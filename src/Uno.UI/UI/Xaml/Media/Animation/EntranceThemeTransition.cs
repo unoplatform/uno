@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		// Using a DependencyProperty as the backing store for IsStaggeringEnabled.  This enables animation, styling, binding, etc...
 		public static DependencyProperty IsStaggeringEnabledProperty { get; } =
-			DependencyProperty.Register("IsStaggeringEnabled", typeof(bool), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+			DependencyProperty.Register("IsStaggeringEnabled", typeof(bool), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 		#endregion
 

@@ -154,7 +154,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
-					Boxes.BoolBoxes.BoxedFalse,
+					Boxes.BoolBoxes.False,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((SplitView)s)?.OnIsPaneOpenChanged(e)
 				)

@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 		// Skipping already declared property FocusStateProperty
 		// Skipping already declared property GettingFocusEvent
@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsAccessKeyScope), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsDoubleTapEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsHoldingEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsRightTapEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 		// Skipping already declared property IsTabStopProperty
 #if __SKIA__
@@ -104,7 +104,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsTapEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 		// Skipping already declared property KeyDownEvent
 #if __SKIA__

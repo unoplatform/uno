@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsActiveView), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 		// Skipping already declared property IsItemClickEnabledProperty
 		// Skipping already declared property IsMultiSelectCheckBoxEnabledProperty
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsSwipeEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsZoomedInView), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ShowsScrollingPlaceholders), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 		// Skipping already declared property SingleSelectionFollowsFocusProperty
 		// Skipping already declared property CanDragItems

@@ -14,7 +14,7 @@
 				"IsActive", typeof(bool),
 				typeof(StateTrigger),
 				new FrameworkPropertyMetadata(
-					defaultValue: global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse,
+					defaultValue: global::Uno.UI.Helpers.Boxes.BoolBoxes.False,
 					propertyChangedCallback: (s, e) => (s as StateTrigger)?.OnIsActiveChanged(e)));
 
 		private void OnIsActiveChanged(DependencyPropertyChangedEventArgs e)

@@ -21,7 +21,7 @@ public partial class FontIconSource : IconSource
 	}
 
 	public static DependencyProperty MirroredWhenRightToLeftProperty { get; } =
-		DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(FontIconSource), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnPropertyChanged));
+		DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(FontIconSource), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnPropertyChanged));
 
 	public bool IsTextScaleFactorEnabled
 	{
@@ -30,7 +30,7 @@ public partial class FontIconSource : IconSource
 	}
 
 	public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
-		DependencyProperty.Register(nameof(IsTextScaleFactorEnabled), typeof(bool), typeof(FontIconSource), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsTextScaleFactorEnabled), typeof(bool), typeof(FontIconSource), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
 
 	public string Glyph
 	{

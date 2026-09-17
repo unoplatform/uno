@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(CanReorderItems),
 			typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		public bool CanReorderItems
 		{
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(CanDragItems),
 			typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnCanDragItemsChanged));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnCanDragItemsChanged));
 
 		public bool CanDragItems
 		{

@@ -155,7 +155,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(bool),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BoolBoxes.BoxedTrue,
+					defaultValue: Boxes.BoolBoxes.True,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnIsTextScaleFactorEnabledChanged()
 				)

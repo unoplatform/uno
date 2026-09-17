@@ -551,14 +551,14 @@ namespace Microsoft.UI.Xaml
 			{
 				if (forType.IsAssignableTo(typeof(UserControl)))
 				{
-					return Boxes.BoolBoxes.BoxedFalse;
+					return Boxes.BoolBoxes.False;
 				}
 				else if (forType.IsAssignableTo(typeof(Control)))
 				{
-					return Boxes.BoolBoxes.BoxedTrue;
+					return Boxes.BoolBoxes.True;
 				}
 
-				return Boxes.BoolBoxes.BoxedFalse;
+				return Boxes.BoolBoxes.False;
 			}
 
 #if __SKIA__

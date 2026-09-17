@@ -22,7 +22,7 @@ partial class MenuFlyoutPresenter
 			nameof(IsDefaultShadowEnabled),
 			typeof(bool),
 			typeof(MenuFlyoutPresenter),
-			new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.BoxedTrue));
+			new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.True));
 
 	/// <summary>
 	/// Gets an object that provides calculated values that can be referenced

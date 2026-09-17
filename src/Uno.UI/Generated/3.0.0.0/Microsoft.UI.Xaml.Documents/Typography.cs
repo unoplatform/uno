@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"CapitalSpacing", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"CaseSensitiveForms", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"ContextualAlternates", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"ContextualLigatures", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -75,7 +75,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"DiscretionaryLigatures", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -83,7 +83,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"EastAsianExpertForms", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -115,7 +115,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"HistoricalForms", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -123,7 +123,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"HistoricalLigatures", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -131,7 +131,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"Kerning", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -139,7 +139,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"MathematicalGreek", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -163,7 +163,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"SlashedZero", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -171,7 +171,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StandardLigatures", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -195,7 +195,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet10", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -203,7 +203,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet11", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -211,7 +211,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet12", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -219,7 +219,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet13", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -227,7 +227,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet14", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -235,7 +235,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet15", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -243,7 +243,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet16", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -251,7 +251,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet17", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -259,7 +259,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet18", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -267,7 +267,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet19", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -275,7 +275,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet1", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -283,7 +283,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet20", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -291,7 +291,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet2", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -299,7 +299,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet3", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -307,7 +307,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet4", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -315,7 +315,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet5", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -323,7 +323,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet6", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -331,7 +331,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet7", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -339,7 +339,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet8", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -347,7 +347,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"StylisticSet9", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]

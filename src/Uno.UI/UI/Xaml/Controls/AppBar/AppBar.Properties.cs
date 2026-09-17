@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsSticky),
 				typeof(bool),
 				typeof(AppBar),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse)
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False)
 			);
 
 		#endregion
@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(IsOpen),
 			typeof(bool),
 			typeof(AppBar),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse)
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False)
 		);
 
 		#endregion

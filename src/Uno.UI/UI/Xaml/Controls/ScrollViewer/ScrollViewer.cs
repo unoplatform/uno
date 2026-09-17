@@ -274,7 +274,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					Boxes.BoolBoxes.BoxedTrue,
+					Boxes.BoolBoxes.True,
 					propertyChangedCallback: OnBringIntoViewOnFocusChangeChanged));
 
 		private static void OnBringIntoViewOnFocusChangeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
