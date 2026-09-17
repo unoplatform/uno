@@ -6,6 +6,7 @@ using Combinatorial.MSTest;
 using AwesomeAssertions;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Windows.Graphics;
 
@@ -225,6 +226,75 @@ public class Given_AppWindow
 		{
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.RunOnUIThread(() => newWindow.Close());
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AppWindow_Hide_Then_Show()
+	{
+		var sut = new Window();
+		var content = new Border() { Width = 100, Height = 100 };
+		sut.Content = content;
+		sut.Activate();
+		await TestServices.WindowHelper.WaitForLoaded(content);
+		try
+		{
+			Assert.IsTrue(sut.Visible);
+			Assert.IsTrue(sut.AppWindow.IsVisible);
+
+			sut.AppWindow.Hide();
+
+			Assert.IsFalse(sut.Visible);
+			Assert.IsFalse(sut.AppWindow.IsVisible);
+
+			sut.AppWindow.Show();
+
+			Assert.IsTrue(sut.Visible);
+			Assert.IsTrue(sut.AppWindow.IsVisible);
+		}
+		finally
+		{
+			sut.Close();
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_Window_Closed_Is_Handled_With_Hide()
+	{
+		var sut = new Window();
+		var content = new Border() { Width = 100, Height = 100 };
+		sut.Content = content;
+		var hideOnClose = true;
+		sut.Closed += (s, e) =>
+		{
+			if (!hideOnClose)
+			{
+				return;
+			}
+
+			e.Handled = true;
+			sut.AppWindow.Hide();
+		};
+
+		sut.Activate();
+		await TestServices.WindowHelper.WaitForLoaded(content);
+
+		try
+		{
+			sut.Close();
+
+			Assert.IsFalse(sut.Visible);
+			Assert.IsFalse(sut.AppWindow.IsVisible);
+
+			sut.AppWindow.Show();
+			Assert.IsTrue(sut.Visible);
+		}
+		finally
+		{
+			hideOnClose = false;
+			sut.Close();
 		}
 	}
 
