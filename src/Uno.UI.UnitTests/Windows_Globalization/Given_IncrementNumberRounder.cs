@@ -107,6 +107,18 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		public void When_SingleIncrementIsJustAboveBinary32_Then_DoubleIncrementIsUsed()
+		{
+			var sut = new IncrementNumberRounder
+			{
+				Increment = Math.BitIncrement((double)float.MaxValue),
+				RoundingAlgorithm = RoundingAlgorithm.RoundTowardsZero,
+			};
+
+			Assert.AreEqual(0f, sut.RoundSingle(float.MaxValue));
+		}
+
+		[TestMethod]
 		public void When_IntegralIncrementExceedsUInt64_Then_ZeroOrOverflowIsReturned()
 		{
 			var sut = new IncrementNumberRounder { Increment = 1e20 };

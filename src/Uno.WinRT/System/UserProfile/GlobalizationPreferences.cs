@@ -7,7 +7,7 @@ using System.Text;
 
 #if __ANDROID__
 using Java.Util;
-#elif __IOS__ || __TVOS__
+#elif __APPLE_UIKIT__
 using Foundation;
 #elif __SKIA__
 using Windows.WinRT;
@@ -18,11 +18,11 @@ namespace Windows.System.UserProfile;
 public static partial class GlobalizationPreferences
 {
 
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__ || __SKIA__
 	public static IReadOnlyList<string> Languages =>
 #if __ANDROID__
 		new[] { Locale.Default.ToLanguageTag() };
-#elif __IOS__ || __TVOS__
+#elif __APPLE_UIKIT__
 		NSLocale.PreferredLanguages;
 #elif __WASM__
 		GetCurrentCultureLanguages();
@@ -31,14 +31,14 @@ public static partial class GlobalizationPreferences
 #endif
 #endif
 
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__ || __SKIA__
 	public static string HomeGeographicRegion
 	{
 		get
 		{
 #if __ANDROID__
 			return NormalizeRegionOrFallback(Locale.Default.Country);
-#elif __IOS__ || __TVOS__
+#elif __APPLE_UIKIT__
 			return NormalizeRegionOrFallback(NSLocale.CurrentLocale.CountryCode);
 #elif __SKIA__
 			if (OperatingSystem.IsWindows() && TryGetWinUserRegion(out var region))
@@ -61,7 +61,7 @@ public static partial class GlobalizationPreferences
 			: ["en-US"];
 #endif
 
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__ || __SKIA__
 	private static string NormalizeRegionOrFallback(string? region)
 	{
 		if (TryNormalizeRegion(region, out var normalizedRegion) ||

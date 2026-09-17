@@ -8,6 +8,8 @@ namespace Windows.Globalization.NumberFormatting;
 
 public partial class IncrementNumberRounder : INumberRounder
 {
+	private const double TwoPow64 = 18446744073709551616d;
+
 	private static readonly double[] Exceptions = new double[]
 	{
 			1E-11,
@@ -121,12 +123,12 @@ public partial class IncrementNumberRounder : INumberRounder
 
 	public float RoundSingle(float value)
 	{
-		var singleIncrement = (float)increment;
-		if (!float.IsFinite(singleIncrement))
+		if (increment > float.MaxValue)
 		{
 			return (float)RoundDouble(value);
 		}
 
+		var singleIncrement = (float)increment;
 		var rounded = (float)Rounder.Round(value / singleIncrement, 0, RoundingAlgorithm);
 
 		return rounded * singleIncrement;
@@ -141,7 +143,7 @@ public partial class IncrementNumberRounder : INumberRounder
 	/// </remarks>
 	private bool TryGetIntegralIncrement(out ulong incrementMagnitude)
 	{
-		if (increment >= 18446744073709551616d)
+		if (increment >= TwoPow64)
 		{
 			incrementMagnitude = 0;
 			return false;
@@ -178,7 +180,7 @@ public partial class IncrementNumberRounder : INumberRounder
 	private bool RoundsNearestAwayFromZero(ulong magnitude, bool isNegative)
 	{
 		var midpoint = increment / 2;
-		if (midpoint >= 18446744073709551616d)
+		if (midpoint >= TwoPow64)
 		{
 			return false;
 		}

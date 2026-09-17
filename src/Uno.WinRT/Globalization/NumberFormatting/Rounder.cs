@@ -100,6 +100,11 @@ internal static class Rounder
 	/// </summary>
 	public static ulong GetPowerOfTen(int exponent)
 	{
+		if ((uint)exponent > 19)
+		{
+			ExceptionHelper.ThrowArithmeticException();
+		}
+
 		var result = 1UL;
 
 		for (var i = 0; i < exponent; i++)
