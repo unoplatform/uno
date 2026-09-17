@@ -42,6 +42,24 @@ internal static class BoxingAnalyzerHarness
 				public static object Box(int value) => value;
 
 				public static object Box(double value) => value;
+
+				public static object Box(global::Uno.UI.Xaml.RoutedEventFlag value) => value;
+			}
+		}
+
+		namespace Uno.UI.Xaml
+		{
+			public enum RoutedEventFlag
+			{
+				None,
+				PointerPressed,
+			}
+		}
+
+		namespace Microsoft.UI.Xaml
+		{
+			public sealed class DependencyProperty
+			{
 			}
 		}
 		""";
@@ -84,9 +102,22 @@ internal static class BoxingAnalyzerHarness
 	}
 
 	public static async Task<Document> ApplyBoxingFixAsync(Document document)
-	{
-		var diagnostic = (await GetDiagnosticsAsync(document)).Should().ContainSingle(d => d.Id == BoxingDiagnosticId).Subject;
+		=> await ApplyBoxingFixAsync(document, (await GetDiagnosticsAsync(document)).Should().ContainSingle(d => d.Id == BoxingDiagnosticId).Subject);
 
+	/// <summary>
+	/// Runs the fix for a diagnostic the analyzer would not report, to check the fix guards itself.
+	/// </summary>
+	public static async Task<Document> ApplyBoxingFixAtAsync(Document document, string expression)
+	{
+		var text = (await document.GetTextAsync()).ToString();
+		var span = new TextSpan(text.LastIndexOf(expression, StringComparison.Ordinal), expression.Length);
+		var descriptor = new DiagnosticDescriptor(BoxingDiagnosticId, "title", "message", "Performance", DiagnosticSeverity.Warning, isEnabledByDefault: true);
+
+		return await ApplyBoxingFixAsync(document, Diagnostic.Create(descriptor, Location.Create((await document.GetSyntaxTreeAsync())!, span)));
+	}
+
+	private static async Task<Document> ApplyBoxingFixAsync(Document document, Diagnostic diagnostic)
+	{
 		List<CodeAction> actions = new();
 		CodeFixContext context = new(document, diagnostic, (action, _) => actions.Add(action), CancellationToken.None);
 		await new BoxingCodeFixProvider().RegisterCodeFixesAsync(context);
