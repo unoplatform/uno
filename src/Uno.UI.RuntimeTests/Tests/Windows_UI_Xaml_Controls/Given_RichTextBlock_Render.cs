@@ -368,6 +368,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		[RequiresScaling(1f)]
+		[DataRow(TextTrimming.CharacterEllipsis)]
+		[DataRow(TextTrimming.WordEllipsis)]
+		public async Task When_RightToLeft_Control_Trims_Latin_Text(TextTrimming trimming)
+		{
+			// RichTextBlock detects its reading order from content, so Latin text still ends with the ellipsis on the right.
+			await AssertRightToLeftTrimming(trimming, "HHHH HHHH HHHH HHHH HHHH", ellipsisOnLeft: false);
+		}
+
+		[TestMethod]
+		[RequiresScaling(1f)]
+		[DataRow(TextTrimming.CharacterEllipsis)]
+		[DataRow(TextTrimming.WordEllipsis)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.NativeWinUI)] // Needs a Hebrew fallback font.
+		public async Task When_RightToLeft_Control_Trims_Hebrew_Text(TextTrimming trimming)
+		{
+			// A right-to-left paragraph keeps its logical start on the right and ends with the ellipsis on the left.
+			const string Word = "םםםם"; // Final mem: full-height strokes, no descender.
+			await AssertRightToLeftTrimming(trimming, $"{Word} {Word} {Word} {Word} {Word}", ellipsisOnLeft: true);
+		}
+
+		private static async Task AssertRightToLeftTrimming(TextTrimming trimming, string text, bool ellipsisOnLeft)
+		{
+			var SUT = new RichTextBlock
+			{
+				Width = 200,
+				FontSize = 40,
+				FlowDirection = FlowDirection.RightToLeft,
+				TextWrapping = TextWrapping.NoWrap,
+				TextTrimming = trimming,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = text });
+			SUT.Blocks.Add(paragraph);
+
+			var host = new Border { Width = 400, Height = 80, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Child = SUT };
+
+			try
+			{
+				WindowHelper.WindowContent = host;
+				await WindowHelper.WaitForLoaded(host);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(SUT.IsTextTrimmed, "A line too long for the control should report as trimmed");
+
+				var shot = await UITestHelper.ScreenShot(host);
+				ImageAssert.DoesNotHaveColorInRectangle(shot, new Rectangle(204, 0, 196, 80), Microsoft.UI.Colors.Red, tolerance: 16);
+
+				var ink = ImageAssert.GetColorBounds(shot, Microsoft.UI.Colors.Red, tolerance: 16);
+				Assert.IsTrue(ink.Right >= 188, $"The line should sit against the control's right edge, but ink ends at {ink.Right}");
+
+				// The ellipsis is dots on the baseline, so the end of the line holding it has no ink in the upper half.
+				var upperHalf = (int)(ink.Height / 2);
+				var leftStrip = new Rectangle((int)ink.Left, (int)ink.Top, 4, upperHalf);
+				var rightStrip = new Rectangle((int)ink.Right - 3, (int)ink.Top, 4, upperHalf);
+				var (ellipsisStrip, letterStrip) = ellipsisOnLeft ? (leftStrip, rightStrip) : (rightStrip, leftStrip);
+
+				ImageAssert.DoesNotHaveColorInRectangle(shot, ellipsisStrip, Microsoft.UI.Colors.Red, tolerance: 16);
+				ImageAssert.HasColorInRectangle(shot, letterStrip, Microsoft.UI.Colors.Red, tolerance: 16);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 		private static async Task<double> MeasureRunWidth(string text, double fontSize)
 		{
 			var probe = new RichTextBlock { FontSize = fontSize, TextWrapping = TextWrapping.NoWrap, HorizontalAlignment = HorizontalAlignment.Left };

@@ -206,6 +206,10 @@ internal sealed class SkiaTextLine : TextLine
 	public override void Arrange(Rect bounds)
 	{
 		var x = (float)bounds.X;
+		if (_renderLine is { CollapsingSymbol: { } symbol, CollapsingSymbolLeads: true })
+		{
+			x += symbol.Width;
+		}
 
 		foreach (var segmentSpan in _renderLine.RenderOrderedSegmentSpans)
 		{
@@ -238,14 +242,15 @@ internal sealed class SkiaTextLine : TextLine
 		// LsTextLine::FormatCollapsed - the formatting width excludes the symbol and never goes negative.
 		var available = Math.Max(0f, (float)(collapsingWidth - symbol.Width));
 
-		var kept = TrimSpansToWidth(_renderLine.RenderOrderedSegmentSpans, available, collapsingStyle);
+		// Line Services formats the collapsed line from its first character, so the logical end is what goes.
+		var kept = TrimSpansToWidth(_renderLine.SegmentSpans, available, collapsingStyle);
 		if (kept is null)
 		{
 			// Everything fits; nothing to collapse.
 			return this;
 		}
 
-		var collapsed = _renderLine.CollapseTo(kept, ShapeSymbol(symbol));
+		var collapsed = _renderLine.CollapseTo(kept, ShapeSymbol(symbol), symbolLeads: _parsedText.IsReadingOrderRightToLeft());
 
 		_parsedText.ReplaceRenderLine(_lineIndex, collapsed);
 

@@ -36,6 +36,18 @@ internal readonly partial struct UnicodeText : IParsedText
 	private const int UBIDI_RTL = 1;
 	private const string HorizontalEllipsis = "\u2026";
 
+	// Unicode rules P2-P3: the first strong character sets the paragraph level, otherwise the flow direction does.
+	internal static bool IsRightToLeftParagraph(string text, FlowDirection flowDirection)
+	{
+		if (text.Length == 0)
+		{
+			return flowDirection is FlowDirection.RightToLeft;
+		}
+
+		using var _ = ICU.CreateBiDiAndSetPara(text, 0, text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out var bidi);
+		return ICU.GetMethod<ICU.ubidi_getParaLevel>()(bidi) is UBIDI_RTL;
+	}
+
 	// Fallbacks for fonts that don't publish underline/strikeout metrics, as a fraction of the em
 	// size so they track the font size. They approximate what real fonts publish (measured on
 	// Segoe UI/Arial/Times New Roman/Consolas: ~0.05 em thickness, ~0.1 em under and ~0.25 em over

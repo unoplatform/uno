@@ -558,6 +558,11 @@ internal readonly struct ParsedText : IParsedText
 			}
 
 			(float x, float justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, alignment);
+			var lineStartX = x;
+			if (line is { CollapsingSymbol: { } leadingSymbol, CollapsingSymbolLeads: true })
+			{
+				x += leadingSymbol.Width;
+			}
 
 			y += line.Height;
 			float baselineOffsetY = line.BaselineOffsetY;
@@ -773,10 +778,10 @@ internal readonly struct ParsedText : IParsedText
 				ArrayPool<ushort>.Shared.Return(glyphs);
 			}
 
-			// A line collapsed by text trimming paints its ellipsis after the glyphs that were kept.
+			// A collapsed line paints its ellipsis at its logical end, still last so it takes the kept glyphs' paint.
 			if (line.CollapsingSymbol is { } collapsingSymbol)
 			{
-				DrawCollapsingSymbol(collapsingSymbol, canvas, x, y + baselineOffsetY);
+				DrawCollapsingSymbol(collapsingSymbol, canvas, line.CollapsingSymbolLeads ? lineStartX : x, y + baselineOffsetY);
 			}
 		}
 
@@ -1075,6 +1080,10 @@ internal readonly struct ParsedText : IParsedText
 			: _textAlignment;
 
 	internal FlowDirection FlowDirection => _flowDirection;
+
+	// TextStore::Initialize - with TextReadingOrder.DetectFromContent (the RichTextBlock default) the paragraph
+	// reads in its content's direction, falling back to FlowDirection.
+	internal bool IsReadingOrderRightToLeft() => UnicodeText.IsRightToLeftParagraph(_text, _flowDirection);
 
 	#endregion
 

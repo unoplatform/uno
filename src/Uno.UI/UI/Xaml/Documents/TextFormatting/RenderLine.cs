@@ -42,13 +42,18 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 		public CollapsedLineSymbol? CollapsingSymbol { get; set; }
 
 		/// <summary>
-		/// Produces a copy of this line trimmed to <paramref name="spans"/> with a collapsing symbol at its
-		/// end. Collapsing only drops glyphs from the tail, so the line's stacking metrics are unchanged.
+		/// Set when the collapsing symbol ends a right-to-left paragraph, whose logical end is its left edge.
 		/// </summary>
-		internal RenderLine CollapseTo(List<RenderSegmentSpan> spans, CollapsedLineSymbol symbol)
-			=> new(this, spans, symbol);
+		public bool CollapsingSymbolLeads { get; }
 
-		private RenderLine(RenderLine source, List<RenderSegmentSpan> spans, CollapsedLineSymbol symbol)
+		/// <summary>
+		/// Produces a copy of this line trimmed to <paramref name="spans"/> (in logical order) with a collapsing
+		/// symbol at its logical end. Collapsing only drops glyphs from the tail, so the line's stacking metrics are unchanged.
+		/// </summary>
+		internal RenderLine CollapseTo(List<RenderSegmentSpan> spans, CollapsedLineSymbol symbol, bool symbolLeads)
+			=> new(this, spans, symbol, symbolLeads);
+
+		private RenderLine(RenderLine source, List<RenderSegmentSpan> spans, CollapsedLineSymbol symbol, bool symbolLeads)
 		{
 			_segmentSpans = new(spans);
 
@@ -64,6 +69,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 			BaselineOffsetY = source.BaselineOffsetY;
 			Wraps = false;
 			CollapsingSymbol = symbol;
+			CollapsingSymbolLeads = symbolLeads;
 		}
 
 		public RenderLine(List<RenderSegmentSpan> spans, LineStackingStrategy lineStackingStrategy, float lineHeight, bool firstLine, bool wraps, TextLineBounds textLineBounds)
