@@ -96,6 +96,9 @@ public partial class ItemAutomationPeer : AutomationPeer, IVirtualizedItemProvid
 	internal AutomationPeer? GetContainerPeer()
 		=> GetContainer()?.GetOrCreateAutomationPeer();
 
+	internal IList<AutomationPeer>? GetChildrenForContainer(UIElement container)
+		=> container.GetOrCreateAutomationPeer()?.GetChildren();
+
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
 		if (patternInterface == PatternInterface.VirtualizedItem)

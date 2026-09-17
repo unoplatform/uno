@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI;
+using Uno.UI.Helpers.WinUI;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
@@ -19,6 +20,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 [TestClass]
 public partial class Given_MobileAccessibilityActions
 {
+	[TestMethod]
+	public void When_BuiltIn_Action_Labels_Are_Requested_Then_Framework_Resources_Are_Used()
+	{
+		var keys = new[]
+		{
+			ResourceAccessor.SR_AccessibilityActionExpand,
+			ResourceAccessor.SR_AccessibilityActionCollapse,
+			ResourceAccessor.SR_AccessibilityActionScrollIntoView,
+			ResourceAccessor.SR_AccessibilityActionRealize,
+			ResourceAccessor.SR_AccessibilityActionZoomIn,
+			ResourceAccessor.SR_AccessibilityActionZoomOut,
+			ResourceAccessor.SR_AccessibilityActionUndock,
+		};
+
+		foreach (var key in keys)
+		{
+			var label = ResourceAccessor.GetLocalizedStringResource(key);
+			Assert.IsFalse(string.IsNullOrWhiteSpace(label), $"Missing localized action label for {key}.");
+			Assert.AreNotEqual(key, label, $"Action label {key} must come from a localized resource value.");
+		}
+	}
+
 	[TestMethod]
 	[DataRow(true)]
 	[DataRow(false)]
