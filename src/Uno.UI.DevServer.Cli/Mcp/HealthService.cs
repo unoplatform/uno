@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Protocol;
 using Uno.UI.DevServer.Cli.Helpers;
 
@@ -14,7 +15,9 @@ namespace Uno.UI.DevServer.Cli.Mcp;
 internal class HealthService(
 	McpUpstreamClient mcpUpstreamClient,
 	DevServerMonitor devServerMonitor,
-	ToolListManager toolListManager)
+	ToolListManager toolListManager,
+	ILogger<HealthService> logger,
+	Func<CancellationToken, Task<string?>>? latestUnoSdkVersionProvider = null)
 {
 	internal bool ForceRootsFallback { get; set; }
 	internal bool RootsProvided { get; set; }
@@ -36,6 +39,15 @@ internal class HealthService(
 
 	public WorkspaceSelectionSnapshot? CurrentSelection { get; set; }
 
+	// Recommended Uno.Sdk version fetch, kicked off exactly once (Lazy + ExecutionAndPublication)
+	// so concurrent health calls never start duplicate fetches and never block. Best-effort: the
+	// fetch has its own short internal timeout, so no lifecycle token is plumbed here — it is a
+	// one-shot, self-bounding HTTP call. Health calls read the result only once it has completed.
+	// The provider is injectable so tests can supply a version without real network I/O.
+	private readonly Lazy<Task<string?>> _latestUnoSdkVersion = new(
+		() => (latestUnoSdkVersionProvider ?? (ct => SdkManifest.GetLatestUnoSdkVersionAsync(logger, ct)))(CancellationToken.None),
+		LazyThreadSafetyMode.ExecutionAndPublication);
+
 	public CallToolResult BuildHealthToolResponse()
 	{
 		var report = BuildHealthReport();
@@ -48,6 +60,9 @@ internal class HealthService(
 
 	public HealthReport BuildHealthReport()
 	{
+		var latestFetch = _latestUnoSdkVersion.Value;
+		var latestUnoSdkVersion = latestFetch.IsCompletedSuccessfully ? latestFetch.Result : null;
+
 		var upstreamTask = mcpUpstreamClient.UpstreamClient;
 		var upstreamConnected = upstreamTask.IsCompletedSuccessfully;
 
@@ -75,6 +90,7 @@ internal class HealthService(
 				: null,
 			forceRootsFallback: ForceRootsFallback,
 			rootsProvided: RootsProvided,
-			hostRespondedNoMcp: devServerMonitor.HostRespondedNoMcp);
+			hostRespondedNoMcp: devServerMonitor.HostRespondedNoMcp,
+			latestUnoSdkVersion: latestUnoSdkVersion);
 	}
 }
