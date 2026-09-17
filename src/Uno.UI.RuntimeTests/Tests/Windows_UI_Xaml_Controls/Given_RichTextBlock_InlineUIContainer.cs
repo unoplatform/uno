@@ -191,5 +191,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, offset.X, 1, $"Expected the wrapped child to start the line, but X was {offset.X}.");
 			Assert.IsTrue(offset.Y > 0, $"Expected the child to wrap onto a second line, but Y was {offset.Y}.");
 		}
+
+		[TestMethod]
+		public async Task When_Height_Shrinks_At_Same_Width()
+		{
+			// Every measure pass detaches the embedded elements and formatting re-hosts them, even at an unchanged width.
+			var child = CreateChild(40, 20);
+			var SUT = CreateSUT(child);
+			SUT.Width = 300;
+
+			await UITestHelper.Load(SUT);
+			Assert.AreEqual(SUT, VisualTreeHelper.GetParent(child));
+
+			SUT.Height = 5;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT, VisualTreeHelper.GetParent(child), "Re-measuring at the same width must keep the child hosted");
+		}
 	}
 }

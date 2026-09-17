@@ -114,5 +114,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = null;
 			}
 		}
+
+		[TestMethod]
+		public async Task When_Paragraph_Properties_Change_At_Same_Width()
+		{
+			// Line Services formats the first line from the current inputs; a layout from an earlier pass must not leak in.
+			var run = new Run { Text = "The quick brown fox jumps over the lazy dog and keeps on running past the edge of the block" };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(run);
+			var SUT = new RichTextBlock { Width = 120 };
+			SUT.Blocks.Add(paragraph);
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var inlines = paragraph.Inlines.TraversedTree.leafTree;
+				var (defaultFont, _) = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle);
+
+				var source = new TestParagraphSource(inlines, defaultFont.SKFontSize);
+				var runProperties = new TextRunProperties(defaultFont, SUT.FontSize, false, false, 0, null, CultureInfo.CurrentCulture, CultureInfo.CurrentCulture);
+				var wrap = new TextParagraphProperties(FlowDirection.LeftToRight, runProperties, 0, TextWrapping.Wrap, TextLineBounds.Full, TextAlignment.Left);
+				var noWrap = new TextParagraphProperties(FlowDirection.LeftToRight, runProperties, 0, TextWrapping.NoWrap, TextLineBounds.Full, TextAlignment.Left);
+
+				var wrappingWidth = SUT.ActualWidth;
+
+				Assert.IsNotNull(SkiaTextFormatter.Instance.FormatLine(source, 0, wrappingWidth, wrap, null, null).TextLineBreak, "Precondition: the text wraps");
+				Assert.IsNull(SkiaTextFormatter.Instance.FormatLine(source, 0, wrappingWidth, noWrap, null, null).TextLineBreak, "NoWrap at the same width must format a single line");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }
