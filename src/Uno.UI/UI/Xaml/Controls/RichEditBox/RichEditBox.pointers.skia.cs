@@ -28,23 +28,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _isPressed;
 		private bool _wasFocusedOnPointerPressed;
 
-		protected override void OnPointerEntered(PointerRoutedEventArgs e)
+		private void OnPointerPressedCore(PointerRoutedEventArgs e)
 		{
-			base.OnPointerEntered(e);
-			_isPointerOver = true;
-			UpdateVisualState();
-		}
-
-		protected override void OnPointerExited(PointerRoutedEventArgs e)
-		{
-			base.OnPointerExited(e);
-			_isPointerOver = false;
-			UpdateVisualState();
-		}
-
-		protected override void OnPointerPressed(PointerRoutedEventArgs e)
-		{
-			base.OnPointerPressed(e);
 			if (!ReferenceEquals(_processedPointerPressedArgs, e))
 			{
 				ProcessPointerPressed(e);
@@ -139,9 +124,14 @@ namespace Microsoft.UI.Xaml.Controls
 			_hasPointerCapture = CapturePointer(e.Pointer);
 		}
 
-		protected override void OnPointerMoved(PointerRoutedEventArgs e)
+		private void OnPointerMovedCore(PointerRoutedEventArgs e)
 		{
-			base.OnPointerMoved(e);
+			if (_textBoxView?.DisplayBlock is { } linkView && e.Pointer.PointerDeviceType == PointerDeviceType.Mouse)
+			{
+				var linkIndex = linkView.ParsedText.GetIndexAt(e.GetCurrentPoint(linkView).Position, true, false);
+				var link = linkIndex < 0 ? string.Empty : Document.GetRange(linkIndex, linkIndex).Link;
+				HandleLinkNavigation(GetInputScope() != InputScopeNameValue.Url && TryGetLinkUri(link, out _), e.KeyModifiers);
+			}
 
 			if (!_hasPointerCapture || _textBoxView?.DisplayBlock is not { } displayBlock)
 			{
@@ -175,9 +165,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnPointerReleased(PointerRoutedEventArgs e)
+		private void OnPointerReleasedCore(PointerRoutedEventArgs e)
 		{
-			base.OnPointerReleased(e);
 			_processedPointerPressedArgs = null;
 			_mouseMultiTapChunk = null;
 
@@ -228,8 +217,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_textBoxView?.DisplayBlock is { } displayBlock)
 				{
 					var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(e.GetCurrentPoint(displayBlock).Position, true, true));
-					var commandModifier = (e.KeyModifiers & _platformCtrlKey) != 0;
-					if (index == _pressedLinkIndex && (IsReadOnly || commandModifier))
+					if (index == _pressedLinkIndex && ShouldNavigateLinkOnMouseClick(e.KeyModifiers))
 					{
 						TryNavigateLinkAt(index);
 					}
@@ -242,9 +230,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
+		private void ResetManagedPointerState()
 		{
-			base.OnPointerCaptureLost(e);
 			_processedPointerPressedArgs = null;
 			_isPressed = false;
 			_mouseMultiTapChunk = null;
@@ -252,15 +239,13 @@ namespace Microsoft.UI.Xaml.Controls
 			_pressedLinkIndex = -1;
 		}
 
-		protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+		private void OnDoubleTappedCore(DoubleTappedRoutedEventArgs e)
 		{
-			base.OnDoubleTapped(e);
 			e.Handled = true;
 		}
 
-		protected override void OnRightTapped(RightTappedRoutedEventArgs e)
+		private void OnRightTappedCore(RightTappedRoutedEventArgs e)
 		{
-			base.OnRightTapped(e);
 			if (_textBoxView?.DisplayBlock is not { } displayBlock)
 			{
 				return;

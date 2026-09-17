@@ -46,6 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Tracks the open composition undo group so the whole composition is one undoable action.
 		private bool _compositionUndoGroupOpen;
+		private InputScope? _defaultImeInputScope;
 
 		internal bool ShouldSwallowKeyDuringComposition => _isComposing && !_compositionAppliedByPlatform;
 
@@ -78,10 +79,6 @@ namespace Microsoft.UI.Xaml.Controls
 			return start < end;
 		}
 
-		public event TypedEventHandler<RichEditBox, TextCompositionStartedEventArgs>? TextCompositionStarted;
-		public event TypedEventHandler<RichEditBox, TextCompositionChangedEventArgs>? TextCompositionChanged;
-		public event TypedEventHandler<RichEditBox, TextCompositionEndedEventArgs>? TextCompositionEnded;
-
 		// --- IImeSessionHost positioning surface (read by the platform IME extensions) ---
 
 		XamlRoot? IImeSessionHost.XamlRoot => XamlRoot;
@@ -94,7 +91,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		bool IImeSessionHost.IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
-		InputScope IImeSessionHost.InputScope => InputScope;
+		InputScope IImeSessionHost.InputScope => InputScope ?? (_defaultImeInputScope ??= new InputScope
+		{
+			Names = { new InputScopeName { NameValue = InputScopeNameValue.Default } },
+		});
 
 		bool IImeSessionHost.IsTextPredictionEnabled => IsTextPredictionEnabled;
 
@@ -121,8 +121,6 @@ namespace Microsoft.UI.Xaml.Controls
 			=> SelectFromNative(selectionStart, selectionLength);
 
 		bool IImeSessionHost.RaisePaste() => RaisePasteIsHandled();
-
-		public event TypedEventHandler<RichEditBox, CandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged;
 
 		private void StartImeSession()
 			=> ActivateImeForFocusOrigin(_imeFocusOrigin);
@@ -429,13 +427,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		void IImeSessionHost.OnCandidateWindowBoundsChanged(Rect bounds)
-			=> CandidateWindowBoundsChanged?.Invoke(this, new CandidateWindowBoundsChangedEventArgs(bounds));
-
-		/// <summary>
-		/// Gets the active linguistic alternatives for the current composition.
-		/// </summary>
-		public IAsyncOperation<IReadOnlyList<string>> GetLinguisticAlternativesAsync()
-			=> AsyncOperation.FromTask(GetLinguisticAlternativesCoreAsync);
+		{
+			_candidateWindowBoundsChanged?.Invoke(this, new CandidateWindowBoundsChangedEventArgs(bounds));
+			m_firedCandidateWindowEventAfterFocus = true;
+		}
 
 		private async Task<IReadOnlyList<string>> GetLinguisticAlternativesCoreAsync(CancellationToken cancellationToken)
 		{

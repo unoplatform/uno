@@ -446,6 +446,9 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		AutomationTextEditChangeType changeType,
 		System.Collections.Generic.IReadOnlyList<string> changedData)
 	{
+		// Non-Win32 backends have no native TextEdit event, but their accessible text mirrors
+		// must still reflect the editor's content without requiring a lossy Value pattern.
+		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
 		if (!_isDisposed && IsAccessibilityEnabled && TryGetPeerOwner(peer, out var textElement))
 		{
 			UpdateTextValueFromProvider(peer, textElement);
@@ -482,12 +485,6 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		{
 			AnnouncePolite(displayString);
 		}
-	}
-
-	public virtual void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
-	{
-		// TextEditTextChanged is a UIA-specific event (Win32 override raises UiaRaiseTextEditTextChangedEvent).
-		// Non-Win32 backends (macOS/WASM) have no direct NSAccessibility/ARIA equivalent, so the base is a no-op.
 	}
 
 	public virtual void NotifyInvalidatePeer(AutomationPeer peer)

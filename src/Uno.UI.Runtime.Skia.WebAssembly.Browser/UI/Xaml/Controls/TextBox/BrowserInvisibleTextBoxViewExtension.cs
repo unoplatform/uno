@@ -49,7 +49,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	private static void OnInputTextChanged(string text, int selectionStart, int selectionLength)
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
-		// We are expecting this to be called only when the control is focused, as it's the result of an interaction with the native HTML input.
+		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
 		switch (FocusManager.GetFocusedElement(xamlRoot!))
 		{
 			case ITextBoxHost { Core: { } core }:
@@ -66,7 +66,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	private static void OnNativePaste(string clipboardText)
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
-		// We are expecting this to be called only when the control is focused, as it's the result of an interaction with the native HTML input.
+		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
 		switch (FocusManager.GetFocusedElement(xamlRoot!))
 		{
 			case ITextBoxHost { Core: { } core }:
@@ -85,11 +85,11 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		return FocusManager.GetFocusedElement(xamlRoot!) switch
 		{
 			RichEditBox richEditBox => richEditBox.GetClipboardPasteSourceLimit(),
-			TextBox { MaxLength: > 0 } textBox => GetTextBoxPasteSourceLimit(textBox),
+			ITextBoxHost { Core: { MaxLength: > 0 } core } => GetTextBoxPasteSourceLimit(core),
 			_ => int.MaxValue,
 		};
 
-		static int GetTextBoxPasteSourceLimit(TextBox textBox)
+		static int GetTextBoxPasteSourceLimit(TextBoxCore textBox)
 		{
 			var selectedLength = Math.Clamp(textBox.SelectionLength, 0, textBox.Text.Length);
 			var outputLimit = Math.Max(0, textBox.MaxLength - (textBox.Text.Length - selectedLength));
@@ -103,7 +103,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	private static void OnSelectionChanged(int selectionStart, int selectionLength)
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
-		// We are expecting this to be called only when the control is focused, as it's the result of an interaction with the native HTML input.
+		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
 		switch (FocusManager.GetFocusedElement(xamlRoot!))
 		{
 			case ITextBoxHost { Core: { } core }:
@@ -213,8 +213,8 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	{
 		if (!IsHostFocused)
 		{
-			// The invisible <input /> instance is shared between all text controls, so only propagate state from
-			// managed to native when this control is the one in focus
+			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
+			// when this TextBox is the one in focus
 			return;
 		}
 		NativeMethods.UpdateSize(_view.DisplayBlock.ActualWidth, _view.DisplayBlock.ActualHeight);
@@ -224,8 +224,8 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	{
 		if (!IsHostFocused)
 		{
-			// The invisible <input /> instance is shared between all text controls, so only propagate state from
-			// managed to native when this control is the one in focus
+			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
+			// when this TextBox is the one in focus
 			return;
 		}
 		var p = _view.DisplayBlock.TransformToVisual(null).TransformPoint(default);
@@ -250,8 +250,8 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	{
 		if (!IsHostFocused)
 		{
-			// The invisible <input /> instance is shared between all text controls, so only propagate state from
-			// managed to native when this control is the one in focus
+			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
+			// when this TextBox is the one in focus
 			return;
 		}
 		NativeMethods.SetText(text);
@@ -270,8 +270,8 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	{
 		if (!IsHostFocused)
 		{
-			// The invisible <input /> instance is shared between all text controls, so only propagate state from
-			// managed to native when this control is the one in focus
+			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
+			// when this TextBox is the one in focus
 			return;
 		}
 		NativeMethods.UpdateSelection(start, length, SelectionDirection);
@@ -284,8 +284,8 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	{
 		if (!IsHostFocused)
 		{
-			// The invisible <input /> instance is shared between all text controls, so only propagate state from
-			// managed to native when this control is the one in focus
+			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
+			// when this TextBox is the one in focus
 			return;
 		}
 		if (GetEnterKeyHintValue() is { } enterKeyHintValue)
@@ -305,7 +305,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	private string GetEnterKeyHintValue()
 	{
-		if (_view.Host is TextBoxCore core)
+		if (_view.Core is { } core)
 		{
 			return TextBoxExtensions.GetInputReturnType(core.Owner).ToEnterKeyHintValue();
 		}
@@ -315,23 +315,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	private string GetInputModeValue()
 	{
-		if (_view.Host is TextBoxCore core)
+		if (_view.Host is IImeSessionHost host)
 		{
-			return core.InputScope.ToInputModeValue();
-		}
-		if (_view.Host is RichEditBox richEditBox)
-		{
-			return richEditBox.InputScope.ToInputModeValue();
+			return host.InputScope.ToInputModeValue();
 		}
 		return "";
 	}
 
-	private bool GetTextPredictionEnabled() => _view.Host switch
-	{
-		TextBox textBox => textBox.IsTextPredictionEnabled,
-		RichEditBox richEditBox => richEditBox.IsTextPredictionEnabled,
-		_ => true,
-	};
+	private bool GetTextPredictionEnabled() => (_view.Host as IImeSessionHost)?.IsTextPredictionEnabled ?? true;
 
 	private bool GetSpellCheckEnabled() => _view.Host?.IsSpellCheckEnabled ?? true;
 

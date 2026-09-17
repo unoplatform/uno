@@ -446,7 +446,7 @@ public partial class Given_RichEditBox
 		await WindowHelper.WaitForLoaded(editor);
 		Assert.IsTrue(editor.Focus(FocusState.Programmatic));
 		await WindowHelper.WaitForIdle();
-		Assert.AreSame(editor, ImeSessionCoordinator.ActiveHost);
+		Assert.AreSame(((ITextBoxHost)editor).Core, ImeSessionCoordinator.ActiveHost);
 		var weak = new WeakReference(editor);
 		WindowHelper.WindowContent = new Button();
 		await WindowHelper.WaitForIdle();

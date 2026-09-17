@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml/xcp/tools/XCPTypesAutoGen/Modules/Controls/RichEditBox.cs, commit 3c9c168844f06c6ac000a97977f0bb3f4c90fd75
 #nullable enable
 
 using System;
@@ -5,14 +8,77 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Uno.Foundation.Logging;
-using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class RichEditBox
+	partial class RichEditBox
 	{
+		/// <summary>Gets an object that facilitates programmatic access to the text and formatting properties of the content of the RichEditBox.</summary>
+		public global::Microsoft.UI.Text.RichEditTextDocument Document => GetDocumentImpl();
+
+		/// <summary>Gets an object that enables you to access and modify the text in a rich edit control.</summary>
+		public global::Microsoft.UI.Text.RichEditTextDocument TextDocument => GetTextDocumentImpl();
+
+		/// <summary>Occurs when content changes in the RichEditBox.</summary>
+		public event RoutedEventHandler? TextChanged;
+
+		/// <summary>Occurs when the text selection has changed.</summary>
+		public event RoutedEventHandler? SelectionChanged;
+
+		/// <summary>Occurs when the system processes an interaction that displays a context menu.</summary>
+		public event ContextMenuOpeningEventHandler? ContextMenuOpening;
+
+		/// <summary>Occurs when text is pasted into the control.</summary>
+		public event TextControlPasteEventHandler? Paste;
+
+		/// <summary>Occurs when the Input Method Editor (IME) candidate window opens, updates, or closes.</summary>
+		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, CandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged
+		{
+			add => AddCandidateWindowBoundsChanged(value);
+			remove => _candidateWindowBoundsChanged -= value;
+		}
+
+		/// <summary>Occurs synchronously when text in the RichEditBox starts to change, but before it is rendered.</summary>
+		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxTextChangingEventArgs>? TextChanging
+		{
+			add => AddTextChangingHandler(value);
+			remove => _textChanging -= value;
+		}
+
+		/// <summary>Occurs when text being composed through an Input Method Editor starts to change.</summary>
+		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, TextCompositionStartedEventArgs>? TextCompositionStarted;
+
+		/// <summary>Occurs when text being composed through an Input Method Editor changes.</summary>
+		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, TextCompositionChangedEventArgs>? TextCompositionChanged;
+
+		/// <summary>Occurs when text being composed through an Input Method Editor is committed or canceled.</summary>
+		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, TextCompositionEndedEventArgs>? TextCompositionEnded;
+
+		/// <summary>Occurs before selected text is copied to the clipboard.</summary>
+		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, TextControlCopyingToClipboardEventArgs>? CopyingToClipboard;
+
+		/// <summary>Occurs before selected text is cut to the clipboard.</summary>
+		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, TextControlCuttingToClipboardEventArgs>? CuttingToClipboard;
+
+		/// <summary>Occurs before the selection changes. Set Cancel to cancel the change.</summary>
+		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxSelectionChangingEventArgs>? SelectionChanging;
+
+		/// <summary>Identifies the DisabledFormattingAccelerators dependency property.</summary>
+		public static DependencyProperty DisabledFormattingAcceleratorsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(DisabledFormattingAccelerators),
+				typeof(DisabledFormattingAccelerators),
+				typeof(RichEditBox),
+				new FrameworkPropertyMetadata(default(DisabledFormattingAccelerators), OnRichEditBoxPropertyChanged));
+
+		/// <summary>Gets or sets which keyboard shortcuts for formatting are disabled.</summary>
+		public DisabledFormattingAccelerators DisabledFormattingAccelerators
+		{
+			get => (DisabledFormattingAccelerators)GetValue(DisabledFormattingAcceleratorsProperty);
+			set => SetValue(DisabledFormattingAcceleratorsProperty, value);
+		}
+
 		/// <summary>
 		/// Identifies the <see cref="AcceptsReturn"/> dependency property.
 		/// </summary>
@@ -21,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(AcceptsReturn),
 				typeof(bool),
 				typeof(RichEditBox),
-				new FrameworkPropertyMetadata(defaultValue: true, OnAcceptsReturnChanged));
+				new FrameworkPropertyMetadata(defaultValue: true, OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the control accepts newline characters.
@@ -29,15 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public bool AcceptsReturn
 		{
 			get => (bool)GetValue(AcceptsReturnProperty);
-			set
-			{
-				if (value != AcceptsReturn)
-				{
-					InvalidatePendingInteractiveLineFeed();
-					_textChangingInvalidatedLineFeed |= _isInvokingTextChanging;
-				}
-				SetValue(AcceptsReturnProperty, value);
-			}
+			set => SetAcceptsReturn(value);
 		}
 
 		/// <summary>
@@ -67,7 +125,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(ClipboardCopyFormat),
 				typeof(RichEditClipboardFormat),
 				typeof(RichEditBox),
-				new FrameworkPropertyMetadata(RichEditClipboardFormat.AllFormats));
+				new FrameworkPropertyMetadata(RichEditClipboardFormat.AllFormats, OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets whether copied content includes rich formatting or plain text only.
@@ -148,7 +206,7 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					TextAlignment.DetectFromContent,
 					FrameworkPropertyMetadataOptions.AffectsArrange,
-					OnHorizontalTextAlignmentChanged));
+					OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates how text is aligned in the control.
@@ -169,7 +227,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(RichEditBox),
 				new FrameworkPropertyMetadata(
 					CandidateWindowAlignment.Default,
-					OnDesiredCandidateWindowAlignmentChanged));
+					OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the preferred alignment of the input method candidate window.
@@ -188,7 +246,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsSpellCheckEnabled),
 				typeof(bool),
 				typeof(RichEditBox),
-				new FrameworkPropertyMetadata(true, OnIsSpellCheckEnabledChanged));
+				new FrameworkPropertyMetadata(true, OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether spell checking is enabled.
@@ -210,7 +268,7 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					true,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
-					OnIsColorFontEnabledChanged));
+					OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that determines whether color font glyphs are enabled.
@@ -229,7 +287,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsTextPredictionEnabled),
 				typeof(bool),
 				typeof(RichEditBox),
-				new FrameworkPropertyMetadata(true, OnIsTextPredictionEnabledChanged));
+				new FrameworkPropertyMetadata(true, OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether text prediction is enabled.
@@ -249,14 +307,8 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(InputScope),
 				typeof(RichEditBox),
 				new FrameworkPropertyMetadata(
-					new InputScope
-					{
-						Names =
-						{
-							new InputScopeName { NameValue = InputScopeNameValue.Default },
-						},
-					},
-					OnInputScopeChanged));
+					default(InputScope),
+					OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the input scope used by software keyboards and IME services.
@@ -275,7 +327,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsReadOnly),
 				typeof(bool),
 				typeof(RichEditBox),
-				new FrameworkPropertyMetadata(default(bool), OnIsReadOnlyChanged));
+				new FrameworkPropertyMetadata(default(bool), OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the user can change the text.
@@ -315,7 +367,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(RichEditBox),
 				new FrameworkPropertyMetadata(
 					default(int),
-					OnMaxLengthChanged,
+					OnRichEditBoxPropertyChanged,
 					CoerceMaxLength));
 
 		/// <summary>
@@ -388,7 +440,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(SelectionHighlightColor),
 				typeof(SolidColorBrush),
 				typeof(RichEditBox),
-				new FrameworkPropertyMetadata(DefaultBrushes.SelectionHighlightColor, OnSelectionHighlightColorChanged));
+				new FrameworkPropertyMetadata(DefaultBrushes.SelectionHighlightColor, OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the brush used to highlight selected text.
@@ -410,7 +462,7 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					options: FrameworkPropertyMetadataOptions.Default,
-					propertyChangedCallback: OnSelectionHighlightColorChanged,
+					propertyChangedCallback: OnRichEditBoxPropertyChanged,
 					coerceValueCallback: null,
 					backingFieldUpdateCallback: null,
 					createDefaultValueCallback: static () => SolidColorBrushHelper.Transparent));
@@ -435,7 +487,7 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					TextAlignment.DetectFromContent,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
-					OnTextAlignmentChanged));
+					OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates how text is aligned in the control.
@@ -457,7 +509,7 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					TextReadingOrder.DetectFromContent,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
-					OnTextReadingOrderChanged));
+					OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates how the reading order is determined.
@@ -479,7 +531,7 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					TextWrapping.NoWrap,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
-					OnTextWrappingChanged));
+					OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates how text wrapping occurs.
@@ -488,172 +540,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get => (TextWrapping)GetValue(TextWrappingProperty);
 			set => SetValue(TextWrappingProperty, value);
-		}
-
-		private static void OnHorizontalTextAlignmentChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			var owner = (RichEditBox)sender;
-			var value = (TextAlignment)args.NewValue;
-			if (owner.TextAlignment != value)
-			{
-				owner.SetValue(TextAlignmentProperty, value);
-			}
-
-			owner._textBoxView?.SetTextAlignment();
-			owner.DispatchUpdateScrolling();
-		}
-
-		private static void OnTextAlignmentChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			var owner = (RichEditBox)sender;
-			var value = (TextAlignment)args.NewValue;
-			if (owner.HorizontalTextAlignment != value)
-			{
-				owner.SetValue(HorizontalTextAlignmentProperty, value);
-			}
-
-			owner._textBoxView?.SetTextAlignment();
-			owner.DispatchUpdateScrolling();
-		}
-
-		private static void OnIsSpellCheckEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			var owner = (RichEditBox)sender;
-			if (owner._textBoxView is { } view)
-			{
-				view.DisplayBlock.IsSpellCheckEnabled = (bool)args.NewValue;
-				view.UpdateProperties();
-			}
-			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(owner);
-			if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged)
-				&& owner.GetOrCreateAutomationPeer() is RichEditBoxAutomationPeer peer)
-			{
-				peer.RaiseIsSpellCheckEnabledPropertyChangedEvent(
-					(bool)args.OldValue,
-					(bool)args.NewValue);
-			}
-			if (!owner.DispatcherQueue.TryEnqueue(() =>
-			{
-				try
-				{
-					(FrameworkElementAutomationPeer.FromElement(owner) as RichEditBoxAutomationPeer)?
-						.OnDocumentAccessibilityChanged();
-				}
-				catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is null)
-				{
-					if (typeof(RichEditBox).Log().IsEnabled(LogLevel.Error))
-					{
-						typeof(RichEditBox).Log().Error("Failed to refresh RichEditBox accessibility state.", error);
-					}
-				}
-			})
-				&& typeof(RichEditBox).Log().IsEnabled(LogLevel.Warning))
-			{
-				typeof(RichEditBox).Log().Warn("Failed to enqueue a RichEditBox accessibility refresh.");
-			}
-			ImeSessionCoordinator.UpdateSession(owner, ImeSessionUpdate.SpellCheck);
-		}
-
-		private static void OnAcceptsReturnChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			var owner = (RichEditBox)sender;
-			owner.InvalidatePendingInteractiveLineFeed();
-			owner._textBoxView?.UpdateProperties();
-			ImeSessionCoordinator.UpdateSession(owner, ImeSessionUpdate.AcceptsReturn);
-		}
-
-		private static void OnIsColorFontEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			var owner = (RichEditBox)sender;
-			owner._textBoxView?.SetColorFontEnabled();
-			owner.RenderDocument();
-			owner.DispatchUpdateScrolling();
-		}
-
-		private static void OnDesiredCandidateWindowAlignmentChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-			=> ImeSessionCoordinator.UpdateSession(
-				(RichEditBox)sender,
-				ImeSessionUpdate.CandidateWindowAlignment);
-
-		private static void OnIsTextPredictionEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			var owner = (RichEditBox)sender;
-			owner._textBoxView?.UpdateProperties();
-			ImeSessionCoordinator.UpdateSession(owner, ImeSessionUpdate.TextPrediction);
-		}
-
-		private static void OnInputScopeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			var owner = (RichEditBox)sender;
-			owner._textBoxView?.UpdateProperties();
-			ImeSessionCoordinator.UpdateSession(owner, ImeSessionUpdate.InputScope);
-		}
-
-		private static void OnIsReadOnlyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			var owner = (RichEditBox)sender;
-			var oldValue = (bool)args.OldValue;
-			var newValue = (bool)args.NewValue;
-
-			if (newValue)
-			{
-				owner.EndImeSession();
-				owner.StopCaret();
-			}
-			else if (owner.FocusState != FocusState.Unfocused)
-			{
-				owner.ResumeCaret();
-				owner.StartImeSession();
-			}
-			else
-			{
-				owner.UpdateDisplaySelection();
-			}
-
-			owner._textBoxView?.UpdateProperties();
-			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(owner);
-			if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged)
-				&& owner.GetOrCreateAutomationPeer() is RichEditBoxAutomationPeer peer)
-			{
-				peer.RaiseIsReadOnlyPropertyChangedEvent(oldValue, newValue);
-			}
-		}
-
-		private static void OnMaxLengthChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			var owner = (RichEditBox)sender;
-			owner.InvalidatePendingInteractiveLineFeed();
-			owner._textBoxView?.UpdateMaxLength();
-		}
-
-		private static object CoerceMaxLength(DependencyObject sender, object baseValue, DependencyPropertyValuePrecedences precedence)
-		{
-			var value = (int)baseValue;
-			if (value < 0)
-			{
-				throw new ArgumentException("MaxLength cannot be negative.", nameof(baseValue));
-			}
-
-			return value;
-		}
-
-		private static void OnSelectionHighlightColorChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-			=> ((RichEditBox)sender).UpdateSelectionHighlightColor();
-
-		private static void OnTextReadingOrderChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			var owner = (RichEditBox)sender;
-			owner._textBoxView?.SetReadingOrder();
-			owner.RenderDocument();
-			owner.DispatchUpdateScrolling();
-		}
-
-		private static void OnTextWrappingChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			var owner = (RichEditBox)sender;
-			owner._textBoxView?.SetWrapping();
-			owner.UpdateTextWrappingScrollMode();
-			owner.DispatchUpdateScrolling();
 		}
 
 	}

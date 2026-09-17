@@ -19,26 +19,6 @@ namespace Microsoft.UI.Xaml.Controls
 	partial class RichEditBox
 	{
 		/// <summary>
-		/// Identifies the <see cref="DisabledFormattingAccelerators"/> dependency property. Functional on
-		/// Skia (the generated stub excludes Skia so this hand-authored registration takes over).
-		/// </summary>
-		public static global::Microsoft.UI.Xaml.DependencyProperty DisabledFormattingAcceleratorsProperty { get; } =
-			global::Microsoft.UI.Xaml.DependencyProperty.Register(
-				nameof(DisabledFormattingAccelerators),
-				typeof(global::Microsoft.UI.Xaml.Controls.DisabledFormattingAccelerators),
-				typeof(global::Microsoft.UI.Xaml.Controls.RichEditBox),
-				new global::Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.DisabledFormattingAccelerators)));
-
-		/// <summary>
-		/// Gets or sets which built-in keyboard formatting accelerators (Ctrl+B/I/U) are disabled.
-		/// </summary>
-		public global::Microsoft.UI.Xaml.Controls.DisabledFormattingAccelerators DisabledFormattingAccelerators
-		{
-			get => (global::Microsoft.UI.Xaml.Controls.DisabledFormattingAccelerators)GetValue(DisabledFormattingAcceleratorsProperty);
-			set => SetValue(DisabledFormattingAcceleratorsProperty, value);
-		}
-
-		/// <summary>
 		/// Applies the bold/italic/underline toggle mapped to <paramref name="accelerator"/> over the
 		/// current selection, unless the accelerator is disabled via <see cref="DisabledFormattingAccelerators"/>
 		/// or the control is read-only. Returns true when a formatting change was applied (so the key is
@@ -51,7 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
-			if ((this.DisabledFormattingAccelerators & accelerator) == accelerator)
+			if ((_enabledFormattingAccelerators & accelerator) != accelerator)
 			{
 				// The app disabled this accelerator — RichEditBox ignores the shortcut.
 				return false;

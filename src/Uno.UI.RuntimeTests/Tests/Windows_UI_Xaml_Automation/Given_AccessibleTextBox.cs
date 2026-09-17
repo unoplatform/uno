@@ -488,6 +488,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		public async Task When_RichEditBox_Relations_And_Editor_State_Update_Independently()
+		{
+			var richEditBox = new RichEditBox { PlaceholderText = "Notes" };
+			richEditBox.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, "abcdef");
+			richEditBox.Document.Selection.SetRange(5, 1);
+			var description = new TextBlock { Text = "Document help" };
+			var targets = new DependencyObjectCollection { description };
+			richEditBox.SetValue(AutomationProperties.DescribedByProperty, targets);
+			var panel = new StackPanel { Children = { richEditBox, description } };
+			try
+			{
+				await UITestHelper.Load(panel);
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(
+					() => SemanticElementExists(description)
+						&& GetSemanticAttribute(richEditBox, "aria-describedby") == GetSemanticElementId(description),
+					timeoutMS: 5000,
+					message: "The rich editor's description must resolve after the target enters the semantic tree.");
+
+				richEditBox.IsSpellCheckEnabled = false;
+				richEditBox.IsReadOnly = true;
+				richEditBox.PlaceholderText = "Updated hint";
+				await UITestHelper.WaitFor(
+					() => GetSemanticTextControlSpellCheck(richEditBox) == "false"
+						&& SemanticElementHasAttribute(richEditBox, "readonly")
+						&& GetSemanticAttribute(richEditBox, "placeholder") == "Updated hint",
+					timeoutMS: 5000,
+					message: "Rich-editor state notifications must still reach the semantic textarea.");
+
+				targets.Clear();
+				await UITestHelper.WaitFor(
+					() => !SemanticElementHasAttribute(richEditBox, "aria-describedby"),
+					timeoutMS: 5000,
+					message: "Clearing an automation relation must clear its DOM IDREF.");
+				Assert.AreEqual("textarea", GetSemanticElementTagName(richEditBox));
+				Assert.AreEqual("abcdef", GetSemanticTextControlValue(richEditBox));
+				Assert.AreEqual("1", GetSemanticTextControlSelectionStart(richEditBox));
+				Assert.AreEqual("5", GetSemanticTextControlSelectionEnd(richEditBox));
+				Assert.AreEqual("backward", GetSemanticTextControlSelectionDirection(richEditBox));
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_RichEditBox_Has_Inline_Objects_Then_Textarea_Does_Not_Emit_Invalid_Children()
 		{
 			var richEditBox = new RichEditBox();

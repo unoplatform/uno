@@ -175,6 +175,7 @@ partial class RichEditBox
 		public int VisualLineCount => _visualLineCount;
 
 		public void Draw(
+			UIElement owner,
 			in Visual.PaintingSession session,
 			(int index, CompositionBrush brush, float thickness)? caret,
 			IEnumerable<TextHighlighter> highlighters,
@@ -212,6 +213,7 @@ partial class RichEditBox
 				session.Canvas.Save();
 				session.Canvas.Translate(0, (float)paragraph.Top);
 				paragraph.ParsedText.Draw(
+					owner,
 					session,
 					localCaret,
 					localHighlighters,

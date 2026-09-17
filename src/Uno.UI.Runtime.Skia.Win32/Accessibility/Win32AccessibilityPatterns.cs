@@ -805,7 +805,6 @@ internal sealed class UiaTextRangeProviderWrapper : IUiaTextRangeProvider, IUiaT
 		{
 			result[i] = providers[i];
 		}
-
 		return result;
 	}
 
@@ -829,7 +828,7 @@ internal sealed class UiaTextRangeProviderWrapper : IUiaTextRangeProvider, IUiaT
 		var count = 0;
 		foreach (var provider in providers)
 		{
-			if (provider.AutomationPeer is { } peer
+			if (provider?.AutomationPeer is { } peer
 				&& _accessibility.GetProviderForPeer(peer) is { } platformProvider)
 			{
 				result[count++] = platformProvider;

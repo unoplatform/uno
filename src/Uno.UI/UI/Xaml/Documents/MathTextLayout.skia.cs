@@ -119,36 +119,42 @@ internal sealed class MathParsedText : IParsedText
 	public bool IsBaseDirectionRightToLeft => false;
 
 	public void Draw(
+		UIElement owner,
 		in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
 		IEnumerable<TextHighlighter> highlighters,
 		(int startIndex, int length)? compositionRange)
 	{
-		DrawHighlighterBackgrounds(session, highlighters);
-
-		foreach (var placement in _textPlacements)
+		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
+		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0 ? 1f : session.Opacity;
+		if (useHighContrastAdjustment)
 		{
-			session.Canvas.Save();
-			session.Canvas.Translate(placement.X, placement.Y);
-			placement.Layout.Draw(session, caret: null, _noHighlighters, compositionRange: null);
-			session.Canvas.Restore();
-		}
+			var colors = owner.GetHighContrastTextColors();
+			_rulePaint.Color = ToHighContrastColor(colors.background, effectiveOpacity);
+			session.Canvas.DrawRect(
+				new SKRect((float)_xOffset, 0, (float)(_xOffset + _width), (float)_height),
+				_rulePaint);
+			DrawContent(owner, session, ToHighContrastColor(colors.foreground, effectiveOpacity));
 
-		using (var textBlobBuilder = new SKTextBlobBuilder())
-		{
-			foreach (var placement in _glyphPlacements)
+			var highlightRects = DrawHighlighterBackgrounds(
+				session,
+				highlighters,
+				ToHighContrastColor(colors.selectionBackground, effectiveOpacity),
+				collectRects: true);
+			foreach (var rect in highlightRects!)
 			{
-				textBlobBuilder.AddPositionedRun(placement.Glyphs, placement.Font, placement.Positions);
-				using var textBlob = textBlobBuilder.Build();
-				_rulePaint.Color = GetColor(placement.Brush, session.Opacity);
-				session.Canvas.DrawText(textBlob, placement.X, placement.Y, _rulePaint);
+				session.Canvas.Save();
+				session.Canvas.ClipRect(rect);
+				DrawContent(owner, session, ToHighContrastColor(colors.selectionForeground, effectiveOpacity));
+				session.Canvas.Restore();
 			}
+			_compositionPaint.Color = ToHighContrastColor(colors.foreground, effectiveOpacity);
 		}
-
-		foreach (var rule in _rulePlacements)
+		else
 		{
-			_rulePaint.Color = GetColor(rule.Brush, session.Opacity);
-			session.Canvas.DrawRect(rule.Rect, _rulePaint);
+			DrawHighlighterBackgrounds(session, highlighters);
+			DrawContent(owner, session, null);
+			_compositionPaint.Color = SKColors.Black.WithAlpha((byte)(255 * effectiveOpacity));
 		}
 
 		if (compositionRange is { length: > 0 } composition)
@@ -176,9 +182,42 @@ internal sealed class MathParsedText : IParsedText
 				(float)rect.Y,
 				(float)rect.X + caretValue.thickness,
 				(float)rect.Bottom);
-			caretValue.brush.Paint(session.Canvas, session.Opacity, caretRect);
+			caretValue.brush.Paint(session.Canvas, effectiveOpacity, caretRect);
 		}
 	}
+
+	private void DrawContent(UIElement owner, in Visual.PaintingSession session, SKColor? foregroundOverride)
+	{
+		foreach (var placement in _textPlacements)
+		{
+			session.Canvas.Save();
+			session.Canvas.Translate(placement.X, placement.Y);
+			placement.Layout.Draw(
+				owner, session, caret: null, _noHighlighters, compositionRange: null,
+				suppressBackplate: true, foregroundOverride);
+			session.Canvas.Restore();
+		}
+
+		using (var textBlobBuilder = new SKTextBlobBuilder())
+		{
+			foreach (var placement in _glyphPlacements)
+			{
+				textBlobBuilder.AddPositionedRun(placement.Glyphs, placement.Font, placement.Positions);
+				using var textBlob = textBlobBuilder.Build();
+				_rulePaint.Color = foregroundOverride ?? GetColor(placement.Brush, session.Opacity);
+				session.Canvas.DrawText(textBlob, placement.X, placement.Y, _rulePaint);
+			}
+		}
+
+		foreach (var rule in _rulePlacements)
+		{
+			_rulePaint.Color = foregroundOverride ?? GetColor(rule.Brush, session.Opacity);
+			session.Canvas.DrawRect(rule.Rect, _rulePaint);
+		}
+	}
+
+	private static SKColor ToHighContrastColor(global::Windows.UI.Color color, float opacity)
+		=> new(color.R, color.G, color.B, (byte)(color.A * opacity));
 
 	public Rect GetRectForIndex(int adjustedIndex)
 		=> _indexLayout[Math.Clamp(adjustedIndex, 0, _document.Projection.Length)].Rect;
@@ -286,10 +325,15 @@ internal sealed class MathParsedText : IParsedText
 	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)
 		=> (0, _document.Projection.Length, true, true, 0);
 
-	private void DrawHighlighterBackgrounds(in Visual.PaintingSession session, IEnumerable<TextHighlighter> highlighters)
+	private List<SKRect>? DrawHighlighterBackgrounds(
+		in Visual.PaintingSession session,
+		IEnumerable<TextHighlighter> highlighters,
+		SKColor? backgroundOverride = null,
+		bool collectRects = false)
 	{
 		var canvas = session.Canvas;
 		var opacity = session.Opacity;
+		var rectangles = collectRects ? new List<SKRect>() : null;
 		foreach (var highlighter in highlighters)
 		{
 			var brush = highlighter.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor());
@@ -327,12 +371,20 @@ internal sealed class MathParsedText : IParsedText
 				{
 					return;
 				}
-				brush.Paint(
-					canvas,
-					opacity,
-					new SKRect((float)value.X, (float)value.Y, (float)value.Right, (float)value.Bottom));
+				var highlightRect = new SKRect((float)value.X, (float)value.Y, (float)value.Right, (float)value.Bottom);
+				if (backgroundOverride is { } color)
+				{
+					_rulePaint.Color = color;
+					canvas.DrawRect(highlightRect, _rulePaint);
+				}
+				else
+				{
+					brush.Paint(canvas, opacity, highlightRect);
+				}
+				rectangles?.Add(highlightRect);
 			}
 		}
+		return rectangles;
 	}
 
 	private void FillMissingIndexes()

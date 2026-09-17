@@ -12,6 +12,9 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </summary>
 	internal interface ITextBoxViewHost
 	{
+		/// <summary>The control owning the editing state and visual tree.</summary>
+		Control Owner { get; }
+
 		/// <summary>The current plain-text content of the host.</summary>
 		string Text { get; }
 

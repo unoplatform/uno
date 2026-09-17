@@ -1,11 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TextAdapter_Partial.cpp, tag winui3/release/1.5-stable
-//
-// Minimal ITextProvider implementation that exposes the owning element's plain
-// text as a single document range. Sufficient for Narrator read-out and Inspect
-// pattern discovery. Win32 projects this adapter through Text, Text2, and the
-// platform-only TextEdit resolver, matching WinUI's windowless RichEdit split.
+// API reference: dxaml/xcp/dxaml/lib/TextAdapter_partial.cpp, commit 3c9c168844f06c6ac000a97977f0bb3f4c90fd75.
+// Uno's managed provider adapter, not a structural port of the native RichEdit provider.
+// WinUI RichEditBox obtains its windowless provider through CTextBoxBaseAutomationPeer;
+// the ordinary XAML TextAdapter sources serve the TextBlock/RichTextBlock text-container pipeline.
 
 #nullable enable
 
