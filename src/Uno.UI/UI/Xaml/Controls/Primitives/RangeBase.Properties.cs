@@ -1,5 +1,5 @@
 ﻿using System;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -14,7 +14,7 @@ public partial class RangeBase
 		set
 		{
 			EnsureValidDoubleValue(value);
-			SetValue(LargeChangeProperty, Boxes.Box(value));
+			SetValue(LargeChangeProperty, Boxer.Box(value));
 		}
 	}
 
@@ -26,7 +26,7 @@ public partial class RangeBase
 			nameof(LargeChange),
 			typeof(double),
 			typeof(RangeBase),
-			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One));
+			new FrameworkPropertyMetadata(DoubleBoxes.One));
 
 	/// <summary>
 	/// Gets or sets the Maximum possible Value of the range element.
@@ -37,7 +37,7 @@ public partial class RangeBase
 		set
 		{
 			EnsureValidDoubleValue(value);
-			SetValue(MaximumProperty, Boxes.Box(value));
+			SetValue(MaximumProperty, Boxer.Box(value));
 		}
 	}
 
@@ -49,7 +49,7 @@ public partial class RangeBase
 			nameof(Maximum),
 			typeof(double),
 			typeof(RangeBase),
-			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One, OnRangeChanged, CoerceMaximum));
+			new FrameworkPropertyMetadata(DoubleBoxes.One, OnRangeChanged, CoerceMaximum));
 
 	/// <summary>
 	/// Gets or sets the Minimum possible Value of the range element.
@@ -60,7 +60,7 @@ public partial class RangeBase
 		set
 		{
 			EnsureValidDoubleValue(value);
-			SetValue(MinimumProperty, Boxes.Box(value));
+			SetValue(MinimumProperty, Boxer.Box(value));
 		}
 	}
 
@@ -72,7 +72,7 @@ public partial class RangeBase
 			nameof(Minimum),
 			typeof(double),
 			typeof(RangeBase),
-			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnRangeChanged, CoerceMinimum));
+			new FrameworkPropertyMetadata(DoubleBoxes.Zero, OnRangeChanged, CoerceMinimum));
 
 	/// <summary>
 	/// Gets or sets a Value to be added to or subtracted from the Value of a RangeBase control.
@@ -83,7 +83,7 @@ public partial class RangeBase
 		set
 		{
 			EnsureValidDoubleValue(value);
-			SetValue(SmallChangeProperty, Boxes.Box(value));
+			SetValue(SmallChangeProperty, Boxer.Box(value));
 		}
 	}
 
@@ -106,7 +106,7 @@ public partial class RangeBase
 		set
 		{
 			EnsureValidDoubleValue(value);
-			SetValue(ValueProperty, Boxes.Box(value));
+			SetValue(ValueProperty, Boxer.Box(value));
 		}
 	}
 
@@ -118,7 +118,7 @@ public partial class RangeBase
 			nameof(Value),
 			typeof(double),
 			typeof(RangeBase),
-			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, null, CoerceValue));
+			new FrameworkPropertyMetadata(DoubleBoxes.Zero, null, CoerceValue));
 
 	/// <summary>
 	/// Occurs when the range value changes.

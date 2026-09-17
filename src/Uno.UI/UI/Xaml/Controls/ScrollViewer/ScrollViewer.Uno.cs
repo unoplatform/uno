@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.UI.Xaml;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Uno.UI.Xaml.Controls
 {
@@ -91,7 +91,7 @@ namespace Uno.UI.Xaml.Controls
 		[DynamicDependency(nameof(GetShouldFallBackToNativeScrollBars))]
 		[DynamicDependency(nameof(SetShouldFallBackToNativeScrollBars))]
 		public static readonly DependencyProperty ShouldFallBackToNativeScrollBarsProperty =
-			DependencyProperty.RegisterAttached("ShouldFallBackToNativeScrollBars", typeof(bool), typeof(ScrollViewer), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
+			DependencyProperty.RegisterAttached("ShouldFallBackToNativeScrollBars", typeof(bool), typeof(ScrollViewer), new FrameworkPropertyMetadata(BoolBoxes.True));
 
 
 	}

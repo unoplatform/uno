@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno;
 using Windows.Foundation.Collections;
 using System.Numerics;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Media
 		public double RadiusX
 		{
 			get => (double)GetValue(RadiusXProperty);
-			set => SetValue(RadiusXProperty, Boxes.Box(value));
+			set => SetValue(RadiusXProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty RadiusYProperty { get; } = DependencyProperty.Register(
@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Media
 		public double RadiusY
 		{
 			get => (double)GetValue(RadiusYProperty);
-			set => SetValue(RadiusYProperty, Boxes.Box(value));
+			set => SetValue(RadiusYProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty GradientOriginProperty { get; } = DependencyProperty.Register(

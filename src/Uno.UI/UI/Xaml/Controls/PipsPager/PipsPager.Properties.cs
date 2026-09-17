@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference PipsPager.properties.cpp, tag winui3/release/1.8-stable
 
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -17,7 +17,7 @@ public partial class PipsPager
 	public int MaxVisiblePips
 	{
 		get => (int)GetValue(MaxVisiblePipsProperty);
-		set => SetValue(MaxVisiblePipsProperty, Boxes.Box(value));
+		set => SetValue(MaxVisiblePipsProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -93,7 +93,7 @@ public partial class PipsPager
 	public int NumberOfPages
 	{
 		get => (int)GetValue(NumberOfPagesProperty);
-		set => SetValue(NumberOfPagesProperty, Boxes.Box(value));
+		set => SetValue(NumberOfPagesProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -104,7 +104,7 @@ public partial class PipsPager
 			nameof(NumberOfPages),
 			typeof(int),
 			typeof(PipsPager),
-			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne, OnPropertyChanged));
+			new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the orientation of the pips and navigation buttons in the PipsPager.
@@ -169,7 +169,7 @@ public partial class PipsPager
 	public int SelectedPageIndex
 	{
 		get => (int)GetValue(SelectedPageIndexProperty);
-		set => SetValue(SelectedPageIndexProperty, Boxes.Box(value));
+		set => SetValue(SelectedPageIndexProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -180,7 +180,7 @@ public partial class PipsPager
 			nameof(SelectedPageIndex),
 			typeof(int),
 			typeof(PipsPager),
-			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, OnPropertyChanged));
+			new FrameworkPropertyMetadata(IntegerBoxes.Zero, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the style to apply to the selected pip in the PipsPager.

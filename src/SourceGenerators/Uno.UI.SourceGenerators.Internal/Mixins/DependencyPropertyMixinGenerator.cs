@@ -58,7 +58,7 @@ public sealed class DependencyPropertyMixinGenerator : IIncrementalGenerator
 					// keeps boxes for the common values, and these properties are set often enough for the
 					// allocation to be worth avoiding.
 					var setterValue = dp.PropertyType is "bool" or "int" or "double"
-						? "global::Uno.UI.Helpers.Boxes.Box(value)"
+						? "global::Uno.UI.Helpers.Boxes.Boxer.Box(value)"
 						: "value";
 					sb.AppendLine($"\t\t\tset {{ this.SetValue({dp.Name}Property, {setterValue}); }}");
 					sb.AppendLine("\t\t}");

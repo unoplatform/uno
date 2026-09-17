@@ -73,7 +73,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetIsEntranceElement(global::Microsoft.UI.Xaml.UIElement element, bool value)
 		{
-			element.SetValue(IsEntranceElementProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+			element.SetValue(IsEntranceElementProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 		}
 #endif
 #if __SKIA__
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetIsExitElement(global::Microsoft.UI.Xaml.UIElement element, bool value)
 		{
-			element.SetValue(IsExitElementProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+			element.SetValue(IsExitElementProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 		}
 #endif
 #if __SKIA__
@@ -101,7 +101,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetExitElementContainer(global::Microsoft.UI.Xaml.Controls.ListViewBase element, bool value)
 		{
-			element.SetValue(ExitElementContainerProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+			element.SetValue(ExitElementContainerProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementContainerProperty.get

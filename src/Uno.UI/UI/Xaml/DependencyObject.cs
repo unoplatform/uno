@@ -45,9 +45,9 @@ namespace Microsoft.UI.Xaml
 		/// silently bind here. An <c>int</c> or <c>double</c> overload would capture <c>byte</c>/<c>short</c>/<c>char</c>
 		/// and <c>float</c>/<c>long</c> arguments through implicit numeric conversion and store the wrong boxed type,
 		/// which only surfaces as an <see cref="InvalidCastException"/> in the unbox on the way out. Those types use
-		/// <c>Boxes.Box(...)</c> at the call site instead. UnoInternal0003 guards this overload.
+		/// <c>Boxer.Box(...)</c> at the call site instead. UnoInternal0003 guards this overload.
 		/// </remarks>
-		internal void SetValue(DependencyProperty dp, bool value) => SetValueInternal(dp, Uno.UI.Helpers.Boxes.Box(value));
+		internal void SetValue(DependencyProperty dp, bool value) => SetValueInternal(dp, Uno.UI.Helpers.Boxes.Boxer.Box(value));
 
 		public void ClearValue(DependencyProperty dp) => ClearValueInternal(dp);
 

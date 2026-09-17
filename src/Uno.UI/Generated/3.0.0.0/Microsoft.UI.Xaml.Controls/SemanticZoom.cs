@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(CanChangeViewsProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(CanChangeViewsProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsZoomOutButtonEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsZoomOutButtonEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsZoomedInViewActiveProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsZoomedInViewActiveProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

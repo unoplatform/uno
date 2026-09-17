@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -11,13 +11,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public double Bounciness
 		{
 			get => (double)this.GetValue(BouncinessProperty);
-			set => this.SetValue(BouncinessProperty, Boxes.Box(value));
+			set => this.SetValue(BouncinessProperty, Boxer.Box(value));
 		}
 
 		public int Bounces
 		{
 			get => (int)this.GetValue(BouncesProperty);
-			set => this.SetValue(BouncesProperty, Boxes.Box(value));
+			set => this.SetValue(BouncesProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty BouncesProperty { get; } =

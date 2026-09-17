@@ -1,6 +1,6 @@
 ﻿using Windows.Foundation;
 using Microsoft.UI.Xaml;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -31,11 +31,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public double CompactVerticalDelta
 		{
 			get => (double)GetValue(CompactVerticalDeltaProperty);
-			internal set => SetValue(CompactVerticalDeltaProperty, Boxes.Box(value));
+			internal set => SetValue(CompactVerticalDeltaProperty, Boxer.Box(value));
 		}
 
 		internal static DependencyProperty CompactVerticalDeltaProperty { get; } =
-			DependencyProperty.Register(nameof(CompactVerticalDelta), typeof(double), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			DependencyProperty.Register(nameof(CompactVerticalDelta), typeof(double), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 		public Thickness HiddenRootMargin
 		{
@@ -49,11 +49,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public double HiddenVerticalDelta
 		{
 			get => (double)GetValue(HiddenVerticalDeltaProperty);
-			internal set => SetValue(HiddenVerticalDeltaProperty, Boxes.Box(value));
+			internal set => SetValue(HiddenVerticalDeltaProperty, Boxer.Box(value));
 		}
 
 		internal static DependencyProperty HiddenVerticalDeltaProperty { get; } =
-			DependencyProperty.Register(nameof(HiddenVerticalDelta), typeof(double), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			DependencyProperty.Register(nameof(HiddenVerticalDelta), typeof(double), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 		public Thickness MinimalRootMargin
 		{
@@ -67,37 +67,37 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public double MinimalVerticalDelta
 		{
 			get => (double)GetValue(MinimalVerticalDeltaProperty);
-			internal set => SetValue(MinimalVerticalDeltaProperty, Boxes.Box(value));
+			internal set => SetValue(MinimalVerticalDeltaProperty, Boxer.Box(value));
 		}
 
 		internal static DependencyProperty MinimalVerticalDeltaProperty { get; } =
-			DependencyProperty.Register(nameof(MinimalVerticalDelta), typeof(double), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			DependencyProperty.Register(nameof(MinimalVerticalDelta), typeof(double), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 		public double NegativeCompactVerticalDelta
 		{
 			get => (double)GetValue(NegativeCompactVerticalDeltaProperty);
-			internal set => SetValue(NegativeCompactVerticalDeltaProperty, Boxes.Box(value));
+			internal set => SetValue(NegativeCompactVerticalDeltaProperty, Boxer.Box(value));
 		}
 
 		internal static DependencyProperty NegativeCompactVerticalDeltaProperty { get; } =
-			DependencyProperty.Register(nameof(NegativeCompactVerticalDelta), typeof(double), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			DependencyProperty.Register(nameof(NegativeCompactVerticalDelta), typeof(double), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 		public double NegativeMinimalVerticalDelta
 		{
 			get => (double)GetValue(NegativeMinimalVerticalDeltaProperty);
-			internal set => SetValue(NegativeMinimalVerticalDeltaProperty, Boxes.Box(value));
+			internal set => SetValue(NegativeMinimalVerticalDeltaProperty, Boxer.Box(value));
 		}
 
 		internal static DependencyProperty NegativeMinimalVerticalDeltaProperty { get; } =
-			DependencyProperty.Register(nameof(NegativeMinimalVerticalDelta), typeof(double), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			DependencyProperty.Register(nameof(NegativeMinimalVerticalDelta), typeof(double), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 		public double NegativeHiddenVerticalDelta
 		{
 			get => (double)GetValue(NegativeHiddenVerticalDeltaProperty);
-			internal set => SetValue(NegativeHiddenVerticalDeltaProperty, Boxes.Box(value));
+			internal set => SetValue(NegativeHiddenVerticalDeltaProperty, Boxer.Box(value));
 		}
 
 		internal static DependencyProperty NegativeHiddenVerticalDeltaProperty { get; } =
-			DependencyProperty.Register(nameof(NegativeHiddenVerticalDelta), typeof(double), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			DependencyProperty.Register(nameof(NegativeHiddenVerticalDelta), typeof(double), typeof(AppBarTemplateSettings), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 	}
 }

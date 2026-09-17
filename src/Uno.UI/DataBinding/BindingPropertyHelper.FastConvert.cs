@@ -16,7 +16,7 @@ using Microsoft.UI.Text;
 using FontWeight = Windows.UI.Text.FontWeight;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 
 namespace Uno.UI.DataBinding
@@ -123,7 +123,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (thickness.IsUniform())
 				{
-					output = Boxes.Box(thickness.Left);
+					output = Boxer.Box(thickness.Left);
 					return true;
 				}
 
@@ -727,7 +727,7 @@ namespace Uno.UI.DataBinding
 					var c = input[0];
 					if (c >= '0' && c <= '9')
 					{
-						output = Boxes.Box((double)(c - '0'));
+						output = Boxer.Box((double)(c - '0'));
 						return true;
 					}
 				}
@@ -736,7 +736,7 @@ namespace Uno.UI.DataBinding
 
 				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
 				{
-					output = Boxes.DoubleBoxes.Zero;
+					output = DoubleBoxes.Zero;
 					return true;
 				}
 
@@ -762,7 +762,7 @@ namespace Uno.UI.DataBinding
 
 				if (double.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var d))
 				{
-					output = Boxes.Box(d);
+					output = Boxer.Box(d);
 					return true;
 				}
 			}
@@ -843,7 +843,7 @@ namespace Uno.UI.DataBinding
 					var c = input[0];
 					if (c >= '0' && c <= '9')
 					{
-						output = Boxes.Box((int)(c - '0'));
+						output = Boxer.Box((int)(c - '0'));
 						return true;
 					}
 				}
@@ -852,13 +852,13 @@ namespace Uno.UI.DataBinding
 
 				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
 				{
-					output = Boxes.IntegerBoxes.Zero;
+					output = IntegerBoxes.Zero;
 					return true;
 				}
 
 				if (int.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var i))
 				{
-					output = Boxes.Box(i);
+					output = Boxer.Box(i);
 					return true;
 				}
 			}
@@ -1005,7 +1005,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(bool) && bool.TryParse(input, out var result))
 			{
-				output = Boxes.Box(result);
+				output = Boxer.Box(result);
 				return true;
 			}
 

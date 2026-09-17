@@ -12,7 +12,7 @@ partial class AppBarSeparator
 	public int DynamicOverflowOrder
 	{
 		get => (int)GetValue(DynamicOverflowOrderProperty);
-		set => SetValue(DynamicOverflowOrderProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+		set => SetValue(DynamicOverflowOrderProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 	}
 
 	/// <summary>

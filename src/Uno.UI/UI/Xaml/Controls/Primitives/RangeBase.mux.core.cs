@@ -1,5 +1,5 @@
 ﻿using System;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -26,7 +26,7 @@ public partial class RangeBase : Control
 
 	private void SetMaximum(double max)
 	{
-		SetValue(MaximumProperty, Boxes.Box(max));
+		SetValue(MaximumProperty, Boxer.Box(max));
 	}
 
 	private object SetRangeBaseValue(DependencyProperty property, object baseValue)
@@ -54,7 +54,7 @@ public partial class RangeBase : Control
 			double max = GetDoubleValueHelper(MaximumProperty);
 
 			var newValue = CoerceValueBetween(m_uncoercedValue, min, max);
-			return Boxes.Box(newValue);
+			return Boxer.Box(newValue);
 
 			//wasHandled = true;
 		}
@@ -100,7 +100,7 @@ public partial class RangeBase : Control
 				// CControl::SetValue(args));
 			}
 
-			return Boxes.Box(newMin);
+			return Boxer.Box(newMin);
 			//wasHandled = true;
 		}
 		else if (property == MaximumProperty)
@@ -141,7 +141,7 @@ public partial class RangeBase : Control
 				// SetMaximum(newMax);
 			}
 
-			return Boxes.Box(newMax);
+			return Boxer.Box(newMax);
 			//wasHandled = true;
 		}
 

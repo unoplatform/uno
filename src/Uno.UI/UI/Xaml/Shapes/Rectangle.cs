@@ -3,7 +3,7 @@ using System;
 using Microsoft.UI.Composition;
 using System.Numerics;
 using Uno.UI.Composition.Drawing;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Rectangle),
 			new FrameworkPropertyMetadata(
-				defaultValue: Boxes.DoubleBoxes.Zero,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double RadiusY
 		{
 			get => (double)this.GetValue(RadiusYProperty);
-			set => this.SetValue(RadiusYProperty, Boxes.Box(value));
+			set => this.SetValue(RadiusYProperty, Boxer.Box(value));
 		}
 		#endregion
 
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Rectangle),
 			new FrameworkPropertyMetadata(
-				defaultValue: Boxes.DoubleBoxes.Zero,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double RadiusX
 		{
 			get => (double)this.GetValue(RadiusXProperty);
-			set => this.SetValue(RadiusXProperty, Boxes.Box(value));
+			set => this.SetValue(RadiusXProperty, Boxer.Box(value));
 		}
 
 #nullable enable

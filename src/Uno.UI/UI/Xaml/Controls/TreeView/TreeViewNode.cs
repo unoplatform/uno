@@ -9,7 +9,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -77,7 +77,7 @@ public partial class TreeViewNode : DependencyObject, ICustomPropertyProvider, I
 	private void UpdateDepth(int depth)
 	{
 		// Update our depth
-		SetValue(DepthProperty, Boxes.Box(depth));
+		SetValue(DepthProperty, Boxer.Box(depth));
 
 		// Update children's depth
 		foreach (var child in Children)

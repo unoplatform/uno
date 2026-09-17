@@ -299,7 +299,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			// check matters: the type is also present, but not accessible, in referenced Uno packages.
 			var hasBoxesProvider = context.CompilationProvider
 				.Select(static (compilation, _) =>
-					compilation.GetTypeByMetadataName("Uno.UI.Helpers.Boxes") is { } boxes &&
+					compilation.GetTypeByMetadataName("Uno.UI.Helpers.Boxes.Boxer") is { } boxes &&
 					compilation.IsSymbolAccessibleWithin(boxes, compilation.Assembly));
 
 			context.RegisterSourceOutput(
@@ -740,7 +740,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 		/// </remarks>
 		private static string GetBoxedValueExpression(string propertyTypeName, bool hasBoxes)
 			=> hasBoxes && propertyTypeName is "bool" or "int" or "double"
-				? "global::Uno.UI.Helpers.Boxes.Box(value)"
+				? "global::Uno.UI.Helpers.Boxes.Boxer.Box(value)"
 				: "value";
 
 		/// <summary>
@@ -755,7 +755,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				("int", -1) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.NegativeOne",
 				("int", 0) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero",
 				("int", 1) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.One",
-				// By bit pattern, like Boxes.Box(double): -0.0 == 0.0 but must not take the positive zero's box.
+				// By bit pattern, like Boxer.Box(double): -0.0 == 0.0 but must not take the positive zero's box.
 				("double", double value) when BitConverter.DoubleToInt64Bits(value) == 0 => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero",
 				("double", 1.0d) => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.One",
 				_ => null,

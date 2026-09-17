@@ -3,6 +3,7 @@
 using System;
 using Uno.Collections;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.Extensions;
 using System.Collections;
 
@@ -52,7 +53,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			internal void Add(Type key, bool isNullable)
-				=> _entries.Add(key, Boxes.Box(isNullable));
+				=> _entries.Add(key, Boxer.Box(isNullable));
 
 			internal void Clear()
 				=> _entries.Clear();

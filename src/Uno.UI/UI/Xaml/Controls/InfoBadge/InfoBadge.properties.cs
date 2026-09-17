@@ -3,7 +3,7 @@
 // MUX reference InfoBadge.properties.cpp, tag winui3/release/1.4.2
 
 using Microsoft.UI.Xaml;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -55,12 +55,12 @@ public partial class InfoBadge
 	public int Value
 	{
 		get => (int)GetValue(ValueProperty);
-		set => SetValue(ValueProperty, Boxes.Box(value));
+		set => SetValue(ValueProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
 	/// Identifies the InfoBadge.Value dependency property.
 	/// </summary>
 	public static DependencyProperty ValueProperty { get; } =
-		DependencyProperty.Register(nameof(Value), typeof(int), typeof(InfoBadge), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne, OnPropertyChanged));
+		DependencyProperty.Register(nameof(Value), typeof(int), typeof(InfoBadge), new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne, OnPropertyChanged));
 }

@@ -8,7 +8,7 @@ using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -63,7 +63,7 @@ partial class AnimatedVisualPlayer
 		nameof(AutoPlay),
 		typeof(bool),
 		typeof(AnimatedVisualPlayer),
-		new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnAutoPlayPropertyChanged));
+		new FrameworkPropertyMetadata(BoolBoxes.True, OnAutoPlayPropertyChanged));
 
 	/// <summary>
 	/// Identifies the <see cref="IsAnimatedVisualLoaded"/> dependency property.
@@ -72,7 +72,7 @@ partial class AnimatedVisualPlayer
 		nameof(IsAnimatedVisualLoaded),
 		typeof(bool),
 		typeof(AnimatedVisualPlayer),
-		new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+		new FrameworkPropertyMetadata(BoolBoxes.False));
 
 	/// <summary>
 	/// Identifies the <see cref="IsPlaying"/> dependency property.
@@ -81,7 +81,7 @@ partial class AnimatedVisualPlayer
 		nameof(IsPlaying),
 		typeof(bool),
 		typeof(AnimatedVisualPlayer),
-		new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+		new FrameworkPropertyMetadata(BoolBoxes.False));
 
 	/// <summary>
 	/// Identifies the <see cref="PlaybackRate"/> dependency property.
@@ -90,7 +90,7 @@ partial class AnimatedVisualPlayer
 		nameof(PlaybackRate),
 		typeof(double),
 		typeof(AnimatedVisualPlayer),
-		new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One, OnPlaybackRatePropertyChanged));
+		new FrameworkPropertyMetadata(DoubleBoxes.One, OnPlaybackRatePropertyChanged));
 
 	/// <summary>
 	/// Identifies the <see cref="AnimationOptimization"/> dependency property.
@@ -187,7 +187,7 @@ partial class AnimatedVisualPlayer
 	public double PlaybackRate
 	{
 		get => (double)GetValue(PlaybackRateProperty);
-		set => SetValue(PlaybackRateProperty, Boxes.Box(value));
+		set => SetValue(PlaybackRateProperty, Boxer.Box(value));
 	}
 
 	/// <summary>

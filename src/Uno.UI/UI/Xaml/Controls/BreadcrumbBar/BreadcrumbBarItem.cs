@@ -7,7 +7,7 @@
 using System.Collections.ObjectModel;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -346,8 +346,8 @@ public partial class BreadcrumbBarItem : ContentControl
 					ellipsisDropDownItemImpl.SetIndex(itemCount - index);
 				}
 
-				element.SetValue(AutomationProperties.PositionInSetProperty, Boxes.Box(index + 1));
-				element.SetValue(AutomationProperties.SizeOfSetProperty, Boxes.Box(itemCount));
+				element.SetValue(AutomationProperties.PositionInSetProperty, Boxer.Box(index + 1));
+				element.SetValue(AutomationProperties.SizeOfSetProperty, Boxer.Box(itemCount));
 			}
 		}
 	}

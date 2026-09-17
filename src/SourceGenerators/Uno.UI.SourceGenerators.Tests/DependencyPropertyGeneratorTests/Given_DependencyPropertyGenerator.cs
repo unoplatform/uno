@@ -401,16 +401,16 @@ public class Given_DependencyPropertyGenerator
 					using Microsoft.UI.Xaml;
 					using Windows.UI.Core;
 
-					namespace Uno.UI.Helpers
+					namespace Uno.UI.Helpers.Boxes
 					{
-						internal static class Boxes
+						internal static class BoolBoxes
 						{
-							internal static class BoolBoxes
-							{
-								public static readonly object True = true;
-								public static readonly object False = false;
-							}
+							public static readonly object True = true;
+							public static readonly object False = false;
+						}
 
+						internal static class Boxer
+						{
 							public static object Box(bool value) => value ? BoolBoxes.True : BoolBoxes.False;
 						}
 					}
@@ -484,7 +484,7 @@ public class Given_DependencyPropertyGenerator
 									}
 									return _MyValuePropertyBackingField;
 								}
-								private void SetMyValueValue(bool value) => SetValue(MyValueProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+								private void SetMyValueValue(bool value) => SetValue(MyValueProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 								private bool _MyValuePropertyBackingFieldSet
 								{
 									get => (_generatedDependencyPropertyFlags0 & GeneratedDependencyPropertyFlags0.DPFlag0) != 0;
@@ -542,16 +542,16 @@ public class Given_DependencyPropertyGenerator
 					using Microsoft.UI.Xaml;
 					using Windows.UI.Core;
 
-					namespace Uno.UI.Helpers
+					namespace Uno.UI.Helpers.Boxes
 					{
-						internal static class Boxes
+						internal static class DoubleBoxes
 						{
-							internal static class DoubleBoxes
-							{
-								public static readonly object Zero = 0.0d;
-								public static readonly object One = 1.0d;
-							}
+							public static readonly object Zero = 0.0d;
+							public static readonly object One = 1.0d;
+						}
 
+						internal static class Boxer
+						{
 							public static object Box(double value) => value;
 						}
 					}
@@ -624,7 +624,7 @@ public class Given_DependencyPropertyGenerator
 									}
 									return _MyValuePropertyBackingField;
 								}
-								private void SetMyValueValue(double value) => SetValue(MyValueProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+								private void SetMyValueValue(double value) => SetValue(MyValueProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 								private bool _MyValuePropertyBackingFieldSet
 								{
 									get => (_generatedDependencyPropertyFlags0 & GeneratedDependencyPropertyFlags0.DPFlag0) != 0;

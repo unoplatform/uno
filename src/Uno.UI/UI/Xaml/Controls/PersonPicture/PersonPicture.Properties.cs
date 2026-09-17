@@ -8,7 +8,7 @@ using Windows.ApplicationModel.Contacts;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -59,7 +59,7 @@ public partial class PersonPicture : Control
 	public int BadgeNumber
 	{
 		get => (int)GetValue(BadgeNumberProperty);
-		set => SetValue(BadgeNumberProperty, Boxes.Box(value));
+		set => SetValue(BadgeNumberProperty, Boxer.Box(value));
 	}
 
 	public ImageSource BadgeImageSource
@@ -99,7 +99,7 @@ public partial class PersonPicture : Control
 			nameof(BadgeNumber),
 			typeof(int),
 			typeof(PersonPicture),
-			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, OnPropertyChanged));
+			new FrameworkPropertyMetadata(IntegerBoxes.Zero, OnPropertyChanged));
 
 	public static DependencyProperty BadgeTextProperty { get; } =
 		DependencyProperty.Register(
@@ -134,14 +134,14 @@ public partial class PersonPicture : Control
 			nameof(IsGroup),
 			typeof(bool),
 			typeof(PersonPicture),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnPropertyChanged));
+			new FrameworkPropertyMetadata(BoolBoxes.False, OnPropertyChanged));
 
 	public static DependencyProperty PreferSmallImageProperty { get; } =
 		DependencyProperty.Register(
 			nameof(PreferSmallImage),
 			typeof(bool),
 			typeof(PersonPicture),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnPropertyChanged));
+			new FrameworkPropertyMetadata(BoolBoxes.False, OnPropertyChanged));
 
 	public static DependencyProperty ProfilePictureProperty { get; } =
 		DependencyProperty.Register(

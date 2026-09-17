@@ -3,7 +3,7 @@
 // MUX Reference TitleBar.idl, TitleBar.properties.cpp, TitleBar.properties.h, commit fc2f82117
 
 using System.Diagnostics.CodeAnalysis;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -195,7 +195,7 @@ public partial class TitleBar
 			nameof(IsBackButtonVisible),
 			typeof(bool),
 			typeof(TitleBar),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnPropertyChanged));
+			new FrameworkPropertyMetadata(BoolBoxes.False, OnPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsBackButtonEnabled dependency property.
@@ -205,7 +205,7 @@ public partial class TitleBar
 			nameof(IsBackButtonEnabled),
 			typeof(bool),
 			typeof(TitleBar),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
+			new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsPaneToggleButtonVisible dependency property.
@@ -215,7 +215,7 @@ public partial class TitleBar
 			nameof(IsPaneToggleButtonVisible),
 			typeof(bool),
 			typeof(TitleBar),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnPropertyChanged));
+			new FrameworkPropertyMetadata(BoolBoxes.False, OnPropertyChanged));
 
 	/// <summary>
 	/// Identifies the TemplateSettings dependency property.
@@ -235,7 +235,7 @@ public partial class TitleBar
 			nameof(AutoRefreshDragRegions),
 			typeof(bool),
 			typeof(TitleBar),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnPropertyChanged));
+			new FrameworkPropertyMetadata(BoolBoxes.False, OnPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsDragRegion attached dependency property.

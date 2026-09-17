@@ -145,7 +145,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(HorizontalShiftProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(HorizontalShiftProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(HorizontalSourceEndOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(HorizontalSourceEndOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -187,7 +187,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(HorizontalSourceStartOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(HorizontalSourceStartOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -201,7 +201,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsHorizontalShiftClampedProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsHorizontalShiftClampedProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -215,7 +215,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsVerticalShiftClampedProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsVerticalShiftClampedProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -229,7 +229,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(MaxHorizontalShiftRatioProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(MaxHorizontalShiftRatioProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -243,7 +243,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(MaxVerticalShiftRatioProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(MaxVerticalShiftRatioProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -271,7 +271,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(VerticalShiftProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(VerticalShiftProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -285,7 +285,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(VerticalSourceEndOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(VerticalSourceEndOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -313,7 +313,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(VerticalSourceStartOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(VerticalSourceStartOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

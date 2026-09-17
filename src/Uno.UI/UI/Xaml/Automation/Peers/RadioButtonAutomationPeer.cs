@@ -1,6 +1,6 @@
 ﻿using System;
 using Uno;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 
@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		{
 			if (bOldValue != bNewValue)
 			{
-				RaisePropertyChangedEvent(SelectionItemPatternIdentifiers.IsSelectedProperty, Boxes.Box(bOldValue), Boxes.Box(bNewValue));
+				RaisePropertyChangedEvent(SelectionItemPatternIdentifiers.IsSelectedProperty, Boxer.Box(bOldValue), Boxer.Box(bNewValue));
 			}
 		}
 	}

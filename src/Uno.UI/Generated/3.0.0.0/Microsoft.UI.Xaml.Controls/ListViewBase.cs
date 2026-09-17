@@ -132,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsActiveViewProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsActiveViewProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -148,7 +148,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsSwipeEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsSwipeEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -162,7 +162,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsZoomedInViewProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsZoomedInViewProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -216,7 +216,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(ShowsScrollingPlaceholdersProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ShowsScrollingPlaceholdersProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

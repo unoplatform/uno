@@ -1,5 +1,5 @@
 ﻿using System;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 using Windows.Globalization;
 
@@ -97,7 +97,7 @@ partial class TimePicker
 	public int MinuteIncrement
 	{
 		get => (int)GetValue(MinuteIncrementProperty);
-		set => SetValue(MinuteIncrementProperty, Boxes.Box(value));
+		set => SetValue(MinuteIncrementProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -109,9 +109,9 @@ partial class TimePicker
 			typeof(int),
 			typeof(TimePicker),
 			new FrameworkPropertyMetadata(
-				defaultValue: Boxes.IntegerBoxes.One,
+				defaultValue: IntegerBoxes.One,
 				options: FrameworkPropertyMetadataOptions.None,
-				propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged(Boxes.Box((int)e.OldValue), Boxes.Box((int)e.NewValue))
+				propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged(Boxer.Box((int)e.OldValue), Boxer.Box((int)e.NewValue))
 			));
 
 	/// <summary>

@@ -10,7 +10,7 @@ using Windows.UI.Input;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.System;
@@ -118,21 +118,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			name: nameof(IsPointerOver),
 			propertyType: typeof(bool),
 			ownerType: typeof(ButtonBase),
-			typeMetadata: new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+			typeMetadata: new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public static DependencyProperty IsPressedProperty { get; } =
 		DependencyProperty.Register(
 			name: nameof(IsPressed),
 			propertyType: typeof(bool),
 			ownerType: typeof(ButtonBase),
-			typeMetadata: new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+			typeMetadata: new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		private protected override object CoerceIsEnabled(object baseValue, DependencyPropertyValuePrecedences precedence)
 		{
 			if (Command != null
 				&& !Command.CanExecute(CommandParameter))
 			{
-				return Boxes.BoolBoxes.False;
+				return BoolBoxes.False;
 			}
 
 			return base.CoerceIsEnabled(baseValue, precedence);

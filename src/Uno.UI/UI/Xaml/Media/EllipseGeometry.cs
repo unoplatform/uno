@@ -3,7 +3,7 @@ using Windows.Foundation;
 using System.Numerics;
 using Uno.UI.Composition.Drawing;
 using Microsoft.UI.Composition;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -22,14 +22,14 @@ namespace Microsoft.UI.Xaml.Media
 				nameof(RadiusX), typeof(double),
 				typeof(EllipseGeometry),
 				new FrameworkPropertyMetadata(
-					Boxes.DoubleBoxes.Zero,
+					DoubleBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure));
 		public static DependencyProperty RadiusYProperty { get; } =
 			DependencyProperty.Register(
 				nameof(RadiusY), typeof(double),
 				typeof(EllipseGeometry),
 				new FrameworkPropertyMetadata(
-					Boxes.DoubleBoxes.Zero,
+					DoubleBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public Point Center
@@ -40,12 +40,12 @@ namespace Microsoft.UI.Xaml.Media
 		public double RadiusX
 		{
 			get => (double)GetValue(RadiusXProperty);
-			set => SetValue(RadiusXProperty, Boxes.Box(value));
+			set => SetValue(RadiusXProperty, Boxer.Box(value));
 		}
 		public double RadiusY
 		{
 			get => (double)GetValue(RadiusYProperty);
-			set => SetValue(RadiusYProperty, Boxes.Box(value));
+			set => SetValue(RadiusYProperty, Boxer.Box(value));
 		}
 
 		public EllipseGeometry()

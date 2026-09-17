@@ -52,7 +52,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(AutoReverseProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(AutoReverseProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(SpeedRatioProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(SpeedRatioProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

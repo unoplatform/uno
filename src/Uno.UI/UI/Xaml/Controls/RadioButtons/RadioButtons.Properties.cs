@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -55,20 +55,20 @@ namespace Microsoft.UI.Xaml.Controls
 		public int MaxColumns
 		{
 			get => (int)GetValue(MaxColumnsProperty);
-			set => SetValue(MaxColumnsProperty, Boxes.Box(value));
+			set => SetValue(MaxColumnsProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MaxColumnsProperty { get; } =
-			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(RadioButtons), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.One, OnPropertyChanged));
+			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(RadioButtons), new FrameworkPropertyMetadata(IntegerBoxes.One, OnPropertyChanged));
 
 		public int SelectedIndex
 		{
 			get => (int)GetValue(SelectedIndexProperty);
-			set => SetValue(SelectedIndexProperty, Boxes.Box(value));
+			set => SetValue(SelectedIndexProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty SelectedIndexProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedIndex), typeof(int), typeof(RadioButtons), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne, OnPropertyChanged));
+			DependencyProperty.Register(nameof(SelectedIndex), typeof(int), typeof(RadioButtons), new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne, OnPropertyChanged));
 
 		public object SelectedItem
 		{

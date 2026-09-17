@@ -86,7 +86,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(EnableDependentAnimationProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(EnableDependentAnimationProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

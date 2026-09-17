@@ -10,7 +10,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
@@ -129,8 +129,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				// The popup deliberately carries no DataContext (WinUI parity): a flyout has none, and forwarding the
 				// owner's DataContext onto the kept-alive popup leaks it. The placement target's DataContext is set on
 				// the presenter at show-time (ForwardTargetPropertiesToPresenter) and cleared on close instead.
-				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, Boxes.Box(AllowFocusOnInteraction));
-				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, Boxes.Box(AllowFocusWhenDisabled));
+				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, Boxer.Box(AllowFocusOnInteraction));
+				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, Boxer.Box(AllowFocusWhenDisabled));
 			}
 		}
 
@@ -209,7 +209,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(IsOpen), typeof(bool),
 				typeof(FlyoutBase),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		#region Placement
 
@@ -300,7 +300,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public static DependencyProperty AllowFocusWhenDisabledProperty { get; } = CreateAllowFocusWhenDisabledProperty();
 
 		private void OnAllowFocusWhenDisabledChanged(bool oldValue, bool newValue) =>
-			SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, Boxes.Box(AllowFocusWhenDisabled));
+			SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, Boxer.Box(AllowFocusWhenDisabled));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the element automatically gets focus when the user interacts with it.
@@ -364,10 +364,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(InputDevicePrefersPrimaryCommands),
 				typeof(bool),
 				typeof(FlyoutBase),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		private void OnAllowFocusOnInteractionChanged(bool oldValue, bool newValue) =>
-			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, Boxes.Box(AllowFocusOnInteraction));
+			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, Boxer.Box(AllowFocusOnInteraction));
 
 		// In WinUI, Target is declared as a back-reference (weak reference) in
 		// IsDependencyPropertyBackReference(). Using ManagedWeakReference (via WeakReferencePool)

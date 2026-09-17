@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			}
 			set
 			{
-				this.SetValue(AutoPlayProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(AutoPlayProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

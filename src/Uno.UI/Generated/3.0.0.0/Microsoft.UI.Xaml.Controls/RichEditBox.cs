@@ -210,7 +210,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(AcceptsReturnProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(AcceptsReturnProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -360,7 +360,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsColorFontEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsColorFontEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -374,7 +374,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsReadOnlyProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsReadOnlyProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -388,7 +388,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsSpellCheckEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsSpellCheckEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -402,7 +402,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsTextPredictionEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsTextPredictionEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -416,7 +416,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(MaxLengthProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(MaxLengthProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -444,7 +444,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

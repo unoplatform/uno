@@ -75,7 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(DefaultSectionIndexProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(DefaultSectionIndexProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsActiveViewProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsActiveViewProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -131,7 +131,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsZoomedInViewProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsZoomedInViewProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

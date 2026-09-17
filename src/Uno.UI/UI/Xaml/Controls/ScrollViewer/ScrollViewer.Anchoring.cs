@@ -8,7 +8,7 @@
 //  ResetAnchorElement, get_CurrentAnchorImpl).
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 
@@ -52,7 +52,7 @@ public partial class ScrollViewer
 	public double HorizontalAnchorRatio
 	{
 		get => (double)GetValue(HorizontalAnchorRatioProperty);
-		set => SetValue(HorizontalAnchorRatioProperty, Boxes.Box(value));
+		set => SetValue(HorizontalAnchorRatioProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty VerticalAnchorRatioProperty { get; } =
@@ -64,7 +64,7 @@ public partial class ScrollViewer
 	public double VerticalAnchorRatio
 	{
 		get => (double)GetValue(VerticalAnchorRatioProperty);
-		set => SetValue(VerticalAnchorRatioProperty, Boxes.Box(value));
+		set => SetValue(VerticalAnchorRatioProperty, Boxer.Box(value));
 	}
 
 	public event global::Windows.Foundation.TypedEventHandler<ScrollViewer, AnchorRequestedEventArgs>? AnchorRequested;

@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 using Windows.System;
 
@@ -25,7 +25,7 @@ partial class KeyboardAccelerator
 			nameof(IsEnabled),
 			typeof(bool),
 			typeof(KeyboardAccelerator),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
+			new FrameworkPropertyMetadata(BoolBoxes.True));
 
 	/// <summary>
 	/// Gets or sets the virtual key (used in conjunction with one or more modifier keys) for a keyboard shortcut (accelerator).

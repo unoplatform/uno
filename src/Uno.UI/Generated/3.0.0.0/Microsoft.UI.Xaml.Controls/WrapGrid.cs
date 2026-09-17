@@ -80,7 +80,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(ItemHeightProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ItemHeightProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(ItemWidthProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ItemWidthProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -108,7 +108,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(MaximumRowsOrColumnsProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(MaximumRowsOrColumnsProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

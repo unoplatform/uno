@@ -3,7 +3,7 @@
 // MUX Reference TreeViewNode.properties.cpp, tag winui3/release/1.4.2
 
 using Microsoft.UI.Xaml;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -18,7 +18,7 @@ public partial class TreeViewNode
 	public int Depth
 	{
 		get => (int)GetValue(DepthProperty);
-		private set => SetValue(DepthProperty, Boxes.Box(value));
+		private set => SetValue(DepthProperty, Boxer.Box(value));
 	}
 
 	public bool HasChildren
@@ -37,13 +37,13 @@ public partial class TreeViewNode
 		DependencyProperty.Register(nameof(Content), typeof(object), typeof(TreeViewNode), new FrameworkPropertyMetadata(null));
 
 	public static DependencyProperty DepthProperty { get; } =
-		DependencyProperty.Register(nameof(Depth), typeof(int), typeof(TreeViewNode), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne));
+		DependencyProperty.Register(nameof(Depth), typeof(int), typeof(TreeViewNode), new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne));
 
 	public static DependencyProperty HasChildrenProperty { get; } =
-		DependencyProperty.Register(nameof(HasChildren), typeof(bool), typeof(TreeViewNode), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnHasChildrenPropertyChanged));
+		DependencyProperty.Register(nameof(HasChildren), typeof(bool), typeof(TreeViewNode), new FrameworkPropertyMetadata(BoolBoxes.False, OnHasChildrenPropertyChanged));
 
 	public static DependencyProperty IsExpandedProperty { get; } =
-		DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewNode), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnIsExpandedPropertyChanged));
+		DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewNode), new FrameworkPropertyMetadata(BoolBoxes.False, OnIsExpandedPropertyChanged));
 
 	private static void OnHasChildrenPropertyChanged(
 		DependencyObject sender,

@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(CharacterSpacingProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(CharacterSpacingProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetIsTemplateKeyTipTarget(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
 		{
-			element.SetValue(IsTemplateKeyTipTargetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+			element.SetValue(IsTemplateKeyTipTargetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BackgroundProperty.get

@@ -3,7 +3,7 @@
 
 // MUX Reference FontIconSource_Partial.cpp, tag winui3/release/1.4.2
 
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -21,7 +21,7 @@ public partial class FontIconSource : IconSource
 	}
 
 	public static DependencyProperty MirroredWhenRightToLeftProperty { get; } =
-		DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(FontIconSource), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnPropertyChanged));
+		DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(FontIconSource), new FrameworkPropertyMetadata(BoolBoxes.False, OnPropertyChanged));
 
 	public bool IsTextScaleFactorEnabled
 	{
@@ -30,7 +30,7 @@ public partial class FontIconSource : IconSource
 	}
 
 	public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
-		DependencyProperty.Register(nameof(IsTextScaleFactorEnabled), typeof(bool), typeof(FontIconSource), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsTextScaleFactorEnabled), typeof(bool), typeof(FontIconSource), new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
 	public string Glyph
 	{
@@ -62,7 +62,7 @@ public partial class FontIconSource : IconSource
 	public double FontSize
 	{
 		get => (double)GetValue(FontSizeProperty);
-		set => SetValue(FontSizeProperty, Boxes.Box(value));
+		set => SetValue(FontSizeProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty FontSizeProperty { get; } =

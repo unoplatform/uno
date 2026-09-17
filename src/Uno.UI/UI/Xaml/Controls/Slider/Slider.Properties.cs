@@ -1,6 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -52,7 +52,7 @@ public partial class Slider
 	public double IntermediateValue
 	{
 		get => (double)GetValue(IntermediateValueProperty);
-		set => SetValue(IntermediateValueProperty, Boxes.Box(value));
+		set => SetValue(IntermediateValueProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -63,7 +63,7 @@ public partial class Slider
 			nameof(IntermediateValue),
 			typeof(double),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets or sets a value that indicates the direction of increasing value.
@@ -82,7 +82,7 @@ public partial class Slider
 			nameof(IsDirectionReversed),
 			typeof(bool),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 	/// <summary>
 	/// Gets or sets a value that determines whether the slider value
@@ -102,7 +102,7 @@ public partial class Slider
 			nameof(IsThumbToolTipEnabled),
 			typeof(bool),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
+			new FrameworkPropertyMetadata(BoolBoxes.True));
 
 	/// <summary>
 	/// Gets or sets the orientation of a Slider.
@@ -155,7 +155,7 @@ public partial class Slider
 	public double StepFrequency
 	{
 		get => (double)GetValue(StepFrequencyProperty);
-		set => SetValue(StepFrequencyProperty, Boxes.Box(value));
+		set => SetValue(StepFrequencyProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -166,7 +166,7 @@ public partial class Slider
 			nameof(StepFrequency),
 			typeof(double),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One));
+			new FrameworkPropertyMetadata(DoubleBoxes.One));
 
 	/// <summary>
 	/// Gets or sets the converter logic that converts the range value of the Slider into tool tip content.
@@ -196,7 +196,7 @@ public partial class Slider
 	public double TickFrequency
 	{
 		get => (double)GetValue(TickFrequencyProperty);
-		set => SetValue(TickFrequencyProperty, Boxes.Box(value));
+		set => SetValue(TickFrequencyProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -207,7 +207,7 @@ public partial class Slider
 			nameof(TickFrequency),
 			typeof(double),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets or sets a value that indicates where to draw tick marks in relation to the track.

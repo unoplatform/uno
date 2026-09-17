@@ -1518,7 +1518,7 @@ namespace Uno.WinAppSDKSyncGenerator
 										var valueParamName = SanitizeParameter(valueParameter.Name);
 										if (valueParameter.Type.SpecialType is SpecialType.System_Int32 or SpecialType.System_Double or SpecialType.System_Boolean)
 										{
-											valueParamName = $"global::Uno.UI.Helpers.Boxes.Box({valueParamName})";
+											valueParamName = $"global::Uno.UI.Helpers.Boxes.Boxer.Box({valueParamName})";
 										}
 
 										b.AppendLineInvariant($"{instanceParamName}.SetValue({filteredName}Property, {valueParamName});");
@@ -2003,7 +2003,7 @@ namespace Uno.WinAppSDKSyncGenerator
 									using (b.BlockInvariant($"set"))
 									{
 										var setterValue = property.Type.SpecialType is SpecialType.System_Int32 or SpecialType.System_Double or SpecialType.System_Boolean
-											? "global::Uno.UI.Helpers.Boxes.Box(value)"
+											? "global::Uno.UI.Helpers.Boxes.Boxer.Box(value)"
 											: "value";
 
 										b.AppendLineInvariant($"this.SetValue({property.Name}Property, {setterValue});");

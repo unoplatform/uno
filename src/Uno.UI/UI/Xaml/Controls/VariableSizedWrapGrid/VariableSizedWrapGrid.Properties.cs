@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -18,7 +18,7 @@ partial class VariableSizedWrapGrid
 			"ColumnSpan",
 			typeof(int),
 			typeof(VariableSizedWrapGrid),
-			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.One));
+			new FrameworkPropertyMetadata(IntegerBoxes.One));
 
 	/// <summary>
 	/// Gets the value of the VariableSizedWrapGrid.ColumnSpan XAML attached property from a target element.
@@ -32,7 +32,7 @@ partial class VariableSizedWrapGrid
 	/// </summary>
 	/// <param name="element">The target element.</param>
 	/// <param name="value">The value to set.</param>
-	public static void SetColumnSpan(UIElement element, int value) => element.SetValue(ColumnSpanProperty, Boxes.Box(value));
+	public static void SetColumnSpan(UIElement element, int value) => element.SetValue(ColumnSpanProperty, Boxer.Box(value));
 
 	/// <summary>
 	/// Gets or sets the alignment rules by which child elements are arranged for the horizontal dimension.
@@ -59,7 +59,7 @@ partial class VariableSizedWrapGrid
 	public double ItemHeight
 	{
 		get => (double)GetValue(ItemHeightProperty);
-		set => SetValue(ItemHeightProperty, Boxes.Box(value));
+		set => SetValue(ItemHeightProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -78,7 +78,7 @@ partial class VariableSizedWrapGrid
 	public double ItemWidth
 	{
 		get => (double)GetValue(ItemWidthProperty);
-		set => SetValue(ItemWidthProperty, Boxes.Box(value));
+		set => SetValue(ItemWidthProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -97,7 +97,7 @@ partial class VariableSizedWrapGrid
 	public int MaximumRowsOrColumns
 	{
 		get => (int)GetValue(MaximumRowsOrColumnsProperty);
-		set => SetValue(MaximumRowsOrColumnsProperty, Boxes.Box(value));
+		set => SetValue(MaximumRowsOrColumnsProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -108,7 +108,7 @@ partial class VariableSizedWrapGrid
 			nameof(MaximumRowsOrColumns),
 			typeof(int),
 			typeof(VariableSizedWrapGrid),
-			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne));
+			new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne));
 
 	internal override Orientation? PhysicalOrientation => Orientation;
 
@@ -143,7 +143,7 @@ partial class VariableSizedWrapGrid
 			"RowSpan",
 			typeof(int),
 			typeof(VariableSizedWrapGrid),
-			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.One));
+			new FrameworkPropertyMetadata(IntegerBoxes.One));
 
 	/// <summary>
 	/// Gets the value of the VariableSizedWrapGrid.RowSpan XAML attached property from a target element.
@@ -157,7 +157,7 @@ partial class VariableSizedWrapGrid
 	/// </summary>
 	/// <param name="element">The target element.</param>
 	/// <param name="value">The value to set.</param>
-	public static void SetRowSpan(UIElement element, int value) => element.SetValue(RowSpanProperty, Boxes.Box(value));
+	public static void SetRowSpan(UIElement element, int value) => element.SetValue(RowSpanProperty, Boxer.Box(value));
 
 	/// <summary>
 	/// Gets or sets the alignment rules by which child elements are arranged for the vertical dimension.

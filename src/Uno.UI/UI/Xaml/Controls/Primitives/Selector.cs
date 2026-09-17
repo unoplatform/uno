@@ -11,6 +11,7 @@ using Uno.Extensions.Specialized;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation.Collections;
 using Windows.System;
@@ -278,7 +279,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public int SelectedIndex
 		{
 			get => (int)this.GetValue(SelectedIndexProperty);
-			set => this.SetValue(SelectedIndexProperty, Boxes.Box(value));
+			set => this.SetValue(SelectedIndexProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty SelectedIndexProperty { get; } =
@@ -286,7 +287,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(SelectedIndex),
 				typeof(int),
 				typeof(Selector),
-				new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne, coerceValueCallback: CoerceSelectedIndex));
+				new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne, coerceValueCallback: CoerceSelectedIndex));
 
 		private int _uncoercedSelectedIndex = -1;
 
@@ -294,14 +295,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			if (baseValue is not int desiredIndex)
 			{
-				return Boxes.IntegerBoxes.NegativeOne;
+				return IntegerBoxes.NegativeOne;
 			}
 
 			var owner = (Selector)dependencyObject;
 			if (desiredIndex == -1)
 			{
 				owner._uncoercedSelectedIndex = -1;
-				return Boxes.IntegerBoxes.NegativeOne;
+				return IntegerBoxes.NegativeOne;
 			}
 
 			var itemCount = owner.NumberOfItems;
@@ -320,17 +321,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					else
 					{
 						// Ignore change.
-						return Boxes.IntegerBoxes.NegativeOne;
+						return IntegerBoxes.NegativeOne;
 					}
 				}
 				owner._uncoercedSelectedIndex = -1;
-				return Boxes.Box(desiredIndex);
+				return Boxer.Box(desiredIndex);
 			}
 			else
 			{
 				// No items exist, store uncoerced and set to -1;
 				owner._uncoercedSelectedIndex = desiredIndex;
-				return Boxes.IntegerBoxes.NegativeOne;
+				return IntegerBoxes.NegativeOne;
 			}
 		}
 
@@ -802,7 +803,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(IsSelectionActive),
 				typeof(bool),
 				typeof(Selector),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		// This method returns a value indicating whether the object is selectable.
 		private protected bool IsSelectableHelper(object obj)

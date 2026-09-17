@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(InteractiveControlsVisibleProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(InteractiveControlsVisibleProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(ZoomLevelProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ZoomLevelProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

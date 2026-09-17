@@ -47,7 +47,7 @@ public partial class ScrollBar
 	public double ViewportSize
 	{
 		get => (double)GetValue(ViewportSizeProperty);
-		set => SetValue(ViewportSizeProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+		set => SetValue(ViewportSizeProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 	}
 
 	/// <summary>

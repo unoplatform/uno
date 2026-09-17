@@ -1,7 +1,7 @@
 ﻿#pragma warning disable 67
 using System;
 using Windows.Foundation;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Imaging;
 
@@ -36,7 +36,7 @@ public partial class SvgImageSource : ImageSource
 	public double RasterizePixelHeight
 	{
 		get => (double)GetValue(RasterizePixelHeightProperty);
-		set => SetValue(RasterizePixelHeightProperty, Boxes.Box(value));
+		set => SetValue(RasterizePixelHeightProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -58,7 +58,7 @@ public partial class SvgImageSource : ImageSource
 	public double RasterizePixelWidth
 	{
 		get => (double)GetValue(RasterizePixelWidthProperty);
-		set => SetValue(RasterizePixelWidthProperty, Boxes.Box(value));
+		set => SetValue(RasterizePixelWidthProperty, Boxer.Box(value));
 	}
 
 	/// <summary>

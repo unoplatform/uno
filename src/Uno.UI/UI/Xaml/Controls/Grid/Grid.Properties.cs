@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using Uno.UI.Extensions;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
@@ -204,7 +204,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double RowSpacing
 		{
 			get => (double)GetValue(RowSpacingProperty);
-			set => SetValue(RowSpacingProperty, Boxes.Box(value));
+			set => SetValue(RowSpacingProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty RowSpacingProperty { get; } =
@@ -212,13 +212,13 @@ namespace Microsoft.UI.Xaml.Controls
 			"RowSpacing", typeof(double),
 			typeof(Grid),
 			new FrameworkPropertyMetadata(
-				Boxes.DoubleBoxes.Zero,
+				DoubleBoxes.Zero,
 				FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public double ColumnSpacing
 		{
 			get => (double)GetValue(ColumnSpacingProperty);
-			set => SetValue(ColumnSpacingProperty, Boxes.Box(value));
+			set => SetValue(ColumnSpacingProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ColumnSpacingProperty { get; } =
@@ -226,7 +226,7 @@ namespace Microsoft.UI.Xaml.Controls
 			"ColumnSpacing", typeof(double),
 			typeof(Grid),
 			new FrameworkPropertyMetadata(
-				Boxes.DoubleBoxes.Zero,
+				DoubleBoxes.Zero,
 				FrameworkPropertyMetadataOptions.AffectsMeasure));
 	}
 }

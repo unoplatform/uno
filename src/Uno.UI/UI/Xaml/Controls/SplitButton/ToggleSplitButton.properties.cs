@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsCheckedProperty { get; } =
-			DependencyProperty.Register(nameof(IsChecked), typeof(bool), typeof(ToggleSplitButton), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnIsCheckedPropertyChanged));
+			DependencyProperty.Register(nameof(IsChecked), typeof(bool), typeof(ToggleSplitButton), new FrameworkPropertyMetadata(BoolBoxes.False, OnIsCheckedPropertyChanged));
 
 		private static void OnIsCheckedPropertyChanged(
 			DependencyObject sender,

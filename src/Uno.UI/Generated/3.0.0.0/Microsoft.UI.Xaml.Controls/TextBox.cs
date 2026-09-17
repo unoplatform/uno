@@ -124,7 +124,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsColorFontEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsColorFontEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

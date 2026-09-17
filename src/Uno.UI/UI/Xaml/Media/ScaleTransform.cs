@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using Windows.Foundation;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -27,37 +27,37 @@ namespace Microsoft.UI.Xaml.Media
 		public double CenterY
 		{
 			get => (double)this.GetValue(CenterYProperty);
-			set => this.SetValue(CenterYProperty, Boxes.Box(value));
+			set => this.SetValue(CenterYProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty CenterYProperty { get; } =
-			DependencyProperty.Register("CenterY", typeof(double), typeof(ScaleTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
+			DependencyProperty.Register("CenterY", typeof(double), typeof(ScaleTransform), new FrameworkPropertyMetadata(DoubleBoxes.Zero, NotifyChangedCallback));
 
 		public double CenterX
 		{
 			get => (double)this.GetValue(CenterXProperty);
-			set => this.SetValue(CenterXProperty, Boxes.Box(value));
+			set => this.SetValue(CenterXProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty CenterXProperty { get; } =
-			DependencyProperty.Register("CenterX", typeof(double), typeof(ScaleTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
+			DependencyProperty.Register("CenterX", typeof(double), typeof(ScaleTransform), new FrameworkPropertyMetadata(DoubleBoxes.Zero, NotifyChangedCallback));
 
 		public double ScaleX
 		{
 			get => (double)this.GetValue(ScaleXProperty);
-			set => this.SetValue(ScaleXProperty, Boxes.Box(value));
+			set => this.SetValue(ScaleXProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ScaleXProperty { get; } =
-			DependencyProperty.Register("ScaleX", typeof(double), typeof(ScaleTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One, NotifyChangedCallback));
+			DependencyProperty.Register("ScaleX", typeof(double), typeof(ScaleTransform), new FrameworkPropertyMetadata(DoubleBoxes.One, NotifyChangedCallback));
 
 		public double ScaleY
 		{
 			get => (double)this.GetValue(ScaleYProperty);
-			set => this.SetValue(ScaleYProperty, Boxes.Box(value));
+			set => this.SetValue(ScaleYProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ScaleYProperty { get; } =
-			DependencyProperty.Register("ScaleY", typeof(double), typeof(ScaleTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One, NotifyChangedCallback));
+			DependencyProperty.Register("ScaleY", typeof(double), typeof(ScaleTransform), new FrameworkPropertyMetadata(DoubleBoxes.One, NotifyChangedCallback));
 	}
 }

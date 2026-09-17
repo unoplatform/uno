@@ -3,7 +3,7 @@
 // MUX Reference BackdropMaterial.properties.cpp, commit 0db5d03
 
 using System.Diagnostics.CodeAnalysis;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -39,6 +39,6 @@ namespace Microsoft.UI.Xaml.Controls
 				"ApplyToRootOrPageBackground",
 				typeof(bool),
 				typeof(BackdropMaterial),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnApplyToRootOrPageBackgroundChanged));
+				new FrameworkPropertyMetadata(BoolBoxes.False, OnApplyToRootOrPageBackgroundChanged));
 	}
 }

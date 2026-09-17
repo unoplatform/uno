@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -10,11 +10,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public double Amplitude
 		{
 			get { return (double)this.GetValue(AmplitudeProperty); }
-			set { this.SetValue(AmplitudeProperty, Boxes.Box(value)); }
+			set { this.SetValue(AmplitudeProperty, Boxer.Box(value)); }
 		}
 
 		public static DependencyProperty AmplitudeProperty { get; } =
-			DependencyProperty.Register("Amplitude", typeof(double), typeof(BackEase), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One));
+			DependencyProperty.Register("Amplitude", typeof(double), typeof(BackEase), new FrameworkPropertyMetadata(DoubleBoxes.One));
 
 		// https://github.com/dotnet/wpf/blob/c3439bc20a3c2ee28d98e7d0eebcf7edcc37b7b9/src/Microsoft.DotNet.Wpf/src/PresentationCore/System/Windows/Media/Animation/BackEase.cs#L42-L45
 		private protected override double EaseInCore(double normalizedTime)

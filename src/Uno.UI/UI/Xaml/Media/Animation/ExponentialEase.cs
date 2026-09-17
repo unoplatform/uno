@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public double Exponent
 		{
 			get => (double)this.GetValue(ExponentProperty);
-			set => this.SetValue(ExponentProperty, Boxes.Box(value));
+			set => this.SetValue(ExponentProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ExponentProperty { get; } =

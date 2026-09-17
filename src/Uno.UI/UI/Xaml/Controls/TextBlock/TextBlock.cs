@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml;
 using Uno.UI.DataBinding;
 using Uno.UI;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using System.Collections;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Markup;
@@ -442,7 +443,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double FontSize
 		{
 			get => (double)GetValue(FontSizeProperty);
-			set => SetValue(FontSizeProperty, Boxes.Box(value));
+			set => SetValue(FontSizeProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty FontSizeProperty { get; } =
@@ -481,7 +482,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BoolBoxes.True,
+					defaultValue: BoolBoxes.True,
 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
@@ -493,7 +494,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public int MaxLines
 		{
 			get => (int)GetValue(MaxLinesProperty);
-			set => SetValue(MaxLinesProperty, Boxes.Box(value));
+			set => SetValue(MaxLinesProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MaxLinesProperty { get; } =
@@ -502,7 +503,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.IntegerBoxes.Zero,
+					defaultValue: IntegerBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnMaxLinesChanged()
 				)
@@ -634,7 +635,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BoolBoxes.False,
+					defaultValue: BoolBoxes.False,
 					propertyChangedCallback: (s, _) => ((TextBlock)s).OnIsTextSelectionEnabledChanged()
 				)
 			);
@@ -712,7 +713,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double LineHeight
 		{
 			get => (double)GetValue(LineHeightProperty);
-			set => SetValue(LineHeightProperty, Boxes.Box(value));
+			set => SetValue(LineHeightProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty LineHeightProperty { get; } =
@@ -721,7 +722,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(double),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					Boxes.DoubleBoxes.Zero,
+					DoubleBoxes.Zero,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged()));
 
@@ -822,7 +823,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public int CharacterSpacing
 		{
 			get => (int)GetValue(CharacterSpacingProperty);
-			set => SetValue(CharacterSpacingProperty, Boxes.Box(value));
+			set => SetValue(CharacterSpacingProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty CharacterSpacingProperty { get; } =
@@ -831,7 +832,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.IntegerBoxes.Zero,
+					defaultValue: IntegerBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnCharacterSpacingChanged()
 				)
@@ -906,7 +907,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(IsTextTrimmed),
 			typeof(bool),
 			typeof(TextBlock),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, propertyChangedCallback: (s, e) => ((TextBlock)s).OnIsTextTrimmedChanged()));
+			new FrameworkPropertyMetadata(BoolBoxes.False, propertyChangedCallback: (s, e) => ((TextBlock)s).OnIsTextTrimmedChanged()));
 
 		public bool IsTextTrimmed
 		{

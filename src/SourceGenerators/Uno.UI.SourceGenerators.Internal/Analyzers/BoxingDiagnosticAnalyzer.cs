@@ -122,7 +122,7 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 		return null;
 	}
 
-	// Boxes.Box(RoutedEventFlag) caches every declared member, but not their combinations.
+	// Boxer.Box(RoutedEventFlag) caches every declared member, but not their combinations.
 	private static bool IsDeclaredEnumMember(ITypeSymbol enumType, object? value)
 	{
 		foreach (var member in enumType.GetMembers())
@@ -231,12 +231,12 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 		}
 		else if (operandSpecialType == SpecialType.System_Int32)
 		{
-			// Keep the values to check against (ie, -1, 0, 1) synchronized with Boxes.Box(int).
+			// Keep the values to check against (ie, -1, 0, 1) synchronized with Boxer.Box(int).
 			return !operation.Operand.ConstantValue.HasValue || operation.Operand.ConstantValue.Value is -1 or 0 or 1;
 		}
 		else if (operandSpecialType == SpecialType.System_Double)
 		{
-			// Keep the values to check against synchronized with Boxes.Box(double), which compares bit patterns:
+			// Keep the values to check against synchronized with Boxer.Box(double), which compares bit patterns:
 			// -0.0 == 0.0, yet it keeps its own box, so it has nothing cached to use.
 			return !operation.Operand.ConstantValue.HasValue ||
 				operation.Operand.ConstantValue.Value is double value && (BitConverter.DoubleToInt64Bits(value) == 0 || value == 1.0);

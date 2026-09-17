@@ -16,7 +16,7 @@ public partial class MenuFlyoutItemTemplateSettings : DependencyObject
 	public double KeyboardAcceleratorTextMinWidth
 	{
 		get => (double)GetValue(KeyboardAcceleratorTextMinWidthProperty);
-		internal set => SetValue(KeyboardAcceleratorTextMinWidthProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+		internal set => SetValue(KeyboardAcceleratorTextMinWidthProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 	}
 
 	internal static DependencyProperty KeyboardAcceleratorTextMinWidthProperty { get; } =
