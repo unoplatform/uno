@@ -164,7 +164,7 @@ namespace Windows.Globalization.NumberFormatting
 			var stringBuilder = StringBuilderCache.Acquire();
 
 			_formatterHelper.AppendFormatIntegral(isNegative, magnitude.ToString(CultureInfo.InvariantCulture), stringBuilder);
-			_translator.TranslateNumerals(stringBuilder);
+			_translator.TranslateNumerals(stringBuilder, translateTrailingDecimalSeparator: true);
 
 			return StringBuilderCache.GetStringAndRelease(stringBuilder);
 		}
@@ -179,6 +179,11 @@ namespace Windows.Globalization.NumberFormatting
 			if (NumberRounder != null)
 			{
 				value = NumberRounder.RoundDouble(value);
+
+				if (!_formatterHelper.TryValidate(value, out text))
+				{
+					return text;
+				}
 			}
 
 
@@ -193,7 +198,7 @@ namespace Windows.Globalization.NumberFormatting
 				_formatterHelper.AppendFormatDouble(value, stringBuilder);
 			}
 
-			_translator.TranslateNumerals(stringBuilder);
+			_translator.TranslateNumerals(stringBuilder, translateTrailingDecimalSeparator: true);
 			var formatted = StringBuilderCache.GetStringAndRelease(stringBuilder);
 			return formatted;
 		}

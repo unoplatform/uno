@@ -15,10 +15,14 @@ namespace Uno.Globalization.NumberFormatting;
 /// </summary>
 internal static class GeographicRegionHelper
 {
+	private const int Alpha2RegionWidth = 2;
+	private const int Alpha3RegionWidth = 3;
+	private const int UserAssignedNumericM49Start = 900;
+
 	private static readonly ConcurrentDictionary<string, NumberFormatInfo> _signNormalizedNumberFormats = new(StringComparer.Ordinal);
 
-	// Native WinRT uses the Windows NLS geographic data exposed by GetGeoInfoEx/EnumSystemGeoNames.
-	// Keep this complete, sorted list aligned with that data; WinRT also accepts 900-999.
+	// UN M49 numeric region codes reported by the Windows NLS geographic data exposed through
+	// GetGeoInfoEx/EnumSystemGeoNames. WinRT also accepts the user-assigned 900-999 range.
 	private static readonly int[] _supportedNumericM49Regions =
 	[
 		0, 1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14,
@@ -47,8 +51,8 @@ internal static class GeographicRegionHelper
 		876, 882, 887, 894,
 	];
 
-	// ISO 3166-1 codes that the same NLS data reports as assigned, excluding the user-assigned
-	// ranges recognized by IsUserAssignedRegion. Sorted, fixed-width records.
+	// ISO 3166-1 alpha-2 codes reported as assigned by the same NLS data, excluding the
+	// user-assigned ranges recognized by IsUserAssignedRegion. Sorted two-character records.
 	private const string _assignedAlpha2Regions =
 		"ADAEAFAGAIALAMANAOAQARASATAUAWAXAZBABBBDBEBFBGBHBIBJ" +
 		"BLBMBNBOBQBRBSBTBVBWBYBZCACCCDCFCGCHCICKCLCMCNCOCRCU" +
@@ -61,6 +65,7 @@ internal static class GeographicRegionHelper
 		"SSSTSVSXSYSZTCTDTFTGTHTJTKTLTMTNTOTRTTTVTWTZUAUGUMUS" +
 		"UYUZVAVCVEVGVIVNVUWFWSYEYTZAZMZW";
 
+	// The corresponding ISO 3166-1 alpha-3 codes, stored as sorted three-character records.
 	private const string _assignedAlpha3Regions =
 		"ABWAFGAGOAIAALAALBANDANTAREARGARMASMATAATFATGAUSAUTAZEBDIBEL" +
 		"BENBESBFABGDBGRBHRBHSBIHBLMBLRBLZBMUBOLBRABRBBRNBTNBVTBWACAF" +
@@ -92,9 +97,9 @@ internal static class GeographicRegionHelper
 
 	private static bool IsSupportedRegion(string region) => region.Length switch
 	{
-		2 => IsUppercaseAlpha(region) &&
+		Alpha2RegionWidth => IsUppercaseAlpha(region) &&
 			(IsUserAssignedRegion(region) || ContainsRegion(_assignedAlpha2Regions, region)),
-		3 => IsNumericM49(region) ||
+		Alpha3RegionWidth => IsNumericM49(region) ||
 			IsUppercaseAlpha(region) &&
 			(IsUserAssignedRegion(region) || ContainsRegion(_assignedAlpha3Regions, region)),
 		_ => false,
@@ -165,7 +170,7 @@ internal static class GeographicRegionHelper
 		}
 
 		var numericRegion = (region[0] - '0') * 100 + (region[1] - '0') * 10 + region[2] - '0';
-		return numericRegion >= 900 ||
+		return numericRegion >= UserAssignedNumericM49Start ||
 			Array.BinarySearch(_supportedNumericM49Regions, numericRegion) >= 0;
 	}
 

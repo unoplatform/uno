@@ -86,6 +86,29 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		public void When_RoundingSingle_Then_UsesBinary32Arithmetic()
+		{
+			var sut = new IncrementNumberRounder { Increment = 0.1 };
+			const float value = 2.147044f;
+
+			Assert.AreEqual(0x40066667, BitConverter.SingleToInt32Bits(sut.RoundSingle(value)));
+		}
+
+		[TestMethod]
+		public void When_IntegralIncrementExceedsUInt64_Then_ZeroOrOverflowIsReturned()
+		{
+			var sut = new IncrementNumberRounder { Increment = 1e20 };
+
+			Assert.AreEqual(0, sut.RoundInt64(1));
+			Assert.AreEqual(0UL, sut.RoundUInt64(1));
+
+			sut.RoundingAlgorithm = RoundingAlgorithm.RoundAwayFromZero;
+
+			Assert.ThrowsExactly<ArithmeticException>(() => sut.RoundInt64(1));
+			Assert.ThrowsExactly<ArithmeticException>(() => sut.RoundUInt64(1));
+		}
+
+		[TestMethod]
 		[DataRow(1.1, 1.25)]
 		[DataRow(-1.1, -1.25)]
 		public void When_UsingRoundAwayFromZeroRoundingAlgorithm(double value, double expected)

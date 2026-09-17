@@ -67,7 +67,8 @@ public partial class NumeralSystemTranslator
 
 		foreach (var language in languages!)
 		{
-			if (string.IsNullOrEmpty(NumeralSystemTranslatorHelper.GetNumeralSystem(language)))
+			if (string.IsNullOrEmpty(language) ||
+				string.IsNullOrEmpty(NumeralSystemTranslatorHelper.GetNumeralSystem(language)))
 			{
 				ExceptionHelper.ThrowArgumentException(nameof(languages));
 			}
@@ -85,6 +86,9 @@ public partial class NumeralSystemTranslator
 	}
 
 	internal void TranslateNumerals(StringBuilder stringBuilder)
+		=> TranslateNumerals(stringBuilder, translateTrailingDecimalSeparator: false);
+
+	internal void TranslateNumerals(StringBuilder stringBuilder, bool translateTrailingDecimalSeparator)
 	{
 		var digitsSource = NumeralSystemTranslatorHelper.GetDigitsSource(NumeralSystem);
 
@@ -96,7 +100,7 @@ public partial class NumeralSystemTranslator
 		if (NumeralSystem.Equals("Arab", StringComparison.Ordinal) ||
 			NumeralSystem.Equals("ArabExt", StringComparison.Ordinal))
 		{
-			TranslateArab(stringBuilder, digitsSource);
+			TranslateArab(stringBuilder, digitsSource, translateTrailingDecimalSeparator);
 		}
 		else
 		{
@@ -104,7 +108,7 @@ public partial class NumeralSystemTranslator
 		}
 	}
 
-	private static void TranslateArab(StringBuilder stringBuilder, char[] digitsSource)
+	private static void TranslateArab(StringBuilder stringBuilder, char[] digitsSource, bool translateTrailingDecimalSeparator)
 	{
 		for (int i = 0; i < stringBuilder.Length; i++)
 		{
@@ -113,7 +117,8 @@ public partial class NumeralSystemTranslator
 			switch (c)
 			{
 				case '.':
-					if (IsImmediatelyBeforeALatinDigit(i, stringBuilder))
+					if (IsImmediatelyBeforeALatinDigit(i, stringBuilder) ||
+						translateTrailingDecimalSeparator && i == stringBuilder.Length - 1)
 					{
 						stringBuilder[i] = '\u066b';
 					}

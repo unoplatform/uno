@@ -219,7 +219,7 @@ namespace Uno.Globalization.NumberFormatting
 
 			// An approximate comparison would accept a lossy representation instead of a true round trip.
 			if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) &&
-				parsed == magnitude)
+				BitConverter.DoubleToInt64Bits(parsed) == BitConverter.DoubleToInt64Bits(magnitude))
 			{
 				return Decompose(text);
 			}
@@ -381,8 +381,19 @@ namespace Uno.Globalization.NumberFormatting
 		private bool HasInvalidGroupSize(string text)
 		{
 			var groupSeparator = NumberFormat.NumberGroupSeparator;
-			if (string.IsNullOrEmpty(groupSeparator) ||
-				!text.Contains(groupSeparator, StringComparison.Ordinal))
+			if (string.IsNullOrEmpty(groupSeparator))
+			{
+				return false;
+			}
+
+			if (groupSeparator.Length == 1 &&
+				groupSeparator[0] is ' ' or '\u00a0')
+			{
+				var equivalentSeparator = groupSeparator[0] == ' ' ? '\u00a0' : ' ';
+				text = text.Replace(equivalentSeparator, groupSeparator[0]);
+			}
+
+			if (!text.Contains(groupSeparator, StringComparison.Ordinal))
 			{
 				return false;
 			}

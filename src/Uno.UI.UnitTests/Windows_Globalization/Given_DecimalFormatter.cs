@@ -321,6 +321,13 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		public void When_LanguagesContainsNull_Then_Throw()
+		{
+			Assert.ThrowsExactly<ArgumentException>(() => new DecimalFormatter(new string[] { null! }, "US"));
+			Assert.ThrowsExactly<ArgumentException>(() => new DecimalFormatter(new[] { "en-US", null! }, "US"));
+		}
+
+		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_GeographicRegionIsNull_Then_Throw()
 		{
@@ -1128,6 +1135,17 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		public void When_GroupedWithEquivalentSpace_Then_GroupWidthsAreValidated()
+		{
+			var sut = new DecimalFormatter(new[] { "sv-SE" }, "SE")
+			{
+				IsGrouped = true,
+			};
+
+			Assert.IsNull(sut.ParseDouble("12 34,50"));
+		}
+
+		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_FormatIntegral_Then_MatchesFormatOverloads()
 		{
@@ -1213,6 +1231,31 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.IsTrue(formatted.Contains('\u066c'), "Expected the Arabic thousands separator.");
 			Assert.IsTrue(formatted.Contains('\u066b'), "Expected the Arabic decimal separator.");
 			Assert.AreEqual(-1234567L, sut.ParseInt(formatted.Substring(0, formatted.IndexOf('\u066b'))));
+		}
+
+		[TestMethod]
+		public void When_DecimalPointAlwaysDisplayedIsArabic_Then_SeparatorIsTranslated()
+		{
+			var sut = new DecimalFormatter(new[] { "ar-SA" }, "SA")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 0,
+				IsDecimalPointAlwaysDisplayed = true,
+			};
+
+			Assert.AreEqual("١\u066b", sut.FormatDouble(1));
+			Assert.AreEqual("١\u066b", sut.FormatInt(1));
+		}
+
+		[TestMethod]
+		public void When_NumberRounderReturnsInfinity_Then_SpecialValueIsFormatted()
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				NumberRounder = new IncrementNumberRounder { Increment = 0.1 },
+			};
+
+			Assert.AreEqual("∞", sut.FormatDouble(double.MaxValue));
 		}
 
 		[TestMethod]

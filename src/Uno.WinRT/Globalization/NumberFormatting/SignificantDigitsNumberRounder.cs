@@ -78,7 +78,8 @@ public partial class SignificantDigitsNumberRounder : INumberRounder
 		}
 
 		// WinRT uses binary32 scaling here, with more than eight significant digits left unchanged.
-		if (value == 0 || SignificantDigits > 8)
+		if ((BitConverter.SingleToInt32Bits(value) & int.MaxValue) == 0 ||
+			SignificantDigits > 8)
 		{
 			return value;
 		}
@@ -101,7 +102,8 @@ public partial class SignificantDigitsNumberRounder : INumberRounder
 		}
 
 		// Exact zero preserves its sign without treating subnormal inputs as zero.
-		if (value == 0 || SignificantDigits > 17)
+		if ((BitConverter.DoubleToInt64Bits(value) & long.MaxValue) == 0 ||
+			SignificantDigits > 17)
 		{
 			return value;
 		}
