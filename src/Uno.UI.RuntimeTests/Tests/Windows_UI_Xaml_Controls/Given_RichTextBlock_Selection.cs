@@ -49,6 +49,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[DataRow("OtherRichTextBlock")]
+		[DataRow("Reversed")]
+		public async Task When_Select_Invalid_Positions_Throws(string positions)
+		{
+			// TextSelectionManager::Select fails with E_UNEXPECTED when VerifyPositionPair rejects the offsets or when a
+			// position belongs to another text container, rather than applying foreign offsets to this control.
+			var SUT = CreateRichTextBlock(LongText);
+			var other = CreateRichTextBlock("Other content");
+			var panel = new StackPanel();
+			panel.Children.Add(SUT);
+			panel.Children.Add(other);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+
+				var (start, end) = positions == "OtherRichTextBlock"
+					? (other.ContentStart, other.ContentEnd)
+					: (SUT.ContentEnd, SUT.ContentStart);
+				if (start is null || end is null)
+				{
+					Assert.Fail("Precondition: the content pointers should be non-null");
+					return;
+				}
+
+				Assert.Throws<Exception>(() => SUT.Select(start, end), "Select should reject the positions");
+				Assert.AreEqual(string.Empty, SUT.SelectedText, "A rejected Select should not change the selection");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Linked_Overflow_SelectAll_Does_Not_Throw()
 		{
 			// A master with an OverflowContentTarget set before the first measure created the linked view

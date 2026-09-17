@@ -1047,12 +1047,14 @@ internal sealed partial class TextSelectionManager
 
 		anchorTextPosition.GetOffset(out var startOffset);
 		movingTextPosition.GetOffset(out var endOffset);
-		if (!TextBoxHelpers.VerifyPositionPair(m_pContainer, startOffset, endOffset))
+
+		// IFC_RETURN(VerifyPositionPair(...)) and IFCEXPECT_ASSERT_RETURN(... == m_pContainer) fail the call with E_UNEXPECTED.
+		if (!TextBoxHelpers.VerifyPositionPair(m_pContainer, startOffset, endOffset) ||
+			anchorTextPosition.GetTextContainer() != m_pContainer ||
+			movingTextPosition.GetTextContainer() != m_pContainer)
 		{
-			return;
+			throw new InvalidOperationException("The positions must be ordered and belong to this element's text container.");
 		}
-		MUX_ASSERT(anchorTextPosition.GetTextContainer() == m_pContainer);
-		MUX_ASSERT(movingTextPosition.GetTextContainer() == m_pContainer);
 
 		m_pTextSelection!.GetStartTextPosition(out var startTextPosition);
 		m_pTextSelection.GetEndTextPosition(out var endTextPosition);
