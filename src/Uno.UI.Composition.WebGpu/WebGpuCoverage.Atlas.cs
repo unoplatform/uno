@@ -99,7 +99,12 @@ internal sealed unsafe partial class WebGpuCoverage
 		// command-list fallback.
 		bool hitOnly = owned is null;
 		if (shape.Edges is null) { AtlasNoEdges++; return false; }
-		if (!WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, pf.BbMin, pf.BbMax, scale, out var key, out var w, out var h, out ox, out oy, allowBig: big)) { AtlasNoKey++; return false; }
+		// The mask's footprint must come from the geometry the bake will rasterize, not from the command's bounds:
+		// those are the geometry's declared bounds mapped by the matrix, and a geometry whose outline reaches past
+		// them leaves the slot too small. The accumulate pass clamps every edge to the slot's right bound, so the
+		// overflow is not merely cropped - the winding it carries is lost and the fill comes out empty.
+		if (!WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, shape.BbMin + pf.Offset, shape.BbMax + pf.Offset, scale, out var key, out var w, out var h, out ox, out oy, allowBig: big)) { AtlasNoKey++; return false; }
+
 
 		if (_d.PathAtlas.RegularPages == 0) { _d.AddPathAtlasPage(); }
 		if (_d.PathAtlas.TryGet(key, out slot))
