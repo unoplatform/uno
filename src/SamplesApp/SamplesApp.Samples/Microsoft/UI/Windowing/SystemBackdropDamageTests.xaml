@@ -1,0 +1,77 @@
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Windowing.SystemBackdropDamageTests"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="Transparent"
+    mc:Ignorable="d">
+
+    <Grid Padding="16" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Spacing="8">
+            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="SystemBackdrop + damage region" />
+            <TextBlock Text="A system backdrop transparentizes the visual tree, so the retained damage layer carries per-pixel alpha, and only the damaged region is redrawn into it each frame. If that layer is then blitted onto the recycled swapchain drawable with source-over, the frame it still holds shows through the alpha. Expected: one crisp square. Broken: ghost copies trailing it, and the whole window flickering at the drawable-rotation cadence." TextWrapping="Wrap" />
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="OnSetMica" Content="Mica" />
+                <Button Click="OnSetAcrylic" Content="Acrylic" />
+                <Button Click="OnClearBackdrop" Content="None" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="24">
+                <ToggleSwitch
+                    x:Name="AnimateToggle"
+                    Header="Animate"
+                    IsOn="True"
+                    OffContent="Off"
+                    OnContent="On"
+                    Toggled="OnAnimateToggled" />
+                <ToggleSwitch
+                    x:Name="OverlayToggle"
+                    Header="Damage overlay"
+                    OffContent="Off"
+                    OnContent="On"
+                    Toggled="OnOverlayToggled" />
+                <ToggleSwitch
+                    x:Name="PlateToggle"
+                    Header="Opaque plate"
+                    OffContent="Off"
+                    OnContent="On"
+                    Toggled="OnPlateToggled" />
+            </StackPanel>
+
+            <TextBlock
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                Text="The overlay tints the region redrawn each frame. The plate is a Rectangle fill rather than a Background, so the backdrop pass leaves it opaque: over it, source-over and replace are identical, and the ghosting should vanish there even while it persists elsewhere."
+                TextWrapping="Wrap" />
+            <TextBlock x:Name="StatusText" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+        </StackPanel>
+
+        <Grid
+            x:Name="AnimationHost"
+            Grid.Row="1"
+            MinHeight="180"
+            SizeChanged="OnAnimationHostSizeChanged">
+            <Rectangle
+                x:Name="OpaquePlate"
+                Fill="#FF1B1B1B"
+                Visibility="Collapsed" />
+            <Rectangle
+                x:Name="MovingBox"
+                Width="64"
+                Height="64"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Fill="#FFE81123">
+                <Rectangle.RenderTransform>
+                    <TranslateTransform x:Name="MovingBoxTransform" />
+                </Rectangle.RenderTransform>
+            </Rectangle>
+        </Grid>
+    </Grid>
+</Page>
