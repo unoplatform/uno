@@ -47,54 +47,39 @@ function Resolve-OutputDir {
 	return $candidate.Directory.FullName
 }
 
-function Resolve-Winapp {
+# winapp provisions the Windows App Runtime for its own process architecture, so it has to match
+# the build output's RID (build-app.ps1 produces win-x64, which also runs emulated on ARM64).
+function Resolve-Winapp([string]$rid) {
 	if ($env:WINAPP_EXE -and (Test-Path $env:WINAPP_EXE)) {
 		return $env:WINAPP_EXE
 	}
-	$onPath = Get-Command winapp -ErrorAction SilentlyContinue
-	if ($onPath) {
-		return $onPath.Source
-	}
-	# The Microsoft.Windows.SDK.BuildTools.WinApp package (referenced by the head) bundles winapp.exe,
-	# so no global install is required.
+	# The Microsoft.Windows.SDK.BuildTools.WinApp package (referenced by the head) bundles winapp.exe
+	# per architecture, so no global install is required.
 	$packages = if ($env:NUGET_PACKAGES) { $env:NUGET_PACKAGES } else { Join-Path $env:USERPROFILE ".nuget\packages" }
-	$arch = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'win-arm64' } else { 'win-x64' }
 	$bundled = Get-ChildItem (Join-Path $packages "microsoft.windows.sdk.buildtools.winapp") -Directory -ErrorAction SilentlyContinue |
-		Sort-Object Name -Descending |
-		ForEach-Object { Join-Path $_.FullName "tools\$arch\winapp.exe" } |
+		Sort-Object { $v = $null; if ([version]::TryParse(($_.Name -split '-')[0], [ref]$v)) { $v } else { [version]'0.0' } } -Descending |
+		ForEach-Object { Join-Path $_.FullName "tools\$rid\winapp.exe" } |
 		Where-Object { Test-Path $_ } | Select-Object -First 1
 	if ($bundled) {
 		return $bundled
 	}
-	throw "winapp.exe not found. Install it (winget install Microsoft.WinAppCli), restore the SamplesApp head, or set WINAPP_EXE."
+	$onPath = Get-Command winapp -ErrorAction SilentlyContinue
+	if ($onPath) {
+		$hostRid = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'win-arm64' } else { 'win-x64' }
+		if ($hostRid -ne $rid) {
+			Write-Warning "Using winapp from PATH, which is likely $hostRid while the build output is $rid. Restore the SamplesApp head or set WINAPP_EXE to a $rid winapp.exe."
+		}
+		return $onPath.Source
+	}
+	throw "winapp.exe not found. Restore the SamplesApp head, install it (winget install Microsoft.WinAppCli), or set WINAPP_EXE."
 }
 
-# The app is framework-dependent: if the machine's PATH dotnet has no matching shared runtime
-# (net11 previews live side-by-side), point DOTNET_ROOT at the install that does have it.
-function Set-DotnetRootIfNeeded([string]$outputDir) {
-	if ($env:DOTNET_ROOT) {
-		return
-	}
-	$runtimeConfig = Get-ChildItem $outputDir -Filter "*.runtimeconfig.json" | Select-Object -First 1
-	if (-not $runtimeConfig) {
-		return
-	}
-	$version = (Get-Content $runtimeConfig.FullName -Raw | ConvertFrom-Json).runtimeOptions.framework.version
-	if (-not $version) {
-		return
-	}
-	$sharedName = ($version -split '-')[0]
-	foreach ($root in @("$env:ProgramFiles\dotnet", "$env:LOCALAPPDATA\Microsoft\dotnet")) {
-		if (Test-Path (Join-Path $root "shared\Microsoft.NETCore.App\$version")) {
-			if ($root -ne "$env:ProgramFiles\dotnet") {
-				$env:DOTNET_ROOT = $root
-				Write-Host "DOTNET_ROOT set to $root (runtime $sharedName)"
-			}
-			return
-		}
-	}
-	Write-Warning "No installed .NET runtime $version found — the app may fail to start."
+# Start-Process joins -ArgumentList without quoting, so paths with spaces would be split.
+function Format-PathArgument([string]$value) {
+	return "`"$value`""
 }
+
+. (Join-Path $PSScriptRoot "dotnet-root.ps1")
 
 $ResultsFile = [System.IO.Path]::GetFullPath($ResultsFile)
 if (-not $OutputDir) {
@@ -102,7 +87,8 @@ if (-not $OutputDir) {
 }
 $OutputDir = (Resolve-Path $OutputDir).Path
 $manifestPath = Join-Path $OutputDir "AppxManifest.xml"
-$winapp = Resolve-Winapp
+$rid = if ($OutputDir -match '\\(win-(?:x64|x86|arm64))$') { $Matches[1] } else { 'win-x64' }
+$winapp = Resolve-Winapp $rid
 
 Write-Host "winapp:     $winapp"
 Write-Host "Output dir: $OutputDir"
@@ -115,11 +101,21 @@ Get-AppxPackage -Name 'SamplesApp' -ErrorAction SilentlyContinue |
 		Remove-AppxPackage -Package $_.PackageFullName
 	}
 
-Set-DotnetRootIfNeeded $OutputDir
+Set-DotnetRootForApp $OutputDir
 
-Remove-Item $ResultsFile, "$ResultsFile.canary" -Force -ErrorAction SilentlyContinue
+# A stale results file left behind would later pass for this run's output.
+foreach ($stale in @($ResultsFile, "$ResultsFile.canary")) {
+	if (Test-Path $stale) {
+		try {
+			Remove-Item $stale -Force
+		}
+		catch {
+			throw "Cannot remove the previous $stale (is another test run still writing it?): $_"
+		}
+	}
+}
 
-$winappArgs = @('run', $OutputDir, '--manifest', $manifestPath, '--with-alias')
+$winappArgs = @('run', (Format-PathArgument $OutputDir), '--manifest', (Format-PathArgument $manifestPath), '--with-alias')
 if (-not $KeepRegistered) {
 	$winappArgs += '--unregister-on-exit'
 }
@@ -127,13 +123,14 @@ if ($DebugOutput) {
 	$winappArgs += '--debug-output'
 }
 $winappArgs += '--'
-$winappArgs += "--runtime-tests=$ResultsFile"
+$winappArgs += "--runtime-tests=$(Format-PathArgument $ResultsFile)"
 if ($Filter) {
 	$winappArgs += "--runtime-test-filter=$Filter"
 }
 
 Write-Host "Launching: winapp $($winappArgs -join ' ')"
 $sw = [Diagnostics.Stopwatch]::StartNew()
+$launchedAt = Get-Date
 $process = Start-Process -FilePath $winapp -ArgumentList $winappArgs -PassThru -NoNewWindow
 
 if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
@@ -147,11 +144,15 @@ if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
 Write-Host ""
 Write-Host "winapp exited with code $($process.ExitCode) after $($sw.Elapsed)."
 
-if (-not (Test-Path $ResultsFile)) {
-	if (Test-Path "$ResultsFile.canary") {
+function Test-WrittenByThisRun([string]$path) {
+	return (Test-Path $path) -and (Get-Item $path).LastWriteTime -ge $launchedAt.AddSeconds(-2)
+}
+
+if (-not (Test-WrittenByThisRun $ResultsFile)) {
+	if (Test-WrittenByThisRun "$ResultsFile.canary") {
 		throw "The app started (canary written) but produced no results file — it likely crashed mid-run. Re-run with -DebugOutput for a stack trace."
 	}
-	throw "No results file at $ResultsFile — the app never reached the runtime-test entry point."
+	throw "No results file written by this run at $ResultsFile — the app never reached the runtime-test entry point."
 }
 
 Write-Host "Results: $ResultsFile"

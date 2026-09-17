@@ -30,6 +30,7 @@ foreach ($case in $doc.SelectNodes('//test-case')) {
 	$marker = switch ($case.result) {
 		'Passed' { '  PASS' }
 		'Failed' { '**FAIL' }
+		'Error' { '**ERR ' }
 		'Inconclusive' { '  INCO' }
 		default { '  SKIP' }
 	}
@@ -44,7 +45,7 @@ foreach ($case in $doc.SelectNodes('//test-case')) {
 		Write-Host "         $text"
 	}
 	$stack = $case.SelectSingleNode('.//stack-trace')
-	if ($stack -and $case.result -eq 'Failed') {
+	if ($stack -and $case.result -in 'Failed', 'Error') {
 		($stack.InnerText -split "`n" | Select-Object -First 3) | ForEach-Object { Write-Host "         $($_.Trim())" }
 	}
 }

@@ -19,12 +19,16 @@ $ErrorActionPreference = 'Stop'
 
 $ResultsFile = [System.IO.Path]::GetFullPath($ResultsFile)
 
-# The app is framework-dependent: an alias launch inherits this process's environment, so a
-# side-by-side .NET runtime (net11 previews) has to be pointed at explicitly.
-if (-not $env:DOTNET_ROOT -and (Test-Path "$env:LOCALAPPDATA\Microsoft\dotnet\shared\Microsoft.NETCore.App")) {
-	$env:DOTNET_ROOT = "$env:LOCALAPPDATA\Microsoft\dotnet"
-	Write-Host "DOTNET_ROOT set to $env:DOTNET_ROOT"
+# An alias launch inherits this process's environment, so DOTNET_ROOT is resolved against the
+# runtimeconfig of the installed package.
+. (Join-Path $PSScriptRoot "dotnet-root.ps1")
+$installed = Get-AppxPackage -Name '*SamplesApp*' -ErrorAction SilentlyContinue |
+	Where-Object { -not $_.IsDevelopmentMode } |
+	Sort-Object Version -Descending | Select-Object -First 1
+if (-not $installed) {
+	throw "No MSIX-installed SamplesApp package found. Run install-msix.ps1 first."
 }
+Set-DotnetRootForApp $installed.InstallLocation
 
 if (Test-Path $ResultsFile) {
 	Remove-Item $ResultsFile -Force
