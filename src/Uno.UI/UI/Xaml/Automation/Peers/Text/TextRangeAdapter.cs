@@ -15,7 +15,6 @@ using Microsoft.UI.Xaml.Controls.Text.Core;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Documents.BlockLayout;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
-using Uno.Foundation.Logging;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Automation.Peers.Text;
@@ -500,23 +499,11 @@ internal sealed partial class TextRangeAdapter : ITextRangeProvider
 
 		// Flatten the Rect list into a double array (UIA returns flat [X,Y,W,H,...]).
 		var flat = new double[4 * rectangles.Length];
+		var toRoot = _pTextOwner.TransformToVisual(null);
 		for (int current = 0; current < rectangles.Length; current++)
 		{
 			// Transform element-relative bounds into root/world space for the UIA client.
-			Rect rect = rectangles[current];
-			try
-			{
-				var toRoot = _pTextOwner.TransformToVisual(null);
-				rect = toRoot.TransformBounds(rect);
-			}
-			catch (Exception ex)
-			{
-				// TODO Uno (UIA): keep element-relative bounds if the transform is unavailable.
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"GetBoundingRectangles: TransformToVisual failed, falling back to element-relative bounds: {ex}");
-				}
-			}
+			var rect = toRoot.TransformBounds(rectangles[current]);
 
 			flat[4 * current] = rect.X;
 			flat[4 * current + 1] = rect.Y;
@@ -792,7 +779,8 @@ internal sealed partial class TextRangeAdapter : ITextRangeProvider
 		var rectangles = pTextView.TextRangeToTextBounds((uint)startOffset, (uint)endOffset);
 		if (rectangles.Length > 0)
 		{
-			// The height formula is CTextRangeAdapter::ScrollIntoView's, kept as-is for parity.
+			// Verbatim from CTextRangeAdapter::ScrollIntoView (textrangeadapter.cpp), kept so UIA scrolls to the same rect as WinUI:
+			//   finalRect.Height = pRectangles[0].Y + pRectangles[cRectangles-1].Y + pRectangles[cRectangles-1].Height;
 			var finalRect = new Rect(
 				rectangles[0].X,
 				rectangles[0].Y,

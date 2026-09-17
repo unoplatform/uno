@@ -12,7 +12,6 @@ using Windows.UI.Text;
 using Windows.Foundation;
 using Microsoft.UI.Input;
 using Uno;
-using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -256,22 +255,9 @@ namespace Microsoft.UI.Xaml.Controls
 			_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundChanged, newOnInvalidateRender);
 		}
 
-		private void OnForegroundChanged()
-		{
-			try
-			{
-				// case RichTextBlock_Foreground: InvalidateRender() - the brush changes ink only, so
-				// the shaped content, measure and arrange all stay valid.
-				OnForegroundChangedPartial();
-			}
-			catch (Exception e)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"Failed to invalidate for brush changed: {e}");
-				}
-			}
-		}
+		// case RichTextBlock_Foreground: InvalidateRender() - the brush changes ink only, so
+		// the shaped content, measure and arrange all stay valid.
+		private void OnForegroundChanged() => OnForegroundChangedPartial();
 
 		partial void OnForegroundChangedPartial();
 
