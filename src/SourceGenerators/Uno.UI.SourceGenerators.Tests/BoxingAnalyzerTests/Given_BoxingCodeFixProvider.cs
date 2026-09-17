@@ -27,6 +27,33 @@ public class Given_BoxingCodeFixProvider
 	public async Task When_Explicit_Boxing_Cast_Of_Inner_Conversion_Then_Inner_Conversion_Is_Kept()
 		=> await AssertFixAsync("object M(byte value) => (object)(int)value;", "object M(byte value) => Boxes.Box((int)value);");
 
+	[TestMethod]
+	public async Task When_RoutedEventFlag()
+		=> await AssertFixAsync("object M(global::Uno.UI.Xaml.RoutedEventFlag flag) => flag;", "object M(global::Uno.UI.Xaml.RoutedEventFlag flag) => Boxes.Box(flag);");
+
+	[TestMethod]
+	public async Task When_Unrelated_Enum_Named_RoutedEventFlag_Then_Not_Rewritten()
+	{
+		var source = """
+			namespace Test
+			{
+				public enum RoutedEventFlag
+				{
+					None,
+				}
+
+				public class C
+				{
+					public object M(RoutedEventFlag flag) => flag;
+				}
+			}
+			""";
+
+		var fixedDocument = await ApplyBoxingFixAtAsync(CreateDocument(source), "flag");
+
+		(await fixedDocument.GetTextAsync()).ToString().Should().Be(source);
+	}
+
 	private static async Task AssertFixAsync(string member, string expected)
 	{
 		var document = CreateDocument(Wrap(member));

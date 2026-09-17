@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -73,6 +74,7 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 			{
 				var invocationOperation = (IInvocationOperation)context.Operation;
 				if (invocationOperation.TargetMethod is { Name: "SetValue", Parameters.Length: 2 } targetMethod &&
+					IsType(targetMethod.Parameters[0].Type, "Microsoft.UI.Xaml", "DependencyProperty") &&
 					targetMethod.Parameters[1].Type.SpecialType != SpecialType.System_Object)
 				{
 					var argumentOperation = invocationOperation.Arguments[1].Value;
@@ -95,13 +97,18 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 	}
 
 	/// <summary>
-	/// Whether the conversion is an operand of a string concatenation. The compiler lowers those back to a
-	/// <c>ToString()</c> call and the box never reaches IL, so "fixing" one with <c>Boxes.Box</c> would make the
-	/// operand statically <c>object</c> and introduce the very allocation this rule is meant to remove.
+	/// Whether the conversion is the implicit one the compiler inserts for a string concatenation operand
+	/// (<c>s + value</c> or <c>s += value</c>). The compiler lowers those to a <c>ToString()</c> call and the box never
+	/// reaches IL, so "fixing" one with <c>Boxes.Box</c> would introduce the very allocation this rule is meant to
+	/// remove. An explicit <c>(object)value</c> operand does box, so it is still reported.
 	/// </summary>
 	private static bool IsStringConcatenationOperand(IConversionOperation operation)
-		=> operation.Parent is IBinaryOperation { OperatorKind: BinaryOperatorKind.Add } binary &&
-			binary.Type?.SpecialType == SpecialType.System_String;
+		=> operation.IsImplicit &&
+			operation.Parent is IBinaryOperation { OperatorKind: BinaryOperatorKind.Add } or ICompoundAssignmentOperation { OperatorKind: BinaryOperatorKind.Add } &&
+			operation.Parent.Type?.SpecialType == SpecialType.System_String;
+
+	internal static bool IsType(ITypeSymbol? type, string containingNamespace, string name)
+		=> type?.Name == name && type.ContainingNamespace?.ToDisplayString() == containingNamespace;
 
 	/// <summary>
 	/// Whether the conversion is an argument to a <see cref="System.Diagnostics.ConditionalAttribute"/> call that is
@@ -127,7 +134,7 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 		var isConditional = false;
 		foreach (var attribute in invocation.TargetMethod.GetAttributes())
 		{
-			if (attribute.AttributeClass?.Name == "ConditionalAttribute" &&
+			if (IsType(attribute.AttributeClass, "System.Diagnostics", "ConditionalAttribute") &&
 				attribute.ConstructorArguments.Length == 1 &&
 				attribute.ConstructorArguments[0].Value is string condition)
 			{
@@ -200,10 +207,12 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 		}
 		else if (operandSpecialType == SpecialType.System_Double)
 		{
-			// Keep the values to check against synchronized with Boxes.Box(double).
-			return !operation.Operand.ConstantValue.HasValue || operation.Operand.ConstantValue.Value is 0.0 or 1.0;
+			// Keep the values to check against synchronized with Boxes.Box(double), which compares bit patterns:
+			// -0.0 == 0.0, yet it keeps its own box, so it has nothing cached to use.
+			return !operation.Operand.ConstantValue.HasValue ||
+				operation.Operand.ConstantValue.Value is double value && (BitConverter.DoubleToInt64Bits(value) == 0 || value == 1.0);
 		}
-		else if (operandType.Name == "RoutedEventFlag" && !IsOptimizedHasFlagCall(operation, hasFlagMethod))
+		else if (IsType(operandType, "Uno.UI.Xaml", "RoutedEventFlag") && !IsOptimizedHasFlagCall(operation, hasFlagMethod))
 		{
 			return true;
 		}
