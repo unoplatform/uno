@@ -35,12 +35,82 @@ public class Given_BoxingDiagnosticAnalyzer
 	public async Task When_Conditional_Symbol_Is_Defined_In_Inactive_Region_Then_Not_Reported()
 		=> await AssertReportedAsync(ConditionalCall(attributes: """[Conditional("ON")]""", directives: "#if NEVER\r\n#define ON\r\n#endif"), expected: false);
 
+	[TestMethod]
+	public async Task When_Conditional_Attribute_Is_Not_The_Compiler_One_Then_Reported()
+		=> await AssertReportedAsync(
+			"""
+			namespace Test
+			{
+				public sealed class ConditionalAttribute : System.Attribute
+				{
+					public ConditionalAttribute(string condition)
+					{
+					}
+				}
+
+				public class C
+				{
+					[Conditional("OFF")]
+					private static void Trace(object value)
+					{
+					}
+
+					public void M() => Trace(true);
+				}
+			}
+			""",
+			expected: true);
+
+	[TestMethod]
+	[DataRow("object M() => 0.0;", true)]
+	[DataRow("object M() => 1.0;", true)]
+	[DataRow("object M() => -0.0;", false)]
+	[DataRow("object M() => 2.0;", false)]
+	public async Task When_Double_Constant(string member, bool expected)
+		=> await AssertReportedAsync(Member(member), expected);
+
+	[TestMethod]
+	[DataRow("string M(bool value) => \"x\" + value;", false)]
+	[DataRow("string M(bool value) { var s = \"x\"; s += value; return s; }", false)]
+	[DataRow("string M(bool value) => \"x\" + (object)value;", true)]
+	public async Task When_String_Concatenation(string member, bool expected)
+		=> await AssertReportedAsync(Member(member), expected);
+
+	[TestMethod]
+	[DataRow("object M(global::Uno.UI.Xaml.RoutedEventFlag flag) => flag;", true)]
+	[DataRow("object M(RoutedEventFlag flag) => flag;", false)]
+	public async Task When_RoutedEventFlag(string member, bool expected)
+		=> await AssertReportedAsync(Member(member, "public enum RoutedEventFlag { None }"), expected);
+
+	[TestMethod]
+	[DataRow("void SetValue(global::Microsoft.UI.Xaml.DependencyProperty property, double value) { }", "SetValue(null, 1.0f)", true)]
+	[DataRow("void SetValue(global::Microsoft.UI.Xaml.DependencyProperty property, double value) { }", "SetValue(null, 1.0)", false)]
+	[DataRow("void SetValue(string key, double value) { }", "SetValue(\"key\", 1.0f)", false)]
+	public async Task When_Typed_SetValue_Receives_Converted_Argument(string setValue, string call, bool expected)
+	{
+		var diagnostics = await GetDiagnosticsAsync(CreateDocument(Member($"{setValue}\r\n\t\tpublic void M() => {call};")));
+
+		diagnostics.Any(d => d.Id == "UnoInternal0003").Should().Be(expected);
+	}
+
 	private static async Task AssertReportedAsync(string source, bool expected, params string[] preprocessorSymbols)
 	{
 		var diagnostics = await GetDiagnosticsAsync(CreateDocument(source, preprocessorSymbols));
 
 		diagnostics.Any(d => d.Id == BoxingDiagnosticId).Should().Be(expected);
 	}
+
+	private static string Member(string member, string siblingType = "") => $$"""
+		namespace Test
+		{
+			{{siblingType}}
+
+			public class C
+			{
+				public {{member}}
+			}
+		}
+		""";
 
 	private static string ConditionalCall(string attributes, string directives = "") => $$"""
 		{{directives}}

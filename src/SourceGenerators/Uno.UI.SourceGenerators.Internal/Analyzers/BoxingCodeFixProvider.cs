@@ -101,7 +101,7 @@ public sealed class BoxingCodeFixProvider : CodeFixProvider
 				{
 					var typeInfo = model.GetTypeInfo(valueNode, ct);
 					if (typeInfo.Type!.SpecialType is SpecialType.System_Int32 or SpecialType.System_Boolean or SpecialType.System_Double ||
-						typeInfo.Type.Name == "RoutedEventFlag")
+						BoxingDiagnosticAnalyzer.IsType(typeInfo.Type, "Uno.UI.Xaml", "RoutedEventFlag"))
 					{
 						var newNode = SyntaxFactory.InvocationExpression(
 							SyntaxFactory.MemberAccessExpression(
