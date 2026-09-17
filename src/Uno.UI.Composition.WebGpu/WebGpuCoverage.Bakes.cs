@@ -170,6 +170,7 @@ internal sealed unsafe partial class WebGpuCoverage
 			wgpuRenderPassEncoderSetBindGroup(apass, 0, (IntPtr)accumBg, 0, (uint*)null);
 			wgpuRenderPassEncoderDraw(apass, (uint)(ext.Length * 6), 1, 0, 0);
 			wgpuRenderPassEncoderEnd(apass);
+			wgpuRenderPassEncoderRelease(apass);
 
 			// Per slot, 6 verts of (ndc in the target, texel in the accumulator, evenOdd, exclude).
 			var verts = new float[b.Count * 36];
@@ -198,6 +199,7 @@ internal sealed unsafe partial class WebGpuCoverage
 			wgpuRenderPassEncoderSetVertexBuffer(rpass, 0, quads, 0, (nuint)(verts.Length * sizeof(float)));
 			wgpuRenderPassEncoderDraw(rpass, (uint)(b.Count * 6), 1, 0, 0);
 			wgpuRenderPassEncoderEnd(rpass);
+			wgpuRenderPassEncoderRelease(rpass);
 			// The accumulator was consumed by the resolve just encoded; re-rentable within the frame.
 			_d.Pool.Return(accView);
 			BakeBatches++;

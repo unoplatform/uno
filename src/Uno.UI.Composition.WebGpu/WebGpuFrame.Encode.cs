@@ -22,6 +22,7 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		var target = pst.Target;
 		wgpuRenderPassEncoderEnd(pst.Pass);
+		wgpuRenderPassEncoderRelease(pst.Pass);
 
 		// Blur only the element AABB, not the whole framebuffer -- and not a padded version of it either: a
 		// backdrop samples the element's OWN backdrop, so reaching outside pulls in whatever sits behind the

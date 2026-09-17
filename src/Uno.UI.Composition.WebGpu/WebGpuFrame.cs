@@ -937,6 +937,7 @@ internal sealed unsafe partial class WebGpuFrame
 		_bound = savedBound;
 
 		wgpuRenderPassEncoderEnd(pass);
+		wgpuRenderPassEncoderRelease(pass);
 		foreach (var b in builds) { ReleaseBuild(b); }
 	}
 

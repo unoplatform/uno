@@ -131,6 +131,10 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 		wgpuRenderPassEncoderEnd(pass);
+		// The pass holds a reference to its colour attachment - here, the swapchain's back buffer. Leaking it
+		// leaves the buffer referenced, and D3D12 then refuses to resize the swapchain ("window is in use"),
+		// which wgpu reports as an invalid surface and panics on.
+		wgpuRenderPassEncoderRelease(pass);
 		var cb = wgpuCommandEncoderFinish(enc, null);
 		wgpuQueueSubmit(_device.Q, 1, (IntPtr)(&cb));
 

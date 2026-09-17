@@ -121,6 +121,7 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, null);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 		wgpuRenderPassEncoderEnd(pass);
+		wgpuRenderPassEncoderRelease(pass);
 		var cb = wgpuCommandEncoderFinish(enc, null);
 		wgpuQueueSubmit(_device.Q, 1, (IntPtr)(&cb));
 
