@@ -792,6 +792,7 @@ internal sealed partial class TextRangeAdapter : ITextRangeProvider
 		var rectangles = pTextView.TextRangeToTextBounds((uint)startOffset, (uint)endOffset);
 		if (rectangles.Length > 0)
 		{
+			// The height formula is CTextRangeAdapter::ScrollIntoView's, kept as-is for parity.
 			var finalRect = new Rect(
 				rectangles[0].X,
 				rectangles[0].Y,
