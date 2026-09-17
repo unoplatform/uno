@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
 using Uno.UI.RuntimeTests.Helpers;
@@ -176,6 +177,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					postChangeStart.Offset,
 					postChangeEnd.Offset,
 					"A locally set inline property is a content change and must clear the selection");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[DataRow("ClearFontSize", true)]
+		[DataRow("SetFontSize", true)]
+		[DataRow("SetForeground", false)]
+		public async Task When_Local_Inline_Format_Is_Written(string change, bool clearsSelection)
+		{
+			// ClearValue goes through CTextElement::SetValue -> MarkDirty just like a set, even though the value is
+			// inherited again afterwards. CRichTextBlock::OnContentChanged treats a Foreground change as render-only.
+			var run = new Run { Text = LongText, FontSize = 22 };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(run);
+			var SUT = new RichTextBlock { Width = 300, FontSize = 16 };
+			SUT.Blocks.Add(paragraph);
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+
+				SUT.SelectAll();
+				await WindowHelper.WaitForIdle();
+
+				if (SUT.SelectionStart is not { } before || SUT.SelectionEnd is not { } beforeEnd || beforeEnd.Offset <= before.Offset)
+				{
+					Assert.Fail("Precondition: SelectAll should produce a non-empty selection");
+					return;
+				}
+
+				switch (change)
+				{
+					case "ClearFontSize":
+						run.ClearValue(TextElement.FontSizeProperty);
+						break;
+					case "SetFontSize":
+						run.FontSize = 18;
+						break;
+					default:
+						run.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+						break;
+				}
+
+				await WindowHelper.WaitForIdle();
+				SUT.UpdateLayout();
+
+				if (SUT.SelectionStart is not { } after || SUT.SelectionEnd is not { } afterEnd)
+				{
+					Assert.Fail("Selection endpoints should stay non-null");
+					return;
+				}
+
+				Assert.AreEqual(clearsSelection, after.Offset == afterEnd.Offset, clearsSelection ? "The change should clear the selection" : "The change should keep the selection");
 			}
 			finally
 			{

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.UI.Xaml.Markup;
@@ -55,60 +55,60 @@ namespace Microsoft.UI.Xaml.Documents
 		protected override void OnForegroundChanged()
 		{
 			base.OnForegroundChanged();
-			InvalidateInlinesForFormatChange(ForegroundProperty);
+			InvalidateInlinesForFormatChange();
 		}
 
 		protected override void OnFontFamilyChanged()
 		{
 			base.OnFontFamilyChanged();
-			InvalidateInlinesForFormatChange(FontFamilyProperty);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontSizeChanged()
 		{
 			base.OnFontSizeChanged();
-			InvalidateInlinesForFormatChange(FontSizeProperty);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
-			InvalidateInlinesForFormatChange(FontStyleProperty);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontStretchChanged()
 		{
 			base.OnFontStretchChanged();
-			InvalidateInlinesForFormatChange(FontStretchProperty);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontWeightChanged()
 		{
 			base.OnFontWeightChanged();
-			InvalidateInlinesForFormatChange(FontWeightProperty);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnBaseLineAlignmentChanged()
 		{
 			base.OnBaseLineAlignmentChanged();
-			InvalidateInlinesForFormatChange(BaseLineAlignmentProperty);
+			InvalidateInlinesForFormatChange();
 		}
 
 		protected override void OnCharacterSpacingChanged()
 		{
 			base.OnCharacterSpacingChanged();
-			InvalidateInlinesForFormatChange(CharacterSpacingProperty);
+			InvalidateInlinesForFormatChange();
 		}
 
 		protected override void OnTextDecorationsChanged()
 		{
 			base.OnTextDecorationsChanged();
-			InvalidateInlinesForFormatChange(TextDecorationsProperty);
+			InvalidateInlinesForFormatChange();
 		}
 
 		partial void InvalidateSegmentsPartial();
