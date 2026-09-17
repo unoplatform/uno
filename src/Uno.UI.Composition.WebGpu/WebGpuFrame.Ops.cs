@@ -167,14 +167,17 @@ internal sealed unsafe partial class WebGpuFrame
 		{
 			if (cmds[ci].Kind == CmdKind.Rect && cmds[ci] is RectCommand rc0)
 			{
+				// The replay transform is not known here, so these edges can end up rotated or off the pixel grid when
+				// the recording is placed: they take the SDF pipeline's analytic coverage, as an image quad's already do.
+				// It still coalesces - the rounded-rect vertex carries its own shape, so a run is one draw either way.
 				_scratch.Clear();
 				int j = ci;
 				while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
 				{
-					AppendSolidRect(_scratch, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
+					AppendAaRect(_scratch, rcj.Color, rcj.P0, rcj.P1, rcj.P2, rcj.P3);
 					j++;
 				}
-				ops.Add(DrawOp.Own(DrawKind.Solid, Vbuf(_scratch, VertexStride.Solid, owned), (uint)((j - ci) * 6), IntPtr.Zero, rc0.Clip, MakeClipBg(rc0.Clip, owned)));
+				ops.Add(DrawOp.Own(DrawKind.RoundedRect, Vbuf(_scratch, VertexStride.RoundedRect, owned), (uint)((j - ci) * 6), IntPtr.Zero, rc0.Clip, MakeClipBg(rc0.Clip, owned)));
 				ci = j - 1;
 			}
 			else if (WebGpuCoverage.AtlasEnabled && atlasScale is { } asc && Coverage.TryAtlasBatch(cmds, ref ci, owned, asc, out var aop))

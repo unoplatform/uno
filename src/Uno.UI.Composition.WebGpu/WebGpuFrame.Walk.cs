@@ -141,14 +141,25 @@ internal sealed unsafe partial class WebGpuFrame
 				case CmdKind.Rect:
 					{
 						var rc0 = (RectCommand)cmd;
-						// A run of rects sharing a clip is one draw: their verts are contiguous in the pass buffer.
+						// A run of rects sharing a clip is one draw: their verts are contiguous in the pass buffer. One whose
+						// edges miss the pixel grid leaves the run - the solid pipeline writes binary coverage, so only the
+						// rounded-rect pipeline's SDF can antialias it.
 						var cd = composer.Compose(outer, rc0.Clip, m, inv, direct);
 						int j = ci; uint start = (uint)(_solid.Count / VertexStride.Solid);
 						while (j < cmds.Count && cmds[j] is RectCommand rcj && (j == ci || ClipDataEquals(rcj.Clip, rc0.Clip)))
 						{
 							var (p0, p1, p2, p3) = identity ? (rcj.P0, rcj.P1, rcj.P2, rcj.P3) : (Map(rcj.P0, m), Map(rcj.P1, m), Map(rcj.P2, m), Map(rcj.P3, m));
+							if (!PixelAligned(p0, p1, p2, p3)) { break; }
 							AppendSolidRect(_solid, p0, p1, p2, p3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
 							j++;
+						}
+						if (j == ci)
+						{
+							var (a0, a1, a2, a3) = identity ? (rc0.P0, rc0.P1, rc0.P2, rc0.P3) : (Map(rc0.P0, m), Map(rc0.P1, m), Map(rc0.P2, m), Map(rc0.P3, m));
+							var ast = (uint)(_rrect.Count / VertexStride.RoundedRect);
+							AppendAaRect(_rrect, rc0.Color, a0, a1, a2, a3);
+							ops.Add(DrawOp.Shared(DrawKind.RoundedRect, ast, 6, IntPtr.Zero, cd, MakeClipBg(cd)));
+							break;
 						}
 						ops.Add(DrawOp.Shared(DrawKind.Solid, start, (uint)((j - ci) * 6), IntPtr.Zero, cd, MakeClipBg(cd)));
 						ci = j - 1;

@@ -282,13 +282,32 @@ internal sealed unsafe partial class WebGpuFrame
 		return start;
 	}
 
+	// A plain rect through the rounded-rect pipeline, with no corners: its analytic coverage is the only edge
+	// antialiasing a solid quad can have, and the SDF's local space comes from the device corners, so it is exact
+	// under any affine.
+	private void AppendAaRect(VertBuf rr, in WColor color, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
+		=> AppendRrect(rr, new RoundedRectCmd { Half = new Vector2((p1 - p0).Length() * 0.5f, (p3 - p0).Length() * 0.5f), Color = color }, p0, p1, p2, p3);
+
 	// Appends one rounded rect at the given corners: per-vertex SDF params in its own centred space (transform-invariant).
+	// The quad is grown a pixel past the shape on every side: coverage below 1 lies OUTSIDE the edge, and a quad that
+	// stops at the edge never rasterises it - which left a rotated rect hard and an offset one half a pixel thin.
 	private void AppendRrect(VertBuf rr, RoundedRectCmd rrc, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
 	{
 		var hf = rrc.Half; var rad = rrc.Radii; var ih = rrc.InnerHalf; var ic = rrc.InnerCenter; var ir = rrc.InnerRadii;
 		float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, color = rrc.Color.A / 255f * rrc.Opacity;
+		const float Pad = 1f;
+		var ax = p1 - p0; var ay = p3 - p0;
+		float dw = ax.Length(), dh = ay.Length();
+		var ext = hf;
+		if (dw > 1e-4f && dh > 1e-4f)
+		{
+			// The pad is a DEVICE pixel, so it reaches the SDF's own space through that axis' device length.
+			ext += new Vector2(Pad * hf.X * 2f / dw, Pad * hf.Y * 2f / dh);
+			var ex = ax / dw * Pad; var ey = ay / dh * Pad;
+			p0 -= ex + ey; p1 += ex - ey; p2 += ex + ey; p3 += ey - ex;
+		}
 		Span<Vector2> dev = stackalloc Vector2[4] { p0, p1, p3, p2 };
-		Span<Vector2> ctr = stackalloc Vector2[4] { new(-hf.X, -hf.Y), new(hf.X, -hf.Y), new(-hf.X, hf.Y), new(hf.X, hf.Y) };
+		Span<Vector2> ctr = stackalloc Vector2[4] { new(-ext.X, -ext.Y), new(ext.X, -ext.Y), new(-ext.X, ext.Y), new(ext.X, ext.Y) };
 		ReadOnlySpan<int> tri = stackalloc int[6] { 0, 1, 2, 2, 1, 3 };
 		var v = Grow(rr, 6 * VertexStride.RoundedRect);
 		int o = 0;
