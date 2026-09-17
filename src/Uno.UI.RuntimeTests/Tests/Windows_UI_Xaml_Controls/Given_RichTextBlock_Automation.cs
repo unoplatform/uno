@@ -63,6 +63,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Overflow_DocumentRange_Continues_Master()
+		{
+			// Each link's DocumentRange covers its own page, so the master and its overflow together read the whole content.
+			var master = new RichTextBlock { Width = 120, MaxLines = 2 };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = Text });
+			master.Blocks.Add(paragraph);
+
+			var overflow = new RichTextBlockOverflow { Width = 120 };
+			master.OverflowContentTarget = overflow;
+
+			var panel = new StackPanel();
+			panel.Children.Add(master);
+			panel.Children.Add(overflow);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(master.HasOverflowContent, "Precondition: the content should overflow");
+
+				var masterText = GetTextProvider(master).DocumentRange.GetText(-1);
+				var overflowText = GetTextProvider(overflow).DocumentRange.GetText(-1);
+
+				Assert.IsFalse(string.IsNullOrEmpty(overflowText), "The overflow should expose the continuation");
+				Assert.AreEqual(Text + "\r\n", masterText + overflowText, "The two pages together should read the content exactly once");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_ExpandToEnclosingUnit_Character()
 		{
 			var SUT = BuildSut();

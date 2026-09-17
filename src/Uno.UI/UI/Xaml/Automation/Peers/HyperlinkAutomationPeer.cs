@@ -190,11 +190,7 @@ internal partial class HyperlinkAutomationPeer : AutomationPeer, IInvokeProvider
 			return default;
 		}
 
-		// The view's bounds APIs take flat character indexes while a TextPointer carries a container
-		// offset, so convert before asking for the range's rects.
-		var bounds = textView.TextRangeToTextBounds(
-			(uint)textView.GetCharacterIndex(contentStart.Offset),
-			(uint)textView.GetCharacterIndex(contentEnd.Offset));
+		var bounds = textView.TextRangeToTextBounds((uint)contentStart.Offset, (uint)contentEnd.Offset);
 
 		if (bounds.Length == 0)
 		{

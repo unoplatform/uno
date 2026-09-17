@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Documents.BlockLayout;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
 using Microsoft.UI.Xaml.Controls.Text.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
@@ -25,6 +26,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 			page.Measure(new Size(width, 1e6), 0, 0f, true, false, false, null, out _);
 			page.Arrange(new Size(width, Math.Ceiling(page.GetDesiredSize().Height)));
 			return (engine, page, new RichTextBlockView(page, rtb));
+		}
+
+		[TestMethod]
+		[RequiresScaling(1f)]
+		public async Task When_TextRangeToTextBounds_Takes_Container_Offsets()
+		{
+			// Callers pass TextPointer offsets, which count the reserved positions of every element edge; the view
+			// converts both ends before querying the flat page node.
+			var run = new Run { Text = "BBBB" };
+			var span = new Span();
+			span.Inlines.Add(run);
+
+			var intro = new Paragraph();
+			intro.Inlines.Add(new Run { Text = "Intro" });
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "AAAA" });
+			paragraph.Inlines.Add(span);
+			paragraph.Inlines.Add(new Run { Text = "CCCC" });
+
+			var SUT = new RichTextBlock { Width = 400, FontSize = 20, TextWrapping = TextWrapping.NoWrap };
+			SUT.Blocks.Add(intro);
+			SUT.Blocks.Add(paragraph);
+
+			var leading = CreateMeasuringBlock("AAAA");
+			var ranged = CreateMeasuringBlock("BBBB");
+
+			var panel = new StackPanel();
+			panel.Children.Add(SUT);
+			panel.Children.Add(leading);
+			panel.Children.Add(ranged);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+
+				var bounds = SUT._pTextView!.TextRangeToTextBounds((uint)run.ContentStart!.Offset, (uint)run.ContentEnd!.Offset);
+
+				Assert.AreEqual(1, bounds.Length, "The run on one line should have one rect");
+				Assert.AreEqual(leading.ActualWidth, bounds[0].X, 1, "The rect should start after the leading run");
+				Assert.AreEqual(ranged.ActualWidth, bounds[0].Width, 1, "The rect should cover exactly the run");
+				Assert.IsTrue(bounds[0].Y > 0, $"The rect should be on the second paragraph's line (Y {bounds[0].Y})");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static RichTextBlock CreateMeasuringBlock(string text)
+		{
+			var block = new RichTextBlock { FontSize = 20, TextWrapping = TextWrapping.NoWrap, HorizontalAlignment = HorizontalAlignment.Left };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = text });
+			block.Blocks.Add(paragraph);
+			return block;
 		}
 
 		// Selection hit-testing routes tap/click through SkiaTextLine caret / bounds members. Before

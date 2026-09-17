@@ -301,7 +301,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_lastMeasuredContentSize = new Size(maxWidth, accumHeight);
 		}
 
-		private static int GetParagraphTextLength(Paragraph paragraph)
+		internal static int GetParagraphTextLength(Paragraph paragraph)
 		{
 			return string.Concat(paragraph.Inlines.Select(InlineExtensions.GetText)).Length;
 		}

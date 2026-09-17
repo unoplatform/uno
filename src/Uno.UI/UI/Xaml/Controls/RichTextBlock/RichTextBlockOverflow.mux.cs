@@ -159,7 +159,7 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 			!_pPageNode.IsArrangeDirty())
 		{
 			MUX_ASSERT(_pMaster is not null);
-			return _pPageNode.GetStartPosition();
+			return _pTextView!.GetContentStartPosition();
 		}
 		return 0;
 	}
@@ -185,7 +185,7 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 			}
 			else
 			{
-				return _pPageNode.GetContentLength();
+				return _pTextView!.GetContentLength();
 			}
 		}
 

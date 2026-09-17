@@ -298,6 +298,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[DataRow(2, 120)]
+		[DataRow(4, 400)]
+		public async Task When_Overflow_Hit_Tests_Near_And_Far(int maxLines, int overflowWidth)
+		{
+			// The overflow's view resolves its master (CRichTextBlockOverflow::GetMaster), so hits anywhere in the
+			// slice map to the right container position, not just the slice start.
+			var master = new RichTextBlock { Width = 120, MaxLines = maxLines };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = LongText });
+			master.Blocks.Add(paragraph);
+
+			var overflow = new RichTextBlockOverflow { Width = overflowWidth };
+			master.OverflowContentTarget = overflow;
+
+			var reference = new RichTextBlock { Width = 400 };
+			var referenceParagraph = new Paragraph();
+			referenceParagraph.Inlines.Add(new Run { Text = LongText });
+			reference.Blocks.Add(referenceParagraph);
+
+			var panel = new StackPanel();
+			panel.Children.Add(master);
+			panel.Children.Add(overflow);
+			panel.Children.Add(reference);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+
+				var near = overflow.GetPositionFromPoint(new Point(0, 1));
+				var far = overflow.GetPositionFromPoint(new Point(overflow.ActualWidth - 1, overflow.ActualHeight - 1));
+				var referenceFar = reference.GetPositionFromPoint(new Point(reference.ActualWidth - 1, reference.ActualHeight - 1));
+				if (near is null || far is null || referenceFar is null)
+				{
+					Assert.Fail($"Hit-testing should yield positions (near is null: {near is null}, far is null: {far is null}, reference is null: {referenceFar is null})");
+					return;
+				}
+
+				Assert.AreEqual(master.ContentEnd?.Offset, near.Offset, "A hit at the start of the slice should be the master's break");
+				Assert.AreEqual(referenceFar.Offset, far.Offset, "A hit at the end of the slice should be the paragraph's end");
+				Assert.IsTrue(far.Offset > near.Offset, $"The far hit ({far.Offset}) should be past the near hit ({near.Offset})");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Overflow_Padding_Changes_At_Same_Width()
 		{
 			// CRichTextBlockOverflow::SetValue invalidates the content measure of the chain for a Padding change.

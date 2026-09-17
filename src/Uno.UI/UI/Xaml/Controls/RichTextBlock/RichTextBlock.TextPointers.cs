@@ -89,9 +89,10 @@ partial class RichTextBlock
 		if (_pageNode is not null &&
 			!_pageNode.IsMeasureDirty() &&
 			!_pageNode.IsArrangeDirty() &&
-			_pOverflowTarget is not null)
+			_pOverflowTarget is not null &&
+			_pTextView is not null)
 		{
-			return _pageNode.GetContentLength();
+			return _pTextView.GetContentLength();
 		}
 		else
 		{

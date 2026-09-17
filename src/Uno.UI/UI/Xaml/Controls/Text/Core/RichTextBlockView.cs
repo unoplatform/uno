@@ -45,14 +45,16 @@ internal sealed class RichTextBlockView : ITextView
 		m_owner = owner;
 	}
 
-	// TODO Uno (9b render): container->flat for node bounds (the node measures in flat ParsedText
-	// space, so TextRangeToTextBounds / TextSelectionToTextBounds still receive flat offsets here).
 	public Rect[] TextRangeToTextBounds(uint startOffset, uint endOffset)
 	{
 		uint length;
 		var bounds = new List<TextBounds>();
 
 		MUX_ASSERT(endOffset >= startOffset);
+
+		// Uno bridge: callers pass container offsets; the page node measures flat positions.
+		startOffset = ContainerToNodePosition(startOffset);
+		endOffset = ContainerToNodePosition(endOffset);
 		length = endOffset - startOffset;
 
 		if (!m_pPageNode.IsMeasureDirty() &&
@@ -128,16 +130,13 @@ internal sealed class RichTextBlockView : ITextView
 		// if it's not within the page's content it's OK to return false and also because there's no concept of Insertion
 		// for RichTextBlock.
 		if (!m_pPageNode.IsMeasureDirty() &&
-			!m_pPageNode.IsArrangeDirty())
+			!m_pPageNode.IsArrangeDirty() &&
+			TransformPositionToPage(iTextPosition, out var pageLocalPosition))
 		{
-			// The manager talks in container space; the node measures in flat (ParsedText) space.
-			// Convert container -> flat before querying the node.
-			return m_pPageNode.IsAtInsertionPosition((uint)GetCharacterIndex((int)iTextPosition));
+			return m_pPageNode.IsAtInsertionPosition(pageLocalPosition);
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	public uint PixelPositionToTextPosition(Point pixelCoordinate, bool bIncludeNewline, out TextGravity gravity)
@@ -147,11 +146,11 @@ internal sealed class RichTextBlockView : ITextView
 		if (!m_pPageNode.IsMeasureDirty() &&
 			!m_pPageNode.IsArrangeDirty())
 		{
-			// The node returns a flat (ParsedText) position; the manager works in container space.
-			// Convert flat -> container at the view boundary.
-			// TODO Uno (overflow): page transform (master page start is 0, so it is dropped for now).
-			var flat = m_pPageNode.PixelPositionToTextPosition(pixelCoordinate, out gravity);
-			return (uint)GetAdjustedPosition((int)flat);
+			var pageLocalPosition = m_pPageNode.PixelPositionToTextPosition(pixelCoordinate, out gravity);
+			return NodeToContainerPosition(
+				TransformPositionFromPage(pageLocalPosition),
+				isPageBoundary: false,
+				trailing: gravity.HasFlag(TextGravity.CharacterBackward));
 		}
 
 		return 0;
@@ -185,7 +184,7 @@ internal sealed class RichTextBlockView : ITextView
 		// If the page has no break and the position is the last position on the page, it corresponds to the end of
 		// the text container. In this case the view is considered to contain it. For pixel position, treat it as though it
 		// has backward gravity, i.e. is the trailing edge of the last position on the page.
-		if (iTextPosition == (m_pPageNode.GetStartPosition() + GetContentLength()) &&
+		if (iTextPosition == (GetContentStartPosition() + GetContentLength()) &&
 			m_pPageNode.GetBreak() == null &&
 			!gravity.HasFlag(TextGravity.CharacterBackward))
 		{
@@ -242,7 +241,7 @@ internal sealed class RichTextBlockView : ITextView
 		// If the page has no break and the position is the last position on the page, it corresponds to the end of
 		// the text container. In this case the view is considered to contain it. For GetUIScope, treat it as though it
 		// has backward gravity, i.e. is the trailing edge of the last position on the page.
-		if (iTextPosition == (m_pPageNode.GetStartPosition() + GetContentLength()) &&
+		if (iTextPosition == (GetContentStartPosition() + GetContentLength()) &&
 			m_pPageNode.GetBreak() == null &&
 			!gravity.HasFlag(TextGravity.CharacterBackward))
 		{
@@ -287,7 +286,7 @@ internal sealed class RichTextBlockView : ITextView
 		// If the page has no break and the position is the last position on the page, it corresponds to the end of
 		// the text container. In this case the view is considered to contain it. For Contains, treat it as though it
 		// has backward gravity, i.e. is the trailing edge of the last position on the page.
-		if (iTextPosition == (m_pPageNode.GetStartPosition() + GetContentLength()) &&
+		if (iTextPosition == (GetContentStartPosition() + GetContentLength()) &&
 			m_pPageNode.GetBreak() == null &&
 			!gravity.HasFlag(TextGravity.CharacterBackward))
 		{
@@ -313,42 +312,12 @@ internal sealed class RichTextBlockView : ITextView
 		return contains;
 	}
 
-	public uint GetContentStartPosition() => m_pPageNode.GetStartPosition();
+	// Uno bridge: WinUI's page node reports these in container space; Uno's reports flat positions.
+	public uint GetContentStartPosition() => NodeToContainerPosition(m_pPageNode.GetStartPosition(), isPageBoundary: true);
 
-	// Uno bridge (R3): the node tree measures in flat (ParsedText) char space, but the position
-	// layer the selection manager talks to is container space (with the reserved placeholder
-	// positions per inline/collection). Compute the container content length from the run model so
-	// it matches GetAdjustedPosition/GetCharacterIndex, instead of the node's flat m_length.
-	// TODO Uno (overflow): for a linked overflow page this should be the page's slice, not the whole owner.
 	public uint GetContentLength()
-	{
-		RichTextBlock? owningRichTextBlock = GetOwningRichTextBlock();
-		if (owningRichTextBlock is null)
-		{
-			return m_pPageNode.GetContentLength();
-		}
-
-		int length = 0;
-		bool previousBlock = false;
-		foreach (var block in owningRichTextBlock.Blocks)
-		{
-			if (block is not Paragraph paragraph)
-			{
-				continue;
-			}
-
-			if (previousBlock)
-			{
-				length += PlaceHolderPositionsForInlines;
-			}
-
-			paragraph.Inlines.GetPositionCount(out var inlinePositions);
-			length += (int)inlinePositions - PlaceHolderPositionsForInlines;
-			previousBlock = true;
-		}
-
-		return (uint)length;
-	}
+		=> NodeToContainerPosition(m_pPageNode.GetStartPosition() + m_pPageNode.GetContentLength(), isPageBoundary: true)
+			- GetContentStartPosition();
 
 	public int GetAdjustedPosition(int charIndex)
 	{
@@ -456,23 +425,25 @@ internal sealed class RichTextBlockView : ITextView
 		return charIndex;
 	}
 
-	// Uno seam: WinUI down-casts m_pPageNode->GetPageOwner() to CRichTextBlock (or, for an
-	// overflow, to CRichTextBlockOverflow->GetMaster()). RichTextBlockOverflow is not ported yet,
-	// so only the RichTextBlock owner is resolved here.
-	private RichTextBlock? GetOwningRichTextBlock() => m_pPageNode.GetPageOwner() as RichTextBlock;
+	// WinUI down-casts m_pPageNode->GetPageOwner() to CRichTextBlock, or for an overflow to CRichTextBlockOverflow::GetMaster().
+	private RichTextBlock? GetOwningRichTextBlock() => m_pPageNode.GetPageOwner() switch
+	{
+		RichTextBlock richTextBlock => richTextBlock,
+		RichTextBlockOverflow overflow => overflow.GetMaster(),
+		_ => null,
+	};
 
 	// Gets a page-relative offset from an external offset passed to the page and vice versa.
 	// This is necessary because query methods can be called from a linked text view
 	// with an arbitrary offset.
 	// TransformToPage returns bool because the position may be on the page at all. TransformFromPage
 	// is only called for a position on the page, so it will always succeed.
-	// Uno bridge (R3): WinUI's CPageNode measures in container space, so it offsets the incoming
-	// position directly. Uno's node measures flat (ParsedText) char space, so convert first - the
-	// same adjustment IsAtInsertionPosition makes before calling into the node.
+	// Uno bridge: WinUI's CPageNode measures in container space, so it offsets the incoming
+	// position directly. Uno's node measures flat positions, so convert first.
 	private bool TransformPositionToPage(uint position, out uint pPosition)
 	{
 		uint pageLocalPosition;
-		uint flatPosition = (uint)GetCharacterIndex((int)position);
+		uint flatPosition = ContainerToNodePosition(position);
 		uint pageStart = m_pPageNode.GetStartPosition();
 
 		if (flatPosition >= pageStart)
@@ -489,13 +460,91 @@ internal sealed class RichTextBlockView : ITextView
 		return false;
 	}
 
-#pragma warning disable IDE0051 // Unused here as well, kept for 1:1 parity with RichTextBlockView.cpp
 	private uint TransformPositionFromPage(uint position)
 	{
 		uint pageStart = m_pPageNode.GetStartPosition();
 		return (position + pageStart);
 	}
-#pragma warning restore IDE0051
+
+	// Uno bridge: container offset -> flat node position. The GetCharacterIndex walk without the Uno-only "\r\n"
+	// between paragraphs, which the node space doesn't have; an empty paragraph still formats one position.
+	private uint ContainerToNodePosition(uint position)
+	{
+		if (GetOwningRichTextBlock() is not { } owner)
+		{
+			return position;
+		}
+
+		int remaining = (int)position;
+		int nodePosition = 0;
+		bool previousBlock = false;
+		foreach (var block in owner.Blocks)
+		{
+			if (block is not Paragraph paragraph)
+			{
+				continue;
+			}
+
+			if (previousBlock)
+			{
+				remaining -= PlaceHolderPositionsForInlines;
+			}
+
+			int charCount = 0;
+			if (TextBlockViewHelpers.AdjustCharacterIndexByPosition(paragraph.Inlines, ref charCount, ref remaining))
+			{
+				return (uint)(nodePosition + charCount);
+			}
+
+			nodePosition += Math.Max(charCount, 1);
+			previousBlock = true;
+		}
+
+		return (uint)nodePosition;
+	}
+
+	// Uno bridge: flat node position -> container offset. Between two paragraphs the node space has a single
+	// position: a page boundary maps to the next paragraph's start (where a break lands), a trailing hit to the
+	// previous paragraph's end, and any other hit to the next paragraph's first character.
+	private uint NodeToContainerPosition(uint nodePosition, bool isPageBoundary, bool trailing = false)
+	{
+		if (GetOwningRichTextBlock() is not { } owner)
+		{
+			return nodePosition;
+		}
+
+		var blocks = owner.Blocks;
+		int remaining = (int)nodePosition;
+		int paragraphStart = 0;
+		for (int i = 0; i < blocks.Count; i++)
+		{
+			if (blocks[i] is not Paragraph paragraph)
+			{
+				continue;
+			}
+
+			if (remaining == 0 && isPageBoundary)
+			{
+				return (uint)paragraphStart;
+			}
+
+			int textLength = RichTextBlock.GetParagraphTextLength(paragraph);
+			int nodeLength = Math.Max(textLength, 1);
+			if (remaining < nodeLength || (remaining == nodeLength && (trailing || i == blocks.Count - 1)))
+			{
+				int charCount = Math.Min(remaining, textLength);
+				int position = 0;
+				TextBlockViewHelpers.AdjustPositionByCharacterCount(paragraph.Inlines, ref charCount, ref position);
+				return (uint)(paragraphStart + position);
+			}
+
+			remaining -= nodeLength;
+			paragraph.GetPositionCount(out var paragraphPositions);
+			paragraphStart += (int)paragraphPositions;
+		}
+
+		return (uint)paragraphStart;
+	}
 
 	public static Rect[] GetBoundsCollectionForElement(
 		ITextView textView,
