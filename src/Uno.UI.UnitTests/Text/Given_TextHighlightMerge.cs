@@ -37,12 +37,12 @@ namespace Uno.UI.Tests.Text
 		private SolidColorBrush Brush(int token)
 			=> _brushes.TryGetValue(token, out var brush) ? brush : _brushes[token] = new SolidColorBrush();
 
-		private struct TextRegion
+		private readonly struct TextRegion
 		{
-			public int StartIndex;
-			public int EndIndex;
-			public int ForegroundBrushValue;
-			public int BackgroundBrushValue;
+			public readonly int StartIndex;
+			public readonly int EndIndex;
+			public readonly int ForegroundBrushValue;
+			public readonly int BackgroundBrushValue;
 
 			public TextRegion(int startIndex, int endIndex, int foregroundBrushValue, int backgroundBrushValue)
 			{

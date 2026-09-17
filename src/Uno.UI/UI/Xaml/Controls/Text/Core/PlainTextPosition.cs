@@ -24,7 +24,7 @@ Remarks:
 // (copy constructor + "*pPosition = *this"). Mutating helpers operate on a copy.
 internal struct PlainTextPosition
 {
-	private ITextContainer? m_pContainer;
+	private readonly ITextContainer? m_pContainer;
 	private uint m_offset;
 	private TextGravity m_gravity;
 

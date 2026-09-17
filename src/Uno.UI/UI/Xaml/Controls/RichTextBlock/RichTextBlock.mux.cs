@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml.Controls
 			int LineCount,
 			int BlockIndex);
 
-		private List<ParagraphLayout> _paragraphLayouts = new();
+		private readonly List<ParagraphLayout> _paragraphLayouts = new();
 		private Size _lastMeasuredContentSize;
 
 		// Stage 9: the ported BlockLayout engine drives measure/arrange; the node tree is the
