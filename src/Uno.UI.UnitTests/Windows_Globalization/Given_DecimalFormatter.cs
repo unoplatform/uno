@@ -321,6 +321,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_LanguagesContainsNull_Then_Throw()
 		{
 			Assert.ThrowsExactly<ArgumentException>(() => new DecimalFormatter(new string[] { null! }, "US"));
@@ -1135,6 +1136,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_GroupedWithEquivalentSpace_Then_GroupWidthsAreValidated()
 		{
 			var sut = new DecimalFormatter(new[] { "sv-SE" }, "SE")
@@ -1234,6 +1236,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_DecimalPointAlwaysDisplayedIsArabic_Then_SeparatorIsTranslated()
 		{
 			var sut = new DecimalFormatter(new[] { "ar-SA" }, "SA")
@@ -1248,6 +1251,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		public void When_NumberRounderReturnsInfinity_Then_SpecialValueIsFormatted()
 		{
 			var sut = new DecimalFormatter(new[] { "en-US" }, "US")

@@ -122,6 +122,11 @@ public partial class IncrementNumberRounder : INumberRounder
 	public float RoundSingle(float value)
 	{
 		var singleIncrement = (float)increment;
+		if (!float.IsFinite(singleIncrement))
+		{
+			return (float)RoundDouble(value);
+		}
+
 		var rounded = (float)Rounder.Round(value / singleIncrement, 0, RoundingAlgorithm);
 
 		return rounded * singleIncrement;
