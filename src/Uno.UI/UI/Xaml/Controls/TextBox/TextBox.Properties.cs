@@ -32,7 +32,7 @@ partial class TextBox
 			throw new InvalidOperationException($"{nameof(CanUndoProperty)} is read-only.");
 		}
 
-		return Uno.UI.Helpers.Boxes.Box(((TextBox)instance)._core.CanUndoInternal);
+		return Uno.UI.Helpers.Boxes.Boxer.Box(((TextBox)instance)._core.CanUndoInternal);
 	}
 
 	public static DependencyProperty CanRedoProperty { get; } = DependencyProperty.Register(
@@ -53,7 +53,7 @@ partial class TextBox
 			throw new InvalidOperationException($"{nameof(CanRedoProperty)} is read-only.");
 		}
 
-		return Uno.UI.Helpers.Boxes.Box(((TextBox)instance)._core.CanRedoInternal);
+		return Uno.UI.Helpers.Boxes.Boxer.Box(((TextBox)instance)._core.CanRedoInternal);
 	}
 
 	[GeneratedDependencyProperty(DefaultValue = false)]

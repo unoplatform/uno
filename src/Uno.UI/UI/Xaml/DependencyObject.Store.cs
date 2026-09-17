@@ -14,7 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
@@ -226,7 +226,7 @@ namespace Microsoft.UI.Xaml
 			{
 				_trace.WriteEvent(
 					DependencyObjectTraceProvider.CreationTask,
-					new object[] { Boxes.Box(GetHashCode()), _originalObjectType.Name }
+					new object[] { Boxer.Box(GetHashCode()), _originalObjectType.Name }
 				);
 			}
 		}
@@ -874,7 +874,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_trace.IsEnabled)
 			{
-				_trace.WriteEvent(eventId, new object[] { Boxes.Box(GetHashCode()), property.OwnerType.Name, property.Name, precedence?.ToString() ?? "Local" });
+				_trace.WriteEvent(eventId, new object[] { Boxer.Box(GetHashCode()), property.OwnerType.Name, property.Name, precedence?.ToString() ?? "Local" });
 			}
 		}
 
@@ -885,7 +885,7 @@ namespace Microsoft.UI.Xaml
 				return _trace.WriteEventActivity(
 					startEventId,
 					stopEventId,
-					new object[] { Boxes.Box(GetHashCode()), property.OwnerType.Name, property.Name, precedence.ToString() }
+					new object[] { Boxer.Box(GetHashCode()), property.OwnerType.Name, property.Name, precedence.ToString() }
 				);
 			}
 			else

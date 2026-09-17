@@ -282,7 +282,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -298,7 +298,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(IsAccessKeyScopeProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsAccessKeyScopeProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -312,7 +312,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(IsDoubleTapEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsDoubleTapEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -326,7 +326,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(IsHoldingEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsHoldingEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -340,7 +340,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(IsRightTapEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsRightTapEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -355,7 +355,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(IsTapEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsTapEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -369,7 +369,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(KeyTipHorizontalOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(KeyTipHorizontalOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -411,7 +411,7 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				this.SetValue(KeyTipVerticalOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(KeyTipVerticalOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

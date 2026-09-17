@@ -5,7 +5,7 @@ using System.Text;
 
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -93,7 +93,7 @@ namespace Microsoft.UI.Xaml.Controls
 			bool isContained = true;
 			if (rc.Left > rc.Right || rc.Top > rc.Bottom)
 			{
-				typeof(ToolTipPositioning).Log().LogError("This rect is ill formed.", Boxes.BoolBoxes.False);
+				typeof(ToolTipPositioning).Log().LogError("This rect is ill formed.", BoolBoxes.False);
 				isContained = false;
 			}
 			if (rc.Left < container.Left || rc.Right > container.Right || rc.Top < container.Top || rc.Bottom > container.Bottom)

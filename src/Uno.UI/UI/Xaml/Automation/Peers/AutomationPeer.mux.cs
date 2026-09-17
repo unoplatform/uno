@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 
@@ -534,8 +534,8 @@ partial class AutomationPeer
 				{
 					RaisePropertyChangedEvent(
 						AutomationElementIdentifiers.IsEnabledProperty,
-						Boxes.Box(_currentIsEnabled),
-						Boxes.Box(isEnabled));
+						Boxer.Box(_currentIsEnabled),
+						Boxer.Box(isEnabled));
 					_currentIsEnabled = isEnabled;
 				}
 
@@ -543,8 +543,8 @@ partial class AutomationPeer
 				{
 					RaisePropertyChangedEvent(
 						AutomationElementIdentifiers.IsOffscreenProperty,
-						Boxes.Box(_currentIsOffscreen),
-						Boxes.Box(isOffscreen));
+						Boxer.Box(_currentIsOffscreen),
+						Boxer.Box(isOffscreen));
 					_currentIsOffscreen = isOffscreen;
 				}
 

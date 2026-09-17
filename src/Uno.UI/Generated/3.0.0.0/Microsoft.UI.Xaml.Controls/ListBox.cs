@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(SingleSelectionFollowsFocusProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(SingleSelectionFollowsFocusProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

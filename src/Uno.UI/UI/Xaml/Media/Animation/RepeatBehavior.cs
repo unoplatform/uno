@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				double.IsNaN(count) ||
 				count < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(count), Boxes.Box(count), "The count must be a positive number, and not infinity or NaN.");
+				throw new ArgumentOutOfRangeException(nameof(count), Boxer.Box(count), "The count must be a positive number, and not infinity or NaN.");
 			}
 
 			Type = RepeatBehaviorType.Count;

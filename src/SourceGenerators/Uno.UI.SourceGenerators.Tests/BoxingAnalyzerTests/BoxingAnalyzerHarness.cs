@@ -14,29 +14,29 @@ internal static class BoxingAnalyzerHarness
 	public const string BoxingDiagnosticId = "UnoInternal0002";
 
 	private const string BoxesSource = """
-		namespace Uno.UI.Helpers
+		namespace Uno.UI.Helpers.Boxes
 		{
-			internal static class Boxes
+			internal static class BoolBoxes
 			{
-				public static class BoolBoxes
-				{
-					public static readonly object True = true;
-					public static readonly object False = false;
-				}
+				public static readonly object True = true;
+				public static readonly object False = false;
+			}
 
-				public static class IntegerBoxes
-				{
-					public static readonly object NegativeOne = -1;
-					public static readonly object Zero = 0;
-					public static readonly object One = 1;
-				}
+			internal static class IntegerBoxes
+			{
+				public static readonly object NegativeOne = -1;
+				public static readonly object Zero = 0;
+				public static readonly object One = 1;
+			}
 
-				public static class DoubleBoxes
-				{
-					public static readonly object Zero = 0.0d;
-					public static readonly object One = 1.0d;
-				}
+			internal static class DoubleBoxes
+			{
+				public static readonly object Zero = 0.0d;
+				public static readonly object One = 1.0d;
+			}
 
+			internal static class Boxer
+			{
 				public static object Box(bool value) => value ? BoolBoxes.True : BoolBoxes.False;
 
 				public static object Box(int value) => value;

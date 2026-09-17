@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		} = DependencyProperty.RegisterAttached(
 			"IsTargetElement", typeof(bool),
 			typeof(EntranceNavigationTransitionInfo),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False)
+			new FrameworkPropertyMetadata(BoolBoxes.False)
 		);
 
 		#endregion

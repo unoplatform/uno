@@ -3,7 +3,7 @@
 // MUX Reference NavigationViewTemplateSettings.properties.cpp, commit bac7a9c33
 
 using Microsoft.UI.Xaml;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -56,7 +56,7 @@ public partial class NavigationViewTemplateSettings : DependencyObject
 	public double OpenPaneLength
 	{
 		get => (double)GetValue(OpenPaneLengthProperty);
-		internal set => SetValue(OpenPaneLengthProperty, Boxes.Box(value));
+		internal set => SetValue(OpenPaneLengthProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -101,14 +101,14 @@ public partial class NavigationViewTemplateSettings : DependencyObject
 	public double PaneToggleButtonWidth
 	{
 		get => (double)GetValue(PaneToggleButtonWidthProperty);
-		internal set => SetValue(PaneToggleButtonWidthProperty, Boxes.Box(value));
+		internal set => SetValue(PaneToggleButtonWidthProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
 	/// Identifies the PaneToggleButtonWidth dependency property.
 	/// </summary>
 	public static DependencyProperty PaneToggleButtonWidthProperty { get; } =
-		DependencyProperty.Register(nameof(PaneToggleButtonWidth), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+		DependencyProperty.Register(nameof(PaneToggleButtonWidth), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the SelectionFollowsFocus value.
@@ -123,7 +123,7 @@ public partial class NavigationViewTemplateSettings : DependencyObject
 	/// Identifies the SingleSelectionFollowsFocus dependency property.
 	/// </summary>
 	public static DependencyProperty SingleSelectionFollowsFocusProperty { get; } =
-		DependencyProperty.Register(nameof(SingleSelectionFollowsFocus), typeof(bool), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+		DependencyProperty.Register(nameof(SingleSelectionFollowsFocus), typeof(bool), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(BoolBoxes.False));
 
 	/// <summary>
 	/// Gets the smaller pane toggle button width.
@@ -131,14 +131,14 @@ public partial class NavigationViewTemplateSettings : DependencyObject
 	public double SmallerPaneToggleButtonWidth
 	{
 		get => (double)GetValue(SmallerPaneToggleButtonWidthProperty);
-		internal set => SetValue(SmallerPaneToggleButtonWidthProperty, Boxes.Box(value));
+		internal set => SetValue(SmallerPaneToggleButtonWidthProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
 	/// Identifies the SmallerPaneToggleButtonWidth dependency property.
 	/// </summary>
 	public static DependencyProperty SmallerPaneToggleButtonWidthProperty { get; } =
-		DependencyProperty.Register(nameof(SmallerPaneToggleButtonWidth), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+		DependencyProperty.Register(nameof(SmallerPaneToggleButtonWidth), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 
 	/// <summary>
@@ -147,14 +147,14 @@ public partial class NavigationViewTemplateSettings : DependencyObject
 	public double TopPadding
 	{
 		get => (double)GetValue(TopPaddingProperty);
-		internal set => SetValue(TopPaddingProperty, Boxes.Box(value));
+		internal set => SetValue(TopPaddingProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
 	/// Identifies the TopPadding dependency property.
 	/// </summary>
 	public static DependencyProperty TopPaddingProperty { get; } =
-		DependencyProperty.Register(nameof(TopPadding), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+		DependencyProperty.Register(nameof(TopPadding), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the visibility of the top pane.

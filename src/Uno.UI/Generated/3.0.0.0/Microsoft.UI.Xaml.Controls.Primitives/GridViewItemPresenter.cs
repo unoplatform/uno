@@ -250,7 +250,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(DisabledOpacityProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(DisabledOpacityProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -292,7 +292,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(DragOpacityProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(DragOpacityProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -404,7 +404,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(ReorderHintOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ReorderHintOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -488,7 +488,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(SelectionCheckMarkVisualEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(SelectionCheckMarkVisualEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

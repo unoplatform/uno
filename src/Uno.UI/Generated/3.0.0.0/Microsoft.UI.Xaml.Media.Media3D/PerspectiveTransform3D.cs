@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(DepthProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(DepthProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(OffsetXProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(OffsetXProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(OffsetYProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(OffsetYProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.UI.Xaml.Automation.Peers;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Automation;
 
@@ -82,7 +82,7 @@ public partial class AutomationProperties
 			"Culture",
 			typeof(int),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
+			new FrameworkPropertyMetadata(IntegerBoxes.Zero));
 
 	/// <summary>
 	/// Identifies the DescribedBy attached property, which points to elements that provide extended descriptive text.
@@ -158,7 +158,7 @@ public partial class AutomationProperties
 			"IsDataValidForForm",
 			typeof(bool),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnIsDataValidForFormChanged));
+			new FrameworkPropertyMetadata(BoolBoxes.True, OnIsDataValidForFormChanged));
 
 	/// <summary>
 	/// Identifies the IsDialog attached property, which indicates whether the element represents a dialog.
@@ -168,7 +168,7 @@ public partial class AutomationProperties
 			"IsDialog",
 			typeof(bool),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 	/// <summary>
 	/// Identifies the IsPeripheral attached property, which indicates whether the element is peripheral to the main UI experience.
@@ -178,7 +178,7 @@ public partial class AutomationProperties
 			"IsPeripheral",
 			typeof(bool),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 	/// <summary>
 	/// Identifies the IsRequiredForForm attached property, which indicates whether the element requires user input before form submission.
@@ -188,7 +188,7 @@ public partial class AutomationProperties
 			"IsRequiredForForm",
 			typeof(bool),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 	/// <summary>
 	/// Identifies the ItemStatus attached property, which conveys status information about an element (for example, “New” or “Busy”).
@@ -239,7 +239,7 @@ public partial class AutomationProperties
 			"Level",
 			typeof(int),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
+			new FrameworkPropertyMetadata(IntegerBoxes.Zero));
 
 	/// <summary>
 	/// Identifies the LiveSetting attached property, which indicates how changes to the element are announced to assistive technologies.
@@ -290,7 +290,7 @@ public partial class AutomationProperties
 			"PositionInSet",
 			typeof(int),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne));
+			new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne));
 
 	/// <summary>
 	/// Identifies the SizeOfSet attached property, which indicates the total number of items in the set that contains the element.
@@ -300,7 +300,7 @@ public partial class AutomationProperties
 			"SizeOfSet",
 			typeof(int),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne));
+			new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne));
 
 	/// <summary>
 	/// Identifies the AutomationControlType attached property, which specifies the UI Automation control type of an element.
@@ -447,7 +447,7 @@ public partial class AutomationProperties
 	/// <summary>
 	/// Sets the 1-based position of the element within its set.
 	/// </summary>
-	public static void SetPositionInSet(DependencyObject element, int value) => element.SetValue(PositionInSetProperty, Boxes.Box(value));
+	public static void SetPositionInSet(DependencyObject element, int value) => element.SetValue(PositionInSetProperty, Boxer.Box(value));
 
 	/// <summary>
 	/// Gets the total size of the set that contains the element.
@@ -457,7 +457,7 @@ public partial class AutomationProperties
 	/// <summary>
 	/// Sets the total size of the set that contains the element.
 	/// </summary>
-	public static void SetSizeOfSet(DependencyObject element, int value) => element.SetValue(SizeOfSetProperty, Boxes.Box(value));
+	public static void SetSizeOfSet(DependencyObject element, int value) => element.SetValue(SizeOfSetProperty, Boxer.Box(value));
 
 	/// <summary>
 	/// Gets the hierarchical level of the element.
@@ -467,7 +467,7 @@ public partial class AutomationProperties
 	/// <summary>
 	/// Sets the hierarchical level of the element.
 	/// </summary>
-	public static void SetLevel(DependencyObject element, int value) => element.SetValue(LevelProperty, Boxes.Box(value));
+	public static void SetLevel(DependencyObject element, int value) => element.SetValue(LevelProperty, Boxer.Box(value));
 
 	/// <summary>
 	/// Gets the annotations associated with the specified element.
@@ -557,7 +557,7 @@ public partial class AutomationProperties
 	/// <summary>
 	/// Sets the culture (locale) identifier for the specified element.
 	/// </summary>
-	public static void SetCulture(DependencyObject element, int value) => element.SetValue(CultureProperty, Boxes.Box(value));
+	public static void SetCulture(DependencyObject element, int value) => element.SetValue(CultureProperty, Boxer.Box(value));
 
 	/// <summary>
 	/// Gets the heading level for the specified element.

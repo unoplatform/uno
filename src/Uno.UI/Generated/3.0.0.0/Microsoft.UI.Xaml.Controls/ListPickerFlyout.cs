@@ -124,7 +124,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(SelectedIndexProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(SelectedIndexProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

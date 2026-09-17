@@ -13,7 +13,7 @@ using Windows.Foundation;
 using Windows.UI;
 using Uno;
 using Uno.UI;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsScrollInertiaEnabled),
 				typeof(bool),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
+				new FrameworkPropertyMetadata(BoolBoxes.True));
 		#endregion
 
 		#region IsHorizontalScrollChainingEnabled (Attached DP)
@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IsHorizontalScrollChainingEnabled",
 				typeof(bool),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
+				new FrameworkPropertyMetadata(BoolBoxes.True));
 		#endregion
 
 		#region IsHorizontalRailEnabled (Attached DP)
@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IsHorizontalRailEnabled",
 				typeof(bool),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
+				new FrameworkPropertyMetadata(BoolBoxes.True));
 		#endregion
 
 		#region IsVerticalScrollChainingEnabled (Attached DP)
@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IsVerticalScrollChainingEnabled",
 				typeof(bool),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
+				new FrameworkPropertyMetadata(BoolBoxes.True));
 		#endregion
 
 		#region IsVerticalRailEnabled (Attached DP)
@@ -142,7 +142,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IsVerticalRailEnabled",
 				typeof(bool),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
+				new FrameworkPropertyMetadata(BoolBoxes.True));
 		#endregion
 
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;

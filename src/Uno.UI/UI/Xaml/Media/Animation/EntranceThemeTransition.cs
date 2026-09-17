@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public double FromHorizontalOffset
 		{
 			get { return (double)this.GetValue(FromHorizontalOffsetProperty); }
-			set { this.SetValue(FromHorizontalOffsetProperty, Boxes.Box(value)); }
+			set { this.SetValue(FromHorizontalOffsetProperty, Boxer.Box(value)); }
 		}
 
 		// Using a DependencyProperty as the backing store for FromHorizontalOffset.  This enables animation, styling, binding, etc...
@@ -38,12 +38,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public double FromVerticalOffset
 		{
 			get { return (double)this.GetValue(FromVerticalOffsetProperty); }
-			set { this.SetValue(FromVerticalOffsetProperty, Boxes.Box(value)); }
+			set { this.SetValue(FromVerticalOffsetProperty, Boxer.Box(value)); }
 		}
 
 		// Using a DependencyProperty as the backing store for FromVerticalOffset.  This enables animation, styling, binding, etc...
 		public static DependencyProperty FromVerticalOffsetProperty { get; } =
-			DependencyProperty.Register("FromVerticalOffset", typeof(double), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			DependencyProperty.Register("FromVerticalOffset", typeof(double), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 		#endregion
 
@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		// Using a DependencyProperty as the backing store for IsStaggeringEnabled.  This enables animation, styling, binding, etc...
 		public static DependencyProperty IsStaggeringEnabledProperty { get; } =
-			DependencyProperty.Register("IsStaggeringEnabled", typeof(bool), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
+			DependencyProperty.Register("IsStaggeringEnabled", typeof(bool), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(BoolBoxes.True));
 
 		#endregion
 
