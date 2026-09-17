@@ -7,6 +7,7 @@ using Windows.System;
 using Windows.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Internal;
@@ -15,6 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
@@ -231,12 +233,15 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 		try
 		{
-			var content = Clipboard.GetContent();
-			CanPasteClipboardContent = content?.Contains(StandardDataFormats.Text) ?? false;
+			CanPasteClipboardContent = Clipboard.IsTextAvailable();
 		}
-		catch
+		catch (Exception error)
 		{
 			CanPasteClipboardContent = false;
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Unable to query clipboard text availability: {error}");
+			}
 		}
 	}
 
