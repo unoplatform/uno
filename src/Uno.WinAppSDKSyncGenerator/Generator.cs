@@ -16,7 +16,7 @@ namespace Uno.WinAppSDKSyncGenerator
 {
 	abstract class Generator
 	{
-		internal const string CSharpLangVersion = "12.0";
+		internal const string CSharpLangVersion = "13.0";
 		private static IEnumerable<PortableExecutableReference> _winuiReferences;
 
 		protected const string AndroidDefine = "__ANDROID__";
@@ -2415,30 +2415,27 @@ namespace Uno.WinAppSDKSyncGenerator
 			}
 
 			var compilation = await project.GetCompilationAsync();
-			return RunMixinGenerators(compilation, project.ParseOptions as CSharpParseOptions);
+			return RunMemberGenerators(compilation, project.ParseOptions as CSharpParseOptions);
 		}
 
-		private static ISourceGenerator[] _mixinGenerators;
+		private const string MixinGeneratorsNamespace = "Uno.UI.SourceGenerators.Mixins";
+
+		private static ISourceGenerator[] _memberGenerators;
 
 		/// <summary>
-		/// Runs the mixin source generators from Uno.UI.SourceGenerators.Internal so the
-		/// members they emit (Border.Background, Popup.IsOpen, etc.) are present in the
-		/// compilation consumed by GetNonGeneratedMembers. Without this, the sync tool
-		/// would re-emit NotImplemented stubs that conflict with the generator output.
+		/// Runs the source generators from Uno.UI.SourceGenerators.Internal that emit members
+		/// (the mixins, e.g. Popup.IsOpen, and [GeneratedDependencyProperty] DPs, e.g. Canvas.LeftProperty)
+		/// so they are present in the compilation consumed by GetNonGeneratedMembers. Without this,
+		/// the sync tool would re-emit NotImplemented stubs that conflict with the generator output.
 		/// </summary>
-		private static Compilation RunMixinGenerators(Compilation compilation, CSharpParseOptions parseOptions)
+		private static Compilation RunMemberGenerators(Compilation compilation, CSharpParseOptions parseOptions)
 		{
 			if (compilation is not CSharpCompilation)
 			{
 				return compilation;
 			}
 
-			var generators = _mixinGenerators ??= LoadMixinGenerators();
-			if (generators.Length == 0)
-			{
-				return compilation;
-			}
-
+			var generators = _memberGenerators ??= LoadMemberGenerators();
 			var driver = CSharpGeneratorDriver.Create(generators, parseOptions: parseOptions);
 			driver.RunGeneratorsAndUpdateCompilation(compilation, out var updatedCompilation, out var diagnostics);
 
@@ -2446,23 +2443,26 @@ namespace Uno.WinAppSDKSyncGenerator
 			{
 				if (diagnostic.Severity >= DiagnosticSeverity.Warning)
 				{
-					Console.WriteLine($"[mixin] {diagnostic}");
+					Console.WriteLine($"[generator] {diagnostic}");
 				}
 			}
 
 			return updatedCompilation;
 		}
 
-		private static ISourceGenerator[] LoadMixinGenerators()
+		private static ISourceGenerator[] LoadMemberGenerators()
 		{
-			// Pull the generator assembly via a known type. Uno.UI.SourceGenerators.Internal
-			// is referenced from Uno.WinAppSDKSyncGenerator.csproj so this type is resolvable.
-			var mixinAssembly = Assembly.Load("Uno.UI.SourceGenerators.Internal");
+			// Referenced at compile time, so renaming or moving the generator breaks this build rather than the stubs.
+			var dependencyPropertyGeneratorType = typeof(global::Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator);
 
 			var generators = new List<ISourceGenerator>();
-			foreach (var type in mixinAssembly.GetTypes())
+			var hasDependencyPropertyGenerator = false;
+			var hasMixinGenerator = false;
+			foreach (var type in dependencyPropertyGeneratorType.Assembly.GetTypes())
 			{
-				if (type.Namespace != "Uno.UI.SourceGenerators.Mixins")
+				// The assembly also contains generators that must not run here (e.g. TSBindingsGenerator).
+				var isDependencyPropertyGenerator = type == dependencyPropertyGeneratorType;
+				if (type.Namespace != MixinGeneratorsNamespace && !isDependencyPropertyGenerator)
 				{
 					continue;
 				}
@@ -2481,6 +2481,24 @@ namespace Uno.WinAppSDKSyncGenerator
 				{
 					generators.Add(sourceGen);
 				}
+				else
+				{
+					continue;
+				}
+
+				hasDependencyPropertyGenerator |= isDependencyPropertyGenerator;
+				hasMixinGenerator |= !isDependencyPropertyGenerator;
+			}
+
+			// Without them, every generated member looks undeclared and would be stubbed again, which breaks Uno.UI.
+			if (!hasDependencyPropertyGenerator)
+			{
+				throw new InvalidOperationException($"The source generator '{dependencyPropertyGeneratorType.FullName}' could not be loaded from '{dependencyPropertyGeneratorType.Assembly.Location}'.");
+			}
+
+			if (!hasMixinGenerator)
+			{
+				throw new InvalidOperationException($"No source generator was found in the '{MixinGeneratorsNamespace}' namespace of '{dependencyPropertyGeneratorType.Assembly.Location}'.");
 			}
 
 			return generators.ToArray();
