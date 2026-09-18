@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using CoreGraphics;
 using Microsoft.UI.Xaml.Controls;
