@@ -321,7 +321,7 @@ namespace Windows.UI.Input
 				var currentPosition = down.Position;
 
 				return previousTap.id == currentId
-					&& currentTs - previousTap.ts <= MultiTapMaxDelayMicroseconds
+					&& currentTs - previousTap.ts <= ResolvedMultiTapMaxDelayMicroseconds
 					&& !IsOutOfTapRange(previousTap.position, currentPosition);
 			}
 
