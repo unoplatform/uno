@@ -72,6 +72,11 @@ on macOS with Skia rendering. To migrate:
 5. Publish with the [macOS desktop packaging](xref:uno.publishing.desktop.macos) flow
    instead of the Mac Catalyst one.
 
+The `IsMacCatalyst` and `IsIOSOrCatalyst` MSBuild properties are also gone — replace them
+with `IsIOS` and `IsAppleUIKit` respectively. A condition that references either property
+as a bare boolean (for example `Condition="$(IsAndroid) or $(IsIOSOrCatalyst)"`) now fails
+with `MSB4100` instead of silently evaluating to `false`, since the property is undefined.
+
 ### Minimum OS versions raised
 
 Uno Platform 7.0 raises the default minimum OS version on the mobile and WinAppSDK
