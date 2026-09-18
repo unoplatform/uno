@@ -4,8 +4,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
+using Windows.Foundation;
 using Windows.System;
 
 namespace Uno.UI.Runtime.Skia;
@@ -145,8 +147,20 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			// when this TextBox is the one in focus
 			return;
 		}
+
+		if (_view.TextBox?.ContentElement is not { } contentElement)
+		{
+			return;
+		}
+
+		// We deliberately track the ContentElement and not the DisplayBlock: the DisplayBlock shrink-wraps the
+		// text, so using it would make the <input /> grow by one character's width on every keystroke. Browser
+		// password managers anchor their affordances to the <input /> bounds, so a growing element makes them
+		// visibly drift across the field. This matches OverlayTextBoxViewExtension on the other Skia targets.
 		// Advisory: on iOS the JS side keeps the input off-screen and ignores size and position.
-		NativeMethods.UpdateSize(_view.DisplayBlock.ActualWidth, _view.DisplayBlock.ActualHeight);
+		NativeMethods.UpdateSize(
+			Math.Max(0, contentElement.ActualWidth - contentElement.Padding.Horizontal()),
+			Math.Max(0, contentElement.ActualHeight - contentElement.Padding.Vertical()));
 	}
 
 	public void UpdatePosition()
@@ -157,8 +171,18 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			// when this TextBox is the one in focus
 			return;
 		}
+
+		if (_view.TextBox?.ContentElement is not { } contentElement)
+		{
+			return;
+		}
+
+		// Anchored on the ContentElement for the same reason as UpdateSize: the DisplayBlock moves as the text
+		// scrolls or is re-aligned, which would drag the <input /> away from the field it belongs to.
 		// Advisory: on iOS the JS side keeps the input off-screen and ignores size and position.
-		var p = _view.DisplayBlock.TransformToVisual(null).TransformPoint(default);
+		var p = contentElement
+			.TransformToVisual(null)
+			.TransformPoint(new Point(contentElement.Padding.Left, contentElement.Padding.Top));
 		NativeMethods.UpdatePosition(p.X, p.Y);
 	}
 
