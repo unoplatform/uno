@@ -185,6 +185,18 @@ To suppress it:
 </PropertyGroup>
 ```
 
+### UNOB0027: The file suffix is no longer recognized by Uno Platform 7.0
+
+Uno Platform 7.0 removed the `*.Apple.cs`, `*.iOSmacOS.cs`, and `*.reference.cs` file suffixes. The build no longer excludes these files from any target framework, so each of them now compiles for every target framework of the project, the WinAppSDK one included. Rename or remove the file:
+
+| Suffix | Replacement |
+|---|---|
+| `*.Apple.cs` | `*.UIKit.cs`, which has the same rule |
+| `*.iOSmacOS.cs` | `*.iOS.cs`. It named the native macOS target, which was removed in 7.0 |
+| `*.reference.cs` | Delete the file, or fold it into a `*.crossruntime.cs` file. It was gated on a build flavor that an application never selected, so it compiled for no target framework |
+
+`*.skia.cs` is still recognized, but it now compiles for every target framework except the WinAppSDK one, not only for `netX.0-desktop`. See [Platform targeting in multi-targeted libraries](xref:Uno.Development.MigratingToUno7) for the other changes.
+
 ## Compiler Errors
 
 ### UNO0001
@@ -256,6 +268,26 @@ WinUI only supports the `using:` xmlns form. The WPF/Silverlight `clr-namespace:
 The assembly is inferred from the compilation, so the `;assembly=` token has no replacement — drop it. The declaration is rejected even when its prefix is never used; the only exemption is a prefix listed in `mc:Ignorable` on the root element.
 
 The same rule is enforced at run time by `XamlReader.Load` and Hot Reload, which throw a `XamlParseException`.
+
+### UXAML0007
+
+**The conditional XAML prefix was removed in Uno Platform 7.0**
+
+Uno Platform 7.0 names every conditional XAML prefix after a target framework, and removed the prefixes that named a renderer or a distinction that no longer exists. A removed prefix no longer selects a platform, so the markup using it is not rewritten or rejected — it silently changes meaning:
+
+- Listed in `mc:Ignorable` (the usual form for a positive prefix such as `skia`), its content is **ignored on every target**.
+- Declared with the presentation namespace (the usual form for a negative prefix such as `not_skia`), it is an alias of the default namespace, so its content **applies on every target**.
+
+| Removed prefix | Replacement |
+|---|---|
+| `skia`, `netstdref` | `not_winappsdk` |
+| `not_skia`, `not_netstdref` | `winappsdk` |
+| `androidskia`, `iosskia`, `tvosskia`, `wasmskia` (and their `not_` forms) | `android`, `ios`, `tvos`, `wasm` (and their `not_` forms) |
+| `macos`, `not_macos` | `desktop`, `not_desktop` |
+| `not_mux` | Remove it with the markup using it. It dates from UWP support and never applied |
+| `xamarin`, `legacy` listed in `mc:Ignorable` | Drop the prefix from the markup using it |
+
+The diagnostic is raised on the `xmlns` declaration. The same names remain valid as ordinary namespace aliases, so a declaration using the `using:` form — for instance `xmlns:skia="using:SkiaSharp.Views.Windows"` or `xmlns:legacy="using:Uno.UI.Controls.Legacy"` — is not reported. `legacy` is only reported when it is listed in `mc:Ignorable`, which is where it used to act as a condition. See [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7#removed-xaml-prefixes).
 
 ## VS Code Errors
 
