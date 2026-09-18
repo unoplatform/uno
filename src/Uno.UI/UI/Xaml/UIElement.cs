@@ -64,7 +64,8 @@ namespace Microsoft.UI.Xaml
 		internal bool HasCompositionChildVisual { get; set; }
 
 		private InputCursor _protectedCursor;
-		private SerialDisposable _disposedEventDisposable = new();
+		// Only ever used by the ProtectedCursor setter below, which almost no element touches.
+		private SerialDisposable _disposedEventDisposable;
 
 
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
@@ -1502,7 +1503,7 @@ namespace Microsoft.UI.Xaml
 
 				if (value is { } cursor)
 				{
-					_disposedEventDisposable.Disposable = cursor.RegisterDisposedEvent((_, _) =>
+					(_disposedEventDisposable ??= new()).Disposable = cursor.RegisterDisposedEvent((_, _) =>
 					{
 						CalculatedFinalCursor = null;
 						_disposedEventDisposable.Disposable?.Dispose();
