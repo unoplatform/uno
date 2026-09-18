@@ -45,6 +45,8 @@ On Skia WebAssembly, a parallel semantic `<textarea>` mirrors document text, sel
 
 `WinUIEdit.dll` supplies the Windows RichEdit/TOM, RTF, math, and windowless-provider implementations; those implementations are not present in the pinned Microsoft UI XAML repository. Uno's story storage, formatting runs, range tracking, undo/redo, RTF codec, math layout, and clipboard/IME integrations are therefore **engine adapters**, not a claimed byte-for-byte port of those components. Native OLE/TSF/message and COM ownership boundaries remain identified with `TODO Uno:` in source-backed partials.
 
+The editor shares the parsed-text contract, shaping primitives, and inline collections with `TextBlock` and `RichTextBlock`. Its incremental paragraph and math adapters implement that shared contract; they do not duplicate or replace `RichTextBlock`'s block-layout, overflow, or text-container implementation. Batched editor updates preserve the shared collection-version and text-position invalidation rules.
+
 Two integration differences are important when maintaining the port:
 
 - Uno's template binding updates a placeholder's text after the owner's property callback. The adapter observes the presenter text as well, so the source visibility policy runs against the updated value.
@@ -54,7 +56,11 @@ The source-gated experimental `HeaderPlacement` feature is not included. Platfor
 
 Packaged native WinUI releases can also differ from the pinned source snapshot, including the placeholder accessibility-view policy and supplementary-character case mappings. Tests of Uno's managed Unicode casing and pinned-source accessibility policy are therefore distinguished from tests that assert behavior shared with the installed native WinUI binary.
 
+The managed editor preserves an explicit `FontStretch` through cloned character formats and undo/redo. The native WinUI binary used for comparison reports `FontStretch.Undefined` on the receiving range after applying a cloned format in that scenario; stretch clone preservation is tested as an Uno-specific engine contract, separately from shared italic-format parity.
+
 For safe cross-platform transport, active or externally linked RTF destinations are removed during export. Unsupported embedded objects are represented by bounded text or image fallbacks. RTF table descriptors are retained through ordinary cell-content edits, but Uno does not host the native Windows RichEdit table or OLE UI.
+
+Automatic hyperlink activation currently allows HTTP, HTTPS, and mailto targets. This is stricter than WinUI's support for application-registered URI schemes: widening it requires an equivalent untrusted-launch confirmation path, not simply removing the protocol restriction.
 
 Math layout uses an installed OpenType MATH font when available and otherwise falls back to bounded managed layout.
 

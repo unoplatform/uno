@@ -15,6 +15,93 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_RichEditBox
 	{
 		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_First_Baseline_Includes_Paragraph_Spacing(bool empty)
+		{
+			var editor = new RichEditBox { Width = 360, FontSize = 24 };
+			try
+			{
+				editor.Document.SetText(TextSetOptions.None, empty ? "" : "first\rsecond");
+				await UITestHelper.Load(editor);
+				var block = GetDisplayBlock(editor);
+				var before = block.ParsedText.FirstLineBaseline;
+
+				editor.Document.GetRange(0, 0).ParagraphFormat.SpaceBefore = 12;
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(before + 16, block.ParsedText.FirstLineBaseline, 0.1f);
+				Assert.AreEqual(block.ParsedText.GetBaselineForIndex(0), block.BaselineOffset, 0.1);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		public async Task When_TextLineBounds_Changes_Then_Bounded_Layout_Is_Invalidated()
+		{
+			var editor = new RichEditBox { Width = 360, Height = 120, FontSize = 24 };
+			try
+			{
+				editor.Document.SetText(TextSetOptions.FormatRtf, BuildAlternatingRunRtf(8200, 1));
+				await UITestHelper.Load(editor);
+				Assert.IsTrue(editor.UsesBoundedRichLayout);
+				var block = GetDisplayBlock(editor);
+				var before = block.ParsedText.GetVisualLine(0);
+				var rebuilds = editor.BoundedRichLayoutParagraphRebuildCount;
+				editor.Document.GetText(TextGetOptions.None, out var originalText);
+
+				block.TextLineBounds = TextLineBounds.TrimToBaseline;
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsGreaterThan(rebuilds, editor.BoundedRichLayoutParagraphRebuildCount);
+				Assert.IsLessThan(before.Bounds.Height, block.ParsedText.GetVisualLine(0).Bounds.Height);
+				Assert.AreEqual(block.ParsedText.GetVisualLine(0).Baseline, block.BaselineOffset, 0.1);
+				editor.Document.GetText(TextGetOptions.None, out var text);
+				Assert.AreEqual(originalText, text);
+
+				block.TextLineBounds = TextLineBounds.Full;
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(before.Bounds.Height, block.ParsedText.GetVisualLine(0).Bounds.Height, 0.1);
+				Assert.AreEqual(before.Baseline, block.BaselineOffset, 0.1);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		public async Task When_Math_Layout_Provides_The_Shared_First_Baseline()
+		{
+			var editor = CreateMathEditor();
+			try
+			{
+				editor.Document.SetMathMode(RichEditMathMode.MathOnly);
+				editor.Document.SetMathML(
+					"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac><mi>a</mi><mi>b</mi></mfrac></math>");
+				await UITestHelper.Load(editor);
+
+				var parsed = GetMathLayout(editor, out var block);
+				Assert.IsGreaterThan(0, block.BaselineOffset);
+				Assert.AreEqual(parsed.GetVisualLine(0).Baseline, block.BaselineOffset, 0.1);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
 		public async Task When_Right_Tab_Excludes_Paragraph_Mark_Advance()
 		{

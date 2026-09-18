@@ -2591,6 +2591,7 @@ namespace Microsoft.UI.Text
 				state.AllCaps = fields[0] == "1";
 				state.Background = background;
 				state.FontStretch = (global::Windows.UI.Text.FontStretch)fontStretch;
+				state.FontStretchExplicit = true;
 				state.Hidden = fields[3] == "1";
 				state.Kerning = kerning;
 				state.LanguageTag = languageTag;
@@ -3304,6 +3305,8 @@ namespace Microsoft.UI.Text
 					var textObjectIdentity = state.Character.TextObjectIdentity;
 					state.Character = new CharacterFormatState
 					{
+						ItalicExplicit = true,
+						FontStretchExplicit = true,
 						Link = link,
 						LinkAnchor = linkAnchor,
 						TextObjectIdentity = textObjectIdentity,
@@ -3352,7 +3355,10 @@ namespace Microsoft.UI.Text
 					break;
 				case "highlight" when hasParameter: state.Character.Background = colors.TryGetValue(parameter, out var background) ? background : null; break;
 				case "v": state.Character.Hidden = !hasParameter || parameter != 0; break;
-				case "i": state.Character.Italic = !hasParameter || parameter != 0; break;
+				case "i":
+					state.Character.Italic = !hasParameter || parameter != 0;
+					state.Character.ItalicExplicit = true;
+					break;
 				case "outl": state.Character.Outline = !hasParameter || parameter != 0; break;
 				case "protect": state.Character.ProtectedText = !hasParameter || parameter != 0; break;
 				case "scaps": state.Character.SmallCaps = !hasParameter || parameter != 0; break;

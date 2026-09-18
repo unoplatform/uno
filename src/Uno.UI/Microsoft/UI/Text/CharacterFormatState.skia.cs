@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Windows.UI.Text;
 
 namespace Microsoft.UI.Text
 {
@@ -10,7 +11,7 @@ namespace Microsoft.UI.Text
 
 	// Uno-specific concrete character-formatting state for one contiguous run of text in the
 	// RichEditBox Text Object Model. Unlike ITextCharacterFormat (which is tri-state and can be
-	// "undefined" over a mixed range), a run always holds concrete, resolved values.
+	// "undefined" over a mixed range), a run retains inherited defaults and explicit overrides.
 	//
 	// Every ITextCharacterFormat property is persisted. The RichEditBox renderer projects the subset
 	// with exact shared-layout equivalents; the remaining values are retained for TOM fidelity.
@@ -22,8 +23,10 @@ namespace Microsoft.UI.Text
 		public global::Windows.UI.Color? Background;
 		public bool Bold;
 		public global::Windows.UI.Text.FontStretch FontStretch = global::Windows.UI.Text.FontStretch.Normal;
+		public bool FontStretchExplicit;
 		public bool Hidden;
 		public bool Italic;
+		public bool ItalicExplicit;
 		public float Kerning;
 		public string LanguageTag = string.Empty;
 		public bool Outline;
@@ -58,6 +61,23 @@ namespace Microsoft.UI.Text
 		/// <summary>Stable identity shared by all runs belonging to one hyperlink or inline image.</summary>
 		public RichEditTextObjectIdentity? TextObjectIdentity;
 
+		internal bool HasFontWeight => WeightExplicit || Weight != 400;
+
+		internal bool HasFontStyle => ItalicExplicit || Italic;
+
+		internal bool HasFontStretch => FontStretchExplicit || FontStretch != global::Windows.UI.Text.FontStretch.Normal;
+
+		internal int GetEffectiveWeight(int inheritedWeight) => HasFontWeight ? Weight : inheritedWeight;
+
+		internal FontStyle GetEffectiveFontStyle(FontStyle inheritedStyle)
+			=> HasFontStyle ? Italic ? FontStyle.Italic : FontStyle.Normal : inheritedStyle;
+
+		internal FontStretch GetEffectiveFontStretch(FontStretch inheritedStretch)
+			=> HasFontStretch ? FontStretch : inheritedStretch;
+
+		internal global::Windows.UI.Color? GetEffectiveForeground(global::Windows.UI.Color? inheritedForeground)
+			=> Foreground ?? inheritedForeground;
+
 		public CharacterFormatState Clone()
 		{
 			FormattingStateCloneDiagnostics.RecordCharacterClone();
@@ -72,8 +92,10 @@ namespace Microsoft.UI.Text
 				&& Nullable.Equals(Background, other.Background)
 				&& Bold == other.Bold
 				&& FontStretch == other.FontStretch
+				&& FontStretchExplicit == other.FontStretchExplicit
 				&& Hidden == other.Hidden
 				&& Italic == other.Italic
+				&& ItalicExplicit == other.ItalicExplicit
 				&& Kerning.Equals(other.Kerning)
 				&& string.Equals(LanguageTag, other.LanguageTag, StringComparison.Ordinal)
 				&& Outline == other.Outline
@@ -111,8 +133,10 @@ namespace Microsoft.UI.Text
 			hash.Add(Background);
 			hash.Add(Bold);
 			hash.Add(FontStretch);
+			hash.Add(FontStretchExplicit);
 			hash.Add(Hidden);
 			hash.Add(Italic);
+			hash.Add(ItalicExplicit);
 			hash.Add(Kerning);
 			hash.Add(LanguageTag, StringComparer.Ordinal);
 			hash.Add(Outline);
