@@ -209,9 +209,8 @@ The method `InitializeComponent` should always be called in class constructor. A
 
 **An assembly required for a component is missing**
 
-Some components like `ProgressRing` and `MediaPlayerElement` requires you to reference a specific NuGet package for them to work correctly.
+Some components like `MediaPlayerElement` require you to reference a specific NuGet package for them to work correctly.
 
-- For `ProgressRing`, it requires Lottie dependency. For more information about adding Lottie to your project, see [Lottie for Uno](xref:Uno.Features.Lottie).
 - For `MediaPlayerElement` on WebAssembly or Gtk, it requires `Uno.WinUI.MediaPlayer.WebAssembly` or `Uno.WinUI.MediaPlayer.Skia.Gtk` NuGet package. For more information, see [MediaPlayerElement](xref:Uno.Controls.MediaPlayerElement).
 
 ### UNO0008
@@ -228,9 +227,12 @@ window.EnableHotReload();
 
 ## XAML Errors
 
-### UNOX0001
+### UNOX0001: Retired
 
-The `ProgressRing` control [needs an additional Lottie](xref:Uno.Features.Lottie) dependency to be enabled.
+> [!NOTE]
+> This error code is retired. It warned that `ProgressRing` needed an additional Lottie
+> dependency; `ProgressRing` now renders through generated Composition visuals and no longer
+> needs one. This heading is kept so existing links to it still resolve.
 
 ### UXAML0006
 
