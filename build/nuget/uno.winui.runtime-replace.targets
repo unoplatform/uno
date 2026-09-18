@@ -153,7 +153,7 @@
 		<Warning
 			Code="UNOB0024"
 			HelpLink="https://aka.platform.uno/UNOB0024"
-			Text="UnoRuntimeIdentifier no longer selects runtime assets for an application head and can be removed. They are selected from the target framework. See https://aka.platform.uno/UNOB0024"
+			Text="UnoRuntimeIdentifier no longer selects runtime assets for an application head and can be removed. Runtime assets are selected from the target framework. See https://aka.platform.uno/UNOB0024"
 			Condition="'$(UnoRuntimeIdentifier)'!='' AND '$(UnoHasRuntimeHost)'=='true' AND '$(UnoDisableUNOB0024Validation)'!='true'" />
 	</Target>
 
