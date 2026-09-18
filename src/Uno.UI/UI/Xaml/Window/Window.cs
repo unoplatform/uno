@@ -27,6 +27,7 @@ using System.Runtime.CompilerServices;
 using Uno.UI;
 using Windows.ApplicationModel.Core;
 using Windows.Devices.PointOfService;
+using Microsoft.UI.Content;
 
 namespace Microsoft.UI.Xaml;
 
@@ -73,9 +74,6 @@ public partial class Window
 		InitialWindow ??= this;
 		_current ??= this; // TODO:MZ: Do we want this?
 
-		AppWindow = new AppWindow();
-		_appWindowMap[AppWindow] = this;
-
 		if (
 			!NativeWindowFactory.SupportsMultipleWindows
 
@@ -119,16 +117,6 @@ public partial class Window
 		if (Application.Current?.InitializationComplete == true)
 		{
 			Initialize();
-		}
-
-		// We set up the DisplayInformation instance after Initialize so that we have an actual window to bind to.
-		// A macOS hosted-ALC window has no native window (Initialize skips it), so skip this too: the macOS
-		// DisplayInformation extension subscribes to MacOSWindowNative.NativeWindowReady and only unsubscribes
-		// when a native window is created — which never happens here — leaking the extension (pinning the ALC)
-		// and letting it bind to the next unrelated native window.
-		if (!IsMacOSHostedAlcWindow)
-		{
-			global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
 		}
 	}
 
@@ -198,7 +186,7 @@ public partial class Window
 	}
 
 	public AppWindow AppWindow
-	{ get; }
+	{ get; private set; } = null!;
 
 	/// <summary>
 	/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
@@ -318,6 +306,25 @@ public partial class Window
 		}
 
 		_windowImplementation.Initialize();
+
+		// A macOS hosted-ALC window has no native window (Initialize skips it), so there is no native window
+		// id to derive the AppWindow from, and DisplayInformation must be skipped as well: the macOS
+		// DisplayInformation extension subscribes to MacOSWindowNative.NativeWindowReady and only unsubscribes
+		// when a native window is created — which never happens here — leaking the extension (pinning the ALC)
+		// and letting it bind to the next unrelated native window.
+		if (!IsMacOSHostedAlcWindow)
+		{
+			AppWindow = new AppWindow(_windowImplementation.NativeWindowWrapper!.NativeWindowId);
+			_appWindowMap[AppWindow] = this;
+
+			if (_windowImplementation is DesktopWindow { DesktopWindowXamlSource: { } desktopWindowXamlSource })
+			{
+				desktopWindowXamlSource.XamlIsland.ContentIslandEnvironment = new ContentIslandEnvironment(AppWindow.Id);
+			}
+
+			// We set up the DisplayInformation instance after Initialize so that we have an actual window to bind to.
+			global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
+		}
 	}
 
 	internal static void EnsureWindowCurrent()
