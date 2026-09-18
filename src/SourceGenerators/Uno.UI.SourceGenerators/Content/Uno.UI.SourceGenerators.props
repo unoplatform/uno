@@ -59,7 +59,6 @@
 		<CompilerVisibleProperty Include="UnoForceIncludeProjectConfiguration" />
 		<CompilerVisibleProperty Include="UnoForceIncludeServerProcessorsConfiguration" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
-		<CompilerVisibleProperty Include="UnoDisableHotRestartHelperGeneration" />
 		<CompilerVisibleProperty Include="RuntimeIdentifier" />
 		<CompilerVisibleProperty Include="UnoRuntimeIdentifier" />
 		<CompilerVisibleProperty Include="UnoWinRTRuntimeIdentifier" />
