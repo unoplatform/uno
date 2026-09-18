@@ -87,11 +87,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _shouldAnnotateGeneratedXaml;
 
-		/// <summary>
-		/// When set, Visual State Manager children will be initialized lazily for performance
-		/// </summary>
-		private readonly bool _isLazyVisualStateManagerEnabled = true;
-
 		private readonly bool _isUiAutomationMappingEnabled;
 
 		/// <summary>
@@ -226,11 +221,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (bool.TryParse(context.GetMSBuildPropertyValue("ShouldAnnotateGeneratedXaml"), out var shouldAnnotateGeneratedXaml))
 			{
 				_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
-			}
-
-			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlLazyVisualStateManagerEnabled"), out var isLazyVisualStateManagerEnabled))
-			{
-				_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
 			}
 
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlResourcesTrimming"), out var xamlResourcesTrimming))
@@ -533,7 +523,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
 							isUnoAssembly: IsUnoAssembly,
 							isUnoFluentAssembly: IsUnoFluentAssembly,
-							isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
 							enableFuzzyMatching: _enableFuzzyMatching,
 							disableBindableTypeProvidersGeneration: _disableBindableTypeProvidersGeneration,
 							enableAlcAppSupport: _enableAlcAppSupport,
