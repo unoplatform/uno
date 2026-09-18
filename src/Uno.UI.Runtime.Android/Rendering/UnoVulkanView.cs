@@ -83,11 +83,6 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		_framePacer.RequestFrame();
 	}
 
-	public void ResetRendererContext()
-	{
-		// The swapchain is recreated on the next surface creation; the device is retained.
-	}
-
 	#region SurfaceHolder.Callback
 
 	public void SurfaceCreated(ISurfaceHolder holder)

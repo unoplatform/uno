@@ -361,7 +361,6 @@ namespace Uno.UI.Runtime.Android
 					AndroidSkiaNativeElementHostingExtension.AdoptNativeElements(xamlRoot, nativeLayerHost);
 				}
 
-				_renderView?.ResetRendererContext();
 				existingWindow.Activate();
 				InvalidateRender();
 			}

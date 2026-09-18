@@ -58,11 +58,6 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		RenderMode = Rendermode.WhenDirty;
 	}
 
-	public void ResetRendererContext()
-	{
-		_renderer.ResetContext();
-	}
-
 	public void TeardownRenderer()
 	{
 		// GLSurfaceView drives IRenderer.OnDrawFrame on its own GL thread, so freeing the Skia and
@@ -197,9 +192,8 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
 
-			// Negotiating lazily here keeps a lost race self-healing: ResetContext() runs on the UI thread when the
-			// activity re-parents this view, and it can land after OnSurfaceCreated has already fired on the GL
-			// thread — without this every later frame would return and the app would freeze on its last frame.
+			// OnSurfaceCreated normally negotiates the context first; negotiating here too keeps a missed
+			// negotiation from freezing the app on its last frame.
 			if (_context is null)
 			{
 				EnsureContext();
@@ -291,8 +285,6 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 			_context?.Dispose();
 			_context = null;
 		}
-
-		internal void ResetContext() => FreeContext();
 
 		/// <summary>
 		/// Frees the GL and Skia state from the thread that owns it. Must run on the GL thread,
