@@ -17,6 +17,9 @@
 			-->
 			<_LibraryUnoRuntimeIdentifier>$(UnoRuntimeIdentifier)</_LibraryUnoRuntimeIdentifier>
 			<_LibraryUnoRuntimeIdentifier Condition=" '$(UnoHasRuntimeHost)' == 'true' or '$(_LibraryUnoRuntimeIdentifier)' == '' ">skia</_LibraryUnoRuntimeIdentifier>
+
+			<!-- A Reference library builds against the reference facades on purpose: nothing is replaced or required. -->
+			<_UnoRuntimeIsReferenceLibrary Condition=" '$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())' == 'reference' ">true</_UnoRuntimeIsReferenceLibrary>
 		</PropertyGroup>
 
 		<ItemGroup>
@@ -53,6 +56,7 @@
 		Uno 4.6 or later convention: net7.0 or later (uno-runtime/[TargetFramework]/**)
 		-->
 		<RuntimeAssetsSelectorTask_v0
+			Condition="'$(_UnoRuntimeIsReferenceLibrary)' != 'true'"
 			UnoRuntimeEnabledPackage="@(UnoRuntimeEnabledPackage)"
 			TargetPlatformIdentifier="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))"
 			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
@@ -103,7 +107,7 @@
 			Code="UNOB0023"
 			HelpLink="https://aka.platform.uno/UNOB0023"
 			Text="The runtime-enabled package(s) [@(_UnoRuntimeEnabledPackage_Unresolved)] did not provide any runtime assembly for $(TargetFramework). The application would run against the reference assemblies and fail at runtime. Re-run with -v:n for the paths that were searched. See https://aka.platform.uno/UNOB0023"
-			Condition="'@(_UnoRuntimeEnabledPackage_Unresolved)'!='' AND '$(UnoDisableUNOB0023Validation)'!='true' AND '$(DesignTimeBuild)'!='true'" />
+			Condition="'@(_UnoRuntimeEnabledPackage_Unresolved)'!='' AND '$(_UnoRuntimeIsReferenceLibrary)'!='true' AND '$(UnoDisableUNOB0023Validation)'!='true' AND '$(DesignTimeBuild)'!='true'" />
 	</Target>
 
 	<Target Name="_UnoValidateRuntimeAssets" BeforeTargets="CoreCompile">
