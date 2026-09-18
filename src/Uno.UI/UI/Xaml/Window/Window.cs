@@ -235,7 +235,21 @@ public partial class Window
 			}
 
 			_windowImplementation.Content = value;
+			OnContentChanged();
 		}
+	}
+
+	/// <summary>
+	/// Raised after <see cref="Content"/> is replaced or cleared.
+	/// </summary>
+	internal event EventHandler? ContentChanged;
+
+	private void OnContentChanged()
+	{
+#if __SKIA__
+		UpdateBackdropThemeSource();
+#endif
+		ContentChanged?.Invoke(this, EventArgs.Empty);
 	}
 
 	/// <summary>
@@ -403,6 +417,7 @@ public partial class Window
 
 #if __SKIA__
 	private Microsoft.UI.Xaml.Media.SystemBackdrop? _systemBackdrop;
+	private FrameworkElement? _backdropThemeSource;
 
 	/// <summary>
 	/// Gets or sets the system backdrop used to render materials like Mica and Acrylic.
@@ -426,8 +441,48 @@ public partial class Window
 				}
 			}
 
-			NativeWrapper?.SetSystemBackdrop(value);
-			UpdateRootVisualBackgroundForBackdrop(value);
+			ApplySystemBackdrop(value);
+		}
+	}
+
+	private void ApplySystemBackdrop(Media.SystemBackdrop? backdrop)
+	{
+		NativeWrapper?.SetSystemBackdrop(backdrop);
+		UpdateRootVisualBackgroundForBackdrop(backdrop);
+		UpdateBackdropThemeSource();
+	}
+
+	/// <summary>
+	/// Tracks the content's theme while a backdrop is set, so the fallback colour follows
+	/// <c>Content.ActualTheme</c> as MUX's SystemBackdrop does, retargeting when the content changes.
+	/// </summary>
+	private void UpdateBackdropThemeSource()
+	{
+		var source = _systemBackdrop is not null ? Content as FrameworkElement : null;
+		if (!ReferenceEquals(source, _backdropThemeSource))
+		{
+			if (_backdropThemeSource is not null)
+			{
+				_backdropThemeSource.ActualThemeChanged -= OnBackdropThemeSourceActualThemeChanged;
+			}
+
+			_backdropThemeSource = source;
+			if (source is not null)
+			{
+				source.ActualThemeChanged += OnBackdropThemeSourceActualThemeChanged;
+			}
+		}
+
+		RefreshBackdropFallback();
+	}
+
+	private void OnBackdropThemeSourceActualThemeChanged(FrameworkElement sender, object args) => RefreshBackdropFallback();
+
+	private void RefreshBackdropFallback()
+	{
+		if (RootElement is Uno.UI.Xaml.Islands.XamlIslandRoot islandRoot)
+		{
+			islandRoot.RefreshBackdropBackground();
 		}
 	}
 
@@ -502,6 +557,7 @@ public partial class Window
 		if (_systemBackdrop is not null)
 		{
 			UpdateRootVisualBackgroundForBackdrop(_systemBackdrop);
+			UpdateBackdropThemeSource();
 		}
 #endif
 	}
