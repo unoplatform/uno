@@ -104,8 +104,6 @@ public class Given_BitmapIcon
 	[TestMethod]
 #if !HAS_RENDER_TARGET_BITMAP
 	[Ignore("Cannot take screenshot on this platform.")]
-#elif !__SKIA__
-	[Ignore("BitmapIcon flicker fix is Skia-specific - Image.skia.cs updates the surface brush color filter in place without reloading.")]
 #endif
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Flaky on Skia iOS/tvOS only - https://github.com/unoplatform/uno/issues/24489
 	public async Task When_Foreground_Changed_With_ShowAsMonochrome_True()
@@ -174,9 +172,9 @@ public class Given_BitmapIcon
 	[TestMethod]
 #if !HAS_RENDER_TARGET_BITMAP
 	[Ignore("Cannot take screenshot on this platform.")]
-#elif !__SKIA__
-	[Ignore("BitmapIcon flicker fix is Skia-specific - Image.skia.cs updates the surface brush color filter in place without reloading.")]
 #endif
+	// WinUI: the capture after toggling ShowAsMonochrome still shows the previous tint.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ShowAsMonochrome_Toggled_True_To_False_Image_Reflects_Change()
 	{
 		var bitmapIcon = new BitmapIcon
@@ -211,9 +209,9 @@ public class Given_BitmapIcon
 	[TestMethod]
 #if !HAS_RENDER_TARGET_BITMAP
 	[Ignore("Cannot take screenshot on this platform.")]
-#elif !__SKIA__
-	[Ignore("BitmapIcon flicker fix is Skia-specific - Image.skia.cs updates the surface brush color filter in place without reloading.")]
 #endif
+	// WinUI: the capture after toggling ShowAsMonochrome still shows the previous tint.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ShowAsMonochrome_Toggled_False_To_True_Image_Picks_Up_Foreground()
 	{
 		var bitmapIcon = new BitmapIcon

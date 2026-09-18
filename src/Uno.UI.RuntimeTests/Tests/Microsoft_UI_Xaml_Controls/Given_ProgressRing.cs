@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
@@ -94,16 +93,8 @@ public class Given_ProgressRing
 	}
 
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("The test is unreliable when DPI scaling is not 1")]
-#endif
 	public async Task When_Stretch_Fill()
 	{
-		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
-		{
-			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
-		}
-
 		var pr1 = new ProgressRing { Width = 100, Height = 50, IsIndeterminate = false, Value = 50 };
 		var pr2 = new ProgressRing { Width = 50, Height = 100, IsIndeterminate = false, Value = 50 };
 

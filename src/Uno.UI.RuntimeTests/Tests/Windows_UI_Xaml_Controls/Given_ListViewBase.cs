@@ -5029,9 +5029,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/257")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-		[Ignore("This test is only for managed scrollers.")]
-#endif
 		public async Task When_ListView_Unloaded_Loaded_Scroll_Position()
 		{
 			var SUT = new ListView
