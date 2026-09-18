@@ -1294,6 +1294,15 @@ namespace Uno.UI
 			UpdateSystemColorAndBrushResourcesCore(rootDictionary, resources, restoreDefaults, visited);
 		}
 
+		/// <summary>
+		/// Test hook: forgets all recorded high-contrast overrides so tests don't leak state into each other.
+		/// </summary>
+		internal static void ResetHighContrastResourceStates()
+		{
+			_highContrastResourceStates.Clear();
+			_hasHighContrastResourceStates = false;
+		}
+
 		private static void UpdateSystemColorAndBrushResourcesCore(
 			ResourceDictionary dictionary,
 			IReadOnlyList<ColorAndBrushResourceInfo> resources,
