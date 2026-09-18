@@ -331,6 +331,14 @@ public partial class Window
 		}
 
 		_windowImplementation.Initialize();
+
+#if __SKIA__
+		if (_systemBackdrop is not null)
+		{
+			// A backdrop set before the native window existed never reached it.
+			ApplySystemBackdrop(_systemBackdrop);
+		}
+#endif
 	}
 
 	internal static void EnsureWindowCurrent()
