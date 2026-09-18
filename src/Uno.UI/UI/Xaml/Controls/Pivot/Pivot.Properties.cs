@@ -141,7 +141,7 @@ namespace Microsoft.UI.Xaml.Controls
 			"SelectedIndex", typeof(int),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(
-				defaultValue: IntegerBoxes.NegativeOne,
+				defaultValue: IntBoxes.NegativeOne,
 				options: FrameworkPropertyMetadataOptions.None,
 				propertyChangedCallback: (s, e) => (s as Pivot)?.OnSelectedIndexChanged((int)e.OldValue, (int)e.NewValue)
 			)

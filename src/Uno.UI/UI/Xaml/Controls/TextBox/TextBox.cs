@@ -328,7 +328,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: IntegerBoxes.Zero,
+					defaultValue: IntBoxes.Zero,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnMaxLengthChanged((int)e.NewValue)
 				)
 			);

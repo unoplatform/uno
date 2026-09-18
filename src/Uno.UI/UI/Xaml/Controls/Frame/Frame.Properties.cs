@@ -48,7 +48,7 @@ partial class Frame
 			nameof(BackStackDepth),
 			typeof(int),
 			typeof(Frame),
-			new FrameworkPropertyMetadata(IntegerBoxes.Zero, (s, e) => ((Frame)s)?.OnBackStackDepthChanged(e)));
+			new FrameworkPropertyMetadata(IntBoxes.Zero, (s, e) => ((Frame)s)?.OnBackStackDepthChanged(e)));
 
 	protected virtual void OnBackStackDepthChanged(DependencyPropertyChangedEventArgs e)
 	{

@@ -58,7 +58,7 @@ public sealed class BoxingCodeFixProvider : CodeFixProvider
 					string? boxMemberName = null;
 					if (typeInfo.Type!.SpecialType == SpecialType.System_Int32)
 					{
-						boxClassName = "IntegerBoxes";
+						boxClassName = "IntBoxes";
 						boxMemberName = literalExpression.Token.Value switch
 						{
 							-1 => "NegativeOne",

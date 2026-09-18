@@ -37,7 +37,7 @@ public partial class TreeViewNode
 		DependencyProperty.Register(nameof(Content), typeof(object), typeof(TreeViewNode), new FrameworkPropertyMetadata(null));
 
 	public static DependencyProperty DepthProperty { get; } =
-		DependencyProperty.Register(nameof(Depth), typeof(int), typeof(TreeViewNode), new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne));
+		DependencyProperty.Register(nameof(Depth), typeof(int), typeof(TreeViewNode), new FrameworkPropertyMetadata(IntBoxes.NegativeOne));
 
 	public static DependencyProperty HasChildrenProperty { get; } =
 		DependencyProperty.Register(nameof(HasChildren), typeof(bool), typeof(TreeViewNode), new FrameworkPropertyMetadata(BoolBoxes.False, OnHasChildrenPropertyChanged));
