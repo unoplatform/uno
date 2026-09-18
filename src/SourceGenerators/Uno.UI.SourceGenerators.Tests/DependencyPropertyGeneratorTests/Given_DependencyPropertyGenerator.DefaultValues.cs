@@ -219,4 +219,22 @@ public partial class Given_DependencyPropertyGenerator
 
 		run.ShouldSucceed().ShouldContain(HintName, "defaultValue: GetMyValueDefaultValue(),");
 	}
+
+	[TestMethod]
+	[DataRow("int?", "int")]
+	[DataRow("object", "int")]
+	[DataRow("global::System.IComparable", "int")]
+	[DataRow("object", "string")]
+	[DataRow("string", "string?")]
+	public async Task When_DefaultValue_Method_Returns_A_Readable_Type(string propertyType, string returnType)
+	{
+		var run = await RunAsync(InstanceType($$"""
+			[GeneratedDependencyProperty]
+			public partial {{propertyType}} MyValue { get; set; }
+
+			private static {{returnType}} GetMyValueDefaultValue() => default!;
+			"""));
+
+		run.ShouldSucceed().ShouldContain(HintName, "defaultValue: GetMyValueDefaultValue(),");
+	}
 }
