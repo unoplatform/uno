@@ -16,6 +16,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject;
 /// Turns one <c>[GeneratedDependencyProperty]</c> target into an equatable model. Invalid input produces diagnostics
 /// instead of a property; nothing here throws.
 /// </summary>
+/// <remarks>
+/// The XAML generator's <c>HasGeneratedDependencyProperty</c> treats any attributed property or single-parameter static
+/// <c>Get{Name}</c> method as a DP, so every shape accepted here must stay within that.
+/// </remarks>
 internal sealed partial class DependencyPropertyModelBuilder
 {
 	public const string AttributeMetadataName = "Uno.UI.Xaml.GeneratedDependencyPropertyAttribute";
