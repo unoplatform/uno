@@ -61,10 +61,44 @@ partial class DependencyPropertyModelBuilder
 				return null;
 			}
 
+			if (!IsBoxCompatible(method.ReturnType, propertyType))
+			{
+				Report(
+					DependencyPropertyDiagnostics.IncompatibleDefaultValueMethod,
+					GetSourceLocation(method) ?? location,
+					$"{_containingType.Name}.{methodName}",
+					method.ReturnType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
+					propertyType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
+					name);
+				return null;
+			}
+
 			return new DefaultValueInfo($"{methodName}()", CachedBox: null, BoxableType: method.ReturnType.ToDisplayString(s_fullyQualifiedFormat));
 		}
 
 		return GetDefaultOf(propertyType);
+	}
+
+	/// <summary>
+	/// Whether a boxed <paramref name="valueType"/> can be read back as <paramref name="propertyType"/>, which the generated getter does with a cast.
+	/// An <see cref="object"/> result is trusted to hold a pre-boxed value of the right type.
+	/// </summary>
+	private bool IsBoxCompatible(ITypeSymbol valueType, ITypeSymbol propertyType)
+	{
+		if (valueType.SpecialType == SpecialType.System_Object || IsUnresolved(valueType) || IsUnresolved(propertyType))
+		{
+			return true;
+		}
+
+		if (propertyType is INamedTypeSymbol { OriginalDefinition.SpecialType: SpecialType.System_Nullable_T } nullableType &&
+			SymbolEqualityComparer.Default.Equals(nullableType.TypeArguments[0], valueType))
+		{
+			return true;
+		}
+
+		// Numeric and user-defined conversions change the boxed type, so only reference and boxing conversions keep it readable.
+		var conversion = _compilation.ClassifyCommonConversion(valueType, propertyType);
+		return conversion.IsIdentity || (conversion.IsImplicit && !conversion.IsUserDefined && propertyType.IsReferenceType);
 	}
 
 	private static DefaultValueInfo GetDefaultOf(ITypeSymbol type)
