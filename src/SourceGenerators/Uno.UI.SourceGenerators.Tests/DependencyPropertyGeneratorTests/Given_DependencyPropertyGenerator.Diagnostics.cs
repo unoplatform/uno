@@ -192,6 +192,27 @@ public partial class Given_DependencyPropertyGenerator
 	}
 
 	[TestMethod]
+	[DataRow("double", "int")]
+	[DataRow("long", "int")]
+	[DataRow("int?", "long")]
+	[DataRow("global::Microsoft.UI.Xaml.Visibility", "int")]
+	[DataRow("string", "global::System.IComparable")]
+	public async Task When_DefaultValue_Method_Returns_An_Incompatible_Type(string propertyType, string returnType)
+	{
+		var run = await RunAsync(InstanceType($$"""
+			[GeneratedDependencyProperty]
+			public partial {{propertyType}} MyValue { get; set; }
+
+			private static {{returnType}} GetMyValueDefaultValue() => default!;
+			"""));
+
+		var diagnostic = run.ShouldReportSingle("UnoInternal0025");
+		diagnostic.GetMessage().Should().StartWith("'C.GetMyValueDefaultValue' returns ");
+		run.InputCompilation.SyntaxTrees.Single(t => t.FilePath == diagnostic.Location.GetLineSpan().Path).GetText().ToString(diagnostic.Location.SourceSpan)
+			.Should().Be("GetMyValueDefaultValue");
+	}
+
+	[TestMethod]
 	[DataRow("int", "\"text\"")]
 	[DataRow("int", "null")]
 	[DataRow("int", "1.5")]
