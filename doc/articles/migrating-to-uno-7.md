@@ -67,8 +67,8 @@ on macOS with Skia rendering. To migrate:
 2. Add `net10.0-desktop` if the solution does not already have a desktop head.
 3. Move anything still needed from `Platforms/MacCatalyst/` to `Platforms/Desktop/`, and
    drop the Catalyst `Info.plist` and `Entitlements.plist`.
-4. Replace `#if __MACCATALYST__` blocks with `#if __DESKTOP__`, or with an
-   `OperatingSystem.IsMacOS()` runtime check.
+4. Replace `#if __MACCATALYST__` blocks with `#if __DESKTOP__` combined with an
+   `OperatingSystem.IsMacOS()` check — `__DESKTOP__` alone is also true on Windows and Linux.
 5. Publish with the [macOS desktop packaging](xref:uno.publishing.desktop.macos) flow
    instead of the Mac Catalyst one.
 
