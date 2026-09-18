@@ -8493,8 +8493,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var renderCaret = SUT.TextBoxView.DisplayBlock.RenderCaret;
-			Assert.IsNotNull(renderCaret);
-			Assert.IsTrue(renderCaret.Value.index < 25, $"The rendered caret should preview the drag, but it is at {renderCaret.Value.index}.");
+			Assert.IsTrue(renderCaret.HasValue, "The caret should be rendered during the drag.");
+			var previewCaret = renderCaret.Value;
+			Assert.IsTrue(previewCaret.index < 25, $"The rendered caret should preview the drag, but it is at {previewCaret.index}.");
 			Assert.AreEqual(25, SUT.SelectionStart, "The selection must not follow the preview.");
 
 			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Cancel, default);
