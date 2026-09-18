@@ -54,13 +54,6 @@
 		]
 	},
 	{
-		"group": "UniversalImageLoading",
-		"version": "1.9.37",
-		"packages": [
-			"Uno.UniversalImageLoader"
-		]
-	},
-	{
 		"group": "Dsp",
 		"version": "1.4.0",
 		"packages": [
