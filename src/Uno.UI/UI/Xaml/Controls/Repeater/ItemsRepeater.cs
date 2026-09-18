@@ -648,12 +648,15 @@ namespace Microsoft.UI.Xaml.Controls
 				_layoutSubscriptionsRevoker.Disposable = disposables;
 			}
 
-			if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is not null)
+			if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is { } itemsSourceView)
 			{
-				m_itemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
+				// Capture the view in a local (as OnDataSourcePropertyChanged does): this revoker is disposed by
+				// OnDataSourcePropertyChanged only after m_itemsSourceView has been replaced, so reading the field
+				// here would unsubscribe the wrong view, or throw when the new ItemsSource is null.
+				itemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
 				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
 				{
-					m_itemsSourceView.CollectionChanged -= OnItemsSourceViewChanged;
+					itemsSourceView.CollectionChanged -= OnItemsSourceViewChanged;
 				});
 			}
 

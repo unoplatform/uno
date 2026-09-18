@@ -404,6 +404,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			sut.Materialized.Should().Be(0);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_UnloadAndReload_Then_CanClearItemsSource()
+		{
+			var sut = SUT.Create();
+
+			await sut.Load();
+			await sut.Unload();
+			await sut.Load();
+
+			sut.Materialized.Should().Be(3);
+
+			// After a reload the data source subscription is re-created by OnLoaded; replacing the items source
+			// must dispose it without reading the (already replaced) ItemsSourceView field.
+			sut.Repeater.ItemsSource = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			sut.Repeater.ItemsSourceView.Should().BeNull();
+
+			// The previous source must no longer be observed (a leaked handler would run against a null view).
+			sut.Source.Add("Additional item");
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
 
 		[TestMethod]
 		[RunsOnUIThread]
