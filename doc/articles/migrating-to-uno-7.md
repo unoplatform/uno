@@ -420,6 +420,14 @@ assembly it has always lived in is itself renamed `Uno` → `Uno.WinRT` in 7.0.
 
   `Coercion`, `Animations`, `Local`, `Inheritance` and `DefaultValue` are unchanged.
 
+- **`PrettyPrint` / `ViewExtensions.TreeGraph` are no longer public on WinAppSDK.**
+  `Uno.UI.Extensions.PrettyPrint` and `ViewExtensions` (`TreeGraph`, `FindFirstAncestor`,
+  `FindFirstDescendant`, …) were accidentally public in the WinAppSDK build of
+  `Uno.UI.Extras` — a guard that was meant to keep them internal there always evaluated to
+  `false`. They are now internal on WinAppSDK, matching the intended Skia-only public surface
+  (they remain public in the Skia `Uno.UI` build). There is no known WinAppSDK consumer; if
+  you called these from a WinAppSDK head, copy the extension methods into your own project.
+
 ### `FeatureConfiguration` flags removed
 
 The native-only flags below no longer exist; delete the calls — behavior is the unified
