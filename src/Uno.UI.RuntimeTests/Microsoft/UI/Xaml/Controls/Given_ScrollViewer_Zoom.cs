@@ -10,9 +10,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
 [RunsOnUIThread]
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-[Ignore("Zoom is only implemented for the managed scroll presenter.")]
-#endif
 public class Given_ScrollViewer_Zoom
 {
 	[TestMethod]
@@ -145,6 +142,8 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
+	// WinUI: the zoomed extent/offsets are not reflected yet after ChangeView and WaitForIdle (reads the pre-zoom values).
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Zoom_ScrollableExtent_Increases()
 	{
 		var content = new Border
@@ -186,6 +185,8 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
+	// WinUI keeps the current ZoomFactor when ZoomMode becomes Disabled; Uno resets it to 1.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ZoomMode_Changed_At_Runtime()
 	{
 		var content = new Border
@@ -224,6 +225,8 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
+	// WinUI: the zoomed extent/offsets are not reflected yet after ChangeView and WaitForIdle (reads the pre-zoom values).
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ChangeView_With_Scroll_And_Zoom()
 	{
 		var content = new Border
@@ -259,6 +262,8 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
+	// WinUI: the zoomed extent/offsets are not reflected yet after ChangeView and WaitForIdle (reads the pre-zoom values).
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ChangeView_Offset_Only_Reachable_At_Target_Zoom()
 	{
 		// 1000x1000 content in a 200x200 viewport: scrollable is 800 at zoom 1.0 and 1800 at zoom 2.0.
@@ -374,6 +379,8 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
+	// WinUI: the zoomed extent/offsets are not reflected yet after ChangeView and WaitForIdle (reads the pre-zoom values).
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ZoomedIn_ScrollableExtent_Scales_With_Zoom()
 	{
 		// Content is 400x400, viewport is 200x200
@@ -415,6 +422,8 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
+	// WinUI: the zoomed extent/offsets are not reflected yet after ChangeView and WaitForIdle (reads the pre-zoom values).
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ZoomedOut_ScrollOffset_Is_Clamped()
 	{
 		// Start with scrollable content, scroll to an offset, then zoom out
@@ -550,6 +559,8 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
+	// WinUI: the zoomed extent/offsets are not reflected yet after ChangeView and WaitForIdle (reads the pre-zoom values).
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ScrollOffset_Exceeds_NewScrollable_After_ZoomOut()
 	{
 		// Start scrolled to max, then zoom out - offset should be reduced
