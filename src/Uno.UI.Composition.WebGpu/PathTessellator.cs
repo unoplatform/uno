@@ -195,7 +195,7 @@ internal static class PathTessellator
 			var n = pts.Count;
 			var area2 = SignedArea2(pts);
 			if (Math.Abs(area2) < 1e-9) { return false; }
-			var sign = area2 > 0 ? 1f : -1f;
+			var sign = area2 > 0 ? -1f : 1f;
 
 			for (var i = 0; i < n; i++)
 			{
