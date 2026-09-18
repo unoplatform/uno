@@ -222,6 +222,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		// The DependencyPropertyGenerator emits the {name}Property identifier, but the output of other generators
 		// is invisible to this one, so a source-declared [GeneratedDependencyProperty] also marks a DP. Referenced
 		// assemblies already expose their identifiers, which may be inaccessible even though the attribute isn't.
+		// This is a superset of the shapes DependencyPropertyModelBuilder accepts: the others fail the build with a diagnostic.
 		private static bool HasGeneratedDependencyProperty(INamedTypeSymbol? propertyOwner, string name)
 		{
 			string? attachedGetterName = null;
