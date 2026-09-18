@@ -1,15 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<!-- Target used to override the uno-runtime targets -->
-	<!--
-	UnoRuntimeIdentifier keeps the target running for a cross-runtime library, which sets it without
-	referencing a runtime host. Dropping it here would leave such a library's output on the reference facades.
-	-->
-	<Target Name="ReplaceUnoRuntime"
-				Condition="'$(UnoHasRuntimeHost)' == 'true' or '$(UnoRuntimeIdentifier)' != ''"
-				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile;ResolveLockFileReferences">
-
+	<Target Name="_UnoComputeLibraryRuntimeIdentifier">
 		<PropertyGroup>
 			<!--
 			The legacy netstandard2.0 convention's folder, named by the library that packs into it. A head has
@@ -18,9 +10,20 @@
 			<_LibraryUnoRuntimeIdentifier>$(UnoRuntimeIdentifier)</_LibraryUnoRuntimeIdentifier>
 			<_LibraryUnoRuntimeIdentifier Condition=" '$(UnoHasRuntimeHost)' == 'true' or '$(_LibraryUnoRuntimeIdentifier)' == '' ">skia</_LibraryUnoRuntimeIdentifier>
 
-			<!-- A Reference library builds against the reference facades on purpose: nothing is replaced or required. -->
+			<!-- A Reference library builds against the reference facades on purpose: nothing is replaced, required or validated. -->
 			<_UnoRuntimeIsReferenceLibrary Condition=" '$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())' == 'reference' ">true</_UnoRuntimeIsReferenceLibrary>
 		</PropertyGroup>
+	</Target>
+
+	<!-- Target used to override the uno-runtime targets -->
+	<!--
+	UnoRuntimeIdentifier keeps the target running for a cross-runtime library, which sets it without
+	referencing a runtime host. Dropping it here would leave such a library's output on the reference facades.
+	-->
+	<Target Name="ReplaceUnoRuntime"
+				Condition="'$(UnoHasRuntimeHost)' == 'true' or '$(UnoRuntimeIdentifier)' != ''"
+				DependsOnTargets="_UnoComputeLibraryRuntimeIdentifier"
+				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile;ResolveLockFileReferences">
 
 		<ItemGroup>
 			<_UnoRuntimeEnabledPackage_EmptyPackageBasePath
@@ -110,7 +113,7 @@
 			Condition="'@(_UnoRuntimeEnabledPackage_Unresolved)'!='' AND '$(_UnoRuntimeIsReferenceLibrary)'!='true' AND '$(UnoDisableUNOB0023Validation)'!='true' AND '$(DesignTimeBuild)'!='true'" />
 	</Target>
 
-	<Target Name="_UnoValidateRuntimeAssets" BeforeTargets="CoreCompile">
+	<Target Name="_UnoValidateRuntimeAssets" BeforeTargets="CoreCompile" DependsOnTargets="_UnoComputeLibraryRuntimeIdentifier">
 		<PropertyGroup>
 			<!-- Normalized so a value other than 'true' cannot fail the task's boolean parameter conversion. -->
 			<_UnoDisableUNOB0020Validation>false</_UnoDisableUNOB0020Validation>
@@ -120,6 +123,7 @@
 		</PropertyGroup>
 
 		<RuntimeAssetsValidatorTask_v0
+			Condition="'$(_UnoRuntimeIsReferenceLibrary)' != 'true'"
 			TargetPlatformIdentifier="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))"
 			NuGetPackageRoot="$(NuGetPackageRoot)"
 			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
