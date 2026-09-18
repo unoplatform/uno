@@ -1045,6 +1045,15 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 `*.Wasm` (DOM) heads in favor of the Skia heads (`Skia.netcoremobile`,
 `Skia.WebAssembly.Browser`, and the desktop Skia head) and remove native bootstrap code.
 
+### iOS Hot Restart is not supported
+
+Visual Studio iOS Hot Restart, which deployed to a device connected to a Windows PC without a Mac, is not
+supported. Visual Studio 2026 no longer offers it, and Visual Studio 2022 does not support the `net10.0`
+target frameworks that 7.0 requires. Uno Platform no longer generates the `__UnoHotRestartDelegate` application
+delegate it relied on, which started the app without the Skia iOS host. Build and deploy iOS apps through a
+connected macOS host instead. The `UnoDisableHotRestartHelperGeneration` property no longer has any effect and can
+be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
+
 ## Migration checklist
 
 1. Remove `<UnoFeatures>skiarenderer</UnoFeatures>` (now implicit) — and any native-only

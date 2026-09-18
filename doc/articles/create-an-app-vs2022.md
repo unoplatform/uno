@@ -114,14 +114,10 @@ To debug for **iOS**:
 
     ![Visual Studio - "Debug toolbar" drop-down selecting the "net10.0-ios" framework](Assets/quick-start/ios-debug.png)
 
-- Select:
-  - An active device, if your IDE is connected to a macOS Host
-  - A [local device using Hot Restart](https://learn.microsoft.com/xamarin/xamarin-forms/deploy-test/hot-restart), to debug your application without connecting to a mac
+- Select an active device. Your IDE must be connected to a macOS host: iOS Hot Restart, which deployed to a device connected to the Windows PC, is not available in Visual Studio 2026 and is not supported by Uno Platform 7.0.
 
     > [!NOTE]
     > If no iOS devices are available, a Visual Studio 17.7+ issue may require unloading/reloading the project. Right-click on the `MyApp` project and select **Unload Project** then **Load project**.
-    > [!IMPORTANT]
-    > When using a device connected to a Windows PC, the Release build configuration is not supported. An actual macOS machine is required.
 
 ### [**Android**](#tab/Android)
 
