@@ -5,7 +5,7 @@
 		The version is not required, and VS/Code waits for some design-time targets to be executed to evaluate it.
 	-->
 	<PropertyGroup>
-		<_UseUnoExtensions>$(UnoFeatures.Contains(';Extensions;'))</_UseUnoExtensions>
+		<_UseUnoExtensions>$(UnoFeatures.Contains(';extensions;'))</_UseUnoExtensions>
 	</PropertyGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';authenticationmsal;'))">
