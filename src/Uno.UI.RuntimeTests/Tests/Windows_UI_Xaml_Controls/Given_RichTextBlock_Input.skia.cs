@@ -160,6 +160,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/81")]
 		public async Task When_ShiftClick_Extends_Selection()
 		{
 			var SUT = CreateSingleLine("The quick brown fox jumps over the lazy dog");
@@ -167,6 +168,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			try
 			{
 				await UITestHelper.Load(SUT);
+				Assert.IsTrue(SUT.Focus(FocusState.Programmatic), "The shift-click target must accept focus");
+				await WindowHelper.WaitForIdle();
 
 				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 				using var mouse = injector.GetMouse();
@@ -181,13 +184,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				mouse.Release();
 				await WindowHelper.WaitForIdle();
 
-				// Delay so the shift+click is not coalesced into a double-tap (word selection).
-				await Task.Delay(600);
+				var anchor = SUT.SelectionStart;
+				Assert.IsNotNull(anchor, "The first click must establish the selection anchor");
+				Assert.AreEqual(string.Empty, SUT.SelectedText, "The first click should place a collapsed caret");
 
-				// Shift+click far to the right extends the selection from the anchor.
-				mouse.MoveTo(new Point(bounds.Right - 2, midY));
+				// Gesture recognition uses injected timestamps; a wall-clock delay does not advance them.
+				mouse.MoveTo(new Point(bounds.Right - 2, midY), steps: 1, stepOffsetInMilliseconds: 600);
 				await WindowHelper.WaitForIdle();
 				mouse.Press(VirtualKeyModifiers.Shift);
+				await WindowHelper.WaitForIdle();
 				mouse.Release(VirtualKeyModifiers.Shift);
 				await WindowHelper.WaitForIdle();
 
@@ -200,6 +205,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					return;
 				}
 
+				Assert.AreEqual(anchor.Offset, start.Offset, "Shift+click must retain the original anchor");
 				Assert.IsTrue(end.Offset > start.Offset, $"Shift+click should extend past the anchor (start {start.Offset}, end {end.Offset})");
 			}
 			finally
