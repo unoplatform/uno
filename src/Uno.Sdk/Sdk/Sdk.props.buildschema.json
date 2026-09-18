@@ -115,10 +115,6 @@
 			"description": "Disables the build check in Visual Studio that ensures the Browser target is first.",
 			"type": "bool"
 		},
-		"UnoDisableVSWarnDesktopIsFirst": {
-			"description": "Disables the build check in Visual Studio that ensures the Desktop target is first.",
-			"type": "bool"
-		},
 		"UnoDisableVSWarnWindowsIsFirst": {
 			"description": "Disables the build check in Visual Studio that ensures the Windows target is first.",
 			"type": "bool"
@@ -134,11 +130,6 @@
 		"DisableWinUI8857_Workaround": {
 			"description": "Disables the WinUI workaround for issue 8857.",
 			"helpUrl": "https://github.com/microsoft/microsoft-ui-xaml/issues/8857",
-			"type": "bool"
-		},
-		"DisableUno9430_Workaround": {
-			"description": "Disables modification of MtouchExtraArgs for Uno Issue 9430.",
-			"helpUrl": "https://github.com/unoplatform/uno/issues/9430",
 			"type": "bool"
 		},
 		"DisableXamarinDebug_Workaround": {
