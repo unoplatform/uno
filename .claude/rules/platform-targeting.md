@@ -11,12 +11,27 @@ paths:
 > `doc/articles/platform-specific-csharp.md`, `doc/articles/platform-specific-xaml.md`, and the proposal in
 > `specs/056-platform-targeting-vocabulary/spec.md`.
 
-Preprocessor symbols and file-suffix exclusion are injected by `src/Uno.CrossTargetting.targets` from `UnoRuntimeIdentifier` / `TargetPlatformIdentifier` — **never** set platform `DefineConstants` or `Compile Remove` for suffixes in a `.csproj`. Symbols are **mutually exclusive per build**: a single compilation never has both `__SKIA__` and `__WASM__`.
+Preprocessor symbols and file-suffix exclusion are injected by `src/Uno.CrossTargetting.targets` from `UnoRuntimeFlavor` / `TargetPlatformIdentifier` — **never** set platform `DefineConstants` or `Compile Remove` for suffixes in a `.csproj`. Symbols are **mutually exclusive per build**: a single compilation never has both `__SKIA__` and `__WASM__`.
 
-Current symbols: `__ANDROID__`, `__APPLE_UIKIT__` (iOS/tvOS), `__WASM__`, `__SKIA__`, `__NETSTD_REFERENCE__` / `UNO_REFERENCE_API`, `__CROSSRUNTIME__` (true for Skia, WebAssembly, Reference).
+`UnoRuntimeFlavor` names **which build of a multi-flavour project this is**, and takes three values — or none at all. It is not a drawing backend and not a runtime identifier — `Uno.UI` picks its backend (Skia, WebGPU, …) at run time, so no build-time value can name one.
+
+| `UnoRuntimeFlavor` | Which projects | Selects | Ships in |
+|---|---|---|---|
+| `Generic` | `*.Skia.csproj` and every single-flavour project | `*.skia.cs`, `__SKIA__` | `uno-runtime/<tfm>/skia` |
+| `Wasm` | `*.Wasm.csproj` | `*.wasm.cs`, `__WASM__` | `uno-runtime/<tfm>/webassembly` |
+| `Reference` | `*.Reference.csproj` | `*.reference.cs`, `__NETSTD_REFERENCE__` | `lib/<tfm>` |
+| *(empty)* | `*.netcoremobile.csproj` on an android/ios/tvos TFM, and the WinAppSDK builds | nothing — `TargetPlatformIdentifier` and the `.Android.cs` / `.UIKit.cs` suffixes take over | `lib/<tfm>-<platform>` |
+
+Empty is a **valid state, not a missing value**, which is why `Uno.CrossTargetting.targets` has neither a fallback nor an error for it: defaulting it would hand `__SKIA__` to the native builds, and failing on it would break every project that is not multi-flavoured.
+
+So **`__SKIA__` is not on everywhere**. `Uno.UI` and everything above it ship a single `Generic` build, so it is always defined there; the WinRT layer below (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) still builds the `Wasm`, `Reference` and native-mobile flavours, which do not get it.
+
+The `uno-runtime` folder names in the last column are a **frozen packaging convention** set by the nuspecs, deliberately not derived from the value — renaming the value must never move the published layout.
+
+Current symbols: `__ANDROID__`, `__APPLE_UIKIT__` (iOS/tvOS), `__WASM__`, `__SKIA__`, `__NETSTD_REFERENCE__` / `UNO_REFERENCE_API`, `__CROSSRUNTIME__` (true for all three flavours).
 
 ## Scope: Skia-only UI
-`Uno.UI` compiles once, for Skia (`UnoRuntimeIdentifier=Skia`, plain `netX.0`), and that single assembly runs on Desktop, Android, iOS/tvOS and WebAssembly. The native Android View, UIKit and WASM DOM renderers were removed in 7.0, so there is no native UI target to maintain. Platform-specific behavior in the UI layer uses runtime checks or `ApiExtensibility` (rules 4-5). Per-platform **file suffixes** remain meaningful only in projects that still build per-platform variants: the WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) and platform-specific runtime/add-in projects. The non-UI WinRT APIs there are still actively enhanced, since Skia apps consume those implementations. See AGENTS.md → "Development scope".
+`Uno.UI` compiles once, for Skia (`UnoRuntimeFlavor=Generic`, plain `netX.0`), and that single assembly runs on Desktop, Android, iOS/tvOS and WebAssembly. The native Android View, UIKit and WASM DOM renderers were removed in 7.0, so there is no native UI target to maintain. Platform-specific behavior in the UI layer uses runtime checks or `ApiExtensibility` (rules 4-5). Per-platform **file suffixes** remain meaningful only in projects that still build per-platform variants: the WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) and platform-specific runtime/add-in projects. The non-UI WinRT APIs there are still actively enhanced, since Skia apps consume those implementations. See AGENTS.md → "Development scope".
 
 ## Decision rule — pick the narrowest that fits
 1. **Entire implementation is platform-specific, in a per-platform project** → separate partial **file suffix**: `.Android.cs`, `.iOS.cs`, `.UIKit.cs` (iOS+tvOS), `.wasm.cs`, `.skia.cs`, `.reference.cs`. One file = exactly one platform/runtime; the suffix is auto-excluded elsewhere. The `Uno.UI` project itself compiles only `.skia.cs` and `.crossruntime.cs`. A platform runtime project may still link a suffixed file from under `src/Uno.UI` (e.g. `Uno.UI.Runtime.Skia.WebAssembly.Browser` compiles `NativeWebView.wasm.cs`), so judge a file by the project that compiles it, not by its path.
