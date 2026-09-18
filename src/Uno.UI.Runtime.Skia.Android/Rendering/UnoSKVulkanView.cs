@@ -91,12 +91,13 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		_surfaceReady = true;
 
 		// Start the render thread
-		_renderThread = new Thread(RenderLoop)
+		Thread renderThread = new(RenderLoop)
 		{
 			Name = "UnoVulkanRenderThread",
 			IsBackground = true
 		};
-		_renderThread.Start(holder);
+		Volatile.Write(ref _renderThread, renderThread);
+		renderThread.Start(holder);
 	}
 
 	public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
@@ -348,7 +349,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		_disposed = true;
 		_renderEvent.Set();
 		var stopped = _renderThread?.Join(TimeSpan.FromSeconds(2)) ?? true;
-		_renderThread = null;
+		Volatile.Write(ref _renderThread, null);
 
 		if (!stopped)
 		{
