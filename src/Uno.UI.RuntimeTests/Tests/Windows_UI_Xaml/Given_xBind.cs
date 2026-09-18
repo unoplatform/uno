@@ -44,6 +44,25 @@ public class Given_xBind
 		Assert.AreEqual("Hello", SUT.tb.Text);
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22223")]
+	public async Task When_xBind_InterfaceProperty()
+	{
+		var SUT = new When_xBind_InterfaceProperty();
+
+		try
+		{
+			await UITestHelper.Load(SUT);
+
+			Assert.AreEqual("3", SUT.arrayCountText.Text, "Array Count should be resolved through IReadOnlyList");
+			Assert.AreEqual("2", SUT.listCountText.Text, "List Count should be resolved");
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
 #if __ANDROID__
 	[TestMethod]
 	public async Task When_XBind_TargetDisposed_Test()

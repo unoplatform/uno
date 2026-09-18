@@ -431,32 +431,51 @@ namespace Uno.UI.DataBinding
 		/// The private members lookup is present to enable the binding to
 		/// x:Name elements in x:Bind operations.
 		/// </remarks>
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types enumerated for the lookup do not carry property annotations, which is acceptable for runtime binding")]
 		private static PropertyInfo? GetPropertyInfo(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] Type type,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] Type type,
 			string name,
 			bool allowPrivateMembers)
 		{
-			do
+			var bindingFlags = BindingFlags.Instance
+				| BindingFlags.Static
+				| BindingFlags.Public
+				| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default);
+
+			foreach (var current in EnumerateTypeThenInterfaces(type))
 			{
-				var info = type.GetProperty(
-					name,
-					BindingFlags.Instance
-					| BindingFlags.Static
-					| BindingFlags.Public
-					| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default)
-					| BindingFlags.DeclaredOnly
-				);
+				// Interfaces never report inherited members, so DeclaredOnly only applies to the class walk.
+				var info = current.GetProperty(name, bindingFlags | (current.IsInterface ? BindingFlags.Default : BindingFlags.DeclaredOnly));
 
 				if (info != null)
 				{
 					return info;
 				}
-
-				type = type.BaseType!;
 			}
-			while (type != null);
 
 			return null;
+		}
+
+		/// <summary>
+		/// Enumerates the type hierarchy, then the implemented interfaces, so that members declared
+		/// on the concrete type take precedence over interface members of the same name.
+		/// </summary>
+		/// <remarks>
+		/// The interface pass is what makes <c>IReadOnlyList&lt;T&gt;.Count</c> reachable when the
+		/// concrete type is an array, or when the interface is implemented explicitly.
+		/// </remarks>
+		private static IEnumerable<Type> EnumerateTypeThenInterfaces(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type type)
+		{
+			for (var current = type; current is not null; current = current.BaseType)
+			{
+				yield return current;
+			}
+
+			foreach (var iface in type.GetInterfaces())
+			{
+				yield return iface;
+			}
 		}
 
 		/// <summary>
@@ -475,8 +494,9 @@ namespace Uno.UI.DataBinding
 		/// The private members lookup is present to enable the binding to
 		/// x:Name elements in x:Bind operations.
 		/// </remarks>
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types enumerated for the lookup do not carry property annotations, which is acceptable for runtime binding")]
 		private static PropertyInfo? GetIndexerInfo(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] Type type,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] Type type,
 			Type? parameterType,
 			bool allowPrivateMembers)
 		{
@@ -487,30 +507,29 @@ namespace Uno.UI.DataBinding
 			var bindingFlags = BindingFlags.Instance
 					| BindingFlags.Static
 					| BindingFlags.Public
-					| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default)
-					| BindingFlags.DeclaredOnly;
+					| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default);
 
-			do
+			foreach (var current in EnumerateTypeThenInterfaces(type))
 			{
+				// Interfaces never report inherited members, so DeclaredOnly only applies to the class walk.
+				var flags = bindingFlags | (current.IsInterface ? BindingFlags.Default : BindingFlags.DeclaredOnly);
+
 				var info = parameterTypes is not null
-					? type.GetProperty(
+					? current.GetProperty(
 						name: "Item"
-						, bindingAttr: bindingFlags
+						, bindingAttr: flags
 						, binder: null
 						, returnType: null
 						, types: parameterTypes
 						, modifiers: null
 					)
-					: type.GetProperty(name: "Item", bindingAttr: bindingFlags);
+					: current.GetProperty(name: "Item", bindingAttr: flags);
 
 				if (info != null)
 				{
 					return info;
 				}
-
-				type = type.BaseType!;
 			}
-			while (type != null);
 
 			return null;
 		}
