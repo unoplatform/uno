@@ -636,8 +636,6 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-		// Not implemented for native pointers (i.e. !UNO_HAS_MANAGED_POINTERS)
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public bool CancelDirectManipulations()
 		{
 #if UNO_HAS_MANAGED_POINTERS

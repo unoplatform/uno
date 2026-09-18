@@ -3,7 +3,7 @@ using Uno;
 
 namespace Microsoft.UI.Xaml.Media.Animation;
 
-[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+[NotImplemented("__SKIA__")]
 internal class MenuPopupThemeTransition : PopupThemeTransition
 {
 	public double OpenedLength
