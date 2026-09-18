@@ -138,6 +138,50 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
+	// The browser reports focus and page visibility instead of window activation, so map them onto the
+	// shared activation path. Beyond raising Window.Activated and Window.VisibilityChanged, which never
+	// fired on this target, this is what lets a key released while the browser holds focus - opening
+	// dev tools mid-keystroke, switching tab - stop being reported as held afterwards.
+	[JSExport]
+	private static void OnWindowFocusChanged([JSMarshalAs<JSType.Any>] object instance, bool focused)
+	{
+		try
+		{
+			using var syncContextScope = NativeDispatcher.Main.SynchronizationContext.Apply();
+
+			if (instance is WebAssemblyWindowWrapper windowWrapper)
+			{
+				windowWrapper.OnNativeActivated(focused
+					? CoreWindowActivationState.PointerActivated
+					: CoreWindowActivationState.Deactivated);
+			}
+		}
+		catch (Exception e)
+		{
+			// A managed exception must not cross back into the JS DOM-event callback.
+			Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, typeof(WebAssemblyWindowWrapper));
+		}
+	}
+
+	[JSExport]
+	private static void OnDocumentVisibilityChanged([JSMarshalAs<JSType.Any>] object instance, bool visible)
+	{
+		try
+		{
+			using var syncContextScope = NativeDispatcher.Main.SynchronizationContext.Apply();
+
+			if (instance is WebAssemblyWindowWrapper windowWrapper)
+			{
+				windowWrapper.OnNativeVisibilityChanged(visible);
+			}
+		}
+		catch (Exception e)
+		{
+			// A managed exception must not cross back into the JS DOM-event callback.
+			Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, typeof(WebAssemblyWindowWrapper));
+		}
+	}
+
 	protected override void ShowCore()
 	{
 		if (Application.Current.FontPreloadTask is { } task)
