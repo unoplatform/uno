@@ -18,6 +18,19 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	public partial class DependencyObjectCollectionBase : DependencyObject
 	{
+		/// <summary>
+		/// The backing list, so tree walks that don't know the item type can index it instead of
+		/// boxing an enumerator. Walked through <see cref="DependencyObjectItems"/>.
+		/// </summary>
+		internal IList IndexedItems { get; private protected set; }
+
+		/// <summary>
+		/// Bumped on every mutation, so an indexed walk still fails on a collection modified
+		/// mid-enumeration, as <see cref="List{T}.Enumerator"/> does.
+		/// </summary>
+		internal int ItemsVersion { get; private set; }
+
+		private protected void OnItemsMutated() => ItemsVersion++;
 	}
 
 	/// <summary>
@@ -90,6 +103,8 @@ namespace Microsoft.UI.Xaml
 
 		private void Initialize()
 		{
+			IndexedItems = _list;
+
 			((DependencyObject)this).RegisterSelfParentChangedCallback(
 				(instance, k, handler) => UpdateParent(handler.NewParent)
 			);
@@ -141,6 +156,7 @@ namespace Microsoft.UI.Xaml
 					OnRemoved(originalValue);
 
 					_list[index] = value;
+					OnItemsMutated();
 
 					OnAdded(value);
 
@@ -158,6 +174,7 @@ namespace Microsoft.UI.Xaml
 			EnsureNotLocked();
 
 			_list.Insert(index, item);
+			OnItemsMutated();
 
 			OnAdded(item);
 
@@ -171,6 +188,7 @@ namespace Microsoft.UI.Xaml
 			OnRemoved(_list[index]);
 
 			_list.RemoveAt(index);
+			OnItemsMutated();
 
 			RaiseVectorChanged(CollectionChange.ItemRemoved, index);
 		}
@@ -182,6 +200,7 @@ namespace Microsoft.UI.Xaml
 			ValidateItem(item);
 
 			_list.Add(item);
+			OnItemsMutated();
 
 			OnAdded(item);
 
@@ -198,6 +217,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_list.Clear();
+			OnItemsMutated();
 
 			RaiseVectorChanged(CollectionChange.Reset, 0);
 		}
@@ -325,5 +345,93 @@ namespace Microsoft.UI.Xaml
 			: base(parent, isAutoPropertyInheritanceEnabled)
 		{
 		}
+	}
+
+	/// <summary>
+	/// Enumerates the items a property value carries for the Enter, Leave and resource-binding walks.
+	/// Framework DO collections and arrays are indexed; any other <see cref="IEnumerable"/> keeps using
+	/// its own enumerator. Mirrors WinUI, where those walks index the collection's items directly.
+	/// </summary>
+	internal ref struct DependencyObjectItems
+	{
+		private readonly DependencyObjectCollectionBase _collection;
+		private readonly IList _items;
+		private readonly object[] _array;
+		private readonly int _version;
+		private readonly IEnumerator _enumerator;
+		private int _index;
+		private object _current;
+
+		public DependencyObjectItems(IEnumerable source)
+		{
+			_collection = null;
+			_items = null;
+			_array = null;
+			_version = 0;
+			_enumerator = null;
+			_index = -1;
+			_current = null;
+
+			if (source is DependencyObjectCollectionBase { IndexedItems: { } items } collection)
+			{
+				_collection = collection;
+				_items = items;
+				_version = collection.ItemsVersion;
+			}
+			else if (source is object[] array)
+			{
+				_array = array;
+			}
+			else
+			{
+				_enumerator = source.GetEnumerator();
+			}
+		}
+
+		public bool MoveNext()
+		{
+			if (_items is not null)
+			{
+				// Same contract as List<T>.Enumerator: a collection modified mid-walk fails rather
+				// than silently skipping or revisiting an item.
+				if (_collection.ItemsVersion != _version)
+				{
+					throw new InvalidOperationException("Collection was modified; enumeration operation may not execute.");
+				}
+
+				if (++_index < _items.Count)
+				{
+					_current = _items[_index];
+					return true;
+				}
+
+				return false;
+			}
+
+			if (_array is not null)
+			{
+				if (++_index < _array.Length)
+				{
+					_current = _array[_index];
+					return true;
+				}
+
+				return false;
+			}
+
+			if (_enumerator is not null && _enumerator.MoveNext())
+			{
+				_current = _enumerator.Current;
+				return true;
+			}
+
+			return false;
+		}
+
+		public object Current => _current;
+
+		public DependencyObjectItems GetEnumerator() => this;
+
+		public void Dispose() => (_enumerator as IDisposable)?.Dispose();
 	}
 }

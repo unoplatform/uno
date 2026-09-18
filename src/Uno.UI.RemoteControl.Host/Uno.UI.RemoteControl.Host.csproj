@@ -8,6 +8,12 @@
 		<Nullable>enable</Nullable>
 		<NoWarn>$(NoWarn);VSTHRD200</NoWarn>
 		<DefineConstants>$(DefineConstants);IS_DEVSERVER</DefineConstants>
+
+		<!-- The dev-server is a long-running background daemon on the developer's machine.
+		     The default Web SDK profile (Server GC) is throughput-oriented and retains committed
+		     memory; switch to a memory-conscious Workstation profile instead. See #24203. -->
+		<ServerGarbageCollection>false</ServerGarbageCollection>
+		<ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-noplatform.props" />
@@ -98,5 +104,13 @@
 
 	<Target Name="GetTargetPath" />
 	<Target Name="GetCopyToPublishDirectoryItems" />
+
+
+	<ItemGroup>
+		<!-- runtimeconfig.template.json is a build-time input merged into the generated
+		     Uno.UI.RemoteControl.Host.runtimeconfig.json; it must not be copied to output
+		     nor packed. See #24203. -->
+		<Content Remove="runtimeconfig.template.json" />
+	</ItemGroup>
 
 </Project>

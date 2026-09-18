@@ -113,8 +113,8 @@ jobs:
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
-        cd src/SamplesApp/SamplesApp.Skia.Generic
-        dotnet build SamplesApp.Skia.Generic.csproj -f net11.0 -c Release -p:UnoTargetFrameworkOverride=net11.0 /bl:ios-netcoremobile-sampleapp.binlog
+        cd src/SamplesApp/SamplesApp
+        dotnet build SamplesApp.csproj -f net11.0-desktop -c Release -p:UnoTargetFrameworkOverride=net11.0-desktop /bl:samplesapp.binlog
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4

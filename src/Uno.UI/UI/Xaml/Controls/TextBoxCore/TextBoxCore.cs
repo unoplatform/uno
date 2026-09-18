@@ -612,6 +612,13 @@ internal sealed partial class TextBoxCore
 		}
 	}
 
+	/// <summary>
+	/// Pushes <see cref="Uno.UI.Xaml.Controls.TextBoxExtensions.ShowKeyboardDismissButtonProperty"/> to the
+	/// native input view. Only takes effect while the control is being edited; the value is read again when
+	/// the native view is created, so a change made while unfocused is picked up on the next focus.
+	/// </summary>
+	internal void OnShowKeyboardDismissButtonChanged() => TextBoxView?.UpdateProperties();
+
 	private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 	{
 		UpdateButtonStates();

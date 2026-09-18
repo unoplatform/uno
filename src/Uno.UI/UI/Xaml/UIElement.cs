@@ -127,7 +127,9 @@ namespace Microsoft.UI.Xaml
 			{
 				if (parent is FrameworkElement feParent)
 				{
-					return feParent is not PopupPanel && fe.FlowDirection != feParent.FlowDirection;
+					// The popup panel covers the whole window and positions its child in absolute coordinates, so it never mirrors itself;
+					// popup content (whose flow direction is forwarded from the flyout's placement target) mirrors relative to the panel.
+					return fe is not PopupPanel && fe.FlowDirection != feParent.FlowDirection;
 				}
 
 				parent = VisualTreeHelper.GetParent(parent);

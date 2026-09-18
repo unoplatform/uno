@@ -35,51 +35,17 @@
                     Content="Dark" />
             </Grid>
 
-            <TextBlock Text="KB Appearance: for 'custom' text/password-box" />
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <RadioButton
-                    Grid.Column="0"
-                    HorizontalAlignment="Stretch"
-                    Click="UpdateKeyboardAppearance"
-                    Content="Default" />
-                <RadioButton
-                    Grid.Column="1"
-                    HorizontalAlignment="Stretch"
-                    Click="UpdateKeyboardAppearance"
-                    Content="Light" />
-                <RadioButton
-                    Grid.Column="2"
-                    HorizontalAlignment="Stretch"
-                    Click="UpdateKeyboardAppearance"
-                    Content="Dark" />
-            </Grid>
-            <TextBlock Text="note: Dark will be displayed as Alert because it shared the same value." TextWrapping="WrapWholeWords" />
-
             <StackPanel x:Name="TestPanel">
                 <TextBlock Margin="0,20,0,0" Text="TextBox" />
                 <TextBox PlaceholderText="default" />
-                <TextBox PlaceholderText="light" />
-                <TextBox PlaceholderText="dark" />
-                <TextBox PlaceholderText="custom:" />
 
                 <TextBlock Margin="0,20,0,0" Text="PasswordBox" />
                 <PasswordBox PlaceholderText="default" />
-                <PasswordBox PlaceholderText="light" />
-                <PasswordBox PlaceholderText="dark" />
-                <PasswordBox PlaceholderText="custom:" />
             </StackPanel>
 
             <TextBlock TextWrapping="WrapWholeWords">
                 <Run>The 'device theme' can be changed by (ios)Settings &gt; Developer &gt; Dark Appearance.</Run><LineBreak /><LineBreak />
-                <Run>'default' should be affected by requested theme or os theme.</Run><LineBreak />
-                <Run>'dark/light' should always be that theme.</Run><LineBreak />
-                <Run>'custom' should be affected by 'KB Appearance', requested theme or os theme.</Run><LineBreak />
+                <Run>The keyboard appearance should follow the requested theme, falling back to the os theme.</Run><LineBreak />
             </TextBlock>
         </StackPanel>
     </ScrollViewer>

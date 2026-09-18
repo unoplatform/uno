@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Private.Infrastructure;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -693,5 +694,128 @@ public class Given_FlowDirection
 
 		var redTransformToRoot = (MatrixTransform)red.TransformToVisual(null);
 		Assert.AreEqual($"-0.5,0,0,0.5,{m31},{m32}", redTransformToRoot.Matrix.ToString());
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	public async Task When_Flyout_Opened_From_RTL_Target()
+	{
+		// The flow direction of the placement target is forwarded to the popup and presenter (WinUI: ForwardPopupFlowDirection /
+		// ForwardTargetPropertiesToPresenter), so flyout content is laid out right-to-left when the target is.
+		var first = new Border { Width = 40, Height = 20, Background = new SolidColorBrush(Colors.Red) };
+		var second = new Border { Width = 40, Height = 20, Background = new SolidColorBrush(Colors.Green) };
+		var content = new StackPanel { Orientation = Orientation.Horizontal, Children = { first, second } };
+		var flyout = new Flyout { Content = content };
+		var button = new Button
+		{
+			Content = "Open",
+			FlowDirection = FlowDirection.RightToLeft,
+			Flyout = flyout,
+			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Center,
+		};
+		var root = new Grid { Children = { button } };
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(root);
+
+		flyout.ShowAt(button);
+
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(content);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var presenter = content.FindFirstParent<FlyoutPresenter>();
+			Assert.IsNotNull(presenter);
+			Assert.AreEqual(FlowDirection.RightToLeft, presenter.FlowDirection);
+			Assert.AreEqual(FlowDirection.RightToLeft, content.FlowDirection);
+
+#if SUPPORTS_RTL
+			// The presenter is the element whose direction differs from its (popup panel) parent, so it is the one being mirrored.
+			Assert.IsFalse(presenter.GetFlowDirectionTransform().IsIdentity);
+#endif
+
+			// Mirrored layout: the first child ends up to the right of the second one.
+			var firstX = first.TransformToVisual(null).TransformPoint(new Point(0, 0)).X;
+			var secondX = second.TransformToVisual(null).TransformPoint(new Point(0, 0)).X;
+			Assert.IsTrue(firstX > secondX, $"Expected the first child ({firstX}) to be laid out to the right of the second one ({secondX}).");
+		}
+		finally
+		{
+			flyout.Hide();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	public async Task When_MenuFlyout_Opened_From_RTL_Target()
+	{
+		var item = new MenuFlyoutItem { Text = "Item" };
+		var flyout = new MenuFlyout { Items = { item } };
+		var button = new Button
+		{
+			Content = "Open",
+			FlowDirection = FlowDirection.RightToLeft,
+			Flyout = flyout,
+			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Center,
+		};
+		var root = new Grid { Children = { button } };
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(root);
+
+		flyout.ShowAt(button);
+
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(item);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var presenter = item.FindFirstParent<MenuFlyoutPresenter>();
+			Assert.IsNotNull(presenter);
+			Assert.AreEqual(FlowDirection.RightToLeft, presenter.FlowDirection);
+			Assert.AreEqual(FlowDirection.RightToLeft, item.FlowDirection);
+		}
+		finally
+		{
+			flyout.Hide();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	public async Task When_Flyout_Opened_From_LTR_Target()
+	{
+		var content = new Border { Width = 40, Height = 20 };
+		var flyout = new Flyout { Content = content };
+		var button = new Button { Content = "Open", Flyout = flyout, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+		var root = new Grid { Children = { button } };
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(root);
+
+		flyout.ShowAt(button);
+
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(content);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var presenter = content.FindFirstParent<FlyoutPresenter>();
+			Assert.IsNotNull(presenter);
+			Assert.AreEqual(FlowDirection.LeftToRight, presenter.FlowDirection);
+#if SUPPORTS_RTL
+			Assert.IsTrue(presenter.GetFlowDirectionTransform().IsIdentity);
+#endif
+		}
+		finally
+		{
+			flyout.Hide();
+		}
 	}
 }

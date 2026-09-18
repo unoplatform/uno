@@ -29,7 +29,8 @@ public class Given_FileAddUpdateRemove
 
 		Assert.IsNull(sut.Get(), "Type should not exists yet");
 
-		/* await using ==> Causes roslyn crash */ var update = await _HR.UpdateAsync([AddXaml(sut), AddCodeBehind(sut)], ct);
+		/* await using ==> Causes roslyn crash */
+		var update = await _HR.UpdateAsync([AddXaml(sut), AddCodeBehind(sut)], ct);
 
 		Assert.IsNotNull(sut.Get(), "Page should have been compiled and made available to the application");
 	}
@@ -42,7 +43,8 @@ public class Given_FileAddUpdateRemove
 
 		Assert.IsNull(sut.Get(), "Type should not exists yet");
 
-		/* await using ==> Causes roslyn crash */ var update = await _HR.UpdateAsync([AddXaml(sut), AddCodeBehind(sut)], ct);
+		/* await using ==> Causes roslyn crash */
+		var update = await _HR.UpdateAsync([AddXaml(sut), AddCodeBehind(sut)], ct);
 
 		Assert.IsNotNull(sut.Get(), "Page should have been compiled and made available to the library");
 	}
@@ -169,12 +171,15 @@ public class Given_FileAddUpdateRemove
 		Assert.IsNull(sut1.Get(), "First type should not exist yet");
 		Assert.IsNull(sut2.Get(), "Second type should not exist yet");
 
-		/* await using ==> Causes roslyn crash */ var update = await _HR.UpdateAsync([
+		/* await using ==> Causes roslyn crash */
+		var update = await _HR.UpdateAsync(
+		[
 			AddXaml(sut1),
 			AddCodeBehind(sut1),
 			AddXaml(sut2),
 			AddCodeBehind(sut2)
-		], ct);
+		],
+		ct);
 
 		Assert.IsNotNull(sut1.Get(), "First page should have been compiled");
 		Assert.IsNotNull(sut2.Get(), "Second page should have been compiled");
@@ -269,7 +274,7 @@ public class Given_FileAddUpdateRemove
 			IsCreateDeleteAllowed: true);
 
 	private static FileEdit AddXaml(DynamicType type)
-		=> new (
+		=> new(
 			type.FilePath + ".xaml",
 			OldText: null,
 			NewText: $$"""
