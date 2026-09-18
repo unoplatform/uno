@@ -229,7 +229,29 @@ long-gone distinction are removed. Markup using them no longer resolves and must
 They read as a compile-time host discriminator but could never be one: the SDK references every desktop host
 package together, so all of them were defined at once in a `netX.0-desktop` head. Use
 `OperatingSystem.IsWindows()` / `IsLinux()` / `IsMacOS()`, which is the only check that can be correct for a
-target framework that runs on all three. `HAS_UNO_SKIA` and `__UNO_SKIA__` are unaffected.
+target framework that runs on all three. `HAS_UNO_SKIA` and `__UNO_SKIA__` are kept, see below.
+
+#### Preprocessor symbols no longer depend on the project shape
+
+The `Uno.WinUI` package now defines every "Uno draws the UI" symbol in one place, for every target framework except
+the WinAppSDK one. The `Uno.WinUI.Runtime.Skia.*` packages no longer define any symbol. In 6.x the result
+depended on which runtime packages a project happened to reference:
+
+| Symbol | 6.x | 7.0 |
+|---|---|---|
+| `UNO_REFERENCE_API`, `HAS_UNO_SKIA`, `__UNO_SKIA__` | missing from natively rendered targets, from `net*-desktop` class libraries (unless `UnoFeatures` pulled in `MediaPlayerElement` or `WebView`) and from mobile libraries that don't use the Uno.Sdk | defined wherever `HAS_UNO` is |
+| `__APPLE_UIKIT__` | not defined in application or library projects | `net*-ios` and `net*-tvos` |
+| `__DESKTOP__` | also defined by `Uno.WinUI.Runtime.Skia.Headless`, even on a plain `net10.0` target framework | `net*-desktop` only |
+
+What this means for an upgrade:
+
+- An `#else` branch under `UNO_REFERENCE_API`, `HAS_UNO_SKIA` or `__UNO_SKIA__` no longer compiles in desktop class
+  libraries or libraries without the Uno.Sdk: they now take the Uno branch, as their application heads always did.
+- Replace these three symbols with `HAS_UNO`. `HAS_UNO_SKIA` and `__UNO_SKIA__` are deprecated and planned for
+  removal in Uno Platform 8.0.
+- A project that references `Uno.WinUI.Runtime.Skia.Headless` on a plain `net10.0` target framework, or a project
+  that does not use the Uno.Sdk and relied on a runtime package for `__DESKTOP__` or `__WASM__`, must now target
+  `net10.0-desktop` / `net10.0-browserwasm` with the Uno.Sdk, or add the symbol to its own `DefineConstants`.
 
 ### MRT Core moves to the `Uno.WinRT` package
 

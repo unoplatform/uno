@@ -414,6 +414,8 @@
         href: uno-development/debugging-inspect-visual-tree.md
       - name: Guidelines for code style
         href: contributing/guidelines/code-style.md
+      - name: Preprocessor symbols
+        href: uno-development/preprocessor-symbols.md
       - name: Using the SamplesApp
         href: uno-development/working-with-the-samples-apps.md
       - name: Guidelines for creating tests
