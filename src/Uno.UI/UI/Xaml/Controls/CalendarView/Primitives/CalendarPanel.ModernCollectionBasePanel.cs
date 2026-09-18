@@ -472,8 +472,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			int focusedIndex,
 			ElementType elementType,
 			KeyNavigationAction action,
-			object o,
-			int i,
+			bool allowWrap,
+			int itemIndexHintForHeaderNavigation,
 			out uint newFocusedIndexUint,
 			out ElementType newFocusedType,
 			out bool actionValidForSourceIndex)
