@@ -173,10 +173,6 @@
 			"description": "Provides an explicit override for the version of the Uno.Wasm.Bootstrap packages to use.",
 			"type": "nuget-version"
 		},
-		"UnoUniversalImageLoaderVersion": {
-			"description": "Provides an explicit override for the version of the Uno.UniversalImageLoader packages to use.",
-			"type": "nuget-version"
-		},
 		"AndroidMaterialVersion": {
 			"description": "Provides an explicit override for the version of Android Material to use.",
 			"type": "nuget-version"
@@ -219,6 +215,10 @@
 		},
 		"UnoHotDesignVersion": {
 			"description": "Provides an explicit override for the version of Uno.HotDesign to use.",
+			"type": "nuget-version"
+		},
+		"UnoAppMcpVersion": {
+			"description": "Provides an explicit override for the version of Uno.UI.App.Mcp to use.",
 			"type": "nuget-version"
 		},
 		"MicrosoftLoggingVersion": {
@@ -287,6 +287,14 @@
 		},
 		"MicrosoftIdentityClientVersion": {
 			"description": "Provides an explicit override for the version of Microsoft.Identity.Client to use.",
+			"type": "nuget-version"
+		},
+		"MicrosoftWebView2Version": {
+			"description": "Provides an explicit override for the version of Microsoft.Web.WebView2 to use.",
+			"type": "nuget-version"
+		},
+		"VlcNativeWindowsAssetsVersion": {
+			"description": "Provides an explicit override for the version of VideoLAN.LibVLC.Windows, used by the MediaPlayerElement feature on desktop, to use.",
 			"type": "nuget-version"
 		},
 		"UnoSplashScreenFile": {
