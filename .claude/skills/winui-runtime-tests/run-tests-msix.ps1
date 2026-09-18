@@ -18,6 +18,10 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $ResultsFile = [System.IO.Path]::GetFullPath($ResultsFile)
+# The app joins its arguments with '&' and splits them again (App.Tests.ParseArgs), so the path would be truncated.
+if ($ResultsFile.Contains('&')) {
+	throw "ResultsFile must not contain '&' (the app splits its arguments on it): $ResultsFile"
+}
 
 # An alias launch inherits this process's environment, so DOTNET_ROOT_<ARCH> is resolved against the
 # runtimeconfig of the installed package.
