@@ -24,26 +24,14 @@ internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewPr
 {
 	public INativeWebView CreateNativeWebView(ContentPresenter contentPresenter)
 	{
-		var backend = Environment.GetEnvironmentVariable("UNO_WEBVIEW2_BACKEND")?.ToLowerInvariant();
-		switch (backend?.Trim())
+		var backend = Environment.GetEnvironmentVariable("UNO_WEBVIEW2_BACKEND")?.Trim().ToLowerInvariant();
+		if (!string.IsNullOrEmpty(backend) && backend != "webview2aot")
 		{
-			case "webview2aot":
-				return CreateWin32NativeAotWebView(contentPresenter);
-			case "":
-			case null:
-				break;
-			default:
-				typeof(Win32Host).LogError()?.Error($"Unsupported `UNO_WEBVIEW2_BACKEND` value `{backend}`! {SupportedUnoWebview2BackendValues}");
-				break;
+			// webview2aot is the only backend left since the Microsoft.Web.WebView2 backend
+			// was removed in Uno Platform 7.0; any other value is ignored, not fatal.
+			typeof(Win32Host).LogWarn()?.Warn($"`UNO_WEBVIEW2_BACKEND={backend}` is not supported. The Microsoft.Web.WebView2 backend was removed in Uno Platform 7.0; `webview2aot` is the only backend and is used regardless.");
 		}
-		return CreateDefaultWebView(contentPresenter);
+
+		return new Win32NativeAotWebView(owner, contentPresenter);
 	}
-
-	private const string SupportedUnoWebview2BackendValues = "Supported values: `webview2aot`.";
-
-	private INativeWebView CreateWin32NativeAotWebView(ContentPresenter contentPresenter)
-		=> new Win32NativeAotWebView(owner, contentPresenter);
-
-	private INativeWebView CreateDefaultWebView(ContentPresenter contentPresenter)
-		=> CreateWin32NativeAotWebView(contentPresenter);
 }
