@@ -737,13 +737,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return namedTypeSymbol2;
 				}
-				else if (nsName.Equals("Uno.UI.Controls.Legacy") &&
-					_metadataHelper.FindTypeByFullName(XamlConstants.Namespaces.Controls + "." + fields[1]) is INamedTypeSymbol namedTypeSymbol3)
-				{
-					// Workaround. There are usages of `legacy:ListView` and `legacy:GridView` in XAML where the referenced control is only in Android and iOS.
-					// We fallback to the corresponding non-legacy for this case
-					return namedTypeSymbol3;
-				}
 
 				return SearchWithFuzzyMatching(fields[1]);
 			}
