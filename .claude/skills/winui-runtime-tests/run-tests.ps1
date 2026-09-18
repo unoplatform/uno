@@ -15,7 +15,7 @@ param(
 
 	[string]$Filter = "",
 
-	# Defaults to the newest src\SamplesApp\SamplesApp\bin\x64\<config>\<tfm>\win-x64 holding an AppxManifest.xml
+	# Defaults to the newest src\SamplesApp\SamplesApp\bin\x64\Release\<tfm>\win-x64 holding an AppxManifest.xml
 	[string]$OutputDir = "",
 
 	[int]$TimeoutSeconds = 600,
@@ -31,7 +31,8 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..\..")
 
 function Resolve-OutputDir {
-	$binRoot = Join-Path $repoRoot "src\SamplesApp\SamplesApp\bin\x64"
+	# build-app.ps1 only produces Release; a newer Debug output must not be picked up instead.
+	$binRoot = Join-Path $repoRoot "src\SamplesApp\SamplesApp\bin\x64\Release"
 	if (-not (Test-Path $binRoot)) {
 		throw "No Windows build output under $binRoot. Build the app first (see SKILL.md Phase 2)."
 	}
@@ -82,6 +83,10 @@ function Format-PathArgument([string]$value) {
 . (Join-Path $PSScriptRoot "dotnet-root.ps1")
 
 $ResultsFile = [System.IO.Path]::GetFullPath($ResultsFile)
+# The app joins its arguments with '&' and splits them again (App.Tests.ParseArgs), so the path would be truncated.
+if ($ResultsFile.Contains('&')) {
+	throw "ResultsFile must not contain '&' (the app splits its arguments on it): $ResultsFile"
+}
 if (-not $OutputDir) {
 	$OutputDir = Resolve-OutputDir
 }
@@ -134,15 +139,25 @@ $launchedAt = Get-Date
 $process = Start-Process -FilePath $winapp -ArgumentList $winappArgs -PassThru -NoNewWindow
 
 if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
+	if ($KeepRegistered) {
+		# winapp stays up too: with -DebugOutput it is the app's debugger, and stopping it would kill the app.
+		throw "Test run timed out after $TimeoutSeconds seconds. The app (winapp PID $($process.Id)) is left running and registered for inspection with winapp ui; stop it and run cleanup.ps1 when done."
+	}
 	Write-Host "Timeout after $TimeoutSeconds seconds — stopping the app."
-	Get-Process -Name 'SamplesApp.Windows' -ErrorAction SilentlyContinue | Stop-Process -Force
 	Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
+	# Only this run's instance: it runs from this output folder and started after the launch.
+	Get-Process -Name 'SamplesApp.Windows' -ErrorAction SilentlyContinue |
+		Where-Object { $_.Path -and $_.Path.StartsWith("$OutputDir\", [StringComparison]::OrdinalIgnoreCase) -and $_.StartTime -ge $launchedAt.AddSeconds(-2) } |
+		Stop-Process -Force
 	& $winapp unregister --manifest $manifestPath --force | Out-Null
 	throw "Test run timed out after $TimeoutSeconds seconds."
 }
 
 Write-Host ""
 Write-Host "winapp exited with code $($process.ExitCode) after $($sw.Elapsed)."
+if ($process.ExitCode -ne 0) {
+	throw "winapp exited with code $($process.ExitCode) — registration, launch or the app itself failed. Any results file at $ResultsFile may be incomplete; re-run with -DebugOutput."
+}
 
 function Test-WrittenByThisRun([string]$path) {
 	return (Test-Path $path) -and (Get-Item $path).LastWriteTime -ge $launchedAt.AddSeconds(-2)
