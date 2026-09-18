@@ -360,7 +360,6 @@ namespace Microsoft.UI.Xaml
 					AndroidSkiaNativeElementHostingExtension.AdoptNativeElements(xamlRoot, nativeLayerHost);
 				}
 
-				_renderView?.ResetRendererContext();
 				existingWindow.Activate();
 				InvalidateRender();
 			}
