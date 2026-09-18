@@ -4,6 +4,7 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -161,24 +162,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/81")]
-		public async Task When_ShiftClick_Extends_Selection()
+		[DataRow(200d)]
+		[DataRow(500d)]
+		public async Task When_ShiftClick_Extends_Selection(double viewportWidth)
 		{
 			var SUT = CreateSingleLine("The quick brown fox jumps over the lazy dog");
+			SUT.HorizontalAlignment = HorizontalAlignment.Left;
+			SUT.VerticalAlignment = VerticalAlignment.Top;
+			var viewport = new Border
+			{
+				Width = viewportWidth,
+				Height = 80,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				Clip = new RectangleGeometry { Rect = new Rect(0, 0, viewportWidth, 80) },
+				Child = SUT,
+			};
 
 			try
 			{
-				await UITestHelper.Load(SUT);
+				await UITestHelper.Load(viewport);
 				Assert.IsTrue(SUT.Focus(FocusState.Programmatic), "The shift-click target must accept focus");
 				await WindowHelper.WaitForIdle();
 
 				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 				using var mouse = injector.GetMouse();
 
-				var bounds = SUT.GetAbsoluteBounds();
-				var midY = bounds.Y + bounds.Height / 2;
+				var run = (Run)((Paragraph)SUT.Blocks[0]).Inlines[0];
+				var textStart = run.ContentStart;
+				Assert.IsNotNull(textStart);
+				var target = textStart.GetPositionAtOffset(4, LogicalDirection.Forward);
+				Assert.IsNotNull(target);
 
-				// Click near the start to place the caret/anchor.
-				mouse.MoveTo(new Point(bounds.X + 2, midY));
+				Point GetClickPoint(TextPointer position)
+				{
+					var rect = position.GetCharacterRect(LogicalDirection.Forward);
+					Assert.IsGreaterThan(0, rect.Height, "The click must target laid-out text");
+					return SUT.TransformToVisual(null).TransformPoint(
+						new Point(rect.Left + 1, rect.Top + rect.Height / 2));
+				}
+
+				// A fixed-width control can extend beyond the runner's visible test area.
+				var anchorPoint = GetClickPoint(textStart);
+				var targetPoint = GetClickPoint(target);
+				Assert.IsTrue(viewport.GetAbsoluteBounds().Contains(anchorPoint), "The anchor must be visible");
+				Assert.IsTrue(viewport.GetAbsoluteBounds().Contains(targetPoint), "The shift-click target must be visible");
+
+				mouse.MoveTo(anchorPoint);
 				await WindowHelper.WaitForIdle();
 				mouse.Press();
 				mouse.Release();
@@ -189,14 +218,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(string.Empty, SUT.SelectedText, "The first click should place a collapsed caret");
 
 				// Gesture recognition uses injected timestamps; a wall-clock delay does not advance them.
-				mouse.MoveTo(new Point(bounds.Right - 2, midY), steps: 1, stepOffsetInMilliseconds: 600);
+				mouse.MoveTo(targetPoint, steps: 1, stepOffsetInMilliseconds: 600);
 				await WindowHelper.WaitForIdle();
 				mouse.Press(VirtualKeyModifiers.Shift);
 				await WindowHelper.WaitForIdle();
 				mouse.Release(VirtualKeyModifiers.Shift);
 				await WindowHelper.WaitForIdle();
 
-				Assert.IsFalse(string.IsNullOrEmpty(SUT.SelectedText), "Shift+click should extend the selection to a non-empty range");
+				Assert.AreEqual("The ", SUT.SelectedText, "Shift+click should select exactly to the targeted text position");
 				var start = SUT.SelectionStart;
 				var end = SUT.SelectionEnd;
 				if (start is null || end is null)
