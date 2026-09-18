@@ -63,10 +63,10 @@ namespace Uno.UI
 			_highContrastResourceStates = [];
 
 		/// <summary>
-		/// <see cref="ConditionalWeakTable{TKey, TValue}"/> exposes no count, so track separately whether
-		/// any high-contrast override has ever been recorded in this process.
+		/// <see cref="ConditionalWeakTable{TKey, TValue}"/> exposes no count. This one only drops on an explicit
+		/// removal, so entries lost to GC keep it above zero and just cost a no-op restore walk.
 		/// </summary>
-		private static bool _hasHighContrastResourceStates;
+		private static int _highContrastResourceStateCount;
 
 		private static readonly object _alcDictionariesLock = new();
 
@@ -1283,9 +1283,9 @@ namespace Uno.UI
 			bool restoreDefaults = false)
 		{
 			// An override is only ever recorded while high contrast is active, so restoring defaults
-			// before that has happened cannot change a value. Skipping the walk keeps the HighContrast
+			// while none is recorded cannot change a value. Skipping the walk keeps the HighContrast
 			// theme dictionaries lazy, which is what this costs at startup on a normal machine.
-			if (restoreDefaults && !_hasHighContrastResourceStates)
+			if (restoreDefaults && _highContrastResourceStateCount == 0)
 			{
 				return;
 			}
@@ -1300,7 +1300,7 @@ namespace Uno.UI
 		internal static void ResetHighContrastResourceStates()
 		{
 			_highContrastResourceStates.Clear();
-			_hasHighContrastResourceStates = false;
+			_highContrastResourceStateCount = 0;
 		}
 
 		private static void UpdateSystemColorAndBrushResourcesCore(
@@ -1372,7 +1372,7 @@ namespace Uno.UI
 							themeDictionary,
 							static _ =>
 							{
-								_hasHighContrastResourceStates = true;
+								_highContrastResourceStateCount++;
 								return new HighContrastResourceState();
 							});
 						var targetColor = state.GetTargetColor(
@@ -1395,7 +1395,7 @@ namespace Uno.UI
 							themeDictionary,
 							static _ =>
 							{
-								_hasHighContrastResourceStates = true;
+								_highContrastResourceStateCount++;
 								return new HighContrastResourceState();
 							});
 						var targetColor = state.GetTargetColor(
@@ -1410,9 +1410,9 @@ namespace Uno.UI
 					}
 				}
 
-				if (restoreDefaults && state is not null)
+				if (restoreDefaults && state is not null && _highContrastResourceStates.Remove(themeDictionary))
 				{
-					_highContrastResourceStates.Remove(themeDictionary);
+					_highContrastResourceStateCount--;
 				}
 			}
 
