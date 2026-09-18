@@ -131,11 +131,20 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		}
 
 		_renderEvent.Set(); // Wake the render thread so it can exit
-		_renderThread?.Join(TimeSpan.FromSeconds(2));
-		_renderThread = null;
+		var stopped = _renderThread?.Join(TimeSpan.FromSeconds(2)) ?? true;
+
+		// Clearing the reference also retires a thread that outlived the timeout: RenderLoop exits
+		// once it is no longer the current render thread, so it cannot resume on the next surface.
+		Volatile.Write(ref _renderThread, null);
+
+		if (!stopped && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("The Vulkan render thread did not stop within the timeout; releasing the surface once its frame completes.");
+		}
 
 		// Dispose the window-scoped Vulkan resources first (the device and GRContext are kept
-		// for the next surface), then release the native window
+		// for the next surface), then release the native window. A frame still in flight holds the
+		// device lock for its whole duration, so this waits for it rather than freeing under it.
 		_vulkanContext.DisposeSurfaceResources();
 
 		if (_nativeWindow != IntPtr.Zero)
@@ -158,7 +167,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 			// Complete the window-scoped Vulkan initialization on the render thread
 			InitializeVulkan(holder);
 
-			while (_surfaceReady && !_disposed)
+			while (_surfaceReady && !_disposed && ReferenceEquals(Volatile.Read(ref _renderThread), Thread.CurrentThread))
 			{
 				// Wait for a render request
 				_renderEvent.Wait(TimeSpan.FromMilliseconds(100));
