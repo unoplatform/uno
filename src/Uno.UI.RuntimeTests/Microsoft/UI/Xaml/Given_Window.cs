@@ -177,6 +177,7 @@ public class Given_Window
 #if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24189")]
 	public async Task When_Transparent_Background_Then_Root_Keeps_Its_Brush()
 	{
 		var content = new Border { Width = 100, Height = 100 };
@@ -210,11 +211,14 @@ public class Given_Window
 		finally
 		{
 			root.SetBackdropBackground(previousMode);
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 	}
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24189")]
 	public async Task When_SystemBackdrop_Set_Then_Content_Background_Is_Untouched()
 	{
 		var red = new SolidColorBrush(Colors.Red);
@@ -242,6 +246,8 @@ public class Given_Window
 		finally
 		{
 			window.SystemBackdrop = previousBackdrop;
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 	}
 #endif
