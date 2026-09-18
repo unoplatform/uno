@@ -65,11 +65,6 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		_renderEvent.Set();
 	}
 
-	public void ResetRendererContext()
-	{
-		// The WebGPU context is recreated on the next surface creation.
-	}
-
 	#region SurfaceHolder.Callback
 
 	public void SurfaceCreated(ISurfaceHolder holder)
