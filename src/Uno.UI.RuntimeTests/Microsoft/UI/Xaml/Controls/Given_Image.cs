@@ -33,9 +33,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresScaling(1f)]
-#if !__SKIA__
-		[Ignore("TODO: Fix on other platforms")]
-#endif
+		// WinUI: the image's color bands land 1px off these bounds (green 20,41,19,18 at 250% display scale).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Parent_Has_BorderThickness()
 		{
 			var image = new Image()
@@ -74,17 +73,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var pinkBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 35, 233), tolerance: 10); // 12x20
 
 			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
-#if __SKIA__
 			Assert.AreEqual(new Rect(20, 30, 59, 19), redBounds);
 			Assert.AreEqual(new Rect(20, 40, 19, 19), greenBounds);
 			Assert.AreEqual(new Rect(44, 40, 19, 19), yellowBounds);
 			Assert.AreEqual(new Rect(68, 40, 11, 19), pinkBounds);
-#else
-			Assert.AreEqual(new Rect(20, 38, 59, 18), redBounds);
-			Assert.AreEqual(new Rect(20, 41, 19, 17), greenBounds);
-			Assert.AreEqual(new Rect(44, 41, 19, 17), yellowBounds);
-			Assert.AreEqual(new Rect(68, 41, 11, 17), pinkBounds);
-#endif
 		}
 
 		[TestMethod]
