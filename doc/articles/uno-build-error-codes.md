@@ -191,6 +191,14 @@ To suppress it:
 
 A member is not implemented, see [this page](xref:Uno.Development.NotImplemented) for more details.
 
+The warning is reported for the target frameworks where the member is missing. WinUI and Composition APIs have one
+implementation shared by every Uno target, so a missing one is reported everywhere. A WinRT API (`Windows.*`) can be
+implemented on some platforms only; a plain `net10.0` library can run on any of them, so it gets the warning only when
+the desktop and WebAssembly implementations are both missing.
+
+To suppress it, use `#pragma warning disable Uno0001` around the call, or `<NoWarn>$(NoWarn);Uno0001</NoWarn>` in
+the project.
+
 ### UNO0002
 
 **Do not call Dispose() on XXX**
