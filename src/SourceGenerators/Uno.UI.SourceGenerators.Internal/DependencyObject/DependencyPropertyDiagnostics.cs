@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 namespace Uno.UI.SourceGenerators.DependencyObject;
 
 /// <summary>
-/// Diagnostics reported by <see cref="DependencyPropertyGenerator"/> (UnoInternal0010 to UnoInternal0024).
+/// Diagnostics reported by <see cref="DependencyPropertyGenerator"/> (UnoInternal0010 to UnoInternal0025).
 /// </summary>
 internal static class DependencyPropertyDiagnostics
 {
@@ -134,6 +134,14 @@ internal static class DependencyPropertyDiagnostics
 		Category,
 		DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
+
+	public static readonly DiagnosticDescriptor IncompatibleDefaultValueMethod = new(
+		"UnoInternal0025",
+		"Incompatible default value method",
+		"'{0}' returns '{1}', which the dependency property '{3}' of type '{2}' cannot read back; return '{2}' or object",
+		Category,
+		DiagnosticSeverity.Error,
+		isEnabledByDefault: true);
 #pragma warning restore RS2008 // Enable analyzer release tracking
 
 	public static ImmutableDictionary<string, DiagnosticDescriptor> ById { get; } = new[]
@@ -153,5 +161,6 @@ internal static class DependencyPropertyDiagnostics
 		LocalCacheRequiresBackingFieldOwner,
 		InvalidBackingFieldOwner,
 		WeakStorageWithLocalCache,
+		IncompatibleDefaultValueMethod,
 	}.ToImmutableDictionary(d => d.Id);
 }

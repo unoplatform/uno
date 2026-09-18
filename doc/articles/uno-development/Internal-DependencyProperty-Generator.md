@@ -101,7 +101,7 @@ The default value comes from, in order of use:
     private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
     ```
 
-    Setting `DefaultValue` as well is an error.
+    It must return the property type, a type that converts to it by reference or boxing, or `object` for a pre-boxed value. Setting `DefaultValue` as well is an error.
 1. Otherwise, `default(T)`.
 
 When the `Uno.UI.Helpers.Boxes.Boxer` class is accessible, the generated code avoids boxing allocations and satisfies the `UnoInternal0002` analyzer. Defaults use the cached boxes of the `Uno.UI.Helpers.Boxes` namespace (for example `BoolBoxes.False` or `DoubleBoxes.Zero`), and setters call `Boxer.Box(value)` when `Boxer` has a `Box` overload for the property type. `Box` overloads are discovered from `Boxer`, so a new overload is used without changes to the generator. Cached boxes are used for the values the generator knows (`false`/`true`, `-1`/`0`/`1` and `0d`/`1d`), only when the corresponding field exists.
@@ -165,6 +165,7 @@ The generator reports these errors:
 | `UnoInternal0022` | `LocalCache = true` is set on an attached property without `AttachedBackingFieldOwner`. |
 | `UnoInternal0023` | `AttachedBackingFieldOwner` isn't a non-generic partial class declared in the same project, or isn't related to the target type. |
 | `UnoInternal0024` | `FrameworkPropertyMetadataOptions.WeakStorage` is combined with a local cache. |
+| `UnoInternal0025` | `Get{Name}DefaultValue()` returns a type the property can't read back, for example `int` for a `double` property. Return the property type, a type it converts to by reference or boxing, or `object` for a pre-boxed value. |
 
 An invalid property is skipped, but the other properties of the type are still generated. A type that can't be resolved never causes the identifier to be skipped: when the property type or `DefaultValue` refers to a missing type, the compiler already reports an error, so the generator doesn't report its own and still generates `{Name}Property`. The generator's behavior is covered by the `Given_DependencyPropertyGenerator` tests in `Uno.UI.SourceGenerators.Tests`.
 
