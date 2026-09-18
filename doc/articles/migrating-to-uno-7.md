@@ -253,6 +253,21 @@ What this means for an upgrade:
   that does not use the Uno.Sdk and relied on a runtime package for `__DESKTOP__` or `__WASM__`, must now target
   `net10.0-desktop` / `net10.0-browserwasm` with the Uno.Sdk, or add the symbol to its own `DefineConstants`.
 
+#### The not-implemented warning (`Uno0001`) follows the target framework
+
+Whether [`Uno0001`](xref:Build.Solution.error-codes#uno0001) fired used to depend on the preprocessor symbols above,
+so it varied with the project shape: `net*-desktop` class libraries got it for no WinRT API, Android and iOS projects
+could get it for WinRT APIs those platforms do implement, and earlier 7.0 previews reported it for no `Uno.UI` or
+`Uno.UI.Composition` API at all. The warning now follows the target framework:
+
+- Using a WinUI or Composition API that Uno Platform does not implement reports `Uno0001` on every target.
+- A WinRT API (`Windows.*`) reports it only on the target frameworks whose implementation is missing. A plain
+  `net10.0` library can run on any of them, so it gets the warning only when the desktop and WebAssembly
+  implementations are both missing.
+
+A project that sets `TreatWarningsAsErrors` can fail to build after the upgrade. Replace the API, or suppress the
+warning where the call is intentional (`#pragma warning disable Uno0001`, or `<NoWarn>$(NoWarn);Uno0001</NoWarn>`).
+
 ### MRT Core moves to the `Uno.WinRT` package
 
 The MRT Core surface — the `Microsoft.Windows.ApplicationModel.Resources` namespace — now lives in
