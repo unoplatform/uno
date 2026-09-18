@@ -246,6 +246,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// WinUI throws for an invalid index; Uno has always returned null and apps depend on it.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_GetChild_Index_Out_Of_Range()
+		{
+			var SUT = new Border { Width = 32, Height = 32, Child = new TextBlock() };
+			await UITestHelper.Load(SUT);
+
+			Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(SUT));
+			Assert.IsNotNull(VisualTreeHelper.GetChild(SUT, 0));
+			Assert.IsNull(VisualTreeHelper.GetChild(SUT, 1));
+			Assert.IsNull(VisualTreeHelper.GetChild(SUT, -1));
+			Assert.IsNull(VisualTreeHelper.GetChild(SUT, int.MinValue));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if !UNO_HAS_MANAGED_POINTERS
 		[Ignore("Root visual tree elements are not configured properly to use managed hit testing.")]
 #endif

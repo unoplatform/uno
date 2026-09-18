@@ -54,6 +54,8 @@ Additionally, on Skia Desktop targets, you'll need the following packages:
 * `SkiaSharp.Views.Uno.WinUI` version 4.148.0 or later
 * `SkiaSharp.Skottie` version 4.148.0 or later
 
+Both are supplied at the version the Uno.Sdk manages (`4.151.1` in Uno Platform 7.0), so an Uno.Sdk project needs no explicit reference.
+
 On Windows/WinAppSDK, use the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
 
 For more information, see [AnimatedVisualPlayer Class](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer).
@@ -133,6 +135,27 @@ Here's how to use this feature:
     }
   }
   ```
+
+## Writing a custom animated visual source
+
+`LottieVisualSource` is one implementation of `IAnimatedVisualSource`; you can write your own to
+feed `AnimatedVisualPlayer` from another format or from generated code.
+
+Since Uno Platform 7.0 that interface matches WinUI exactly — a single method:
+
+```csharp
+IAnimatedVisual TryCreateAnimatedVisual(Compositor compositor, out object diagnostics);
+```
+
+Return an `IAnimatedVisual` carrying the composition `RootVisual`, its natural `Size` and its
+`Duration`; `AnimatedVisualPlayer` drives playback, progress and measurement from there. Because
+this is the WinUI contract, C# emitted by [LottieGen](https://aka.ms/lottiegen) with
+`-Language CSharp -Public -WinUIVersion 3.0` compiles and runs unchanged.
+
+Before 7.0, Uno's `IAnimatedVisualSource` was a nine-method Uno-only contract in which the source
+drove playback itself. See the
+[Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for the old-to-new
+mapping.
 
 ## Limitations
 

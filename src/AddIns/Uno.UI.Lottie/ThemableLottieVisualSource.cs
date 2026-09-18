@@ -1,10 +1,11 @@
-﻿#if !__ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Json;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Windows.Storage.Streams;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Controls;
@@ -22,7 +23,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	[Bindable]
 	public partial class ThemableLottieVisualSource : LottieVisualSourceBase, IThemableAnimatedVisualSource
 	{
-		private JsonValue? _currentDocument;
+		// Lottie files are routinely hand-edited to carry the "{ Color : var(X) }" binding grammar in
+		// shape names, so keep tolerating the trailing commas and comments an editor leaves behind.
+		private static readonly JsonDocumentOptions _documentOptions = new() { AllowTrailingCommas = true, CommentHandling = JsonCommentHandling.Skip };
+
+		// The default encoder escapes non-ASCII and HTML-sensitive characters, which would rewrite every
+		// layer name in the document; the relaxed encoder emits them as-is, matching the previous output.
+		private static readonly JsonSerializerOptions _serializerOptions = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+
+		private JsonObject? _currentDocument;
 
 		private UpdatedAnimation? _updateCallback;
 		private string? _sourceCacheKey;
@@ -38,10 +47,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			LoadAndUpdateAsync(sourceCacheKey, sourceJson, CancellationToken.None).GetAwaiter().GetResult();
 		}
 
-		public string? GetJson()
-		{
-			return _currentDocument?.ToString();
-		}
+		public string? GetJson() => _currentDocument?.ToJsonString(_serializerOptions);
 
 		protected override IDisposable? LoadAndObserveAnimationData(
 			IInputStream sourceJson,
@@ -71,10 +77,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			_sourceCacheKey = sourceCacheKey;
 
-			// Note: we're using Newtonsoft JSON.NET here
-			// because System.Text.Json does not support changing the
-			// parsed document - it's read only.
-
 			// LOAD & PARSE JSON
 			var json = await ReadAnimationJsonAsync(sourceJson, ct);
 			ct.ThrowIfCancellationRequested();
@@ -94,8 +96,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private void LoadAndParseDocument(string json)
 		{
-			JsonObject? document;
-			document = JsonValue.Parse(json) as JsonObject;
+			var document = JsonNode.Parse(json, documentOptions: _documentOptions) as JsonObject;
 
 			if (document == null)
 			{
@@ -121,7 +122,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				{
 					if (layer is JsonObject l)
 					{
-						if (l.TryGetValue("shapes", out var shapesValue))
+						if (l.TryGetPropertyValue("shapes", out var shapesValue))
 						{
 							if (shapesValue is JsonArray shapes)
 							{
@@ -140,47 +141,46 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			void ParseShape(JsonObject shapeElement)
 			{
-				if (!shapeElement.TryGetValue("ty", out var typeValue))
+				if (!shapeElement.TryGetPropertyValue("ty", out var typeValue))
 				{
 					return; // potentially invalid lottie file
 				}
-				if (typeValue.JsonType != JsonType.String)
+				if (typeValue is not JsonValue typeString || typeString.GetValueKind() != JsonValueKind.String)
 				{
 					return; // potentially invalid lottie file
 				}
 
-				var shapeType = (string)typeValue;
+				var shapeType = typeString.GetValue<string>();
 
 				if (shapeType != null && shapeType.Equals("gr"))
 				{
 					// That's a group
 
-					if (!shapeElement.TryGetValue("it", out var itemsProperty)
-						|| itemsProperty.JsonType != JsonType.Array)
+					if (!shapeElement.TryGetPropertyValue("it", out var itemsProperty)
+						|| itemsProperty is not JsonArray items)
 					{
 						return; // potentially invalid lottie file
 					}
-					if (itemsProperty is JsonArray items)
+
+					foreach (var item in items)
 					{
-						foreach (var item in items)
+						if (item is JsonObject s)
 						{
-							if (item is JsonObject s)
-							{
-								ParseShape(s);
-							}
+							ParseShape(s);
 						}
 					}
 
 					return;
 				}
 
-				if (!shapeElement.TryGetValue("nm", out var nameProperty)
-					|| nameProperty.JsonType != JsonType.String)
+				if (!shapeElement.TryGetPropertyValue("nm", out var nameProperty)
+					|| nameProperty is not JsonValue nameString
+					|| nameString.GetValueKind() != JsonValueKind.String)
 				{
 					return; // No name
 				}
 
-				var name = (string)nameProperty;
+				var name = nameString.GetValue<string>();
 
 				if (!string.IsNullOrWhiteSpace(name))
 				{
@@ -207,7 +207,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 			}
 
-			if (document.TryGetValue("layers", out var lyrs) && lyrs is JsonArray documentLayers)
+			if (document.TryGetPropertyValue("layers", out var lyrs) && lyrs is JsonArray documentLayers)
 			{
 				ParseLayers(documentLayers);
 			}
@@ -227,9 +227,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				foreach (var element in colorBinding.Value.Elements)
 				{
-					if (element.TryGetValue("c", out var cElm)
+					if (element.TryGetPropertyValue("c", out var cElm)
 						&& cElm is JsonObject c
-						&& c.TryGetValue("k", out var kElm)
+						&& c.TryGetPropertyValue("k", out var kElm)
 						&& kElm is JsonArray k)
 					{
 
@@ -254,7 +254,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			if (_updateCallback is { } callback)
 			{
-				var json = _currentDocument?.ToString();
+				var json = _currentDocument?.ToJsonString(_serializerOptions);
 				if (json is { })
 				{
 					var propertiesKey = _colorsBindings
@@ -275,4 +275,3 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 	}
 }
-#endif

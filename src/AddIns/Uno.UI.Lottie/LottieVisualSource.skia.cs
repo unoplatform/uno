@@ -143,8 +143,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 						return;
 					}
 
-					canvas.Clear(SKColors.Transparent);
-
+					// Deliberately no clear: this canvas is the frame being recorded, so clearing it (Src
+					// blend) would punch our own box straight through whatever is painted behind the player.
 					var progress = GetProgress();
 					var frameTime = TimeSpan.FromTicks((long)(Duration.Ticks * progress));
 					_animation.SeekFrameTime(frameTime, _invalidationController);

@@ -40,10 +40,10 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		ApplicationHelper.AddWindow(window);
 	}
 
-	public event WindowSizeChangedEventHandler? SizeChanged;
-	public event WindowActivatedEventHandler? Activated;
+	public event TypedEventHandler<object, Microsoft.UI.Xaml.WindowSizeChangedEventArgs>? SizeChanged;
+	public event TypedEventHandler<object, Microsoft.UI.Xaml.WindowActivatedEventArgs>? Activated;
 	public event TypedEventHandler<object, WindowEventArgs>? Closed;
-	public event WindowVisibilityChangedEventHandler? VisibilityChanged;
+	public event TypedEventHandler<object, Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs>? VisibilityChanged;
 
 	public void RaiseActivated(WindowActivatedEventArgs args)
 		=> Activated?.Invoke(Window, args);
@@ -54,7 +54,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 	public void RaiseSizeChanged(WindowSizeChangedEventArgs args)
 		=> SizeChanged?.Invoke(Window, args);
 
-	public void RaiseVisibilityChanged(VisibilityChangedEventArgs args)
+	public void RaiseVisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs args)
 		=> VisibilityChanged?.Invoke(Window, args);
 
 	protected Window Window { get; }
@@ -64,6 +64,9 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 	public abstract CoreWindow? CoreWindow { get; }
 
 	public bool Visible => NativeWindowWrapper?.IsVisible ?? false;
+
+	private bool IsClosingCancellable =>
+		NativeWindowWrapper?.IsClosingCancellable ?? NativeWindowFactory.SupportsClosingCancellation;
 
 	public abstract UIElement? Content { get; set; }
 
@@ -148,12 +151,12 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 			Window.AppWindow.RaiseClosing(e);
 
-			if (e.Cancel && NativeWindowFactory.SupportsClosingCancellation)
+			if (e.Cancel && IsClosingCancellable)
 			{
 				return;
 			}
 
-			if (e.Cancel && !NativeWindowFactory.SupportsClosingCancellation)
+			if (e.Cancel && !IsClosingCancellable)
 			{
 				if (this.Log().IsWarningEnabled())
 				{
@@ -290,7 +293,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 				// don't proceed to close if closing event has been handled
 				// _isClosing will get reset to false
 
-				if (!NativeWindowFactory.SupportsClosingCancellation)
+				if (!IsClosingCancellable)
 				{
 					if (this.Log().IsWarningEnabled())
 					{
@@ -367,10 +370,8 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	private void RaiseWindowVisibilityChangedEvent(bool isVisible)
 	{
-		var args = new VisibilityChangedEventArgs() { Visible = isVisible };
-
-		CoreWindow?.OnVisibilityChanged(args);
-		RaiseVisibilityChanged(args);
+		CoreWindow?.OnVisibilityChanged(new VisibilityChangedEventArgs() { Visible = isVisible });
+		RaiseVisibilityChanged(new Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs(isVisible));
 	}
 
 	public void NotifyContentLoaded()
