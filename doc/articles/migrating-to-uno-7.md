@@ -200,18 +200,30 @@ What this means for an upgrade:
 #### Removed XAML prefixes
 
 Every conditional prefix is now named after a target framework, so the prefixes that named a renderer or a
-long-gone distinction are removed. Markup using them no longer resolves and must be rewritten:
+long-gone distinction are removed. A removed prefix is not rejected: it is treated as an ordinary XML namespace,
+which silently changes what the markup does. Listed in `mc:Ignorable`, its content is ignored on every target;
+declared with the presentation namespace (the usual form for a `not_` prefix), its content applies on every
+target. The build reports each such declaration as [UXAML0007](xref:Build.Solution.error-codes).
+Rewrite the markup:
 
 | Removed prefix | Replacement |
 |---|---|
 | `skia:`, `netstdref:` | `not_winappsdk:` |
 | `not_skia:`, `not_netstdref:` | `winappsdk:` |
 | `androidskia:`, `iosskia:`, `tvosskia:`, `wasmskia:` | `android:`, `ios:`, `tvos:`, `wasm:` |
-| `macos:` | `desktop:` |
+| `macos:`, `not_macos:` | `desktop:`, `not_desktop:` |
 | `not_mux:` | drop the attribute — it dates from UWP support and never applied |
-| `xamarin:`, `legacy:` | drop the prefix |
+| `xamarin:`, and `legacy:` listed in `mc:Ignorable` | drop the prefix |
+
+The removed names stay valid as ordinary aliases of a `using:` namespace, and are not reported then. In particular,
+`xmlns:legacy="using:Uno.UI.Controls.Legacy"` names a live namespace (for instance
+`Uno.UI.Controls.Legacy.ProgressRing`): keep that prefix, since dropping it switches `legacy:ProgressRing` to the
+WinUI `ProgressRing`.
 
 #### Removed file suffixes
+
+These suffixes no longer have a rule, so a file using one compiles for every target framework, the WinAppSDK one
+included. The build reports each such file as [UNOB0027](xref:Build.Solution.error-codes).
 
 | Removed suffix | Replacement |
 |---|---|
