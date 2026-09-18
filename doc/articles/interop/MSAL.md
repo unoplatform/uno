@@ -61,6 +61,28 @@ Follow [Considerations for using Xamarin iOS with MSAL.NET](https://learn.micros
 
 ## WebAssembly
 
+`.WithUnoHelpers()` does nothing on WebAssembly — as on WinUI, it is only there so the same code
+compiles across heads without `#if` conditionals. MSAL's default interactive web UI cannot run
+inside a WebAssembly app (it opens a native browser popup outside the sandbox), so you must supply
+your own browser-based web UI, and an HTTP client factory if the default `HttpClient` does not work
+for your scenario:
+
+```csharp
+IPublicClientApplication _app = PublicClientApplicationBuilder.Create(clientId)
+    [...]
+    .WithHttpClientFactory(myHttpClientFactory) // optional, only if needed
+    .Build();
+
+var authResult = await _app.AcquireTokenInteractive(scopes)
+    .WithCustomWebUi(myCustomWebUi) // required on WebAssembly
+    .ExecuteAsync();
+```
+
+`myCustomWebUi` implements `Microsoft.Identity.Client.Extensibility.ICustomWebUi` and drives the
+authentication flow through the browser — for example with a popup window monitored through
+`System.Runtime.InteropServices.JavaScript` JSImport/JSExport interop, or an in-app `WebView2`.
+There is no built-in Uno implementation to fall back to.
+
 Particularities for WASM:
 
 * Currently, .NET 9 [enforces COOP/COEP](https://github.com/dotnet/runtime/issues/109937) for WebAssembly applications. This prevents any cross-site behavior, including authentication through a browser window popup. There are currently two workarounds for this:
