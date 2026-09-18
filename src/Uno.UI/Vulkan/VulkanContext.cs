@@ -252,11 +252,15 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	/// </summary>
 	public bool RenderFrame(Action<SKSurface> renderCallback)
 	{
-		if (_display == null || _grContext == null || _renderImage == null || _device == null)
+		if (_device == null)
 			return false;
 
 		using (_device.Lock())
 		{
+			// Checked under the lock: DisposeSurfaceResources may have run while this thread waited for it.
+			if (_display == null || _grContext == null || _renderImage == null)
+				return false;
+
 			try
 			{
 				_display.EnsureSwapchainAvailable();
