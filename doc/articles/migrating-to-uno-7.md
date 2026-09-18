@@ -406,6 +406,9 @@ assembly it has always lived in is itself renamed `Uno` → `Uno.WinRT` in 7.0.
   from `System.Runtime.InteropServices.JavaScript` — the recommended, source-generated path
   (thread-safe, CSP-compliant, no `eval`). The string-based `WebAssemblyRuntime.InvokeJS(string)`
   is *not* removed, but it is a legacy eval-based API and is not recommended for new code.
+- **TypeScript interop marker:** `Uno.Foundation.Interop.TSInteropMessageAttribute` and its
+  `CodeGeneration` enum. They drove a TypeScript bindings generator whose only input was set by the
+  WebAssembly DOM heads removed in 7.0, so the attribute had no effect. Remove it from your structs.
 - **Fluent Design resource-version types:** `Microsoft.UI.Xaml.Controls.XamlControlsResourcesV1`,
   `Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2`, the `ControlsResourcesVersion` enum, and
   the `ControlsResourcesVersion` member on **both** `XamlControlsResources` (a dependency property)

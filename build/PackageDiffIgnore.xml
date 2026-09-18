@@ -2332,6 +2332,10 @@
 		  <Member fullName="Uno.Foundation.Interop.JSObjectHandle" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 		  <Member fullName="Uno.Foundation.Interop.JSObject" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 
+		  <!-- Marker for the TypeScript bindings generator, whose only input was set by the native WebAssembly DOM heads removed in 7.0. -->
+		  <Member fullName="Uno.Foundation.Interop.TSInteropMessageAttribute" reason="Removed with the TSBindings generator; nothing sets its input since the WASM DOM heads were removed (breaking changes for 7.0)" />
+		  <Member fullName="Uno.Foundation.Interop.CodeGeneration" reason="Removed with TSInteropMessageAttribute, its only user (breaking changes for 7.0)" />
+
 		  <!-- Uno-only duplicate of System.Numerics.VectorExtensions; removed in favor of the WinAppSDK-ref counterpart. -->
 		  <Member fullName="Uno.Extensions.Vector2Extensions" reason="Removed redundant Uno.Extensions.Vector2Extensions (BC72, breaking changes for 7.0)" />
 
@@ -3818,6 +3822,10 @@
 		  <Member fullName="Uno.Foundation.Interop.IJSObjectMetadata" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 		  <Member fullName="Uno.Foundation.Interop.JSObjectHandle" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 		  <Member fullName="Uno.Foundation.Interop.JSObject" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
+
+		  <!-- Marker for the TypeScript bindings generator, whose only input was set by the native WebAssembly DOM heads removed in 7.0. -->
+		  <Member fullName="Uno.Foundation.Interop.TSInteropMessageAttribute" reason="Removed with the TSBindings generator; nothing sets its input since the WASM DOM heads were removed (breaking changes for 7.0)" />
+		  <Member fullName="Uno.Foundation.Interop.CodeGeneration" reason="Removed with TSInteropMessageAttribute, its only user (breaking changes for 7.0)" />
 
 		  <!-- Uno-only duplicate of System.Numerics.VectorExtensions; removed in favor of the WinAppSDK-ref counterpart. -->
 		  <Member fullName="Uno.Extensions.Vector2Extensions" reason="Removed redundant Uno.Extensions.Vector2Extensions (BC72, breaking changes for 7.0)" />
