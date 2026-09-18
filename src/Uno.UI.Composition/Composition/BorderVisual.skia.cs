@@ -59,7 +59,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	public CompositionBrush? BackgroundBrush
 	{
-		private get => _backgroundBrush;
+		internal get => _backgroundBrush;
 		set => SetProperty(ref _backgroundBrush, value);
 	}
 
