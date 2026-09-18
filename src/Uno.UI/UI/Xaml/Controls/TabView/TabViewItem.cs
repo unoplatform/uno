@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
@@ -135,18 +136,18 @@ public partial class TabViewItem : ListViewItem
 		var strOut = string.Format(
 			CultureInfo.InvariantCulture,
 			data,
-			height,
-			leftCorner,
-			leftCorner,
-			leftCorner,
-			leftCorner,
-			leftCorner,
-			ActualWidth - (leftCorner + rightCorner),
-			rightCorner,
-			rightCorner,
-			rightCorner,
-			rightCorner,
-			height - (4.0 + rightCorner));
+			Boxer.Box(height),
+			Boxer.Box(leftCorner),
+			Boxer.Box(leftCorner),
+			Boxer.Box(leftCorner),
+			Boxer.Box(leftCorner),
+			Boxer.Box(leftCorner),
+			Boxer.Box(ActualWidth - (leftCorner + rightCorner)),
+			Boxer.Box(rightCorner),
+			Boxer.Box(rightCorner),
+			Boxer.Box(rightCorner),
+			Boxer.Box(rightCorner),
+			Boxer.Box(height - (4.0 + rightCorner)));
 
 		var geometry = XamlReader.Load(strOut) as Geometry;
 
@@ -183,7 +184,7 @@ public partial class TabViewItem : ListViewItem
 		}
 		else
 		{
-			SetValue(Canvas.ZIndexProperty, 0);
+			SetValue(Canvas.ZIndexProperty, IntBoxes.Zero);
 		}
 
 		UpdateWidthModeVisualState();

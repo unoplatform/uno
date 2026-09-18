@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
@@ -481,7 +482,7 @@ public partial class TreeViewItem : ListViewItem
 			treeViewItemPeer.RaiseAutomationEvent(selectionEvent);
 
 			var isSelectedProperty = SelectionItemPatternIdentifiers.IsSelectedProperty;
-			treeViewItemPeer.RaisePropertyChangedEvent(isSelectedProperty, !isSelected, isSelected);
+			treeViewItemPeer.RaisePropertyChangedEvent(isSelectedProperty, Boxer.Box(!isSelected), Boxer.Box(isSelected));
 		}
 	}
 

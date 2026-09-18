@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualHeight), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualWidth), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 		// Skipping already declared property AllowFocusOnInteractionProperty
 		// Skipping already declared property AllowFocusWhenDisabledProperty
