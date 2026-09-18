@@ -59,6 +59,9 @@ namespace Uno.UI
 		private static int _instanceCount;
 		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
 		private static BaseActivity? _current;
+		private static long _activationCount;
+
+		private long _lastActivation;
 
 		/// <summary>
 		/// Unique identifier for this instance of an activity.
@@ -362,8 +365,9 @@ namespace Uno.UI
 				lock (_instances)
 				{
 					// _instances is only pruned on Dispose, so it can still hold activities already torn down.
-					next = _instances.Values.FirstOrDefault(activity =>
-						!ReferenceEquals(activity, this) && !activity.IsDestroyed && !activity.IsFinishing);
+					next = _instances.Values
+						.Where(activity => !ReferenceEquals(activity, this) && !activity.IsDestroyed && !activity.IsFinishing)
+						.MaxBy(activity => activity._lastActivation);
 				}
 
 				ContextHelper.SetForeground(next);
@@ -372,6 +376,7 @@ namespace Uno.UI
 
 		private void SetAsCurrent()
 		{
+			_lastActivation = Interlocked.Increment(ref _activationCount);
 			ContextHelper.Current = this;
 			if (Interlocked.Exchange(ref _current, this) != this)
 			{
