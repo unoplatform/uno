@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -8184,6 +8185,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		#endregion
+
+		/// <summary>
+		/// The invisible &lt;input /&gt; the WASM head keeps in the DOM for text entry must track the
+		/// ContentElement, not the DisplayBlock. The DisplayBlock shrink-wraps the text, so sizing the
+		/// element from it made it grow by a character's width on every keystroke. Browser password
+		/// managers anchor their affordances to the &lt;input /&gt; bounds, so users saw the 1Password badge
+		/// start at the left edge of an empty PasswordBox and march right as they typed.
+		///
+		/// This was latent until the element was actually sized: the TS wrote a unitless
+		/// <c>style.width = `${width}`</c>, which is invalid CSS and silently dropped, until the unit was
+		/// added. So this asserts the width the element *ends up with*, which is what regressed.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Typing_Then_Invisible_Input_Tracks_ContentElement_Not_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Width = 200 };
+			await UITestHelper.Load(SUT, x => x.IsLoaded);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await UITestHelper.WaitFor(
+				() => GetInvisibleInputWidth() > 0,
+				timeoutMS: 5000,
+				message: "Timed out waiting for the invisible <input /> to be sized.");
+
+			if (SUT.FindVisualChildByName("ContentElement") is not Control contentElement)
+			{
+				Assert.Fail("Could not locate the ContentElement template part.");
+				return;
+			}
+
+			// Deliberately compared against the content area at each point rather than against a constant:
+			// the DeleteButton appears once the focused TextBox is non-empty, which legitimately narrows the
+			// ContentElement. Tracking it is correct; tracking the text is the regression.
+			double ContentWidth() => contentElement.ActualWidth - (contentElement.Padding.Left + contentElement.Padding.Right);
+
+			var widthWhenEmpty = GetInvisibleInputWidth();
+			Assert.AreEqual(ContentWidth(), widthWhenEmpty, delta: 2,
+				$"An empty TextBox must size the invisible <input /> to the content area, not to the (empty) text. " +
+				$"Got {widthWhenEmpty}, expected ~{ContentWidth()}.");
+
+			// 'w' is among the widest glyphs, so a per-character regression shows up immediately.
+			foreach (var c in "wwwwwwwwww")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			var widthAfterTyping = GetInvisibleInputWidth();
+			Assert.AreEqual(ContentWidth(), widthAfterTyping, delta: 2,
+				$"After typing, the invisible <input /> must still match the content area ({ContentWidth()}), but it " +
+				$"was {widthAfterTyping}. Sizing it from the DisplayBlock makes it track the text instead, which is " +
+				$"what drifts password-manager badges across the field.");
+		}
+
+		/// <summary>
+		/// Reads the rendered width of the shared invisible &lt;input /&gt; straight from the DOM. The id is the
+		/// literal from <c>UnoDomIds.input</c> in the TS runtime; a rename there should fail this test loudly.
+		/// </summary>
+		private static double GetInvisibleInputWidth()
+		{
+			var raw = Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const e = document.getElementById('uno-input'); return e ? e.getBoundingClientRect().width.toString() : '';})()");
+
+			return double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var width)
+				? width
+				: -1;
+		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{
