@@ -234,6 +234,11 @@
 			<_OwnedCommonOverrideManifest>$(_TargetNugetFolder)\.$(MSBuildProjectName).$(_OverrideTargetFramework).owned-files.txt</_OwnedCommonOverrideManifest>
 		</PropertyGroup>
 
+		<!-- Without a folder name the override would write straight into uno-runtime\<tfm>. -->
+		<Error
+			Text="UnoRuntimeFlavor '$(UnoRuntimeFlavor)' has no uno-runtime folder to override. Expected Generic, Wasm or Reference."
+			Condition="'$(_UnoOverrideUsesRuntimeFolder)'=='true' AND '$(_UnoRuntimeFolderName)'==''" />
+
 		<ItemGroup>
 			<_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
 			<_OutputDebugSymbols Include="@(_DebugSymbolsIntermediatePath)" />
