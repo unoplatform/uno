@@ -541,6 +541,15 @@ namespace Uno.UI.Runtime.Android
 
 		protected override void OnDestroy()
 		{
+			// The render stack is per-activity and the peer finalizer never runs the managed
+			// dispose path, so the GL/Vulkan context has to be released explicitly. This must
+			// precede base.OnDestroy(): NativePage detaches the content view there, which stops
+			// the GL thread the teardown is queued on.
+			_renderView?.TeardownRenderer();
+			_renderView = null;
+			_renderViewAsView = null;
+			_nativeLayerHost = null;
+
 			base.OnDestroy();
 
 			LayoutProvider.Stop();
@@ -554,13 +563,6 @@ namespace Uno.UI.Runtime.Android
 			SimpleOrientationSensor.GetDefault()!.OrientationChanged -= OnSensorOrientationChanged;
 
 			CleanupBackPressedCallback();
-
-			// The render stack is per-activity and the peer finalizer never runs the managed
-			// dispose path, so the GL/Vulkan context has to be released explicitly.
-			_renderView?.TeardownRenderer();
-			_renderView = null;
-			_renderViewAsView = null;
-			_nativeLayerHost = null;
 
 			// Only a finishing activity that still owns the window closes it. The system also destroys
 			// activities it re-creates later (configuration changes, reclaiming memory), and in the
