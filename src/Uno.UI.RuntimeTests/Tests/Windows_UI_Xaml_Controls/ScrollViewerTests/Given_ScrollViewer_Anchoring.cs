@@ -152,6 +152,21 @@ public class Given_ScrollViewer_Anchoring
 	}
 
 	[TestMethod]
+	public void AnchorRatios_Default_IsZero()
+	{
+		var sv = new ScrollViewer();
+
+		// WinUI documents both ratios as "A normalized value (0.0 to 1.0). The default is 0.0."
+		// and ScrollPresenter/ScrollView back them with s_defaultAnchorRatio = 0.0.
+		Assert.AreEqual(0d, sv.HorizontalAnchorRatio);
+		Assert.AreEqual(0d, sv.VerticalAnchorRatio);
+
+		// The values must come from the property metadata, not from a local set in the constructor.
+		Assert.AreEqual(DependencyProperty.UnsetValue, sv.ReadLocalValue(ScrollViewer.HorizontalAnchorRatioProperty));
+		Assert.AreEqual(DependencyProperty.UnsetValue, sv.ReadLocalValue(ScrollViewer.VerticalAnchorRatioProperty));
+	}
+
+	[TestMethod]
 	[RequiresFullWindow]
 	public async Task CurrentAnchor_Null_WhenNoRatios()
 	{
@@ -167,7 +182,9 @@ public class Given_ScrollViewer_Anchoring
 
 		await WindowHelper.WaitForIdle();
 
-		Assert.IsNull(sv.CurrentAnchor, "CurrentAnchor should be null when both ratios are NaN (default).");
+		// With the default ratio of 0.0 and the content at the near edge, the edge itself is the anchor
+		// rather than a candidate element, so no CurrentAnchor is selected.
+		Assert.IsNull(sv.CurrentAnchor, "CurrentAnchor should be null at the near edge with the default 0.0 ratios.");
 	}
 
 	[TestMethod]
