@@ -70,6 +70,17 @@ internal partial class XamlIslandRoot
 		}
 	}
 
+	/// <summary>
+	/// Re-resolves the fallback background after the theme it follows has changed.
+	/// </summary>
+	internal void RefreshBackdropBackground()
+	{
+		if (BackdropBackground == BackdropBackgroundMode.Fallback)
+		{
+			this.UpdateBackground();
+		}
+	}
+
 	private void SetPublicRootVisual(
 		UIElement? rootVisual,
 		ScrollViewer? rootScrollViewer,
