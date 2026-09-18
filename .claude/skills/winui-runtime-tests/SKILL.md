@@ -144,7 +144,7 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File .claude/skills/winui-runtime-tests
     -ResultsFile "$(pwd)/winui-test-results.xml" -Filter "$FILTER"
 ```
 
-Useful switches: `-DebugOutput` (crash triage), `-TimeoutSeconds` (default 600), `-KeepRegistered` (leave the dev package registered), `-OutputDir` (override output folder detection).
+Useful switches: `-DebugOutput` (crash triage), `-TimeoutSeconds` (default 600), `-KeepRegistered` (leave the dev package registered; on timeout the app is also left running for `winapp ui`), `-OutputDir` (override output folder detection).
 
 The app's console output — including each test name as it runs — streams live, so a hang is visible immediately rather than after a timeout.
 
@@ -210,6 +210,8 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/install-msix.ps1" -Rep
 # 4. Run + 5. parse (as in Phases 3-4, but via the alias runner)
 pwsh -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/run-tests-msix.ps1" \
     -ResultsFile "$(pwd)/winui-test-results.xml" -Filter "$FILTER"
+pwsh -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/parse-results.ps1" \
+    -ResultsFile "$(pwd)/winui-test-results.xml"
 ```
 
 #### Install failure diagnostics
