@@ -1015,9 +1015,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		if (backdrop is not null and not (Microsoft.UI.Xaml.Media.MicaBackdrop or Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop))
 		{
-			// Leave any currently applied backdrop untouched rather than clearing it with DWMSBT_NONE.
-			this.LogWarn()?.Warn($"Only {nameof(Microsoft.UI.Xaml.Media.MicaBackdrop)} and {nameof(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)} are currently supported on Win32. '{backdrop.GetType().Name}' was ignored.");
-			return;
+			// Cleared with DWMSBT_NONE below: the window now paints its fallback, so a previously applied
+			// material must not linger under the frame.
+			this.LogWarn()?.Warn($"Only {nameof(Microsoft.UI.Xaml.Media.MicaBackdrop)} and {nameof(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)} are currently supported on Win32. '{backdrop.GetType().Name}' is not rendered natively.");
 		}
 
 		DWM_SYSTEMBACKDROP_TYPE backdropType = backdrop switch
