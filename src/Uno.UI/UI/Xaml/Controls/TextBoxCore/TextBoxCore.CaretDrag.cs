@@ -22,6 +22,10 @@ internal sealed partial class TextBoxCore
 	// Centre of the caret rect when the gesture began, in DisplayBlock coordinates.
 	private Point? _caretDragAnchor;
 
+	// First and last line centres, captured at Begin. The text is read-only for the whole gesture,
+	// and GetRectForIndex scans the text up to the index, so this is not redone on every update.
+	private (double Min, double Max) _caretDragYRange;
+
 	// Caret position previewed during the gesture. The selection itself stays untouched until End,
 	// so a drag raises a single SelectionChanged instead of one per callback.
 	private int? _caretDragPreviewIndex;
@@ -79,6 +83,12 @@ internal sealed partial class TextBoxCore
 		var caretRect = parsedText.GetRectForIndex(caretIndex);
 		_caretDragAnchor = new Point(caretRect.Left, caretRect.Top + (caretRect.Height / 2));
 
+		// Clamping to the first and last line centres keeps an over-shooting drag on the text
+		// instead of returning a miss.
+		var firstLine = parsedText.GetRectForIndex(0);
+		var lastLine = parsedText.GetRectForIndex(Text.Length);
+		_caretDragYRange = (firstLine.Top + (firstLine.Height / 2), lastLine.Top + (lastLine.Height / 2));
+
 		_caretModeBeforeCaretDrag ??= CaretMode;
 
 		// The caret must not blink away mid-drag. CaretMode restarts the timer when it changes,
@@ -106,16 +116,8 @@ internal sealed partial class TextBoxCore
 		}
 
 		var textLength = Text.Length;
-
-		// Clamping to the first and last line centres keeps an over-shooting drag on the text
-		// instead of returning a miss.
-		var firstLine = parsedText.GetRectForIndex(0);
-		var lastLine = parsedText.GetRectForIndex(textLength);
-		var minY = firstLine.Top + (firstLine.Height / 2);
-		var maxY = lastLine.Top + (lastLine.Height / 2);
-
 		var x = anchor.X + cumulativeOffset.X;
-		var y = Math.Clamp(anchor.Y + cumulativeOffset.Y, minY, maxY);
+		var y = Math.Clamp(anchor.Y + cumulativeOffset.Y, _caretDragYRange.Min, _caretDragYRange.Max);
 
 		// GetIndexAt returns -1 on a miss, hence the Math.Max, matching every other call site.
 		var index = Math.Max(0, parsedText.GetIndexAt(new Point(x, y), true, true));
