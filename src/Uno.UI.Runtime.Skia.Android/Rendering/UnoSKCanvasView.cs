@@ -60,11 +60,6 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		RenderMode = Rendermode.WhenDirty;
 	}
 
-	public void ResetRendererContext()
-	{
-		_renderer.ResetContext();
-	}
-
 	public void TeardownRenderer()
 	{
 		// GLSurfaceView drives IRenderer.OnDrawFrame on its own GL thread, so freeing the Skia and
@@ -333,8 +328,6 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			_context?.Dispose();
 			_context = null;
 		}
-
-		internal void ResetContext() => FreeContext();
 
 		/// <summary>
 		/// Frees the GL and Skia state from the thread that owns it. Must run on the GL thread,

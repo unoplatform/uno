@@ -7,7 +7,6 @@ namespace Uno.UI.Runtime.Skia.Android;
 internal interface IUnoSkiaRenderView
 {
 	void InvalidateRender();
-	void ResetRendererContext();
 
 	/// <summary>
 	/// Releases the GPU resources backing this view. Required on activity teardown: the peer

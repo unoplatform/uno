@@ -74,11 +74,6 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		_renderEvent.Set();
 	}
 
-	public void ResetRendererContext()
-	{
-		// Vulkan context will be recreated on next surface creation
-	}
-
 	#region SurfaceHolder.Callback
 
 	public void SurfaceCreated(ISurfaceHolder holder)
