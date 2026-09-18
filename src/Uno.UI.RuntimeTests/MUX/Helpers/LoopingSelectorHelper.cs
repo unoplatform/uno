@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using static Private.Infrastructure.TestServices;
@@ -107,36 +108,35 @@ public static class LoopingSelectorHelper
 
 	public static async Task DoLoopingSelectorSelectionChange(LoopingSelector loopingSelector)
 	{
-		throw new NotImplementedException("PanFromCenter is not implemented yet");
-		//bool selectionChangedEvent = false;
-		//var selectionChangedRegistration = CreateSafeEventRegistration<LoopingSelector, SelectionChangedEventHandler>("SelectionChanged");
+		var selectionChangedEvent = new Event();
+		var selectionChangedRegistration = CreateSafeEventRegistration<LoopingSelector, SelectionChangedEventHandler>("SelectionChanged");
 
-		//await RunOnUIThread(() =>
-		//{
-		//	selectionChangedRegistration.Attach(
-		//		loopingSelector,
-		//		(object sender, SelectionChangedEventArgs args) =>
-		//	{
-		//		LOG_OUTPUT("DoLoopingSelectorSelectionChange: SelectionChanged event fired. new selection index=%d", loopingSelector.SelectedIndex);
+		await RunOnUIThread(() =>
+		{
+			selectionChangedRegistration.Attach(
+				loopingSelector,
+				(object sender, SelectionChangedEventArgs args) =>
+			{
+				LOG_OUTPUT($"DoLoopingSelectorSelectionChange: SelectionChanged event fired. new selection index={loopingSelector.SelectedIndex}");
 
-		//		var selectedItem = loopingSelector.SelectedItem;
-		//		VERIFY_IS_NOT_NULL(selectedItem);
+				var selectedItem = loopingSelector.SelectedItem;
+				VERIFY_IS_NOT_NULL(selectedItem);
 
-		//		var items = loopingSelector.Items;
-		//		LOG_OUTPUT("VerifyProperties: items size==%d ", items.Count);
-		//		var selectedItemFromIndex = items[loopingSelector.SelectedIndex];
-		//		VERIFY_IS_NOT_NULL(selectedItemFromIndex);
-		//		VERIFY_ARE_EQUAL(selectedItem, selectedItemFromIndex);
+				var items = loopingSelector.Items;
+				LOG_OUTPUT($"VerifyProperties: items size=={items.Count}");
+				var selectedItemFromIndex = items[loopingSelector.SelectedIndex];
+				VERIFY_IS_NOT_NULL(selectedItemFromIndex);
+				VERIFY_ARE_EQUAL(selectedItem, selectedItemFromIndex);
 
-		//		selectionChangedEvent = true;
-		//	});
-		//});
+				selectionChangedEvent.Set();
+			});
+		});
 
-		//await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		//// These values were changed to work around Task 24429189: DCPP Test: InputManagerXaml.dll InjectPressAndDrag does not work correctly on 64 bit OS
-		//InputHelper.PanFromCenter(loopingSelector, 0 /*relX*/, -100 /*relY*/, 10.0 /*velocityFactor*/);
-		//await WindowHelper.WaitFor(() => selectionChangedEvent);
+		// These values were changed to work around Task 24429189: DCPP Test: InputManagerXaml.dll InjectPressAndDrag does not work correctly on 64 bit OS
+		TestServices.InputHelper.PanFromCenter(loopingSelector, 0 /*relX*/, -100 /*relY*/, 10.0 /*velocityFactor*/);
+		await selectionChangedEvent.WaitForDefault();
 	}
 
 
