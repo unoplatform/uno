@@ -401,22 +401,22 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
 
 ## Visual Studio First-TargetFramework Workarounds
 
-Using a Single Project in Visual Studio requires the Uno Platform tooling to apply workarounds in order to have an acceptable debugging experience.
+Using a Single Project in Visual Studio requires the Uno Platform tooling to apply a workaround in order to have an acceptable debugging experience.
 
-For some of the platforms (Desktop, WinAppSDK, and WebAssembly), the corresponding target frameworks must be placed first in order for debugging and publishing to function properly. To address that problem, the Uno Platform tooling modifies the `csproj` file to reorder the `TargetFrameworks` property so that the list is accepted by Visual Studio.
+When building inside Visual Studio, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents debugging and Hot Reload from working properly for all targets when `browserwasm` is the active launch target but is not first in the `TargetFrameworks` property. To work around this, the Uno Platform tooling swaps the active target framework into the first position of `TargetFrameworks` whenever it is `browserwasm`.
 
-As a result, the csproj file is on disk and will show the file as modified in your source control, yet the automatic change can be reverted safely. If the behavior is impacting your IDE negatively, you can disable it by adding the following in your `.csproj` file:
+This reorder is applied **in-memory during MSBuild evaluation only** — the `.csproj` file on disk is never modified. If the behavior is impacting your IDE negatively, you can disable it by adding the following in your `.csproj` file:
 
 ```xml
 <PropertyGroup>
-  <UnoDisableVSTargetFrameworksRewrite>true</UnoDisableVSTargetFrameworksRewrite>
+  <UnoDisableFirstTargetFrameworkRewrite>true</UnoDisableFirstTargetFrameworkRewrite>
 </PropertyGroup>
 ```
 
 Note that we are currently tracking these Visual Studio issues, make sure to upvote them:
 
-- `net8.0-browserwasm` must be first for WebAssembly debugging to work ([Link](https://developercommunity.visualstudio.com/t/net80-must-be-first-for-WebAssembly-pub/10643720))
-- [WinAppSDK Unpackaged profile cannot be selected properly when a net8.0 mobile target is active](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735)
+- `net10.0-browserwasm` must be first for WebAssembly debugging to work ([Link](https://developercommunity.visualstudio.com/t/net80-must-be-first-for-WebAssembly-pub/10643720))
+- [WinAppSDK Unpackaged profile cannot be selected properly when a net10.0 mobile target is active](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735)
 
 ## Disabling Default Items
 

@@ -49,7 +49,7 @@ The build process has detected that you have set the value `UnoGenerateAotProfil
 
 ### UNOB0008: Building a WinUI class library with dotnet build is not supported
 
-Building a `net8.0-windows10.x.x` class library using `dotnet build` is not supported at this time because of a [Windows App SDK issue](https://github.com/microsoft/WindowsAppSDK/issues/3548), when the library contains XAML files.
+Building a `net10.0-windows10.x.x` class library using `dotnet build` is not supported at this time because of a [Windows App SDK issue](https://github.com/microsoft/WindowsAppSDK/issues/3548), when the library contains XAML files.
 
 To work around this, use `msbuild /r` on Windows. You can build using `msbuild` with a **Developer Command Prompt for VS 2022** (or 2026), or by using `vswhere` or using [GitHub actions scripts](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/ci-for-winui3?pivots=winui3-packaged-csharp) in a CI environment.
 
@@ -69,37 +69,31 @@ Alternatively you may disable the Implicit Package References
 
 ### UNOB0010: The browserwasm TargetFramework must not be placed first in the TargetFrameworks property
 
-In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents debugging and Hot Reload from working properly for all targets when the `net8.0-browserwasm` TargetFramework is placed first in the `TargetFrameworks` property.
+In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents debugging and Hot Reload from working properly for all targets when the `net10.0-browserwasm` TargetFramework is placed first in the `TargetFrameworks` property.
 
-Make sure to place `net8.0-browserwasm` last in your `<TargetFrameworks>` property.
-
-This warning can be disabled by adding the following to your `.csproj`:
-
-```xml
-<PropertyGroup>
-  <UnoDisableVSWarnBrowserNotFirst>true</UnoDisableVSWarnBrowserNotFirst>
-</PropertyGroup>
-```
-
-### UNOB0011: The desktop TargetFramework must be placed first in the TargetFrameworks property
-
-In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-desktop` TargetFramework is placed first in the `TargetFrameworks` property.
-
-Make sure to place `net8.0-desktop` first in your `<TargetFrameworks>` property.
+Make sure to place `net10.0-browserwasm` last in your `<TargetFrameworks>` property.
 
 This warning can be disabled by adding the following to your `.csproj`:
 
 ```xml
 <PropertyGroup>
-  <UnoDisableVSWarnDesktopNotFirst>true</UnoDisableVSWarnDesktopNotFirst>
+  <UnoDisableVSWarnBrowserIsFirst>true</UnoDisableVSWarnBrowserIsFirst>
 </PropertyGroup>
 ```
+
+### UNOB0011: Retired
+
+> [!NOTE]
+> This error code is retired. It warned when the desktop TargetFramework was placed first
+> while targeting Visual Studio 17.11 or earlier — a version that can no longer build Uno
+> Platform 7.0 (minimum MSBuild is 17.14). The check and its `UnoDisableVSWarnDesktopIsFirst`
+> opt-out have been removed. This heading is kept so existing links to it still resolve.
 
 ### UNOB0012: The windows TargetFramework must not be placed first in the TargetFrameworks property
 
-In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-windows10.xxx` TargetFramework is placed first in the `TargetFrameworks` property.
+In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net10.0-windows10.xxx` TargetFramework is placed first in the `TargetFrameworks` property.
 
-Make sure that `net8.0-windows10.xxx` is not first in your `<TargetFrameworks>` property.
+Make sure that `net10.0-windows10.xxx` is not first in your `<TargetFrameworks>` property.
 
 This warning can be disabled by adding the following to your `.csproj`:
 
@@ -109,11 +103,11 @@ This warning can be disabled by adding the following to your `.csproj`:
 </PropertyGroup>
 ```
 
-### UNOB0013: The net8.0 TargetFramework must not be placed first in the TargetFrameworks property
+### UNOB0013: The net10.0 TargetFramework must not be placed first in the TargetFrameworks property
 
-In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0` TargetFramework is placed first in the `TargetFrameworks` property.
+In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net10.0` TargetFramework is placed first in the `TargetFrameworks` property.
 
-Make sure that `net8.0` is not first in your `<TargetFrameworks>` property.
+Make sure that `net10.0` is not first in your `<TargetFrameworks>` property.
 
 This warning can be disabled by adding the following to your `.csproj`:
 
@@ -129,19 +123,13 @@ When building with Rider on Linux or macOS, unsupported target frameworks are [n
 
 See how to [make platforms conditional](xref:Uno.GettingStarted.CreateAnApp.Rider#considerations-for-macos-and-linux) for Rider.
 
-### UNOB0015: The desktop TargetFramework must be placed first
+### UNOB0015: Retired
 
-In Visual Studio 17.13 or earlier, when both mobile (`-ios`, `-android`) and `desktop` target frameworks are used, the `-desktop` target framework must be placed first in order for WSL debugging to work.
-
-If `-desktop` is not first, the following message will appear:
-
-```text
-The project doesn't know how to run the profile with name 'MyApp (Desktop WSL2)' and command 'WSL2'.
-```
-
-To fix the issue, reorder the items in your `.csproj` so that `TargetFrameworks` contains `netX.0-desktop` as the first target framework, or upgrade to Visual Studio 17.13 (when a stable release will be available).
-
-The Uno Platform team is following this [Visual Studio issue](https://developercommunity.visualstudio.com/t/WSL-launch-profile-cannot-be-found-when/10776961).
+> [!NOTE]
+> This error code is retired. It warned when the desktop TargetFramework was not placed
+> first while targeting Visual Studio 17.12.x specifically — a version that can no longer
+> build Uno Platform 7.0 (minimum MSBuild is 17.14). The check has been removed. This
+> heading is kept so existing links to it still resolve.
 
 ### UNOB0016: The Publish Profile file must not contain the "PublishDir"
 
