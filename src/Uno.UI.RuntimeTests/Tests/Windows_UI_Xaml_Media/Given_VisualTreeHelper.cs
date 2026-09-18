@@ -101,6 +101,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			Assert.IsTrue(matches.Contains(popup.Child), "Expected to find the element in the FindElementsInHostCoordinates results");
 		}
 
+		/// <remarks>
+		/// The other hit-test tests here exercise geometry. This one covers the inheritance leg:
+		/// HitTestVisibility is coerced from the ancestor down, so a descendant must follow its
+		/// ancestor's IsHitTestVisible/Visibility without being touched itself.
+		/// </remarks>
+		[TestMethod]
+		[RunsOnUIThread]
+#if !UNO_HAS_MANAGED_POINTERS
+		[Ignore("Hit-test visibility coercion is only used by managed hit testing.")]
+#endif
+		public async Task When_Ancestor_Not_HitTestVisible_Then_Descendant_Collapsed()
+		{
+			var child = new Border { Width = 20, Height = 20, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+			var ancestor = new Border { Width = 40, Height = 40, Background = new SolidColorBrush(Microsoft.UI.Colors.Blue), Child = child };
+
+			try
+			{
+				await UITestHelper.Load(ancestor);
+
+				Assert.AreEqual(HitTestability.Visible, child.GetHitTestVisibility());
+
+				ancestor.IsHitTestVisible = false;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(HitTestability.Collapsed, child.GetHitTestVisibility(), "IsHitTestVisible=false on the ancestor must collapse the descendant");
+
+				ancestor.IsHitTestVisible = true;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(HitTestability.Visible, child.GetHitTestVisibility(), "the descendant must recover once the ancestor is hit-test visible again");
+
+				ancestor.Visibility = Visibility.Collapsed;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(HitTestability.Collapsed, child.GetHitTestVisibility(), "Visibility=Collapsed on the ancestor must collapse the descendant");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Nested_Setup_HitTest()

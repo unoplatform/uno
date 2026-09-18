@@ -160,9 +160,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected virtual object CoerceIsEnabled(object baseValue, DependencyPropertyValuePrecedences precedence)
 		{
+			// IsEnabledProperty inherits and coerces the subtree below it, so return the shared box.
 			if (_suppressIsEnabled)
 			{
-				return false;
+				return Uno.UI.Helpers.Boxes.Box(false);
 			}
 
 			// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
@@ -175,7 +176,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// If the parent is disabled, this control must be disabled as well
 			if (parentValue is false)
 			{
-				return false;
+				return Uno.UI.Helpers.Boxes.Box(false);
 			}
 
 			// otherwise use the more local value
