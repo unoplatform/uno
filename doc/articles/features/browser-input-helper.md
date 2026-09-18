@@ -25,7 +25,7 @@ The `BrowserInputHelper` class is WebAssembly Skia-specific. It resides in the `
 When using this API, guard your code with platform checks:
 
 ```csharp
-#if HAS_UNO_SKIA
+#if __WASM__
 using Uno.UI.Runtime.Skia;
 #endif
 ```
@@ -35,7 +35,7 @@ using Uno.UI.Runtime.Skia;
 By default, <kbd>Ctrl</kbd>+mouse wheel triggers the browser's built-in page zoom. You can disable this so your app receives the wheel events instead (for example, to implement custom zoom-to-cursor behavior in a canvas or map control):
 
 ```csharp
-#if HAS_UNO_SKIA
+#if __WASM__
 // Disable browser zoom - Ctrl+wheel events are delivered to the Uno app instead
 BrowserInputHelper.IsBrowserZoomEnabled = false;
 #endif
@@ -44,7 +44,7 @@ BrowserInputHelper.IsBrowserZoomEnabled = false;
 To re-enable browser zoom:
 
 ```csharp
-#if HAS_UNO_SKIA
+#if __WASM__
 BrowserInputHelper.IsBrowserZoomEnabled = true;
 #endif
 ```
@@ -61,7 +61,7 @@ Some system-level keys (like <kbd>Escape</kbd>, <kbd>Alt</kbd>+<kbd>Tab</kbd>, o
 Before calling `LockKeysAsync`, you can check whether the current browser supports the Keyboard Lock API:
 
 ```csharp
-#if HAS_UNO_SKIA
+#if __WASM__
 if (BrowserInputHelper.IsKeyboardLockSupported)
 {
     await BrowserInputHelper.LockKeysAsync("Escape", "F11");
@@ -78,7 +78,7 @@ else
 To lock specific keys so they are delivered to your app instead of the browser or OS:
 
 ```csharp
-#if HAS_UNO_SKIA
+#if __WASM__
 // Lock Escape and F11 so they reach the Uno app
 await BrowserInputHelper.LockKeysAsync("Escape", "F11");
 #endif
@@ -91,7 +91,7 @@ Key codes use the [`KeyboardEvent.code`](https://developer.mozilla.org/en-US/doc
 To lock all keys:
 
 ```csharp
-#if HAS_UNO_SKIA
+#if __WASM__
 // Lock all capturable keys
 await BrowserInputHelper.LockKeysAsync();
 #endif
@@ -102,7 +102,7 @@ await BrowserInputHelper.LockKeysAsync();
 To release all locked keys and restore default browser key handling:
 
 ```csharp
-#if HAS_UNO_SKIA
+#if __WASM__
 BrowserInputHelper.UnlockKeys();
 #endif
 ```
