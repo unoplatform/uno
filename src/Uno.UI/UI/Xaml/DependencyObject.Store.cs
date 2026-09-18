@@ -1116,28 +1116,14 @@ namespace Microsoft.UI.Xaml
 			_genericCallbacks = _genericCallbacks.Add(handler);
 		}
 
-		private readonly struct InheritedPropertyChangedCallbackDisposable : IDisposable
-		{
-			public InheritedPropertyChangedCallbackDisposable(ManagedWeakReference objectStoreWeak, DependencyObject childStore)
-			{
-				ChildStore = childStore;
-				ObjectStoreWeak = objectStoreWeak;
-			}
-
-			private readonly DependencyObject ChildStore;
-			private readonly ManagedWeakReference ObjectStoreWeak;
-
-			public void Dispose()
-				=> CleanupInheritedPropertyChangedCallback(ObjectStoreWeak, ChildStore);
-		}
-
 		/// <summary>
 		/// Register for changes all dependency properties changes notifications for the specified instance.
 		/// </summary>
-		/// <param name="instance">The instance for which to observe properties changes</param>
-		/// <param name="callback">The callback</param>
-		/// <returns>A disposable that will unregister the callback when disposed.</returns>
-		private InheritedPropertyChangedCallbackDisposable RegisterInheritedPropertyChangedCallback(DependencyObject childStore)
+		/// <param name="childStore">The child store to propagate inherited properties to</param>
+		/// <returns>
+		/// This store's weak reference, which <see cref="CleanupInheritedPropertyChangedCallback"/> takes to unregister the child.
+		/// </returns>
+		private ManagedWeakReference RegisterInheritedPropertyChangedCallback(DependencyObject childStore)
 		{
 			_childrenStores = _childrenStores.Add(childStore);
 
@@ -1153,9 +1139,7 @@ namespace Microsoft.UI.Xaml
 			// This weak reference ensure that the disposable will not link
 			// the caller and the callee, in the same way "newValueActionWeak"
 			// does not link the callee to the caller.
-			var objectStoreWeak = SelfWeakReference;
-
-			return new InheritedPropertyChangedCallbackDisposable(objectStoreWeak, childStore);
+			return SelfWeakReference;
 		}
 
 		private static void CleanupInheritedPropertyChangedCallback(ManagedWeakReference objectStoreWeak, DependencyObject childStore)
@@ -1441,18 +1425,20 @@ namespace Microsoft.UI.Xaml
 
 		private readonly struct InheritedPropertiesDisposable : IDisposable
 		{
-			private readonly IDisposable _inheritedPropertiesCallback;
+			// Two references, no nested IDisposable: this lives inline on every DependencyObject, and an
+			// IDisposable field would box the parent callback's state on every registration.
+			private readonly ManagedWeakReference _parentStoreWeak;
 			private readonly DependencyObject _owner;
 
-			public InheritedPropertiesDisposable(DependencyObject owner, IDisposable inheritedPropertiesCallback)
+			public InheritedPropertiesDisposable(DependencyObject owner, ManagedWeakReference parentStoreWeak)
 			{
 				_owner = owner;
-				_inheritedPropertiesCallback = inheritedPropertiesCallback;
+				_parentStoreWeak = parentStoreWeak;
 			}
 
 			public void Dispose()
 			{
-				_inheritedPropertiesCallback.Dispose();
+				CleanupInheritedPropertyChangedCallback(_parentStoreWeak, _owner);
 				_owner.CleanupInheritedProperties();
 			}
 		}
@@ -1474,13 +1460,13 @@ namespace Microsoft.UI.Xaml
 			//    - By forcing a property update notification down to a DependencyObject's children when the parent is set.
 
 			// Subscribe to the parent's notifications
-			var inheritedPropertiesCallback = parentProvider
+			var parentStoreWeak = parentProvider
 				.RegisterInheritedPropertyChangedCallback(this);
 
 			// Force propagation for inherited properties defined on the current instance.
 			PropagateInheritedProperties();
 
-			return new InheritedPropertiesDisposable(this, inheritedPropertiesCallback);
+			return new InheritedPropertiesDisposable(this, parentStoreWeak);
 		}
 
 		private void CleanupInheritedProperties()
@@ -2188,7 +2174,11 @@ namespace Microsoft.UI.Xaml
 		/// <param name="previousValue">The previous value</param>
 		/// <param name="newValue">The new value</param>
 		/// <returns>True if different, otherwise false</returns>
-		/// <remarks>This comparison uses value for value types, references for reference types.</remarks>
+		/// <remarks>
+		/// This comparison uses value for value types, references for reference types. Callers depend on
+		/// that: coercions that return a shared box per constant (see UIElement.CoerceHitTestVisibility)
+		/// stay value-equal here, so a ReferenceEquals fast path would change change-detection for them.
+		/// </remarks>
 		internal static bool AreDifferent(object? previousValue, object? newValue)
 		{
 			if (newValue is ValueType || newValue is string)

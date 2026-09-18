@@ -131,7 +131,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (Command != null
 				&& !Command.CanExecute(CommandParameter))
 			{
-				return false;
+				return Uno.UI.Helpers.Boxes.Box(false);
 			}
 
 			return base.CoerceIsEnabled(baseValue, precedence);
