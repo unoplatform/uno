@@ -98,7 +98,6 @@ namespace Microsoft.UI.Xaml.Media
 
 		public static void Write(this StreamGeometryContext ctx, EllipseGeometry ellipseGeometry)
 		{
-#if !__APPLE_UIKIT__
 			var cx = ellipseGeometry.Center.X;
 			var cy = ellipseGeometry.Center.Y;
 			var rx = ellipseGeometry.RadiusX;
@@ -108,7 +107,6 @@ namespace Microsoft.UI.Xaml.Media
 			ctx.ArcTo(new Point(cx, cy + ry), new Size(rx, ry), 0, false, SweepDirection.Counterclockwise, true, false);
 			ctx.ArcTo(new Point(cx, cy - ry), new Size(rx, ry), 0, false, SweepDirection.Counterclockwise, true, false);
 			ctx.SetClosedState(true);
-#endif
 		}
 
 		public static void Write(this StreamGeometryContext ctx, PathFigure pathFigure)

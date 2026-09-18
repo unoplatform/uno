@@ -14,7 +14,6 @@
 // limitations under the License.
 //
 // ******************************************************************
-#if !SILVERLIGHT
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -60,4 +59,3 @@ namespace Uno.Extensions
 		}
 	}
 }
-#endif

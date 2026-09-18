@@ -1,10 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Controls.Primitives;
 
-#if __APPLE_UIKIT__
-using Foundation;
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>

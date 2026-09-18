@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	[DebuggerDisplay("{DebugDisplay,nq}")]
 	[ContentProperty(Name = nameof(Width))]
-	public partial class ColumnDefinition : DefinitionBase, DependencyObject
+	public partial class ColumnDefinition : DependencyObject, DefinitionBase
 	{
 		public ColumnDefinition()
 		{
@@ -19,8 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		// This method is called from the generated IDependencyObjectInternal.OnPropertyChanged2 method
-		internal void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			InvalidateDefinition();
 		}

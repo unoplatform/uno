@@ -6,7 +6,7 @@ using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml.Controls;
 using RatingControl = Microsoft.UI.Xaml.Controls.RatingControl;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 #if HAS_UNO && !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
@@ -22,6 +22,7 @@ public class Given_RatingControl
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 	public async Task When_Loaded_Then_Unloaded_Tap()
 	{
 		// Create RatingControl

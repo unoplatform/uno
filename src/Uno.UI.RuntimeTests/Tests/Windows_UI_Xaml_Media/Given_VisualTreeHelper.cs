@@ -16,7 +16,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media.VisualTreeHelperPages;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 using Windows.Foundation;
 using Windows.UI;
 using static Private.Infrastructure.TestServices;
@@ -158,7 +158,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			RectAssert.AreEqual(expected, bounds);
 
 			GetHitTestability getHitTestability = null;
-			getHitTestability = element => (element as FrameworkElement)?.Background != null ? (element.GetHitTestVisibility(), getHitTestability) : (HitTestability.Invisible, getHitTestability);
+			getHitTestability = element =>
+			{
+				var background = element switch
+				{
+					Border border => border.Background,
+					Panel panel => panel.Background,
+					ContentPresenter presenter => presenter.Background,
+					Control control => control.Background,
+					_ => null
+				};
+				return background != null ? (element.GetHitTestVisibility(), getHitTestability) : (HitTestability.Invisible, getHitTestability);
+			};
 
 			foreach (var point in GetPointsInside(bounds, perimeterOffset: 5))
 			{
@@ -231,6 +242,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(SUT));
 			Assert.IsNull(VisualTreeHelper.GetChild(SUT, 0));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		// WinUI throws for an invalid index; Uno has always returned null and apps depend on it.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_GetChild_Index_Out_Of_Range()
+		{
+			var SUT = new Border { Width = 32, Height = 32, Child = new TextBlock() };
+			await UITestHelper.Load(SUT);
+
+			Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(SUT));
+			Assert.IsNotNull(VisualTreeHelper.GetChild(SUT, 0));
+			Assert.IsNull(VisualTreeHelper.GetChild(SUT, 1));
+			Assert.IsNull(VisualTreeHelper.GetChild(SUT, -1));
+			Assert.IsNull(VisualTreeHelper.GetChild(SUT, int.MinValue));
 		}
 
 		[TestMethod]

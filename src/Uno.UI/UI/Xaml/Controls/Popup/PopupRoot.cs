@@ -89,7 +89,6 @@ internal partial class PopupRoot : Canvas
 		}
 	}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	// MUX Reference: Popup.cpp CPopupRoot::NotifyThemeChanged (lines 5451-5485)
 	// PopupRoot should NEVER store a theme. Its GetTheme() must always return
 	// Theme.None so that popup content entering the visual tree under PopupRoot
@@ -126,7 +125,6 @@ internal partial class PopupRoot : Canvas
 			node = next;
 		}
 	}
-#endif
 
 	protected override void OnChildrenChanged()
 	{
@@ -176,7 +174,6 @@ internal partial class PopupRoot : Canvas
 		Children.Add(popupPanel);
 		var disposable = RegisterOpenPopup(popup);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: CPopupRoot::CompleteAdditionToOpenPopupList (lines 4366-4400)
 		// If app's theme has changed, notify popup (:4375-4379) — a non-parented popup missed the
 		// theme walks while it was closed; parented popups (ShouldPopupRootNotifyThemeChange == false)
@@ -192,7 +189,6 @@ internal partial class PopupRoot : Canvas
 			// MUX: popup.cpp:4378 — pPopup->NotifyThemeChanged(GetContext()->GetFrameworkTheming()->GetTheme())
 			popup.NotifyThemeChanged(WinUICoreServices.Instance.Theming.GetTheme());
 		}
-#endif
 
 		return Disposable.Create(() =>
 		{
@@ -207,7 +203,6 @@ internal partial class PopupRoot : Canvas
 		});
 	}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	// Should PopupRoot notify this popup of app's theme change?
 	// MUX Reference: CPopup::ShouldPopupRootNotifyThemeChange (lines 3628-3640)
 	// An AppBar gets theme change notification from its owner page.
@@ -216,7 +211,6 @@ internal partial class PopupRoot : Canvas
 	// non-parented, matching WinUI where only Popup.Child — never the Popup — parents to PopupRoot.)
 	private static bool ShouldPopupRootNotifyThemeChange(Popup popup)
 		=> VisualTreeHelper.GetParent(popup) is null or PopupRoot;
-#endif
 
 	internal IDisposable RegisterOpenPopup(IPopup popup)
 	{

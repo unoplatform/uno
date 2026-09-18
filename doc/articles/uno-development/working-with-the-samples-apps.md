@@ -23,9 +23,13 @@ To run the SamplesApp locally:
 
 1. Ensure [your environment is configured](xref:Uno.GetStarted.vs2022) for the platform you want to run on.
 2. Open Uno.UI with the [correct target override and solution filter](building-uno-ui.md) for the platform you want to run on.
-3. Select `SamplesApp.[Platform]` as the startup app. (Eg, `SamplesApp.iOS` if you're running on iOS.)
-4. If you're testing on a mobile platform, use a tablet if possible, as the app is optimized for a tablet layout.
-5. Run SamplesApp.
+3. Select `SamplesApp` as the startup app. This is a single multi-targeted head that covers every platform.
+4. Pick the platform from the target framework dropdown next to the run button — `net10.0-desktop`, `net10.0-browserwasm`, `net10.0-android`, `net10.0-ios`, `net10.0-tvos`, or the `windows10.0` (WinUI) target. Select the target explicitly the first time: `net10.0-browserwasm` comes first in the list, so it is what a fresh checkout defaults to.
+5. If you're testing on a mobile platform, use a tablet if possible, as the app is optimized for a tablet layout.
+6. Run SamplesApp.
+
+> [!NOTE]
+> `SamplesApp` needs no bootstrap step. It imports the in-repo Uno.Sdk directly from `src/Uno.Sdk` by path, so the project loads and builds straight from a fresh clone without packing anything into a local NuGet feed first.
 
 If everything builds successfully, the app will run. The app is a collection of samples, grouped into categories. You can navigate to a sample using the menu on the left.
 
@@ -69,7 +73,7 @@ namespace UITests.Windows_Devices.Haptics
 
 To add a new sample to the SamplesApp:
 
-1. Locate the folder corresponding to the control or class you want to create a sample for in `src/SamplesApp/SamplesApp.Samples/`. The folder structure is typically `Namespace_In_Snake_Case/ControlNameTests`.
+1. Locate the folder corresponding to the control or class you want to create a sample for in `src/SamplesApp/SamplesApp.Samples/`. Folders form a nested hierarchy mirroring the API namespace — the same layout as `src/Uno.UI` — so a `Button` sample lives under `Windows/UI/Xaml/Controls/Button/`. Note that the C# namespaces still use the older underscore form (`UITests.Shared.Windows_UI_Xaml_Controls.Button`), so copy the namespace from a neighboring sample rather than deriving it from the folder path.
 2. Create a new `UserControl` from the Visual Studio templates, with a meaningful name.
 3. Add your sample UI to the `UserControl`.
 4. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the class in the code-behind partial file. The XAML and code-behind are picked up automatically — no project registration required.
@@ -87,28 +91,13 @@ The content of those tests must describe a scenario to follow, what to expect, a
 
 Each CI build of Uno.UI records screenshots of each sample in the SamplesApp. A diff tool details screenshots that have changed from the previous master build, allowing unexpected changes in the visual output to be caught.
 
-### Running the snapshot taker locally on WebAssembly
-
-The WebAssembly head has the ability to be run through puppeteer, and displays all tests in sequence. Puppeteer runs a headless version of Chromium, suited for running tests in a CI environment.
-
-To run the tests:
-
-* Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
-* Build the `SamplesApp.Wasm.UITests.njsproj` project
-* Press `F5`, node will start and run the tests sequentially
-* The screen shots are placed in a folder named `out`
-
-Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in the Unit Tests section under `Screenshots Compare Test Run` as well as in the build artifact.
+The snapshots are taken during the CI, in a specific job running under Linux. They are located in the Unit Tests section under `Screenshots Compare Test Run` as well as in the build artifact.
 
 ## Validating the WebAssembly UI Tests results
 
 In the CI build, an artifact named `wasm-uitests` is generated and contains an HTML file that shows all the differences
 for screenshots taken for the past builds. Download this artifact and open the html file to determine if any screenshots
 have changed.
-
-### Troubleshooting the tests
-
-It is possible to enable the chromium head using the configuration parameters in the [app.ts](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
 
 ## Creating performance benchmarks with BenchmarkDotNet
 

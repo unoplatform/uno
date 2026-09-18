@@ -1,8 +1,9 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using Microsoft.UI.Content;
 using Microsoft.UI.Xaml;
+using Uno.Foundation.Extensibility;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -44,5 +45,30 @@ internal partial class NativeWindowFactory
 		xamlRoot.VisualTree.ContentRoot.SetContentIsland(contentIsland);
 
 		return windowWrapper;
+	}
+
+	private static Lazy<INativeWindowFactoryExtension?> _nativeWindowFactory = new(() =>
+	{
+		if (!ApiExtensibility.CreateInstance<INativeWindowFactoryExtension>(typeof(DesktopWindow), out var factory))
+		{
+			return null;
+		}
+
+		return factory;
+	});
+
+	public static bool SupportsClosingCancellation => _nativeWindowFactory.Value?.SupportsClosingCancellation ?? false;
+
+	public static bool SupportsMultipleWindows => _nativeWindowFactory.Value?.SupportsMultipleWindows ?? false;
+
+	private static INativeWindowWrapper? CreateWindowPlatform(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot)
+	{
+		if (_nativeWindowFactory.Value is not { } windowFactory)
+		{
+			throw new InvalidOperationException(
+				"Window factory was not registered. Please ensure that you set up the application initialization " +
+				"properly for this Skia target by following the migration docs.");
+		}
+		return windowFactory.CreateWindow(window, xamlRoot);
 	}
 }

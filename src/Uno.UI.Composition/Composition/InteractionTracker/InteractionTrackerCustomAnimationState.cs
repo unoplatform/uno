@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Numerics;
 using Windows.Foundation;
 
@@ -55,6 +56,13 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 		}
 
 		_interactionTracker.SetPosition(value, requestId);
+		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId));
+	}
+
+	internal override void TryUpdateScale(float value, Vector3 centerPoint, int requestId)
+	{
+		value = Math.Clamp(value, _interactionTracker.MinScale, _interactionTracker.MaxScale);
+		_interactionTracker.SetScale(value, centerPoint, requestId);
 		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId));
 	}
 }

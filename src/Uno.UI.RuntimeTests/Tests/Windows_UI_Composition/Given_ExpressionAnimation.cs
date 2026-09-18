@@ -241,4 +241,55 @@ public partial class Given_ExpressionAnimation
 			visual.StopAnimation("Translation.X");
 		}
 	}
+
+	// LottieGen reconfigures a single ExpressionAnimation (different Expression + reference parameters)
+	// and starts it on many targets. Each target must keep the parameters it was started with, not the
+	// last-configured ones. (This is why the "L" in the LottieFiles logo used to disappear.)
+	[TestMethod]
+#if !__SKIA__
+	[Ignore("ExpressionAnimation evaluation is Skia-only")]
+#endif
+	public async Task When_Reusable_Expression_Started_On_Multiple_Targets()
+	{
+		var border = new Border() { Width = 100, Height = 100 };
+		await UITestHelper.Load(border);
+
+		var compositor = ElementCompositionPreview.GetElementVisual(border).Compositor;
+
+		var sourceA = compositor.CreatePropertySet();
+		sourceA.InsertScalar("x", 1f);
+		var sourceB = compositor.CreatePropertySet();
+		sourceB.InsertScalar("x", 2f);
+
+		var targetA = compositor.CreatePropertySet();
+		targetA.InsertScalar("y", 0f);
+		var targetB = compositor.CreatePropertySet();
+		targetB.InsertScalar("y", 0f);
+
+		var reusable = compositor.CreateExpressionAnimation();
+
+		reusable.ClearAllParameters();
+		reusable.Expression = "_.x";
+		reusable.SetReferenceParameter("_", sourceA);
+		targetA.StartAnimation("y", reusable);
+
+		// Same instance, reconfigured for a different source.
+		reusable.ClearAllParameters();
+		reusable.Expression = "_.x";
+		reusable.SetReferenceParameter("_", sourceB);
+		targetB.StartAnimation("y", reusable);
+
+		targetA.TryGetScalar("y", out var a0);
+		targetB.TryGetScalar("y", out var b0);
+		Assert.AreEqual(1f, a0, 0.001f); // targetA tracks sourceA
+		Assert.AreEqual(2f, b0, 0.001f); // targetB tracks sourceB
+
+		sourceA.InsertScalar("x", 10f);
+		sourceB.InsertScalar("x", 20f);
+
+		targetA.TryGetScalar("y", out var a1);
+		targetB.TryGetScalar("y", out var b1);
+		Assert.AreEqual(10f, a1, 0.001f);
+		Assert.AreEqual(20f, b1, 0.001f);
+	}
 }

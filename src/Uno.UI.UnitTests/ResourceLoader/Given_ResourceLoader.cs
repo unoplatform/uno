@@ -18,6 +18,14 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 		private const string DefaultLanguage = "en-US";
 		private const string UITestResources = "Uno.UI.UnitTests/Resources";
 
+		// The same strings, localized once under script-named folders (zh-Hans/zh-Hant, the WinUI
+		// convention) and once under region-named ones (zh-CN/zh-TW). Both must resolve identically.
+		private const string ScriptNamedResources = "Uno.UI.UnitTests/ZhScriptFolders";
+		private const string RegionNamedResources = "Uno.UI.UnitTests/ZhRegionFolders";
+
+		// A bare zh folder (Simplified) alongside two Traditional ones, zh-HK and zh-Hant-TW.
+		private const string MixedResources = "Uno.UI.UnitTests/ZhMixedFolders";
+
 		[TestInitialize]
 		public void Init()
 		{
@@ -87,6 +95,84 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 
 			ApplicationLanguages.PrimaryLanguageOverride = "de-DE";
 			Assert.AreEqual(@"Text in 'en'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
+		}
+
+		[TestMethod]
+		[DataRow("zh-CN")]
+		[DataRow("zh-Hans")]
+		[DataRow("zh-Hans-CN")]
+		[DataRow("zh-SG")]
+		[DataRow("zh")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24024")]
+		public void When_SimplifiedChinese_And_ScriptNamedFolders(string language)
+		{
+			var SUT = _ResourceLoader.GetForCurrentView(ScriptNamedResources);
+
+			ApplicationLanguages.PrimaryLanguageOverride = language;
+			Assert.AreEqual("Simplified", SUT.GetString("Given_ResourceLoader/When_ChineseScript"));
+		}
+
+		[TestMethod]
+		[DataRow("zh-TW")]
+		[DataRow("zh-Hant")]
+		[DataRow("zh-Hant-TW")]
+		[DataRow("zh-HK")]
+		[DataRow("zh-MO")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24024")]
+		public void When_TraditionalChinese_And_ScriptNamedFolders(string language)
+		{
+			var SUT = _ResourceLoader.GetForCurrentView(ScriptNamedResources);
+
+			ApplicationLanguages.PrimaryLanguageOverride = language;
+			Assert.AreEqual("Traditional", SUT.GetString("Given_ResourceLoader/When_ChineseScript"));
+		}
+
+		[TestMethod]
+		[DataRow("zh-CN")]
+		[DataRow("zh-Hans")]
+		[DataRow("zh-Hans-CN")]
+		[DataRow("zh-SG")]
+		[DataRow("zh")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24024")]
+		public void When_SimplifiedChinese_And_RegionNamedFolders(string language)
+		{
+			var SUT = _ResourceLoader.GetForCurrentView(RegionNamedResources);
+
+			ApplicationLanguages.PrimaryLanguageOverride = language;
+			Assert.AreEqual("Simplified", SUT.GetString("Given_ResourceLoader/When_ChineseScript"));
+		}
+
+		[TestMethod]
+		[DataRow("zh-TW")]
+		[DataRow("zh-Hant")]
+		[DataRow("zh-Hant-TW")]
+		[DataRow("zh-HK")]
+		[DataRow("zh-MO")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24024")]
+		public void When_TraditionalChinese_And_RegionNamedFolders(string language)
+		{
+			var SUT = _ResourceLoader.GetForCurrentView(RegionNamedResources);
+
+			ApplicationLanguages.PrimaryLanguageOverride = language;
+			Assert.AreEqual("Traditional", SUT.GetString("Given_ResourceLoader/When_ChineseScript"));
+		}
+
+		[TestMethod]
+		[DataRow("zh-CN", "Simplified")]
+		[DataRow("zh-Hans", "Simplified")]
+		[DataRow("zh", "Simplified")]
+		[DataRow("zh-TW", "Taiwan")] // zh is a nearer ancestor, but it is Simplified
+		[DataRow("zh-Hant", "Taiwan")] // both siblings are Traditional, ordinal order picks TW
+		[DataRow("zh-MO", "Taiwan")]
+		[DataRow("zh-Hant-HK", "Hong Kong")] // same script, and HK is the matching region
+		[DataRow("zh-HK", "Hong Kong")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24024")]
+		public void When_Chinese_And_MixedFolders(string language, string expected)
+		{
+			var SUT = _ResourceLoader.GetForCurrentView(MixedResources);
+
+			ApplicationLanguages.PrimaryLanguageOverride = language;
+			Assert.AreEqual(expected, SUT.GetString("Given_ResourceLoader/When_ChineseMixedFolders"));
 		}
 
 		[TestMethod]

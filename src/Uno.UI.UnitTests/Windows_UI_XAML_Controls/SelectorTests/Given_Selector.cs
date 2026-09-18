@@ -223,7 +223,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			var SUT = new Selector()
 			{
 				ItemsPanel = XamlHelper.LoadXaml<ItemsPanelTemplate>("<ItemsPanelTemplate><StackPanel /></ItemsPanelTemplate>"),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 			};
 			SUT.ForceLoaded();
 

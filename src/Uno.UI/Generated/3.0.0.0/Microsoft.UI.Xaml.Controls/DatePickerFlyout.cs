@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DatePickerFlyout
+	public partial class DatePickerFlyout : global::Microsoft.UI.Xaml.Controls.Primitives.PickerFlyoutBase
 	{
 		// Skipping already declared property CalendarIdentifierProperty
 		// Skipping already declared property DateProperty

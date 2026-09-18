@@ -181,9 +181,6 @@ partial class ItemsView
 	}
 
 	public
-#if __ANDROID__
-		new
-#endif
 		Layout Layout
 	{
 		get => (Layout)GetValue(LayoutProperty);

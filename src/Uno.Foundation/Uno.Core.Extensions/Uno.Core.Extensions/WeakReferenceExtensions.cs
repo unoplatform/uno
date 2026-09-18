@@ -14,7 +14,6 @@
 // limitations under the License.
 //
 // ******************************************************************
-#if !SILVERLIGHT
 
 namespace Uno.Extensions
 {
@@ -27,4 +26,3 @@ namespace Uno.Extensions
 		}
 	}
 }
-#endif

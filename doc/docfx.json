@@ -23,7 +23,8 @@
 					"articles/**.jpg",
 					"articles/**.gif",
 					"articles/**.svg",
-					"articles/llms/**"
+					"articles/llms/**",
+					"search.html"
 				]
             }
         ],

@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Setter : global::Microsoft.UI.Xaml.SetterBase
@@ -15,6 +15,7 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Setter()
 		// Skipping already declared method Microsoft.UI.Xaml.Setter.Setter(Microsoft.UI.Xaml.DependencyProperty, object)
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Setter(Microsoft.UI.Xaml.DependencyProperty, object)
+		// Forced skipping of method Microsoft.UI.Xaml.Setter.ValueProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Property.set
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Target.get

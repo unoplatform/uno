@@ -7,7 +7,7 @@ partial class TimePickerFlyoutPresenter
 	/// <summary>
 	/// Gets or sets a value that indicates whether the default shadow effect is shown.
 	/// </summary>
-	public new bool IsDefaultShadowEnabled
+	public bool IsDefaultShadowEnabled
 	{
 		get => (bool)GetValue(IsDefaultShadowEnabledProperty);
 		set => SetValue(IsDefaultShadowEnabledProperty, value);
@@ -16,7 +16,7 @@ partial class TimePickerFlyoutPresenter
 	/// <summary>
 	/// Identifies the IsDefaultShadowEnabled dependency property.
 	/// </summary>
-	public static new DependencyProperty IsDefaultShadowEnabledProperty { get; } =
+	public static DependencyProperty IsDefaultShadowEnabledProperty { get; } =
 		DependencyProperty.Register(
 			nameof(IsDefaultShadowEnabled),
 			typeof(bool),

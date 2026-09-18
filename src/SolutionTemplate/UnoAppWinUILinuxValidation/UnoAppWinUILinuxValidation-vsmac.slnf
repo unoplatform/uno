@@ -3,10 +3,6 @@
     "path": "UnoAppWinUILinuxValidation.sln",
     "projects": [
 		"UnoAppWinUILinuxValidation\\UnoAppWinUILinuxValidation.csproj",
-
-
-		"UnoAppWinUILinuxValidation.Wasm\\UnoAppWinUILinuxValidation.Wasm.csproj",
-
     ]
   }
 }

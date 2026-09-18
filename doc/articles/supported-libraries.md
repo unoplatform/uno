@@ -22,6 +22,10 @@ This article lists some of the 3rd-party libraries supported by Uno Platform.
 * [ReactiveUI](https://www.reactiveui.net/)
 * [MVVMCross](https://www.mvvmcross.com/)
 
+## Dependency injection
+
+* [Pure.DI](https://github.com/DevTeam/Pure.DI/blob/master/readme/UnoApp.md) - Compile-time dependency injection with generated object graphs and no runtime container required
+
 ## Design and theming
 
 * [Uno.Material](external/uno.themes/doc/material-getting-started.md)

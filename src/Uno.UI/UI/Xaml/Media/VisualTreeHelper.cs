@@ -24,19 +24,10 @@ using System.Text;
 using Uno.Disposables;
 #endif
 
-#if __APPLE_UIKIT__
-using UIKit;
-using _View = UIKit.UIView;
-using _ViewGroup = UIKit.UIView;
-#elif __ANDROID__
-using _View = Android.Views.View;
-using _ViewGroup = Android.Views.ViewGroup;
-#else
 using _View = Microsoft.UI.Xaml.UIElement;
 using _ViewGroup = Microsoft.UI.Xaml.UIElement;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Shapes;
-#endif
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -68,15 +59,7 @@ namespace Microsoft.UI.Xaml.Media
 
 				foreach (var child in subtree.GetChildren())
 				{
-#if __ANDROID__ || __APPLE_UIKIT__
-					// On Wasm and Skia, child is always UIElement.
-					if (child is not UIElement uiElement)
-					{
-						continue;
-					}
-#else
 					var uiElement = child;
-#endif
 					var canTest = includeAllElements
 						|| (uiElement.IsHitTestVisible && uiElement.IsViewHit());
 
@@ -113,60 +96,66 @@ namespace Microsoft.UI.Xaml.Media
 			throw new NotSupportedException();
 		}
 
+		// Both accessors below walk the children by index rather than through LINQ. Enumerating a
+		// MaterializableList goes through its Materialized copy -- a fresh List<T> whenever the collection
+		// has been touched -- and LINQ additionally boxes the enumerator. These two run for every element
+		// on every measure (FrameworkElement.HasTemplateChild) and for every node of every tree walk.
 		public static DependencyObject/* ? */ GetChild(DependencyObject reference, int childIndex)
 		{
-#if XAMARIN
-			return (reference as _ViewGroup)?
-				.GetChildren()
-				.OfType<DependencyObject>()
-				.Where(c => c is not ElementStub)
-				.ElementAtOrDefault(childIndex);
-#else
-			return (reference as UIElement)?
-				.GetChildren()
-				.Where(c => c is not ElementStub)
-				.ElementAtOrDefault(childIndex);
-#endif
+			// Matches ElementAtOrDefault: any out-of-range index yields null. Negative indices are rejected
+			// up front so they stay O(1), as they were with ElementAtOrDefault's own short-circuit.
+			if (childIndex < 0 || reference is not UIElement element)
+			{
+				return null;
+			}
+
+			var children = element.GetChildren();
+			for (var i = 0; i < children.Count; i++)
+			{
+				var child = children[i];
+				if (child is ElementStub)
+				{
+					continue;
+				}
+
+				if (childIndex == 0)
+				{
+					return child;
+				}
+
+				childIndex--;
+			}
+
+			return null;
 		}
 
 		public static int GetChildrenCount(DependencyObject reference)
 		{
-#if XAMARIN
-			return (reference as _ViewGroup)?
-				.GetChildren()
-				.OfType<DependencyObject>()
-				.Count(c => c is not ElementStub) ?? 0;
-#else
-			return (reference as UIElement)?
-				.GetChildren()
-				.Count(c => c is not ElementStub) ?? 0;
-#endif
+			if (reference is not UIElement element)
+			{
+				return 0;
+			}
+
+			var children = element.GetChildren();
+			var count = 0;
+			for (var i = 0; i < children.Count; i++)
+			{
+				if (children[i] is not ElementStub)
+				{
+					count++;
+				}
+			}
+
+			return count;
 		}
 
 		internal static int GetViewGroupChildrenCount(_ViewGroup reference)
-#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			=> reference.GetChildren().Count;
-#else
-			=> reference.GetChildren().Count();
-#endif
 
 		internal static void AddView(_ViewGroup parent, _View child, int index)
 		{
-#if __APPLE_UIKIT__
-			parent.InsertSubview(child, index);
-#elif __ANDROID__
-			parent.AddView(child, index);
-#elif __CROSSRUNTIME__
+#if __CROSSRUNTIME__
 			parent.AddChild(child, index);
-#elif IS_UNIT_TESTS
-			if (parent is FrameworkElement fe)
-			{
-				fe.AddChild(child, index);
-			}
-			else
-			{
-				throw new NotSupportedException("AddView on UIElement is not implemented on IS_UNIT_TESTS.");
-			}
 #else
 			throw new NotSupportedException("AddView not implemented on this platform.");
 #endif
@@ -174,22 +163,12 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void AddView(_ViewGroup parent, _View child)
 		{
-#if __APPLE_UIKIT__
-			parent.AddSubview(child);
-#elif __ANDROID__
-			parent.AddView(child);
-#else
 			parent.AddChild(child);
-#endif
 		}
 
 		internal static void RemoveView(_ViewGroup parent, _View child)
 		{
-#if __APPLE_UIKIT__
-			child.RemoveFromSuperview();
-#elif __ANDROID__
-			parent.RemoveView(child);
-#elif __CROSSRUNTIME__
+#if __CROSSRUNTIME__
 			parent.RemoveChild(child);
 #else
 			throw new NotSupportedException("RemoveView not implemented on this platform.");
@@ -242,10 +221,6 @@ namespace Microsoft.UI.Xaml.Media
 		public static DependencyObject/* ? */ GetParent(DependencyObject reference)
 		{
 			DependencyObject realParent = null;
-#if XAMARIN
-			realParent = (reference as _ViewGroup)?
-				.FindFirstParent<DependencyObject>();
-#endif
 
 			realParent ??= reference.GetParent() as DependencyObject;
 
@@ -380,21 +355,8 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void AddChild(UIElement view, UIElement child)
 		{
-#if __ANDROID__
-			view.AddView(child);
-#elif __APPLE_UIKIT__
-			view.AddSubview(child);
-#elif __CROSSRUNTIME__
+#if __CROSSRUNTIME__
 			view.AddChild(child);
-#elif IS_UNIT_TESTS
-			if (view is FrameworkElement fe)
-			{
-				fe.AddChild(child);
-			}
-			else
-			{
-				throw new NotImplementedException("AddChild on UIElement is not implemented on IS_UNIT_TESTS.");
-			}
 #else
 			throw new NotImplementedException("AddChild not implemented on this platform.");
 #endif
@@ -402,14 +364,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void RemoveChild(UIElement view, UIElement child)
 		{
-#if __ANDROID__
-			view.RemoveView(child);
-#elif __APPLE_UIKIT__
-			if (child.Superview == view)
-			{
-				child.RemoveFromSuperview();
-			}
-#elif __CROSSRUNTIME__
+#if __CROSSRUNTIME__
 			view.RemoveChild(child);
 #else
 			throw new NotImplementedException("AddChild not implemented on this platform.");
@@ -423,12 +378,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void ClearChildren(UIElement view)
 		{
-#if __ANDROID__
-			view.RemoveAllViews();
-#elif __APPLE_UIKIT__
-			var children = view.ChildrenShadow;
-			children.ForEach(v => v.RemoveFromSuperview());
-#elif __CROSSRUNTIME__
+#if __CROSSRUNTIME__
 			view.ClearChildren();
 #else
 			throw new NotImplementedException("ClearChildren not implemented on this platform.");
@@ -626,8 +576,6 @@ namespace Microsoft.UI.Xaml.Media
 				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
 				// It has an efficient "ReverseEnumerator". This will also avoid the boxing allocations of the enumerator when it's a struct.
 				.GetReverseSortedEnumerator(UIElementToCanvasZIndex);
-#elif __WASM__
-				.GetReverseEnumerator();
 #else
 				.Reverse()
 				.GetEnumerator();
@@ -710,8 +658,6 @@ namespace Microsoft.UI.Xaml.Media
 				// TODO: Those HitTest should be provided by the `getVisibility`. SearchDownForTopMostElementAt is NOT about hit-testing (even if derived from and used by)
 #if __SKIA__
 				&& element.HitTest(elementToRoot.Inverse().Transform(testPosition))
-#elif __WASM__
-				&& element.HitTest(testPosition)
 #endif
 				)
 			{
@@ -753,8 +699,6 @@ namespace Microsoft.UI.Xaml.Media
 				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
 				// It has an efficient "ReverseEnumerator". This will also avoid the boxing allocations of the enumerator when it's a struct.
 				.GetReverseSortedEnumerator(UIElementToCanvasZIndex);
-#elif __WASM__
-				.GetReverseEnumerator();
 #else
 				.Reverse()
 				.GetEnumerator();
@@ -826,51 +770,14 @@ namespace Microsoft.UI.Xaml.Media
 				? GetManagedVisualChildren(elt)
 				: Enumerable.Empty<UIElement>();
 
-#if __APPLE_UIKIT__ || __ANDROID__
-		/// <summary>
-		/// Gets all immediate UIElement children of this <paramref name="view"/>. If any immediate subviews are native, it will descend into
-		/// them depth-first until it finds a UIElement, and return those UIElements.
-		/// </summary>
-		internal static IEnumerable<UIElement> GetManagedVisualChildren(_ViewGroup view)
-		{
-			foreach (var child in view.GetChildren())
-			{
-				if (child is UIElement uiElement)
-				{
-					yield return uiElement;
-				}
-				else if (child is _ViewGroup childVG)
-				{
-					foreach (var firstManagedChild in GetManagedVisualChildren(childVG))
-					{
-						yield return firstManagedChild;
-					}
-				}
-			}
-		}
-#elif IS_UNIT_TESTS
-		internal static IEnumerable<UIElement> GetManagedVisualChildren(_View view)
-			=> view.GetChildren();
-#else
 		internal static MaterializableList<UIElement> GetManagedVisualChildren(_View view)
 			=> view._children;
-#endif
 
-#if __APPLE_UIKIT__ || __ANDROID__ || IS_UNIT_TESTS
-		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view)
-			=> GetManagedVisualChildren(view).Reverse().GetEnumerator();
-#else
 		internal static MaterializableList<UIElement>.ReverseEnumerator GetManagedVisualChildrenReversedEnumerator(_View view)
 			=> view._children.GetReverseEnumerator();
-#endif
 
-#if __APPLE_UIKIT__ || __ANDROID__ || IS_UNIT_TESTS
-		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
-			=> GetManagedVisualChildren(view).Where(elt => predicate(elt)).Reverse().GetEnumerator();
-#else
 		internal static MaterializableList<UIElement>.ReverseReduceEnumerator GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
 			=> view._children.GetReverseEnumerator(predicate);
-#endif
 		#endregion
 
 		#region HitTest tracing

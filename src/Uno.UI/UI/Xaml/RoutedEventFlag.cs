@@ -23,7 +23,9 @@ namespace Uno.UI.Xaml
 		KeyDown = 1UL << 13,
 		PreviewKeyUp = 1UL << 14,
 		KeyUp = 1UL << 15,
-		// CharacterReceived = 1UL << 16,
+		// Note: CharacterReceived is deliberately not part of _isKey — the key-event
+		// bubbling path hard-casts args to KeyRoutedEventArgs.
+		CharacterReceived = 1UL << 16,
 		// ProcessKeyboardAccelerators = 1UL << 17, => Reserved for future use (even if it is not an actual standard RoutedEvent)
 		// AccessKeyInvoked = 1UL << 18, => Reserved for future use (even if it is not an actual standard RoutedEvent)
 		// AccessKeyDisplayRequested = 1UL << 19, => Reserved for future use (even if it is not an actual standard RoutedEvent)
