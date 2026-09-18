@@ -15,14 +15,16 @@ partial class DependencyPropertyModelBuilder
 	{
 		var methodName = _arguments.ChangedCallbackMethodName ?? $"On{name}Changed";
 		var isRequested = _arguments.ChangedCallback || _arguments.ChangedCallbackMethodName is not null;
-		var methods = GetOrdinaryMethods(methodName)
-			.Where(m => !m.IsGenericMethod && m.Parameters.All(p => p.RefKind == RefKind.None) && (m.IsStatic || targetType is null))
-			.ToArray();
+		var allMethods = GetOrdinaryMethods(methodName).ToArray();
 
-		if (!isRequested && !GetOrdinaryMethods(methodName).Any())
+		if (!isRequested && allMethods.Length == 0)
 		{
 			return null;
 		}
+
+		var methods = allMethods
+			.Where(m => !m.IsGenericMethod && m.Parameters.All(p => p.RefKind == RefKind.None) && (m.IsStatic || targetType is null))
+			.ToArray();
 
 		var typeName = propertyType.ToDisplayString(s_fullyQualifiedFormat);
 		var escapedName = EscapeIdentifier(methodName);
