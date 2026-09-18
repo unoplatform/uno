@@ -33,15 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 			TemplateSettings = new SplitViewTemplateSettings(this);
 		}
 
-#if __APPLE_UIKIT__
-		public override void LayoutSubviews()
-		{
-			base.LayoutSubviews();
-
-			TemplateSettings.ViewHeight = Bounds.Height;
-		}
-#endif
-
 		#region CompactPaneLength DependencyProperty
 
 		public double CompactPaneLength
@@ -376,9 +367,6 @@ namespace Microsoft.UI.Xaml.Controls
 				PaneOpening?.Invoke(this, null);
 			}
 
-#if __APPLE_UIKIT__
-			PatchInvalidFinalState(stateName);
-#endif
 			VisualStateManager.GoToState(this, stateName, useTransitons);
 
 			if (!IsPaneOpen)

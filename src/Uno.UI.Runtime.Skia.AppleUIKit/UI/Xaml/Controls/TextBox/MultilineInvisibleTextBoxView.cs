@@ -41,7 +41,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 		TextContainerInset = new UIEdgeInsets();
 	}
 
-	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => textBox.AcceptsReturn;
+	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBoxCore core) => core.AcceptsReturn;
 
 	public override void Paste(NSObject? sender) => HandlePaste(() => base.Paste(sender));
 
@@ -58,7 +58,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 	private void HandlePaste(Action baseAction)
 	{
 		var args = new TextControlPasteEventArgs();
-		TextBoxViewExtension?.Owner.TextBox?.RaisePaste(args);
+		TextBoxViewExtension?.Owner.Core?.RaisePaste(args);
 		if (!args.Handled)
 		{
 			baseAction.Invoke();
@@ -113,6 +113,23 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 		}
 	}
 
+	public void SetKeyboardAccessoryView(UIView? accessoryView)
+	{
+		if (InputAccessoryView == accessoryView)
+		{
+			return;
+		}
+
+		InputAccessoryView = accessoryView;
+
+		// Setting it before the view becomes first responder is enough for the keyboard to come up
+		// with the accessory; changing it during an editing session needs the input views reloaded.
+		if (IsFirstResponder)
+		{
+			ReloadInputViews();
+		}
+	}
+
 	public void Select(int start, int length)
 	{
 		try
@@ -132,14 +149,14 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 	[Export("selectedTextRange")]
 	public new IntPtr SelectedTextRange
 	{
-		get => NativeTextSelection.GetSelectedTextRange(SuperHandle);
+		get => NativeTextSelection.GetSelectedTextRange(this);
 		set
 		{
 			var textBoxView = TextBoxViewExtension;
 
 			if (textBoxView != null && SelectedTextRange != value)
 			{
-				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
+				NativeTextSelection.SetSelectedTextRange(this, value);
 				if (!_settingSelectionFromManaged)
 				{
 					textBoxView.SyncSelectionToTextBox();

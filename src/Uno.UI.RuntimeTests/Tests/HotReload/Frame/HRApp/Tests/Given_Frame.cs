@@ -37,12 +37,8 @@ public class Given_Frame : BaseTestClass
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
 
-		var message = new HR_Frame_Pages_Page1().CreateUpdateFileMessage(
-			originalText: FirstPageTextBlockOriginalText,
-			replacementText: FirstPageTextBlockChangedText);
-
 		// Check the initial text of the TextBlock
-		await frame.ValidateTextOnChildTextBlock(message.OldText);
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 	}
 
 	/// <summary>

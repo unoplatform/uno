@@ -25,7 +25,7 @@ jobs:
     pool:
       vmImage: ${{ parameters.vmLinuxImage }}
 
-    condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['SetScope.SkiaScreenshots'], 'true')))
+    condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.ScreenshotsRequired'], 'true')))
 
     variables:
       SamplesAppArtifactName: samplesapp-desktop-skia
@@ -49,7 +49,7 @@ jobs:
 
     - script: |
           cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
-          xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-linux-screenshots'
+          xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-linux-screenshots'
 
       displayName: Run Snapshot Tests
 
@@ -91,6 +91,12 @@ jobs:
       artifact: runtime-tests-desktop-skia-linux-failures
       path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
+  # Marks the test step as not-yet-reached. The publish tasks below key off this so a job killed
+  # during dependency install reports one failure (the real one) instead of also claiming the
+  # results file is missing. Fail-safe: only an explicit 'false' suppresses the publish.
+  - bash: echo "##vso[task.setvariable variable=UNO_TESTS_STEP_RAN]false"
+    displayName: Arm the test-step sentinel
+
   - template: ../templates/dotnet-install.yml
   - template: ../templates/linux-install-deps.yml
 
@@ -115,7 +121,7 @@ jobs:
       UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
 
   - task: PublishTestResults@2
-    condition: always()
+    condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))
     inputs:
       testRunTitle: '${{ parameters.testRunTitle }}'
       testResultsFormat: 'NUnit'
@@ -124,7 +130,7 @@ jobs:
       failTaskOnMissingResultsFile: true
 
   - task: PublishBuildArtifacts@1
-    condition: always()
+    condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))
     displayName: Publish Failed Tests Results
     retryCountOnTaskFailure: 3
     inputs:

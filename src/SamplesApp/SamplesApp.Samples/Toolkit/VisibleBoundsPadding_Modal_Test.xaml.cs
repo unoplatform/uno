@@ -14,10 +14,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.UI.Samples.Controls;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace UITests.Toolkit
 {
 	[Sample("Toolkit")]
@@ -27,18 +23,25 @@ namespace UITests.Toolkit
 		{
 			this.InitializeComponent();
 		}
+
+		// The modal used to be presented through a native UIViewController on iOS. Uno elements are no
+		// longer UIViews, so a window-sized Popup is what puts the page over the visible bounds now.
 		private void LaunchModalSample(object sender, RoutedEventArgs e)
 		{
-#if __APPLE_UIKIT__
-			var vc = new UIViewController { View = new VisibleBoundsPadding_Modal() };
-			if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Pad)
+			var modal = new VisibleBoundsPadding_Modal
 			{
-				// Esnure the behavior of the iPad modal presentation mimics that of the iPhone
-				vc.PreferredContentSize = Microsoft.UI.Xaml.Window.Current.Bounds.ToCGRect().Size;
-				vc.ModalPresentationStyle = UIModalPresentationStyle.FormSheet;
-			}
-			UIApplication.SharedApplication.KeyWindow.RootViewController.PresentModalViewController(vc, true);
-#endif
+				Width = XamlRoot.Size.Width,
+				Height = XamlRoot.Size.Height,
+			};
+
+			var popup = new Popup
+			{
+				XamlRoot = XamlRoot,
+				ShouldConstrainToRootBounds = false,
+				Child = modal,
+			};
+
+			popup.IsOpen = true;
 		}
 	}
 }

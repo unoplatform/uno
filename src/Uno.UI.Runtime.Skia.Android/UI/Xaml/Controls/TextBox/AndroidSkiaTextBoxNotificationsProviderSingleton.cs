@@ -10,8 +10,8 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBoxNotificationsProviderSingleton
 {
-	internal List<TextBox> LiveTextBoxes { get; } = new();
-	internal Dictionary<int, TextBox> LiveTextBoxesMap { get; } = new();
+	internal List<TextBoxCore> LiveTextBoxes { get; } = new();
+	internal Dictionary<int, TextBoxCore> LiveTextBoxesMap { get; } = new();
 
 	public static AndroidSkiaTextBoxNotificationsProviderSingleton Instance { get; } = new AndroidSkiaTextBoxNotificationsProviderSingleton();
 
@@ -19,19 +19,19 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 	}
 
-	public void OnFocused(TextBox textBox)
+	public void OnFocused(TextBoxCore core)
 	{
 		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
 		{
-			if (CouldRequireKeyboard(textBox))
+			if (CouldRequireKeyboard(core))
 			{
-				textInputPlugin.ShowTextInput(textBox);
+				textInputPlugin.ShowTextInput(core);
 			}
-			textInputPlugin.NotifyViewEntered(textBox, textBox.GetHashCode());
+			textInputPlugin.NotifyViewEntered(core, core.GetHashCode());
 		}
 	}
 
-	public void OnUnfocused(TextBox textBox)
+	public void OnUnfocused(TextBoxCore core)
 	{
 		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
 		{
@@ -39,12 +39,12 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 			// could require the keyboard (TextBox, AutoSuggestBox, NumberBox, etc.).
 			// This prevents the keyboard from flickering when switching between TextBoxes
 			// https://github.com/unoplatform/uno-private/issues/1160
-			if (!IsFocusingElementKeyboardActivator(textBox.XamlRoot))
+			if (!IsFocusingElementKeyboardActivator(core.Owner.XamlRoot))
 			{
 				textInputPlugin.HideTextInput();
 			}
 
-			textInputPlugin.NotifyViewExited(textBox.GetHashCode());
+			textInputPlugin.NotifyViewExited(core.GetHashCode());
 		}
 
 		static bool IsFocusingElementKeyboardActivator(XamlRoot? xamlRoot)
@@ -59,16 +59,16 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 		}
 	}
 
-	public void OnEnteredVisualTree(TextBox textBox)
+	public void OnEnteredVisualTree(TextBoxCore core)
 	{
-		LiveTextBoxes.Add(textBox);
-		LiveTextBoxesMap.Add(textBox.GetHashCode(), textBox);
+		LiveTextBoxes.Add(core);
+		LiveTextBoxesMap.Add(core.GetHashCode(), core);
 	}
 
-	public void OnLeaveVisualTree(TextBox textBox)
+	public void OnLeaveVisualTree(TextBoxCore core)
 	{
-		LiveTextBoxes.Remove(textBox);
-		LiveTextBoxesMap.Remove(textBox.GetHashCode());
+		LiveTextBoxes.Remove(core);
+		LiveTextBoxesMap.Remove(core.GetHashCode());
 	}
 
 	public void FinishAutofillContext(bool shouldSave)
@@ -79,23 +79,24 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 		}
 	}
 
-	public void NotifyValueChanged(TextBox textBox)
+	public void NotifyValueChanged(TextBoxCore core)
 	{
 		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
 		{
-			textInputPlugin.NotifyValueChanged(textBox.GetHashCode(), textBox.Text);
+			textInputPlugin.NotifyValueChanged(core.GetHashCode(), core.Text);
 		}
 	}
 
-	public void NotifySelectionChanged(TextBox textBox)
+	public void NotifySelectionChanged(TextBoxCore core)
 	{
 	}
 
-	private static bool CouldRequireKeyboard(FrameworkElement? element)
+	private static bool CouldRequireKeyboard(object? element)
 	{
 		return element switch
 		{
-			TextBox textBox => !textBox.IsReadOnly,
+			TextBoxCore core => !core.IsReadOnly,
+			ITextBoxHost host => !host.Core.IsReadOnly,
 			AutoSuggestBox or NumberBox => true,
 			_ => false,
 		};

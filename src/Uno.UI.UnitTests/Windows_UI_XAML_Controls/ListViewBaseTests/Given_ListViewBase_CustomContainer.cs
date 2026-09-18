@@ -27,12 +27,12 @@ namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 			var SUT = new MyItemsControl()
 			{
 				ItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new MyCustomItemContainer() { MyValue = 42 };
 				}),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 			};
 
 			SUT.ApplyTemplate();
@@ -58,7 +58,7 @@ namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 
 			var itemsPresenter = new MyItemsControl();
 
-			var itemTemplate = new DataTemplate(() =>
+			var itemTemplate = new DataTemplate(null, (_, _) =>
 			 {
 				 count++;
 				 return new MyCustomItemContainer() { MyValue = 42 };
@@ -68,7 +68,7 @@ namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 			{
 				ItemsPanelRoot = panel,
 				ItemTemplateSelector = new MyDataTemplateSelector(i => itemTemplate),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 			};
 
 			SUT.ApplyTemplate();
@@ -95,7 +95,7 @@ namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 
 			var itemsPresenter = new MyItemsControl();
 
-			var itemTemplate = new DataTemplate(() =>
+			var itemTemplate = new DataTemplate(null, (_, _) =>
 			{
 				count++;
 				return new Border();
@@ -105,7 +105,7 @@ namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 			{
 				ItemsPanelRoot = panel,
 				ItemTemplate = itemTemplate,
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 			};
 
 			SUT.ApplyTemplate();

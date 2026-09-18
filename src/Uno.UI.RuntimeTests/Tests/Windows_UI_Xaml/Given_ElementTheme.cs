@@ -2702,8 +2702,15 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
+	// Skia-WASM: the item resolves the application theme instead of the changed parent theme, see https://github.com/unoplatform/uno/issues/24143
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_MenuFlyout_Opened_After_Theme_Change_Items_Use_New_Theme()
 	{
+		// ActualTheme falls back to the application theme when no local theme is set, so an ambient
+		// Dark OS/browser theme would let a failed propagation assert Dark anyway.
+		using var _ = ThemeHelper.UseApplicationLightTheme();
+
 		// User repro: MenuFlyout items hovered show old theme foreground (black)
 		// after switching to dark theme. The flyout presenter and items should
 		// pick up the new theme when opened.
@@ -2728,20 +2735,25 @@ public class Given_ElementTheme
 			menuFlyout.ShowAt(button);
 			await WindowHelper.WaitForIdle();
 
-			// The flyout presenter should have Dark theme
-			var presenter = menuFlyout.Items[0].FindVisualChildByName("LayoutRoot");
-			if (presenter == null)
+			if (menuFlyout.Items[0] is not MenuFlyoutItem item)
 			{
-				// Try getting the item directly
-				var item = menuFlyout.Items[0] as MenuFlyoutItem;
-				Assert.AreEqual(ElementTheme.Dark, item.ActualTheme,
-					"MenuFlyoutItem should have Dark theme after parent theme change");
+				Assert.Fail("MenuFlyout should expose its first item as a MenuFlyoutItem");
+				return;
 			}
-			else
+
+			// The template must be applied before its LayoutRoot can be sampled.
+			await WindowHelper.WaitForLoaded(item);
+
+			if (item.FindVisualChildByName("LayoutRoot") is not FrameworkElement presenter)
 			{
-				Assert.AreEqual(ElementTheme.Dark, (presenter as FrameworkElement)?.ActualTheme,
-					"MenuFlyoutItem layout root should have Dark theme");
+				Assert.Fail("MenuFlyoutItem should have materialized its LayoutRoot template child");
+				return;
 			}
+
+			Assert.AreEqual(ElementTheme.Dark, item.ActualTheme,
+				"MenuFlyoutItem should have Dark theme after parent theme change");
+			Assert.AreEqual(ElementTheme.Dark, presenter.ActualTheme,
+				"MenuFlyoutItem layout root should have Dark theme");
 		}
 		finally
 		{
@@ -4573,6 +4585,179 @@ public class Given_ElementTheme
 		Assert.IsNotNull(brush, "ForegroundBrush should be a SolidColorBrush");
 		Assert.AreEqual(Colors.Green, brush.Color,
 			$"ThemedDO inside Light subtree should resolve {{ThemeResource}} to Green, got {brush.Color}");
+	}
+#endif
+
+	#endregion
+
+	#region Focused text input in dark theme (issue #24021)
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_NumberBox_Focused_In_Dark_Theme_Text_Is_Light()
+	{
+		// The NumberBox template's Focused state sets ContentElement.RequestedTheme = Light
+		// (as WinUI does). The theme boundary must not override the explicitly set focused
+		// Foreground that the text display block inherits.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var numberBox = new NumberBox { Width = 150, Value = 888 };
+		WindowHelper.WindowContent = numberBox;
+		await WindowHelper.WaitForLoaded(numberBox);
+		await WindowHelper.WaitForIdle();
+
+		var inputBox = numberBox.FindFirstDescendant<TextBox>("InputBox");
+		Assert.IsNotNull(inputBox, "InputBox should exist in the NumberBox template");
+
+		inputBox.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		AssertFocusedStateResolvedDark(inputBox);
+
+		var displayBlock = inputBox.FindFirstDescendant<TextBlock>(tb => tb.Text == "888");
+		Assert.IsNotNull(displayBlock, "The text display block should exist in the TextBox visual tree");
+
+		var foreground = displayBlock.Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "The display block Foreground should be a SolidColorBrush");
+		Assert.IsTrue((foreground.Color.R + foreground.Color.G + foreground.Color.B) / 3 > 200,
+			$"Focused NumberBox text should be light in dark theme, but was {foreground.Color}");
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_Editable_ComboBox_Focused_In_Dark_Theme_Text_Is_Light()
+	{
+		// Same as the NumberBox scenario: the editable ComboBox's TextBox style sets
+		// ContentElement.RequestedTheme = Light in its Focused state.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var comboBox = new ComboBox { Width = 150, IsEditable = true };
+		WindowHelper.WindowContent = comboBox;
+		await WindowHelper.WaitForLoaded(comboBox);
+		await WindowHelper.WaitForIdle();
+
+		var editableText = comboBox.FindFirstDescendant<TextBox>("EditableText");
+		Assert.IsNotNull(editableText, "EditableText should exist in the ComboBox template");
+
+		editableText.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		editableText.Text = "888";
+		await WindowHelper.WaitForIdle();
+
+		AssertFocusedStateResolvedDark(editableText);
+
+		var displayBlock = editableText.FindFirstDescendant<TextBlock>(tb => tb.Text == "888");
+		Assert.IsNotNull(displayBlock, "The text display block should exist in the TextBox visual tree");
+
+		var foreground = displayBlock.Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "The display block Foreground should be a SolidColorBrush");
+		Assert.IsTrue((foreground.Color.R + foreground.Color.G + foreground.Color.B) / 3 > 200,
+			$"Focused editable ComboBox text should be light in dark theme, but was {foreground.Color}");
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_Editable_ComboBox_Focused_In_Dark_Theme_Without_Theme_Walk_Text_Is_Light()
+	{
+		// An app that simply starts dark never runs a theme walk, so every per-object theme stays
+		// Theme.None — the state #24021 reports. Recreate it: switch the app theme to get a Dark
+		// base (the harness starts Light), then clear the per-object themes the switch persisted
+		// on the subtree, so the boundary escape cannot lean on an established parent theme.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var comboBox = new ComboBox { Width = 150, IsEditable = true };
+		WindowHelper.WindowContent = comboBox;
+		await WindowHelper.WaitForLoaded(comboBox);
+		await WindowHelper.WaitForIdle();
+
+		ResetPersistedThemes(comboBox);
+
+		var editableText = comboBox.FindFirstDescendant<TextBox>("EditableText");
+		Assert.IsNotNull(editableText, "EditableText should exist in the ComboBox template");
+
+		editableText.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		editableText.Text = "888";
+		await WindowHelper.WaitForIdle();
+
+		AssertFocusedStateResolvedDark(editableText);
+
+		var displayBlock = editableText.FindFirstDescendant<TextBlock>(tb => tb.Text == "888");
+		Assert.IsNotNull(displayBlock, "The text display block should exist in the TextBox visual tree");
+
+		var foreground = displayBlock.Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "The display block Foreground should be a SolidColorBrush");
+		Assert.IsTrue((foreground.Color.R + foreground.Color.G + foreground.Color.B) / 3 > 200,
+			$"Focused editable ComboBox text should be light in a dark app that never switched theme, but was {foreground.Color}");
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_Editable_ComboBox_Focused_In_Dark_Theme_ContentElement_Foreground_Is_Light()
+	{
+		// Platform-agnostic variant: asserts the Focused setter's direct target
+		// (ContentElement.Foreground) instead of Skia's text display block, so it also runs
+		// on native WASM, where ResourceResolver.ApplyVisualStateSetter is not guarded.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var comboBox = new ComboBox { Width = 150, IsEditable = true };
+		WindowHelper.WindowContent = comboBox;
+		await WindowHelper.WaitForLoaded(comboBox);
+		await WindowHelper.WaitForIdle();
+
+		var editableText = comboBox.FindFirstDescendant<TextBox>("EditableText");
+		Assert.IsNotNull(editableText, "EditableText should exist in the ComboBox template");
+
+		editableText.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		AssertFocusedStateResolvedDark(editableText);
+
+		var contentElement = editableText.FindFirstDescendant<ScrollViewer>("ContentElement");
+		Assert.IsNotNull(contentElement, "ContentElement should exist in the TextBox template");
+
+		var foreground = contentElement.Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "ContentElement.Foreground should be a SolidColorBrush");
+		Assert.IsTrue((foreground.Color.R + foreground.Color.G + foreground.Color.B) / 3 > 200,
+			$"Focused ContentElement foreground should be light in dark theme, but was {foreground.Color}");
+	}
+
+	// Positive control: the Focused state's BorderElement background proves the state actually
+	// ran and resolved Dark — all Dark-theme text-control foregrounds alias the same light
+	// brush, so a foreground assert alone can't tell "resolved correctly" from "never applied".
+	private static void AssertFocusedStateResolvedDark(TextBox textBox)
+	{
+		var borderElement = textBox.FindFirstDescendant<Border>("BorderElement");
+		Assert.IsNotNull(borderElement, "BorderElement should exist in the TextBox template");
+
+		var background = borderElement.Background as SolidColorBrush;
+		Assert.IsNotNull(background, "BorderElement.Background should be a SolidColorBrush");
+		Assert.AreEqual(Windows.UI.Color.FromArgb(0xB3, 0x1E, 0x1E, 0x1E), background.Color,
+			"BorderElement should carry the dark TextControlBackgroundFocused value (#B31E1E1E)");
+	}
+
+	private static void ResetPersistedThemes(UIElement element)
+	{
+		element.SetTheme(Theme.None);
+		var count = VisualTreeHelper.GetChildrenCount(element);
+		for (var i = 0; i < count; i++)
+		{
+			if (VisualTreeHelper.GetChild(element, i) is UIElement child)
+			{
+				ResetPersistedThemes(child);
+			}
+		}
 	}
 #endif
 

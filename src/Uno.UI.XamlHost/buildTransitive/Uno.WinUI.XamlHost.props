@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
-	<ItemGroup>
-		<UnoRuntimeEnabledPackage Include="uno.ui.xamlhost" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.ui.xamlhost.props'" />
-		<UnoRuntimeEnabledPackage Include="uno.winui.xamlhost" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.xamlhost.props'" />
-	</ItemGroup>
-
-</Project>

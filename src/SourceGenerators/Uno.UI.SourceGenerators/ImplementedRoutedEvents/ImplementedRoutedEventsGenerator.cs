@@ -101,6 +101,9 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 			_events.Add("OnKeyDown", keyRoutedEventArgs);
 			_events.Add("OnKeyUp", keyRoutedEventArgs);
 
+			var characterReceivedRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.CharacterReceivedRoutedEventArgs);
+			_events.Add("OnCharacterReceived", characterReceivedRoutedEventArgs);
+
 			var routedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.RoutedEventArgs);
 			_events.Add("OnLostFocus", routedEventArgs);
 			_events.Add("OnGotFocus", routedEventArgs);

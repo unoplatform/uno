@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ListView
+	public partial class ListView : global::Microsoft.UI.Xaml.Controls.ListViewBase
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListView.ListView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListView.ListView()

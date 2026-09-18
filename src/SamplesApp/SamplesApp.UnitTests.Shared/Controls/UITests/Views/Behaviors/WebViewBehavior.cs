@@ -1,4 +1,4 @@
-﻿#if XAMARIN || __WASM__
+﻿#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 using Microsoft.UI.Xaml;
 using _WebView = Microsoft.UI.Xaml.Controls.WebView;
 

@@ -171,8 +171,13 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return false;
 	}
 
-	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat node)
+	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat? node)
 	{
+		if (node is null)
+		{
+			return;
+		}
+
 		// TODO: What about non-UIElements? e.g, Hyperlinks?
 		// In WinUI, `TextElement`s can have automation peers. We need to support that in Uno.
 		if (_idToElement.TryGetValue(virtualViewId, out var element) &&
@@ -228,7 +233,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				if (peer.GetLabeledBy() is FrameworkElementAutomationPeer labeledByPeer &&
 					_cwtElementToId.TryGetValue(labeledByPeer.Owner, out var labeledByVirtualId))
 				{
-					node.SetLabeledBy(_host, (int)labeledByVirtualId);
+					node.AddLabeledBy(_host, (int)labeledByVirtualId);
 				}
 
 				node.Heading = peer.GetHeadingLevel() != AutomationHeadingLevel.None;

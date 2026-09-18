@@ -69,9 +69,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty LayoutProperty { get; } = DependencyProperty.Register(
 			"Layout", typeof(Layout), typeof(LayoutPanel), new FrameworkPropertyMetadata(default(Layout), propertyChangedCallback: (sender, args) => ((LayoutPanel)sender).OnPropertyChanged(args)));
 
-#if __ANDROID__
-		new
-#endif
 		public Layout Layout
 		{
 			get => (Layout)GetValue(LayoutProperty);

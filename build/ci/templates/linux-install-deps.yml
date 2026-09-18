@@ -1,5 +1,10 @@
+parameters:
+  # Default is the Skia desktop set. These are load-bearing: the X11 host dlopens unversioned
+  # sonames (libvlc.so, libwebkit2gtk-4.1.so, libgdk-3.so) that only the -dev packages symlink.
+  packages: 'xvfb fluxbox vlc libvlc-dev libgtk-3-dev libwebkit2gtk-4.1-dev'
+
 steps:
-          
+
   - bash: |
       # Used to improve the install performance, since we don't need man
       set -e
@@ -11,7 +16,50 @@ steps:
       sudo chmod 755 /usr/bin/mandb
     displayName: Disable man-db
 
+  # apt has no bound of its own, so a stalling Ubuntu mirror escalates into a 60-minute job kill
+  # that takes the whole test run with it. On 2026-08-19 that cost two jobs on PR #24121 and five
+  # on master, each hanging ~59 minutes inside apt-get update having printed nothing. Every apt
+  # invocation below is wrapped in `timeout`, and the budget fits under the task timeout so a job
+  # that loses this step still has most of its 60 minutes left to actually run the tests.
   - bash: |
-      sudo apt-get update
-      sudo apt-get install -y xvfb fluxbox vlc libvlc-dev libgtk-3-dev libwebkit2gtk-4.1-dev libwebkit2gtk-4.1-dev
+      set -uo pipefail
+
+      packages="${{ parameters.packages }}"
+      apt_opts="-o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::Languages=none -o Dpkg::Use-Pty=0"
+
+      missing=""
+      for package in $packages; do
+        if ! dpkg-query -W -f='${Status}' "$package" 2>/dev/null | grep -q "ok installed"; then
+          missing="$missing $package"
+        fi
+      done
+
+      if [ -z "$missing" ]; then
+        echo "Already installed, nothing to do: $packages"
+        exit 0
+      fi
+
+      echo "Missing packages:$missing"
+
+      # The image ships pre-baked apt indexes. Installing straight from them skips the mirror
+      # round-trip entirely, which is both the fast path and the one that cannot stall on a
+      # refresh -- the observed hangs were all inside apt-get update.
+      if sudo timeout --kill-after=30s 6m apt-get install -y $apt_opts $missing; then
+        exit 0
+      fi
+
+      echo "##vso[task.logissue type=warning]Install from the pre-baked indexes failed; refreshing them and retrying once"
+
+      # A timeout-killed apt can leave dpkg half-configured, which would then break this install
+      # and, in the WebAssembly job, the Chrome install that follows.
+      sudo dpkg --configure -a || true
+
+      if sudo timeout --kill-after=30s 3m apt-get update $apt_opts && sudo timeout --kill-after=30s 5m apt-get install -y $apt_opts $missing; then
+        exit 0
+      fi
+
+      echo "##vso[task.logissue type=error]UNOBLD004: Could not install the Linux dependencies within the time budget. The Ubuntu package mirror is most likely not responding -- this is an infrastructure failure, not a code failure."
+      exit 1
     displayName: Install Linux dependencies
+    # 6m + 3m + 5m = 14m of apt budget, with this as the hard backstop.
+    timeoutInMinutes: 15

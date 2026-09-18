@@ -18,6 +18,7 @@ using Uno.Helpers;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
 
+
 namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
@@ -52,6 +53,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private IntPtr _picture;
 	private IntPtr _childrenPicture;
 	private int _framesSinceSubtreeNotChanged;
+
+	// Raised when this visual's own Clip/LayoutClip changes, and carried down the render walk so
+	// descendants report damage for the region the clip revealed or hid. Cleared once consumed by Render.
+	private bool _clipChangedSincePaint;
+
+	/// <summary>
+	/// ContainerVisual.LayoutClip is declared in a partial that isn't compiled for every target, so the
+	/// clip-change hook in Visual.OnPropertyChangedCore matches it by name.
+	/// </summary>
+	private const string LayoutClipPropertyName = "LayoutClip";
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
 
@@ -119,6 +130,57 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// only be true when we really have something to paint (and that painting needs to be updated).
 	/// </summary>
 	internal virtual bool CanPaint() => false;
+
+	/// <summary>
+	/// Set while the owning element has no layout slot, i.e. it has never been arranged (or was
+	/// re-parented and not arranged since). <see cref="ArrangeOffset"/>/<see cref="Size"/> are unset then,
+	/// and a visual's content is not bounded by its Size, so painting would draw at the parent's origin,
+	/// unclipped. WinUI never renders an element its parent didn't arrange. Defaults to
+	/// <see langword="false"/> so visuals created directly through the Composition API (which the layout
+	/// system never arranges) keep rendering.
+	/// </summary>
+	internal bool IsArrangePending
+	{
+		get => _isArrangePending;
+		set
+		{
+			if (_isArrangePending != value)
+			{
+				_isArrangePending = value;
+
+				// Mirrors the visibility transitions: the ancestors' cached children pictures must be
+				// rebuilt either way (to drop or to re-collect this subtree). Passing includeSelf would
+				// stop the walk immediately, since a suppressed visual's own ChildrenSKPictureInvalid is
+				// never cleared (Render returns before that).
+				InvalidateParentChildrenPicture(includeSelf: false);
+
+				if (CompositionTarget is { } target)
+				{
+					// Becoming suppressed leaves whatever was painted on screen, so damage it like
+					// OnIsVisibleChanged does. The reverse direction self-heals: the visual is walked again
+					// with no _lastRenderBounds, which reports it as moved.
+					if (value)
+					{
+						DamageLastRenderedRegion(target);
+					}
+
+					// This is not a composition property, so nothing requests a frame on our behalf. An
+					// arrange landing on the previous offset and size (a re-parented element re-added to the
+					// same slot) changes no property at all, so without this the damage above, or the newly
+					// unsuppressed subtree, would wait for an unrelated invalidation.
+					target.RequestNewFrame();
+				}
+			}
+		}
+	}
+
+	private bool _isArrangePending;
+
+	/// <summary>
+	/// Nothing this visual or its subtree paints may reach the frame. Kept in one place so the paint
+	/// walks below cannot drift apart on which suppression reasons they honor.
+	/// </summary>
+	private bool IsRenderSuppressed => Opacity == 0f || !IsVisible || IsArrangePending;
 
 	/// <summary>
 	/// When true, this visual guarantees that everything <em>it itself</em> paints stays inside
@@ -241,6 +303,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		InvalidateParentChildrenPicture(false);
 	}
 
+	internal void InvalidateSubtreePaint()
+	{
+		InvalidatePaint();
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.InvalidateSubtreePaint();
+		}
+	}
+
 	internal void InvalidateParentChildrenPicture(bool includeSelf)
 	{
 		var parent = includeSelf ? this : Parent;
@@ -323,9 +394,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="canvas">The canvas on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, SKPath? damage = null)
+	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, DamageRegion? damage = null)
 	{
-		if (this is { Opacity: 0 } or { IsVisible: false })
+		if (IsRenderSuppressed)
 		{
 			return;
 		}
@@ -362,10 +433,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// omitted.
 			canvas.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
 
-			var rootClip = _pathPool.Allocate();
-			using var rootClipDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), rootClip);
-			rootClip.Rewind();
-			rootClip.AddRect(InfiniteClipRect);
+			using var rootClip = SkiaExtensions.CreateRectPath(InfiniteClipRect);
 			Render(session, rootClip);
 		}
 	}
@@ -374,7 +442,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	private void Render(in PaintingSession parentSession, SKPath clipInRoot, bool applyChildOptimization = true)
+	private void Render(in PaintingSession parentSession, SKPath clipInRoot, bool applyChildOptimization = true, bool ancestorClipChanged = false)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -383,10 +451,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
 #endif
 
-		if (this is { Opacity: 0 } or { IsVisible: false })
+		if (IsRenderSuppressed)
 		{
 			return;
 		}
+
+		// A clip change alters what this subtree contributes to the frame without touching any descendant's
+		// content or transform, so the signal has to reach them: it is raised where the clip is mutated and
+		// carried down this walk. Consumed here so it is reported exactly once.
+		var clipChanged = ancestorClipChanged || _clipChangedSincePaint;
+		_clipChangedSincePaint = false;
 
 		if ((_flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 		{
@@ -418,10 +492,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			var toRoot = TotalMatrix.ToSKMatrix();
 
 			var preClip = _spareRenderPath;
-			preClip.Rewind();
+			preClip.Reset();
 
-			ownClip.Rewind();
-			ownClip.AddPath(clipInRoot);
+			clipInRoot.Transform(SKMatrix.Identity, ownClip);
 			if (GetPrePaintingClipping(preClip))
 			{
 				canvas.ClipPath(preClip, antialias: true);
@@ -429,13 +502,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				ownClip.Op(preClip, SKPathOp.Intersect, ownClip);
 			}
 
-			childClip.Rewind();
-			childClip.AddPath(ownClip);
+			ownClip.Transform(SKMatrix.Identity, childClip);
 			if (GetPostPaintingClipping() is { } postClip)
 			{
 				var postClipInRoot = _pathPool.Allocate();
-				postClipInRoot.Rewind();
-				postClipInRoot.AddPath(postClip);
+				postClip.Transform(SKMatrix.Identity, postClipInRoot);
 				postClipInRoot.Transform(toRoot);
 				childClip.Op(postClipInRoot, SKPathOp.Intersect, childClip);
 				_pathPool.Free(postClipInRoot);
@@ -443,9 +514,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			if (ShadowState is null || TryRenderAnalyticShadow(canvas, ShadowState))
 			{
-				PaintStep(this, session, ownClip);
+				PaintStep(this, session, ownClip, clipChanged);
 				PostPaintingClipStep(this, canvas);
-				RenderChildrenStep(this, session, childClip, applyChildOptimization);
+				RenderChildrenStep(this, session, childClip, applyChildOptimization, clipChanged);
 			}
 			else
 			{
@@ -456,9 +527,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, session.Damage, out var childSession);
 				using (childSession)
 				{
-					PaintStep(this, childSession, ownClip);
+					PaintStep(this, childSession, ownClip, clipChanged);
 					PostPaintingClipStep(this, recordingCanvas);
-					RenderChildrenStep(this, childSession, childClip, applyChildOptimization);
+					RenderChildrenStep(this, childSession, childClip, applyChildOptimization, clipChanged);
 				}
 
 				unsafe
@@ -473,7 +544,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 		}
 
-		static void PaintStep(Visual visual, in PaintingSession session, SKPath clip)
+		static void PaintStep(Visual visual, in PaintingSession session, SKPath clip, bool clipChanged)
 		{
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
 			// be specific to that visual and should not affect the rendering of any other visual.
@@ -484,7 +555,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				visual.InvalidateParentChildrenPicture(includeSelf: false);
 				// why bother with a recorder when it's going to get repainted next frame? just paint directly
-				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage, clip);
+				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage, clip, clipChanged);
 				visual._ownContentPath = visual.Paint(session);
 			}
 			else
@@ -504,7 +575,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					visual._picture = picture;
 				}
 
-				visual.ContributeDamageOnPaint(contentChanged, session.Damage, clip);
+				visual.ContributeDamageOnPaint(contentChanged, session.Damage, clip, clipChanged);
 				unsafe
 				{
 					UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._picture, null, IntPtr.Zero);
@@ -533,7 +604,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #endif
 		}
 
-		static void RenderChildrenStep(Visual visual, PaintingSession session, SKPath childClip, bool applyChildOptimization)
+		static void RenderChildrenStep(Visual visual, PaintingSession session, SKPath childClip, bool applyChildOptimization, bool clipChanged)
 		{
 			if (visual._childrenPicture != IntPtr.Zero)
 			{
@@ -549,7 +620,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
-					child.Render(in session, childClip, applyChildOptimization);
+					child.Render(in session, childClip, applyChildOptimization, clipChanged);
 				}
 			}
 			else
@@ -563,7 +634,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					foreach (var child in visual.GetChildrenInRenderOrder())
 					{
-						child.Render(in childSession, childClip, applyChildOptimization: false);
+						child.Render(in childSession, childClip, applyChildOptimization: false, ancestorClipChanged: clipChanged);
 					}
 				}
 
@@ -605,17 +676,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		var localClipCombinedByClipFromParent = _pathPool.Allocate();
 		using var rentedArrayDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), localClipCombinedByClipFromParent);
-		localClipCombinedByClipFromParent.Rewind();
-
+		var localMatrix = TotalMatrix.ToSKMatrix();
 		if (GetPrePaintingClipping(_spareRenderPath))
 		{
-			localClipCombinedByClipFromParent.AddPath(_spareRenderPath);
+			_spareRenderPath.Transform(localMatrix, localClipCombinedByClipFromParent);
 		}
 		else
 		{
-			localClipCombinedByClipFromParent.AddRect(new SKRect(0, 0, Size.X, Size.Y));
+			using var sizeRect = SkiaExtensions.CreateRectPath(new SKRect(0, 0, Size.X, Size.Y));
+			sizeRect.Transform(localMatrix, localClipCombinedByClipFromParent);
 		}
-		localClipCombinedByClipFromParent.Transform(TotalMatrix.ToSKMatrix(), localClipCombinedByClipFromParent);
 		localClipCombinedByClipFromParent.Op(clipFromParent, SKPathOp.Intersect, localClipCombinedByClipFromParent);
 
 		if (IsNativeHostVisual || CanPaint())
@@ -647,8 +717,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 		else
 		{
-			dst.Rewind();
-			dst.AddRect(InfiniteClipRect);
+			// Root: seed the caller's accumulator with the unclipped (infinite) region; ancestor clips
+			// get intersected into it below. dst is caller-owned and Op'd in place, hence the copy.
+			using var infiniteRect = SkiaExtensions.CreateRectPath(InfiniteClipRect);
+			infiniteRect.Transform(SKMatrix.Identity, dst);
 		}
 
 		var localPath = _pathPool.Allocate();
@@ -777,7 +849,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				// Cancel the canvas Y-scale on the geometry so the shape lands at its original
 				// position; the canvas scale only affects the mask blur's per-axis sigma.
 				var scratch = _spareShadowPath;
-				scratch.Rewind();
+				scratch.Reset();
 				path.Transform(SKMatrix.CreateScale(1f, pathYScale), scratch);
 				canvas.DrawPath(scratch, paint);
 			}
@@ -793,7 +865,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		ShadowPathAccumulator accumulator)
 	{
 		var scratch = _spareShadowContributions;
-		if (visual.Opacity == 0f || !visual.IsVisible)
+		if (visual.IsRenderSuppressed)
 		{
 			return true;
 		}
@@ -809,7 +881,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		var clipPath = _pathPool.Allocate();
 		using var clipPathDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), clipPath);
-		clipPath.Rewind();
+		clipPath.Reset();
 
 		var hasClip = TryPopulateEffectiveClipInRoot(visual, in toRoot, clipPath);
 
@@ -822,7 +894,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				clipPath.AddPath(ancestorClipInRoot);
+				ancestorClipInRoot.Transform(SKMatrix.Identity, clipPath);
 			}
 			hasClip = true;
 		}
@@ -837,9 +909,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (visual is { PaintsWithinOwnSize: true, Size: { X: > 0, Y: > 0 } size })
 		{
 			var sizeCandidate = _spareShadowPath;
-			sizeCandidate.Rewind();
-			sizeCandidate.AddRect(new SKRect(0, 0, size.X, size.Y));
-			sizeCandidate.Transform(toRoot);
+			using var sizeRect = SkiaExtensions.CreateRectPath(new SKRect(0, 0, size.X, size.Y));
+			sizeRect.Transform(toRoot, sizeCandidate);
 			if (hasClip)
 			{
 				sizeCandidate.Op(clipPath, SKPathOp.Intersect, sizeCandidate);
@@ -864,7 +935,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			foreach (var (path, alpha) in scratch)
 			{
 				var transformed = _spareShadowPath;
-				transformed.Rewind();
+				transformed.Reset();
 				path.Transform(toRoot, transformed);
 
 				if (hasClip)
@@ -890,7 +961,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (postClipLocal is not null)
 		{
 			var postClipInRoot = _spareShadowPath;
-			postClipInRoot.Rewind();
+			postClipInRoot.Reset();
 			postClipLocal.Transform(toRoot, postClipInRoot);
 
 			if (hasClip)
@@ -899,7 +970,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				clipPath.AddPath(postClipInRoot);
+				postClipInRoot.Transform(SKMatrix.Identity, clipPath);
 			}
 			hasClip = true;
 		}
@@ -920,7 +991,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private static bool TryPopulateEffectiveClipInRoot(Visual visual, in SKMatrix toRoot, SKPath dst)
 	{
 		var preClipLocal = _spareShadowPath;
-		preClipLocal.Rewind();
+		preClipLocal.Reset();
 		if (visual.GetPrePaintingClipping(preClipLocal))
 		{
 			preClipLocal.Transform(toRoot, dst);
@@ -956,7 +1027,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (Clip is not null)
 		{
 			dst.Reset();
-			dst.AddPath(Clip?.GetClipPath(this));
+			if (Clip.GetClipPath(this) is { } clipPath)
+			{
+				clipPath.Transform(SKMatrix.Identity, dst);
+			}
 			return true;
 		}
 		return false;
@@ -997,6 +1071,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		ref var rootTransform = ref parentSession.RootTransform;
 
 		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
+
+		// MUX Reference hwwalk.cpp, ShouldOverrideRenderOpacity.
+		if (IsHighContrastOpacityOverrideActive && opacity > 0 && opacity < 1.0f)
+		{
+			opacity = 1.0f;
+		}
 
 		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, parentSession.Damage, out session);
 

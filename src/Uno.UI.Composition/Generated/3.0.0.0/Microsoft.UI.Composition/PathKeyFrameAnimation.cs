@@ -3,29 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PathKeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal PathKeyFrameAnimation()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void InsertKeyFrame(float normalizedProgressKey, global::Microsoft.UI.Composition.CompositionPath path)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PathKeyFrameAnimation", "InsertKeyFrame(float normalizedProgressKey, CompositionPath path)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void InsertKeyFrame(float normalizedProgressKey, global::Microsoft.UI.Composition.CompositionPath path, global::Microsoft.UI.Composition.CompositionEasingFunction easingFunction)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PathKeyFrameAnimation", "InsertKeyFrame(float normalizedProgressKey, CompositionPath path, CompositionEasingFunction easingFunction)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.PathKeyFrameAnimation.InsertKeyFrame(float, Microsoft.UI.Composition.CompositionPath)
+		// Skipping already declared method Microsoft.UI.Composition.PathKeyFrameAnimation.InsertKeyFrame(float, Microsoft.UI.Composition.CompositionPath, Microsoft.UI.Composition.CompositionEasingFunction)
 	}
 }

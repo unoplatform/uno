@@ -194,15 +194,6 @@ partial class MenuFlyoutPresenter : IMenuPresenter
 		var spMenuFlyoutItemBase = pElement as MenuFlyoutItemBase;
 
 		spMenuFlyoutItemBase?.SetParentMenuFlyoutPresenter(this);
-
-#if HAS_UNO
-		// Manual propagation of the templated parent to the content properly
-		// until we get the propagation running properly
-		if (spMenuFlyoutItemBase is FrameworkElement content)
-		{
-			content.TemplatedParent = TemplatedParent;
-		}
-#endif
 	}
 
 	protected override void ClearContainerForItemOverride(

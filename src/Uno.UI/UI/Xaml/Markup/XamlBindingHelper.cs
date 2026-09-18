@@ -56,6 +56,8 @@ namespace Microsoft.UI.Xaml.Markup
 			}
 		}
 
+		// Every setter below boxes its value; WinUI reaches the property system through a
+		// stack-allocated CValue instead. Tracked by https://github.com/unoplatform/uno/issues/24064.
 		public static void SetPropertyFromBoolean(object dependencyObject, DependencyProperty propertyToSet, bool value) =>
 			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
 
@@ -63,6 +65,12 @@ namespace Microsoft.UI.Xaml.Markup
 			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
 
 		public static void SetPropertyFromChar16(object dependencyObject, DependencyProperty propertyToSet, char value) =>
+			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
+
+		public static void SetPropertyFromColor(object dependencyObject, DependencyProperty propertyToSet, global::Windows.UI.Color value) =>
+			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
+
+		public static void SetPropertyFromCornerRadius(object dependencyObject, DependencyProperty propertyToSet, CornerRadius value) =>
 			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
 
 		public static void SetPropertyFromDateTime(object dependencyObject, DependencyProperty propertyToSet, DateTimeOffset value) =>
@@ -93,6 +101,9 @@ namespace Microsoft.UI.Xaml.Markup
 			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
 
 		public static void SetPropertyFromString(object dependencyObject, DependencyProperty propertyToSet, string value) =>
+			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
+
+		public static void SetPropertyFromThickness(object dependencyObject, DependencyProperty propertyToSet, Thickness value) =>
 			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
 
 		public static void SetPropertyFromTimeSpan(object dependencyObject, DependencyProperty propertyToSet, TimeSpan value) =>

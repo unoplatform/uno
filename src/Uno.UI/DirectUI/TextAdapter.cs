@@ -80,14 +80,14 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 		=> new TextRangeAdapter(_ownerPeer, _owner, 0, GetEffectiveText(_owner).Length);
 
 	public SupportedTextSelection SupportedTextSelection
-		=> _owner is TextBox ? SupportedTextSelection.Single : SupportedTextSelection.None;
+		=> _owner is ITextBoxHost ? SupportedTextSelection.Single : SupportedTextSelection.None;
 
 	public ITextRangeProvider[] GetSelection()
 	{
-		if (_owner is TextBox textBox)
+		if (_owner is ITextBoxHost { Core: { } core })
 		{
-			var start = textBox.SelectionStart;
-			var length = textBox.SelectionLength;
+			var start = core.SelectionStart;
+			var length = core.SelectionLength;
 			return new ITextRangeProvider[]
 			{
 				new TextRangeAdapter(_ownerPeer, _owner, start, start + length),
@@ -116,11 +116,11 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 
 	public ITextRangeProvider GetCaretRange(out bool isActive)
 	{
-		isActive = _owner is Microsoft.UI.Xaml.Controls.TextBox;
+		isActive = _owner is ITextBoxHost;
 
-		if (_owner is Microsoft.UI.Xaml.Controls.TextBox textBox)
+		if (_owner is ITextBoxHost { Core: { } core })
 		{
-			var caret = textBox.SelectionStart + textBox.SelectionLength;
+			var caret = core.SelectionStart + core.SelectionLength;
 			return new TextRangeAdapter(_ownerPeer, _owner, caret, caret);
 		}
 

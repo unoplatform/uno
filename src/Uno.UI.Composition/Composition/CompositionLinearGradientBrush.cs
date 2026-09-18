@@ -1,6 +1,9 @@
 ﻿#nullable enable
 
+using System;
 using System.Numerics;
+
+using static Microsoft.UI.Composition.SubPropertyHelpers;
 
 namespace Microsoft.UI.Composition
 {
@@ -25,6 +28,38 @@ namespace Microsoft.UI.Composition
 		{
 			get => _endPoint;
 			set => SetProperty(ref _endPoint, value);
+		}
+
+		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+		{
+			if (propertyName.Equals(nameof(StartPoint), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetVector2(subPropertyName, StartPoint);
+			}
+			else if (propertyName.Equals(nameof(EndPoint), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetVector2(subPropertyName, EndPoint);
+			}
+			else
+			{
+				return base.GetAnimatableProperty(propertyName, subPropertyName);
+			}
+		}
+
+		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+		{
+			if (propertyName.Equals(nameof(StartPoint), StringComparison.OrdinalIgnoreCase))
+			{
+				StartPoint = UpdateVector2(subPropertyName, StartPoint, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(EndPoint), StringComparison.OrdinalIgnoreCase))
+			{
+				EndPoint = UpdateVector2(subPropertyName, EndPoint, propertyValue);
+			}
+			else
+			{
+				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
+			}
 		}
 	}
 }

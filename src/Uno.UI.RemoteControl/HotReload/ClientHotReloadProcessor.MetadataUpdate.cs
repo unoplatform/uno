@@ -850,9 +850,9 @@ partial class ClientHotReloadProcessor
 	{
 		var value = source.OriginalString;
 
-		if (value.StartsWith(Uno.UI.Xaml.XamlFilePathHelper.LocalResourcePrefix, StringComparison.OrdinalIgnoreCase))
+		if (value.StartsWith(Uno.UI.Xaml.XamlFilePathHelper.MsResourceFilesPrefix, StringComparison.OrdinalIgnoreCase))
 		{
-			return value.Substring(Uno.UI.Xaml.XamlFilePathHelper.LocalResourcePrefix.Length);
+			return value.Substring(Uno.UI.Xaml.XamlFilePathHelper.MsResourceFilesPrefix.Length);
 		}
 
 		if (value.StartsWith(Uno.UI.Xaml.XamlFilePathHelper.AppXIdentifier, StringComparison.OrdinalIgnoreCase))
@@ -880,8 +880,8 @@ partial class ClientHotReloadProcessor
 				newInstanceFE is not null)
 			{
 #if HAS_UNO
-				var oldStore = ((IDependencyObjectStoreProvider)instanceFE).Store;
-				var newStore = ((IDependencyObjectStoreProvider)newInstanceFE).Store;
+				var oldStore = ((DependencyObject)instanceFE);
+				var newStore = ((DependencyObject)newInstanceFE);
 				oldStore.ClonePropertiesToAnotherStoreForHotReload(newStore);
 
 				if (instanceFE.DebugParseContext is { } debugParseContext)

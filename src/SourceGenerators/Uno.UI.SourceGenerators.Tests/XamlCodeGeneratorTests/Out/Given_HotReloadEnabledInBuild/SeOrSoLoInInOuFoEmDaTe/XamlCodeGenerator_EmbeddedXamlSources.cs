@@ -31,7 +31,7 @@ internal static class EmbeddedXamlSourcesProvider
 	// The content of this method only changes when the file list changes
 	private static global::System.Collections.Generic.IDictionary<string, (string ActualPath, global::System.Func<(string Hash, string Payload)> Getter)> EnsureInitialize()
 	{
-		const string currentListHash = "0f836ad6c048ef5ac0e673406e3c3706"; // that's the hash of all the paths, used to detect changes in the file list following a HR operation
+		const string currentListHash = "14a64d66c7071a2b54a8c9a36712e00c"; // that's the hash of all the paths, used to detect changes in the file list following a HR operation
 
 		// Determine if the sources have been updated or not initialized yet
 		var previousHashList = _XamlSources;
@@ -42,7 +42,7 @@ internal static class EmbeddedXamlSourcesProvider
 			var xamlSources = new global::System.Collections.Generic.Dictionary<string, (string ActualPath, global::System.Func<(string Hash, string Payload)> Getter)>(1, global::System.StringComparer.OrdinalIgnoreCase);
 
 			// Use method groups to avoid closure allocation and ensure no lambda is created, to allow proper HR support
-			xamlSources[NormalizePath(@"C:/Project/0/EmptyDataTemplatePage.xaml")] = (NormalizePath(@"C:/Project/0/EmptyDataTemplatePage.xaml"), GetSources_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706);
+			xamlSources[NormalizePath(@"//Project/0/EmptyDataTemplatePage.xaml")] = (NormalizePath(@"//Project/0/EmptyDataTemplatePage.xaml"), GetSources_EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c);
 
 			if (global::System.Threading.Interlocked.CompareExchange(ref _XamlSources, xamlSources, previousHashList) == previousHashList)
 			{
@@ -93,11 +93,11 @@ internal static class EmbeddedXamlSourcesProvider
 
 	private static string NormalizePath(string path) => path.Replace('\\', '/');
 
-	#region Sources for C:/Project/0/EmptyDataTemplatePage.xaml
-	private static (string hash, string payload) GetSources_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706()
+	#region Sources for //Project/0/EmptyDataTemplatePage.xaml
+	private static (string hash, string payload) GetSources_EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c()
 	{
 		return (
-			"5d034cfbcd11ff7f7f6cfe08e1339adcec1279e4", // hash
+			"57da9b656b835e38693ff13bc03602d0df7d40b5", // hash
 			_utf8.GetString("""
 			 <Page x:Class="TestRepro.EmptyDataTemplatePage"
 				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
