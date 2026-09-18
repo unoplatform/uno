@@ -115,10 +115,6 @@
 			"description": "Disables the build check in Visual Studio that ensures the Browser target is first.",
 			"type": "bool"
 		},
-		"UnoDisableVSWarnDesktopIsFirst": {
-			"description": "Disables the build check in Visual Studio that ensures the Desktop target is first.",
-			"type": "bool"
-		},
 		"UnoDisableVSWarnWindowsIsFirst": {
 			"description": "Disables the build check in Visual Studio that ensures the Windows target is first.",
 			"type": "bool"
@@ -134,11 +130,6 @@
 		"DisableWinUI8857_Workaround": {
 			"description": "Disables the WinUI workaround for issue 8857.",
 			"helpUrl": "https://github.com/microsoft/microsoft-ui-xaml/issues/8857",
-			"type": "bool"
-		},
-		"DisableUno9430_Workaround": {
-			"description": "Disables modification of MtouchExtraArgs for Uno Issue 9430.",
-			"helpUrl": "https://github.com/unoplatform/uno/issues/9430",
 			"type": "bool"
 		},
 		"DisableXamarinDebug_Workaround": {
@@ -180,10 +171,6 @@
 		},
 		"UnoWasmBootstrapVersion": {
 			"description": "Provides an explicit override for the version of the Uno.Wasm.Bootstrap packages to use.",
-			"type": "nuget-version"
-		},
-		"UnoUniversalImageLoaderVersion": {
-			"description": "Provides an explicit override for the version of the Uno.UniversalImageLoader packages to use.",
 			"type": "nuget-version"
 		},
 		"AndroidMaterialVersion": {
@@ -228,6 +215,10 @@
 		},
 		"UnoHotDesignVersion": {
 			"description": "Provides an explicit override for the version of Uno.HotDesign to use.",
+			"type": "nuget-version"
+		},
+		"UnoAppMcpVersion": {
+			"description": "Provides an explicit override for the version of Uno.UI.App.Mcp to use.",
 			"type": "nuget-version"
 		},
 		"MicrosoftLoggingVersion": {
@@ -296,6 +287,14 @@
 		},
 		"MicrosoftIdentityClientVersion": {
 			"description": "Provides an explicit override for the version of Microsoft.Identity.Client to use.",
+			"type": "nuget-version"
+		},
+		"MicrosoftWebView2Version": {
+			"description": "Provides an explicit override for the version of Microsoft.Web.WebView2 to use.",
+			"type": "nuget-version"
+		},
+		"VlcNativeWindowsAssetsVersion": {
+			"description": "Provides an explicit override for the version of VideoLAN.LibVLC.Windows, used by the MediaPlayerElement feature on desktop, to use.",
 			"type": "nuget-version"
 		},
 		"UnoSplashScreenFile": {

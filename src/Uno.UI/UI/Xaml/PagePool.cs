@@ -50,11 +50,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public static TimeSpan TimeToLive { get; set; } = TimeSpan.FromMinutes(1);
 
-		/// <summary>
-		/// Determines if the pooling is enabled. If false, all requested instances are new.
-		/// </summary>
-		public static bool IsPoolingEnabled { get; set; } = true;
-
 		internal PagePool()
 		{
 			lock (_poolsGate)

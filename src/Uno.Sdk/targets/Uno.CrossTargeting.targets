@@ -43,4 +43,34 @@
 		<Compile Remove="**\*.WinAppSDK.cs" Condition="!$(IsWinAppSDK)" />
 	</ItemGroup>
 
+	<!-- These suffixes lost their rules in 7.0, so the files now compile for every target framework. -->
+	<Target Name="_UnoWarnRemovedFileSuffixes"
+			BeforeTargets="CoreCompile"
+			Condition="'$(DesignTimeBuild)' != 'true'">
+		<ItemGroup>
+			<_UnoRemovedSuffixFile Include="@(Compile)"
+								   Condition="$([System.String]::new('%(Compile.Identity)').ToLowerInvariant().EndsWith('.apple.cs'))"
+								   UnoSuffix=".Apple.cs"
+								   UnoAdvice="Rename it to *.UIKit.cs, which has the same rule." />
+			<_UnoRemovedSuffixFile Include="@(Compile)"
+								   Condition="$([System.String]::new('%(Compile.Identity)').ToLowerInvariant().EndsWith('.iosmacos.cs'))"
+								   UnoSuffix=".iOSmacOS.cs"
+								   UnoAdvice="Rename it to *.iOS.cs." />
+			<_UnoRemovedSuffixFile Include="@(Compile)"
+								   Condition="$([System.String]::new('%(Compile.Identity)').ToLowerInvariant().EndsWith('.reference.cs'))"
+								   UnoSuffix=".reference.cs"
+								   UnoAdvice="It used to compile for no target framework: delete it, or fold it into a *.crossruntime.cs file." />
+		</ItemGroup>
+
+		<Warning Code="UNOB0027"
+				 File="%(_UnoRemovedSuffixFile.Identity)"
+				 HelpLink="https://aka.platform.uno/UNOB0027"
+				 Text="The '%(_UnoRemovedSuffixFile.UnoSuffix)' file suffix is no longer recognized by Uno Platform 7.0, so this file now compiles for every target framework. %(_UnoRemovedSuffixFile.UnoAdvice) (See https://aka.platform.uno/UNOB0027)"
+				 Condition="'@(_UnoRemovedSuffixFile)' != ''" />
+
+		<ItemGroup>
+			<_UnoRemovedSuffixFile Remove="@(_UnoRemovedSuffixFile)" />
+		</ItemGroup>
+	</Target>
+
 </Project>

@@ -1,11 +1,4 @@
-﻿#if __CROSSRUNTIME__
-#define MEASURE_DIRTY_PATH_AVAILABLE
-#define ARRANGE_DIRTY_PATH_AVAILABLE
-#elif __ANDROID__
-#define MEASURE_DIRTY_PATH_AVAILABLE
-#endif
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -922,9 +915,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !MEASURE_DIRTY_PATH_AVAILABLE
-		[Ignore("Not supported on this platform")]
-#endif
 		public async Task When_InvalidatingMeasureExplicitly()
 		{
 			var (ctl1, ctl2, ctl3) = await SetupMeasureArrangeTest();
@@ -941,11 +931,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			ctl2.MeasureCount.Should().Be(2);
 			ctl3.MeasureCount.Should().Be(1);
 
-#if ARRANGE_DIRTY_PATH_AVAILABLE
 			ctl1.ArrangeCount.Should().Be(1);
 			ctl2.ArrangeCount.Should().BeInRange(1, 2); // both are acceptable, depends on the capabilities of the platform
 			ctl3.ArrangeCount.Should().Be(1);
-#endif
 		}
 
 #if __WASM__ || __SKIA__
@@ -1012,9 +1000,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !ARRANGE_DIRTY_PATH_AVAILABLE
-		[Ignore("Not supported on this platform")]
-#endif
 		public async Task When_InvalidatingArrangeExplicitly()
 		{
 			var (ctl1, ctl2, ctl3) = await SetupMeasureArrangeTest();
@@ -1038,9 +1023,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !(MEASURE_DIRTY_PATH_AVAILABLE && ARRANGE_DIRTY_PATH_AVAILABLE)
-		[Ignore("Not supported on this platform")]
-#endif
 		public async Task When_InvalidatingMeasureAndArrangeByChangingSize()
 		{
 			var (ctl1, ctl2, ctl3) = await SetupMeasureArrangeTest();
@@ -1065,9 +1047,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !(MEASURE_DIRTY_PATH_AVAILABLE && ARRANGE_DIRTY_PATH_AVAILABLE)
-		[Ignore("Not supported on this platform")]
-#endif
 		public async Task When_InvalidatingMeasureAndArrangeByChangingSizeTwice()
 		{
 			var (ctl1, ctl2, ctl3) = await SetupMeasureArrangeTest();
@@ -1565,9 +1544,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("Translation X and Y axis is currently supported on Skia only")]
-#endif
+		// WinUI's RenderTargetBitmap returns a 0x0 capture once a child has a non-zero Translation.Z.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Translation_On_Load()
 		{
 			var sut = new Rectangle()

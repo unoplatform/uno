@@ -49,7 +49,7 @@ The build process has detected that you have set the value `UnoGenerateAotProfil
 
 ### UNOB0008: Building a WinUI class library with dotnet build is not supported
 
-Building a `net8.0-windows10.x.x` class library using `dotnet build` is not supported at this time because of a [Windows App SDK issue](https://github.com/microsoft/WindowsAppSDK/issues/3548), when the library contains XAML files.
+Building a `net10.0-windows10.x.x` class library using `dotnet build` is not supported at this time because of a [Windows App SDK issue](https://github.com/microsoft/WindowsAppSDK/issues/3548), when the library contains XAML files.
 
 To work around this, use `msbuild /r` on Windows. You can build using `msbuild` with a **Developer Command Prompt for VS 2022** (or 2026), or by using `vswhere` or using [GitHub actions scripts](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/ci-for-winui3?pivots=winui3-packaged-csharp) in a CI environment.
 
@@ -69,37 +69,31 @@ Alternatively you may disable the Implicit Package References
 
 ### UNOB0010: The browserwasm TargetFramework must not be placed first in the TargetFrameworks property
 
-In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents debugging and Hot Reload from working properly for all targets when the `net8.0-browserwasm` TargetFramework is placed first in the `TargetFrameworks` property.
+In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents debugging and Hot Reload from working properly for all targets when the `net10.0-browserwasm` TargetFramework is placed first in the `TargetFrameworks` property.
 
-Make sure to place `net8.0-browserwasm` last in your `<TargetFrameworks>` property.
-
-This warning can be disabled by adding the following to your `.csproj`:
-
-```xml
-<PropertyGroup>
-  <UnoDisableVSWarnBrowserNotFirst>true</UnoDisableVSWarnBrowserNotFirst>
-</PropertyGroup>
-```
-
-### UNOB0011: The desktop TargetFramework must be placed first in the TargetFrameworks property
-
-In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-desktop` TargetFramework is placed first in the `TargetFrameworks` property.
-
-Make sure to place `net8.0-desktop` first in your `<TargetFrameworks>` property.
+Make sure to place `net10.0-browserwasm` last in your `<TargetFrameworks>` property.
 
 This warning can be disabled by adding the following to your `.csproj`:
 
 ```xml
 <PropertyGroup>
-  <UnoDisableVSWarnDesktopNotFirst>true</UnoDisableVSWarnDesktopNotFirst>
+  <UnoDisableVSWarnBrowserIsFirst>true</UnoDisableVSWarnBrowserIsFirst>
 </PropertyGroup>
 ```
+
+### UNOB0011: Retired
+
+> [!NOTE]
+> This error code is retired. It warned when the desktop TargetFramework was placed first
+> while targeting Visual Studio 17.11 or earlier — a version that can no longer build Uno
+> Platform 7.0 (minimum MSBuild is 17.14). The check and its `UnoDisableVSWarnDesktopIsFirst`
+> opt-out have been removed. This heading is kept so existing links to it still resolve.
 
 ### UNOB0012: The windows TargetFramework must not be placed first in the TargetFrameworks property
 
-In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-windows10.xxx` TargetFramework is placed first in the `TargetFrameworks` property.
+In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net10.0-windows10.xxx` TargetFramework is placed first in the `TargetFrameworks` property.
 
-Make sure that `net8.0-windows10.xxx` is not first in your `<TargetFrameworks>` property.
+Make sure that `net10.0-windows10.xxx` is not first in your `<TargetFrameworks>` property.
 
 This warning can be disabled by adding the following to your `.csproj`:
 
@@ -109,11 +103,11 @@ This warning can be disabled by adding the following to your `.csproj`:
 </PropertyGroup>
 ```
 
-### UNOB0013: The net8.0 TargetFramework must not be placed first in the TargetFrameworks property
+### UNOB0013: The net10.0 TargetFramework must not be placed first in the TargetFrameworks property
 
-In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0` TargetFramework is placed first in the `TargetFrameworks` property.
+In Visual Studio 2022/2026, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net10.0` TargetFramework is placed first in the `TargetFrameworks` property.
 
-Make sure that `net8.0` is not first in your `<TargetFrameworks>` property.
+Make sure that `net10.0` is not first in your `<TargetFrameworks>` property.
 
 This warning can be disabled by adding the following to your `.csproj`:
 
@@ -129,19 +123,13 @@ When building with Rider on Linux or macOS, unsupported target frameworks are [n
 
 See how to [make platforms conditional](xref:Uno.GettingStarted.CreateAnApp.Rider#considerations-for-macos-and-linux) for Rider.
 
-### UNOB0015: The desktop TargetFramework must be placed first
+### UNOB0015: Retired
 
-In Visual Studio 17.13 or earlier, when both mobile (`-ios`, `-android`) and `desktop` target frameworks are used, the `-desktop` target framework must be placed first in order for WSL debugging to work.
-
-If `-desktop` is not first, the following message will appear:
-
-```text
-The project doesn't know how to run the profile with name 'MyApp (Desktop WSL2)' and command 'WSL2'.
-```
-
-To fix the issue, reorder the items in your `.csproj` so that `TargetFrameworks` contains `netX.0-desktop` as the first target framework, or upgrade to Visual Studio 17.13 (when a stable release will be available).
-
-The Uno Platform team is following this [Visual Studio issue](https://developercommunity.visualstudio.com/t/WSL-launch-profile-cannot-be-found-when/10776961).
+> [!NOTE]
+> This error code is retired. It warned when the desktop TargetFramework was not placed
+> first while targeting Visual Studio 17.12.x specifically — a version that can no longer
+> build Uno Platform 7.0 (minimum MSBuild is 17.14). The check has been removed. This
+> heading is kept so existing links to it still resolve.
 
 ### UNOB0016: The Publish Profile file must not contain the "PublishDir"
 
@@ -197,11 +185,31 @@ To suppress it:
 </PropertyGroup>
 ```
 
+### UNOB0027: The file suffix is no longer recognized by Uno Platform 7.0
+
+Uno Platform 7.0 removed the `*.Apple.cs`, `*.iOSmacOS.cs`, and `*.reference.cs` file suffixes. The build no longer excludes these files from any target framework, so each of them now compiles for every target framework of the project, the WinAppSDK one included. Rename or remove the file:
+
+| Suffix | Replacement |
+|---|---|
+| `*.Apple.cs` | `*.UIKit.cs`, which has the same rule |
+| `*.iOSmacOS.cs` | `*.iOS.cs`. It named the native macOS target, which was removed in 7.0 |
+| `*.reference.cs` | Delete the file, or fold it into a `*.crossruntime.cs` file. It was gated on a build flavor that an application never selected, so it compiled for no target framework |
+
+`*.skia.cs` is still recognized, but it now compiles for every target framework except the WinAppSDK one, not only for `netX.0-desktop`. See [Platform targeting in multi-targeted libraries](xref:Uno.Development.MigratingToUno7) for the other changes.
+
 ## Compiler Errors
 
 ### UNO0001
 
 A member is not implemented, see [this page](xref:Uno.Development.NotImplemented) for more details.
+
+The warning is reported for the target frameworks where the member is missing. WinUI and Composition APIs have one
+implementation shared by every Uno target, so a missing one is reported everywhere. A WinRT API (`Windows.*`) can be
+implemented on some platforms only; a plain `net10.0` library can run on any of them, so it gets the warning only when
+the desktop and WebAssembly implementations are both missing.
+
+To suppress it, use `#pragma warning disable Uno0001` around the call, or `<NoWarn>$(NoWarn);Uno0001</NoWarn>` in
+the project.
 
 ### UNO0002
 
@@ -221,9 +229,8 @@ The method `InitializeComponent` should always be called in class constructor. A
 
 **An assembly required for a component is missing**
 
-Some components like `ProgressRing` and `MediaPlayerElement` requires you to reference a specific NuGet package for them to work correctly.
+Some components like `MediaPlayerElement` require you to reference a specific NuGet package for them to work correctly.
 
-- For `ProgressRing`, it requires Lottie dependency. For more information about adding Lottie to your project, see [Lottie for Uno](xref:Uno.Features.Lottie).
 - For `MediaPlayerElement` on WebAssembly or Gtk, it requires `Uno.WinUI.MediaPlayer.WebAssembly` or `Uno.WinUI.MediaPlayer.Skia.Gtk` NuGet package. For more information, see [MediaPlayerElement](xref:Uno.Controls.MediaPlayerElement).
 
 ### UNO0008
@@ -240,9 +247,12 @@ window.EnableHotReload();
 
 ## XAML Errors
 
-### UNOX0001
+### UNOX0001: Retired
 
-The `ProgressRing` control [needs an additional Lottie](xref:Uno.Features.Lottie) dependency to be enabled.
+> [!NOTE]
+> This error code is retired. It warned that `ProgressRing` needed an additional Lottie
+> dependency; `ProgressRing` now renders through generated Composition visuals and no longer
+> needs one. This heading is kept so existing links to it still resolve.
 
 ### UXAML0006
 
@@ -258,6 +268,26 @@ WinUI only supports the `using:` xmlns form. The WPF/Silverlight `clr-namespace:
 The assembly is inferred from the compilation, so the `;assembly=` token has no replacement — drop it. The declaration is rejected even when its prefix is never used; the only exemption is a prefix listed in `mc:Ignorable` on the root element.
 
 The same rule is enforced at run time by `XamlReader.Load` and Hot Reload, which throw a `XamlParseException`.
+
+### UXAML0007
+
+**The conditional XAML prefix was removed in Uno Platform 7.0**
+
+Uno Platform 7.0 names every conditional XAML prefix after a target framework, and removed the prefixes that named a renderer or a distinction that no longer exists. A removed prefix no longer selects a platform, so the markup using it is not rewritten or rejected — it silently changes meaning:
+
+- Listed in `mc:Ignorable` (the usual form for a positive prefix such as `skia`), its content is **ignored on every target**.
+- Declared with the presentation namespace (the usual form for a negative prefix such as `not_skia`), it is an alias of the default namespace, so its content **applies on every target**.
+
+| Removed prefix | Replacement |
+|---|---|
+| `skia`, `netstdref` | `not_winappsdk` |
+| `not_skia`, `not_netstdref` | `winappsdk` |
+| `androidskia`, `iosskia`, `tvosskia`, `wasmskia` (and their `not_` forms) | `android`, `ios`, `tvos`, `wasm` (and their `not_` forms) |
+| `macos`, `not_macos` | `desktop`, `not_desktop` |
+| `not_mux` | Remove it with the markup using it. It dates from UWP support and never applied |
+| `xamarin`, `legacy` listed in `mc:Ignorable` | Drop the prefix from the markup using it |
+
+The diagnostic is raised on the `xmlns` declaration. The same names remain valid as ordinary namespace aliases, so a declaration using the `using:` form — for instance `xmlns:skia="using:SkiaSharp.Views.Windows"` or `xmlns:legacy="using:Uno.UI.Controls.Legacy"` — is not reported. `legacy` is only reported when it is listed in `mc:Ignorable`, which is where it used to act as a condition. See [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7#removed-xaml-prefixes).
 
 ## VS Code Errors
 

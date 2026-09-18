@@ -141,7 +141,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			;
 		}
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 		[TestMethod]
 		[DataRow(175, 175, 26, 26)]
 		// [DataRow(1, 0, 2, 2)] // https://github.com/unoplatform/uno/issues/13907
@@ -150,6 +149,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(123, 456, 18, 68)]
 		[DataRow(96, 97, 14, 15)]
 		[DataRow(393, 277, 59, 42)]
+		// KeyboardHelper is a no-op on WinAppSDK.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ArrowKeys_Pressed(int width, int height, int horizontalDelta, int verticalDelta)
 		{
 			var border = new Border
@@ -580,7 +581,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(4, keyDownCount);
 		}
-#endif
 
 		[TestMethod]
 		public async Task When_Scrolled_ViewportSizeLargerThanContent()
@@ -1610,9 +1610,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-		[Ignore("We're only testing managed scrollers.")]
-#endif
+		// WinUI: after ScrollToVerticalOffset(50) and WaitForIdle, the content's TransformToVisual still reports no offset.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SizeChanged_Offsets_Adjusted()
 		{
 			Rectangle rect;
@@ -1654,9 +1653,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO // uses internal ToMatrix
 		[TestMethod]
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-		[Ignore("We're only testing managed scrollers.")]
-#endif
 		public async Task When_SCP_TransformToVisual()
 		{
 			var SUT = new ScrollViewer
@@ -1722,8 +1718,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_SCROLL_PRESENTER
-		[Ignore("This test only applies to managed scroll presenter and requires input injector.")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_ScrollViewer_Touch_Scrolled()
 		{

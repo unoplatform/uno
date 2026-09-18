@@ -527,9 +527,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("Only skia handled trailing newlines correctly for now.")]
-#endif
 		public async Task When_Text_Ends_In_CarriageReturn()
 		{
 			var SUT0 = new TextBlock();
@@ -563,9 +560,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("Only skia handled trailing newlines correctly for now.")]
-#endif
 		public async Task When_Text_Ends_In_CarriageReturn2()
 		{
 			var SUT0 = new TextBlock();
@@ -614,9 +608,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("Only skia handled trailing newlines correctly for now.")]
-#endif
+		// WinUI: ActualHeight is unchanged after appending "\r" at runtime and WaitForIdle (a trailing "\r" set up front does add a line).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Text_Ends_In_Return()
 		{
 			var SUT = new TextBlock { Text = "hello world" };
@@ -636,9 +629,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("Only skia handled trailing newlines correctly for now.")]
-#endif
 		public async Task When_Text_Ends_In_LineBreak()
 		{
 			var SUT0 = new TextBlock();
@@ -673,9 +663,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("Only skia handled trailing newlines correctly for now.")]
-#endif
 		public async Task When_Text_Ends_In_LineBreak2()
 		{
 			var SUT0 = new TextBlock();

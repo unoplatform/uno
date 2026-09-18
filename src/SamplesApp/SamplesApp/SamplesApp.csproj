@@ -7,7 +7,7 @@
 	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.props" />
 
 	<PropertyGroup>
-		<!-- Desktop deliberately not first (UNOB0011): keeps VS multi-target debugging working. iOS/tvOS
+		<!-- Desktop deliberately not first: keeps VS multi-target debugging working. iOS/tvOS
 		     carry the explicit platform version to match $(NetCurrentNetCoreMobile). -->
 		<TargetFrameworks>$(NetCurrent)-browserwasm;$(NetCurrentWinAppSDK);$(NetCurrent)-android;$(NetCurrent)-ios$(NetCurrentAppleOSVersion);$(NetCurrent)-tvos$(NetCurrentAppleOSVersion);$(NetCurrent)-desktop</TargetFrameworks>
 		<OutputType>Exe</OutputType>

@@ -4,7 +4,6 @@
 		<IsIOS>false</IsIOS>
 		<IsTvOS>false</IsTvOS>
 		<IsAppleUIKit>false</IsAppleUIKit>
-		<IsApple>false</IsApple>
 		<IsWinAppSdk>false</IsWinAppSdk>
 		<IsBrowserWasm>false</IsBrowserWasm>
 		<IsDesktop>false</IsDesktop>

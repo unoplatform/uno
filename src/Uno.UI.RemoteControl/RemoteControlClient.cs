@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Runtime.Loader;
@@ -1293,43 +1294,82 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// existing parallel-race connection strategy.
 	/// </summary>
 	private static IReadOnlyList<string> GetDevServerHostCandidates()
+		=> GetDevServerHostCandidates(
+			isBrowser: OperatingSystem.IsBrowser(),
+			isAppleMobile: OperatingSystem.IsIOS() || OperatingSystem.IsTvOS(),
+			isAndroid: OperatingSystem.IsAndroid(),
+			isAppleSimulator: IsAppleSimulator(),
+			isAndroidEmulator: IsAndroidEmulator());
+
+	/// <summary>
+	/// Selects the high-priority host candidates from platform facts (a pure function, for testability).
+	/// </summary>
+	internal static IReadOnlyList<string> GetDevServerHostCandidates(bool isBrowser, bool isAppleMobile, bool isAndroid, bool isAppleSimulator, bool isAndroidEmulator)
 	{
-#if __WASM__
-		return ["127.0.0.1", "[::1]"];
-#elif __IOS__ || __TVOS__
-		// Canonical source: Uno.DeviceHelper.IsSimulator in Uno.dll (internal, not accessible from here).
-		if (ObjCRuntime.Runtime.Arch == ObjCRuntime.Arch.SIMULATOR)
+		if (isBrowser)
 		{
 			return ["127.0.0.1", "[::1]"];
 		}
-		return Array.Empty<string>();
-#elif __ANDROID__
-		// Multi-field heuristic sourced from flutter/plus_plugins device_info_plus (same logic in SamplesApp Main.Android.cs).
-		// Covers AVD (10.0.2.2 = host-machine alias), adb-reverse (127.0.0.1), and Genymotion.
-		var isEmulator =
-			(Android.OS.Build.Brand!.StartsWith("generic", StringComparison.OrdinalIgnoreCase)
-				&& Android.OS.Build.Device!.StartsWith("generic", StringComparison.OrdinalIgnoreCase))
-			|| Android.OS.Build.Fingerprint!.StartsWith("generic", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Fingerprint.StartsWith("unknown", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Hardware!.Contains("goldfish", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Hardware.Contains("ranchu", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Model!.Contains("google_sdk", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Model.Contains("Emulator", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Model.Contains("Android SDK built for x86", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Manufacturer!.Contains("Genymotion", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Product!.Contains("sdk_google", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Product.Contains("google_sdk", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Product.Contains("sdk", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Product.Contains("sdk_x86", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Product.Contains("vbox86p", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Product.Contains("emulator", StringComparison.OrdinalIgnoreCase)
-			|| Android.OS.Build.Product.Contains("simulator", StringComparison.OrdinalIgnoreCase);
 
-		return isEmulator ? ["10.0.2.2", "127.0.0.1"] : Array.Empty<string>();
-#else
+		if (isAppleMobile)
+		{
+			// Physical iOS/tvOS devices are not reachable via loopback from the dev-server host.
+			return isAppleSimulator ? ["127.0.0.1", "[::1]"] : Array.Empty<string>();
+		}
+
+		if (isAndroid)
+		{
+			return isAndroidEmulator ? ["10.0.2.2", "127.0.0.1"] : Array.Empty<string>();
+		}
+
 		// Skia desktop (Windows, Linux, macOS).
 		return ["127.0.0.1", "[::1]"];
-#endif
+	}
+
+	/// <summary>
+	/// Best-effort iOS/tvOS simulator detection via the environment variables Xcode's Simulator sets on its
+	/// child process. No platform SDK types are referenced: this assembly compiles against plain net10.0/net11.0.
+	/// </summary>
+	private static bool IsAppleSimulator()
+		=> Environment.GetEnvironmentVariable("SIMULATOR_DEVICE_NAME") is not null
+			|| Environment.GetEnvironmentVariable("SIMULATOR_UDID") is not null;
+
+	/// <summary>
+	/// Best-effort Android emulator detection without any Android SDK types (same constraint as
+	/// <see cref="IsAppleSimulator()"/>). Checks the AVD/Genymotion pipe devices, then falls back to QEMU build props.
+	/// </summary>
+	private static bool IsAndroidEmulator()
+	{
+		try
+		{
+			if (File.Exists("/dev/goldfish_pipe") || File.Exists("/dev/qemu_pipe"))
+			{
+				return true;
+			}
+
+			const string buildPropPath = "/system/build.prop";
+			if (File.Exists(buildPropPath))
+			{
+				foreach (var line in File.ReadLines(buildPropPath))
+				{
+					if (line.StartsWith("ro.kernel.qemu=1", StringComparison.Ordinal)
+						|| line.StartsWith("ro.hardware=goldfish", StringComparison.Ordinal)
+						|| line.StartsWith("ro.hardware=ranchu", StringComparison.Ordinal))
+					{
+						return true;
+					}
+				}
+			}
+		}
+		catch (IOException)
+		{
+			// Unreadable is treated as "not an emulator" — this is a best-effort heuristic, not a hard requirement.
+		}
+		catch (UnauthorizedAccessException)
+		{
+		}
+
+		return false;
 	}
 
 	/// <summary>

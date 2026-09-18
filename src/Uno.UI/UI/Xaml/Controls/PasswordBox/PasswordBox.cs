@@ -163,14 +163,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		[NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__")]
 		public string PasswordChar
 		{
 			get => (string)this.GetValue(PasswordCharProperty);
 			set => this.SetValue(PasswordCharProperty, value);
 		}
 
-		[NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__")]
 		public static DependencyProperty PasswordCharProperty { get; } =
 			DependencyProperty.Register(
 				nameof(PasswordChar),

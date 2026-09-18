@@ -67,10 +67,15 @@ on macOS with Skia rendering. To migrate:
 2. Add `net10.0-desktop` if the solution does not already have a desktop head.
 3. Move anything still needed from `Platforms/MacCatalyst/` to `Platforms/Desktop/`, and
    drop the Catalyst `Info.plist` and `Entitlements.plist`.
-4. Replace `#if __MACCATALYST__` blocks with `#if __DESKTOP__`, or with an
-   `OperatingSystem.IsMacOS()` runtime check.
+4. Replace `#if __MACCATALYST__` blocks with `#if __DESKTOP__` combined with an
+   `OperatingSystem.IsMacOS()` check — `__DESKTOP__` alone is also true on Windows and Linux.
 5. Publish with the [macOS desktop packaging](xref:uno.publishing.desktop.macos) flow
    instead of the Mac Catalyst one.
+
+The `IsMacCatalyst` and `IsIOSOrCatalyst` MSBuild properties are also gone — replace them
+with `IsIOS` and `IsAppleUIKit` respectively. A condition that references either property
+as a bare boolean (for example `Condition="$(IsAndroid) or $(IsIOSOrCatalyst)"`) now fails
+with `MSB4100` instead of silently evaluating to `false`, since the property is undefined.
 
 ### Minimum OS versions raised
 
@@ -101,8 +106,11 @@ longer tested by Uno Platform.
 | `Uno.UI.BindingHelper.Android` assembly removed | Remove the reference; Skia-on-Android needs no Java/JNI binding. |
 | `Uno.UI.FluentTheme.v1` assembly removed | The Fluent Design **V1** styles were deleted several releases ago and the assembly has shipped empty since. `Uno.UI.FluentTheme` still ships and is what `XamlControlsResources` has always loaded, so there is nothing to change unless you referenced the V1 types directly — see *Fluent Design resource-version types* under **Public API removed**. |
 | `Uno.UI.FluentTheme.v2` assembly merged into `Uno.UI.FluentTheme` | With V1 gone there is a single set of Fluent styles, so the two assemblies were collapsed into one. All the styles ship in `Uno.UI.FluentTheme`; both assemblies come from the `Uno.WinUI` package, so no reference changes. Only a direct reference to the `Uno.UI.FluentTheme.v2` assembly, or to `XamlControlsResourcesV2`, needs updating. |
-| `Uno.UniversalImageLoader` no longer injected (Android) | Skia handles image loading internally. If you initialized it manually, remove the `ConfigureUniversalImageLoader();` call. |
+| `Uno.UniversalImageLoader` no longer injected (Android) | Skia handles image loading internally. If you initialized it manually, remove the `ConfigureUniversalImageLoader();` call. The `UnoUniversalImageLoaderVersion` property is removed and is silently ignored if still set. |
+| `bundle://` image scheme removed (iOS/tvOS) | The native UIKit bundle-resource loader is gone with the native rendering layer. Use `ms-appx:///` assets instead — see [Working with assets](xref:Uno.Features.Assets). |
+| `UnoDragDropExternalSupport` trimming property removed | The external drag-and-drop feature it gated was already gone from `Uno.UI`. The property is removed and is silently ignored if still set; in-app drag and drop is unaffected. |
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
+| `Microsoft.Web.WebView2` WebView backend removed (Windows) | `WebView2Aot` is now the only backend. Remove any `Environment.SetEnvironmentVariable("UNO_WEBVIEW2_BACKEND", "microsoft.web.webview2")` call — the variable is still read, but any value other than `webview2aot` now only logs a warning and `WebView2Aot` is used regardless. |
 | `Uno.WinUI` UI assemblies for `net*-android/ios/tvos` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
 | `Xamarin.AndroidX.Legacy.Support.V4` no longer injected (Android) | The `Uno.Sdk` added it to every Android app head. It is the AndroidX wrapper for the Android Support Library v4, whose job was bridging pre-AndroidX *view* code — with the native Android Views renderer gone, nothing needs it. Ten packages leave the graph: `Legacy.Support.V4`, `Legacy.Support.Core.UI`, `Legacy.Support.Core.Utils`, `AsyncLayoutInflater`, `LocalBroadcastManager`, `Media`, `Print`, `SlidingPaneLayout`, `Window` and its `Window.*Core*` companions. Nothing changes version. `AndroidX.Window` still arrives with the `foldable` feature. If *your own* code uses any of these, add an explicit `PackageReference`. The `AndroidXLegacySupportV4Version` property is removed and is silently ignored if still set. |
@@ -192,18 +200,30 @@ What this means for an upgrade:
 #### Removed XAML prefixes
 
 Every conditional prefix is now named after a target framework, so the prefixes that named a renderer or a
-long-gone distinction are removed. Markup using them no longer resolves and must be rewritten:
+long-gone distinction are removed. A removed prefix is not rejected: it is treated as an ordinary XML namespace,
+which silently changes what the markup does. Listed in `mc:Ignorable`, its content is ignored on every target;
+declared with the presentation namespace (the usual form for a `not_` prefix), its content applies on every
+target. The build reports each such declaration as [UXAML0007](xref:Build.Solution.error-codes).
+Rewrite the markup:
 
 | Removed prefix | Replacement |
 |---|---|
 | `skia:`, `netstdref:` | `not_winappsdk:` |
 | `not_skia:`, `not_netstdref:` | `winappsdk:` |
 | `androidskia:`, `iosskia:`, `tvosskia:`, `wasmskia:` | `android:`, `ios:`, `tvos:`, `wasm:` |
-| `macos:` | `desktop:` |
+| `macos:`, `not_macos:` | `desktop:`, `not_desktop:` |
 | `not_mux:` | drop the attribute — it dates from UWP support and never applied |
-| `xamarin:`, `legacy:` | drop the prefix |
+| `xamarin:`, and `legacy:` listed in `mc:Ignorable` | drop the prefix |
+
+The removed names stay valid as ordinary aliases of a `using:` namespace, and are not reported then. In particular,
+`xmlns:legacy="using:Uno.UI.Controls.Legacy"` names a live namespace (for instance
+`Uno.UI.Controls.Legacy.ProgressRing`): keep that prefix, since dropping it switches `legacy:ProgressRing` to the
+WinUI `ProgressRing`.
 
 #### Removed file suffixes
+
+These suffixes no longer have a rule, so a file using one compiles for every target framework, the WinAppSDK one
+included. The build reports each such file as [UNOB0027](xref:Build.Solution.error-codes).
 
 | Removed suffix | Replacement |
 |---|---|
@@ -221,7 +241,44 @@ long-gone distinction are removed. Markup using them no longer resolves and must
 They read as a compile-time host discriminator but could never be one: the SDK references every desktop host
 package together, so all of them were defined at once in a `netX.0-desktop` head. Use
 `OperatingSystem.IsWindows()` / `IsLinux()` / `IsMacOS()`, which is the only check that can be correct for a
-target framework that runs on all three. `HAS_UNO_SKIA` and `__UNO_SKIA__` are unaffected.
+target framework that runs on all three. `HAS_UNO_SKIA` and `__UNO_SKIA__` are kept, see below.
+
+#### Preprocessor symbols no longer depend on the project shape
+
+The `Uno.WinUI` package now defines every "Uno draws the UI" symbol in one place, for every target framework except
+the WinAppSDK one. The `Uno.WinUI.Runtime.Skia.*` packages no longer define any symbol. In 6.x the result
+depended on which runtime packages a project happened to reference:
+
+| Symbol | 6.x | 7.0 |
+|---|---|---|
+| `UNO_REFERENCE_API`, `HAS_UNO_SKIA`, `__UNO_SKIA__` | missing from natively rendered targets, from `net*-desktop` class libraries (unless `UnoFeatures` pulled in `MediaPlayerElement` or `WebView`) and from mobile libraries that don't use the Uno.Sdk | defined wherever `HAS_UNO` is |
+| `__APPLE_UIKIT__` | not defined in application or library projects | `net*-ios` and `net*-tvos` |
+| `__DESKTOP__` | also defined by `Uno.WinUI.Runtime.Skia.Headless`, even on a plain `net10.0` target framework | `net*-desktop` only |
+
+What this means for an upgrade:
+
+- An `#else` branch under `UNO_REFERENCE_API`, `HAS_UNO_SKIA` or `__UNO_SKIA__` no longer compiles in desktop class
+  libraries or libraries without the Uno.Sdk: they now take the Uno branch, as their application heads always did.
+- Replace these three symbols with `HAS_UNO`. `HAS_UNO_SKIA` and `__UNO_SKIA__` are deprecated and planned for
+  removal in Uno Platform 8.0.
+- A project that references `Uno.WinUI.Runtime.Skia.Headless` on a plain `net10.0` target framework, or a project
+  that does not use the Uno.Sdk and relied on a runtime package for `__DESKTOP__` or `__WASM__`, must now target
+  `net10.0-desktop` / `net10.0-browserwasm` with the Uno.Sdk, or add the symbol to its own `DefineConstants`.
+
+#### The not-implemented warning (`Uno0001`) follows the target framework
+
+Whether [`Uno0001`](xref:Build.Solution.error-codes#uno0001) fired used to depend on the preprocessor symbols above,
+so it varied with the project shape: `net*-desktop` class libraries got it for no WinRT API, Android and iOS projects
+could get it for WinRT APIs those platforms do implement, and earlier 7.0 previews reported it for no `Uno.UI` or
+`Uno.UI.Composition` API at all. The warning now follows the target framework:
+
+- Using a WinUI or Composition API that Uno Platform does not implement reports `Uno0001` on every target.
+- A WinRT API (`Windows.*`) reports it only on the target frameworks whose implementation is missing. A plain
+  `net10.0` library can run on any of them, so it gets the warning only when the desktop and WebAssembly
+  implementations are both missing.
+
+A project that sets `TreatWarningsAsErrors` can fail to build after the upgrade. Replace the API, or suppress the
+warning where the call is intentional (`#pragma warning disable Uno0001`, or `<NoWarn>$(NoWarn);Uno0001</NoWarn>`).
 
 ### MRT Core moves to the `Uno.WinRT` package
 
@@ -349,6 +406,9 @@ assembly it has always lived in is itself renamed `Uno` → `Uno.WinRT` in 7.0.
   from `System.Runtime.InteropServices.JavaScript` — the recommended, source-generated path
   (thread-safe, CSP-compliant, no `eval`). The string-based `WebAssemblyRuntime.InvokeJS(string)`
   is *not* removed, but it is a legacy eval-based API and is not recommended for new code.
+- **TypeScript interop marker:** `Uno.Foundation.Interop.TSInteropMessageAttribute` and its
+  `CodeGeneration` enum. They drove a TypeScript bindings generator whose only input was set by the
+  WebAssembly DOM heads removed in 7.0, so the attribute had no effect. Remove it from your structs.
 - **Fluent Design resource-version types:** `Microsoft.UI.Xaml.Controls.XamlControlsResourcesV1`,
   `Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2`, the `ControlsResourcesVersion` enum, and
   the `ControlsResourcesVersion` member on **both** `XamlControlsResources` (a dependency property)
@@ -416,6 +476,14 @@ assembly it has always lived in is itself renamed `Uno` → `Uno.WinRT` in 7.0.
 
   `Coercion`, `Animations`, `Local`, `Inheritance` and `DefaultValue` are unchanged.
 
+- **`PrettyPrint` / `ViewExtensions.TreeGraph` are no longer public on WinAppSDK.**
+  `Uno.UI.Extensions.PrettyPrint` and `ViewExtensions` (`TreeGraph`, `FindFirstAncestor`,
+  `FindFirstDescendant`, …) were accidentally public in the WinAppSDK build of
+  `Uno.UI.Extras` — a guard that was meant to keep them internal there always evaluated to
+  `false`. They are now internal on WinAppSDK, matching the intended Skia-only public surface
+  (they remain public in the Skia `Uno.UI` build). There is no known WinAppSDK consumer; if
+  you called these from a WinAppSDK head, copy the extension methods into your own project.
+
 ### `FeatureConfiguration` flags removed
 
 The native-only flags below no longer exist; delete the calls — behavior is the unified
@@ -478,6 +546,20 @@ CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICult
 
 If a single codebase must target both pre-7.0 and 7.0, guard the calls with `#if`.
 
+The following flags are also removed. Their readers were removed earlier (with the native renderers,
+or when a control was rewritten), but the public setters stayed behind as silent no-ops — removing
+them does not change behavior on any currently-supported target:
+
+- `FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent`.
+- `FeatureConfiguration.ProgressRing.ProgressRingAsset` / `.DeterminateProgressRingAsset` — use
+  `ProgressRing.IndeterminateSource` / `.DeterminateSource` to customize the animated visual instead.
+- `WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus` (iOS/tvOS) — keyboard focus
+  handling is always enabled.
+- `WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap` (Android) and
+  `.InterpretForceTouchAsRightTap` (iOS/tvOS).
+- `Microsoft.UI.Xaml.PagePool.IsPoolingEnabled` — this duplicated `FeatureConfiguration.Page.IsPoolingEnabled`,
+  which is the flag Uno actually reads; use that one instead.
+
 ### Behavioral changes (same API, different result)
 
 Because rendering moves from `Canvas`/`CALayer`/CSS to Skia, expect subtle differences and
@@ -537,6 +619,15 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
   (`.UseX11(b => b.RenderingBackend(X11RenderingBackend.OpenGL))`) or set the matching
   `FeatureConfiguration.Rendering.UseVulkanOn*` flag to `false` before building the host. See
   [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
+
+Independently of rendering, `Uno.WinUI.MSAL`'s `WithUnoHelpers()` changed on WebAssembly:
+
+- **`WithUnoHelpers()` no longer wires an interactive web UI on WebAssembly.** The WASM-only
+  flavor of `Uno.UI.MSAL` that provided it was removed; `PublicClientApplicationBuilder
+  .WithUnoHelpers()` and `AcquireTokenInteractiveParameterBuilder.WithUnoHelpers()` are now
+  no-ops there, same as they always were on WinUI. Interactive sign-in on WebAssembly needs
+  your own `WithCustomWebUi(...)` (and `WithHttpClientFactory(...)` if needed) — see
+  [MSAL: WebAssembly](xref:Uno.Interop.MSAL#webassembly).
 
 ### Type-hierarchy changes (WinUI parity)
 
@@ -831,6 +922,12 @@ To port a custom source, move the work as follows:
   rejected whether or not the prefix is used, so unused `clr-namespace:` declarations must also be
   removed — the only exemption is a prefix listed in `mc:Ignorable` on the root element.
 
+- **`legacy:ListView` and `legacy:GridView` no longer compile.** The XAML generator used to resolve any
+  type it could not find in `using:Uno.UI.Controls.Legacy` to the `Microsoft.UI.Xaml.Controls` type of the
+  same name, a leftover of the native legacy lists removed in 7.0, so this markup already produced the
+  regular controls. Use `ListView` and `GridView` from the default namespace. Types that do exist in that
+  namespace, such as `legacy:ProgressRing`, are unaffected.
+
 - **A relative URI on a `Uri`-typed property now compiles to `ms-resource:///Files/…`**, the MRT
   local-resource form WinUI produces. Previously Uno emitted the relative string verbatim. This
   affects custom `Uri` properties, `HyperlinkButton.NavigateUri`, `Hyperlink.NavigateUri`,
@@ -947,6 +1044,15 @@ See [Customizing the `Application` class on Android](xref:Uno.Features.Customizi
 New apps get Skia heads only. Existing apps should drop native `*.Mobile` / native
 `*.Wasm` (DOM) heads in favor of the Skia heads (`Skia.netcoremobile`,
 `Skia.WebAssembly.Browser`, and the desktop Skia head) and remove native bootstrap code.
+
+### iOS Hot Restart is not supported
+
+Visual Studio iOS Hot Restart, which deployed to a device connected to a Windows PC without a Mac, is not
+supported. Visual Studio 2026 no longer offers it, and Visual Studio 2022 does not support the `net10.0`
+target frameworks that 7.0 requires. Uno Platform no longer generates the `__UnoHotRestartDelegate` application
+delegate it relied on, which started the app without the Skia iOS host. Build and deploy iOS apps through a
+connected macOS host instead. The `UnoDisableHotRestartHelperGeneration` property no longer has any effect and can
+be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
 
 ## Migration checklist
 

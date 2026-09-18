@@ -20,9 +20,6 @@ public class Given_BackgroundTransition
 {
 	private const DynamicallyAccessedMemberTypes ActivatorRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
 
-#if !__SKIA__
-	[Ignore]
-#endif
 	[TestMethod]
 	[DataRow(typeof(Grid))]
 	[DataRow(typeof(StackPanel))]
@@ -89,9 +86,6 @@ public class Given_BackgroundTransition
 		}
 	}
 
-#if !__SKIA__
-	[Ignore]
-#endif
 	[TestMethod]
 	// Test is flaky on iOS https://github.com/unoplatform/uno-private/issues/797
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)]

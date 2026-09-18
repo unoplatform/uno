@@ -19,16 +19,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 [TestClass]
 public class Given_XamlCompositionBrushBase
 {
-#if !__SKIA__
-	[Ignore]
-#endif
 	[TestMethod]
 	[RunsOnUIThread]
+	// WinUI's RenderTargetBitmap doesn't capture the SetElementChildVisual content (0x0 capture).
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_CompositionBrush_Changes()
 	{
 		var dpi = TestServices.WindowHelper.XamlRoot.RasterizationScale;
 
-		var compositor = Window.Current.Compositor;
 		var expected = new Grid
 		{
 			Width = 200,
@@ -39,6 +37,8 @@ public class Given_XamlCompositionBrushBase
 			Width = 200,
 			Height = 200
 		};
+
+		var compositor = ElementCompositionPreview.GetElementVisual(sut).Compositor;
 
 		var colorBrush = compositor.CreateColorBrush(Colors.Red);
 

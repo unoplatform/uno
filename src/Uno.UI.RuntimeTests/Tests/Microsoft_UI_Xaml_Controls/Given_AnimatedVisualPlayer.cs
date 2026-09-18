@@ -356,7 +356,7 @@ public class Given_AnimatedVisualPlayer
 
 		await UITestHelper.Load(host);
 
-		await source.SetSourceAsync(FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset);
+		await source.SetSourceAsync(new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json"));
 
 		var compositor = ElementCompositionPreview.GetElementVisual(host).Compositor;
 		var visual = ((IAnimatedVisualSource3)source).TryCreateAnimatedVisual(compositor, out var diagnostics, createAnimations: false);
@@ -388,7 +388,7 @@ public class Given_AnimatedVisualPlayer
 
 		await UITestHelper.Load(host);
 
-		await source.SetSourceAsync(FeatureConfiguration.ProgressRing.ProgressRingAsset);
+		await source.SetSourceAsync(new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json"));
 		await TestServices.WindowHelper.WaitFor(() => player.IsAnimatedVisualLoaded, timeoutMS: 5000, "The first Lottie source should load.");
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -398,7 +398,7 @@ public class Given_AnimatedVisualPlayer
 		var firstFrame = await UITestHelper.ScreenShot(host);
 		await firstFrame.Populate();
 
-		await source.SetSourceAsync(FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset);
+		await source.SetSourceAsync(new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json"));
 		await TestServices.WindowHelper.WaitFor(() => player.IsAnimatedVisualLoaded && player.Duration != firstDuration, timeoutMS: 5000, "Swapping the URI should reload the real Lottie source.");
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -463,7 +463,7 @@ public class Given_AnimatedVisualPlayer
 			await TestServices.WindowHelper.WaitFor(() => player.Diagnostics is Exception, timeoutMS: 5000, "The initial load should fail.");
 
 			await WriteEmbeddedAssetToFileAsync(
-				FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset,
+				new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json"),
 				retryPath);
 
 			await source.SetSourceAsync(retryUri);
@@ -498,7 +498,7 @@ public class Given_AnimatedVisualPlayer
 
 		try
 		{
-			await WriteEmbeddedAssetToFileAsync(FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset, roamingPath);
+			await WriteEmbeddedAssetToFileAsync(new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json"), roamingPath);
 			await UITestHelper.Load(host);
 
 			await source.SetSourceAsync(traversalUri);
@@ -721,7 +721,7 @@ public class Given_AnimatedVisualPlayer
 			AutoPlay = false,
 			Source = new LottieVisualSource
 			{
-				UriSource = FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset
+				UriSource = new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json")
 			}
 		};
 		var host = CreateHost(player);
@@ -763,7 +763,7 @@ public class Given_AnimatedVisualPlayer
 			AutoPlay = false,
 			Source = new LottieVisualSource
 			{
-				UriSource = FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset
+				UriSource = new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json")
 			}
 		};
 		var host = CreateHost(player);

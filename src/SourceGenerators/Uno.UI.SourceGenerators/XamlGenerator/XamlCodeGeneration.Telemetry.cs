@@ -17,6 +17,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private const string InstrumentationKey = "9a44058e-1913-4721-a979-9582ab8bedce";
 
+		private static readonly char[] _defineConstantsSeparators = new[] { ',', ';' };
+
 		private Telemetry _telemetry = null!;
 
 		private void InitTelemetry(GeneratorExecutionContext context)
@@ -170,27 +172,59 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private string BuildUnoRuntimeValue()
-		{
-			var constants = _generatorContext.GetMSBuildPropertyValue("DefineConstantsProperty");
+			=> GetUnoRuntime(
+				_generatorContext.GetMSBuildPropertyValue("TargetFramework"),
+				_generatorContext.GetMSBuildPropertyValue("DefineConstantsProperty"));
 
-			if (constants.Contains("__WASM__"))
+		/// <summary>
+		/// Classifies the build by target platform, from the target framework or, when it names none, from the
+		/// platform symbols. A plain netX.0 project is reported as "Plain".
+		/// </summary>
+		internal static string GetUnoRuntime(string targetFramework, string defineConstants)
+		{
+			var separatorIndex = targetFramework?.IndexOf('-') ?? -1;
+			if (separatorIndex >= 0)
+			{
+				var platform = targetFramework.Substring(separatorIndex + 1).TrimEnd('.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+
+				return platform.ToLowerInvariant() switch
+				{
+					"desktop" => "Desktop",
+					"android" => "Android",
+					"ios" => "iOS",
+					"tvos" => "tvOS",
+					"browserwasm" => "WebAssembly",
+					_ => "Unknown",
+				};
+			}
+
+			var symbols = new HashSet<string>(
+				(defineConstants ?? "").Split(_defineConstantsSeparators, StringSplitOptions.RemoveEmptyEntries),
+				StringComparer.Ordinal);
+
+			if (symbols.Contains("__DESKTOP__") || symbols.Contains("DESKTOP"))
+			{
+				return "Desktop";
+			}
+			if (symbols.Contains("__ANDROID__"))
+			{
+				return "Android";
+			}
+			// Checked before __IOS__, in case a tvOS build defines both.
+			if (symbols.Contains("__TVOS__"))
+			{
+				return "tvOS";
+			}
+			if (symbols.Contains("__IOS__"))
+			{
+				return "iOS";
+			}
+			if (symbols.Contains("__WASM__") || symbols.Contains("BROWSERWASM"))
 			{
 				return "WebAssembly";
 			}
-			if (constants.Contains("__SKIA__"))
-			{
-				return "Skia";
-			}
-			if (constants.Contains("__TIZEN__"))
-			{
-				return "Tizen";
-			}
-			if (constants.Contains("UNO_REFERENCE_API"))
-			{
-				return "Reference";
-			}
 
-			return "Unknown";
+			return "Plain";
 		}
 	}
 }
