@@ -571,6 +571,8 @@ content is left exactly as you set it.
 
   ```xml
   <Page Background="Transparent">
+      <!-- your content -->
+  </Page>
   ```
 
   This is what WinUI has always required, so the same markup works on Windows.
