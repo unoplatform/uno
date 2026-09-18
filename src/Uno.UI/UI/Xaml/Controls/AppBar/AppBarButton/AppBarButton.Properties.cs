@@ -29,7 +29,7 @@ partial class AppBarButton
 			nameof(DynamicOverflowOrder),
 			typeof(int),
 			typeof(AppBarButton),
-			new FrameworkPropertyMetadata(IntegerBoxes.Zero));
+			new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 	/// <summary>
 	/// Gets or sets the image displayed on the app bar button.

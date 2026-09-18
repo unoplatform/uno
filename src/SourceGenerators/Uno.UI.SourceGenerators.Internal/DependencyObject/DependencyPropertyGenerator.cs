@@ -752,9 +752,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				("bool", false) => "global::Uno.UI.Helpers.Boxes.BoolBoxes.False",
 				("bool", true) => "global::Uno.UI.Helpers.Boxes.BoolBoxes.True",
-				("int", -1) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.NegativeOne",
-				("int", 0) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero",
-				("int", 1) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.One",
+				("int", -1) => "global::Uno.UI.Helpers.Boxes.IntBoxes.NegativeOne",
+				("int", 0) => "global::Uno.UI.Helpers.Boxes.IntBoxes.Zero",
+				("int", 1) => "global::Uno.UI.Helpers.Boxes.IntBoxes.One",
 				// By bit pattern, like Boxer.Box(double): -0.0 == 0.0 but must not take the positive zero's box.
 				("double", double value) when BitConverter.DoubleToInt64Bits(value) == 0 => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero",
 				("double", 1.0d) => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.One",

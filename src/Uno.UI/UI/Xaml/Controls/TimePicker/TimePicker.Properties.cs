@@ -109,7 +109,7 @@ partial class TimePicker
 			typeof(int),
 			typeof(TimePicker),
 			new FrameworkPropertyMetadata(
-				defaultValue: IntegerBoxes.One,
+				defaultValue: IntBoxes.One,
 				options: FrameworkPropertyMetadataOptions.None,
 				propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged(e.OldValue, e.NewValue)
 			));

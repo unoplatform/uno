@@ -287,7 +287,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(SelectedIndex),
 				typeof(int),
 				typeof(Selector),
-				new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne, coerceValueCallback: CoerceSelectedIndex));
+				new FrameworkPropertyMetadata(IntBoxes.NegativeOne, coerceValueCallback: CoerceSelectedIndex));
 
 		private int _uncoercedSelectedIndex = -1;
 
@@ -295,14 +295,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			if (baseValue is not int desiredIndex)
 			{
-				return IntegerBoxes.NegativeOne;
+				return IntBoxes.NegativeOne;
 			}
 
 			var owner = (Selector)dependencyObject;
 			if (desiredIndex == -1)
 			{
 				owner._uncoercedSelectedIndex = -1;
-				return IntegerBoxes.NegativeOne;
+				return IntBoxes.NegativeOne;
 			}
 
 			var itemCount = owner.NumberOfItems;
@@ -321,7 +321,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					else
 					{
 						// Ignore change.
-						return IntegerBoxes.NegativeOne;
+						return IntBoxes.NegativeOne;
 					}
 				}
 				owner._uncoercedSelectedIndex = -1;
@@ -331,7 +331,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				// No items exist, store uncoerced and set to -1;
 				owner._uncoercedSelectedIndex = desiredIndex;
-				return IntegerBoxes.NegativeOne;
+				return IntBoxes.NegativeOne;
 			}
 		}
 

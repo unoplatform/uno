@@ -99,7 +99,7 @@ public partial class PersonPicture : Control
 			nameof(BadgeNumber),
 			typeof(int),
 			typeof(PersonPicture),
-			new FrameworkPropertyMetadata(IntegerBoxes.Zero, OnPropertyChanged));
+			new FrameworkPropertyMetadata(IntBoxes.Zero, OnPropertyChanged));
 
 	public static DependencyProperty BadgeTextProperty { get; } =
 		DependencyProperty.Register(

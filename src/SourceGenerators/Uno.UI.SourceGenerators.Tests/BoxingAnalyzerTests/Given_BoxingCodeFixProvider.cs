@@ -7,7 +7,7 @@ public class Given_BoxingCodeFixProvider
 {
 	[TestMethod]
 	[DataRow("object M() => true;", "object M() => BoolBoxes.True;")]
-	[DataRow("object M() => 1;", "object M() => IntegerBoxes.One;")]
+	[DataRow("object M() => 1;", "object M() => IntBoxes.One;")]
 	[DataRow("object M() => 0.0;", "object M() => DoubleBoxes.Zero;")]
 	[DataRow("object M(int value) => value;", "object M(int value) => Boxer.Box(value);")]
 	[DataRow("object M(byte value) => (int)value;", "object M(byte value) => Boxer.Box((int)value);")]
@@ -17,7 +17,7 @@ public class Given_BoxingCodeFixProvider
 
 	[TestMethod]
 	[DataRow("object M() => (object)true;", "object M() => BoolBoxes.True;")]
-	[DataRow("object M() => (object)1;", "object M() => IntegerBoxes.One;")]
+	[DataRow("object M() => (object)1;", "object M() => IntBoxes.One;")]
 	[DataRow("object M() => (object)1.0;", "object M() => DoubleBoxes.One;")]
 	[DataRow("object M() => (object)(false);", "object M() => BoolBoxes.False;")]
 	[DataRow("object M(int value) => (object)value;", "object M(int value) => Boxer.Box(value);")]

@@ -245,7 +245,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					IntegerBoxes.Zero,
+					IntBoxes.Zero,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public int MinSaturation
@@ -260,7 +260,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					IntegerBoxes.Zero,
+					IntBoxes.Zero,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public int MinValue
@@ -275,7 +275,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					IntegerBoxes.Zero,
+					IntBoxes.Zero,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public Color? PreviousColor

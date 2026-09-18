@@ -383,7 +383,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(int),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				defaultValue: IntegerBoxes.Zero,
+				defaultValue: IntBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnMaxLinesChanged()
 			)

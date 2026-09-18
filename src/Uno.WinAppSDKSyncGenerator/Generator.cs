@@ -1969,7 +1969,7 @@ namespace Uno.WinAppSDKSyncGenerator
 								// FrameworkPropertyMetadata takes an object, so default(T) would box on every registration.
 								var defaultValue = propertyType.SpecialType switch
 								{
-									SpecialType.System_Int32 => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero",
+									SpecialType.System_Int32 => "global::Uno.UI.Helpers.Boxes.IntBoxes.Zero",
 									SpecialType.System_Boolean => "global::Uno.UI.Helpers.Boxes.BoolBoxes.False",
 									SpecialType.System_Double => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero",
 									_ => $"default({propertyDisplayType})",

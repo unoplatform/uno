@@ -22,7 +22,7 @@ internal static class BoxingAnalyzerHarness
 				public static readonly object False = false;
 			}
 
-			internal static class IntegerBoxes
+			internal static class IntBoxes
 			{
 				public static readonly object NegativeOne = -1;
 				public static readonly object Zero = 0;

@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(ItemHeight), typeof(int),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(IntegerBoxes.Zero));
+				new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 
 		public static DependencyProperty ItemTemplateProperty { get; } =
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(ItemWidth), typeof(int),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(IntegerBoxes.Zero));
+				new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 
 		public static DependencyProperty ItemsProperty { get; } =
@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(SelectedIndex), typeof(int),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(IntegerBoxes.Zero, propertyChangedCallback: (sender, args) => ((LoopingSelector)sender).OnPropertyChanged(args)));
+				new FrameworkPropertyMetadata(IntBoxes.Zero, propertyChangedCallback: (sender, args) => ((LoopingSelector)sender).OnPropertyChanged(args)));
 
 
 		public static DependencyProperty SelectedItemProperty { get; } =

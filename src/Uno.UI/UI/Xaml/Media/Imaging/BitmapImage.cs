@@ -81,7 +81,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		// Using a DependencyProperty as the backing store for DecodePixelWidth.  This enables animation, styling, binding, etc...
 		public static DependencyProperty DecodePixelWidthProperty { get; } =
-			DependencyProperty.Register("DecodePixelWidth", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(IntegerBoxes.Zero, (s, e) => ((BitmapImage)s)?.OnDecodePixelWidthChanged(e)));
+			DependencyProperty.Register("DecodePixelWidth", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(IntBoxes.Zero, (s, e) => ((BitmapImage)s)?.OnDecodePixelWidthChanged(e)));
 
 
 		private void OnDecodePixelWidthChanged(DependencyPropertyChangedEventArgs e)
@@ -101,7 +101,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		// Using a DependencyProperty as the backing store for DecodePixelHeight.  This enables animation, styling, binding, etc...
 		public static DependencyProperty DecodePixelHeightProperty { get; } =
-			DependencyProperty.Register("DecodePixelHeight", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(IntegerBoxes.Zero, (s, e) => ((BitmapImage)s)?.OnDecodePixelHeightChanged(e)));
+			DependencyProperty.Register("DecodePixelHeight", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(IntBoxes.Zero, (s, e) => ((BitmapImage)s)?.OnDecodePixelHeightChanged(e)));
 
 
 		private void OnDecodePixelHeightChanged(DependencyPropertyChangedEventArgs e)

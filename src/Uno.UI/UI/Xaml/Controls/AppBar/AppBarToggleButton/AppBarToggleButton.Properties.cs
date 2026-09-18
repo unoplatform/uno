@@ -24,7 +24,7 @@ partial class AppBarToggleButton
 			nameof(DynamicOverflowOrder),
 			typeof(int),
 			typeof(AppBarToggleButton),
-			new FrameworkPropertyMetadata(IntegerBoxes.Zero));
+			new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 	/// <summary>
 	/// Gets or sets the graphic content of the app bar toggle button.

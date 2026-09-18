@@ -62,5 +62,5 @@ public partial class InfoBadge
 	/// Identifies the InfoBadge.Value dependency property.
 	/// </summary>
 	public static DependencyProperty ValueProperty { get; } =
-		DependencyProperty.Register(nameof(Value), typeof(int), typeof(InfoBadge), new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne, OnPropertyChanged));
+		DependencyProperty.Register(nameof(Value), typeof(int), typeof(InfoBadge), new FrameworkPropertyMetadata(IntBoxes.NegativeOne, OnPropertyChanged));
 }

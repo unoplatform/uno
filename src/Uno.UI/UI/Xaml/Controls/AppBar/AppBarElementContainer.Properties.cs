@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"DynamicOverflowOrder",
 				typeof(int),
 				typeof(AppBarElementContainer),
-				new FrameworkPropertyMetadata(IntegerBoxes.Zero)
+				new FrameworkPropertyMetadata(IntBoxes.Zero)
 			);
 
 		#endregion

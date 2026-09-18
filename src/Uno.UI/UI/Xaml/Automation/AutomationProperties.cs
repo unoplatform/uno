@@ -82,7 +82,7 @@ public partial class AutomationProperties
 			"Culture",
 			typeof(int),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(IntegerBoxes.Zero));
+			new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 	/// <summary>
 	/// Identifies the DescribedBy attached property, which points to elements that provide extended descriptive text.
@@ -239,7 +239,7 @@ public partial class AutomationProperties
 			"Level",
 			typeof(int),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(IntegerBoxes.Zero));
+			new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 	/// <summary>
 	/// Identifies the LiveSetting attached property, which indicates how changes to the element are announced to assistive technologies.
@@ -290,7 +290,7 @@ public partial class AutomationProperties
 			"PositionInSet",
 			typeof(int),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne));
+			new FrameworkPropertyMetadata(IntBoxes.NegativeOne));
 
 	/// <summary>
 	/// Identifies the SizeOfSet attached property, which indicates the total number of items in the set that contains the element.
@@ -300,7 +300,7 @@ public partial class AutomationProperties
 			"SizeOfSet",
 			typeof(int),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne));
+			new FrameworkPropertyMetadata(IntBoxes.NegativeOne));
 
 	/// <summary>
 	/// Identifies the AutomationControlType attached property, which specifies the UI Automation control type of an element.

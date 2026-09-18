@@ -184,7 +184,7 @@ public partial class TabViewItem : ListViewItem
 		}
 		else
 		{
-			SetValue(Canvas.ZIndexProperty, IntegerBoxes.Zero);
+			SetValue(Canvas.ZIndexProperty, IntBoxes.Zero);
 		}
 
 		UpdateWidthModeVisualState();

@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		public static DependencyProperty MaxColumnsProperty { get; } =
-			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(IntegerBoxes.Zero, OnMaxColumnsPropertyChanged));
+			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(IntBoxes.Zero, OnMaxColumnsPropertyChanged));
 
 		public double RowSpacing
 		{
