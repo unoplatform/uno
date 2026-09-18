@@ -42,7 +42,7 @@ public partial class ContentIsland : IDisposable, IClosableNotifier, ICompositio
 	/// <summary>
 	/// Occurs when an automation provider is requested for this ContentIsland.
 	/// </summary>
-	[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	[NotImplemented("__SKIA__")]
 	public event TypedEventHandler<ContentIsland, ContentIslandAutomationProviderRequestedEventArgs> AutomationProviderRequested;
 #pragma warning restore CS0067
 

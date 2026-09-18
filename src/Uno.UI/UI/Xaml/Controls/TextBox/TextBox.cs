@@ -393,7 +393,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 #if __SKIA__
-		[Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[Uno.NotImplemented("__SKIA__")]
 #endif
 		public CharacterCasing CharacterCasing
 		{
@@ -402,7 +402,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if __SKIA__
-		[Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[Uno.NotImplemented("__SKIA__")]
 #endif
 		public static DependencyProperty CharacterCasingProperty { get; } =
 			DependencyProperty.Register(
