@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MaximumRowsOrColumnsProperty { get; } = DependencyProperty.Register(
-			"MaximumRowsOrColumns", typeof(int), typeof(UniformGridLayout), new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne, propertyChangedCallback: (sender, args) => ((UniformGridLayout)sender).OnPropertyChanged(args)));
+			"MaximumRowsOrColumns", typeof(int), typeof(UniformGridLayout), new FrameworkPropertyMetadata(IntBoxes.NegativeOne, propertyChangedCallback: (sender, args) => ((UniformGridLayout)sender).OnPropertyChanged(args)));
 
 		public int MaximumRowsOrColumns
 		{

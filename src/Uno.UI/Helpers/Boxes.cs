@@ -16,7 +16,7 @@ internal static class BoolBoxes
 	public static readonly object False = false;
 }
 
-internal static class IntegerBoxes
+internal static class IntBoxes
 {
 	public static readonly object NegativeOne = -1;
 	public static readonly object Zero = 0;
@@ -108,9 +108,9 @@ internal static class Boxer
 	public static object Box(int value) => value switch
 	{
 		// Keep the specialized integers in sync with BoxingDiagnosticAnalyzer
-		-1 => IntegerBoxes.NegativeOne,
-		0 => IntegerBoxes.Zero,
-		1 => IntegerBoxes.One,
+		-1 => IntBoxes.NegativeOne,
+		0 => IntBoxes.Zero,
+		1 => IntBoxes.One,
 		_ => value,
 	};
 

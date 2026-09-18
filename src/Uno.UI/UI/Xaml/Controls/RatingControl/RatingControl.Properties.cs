@@ -46,7 +46,7 @@ partial class RatingControl
 			nameof(InitialSetValue),
 			typeof(int),
 			typeof(RatingControl),
-			new FrameworkPropertyMetadata(IntegerBoxes.One, OnPropertyChanged));
+			new FrameworkPropertyMetadata(IntBoxes.One, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the value that determines if the user can remove the rating.

@@ -15,7 +15,7 @@ partial class ItemsView
 		nameof(CurrentItemIndex),
 		typeof(int),
 		typeof(ItemsView),
-		new FrameworkPropertyMetadata(defaultValue: IntegerBoxes.NegativeOne, propertyChangedCallback: OnCurrentItemIndexPropertyChanged));
+		new FrameworkPropertyMetadata(defaultValue: IntBoxes.NegativeOne, propertyChangedCallback: OnCurrentItemIndexPropertyChanged));
 
 	public static DependencyProperty IsItemInvokedEnabledProperty { get; } = DependencyProperty.Register(
 		nameof(IsItemInvokedEnabled),

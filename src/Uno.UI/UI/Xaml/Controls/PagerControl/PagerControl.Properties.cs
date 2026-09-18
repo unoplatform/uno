@@ -115,7 +115,7 @@ public partial class PagerControl
 	}
 
 	public static DependencyProperty NumberOfPagesProperty { get; } =
-		DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(IntegerBoxes.Zero, OnPropertyChanged));
+		DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(IntBoxes.Zero, OnPropertyChanged));
 
 	public string PrefixText
 	{
@@ -160,7 +160,7 @@ public partial class PagerControl
 	}
 
 	public static DependencyProperty SelectedPageIndexProperty { get; } =
-		DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(IntegerBoxes.Zero, OnPropertyChanged));
+		DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(IntBoxes.Zero, OnPropertyChanged));
 
 	public string SuffixText
 	{

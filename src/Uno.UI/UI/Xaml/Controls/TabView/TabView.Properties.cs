@@ -146,7 +146,7 @@ public partial class TabView
 	/// Identifies the SelectedIndex dependency property.
 	/// </summary>
 	public static DependencyProperty SelectedIndexProperty { get; } =
-		DependencyProperty.Register(nameof(SelectedIndex), typeof(int), typeof(TabView), new FrameworkPropertyMetadata(IntegerBoxes.Zero, OnSelectedIndexPropertyChanged));
+		DependencyProperty.Register(nameof(SelectedIndex), typeof(int), typeof(TabView), new FrameworkPropertyMetadata(IntBoxes.Zero, OnSelectedIndexPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the selected item.

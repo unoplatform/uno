@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CharacterSpacing), typeof(int),
 			typeof(global::Microsoft.UI.Xaml.Controls.ContentPresenter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntBoxes.Zero));
 #endif
 		// Skipping already declared property ContentProperty
 		// Skipping already declared property ContentTemplateProperty

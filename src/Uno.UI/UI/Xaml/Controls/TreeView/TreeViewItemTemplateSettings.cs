@@ -58,7 +58,7 @@ public partial class TreeViewItemTemplateSettings : DependencyObject
 	/// Identifies the DragItemsCount dependency property.
 	/// </summary>
 	public static DependencyProperty DragItemsCountProperty { get; } =
-		DependencyProperty.Register(nameof(DragItemsCount), typeof(int), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(IntegerBoxes.Zero));
+		DependencyProperty.Register(nameof(DragItemsCount), typeof(int), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 	/// <summary>
 	/// Identifies the ExpandedGlyphVisibility dependency property.

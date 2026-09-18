@@ -18,7 +18,7 @@ partial class VariableSizedWrapGrid
 			"ColumnSpan",
 			typeof(int),
 			typeof(VariableSizedWrapGrid),
-			new FrameworkPropertyMetadata(IntegerBoxes.One));
+			new FrameworkPropertyMetadata(IntBoxes.One));
 
 	/// <summary>
 	/// Gets the value of the VariableSizedWrapGrid.ColumnSpan XAML attached property from a target element.
@@ -108,7 +108,7 @@ partial class VariableSizedWrapGrid
 			nameof(MaximumRowsOrColumns),
 			typeof(int),
 			typeof(VariableSizedWrapGrid),
-			new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne));
+			new FrameworkPropertyMetadata(IntBoxes.NegativeOne));
 
 	internal override Orientation? PhysicalOrientation => Orientation;
 
@@ -143,7 +143,7 @@ partial class VariableSizedWrapGrid
 			"RowSpan",
 			typeof(int),
 			typeof(VariableSizedWrapGrid),
-			new FrameworkPropertyMetadata(IntegerBoxes.One));
+			new FrameworkPropertyMetadata(IntBoxes.One));
 
 	/// <summary>
 	/// Gets the value of the VariableSizedWrapGrid.RowSpan XAML attached property from a target element.

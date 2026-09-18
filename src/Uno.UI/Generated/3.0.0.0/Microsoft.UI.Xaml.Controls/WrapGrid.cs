@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(MaximumRowsOrColumns), typeof(int),
 			typeof(global::Microsoft.UI.Xaml.Controls.WrapGrid),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
