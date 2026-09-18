@@ -26,7 +26,7 @@ using static Uno.UI.Extensions.PrettyPrint;
 
 namespace Uno.UI.Extensions;
 
-#if WINAPPSDK || WINDOWS_UWP
+#if !HAS_UNO
 internal
 #else
 public
