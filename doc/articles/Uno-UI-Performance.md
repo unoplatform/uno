@@ -77,6 +77,16 @@ Here's what to look for:
 
       This message indicates that the binding engine will fall back on reflection based code, which is generally slow. To compensate for this, Uno use the `BindableTypeProvidersSourceGenerator`, which generates static non-generic code to avoid reflection operations during binding operations.
       This attribute is inherited and is generally used on ViewModel based classes.
+
+      To turn the message off without adding the attribute, for instance when the type comes from a library you do not control, define the `UNO_DISABLE_KNOWN_MISSING_TYPES` constant in the application project:
+
+      ```xml
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants);UNO_DISABLE_KNOWN_MISSING_TYPES</DefineConstants>
+      </PropertyGroup>
+      ```
+
+      The binding engine still falls back to reflection for these types; only the message is removed.
 - [`x:Phase`](https://learn.microsoft.com/windows/uwp/xaml-platform/x-phase-attribute)
   - For `ListView` instances with large templates, consider the use of x:Phase to reduce the number of bindings processed during item materialization.
   - It is only supported for items inside `ListViewItem` templates, it will be ignored for others.
