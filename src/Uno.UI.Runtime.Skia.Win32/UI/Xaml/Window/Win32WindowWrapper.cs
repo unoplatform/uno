@@ -102,6 +102,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		XamlRootMap.Register(xamlRoot, this);
 
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged += OnSystemThemeChanged;
+		window.ContentChanged += OnWindowContentChanged;
 		OnSystemThemeChanged(Win32SystemThemeHelperExtension.Instance, EventArgs.Empty);
 
 		UpdateWindowPropertiesFromPackage();
@@ -170,6 +171,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private void OnContentActualThemeChanged(FrameworkElement sender, object args) => UpdateFrameTheme();
 
+	// MUX retargets the backdrop theme source on XamlRoot.Changed (SystemBackdrop_Partial.cpp).
+	private void OnWindowContentChanged(object? sender, EventArgs args) => UpdateFrameTheme();
+
 	/// <summary>
 	/// Applies the theme DWM uses for this window's caption and, on Windows 11, for the tint of a
 	/// system backdrop.
@@ -182,7 +186,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	/// </remarks>
 	private unsafe void UpdateFrameTheme()
 	{
-		if (_window?.Content is FrameworkElement content && !ReferenceEquals(content, _frameThemeSource))
+		var content = _window?.Content as FrameworkElement;
+		if (!ReferenceEquals(content, _frameThemeSource))
 		{
 			if (_frameThemeSource is not null)
 			{
@@ -190,7 +195,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			}
 
 			_frameThemeSource = content;
-			content.ActualThemeChanged += OnContentActualThemeChanged;
+			if (content is not null)
+			{
+				content.ActualThemeChanged += OnContentActualThemeChanged;
+			}
 		}
 
 		BOOL value = _frameThemeSource is { } themeSource
@@ -537,6 +545,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
+		if (_window is not null)
+		{
+			_window.ContentChanged -= OnWindowContentChanged;
+		}
 
 		// Dispose the accessibility instance BEFORE unregistering from XamlRootMap
 		// and before releasing the HWND. UIA clients must see a well-formed

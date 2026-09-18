@@ -43,10 +43,12 @@ internal static class BorderHelper
 				// The material can't be rendered here. MUX's MicaController would paint FallbackColor;
 				// Uno paints the window background, which resolves to SolidBackgroundFillColorBase under
 				// the Fluent styles (and to the high-contrast window colour when that is active) rather
-				// than the flat black/white the root visual carries.
-				var pageBrush = Uno.UI.ResourceResolver.ResolveTopLevelResource(
-					"ApplicationPageBackgroundThemeBrush",
-					null) as Brush;
+				// than the flat black/white the root visual carries. Like MUX's SystemBackdropConfiguration,
+				// it follows the window content's theme rather than the application's.
+				var theme = ThemeResolution.ResolveOwnerTheme(islandRoot.OwnerWindow?.Content);
+				var pageBrush = Uno.UI.Xaml.Core.CoreServices.Instance.LookupThemeResource(
+					theme,
+					"ApplicationPageBackgroundThemeBrush") as Brush;
 				@this.BorderVisual.BackgroundBrush =
 					(pageBrush ?? @this.Background)?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
 			}

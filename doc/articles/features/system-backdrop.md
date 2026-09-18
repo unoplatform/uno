@@ -73,7 +73,8 @@ supported, a solid color is used instead of the Mica effect." — WinUI paints
 
 Under the Fluent styles that resolves to `SolidBackgroundFillColorBase` — `#202020` in dark and
 `#F3F3F3` in light, the same colours WinUI 3 uses — and to the system window colour under high
-contrast. It follows the active theme and updates on a theme change.
+contrast. As in WinUI, it follows the `ActualTheme` of the window's `Content` — not the
+application theme — and updates when that theme changes or the content is replaced.
 
 ## Limitations and recommendations
 
