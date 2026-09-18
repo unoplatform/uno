@@ -495,6 +495,18 @@ a difference:
 - `GetNavigationState` and `SetNavigationState` now serialize and restore the navigation history
   instead of only storing the string.
 
+The following flags are also removed. Their readers were removed earlier (with the native renderers,
+or when a control was rewritten), but the public setters stayed behind as silent no-ops — removing
+them does not change behavior on any currently-supported target:
+
+- `FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent`.
+- `FeatureConfiguration.ProgressRing.ProgressRingAsset` / `.DeterminateProgressRingAsset` — use
+  `ProgressRing.IndeterminateSource` / `.DeterminateSource` to customize the animated visual instead.
+- `WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus` (iOS/tvOS) — keyboard focus
+  handling is always enabled.
+- `WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap` (Android) and
+  `.InterpretForceTouchAsRightTap` (iOS/tvOS).
+
 ### Behavioral changes (same API, different result)
 
 Because rendering moves from `Canvas`/`CALayer`/CSS to Skia, expect subtle differences and

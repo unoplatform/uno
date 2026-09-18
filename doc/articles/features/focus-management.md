@@ -24,15 +24,7 @@ Support for programmatic focus is fully implemented on all Uno Platform targets 
 
 ## Keyboard focus
 
-Keyboard focus handling support is generally available on all targets except iOS. On iOS you can opt-in to enable experimental support by setting the related flag:
-
-```csharp
-#if __IOS__
-WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
-#endif
-```
-
-The feature requires additional testing to verify all edge cases on Android and iOS. In a future release, we will switch the experimental support to be enabled by default.
+Keyboard focus handling support is available on all targets, including iOS.
 
 ## Disabling initial focus on Page
 
