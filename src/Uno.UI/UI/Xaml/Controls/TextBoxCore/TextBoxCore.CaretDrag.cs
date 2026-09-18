@@ -163,6 +163,12 @@ internal sealed partial class TextBoxCore
 		{
 			SelectInternal(Math.Clamp(index, 0, Text.Length), 0);
 		}
+		else if (!IsComposing)
+		{
+			// The native proxy may have moved its own selection mid-gesture; put it back on the unchanged
+			// managed one. Skipped while composing, where the proxy's marked text owns the selection.
+			TextBoxView?.Select(SelectionStart, SelectionLength);
+		}
 
 		UpdateDisplaySelection();
 		return true;
