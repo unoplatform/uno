@@ -587,9 +587,6 @@ namespace SamplesApp
 
 		static void ConfigureFeatureFlags()
 		{
-#if __APPLE_UIKIT__
-			WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
-#endif
 #if HAS_UNO
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
 			Uno.UI.FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite = true;

@@ -479,6 +479,20 @@ CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICult
 
 If a single codebase must target both pre-7.0 and 7.0, guard the calls with `#if`.
 
+The following flags are also removed. Their readers were removed earlier (with the native renderers,
+or when a control was rewritten), but the public setters stayed behind as silent no-ops — removing
+them does not change behavior on any currently-supported target:
+
+- `FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent`.
+- `FeatureConfiguration.ProgressRing.ProgressRingAsset` / `.DeterminateProgressRingAsset` — use
+  `ProgressRing.IndeterminateSource` / `.DeterminateSource` to customize the animated visual instead.
+- `WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus` (iOS/tvOS) — keyboard focus
+  handling is always enabled.
+- `WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap` (Android) and
+  `.InterpretForceTouchAsRightTap` (iOS/tvOS).
+- `Microsoft.UI.Xaml.PagePool.IsPoolingEnabled` — this duplicated `FeatureConfiguration.Page.IsPoolingEnabled`,
+  which is the flag Uno actually reads; use that one instead.
+
 ### Behavioral changes (same API, different result)
 
 Because rendering moves from `Canvas`/`CALayer`/CSS to Skia, expect subtle differences and
