@@ -62,17 +62,17 @@ Tips:
 ## Unsupported platforms
 
 Materials are drawn by the native window: DWM on Windows and `NSVisualEffectView` on macOS. Heads
-that have no such window — Linux (X11 and FrameBuffer), Android, iOS and WebAssembly — and Windows
-builds older than 11 22621 cannot render one.
+that have no such window — Linux (X11 and FrameBuffer), Android, iOS and WebAssembly — and Windows 11
+builds older than 22621 cannot render one.
 
 Setting `SystemBackdrop` there is safe and never leaves a hole in the window: it paints the regular
 window background instead, and Uno logs an informational message saying so. This matches the
-behaviour documented for WinUI, where "Mica isn't supported on all systems. Where it's not
+behavior documented for WinUI, where "Mica isn't supported on all systems. Where it's not
 supported, a solid color is used instead of the Mica effect." — WinUI paints
 `MicaController.FallbackColor`, and Uno paints `ApplicationPageBackgroundThemeBrush`.
 
 Under the Fluent styles that resolves to `SolidBackgroundFillColorBase` — `#202020` in dark and
-`#F3F3F3` in light, the same colours WinUI 3 uses — and to the system window colour under high
+`#F3F3F3` in light, the same colors WinUI 3 uses — and to the system window color under high
 contrast. As in WinUI, it follows the `ActualTheme` of the window's `Content` — not the
 application theme — and updates when that theme changes or the content is replaced.
 
