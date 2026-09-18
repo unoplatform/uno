@@ -8420,17 +8420,82 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		/// <summary>
-		/// Reads the rendered width of the shared invisible &lt;input /&gt; straight from the DOM. The id is the
+		/// The invisible &lt;input /&gt; must also sit *on* the field it serves, not merely be the right size.
+		/// Anchoring it on the DisplayBlock let it slide away as long text scrolled or TextAlignment moved the
+		/// block, and under RightToLeft the mirrored transform put it almost entirely outside the control.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Focused_Then_Invisible_Input_Is_Positioned_Over_The_Field()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			foreach (var flowDirection in new[] { FlowDirection.LeftToRight, FlowDirection.RightToLeft })
+			{
+				var SUT = new TextBox { Width = 200, FlowDirection = flowDirection };
+				var host = new Border { Width = 400, Height = 100, Child = SUT };
+				await UITestHelper.Load(host, x => x.IsLoaded);
+
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				await UITestHelper.WaitFor(
+					() => GetInvisibleInputWidth() > 0,
+					timeoutMS: 5000,
+					message: $"Timed out waiting for the invisible <input /> ({flowDirection}).");
+
+				// Long enough to overflow the field, so a DisplayBlock-anchored element scrolls out of it.
+				foreach (var c in "wwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				}
+				await WindowHelper.WaitForIdle();
+
+				var input = GetInvisibleInputRect();
+				var (fieldLeft, fieldRight) = GetHorizontalSpan(SUT);
+
+				// Asserted as containment rather than against the computed origin, so this stays a check on the
+				// observable outcome instead of restating the implementation.
+				Assert.IsTrue(
+					input.Left >= fieldLeft - 2 && input.Right <= fieldRight + 2,
+					$"{flowDirection}: the invisible <input /> must stay within the TextBox. Input spans " +
+					$"{input.Left}..{input.Right}, field spans {fieldLeft}..{fieldRight}.");
+			}
+		}
+
+		/// <summary>
+		/// Reads the rendered bounds of the shared invisible &lt;input /&gt; straight from the DOM. The id is the
 		/// literal from <c>UnoDomIds.input</c> in the TS runtime; a rename there should fail this test loudly.
 		/// </summary>
-		private static double GetInvisibleInputWidth()
+		private static Rect GetInvisibleInputRect()
 		{
 			var raw = Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-				"(function(){const e = document.getElementById('uno-input'); return e ? e.getBoundingClientRect().width.toString() : '';})()");
+				"(function(){const e = document.getElementById('uno-input'); if (!e) { return ''; } " +
+				"const r = e.getBoundingClientRect(); return r.x + ',' + r.y + ',' + r.width + ',' + r.height;})()");
 
-			return double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var width)
-				? width
-				: -1;
+			var parts = raw.Split(',');
+			if (parts.Length != 4)
+			{
+				return new Rect(-1, -1, -1, -1);
+			}
+
+			double P(int i) => double.TryParse(parts[i], NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : -1;
+			return new Rect(P(0), P(1), P(2), P(3));
+		}
+
+		private static double GetInvisibleInputWidth() => GetInvisibleInputRect().Width;
+
+		/// <summary>
+		/// The element's horizontal span in root coordinates, derived from both corners so it is correct under a
+		/// mirrored (RightToLeft) subtree, where transforming the origin yields the right edge.
+		/// </summary>
+		private static (double Left, double Right) GetHorizontalSpan(FrameworkElement element)
+		{
+			var transform = element.TransformToVisual(null);
+			var a = transform.TransformPoint(default).X;
+			var b = transform.TransformPoint(new Point(element.ActualWidth, 0)).X;
+			return (Math.Min(a, b), Math.Max(a, b));
 		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
