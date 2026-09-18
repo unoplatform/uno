@@ -5079,28 +5079,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Throwing_Change_Handlers_Do_Not_Corrupt_Control_State()
+		public async Task When_TextChanging_HandlerThrows_PropagatesAndRendersFinalState()
 		{
 			var SUT = new RichEditBox();
+			var failure = new InvalidOperationException("TextChanging handler");
+			var changingCount = 0;
+			global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxTextChangingEventArgs> handler = (_, _) =>
+			{
+				if (++changingCount == 1)
+				{
+					SUT.Document.SetText(TextSetOptions.None, "nested");
+					throw failure;
+				}
+			};
 			try
 			{
 				WindowHelper.WindowContent = SUT;
 				await WindowHelper.WaitForLoaded(SUT);
-				SUT.TextChanging += (_, _) => throw new InvalidOperationException("test");
-				SUT.TextChanged += (_, _) => throw new InvalidOperationException("test");
-				SUT.SelectionChanged += (_, _) => throw new InvalidOperationException("test");
+				SUT.TextChanging += handler;
 
-				SUT.Document.SetText(TextSetOptions.None, "abc");
-				SUT.Document.Selection.SetRange(1, 2);
+				Assert.AreSame(failure, Assert.ThrowsExactly<InvalidOperationException>(() => SUT.Document.SetText(TextSetOptions.None, "abc")));
+				GetTextWithoutFinalEop(SUT.Document, out var nested);
+				Assert.AreEqual("nested", nested);
+				Assert.AreEqual("nested", GetDisplayBlock(SUT).Text);
+				Assert.AreEqual(1, changingCount);
+
+				SUT.Document.SetText(TextSetOptions.None, "next");
 				await WindowHelper.WaitForIdle();
-
 				GetTextWithoutFinalEop(SUT.Document, out var text);
-				Assert.AreEqual("abc", text);
-				Assert.AreEqual(1, SUT.SelectionStartForTesting);
-				Assert.AreEqual(1, SUT.SelectionLengthForTesting);
+				Assert.AreEqual("next", text);
+				Assert.AreEqual("next", GetDisplayBlock(SUT).Text);
+				Assert.AreEqual(2, changingCount);
 			}
 			finally
 			{
+				SUT.TextChanging -= handler;
 				WindowHelper.WindowContent = null;
 			}
 		}

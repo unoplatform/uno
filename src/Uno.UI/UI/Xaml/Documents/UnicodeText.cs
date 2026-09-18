@@ -232,7 +232,6 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly FontDetails _defaultFontDetails;
 	private readonly List<Line> _lines;
 	private readonly float? _endingNewLineLineHeight;
-	private readonly float _firstLineBaseline;
 	private readonly float _endingLineContentTop;
 	private readonly float _endingLineBaselineOffset;
 	private readonly ParagraphLayoutInfo? _endingParagraphLayout;
@@ -457,7 +456,6 @@ internal readonly partial struct UnicodeText : IParsedText
 				: ApplyLineSpacingRule(naturalHeight, endingParagraphLayout);
 			_endingLineContentTop = endingParagraphLayout?.SpaceBefore ?? 0;
 			_endingLineBaselineOffset = naturalBaseline + (_endingNewLineLineHeight.Value - naturalHeight) / 2;
-			_firstLineBaseline = _endingLineContentTop + _endingLineBaselineOffset;
 			calculatedSize = new Size(
 				GetParagraphLeftInset(endingParagraphLayout, firstLine: true) + GetParagraphRightInset(endingParagraphLayout, firstLine: true),
 				_endingLineContentTop + _endingNewLineLineHeight.Value + (endingParagraphLayout?.SpaceAfter ?? 0));
@@ -1213,7 +1211,6 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		_lines = lines;
-		_firstLineBaseline = lines.Count > 0 ? lines[0].baselineOffset : 0;
 		_defaultFontDetails = defaultFontDetails;
 		_textAlignment = textAlignment!.Value;
 		_wordBoundaries = GetWords(_text);
@@ -2611,7 +2608,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => _rtl;
 
-	public float FirstLineBaseline => _firstLineBaseline;
+	public float FirstLineBaseline => (float)GetBaselineForIndex(0);
 
 	private static List<int> GetWords(string text)
 	{

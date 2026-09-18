@@ -552,7 +552,7 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 	private object GetAttributeValueForSpan(AutomationTextAttributesEnum attribute, int start, int end)
 	{
 		var owner = (RichEditBox)_owner;
-		var character = owner.Document.GetFormatOverRange(start, end);
+		var character = owner.Document.GetFormatOverRange(start, end, resolveForeground: true);
 		var paragraph = owner.Document.GetParagraphFormatOverRange(start, end);
 
 		return attribute switch
@@ -563,7 +563,7 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 			AutomationTextAttributesEnum.CultureAttribute => GetCulture(character, owner),
 			AutomationTextAttributesEnum.FontNameAttribute => GetFontName(character, owner),
 			AutomationTextAttributesEnum.FontSizeAttribute => GetFontSize(character, owner),
-			AutomationTextAttributesEnum.FontWeightAttribute => GetFontWeight(character, owner),
+			AutomationTextAttributesEnum.FontWeightAttribute => GetFontWeight(character),
 			AutomationTextAttributesEnum.ForegroundColorAttribute
 				or AutomationTextAttributesEnum.UnderlineColorAttribute
 				or AutomationTextAttributesEnum.StrikethroughColorAttribute => GetForegroundColor(character, owner),
@@ -701,10 +701,10 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 			? TextAttributeValueSentinel.Mixed
 			: format.Size > 0 ? format.Size : owner.FontSize * 72d / 96d;
 
-	private static object GetFontWeight(Microsoft.UI.Text.UnoTextCharacterFormat format, RichEditBox owner)
+	private static object GetFontWeight(Microsoft.UI.Text.UnoTextCharacterFormat format)
 		=> format.Weight == Microsoft.UI.Text.TextConstants.UndefinedInt32Value
 			? TextAttributeValueSentinel.Mixed
-			: format.Weight > 0 ? format.Weight : owner.FontWeight.Weight;
+			: format.Weight;
 
 	private static object GetForegroundColor(Microsoft.UI.Text.UnoTextCharacterFormat format, RichEditBox owner)
 	{
@@ -714,10 +714,11 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 		}
 
 		var color = format.ForegroundColor;
-		if (color == Microsoft.UI.Text.TextConstants.UndefinedColor
-			&& owner.Foreground is Microsoft.UI.Xaml.Media.SolidColorBrush brush)
+		if (color == Microsoft.UI.Text.TextConstants.AutoColor)
 		{
-			color = brush.Color;
+			return owner.Foreground is Microsoft.UI.Xaml.Media.SolidColorBrush brush
+				? ToColorRef(brush.Color)
+				: TextAttributeValueSentinel.NotSupported;
 		}
 
 		return ToColorRef(color);

@@ -121,6 +121,7 @@ partial class RichEditBox
 		float DefaultSkFontScaleX,
 		double LineHeight,
 		LineStackingStrategy LineStackingStrategy,
+		TextLineBounds TextLineBounds,
 		FlowDirection FlowDirection,
 		TextAlignment? TextAlignment,
 		TextWrapping TextWrapping,
@@ -174,13 +175,20 @@ partial class RichEditBox
 
 		public int VisualLineCount => _visualLineCount;
 
+		public float FirstLineBaseline
+			=> _paragraphs.Length > 0 ? _paragraphs[0].ParsedText.FirstLineBaseline : 0;
+
 		public void Draw(
 			UIElement owner,
 			in Visual.PaintingSession session,
 			(int index, CompositionBrush brush, float thickness)? caret,
 			IEnumerable<TextHighlighter> highlighters,
-			(int startIndex, int length)? compositionRange)
+			(int startIndex, int length)? compositionRange,
+			int firstLine = 0,
+			int lineCount = int.MaxValue)
 		{
+			global::System.Diagnostics.Debug.Assert(firstLine == 0 && lineCount == int.MaxValue, "RichEditBox does not page its content.");
+
 			var highlighterList = highlighters as IReadOnlyList<TextHighlighter>
 				?? new List<TextHighlighter>(highlighters);
 			var caretParagraph = caret is null ? -1 : FindParagraphForIndex(caret.Value.index);

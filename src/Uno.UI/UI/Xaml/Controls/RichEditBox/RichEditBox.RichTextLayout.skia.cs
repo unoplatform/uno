@@ -126,6 +126,7 @@ partial class RichEditBox
 					block.MaxLines,
 					(float)block.LineHeight,
 					block.LineStackingStrategy,
+					block.TextLineBounds,
 					block.FlowDirection,
 					textAlignment,
 					block.TextWrapping,
@@ -157,6 +158,7 @@ partial class RichEditBox
 				defaultFontDetails.SKFontScaleX,
 				block.LineHeight,
 				block.LineStackingStrategy,
+				block.TextLineBounds,
 				block.FlowDirection,
 				textAlignment,
 				block.TextWrapping,
@@ -186,6 +188,7 @@ partial class RichEditBox
 					maxLines: 0,
 					(float)block.LineHeight,
 					block.LineStackingStrategy,
+					block.TextLineBounds,
 					block.FlowDirection,
 					textAlignment,
 					block.TextWrapping,
@@ -488,13 +491,9 @@ partial class RichEditBox
 						inlineImage.VerticalAlignment)
 					: null;
 
-				_run.FontWeight = format.WeightExplicit || format.Weight != 400
-					? new FontWeight((ushort)Math.Clamp(format.Weight, 0, 999))
-					: _owner.FontWeight;
-				_run.FontStyle = format.Italic ? FontStyle.Italic : _owner.FontStyle;
-				_run.FontStretch = format.FontStretch != FontStretch.Normal
-					? format.FontStretch
-					: _owner.FontStretch;
+				_run.FontWeight = new FontWeight((ushort)Math.Clamp(format.GetEffectiveWeight(_owner.FontWeight.Weight), 0, 999));
+				_run.FontStyle = format.GetEffectiveFontStyle(_owner.FontStyle);
+				_run.FontStretch = format.GetEffectiveFontStretch(_owner.FontStretch);
 
 				var decorations = TextDecorations.None;
 				var hasExplicitUnderline = format.Underline is not global::Microsoft.UI.Text.UnderlineType.None

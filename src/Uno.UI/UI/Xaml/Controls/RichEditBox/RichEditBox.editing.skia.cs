@@ -1105,8 +1105,14 @@ namespace Microsoft.UI.Xaml.Controls
 			var tomEnd = Document.Selection.EndPosition;
 			var start = Math.Clamp(tomStart, 0, length);
 			var end = Math.Clamp(tomEnd, start, length);
-			ProcessSelectionChange(start, end, _selection.selectionEndsAtTheStart && start != end, proposalAlreadyInTom: true, raiseForSameRange: false);
-			RestoreVirtualFinalEopSelection(tomStart, tomEnd, start, end, length);
+			try
+			{
+				ProcessSelectionChange(start, end, _selection.selectionEndsAtTheStart && start != end, proposalAlreadyInTom: true, raiseForSameRange: false);
+			}
+			finally
+			{
+				RestoreVirtualFinalEopSelection(tomStart, tomEnd, start, end, length);
+			}
 		}
 
 		/// <summary>
@@ -1129,8 +1135,14 @@ namespace Microsoft.UI.Xaml.Controls
 			var end = Math.Clamp(tomEnd, start, length);
 			var selectionEndsAtTheStart = start != end
 				&& Document.Selection.Options.HasFlag(global::Microsoft.UI.Text.SelectionOptions.StartActive);
-			ProcessSelectionChange(start, end, selectionEndsAtTheStart, proposalAlreadyInTom: true, raiseForSameRange: true);
-			RestoreVirtualFinalEopSelection(tomStart, tomEnd, start, end, length);
+			try
+			{
+				ProcessSelectionChange(start, end, selectionEndsAtTheStart, proposalAlreadyInTom: true, raiseForSameRange: true);
+			}
+			finally
+			{
+				RestoreVirtualFinalEopSelection(tomStart, tomEnd, start, end, length);
+			}
 		}
 
 		internal void OnTomSelectionDirectionChanged()
@@ -1257,26 +1269,32 @@ namespace Microsoft.UI.Xaml.Controls
 				_caretXOffset = (float)view.DisplayBlock.ParsedText.GetRectForIndex(caret).Left;
 			}
 
-			if (end == start && CaretMode == RichEditCaretDisplayMode.CaretWithThumbsBothEndsShowing)
+			try
 			{
-				CaretMode = RichEditCaretDisplayMode.CaretWithThumbsOnlyEndShowing;
-			}
-			else if (CaretMode == RichEditCaretDisplayMode.ThumblessCaretHidden && FocusState != FocusState.Unfocused)
-			{
-				CaretMode = RichEditCaretDisplayMode.ThumblessCaretShowing;
-			}
-			else if (CaretMode == RichEditCaretDisplayMode.ThumblessCaretShowing)
-			{
-				_caretBlinkVisible = true;
-				EnsureCaretTimerHooked();
-				_caretTimer.Start();
-			}
+				if (end == start && CaretMode == RichEditCaretDisplayMode.CaretWithThumbsBothEndsShowing)
+				{
+					CaretMode = RichEditCaretDisplayMode.CaretWithThumbsOnlyEndShowing;
+				}
+				else if (CaretMode == RichEditCaretDisplayMode.ThumblessCaretHidden && FocusState != FocusState.Unfocused)
+				{
+					CaretMode = RichEditCaretDisplayMode.ThumblessCaretShowing;
+				}
+				else if (CaretMode == RichEditCaretDisplayMode.ThumblessCaretShowing)
+				{
+					_caretBlinkVisible = true;
+					EnsureCaretTimerHooked();
+					_caretTimer.Start();
+				}
 
-			UpdateDisplaySelection();
-			_textBoxView?.Select(start, end - start);
-			if (selectionChanged)
+				UpdateDisplaySelection();
+			}
+			finally
 			{
-				UpdateScrolling();
+				_textBoxView?.Select(_selection.start, _selection.length);
+				if (selectionChanged)
+				{
+					UpdateScrolling();
+				}
 			}
 		}
 
@@ -1305,8 +1323,18 @@ namespace Microsoft.UI.Xaml.Controls
 			// Raise SelectionChanged from this universal selection choke point, before the layout
 			// guard, so caret/selection changes notify even if the view is not laid out yet. The
 			// de-dupe against the last-raised span keeps focus-only re-renders from firing spuriously.
-			RaiseSelectionChangedIfNeeded();
+			try
+			{
+				RaiseSelectionChangedIfNeeded();
+			}
+			finally
+			{
+				UpdateDisplaySelectionCore();
+			}
+		}
 
+		private void UpdateDisplaySelectionCore()
+		{
 			IsCaretRenderedForTesting = false;
 			if (_textBoxView?.DisplayBlock is not { } displayBlock)
 			{

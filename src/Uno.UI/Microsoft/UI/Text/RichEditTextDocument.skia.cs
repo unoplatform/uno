@@ -639,7 +639,6 @@ namespace Microsoft.UI.Text
 			var selectionMutation = sourceRange is not null && ReferenceEquals(sourceRange, selection);
 			var selectionStartBefore = selection.StartPosition;
 			var selectionEndBefore = selection.EndPosition;
-			var selectionRebased = false;
 			if (selectionMutation)
 			{
 				_selectionMutationDepth++;
@@ -673,25 +672,12 @@ namespace Microsoft.UI.Text
 				{
 					RebaseRanges(start, end, insert.Length, sourceRange);
 				}
-				selectionRebased = selection.StartPosition != selectionStartBefore
-					|| selection.EndPosition != selectionEndBefore;
 			}
 			finally
 			{
-				if (selectionMutation)
-				{
-					_selectionMutationDepth--;
-				}
+				CompleteRangeMutation(selection, selectionMutation, selectionStartBefore, selectionEndBefore);
 			}
 
-			if (selectionRebased)
-			{
-				_owner.OnDocumentTextChangedInteractive();
-			}
-
-			// The pending caret format (if any) has now been consumed by the splice above, or the caret
-			// context has changed by an edit that didn't consume it; either way it no longer applies.
-			ClearPendingCaretFormat();
 			return insert.Length;
 		}
 
@@ -706,7 +692,6 @@ namespace Microsoft.UI.Text
 			var selectionMutation = sourceRange is not null && ReferenceEquals(sourceRange, selection);
 			var selectionStartBefore = selection.StartPosition;
 			var selectionEndBefore = selection.EndPosition;
-			var selectionRebased = false;
 			if (selectionMutation)
 			{
 				_selectionMutationDepth++;
@@ -754,22 +739,11 @@ namespace Microsoft.UI.Text
 						edit.InsertedProjectionLength,
 						sourceRange);
 				}
-				selectionRebased = selection.StartPosition != selectionStartBefore
-					|| selection.EndPosition != selectionEndBefore;
 			}
 			finally
 			{
-				if (selectionMutation)
-				{
-					_selectionMutationDepth--;
-				}
+				CompleteRangeMutation(selection, selectionMutation, selectionStartBefore, selectionEndBefore);
 			}
-
-			if (selectionRebased)
-			{
-				_owner.OnDocumentTextChangedInteractive();
-			}
-			ClearPendingCaretFormat();
 			return edit.CallerInsertedLength;
 		}
 
@@ -786,6 +760,8 @@ namespace Microsoft.UI.Text
 				DefaultParagraphState());
 			var selection = (UnoTextSelection)Selection;
 			var selectionMutation = sourceRange is not null && ReferenceEquals(sourceRange, selection);
+			var selectionStartBefore = selection.StartPosition;
+			var selectionEndBefore = selection.EndPosition;
 			if (selectionMutation)
 			{
 				_selectionMutationDepth++;
@@ -819,14 +795,31 @@ namespace Microsoft.UI.Text
 			}
 			finally
 			{
-				if (selectionMutation)
-				{
-					_selectionMutationDepth--;
-				}
+				CompleteRangeMutation(selection, selectionMutation, selectionStartBefore, selectionEndBefore);
 			}
 
-			ClearPendingCaretFormat();
 			return replacement.Length;
+		}
+
+		private void CompleteRangeMutation(UnoTextSelection selection, bool selectionMutation, int previousStart, int previousEnd)
+		{
+			if (selectionMutation)
+			{
+				_selectionMutationDepth--;
+			}
+
+			try
+			{
+				if (selection.StartPosition != previousStart || selection.EndPosition != previousEnd)
+				{
+					_owner.OnDocumentTextChangedInteractive();
+				}
+			}
+			finally
+			{
+				// The splice consumes the insertion format even if a subsequent application event throws.
+				ClearPendingCaretFormat();
+			}
 		}
 
 		internal void TrackRange(UnoTextRange range)
@@ -1108,7 +1101,6 @@ namespace Microsoft.UI.Text
 			var selectionMutation = sourceRange is not null && ReferenceEquals(sourceRange, selection);
 			var selectionStartBefore = selection.StartPosition;
 			var selectionEndBefore = selection.EndPosition;
-			var selectionRebased = false;
 			if (selectionMutation)
 			{
 				_selectionMutationDepth++;
@@ -1164,23 +1156,12 @@ namespace Microsoft.UI.Text
 				{
 					RebaseRanges(start, end, insertedLength, sourceRange);
 				}
-				selectionRebased = selection.StartPosition != selectionStartBefore
-					|| selection.EndPosition != selectionEndBefore;
 			}
 			finally
 			{
-				if (selectionMutation)
-				{
-					_selectionMutationDepth--;
-				}
+				CompleteRangeMutation(selection, selectionMutation, selectionStartBefore, selectionEndBefore);
 			}
 
-			if (selectionRebased)
-			{
-				_owner.OnDocumentTextChangedInteractive();
-			}
-
-			ClearPendingCaretFormat();
 			return insertedLength;
 		}
 
