@@ -103,11 +103,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isUnoAssembly;
 		private readonly bool _isUnoFluentAssembly;
 
-		/// <summary>
-		/// True if VisualStateManager children can be set lazily
-		/// </summary>
-		private readonly bool _isLazyVisualStateManagerEnabled;
-
 		private readonly bool _enableFuzzyMatching;
 
 		/// <summary>
@@ -226,7 +221,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool shouldAnnotateGeneratedXaml,
 			bool isUnoAssembly,
 			bool isUnoFluentAssembly,
-			bool isLazyVisualStateManagerEnabled,
 			bool enableFuzzyMatching,
 			bool disableBindableTypeProvidersGeneration,
 			bool enableAlcAppSupport,
@@ -253,7 +247,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isInsideMainAssembly = isInsideMainAssembly;
 			_isDesignTimeBuild = isDesignTimeBuild;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
-			_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
 			_enableFuzzyMatching = enableFuzzyMatching;
 			_generatorContext = generatorContext;
 			_xamlResourcesTrimming = xamlResourcesTrimming;
@@ -6292,8 +6285,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private bool IsLazyVisualStateManagerProperty(XamlMemberDefinition member)
-			=> _isLazyVisualStateManagerEnabled
-				&& member.Owner != null
+			=> member.Owner != null
 				&& member.Owner.Type.Name switch
 				{
 					"VisualState" => (member.Member.Name == "Storyboard"
@@ -6303,14 +6295,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				};
 
 		private bool IsLazyVisualStateManagerProperty(IPropertySymbol property)
-			=> _isLazyVisualStateManagerEnabled
-				&& property.ContainingSymbol.Name switch
-				{
-					"VisualState" => property.Name == "Storyboard"
-									|| property.Name == "Setters",
-					"VisualTransition" => property.Name == "Storyboard",
-					_ => false,
-				};
+			=> property.ContainingSymbol.Name switch
+			{
+				"VisualState" => property.Name == "Storyboard"
+								|| property.Name == "Setters",
+				"VisualTransition" => property.Name == "Storyboard",
+				_ => false,
+			};
 
 		/// <summary>
 		/// Determines if the member is inline initializable and the first item is not a new collection instance
