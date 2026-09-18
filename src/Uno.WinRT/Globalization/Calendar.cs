@@ -424,7 +424,12 @@ namespace Windows.Globalization
 		public int NumberOfSecondsInThisMinute => 60;
 
 		public int FirstEra => _calendar.Eras.First();
-		public int FirstYearInThisEra => _calendar.MinSupportedDateTime.Year;
+		// Note: MinSupportedDateTime is a System.DateTime whose .Year is the proleptic Gregorian
+		// year. We must project it through the underlying calendar so the value is expressed in
+		// the same era-year numbering as the Year property (e.g. Hebrew 5343, not Gregorian 1583).
+		// Returning a Gregorian year here makes CalendarView decade math clamp to an out-of-range
+		// value and throw when it is later assigned back via SetUnit.
+		public int FirstYearInThisEra => _calendar.GetYear(_calendar.MinSupportedDateTime);
 		public int FirstMonthInThisYear => 1;
 		public int FirstDayInThisMonth => 1;
 		public int FirstPeriodInThisDay => 1;
@@ -433,7 +438,9 @@ namespace Windows.Globalization
 		public int FirstSecondInThisMinute => 0;
 
 		public int LastEra => _calendar.Eras.Last();
-		public int LastYearInThisEra => _calendar.MaxSupportedDateTime.Year;
+		// See FirstYearInThisEra: project through the calendar so this is an era-year (e.g. Hebrew
+		// 5999) rather than the proleptic Gregorian year (2239) of MaxSupportedDateTime.
+		public int LastYearInThisEra => _calendar.GetYear(_calendar.MaxSupportedDateTime);
 		public int LastMonthInThisYear => _calendar.GetMonthsInYear(Year);
 		public int LastDayInThisMonth => _calendar.GetDaysInMonth(Year, Month, Era);
 		public int LastPeriodInThisDay => _clock == ClockIdentifiers.TwentyFourHour ? 1 : 2;
