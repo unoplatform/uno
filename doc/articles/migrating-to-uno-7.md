@@ -575,6 +575,15 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
   `FeatureConfiguration.Rendering.UseVulkanOn*` flag to `false` before building the host. See
   [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
+Independently of rendering, `Uno.WinUI.MSAL`'s `WithUnoHelpers()` changed on WebAssembly:
+
+- **`WithUnoHelpers()` no longer wires an interactive web UI on WebAssembly.** The WASM-only
+  flavor of `Uno.UI.MSAL` that provided it was removed; `PublicClientApplicationBuilder
+  .WithUnoHelpers()` and `AcquireTokenInteractiveParameterBuilder.WithUnoHelpers()` are now
+  no-ops there, same as they always were on WinUI. Interactive sign-in on WebAssembly needs
+  your own `WithCustomWebUi(...)` (and `WithHttpClientFactory(...)` if needed) — see
+  [MSAL: WebAssembly](xref:Uno.Interop.MSAL#webassembly).
+
 ### Type-hierarchy changes (WinUI parity)
 
 7.0 realigns several types to their WinUI base classes. Most code is unaffected — the

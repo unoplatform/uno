@@ -18,8 +18,6 @@ namespace Uno.UI.MSAL
 #pragma warning disable CA1422 // Validate platform compatibility
 			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => UIKit.UIApplication.SharedApplication?.KeyWindow?.RootViewController);
 #pragma warning restore CA1422 // Validate platform compatibility
-#elif __WASM__
-			builder.WithHttpClientFactory(WasmHttpFactory.Instance);
 #endif
 			return builder;
 		}
