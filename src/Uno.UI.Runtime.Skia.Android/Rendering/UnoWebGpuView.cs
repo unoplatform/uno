@@ -80,8 +80,9 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		}
 
 		_surfaceReady = true;
-		_renderThread = new Thread(RenderLoop) { Name = "UnoWebGpuRenderThread", IsBackground = true };
-		_renderThread.Start(holder);
+		Thread renderThread = new(RenderLoop) { Name = "UnoWebGpuRenderThread", IsBackground = true };
+		Volatile.Write(ref _renderThread, renderThread);
+		renderThread.Start(holder);
 	}
 
 	public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
@@ -346,7 +347,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		_disposed = true;
 		_renderEvent.Set();
 		var stopped = _renderThread?.Join(TimeSpan.FromSeconds(2)) ?? true;
-		_renderThread = null;
+		Volatile.Write(ref _renderThread, null);
 
 		if (!stopped)
 		{
