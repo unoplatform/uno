@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.Extensions;
 using Uno.Roslyn;
@@ -105,6 +106,12 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				var isiOSView = typeSymbol.Is(_iosViewSymbol);
 				var isAndroidView = typeSymbol.Is(_androidViewSymbol);
 
+				// The constructors go in a partial declaration, which would not compile (CS0260) against a non-partial one.
+				if (!(isiOSView || isAndroidView) || !IsPartialInEveryDeclaration(typeSymbol))
+				{
+					return;
+				}
+
 				if (isiOSView)
 				{
 					Func<IMethodSymbol, bool> predicate = m =>
@@ -151,7 +158,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 					Action<IIndentedStringBuilder> beforeClassHeaderAction = builder =>
 					{
 						// These will be generated just before `partial class ClassName {`
-						builder.AppendLineIndented("#if __APPLE_UIKIT__ || __IOS__ || __TVOS__");
+						builder.AppendLineIndented("#if __IOS__ || __TVOS__");
 
 						// When C# hot reload is enabled types get replaced with a new type
 						// that has a different name. We need to register the new type
@@ -199,20 +206,20 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 						builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
 						builder.AppendLineIndented("/// </summary>");
 						builder.AppendLineIndented("/// <remarks>");
-						builder.AppendLineIndented("/// Used by the Xamarin Runtime to materialize native ");
+						builder.AppendLineIndented("/// Used by the .NET for Android runtime to materialize native");
 						builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
 						builder.AppendLineIndented("/// </remarks>");
 						builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr javaReference, global::Android.Runtime.JniHandleOwnership transfer) : base (javaReference, transfer) {{ }}");
 						builder.Append("#endif");
 						builder.AppendLine();
 
-						builder.Append("#if __APPLE_UIKIT__ || __IOS__ || __TVOS__");
+						builder.Append("#if __IOS__ || __TVOS__");
 						builder.AppendLine();
 						builder.AppendLineIndented("/// <summary>");
 						builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
 						builder.AppendLineIndented("/// </summary>");
 						builder.AppendLineIndented("/// <remarks>");
-						builder.AppendLineIndented("/// Used by the Xamarin Runtime to materialize native ");
+						builder.AppendLineIndented("/// Used by the .NET for iOS runtime to materialize native");
 						builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
 						builder.AppendLineIndented("/// </remarks>");
 						builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr handle) : base (handle) {{ }}");
@@ -223,7 +230,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 							builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
 							builder.AppendLineIndented("/// </summary>");
 							builder.AppendLineIndented("/// <remarks>");
-							builder.AppendLineIndented("/// Used by the .NET Runtime to materialize native ");
+							builder.AppendLineIndented("/// Used by the .NET for iOS runtime to materialize native");
 							builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
 							builder.AppendLineIndented("/// </remarks>");
 							builder.AppendLineIndented($"public {syntacticValidSymbolName}(global::ObjCRuntime.NativeHandle handle) : base (handle) {{ }}");
@@ -261,6 +268,23 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 						return GetNativeCtor(type.BaseType, predicate, true);
 					}
 				}
+			}
+
+			private static bool IsPartialInEveryDeclaration(INamedTypeSymbol typeSymbol)
+			{
+				for (var type = typeSymbol; type is not null; type = type.ContainingType)
+				{
+					foreach (var reference in type.DeclaringSyntaxReferences)
+					{
+						if (reference.GetSyntax() is not TypeDeclarationSyntax declaration
+							|| !declaration.Modifiers.Any(SyntaxKind.PartialKeyword))
+						{
+							return false;
+						}
+					}
+				}
+
+				return true;
 			}
 
 			private static bool NeedsExplicitDefaultCtor(INamedTypeSymbol typeSymbol)
