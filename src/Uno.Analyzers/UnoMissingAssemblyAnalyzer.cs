@@ -38,7 +38,6 @@ public class UnoMissingAssemblyAnalyzer : DiagnosticAnalyzer
 		context.RegisterCompilationStartAction(context =>
 		{
 			var assemblies = context.Compilation.ReferencedAssemblyNames.Select(a => a.Name).ToImmutableHashSet();
-			var progressRing = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.Controls.ProgressRing");
 			var mpe = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.Controls.MediaPlayerElement");
 			_ = context.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.UnoRuntimeIdentifier", out var unoRuntimeIdentifier);
 			_ = context.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.IsUnoHead", out var isUnoHead);
@@ -55,18 +54,7 @@ public class UnoMissingAssemblyAnalyzer : DiagnosticAnalyzer
 					return;
 				}
 
-				if (type.DerivesFrom(progressRing) && !assemblies.Contains("Uno.UI.Lottie"))
-				{
-					const string lottieNuGetPackageName =
-#if HAS_UNO_WINUI
-						"Uno.WinUI.Lottie";
-#else
-						"Uno.UI.Lottie";
-#endif
-
-					context.ReportDiagnostic(Diagnostic.Create(Rule, objectCreation.Syntax.GetLocation(), "ProgressRing", lottieNuGetPackageName));
-				}
-				else if (type.DerivesFrom(mpe))
+				if (type.DerivesFrom(mpe))
 				{
 					if (unoRuntimeIdentifier?.Equals("WebAssembly", StringComparison.OrdinalIgnoreCase) == true)
 					{
