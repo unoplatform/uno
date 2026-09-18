@@ -933,6 +933,12 @@ To port a custom source, move the work as follows:
   rejected whether or not the prefix is used, so unused `clr-namespace:` declarations must also be
   removed — the only exemption is a prefix listed in `mc:Ignorable` on the root element.
 
+- **`legacy:ListView` and `legacy:GridView` no longer compile.** The XAML generator used to resolve any
+  type it could not find in `using:Uno.UI.Controls.Legacy` to the `Microsoft.UI.Xaml.Controls` type of the
+  same name, a leftover of the native legacy lists removed in 7.0, so this markup already produced the
+  regular controls. Use `ListView` and `GridView` from the default namespace. Types that do exist in that
+  namespace, such as `legacy:ProgressRing`, are unaffected.
+
 - **A relative URI on a `Uri`-typed property now compiles to `ms-resource:///Files/…`**, the MRT
   local-resource form WinUI produces. Previously Uno emitted the relative string verbatim. This
   affects custom `Uri` properties, `HyperlinkButton.NavigateUri`, `Hyperlink.NavigateUri`,
