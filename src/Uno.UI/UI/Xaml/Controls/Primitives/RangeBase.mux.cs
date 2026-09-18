@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -35,7 +36,7 @@ public partial class RangeBase : Control
 		if (pDP == LargeChangeProperty ||
 			pDP == MaximumProperty)
 		{
-			pValue = 1.0;
+			pValue = DoubleBoxes.One;
 		}
 		else if (pDP == SmallChangeProperty)
 		{
@@ -55,21 +56,21 @@ public partial class RangeBase : Control
 		{
 			HandlePropertyChanged(
 			args,
-			(automationPeer, oldValue, newValue) => automationPeer.RaiseMinimumPropertyChangedEvent(oldValue, newValue),
+			(automationPeer, oldValue, newValue) => automationPeer.RaiseMinimumPropertyChangedEvent(Boxer.Box(oldValue), Boxer.Box(newValue)),
 			(rangeBase, oldValue, newValue) => rangeBase.OnMinimumChanged(oldValue, newValue));
 		}
 		else if (args.Property == MaximumProperty)
 		{
 			HandlePropertyChanged(
 			args,
-			(automationPeer, oldValue, newValue) => automationPeer.RaiseMaximumPropertyChangedEvent(oldValue, newValue),
+			(automationPeer, oldValue, newValue) => automationPeer.RaiseMaximumPropertyChangedEvent(Boxer.Box(oldValue), Boxer.Box(newValue)),
 			(rangeBase, oldValue, newValue) => rangeBase.OnMaximumChanged(oldValue, newValue));
 		}
 		else if (args.Property == ValueProperty)
 		{
 			HandlePropertyChanged(
 			args,
-			(automationPeer, oldValue, newValue) => automationPeer.RaiseValuePropertyChangedEvent(oldValue, newValue),
+			(automationPeer, oldValue, newValue) => automationPeer.RaiseValuePropertyChangedEvent(Boxer.Box(oldValue), Boxer.Box(newValue)),
 			(rangeBase, oldValue, newValue) => rangeBase.OnValueChanged(oldValue, newValue));
 		}
 	}

@@ -108,15 +108,9 @@ namespace Microsoft.UI.Xaml
 
 		#region Tag Dependency Property
 
-		public object Tag
-		{
-			get => GetTagValue();
-			set => SetTagValue(value);
-		}
-#pragma warning restore 114 // Error CS0114: 'FrameworkElement.Tag' hides inherited member 'UIView.Tag'
-
 		[GeneratedDependencyProperty(DefaultValue = null)]
-		public static DependencyProperty TagProperty { get; } = CreateTagProperty();
+		public partial object Tag { get; set; }
+#pragma warning restore 114 // Error CS0114: 'FrameworkElement.Tag' hides inherited member 'UIView.Tag'
 
 		#endregion
 
@@ -145,21 +139,17 @@ namespace Microsoft.UI.Xaml
 #if !SUPPORTS_RTL
 		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
 #endif
-		public FlowDirection FlowDirection
-		{
-			get => GetFlowDirectionValue();
-			set => SetFlowDirectionValue(value);
-		}
-
-#if !SUPPORTS_RTL
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
-#endif
 		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options =
 #if SUPPORTS_RTL
 			FrameworkPropertyMetadataOptions.AffectsMeasure |
 #endif
 			FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
+		public partial FlowDirection FlowDirection { get; set; }
+
+#if !SUPPORTS_RTL
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
+#endif
+		public static partial DependencyProperty FlowDirectionProperty { get; }
 
 		#endregion
 		internal void RaiseSizeChanged(SizeChangedEventArgs args)
@@ -529,85 +519,37 @@ namespace Microsoft.UI.Xaml
 		// freezing, etc.) are in FrameworkElement.Theming.cs.
 
 		[GeneratedDependencyProperty]
-		public static DependencyProperty FocusVisualSecondaryThicknessProperty { get; } = CreateFocusVisualSecondaryThicknessProperty();
-
-		public Thickness FocusVisualSecondaryThickness
-		{
-			get => GetFocusVisualSecondaryThicknessValue();
-			set => SetFocusVisualSecondaryThicknessValue(value);
-		}
+		public partial Thickness FocusVisualSecondaryThickness { get; set; }
 
 		private static Thickness GetFocusVisualSecondaryThicknessDefaultValue() => new Thickness(1);
 
 		[GeneratedDependencyProperty(DefaultValue = default(Brush))]
-		public static DependencyProperty FocusVisualSecondaryBrushProperty { get; } = CreateFocusVisualSecondaryBrushProperty();
-
-		public Brush FocusVisualSecondaryBrush
-		{
-			get => GetFocusVisualSecondaryBrushValue();
-			set => SetFocusVisualSecondaryBrushValue(value);
-		}
+		public partial Brush FocusVisualSecondaryBrush { get; set; }
 
 		[GeneratedDependencyProperty]
-		public static DependencyProperty FocusVisualPrimaryThicknessProperty { get; } = CreateFocusVisualPrimaryThicknessProperty();
-
-		public Thickness FocusVisualPrimaryThickness
-		{
-			get => GetFocusVisualPrimaryThicknessValue();
-			set => SetFocusVisualPrimaryThicknessValue(value);
-		}
+		public partial Thickness FocusVisualPrimaryThickness { get; set; }
 
 		private static Thickness GetFocusVisualPrimaryThicknessDefaultValue() => new Thickness(2);
 
-		public Brush FocusVisualPrimaryBrush
-		{
-			get => GetFocusVisualPrimaryBrushValue();
-			set => SetFocusVisualPrimaryBrushValue(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = default(Brush))]
-		public static DependencyProperty FocusVisualPrimaryBrushProperty { get; } = CreateFocusVisualPrimaryBrushProperty();
-
-		public Thickness FocusVisualMargin
-		{
-			get => GetFocusVisualMarginValue();
-			set => SetFocusVisualMarginValue(value);
-		}
-
-		private static Thickness GetFocusVisualMarginDefaultValue() => Thickness.Empty;
+		public partial Brush FocusVisualPrimaryBrush { get; set; }
 
 		[GeneratedDependencyProperty]
-		public static DependencyProperty FocusVisualMarginProperty { get; } = CreateFocusVisualMarginProperty();
+		public partial Thickness FocusVisualMargin { get; set; }
+
+		private static Thickness GetFocusVisualMarginDefaultValue() => Thickness.Empty;
 
 		/// <summary>
 		/// Gets or sets whether a disabled control can receive focus.
 		/// </summary>
-		public bool AllowFocusWhenDisabled
-		{
-			get => GetAllowFocusWhenDisabledValue();
-			set => SetAllowFocusWhenDisabledValue(value);
-		}
-
-		/// <summary>
-		/// Identifies the AllowFocusWhenDisabled  dependency property.
-		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = false, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty AllowFocusWhenDisabledProperty { get; } = CreateAllowFocusWhenDisabledProperty();
+		public partial bool AllowFocusWhenDisabled { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the element automatically gets focus when the user interacts with it.
 		/// </summary>
-		public bool AllowFocusOnInteraction
-		{
-			get => GetAllowFocusOnInteractionValue();
-			set => SetAllowFocusOnInteractionValue(value);
-		}
-
-		/// <summary>
-		/// Identifies for the AllowFocusOnInteraction dependency property.
-		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
+		public partial bool AllowFocusOnInteraction { get; set; }
 
 		internal virtual
 			bool HasFocus()
@@ -922,13 +864,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
-		public static DependencyProperty NameProperty { get; } = CreateNameProperty();
-
-		public string Name
-		{
-			get => GetNameValue();
-			set => SetNameValue(value);
-		}
+		public partial string Name { get; set; }
 
 		#endregion
 

@@ -42,72 +42,42 @@ public partial class NativePopupBase : Primitives.Popup
 	}
 
 	#region IsOpen Property
-	public new bool IsOpen
-	{
-		get => GetIsOpenValue();
-		set => SetIsOpenValue(value);
-	}
+	[GeneratedDependencyProperty(DefaultValue = false, LocalCache = false, ChangedCallback = true)]
+	public new partial bool IsOpen { get; set; }
 
 	private new void OnIsOpenChanged(bool oldValue, bool newValue)
 		=> base.IsOpen = newValue;
-
-	[GeneratedDependencyProperty(DefaultValue = false, LocalCache = false, ChangedCallback = true)]
-	public new static DependencyProperty IsOpenProperty { get; } = CreateIsOpenProperty();
 	#endregion
 
 	#region Child Property
-	public new UIElement Child
-	{
-		get => GetChildValue();
-		set => SetChildValue(value);
-	}
+	[GeneratedDependencyProperty(DefaultValue = null, LocalCache = false, ChangedCallback = true)]
+	public new partial UIElement Child { get; set; }
 
 	private new void OnChildChanged(UIElement oldValue, UIElement newValue)
 		=> base.Child = newValue;
-
-	[GeneratedDependencyProperty(DefaultValue = null, LocalCache = false, ChangedCallback = true)]
-	public new static DependencyProperty ChildProperty { get; } = CreateChildProperty();
 	#endregion
 
 	#region IsLightDismissEnabled Property
-	public new bool IsLightDismissEnabled
-	{
-		get => GetIsLightDismissEnabledValue();
-		set => SetIsLightDismissEnabledValue(value);
-	}
+	[GeneratedDependencyProperty(DefaultValue = false, LocalCache = false, ChangedCallback = true)]
+	public new partial bool IsLightDismissEnabled { get; set; }
 
 	private new void OnIsLightDismissEnabledChanged(bool oldValue, bool newValue)
 		=> base.IsLightDismissEnabled = newValue;
-
-	[GeneratedDependencyProperty(DefaultValue = false, LocalCache = false, ChangedCallback = true)]
-	public new static DependencyProperty IsLightDismissEnabledProperty { get; } = CreateIsLightDismissEnabledProperty();
 	#endregion
 
 	#region HorizontalOffset Property
-	public new double HorizontalOffset
-	{
-		get => GetHorizontalOffsetValue();
-		set => SetHorizontalOffsetValue(value);
-	}
+	[GeneratedDependencyProperty(DefaultValue = 0.0, LocalCache = false, ChangedCallback = true)]
+	public new partial double HorizontalOffset { get; set; }
 	private void OnHorizontalOffsetChanged(double oldValue, double newValue)
 		=> base.HorizontalOffset = newValue;
-
-	[GeneratedDependencyProperty(DefaultValue = 0.0, LocalCache = false, ChangedCallback = true)]
-	public new static DependencyProperty HorizontalOffsetProperty { get; } = CreateHorizontalOffsetProperty();
 	#endregion
 
 	#region VerticalOffset Property
-	public new double VerticalOffset
-	{
-		get => GetVerticalOffsetValue();
-		set => SetVerticalOffsetValue(value);
-	}
+	[GeneratedDependencyProperty(DefaultValue = 0.0, LocalCache = false, ChangedCallback = true)]
+	public new partial double VerticalOffset { get; set; }
 
 	private void OnVerticalOffsetChanged(double oldValue, double newValue)
 		=> base.VerticalOffset = newValue;
-
-	[GeneratedDependencyProperty(DefaultValue = 0.0, LocalCache = false, ChangedCallback = true)]
-	public new static DependencyProperty VerticalOffsetProperty { get; } = CreateVerticalOffsetProperty();
 	#endregion
 
 	public new event EventHandler<object> Closed

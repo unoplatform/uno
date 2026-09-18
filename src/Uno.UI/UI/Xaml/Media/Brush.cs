@@ -94,14 +94,8 @@ namespace Microsoft.UI.Xaml.Media
 
 		#region Opacity Dependency Property
 
-		public double Opacity
-		{
-			get => GetOpacityValue();
-			set => SetOpacityValue(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = 1d, ChangedCallback = true)]
-		public static DependencyProperty OpacityProperty { get; } = CreateOpacityProperty();
+		public partial double Opacity { get; set; }
 
 		protected virtual void OnOpacityChanged(double oldValue, double newValue)
 		{
@@ -110,24 +104,14 @@ namespace Microsoft.UI.Xaml.Media
 		#endregion
 
 		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		[GeneratedDependencyProperty(DefaultValue = null)]
-		public static DependencyProperty TransformProperty { get; } = CreateTransformProperty();
+		public static partial DependencyProperty TransformProperty { get; }
 
 		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public Microsoft.UI.Xaml.Media.Transform Transform
-		{
-			get => GetTransformValue();
-			set => SetTransformValue(value);
-		}
-
-		public Transform RelativeTransform
-		{
-			get => GetRelativeTransformValue();
-			set => SetRelativeTransformValue(value);
-		}
+		[GeneratedDependencyProperty(DefaultValue = null)]
+		public partial Microsoft.UI.Xaml.Media.Transform Transform { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static DependencyProperty RelativeTransformProperty { get; } = CreateRelativeTransformProperty();
+		public partial Transform RelativeTransform { get; set; }
 
 		protected virtual void OnRelativeTransformChanged(Transform oldValue, Transform newValue)
 		{

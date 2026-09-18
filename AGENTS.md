@@ -32,7 +32,7 @@ These load **automatically** when you touch matching files — you don't invoke 
 | `code-style.md` | `src/**/*.cs` | nullable, file headers (MUX/MIT), logging, `[Uno.NotImplemented]` |
 | `platform-targeting.md` | `src/**/*.cs` | file-suffix vs `#if` vs `OperatingSystem.IsX()` vs `ApiExtensibility` |
 | `debugging-discipline.md` | `src/**/*.cs` | full root-cause/validation/diagnosis-bias protocols |
-| `dependency-properties.md` | `src/Uno.UI/**` | `[GeneratedDependencyProperty]`, metadata, callbacks |
+| `dependency-properties.md` | `src/Uno.UI/**` | `[GeneratedDependencyProperty]` partial properties, metadata, callbacks |
 | `runtime-tests.md` | `src/Uno.UI.RuntimeTests/**` | `[RunsOnUIThread]`, `[PlatformCondition]`, `UITestHelper` |
 | `unit-tests.md` | `src/Uno.UI.UnitTests/**` | MSTest, no-visual-tree logic tests |
 | `source-generators.md` | `src/SourceGenerators/**` | incremental gens, LOH/perf, cancellation |
@@ -278,7 +278,7 @@ Extensive use for:
 
 ### DependencyProperty Pattern
 
-Prefer `[GeneratedDependencyProperty]` for new properties. Conventions auto-load from `.claude/rules/dependency-properties.md`; for full templates copy from existing controls (`Canvas`, `RangeBase`, `Button`).
+Prefer `[GeneratedDependencyProperty]` for new Uno-authored properties, on a partial property (`public partial double Spacing { get; set; }`) or, for an attached property, on a static partial `GetX` method. The generator declares and registers `XProperty` — don't hand-write it. Properties ported from WinUI keep the 1:1 manual `DependencyProperty.Register` form (`/winui-port`). Conventions auto-load from `.claude/rules/dependency-properties.md` (full reference: `doc/articles/uno-development/Internal-DependencyProperty-Generator.md`); for full templates copy from existing controls (`StackPanel`, `Canvas`, `RangeBase`, `Button`).
 
 ### Code Style
 

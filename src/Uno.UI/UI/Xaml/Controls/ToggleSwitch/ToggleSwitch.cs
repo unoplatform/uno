@@ -1,5 +1,6 @@
 ﻿using System;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 
@@ -106,7 +107,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsOn dependency property.
 		/// </summary>
 		public static DependencyProperty IsOnProperty { get; } =
-			DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(ToggleSwitch), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+			DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(ToggleSwitch), new FrameworkPropertyMetadata(BoolBoxes.False, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 

@@ -215,7 +215,57 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private static bool IsDependencyProperty(INamedTypeSymbol? propertyOwner, string name)
 		{
 			return propertyOwner.GetPropertyWithName(name + "Property") is not null ||
-				propertyOwner.GetFieldWithName(name + "Property") is not null;
+				propertyOwner.GetFieldWithName(name + "Property") is not null ||
+				HasGeneratedDependencyProperty(propertyOwner, name);
+		}
+
+		// The DependencyPropertyGenerator emits the {name}Property identifier, but the output of other generators
+		// is invisible to this one, so a source-declared [GeneratedDependencyProperty] also marks a DP. Referenced
+		// assemblies already expose their identifiers, which may be inaccessible even though the attribute isn't.
+		// This is a superset of the shapes DependencyPropertyModelBuilder accepts: the others fail the build with a diagnostic.
+		private static bool HasGeneratedDependencyProperty(INamedTypeSymbol? propertyOwner, string name)
+		{
+			string? attachedGetterName = null;
+
+			for (; propertyOwner is not null; propertyOwner = propertyOwner.BaseType)
+			{
+				if (propertyOwner.DeclaringSyntaxReferences.Length == 0)
+				{
+					continue;
+				}
+
+				foreach (var member in propertyOwner.GetMembers(name))
+				{
+					if (member.Kind == SymbolKind.Property && HasGeneratedDependencyPropertyAttribute(member))
+					{
+						return true;
+					}
+				}
+
+				foreach (var member in propertyOwner.GetMembers(attachedGetterName ??= "Get" + name))
+				{
+					if (member is IMethodSymbol { IsStatic: true, Parameters.Length: 1 } && HasGeneratedDependencyPropertyAttribute(member))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		private static bool HasGeneratedDependencyPropertyAttribute(ISymbol symbol)
+		{
+			foreach (var attribute in symbol.GetAttributes())
+			{
+				if (attribute.AttributeClass is { Name: "GeneratedDependencyPropertyAttribute" } attributeClass
+					&& attributeClass.GetFullMetadataName() == "Uno.UI.Xaml.GeneratedDependencyPropertyAttribute")
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		private bool HasIsParsing(INamedTypeSymbol? type)

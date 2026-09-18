@@ -7,6 +7,8 @@ using System.Text;
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
@@ -19,7 +21,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
-using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
@@ -318,7 +319,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public int MaxLength
 		{
 			get => (int)this.GetValue(MaxLengthProperty);
-			set => this.SetValue(MaxLengthProperty, value);
+			set => this.SetValue(MaxLengthProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MaxLengthProperty { get; } =
@@ -327,7 +328,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: IntBoxes.Zero,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnMaxLengthChanged((int)e.NewValue)
 				)
 			);
@@ -350,7 +351,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: false,
+					defaultValue: BoolBoxes.False,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnAcceptsReturnChanged((bool)e.NewValue)
 				)
 			);
@@ -430,7 +431,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					false,
+					BoolBoxes.False,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnIsReadonlyChanged()
 				)
 			);
@@ -494,7 +495,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: true,
+					defaultValue: BoolBoxes.True,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnIsSpellCheckEnabledChanged((bool)e.NewValue)
 				)
 			);
@@ -519,7 +520,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: true,
+					defaultValue: BoolBoxes.True,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnIsTextPredictionEnabledChanged((bool)e.NewValue)
 				)
 			);

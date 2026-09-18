@@ -18,7 +18,7 @@ partial class TextBox
 		nameof(CanUndo),
 		typeof(bool),
 		typeof(TextBox),
-		new FrameworkPropertyMetadata(defaultValue: false)
+		new FrameworkPropertyMetadata(defaultValue: Uno.UI.Helpers.Boxes.BoolBoxes.False)
 		{
 			PropMethodCall = GetCanUndo,
 		});
@@ -32,14 +32,14 @@ partial class TextBox
 			throw new InvalidOperationException($"{nameof(CanUndoProperty)} is read-only.");
 		}
 
-		return Uno.UI.Helpers.Boxes.Box(((TextBox)instance)._core.CanUndoInternal);
+		return Uno.UI.Helpers.Boxes.Boxer.Box(((TextBox)instance)._core.CanUndoInternal);
 	}
 
 	public static DependencyProperty CanRedoProperty { get; } = DependencyProperty.Register(
 		nameof(CanRedo),
 		typeof(bool),
 		typeof(TextBox),
-		new FrameworkPropertyMetadata(defaultValue: false)
+		new FrameworkPropertyMetadata(defaultValue: Uno.UI.Helpers.Boxes.BoolBoxes.False)
 		{
 			PropMethodCall = GetCanRedo,
 		});
@@ -53,17 +53,11 @@ partial class TextBox
 			throw new InvalidOperationException($"{nameof(CanRedoProperty)} is read-only.");
 		}
 
-		return Uno.UI.Helpers.Boxes.Box(((TextBox)instance)._core.CanRedoInternal);
+		return Uno.UI.Helpers.Boxes.Boxer.Box(((TextBox)instance)._core.CanRedoInternal);
 	}
 
 	[GeneratedDependencyProperty(DefaultValue = false)]
-	public static DependencyProperty CanPasteClipboardContentProperty { get; } = CreateCanPasteClipboardContentProperty();
-
-	public bool CanPasteClipboardContent
-	{
-		get => GetCanPasteClipboardContentValue();
-		private set => SetCanPasteClipboardContentValue(value);
-	}
+	public partial bool CanPasteClipboardContent { get; private set; }
 
 	bool ITextBoxHost.CanPasteClipboardContent
 	{
