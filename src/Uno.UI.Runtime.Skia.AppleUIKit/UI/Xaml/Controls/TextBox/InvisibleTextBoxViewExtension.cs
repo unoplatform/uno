@@ -274,6 +274,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		// responder, so a discarded proxy can still receive the gesture.
 		if (_textBoxView?.Owner?.Core is not { } core || AppleUIKitImeTextBoxExtension.Instance.IsComposing)
 		{
+			// The caller stops forwarding once declined, so its End would never reach an already-started drag.
+			_owner.Core?.CancelCaretDrag();
 			return false;
 		}
 
