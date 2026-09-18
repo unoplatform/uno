@@ -432,6 +432,18 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			throw new InvalidOperationException("XLIB ERROR: Cannot connect to X server");
 		}
 
+		// Without this, the server reports auto-repeat as a KeyRelease/KeyPress pair, so a held key looks
+		// like a rapid sequence of presses and releases and CoreWindow.GetKeyState reports it as not held
+		// in between. Detectable auto-repeat delivers repeated key presses instead, as every other
+		// platform does.
+		if (X11Helper.XkbSetDetectableAutoRepeat(display, 1, out var detectableAutoRepeatSupported) == 0 || detectableAutoRepeatSupported == 0)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("XLIB: detectable auto-repeat is unavailable, a held key will be reported as repeatedly pressed and released.");
+			}
+		}
+
 		int screen = XLib.XDefaultScreen(display);
 
 		var size = ApplicationView.PreferredLaunchViewSize;
@@ -445,6 +457,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		IntPtr rootXWindow = XLib.XRootWindow(display, screen);
 		_x11Window = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
 		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
+		// Detectable auto-repeat is set per connection, and key events are read from whichever
+		// connection owns the window they target.
+		_ = X11Helper.XkbSetDetectableAutoRepeat(topWindowDisplay, 1, out _);
 
 		// Neutral pipeline: the host registers a per-kind window+context factory and lets the backend negotiate; only window+context creation is X11-specific.
 		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind, topWindowDisplay, display, screen, size));
