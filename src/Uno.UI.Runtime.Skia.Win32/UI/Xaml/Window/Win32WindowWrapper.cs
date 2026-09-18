@@ -54,6 +54,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private readonly HWND _hwnd;
 	private readonly IRenderer _renderer;
+	private FrameworkElement? _frameThemeSource;
 
 	private Win32Accessibility? _accessibility;
 	private bool _rendererDisposed;
@@ -99,6 +100,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		XamlRootMap.Register(xamlRoot, this);
 
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged += OnSystemThemeChanged;
+		window.ContentChanged += OnWindowContentChanged;
 		OnSystemThemeChanged(Win32SystemThemeHelperExtension.Instance, EventArgs.Empty);
 
 		UpdateWindowPropertiesFromPackage();
@@ -165,9 +167,44 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 	}
 
-	private unsafe void OnSystemThemeChanged(object? _, EventArgs __)
+	private void OnSystemThemeChanged(object? _, EventArgs __) => UpdateFrameTheme();
+
+	private void OnContentActualThemeChanged(FrameworkElement sender, object args) => UpdateFrameTheme();
+
+	// MUX retargets the backdrop theme source on XamlRoot.Changed (SystemBackdrop_Partial.cpp).
+	private void OnWindowContentChanged(object? sender, EventArgs args) => UpdateFrameTheme();
+
+	/// <summary>
+	/// Applies the theme DWM uses for this window's caption and, on Windows 11, for the tint of a
+	/// system backdrop.
+	/// </summary>
+	/// <remarks>
+	/// MUX drives <c>SystemBackdropConfiguration.Theme</c> from <c>XamlRoot.Content.ActualTheme</c>
+	/// (SystemBackdrop_Partial.cpp), so an app running light on a dark desktop gets a light material.
+	/// DWM exposes a single per-window flag for both the material tint and the caption, so this follows
+	/// the content's theme rather than the desktop's.
+	/// </remarks>
+	private unsafe void UpdateFrameTheme()
 	{
-		BOOL value = Win32SystemThemeHelperExtension.Instance.GetSystemTheme() is SystemTheme.Dark;
+		var content = _window?.Content as FrameworkElement;
+		if (!ReferenceEquals(content, _frameThemeSource))
+		{
+			if (_frameThemeSource is not null)
+			{
+				_frameThemeSource.ActualThemeChanged -= OnContentActualThemeChanged;
+			}
+
+			_frameThemeSource = content;
+			if (content is not null)
+			{
+				content.ActualThemeChanged += OnContentActualThemeChanged;
+			}
+		}
+
+		BOOL value = _frameThemeSource is { } themeSource
+			? themeSource.ActualTheme == ElementTheme.Dark
+			: Application.Current?.RequestedTheme == ApplicationTheme.Dark;
+
 		var hResult = PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, &value, (uint)Marshal.SizeOf(value));
 		if (hResult.Failed)
 		{
@@ -508,6 +545,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
+		if (_window is not null)
+		{
+			_window.ContentChanged -= OnWindowContentChanged;
+		}
 
 		// Dispose the accessibility instance BEFORE unregistering from XamlRootMap
 		// and before releasing the HWND. UIA clients must see a well-formed
@@ -534,6 +575,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		_renderer.Dispose();
 		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();
+		if (_frameThemeSource is not null)
+		{
+			_frameThemeSource.ActualThemeChanged -= OnContentActualThemeChanged;
+			_frameThemeSource = null;
+		}
 		DestroyIcons();
 		XamlRootMap.Unregister(XamlRoot!);
 	}
@@ -941,6 +987,20 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 	}
 
+	/// <remarks>
+	/// Mirrors what <see cref="SetSystemBackdrop"/> actually honours: only Mica and Acrylic are mapped
+	/// onto <c>DWMWA_SYSTEMBACKDROP_TYPE</c>, and that attribute needs Windows 11 build 22621.
+	/// </remarks>
+	public override bool IsSystemBackdropSupported(Microsoft.UI.Xaml.Media.SystemBackdrop backdrop)
+		=> backdrop switch
+		{
+			Microsoft.UI.Xaml.Media.MicaBackdrop
+				=> Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported(),
+			Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop
+				=> Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported(),
+			_ => false,
+		};
+
 	public override unsafe void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
 	{
 		if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22621))
@@ -955,9 +1015,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		if (backdrop is not null and not (Microsoft.UI.Xaml.Media.MicaBackdrop or Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop))
 		{
-			// Leave any currently applied backdrop untouched rather than clearing it with DWMSBT_NONE.
-			this.LogWarn()?.Warn($"Only {nameof(Microsoft.UI.Xaml.Media.MicaBackdrop)} and {nameof(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)} are currently supported on Win32. '{backdrop.GetType().Name}' was ignored.");
-			return;
+			// Cleared with DWMSBT_NONE below: the window now paints its fallback, so a previously applied
+			// material must not linger under the frame.
+			this.LogWarn()?.Warn($"Only {nameof(Microsoft.UI.Xaml.Media.MicaBackdrop)} and {nameof(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)} are currently supported on Win32. '{backdrop.GetType().Name}' is not rendered natively.");
 		}
 
 		DWM_SYSTEMBACKDROP_TYPE backdropType = backdrop switch
@@ -990,6 +1050,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// area ("sheet of glass" MARGINS {-1,-1,-1,-1}) so the transparent client pixels reveal the
 		// material instead of black; otherwise it restores the title-bar/border configuration. Keeping
 		// this in the presenter avoids fighting it over the frame margins and corner preference.
+		UpdateFrameTheme();
 		UpdateClientAreaExtension();
 	}
 }
