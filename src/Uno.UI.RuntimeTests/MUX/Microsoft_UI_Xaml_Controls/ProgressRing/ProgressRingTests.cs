@@ -14,9 +14,6 @@ public class ProgressRingTests
 	[TestMethod]
 	[RunsOnUIThread]
 	[CombinatorialData]
-#if !(__WASM__ || HAS_SKOTTIE)
-	[Ignore("Skottie is not supported on net6+ UWP targets")]
-#endif
 	public async Task ProgressRingDefaultHeightShouldBe32(bool useFluent)
 	{
 		using (useFluent ? Disposable.Empty : StyleHelper.UseUwpStyles())
