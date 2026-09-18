@@ -108,6 +108,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		/// </remarks>
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24524")]
 #if !UNO_HAS_MANAGED_POINTERS
 		[Ignore("Hit-test visibility coercion is only used by managed hit testing.")]
 #endif
@@ -116,21 +117,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var child = new Border { Width = 20, Height = 20, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
 			var ancestor = new Border { Width = 40, Height = 40, Background = new SolidColorBrush(Microsoft.UI.Colors.Blue), Child = child };
 
-			await UITestHelper.Load(ancestor);
+			try
+			{
+				await UITestHelper.Load(ancestor);
 
-			Assert.AreEqual(HitTestability.Visible, child.GetHitTestVisibility());
+				Assert.AreEqual(HitTestability.Visible, child.GetHitTestVisibility());
 
-			ancestor.IsHitTestVisible = false;
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(HitTestability.Collapsed, child.GetHitTestVisibility(), "IsHitTestVisible=false on the ancestor must collapse the descendant");
+				ancestor.IsHitTestVisible = false;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(HitTestability.Collapsed, child.GetHitTestVisibility(), "IsHitTestVisible=false on the ancestor must collapse the descendant");
 
-			ancestor.IsHitTestVisible = true;
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(HitTestability.Visible, child.GetHitTestVisibility(), "the descendant must recover once the ancestor is hit-test visible again");
+				ancestor.IsHitTestVisible = true;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(HitTestability.Visible, child.GetHitTestVisibility(), "the descendant must recover once the ancestor is hit-test visible again");
 
-			ancestor.Visibility = Visibility.Collapsed;
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(HitTestability.Collapsed, child.GetHitTestVisibility(), "Visibility=Collapsed on the ancestor must collapse the descendant");
+				ancestor.Visibility = Visibility.Collapsed;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(HitTestability.Collapsed, child.GetHitTestVisibility(), "Visibility=Collapsed on the ancestor must collapse the descendant");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
