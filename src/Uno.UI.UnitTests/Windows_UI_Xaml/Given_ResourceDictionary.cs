@@ -32,6 +32,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			UnitTestsApp.App.EnsureApplication();
 		}
 
+		[TestCleanup]
+		public void Cleanup() => ResourceResolver.ResetHighContrastResourceStates();
+
 		[TestMethod]
 		public void When_CreateWithCapacity_NegativeCapacity_Throws()
 		{
@@ -168,6 +171,59 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				});
 
 			Assert.AreEqual(Color.FromArgb(255, 1, 2, 3), nestedDictionary[colorKey]);
+		}
+
+		[TestMethod]
+		public void When_HighContrast_Restore_Without_Override_Theme_Dictionaries_Stay_Lazy()
+		{
+			const string colorKey = "SystemColorWindowColor";
+			var resources = new[]
+			{
+				new ColorAndBrushResourceInfo
+				{
+					ColorKey = colorKey,
+					RgbValue = 0xFF010203,
+					OverrideAlpha = true,
+				},
+			};
+			var materializations = 0;
+			var root = new ResourceDictionary();
+			root.ThemeDictionaries.Add("HighContrast", new ResourceDictionary.ResourceInitializer(() =>
+			{
+				materializations++;
+				return new ResourceDictionary
+				{
+					[colorKey] = Colors.Red,
+				};
+			}));
+
+			ResourceResolver.UpdateSystemColorAndBrushResources(
+				root,
+				resources,
+				restoreDefaults: true);
+
+			Assert.AreEqual(0, materializations);
+
+			var overriddenDictionary = new ResourceDictionary
+			{
+				[colorKey] = Colors.Red,
+			};
+			ResourceResolver.UpdateSystemColorAndBrushResources(
+				new ResourceDictionary
+				{
+					ThemeDictionaries =
+					{
+						["HighContrast"] = overriddenDictionary,
+					},
+				},
+				resources);
+
+			ResourceResolver.UpdateSystemColorAndBrushResources(
+				root,
+				resources,
+				restoreDefaults: true);
+
+			Assert.AreEqual(1, materializations);
 		}
 
 		[TestMethod]
