@@ -172,7 +172,7 @@
 	</Target>
 
 	<!-- Force a rebuild on runtime files changes -->
-	<ItemGroup Condition="'$(UnoHasRuntimeHost)'=='true'">
+	<ItemGroup Condition="'$(UnoHasRuntimeHost)'=='true' OR '$(UnoRuntimeIdentifier)'!=''">
 		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../uno-runtime/*" />
 	</ItemGroup>
 
