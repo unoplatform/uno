@@ -187,10 +187,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 
-#if !UNO_REFERENCE_API
-		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated() { }  // Nothing to do here: this won't be invoked for real FrameworkElement, instead we receive OnViewportUpdated
-#endif
-
 #if __SKIA__
 		private protected sealed override void OnViewportUpdated() // a.k.a. OnLayoutUpdated / OnClippingApplied
 		{
