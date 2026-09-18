@@ -227,6 +227,54 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_HighContrast_Overrides_Restored_Theme_Dictionaries_Stay_Lazy()
+		{
+			const string colorKey = "SystemColorWindowColor";
+			var resources = new[]
+			{
+				new ColorAndBrushResourceInfo
+				{
+					ColorKey = colorKey,
+					RgbValue = 0xFF010203,
+					OverrideAlpha = true,
+				},
+			};
+			var overriddenRoot = new ResourceDictionary
+			{
+				ThemeDictionaries =
+				{
+					["HighContrast"] = new ResourceDictionary
+					{
+						[colorKey] = Colors.Red,
+					},
+				},
+			};
+			ResourceResolver.UpdateSystemColorAndBrushResources(overriddenRoot, resources);
+			ResourceResolver.UpdateSystemColorAndBrushResources(
+				overriddenRoot,
+				resources,
+				restoreDefaults: true);
+
+			var materializations = 0;
+			var root = new ResourceDictionary();
+			root.ThemeDictionaries.Add("HighContrast", new ResourceDictionary.ResourceInitializer(() =>
+			{
+				materializations++;
+				return new ResourceDictionary
+				{
+					[colorKey] = Colors.Red,
+				};
+			}));
+
+			ResourceResolver.UpdateSystemColorAndBrushResources(
+				root,
+				resources,
+				restoreDefaults: true);
+
+			Assert.AreEqual(0, materializations);
+		}
+
+		[TestMethod]
 		public void When_Simple_Add_And_Retrieve_Type_Key()
 		{
 			var rd = new ResourceDictionary();
