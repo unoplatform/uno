@@ -30,7 +30,7 @@ An **MSIX fallback** remains for the rare cases that need a real package (see *M
 | `run-tests.ps1` | Register the build output via `winapp` and run the tests **(default path)** |
 | `parse-results.ps1` | Summarize the UTF-16 NUnit results, including Inconclusive |
 | `cleanup.ps1` | Remove the package (MSIX-installed or `winapp`-registered) |
-| `dotnet-root.ps1` | Dot-sourced by both runners — points `DOTNET_ROOT` at the install holding the app's exact runtime |
+| `dotnet-root.ps1` | Dot-sourced by both runners — points `DOTNET_ROOT_<ARCH>` at the install holding the app's exact runtime in the app's architecture |
 | `setup-cert.ps1` | *MSIX fallback only* — generate + trust a signing certificate (admin, once) |
 | `install-msix.ps1` | *MSIX fallback only* — remove old package + install the built MSIX |
 | `run-tests-msix.ps1` | *MSIX fallback only* — launch via execution alias, poll for results |
@@ -51,7 +51,7 @@ Every item below was hit in practice, not theorized:
 
 5. **`winapp run` re-stages the layout on every run** (into `<output>\AppX`, which is a *copy*). So after rebuilding, **always go through `run-tests.ps1` again** — launching `unosamplesapp.exe` directly would silently run the previously staged binaries.
 
-6. **The app is framework-dependent on the preview runtime.** An alias launch inherits the environment, so `DOTNET_ROOT` must point at the install carrying that .NET version, or the app dies at startup before writing any results. Both runner scripts set it when needed.
+6. **The app is framework-dependent on the preview runtime.** An alias launch inherits the environment, so `DOTNET_ROOT_<ARCH>` must point at an install carrying that .NET version in the exe's architecture (on ARM64, the x64 app needs the emulated `%ProgramFiles%\dotnet\x64` install, not the native one), or the app dies at startup before writing any results. Both runner scripts set it when needed.
 
 7. **Inconclusive results are usually expected.** WinUI cannot change `Application.RequestedTheme` at runtime, so theme tests report *Inconclusive* unless the **OS theme** already matches (e.g. 9 of 21 `Given_Border`/`Given_Ellipse` cases are Inconclusive on a Dark-themed machine). Switch the OS theme and re-run to exercise them; do not report them as failures.
 

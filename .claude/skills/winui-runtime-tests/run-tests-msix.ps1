@@ -19,7 +19,7 @@ $ErrorActionPreference = 'Stop'
 
 $ResultsFile = [System.IO.Path]::GetFullPath($ResultsFile)
 
-# An alias launch inherits this process's environment, so DOTNET_ROOT is resolved against the
+# An alias launch inherits this process's environment, so DOTNET_ROOT_<ARCH> is resolved against the
 # runtimeconfig of the installed package.
 . (Join-Path $PSScriptRoot "dotnet-root.ps1")
 $installed = Get-AppxPackage -Name '*SamplesApp*' -ErrorAction SilentlyContinue |
