@@ -113,8 +113,16 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		}
 
 		_renderEvent.Set();
-		_renderThread?.Join(TimeSpan.FromSeconds(2));
-		_renderThread = null;
+		var stopped = _renderThread?.Join(TimeSpan.FromSeconds(2)) ?? true;
+
+		// Clearing the reference also retires a thread that outlived the timeout: RenderLoop exits
+		// once it is no longer the current render thread, so it cannot resume on the next surface.
+		Volatile.Write(ref _renderThread, null);
+
+		if (!stopped && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("UnoWebGpuView: the render thread did not stop within the timeout.");
+		}
 
 		// Before the swapchain: the backend built its own device objects on it, and tearing the swapchain down
 		// first leaves the driver dereferencing them. Surface re-creation negotiates a fresh backend.
@@ -153,7 +161,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 
 		try
 		{
-			while (_surfaceReady && !_disposed)
+			while (_surfaceReady && !_disposed && ReferenceEquals(Volatile.Read(ref _renderThread), Thread.CurrentThread))
 			{
 				_renderEvent.Wait(TimeSpan.FromMilliseconds(100));
 				_renderEvent.Reset();

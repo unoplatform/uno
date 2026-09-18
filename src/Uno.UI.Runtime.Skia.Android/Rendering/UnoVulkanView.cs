@@ -138,7 +138,9 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			this.Log().Warn("UnoVulkanView: the render thread is still inside a frame; teardown waits on the device lock");
 		}
 
-		_renderThread = null;
+		// Clearing the reference also retires a thread that outlived the timeout: RenderLoop exits
+		// once it is no longer the current render thread, so it cannot resume on the next surface.
+		Volatile.Write(ref _renderThread, null);
 
 		// A first frame that builds pipelines and shaders can outlast the Join above, so the GPU teardown runs under
 		// the device lock every frame also holds — destroying pipelines and command pools the render thread is still
@@ -186,7 +188,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 
 		try
 		{
-			while (_surfaceReady && !_disposed)
+			while (_surfaceReady && !_disposed && ReferenceEquals(Volatile.Read(ref _renderThread), Thread.CurrentThread))
 			{
 				_renderEvent.Wait(TimeSpan.FromMilliseconds(100));
 				_renderEvent.Reset();
