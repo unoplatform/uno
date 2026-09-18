@@ -191,8 +191,8 @@ namespace Microsoft.UI.Text
 				|| format.Weight != 400
 				|| format.Background is not null
 				|| format.Hidden
-				|| format.Italic
-				|| format.FontStretch != global::Windows.UI.Text.FontStretch.Normal
+				|| format.HasFontStyle
+				|| format.HasFontStretch
 				|| format.Kerning != 0
 				|| !string.IsNullOrEmpty(format.LanguageTag)
 				|| format.Outline
@@ -463,7 +463,11 @@ namespace Microsoft.UI.Text
 		/// Builds a tri-state character format describing the formatting over [start, end): each tracked
 		/// property is the common value where the characters agree, otherwise "undefined".
 		/// </summary>
-		internal UnoTextCharacterFormat GetFormatOverRange(int start, int end, global::Microsoft.UI.Text.RangeGravity gravity = global::Microsoft.UI.Text.RangeGravity.UIBehavior)
+		internal UnoTextCharacterFormat GetFormatOverRange(
+			int start,
+			int end,
+			global::Microsoft.UI.Text.RangeGravity gravity = global::Microsoft.UI.Text.RangeGravity.UIBehavior,
+			bool resolveForeground = false)
 		{
 			SyncRunsToLength(_textBuffer.Length);
 			var length = _textBuffer.Length;
@@ -475,13 +479,13 @@ namespace Microsoft.UI.Text
 			// A collapsed caret carrying a pending insertion-point format reports that pending format.
 			if (start == end && _pendingCaretFormat is { } pendingRead && _pendingCaretPosition == start)
 			{
-				format.LoadFrom(pendingRead);
+				format.LoadFrom(pendingRead, _owner, resolveForeground);
 				return format;
 			}
 
 			if (length == 0)
 			{
-				format.LoadFrom(DefaultFormatState());
+				format.LoadFrom(DefaultFormatState(), _owner, resolveForeground);
 				return format;
 			}
 
@@ -491,12 +495,22 @@ namespace Microsoft.UI.Text
 				var preferForward = gravity is global::Microsoft.UI.Text.RangeGravity.Forward or global::Microsoft.UI.Text.RangeGravity.Inward;
 				format.LoadFrom(preferForward && start < length
 					? GetFormatAt(start)
-					: (start > 0 ? GetFormatAt(start - 1) : GetFormatAt(0)));
+					: (start > 0 ? GetFormatAt(start - 1) : GetFormatAt(0)), _owner, resolveForeground);
 				return format;
 			}
 
 			var firstRunIndex = FindRunIndex(start);
 			var first = _runs[firstRunIndex].Format;
+			var inheritedWeight = _owner.FontWeight.Weight;
+			var inheritedStyle = _owner.FontStyle;
+			var inheritedStretch = _owner.FontStretch;
+			var inheritedForeground = resolveForeground
+				? (_owner.Foreground as global::Microsoft.UI.Xaml.Media.SolidColorBrush)?.Color
+				: null;
+			var firstWeight = first.GetEffectiveWeight(inheritedWeight);
+			var firstItalic = first.GetEffectiveFontStyle(inheritedStyle) != global::Windows.UI.Text.FontStyle.Normal;
+			var firstStretch = first.GetEffectiveFontStretch(inheritedStretch);
+			var firstForeground = first.GetEffectiveForeground(inheritedForeground);
 			bool allCapsUniform = true, backgroundUniform = true, boldUniform = true,
 				fontStretchUniform = true, hiddenUniform = true, italicUniform = true,
 				kerningUniform = true, languageTagUniform = true, outlineUniform = true,
@@ -510,10 +524,10 @@ namespace Microsoft.UI.Text
 				var s = cursor.Current.Format;
 				allCapsUniform &= s.AllCaps == first.AllCaps;
 				backgroundUniform &= Nullable.Equals(s.Background, first.Background);
-				boldUniform &= s.Bold == first.Bold;
-				fontStretchUniform &= s.FontStretch == first.FontStretch;
+				boldUniform &= (s.GetEffectiveWeight(inheritedWeight) >= 600) == (firstWeight >= 600);
+				fontStretchUniform &= s.GetEffectiveFontStretch(inheritedStretch) == firstStretch;
 				hiddenUniform &= s.Hidden == first.Hidden;
-				italicUniform &= s.Italic == first.Italic;
+				italicUniform &= (s.GetEffectiveFontStyle(inheritedStyle) != global::Windows.UI.Text.FontStyle.Normal) == firstItalic;
 				kerningUniform &= s.Kerning.Equals(first.Kerning);
 				languageTagUniform &= string.Equals(s.LanguageTag, first.LanguageTag, StringComparison.Ordinal);
 				outlineUniform &= s.Outline == first.Outline;
@@ -526,10 +540,10 @@ namespace Microsoft.UI.Text
 				superscriptUniform &= s.Superscript == first.Superscript;
 				textScriptUniform &= s.TextScript == first.TextScript;
 				underlineUniform &= s.Underline == first.Underline;
-				foregroundUniform &= Nullable.Equals(s.Foreground, first.Foreground);
+				foregroundUniform &= Nullable.Equals(s.GetEffectiveForeground(inheritedForeground), firstForeground);
 				sizeUniform &= s.Size.Equals(first.Size);
 				nameUniform &= string.Equals(s.Name, first.Name, StringComparison.Ordinal);
-				weightUniform &= s.Weight == first.Weight;
+				weightUniform &= s.GetEffectiveWeight(inheritedWeight) == firstWeight;
 				linkUniform &= string.Equals(s.Link, first.Link, StringComparison.Ordinal);
 				cursor.MoveNext();
 			}
@@ -545,15 +559,15 @@ namespace Microsoft.UI.Text
 				}
 			}
 
-			format.BoldEffect = boldUniform ? Effect(first.Bold) : global::Microsoft.UI.Text.FormatEffect.Undefined;
+			format.BoldEffect = boldUniform ? Effect(firstWeight >= 600) : global::Microsoft.UI.Text.FormatEffect.Undefined;
 			if (fontStretchUniform)
 			{
-				format.FontStretchValue = first.FontStretch;
+				format.FontStretchValue = firstStretch;
 				format.FontStretchDefined = true;
 			}
 
 			format.HiddenEffect = hiddenUniform ? Effect(first.Hidden) : global::Microsoft.UI.Text.FormatEffect.Undefined;
-			format.ItalicEffect = italicUniform ? Effect(first.Italic) : global::Microsoft.UI.Text.FormatEffect.Undefined;
+			format.ItalicEffect = italicUniform ? Effect(firstItalic) : global::Microsoft.UI.Text.FormatEffect.Undefined;
 			if (kerningUniform)
 			{
 				format.KerningValue = first.Kerning;
@@ -589,8 +603,8 @@ namespace Microsoft.UI.Text
 			if (foregroundUniform)
 			{
 				format.ForegroundDefined = true;
-				format.ForegroundAutomatic = first.Foreground is null;
-				if (first.Foreground is { } fg)
+				format.ForegroundAutomatic = firstForeground is null;
+				if (firstForeground is { } fg)
 				{
 					format.ForegroundValue = fg;
 				}
@@ -610,7 +624,7 @@ namespace Microsoft.UI.Text
 
 			if (weightUniform)
 			{
-				format.WeightValue = first.Weight;
+				format.WeightValue = firstWeight;
 				format.WeightDefined = true;
 			}
 
@@ -849,7 +863,7 @@ namespace Microsoft.UI.Text
 			};
 
 		/// <summary>Writes the defined properties of <paramref name="format"/> into <paramref name="state"/>.</summary>
-		private static void ApplyCharacterFormatToState(CharacterFormatState state, UnoTextCharacterFormat format)
+		private void ApplyCharacterFormatToState(CharacterFormatState state, UnoTextCharacterFormat format)
 		{
 			if (format.AllCapsEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
@@ -863,7 +877,7 @@ namespace Microsoft.UI.Text
 
 			if (format.BoldEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
-				state.Bold = ResolveEffect(format.BoldEffect, state.Bold);
+				state.Bold = ResolveEffect(format.BoldEffect, state.GetEffectiveWeight(_owner.FontWeight.Weight) >= 600);
 				state.WeightExplicit = true;
 				if (!format.WeightDefined)
 				{
@@ -881,6 +895,7 @@ namespace Microsoft.UI.Text
 			if (format.FontStretchDefined)
 			{
 				state.FontStretch = format.FontStretchValue;
+				state.FontStretchExplicit = true;
 			}
 
 			if (format.HiddenEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
@@ -890,7 +905,8 @@ namespace Microsoft.UI.Text
 
 			if (format.ItalicEffect != global::Microsoft.UI.Text.FormatEffect.Undefined)
 			{
-				state.Italic = ResolveEffect(format.ItalicEffect, state.Italic);
+				state.Italic = ResolveEffect(format.ItalicEffect, state.GetEffectiveFontStyle(_owner.FontStyle) != global::Windows.UI.Text.FontStyle.Normal);
+				state.ItalicExplicit = true;
 			}
 
 			if (format.KerningDefined)
@@ -973,7 +989,7 @@ namespace Microsoft.UI.Text
 		public global::Microsoft.UI.Text.ITextCharacterFormat GetDefaultCharacterFormat()
 		{
 			var format = new UnoTextCharacterFormat();
-			format.LoadFrom(DefaultFormatState());
+			format.LoadFrom(DefaultFormatState(), _owner);
 			format.BindApply(ApplyDefaultCharacterFormat);
 			return format;
 		}

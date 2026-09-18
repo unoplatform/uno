@@ -502,7 +502,7 @@ namespace Microsoft.UI.Text
 		}
 
 		/// <summary>Populates the tracked subset from a single resolved run state (a degenerate range).</summary>
-		internal void LoadFrom(CharacterFormatState state)
+		internal void LoadFrom(CharacterFormatState state, global::Microsoft.UI.Xaml.Controls.RichEditBox owner, bool resolveForeground = false)
 		{
 			AllCapsEffect = Effect(state.AllCaps);
 			BackgroundDefined = true;
@@ -513,13 +513,13 @@ namespace Microsoft.UI.Text
 				BackgroundDefined = true;
 			}
 
-			BoldEffect = Effect(state.Bold);
-			WeightValue = state.Weight;
+			WeightValue = state.GetEffectiveWeight(owner.FontWeight.Weight);
+			BoldEffect = Effect(WeightValue >= 600);
 			WeightDefined = true;
-			FontStretchValue = state.FontStretch;
+			FontStretchValue = state.GetEffectiveFontStretch(owner.FontStretch);
 			FontStretchDefined = true;
 			HiddenEffect = Effect(state.Hidden);
-			ItalicEffect = Effect(state.Italic);
+			ItalicEffect = Effect(state.GetEffectiveFontStyle(owner.FontStyle) != global::Windows.UI.Text.FontStyle.Normal);
 			KerningValue = state.Kerning;
 			KerningDefined = true;
 			LanguageTagValue = state.LanguageTag;
@@ -536,9 +536,12 @@ namespace Microsoft.UI.Text
 			SuperscriptEffect = Effect(state.Superscript);
 			TextScriptValue = state.TextScript;
 			UnderlineValue = state.Underline;
+			var foreground = resolveForeground
+				? state.GetEffectiveForeground((owner.Foreground as global::Microsoft.UI.Xaml.Media.SolidColorBrush)?.Color)
+				: state.Foreground;
 			ForegroundDefined = true;
-			ForegroundAutomatic = state.Foreground is null;
-			if (state.Foreground is { } fg)
+			ForegroundAutomatic = foreground is null;
+			if (foreground is { } fg)
 			{
 				ForegroundValue = fg;
 				ForegroundDefined = true;

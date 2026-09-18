@@ -164,18 +164,34 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void OnDocumentTextChanged(bool isContentChanging)
 		{
-			// If the text changed by something other than the active IME composition, cancel it first
-			// (guarded so composition-internal edits don't self-cancel).
-			CancelCompositionOnExternalChange();
+			var notificationCompleted = false;
+			try
+			{
+				// If the text changed by something other than the active IME composition, cancel it first
+				// (guarded so composition-internal edits don't self-cancel).
+				CancelCompositionOnExternalChange();
+				OnContentChanged(isContentChanging);
+				notificationCompleted = true;
+			}
+			finally
+			{
+				if (!notificationCompleted)
+				{
+					ShowPlaceholderTextHandler(IsEmpty());
+				}
+				RenderDocument();
+				(FrameworkElementAutomationPeer.FromElement(this) as RichEditBoxAutomationPeer)?.OnDocumentAccessibilityChanged();
 
-			OnContentChanged(isContentChanging);
-
-			RenderDocument();
-			(FrameworkElementAutomationPeer.FromElement(this) as RichEditBoxAutomationPeer)?.OnDocumentAccessibilityChanged();
-
-			OnDocumentTextChangedInteractive();
-			DispatchUpdateScrolling();
-			ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
+				try
+				{
+					OnDocumentTextChangedInteractive();
+				}
+				finally
+				{
+					DispatchUpdateScrolling();
+					ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
+				}
+			}
 		}
 
 		internal void OnDocumentMathModeChanged()

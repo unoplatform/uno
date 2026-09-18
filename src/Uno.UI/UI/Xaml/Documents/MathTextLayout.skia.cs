@@ -118,13 +118,19 @@ internal sealed class MathParsedText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => false;
 
+	public float FirstLineBaseline => (float)_baseline;
+
 	public void Draw(
 		UIElement owner,
 		in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
 		IEnumerable<TextHighlighter> highlighters,
-		(int startIndex, int length)? compositionRange)
+		(int startIndex, int length)? compositionRange,
+		int firstLine = 0,
+		int lineCount = int.MaxValue)
 	{
+		global::System.Diagnostics.Debug.Assert(firstLine == 0 && lineCount == int.MaxValue, "RichEditBox does not page its content.");
+
 		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
 		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0 ? 1f : session.Opacity;
 		if (useHighContrastAdjustment)
@@ -959,6 +965,7 @@ internal sealed class MathParsedText : IParsedText
 				1,
 				0,
 				LineStackingStrategy.MaxHeight,
+				TextLineBounds.Full,
 				FlowDirection.LeftToRight,
 				TextAlignment.Left,
 				TextWrapping.NoWrap,

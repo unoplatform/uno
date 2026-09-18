@@ -1,9 +1,7 @@
 #nullable enable
 
-using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
-using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -82,26 +80,20 @@ namespace Microsoft.UI.Xaml.Controls
 				return null;
 			}
 
+			string finalText;
 			try
 			{
 				_isInvokingTextChanging = true;
-				try
-				{
-					OnTextChangingHandler(isContentChanging);
-				}
-				catch (Exception error)
-				{
-					typeof(RichEditBox).LogError()?.Error("A RichEditBox TextChanging handler failed.", error);
-				}
+				OnTextChangingHandler(isContentChanging);
 			}
 			finally
 			{
 				_isInvokingTextChanging = false;
+				finalText = GetPlainTextContent();
+				_lastObservedText = finalText;
+				_lastObservedTextVersion = Document.TextVersion;
 			}
 
-			var finalText = GetPlainTextContent();
-			_lastObservedText = finalText;
-			_lastObservedTextVersion = Document.TextVersion;
 			if (isContentChanging && oldText == finalText)
 			{
 				return null;
@@ -127,18 +119,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
 
-			_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-			{
-				try
-				{
-					TextChanged?.Invoke(this, new RoutedEventArgs());
-				}
-				catch (Exception error)
-				{
-					typeof(RichEditBox).LogError()?.Error("A RichEditBox TextChanged handler failed.", error);
-				}
-			});
+			_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, OnTextChangedHandler);
 		}
+
+		internal void OnTextChangedHandler() => TextChanged?.Invoke(this, new RoutedEventArgs());
 
 		private void RaiseSelectionChangedIfNeeded()
 		{
@@ -154,17 +138,15 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				SelectionChanged?.Invoke(this, new RoutedEventArgs());
 			}
-			catch (Exception error)
+			finally
 			{
-				typeof(RichEditBox).LogError()?.Error("A RichEditBox SelectionChanged handler failed.", error);
+				if (GetOrCreateAutomationPeer() is RichEditBoxAutomationPeer peer
+					&& AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextSelectionChanged))
+				{
+					peer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
+				}
+				Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
 			}
-
-			if (GetOrCreateAutomationPeer() is RichEditBoxAutomationPeer peer
-				&& AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextSelectionChanged))
-			{
-				peer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
-			}
-			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
 		}
 
 		private readonly record struct TextChangeNotification(long Version);

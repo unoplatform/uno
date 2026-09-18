@@ -9,7 +9,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
-using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -46,6 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Tracks the open composition undo group so the whole composition is one undoable action.
 		private bool _compositionUndoGroupOpen;
+		private int _compositionEventReentrancyCount;
 		private InputScope? _defaultImeInputScope;
 
 		internal bool ShouldSwallowKeyDuringComposition => _isComposing && !_compositionAppliedByPlatform;
@@ -173,9 +173,7 @@ namespace Microsoft.UI.Xaml.Controls
 					previousConversionStart,
 					previousConversionEnd);
 				InvokeCompositionEvent(
-					() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)),
-					nameof(TextCompositionEnded));
-				InvalidateImeRender();
+					() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)));
 			}
 			else
 			{
@@ -203,9 +201,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// Open one undo group for the whole composition so a single Undo removes the composed word.
 			OpenCompositionUndoGroup();
 
-			InvokeCompositionEvent(
-				() => TextCompositionStarted?.Invoke(this, new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionLength)),
-				nameof(TextCompositionStarted));
+			var args = new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionLength);
+			InvokeCompositionEvent(() => TextCompositionStarted?.Invoke(this, args));
 		}
 
 		void IImeSessionHost.OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied)
@@ -243,10 +240,8 @@ namespace Microsoft.UI.Xaml.Controls
 				hadConversionTarget,
 				previousConversionStart,
 				previousConversionEnd);
-			InvokeCompositionEvent(
-				() => TextCompositionChanged?.Invoke(this, new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength)),
-				nameof(TextCompositionChanged));
-			InvalidateImeRender();
+			var args = new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength);
+			InvokeCompositionEvent(() => TextCompositionChanged?.Invoke(this, args));
 		}
 
 		void IImeSessionHost.OnImeCompositionPartiallyCommitted(
@@ -297,10 +292,8 @@ namespace Microsoft.UI.Xaml.Controls
 				hadConversionTarget,
 				previousConversionStart,
 				previousConversionEnd);
-			InvokeCompositionEvent(
-				() => TextCompositionChanged?.Invoke(this, new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength)),
-				nameof(TextCompositionChanged));
-			InvalidateImeRender();
+			var args = new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength);
+			InvokeCompositionEvent(() => TextCompositionChanged?.Invoke(this, args));
 		}
 
 		void IImeSessionHost.OnImeCompositionCompleted(string committedText, bool textAlreadyApplied)
@@ -315,30 +308,38 @@ namespace Microsoft.UI.Xaml.Controls
 				out var previousConversionStart,
 				out var previousConversionEnd);
 			var committedLength = committedText.Length;
-			if (!textAlreadyApplied)
-			{
-				committedLength = ReplaceCompositionText(committedText);
-			}
-
 			var startIndex = _compositionStartIndex;
-			_isComposing = false;
-			_compositionAppliedByPlatform = false;
-			_platformTextApplyInProgress = false;
-			_compositionLength = 0;
-			_compositionStartIndex = 0;
-			_compositionResolvedLength = 0;
-			_compositionHasCommittedText = false;
-
-			CloseCompositionUndoGroup();
+			var completed = false;
+			try
+			{
+				if (!textAlreadyApplied)
+				{
+					committedLength = ReplaceCompositionText(committedText);
+				}
+				completed = true;
+			}
+			finally
+			{
+				_isComposing = false;
+				_compositionAppliedByPlatform = false;
+				_platformTextApplyInProgress = false;
+				_compositionLength = 0;
+				_compositionStartIndex = 0;
+				_compositionResolvedLength = 0;
+				_compositionHasCommittedText = false;
+				CloseCompositionUndoGroup();
+				if (!completed)
+				{
+					InvalidateImeRender();
+				}
+			}
 			RaiseTextEditCompositionEvent(AutomationTextEditChangeType.CompositionFinalized, committedText);
 			RaiseConversionTargetChangedIfNeeded(
 				hadConversionTarget,
 				previousConversionStart,
 				previousConversionEnd);
 			InvokeCompositionEvent(
-				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, committedLength)),
-				nameof(TextCompositionEnded));
-			InvalidateImeRender();
+				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, committedLength)));
 		}
 
 		void IImeSessionHost.OnImeCompositionCanceled(bool textAlreadyApplied)
@@ -355,27 +356,37 @@ namespace Microsoft.UI.Xaml.Controls
 				out var previousConversionStart,
 				out var previousConversionEnd);
 			var startIndex = _compositionStartIndex;
-			if (!textAlreadyApplied)
+			var canceled = false;
+			try
 			{
-				ReplaceCompositionText(string.Empty);
+				if (!textAlreadyApplied)
+				{
+					ReplaceCompositionText(string.Empty);
+				}
+				canceled = true;
 			}
-
-			_isComposing = false;
-			_compositionAppliedByPlatform = false;
-			_platformTextApplyInProgress = false;
-			_compositionLength = 0;
-			_compositionStartIndex = 0;
-			_compositionResolvedLength = 0;
-
-			if (_compositionHasCommittedText)
+			finally
 			{
-				CloseCompositionUndoGroup();
+				_isComposing = false;
+				_compositionAppliedByPlatform = false;
+				_platformTextApplyInProgress = false;
+				_compositionLength = 0;
+				_compositionStartIndex = 0;
+				_compositionResolvedLength = 0;
+				if (_compositionHasCommittedText)
+				{
+					CloseCompositionUndoGroup();
+				}
+				else
+				{
+					DiscardCompositionUndoGroup();
+				}
+				_compositionHasCommittedText = false;
+				if (!canceled)
+				{
+					InvalidateImeRender();
+				}
 			}
-			else
-			{
-				DiscardCompositionUndoGroup();
-			}
-			_compositionHasCommittedText = false;
 
 			RaiseTextEditCompositionEvent(AutomationTextEditChangeType.CompositionFinalized, string.Empty);
 			RaiseConversionTargetChangedIfNeeded(
@@ -383,9 +394,7 @@ namespace Microsoft.UI.Xaml.Controls
 				previousConversionStart,
 				previousConversionEnd);
 			InvokeCompositionEvent(
-				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, 0)),
-				nameof(TextCompositionEnded));
-			InvalidateImeRender();
+				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, 0)));
 		}
 
 		void IImeSessionHost.OnImeCompositionEnded()
@@ -421,9 +430,7 @@ namespace Microsoft.UI.Xaml.Controls
 				previousConversionStart,
 				previousConversionEnd);
 			InvokeCompositionEvent(
-				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)),
-				nameof(TextCompositionEnded));
-			InvalidateImeRender();
+				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)));
 		}
 
 		void IImeSessionHost.OnCandidateWindowBoundsChanged(Rect bounds)
@@ -485,23 +492,45 @@ namespace Microsoft.UI.Xaml.Controls
 				? Math.Min(cursorPosition, newText.Length)
 				: newText.Length;
 
+			var textVersion = Document.TextVersion;
+			var insertedLength = 0;
+			var replaced = false;
+			var selectionSynchronized = false;
 			_suppressCompositionExternalCancel = true;
 			try
 			{
-				var insertedLength = 0;
 				if (Document.IsRangeProtected(startIndex, endIndex))
 				{
 					return _compositionLength;
 				}
 
 				RunWithDeferredSelectionSync(() => insertedLength = Document.ReplaceRange(startIndex, endIndex, newText));
-				caretOffset = Math.Min(caretOffset, insertedLength);
-				SetInteractiveSelectionFromComposition(startIndex + caretOffset);
+				replaced = true;
 				return insertedLength;
 			}
 			finally
 			{
-				_suppressCompositionExternalCancel = false;
+				try
+				{
+					if (replaced || Document.TextVersion != textVersion)
+					{
+						var currentLength = GetPlainTextLength();
+						_compositionStartIndex = Math.Min(startIndex, currentLength);
+						_compositionLength = replaced
+							? insertedLength
+							: Math.Clamp(currentLength - (text.Length - (endIndex - startIndex)), 0, currentLength - _compositionStartIndex);
+						SetInteractiveSelectionFromComposition(_compositionStartIndex + Math.Min(caretOffset, _compositionLength));
+						selectionSynchronized = true;
+					}
+				}
+				finally
+				{
+					_suppressCompositionExternalCancel = false;
+					if ((!replaced || !selectionSynchronized) && Document.TextVersion != textVersion)
+					{
+						InvalidateImeRender();
+					}
+				}
 			}
 		}
 
@@ -577,20 +606,33 @@ namespace Microsoft.UI.Xaml.Controls
 				previousConversionStart,
 				previousConversionEnd);
 			InvokeCompositionEvent(
-				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)),
-				nameof(TextCompositionEnded));
-			InvalidateImeRender();
+				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)));
 		}
 
-		private static void InvokeCompositionEvent(Action invoke, string eventName)
+		private void InvokeCompositionEvent(Action invoke)
 		{
 			try
 			{
-				invoke();
+				// TextBoxBase::SendTextCompositionEvent defers notifications raised by another composition handler.
+				if (_compositionEventReentrancyCount != 0)
+				{
+					_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, () => InvokeCompositionEvent(invoke));
+					return;
+				}
+
+				_compositionEventReentrancyCount++;
+				try
+				{
+					invoke();
+				}
+				finally
+				{
+					_compositionEventReentrancyCount--;
+				}
 			}
-			catch (Exception error)
+			finally
 			{
-				typeof(RichEditBox).LogError()?.Error($"A RichEditBox {eventName} handler failed.", error);
+				InvalidateImeRender();
 			}
 		}
 

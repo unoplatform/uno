@@ -1158,17 +1158,17 @@ namespace Microsoft.UI.Xaml.Controls
 					inlineImage.VerticalAlignment);
 			}
 
-			if (format.WeightExplicit || format.Weight != 400)
+			if (format.HasFontWeight)
 			{
 				run.FontWeight = new global::Windows.UI.Text.FontWeight((ushort)Math.Clamp(format.Weight, 0, 999));
 			}
 
-			if (format.Italic)
+			if (format.HasFontStyle)
 			{
-				run.FontStyle = global::Windows.UI.Text.FontStyle.Italic;
+				run.FontStyle = format.GetEffectiveFontStyle(global::Windows.UI.Text.FontStyle.Normal);
 			}
 
-			if (format.FontStretch != global::Windows.UI.Text.FontStretch.Normal)
+			if (format.HasFontStretch)
 			{
 				run.FontStretch = format.FontStretch;
 			}

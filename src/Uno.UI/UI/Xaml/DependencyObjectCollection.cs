@@ -220,6 +220,7 @@ namespace Microsoft.UI.Xaml
 				{
 					OnRemoved(oldItem);
 					_list[index + i] = newItem;
+					OnItemsMutated();
 					OnAdded(newItem);
 				}
 			}
@@ -231,6 +232,7 @@ namespace Microsoft.UI.Xaml
 					OnRemoved(_list[index + i]);
 				}
 				_list.RemoveRange(index + commonCount, count - commonCount);
+				OnItemsMutated();
 			}
 			else if (replacement.Count > commonCount)
 			{
@@ -241,6 +243,7 @@ namespace Microsoft.UI.Xaml
 					inserted[i] = item;
 				}
 				_list.InsertRange(index + commonCount, inserted);
+				OnItemsMutated();
 				for (var i = 0; i < inserted.Length; i++)
 				{
 					OnAdded(inserted[i]);
