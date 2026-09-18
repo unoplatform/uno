@@ -104,7 +104,7 @@ public partial class PipsPager
 			nameof(NumberOfPages),
 			typeof(int),
 			typeof(PipsPager),
-			new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne, OnPropertyChanged));
+			new FrameworkPropertyMetadata(IntBoxes.NegativeOne, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the orientation of the pips and navigation buttons in the PipsPager.
@@ -180,7 +180,7 @@ public partial class PipsPager
 			nameof(SelectedPageIndex),
 			typeof(int),
 			typeof(PipsPager),
-			new FrameworkPropertyMetadata(IntegerBoxes.Zero, OnPropertyChanged));
+			new FrameworkPropertyMetadata(IntBoxes.Zero, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the style to apply to the selected pip in the PipsPager.

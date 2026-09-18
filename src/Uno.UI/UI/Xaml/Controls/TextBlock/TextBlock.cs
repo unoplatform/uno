@@ -503,7 +503,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: IntegerBoxes.Zero,
+					defaultValue: IntBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnMaxLinesChanged()
 				)
@@ -832,7 +832,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: IntegerBoxes.Zero,
+					defaultValue: IntBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnCharacterSpacingChanged()
 				)

@@ -313,7 +313,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(PasswordBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: IntegerBoxes.Zero,
+					defaultValue: IntBoxes.Zero,
 					propertyChangedCallback: (s, e) => ((PasswordBox)s)?._core.OnMaxLengthChanged((int)e.NewValue)
 				)
 			);

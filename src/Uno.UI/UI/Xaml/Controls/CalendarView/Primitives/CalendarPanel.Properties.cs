@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		internal static readonly DependencyProperty ColsProperty = DependencyProperty.Register(
-			"Cols", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(IntegerBoxes.Zero));
+			"Cols", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 		internal int Cols
 		{
@@ -108,7 +108,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		internal static readonly DependencyProperty RowsProperty = DependencyProperty.Register(
-			"Rows", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(IntegerBoxes.Zero));
+			"Rows", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 		internal int Rows
 		{
@@ -129,7 +129,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 
 		internal static readonly DependencyProperty StartIndexProperty = DependencyProperty.Register(
-			"StartIndex", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(IntegerBoxes.Zero));
+			"StartIndex", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 		internal int StartIndex
 		{

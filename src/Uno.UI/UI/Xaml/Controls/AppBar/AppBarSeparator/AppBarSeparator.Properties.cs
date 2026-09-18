@@ -23,7 +23,7 @@ partial class AppBarSeparator
 			nameof(DynamicOverflowOrder),
 			typeof(int),
 			typeof(AppBarSeparator),
-			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero));
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntBoxes.Zero));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the separator is shown with reduced padding.
