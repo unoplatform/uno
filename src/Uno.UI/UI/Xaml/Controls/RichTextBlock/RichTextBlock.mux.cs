@@ -23,6 +23,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Dispatching;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core.Scaling;
 using Uno.UI.Xaml.Media;
 
@@ -103,7 +104,35 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 			_forceFocusedForContextFlyout = false;
-			TextSelectionManager.Destroy(ref _pSelectionManager);
+		}
+
+		// CRichTextBlock::EnterImpl
+		internal override void EnterImpl(EnterParams @params, int depth)
+		{
+			base.EnterImpl(@params, depth);
+
+			if (@params.IsLive)
+			{
+				// Upon entering the live tree, a parent or ancestor may have changed and inherited properties
+				// should be considered dirty.
+				InvalidateContent();
+			}
+		}
+
+		// CRichTextBlock::LeaveImpl
+		internal override void LeaveImpl(LeaveParams @params)
+		{
+			base.LeaveImpl(@params);
+
+			if (@params.IsLive)
+			{
+				// Deleting TextSelectionManager here so that Popup can be removed while tree is still alive.
+				TextSelectionManager.Destroy(ref _pSelectionManager);
+
+				// Upon leaving the live tree, a parent or ancestor may have changed and inherited properties
+				// should be considered dirty.
+				InvalidateContent();
+			}
 		}
 
 		// CRichTextBlock::OnChildDesiredSizeChanged
@@ -203,15 +232,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Since IsTextSelectionEnabled is true by default, the manager is created once here.
 			if (_pSelectionManager is null && (IsTextSelectionEnabled || ((ITextSelectionManagerOwner)this).IsHighContrast))
 			{
-				_pSelectionManager = TextSelectionManager.Create(this, Blocks.GetTextContainer(), this);
-
-				// ResolveNextLink runs before the first measure, so a chain linked up front reported its
-				// linked view to a manager that did not exist yet. Attach it now, otherwise the manager
-				// never builds a selection and SelectAll / the first click hit a null one.
-				if (_pLinkedView is not null)
-				{
-					_pSelectionManager.TextViewChanged(null, _pLinkedView);
-				}
+				CreateTextSelectionManager();
 			}
 
 			// The page node and the view are each created once, exactly as EnsureBlockLayout does.
@@ -230,6 +251,22 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					_pSelectionManager.TextViewChanged(null, _pTextView);
 				}
+			}
+		}
+
+		// CRichTextBlock::CreateTextSelectionManager
+		private void CreateTextSelectionManager()
+		{
+			_pSelectionManager = TextSelectionManager.Create(this, Blocks.GetTextContainer(), this);
+
+			// Set the selection manager with the linked view if one exists.
+			if (_pLinkedView is not null)
+			{
+				_pSelectionManager.TextViewChanged(null, _pLinkedView);
+			}
+			else if (_pTextView is not null) // set to local view if exists
+			{
+				_pSelectionManager.TextViewChanged(null, _pTextView);
 			}
 		}
 
@@ -455,6 +492,12 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsTextSelectionEnabled)
 			{
 				EnsureContextMenuGesturesEnabled();
+
+				// Selection went from disabled to enabled. Create selection manager if it doesn't exist.
+				if (_pSelectionManager is null)
+				{
+					CreateTextSelectionManager();
+				}
 			}
 			else if (_pSelectionManager is not null && !((ITextSelectionManagerOwner)this).IsHighContrast)
 			{
