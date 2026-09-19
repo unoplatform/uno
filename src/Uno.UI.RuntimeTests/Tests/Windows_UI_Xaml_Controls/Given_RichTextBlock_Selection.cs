@@ -386,6 +386,95 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Reloaded_SelectAll_Selects_Content(bool remeasure)
+		{
+			// Leaving the tree destroys the selection manager; the next layout must recreate it bound to the view.
+			var SUT = CreateRichTextBlock("Hello world");
+			var host = new StackPanel();
+			host.Children.Add(SUT);
+
+			try
+			{
+				WindowHelper.WindowContent = host;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+
+				host.Children.Remove(SUT);
+				await WindowHelper.WaitForIdle();
+				host.Children.Add(SUT);
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+
+				if (remeasure)
+				{
+					SUT.Width = 250;
+					await WindowHelper.WaitForIdle();
+				}
+
+				SUT.SelectAll();
+				await WindowHelper.WaitForIdle();
+
+				AssertSelectionStartsWith(SUT, "Hello world");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Selection_Reenabled_SelectAll_Selects_Content(bool remeasure)
+		{
+			// Enabling selection creates the manager right away, bound to the existing view.
+			var SUT = CreateRichTextBlock("Hello world");
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+
+				SUT.IsTextSelectionEnabled = false;
+				await WindowHelper.WaitForIdle();
+				SUT.IsTextSelectionEnabled = true;
+				await WindowHelper.WaitForIdle();
+
+				if (remeasure)
+				{
+					SUT.Width = 250;
+					await WindowHelper.WaitForIdle();
+				}
+
+				SUT.SelectAll();
+				await WindowHelper.WaitForIdle();
+
+				AssertSelectionStartsWith(SUT, "Hello world");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static void AssertSelectionStartsWith(RichTextBlock SUT, string expectedText)
+		{
+			var start = SUT.SelectionStart;
+			var end = SUT.SelectionEnd;
+			if (start is null || end is null)
+			{
+				Assert.Fail($"SelectAll should produce non-null selection endpoints (start is null: {start is null}, end is null: {end is null})");
+				return;
+			}
+
+			Assert.IsTrue(end.Offset > start.Offset, "SelectAll should produce a non-empty selection");
+			StringAssert.StartsWith(SUT.SelectedText, expectedText);
+		}
+
+		[TestMethod]
 		public async Task When_GetPositionFromPoint_After_ContentStart_Uses_Live_Layout()
 		{
 			// Reading ContentStart/ContentEnd must not rebuild a measure-dirty tree, otherwise every
