@@ -24,7 +24,7 @@ To run the SamplesApp locally:
 1. Ensure [your environment is configured](xref:Uno.GetStarted.vs2022) for the platform you want to run on.
 2. Open Uno.UI with the [correct target override and solution filter](building-uno-ui.md) for the platform you want to run on.
 3. Select `SamplesApp` as the startup app. This is a single multi-targeted head that covers every platform.
-4. Pick the platform from the target framework dropdown next to the run button — `net10.0-desktop`, `net10.0-browserwasm`, `net10.0-android`, `net10.0-ios`, `net10.0-tvos`, or the `windows10.0` (WinUI) target. Select the target explicitly the first time: `net10.0-browserwasm` comes first in the list, so it is what a fresh checkout defaults to.
+4. Pick the platform from the target framework dropdown next to the run button — `net11.0-desktop`, `net11.0-browserwasm`, `net11.0-android`, `net11.0-ios`, `net11.0-tvos`, or the `windows10.0` (WinUI) target. The version prefix follows the `NetCurrent` property in `Directory.Build.props`, so it changes when the repository moves to a newer .NET release. Select the target explicitly the first time: `net11.0-browserwasm` comes first in the list, so it is what a fresh checkout defaults to.
 5. If you're testing on a mobile platform, use a tablet if possible, as the app is optimized for a tablet layout.
 6. Run SamplesApp.
 
