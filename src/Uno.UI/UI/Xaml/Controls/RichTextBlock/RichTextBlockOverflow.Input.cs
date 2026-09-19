@@ -18,6 +18,7 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class RichTextBlockOverflow
 {
 	private Hyperlink? _hyperlinkOver;
+	private uint? _linkPressPointerId;
 
 	private Hyperlink? HyperlinkOver
 	{
@@ -63,6 +64,7 @@ partial class RichTextBlockOverflow
 		{
 			if (CapturePointer(e.Pointer))
 			{
+				_linkPressPointerId = e.Pointer.PointerId;
 				hyperlink.SetPointerPressed(e.Pointer);
 				e.Handled = true;
 				CompleteGesture();
@@ -76,9 +78,11 @@ partial class RichTextBlockOverflow
 
 	private void OnOverflowPointerReleased(object sender, PointerRoutedEventArgs e)
 	{
-		// WinUI raises no PointerCaptureLost for a link click or a selection drag.
-		if (IsCaptured(e.Pointer))
+		// WinUI takes no capture for a link press, so releasing the one taken here must raise no PointerCaptureLost.
+		// A selection drag's capture belongs to the selection manager, which releases it below.
+		if (_linkPressPointerId == e.Pointer.PointerId && IsCaptured(e.Pointer))
 		{
+			_linkPressPointerId = null;
 			var hyperlink = FindHyperlinkAt(e);
 			ReleasePointerCapture(e.Pointer.UniqueId, muteEvent: true);
 
@@ -107,6 +111,7 @@ partial class RichTextBlockOverflow
 
 	private void OnPointerCanceledForLinks(object sender, PointerRoutedEventArgs e)
 	{
+		_linkPressPointerId = null;
 		AbortHyperlinkPress(e);
 		HyperlinkOver = null;
 	}
