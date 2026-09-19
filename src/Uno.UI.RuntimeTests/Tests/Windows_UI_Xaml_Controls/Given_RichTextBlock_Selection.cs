@@ -460,6 +460,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_Selection_Follows_LineBreaks_SelectedText_Matches()
+		{
+			// SelectedText is the container text over the selection, where a LineBreak reads as CRLF.
+			var SUT = new RichTextBlock { Width = 300 };
+			var first = new Run { Text = "One" };
+			var second = new Run { Text = "Two" };
+			var third = new Run { Text = "Three" };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(first);
+			paragraph.Inlines.Add(new LineBreak());
+			paragraph.Inlines.Add(second);
+			paragraph.Inlines.Add(new LineBreak());
+			paragraph.Inlines.Add(third);
+			SUT.Blocks.Add(paragraph);
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+
+				SUT.Select(third.ContentStart, third.ContentEnd);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("Three", SUT.SelectedText);
+
+				SUT.Select(second.ContentStart, third.ContentEnd);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("Two\r\nThree", SUT.SelectedText);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 		private static void AssertSelectionStartsWith(RichTextBlock SUT, string expectedText)
 		{
 			var start = SUT.SelectionStart;
