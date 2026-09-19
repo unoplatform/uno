@@ -693,5 +693,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = null;
 			}
 		}
+
+		[TestMethod]
+		public async Task When_Selection_Drag_In_Overflow_Is_Released_CaptureLost_Is_Raised()
+		{
+			// Only the capture taken for a link press is released silently. The selection manager releases its drag
+			// capture itself, which raises PointerCaptureLost (PointerInputProcessor::ReleasePointerCapture).
+			var master = new RichTextBlock { Width = 200, MaxLines = 1, FontSize = 20 };
+			var first = new Paragraph();
+			first.Inlines.Add(new Run { Text = "First" });
+			master.Blocks.Add(first);
+
+			var second = new Paragraph();
+			second.Inlines.Add(new Run { Text = "Selectable overflow text" });
+			master.Blocks.Add(second);
+
+			var overflow = new RichTextBlockOverflow { Width = 200, Height = 120 };
+			master.OverflowContentTarget = overflow;
+
+			var captureLost = 0;
+			overflow.PointerCaptureLost += (_, _) => captureLost++;
+
+			var root = new StackPanel();
+			root.Children.Add(master);
+			root.Children.Add(overflow);
+
+			try
+			{
+				await UITestHelper.Load(root);
+				Assert.IsTrue(master.HasOverflowContent, "The second paragraph must land in the overflow");
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var mouse = injector.GetMouse();
+
+				var bounds = overflow.GetAbsoluteBounds();
+				mouse.MoveTo(new Point(bounds.X + 4, bounds.Y + 10));
+				await WindowHelper.WaitForIdle();
+				mouse.Press();
+				await WindowHelper.WaitForIdle();
+				mouse.MoveTo(new Point(bounds.X + 120, bounds.Y + 10));
+				await WindowHelper.WaitForIdle();
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(string.IsNullOrEmpty(master.SelectedText), "The drag should select text in the overflow");
+				Assert.AreEqual(1, captureLost, "Releasing a selection drag should raise PointerCaptureLost once");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }
