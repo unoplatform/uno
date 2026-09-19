@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Windows.UI.Input.Preview.Injection;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -67,6 +69,39 @@ public class Given_TabView
 
 		Assert.IsFalse(((TabViewItem)SUT.TabItems[0]).IsSelected);
 		Assert.IsTrue(((TabViewItem)SUT.TabItems[1]).IsSelected);
+	}
+
+	[TestMethod]
+	public async Task When_Arrow_Keys_On_Tabs_Then_Focus_Follows_Tab_Order()
+	{
+		var firstItem = new TabViewItem { Header = "Tab 1" };
+		var secondItem = new TabViewItem { Header = "Tab 2" };
+		var SUT = new TabView
+		{
+			TabItems = { firstItem, secondItem }
+		};
+
+		await UITestHelper.Load(SUT);
+
+		var firstCloseButton = (Button)firstItem.FindName("CloseButton");
+		Assert.IsNotNull(firstCloseButton);
+
+		firstItem.Focus(FocusState.Keyboard);
+		await WindowHelper.WaitForIdle();
+		Assert.AreSame(firstItem, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+
+		// Focus order is Tab 1 -> Tab 1 close button -> Tab 2 -> ...
+		await KeyboardHelper.Right();
+		await WindowHelper.WaitForIdle();
+		Assert.AreSame(firstCloseButton, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+
+		await KeyboardHelper.Right();
+		await WindowHelper.WaitForIdle();
+		Assert.AreSame(secondItem, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+
+		await KeyboardHelper.Left();
+		await WindowHelper.WaitForIdle();
+		Assert.AreSame(firstCloseButton, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 	}
 #endif
 
