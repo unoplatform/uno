@@ -586,14 +586,11 @@ namespace Microsoft.UI.Xaml.Controls
 			base.UpdateThemeBindings(updateReason);
 			UpdateLastUsedTheme();
 
-			foreach (var block in Blocks)
+			foreach (var paragraph in Blocks.OfType<Paragraph>())
 			{
-				if (block is Paragraph paragraph)
+				foreach (var inline in paragraph.Inlines)
 				{
-					foreach (var inline in paragraph.Inlines)
-					{
-						((DependencyObject)inline).UpdateResourceBindings(updateReason, resourceContextProvider: this);
-					}
+					((DependencyObject)inline).UpdateResourceBindings(updateReason, resourceContextProvider: this);
 				}
 			}
 		}
