@@ -214,7 +214,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 
 				var anchor = SUT.SelectionStart;
-				Assert.IsNotNull(anchor, "The first click must establish the selection anchor");
+				if (anchor is null)
+				{
+					Assert.Fail("The first click must establish the selection anchor");
+					return;
+				}
+
 				Assert.AreEqual(string.Empty, SUT.SelectedText, "The first click should place a collapsed caret");
 
 				// Gesture recognition uses injected timestamps; a wall-clock delay does not advance them.
