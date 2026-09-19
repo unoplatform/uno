@@ -1,19 +1,22 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference ProgressBar.h, tag winui3/release/1.7-stable
+// MUX Reference ProgressBar.h, tag winui3/release/2.5.1, commit ba3a8d59e
 
-using Windows.Foundation;
+#nullable enable
+
 using Microsoft.UI.Xaml.Shapes;
-using MUXC = Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class ProgressBar
+partial class ProgressBar
 {
-	private MUXC.Grid m_layoutRoot;
-	private Rectangle m_determinateProgressBarIndicator;
-	private Rectangle m_indeterminateProgressBarIndicator;
-	private Rectangle m_indeterminateProgressBarIndicator2;
+	// TODO Uno: WinUI declares m_layoutRootLoadedRevoker (Grid::Loaded_revoker) and
+	// m_progressBarIndicatorRevoker (Rectangle::Loaded_revoker) here, but never uses them.
+
+	private Grid? m_layoutRoot;
+	private Rectangle? m_determinateProgressBarIndicator;
+	private Rectangle? m_indeterminateProgressBarIndicator;
+	private Rectangle? m_indeterminateProgressBarIndicator2;
 
 	private const string s_LayoutRootName = "LayoutRoot";
 	private const string s_DeterminateProgressBarIndicatorName = "DeterminateProgressBarIndicator";
