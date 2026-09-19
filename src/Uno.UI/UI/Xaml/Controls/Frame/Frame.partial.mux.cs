@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference dxaml\xcp\dxaml\lib\Frame_Partial.cpp, tag winui3/release/1.5.5, commit fd8e26f1d
+// MUX Reference dxaml\xcp\dxaml\lib\Frame_Partial.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 
 using System;
 using System.Collections.Generic;
@@ -566,6 +566,8 @@ partial class Frame
 		{
 			RaiseNavigationFailed(strDescriptor, ex, out var isHandled);
 
+			// If NavigationFailedEventArgs.Handled was set to True, do not let the error propagate & raise an
+			// exception, or raise an unhandled exception below, allowing the app to continue its execution.
 			if (!isHandled)
 			{
 				RaiseUnhandledException(ex);
@@ -576,7 +578,10 @@ partial class Frame
 				Content = oldObject;
 			}
 
-			throw;
+			if (!isHandled)
+			{
+				throw;
+			}
 		}
 	}
 
