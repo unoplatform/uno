@@ -135,6 +135,20 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		OnChildRemoved(parent, child);
 	}
 
+	internal void RouteTextControlStateChanged(UIElement element)
+	{
+		if (_isDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		OnTextControlStateChanged(element);
+	}
+
+	protected virtual void OnTextControlStateChanged(UIElement element)
+	{
+	}
+
 	// Hooks ScrollViewer / ScrollPresenter scroll events. Without this, scrolling a
 	// container does not invalidate the cached bounding rectangles of its descendants
 	// in the native accessibility tree, leaving screen-reader highlight rectangles at
@@ -415,16 +429,41 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 			case AutomationEvents.TextEditTextChanged:
 			case AutomationEvents.TextPatternOnTextChanged:
-				if (TryGetPeerOwner(peer, out var textElement) &&
-					peer.GetPattern(PatternInterface.Value) is IValueProvider textValueProvider)
+				if (TryGetPeerOwner(peer, out var textElement))
 				{
-					UpdateTextValue(textElement.Visual.Handle, textValueProvider.Value);
+					UpdateTextValueFromProvider(peer, textElement);
 				}
 				break;
 
 			case AutomationEvents.StructureChanged:
 				OnNativeStructureChanged();
 				break;
+		}
+	}
+
+	public virtual void NotifyTextEditTextChangedEvent(
+		AutomationPeer peer,
+		AutomationTextEditChangeType changeType,
+		System.Collections.Generic.IReadOnlyList<string> changedData)
+	{
+		// Non-Win32 backends have no native TextEdit event, but their accessible text mirrors
+		// must still reflect the editor's content without requiring a lossy Value pattern.
+		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
+		if (!_isDisposed && IsAccessibilityEnabled && TryGetPeerOwner(peer, out var textElement))
+		{
+			UpdateTextValueFromProvider(peer, textElement);
+		}
+	}
+
+	private void UpdateTextValueFromProvider(AutomationPeer peer, UIElement element)
+	{
+		if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
+		{
+			UpdateTextValue(element.Visual.Handle, valueProvider.Value);
+		}
+		else if (peer.GetPattern(PatternInterface.Text) is ITextProvider textProvider)
+		{
+			UpdateTextValue(element.Visual.Handle, textProvider.DocumentRange.GetText(-1));
 		}
 	}
 
@@ -446,12 +485,6 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		{
 			AnnouncePolite(displayString);
 		}
-	}
-
-	public virtual void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
-	{
-		// TextEditTextChanged is a UIA-specific event (Win32 override raises UiaRaiseTextEditTextChangedEvent).
-		// Non-Win32 backends (macOS/WASM) have no direct NSAccessibility/ARIA equivalent, so the base is a no-op.
 	}
 
 	public virtual void NotifyInvalidatePeer(AutomationPeer peer)
@@ -510,6 +543,11 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 				owner = parentElement;
 				return true;
 			}
+		}
+
+		if (peer.TryGetProviderOwner(out owner))
+		{
+			return true;
 		}
 
 		owner = null;

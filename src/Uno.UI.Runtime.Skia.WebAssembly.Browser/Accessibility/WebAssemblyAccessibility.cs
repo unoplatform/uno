@@ -45,6 +45,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		AccessibilityAnnouncer.AccessibilityImpl = this;
 		UIElementAccessibilityHelper.ExternalOnChildAdded = (parent, child, index) => RouteChildAdded(parent, child, index);
 		UIElementAccessibilityHelper.ExternalOnChildRemoved = (parent, child) => RouteChildRemoved(parent, child);
+		UIElementAccessibilityHelper.ExternalOnTextControlStateChanged = element => RouteTextControlStateChanged(element);
 		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = visual => RouteVisualOffsetOrSizeChanged(visual);
 		AutomationPeer.AutomationPeerListener = this;
 	}
@@ -184,8 +185,18 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// outermost OnChildAdded call for panels loaded after accessibility is already enabled.
 	/// </summary>
 	private readonly List<(IntPtr Handle, WeakReference<AutomationPeer> Peer)> _pendingLabelledBy = new();
-	private readonly Dictionary<IntPtr, WeakReference<AutomationPeer>> _relationshipPeers = new();
+	private readonly Dictionary<IntPtr, RelationshipState> _relationshipPeers = new();
 	private bool _relationshipRefreshQueued;
+
+	private sealed class RelationshipState
+	{
+		public RelationshipState(AutomationPeer peer) => Peer = new WeakReference<AutomationPeer>(peer);
+
+		public WeakReference<AutomationPeer> Peer { get; }
+		public bool HasRelationships { get; set; }
+		public bool IsUpdating { get; set; }
+		public AutomationPeer? PendingPeer { get; set; }
+	}
 
 	/// <summary>
 	/// Reentrancy depth of <see cref="OnChildAdded"/>. OnChildAdded recurses through a whole subtree
@@ -356,7 +367,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// AddChild also fires while a subtree is still detached (XAML builds bottom-up) and for live parents under
 		// a Collapsed ancestor. A node emitted then hangs off the semantic root with zero geometry; attaching the
 		// subtree root, or showing the ancestor, replays every descendant through the recursion below instead.
-		if (!parent.IsActiveInVisualTree || (_onChildAddedDepth == 0 && IsUnderCollapsedElement(parent)))
+		if (!parent.IsActiveInVisualTree
+			|| (_onChildAddedDepth == 0 && IsUnderCollapsedElement(parent))
+			|| IsNativeTextControlSubtree(parent))
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -438,7 +451,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// by VirtualizedSemanticRegion via ContainerContentChanging/ElementPrepared.
 			// ComboBox dropdown items are realized as role="option" by the listbox region; recursing
 			// would also emit each item's content TextBlock as a standalone <p> (duplicate).
-			if (child is not ComboBoxItem &&
+			if (child is not (TextBox or PasswordBox or RichEditBox or ComboBoxItem) &&
 				(child is not (ListViewBase or ItemsRepeater) || !isChildSemantic))
 			{
 				// Recurse into children — if this element was skipped,
@@ -767,6 +780,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				if (_prunedHandles.Remove(handle) && containerVisual.Owner?.Target is UIElement shownElement)
 				{
 					var shownParent = shownElement.GetParent() as UIElement;
+					if (!shownElement.IsActiveOrAttachedUnderActiveAncestor() || IsNativeTextControlSubtree(shownParent))
+					{
+						return;
+					}
 					var shownParentHandle = shownParent is not null ? FindSemanticParent(shownParent) : _rootElementHandle;
 					BuildSemanticsTreeRecursive(shownParentHandle, shownElement);
 					return;
@@ -969,6 +986,59 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	[JSExport]
+	public static void ResetForTesting()
+	{
+		var @this = Instance;
+		if (!@this.IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		if (@this._focusSearchRoot is { } rootElement)
+		{
+			var focusManager = global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(rootElement);
+			if (focusManager is not null)
+			{
+				focusManager.FocusObserver.FocusController.FocusDeparting -= @this.OnFocusDeparting;
+			}
+		}
+
+		@this._focusSynchronizer?.Uninitialize();
+		@this._focusSynchronizer = null;
+		@this._liveRegionManager?.ClearPending();
+		@this._liveRegionManager = null;
+
+		foreach (var region in @this._virtualizedRegions)
+		{
+			region.Dispose();
+		}
+		@this._virtualizedRegions.Clear();
+
+		lock (@this._updateLock)
+		{
+			@this._debounceTimer?.Dispose();
+			@this._debounceTimer = null;
+			@this._pendingUpdates.Clear();
+		}
+
+		@this._semanticParentMap.Clear();
+		@this._prunedHandles.Clear();
+		@this._pendingLabelledBy.Clear();
+		@this._relationshipPeers.Clear();
+		@this._relationshipRefreshQueued = false;
+		@this._onChildAddedDepth = 0;
+		@this._rootElementHandle = IntPtr.Zero;
+		@this._focusSearchRoot = null;
+		@this.ActiveModalScope = null;
+		@this._isCreatingAOM = false;
+		@this._isAccessibilityEnabled = false;
+
+		Control.OnIsFocusableChangedCallback = null;
+		FocusManager.SuppressNativeFocus = false;
+		NativeMethods.ResetDomForTesting();
+	}
+
+	[JSExport]
 	public static void OnScroll(IntPtr handle, double horizontalOffset, double verticalOffset)
 	{
 		var @this = Instance;
@@ -1061,7 +1131,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// Routes to the IValueProvider.SetValue() method on the automation peer.
 	/// </summary>
 	[JSExport]
-	public static void OnTextInput(IntPtr handle, string value, int selectionStart, int selectionEnd)
+	public static void OnTextInput(
+		IntPtr handle,
+		string value,
+		int selectionStart,
+		int selectionEnd,
+		bool selectionIsBackward)
 	{
 		var @this = Instance;
 		if (@this.Log().IsEnabled(LogLevel.Trace))
@@ -1071,6 +1146,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
+			if (owner is RichEditBox richEditBox)
+			{
+				richEditBox.ApplyAccessibilityTextInput(
+					value,
+					selectionStart,
+					selectionEnd,
+					selectionIsBackward);
+				return;
+			}
+
 			if (owner is ITextBoxHost { Core: { } core })
 			{
 				var maxLength = value?.Length ?? 0;
@@ -1084,6 +1169,22 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				valueProvider.SetValue(value);
 			}
+		}
+	}
+
+	[JSExport]
+	public static void OnTextSelectionChanged(
+		IntPtr handle,
+		int selectionStart,
+		int selectionEnd,
+		bool selectionIsBackward)
+	{
+		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: RichEditBox richEditBox })
+		{
+			richEditBox.ApplyAccessibilitySelection(
+				selectionStart,
+				selectionEnd,
+				selectionIsBackward);
 		}
 	}
 
@@ -1366,21 +1467,54 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	internal void UpdateRelationships(AutomationPeer peer, IntPtr handle)
 	{
-		var wasTracked = _relationshipPeers.TryGetValue(handle, out var reference);
-		if (SemanticElementFactory.ApplyRelationshipAttributes(peer, handle, clearMissing: wasTracked))
+		if (!_relationshipPeers.TryGetValue(handle, out var state))
 		{
-			if (reference is not null)
-			{
-				reference.SetTarget(peer);
-			}
-			else
-			{
-				_relationshipPeers.Add(handle, new WeakReference<AutomationPeer>(peer));
-			}
+			state = new RelationshipState(peer);
+			_relationshipPeers.Add(handle, state);
 		}
 		else
 		{
-			_relationshipPeers.Remove(handle);
+			state.Peer.SetTarget(peer);
+		}
+
+		state.PendingPeer = peer;
+		if (state.IsUpdating)
+		{
+			return;
+		}
+
+		// Peer queries can mutate their relation collections (including WinUI's placeholder helper).
+		// Register before calling out, and publish IDREFs only from the final, non-reentrant snapshot.
+		state.IsUpdating = true;
+		try
+		{
+			while (state.PendingPeer is { } currentPeer)
+			{
+				state.PendingPeer = null;
+				var hasRelationships = SemanticElementFactory.ResolveRelationshipAttributes(
+					currentPeer, out var describedByIds, out var controlledIds, out var flowsToIds);
+				if (!_relationshipPeers.TryGetValue(handle, out var current) || !ReferenceEquals(current, state))
+				{
+					return;
+				}
+
+				if (state.PendingPeer is null)
+				{
+					SemanticElementFactory.ApplyRelationshipAttributes(
+						handle, describedByIds, controlledIds, flowsToIds, clearMissing: state.HasRelationships);
+					state.HasRelationships = hasRelationships;
+				}
+			}
+
+			if (!state.HasRelationships)
+			{
+				_relationshipPeers.Remove(handle);
+			}
+		}
+		finally
+		{
+			state.PendingPeer = null;
+			state.IsUpdating = false;
 		}
 	}
 
@@ -1405,9 +1539,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		foreach (var (handle, reference) in _relationshipPeers.ToArray())
+		foreach (var (handle, state) in _relationshipPeers.ToArray())
 		{
-			if (HasSemanticElement(handle) && reference.TryGetTarget(out var peer))
+			if (!_relationshipPeers.TryGetValue(handle, out var current) || !ReferenceEquals(current, state))
+			{
+				continue;
+			}
+
+			if (HasSemanticElement(handle) && state.Peer.TryGetTarget(out var peer))
 			{
 				UpdateRelationships(peer, handle);
 			}
@@ -1699,6 +1838,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		return _rootElementHandle;
 	}
 
+	private bool IsNativeTextControlSubtree(UIElement? element)
+	{
+		for (var current = element; current is not null; current = current.GetParent() as UIElement)
+		{
+			if (current is TextBox or PasswordBox or RichEditBox && IsSemanticElement(current))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	internal void BuildSemanticsTreeRecursive(IntPtr parentHandle, UIElement child, int depth = 0)
 	{
 		Debug.Assert(IsAccessibilityEnabled);
@@ -1772,6 +1924,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// (TryRealizeComboBoxItem above); don't recurse, or each item's content TextBlock would
 		// also emit as a standalone <p> alongside its option.
 		if (child is ComboBoxItem)
+		{
+			return;
+		}
+
+		// Native text inputs carry their value and selection directly. Their XAML template and
+		// RichEditBox text-object peers cannot be represented as descendants of <input>/<textarea>.
+		if (isSemantic && child is TextBox or PasswordBox or RichEditBox)
 		{
 			return;
 		}
@@ -2125,8 +2284,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	{
 		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
 
-		if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty &&
-			TryGetPeerOwner(peer, out var element))
+		if (automationProperty == RichEditBoxAutomationPeer.IsSpellCheckEnabledProperty
+			&& TryGetPeerOwner(peer, out var element))
+		{
+			NativeMethods.UpdateTextBoxSpellCheck(element.Visual.Handle, (bool)newValue);
+		}
+		else if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty &&
+			TryGetPeerOwner(peer, out element))
 		{
 			var ariaChecked = ConvertToAriaChecked((ToggleState)newValue);
 			if (this.Log().IsEnabled(LogLevel.Trace))
@@ -2438,14 +2602,24 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			case AutomationEvents.TextEditTextChanged:
 			case AutomationEvents.TextPatternOnTextChanged:
 				// Sync text value changes to the semantic DOM (handles programmatic TextBox.Text updates)
-				if (TryGetPeerOwner(peer, out var textElement) &&
-					peer.GetPattern(PatternInterface.Value) is IValueProvider textValueProvider)
+				if (TryGetPeerOwner(peer, out var textElement))
 				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (textElement is RichEditBox richEditBox)
 					{
-						this.Log().Trace($"[A11y] AUTOMATION EVENT: {eventId} handle={textElement.Visual.Handle} valueLen={textValueProvider.Value?.Length ?? 0}");
+						UpdateRichEditBoxValueAndSelection(richEditBox);
 					}
-					UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, (textElement as ITextBoxHost)?.Core);
+					else if (peer.GetPattern(PatternInterface.Value) is IValueProvider textValueProvider)
+					{
+						UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, (textElement as ITextBoxHost)?.Core);
+					}
+				}
+				break;
+
+			case AutomationEvents.TextPatternOnTextSelectionChanged:
+				if (TryGetPeerOwner(peer, out var selectionElement)
+					&& selectionElement is RichEditBox selectionRichEditBox)
+				{
+					UpdateRichEditBoxValueAndSelection(selectionRichEditBox);
 				}
 				break;
 
@@ -2571,6 +2745,31 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		UpdateTextBoxValueKeepingSelection(core.Owner.Visual.Handle, core.Text, core);
 	}
 
+	protected override void OnTextControlStateChanged(UIElement element)
+	{
+		if (element is RichEditBox richEditBox && HasSemanticElement(element.Visual.Handle))
+		{
+			UpdateRichEditBoxValueAndSelection(richEditBox);
+			NativeMethods.UpdateTextBoxReadOnly(element.Visual.Handle, richEditBox.IsReadOnly);
+			NativeMethods.UpdateTextBoxPlaceholder(element.Visual.Handle, richEditBox.PlaceholderText ?? string.Empty);
+			NativeMethods.UpdateTextBoxSpellCheck(element.Visual.Handle, richEditBox.IsSpellCheckEnabled);
+		}
+	}
+
+	private static void UpdateRichEditBoxValueAndSelection(RichEditBox richEditBox)
+	{
+		richEditBox.GetAccessibilitySelection(
+			out var selectionStart,
+			out var selectionEnd,
+			out var selectionIsBackward);
+		NativeMethods.UpdateTextBoxValue(
+			richEditBox.Visual.Handle,
+			richEditBox.GetAccessibilityText(),
+			selectionStart,
+			selectionEnd,
+			selectionIsBackward);
+	}
+
 	private static void UpdateTextBoxValueKeepingSelection(IntPtr handle, string? value, TextBoxCore? core = null)
 	{
 		core ??= TryGetTextBoxForHandle(handle, out var resolvedCore) ? resolvedCore : null;
@@ -2578,7 +2777,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (TryGetTextSelection(core, normalizedValue.Length, out var selectionStart, out var selectionEnd))
 		{
-			NativeMethods.UpdateTextBoxValue(handle, normalizedValue, selectionStart, selectionEnd);
+			NativeMethods.UpdateTextBoxValue(handle, normalizedValue, selectionStart, selectionEnd, false);
 			return;
 		}
 
@@ -2586,7 +2785,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	private static void UpdateTextBoxValuePreservingSelection(IntPtr handle, string value)
-		=> NativeMethods.UpdateTextBoxValue(handle, value ?? string.Empty, PreserveTextSelectionSentinel, PreserveTextSelectionSentinel);
+		=> NativeMethods.UpdateTextBoxValue(
+			handle,
+			value ?? string.Empty,
+			PreserveTextSelectionSentinel,
+			PreserveTextSelectionSentinel,
+			false);
 
 	private static bool TryGetTextBoxForHandle(IntPtr handle, [NotNullWhen(true)] out TextBoxCore? core)
 	{
@@ -2634,6 +2838,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.removeSemanticElement")]
 		internal static partial void RemoveSemanticElement(IntPtr parentHandle, IntPtr childHandle);
 
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.resetDomForTesting")]
+		internal static partial void ResetDomForTesting();
+
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLabel")]
 		internal static partial void UpdateAriaLabel(IntPtr handle, string automationId);
 
@@ -2664,10 +2871,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		internal static partial void UpdateSliderValue(IntPtr handle, double value, double min, double max, string? valueText);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxValue")]
-		internal static partial void UpdateTextBoxValue(IntPtr handle, string value, int selectionStart, int selectionEnd);
+		internal static partial void UpdateTextBoxValue(IntPtr handle, string value, int selectionStart, int selectionEnd, bool selectionIsBackward);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxReadOnly")]
 		internal static partial void UpdateTextBoxReadOnly(IntPtr handle, bool isReadOnly);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxSpellCheck")]
+		internal static partial void UpdateTextBoxSpellCheck(IntPtr handle, bool isSpellCheckEnabled);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxPlaceholder")]
+		internal static partial void UpdateTextBoxPlaceholder(IntPtr handle, string placeholder);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateExpandCollapseState")]
 		internal static partial void UpdateExpandCollapseState(IntPtr handle, bool expanded);

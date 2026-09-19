@@ -44,21 +44,9 @@ internal partial class FlyoutBasePopupPanel : PopupPanel
 			return;
 		}
 
-		if (!Flyout.GetAllParents(includeCurrent: false).Contains(passThroughElement))
-		{
-			// The element must be a parent of the Flyout (not 'this') to be able to receive the pointer events.
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-				this.Log().Debug(
-					$"{this.GetDebugName()} PassThroughElement ignored as element ({Flyout.OverlayInputPassThroughElement?.GetAllParents().Reverse().Select(elt => elt.GetDebugName()).JoinBy(">") ?? "--null--"})"
-					+ $" is not a parent of the Flyout ({Flyout.GetAllParents().Select(elt => elt.GetDebugName()).Reverse().JoinBy(">")}).");
-
-			return;
-		}
-
 		var point = args.GetCurrentPoint(null);
 		var hitTestIgnoringThis = VisualTreeHelper.DefaultGetTestability.Except(XamlRoot?.VisualTree.PopupRoot as UIElement ?? this);
-		var (elementHitUnderOverlay, _) = VisualTreeHelper.HitTest(point.Position, passThroughElement.XamlRoot?.VisualTree.RootElement, hitTestIgnoringThis);
+		var (elementHitUnderOverlay, _) = VisualTreeHelper.HitTest(point.Position, XamlRoot?.VisualTree.RootElement, hitTestIgnoringThis);
 
 		if (elementHitUnderOverlay is null)
 		{
@@ -68,7 +56,15 @@ internal partial class FlyoutBasePopupPanel : PopupPanel
 			return;
 		}
 
-		if (!VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Contains(passThroughElement))
+		// MUX Reference PointerInputProcessor.cpp:1100-1120, commit 3c9c168844f06c6ac000a97977f0bb3f4c90fd75.
+		// If the app specified that the overlay input pass-through element is the root visual,
+		// then we want to always allow the event to pass through the light-dismiss layer.
+		// This is needed because setting the root visual as the pass-through element implies that
+		// you want all input to go through the light-dismiss layer, but since popups don't have
+		// the root visual as their ancestor in the visual tree, the test for ancestry will fail.
+		if (!ReferenceEquals(passThroughElement, XamlRoot?.Content)
+			&& !ReferenceEquals(passThroughElement, elementHitUnderOverlay)
+			&& !VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Contains(passThroughElement))
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 				this.Log().Debug(
