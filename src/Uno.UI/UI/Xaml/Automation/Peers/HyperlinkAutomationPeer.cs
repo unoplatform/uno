@@ -168,31 +168,29 @@ internal partial class HyperlinkAutomationPeer : AutomationPeer, IInvokeProvider
 		return AutomationProperties.GetLiveSetting(owner);
 	}
 
+	// CCoreServices::GetTextElementBoundingRect -> CRichTextBlock::GetTextElementBoundRect: the range's
+	// text bounds, unioned because a link wraps, then transformed to screen space.
 	protected override Rect GetBoundingRectangleCore()
 	{
-		// TODO Uno: GetTextElementBoundingRect is not available in Uno.
-		// This needs lower-level text infrastructure to compute the
-		// bounding rectangle of the Hyperlink inline within its containing TextBlock.
-		return default;
+		if (GetLinkBounds(out var element) is not { Length: > 0 } bounds)
+		{
+			return default;
+		}
+
+		var union = bounds[0];
+		for (var i = 1; i < bounds.Length; i++)
+		{
+			union.Union(bounds[i]);
+		}
+
+		return element.TransformToVisual(null).TransformBounds(union);
 	}
 
 	protected override bool IsKeyboardFocusableCore() => true;
 
 	protected override Point GetClickablePointCore()
 	{
-		var owner = GetOwner();
-		var element = owner.GetContainingFrameworkElement();
-
-		if (Text.TextAdapter.GetTextView(element) is not { } textView ||
-			owner.ContentStart is not { } contentStart ||
-			owner.ContentEnd is not { } contentEnd)
-		{
-			return default;
-		}
-
-		var bounds = textView.TextRangeToTextBounds((uint)contentStart.Offset, (uint)contentEnd.Offset);
-
-		if (bounds.Length == 0)
+		if (GetLinkBounds(out var element) is not { Length: > 0 } bounds)
 		{
 			return default;
 		}
@@ -200,7 +198,26 @@ internal partial class HyperlinkAutomationPeer : AutomationPeer, IInvokeProvider
 		// We're looking for the point at the start of the link, so we only care about the first
 		// rectangle, and return its top-left because the length is determined from there.
 		var first = bounds[0];
-		return element.TransformToVisual(null).TransformPoint(new Point(first.Left, first.Top));
+		var point = element.TransformToVisual(null).TransformPoint(new Point(first.Left, first.Top));
+
+		// Round up the Y pixel so we don't get the previous line when there is more than one line.
+		return new Point(point.X, Math.Ceiling(point.Y));
+	}
+
+	// A TextElement has no bounding-box API, so the containing control owns the geometry.
+	private Rect[] GetLinkBounds(out FrameworkElement element)
+	{
+		var owner = GetOwner();
+		element = owner.GetContainingFrameworkElement();
+
+		if (Text.TextAdapter.GetTextView(element) is not { } textView ||
+			owner.ContentStart is not { } contentStart ||
+			owner.ContentEnd is not { } contentEnd)
+		{
+			return Array.Empty<Rect>();
+		}
+
+		return textView.TextRangeToTextBounds((uint)contentStart.Offset, (uint)contentEnd.Offset);
 	}
 
 	protected override bool IsOffscreenCore()
