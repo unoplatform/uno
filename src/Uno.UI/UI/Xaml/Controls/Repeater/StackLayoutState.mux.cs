@@ -60,5 +60,8 @@ partial class StackLayoutState
 		m_totalElementSize = 0.0;
 		m_lastElementSize = 0.0;
 		Array.Clear(m_estimationBuffer);
+#if HAS_UNO
+		_lastReportedExtentMajorStart = double.NaN;
+#endif
 	}
 }
