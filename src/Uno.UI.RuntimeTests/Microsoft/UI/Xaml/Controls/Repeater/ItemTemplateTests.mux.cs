@@ -273,7 +273,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if HAS_UNO
 		[Ignore("UNO (uno#24477): ElementName binding across a DataTemplate loaded via XamlReader.Load does not resolve siblings outside the template scope.")]
+#endif
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24477")]
 		public async Task ValidateDataTemplateWithElementNameBinding()
 		{
@@ -281,7 +283,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if HAS_UNO
 		[Ignore("UNO (uno#24477): ElementName binding across a DataTemplate loaded via XamlReader.Load does not resolve siblings outside the template scope.")]
+#endif
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24477")]
 		public async Task ValidateDataTemplateWithNestedElementNameBinding()
 		{
