@@ -24,10 +24,4 @@ partial class StackLayoutState
 	private int m_totalElementsMeasured;
 
 	private const int BufferSize = 100;
-
-#if HAS_UNO
-	// Uno-specific: the layout origin reported by the previous measure pass, held stable by
-	// StackLayout.StabilizeExtentOrigin. NaN until the first pass reports one.
-	internal float Uno_LastReportedExtentMajorStart = float.NaN;
-#endif
 }
