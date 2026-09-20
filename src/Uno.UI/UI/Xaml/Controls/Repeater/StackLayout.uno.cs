@@ -35,8 +35,8 @@ partial class StackLayout
 		int firstRealizedItemIndex,
 		Rect firstRealizedLayoutBounds)
 	{
-		var held = stackState.Uno_LastReportedExtentMajorStart;
-		var hasHeld = !float.IsNaN(held);
+		var held = stackState._lastReportedExtentMajorStart;
+		var hasHeld = !double.IsNaN(held);
 		var itemsAboveHeld = hasHeld && MajorStart(firstRealizedLayoutBounds) < held;
 
 		if (hasHeld && firstRealizedItemIndex != 0 && !itemsAboveHeld)
@@ -44,7 +44,7 @@ partial class StackLayout
 			SetMajorStart(ref extent, held);
 		}
 
-		stackState.Uno_LastReportedExtentMajorStart = (float)MajorStart(extent);
+		stackState._lastReportedExtentMajorStart = MajorStart(extent);
 	}
 
 	private ScrollOrientation _scrollOrientation;
