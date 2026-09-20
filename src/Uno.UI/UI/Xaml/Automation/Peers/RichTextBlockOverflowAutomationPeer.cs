@@ -10,10 +10,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutomationPeer
 {
-#if __SKIA__
 	// CRichTextBlockOverflowAutomationPeer::m_pTextPattern — the faithfully-ported Text pattern provider.
 	private Text.TextAdapter m_textPattern;
-#endif
 
 	public RichTextBlockOverflowAutomationPeer(Controls.RichTextBlockOverflow owner) : base(owner)
 	{
@@ -23,7 +21,6 @@ public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutom
 	{
 		if (patternInterface == PatternInterface.Text)
 		{
-#if __SKIA__
 			// CRichTextBlockOverflowAutomationPeer::GetPatternCore — overflows without a master
 			// RichTextBlock have no text pattern. Only create the adapter when a master exists.
 			if (m_textPattern is null
@@ -34,10 +31,6 @@ public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutom
 			}
 
 			return m_textPattern;
-#else
-			// The Text pattern provider is Skia-only (container/view/position model).
-			return base.GetPatternCore(patternInterface);
-#endif
 		}
 		else
 		{
@@ -52,11 +45,8 @@ public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutom
 
 	// CRichTextBlockOverflowAutomationPeer::GetChildrenCore — append the inline peers from the source
 	// (master) RichTextBlock's blocks that fall within this overflow's slice [contentStart, overflowStart).
-	// The slice needs the TextPointer position layer, which only Skia has; the override still has to exist
-	// everywhere so the reference assembly matches the runtime API.
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
-#if __SKIA__
 		if (Owner is not Controls.RichTextBlockOverflow owner)
 		{
 			return base.GetChildrenCore();
@@ -93,8 +83,5 @@ public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutom
 		}
 
 		return children;
-#else
-		return base.GetChildrenCore();
-#endif
 	}
 }

@@ -57,12 +57,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		// The owning element of this collection (the Span/Hyperlink/TextBlock it belongs to).
 		// Mirrors CInlineCollection::GetParentInternal — used by TextSchema validation.
-		internal object GetParent()
-#if __WASM__
-			=> _collection.Owner;
-#else
-			=> _collection.GetParent();
-#endif
+		internal object GetParent() => _collection.GetParent();
 
 		private (Inline[] preorderTree, Inline[] leafTree)? _traversedTree;
 

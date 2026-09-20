@@ -13,10 +13,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPeer
 {
-#if __SKIA__
 	// CRichTextBlockAutomationPeer::m_pTextPattern — the faithfully-ported Text pattern provider.
 	private Text.TextAdapter m_textPattern;
-#endif
 
 	public RichTextBlockAutomationPeer(Controls.RichTextBlock owner) : base(owner)
 	{
@@ -26,7 +24,6 @@ public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPee
 	{
 		if (patternInterface == PatternInterface.Text)
 		{
-#if __SKIA__
 			// CRichTextBlockAutomationPeer::GetPatternCore — lazily create the TextAdapter over the owner.
 			if (m_textPattern is null && Owner is Controls.RichTextBlock owner)
 			{
@@ -34,11 +31,6 @@ public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPee
 			}
 
 			return m_textPattern;
-#else
-			// The Text pattern provider is Skia-only (container/view/position model). On non-Skia targets
-			// there is no plain-text position layer, so report no Text pattern.
-			return base.GetPatternCore(patternInterface);
-#endif
 		}
 		else
 		{
@@ -53,11 +45,9 @@ public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPee
 
 	// CRichTextBlockAutomationPeer::GetChildrenCore — walk the block collection, stopping at the first
 	// block whose content starts at/after the overflow target's content start, and append each block's
-	// inline peers. The overflow/position filtering needs the TextPointer position layer, which only Skia
-	// has; the override still has to exist everywhere so the reference assembly matches the runtime API.
+	// inline peers.
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
-#if __SKIA__
 		if (Owner is not Controls.RichTextBlock owner)
 		{
 			return base.GetChildrenCore();
@@ -87,8 +77,5 @@ public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPee
 		}
 
 		return children;
-#else
-		return base.GetChildrenCore();
-#endif
 	}
 }

@@ -21,11 +21,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 		// MUX Reference Span::AppendAutomationPeerChildren — if this Span exposes a peer (e.g. Hyperlink),
 		// append it; otherwise recurse into the inlines whose content-start falls within [startPos, endPos].
-		// The position-filtered walk needs the TextPointer/position layer, which only Skia has; the override
-		// still has to exist everywhere so the reference assembly matches the runtime API.
 		internal override void AppendAutomationPeerChildren(IList<AutomationPeer> automationPeerChildren, int startPos, int endPos)
 		{
-#if __SKIA__
 			var automationPeer = GetOrCreateAutomationPeer();
 			if (automationPeer is not null)
 			{
@@ -43,9 +40,6 @@ namespace Microsoft.UI.Xaml.Documents
 					}
 				}
 			}
-#else
-			base.AppendAutomationPeerChildren(automationPeerChildren, startPos, endPos);
-#endif
 		}
 	}
 }

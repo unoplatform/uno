@@ -10,11 +10,9 @@
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Documents;
-#if __SKIA__
 using Microsoft.UI.Xaml.Controls.Text.Core;
 using Microsoft.UI.Xaml.Documents.BlockLayout;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -60,7 +58,6 @@ partial class RichTextBlock
 		SelectCore(start, end);
 	}
 
-#if __SKIA__
 	// CRichTextBlock::GetContentStart
 	private TextPointer? GetContentStart()
 	{
@@ -184,12 +181,4 @@ partial class RichTextBlock
 
 	// CRichTextBlock::IsSelectionEnabled
 	private bool IsSelectionEnabled() => IsTextSelectionEnabled && _pSelectionManager is not null;
-#else
-	private TextPointer? GetContentStart() => null;
-	private TextPointer? GetContentEnd() => null;
-	private TextPointer? GetSelectionStart() => null;
-	private TextPointer? GetSelectionEnd() => null;
-	private TextPointer? GetTextPositionFromPoint(Point point) => null;
-	private void SelectCore(TextPointer start, TextPointer end) { }
-#endif
 }

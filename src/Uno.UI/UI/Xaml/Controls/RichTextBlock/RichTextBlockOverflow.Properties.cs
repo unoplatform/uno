@@ -155,14 +155,8 @@ namespace Microsoft.UI.Xaml.Controls
 		#region ContentSource
 
 		// The master RichTextBlock that overflows content into this element. Resolved during layout from the
-		// previous link in the chain (CRichTextBlockOverflow::GetMaster). The overflow layout chain is
-		// Skia-only; on other targets there is no master to resolve.
-		public RichTextBlock ContentSource =>
-#if __SKIA__
-			GetMaster();
-#else
-			null;
-#endif
+		// previous link in the chain (CRichTextBlockOverflow::GetMaster).
+		public RichTextBlock ContentSource => GetMaster();
 
 		#endregion
 	}

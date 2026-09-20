@@ -12,7 +12,6 @@ public partial class Paragraph : Block
 	// the override still has to exist everywhere so the reference assembly matches the runtime API.
 	internal override void AppendAutomationPeerChildren(IList<AutomationPeer> automationPeerChildren, int startPos, int endPos)
 	{
-#if __SKIA__
 		foreach (var inline in Inlines)
 		{
 			var inlineStart = inline.GetContentStart();
@@ -22,9 +21,6 @@ public partial class Paragraph : Block
 				inline.AppendAutomationPeerChildren(automationPeerChildren, startPos, endPos);
 			}
 		}
-#else
-		base.AppendAutomationPeerChildren(automationPeerChildren, startPos, endPos);
-#endif
 	}
 
 	public double TextIndent
