@@ -18,10 +18,16 @@ using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
+	// Every test here is bounded: injected input can go missing on a CI emulator, and an unbounded test
+	// body then hangs the whole job (a healthy Android group runs ~11 min; a hung one burns the 45-minute
+	// cap without naming a test).
 	// Exercises the Stage 9b pointer/keyboard input pipeline end-to-end via injected input:
 	// mouse press-drag-release selection through TextSelectionManager, double-click word
 	// selection, shift+click extension, tap-to-clear, cross-paragraph drag, Ctrl+A/Ctrl+C,
 	// and hyperlink Click. SkiaWasm is excluded (mouse/keyboard injection + clipboard).
+	// Injected input can go missing on a CI emulator, and an unbounded test body then hangs the whole
+	// job: a healthy Android group finishes in ~11 min, a hung one burns the 45-minute cap. Bound them
+	// so a hang fails with a name instead.
 	[TestClass]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
@@ -41,6 +47,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		#region Pointer selection
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_PointerDrag_Selects_Range()
 		{
 			var SUT = CreateSingleLine("The quick brown fox jumps over the lazy dog");
@@ -85,6 +92,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_PointerDrag_In_Overflow_Selects_Range()
 		{
 			// CRichTextBlockOverflow::OnPointerPressed/Moved/Released feed the master's TextSelectionManager, so a
@@ -129,6 +137,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_DoubleClick_Selects_Word()
 		{
 			var SUT = CreateSingleLine("Wonderful sunny afternoon");
@@ -161,6 +170,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Timeout(120_000)]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/81")]
 		[DataRow(200d)]
 		[DataRow(500d)]
@@ -249,6 +259,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_Tap_Clears_Selection()
 		{
 			var SUT = CreateSingleLine("Select then clear this line");
@@ -280,6 +291,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_MultiParagraph_Drag_Crosses_Boundary()
 		{
 			var SUT = new RichTextBlock { Width = 400, TextWrapping = TextWrapping.NoWrap };
@@ -327,6 +339,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// The command modifier is Cmd (not Ctrl) on macOS, and KeyboardHelper only injects Ctrl.
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_CtrlA_Selects_All()
 		{
 			var SUT = CreateSingleLine("Keyboard select all content");
@@ -349,6 +362,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// The command modifier is Cmd (not Ctrl) on macOS, and KeyboardHelper only injects Ctrl.
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_CtrlC_Copies_Selection()
 		{
 			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
@@ -383,6 +397,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_CopySelectionToClipboard_Api_Copies_Across_Paragraphs()
 		{
 			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
@@ -444,6 +459,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_Selectable_Without_Hyperlink_Cursor_Is_IBeam()
 		{
 			// IsTextSelectionEnabled defaults to true, so nothing ever raises its changed callback
@@ -464,6 +480,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_Pointer_Over_Hyperlink_Cursor_Is_Hand()
 		{
 			var (SUT, _) = CreateHyperlinkSut();
@@ -498,6 +515,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_Click_On_Hyperlink_Raises_Click()
 		{
 			var (SUT, hyperlink) = CreateHyperlinkSut();
@@ -528,6 +546,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_Click_Off_Hyperlink_Does_Not_Raise_Click()
 		{
 			var (SUT, hyperlink) = CreateHyperlinkSut();
@@ -560,6 +579,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		#endregion
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_Hyperlink_In_Overflow_Is_Clicked()
 		{
 			// An overflow column hosts the master's content, so it has to answer for the links inside its
@@ -613,6 +633,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_Hyperlink_In_Overflow_Is_Released_CaptureLost_Is_Not_Raised()
 		{
 			// WinUI raises no PointerCaptureLost for a link click; the overflow must match the master.
@@ -687,6 +708,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Timeout(120_000)]
 		public async Task When_Selection_Drag_In_Overflow_Is_Released_CaptureLost_Is_Raised()
 		{
 			// Only the capture taken for a link press is released silently. The selection manager releases its drag
