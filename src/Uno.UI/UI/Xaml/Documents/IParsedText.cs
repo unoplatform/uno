@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
@@ -10,7 +10,9 @@ internal interface IParsedText
 	void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
 		IEnumerable<TextHighlighter> highlighters,
-		(int startIndex, int length)? compositionRange
+		(int startIndex, int length)? compositionRange,
+		int firstLine = 0, // a paragraph broken across a page starts partway in
+		int lineCount = int.MaxValue
 	);
 
 	Rect GetRectForIndex(int adjustedIndex);
@@ -25,4 +27,8 @@ internal interface IParsedText
 	internal (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index);
 
 	bool IsBaseDirectionRightToLeft { get; }
+
+	// Distance from the top of the first line to its baseline. Used to surface RichTextBlock/
+	// TextBlock BaselineOffset for embedded-element alignment (CTextBlock::GetBaselineOffset).
+	float FirstLineBaseline { get; }
 }

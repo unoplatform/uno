@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -10,7 +10,13 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
+using Uno.UI;
 using WinUIColor = Windows.UI.Color;
+
+// Aliased rather than imported: the RichTextServices namespace also declares a TextFormatting type,
+// which would collide with the TextFormatting namespace imported above.
+using ObjectRun = Microsoft.UI.Xaml.Documents.RichTextServices.ObjectRun;
+using ObjectRunMetrics = Microsoft.UI.Xaml.Documents.RichTextServices.ObjectRunMetrics;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -62,10 +68,34 @@ internal readonly struct ParsedText : IParsedText
 		int maxLines,
 		float lineHeight,
 		LineStackingStrategy lineStackingStrategy,
+		TextLineBounds textLineBounds,
 		TextAlignment textAlignment,
 		TextWrapping textWrapping,
 		FlowDirection flowDirection,
-		out Size desiredSize)
+		out Size desiredSize,
+		Func<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)?>? formatInlineObject = null)
+		=> ParseText(availableSize, inlines, defaultLineHeight, maxLines, lineHeight, lineStackingStrategy, textLineBounds, textAlignment, textWrapping, flowDirection, out desiredSize, resumeCharIndex: 0, out _, formatInlineObject);
+
+	/// <summary>
+	/// Measures a block-level inline collection whose layout resumes at <paramref name="resumeCharIndex"/>, where a
+	/// previous link of a linked chain broke at its own width.
+	/// </summary>
+	/// <param name="resumeLineIndex">Index of the first line laid out from <paramref name="resumeCharIndex"/>.</param>
+	internal static ParsedText ParseText(
+		Size availableSize,
+		Inline[] inlines, // traversed pre-orderly
+		float defaultLineHeight,
+		int maxLines,
+		float lineHeight,
+		LineStackingStrategy lineStackingStrategy,
+		TextLineBounds textLineBounds,
+		TextAlignment textAlignment,
+		TextWrapping textWrapping,
+		FlowDirection flowDirection,
+		out Size desiredSize,
+		int resumeCharIndex,
+		out int resumeLineIndex,
+		Func<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)?>? formatInlineObject = null)
 	{
 		lineStackingStrategy = lineHeight == 0 ? LineStackingStrategy.MaxHeight : lineStackingStrategy;
 
@@ -73,21 +103,71 @@ internal readonly struct ParsedText : IParsedText
 		List<RenderSegmentSpan> lineSegmentSpans = new();
 		bool previousLineWrapped = false;
 
-		float availableWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
+		float wrappingWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		float widestLineWidth = 0, widestLineHeight = 0;
+
+		// Like Line Services resuming at cpFirst, the text before resumeCharIndex belongs to a previous link. It is kept
+		// as unwrapped, never-painted lines so line character intervals stay paragraph-relative.
+		bool inPrefix = resumeCharIndex > 0;
+		float availableWidth = inPrefix ? float.PositiveInfinity : wrappingWidth;
+		int charIndex = 0;
+		int resumeLine = 0;
 
 		float x = 0;
 		float height = 0;
 
 		foreach (var inline in inlines)
 		{
+			EndPrefixIfReached();
+
 			if (inline is LineBreak lineBreak)
 			{
-				Segment breakSegment = new(lineBreak);
-				RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0);
+				// A <LineBreak/> is one flat character (CLineBreak::GetRun yields a single \x2028), matching the
+				// "\n" InlineExtensions.GetText already put in _text. It renders no glyph, so CharacterLength stays 0.
+				Segment breakSegment = new(lineBreak, lineBreakLength: 1);
+				RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 				lineSegmentSpans.Add(breakSegmentSpan);
 
+				if (inPrefix)
+				{
+					charIndex += breakSegmentSpan.CharacterLengthWithNewLine;
+				}
+
 				MoveToNextLine(currentLineWrapped: false);
+			}
+			else if (inline is InlineUIContainer container)
+			{
+				if (inPrefix)
+				{
+					// An object takes no character position; one before the break was laid out by the previous link.
+					continue;
+				}
+
+				// Only containers the caller formats occupy space. Formatting outside a block-layout
+				// host (so with no embedded element host to measure against) leaves them zero-sized.
+				if (formatInlineObject?.Invoke(container) is not { } inlineObject)
+				{
+					continue;
+				}
+
+				if (maxLines > 0 && renderLines.Count == maxLines)
+				{
+					goto MaxLinesHit;
+				}
+
+				var objectWidth = inlineObject.Metrics.Width;
+
+				if (x > 0 && objectWidth > availableWidth - x)
+				{
+					// The object doesn't fit in what's left of the line, and there is content before it,
+					// so wrap it whole onto the next line. An object never breaks internally.
+					MoveToNextLine(currentLineWrapped: true);
+				}
+
+				Segment objectSegment = new(container, flowDirection, inlineObject.Run, inlineObject.Metrics);
+				RenderSegmentSpan objectSegmentSpan = new(objectSegment, 0, 0, 0, 0, 0, objectWidth, objectWidth, 0, 0);
+				lineSegmentSpans.Add(objectSegmentSpan);
+				x += objectWidth;
 			}
 			else if (inline is Run run)
 			{
@@ -101,8 +181,41 @@ internal readonly struct ParsedText : IParsedText
 
 					// Exclude leading spaces at the start of the line only if the previous line ended because it was wrapped and not because of a line break
 
+					EndPrefixIfReached();
+
 					int start = x == 0 && previousLineWrapped ? segment.LeadingSpaces : 0;
 					int skippedLeadingSpaces = start;
+
+					if (inPrefix)
+					{
+						var glyphCount = segment.LineBreakAfter ? segment.Glyphs.Count - 1 : segment.Glyphs.Count;
+						RenderSegmentSpan wholeSpan = new(segment, 0, glyphCount, 0, 0, characterSpacing, 0, 0, 0, segment.ContentLength);
+						var wholeLength = wholeSpan.CharacterLengthWithNewLine;
+
+						if (charIndex + wholeLength <= resumeCharIndex)
+						{
+							lineSegmentSpans.Add(wholeSpan);
+							charIndex += wholeLength;
+
+							if (segment.LineBreakAfter)
+							{
+								MoveToNextLine(currentLineWrapped: false);
+							}
+
+							EndPrefixIfReached();
+							continue;
+						}
+
+						// The previous link wrapped inside this segment, so the continuation starts at that character's glyph.
+						var resumeGlyph = segment.GetGlyphIndex(resumeCharIndex - charIndex);
+						var prefixSpan = RenderSegmentSpan.Create(segment, 0, resumeGlyph, 0, 0, characterSpacing, 0, 0, 0, resumeGlyph);
+						lineSegmentSpans.Add(prefixSpan);
+						charIndex += prefixSpan.CharacterLength;
+						EndPrefixIfReached();
+
+						start = resumeGlyph;
+						skippedLeadingSpaces = 0;
+					}
 
 				BeginSegmentFitting:
 
@@ -139,12 +252,8 @@ internal readonly struct ParsedText : IParsedText
 							trailingSpaces++;
 						}
 
-						var fullGlyphsLength = start == skippedLeadingSpaces ? segment.Glyphs.Count : segment.Glyphs.Count - start;
-						if (segment.LineBreakAfter)
-						{
-							fullGlyphsLength--;
-						}
-						RenderSegmentSpan segmentSpan = new(segment, start, length, Math.Max(0, segment.LeadingSpaces - start), trailingSpaces, characterSpacing, width, widthWithoutTrailingSpaces, fullGlyphsLength);
+						var fullGlyphsStart = start == skippedLeadingSpaces ? 0 : start;
+						var segmentSpan = RenderSegmentSpan.Create(segment, start, length, Math.Max(0, segment.LeadingSpaces - start), trailingSpaces, characterSpacing, width, widthWithoutTrailingSpaces, fullGlyphsStart, end - fullGlyphsStart);
 						lineSegmentSpans.Add(segmentSpan);
 						x += width;
 
@@ -196,7 +305,7 @@ internal readonly struct ParsedText : IParsedText
 
 						if (width > 0)
 						{
-							RenderSegmentSpan segmentSpan = new(segment, 0, spaces, spaces, 0, characterSpacing, widthWithoutTrailingSpaces, 0, segment.LeadingSpaces);
+							var segmentSpan = RenderSegmentSpan.Create(segment, 0, spaces, spaces, 0, characterSpacing, widthWithoutTrailingSpaces, 0, 0, segment.LeadingSpaces);
 							lineSegmentSpans.Add(segmentSpan);
 							x += width;
 
@@ -231,12 +340,9 @@ internal readonly struct ParsedText : IParsedText
 					{
 						// Put the whole segment on the line and move to the next line.
 
-						var fullGlyphsLength = start == skippedLeadingSpaces ? segment.Glyphs.Count : segment.Glyphs.Count - start;
-						if (segment.LineBreakAfter)
-						{
-							fullGlyphsLength--;
-						}
-						RenderSegmentSpan segmentSpan = new(segment, start, segmentLengthWithoutTrailingSpaces - segment.LeadingSpaces, 0, segment.TrailingSpaces, characterSpacing, widthWithoutTrailingSpaces, widthWithoutTrailingSpaces, fullGlyphsLength);
+						var fullGlyphsStart = start == skippedLeadingSpaces ? 0 : start;
+						var fullGlyphsEnd = segment.LineBreakAfter ? segment.Glyphs.Count - 1 : segment.Glyphs.Count;
+						var segmentSpan = RenderSegmentSpan.Create(segment, start, segmentLengthWithoutTrailingSpaces - segment.LeadingSpaces, 0, segment.TrailingSpaces, characterSpacing, widthWithoutTrailingSpaces, widthWithoutTrailingSpaces, fullGlyphsStart, fullGlyphsEnd - fullGlyphsStart);
 						lineSegmentSpans.Add(segmentSpan);
 						x += widthWithoutTrailingSpaces;
 
@@ -257,11 +363,26 @@ internal readonly struct ParsedText : IParsedText
 							length++;
 						}
 
+						// Line Services never breaks inside a cluster: back off to the cluster's start, or take the whole
+						// cluster when it is all that is on the line.
+						while (length > 1 && IsInsideCluster(segment, start + length))
+						{
+							length--;
+							width -= GetGlyphWidthWithSpacing(segment.Glyphs[start + length], characterSpacing);
+						}
+
+						while (IsInsideCluster(segment, start + length))
+						{
+							width += GetGlyphWidthWithSpacing(segment.Glyphs[start + length], characterSpacing);
+							length++;
+						}
+
 						// We've already dealt with leading spaces.
 						// We can't fit the segment content (excluding trailing spaces),
 						// so this span definitely doesn't include any trailing spaces either.
 
-						RenderSegmentSpan segmentSpan = new(segment, start, length, 0, 0, characterSpacing, widthWithoutTrailingSpaces, widthWithoutTrailingSpaces, start == skippedLeadingSpaces ? length + skippedLeadingSpaces : length);
+						var fullGlyphsStart = start == skippedLeadingSpaces ? 0 : start;
+						var segmentSpan = RenderSegmentSpan.Create(segment, start, length, 0, 0, characterSpacing, widthWithoutTrailingSpaces, widthWithoutTrailingSpaces, fullGlyphsStart, start + length - fullGlyphsStart);
 						lineSegmentSpans.Add(segmentSpan);
 						x += width;
 						start += length;
@@ -282,9 +403,11 @@ internal readonly struct ParsedText : IParsedText
 			lineHeight = defaultLineHeight;
 			lineStackingStrategy = LineStackingStrategy.BlockLineHeight;
 
-			// this bit isn't strictly necessary but it maintains the invariant that RenderLines always have a span
+			// this bit isn't strictly necessary but it maintains the invariant that RenderLines always have a span.
+			// lineBreakLength stays 0: the newline it stands for was already counted by the preceding Run's
+			// LineBreakLength (or there is no newline at all), so it must not be counted twice.
 			Segment breakSegment = new(new LineBreak());
-			RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0);
+			RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 			lineSegmentSpans.Add(breakSegmentSpan);
 
 			MoveToNextLine(false);
@@ -298,6 +421,13 @@ internal readonly struct ParsedText : IParsedText
 
 	MaxLinesHit:
 
+		if (inPrefix || resumeLine >= renderLines.Count)
+		{
+			// A break at or past the content's end: there is nothing left to continue with but the last line.
+			resumeLine = Math.Max(0, renderLines.Count - 1);
+		}
+
+		resumeLineIndex = resumeLine;
 		desiredSize = renderLines.Count == 0 ? new Size(0, defaultLineHeight) : new Size(widestLineWidth, height);
 		return new(inlines, renderLines, availableSize, textAlignment, textWrapping, defaultLineHeight, flowDirection);
 
@@ -321,9 +451,13 @@ internal readonly struct ParsedText : IParsedText
 			return (end - startGlyph, width);
 		}
 
+		// True when the glyph at glyphIndex continues the cluster of the glyph before it.
+		static bool IsInsideCluster(Segment segment, int glyphIndex)
+			=> glyphIndex > 0 && glyphIndex < segment.Glyphs.Count && segment.Glyphs[glyphIndex].Cluster == segment.Glyphs[glyphIndex - 1].Cluster;
+
 		void MoveToNextLine(bool currentLineWrapped)
 		{
-			var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, renderLines.Count == 0, currentLineWrapped);
+			var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, renderLines.Count == 0, currentLineWrapped, textLineBounds);
 			renderLines.Add(renderLine);
 			lineSegmentSpans.Clear();
 
@@ -337,6 +471,24 @@ internal readonly struct ParsedText : IParsedText
 			height += renderLine.Height;
 			previousLineWrapped = currentLineWrapped;
 		}
+
+		void EndPrefixIfReached()
+		{
+			if (!inPrefix || charIndex < resumeCharIndex)
+			{
+				return;
+			}
+
+			if (lineSegmentSpans.Count > 0)
+			{
+				// The previous link's line wrapped here; after a hard break the line has already moved on.
+				MoveToNextLine(currentLineWrapped: true);
+			}
+
+			inPrefix = false;
+			availableWidth = wrappingWidth;
+			resumeLine = renderLines.Count;
+		}
 	}
 
 	#region IParsedText
@@ -345,10 +497,15 @@ internal readonly struct ParsedText : IParsedText
 	// composition underline rendering is implemented by UnicodeText (the actual
 	// renderer used by TextBlock/TextBox). ParsedText is only the initial empty
 	// fallback and never has an active composition to render.
+	/// <param name="firstLine">Index of the first line to paint. Lines before it still advance the
+	/// character index so highlight and selection ranges stay in the paragraph's own space.</param>
+	/// <param name="lineCount">Number of lines to paint, for a paragraph split across a page break.</param>
 	public void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
 		IEnumerable<TextHighlighter> highlighters,
-		(int startIndex, int length)? compositionRange)
+		(int startIndex, int length)? compositionRange,
+		int firstLine = 0,
+		int lineCount = int.MaxValue)
 	{
 		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
 		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
@@ -358,6 +515,15 @@ internal readonly struct ParsedText : IParsedText
 			useHighContrastAdjustment
 				? owner.GetHighContrastTextColors()
 				: default;
+
+		// Resolved once for the whole draw: the merged regions and their line spans depend only on the
+		// highlighters, not on the segment being painted.
+		var highlightRegions = new List<(HighlightRegion Region, SelectionDetails Details)>();
+		foreach (var region in MergeHighlighters(highlighters))
+		{
+			// HighlightRegion is inclusive, CalculateSelection takes an exclusive end.
+			highlightRegions.Add((region, CalculateSelection(region.StartIndex, region.EndIndex + 1)));
+		}
 
 		if (_renderLines.Count == 0)
 		{
@@ -372,7 +538,7 @@ internal readonly struct ParsedText : IParsedText
 		}
 
 		var canvas = session.Canvas;
-		var alignment = _textAlignment;
+		var alignment = ResolvedTextAlignment;
 		if (_flowDirection == FlowDirection.RightToLeft)
 		{
 			alignment = alignment switch
@@ -387,12 +553,30 @@ internal readonly struct ParsedText : IParsedText
 
 		float y = 0;
 
-		for (var lineIndex = 0; lineIndex < _renderLines.Count; lineIndex++)
+		var lastLine = lineCount == int.MaxValue ? int.MaxValue : firstLine + lineCount;
+
+		for (var lineIndex = 0; lineIndex < _renderLines.Count && lineIndex < lastLine; lineIndex++)
 		{
 			var line = _renderLines[lineIndex];
 			// TODO: (Performance) Stop rendering when the lines exceed the available height
 
+			if (lineIndex < firstLine)
+			{
+				// Not on this page, but its characters still count towards the index space.
+				foreach (var skipped in line.SegmentSpans)
+				{
+					characterCountSoFar += skipped.CharacterLengthWithNewLine;
+				}
+
+				continue;
+			}
+
 			(float x, float justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, alignment);
+			var lineStartX = x;
+			if (line is { CollapsingSymbol: { } leadingSymbol, CollapsingSymbolLeads: true })
+			{
+				x += leadingSymbol.Width;
+			}
 
 			y += line.Height;
 			float baselineOffsetY = line.BaselineOffsetY;
@@ -403,6 +587,14 @@ internal readonly struct ParsedText : IParsedText
 				var segmentSpan = line.RenderOrderedSegmentSpans[s];
 
 				var segment = segmentSpan.Segment;
+
+				if (segment.IsInlineObject)
+				{
+					// Inline objects do not render content directly. They are rendering through UIElement tree render walk.
+					x += segmentSpan.Width;
+					continue;
+				}
+
 				var inline = segment.Inline;
 				var fontInfo = segment.FallbackFont ?? inline.FontInfo;
 
@@ -518,30 +710,32 @@ internal readonly struct ParsedText : IParsedText
 					DrawBackplate(canvas, xBeforeGlyphOffsets, y, line.Height, backplateWidth, highContrastBackground, effectiveOpacity);
 				}
 
-				// limited support for highlighters
-				var highlighter = highlighters.FirstOrDefault();
-				var selection = highlighter?.Ranges?.FirstOrDefault();
-				if (selection is not null)
+				if (highlightRegions.Count > 0)
 				{
-					var selectionDetails = CalculateSelection(selection.Value.StartIndex, selection.Value.StartIndex + selection.Value.Length);
-					HandleSelection(
-						selectionDetails,
-						lineIndex,
-						characterCountSoFar,
-						positionsSpan,
-						x,
-						justifySpaceOffset,
-						segmentSpan,
-						segment,
-						fontInfo,
-						y,
-						line,
-						canvas,
-						highlighter!.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
-						effectiveOpacity,
-						useHighContrastAdjustment ? ToSkColor(highContrastSelectionBackground, effectiveOpacity) : null);
-					RenderText(
-						selectionDetails,
+					// Backgrounds first: merged regions never overlap, so they compose without repainting
+					// one another, and the text is then drawn once across the whole segment.
+					foreach (var (region, details) in highlightRegions)
+					{
+						HandleSelection(
+							details,
+							lineIndex,
+							characterCountSoFar,
+							positionsSpan,
+							x,
+							justifySpaceOffset,
+							segmentSpan,
+							segment,
+							fontInfo,
+							y,
+							line,
+							canvas,
+							(region.BackgroundBrush ?? DefaultHighlighterBackground).GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
+							effectiveOpacity,
+							useHighContrastAdjustment ? ToSkColor(highContrastSelectionBackground, effectiveOpacity) : null);
+					}
+
+					RenderHighlightedText(
+						highlightRegions,
 						lineIndex,
 						characterCountSoFar,
 						segmentSpan,
@@ -592,10 +786,16 @@ internal readonly struct ParsedText : IParsedText
 				}
 
 				x += justifySpaceOffset * segmentSpan.TrailingSpaces;
-				characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInNewLine(segmentSpan) ? segment.LineBreakLength : 0);
+				characterCountSoFar += segmentSpan.CharacterLengthWithNewLine;
 
 				ArrayPool<SKPoint>.Shared.Return(positions);
 				ArrayPool<ushort>.Shared.Return(glyphs);
+			}
+
+			// A collapsed line paints its ellipsis at its logical end, still last so it takes the kept glyphs' paint.
+			if (line.CollapsingSymbol is { } collapsingSymbol)
+			{
+				DrawCollapsingSymbol(collapsingSymbol, canvas, line.CollapsingSymbolLeads ? lineStartX : x, y + baselineOffsetY);
 			}
 		}
 
@@ -632,51 +832,56 @@ internal readonly struct ParsedText : IParsedText
 		}
 	}
 
-	// Warning: this is only tested and currently used by TextBox
-	/// <remarks>Takes an already adjusted-for-surrogate-pairs index</remarks>
-	public Rect GetRectForIndex(int adjustedIndex)
+	/// <remarks>
+	/// Takes a UTF-16 index into the paragraph text, the same space as the RichTextServices TextLine character
+	/// indices. An index inside a cluster gets the whole cluster's box.
+	/// </remarks>
+	public Rect GetRectForIndex(int index)
 	{
 		var characterCount = 0;
 		float y = 0, x = 0;
-		var index = _text[..adjustedIndex].EnumerateRunes().Count(); // unadjust
 
 		foreach (var line in _renderLines)
 		{
-			(x, var justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, _textAlignment);
+			(x, var justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, ResolvedTextAlignment);
 
 			var spans = line.RenderOrderedSegmentSpans;
 			foreach (var span in spans)
 			{
-				var glyphCount = GlyphsLengthWithCR(span);
+				var spanLength = span.CharacterLengthWithNewLine;
 
-				if (index < characterCount + glyphCount)
+				if (index < characterCount + spanLength)
 				{
 					// we found the right span
 					var segment = span.Segment;
-					var run = (Run)segment.Inline;
-					var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
 
-					var glyphStart = span.GlyphsStart;
-					var glyphEnd = glyphStart + span.GlyphsLength;
-					for (var i = glyphStart; i < glyphEnd; i++)
+					// A <LineBreak/> (or inline-object) span has no glyphs; the caret sits at the span's left edge.
+					if (segment.Inline is not Run run)
 					{
-						var glyph = segment.Glyphs[i];
-						var glyphWidth = GetGlyphWidthWithSpacing(glyph, characterSpacing);
+						return new Rect(x, y, 0, line.Height);
+					}
 
-						if (index == characterCount)
+					var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
+					var offset = index - characterCount;
+
+					for (var i = 0; i < span.GlyphsLength;)
+					{
+						var next = GetNextCluster(span, i, characterSpacing, out var clusterWidth);
+
+						if (offset < span.GetCharacterOffset(next))
 						{
-							return new Rect(x, y, glyphWidth, line.Height);
+							return new Rect(x, y, clusterWidth, line.Height);
 						}
 
-						x += glyphWidth;
-						characterCount++;
+						x += clusterWidth;
+						i = next;
 					}
 
 					// we should have returned by now, so this is a case of a trailing \r and/or non-rendered trailing spaces, which are not counted in GlyphsLength
 					return new Rect(x, y, 0, line.Height);
 				}
 
-				characterCount += glyphCount;
+				characterCount += spanLength;
 				x += span.Width;
 			}
 
@@ -690,30 +895,53 @@ internal readonly struct ParsedText : IParsedText
 		return new Rect(x, y, 0, _renderLines.Count > 0 ? _renderLines[^1].Height : 0);
 	}
 
-	/// <remarks>Adjusted for surrogate pairs</remarks>
-	public int GetIndexAt(Point p, bool ignoreEndingNewLine, bool extendedSelection) => AdjustIndexForSurrogatePairs(GetIndexAtUnadjusted(p, ignoreEndingNewLine, extendedSelection));
-
 	public Hyperlink GetHyperlinkAt(Point point)
 	{
 		var start = 0;
 		var hyperlinks = new List<(int start, int end, Hyperlink hyperlink)>();
+
+		// Only leaves carry text, and _inlines may be either the leaf list (RichTextBlock feeds the
+		// formatter through ISkiaParagraphSource.GetLeafInlines) or a pre-order walk. Deriving the
+		// ranges from the leaves and walking up to the containing Hyperlink handles both.
 		foreach (var inline in _inlines)
 		{
-			switch (inline)
+			if (inline is Span)
 			{
-				case Hyperlink h:
-					hyperlinks.Add((start, start + h.GetText().Length, h));
-					break;
-				case Span:
-					break;
-				default: // Leaf node
-					start += inline.GetText().Length;
-					break;
+				// Container - its leaves contribute the text.
+				continue;
 			}
+
+			var length = inline.GetText().Length;
+
+			if (FindContainingHyperlink(inline) is { } hyperlink)
+			{
+				hyperlinks.Add((start, start + length, hyperlink));
+			}
+
+			start += length;
 		}
 		var characterIndex = ((IParsedText)this).GetIndexAt(point, ignoreEndingNewLine: false, extendedSelection: false);
 		return hyperlinks.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex)
 			.hyperlink;
+	}
+
+	// Nearest Hyperlink ancestor of a leaf inline, or null when the leaf is not inside one.
+	private static Hyperlink? FindContainingHyperlink(Inline inline)
+	{
+		for (DependencyObject? current = inline; current is not null; current = current.GetParent() as DependencyObject)
+		{
+			if (current is Hyperlink hyperlink)
+			{
+				return hyperlink;
+			}
+
+			if (current is Microsoft.UI.Xaml.Controls.TextBlock or Microsoft.UI.Xaml.Controls.RichTextBlock)
+			{
+				break;
+			}
+		}
+
+		return null;
 	}
 
 	public (int start, int length) GetWordAt(int index, bool right)
@@ -815,6 +1043,53 @@ internal readonly struct ParsedText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => false;
 
+	internal int LineCount => _renderLines.Count;
+
+	// True when the paragraph carries no text at all; SkiaTextLine uses it to stand in for
+	// WinUI's EndOfParagraphRun (ParagraphTextSource::GetTextRun).
+	internal bool IsEmpty => _text.Length == 0;
+
+	// Bridge accessors used by the RichTextServices Skia formatter (SkiaTextLine /
+	// SkiaTextFormatter) to vend per-line metrics over the parsed layout.
+	internal IReadOnlyList<RenderLine> RenderLines => _renderLines;
+
+	// Top of a line within the paragraph. A page that starts partway in draws its first line at the
+	// top, so hit-testing has to add back the height of the lines it skipped.
+	internal float GetLineTop(int lineIndex)
+	{
+		var top = 0f;
+		for (var i = 0; i < lineIndex && i < _renderLines.Count; i++)
+		{
+			top += _renderLines[i].Height;
+		}
+
+		return top;
+	}
+
+	// Text trimming collapses a line in place: the formatter hands the same ParsedText back for every
+	// line of the paragraph, so the collapsed line has to replace the original for Draw to pick it up.
+	internal void ReplaceRenderLine(int index, RenderLine line) => _renderLines[index] = line;
+
+	public float FirstLineBaseline => _renderLines.Count > 0 ? _renderLines[0].Height + _renderLines[0].BaselineOffsetY : _defaultLineHeight;
+
+	internal Size AvailableSize => _availableSize;
+
+	internal TextAlignment TextAlignment => ResolvedTextAlignment;
+
+	// WinUI resolves DetectFromContent to a concrete edge in one place, against the paragraph's
+	// detected reading order (ParagraphNode::CalculateLineOffset), and nothing downstream ever
+	// sees the enum value. Resolving it here keeps every consumer on that contract.
+	private TextAlignment ResolvedTextAlignment
+		=> _textAlignment == TextAlignment.DetectFromContent
+			? (IsBaseDirectionRightToLeft ? TextAlignment.Right : TextAlignment.Left)
+			: _textAlignment;
+
+	internal FlowDirection FlowDirection => _flowDirection;
+
+	// TextStore::Initialize - with TextReadingOrder.DetectFromContent (the RichTextBlock default) the paragraph
+	// reads in its content's direction, falling back to FlowDirection.
+	internal bool IsReadingOrderRightToLeft() => UnicodeText.IsRightToLeftParagraph(_text, _flowDirection);
+
 	#endregion
 
 	private void HandleSelection(SelectionDetails selection, int lineIndex,
@@ -834,10 +1109,10 @@ internal readonly struct ParsedText : IParsedText
 				// the selection starts from a previous span, so this span is selected from the very beginning
 				left = positions.Length > 0 ? positions[0].X : x;
 			}
-			else if (bg.StartIndex - spanStartingIndex < positions.Length)
+			else if (segmentSpan.GetRenderedGlyphIndex(bg.StartIndex - spanStartingIndex) is var startGlyph && startGlyph < positions.Length)
 			{
 				// part or all of this span is selected
-				left = positions[bg.StartIndex - spanStartingIndex].X;
+				left = positions[startGlyph].X;
 			}
 			else
 			{
@@ -851,10 +1126,10 @@ internal readonly struct ParsedText : IParsedText
 				// this span is not a part of the selection, so we select nothing by making the left edge to the far left
 				right = positions.Length > 0 ? positions[0].X : x;
 			}
-			else if (bg.EndIndex - spanStartingIndex < positions.Length)
+			else if (segmentSpan.GetRenderedGlyphIndex(bg.EndIndex - spanStartingIndex) is var endGlyph && endGlyph < positions.Length)
 			{
 				// part or all of this span is selected
-				right = positions[bg.EndIndex - spanStartingIndex].X;
+				right = positions[endGlyph].X;
 			}
 			else
 			{
@@ -862,8 +1137,8 @@ internal readonly struct ParsedText : IParsedText
 				right = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
 
 				var selectionNotEmpty = bg.StartIndex != bg.EndIndex;
-				// positions.Length doesn't include CRLF, so we specifically check if EndIndex goes past position.Length to know if CRLF is included or not.
-				var newLineIncludedInSelection = SpanEndsInNewLine(segmentSpan) && bg.EndIndex - spanStartingIndex > positions.Length;
+				// CharacterLength doesn't include CRLF, so we specifically check if EndIndex goes past it to know if CRLF is included or not.
+				var newLineIncludedInSelection = segmentSpan.EndsInNewLine && bg.EndIndex - spanStartingIndex > segmentSpan.CharacterLength;
 				if (selectionNotEmpty && newLineIncludedInSelection)
 				{
 					// fontInfo.SKFontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
@@ -906,41 +1181,9 @@ internal readonly struct ParsedText : IParsedText
 		}
 		else
 		{
-			var spanStartingIndex = characterCountSoFar;
-			int startOfSelection;
-			int endOfSelection;
-
-			if (bg.StartIndex < spanStartingIndex)
-			{
-				// the selection starts from a previous span, so this span is selected from the very beginning
-				startOfSelection = 0;
-			}
-			else if (bg.StartIndex - spanStartingIndex < segmentSpan.GlyphsLength)
-			{
-				// part or all of this span is selected
-				startOfSelection = bg.StartIndex - spanStartingIndex;
-			}
-			else
-			{
-				// this span is not a part of the selection
-				startOfSelection = segmentSpan.GlyphsLength;
-			}
-
-			if (bg.EndIndex - spanStartingIndex < 0)
-			{
-				// this span is not a part of the selection
-				endOfSelection = 0;
-			}
-			else if (bg.EndIndex - spanStartingIndex < segmentSpan.GlyphsLength)
-			{
-				// part or all of this span is selected
-				endOfSelection = bg.EndIndex - spanStartingIndex;
-			}
-			else
-			{
-				// the selection ends after this span, so this span is selected to the very end
-				endOfSelection = segmentSpan.GlyphsLength;
-			}
+			// Offsets before the span clamp to its first glyph and offsets past it to its end.
+			var startOfSelection = segmentSpan.GetRenderedGlyphIndex(bg.StartIndex - characterCountSoFar);
+			var endOfSelection = segmentSpan.GetRenderedGlyphIndex(bg.EndIndex - characterCountSoFar);
 
 			if (startOfSelection > 0) // pre selection
 			{
@@ -979,16 +1222,116 @@ internal readonly struct ParsedText : IParsedText
 			}
 		}
 
-		static void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
-			SKCanvas canvas, float y, SKPaint paint)
+	}
+
+	private static void DrawCollapsingSymbol(CollapsedLineSymbol symbol, SKCanvas canvas, float x, float y)
+	{
+		var positions = new SKPoint[symbol.Glyphs.Length];
+		var pen = x;
+
+		for (var i = 0; i < symbol.Glyphs.Length; i++)
 		{
-			_textBlobBuilder.AddPositionedRun(glyphs, fontInfo.SKFont, positions);
-			// Roughly equivalent to:
-			//   using var textBlob = _textBlobBuilder.Build();
-			//   canvas.DrawText(textBlob, 0f, y, paint);
-			var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-			UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-			UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+			positions[i] = new SKPoint(pen, 0);
+			pen += symbol.Advances[i];
+		}
+
+		DrawText(symbol.Font, positions, symbol.Glyphs, canvas, y, _spareDrawPaint);
+	}
+
+	private static void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
+		SKCanvas canvas, float y, SKPaint paint)
+	{
+		_textBlobBuilder.AddPositionedRun(glyphs, fontInfo.SKFont, positions);
+		// Roughly equivalent to:
+		//   using var textBlob = _textBlobBuilder.Build();
+		//   canvas.DrawText(textBlob, 0f, y, paint);
+		var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
+		UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
+		UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+	}
+
+	// TextHighlightRenderer::GetDefaultHighlighterBrushes — the fallback when a highlighter's brush is
+	// unset or not a SolidColorBrush.
+	private static SolidColorBrush DefaultHighlighterBackground =>
+		ResourceResolver.ResolveResourceStatic<SolidColorBrush>("TextControlHighlighterBackground")
+		?? new SolidColorBrush(Microsoft.UI.Colors.Yellow);
+
+	// TextHighlightRenderer::IterateMergedHighlighters — collapse every highlighter's ranges into
+	// non-overlapping regions where a later entry wins. The caller appends the selection last, so it
+	// takes precedence wherever it overlaps an app highlighter.
+	private static List<HighlightRegion> MergeHighlighters(IEnumerable<TextHighlighter> highlighters)
+	{
+		TextHighlightMerge merge = new();
+
+		foreach (var highlighter in highlighters)
+		{
+			if (highlighter?.Ranges is not { Count: > 0 } ranges)
+			{
+				continue;
+			}
+
+			// WinUI resolves highlighter brushes to SolidColorBrush and falls back to the theme default.
+			var foreground = highlighter.Foreground as SolidColorBrush;
+			var background = highlighter.Background as SolidColorBrush;
+
+			foreach (var range in ranges)
+			{
+				if (range.Length <= 0)
+				{
+					continue;
+				}
+
+				// HighlightRegion ranges are inclusive; TextRange carries a length.
+				merge.AddRegion(new HighlightRegion(range.StartIndex, range.StartIndex + range.Length - 1, foreground, background));
+			}
+		}
+
+		return new List<HighlightRegion>(merge.Regions);
+	}
+
+	// Renders one segment split across the merged highlight regions: unhighlighted runs keep the base
+	// colour, each highlighted run takes its region's foreground. Regions are disjoint and ordered, so a
+	// single left-to-right pass covers the segment without overdrawing it.
+	private void RenderHighlightedText(List<(HighlightRegion Region, SelectionDetails Details)> regions,
+		int lineIndex, int characterCountSoFar, RenderSegmentSpan segmentSpan, FontDetails fontInfo,
+		Span<SKPoint> positions, Span<ushort> glyphs, SKCanvas canvas, float y, SKPaint paint,
+		SKColor? highContrastSelectionColor)
+	{
+		var glyphsLength = segmentSpan.GlyphsLength;
+		var baseColor = paint.Color;
+		var cursor = 0;
+
+		foreach (var (region, details) in regions)
+		{
+			if (details.StartLine > lineIndex || lineIndex > details.EndLine)
+			{
+				continue;
+			}
+
+			var start = segmentSpan.GetRenderedGlyphIndex(details.StartIndex - characterCountSoFar);
+			var end = segmentSpan.GetRenderedGlyphIndex(details.EndIndex - characterCountSoFar);
+
+			if (end <= start)
+			{
+				continue;
+			}
+
+			if (start > cursor)
+			{
+				DrawText(fontInfo, positions.Slice(cursor, start - cursor), glyphs.Slice(cursor, start - cursor), canvas, y, paint);
+			}
+
+			paint.Color = highContrastSelectionColor
+				?? (region.ForegroundBrush is { } fg ? ToSkColor(fg.Color, baseColor.Alpha / 255f) : new SKColor(255, 255, 255, 255));
+			DrawText(fontInfo, positions.Slice(start, end - start), glyphs.Slice(start, end - start), canvas, y, paint);
+			paint.Color = baseColor;
+
+			cursor = end;
+		}
+
+		if (cursor < glyphsLength)
+		{
+			DrawText(fontInfo, positions.Slice(cursor, glyphsLength - cursor), glyphs.Slice(cursor, glyphsLength - cursor), canvas, y, paint);
 		}
 	}
 
@@ -1003,27 +1346,19 @@ internal readonly struct ParsedText : IParsedText
 		CompositionBrush caretBrush, float opacity, int characterCountSoFar, RenderSegmentSpan segmentSpan,
 		Span<SKPoint> positions, float x, float justifySpaceOffset, float y, RenderLine line)
 	{
-		var spanStartingIndex = characterCountSoFar;
 		{
 			float caretLocation = float.MinValue;
 
-			var i = caretIndex;
-			if (i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.GlyphsLength)
+			var offset = caretIndex - characterCountSoFar;
+			if (offset >= 0 && offset <= segmentSpan.CharacterLength)
 			{
-				if (i >= spanStartingIndex + positions.Length)
-				{
-					caretLocation = x + justifySpaceOffset * (i - (spanStartingIndex + positions.Length));
-				}
-				else
-				{
-					caretLocation = positions[i - spanStartingIndex].X;
-				}
-			}
-			else if (i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.FullGlyphsLength)
-			{
+				var glyph = segmentSpan.GetRenderedGlyphIndex(offset);
+
 				// In case of non-rendered trailing spaces, the caret should theoretically be beyond the width of the TextBox,
 				// but we still render the caret at the end of the visible area like WinUI does.
-				caretLocation = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
+				caretLocation = glyph < positions.Length
+					? positions[glyph].X
+					: x + justifySpaceOffset * (offset > segmentSpan.GetCharacterOffset(positions.Length) ? segmentSpan.TrailingSpaces : 0);
 			}
 
 			if (Math.Round(caretLocation + caretThickness) > _availableSize.Width)
@@ -1050,15 +1385,14 @@ internal readonly struct ParsedText : IParsedText
 		}
 	}
 
-	// Warning: this is only tested and currently used by TextBox
-	private List<(int start, int length)> GetLineIntervals()
+	internal List<(int start, int length)> GetLineIntervals()
 	{
 		var lineIntervals = new List<(int start, int length)>(_renderLines.Count);
 
 		var start = 0;
 		foreach (var line in _renderLines)
 		{
-			var length = line.SegmentSpans.Sum(GlyphsLengthWithCR);
+			var length = GetCharacterLength(line);
 			lineIntervals.Add((start, length));
 			start += length;
 		}
@@ -1068,26 +1402,10 @@ internal readonly struct ParsedText : IParsedText
 
 	private SelectionDetails CalculateSelection(int start, int end)
 	{
-		var unadjustedValue = (start: CountRunes(_text[..start]), end: CountRunes(_text[..end])); // unadjust for surrogate pairs
-
 		// TODO: we're passing twice to look for the start and end lines. Could easily be done in 1 pass
-		// GetRectForIndex expects an adjusted index, so no need to unadjust
 		var startLine = GetRenderLineAt(GetRectForIndex(start).GetCenter().Y, true)?.index ?? 0;
 		var endLine = GetRenderLineAt(GetRectForIndex(end).GetCenter().Y, true)?.index ?? 0;
-		return new SelectionDetails(startLine, unadjustedValue.start, endLine, unadjustedValue.end);
-
-		static int CountRunes(string s)
-		{
-			var enumerator = s.EnumerateRunes();
-			int count = 0;
-			// Avoid LINQ's Count() because it will box the enumerator.
-			while (enumerator.MoveNext())
-			{
-				count++;
-			}
-
-			return count;
-		}
+		return new SelectionDetails(startLine, start, endLine, end);
 	}
 
 	/// <param name="extendedSelection">returns the most appropriate match even if y is completely outside the textblock</param>
@@ -1126,7 +1444,7 @@ internal readonly struct ParsedText : IParsedText
 		}
 
 		RenderSegmentSpan span;
-		(float spanX, float justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, _textAlignment);
+		(float spanX, float justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, ResolvedTextAlignment);
 		int i = 0;
 
 		do
@@ -1145,30 +1463,8 @@ internal readonly struct ParsedText : IParsedText
 		return extendedSelection ? (span, spanX - span.Width) : null;
 	}
 
-	// equivalent to AdjustSelectionForSurrogatePairs for a single index
-	/// <remarks>does nothing on invalid index input (i.e. keeps it invalid)</remarks>
-	private int AdjustIndexForSurrogatePairs(int index)
-	{
-		if (index < 0)
-		{
-			return index;
-		}
-
-		var count = 0;
-		for (int i = 0, j = 0; i < _text.Length && j < index; i++, j++, count += 1)
-		{
-			if (i < _text.Length - 1 && char.IsSurrogatePair(_text[i], _text[i + 1]))
-			{
-				// Notice how j didn't move here
-				count += 1;
-				i++;
-			}
-		}
-
-		return count;
-	}
-
-	private int GetIndexAtUnadjusted(Point p, bool ignoreEndingSpace, bool extendedSelection)
+	/// <remarks>Returns a UTF-16 index into the paragraph text, always at a cluster boundary.</remarks>
+	public int GetIndexAt(Point p, bool ignoreEndingNewLine, bool extendedSelection)
 	{
 		var line = GetRenderLineAt(p.Y, extendedSelection)?.line;
 
@@ -1179,13 +1475,13 @@ internal readonly struct ParsedText : IParsedText
 
 		var characterCount = _renderLines
 			.TakeWhile(l => l != line) // all previous lines
-			.Sum(currentLine => currentLine.SegmentSpans.Sum(GlyphsLengthWithCR)); // all characters in line
+			.Sum(GetCharacterLength);
 
 		var (span, x) = GetRenderSegmentSpanAt(p, true)!.Value; // never null because we already found a line
 
 		characterCount += line.SegmentSpans
 			.TakeWhile(s => !s.Equals(span)) // all previous spans in line
-			.Sum(GlyphsLengthWithCR); // all characters in span
+			.Sum(s => s.CharacterLengthWithNewLine);
 
 		var segment = span.Segment;
 		if (segment.Inline is not Run run)
@@ -1195,29 +1491,27 @@ internal readonly struct ParsedText : IParsedText
 
 		var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
 
-		// The rest of the function uses GlyphsLength and not FullGlyphsLength as we can only really find a rendered glyph with a pointer.
-		// Non-rendered spaces don't matter here.
-		var glyphStart = span.GlyphsStart;
-		var glyphEnd = glyphStart + span.GlyphsLength;
-		for (var i = glyphStart; i < glyphEnd; i++)
+		// Only rendered glyphs can be found with a pointer. Non-rendered spaces don't matter here.
+		for (var i = 0; i < span.GlyphsLength;)
 		{
-			var glyph = segment.Glyphs[i];
-			var glyphWidth = GetGlyphWidthWithSpacing(glyph, characterSpacing);
-			if (p.X < x + glyphWidth / 2) // the point is closer to the left side of the glyph.
+			var next = GetNextCluster(span, i, characterSpacing, out var clusterWidth);
+			if (p.X < x + clusterWidth / 2) // the point is closer to the left side of the cluster.
 			{
-				return characterCount;
+				return characterCount + span.GetCharacterOffset(i);
 			}
 
-			x += glyphWidth;
-			characterCount++;
+			x += clusterWidth;
+			i = next;
 		}
 
-		if (ignoreEndingSpace
+		characterCount += span.GetCharacterOffset(span.GlyphsLength);
+
+		if (ignoreEndingNewLine
 			&& span == line.SegmentSpans[^1]
 			&& line != _renderLines[^1]
 			&& _textWrapping != TextWrapping.NoWrap
 			&& span.GlyphsStart + span.GlyphsLength > 0
-			&& char.IsWhiteSpace(segment.Text[span.GlyphsStart + span.GlyphsLength - 1]))
+			&& char.IsWhiteSpace(segment.Text[segment.GetCharacterOffset(span.GlyphsStart + span.GlyphsLength - 1)]))
 		{
 			// in cases like clicking at the end of a line that ends in a wrapping space, we actually want the character right before the space
 			characterCount--;
@@ -1226,21 +1520,73 @@ internal readonly struct ParsedText : IParsedText
 		return characterCount;
 	}
 
-	// RenderSegmentSpan.FullGlyphsLength includes spaces, but not \r
-	private static int GlyphsLengthWithCR(RenderSegmentSpan span)
-		=> span.FullGlyphsLength + (SpanEndsInNewLine(span) ? span.Segment.LineBreakLength : 0);
+	// The caret stop containing a UTF-16 index: a surrogate pair, a combining sequence or a CRLF is a single stop.
+	internal (int Start, int Length) GetCaretStop(int index)
+	{
+		if (index < 0)
+		{
+			return (index, 1);
+		}
+
+		var characterCount = 0;
+		foreach (var line in _renderLines)
+		{
+			foreach (var span in line.SegmentSpans)
+			{
+				var spanLength = span.CharacterLengthWithNewLine;
+				if (index < characterCount + spanLength)
+				{
+					var offset = index - characterCount;
+					if (offset >= span.CharacterLength)
+					{
+						return (characterCount + span.CharacterLength, spanLength - span.CharacterLength);
+					}
+
+					var (start, end) = span.Segment.GetClusterRange(span.CharacterStart + offset);
+					start = Math.Max(start, span.CharacterStart);
+					end = Math.Min(end, span.CharacterStart + span.CharacterLength);
+					return (characterCount + start - span.CharacterStart, end - start);
+				}
+
+				characterCount += spanLength;
+			}
+		}
+
+		return (index, 1);
+	}
+
+	// The UTF-16 length of a line, including the line break it ends with.
+	private static int GetCharacterLength(RenderLine line)
+	{
+		var length = 0;
+		foreach (var span in line.SegmentSpans)
+		{
+			length += span.CharacterLengthWithNewLine;
+		}
+
+		return length;
+	}
+
+	// Returns the rendered glyph index following the cluster that starts at glyphIndex, and that cluster's width.
+	private static int GetNextCluster(RenderSegmentSpan span, int glyphIndex, float characterSpacing, out float clusterWidth)
+	{
+		var glyphs = span.Segment.Glyphs;
+		var cluster = glyphs[span.GlyphsStart + glyphIndex].Cluster;
+		clusterWidth = 0;
+
+		do
+		{
+			clusterWidth += GetGlyphWidthWithSpacing(glyphs[span.GlyphsStart + glyphIndex], characterSpacing);
+			glyphIndex++;
+		}
+		while (glyphIndex < span.GlyphsLength && glyphs[span.GlyphsStart + glyphIndex].Cluster == cluster);
+
+		return glyphIndex;
+	}
 
 	private static float GetGlyphWidthWithSpacing(GlyphInfo glyph, float characterSpacing)
 	{
 		return glyph.AdvanceX > 0 ? glyph.AdvanceX + characterSpacing : glyph.AdvanceX;
-	}
-
-	private static bool SpanEndsInNewLine(RenderSegmentSpan segmentSpan)
-	{
-		var segment = segmentSpan.Segment;
-
-		return segment is { Inline: Run, LineBreakAfter: true } &&
-			   segment.Text.TrimEnd().Length <= segmentSpan.GlyphsStart + segmentSpan.GlyphsLength; // last in segment
 	}
 
 	private record SelectionDetails(int StartLine, int StartIndex, int EndLine, int EndIndex)
