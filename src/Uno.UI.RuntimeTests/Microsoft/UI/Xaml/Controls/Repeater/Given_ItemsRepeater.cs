@@ -401,7 +401,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[Ignore("Validated the Uno-specific firstRealizedMajor clamping in StackLayout.GetExtent, which was removed in favor of WinUI parity (uno#24479). Fails on Skia (WinUI behavior) and on native targets (async native scrolling).")]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24479")]
 		public async Task When_ItemSignificantlyTaller_Then_VirtualizeProperly()
 		{
