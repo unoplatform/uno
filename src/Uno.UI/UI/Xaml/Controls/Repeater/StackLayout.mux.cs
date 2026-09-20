@@ -199,6 +199,9 @@ partial class StackLayout
 				MUX_ASSERT(lastRealized != null);
 
 				SetMajorStart(ref extent, MajorStart(firstRealizedLayoutBounds) - firstRealizedItemIndex * averageElementSize);
+#if HAS_UNO
+				StabilizeExtentOrigin(ref extent, stackState, firstRealizedItemIndex, firstRealizedLayoutBounds);
+#endif
 				var remainingItems = itemsCount - lastRealizedItemIndex - 1;
 				SetMajorSize(ref extent, MajorEnd(lastRealizedLayoutBounds) - MajorStart(extent) + remainingItems * averageElementSize);
 			}

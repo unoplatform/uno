@@ -6,9 +6,47 @@ using Windows.Foundation;
 namespace Microsoft.UI.Xaml.Controls;
 
 // Uno-specific scaffolding for the C++ OrientationBasedMeasures multiple
-// inheritance.
+// inheritance, plus the stable layout origin GetExtent needs on Uno.
 partial class StackLayout
 {
+	/// <summary>
+	/// Holds the layout origin WinUI's GetExtent formula produces steady across measure passes.
+	/// </summary>
+	/// <remarks>
+	/// WinUI computes the origin as firstRealizedLayoutBounds.MajorStart - firstRealizedItemIndex *
+	/// averageElementSize. averageElementSize is a running mean over the realized items, so the origin
+	/// drifts by a few pixels whenever a tall item enters or leaves the realization buffer. WinUI
+	/// absorbs that drift through the viewport shift the repeater hands its scroller; Uno's
+	/// ScrollViewer does not consume ItemsRepeater's pending viewport shift, so the drift lands
+	/// straight on screen: items change their repeater-local Y between two wheel ticks, and a
+	/// shrinking estimate drags the scroll offset backward mid-gesture (uno#23041, uno#23042).
+	///
+	/// So we keep the origin we last reported, and let MajorSize grow to cover the realized range
+	/// instead. Two cases release it: the first item being realized, where the natural origin is 0
+	/// and holding a stale one would offset the whole list, and realized items sitting above the held
+	/// origin, which happens when scrolling back up puts items at negative algorithm coordinates --
+	/// holding then would leave them above the repeater's frame, unreachable.
+	///
+	/// Remove once Uno's ScrollViewer honours the pending viewport shift.
+	/// </remarks>
+	private void StabilizeExtentOrigin(
+		ref Rect extent,
+		StackLayoutState stackState,
+		int firstRealizedItemIndex,
+		Rect firstRealizedLayoutBounds)
+	{
+		var held = stackState.Uno_LastReportedExtentMajorStart;
+		var hasHeld = !float.IsNaN(held);
+		var itemsAboveHeld = hasHeld && MajorStart(firstRealizedLayoutBounds) < held;
+
+		if (hasHeld && firstRealizedItemIndex != 0 && !itemsAboveHeld)
+		{
+			SetMajorStart(ref extent, held);
+		}
+
+		stackState.Uno_LastReportedExtentMajorStart = (float)MajorStart(extent);
+	}
+
 	private ScrollOrientation _scrollOrientation;
 
 	ScrollOrientation OrientationBasedMeasures.ScrollOrientation
