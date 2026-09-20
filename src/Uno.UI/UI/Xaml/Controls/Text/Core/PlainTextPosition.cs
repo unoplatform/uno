@@ -235,6 +235,8 @@ internal struct PlainTextPosition
 
 	public override bool Equals(object? obj) => obj is PlainTextPosition other && Equals(other);
 
+	// The container is deliberately not part of identity: CPlainTextPosition::Equals compares the offset
+	// alone, so positions are only ever comparable within one text container.
 	public override int GetHashCode()
 	{
 		GetOffset(out var offset);

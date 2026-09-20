@@ -508,9 +508,14 @@ internal sealed partial class TextAdapter : ITextProvider
 		=> _ownerPeer.GetChildren() ?? (IList<AutomationPeer>)Array.Empty<AutomationPeer>();
 
 	// WinUI: TransformToRoot + ReverseTransform to map a root/screen point into element-relative pixels.
-	// A transform that cannot be inverted (e.g. a zero scale) leaves the point untransformed.
 	private static Point ReverseTransformFromRoot(FrameworkElement element, Point rootPoint)
-		=> element.TransformToVisual(null).Inverse is { } inverse ? inverse.TransformPoint(rootPoint) : rootPoint;
+	{
+		var elementPoint = element.TransformToVisual(null).Inverse.TransformPoint(rootPoint);
+
+		// A transform that cannot be inverted (a zero scale) yields NaN rather than failing, and WinUI's
+		// ReverseTransform leaves the point untransformed in that case.
+		return double.IsNaN(elementPoint.X) || double.IsNaN(elementPoint.Y) ? rootPoint : elementPoint;
+	}
 
 	// TODO Uno (UIA): RichTextBlockOverflow content-pointer slice of the master container.
 	// WinUI returns CRichTextBlockOverflow::GetContentStart()/GetContentEnd() (the overflow's
