@@ -190,7 +190,7 @@ namespace Microsoft.UI.Xaml.Documents
 		private static bool IsLinkNavigationKey(VirtualKey key) => key is VirtualKey.Enter or VirtualKey.Space;
 
 		// CHyperlink::KeyDownEventListener - leaves the event unhandled, so it keeps bubbling to the host.
-		internal void OnKeyDown(VirtualKey key)
+		internal override void OnKeyDown(VirtualKey key)
 		{
 			if (IsLinkNavigationKey(key))
 			{
@@ -200,7 +200,7 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		// CHyperlink::KeyUpEventListener - only navigate when this link saw a navigation key down.
-		internal void OnKeyUp(VirtualKey key)
+		internal override void OnKeyUp(VirtualKey key)
 		{
 			if (_isLinkNavigationKeyDown && IsLinkNavigationKey(key))
 			{

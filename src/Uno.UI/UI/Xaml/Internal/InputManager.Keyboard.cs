@@ -76,16 +76,17 @@ partial class InputManager
 			var focusedElement = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot);
 			var originalSource2 = GetKeyRoutedSource(focusedElement);
 
-			// CHyperlink's own KeyDown/KeyUp listeners are the first stop as the event bubbles from the focused link.
-			if (focusedElement is Hyperlink hyperlink && !routedArgs.Handled)
+			// A focused text element is not a UIElement, so Uno hands it the key here; WinUI's CHyperlink
+			// registers its own KeyDown/KeyUp listeners on itself instead (Hyperlink.cpp).
+			if (!routedArgs.Handled && focusedElement is TextElement focusedTextElement)
 			{
 				if (down)
 				{
-					hyperlink.OnKeyDown(args.VirtualKey);
+					focusedTextElement.OnKeyDown(args.VirtualKey);
 				}
 				else
 				{
-					hyperlink.OnKeyUp(args.VirtualKey);
+					focusedTextElement.OnKeyUp(args.VirtualKey);
 				}
 			}
 

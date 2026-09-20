@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -381,6 +381,13 @@ namespace Microsoft.UI.Xaml.Documents
 					break;
 			}
 		}
+
+		// WinUI text elements register their own UIElement_KeyDown/KeyUp listeners (CHyperlink's
+		// constructor, Hyperlink.cpp). Uno raises routed events on UIElements only, so InputManager
+		// hands the keys to the focused text element through these instead.
+		internal virtual void OnKeyDown(global::Windows.System.VirtualKey key) { }
+
+		internal virtual void OnKeyUp(global::Windows.System.VirtualKey key) { }
 
 		/// <summary>
 		/// Retrieves the parent RichTextBox/CRichTextBlock/TextBlock.
