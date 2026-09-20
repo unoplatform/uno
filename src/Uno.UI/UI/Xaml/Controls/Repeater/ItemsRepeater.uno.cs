@@ -49,14 +49,18 @@ partial class ItemsRepeater : IPanel
 			_layoutSubscriptionsRevoker.Disposable = disposables;
 		}
 
-		if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is not null)
+		if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is { } itemsSourceView)
 		{
-			m_itemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
+			itemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
 			_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
-			{
-				m_itemsSourceView.CollectionChanged -= OnItemsSourceViewChanged;
-			});
+				itemsSourceView.CollectionChanged -= OnItemsSourceViewChanged);
 		}
+
+		// Uno specific: re-supply the effective provider so layout-provided defaults survive an
+		// unload/load cycle. Mirrors the precedence in OnLayoutChanged / OnTransitionProviderChanged.
+		var effectiveProvider = ItemTransitionProvider
+			?? (m_ownsTransitionProvider ? GetEffectiveLayout()?.CreateDefaultItemTransitionProvider() : null);
+		m_transitionManager.ReattachToProvider(effectiveProvider);
 	}
 
 	private void OnUnloadedUno()
@@ -65,6 +69,12 @@ partial class ItemsRepeater : IPanel
 		// because ItemsRepeater uses a "singleton" instance of default StackLayout.
 		_layoutSubscriptionsRevoker.Disposable = null;
 		_dataSourceSubscriptionsRevoker.Disposable = null;
+
+		// Uno specific: TransitionManager subscribes a strong .NET delegate to the provider's
+		// TransitionCompleted and holds the repeater through m_owner, so a shared or externally
+		// retained provider would keep the unloaded repeater alive. Paired with ReattachToProvider above.
+		m_transitionManager.DetachFromProvider();
+
 		if (m_itemsSourceView is not null)
 		{
 			// We will no longer receive the element changes until next load.
