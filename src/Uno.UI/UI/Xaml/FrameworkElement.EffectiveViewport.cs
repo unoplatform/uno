@@ -91,6 +91,13 @@ namespace Microsoft.UI.Xaml
 				{
 					TRACE_EFFECTIVE_VIEWPORT($"Enabling effective viewport propagation (reason: {caller} | child: {child.GetDebugName()} | local: {_effectiveViewportChanged?.GetInvocationList().Length} | children: {_childrenInterestedInViewportUpdates?.Count}).");
 
+					// Forget the viewport we last propagated: while propagation was off we kept receiving
+					// neither updates nor invalidations, so it tells us nothing about the viewport we are
+					// about to compute. Without this, an element that leaves the tree and comes back finds
+					// the same viewport as before, skips the update as unchanged, and leaves the empty
+					// viewport enqueued on its way out to be raised -- after it is back and laid out.
+					_lastEffectiveViewport = default;
+
 					var parent = this.FindFirstAncestor<IFrameworkElement_EffectiveViewport>();
 					if (parent is null)
 					{
