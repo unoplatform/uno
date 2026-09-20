@@ -161,7 +161,7 @@ internal sealed unsafe partial class WebGpuFrame
 
 	// Builds a plain recording's ops in its own space, into resources it owns: runs of same-clip rects coalesce into
 	// one buffer and one draw, glyph runs into one atlas draw. The arena positions the result on the GPU.
-	private void BuildCoalesced(List<WebGpuCommand> cmds, List<DrawOp> ops, OwnedResources owned, Vector2? atlasScale = null, Vector2? maskScale = null)
+	private void BuildCoalesced(List<WebGpuCommand> cmds, List<DrawOp> ops, OwnedResources owned, Vector2? atlasScale = null, Vector2? maskScale = null, Vector2 place = default)
 	{
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
@@ -180,7 +180,7 @@ internal sealed unsafe partial class WebGpuFrame
 				ops.Add(DrawOp.Own(DrawKind.RoundedRect, Vbuf(_scratch, VertexStride.RoundedRect, owned), (uint)((j - ci) * 6), IntPtr.Zero, rc0.Clip, MakeClipBg(rc0.Clip, owned)));
 				ci = j - 1;
 			}
-			else if (WebGpuCoverage.AtlasEnabled && atlasScale is { } asc && Coverage.TryAtlasBatch(cmds, ref ci, owned, asc, out var aop))
+			else if (WebGpuCoverage.AtlasEnabled && atlasScale is { } asc && Coverage.TryAtlasBatch(cmds, ref ci, owned, asc, out var aop, place))
 			{
 				ops.Add(aop);
 			}
@@ -188,7 +188,7 @@ internal sealed unsafe partial class WebGpuFrame
 			{
 				var density = maskScale ?? atlasScale ?? Vector2.One;
 				var shape = Coverage.ShapeOf(pc, density);
-				if (shape.Tris is null) { TryBigFill(pc, shape, ops, owned, density, filtered: atlasScale is null); }
+				if (shape.Tris is null) { TryBigFill(pc, shape, ops, owned, density, filtered: atlasScale is null, place: place); }
 				else { AddFan(pc, shape, ops, owned); }
 			}
 			else { BuildSimpleOp(cmds[ci], ops, owned, atlasScale, maskScale); }
@@ -221,9 +221,9 @@ internal sealed unsafe partial class WebGpuFrame
 	// coverage mask: a cached entry when the shape is keyable, else a per-frame bake. The scale is the device density
 	// to bake at, so a rotated replay still gets a mask and draws it through its quad -- filtered, since its texels
 	// no longer land on pixels.
-	private bool TryBigFill(PathCmd pf, WebGpuShapeCache.Shape shape, List<DrawOp> ops, OwnedResources owned, Vector2 scale, bool filtered)
+	private bool TryBigFill(PathCmd pf, WebGpuShapeCache.Shape shape, List<DrawOp> ops, OwnedResources owned, Vector2 scale, bool filtered, Vector2 place = default)
 	{
-		if (WebGpuCoverage.AtlasEnabled && Coverage.TryAtlasFill(pf, shape, ops, owned, scale, big: true, filtered: filtered)) { return true; }
+		if (WebGpuCoverage.AtlasEnabled && Coverage.TryAtlasFill(pf, shape, ops, owned, scale, big: true, filtered: filtered, place: place)) { return true; }
 		if (Coverage.TryMaskFill(pf, shape, owned, scale, filtered, out var op)) { ops.Add(op); return true; }
 		return false;
 	}

@@ -585,7 +585,7 @@ internal sealed unsafe partial class WebGpuFrame
 			int atlasBefore = WebGpuCoverage.AtlasHit + WebGpuCoverage.AtlasBaked;
 			int maskBefore = WebGpuCoverage.ClipMasksBaked + WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits;
 			bool atlasSafe = TryAtlasScale(rm, out var scale);
-			BuildCoalesced(rr.Commands, built, owned, atlasScale: atlasSafe ? scale : null, maskScale: atlasSafe ? scale : MaskScale(rm));
+			BuildCoalesced(rr.Commands, built, owned, atlasScale: atlasSafe ? scale : null, maskScale: atlasSafe ? scale : MaskScale(rm), place: new Vector2(rm.M31, rm.M32));
 			RealizeOwnedVertices(built, owned);
 			bool hasPathClip = false; foreach (var o in built) { if (o.Clip.Paths is not null) { hasPathClip = true; break; } }
 			entry = new WebGpuGeometryCache
@@ -598,6 +598,7 @@ internal sealed unsafe partial class WebGpuFrame
 				HasPathClip = hasPathClip,
 				AtlasBlockedByScale = !atlasSafe && hasPath && WebGpuCoverage.AtlasEnabled,
 				AtlasScale = scale,
+				AtlasPhase = AtlasPhase(rm),
 				MaskScale = MaskScale(rm),
 			};
 			entry.Refs = 1;
@@ -763,8 +764,14 @@ internal sealed unsafe partial class WebGpuFrame
 
 	// An atlas quad or mask is baked for one replay scale; a different one, or a transform that now allows the
 	// atlas where the build could not use it, rebuilds so the content is neither mis-sized nor left aliased.
+	// The subpixel phase the atlas masks were baked for: only the FRACTION of the placement matters, so a cached
+	// recording that moves by whole pixels still reuses its masks and only a fractional move rebakes them.
+	private static Vector2 AtlasPhase(in Matrix3x2 t)
+		=> new(t.M31 - MathF.Floor(t.M31), t.M32 - MathF.Floor(t.M32));
+
 	private static bool AtlasNeedsRebuild(WebGpuGeometryCache entry, in Matrix3x2 transform)
 		=> (entry.HasAtlas && !(TryAtlasScale(transform, out var scale) && SameAtlasScale(scale, entry.AtlasScale)))
+			|| (entry.HasAtlas && AtlasPhase(transform) != entry.AtlasPhase)
 			|| (entry.HasClipMask && !SameAtlasScale(MaskScale(transform), entry.MaskScale))
 			|| (entry.AtlasBlockedByScale && TryAtlasScale(transform, out _));
 

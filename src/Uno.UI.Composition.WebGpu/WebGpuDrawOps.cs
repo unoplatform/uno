@@ -128,6 +128,8 @@ internal sealed class WebGpuGeometryCache
 	// Built while the replay transform rotated or skewed, so its paths could not take the atlas; rebuilt once it settles.
 	public bool AtlasBlockedByScale;
 	public Vector2 AtlasScale;
+	// The subpixel placement phase the atlas masks were baked at; a replay at a different fraction rebakes.
+	public Vector2 AtlasPhase;
 	public Vector2 MaskScale;
 	// The stamps: each is the per-op clip bind groups for one (transform, clip, pass basis), reused verbatim while
 	// those hold and rewritten in place when only the transform moved. There are several because one recording is

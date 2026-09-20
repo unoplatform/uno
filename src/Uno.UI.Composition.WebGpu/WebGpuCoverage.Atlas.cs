@@ -23,9 +23,9 @@ internal sealed unsafe partial class WebGpuCoverage
 	/// <summary>
 	/// Emits an atlased fill as a tinted quad, or returns false to leave it on the geometry path.
 	/// </summary>
-	internal bool TryAtlasFill(PathCmd pf, WebGpuShapeCache.Shape shape, List<DrawOp> ops, OwnedResources owned, Vector2 scale, bool big = false, bool filtered = false)
+	internal bool TryAtlasFill(PathCmd pf, WebGpuShapeCache.Shape shape, List<DrawOp> ops, OwnedResources owned, Vector2 scale, bool big = false, bool filtered = false, Vector2 place = default)
 	{
-		if (!TryAtlasOp(pf, shape, owned, scale, out var op, big, filtered)) { return false; }
+		if (!TryAtlasOp(pf, shape, owned, scale, out var op, big, filtered, place)) { return false; }
 		ops.Add(op);
 		return true;
 	}
@@ -38,10 +38,10 @@ internal sealed unsafe partial class WebGpuCoverage
 	/// recording (identity-baked geometry mapped by the xform table). Getting that scale wrong bakes the mask at
 	/// the wrong size, which is what broke When_ShapeVisual_ViewBox_Shape_Combinations.
 	/// </summary>
-	private bool TryAtlasOp(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, out DrawOp result, bool big = false, bool filtered = false)
+	private bool TryAtlasOp(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, out DrawOp result, bool big = false, bool filtered = false, Vector2 place = default)
 	{
 		result = default;
-		if (!TryAtlasSlot(pf, shape, owned, scale, out var slot, out var ox, out var oy, big)) { return false; }
+		if (!TryAtlasSlot(pf, shape, owned, scale, out var slot, out var ox, out var oy, big, place)) { return false; }
 		_atlasQuads.Clear();
 		AppendAtlasQuad(_atlasQuads, slot, ox, oy, scale, pf.Color);
 		result = MakeAtlasOp(pf, slot.Owner, _atlasQuads, owned, filtered);
@@ -55,11 +55,11 @@ internal sealed unsafe partial class WebGpuCoverage
 	/// <paramref name="i"/> past them. Per-glyph geometry turns a string into N fills, and a draw apiece is far
 	/// worse than the single merged run it replaces - the quads all sample one page, so they batch trivially.
 	/// </summary>
-	internal bool TryAtlasBatch(List<WebGpuCommand> cmds, ref int i, OwnedResources owned, Vector2 scale, out DrawOp result)
+	internal bool TryAtlasBatch(List<WebGpuCommand> cmds, ref int i, OwnedResources owned, Vector2 scale, out DrawOp result, Vector2 place = default)
 	{
 		result = default;
 		if (cmds[i] is not PathCmd first) { return false; }
-		if (!TryAtlasSlot(first, ShapeOf(first, scale), owned, scale, out var slot0, out var ox0, out var oy0)) { return false; }
+		if (!TryAtlasSlot(first, ShapeOf(first, scale), owned, scale, out var slot0, out var ox0, out var oy0, place: place)) { return false; }
 
 		_atlasQuads.Clear();
 		AppendAtlasQuad(_atlasQuads, slot0, ox0, oy0, scale, first.Color);
@@ -71,7 +71,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		{
 			// A fill landing on ANOTHER page cannot share this draw's bind group. It stays baked, so the caller
 			// picks it up next and starts a fresh batch on what is by then a cache hit.
-			if (!TryAtlasSlot(nx, ShapeOf(nx, scale), owned, scale, out var slotN, out var oxN, out var oyN)) { break; }
+			if (!TryAtlasSlot(nx, ShapeOf(nx, scale), owned, scale, out var slotN, out var oxN, out var oyN, place: place)) { break; }
 			if (!ReferenceEquals(slotN.Owner, slot0.Owner)) { break; }
 			AppendAtlasQuad(_atlasQuads, slotN, oxN, oyN, scale, first.Color);
 			j++;
@@ -87,7 +87,7 @@ internal sealed unsafe partial class WebGpuCoverage
 	/// Resolves (baking on a miss) the atlas entry for one fill. <paramref name="big"/> admits fills too large for
 	/// a shared page as entries with a texture of their own -- the cached form of what used to be a per-frame mask.
 	/// </summary>
-	private bool TryAtlasSlot(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, out WebGpuPathAtlas.Slot slot, out float ox, out float oy, bool big = false)
+	private bool TryAtlasSlot(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, out WebGpuPathAtlas.Slot slot, out float ox, out float oy, bool big = false, Vector2 place = default)
 	{
 		slot = null; ox = oy = 0;
 		if (!AtlasEnabled) { return false; }
@@ -103,7 +103,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		// those are the geometry's declared bounds mapped by the matrix, and a geometry whose outline reaches past
 		// them leaves the slot too small. The accumulate pass clamps every edge to the slot's right bound, so the
 		// overflow is not merely cropped - the winding it carries is lost and the fill comes out empty.
-		if (!WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, shape.BbMin + pf.Offset, shape.BbMax + pf.Offset, scale, out var key, out var w, out var h, out ox, out oy, allowBig: big)) { AtlasNoKey++; return false; }
+		if (!WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, shape.BbMin + pf.Offset, shape.BbMax + pf.Offset, scale, out var key, out var w, out var h, out ox, out oy, allowBig: big, place: place)) { AtlasNoKey++; return false; }
 
 
 		if (_d.PathAtlas.RegularPages == 0) { _d.AddPathAtlasPage(); }

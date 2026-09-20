@@ -305,7 +305,7 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// actually covers on screen, so every pixel quantity here — footprint, origin snap, subpixel phase — is
 	/// computed in DEVICE space, while the origin is returned in the op's own space for placing the quad.
 	/// </param>
-	public static bool TryKey(long shape, in Matrix4x4 matrix, Vector2 bbMin, Vector2 bbMax, Vector2 scale, out Key key, out int w, out int h, out float originX, out float originY, bool allowBig = false, int extra = 0)
+	public static bool TryKey(long shape, in Matrix4x4 matrix, Vector2 bbMin, Vector2 bbMax, Vector2 scale, out Key key, out int w, out int h, out float originX, out float originY, bool allowBig = false, int extra = 0, Vector2 place = default)
 	{
 		key = default;
 		w = h = 0;
@@ -322,16 +322,18 @@ internal sealed unsafe class WebGpuPathAtlas
 		// Snap the slot origin to whole DEVICE pixels and let the mask absorb the fractional offset. Placing the
 		// quad at a fractional position instead makes the sampler resample a 1:1 mask, which visibly blurs and
 		// fattens glyphs — the phase belongs in the baked mask (that is what the phase key is for).
-		var devMinX = bbMin.X * scale.X;
-		var devMinY = bbMin.Y * scale.Y;
+		// The phase must be the one the mask is DRAWN at, so the placement translation belongs here: a recording
+		// replayed at a fractional offset would otherwise bake the phase of its own space and land half a pixel out.
+		var devMinX = bbMin.X * scale.X + place.X;
+		var devMinY = bbMin.Y * scale.Y + place.Y;
 		var oxDev = MathF.Floor(devMinX);
 		var oyDev = MathF.Floor(devMinY);
-		originX = oxDev / scale.X;
-		originY = oyDev / scale.Y;
+		originX = (oxDev - place.X) / scale.X;
+		originY = (oyDev - place.Y) / scale.Y;
 
 		// A one-texel skirt keeps bilinear sampling from bleeding a neighbouring slot into the edge.
-		w = (int)MathF.Ceiling(bbMax.X * scale.X - oxDev) + 2;
-		h = (int)MathF.Ceiling(bbMax.Y * scale.Y - oyDev) + 2;
+		w = (int)MathF.Ceiling(bbMax.X * scale.X + place.X - oxDev) + 2;
+		h = (int)MathF.Ceiling(bbMax.Y * scale.Y + place.Y - oyDev) + 2;
 
 		// The subpixel phase on both axes, bit for bit: entries are keyed by outline content, so a shape shares an
 		// entry with any other drawn at the same fraction, and only then. Any coarser and two shapes a fraction of a
