@@ -324,6 +324,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		#region Keyboard
 
+		// The command modifier is Cmd (not Ctrl) on macOS, and KeyboardHelper only injects Ctrl.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 		[TestMethod]
 		public async Task When_CtrlA_Selects_All()
 		{
@@ -332,12 +334,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			try
 			{
 				await UITestHelper.Load(SUT);
-
-				if (OperatingSystem.IsMacOS())
-				{
-					Assert.Inconclusive("The command modifier is Cmd (not Ctrl) on macOS; KeyboardHelper only injects Ctrl.");
-					return;
-				}
 
 				await KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_a#$u$_a#$u$_ctrl", SUT);
 				await WindowHelper.WaitForIdle();
@@ -350,6 +346,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// The command modifier is Cmd (not Ctrl) on macOS, and KeyboardHelper only injects Ctrl.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 		[TestMethod]
 		public async Task When_CtrlC_Copies_Selection()
 		{
@@ -363,12 +361,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			try
 			{
 				await UITestHelper.Load(SUT);
-
-				if (OperatingSystem.IsMacOS())
-				{
-					Assert.Inconclusive("The command modifier is Cmd (not Ctrl) on macOS; KeyboardHelper only injects Ctrl.");
-					return;
-				}
 
 				await KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_a#$u$_a#$u$_ctrl", SUT);
 				await WindowHelper.WaitForIdle();
