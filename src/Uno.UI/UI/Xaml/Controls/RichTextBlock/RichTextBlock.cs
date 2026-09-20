@@ -40,10 +40,8 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private IDisposable? _foregroundBrushChangedSubscription;
 
-#if !__WASM__
 		private bool _isPressed;
 		private Range _selectionOnPointerPressed;
-#endif
 
 		private Hyperlink? _hyperlinkOver; // do not use: use HyperlinkOver instead
 		private Hyperlink? HyperlinkOver
@@ -201,10 +199,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Pointer events
 
-#if !__WASM__
 		private static bool SupportsSelection(PointerRoutedEventArgs args)
 			=> args.Pointer.PointerDeviceType is PointerDeviceType.Mouse;
-#endif
 
 		private static readonly RightTappedEventHandler OnRightTapped = (object sender, RightTappedRoutedEventArgs e) =>
 		{
@@ -218,12 +214,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if __SKIA__
 			if (!that.IsFocused && !Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
 			{
 				that.Focus(FocusState.Pointer);
 			}
-#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerPressed = (object sender, PointerRoutedEventArgs e) =>
@@ -238,9 +232,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if !__WASM__
 			that._isPressed = true;
-#endif
 
 			if (that.FindHyperlinkAt(e) is Hyperlink hyperlink)
 			{
@@ -253,21 +245,14 @@ namespace Microsoft.UI.Xaml.Controls
 				e.Handled = true;
 				that.CompleteGesture();
 			}
-#if __SKIA__
 			else if (that.IsTextSelectionEnabled && that._pSelectionManager is { } manager && that._pTextView is { } view)
 			{
 				manager.OnPointerPressed(that, e, view);
 			}
-#endif
-#if !__WASM__
 			else if (that.IsTextSelectionEnabled && SupportsSelection(e))
 			{
 				var point = e.GetCurrentPoint(that);
-#if __SKIA__
 				var index = that.GetCharacterIndexAtPoint(point.Position, true);
-#else
-				var index = that.GetCharacterIndexAtPoint(point.Position);
-#endif
 				that._selectionOnPointerPressed = that.Selection;
 				if (index >= 0)
 				{
@@ -275,16 +260,13 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				e.Handled = true;
-#if __SKIA__
 				if (!Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
-#endif
 				{
 					that.Focus(FocusState.Pointer);
 				}
 
 				that.CapturePointer(e.Pointer);
 			}
-#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerReleased = (object sender, PointerRoutedEventArgs e) =>
@@ -294,14 +276,12 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if !__WASM__
 			if (that._isPressed && that.IsTextSelectionEnabled && that.FindHyperlinkAt(e) is { })
 			{
 				that.Selection = new Range(0, 0);
 			}
 
 			that._isPressed = false;
-#endif
 
 			if (that.IsCaptured(e.Pointer))
 			{
@@ -319,30 +299,24 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-#if __SKIA__
 			if (that.IsTextSelectionEnabled && that._pSelectionManager is { } manager && that._pTextView is { } view)
 			{
 				manager.OnPointerReleased(that, e, view);
 			}
-#endif
 
 			that.OnPointerReleasedForSelectionFlyout(e);
-#if !__WASM__
 			e.Handled |= that.IsTextSelectionEnabled;
-#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerCaptureLost = (object sender, PointerRoutedEventArgs e) =>
 		{
 			if (sender is RichTextBlock that)
 			{
-#if !__WASM__
 				that._isPressed = false;
 				if (SupportsSelection(e))
 				{
 					that.Selection = that._selectionOnPointerPressed;
 				}
-#endif
 
 				e.Handled = that.AbortHyperlinkCaptures(e.Pointer);
 			}
@@ -363,29 +337,21 @@ namespace Microsoft.UI.Xaml.Controls
 				hyperlink?.SetPointerOver(e.Pointer);
 			}
 
-#if __SKIA__
 			if (that.IsTextSelectionEnabled && that._pSelectionManager is { } manager && that._pTextView is { } view)
 			{
 				manager.OnPointerMoved(that, e, view);
 				return;
 			}
-#endif
 
-#if !__WASM__
 			if (that._isPressed && that.IsTextSelectionEnabled && SupportsSelection(e))
 			{
 				var point = e.GetCurrentPoint(that);
-#if __SKIA__
 				var index = that.GetCharacterIndexAtPoint(point.Position, true);
-#else
-				var index = that.GetCharacterIndexAtPoint(point.Position);
-#endif
 				if (index >= 0)
 				{
 					that.Selection = that.Selection with { end = index };
 				}
 			}
-#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerEntered = (sender, e) =>
@@ -440,9 +406,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void RecalculateSubscribeToPointerEvents()
 		{
 			SubscribeToPointerEvents = HasHyperlink
-#if !__WASM__
 				|| IsTextSelectionEnabled
-#endif
 				;
 		}
 
@@ -551,11 +515,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private Hyperlink? FindHyperlinkAt(PointerRoutedEventArgs e)
 		{
-#if __SKIA__
 			return FindHyperlinkAtSkia(e);
-#else
-			return null;
-#endif
 		}
 
 		#endregion
@@ -571,12 +531,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// control nor a constraining arrange slot changes the size the text reports.
 		private Size GetContentSize()
 		{
-#if __SKIA__
 			if (_pageNode is not null)
 			{
 				return _pageNode.GetDesiredSize();
 			}
-#endif
 
 			return DesiredSize;
 		}
@@ -602,11 +560,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private int GetCharacterIndexAtPoint(Point point, bool extended = false)
 		{
-#if __SKIA__
 			return GetCharacterIndexAtPointSkia(point, extended);
-#else
-			return -1;
-#endif
 		}
 
 		/// <summary>
@@ -614,13 +568,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public void CopySelectionToClipboard()
 		{
-#if __SKIA__
 			if (_pSelectionManager is not null)
 			{
 				_pSelectionManager.CopySelectionToClipboard();
 				return;
 			}
-#endif
 
 			if (Selection.start != Selection.end)
 			{
@@ -635,13 +587,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public void SelectAll()
 		{
-#if __SKIA__
 			if (_pSelectionManager is not null)
 			{
 				_pSelectionManager.SelectAll();
 				return;
 			}
-#endif
 
 			Selection = new Range(0, GetPlainText().Length);
 		}
