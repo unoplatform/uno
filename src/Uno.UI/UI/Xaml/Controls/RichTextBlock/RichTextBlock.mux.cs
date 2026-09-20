@@ -8,6 +8,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading.Tasks;
 using SkiaSharp;
 using Windows.Foundation;
 using Windows.System;
@@ -41,6 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly VirtualKeyModifiers _platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
 		private readonly Dictionary<TextHighlighter, IDisposable> _textHighlighterDisposables = new();
 		private bool _renderSelection;
+		private Task? _pendingFontLoad;
 		private bool _forceFocusedForContextFlyout;
 		private bool _isSelectionFlyoutUpdateQueued;
 		private PointerDeviceType _lastInputDeviceType;
@@ -358,10 +360,22 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				task.ContinueWith(_ =>
+				// Measure runs repeatedly while the shared font task is pending: register one continuation
+				// per task, and hold the control weakly so an unloaded one is not kept alive by it.
+				if (_pendingFontLoad != task)
 				{
-					NativeDispatcher.Main.Enqueue(OnFontLoaded);
-				});
+					_pendingFontLoad = task;
+					var self = new WeakReference<RichTextBlock>(this);
+					task.ContinueWith(_ => NativeDispatcher.Main.Enqueue(() =>
+					{
+						if (self.TryGetTarget(out var that) && that._pendingFontLoad == task)
+						{
+							that._pendingFontLoad = null;
+							that.OnFontLoaded();
+						}
+					}));
+				}
+
 				return details;
 			}
 		}
