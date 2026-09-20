@@ -286,7 +286,9 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	[TestMethod]
-	[Ignore("Disabled temporarily (uno#23041): regressed by the ItemsRepeater/layout WinUI sync. Fails on Skia Desktop (2 of 3 local runs) while passing on master, because realization-driven extent estimation can again move the offset backward mid-wheel. This guard is Uno-only -- it is NotExecuted on the WinUI leg, which has no InputInjector -- so parity of the ported layout sources does not cover it. Re-enable once forward progress holds on Skia.")]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23041")]
 	public async Task When_WheelScrollDownThroughVarianceList_Then_OffsetMonotonicallyAdvances()
 	{
