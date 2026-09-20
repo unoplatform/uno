@@ -15,6 +15,11 @@ partial class BlockCollection
 	private uint[]? m_pLengths;
 	private uint m_length;
 
+	// Uno glue (Stage 9b): the TextSelectionManager is created against an ITextContainer.
+	// BlockCollection already implements RichTextServices.ITextContainer (see the run-model
+	// partials), so the container is the collection itself.
+	internal RichTextServices.ITextContainer GetTextContainer() => this;
+
 	//------------------------------------------------------------------------
 	//
 	//  Method:   CBlockCollection::GetPositionCount
