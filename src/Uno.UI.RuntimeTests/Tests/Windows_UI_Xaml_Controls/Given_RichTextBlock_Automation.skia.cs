@@ -55,6 +55,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Hyperlink_Reports_A_Bounding_Rectangle()
+		{
+			// CCoreServices::GetTextElementBoundingRect unions the link's text bounds and transforms them to
+			// screen space. The port returned an empty rect, so a focusable link had zero bounds.
+			var SUT = new RichTextBlock { Width = 400, FontSize = 24, TextWrapping = TextWrapping.NoWrap };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "Leading text " });
+			var hyperlink = new Hyperlink();
+			hyperlink.Inlines.Add(new Run { Text = "the link" });
+			paragraph.Inlines.Add(hyperlink);
+			SUT.Blocks.Add(paragraph);
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(SUT);
+				var hyperlinkPeer = (peer.GetChildren() ?? new List<AutomationPeer>()).OfType<HyperlinkAutomationPeer>().SingleOrDefault();
+				Assert.IsNotNull(hyperlinkPeer, "The RichTextBlock peer should expose a peer for the Hyperlink");
+
+				var rect = hyperlinkPeer!.GetBoundingRectangle();
+				var origin = SUT.TransformToVisual(null).TransformPoint(new Point(0, 0));
+
+				Assert.IsTrue(rect.Width > 0 && rect.Height > 0, $"The link should report a non-empty rectangle (got {rect})");
+				Assert.IsTrue(rect.X > origin.X, $"The rectangle should start past the leading run (got {rect.X}, control origin {origin.X})");
+				Assert.IsTrue(rect.Right <= origin.X + SUT.ActualWidth + 1, $"The rectangle should stay inside the control (got {rect.Right}, origin {origin.X}, width {SUT.ActualWidth})");
+				Assert.IsTrue(rect.Height <= SUT.ActualHeight + 1, $"A single-line link should not be taller than the control (got {rect.Height}, control {SUT.ActualHeight})");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public void When_Hyperlink_Peer_Requested_Repeatedly()
 		{
 			// TextElement::GetOrCreateAutomationPeer caches the peer in m_tpAP for the element's lifetime.
