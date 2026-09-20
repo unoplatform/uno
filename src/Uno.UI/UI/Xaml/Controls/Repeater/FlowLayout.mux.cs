@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference FlowLayout.cpp, commit 4b206bce3
+// MUX Reference FlowLayout.cpp, winui3/release/2.5.1
 
 using System;
 using System.Collections.Specialized;
@@ -85,7 +85,16 @@ partial class FlowLayout
 	/// <inheritdoc />
 	protected internal override void OnItemsChangedCore(VirtualizingLayoutContext context, object source, NotifyCollectionChangedEventArgs args)
 	{
-		GetFlowAlgorithm(context).OnItemsSourceChanged(source, args, context);
+		// The LayoutState can be null when a collection change is raised against a
+		// layout that has not been (or is no longer) initialized for this context -
+		// for example a stray CollectionChanged delivered to an unloaded ItemsRepeater
+		// whose RepeaterLayoutContext can no longer resolve its owner. Guard against it
+		// (mirrors StackLayout.OnItemsChangedCore) instead of dereferencing a null state.
+		if (context.LayoutState is { } layoutState && GetAsFlowState(layoutState) is { } flowState)
+		{
+			flowState.FlowAlgorithm.OnItemsSourceChanged(source, args, context);
+		}
+
 		// Always invalidate layout to keep the view accurate.
 		InvalidateLayout();
 	}
