@@ -488,6 +488,34 @@
 		<GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
 		<ApplicationManifest>Platforms\Windows\app.manifest</ApplicationManifest>
 	</PropertyGroup>
+	<!--
+	Windows keys a staged MSIX payload by package full name (identity + version), and the manifest
+	pins 1.0.0.0. Reinstalling a rebuilt package therefore re-registers the payload Windows already
+	staged instead of the new files, so a command-line MSIX loop silently runs stale bits. Switching
+	between the net10 and net11 windows TFMs makes that fatal rather than merely confusing: the
+	payload keeps the other TFM's framework assemblies and the app dies inside CsWinRT looking for a
+	System.Runtime it does not ship. Stamp a unique revision for command-line local builds; CI and
+	Visual Studio (which deploys a loose layout, and owns this manifest's revision) keep it as-is.
+	-->
+	<Target Name="_UnoStampDevAppxPackageVersion"
+			Condition="'$(_Platform)' == 'windows' and '$(ContinuousIntegrationBuild)' != 'true' and '$(BuildingInsideVisualStudio)' != 'true'"
+			BeforeTargets="_ValidatePresenceOfAppxManifestItems;_GenerateCurrentProjectAppxManifest;GetPackagingOutputs;_CreatePackageLayout">
+		<PropertyGroup>
+			<_UnoDevAppxManifest>$(IntermediateOutputPath)Package.dev.appxmanifest</_UnoDevAppxManifest>
+			<!-- Monotonic: days since 2020 as build, two-second ticks of the day as revision (both fit the 0-65535 limit). -->
+			<_UnoDevAppxVersion>1.0.$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse('2020-01-01'))).Days).$([System.Convert]::ToInt32($([System.Math]::Floor($([MSBuild]::Divide($([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds), 2))))))</_UnoDevAppxVersion>
+		</PropertyGroup>
+		<Copy SourceFiles="Package.appxmanifest" DestinationFiles="$(_UnoDevAppxManifest)" />
+		<XmlPoke XmlInputPath="$(_UnoDevAppxManifest)"
+				 Query="/x:Package/x:Identity/@Version"
+				 Value="$(_UnoDevAppxVersion)"
+				 Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10' /&gt;" />
+		<ItemGroup>
+			<AppxManifest Remove="Package.appxmanifest" />
+			<AppxManifest Include="$(_UnoDevAppxManifest)" />
+		</ItemGroup>
+		<Message Importance="high" Text="SamplesApp MSIX package version stamped as $(_UnoDevAppxVersion) so Windows stages this build instead of re-registering an older payload." />
+	</Target>
 	<ItemGroup Condition="'$(_Platform)' == 'windows'">
 		<AppxManifest Include="Package.appxmanifest">
 			<SubType>Designer</SubType>
