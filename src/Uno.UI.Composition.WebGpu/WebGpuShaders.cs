@@ -609,10 +609,12 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
   let d = sdRR(i.p, i.hf, i.radii);
   var cov = clamp(0.5 - d / sxy, 0.0, 1.0);
   // sxy above stays outside the `if`: WGSL forbids derivatives in non-uniform control flow, and Dawn (browser
-  // WebGPU) enforces that strictly even though wgpu-native (desktop) tolerated it. The inner rect only gets
-  // APPLIED when one is present.
-  let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii);
-  if (i.ihalf.x >= 0.0) { cov = cov * clamp(0.5 + di / sxy, 0.0, 1.0); }
+  // WebGPU) enforces that strictly even though wgpu-native (desktop) tolerated it. The inner SDF has no
+  // derivative of its own, so it belongs inside -- most rounded rects are a plain fill with no ring to cut.
+  if (i.ihalf.x >= 0.0) {
+    let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii);
+    cov = cov * clamp(0.5 + di / sxy, 0.0, 1.0);
+  }
   cov = cov * clipCov(i.rp, vec2<f32>(0.0), i.pos.xy);
   return vec4<f32>(i.col.rgb, i.col.a * cov);
 }";
