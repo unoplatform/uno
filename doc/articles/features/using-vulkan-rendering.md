@@ -58,13 +58,17 @@ For example, to prefer OpenGL ES over desktop OpenGL on X11, disable the desktop
 .UseX11(b => b.DisableRenderingBackends(X11RenderingBackend.OpenGL))
 ```
 
-### Android
+### Using FeatureConfiguration Flags
 
-Android does not use a host builder for this; configure it via `FeatureConfiguration.Rendering` before `host.Build()`:
+For backwards compatibility, Android rendering can also be configured via `FeatureConfiguration.Rendering`:
 
 ```csharp
+// Set before host.Build()
 FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = true;
 ```
+
+> [!NOTE]
+> When both the builder API and the feature flag are used, the builder takes precedence if it runs after the flag is set (which is the typical case). If you set the feature flag *after* `Build()`, the flag value wins.
 
 ### Android
 
