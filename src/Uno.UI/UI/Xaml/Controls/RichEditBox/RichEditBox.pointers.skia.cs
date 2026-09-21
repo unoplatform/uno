@@ -262,7 +262,15 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var displayBlock = _textBoxView!.DisplayBlock;
 			var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(point, true, true));
-			TouchTapAtIndex(index);
+			if (wasFocused)
+			{
+				TouchTapAtIndex(index);
+			}
+			else
+			{
+				SetInteractiveSelection(index, 0);
+				CaretMode = RichEditCaretDisplayMode.CaretWithThumbsOnlyEndShowing;
+			}
 		}
 
 		private void TouchTapAtIndex(int index)

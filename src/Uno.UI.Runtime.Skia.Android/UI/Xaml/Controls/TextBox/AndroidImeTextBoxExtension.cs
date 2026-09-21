@@ -17,10 +17,8 @@ namespace Uno.UI.Runtime.Skia.Android;
 /// <see cref="IImeSessionHost"/>.
 /// </summary>
 /// <remarks>
-/// Timing: The composition callback fires from <see cref="ObservableEditingState.EndBatchEdit"/>
-/// which happens BEFORE <see cref="TextInputConnection.EndBatchEdit"/> calls
-/// the active host's native text-update path. The callback therefore marks the composition as
-/// platform-applied before the document is synchronized.
+/// Composition bookkeeping precedes native text synchronization; completion follows it so the
+/// committed text belongs to the composition's undo group and is visible to completion handlers.
 /// </remarks>
 internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 {
@@ -31,6 +29,11 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 	private bool _sessionActive;
 	private TextInputConnection? _subscribedConnection;
 	private IImeSessionHost? _activeHost;
+	private int _sessionVersion;
+	private TextBox? _observedTextBox;
+	private long _readOnlyChangedToken;
+	private long _enabledChangedToken;
+	private long _tabStopChangedToken;
 
 	public bool IsComposing => _isComposing;
 
@@ -56,9 +59,11 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 
 		_sessionActive = true;
 		_activeHost = host;
+		_sessionVersion++;
 
 		try
 		{
+			ObserveInputAvailability(host);
 			if (Plugin is { } plugin)
 			{
 				plugin.InputConnectionCreated -= OnInputConnectionCreated;
@@ -72,6 +77,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 		{
 			_sessionActive = false;
 			_activeHost = null;
+			StopObservingInputAvailability();
 			UnsubscribeFromConnection();
 			if (Plugin is { } plugin)
 			{
@@ -88,7 +94,44 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 
 	public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update)
 	{
+		if (ReferenceEquals(_activeHost, host) && !TextInputPlugin.CanAcceptTextInput(host) && _isComposing)
+		{
+			ResetComposition();
+			CompositionEnded?.Invoke(this, EventArgs.Empty);
+		}
+
 		Plugin?.UpdateImeSession(host, update);
+	}
+
+	private void ObserveInputAvailability(IImeSessionHost host)
+	{
+		StopObservingInputAvailability();
+		if (host is TextBoxCore { Owner: TextBox textBox })
+		{
+			_observedTextBox = textBox;
+			_readOnlyChangedToken = textBox.RegisterPropertyChangedCallback(TextBox.IsReadOnlyProperty, OnInputAvailabilityChanged);
+			_enabledChangedToken = textBox.RegisterPropertyChangedCallback(Control.IsEnabledProperty, OnInputAvailabilityChanged);
+			_tabStopChangedToken = textBox.RegisterPropertyChangedCallback(Control.IsTabStopProperty, OnInputAvailabilityChanged);
+		}
+	}
+
+	private void StopObservingInputAvailability()
+	{
+		if (_observedTextBox is { } textBox)
+		{
+			textBox.UnregisterPropertyChangedCallback(TextBox.IsReadOnlyProperty, _readOnlyChangedToken);
+			textBox.UnregisterPropertyChangedCallback(Control.IsEnabledProperty, _enabledChangedToken);
+			textBox.UnregisterPropertyChangedCallback(Control.IsTabStopProperty, _tabStopChangedToken);
+			_observedTextBox = null;
+		}
+	}
+
+	private void OnInputAvailabilityChanged(DependencyObject sender, DependencyProperty property)
+	{
+		if (_activeHost is { } host)
+		{
+			UpdateImeSession(host, ImeSessionUpdate.TextAndSelection);
+		}
 	}
 
 	public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
@@ -106,7 +149,9 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 	public void EndImeSession()
 	{
 		_sessionActive = false;
+		_sessionVersion++;
 
+		StopObservingInputAvailability();
 		UnsubscribeFromConnection();
 
 		if (Plugin is { } plugin)
@@ -121,9 +166,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 
 		if (_isComposing)
 		{
-			_isComposing = false;
-			_lastComposingStart = -1;
-			_lastComposingEnd = -1;
+			ResetComposition();
 			CompositionEnded?.Invoke(this, EventArgs.Empty);
 		}
 	}
@@ -154,27 +197,61 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 		if (_sessionActive)
 		{
 			SubscribeToConnection(args.Connection);
+			if (_isComposing && args.Connection.GetComposingRange() is null)
+			{
+				ResetComposition();
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
 		}
 	}
 
-	private void OnCompositionStateChanged(int composingStart, int composingEnd, string? composingText, string fullText, bool textChanged)
+	private bool IsCurrentSession(object? connection, int version)
+		=> _sessionActive
+			&& _sessionVersion == version
+			&& ReferenceEquals(connection, _subscribedConnection)
+			&& ReferenceEquals(_subscribedConnection?.ActiveHost, _activeHost)
+			&& TextInputPlugin.CanAcceptTextInput(_activeHost)
+			&& !TextInputPlugin.IsSupersededByFocusedHost(_activeHost);
+
+	private void ResetComposition()
 	{
-		if (!_sessionActive)
+		_isComposing = false;
+		_lastComposingStart = -1;
+		_lastComposingEnd = -1;
+		_lastFullTextLength = 0;
+	}
+
+	private void OnCompositionStateChanged(object? sender, TextInputCompositionEventArgs args)
+	{
+		var sessionVersion = _sessionVersion;
+		if (!IsCurrentSession(sender, sessionVersion))
 		{
 			return;
 		}
 
 		bool wasComposing = _isComposing;
-		bool isNowComposing = composingStart >= 0 && composingEnd > composingStart;
+		bool isNowComposing = args.IsComposing;
+		var composingStart = args.ComposingStart;
+		var composingEnd = args.ComposingEnd;
+		var composingText = args.CompositionText;
+		var fullText = args.Text;
 
-		if (!wasComposing && isNowComposing)
+		if (args.TextApplied && isNowComposing)
+		{
+			_lastComposingStart = composingStart;
+			_lastComposingEnd = composingEnd;
+			_lastFullTextLength = fullText.Length;
+			return;
+		}
+
+		if (!args.TextApplied && !wasComposing && isNowComposing)
 		{
 			// Don't treat passive autocorrect/spell-check compositions (composing region
 			// set on existing text without any text change) as a real composition session.
 			// Without this filter, the IME setting a composing region on pre-existing text
 			// would set _isComposing=true on the TextBox, causing all subsequent key events
 			// to be swallowed by the IsComposing check in OnKeyDown.
-			if (!textChanged)
+			if (!args.TextChanged)
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
@@ -191,7 +268,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 
 			CompositionStarted?.Invoke(this, EventArgs.Empty);
 
-			if (!string.IsNullOrEmpty(composingText))
+			if (IsCurrentSession(sender, sessionVersion) && _isComposing)
 			{
 				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(composingText, textAlreadyApplied: true));
 			}
@@ -201,7 +278,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 				this.Log().Trace($"Composition started: [{composingStart}..{composingEnd}] '{composingText}'");
 			}
 		}
-		else if (wasComposing && isNowComposing)
+		else if (!args.TextApplied && wasComposing && isNowComposing)
 		{
 			// Transition: Composing → Composing (preedit update)
 			_lastComposingStart = composingStart;
@@ -220,9 +297,6 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 		}
 		else if (wasComposing && !isNowComposing)
 		{
-			// Transition: Composing → Idle (commit or cancel)
-			_isComposing = false;
-
 			// Compute the committed text. The old composing region was at
 			// [_lastComposingStart.._lastComposingEnd). The text outside
 			// that region is unchanged, so:
@@ -232,15 +306,30 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 			var nonComposingLength = _lastFullTextLength - oldComposingLength;
 			var committedLength = fullText.Length - nonComposingLength;
 
-			if (committedLength > 0 && _lastComposingStart >= 0
-				&& _lastComposingStart + committedLength <= fullText.Length)
+			if (!args.TextApplied)
 			{
-				var committedText = fullText.Substring(_lastComposingStart, committedLength);
+				// The final native replacement must consume the same external-change guard as a preedit.
+				if (args.TextChanged && committedLength >= 0 && _lastComposingStart >= 0
+					&& _lastComposingStart + committedLength <= fullText.Length)
+				{
+					CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(
+						fullText.Substring(_lastComposingStart, committedLength),
+						textAlreadyApplied: true));
+				}
+				return;
+			}
+
+			var committedStart = _lastComposingStart;
+			ResetComposition();
+			if (committedLength > 0 && committedStart >= 0
+				&& committedStart + committedLength <= fullText.Length)
+			{
+				var committedText = fullText.Substring(committedStart, committedLength);
 				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(committedText, textAlreadyApplied: true));
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"Composition committed: '{committedText}' at {_lastComposingStart}");
+					this.Log().Trace($"Composition committed: '{committedText}' at {committedStart}");
 				}
 			}
 			else if (committedLength == 0)
@@ -255,9 +344,10 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 				}
 			}
 
-			_lastComposingStart = -1;
-			_lastComposingEnd = -1;
-			CompositionEnded?.Invoke(this, EventArgs.Empty);
+			if (IsCurrentSession(sender, sessionVersion) && !_isComposing)
+			{
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
 		}
 	}
 }

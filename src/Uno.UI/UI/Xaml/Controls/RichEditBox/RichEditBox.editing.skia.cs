@@ -9,6 +9,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Internal;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Media;
@@ -110,7 +111,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void StartCaret()
 		{
-			if (_textBoxView is null)
+			if (!IsEnabled || _textBoxView is null)
 			{
 				return;
 			}
@@ -156,7 +157,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void ResumeCaret()
 		{
-			if (_textBoxView is not { } view)
+			if (!IsEnabled || _textBoxView is not { } view)
 			{
 				return;
 			}
@@ -205,11 +206,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnPostKeyDownSkia(KeyRoutedEventArgs args)
 		{
-			if (_textBoxView is null || FocusState == FocusState.Unfocused)
+			if (_textBoxView is null || FocusState == FocusState.Unfocused || !ShouldProcessKeyMessage(args))
 			{
 				InvalidatePendingInteractiveLineFeed();
 				return;
 			}
+
+			TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
 
 			var pendingLineFeedPosition = _pendingInteractiveLineFeedPosition;
 			var pendingLineFeedTextVersion = _pendingInteractiveLineFeedTextVersion;
@@ -232,6 +235,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var shift = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
 			var ctrl = args.KeyboardModifiers.HasFlag(_platformCtrlKey);
+			var alt = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+			// MUX Reference KeyboardUtility.cpp, lines 91-133, commit 3c9c168844f06c6ac000a97977f0bb3f4c90fd75.
+			var ctrlOnly = ctrl && !alt && !shift;
+			var shiftOnly = shift && !ctrl && !alt;
+			var ctrlNoAlt = ctrl && !alt;
 
 			if (args.Key == VirtualKey.Enter && TryNavigateLinkAtCaret())
 			{
@@ -242,41 +250,42 @@ namespace Microsoft.UI.Xaml.Controls
 			// Text commands: always return from this switch, never break.
 			switch (args.Key)
 			{
-				case VirtualKey.Z when ctrl:
+				case VirtualKey.Z when ctrlOnly:
 					args.Handled = true;
 					DocumentUndoInteractive();
 					return;
-				case VirtualKey.Y when ctrl:
+				case VirtualKey.Y when ctrlOnly:
 					args.Handled = true;
 					DocumentRedoInteractive();
 					return;
-				case VirtualKey.X when ctrl:
+				case VirtualKey.X when ctrlOnly:
+				case VirtualKey.Delete when shiftOnly:
 					args.Handled = true;
 					CutSelectionToClipboard();
 					return;
-				case VirtualKey.C when ctrl:
-				case VirtualKey.Insert when ctrl:
+				case VirtualKey.C when ctrlOnly:
+				case VirtualKey.Insert when ctrlOnly:
 					args.Handled = true;
 					CopySelectionToClipboard();
 					return;
-				case VirtualKey.V when ctrl:
-				case VirtualKey.Insert when shift:
+				case VirtualKey.V when ctrlNoAlt:
+				case VirtualKey.Insert when shiftOnly:
 					args.Handled = true;
 					PasteFromClipboard();
 					return;
-				case VirtualKey.B when ctrl:
+				case VirtualKey.B when ctrlNoAlt:
 					if (TryToggleFormattingAccelerator(DisabledFormattingAccelerators.Bold))
 					{
 						args.Handled = true;
 					}
 					return;
-				case VirtualKey.I when ctrl:
+				case VirtualKey.I when ctrlNoAlt:
 					if (TryToggleFormattingAccelerator(DisabledFormattingAccelerators.Italic))
 					{
 						args.Handled = true;
 					}
 					return;
-				case VirtualKey.U when ctrl:
+				case VirtualKey.U when ctrlNoAlt:
 					if (TryToggleFormattingAccelerator(DisabledFormattingAccelerators.Underline))
 					{
 						args.Handled = true;
@@ -320,6 +329,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			switch (args.Key)
 			{
+				case VirtualKey.PageUp:
+				case VirtualKey.PageDown:
+					OnPageKeyDown(args, selectionStart, selectionLength, shift);
+					return;
 				case VirtualKey.Up:
 					if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
 					{
@@ -356,7 +369,7 @@ namespace Microsoft.UI.Xaml.Controls
 				case VirtualKey.End:
 					Editor.KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 					break;
-				case VirtualKey.Back when !IsReadOnly:
+				case VirtualKey.Back when IsEnabled && !IsReadOnly:
 					historyKind = global::Microsoft.UI.Text.TextHistoryKind.Backspace;
 					if (!_hasPointerCapture && selectionLength == 0 && selectionStart > 0 && !IsWordDelete(args, ctrl))
 					{
@@ -367,7 +380,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					Editor.KeyDownBack(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 					break;
-				case VirtualKey.Delete when !IsReadOnly:
+				case VirtualKey.Delete when IsEnabled && !IsReadOnly:
 					historyKind = global::Microsoft.UI.Text.TextHistoryKind.Delete;
 					if (!_hasPointerCapture && selectionLength == 0 && selectionStart < text.Length && !shift && !IsWordDelete(args, ctrl))
 					{
@@ -378,7 +391,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					Editor.KeyDownDelete(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 					break;
-				case VirtualKey.A when ctrl:
+				case VirtualKey.A when ctrlOnly:
 					args.Handled = true;
 					selectionStart = 0;
 					selectionLength = text.Length;
@@ -399,7 +412,7 @@ namespace Microsoft.UI.Xaml.Controls
 						ctrlHeld ||
 						args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Windows) ||
 						(!DeviceTargetHelper.UsesAppleKeyboardLayout && altHeld));
-					if (!IsReadOnly && !hasShortcutModifier && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
+					if (IsEnabled && !IsReadOnly && !hasShortcutModifier && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
 					{
 						historyKind = global::Microsoft.UI.Text.TextHistoryKind.Typing;
 						var start = Math.Min(selectionStart, selectionStart + selectionLength);
@@ -512,7 +525,7 @@ namespace Microsoft.UI.Xaml.Controls
 			switch (args.Key)
 			{
 				case VirtualKey.Back:
-					if (IsReadOnly || _hasPointerCapture)
+					if (!IsEnabled || IsReadOnly || _hasPointerCapture)
 					{
 						return true;
 					}
@@ -537,7 +550,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					break;
 				case VirtualKey.Delete:
-					if (IsReadOnly || _hasPointerCapture)
+					if (!IsEnabled || IsReadOnly || _hasPointerCapture)
 					{
 						return true;
 					}
@@ -593,7 +606,8 @@ namespace Microsoft.UI.Xaml.Controls
 						ctrlHeld
 						|| args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Windows)
 						|| !DeviceTargetHelper.UsesAppleKeyboardLayout && altHeld);
-					if (IsReadOnly
+					if (!IsEnabled
+						|| IsReadOnly
 						|| hasShortcutModifier
 						|| isEnterKey && !AcceptsReturn)
 					{
@@ -838,6 +852,8 @@ namespace Microsoft.UI.Xaml.Controls
 				GetTextDiff(oldText, newText),
 				historyKind,
 				checkTextLimit,
+				out _,
+				out _,
 				out _);
 
 		private bool ApplyTextDiff(
@@ -846,8 +862,11 @@ namespace Microsoft.UI.Xaml.Controls
 			TextDiff diff,
 			global::Microsoft.UI.Text.TextHistoryKind historyKind,
 			bool checkTextLimit,
+			out string expectedText,
+			out TextDiff inputCorrection,
 			out bool nativeTextNeedsCorrection)
 		{
+			diff = RefineTextDiffToScalarBoundaries(oldText, newText, diff);
 			var oldEnd = diff.Start + diff.RemovedLength;
 			var nativeInsert = newText.Substring(diff.Start, diff.InsertedLength);
 			var insert = CoerceCasing(nativeInsert);
@@ -856,21 +875,23 @@ namespace Microsoft.UI.Xaml.Controls
 				insert = ClampInsertToMaxLength(insert, oldText.Length, diff.Start, oldEnd);
 			}
 			nativeTextNeedsCorrection = !string.Equals(nativeInsert, insert, StringComparison.Ordinal);
+			expectedText = nativeTextNeedsCorrection
+				? string.Concat(oldText.AsSpan(0, diff.Start), insert.AsSpan(), oldText.AsSpan(oldEnd))
+				: newText;
+			inputCorrection = new TextDiff(diff.Start, diff.InsertedLength, insert.Length);
 
 			try
 			{
-				var insertedLength = 0;
 				RunWithDeferredSelectionSync(() =>
 				{
-					insertedLength = Document.ReplaceRange(
+					Document.ReplaceRange(
 						diff.Start,
 						oldEnd,
 						insert,
 						checkTextLimit: false,
 						historyKind: historyKind);
 				});
-				var actualInsert = Document.GetTextInRange(diff.Start, diff.Start + insertedLength);
-				nativeTextNeedsCorrection = !string.Equals(nativeInsert, actualInsert, StringComparison.Ordinal);
+				nativeTextNeedsCorrection = !string.Equals(newText, GetPlainTextContent(), StringComparison.Ordinal);
 				return true;
 			}
 			catch (UnauthorizedAccessException)
@@ -891,11 +912,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool TryUpdateTextFromNative(string text, int selectionStart, int selectionLength)
 		{
+			var nativeTextLength = text.Length;
+			text = NormalizeNativeText(text, ref selectionStart, ref selectionLength);
 			var oldText = GetPlainTextContent();
-			var textChanged = !NativeTextMatchesDocument(text, oldText);
-			var diff = textChanged ? GetTextDiff(oldText, text) : default;
+			var textChanged = !string.Equals(text, oldText, StringComparison.Ordinal);
+			var compositionRange = _isComposing && _compositionAppliedByPlatform
+				? _nativeCompositionRangeBeforeUpdate
+				: null;
+			_nativeCompositionRangeBeforeUpdate = null;
+			var diff = textChanged ? GetNativeTextDiff(oldText, text, selectionStart, selectionLength, compositionRange) : default;
+			var expectedText = text;
+			var inputCorrection = default(TextDiff);
 			var nativeTextNeedsCorrection = false;
-			if (IsReadOnly
+			var selectionBeforeMutation = _selection;
+			var selectionVersionBeforeMutation = Document.SelectionChangeVersion;
+			if (!IsEnabled
+				|| IsReadOnly
 				|| (_isComposing && !_platformTextApplyInProgress && !_compositionAppliedByPlatform)
 				|| (textChanged && !ApplyTextDiff(
 					oldText,
@@ -903,32 +935,52 @@ namespace Microsoft.UI.Xaml.Controls
 					diff,
 					GetNativeHistoryKind(diff),
 					checkTextLimit: true,
+					out expectedText,
+					out inputCorrection,
 					out nativeTextNeedsCorrection)))
 			{
+				_platformTextApplyInProgress = false;
 				RestoreNativeTextAndSelection(oldText);
 				return false;
 			}
 
+			_platformTextApplyInProgress = false;
+			nativeTextNeedsCorrection |= nativeTextLength != text.Length;
+			var actualText = GetPlainTextContent();
 			if (nativeTextNeedsCorrection)
 			{
-				var actualText = GetPlainTextContent();
 				_textBoxView?.Extension?.SetText(actualText);
-				var correction = GetTextDiff(text, actualText);
-				var selectionEnd = RebaseNativePosition(selectionStart + selectionLength, correction);
-				selectionStart = RebaseNativePosition(selectionStart, correction);
+				var selectionEnd = RebaseNativePosition(selectionStart + selectionLength, inputCorrection);
+				selectionStart = RebaseNativePosition(selectionStart, inputCorrection);
+				if (!string.Equals(expectedText, actualText, StringComparison.Ordinal))
+				{
+					var appCorrection = GetTextDiff(expectedText, actualText);
+					selectionEnd = RebaseNativePosition(selectionEnd, appCorrection);
+					selectionStart = RebaseNativePosition(selectionStart, appCorrection);
+				}
 				selectionLength = selectionEnd - selectionStart;
 			}
 
-			if (textChanged)
+			var selectionChangedByApp = Document.SelectionChangeVersion != selectionVersionBeforeMutation
+				|| _selection != selectionBeforeMutation;
+			if (!selectionChangedByApp)
 			{
-				SetInteractiveSelection(selectionStart, selectionLength);
+				if (textChanged)
+				{
+					SetInteractiveSelection(selectionStart, selectionLength);
+				}
+				else
+				{
+					SelectFromNative(selectionStart, selectionLength);
+				}
 			}
-			else
+
+			var finalText = GetPlainTextContent();
+			if (!string.Equals(actualText, finalText, StringComparison.Ordinal))
 			{
-				_platformTextApplyInProgress = false;
-				SelectFromNative(selectionStart, selectionLength);
+				RestoreNativeTextAndSelection(finalText);
 			}
-			if (nativeTextNeedsCorrection)
+			else if (nativeTextNeedsCorrection || selectionChangedByApp)
 			{
 				_textBoxView?.Extension?.Select(_selection.start, _selection.length);
 			}
@@ -940,28 +992,39 @@ namespace Microsoft.UI.Xaml.Controls
 			return true;
 		}
 
-		private static bool NativeTextMatchesDocument(string nativeText, string documentText)
+		private static string NormalizeNativeText(string text, ref int selectionStart, ref int selectionLength)
 		{
-			if (string.Equals(nativeText, documentText, StringComparison.Ordinal))
+			var start = Math.Clamp(selectionStart, 0, text.Length);
+			var end = (int)Math.Clamp((long)selectionStart + selectionLength, 0, text.Length);
+			if (text.IndexOf('\n') < 0)
 			{
-				return true;
+				selectionStart = start;
+				selectionLength = end - start;
+				return text;
 			}
-			if (nativeText.Length != documentText.Length)
-			{
-				return false;
-			}
+			var normalizedStart = start;
+			var normalizedEnd = end;
 
-			// Native editors mirror TOM paragraph marks as LF. An unchanged echo must not
-			// reapply typing restrictions (for example during an AcceptsReturn transition).
-			for (var i = 0; i < nativeText.Length; i++)
+			// Use TOM's CR coordinate space before diffing, not just on the inserted fragment.
+			// Each LF removed from a CRLF pair contracts both selection endpoints after it.
+			for (var i = 1; i < text.Length; i++)
 			{
-				if (nativeText[i] != documentText[i]
-					&& (nativeText[i] != '\n' || documentText[i] != '\r'))
+				if (text[i - 1] == '\r' && text[i] == '\n')
 				{
-					return false;
+					if (i < start)
+					{
+						normalizedStart--;
+					}
+					if (i < end)
+					{
+						normalizedEnd--;
+					}
 				}
 			}
-			return true;
+
+			selectionStart = normalizedStart;
+			selectionLength = normalizedEnd - normalizedStart;
+			return text.Replace("\r\n", "\r").Replace('\n', '\r');
 		}
 
 		private void RestoreNativeTextAndSelection(string text)
@@ -995,7 +1058,79 @@ namespace Microsoft.UI.Xaml.Controls
 			return global::Microsoft.UI.Text.TextHistoryKind.None;
 		}
 
+		private TextDiff GetNativeTextDiff(
+			string oldText,
+			string newText,
+			int nativeSelectionStart,
+			int nativeSelectionLength,
+			(int start, int length)? compositionRange)
+		{
+			// Repeated text outside the edit is not interchangeable with newly composed text.
+			// Preserve its provenance by comparing only inside an edit with unchanged context.
+			if (compositionRange is { } range
+				&& TryGetTextDiffAtRange(oldText, newText, range.start, range.length, out var compositionDiff))
+			{
+				return compositionDiff;
+			}
+
+			if (nativeSelectionLength == 0
+				&& TryGetTextDiffAtRange(oldText, newText, _selection.start, _selection.length, out var selectionDiff)
+				&& nativeSelectionStart == (long)_selection.start + _selection.length + selectionDiff.InsertedLength - selectionDiff.RemovedLength)
+			{
+				return selectionDiff;
+			}
+
+			return GetTextDiff(oldText, newText);
+		}
+
+		private static bool TryGetTextDiffAtRange(string oldText, string newText, int start, int length, out TextDiff diff)
+		{
+			diff = default;
+			if (start < 0 || length < 0 || start > oldText.Length || length > oldText.Length - start
+				|| newText.Length < oldText.Length - length)
+			{
+				return false;
+			}
+
+			var insertedLength = newText.Length - (oldText.Length - length);
+			if (!oldText.AsSpan(0, start).SequenceEqual(newText.AsSpan(0, start))
+				|| !oldText.AsSpan(start + length).SequenceEqual(newText.AsSpan(start + insertedLength)))
+			{
+				return false;
+			}
+
+			var localDiff = GetTextDiff(oldText.AsSpan(start, length), newText.AsSpan(start, insertedLength));
+			diff = new TextDiff(start + localDiff.Start, localDiff.RemovedLength, localDiff.InsertedLength);
+			return true;
+		}
+
 		private static TextDiff GetTextDiff(string oldText, string newText)
+			=> GetTextDiff(oldText.AsSpan(), newText.AsSpan());
+
+		private static TextDiff RefineTextDiffToScalarBoundaries(string oldText, string newText, TextDiff diff)
+		{
+			var start = diff.Start;
+			var oldEnd = start + diff.RemovedLength;
+			var newEnd = start + diff.InsertedLength;
+			if (IsInsideUtf16Scalar(oldText.AsSpan(), start) || IsInsideUtf16Scalar(newText.AsSpan(), start))
+			{
+				start--;
+			}
+			if (IsInsideUtf16Scalar(oldText.AsSpan(), oldEnd) || IsInsideUtf16Scalar(newText.AsSpan(), newEnd))
+			{
+				oldEnd++;
+				newEnd++;
+			}
+			var refined = GetTextDiff(oldText.AsSpan(start, oldEnd - start), newText.AsSpan(start, newEnd - start));
+			return new TextDiff(start + refined.Start, refined.RemovedLength, refined.InsertedLength);
+		}
+
+		private static bool IsInsideUtf16Scalar(ReadOnlySpan<char> text, int position)
+			=> position > 0 && position < text.Length
+				&& char.IsHighSurrogate(text[position - 1])
+				&& char.IsLowSurrogate(text[position]);
+
+		private static TextDiff GetTextDiff(ReadOnlySpan<char> oldText, ReadOnlySpan<char> newText)
 		{
 			var max = Math.Min(oldText.Length, newText.Length);
 			var prefix = 0;
@@ -1003,12 +1138,21 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				prefix++;
 			}
+			if (IsInsideUtf16Scalar(oldText, prefix) || IsInsideUtf16Scalar(newText, prefix))
+			{
+				prefix--;
+			}
 
 			var suffix = 0;
 			while (suffix < max - prefix
 				&& oldText[oldText.Length - 1 - suffix] == newText[newText.Length - 1 - suffix])
 			{
 				suffix++;
+			}
+			if (IsInsideUtf16Scalar(oldText, oldText.Length - suffix)
+				|| IsInsideUtf16Scalar(newText, newText.Length - suffix))
+			{
+				suffix--;
 			}
 
 			return new TextDiff(
@@ -1275,11 +1419,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					CaretMode = RichEditCaretDisplayMode.CaretWithThumbsOnlyEndShowing;
 				}
-				else if (CaretMode == RichEditCaretDisplayMode.ThumblessCaretHidden && FocusState != FocusState.Unfocused)
+				else if (IsEnabled && CaretMode == RichEditCaretDisplayMode.ThumblessCaretHidden && FocusState != FocusState.Unfocused)
 				{
 					CaretMode = RichEditCaretDisplayMode.ThumblessCaretShowing;
 				}
-				else if (CaretMode == RichEditCaretDisplayMode.ThumblessCaretShowing)
+				else if (IsEnabled && CaretMode == RichEditCaretDisplayMode.ThumblessCaretShowing)
 				{
 					_caretBlinkVisible = true;
 					EnsureCaretTimerHooked();
@@ -1300,7 +1444,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void DocumentUndoInteractive()
 		{
-			if (!IsReadOnly && Document.CanUndo())
+			if (IsEnabled && !IsReadOnly && Document.CanUndo())
 			{
 				Document.Undo();
 			}
@@ -1308,7 +1452,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void DocumentRedoInteractive()
 		{
-			if (!IsReadOnly && Document.CanRedo())
+			if (IsEnabled && !IsReadOnly && Document.CanRedo())
 			{
 				Document.Redo();
 			}
@@ -1353,6 +1497,7 @@ namespace Microsoft.UI.Xaml.Controls
 			displayBlock.RenderSelection = focused || _selection.length > 0;
 
 			if (focused
+				&& IsEnabled
 				&& CaretMode == RichEditCaretDisplayMode.ThumblessCaretShowing
 				&& Document.CaretType != global::Microsoft.UI.Text.CaretType.Null
 				&& _selection.length == 0

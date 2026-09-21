@@ -147,7 +147,7 @@ namespace Uno.UI.Runtime.Skia {
 			});
 
 			element.addEventListener('blur', () => {
-				if (callbacks.onBlur) {
+				if (callbacks.onBlur && !BrowserInvisibleTextBoxViewExtension.isManagedBlur()) {
 					callbacks.onBlur(handle);
 				}
 			});
@@ -569,6 +569,7 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			value: string,
 			multiline: boolean,
+			acceptsReturn: boolean,
 			password: boolean,
 			isReadOnly: boolean,
 			selectionStart: number,
@@ -591,6 +592,7 @@ namespace Uno.UI.Runtime.Skia {
 			Accessibility.updateElementFocusability(element, isFocusable);
 
 			element.value = value;
+			element.dataset.unoAcceptsReturn = acceptsReturn ? "true" : "false";
 			const maxLen = value.length;
 			const initialSelectionStart = Math.max(0, Math.min(selectionStart, maxLen));
 			const initialSelectionEnd = Math.max(initialSelectionStart, Math.min(selectionEnd, maxLen));
@@ -616,18 +618,10 @@ namespace Uno.UI.Runtime.Skia {
 			// source of text edits. Without this, the key is inserted both by the browser (into
 			// this <input>) and by managed OnKeyDownSkia, producing duplicated input once a11y
 			// moves focus to the semantic element instead of the invisible TextBox <input>.
-			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(element, multiline);
-
-			element.addEventListener('paste', (event: ClipboardEvent) => {
-				const source = event.clipboardData?.getData('text') ?? '';
-				const sourceLimit = BrowserInvisibleTextBoxViewExtension.getNativePasteSourceLimit();
-				BrowserInvisibleTextBoxViewExtension.onNativePaste(
-					source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
-				event.preventDefault();
-			});
+			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(element, acceptsReturn);
 
 			// Input event handler for text changes (T050)
-			element.addEventListener('input', () => {
+			BrowserInvisibleTextBoxViewExtension.attachTextInputEvents(element, () => {
 				if (callbacks.onTextInput) {
 					callbacks.onTextInput(
 						handle,
@@ -640,22 +634,11 @@ namespace Uno.UI.Runtime.Skia {
 			});
 
 			element.addEventListener('select', () => {
-				if (callbacks.onTextSelectionChanged) {
+				if (document.activeElement === element
+					&& !BrowserInvisibleTextBoxViewExtension.isComposingInput(element)
+					&& callbacks.onTextSelectionChanged) {
 					callbacks.onTextSelectionChanged(
 						handle,
-						element.selectionStart ?? 0,
-						element.selectionEnd ?? 0,
-						element.selectionDirection === 'backward'
-					);
-				}
-			});
-
-			// Handle IME composition events for international text input (T055)
-			element.addEventListener('compositionend', () => {
-				if (callbacks.onTextInput) {
-					callbacks.onTextInput(
-						handle,
-						element.value,
 						element.selectionStart ?? 0,
 						element.selectionEnd ?? 0,
 						element.selectionDirection === 'backward'
@@ -838,6 +821,10 @@ namespace Uno.UI.Runtime.Skia {
 		): void {
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement | HTMLTextAreaElement;
 			if (element && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
+				if (BrowserInvisibleTextBoxViewExtension.isComposingInput(element)) {
+					return;
+				}
+				BrowserInvisibleTextBoxViewExtension.recordManagedInputState(element, value, selectionStart, selectionEnd, selectionIsBackward);
 				// Skip no-op writes to avoid caret and IME churn when the DOM value already matches.
 				if (element.value !== value) {
 					element.value = value;
@@ -850,15 +837,26 @@ namespace Uno.UI.Runtime.Skia {
 					const maxLen = value.length;
 					const start = Math.max(0, Math.min(selectionStart, maxLen));
 					const end = Math.max(start, Math.min(selectionEnd, maxLen));
-					try {
-						element.setSelectionRange(
-							start,
-							end,
-							selectionIsBackward ? 'backward' : 'forward');
-					} catch {
-						// Some input types (e.g., password in some browsers) don't support setSelectionRange
+					if (element.selectionStart !== start || element.selectionEnd !== end
+						|| (start !== end && (element.selectionDirection === 'backward') !== selectionIsBackward)) {
+						try {
+							element.setSelectionRange(
+								start,
+								end,
+								selectionIsBackward ? 'backward' : 'forward');
+						} catch {
+							// Some input types (e.g., password in some browsers) don't support setSelectionRange
+						}
 					}
 				}
+
+			}
+		}
+
+		public static updateTextBoxAcceptsReturn(handle: number, acceptsReturn: boolean): void {
+			const element = document.getElementById(`uno-semantics-${handle}`);
+			if (element) {
+				element.dataset.unoAcceptsReturn = acceptsReturn ? "true" : "false";
 			}
 		}
 

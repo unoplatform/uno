@@ -81,6 +81,12 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>Called when the IME composition string changes.</summary>
 		void OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied);
 
+		/// <summary>
+		/// Reconciles composition metadata with the accepted native text span without changing text,
+		/// selection, history, public composition events, or the next native-text apply guard.
+		/// </summary>
+		void ReconcileCompositionFromNative(int start, int length);
+
 		/// <summary>Called when the user commits text from the IME.</summary>
 		void OnImeCompositionCompleted(string committedText, bool textAlreadyApplied);
 

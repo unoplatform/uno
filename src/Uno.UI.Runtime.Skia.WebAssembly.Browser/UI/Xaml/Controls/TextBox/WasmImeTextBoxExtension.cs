@@ -21,6 +21,8 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 
 	private bool _isComposing;
 	private bool _restartPending;
+	private IImeSessionHost? _host;
+	private int _sessionGeneration;
 
 	public bool IsComposing => _isComposing;
 
@@ -41,10 +43,12 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 		{
 			return;
 		}
+		_host = host;
+		_sessionGeneration++;
 		if (_restartPending)
 		{
-			BrowserInvisibleTextBoxViewExtension.RestartComposition();
 			_restartPending = false;
+			BrowserInvisibleTextBoxViewExtension.RestartComposition();
 		}
 	}
 
@@ -75,6 +79,8 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 	public void EndImeSession()
 	{
 		_restartPending = _isComposing;
+		_host = null;
+		_sessionGeneration++;
 		BrowserInvisibleTextBoxViewExtension.InvalidateComposition();
 		if (_isComposing)
 		{
@@ -83,17 +89,26 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 		}
 	}
 
+	private bool OwnsCompositionCallback(IntPtr handle)
+		=> _host?.TextBoxView?.Host?.Owner == BrowserInvisibleTextBoxViewExtension.GetFocusedTextInputOwner(handle)
+			&& _host is { CanAcceptTextInput: true };
+
 	[JSExport]
-	private static void OnCompositionStarted()
+	private static void OnCompositionStarted(IntPtr handle)
 	{
+		if (!Instance.OwnsCompositionCallback(handle))
+		{
+			BrowserInvisibleTextBoxViewExtension.InvalidateComposition();
+			return;
+		}
 		Instance._isComposing = true;
 		Instance.CompositionStarted?.Invoke(Instance, EventArgs.Empty);
 	}
 
 	[JSExport]
-	private static void OnCompositionUpdated(string text, int cursorPosition)
+	private static void OnCompositionUpdated(IntPtr handle, string text, int cursorPosition)
 	{
-		if (!Instance._isComposing)
+		if (!Instance._isComposing || !Instance.OwnsCompositionCallback(handle))
 		{
 			return;
 		}
@@ -101,21 +116,25 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 	}
 
 	[JSExport]
-	private static void OnCompositionCompleted(string text)
+	private static void OnCompositionCompleted(IntPtr handle, string text)
 	{
-		if (!Instance._isComposing)
+		if (!Instance._isComposing || !Instance.OwnsCompositionCallback(handle))
 		{
 			return;
 		}
 		Instance._isComposing = false;
+		var generation = Instance._sessionGeneration;
 		Instance.CompositionCompleted?.Invoke(Instance, new ImeCompositionEventArgs(text));
-		Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty);
+		if (generation == Instance._sessionGeneration && !Instance._isComposing)
+		{
+			Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty);
+		}
 	}
 
 	[JSExport]
-	private static void OnCompositionEnded()
+	private static void OnCompositionEnded(IntPtr handle)
 	{
-		if (!Instance._isComposing)
+		if (!Instance._isComposing || !Instance.OwnsCompositionCallback(handle))
 		{
 			return;
 		}
@@ -125,15 +144,19 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 	}
 
 	[JSExport]
-	private static void OnCompositionCanceled()
+	private static void OnCompositionCanceled(IntPtr handle)
 	{
-		if (!Instance._isComposing)
+		if (!Instance._isComposing || !Instance.OwnsCompositionCallback(handle))
 		{
 			return;
 		}
 
 		Instance._isComposing = false;
+		var generation = Instance._sessionGeneration;
 		Instance.CompositionCanceled?.Invoke(Instance, new ImeCompositionEventArgs(string.Empty));
-		Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty);
+		if (generation == Instance._sessionGeneration && !Instance._isComposing)
+		{
+			Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty);
+		}
 	}
 }

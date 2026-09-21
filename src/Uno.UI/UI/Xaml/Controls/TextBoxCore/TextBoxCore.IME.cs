@@ -56,7 +56,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 	bool IImeSessionHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
 
-	bool IImeSessionHost.CanAcceptTextInput => !IsReadOnly && Owner.IsTabStop;
+	bool IImeSessionHost.CanAcceptTextInput => Owner.IsEnabled && !IsReadOnly && Owner.IsTabStop;
 
 	int IImeSessionHost.MaxLength => MaxLength;
 
@@ -66,8 +66,89 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 	void IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
 	{
-		ProcessTextInput(text);
-		Select(selectionStart, selectionLength);
+		var nativeComposition = _isComposing && _platformTextApplyInProgress;
+		var compositionStart = _compositionStartIndex;
+		var compositionLength = _compositionLength;
+		try
+		{
+			var acceptedText = ProcessTextInput(text);
+			_platformTextApplyInProgress = false;
+			if (nativeComposition && _isComposing && _compositionAppliedByPlatform
+				&& _compositionStartIndex == compositionStart && _compositionLength == compositionLength)
+			{
+				RebaseNativeCompositionSelection(
+					text,
+					acceptedText.Replace('\r', '\n'),
+					compositionStart,
+					compositionLength,
+					ref selectionStart,
+					ref selectionLength);
+			}
+			Select(selectionStart, selectionLength);
+		}
+		finally
+		{
+			_platformTextApplyInProgress = false;
+		}
+	}
+
+	private static void RebaseNativeCompositionSelection(
+		string nativeText,
+		string acceptedText,
+		int compositionStart,
+		int compositionLength,
+		ref int selectionStart,
+		ref int selectionLength)
+	{
+		if (compositionStart < 0 || compositionStart > nativeText.Length
+			|| compositionLength < 0 || compositionLength > nativeText.Length - compositionStart)
+		{
+			return;
+		}
+
+		var nativeEnd = compositionStart + compositionLength;
+		var suffixLength = nativeText.Length - nativeEnd;
+		if (acceptedText.Length < compositionStart + suffixLength
+			|| !acceptedText.AsSpan(0, compositionStart).SequenceEqual(nativeText.AsSpan(0, compositionStart))
+			|| !acceptedText.AsSpan(acceptedText.Length - suffixLength).SequenceEqual(nativeText.AsSpan(nativeEnd)))
+		{
+			return;
+		}
+
+		// Only the proven composing interval was corrected; equal surrounding text is not preedit.
+		var acceptedEnd = acceptedText.Length - suffixLength;
+		var selectionEnd = RebaseNativeCompositionPosition(selectionStart + selectionLength, compositionStart, nativeEnd, acceptedEnd);
+		selectionStart = RebaseNativeCompositionPosition(selectionStart, compositionStart, nativeEnd, acceptedEnd);
+		selectionLength = selectionEnd - selectionStart;
+	}
+
+	private static int RebaseNativeCompositionPosition(int position, int start, int nativeEnd, int acceptedEnd)
+		=> position <= start
+			? position
+			: position >= nativeEnd
+				? acceptedEnd + (position - nativeEnd)
+				: start + Math.Min(position - start, acceptedEnd - start);
+
+	void IImeSessionHost.ReconcileCompositionFromNative(int start, int length)
+	{
+		if (!_isComposing)
+		{
+			return;
+		}
+
+		var textLength = Text.Length;
+		start = Math.Clamp(start, 0, textLength);
+		length = Math.Clamp(length, 0, textLength - start);
+		var resolvedLength = Math.Clamp(_compositionResolvedLength, 0, length);
+		if (_compositionStartIndex == start && _compositionLength == length && _compositionResolvedLength == resolvedLength)
+		{
+			return;
+		}
+
+		_compositionStartIndex = start;
+		_compositionLength = length;
+		_compositionResolvedLength = resolvedLength;
+		InvalidateTextBoxRender();
 	}
 
 	void IImeSessionHost.SelectFromNative(int selectionStart, int selectionLength)

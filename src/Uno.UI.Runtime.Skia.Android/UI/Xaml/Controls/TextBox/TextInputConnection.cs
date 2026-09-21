@@ -4,6 +4,8 @@
 
 // Ported to C# from https://github.com/flutter/flutter/blob/ea4cdcf39e935bb643b1294abe52c45063597caf/engine/src/flutter/shell/platform/android/io/flutter/plugin/editing/InputConnectionAdaptor.java
 
+#nullable enable
+
 using System;
 using Android.Content;
 using Android.OS;
@@ -41,15 +43,16 @@ class TextInputConnection : BaseInputConnection
 	private ExtractedText _extractedText = new ExtractedText();
 	private ExtractedTextRequest? _extractRequest;
 	private int _batchEditNestDepth;
+	private int _hostVersion;
+	private bool _textChangedInBatch;
+	private bool _composingRegionChangedInBatch;
 
-	public delegate bool KeyboardEventHandler(KeyEvent? keyEvent);
+	public delegate bool KeyboardEventHandler(TextInputConnection source, KeyEvent? keyEvent);
 
 	/// <summary>
-	/// Callback invoked when the composing region changes.
-	/// Parameters: composingStart, composingEnd, composingText (nullable), fullText, textChanged.
-	/// Used by <see cref="AndroidImeTextBoxExtension"/> to detect composition state transitions.
+	/// Prepares composition bookkeeping before native text is applied, then reports its committed state.
 	/// </summary>
-	internal Action<int, int, string?, string, bool>? CompositionStateChanged { get; set; }
+	internal event EventHandler<TextInputCompositionEventArgs>? CompositionStateChanged;
 
 	public TextInputConnection(View target, EditorInfo editorInfo, KeyboardEventHandler keyboardHandler) : base(target, true)
 	{
@@ -84,21 +87,16 @@ class TextInputConnection : BaseInputConnection
 		get => _activeHost;
 		set
 		{
-			_activeHost = value;
-			_editable?.Clear();
-
-			if (_activeHost is not null)
+			if (ReferenceEquals(_activeHost, value))
 			{
-				_editable?.Append(_activeHost.Text.Replace('\r', '\n'));
-				Selection.SetSelection(
-					_editable,
-					_activeHost.SelectionStart,
-					_activeHost.SelectionStart + _activeHost.SelectionLength);
-
-				// Proactively send cursor position so the IME candidate window
-				// is correctly positioned on the very first composition.
-				SendCursorAnchorInfo();
+				return;
 			}
+
+			_hostVersion++;
+			_activeHost = value;
+			_editable.SetComposingRange(-1, -1);
+			UpdateEditableStateFromHost();
+			SendCursorAnchorInfo();
 		}
 	}
 
@@ -143,13 +141,8 @@ class TextInputConnection : BaseInputConnection
 		}
 	}
 
-	private void UpdateEditableStateFromHost()
+	private (int Start, int End)? UpdateEditableStateFromHost()
 	{
-		if (_activeHost is null)
-		{
-			return;
-		}
-
 		// In managed, we only use \r and convert all \n's to \r's to
 		// match WinUI, so when copying from managed to native, we convert
 		// \r to \n so that in the case of typing two newlines in a row,
@@ -157,56 +150,187 @@ class TextInputConnection : BaseInputConnection
 		// managed, the second was just typed
 		// before conversion) which looks like a single newline.
 		// cf. https://github.com/unoplatform/uno-private/issues/965
-		var text = _activeHost.Text.Replace('\r', '\n');
+		var host = _activeHost;
+		var text = host?.Text.Replace('\r', '\n') ?? string.Empty;
+		var nativeText = _editable.ToString();
+		var composingRange = host?.IsComposing == true ? GetComposingRange() : null;
 
 		_duringHostStateUpdate = true;
+		_editable.BeginBatchEdit();
 		try
 		{
-			if (!string.Equals(text, _editable.ToString(), StringComparison.Ordinal))
+			if (!string.Equals(text, nativeText, StringComparison.Ordinal))
 			{
-				_editable.Clear();
-				_editable.Append(text);
+				var prefix = 0;
+				var suffix = 0;
+				if (composingRange is { } nativeRange && HasUnchangedCompositionContext(nativeText, text, nativeRange))
+				{
+					// Repeated surrounding text must not be mistaken for accepted preedit.
+					prefix = nativeRange.Start;
+					suffix = nativeText.Length - nativeRange.End;
+				}
+				else
+				{
+					var commonLength = Math.Min(text.Length, nativeText.Length);
+					while (prefix < commonLength && text[prefix] == nativeText[prefix])
+					{
+						prefix++;
+					}
+					while (suffix < commonLength - prefix
+						&& text[text.Length - suffix - 1] == nativeText[nativeText.Length - suffix - 1])
+					{
+						suffix++;
+					}
+				}
+				var nativeEnd = nativeText.Length - suffix;
+				var correctedEnd = text.Length - suffix;
+				if (composingRange is { } range)
+				{
+					composingRange = (
+						RebaseComposingPosition(range.Start, prefix, nativeEnd, correctedEnd),
+						RebaseComposingPosition(range.End, prefix, nativeEnd, correctedEnd));
+				}
+
+				_editable.Replace(prefix, nativeEnd, text.Substring(prefix, correctedEnd - prefix));
+				if (composingRange is { } correctedRange)
+				{
+					// Replacing an exclusive composing span removes it, even for casing/length corrections.
+					_editable.SetComposingRange(correctedRange.Start, correctedRange.End);
+				}
 			}
 
-			var length = _editable.Length() + 1;
+			if (host is not null)
+			{
+				var length = _editable.Length();
+				Selection.SetSelection(
+					_editable,
+					Math.Clamp(host.SelectionStart, 0, length),
+					Math.Clamp(host.SelectionStart + host.SelectionLength, 0, length));
+			}
+			else
+			{
+				Selection.RemoveSelection(_editable);
+			}
 
-			SetSelection(
-				Math.Min(length, _activeHost.SelectionStart),
-				Math.Min(length, _activeHost.SelectionStart + _activeHost.SelectionLength));
+			if (!TextInputPlugin.CanAcceptTextInput(host))
+			{
+				_editable.SetComposingRange(-1, -1);
+				composingRange = null;
+			}
 		}
 		finally
 		{
+			_editable.EndBatchEdit();
 			_duringHostStateUpdate = false;
 		}
+
+		return composingRange;
 	}
+
+	private static bool HasUnchangedCompositionContext(string nativeText, string correctedText, (int Start, int End) range)
+	{
+		var suffixLength = nativeText.Length - range.End;
+		return correctedText.Length >= nativeText.Length - (range.End - range.Start)
+			&& correctedText.AsSpan(0, range.Start).SequenceEqual(nativeText.AsSpan(0, range.Start))
+			&& correctedText.AsSpan(correctedText.Length - suffixLength).SequenceEqual(nativeText.AsSpan(range.End));
+	}
+
+	private static int RebaseComposingPosition(int position, int start, int nativeEnd, int correctedEnd)
+		=> position <= start
+			? position
+			: position >= nativeEnd
+				? position + correctedEnd - nativeEnd
+				: start + Math.Min(position - start, correctedEnd - start);
 
 	public override bool EndBatchEdit()
 	{
+		if (_batchEditNestDepth == 0)
+		{
+			return false;
+		}
+
 		_batchEditNestDepth -= 1;
 		_editable.EndBatchEdit();
 
-		if (_batchEditNestDepth == 0)
+		if (_batchEditNestDepth != 0)
 		{
-			_endingBatch = true;
+			return true;
+		}
 
-			var selectionStart = Selection.GetSelectionStart(_editable);
-			var selectionEnd = Selection.GetSelectionEnd(_editable);
+		var compositionChanged = _composingRegionChangedInBatch || _textChangedInBatch;
+		var textChanged = _textChangedInBatch;
+		_textChangedInBatch = false;
+		_composingRegionChangedInBatch = false;
+		var host = _activeHost;
+		var hostVersion = _hostVersion;
+		if (host is null || _duringHostStateUpdate || _endingBatch)
+		{
+			return false;
+		}
 
-			this.LogDebug()?.Debug($"EndBatchEdit: {_editable?.ToString()} ({selectionStart}->{selectionEnd})");
+		_endingBatch = true;
+		try
+		{
+			var selectionStart = _editable.SelectionStart;
+			var selectionEnd = _editable.SelectionEnd;
+			this.LogDebug()?.Debug($"EndBatchEdit: {_editable.ToString()} ({selectionStart}->{selectionEnd})");
 
-			if (ActiveHost is not null && !_duringHostStateUpdate)
+			if (TextInputPlugin.CanAcceptTextInput(host))
 			{
-				ActiveHost.UpdateTextFromNative(
-					_editable?.ToString() ?? string.Empty,
-					selectionStart,
-					selectionEnd - selectionStart);
-			}
+				if (compositionChanged)
+				{
+					NotifyCompositionStateChanged(textChanged, textApplied: false, GetComposingRange());
+				}
 
+				if (IsCurrentHost(host, hostVersion) && TextInputPlugin.CanAcceptTextInput(host))
+				{
+					host.UpdateTextFromNative(_editable.ToString(), selectionStart, selectionEnd - selectionStart);
+				}
+
+				if (IsCurrentHost(host, hostVersion) && TextInputPlugin.CanAcceptTextInput(host))
+				{
+					var correctedComposition = UpdateEditableStateFromHost();
+					if (correctedComposition is { } range
+						&& IsCurrentHost(host, hostVersion) && TextInputPlugin.CanAcceptTextInput(host))
+					{
+						host.ReconcileCompositionFromNative(range.Start, range.End - range.Start);
+					}
+					if (compositionChanged && IsCurrentHost(host, hostVersion) && TextInputPlugin.CanAcceptTextInput(host))
+					{
+						NotifyCompositionStateChanged(textChanged, textApplied: true, correctedComposition);
+					}
+				}
+			}
+			else if (string.Equals(_editable.ToString(), host.Text.Replace('\r', '\n'), StringComparison.Ordinal))
+			{
+				// A read-only host still participates in native selection and copy.
+				host.SelectFromNative(selectionStart, selectionEnd - selectionStart);
+			}
+		}
+		finally
+		{
 			_endingBatch = false;
+			if (IsCurrentHost(host, hostVersion))
+			{
+				UpdateEditableStateFromHost();
+			}
 		}
 
 		return false;
 	}
+
+	private bool IsCurrentHost(IImeSessionHost host, int version)
+		=> ReferenceEquals(_activeHost, host)
+			&& _hostVersion == version
+			&& !TextInputPlugin.IsSupersededByFocusedHost(host);
+
+	private void NotifyCompositionStateChanged(bool textChanged, bool textApplied, (int Start, int End)? composingRange)
+		=> CompositionStateChanged?.Invoke(this, new TextInputCompositionEventArgs(
+			composingRange?.Start ?? -1,
+			composingRange?.End ?? -1,
+			_editable.ToString(),
+			textChanged,
+			textApplied));
 
 	public override bool SetSelection(int start, int end)
 	{
@@ -215,17 +339,6 @@ class TextInputConnection : BaseInputConnection
 			BeginBatchEdit();
 			bool ret = base.SetSelection(start, end);
 			EndBatchEdit();
-
-			if (ActiveHost is not null
-				&& !_duringHostStateUpdate)
-			{
-				this.LogDebug()?.Debug($"SetSelection: {_editable?.ToString()} ({start}->{end})");
-
-				var selectionStart = Selection.GetSelectionStart(_editable);
-				var selectionEnd = Selection.GetSelectionEnd(_editable);
-
-				ActiveHost.SelectFromNative(selectionStart, selectionEnd - selectionStart);
-			}
 			return ret;
 		}
 		else
@@ -239,7 +352,7 @@ class TextInputConnection : BaseInputConnection
 	{
 		this.LogDebug()?.Debug($"SendKeyEvent {e?.Action} {e?.KeyCode}");
 
-		return _keyboardHandler(e);
+		return _activeHost is not null && _keyboardHandler(this, e);
 	}
 
 	public override bool RequestCursorUpdates(int cursorUpdateMode)
@@ -318,6 +431,10 @@ class TextInputConnection : BaseInputConnection
 			{
 				// editor actions are not supported yet
 				// PerformEditorAction((ImeAction)_editorInfo.ImeOptions & ImeAction.ImeMaskAction);
+				return false;
+			}
+			else if (!TextInputPlugin.CanAcceptTextInput(_activeHost))
+			{
 				return false;
 			}
 			else if (evt.KeyCode == Keycode.Del)
@@ -535,7 +652,7 @@ class TextInputConnection : BaseInputConnection
 		_editable.BeginBatchEdit();
 		_batchEditNestDepth += 1;
 
-		return base.BeginBatchEdit();
+		return true;
 	}
 
 	public override bool ClearMetaKeyStates(MetaKeyStates states)
@@ -552,6 +669,7 @@ class TextInputConnection : BaseInputConnection
 		// BaseInputConnection closes composition through our virtual batch-edit callbacks.
 		// A retired connection must not replay its old buffer or end the replacement host's composition.
 		_activeHost = null;
+		_hostVersion++;
 		_editable.RemoveEditingStateListener(DidChangeEditingState);
 		base.CloseConnection();
 
@@ -585,12 +703,23 @@ class TextInputConnection : BaseInputConnection
 	{
 		this.LogDebug()?.Debug($"CommitText {text}");
 
+		if (!TextInputPlugin.CanAcceptTextInput(_activeHost))
+		{
+			return false;
+		}
+
+		_composingRegionChangedInBatch |= _activeHost?.IsComposing == true;
 		return base.CommitText(text, newCursorPosition);
 	}
 
 	public override bool DeleteSurroundingText(int beforeLength, int afterLength)
 	{
 		this.LogDebug()?.Debug($"DeleteSurroundingText {beforeLength}->{afterLength}");
+
+		if (!TextInputPlugin.CanAcceptTextInput(_activeHost))
+		{
+			return false;
+		}
 
 		if (_editable.SelectionStart == -1)
 		{
@@ -604,13 +733,15 @@ class TextInputConnection : BaseInputConnection
 	{
 		this.LogDebug()?.Debug($"DeleteSurroundingTextInCodePoints {beforeLength}->{afterLength}");
 
-		return base.DeleteSurroundingTextInCodePoints(beforeLength, afterLength);
+		return TextInputPlugin.CanAcceptTextInput(_activeHost) && base.DeleteSurroundingTextInCodePoints(beforeLength, afterLength);
 	}
 
 	public override bool FinishComposingText()
 	{
 		this.LogDebug()?.Debug($"FinishComposingText");
 
+		// A fully rejected preedit has no native span left to generate a removal notification.
+		_composingRegionChangedInBatch |= _activeHost?.IsComposing == true;
 		return base.FinishComposingText();
 	}
 
@@ -641,19 +772,19 @@ class TextInputConnection : BaseInputConnection
 	{
 		var ret = base.GetSelectedTextFormatted(flags);
 
+		var wasEndingBatch = _endingBatch;
 		_endingBatch = true;
-
-		var selectionStart = Selection.GetSelectionStart(Editable);
-		var selectionEnd = Selection.GetSelectionEnd(Editable);
-
-		this.LogDebug()?.Debug($"GetSelectedTextFormatted {flags} = {selectionStart}->{selectionEnd}");
-
-		if (ActiveHost is not null)
+		try
 		{
-			ActiveHost.SelectFromNative(selectionStart, selectionEnd - selectionStart);
+			var selectionStart = Selection.GetSelectionStart(Editable);
+			var selectionEnd = Selection.GetSelectionEnd(Editable);
+			this.LogDebug()?.Debug($"GetSelectedTextFormatted {flags} = {selectionStart}->{selectionEnd}");
+			ActiveHost?.SelectFromNative(selectionStart, selectionEnd - selectionStart);
 		}
-
-		_endingBatch = false;
+		finally
+		{
+			_endingBatch = wasEndingBatch;
+		}
 
 		return ret;
 	}
@@ -692,6 +823,12 @@ class TextInputConnection : BaseInputConnection
 
 	private bool DoPerformContextMenuAction(int id)
 	{
+		if ((id == global::Android.Resource.Id.Cut || id == global::Android.Resource.Id.Paste)
+			&& !TextInputPlugin.CanAcceptTextInput(_activeHost))
+		{
+			return false;
+		}
+
 		if (id == global::Android.Resource.Id.SelectAll)
 		{
 			SetSelection(0, _editable.Length());
@@ -761,6 +898,12 @@ class TextInputConnection : BaseInputConnection
 
 	private void DidChangeEditingState(bool textChanged, bool selectionChanged, bool composingRegionChanged)
 	{
+		if (!_duringHostStateUpdate)
+		{
+			_textChangedInBatch |= textChanged;
+			_composingRegionChangedInBatch |= composingRegionChanged;
+		}
+
 		if (_imm is null)
 		{
 			return;
@@ -793,19 +936,6 @@ class TextInputConnection : BaseInputConnection
 			var info = GetCursorAnchorInfo();
 			_imm.UpdateCursorAnchorInfo(_target, info);
 		}
-
-		// Notify IME extension of composition state changes
-		if (composingRegionChanged || textChanged)
-		{
-			var composingStart = _editable.ComposingStart;
-			var composingEnd = _editable.ComposingEnd;
-			string? composingText = null;
-			if (composingStart >= 0 && composingEnd > composingStart && composingEnd <= _editable.Length())
-			{
-				composingText = _editable.SubSequence(composingStart, composingEnd)?.ToString();
-			}
-			CompositionStateChanged?.Invoke(composingStart, composingEnd, composingText, _editable.ToString(), textChanged);
-		}
 	}
 
 	public override bool PerformEditorAction(ImeAction actionCode)
@@ -826,7 +956,7 @@ class TextInputConnection : BaseInputConnection
 	{
 		this.LogDebug()?.Debug($"ReplaceText {start}->{end}, [{text}], {newCursorPosition}, {textAttribute}");
 
-		return base.ReplaceText(start, end, text, newCursorPosition, textAttribute);
+		return TextInputPlugin.CanAcceptTextInput(_activeHost) && base.ReplaceText(start, end, text, newCursorPosition, textAttribute);
 	}
 
 	public override bool ReportFullscreenMode(bool enabled)
@@ -840,12 +970,17 @@ class TextInputConnection : BaseInputConnection
 	{
 		this.LogDebug()?.Debug($"SetComposingRegion {start}->{end}");
 
-		return base.SetComposingRegion(start, end);
+		return TextInputPlugin.CanAcceptTextInput(_activeHost) && base.SetComposingRegion(start, end);
 	}
 
 	public override bool SetComposingText(Java.Lang.ICharSequence? text, int newCursorPosition)
 	{
 		this.LogDebug()?.Debug($"SetComposingText {text}, {newCursorPosition}");
+
+		if (!TextInputPlugin.CanAcceptTextInput(_activeHost))
+		{
+			return false;
+		}
 
 		bool result;
 
@@ -853,6 +988,7 @@ class TextInputConnection : BaseInputConnection
 
 		if (text?.Length() == 0)
 		{
+			_composingRegionChangedInBatch |= _activeHost?.IsComposing == true;
 			result = base.CommitText(text, newCursorPosition);
 		}
 		else
@@ -870,4 +1006,21 @@ class TextInputConnection : BaseInputConnection
 
 		return base.TakeSnapshot();
 	}
+}
+
+internal sealed class TextInputCompositionEventArgs(
+	int composingStart,
+	int composingEnd,
+	string text,
+	bool textChanged,
+	bool textApplied) : EventArgs
+{
+	internal int ComposingStart { get; } = composingStart;
+	internal int ComposingEnd { get; } = composingEnd;
+	internal string Text { get; } = text;
+	internal bool TextChanged { get; } = textChanged;
+	internal bool TextApplied { get; } = textApplied;
+	// A correction may reject the entire preedit without ending the native composition session.
+	internal bool IsComposing => ComposingStart >= 0 && ComposingEnd >= ComposingStart && ComposingEnd <= Text.Length;
+	internal string CompositionText => IsComposing ? Text.Substring(ComposingStart, ComposingEnd - ComposingStart) : string.Empty;
 }

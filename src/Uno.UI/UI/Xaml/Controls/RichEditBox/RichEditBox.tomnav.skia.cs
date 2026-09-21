@@ -342,6 +342,40 @@ namespace Microsoft.UI.Xaml.Controls
 			return true;
 		}
 
+		// MUX Reference TextBoxView.cpp, lines 1153-1159 and 1202-1211, commit 3c9c168844f06c6ac000a97977f0bb3f4c90fd75.
+		private bool TryGetKeyboardPageTarget(int position, bool up, out int target)
+		{
+			target = position;
+			if (_textBoxView?.DisplayBlock is not { } displayBlock || _contentElement is not { } contentHost)
+			{
+				return false;
+			}
+
+			var viewportHeight = contentHost is ScrollViewer scrollViewer
+				&& double.IsFinite(scrollViewer.ViewportHeight)
+				&& scrollViewer.ViewportHeight > 0
+				? scrollViewer.ViewportHeight
+				: contentHost.ActualHeight;
+			if (!double.IsFinite(viewportHeight) || viewportHeight <= 0)
+			{
+				return false;
+			}
+
+			var caretRect = displayBlock.ParsedText.GetRectForIndex(position);
+			// We add half the caret height such that the hittesting point will be at the middle of the line.
+			// Without this addition a sequence of PageUp,PageDown,PageUp or PageDown,PageUp,PageDown
+			// may not result in the caret ending where it started.
+			var y = caretRect.Y + (up ? -viewportHeight : viewportHeight) + caretRect.Height / 2;
+			var hit = displayBlock.ParsedText.GetIndexAt(new Point(caretRect.X, y), true, true);
+			if (hit < 0)
+			{
+				return false;
+			}
+
+			target = Math.Clamp(hit, 0, GetPlainTextLength());
+			return target != position;
+		}
+
 		internal bool TryGetPageTarget(int position, bool up, int count, out int target, out int unitsMoved)
 			=> TryGetPageTarget(position, up, count, _caretXOffset, out target, out unitsMoved);
 
@@ -389,16 +423,22 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			target = position;
 			unitsMoved = 0;
-			if (_textBoxView?.DisplayBlock is not { } displayBlock || _contentElement is not ScrollViewer scrollViewer)
+			if (_textBoxView?.DisplayBlock is not { } displayBlock || _contentElement is not { } contentHost)
 			{
 				return false;
 			}
 
 			var textLength = GetPlainTextLength();
 			target = Math.Clamp(position, 0, textLength);
-			var viewportHeight = double.IsFinite(scrollViewer.ViewportHeight) && scrollViewer.ViewportHeight > 0
+			var viewportHeight = contentHost is ScrollViewer scrollViewer
+				&& double.IsFinite(scrollViewer.ViewportHeight)
+				&& scrollViewer.ViewportHeight > 0
 				? scrollViewer.ViewportHeight
-				: scrollViewer.ActualHeight;
+				: contentHost.ActualHeight;
+			if (!double.IsFinite(viewportHeight) || viewportHeight <= 0)
+			{
+				return false;
+			}
 			for (var i = 0; i < count; i++)
 			{
 				var rect = displayBlock.ParsedText.GetRectForIndex(target);

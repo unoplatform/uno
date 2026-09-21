@@ -3,9 +3,13 @@
 // MUX Reference dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp, commit 3c9c168844f06c6ac000a97977f0bb3f4c90fd75
 #nullable enable
 
+using System;
+using System.Reflection;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
+using Windows.System;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -114,6 +118,31 @@ partial class RichEditBox
 		pEventArgs.Handled = true;
 	}
 
+	// TextBoxBase.cpp, lines 2436-2449.
+	private void OnPageKeyDown(KeyRoutedEventArgs pKeyEventArgs, int selectionStart, int selectionLength, bool expandSelection)
+	{
+		if (_hasPointerCapture || _textBoxView?.DisplayBlock is not { } view)
+		{
+			return;
+		}
+
+		var caret = selectionStart + selectionLength;
+		var caretRectBefore = view.ParsedText.GetRectForIndex(caret);
+
+		// We still need to detect if the caret moved and not use the scrolled flag
+		// since a pagedown can move the caret and not cause a scroll.
+		if (TryGetKeyboardPageTarget(caret, pKeyEventArgs.Key == VirtualKey.PageUp, out var target))
+		{
+			SetInteractiveSelection(expandSelection ? selectionStart : target, expandSelection ? target - selectionStart : 0);
+		}
+
+		var caretRectAfter = view.ParsedText.GetRectForIndex(GetActiveSelectionIndex());
+		if (caretRectBefore.X != caretRectAfter.X || caretRectBefore.Y != caretRectAfter.Y)
+		{
+			pKeyEventArgs.Handled = true;
+		}
+	}
+
 	// TextBoxBase.cpp, lines 2575-2653.
 	//------------------------------------------------------------------------
 	//
@@ -198,6 +227,56 @@ partial class RichEditBox
 		{
 			InvalidateView();
 		}
+	}
+
+	// TextBoxBase.cpp, lines 2759-2763 and 2964-3008.
+	private void OnIsEnabledChangedCore(bool wasEnabled, bool wasFocused)
+	{
+		UpdateVisualState();
+#if HAS_UNO
+		// switching from disabled and focused state (AllowFocusWhenDisabled had to be true) to enabled
+		if (!wasEnabled && wasFocused && IsEnabled && FocusState != FocusState.Unfocused)
+		{
+			OnGotFocusCore(new RoutedEventArgs());
+		}
+		else if (!IsEnabled)
+		{
+			_textBoxView?.OnFocusStateChanged(FocusState.Unfocused);
+			EndImeSession();
+			StopCaret();
+		}
+#endif
+	}
+
+	// TextBoxBase.cpp, lines 2771-2818.
+	private void OnCharacterReceivedCore(CharacterReceivedRoutedEventArgs pEventArgs)
+	{
+		if (!IsEnabled) // Disabled TextBox can receive this call because AllowFocusWhenDisabled is true
+		{
+			return;
+		}
+
+#if HAS_UNO
+		// As in TextBoxCore, key-press characters use OnPostKeyDown; only release-composed
+		// characters (Win32 Alt+numpad) are not already delivered by that path.
+		if (pEventArgs.Handled
+			|| !ReferenceEquals(pEventArgs.OriginalSource, this)
+			|| !pEventArgs.KeyStatus.IsKeyReleased
+			|| IsReadOnly
+			|| _hasPointerCapture
+			|| ShouldSwallowKeyDuringComposition
+			|| char.IsControl(pEventArgs.Character))
+		{
+			return;
+		}
+
+		OnPostKeyDownSkia(new KeyRoutedEventArgs(this, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: pEventArgs.Character));
+#else
+		// TODO Uno: The managed text-input adapter replaces WM_CHAR/WM_DEADCHAR dispatch to WinUIEdit.
+		// IFC_RETURN(TextBoxBase_Internal::TxSendMessageHelper(this, message, message, wParam, lParam, &handled, &result));
+#endif
+		// pCharacterReceivedArgs->m_bHandled is not set to the 'handled' value so that app code does receive the UIElement.CharacterReceived
+		// event like in the UWP branch above, even for handlers with handledEventsToo==False.
 	}
 
 	// TextBoxBase.cpp, lines 2827-2868.
@@ -365,5 +444,89 @@ partial class RichEditBox
 		// TODO Uno: Native focusManager->IsPluginFocused() is represented by host activation/focus notifications.
 		// TODO Uno: Feature_HeaderPlacement's HeaderStates are outside the supported WinUI contract.
 #endif
+	}
+
+	// TextBoxBase.cpp, lines 3847-3904.
+	private void AttachToHost(FrameworkElement contentHost)
+	{
+		if (_textBoxView?.DisplayBlock is not { } view)
+		{
+			return;
+		}
+
+		// Set the content property of the host element to view object.
+		var contentPropertyName = contentHost.GetType().GetCustomAttribute<ContentPropertyAttribute>(inherit: true)?.Name;
+		switch (contentHost, contentPropertyName)
+		{
+			case (Panel panel, nameof(Panel.Children)):
+				if (!panel.Children.Contains(view))
+				{
+					panel.Children.Add(view);
+				}
+				break;
+			case (Viewbox viewbox, nameof(Viewbox.Child)):
+				viewbox.Child = view;
+				break;
+			default:
+				if (contentPropertyName is null
+					|| DependencyProperty.GetProperty(contentHost.GetType(), contentPropertyName) is not { } contentProperty)
+				{
+					throw new InvalidOperationException("The RichEditBox ContentElement must have a content property that accepts the editing view.");
+				}
+				contentHost.SetValue(contentProperty, view);
+				_contentHostProperty = contentProperty;
+				break;
+		}
+	}
+
+	private void DetachFromHost()
+	{
+		if (_contentElement is not { } contentHost || _textBoxView?.DisplayBlock is not { } view)
+		{
+			return;
+		}
+
+		if (_contentHostProperty is { } contentProperty)
+		{
+			contentHost.ClearValue(contentProperty);
+		}
+		else if (contentHost is Panel panel)
+		{
+			panel.Children.Remove(view);
+		}
+		else if (contentHost is Viewbox viewbox)
+		{
+			viewbox.Child = null;
+		}
+		_contentHostProperty = null;
+	}
+
+	// TextBoxBase.cpp, lines 4495-4522.
+	private bool ShouldProcessKeyMessage(KeyRoutedEventArgs pKeyEventArgs)
+	{
+		if (!AcceptsReturn && TextWrapping == TextWrapping.Wrap)
+		{
+			// Special case when AcceptsReturn is FALSE and word wrap
+			// is turned on. In this case, we want RichEdit in multi-line mode
+			// but do not want it to process Enter. RichEdit does not support this
+			// mode, so we block Enter key explicitly.
+			if (pKeyEventArgs.Key == VirtualKey.Enter)
+			{
+				return false;
+			}
+		}
+
+		if (FocusHelper.IsGamepadNavigationDirection(pKeyEventArgs.OriginalKey))
+		{
+			return false;
+		}
+
+		// RichEdit invokes legacy context menu on key up, disable processing context menu key if we have a context flyout
+		if (pKeyEventArgs.Key == VirtualKey.Application && ContextFlyout is not null)
+		{
+			return false;
+		}
+
+		return true;
 	}
 }

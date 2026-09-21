@@ -32,7 +32,8 @@ The control policy is based on Microsoft UI XAML commit [`3c9c168844f06c6ac000a9
 | `dxaml/xcp/tools/XCPTypesAutoGen/Modules/Controls/RichEditBox.cs` | Public control and event-argument contracts |
 | `dxaml/xcp/dxaml/lib/RichEditBox_Partial.cpp` and `.h` | Routed-input forwarding, document access, lazy header/placeholder handling, reusable changing-event arguments, automatic-height animation, and template lifecycle |
 | `dxaml/xcp/core/native/text/Controls/RichEditBox.cpp` and `.h` | Property dispatch and validation, formatting-accelerator masks, hyperlink policy, and content-change integration |
-| `dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp` and `.h` | Shared selection-cancellation policy, focus/candidate-window lifecycle, pointer policy, default spell checking, and caret-scroll coordination |
+| `dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp` and `.h` | Shared selection-cancellation policy, enabled/focus and candidate-window lifecycle, first-touch policy, page navigation, default spell checking, and caret-scroll coordination |
+| `dxaml/xcp/components/input/lib/KeyboardUtility.cpp` | Clipboard shortcut modifier rules, including AltGr exclusion and Shift+Delete |
 | `dxaml/xcp/dxaml/lib/TextBoxPlaceholderTextHelper.cpp` | Placeholder visibility and removal from automation descriptions when document content replaces the hint |
 | `dxaml/xcp/dxaml/lib/FlyoutBase_partial.cpp` and `dxaml/xcp/components/ContentRoot/PointerInputProcessor.cpp` | Transient selection-flyout input pass-through, application-owned overrides, and underlying hit-target validation |
 | `RichEditBoxAutomationPeer_Partial.cpp`, `TextBoxBaseAutomationPeer.cpp`, and generated changing-event-argument sources | Automation control identity/descriptions, accessibility-driven software-keyboard focus, and thread-affine event-argument state |
@@ -43,14 +44,19 @@ Native host and automation-wrapper source is available too; it must not be confu
 
 On Skia WebAssembly, a parallel semantic `<textarea>` mirrors document text, selection direction, read-only state, spell checking, and placeholder text without exposing the Value pattern. ARIA relationships reference only targets present in the semantic tree. The browser adapter also handles relation getters that update their own collections, such as the source-backed visible-placeholder description, without interrupting tree creation or publishing stale relationships.
 
+Both browser input surfaces preserve existing document paragraphs when `AcceptsReturn` is `false`; that property controls Enter input, not the representation of stored rich text. Native input changes are reconciled with the final managed document after callbacks without replaying the same edit into the browser.
+
 `WinUIEdit.dll` supplies the Windows RichEdit/TOM, RTF, math, and windowless-provider implementations; those implementations are not present in the pinned Microsoft UI XAML repository. Uno's story storage, formatting runs, range tracking, undo/redo, RTF codec, math layout, and clipboard/IME integrations are therefore **engine adapters**, not a claimed byte-for-byte port of those components. Native OLE/TSF/message and COM ownership boundaries remain identified with `TODO Uno:` in source-backed partials.
 
 The editor shares the parsed-text contract, shaping primitives, and inline collections with `TextBlock` and `RichTextBlock`. Its incremental paragraph and math adapters implement that shared contract; they do not duplicate or replace `RichTextBlock`'s block-layout, overflow, or text-container implementation. Batched editor updates preserve the shared collection-version and text-position invalidation rules.
 
-Two integration differences are important when maintaining the port:
+The following integration rules are important when maintaining the port:
 
 - Uno's template binding updates a placeholder's text after the owner's property callback. The adapter observes the presenter text as well, so the source visibility policy runs against the updated value.
 - Managed text replacement rebases the same selection object, and clipboard reads can be asynchronous. The selection adapter distinguishes explicit selection changes from content-induced rebasing when applying the source cancellation policy.
+- Native LF/CRLF text and both selection endpoints are mapped to the document's CR coordinates before computing a replacement, so unchanged paragraph content retains its formatting.
+- Browser copy/cut uses the gesture's clipboard data and honors the public cancellable events. A cut prepares its payload before writing, then deletes only after successful writes and revalidation of the original editor, document, and selection.
+- Host-side IME corrections must preserve the composing range. Completion notifications and undo-group closure follow the committed document update, and retired input connections cannot modify a replacement editor.
 
 The source-gated experimental `HeaderPlacement` feature is not included. Platform-specific candidate-window tracking and linguistic alternatives depend on the installed input-method service. Pixel-identical text shaping and private Windows editor behavior are not compatibility guarantees.
 

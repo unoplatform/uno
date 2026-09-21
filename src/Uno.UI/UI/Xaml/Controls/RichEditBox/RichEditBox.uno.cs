@@ -27,7 +27,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private TextBoxView? _textBoxView;
 		private TextSelectionGripperPresenter? _gripperPresenter;
-		private ContentControl? _contentElement;
+		private FrameworkElement? _contentElement;
+		private DependencyProperty? _contentHostProperty;
 		private global::Microsoft.UI.Text.RichEditTextDocument? _document;
 		private bool _pointerPressedHandlerRegistered;
 		private bool _isPointerOver;
@@ -57,9 +58,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// Ensures we don't keep a reference to a TextBoxView that exists in a previous template.
 			_gripperPresenter?.Hide();
 			_gripperPresenter = null;
+			DetachFromHost();
 			_textBoxView = null;
 
-			_contentElement = GetTemplateChild(TextBoxConstants.ContentElementPartName) as ContentControl;
+			_contentElement = GetTemplateChild(TextBoxConstants.ContentElementPartName) as FrameworkElement;
 
 			if (_contentElement is { })
 			{
@@ -85,13 +87,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private void UpdateTextBoxView()
 		{
 			_textBoxView ??= new TextBoxView(this);
-			if (_contentElement != null)
+			if (_contentElement is { } contentHost)
 			{
-				var displayBlock = _textBoxView.DisplayBlock;
-				if (_contentElement.Content != displayBlock)
-				{
-					_contentElement.Content = displayBlock;
-				}
+				AttachToHost(contentHost);
 				_gripperPresenter ??= new TextSelectionGripperPresenter(this);
 
 				RenderDocument();
@@ -258,6 +256,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnLostFocusManaged(RoutedEventArgs e)
 		{
+			InvalidateNativeClipboardOperation();
 			_forceFocusedVisualState = ShouldForceFocusedVisualState();
 			if (_forceFocusedVisualState
 				&& ShouldHideGrippersOnFlyoutOpening()
@@ -288,6 +287,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected override void OnUnloaded()
 		{
+			InvalidateNativeClipboardOperation();
 			_placeholderTextChangedSubscription.Disposable = null;
 			StopHeightAnimation();
 			EndImeSession();
@@ -429,7 +429,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		TextWrapping ITextBoxViewHost.TextWrapping => TextWrapping;
 
-		ContentControl? ITextBoxViewHost.ContentElement => _contentElement;
+		ContentControl? ITextBoxViewHost.ContentElement => _contentElement as ContentControl;
 
 		FontFamily ITextBoxViewHost.FontFamily => _document?.IsMathMode == true
 			? new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathRenderingFontFamilyName)

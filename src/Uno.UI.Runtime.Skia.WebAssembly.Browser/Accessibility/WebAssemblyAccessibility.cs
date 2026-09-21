@@ -1144,7 +1144,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			@this.Log().Trace($"OnTextInput called for handle: {handle}, value length: {value?.Length ?? 0}, selection: {selectionStart}-{selectionEnd}");
 		}
 
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+		if (BrowserInvisibleTextBoxViewExtension.GetFocusedTextInputOwner(handle) is { } owner)
 		{
 			if (owner is RichEditBox richEditBox)
 			{
@@ -1158,6 +1158,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			if (owner is ITextBoxHost { Core: { } core })
 			{
+				if (!core.Owner.IsEnabled || core.IsReadOnly)
+				{
+					return;
+				}
 				var maxLength = value?.Length ?? 0;
 				selectionStart = Math.Max(0, Math.Min(selectionStart, maxLength));
 				selectionEnd = Math.Max(selectionStart, Math.Min(selectionEnd, maxLength));
@@ -1179,12 +1183,23 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		int selectionEnd,
 		bool selectionIsBackward)
 	{
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: RichEditBox richEditBox })
+		try
 		{
-			richEditBox.ApplyAccessibilitySelection(
-				selectionStart,
-				selectionEnd,
-				selectionIsBackward);
+			switch (BrowserInvisibleTextBoxViewExtension.GetFocusedTextInputOwner(handle))
+			{
+				case RichEditBox richEditBox:
+					richEditBox.ApplyAccessibilitySelection(selectionStart, selectionEnd, selectionIsBackward);
+					break;
+				case ITextBoxHost { Core: { } core }:
+					core.SelectInternal(
+						selectionIsBackward ? selectionEnd : selectionStart,
+						selectionIsBackward ? selectionStart - selectionEnd : selectionEnd - selectionStart);
+					break;
+			}
+		}
+		finally
+		{
+			BrowserInvisibleTextBoxViewExtension.SynchronizeTextInput(handle);
 		}
 	}
 
@@ -1258,7 +1273,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// Route through FocusSynchronizer if available (handles IsSyncing guard)
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
-			if (owner is ITextBoxHost)
+			if (owner is ITextBoxHost or RichEditBox)
 			{
 				BrowserInvisibleTextBoxViewExtension.DetachNativeInputPreservingFocus();
 			}
@@ -1287,8 +1302,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			@this.Log().Trace($"OnBlur called for handle: {handle}");
 		}
 
-		// Focus leaving the semantic element is handled by the browser focus system.
-		// No explicit action needed here - the Uno FocusManager handles focus transitions.
+		BrowserInvisibleTextBoxViewExtension.OnNativeBlur(handle);
 	}
 
 	[JSExport]
@@ -2753,6 +2767,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			NativeMethods.UpdateTextBoxReadOnly(element.Visual.Handle, richEditBox.IsReadOnly);
 			NativeMethods.UpdateTextBoxPlaceholder(element.Visual.Handle, richEditBox.PlaceholderText ?? string.Empty);
 			NativeMethods.UpdateTextBoxSpellCheck(element.Visual.Handle, richEditBox.IsSpellCheckEnabled);
+			NativeMethods.UpdateTextBoxAcceptsReturn(element.Visual.Handle, richEditBox.AcceptsReturn);
 		}
 	}
 
@@ -2777,7 +2792,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (TryGetTextSelection(core, normalizedValue.Length, out var selectionStart, out var selectionEnd))
 		{
-			NativeMethods.UpdateTextBoxValue(handle, normalizedValue, selectionStart, selectionEnd, false);
+			NativeMethods.UpdateTextBoxValue(handle, normalizedValue, selectionStart, selectionEnd, core?.IsBackwardSelection ?? false);
 			return;
 		}
 
@@ -2872,6 +2887,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxValue")]
 		internal static partial void UpdateTextBoxValue(IntPtr handle, string value, int selectionStart, int selectionEnd, bool selectionIsBackward);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxAcceptsReturn")]
+		internal static partial void UpdateTextBoxAcceptsReturn(IntPtr handle, bool acceptsReturn);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxReadOnly")]
 		internal static partial void UpdateTextBoxReadOnly(IntPtr handle, bool isReadOnly);

@@ -657,6 +657,39 @@ public partial class Given_RichEditBox
 		}
 	}
 
+	[TestMethod]
+	public async Task When_Android_InputConnection_Completion_Observes_Committed_Text_And_Undo()
+	{
+		var fake = new FakeImeTextBoxExtension();
+		using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+		var editor = new RichEditBox();
+		try
+		{
+			await UITestHelper.Load(editor);
+			editor.Document.SetText(TextSetOptions.None, "AB");
+			editor.Document.Selection.SetRange(1, 1);
+			editor.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			editor.Document.ClearUndoRedoHistory();
+			string textAtEnd = null;
+			editor.TextCompositionEnded += (_, _) => GetTextWithoutFinalEop(editor.Document, out textAtEnd);
+			var connection = new FakeAndroidInputConnection(editor, fake);
+
+			connection.SetComposingText("ni", cursorPosition: 2);
+			connection.CommitText("\u4f60");
+
+			Assert.AreEqual("A\u4f60B", textAtEnd);
+			editor.Document.Undo();
+			GetTextWithoutFinalEop(editor.Document, out var text);
+			Assert.AreEqual("AB", text);
+			Assert.IsFalse(editor.Document.CanUndo());
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	private sealed class FakeAndroidInputConnection
 	{
 		private readonly IImeSessionHost _host;
@@ -705,10 +738,11 @@ public partial class Given_RichEditBox
 			_selectionStart = start + text.Length;
 			_selectionLength = 0;
 
-			_plugin.SimulateCompositionComplete(text, textAlreadyApplied: true);
+			_plugin.SimulateCompositionUpdate(text, textAlreadyApplied: true);
 			_compositionStart = -1;
 			_compositionLength = 0;
 			_host.UpdateTextFromNative(_text, _selectionStart, _selectionLength);
+			_plugin.SimulateCompositionComplete(text, textAlreadyApplied: true);
 		}
 
 		internal void SetSelection(int selectionStart, int selectionLength)

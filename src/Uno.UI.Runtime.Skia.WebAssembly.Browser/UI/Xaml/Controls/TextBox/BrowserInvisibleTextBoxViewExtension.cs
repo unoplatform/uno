@@ -1,5 +1,8 @@
+#nullable enable
+
 using System.Runtime.InteropServices.JavaScript;
 using System;
+using System.Globalization;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -15,6 +18,8 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	private readonly TextBoxView _view;
 	private bool _isNativeInputActive;
 	private bool _suppressSoftwareKeyboard;
+	private static int _nativeClipboardToken;
+	private static (int Token, RichEditBox Owner, RichEditBox.NativeClipboardOperation Operation)? _nativeClipboardOperation;
 
 	public BrowserInvisibleTextBoxViewExtension(TextBoxView view)
 	{
@@ -46,15 +51,16 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	};
 
 	[JSExport]
-	private static void OnInputTextChanged(string text, int selectionStart, int selectionLength)
+	private static void OnInputTextChanged(IntPtr handle, string text, int selectionStart, int selectionLength)
 	{
-		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
-		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
-		switch (FocusManager.GetFocusedElement(xamlRoot!))
+		switch (GetFocusedTextInputOwner(handle))
 		{
-			case ITextBoxHost { Core: { } core }:
+			case ITextBoxHost { Core: { IsReadOnly: false } core } when core.Owner.IsEnabled:
 				core.TextBoxView.UpdateTextFromNative(text);
-				core.SelectInternal(selectionStart, selectionLength);
+				if (GetFocusedTextInputOwner(handle) == core.Owner)
+				{
+					core.SelectInternal(selectionStart, selectionLength);
+				}
 				break;
 			case RichEditBox richEditBox:
 				richEditBox.UpdateTextFromNative(text, selectionStart, selectionLength);
@@ -63,11 +69,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
-	private static void OnNativePaste(string clipboardText)
+	private static void OnNativePaste(IntPtr handle, string clipboardText)
 	{
-		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
-		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
-		switch (FocusManager.GetFocusedElement(xamlRoot!))
+		switch (GetFocusedTextInputOwner(handle))
 		{
 			case ITextBoxHost { Core: { } core }:
 				core.PasteFromClipboard(clipboardText);
@@ -79,10 +83,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
-	private static int GetNativePasteSourceLimit()
+	private static int GetNativePasteSourceLimit(IntPtr handle)
 	{
-		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
-		return FocusManager.GetFocusedElement(xamlRoot!) switch
+		return GetFocusedTextInputOwner(handle) switch
 		{
 			RichEditBox richEditBox => richEditBox.GetClipboardPasteSourceLimit(),
 			ITextBoxHost { Core: { MaxLength: > 0 } core } => GetTextBoxPasteSourceLimit(core),
@@ -100,11 +103,88 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
-	private static void OnSelectionChanged(int selectionStart, int selectionLength)
+	private static bool HandlesNativeClipboard(IntPtr handle)
+		=> GetFocusedTextInputOwner(handle) is RichEditBox;
+
+	[JSExport]
+	private static void SynchronizeNativeClipboardOwner(IntPtr handle)
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
-		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
-		switch (FocusManager.GetFocusedElement(xamlRoot!))
+		if (xamlRoot is not null
+			&& FocusManager.GetFocusedElement(xamlRoot) is RichEditBox { IsLoaded: true, IsEnabled: true } owner
+			&& owner.Visual.Handle != handle
+			&& ((IImeSessionHost)owner).TextBoxView?.Extension is BrowserInvisibleTextBoxViewExtension extension)
+		{
+			// Focus() updates the managed owner before its queued GotFocus activates the proxy.
+			extension.StartEntry(owner.IsReadOnly
+				|| owner.PreventKeyboardDisplayOnProgrammaticFocus && owner.FocusState == FocusState.Programmatic);
+		}
+	}
+
+	[JSExport]
+	[return: JSMarshalAs<JSType.Array<JSType.String>>]
+	private static string?[]? PrepareNativeClipboard(IntPtr handle, bool isCut)
+	{
+		var token = unchecked(++_nativeClipboardToken);
+		_nativeClipboardOperation = null;
+		if (GetFocusedTextInputOwner(handle) is not RichEditBox owner
+			|| owner.PrepareNativeClipboard(isCut) is not { } operation
+			|| token != _nativeClipboardToken
+			|| GetFocusedTextInputOwner(handle) != owner)
+		{
+			return null;
+		}
+
+		_nativeClipboardOperation = (token, owner, operation);
+		return new[] { token.ToString(CultureInfo.InvariantCulture), operation.Text, operation.Rtf };
+	}
+
+	[JSExport]
+	private static bool CompleteNativeClipboard(IntPtr handle, int token, bool clipboardWritten)
+	{
+		if (_nativeClipboardOperation is not { } pending || pending.Token != token)
+		{
+			return false;
+		}
+
+		_nativeClipboardOperation = null;
+		return clipboardWritten
+			&& GetFocusedTextInputOwner(handle) == pending.Owner
+			&& pending.Owner.CommitNativeClipboard(pending.Operation);
+	}
+
+	internal static Control? GetFocusedTextInputOwner(IntPtr handle)
+	{
+		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
+		return xamlRoot is not null
+			&& FocusManager.GetFocusedElement(xamlRoot) is Control control and (ITextBoxHost or RichEditBox)
+			&& control.Visual.Handle == handle
+				? control
+				: null;
+	}
+
+	[JSExport]
+	internal static void SynchronizeTextInput(IntPtr handle)
+	{
+		switch (GetFocusedTextInputOwner(handle))
+		{
+			case ITextBoxHost { Core: { } core }:
+				NativeMethods.SynchronizeTextInput(
+					handle, core.Text, core.SelectionStart, core.SelectionLength,
+					core.IsBackwardSelection ? "backward" : "forward");
+				break;
+			case RichEditBox richEditBox:
+				NativeMethods.SynchronizeTextInput(
+					handle, richEditBox.GetAccessibilityText(), richEditBox.NativeSelectionStart,
+					richEditBox.NativeSelectionLength, richEditBox.NativeSelectionIsBackward ? "backward" : "forward");
+				break;
+		}
+	}
+
+	[JSExport]
+	private static void OnSelectionChanged(IntPtr handle, int selectionStart, int selectionLength)
+	{
+		switch (GetFocusedTextInputOwner(handle))
 		{
 			case ITextBoxHost { Core: { } core }:
 				core.SelectInternal(selectionStart, selectionLength);
@@ -116,7 +196,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
-	private static void OnNativeBlur()
+	internal static void OnNativeBlur(IntPtr handle)
 	{
 		try
 		{
@@ -130,7 +210,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			// Fired only for browser-initiated blurs of the shared native input (managed-initiated
 			// blurs are suppressed on the JS side). In that case managed focus is still stale on the
 			// TextBox, so clearing it here is what finally raises LostFocus and re-syncs FocusManager.
-			var focused = FocusManager.GetFocusedElement(xamlRoot);
+			var focused = GetFocusedTextInputOwner(handle);
 			if (typeof(BrowserInvisibleTextBoxViewExtension).Log().IsEnabled(LogLevel.Trace))
 			{
 				typeof(BrowserInvisibleTextBoxViewExtension).Log().Trace($"OnNativeBlur: focused element is {focused?.GetType().Name ?? "null"}");
@@ -148,11 +228,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
-	private static void OnEnterKeyPressed()
+	private static void OnEnterKeyPressed(IntPtr handle)
 	{
-		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
-
-		if (FocusManager.GetFocusedElement(xamlRoot!) is Control control and (ITextBoxHost or RichEditBox))
+		if (GetFocusedTextInputOwner(handle) is { } control)
 		{
 			var keyArgs = new KeyRoutedEventArgs(control, VirtualKey.Enter, VirtualKeyModifiers.None);
 			control.RaiseEvent(UIElement.KeyDownEvent, keyArgs);
@@ -176,6 +254,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 				RichEditBox richEditBox => richEditBox.AcceptsReturn,
 				_ => false,
 			},
+			host is RichEditBox,
 			suppressSoftwareKeyboard ? "none" : GetInputModeValue(),
 			GetEnterKeyHintValue());
 
@@ -336,6 +415,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setText")]
 		public static partial void SetText(string text);
 
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.synchronizeTextInput")]
+		public static partial void SynchronizeTextInput(IntPtr handle, string text, int start, int length, string direction);
+
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.replaceText")]
 		public static partial void ReplaceText(int start, int length, string replacement);
 
@@ -346,7 +428,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		public static partial void RestartComposition();
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.focus")]
-		public static partial bool Focus(IntPtr handle, bool isPassword, string? text, bool acceptsReturn, string inputMode, string enterKeyHint);
+		public static partial bool Focus(IntPtr handle, bool isPassword, string? text, bool acceptsReturn, bool isRichEditBox, string inputMode, string enterKeyHint);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.blur")]
 		public static partial void Blur(IntPtr handle);

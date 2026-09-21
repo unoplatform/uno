@@ -319,9 +319,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		if (element is UIElement uiElement)
 		{
-			var transform = UIElement.GetTransform(from: uiElement, to: null);
-			var logicalRect = transform.Transform(new Windows.Foundation.Rect(default, new Windows.Foundation.Size(uiElement.Visual.Size.X, uiElement.Visual.Size.Y)));
-			var physicalRect = logicalRect.LogicalToPhysicalPixels();
+			var physicalRect = GetPhysicalBounds(uiElement);
 #pragma warning disable CS0618 // Type or member is obsolete
 			node.SetBoundsInParent(new global::Android.Graphics.Rect((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom));
 #pragma warning restore CS0618 // Type or member is obsolete
@@ -415,6 +413,15 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 	}
 
+	private static Windows.Foundation.Rect GetPhysicalBounds(UIElement element)
+	{
+		var transform = UIElement.GetTransform(from: element, to: null);
+		var logicalBounds = transform.Transform(new Windows.Foundation.Rect(
+			default,
+			new Windows.Foundation.Size(element.Visual.Size.X, element.Visual.Size.Y)));
+		return logicalBounds.LogicalToPhysicalPixels();
+	}
+
 	private void PopulateRichEditBoxNode(
 		RichEditBox richEditBox,
 		AutomationPeer peer,
@@ -463,12 +470,24 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return;
 		}
 
+		var parentLeft = 0;
+		var parentTop = 0;
+		if (peer.GetParent() is { } parent
+			&& parent.TryGetProviderOwner(out var parentOwner))
+		{
+			node.SetParent(_host, GetOrCreateVirtualId(parentOwner));
+			var parentBounds = GetPhysicalBounds(parentOwner);
+			parentLeft = (int)parentBounds.Left;
+			parentTop = (int)parentBounds.Top;
+		}
+
+		// AndroidX adds the virtual parent's physical origin, then the native host's screen offset.
 #pragma warning disable CS0618 // Type or member is obsolete
 		node.SetBoundsInParent(new global::Android.Graphics.Rect(
-			(int)bounds.Left,
-			(int)bounds.Top,
-			(int)bounds.Right,
-			(int)bounds.Bottom));
+			(int)bounds.Left - parentLeft,
+			(int)bounds.Top - parentTop,
+			(int)bounds.Right - parentLeft,
+			(int)bounds.Bottom - parentTop));
 #pragma warning restore CS0618 // Type or member is obsolete
 		node.ContentDescription = peer.GetName() ?? string.Empty;
 		node.Enabled = peer.IsEnabled();
@@ -478,12 +497,6 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		node.ClassName = peer.GetAutomationControlType() == AutomationControlType.Image
 			? "android.widget.ImageView"
 			: "android.widget.TextView";
-
-		if (peer.GetParent() is { } parent
-			&& parent.TryGetProviderOwner(out var parentOwner))
-		{
-			node.SetParent(_host, GetOrCreateVirtualId(parentOwner));
-		}
 
 		if (node.Clickable)
 		{

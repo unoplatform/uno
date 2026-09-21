@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Windows.ApplicationModel.DataTransfer;
 
@@ -10,6 +11,43 @@ namespace Microsoft.UI.Xaml.Controls
 	// Clipboard mutations flow through the document so formatting, tracked ranges, and undo stay aligned.
 	partial class RichEditBox
 	{
+		private long _nativeClipboardOperationVersion;
+		private WeakReference<NativeClipboardOperation>? _pendingNativeClipboardOperation;
+
+		internal sealed class NativeClipboardOperation
+		{
+			internal NativeClipboardOperation(RichEditBox owner, XamlRoot root, bool isCut, string text, string? rtf)
+			{
+				Owner = owner;
+				Root = root;
+				Document = owner.Document;
+				IsCut = isCut;
+				Text = text;
+				Rtf = rtf;
+				Selection = owner._selection;
+				TextVersion = Document.TextVersion;
+				SelectionVersion = Document.SelectionChangeVersion;
+				CharacterFormatVersion = Document.CharacterFormatVersion;
+				ParagraphFormatVersion = Document.ParagraphFormatVersion;
+				AutomationVersion = Document.AutomationVersion;
+				CopyFormat = owner.ClipboardCopyFormat;
+			}
+
+			internal string Text { get; }
+			internal string? Rtf { get; }
+			internal RichEditBox Owner { get; }
+			internal XamlRoot Root { get; }
+			internal global::Microsoft.UI.Text.RichEditTextDocument Document { get; }
+			internal bool IsCut { get; }
+			internal (int start, int length, bool selectionEndsAtTheStart) Selection { get; }
+			internal long TextVersion { get; }
+			internal long SelectionVersion { get; }
+			internal long CharacterFormatVersion { get; }
+			internal long ParagraphFormatVersion { get; }
+			internal long AutomationVersion { get; }
+			internal RichEditClipboardFormat CopyFormat { get; }
+		}
+
 		/// <summary>
 		/// Copies the current selection to the OS clipboard as plain text. When there is a non-empty
 		/// selection, raises <see cref="CopyingToClipboard"/> first (a handler may suppress the default
@@ -45,10 +83,101 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void CopySelectionToClipboardCore(int start, int end)
 		{
-			// Routes through the document so plain text goes to the OS clipboard and, when
-			// ClipboardCopyFormat is AllFormats, the selection's character formatting is stashed
-			// for a matching paste to restore.
+			// AllFormats also publishes standard RTF through the document's clipboard package.
 			Document.CopyToClipboard(start, end);
+		}
+
+		/// <summary>Captures a native clipboard payload without changing the document or writing to the OS clipboard.</summary>
+		internal NativeClipboardOperation? PrepareNativeClipboard(bool isCut)
+		{
+			InvalidateNativeClipboardOperation();
+			var operationVersion = _nativeClipboardOperationVersion;
+			if (XamlRoot is not { } root
+				|| !CanUseNativeClipboard(root)
+				|| isCut && IsReadOnly
+				|| !TryGetInteractiveSelectionSpan(out _, out _))
+			{
+				return null;
+			}
+
+			if (isCut ? RaiseCuttingToClipboardIsHandled() : RaiseCopyingToClipboardIsHandled())
+			{
+				return null;
+			}
+
+			if (operationVersion != _nativeClipboardOperationVersion
+				|| !CanUseNativeClipboard(root)
+				|| isCut && IsReadOnly
+				|| !TryGetInteractiveSelectionSpan(out var start, out var end)
+				|| isCut && Document.IsRangeProtected(start, end))
+			{
+				return null;
+			}
+
+			var package = Document.CreateClipboardDataPackage(start, end);
+			if (package is null)
+			{
+				return null;
+			}
+			var text = Document.GetTextInRange(start, end);
+			// Reuse the managed copy path's format/size eligibility; native gestures need its
+			// snapshot serialized synchronously rather than a deferred DataPackage provider.
+			var rtf = package.GetView().Contains(StandardDataFormats.Rtf)
+				? global::Microsoft.UI.Text.RichTextRtfCodec.Write(Document.CaptureFragment(start, end))
+				: null;
+			var operation = new NativeClipboardOperation(this, root, isCut, text, rtf);
+			_pendingNativeClipboardOperation = new WeakReference<NativeClipboardOperation>(operation);
+			return operation;
+		}
+
+		/// <summary>Completes a prepared operation after the native clipboard accepted every advertised format.</summary>
+		internal bool CommitNativeClipboard(NativeClipboardOperation operation)
+		{
+			if (operation is null
+				|| _pendingNativeClipboardOperation is not { } pendingReference
+				|| !pendingReference.TryGetTarget(out var pending)
+				|| !ReferenceEquals(pending, operation))
+			{
+				return false;
+			}
+
+			InvalidateNativeClipboardOperation();
+			if (!ReferenceEquals(operation.Owner, this)
+				|| !ReferenceEquals(operation.Document, Document)
+				|| !CanUseNativeClipboard(operation.Root)
+				|| operation.IsCut && IsReadOnly
+				|| operation.TextVersion != Document.TextVersion
+				|| operation.SelectionVersion != Document.SelectionChangeVersion
+				|| operation.CharacterFormatVersion != Document.CharacterFormatVersion
+				|| operation.ParagraphFormatVersion != Document.ParagraphFormatVersion
+				|| operation.AutomationVersion != Document.AutomationVersion
+				|| operation.CopyFormat != ClipboardCopyFormat
+				|| operation.Selection != _selection
+				|| !TryGetInteractiveSelectionSpan(out var start, out var end)
+				|| operation.IsCut && Document.IsRangeProtected(start, end))
+			{
+				return false;
+			}
+
+			if (operation.IsCut)
+			{
+				DeleteSelectionForCut(start, end);
+			}
+			return true;
+		}
+
+		private bool CanUseNativeClipboard(XamlRoot root)
+			=> IsLoaded
+				&& IsEnabled
+				&& ReferenceEquals(XamlRoot, root)
+				&& ReferenceEquals(FocusManager.GetFocusedElement(root), this)
+				&& _selectionSyncDeferralDepth == 0
+				&& !_isProcessingSelectionChanging;
+
+		private void InvalidateNativeClipboardOperation()
+		{
+			_pendingNativeClipboardOperation = null;
+			_nativeClipboardOperationVersion++;
 		}
 
 		internal void CopyTomSelectionToClipboard(global::Microsoft.UI.Text.UnoTextSelection selection)
@@ -76,7 +205,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void CutSelectionToClipboard()
 		{
-			if (IsReadOnly)
+			if (!IsEnabled || IsReadOnly)
 			{
 				return;
 			}
@@ -102,8 +231,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Raw copy (does not re-raise CopyingToClipboard — WinUI raises CuttingToClipboard for a cut).
 			CopySelectionToClipboardCore(start, end);
+			DeleteSelectionForCut(start, end);
+		}
+
+		private void DeleteSelectionForCut(int start, int end)
+		{
+			var selectionBeforeMutation = _selection;
+			var selectionVersionBeforeMutation = Document.SelectionChangeVersion;
 			RunWithDeferredSelectionSync(() => Document.ReplaceRange(start, end, string.Empty));
-			SetInteractiveSelection(start, 0);
+			if (Document.SelectionChangeVersion == selectionVersionBeforeMutation
+				&& _selection == selectionBeforeMutation)
+			{
+				SetInteractiveSelection(start, 0);
+			}
 			Document.FinalizeHistorySelection();
 		}
 
@@ -150,7 +290,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			try
 			{
-				if (IsReadOnly)
+				if (!IsEnabled || IsReadOnly)
 				{
 					return;
 				}
@@ -198,7 +338,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void PasteFromClipboard(string clipboardText)
 		{
-			if (IsReadOnly || RaisePasteIsHandled())
+			if (!IsEnabled || IsReadOnly || RaisePasteIsHandled())
 			{
 				return;
 			}
@@ -238,7 +378,7 @@ namespace Microsoft.UI.Xaml.Controls
 			string? clipboardText,
 			global::Microsoft.UI.Text.ITextRange operationRange)
 		{
-			if (IsReadOnly || (fragment is null && string.IsNullOrEmpty(clipboardText)))
+			if (!IsEnabled || IsReadOnly || (fragment is null && string.IsNullOrEmpty(clipboardText)))
 			{
 				return;
 			}

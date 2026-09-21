@@ -796,6 +796,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				finger.Press(GetTextPoint(SUT, 2));
 				finger.Release();
 				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(SUT.Document.Selection.StartPosition, SUT.Document.Selection.EndPosition);
+				finger.Press(GetTextPoint(SUT, 2));
+				finger.Release();
+				await WindowHelper.WaitForIdle();
 
 				var grippers = SUT.SelectionGrippersForTesting;
 				Assert.IsNotNull(grippers);
@@ -839,11 +843,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				finger.Press(GetTextPoint(SUT, 8));
 				finger.Release();
 				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(SUT.Document.Selection.StartPosition, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(0, opened);
+				finger.Press(GetTextPoint(SUT, 8));
+				finger.Release();
+				await WindowHelper.WaitForIdle();
 
 				Assert.IsGreaterThan(
 					SUT.Document.Selection.StartPosition,
 					SUT.Document.Selection.EndPosition,
-					"A touch tap on a word should produce a non-empty selection.");
+					"A second touch tap on a word should produce a non-empty selection.");
 				await WindowHelper.WaitFor(() => opened == 1);
 				Assert.AreEqual(0, closed);
 

@@ -321,14 +321,12 @@ partial class RichEditBox
 	//      Event handler override, passes control to core layer.
 	//
 	//---------------------------------------------------------------------------
-#if !HAS_UNO
-	// TODO Uno: Unicode insertion is routed through OnPostKeyDown and IImeSessionHost, not a native peer.
-	// _Check_return_ HRESULT RichEditBox::OnCharacterReceivedImpl(_In_ xaml_input::ICharacterReceivedRoutedEventArgs* pArgs)
-	// {
-	//     IFC_RETURN(TextBox::RaiseNative(this, ctl::as_iinspectable(pArgs), KnownEventIndex::UIElement_CharacterReceived));
-	//     return S_OK;
-	// }
-#endif
+	/// <inheritdoc />
+	protected override void OnCharacterReceived(CharacterReceivedRoutedEventArgs pArgs)
+	{
+		base.OnCharacterReceived(pArgs);
+		OnCharacterReceivedCore(pArgs);
+	}
 
 	//---------------------------------------------------------------------------
 	//
@@ -356,8 +354,11 @@ partial class RichEditBox
 	//---------------------------------------------------------------------------
 	private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
 	{
+		// TextBoxBase.cpp, lines 2966-2969: snapshot before callbacks reuse Control's thread-static args.
+		var wasEnabled = pArgs.OldValue;
+		var wasFocused = FocusState != FocusState.Unfocused;
 		base.OnIsEnabledChanged(pArgs);
-		UpdateVisualState();
+		OnIsEnabledChangedCore(wasEnabled, wasFocused);
 	}
 
 	private RichEditTextDocument GetDocumentImpl() => GetDocument();

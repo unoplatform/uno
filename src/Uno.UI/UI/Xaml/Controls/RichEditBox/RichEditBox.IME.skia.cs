@@ -34,6 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// composition events and should NOT be swallowed by the IsComposing check.
 		private bool _compositionAppliedByPlatform;
 		private bool _platformTextApplyInProgress;
+		private (int start, int length)? _nativeCompositionRangeBeforeUpdate;
 		private int _compositionStartIndex;
 		private int _compositionLength;
 		private int _compositionResolvedLength;
@@ -106,7 +107,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		bool IImeSessionHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
 
-		bool IImeSessionHost.CanAcceptTextInput => !IsReadOnly && IsTabStop;
+		bool IImeSessionHost.CanAcceptTextInput => IsEnabled && !IsReadOnly && IsTabStop;
 
 		int IImeSessionHost.MaxLength => MaxLength;
 
@@ -127,6 +128,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ActivateImeForFocusOrigin(FocusState focusState)
 		{
+			if (!IsEnabled)
+			{
+				return;
+			}
+
 			var suppressSoftwareKeyboard =
 				PreventKeyboardDisplayOnProgrammaticFocus && focusState == FocusState.Programmatic;
 			_textBoxView?.OnFocusStateChanged(focusState, suppressSoftwareKeyboard);
@@ -137,6 +143,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ActivateImeForUserInteraction(FocusState focusState)
 		{
+			if (!IsEnabled)
+			{
+				return;
+			}
+
 			_textBoxView?.OnFocusStateChanged(focusState, suppressSoftwareKeyboard: false);
 			ImeSessionCoordinator.StartSession(
 				this,
@@ -151,6 +162,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// fire, so subsequent key events aren't swallowed at the IsComposing check in OnPostKeyDown.
 			_compositionAppliedByPlatform = false;
 			_platformTextApplyInProgress = false;
+			_nativeCompositionRangeBeforeUpdate = null;
 			if (_isComposing)
 			{
 				var compositionText = GetCurrentCompositionText();
@@ -183,7 +195,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void IImeSessionHost.OnImeCompositionStarted()
 		{
-			if (IsReadOnly)
+			if (!IsEnabled || IsReadOnly)
 			{
 				return;
 			}
@@ -191,6 +203,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_isComposing = true;
 			_compositionAppliedByPlatform = false;
 			_platformTextApplyInProgress = false;
+			_nativeCompositionRangeBeforeUpdate = null;
 			_compositionHasCommittedText = false;
 			_compositionStartIndex = _selection.start;
 			// Initialize from the current selection length so the first ReplaceCompositionText replaces
@@ -221,8 +234,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// The platform (e.g., Android InputConnection) already applied the text. Suppress the
 				// external-change cancel for the document sync that follows, and mark the session so key
 				// events aren't swallowed by the IsComposing check.
-				_platformTextApplyInProgress = true;
-				_compositionAppliedByPlatform = true;
+				PreparePlatformCompositionUpdate();
 			}
 			else
 			{
@@ -242,6 +254,37 @@ namespace Microsoft.UI.Xaml.Controls
 				previousConversionEnd);
 			var args = new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength);
 			InvokeCompositionEvent(() => TextCompositionChanged?.Invoke(this, args));
+		}
+
+		private void PreparePlatformCompositionUpdate()
+		{
+			if (!_platformTextApplyInProgress)
+			{
+				_nativeCompositionRangeBeforeUpdate = (_compositionStartIndex, _compositionLength);
+			}
+			_platformTextApplyInProgress = true;
+			_compositionAppliedByPlatform = true;
+		}
+
+		void IImeSessionHost.ReconcileCompositionFromNative(int start, int length)
+		{
+			if (!_isComposing)
+			{
+				return;
+			}
+
+			var hadConversionTarget = TryGetAccessibilityCompositionRange(
+				conversionTarget: true,
+				out var previousConversionStart,
+				out var previousConversionEnd);
+			var textLength = GetPlainTextLength();
+			_compositionStartIndex = Math.Clamp(start, 0, textLength);
+			_compositionLength = Math.Clamp(length, 0, textLength - _compositionStartIndex);
+			_compositionResolvedLength = Math.Clamp(_compositionResolvedLength, 0, _compositionLength);
+
+			InvalidateImeRender();
+			RaiseConversionTargetChangedIfNeeded(hadConversionTarget, previousConversionStart, previousConversionEnd);
+			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
 		}
 
 		void IImeSessionHost.OnImeCompositionPartiallyCommitted(
@@ -264,8 +307,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var compositionLength = compositionText.Length;
 			if (textAlreadyApplied)
 			{
-				_platformTextApplyInProgress = true;
-				_compositionAppliedByPlatform = true;
+				PreparePlatformCompositionUpdate();
 			}
 			else
 			{
@@ -298,7 +340,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void IImeSessionHost.OnImeCompositionCompleted(string committedText, bool textAlreadyApplied)
 		{
-			if (IsReadOnly)
+			if (!IsEnabled || IsReadOnly)
 			{
 				return;
 			}

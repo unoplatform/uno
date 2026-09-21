@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private bool TryToggleFormattingAccelerator(DisabledFormattingAccelerators accelerator)
 		{
-			if (IsReadOnly)
+			if (!IsEnabled || IsReadOnly)
 			{
 				return false;
 			}

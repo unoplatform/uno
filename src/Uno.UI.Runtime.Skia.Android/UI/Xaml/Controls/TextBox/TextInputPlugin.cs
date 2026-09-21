@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Android.Content;
 using Android.OS;
 using Android.Text;
@@ -32,6 +34,26 @@ internal sealed class TextInputPlugin
 	/// Used by <see cref="AndroidImeTextBoxExtension"/> to subscribe to composition state changes.
 	/// </summary>
 	internal TextInputConnection? ActiveInputConnection => _inputConnection;
+
+	internal static bool CanAcceptTextInput(IImeSessionHost? host)
+		=> host?.CanAcceptTextInput == true;
+
+	internal static bool IsSupersededByFocusedHost(IImeSessionHost? host)
+	{
+		if (host?.XamlRoot is not { } root)
+		{
+			return false;
+		}
+
+		// Focus changes synchronously, but the Lost/GotFocus callbacks that transfer the session are queued.
+		// Non-editor focus (for example a selection flyout) can legitimately retain the editing session.
+		return FocusManager.GetFocusedElement(root) switch
+		{
+			IImeSessionHost focusedHost => !ReferenceEquals(host, focusedHost),
+			ITextBoxHost textBox => !ReferenceEquals(host, textBox.Core),
+			_ => false,
+		};
+	}
 
 	/// <summary>
 	/// Raised when a new <see cref="TextInputConnection"/> is created (e.g., when the system
@@ -121,13 +143,24 @@ internal sealed class TextInputPlugin
 	internal void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
 	{
 		SetActiveHost(host);
-		if (!activation.IsSoftwareKeyboardSuppressed)
+		if (!CanAcceptTextInput(host))
+		{
+			HideTextInput();
+		}
+		else if (!activation.IsSoftwareKeyboardSuppressed)
 		{
 			ShowTextInput(host);
 		}
 	}
 
-	internal void EndImeSession(IImeSessionHost host) => ClearActiveHost(host);
+	internal void EndImeSession(IImeSessionHost host)
+	{
+		ClearActiveHost(host);
+		if (!CanAcceptTextInput(host))
+		{
+			HideTextInput();
+		}
+	}
 
 	internal void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update)
 	{
@@ -136,15 +169,31 @@ internal sealed class TextInputPlugin
 			return;
 		}
 
-		if ((update & (
+		var inputAvailabilityChanged = (_inputTypes != InputTypes.Null) != CanAcceptTextInput(host);
+		if (inputAvailabilityChanged || (update & (
 			ImeSessionUpdate.InputScope |
 			ImeSessionUpdate.TextPrediction |
 			ImeSessionUpdate.AcceptsReturn |
 			ImeSessionUpdate.SpellCheck)) != 0)
 		{
 			UpdateInputOptions(host);
-			_pendingCompositionRange = _inputConnection?.GetComposingRange();
+			_pendingCompositionRange = CanAcceptTextInput(host)
+				&& string.Equals(_inputConnection?.Editable?.ToString(), host.Text.Replace('\r', '\n'), StringComparison.Ordinal)
+					? _inputConnection?.GetComposingRange()
+					: null;
+			if (_inputConnection is { } connection)
+			{
+				connection.ActiveHost = null;
+				_inputConnection = null;
+			}
 			_imm?.RestartInput(_view);
+		}
+
+		if (!CanAcceptTextInput(host))
+		{
+			_pendingCompositionRange = null;
+			_inputConnection?.OnTextInputHostChanged();
+			HideTextInput();
 		}
 
 		if ((update & ImeSessionUpdate.TextAndSelection) != 0)
@@ -163,6 +212,12 @@ internal sealed class TextInputPlugin
 	{
 		UpdateInputOptions(host);
 		SetActiveHost(host);
+		if (!CanAcceptTextInput(host))
+		{
+			HideTextInput();
+			return;
+		}
+
 		_view.RequestFocus();
 		_imm?.ShowSoftInput(_view, 0);
 	}
@@ -170,17 +225,21 @@ internal sealed class TextInputPlugin
 	private void SetActiveHost(IImeSessionHost host)
 	{
 		UpdateInputOptions(host);
-		var changed = !ReferenceEquals(_activeHost, host);
-		_activeHost = host;
-		if (_inputConnection is { } connection)
+		if (ReferenceEquals(_activeHost, host))
 		{
-			connection.ActiveHost = host;
+			return;
 		}
 
-		if (changed)
+		// An input connection belongs to one host. Late callbacks must not edit its replacement.
+		if (_inputConnection is { } connection)
 		{
-			_imm?.RestartInput(_view);
+			connection.ActiveHost = null;
+			_inputConnection = null;
 		}
+
+		_activeHost = host;
+		_pendingCompositionRange = null;
+		_imm?.RestartInput(_view);
 	}
 
 	private void ClearActiveHost(IImeSessionHost host)
@@ -195,12 +254,13 @@ internal sealed class TextInputPlugin
 		if (_inputConnection is { } connection && ReferenceEquals(connection.ActiveHost, host))
 		{
 			connection.ActiveHost = null;
+			_inputConnection = null;
 		}
 	}
 
 	private void UpdateInputOptions(IImeSessionHost host)
 	{
-		_inputTypes = ConvertInputScope(host);
+		_inputTypes = CanAcceptTextInput(host) ? ConvertInputScope(host) : InputTypes.Null;
 		_imeAction = host switch
 		{
 			TextBoxCore core => TextBoxExtensions.GetInputReturnType(core.Owner).ToImeAction(),
@@ -352,10 +412,20 @@ internal sealed class TextInputPlugin
 
 	internal IInputConnection? OnCreateInputConnection(EditorInfo? editorInfo)
 	{
+		if (_activeHost is null)
+		{
+			return null;
+		}
+
 		if (editorInfo is not null)
 		{
 			_editorInfo = editorInfo;
 			ApplyInputOptions(_editorInfo);
+		}
+
+		if (_inputConnection is { } previousConnection)
+		{
+			previousConnection.ActiveHost = null;
 		}
 
 		_inputConnection = new TextInputConnection(_view, editorInfo ?? new(), HandleKeyEvent);
@@ -369,9 +439,13 @@ internal sealed class TextInputPlugin
 		return _inputConnection;
 	}
 
-	public bool HandleKeyEvent(KeyEvent? keyEvent)
+	private bool HandleKeyEvent(TextInputConnection source, KeyEvent? keyEvent)
 	{
-		if (!(_imm?.IsAcceptingText ?? false) || _inputConnection == null)
+		if (!ReferenceEquals(source, _inputConnection)
+			|| !ReferenceEquals(source.ActiveHost, _activeHost)
+			|| _activeHost is null
+			|| IsSupersededByFocusedHost(_activeHost)
+			|| !(_imm?.IsAcceptingText ?? false))
 		{
 			return false;
 		}
@@ -382,10 +456,9 @@ internal sealed class TextInputPlugin
 		// InputConnectionAdaptor#sendKeyEvent forwards the key event back to the
 		// keyboard manager).
 
-		if (keyEvent is not null
-			&& _inputConnection is TextInputConnection inputConnection)
+		if (keyEvent is not null)
 		{
-			var handled = inputConnection.handleKeyEvent(keyEvent);
+			var handled = source.handleKeyEvent(keyEvent);
 
 			if (!handled && (keyEvent.KeyCode == Keycode.Enter || keyEvent.KeyCode == Keycode.NumpadEnter))
 			{
@@ -396,6 +469,8 @@ internal sealed class TextInputPlugin
 				// be more reasonable to treat Enter like any other key.
 				return ApplicationActivity.Instance.DispatchKeyEvent(keyEvent);
 			}
+
+			return handled;
 		}
 
 		return false;
