@@ -30,6 +30,7 @@ using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls.Extensions;
 using static Private.Infrastructure.TestServices;
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
 
@@ -42,6 +43,179 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	/// </summary>
 	public partial class Given_TextBox
 	{
+		// The browser head types through one shared hidden <input>. Where it is placed is per-host: desktop
+		// browsers keep it over the focused TextBox, iOS parks it off-screen so WebKit has nothing to reveal
+		// and cannot pan the page (see keepsInputOffscreen in BrowserInvisibleTextBoxViewExtension.ts). The
+		// runtime tests run in whichever browser hosts them, so assert the invariant of the reported policy.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24526")]
+		public async Task When_Focused_In_Browser_Then_Hidden_Input_Placement_Matches_Host()
+		{
+			var SUT = new TextBox
+			{
+				Width = 200,
+				Margin = new Thickness(40, 60, 0, 0),
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			try
+			{
+				await UITestHelper.Load(new Grid { Width = 400, Height = 400, Children = { SUT } });
+
+				// Focus has to land on this TextBox: the input is shared, so a failed focus could otherwise be
+				// assessed against an element a previous test left behind.
+				Assert.IsTrue(SUT.Focus(FocusState.Programmatic), "TextBox should take focus");
+				Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot), "TextBox should own the entry session");
+
+				// Accessibility routes text entry through the per-element semantic <input> and detaches the shared
+				// one, so the placement policy only applies when it is off. Any earlier accessibility test latches
+				// it on for the rest of the browser session, which is how the suite reaches this test on CI.
+				if (SemanticElementExists(SUT))
+				{
+					Assert.IsTrue(await SettlesTo(() => GetHiddenInputRect() is null),
+						$"accessibility owns text entry, so the shared input should be detached; it is {DescribeHiddenInput()}");
+					return;
+				}
+
+				var placement = ExpectedPlacementForHost();
+				// Reported after the wait, not through WaitFor's message, which is formatted at call time and so
+				// would describe the state before the wait rather than the state that failed it.
+				Assert.IsTrue(await SettlesTo(() => GetHiddenInputPlacement() == placement),
+					$"expected the hidden input to report '{placement}'; it is {DescribeHiddenInput()}");
+
+				var bounds = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
+				await UITestHelper.WaitFor(() => IsPlacedFor(placement, bounds, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input placed for '{placement}' against the focused TextBox {bounds}");
+
+				SUT.Margin = new Thickness(40, 200, 0, 0);
+				await WindowHelper.WaitForIdle();
+
+				var moved = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
+				Assert.IsTrue(moved.Y >= bounds.Y + 100, $"TextBox should have moved down, was {bounds}, now {moved}");
+				await UITestHelper.WaitFor(() => IsPlacedFor(placement, moved, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input still placed for '{placement}' after the TextBox moved to {moved}");
+
+				// Moving focus to a second TextBox reuses the shared input instead of creating one, which is how
+				// every entry session after the first behaves once another control has already used it.
+				var second = new TextBox { Width = 200, Margin = new Thickness(40, 20, 0, 0), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+				((Grid)WindowHelper.WindowContent).Children.Add(second);
+				await UITestHelper.WaitForLoaded(second);
+
+				Assert.IsTrue(second.Focus(FocusState.Programmatic), "second TextBox should take focus");
+				var secondBounds = second.TransformToVisual(null).TransformBounds(new Rect(0, 0, second.ActualWidth, second.ActualHeight));
+				Assert.IsTrue(await SettlesTo(() => GetHiddenInputPlacement() == placement),
+					$"expected the reused input to report '{placement}'; it is {DescribeHiddenInput()}");
+				await UITestHelper.WaitFor(() => IsPlacedFor(placement, secondBounds, GetHiddenInputRect()), timeoutMS: 3000, message: $"reused input placed for '{placement}' against the second TextBox {secondBounds}");
+			}
+			finally
+			{
+				// The runtime-test engine only unloads test content when IsUnloadingTestContent is set, which the
+				// CI/headless path does not: leaving a focused TextBox would keep the shared input in the DOM for
+				// whatever runs next.
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// "tracking": the input sits over the TextBox's inner text block, so it is within the TextBox bounds
+		// (inflated by a pixel to absorb device-pixel rounding between the XAML and DOM rects). "offscreen":
+		// entirely above the viewport, whatever the TextBox does, so there is no rect for the browser to
+		// scroll into view. A missing input reads as null and satisfies neither: an empty rect would
+		// otherwise pass the off-screen check by default.
+		private static bool IsPlacedFor(string placement, Rect textBox, Rect? inputRect)
+			=> inputRect is { } input
+				&& (placement == "offscreen"
+					? input.Bottom < 0
+					: input.Width > 0 && input.Height > 0 && textBox.InflateBy(new Thickness(1)).Contains(input));
+
+		// Polls instead of UITestHelper.WaitFor so the caller can assert with state captured after the wait.
+		private static async Task<bool> SettlesTo(Func<bool> condition, int timeoutMS = 5000)
+		{
+			var giveUp = DateTimeOffset.UtcNow.AddMilliseconds(timeoutMS);
+			while (DateTimeOffset.UtcNow < giveUp)
+			{
+				if (condition())
+				{
+					return true;
+				}
+
+				await WindowHelper.WaitForIdle();
+			}
+
+			return condition();
+		}
+
+		// Everything a failure needs to tell "the input was never created" apart from "it was placed wrongly".
+		private static string DescribeHiddenInput()
+			=> InvokeBrowserJs("""
+				(function() {
+					const e = document.getElementById('uno-input');
+					const a = document.activeElement;
+					const active = a ? (a.id || a.tagName) : 'none';
+					if (!e) {
+						return 'absent (activeElement=' + active + ')';
+					}
+
+					const r = e.getBoundingClientRect();
+					return "placement='" + (e.dataset.unoPlacement ?? '') + "' rect=" + [r.x, r.y, r.width, r.height].map(Math.round).join(',')
+						+ ' activeElement=' + active + ' focused=' + (a === e);
+				})()
+				""");
+
+		// Restates the host predicate rather than reading back what the page reports: deriving the expectation
+		// from data-uno-placement would pass even if the gate itself regressed (off-screen on a desktop
+		// browser, or tracking on iOS), which is the contract this test exists to pin.
+		private static string ExpectedPlacementForHost()
+			=> InvokeBrowserJs("""
+				(function() {
+					const p = navigator.platform ?? '';
+					const isIOS = /iP(ad|hone|od)/.test(p) || (p === 'MacIntel' && (navigator.maxTouchPoints ?? 0) > 1);
+					return isIOS ? 'offscreen' : 'tracking';
+				})()
+				""");
+
+		private static string GetHiddenInputPlacement()
+			=> InvokeBrowserJs("""
+				(function() {
+					const e = document.getElementById('uno-input');
+					return e ? (e.dataset.unoPlacement ?? '') : '';
+				})()
+				""");
+
+		// Reads the rendered rect rather than the inline styles, so a CSS-level placement or sizing regression
+		// is caught too. Null when the input is absent or the rect cannot be read, which is never a pass.
+		private static Rect? GetHiddenInputRect()
+		{
+			var raw = InvokeBrowserJs("""
+				(function() {
+					const e = document.getElementById('uno-input');
+					if (!e) {
+						return '';
+					}
+
+					const r = e.getBoundingClientRect();
+					return r.x + ',' + r.y + ',' + r.width + ',' + r.height;
+				})()
+				""");
+			var parts = raw.Split(',');
+			if (parts.Length != 4)
+			{
+				return null;
+			}
+
+			var values = new double[4];
+			for (var i = 0; i < 4; i++)
+			{
+				if (!double.TryParse(parts[i], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out values[i]))
+				{
+					return null;
+				}
+			}
+
+			return new Rect(values[0], values[1], values[2], values[3]);
+		}
+
 		[TestMethod]
 		public async Task When_Basic_Input()
 		{
