@@ -15,6 +15,27 @@ namespace Uno.UI.Tests.FrameTests
 		}
 
 		[TestMethod]
+		public void When_Created_Has_No_History()
+		{
+			var SUT = new Frame();
+
+			Assert.IsFalse(SUT.CanGoBack);
+			Assert.IsFalse(SUT.CanGoForward);
+			Assert.AreEqual(0, SUT.BackStackDepth);
+		}
+
+		[TestMethod]
+		public void When_Navigated_Once_Cannot_Go_Forward()
+		{
+			var SUT = new Frame();
+
+			SUT.Navigate(typeof(MyPage));
+
+			Assert.IsFalse(SUT.CanGoBack);
+			Assert.IsFalse(SUT.CanGoForward);
+		}
+
+		[TestMethod]
 		public void When_Navigating_Cancels()
 		{
 			// Arrange
