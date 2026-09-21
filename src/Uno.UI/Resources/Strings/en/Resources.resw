@@ -165,4 +165,19 @@
   <data name="FILE_SAVER_ACCEPT_LABEL" xml:space="preserve">
     <value>Submit</value>
   </data>
+  <data name="RichEditBoxOpenLinkTitle" xml:space="preserve">
+    <value>Open link in another app?</value>
+  </data>
+  <data name="RichEditBoxOpenLinkWarning" xml:space="preserve">
+    <value>Only open this link if you trust its source.
+
+{0}</value>
+    <comment>{0} is the complete URI that will be opened.</comment>
+  </data>
+  <data name="RichEditBoxOpenLinkButton" xml:space="preserve">
+    <value>Open link</value>
+  </data>
+  <data name="RichEditBoxCancelLinkButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 </root>

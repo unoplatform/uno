@@ -15,6 +15,7 @@ namespace Microsoft.UI.Text
 	{
 		internal const int MaxRtfInputLength = 16 * 1024 * 1024;
 		internal const int MaxRtfOutputLength = 16 * 1024 * 1024;
+		internal const int MaxImportCharacters = 8 * 1024 * 1024;
 		private const int MaxGroupDepth = 256;
 		private const int MaxParsedGroups = 65_536;
 		private const int MaxFontNameLength = 256;

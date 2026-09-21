@@ -48,7 +48,11 @@ public partial class RichEditBoxAutomationPeer
 	}
 
 	private bool RefreshAccessibilityPeers()
-		=> RefreshTextObjectPeers() | RefreshSpellingErrorPeers();
+	{
+		var textObjectsChanged = RefreshTextObjectPeers();
+		var spellingErrorsChanged = RefreshSpellingErrorPeers();
+		return textObjectsChanged || spellingErrorsChanged;
+	}
 
 	internal IRawElementProviderSimple[] GetSpellingErrorAnnotations(int start, int end)
 	{
