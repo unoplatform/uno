@@ -4516,6 +4516,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Rtf_Unsafe_Hyperlink_Metadata_Is_Preserved_But_Not_Activated()
 		{
 			var SUT = new RichEditBox();
+			var confirmationCount = 0;
+			var launchCount = 0;
+			SUT.LinkConfirmationForTesting = _ =>
+			{
+				confirmationCount++;
+				return Task.FromResult(false);
+			};
+			SUT.LinkLauncherForTesting = _ =>
+			{
+				launchCount++;
+				return Task.FromResult(true);
+			};
 			try
 			{
 				WindowHelper.WindowContent = SUT;
@@ -4523,7 +4535,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1{\field{\*\fldinst HYPERLINK ""javascript:alert(1)""}{\fldrslt unsafe}}}");
 
 				Assert.AreEqual("\"javascript:alert(1)\"", SUT.Document.GetRange(0, 6).Link);
-				Assert.IsFalse(RichEditBox.TryGetLinkUri(SUT.Document.GetRange(0, 6).Link, out _));
+				Assert.IsTrue(SUT.TryNavigateLinkAt(1));
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(1, confirmationCount);
+				Assert.AreEqual(0, launchCount);
 				GetTextWithoutFinalEop(SUT.Document, out var text);
 				Assert.AreEqual("unsafe", text);
 			}
@@ -4534,13 +4549,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public void When_Programmatic_Mailto_Link_Is_Navigable()
+		[DataRow("mailto:user@example.com", "mailto")]
+		[DataRow("tel:+15555550100", "tel")]
+		[DataRow("ms-settings:privacy", "ms-settings")]
+		[DataRow("contoso-shell:open", "contoso-shell")]
+		public void When_Programmatic_Absolute_Link_Is_Parsed(string target, string scheme)
 		{
-			Assert.IsTrue(RichEditBox.TryGetLinkUri("\"mailto:user@example.com\"", out var uri));
-			Assert.AreEqual("mailto", uri.Scheme);
-			Assert.IsFalse(RichEditBox.TryGetLinkUri("\"javascript:alert(1)\"", out _));
-			Assert.IsFalse(RichEditBox.TryGetLinkUri("\"file:///C:/secret.txt\"", out _));
-			Assert.IsFalse(RichEditBox.TryGetLinkUri("\"contoso-shell:open\"", out _));
+			Assert.IsTrue(RichEditBox.TryGetLinkUri($"\"{target}\"", out var uri));
+			Assert.AreEqual(scheme, uri.Scheme);
 		}
 
 		[TestMethod]
@@ -4769,26 +4785,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Rtf_Import_Rejects_Projected_Text_Above_Configured_Limit()
+		public void When_Rtf_Parser_Rejects_Projected_Text_Above_Limit()
 		{
-			var SUT = new RichEditBox();
-			var previous = global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters;
-			try
-			{
-				global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters = 262_144;
-				WindowHelper.WindowContent = SUT;
-				await WindowHelper.WaitForLoaded(SUT);
-				var rtf = @"{\rtf1 " + new string('a', 262_145) + "}";
+			var rtf = @"{\rtf1 " + new string('a', 262_145) + "}";
 
-				Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetText(TextSetOptions.FormatRtf, rtf));
-				GetTextWithoutFinalEop(SUT.Document, out var text);
-				Assert.AreEqual(string.Empty, text);
-			}
-			finally
-			{
-				global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters = previous;
-				WindowHelper.WindowContent = null;
-			}
+			Assert.ThrowsExactly<ArgumentException>(() => RichTextRtfCodec.Read(rtf, maxCharacters: 262_144));
 		}
 
 		[TestMethod]

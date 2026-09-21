@@ -317,6 +317,69 @@ public partial class Given_RichEditBox
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+	[DataRow(FocusState.Programmatic, true)]
+	[DataRow(FocusState.Pointer, false)]
+	[DataRow(FocusState.Keyboard, false)]
+	public async Task When_FocusManager_Request_Preserves_IME_Focus_Origin(FocusState focusState, bool suppressKeyboard)
+	{
+		var fake = new FakeImeTextBoxExtension();
+		using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+		var editor = new RichEditBox { PreventKeyboardDisplayOnProgrammaticFocus = true };
+		var other = new Button { Content = "Other focus" };
+		try
+		{
+			WindowHelper.WindowContent = new StackPanel { Children = { other, editor } };
+			await WindowHelper.WaitForLoaded(editor);
+			Assert.IsTrue(other.Focus(FocusState.Programmatic));
+			await WindowHelper.WaitForIdle();
+
+			var result = await FocusManager.TryFocusAsync(editor, focusState);
+			Assert.IsTrue(result.Succeeded);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(focusState, fake.LastActivation.FocusState);
+			Assert.AreEqual(suppressKeyboard, fake.LastActivation.IsSoftwareKeyboardSuppressed);
+			Assert.AreSame(editor, ImeSessionCoordinator.ActiveHost);
+			Assert.IsTrue(editor.IsCaretRenderedForTesting);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Tap_Reactivates_Keyboard_After_Programmatic_Focus()
+	{
+		var fake = new FakeImeTextBoxExtension();
+		using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+		var editor = new RichEditBox { PreventKeyboardDisplayOnProgrammaticFocus = true };
+		var other = new Button { Content = "Other focus" };
+		try
+		{
+			WindowHelper.WindowContent = new StackPanel { Children = { other, editor } };
+			await WindowHelper.WaitForLoaded(editor);
+			Assert.IsTrue(other.Focus(FocusState.Programmatic));
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(editor.Focus(FocusState.Programmatic));
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(fake.LastActivation.IsSoftwareKeyboardSuppressed);
+
+			var args = new TappedRoutedEventArgs();
+			editor.SafeRaiseEvent(UIElement.TappedEvent, args);
+
+			Assert.IsTrue(args.Handled);
+			Assert.AreEqual(FocusState.Pointer, fake.LastActivation.FocusState);
+			Assert.IsFalse(fake.LastActivation.IsSoftwareKeyboardSuppressed);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Programmatic_Focus_Suppresses_Only_Software_Keyboard()
 	{
 		var fake = new FakeImeTextBoxExtension();

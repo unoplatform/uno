@@ -5,6 +5,7 @@
 
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -365,5 +366,37 @@ partial class RichEditBox
 		// TODO Uno: Native focusManager->IsPluginFocused() is represented by host activation/focus notifications.
 		// TODO Uno: Feature_HeaderPlacement's HeaderStates are outside the supported WinUI contract.
 #endif
+	}
+
+	// TextBoxBase.cpp, lines 4981-5004.
+	internal override void UpdateFocusState(FocusState focusState)
+	{
+		base.UpdateFocusState(focusState);
+		if (focusState != FocusState.Unfocused) // only check and update SIP settings when textbox has focus
+		{
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			focusState = focusManager!.GetRealFocusStateForFocusedElement();
+#if HAS_UNO
+			UpdateManagedSIPSettings(focusState);
+#else
+			// TODO Uno: Platform IME activation replaces private TSF input-pane settings.
+			// IFC_RETURN(UpdateSIPSettings(focusState));
+#endif
+		}
+
+		if (focusState == FocusState.Unfocused)
+		{
+			// We want to force the focused visual state when either the Context or Selection flyouts are getting focus.
+			// This needs to happen before the async call to OnLostFocus so that GetSelectionHighlightColorNoRef returns the correct color.
+			_forceFocusedVisualState = ShouldForceFocusedVisualState();
+
+			// We only want to hide the grippers when the context flyout is getting focus.  The selection flyout is intended
+			// to be transient in nature, and the user is still intended to be able to interact with the rest of the app
+			// while it's being shown.
+			m_shouldHideGrippersOnFlyoutOpening = ShouldHideGrippersOnFlyoutOpening();
+#if HAS_UNO
+			_imeFocusOrigin = focusState;
+#endif
+		}
 	}
 }
