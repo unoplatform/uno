@@ -425,7 +425,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
 
 	partial void OnIsVisibleChanged(bool value)
-		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+	{
+		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+		if (!value && CompositionTarget is { } target)
+		{
+			ContributeRemovalDamage(target);
+		}
+	}
 
 	/// <summary>
 	/// Render a visual as if it's the root visual.
@@ -615,6 +622,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #endif
 			if (visual.RequiresRepaintOnEveryFrame)
 			{
+				visual.InvalidateParentChildrenPicture(includeSelf: false);
 				// Repaint-every-frame content (e.g. an effect brush over already-drawn area): paint directly, uncached.
 				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage, clipChanged);
 				visual.Paint(session);
