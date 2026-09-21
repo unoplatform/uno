@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -85,9 +84,30 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 
 	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> action) => throw new NotImplementedException();
 
+	private static void CompleteFileDrop(
+		TaskCompletionSource<List<IStorageItem>> completion,
+		Func<List<IStorageItem>?> getFiles,
+		IDisposable cleanup)
+	{
+		try
+		{
+			List<IStorageItem> files;
+			using (cleanup)
+			{
+				files = getFiles() ?? throw new InvalidOperationException("Failed to retrieve file drop list from HDROP.");
+			}
+
+			completion.TrySetResult(files);
+		}
+		catch (Exception error) when (error is not OutOfMemoryException and not StackOverflowException and not AccessViolationException)
+		{
+			completion.TrySetException(error);
+		}
+	}
+
 	private class AsyncHDropHandler(FORMATETC hdropFormat)
 	{
-		private readonly TaskCompletionSource<List<IStorageItem>> _tcs = new();
+		private readonly TaskCompletionSource<List<IStorageItem>> _tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
 		public Task<List<IStorageItem>> Task => _tcs.Task;
 
@@ -140,32 +160,15 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 					else
 					{
 						dispose = false;
-						new Thread(() =>
-						{
-							try
+						new Thread(() => CompleteFileDrop(
+							_tcs,
+							() => Win32ClipboardExtension.GetFileDropList(hdropMedium.u.hGlobal),
+							Disposable.Create(() =>
 							{
-								using var _2 = Disposable.Create(() =>
-								{
-									PInvoke.ReleaseStgMedium(ref hdropMedium);
-									asyncCapability->EndOperation(HRESULT.S_OK, null, (uint)DropEffect);
-									asyncCapabilityScope.Dispose();
-								});
-
-								var files = Win32ClipboardExtension.GetFileDropList(hdropMedium.u.hGlobal);
-								if (files is null)
-								{
-									_tcs.TrySetException(new InvalidOperationException("Failed to retrieve file drop list from HDROP."));
-								}
-								else
-								{
-									_tcs.TrySetResult(files);
-								}
-							}
-							catch (Exception error) when (error is ArgumentException or IOException or InvalidOperationException or NotSupportedException or UnauthorizedAccessException or COMException)
-							{
-								_tcs.TrySetException(error);
-							}
-						}).Start();
+								PInvoke.ReleaseStgMedium(ref hdropMedium);
+								asyncCapability->EndOperation(HRESULT.S_OK, null, (uint)DropEffect);
+								asyncCapabilityScope.Dispose();
+							}))).Start();
 					}
 				}
 				else
