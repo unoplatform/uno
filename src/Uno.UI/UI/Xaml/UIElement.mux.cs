@@ -162,7 +162,8 @@ namespace Microsoft.UI.Xaml
 			var bounds = GetGlobalBoundsWithOptions(
 				ignoreClipping: false,
 				ignoreClippingOnScrollContentPresenters: false,
-				useTargetInformation: false);
+				useTargetInformation: false,
+				skipPostPaintingClipping: false);
 
 			return bounds.Width > 0 && bounds.Height > 0
 				? new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2)
@@ -838,6 +839,17 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal Rect GetGlobalBoundsWithOptions(bool ignoreClipping, bool ignoreClippingOnScrollContentPresenters, bool useTargetInformation)
+			=> GetGlobalBoundsWithOptions(
+				ignoreClipping,
+				ignoreClippingOnScrollContentPresenters,
+				useTargetInformation,
+				skipPostPaintingClipping: true);
+
+		private Rect GetGlobalBoundsWithOptions(
+			bool ignoreClipping,
+			bool ignoreClippingOnScrollContentPresenters,
+			bool useTargetInformation,
+			bool skipPostPaintingClipping)
 		{
 #if __SKIA__
 			if (!IsInLiveTree)
@@ -862,7 +874,7 @@ namespace Microsoft.UI.Xaml
 				// wrongly considered on-screen (IsOffscreen == false).
 				// TODO: ignoreClippingOnScrollContentPresenters is not yet honored separately. Every caller
 				// currently passes false, so the full ancestor clip (including ScrollContentPresenters) applies.
-				var clip = Visual.GetTotalClipRectInRootCoordinates();
+				var clip = Visual.GetTotalClipRectInRootCoordinates(skipPostPaintingClipping);
 
 				var left = Math.Max(globalBounds.Left, clip.Left);
 				var top = Math.Max(globalBounds.Top, clip.Top);

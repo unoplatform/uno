@@ -831,11 +831,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Intersecting an element's bounds with this rect yields what's actually visible, which automation
 	/// uses to detect elements clipped entirely out of view (e.g. scrolled outside a ScrollViewer).
 	/// </summary>
-	internal Rect GetTotalClipRectInRootCoordinates()
+	internal Rect GetTotalClipRectInRootCoordinates(bool skipPostPaintingClipping = true)
 	{
-		// skipPostPaintingClipping: true — a visual's own post-painting clip only affects its children,
+		// skipPostPaintingClipping defaults to true — a visual's own post-painting clip only affects its children,
 		// not the visual itself. Ancestor post-painting clips are still applied via the parent recursion.
-		var clip = GetTotalClipPath(skipPostPaintingClipping: true);
+		var clip = GetTotalClipPath(skipPostPaintingClipping);
 		var bounds = clip.Bounds;
 		clip.Release();
 		return bounds;
