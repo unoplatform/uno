@@ -109,9 +109,15 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 			_root.Children.Insert(0, _stage);
 		}
 
+		// A scene that moves cannot be compared pixel for pixel between two builds. UNO_PERF_FREEZE_FRAME=N runs
+		// exactly N ticks and then holds, which is what a rendering A/B needs. Prefer 0: a tick that scrolls is a
+		// no-op until layout reports a scrollable height, so any N > 0 still depends on when layout settled.
+		private static readonly long _tickBudget =
+			long.TryParse(Environment.GetEnvironmentVariable("UNO_PERF_FREEZE_FRAME"), out var f) && f >= 0 ? f : -1;
+
 		private void OnRendering(object? sender, object e)
 		{
-			Tick(_frame++);
+			if (_tickBudget < 0 || _frame < _tickBudget) { Tick(_frame++); }
 
 			var now = Stopwatch.GetTimestamp();
 			var frameMs = (now - _lastFrameTs) * 1000.0 / Stopwatch.Frequency;
