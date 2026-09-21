@@ -89,6 +89,7 @@ internal sealed class DBusAppTaskNotificationService : IAppTaskNotificationServi
 		}
 		finally
 		{
+			// A successful connection is owned until Reset; a using scope would dispose it after transfer.
 			if (!ReferenceEquals(_publicationConnection, connection))
 			{
 				connection.Dispose();

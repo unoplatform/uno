@@ -157,6 +157,7 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase, IDispo
 		}
 	}
 
+	// ProbeSupportAsync contains recoverable failures; process-level failures must reach the calling context.
 	private static async void ObserveSupportProbe(Task probe) => await probe;
 
 	private async Task ProbeSupportAsync()

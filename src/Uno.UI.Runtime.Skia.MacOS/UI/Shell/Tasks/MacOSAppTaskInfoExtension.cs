@@ -40,7 +40,7 @@ internal sealed class MacOSAppTaskInfoExtension : AppTaskInfoExtensionBase
 				BadgeUpdater.SetAppTaskBadge(visibleTaskCount == 0 ? null : visibleTaskCount);
 				completion.SetResult();
 			}
-			catch (Exception error)
+			catch (Exception error) when (IsRecoverable(error))
 			{
 				completion.SetException(error);
 			}

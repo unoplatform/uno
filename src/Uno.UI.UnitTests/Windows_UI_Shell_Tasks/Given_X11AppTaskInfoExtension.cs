@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.WinUI.Runtime.Skia.X11;
@@ -36,6 +38,65 @@ public class Given_X11AppTaskInfoExtension
 		}
 
 		Assert.IsTrue(extension.IsSupported());
+	}
+
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public Task When_Probe_Fails_Then_It_Can_Be_Retried(bool asynchronously) =>
+		AssertProbeFailure(new IOException("Notification service is unavailable."), asynchronously, isRecoverable: true);
+
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public Task When_Probe_Has_Unrecoverable_Error_Then_It_Reaches_The_Calling_Context(bool asynchronously) =>
+		AssertProbeFailure(new InvalidProgramException("Fatal probe failure."), asynchronously, isRecoverable: false);
+
+	[TestMethod]
+	public void When_Disposed_Then_Service_Is_Disposed_Only_Once()
+	{
+		var service = new TestNotificationService { Owner = ":1.1" };
+		using var extension = new X11AppTaskInfoExtension(service, TimeSpan.FromMinutes(1));
+		Assert.IsTrue(extension.IsSupported());
+
+		extension.Dispose();
+		extension.Dispose();
+
+		Assert.IsFalse(extension.IsSupported());
+		Assert.AreEqual(1, service.DisposeCount);
+	}
+
+	[TestMethod]
+	public void When_Disposed_Then_Probe_Timer_Does_Not_Keep_Extension_Alive()
+	{
+		var extension = CreateDisposedExtension();
+
+		GC.Collect();
+		GC.WaitForPendingFinalizers();
+		GC.Collect();
+
+		Assert.IsFalse(extension.IsAlive);
+	}
+
+	[TestMethod]
+	public async Task When_Disposed_While_Probing_Then_Recovery_Is_Not_Published()
+	{
+		var service = new TestNotificationService { Owner = ":1.1" };
+		using var extension = new X11AppTaskInfoExtension(service, TimeSpan.Zero);
+		extension.Synchronize(1, [CreateSnapshot()]);
+
+		var probe = new TaskCompletionSource<AppTaskNotificationSupport>(TaskCreationOptions.RunContinuationsAsynchronously);
+		service.PendingProbe = probe.Task;
+		var context = CaptureProbe(extension);
+
+		extension.Dispose();
+		probe.SetResult(new(true, ":1.2"));
+		await context.Completion.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+		Assert.IsNull(context.Error);
+		Assert.IsFalse(extension.IsSupported());
+		Assert.AreEqual(1, service.Notifications.Count);
+		Assert.AreEqual(1, service.DisposeCount);
 	}
 
 	[TestMethod]
@@ -136,6 +197,63 @@ public class Given_X11AppTaskInfoExtension
 		Assert.AreEqual((":1.1", 1U), service.Closed[0]);
 	}
 
+	private static async Task AssertProbeFailure(Exception error, bool asynchronously, bool isRecoverable)
+	{
+		var service = new TestNotificationService();
+		using var extension = new X11AppTaskInfoExtension(service, TimeSpan.Zero);
+		var probe = new TaskCompletionSource<AppTaskNotificationSupport>(TaskCreationOptions.RunContinuationsAsynchronously);
+		service.PendingProbe = probe.Task;
+		if (!asynchronously)
+		{
+			probe.SetException(error);
+		}
+
+		var context = CaptureProbe(extension);
+		if (asynchronously)
+		{
+			probe.SetException(error);
+		}
+
+		await context.Completion.Task.WaitAsync(TimeSpan.FromSeconds(5));
+		if (isRecoverable)
+		{
+			Assert.IsNull(context.Error);
+			Assert.IsFalse(extension.IsSupported());
+
+			service.PendingProbe = null;
+			service.Owner = ":1.1";
+			Assert.IsTrue(extension.IsSupported());
+		}
+		else
+		{
+			Assert.AreSame(error, context.Error);
+		}
+	}
+
+	private static ExceptionCaptureContext CaptureProbe(X11AppTaskInfoExtension extension)
+	{
+		var context = new ExceptionCaptureContext();
+		var previousContext = SynchronizationContext.Current;
+		try
+		{
+			SynchronizationContext.SetSynchronizationContext(context);
+			extension.IsSupported();
+		}
+		finally
+		{
+			SynchronizationContext.SetSynchronizationContext(previousContext);
+		}
+
+		return context;
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static WeakReference CreateDisposedExtension()
+	{
+		using var extension = new X11AppTaskInfoExtension(new TestNotificationService(), TimeSpan.FromMinutes(1));
+		return new WeakReference(extension);
+	}
+
 	private static AppTaskInfoSnapshot CreateSnapshot() => new(
 		Guid.NewGuid().ToString("B"),
 		"Task",
@@ -156,6 +274,7 @@ public class Given_X11AppTaskInfoExtension
 		internal bool FailNextNotification { get; set; }
 		internal Task<AppTaskNotificationSupport>? PendingProbe { get; set; }
 		internal int ResetCount { get; private set; }
+		internal int DisposeCount { get; private set; }
 		internal List<(string Owner, uint ReplacesId)> Notifications { get; } = new();
 		internal List<(string Owner, uint Id)> Closed { get; } = new();
 		internal TaskCompletionSource<string> Republished { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -199,8 +318,26 @@ public class Given_X11AppTaskInfoExtension
 
 		public void Reset() => ResetCount++;
 
-		public void Dispose()
+		public void Dispose() => DisposeCount++;
+	}
+
+	private sealed class ExceptionCaptureContext : SynchronizationContext
+	{
+		internal TaskCompletionSource Completion { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		internal Exception? Error { get; private set; }
+
+		public override void Post(SendOrPostCallback callback, object? state)
 		{
+			try
+			{
+				callback(state);
+			}
+			catch (Exception error)
+			{
+				Error = error;
+			}
 		}
+
+		public override void OperationCompleted() => Completion.TrySetResult();
 	}
 }

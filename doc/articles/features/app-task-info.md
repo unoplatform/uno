@@ -122,6 +122,19 @@ without a reachable notification service that is running or can be activated. On
 `AppTaskInfo.IsSupported()`. On X11, retry that capability query after the initial asynchronous
 probe instead of treating the first false result as permanent.
 
+### Test coverage and unavailable presenters
+
+The `Given_AppTaskInfo` runtime tests wait up to five seconds for `IsSupported()` before exercising
+the task lifecycle. When no presenter is available, they verify that enumeration is empty and report
+**inconclusive**, not a successful lifecycle test. A green CI job alone therefore does not establish
+that these paths ran; check the individual test results and the platform prerequisites above.
+The tests exercise the task model with the platform presenter enabled; they do not assert successful
+publication or visible shell UI.
+
+The `Uno.UI.UnitTests` app-task tests use controlled presenters and notification services to cover
+the Windows argument contract, unsupported-platform behavior, recovery, and resource ownership
+without relying on host notification permissions, a D-Bus daemon, or browser badging support.
+
 ### Restore tasks at startup
 
 ```csharp
