@@ -68,6 +68,7 @@ public class Given_TabView
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24560")]
 	public async Task When_Arrow_Keys_On_Tabs_Then_Focus_Follows_Tab_Order()
 	{
 		var firstItem = new TabViewItem { Header = "Tab 1" };
@@ -77,27 +78,34 @@ public class Given_TabView
 			TabItems = { firstItem, secondItem }
 		};
 
-		await UITestHelper.Load(SUT);
+		try
+		{
+			await UITestHelper.Load(SUT);
 
-		var firstCloseButton = (Button)firstItem.FindName("CloseButton");
-		Assert.IsNotNull(firstCloseButton);
+			var firstCloseButton = (Button)firstItem.FindName("CloseButton");
+			Assert.IsNotNull(firstCloseButton);
 
-		firstItem.Focus(FocusState.Keyboard);
-		await WindowHelper.WaitForIdle();
-		Assert.AreSame(firstItem, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+			firstItem.Focus(FocusState.Keyboard);
+			await WindowHelper.WaitForIdle();
+			Assert.AreSame(firstItem, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 
-		// Focus order is Tab 1 -> Tab 1 close button -> Tab 2 -> ...
-		await KeyboardHelper.Right();
-		await WindowHelper.WaitForIdle();
-		Assert.AreSame(firstCloseButton, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+			// Focus order is Tab 1 -> Tab 1 close button -> Tab 2 -> ...
+			await KeyboardHelper.Right();
+			await WindowHelper.WaitForIdle();
+			Assert.AreSame(firstCloseButton, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 
-		await KeyboardHelper.Right();
-		await WindowHelper.WaitForIdle();
-		Assert.AreSame(secondItem, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+			await KeyboardHelper.Right();
+			await WindowHelper.WaitForIdle();
+			Assert.AreSame(secondItem, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 
-		await KeyboardHelper.Left();
-		await WindowHelper.WaitForIdle();
-		Assert.AreSame(firstCloseButton, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+			await KeyboardHelper.Left();
+			await WindowHelper.WaitForIdle();
+			Assert.AreSame(firstCloseButton, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 #endif
 
