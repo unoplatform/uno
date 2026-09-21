@@ -5,6 +5,9 @@ using Uno.UI;
 using Windows.UI;
 
 #if __SKIA__
+using System;
+using System.Collections.Generic;
+using Microsoft.UI.Composition.Interactions;
 using Uno.UI.Composition;
 using Uno.UI.Helpers;
 using Uno.UI.Composition.Drawing;
@@ -450,6 +453,100 @@ public class Given_Visual_Damage
 #endif
 	}
 
+	// Hiding a visual takes its whole subtree off the frame, but the render walk never enters a hidden subtree, so
+	// the area its descendants painted is repainted only if hiding reports it. A container paints nothing itself,
+	// so its own last-rendered bounds can't stand in for its children's.
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Container_Is_Hidden_Then_Its_Descendants_Are_Damaged()
+	{
+#if __SKIA__
+		var compositor = Compositor.GetSharedCompositor();
+
+		var root = compositor.CreateContainerVisual();
+		root.Size = new Vector2(200, 200);
+
+		var target = new DamageRecorder();
+		root.CompositionTarget = target;
+
+		var container = compositor.CreateContainerVisual();
+		container.Size = new Vector2(200, 200);
+		root.Children.InsertAtTop(container);
+
+		var child = compositor.CreateSpriteVisual();
+		child.Brush = compositor.CreateColorBrush(Colors.Magenta);
+		child.Size = new Vector2(50, 50);
+		child.Offset = new Vector3(100, 100, 0);
+		container.Children.InsertAtTop(child);
+
+		using var damage = new DamageRegion();
+		RenderFrame(root, damage);
+		damage.Reset();
+
+		container.IsVisible = false;
+		RenderFrame(root, damage);
+
+		// Hiding may report straight to the target or through the next frame's walk; either repaints the area.
+		using var reported = SnapshotDamage(damage);
+		Assert.IsTrue(
+			target.Damage.Exists(r => r.Contains(new Point(125, 125))) || reported.FillContains(new Vector2(125, 125)),
+			"Hiding a container reported no damage for its child, so the child's pixels would stay on screen.");
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	// A visual that repaints every frame changes without raising any of the flags that invalidate a cached children
+	// picture. Once its subtree is stable long enough to be collapsed into one, it would no longer be walked: frozen
+	// on screen and never damaged again. Painting it has to keep its ancestors from collapsing.
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Live_Visual_Is_In_A_Stable_Subtree_Then_It_Keeps_Reporting_Damage()
+	{
+#if __SKIA__
+		var compositor = Compositor.GetSharedCompositor();
+
+		var root = compositor.CreateContainerVisual();
+		root.Size = new Vector2(200, 200);
+
+		var source = compositor.CreateSpriteVisual();
+		source.Brush = compositor.CreateColorBrush(Colors.Magenta);
+		source.Size = new Vector2(10, 10);
+		root.Children.InsertAtTop(source);
+
+		// Enough static visuals that the subtree qualifies for collapsing once it has been stable long enough.
+		for (var i = 0; i < Visual.PictureCollapsingOptimizationVisualCountThreshold; i++)
+		{
+			var filler = compositor.CreateSpriteVisual();
+			filler.Brush = compositor.CreateColorBrush(Colors.Magenta);
+			filler.Size = new Vector2(1, 1);
+			root.Children.InsertAtTop(filler);
+		}
+
+		// A RedirectVisual repaints on every frame.
+		var redirect = compositor.CreateRedirectVisual(source);
+		redirect.Size = new Vector2(10, 10);
+		redirect.Offset = new Vector3(150, 150, 0);
+		root.Children.InsertAtTop(redirect);
+
+		using var damage = new DamageRegion();
+		for (var frame = 0; frame <= Visual.PictureCollapsingOptimizationFrameThreshold + 5; frame++)
+		{
+			damage.Reset();
+			RenderFrame(root, damage);
+		}
+
+		using var reported = SnapshotDamage(damage);
+		Assert.IsTrue(
+			reported.FillContains(new Vector2(155, 155)),
+			$"The live visual stopped reporting damage once its subtree was stable (damage bounds: {reported.Bounds}).");
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
 #if __SKIA__
 	private static void RenderFrame(ContainerVisual root, DamageRegion damage)
 	{
@@ -464,6 +561,27 @@ public class Given_Visual_Damage
 	{
 		damage.ClampTo(new Rect(0, 0, frameSize, frameSize));
 		return damage.Detach(1f) ?? GeometryFactory.Current.CreateRectangleGeometry(default);
+	}
+
+	private sealed class DamageRecorder : ICompositionTarget
+	{
+		public List<Rect> Damage { get; } = new();
+
+		public double RasterizationScale => 1;
+
+		public event EventHandler RasterizationScaleChanged
+		{
+			add { }
+			remove { }
+		}
+
+		public void RequestNewFrame() { }
+
+		public void AddDamage(Rect bounds) => Damage.Add(bounds);
+
+		public void AddDamage(IGeometry region) => Damage.Add(region.Bounds);
+
+		public void TryRedirectForManipulation(Microsoft.UI.Input.PointerPoint pointerPoint, InteractionTracker tracker) { }
 	}
 #endif
 }
