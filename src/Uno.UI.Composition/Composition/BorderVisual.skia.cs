@@ -371,6 +371,8 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	internal override bool RequiresRepaintOnEveryFrame => (_backgroundBrush?.RequiresRepaintOnEveryFrame ?? false) || (_borderBrush?.RequiresRepaintOnEveryFrame ?? false);
 
+	internal override float DamageRegionSamplingMargin => global::System.Math.Max(_backgroundBrush?.DamageRegionSamplingMargin ?? 0, _borderBrush?.DamageRegionSamplingMargin ?? 0);
+
 	internal override bool HitTest(Point point)
 	{
 		UpdatePathsAndCornerClip();

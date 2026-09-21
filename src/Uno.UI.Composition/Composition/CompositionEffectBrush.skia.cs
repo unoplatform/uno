@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using Windows.Foundation;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Composition.Effects;
@@ -20,6 +21,10 @@ public partial class CompositionEffectBrush : CompositionBrush
 	}
 
 	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput;
+
+	private float _backdropBlurSigma;
+
+	internal override float DamageRegionSamplingMargin => HasBackdropBrushInput ? _backdropBlurSigma * 3f : 0f;
 
 	internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 	{
@@ -92,8 +97,20 @@ public partial class CompositionEffectBrush : CompositionBrush
 		// per-pixel colour effect); TryPaint then falls back to the recipe path. Not an error.
 		_tree = EffectGraphParser.Parse(_effect, bounds, GetSourceParameter, factory);
 		_filter = factory.CreateEffectFilter(_tree, bounds);
+		_backdropBlurSigma = GetMaxBlurSigma(_tree);
 		HasBackdropBrushInput = _tree.ContainsSourceInput();
 		_currentBounds = bounds;
+	}
+
+	private static float GetMaxBlurSigma(EffectNode node)
+	{
+		var sigma = node is BlurEffectNode blur ? blur.Sigma : 0f;
+		foreach (var child in node.Children)
+		{
+			sigma = Math.Max(sigma, GetMaxBlurSigma(child));
+		}
+
+		return sigma;
 	}
 
 	private void DisposeTree()

@@ -21,6 +21,8 @@ namespace Microsoft.UI.Composition
 
 		internal override bool RequiresRepaintOnEveryFrame => Brush?.RequiresRepaintOnEveryFrame ?? false;
 
+		internal override float DamageRegionSamplingMargin => Brush?.DamageRegionSamplingMargin ?? 0;
+
 		private protected override bool TryAddShadowPaths(List<(IGeometry path, float alpha)> output)
 		{
 			// SpriteVisual fills its bounds with its Brush.
