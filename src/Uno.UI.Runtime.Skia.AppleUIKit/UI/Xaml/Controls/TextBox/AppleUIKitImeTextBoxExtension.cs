@@ -17,10 +17,8 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 /// on the hidden UITextField/UITextView proxies to the managed TextBox composition
 /// event lifecycle (Started → Updated → Completed → Ended).
 /// </summary>
-internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
+internal sealed class AppleUIKitImeTextBoxExtension : IHostScopedImeTextBoxExtension
 {
-	internal static AppleUIKitImeTextBoxExtension Instance { get; } = new();
-
 	private bool _isComposing;
 	private string _lastComposingText = string.Empty;
 	private IImeSessionHost? _activeTextBox;
@@ -38,6 +36,13 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 	}
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCanceled;
 	public event EventHandler? CompositionEnded;
+
+	// UIKit owns the candidate UI and does not expose its bounds.
+	public event EventHandler<ImeCandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged
+	{
+		add { }
+		remove { }
+	}
 
 	public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
 	{
@@ -86,12 +91,6 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		return Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
-	}
-
-	public event EventHandler<ImeCandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged
-	{
-		add { }
-		remove { }
 	}
 
 	public void EndImeSession()

@@ -69,7 +69,9 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 		}
 	}
 
-	public bool IsComposing => AppleUIKitImeTextBoxExtension.Instance.IsComposing;
+	public bool IsComposing => ImeExtension?.IsComposing == true;
+
+	private AppleUIKitImeTextBoxExtension? ImeExtension => TextBoxViewExtension?.GetImeExtension(this);
 
 	internal InvisibleTextBoxViewExtension TextBoxViewExtension => _textBoxViewExtension.GetTarget();
 
@@ -174,35 +176,40 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 	public override void SetMarkedText(string markedText, NSRange selectedRange)
 	{
 		markedText ??= string.Empty;
+		var imeExtension = ImeExtension;
 		base.SetMarkedText(markedText, selectedRange);
-		AppleUIKitImeTextBoxExtension.Instance.OnSetMarkedText(
-			markedText,
-			Math.Clamp((int)selectedRange.Location, 0, markedText.Length));
+		if (ReferenceEquals(imeExtension, ImeExtension))
+		{
+			imeExtension?.OnSetMarkedText(
+				markedText,
+				Math.Clamp((int)selectedRange.Location, 0, markedText.Length));
+		}
 	}
 
 	public new void InsertText(string text)
 	{
-		var wasComposing = AppleUIKitImeTextBoxExtension.Instance.IsComposing;
+		var imeExtension = ImeExtension;
+		var wasComposing = imeExtension?.IsComposing == true;
 		base.InsertText(text);
 
 		// Only fire composition events when completing an active IME composition
 		// (SetMarkedText was called first). Regular native keystrokes and
 		// BecomeFirstResponder's silent text restore should not trigger composition.
-		if (wasComposing)
+		if (wasComposing && ReferenceEquals(imeExtension, ImeExtension))
 		{
-			AppleUIKitImeTextBoxExtension.Instance.OnInsertText(text);
+			imeExtension!.OnInsertText(text);
 		}
 	}
 
 	public override void UnmarkText()
 	{
-		AppleUIKitImeTextBoxExtension.Instance.OnUnmarkText();
+		ImeExtension?.OnUnmarkText();
 		base.UnmarkText();
 	}
 
 	public override CoreGraphics.CGRect GetFirstRectForRange(UITextRange range)
 	{
-		var caretRect = AppleUIKitImeTextBoxExtension.Instance.GetCaretRect();
+		var caretRect = ImeExtension?.GetCaretRect() ?? Windows.Foundation.Rect.Empty;
 		if (caretRect != Windows.Foundation.Rect.Empty && Superview is not null)
 		{
 			var windowRect = new CoreGraphics.CGRect(caretRect.X, caretRect.Y, caretRect.Width, caretRect.Height);

@@ -72,3 +72,11 @@ internal interface IImeTextBoxExtension
 	/// </summary>
 	event EventHandler<ImeCandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged;
 }
+
+/// <summary>
+/// Registered instead of <see cref="IImeTextBoxExtension"/> when each native input host owns
+/// an independent session. The registration must create a new extension for each host.
+/// </summary>
+internal interface IHostScopedImeTextBoxExtension : IImeTextBoxExtension
+{
+}
