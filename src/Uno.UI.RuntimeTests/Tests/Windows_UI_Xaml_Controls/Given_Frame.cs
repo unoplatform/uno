@@ -511,18 +511,25 @@ public class Given_Frame
 			e.Handled = true;
 		};
 
-		TestServices.WindowHelper.WindowContent = SUT;
-		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		try
+		{
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
 
-		SUT.Navigate(typeof(MyPage));
-		var previousContent = SUT.Content;
+			SUT.Navigate(typeof(MyPage));
+			var previousContent = SUT.Content;
 
-		// A handled NavigationFailed lets the app continue: no exception, previous content restored.
-		var result = SUT.Navigate(typeof(ExceptionInOnNavigatedToPage));
+			// A handled NavigationFailed lets the app continue: no exception, previous content restored.
+			var result = SUT.Navigate(typeof(ExceptionInOnNavigatedToPage));
 
-		Assert.IsTrue(navigationFailed);
-		Assert.IsTrue(result);
-		Assert.AreSame(previousContent, SUT.Content);
+			Assert.IsTrue(navigationFailed);
+			Assert.IsTrue(result);
+			Assert.AreSame(previousContent, SUT.Content);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
