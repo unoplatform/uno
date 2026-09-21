@@ -16,7 +16,6 @@ pr:
   branches:
     include:
       - master
-      - dev/mazi/richtextblock-winui
       - servicing/*
       - release/beta/*
       - release/stable/*
