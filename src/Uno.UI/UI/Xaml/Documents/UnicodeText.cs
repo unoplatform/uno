@@ -1250,7 +1250,15 @@ internal readonly partial struct UnicodeText : IParsedText
 		foreach (var ((_, _, scale), (left, right, midY)) in spellCheckUnderlines)
 		{
 			using var path = BuildSpellCheckSquigglyPath(midY, left, right, scale);
-			drawingSession.StrokePath(path, WithOpacity(Colors.Red, effectiveOpacity), scale);
+			// Widened here rather than handed to StrokePath, which implies flat caps: the wave has round joins and caps.
+			using var stroke = path.GetStrokeFillGeometry(new StrokeStyle
+			{
+				Thickness = scale,
+				StartCap = StrokeCap.Round,
+				EndCap = StrokeCap.Round,
+				LineJoin = StrokeJoin.Round,
+			});
+			drawingSession.DrawPath(stroke, WithOpacity(Colors.Red, effectiveOpacity));
 		}
 
 		foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
