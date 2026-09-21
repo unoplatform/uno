@@ -20,6 +20,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	private readonly TextBoxView _owner;
 	private UIView? _latestNativeView;
 	private IInvisibleTextBoxView? _textBoxView;
+	private XamlRoot? _textBoxViewRoot;
 	private UIView? _keyboardDismissAccessory;
 
 	public InvisibleTextBoxViewExtension(TextBoxView view)
@@ -30,6 +31,19 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	internal TextBoxView Owner => _owner;
 
 	private IImeSessionHost? ImeHost => _owner.Host as IImeSessionHost;
+
+	internal AppleUIKitImeTextBoxExtension? GetImeExtension(IInvisibleTextBoxView source)
+	{
+		if (ReferenceEquals(_textBoxView, source)
+			&& ImeHost is { XamlRoot: { } xamlRoot } host
+			&& ReferenceEquals(host.TextBoxView, _owner)
+			&& ReferenceEquals(_textBoxViewRoot, xamlRoot))
+		{
+			return ImeSessionCoordinator.GetExtension(host) as AppleUIKitImeTextBoxExtension;
+		}
+
+		return null;
+	}
 
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;
 
@@ -77,6 +91,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		{
 			RemoveViewFromTextInputLayer();
 			_textBoxView = null;
+			_textBoxViewRoot = null;
 		}
 	}
 
@@ -282,6 +297,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			// before its native mirror has received the document mutation.
 			var inputText = host is RichEditBox ? host.Text : GetNativeText() ?? host.Text;
 			_textBoxView = CreateNativeView(host);
+			_textBoxViewRoot = host.XamlRoot;
 			if (_textBoxView is UIView nativeView)
 			{
 				nativeView.Alpha = 0.01f;

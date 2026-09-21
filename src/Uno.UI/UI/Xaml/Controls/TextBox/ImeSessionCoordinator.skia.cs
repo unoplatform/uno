@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -13,32 +14,55 @@ using Uno.UI.Xaml.Controls.Extensions;
 namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
-	/// Shared, control-agnostic coordinator for IME composition sessions on Skia. It owns the single
-	/// platform <see cref="IImeTextBoxExtension"/> (a per-platform singleton) and the currently-active
-	/// <see cref="IImeSessionHost"/>, routing the OS composition events to whichever control
-	/// (<see cref="TextBox"/> or RichEditBox) currently holds the session. Both controls
-	/// activate/deactivate through here on focus/blur, so the one global OS IME is arbitrated by a
-	/// single active-host reference.
+	/// Routes IME composition events to the control owning the native input session.
+	/// Platforms with independent native responders register <see cref="IHostScopedImeTextBoxExtension"/>;
+	/// other platforms retain a shared extension and active host.
 	/// </summary>
-	internal static class ImeSessionCoordinator
+	internal sealed class ImeSessionCoordinator
 	{
-		private static IImeTextBoxExtension? _extension;
+		private static readonly ImeSessionCoordinator _shared = new();
+		private static ConditionalWeakTable<IImeSessionHost, ImeSessionCoordinator> _hostSessions = new();
+		private static Func<IImeSessionHost, IHostScopedImeTextBoxExtension>? _extensionFactoryForTesting;
 		private static bool _initialized;
-		private static IImeSessionHost? _activeHost;
-		private static ImeSessionActivation _activeActivation;
+		private static bool _useHostScopedExtensions;
 
-		/// <summary>The active platform IME extension, or null when none is registered.</summary>
+		private readonly bool _isHostScoped;
+		private readonly XamlRoot? _xamlRoot;
+		private IImeTextBoxExtension? _extension;
+		private IDisposable? _subscriptions;
+		private IImeSessionHost? _activeHost;
+		private ImeSessionActivation _activeActivation;
+
+		private ImeSessionCoordinator()
+		{
+		}
+
+		private ImeSessionCoordinator(IHostScopedImeTextBoxExtension extension, XamlRoot? xamlRoot)
+		{
+			_isHostScoped = true;
+			_xamlRoot = xamlRoot;
+			_extension = extension;
+			_subscriptions = WireExtensionEvents(extension);
+		}
+
+		/// <summary>The shared platform IME extension, or null when the platform uses host-scoped sessions.</summary>
 		internal static IImeTextBoxExtension? Extension
 		{
 			get
 			{
 				EnsureInitialized();
-				return _extension;
+				return _shared._extension;
 			}
 		}
 
-		/// <summary>The control currently owning the IME session, or null when none is focused.</summary>
-		internal static IImeSessionHost? ActiveHost => _activeHost;
+		/// <summary>The control currently owning the shared IME session.</summary>
+		internal static IImeSessionHost? ActiveHost => _shared._activeHost;
+
+		internal static IImeTextBoxExtension? GetExtension(IImeSessionHost host)
+		{
+			var coordinator = GetCoordinator(host, create: false);
+			return coordinator?.IsActiveHost(host) == true ? coordinator._extension : null;
+		}
 
 		/// <summary>
 		/// Creates and wires the platform IME extension. Idempotent — safe to call from any control's
@@ -55,41 +79,112 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_initialized = true;
 
+			_useHostScopedExtensions = ApiExtensibility.IsRegistered<IHostScopedImeTextBoxExtension>();
+			if (_useHostScopedExtensions)
+			{
+				return;
+			}
+
 			if (!ApiExtensibility.CreateInstance<IImeTextBoxExtension>(typeof(TextBox), out var extension))
 			{
 				typeof(ImeSessionCoordinator).LogDebug()?.Debug("No IME extension registered or registration returned null, IME composition will not be supported.");
 				return;
 			}
 
-			WireExtensionEvents(extension);
-			_extension = extension;
+			_shared._extension = extension;
+			_shared._subscriptions = _shared.WireExtensionEvents(extension);
 		}
 
-		private static void WireExtensionEvents(IImeTextBoxExtension extension)
+		private static ImeSessionCoordinator? GetCoordinator(IImeSessionHost host, bool create)
 		{
-			extension.CompositionStarted += static (_, _) => InvokeActiveHost(static host => host.OnImeCompositionStarted());
-			extension.CompositionUpdated += static (_, e) => InvokeActiveHost(host => host.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied));
-			extension.CompositionCompleted += static (_, e) => InvokeActiveHost(host => host.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied));
-			extension.CompositionPartiallyCommitted += static (_, e) => InvokeActiveHost(host => host.OnImeCompositionPartiallyCommitted(
+			EnsureInitialized();
+			if (!_useHostScopedExtensions)
+			{
+				return _shared;
+			}
+
+			if (_hostSessions.TryGetValue(host, out var coordinator))
+			{
+				if (!create || ReferenceEquals(coordinator._xamlRoot, host.XamlRoot))
+				{
+					return coordinator;
+				}
+
+				ReleaseHostSession(host, coordinator);
+				return GetCoordinator(host, create: true);
+			}
+
+			if (!create)
+			{
+				return null;
+			}
+
+			IHostScopedImeTextBoxExtension? extension;
+			if (_extensionFactoryForTesting is { } factory)
+			{
+				extension = factory(host);
+			}
+			else if (!ApiExtensibility.CreateInstance(host, out extension))
+			{
+				return null;
+			}
+
+			coordinator = new ImeSessionCoordinator(extension, host.XamlRoot);
+			_hostSessions.Add(host, coordinator);
+			return coordinator;
+		}
+
+		private IImeSessionHost? GetCallbackHost()
+			=> _activeHost is { } host && (!_isHostScoped || ReferenceEquals(_xamlRoot, host.XamlRoot))
+				? host
+				: null;
+
+		private bool IsActiveHost(IImeSessionHost host) => ReferenceEquals(GetCallbackHost(), host);
+
+		private IDisposable WireExtensionEvents(IImeTextBoxExtension extension)
+		{
+			EventHandler onStarted = (_, _) => InvokeActiveHost(extension, static host => host.OnImeCompositionStarted());
+			EventHandler<ImeCompositionEventArgs> onUpdated = (_, e) => InvokeActiveHost(extension, host => host.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied));
+			EventHandler<ImeCompositionEventArgs> onCompleted = (_, e) => InvokeActiveHost(extension, host => host.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied));
+			EventHandler<ImePartialCompositionEventArgs> onPartiallyCommitted = (_, e) => InvokeActiveHost(extension, host => host.OnImeCompositionPartiallyCommitted(
 				e.CommittedText,
 				e.CompositionText,
 				e.CursorPosition,
 				e.ResolvedLength,
 				e.TextAlreadyApplied));
-			extension.CompositionCanceled += static (_, e) => InvokeActiveHost(host => host.OnImeCompositionCanceled(e.TextAlreadyApplied));
-			extension.CompositionEnded += static (_, _) => InvokeActiveHost(static host => host.OnImeCompositionEnded());
-			extension.CandidateWindowBoundsChanged += static (_, e) =>
+			EventHandler<ImeCompositionEventArgs> onCanceled = (_, e) => InvokeActiveHost(extension, host => host.OnImeCompositionCanceled(e.TextAlreadyApplied));
+			EventHandler onEnded = (_, _) => InvokeActiveHost(extension, static host => host.OnImeCompositionEnded());
+			EventHandler<ImeCandidateWindowBoundsChangedEventArgs> onCandidateWindowBoundsChanged = (_, e) =>
 			{
-				if (_activeHost is { } host)
+				if (ReferenceEquals(_extension, extension) && GetCallbackHost() is { } host)
 				{
 					host.OnCandidateWindowBoundsChanged(e.Bounds);
 				}
 			};
+
+			extension.CompositionStarted += onStarted;
+			extension.CompositionUpdated += onUpdated;
+			extension.CompositionCompleted += onCompleted;
+			extension.CompositionPartiallyCommitted += onPartiallyCommitted;
+			extension.CompositionCanceled += onCanceled;
+			extension.CompositionEnded += onEnded;
+			extension.CandidateWindowBoundsChanged += onCandidateWindowBoundsChanged;
+
+			return Disposable.Create(() =>
+			{
+				extension.CompositionStarted -= onStarted;
+				extension.CompositionUpdated -= onUpdated;
+				extension.CompositionCompleted -= onCompleted;
+				extension.CompositionPartiallyCommitted -= onPartiallyCommitted;
+				extension.CompositionCanceled -= onCanceled;
+				extension.CompositionEnded -= onEnded;
+				extension.CandidateWindowBoundsChanged -= onCandidateWindowBoundsChanged;
+			});
 		}
 
-		private static void InvokeActiveHost(Action<IImeSessionHost> callback)
+		private void InvokeActiveHost(IImeTextBoxExtension extension, Action<IImeSessionHost> callback)
 		{
-			if (_activeHost is not { } host)
+			if (!ReferenceEquals(_extension, extension) || GetCallbackHost() is not { } host)
 			{
 				return;
 			}
@@ -110,8 +205,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <summary>Activates an IME session for <paramref name="host"/> (called on focus).</summary>
 		internal static void StartSession(IImeSessionHost host, ImeSessionActivation activation)
+			=> GetCoordinator(host, create: true)?.Start(host, activation);
+
+		private void Start(IImeSessionHost host, ImeSessionActivation activation)
 		{
-			EnsureInitialized();
 			if (ReferenceEquals(_activeHost, host))
 			{
 				if (_activeActivation != activation)
@@ -162,12 +259,37 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal static void EndSession(IImeSessionHost host)
 		{
+			var coordinator = GetCoordinator(host, create: false);
+			if (coordinator?._isHostScoped == true)
+			{
+				ReleaseHostSession(host, coordinator);
+			}
+			else
+			{
+				coordinator?.End(host);
+			}
+		}
+
+		private static void ReleaseHostSession(IImeSessionHost host, ImeSessionCoordinator coordinator)
+		{
+			_hostSessions.Remove(host);
+			try
+			{
+				coordinator.End(host);
+			}
+			finally
+			{
+				coordinator.Detach();
+			}
+		}
+
+		private void End(IImeSessionHost host)
+		{
 			if (!ReferenceEquals(_activeHost, host))
 			{
 				return;
 			}
 
-			EnsureInitialized();
 			try
 			{
 				_extension?.EndImeSession();
@@ -187,8 +309,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal static void UpdateSession(IImeSessionHost host, ImeSessionUpdate update)
+			=> GetCoordinator(host, create: false)?.Update(host, update);
+
+		private void Update(IImeSessionHost host, ImeSessionUpdate update)
 		{
-			if (update != ImeSessionUpdate.None && ReferenceEquals(_activeHost, host))
+			if (update != ImeSessionUpdate.None && IsActiveHost(host))
 			{
 				try
 				{
@@ -201,7 +326,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private static void RecoverFailedSession(IImeSessionHost host, string message, Exception error)
+		private void RecoverFailedSession(IImeSessionHost host, string message, Exception error)
 		{
 			typeof(ImeSessionCoordinator).LogError()?.Error(message, error);
 			try
@@ -222,13 +347,19 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal static async Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(
+		internal static Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(
+			IImeSessionHost host,
+			string compositionText,
+			CancellationToken cancellationToken)
+			=> GetCoordinator(host, create: false)?.GetLinguisticAlternatives(host, compositionText, cancellationToken)
+				?? Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
+
+		private async Task<IReadOnlyList<string>> GetLinguisticAlternatives(
 			IImeSessionHost host,
 			string compositionText,
 			CancellationToken cancellationToken)
 		{
-			EnsureInitialized();
-			if (!ReferenceEquals(_activeHost, host) || _extension is not { } extension)
+			if (!IsActiveHost(host) || _extension is not { } extension)
 			{
 				return Array.Empty<string>();
 			}
@@ -250,8 +381,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal static void RestartSession(IImeSessionHost host)
+			=> GetCoordinator(host, create: false)?.Restart(host);
+
+		private void Restart(IImeSessionHost host)
 		{
-			if (!ReferenceEquals(_activeHost, host))
+			if (!IsActiveHost(host))
 			{
 				return;
 			}
@@ -281,52 +415,62 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal static IDisposable SetExtensionForTesting(IImeTextBoxExtension extension)
 		{
-			var originalExtension = _extension;
+			var originalExtension = _shared._extension;
 			var originalInitialized = _initialized;
+			var originalUseHostScopedExtensions = _useHostScopedExtensions;
 
 			// Mark initialized so a later focus doesn't create/wire the real extension over the fake.
-			_extension = extension;
+			_shared._extension = extension;
 			_initialized = true;
-
-			EventHandler onStarted = (_, _) => InvokeActiveHost(static host => host.OnImeCompositionStarted());
-			EventHandler<ImeCompositionEventArgs> onUpdated = (_, e) => InvokeActiveHost(host => host.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength, e.TextAlreadyApplied));
-			EventHandler<ImeCompositionEventArgs> onCompleted = (_, e) => InvokeActiveHost(host => host.OnImeCompositionCompleted(e.Text, e.TextAlreadyApplied));
-			EventHandler<ImePartialCompositionEventArgs> onPartiallyCommitted = (_, e) => InvokeActiveHost(host => host.OnImeCompositionPartiallyCommitted(
-				e.CommittedText,
-				e.CompositionText,
-				e.CursorPosition,
-				e.ResolvedLength,
-				e.TextAlreadyApplied));
-			EventHandler<ImeCompositionEventArgs> onCanceled = (_, e) => InvokeActiveHost(host => host.OnImeCompositionCanceled(e.TextAlreadyApplied));
-			EventHandler onEnded = (_, _) => InvokeActiveHost(static host => host.OnImeCompositionEnded());
-			EventHandler<ImeCandidateWindowBoundsChangedEventArgs> onCandidateWindowBoundsChanged = (_, e) =>
-			{
-				if (_activeHost is { } host)
-				{
-					host.OnCandidateWindowBoundsChanged(e.Bounds);
-				}
-			};
-
-			extension.CompositionStarted += onStarted;
-			extension.CompositionUpdated += onUpdated;
-			extension.CompositionCompleted += onCompleted;
-			extension.CompositionPartiallyCommitted += onPartiallyCommitted;
-			extension.CompositionCanceled += onCanceled;
-			extension.CompositionEnded += onEnded;
-			extension.CandidateWindowBoundsChanged += onCandidateWindowBoundsChanged;
+			_useHostScopedExtensions = false;
+			var subscription = _shared.WireExtensionEvents(extension);
 
 			return Disposable.Create(() =>
 			{
-				extension.CompositionStarted -= onStarted;
-				extension.CompositionUpdated -= onUpdated;
-				extension.CompositionCompleted -= onCompleted;
-				extension.CompositionPartiallyCommitted -= onPartiallyCommitted;
-				extension.CompositionCanceled -= onCanceled;
-				extension.CompositionEnded -= onEnded;
-				extension.CandidateWindowBoundsChanged -= onCandidateWindowBoundsChanged;
-				_extension = originalExtension;
+				subscription.Dispose();
+				_shared._extension = originalExtension;
 				_initialized = originalInitialized;
+				_useHostScopedExtensions = originalUseHostScopedExtensions;
 			});
+		}
+
+		internal static IDisposable SetExtensionFactoryForTesting(Func<IImeSessionHost, IHostScopedImeTextBoxExtension> factory)
+		{
+			var originalExtension = _shared._extension;
+			var originalInitialized = _initialized;
+			var originalUseHostScopedExtensions = _useHostScopedExtensions;
+			var originalFactory = _extensionFactoryForTesting;
+			var originalSessions = _hostSessions;
+			var sessions = new ConditionalWeakTable<IImeSessionHost, ImeSessionCoordinator>();
+
+			_shared._extension = null;
+			_initialized = true;
+			_useHostScopedExtensions = true;
+			_extensionFactoryForTesting = factory;
+			_hostSessions = sessions;
+
+			return Disposable.Create(() =>
+			{
+				foreach (var session in sessions)
+				{
+					session.Value.Detach();
+				}
+
+				_shared._extension = originalExtension;
+				_initialized = originalInitialized;
+				_useHostScopedExtensions = originalUseHostScopedExtensions;
+				_extensionFactoryForTesting = originalFactory;
+				_hostSessions = originalSessions;
+			});
+		}
+
+		private void Detach()
+		{
+			_subscriptions?.Dispose();
+			_subscriptions = null;
+			_extension = null;
+			_activeHost = null;
+			_activeActivation = default;
 		}
 	}
 }
