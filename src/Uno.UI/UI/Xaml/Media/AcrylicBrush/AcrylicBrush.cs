@@ -1,4 +1,4 @@
-﻿using Color = Windows.UI.Color;
+using Color = Windows.UI.Color;
 using System;
 using System.IO;
 using Windows.UI;
