@@ -108,7 +108,7 @@ partial class Frame
 			nameof(CanGoForward),
 			typeof(bool),
 			typeof(Frame),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(false));
 
 	/// <summary>
 	/// Gets a type reference for the content that is currently displayed.
