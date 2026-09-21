@@ -166,8 +166,8 @@ public partial class CompositionTarget
 	}
 
 	private (IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)? _lastRenderedFrame;
-	// Damage (dirty region) accumulated between frames from AddDamage + carried-forward unpresented damage;
-	// folded into each frame's own damage during Render. Guarded by _frameGate.
+	// Damage (dirty region) accumulated between frames from AddDamage; folded into each frame's own damage during
+	// Render. Guarded by _frameGate.
 	private readonly DamageRegion _pendingDamage = new();
 	// only set and read under _xamlRootBoundsGate
 	private Size _xamlRootBounds;
@@ -273,7 +273,6 @@ public partial class CompositionTarget
 			frameDamage.UnionRect(overlayBounds);
 		}
 
-		frameDamage.ClampTo(frameRect);
 		// Snapped with the scale the present path will apply. If the scale changes before the frame is presented,
 		// that present sees `resized` and skips the damage clip entirely, so a stale value here cannot be used.
 		float damageScale;
@@ -281,20 +280,21 @@ public partial class CompositionTarget
 		{
 			damageScale = _xamlRootRasterizationScale;
 		}
-		var renderedFrame = (frame, path, frameDamage.Detach(damageScale));
 		var previousFrame = default((IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)?);
 		lock (_frameGate)
 		{
 			previousFrame = _lastRenderedFrame;
 
-			_lastRenderedFrame = renderedFrame;
-
 			// A previous frame that was recorded but never presented (its slot was still occupied) is being
-			// dropped; carry its damage forward so the area it would have repainted isn't lost.
+			// dropped, and this one replaces it on screen, so it has to repaint what that one would have.
+			// Presented frames carry no damage (see Draw).
 			if (previousFrame is { damage: { } carried })
 			{
-				_pendingDamage.Union(carried);
+				frameDamage.Union(carried);
 			}
+
+			frameDamage.ClampTo(frameRect);
+			_lastRenderedFrame = (frame, path, frameDamage.Detach(damageScale));
 		}
 
 		_fpsHelper.OnFrameRecorded();
@@ -467,6 +467,9 @@ public partial class CompositionTarget
 				present.Restore();
 			}
 
+			// This frame's damage is now presented; drop it so Render's carry-forward doesn't re-damage it next frame.
+			lastRenderedFrame.damage?.Dispose();
+			lastRenderedFrame.damage = null;
 			ReturnFrame(lastRenderedFrame);
 
 			if (_logFramePhases)
