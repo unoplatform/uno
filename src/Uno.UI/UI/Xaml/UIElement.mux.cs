@@ -902,7 +902,6 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// WinUI stores fIsProcessingEnterLeave (bit 15) in a DependencyObjectBitFields uint on
 		// CDependencyObject (corep.h:224-348; CDependencyObject.h:298). The per-object theme (m_theme) and
 		// the theme-walk bit (fIsProcessingThemeWalk, bit 16) now live on DependencyObject, since WinUI
@@ -1916,7 +1915,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 		}
-#endif
 
 		internal virtual bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation horizontal)
 			=> true;
