@@ -20,12 +20,6 @@ partial class Frame
 {
 	private const int InitialTransientCacheSize = 10;
 
-	private void CtorWinUI()
-	{
-		DefaultStyleKey = typeof(Frame);
-		Initialize();
-	}
-
 	// TODO:MZ: Avoid destructor
 	~Frame()
 	{
@@ -89,13 +83,6 @@ partial class Frame
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		base.OnPropertyChanged2(args);
-
-#if HAS_UNO // Make sure we don't overrule legacy behavior if required
-		if (!_useWinUIBehavior)
-		{
-			return;
-		}
-#endif
 
 		if (args.Property == SourcePageTypeProperty)
 		{
@@ -412,17 +399,7 @@ partial class Frame
 		}
 	}
 
-	internal void RemovePageFromCache(string descriptor)
-	{
-#if HAS_UNO // Do not use this method when legacy behavior is preferred
-		if (!_useWinUIBehavior)
-		{
-			return;
-		}
-#endif
-
-		m_upNavigationCache.UncachePageContent(descriptor);
-	}
+	internal void RemovePageFromCache(string descriptor) => m_upNavigationCache.UncachePageContent(descriptor);
 
 	//------------------------------------------------------------------------
 	//

@@ -425,7 +425,7 @@ partial class Application
 		// THREADING CONTRACT for the sweeps below: the rebuildable Type-keyed caches
 		// (Application registry, DependencyProperty, Style, MetadataAPI, ResourceResolver, …) are
 		// populated and swept on the same UI/teardown thread, so they need no gate. The caches that
-		// DO carry their own _*Gate lock (CompositionTarget, PagePool) are the ones additionally
+		// DO carry their own _*Gate lock (CompositionTarget) are the ones additionally
 		// reachable off that thread — the rendering frame callback and native element creation.
 		// Every step is isolated through
 		// RunCleanupStep so that, even if that contract is ever violated and an enumeration throws
@@ -495,10 +495,6 @@ partial class Application
 		// clears that association on unload, so host-lifetime resources pin the collectible ALC.
 		// Sweep every dictionary reachable from the host application and the master theme set.
 		RunCleanupStep(nameof(ClearCollectibleResourceAssociations), ClearCollectibleResourceAssociations);
-
-		// PagePool pools Page instances keyed by their (previewed-app) page Type; a pooled page from
-		// an unloaded app pins its ALC. Sweeps every live per-Frame pool via the weak registry.
-		RunCleanupStep(nameof(PagePool.ClearNonDefaultAlcEntries), static () => PagePool.ClearNonDefaultAlcEntries());
 
 		// Secondary-ALC code can subscribe to events on HOST visual-tree elements (e.g. a
 		// designer overlay tracking an ancestor's SizeChanged); those subscriptions are never
