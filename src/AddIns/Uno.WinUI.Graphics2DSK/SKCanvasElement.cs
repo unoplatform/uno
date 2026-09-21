@@ -38,7 +38,7 @@ public abstract partial class SKCanvasElement : Grid
 	private int _softW, _softH;
 
 	private protected override ContainerVisual CreateElementVisual()
-		=> _canvasVisual = new SKCanvasVisual(this, Compositor.GetSharedCompositor());
+		=> _canvasVisual = new SKCanvasVisual(this, ElementVisualCompositor);
 
 	internal override bool IsViewHit() => true;
 #endif
