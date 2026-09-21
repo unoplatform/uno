@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Uno.UI.Composition.Drawing;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -124,11 +125,15 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_windowToHost[winUIWindow] = this;
 		XamlRootMap.Register(xamlRoot, this);
 
+		// The frame pacer must exist before UpdateWindowPropertiesFromPackage: reading the DPI
+		// creates the DisplayInformation extension, whose UpdateDetails reports the screen
+		// refresh rate through UpdateRenderTimerFps.
+		_framePacer = CreateFramePacer();
+
 		UpdateWindowPropertiesFromPackage();
 
 		// only start listening to events after we're done setting everything up
 		InitializeX11EventsThread();
-		_framePacer = CreateFramePacer();
 		_renderThread = InitRenderThread();
 
 		Closed.ContinueWith(_ =>
@@ -175,7 +180,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private void UpdateWindowPropertiesFromPackage()
 	{
-		Task.Run(SetWindowIcon);
+		// Icon path resolution must stay on the UI thread: BitmapImage.GetScaledPath reads
+		// DisplayInformation, and creating it from another thread races the one created for
+		// the window (X11DisplayInformationExtension would then be "set twice"). Only the
+		// decoding and the X11 calls are offloaded, inside SetWindowIcon.
+		SetWindowIcon();
 
 		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
@@ -207,7 +216,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
 				}
 
-				SetIconFromFile(iconPath);
+				BeginSetIconFromFile(iconPath);
 			}
 			else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 			{
@@ -216,7 +225,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
 				}
 
-				SetIconFromFile(scaledPath);
+				BeginSetIconFromFile(scaledPath);
 			}
 			else
 			{
@@ -226,6 +235,21 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				}
 			}
 		}
+
+		void BeginSetIconFromFile(string path) => Task.Run(() =>
+		{
+			try
+			{
+				SetIconFromFile(path);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to set the window icon from [{path}].", e);
+				}
+			}
+		});
 
 		unsafe void SetIconFromFile(string iconPath)
 		{
@@ -688,19 +712,26 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	public unsafe void AttachSubWindow(IntPtr window)
 	{
 		using var lockDisposable = X11Helper.XLock(RootX11Window.Display);
-		// this seems to be necessary or else the WM will keep detaching the subwindow
-		XWindowAttributes attributes = default;
-		_ = XLib.XGetWindowAttributes(RootX11Window.Display, window, ref attributes);
-		attributes.override_direct = /* True */ 1;
-
-		IntPtr attr = Marshal.AllocHGlobal(Marshal.SizeOf(attributes));
-		Marshal.StructureToPtr(attributes, attr, false);
-		_ = X11Helper.XChangeWindowAttributes(RootX11Window.Display, window, (IntPtr)XCreateWindowFlags.CWOverrideRedirect, (XSetWindowAttributes*)attr.ToPointer());
-		Marshal.FreeHGlobal(attr);
+		// Setting override-redirect is necessary or else the WM will keep detaching the subwindow.
+		// Note that XSetWindowAttributes is a different struct from XWindowAttributes, and only
+		// the former is valid here.
+		var attributes = new XSetWindowAttributes { override_redirect = /* True */ 1 };
+		_ = X11Helper.XChangeWindowAttributes(RootX11Window.Display, window, (IntPtr)SetWindowValuemask.OverrideRedirect, &attributes);
 
 		_ = X11Helper.XReparentWindow(RootX11Window.Display, window, RootX11Window.Window, 0, 0);
 		_ = XLib.XFlush(RootX11Window.Display);
 		XLib.XSync(RootX11Window.Display, false); // XSync is necessary after XReparent for unknown reasons
+
+		// Best-effort diagnostic only: a WM that already manages `window` as a toplevel can also
+		// steal it back asynchronously after this check (observed with Weston's XWM on WSLg).
+		if (XLib.XQueryTree(RootX11Window.Display, window, out _, out var parent, out var children, out _) != 0)
+		{
+			_ = XLib.XFree(children);
+			if (parent != RootX11Window.Window && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"Failed to reparent window 0x{window.ToString("X", CultureInfo.InvariantCulture)} into the application window; it is parented by 0x{parent.ToString("X", CultureInfo.InvariantCulture)} instead, likely a window manager managing it as a toplevel. The native element will likely not be visible.");
+			}
+		}
 	}
 
 	private void SynchronizedShutDown(X11Window x11Window)
