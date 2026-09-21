@@ -36,8 +36,9 @@
 {
     // A paused view is driven by the managed render thread, which owns the GRContext. AppKit can
     // still call this (occlusion changes, backing-store redraws), so bail out rather than touch the
-    // GRContext from the main thread concurrently with the render thread.
-    if (view.isPaused)
+    // GRContext from the main thread concurrently with the render thread. An external-present view is
+    // paused too, but has no render thread: this callback is what drives it.
+    if (view.isPaused && !self.externalPresent)
     {
         return;
     }
