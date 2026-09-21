@@ -545,7 +545,8 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			}
 		}
 
-		if (peer.TryGetProviderOwner(out owner))
+		if (peer is not ItemAutomationPeer &&
+			peer.TryGetProviderOwner(out owner))
 		{
 			return true;
 		}
