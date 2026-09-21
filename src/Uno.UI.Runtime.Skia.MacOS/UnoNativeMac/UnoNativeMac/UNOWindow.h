@@ -345,6 +345,14 @@ void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, wind
 
 void uno_window_get_metal_handles(UNOWindow* window, void*_Nonnull* _Nonnull device, void*_Nonnull* _Nonnull queue);
 
+// Returns the rendering MTKView's CAMetalLayer so the managed WebGPU backend can create a wgpu
+// surface on it (CreateMetalSurface). Returns NULL if the window has no Metal rendering view.
+void* _Nullable uno_window_get_metal_layer(UNOWindow* window);
+
+// Toggles context ownership of the view's CAMetalLayer. When enabled, drawInMTKView stops
+// acquiring/presenting its own drawable and only ticks managed code, which drives the context's own swapchain.
+void uno_window_set_external_present(UNOWindow* window, bool enabled);
+
 /// Refresh rate, in frames per second, of the screen currently showing the window.
 /// Returns 0 when it cannot be determined, in which case the caller keeps its configured rate.
 double uno_window_get_refresh_rate(NSWindow* window);
