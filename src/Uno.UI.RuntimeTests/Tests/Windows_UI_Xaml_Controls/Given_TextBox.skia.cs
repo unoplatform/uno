@@ -8402,7 +8402,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await UITestHelper.Load(SUT, x => x.IsLoaded);
 
-				SUT.Focus(FocusState.Programmatic);
+				TakeEntrySession(SUT);
 				await WindowHelper.WaitForIdle();
 
 				if (!TracksTheFocusedTextBox(SUT))
@@ -8470,7 +8470,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					var host = new Border { Width = 400, Height = 100, Child = SUT };
 					await UITestHelper.Load(host, x => x.IsLoaded);
 
-					SUT.Focus(FocusState.Programmatic);
+					TakeEntrySession(SUT, flowDirection.ToString());
 					await WindowHelper.WaitForIdle();
 
 					if (!TracksTheFocusedTextBox(SUT))
@@ -8508,6 +8508,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await ReleaseSharedInput();
 			}
+		}
+
+		/// <summary>
+		/// Focuses <paramref name="textBox"/> and asserts it owns the entry session before anything reads the
+		/// shared &lt;input /&gt;. Focus that quietly failed, or that a previous test still holds, would otherwise
+		/// leave the assertions measuring some other TextBox's input — passing without exercising this SUT.
+		/// </summary>
+		private static void TakeEntrySession(TextBox textBox, string context = "")
+		{
+			var prefix = context.Length == 0 ? "" : context + ": ";
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic), $"{prefix}TextBox should take focus");
+			Assert.AreEqual(textBox, FocusManager.GetFocusedElement(textBox.XamlRoot), $"{prefix}TextBox should own the entry session");
 		}
 
 		/// <summary>
