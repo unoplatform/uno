@@ -15,7 +15,9 @@ using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
+using Uno.UI.Runtime.Skia.Vulkan;
 using Uno.UI.Xaml.Controls;
+using Uno.WinUI.Runtime.Skia.Android.Platform.Vulkan;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -40,9 +42,16 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 	private int _width, _height;
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private IntPtr _nativeWindow; // Must stay alive while the Vulkan surface references it
+	private readonly VulkanContext _vulkanContext = new();
+	private readonly AndroidVulkanSurfaceFactory _surfaceFactory = new();
 
 	public UnoVulkanView(Context context) : base(context)
 	{
+		// Create the window-independent Vulkan resources (instance, device) right away: this throws when the
+		// driver is unusable, letting the caller fall back to the OpenGL ES view. The window-scoped part
+		// (swapchain) is completed on the render thread once a surface exists.
+		_vulkanContext.InitializeDevice(_surfaceFactory);
+
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);
@@ -66,7 +75,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 
 	public void ResetRendererContext()
 	{
-		// The Vulkan context is recreated on the next surface creation.
+		// The swapchain is recreated on the next surface creation; the device is retained.
 	}
 
 	#region SurfaceHolder.Callback
@@ -92,9 +101,10 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		_renderThread?.Join(TimeSpan.FromSeconds(2));
 		_renderThread = null;
 
-		// Before the device: the backend built its own command pools, images and pipelines on it, and destroying
-		// the device while those are still alive leaves the driver dereferencing them (a SIGSEGV inside
-		// vkDestroyDevice). Surface re-creation negotiates a fresh backend along with the new device.
+		// Before the swapchain: the backend built its own command pools, images and pipelines on it, and
+		// destroying the swapchain while those are still alive leaves the driver dereferencing them (a SIGSEGV
+		// inside vkDestroySwapchainKHR). The device itself outlives the surface (see _vulkanContext.Dispose in
+		// Dispose(bool)); surface re-creation negotiates a fresh backend against the same device.
 		(_renderer as IDisposable)?.Dispose();
 		_renderer = null;
 
@@ -167,7 +177,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		global::Uno.UI.Composition.Drawing.GraphicsRegistry.ContextFactory =
 			kind => System.Threading.Tasks.Task.FromResult<global::Uno.UI.Composition.Drawing.ISwapChain?>(
 				kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Vulkan
-					? new AndroidVulkanGraphicsContext(nativeWindow, width, height)
+					? new AndroidVulkanGraphicsContext(_vulkanContext, nativeWindow, width, height)
 					: null);
 		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
 		_context = init.Context;
@@ -290,6 +300,8 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			_renderThread?.Join(TimeSpan.FromSeconds(2));
 			_context?.Dispose();
 			_context = null;
+			// Releases the retained instance and device kept alive across surface re-creations.
+			_vulkanContext.Dispose();
 			if (_nativeWindow != IntPtr.Zero)
 			{
 				ANativeWindow_release(_nativeWindow);

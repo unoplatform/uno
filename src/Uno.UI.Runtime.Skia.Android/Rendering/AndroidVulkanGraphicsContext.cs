@@ -3,16 +3,17 @@
 using System;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Runtime.Skia.Vulkan;
-using Uno.WinUI.Runtime.Skia.Android.Platform.Vulkan;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
 /// <summary>
-/// On-window Vulkan graphics context for Android (the Android mirror of the Win32/X11 Vulkan contexts). It owns the
-/// Vulkan device/swapchain over the <c>ANativeWindow</c> and exposes the device as a neutral
-/// <see cref="IVulkanDeviceContext"/>. The device lock is held for the whole frame (acquire → render → present);
-/// <see cref="Present"/> blits the render image to the swapchain and releases the lock. The ctor throws when Vulkan
-/// is unavailable, letting the view fall back to the canvas render view.
+/// On-window Vulkan graphics context for Android (the Android mirror of the Win32/X11 Vulkan contexts). It
+/// completes an already device-initialized <see cref="VulkanContext"/> for a specific <c>ANativeWindow</c> and
+/// exposes the device as a neutral <see cref="IVulkanDeviceContext"/>. Unlike Win32/X11, the device is owned by
+/// <see cref="UnoVulkanView"/> and outlives this wrapper across surface re-creations (Android tears down and
+/// recreates the Surface far more often than a desktop window is recreated) — only the window-scoped swapchain
+/// is created and torn down here. The device lock is held for the whole frame (acquire → render → present);
+/// <see cref="Present"/> blits the render image to the swapchain and releases the lock.
 /// </summary>
 internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceContext
 {
@@ -20,19 +21,13 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 	private IDisposable? _frameLock;
 	private int _width, _height;
 
-	public AndroidVulkanGraphicsContext(IntPtr nativeWindow, int width, int height)
+	public AndroidVulkanGraphicsContext(VulkanContext vk, IntPtr nativeWindow, int width, int height)
 	{
-		if (!AndroidVulkanSurfaceFactory.IsVulkanAvailable())
-		{
-			throw new InvalidOperationException("Vulkan rendering not available: libvulkan.so not found");
-		}
-
+		_vk = vk;
 		_width = Math.Max(width, 1);
 		_height = Math.Max(height, 1);
 
-		var factory = new AndroidVulkanSurfaceFactory();
-		_vk = new VulkanContext();
-		_vk.Initialize(factory, nativeWindow, _width, _height);
+		_vk.InitializeSurface(nativeWindow, _width, _height);
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;
@@ -95,6 +90,8 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 		}
 
 		_frameLock = null;
-		_vk.Dispose();
+		// The device is owned by UnoVulkanView and reused for the next surface; only the window-scoped
+		// swapchain/render image are released here.
+		_vk.DisposeSurfaceResources();
 	}
 }
