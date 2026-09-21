@@ -319,11 +319,11 @@ public class Given_Visual_Damage
 		// A scroll port's worth of overlapping contributions, as a moved subtree produces.
 		for (var y = 0f; y < 200; y += 10)
 		{
-			damage.UnionRect(new Rect(0, y, 100, y + 20));
+			damage.UnionRect(new Rect(0, y, 100, 20));
 		}
 
 		// Something small animating in the opposite corner.
-		damage.UnionRect(new Rect(900, 900, 920, 920));
+		damage.UnionRect(new Rect(900, 900, 20, 20));
 
 		using var reported = SnapshotDamage(damage, frameSize: 1000);
 
