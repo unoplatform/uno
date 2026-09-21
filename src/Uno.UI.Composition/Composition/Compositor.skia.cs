@@ -31,6 +31,8 @@ public partial class Compositor
 	/// </summary>
 	internal bool? IsSoftwareRenderer { get; set; }
 
+	internal static bool SkipVisualTreePainting { get; set; }
+
 	internal bool IsAnimating => _runningAnimations.Count > 0;
 
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
@@ -225,7 +227,12 @@ public partial class Compositor
 		var start = Stopwatch.GetTimestamp();
 #endif
 		var recPhaseT1 = _logRecordPhases ? Stopwatch.GetTimestamp() : 0;
-		rootVisual.RenderRootVisual(drawingSession, null, damage);
+		// Skip only the paint walk: animations above still tick and transitions/frame
+		// re-requests below still run, so the scene stays live without producing pixels.
+		if (!SkipVisualTreePainting)
+		{
+			rootVisual.RenderRootVisual(drawingSession, null, damage);
+		}
 		if (_logRecordPhases)
 		{
 			var recPhaseT2 = Stopwatch.GetTimestamp();
