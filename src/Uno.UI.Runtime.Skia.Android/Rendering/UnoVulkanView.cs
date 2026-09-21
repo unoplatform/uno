@@ -149,6 +149,8 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 
 		// Keep the ANativeWindow alive for the Vulkan surface's lifetime (the swapchain references it).
 		_nativeWindow = ANativeWindow_fromSurface(JNIEnv.Handle, surface.Handle);
+		// surface must stay alive across the interop call above, or it can be collected mid-call.
+		GC.KeepAlive(surface);
 		if (_nativeWindow == IntPtr.Zero)
 		{
 			throw new InvalidOperationException("Failed to get ANativeWindow from Surface");
