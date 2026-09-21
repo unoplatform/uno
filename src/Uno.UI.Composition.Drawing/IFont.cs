@@ -41,6 +41,12 @@ public interface IFont
 	/// <summary>Distance from the baseline to the bottom of the text, positive (below the baseline).</summary>
 	float Descent { get; }
 
+	/// <summary>
+	/// Distance from the baseline to the top of a flat capital, positive (above the baseline). Not derivable from
+	/// <see cref="Ascent"/>, which also covers internal leading and accent space, so a font states it separately.
+	/// </summary>
+	float CapHeight { get; }
+
 	/// <summary>Underline stroke offset from the baseline (positive below), or null if the font doesn't specify one.</summary>
 	float? UnderlinePosition { get; }
 

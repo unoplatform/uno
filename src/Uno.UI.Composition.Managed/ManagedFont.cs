@@ -54,6 +54,7 @@ internal sealed class ManagedFont : IFont
 	private readonly int _numHMetrics;
 	private readonly int _ascent;
 	private readonly int _descent;
+	private readonly int _capHeight;
 	private readonly int? _underlinePosition;
 	private readonly int? _underlineThickness;
 	private readonly int? _strikeoutPosition;
@@ -68,7 +69,7 @@ internal sealed class ManagedFont : IFont
 	private string? _familyName;
 
 	private ManagedFont(byte[] data, float pixelSize, int unitsPerEm, int numGlyphs, int glyf, int loca, bool longLoca, CffTable? cff, ColrTable? colr, Color[]? palette,
-		CmapTable? cmap, int hmtx, int numHMetrics, int ascent, int descent, int? underlinePosition, int? underlineThickness,
+		CmapTable? cmap, int hmtx, int numHMetrics, int ascent, int descent, int capHeight, int? underlinePosition, int? underlineThickness,
 		int? strikeoutPosition, int? strikeoutThickness, int sfntOffset, int name)
 	{
 		_name = name;
@@ -87,6 +88,7 @@ internal sealed class ManagedFont : IFont
 		_numHMetrics = numHMetrics;
 		_ascent = ascent;
 		_descent = descent;
+		_capHeight = capHeight;
 		_underlinePosition = underlinePosition;
 		_underlineThickness = underlineThickness;
 		_strikeoutPosition = strikeoutPosition;
@@ -123,6 +125,11 @@ internal sealed class ManagedFont : IFont
 
 	/// <summary>Distance from the baseline to the bottom of the text, positive (below the baseline).</summary>
 	public float Descent => -_descent * Scale;
+
+	// sfnt stores cap height up-positive, which is already the IFont convention, so this one is not negated.
+
+	/// <summary>Distance from the baseline to the top of a flat capital, positive (above the baseline).</summary>
+	public float CapHeight => _capHeight * Scale;
 
 	/// <summary>Recommended extra line spacing in pixels.</summary>
 
@@ -414,6 +421,35 @@ internal sealed class ManagedFont : IFont
 
 			var cmapTable = cmap != 0 ? CmapTable.Parse(data, cmap) : null;
 
+			// OS/2 sCapHeight @88 exists from table version 2 on, so the version - not just the table length -
+			// decides whether it is there. Without it, measure the top of 'H'; failing that (no cmap, CFF
+			// outlines, no 'H'), fall back to a fraction of the em, since ascent cannot stand in for cap height.
+			var capHeight = 0;
+			if (os2 != 0 && os2 + 90 <= data.Length && U16(data, os2) >= 2)
+			{
+				capHeight = S16(data, os2 + 88);
+			}
+
+			if (capHeight <= 0 && cmapTable is not null && glyf != 0 && loca != 0)
+			{
+				var h = cmapTable.Map(data, 'H');
+				if (h != 0 && h + 1 <= numGlyphs)
+				{
+					var gs = longLoca ? (int)U32(data, loca + h * 4) : U16(data, loca + h * 2) * 2;
+					var ge = longLoca ? (int)U32(data, loca + (h + 1) * 4) : U16(data, loca + (h + 1) * 2) * 2;
+					// yMax sits at +8 of the glyf record, past numberOfContours/xMin/yMin/xMax.
+					if (ge > gs && glyf + gs + 10 <= data.Length)
+					{
+						capHeight = S16(data, glyf + gs + 8);
+					}
+				}
+			}
+
+			if (capHeight <= 0)
+			{
+				capHeight = (int)(unitsPerEm * 0.7f);
+			}
+
 			var cffTable = cff != 0 ? CffTable.Parse(data, cff) : null;
 			var hasOutlines = (glyf != 0 && loca != 0) || cffTable is not null;
 			if (!hasOutlines || unitsPerEm == 0)
@@ -435,7 +471,7 @@ internal sealed class ManagedFont : IFont
 			}
 
 			font = new ManagedFont(data, pixelSize, unitsPerEm, numGlyphs, glyf, loca, longLoca, cffTable, colrTable, palette,
-				cmapTable, hmtx, numHMetrics, ascent, descent, underlinePosition, underlineThickness,
+				cmapTable, hmtx, numHMetrics, ascent, descent, capHeight, underlinePosition, underlineThickness,
 				strikeoutPosition, strikeoutThickness, baseOffset, name);
 			return true;
 		}
