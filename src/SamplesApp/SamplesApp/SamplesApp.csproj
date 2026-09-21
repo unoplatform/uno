@@ -339,7 +339,6 @@
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(_Platform)' == 'browserwasm'">
-		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=1024m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
 		<LinkerDescriptor Include="Platforms\WebAssembly\LinkerConfig.xml" />
 		<EmbeddedResource Include="Platforms\WebAssembly\WasmScripts\AppManifest.js" />
 		<Content Include="..\LinkedFiles\WebContent\**\*.*">
@@ -367,10 +366,9 @@
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
 		<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
-		<!-- AndroidX versions track $(NetCurrent)'s .NET for Android bindings -->
-		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.10.0.1" />
-		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.3" />
-		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.14.0.5" />
+		<PackageReference Include="Xamarin.AndroidX.Browser" />
+		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
+		<PackageReference Include="Xamarin.Google.Android.Material" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">
@@ -558,26 +556,6 @@
 
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.props" />
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.targets" />
-
-	<!--
-	WASM + mobile: Uno.UI.Tasks.targets retargets the head's Content (the Uno.UI.RuntimeTests assets
-	and fonts) into the wasm ms-appx manifest, AndroidAssets and iOS/tvOS BundleResources. Referencing
-	the framework from source means it does not arrive transitively, so import it explicitly. Desktop
-	is excluded — it loads ms-appx straight from the flat output dir.
-	-->
-	<PropertyGroup Condition="'$(_IsSkiaTfm)' == 'true' AND '$(_Platform)' != 'desktop'">
-		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
-	</PropertyGroup>
-	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets"
-	        Condition="'$(_IsSkiaTfm)' == 'true' AND '$(_Platform)' != 'desktop' AND '$(SkipUnoResourceGeneration)' == ''" />
-
-	<!--
-	Android needs AndroidResourcesGenerator to emit the DrawableHelper.SetDrawableResolver call —
-	without it every ms-appx local asset lookup throws "Drawable resources were not initialized" at
-	runtime.
-	-->
-	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props"
-	        Condition="'$(_Platform)' == 'android'" />
 
 	<!-- ==================== Windows build configuration ==================== -->
 	<PropertyGroup Condition="'$(_Platform)' == 'windows'">
@@ -770,8 +748,16 @@
 		<CompilerVisibleProperty Include="SkipIcuDataInitializerGenerator" />
 	</ItemGroup>
 
-	<!-- The XAML and DependencyProperty generators, which the samples need on every Skia TFM. WinUI is
-	     excluded: it uses the real WinUI XAML compiler. -->
+	<!--
+	The XAML and DependencyProperty generators, which the samples need on every Skia TFM. WinUI is
+	excluded: it uses the real WinUI XAML compiler.
+
+	This import is also what brings in Uno.UI.Tasks.targets, which retargets the head's Content (the
+	Uno.UI.RuntimeTests assets and fonts) into the wasm ms-appx manifest, AndroidAssets and iOS/tvOS
+	BundleResources, and Uno.UI.SourceGenerators.props, which Android needs so AndroidResourcesGenerator
+	emits the DrawableHelper.SetDrawableResolver call. Referencing the framework from source means
+	neither arrives transitively.
+	-->
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" Condition="'$(_IsSkiaTfm)' == 'true'" />
 
 	<!-- Must stay below the Sdk.props import at the top: Directory.Build.props sets

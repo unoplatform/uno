@@ -46,35 +46,35 @@ namespace Microsoft.UI.Xaml.Documents
 		protected override void OnFontFamilyChanged()
 		{
 			base.OnFontFamilyChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateFontInfo();
 		}
 
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateFontInfo();
 		}
 
 		protected override void OnFontStretchChanged()
 		{
 			base.OnFontStretchChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateFontInfo();
 		}
 
 		protected override void OnFontWeightChanged()
 		{
 			base.OnFontWeightChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateFontInfo();
 		}
 
 		protected override void OnFontSizeChanged()
 		{
 			base.OnFontSizeChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateFontInfo();
 		}
 
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			base.OnIsTextScaleFactorEnabledChanged();
 			InvalidateFontInfo();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 		}
 
 		/// <summary>

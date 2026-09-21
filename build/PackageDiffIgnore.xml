@@ -2377,6 +2377,9 @@
 		  <Member fullName="Uno.UI.Runtime.Skia.Android.AndroidHost" reason="AndroidHost reduced to internal; use UseAndroid() on the host builder (breaking changes for 7.0)" />
 		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>/<Methods> below). -->
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
+		  <!-- WASM DOM renderer removal: the DOM-interop event payload type is unraisable now that its only producer (UIElementWasmExtensions) is gone. -->
+		  <Member fullName="Uno.Extensions.HtmlCustomEventArgs" reason="Removed with the WebAssembly DOM renderer and its HTML interop surface (breaking changes for 7.0, uno#8339)" />
+
 		  <!-- BC01: legacy templated-parent mechanism removed; the template factory is now a plain System.Func (uno#18672, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.FrameworkTemplateBuilder" reason="BC01: legacy template builder delegate removed with the ambient TemplatedParentScope (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
@@ -2477,6 +2480,10 @@
 
 		  <!-- DependencyObject as class (BC26): fields of the removed DependencyObjectStore (incl. its nested TraceProvider). -->
 		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
+
+		  <!-- BC62: Application.TraceProvider's misspelled LauchedStart/LauchedStop consts were corrected to LaunchedStart/LaunchedStop; the old spellings read as removed fields. -->
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStart" reason="Corrected the LauchedStart typo to LaunchedStart (BC62, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStop" reason="Corrected the LauchedStop typo to LaunchedStop (BC62, breaking changes for 7.0)" />
 
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
@@ -2791,6 +2798,7 @@
 		  <!-- Uno-only public members removed/hidden to match WinUI (accessors paired in <Methods> below). -->
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata::DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.SwipeItems::Size()" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
 		  <!-- ScrollControllerPanRequestedEventArgs.PointerPoint retyped from Windows.UI.Input.PointerPoint to Microsoft.UI.Input.PointerPoint (getter/ctor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Retyped ScrollControllerPanRequestedEventArgs.PointerPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
 
@@ -3444,6 +3452,20 @@
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border.get_ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.OnIsDropDownOpenChanged(System.Boolean oldIsDropDownOpen, System.Boolean newIsDropDownOpen)" reason="Hid Uno-only ComboBox.OnIsDropDownOpenChanged (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.set_BackStack(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Navigation.PageStackEntry&gt; value)" reason="Removed Frame.BackStack setter to match WinUI get-only property (breaking changes for 7.0, uno#8339)" />
+		  <!-- SwipeItems keeps only its IList<SwipeItem> projection: the never-implemented First/GetMany/ReplaceAll are removed, the other IVector<T> members are internal, and VectorChanged is an explicit IObservableVector<SwipeItem> implementation (get_Size/VectorChanged paired in <Properties>/<Events>). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.SwipeItem Microsoft.UI.Xaml.Controls.SwipeItems.First()" reason="Removed Uno-only SwipeItems.First; not part of WinUI's IList projection (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.SwipeItems.GetMany(System.UInt32 startIndex, Microsoft.UI.Xaml.Controls.SwipeItem[] items)" reason="Removed Uno-only SwipeItems.GetMany; not part of WinUI's IList projection (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.ReplaceAll(Microsoft.UI.Xaml.Controls.SwipeItem[] items)" reason="Removed Uno-only SwipeItems.ReplaceAll; not part of WinUI's IList projection (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.SwipeItem Microsoft.UI.Xaml.Controls.SwipeItems.GetAt(System.UInt32 index)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.SwipeItems.get_Size()" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.SwipeItems.IndexOf(Microsoft.UI.Xaml.Controls.SwipeItem value, System.UInt32&amp; index)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.SetAt(System.UInt32 index, Microsoft.UI.Xaml.Controls.SwipeItem value)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.InsertAt(System.UInt32 index, Microsoft.UI.Xaml.Controls.SwipeItem value)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.RemoveAt(System.UInt32 index)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.Append(Microsoft.UI.Xaml.Controls.SwipeItem value)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.RemoveAtEnd()" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.add_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; value)" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.remove_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; value)" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- OnTemplateRecycled made an explicit interface implementation (BC), so the public methods read as removed. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.OnTemplateRecycled()" reason="Made OnTemplateRecycled an explicit interface implementation (breaking changes for 7.0, uno#8339)" />
@@ -3525,6 +3547,7 @@
 		  <Member fullName="Microsoft.UI.Xaml.WindowActivatedEventHandler Microsoft.UI.Xaml.Window::Activated" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler Microsoft.UI.Xaml.Window::SizeChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler Microsoft.UI.Xaml.Window::VisibilityChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; Microsoft.UI.Xaml.Controls.SwipeItems::VectorChanged" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- ====================================================================== -->
 		  <!-- BEGIN WinUI sync (Category B): shadow event removals.                  -->
@@ -3840,6 +3863,9 @@
 		  <Member fullName="Uno.UI.Runtime.Skia.Android.AndroidHost" reason="AndroidHost reduced to internal; use UseAndroid() on the host builder (breaking changes for 7.0)" />
 		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>/<Methods> below). -->
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
+		  <!-- WASM DOM renderer removal: the DOM-interop event payload type is unraisable now that its only producer (UIElementWasmExtensions) is gone. -->
+		  <Member fullName="Uno.Extensions.HtmlCustomEventArgs" reason="Removed with the WebAssembly DOM renderer and its HTML interop surface (breaking changes for 7.0, uno#8339)" />
+
 		  <!-- BC01: legacy templated-parent mechanism removed; the template factory is now a plain System.Func (uno#18672, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.FrameworkTemplateBuilder" reason="BC01: legacy template builder delegate removed with the ambient TemplatedParentScope (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
@@ -3940,6 +3966,10 @@
 
 		  <!-- DependencyObject as class (BC26): fields of the removed DependencyObjectStore (incl. its nested TraceProvider). -->
 		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
+
+		  <!-- BC62: Application.TraceProvider's misspelled LauchedStart/LauchedStop consts were corrected to LaunchedStart/LaunchedStop; the old spellings read as removed fields. -->
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStart" reason="Corrected the LauchedStart typo to LaunchedStart (BC62, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStop" reason="Corrected the LauchedStop typo to LaunchedStop (BC62, breaking changes for 7.0)" />
 
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
@@ -4254,6 +4284,7 @@
 		  <!-- Uno-only public members removed/hidden to match WinUI (accessors paired in <Methods> below). -->
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata::DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.SwipeItems::Size()" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
 		  <!-- ScrollControllerPanRequestedEventArgs.PointerPoint retyped from Windows.UI.Input.PointerPoint to Microsoft.UI.Input.PointerPoint (getter/ctor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Retyped ScrollControllerPanRequestedEventArgs.PointerPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
 
@@ -4907,6 +4938,20 @@
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border.get_ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.OnIsDropDownOpenChanged(System.Boolean oldIsDropDownOpen, System.Boolean newIsDropDownOpen)" reason="Hid Uno-only ComboBox.OnIsDropDownOpenChanged (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.set_BackStack(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Navigation.PageStackEntry&gt; value)" reason="Removed Frame.BackStack setter to match WinUI get-only property (breaking changes for 7.0, uno#8339)" />
+		  <!-- SwipeItems keeps only its IList<SwipeItem> projection: the never-implemented First/GetMany/ReplaceAll are removed, the other IVector<T> members are internal, and VectorChanged is an explicit IObservableVector<SwipeItem> implementation (get_Size/VectorChanged paired in <Properties>/<Events>). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.SwipeItem Microsoft.UI.Xaml.Controls.SwipeItems.First()" reason="Removed Uno-only SwipeItems.First; not part of WinUI's IList projection (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.SwipeItems.GetMany(System.UInt32 startIndex, Microsoft.UI.Xaml.Controls.SwipeItem[] items)" reason="Removed Uno-only SwipeItems.GetMany; not part of WinUI's IList projection (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.ReplaceAll(Microsoft.UI.Xaml.Controls.SwipeItem[] items)" reason="Removed Uno-only SwipeItems.ReplaceAll; not part of WinUI's IList projection (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.SwipeItem Microsoft.UI.Xaml.Controls.SwipeItems.GetAt(System.UInt32 index)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.SwipeItems.get_Size()" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.SwipeItems.IndexOf(Microsoft.UI.Xaml.Controls.SwipeItem value, System.UInt32&amp; index)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.SetAt(System.UInt32 index, Microsoft.UI.Xaml.Controls.SwipeItem value)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.InsertAt(System.UInt32 index, Microsoft.UI.Xaml.Controls.SwipeItem value)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.RemoveAt(System.UInt32 index)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.Append(Microsoft.UI.Xaml.Controls.SwipeItem value)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.RemoveAtEnd()" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.add_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; value)" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.remove_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; value)" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- OnTemplateRecycled made an explicit interface implementation (BC), so the public methods read as removed. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.OnTemplateRecycled()" reason="Made OnTemplateRecycled an explicit interface implementation (breaking changes for 7.0, uno#8339)" />
@@ -4988,6 +5033,7 @@
 		  <Member fullName="Microsoft.UI.Xaml.WindowActivatedEventHandler Microsoft.UI.Xaml.Window::Activated" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler Microsoft.UI.Xaml.Window::SizeChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler Microsoft.UI.Xaml.Window::VisibilityChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; Microsoft.UI.Xaml.Controls.SwipeItems::VectorChanged" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- ====================================================================== -->
 		  <!-- BEGIN WinUI sync (Category B): shadow event removals.                  -->

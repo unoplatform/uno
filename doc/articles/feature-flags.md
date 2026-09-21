@@ -20,7 +20,7 @@ Use `Uno.UI.FeatureConfiguration.Font.MaximumTextScaleFactor` to control this.
 
 The rendering backend for the Skia renderer can be configured per platform. On desktop (X11, Win32) it is configured through the [host builder API](xref:Uno.Skia.Vulkan) (`ForceRenderingBackend` / `DisableRenderingBackends`), not feature flags. The feature flags below apply to platforms (like Android) that don't use a host builder.
 
-- `Uno.UI.FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid` — Enables Vulkan rendering on Android (Skia). Default: `false`.
+- `Uno.UI.FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid` — Enables Vulkan rendering on Android (Skia). Default: `true` since Uno Platform 7.0. Set to `false` to fall back to OpenGL ES.
 - `Uno.UI.FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid` — Enables OpenGL ES rendering on Android (Skia). Default: `true`.
 
 For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).

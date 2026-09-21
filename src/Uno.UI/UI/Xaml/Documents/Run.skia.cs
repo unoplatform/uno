@@ -32,10 +32,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(Run),
 				new FrameworkPropertyMetadata(default(FlowDirection), FrameworkPropertyMetadataOptions.Inherits, (DependencyObject dO, DependencyPropertyChangedEventArgs args) => ((Run)dO).OnFlowDirectionChanged()));
 
-		private void OnFlowDirectionChanged()
-		{
-			InvalidateInlines(false);
-		}
+		private void OnFlowDirectionChanged() => InvalidateInlinesForFormatChange();
 
 		private static (int CodePoint, int Length) GetCodePoint(ReadOnlySpan<char> text, int i)
 		{

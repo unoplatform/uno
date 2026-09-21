@@ -169,11 +169,17 @@ END_TIME=$((SECONDS+TIMEOUT))
 
 echo "Waiting for $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH to be available..."
 
+DEVICE_SCREENSHOT_PATH="/data/local/tmp/screenshot.png"
+LOGS_SCREENSHOT_PATH="$LOGS_PATH/android-device-screenshot-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.interim.png"
+
 while [[ $SECONDS -lt $END_TIME ]]; do
     sleep 15
 
 	## Dump the emulator's system log
 	$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.interim.txt
+
+	$ANDROID_HOME/platform-tools/adb shell screencap "$DEVICE_SCREENSHOT_PATH" || echo "ERROR: could not adb screencap $DEVICE_SCREENSHOT_PATH"
+	$ANDROID_HOME/platform-tools/adb pull "$DEVICE_SCREENSHOT_PATH" "$LOGS_SCREENSHOT_PATH" || echo "ERROR: could not adb pull $DEVICE_SCREENSHOT_PATH"
 
 	# exit loop if the output file exists
 	if $ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH" ; then

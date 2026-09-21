@@ -113,6 +113,23 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 		}
 	}
 
+	public void SetKeyboardAccessoryView(UIView? accessoryView)
+	{
+		if (InputAccessoryView == accessoryView)
+		{
+			return;
+		}
+
+		InputAccessoryView = accessoryView;
+
+		// Setting it before the view becomes first responder is enough for the keyboard to come up
+		// with the accessory; changing it during an editing session needs the input views reloaded.
+		if (IsFirstResponder)
+		{
+			ReloadInputViews();
+		}
+	}
+
 	public void Select(int start, int length)
 	{
 		try
