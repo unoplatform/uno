@@ -25,7 +25,7 @@ public partial class Visual
 
 	internal virtual float DamageRegionSamplingMargin => 0;
 
-	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage, SKPath clip, bool clipChanged)
+	private void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage, SKPath clip, bool clipChanged)
 	{
 		if (damage is null)
 		{
