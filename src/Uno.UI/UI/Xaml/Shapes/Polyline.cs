@@ -1,14 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
+using Uno.Media;
+using Microsoft.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 
 namespace Microsoft.UI.Xaml.Shapes
 {
-	public partial class Polyline
+	public partial class Polyline : Shape
 	{
 		#region Points (DP)
 		public PointCollection Points
@@ -38,9 +41,35 @@ namespace Microsoft.UI.Xaml.Shapes
 			Points = new PointCollection();
 		}
 
-#if __NETSTD_REFERENCE__
-		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
-		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
-#endif
+		/// <inheritdoc />
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureAbsoluteShape(availableSize, GetPath());
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeAbsoluteShape(finalSize, GetPath());
+
+#nullable enable
+		private IGeometry? GetPath()
+		{
+			var points = Points;
+			if (points == null || points.Count <= 1)
+			{
+				return null;
+			}
+
+			var streamGeometry = Uno.Media.GeometryHelper.Build(c =>
+			{
+				c.BeginFigure(points[0], true);
+				for (var i = 1; i < points.Count; i++)
+				{
+					c.LineTo(points[i], true, false);
+				}
+			});
+
+			return streamGeometry.GetTransformedGeometry();
+		}
+#nullable disable
+
 	}
 }

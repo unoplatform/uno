@@ -1,8 +1,12 @@
-﻿using Windows.Foundation;
+using Windows.Foundation;
+using System;
+using Uno.Media;
+using Microsoft.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
-	public partial class Line
+	public partial class Line : Shape
 	{
 		#region X1 (DP)
 		public double X1
@@ -74,11 +78,33 @@ namespace Microsoft.UI.Xaml.Shapes
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
+
+		/// <inheritdoc />
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureAbsoluteShape(availableSize, GetPath());
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeAbsoluteShape(finalSize, GetPath());
+
+#nullable enable
+		private IGeometry? GetPath()
+		{
+			if (Math.Abs(X1 - X2) > double.Epsilon || Math.Abs(Y1 - Y2) > double.Epsilon)
+			{
+				var streamGeometry = GeometryHelper.Build(c =>
+				{
+					c.BeginFigure(new Point(X1, Y1), false);
+					c.LineTo(new Point(X2, Y2), false, false);
+				});
+
+				return streamGeometry.GetTransformedGeometry();
+			}
+
+			return null;
+		}
+#nullable disable
 		#endregion
 
-#if __NETSTD_REFERENCE__
-		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
-		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
-#endif
 	}
 }

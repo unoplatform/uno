@@ -1,4 +1,8 @@
-﻿using Windows.Foundation;
+using Windows.Foundation;
+using System;
+using Microsoft.UI.Composition;
+using System.Numerics;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -44,11 +48,39 @@ namespace Microsoft.UI.Xaml.Shapes
 			get => (double)this.GetValue(RadiusXProperty);
 			set => this.SetValue(RadiusXProperty, value);
 		}
+
+#nullable enable
+		public Rectangle()
+		{
+		}
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			var (_, renderingArea) = ArrangeRelativeShape(finalSize);
+			var path = renderingArea.Width > 0 && renderingArea.Height > 0
+				? GetGeometry(renderingArea)
+				: null;
+
+			Render(path);
+
+			return finalSize;
+		}
+
+		private IGeometry GetGeometry(Rect finalRect)
+		{
+			var radiusX = RadiusX;
+			var radiusY = RadiusY;
+
+			var offset = new Vector2((float)finalRect.Left, (float)finalRect.Top);
+			var size = new Vector2((float)finalRect.Width, (float)finalRect.Height);
+
+			return radiusX is 0 || radiusY is 0
+				? CompositionGeometry.BuildRectangleGeometry(offset, size)
+				: CompositionGeometry.BuildRoundedRectangleGeometry(offset, size, new Vector2((float)radiusX, (float)radiusY));
+		}
+#nullable disable
 		#endregion
 
-#if __NETSTD_REFERENCE__
-		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
-		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
-#endif
 	}
 }

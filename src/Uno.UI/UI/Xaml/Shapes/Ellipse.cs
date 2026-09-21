@@ -1,4 +1,8 @@
-﻿using Windows.Foundation;
+using Windows.Foundation;
+using Uno.Extensions;
+using Microsoft.UI.Composition;
+using System.Numerics;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -6,11 +10,30 @@ namespace Microsoft.UI.Xaml.Shapes
 	{
 #if __SKIA__
 		protected override Size MeasureOverride(Size availableSize) => MeasureRelativeShape(availableSize);
+
+		public Ellipse()
+		{
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			var (_, renderingArea) = ArrangeRelativeShape(finalSize);
+
+			Render(renderingArea.Width > 0 && renderingArea.Height > 0
+				? GetGeometry(renderingArea)
+				: null);
+
+			return finalSize;
+		}
+
+		private IGeometry GetGeometry(Rect renderingArea)
+		{
+			var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
+			var center = new Vector2((float)(renderingArea.X + renderingArea.Width / 2), (float)(renderingArea.Y + renderingArea.Height / 2));
+			builder.AddEllipse(center, (float)(renderingArea.Width / 2), (float)(renderingArea.Height / 2));
+			return builder.Build();
+		}
 #endif
 
-#if __NETSTD_REFERENCE__
-		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
-		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
-#endif
 	}
 }
