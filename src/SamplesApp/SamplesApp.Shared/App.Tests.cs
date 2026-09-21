@@ -282,6 +282,12 @@ partial class App
 			// are not part of the sample identifier.
 			identifier = identifier.Split(new[] { ' ', '&' }, 2)[0];
 
+			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { IsSampleIndexLoaded: true } vm)
+			{
+				// A definitive no-match falls through to the regular launch-argument handling.
+				return vm.TrySelectSample(CancellationToken.None, identifier);
+			}
+
 			// Sample discovery is async and races the launch: wait until the chooser knows its samples.
 			_ = NavigateWithRetriesAsync(identifier);
 			return true;

@@ -1182,17 +1182,7 @@ namespace SampleControl.Presentation
 		/// known — sample discovery is async, so early callers (launch deep links) should retry.</summary>
 		public bool TrySetSelectedSample(CancellationToken token, string categoryName, string sampleName)
 		{
-			var category = _allCategories?.FirstOrDefault(
-				c => c.Category != null &&
-				c.Category.Equals(categoryName, StringComparison.InvariantCultureIgnoreCase));
-
-			if (category == null)
-			{
-				return false;
-			}
-
-			var sample = category.SamplesContent.FirstOrDefault(
-				s => s.ControlName != null && s.ControlName.Equals(sampleName, StringComparison.InvariantCultureIgnoreCase));
+			var sample = FindSample(categoryName, sampleName);
 
 			if (sample == null)
 			{
@@ -1204,6 +1194,11 @@ namespace SampleControl.Presentation
 			SelectedLibrarySample = sample;
 			return true;
 		}
+
+		private SampleChooserContent FindSample(string categoryName, string sampleName)
+			=> _allCategories?
+				.FirstOrDefault(c => c.Category != null && c.Category.Equals(categoryName, StringComparison.InvariantCultureIgnoreCase))
+				?.SamplesContent.FirstOrDefault(s => s.ControlName != null && s.ControlName.Equals(sampleName, StringComparison.InvariantCultureIgnoreCase));
 
 		/// <summary>
 		/// Resolves a sample from a single deep-link identifier and navigates to it. Accepts
@@ -1223,9 +1218,7 @@ namespace SampleControl.Presentation
 
 			SampleChooserContent sample = parts.Length switch
 			{
-				2 => _allCategories
-					.FirstOrDefault(c => c.Category != null && c.Category.Equals(parts[0], StringComparison.InvariantCultureIgnoreCase))
-					?.SamplesContent.FirstOrDefault(s => s.ControlName != null && s.ControlName.Equals(parts[1], StringComparison.InvariantCultureIgnoreCase)),
+				2 => FindSample(parts[0], parts[1]),
 				1 => allSamples.FirstOrDefault(s =>
 					s.ControlType.FullName.Equals(identifier, StringComparison.InvariantCultureIgnoreCase) ||
 					(s.ControlName != null && s.ControlName.Equals(identifier, StringComparison.InvariantCultureIgnoreCase))),
@@ -1240,6 +1233,10 @@ namespace SampleControl.Presentation
 
 			ShowNewSection(token, Section.SamplesContent);
 			SelectedLibrarySample = sample;
+
+			// Launching straight into a sample is a focused, one-off scenario - start with the
+			// sample list collapsed instead of covering the sample.
+			IsSplitVisible = false;
 
 			Console.WriteLine($"[SampleChooser] Navigated to sample '{sample.ControlType.FullName}'.");
 			return true;
