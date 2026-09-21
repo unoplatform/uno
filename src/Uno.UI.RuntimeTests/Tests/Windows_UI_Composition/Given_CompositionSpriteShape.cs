@@ -399,6 +399,65 @@ public class Given_CompositionSpriteShape
 			$"Stroke height mismatch. Expected ~{expectedStrokePixels}px (±{tolerance}), got {strokePixels:F2}px (physical coverage: {coveragePhysical:F2}, scale: {rasterizationScale}).");
 	}
 
+	// Regression guard for damage-region rendering: the bounds a shape reports for the damage region
+	// (TryGetRenderBounds) must match the transform CompositionShape.Render applies to the canvas — its
+	// Offset and CombinedTransformMatrix (Scale/Rotation around CenterPoint). Before the fix these ignored
+	// Offset/Rotation, so an animating AnimatedIcon (whose shapes rotate about a centre and are offset)
+	// damaged the wrong region and left the previous frame's pixels un-erased.
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Shape_Offset_Then_RenderBounds_Track_Offset()
+	{
+		var shape = CreateUnitRectShape(20, 10);
+
+		Assert.IsTrue(shape.TryGetRenderBounds(out var baseline));
+		AssertRectClose(new Rect(0, 0, 20, 10), baseline);
+
+		shape.Offset = new Vector2(100, 50);
+
+		Assert.IsTrue(shape.TryGetRenderBounds(out var moved));
+		AssertRectClose(new Rect(100, 50, 20, 10), moved);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Shape_Rotated_Then_RenderBounds_Track_Rotation()
+	{
+		var shape = CreateUnitRectShape(20, 10);
+		shape.CenterPoint = new Vector2(10, 5);
+		shape.RotationAngleInDegrees = 90;
+
+		// A 20x10 rect rotated 90° about its centre (10,5) becomes a 10x20 AABB centred at (10,5).
+		var expected = new Rect(5, -5, 10, 20);
+
+		Assert.IsTrue(shape.TryGetRenderBounds(out var rotated));
+		AssertRectClose(expected, rotated);
+	}
+
+	private static CompositionSpriteShape CreateUnitRectShape(float width, float height)
+	{
+		var compositor = Compositor.GetSharedCompositor();
+		using var builder = new CanvasPathBuilder(CanvasDevice.GetSharedDevice());
+		builder.BeginFigure(new Vector2(0, 0));
+		builder.AddLine(new Vector2(width, 0));
+		builder.AddLine(new Vector2(width, height));
+		builder.AddLine(new Vector2(0, height));
+		builder.EndFigure(CanvasFigureLoop.Closed);
+
+		var geometry = compositor.CreatePathGeometry(new CompositionPath(CanvasGeometry.CreatePath(builder)));
+		var shape = compositor.CreateSpriteShape(geometry);
+		shape.FillBrush = compositor.CreateColorBrush(Microsoft.UI.Colors.Black);
+		return shape;
+	}
+
+	private static void AssertRectClose(Rect expected, Rect actual, double tolerance = 0.5)
+		=> Assert.IsTrue(
+			Math.Abs(expected.Left - actual.Left) <= tolerance
+			&& Math.Abs(expected.Top - actual.Top) <= tolerance
+			&& Math.Abs(expected.Right - actual.Right) <= tolerance
+			&& Math.Abs(expected.Bottom - actual.Bottom) <= tolerance,
+			$"Expected ~{expected}, got {actual}.");
+
 	private async Task RenderPath(CompositionPath path, FrameworkElement expected, Vector2? scale = null, Vector2? offset = null, Windows.UI.Color? color = null)
 	{
 		var compositor = Compositor.GetSharedCompositor();
