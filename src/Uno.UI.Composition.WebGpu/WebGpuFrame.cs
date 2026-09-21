@@ -194,6 +194,77 @@ internal sealed unsafe partial class WebGpuFrame
 		return b;
 	}
 
+	// The rect an axis-aligned quad covers, before the antialiasing pad -- empty when the quad is rotated or skewed,
+	// which the occlusion cull does not handle. Corners are TL, TR, BR, BL.
+	private static Vector4 AaRect(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
+		=> p0.Y == p1.Y && p2.Y == p3.Y && p0.X == p3.X && p1.X == p2.X && p1.X > p0.X && p3.Y > p0.Y
+			? new Vector4(p0.X, p0.Y, p2.X, p2.Y)
+			: default;
+
+	// A rounded rect paints its whole box only with square corners, no border ring cut out of it, and full alpha.
+	private static bool OpaqueRrect(RoundedRectCmd rr)
+		=> rr.Color.A == 255 && rr.Opacity >= 1f && rr.Radii == Vector4.Zero && rr.InnerHalf.X < 0f && ClipIsPlain(rr.Clip);
+
+	// A clip that cannot cut the op's own shape anywhere inside its AABB: anything else and the op paints less
+	// than its rect, so it may not be trusted to hide what is under it.
+	private static bool ClipIsPlain(in ClipData c)
+		=> c.Paths is null && (c.Entries is null || c.Entries.Length == 0) && c.Coverage == 0;
+
+	// Coverage decides in PIXELS, not in the rect's own coordinates: a rect flush with the surface edge still fills
+	// its edge pixels, which a rect-versus-rect comparison with any margin for the antialiasing ramp would deny.
+	// Both of these are inclusive pixel indices.
+
+	// Where the analytic ramp reads exactly 1: a pixel centre at least half a pixel inside the edge.
+	private static Vector4 PixelsFilled(in Vector4 r)
+		=> new(MathF.Ceiling(r.X), MathF.Ceiling(r.Y), MathF.Floor(r.Z - 1f), MathF.Floor(r.W - 1f));
+
+	// Where it reads anything at all: a pixel centre less than half a pixel outside.
+	private static Vector4 PixelsTouched(in Vector4 r)
+		=> new(MathF.Floor(r.X - 1f) + 1f, MathF.Floor(r.Y - 1f) + 1f, MathF.Ceiling(r.Z) - 1f, MathF.Ceiling(r.W) - 1f);
+
+	private static Vector4 Meet(in Vector4 a, in Vector4 b)
+		=> new(MathF.Max(a.X, b.X), MathF.Max(a.Y, b.Y), MathF.Min(a.Z, b.Z), MathF.Min(a.W, b.W));
+
+	private static bool Contains(in Vector4 outer, in Vector4 inner)
+		=> inner.X >= outer.X && inner.Y >= outer.Y && inner.Z <= outer.Z && inner.W <= outer.W;
+
+	/// <summary>
+	/// Drops ops that a later opaque rect paints over completely. Stacked full-surface backgrounds -- the app's, the
+	/// page's and the control's, each an opaque fill of the whole window -- are the ordinary case, and each one of
+	/// them costs a whole surface of fill rate.
+	/// </summary>
+	private static void CullOccluded(List<DrawOp> ops, in Vector4 bound)
+	{
+		var cover = default(Vector4);
+		float coverArea = 0f;
+		for (int i = ops.Count - 1; i >= 0; i--)
+		{
+			var op = ops[i];
+			// A backdrop samples the target, so everything before it stays visible to it whatever is drawn later.
+			if (op.Kind == DrawKind.BackdropSegment) { cover = default; coverArea = 0f; continue; }
+			if (op.Bounds == default) { continue; }
+			if (coverArea > 0f && Contains(cover, PixelsTouched(op.Bounds)))
+			{
+				ops.RemoveAt(i);
+				StatCulled++;
+				continue;
+			}
+			if (!op.Opaque) { continue; }
+			// What it actually fills: its own pixels, cut to every scissor the encode will apply.
+			var r = PixelsFilled(op.Bounds);
+			if (!op.Clip.ScissorInert) { r = Meet(r, PixelsFilled(op.Clip.Aabb)); }
+			if (bound.X > float.MinValue) { r = Meet(r, PixelsFilled(bound)); }
+			var area = MathF.Max(0f, r.Z - r.X + 1f) * MathF.Max(0f, r.W - r.Y + 1f);
+			if (area > coverArea) { cover = r; coverArea = area; }
+		}
+	}
+
+	/// <summary>Ops the occlusion cull dropped this frame.</summary>
+	internal static int StatCulled;
+
+	// Off for bisecting a visual regression against the cull.
+	private static readonly bool _noOcclusionCull = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_OCCLUSION_CULL") == "1";
+
 	private static Vector4 QuadBounds(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, in ClipData clip)
 	{
 		var min = Vector2.Min(Vector2.Min(p0, p1), Vector2.Min(p2, p3));
@@ -877,6 +948,7 @@ internal sealed unsafe partial class WebGpuFrame
 		if (overlay is not null) { Walk(overlay, Matrix3x2.Identity, ClipData.None, b.Ops); }
 		_passDepth--;
 		if (_emitStats && _passDepth == 0) { WalkTicks += System.Diagnostics.Stopwatch.GetTimestamp() - walkStart; }
+		if (!_noOcclusionCull) { CullOccluded(b.Ops, bound); }
 		long uploadStart = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 
 		// Upload the whole pass's shared geometry in ONE buffer per layout; the ops index them.

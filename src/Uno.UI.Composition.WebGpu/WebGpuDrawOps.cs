@@ -88,6 +88,13 @@ internal struct DrawOp
 	public IntPtr SiteBg;
 	/// <summary>Its site's slot, whose scissor box the encode reads. Zero = the op carries its own.</summary>
 	public nint SiteSlot;
+	/// <summary>
+	/// The op's shape in the space its vertices are in, before the antialiasing pad; empty when it is not a plain
+	/// rect or is not worth tracking. The occlusion cull reads it, and nothing else may assume it is set.
+	/// </summary>
+	public Vector4 Bounds;
+	/// <summary>It paints <see cref="Bounds"/> at full alpha, so whatever it covers need not be drawn.</summary>
+	public bool Opaque;
 
 	/// <summary>An op drawing a range of the pass's shared buffer for its kind.</summary>
 	public static DrawOp Shared(DrawKind kind, uint firstVertex, uint count, IntPtr group1, in ClipData clip, IntPtr clipBg)

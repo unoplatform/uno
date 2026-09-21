@@ -177,7 +177,14 @@ internal sealed unsafe partial class WebGpuFrame
 					AppendAaRect(_scratch, rcj.Color, rcj.P0, rcj.P1, rcj.P2, rcj.P3);
 					j++;
 				}
-				ops.Add(DrawOp.Own(DrawKind.RoundedRect, Vbuf(_scratch, VertexStride.RoundedRect, owned), (uint)((j - ci) * 6), IntPtr.Zero, rc0.Clip, MakeClipBg(rc0.Clip, owned)));
+				var rop = DrawOp.Own(DrawKind.RoundedRect, Vbuf(_scratch, VertexStride.RoundedRect, owned), (uint)((j - ci) * 6), IntPtr.Zero, rc0.Clip, MakeClipBg(rc0.Clip, owned));
+				// Only a run of one: a longer run's rects need not tile the box they share, so its box is not painted.
+				if (j == ci + 1)
+				{
+					rop.Bounds = AaRect(rc0.P0, rc0.P1, rc0.P2, rc0.P3);
+					rop.Opaque = rc0.Color.A == 255 && ClipIsPlain(rc0.Clip);
+				}
+				ops.Add(rop);
 				ci = j - 1;
 			}
 			else if (WebGpuCoverage.AtlasEnabled && atlasScale is { } asc && Coverage.TryAtlasBatch(cmds, ref ci, owned, asc, out var aop, place))
@@ -264,7 +271,10 @@ internal sealed unsafe partial class WebGpuFrame
 					AppendRrect(tmp, rrc, rrc.P0, rrc.P1, rrc.P2, rrc.P3);
 					var buf = Vbuf(tmp, VertexStride.RoundedRect, owned);
 					ReturnRrect(tmp);
-					ops.Add(DrawOp.Own(DrawKind.RoundedRect, buf, 6, IntPtr.Zero, rrc.Clip, MakeClipBg(rrc.Clip, owned)));
+					var rrop = DrawOp.Own(DrawKind.RoundedRect, buf, 6, IntPtr.Zero, rrc.Clip, MakeClipBg(rrc.Clip, owned));
+					rrop.Bounds = AaRect(rrc.P0, rrc.P1, rrc.P2, rrc.P3);
+					rrop.Opaque = OpaqueRrect(rrc);
+					ops.Add(rrop);
 					break;
 				}
 		}

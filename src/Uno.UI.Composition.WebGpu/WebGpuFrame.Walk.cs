@@ -158,10 +158,21 @@ internal sealed unsafe partial class WebGpuFrame
 							var (a0, a1, a2, a3) = identity ? (rc0.P0, rc0.P1, rc0.P2, rc0.P3) : (Map(rc0.P0, m), Map(rc0.P1, m), Map(rc0.P2, m), Map(rc0.P3, m));
 							var ast = (uint)(_rrect.Count / VertexStride.RoundedRect);
 							AppendAaRect(_rrect, rc0.Color, a0, a1, a2, a3);
-							ops.Add(DrawOp.Shared(DrawKind.RoundedRect, ast, 6, IntPtr.Zero, cd, MakeClipBg(cd)));
+							var aop = DrawOp.Shared(DrawKind.RoundedRect, ast, 6, IntPtr.Zero, cd, MakeClipBg(cd));
+							aop.Bounds = AaRect(a0, a1, a2, a3);
+							aop.Opaque = rc0.Color.A == 255 && ClipIsPlain(cd);
+							ops.Add(aop);
 							break;
 						}
-						ops.Add(DrawOp.Shared(DrawKind.Solid, start, (uint)((j - ci) * 6), IntPtr.Zero, cd, MakeClipBg(cd)));
+						var sop = DrawOp.Shared(DrawKind.Solid, start, (uint)((j - ci) * 6), IntPtr.Zero, cd, MakeClipBg(cd));
+						// Only a run of one: a longer run's rects need not tile the box they share, so its box is not painted.
+						if (j == ci + 1)
+						{
+							var (s0, s1, s2, s3) = identity ? (rc0.P0, rc0.P1, rc0.P2, rc0.P3) : (Map(rc0.P0, m), Map(rc0.P1, m), Map(rc0.P2, m), Map(rc0.P3, m));
+							sop.Bounds = AaRect(s0, s1, s2, s3);
+							sop.Opaque = rc0.Color.A == 255 && ClipIsPlain(cd);
+						}
+						ops.Add(sop);
 						ci = j - 1;
 						break;
 					}
@@ -170,9 +181,12 @@ internal sealed unsafe partial class WebGpuFrame
 						var rri = (RoundedRectCmd)cmd;
 						var cd = composer.Compose(outer, rri.Clip, m, inv, direct);
 						uint st = (uint)(_rrect.Count / VertexStride.RoundedRect);
-						if (identity) { AppendRrect(_rrect, rri, rri.P0, rri.P1, rri.P2, rri.P3); }
-						else { AppendRrect(_rrect, rri, Map(rri.P0, m), Map(rri.P1, m), Map(rri.P2, m), Map(rri.P3, m)); }
-						ops.Add(DrawOp.Shared(DrawKind.RoundedRect, st, 6, IntPtr.Zero, cd, MakeClipBg(cd)));
+						var (r0, r1, r2, r3) = identity ? (rri.P0, rri.P1, rri.P2, rri.P3) : (Map(rri.P0, m), Map(rri.P1, m), Map(rri.P2, m), Map(rri.P3, m));
+						AppendRrect(_rrect, rri, r0, r1, r2, r3);
+						var rop = DrawOp.Shared(DrawKind.RoundedRect, st, 6, IntPtr.Zero, cd, MakeClipBg(cd));
+						rop.Bounds = AaRect(r0, r1, r2, r3);
+						rop.Opaque = OpaqueRrect(rri) && ClipIsPlain(cd);
+						ops.Add(rop);
 						break;
 					}
 				case CmdKind.Path:
@@ -682,7 +696,7 @@ internal sealed unsafe partial class WebGpuFrame
 			if (siteCarries && !fresh && slot.SiteOps)
 			{
 				slot.Frame = _d.FrameSeq;
-				ops.AddRange(slot.Ops);
+				AppendSite(ops, slot.Ops, rm, session);
 				return;
 			}
 			var stampOwned = fresh ? new OwnedResources() : slot.Owned;
@@ -759,7 +773,24 @@ internal sealed unsafe partial class WebGpuFrame
 		}
 
 		slot.Frame = _d.FrameSeq;
-		ops.AddRange(slot.Ops);
+		AppendSite(ops, slot.Ops, rm, session);
+	}
+
+	// A stamp's ops into the pass list, each op's box lifted from its recording's space into device pixels -- that is
+	// the space the occlusion cull compares in, and a stamp's ops are shared across the sites replaying it.
+	private static void AppendSite(List<DrawOp> ops, List<DrawOp> stamped, in Matrix3x2 rm, in ClipData session)
+	{
+		// A rotated or skewed placement does not map a box to the box it paints, and a session clip beyond a plain
+		// rect cuts the op somewhere its own clip does not record.
+		bool boxes = rm.M12 == 0f && rm.M21 == 0f;
+		bool plain = boxes && ClipIsPlain(session);
+		foreach (var op in stamped)
+		{
+			var o = op;
+			o.Bounds = boxes && op.Bounds != default ? TransformBounds(op.Bounds, rm) : default;
+			o.Opaque = op.Opaque && plain;
+			ops.Add(o);
+		}
 	}
 
 	// An atlas quad or mask is baked for one replay scale; a different one, or a transform that now allows the
