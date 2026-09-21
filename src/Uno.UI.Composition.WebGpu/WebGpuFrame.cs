@@ -228,6 +228,28 @@ internal sealed unsafe partial class WebGpuFrame
 	private static bool Contains(in Vector4 outer, in Vector4 inner)
 		=> inner.X >= outer.X && inner.Y >= outer.Y && inner.Z <= outer.Z && inner.W <= outer.W;
 
+	// What of `box` a cover rect leaves uncovered, as up to four bands (above, below, left, right of the overlap).
+	// Rect minus rect is not a rect in general -- a page background under an opaque content panel is covered across
+	// its middle and survives only as a header and a footer strip.
+	private static int Remainder(in Vector4 cover, in Vector4 box, Span<Vector4> outBands)
+	{
+		float ix0 = MathF.Max(box.X, cover.X), ix1 = MathF.Min(box.Z, cover.Z);
+		float iy0 = MathF.Max(box.Y, cover.Y), iy1 = MathF.Min(box.W, cover.W);
+		if (ix0 > ix1 || iy0 > iy1) { return 0; }   // no overlap at all: nothing to trim
+		int n = 0;
+		if (iy0 > box.Y) { outBands[n++] = new Vector4(box.X, box.Y, box.Z, iy0 - 1f); }
+		if (iy1 < box.W) { outBands[n++] = new Vector4(box.X, iy1 + 1f, box.Z, box.W); }
+		if (ix0 > box.X) { outBands[n++] = new Vector4(box.X, iy0, ix0 - 1f, iy1); }
+		if (ix1 < box.Z) { outBands[n++] = new Vector4(ix1 + 1f, iy0, box.Z, iy1); }
+		return n;
+	}
+
+	private static float PixelArea(in Vector4 r) => MathF.Max(0f, r.Z - r.X + 1f) * MathF.Max(0f, r.W - r.Y + 1f);
+
+	// Splitting multiplies the draw, so it has to buy a lot: a big op that keeps little of itself.
+	private const float SplitMinArea = 100_000f;
+	private const float SplitMaxKept = 0.6f;
+
 	/// <summary>
 	/// Drops ops that a later opaque rect paints over completely. Stacked full-surface backgrounds -- the app's, the
 	/// page's and the control's, each an opaque fill of the whole window -- are the ordinary case, and each one of
@@ -243,13 +265,36 @@ internal sealed unsafe partial class WebGpuFrame
 			// A backdrop samples the target, so everything before it stays visible to it whatever is drawn later.
 			if (op.Kind == DrawKind.BackdropSegment) { cover = default; coverArea = 0f; continue; }
 			if (op.Bounds == default) { continue; }
-			if (coverArea > 0f && Contains(cover, PixelsTouched(op.Bounds)))
+			var touched = PixelsTouched(op.Bounds);
+			if (coverArea > 0f && Contains(cover, touched))
 			{
 				ops.RemoveAt(i);
 				StatCulled++;
 				continue;
 			}
-			if (!op.Opaque) { continue; }
+			if (!op.Opaque)
+			{
+				// Not covered outright, but maybe covered across its middle: redraw only the bands left over.
+				if (coverArea > 0f && op.CullScissor.Z <= op.CullScissor.X && PixelArea(touched) > SplitMinArea)
+				{
+					Span<Vector4> bands = stackalloc Vector4[4];
+					int n = Remainder(cover, touched, bands);
+					float kept = 0f;
+					for (int k = 0; k < n; k++) { kept += PixelArea(bands[k]); }
+					if (n > 0 && kept < PixelArea(touched) * SplitMaxKept)
+					{
+						// Inclusive pixel indices back to a device rect: the far edge is one past the last.
+						for (int k = 0; k < n; k++)
+						{
+							var o = op;
+							o.CullScissor = new Vector4(bands[k].X, bands[k].Y, bands[k].Z + 1f, bands[k].W + 1f);
+							if (k == 0) { ops[i] = o; } else { ops.Insert(i + k, o); }
+						}
+						StatSplit++;
+					}
+				}
+				continue;
+			}
 			// What it actually fills: its own pixels, cut to every scissor the encode will apply.
 			var r = PixelsFilled(op.Bounds);
 			if (!op.Clip.ScissorInert) { r = Meet(r, PixelsFilled(op.Clip.Aabb)); }
@@ -259,8 +304,9 @@ internal sealed unsafe partial class WebGpuFrame
 		}
 	}
 
-	/// <summary>Ops the occlusion cull dropped this frame.</summary>
+	/// <summary>Ops the occlusion cull dropped this frame, and ops it cut down to their uncovered bands.</summary>
 	internal static int StatCulled;
+	internal static int StatSplit;
 
 	// Off for bisecting a visual regression against the cull.
 	private static readonly bool _noOcclusionCull = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_OCCLUSION_CULL") == "1";

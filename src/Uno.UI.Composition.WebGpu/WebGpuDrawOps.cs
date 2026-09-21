@@ -95,6 +95,11 @@ internal struct DrawOp
 	public Vector4 Bounds;
 	/// <summary>It paints <see cref="Bounds"/> at full alpha, so whatever it covers need not be drawn.</summary>
 	public bool Opaque;
+	/// <summary>
+	/// The only band of the op still worth drawing, when a later opaque rect covers the rest of it. Empty
+	/// (Z &lt;= X) unless the cull set it; applied on top of whatever scissor the op would otherwise get.
+	/// </summary>
+	public Vector4 CullScissor;
 
 	/// <summary>An op drawing a range of the pass's shared buffer for its kind.</summary>
 	public static DrawOp Shared(DrawKind kind, uint firstVertex, uint count, IntPtr group1, in ClipData clip, IntPtr clipBg)

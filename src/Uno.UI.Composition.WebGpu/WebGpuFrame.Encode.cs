@@ -140,10 +140,14 @@ internal sealed unsafe partial class WebGpuFrame
 			}
 			// An op placed by a site scissors to that site's box: its own would have to be rewritten every time
 			// the recording moved, which is the cost this avoids.
-			if (!TryScissor(op.SiteSlot != 0 ? SiteScissor(op.SiteSlot) : op.Clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
+			var scissorBox = op.SiteSlot != 0 ? SiteScissor(op.SiteSlot) : op.Clip.Aabb;
+			// A split op draws only the band no later opaque rect covers, so that band wins over any widening.
+			var split = op.CullScissor.Z > op.CullScissor.X;
+			if (split) { scissorBox = Meet(scissorBox, op.CullScissor); }
+			if (!TryScissor(scissorBox, out var sx, out var sy, out var sw, out var sh)) { continue; }
 			// A widenable op's tight AABB is cull-only (checked above); the applied scissor is the full
 			// surface, so consecutive such ops dedup to a single SetScissorRect.
-			if (op.SiteSlot == 0 && ScissorWidenable(op.Clip)) { sx = 0; sy = 0; sw = (int)BasisW; sh = (int)BasisH; }
+			if (!split && op.SiteSlot == 0 && ScissorWidenable(op.Clip)) { sx = 0; sy = 0; sw = (int)BasisW; sh = (int)BasisH; }
 			// On the layer sheet every draw stays inside its layer's slot, whatever its clip says.
 			if (_bound.X > float.MinValue)
 			{
@@ -162,7 +166,7 @@ internal sealed unsafe partial class WebGpuFrame
 			{
 				var nx = ops[oi + 1];
 				if (nx.Kind != op.Kind || nx.Verts != op.Verts || nx.Group1 != op.Group1 || nx.ClipBg != op.ClipBg || nx.SiteBg != op.SiteBg
-					|| nx.Clip.Aabb != op.Clip.Aabb || nx.FirstVertex != op.FirstVertex + count) { break; }
+					|| nx.Clip.Aabb != op.Clip.Aabb || nx.CullScissor != op.CullScissor || nx.FirstVertex != op.FirstVertex + count) { break; }
 				count += nx.Count; oi++;
 			}
 
@@ -205,13 +209,13 @@ internal sealed unsafe partial class WebGpuFrame
 		line.Append($"[webgpu-stats] {Target.Width}x{Target.Height}:");
 		line.Append($" ops={opCount} emitted={pst.Iters} sharedOps={pst.SharedOps}");
 		line.Append($" scissorChanges={pst.Scissors} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
-		line.Append($" arena={StatArenaHits} rebuilds={_statArenaRebuilds}(miss{_statArMiss}/masks{_statArMasks}) stamps={_statStamps} pool={StatPoolHits}/{StatPoolAdds} walked={StatWalkedRecords} walkPaths={StatWalkPaths} culled={StatCulled}");
+		line.Append($" arena={StatArenaHits} rebuilds={_statArenaRebuilds}(miss{_statArMiss}/masks{_statArMasks}) stamps={_statStamps} pool={StatPoolHits}/{StatPoolAdds} walked={StatWalkedRecords} walkPaths={StatWalkPaths} culled={StatCulled}/{StatSplit}");
 		line.Append($" fan=refused{WebGpuShapeCache.StatFanRefused}/points{WebGpuShapeCache.StatTessPoints}/tri{WebGpuShapeCache.StatTessTri}/area{WebGpuShapeCache.StatTessArea}/fold{WebGpuShapeCache.StatTessFold}");
 		line.Append($" atlas=try{WebGpuCoverage.AtlasTried}/key-no{WebGpuCoverage.AtlasNoKey}/hit{WebGpuCoverage.AtlasHit}/baked{WebGpuCoverage.AtlasBaked} clipMasks={WebGpuCoverage.ClipMasksBaked} fillMasks={WebGpuCoverage.FillMaskHits}/{WebGpuCoverage.FillMasksBaked}/nocache{WebGpuCoverage.FillMaskUncached} sheet={WebGpuCoverage.SheetSlotsBaked} shadowSheet={WebGpuEffects.ShadowSlotsBaked} bakes={WebGpuCoverage.BakeBatches} layerSheet={WebGpuEffects.LayerSheetSlots}/{WebGpuEffects.LayerSheetPasses}");
 		line.Append($"/full{WebGpuCoverage.AtlasNoRoom}/noedges{WebGpuCoverage.AtlasNoEdges}/scaleblk{WebGpuCoverage.ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
 		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
 		System.Console.WriteLine(line.ToString());
-		StatArenaHits = _statArenaRebuilds = _statArMiss = _statArMasks = _statStamps = StatWalkedRecords = StatWalkPaths = StatCulled = 0;
+		StatArenaHits = _statArenaRebuilds = _statArMiss = _statArMasks = _statStamps = StatWalkedRecords = StatWalkPaths = StatCulled = StatSplit = 0;
 		StatPoolHits = StatPoolAdds = 0;
 	}
 }
