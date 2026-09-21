@@ -1361,12 +1361,9 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				}
 			}
 		}
-		catch (IOException)
+		catch (Exception e) when (e is IOException or UnauthorizedAccessException)
 		{
 			// Unreadable is treated as "not an emulator" — this is a best-effort heuristic, not a hard requirement.
-		}
-		catch (UnauthorizedAccessException)
-		{
 		}
 
 		return false;

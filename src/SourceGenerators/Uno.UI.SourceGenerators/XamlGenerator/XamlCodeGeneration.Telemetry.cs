@@ -183,7 +183,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal static string GetUnoRuntime(string targetFramework, string defineConstants)
 		{
 			var separatorIndex = targetFramework?.IndexOf('-') ?? -1;
-			if (separatorIndex >= 0)
+			if (separatorIndex >= 0 && targetFramework is not null)
 			{
 				var platform = targetFramework.Substring(separatorIndex + 1).TrimEnd('.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
 
