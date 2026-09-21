@@ -696,26 +696,6 @@ namespace Microsoft.UI.Xaml.Controls
 			return true;
 		}
 
-		internal Func<Uri, Task<bool>>? LinkLauncherForTesting { get; set; }
-
-		private async Task LaunchLinkAsync(Uri uri)
-		{
-			try
-			{
-				var launched = LinkLauncherForTesting is { } testLauncher
-					? await testLauncher(uri)
-					: await global::Windows.System.Launcher.LaunchUriAsync(uri);
-				if (!launched)
-				{
-					typeof(RichEditBox).LogWarn()?.Warn("No handler accepted a RichEditBox hyperlink.");
-				}
-			}
-			catch (Exception error)
-			{
-				typeof(RichEditBox).LogError()?.Error("Failed to launch a RichEditBox hyperlink.", error);
-			}
-		}
-
 		internal static bool TryGetLinkUri(string link, out Uri uri)
 		{
 			uri = null!;
@@ -728,10 +708,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (link.Length - start >= 2
 				&& link[start] == '"'
 				&& link[^1] == '"'
-				&& Uri.TryCreate(link.Substring(start + 1, link.Length - start - 2), UriKind.Absolute, out var parsed)
-				&& (parsed.Scheme == Uri.UriSchemeHttp
-					|| parsed.Scheme == Uri.UriSchemeHttps
-					|| parsed.Scheme == Uri.UriSchemeMailto))
+				&& Uri.TryCreate(link.Substring(start + 1, link.Length - start - 2), UriKind.Absolute, out var parsed))
 			{
 				uri = parsed;
 				return true;

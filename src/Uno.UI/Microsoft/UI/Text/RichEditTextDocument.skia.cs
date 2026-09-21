@@ -869,7 +869,7 @@ namespace Microsoft.UI.Text
 				&& Math.Max(0, _owner.MaxLength - (_textBuffer.Length - (end - start))) < GetRtfImportSafetyLimit();
 
 		private static int GetRtfImportSafetyLimit()
-			=> global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters;
+			=> RichTextRtfCodec.MaxImportCharacters;
 
 		internal bool IsSelectionMutationInProgress => _selectionMutationDepth > 0;
 

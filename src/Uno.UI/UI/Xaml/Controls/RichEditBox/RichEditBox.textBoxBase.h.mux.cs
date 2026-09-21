@@ -8,4 +8,5 @@ partial class RichEditBox
 {
 	private bool m_ensureRectVisibleEnabled = true;
 	private bool m_firedCandidateWindowEventAfterFocus;
+	private bool m_shouldHideGrippersOnFlyoutOpening;
 }

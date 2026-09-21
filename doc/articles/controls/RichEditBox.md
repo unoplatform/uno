@@ -33,6 +33,7 @@ The control policy is based on Microsoft UI XAML commit [`3c9c168844f06c6ac000a9
 | `dxaml/xcp/dxaml/lib/RichEditBox_Partial.cpp` and `.h` | Routed-input forwarding, document access, lazy header/placeholder handling, reusable changing-event arguments, automatic-height animation, and template lifecycle |
 | `dxaml/xcp/core/native/text/Controls/RichEditBox.cpp` and `.h` | Property dispatch and validation, formatting-accelerator masks, hyperlink policy, and content-change integration |
 | `dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp` and `.h` | Shared selection-cancellation policy, focus/candidate-window lifecycle, pointer policy, default spell checking, and caret-scroll coordination |
+| `dxaml/xcp/dxaml/lib/Launcher.cpp` | Hyperlink scheme eligibility and trusted/untrusted launch policy |
 | `dxaml/xcp/dxaml/lib/TextBoxPlaceholderTextHelper.cpp` | Placeholder visibility and removal from automation descriptions when document content replaces the hint |
 | `dxaml/xcp/dxaml/lib/FlyoutBase_partial.cpp` and `dxaml/xcp/components/ContentRoot/PointerInputProcessor.cpp` | Transient selection-flyout input pass-through, application-owned overrides, and underlying hit-target validation |
 | `RichEditBoxAutomationPeer_Partial.cpp`, `TextBoxBaseAutomationPeer.cpp`, and generated changing-event-argument sources | Automation control identity/descriptions, accessibility-driven software-keyboard focus, and thread-affine event-argument state |
@@ -60,7 +61,13 @@ The managed editor preserves an explicit `FontStretch` through cloned character 
 
 For safe cross-platform transport, active or externally linked RTF destinations are removed during export. Unsupported embedded objects are represented by bounded text or image fallbacks. RTF table descriptors are retained through ordinary cell-content edits, but Uno does not host the native Windows RichEdit table or OLE UI.
 
-Automatic hyperlink activation currently allows HTTP, HTTPS, and mailto targets. This is stricter than WinUI's support for application-registered URI schemes: widening it requires an equivalent untrusted-launch confirmation path, not simply removing the protocol restriction.
+The managed decoder limits each RTF or clipboard import to 8,388,608 decoded characters and rejects an oversized RTF import before changing the document. These internal resource budgets are not WinUI properties or application-level configuration. Plain-text document and stream APIs do not inherit the RTF character budget; `MaxLength` continues to follow the WinUI `CheckTextLimit` contract.
+
+Hyperlink activation follows the pinned WinUI launcher policy: `file` and `res` schemes are blocked, HTTP and HTTPS are trusted, and all other absolute URI schemes require confirmation before invoking the platform launcher. This includes `mailto`, `tel`, `ms-settings`, and application-registered protocols. Because Uno's platform launcher does not implement Windows' `TreatAsUntrusted` option, the adapter shows a localized confirmation dialog in the editor's own `XamlRoot`, with Cancel as the default. Canceling or being unable to show confirmation never launches the URI. RTF export filtering remains a separate transport boundary.
+
+The browser adapter rejects `javascript` URIs even after confirmation: a browser would execute them in the application's origin rather than invoke an external protocol handler.
+
+UIKit IME sessions retain their owning editor and `XamlRoot`; callbacks from retired native input views do not update another scene's editor. Candidate-window bounds notifications remain unavailable on UIKit because the platform exposes no corresponding API.
 
 Math layout uses an installed OpenType MATH font when available and otherwise falls back to bounded managed layout.
 

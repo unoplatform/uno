@@ -125,6 +125,16 @@ namespace Microsoft.UI.Xaml.Controls
 		private void StartImeSession()
 			=> ActivateImeForFocusOrigin(_imeFocusOrigin);
 
+		private void UpdateManagedSIPSettings(FocusState focusState)
+		{
+			var wasFocused = _imeFocusOrigin != FocusState.Unfocused;
+			_imeFocusOrigin = focusState;
+			if (wasFocused && !IsReadOnly)
+			{
+				ActivateImeForFocusOrigin(focusState);
+			}
+		}
+
 		private void ActivateImeForFocusOrigin(FocusState focusState)
 		{
 			var suppressSoftwareKeyboard =

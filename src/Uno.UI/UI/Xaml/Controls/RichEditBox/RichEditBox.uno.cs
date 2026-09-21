@@ -14,6 +14,7 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI;
+using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI.Text;
@@ -21,7 +22,7 @@ using Windows.UI.Text;
 namespace Microsoft.UI.Xaml.Controls
 {
 	// Skia uses the shared managed text surface while preserving RichEditBox's document semantics.
-	partial class RichEditBox : ITextBoxViewHost, ITextSelectionGripperHost, IFocusRequestOriginHandler
+	partial class RichEditBox : ITextBoxViewHost, ITextSelectionGripperHost
 	{
 		Control ITextBoxViewHost.Owner => this;
 
@@ -32,8 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _pointerPressedHandlerRegistered;
 		private bool _isPointerOver;
 		private FocusState _imeFocusOrigin;
-		private bool _imeFocusRequestInProgress;
-		private bool _imeWasFocusedBeforeRequest;
 		private bool _pendingUpdateScrolling;
 		private int? _pendingScrollingTargetIndex;
 		private int? _bringIntoViewTargetIndex;
@@ -78,7 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 			AttachImeGeometryTracking();
 			if (focusState != FocusState.Unfocused)
 			{
-				ActivateImeForFocusOrigin(focusState);
+				ActivateImeForFocusOrigin(VisualTree.GetFocusManagerForElement(this)!.GetRealFocusStateForFocusedElement());
 			}
 		}
 
@@ -202,45 +201,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnDocumentCaretTypeChanged() => UpdateDisplaySelection();
 
-		internal override void UpdateFocusState(FocusState focusState)
-		{
-			var wasFocused = FocusState != FocusState.Unfocused;
-			if (!_imeFocusRequestInProgress)
-			{
-				_imeFocusOrigin = focusState;
-			}
-			base.UpdateFocusState(focusState);
-			if (!_imeFocusRequestInProgress &&
-				wasFocused &&
-				focusState != FocusState.Unfocused &&
-				!IsReadOnly)
-			{
-				ActivateImeForFocusOrigin(focusState);
-			}
-		}
-
-		void IFocusRequestOriginHandler.OnFocusRequesting(FocusState focusState)
-		{
-			_imeFocusRequestInProgress = true;
-			_imeWasFocusedBeforeRequest = FocusState != FocusState.Unfocused;
-			_imeFocusOrigin = focusState;
-		}
-
-		void IFocusRequestOriginHandler.OnFocusRequested(FocusState focusState, bool succeeded)
-		{
-			_imeFocusRequestInProgress = false;
-			if (succeeded &&
-				_imeWasFocusedBeforeRequest &&
-				FocusState != FocusState.Unfocused &&
-				!IsReadOnly)
-			{
-				ActivateImeForFocusOrigin(focusState);
-			}
-			_imeWasFocusedBeforeRequest = false;
-		}
-
 		private void OnGotFocusManaged(RoutedEventArgs e)
 		{
+			_imeFocusOrigin = VisualTree.GetFocusManagerForElement(this)!.GetRealFocusStateForFocusedElement();
 			_forceFocusedVisualState = false;
 			UpdateSelectionHighlightColor();
 			UpdateVisualState();
@@ -258,9 +221,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnLostFocusManaged(RoutedEventArgs e)
 		{
-			_forceFocusedVisualState = ShouldForceFocusedVisualState();
 			if (_forceFocusedVisualState
-				&& ShouldHideGrippersOnFlyoutOpening()
+				&& m_shouldHideGrippersOnFlyoutOpening
 				&& CaretMode is RichEditCaretDisplayMode.CaretWithThumbsOnlyEndShowing
 					or RichEditCaretDisplayMode.CaretWithThumbsBothEndsShowing)
 			{

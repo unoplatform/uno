@@ -104,24 +104,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public void When_Hidden_Rtf_Destination_Does_Not_Consume_Text_Budget_Or_Reenter_Body()
 		{
-			var previous = global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters;
-			try
-			{
-				global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters = 2;
-				var document = new RichEditBox().Document;
+			var fragment = RichTextRtfCodec.Read(
+				$@"{{\rtf1 A{{\header {new string('x', 64 * 1024)}"
+					+ @"{\object\objemb{\result leaked}}}B}",
+				maxCharacters: 2);
 
-				document.SetText(
-					TextSetOptions.FormatRtf,
-					$@"{{\rtf1 A{{\header {new string('x', 64 * 1024)}"
-						+ @"{\object\objemb{\result leaked}}}B}");
-
-				GetTextWithoutFinalEop(document, out var text);
-				Assert.AreEqual("AB", text);
-			}
-			finally
-			{
-				global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters = previous;
-			}
+			Assert.AreEqual("AB", fragment.Text);
 		}
 
 		[TestMethod]
@@ -137,9 +125,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public void When_Default_Rtf_Policy_Imports_Multi_MiB_Text()
+		[DataRow(2 * 1024 * 1024)]
+		[DataRow(8 * 1024 * 1024)]
+		public void When_Default_Rtf_Policy_Imports_Multi_MiB_Text(int length)
 		{
-			const int length = 2 * 1024 * 1024;
 			var document = new RichEditBox().Document;
 
 			document.SetText(TextSetOptions.FormatRtf, $@"{{\rtf1 {new string('x', length)}}}");
@@ -150,70 +139,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public void When_Rtf_Upr_Fallback_Does_Not_Consume_Unicode_Import_Budget()
 		{
-			var previous = global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters;
-			try
-			{
-				global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters = 4;
-				var document = new RichEditBox().Document;
+			var fragment = RichTextRtfCodec.Read(
+				$@"{{\rtf1 A{{\upr{{{new string('x', 64)}}}{{\*\ud\u945?}}}}B}}",
+				maxCharacters: 4);
 
-				document.SetText(
-					TextSetOptions.FormatRtf,
-					$@"{{\rtf1 A{{\upr{{{new string('x', 64)}}}{{\*\ud\u945?}}}}B}}");
-
-				GetTextWithoutFinalEop(document, out var text);
-				Assert.AreEqual("AαB", text);
-			}
-			finally
-			{
-				global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters = previous;
-			}
+			Assert.AreEqual("AαB", fragment.Text);
 		}
 
 		[TestMethod]
-		public void When_Configured_Rtf_Policy_Is_Exceeded_Import_Is_Atomic()
+		public void When_Rtf_Import_Budget_Is_Exceeded_Import_Is_Atomic()
 		{
-			var previous = global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters;
-			try
-			{
-				global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters = 300_000;
-				var document = new RichEditBox().Document;
-				document.SetText(TextSetOptions.None, "original");
-				document.ClearUndoRedoHistory();
+			var document = new RichEditBox().Document;
+			document.SetText(TextSetOptions.None, "original");
+			document.ClearUndoRedoHistory();
 
-				Assert.ThrowsExactly<ArgumentException>(() =>
-					document.SetText(TextSetOptions.FormatRtf, $@"{{\rtf1 {new string('x', 300_001)}}}"));
+			Assert.ThrowsExactly<ArgumentException>(() =>
+				document.SetText(TextSetOptions.FormatRtf, $@"{{\rtf1 {new string('x', 8 * 1024 * 1024 + 1)}}}"));
 
-				GetTextWithoutFinalEop(document, out var text);
-				Assert.AreEqual("original", text);
-				Assert.IsFalse(document.CanUndo());
-			}
-			finally
-			{
-				global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters = previous;
-			}
+			GetTextWithoutFinalEop(document, out var text);
+			Assert.AreEqual("original", text);
+			Assert.IsFalse(document.CanUndo());
 		}
 
 		[TestMethod]
-		public void When_Rtf_Policy_Is_Lowered_Plain_Stream_Import_Is_Unchanged()
+		public void When_Plain_Stream_Import_Is_Not_Limited_By_Rtf_Budget()
 		{
-			var previous = global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters;
-			try
-			{
-				global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters = 300_000;
-				var expected = new string('x', 300_001);
-				using var backing = new MemoryStream(Encoding.Unicode.GetBytes(expected));
-				using var stream = backing.AsRandomAccessStream();
-				var document = new RichEditBox().Document;
+			var expected = new string('x', 8 * 1024 * 1024 + 1);
+			using var backing = new MemoryStream(Encoding.Unicode.GetBytes(expected));
+			using var stream = backing.AsRandomAccessStream();
+			var document = new RichEditBox().Document;
 
-				document.LoadFromStream(TextSetOptions.None, stream);
+			document.LoadFromStream(TextSetOptions.None, stream);
 
-				GetTextWithoutFinalEop(document, out var actual);
-				Assert.AreEqual(expected.Length, actual.Length);
-			}
-			finally
-			{
-				global::Uno.UI.FeatureConfiguration.RichEditBox.MaxRtfImportCharacters = previous;
-			}
+			GetTextWithoutFinalEop(document, out var actual);
+			Assert.AreEqual(expected, actual);
 		}
 
 		[TestMethod]

@@ -46,7 +46,7 @@ public partial class Given_RichEditBox
 			var start = text.IndexOf(label, StringComparison.Ordinal);
 			Assert.IsGreaterThanOrEqualTo(0, start);
 			Assert.AreEqual($"\"{target}\"", document.GetRange(start, start + label.Length).Link);
-			Assert.AreEqual(allowed, RichEditBox.TryGetLinkUri($"\"{target}\"", out _), target);
+			Assert.IsTrue(RichEditBox.TryGetLinkUri($"\"{target}\"", out _), target);
 		}
 
 		document.GetText(TextGetOptions.FormatRtf, out var roundTrippedRtf);
@@ -63,11 +63,17 @@ public partial class Given_RichEditBox
 	}
 
 	[TestMethod]
-	public async Task When_Pointer_Link_Activation_Uses_The_Safe_Scheme_Allowlist()
+	public async Task When_Pointer_Link_Activation_Uses_WinUI_Launcher_Policy()
 	{
 		var launched = new List<Uri>();
+		var confirmed = new List<Uri>();
 		var editor = new RichEditBox
 		{
+			LinkConfirmationForTesting = uri =>
+			{
+				confirmed.Add(uri);
+				return Task.FromResult(true);
+			},
 			LinkLauncherForTesting = uri =>
 			{
 				launched.Add(uri);
@@ -76,14 +82,20 @@ public partial class Given_RichEditBox
 		};
 		editor.Document.SetText(TextSetOptions.None, "link");
 
-		foreach (var blocked in new[] { "file:///C:/secret.txt", "contoso-shell:open", "javascript:alert(1)" })
+		foreach (var blocked in new[] { "file:///C:/secret.txt", "res://app/resource" })
 		{
 			editor.Document.GetRange(0, 4).Link = $"\"{blocked}\"";
-			Assert.IsFalse(editor.TryNavigateLinkAt(1), blocked);
+			Assert.IsTrue(editor.TryNavigateLinkAt(1), blocked);
 			Assert.HasCount(0, launched, blocked);
+			Assert.HasCount(0, confirmed, blocked);
 		}
 
-		foreach (var allowed in new[] { "http://example.com", "https://example.com", "mailto:user@example.com" })
+		var allowedTargets = new[]
+		{
+			"http://example.com", "https://example.com", "mailto:user@example.com",
+			"tel:+15555550100", "ms-settings:privacy", "contoso-shell:open",
+		};
+		foreach (var allowed in allowedTargets)
 		{
 			editor.Document.GetRange(0, 4).Link = $"\"{allowed}\"";
 			Assert.IsTrue(editor.TryNavigateLinkAt(1), allowed);
@@ -91,17 +103,26 @@ public partial class Given_RichEditBox
 		}
 
 		CollectionAssert.AreEqual(
-			new[] { "http://example.com/", "https://example.com/", "mailto:user@example.com" },
-			launched.Select(uri => uri.ToString()).ToArray());
+			allowedTargets,
+			launched.Select(uri => uri.OriginalString).ToArray());
+		CollectionAssert.AreEqual(
+			allowedTargets.Skip(2).ToArray(),
+			confirmed.Select(uri => uri.OriginalString).ToArray());
 	}
 
 	[TestMethod]
-	public async Task When_UIA_Invoke_Uses_The_Safe_Link_Scheme_Allowlist()
+	public async Task When_UIA_Invoke_Uses_WinUI_Launcher_Policy()
 	{
 		var launched = new List<Uri>();
+		var confirmed = new List<Uri>();
 		var richEditBox = new RichEditBox
 		{
 			Width = 320,
+			LinkConfirmationForTesting = uri =>
+			{
+				confirmed.Add(uri);
+				return Task.FromResult(true);
+			},
 			LinkLauncherForTesting = uri =>
 			{
 				launched.Add(uri);
@@ -114,21 +135,30 @@ public partial class Given_RichEditBox
 			await WindowHelper.WaitForLoaded(richEditBox);
 			richEditBox.Document.SetText(TextSetOptions.None, "link");
 
-			foreach (var blocked in new[] { "file:///C:/secret.txt", "contoso-shell:open", "javascript:alert(1)" })
+			foreach (var blocked in new[] { "file:///C:/secret.txt", "res://app/resource" })
 			{
 				InvokeCurrentLink($"\"{blocked}\"");
 				Assert.HasCount(0, launched, blocked);
+				Assert.HasCount(0, confirmed, blocked);
 			}
 
-			foreach (var allowed in new[] { "http://example.com", "https://example.com", "mailto:user@example.com" })
+			var allowedTargets = new[]
+			{
+				"http://example.com", "https://example.com", "mailto:user@example.com",
+				"tel:+15555550100", "ms-settings:privacy", "contoso-shell:open",
+			};
+			foreach (var allowed in allowedTargets)
 			{
 				InvokeCurrentLink($"\"{allowed}\"");
 				await WindowHelper.WaitFor(() => launched.Count > 0 && launched[^1].OriginalString == allowed);
 			}
 
 			CollectionAssert.AreEqual(
-				new[] { "http://example.com/", "https://example.com/", "mailto:user@example.com" },
-				launched.Select(uri => uri.ToString()).ToArray());
+				allowedTargets,
+				launched.Select(uri => uri.OriginalString).ToArray());
+			CollectionAssert.AreEqual(
+				allowedTargets.Skip(2).ToArray(),
+				confirmed.Select(uri => uri.OriginalString).ToArray());
 
 			void InvokeCurrentLink(string link)
 			{

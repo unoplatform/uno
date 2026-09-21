@@ -388,10 +388,10 @@ partial class RichEditBox
 	{
 		var spUri = new Uri(pLinkText, UriKind.Absolute);
 #if HAS_UNO
-		// The Uno launcher is asynchronous; the adapter observes failures and provides the existing test seam.
+		// Observe asynchronous failures from the source-backed launcher policy.
 		_ = LaunchLinkAsync(spUri);
 #else
-		// TODO Uno: Launcher::TryInvokeLauncher is represented by Windows.System.Launcher in Uno.
+		// TODO Uno: The managed adapter observes completion instead of a native HRESULT.
 		// IFC_RETURN(Launcher::TryInvokeLauncher(spUri.Get()));
 #endif
 	}

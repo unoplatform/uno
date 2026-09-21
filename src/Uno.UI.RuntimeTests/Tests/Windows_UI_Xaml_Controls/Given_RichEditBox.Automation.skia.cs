@@ -116,6 +116,12 @@ public partial class Given_RichEditBox
 	public async Task When_Automation_Range_Contains_Link_And_Image_Children()
 	{
 		var sut = new RichEditBox { Width = 320, Height = 140 };
+		var confirmationCount = 0;
+		sut.LinkConfirmationForTesting = _ =>
+		{
+			confirmationCount++;
+			return Task.FromResult(false);
+		};
 		try
 		{
 			WindowHelper.WindowContent = sut;
@@ -172,7 +178,7 @@ public partial class Given_RichEditBox
 			Assert.IsNull(imageProvider.AutomationPeer?.GetPattern(PatternInterface.Invoke));
 
 			((IInvokeProvider)linkProvider.AutomationPeer!.GetPattern(PatternInterface.Invoke)!).Invoke();
-			Assert.IsFalse(RichEditBox.TryGetLinkUri("\"javascript:alert(1)\"", out _));
+			Assert.AreEqual(1, confirmationCount);
 
 			sut.Document.GetRange(0, 0).SetText(TextSetOptions.None, "X");
 			await WindowHelper.WaitForIdle();
