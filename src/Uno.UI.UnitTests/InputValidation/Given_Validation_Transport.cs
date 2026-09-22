@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
@@ -263,6 +264,36 @@ public partial class Given_Validation_Transport
 		CollectionAssert.AreEqual(
 			new object[] { "required" },
 			Validation.GetErrors(control).Cast<object>().ToArray());
+	}
+
+	[TestMethod]
+	public void When_Control_Is_Collected()
+	{
+		// A strong ErrorsChanged handler would let a long-lived view model root every control bound to it.
+		var source = new Person();
+		var reference = BindAndForget(source);
+
+		GC.Collect();
+		GC.WaitForPendingFinalizers();
+		GC.Collect();
+
+		Assert.IsFalse(reference.IsAlive, "the source must not root the control");
+
+		// And the orphaned handler must not throw when the source raises after the collection.
+		source.SetErrors(nameof(Person.Name), "required");
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static WeakReference BindAndForget(Person source)
+	{
+		var control = new ValidatingControl { DataContext = source };
+		Validation.SetIsEnabled(control, true);
+		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
+
+		source.SetErrors(nameof(Person.Name), "required");
+		Assert.IsTrue(Validation.GetHasErrors(control));
+
+		return new WeakReference(control);
 	}
 
 	private static (ValidatingControl Control, Person Source) Bind(bool enable = true)
