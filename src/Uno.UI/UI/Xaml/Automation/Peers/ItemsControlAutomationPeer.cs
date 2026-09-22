@@ -635,9 +635,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 	internal void OnItemsChanged(NotifyCollectionChangedEventArgs args)
 	{
-		if (args.Action == NotifyCollectionChangedAction.Reset ||
-			(Owner is ItemsControl { IsGrouping: true } &&
-				args.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace))
+		if (args.Action == NotifyCollectionChangedAction.Reset)
 		{
 			ClearItemAutomationPeerCache();
 		}

@@ -245,10 +245,16 @@ public class Given_MobileAccessibilityRichControls
 			AccessibilityPeerHelper.IOSAllNodeSnapshotsForRootAccessor?.Invoke(listView.XamlRoot!) ??
 			Array.Empty<AccessibilityNativeNodeSnapshot>();
 		var duplicateSnapshots = snapshots
-			.Where(snapshot => snapshot.Name == duplicate)
+			.Where(snapshot => snapshot.Name == duplicate &&
+				!snapshot.Traits.HasFlag(AccessibilityNativeTraits.StaticText))
 			.ToArray();
 
 		Assert.AreEqual(2, duplicateSnapshots.Length, "Both realized duplicate occurrences must be exposed.");
+		Assert.AreEqual(
+			2,
+			snapshots.Count(snapshot => snapshot.Name == duplicate &&
+				snapshot.Traits.HasFlag(AccessibilityNativeTraits.StaticText)),
+			"WinUI's default item content also exposes each implicit text child.");
 		Assert.AreNotEqual(
 			duplicateSnapshots[0].Bounds.Y,
 			duplicateSnapshots[1].Bounds.Y,
