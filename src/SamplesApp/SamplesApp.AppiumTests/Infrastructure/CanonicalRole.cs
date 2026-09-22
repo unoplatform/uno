@@ -143,7 +143,7 @@ internal static class CanonicalRole
 		["radio"] = "radio",
 		["radiogroup"] = "group",
 		["combobox"] = "combobox",
-		["listbox"] = "combobox",
+		["listbox"] = "listbox",
 		["textbox"] = "textbox",
 		["searchbox"] = "textbox",
 		["textarea"] = "textbox",

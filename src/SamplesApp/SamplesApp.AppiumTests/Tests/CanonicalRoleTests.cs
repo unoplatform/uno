@@ -36,6 +36,15 @@ public sealed class CanonicalRoleTests
 
 	[TestMethod]
 	[TestCategory(TestCategories.HostIndependent)]
+	public void Normalize_KeepsListBoxDistinctFromComboBox()
+	{
+		CanonicalRole.Normalize("listbox", AppiumPlatform.Wasm).Should().Be("listbox");
+		CanonicalRole.Normalize("LISTBOX", AppiumPlatform.Wasm).Should().Be("listbox");
+		CanonicalRole.Normalize("combobox", AppiumPlatform.Wasm).Should().Be("combobox");
+	}
+
+	[TestMethod]
+	[TestCategory(TestCategories.HostIndependent)]
 	public void Normalize_PrefersHeadingWhenLevelIsPresent()
 	{
 		var canonical = CanonicalRole.Normalize("text", AppiumPlatform.Windows, level: 3);
