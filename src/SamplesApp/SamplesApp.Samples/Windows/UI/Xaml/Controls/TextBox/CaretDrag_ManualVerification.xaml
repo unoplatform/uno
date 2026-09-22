@@ -1,0 +1,42 @@
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.CaretDrag_ManualVerification"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="400"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+
+    <StackPanel Padding="12" Spacing="12">
+        <TextBlock
+            FontWeight="Bold"
+            Text="iOS space-bar trackpad caret drag - device verification"
+            TextWrapping="Wrap" />
+        <TextBlock TextWrapping="Wrap">
+            <Run Text="Not covered by automated tests: the temporary Bounds/caretRectForPosition overrides only take effect once UIKit's own floating-cursor code calls into them, which requires the real system keyboard's space-bar trackpad gesture on a device or simulator." />
+        </TextBlock>
+        <TextBlock FontWeight="SemiBold" Text="Checklist:" />
+        <TextBlock TextWrapping="Wrap">
+            <Run Text="1. Tap into the multiline TextBox below, hold the space bar until the keys blank out (floating cursor mode), then drag left/right - the caret should move smoothly without committing a selection until release." />
+        </TextBlock>
+        <TextBlock TextWrapping="Wrap">
+            <Run Text="2. Drag up past the first visible line - the caret should keep following the gesture instead of stopping at the proxy's own bounds." />
+        </TextBlock>
+        <TextBlock TextWrapping="Wrap">
+            <Run Text="3. Watch the counter below while dragging - it should increment by at most 1 per gesture on release (0 if the caret ends up back where it started), never once per callback." />
+        </TextBlock>
+        <TextBlock TextWrapping="Wrap">
+            <Run Text="4. After releasing, tap to place the caret elsewhere, then type a character - it must land where you tapped, not where the drag preview last was." />
+        </TextBlock>
+
+        <TextBlock x:Name="SelectionChangedCountText" Text="SelectionChanged count: 0" />
+
+        <TextBox
+            x:Name="SUT"
+            Height="150"
+            AcceptsReturn="True"
+            SelectionChanged="OnSelectionChanged"
+            Text="The quick brown fox jumps over the lazy dog.&#x0a;Second line of text to test vertical dragging.&#x0a;Third line, long enough that it may wrap on narrower screens and give the horizontal drag something to cross." />
+    </StackPanel>
+</UserControl>
