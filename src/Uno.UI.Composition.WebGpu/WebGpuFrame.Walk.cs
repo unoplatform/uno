@@ -160,7 +160,7 @@ internal sealed unsafe partial class WebGpuFrame
 							AppendAaRect(_rrect, rc0.Color, a0, a1, a2, a3);
 							var aop = DrawOp.Shared(DrawKind.RoundedRect, ast, 6, IntPtr.Zero, cd, MakeClipBg(cd));
 							aop.Bounds = AaRect(a0, a1, a2, a3);
-							aop.Opaque = rc0.Color.A == 255 && ClipIsPlain(cd);
+							if (rc0.Color.A == 255 && ClipIsPlain(cd)) { aop.Cover = aop.Bounds; }
 							ops.Add(aop);
 							break;
 						}
@@ -170,7 +170,7 @@ internal sealed unsafe partial class WebGpuFrame
 						{
 							var (s0, s1, s2, s3) = identity ? (rc0.P0, rc0.P1, rc0.P2, rc0.P3) : (Map(rc0.P0, m), Map(rc0.P1, m), Map(rc0.P2, m), Map(rc0.P3, m));
 							sop.Bounds = AaRect(s0, s1, s2, s3);
-							sop.Opaque = rc0.Color.A == 255 && ClipIsPlain(cd);
+							if (rc0.Color.A == 255 && ClipIsPlain(cd)) { sop.Cover = sop.Bounds; }
 						}
 						ops.Add(sop);
 						ci = j - 1;
@@ -185,7 +185,7 @@ internal sealed unsafe partial class WebGpuFrame
 						var rn = (uint)AppendRrect(_rrect, rri, r0, r1, r2, r3);
 						var rop = DrawOp.Shared(DrawKind.RoundedRect, st, rn, IntPtr.Zero, cd, MakeClipBg(cd));
 						rop.Bounds = AaRect(r0, r1, r2, r3);
-						rop.Opaque = OpaqueRrect(rri) && ClipIsPlain(cd);
+						rop.Cover = OpaqueRrect(rri) ? Meet(RrectCover(rri, rop.Bounds), ClipInner(cd)) : default;
 						ops.Add(rop);
 						break;
 					}
@@ -267,7 +267,15 @@ internal sealed unsafe partial class WebGpuFrame
 		var dst = owned is null ? _quadVerts : new VertBuf();
 		var first = (uint)(dst.Count / VertexStride.Quad);
 		AppendQuad(dst, p0, p1, p2, p3, im.U0, im.V0, im.U1, im.V1);
-		ops.Add(QuadOp(DrawKind.Image, dst, first, ImageBg(im, owned), cd, owned));
+		var iop = QuadOp(DrawKind.Image, dst, first, ImageBg(im, owned), cd, owned);
+		// A photo over a card hides it. Only a plain draw of an all-opaque texture qualifies -- a tint, a colour
+		// matrix or a sub-1 opacity all let what is underneath through -- and only inside its clip's inner box.
+		iop.Bounds = AaRect(p0, p1, p2, p3);
+		if (im.SourceOpaque && im.Opacity >= 1f && im.TintMode == 0 && im.ColorMatrix is null)
+		{
+			iop.Cover = Meet(iop.Bounds, ClipInner(cd));
+		}
+		ops.Add(iop);
 	}
 
 	private DrawOp QuadOp(DrawKind kind, VertBuf verts, uint first, IntPtr group1, in ClipData cd, OwnedResources owned)
@@ -573,6 +581,9 @@ internal sealed unsafe partial class WebGpuFrame
 	/// </summary>
 	private void EmitArena(ReplayRefCmd rr, in Matrix3x2 rm, in ClipData session, List<DrawOp> ops)
 	{
+		// One depth per replay site, rising with draw order. Ops of a site share it, so they never reject each
+		// other; only a LATER site's opaque cover can reject them. Held under 1, which device-space ops own.
+		float siteDepth = MathF.Min(0.999f, ++_siteSeq * SiteDepthStep);
 		var entry = rr.Data.Compiled;
 		if (_emitStats) { StatArenaHits++; }
 		long t0 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
@@ -688,7 +699,7 @@ internal sealed unsafe partial class WebGpuFrame
 			// When the site's clip can ride the site uniform, no op's clip depends on where the recording sits any
 			// more -- so a move writes THIS block and nothing else.
 			var siteCarries = SiteCanCarry(session);
-			WriteSite(slot.SiteSlot, rm, session, siteCarries);
+			WriteSite(slot.SiteSlot, rm, session, siteCarries, siteDepth);
 			// The ops' scissor, once for the whole site.
 			SetSiteScissor(slot.SiteSlot, IsFiniteAabb(session.Aabb) ? session.Aabb : ClipData.None.Aabb);
 			// Every op of this site is then independent of where the site is, so a move reuses the list as it
@@ -696,7 +707,7 @@ internal sealed unsafe partial class WebGpuFrame
 			if (siteCarries && !fresh && slot.SiteOps)
 			{
 				slot.Frame = _d.FrameSeq;
-				AppendSite(ops, slot.Ops, rm, session);
+				AppendSite(ops, slot.Ops, rm, session, siteDepth);
 				return;
 			}
 			var stampOwned = fresh ? new OwnedResources() : slot.Owned;
@@ -768,17 +779,17 @@ internal sealed unsafe partial class WebGpuFrame
 		{
 			// A matched stamp keeps its ops, but the site block they read is per-slot GPU state that another
 			// render may have moved on from - rewrite it so the ops are placed and scissored for THIS replay.
-			WriteSite(slot.SiteSlot, rm, session, slot.SiteOps);
+			WriteSite(slot.SiteSlot, rm, session, slot.SiteOps, siteDepth);
 			SetSiteScissor(slot.SiteSlot, IsFiniteAabb(session.Aabb) ? session.Aabb : ClipData.None.Aabb);
 		}
 
 		slot.Frame = _d.FrameSeq;
-		AppendSite(ops, slot.Ops, rm, session);
+		AppendSite(ops, slot.Ops, rm, session, siteDepth);
 	}
 
 	// A stamp's ops into the pass list, each op's box lifted from its recording's space into device pixels -- that is
 	// the space the occlusion cull compares in, and a stamp's ops are shared across the sites replaying it.
-	private static void AppendSite(List<DrawOp> ops, List<DrawOp> stamped, in Matrix3x2 rm, in ClipData session)
+	private static void AppendSite(List<DrawOp> ops, List<DrawOp> stamped, in Matrix3x2 rm, in ClipData session, float depth)
 	{
 		// A rotated or skewed placement does not map a box to the box it paints, and a session clip beyond a plain
 		// rect cuts the op somewhere its own clip does not record.
@@ -787,8 +798,9 @@ internal sealed unsafe partial class WebGpuFrame
 		foreach (var op in stamped)
 		{
 			var o = op;
+			o.Depth = depth;
 			o.Bounds = boxes && op.Bounds != default ? TransformBounds(op.Bounds, rm) : default;
-			o.Opaque = op.Opaque && plain;
+			o.Cover = plain && op.Cover != default ? TransformBounds(op.Cover, rm) : default;
 			ops.Add(o);
 		}
 	}
@@ -857,6 +869,11 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		var content = ClampToClip(TransformBounds(CmdListBounds(lyr.Commands), m), cd);
 		bool plain = lyr.CompositeMode == 0 && lyr.ColorMatrix is null;
+		// Which kind of layer the walk is actually paying for; per frame, so a reset each stats interval is right.
+		if (lyr.ShadowEffect is not null) { StatLayerShadow++; }
+		else if (lyr.ColorMatrix is not null) { StatLayerMatrix++; }
+		else if (lyr.CompositeMode != 0) { StatLayerMask++; }
+		else { StatLayerPlain++; }
 		if (plain)
 		{
 			// Content or shadow may each be empty (clipped out); an empty layer is culled, never rendered. A mask must

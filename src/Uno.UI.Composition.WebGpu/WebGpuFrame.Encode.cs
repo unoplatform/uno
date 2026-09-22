@@ -41,7 +41,17 @@ internal sealed unsafe partial class WebGpuFrame
 			LoadOp = WGPULoadOp.Load,
 			StoreOp = WGPUStoreOp.Store,   // a following segment, or another backdrop, reloads it
 		};
-		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
+		// The reopened segment must carry the same attachments as the pass it continues -- a pipeline is only valid
+		// against a matching set -- so the depth buffer comes back, LOADED, and occlusion carries across the split.
+		var bda = new WGPURenderPassDepthStencilAttachment
+		{
+			View = _depthView,
+			DepthLoadOp = WGPULoadOp.Load,
+			DepthStoreOp = WGPUStoreOp.Store,
+			StencilLoadOp = WGPULoadOp.Undefined,
+			StencilStoreOp = WGPUStoreOp.Undefined,
+		};
+		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = _depthView != IntPtr.Zero ? &bda : null };
 		var pass = wgpuCommandEncoderBeginRenderPass(Encoder, &desc);
 
 		pst.Pass = pass;
@@ -86,7 +96,7 @@ internal sealed unsafe partial class WebGpuFrame
 		var verts = MakeBuffer(TexturedQuad(origin, size));
 		var clipBg = MakeClipBg(backdrop.Clip);
 
-		pst.Enc.Pipe(_d.ImagePipe);
+		pst.Enc.Pipe(UseDepth ? _d.ImagePipeD : _d.ImagePipe);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 0, pst.PassBg, 0, (uint*)null);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 1, (IntPtr)imageBg, 0, (uint*)null);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 2, (IntPtr)clipBg, 0, (uint*)null);
@@ -113,7 +123,7 @@ internal sealed unsafe partial class WebGpuFrame
 		var buf = MakeBuffer(verts);
 		var clipBg = MakeClipBg(backdrop.Clip);
 
-		pst.Enc.Pipe(_d.SolidPipe);
+		pst.Enc.Pipe(UseDepth ? _d.SolidPipeD : _d.SolidPipe);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 0, pst.PassBg, 0, (uint*)null);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 1, (IntPtr)clipBg, 0, (uint*)null);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 3, _d.IdentitySiteBg, 0, (uint*)null);
@@ -172,11 +182,11 @@ internal sealed unsafe partial class WebGpuFrame
 
 			var (pipe, stride) = op.Kind switch
 			{
-				DrawKind.Solid => (_d.SolidPipe, VertexStride.Solid),
-				DrawKind.RoundedRect => (_d.RrPipe, VertexStride.RoundedRect),
-				DrawKind.Image => (_d.ImagePipe, VertexStride.Quad),
-				DrawKind.Mask => (_d.ImageDstInPipe, VertexStride.Quad),
-				_ => (_d.GradientPipe, VertexStride.Quad),
+				DrawKind.Solid => (UseDepth ? _d.SolidPipeD : _d.SolidPipe, VertexStride.Solid),
+				DrawKind.RoundedRect => (UseDepth ? _d.RrPipeD : _d.RrPipe, VertexStride.RoundedRect),
+				DrawKind.Image => (UseDepth ? _d.ImagePipeD : _d.ImagePipe, VertexStride.Quad),
+				DrawKind.Mask => (UseDepth ? _d.ImageDstInPipeD : _d.ImageDstInPipe, VertexStride.Quad),
+				_ => (UseDepth ? _d.GradientPipeD : _d.GradientPipe, VertexStride.Quad),
 			};
 			var (buf, bytes) = op.SharesBuffer ? SharedBuffer(op.Kind, ref pst) : (op.Verts, (nuint)((op.FirstVertex + count) * stride * sizeof(float)));
 			pst.Enc.Pipe(pipe);
@@ -209,13 +219,13 @@ internal sealed unsafe partial class WebGpuFrame
 		line.Append($"[webgpu-stats] {Target.Width}x{Target.Height}:");
 		line.Append($" ops={opCount} emitted={pst.Iters} sharedOps={pst.SharedOps}");
 		line.Append($" scissorChanges={pst.Scissors} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
-		line.Append($" arena={StatArenaHits} rebuilds={_statArenaRebuilds}(miss{_statArMiss}/masks{_statArMasks}) stamps={_statStamps} pool={StatPoolHits}/{StatPoolAdds} walked={StatWalkedRecords} walkPaths={StatWalkPaths} culled={StatCulled}/{StatSplit} ringBands={StatRingBands}");
+		line.Append($" arena={StatArenaHits} rebuilds={_statArenaRebuilds}(miss{_statArMiss}/masks{_statArMasks}) stamps={_statStamps} pool={StatPoolHits}/{StatPoolAdds} walked={StatWalkedRecords} walkPaths={StatWalkPaths} culled={StatCulled}/{StatSplit} ringBands={StatRingBands} prepass={StatPrepass} layers=shadow{StatLayerShadow}/matrix{StatLayerMatrix}/mask{StatLayerMask}/plain{StatLayerPlain}");
 		line.Append($" fan=refused{WebGpuShapeCache.StatFanRefused}/points{WebGpuShapeCache.StatTessPoints}/tri{WebGpuShapeCache.StatTessTri}/area{WebGpuShapeCache.StatTessArea}/fold{WebGpuShapeCache.StatTessFold}");
 		line.Append($" atlas=try{WebGpuCoverage.AtlasTried}/key-no{WebGpuCoverage.AtlasNoKey}/hit{WebGpuCoverage.AtlasHit}/baked{WebGpuCoverage.AtlasBaked} clipMasks={WebGpuCoverage.ClipMasksBaked} fillMasks={WebGpuCoverage.FillMaskHits}/{WebGpuCoverage.FillMasksBaked}/nocache{WebGpuCoverage.FillMaskUncached} sheet={WebGpuCoverage.SheetSlotsBaked} shadowSheet={WebGpuEffects.ShadowSlotsBaked} bakes={WebGpuCoverage.BakeBatches} layerSheet={WebGpuEffects.LayerSheetSlots}/{WebGpuEffects.LayerSheetPasses}");
 		line.Append($"/full{WebGpuCoverage.AtlasNoRoom}/noedges{WebGpuCoverage.AtlasNoEdges}/scaleblk{WebGpuCoverage.ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
 		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
 		System.Console.WriteLine(line.ToString());
-		StatArenaHits = _statArenaRebuilds = _statArMiss = _statArMasks = _statStamps = StatWalkedRecords = StatWalkPaths = StatCulled = StatSplit = 0;
+		StatArenaHits = _statArenaRebuilds = _statArMiss = _statArMasks = _statStamps = StatWalkedRecords = StatWalkPaths = StatCulled = StatSplit = StatPrepass = StatLayerShadow = StatLayerMatrix = StatLayerMask = StatLayerPlain = 0;
 		StatPoolHits = StatPoolAdds = 0;
 	}
 }

@@ -229,7 +229,9 @@ internal sealed unsafe class WebGpuEffects
 		_f.LayerDepth = depth + 1;
 		foreach (var sheet in sheets)
 		{
-			_f.EncodePass(sheet.Surface, null, false, sheet.Builds);
+			// The sheet occludes too: a card draws its opaque background and then its photo straight over it, and
+			// slots do not overlap, so depth rejects within each slot independently.
+			_f.EncodePass(sheet.Surface, null, false, sheet.Builds, !WebGpuDevice.NoDepthOcclusion);
 			LayerSheetPasses++;
 			foreach (var (levels, blurred) in sheet.Blurs)
 			{

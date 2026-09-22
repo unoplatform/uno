@@ -185,6 +185,7 @@ internal sealed unsafe class ImageCmd : WebGpuCommand
 	public int TintMode;        // 0 = none, 1 = SrcIn blend-mode tint
 	public Vector4 Tint;        // straight-alpha tint color (0..1) for TintMode 1
 	public float[] ColorMatrix; // null, or 20-float (4x5) effect colour matrix applied in the image shader
+	public bool SourceOpaque;   // the texture has no transparency, so a plain full-alpha draw of it hides what it covers
 }
 
 internal sealed class GradientCmd : WebGpuCommand

@@ -54,7 +54,7 @@ internal sealed unsafe partial class WebGpuFrame
 		Begin();
 		try
 		{
-			RenderInto(cmds, m, ClipData.None, Target, clear, overlay: overlay);
+			RenderInto(cmds, m, ClipData.None, Target, clear, overlay: overlay, depth: !WebGpuDevice.NoDepthOcclusion);
 		}
 		finally
 		{
@@ -160,6 +160,15 @@ internal sealed unsafe partial class WebGpuFrame
 	// this is what turns a device rect into target pixels for the scissor.
 	private float _basisScale = 1f;
 
+	/// <summary>This pass carries the occlusion depth buffer, so its draws use the depth pipeline variants.</summary>
+	internal bool UseDepth;
+	private IntPtr _depthView;
+
+	// Replay sites in draw order within a pass, and the depth step between them. 4096 sites is far past what any
+	// frame builds, and keeps neighbouring depths apart in a 24-bit buffer.
+	private int _siteSeq;
+	private const float SiteDepthStep = 1f / 4096f;
+
 	// How many layers deep the content being built sits: 0 for the window, 1 inside a layer, and so on. A layer's
 	// content composites layers one level deeper, so the sheets holding those must render before it does.
 	internal int LayerDepth;
@@ -207,9 +216,61 @@ internal sealed unsafe partial class WebGpuFrame
 			? new Vector4(p0.X, p0.Y, p2.X, p2.Y)
 			: default;
 
-	// A rounded rect paints its whole box only with square corners, no border ring cut out of it, and full alpha.
+	// A rounded rect paints at full alpha everywhere except its corners: no ring cut out of it, and opaque colour.
 	private static bool OpaqueRrect(RoundedRectCmd rr)
-		=> rr.Color.A == 255 && rr.Opacity >= 1f && rr.Radii == Vector4.Zero && rr.InnerHalf.X < 0f && ClipIsPlain(rr.Clip);
+		=> rr.Color.A == 255 && rr.Opacity >= 1f && rr.InnerHalf.X < 0f;
+
+	// The biggest axis-aligned rect inside a rounded one: keep the full width and lose the corner rows, or keep
+	// the full height and lose the corner columns, whichever leaves more. A 240x168 card at radius 12 keeps 88%.
+	private static Vector4 Inscribed(in Vector4 r, float radX, float radY)
+	{
+		if (radX <= 0f && radY <= 0f) { return r; }
+		float w = r.Z - r.X, h = r.W - r.Y;
+		float wide = w * MathF.Max(0f, h - 2f * radY), tall = MathF.Max(0f, w - 2f * radX) * h;
+		return wide >= tall
+			? new Vector4(r.X, r.Y + radY, r.Z, r.W - radY)
+			: new Vector4(r.X + radX, r.Y, r.Z - radX, r.W);
+	}
+
+	// The rect a rounded-rect command fills, in device pixels: its box less the corners, whose LOCAL radii reach
+	// device space through the quad's own device size.
+	private static Vector4 RrectCover(RoundedRectCmd rr, in Vector4 box)
+	{
+		if (box == default) { return default; }
+		float rad = MathF.Max(MathF.Max(rr.Radii.X, rr.Radii.Y), MathF.Max(rr.Radii.Z, rr.Radii.W));
+		if (rad <= 0f) { return box; }
+		float sx = rr.Half.X > 0f ? (box.Z - box.X) / (2f * rr.Half.X) : 1f;
+		float sy = rr.Half.Y > 0f ? (box.W - box.Y) / (2f * rr.Half.Y) : 1f;
+		return Inscribed(box, rad * sx, rad * sy);
+	}
+
+	// The largest rect every analytic clip entry covers in FULL, in the clip's own space -- the CPU twin of the
+	// inner box WriteClipU hands the shader. An excluded, masked or rotated entry leaves none, and a path clip
+	// leaves none. Without this a rounded clip disqualifies its op from ever hiding anything, which is most of a
+	// real UI: a card's corner radius alone is enough.
+	private static Vector4 ClipInner(in ClipData cd)
+	{
+		if (cd.Paths is not null || cd.Coverage != 0) { return default; }
+		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
+		if (!cd.ScissorInert && IsFiniteAabb(cd.Aabb)) { ix = cd.Aabb.X + 1f; iy = cd.Aabb.Y + 1f; iz = cd.Aabb.Z - 1f; iw = cd.Aabb.W - 1f; }
+		var ents = cd.Entries;
+		for (int i = 0; ents is not null && i < ents.Length; i++)
+		{
+			ref readonly var e = ref ents[i];
+			if (e.Exclude || e.Mask || MathF.Abs(e.M.M12) > 1e-6f || MathF.Abs(e.M.M21) > 1e-6f
+				|| MathF.Abs(e.M.M11) < 1e-9f || MathF.Abs(e.M.M22) < 1e-9f) { return default; }
+			// The inscribed-square fraction of each corner radius, plus a device pixel for the analytic ramp.
+			const float inset = 0.2929f;
+			float k = MathF.Max(MathF.Max(new Vector2(e.M.M11, e.M.M12).Length(), new Vector2(e.M.M21, e.M.M22).Length()), 1e-6f);
+			float qL = e.Rect.X + MathF.Max(e.Radii.X, e.Radii.W) * inset + k, qR = e.Rect.Z - MathF.Max(e.Radii.Y, e.Radii.Z) * inset - k;
+			float qT = e.Rect.Y + MathF.Max(e.RadiiY.X, e.RadiiY.Y) * inset + k, qB = e.Rect.W - MathF.Max(e.RadiiY.Z, e.RadiiY.W) * inset - k;
+			float pL = (qL - e.M.M31) / e.M.M11, pR = (qR - e.M.M31) / e.M.M11;
+			float pT = (qT - e.M.M32) / e.M.M22, pB = (qB - e.M.M32) / e.M.M22;
+			ix = MathF.Max(ix, MathF.Min(pL, pR)); iz = MathF.Min(iz, MathF.Max(pL, pR));
+			iy = MathF.Max(iy, MathF.Min(pT, pB)); iw = MathF.Min(iw, MathF.Max(pT, pB));
+		}
+		return iz > ix && iw > iy ? new Vector4(ix, iy, iz, iw) : default;
+	}
 
 	// A clip that cannot cut the op's own shape anywhere inside its AABB: anything else and the op paints less
 	// than its rect, so it may not be trusted to hide what is under it.
@@ -278,7 +339,7 @@ internal sealed unsafe partial class WebGpuFrame
 				StatCulled++;
 				continue;
 			}
-			if (!op.Opaque)
+			if (op.Cover == default)
 			{
 				// Not covered outright, but maybe covered across its middle: redraw only the bands left over.
 				if (coverArea > 0f && op.CullScissor.Z <= op.CullScissor.X && PixelArea(touched) > SplitMinArea)
@@ -301,13 +362,51 @@ internal sealed unsafe partial class WebGpuFrame
 				}
 				continue;
 			}
-			// What it actually fills: its own pixels, cut to every scissor the encode will apply.
-			var r = PixelsFilled(op.Bounds);
+			// What it actually fills: its own covered pixels, cut to every scissor the encode will apply.
+			var r = PixelsFilled(op.Cover);
 			if (!op.Clip.ScissorInert) { r = Meet(r, PixelsFilled(op.Clip.Aabb)); }
 			if (bound.X > float.MinValue) { r = Meet(r, PixelsFilled(bound)); }
 			var area = MathF.Max(0f, r.Z - r.X + 1f) * MathF.Max(0f, r.W - r.Y + 1f);
 			if (area > coverArea) { cover = r; coverArea = area; }
 		}
+	}
+
+	// One quad per op that paints something opaque, at its site's depth. The prepass draws these into the depth
+	// buffer so the colour pass can reject whatever an opaque site later covered -- per fragment, and by the
+	// fixed-function hardware, rather than per rect pair on the CPU.
+	private static void BuildPrepass(PassBuild b)
+	{
+		int n = 0;
+		foreach (var op in b.Ops) { if (PrepassCover(op, b) != default) { n++; } }
+		if (n == 0) { return; }
+		var v = new float[n * 6 * 3];
+		int o = 0;
+		foreach (var op in b.Ops)
+		{
+			var c = PrepassCover(op, b);
+			if (c == default) { continue; }
+			var z = op.Depth;
+			ReadOnlySpan<float> xs = stackalloc float[6] { c.X, c.Z, c.Z, c.X, c.Z, c.X };
+			ReadOnlySpan<float> ys = stackalloc float[6] { c.Y, c.Y, c.W, c.Y, c.W, c.W };
+			for (int i = 0; i < 6; i++) { v[o++] = xs[i]; v[o++] = ys[i]; v[o++] = z; }
+		}
+		b.Prepass = v;
+		b.PrepassVerts = n * 6;
+		StatPrepass += n;
+	}
+
+	// What an op may claim in the depth buffer: only where it certainly paints at full alpha. The scissor the
+	// encode will apply cuts it (the CPU cull does the same), the build's bound cuts it, and it is inset by a
+	// pixel because analytic antialiasing leaves every edge pixel partly transparent. Over-claiming here does not
+	// look like a cull miss -- it silently deletes whatever was underneath.
+	private static Vector4 PrepassCover(in DrawOp op, PassBuild b)
+	{
+		if (op.Cover == default || op.Depth <= 0f) { return default; }
+		var c = op.Cover;
+		if (!op.Clip.ScissorInert) { c = Meet(c, op.Clip.Aabb); }
+		if (b.Bound.X > float.MinValue) { c = Meet(c, b.Bound); }
+		c = new Vector4(c.X + 1f, c.Y + 1f, c.Z - 1f, c.W - 1f);
+		return c.Z - c.X >= 1f && c.W - c.Y >= 1f ? c : default;
 	}
 
 	/// <summary>Ops the occlusion cull dropped this frame, and ops it cut down to their uncovered bands.</summary>
@@ -316,6 +415,8 @@ internal sealed unsafe partial class WebGpuFrame
 	/// <summary>Border rings cut into bands. CUMULATIVE: op building happens once per cached recording, so a
 	/// counter reset every stats interval reads zero in steady state while the rings still draw every frame.</summary>
 	internal static int StatRingBands;
+	internal static int StatPrepass;
+	internal static int StatLayerShadow, StatLayerMatrix, StatLayerMask, StatLayerPlain;
 
 	// Off for bisecting a visual regression against the cull.
 	private static readonly bool _noOcclusionCull = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_OCCLUSION_CULL") == "1";
@@ -597,7 +698,7 @@ internal sealed unsafe partial class WebGpuFrame
 	/// Fills a site slot: where the recording sits, and the site's own clip in DEVICE space. Writing this is the
 	/// whole cost of moving a cached recording, in place of a rewrite of every one of its ops' clip uniforms.
 	/// </summary>
-	private void WriteSite(nint slot, in Matrix3x2 rm, in ClipData session, bool carry)
+	private void WriteSite(nint slot, in Matrix3x2 rm, in ClipData session, bool carry, float depth = 0f)
 	{
 		var u = _d.SiteSlab.SlotSpan(slot);
 		u[0] = rm.M11; u[1] = rm.M21; u[2] = rm.M12; u[3] = rm.M22;
@@ -610,7 +711,8 @@ internal sealed unsafe partial class WebGpuFrame
 		bool rect = ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f;
 		u[9] = rect ? 1f : 0f;
 		u[10] = ab.X; u[11] = ab.Y;
-		u[12] = 0f; u[13] = 0f; u[14] = ab.Z; u[15] = ab.W;
+		// rect.x is the site's draw-order depth (see project); rect.y stays spare.
+		u[12] = depth; u[13] = 0f; u[14] = ab.Z; u[15] = ab.W;
 
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
 		if (rect) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
@@ -987,6 +1089,9 @@ internal sealed unsafe partial class WebGpuFrame
 		public List<BackdropCmd> Backdrops;
 		public VertBuf Solid, Rrect, Grad, Quad;
 		public float BasisOx, BasisOy, BasisW, BasisH, BasisScale;
+		/// <summary>The occlusion prepass' quads: 6 verts of (x, y, depth) per opaque cover.</summary>
+		public float[] Prepass;
+		public int PrepassVerts;
 		public Vector4 Bound;   // device rect every scissor stays within: a sheet slot; the whole target otherwise
 		public nint SolidBuf, RrectBuf, GradBuf, QuadBuf;
 		public nuint SolidBufBytes, RrectBufBytes, GradBufBytes, QuadBufBytes;
@@ -1002,11 +1107,11 @@ internal sealed unsafe partial class WebGpuFrame
 	// basisW/basisH default (0) to the target's own size at origin (basisOx,basisOy) — the whole-target mapping the
 	// window and full-size layers use. A size-to-content layer passes its device sub-rect.
 	internal void RenderInto(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, WColor? clear, bool load = false,
-		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f, List<WebGpuCommand> overlay = null)
+		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f, List<WebGpuCommand> overlay = null, bool depth = false)
 	{
 		var build = BuildPass(cmds, m, outer, target, basisOx, basisOy, basisW, basisH, _unbounded, overlay);
 		_singleBuild[0] = build;
-		EncodePass(target, clear, load, _singleBuild);
+		EncodePass(target, clear, load, _singleBuild, depth);
 	}
 
 	private readonly PassBuild[] _singleBuild = new PassBuild[1];
@@ -1034,6 +1139,9 @@ internal sealed unsafe partial class WebGpuFrame
 		_quadVerts = b.Quad = RentVerts();
 		_backdrops = b.Backdrops = new List<BackdropCmd>();
 
+		// Restarted once per frame, not per pass: a nested layer pass runs INSIDE the outer walk, so resetting there
+		// would hand the rest of the outer pass depths below the ones it already issued.
+		if (_passDepth == 0) { _siteSeq = 0; }
 		long walkStart = _emitStats && _passDepth == 0 ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 		_passDepth++;
 		Walk(cmds, m, outer, b.Ops);
@@ -1041,6 +1149,7 @@ internal sealed unsafe partial class WebGpuFrame
 		_passDepth--;
 		if (_emitStats && _passDepth == 0) { WalkTicks += System.Diagnostics.Stopwatch.GetTimestamp() - walkStart; }
 		if (!_noOcclusionCull) { CullOccluded(b.Ops, bound); }
+		BuildPrepass(b);
 		long uploadStart = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 
 		// Upload the whole pass's shared geometry in ONE buffer per layout; the ops index them.
@@ -1068,7 +1177,7 @@ internal sealed unsafe partial class WebGpuFrame
 
 	// Encodes builds into one pass on the target, each under its own basis and scissor bound. Everything the pass
 	// samples -- masks, the frame's layer sheets -- is encoded first.
-	internal void EncodePass(WebGpuRenderSurface target, WColor? clear, bool load, IReadOnlyList<PassBuild> builds)
+	internal void EncodePass(WebGpuRenderSurface target, WColor? clear, bool load, IReadOnlyList<PassBuild> builds, bool depth = false)
 	{
 		Coverage.FlushPendingBakes();
 		Effects.FlushLayerSheets(LayerDepth);
@@ -1081,8 +1190,20 @@ internal sealed unsafe partial class WebGpuFrame
 			StoreOp = WGPUStoreOp.Store,
 			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
-		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
+		var depthView = depth ? _d.Pool.Rent(target.Width, target.Height, 1, WGPUTextureUsage.RenderAttachment, WebGpuDevice.DepthFormat) : IntPtr.Zero;
+		var da = new WGPURenderPassDepthStencilAttachment
+		{
+			View = depthView,
+			DepthLoadOp = WGPULoadOp.Clear,
+			DepthStoreOp = WGPUStoreOp.Store,
+			DepthClearValue = 0f,   // nothing covers anything until the prepass says so
+			StencilLoadOp = WGPULoadOp.Undefined,
+			StencilStoreOp = WGPUStoreOp.Undefined,
+		};
+		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = depthView != IntPtr.Zero ? &da : null };
 		var pass = wgpuCommandEncoderBeginRenderPass(Encoder, &desc);
+		UseDepth = depthView != IntPtr.Zero;
+		_depthView = depthView;
 		var encodeStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
 		var savedBasis = (_basisOx, _basisOy, _basisW, _basisH, _basisScale);
@@ -1109,6 +1230,16 @@ internal sealed unsafe partial class WebGpuFrame
 				QuadBufBytes = b.QuadBufBytes,
 				Enc = enc,
 			};
+			if (UseDepth && b.PrepassVerts > 0)
+			{
+				float ps = b.BasisScale <= 0f ? 1f : b.BasisScale;
+				var pv = MakeBuffer(b.Prepass);
+				pst.Enc.Pipe(_d.DepthPrepassPipe);
+				pst.Enc.Bg(0, b.PassBg);
+				pst.Enc.Scissor(0, 0, (int)(b.BasisW / ps), (int)(b.BasisH / ps));
+				pst.Enc.Vb(pv, 0, (nuint)(b.Prepass.Length * sizeof(float)));
+				pst.Enc.Draw((uint)b.PrepassVerts, 0);
+			}
 			EncodeOps(0, b.Ops.Count, ref pst);
 			pass = pst.Pass;   // a backdrop segment reopens the pass
 			enc = pst.Enc;
@@ -1123,6 +1254,8 @@ internal sealed unsafe partial class WebGpuFrame
 
 		wgpuRenderPassEncoderEnd(pass);
 		wgpuRenderPassEncoderRelease(pass);
+		UseDepth = false;
+		_depthView = IntPtr.Zero;
 		foreach (var b in builds) { ReleaseBuild(b); }
 	}
 

@@ -523,7 +523,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 	private ImageCmd ImageQuad(WebGpuTexture t, float x, float y, float qw, float qh, float opacity)
 	{
 		var p0 = Map(x, y); var p1 = Map(x + qw, y); var p2 = Map(x + qw, y + qh); var p3 = Map(x, y + qh);
-		return new ImageCmd { P0 = p0, P1 = p1, P2 = p2, P3 = p3, View = t.View, W = t.PixelWidth, H = t.PixelHeight, Opacity = opacity, Clip = RelaxedClip(p0, p1, p2, p3) };
+		return new ImageCmd { P0 = p0, P1 = p1, P2 = p2, P3 = p3, View = t.View, W = t.PixelWidth, H = t.PixelHeight, Opacity = opacity, SourceOpaque = t.IsOpaque, Clip = RelaxedClip(p0, p1, p2, p3) };
 	}
 	public void DrawImageTiled(ITexture texture, in Rect destination, EdgeExtend extendX, EdgeExtend extendY, float opacity = 1f)
 	{
@@ -610,6 +610,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 					W = w,
 					H = h,
 					Opacity = 1f,
+					SourceOpaque = t.IsOpaque,
 					Clip = RelaxedClip(np0, np1, np2, np3),
 					P0 = np0,
 					P1 = np1,

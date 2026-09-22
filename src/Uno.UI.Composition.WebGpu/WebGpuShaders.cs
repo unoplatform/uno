@@ -86,8 +86,10 @@ fn siteCov(fp: vec2<f32>) -> f32 {
   if (n > 3u) { cov = cov * entryCov(site.entries[3], dp); }
   return cov;
 }
+// z is the replay site's draw order, 0 (oldest) to 1 (newest), so the occlusion prepass can reject a fragment a
+// later opaque site already covered. Zero when no depth attachment is bound, which every compare then passes.
 fn project(p: vec2<f32>) -> vec4<f32> {
-  return vec4<f32>((p.x - proj.basis.x) / proj.basis.z * 2.0 - 1.0, 1.0 - (p.y - proj.basis.y) / proj.basis.w * 2.0, 0.0, 1.0);
+  return vec4<f32>((p.x - proj.basis.x) / proj.basis.z * 2.0 - 1.0, 1.0 - (p.y - proj.basis.y) / proj.basis.w * 2.0, site.rect.x, 1.0);
 }
 // Places a vertex: the op's pixel-space transform (xform = [m00 m01 m10 m11], xoff.xy = translation; identity for
 // geometry built where it lands), then the pass projection. Re-stamped as one uniform write when a cached visual
@@ -618,6 +620,18 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
   cov = cov * clipCov(i.rp, vec2<f32>(0.0), i.pos.xy);
   return vec4<f32>(i.col.rgb, i.col.a * cov);
 }";
+	// The occlusion prepass: one quad per opaque cover, writing only depth. The depth test and write are fixed
+	// function, so the whole pass costs a vertex per corner and a depth compare per pixel.
+	private const string DepthPrepassWgsl = @"
+struct PassU { basis: vec4<f32> };
+@group(0) @binding(0) var<uniform> proj: PassU;
+@vertex fn vs(@location(0) p: vec3<f32>) -> @builtin(position) vec4<f32> {
+  return vec4<f32>((p.x - proj.basis.x) / proj.basis.z * 2.0 - 1.0, 1.0 - (p.y - proj.basis.y) / proj.basis.w * 2.0, p.z, 1.0);
+}
+// A pipeline's colour targets must match the pass's, so the prepass declares one and writes nothing to it
+// (WriteMask None). The fragment stage exists only to satisfy that; depth is written by fixed function.
+@fragment fn fs() -> @location(0) vec4<f32> { return vec4<f32>(0.0); }";
+
 	private const string ImageWgsl = @"
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32>, @location(1) rp: vec2<f32> };
 // edge = the quad's own uv rect (u0,v0,u1,v1); ctrl2.x > 0.5 = antialias the quad's edges analytically.

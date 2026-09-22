@@ -93,8 +93,14 @@ internal struct DrawOp
 	/// rect or is not worth tracking. The occlusion cull reads it, and nothing else may assume it is set.
 	/// </summary>
 	public Vector4 Bounds;
-	/// <summary>It paints <see cref="Bounds"/> at full alpha, so whatever it covers need not be drawn.</summary>
-	public bool Opaque;
+	/// <summary>
+	/// The rect the op paints at FULL alpha, which is not its extent: a rounded rect misses its corners, and a
+	/// clipped one reaches only its clip's inner box. Empty when it hides nothing. Deliberately separate from
+	/// <see cref="Bounds"/> -- that one decides whether something is hidden, this one decides what hides it.
+	/// </summary>
+	public Vector4 Cover;
+	/// <summary>Its replay site's draw-order depth, matching what the vertex shader emits (see project).</summary>
+	public float Depth;
 	/// <summary>
 	/// The only band of the op still worth drawing, when a later opaque rect covers the rest of it. Empty
 	/// (Z &lt;= X) unless the cull set it; applied on top of whatever scissor the op would otherwise get.

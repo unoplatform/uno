@@ -223,6 +223,9 @@ public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 	/// returns it to the offscreen pool rather than freeing it.</summary>
 	internal bool Recycle;
 
+	/// <summary>Every texel is fully opaque, so a plain draw of it hides what it covers. False when unknown.</summary>
+	internal bool IsOpaque;
+
 	internal WebGpuTexture(WebGpuDevice device, IntPtr tex, IntPtr view, int width, int height)
 	{
 		_d = device;
@@ -268,7 +271,14 @@ public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 			return;
 		}
 		var rgba = new byte[w * h * 4];
-		for (int i = 0; i < rgba.Length; i += 4) { rgba[i] = bgra[i + 2]; rgba[i + 1] = bgra[i + 1]; rgba[i + 2] = bgra[i]; rgba[i + 3] = bgra[i + 3]; }
+		// The swizzle already walks every texel, so learning whether the image has any transparency is free here.
+		byte alphaAnd = 255;
+		for (int i = 0; i < rgba.Length; i += 4)
+		{
+			rgba[i] = bgra[i + 2]; rgba[i + 1] = bgra[i + 1]; rgba[i + 2] = bgra[i]; rgba[i + 3] = bgra[i + 3];
+			alphaAnd &= bgra[i + 3];
+		}
+		IsOpaque = rgba.Length > 0 && alphaAnd == 255;
 		// A full mip chain: a draw that minifies the image then samples the level near its on-screen size instead of
 		// striding across the full-resolution one, which is what makes large images bandwidth-bound.
 		var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = WGPUTextureFormat.RGBA8Unorm, MipLevelCount = (uint)MipLevels(w, h), SampleCount = 1, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst | WGPUTextureUsage.CopySrc };

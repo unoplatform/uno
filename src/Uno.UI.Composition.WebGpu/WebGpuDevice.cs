@@ -76,6 +76,9 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 				u[0] = 1f; u[3] = 1f;                                             // identity placement
 				u[10] = -1e9f; u[11] = -1e9f; u[14] = 1e9f; u[15] = 1e9f;         // no site aabb...
 				u[16] = -1e30f; u[17] = -1e30f; u[18] = 1e30f; u[19] = 1e30f;     // ...so everything is inside it
+				// Depth 1 = nearest, so a device-space op is never rejected by the occlusion prepass. It never
+				// occludes either: its DrawOp.Depth stays 0, which keeps it out of the prepass entirely.
+				u[12] = 1f;
 				var e = new WGPUBindGroupEntry { Binding = 0, Buffer = SiteSlab.BufferOf(slot), Offset = SiteSlab.OffsetOf(slot), Size = WebGpuFrame.SiteUBytes };
 				var d = new WGPUBindGroupDescriptor { Layout = SiteBgl, EntryCount = 1, Entries = &e };
 				_identitySiteBg = wgpuDeviceCreateBindGroup(Dev, &d);
@@ -139,6 +142,10 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// Monotonic per-session-frame counter: lets stamp memos detect "already stamped under the current submit",
 	// where an in-place uniform rewrite would clobber data this frame's earlier draws still reference.
 	public long FrameSeq;
+
+	// Escape hatch for the occlusion prepass: it changes what reaches the rasteriser, so a driver that gets the
+	// depth comparison wrong can be told apart from a bug in the geometry without a rebuild.
+	internal static readonly bool NoDepthOcclusion = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_DEPTH_OCCLUSION") == "1";
 
 	public void BeginFrameResources()
 	{
@@ -439,15 +446,27 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var add = Blend(WGPUBlendFactor.One, WGPUBlendFactor.One);
 		const WGPUVertexFormat F2 = WGPUVertexFormat.Float32x2, F4 = WGPUVertexFormat.Float32x4;
 
-		SolidPipe = Pipeline(Module(ClipStructFn + ColoredWgsl), clipLayout, &straight, ColorFormat, F2, F4, F2);   // pos, colour, coverage uv
-		RrPipe = Pipeline(Module(ClipStructFn + RoundedRectWgsl), clipLayout, &straight, ColorFormat, F2, F2, F2, F4, F4, F2, F2, F4);   // corner, local p, half size, radii, colour, inner half, inner centre, inner radii
+		// Each colour pipeline gets a twin carrying depth state: a pipeline may only run in a pass whose attachments
+		// match it, and only the window pass has a depth buffer. The modules and layouts are shared.
+		var solidMod = Module(ClipStructFn + ColoredWgsl);
+		SolidPipe = Pipeline(solidMod, clipLayout, &straight, ColorFormat, F2, F4, F2);   // pos, colour, coverage uv
+		SolidPipeD = DepthPipeline(solidMod, clipLayout, &straight, ColorFormat, F2, F4, F2);
+		var rrMod = Module(ClipStructFn + RoundedRectWgsl);
+		RrPipe = Pipeline(rrMod, clipLayout, &straight, ColorFormat, F2, F2, F2, F4, F4, F2, F2, F4);   // corner, local p, half size, radii, colour, inner half, inner centre, inner radii
+		RrPipeD = DepthPipeline(rrMod, clipLayout, &straight, ColorFormat, F2, F2, F2, F4, F4, F2, F2, F4);
 		GradBgl = Bgl(UniformEntry(0, WGPUShaderStage.Fragment, GradientUniformBytes), TextureEntry(1, WGPUTextureSampleType.Float), SamplerEntry(3));
-		GradientPipe = Pipeline(Module(ClipStructFn + GradientWgsl), ColourLayout(GradBgl, ClipBgl, SiteBgl), &straight, ColorFormat, F2, F2);
+		var gradMod = Module(ClipStructFn + GradientWgsl);
+		var gradLayout = ColourLayout(GradBgl, ClipBgl, SiteBgl);
+		GradientPipe = Pipeline(gradMod, gradLayout, &straight, ColorFormat, F2, F2);
+		GradientPipeD = DepthPipeline(gradMod, gradLayout, &straight, ColorFormat, F2, F2);
 		ImgBgl = Bgl(TextureEntry(0, WGPUTextureSampleType.Float), SamplerEntry(1), UniformEntry(2, WGPUShaderStage.Fragment, ImageUniformBytes));
 		var image = Module(ClipStructFn + ImageWgsl);
 		var imageLayout = ColourLayout(ImgBgl, ClipBgl, SiteBgl);
 		ImagePipe = Pipeline(image, imageLayout, &over, ColorFormat, F2, F2);
+		ImagePipeD = DepthPipeline(image, imageLayout, &over, ColorFormat, F2, F2);
 		ImageDstInPipe = Pipeline(image, imageLayout, &dstIn, ColorFormat, F2, F2);
+		ImageDstInPipeD = DepthPipeline(image, imageLayout, &dstIn, ColorFormat, F2, F2);
+		DepthPrepassPipe = DepthOnlyPipeline(Module(DepthPrepassWgsl), PassOnlyLayout(), ColorFormat);
 
 		// Coverage bakes: signed area accumulates additively into a float sheet, which then resolves to alpha.
 		CoverageSheetBgl = Bgl(StorageEntry(0, WGPUShaderStage.Vertex), StorageEntry(1, WGPUShaderStage.Vertex), UniformEntry(2, WGPUShaderStage.Vertex, 16));
@@ -539,12 +558,39 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	/// <summary>Single-channel float so accumulation can exceed 1 and go negative; blendable, unlike r32float.</summary>
 	public const WGPUTextureFormat CoverageFormat = WGPUTextureFormat.R16Float;
 	public IntPtr CoverageSheetPipe, CoverageSheetBgl, CoverageResolveSheetPipe, CoverageResolveSheetBgl;
+	/// <summary>The colour pipelines again, with depth state, for the one pass that carries a depth buffer.</summary>
+	public IntPtr SolidPipeD, RrPipeD, GradientPipeD, ImagePipeD, ImageDstInPipeD;
+	/// <summary>Writes the occlusion depth buffer and nothing else.</summary>
+	public IntPtr DepthPrepassPipe;
 
 	private static readonly WGPUStringView VsEntry = SV("vs"), FsEntry = SV("fs");
 
 	// One render pipeline: a fullscreen triangle when it has no vertex attributes, else one vertex buffer of the
 	// attributes packed in order.
+	/// <summary>The occlusion depth buffer's format. Depth only -- nothing here uses stencil.</summary>
+	public const WGPUTextureFormat DepthFormat = WGPUTextureFormat.Depth24Plus;
+
+	// A colour pipeline that reads the occlusion depth buffer: it never writes depth (the prepass does that), and
+	// keeps a fragment only where its site is at or in front of whatever opaque site last covered that pixel.
+	private IntPtr DepthPipeline(IntPtr module, IntPtr layout, WGPUBlendState* blend, WGPUTextureFormat format, params ReadOnlySpan<WGPUVertexFormat> attrs)
+	{
+		var ds = new WGPUDepthStencilState
+		{
+			Format = DepthFormat,
+			DepthWriteEnabled = WGPUOptionalBool.False,
+			DepthCompare = WGPUCompareFunction.GreaterEqual,
+			StencilFront = new WGPUStencilFaceState { Compare = WGPUCompareFunction.Always, FailOp = WGPUStencilOperation.Keep, DepthFailOp = WGPUStencilOperation.Keep, PassOp = WGPUStencilOperation.Keep },
+			StencilBack = new WGPUStencilFaceState { Compare = WGPUCompareFunction.Always, FailOp = WGPUStencilOperation.Keep, DepthFailOp = WGPUStencilOperation.Keep, PassOp = WGPUStencilOperation.Keep },
+			StencilReadMask = 0xFFFFFFFF,
+			StencilWriteMask = 0xFFFFFFFF,
+		};
+		return Pipeline(module, layout, blend, format, &ds, attrs);
+	}
+
 	private IntPtr Pipeline(IntPtr module, IntPtr layout, WGPUBlendState* blend, WGPUTextureFormat format, params ReadOnlySpan<WGPUVertexFormat> attrs)
+		=> Pipeline(module, layout, blend, format, null, attrs);
+
+	private IntPtr Pipeline(IntPtr module, IntPtr layout, WGPUBlendState* blend, WGPUTextureFormat format, WGPUDepthStencilState* depth, ReadOnlySpan<WGPUVertexFormat> attrs)
 	{
 		var va = stackalloc WGPUVertexAttribute[Math.Max(1, attrs.Length)];
 		ulong stride = 0;
@@ -562,6 +608,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			Fragment = &fs,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
 			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			DepthStencil = depth,
 			Layout = layout,
 		};
 		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
@@ -608,6 +655,39 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 
 	// A colour pipeline's layout: the pass projection at group 0, then its own groups.
 	private IntPtr ColourLayout(params ReadOnlySpan<IntPtr> groups) => Layout([PassBgl, .. groups]);
+
+	// The prepass needs nothing but the pass projection.
+	private IntPtr PassOnlyLayout() => Layout(PassBgl);
+
+	// Depth-only: the fragment stage writes no colour, so the draw is a vertex per corner plus fixed-function
+	// depth. GREATER + write leaves each pixel holding the depth of the LAST opaque site that covered it.
+	private IntPtr DepthOnlyPipeline(IntPtr module, IntPtr layout, WGPUTextureFormat format)
+	{
+		var attr = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x3, Offset = 0, ShaderLocation = 0 };
+		var vbl = new WGPUVertexBufferLayout { ArrayStride = 12, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 1, Attributes = &attr };
+		var ds = new WGPUDepthStencilState
+		{
+			Format = DepthFormat,
+			DepthWriteEnabled = WGPUOptionalBool.True,
+			DepthCompare = WGPUCompareFunction.Greater,
+			StencilFront = new WGPUStencilFaceState { Compare = WGPUCompareFunction.Always, FailOp = WGPUStencilOperation.Keep, DepthFailOp = WGPUStencilOperation.Keep, PassOp = WGPUStencilOperation.Keep },
+			StencilBack = new WGPUStencilFaceState { Compare = WGPUCompareFunction.Always, FailOp = WGPUStencilOperation.Keep, DepthFailOp = WGPUStencilOperation.Keep, PassOp = WGPUStencilOperation.Keep },
+			StencilReadMask = 0xFFFFFFFF,
+			StencilWriteMask = 0xFFFFFFFF,
+		};
+		var target = new WGPUColorTargetState { Format = format, Blend = null, WriteMask = WGPUColorWriteMask.None };
+		var fs = new WGPUFragmentState { Module = module, EntryPoint = FsEntry, TargetCount = 1, Targets = &target };
+		var pd = new WGPURenderPipelineDescriptor
+		{
+			Vertex = new WGPUVertexState { Module = module, EntryPoint = VsEntry, BufferCount = 1, Buffers = &vbl },
+			Fragment = &fs,
+			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
+			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			DepthStencil = &ds,
+			Layout = layout,
+		};
+		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
+	}
 
 	// Persistent UTF-8 for a WGPUStringView (WGSL/entry points; created once at pipeline init, intentionally not freed).
 	private static WGPUStringView SV(string s)
