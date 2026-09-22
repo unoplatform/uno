@@ -117,12 +117,33 @@ internal sealed class SkiaFont : IFont
 			return cached;
 		}
 
+		var buffer = FillBuffer(text);
+		buffer.Direction = direction == TextDirection.RightToLeft ? HarfBuzzSharp.Direction.RightToLeft : HarfBuzzSharp.Direction.LeftToRight;
+		return ShapeBuffer(buffer, text, direction, enableLigatures);
+	}
+
+	public GlyphRun Shape(ReadOnlySpan<char> text, out TextDirection resolvedDirection, bool enableLigatures = true)
+	{
+		// The direction GuessSegmentProperties inferred from the run's script is the one to shape with here.
+		var buffer = FillBuffer(text);
+		resolvedDirection = buffer.Direction == HarfBuzzSharp.Direction.RightToLeft ? TextDirection.RightToLeft : TextDirection.LeftToRight;
+
+		return _shapeCache.TryGet(text, resolvedDirection, enableLigatures, out var cached)
+			? cached
+			: ShapeBuffer(buffer, text, resolvedDirection, enableLigatures);
+	}
+
+	private static HbBuffer FillBuffer(ReadOnlySpan<char> text)
+	{
 		var buffer = _shapeBuffer ??= new HbBuffer();
 		buffer.ClearContents();
 		buffer.AddUtf16(text);
-		buffer.GuessSegmentProperties(); // sets the run's script/language for the shaper; direction is set explicitly below
-		buffer.Direction = direction == TextDirection.RightToLeft ? HarfBuzzSharp.Direction.RightToLeft : HarfBuzzSharp.Direction.LeftToRight;
+		buffer.GuessSegmentProperties(); // sets the run's script/language for the shaper, and a direction callers may override
+		return buffer;
+	}
 
+	private GlyphRun ShapeBuffer(HbBuffer buffer, ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures)
+	{
 		if (enableLigatures)
 		{
 			GetHarfBuzzFont().Shape(buffer);

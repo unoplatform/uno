@@ -302,8 +302,8 @@ namespace Microsoft.UI.Xaml.Documents
 				IFont segmentFont;
 				if (fontHandle is not null && !SameFont(fontHandle, defaultFontHandle))
 				{
-					// MatchCharacter returns installed fonts synchronously, so the fallback FontDetails is
-					// built directly from the resolved handle (no async family re-resolution).
+					// The handle already carries the requested weight/stretch/style (the provider resolved the
+					// fallback family for them), so it only needs wrapping with this run's size.
 					fallbackFont = FontDetails.Create(fontHandle, (float)FontSize);
 					segmentFont = fallbackFont.FontHandle;
 				}
@@ -317,12 +317,19 @@ namespace Microsoft.UI.Xaml.Documents
 					// Skip the second line break char so it stays part of the same cluster as the first.
 					var shapedLength = lineBreakLength == 2 ? length - 1 : length;
 
-					// Legacy non-bidi path (superseded by UnicodeText): shape each segment in the run's own
-					// FlowDirection rather than resolving bidi. Ligatures are disabled because a TextBox needs each
-					// source char to stay separately addressable (uno#15528, uno#16788).
-					var direction = this.FlowDirection;
-					var textDirection = direction == FlowDirection.RightToLeft ? TextDirection.RightToLeft : TextDirection.LeftToRight;
-					var glyphRun = segmentFont.Shape(text.Slice(i, shapedLength), textDirection, enableLigatures: false);
+					// Legacy non-bidi path (superseded by UnicodeText): the shaper guesses each segment's direction
+					// from its script. Ligatures are disabled because a TextBox needs each source char to stay
+					// separately addressable (uno#15528, uno#16788).
+					var glyphRun = segmentFont.Shape(text.Slice(i, shapedLength), out var textDirection, enableLigatures: false);
+					var direction = textDirection is TextDirection.RightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+					if (direction == FlowDirection.LeftToRight &&
+						segments.Count > 0 && segments[^1].Direction == FlowDirection.RightToLeft &&
+						trailingSpaces + leadingSpaces == length)
+					{
+						// A spaces-only segment is guessed LeftToRight; keep it with the RightToLeft segment it follows.
+						direction = FlowDirection.RightToLeft;
+					}
+
 					var glyphs = GetGlyphs(glyphRun, i, textDirection is TextDirection.RightToLeft);
 
 					Debug.Assert(!(Text.AsSpan(i, length).Contains('\t')) || length == 1);
@@ -348,17 +355,34 @@ namespace Microsoft.UI.Xaml.Documents
 				var count = glyphRun.Count;
 				List<TextFormatting.GlyphInfo> glyphs = new(count);
 
-				// Mirror HarfBuzz's ReverseClusters for RTL runs. Ligatures are disabled here, so clusters are 1:1 and
-				// a plain reverse matches. Offsets/advances are already in pixels (IFont.Shape scaled them).
-				for (var k = 0; k < count; k++)
+				// Offsets/advances are already in pixels (IFont.Shape scaled them).
+				for (var index = 0; index < count; index++)
 				{
-					var index = rtl ? count - 1 - k : k;
 					glyphs.Add(new TextFormatting.GlyphInfo(
 						glyphRun.Glyphs[index],
 						clusterStart + glyphRun.Clusters[index],
 						glyphRun.Advances[index],
 						glyphRun.Offsets[index].X,
 						glyphRun.Offsets[index].Y));
+				}
+
+				if (rtl)
+				{
+					// Mirror hb_buffer_reverse_clusters: the shaper emits an RTL run in visual order, so reversing it
+					// gives ascending clusters, and re-reversing each cluster keeps a mark next to the base it attaches
+					// to (the pen advances in list order, so a flat reverse drops it one advance away).
+					glyphs.Reverse();
+					for (var start = 0; start < count;)
+					{
+						var end = start + 1;
+						while (end < count && glyphs[end].Cluster == glyphs[start].Cluster)
+						{
+							end++;
+						}
+
+						glyphs.Reverse(start, end - start);
+						start = end;
+					}
 				}
 
 				return glyphs;

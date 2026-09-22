@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,7 @@ public static class FontFallback
 	// shaping across them (joining scripts render disconnected).
 	private static readonly Dictionary<(IFontProvider, string, FontWeight, FontStretch, FontStyle, float), IFont?> _fetched = new();
 	private static readonly object _fetchedGate = new();
-	private static (byte[] bytes, IFont probe)[]? _androidSystemFonts;
+	private static (string path, IFont probe)[]? _androidSystemFonts;
 	private static readonly object _androidGate = new();
 
 	/// <summary>
@@ -92,7 +92,23 @@ public static class FontFallback
 						return cachedAndroid;
 					}
 
-					var created = provider.CreateFont(fonts[i].bytes, null, weight, stretch, style, fontSize);
+					// Re-read on the hit rather than holding every system font's bytes: /system/fonts carries the
+					// CJK and emoji faces, tens of MB each, and a miss only reaches here once per style.
+					IFont? created = null;
+					try
+					{
+						created = provider.CreateFont(File.ReadAllBytes(fonts[i].path), null, weight, stretch, style, fontSize);
+					}
+					catch
+					{
+						// unreadable since enumeration — fall through to the next covering font
+					}
+
+					if (created is null)
+					{
+						break;
+					}
+
 					_fetched[androidKey] = created;
 					return created;
 				}
@@ -102,15 +118,15 @@ public static class FontFallback
 		return null;
 	}
 
-	// Loads Android's bundled system fonts once, using the provider to build a coverage probe per file. Kept in memory
-	// so subsequent codepoint misses resolve synchronously (matching the previous HarfBuzz-based service's caching).
-	private static (byte[] bytes, IFont probe)[] GetAndroidSystemFonts(IFontProvider provider)
+	// Builds a coverage probe per bundled system font once, so subsequent codepoint misses resolve synchronously.
+	// Only the path is kept alongside it: the bytes are re-read when a font is actually selected.
+	private static (string path, IFont probe)[] GetAndroidSystemFonts(IFontProvider provider)
 	{
 		lock (_androidGate)
 		{
 			if (_androidSystemFonts is null)
 			{
-				var loaded = new List<(byte[], IFont)>();
+				var loaded = new List<(string, IFont)>();
 				foreach (var path in SafeEnumerateSystemFonts())
 				{
 					try
@@ -119,7 +135,7 @@ public static class FontFallback
 						// The probe is only used for ContainsGlyph, so the style/size are immaterial.
 						if (provider.CreateFont(bytes, null, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal, 16f) is { } probe)
 						{
-							loaded.Add((bytes, probe));
+							loaded.Add((path, probe));
 						}
 					}
 					catch

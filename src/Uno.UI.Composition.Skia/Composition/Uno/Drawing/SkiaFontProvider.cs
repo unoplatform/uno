@@ -86,7 +86,10 @@ internal sealed class SkiaFontProvider : IFontProvider
 			_matchedFamilyCache.TryGetValue(familyKey, out font);
 		}
 
-		font ??= MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
+		// MatchCharacter ignores the requested style, so re-resolve the family it found for the run's
+		// weight/stretch/style; the matched face stands when no styled face still covers the codepoint.
+		font ??= MatchStyledFamily(typeface.FamilyName, codepoint, weight, stretch, style, fontSize)
+			?? MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
 
 		lock (_matchCharacterGate)
 		{
@@ -102,6 +105,27 @@ internal sealed class SkiaFontProvider : IFontProvider
 		var typeface = SKTypeface.FromFamilyName(null, weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant())
 			?? SKTypeface.FromFamilyName(null);
 		return MakeFont(typeface, fontSize);
+	}
+
+	/// <summary>
+	/// Resolves <paramref name="familyName"/> for the requested style, or <c>null</c> when the family is unknown or
+	/// its styled face no longer covers <paramref name="codepoint"/> (family lookup can land on a default face).
+	/// </summary>
+	private static IFont? MatchStyledFamily(string familyName, int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+	{
+		if (string.IsNullOrEmpty(familyName))
+		{
+			return null;
+		}
+
+		var typeface = SKTypeface.FromFamilyName(familyName, weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant());
+		if (typeface is null || typeface.IsEmpty)
+		{
+			return null;
+		}
+
+		var font = MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
+		return font.ContainsGlyph(codepoint) ? font : null;
 	}
 
 	private static IFont MakeFont(SKTypeface typeface, float fontSize)

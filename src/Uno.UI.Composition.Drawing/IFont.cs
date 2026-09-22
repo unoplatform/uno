@@ -24,6 +24,18 @@ public interface IFont
 	GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures = true);
 
 	/// <summary>
+	/// Shapes a run, letting the shaper guess the run's direction from its script (for the legacy segment itemizer
+	/// that doesn't resolve bidi itself) and reporting it back via <paramref name="resolvedDirection"/>. Otherwise
+	/// identical to <see cref="Shape(ReadOnlySpan{char}, TextDirection, bool)"/>. A backend whose shaper can't
+	/// guess keeps the default, which shapes left-to-right.
+	/// </summary>
+	GlyphRun Shape(ReadOnlySpan<char> text, out TextDirection resolvedDirection, bool enableLigatures = true)
+	{
+		resolvedDirection = TextDirection.LeftToRight;
+		return Shape(text, TextDirection.LeftToRight, enableLigatures);
+	}
+
+	/// <summary>
 	/// Turns a shaped run into a sequence of drawable elements, appended to <paramref name="elements"/> in draw order.
 	/// Each is a per-glyph <see cref="GlyphOutlineRef"/> (or a merged monochrome <see cref="GlyphOutline"/>), a
 	/// <see cref="GlyphColorLayers"/> vector colour glyph, or a rasterized <see cref="GlyphImage"/> colour glyph. Each glyph is shifted by <paramref name="baselineY"/>. The

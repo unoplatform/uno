@@ -182,8 +182,9 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			// NoWrap ASCII text without mandatory breaks never consults intermediate line-break opportunities
 			// (no wrapping decisions, single line) — skip the ICU break-iterator pass and emit the sole
-			// end-of-text boundary.
-			if (textWrapping is TextWrapping.NoWrap && IsAsciiWithoutLineBreaks(inlineText))
+			// end-of-text boundary. Word trimming picks its ellipsis position from the same list, so it still
+			// needs the real boundaries.
+			if (textWrapping is TextWrapping.NoWrap && textTrimming is not TextTrimming.WordEllipsis && IsAsciiWithoutLineBreaks(inlineText))
 			{
 				lineOpportunityBreaks.Add(inlineStart + inlineText.Length);
 			}

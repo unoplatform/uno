@@ -159,6 +159,23 @@ internal sealed class ManagedFont : IFont
 
 	private readonly GlyphRunCache _shapeCache = new();
 
+	/// <summary>
+	/// Shapes a run whose direction the shaper infers from its script. The legacy segment itemizer relies on this
+	/// to give an RTL script its direction even when the surrounding run is left-to-right.
+	/// </summary>
+	public GlyphRun Shape(ReadOnlySpan<char> text, out TextDirection resolvedDirection, bool enableLigatures = true)
+	{
+		var buffer = _shapeBuffer ??= new HbBuffer();
+		buffer.ClearContents();
+		buffer.AddUtf16(text);
+		buffer.GuessSegmentProperties();
+		resolvedDirection = buffer.Direction == HarfBuzzSharp.Direction.RightToLeft
+			? TextDirection.RightToLeft
+			: TextDirection.LeftToRight;
+
+		return Shape(text, resolvedDirection, enableLigatures);
+	}
+
 	public GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures = true)
 	{
 		if (_shapeCache.TryGet(text, direction, enableLigatures, out var cached))
