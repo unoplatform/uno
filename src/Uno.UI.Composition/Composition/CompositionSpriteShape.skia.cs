@@ -27,11 +27,11 @@ namespace Microsoft.UI.Composition
 
 		// Set by BorderVisual for a rounded-rect background: lets the fill go through the backend's analytic
 		// DrawRoundedRect (one SDF quad) instead of a tessellated path. Null → unchanged path behaviour.
-		internal (Rect Rect, Vector4 Radii)? RoundedRectFillHint { get; set; }
+		internal RoundRectangle? RoundedRectFillHint { get; set; }
 
 		// Set by BorderVisual for a rounded border stroke: the fill goes through DrawRoundedRectBorder (one analytic
 		// annulus SDF quad, outer minus inner) instead of a tessellated ring path. Null → unchanged path behaviour.
-		internal (Rect Outer, Vector4 OuterRadii, Rect Inner, Vector4 InnerRadii)? RoundedRectBorderHint { get; set; }
+		internal (RoundRectangle Outer, RoundRectangle Inner)? RoundedRectBorderHint { get; set; }
 
 		/// <summary>
 		/// This is largely a hack that's needed for MUX.Shapes.Path with Data set to a PathGeometry that has some
@@ -85,16 +85,6 @@ namespace Microsoft.UI.Composition
 		private static global::Windows.UI.Color WithOpacity(global::Windows.UI.Color c, float opacity)
 			=> opacity >= 1f ? c : global::Windows.UI.Color.FromArgb((byte)(c.A * opacity), c.R, c.G, c.B);
 
-		// radii = (TopLeft, TopRight, BottomRight, BottomLeft) scalars → a RoundRectangle with circular corners.
-		private static RoundRectangle ToRoundRect(Rect rect, Vector4 radii) => new()
-		{
-			Rect = rect,
-			TopLeft = new Vector2(radii.X, radii.X),
-			TopRight = new Vector2(radii.Y, radii.Y),
-			BottomRight = new Vector2(radii.Z, radii.Z),
-			BottomLeft = new Vector2(radii.W, radii.W),
-		};
-
 		internal override void Paint(in Visual.PaintingSession session)
 		{
 			if (_geometryWithTransformations is { } geometryWithTransformations)
@@ -121,8 +111,8 @@ namespace Microsoft.UI.Composition
 					if (solidFill is { } sc)
 					{
 						var oc = WithOpacity(sc, session.Opacity);
-						if (brHint is { } b) { session.Session.DrawRoundedRectBorder(b.Outer, b.OuterRadii, b.Inner, b.InnerRadii, oc); }
-						else if (rrHint is { } h) { session.Session.DrawRoundedRect(h.Rect, h.Radii, oc); }
+						if (brHint is { } b) { session.Session.DrawRoundedRectBorder(b.Outer, b.Inner, oc); }
+						else if (rrHint is { } h) { session.Session.DrawRoundedRect(h, oc); }
 						else { session.Session.DrawPath(fillGeometry, oc); }
 					}
 					// A brush that cannot paint (a fully transparent colour) must not reach the clip-and-fill path
@@ -135,16 +125,16 @@ namespace Microsoft.UI.Composition
 						// bounds. When the shape is a rounded rect (the hint), clip ANALYTICALLY (ClipRoundRect, 0
 						// draws) instead of a tessellated path clip (stencil + depth draws per visual).
 						session.Session.Save();
-						if (rrHint is { } hc) { session.Session.ClipRoundRect(ToRoundRect(hc.Rect, hc.Radii)); }
+						if (rrHint is { } hc) { session.Session.ClipRoundRect(hc); }
 						else if (brHint is { } bc)
 						{
 							// A rounded border ring also clips analytically: intersect the outer round rect, exclude the
 							// inner one. Matters for gradient borders (Fluent's ControlElevationBorderBrush puts one on
 							// every Button): a tessellated ring clip costs a stencil mask per visual and defeats coalescing.
-							session.Session.ClipRoundRect(ToRoundRect(bc.Outer, bc.OuterRadii));
-							if (bc.Inner.Width > 0 && bc.Inner.Height > 0)
+							session.Session.ClipRoundRect(bc.Outer);
+							if (bc.Inner.Rect.Width > 0 && bc.Inner.Rect.Height > 0)
 							{
-								session.Session.ClipRoundRect(ToRoundRect(bc.Inner, bc.InnerRadii), ClipOperation.Difference);
+								session.Session.ClipRoundRect(bc.Inner, ClipOperation.Difference);
 							}
 						}
 						else { session.Session.ClipPath(fillGeometry); }

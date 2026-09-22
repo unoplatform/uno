@@ -301,8 +301,8 @@ public class Given_SvgImageSource_ManagedEngine
 		public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect) { }
 		public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect) { }
 		public void Clear(Color color) { }
-		public void DrawRoundedRect(in Rect rect, Vector4 radii, Color color) { }
-		public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color) { }
+		public void DrawRoundedRect(in RoundRectangle roundRect, Color color) { }
+		public void DrawRoundedRectBorder(in RoundRectangle outer, in RoundRectangle inner, Color color) { }
 		public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive) { }
 		public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth) { }
 		public void DrawImage(ITexture texture, float x, float y, float opacity = 1f) { }

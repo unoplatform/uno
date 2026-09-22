@@ -272,7 +272,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 					SetPath((CompositionPathGeometry)_backgroundShape!.Geometry!, BuildRoundRectPath(bgRect, bgRadii));
 					// Let a supporting backend fill the background as one analytic rounded rect (SDF) instead of the
 					// tessellated path. The path stays set as the fallback (non-solid brushes, non-identity transforms).
-					_backgroundShape!.RoundedRectFillHint = (bgRect, new Vector4(bgRadii.TopLeft.X, bgRadii.TopRight.X, bgRadii.BottomRight.X, bgRadii.BottomLeft.X));
+					_backgroundShape!.RoundedRectFillHint = ToRoundRect(bgRect, bgRadii);
 					_backgroundShape!.Offset = useInner
 						? new Vector2(borderLeft, borderTop)
 						: Vector2.Zero;
@@ -290,7 +290,8 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 				_borderPathValid = true;
 				if (_borderBrush is not null)
 				{
-					_borderPathOuterRect = ToRoundRect(outerArea, fullCornerRadius.Outer);
+					var outerRoundRect = ToRoundRect(outerArea, fullCornerRadius.Outer);
+					_borderPathOuterRect = outerRoundRect;
 					// A ring of zero thickness covers nothing, so the shape gets no path at all rather than an empty
 					// one: an empty path still reaches the clip-and-fill route, which costs a coverage mask per visual
 					// on WebGPU, and every Fluent control carries a border brush at whatever thickness.
@@ -299,10 +300,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 					{
 						SetPath((CompositionPathGeometry)_borderShape!.Geometry!, BuildRoundRectRingPath(outerArea, fullCornerRadius.Outer, innerArea, fullCornerRadius.Inner));
 						// Let a supporting backend fill the border as one analytic annulus (SDF) instead of a ring path.
-						var or = fullCornerRadius.Outer; var ir = fullCornerRadius.Inner;
-						_borderShape!.RoundedRectBorderHint = (
-							outerArea, new Vector4(or.TopLeft.X, or.TopRight.X, or.BottomRight.X, or.BottomLeft.X),
-							innerArea, new Vector4(ir.TopLeft.X, ir.TopRight.X, ir.BottomRight.X, ir.BottomLeft.X));
+						_borderShape!.RoundedRectBorderHint = (outerRoundRect, ToRoundRect(innerArea, fullCornerRadius.Inner));
 					}
 					else
 					{

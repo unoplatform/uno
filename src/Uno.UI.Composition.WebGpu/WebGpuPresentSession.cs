@@ -86,8 +86,8 @@ public sealed class WebGpuPresentSession : IPresentSession
 	public void Clear(WColor color) => _presentClear = color;
 	public void DrawRect(in Rect rect, WColor color) => _overlay.DrawRect(rect, color);
 	public void DrawRect(in Rect rect, IShader shader) => _overlay.DrawRect(rect, shader);
-	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color) => _overlay.DrawRoundedRect(rect, radii, color);
-	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, WColor color) => _overlay.DrawRoundedRectBorder(outer, outerRadii, inner, innerRadii, color);
+	public void DrawRoundedRect(in RoundRectangle roundRect, WColor color) => _overlay.DrawRoundedRect(roundRect, color);
+	public void DrawRoundedRectBorder(in RoundRectangle outer, in RoundRectangle inner, WColor color) => _overlay.DrawRoundedRectBorder(outer, inner, color);
 	public void DrawPath(IGeometry geometry, WColor color) => _overlay.DrawPath(geometry, color);
 	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive) => _overlay.DrawShadow(silhouette, color, sigmaX, sigmaY, additive);
 	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, StrokeJoin join = StrokeJoin.Miter) => _overlay.StrokePath(geometry, color, strokeWidth, join);

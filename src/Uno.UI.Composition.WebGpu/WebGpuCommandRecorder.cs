@@ -289,8 +289,25 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 	}
 
 
-	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color)
+	// The analytic SDF quad carries a single radius per corner, so an elliptical corner (x != y) can only be drawn
+	// through the clip entries, which do carry both axes.
+	private static bool IsCircular(in RoundRectangle rr)
+		=> rr.TopLeft.X == rr.TopLeft.Y && rr.TopRight.X == rr.TopRight.Y
+			&& rr.BottomRight.X == rr.BottomRight.Y && rr.BottomLeft.X == rr.BottomLeft.Y;
+
+	public void DrawRoundedRect(in RoundRectangle roundRect, WColor color)
 	{
+		if (!IsCircular(roundRect))
+		{
+			Save();
+			ClipRoundRect(roundRect);
+			DrawRect(roundRect.Rect, color);
+			Restore();
+			return;
+		}
+
+		var rect = roundRect.Rect;
+		var radii = new Vector4(roundRect.TopLeft.X, roundRect.TopRight.X, roundRect.BottomRight.X, roundRect.BottomLeft.X);
 		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
 		float w = (float)rect.Width, h = (float)rect.Height;
 		float maxR = MathF.Min(w, h) * 0.5f;
@@ -311,8 +328,25 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		});
 	}
 
-	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, WColor color)
+	public void DrawRoundedRectBorder(in RoundRectangle outerRoundRect, in RoundRectangle innerRoundRect, WColor color)
 	{
+		if (!IsCircular(outerRoundRect) || !IsCircular(innerRoundRect))
+		{
+			Save();
+			ClipRoundRect(outerRoundRect);
+			if (innerRoundRect.Rect.Width > 0 && innerRoundRect.Rect.Height > 0)
+			{
+				ClipRoundRect(innerRoundRect, ClipOperation.Difference);
+			}
+			DrawRect(outerRoundRect.Rect, color);
+			Restore();
+			return;
+		}
+
+		var outer = outerRoundRect.Rect;
+		var inner = innerRoundRect.Rect;
+		var outerRadii = new Vector4(outerRoundRect.TopLeft.X, outerRoundRect.TopRight.X, outerRoundRect.BottomRight.X, outerRoundRect.BottomLeft.X);
+		var innerRadii = new Vector4(innerRoundRect.TopLeft.X, innerRoundRect.TopRight.X, innerRoundRect.BottomRight.X, innerRoundRect.BottomLeft.X);
 		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
 		float ow = (float)outer.Width, oh = (float)outer.Height, iw = (float)inner.Width, ih = (float)inner.Height;
 		var oHalf = new Vector2(ow * 0.5f, oh * 0.5f); var iHalf = new Vector2(iw * 0.5f, ih * 0.5f);

@@ -143,36 +143,16 @@ internal class SkiaDrawingSession : IDrawingSession
 	public void DrawRect(in Rect rect, IShader shader)
 		=> _canvas.DrawRect(rect.ToSKRect(), ShaderPaint(shader));
 
-	public void DrawRoundedRect(in Rect rect, Vector4 radii, Color color)
-	{
-		// radii = (TopLeft, TopRight, BottomRight, BottomLeft); SKRoundRect.SetRectRadii uses the same corner order.
-		var rr = new SKRoundRect();
-		rr.SetRectRadii(rect.ToSKRect(), new[]
-		{
-			new SKPoint(radii.X, radii.X), new SKPoint(radii.Y, radii.Y),
-			new SKPoint(radii.Z, radii.Z), new SKPoint(radii.W, radii.W),
-		});
-		_canvas.DrawRoundRect(rr, FillPaint(color));
-	}
+	public void DrawRoundedRect(in RoundRectangle roundRect, Color color)
+		=> _canvas.DrawRoundRect(ToSK(roundRect), FillPaint(color));
 
-	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color)
+	public void DrawRoundedRectBorder(in RoundRectangle outer, in RoundRectangle inner, Color color)
 	{
 		// Annulus = outer round rect with the inner round rect clipped OUT (Difference), then filled.
 		_canvas.Save();
-		_canvas.ClipRoundRect(RoundRect(inner, innerRadii), SKClipOperation.Difference, true);
-		_canvas.DrawRoundRect(RoundRect(outer, outerRadii), FillPaint(color));
+		_canvas.ClipRoundRect(ToSK(inner), SKClipOperation.Difference, true);
+		_canvas.DrawRoundRect(ToSK(outer), FillPaint(color));
 		_canvas.Restore();
-	}
-
-	private static SKRoundRect RoundRect(in Rect r, Vector4 radii)
-	{
-		var rr = new SKRoundRect();
-		rr.SetRectRadii(r.ToSKRect(), new[]
-		{
-			new SKPoint(radii.X, radii.X), new SKPoint(radii.Y, radii.Y),
-			new SKPoint(radii.Z, radii.Z), new SKPoint(radii.W, radii.W),
-		});
-		return rr;
 	}
 
 	public void DrawPath(IGeometry geometry, Color color)

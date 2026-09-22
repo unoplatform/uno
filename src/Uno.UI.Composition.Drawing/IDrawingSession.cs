@@ -83,16 +83,16 @@ public interface IDrawingSession
 	void DrawRect(in Rect rect, IShader shader);
 
 	/// <summary>
-	/// Fills a rounded rectangle with a solid <paramref name="color"/>; <paramref name="radii"/> are the per-corner
-	/// radii in (TopLeft, TopRight, BottomRight, BottomLeft) order.
+	/// Fills a rounded rectangle with a solid <paramref name="color"/>. Corner radii are (x, y) pairs: a corner
+	/// whose axes differ is elliptical, which CornerRadius clamping routinely produces.
 	/// </summary>
-	void DrawRoundedRect(in Rect rect, Vector4 radii, Color color);
+	void DrawRoundedRect(in RoundRectangle roundRect, Color color);
 
 	/// <summary>
 	/// Fills the annulus between an outer and inner rounded rectangle with a solid <paramref name="color"/> — a
-	/// rounded border in one shape. Per-corner radii in (TopLeft, TopRight, BottomRight, BottomLeft) order.
+	/// rounded border in one shape.
 	/// </summary>
-	void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color);
+	void DrawRoundedRectBorder(in RoundRectangle outer, in RoundRectangle inner, Color color);
 
 	/// <summary>Fills <paramref name="geometry"/> with a solid <paramref name="color"/> (bake any opacity into its alpha).</summary>
 	void DrawPath(IGeometry geometry, Color color);

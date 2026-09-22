@@ -92,7 +92,10 @@ internal abstract class FrameBufferRenderer
 		var p = FrameBufferPointerInputSource.Instance.MousePosition;
 		var r = _cursorRadius;
 		var rect = new Rect(p.X - r, p.Y - r, 2 * r, 2 * r);
-		session.DrawRoundedRect(rect, new Vector4(r, r, r, r), _cursorColor);
+		var radius = new Vector2(r, r);
+		session.DrawRoundedRect(
+			new RoundRectangle { Rect = rect, TopLeft = radius, TopRight = radius, BottomRight = radius, BottomLeft = radius },
+			_cursorColor);
 	}
 
 	// Equivalent to a Skia canvas Translate(transX, transY) followed by RotateDegrees(degrees), packed into the

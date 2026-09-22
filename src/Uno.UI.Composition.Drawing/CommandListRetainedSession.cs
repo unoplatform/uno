@@ -230,17 +230,17 @@ internal sealed class CommandListRecorder : ICommandRecorder
 		_commands.Add(ctx => ctx.Target.DrawRect(r, s));
 	}
 
-	public void DrawRoundedRect(in Rect rect, Vector4 radii, Color color)
+	public void DrawRoundedRect(in RoundRectangle roundRect, Color color)
 	{
-		var r = rect;
-		_commands.Add(ctx => ctx.Target.DrawRoundedRect(r, radii, color));
+		var rr = roundRect;
+		_commands.Add(ctx => ctx.Target.DrawRoundedRect(rr, color));
 	}
 
-	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color)
+	public void DrawRoundedRectBorder(in RoundRectangle outer, in RoundRectangle inner, Color color)
 	{
 		var o = outer;
 		var i = inner;
-		_commands.Add(ctx => ctx.Target.DrawRoundedRectBorder(o, outerRadii, i, innerRadii, color));
+		_commands.Add(ctx => ctx.Target.DrawRoundedRectBorder(o, i, color));
 	}
 
 	public void DrawPath(IGeometry geometry, Color color)
