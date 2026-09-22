@@ -51,6 +51,11 @@
 				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 			</Content>
+			<Content Include="$(MSBuildThisFileDirectory)..\runtimes\win\native\Microsoft.Windows.AppLifecycle.winmd" Condition="Exists('$(MSBuildThisFileDirectory)..\runtimes\win\native\Microsoft.Windows.AppLifecycle.winmd')">
+				<TargetPath>Microsoft.Windows.AppLifecycle.winmd</TargetPath>
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</Content>
 		</ItemGroup>
 	</Target>
 

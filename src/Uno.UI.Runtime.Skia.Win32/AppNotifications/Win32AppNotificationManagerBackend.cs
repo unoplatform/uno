@@ -10,12 +10,15 @@ using System.Threading;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Internal;
 using Uno.Foundation.Logging;
+using NativeAppInstance = winappsdk::Microsoft.Windows.AppLifecycle.AppInstance;
 using NativeAppNotification = winappsdk::Microsoft.Windows.AppNotifications.AppNotification;
+using NativeAppNotificationActivatedEventArgs = winappsdk::Microsoft.Windows.AppNotifications.AppNotificationActivatedEventArgs;
 using NativeAppNotificationManager = winappsdk::Microsoft.Windows.AppNotifications.AppNotificationManager;
 using NativeAppNotificationPriority = winappsdk::Microsoft.Windows.AppNotifications.AppNotificationPriority;
 using NativeAppNotificationProgressData = winappsdk::Microsoft.Windows.AppNotifications.AppNotificationProgressData;
 using NativeAppNotificationProgressResult = winappsdk::Microsoft.Windows.AppNotifications.AppNotificationProgressResult;
 using NativeBootstrap = winappsdk::Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap;
+using NativeExtendedActivationKind = winappsdk::Microsoft.Windows.AppLifecycle.ExtendedActivationKind;
 using NativePackageVersion = winappsdk::Microsoft.Windows.ApplicationModel.DynamicDependency.PackageVersion;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -32,6 +35,7 @@ internal sealed class Win32AppNotificationManagerBackend : IAppNotificationManag
 	private readonly object _gate = new();
 	private NativeAppNotificationManager? _manager;
 	private bool _isRegistered;
+	private bool _hasReadStartupActivation;
 
 	private Win32AppNotificationManagerBackend()
 	{
@@ -71,48 +75,97 @@ internal sealed class Win32AppNotificationManagerBackend : IAppNotificationManag
 
 	public string? BootIdentifier => null;
 
-	public void Register()
+	public void Register() => RegisterCore(static manager => manager.Register());
+
+	public void Register(string displayName, Uri iconUri)
+		=> RegisterCore(manager => manager.Register(displayName, iconUri));
+
+	private void RegisterCore(Action<NativeAppNotificationManager> register)
 	{
+		AppNotificationActivation? startupActivation;
 		lock (_gate)
 		{
 			var manager = GetManager() ?? throw new InvalidOperationException("Windows App SDK app notifications are unavailable.");
 			if (!_isRegistered)
 			{
+				var registeredByThisCall = false;
 				manager.NotificationInvoked += OnNotificationInvoked;
 				try
 				{
-					manager.Register();
+					register(manager);
+					registeredByThisCall = true;
 					_isRegistered = true;
+					startupActivation = ReadStartupActivation();
 				}
-				catch
+				catch (Exception exception)
 				{
-					manager.NotificationInvoked -= OnNotificationInvoked;
+					Exception? rollbackFailure = null;
+					try
+					{
+						if (registeredByThisCall)
+						{
+							manager.Unregister();
+						}
+					}
+					catch (Exception rollbackException)
+					{
+						rollbackFailure = rollbackException;
+					}
+					finally
+					{
+						_isRegistered = false;
+					}
+					try
+					{
+						manager.NotificationInvoked -= OnNotificationInvoked;
+					}
+					catch (Exception unsubscribeException)
+					{
+						rollbackFailure = rollbackFailure is null
+							? unsubscribeException
+							: new AggregateException(rollbackFailure, unsubscribeException);
+					}
+					if (rollbackFailure is not null)
+					{
+						throw new AggregateException(
+							"App notification registration failed and its foreground registration could not be rolled back.",
+							exception,
+							rollbackFailure);
+					}
 					throw;
 				}
 			}
+			else
+			{
+				startupActivation = ReadStartupActivation();
+			}
+		}
+		if (startupActivation is not null)
+		{
+			AppNotificationActivationBroker.Publish(startupActivation);
 		}
 	}
 
-	public void Register(string displayName, Uri iconUri)
+	private AppNotificationActivation? ReadStartupActivation()
 	{
-		lock (_gate)
+		if (_hasReadStartupActivation)
 		{
-			var manager = GetManager() ?? throw new InvalidOperationException("Windows App SDK app notifications are unavailable.");
-			if (!_isRegistered)
-			{
-				manager.NotificationInvoked += OnNotificationInvoked;
-				try
-				{
-					manager.Register(displayName, iconUri);
-					_isRegistered = true;
-				}
-				catch
-				{
-					manager.NotificationInvoked -= OnNotificationInvoked;
-					throw;
-				}
-			}
+			return null;
 		}
+		if (!Win32AppNotificationActivation.IsAppNotificationLaunch(Environment.GetCommandLineArgs()))
+		{
+			_hasReadStartupActivation = true;
+			return null;
+		}
+
+		// Windows App SDK stores the first cold-start activation instead of raising NotificationInvoked.
+		var args = NativeAppInstance.GetCurrent().GetActivatedEventArgs();
+		var activation = args.Kind == NativeExtendedActivationKind.AppNotification &&
+			args.Data is NativeAppNotificationActivatedEventArgs notificationArgs
+				? ToActivation(notificationArgs)
+				: null;
+		_hasReadStartupActivation = true;
+		return activation;
 	}
 
 	public void Unregister()
@@ -307,10 +360,13 @@ internal sealed class Win32AppNotificationManagerBackend : IAppNotificationManag
 		}
 	}
 
-	private void OnNotificationInvoked(NativeAppNotificationManager sender, winappsdk::Microsoft.Windows.AppNotifications.AppNotificationActivatedEventArgs args)
-		=> AppNotificationActivationBroker.Publish(new AppNotificationActivation(
+	private void OnNotificationInvoked(NativeAppNotificationManager sender, NativeAppNotificationActivatedEventArgs args)
+		=> AppNotificationActivationBroker.Publish(ToActivation(args));
+
+	private static AppNotificationActivation ToActivation(NativeAppNotificationActivatedEventArgs args)
+		=> new(
 			args.Argument ?? string.Empty,
-			new Dictionary<string, string>(args.UserInput ?? new Dictionary<string, string>())));
+			new Dictionary<string, string>(args.UserInput ?? new Dictionary<string, string>()));
 
 	private static void Wait(winappsdk::Windows.Foundation.IAsyncAction action)
 	{

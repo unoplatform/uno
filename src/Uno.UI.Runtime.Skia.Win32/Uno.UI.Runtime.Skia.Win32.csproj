@@ -26,6 +26,7 @@
 		<PackageId>Uno.WinUI.Runtime.Skia.Win32</PackageId>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_UnoIncludeWin32RuntimePackageAssets</TargetsForTfmSpecificContentInPackage>
 
 		<!-- Ignore NU5104 for net7.0 System.Drawing.Common -->
 		<NoWarn>$(NoWarn);NU5104</NoWarn>
@@ -47,6 +48,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Reference Include="Microsoft.Windows.AppLifecycle.Projection" HintPath="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.Windows.AppLifecycle.Projection.dll" Aliases="winappsdk" Private="true" />
 		<Reference Include="Microsoft.Windows.AppNotifications.Projection" HintPath="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.Windows.AppNotifications.Projection.dll" Aliases="winappsdk" Private="true" />
 		<Reference Include="Microsoft.WindowsAppRuntime.Bootstrap.Net" HintPath="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.WindowsAppRuntime.Bootstrap.Net.dll" Aliases="winappsdk" Private="true" />
 		<Reference Include="Microsoft.Windows.SDK.NET" HintPath="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\Microsoft.Windows.SDK.NET.dll" Aliases="winappsdk" Private="true" />
@@ -64,15 +66,8 @@
 		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-x64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Pack="true" PackagePath="runtimes\win-x64\native" />
 		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-x86\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Link="runtimes\win-x86\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Pack="true" PackagePath="runtimes\win-x86\native" />
 		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-arm64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Link="runtimes\win-arm64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Pack="true" PackagePath="runtimes\win-arm64\native" />
+		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\metadata\Microsoft.Windows.AppLifecycle.winmd" Pack="true" PackagePath="runtimes\win\native" />
 		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\metadata\Microsoft.Windows.AppNotifications.winmd" Pack="true" PackagePath="runtimes\win\native" />
-		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.Windows.AppNotifications.Projection.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetPrevious)" />
-		<None Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\Microsoft.Windows.SDK.NET.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetPrevious)" />
-		<None Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\WinRT.Runtime.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetPrevious)" />
-		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.WindowsAppRuntime.Bootstrap.Net.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetPrevious)" />
-		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.Windows.AppNotifications.Projection.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetCurrent)" />
-		<None Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\Microsoft.Windows.SDK.NET.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetCurrent)" />
-		<None Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\WinRT.Runtime.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetCurrent)" />
-		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.WindowsAppRuntime.Bootstrap.Net.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetCurrent)" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -118,27 +113,31 @@
 				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 			</Content>
+			<Content Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\metadata\Microsoft.Windows.AppLifecycle.winmd">
+				<TargetPath>Microsoft.Windows.AppLifecycle.winmd</TargetPath>
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</Content>
 		</ItemGroup>
 	</Target>
 
-	<Target Name="_UnoUpdateAdditionalAssemblies" AfterTargets="DispatchToInnerBuilds">
+	<Target Name="_UnoIncludeWin32RuntimePackageAssets" DependsOnTargets="BuiltProjectOutputGroup">
+		<PropertyGroup>
+			<_UnoWin32SupportOutput>$(MSBuildThisFileDirectory)..\Uno.UI.Runtime.Skia.Win32.Support\bin\$(Configuration)\$(TargetFramework)\</_UnoWin32SupportOutput>
+		</PropertyGroup>
+		<Error
+			Condition="!Exists('$(_UnoWin32SupportOutput)Uno.UI.Runtime.Skia.Win32.Support.dll')"
+			Text="Build the Win32 support assembly for $(TargetFramework) before packing." />
 		<ItemGroup>
-			<Content Include="../Uno.UI.Runtime.Skia.Win32.Support/bin/$(Configuration)/$(NetPrevious)/*.dll">
-				<Pack>true</Pack>
-				<PackagePath>lib/$(NetPrevious)</PackagePath>
-			</Content>
-			<Content Include="../Uno.UI.Runtime.Skia.Win32.Support/bin/$(Configuration)/$(NetPrevious)/*.pdb">
-				<Pack>true</Pack>
-				<PackagePath>lib/$(NetPrevious)</PackagePath>
-			</Content>
-			<Content Include="../Uno.UI.Runtime.Skia.Win32.Support/bin/$(Configuration)/$(NetCurrent)/*.dll">
-				<Pack>true</Pack>
-				<PackagePath>lib/$(NetCurrent)</PackagePath>
-			</Content>
-			<Content Include="../Uno.UI.Runtime.Skia.Win32.Support/bin/$(Configuration)/$(NetCurrent)/*.pdb">
-				<Pack>true</Pack>
-				<PackagePath>lib/$(NetCurrent)</PackagePath>
-			</Content>
+			<!-- NuGet selects the RID-specific runtime group instead of lib, so it must include the backend too. -->
+			<TfmSpecificPackageFile Include="$(TargetPath)" PackagePath="runtimes\win\lib\$(TargetFramework)" />
+			<TfmSpecificPackageFile Include="$(_UnoWin32SupportOutput)*.dll" PackagePath="lib\$(TargetFramework);runtimes\win\lib\$(TargetFramework)" />
+			<TfmSpecificPackageFile Include="$(_UnoWin32SupportOutput)*.pdb" PackagePath="lib\$(TargetFramework)" />
+			<TfmSpecificPackageFile Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.Windows.AppLifecycle.Projection.dll" PackagePath="runtimes\win\lib\$(TargetFramework)" />
+			<TfmSpecificPackageFile Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.Windows.AppNotifications.Projection.dll" PackagePath="runtimes\win\lib\$(TargetFramework)" />
+			<TfmSpecificPackageFile Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.WindowsAppRuntime.Bootstrap.Net.dll" PackagePath="runtimes\win\lib\$(TargetFramework)" />
+			<TfmSpecificPackageFile Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\Microsoft.Windows.SDK.NET.dll" PackagePath="runtimes\win\lib\$(TargetFramework)" />
+			<TfmSpecificPackageFile Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\WinRT.Runtime.dll" PackagePath="runtimes\win\lib\$(TargetFramework)" />
 		</ItemGroup>
 	</Target>
 
@@ -148,7 +147,9 @@
 			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-x64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" />
 			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-arm64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" />
 			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\metadata\Microsoft.Windows.AppNotifications.winmd" />
+			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\metadata\Microsoft.Windows.AppLifecycle.winmd" />
 			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.Windows.AppNotifications.Projection.dll" />
+			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.Windows.AppLifecycle.Projection.dll" />
 			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.WindowsAppRuntime.Bootstrap.Net.dll" />
 			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\Microsoft.Windows.SDK.NET.dll" />
 			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\WinRT.Runtime.dll" />
