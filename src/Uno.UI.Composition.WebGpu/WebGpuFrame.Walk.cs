@@ -946,6 +946,11 @@ internal sealed unsafe partial class WebGpuFrame
 			}
 		}
 
+		// A shadow layer is only ever a shadow. The single producer of an IEffectFilter layer is
+		// ShadowState.GetShadowFilter, and its one caller replays the same content directly right after the layer --
+		// so compositing the layer's colour here would draw that content a second time for nothing. Every other
+		// SaveLayer overload carries an IColorFilter and lands in ColorMatrix, never here.
+		if (lyr.ShadowEffect is not null) { return; }
 		// Pop the target: the content as one textured quad over the target's rect, sampling its slot 1:1.
 		var cuv = sheet is not null
 			? new Vector4(slotX, slotY, slotX + tw, slotY + th) / WebGpuEffects.LayerSheetSize
