@@ -257,6 +257,7 @@ public partial class Given_MobileAccessibilityLifecycle
 			IsLightDismissEnabled = false,
 			Child = new Border { Child = modalButton },
 		};
+		AutomationProperties.SetIsDialog(popup, true);
 		var root = new Grid { Children = { background, popup } };
 		await UITestHelper.Load(root);
 		var backgroundVirtualId = AccessibilityPeerHelper.AndroidAccessibilityVirtualIdAccessor?.Invoke(background);

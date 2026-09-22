@@ -416,6 +416,7 @@ public class Given_MobileAccessibilityEvents_Android
 			IsLightDismissEnabled = false,
 			Child = new Border { Child = modalContent },
 		};
+		AutomationProperties.SetIsDialog(popup, true);
 		var root = new Grid { Children = { background, popup } };
 		await UITestHelper.Load(root);
 
@@ -464,6 +465,40 @@ public class Given_MobileAccessibilityEvents_Android
 		finally
 		{
 			popup.IsOpen = false;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_NonModal_Popup_Is_Open_Then_Background_Remains_Accessible()
+	{
+		var background = new Button { Content = "Nonmodal background" };
+		AutomationProperties.SetLiveSetting(background, AutomationLiveSetting.Assertive);
+		var popup = new Popup
+		{
+			IsLightDismissEnabled = false,
+			Child = new Border { Width = 20, Height = 20 },
+		};
+		var root = new Grid { Children = { background, popup } };
+		try
+		{
+			await UITestHelper.Load(root);
+			popup.IsOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();
+			var popupPeer = popup.GetOrCreateAutomationPeer();
+			Assert.IsNotNull(popupPeer);
+			Assert.IsNull(popupPeer.GetPattern(PatternInterface.Window));
+			Assert.IsFalse(popupPeer.IsDialog());
+			EnsureVirtualId(background);
+			GetAndClearEvents(root.XamlRoot!);
+
+			background.GetOrCreateAutomationPeer()!.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
+			Assert.IsTrue(await WaitForAnnouncementAsync(root.XamlRoot!, "Nonmodal background"));
+		}
+		finally
+		{
+			popup.IsOpen = false;
+			TestServices.WindowHelper.WindowContent = null;
 		}
 	}
 

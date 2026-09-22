@@ -950,17 +950,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 			try
 			{
-				// Primary: Window pattern (respects ShouldExposeWindowPattern gating).
 				var wp = peer.GetPattern(PatternInterface.Window) as IWindowProvider;
-
-				// Secondary: direct cast for Window-typed peers whose pattern is gated off
-				// (e.g., Popup with IsLightDismissEnabled=false used by ContentDialog).
-				if (wp is null &&
-					peer is PopupAutomationPeer { Owner: Popup { IsOpen: true } } popupPeer)
-				{
-					wp = popupPeer;
-				}
-
 				if (wp?.IsModal is true)
 				{
 					modalOwner = owner;
@@ -1003,9 +993,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	}
 
 	private static bool IsWithinModalScope(UIElement element, UIElement modalOwner)
-		=> IsDescendantOf(element, modalOwner.Visual.Handle)
-			|| (modalOwner is Popup { Child: UIElement popupChild }
-				&& IsDescendantOf(element, popupChild.Visual.Handle));
+		=> AccessibilityPeerHelper.IsWithinModalScope(element, modalOwner);
 
 	/// <summary>
 	/// Returns the subset of <paramref name="allElements"/> whose peer nodes are the modal
@@ -1175,7 +1163,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 		try
 		{
-			if (peer.GetBoundingRectangle() is { } peerBounds &&
+			var owner = GetOwner(handle);
+			if (AccessibilityPeerHelper.GetBoundingRectangle(peer, owner) is { } peerBounds &&
 				HasFiniteBounds(peerBounds))
 			{
 				return new CGRect(
@@ -1185,7 +1174,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					peerBounds.Height);
 			}
 
-			if (GetOwner(handle) is not { } element)
+			if (owner is not { } element)
 			{
 				return CGRect.Empty;
 			}
