@@ -283,7 +283,8 @@ Uno Platform 7.0 names every conditional XAML prefix after a target framework, a
 | `skia`, `netstdref` | `not_winappsdk` |
 | `not_skia`, `not_netstdref` | `winappsdk` |
 | `androidskia`, `iosskia`, `tvosskia`, `wasmskia` (and their `not_` forms) | `android`, `ios`, `tvos`, `wasm` (and their `not_` forms) |
-| `macos`, `not_macos` | `desktop`, `not_desktop` |
+| `macos` | Remove it with the markup using it. It named the native macOS head, which has selected nothing since Uno Platform 5.0. Gate macOS-only code with `OperatingSystem.IsMacOS()` instead |
+| `not_macos` | Drop the prefix from the markup using it. It has applied on every target since Uno Platform 5.0 — `desktop`/`not_desktop` are not equivalent, since they also cover Windows and Linux |
 | `not_mux` | Remove it with the markup using it. It dates from UWP support and never applied |
 | `xamarin`, `legacy` listed in `mc:Ignorable` | Drop the prefix from the markup using it |
 

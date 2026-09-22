@@ -25,7 +25,7 @@ flavor, selected by `UnoRuntimeIdentifier` or by the target framework.
 | `__NETSTD_REFERENCE__` | The Reference flavor of the WinRT layer, packed as the `lib/netX.0` assembly that plain `netX.0` libraries compile against | None |
 | `__CROSSRUNTIME__` | The Skia, WebAssembly and Reference flavors, not the Android, iOS and tvOS variants of the WinRT layer | `HAS_UNO` |
 | `UNO_REFERENCE_API` | Same as `__CROSSRUNTIME__` | `HAS_UNO`. Consumers get `UNO_REFERENCE_API` as a legacy synonym of `HAS_UNO`, which is a different condition |
-| `__ANDROID__`, `__IOS__`, `__TVOS__` | The Android, iOS and tvOS variants | Same symbols |
+| `__ANDROID__`, `__IOS__`, `__TVOS__` | The Android, iOS and tvOS variants of the WinRT layer | Same symbols |
 | `__APPLE_UIKIT__` | The iOS and tvOS variants | `__APPLE_UIKIT__` |
 
 `#if __ANDROID__` is false in every file the `Uno.UI` project compiles, even though that assembly runs on Android.

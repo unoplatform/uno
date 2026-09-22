@@ -15,7 +15,7 @@ public partial class Given_Parser
 	[DataRow("iosskia", "Use 'ios' instead.")]
 	[DataRow("tvosskia", "Use 'tvos' instead.")]
 	[DataRow("wasmskia", "Use 'wasm' instead.")]
-	[DataRow("macos", "Use 'desktop' instead.")]
+	[DataRow("macos", "It named the native macOS head and has selected nothing since Uno Platform 5.0; remove it along with the markup using it. 'desktop' also covers Windows and Linux, so gate macOS-only content on OperatingSystem.IsMacOS() instead.")]
 	[DataRow("xamarin", "Drop the prefix from the markup using it.")]
 	[DataRow("legacy", "Drop the prefix from the markup using it.")]
 	public async Task When_Removed_Prefix_Is_Ignorable(string prefix, string advice)
@@ -50,7 +50,7 @@ public partial class Given_Parser
 	[DataRow("not_iosskia", "Use 'not_ios' instead.")]
 	[DataRow("not_tvosskia", "Use 'not_tvos' instead.")]
 	[DataRow("not_wasmskia", "Use 'not_wasm' instead.")]
-	[DataRow("not_macos", "Use 'not_desktop' instead.")]
+	[DataRow("not_macos", "It has applied on every target since Uno Platform 5.0; drop the prefix from the markup using it. 'not_desktop' is not an equivalent, since it also excludes Windows and Linux.")]
 	[DataRow("not_mux", "Remove it along with the markup using it; it dates from UWP support and never applied.")]
 	public async Task When_Removed_Prefix_Aliases_Presentation_Namespace(string prefix, string advice)
 	{
