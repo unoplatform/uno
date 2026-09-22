@@ -162,7 +162,7 @@ namespace Microsoft.UI.Xaml
 				details.SetBinding(bindingExpression);
 				_bindings = _bindings.Add(bindingExpression);
 
-				if (global::Uno.UI.FeatureConfiguration.Validation.IsEnabled)
+				if (global::Uno.UI.FeatureConfiguration.InputValidation.IsEnabled)
 				{
 					global::Uno.UI.Xaml.Controls.Validation.OnBindingSet(Owner, dependencyProperty, bindingExpression);
 				}

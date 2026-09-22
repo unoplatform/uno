@@ -18,15 +18,15 @@ namespace Uno.UI.Tests.InputValidation;
 public partial class Given_Validation_Transport
 {
 	[TestInitialize]
-	public void Initialize() => FeatureConfiguration.Validation.IsEnabled = true;
+	public void Initialize() => FeatureConfiguration.InputValidation.IsEnabled = true;
 
 	[TestCleanup]
-	public void Cleanup() => FeatureConfiguration.Validation.IsEnabled = false;
+	public void Cleanup() => FeatureConfiguration.InputValidation.IsEnabled = false;
 
 	[TestMethod]
 	public void When_Global_Switch_Off()
 	{
-		FeatureConfiguration.Validation.IsEnabled = false;
+		FeatureConfiguration.InputValidation.IsEnabled = false;
 
 		var (control, source) = Bind();
 		source.SetErrors(nameof(Person.Name), "required");
@@ -280,7 +280,7 @@ public partial class Given_Validation_Transport
 		return (control, source);
 	}
 
-	[ValidationProperty("Text")]
+	[InputValidationProperty("Text")]
 	private partial class ValidatingControl : Control
 	{
 		public static DependencyProperty TextProperty { get; } =

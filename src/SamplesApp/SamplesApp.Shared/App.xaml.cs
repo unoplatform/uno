@@ -610,7 +610,7 @@ namespace SamplesApp
 			Uno.UI.FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite = true;
 
 			// Must be set before the first binding is registered, i.e. before the first page is created.
-			Uno.UI.FeatureConfiguration.Validation.IsEnabled = true;
+			Uno.UI.FeatureConfiguration.InputValidation.IsEnabled = true;
 
 			Uno.UI.FeatureConfiguration.Font.DefaultTextFontFamily = "ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans.ttf";
 #endif
