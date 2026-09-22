@@ -48,14 +48,14 @@ You can find common prompts to use with agents in our [getting started](xref:Uno
 
 ### Docs MCP tools
 
-All four tools are read-only.
+All four tools are read-only, and none requires a [license](xref:Uno.GetStarted.Licensing).
 
-| Tool | Purpose | Parameters |
-|---|---|---|
-| `uno_platform_docs_search` | Search the documentation for a topic. Returns snippets with the source path of each match. | `query`, `contentType` (`prose` or `code`), `topK` (1–50, default 8) |
-| `uno_platform_docs_fetch` | Fetch a full documentation page as markdown. Pass the `sourcePath` from a search result. | `sourcePath`, `anchor`, `maxChars` (100–50000, default 8000) |
-| `uno_platform_agent_rules_init` | Primes the environment on how to interact with Uno Platform apps during development. | — |
-| `uno_platform_usage_rules_init` | Primes the environment on how to use Uno Platform's APIs in the best way possible. | — |
+| Tool | License | Purpose | Parameters |
+|---|---|---|---|
+| `uno_platform_docs_search` | None | Search the documentation for a topic. Returns snippets with the source path of each match. | `query`, `contentType` (`prose` or `code`), `topK` (1–50, default 8) |
+| `uno_platform_docs_fetch` | None | Fetch a full documentation page as markdown. Pass the `sourcePath` from a search result. | `sourcePath`, `anchor`, `maxChars` (100–50000, default 8000) |
+| `uno_platform_agent_rules_init` | None | Primes the environment on how to interact with Uno Platform apps during development. | — |
+| `uno_platform_usage_rules_init` | None | Primes the environment on how to use Uno Platform's APIs in the best way possible. | — |
 
 Those tools are suggested to the agent on how to be used best. In general, asking the agent "Make sure to search the Uno Platform docs to answer" will hint it to use those tools.
 
@@ -83,67 +83,55 @@ The App MCP follows a single-app model: when more than one app instance is conne
 
 ### Bridge tools
 
-These tools are provided by the DevServer MCP bridge itself rather than by the running app. They carry no license requirement and answer even before the app connects.
+These tools are provided by the DevServer MCP bridge itself rather than by the running app. None requires a [license](xref:Uno.GetStarted.Licensing), and they answer even before the app connects — so they remain available when the app tools below do not.
 
-| Tool | Purpose | Parameters |
-|---|---|---|
-| `uno_health` | Health of the DevServer MCP bridge: connection state, tool count, discovered solutions, and any issues detected during startup. Read-only. | — |
-| `uno_discover_tools` | Re-query the full list of app tools, with their descriptions and input schemas. Read-only. | — |
-| `uno_execute_tool` | Call an app tool by name, whether or not your agent's tool list already knows about it. | `toolName`, `arguments` |
-| `uno_app_select_solution` | Pick a solution when the workspace contains more than one. **Restarts the DevServer.** Typically called when `uno_health` reports a `WorkspaceAmbiguous` issue. | `solutionPath`, `forceRestart` |
-| `uno_app_initialize` | Set the workspace root, resolve the solution and start the DevServer. Called once at the start of a session, and only exposed for agents that do not support [MCP roots](#mcp-roots-compatibility). | — |
+| Tool | License | Purpose | Parameters |
+|---|---|---|---|
+| `uno_health` | None | Health of the DevServer MCP bridge: connection state, tool count, discovered solutions, and any issues detected during startup. Read-only. | — |
+| `uno_discover_tools` | None | Re-query the full list of app tools, with their descriptions and input schemas. Read-only. | — |
+| `uno_execute_tool` | None | Call an app tool by name, whether or not your agent's tool list already knows about it. | `toolName`, `arguments` |
+| `uno_app_select_solution` | None | Pick a solution when the workspace contains more than one. **Restarts the DevServer.** Typically called when `uno_health` reports a `WorkspaceAmbiguous` issue. | `solutionPath`, `forceRestart` |
+| `uno_app_initialize` | None | Set the workspace root, resolve the solution and start the DevServer. Called once at the start of a session, and only exposed for agents that do not support [MCP roots](#mcp-roots-compatibility). | — |
 
 ### App MCP tools
 
-These tools require a license — see [licensing](xref:Uno.GetStarted.Licensing) for what each tier includes.
+Every tool in this section requires a license. The **License** column gives the tier each one needs — see [Licensing](xref:Uno.GetStarted.Licensing) for what the Community, Pro and Business tiers include and how to obtain one.
 
-The Community license MCP app tools are:
-
-| Tool | Purpose | Parameters |
-|---|---|---|
-| `uno_app_start` | Start the app with Hot Reload support. | `projectPath`, `targetFramework`, `args`, `display`, `stdoutFile`, `connectionTimeoutSeconds` (1–300) |
-| `uno_app_close` | Close the running app. | — |
-| `uno_app_get_runtime_info` | General information about the running app, such as its PID, window title and uptime. Read-only. | — |
-| `uno_app_get_screenshot` | A screenshot of the running app, or of a single element. Read-only. | `fileType` (`png` or `jpeg`), `quality` (default 75), `path`, `elementRef` |
-| `uno_app_visualtree_snapshot` | A textual representation of the visual tree. Read-only. | `detail` (`compact`, `normal` or `full`), `includeHidden`, `elementRef` |
-| `uno_app_pointer_click` | Click at X,Y coordinates in the app. | `x`, `y`, `button`, `clickCount`, `delayBetweenPresseAndReleaseInMs` |
-| `uno_app_key_press` | Type an individual key, optionally with modifiers. | `virtualKey`, `virtualKeyModifiers`, `unicodeKey` |
-| `uno_app_type_text` | Type a longer string into the focused control. | `text`, `intervalInMs` |
-| `uno_app_element_peer_default_action` | Execute the default automation peer action on a UI element. | `elementRef` |
-| `uno_devserver_diagnostics` | Diagnostics for the current DevServer connection. Read-only. | — |
+| Tool | License | Purpose | Parameters |
+|---|---|---|---|
+| `uno_app_start` | Community | Start the app with Hot Reload support. | `projectPath`, `targetFramework`, `args`, `display`, `stdoutFile`, `connectionTimeoutSeconds` (1–300) |
+| `uno_app_close` | Community | Close the running app. | — |
+| `uno_app_get_runtime_info` | Community | General information about the running app, such as its PID, window title and uptime. Read-only. | — |
+| `uno_app_get_screenshot` | Community | A screenshot of the running app, or of a single element. Read-only. | `fileType` (`png` or `jpeg`), `quality` (default 75), `path`, `elementRef` |
+| `uno_app_visualtree_snapshot` | Community | A textual representation of the visual tree. Read-only. | `detail` (`compact`, `normal` or `full`), `includeHidden`, `elementRef` |
+| `uno_app_pointer_click` | Community | Click at X,Y coordinates in the app. | `x`, `y`, `button`, `clickCount`, `delayBetweenPresseAndReleaseInMs` |
+| `uno_app_key_press` | Community | Type an individual key, optionally with modifiers. | `virtualKey`, `virtualKeyModifiers`, `unicodeKey` |
+| `uno_app_type_text` | Community | Type a longer string into the focused control. | `text`, `intervalInMs` |
+| `uno_app_element_peer_default_action` | Community | Execute the default automation peer action on a UI element. | `elementRef` |
+| `uno_devserver_diagnostics` | Community | Diagnostics for the current DevServer connection. Read-only. | — |
+| `uno_app_element_peer_action` | Pro | Invoke a specific automation peer action on an element. | `elementRef`, `action`, `actionParameters` |
+| `uno_app_get_element_datacontext` | Pro | A textual representation of the DataContext on a FrameworkElement. Read-only. | `elementRef` |
+| `uno_app_get_memory_counters` | Business | Memory counters for the running app. Read-only. | — |
 
 > [!TIP]
 > `detail` on `uno_app_visualtree_snapshot` makes a large difference to what you get back. `compact` (the default) returns structure only; `normal` adds automation patterns, bindings, DataContext and state flags; `full` adds framework-internal nodes, bounds and offscreen elements. Start with `compact` and ask for more only when you need it.
-
-The Pro license App MCP app tools are:
-
-| Tool | Purpose | Parameters |
-|---|---|---|
-| `uno_app_element_peer_action` | Invoke a specific automation peer action on an element. | `elementRef`, `action`, `actionParameters` |
-| `uno_app_get_element_datacontext` | A textual representation of the DataContext on a FrameworkElement. Read-only. | `elementRef` |
-
-The Business license App MCP app tools are:
-
-| Tool | Purpose | Parameters |
-|---|---|---|
-| `uno_app_get_memory_counters` | Memory counters for the running app. Read-only. | — |
 
 ### Tools published by the running app
 
 Beyond the fixed set above, a running app can publish its own tools, which the App MCP merges into its surface. The server prefixes every such tool with `app_`, so a tool an app publishes as `set_theme` reaches the agent as `app_set_theme`. Names already starting with `uno_` or `app_` are rejected, and a name colliding with one of the built-in tools is dropped in favor of the built-in.
 
-[Hot Design](xref:Uno.HotDesign.Overview) is the first component to use this. When a Hot Design-enabled app is running, these become available:
+[Hot Design](xref:Uno.HotDesign.Overview) is the first component to use this. It is part of Uno Platform Studio and needs its own entitlement — see [Licensing](xref:Uno.GetStarted.Licensing). When a licensed, Hot Design-enabled app is running, these become available:
 
-| Tool | Purpose | Parameters |
-|---|---|---|
-| `app_hotdesign_set_mode` | Show Hot Design over the running app. | `mode` (`in_app`) |
-| `app_hotdesign_set_app_mode` | Choose what the design surface edits. | `app_mode` (`application`, `previews` or `themes`) |
-| `app_hotdesign_set_form_factor` | Set the design surface's size — a named form factor, or explicit dimensions. | `form_factor`, or `width` and `height` |
-| `app_hotdesign_set_theme` | Switch the nested app between light and dark. | `theme` (`light` or `dark`) |
-| `app_hotdesign_create_preview` | Add a preview for a control, or duplicate an existing one. | `control_type`, `style_key`, `source_group_type_name`, `source_display_name` |
-| `app_hotdesign_select_preview` | Open a preview in the design surface. | `display_name` and `kind` (both required), `preview_name`, `parent_path`, `tab` |
-| `app_hotdesign_delete_preview` | Delete a preview. | `element_id` |
-| `app_hotdesign_screenshot_preview` | Screenshot a preview off-screen, without changing mode or selection. | `display_name` and `kind` (both required), `preview_name`, `parent_path`, `tab`, `file_type` |
+| Tool | License | Purpose | Parameters |
+|---|---|---|---|
+| `app_hotdesign_set_mode` | Hot Design | Show Hot Design over the running app. | `mode` (`in_app`) |
+| `app_hotdesign_set_app_mode` | Hot Design | Choose what the design surface edits. | `app_mode` (`application`, `previews` or `themes`) |
+| `app_hotdesign_set_form_factor` | Hot Design | Set the design surface's size — a named form factor, or explicit dimensions. | `form_factor`, or `width` and `height` |
+| `app_hotdesign_set_theme` | Hot Design | Switch the nested app between light and dark. | `theme` (`light` or `dark`) |
+| `app_hotdesign_create_preview` | Hot Design | Add a preview for a control, or duplicate an existing one. | `control_type`, `style_key`, `source_group_type_name`, `source_display_name` |
+| `app_hotdesign_select_preview` | Hot Design | Open a preview in the design surface. | `display_name` and `kind` (both required), `preview_name`, `parent_path`, `tab` |
+| `app_hotdesign_delete_preview` | Hot Design | Delete a preview. | `element_id` |
+| `app_hotdesign_screenshot_preview` | Hot Design | Screenshot a preview off-screen, without changing mode or selection. | `display_name` and `kind` (both required), `preview_name`, `parent_path`, `tab`, `file_type` |
 
 Two further tools expose the app's resources: `app_list_resources` and `app_read_resource`.
 
