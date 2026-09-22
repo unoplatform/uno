@@ -1574,7 +1574,6 @@ public partial class Slider
 			{
 				Point transformedPoint = Point.Zero;
 				GeneralTransform transformRoot;
-				GeneralTransform transformFromRoot;
 
 				// Determine the length of the track, in pixels.
 				orientation = Orientation;
@@ -1593,8 +1592,7 @@ public partial class Slider
 				trackClickableRegionLength = DoubleUtil.Max(trackActualLength - thumbLength, 1);
 
 				transformRoot = rootGrid.TransformToVisual(null);
-				transformFromRoot = transformRoot.Inverse;
-				transformedPoint = transformFromRoot.TransformPoint(point);
+				transformRoot.TryTransformInverse(point, out transformedPoint);
 
 				// Determine what percentage of the track is contained in the input point.
 				clickDelta = orientation == Orientation.Horizontal ?

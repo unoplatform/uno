@@ -774,6 +774,106 @@ public class Given_Binding
 	}
 
 	[TestMethod]
+	public async Task When_TemplateBinding_Can_Use_DependencyProperty_Fast_Path()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<Page.Resources>
+						<Style x:Key="ButtonStyle" TargetType="Button">
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="Button">
+										<StackPanel>
+											<ContentPresenter Content="{TemplateBinding Content}" />
+											<TextBlock Text="{TemplateBinding Tag, Mode=TwoWay}" />
+											<ScrollViewer HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" />
+										</StackPanel>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</Page.Resources>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState = { Sources = { _emptyCodeBehind } },
+			TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck,
+			GeneratedSourcesVerifier = generatedSources =>
+			{
+				var generated = generatedSources.Single(source => source.Key.Contains("MainPage_", StringComparison.Ordinal)).Value;
+
+				Assert.AreEqual(
+					2,
+					generated.Split("global::Uno.UI.Xaml.BindingHelper.SetTemplateBinding(", StringSplitOptions.None).Length - 1);
+				StringAssert.Contains(
+					generated,
+					"ContentPresenter.ContentProperty, global::Microsoft.UI.Xaml.Controls.Button.ContentProperty, @\"Content\"");
+				StringAssert.Contains(generated, "__p1.SetBinding(");
+				StringAssert.Contains(generated, "Path = @\"Tag\"");
+				StringAssert.Contains(
+					generated,
+					"ScrollViewer.HorizontalScrollModeProperty, global::Microsoft.UI.Xaml.Controls.ScrollViewer.HorizontalScrollModeProperty, @\"(Microsoft.UI.Xaml.Controls:ScrollViewer.HorizontalScrollMode)\"");
+			},
+		};
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_TemplateBinding_Targets_Attached_Property()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<Page.Resources>
+						<Style x:Key="ButtonStyle" TargetType="Button">
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="Button">
+										<Grid>
+											<ContentPresenter Grid.Row="{TemplateBinding TabIndex}" />
+										</Grid>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</Page.Resources>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState = { Sources = { _emptyCodeBehind } },
+			TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck,
+			GeneratedSourcesVerifier = generatedSources =>
+			{
+				var generated = generatedSources.Single(source => source.Key.Contains("MainPage_", StringComparison.Ordinal)).Value;
+
+				StringAssert.Contains(
+					generated,
+					"global::Uno.UI.Xaml.BindingHelper.SetTemplateBinding(__p1, global::Microsoft.UI.Xaml.Controls.Grid.RowProperty, global::Microsoft.UI.Xaml.Controls.Button.TabIndexProperty, @\"TabIndex\")");
+			},
+		};
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task When_Static_XBind_Property_In_DataTemplate_Without_DataType()
 	{
 		var xamlFiles = new[]
