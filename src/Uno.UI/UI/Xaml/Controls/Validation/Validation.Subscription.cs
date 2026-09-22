@@ -134,6 +134,34 @@ public static partial class Validation
 	private static ValidationState? GetValidationState(Control control)
 		=> control.GetValue(ValidationStateProperty) as ValidationState;
 
+	/// <summary>
+	/// Backs <see cref="IInputValidationControl.ErrorChanged"/> for every participating control, so that no
+	/// control needs storage of its own. Kept apart from the subscription state, which comes and goes with
+	/// the binding while handlers must survive a rebind.
+	/// </summary>
+	private static DependencyProperty ErrorChangedHandlerProperty { get; } =
+		DependencyProperty.RegisterAttached(
+			"ErrorChangedHandler",
+			typeof(EventHandler<DataErrorsChangedEventArgs>),
+			typeof(Validation),
+			new FrameworkPropertyMetadata(default(EventHandler<DataErrorsChangedEventArgs>)));
+
+	internal static void AddErrorChangedHandler(Control control, EventHandler<DataErrorsChangedEventArgs> handler)
+		=> control.SetValue(
+			ErrorChangedHandlerProperty,
+			Delegate.Combine(GetErrorChangedHandler(control), handler));
+
+	internal static void RemoveErrorChangedHandler(Control control, EventHandler<DataErrorsChangedEventArgs> handler)
+		=> control.SetValue(
+			ErrorChangedHandlerProperty,
+			Delegate.Remove(GetErrorChangedHandler(control), handler));
+
+	private static EventHandler<DataErrorsChangedEventArgs>? GetErrorChangedHandler(Control control)
+		=> control.GetValue(ErrorChangedHandlerProperty) as EventHandler<DataErrorsChangedEventArgs>;
+
+	private static void RaiseErrorChanged(Control control, DataErrorsChangedEventArgs args)
+		=> GetErrorChangedHandler(control)?.Invoke(control, args);
+
 	private sealed class ValidationState : IDisposable
 	{
 		private readonly Control _control;
@@ -144,8 +172,6 @@ public static partial class Validation
 		private string? _propertyName;
 
 		public ValidationState(Control control) => _control = control;
-
-		public EventHandler<DataErrorsChangedEventArgs>? ErrorChanged { get; set; }
 
 		public bool Owns(BindingExpression expression) => ReferenceEquals(_expression, expression);
 
@@ -199,7 +225,7 @@ public static partial class Validation
 
 			if (args is not null)
 			{
-				ErrorChanged?.Invoke(_control, args);
+				RaiseErrorChanged(_control, args);
 			}
 		}
 
