@@ -297,6 +297,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				"Each duplicate occurrence must retain its own realized container.");
 			Assert.AreEqual(0, listView.IndexFromContainer(occurrences[0].Owner));
 			Assert.AreEqual(1, listView.IndexFromContainer(occurrences[1].Owner));
+
+			var peerBounds = itemPeers[0].GetBoundingRectangle();
+			var firstOwner = occurrences[0].Owner;
+			var secondOwner = occurrences[1].Owner;
+			Assert.IsNotNull(firstOwner);
+			Assert.IsNotNull(secondOwner);
+			var firstContainerPeer = firstOwner.GetOrCreateAutomationPeer();
+			var secondContainerPeer = secondOwner.GetOrCreateAutomationPeer();
+			Assert.IsNotNull(firstContainerPeer);
+			Assert.IsNotNull(secondContainerPeer);
+			var firstBounds = AccessibilityPeerHelper.GetBoundingRectangle(itemPeers[0], firstOwner);
+			var secondBounds = AccessibilityPeerHelper.GetBoundingRectangle(itemPeers[0], secondOwner);
+			Assert.AreNotEqual(firstBounds.Y, secondBounds.Y);
+			Assert.AreEqual(firstContainerPeer.GetBoundingRectangle(), firstBounds);
+			Assert.AreEqual(secondContainerPeer.GetBoundingRectangle(), secondBounds);
+			Assert.AreEqual(peerBounds, itemPeers[0].GetBoundingRectangle(),
+				"Querying an occurrence must not permanently retarget the shared item peer.");
 #endif
 		}
 
