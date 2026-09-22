@@ -17,11 +17,11 @@ namespace DirectUI
 		Interaction = 0x00000001,
 		PanX = 0x00000002,
 		PanY = 0x00000004,
-		PanInertia = 0x00000008,
-		RailsX = 0x00000010,
-		RailsY = 0x00000020,
-		Zoom = 0x00000040,
+		Zoom = 0x00000010,
+		PanInertia = 0x00000020,
 		ZoomInertia = 0x00000080,
+		RailsX = 0x00000100,
+		RailsY = 0x00000200,
 	}
 
 	// DirectManipulation alignment for primary content. Determines where short content
@@ -32,23 +32,22 @@ namespace DirectUI
 		Near = 0x01,
 		Center = 0x02,
 		Far = 0x04,
-		Stretch = 0x08,
-		Unlocked = 0x10,
+		UnlockCenter = 0x08,
 	}
 
 	// Overpan (rubber-band) mode for one direction.
 	internal enum DMOverpanMode
 	{
-		Default = 0,
-		None = 1,
+		Default = 0x00,
+		None = 0x04,
 	}
 
 	// Coordinate system in which snap points are expressed.
 	internal enum DMSnapCoordinate
 	{
-		Boundary = 0,
-		Origin = 1,
-		Mirrored = 2,
+		Boundary = 0x00,
+		Origin = 0x01,
+		Mirrored = 0x10,
 	}
 
 	// Motion types for which DM can produce snap points / chaining.
@@ -59,8 +58,8 @@ namespace DirectUI
 		PanX = 0x01,
 		PanY = 0x02,
 		Zoom = 0x04,
-		CenterX = 0x08,
-		CenterY = 0x10,
+		CenterX = 0x10,
+		CenterY = 0x20,
 	}
 
 	internal enum ZoomDirection

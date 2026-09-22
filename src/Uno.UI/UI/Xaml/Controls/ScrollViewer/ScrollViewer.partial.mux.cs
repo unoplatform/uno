@@ -3940,7 +3940,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// When a header child is present, the DMAlignmentUnlockCenter flag is required to avoid
 				// offsets being reset to 0 when inertia starts.
-				horizontalAlignment = (DMAlignment)((int)alignment + (int)DMAlignment.Unlocked);
+				horizontalAlignment = (DMAlignment)((int)alignment + (int)DMAlignment.UnlockCenter);
 			}
 
 			if (resetHorizontalStretchAlignmentTreatedAsNear)
@@ -4054,7 +4054,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// When a header child is present, the DMAlignmentUnlockCenter flag is required to avoid
 				// offsets being reset to 0 when inertia starts.
-				verticalAlignment = (DMAlignment)((int)alignment + (int)DMAlignment.Unlocked);
+				verticalAlignment = (DMAlignment)((int)alignment + (int)DMAlignment.UnlockCenter);
 			}
 
 			if (resetVerticalStretchAlignmentTreatedAsNear)
