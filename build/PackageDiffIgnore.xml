@@ -2803,6 +2803,8 @@
 		  <!-- Legacy Frame navigation mode flags (accessors paired in <Methods> below). -->
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Frame::UseWinUIBehavior()" reason="Removed Frame.UseWinUIBehavior; Frame always follows WinUI (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page::IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled; only the legacy Frame navigation mode pooled pages (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -3526,6 +3528,10 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Frame.set_UseWinUIBehavior(System.Boolean value)" reason="Removed Frame.UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page.get_IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Page.set_IsPoolingEnabled(System.Boolean value)" reason="Removed Page.IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool.get_TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PagePool.set_TimeToLive(System.TimeSpan value)" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool.get_IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PagePool.set_IsPoolingEnabled(System.Boolean value)" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.OnContentChanged(System.Object oldValue, System.Object newValue)" reason="Removed Frame override that synced the legacy navigation entry; ContentControl.OnContentChanged still applies (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.GetInstance(Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.EnsurePageInitialized(Microsoft.UI.Xaml.Controls.Frame frame, Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
@@ -4278,6 +4284,8 @@
 		  <!-- Legacy Frame navigation mode flags (accessors paired in <Methods> below). -->
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Frame::UseWinUIBehavior()" reason="Removed Frame.UseWinUIBehavior; Frame always follows WinUI (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page::IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled; only the legacy Frame navigation mode pooled pages (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -5001,6 +5009,10 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Frame.set_UseWinUIBehavior(System.Boolean value)" reason="Removed Frame.UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page.get_IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Page.set_IsPoolingEnabled(System.Boolean value)" reason="Removed Page.IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool.get_TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PagePool.set_TimeToLive(System.TimeSpan value)" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool.get_IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PagePool.set_IsPoolingEnabled(System.Boolean value)" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.OnContentChanged(System.Object oldValue, System.Object newValue)" reason="Removed Frame override that synced the legacy navigation entry; ContentControl.OnContentChanged still applies (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.GetInstance(Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.EnsurePageInitialized(Microsoft.UI.Xaml.Controls.Frame frame, Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
