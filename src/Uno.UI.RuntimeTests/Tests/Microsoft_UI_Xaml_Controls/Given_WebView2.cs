@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
 using Private.Infrastructure;
@@ -336,6 +337,7 @@ public class Given_WebView2
 				CoreWebView2HostResourceAccessKind.Allow);
 			webView.NavigationCompleted += (sender, e) => navigated = true;
 			string message = "";
+			CoreWebView2WebMessageReceivedEventArgs receivedMessage = null;
 			webView.WebMessageReceived += (s, e) =>
 			{
 				Assert.IsTrue(webView.DispatcherQueue.HasThreadAccess);
@@ -343,19 +345,14 @@ public class Given_WebView2
 				Assert.IsTrue(webView.Dispatcher.HasThreadAccess);
 #endif
 				message = e.WebMessageAsJson;
+				receivedMessage = e;
 			};
 			webView.CoreWebView2.Navigate("http://UnoNativeAssets/index.html");
 			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 			await TestServices.WindowHelper.WaitFor(() => !string.IsNullOrEmpty(message), 2000);
 
-			if (RuntimeTestsPlatformHelper.CurrentPlatform is RuntimeTestPlatforms.SkiaX11) // On X11 we double escape. This makes sense because in site.js, we stringify a string. Other webkit-based implementations get this wrong
-			{
-				Assert.AreEqual("\"\\\"rgb(255, 0, 0)\\\"\"", message);
-			}
-			else
-			{
-				Assert.AreEqual(@"""rgb(255, 0, 0)""", message);
-			}
+			Assert.AreEqual(@"""rgb(255, 0, 0)""", message);
+			Assert.AreEqual("rgb(255, 0, 0)", receivedMessage.TryGetWebMessageAsString());
 		}
 
 		await TestHelper.RetryAssert(Do, 3);
@@ -486,14 +483,9 @@ public class Given_WebView2
 
 		await TestServices.WindowHelper.WaitFor(() => message is not null, 2000);
 
-		if (RuntimeTestsPlatformHelper.CurrentPlatform is RuntimeTestPlatforms.SkiaX11) // On X11 we double escape. If we fix this, other cases break.
-		{
-			Assert.AreEqual("\"{\\\"some\\\":[\\\"values\\\",\\\"in\\\",\\\"json\\\",1]}\"", message);
-		}
-		else
-		{
-			Assert.AreEqual(@"{""some"":[""values"",""in"",""json"",1]}", message);
-		}
+		Assert.AreEqual(@"{""some"":[""values"",""in"",""json"",1]}", message);
+		using var json = JsonDocument.Parse(message);
+		Assert.AreEqual(JsonValueKind.Object, json.RootElement.ValueKind);
 	}
 
 	[TestMethod]

@@ -16,6 +16,40 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 public class Given_WebView2_ReviewContracts
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include,
+		RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS
+		| RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Web_Messages_Preserve_Object_And_Json_Looking_String_Types()
+	{
+		var webView = await CreateWebViewAsync();
+		try
+		{
+			var messages = new List<CoreWebView2WebMessageReceivedEventArgs>();
+			webView.CoreWebView2!.WebMessageReceived += (_, args) => messages.Add(args);
+			webView.NavigateToString("""
+				<!doctype html><html><head><script>
+				var message = { some: ['values', 'in', 'json', 1] };
+				chrome.webview.postMessage(message);
+				chrome.webview.postMessage(JSON.stringify(message));
+				chrome.webview.postMessage('rgb(255, 0, 0)');
+				</script></head><body>message types</body></html>
+				""");
+			await TestServices.WindowHelper.WaitFor(() => messages.Count == 3, 10_000);
+
+			Assert.AreEqual("""{"some":["values","in","json",1]}""", messages[0].WebMessageAsJson);
+			Assert.ThrowsExactly<ArgumentException>(() => messages[0].TryGetWebMessageAsString());
+			Assert.AreEqual("\"{\\\"some\\\":[\\\"values\\\",\\\"in\\\",\\\"json\\\",1]}\"", messages[1].WebMessageAsJson);
+			Assert.AreEqual("""{"some":["values","in","json",1]}""", messages[1].TryGetWebMessageAsString());
+			Assert.AreEqual("\"rgb(255, 0, 0)\"", messages[2].WebMessageAsJson);
+			Assert.AreEqual("rgb(255, 0, 0)", messages[2].TryGetWebMessageAsString());
+		}
+		finally
+		{
+			Close(webView);
+		}
+	}
+
+	[TestMethod]
 	[DataRow(false)]
 	[DataRow(true)]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.SkiaMacOS)]

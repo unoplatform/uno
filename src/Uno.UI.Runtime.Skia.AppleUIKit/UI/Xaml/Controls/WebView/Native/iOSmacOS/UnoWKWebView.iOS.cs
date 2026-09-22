@@ -369,8 +369,8 @@ public
 		_isClosed = true;
 		var navigationDelegate = NavigationDelegate;
 		var uiDelegate = UIDelegate;
-		NavigationDelegate = null;
-		UIDelegate = null;
+		WeakNavigationDelegate = null;
+		WeakUIDelegate = null;
 		StopLoading();
 		Configuration.UserContentController.RemoveScriptMessageHandler(WebMessageHandlerName);
 		Configuration.UserContentController.RemoveAllUserScripts();
