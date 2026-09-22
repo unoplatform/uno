@@ -4163,12 +4163,9 @@ namespace Microsoft.UI.Xaml.Controls
 			canManipulateElementsWithAsyncBringIntoViewport = false;
 			touchConfiguration = DMConfigurations.None;
 			nonTouchConfiguration = DMConfigurations.None;
-			bringIntoViewportConfiguration =
-				DMConfigurations.PanX |
-				DMConfigurations.PanY |
-				DMConfigurations.Zoom |
-				DMConfigurations.PanInertia |
-				DMConfigurations.ZoomInertia;
+			// WinUI clears the output up front and only publishes the bring-into-viewport set once every
+			// gate below has passed, so an unloaded, content-less or disabled ScrollViewer reports None.
+			bringIntoViewportConfiguration = DMConfigurations.None;
 
 			var content = GetContentUIElement();
 			if (m_hManipulationHandler is null || content is null || !IsLoaded || !m_hManipulationHandler.IsLoaded)
@@ -4236,6 +4233,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			nonTouchConfiguration = GetNonTouchManipulationConfiguration(canUseCachedProperties);
+
+			bringIntoViewportConfiguration =
+				DMConfigurations.PanX |
+				DMConfigurations.PanY |
+				DMConfigurations.Zoom |
+				DMConfigurations.PanInertia |
+				DMConfigurations.ZoomInertia;
 		}
 
 		internal void GetCanManipulateElements(
