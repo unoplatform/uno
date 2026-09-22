@@ -637,10 +637,12 @@ are the rest.
   `DropDownPreferredPlacement` with the *MUX* `ComboBox` as owner while the path names the Uno static class,
   so the registry lookup misses and that property cannot be observed through a binding path. Pre-existing,
   out of scope here, worth its own issue.
-- **Ordering: the attached property is set *after* the binding**, not before, in generated XAML — and at that
-  moment the element is parentless with a null `DataContext`, so the leaf is unresolvable anyway.
-  Registration therefore cannot be gated on `Validation.IsEnabled`; it marks the expression unconditionally
-  and the changed callback pulls the current expression. Either order works.
+- **Ordering: neither `SetBinding` nor `Validation.IsEnabled` can be assumed to come first.** Generated XAML
+  emits the two as sequential assignments in document order, so the attribute order in the markup decides —
+  and XamlStyler reorders attributes, so it is not even stable per file. Either way the element is parentless
+  with a null `DataContext` at that point, so the leaf is unresolvable regardless. Registration therefore
+  cannot be gated on `Validation.IsEnabled`: it marks the expression unconditionally, the *sync* is gated,
+  and the changed callback pulls the current expression. Both orders are covered by tests.
 - **No read-only attached dependency property exists in Uno** — no `DependencyPropertyKey`, no
   `RegisterAttachedReadOnly`. `HasErrors` and `Errors` use a public getter with an internal setter, which
   leaves them technically settable from XAML through `SetValue`.
