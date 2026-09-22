@@ -67,6 +67,11 @@ accessibility but does not establish release-shrinker, marshal-method, or AOT co
 Leave runtime identifiers to the head project rather than
 forcing an Android RID onto its generic project references.
 
+If an SDK 10 incremental APK fails at startup with Kotlin's missing Main dispatcher error,
+check that `META-INF/services/kotlinx.coroutines.internal.MainDispatcherFactory` is present.
+Clean the SamplesApp head and republish with the same flags before changing dependencies;
+the native validation package must include this service-loader resource.
+
 The CI-equivalent Skia Android runner is:
 
 ```text
@@ -171,6 +176,24 @@ Add tests that:
 
 No new Appium test project is required. Appium compatibility is validated against the same
 native trees through a focused manual smoke matrix.
+
+Modal isolation follows `IsDialog` or an exposed Window pattern reporting `IsModal`.
+Do not bypass `GetPattern(Window)` with a direct popup-peer cast: ordinary text-gripper
+popups do not expose that pattern and must not hide the editor's accessibility nodes.
+ContentDialog popups retain WinUI's explicit `IsContentDialog` marker.
+
+The Android `GetScreenshot("0")` backdoor starts a capture and returns `pending`.
+Poll the same backdoor until it returns a base64 PNG; `GetInAppScreenshot` handles this
+protocol for UI tests. Native capture errors and the 10-second capture timeout propagate
+on polling without blocking the Activity's UI thread.
+Only `pending` responses are retried. Do not put the bridge invocation inside Xamarin's
+`WaitFor` predicate: that helper catches predicate exceptions and could silently start a
+new capture after the original request failed.
+
+Run the Xamarin.UITest-backed Android fixtures with `UNO_UITEST_ANDROIDAPK_PATH` set to
+the test APK, not only an installed package name. The runner must sign the app and its
+Calabash instrumentation server with the same certificate. The CI step prepares the
+assembly-store compatibility marker in the APK, as `android-uitest-run.sh` does.
 
 ## 7. Manual TalkBack validation
 
