@@ -145,6 +145,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			// when this TextBox is the one in focus
 			return;
 		}
+		// Advisory: on iOS the JS side keeps the input off-screen and ignores size and position.
 		NativeMethods.UpdateSize(_view.DisplayBlock.ActualWidth, _view.DisplayBlock.ActualHeight);
 	}
 
@@ -156,6 +157,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			// when this TextBox is the one in focus
 			return;
 		}
+		// Advisory: on iOS the JS side keeps the input off-screen and ignores size and position.
 		var p = _view.DisplayBlock.TransformToVisual(null).TransformPoint(default);
 		NativeMethods.UpdatePosition(p.X, p.Y);
 	}

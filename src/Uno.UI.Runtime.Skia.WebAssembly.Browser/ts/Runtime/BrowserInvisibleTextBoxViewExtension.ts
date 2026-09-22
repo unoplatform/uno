@@ -3,6 +3,20 @@
 		private static _exports: any;
 		private static _imeExports: any;
 		private static readonly isMacOS = navigator?.platform.toUpperCase().includes('MAC') ?? false;
+		// iPadOS 13+ reports itself as a Mac, so touch support is what tells it apart from macOS Safari.
+		private static readonly isIOS = /iP(ad|hone|od)/.test(navigator?.platform ?? "")
+			|| (navigator?.platform === "MacIntel" && (navigator.maxTouchPoints ?? 0) > 1);
+
+		// iOS WebKit scrolls the page to reveal the focused editable, on focus and on every keyboard frame
+		// change. The page is position:fixed, so that scroll pans the whole canvas and shifts hit-testing by
+		// the same amount. Off-screen there is nothing to reveal; the TextBox draws its own caret, selection
+		// and grippers, so the input's position and size are unused there.
+		private static readonly keepsInputOffscreen = BrowserInvisibleTextBoxViewExtension.isIOS;
+		private static readonly offscreenTop = "-10000px";
+
+		// The InputPane drives the bring-into-view of the focused TextBox; the browser's own scroll-to-focus
+		// would only pan the visual viewport (see keepsInputOffscreen).
+		private static readonly focusOptions: FocusOptions = { preventScroll: true };
 		private static inputElement: HTMLInputElement | HTMLTextAreaElement | null;
 
 		// Issue-1 trailing-click guard state (see installTrailingClickGuard).
@@ -141,7 +155,9 @@
 			input.style.overflow = "hidden";
 			input.style.pointerEvents = "none";
 			input.style.zIndex = "99";
-			input.style.top = "0px";
+			// Placed before focus() so WebKit never sees an on-screen rect to reveal. Only top goes off-screen:
+			// a negative left would be scrollable overflow in a right-to-left document.
+			input.style.top = BrowserInvisibleTextBoxViewExtension.keepsInputOffscreen ? BrowserInvisibleTextBoxViewExtension.offscreenTop : "0px";
 			input.style.left = "0px";
 			input.value = text;
 
@@ -333,7 +349,7 @@
 				// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal
 				// events and properly recognize password inputs to not read it.
 				if (document.activeElement !== existingInput) {
-					existingInput.focus();
+					existingInput.focus(BrowserInvisibleTextBoxViewExtension.focusOptions);
 				}
 			}
 			else {
@@ -345,12 +361,18 @@
 				existingInput?.removeAttribute("id");
 				this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint);
 				BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(() => {
-					BrowserInvisibleTextBoxViewExtension.inputElement.focus();
+					BrowserInvisibleTextBoxViewExtension.inputElement.focus(BrowserInvisibleTextBoxViewExtension.focusOptions);
 					existingInput?.remove();
 				});
 			}
 
 			BrowserInvisibleTextBoxViewExtension.currentHandle = Number(handle);
+
+			// Set for whichever element ends up live: the shared input is reused across TextBoxes, so tagging
+			// it only on creation leaves the policy unreported for every retargeted entry session. Inspectable
+			// from the Web Inspector when diagnosing keyboard or IME placement reports.
+			BrowserInvisibleTextBoxViewExtension.inputElement.dataset.unoPlacement =
+				BrowserInvisibleTextBoxViewExtension.keepsInputOffscreen ? "offscreen" : "tracking";
 
 			// The retarget path keeps the input focused, so no focusin fires and the trailing-click
 			// guard never arms; arm it here for both paths (see installTrailingClickGuard).
@@ -462,7 +484,9 @@
 
 		public static updateSize(width: number, height: number) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
-			if (input != null) {
+			// Sized like the TextBox only where the input is positioned over it: a multi-line TextBox reports
+			// its full content height, which would stretch an off-screen input back into the viewport.
+			if (input != null && !BrowserInvisibleTextBoxViewExtension.keepsInputOffscreen) {
 				input.style.width = `${width}px`;
 				input.style.height = `${height}px`;
 			}
@@ -470,7 +494,7 @@
 
 		public static updatePosition(x: number, y: number) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
-			if (input != null) {
+			if (input != null && !BrowserInvisibleTextBoxViewExtension.keepsInputOffscreen) {
 				input.style.top = `${Math.round(y)}px`;
 				input.style.left = `${Math.round(x)}px`;
 			}
