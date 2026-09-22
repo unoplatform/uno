@@ -6,6 +6,7 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml;
@@ -641,6 +642,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 				tooltip.IsOpen = false;
+#if HAS_UNO
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Image_Source_Loads_While_Open()
+		{
+			var owner = new Button { Content = "owner" };
+			var image = new Image { Width = 180, Height = 120, Stretch = Stretch.Uniform };
+			var SUT = new ToolTip { Content = image };
+			ToolTipService.SetToolTip(owner, SUT);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = owner;
+				await TestServices.WindowHelper.WaitForLoaded(owner);
+
+				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitForLoaded(image);
+
+				// The image gets its source only once the tooltip is showing, so the bitmap data arrives
+				// while the image sits inside an already-laid-out popup.
+				var opened = new TaskCompletionSource<bool>();
+				image.ImageOpened += (_, _) => opened.TrySetResult(true);
+				image.ImageFailed += (_, _) => opened.TrySetResult(false);
+				image.Source = new BitmapImage(new Uri("ms-appx:///Assets/my500x200.jpg"));
+
+				await Task.WhenAny(opened.Task, Task.Delay(3000));
+
+				Assert.IsTrue(opened.Task.IsCompleted, "The image did not open while the tooltip was showing.");
+				Assert.IsTrue(await opened.Task, "The image failed to load.");
+
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsTrue(image.ActualWidth > 0 && image.ActualHeight > 0, "The image was not laid out with its bitmap.");
+			}
+			finally
+			{
+				SUT.IsOpen = false;
 #if HAS_UNO
 				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 #endif
