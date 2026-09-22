@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.InputValidation;
@@ -236,6 +237,34 @@ public partial class Given_Validation_Transport
 		Assert.IsFalse(Validation.GetHasErrors(control));
 	}
 
+	[TestMethod]
+	public void When_Compiled_Binding()
+	{
+		// A compiled binding resolves through its update sources and leaves the binding path empty, so leaf
+		// resolution has to read the former. Reading the path alone would have reproduced
+		// microsoft-ui-xaml#4642 in reverse, validating {Binding} but silently never an x:Bind.
+		var page = new Page { ViewModel = new Person() };
+		var control = new ValidatingControl();
+		Validation.SetIsEnabled(control, true);
+
+		var binding = new Binding { Mode = BindingMode.OneWay, CompiledSource = page };
+		binding.SetBindingXBindProvider(
+			page,
+			o => (true, ((Page)o).ViewModel.Name),
+			null,
+			new[] { "ViewModel.Name" });
+
+		control.SetBinding(ValidatingControl.TextProperty, binding);
+		control.ApplyXBind();
+
+		page.ViewModel.SetErrors(nameof(Person.Name), "required");
+
+		Assert.IsTrue(Validation.GetHasErrors(control));
+		CollectionAssert.AreEqual(
+			new object[] { "required" },
+			Validation.GetErrors(control).Cast<object>().ToArray());
+	}
+
 	private static (ValidatingControl Control, Person Source) Bind(bool enable = true)
 	{
 		var source = new Person();
@@ -281,6 +310,12 @@ public partial class Given_Validation_Transport
 	private class PlainSource
 	{
 		public string Name { get; set; } = string.Empty;
+	}
+
+	/// <summary>Stands in for the page a compiled binding uses as its compiled source.</summary>
+	private class Page
+	{
+		public Person ViewModel { get; set; } = new();
 	}
 
 	private class Wrapper : INotifyPropertyChanged
