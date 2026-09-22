@@ -500,10 +500,22 @@
 	<Target Name="_UnoStampDevAppxPackageVersion"
 			Condition="'$(_Platform)' == 'windows' and '$(ContinuousIntegrationBuild)' != 'true' and '$(BuildingInsideVisualStudio)' != 'true'"
 			BeforeTargets="_ValidatePresenceOfAppxManifestItems;_GenerateCurrentProjectAppxManifest;GetPackagingOutputs;_CreatePackageLayout">
+		<XmlPeek XmlInputPath="Package.appxmanifest"
+				 Query="/x:Package/x:Identity/@Version"
+				 Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10' /&gt;">
+			<Output TaskParameter="Result" ItemName="_UnoAppxManifestVersion" />
+		</XmlPeek>
 		<PropertyGroup>
+			<_UnoAppxManifestVersionValue>@(_UnoAppxManifestVersion)</_UnoAppxManifestVersionValue>
+			<!-- Read off the manifest instead of hardcoding, so a future major/minor bump there doesn't silently diverge. -->
+			<_UnoAppxManifestMajorMinor>$(_UnoAppxManifestVersionValue.Split('.')[0]).$(_UnoAppxManifestVersionValue.Split('.')[1])</_UnoAppxManifestMajorMinor>
 			<_UnoDevAppxManifest>$(IntermediateOutputPath)Package.dev.appxmanifest</_UnoDevAppxManifest>
-			<!-- Monotonic: days since 2020 as build, two-second ticks of the day as revision (both fit the 0-65535 limit). -->
-			<_UnoDevAppxVersion>1.0.$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse('2020-01-01'))).Days).$([System.Convert]::ToInt32($([System.Math]::Floor($([MSBuild]::Divide($([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds), 2))))))</_UnoDevAppxVersion>
+			<!-- Monotonic: days since 2020 as build, milliseconds of the day mod 65536 as revision (both fit the
+			     0-65535 limit). The (year, month, day) DateTime constructor is always Gregorian, unlike
+			     DateTime.Parse (which reads the current culture's calendar) - avoids a wrong-by-centuries offset
+			     on a machine configured with a non-Gregorian calendar. Sub-second precision keeps a fast
+			     rebuild-deploy loop from stamping the same version twice. -->
+			<_UnoDevAppxVersion>$(_UnoAppxManifestMajorMinor).$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::new(2020,1,1))).Days).$([MSBuild]::Modulo($([System.DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()), 65536))</_UnoDevAppxVersion>
 		</PropertyGroup>
 		<Copy SourceFiles="Package.appxmanifest" DestinationFiles="$(_UnoDevAppxManifest)" />
 		<XmlPoke XmlInputPath="$(_UnoDevAppxManifest)"
