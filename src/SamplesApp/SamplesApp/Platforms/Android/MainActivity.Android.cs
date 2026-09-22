@@ -35,7 +35,7 @@ namespace SamplesApp.Droid
 		DataScheme = "uno-samples-test")]
 	public class MainActivity : ApplicationActivity
 	{
-		private HandlerThread _pixelCopyHandlerThread;
+		private Task<string> _screenshotTask;
 
 		protected override void OnCreate(Bundle bundle)
 		{
@@ -83,6 +83,25 @@ namespace SamplesApp.Droid
 		[Export("GetScreenshot")]
 		public string GetScreenshot(string displayId)
 		{
+			var screenshotTask = _screenshotTask;
+			if (screenshotTask is null)
+			{
+				// The capture retains its bitmap until PixelCopy completes, even if polling times out.
+				_screenshotTask = CaptureScreenshotAsync().WaitAsync(TimeSpan.FromSeconds(10));
+				return "pending";
+			}
+
+			if (!screenshotTask.IsCompleted)
+			{
+				return "pending";
+			}
+
+			_screenshotTask = null;
+			return screenshotTask.GetAwaiter().GetResult();
+		}
+
+		private async Task<string> CaptureScreenshotAsync()
+		{
 			var rootView = Window.DecorView;
 			using var bitmap = Android.Graphics.Bitmap.CreateBitmap(
 				rootView.Width,
@@ -90,13 +109,7 @@ namespace SamplesApp.Droid
 				Android.Graphics.Bitmap.Config.Argb8888);
 			using var scope = new Android.Graphics.Rect(0, 0, rootView.Width, rootView.Height);
 
-			if (_pixelCopyHandlerThread is null)
-			{
-				_pixelCopyHandlerThread = new HandlerThread("ScreenshotHelper");
-				_pixelCopyHandlerThread.Start();
-			}
-
-			using var handler = new Handler(_pixelCopyHandlerThread.Looper);
+			using var handler = new Handler(Looper.MainLooper);
 			var completion = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
 			var listener = new PixelCopyListener(completion);
 			var requested = false;
@@ -113,12 +126,7 @@ namespace SamplesApp.Droid
 				}
 			}
 
-			if (!completion.Task.Wait(TimeSpan.FromSeconds(10)))
-			{
-				throw new TimeoutException("PixelCopy screenshot did not finish within 10 seconds.");
-			}
-
-			var copyResult = completion.Task.GetAwaiter().GetResult();
+			var copyResult = await completion.Task.ConfigureAwait(false);
 			if (copyResult != (int)PixelCopyResult.Success)
 			{
 				throw new InvalidOperationException($"PixelCopy screenshot failed: {(PixelCopyResult)copyResult} ({copyResult}).");
@@ -143,19 +151,6 @@ namespace SamplesApp.Droid
 			{
 				Window.ClearFlags(WindowManagerFlags.Fullscreen);
 			}
-		}
-
-		protected override void OnDestroy()
-		{
-			var thread = _pixelCopyHandlerThread;
-			_pixelCopyHandlerThread = null;
-			if (thread is not null)
-			{
-				thread.QuitSafely();
-				thread.Dispose();
-			}
-
-			base.OnDestroy();
 		}
 
 		// Required for the MSAL sample "MsalLoginAndGraph"

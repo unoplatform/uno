@@ -106,7 +106,25 @@ jobs:
       $env:UNO_UITEST_PLATFORM = "Android"
       $env:UNO_UITEST_APP_ID = "uno.platform.samplesapp.skia"
       $env:UITEST_VARIANT = "skia"
-      Remove-Item Env:UNO_UITEST_ANDROIDAPK_PATH -ErrorAction Ignore
+      $env:UNO_UITEST_ANDROIDAPK_PATH = "$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android/$($env:UNO_UITEST_APP_ID)-Signed.apk"
+      if (-not (Test-Path -LiteralPath $env:UNO_UITEST_ANDROIDAPK_PATH -PathType Leaf))
+      {
+        throw "Android Skia test APK was not found: $($env:UNO_UITEST_ANDROIDAPK_PATH)"
+      }
+
+      # Match android-uitest-run.sh: Xamarin.UITest needs the assembly-store marker and must sign both APKs.
+      $apk = [System.IO.Compression.ZipFile]::Open($env:UNO_UITEST_ANDROIDAPK_PATH, [System.IO.Compression.ZipArchiveMode]::Update)
+      try
+      {
+        if ($null -eq $apk.GetEntry("assemblies.blob"))
+        {
+          $null = $apk.CreateEntry("assemblies.blob")
+        }
+      }
+      finally
+      {
+        $apk.Dispose()
+      }
 
       $adb = Join-Path $env:ANDROID_HOME "platform-tools/adb"
       $device = (& $adb devices) |
@@ -128,7 +146,7 @@ jobs:
         -c Release `
         -p:UnoTargetFrameworkOverride=net10.0-android `
         -p:UnoFastDevBuild=true `
-        --filter "FullyQualifiedName~MobileAccessibility_Android_UiAutomator_Tests"
+        --filter "FullyQualifiedName~MobileAccessibility_Android_UiAutomator_Tests|FullyQualifiedName~ScreenshotBridge_Tests|FullyQualifiedName~ScreenshotPolling_Tests"
       if ($LASTEXITCODE -ne 0)
       {
         exit $LASTEXITCODE
