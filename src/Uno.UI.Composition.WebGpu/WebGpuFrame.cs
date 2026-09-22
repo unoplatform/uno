@@ -403,7 +403,10 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		if (op.Cover == default || op.Depth <= 0f) { return default; }
 		var c = op.Cover;
-		if (!op.Clip.ScissorInert) { c = Meet(c, op.Clip.Aabb); }
+		// Only for an op the walk placed itself. A replayed op's clip is in its RECORDING's space, so meeting a
+		// device-space cover with it would claim ground the clip never covered; AppendSite has already cut such a
+		// cover to its session clip, in device space, which is the equivalent restriction.
+		if (op.SiteSlot == 0 && !op.Clip.ScissorInert) { c = Meet(c, op.Clip.Aabb); }
 		if (b.Bound.X > float.MinValue) { c = Meet(c, b.Bound); }
 		c = new Vector4(c.X + 1f, c.Y + 1f, c.Z - 1f, c.W - 1f);
 		return c.Z - c.X >= 1f && c.W - c.Y >= 1f ? c : default;

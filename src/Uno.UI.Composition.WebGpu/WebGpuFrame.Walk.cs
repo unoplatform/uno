@@ -791,16 +791,21 @@ internal sealed unsafe partial class WebGpuFrame
 	// the space the occlusion cull compares in, and a stamp's ops are shared across the sites replaying it.
 	private static void AppendSite(List<DrawOp> ops, List<DrawOp> stamped, in Matrix3x2 rm, in ClipData session, float depth)
 	{
-		// A rotated or skewed placement does not map a box to the box it paints, and a session clip beyond a plain
-		// rect cuts the op somewhere its own clip does not record.
+		// A rotated or skewed placement does not map a box to the box it paints.
 		bool boxes = rm.M12 == 0f && rm.M21 == 0f;
-		bool plain = boxes && ClipIsPlain(session);
+		// A session clip beyond a plain rect need not cost the site every cover it has: the op still paints at full
+		// alpha wherever that clip is fully inside, which is its inner box. Without this one rounded corner on the
+		// card disqualifies everything inside it from ever occluding.
+		// This is also the ONLY place the session restriction can be applied: the session clip is in device space
+		// while a recorded op's own clip is in its recording's, so the prepass cannot intersect the two later.
+		var sessionInner = boxes ? ClipInner(session) : default;
+		bool innerOk = sessionInner != default;
 		foreach (var op in stamped)
 		{
 			var o = op;
 			o.Depth = depth;
 			o.Bounds = boxes && op.Bounds != default ? TransformBounds(op.Bounds, rm) : default;
-			o.Cover = plain && op.Cover != default ? TransformBounds(op.Cover, rm) : default;
+			o.Cover = op.Cover != default && innerOk ? Meet(TransformBounds(op.Cover, rm), sessionInner) : default;
 			ops.Add(o);
 		}
 	}
