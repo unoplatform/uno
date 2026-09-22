@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Globalization;
@@ -43,9 +43,10 @@ internal sealed class SvgPathParser
 				command = c;
 				_pos++;
 			}
-			else if (_lastCommand != '\0')
+			else if (_lastCommand is not '\0' and not 'Z' and not 'z')
 			{
-				// Implicit repeat of the previous command; after an M/m, subsequent coords are L/l.
+				// Implicit repeat of the previous command; after an M/m, subsequent coords are L/l. Z takes no
+				// coordinates and consumes nothing, so repeating it for a stray number would never advance.
 				command = _lastCommand switch { 'M' => 'L', 'm' => 'l', _ => _lastCommand };
 			}
 			else

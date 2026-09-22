@@ -62,14 +62,26 @@ namespace Microsoft.UI.Composition
 		IGeometry IGeometry.Combine(IGeometry other, GeometryCombineMode mode)
 		{
 			using var lease = SkiaGeometryInterop.Lease(other);
-			return new SkiaGeometrySource2D(_geometry.Op(lease.Path, mode switch
+			var op = mode switch
 			{
 				GeometryCombineMode.Union => SKPathOp.Union,
 				GeometryCombineMode.Intersect => SKPathOp.Intersect,
 				GeometryCombineMode.Difference => SKPathOp.Difference,
 				GeometryCombineMode.Xor => SKPathOp.Xor,
 				_ => SKPathOp.Union,
-			}));
+			};
+
+			if (_geometry.Op(lease.Path, op) is { } combined)
+			{
+				return new SkiaGeometrySource2D(combined);
+			}
+
+			// The boolean failed (a non-finite or pathological contour). IGeometry has no failure channel, so this
+			// degrades the way master's Op-into-destination did: an intersection yields nothing, and anything else
+			// yields this geometry unchanged, which is the answer that keeps a caller from acting on a false empty.
+			return op == SKPathOp.Intersect
+				? new SkiaGeometrySource2D(new SKPath())
+				: new SkiaGeometrySource2D(new SKPath(_geometry));
 		}
 
 		#endregion

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -76,7 +76,7 @@ internal sealed partial class ManagedGeometry
 			// A is empty: Union/Xor with B is B; Intersect and Difference (A minus B, A empty) are both empty.
 			return mode is GeometryCombineMode.Intersect or GeometryCombineMode.Difference
 				? new ManagedGeometry(Array.Empty<ManagedContour>(), GeometryFillRule.NonZero)
-				: b.AsNonZeroCopy(polysB);
+				: b.AsSameRuleCopy(polysB);
 		}
 
 		if (polysB.Count == 0)
@@ -84,7 +84,7 @@ internal sealed partial class ManagedGeometry
 			// B is empty: Intersect is empty; Union/Xor/Difference (A minus nothing) are all A.
 			return mode is GeometryCombineMode.Intersect
 				? new ManagedGeometry(Array.Empty<ManagedContour>(), GeometryFillRule.NonZero)
-				: a.AsNonZeroCopy(polysA);
+				: a.AsSameRuleCopy(polysA);
 		}
 
 		var edges = new List<(Vector2 A, Vector2 B)>();
@@ -245,7 +245,7 @@ internal sealed partial class ManagedGeometry
 			}
 		}
 
-		return new ManagedGeometry(contours, GeometryFillRule.NonZero);
+		return new ManagedGeometry(contours, g.FillRule);
 	}
 
 	private enum RectEdge
@@ -325,7 +325,9 @@ internal sealed partial class ManagedGeometry
 		return output;
 	}
 
-	private ManagedGeometry AsNonZeroCopy(List<Vector2[]> polygons)
+	// Keeps the source's fill rule: this is a copy of one operand, not a boolean result, so re-ruling it as
+	// NonZero would fill the holes of an EvenOdd shape (every rounded border ring is one).
+	private ManagedGeometry AsSameRuleCopy(List<Vector2[]> polygons)
 	{
 		var contours = new List<ManagedContour>(polygons.Count);
 		foreach (var poly in polygons)
@@ -344,7 +346,7 @@ internal sealed partial class ManagedGeometry
 			contours.Add(new ManagedContour(poly[0], segments, closed: true));
 		}
 
-		return new ManagedGeometry(contours, GeometryFillRule.NonZero);
+		return new ManagedGeometry(contours, FillRule);
 	}
 
 	// Snapped-polygon flattening, cached: the geometry is immutable and Combine flattens both operands on
