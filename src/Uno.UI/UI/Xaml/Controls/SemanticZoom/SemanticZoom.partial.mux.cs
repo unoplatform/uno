@@ -848,7 +848,7 @@ partial class SemanticZoom
 			// allow zooming using mouse in Win8 desktop apps. Phone does not have mouse in phone blue.
 			// in threshold mouse zoom is disabled by default. unless you enable zoom mode on the
 			// ScrollViewer
-			var shouldAllowMouseZoom = m_tpScrollViewer?.ZoomMode != ZoomMode.Disabled;
+			var shouldAllowMouseZoom = m_tpScrollViewer is { } scrollViewer && scrollViewer.ZoomMode != ZoomMode.Disabled;
 			if (!shouldAllowMouseZoom || !CanChangeViews)
 			{
 				return;
@@ -1166,6 +1166,8 @@ partial class SemanticZoom
 				destinationCoordinateSystem = sourceCoordinateSystem;
 			}
 
+			// WinUI assumes the manipulated element is a FrameworkElement; skip the centering correction
+			// rather than fault when a template gives the ScrollViewer non-FrameworkElement content.
 			if (m_changePhase == SemanticZoomPhase.SemanticZoomPhase_API_SwitchingViews &&
 				m_tpScrollViewer.Content is FrameworkElement manipulatedElement)
 			{
@@ -1642,6 +1644,8 @@ partial class SemanticZoom
 		return false;
 	}
 
+	// Approximates Storyboard::IsEssential: the transition must still run when dependent animations
+	// are otherwise skipped, which is what EnableDependentAnimation grants on Uno.
 	private static void MakeStoryboardEssential(Storyboard storyboard)
 	{
 		foreach (var timeline in storyboard.Children)
