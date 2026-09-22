@@ -211,7 +211,8 @@ Rewrite the markup:
 | `skia:`, `netstdref:` | `not_winappsdk:` |
 | `not_skia:`, `not_netstdref:` | `winappsdk:` |
 | `androidskia:`, `iosskia:`, `tvosskia:`, `wasmskia:` | `android:`, `ios:`, `tvos:`, `wasm:` |
-| `macos:`, `not_macos:` | `desktop:`, `not_desktop:` |
+| `macos:` | drop the attribute along with the markup using it — it named the native macOS head, which has selected nothing since Uno Platform 5.0. Gate macOS-only code with `OperatingSystem.IsMacOS()` instead |
+| `not_macos:` | drop the prefix — it has applied on every target since Uno Platform 5.0. `desktop:`/`not_desktop:` are not equivalent, since they also cover Windows and Linux |
 | `not_mux:` | drop the attribute — it dates from UWP support and never applied |
 | `xamarin:`, and `legacy:` listed in `mc:Ignorable` | drop the prefix |
 
