@@ -31,6 +31,48 @@ public static class FontFallback
 	private static readonly object _androidGate = new();
 
 	/// <summary>
+	/// The font for a family the platform itself does not have, when the fallback source knows it by name -- the
+	/// browser has no installed fonts, so a FontFamily naming a Noto family is only resolvable this way. Null when
+	/// nothing can supply it, and the caller falls back to the platform's own family lookup.
+	/// </summary>
+	public static async ValueTask<IFont?> MatchFamilyAsync(IFontProvider provider, string family, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+	{
+		if (!OperatingSystem.IsBrowser())
+		{
+			return null;
+		}
+
+		var key = (provider, family, weight, stretch, style, fontSize);
+		lock (_fetchedGate)
+		{
+			if (_fetched.TryGetValue(key, out var cached))
+			{
+				return cached;
+			}
+		}
+
+		var noto = _noto ??= NotoFontFallbackService.Instance;
+		using var stream = await noto.GetFontStreamForFontFamily(family, weight, stretch, style);
+		if (stream is null)
+		{
+			return null;
+		}
+
+		var font = provider.CreateFont(ReadAllBytes(stream), family, weight, stretch, style, fontSize);
+		lock (_fetchedGate)
+		{
+			if (_fetched.TryGetValue(key, out var raced))
+			{
+				return raced;
+			}
+
+			_fetched[key] = font;
+		}
+
+		return font;
+	}
+
+	/// <summary>
 	/// Resolves a font that can render <paramref name="codepoint"/> via the platform fallback, or <c>null</c>. Callers
 	/// try their own installed-font lookup first and only reach here on a miss. Completes synchronously except for the
 	/// browser's on-demand Noto fetch.
@@ -91,22 +133,31 @@ public static class FontFallback
 					{
 						return cachedAndroid;
 					}
+				}
 
-					// Re-read on the hit rather than holding every system font's bytes: /system/fonts carries the
-					// CJK and emoji faces, tens of MB each, and a miss only reaches here once per style.
-					IFont? created = null;
-					try
-					{
-						created = provider.CreateFont(File.ReadAllBytes(fonts[i].path), null, weight, stretch, style, fontSize);
-					}
-					catch
-					{
-						// unreadable since enumeration — fall through to the next covering font
-					}
+				// Re-read on the hit rather than holding every system font's bytes: /system/fonts carries the CJK
+				// and emoji faces, tens of MB each, and a miss only reaches here once per style. Read outside the
+				// lock so a multi-MB read does not block every other fallback lookup.
+				IFont? created = null;
+				try
+				{
+					created = provider.CreateFont(File.ReadAllBytes(fonts[i].path), null, weight, stretch, style, fontSize);
+				}
+				catch
+				{
+					// unreadable since enumeration — try the next font that covers the codepoint
+				}
 
-					if (created is null)
+				if (created is null)
+				{
+					continue;
+				}
+
+				lock (_fetchedGate)
+				{
+					if (_fetched.TryGetValue(androidKey, out var raced))
 					{
-						break;
+						return raced;
 					}
 
 					_fetched[androidKey] = created;

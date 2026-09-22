@@ -279,8 +279,10 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		// Two handles are the "same font" for segment-grouping when they refer to the same family (fallback
-		// resolution may return distinct IFont instances for the same physical font).
-		private static bool SameFont(IFont a, IFont b) => ReferenceEquals(a, b) || a.FamilyName == b.FamilyName;
+		// resolution may return distinct IFont instances for the same physical font). An empty family name
+		// carries no identity, so it never matches: a font with no typeface would otherwise group with any other.
+		private static bool SameFont(IFont a, IFont b)
+			=> ReferenceEquals(a, b) || (a.FamilyName.Length > 0 && a.FamilyName == b.FamilyName);
 
 		private List<Segment> GetSegments()
 		{
@@ -300,7 +302,10 @@ namespace Microsoft.UI.Xaml.Documents
 				int length = nextStartingIndex - i;
 				FontDetails? fallbackFont = null;
 				IFont segmentFont;
-				if (fontHandle is not null && !SameFont(fontHandle, defaultFontHandle))
+				// By reference, not by family: the handle is only here because the default could not render this
+				// codepoint, so a packaged subset that declares the same family name as the installed font it was
+				// cut from still has to be treated as a different font -- grouping them draws .notdef.
+				if (fontHandle is not null && !ReferenceEquals(fontHandle, defaultFontHandle))
 				{
 					// The handle already carries the requested weight/stretch/style (the provider resolved the
 					// fallback family for them), so it only needs wrapping with this run's size.
