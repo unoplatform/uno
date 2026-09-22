@@ -120,18 +120,18 @@ Every tool in this section requires a license. The **License** column gives the 
 
 Beyond the fixed set above, a running app can publish its own tools, which the App MCP merges into its surface. The server prefixes every such tool with `app_`, so a tool an app publishes as `set_theme` reaches the agent as `app_set_theme`. Names already starting with `uno_` or `app_` are rejected, and a name colliding with one of the built-in tools is dropped in favor of the built-in.
 
-[Hot Design](xref:Uno.HotDesign.Overview) is the first component to use this. It is part of Uno Platform Studio and needs its own entitlement — see [Licensing](xref:Uno.GetStarted.Licensing). When a licensed, Hot Design-enabled app is running, these become available:
+[Hot Design](xref:Uno.HotDesign.Overview) is the first component to use this. It ships with the Pro and Business licenses — see [Licensing](xref:Uno.GetStarted.Licensing). When a licensed, Hot Design-enabled app is running, these become available:
 
 | Tool | License | Purpose | Parameters |
 |---|---|---|---|
-| `app_hotdesign_set_mode` | Hot Design | Show Hot Design over the running app. | `mode` (`in_app`) |
-| `app_hotdesign_set_app_mode` | Hot Design | Choose what the design surface edits. | `app_mode` (`application`, `previews` or `themes`) |
-| `app_hotdesign_set_form_factor` | Hot Design | Set the design surface's size — a named form factor, or explicit dimensions. | `form_factor`, or `width` and `height` |
-| `app_hotdesign_set_theme` | Hot Design | Switch the nested app between light and dark. | `theme` (`light` or `dark`) |
-| `app_hotdesign_create_preview` | Hot Design | Add a preview for a control, or duplicate an existing one. | `control_type`, `style_key`, `source_group_type_name`, `source_display_name` |
-| `app_hotdesign_select_preview` | Hot Design | Open a preview in the design surface. | `display_name` and `kind` (both required), `preview_name`, `parent_path`, `tab` |
-| `app_hotdesign_delete_preview` | Hot Design | Delete a preview. | `element_id` |
-| `app_hotdesign_screenshot_preview` | Hot Design | Screenshot a preview off-screen, without changing mode or selection. | `display_name` and `kind` (both required), `preview_name`, `parent_path`, `tab`, `file_type` |
+| `app_hotdesign_set_mode` | Pro, Business | Show Hot Design over the running app. | `mode` (`in_app`) |
+| `app_hotdesign_set_app_mode` | Pro, Business | Choose what the design surface edits. | `app_mode` (`application`, `previews` or `themes`) |
+| `app_hotdesign_set_form_factor` | Pro, Business | Set the design surface's size — a named form factor, or explicit dimensions. | `form_factor`, or `width` and `height` |
+| `app_hotdesign_set_theme` | Pro, Business | Switch the nested app between light and dark. | `theme` (`light` or `dark`) |
+| `app_hotdesign_create_preview` | Pro, Business | Add a preview for a control, or duplicate an existing one. | `control_type`, `style_key`, `source_group_type_name`, `source_display_name` |
+| `app_hotdesign_select_preview` | Pro, Business | Open a preview in the design surface. | `display_name` and `kind` (both required), `preview_name`, `parent_path`, `tab` |
+| `app_hotdesign_delete_preview` | Pro, Business | Delete a preview. | `element_id` |
+| `app_hotdesign_screenshot_preview` | Pro, Business | Screenshot a preview off-screen, without changing mode or selection. | `display_name` and `kind` (both required), `preview_name`, `parent_path`, `tab`, `file_type` |
 
 Two further tools expose the app's resources: `app_list_resources` and `app_read_resource`.
 
