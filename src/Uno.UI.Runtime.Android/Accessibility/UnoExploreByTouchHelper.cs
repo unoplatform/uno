@@ -584,12 +584,6 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 
 		var windowProvider = peer.GetPattern(PatternInterface.Window) as IWindowProvider;
-		if (windowProvider is null &&
-			peer is PopupAutomationPeer { Owner: Popup { IsOpen: true } } popupPeer)
-		{
-			windowProvider = popupPeer;
-		}
-
 		if (windowProvider is null)
 		{
 			return false;
@@ -1588,13 +1582,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return false;
 		}
 
-		var bounds = peer.ResolveProviderPeer(resolveEventsSource: true).GetBoundingRectangle();
-		if (!HasUsableBounds(bounds) &&
-			TryGetElement(virtualViewId, out var element) &&
-			element is UIElement uiElement)
-		{
-			bounds = GetElementLogicalBounds(uiElement);
-		}
+		var bounds = GetVirtualPeerBounds(virtualViewId, peer.ResolveProviderPeer(resolveEventsSource: true));
 
 		return HasUsableBounds(bounds) &&
 			bounds.Contains(logicalPoint);
@@ -2087,12 +2075,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		var semanticOwner = _peerOnlyIds.Contains(virtualViewId) ? null : uiElement;
 
 		var effectivePeer = peer.ResolveProviderPeer(resolveEventsSource: true);
-		var peerBounds = effectivePeer.GetBoundingRectangle();
-		var logicalRect = HasUsableBounds(peerBounds)
-			? peerBounds
-			: uiElement is not null
-				? GetElementLogicalBounds(uiElement)
-				: Windows.Foundation.Rect.Empty;
+		var logicalRect = GetVirtualPeerBounds(virtualViewId, effectivePeer);
 		var physicalRect = logicalRect.LogicalToPhysicalPixels();
 		var parentPhysicalRect = physicalRect;
 		if (_parentVirtualIdByVirtualId.TryGetValue(virtualViewId, out var boundsParentId) &&
@@ -2100,13 +2083,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			TryGetVisiblePeer(boundsParentId, out var parentPeer))
 		{
 			var effectiveParentPeer = parentPeer.ResolveProviderPeer(resolveEventsSource: true);
-			var parentBounds = effectiveParentPeer.GetBoundingRectangle();
-			var parentLogicalRect = HasUsableBounds(parentBounds)
-				? parentBounds
-				: TryGetElement(boundsParentId, out var parentElement) &&
-					parentElement is UIElement parentUiElement
-						? GetElementLogicalBounds(parentUiElement)
-						: Windows.Foundation.Rect.Empty;
+			var parentLogicalRect = GetVirtualPeerBounds(boundsParentId, effectiveParentPeer);
 			parentPhysicalRect = new Windows.Foundation.Rect(
 					logicalRect.X - parentLogicalRect.X,
 					logicalRect.Y - parentLogicalRect.Y,
@@ -2319,6 +2296,15 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		// Additional metadata.
 		SetMetadata(node, effectivePeer, semanticOwner);
 		ApplyCulture(node, effectivePeer);
+	}
+
+	private Windows.Foundation.Rect GetVirtualPeerBounds(int virtualViewId, AutomationPeer peer)
+	{
+		var owner = TryGetElement(virtualViewId, out var element) ? element as UIElement : null;
+		var bounds = AccessibilityPeerHelper.GetBoundingRectangle(peer, owner);
+		return HasUsableBounds(bounds)
+			? bounds
+			: owner is not null ? GetElementLogicalBounds(owner) : Windows.Foundation.Rect.Empty;
 	}
 
 	private static Windows.Foundation.Rect GetElementLogicalBounds(UIElement element)
@@ -3208,24 +3194,20 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private HashSet<int>? GetActiveModalNodeIndices(
 		IReadOnlyList<AccessibilityPeerNode> tree)
 	{
-		if (_cachedModalNodeIndex < 0)
+		if (_cachedModalNodeIndex < 0 || _cachedModalElement is not { } modalOwner)
 		{
 			return null;
 		}
 
-		var allowed = new HashSet<int> { _cachedModalNodeIndex };
-		for (var i = _cachedModalNodeIndex + 1; i < tree.Count; i++)
+		var allowed = new HashSet<int>();
+		for (var i = 0; i < tree.Count; i++)
 		{
-			var parentIndex = tree[i].ParentIndex;
-			while (parentIndex is { } parent)
+			if (i == _cachedModalNodeIndex ||
+				(tree[i].Owner is { } owner &&
+					AccessibilityPeerHelper.IsWithinModalScope(owner, modalOwner)) ||
+				(tree[i].ParentIndex is { } parentIndex && allowed.Contains(parentIndex)))
 			{
-				if (parent == _cachedModalNodeIndex)
-				{
-					allowed.Add(i);
-					break;
-				}
-
-				parentIndex = tree[parent].ParentIndex;
+				allowed.Add(i);
 			}
 		}
 
@@ -3242,45 +3224,21 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return false;
 		}
 
+		if (AccessibilityPeerHelper.IsWithinModalScope(element, _cachedModalElement))
+		{
+			return false;
+		}
+
+		var allowed = GetActiveModalNodeIndices(tree)!;
 		for (var i = 0; i < tree.Count; i++)
 		{
-			if (!ReferenceEquals(tree[i].Owner, element))
+			if (ReferenceEquals(tree[i].Owner, element) && allowed.Contains(i))
 			{
-				continue;
+				return false;
 			}
-
-			int? current = i;
-			while (current is { } index)
-			{
-				if (index == _cachedModalNodeIndex)
-				{
-					return false;
-				}
-
-				current = tree[index].ParentIndex;
-			}
-
-			return true;
 		}
 
-		return !IsDescendantOfElement(element, _cachedModalElement);
-	}
-
-	// Walks the visual parent chain to check whether element is a descendant of ancestor.
-	private static bool IsDescendantOfElement(UIElement element, UIElement ancestor)
-	{
-		DependencyObject? current = element;
-		while (current is not null)
-		{
-			if (ReferenceEquals(current, ancestor))
-			{
-				return true;
-			}
-
-			current = (current as UIElement)?.GetUIElementAdjustedParentInternal();
-		}
-
-		return false;
+		return true;
 	}
 
 	private static AccessibilityNativeNodeSnapshot CreateSnapshot(
