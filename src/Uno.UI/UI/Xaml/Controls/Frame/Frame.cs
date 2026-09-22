@@ -98,7 +98,7 @@ public partial class Frame : ContentControl
 	/// Causes the Frame to load content represented by the specified Page.
 	/// </summary>
 	/// <param name="sourcePageType">The page to navigate to, specified as a type reference to its partial class type.</param>
-	/// <returns>False if a NavigationFailed event handler has set Handled to true; otherwise, true. See Remarks for more info.</returns>
+	/// <returns>True if the navigation is not canceled; otherwise, false. A handled <see cref="NavigationFailed"/> still returns true. See Remarks for more info.</returns>
 	public bool Navigate(Type sourcePageType) => _useWinUIBehavior ? NavigateImpl(sourcePageType) : NavigateLegacy(sourcePageType);
 
 	/// <summary>
@@ -106,7 +106,7 @@ public partial class Frame : ContentControl
 	/// </summary>
 	/// <param name="sourcePageType">The page to navigate to, specified as a type reference to its partial class type.</param>
 	/// <param name="parameter">The navigation parameter to pass to the target page.</param>
-	/// <returns>False if a NavigationFailed event handler has set Handled to true; otherwise, true. See Remarks for more info.</returns>
+	/// <returns>True if the navigation is not canceled; otherwise, false. A handled <see cref="NavigationFailed"/> still returns true. See Remarks for more info.</returns>
 	public bool Navigate(Type sourcePageType, object parameter) => _useWinUIBehavior ? NavigateImpl(sourcePageType, parameter) : NavigateLegacy(sourcePageType, parameter);
 
 	/// <summary>
