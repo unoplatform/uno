@@ -1,4 +1,4 @@
-using SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models;
+﻿using SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models;
 using Uno.UI.Samples.Controls;
 using Uno.UI;
 using Microsoft.UI.Xaml;
@@ -42,7 +42,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl
 		private void SetPoolingEnabled(bool enabled)
 		{
 #if __ANDROID__ || __APPLE_UIKIT__
-			FeatureConfiguration.Page.IsPoolingEnabled = enabled;
 			FrameworkTemplatePool.IsPoolingEnabled = enabled;
 #endif
 		}

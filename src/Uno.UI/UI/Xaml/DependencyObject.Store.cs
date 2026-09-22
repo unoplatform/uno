@@ -1555,7 +1555,7 @@ namespace Microsoft.UI.Xaml
 			|| property == Controls.TextBlock.ForegroundProperty
 			|| property == Controls.IconElement.ForegroundProperty
 			|| property == Controls.ContentPresenter.ForegroundProperty
-			|| property == Controls.RichTextBlock.ForegroundProperty
+			|| property.IsRichTextBlockProperty(nameof(Controls.RichTextBlock.Foreground))
 			|| property == Documents.TextElement.ForegroundProperty;
 
 		/// <summary>

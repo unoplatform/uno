@@ -71,11 +71,11 @@ This is the most substantial compile-time task that Uno Platform carries out. Wh
 
 Uno Platform uses existing libraries to parse a given XAML file into a XAML object tree, then Uno-specific code is responsible for interpreting the XAML object tree as a tree of visual elements and their properties. Most of this takes place within the [`XamlFileGenerator`](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs) class.
 
-### DependencyObject implementation generator
+### `DependencyObject` is a class
 
-On [Android](uno-internals-android.md) and [iOS](uno-internals-ios.md), `UIElement` (the base view type in WinUI) inherits from the native view class on the respective platform. This poses a challenge because `UIElement` inherits from the `DependencyObject` class in UWP/WinUI, which is a key part of the dependency property system. Uno makes this work by breaking from WinUI and having `DependencyObject` be an interface rather than a type.
+`DependencyObject` is an ordinary class that `UIElement` inherits from, exactly as in WinUI, and inheriting from it directly needs no special handling.
 
-Class library authors and app authors sometimes inherit directly from `DependencyObject` rather than a more derived type. To support this scenario seamlessly, the [`DependencyObjectGenerator` task](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs) looks for such classes and [generates](https://github.com/unoplatform/Uno.SourceGeneration) a partial implementation for the `DependencyObject` interface, ie, the methods that on UWP would be inherited from the base class.
+This was not always so. Before Uno Platform 7.0, the Android and iOS renderers made `UIElement` inherit the platform's native view class, which left no base-class slot for `DependencyObject` — so Uno declared it as an *interface*, and a `DependencyObjectGenerator` source generator emitted the implementation into any class that inherited from it directly. Rendering is now Skia on every target, so the native base class is gone, `DependencyObject` went back to being a class, and that generator was removed along with it.
 
 ### Formatting image assets
 

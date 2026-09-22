@@ -4,8 +4,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
+using Windows.Foundation;
 using Windows.System;
 
 namespace Uno.UI.Runtime.Skia;
@@ -163,8 +165,27 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			// managed to native when this control is the one in focus
 			return;
 		}
-		NativeMethods.UpdateSize(_view.DisplayBlock.ActualWidth, _view.DisplayBlock.ActualHeight);
+
+		if (_view.Core?.ContentElement is not { } contentElement)
+		{
+			return;
+		}
+
+		// We deliberately track the ContentElement and not the DisplayBlock: the DisplayBlock shrink-wraps the
+		// text, so using it would make the <input /> grow by one character's width on every keystroke. Browser
+		// password managers anchor their affordances to the <input /> bounds, so a growing element makes them
+		// visibly drift across the field. This matches OverlayTextBoxViewExtension on the other Skia targets.
+		// Advisory: on iOS the JS side keeps the input off-screen and ignores size and position.
+		var (width, height) = GetContentSize(contentElement);
+		NativeMethods.UpdateSize(width, height);
 	}
+
+	/// <summary>
+	/// The area the text is actually laid out in: the ContentElement without its padding.
+	/// </summary>
+	private static (double Width, double Height) GetContentSize(Control contentElement)
+		=> (Math.Max(0, contentElement.ActualWidth - contentElement.Padding.Horizontal()),
+			Math.Max(0, contentElement.ActualHeight - contentElement.Padding.Vertical()));
 
 	public void UpdatePosition()
 	{
@@ -174,8 +195,28 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			// managed to native when this control is the one in focus
 			return;
 		}
-		var p = _view.DisplayBlock.TransformToVisual(null).TransformPoint(default);
-		NativeMethods.UpdatePosition(p.X, p.Y);
+
+		if (_view.Core?.ContentElement is not { } contentElement)
+		{
+			return;
+		}
+
+		// Anchored on the ContentElement for the same reason as UpdateSize: the DisplayBlock moves as the text
+		// scrolls or is re-aligned, which would drag the <input /> away from the field it belongs to.
+		// Advisory: on iOS the JS side keeps the input off-screen and ignores size and position.
+		var p = contentElement
+			.TransformToVisual(null)
+			.TransformPoint(new Point(contentElement.Padding.Left, contentElement.Padding.Top));
+
+		// Under RightToLeft the subtree is mirrored, so that transformed point lands on the *right* edge of the
+		// content area while CSS positions the <input /> by its left edge. Shift it by the content width, not by
+		// RenderSize.Width: the latter still includes the padding that was just excluded, which would place the
+		// element a padding's worth too far to the left.
+		var x = _view.Core?.FlowDirection is FlowDirection.RightToLeft
+			? p.X - GetContentSize(contentElement).Width
+			: p.X;
+
+		NativeMethods.UpdatePosition(x, p.Y);
 	}
 
 	public void InvalidateLayout()

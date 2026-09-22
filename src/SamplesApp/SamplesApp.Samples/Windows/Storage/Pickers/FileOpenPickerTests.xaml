@@ -70,23 +70,23 @@
                             Orientation="Vertical">
                             <TextBlock>
                                 <Run Text="Display name: " />
-                                <Run Text="{x:Bind DisplayName, Mode=OneWay}" />
+                                <Run Text="{x:Bind DisplayName, Mode=OneTime}" />
                             </TextBlock>
                             <TextBlock>
                                 <Run Text="Name: " />
-                                <Run Text="{x:Bind Name, Mode=OneWay}" />
+                                <Run Text="{x:Bind Name, Mode=OneTime}" />
                             </TextBlock>
                             <TextBlock>
                                 <Run Text="File type: " />
-                                <Run Text="{x:Bind FileType, Mode=OneWay}" />
+                                <Run Text="{x:Bind FileType, Mode=OneTime}" />
                             </TextBlock>
                             <TextBlock>
                                 <Run Text="Content type: " />
-                                <Run Text="{x:Bind ContentType, Mode=OneWay}" />
+                                <Run Text="{x:Bind ContentType, Mode=OneTime}" />
                             </TextBlock>
                             <TextBlock>
                                 <Run Text="File path: " />
-                                <Run Text="{x:Bind Path, Mode=OneWay}" />
+                                <Run Text="{x:Bind Path, Mode=OneTime}" />
                             </TextBlock>
                         </StackPanel>
                     </DataTemplate>

@@ -80,7 +80,7 @@ By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **Sk
 
 ### SkiaSharp 4
 
-SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. SkiaSharp 4 support is opt-in: set `SkiaSharpVersion` to a `4.x` version as shown above. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project moving from `3.x` may need small code changes before it builds.
+SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. **Since Uno Platform 7.0, SkiaSharp 4 is the default** — the Uno.Sdk resolves the SkiaSharp package group at a `4.x` version, and you only need to set `SkiaSharpVersion` to move off it. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project carrying its own SkiaSharp code from `3.x` may need small changes before it builds.
 
 ### Pinning packages individually
 

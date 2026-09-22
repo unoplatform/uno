@@ -341,6 +341,11 @@ namespace Microsoft.UI.Xaml
 			get { return _name; }
 		}
 
+		// Matching by owner and name keeps the trimmer from rooting RichTextBlock: reading one of its statics
+		// keeps its static constructor, and Register's ownerType annotation then keeps the whole control.
+		internal bool IsRichTextBlockProperty(string name)
+			=> _ownerType == typeof(RichTextBlock) && _name == name;
+
 		/// <summary>
 		/// Determines if the property is an attached property
 		/// </summary>
@@ -509,7 +514,7 @@ namespace Microsoft.UI.Xaml
 			if (this == TextElement.ForegroundProperty ||
 				this == TextBlock.ForegroundProperty ||
 				this == Control.ForegroundProperty ||
-				this == RichTextBlock.ForegroundProperty ||
+				IsRichTextBlockProperty(nameof(RichTextBlock.Foreground)) ||
 				this == ContentPresenter.ForegroundProperty ||
 				this == IconElement.ForegroundProperty)
 			{
@@ -571,7 +576,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			if (this == TextBlock.SelectionFlyoutProperty ||
-				this == RichTextBlock.SelectionFlyoutProperty)
+				IsRichTextBlockProperty(nameof(RichTextBlock.SelectionFlyout)))
 			{
 				return GetDefaultTextControlSelectionFlyout();
 			}
