@@ -783,7 +783,7 @@ namespace Microsoft.UI.Xaml.Controls
 			appliedOffsetY = 0.0;
 
 			// Handle cases where we don't have to do anything
-			isEmpty = rectangle.IsEmpty || rectangle.Width == 0 || rectangle.Height == 0;
+			isEmpty = rectangle.IsEmpty;
 			isEmpty = isEmpty || visual is null || visual == this;
 			if (!isEmpty)
 			{
@@ -1066,7 +1066,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 						rectangle.Intersect(viewport);
 
-						isEmpty = rectangle.IsEmpty || rectangle.Width == 0 || rectangle.Height == 0;
+						isEmpty = rectangle.IsEmpty;
 						if (!isEmpty)
 						{
 							rectangle.X = rectangle.X - viewport.X + sizeHeaders.Width;
@@ -1720,6 +1720,9 @@ namespace Microsoft.UI.Xaml.Controls
 				InvalidateMeasure();
 			}
 
+			// WinUI forwards to the provider in the else of IsScrollClient(). Uno cannot: IsScrollClient()
+			// is also true for the ManipulationDataProviderScrollInfo bridge, whose provider still needs the
+			// zoom factor while this presenter keeps owning the scroll data.
 			if (GetCurrentScrollInfo() is IManipulationDataProvider provider)
 			{
 				provider.SetZoomFactor(m_fZoomFactor);
