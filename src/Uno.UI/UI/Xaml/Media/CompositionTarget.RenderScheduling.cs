@@ -237,9 +237,16 @@ public partial class CompositionTarget
 			NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
 		}
 
-		var nativeElementClipPath = Draw(swapChain, rootTransform, overlay);
-		swapChain.Present();
-		return nativeElementClipPath;
+		// Present in a finally: a swapchain that takes a device lock in AcquireRenderTarget releases it in
+		// Present, so a throwing frame would otherwise hold it forever and deadlock the next teardown.
+		try
+		{
+			return Draw(swapChain, rootTransform, overlay);
+		}
+		finally
+		{
+			swapChain.Present();
+		}
 	}
 
 	internal void OnRenderFrameOpportunity()

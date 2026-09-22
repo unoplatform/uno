@@ -420,6 +420,8 @@ public partial class CompositionTarget
 				_lastScaledNativeClipPath = null;
 			}
 
+			var host = ContentRoot.XamlRoot is { } xamlRootForHost ? XamlRootMap.GetHostForRoot(xamlRootForHost) : null;
+
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
 			using (var present = BeginPresent(Renderer, target))
 			{
@@ -464,7 +466,9 @@ public partial class CompositionTarget
 						present.ClipPath(lastRenderedFrame.damage!, ClipOperation.Intersect);
 					}
 
-					present.Clear(global::Windows.UI.Colors.Transparent);
+					// The window's own background, when it has one: content smaller than the window (or with no
+					// background of its own) shows it, and a transparent clear would show through to nothing.
+					present.Clear(host?.BackgroundColor ?? global::Windows.UI.Colors.Transparent);
 					lastRenderedFrame.frame.Replay(present);
 				}
 

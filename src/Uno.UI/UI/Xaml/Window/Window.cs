@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -610,7 +610,16 @@ public partial class Window
 	internal Brush? Background
 	{
 		get => _background;
-		set => _background = value;
+		set
+		{
+			_background = value;
+
+			// The frame clear reads this at present time, so an otherwise idle window needs a frame to show it.
+			if (_windowImplementation.XamlRoot is { } xamlRoot)
+			{
+				global::Uno.UI.Hosting.XamlRootMap.GetHostForRoot(xamlRoot)?.InvalidateRender();
+			}
+		}
 	}
 
 	internal void NotifyContentLoaded()

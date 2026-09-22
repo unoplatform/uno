@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Uno.UI.Composition.Drawing;
@@ -685,6 +685,23 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	}
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
+
+	Windows.UI.Color? IXamlRootHost.BackgroundColor
+	{
+		get
+		{
+			switch (_window.Background)
+			{
+				case Microsoft.UI.Xaml.Media.SolidColorBrush brush:
+					return brush.Color;
+				case not null:
+					this.LogError()?.Error("This platform only supports SolidColorBrush for the Window background");
+					return null;
+				default:
+					return null;
+			}
+		}
+	}
 
 	private void RaiseConfigureCallback()
 	{

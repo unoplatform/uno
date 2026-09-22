@@ -526,11 +526,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// thread — the sole user of the graphics context — has exited, so freeing it here cannot
 		// race an in-flight present.
 		StopRenderThread();
-		// The backend factory is per window and owns this window's GRContext + cached GPU surfaces, so closing a
-		// window leaks them. It is NOT disposed here on purpose: DrawingFactory.Current is a process-wide static
-		// holding whichever window registered last, and every visual records through it, so disposing one window's
-		// factory can leave another window recording into a disposed one. Fixing the leak needs the factory to
-		// become per window on the recording side first.
+		// Before the context it is bound to: the factory owns this window's GRContext and cached GPU surfaces,
+		// and disposing the context first would destroy the device out from under them. Safe even though
+		// DrawingFactory.Current may still point here -- Dispose frees only the GPU contexts, and everything
+		// reached through Current (recordings, textures, offscreens) is CPU-side.
+		(_renderer as IDisposable)?.Dispose();
 		_context.Dispose();
 		_rendererDisposed = true;
 		DestroyIcons();
@@ -906,6 +906,23 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
+
+	Windows.UI.Color? IXamlRootHost.BackgroundColor
+	{
+		get
+		{
+			switch (Window?.Background)
+			{
+				case Microsoft.UI.Xaml.Media.SolidColorBrush brush:
+					return brush.Color;
+				case not null:
+					this.LogError()?.Error("This platform only supports SolidColorBrush for the Window background");
+					return null;
+				default:
+					return null;
+			}
+		}
+	}
 
 	private unsafe float GetPrimaryMonitorScale()
 	{
