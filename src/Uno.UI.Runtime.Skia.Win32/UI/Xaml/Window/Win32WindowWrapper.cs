@@ -526,9 +526,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// thread — the sole user of the graphics context — has exited, so freeing it here cannot
 		// race an in-flight present.
 		StopRenderThread();
-		// The backend factory is created per window and owns that window's GRContext + cached GPU surfaces, so it
-		// has to go with the window (before the context it is bound to) or every window close leaks GPU memory.
-		(_renderer as IDisposable)?.Dispose();
+		// The backend factory is per window and owns this window's GRContext + cached GPU surfaces, so closing a
+		// window leaks them. It is NOT disposed here on purpose: DrawingFactory.Current is a process-wide static
+		// holding whichever window registered last, and every visual records through it, so disposing one window's
+		// factory can leave another window recording into a disposed one. Fixing the leak needs the factory to
+		// become per window on the recording side first.
 		_context.Dispose();
 		_rendererDisposed = true;
 		DestroyIcons();

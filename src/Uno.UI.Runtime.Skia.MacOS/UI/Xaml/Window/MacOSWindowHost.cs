@@ -897,10 +897,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				Unregister(handle);
 				window._nativeWindow.Destroyed();
 				window.Closed?.Invoke(window, EventArgs.Empty);
-				// GraphicsRegistry.Initialize() runs per window, so the backend factory is per window too and owns
-				// this window's GRContext + cached GPU surfaces: dispose it before the context it is bound to, or
-				// every window close leaks GPU memory. Mirrors X11/Win32 window-close teardown.
-				(window._renderer as IDisposable)?.Dispose();
+				// The backend factory is per window and owns this window's GRContext + cached GPU surfaces, so
+				// closing a window leaks them. It is NOT disposed here on purpose: DrawingFactory.Current is a
+				// process-wide static holding whichever window registered last, and every visual records through
+				// it, so disposing one window's factory can leave another recording into a disposed one.
 				window._context?.Dispose();
 			}
 		}
