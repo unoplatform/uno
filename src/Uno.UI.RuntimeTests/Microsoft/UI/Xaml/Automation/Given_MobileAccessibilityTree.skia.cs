@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -18,6 +19,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 [TestClass]
 public partial class Given_MobileAccessibilityTree
 {
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(false, false, false, false)]
+	[DataRow(true, false, false, true)]
+	[DataRow(false, true, false, true)]
+	[DataRow(false, false, true, true)]
+	public void When_Popup_Window_Pattern_Matches_Exposed_Surface(
+		bool lightDismiss, bool contentDialog, bool submenu, bool expected)
+	{
+		var popup = new Popup
+		{
+			IsLightDismissEnabled = lightDismiss,
+			IsContentDialog = contentDialog,
+			IsSubMenu = submenu,
+		};
+		var peer = new PopupAutomationPeer(popup);
+		Assert.AreEqual(expected, peer.GetPattern(PatternInterface.Window) is IWindowProvider);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Item_Occurrence_Bounds_Are_Queried_Then_Custom_Peer_Override_Is_Preserved()
+	{
+		var peer = new BoundsItemAutomationPeer(new object(), new ItemsControlAutomationPeer(new ListView()));
+		var expected = peer.GetBoundingRectangle();
+
+		Assert.AreEqual(expected, AccessibilityPeerHelper.GetBoundingRectangle(peer, new ListViewItem()));
+		Assert.AreEqual(expected, peer.GetBoundingRectangle());
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Popup_Content_Has_A_Separate_Visual_Parent_Then_It_Remains_In_Modal_Scope()
+	{
+		var content = new Button { Content = "Modal" };
+		var popup = new Popup { Child = new Border { Child = content } };
+
+		Assert.IsTrue(AccessibilityPeerHelper.IsWithinModalScope(content, popup));
+		Assert.IsFalse(AccessibilityPeerHelper.IsWithinModalScope(new Button(), popup));
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Submenu_Is_Modal_Then_Only_Its_Owning_Menu_Remains_In_Scope()
+	{
+		var menu = new MenuFlyout();
+		var parentPresenter = new MenuFlyoutPresenter();
+		parentPresenter.SetParentMenuFlyout(menu);
+		var submenuPresenter = new MenuFlyoutPresenter();
+		submenuPresenter.SetParentMenuFlyout(menu);
+		var otherMenu = new MenuFlyout();
+		var otherPresenter = new MenuFlyoutPresenter();
+		otherPresenter.SetParentMenuFlyout(otherMenu);
+		var parentPopup = new Popup { Child = parentPresenter };
+		var submenuPopup = new Popup { Child = submenuPresenter };
+		var otherPopup = new Popup { Child = otherPresenter };
+
+		Assert.IsTrue(AccessibilityPeerHelper.IsWithinModalScope(parentPopup, submenuPopup));
+		Assert.IsTrue(AccessibilityPeerHelper.IsWithinModalScope(parentPresenter, submenuPopup));
+		Assert.IsFalse(AccessibilityPeerHelper.IsWithinModalScope(otherPopup, submenuPopup));
+		GC.KeepAlive(menu);
+		GC.KeepAlive(otherMenu);
+	}
+
 	[TestMethod]
 	[RunsOnUIThread]
 	public void When_Transparent_Peer_Has_Child_Then_Child_Is_Promoted()
@@ -293,6 +358,16 @@ public partial class Given_MobileAccessibilityTree
 		}
 
 		protected override bool IsControlElementCore() => true;
+	}
+
+	private sealed class BoundsItemAutomationPeer : ItemAutomationPeer
+	{
+		internal BoundsItemAutomationPeer(object item, ItemsControlAutomationPeer parent)
+			: base(item, parent)
+		{
+		}
+
+		protected override Windows.Foundation.Rect GetBoundingRectangleCore() => new(3, 7, 29, 41);
 	}
 
 	private sealed class TestItemsControlAutomationPeer : ItemsControlAutomationPeer
