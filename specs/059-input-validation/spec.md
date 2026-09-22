@@ -1,6 +1,6 @@
 # Input validation — transport and read model
 
-**Status**: Proposal
+**Status**: Implemented — see §11 for what the code corrected about this document
 **Audience**: Internal engineering (Uno Platform maintainers)
 **Created**: 2026-09-22
 
@@ -40,19 +40,21 @@ property on the control, and its errors arrive on `Validation.HasErrors` / `Vali
 markup can render them:
 
 ```xml
+<!-- xmlns:uno="using:Uno.UI.Xaml.Controls" -->
 <StackPanel>
-    <TextBox x:Name="UserNameBox" Text="{Binding UserName}" Validation.IsEnabled="True" />
+    <TextBox x:Name="UserNameBox" Text="{Binding UserName}" uno:Validation.IsEnabled="True" />
     <TextBlock Foreground="Red"
-               Visibility="{Binding (Validation.HasErrors), ElementName=UserNameBox,
+               Visibility="{Binding (uno:Validation.HasErrors), ElementName=UserNameBox,
                                     Converter={StaticResource BoolToVisibilityConverter}}"
-               Text="{Binding (Validation.Errors), ElementName=UserNameBox,
+               Text="{Binding (uno:Validation.Errors), ElementName=UserNameBox,
                               Converter={StaticResource StringJoinConverter}}" />
 </StackPanel>
 ```
 
 **Both converters are the app's**, not the framework's — 059 ships no converters, and `Validation.HasErrors`
-is a `bool` while `Validation.Errors` is the raw `IEnumerable` from `GetErrors` (see [Q1](#9-open-decisions)).
-Supplying them is the cost of this slice rendering nothing on its own.
+is a `bool` while `Validation.Errors` is an `IEnumerable` snapshot of `GetErrors` with its element type
+untouched (see [Q1](#9-open-decisions)). Supplying them is the cost of this slice rendering nothing on its
+own.
 
 That is the independently testable MVP. Spec 060 replaces the hand-written `TextBlock` with a templated
 error presenter, and supplies a default template so the converters are no longer the app's problem; it does
@@ -164,6 +166,16 @@ Registration and resolution are two jobs with different lifetimes, and conflatin
 `BindingPath.GetTargetContextAndPropertyName()` (`:134`) returns both as a tuple, and `GetPathItems()`
 (`:129`) exposes the chain as public `IBindingItem`.
 
+> **Correction — those two accessors are `{Binding}`-only.** For `{x:Bind}`, `ParentBinding.Path` is null and
+> `ApplyBinding` takes the `_updateSources` branch (`DataBinding/BindingExpression.cs:576-600`), which never
+> calls `_bindingPath.SetWeakDataContext`. `_bindingPath` therefore stays empty and both `DataItem` and
+> `LeafPropertyName` are **null** for a compiled binding. Reading them alone would have reproduced
+> [microsoft-ui-xaml#4642](https://github.com/microsoft/microsoft-ui-xaml/issues/4642) *in reverse* — the
+> asymmetry §3.1 claims is structurally impossible — so leaf resolution reads `_updateSources` when present
+> and falls back to `_bindingPath`. `OnValueChanged` itself does fire for both binding kinds, so the funnel
+> below is sound; only the leaf accessors needed the extra branch. Several update sources have no single
+> leaf, and validation is skipped there.
+
 **The leaf is not resolvable at binding-set time.** Generated XAML calls `SetBinding` inside the `XamlApply`
 lambda, which is the collection-initializer element expression for `Children` — C# evaluates it fully
 *before* `Children.Add(…)`. At that moment the control is parentless, outside the visual tree, and its
@@ -230,10 +242,23 @@ private IDisposable RegisterValidation(BindingExpression expression);
 
 1. **Rebinding silently replaces.** `Bindings.cs:151` `details.ClearBinding()` disposes the prior
    `BindingExpression` with no notification. **Never cache the expression object.**
-2. **Setting a local value clears the binding** — `DependencyObject.Store.cs`, the `ClearBinding` paths.
-3. **Template recycling suspends and resumes** bindings, driven by `FrameworkTemplatePool`; `ResumeBinding`
-   re-runs `ApplyBinding()`.
+2. ~~**Setting a local value clears the binding**~~ — **it does not.** `TryClearBinding`
+   (`DependencyObject.Store.cs:785-797`) only acts on `UnsetValue`, i.e. `ClearValue`, not `SetValue`; and a
+   `TemplatedParent` binding survives even that.
+3. ~~**Template recycling suspends and resumes bindings**~~ — **it does not.** `SuspendBindings` /
+   `ResumeBindings` have **zero production callers** (only `PhaseBindingTests.cs`). `FrameworkTemplatePool`
+   uses `IsRecycling` as a *write-suppression* guard (`BindingExpression.cs:249`, `:278`); the live
+   suspend/resume path is the compiled-binding one, `SuspendCompiledSource` / `ApplyCompiledSource`.
 4. **`GetBindingExpression` materializes a details entry** as a side effect of `GetPropertyDetails`.
+5. **The binding collection is append-only.** `_bindings.Add` is its only mutation; `ClearBinding()` disposes
+   the replaced expression but leaves it in the list, still iterated by `ApplyDataContext`. A stale
+   expression can therefore still reach the hook, so teardown must verify the expression that established
+   the subscription still owns it.
+6. **Teardown is silent.** `ClearBinding()` disposes the expression, whose subscription nulls
+   `_bindingPath.Expression` first, so `OnValueChanged` can never signal the removal. Rebinding survives only
+   because `SetBinding` re-registers immediately; `ClearValue` has no follow-up and would orphan the
+   subscription. Both funnel through `DependencyPropertyDetails.ClearBinding()`, which is where the teardown
+   hook belongs.
 
 ### 3.3 Declaring the validation property — by attribute
 
@@ -533,12 +558,12 @@ class SignUpViewModel2 : /* ObservableValidator, or any INotifyDataErrorInfo imp
 ### The page
 
 ```xml
-<TextBox Text="{Binding Property1}" Validation.IsEnabled="True" />
+<TextBox Text="{Binding Property1}" uno:Validation.IsEnabled="True" />
 ```
 
 That is the whole opt-in: one attached property on the control, and a binding whose source implements
-`INotifyDataErrorInfo`. The unprefixed spelling presumes Q3 resolves in favour of the default xmlns. Rendering
-the errors is the app's job in this slice — see §1.
+`INotifyDataErrorInfo`. Q3 resolved in favour of the prefixed spelling, over
+`xmlns:uno="using:Uno.UI.Xaml.Controls"`. Rendering the errors is the app's job in this slice — see §1.
 
 ## 7. Decisions (locked)
 
@@ -571,7 +596,17 @@ the errors is the app's job in this slice — see §1.
 Steps 1–3 are independently mergeable and observable only through tests. Step 4 is the first one an app can
 see.
 
-## 9. Open decisions
+## 9. Open decisions — resolved
+
+| | Resolution |
+|---|---|
+| **Q1** | `Validation.Errors` is a **fresh snapshot** materialised from `GetErrors` on every synchronization, element type untouched. A new instance each time is load-bearing rather than stylistic: the dependency property change is what refreshes the application's binding, and sources commonly hand back the same collection instance. The no-error case reuses `Array.Empty<object>()`, so repeated clean syncs raise nothing. |
+| **Q3 / Q11** | `Uno.UI.Xaml.Controls`, spelled `uno:Validation.IsEnabled="True"`. Reversible — an unprefixed alias can be added later, the reverse is a break — and it needs no generator change, since `Uno.UI.Xaml.Controls` is absent from the hardcoded `PresentationNamespaces` an unprefixed spelling would have had to join. microsoft-ui-xaml#179 is still open, so WinUI could yet claim the name. |
+| **Q5** | `ErrorChanged`, after the withdrawn WinUI spec `IInputValidationControl` is borrowed from. |
+| **Q8** | `TextBox`→`Text`, `PasswordBox`→`Password`, `NumberBox`→`Value`, `AutoSuggestBox`→`Text`, `ToggleSwitch`→`IsOn`, `ToggleButton`→`IsChecked` (so `CheckBox` and `RadioButton`), `Slider`→`Value`, `ComboBox`→`SelectedItem`. **`RichEditBox` is left out**: its content is an `ITextDocument` with no dependency property to bind. |
+| **Q9** | **De-scoped, not deferred.** §3.4 records that the app builder lives outside this repo, so `UseInputValidation()` cannot be implemented here. `FeatureConfiguration.InputValidation.IsEnabled` is the mechanism. |
+
+The questions as originally posed:
 
 | | Question | Layer |
 |---|---|---|
@@ -585,7 +620,40 @@ see.
 Q6 and Q10 from the original design — what drives the visual states, and visual-state contention — belong to
 spec 060 and are not open questions for this slice.
 
-## 10. References
+## 10. What implementation corrected
+
+Recorded so the next reader does not re-derive it. The three lifecycle corrections are inline in §3.2; these
+are the rest.
+
+- **A pre-existing bug blocked the read model, and had to be fixed first.**
+  `DependencyProperty.InternalGetProperty` forced the static constructor of the *queried* type, but
+  `DependencyPropertyDescriptor.Parse` then redirects the lookup to the attached property's **owner**, whose
+  registration only happens in *its* static constructor. An uninitialized owner produced a miss, and the null
+  was negatively cached — so `{Binding (Owner.Property)}` read its initial value once and never subscribed to
+  changes. This affected any attached-property binding path, `Canvas.Left` included; regression tests are in
+  `Uno.UI.UnitTests/DependencyProperty/Given_DependencyProperty.AttachedPath.cs`.
+- **Owner type matters for an attached property meant to be reachable from a binding path.** `Validation`
+  registers with `typeof(Validation)` and resolves. `ComboBox.Uno.cs` instead registers
+  `DropDownPreferredPlacement` with the *MUX* `ComboBox` as owner while the path names the Uno static class,
+  so the registry lookup misses and that property cannot be observed through a binding path. Pre-existing,
+  out of scope here, worth its own issue.
+- **Ordering: the attached property is set *after* the binding**, not before, in generated XAML — and at that
+  moment the element is parentless with a null `DataContext`, so the leaf is unresolvable anyway.
+  Registration therefore cannot be gated on `Validation.IsEnabled`; it marks the expression unconditionally
+  and the changed callback pulls the current expression. Either order works.
+- **No read-only attached dependency property exists in Uno** — no `DependencyPropertyKey`, no
+  `RegisterAttachedReadOnly`. `HasErrors` and `Errors` use a public getter with an internal setter, which
+  leaves them technically settable from XAML through `SetValue`.
+- **`FeatureConfiguration` hosts no other cache**, so `InputValidation` is a new shape there. The lookup is
+  `internal` and backed by a `ConditionalWeakTable<Type, …>`, the established repo answer for a `Type`-keyed
+  cache that must not pin a collectible `AssemblyLoadContext`; no teardown hook is needed with weak keys.
+- **The naming collision §1 flags reaches the code.** `Uno.UI.Xaml.Controls` also holds static `ComboBox` and
+  `ScrollViewer` classes, so the participating controls alias the namespace rather than importing it.
+- **Most of the transport is unit-testable.** `Uno.UI.UnitTests` references the real Skia `Uno.UI` and needs
+  no visual tree to exercise bindings, so the four lifecycle hazards, the leaf-not-root case, the
+  initial-value-equals-default case and the compiled-binding path all live there rather than in runtime tests.
+
+## 11. References
 
 - [`INotifyDataErrorInfo`](https://learn.microsoft.com/dotnet/api/system.componentmodel.inotifydataerrorinfo)
   — the layer-1 contract, unchanged since .NET 4.5 and already functional on Uno

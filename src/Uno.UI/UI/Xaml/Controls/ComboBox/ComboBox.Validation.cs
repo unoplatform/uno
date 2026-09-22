@@ -6,7 +6,7 @@ using UnoValidation = Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-[UnoValidation.ValidationProperty(nameof(SelectedItem))]
+[UnoValidation.InputValidationProperty(nameof(SelectedItem))]
 public partial class ComboBox : UnoValidation.IInputValidationControl
 {
 	/// <inheritdoc />

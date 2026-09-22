@@ -18,13 +18,13 @@ namespace Uno.UI.Xaml.Controls;
 /// </para>
 /// </remarks>
 [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
-public sealed class ValidationPropertyAttribute : Attribute
+public sealed class InputValidationPropertyAttribute : Attribute
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="ValidationPropertyAttribute"/> class.
+	/// Initializes a new instance of the <see cref="InputValidationPropertyAttribute"/> class.
 	/// </summary>
 	/// <param name="name">The name of the dependency property to validate.</param>
-	public ValidationPropertyAttribute(string name) => Name = name;
+	public InputValidationPropertyAttribute(string name) => Name = name;
 
 	/// <summary>
 	/// The name of the dependency property to validate.

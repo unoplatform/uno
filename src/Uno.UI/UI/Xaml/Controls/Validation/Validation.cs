@@ -13,8 +13,8 @@ namespace Uno.UI.Xaml.Controls;
 /// <see cref="System.ComponentModel.INotifyDataErrorInfo"/> source.
 /// </summary>
 /// <remarks>
-/// Uno only. Requires <see cref="Uno.UI.FeatureConfiguration.Validation.IsEnabled"/> to be set before the
-/// first binding is registered, and the control's type to declare a <see cref="ValidationPropertyAttribute"/>.
+/// Uno only. Requires <see cref="Uno.UI.FeatureConfiguration.InputValidation.IsEnabled"/> to be set before the
+/// first binding is registered, and the control's type to declare a <see cref="InputValidationPropertyAttribute"/>.
 /// <para>
 /// This slice ships no visuals: <see cref="HasErrorsProperty"/> and <see cref="ErrorsProperty"/> are a read
 /// model for the application's own markup to bind to.

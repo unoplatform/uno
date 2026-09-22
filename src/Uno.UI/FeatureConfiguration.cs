@@ -582,7 +582,7 @@ namespace Uno.UI
 		/// <see cref="System.ComponentModel.INotifyDataErrorInfo"/> errors from a binding source to the
 		/// control bound to it.
 		/// </summary>
-		public static class Validation
+		public static class InputValidation
 		{
 			/// <summary>
 			/// Enables input validation application-wide. Defaults to false, so applications that never validate
@@ -596,11 +596,11 @@ namespace Uno.UI
 			public static bool IsEnabled { get; set; }
 
 			/// <summary>
-			/// Gets the validation property declared by <see cref="ValidationPropertyAttribute"/> on
+			/// Gets the validation property declared by <see cref="InputValidationPropertyAttribute"/> on
 			/// <paramref name="type"/>, or null when it declares none. Cached per type, negative answers included.
 			/// </summary>
 			internal static Microsoft.UI.Xaml.DependencyProperty GetValidationProperty(Type type)
-				=> ValidationPropertyResolver.GetValidationProperty(type);
+				=> InputValidationPropertyResolver.GetValidationProperty(type);
 		}
 
 		/// <summary>

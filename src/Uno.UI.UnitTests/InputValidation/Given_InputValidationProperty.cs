@@ -9,12 +9,12 @@ using Uno.UI.Xaml.Controls;
 namespace Uno.UI.Tests.InputValidation;
 
 [TestClass]
-public partial class Given_ValidationProperty
+public partial class Given_InputValidationProperty
 {
 	[TestMethod]
 	public void When_No_Attribute()
 	{
-		Assert.IsNull(FeatureConfiguration.Validation.GetValidationProperty(typeof(Unannotated)));
+		Assert.IsNull(FeatureConfiguration.InputValidation.GetValidationProperty(typeof(Unannotated)));
 	}
 
 	[TestMethod]
@@ -22,44 +22,44 @@ public partial class Given_ValidationProperty
 	{
 		// The case the rejected metadata-flag route could not express: the DP is registered on the shared
 		// base, the attribute sits on the leaf, and the sibling leaf must not participate.
-		Assert.AreSame(SharedBase.SharedValueProperty, FeatureConfiguration.Validation.GetValidationProperty(typeof(ValidatingLeaf)));
-		Assert.IsNull(FeatureConfiguration.Validation.GetValidationProperty(typeof(NonValidatingLeaf)));
+		Assert.AreSame(SharedBase.SharedValueProperty, FeatureConfiguration.InputValidation.GetValidationProperty(typeof(ValidatingLeaf)));
+		Assert.IsNull(FeatureConfiguration.InputValidation.GetValidationProperty(typeof(NonValidatingLeaf)));
 	}
 
 	[TestMethod]
 	public void When_Derived_Type_Then_Attribute_Is_Inherited()
 	{
-		Assert.AreSame(SharedBase.SharedValueProperty, FeatureConfiguration.Validation.GetValidationProperty(typeof(DerivedFromValidatingLeaf)));
+		Assert.AreSame(SharedBase.SharedValueProperty, FeatureConfiguration.InputValidation.GetValidationProperty(typeof(DerivedFromValidatingLeaf)));
 	}
 
 	[TestMethod]
 	public void When_Derived_Redeclares_Then_It_Shadows_The_Base()
 	{
-		Assert.AreSame(ShadowingDerived.OtherValueProperty, FeatureConfiguration.Validation.GetValidationProperty(typeof(ShadowingDerived)));
-		Assert.AreSame(SharedBase.SharedValueProperty, FeatureConfiguration.Validation.GetValidationProperty(typeof(ValidatingLeaf)));
+		Assert.AreSame(ShadowingDerived.OtherValueProperty, FeatureConfiguration.InputValidation.GetValidationProperty(typeof(ShadowingDerived)));
+		Assert.AreSame(SharedBase.SharedValueProperty, FeatureConfiguration.InputValidation.GetValidationProperty(typeof(ValidatingLeaf)));
 	}
 
 	[TestMethod]
 	public void When_Empty_Name_Then_Opted_Out()
 	{
-		Assert.IsNull(FeatureConfiguration.Validation.GetValidationProperty(typeof(OptedOutDerived)));
+		Assert.IsNull(FeatureConfiguration.InputValidation.GetValidationProperty(typeof(OptedOutDerived)));
 	}
 
 	[TestMethod]
 	public void When_Unknown_Property_Name()
 	{
-		Assert.IsNull(FeatureConfiguration.Validation.GetValidationProperty(typeof(AnnotatedWithUnknownProperty)));
+		Assert.IsNull(FeatureConfiguration.InputValidation.GetValidationProperty(typeof(AnnotatedWithUnknownProperty)));
 	}
 
 	[TestMethod]
 	public void When_Resolved_Twice_Then_Cached()
 	{
 		// Negative answers must be cached too, or every non-participating control re-walks its attributes.
-		Assert.IsNull(FeatureConfiguration.Validation.GetValidationProperty(typeof(Unannotated)));
-		Assert.IsNull(FeatureConfiguration.Validation.GetValidationProperty(typeof(Unannotated)));
+		Assert.IsNull(FeatureConfiguration.InputValidation.GetValidationProperty(typeof(Unannotated)));
+		Assert.IsNull(FeatureConfiguration.InputValidation.GetValidationProperty(typeof(Unannotated)));
 
-		var first = FeatureConfiguration.Validation.GetValidationProperty(typeof(ValidatingLeaf));
-		Assert.AreSame(first, FeatureConfiguration.Validation.GetValidationProperty(typeof(ValidatingLeaf)));
+		var first = FeatureConfiguration.InputValidation.GetValidationProperty(typeof(ValidatingLeaf));
+		Assert.AreSame(first, FeatureConfiguration.InputValidation.GetValidationProperty(typeof(ValidatingLeaf)));
 	}
 
 	/// <summary>
@@ -111,14 +111,14 @@ public partial class Given_ValidationProperty
 
 	private partial class Unannotated : SharedBase;
 
-	[ValidationProperty("SharedValue")]
+	[InputValidationProperty("SharedValue")]
 	private partial class ValidatingLeaf : SharedBase;
 
 	private partial class NonValidatingLeaf : SharedBase;
 
 	private partial class DerivedFromValidatingLeaf : ValidatingLeaf;
 
-	[ValidationProperty("OtherValue")]
+	[InputValidationProperty("OtherValue")]
 	private partial class ShadowingDerived : ValidatingLeaf
 	{
 		public static DependencyProperty OtherValueProperty { get; } =
@@ -129,9 +129,9 @@ public partial class Given_ValidationProperty
 				new FrameworkPropertyMetadata(0d));
 	}
 
-	[ValidationProperty("")]
+	[InputValidationProperty("")]
 	private partial class OptedOutDerived : ValidatingLeaf;
 
-	[ValidationProperty("ThereIsNoSuchProperty")]
+	[InputValidationProperty("ThereIsNoSuchProperty")]
 	private partial class AnnotatedWithUnknownProperty : SharedBase;
 }

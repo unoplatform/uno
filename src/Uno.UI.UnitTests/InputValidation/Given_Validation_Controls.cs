@@ -17,10 +17,10 @@ namespace Uno.UI.Tests.InputValidation;
 public partial class Given_Validation_Controls
 {
 	[TestInitialize]
-	public void Initialize() => FeatureConfiguration.Validation.IsEnabled = true;
+	public void Initialize() => FeatureConfiguration.InputValidation.IsEnabled = true;
 
 	[TestCleanup]
-	public void Cleanup() => FeatureConfiguration.Validation.IsEnabled = false;
+	public void Cleanup() => FeatureConfiguration.InputValidation.IsEnabled = false;
 
 	[TestMethod]
 	public void When_Participating_Controls()
@@ -111,7 +111,7 @@ public partial class Given_Validation_Controls
 		Assert.AreEqual(1, raised, "the handler was removed");
 	}
 
-	private static DependencyProperty? Resolve<T>() => FeatureConfiguration.Validation.GetValidationProperty(typeof(T));
+	private static DependencyProperty? Resolve<T>() => FeatureConfiguration.InputValidation.GetValidationProperty(typeof(T));
 
 	private partial class CustomTextBox : TextBox;
 

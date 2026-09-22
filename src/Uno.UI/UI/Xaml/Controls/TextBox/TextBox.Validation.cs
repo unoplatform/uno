@@ -6,7 +6,7 @@ using UnoValidation = Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-[UnoValidation.ValidationProperty(nameof(Text))]
+[UnoValidation.InputValidationProperty(nameof(Text))]
 public partial class TextBox : UnoValidation.IInputValidationControl
 {
 	/// <inheritdoc />
