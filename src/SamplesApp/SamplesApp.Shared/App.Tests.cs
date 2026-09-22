@@ -268,6 +268,10 @@ partial class App
 
 			var samplePath = Uri.UnescapeDataString(sampleArgument.Substring(samplePrefix.Length));
 			var pathParts = samplePath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+			if (pathParts.Length < 2)
+			{
+				return false;
+			}
 			var category = pathParts[0];
 			var sampleName = pathParts[1];
 
