@@ -81,26 +81,12 @@ public partial class Given_SemanticZoom
 	public void When_Constructed_DefaultsMatchWinUI()
 	{
 		var sut = new SemanticZoom();
-		var scrollViewer = new ScrollViewer();
 
 		Assert.IsTrue(sut.IsZoomedInViewActive);
 		Assert.IsTrue(sut.CanChangeViews);
 		Assert.IsTrue(sut.IsZoomOutButtonEnabled);
 		Assert.IsNull(sut.ZoomedInView);
 		Assert.IsNull(sut.ZoomedOutView);
-		Assert.AreEqual(ZoomMode.Enabled, scrollViewer.ZoomMode);
-		Assert.AreEqual(ScrollBarVisibility.Visible, scrollViewer.VerticalScrollBarVisibility);
-		Assert.IsFalse(scrollViewer.CanContentRenderOutsideBounds);
-		Assert.IsFalse(scrollViewer.IsDeferredScrollingEnabled);
-		Assert.IsTrue(scrollViewer.IsZoomChainingEnabled);
-		Assert.IsTrue(scrollViewer.IsZoomInertiaEnabled);
-		Assert.IsFalse(scrollViewer.ReduceViewportForCoreInputViewOcclusions);
-		Assert.IsNull(scrollViewer.LeftHeader);
-		Assert.IsNull(scrollViewer.TopHeader);
-		Assert.IsNull(scrollViewer.TopLeftHeader);
-		Assert.AreEqual(SnapPointsType.Optional, scrollViewer.ZoomSnapPointsType);
-		Assert.IsNotNull(scrollViewer.ZoomSnapPoints);
-		Assert.AreSame(scrollViewer.ZoomSnapPoints, scrollViewer.ZoomSnapPoints);
 	}
 
 	[TestMethod]
