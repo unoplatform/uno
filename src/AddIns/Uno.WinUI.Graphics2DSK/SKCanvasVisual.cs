@@ -26,7 +26,7 @@ internal sealed class SKCanvasVisual(SKCanvasElement owner, Compositor composito
 		if (session.Session.NativeSurface is SKCanvas canvas)
 		{
 			canvas.Save();
-			canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y));
+			canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y), antialias: true);
 			owner.InvokeRenderOverride(canvas, new Size(Size.X, Size.Y));
 			canvas.Restore();
 		}

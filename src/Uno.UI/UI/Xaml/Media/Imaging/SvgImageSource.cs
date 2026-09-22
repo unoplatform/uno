@@ -160,23 +160,27 @@ public partial class SvgImageSource : ImageSource
 	// The retained parsed SVG (from the registered ISvgRenderer); set when the markup parses.
 	private ISvgDocument? _svgDocument;
 
+	// One surface per parsed document, shared by every consumer of this source: the surface owns the document and
+	// disposes it, so a re-open or an unload releases exactly one owner (see Unload).
+	private CompositionSvgSurface? _svgSurface;
+
 	private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 	{
 		if (TryOpenSvgImageData(ct, out var imageTask))
 		{
 			asyncImage = imageTask.ContinueWith(task =>
 			{
-				_ = task.Result;
+				var imageData = task.Result;
 
-				// The registered ISvgRenderer retains the parsed vector; hand it to a live composition surface that
-				// replays it each frame at the display size — resolution-independent (crisp at any scale), no
-				// intermediate rasterization. Consumed like any other image surface (e.g. by Image's surface brush).
-				if (_svgDocument is { } document)
+				// The registered ISvgRenderer retains the parsed vector; the live composition surface replays it each
+				// frame at the display size — resolution-independent (crisp at any scale), no intermediate
+				// rasterization. Consumed like any other image surface (e.g. by Image's surface brush).
+				if (_svgSurface is { } surface)
 				{
-					return ImageData.FromCompositionSurface(new CompositionSvgSurface(document));
+					return ImageData.FromCompositionSurface(surface);
 				}
 
-				return ImageData.Empty;
+				return imageData.Kind == ImageDataKind.Error ? imageData : ImageData.Empty;
 			}, ct);
 			return true;
 		}
