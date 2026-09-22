@@ -8,10 +8,10 @@ using Microsoft.UI.Xaml;
 namespace Uno.UI.Xaml.Controls;
 
 /// <summary>
-/// Resolves the <see cref="ValidationPropertyAttribute"/> declared by a control type to the
+/// Resolves the <see cref="InputValidationPropertyAttribute"/> declared by a control type to the
 /// <see cref="DependencyProperty"/> it names.
 /// </summary>
-internal static class ValidationPropertyResolver
+internal static class InputValidationPropertyResolver
 {
 	/// <summary>
 	/// Per-type validation-property memoization. Weak-keyed: a <see cref="Type"/> key roots the
@@ -30,7 +30,7 @@ internal static class ValidationPropertyResolver
 		=> _cache.GetValue(type, static t => new Entry(Resolve(t))).Property;
 
 	private static DependencyProperty? Resolve(Type type)
-		=> type.GetCustomAttribute<ValidationPropertyAttribute>(inherit: true) is { Name.Length: > 0 } attribute
+		=> type.GetCustomAttribute<InputValidationPropertyAttribute>(inherit: true) is { Name.Length: > 0 } attribute
 			? DependencyProperty.GetProperty(type, attribute.Name)
 			: null;
 

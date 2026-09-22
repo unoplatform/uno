@@ -68,8 +68,8 @@ public static partial class Validation
 		// still parentless with a null DataContext, so registration cannot be gated on it. Pull the current
 		// expression here instead of waiting for the next path re-resolution.
 		if (sender is Control control
-			&& FeatureConfiguration.Validation.IsEnabled
-			&& FeatureConfiguration.Validation.GetValidationProperty(control.GetType()) is { } property)
+			&& FeatureConfiguration.InputValidation.IsEnabled
+			&& FeatureConfiguration.InputValidation.GetValidationProperty(control.GetType()) is { } property)
 		{
 			if (control.GetBindingExpression(property) is { } expression)
 			{
@@ -84,7 +84,7 @@ public static partial class Validation
 	}
 
 	private static bool IsValidationProperty(Control control, DependencyProperty property)
-		=> FeatureConfiguration.Validation.GetValidationProperty(control.GetType()) == property;
+		=> FeatureConfiguration.InputValidation.GetValidationProperty(control.GetType()) == property;
 
 	private static void Synchronize(Control control, BindingExpression expression)
 	{

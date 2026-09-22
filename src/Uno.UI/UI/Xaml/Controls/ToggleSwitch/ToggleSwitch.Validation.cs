@@ -6,7 +6,7 @@ using UnoValidation = Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-[UnoValidation.ValidationProperty(nameof(IsOn))]
+[UnoValidation.InputValidationProperty(nameof(IsOn))]
 public partial class ToggleSwitch : UnoValidation.IInputValidationControl
 {
 	/// <inheritdoc />
