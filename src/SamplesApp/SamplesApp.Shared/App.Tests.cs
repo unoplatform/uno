@@ -263,24 +263,20 @@ partial class App
 
 	private bool TryNavigateToLaunchSample(string args)
 	{
-		const string samplePrefix = "sample=";
 		try
 		{
 			// TrimStart('?') accepts the same value the in-app "copy link" button produces
 			// (SampleChooserContent.QueryString), which is prefixed for use as a URL query string.
-			args = Uri.UnescapeDataString(args).TrimStart('?');
+			var query = ParseArgs(Uri.UnescapeDataString(args).TrimStart('?'));
 
-			if (string.IsNullOrEmpty(args) || !args.StartsWith(samplePrefix))
+			if (!query.TryGetValue("sample", out var identifier))
 			{
 				return false;
 			}
 
-			var identifier = args.Substring(samplePrefix.Length);
-
-			// The deep link is the first token only — further space-separated launch args (e.g.
-			// --FeatureConfiguration overrides) and additional URL query parameters (&key=value on WASM)
-			// are not part of the sample identifier.
-			identifier = identifier.Split(new[] { ' ', '&' }, 2)[0];
+			// Further space-separated launch args (e.g. --FeatureConfiguration overrides) are not part
+			// of the sample identifier.
+			identifier = identifier.Split(' ', 2)[0];
 
 			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { IsSampleIndexLoaded: true } vm)
 			{
