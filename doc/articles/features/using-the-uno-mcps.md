@@ -54,11 +54,20 @@ These tools give "eyes" and "hands" to Agents in order to validate their assumpt
 > [!NOTE]
 > If using Visual Studio 2022/2026, sometimes the Uno App MCP does not appear in the Visual Studio tools list. See [how to make the App MCP appear in Visual Studio](xref:Uno.UI.CommonIssues.AIAgents#the-app-mcp-does-not-appear-in-visual-studio).
 
-### App MCP Tools
+### Bridge tools
 
-The following diagnostic tool is always available, even before the app connects:
+These tools are provided by the DevServer MCP bridge itself rather than by the running app. They carry no license requirement and answer even before the app connects:
 
 - `uno_health`, used to get the health status of the DevServer MCP bridge, including connection state, tool count, discovered solutions, and any issues detected during startup
+- `uno_app_select_solution`, used to pick a solution when the workspace contains more than one. This restarts the DevServer, and is typically called when `uno_health` reports a `WorkspaceAmbiguous` issue
+- `uno_discover_tools`, used to re-query the full list of app tools with their descriptions and input schemas
+- `uno_execute_tool`, used to call an app tool by name, whether or not the agent's tool list already knows about it
+- `uno_app_initialize`, used to set the workspace root, resolve the solution and start the DevServer. Only exposed for agents that do not support [MCP roots](#mcp-roots-compatibility) — see that section below
+
+> [!NOTE]
+> The RemoteControl host declares a second tool also named `uno_health`, reporting add-in loading status and host version. The bridge de-duplicates the two, so an agent only ever sees one `uno_health`.
+
+### App MCP Tools
 
 The Community license MCP app tools are:
 
@@ -71,11 +80,39 @@ The Community license MCP app tools are:
 - `uno_app_element_peer_default_action`, used to execute the default automation peer action on a UI element
 - `uno_app_close`, used to close the running app
 - `uno_app_start`, used to start the app with Hot Reload support
+- `uno_devserver_diagnostics`, used to get diagnostics for the current DevServer connection
 
 The Pro license App MCP app tools are:
 
 - `uno_app_element_peer_action`, used to invoke a specific element automation peer action
 - `uno_app_get_element_datacontext`, used to get a textual representation of the DataContext on a FrameworkElement
+
+The Business license App MCP app tools are:
+
+- `uno_app_get_memory_counters`, used to get the memory counters of the running app
+
+## Tools published by the running app
+
+Beyond the fixed set above, a running app can publish its own tools, which the App MCP merges into its surface. The server prefixes every such tool with `app_`, so a tool an app publishes as `set_theme` reaches the agent as `app_set_theme`. Names already starting with `uno_` or `app_` are rejected, and a name colliding with one of the built-in tools is dropped in favor of the built-in.
+
+[Hot Design](xref:Uno.HotDesign.Overview) is the first component to use this. When a Hot Design-enabled app is running, these become available:
+
+- `app_hotdesign_set_mode`, used to show Hot Design over the running app
+- `app_hotdesign_set_app_mode`, used to choose what the design surface edits (`application`, `previews` or `themes`)
+- `app_hotdesign_set_form_factor`, used to set the design surface's size
+- `app_hotdesign_set_theme`, used to switch the nested app between light and dark
+- `app_hotdesign_create_preview`, used to add a preview for a control, or duplicate an existing one
+- `app_hotdesign_select_preview`, used to open a preview in the design surface
+- `app_hotdesign_delete_preview`, used to delete a preview
+- `app_hotdesign_screenshot_preview`, used to screenshot a preview off-screen, without changing mode or selection
+
+Two further tools expose the app's resources: `app_list_resources` and `app_read_resource`.
+
+> [!IMPORTANT]
+> These tools register when the app connects, which is normally *after* your agent has connected to the MCP. The bridge pushes a `tools/list_changed` notification only once per connection, so your agent will usually not be told that they appeared. Call `uno_discover_tools` after starting the app to pick them up, and `uno_execute_tool` to call one that your agent's tool list does not show.
+
+> [!NOTE]
+> Unlike the App MCP tools, app-published tools are listed regardless of licensing — the tool registry applies no license checks of its own, leaving that to each publisher. Without a Hot Design license the eight tools above are still listed, and each one returns an error when called.
 
 ## Registering and diagnosing Uno MCPs
 
