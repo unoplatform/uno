@@ -538,21 +538,19 @@ namespace Microsoft.UI.Xaml.Controls
 				m_pendingDirectManipulationKey = key;
 				try
 				{
+					// As in WinUI, the outcome is not consulted: an animated request is owned by direct
+					// manipulation, and the unanimated scroll below is only for the non-animated case.
 					ProcessInputMessage(
 						ignoreFlowDirection: key == VirtualKey.PageUp || key == VirtualKey.PageDown ||
 							key == VirtualKey.Home || key == VirtualKey.End,
-						out var isHandled);
-					if (isHandled)
-					{
-						return;
-					}
+						out _);
 				}
 				finally
 				{
 					m_pendingDirectManipulationKey = null;
 				}
 			}
-
+			else
 			{
 				var direction = FlowDirection;
 				var invert = direction == FlowDirection.RightToLeft;
