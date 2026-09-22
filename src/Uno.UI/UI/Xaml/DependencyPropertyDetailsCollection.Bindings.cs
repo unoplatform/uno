@@ -162,6 +162,11 @@ namespace Microsoft.UI.Xaml
 				details.SetBinding(bindingExpression);
 				_bindings = _bindings.Add(bindingExpression);
 
+				if (global::Uno.UI.FeatureConfiguration.Validation.IsEnabled)
+				{
+					global::Uno.UI.Xaml.Controls.Validation.OnBindingSet(Owner, dependencyProperty, bindingExpression);
+				}
+
 				if (!Equals(binding.RelativeSource, RelativeSource.TemplatedParent))
 				{
 					if (DataContextPropertyDetails is { } dataContextDetails)
