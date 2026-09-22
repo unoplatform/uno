@@ -268,10 +268,10 @@ internal sealed unsafe partial class WebGpuFrame
 				{
 					var rrc = (RoundedRectCmd)cmd;
 					var tmp = RentRrect();
-					AppendRrect(tmp, rrc, rrc.P0, rrc.P1, rrc.P2, rrc.P3);
+					var rn = (uint)AppendRrect(tmp, rrc, rrc.P0, rrc.P1, rrc.P2, rrc.P3);
 					var buf = Vbuf(tmp, VertexStride.RoundedRect, owned);
 					ReturnRrect(tmp);
-					var rrop = DrawOp.Own(DrawKind.RoundedRect, buf, 6, IntPtr.Zero, rrc.Clip, MakeClipBg(rrc.Clip, owned));
+					var rrop = DrawOp.Own(DrawKind.RoundedRect, buf, rn, IntPtr.Zero, rrc.Clip, MakeClipBg(rrc.Clip, owned));
 					rrop.Bounds = AaRect(rrc.P0, rrc.P1, rrc.P2, rrc.P3);
 					rrop.Opaque = OpaqueRrect(rrc);
 					ops.Add(rrop);

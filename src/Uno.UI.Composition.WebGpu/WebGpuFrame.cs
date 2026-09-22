@@ -307,6 +307,9 @@ internal sealed unsafe partial class WebGpuFrame
 	/// <summary>Ops the occlusion cull dropped this frame, and ops it cut down to their uncovered bands.</summary>
 	internal static int StatCulled;
 	internal static int StatSplit;
+	/// <summary>Border rings cut into bands. CUMULATIVE: op building happens once per cached recording, so a
+	/// counter reset every stats interval reads zero in steady state while the rings still draw every frame.</summary>
+	internal static int StatRingBands;
 
 	// Off for bisecting a visual regression against the cull.
 	private static readonly bool _noOcclusionCull = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_OCCLUSION_CULL") == "1";
@@ -402,13 +405,14 @@ internal sealed unsafe partial class WebGpuFrame
 	// A plain rect through the rounded-rect pipeline, with no corners: its analytic coverage is the only edge
 	// antialiasing a solid quad can have, and the SDF's local space comes from the device corners, so it is exact
 	// under any affine.
-	private void AppendAaRect(VertBuf rr, in WColor color, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
+	private int AppendAaRect(VertBuf rr, in WColor color, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
 		=> AppendRrect(rr, new RoundedRectCmd { Half = new Vector2((p1 - p0).Length() * 0.5f, (p3 - p0).Length() * 0.5f), Color = color }, p0, p1, p2, p3);
 
 	// Appends one rounded rect at the given corners: per-vertex SDF params in its own centred space (transform-invariant).
 	// The quad is grown a pixel past the shape on every side: coverage below 1 lies OUTSIDE the edge, and a quad that
 	// stops at the edge never rasterises it - which left a rotated rect hard and an offset one half a pixel thin.
-	private void AppendRrect(VertBuf rr, RoundedRectCmd rrc, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
+	// Returns how many vertices it appended.
+	private int AppendRrect(VertBuf rr, RoundedRectCmd rrc, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
 	{
 		var hf = rrc.Half; var rad = rrc.Radii; var ih = rrc.InnerHalf; var ic = rrc.InnerCenter; var ir = rrc.InnerRadii;
 		float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, color = rrc.Color.A / 255f * rrc.Opacity;
@@ -416,26 +420,61 @@ internal sealed unsafe partial class WebGpuFrame
 		var ax = p1 - p0; var ay = p3 - p0;
 		float dw = ax.Length(), dh = ay.Length();
 		var ext = hf;
+		var local = Vector2.One;   // local units per device pixel, per axis
 		if (dw > 1e-4f && dh > 1e-4f)
 		{
 			// The pad is a DEVICE pixel, so it reaches the SDF's own space through that axis' device length.
-			ext += new Vector2(Pad * hf.X * 2f / dw, Pad * hf.Y * 2f / dh);
+			local = new Vector2(hf.X * 2f / dw, hf.Y * 2f / dh);
+			ext += local * Pad;
 			var ex = ax / dw * Pad; var ey = ay / dh * Pad;
 			p0 -= ex + ey; p1 += ex - ey; p2 += ex + ey; p3 += ey - ex;
 		}
-		Span<Vector2> dev = stackalloc Vector2[4] { p0, p1, p3, p2 };
-		Span<Vector2> ctr = stackalloc Vector2[4] { new(-ext.X, -ext.Y), new(ext.X, -ext.Y), new(-ext.X, ext.Y), new(ext.X, ext.Y) };
-		ReadOnlySpan<int> tri = stackalloc int[6] { 0, 1, 2, 2, 1, 3 };
-		var v = Grow(rr, 6 * VertexStride.RoundedRect);
-		int o = 0;
-		foreach (var idx in tri)
+
+		// Local (centred, +/-ext) to device, so any sub-rect of the quad can be placed under the same affine.
+		var centre = (p0 + p2) * 0.5f; var hx = (p1 - p0) * 0.5f; var hy = (p3 - p0) * 0.5f;
+		int written = 0;
+		void Band(float lx0, float ly0, float lx1, float ly1)
 		{
-			var d = dev[idx];
-			v[o] = d.X; v[o + 1] = d.Y; v[o + 2] = ctr[idx].X; v[o + 3] = ctr[idx].Y; v[o + 4] = hf.X; v[o + 5] = hf.Y;
-			v[o + 6] = rad.X; v[o + 7] = rad.Y; v[o + 8] = rad.Z; v[o + 9] = rad.W; v[o + 10] = cr; v[o + 11] = cg; v[o + 12] = cb; v[o + 13] = color;
-			v[o + 14] = ih.X; v[o + 15] = ih.Y; v[o + 16] = ic.X; v[o + 17] = ic.Y; v[o + 18] = ir.X; v[o + 19] = ir.Y; v[o + 20] = ir.Z; v[o + 21] = ir.W;
-			o += VertexStride.RoundedRect;
+			ReadOnlySpan<int> tri = stackalloc int[6] { 0, 1, 2, 2, 1, 3 };
+			Span<Vector2> ctr = stackalloc Vector2[4] { new(lx0, ly0), new(lx1, ly0), new(lx0, ly1), new(lx1, ly1) };
+			var v = Grow(rr, 6 * VertexStride.RoundedRect);
+			int o = 0;
+			foreach (var idx in tri)
+			{
+				var c = ctr[idx];
+				var d = centre + hx * (c.X / ext.X) + hy * (c.Y / ext.Y);
+				v[o] = d.X; v[o + 1] = d.Y; v[o + 2] = c.X; v[o + 3] = c.Y; v[o + 4] = hf.X; v[o + 5] = hf.Y;
+				v[o + 6] = rad.X; v[o + 7] = rad.Y; v[o + 8] = rad.Z; v[o + 9] = rad.W; v[o + 10] = cr; v[o + 11] = cg; v[o + 12] = cb; v[o + 13] = color;
+				v[o + 14] = ih.X; v[o + 15] = ih.Y; v[o + 16] = ic.X; v[o + 17] = ic.Y; v[o + 18] = ir.X; v[o + 19] = ir.Y; v[o + 20] = ir.Z; v[o + 21] = ir.W;
+				o += VertexStride.RoundedRect;
+			}
+			written += 6;
 		}
+
+		// A border ring paints its frame and nothing else, yet one quad shades the whole box for it: a 3px border on
+		// a 240x168 card shades forty times the pixels it can possibly change. Cut the middle out as four bands over
+		// a hole small enough that every fragment in it would have come out at zero coverage anyway.
+		if (ih.X >= 0f && ext.X > 0f && ext.Y > 0f)
+		{
+			// Inside the inner shape far enough that its coverage is exactly zero: the box, less the widest corner
+			// radius, less the ramp. The shader divides the distance by the LARGER of the two axes' pixel rates, so
+			// both insets use that one; twice it, because the derivative it reads is a 2x2 quad's estimate.
+			var back = MathF.Max(MathF.Max(ir.X, ir.Y), MathF.Max(ir.Z, ir.W)) + 2f * MathF.Max(local.X, local.Y);
+			float hx0 = MathF.Max(ic.X - ih.X + back, -ext.X), hx1 = MathF.Min(ic.X + ih.X - back, ext.X);
+			float hy0 = MathF.Max(ic.Y - ih.Y + back, -ext.Y), hy1 = MathF.Min(ic.Y + ih.Y - back, ext.Y);
+			// Four quads cost three extra draws' worth of vertices, so only when the hole is most of the box.
+			if ((hx1 - hx0) * (hy1 - hy0) > ext.X * ext.Y * 2f)
+			{
+				StatRingBands++;
+				Band(-ext.X, -ext.Y, ext.X, hy0);
+				Band(-ext.X, hy1, ext.X, ext.Y);
+				Band(-ext.X, hy0, hx0, hy1);
+				Band(hx1, hy0, ext.X, hy1);
+				return written;
+			}
+		}
+		Band(-ext.X, -ext.Y, ext.X, ext.Y);
+		return written;
 	}
 
 	internal IntPtr MakeBuffer(float[] data)

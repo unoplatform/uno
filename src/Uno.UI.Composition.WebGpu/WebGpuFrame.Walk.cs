@@ -182,8 +182,8 @@ internal sealed unsafe partial class WebGpuFrame
 						var cd = composer.Compose(outer, rri.Clip, m, inv, direct);
 						uint st = (uint)(_rrect.Count / VertexStride.RoundedRect);
 						var (r0, r1, r2, r3) = identity ? (rri.P0, rri.P1, rri.P2, rri.P3) : (Map(rri.P0, m), Map(rri.P1, m), Map(rri.P2, m), Map(rri.P3, m));
-						AppendRrect(_rrect, rri, r0, r1, r2, r3);
-						var rop = DrawOp.Shared(DrawKind.RoundedRect, st, 6, IntPtr.Zero, cd, MakeClipBg(cd));
+						var rn = (uint)AppendRrect(_rrect, rri, r0, r1, r2, r3);
+						var rop = DrawOp.Shared(DrawKind.RoundedRect, st, rn, IntPtr.Zero, cd, MakeClipBg(cd));
 						rop.Bounds = AaRect(r0, r1, r2, r3);
 						rop.Opaque = OpaqueRrect(rri) && ClipIsPlain(cd);
 						ops.Add(rop);

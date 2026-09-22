@@ -209,7 +209,7 @@ internal sealed unsafe partial class WebGpuFrame
 		line.Append($"[webgpu-stats] {Target.Width}x{Target.Height}:");
 		line.Append($" ops={opCount} emitted={pst.Iters} sharedOps={pst.SharedOps}");
 		line.Append($" scissorChanges={pst.Scissors} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
-		line.Append($" arena={StatArenaHits} rebuilds={_statArenaRebuilds}(miss{_statArMiss}/masks{_statArMasks}) stamps={_statStamps} pool={StatPoolHits}/{StatPoolAdds} walked={StatWalkedRecords} walkPaths={StatWalkPaths} culled={StatCulled}/{StatSplit}");
+		line.Append($" arena={StatArenaHits} rebuilds={_statArenaRebuilds}(miss{_statArMiss}/masks{_statArMasks}) stamps={_statStamps} pool={StatPoolHits}/{StatPoolAdds} walked={StatWalkedRecords} walkPaths={StatWalkPaths} culled={StatCulled}/{StatSplit} ringBands={StatRingBands}");
 		line.Append($" fan=refused{WebGpuShapeCache.StatFanRefused}/points{WebGpuShapeCache.StatTessPoints}/tri{WebGpuShapeCache.StatTessTri}/area{WebGpuShapeCache.StatTessArea}/fold{WebGpuShapeCache.StatTessFold}");
 		line.Append($" atlas=try{WebGpuCoverage.AtlasTried}/key-no{WebGpuCoverage.AtlasNoKey}/hit{WebGpuCoverage.AtlasHit}/baked{WebGpuCoverage.AtlasBaked} clipMasks={WebGpuCoverage.ClipMasksBaked} fillMasks={WebGpuCoverage.FillMaskHits}/{WebGpuCoverage.FillMasksBaked}/nocache{WebGpuCoverage.FillMaskUncached} sheet={WebGpuCoverage.SheetSlotsBaked} shadowSheet={WebGpuEffects.ShadowSlotsBaked} bakes={WebGpuCoverage.BakeBatches} layerSheet={WebGpuEffects.LayerSheetSlots}/{WebGpuEffects.LayerSheetPasses}");
 		line.Append($"/full{WebGpuCoverage.AtlasNoRoom}/noedges{WebGpuCoverage.AtlasNoEdges}/scaleblk{WebGpuCoverage.ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
