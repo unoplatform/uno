@@ -133,7 +133,18 @@ partial class WebView2 : IWebView
 	{
 		var core = _nativeCore;
 		_nativeCore = null;
-		core?.Close();
+		try
+		{
+			if (_nativePresenter is { } presenter)
+			{
+				// Detach the native element while its handle is still valid.
+				presenter.Content = null;
+			}
+		}
+		finally
+		{
+			core?.Close();
+		}
 	}
 
 	private void ReleaseFailedNativeCore()

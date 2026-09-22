@@ -3,10 +3,8 @@
 namespace Uno.UI.Xaml.Controls;
 
 /// <summary>
-/// Implemented by native WebView providers that have a first-class host-to-page
-/// message channel (e.g. CoreWebView2.PostWebMessageAsJson on Win32). When a
-/// platform does not implement this interface, CoreWebView2 falls back to a
-/// JavaScript-based polyfill via ExecuteScriptAsync.
+/// Implemented by providers with a native message channel or a compatibility
+/// bridge installed before page scripts can subscribe to message events.
 /// </summary>
 internal interface ISupportsPostWebMessage
 {

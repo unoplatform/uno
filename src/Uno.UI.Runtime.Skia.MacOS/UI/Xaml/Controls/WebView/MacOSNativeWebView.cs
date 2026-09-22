@@ -133,6 +133,8 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 			NativeUno.uno_webview_stop(handle);
 		}
 		_isClosed = true;
+		DisposeNativePeer();
+		GC.SuppressFinalize(this);
 	}
 
 	public string DocumentTitle => TryGetHandle("read the document title of", out var handle)

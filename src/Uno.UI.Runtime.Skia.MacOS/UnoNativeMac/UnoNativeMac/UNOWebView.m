@@ -511,9 +511,10 @@ void uno_set_webview_cookie_operation_callback(uno_webview_cookie_operation_fn_p
 
 static bool uno_webview_cookie_domain_matches(NSString *cookieDomain, NSString *host)
 {
-    NSString *domain = [cookieDomain hasPrefix:@"."] ? [cookieDomain substringFromIndex:1] : cookieDomain;
+    bool isDomainCookie = [cookieDomain hasPrefix:@"."];
+    NSString *domain = isDomainCookie ? [cookieDomain substringFromIndex:1] : cookieDomain;
     return [[domain lowercaseString] isEqualToString:[host lowercaseString]]
-        || [[host lowercaseString] hasSuffix:[@"." stringByAppendingString:[domain lowercaseString]]];
+        || (isDomainCookie && [[host lowercaseString] hasSuffix:[@"." stringByAppendingString:[domain lowercaseString]]]);
 }
 
 static bool uno_webview_cookie_path_matches(NSString *cookiePath, NSString *requestPath)
@@ -603,7 +604,11 @@ static NSHTTPCookie* uno_webview_cookie_from_json(NSString *json)
     NSString *domain = [dict[@"domain"] length] > 0 ? dict[@"domain"] : @"localhost";
     NSString *path = [dict[@"path"] length] > 0 ? dict[@"path"] : @"/";
     bool isSecure = [dict[@"isSecure"] boolValue];
-	NSMutableString *header = [NSMutableString stringWithFormat:@"%@=%@; Domain=%@; Path=%@", name, value, domain, path];
+	NSMutableString *header = [NSMutableString stringWithFormat:@"%@=%@", name, value];
+	if ([domain hasPrefix:@"."]) {
+		[header appendFormat:@"; Domain=%@", domain];
+	}
+	[header appendFormat:@"; Path=%@", path];
 	if (isSecure) {
 		[header appendString:@"; Secure"];
 	}
@@ -661,9 +666,7 @@ void uno_webview_delete_cookies(WKWebView *webview, NSInteger handle, const char
                 continue;
             }
             if (domainStr != nil) {
-                NSString *cd = [c.domain hasPrefix:@"."] ? [c.domain substringFromIndex:1] : c.domain;
-                NSString *want = [domainStr hasPrefix:@"."] ? [domainStr substringFromIndex:1] : domainStr;
-                if (![[cd lowercaseString] isEqualToString:[want lowercaseString]]) {
+                if (![[c.domain lowercaseString] isEqualToString:[domainStr lowercaseString]]) {
                     continue;
                 }
             }

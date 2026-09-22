@@ -16,7 +16,7 @@ using Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
+internal partial class NativeWebViewWrapper : INativeWebView, ISupportsClose, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
 {
 #nullable enable annotations
 	Task<System.IO.Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
@@ -74,27 +74,8 @@ internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent
 	void ISupportsCookieManager.AddOrUpdateCookie(CoreWebView2Cookie cookie)
 	{
 		var manager = Android.Webkit.CookieManager.Instance;
-		var sb = new System.Text.StringBuilder();
-		sb.Append(cookie.Name).Append('=').Append(cookie.Value);
-		if (!string.IsNullOrEmpty(cookie.Path))
-		{
-			sb.Append("; Path=").Append(cookie.Path);
-		}
-		if (!string.IsNullOrEmpty(cookie.Domain))
-		{
-			sb.Append("; Domain=").Append(cookie.Domain);
-		}
-		if (cookie.IsSecure)
-		{
-			sb.Append("; Secure");
-		}
-		if (cookie.IsHttpOnly)
-		{
-			sb.Append("; HttpOnly");
-		}
-
 		var url = (cookie.IsSecure ? "https://" : "http://") + (string.IsNullOrEmpty(cookie.Domain) ? "localhost" : cookie.Domain.TrimStart('.'));
-		manager.SetCookie(url, sb.ToString());
+		manager.SetCookie(url, cookie.ToSetCookieHeader());
 		manager.Flush();
 	}
 
@@ -102,8 +83,7 @@ internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent
 	{
 		var manager = Android.Webkit.CookieManager.Instance;
 		var url = (cookie.IsSecure ? "https://" : "http://") + (string.IsNullOrEmpty(cookie.Domain) ? "localhost" : cookie.Domain.TrimStart('.'));
-		// Expire immediately.
-		manager.SetCookie(url, cookie.Name + "=; Max-Age=0; Path=" + (string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path));
+		manager.SetCookie(url, cookie.ToSetCookieDeletionHeader());
 		manager.Flush();
 	}
 
@@ -115,8 +95,9 @@ internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent
 	void ISupportsCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path)
 	{
 		var manager = Android.Webkit.CookieManager.Instance;
-		var url = "http://" + domain.TrimStart('.');
-		manager.SetCookie(url, name + "=; Max-Age=0; Path=" + (string.IsNullOrEmpty(path) ? "/" : path) + "; Domain=" + domain);
+		var url = "https://" + domain.TrimStart('.');
+		var cookie = new CoreWebView2Cookie(name, string.Empty, domain, string.IsNullOrEmpty(path) ? "/" : path) { IsSecure = true };
+		manager.SetCookie(url, cookie.ToSetCookieDeletionHeader());
 		manager.Flush();
 	}
 
@@ -126,24 +107,15 @@ internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent
 		Android.Webkit.CookieManager.Instance.Flush();
 	}
 
-	private readonly System.Collections.Generic.Dictionary<string, string> _documentCreatedScripts = new();
-
 	Task<string> ISupportsDocumentCreatedScripts.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript, CancellationToken ct)
-	{
-		var id = Guid.NewGuid().ToString();
-		_documentCreatedScripts[id] = javaScript;
-		return Task.FromResult(id);
-	}
+		=> throw new NotSupportedException(
+			"AddScriptToExecuteOnDocumentCreatedAsync is not supported by the Android WebView provider: " +
+			"Android.Webkit.WebView does not expose a document-start injection hook.");
 
-	void ISupportsDocumentCreatedScripts.RemoveScriptToExecuteOnDocumentCreated(string id) => _documentCreatedScripts.Remove(id);
-
-	internal void InjectDocumentCreatedScripts()
-	{
-		foreach (var script in _documentCreatedScripts.Values)
-		{
-			_webView.EvaluateJavascript(script, null);
-		}
-	}
+	void ISupportsDocumentCreatedScripts.RemoveScriptToExecuteOnDocumentCreated(string id)
+		=> throw new NotSupportedException(
+			"RemoveScriptToExecuteOnDocumentCreated is not supported by the Android WebView provider: " +
+			"Android.Webkit.WebView does not expose a document-start injection hook.");
 
 	public string UserAgent
 	{
@@ -167,8 +139,12 @@ internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent
 
 	private readonly WebView _webView;
 	private readonly CoreWebView2 _coreWebView;
+	private readonly InternalClient _webViewClient;
+	private readonly InternalWebChromeClient _webChromeClient;
+	private readonly UnoWebViewHandler _webMessageHandler;
 
 	private string _documentTitle;
+	private bool _isClosed;
 	internal bool _wasLoadedFromString;
 
 	public NativeWebViewWrapper(WebView webView, CoreWebView2 coreWebView)
@@ -190,10 +166,12 @@ internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent
 		_webView.Settings.LoadWithOverviewMode = true;
 		_webView.Settings.UseWideViewPort = true;
 		_webView.Settings.SetSupportMultipleWindows(true);
-		_webView.SetWebViewClient(new InternalClient(_coreWebView, this));
-		_webView.SetWebChromeClient(new InternalWebChromeClient(_coreWebView));
-
-		_webView.AddJavascriptInterface(new UnoWebViewHandler(this), "unoWebView");
+		_webViewClient = new InternalClient(_coreWebView, this);
+		_webChromeClient = new InternalWebChromeClient(_coreWebView);
+		_webMessageHandler = new UnoWebViewHandler(this);
+		_webView.SetWebViewClient(_webViewClient);
+		_webView.SetWebChromeClient(_webChromeClient);
+		_webView.AddJavascriptInterface(_webMessageHandler, "unoWebView");
 
 		//Allow ThirdPartyCookies by default only on Android 5.0 and UP
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
@@ -229,6 +207,26 @@ internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent
 	public void GoForward() => GoToNearestValidHistoryEntry(direction: 1 /* forward */);
 
 	public void Stop() => _webView.StopLoading();
+
+	void ISupportsClose.Close()
+	{
+		if (_isClosed)
+		{
+			return;
+		}
+
+		_isClosed = true;
+		_webView.StopLoading();
+		_webView.SetWebViewClient(null);
+		_webView.SetWebChromeClient(null);
+		_webView.RemoveJavascriptInterface("unoWebView");
+		(_webView.Parent as ViewGroup)?.RemoveView(_webView);
+		_webViewClient.Dispose();
+		_webChromeClient.Dispose();
+		_webMessageHandler.Dispose();
+		_webView.Destroy();
+		_webView.Dispose();
+	}
 
 	public void Reload() => _webView.Reload();
 
@@ -344,6 +342,11 @@ internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent
 		// the WinUI behavior.
 		_ = _coreWebView.Owner.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
 		{
+			if (_isClosed)
+			{
+				return;
+			}
+
 			// Ensure we pass the correct navigation data - use Uri for file URLs, string for data URLs
 			object navigationData = url;
 			if (!string.IsNullOrEmpty(url) && !url.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
@@ -353,7 +356,7 @@ internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent
 
 			_coreWebView.RaiseNavigationStarting(navigationData, out var cancel);
 
-			if (!cancel)
+			if (!cancel && !_isClosed)
 			{
 				loadAction.Invoke();
 			}

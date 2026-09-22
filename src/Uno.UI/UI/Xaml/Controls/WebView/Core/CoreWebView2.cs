@@ -361,7 +361,7 @@ public partial class CoreWebView2
 		}
 		else
 		{
-			DispatchPostWebMessage(webMessageAsJson, isJson: true);
+			throw new NotSupportedException("Host-to-page web messaging requires a document-start message bridge and is not supported on this platform.");
 		}
 	}
 
@@ -386,7 +386,7 @@ public partial class CoreWebView2
 		}
 		else
 		{
-			DispatchPostWebMessage(webMessageAsString, isJson: false);
+			throw new NotSupportedException("Host-to-page web messaging requires a document-start message bridge and is not supported on this platform.");
 		}
 	}
 
@@ -396,78 +396,6 @@ public partial class CoreWebView2
 		{
 			throw new UnauthorizedAccessException("Web messaging is disabled by CoreWebView2Settings.IsWebMessageEnabled.");
 		}
-	}
-
-	private void DispatchPostWebMessage(string payload, bool isJson)
-	{
-		if (_nativeWebView is null)
-		{
-			return;
-		}
-
-		// Providers install this bridge at document start when possible. Keep the
-		// setup here as a fallback for engines that can only inject on demand.
-		var literal = isJson ? payload : EscapeJsString(payload);
-		var script =
-			"(function(){" +
-				"window.chrome=window.chrome||{};" +
-				"window.chrome.webview=window.chrome.webview||{};" +
-				"if(!window.chrome.webview.__unoListeners){" +
-					"window.chrome.webview.__unoListeners=[];" +
-					"var origAdd=window.chrome.webview.addEventListener;" +
-					"window.chrome.webview.addEventListener=function(t,h){" +
-						"if(t==='message'){window.chrome.webview.__unoListeners.push(h);}" +
-						"else if(typeof origAdd==='function'){origAdd.call(window.chrome.webview,t,h);}" +
-					"};" +
-					"var origRemove=window.chrome.webview.removeEventListener;" +
-					"window.chrome.webview.removeEventListener=function(t,h){" +
-						"if(t==='message'){var i=window.chrome.webview.__unoListeners.indexOf(h);if(i>=0)window.chrome.webview.__unoListeners.splice(i,1);}" +
-						"else if(typeof origRemove==='function'){origRemove.call(window.chrome.webview,t,h);}" +
-					"};" +
-					"window.chrome.webview.__unoDispatchMessage=function(d){" +
-						"var ev=typeof MessageEvent==='function'?new MessageEvent('message',{data:d}):{data:d};" +
-						"window.chrome.webview.__unoListeners.slice().forEach(function(h){try{h(ev);}catch(e){}});" +
-					"};" +
-				"}" +
-				"var d=" + literal + ";" +
-				"window.chrome.webview.__unoDispatchMessage(d);" +
-			"})();";
-
-		_ = _nativeWebView.ExecuteScriptAsync(script, CancellationToken.None);
-	}
-
-	private static string EscapeJsString(string input)
-	{
-		var sb = new System.Text.StringBuilder(input.Length + 2);
-		sb.Append('"');
-		foreach (var ch in input)
-		{
-			switch (ch)
-			{
-				case '\\': sb.Append("\\\\"); break;
-				case '"': sb.Append("\\\""); break;
-				case '\b': sb.Append("\\b"); break;
-				case '\f': sb.Append("\\f"); break;
-				case '\n': sb.Append("\\n"); break;
-				case '\r': sb.Append("\\r"); break;
-				case '\t': sb.Append("\\t"); break;
-				case '/': sb.Append("\\/"); break;
-				case '\u2028': sb.Append("\\u2028"); break;
-				case '\u2029': sb.Append("\\u2029"); break;
-				default:
-					if (ch < 0x20)
-					{
-						sb.Append("\\u").Append(((int)ch).ToString("x4", CultureInfo.InvariantCulture));
-					}
-					else
-					{
-						sb.Append(ch);
-					}
-					break;
-			}
-		}
-		sb.Append('"');
-		return sb.ToString();
 	}
 
 	internal async Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken ct)
@@ -565,8 +493,21 @@ public partial class CoreWebView2
 	public event global::Windows.Foundation.TypedEventHandler<CoreWebView2, CoreWebView2ContentLoadingEventArgs>? ContentLoading;
 	public event global::Windows.Foundation.TypedEventHandler<CoreWebView2, CoreWebView2DOMContentLoadedEventArgs>? DOMContentLoaded;
 
-	internal void RaiseContentLoading(CoreWebView2ContentLoadingEventArgs args) => ContentLoading?.Invoke(this, args);
-	internal void RaiseDOMContentLoaded(CoreWebView2DOMContentLoadedEventArgs args) => DOMContentLoaded?.Invoke(this, args);
+	internal void RaiseContentLoading(CoreWebView2ContentLoadingEventArgs args)
+	{
+		if (!_isClosed)
+		{
+			ContentLoading?.Invoke(this, args);
+		}
+	}
+
+	internal void RaiseDOMContentLoaded(CoreWebView2DOMContentLoadedEventArgs args)
+	{
+		if (!_isClosed)
+		{
+			DOMContentLoaded?.Invoke(this, args);
+		}
+	}
 	internal void RaiseContentLoading(bool isErrorPage = false) => RaiseContentLoading(new CoreWebView2ContentLoadingEventArgs(isErrorPage, (ulong)_navigationId));
 	internal void RaiseDOMContentLoaded() => RaiseDOMContentLoaded(new CoreWebView2DOMContentLoadedEventArgs((ulong)_navigationId));
 
@@ -657,11 +598,20 @@ public partial class CoreWebView2
 
 	internal void OnDocumentTitleChanged()
 	{
-		DocumentTitleChanged?.Invoke(this, null);
+		if (!_isClosed)
+		{
+			DocumentTitleChanged?.Invoke(this, null);
+		}
 	}
 
-	internal void RaiseNavigationStarting(object? navigationData, out bool cancel, ulong? navigationId = null)
+	internal void RaiseNavigationStarting(object? navigationData, out bool cancel, ulong? navigationId = null, bool isRedirected = false, bool isUserInitiated = false)
 	{
+		if (_isClosed)
+		{
+			cancel = true;
+			return;
+		}
+
 		string? uriString = null;
 		if (navigationData is Uri uri)
 		{
@@ -681,7 +631,7 @@ public partial class CoreWebView2
 			Interlocked.Exchange(ref _navigationId, unchecked((long)actualNavigationId));
 		}
 
-		var args = new CoreWebView2NavigationStartingEventArgs(actualNavigationId, uriString);
+		var args = new CoreWebView2NavigationStartingEventArgs(actualNavigationId, uriString, isRedirected, isUserInitiated);
 		NavigationStarting?.Invoke(this, args);
 
 		cancel = args.Cancel;
@@ -717,6 +667,11 @@ public partial class CoreWebView2
 		bool shouldSetSource = true,
 		ulong? navigationId = null)
 	{
+		if (_isClosed)
+		{
+			return;
+		}
+
 		if (shouldSetSource)
 		{
 			Source = (uri ?? BlankUri).ToString();
@@ -742,7 +697,7 @@ public partial class CoreWebView2
 
 	internal void RaiseWebMessageReceived(string message)
 	{
-		if (!Settings.IsWebMessageEnabled)
+		if (_isClosed || !Settings.IsWebMessageEnabled)
 		{
 			return;
 		}
@@ -756,7 +711,13 @@ public partial class CoreWebView2
 		{
 			_ = _owner.Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
-				() => WebMessageReceived?.Invoke(this, new(message)));
+				() =>
+				{
+					if (!_isClosed && Settings.IsWebMessageEnabled)
+					{
+						WebMessageReceived?.Invoke(this, new(message));
+					}
+				});
 		}
 	}
 

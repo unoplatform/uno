@@ -268,6 +268,10 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IA
 		var uriString = uriPwstr.ToString();
 		ulong navigationId = default;
 		e.get_NavigationId(ref navigationId).ThrowOnError();
+		BOOL isRedirected = default;
+		BOOL isUserInitiated = default;
+		e.get_IsRedirected(ref isRedirected).ThrowOnError();
+		e.get_IsUserInitiated(ref isUserInitiated).ThrowOnError();
 
 		if (uriString is null)
 		{
@@ -277,11 +281,11 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IA
 		bool cancel;
 		if (Uri.TryCreate(uriString, UriKind.RelativeOrAbsolute, out var uri))
 		{
-			_coreWebView.RaiseNavigationStarting(uri, out cancel, navigationId);
+			_coreWebView.RaiseNavigationStarting(uri, out cancel, navigationId, isRedirected.Value != 0, isUserInitiated.Value != 0);
 		}
 		else
 		{
-			_coreWebView.RaiseNavigationStarting(uriString, out cancel, navigationId);
+			_coreWebView.RaiseNavigationStarting(uriString, out cancel, navigationId, isRedirected.Value != 0, isUserInitiated.Value != 0);
 		}
 
 		BOOL canGoBack = default;

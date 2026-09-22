@@ -35,7 +35,21 @@ public partial class CoreWebView2CookieManager
 	public CoreWebView2Cookie CreateCookie(string name, string value, string Domain, string Path)
 	{
 		ValidateCookieIdentity(name, Domain, Path);
-		return new CoreWebView2Cookie(name, value ?? throw new ArgumentNullException(nameof(value)), Domain, Path);
+		ValidateCookieValue(value);
+		return new CoreWebView2Cookie(name, value, Domain, Path);
+	}
+
+	private static void ValidateCookieValue(string value)
+	{
+		ArgumentNullException.ThrowIfNull(value);
+		foreach (var character in value)
+		{
+			// Chromium's ParsedCookie::IsValidCookieValue excludes CTLs and ';', not quotes or commas.
+			if (character < 0x20 || character == 0x7f || character == ';')
+			{
+				throw new ArgumentException("Cookie values cannot contain control characters or semicolons.", nameof(value));
+			}
+		}
 	}
 
 	private static void ValidateCookieIdentity(string name, string domain, string path)
@@ -104,10 +118,7 @@ public partial class CoreWebView2CookieManager
 			throw new ArgumentNullException(nameof(cookie));
 		}
 		ValidateCookieIdentity(cookie.Name, cookie.Domain, cookie.Path);
-		if (cookie.Value is null || cookie.Value.IndexOfAny(['\r', '\n']) >= 0)
-		{
-			throw new ArgumentException("Cookie values cannot be null or contain line breaks.", nameof(cookie));
-		}
+		ValidateCookieValue(cookie.Value);
 		if (cookie.SameSite == CoreWebView2CookieSameSiteKind.None && !cookie.IsSecure)
 		{
 			throw new ArgumentException("SameSite=None cookies must also be secure.", nameof(cookie));

@@ -35,20 +35,36 @@ namespace Microsoft.UI.Xaml.Controls {
             return serialized === undefined ? "null" : serialized;
         }
 
-        static postWebMessage(htmlId: string, payload: string, isJson: boolean): void {
-            const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
-            let webview: any;
+        static canPostWebMessage(htmlId: string): boolean {
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement | null;
             try {
-                // Reading properties of a cross-origin contentWindow throws SecurityError.
-                webview = (iframe.contentWindow as any)?.chrome?.webview;
+                return iframe?.contentWindow?.location.href.split("#")[0] === "about:srcdoc"
+                    && typeof (iframe.contentWindow as any).chrome?.webview?.__unoDispatchMessage === "function";
             } catch {
-                webview = undefined;
+                return false;
             }
-            if (typeof webview?.__unoDispatchMessage !== "function") {
-                throw new Error("Web messaging is available only to same-origin WebView content on WebAssembly.");
+        }
+
+        static postWebMessage(htmlId: string, payload: string, isJson: boolean): void {
+            if (!WebView.canPostWebMessage(htmlId)) {
+                throw new Error("Web messaging on WebAssembly is supported only for content loaded with NavigateToString.");
             }
 
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
+            const webview = (iframe.contentWindow as any).chrome.webview;
             webview.__unoDispatchMessage(isJson ? JSON.parse(payload) : payload);
+        }
+
+        static onDocumentCreated(htmlId: string, navigationId: string, frame: Window): void {
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement | null;
+            const frameDocument = frame.document;
+            const notify = (isDomContentLoaded: boolean) => {
+                if (iframe?.contentDocument === frameDocument && iframe.isConnected) {
+                    WebView.unoExports.DispatchDocumentEvent(htmlId, navigationId, isDomContentLoaded);
+                }
+            };
+            frameDocument.addEventListener("DOMContentLoaded", () => notify(true), { once: true });
+            notify(false);
         }
 
         static dispatchWebMessage(htmlId: string, payload: string): void {
@@ -83,14 +99,9 @@ namespace Microsoft.UI.Xaml.Controls {
         static navigate(htmlId: string, url: string) {
             const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
             if (iframe) {
-                try {
-                    if (iframe.contentWindow) {
-                        iframe.contentWindow.location.href = url;
-                    }
-                } catch (e) {
-                    // Fall back to setAttribute if contentWindow access fails (cross-origin)
-                    iframe.setAttribute("src", url);
-                }
+                // srcdoc overrides src; set the target before removing it to avoid an intermediate load.
+                iframe.setAttribute("src", url);
+                iframe.removeAttribute("srcdoc");
             }
         }
 
@@ -139,8 +150,8 @@ namespace Microsoft.UI.Xaml.Controls {
             }
 
             iframe.removeEventListener('load', WebView.onLoad);
-            iframe.removeAttribute("srcdoc");
             iframe.setAttribute("src", "about:blank");
+            iframe.removeAttribute("srcdoc");
         }
 
         private static onLoad(event: Event) {

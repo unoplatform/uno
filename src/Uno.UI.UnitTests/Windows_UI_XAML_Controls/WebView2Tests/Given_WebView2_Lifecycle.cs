@@ -175,4 +175,74 @@ public class Given_WebView2_Lifecycle
 
 		Assert.AreEqual("Uno-WebView2-Override", settings.UserAgent);
 	}
+
+	[TestMethod]
+	[DataRow(false, false)]
+	[DataRow(false, true)]
+	[DataRow(true, false)]
+	[DataRow(true, true)]
+	public void When_Navigation_Flags_Are_Projected_They_Reach_Cancellation_Policy(bool isRedirected, bool isUserInitiated)
+	{
+		var owner = new WebView2();
+		var core = new CoreWebView2((IWebView)owner);
+		CoreWebView2NavigationStartingEventArgs? starting = null;
+		CoreWebView2NavigationCompletedEventArgs? completed = null;
+		core.NavigationStarting += (_, args) =>
+		{
+			starting = args;
+			args.Cancel = args.IsRedirected || !args.IsUserInitiated;
+		};
+		core.NavigationCompleted += (_, args) => completed = args;
+		try
+		{
+			core.RaiseNavigationStarting(new Uri("https://example.com/"), out var cancel, 42, isRedirected, isUserInitiated);
+
+			Assert.IsNotNull(starting);
+			Assert.AreEqual(42UL, starting.NavigationId);
+			Assert.AreEqual(isRedirected, starting.IsRedirected);
+			Assert.AreEqual(isUserInitiated, starting.IsUserInitiated);
+			Assert.AreEqual(isRedirected || !isUserInitiated, cancel);
+			if (cancel)
+			{
+				Assert.IsNotNull(completed);
+				Assert.AreEqual(starting.NavigationId, completed.NavigationId);
+				Assert.AreEqual(CoreWebView2WebErrorStatus.OperationCanceled, completed.WebErrorStatus);
+			}
+			else
+			{
+				Assert.IsNull(completed);
+			}
+		}
+		finally
+		{
+			core.Close();
+			owner.Close();
+		}
+	}
+
+	[TestMethod]
+	public void When_Closed_Queued_Native_Events_Are_Ignored()
+	{
+		var owner = new WebView2();
+		var core = new CoreWebView2((IWebView)owner);
+		var events = 0;
+		core.NavigationStarting += (_, _) => events++;
+		core.ContentLoading += (_, _) => events++;
+		core.DOMContentLoaded += (_, _) => events++;
+		core.NavigationCompleted += (_, _) => events++;
+		core.WebMessageReceived += (_, _) => events++;
+		core.DocumentTitleChanged += (_, _) => events++;
+		core.Close();
+		owner.Close();
+
+		core.RaiseNavigationStarting(new Uri("https://example.com/"), out var cancel);
+		core.RaiseContentLoading();
+		core.RaiseDOMContentLoaded();
+		core.RaiseNavigationCompleted(new Uri("https://example.com/"), true, 200, CoreWebView2WebErrorStatus.Unknown);
+		core.RaiseWebMessageReceived("\"late\"");
+		core.OnDocumentTitleChanged();
+
+		Assert.IsTrue(cancel);
+		Assert.AreEqual(0, events);
+	}
 }

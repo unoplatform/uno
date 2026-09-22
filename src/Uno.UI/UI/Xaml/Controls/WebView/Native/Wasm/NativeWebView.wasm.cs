@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Net.Http;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
@@ -109,17 +110,34 @@ internal partial class NativeWebView : ICleanableNativeWebView, Uno.UI.Xaml.Cont
 		}
 	}
 
-	void Uno.UI.Xaml.Controls.ISupportsPostWebMessage.PostWebMessageAsJson(string json) =>
+	void Uno.UI.Xaml.Controls.ISupportsPostWebMessage.PostWebMessageAsJson(string json)
+	{
+		EnsureWebMessagingSupported();
 		NativeMethods.PostWebMessage(_elementId, json, isJson: true);
+	}
 
-	void Uno.UI.Xaml.Controls.ISupportsPostWebMessage.PostWebMessageAsString(string message) =>
+	void Uno.UI.Xaml.Controls.ISupportsPostWebMessage.PostWebMessageAsString(string message)
+	{
+		EnsureWebMessagingSupported();
 		NativeMethods.PostWebMessage(_elementId, message, isJson: false);
+	}
+
+	private void EnsureWebMessagingSupported()
+	{
+		if (!NativeMethods.CanPostWebMessage(_elementId))
+		{
+			throw new NotSupportedException(
+				"Web messaging on WebAssembly is supported only for the current document loaded with NavigateToString. " +
+				"The iframe host cannot install a document-start bridge for URI navigations, including same-origin pages.");
+		}
+	}
 
 	private readonly CoreWebView2 _coreWebView;
 	private readonly ElementId _elementId;
 	private bool _navigationPending;
 	private bool _isClosed;
 	private Uri? _pendingNavigationUri;
+	private string? _documentNavigationId;
 	private static readonly ConcurrentDictionary<ElementId, NativeWebView> _elementIdToNativeWebView = new();
 
 	public NativeWebView(CoreWebView2 coreWebView, ElementId elementId)
@@ -178,6 +196,24 @@ internal partial class NativeWebView : ICleanableNativeWebView, Uno.UI.Xaml.Cont
 		}
 	}
 
+	[JSExport]
+	internal static void DispatchDocumentEvent(ElementId elementId, string navigationId, bool isDomContentLoaded)
+	{
+		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView)
+			&& nativeWebView._navigationPending
+			&& nativeWebView._documentNavigationId == navigationId)
+		{
+			if (isDomContentLoaded)
+			{
+				nativeWebView._coreWebView.RaiseDOMContentLoaded();
+			}
+			else
+			{
+				nativeWebView._coreWebView.RaiseContentLoading();
+			}
+		}
+	}
+
 	public string DocumentTitle => NativeMethods.GetDocumentTitle(_elementId) ?? "";
 
 	private void OnNavigationCompleted(object sender, string? absoluteUrl)
@@ -197,8 +233,6 @@ internal partial class NativeWebView : ICleanableNativeWebView, Uno.UI.Xaml.Cont
 		}
 		_pendingNavigationUri = null;
 
-		_coreWebView.RaiseContentLoading();
-		_coreWebView.RaiseDOMContentLoaded();
 		_coreWebView.OnDocumentTitleChanged();
 		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
 	}
@@ -219,12 +253,18 @@ internal partial class NativeWebView : ICleanableNativeWebView, Uno.UI.Xaml.Cont
 	{
 		_ = _coreWebView.Owner.Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.High, () =>
 		{
+			if (_isClosed)
+			{
+				return;
+			}
+
 			_coreWebView.RaiseNavigationStarting(navigationData, out var cancel);
 
-			if (!cancel)
+			if (!cancel && !_isClosed)
 			{
 				_pendingNavigationUri = completionUri;
 				_navigationPending = true;
+				_documentNavigationId = _coreWebView._navigationId.ToString(CultureInfo.InvariantCulture);
 				loadAction.Invoke();
 			}
 		});
@@ -265,36 +305,17 @@ internal partial class NativeWebView : ICleanableNativeWebView, Uno.UI.Xaml.Cont
 		ScheduleNavigationStarting(html, CoreWebView2.BlankUri, () => NativeMethods.SetAttribute(_elementId, "srcdoc", AddWebMessageBridge(html)));
 	}
 
-	private static string AddWebMessageBridge(string html)
+	private string AddWebMessageBridge(string html)
 	{
-		const string bridge = """
+		var bridge = $$"""
 			<script>
-			(function () {
-				window.chrome = window.chrome || {};
-				var webview = window.chrome.webview = window.chrome.webview || {};
-				if (webview.__unoListeners) { return; }
-				var listeners = webview.__unoListeners = [];
-				webview.addEventListener = function (type, handler) {
-					if (type === 'message' && typeof handler === 'function') { listeners.push(handler); }
-				};
-				webview.removeEventListener = function (type, handler) {
-					if (type !== 'message') { return; }
-					var index = listeners.indexOf(handler);
-					if (index >= 0) { listeners.splice(index, 1); }
-				};
-				webview.postMessage = function (message) {
-					var payload = JSON.stringify(message);
-					window.parent.Microsoft.UI.Xaml.Controls.WebView.dispatchWebMessage(window.frameElement.id, payload === undefined ? 'null' : payload);
-				};
-				webview.__unoDispatchMessage = function (data) {
-					var event = typeof MessageEvent === 'function' ? new MessageEvent('message', { data: data }) : { data: data };
-					listeners.slice().forEach(function (handler) { try { handler(event); } catch (_) {} });
-				};
-			})();
+			{{WebViewMessageBridge.CreateScript("var payload = JSON.stringify(message); window.parent.Microsoft.UI.Xaml.Controls.WebView.dispatchWebMessage(window.frameElement.id, payload === undefined ? 'null' : payload);")}}
+			window.parent.Microsoft.UI.Xaml.Controls.WebView.onDocumentCreated(window.frameElement.id, "{{_documentNavigationId}}", window);
 			</script>
 			""";
 
-		var doctypeEnd = html.StartsWith("<!doctype", StringComparison.OrdinalIgnoreCase) ? html.IndexOf('>') : -1;
+		var firstContent = html.AsSpan().TrimStart();
+		var doctypeEnd = firstContent.StartsWith("<!doctype", StringComparison.OrdinalIgnoreCase) ? html.IndexOf('>') : -1;
 		return doctypeEnd >= 0 ? html.Insert(doctypeEnd + 1, bridge) : bridge + html;
 	}
 
@@ -321,6 +342,9 @@ internal partial class NativeWebView : ICleanableNativeWebView, Uno.UI.Xaml.Cont
 		}
 
 		_isClosed = true;
+		_navigationPending = false;
+		_documentNavigationId = null;
+		_pendingNavigationUri = null;
 		_elementIdToNativeWebView.TryRemove(_elementId, out _);
 		NativeMethods.Close(_elementId);
 	}

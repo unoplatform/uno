@@ -1,3 +1,5 @@
+﻿#nullable enable
+
 using System;
 using System.IO;
 using System.Net.Http;
@@ -38,7 +40,7 @@ public class X11NativeWebViewProvider(CoreWebView2 coreWebView2) : INativeWebVie
 	INativeWebView INativeWebViewProvider.CreateNativeWebView(ContentPresenter contentPresenter) => new X11NativeWebView(coreWebView2, contentPresenter);
 }
 
-public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
+public class X11NativeWebView : INativeWebView, ISupportsClose, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsPostWebMessage, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
 {
 	async Task<Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
 	{
@@ -173,6 +175,7 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 		RunOnGtkThread(() =>
 		{
 			_webview.UserContentManager.RemoveAllScripts();
+			AddWebMessageBridge();
 			foreach (var remaining in _documentCreatedScripts.Values)
 			{
 				using var script = new WebKit.UserScript(
@@ -223,6 +226,7 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 
 	private bool _dontRaiseNextNavigationCompleted;
 	private bool _isCancelling;
+	private volatile bool _isClosed;
 
 	[DllImport("libc", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
 	private static extern int setenv(string name, string value, int overwrite);
@@ -341,6 +345,7 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 			_webview.LoadFailed += WebViewOnLoadFailed;
 			_webview.UserContentManager.RegisterScriptMessageHandler("unoWebView");
 			_webview.UserContentManager.ScriptMessageReceived += UserContentManagerOnScriptMessageReceived;
+			AddWebMessageBridge();
 			_webview.AddNotification(WebViewNotificationHandler);
 			_window.Add(_webview);
 			_webview.ShowAll();
@@ -377,14 +382,83 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 			RunOnGtkThread(() => _window.ShowAll());
 		}
 
-		presenter.Loaded += (_, _) => RunOnGtkThread(() => _window.ShowAll());
-		presenter.Unloaded += (_, _) => RunOnGtkThread(() => _window.Hide());
+		presenter.Loaded += OnPresenterLoaded;
+		presenter.Unloaded += OnPresenterUnloaded;
 	}
 
 	~X11NativeWebView()
 	{
-		RunOnGtkThread(() => _window.Close());
+		if (_window is { } window)
+		{
+			GLib.Idle.Add(() =>
+			{
+				window.Destroy();
+				window.Dispose();
+				return false;
+			});
+		}
 	}
+
+	private void OnPresenterLoaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs args) => RunOnGtkThread(() =>
+	{
+		if (!_isClosed)
+		{
+			_window.ShowAll();
+		}
+	});
+
+	private void OnPresenterUnloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs args) => RunOnGtkThread(() =>
+	{
+		if (!_isClosed)
+		{
+			_window.Hide();
+		}
+	});
+
+	void ISupportsClose.Close()
+	{
+		if (_isClosed)
+		{
+			return;
+		}
+
+		_isClosed = true;
+		_presenter.Loaded -= OnPresenterLoaded;
+		_presenter.Unloaded -= OnPresenterUnloaded;
+		_presenter.Content = null;
+		RunOnGtkThread(() =>
+		{
+			_webview.LoadChanged -= WebViewOnLoadChanged;
+			_webview.LoadFailed -= WebViewOnLoadFailed;
+			_webview.RemoveNotification(WebViewNotificationHandler);
+			_webview.UserContentManager.ScriptMessageReceived -= UserContentManagerOnScriptMessageReceived;
+			_webview.UserContentManager.UnregisterScriptMessageHandler("unoWebView");
+			_webview.UserContentManager.RemoveAllScripts();
+			_webview.StopLoading();
+			_window.Remove(_webview);
+			_webview.Destroy();
+			_webview.Dispose();
+			_window.Destroy();
+			_window.Dispose();
+		});
+		_documentCreatedScripts.Clear();
+		GC.SuppressFinalize(this);
+	}
+
+	private void AddWebMessageBridge()
+	{
+		using var script = new WebKit.UserScript(
+			WebViewMessageBridge.CreateScript("window.webkit.messageHandlers.unoWebView.postMessage(message);"),
+			WebKit.UserContentInjectedFrames.TopFrame,
+			WebKit.UserScriptInjectionTime.Start,
+			null,
+			null);
+		_webview.UserContentManager.AddScript(script);
+	}
+
+	void ISupportsPostWebMessage.PostWebMessageAsJson(string json) => WebViewMessageBridge.PostMessage(this, json, isJson: true);
+
+	void ISupportsPostWebMessage.PostWebMessageAsString(string message) => WebViewMessageBridge.PostMessage(this, message, isJson: false);
 
 	public string DocumentTitle => RunOnGtkThread(() => _webview.Title);
 
@@ -513,7 +587,7 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 	public Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
 	{
 		var tcs = new TaskCompletionSource<string?>();
-		_webview.RunJavascript(script, null, (wv, res) =>
+		RunOnGtkThread(() => _webview.RunJavascript(script, null, (wv, res) =>
 		{
 			// INCREDIBLY IMPORTANT NOTES
 			// Read JSValue only once. Each time result.JsValue is read, it increments the ref count
@@ -543,7 +617,7 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 				}
 				tcs.SetException(e);
 			}
-		});
+		}));
 		return tcs.Task;
 	}
 
@@ -565,28 +639,37 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 
 	private void WebViewOnLoadChanged(object o, LoadChangedArgs args)
 	{
+		if (_isClosed)
+		{
+			return;
+		}
+
 		switch (args.LoadEvent)
 		{
 			case LoadEvent.Started:
 				{
 					if (Uri.TryCreate(_webview.Uri, UriKind.Absolute, out var uri))
 					{
-						_presenter.DispatcherQueue.TryEnqueue(() =>
-						{
-							_isCancelling = false;
-							_coreWebView.RaiseNavigationStarting(uri, out var cancel);
-							if (cancel)
+						_presenter.DispatcherQueue.TryEnqueue(X11WebViewNavigationStarting.CreateCallback(
+							() => _isClosed,
+							() =>
+							{
+								_isCancelling = false;
+								_coreWebView.RaiseNavigationStarting(uri, out var cancel);
+								return cancel;
+							},
+							stopLoading =>
 							{
 								// The shared layer already raised the OperationCanceled completion,
 								// so the load-failed callback triggered by StopLoading must stay silent.
 								_isCancelling = true;
 								GLib.Idle.Add(() =>
 								{
-									_webview.StopLoading();
+									stopLoading();
 									return false;
 								});
-							}
-						});
+							},
+							() => _webview.StopLoading()));
 					}
 				}
 				break;
@@ -605,12 +688,20 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 					{
 						_presenter.DispatcherQueue.TryEnqueue(() =>
 						{
+							if (_isClosed)
+							{
+								return;
+							}
+
 							_coreWebView.SetHistoryProperties(canGoBack, canGoForward);
 							_coreWebView.RaiseHistoryChanged();
 							Uri.TryCreate(uriString, UriKind.Absolute, out var uri);
 							_presenter.DispatcherQueue.TryEnqueue(() =>
 							{
-								_coreWebView.RaiseNavigationCompleted(uri, isSuccess: true, httpStatusCode: 200, errorStatus: CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
+								if (!_isClosed)
+								{
+									_coreWebView.RaiseNavigationCompleted(uri, isSuccess: true, httpStatusCode: 200, errorStatus: CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
+								}
 							});
 						});
 					}
@@ -621,6 +712,11 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 
 	private void WebViewOnLoadFailed(object o, LoadFailedArgs args)
 	{
+		if (_isClosed)
+		{
+			return;
+		}
+
 		_dontRaiseNextNavigationCompleted = true;
 		if (_isCancelling)
 		{
@@ -631,13 +727,16 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 		Uri.TryCreate(args.FailingUri, UriKind.Absolute, out var uri);
 		_presenter.DispatcherQueue.TryEnqueue(() =>
 		{
-			_coreWebView.RaiseNavigationCompleted(uri, isSuccess: false, httpStatusCode: 0, errorStatus: CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
+			if (!_isClosed)
+			{
+				_coreWebView.RaiseNavigationCompleted(uri, isSuccess: false, httpStatusCode: 0, errorStatus: CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
+			}
 		});
 	}
 
 	private void WebViewNotificationHandler(object o, GLib.NotifyArgs args)
 	{
-		if (args.Property == "title")
+		if (!_isClosed && args.Property == "title")
 		{
 			_coreWebView.OnDocumentTitleChanged();
 		}
@@ -652,7 +751,10 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 		GC.SuppressFinalize(value); // see comments in ExecuteScriptAsync
 		_presenter.DispatcherQueue.TryEnqueue(() =>
 		{
-			_coreWebView.RaiseWebMessageReceived(str);
+			if (!_isClosed)
+			{
+				_coreWebView.RaiseWebMessageReceived(str);
+			}
 		});
 	}
 

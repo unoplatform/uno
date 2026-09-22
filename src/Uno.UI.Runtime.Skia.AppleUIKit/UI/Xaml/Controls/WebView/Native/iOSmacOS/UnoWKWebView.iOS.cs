@@ -36,7 +36,7 @@ internal
 #else
 public
 #endif
-	partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
+	partial class UnoWKWebView : WKWebView, INativeWebView, ISupportsClose, IWKScriptMessageHandler, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsPostWebMessage, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
 {
 	async Task<Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
 	{
@@ -104,13 +104,13 @@ public
 		using var reg = ct.Register(() => tcs.TrySetCanceled());
 		var all = await tcs.Task;
 
-		var host = string.IsNullOrEmpty(uri) ? null : new Uri(uri).Host;
+		var requestUri = string.IsNullOrEmpty(uri) ? null : new Uri(uri);
 
 		var result = new List<CoreWebView2Cookie>();
 		foreach (var nc in all)
 		{
-			if (host is not null && !string.Equals(nc.Domain.TrimStart('.'), host, StringComparison.OrdinalIgnoreCase)
-				&& !host.EndsWith("." + nc.Domain.TrimStart('.'), StringComparison.OrdinalIgnoreCase))
+			if (requestUri is not null
+				&& !CoreWebView2Cookie.MatchesUri(nc.Domain, nc.Path, nc.IsSecure, requestUri))
 			{
 				continue;
 			}
@@ -118,6 +118,7 @@ public
 			{
 				IsHttpOnly = nc.IsHttpOnly,
 				IsSecure = nc.IsSecure,
+				SameSite = GetSameSite(nc),
 				Expires = nc.ExpiresDate is { } e ? (e.SecondsSinceReferenceDate + 978307200d) : -1d,
 			};
 			result.Add(cookie);
@@ -127,24 +128,37 @@ public
 
 	void ISupportsCookieManager.AddOrUpdateCookie(CoreWebView2Cookie cookie)
 	{
-		var props = new NSMutableDictionary();
-		props[NSHttpCookie.KeyName] = new NSString(cookie.Name);
-		props[NSHttpCookie.KeyValue] = new NSString(cookie.Value ?? string.Empty);
-		props[NSHttpCookie.KeyDomain] = new NSString(string.IsNullOrEmpty(cookie.Domain) ? "localhost" : cookie.Domain);
-		props[NSHttpCookie.KeyPath] = new NSString(string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path);
-		if (cookie.IsSecure)
+		// The response-header parser preserves HttpOnly, which has no public NSHTTPCookie property key.
+		using var headers = new NSMutableDictionary();
+		using var headerName = new NSString("Set-Cookie");
+		using var headerValue = new NSString(cookie.ToSetCookieHeader());
+		headers[headerName] = headerValue;
+		var host = cookie.Domain.StartsWith('.') ? cookie.Domain[1..] : cookie.Domain;
+		using var url = new NSUrl(new UriBuilder(cookie.IsSecure ? Uri.UriSchemeHttps : Uri.UriSchemeHttp, host)
 		{
-			props[NSHttpCookie.KeySecure] = new NSString("TRUE");
-		}
-		if (cookie.Expires > 0)
+			Path = cookie.Path,
+		}.Uri.AbsoluteUri);
+		var cookies = NSHttpCookie.CookiesWithResponseHeaderFields(headers, url);
+		if (cookies.Length != 1)
 		{
-			var date = NSDate.FromTimeIntervalSinceReferenceDate(cookie.Expires - 978307200d);
-			props[NSHttpCookie.KeyExpires] = date;
+			throw new ArgumentException("The native cookie store rejected the cookie attributes.", nameof(cookie));
 		}
 
-		var ns = new NSHttpCookie(props);
-		Configuration.WebsiteDataStore.HttpCookieStore.SetCookie(ns, null);
+		using var nativeCookie = cookies[0];
+		if (nativeCookie.IsHttpOnly != cookie.IsHttpOnly || GetSameSite(nativeCookie) != cookie.SameSite)
+		{
+			throw new NotSupportedException("The native cookie store cannot preserve the requested HttpOnly and SameSite attributes.");
+		}
+		Configuration.WebsiteDataStore.HttpCookieStore.SetCookie(nativeCookie, null);
 	}
+
+	private static CoreWebView2CookieSameSiteKind GetSameSite(NSHttpCookie cookie) =>
+		cookie.SameSitePolicy?.ToString().ToLowerInvariant() switch
+		{
+			"strict" => CoreWebView2CookieSameSiteKind.Strict,
+			"none" => CoreWebView2CookieSameSiteKind.None,
+			_ => CoreWebView2CookieSameSiteKind.Lax,
+		};
 
 	void ISupportsCookieManager.DeleteCookie(CoreWebView2Cookie cookie)
 	{
@@ -175,7 +189,9 @@ public
 				{
 					continue;
 				}
-				if (host is null || string.Equals(nc.Domain.TrimStart('.'), host, StringComparison.OrdinalIgnoreCase))
+				if (host is null
+					|| string.Equals(nc.Domain, host, StringComparison.OrdinalIgnoreCase)
+					|| string.Equals(nc.Domain, "." + host, StringComparison.OrdinalIgnoreCase))
 				{
 					store.DeleteCookie(nc, null);
 				}
@@ -191,7 +207,7 @@ public
 			foreach (var nc in all)
 			{
 				if (string.Equals(nc.Name, name, StringComparison.Ordinal)
-					&& string.Equals(nc.Domain.TrimStart('.'), domain.TrimStart('.'), StringComparison.OrdinalIgnoreCase)
+					&& string.Equals(nc.Domain, domain, StringComparison.OrdinalIgnoreCase)
 					&& string.Equals(nc.Path, path, StringComparison.Ordinal))
 				{
 					store.DeleteCookie(nc, null);
@@ -232,19 +248,21 @@ public
 
 		var controller = Configuration.UserContentController;
 		controller.RemoveAllUserScripts();
+		AddWebMessageBridge();
 		foreach (var remaining in _documentCreatedScripts.Values)
 		{
 			controller.AddUserScript(new WKUserScript(new NSString(remaining), WKUserScriptInjectionTime.AtDocumentStart, isForMainFrameOnly: false));
 		}
 	}
 
-	string? ISupportsUserAgent.UserAgent
+	// Implicit properties avoid interface-qualified names in the iOS-generated linker roots.
+	public string? UserAgent
 	{
 		get => CustomUserAgent;
 		set => CustomUserAgent = value;
 	}
 
-	bool ISupportsScriptEnabled.IsScriptEnabled
+	public bool IsScriptEnabled
 	{
 		get => Configuration?.DefaultWebpagePreferences?.AllowsContentJavaScript ?? true;
 		set
@@ -256,7 +274,7 @@ public
 		}
 	}
 
-	bool ISupportsZoomControl.IsZoomControlEnabled
+	public bool IsZoomControlEnabled
 	{
 #if __APPLE_UIKIT__
 		get => ScrollView?.PinchGestureRecognizer?.Enabled ?? true;
@@ -288,6 +306,7 @@ public
 
 	private bool _isHistoryChangeQueued;
 	private bool _isNavigationCompleted;
+	private bool _isClosed;
 
 	/// <summary>
 	/// Object of the last navigation. Can be a Uri or HTML string.
@@ -322,6 +341,7 @@ public
 #endif
 
 		Configuration.UserContentController.AddScriptMessageHandler(this, WebMessageHandlerName);
+		AddWebMessageBridge();
 
 		// Set strings with fallback to default English
 		OkString = !string.IsNullOrEmpty(ok) ? ok : "OK";
@@ -338,6 +358,43 @@ public
 	public string DocumentTitle => Title!;
 
 	public void Stop() => StopLoading();
+
+	void ISupportsClose.Close()
+	{
+		if (_isClosed)
+		{
+			return;
+		}
+
+		_isClosed = true;
+		var navigationDelegate = NavigationDelegate;
+		var uiDelegate = UIDelegate;
+		NavigationDelegate = null;
+		UIDelegate = null;
+		StopLoading();
+		Configuration.UserContentController.RemoveScriptMessageHandler(WebMessageHandlerName);
+		Configuration.UserContentController.RemoveAllUserScripts();
+		_documentCreatedScripts.Clear();
+		_webResourceFilters.Clear();
+		_customHeaders.Clear();
+		RemoveFromSuperview();
+		navigationDelegate?.Dispose();
+		uiDelegate?.Dispose();
+		Dispose();
+	}
+
+	private void AddWebMessageBridge()
+	{
+		using var script = new WKUserScript(
+			new NSString(WebViewMessageBridge.CreateScript("window.webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));")),
+			WKUserScriptInjectionTime.AtDocumentStart,
+			isForMainFrameOnly: true);
+		Configuration.UserContentController.AddUserScript(script);
+	}
+
+	void ISupportsPostWebMessage.PostWebMessageAsJson(string json) => WebViewMessageBridge.PostMessage(this, json, isJson: true);
+
+	void ISupportsPostWebMessage.PostWebMessageAsString(string message) => WebViewMessageBridge.PostMessage(this, message, isJson: false);
 
 	void INativeWebView.ProcessNavigation(HttpRequestMessage requestMessage)
 	{
