@@ -15,6 +15,27 @@ namespace Uno.UI.Tests.FrameTests
 		}
 
 		[TestMethod]
+		public void When_Created_Has_No_History()
+		{
+			var SUT = new Frame();
+
+			Assert.IsFalse(SUT.CanGoBack);
+			Assert.IsFalse(SUT.CanGoForward);
+			Assert.AreEqual(0, SUT.BackStackDepth);
+		}
+
+		[TestMethod]
+		public void When_Navigated_Once_Cannot_Go_Forward()
+		{
+			var SUT = new Frame();
+
+			SUT.Navigate(typeof(MyPage));
+
+			Assert.IsFalse(SUT.CanGoBack);
+			Assert.IsFalse(SUT.CanGoForward);
+		}
+
+		[TestMethod]
 		public void When_Navigating_Cancels()
 		{
 			// Arrange
@@ -150,9 +171,8 @@ namespace Uno.UI.Tests.FrameTests
 
 			SUT.GoBack();
 
-			// WinUI Frame behavior (the Skia default): with NavigationCacheMode.Disabled the
-			// page instance is not retained on the back stack, so GoBack creates a fresh MyPage
-			// rather than restoring myPage1.
+			// With NavigationCacheMode.Disabled the page instance is not retained on the back
+			// stack, so GoBack creates a fresh MyPage rather than restoring myPage1.
 			var backPage = SUT.Content as MyPage;
 			Assert.IsNotNull(backPage);
 			Assert.AreNotEqual(myPage1, backPage);

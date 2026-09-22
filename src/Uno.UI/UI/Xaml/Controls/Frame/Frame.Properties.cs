@@ -108,7 +108,7 @@ partial class Frame
 			nameof(CanGoForward),
 			typeof(bool),
 			typeof(Frame),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(false));
 
 	/// <summary>
 	/// Gets a type reference for the content that is currently displayed.
@@ -188,15 +188,7 @@ partial class Frame
 			nameof(SourcePageType),
 			typeof(Type),
 			typeof(Frame),
-			new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnSourcePageTypeChanged(e)));
-
-	private void OnSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)
-	{
-		if (!_useWinUIBehavior)
-		{
-			OnSourcePageTypeChangedLegacy(e);
-		}
-	}
+			new FrameworkPropertyMetadata(null));
 
 	/// <summary>
 	/// Occurs when the content that is being navigated to has been found and is available

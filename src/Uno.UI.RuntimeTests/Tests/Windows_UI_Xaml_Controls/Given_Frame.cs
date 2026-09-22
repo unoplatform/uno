@@ -248,40 +248,6 @@ public class Given_Frame
 		Assert.HasCount(2, SUT.ForwardStack);
 	}
 
-#if !__SKIA__ // This test only applies to legacy frame which keeps all pages in memory
-	[TestMethod]
-	public void When_RemovedPage()
-	{
-		var SUT = new Frame()
-		{
-		};
-
-		SUT.Navigate(typeof(MyPage));
-
-		var myPage1 = SUT.Content as MyPage;
-		Assert.IsNotNull(myPage1);
-		Assert.AreEqual(SUT, myPage1.Frame);
-
-		SUT.Navigate(typeof(MyPage));
-
-		var myPage2 = SUT.Content as MyPage;
-		Assert.IsNotNull(myPage2);
-		Assert.AreEqual(SUT, myPage2.Frame);
-
-		SUT.GoBack();
-
-		Assert.AreEqual(myPage1, SUT.Content);
-		Assert.IsNotNull(myPage2.Frame);
-
-		SUT.Navigate(typeof(MyPage));
-
-		var myPage3 = SUT.Content as MyPage;
-
-		Assert.AreEqual(myPage3, SUT.Content);
-		Assert.IsNull(myPage2.Frame);
-	}
-#endif
-
 	[TestMethod]
 	public void When_Tracking_SourcePageType()
 	{
@@ -463,11 +429,7 @@ public class Given_Frame
 		var exception = Assert.ThrowsExactly<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInCtorPage)));
 		Assert.AreEqual("Crashed", exception.Message);
 #if HAS_UNO
-		if (FeatureConfiguration.Frame.UseWinUIBehavior)
-		{
-			// This is only valid with WinUI Frame behavior
-			Assert.IsFalse(navigationFailed);
-		}
+		Assert.IsFalse(navigationFailed);
 #endif
 	}
 
