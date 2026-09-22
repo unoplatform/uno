@@ -118,8 +118,16 @@ public partial class ContainerVisual : Visual
 	/// <remarks>This does NOT take the clipping into account.</remarks>
 	internal virtual bool HitTest(Point relativeLocation) => new Rect(0, 0, Size.X, Size.Y).Contains(relativeLocation);
 
-	internal Rect? GetArrangeClipPathInElementCoordinateSpace()
+	internal Rect? GetArrangeClipPathInElementCoordinateSpace() => GetArrangeClip(out _);
+
+	/// <summary>
+	/// The arrange clip in this visual's coordinates. <paramref name="skew"/> is the mapping that was applied to
+	/// get there when it is not axis aligned, in which case the returned rect is only the bounding box of the real
+	/// clip and a caller that can express a shape should use the mapping instead.
+	/// </summary>
+	private Rect? GetArrangeClip(out Matrix3x2? skew)
 	{
+		skew = null;
 		if (LayoutClip is not { isAncestorClip: var isAncestorClip, rect: var rect })
 		{
 			return default;
@@ -131,19 +139,56 @@ public partial class ContainerVisual : Visual
 			var childToParentTransform = (Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted;
 			if (!childToParentTransform.IsIdentity)
 			{
-				rect = rect.Transform(childToParentTransform.ToMatrix3x2());
+				var matrix = childToParentTransform.ToMatrix3x2();
+				if (matrix.M12 != 0 || matrix.M21 != 0)
+				{
+					skew = matrix;
+				}
+
+				rect = rect.Transform(matrix);
 			}
 		}
 
 		return rect;
 	}
 
+	/// <summary>The arrange clip as a shape, which a rotated ancestor clip needs: its bounding box would let
+	/// roughly the corners through.</summary>
+	private IGeometry? CreateArrangeClipGeometry()
+	{
+		if (GetArrangeClip(out var skew) is not { } rect)
+		{
+			return null;
+		}
+
+		if (skew is not { } matrix)
+		{
+			return GeometryFactory.Current.CreateRectangleGeometry(rect);
+		}
+
+		// rect is already the mapped bounding box, so the source rect is rebuilt and mapped as a shape instead.
+		Matrix3x2.Invert(matrix, out var inverse);
+		var local = rect.Transform(inverse);
+		var localGeometry = GeometryFactory.Current.CreateRectangleGeometry(local);
+		var transformed = localGeometry.Transform(matrix);
+		localGeometry.Release();
+		return transformed;
+	}
+
 	internal override void ApplyPrePaintingClipping(IDrawingSession session)
 	{
 		base.ApplyPrePaintingClipping(session);
-		if (GetArrangeClipPathInElementCoordinateSpace() is { } rect)
+		if (GetArrangeClip(out var skew) is { } rect)
 		{
-			session.ClipRect(rect);
+			if (skew is null)
+			{
+				session.ClipRect(rect);
+			}
+			else if (CreateArrangeClipGeometry() is { } clip)
+			{
+				session.ClipPath(clip);
+				clip.Release();
+			}
 		}
 	}
 
@@ -166,7 +211,7 @@ public partial class ContainerVisual : Visual
 			return baseClip;
 		}
 
-		var arrangeClip = GeometryFactory.Current.CreateRectangleGeometry(rect);
+		var arrangeClip = CreateArrangeClipGeometry() ?? GeometryFactory.Current.CreateRectangleGeometry(rect);
 		return baseClip is null
 			? arrangeClip
 			: IntersectOwned(baseClip, arrangeClip);

@@ -28,23 +28,46 @@ namespace Uno.Media
 			return new PathStreamGeometryContext(this);
 		}
 
-		internal void Close(Path bezierPath_)
+#if __SKIA__
+		private IPathBuilder _pendingBuilder;
+
+		// The winding rule is baked in at Build time, so the build waits for the first read: the rule is only
+		// known from the markup after the context has closed (Uno.Media.Parsers, and any caller assigning
+		// FillRule after its using block), and a built geometry can no longer be re-ruled.
+		internal void Close(IPathBuilder builder)
 		{
-			bezierPath = bezierPath_;
+			_pendingBuilder = builder;
+			bezierPath = null;
 		}
 
-#if __SKIA__
-		internal override IGeometry GetGeometry() => bezierPath;
+		private Path EnsureGeometry()
+		{
+			if (bezierPath is null && _pendingBuilder is { } builder)
+			{
+				builder.FillRule = FillRule == FillRule.EvenOdd ? GeometryFillRule.EvenOdd : GeometryFillRule.NonZero;
+				bezierPath = builder.Build();
+				_pendingBuilder = null;
+			}
+
+			return bezierPath;
+		}
+
+		internal override IGeometry GetGeometry() => EnsureGeometry();
 
 		private protected override Windows.Foundation.Rect ComputeBounds()
 		{
-			if (bezierPath is null || bezierPath.IsEmpty)
+			if (EnsureGeometry() is not { IsEmpty: false } geometry)
 			{
 				return default;
 			}
 
-			var rect = bezierPath.Bounds;
+			var rect = geometry.Bounds;
 			return Transform is { } transform ? transform.TransformBounds(rect) : rect;
+		}
+#else
+		internal void Close(Path bezierPath_)
+		{
+			bezierPath = bezierPath_;
 		}
 #endif
 

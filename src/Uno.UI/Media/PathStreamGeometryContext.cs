@@ -183,8 +183,9 @@ namespace Uno.Media
 		public override void Dispose()
 		{
 #if __SKIA__
-			bezierPath.FillRule = _owner.FillRule == FillRule.EvenOdd ? GeometryFillRule.EvenOdd : GeometryFillRule.NonZero;
-			_owner.Close(bezierPath.Build());
+			// Handing over the builder, not a built geometry: the owner bakes the winding rule on first read,
+			// once callers that learn it from the markup have had a chance to set it.
+			_owner.Close(bezierPath);
 #else
 			_owner.Close(bezierPath);
 #endif
