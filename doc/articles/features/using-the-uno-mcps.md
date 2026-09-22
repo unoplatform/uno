@@ -50,12 +50,12 @@ You can find common prompts to use with agents in our [getting started](xref:Uno
 
 All four tools are read-only, and none requires a [license](xref:Uno.GetStarted.Licensing).
 
-| Tool | License | Purpose | Parameters |
-|---|---|---|---|
-| `uno_platform_docs_search` | None | Search the documentation for a topic. Returns snippets with the source path of each match. | `query`, `contentType` (`prose` or `code`), `topK` (1–50, default 8) |
-| `uno_platform_docs_fetch` | None | Fetch a full documentation page as markdown. Pass the `sourcePath` from a search result. | `sourcePath`, `anchor`, `maxChars` (100–50000, default 8000) |
-| `uno_platform_agent_rules_init` | None | Primes the environment on how to interact with Uno Platform apps during development. | — |
-| `uno_platform_usage_rules_init` | None | Primes the environment on how to use Uno Platform's APIs in the best way possible. | — |
+| Tool | Purpose | Parameters |
+|---|---|---|
+| `uno_platform_docs_search` | Search the documentation for a topic. Returns snippets with the source path of each match. | `query`, `contentType` (`prose` or `code`), `topK` (1–50, default 8) |
+| `uno_platform_docs_fetch` | Fetch a full documentation page as markdown. Pass the `sourcePath` from a search result. | `sourcePath`, `anchor`, `maxChars` (100–50000, default 8000) |
+| `uno_platform_agent_rules_init` | Primes the environment on how to interact with Uno Platform apps during development. | — |
+| `uno_platform_usage_rules_init` | Primes the environment on how to use Uno Platform's APIs in the best way possible. | — |
 
 Those tools are suggested to the agent on how to be used best. In general, asking the agent "Make sure to search the Uno Platform docs to answer" will hint it to use those tools.
 
@@ -85,13 +85,13 @@ The App MCP follows a single-app model: when more than one app instance is conne
 
 These tools are provided by the DevServer MCP bridge itself rather than by the running app. None requires a [license](xref:Uno.GetStarted.Licensing), and they answer even before the app connects — so they remain available when the app tools below do not.
 
-| Tool | License | Purpose | Parameters |
-|---|---|---|---|
-| `uno_health` | None | Health of the DevServer MCP bridge: connection state, tool count, discovered solutions, and any issues detected during startup. Read-only. | — |
-| `uno_discover_tools` | None | Re-query the full list of app tools, with their descriptions and input schemas. Read-only. | — |
-| `uno_execute_tool` | None | Call an app tool by name, whether or not your agent's tool list already knows about it. | `toolName`, `arguments` |
-| `uno_app_select_solution` | None | Pick a solution when the workspace contains more than one. **Restarts the DevServer.** Typically called when `uno_health` reports a `WorkspaceAmbiguous` issue. | `solutionPath`, `forceRestart` |
-| `uno_app_initialize` | None | Set the workspace root, resolve the solution and start the DevServer. Called once at the start of a session, and only exposed for agents that do not support [MCP roots](#mcp-roots-compatibility). | — |
+| Tool | Purpose | Parameters |
+|---|---|---|
+| `uno_health` | Health of the DevServer MCP bridge: connection state, tool count, discovered solutions, and any issues detected during startup. Read-only. | — |
+| `uno_discover_tools` | Re-query the full list of app tools, with their descriptions and input schemas. Read-only. | — |
+| `uno_execute_tool` | Call an app tool by name, whether or not your agent's tool list already knows about it. | `toolName`, `arguments` |
+| `uno_app_select_solution` | Pick a solution when the workspace contains more than one. **Restarts the DevServer.** Typically called when `uno_health` reports a `WorkspaceAmbiguous` issue. | `solutionPath`, `forceRestart` |
+| `uno_app_initialize` | Set the workspace root, resolve the solution and start the DevServer. Called once at the start of a session, and only exposed for agents that do not support [MCP roots](#mcp-roots-compatibility). | — |
 
 ### App MCP tools
 
