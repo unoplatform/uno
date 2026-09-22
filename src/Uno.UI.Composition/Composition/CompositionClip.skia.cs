@@ -55,5 +55,12 @@ partial class CompositionClip
 			session.ClipPath(clipPath);
 			clipPath.Release();
 		}
+		else
+		{
+			// A clip that yields no shape at all (a geometric clip with no geometry) clips everything out. The
+			// rest of the pipeline already treats it that way -- GetPrePaintingClipping returns an empty rect --
+			// so letting the visual paint unclipped here would contradict its own shadow and automation bounds.
+			session.ClipRect(default);
+		}
 	}
 }

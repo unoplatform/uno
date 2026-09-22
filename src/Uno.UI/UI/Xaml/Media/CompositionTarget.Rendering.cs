@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -431,6 +431,14 @@ public partial class CompositionTarget
 				// PreservesContents so the viz works on full-repaint targets too.
 				var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
 				var useDamage = damageEligible && !overlayEnabled && !_forceFullRepaint;
+				// Detach returns null both for "nothing was damaged" and for "no damage information", but a frame
+				// is only ever recorded with tracking on, so on an unresized frame null means nothing changed. The
+				// target still holds the previous frame, so the clear+replay is skipped rather than repainted whole.
+				var nothingChanged = !resized
+					&& lastRenderedFrame.damage is null
+					&& swapChain.PreservesContents
+					&& !overlayEnabled
+					&& !_forceFullRepaint;
 
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();
@@ -447,14 +455,19 @@ public partial class CompositionTarget
 				// Clip clear+replay to the damage region so only the damaged area is repainted; FPS/overlay draw
 				// outside this scope so they aren't restricted to it.
 				present.Save();
-				if (useDamage)
+				if (!nothingChanged)
 				{
-					// Clipped as-is: contributions are already outset for the antialiased fringe
-					// (Visual.OutsetForAntialiasing), so no widening is needed here.
-					present.ClipPath(lastRenderedFrame.damage!, ClipOperation.Intersect);
+					if (useDamage)
+					{
+						// Clipped as-is: contributions are already outset for the antialiased fringe
+						// (Visual.OutsetForAntialiasing), so no widening is needed here.
+						present.ClipPath(lastRenderedFrame.damage!, ClipOperation.Intersect);
+					}
+
+					present.Clear(global::Windows.UI.Colors.Transparent);
+					lastRenderedFrame.frame.Replay(present);
 				}
-				present.Clear(global::Windows.UI.Colors.Transparent);
-				lastRenderedFrame.frame.Replay(present);
+
 				present.Restore();
 				if (overlayEnabled && hasDamage)
 				{

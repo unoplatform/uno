@@ -104,7 +104,13 @@ public partial class Visual
 		{
 			if (visual.GetLocalCullClipBounds() is { } localClip)
 			{
-				rect = Intersect(rect, localClip.Transform(visual.TotalMatrix.ToMatrix3x2()));
+				// A clip whose projection is unbounded cannot narrow anything; skipping it only widens the result.
+				if (!localClip.TryTransformBounds(visual.TotalMatrix, out var clipInRoot))
+				{
+					continue;
+				}
+
+				rect = Intersect(rect, clipInRoot);
 				if (IsRectEmpty(rect))
 				{
 					return default;
@@ -145,7 +151,13 @@ public partial class Visual
 				local = Inflate(local, samplingMargin, samplingMargin);
 			}
 
-			var clipped = Intersect(OutsetForAntialiasing(local.Transform(TotalMatrix.ToMatrix3x2())), clipRect);
+			if (!local.TryTransformBounds(TotalMatrix, out var localInRoot))
+			{
+				bounds = clipRect;
+				return true;
+			}
+
+			var clipped = Intersect(OutsetForAntialiasing(localInRoot), clipRect);
 			if (IsRectEmpty(clipped))
 			{
 				return false;
@@ -209,6 +221,12 @@ public partial class Visual
 	{
 		localBounds = default;
 
+		// The silhouette is mapped back through a 2D inverse below, which a projective caster has none of.
+		if (!TotalMatrix.IsPlanarAffine())
+		{
+			return false;
+		}
+
 		var casterMatrix = TotalMatrix.ToMatrix3x2();
 		var silhouetteInRoot = ownLocalBounds.Transform(casterMatrix);
 		if (!TryAccumulateDescendantContentBoundsInRoot(ref silhouetteInRoot))
@@ -251,7 +269,10 @@ public partial class Visual
 
 		if (!IsRectEmpty(own))
 		{
-			boundsInRoot = own.Transform(TotalMatrix.ToMatrix3x2());
+			if (!own.TryTransformBounds(TotalMatrix, out boundsInRoot))
+			{
+				return false;
+			}
 		}
 
 		// A shadow's silhouette already covers the descendants, see TryGetShadowSilhouetteBounds.
@@ -274,7 +295,11 @@ public partial class Visual
 
 			if (!IsRectEmpty(childLocal))
 			{
-				var rect = childLocal.Transform(child.TotalMatrix.ToMatrix3x2());
+				if (!childLocal.TryTransformBounds(child.TotalMatrix, out var rect))
+				{
+					return false;
+				}
+
 				acc = IsRectEmpty(acc) ? rect : Union(acc, rect);
 			}
 

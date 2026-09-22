@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Collections.Generic;
 using Uno.UI.Composition.Drawing;
@@ -58,7 +58,10 @@ internal sealed class ShadowPathAccumulator
 			return false;
 		}
 
-		return candidate.Combine(_opaqueSilhouette, GeometryCombineMode.Difference).IsEmpty;
+		var difference = candidate.Combine(_opaqueSilhouette, GeometryCombineMode.Difference);
+		var covered = difference.IsEmpty;
+		difference.Release();
+		return covered;
 	}
 
 	internal void Add(IGeometry path, float alpha)

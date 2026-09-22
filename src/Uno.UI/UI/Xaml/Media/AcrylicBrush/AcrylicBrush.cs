@@ -1,4 +1,4 @@
-using Color = Windows.UI.Color;
+﻿using Color = Windows.UI.Color;
 using System;
 using System.IO;
 using Windows.UI;
@@ -239,27 +239,35 @@ namespace Microsoft.UI.Xaml.Media
 			CompositionBrush = _brush;
 		}
 
-		// The noise texture is a small static asset tiled across every acrylic; decode + upload it once, shared across
-		// all AcrylicBrush instances. Null if the asset is missing or no codec/backend is available yet.
+		// The noise texture is a small static asset tiled across every acrylic, so it is decoded and uploaded once
+		// and shared. It is keyed on the factory that minted it: a texture belongs to one backend device, and the
+		// factory is per window, so a second window must not be handed the first window's texture.
+		private static readonly object _noiseGate = new();
 		private static global::Uno.UI.Composition.Drawing.ITexture? _sharedNoiseTexture;
+		private static global::Uno.UI.Composition.Drawing.IDrawingFactory? _sharedNoiseFactory;
 
 		private static global::Uno.UI.Composition.Drawing.ITexture? EnsureNoiseTexture()
 		{
-			if (_sharedNoiseTexture is not null)
+			var factory = global::Uno.UI.Composition.Drawing.DrawingFactory.Current;
+			lock (_noiseGate)
 			{
+				if (_sharedNoiseTexture is not null && ReferenceEquals(_sharedNoiseFactory, factory))
+				{
+					return _sharedNoiseTexture;
+				}
+
+				using var stream = typeof(AcrylicBrush).Assembly.GetManifestResourceStream(EffectNames.NoiseAsset);
+				if (stream is null
+					|| !global::Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current.TryDecode(stream, null, null, out var frames)
+					|| frames.Frames.Count == 0)
+				{
+					return null;
+				}
+
+				_sharedNoiseTexture = factory.CreateTexture(frames.Frames[0]);
+				_sharedNoiseFactory = factory;
 				return _sharedNoiseTexture;
 			}
-
-			using var stream = typeof(AcrylicBrush).Assembly.GetManifestResourceStream(EffectNames.NoiseAsset);
-			if (stream is null
-				|| !global::Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current.TryDecode(stream, null, null, out var frames)
-				|| frames.Frames.Count == 0)
-			{
-				return null;
-			}
-
-			_sharedNoiseTexture = global::Uno.UI.Composition.Drawing.DrawingFactory.Current.CreateTexture(frames.Frames[0]);
-			return _sharedNoiseTexture;
 		}
 
 		// The direct acrylic material: a dedicated brush doing backdrop blur + luminosity + tint + noise on the neutral

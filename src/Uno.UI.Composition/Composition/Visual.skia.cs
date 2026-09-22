@@ -894,6 +894,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			&& !RequiresRepaintOnEveryFrame;
 		if (!cacheValid)
 		{
+			// The whole walk maps geometry with 2D matrices, which cannot carry a projection: a perspective
+			// caster falls back to the picture-based shadow instead of casting from the wrong silhouette.
+			if (!TotalMatrix.IsPlanarAffine())
+			{
+				_hasAnalyticShadowVerdict = false;
+				return false;
+			}
+
 			var rootMatrix = TotalMatrix.ToMatrix3x2();
 			if (!Matrix3x2.Invert(rootMatrix, out var inverseRoot))
 			{
@@ -1026,12 +1034,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		var canSkipOwnContribution = false;
 		if (visual is { PaintsWithinOwnSize: true, Size: { X: > 0, Y: > 0 } size })
 		{
-			var sizeCandidate = GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, size.X, size.Y)).Transform(toRoot);
+			var sizeRect = GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, size.X, size.Y));
+			var sizeCandidate = sizeRect.Transform(toRoot);
+			sizeRect.Release();
 			if (effectiveClip is not null)
 			{
-				sizeCandidate = sizeCandidate.Combine(effectiveClip, GeometryCombineMode.Intersect);
+				var clipped = sizeCandidate.Combine(effectiveClip, GeometryCombineMode.Intersect);
+				sizeCandidate.Release();
+				sizeCandidate = clipped;
 			}
+
 			canSkipOwnContribution = accumulator.IsFullyCovered(sizeCandidate);
+			sizeCandidate.Release();
 		}
 		else if (effectiveClip is not null)
 		{
@@ -1160,7 +1174,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return false;
 		}
 
-		var bounds = new Rect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y)).Transform(TotalMatrix.ToMatrix3x2());
+		// Under perspective the footprint is not the affine one, so culling against that approximation would
+		// drop content that is actually on screen.
+		if (!new Rect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y)).TryTransformBounds(TotalMatrix, out var bounds))
+		{
+			return false;
+		}
+
 		return IsRectEmpty(Intersect(bounds, cullRect));
 	}
 
@@ -1176,7 +1196,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return cullRect;
 		}
 
-		var clipInRoot = localClip.Transform(TotalMatrix.ToMatrix3x2());
+		if (!localClip.TryTransformBounds(TotalMatrix, out var clipInRoot))
+		{
+			return cullRect;
+		}
+
 		var narrowed = Intersect(cullRect, clipInRoot);
 		// Fully clipped-out subtree: an empty rect would read as "culling disabled", so keep a degenerate
 		// non-empty rect instead — every size-bounded leaf then tests as outside (still conservative).
