@@ -110,8 +110,10 @@ internal partial class WebAssemblyAccessibility
 	{
 		if (_comboBoxListBoxes.TryGetValue(comboBox, out var region))
 		{
-			region.Dispose();
 			_comboBoxListBoxes.Remove(comboBox);
+			_virtualizedRegions.Remove(region);
+			_semanticParentMap.Remove(region.ContainerHandle);
+			region.Dispose();
 
 			// Drop the head's relationships to the now-removed listbox.
 			NativeMethods.UpdateAriaControls(comboBox.Visual.Handle, string.Empty);
@@ -155,15 +157,15 @@ internal partial class WebAssemblyAccessibility
 		}
 
 		var totalCount = comboBox.Items.Count;
-		var offset = GetOffsetRelativeToSemanticParent(item, region.ContainerHandle);
+		var bounds = GetSemanticElementBounds(item, region.ContainerHandle);
 		var label = item.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
 
 		region.OnItemRealized(
 			item.Visual.Handle,
 			index,
 			totalCount,
-			offset.X, offset.Y,
-			item.Visual.Size.X, item.Visual.Size.Y,
+			(float)bounds.X, (float)bounds.Y,
+			(float)bounds.Width, (float)bounds.Height,
 			"option",
 			label);
 
@@ -216,6 +218,12 @@ internal partial class WebAssemblyAccessibility
 			label,
 			multiselectable: false);
 		_comboBoxListBoxes[comboBox] = region;
+		_virtualizedRegions.Add(region);
+
+		// The fallback listbox is attached directly to the DOM semantics root. Preserve an
+		// existing node's registered parent, otherwise position this host in root coordinates.
+		_semanticParentMap.TryAdd(itemsHost.Visual.Handle, IntPtr.Zero);
+		UpdateSemanticElementGeometry(itemsHost.Visual.Handle, itemsHost, _semanticParentMap[itemsHost.Visual.Handle]);
 
 		// WAI-ARIA combobox pattern: the head owns the popup listbox via aria-controls so
 		// screen readers associate the two separate DOM subtrees and aria-activedescendant

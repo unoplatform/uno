@@ -77,6 +77,11 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	/// <summary>Called when a visual's offset or size changes. Platform handles position updates.</summary>
 	protected abstract void OnSizeOrOffsetChanged(Microsoft.UI.Composition.Visual visual);
 
+	// The shared scroll walk already visits every descendant. Platforms with subtree invalidation
+	// can override this callback to update only the visual passed by that walk.
+	protected virtual void OnScrolledVisualChanged(Microsoft.UI.Composition.Visual visual)
+		=> OnSizeOrOffsetChanged(visual);
+
 	// ──────────────────────────────────────────────────────────────
 	//  Abstract: Property updates (called from shared routing)
 	// ──────────────────────────────────────────────────────────────
@@ -195,7 +200,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 	}
 
-	// Walks descendants of the scrolled element and re-emits OnSizeOrOffsetChanged
+	// Walks descendants of the scrolled element and re-emits position changes
 	// for each ContainerVisual. The platform overrides recompute positions via
 	// UIElement.GetTransform, which composes ancestor scroll offsets and transforms.
 	private void OnScrollSourceChanged(UIElement scrollSource)
@@ -216,7 +221,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			{
 				try
 				{
-					OnSizeOrOffsetChanged(childVisual);
+					OnScrolledVisualChanged(childVisual);
 				}
 				catch (Exception ex)
 				{

@@ -1425,17 +1425,45 @@ namespace Uno.UI.Runtime.Skia {
 		 */
 		private static virtualizedMutationQueue: (() => void)[] = [];
 		private static virtualizedRafId: number = 0;
+		private static pendingVirtualizedItems = new Map<number, number>();
 
 		/**
 		 * Schedules a virtualized mutation to be flushed in the next animation frame.
 		 */
-		private static scheduleVirtualizedMutation(mutation: () => void): void {
+		private static scheduleVirtualizedMutation(mutation: () => void, itemHandle?: number): void {
+			if (itemHandle !== undefined) {
+				const handle = itemHandle;
+				SemanticElements.pendingVirtualizedItems.set(handle, (SemanticElements.pendingVirtualizedItems.get(handle) ?? 0) + 1);
+				const itemMutation = mutation;
+				mutation = () => {
+					try {
+						itemMutation();
+					} finally {
+						const remaining = SemanticElements.pendingVirtualizedItems.get(handle)! - 1;
+						if (remaining === 0) {
+							SemanticElements.pendingVirtualizedItems.delete(handle);
+						} else {
+							SemanticElements.pendingVirtualizedItems.set(handle, remaining);
+						}
+					}
+				};
+			}
 			SemanticElements.virtualizedMutationQueue.push(mutation);
 			if (SemanticElements.virtualizedRafId === 0) {
 				SemanticElements.virtualizedRafId = requestAnimationFrame(() => {
 					SemanticElements.flushVirtualizedMutations();
 				});
 			}
+		}
+
+		public static hasPendingVirtualizedMutation(itemHandle: number): boolean {
+			return SemanticElements.pendingVirtualizedItems.has(itemHandle);
+		}
+
+		public static updateVirtualizedItemGeometry(itemHandle: number, width: number, height: number, x: number, y: number): void {
+			SemanticElements.scheduleVirtualizedMutation(() => {
+				Accessibility.applySemanticElementPositioning(itemHandle, width, height, x, y);
+			});
 		}
 
 		/**
@@ -1555,6 +1583,15 @@ namespace Uno.UI.Runtime.Skia {
 				});
 
 				container.appendChild(element);
+			}, itemHandle);
+		}
+
+		/**
+		 * Updates a shifted item's position after any queued creation for that handle.
+		 */
+		public static updateVirtualizedItemIndex(itemHandle: number, index: number, totalCount: number): void {
+			SemanticElements.scheduleVirtualizedMutation(() => {
+				Accessibility.updatePositionInSet(itemHandle, index + 1, totalCount);
 			});
 		}
 
@@ -1568,7 +1605,7 @@ namespace Uno.UI.Runtime.Skia {
 				if (element && element.parentElement) {
 					element.parentElement.removeChild(element);
 				}
-			});
+			}, itemHandle);
 		}
 
 		/**

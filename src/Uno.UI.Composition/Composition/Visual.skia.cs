@@ -376,6 +376,21 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	partial void OnTransformMatrixChanged(Matrix4x4 value)
 		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
 
+	partial void OnScaleChanged(Vector3 value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+	partial void OnOrientationChanged(Quaternion value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+	partial void OnRotationAngleChanged(float value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+	partial void OnRotationAxisChanged(Vector3 value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+	partial void OnCenterPointChanged(Vector3 value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
 	partial void OnIsVisibleChanged(bool value)
 	{
 		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);

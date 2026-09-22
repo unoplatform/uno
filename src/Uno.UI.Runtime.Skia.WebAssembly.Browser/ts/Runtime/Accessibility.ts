@@ -925,11 +925,26 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static updateSemanticElementPositioning(handle: number, width: number, height: number, x: number, y: number) {
+			// A pooled item can finish layout before its queued DOM recreation. Apply that
+			// geometry after the pending mutation instead of losing it or restoring the pool rect.
+			if (SemanticElements.hasPendingVirtualizedMutation(handle)) {
+				SemanticElements.updateVirtualizedItemGeometry(handle, width, height, x, y);
+				return;
+			}
+			Accessibility.applySemanticElementPositioning(handle, width, height, x, y);
+		}
+
+		public static applySemanticElementPositioning(handle: number, width: number, height: number, x: number, y: number) {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.hidden = false;
-				element.style.left = `${x}px`;
-				element.style.top = `${y}px`;
+				// DOM scroll ports apply their offset again to the already-scrolled managed bounds.
+				// Other parents need no scroll measurements, which can force layout.
+				const parent = element.parentElement;
+				const scrollLeft = parent && parent.style.overflowX === "scroll" ? parent.scrollLeft : 0;
+				const scrollTop = parent && parent.style.overflowY === "scroll" ? parent.scrollTop : 0;
+				element.style.left = `${x + scrollLeft}px`;
+				element.style.top = `${y + scrollTop}px`;
 				element.style.width = `${width}px`;
 				element.style.height = `${height}px`;
 			}

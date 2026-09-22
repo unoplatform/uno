@@ -103,7 +103,13 @@ namespace Microsoft.UI.Composition
 		public Vector3 CenterPoint
 		{
 			get => _centerPoint;
-			set { SetProperty(ref _centerPoint, value); OnCenterPointChanged(value); }
+			set
+			{
+				if (SetProperty(ref _centerPoint, value))
+				{
+					OnCenterPointChanged(value);
+				}
+			}
 		}
 
 		partial void OnCenterPointChanged(Vector3 value);
@@ -111,7 +117,13 @@ namespace Microsoft.UI.Composition
 		public Vector3 Scale
 		{
 			get => _scale;
-			set { SetProperty(ref _scale, value); OnScaleChanged(value); }
+			set
+			{
+				if (SetProperty(ref _scale, value))
+				{
+					OnScaleChanged(value);
+				}
+			}
 		}
 
 		partial void OnScaleChanged(Vector3 value);
@@ -119,7 +131,14 @@ namespace Microsoft.UI.Composition
 		public Quaternion Orientation
 		{
 			get => _orientation;
-			set { SetProperty(ref _orientation, value); OnOrientationChanged(value); }
+			set
+			{
+				if (!_orientation.Equals(value))
+				{
+					SetProperty(ref _orientation, value);
+					OnOrientationChanged(value);
+				}
+			}
 		}
 
 		partial void OnOrientationChanged(Quaternion value);
@@ -133,7 +152,14 @@ namespace Microsoft.UI.Composition
 		public float RotationAngle
 		{
 			get => _rotationAngle;
-			set { SetProperty(ref _rotationAngle, value); OnRotationAngleChanged(value); }
+			set
+			{
+				if (!_rotationAngle.Equals(value))
+				{
+					SetProperty(ref _rotationAngle, value);
+					OnRotationAngleChanged(value);
+				}
+			}
 		}
 
 		partial void OnRotationAngleChanged(float value);
@@ -163,7 +189,13 @@ namespace Microsoft.UI.Composition
 		public Vector3 RotationAxis
 		{
 			get => _rotationAxis;
-			set { SetProperty(ref _rotationAxis, value); OnRotationAxisChanged(value); }
+			set
+			{
+				if (SetProperty(ref _rotationAxis, value))
+				{
+					OnRotationAxisChanged(value);
+				}
+			}
 		}
 
 		partial void OnRotationAxisChanged(Vector3 value);
