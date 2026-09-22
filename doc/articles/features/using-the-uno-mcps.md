@@ -14,7 +14,7 @@ Between them, an agent sees four families of tools: the docs tools, the bridge t
 ## On this page
 
 - [Docs MCP (remote)](#docs-mcp-remote) — search and fetch documentation, and the predefined prompts
-- [App MCP (local)](#app-mcp-local) — bridge tools, app tools, and tools published by the running app
+- [App MCP (local)](#app-mcp-local) — bridge tools, app tools, tools published by the running app, and what each license includes
 - [A worked example](#a-worked-example) — driving an app end to end
 - [Registering and diagnosing Uno MCPs](#registering-and-diagnosing-uno-mcps) — the `uno-devserver mcp` command reference
 - [Troubleshooting](#troubleshooting-mcp-servers)
@@ -95,9 +95,9 @@ These tools are provided by the DevServer MCP bridge itself rather than by the r
 
 ### App MCP tools
 
-Every tool in this section requires a license. The **License** column gives the tier each one needs — see [Licensing](xref:Uno.GetStarted.Licensing) for what the Community, Pro and Business tiers include and how to obtain one.
+Every tool in this section requires a license. Licenses are cumulative: Pro includes every Community tool, and Business includes every Pro and Community tool. The **Minimum license** column gives the lowest tier that unlocks each tool — see [Licensing](xref:Uno.GetStarted.Licensing) for what each tier includes and how to obtain one.
 
-| Tool | License | Purpose | Parameters |
+| Tool | Minimum license | Purpose | Parameters |
 |---|---|---|---|
 | `uno_app_start` | Community | Start the app with Hot Reload support. | `projectPath`, `targetFramework`, `args`, `display`, `stdoutFile`, `connectionTimeoutSeconds` (1–300) |
 | `uno_app_close` | Community | Close the running app. | — |
@@ -122,7 +122,7 @@ Beyond the fixed set above, a running app can publish its own tools, which the A
 
 [Hot Design](xref:Uno.HotDesign.Overview) is the first component to use this. It ships with the Pro and Business licenses — see [Licensing](xref:Uno.GetStarted.Licensing). When a licensed, Hot Design-enabled app is running, these become available:
 
-| Tool | License | Purpose | Parameters |
+| Tool | Minimum license | Purpose | Parameters |
 |---|---|---|---|
 | `app_hotdesign_set_mode` | Pro, Business | Show Hot Design over the running app. | `mode` (`in_app`) |
 | `app_hotdesign_set_app_mode` | Pro, Business | Choose what the design surface edits. | `app_mode` (`application`, `previews` or `themes`) |
@@ -140,6 +140,17 @@ Two further tools expose the app's resources: `app_list_resources` and `app_read
 
 > [!NOTE]
 > The Hot Design tools are listed whether or not Hot Design has started. Until it is running and licensed, each one returns an error explaining what is missing.
+
+### What each license includes
+
+Because the tiers are cumulative, the number of tools an agent can see depends only on the seat:
+
+| Seat | Tools available | What it adds |
+|---|---|---|
+| No license | 11 | The bridge tools and the documentation tools |
+| Community | 21 | The ten tools that start, observe and drive an app |
+| Pro | 31 | Element peer actions and DataContext, plus the eight Hot Design tools |
+| Business | 32 | `uno_app_get_memory_counters` |
 
 ## A worked example
 
