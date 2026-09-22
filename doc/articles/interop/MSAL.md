@@ -80,7 +80,7 @@ var authResult = await _app.AcquireTokenInteractive(scopes)
 
 `myCustomWebUi` implements `Microsoft.Identity.Client.Extensibility.ICustomWebUi` and drives the
 authentication flow through the browser — for example with a popup window monitored through
-`System.Runtime.InteropServices.JavaScript` JSImport/JSExport interop, or an in-app `WebView2`.
+`System.Runtime.InteropServices.JavaScript` `JSImport`/`JSExport` interop.
 There is no built-in Uno implementation to fall back to.
 
 Particularities for WASM:
