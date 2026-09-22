@@ -148,6 +148,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ThrowIfItemsSourceSet();
 				_inner[index] = value;
+				(VectorChanged, _untypedVectorChanged).TryRaiseChanged(this, index);
 			}
 		}
 

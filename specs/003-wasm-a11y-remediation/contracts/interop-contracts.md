@@ -60,23 +60,56 @@ missing:
 UpdateHeadingLevel(handle, ariaLevel)        // exists (UpdateAriaLevel) but unreachable on WASM — wire a branch; aria-level carries true 1..9 (FR-011)
 UpdateTextBoxPlaceholder(handle, placeholder) // exists for creation — add a PlaceholderTextProperty branch
 UpdateAriaRequired(handle, required)          // JSImport exists — call it on IsRequiredForForm change, not only creation
-// PasswordBox value: the gap is upstream — see §4
+// PasswordBox value: browser-local value synchronization — see §4
 ```
 
-## 4. PasswordBox value live-sync (FR-009) — upstream raise
+## 4. PasswordBox value live-sync (FR-009) — browser projection
 
-The missing link is in **Uno.UI**, not the Browser project: `PasswordBox` must raise a
-value automation event so the existing `Value` branch fires.
+The browser's existing `TextBoxCore` notifications synchronize value, focus, and
+selection changes for both text controls. `UpdateTextBoxValueKeepingSelection`
+must use `PasswordBoxAutomationPeer.MaskPasswordValue` for password cores, not
+`core.Text` verbatim. Initial realization and subsequent updates use the same
+masked value, including when the visual control is revealed. No duplicate control
+subscriptions or public UIA events are needed.
 
-- `PasswordBox.OnPasswordChanged` ([PasswordBox.cs:110-123](../../src/Uno.UI/UI/Xaml/Controls/PasswordBox/PasswordBox.cs))
-  raises no `ValueProperty` event; and `TextBox.OnTextChanged`'s raise is gated on
-  `peer is TextBoxAutomationPeer` ([TextBox.cs:361](../../src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.cs)),
-  false for `PasswordBoxAutomationPeer`.
-- **Change**: have `PasswordBoxAutomationPeer` raise the value-changed automation event
-  (masked value), so `NotifyPropertyChangedEventCore`'s existing `Value` → `UpdateTextBoxValue`
-  path runs. Consult WinUI for the correct event (likely `ValuePatternIdentifiers.ValueProperty`).
-- **Cross-platform note**: this is shared `Uno.UI` code — verify it does not regress other
-  Skia hosts and is gated so it does not fire on non-Skia native targets inappropriately.
+The text-input export also receives an edit range:
+
+```text
+OnTextInput(handle, value, selectionStart, selectionEnd, replacementStart, replacementLength)
+```
+
+For ordinary text and full-value replacement, the last two arguments are `-1`.
+For a password edit, `value` contains only the inserted text; the edit range comes
+from the browser's pre-input selection and the retained masked prefix/suffix.
+The managed side preserves the real password outside that range. Composition is
+committed once rather than feeding masked bullets back into the password.
+
+Mask offsets count UTF-16 units. The managed splice expands a nonempty edit to
+whole surrogate pairs and moves a collapsed insertion out of a pair before
+changing text. It then remaps the browser's post-edit selection to the resulting
+text; a one-bullet Backspace/Delete must not leave an unpaired half or a stale
+caret. This follows the valid-position rule in pinned
+`TextBoxHelpers.cpp::IsNotInSurrogateCRLF`; native RichEdit keyboard probes also
+remove a supplementary character atomically. Raw programmatic password selection
+APIs can accept half-pair offsets, so the projection must not treat those mask
+positions as valid underlying edit boundaries.
+
+The two selection coordinates at this internal boundary are directed anchor/caret
+positions, not necessarily increasing. They use the existing signed
+`TextBoxCore.SetPendingSelection` convention and round-trip as a backward DOM
+selection when the anchor follows the caret. Ordinary TextBox input keeps its
+full-value path. As in `BrowserInvisibleTextBoxViewExtension.OnInputTextChanged`,
+the directed selection is applied after updating text, including no-op replacements.
+The semantic value is re-synchronized even when the password did not change, so
+replacing a character with itself cannot leave the inserted character in the DOM.
+
+This does **not** add a public UIA Value change event. The source policy is pinned to
+WinUI `winui3/release/1.8.4`, commit `dc46907e92b9965bb48d6001773777335b41aa24`:
+`src/dxaml/xcp/core/native/text/Controls/PasswordBox.cpp` does not raise that event
+from `OnContentChanged`. Likewise,
+`src/dxaml/xcp/dxaml/lib/PasswordBoxAutomationPeer_Partial.cpp` supplies placeholder
+hints through `GetDescribedByCoreImpl`, not a HelpText override. Header/placeholder
+changes must not fabricate HelpText notifications.
 
 ## 5. Roving driver from focus (FR-012)
 
@@ -146,6 +179,43 @@ precedence so the `HelpText` branch doesn't clobber a `FullDescription`-derived 
 **Value-semantics (FR-028)** — drive `aria-haspopup` from the C# `HasPopup` value (not TS
 hardcoding); map `AccessKey` to the HTML `accesskey` attribute; stop injecting `posinset`
 "N of M" into `aria-label`.
+
+## 8. ComboBox value, option state, and popup relationships
+
+The virtualized-item import and its TypeScript implementation have matching final
+arguments:
+
+```text
+AddVirtualizedItem(containerHandle, itemHandle, index, totalCount, x, y, width, height,
+                  role, label, selected, automationId)
+```
+
+`selected` is `bool?` / `boolean | null`; `null` omits `aria-selected`.
+`automationId` is a string mapped to `xamlautomationid`, never the name. Both
+attributes are refreshed or removed on reused nodes. Selection updates arriving
+before a queued realization must take precedence over its older state.
+Live `IsSelected` notifications originate from the owner's item **data peer**, not
+a cast of the container's `FrameworkElementAutomationPeer` to
+`SelectorItemAutomationPeer`. This follows
+`Selector_Partial.cpp::RaiseIsSelectedChangedAutomationEvent` at the same WinUI
+`dc46907e92b9965bb48d6001773777335b41aa24` pin; null/placeholder items are skipped.
+These owner-created peers are cached by item reference. Collection remove, replace,
+reset, and source replacement must remove absent items from all managed peer stores
+without replacing peers for surviving references or duplicates in another group.
+Recycled containers release their item-peer `EventsSource` link. Direct
+`ItemCollection[index]` assignment raises `ItemChanged`, matching the pinned
+`ItemCollection_Partial.cpp::SetAt`, so that replacement follows the same lifecycle.
+
+`SemanticElements.updateComboBoxValue(handle, selectedValue)` updates a dedicated
+text node without replacing the accessible name or semantic child controls.
+Select-only ComboBoxes still do not advertise WinUI's editable Value pattern.
+Their browser value uses the selection's displayed content, including
+`DisplayMemberPath`, rather than the data object's type name.
+
+`Accessibility.updateAriaControls(handle, idList)` owns authored `ControlledPeers`;
+`Accessibility.updateRuntimeAriaControls(handle, idList)` owns generated popup
+relationships. The emitted `aria-controls` is their de-duplicated union. Updating
+or clearing either source must leave the other intact.
 
 ## Contract sync rule
 

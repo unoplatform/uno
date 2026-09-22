@@ -58,7 +58,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	/// <summary>
 	/// Called when an item is realized (ElementPrepared).
 	/// </summary>
-	internal void OnItemRealized(IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label)
+	internal void OnItemRealized(IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label, bool? selected, string automationId)
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -71,7 +71,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		}
 		_realizedHandles[index] = itemHandle;
 		_realizedHandleSet.Add(itemHandle);
-		NativeMethods.AddVirtualizedItem(_containerHandle, itemHandle, index, totalCount, x, y, width, height, role, label);
+		NativeMethods.AddVirtualizedItem(_containerHandle, itemHandle, index, totalCount, x, y, width, height, role, label, selected, automationId);
 		WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 	}
 
@@ -170,7 +170,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		internal static partial void RegisterVirtualizedContainer(IntPtr containerHandle, string role, string label, bool multiselectable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.addVirtualizedItem")]
-		internal static partial void AddVirtualizedItem(IntPtr containerHandle, IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label);
+		internal static partial void AddVirtualizedItem(IntPtr containerHandle, IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label, bool? selected, string automationId);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.removeVirtualizedItem")]
 		internal static partial void RemoveVirtualizedItem(IntPtr itemHandle);

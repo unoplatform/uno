@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference ItemsControlAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
+// MUX reference ItemsControlAutomationPeer_Partial.cpp, tag winui3/release/1.8.4, commit dc46907e
 
 #nullable enable
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type
@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
@@ -34,7 +35,57 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.List;
 
-	protected void ClearItemAutomationPeerCache() => _itemPeers.Clear();
+	protected void ClearItemAutomationPeerCache()
+	{
+		_itemPeers.Clear();
+		_itemPeerStorage.Clear();
+		_itemPeerStorageForPattern.Clear();
+	}
+
+	internal void OnItemsChanged(NotifyCollectionChangedEventArgs args)
+	{
+		if (args.Action is not (NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace or NotifyCollectionChangedAction.Reset) ||
+			(_itemPeers.Count == 0 && _itemPeerStorage.Count == 0 && _itemPeerStorageForPattern.Count == 0) ||
+			Owner is not ItemsControl owner)
+		{
+			return;
+		}
+
+		// Managed stores need explicit eviction; MUX releases unused tracked peers.
+		// Membership preserves retained peers and repeated references, including across groups.
+		var currentItems = new HashSet<object>(Uno.ReferenceEqualityComparer<object>.Default);
+		foreach (var item in owner.Items)
+		{
+			if (item is not null)
+			{
+				currentItems.Add(item);
+			}
+		}
+
+		if (currentItems.Count == 0)
+		{
+			ClearItemAutomationPeerCache();
+			return;
+		}
+
+		List<object>? removedItems = null;
+		foreach (var item in _itemPeers.Keys)
+		{
+			if (!currentItems.Contains(item))
+			{
+				(removedItems ??= new()).Add(item);
+			}
+		}
+		if (removedItems is not null)
+		{
+			foreach (var item in removedItems)
+			{
+				_itemPeers.Remove(item);
+			}
+		}
+		_itemPeerStorage.RemoveAll(peer => !currentItems.Contains(peer.Item));
+		_itemPeerStorageForPattern.RemoveAll(peer => !currentItems.Contains(peer.Item));
+	}
 
 	public ItemAutomationPeer CreateItemAutomationPeer(object item)
 		=> item == null ? null : _itemPeers.TryGetValue(item, out var peer) ? peer : AddItemAutomationPeer(item);

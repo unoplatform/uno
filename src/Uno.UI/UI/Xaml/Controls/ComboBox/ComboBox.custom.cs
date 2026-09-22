@@ -358,6 +358,18 @@ public partial class ComboBox : Selector
 		return SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
 	}
 
+	internal string GetSelectedValueTextForAutomation()
+	{
+		var content = GetSelectionContent();
+		if (content is not null && !string.IsNullOrEmpty(DisplayMemberPath))
+		{
+			using var binding = new BindingPath(DisplayMemberPath, content) { DataContext = content };
+			content = binding.Value;
+		}
+
+		return content is null ? string.Empty : FrameworkElement.GetStringFromObject(content) ?? string.Empty;
+	}
+
 	/// <summary>
 	/// Restore SelectedItem (or former SelectedItem) view to its position in the dropdown list.
 	/// </summary>

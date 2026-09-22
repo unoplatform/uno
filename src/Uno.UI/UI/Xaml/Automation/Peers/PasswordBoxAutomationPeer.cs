@@ -69,11 +69,12 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			get
 			{
 				var password = (Owner as PasswordBox)?.Password ?? string.Empty;
-				return password.Length == 0
-					? string.Empty
-					: new string('•', password.Length);
+				return MaskPasswordValue(password);
 			}
 		}
+
+		internal static string MaskPasswordValue(string password)
+			=> string.IsNullOrEmpty(password) ? string.Empty : new string('•', password.Length);
 
 		public bool IsReadOnly => false;
 
