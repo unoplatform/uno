@@ -17,33 +17,48 @@ internal sealed class AndroidToastNotificationBootReceiverLifecycle : IToastNoti
 	private static readonly object _gate = new();
 	private readonly Func<ToastNotificationScheduleSnapshot> _loadState;
 	private readonly Action<bool> _setEnabled;
+	private readonly Func<bool> _hasBootPermission;
 
 	public AndroidToastNotificationBootReceiverLifecycle(
 		IToastNotificationSchedulePersistence persistence,
-		Action<bool> setEnabled)
-		: this(persistence.Load, setEnabled)
+		Action<bool> setEnabled,
+		Func<bool> hasBootPermission)
+		: this(persistence.Load, setEnabled, hasBootPermission)
 	{
 		ArgumentNullException.ThrowIfNull(persistence);
 	}
 
 	internal AndroidToastNotificationBootReceiverLifecycle(
 		Func<ToastNotificationScheduleSnapshot> loadState,
-		Action<bool> setEnabled)
+		Action<bool> setEnabled,
+		Func<bool> hasBootPermission)
 	{
 		_loadState = loadState ?? throw new ArgumentNullException(nameof(loadState));
 		_setEnabled = setEnabled ?? throw new ArgumentNullException(nameof(setEnabled));
+		_hasBootPermission = hasBootPermission ?? throw new ArgumentNullException(nameof(hasBootPermission));
 	}
 
 	internal AndroidToastNotificationBootReceiverLifecycle(
 		Func<IReadOnlyList<ToastNotificationScheduleRecord>> loadRecords,
-		Action<bool> setEnabled)
+		Action<bool> setEnabled,
+		Func<bool> hasBootPermission)
 		: this(
 			() => new ToastNotificationScheduleSnapshot(
 				ToastNotificationScheduleSnapshot.CurrentSchemaVersion,
 				loadRecords()),
-			setEnabled)
+			setEnabled,
+			hasBootPermission)
 	{
 		ArgumentNullException.ThrowIfNull(loadRecords);
+	}
+
+	public void ValidateNewSchedule()
+	{
+		if (!_hasBootPermission())
+		{
+			throw new InvalidOperationException(
+				"Scheduled Android notifications require android.permission.RECEIVE_BOOT_COMPLETED in the application's manifest.");
+		}
 	}
 
 	public void OnSchedulesChanged()
@@ -58,9 +73,9 @@ internal sealed class AndroidToastNotificationBootReceiverLifecycle : IToastNoti
 		{
 			for (var attempt = 0; attempt < MaximumReconciliationAttempts; attempt++)
 			{
-				var enabled = ShouldEnable(_loadState());
+				var enabled = _hasBootPermission() && ShouldEnable(_loadState());
 				_setEnabled(enabled);
-				if (enabled == ShouldEnable(_loadState()))
+				if (enabled == (_hasBootPermission() && ShouldEnable(_loadState())))
 				{
 					return;
 				}

@@ -67,7 +67,8 @@ internal sealed class AndroidToastNotificationSchedulerBackend : IToastNotificat
 		IToastNotificationSchedulePersistence persistence)
 		=> new(
 			persistence,
-			enabled => SetBootReceiverEnabled(context, enabled));
+			enabled => SetBootReceiverEnabled(context, enabled),
+			static () => global::Windows.Extensions.PermissionsHelper.IsDeclaredInManifest("android.permission.RECEIVE_BOOT_COMPLETED"));
 
 	private static void SetBootReceiverEnabled(Context context, bool enabled)
 	{

@@ -166,6 +166,10 @@ public class Given_ToastNotificationScheduleLifecycle
 		public void OnSchedulesChanged() => _onChanged(_persistence.Load().Records.Count);
 
 		public void Reconcile() => _onChanged(_persistence.Load().Records.Count);
+
+		public void ValidateNewSchedule()
+		{
+		}
 	}
 
 	private sealed class TestSchedulerBackend : IToastNotificationSchedulerBackend

@@ -6,6 +6,9 @@ internal static class AndroidAppNotificationSettingEvaluator
 {
 	public static bool IsSupported(int apiLevel) => apiLevel >= 23;
 
+	public static bool ShouldRequestRuntimePermission(bool requiresRuntimePermission, bool declaredInManifest, bool permissionGranted)
+		=> requiresRuntimePermission && declaredInManifest && !permissionGranted;
+
 	public static AppNotificationSetting Evaluate(bool requiresRuntimePermission, bool declaredInManifest, bool permissionGranted, bool notificationsEnabled)
 	{
 		if (requiresRuntimePermission && !declaredInManifest)

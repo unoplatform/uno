@@ -15,6 +15,8 @@ internal interface IToastNotificationSchedulerBackend
 
 internal interface IToastNotificationScheduleLifecycle
 {
+	void ValidateNewSchedule();
+
 	void Reconcile();
 
 	void OnSchedulesChanged();
@@ -87,6 +89,7 @@ internal sealed class ToastNotificationScheduler
 	{
 		lock (_gate)
 		{
+			_lifecycle?.ValidateNewSchedule();
 			var operation = _store.Add(record, now);
 			try
 			{

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.UI.Notifications;
 using Windows.UI.Notifications.Internal;
 
 namespace Uno.UI.Tests.Microsoft_Windows_AppNotifications;
@@ -11,6 +12,185 @@ namespace Uno.UI.Tests.Microsoft_Windows_AppNotifications;
 [TestClass]
 public class Given_AndroidToastNotificationBootReceiverLifecycle
 {
+	[TestMethod]
+	public void When_Update_Removes_Boot_Permission_Existing_Schedule_Can_Be_Enumerated_And_Removed()
+	{
+		var record = Record("migrated");
+		var persistence = new InMemoryToastNotificationSchedulePersistence(new ToastNotificationScheduleSnapshot(
+			ToastNotificationScheduleSnapshot.CurrentSchemaVersion,
+			new[] { record }));
+		var states = new List<bool>();
+		var backend = new TestSchedulerBackend();
+		var scheduler = new ToastNotificationScheduler(new ToastNotificationScheduleStore(persistence), backend,
+			CreatePermissionLifecycle(persistence, states, static () => false));
+		ToastNotificationSchedulerRuntime.SetSchedulerForTests(scheduler);
+		try
+		{
+			var notifier = ToastNotificationManager.CreateToastNotifier();
+			var scheduled = notifier.GetScheduledToastNotifications();
+
+			Assert.AreEqual(1, scheduled.Count);
+			Assert.AreEqual(record.ScheduleIdentifier, scheduled[0].ScheduleIdentifier);
+			Assert.ThrowsExactly<InvalidOperationException>(() =>
+				scheduler.Add(Record("new-not-opted-in"), DateTimeOffset.UtcNow));
+			Assert.AreEqual(1, persistence.Load().Records.Count);
+
+			notifier.RemoveFromSchedule(scheduled[0]);
+
+			Assert.AreEqual(0, notifier.GetScheduledToastNotifications().Count);
+			Assert.AreEqual(0, persistence.Load().Records.Count);
+			CollectionAssert.AreEqual(new[] { record.ScheduleIdentifier }, backend.Canceled);
+			Assert.IsTrue(states.Count > 0 && states.All(enabled => !enabled));
+		}
+		finally
+		{
+			ToastNotificationSchedulerRuntime.SetSchedulerForTests(null);
+		}
+	}
+
+	[TestMethod]
+	public void When_Update_Removes_Boot_Permission_Cancellation_Does_Not_Require_Prior_Enumeration()
+	{
+		var record = Record("remove-directly");
+		var persistence = new InMemoryToastNotificationSchedulePersistence(new ToastNotificationScheduleSnapshot(
+			ToastNotificationScheduleSnapshot.CurrentSchemaVersion, new[] { record }));
+		var states = new List<bool>();
+		var backend = new TestSchedulerBackend();
+		ToastNotificationSchedulerRuntime.SetSchedulerForTests(new ToastNotificationScheduler(
+			new ToastNotificationScheduleStore(persistence), backend,
+			CreatePermissionLifecycle(persistence, states, static () => false)));
+		try
+		{
+			ToastNotificationManager.CreateToastNotifier().RemoveFromSchedule(ToastNotificationSchedulerRuntime.FromRecord(record));
+
+			Assert.AreEqual(0, persistence.Load().Records.Count);
+			CollectionAssert.AreEqual(new[] { record.ScheduleIdentifier }, backend.Canceled);
+			Assert.IsTrue(states.Count > 0 && states.All(enabled => !enabled));
+		}
+		finally
+		{
+			ToastNotificationSchedulerRuntime.SetSchedulerForTests(null);
+		}
+	}
+
+	[TestMethod]
+	public void When_Cleanup_Without_Boot_Permission_Fails_Native_Error_Is_Preserved_For_Retry()
+	{
+		var record = Record("retry-cancellation", ToastNotificationScheduleStatus.Canceling);
+		var persistence = new InMemoryToastNotificationSchedulePersistence(new ToastNotificationScheduleSnapshot(
+			ToastNotificationScheduleSnapshot.CurrentSchemaVersion, new[] { record }));
+		var expected = new InvalidOperationException("native cancellation failed");
+		var backend = new TestSchedulerBackend { CancelException = expected };
+		var states = new List<bool>();
+		ToastNotificationSchedulerRuntime.SetSchedulerForTests(new ToastNotificationScheduler(
+			new ToastNotificationScheduleStore(persistence), backend,
+			CreatePermissionLifecycle(persistence, states, static () => false)));
+		try
+		{
+			var notifier = ToastNotificationManager.CreateToastNotifier();
+			var actual = Assert.ThrowsExactly<InvalidOperationException>(() => notifier.GetScheduledToastNotifications());
+
+			Assert.AreSame(expected, actual);
+			Assert.AreEqual(1, ToastNotificationScheduleSnapshotMerger.GetOperations(persistence.Load()).Count);
+			Assert.AreEqual(0, backend.Canceled.Count);
+
+			backend.CancelException = null;
+
+			Assert.AreEqual(0, notifier.GetScheduledToastNotifications().Count);
+			CollectionAssert.AreEqual(new[] { record.ScheduleIdentifier }, backend.Canceled);
+			Assert.AreEqual(0, ToastNotificationScheduleSnapshotMerger.GetOperations(persistence.Load()).Count);
+		}
+		finally
+		{
+			ToastNotificationSchedulerRuntime.SetSchedulerForTests(null);
+		}
+	}
+
+	[TestMethod]
+	public void When_Boot_Permission_Query_Fails_It_Is_Not_Treated_As_Opt_Out()
+	{
+		var expected = new InvalidOperationException("manifest could not be read");
+		var lifecycle = CreatePermissionLifecycle(new InMemoryToastNotificationSchedulePersistence(), new List<bool>(), () => throw expected);
+
+		Assert.AreSame(expected, Assert.ThrowsExactly<InvalidOperationException>(lifecycle.ValidateNewSchedule));
+		Assert.AreSame(expected, Assert.ThrowsExactly<InvalidOperationException>(lifecycle.Reconcile));
+	}
+
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public void When_Update_Removes_Boot_Permission_Pending_Cancellation_Can_Recover(bool orphanedOperation)
+	{
+		var record = Record("pending-cancel", ToastNotificationScheduleStatus.Canceling);
+		var operation = new ToastNotificationNativeOperation(
+			ScheduleIdentifier: record.ScheduleIdentifier,
+			Kind: ToastNotificationNativeOperationKind.Cancel,
+			OperationIdentifier: Guid.NewGuid().ToString("N"));
+		var persistence = new InMemoryToastNotificationSchedulePersistence(new ToastNotificationScheduleSnapshot(
+			ToastNotificationScheduleSnapshot.CurrentSchemaVersion,
+			orphanedOperation ? Array.Empty<ToastNotificationScheduleRecord>() : new[] { record },
+			NativeOperations: orphanedOperation ? new[] { operation } : null));
+		var states = new List<bool>();
+		var backend = new TestSchedulerBackend();
+		var scheduler = new ToastNotificationScheduler(new ToastNotificationScheduleStore(persistence), backend,
+			CreatePermissionLifecycle(persistence, states, static () => false));
+		ToastNotificationSchedulerRuntime.SetSchedulerForTests(scheduler);
+		try
+		{
+			Assert.AreEqual(0, ToastNotificationManager.CreateToastNotifier().GetScheduledToastNotifications().Count);
+			Assert.AreEqual(0, persistence.Load().Records.Count);
+			Assert.AreEqual(0, ToastNotificationScheduleSnapshotMerger.GetOperations(persistence.Load()).Count);
+			CollectionAssert.AreEqual(new[] { record.ScheduleIdentifier }, backend.Canceled);
+			Assert.IsTrue(states.Count > 0 && states.All(enabled => !enabled));
+		}
+		finally
+		{
+			ToastNotificationSchedulerRuntime.SetSchedulerForTests(null);
+		}
+	}
+
+	private static AndroidToastNotificationBootReceiverLifecycle CreatePermissionLifecycle(
+		IToastNotificationSchedulePersistence persistence,
+		List<bool> states,
+		Func<bool> hasPermission)
+		=> new(persistence, states.Add, hasPermission);
+
+	[TestMethod]
+	[DataRow(false, false, false)]
+	[DataRow(false, true, false)]
+	[DataRow(true, false, false)]
+	[DataRow(true, true, true)]
+	public void When_Recovering_Receiver_Requires_Both_Durable_State_And_Permission(bool hasSchedule, bool declaredInManifest, bool expected)
+	{
+		var states = new List<bool>();
+		var lifecycle = new AndroidToastNotificationBootReceiverLifecycle(
+			() => hasSchedule ? new[] { Record("existing") } : Array.Empty<ToastNotificationScheduleRecord>(),
+			states.Add,
+			() => declaredInManifest);
+
+		lifecycle.Reconcile();
+
+		CollectionAssert.AreEqual(new[] { expected }, states);
+	}
+
+	[TestMethod]
+	public void When_Boot_Permission_Is_Missing_New_Schedule_Is_Rejected_Before_Durable_Add()
+	{
+		var persistence = new InMemoryToastNotificationSchedulePersistence();
+		var states = new List<bool>();
+		var lifecycle = CreatePermissionLifecycle(persistence, states, static () => false);
+		var backend = new TestSchedulerBackend();
+		var scheduler = new ToastNotificationScheduler(new ToastNotificationScheduleStore(persistence), backend, lifecycle);
+
+		var exception = Assert.ThrowsExactly<InvalidOperationException>(() =>
+			scheduler.Add(Record("missing-permission"), DateTimeOffset.UtcNow));
+
+		StringAssert.Contains(exception.Message, "android.permission.RECEIVE_BOOT_COMPLETED");
+		Assert.AreEqual(0, backend.ScheduleCount);
+		Assert.AreEqual(0, persistence.Load().Records.Count);
+		Assert.AreEqual(0, states.Count);
+	}
+
 	[TestMethod]
 	public void When_No_Durable_Schedules_Exist_Receiver_Is_Disabled()
 	{
@@ -36,7 +216,8 @@ public class Given_AndroidToastNotificationBootReceiverLifecycle
 				ToastNotificationScheduleSnapshot.CurrentSchemaVersion,
 				Array.Empty<ToastNotificationScheduleRecord>(),
 				NativeOperations: new[] { operation }),
-			states.Add);
+			states.Add,
+			static () => true);
 
 		lifecycle.OnSchedulesChanged();
 
@@ -63,7 +244,7 @@ public class Given_AndroidToastNotificationBootReceiverLifecycle
 	{
 		IReadOnlyList<ToastNotificationScheduleRecord> records = new[] { Record("last") };
 		var states = new List<bool>();
-		var lifecycle = new AndroidToastNotificationBootReceiverLifecycle(() => records, states.Add);
+		var lifecycle = new AndroidToastNotificationBootReceiverLifecycle(() => records, states.Add, static () => true);
 
 		lifecycle.OnSchedulesChanged();
 		records = Array.Empty<ToastNotificationScheduleRecord>();
@@ -79,7 +260,7 @@ public class Given_AndroidToastNotificationBootReceiverLifecycle
 	{
 		IReadOnlyList<ToastNotificationScheduleRecord> records = new[] { Record("removed"), Record("remaining") };
 		var states = new List<bool>();
-		var lifecycle = new AndroidToastNotificationBootReceiverLifecycle(() => records, states.Add);
+		var lifecycle = new AndroidToastNotificationBootReceiverLifecycle(() => records, states.Add, static () => true);
 
 		lifecycle.OnSchedulesChanged();
 		records = new[] { Record("remaining") };
@@ -95,7 +276,7 @@ public class Given_AndroidToastNotificationBootReceiverLifecycle
 	{
 		IReadOnlyList<ToastNotificationScheduleRecord> records = Array.Empty<ToastNotificationScheduleRecord>();
 		var states = new List<bool>();
-		var lifecycle = new AndroidToastNotificationBootReceiverLifecycle(() => records, states.Add);
+		var lifecycle = new AndroidToastNotificationBootReceiverLifecycle(() => records, states.Add, static () => true);
 
 		lifecycle.OnSchedulesChanged();
 		records = new[] { Record("added") };
@@ -117,7 +298,8 @@ public class Given_AndroidToastNotificationBootReceiverLifecycle
 			{
 				states.Add(enabled);
 				records = Array.Empty<ToastNotificationScheduleRecord>();
-			});
+			},
+			static () => true);
 
 		lifecycle.OnSchedulesChanged();
 
@@ -130,7 +312,8 @@ public class Given_AndroidToastNotificationBootReceiverLifecycle
 		var expected = new InvalidOperationException("failed");
 		var lifecycle = new AndroidToastNotificationBootReceiverLifecycle(
 			() => Array.Empty<ToastNotificationScheduleRecord>(),
-			_ => throw expected);
+			_ => throw expected,
+			static () => true);
 
 		var actual = Assert.ThrowsExactly<InvalidOperationException>(
 			lifecycle.OnSchedulesChanged);
@@ -152,7 +335,8 @@ public class Given_AndroidToastNotificationBootReceiverLifecycle
 				{
 					throw new InvalidOperationException("package manager failed");
 				}
-			});
+			},
+			static () => true);
 		var backend = new TestSchedulerBackend();
 		var scheduler = new ToastNotificationScheduler(
 			new ToastNotificationScheduleStore(persistence),
@@ -174,7 +358,7 @@ public class Given_AndroidToastNotificationBootReceiverLifecycle
 	{
 		var persistence = new InMemoryToastNotificationSchedulePersistence();
 		var states = new List<bool>();
-		var lifecycle = new AndroidToastNotificationBootReceiverLifecycle(persistence, states.Add);
+		var lifecycle = new AndroidToastNotificationBootReceiverLifecycle(persistence, states.Add, static () => true);
 		var backend = new TestSchedulerBackend
 		{
 			ScheduleException = new InvalidOperationException("alarm failed"),
@@ -216,7 +400,7 @@ public class Given_AndroidToastNotificationBootReceiverLifecycle
 		var scheduler = new ToastNotificationScheduler(
 			new ToastNotificationScheduleStore(persistence),
 			backend,
-			new AndroidToastNotificationBootReceiverLifecycle(persistence, states.Add));
+			new AndroidToastNotificationBootReceiverLifecycle(persistence, states.Add, static () => true));
 
 		if (AndroidToastNotificationRecoveryActions.ShouldRecover(AndroidToastNotificationRecoveryActions.MyPackageReplaced))
 		{
@@ -233,7 +417,8 @@ public class Given_AndroidToastNotificationBootReceiverLifecycle
 		List<bool> states)
 		=> new(
 			() => records,
-			states.Add);
+			states.Add,
+			static () => true);
 
 	private static ToastNotificationScheduleRecord Record(
 		string scheduleIdentifier,
@@ -255,7 +440,11 @@ public class Given_AndroidToastNotificationBootReceiverLifecycle
 	{
 		public Exception? ScheduleException { get; init; }
 
+		public Exception? CancelException { get; set; }
+
 		public int ScheduleCount { get; private set; }
+
+		public List<string> Canceled { get; } = new();
 
 		public void Schedule(ToastNotificationScheduleRecord record)
 		{
@@ -268,6 +457,11 @@ public class Given_AndroidToastNotificationBootReceiverLifecycle
 
 		public void Cancel(string scheduleIdentifier)
 		{
+			if (CancelException is { } exception)
+			{
+				throw exception;
+			}
+			Canceled.Add(scheduleIdentifier);
 		}
 	}
 }

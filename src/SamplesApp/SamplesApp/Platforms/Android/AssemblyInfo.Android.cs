@@ -21,3 +21,4 @@ using Android.App;
 [assembly: UsesPermission("android.permission.READ_PHONE_STATE")]
 [assembly: UsesPermission("android.permission.MANAGE_EXTERNAL_STORAGE")]
 [assembly: UsesPermission("android.permission.POST_NOTIFICATIONS")]
+[assembly: UsesPermission("android.permission.RECEIVE_BOOT_COMPLETED")]

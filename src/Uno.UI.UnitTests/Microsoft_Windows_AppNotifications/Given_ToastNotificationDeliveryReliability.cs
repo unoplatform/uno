@@ -119,6 +119,10 @@ public class Given_ToastNotificationDeliveryReliability
 	{
 		public Exception? Exception { get; set; }
 
+		public void ValidateNewSchedule()
+		{
+		}
+
 		public void OnSchedulesChanged()
 		{
 		}

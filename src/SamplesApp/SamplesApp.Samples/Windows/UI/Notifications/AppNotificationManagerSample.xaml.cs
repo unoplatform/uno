@@ -103,6 +103,12 @@ public sealed partial class AppNotificationManagerSample : Page
 			{
 				return;
 			}
+			if (!permissionGranted)
+			{
+				RefreshRegistrationStatus();
+				Log("Notification permission was not granted.");
+				return;
+			}
 			_manager.Register();
 			_isRegistered = true;
 			RefreshRegistrationStatus();

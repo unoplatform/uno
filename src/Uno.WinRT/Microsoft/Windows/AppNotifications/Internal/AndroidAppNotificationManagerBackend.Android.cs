@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -70,9 +72,32 @@ internal sealed class AndroidAppNotificationManagerBackend : IAppNotificationMan
 		EnsureChannel(SilentChannelId, "Silent app notifications", NotificationImportance.Default, silent: true);
 		EnsureChannel(HighSilentChannelId, "Silent high-priority app notifications", NotificationImportance.High, silent: true);
 		EnsureChannel(SuppressedChannelId, "Suppressed app notifications", NotificationImportance.Low, silent: true);
+		_ = RequestPermissionAsync();
 	}
 
 	public void Register(string displayName, Uri iconUri) => Register();
+
+	private async Task RequestPermissionAsync()
+	{
+		try
+		{
+			var requiresRuntimePermission = Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu;
+			if (AndroidAppNotificationSettingEvaluator.ShouldRequestRuntimePermission(
+				requiresRuntimePermission,
+				requiresRuntimePermission && global::Windows.Extensions.PermissionsHelper.IsDeclaredInManifest(PostNotificationsPermission),
+				!requiresRuntimePermission || ContextCompat.CheckSelfPermission(_context, PostNotificationsPermission) == Permission.Granted))
+			{
+				if (!await global::Windows.Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, PostNotificationsPermission))
+				{
+					LogWarning("Android notification permission was not granted. App notifications remain disabled.");
+				}
+			}
+		}
+		catch (Exception exception)
+		{
+			LogWarning($"Android notification permission could not be requested: {exception.Message}");
+		}
+	}
 
 	public void Unregister()
 	{

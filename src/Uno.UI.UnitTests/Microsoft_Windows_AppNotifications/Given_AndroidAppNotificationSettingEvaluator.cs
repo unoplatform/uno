@@ -17,6 +17,20 @@ public class Given_AndroidAppNotificationSettingEvaluator
 	}
 
 	[TestMethod]
+	[DataRow(false, false, false, false)]
+	[DataRow(false, false, true, false)]
+	[DataRow(false, true, false, false)]
+	[DataRow(false, true, true, false)]
+	[DataRow(true, false, false, false)]
+	[DataRow(true, false, true, false)]
+	[DataRow(true, true, false, true)]
+	[DataRow(true, true, true, false)]
+	public void When_Registering_Only_Requests_A_Declared_Ungranted_Runtime_Permission(
+		bool requiresRuntimePermission, bool declaredInManifest, bool permissionGranted, bool expected)
+		=> Assert.AreEqual(expected, AndroidAppNotificationSettingEvaluator.ShouldRequestRuntimePermission(
+			requiresRuntimePermission, declaredInManifest, permissionGranted));
+
+	[TestMethod]
 	public void When_Runtime_Permission_Is_Not_Declared_Setting_Is_DisabledByManifest()
 	{
 		var setting = AndroidAppNotificationSettingEvaluator.Evaluate(true, false, false, false);
