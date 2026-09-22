@@ -300,7 +300,7 @@ The App MCP uses [MCP roots](https://modelcontextprotocol.io/docs/concepts/roots
 | Windsurf | No |
 | junie-rider | No |
 | JetBrains Air | No |
-| OpenCode | Unknown |
+| OpenCode | Yes |
 | Kimi Code | No |
 
 For agents without roots support, the DevServer CLI auto-detects the missing capability and exposes the `uno_app_initialize` tool, allowing the agent to specify the workspace directory manually. No additional configuration is required. The legacy `--force-roots-fallback` flag is still accepted as an explicit override, but is rarely needed.
