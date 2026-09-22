@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 
@@ -645,6 +646,37 @@ internal static class AccessibilityPeerHelper
 	{
 		ArgumentNullException.ThrowIfNull(peer);
 		return peer.ResolveProviderPeer(resolveEventsSource: true);
+	}
+
+	internal static Rect GetBoundingRectangle(AutomationPeer peer, UIElement? occurrenceOwner)
+		=> peer is ItemAutomationPeer itemPeer && occurrenceOwner is not null
+			? itemPeer.GetBoundingRectangleForContainer(occurrenceOwner)
+			: peer.GetBoundingRectangle();
+
+	internal static bool IsWithinModalScope(UIElement element, UIElement modalOwner)
+	{
+		var popupChild = (modalOwner as Popup)?.Child;
+		var modalMenu = (popupChild as MenuFlyoutPresenter)?.GetParentMenuFlyout();
+		UIElement? current = element is Popup { Child: MenuFlyoutPresenter presenter } ? presenter : element;
+		while (current is not null)
+		{
+			if (ReferenceEquals(current, modalOwner) || ReferenceEquals(current, popupChild))
+			{
+				return true;
+			}
+
+			// Cascading menu presenters share the owning flyout, but live in sibling popup panels.
+			if (modalMenu is not null &&
+				current is MenuFlyoutPresenter menuPresenter &&
+				ReferenceEquals(menuPresenter.GetParentMenuFlyout(), modalMenu))
+			{
+				return true;
+			}
+
+			current = current.GetUIElementAdjustedParentInternal();
+		}
+
+		return false;
 	}
 
 	internal static bool TryInvokeDefaultAction(AutomationPeer peer)
