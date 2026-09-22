@@ -63,9 +63,11 @@ public sealed class AccessibilityInteractionTests : AppiumFixtureBase
 	[TestCategory(TestCategories.Interaction)]
 	public void FavoriteColorComboBox_Selection_UpdatesThePlatformTree()
 	{
-		var comboFields = AccessibilitySnapshotFields.Patterns | AccessibilitySnapshotFields.Expanded;
+		var comboFields = AccessibilitySnapshotFields.Patterns | AccessibilitySnapshotFields.Value | AccessibilitySnapshotFields.Expanded;
 		var initialCombo = Session.CaptureElement(AccessibilityScreenReaderIds.FavoriteColorComboBox, comboFields);
 		initialCombo.Patterns.Should().Contain("expandcollapse");
+		initialCombo.Name.Should().Be("Favorite color");
+		initialCombo.Value.Should().Be("Red");
 
 		Session.Activate(AccessibilityScreenReaderIds.FavoriteColorComboBox);
 		Session.WaitForSnapshot(
@@ -73,22 +75,20 @@ public sealed class AccessibilityInteractionTests : AppiumFixtureBase
 			comboFields,
 			snapshot => snapshot.State.Expanded is null or true,
 			"observe the combobox expansion when the platform exposes it");
-		if (Session.Options.Platform == AppiumPlatform.Wasm)
-		{
-			Session.Activate(
-				By.CssSelector("#uno-semantics-root [role=\"option\"][aria-label=\"Green\"]"),
-				"find the Green option by its ARIA role and name");
-		}
-		else
-		{
-			Session.Activate(AccessibilityScreenReaderIds.FavoriteColorOptionGreen);
-		}
-
 		Session.WaitForSnapshot(
+			AccessibilityScreenReaderIds.FavoriteColorOptionRed,
+			AccessibilitySnapshotFields.Selected,
+			snapshot => snapshot.State.Selected == true,
+			"observe the initially selected Red option by AutomationId");
+		Session.Activate(AccessibilityScreenReaderIds.FavoriteColorOptionGreen);
+
+		var combo = Session.WaitForSnapshot(
 			AccessibilityScreenReaderIds.FavoriteColorComboBox,
 			comboFields,
-			snapshot => snapshot.State.Expanded is null or false,
-			"observe the combobox collapse when the platform exposes it");
+			snapshot => snapshot.Value == "Green" && (snapshot.State.Expanded is null or false),
+			"observe the collapsed combobox's independent Green value");
+		combo.Name.Should().Be("Favorite color");
+		combo.Value.Should().Be("Green");
 		Session.Activate(AccessibilityScreenReaderIds.FavoriteColorComboBox);
 		Session.WaitForSnapshot(
 			AccessibilityScreenReaderIds.FavoriteColorComboBox,
@@ -96,8 +96,26 @@ public sealed class AccessibilityInteractionTests : AppiumFixtureBase
 			snapshot => snapshot.State.Expanded is null or true,
 			"observe the combobox reopening when the platform exposes it");
 
+		var selectedGreen = Session.WaitForSnapshot(
+			AccessibilityScreenReaderIds.FavoriteColorOptionGreen,
+			AccessibilitySnapshotFields.Selected,
+			snapshot => snapshot.State.Selected == true,
+			"observe the selected combobox item");
+		var selectedRed = Session.WaitForSnapshot(
+			AccessibilityScreenReaderIds.FavoriteColorOptionRed,
+			AccessibilitySnapshotFields.Selected,
+			snapshot => snapshot.State.Selected == false,
+			"observe the previously selected combobox item");
+
+		selectedGreen.State.Selected.Should().BeTrue();
+		selectedRed.State.Selected.Should().BeFalse();
+
 		if (Session.Options.Platform == AppiumPlatform.Wasm)
 		{
+			Session.WaitForElement(AccessibilityScreenReaderIds.FavoriteColorOptionGreen)
+				.GetAttribute("aria-selected").Should().Be("true");
+			Session.WaitForElement(AccessibilityScreenReaderIds.FavoriteColorOptionRed)
+				.GetAttribute("aria-selected").Should().Be("false");
 			Session.WaitForCondition(
 				() => ((IJavaScriptExecutor)Session.Driver).ExecuteScript(
 					"""
@@ -109,22 +127,6 @@ public sealed class AccessibilityInteractionTests : AppiumFixtureBase
 						: false;
 					""") is true,
 				"observe the Green option through aria-activedescendant");
-		}
-		else
-		{
-			var selectedGreen = Session.WaitForSnapshot(
-				AccessibilityScreenReaderIds.FavoriteColorOptionGreen,
-				AccessibilitySnapshotFields.Selected,
-				snapshot => snapshot.State.Selected == true,
-				"observe the selected combobox item");
-			var selectedRed = Session.WaitForSnapshot(
-				AccessibilityScreenReaderIds.FavoriteColorOptionRed,
-				AccessibilitySnapshotFields.Selected,
-				snapshot => snapshot.State.Selected == false,
-				"observe the previously selected combobox item");
-
-			selectedGreen.State.Selected.Should().BeTrue();
-			selectedRed.State.Selected.Should().BeFalse();
 		}
 	}
 

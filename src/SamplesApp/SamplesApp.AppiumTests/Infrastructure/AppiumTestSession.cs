@@ -21,7 +21,7 @@ public sealed class AppiumTestSession : IDisposable
 	private readonly TestContext _testContext;
 	private bool _disposed;
 
-	private AppiumTestSession(
+	internal AppiumTestSession(
 		TestContext testContext,
 		AppiumTestOptions options,
 		IPlatformAdapter adapter,
@@ -52,7 +52,11 @@ public sealed class AppiumTestSession : IDisposable
 		var options = AppiumTestOptions.LoadRequired(defaultArtifactsDirectory);
 		Directory.CreateDirectory(options.ArtifactsDirectory);
 
-		var adapter = CreateAdapter(options.Platform);
+		return Create(testContext, options, CreateAdapter(options.Platform), sampleQuery);
+	}
+
+	internal static AppiumTestSession Create(TestContext testContext, AppiumTestOptions options, IPlatformAdapter adapter, string sampleQuery)
+	{
 		IWebDriver? driver = null;
 
 		try
@@ -65,7 +69,7 @@ public sealed class AppiumTestSession : IDisposable
 			testContext.WriteLine($"Started Appium session ({options.DiagnosticContext(sampleQuery)}).");
 			return new AppiumTestSession(testContext, options, adapter, driver, sampleQuery);
 		}
-		catch (Exception ex)
+		catch (Exception ex) when (!AppiumExceptionPolicy.IsCritical(ex))
 		{
 			var disposalErrors = new List<Exception>();
 
@@ -75,7 +79,7 @@ public sealed class AppiumTestSession : IDisposable
 				{
 					driver.Quit();
 				}
-				catch (Exception quitError)
+				catch (Exception quitError) when (!AppiumExceptionPolicy.IsCritical(quitError))
 				{
 					disposalErrors.Add(quitError);
 				}
@@ -84,7 +88,7 @@ public sealed class AppiumTestSession : IDisposable
 				{
 					driver.Dispose();
 				}
-				catch (Exception disposeError)
+				catch (Exception disposeError) when (!AppiumExceptionPolicy.IsCritical(disposeError))
 				{
 					disposalErrors.Add(disposeError);
 				}
@@ -94,7 +98,7 @@ public sealed class AppiumTestSession : IDisposable
 			{
 				adapter.Dispose();
 			}
-			catch (Exception adapterError)
+			catch (Exception adapterError) when (!AppiumExceptionPolicy.IsCritical(adapterError))
 			{
 				disposalErrors.Add(adapterError);
 			}
@@ -269,7 +273,7 @@ public sealed class AppiumTestSession : IDisposable
 		{
 			Driver.Quit();
 		}
-		catch (Exception ex)
+		catch (Exception ex) when (!AppiumExceptionPolicy.IsCritical(ex))
 		{
 			failures.Add(new InvalidOperationException($"Driver.Quit failed ({DiagnosticContext}).", ex));
 		}
@@ -278,7 +282,7 @@ public sealed class AppiumTestSession : IDisposable
 		{
 			Driver.Dispose();
 		}
-		catch (Exception ex)
+		catch (Exception ex) when (!AppiumExceptionPolicy.IsCritical(ex))
 		{
 			failures.Add(new InvalidOperationException($"Driver.Dispose failed ({DiagnosticContext}).", ex));
 		}
@@ -287,7 +291,7 @@ public sealed class AppiumTestSession : IDisposable
 		{
 			Adapter.Dispose();
 		}
-		catch (Exception ex)
+		catch (Exception ex) when (!AppiumExceptionPolicy.IsCritical(ex))
 		{
 			failures.Add(new InvalidOperationException($"Adapter.Dispose failed ({DiagnosticContext}).", ex));
 		}

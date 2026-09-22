@@ -64,6 +64,7 @@
       "automationId": "FavoriteColorComboBox",
       "role": "combobox",
       "name": "Favorite color",
+      "value": "Red",
       "patterns": [
         "expandcollapse",
         "selection"

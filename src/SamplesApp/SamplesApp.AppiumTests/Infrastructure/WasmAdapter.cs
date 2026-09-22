@@ -49,14 +49,14 @@ public sealed class WasmAdapter : IPlatformAdapter
 			EnableSemanticAccessibility(driver, options, startUri);
 			return driver;
 		}
-		catch (Exception startupError)
+		catch (Exception startupError) when (!AppiumExceptionPolicy.IsCritical(startupError))
 		{
 			var errors = new List<Exception> { startupError };
 			try
 			{
 				driver.Quit();
 			}
-			catch (Exception quitError)
+			catch (Exception quitError) when (!AppiumExceptionPolicy.IsCritical(quitError))
 			{
 				errors.Add(quitError);
 			}
@@ -65,7 +65,7 @@ public sealed class WasmAdapter : IPlatformAdapter
 			{
 				driver.Dispose();
 			}
-			catch (Exception disposeError)
+			catch (Exception disposeError) when (!AppiumExceptionPolicy.IsCritical(disposeError))
 			{
 				errors.Add(disposeError);
 			}

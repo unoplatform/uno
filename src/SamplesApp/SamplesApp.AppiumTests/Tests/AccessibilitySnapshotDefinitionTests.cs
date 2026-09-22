@@ -12,6 +12,23 @@ public sealed class AccessibilitySnapshotDefinitionTests
 {
 	[TestMethod]
 	[TestCategory(TestCategories.HostIndependent)]
+	public void ComboBox_Definition_And_Baseline_Require_Independent_Value()
+	{
+		var definition = AccessibilityScreenReaderSnapshotDefinition.Definition;
+		var comboBox = definition.Elements.Single(element => element.Id == AccessibilityScreenReaderIds.FavoriteColorComboBox);
+		foreach (var platform in new[] { AppiumPlatform.Windows, AppiumPlatform.Mac, AppiumPlatform.Wasm })
+		{
+			comboBox.FieldsFor(platform).HasFlag(AccessibilitySnapshotFields.Value).Should().BeTrue();
+		}
+
+		var baseline = SnapshotSerializer.Read(SnapshotPaths.ResolveBaselinePath(AppiumPlatform.Wasm, definition));
+		var value = baseline!.Elements.Single(element => element.Id == AccessibilityScreenReaderIds.FavoriteColorComboBox);
+		value.Name.Should().Be("Favorite color");
+		value.Value.Should().Be("Red");
+	}
+
+	[TestMethod]
+	[TestCategory(TestCategories.HostIndependent)]
 	public void Definitions_HaveUniqueIdsAndAutomationIds()
 	{
 		foreach (var definition in AccessibilityScreenReaderSnapshotDefinition.All)

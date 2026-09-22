@@ -51,8 +51,8 @@ public interface IPlatformAdapter : IDisposable
 	string GetAutomationId(IWebElement element);
 
 	/// <summary>
-	/// Value-pattern string when the element exposes one (UIA Value.Value /
-	/// AXValue / DOM <c>value</c>). Null when the element has no value pattern.
+	/// Current semantic value (UIA Value.Value, selected-item text for a select-only
+	/// ComboBox, AXValue, or DOM value). This does not imply Value-pattern support.
 	/// </summary>
 	string? GetValue(IWebElement element);
 

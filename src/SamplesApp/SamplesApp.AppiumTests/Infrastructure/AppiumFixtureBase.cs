@@ -42,10 +42,6 @@ public abstract class AppiumFixtureBase
 		{
 			_session.Dispose();
 		}
-		catch (Exception ex) when (TestContext.CurrentTestOutcome != UnitTestOutcome.Passed)
-		{
-			TestContext.WriteLine($"Session cleanup failed after {TestContext.CurrentTestOutcome}: {ex}");
-		}
 		finally
 		{
 			_session = null;

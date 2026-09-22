@@ -15,6 +15,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Appium.WebDriver" />
+		<PackageReference Include="Interop.UIAutomationClient" />
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="MSTest" />
 	</ItemGroup>

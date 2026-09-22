@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
@@ -28,6 +29,7 @@ public sealed class MacAdapter : IPlatformAdapter
 
 	public IWebDriver CreateDriver(AppiumTestOptions options, string sampleQuery)
 	{
+		_keepWrapperBundle = options.KeepMacBundle;
 		var appiumOptions = new AppiumOptions
 		{
 			AutomationName = "Mac2",
@@ -45,8 +47,8 @@ public sealed class MacAdapter : IPlatformAdapter
 					$"App bundle at '{appPath}' does not provide a readable CFBundleIdentifier. {bundleIdDiagnostic}");
 			if (!IsBundleRunning(bundleId))
 			{
-				LaunchAppBundle(appPath, sampleQuery);
 				_startedBundleId = bundleId;
+				LaunchAppBundle(appPath, sampleQuery);
 			}
 		}
 		else
@@ -55,12 +57,11 @@ public sealed class MacAdapter : IPlatformAdapter
 			if (!IsBundleRunning(bundleId))
 			{
 				_wrapperBundlePath = CreateWrapperBundle(options.ArtifactsDirectory, appPath, sampleQuery);
-				LaunchWrapperBundle(_wrapperBundlePath);
 				_startedBundleId = WrapperBundleId;
+				LaunchWrapperBundle(_wrapperBundlePath);
 			}
 		}
 
-		_keepWrapperBundle = options.KeepMacBundle;
 		WaitForBundleRunning(bundleId, options.Timeout);
 
 		appiumOptions.AddAdditionalAppiumOption("bundleId", bundleId);
@@ -124,7 +125,7 @@ public sealed class MacAdapter : IPlatformAdapter
 	private static void LaunchWrapperBundle(string bundlePath)
 		=> RunProcess("/usr/bin/open", new[] { "-n", bundlePath }, TimeSpan.FromSeconds(10));
 
-	private static ProcessResult RunProcess(
+	internal static ProcessResult RunProcess(
 		string fileName,
 		IEnumerable<string> arguments,
 		TimeSpan timeout,
@@ -142,22 +143,95 @@ public sealed class MacAdapter : IPlatformAdapter
 			startInfo.ArgumentList.Add(argument);
 		}
 
-		using var process = Process.Start(startInfo)
-			?? throw new InvalidOperationException($"Failed to start '{fileName}'.");
-		var standardOutput = process.StandardOutput.ReadToEndAsync();
-		var standardError = process.StandardError.ReadToEndAsync();
-
-		if (!process.WaitForExit(timeout))
+		var output = new StringBuilder();
+		var error = new StringBuilder();
+		var outputComplete = false;
+		var errorComplete = false;
+		var sync = new object();
+		using var process = new Process { StartInfo = startInfo };
+		process.OutputDataReceived += (_, args) =>
 		{
-			process.Kill(entireProcessTree: true);
-			process.WaitForExit();
-			throw new TimeoutException($"Process '{fileName}' did not exit within {timeout.TotalSeconds:F0}s.");
+			lock (sync)
+			{
+				if (args.Data is null)
+				{
+					outputComplete = true;
+				}
+				else
+				{
+					output.AppendLine(args.Data);
+				}
+				Monitor.PulseAll(sync);
+			}
+		};
+		process.ErrorDataReceived += (_, args) =>
+		{
+			lock (sync)
+			{
+				if (args.Data is null)
+				{
+					errorComplete = true;
+				}
+				else
+				{
+					error.AppendLine(args.Data);
+				}
+				Monitor.PulseAll(sync);
+			}
+		};
+
+		var elapsed = Stopwatch.StartNew();
+		if (!process.Start())
+		{
+			throw new InvalidOperationException($"Failed to start '{fileName}'.");
+		}
+		process.BeginOutputReadLine();
+		process.BeginErrorReadLine();
+
+		var completed = process.WaitForExit(timeout);
+		if (completed)
+		{
+			lock (sync)
+			{
+				while (!outputComplete || !errorComplete)
+				{
+					var remaining = timeout - elapsed.Elapsed;
+					if (remaining <= TimeSpan.Zero || !Monitor.Wait(sync, remaining))
+					{
+						completed = false;
+						break;
+					}
+				}
+			}
+		}
+
+		if (!completed)
+		{
+			var timeoutError = new TimeoutException(
+				$"Process '{fileName}' did not exit and finish redirecting output within {timeout.TotalSeconds:F0}s.");
+			try
+			{
+				if (!process.HasExited)
+				{
+					process.Kill(entireProcessTree: true);
+					if (!process.WaitForExit(TimeSpan.FromSeconds(5)))
+					{
+						throw new TimeoutException($"Process '{fileName}' did not exit after termination.");
+					}
+				}
+			}
+			catch (Exception cleanupError) when (!AppiumExceptionPolicy.IsCritical(cleanupError))
+			{
+				throw new AggregateException("Process timeout and termination both failed.", timeoutError, cleanupError);
+			}
+
+			throw timeoutError;
 		}
 
 		var result = new ProcessResult(
 			process.ExitCode,
-			standardOutput.GetAwaiter().GetResult().Trim(),
-			standardError.GetAwaiter().GetResult().Trim());
+			output.ToString().Trim(),
+			error.ToString().Trim());
 
 		if (throwOnNonZeroExit && result.ExitCode != 0)
 		{
@@ -191,15 +265,22 @@ public sealed class MacAdapter : IPlatformAdapter
 			$"App with bundle id '{bundleId}' did not start within {timeout.TotalSeconds:F0}s ({attempts} polls).{diagnosticSuffix}");
 	}
 
-	private static bool IsBundleRunning(string bundleId)
-		=> IsBundleRunning(bundleId, out _);
+	private static bool IsBundleRunning(string bundleId, TimeSpan? timeout = null)
+	{
+		var running = IsBundleRunning(bundleId, out var diagnostic, timeout);
+		if (diagnostic is not null)
+		{
+			throw new InvalidOperationException($"Unable to query app '{bundleId}': {diagnostic}");
+		}
+		return running;
+	}
 
-	private static bool IsBundleRunning(string bundleId, out string? diagnostic)
+	private static bool IsBundleRunning(string bundleId, out string? diagnostic, TimeSpan? timeout = null)
 	{
 		var result = RunProcess(
 			"/usr/bin/osascript",
 			new[] { "-e", $"tell application \"System Events\" to (bundle identifier of every process) contains {ToAppleScriptStringLiteral(bundleId)}" },
-			TimeSpan.FromSeconds(10),
+			timeout ?? TimeSpan.FromSeconds(10),
 			throwOnNonZeroExit: false);
 		if (result.ExitCode != 0)
 		{
@@ -207,8 +288,14 @@ public sealed class MacAdapter : IPlatformAdapter
 			return false;
 		}
 
-		diagnostic = null;
-		return string.Equals(result.StandardOutput, "true", StringComparison.OrdinalIgnoreCase);
+		if (bool.TryParse(result.StandardOutput, out var running))
+		{
+			diagnostic = null;
+			return running;
+		}
+
+		diagnostic = $"osascript returned '{result.StandardOutput}' instead of true or false.";
+		return false;
 	}
 
 	public By ByAutomationId(string automationId)
@@ -371,13 +458,16 @@ public sealed class MacAdapter : IPlatformAdapter
 	{
 		var errors = new List<Exception>();
 
-		if (_startedBundleId is not null && IsBundleRunning(_startedBundleId))
+		if (_startedBundleId is not null)
 		{
 			try
 			{
-				TerminateBundle(_startedBundleId);
+				if (IsBundleRunning(_startedBundleId))
+				{
+					TerminateBundle(_startedBundleId);
+				}
 			}
-			catch (Exception ex)
+			catch (Exception ex) when (!AppiumExceptionPolicy.IsCritical(ex))
 			{
 				errors.Add(ex);
 			}
@@ -391,7 +481,7 @@ public sealed class MacAdapter : IPlatformAdapter
 			{
 				Directory.Delete(_wrapperBundlePath, recursive: true);
 			}
-			catch (Exception ex)
+			catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
 			{
 				errors.Add(ex);
 			}
@@ -414,10 +504,26 @@ public sealed class MacAdapter : IPlatformAdapter
 
 	private static void TerminateBundle(string bundleId)
 	{
+		var timeout = TimeSpan.FromSeconds(10);
 		RunProcess(
 			"/usr/bin/osascript",
 			new[] { "-e", $"tell application id {ToAppleScriptStringLiteral(bundleId)} to quit" },
-			TimeSpan.FromSeconds(10));
+			timeout);
+
+		var elapsed = Stopwatch.StartNew();
+		while (true)
+		{
+			var remaining = timeout - elapsed.Elapsed;
+			if (remaining <= TimeSpan.Zero)
+			{
+				throw new TimeoutException($"App '{bundleId}' did not terminate after its quit request.");
+			}
+			if (!IsBundleRunning(bundleId, remaining))
+			{
+				return;
+			}
+			Thread.Sleep(TimeSpan.FromMilliseconds(100));
+		}
 	}
 
 	private static string CreateWrapperBundle(string artifactsDirectory, string dllPath, string sampleQuery)
@@ -583,5 +689,5 @@ public sealed class MacAdapter : IPlatformAdapter
 	private static string BashSingleQuote(string value)
 		=> $"'{value.Replace("'", "'\\''")}'";
 
-	private readonly record struct ProcessResult(int ExitCode, string StandardOutput, string StandardError);
+	internal readonly record struct ProcessResult(int ExitCode, string StandardOutput, string StandardError);
 }

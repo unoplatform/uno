@@ -16,10 +16,25 @@ namespace SamplesApp.AppiumTests.Infrastructure;
 /// </summary>
 public sealed class WindowsAdapter : IPlatformAdapter
 {
+	private readonly Func<IWebElement, IReadOnlyList<string>> _getSelectedItemNames;
+	private Uri? _serverUri;
+
+	public WindowsAdapter()
+	{
+		_getSelectedItemNames = GetSelectedItemNames;
+	}
+
+	internal WindowsAdapter(Func<IWebElement, IReadOnlyList<string>> getSelectedItemNames)
+	{
+		ArgumentNullException.ThrowIfNull(getSelectedItemNames);
+		_getSelectedItemNames = getSelectedItemNames;
+	}
+
 	public AppiumPlatform Platform => AppiumPlatform.Windows;
 
 	public IWebDriver CreateDriver(AppiumTestOptions options, string sampleQuery)
 	{
+		_serverUri = options.ServerUri;
 		var appiumOptions = new AppiumOptions
 		{
 			AutomationName = "Windows",
@@ -62,7 +77,37 @@ public sealed class WindowsAdapter : IPlatformAdapter
 		=> GetAttributeAny(element, "AutomationId") ?? string.Empty;
 
 	public string? GetValue(IWebElement element)
-		=> EmptyToNull(GetAttributeAny(element, "Value.Value", "RangeValue.Value", "value"));
+	{
+		if (CanonicalRole.Normalize(GetRole(element), Platform) == "combobox" &&
+			ParseBool(GetAttributeAny(element, "IsValuePatternAvailable")) != true)
+		{
+			if (ParseBool(GetAttributeAny(element, "IsSelectionPatternAvailable")) != true)
+			{
+				return null;
+			}
+
+			var selectedNames = _getSelectedItemNames(element);
+			return selectedNames.Count switch
+			{
+				0 => null,
+				1 => EmptyToNull(selectedNames[0]),
+				_ => throw new InvalidOperationException("A single-selection ComboBox returned multiple selected UIA elements."),
+			};
+		}
+
+		return EmptyToNull(GetAttributeAny(element, "Value.Value", "RangeValue.Value", "value"));
+	}
+
+	private IReadOnlyList<string> GetSelectedItemNames(IWebElement element)
+	{
+		if (_serverUri?.IsLoopback != true)
+		{
+			throw new InvalidOperationException(
+				"Reading a select-only Windows ComboBox requires a local Windows Appium session so UIA Selection can be queried on the driver-owned window.");
+		}
+
+		return WindowsSelectionReader.GetSelectedItemNames(element);
+	}
 
 	public IReadOnlyList<string> GetSupportedPatterns(IWebElement element)
 	{

@@ -19,7 +19,8 @@ selection where the native surfaces legitimately differ.
 Three categories exist:
 
 - `HostIndependent` - pure logic tests for configuration parsing, role
-  normalization, snapshot schema/diffing, and baseline-definition integrity.
+  normalization, snapshot schema/diffing, baseline-definition integrity,
+  cleanup failure propagation, and bounded process-output collection.
   These run in ordinary CI and do not need Appium.
 - `HostRequired` - real external-driver sessions that validate canonical snapshots and
   representative interactions against the live platform tree.
@@ -165,6 +166,42 @@ WASM discovery is based on Uno's semantic DOM:
 - elements are found under `#uno-semantics-root`
 - AutomationIds come from `xamlautomationid`
 - names/descriptions/states come from DOM + ARIA attributes
+- the collapsed ComboBox retains its selected value independently of its name;
+  interactions locate options by AutomationId and assert both old and new
+  `aria-selected` states, not just `aria-activedescendant`
+
+### Windows select-only ComboBox values
+
+WinUI exposes `ValuePattern` only for editable ComboBoxes. For a select-only
+ComboBox, the Windows adapter queries native UIA
+[`Selection.GetCurrentSelection`](https://learn.microsoft.com/en-us/windows/win32/api/uiautomationclient/nf-uiautomationclient-iuiautomationselectionpattern-getcurrentselection)
+and reads the selected element's `Name`. It does not substitute the ComboBox's
+name, assume an undocumented WinAppDriver value attribute, expand the popup, or
+require selected items to be present in the collapsed child tree.
+
+This fallback requires the test runner and Windows Appium session on the same
+Windows host, using a loopback `UNO_APPIUM_SERVER` address. Native lookup starts
+at the driver session's window handle and verifies the element's process and
+unique AutomationId; it does not search another application's window. Remote
+select-only value reads fail explicitly rather than returning a guessed value.
+The `Interop.UIAutomationClient` dependency is only a managed COM interop assembly;
+the UIA service is supplied by Windows.
+
+Host-independent `WindowsAdapterSelectionTests` exercise the actual adapter and
+snapshot-builder path through its Selection seam, including Red/Green values,
+separate names, unchanged pattern availability and selection states, and provider
+failures. Native WinAppDriver coverage remains a separate host-backed gate.
+
+## Session cleanup
+
+Cleanup failures fail the run even when the test has already failed. Ordinary
+startup and teardown failures are retained while every driver/adapter cleanup
+operation is attempted; multiple failures are reported together. Critical CLR
+exceptions propagate immediately rather than being wrapped as recoverable failures.
+
+The macOS process helper drains stdout and stderr concurrently without blocking
+on asynchronous tasks. Its timeout covers both process exit and stream completion,
+and timed-out owned processes are terminated before the failure is reported.
 
 ## Environment variables
 
