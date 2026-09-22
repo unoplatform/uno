@@ -19,9 +19,14 @@ internal sealed class FrameBufferGraphicsContext : ISwapChain, IGLDeviceContext
 
 	public GraphicsContextKind Kind { get; }
 
-	// The renderer composes into one persistent framebuffer (recreated only on resize), so the previous frame's
-	// pixels survive and the compositor can repaint only the damaged region.
-	public bool PreservesContents => true;
+	// Only the software path composes into one persistent CPU buffer, so only it keeps the previous frame's pixels
+	// for a partial repaint. The DRM/GLES path presents through 2-3 rotating GBM buffers, where the acquired one
+	// still holds the content of a flip or two ago. The mouse cursor is composed into that buffer too, so while it
+	// is drawn the frame has to be repainted whole, otherwise every position it passed through stays behind.
+	public bool PreservesContents => Kind == GraphicsContextKind.Software && !ComposesCursorOverlay;
+
+	/// <summary>Set by <see cref="FrameBufferRenderer"/> each frame: whether it composes the cursor into the target.</summary>
+	internal bool ComposesCursorOverlay { get; set; }
 
 	// GL device face (used only when Kind == OpenGLES): supplies the GLES proc-address loader.
 	public Func<string, nint> GetProcAddress => static name => EglHelper.EglGetProcAddress(name);

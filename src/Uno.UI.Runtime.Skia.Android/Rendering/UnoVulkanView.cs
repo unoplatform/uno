@@ -200,18 +200,27 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			return;
 		}
 
-		compositionTarget.Renderer = _renderer!;
-		var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
-
-		ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
-
-		if (!_firstFrameSignaled)
+		// Contained per frame: letting it reach the loop would end the render thread for good, freezing the app on
+		// its last frame while input keeps being delivered.
+		try
 		{
-			_firstFrameSignaled = true;
-			NativeWindowWrapper.Instance.NotifyFirstFrameRendered();
-			// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
-			ApplicationActivity.RelativeLayout?.Post(() =>
-				ApplicationActivity.RelativeLayout?.Invalidate());
+			compositionTarget.Renderer = _renderer!;
+			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
+
+			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+
+			if (!_firstFrameSignaled)
+			{
+				_firstFrameSignaled = true;
+				NativeWindowWrapper.Instance.NotifyFirstFrameRendered();
+				// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
+				ApplicationActivity.RelativeLayout?.Post(() =>
+					ApplicationActivity.RelativeLayout?.Invalidate());
+			}
+		}
+		catch (Exception ex)
+		{
+			this.Log().Error("UnoVulkanView: frame render failed", ex);
 		}
 	}
 

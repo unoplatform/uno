@@ -12,7 +12,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 /// and hands the renderer a neutral <see cref="IGLRenderTarget"/> flagged GLES. <see cref="Present"/> swaps
 /// buffers and releases current.
 /// </summary>
-internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContext
+internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContext, IX11GpuTeardownContext
 {
 	private const uint DefaultFramebuffer = 0;
 
@@ -77,9 +77,16 @@ internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContex
 		}
 	}
 
+	public void MakeCurrentForTeardown()
+	{
+		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
+		MakeCurrent();
+	}
+
 	public void Dispose()
 	{
 		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
+		EglHelper.EglMakeCurrent(_eglDisplay, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 		if (!EglHelper.EglTerminate(_eglDisplay))
 		{
 			this.LogError()?.Error("EglTerminate failed.");

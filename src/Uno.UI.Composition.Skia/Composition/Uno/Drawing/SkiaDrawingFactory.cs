@@ -21,6 +21,8 @@ internal sealed class SkiaDrawingFactory :
 	IDrawingFactory<IVulkanRenderTarget>,
 	System.IDisposable
 {
+	private const long WebGlResourceCacheBytes = 256 * 1024 * 1024;
+
 	// GL state (built lazily on the first GL present, once the host's GL context is current; per backend
 	// instance, i.e. per graphics context). Null for the software / host-canvas cases.
 	private GRContext? _glContext;
@@ -146,15 +148,25 @@ internal sealed class SkiaDrawingFactory :
 		// GLES/WebGL assemble the interface from the host's proc loader. Desktop GL uses SkiaSharp's compiled-in
 		// native interface (Create()) instead: the proc-assembled variant segfaults on Mesa/llvmpipe.
 		var loader = _glDevice!.GetProcAddress;
-		_glContext ??= GRContext.CreateGl(
-				(_glDevice!.Kind switch
-				{
-					GraphicsContextKind.OpenGLES => GRGlInterface.CreateGles(name => loader(name)),
-					GraphicsContextKind.WebGL => GRGlInterface.CreateWebGl(name => loader(name)),
-					_ => GRGlInterface.Create(),
-				})
-				?? throw new System.NotSupportedException("OpenGL is not available (GRGlInterface create failed)."))
-			?? throw new System.NotSupportedException("Failed to create an OpenGL GRContext.");
+		if (_glContext is null)
+		{
+			_glContext = GRContext.CreateGl(
+					(_glDevice!.Kind switch
+					{
+						GraphicsContextKind.OpenGLES => GRGlInterface.CreateGles(name => loader(name)),
+						GraphicsContextKind.WebGL => GRGlInterface.CreateWebGl(name => loader(name)),
+						_ => GRGlInterface.Create(),
+					})
+					?? throw new System.NotSupportedException("OpenGL is not available (GRGlInterface create failed)."))
+				?? throw new System.NotSupportedException("Failed to create an OpenGL GRContext.");
+
+			if (_glDevice.Kind == GraphicsContextKind.WebGL)
+			{
+				// The browser host needs a far larger resource cache than Skia's default: with the default the
+				// canvas-sized GPU resources are evicted and rebuilt constantly.
+				_glContext.SetResourceCacheLimit(WebGlResourceCacheBytes);
+			}
+		}
 
 		if (_glSurface is null || gl.Width != _glWidth || gl.Height != _glHeight)
 		{
@@ -164,7 +176,10 @@ internal sealed class SkiaDrawingFactory :
 			_glSurface?.Dispose();
 
 			var info = new GRGlFramebufferInfo(gl.FramebufferId, SKColorType.Rgba8888.ToGlSizedFormat());
-			_glRenderTarget = new GRBackendRenderTarget(gl.Width, gl.Height, gl.SampleCount, gl.StencilBits, info);
+			// A host can report more GL_SAMPLES than Skia can wrap for this color type (common on Android GLES),
+			// and an unclamped count makes SKSurface.Create return null instead of quietly downgrading MSAA.
+			var samples = Math.Min(gl.SampleCount, _glContext.GetMaxSurfaceSampleCount(SKColorType.Rgba8888));
+			_glRenderTarget = new GRBackendRenderTarget(gl.Width, gl.Height, samples, gl.StencilBits, info);
 			// BottomLeft to match OpenGL's origin.
 			_glSurface = SKSurface.Create(_glContext, _glRenderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888)
 				?? throw new System.NotSupportedException("Skia could not wrap the host's OpenGL framebuffer.");

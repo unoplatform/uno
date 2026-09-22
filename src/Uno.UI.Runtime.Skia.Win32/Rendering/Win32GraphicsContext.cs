@@ -56,6 +56,9 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 	public bool PreservesContents => false;
 
 	private Win32GLRenderTarget? _target;
+	// Whether the compositor acquired a target this tick; it skips drawing entirely when there is no recorded
+	// frame yet or the bounds are empty, and swapping then shows an uninitialised back buffer.
+	private bool _frameAcquired;
 
 	public Func<string, nint> GetProcAddress => Win32NativeOpenGLWrapper.GetProcAddressStatic;
 
@@ -181,11 +184,18 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 		{
 			_target = new Win32GLRenderTarget((uint)framebuffer, samples, stencil, width, height);
 		}
+		_frameAcquired = true;
 		return _target;
 	}
 
 	public void Present()
 	{
+		if (!_frameAcquired)
+		{
+			return;
+		}
+		_frameAcquired = false;
+
 		_pacer?.OnFrameStart();
 
 		var success = PInvoke.SwapBuffers(_hdc);
@@ -302,6 +312,9 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 	public bool PreservesContents => true;
 
 	private Win32SoftwareRenderTarget? _target;
+	// Whether the compositor acquired a target this tick; it skips drawing entirely when there is no recorded
+	// frame yet or the bounds are empty, and blitting then shows an uninitialised DIB.
+	private bool _frameAcquired;
 
 	public unsafe IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -340,11 +353,18 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 			_target = new Win32SoftwareRenderTarget(_bits, _width * 4, _width, _height);
 		}
 
+		_frameAcquired = true;
 		return _target!;
 	}
 
 	public void Present()
 	{
+		if (!_frameAcquired)
+		{
+			return;
+		}
+		_frameAcquired = false;
+
 		_pacer.OnFrameStart();
 
 		var paintDc = PInvoke.GetDC(_hwnd);

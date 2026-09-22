@@ -78,9 +78,12 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 	public void Dispose()
 	{
 		_airspaceHelper?.Dispose();
-		_context.Dispose();
 		// Dispose this window's backend factory too: it owns the GRContext + cached GPU surfaces bound to the
-		// context above, so leaving it alive leaks GPU memory on every window close (crashes after enough windows).
+		// context below, so leaving it alive leaks GPU memory on every window close (crashes after enough windows).
+		// It has to run while the GL/EGL context is still current and before the context terminates it, or the
+		// GPU handles are released against no context and simply leak.
+		(_context as IX11GpuTeardownContext)?.MakeCurrentForTeardown();
 		(_renderer as IDisposable)?.Dispose();
+		_context.Dispose();
 	}
 }

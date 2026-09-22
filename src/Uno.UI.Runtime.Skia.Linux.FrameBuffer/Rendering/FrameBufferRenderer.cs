@@ -72,9 +72,12 @@ internal abstract class FrameBufferRenderer
 		var rootTransform = BuildOrientationMatrix(degrees, transX, transY);
 		Action<IDrawingSession>? overlay = (_cursorVisible ?? _receivedMouseEvent) ? DrawCursor : null;
 
+		var context = (FrameBufferGraphicsContext)_swapChain!;
+		context.ComposesCursorOverlay = overlay is not null;
+
 		// Route the context's acquire to this renderer's orientation-aware target creation, reusing the current
 		// target while the physical size is unchanged (portrait swaps width/height for the physical framebuffer).
-		((FrameBufferGraphicsContext)_swapChain!).SetAcquire((width, height) =>
+		context.SetAcquire((width, height) =>
 		{
 			if (orientation is DisplayOrientations.Portrait or DisplayOrientations.PortraitFlipped)
 			{
@@ -84,7 +87,7 @@ internal abstract class FrameBufferRenderer
 		});
 
 		ct.Renderer = _rendererFactory!;
-		ct.OnNativePlatformFrameRequested(_swapChain!, rootTransform, overlay);
+		ct.OnNativePlatformFrameRequested(context, rootTransform, overlay);
 	}
 
 	private void DrawCursor(IDrawingSession session)

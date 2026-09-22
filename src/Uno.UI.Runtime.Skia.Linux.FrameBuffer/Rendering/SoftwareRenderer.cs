@@ -99,17 +99,23 @@ namespace Uno.UI.Runtime.Skia
 			var srcStride = _bufferWidth * 4;
 			var format = _fbDev.PixelFormat;
 
-			for (var y = 0; y < _bufferHeight; y++)
+			// The staging buffer is sized from the composition bounds, which can exceed the device (orientation
+			// change, a stale size, a mode the driver rounded); writing past the mmap'd region corrupts memory.
+			var dstBytesPerPixel = format == FramebufferColorFormat.Rgb565 ? 2 : 4;
+			var rows = Math.Min(_bufferHeight, (int)_fbDev.ScreenSize.Height);
+			var columns = Math.Min(_bufferWidth, Math.Min((int)_fbDev.ScreenSize.Width, dstStride / dstBytesPerPixel));
+
+			for (var y = 0; y < rows; y++)
 			{
 				var srcRow = src + y * srcStride;
 				var dstRow = dst + y * dstStride;
 				switch (format)
 				{
 					case FramebufferColorFormat.Bgra8888:
-						Buffer.MemoryCopy(srcRow, dstRow, dstStride, Math.Min(srcStride, dstStride));
+						Buffer.MemoryCopy(srcRow, dstRow, dstStride, columns * 4);
 						break;
 					case FramebufferColorFormat.Rgba8888:
-						for (var x = 0; x < _bufferWidth; x++)
+						for (var x = 0; x < columns; x++)
 						{
 							var s = srcRow + x * 4;
 							var d = dstRow + x * 4;
@@ -121,7 +127,7 @@ namespace Uno.UI.Runtime.Skia
 						break;
 					case FramebufferColorFormat.Rgb565:
 						var dst16 = (ushort*)dstRow;
-						for (var x = 0; x < _bufferWidth; x++)
+						for (var x = 0; x < columns; x++)
 						{
 							var s = srcRow + x * 4;
 							dst16[x] = (ushort)(((s[2] & 0xF8) << 8) | ((s[1] & 0xFC) << 3) | (s[0] >> 3));

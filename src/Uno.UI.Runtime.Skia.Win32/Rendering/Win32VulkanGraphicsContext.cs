@@ -15,10 +15,14 @@ namespace Uno.UI.Runtime.Skia.Win32;
 /// the whole frame; <see cref="Present"/> blits the render image to the swapchain and releases it. The ctor throws
 /// when Vulkan is unavailable so negotiation falls through to the next kind.
 /// </summary>
-internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext
+internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext, IWin32PacedContext
 {
 	private readonly VulkanContext _vk;
+	// MAILBOX present returns without blocking, so the render thread is paced here; otherwise it spins at
+	// thousands of fps rendering frames the presentation engine discards, and FrameRate is ignored.
+	private readonly Win32RenderPacer _pacer;
 	private IDisposable? _frameLock;
+	private bool _skipPresent;
 	private int _width, _height;
 
 	public Win32VulkanGraphicsContext(HWND hwnd)
@@ -41,6 +45,11 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 		var factory = new Win32VulkanSurfaceFactory();
 		_vk = new VulkanContext();
 		_vk.Initialize(factory, hwnd.Value, _width, _height);
+
+		// Created last so a declined negotiation (the throw above) doesn't leave a timer behind.
+		_pacer = new Win32RenderPacer(
+			FeatureConfiguration.CompositionTarget.FrameRate,
+			FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate);
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;
@@ -73,6 +82,9 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 			_width = width;
 			_height = height;
 			_vk.ResizeRenderImage(width, height);
+			// The frame about to be composed was recorded at the old size; presenting it into the resized
+			// swapchain shows a stretched/garbled image, so this one frame is dropped.
+			_skipPresent = true;
 		}
 
 		return _vk.CurrentRenderTarget;
@@ -87,15 +99,31 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 			return;
 		}
 
-		_vk.BlitAndPresent();
+		_pacer.OnFrameStart();
+
+		if (_skipPresent)
+		{
+			_skipPresent = false;
+		}
+		else
+		{
+			_vk.BlitAndPresent();
+			_pacer.WaitForNextFrame();
+		}
+
 		_frameLock.Dispose();
 		_frameLock = null;
 	}
+
+	// Retargets the pacer's timer (the degraded DwmFlush fallback, or the active pacer under a fixed FrameRate)
+	// when the window moves to a display with a different refresh rate.
+	public void UpdateRefreshRate(double fps) => _pacer.UpdateTargetFps(fps);
 
 	public void Dispose()
 	{
 		_frameLock?.Dispose();
 		_frameLock = null;
+		_pacer.Dispose();
 		_vk.Dispose();
 	}
 }

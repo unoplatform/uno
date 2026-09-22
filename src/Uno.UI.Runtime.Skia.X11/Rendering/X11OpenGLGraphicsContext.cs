@@ -10,7 +10,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 /// Neutral OpenGL <see cref="ISwapChain"/> for X11: makes the window's GLX context current and hands the
 /// renderer a neutral <see cref="IGLRenderTarget"/>. <see cref="Present"/> swaps buffers and releases current.
 /// </summary>
-internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext
+internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext, IX11GpuTeardownContext
 {
 	private const uint DefaultFramebuffer = 0; // the GLX buffer created in X11XamlRootHost, rendered directly on screen
 
@@ -64,7 +64,17 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext
 		}
 	}
 
-	public void Dispose() { }
+	public void MakeCurrentForTeardown()
+	{
+		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
+		MakeCurrent();
+	}
+
+	public void Dispose()
+	{
+		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
+		GlxInterface.glXMakeCurrent(_x11Window.Display, X11Helper.None, IntPtr.Zero);
+	}
 
 	private sealed class X11GLRenderTarget(int width, int height, int sampleCount, int stencilBits) : IGLRenderTarget
 	{

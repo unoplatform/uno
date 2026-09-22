@@ -49,7 +49,9 @@ internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 	{
 		Canvas.RestoreToCount(_saveCount);
 		Canvas.Flush();
-		_flushContext?.Flush();
+		// Submit, not just flush: the host's present runs on its own command buffer and can otherwise blit the
+		// texture before Skia's recorded work has been sent to the GPU.
+		_flushContext?.Flush(submit: true);
 		if (_ownsSurface) { _surface?.Dispose(); }
 	}
 }

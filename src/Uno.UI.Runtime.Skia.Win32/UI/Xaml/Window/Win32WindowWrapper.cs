@@ -526,6 +526,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// thread — the sole user of the graphics context — has exited, so freeing it here cannot
 		// race an in-flight present.
 		StopRenderThread();
+		// The backend factory is created per window and owns that window's GRContext + cached GPU surfaces, so it
+		// has to go with the window (before the context it is bound to) or every window close leaks GPU memory.
+		(_renderer as IDisposable)?.Dispose();
 		_context.Dispose();
 		_rendererDisposed = true;
 		DestroyIcons();

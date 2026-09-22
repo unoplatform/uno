@@ -16,6 +16,7 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 {
 	private readonly VulkanContext _vk;
 	private IDisposable? _frameLock;
+	private bool _skipPresent;
 	private int _width, _height;
 
 	public X11VulkanGraphicsContext(X11Window x11Window)
@@ -68,6 +69,9 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 			_width = width;
 			_height = height;
 			_vk.ResizeRenderImage(width, height);
+			// The frame about to be composed was recorded at the old size; presenting it into the resized
+			// swapchain shows a stretched/garbled image, so this one frame is dropped.
+			_skipPresent = true;
 		}
 
 		return _vk.CurrentRenderTarget;
@@ -82,7 +86,15 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 			return;
 		}
 
-		_vk.BlitAndPresent();
+		if (_skipPresent)
+		{
+			_skipPresent = false;
+		}
+		else
+		{
+			_vk.BlitAndPresent();
+		}
+
 		_frameLock.Dispose();
 		_frameLock = null;
 	}

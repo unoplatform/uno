@@ -897,9 +897,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				Unregister(handle);
 				window._nativeWindow.Destroyed();
 				window.Closed?.Invoke(window, EventArgs.Empty);
-				// Dispose the per-window graphics context (device/queue/swapchain). The renderer (_renderer) is the
-				// process-shared IDrawingFactory registered as DrawingFactory.Current — not per-window and not
-				// disposable — so it is intentionally left alone. Mirrors X11/Win32 window-close teardown.
+				// GraphicsRegistry.Initialize() runs per window, so the backend factory is per window too and owns
+				// this window's GRContext + cached GPU surfaces: dispose it before the context it is bound to, or
+				// every window close leaks GPU memory. Mirrors X11/Win32 window-close teardown.
+				(window._renderer as IDisposable)?.Dispose();
 				window._context?.Dispose();
 			}
 		}
