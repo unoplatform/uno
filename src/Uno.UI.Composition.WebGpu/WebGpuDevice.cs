@@ -143,6 +143,15 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// where an in-place uniform rewrite would clobber data this frame's earlier draws still reference.
 	public long FrameSeq;
 
+	// Blurred shadows for rounded-rect silhouettes, keyed by shape so a wall of identical cards shares one. Lives
+	// on the device because a WebGpuFrame -- and its WebGpuEffects -- is constructed per frame.
+	internal readonly Dictionary<WebGpuEffects.ShapeKey, WebGpuEffects.ShapeShadow> ShapeShadows = new();
+	internal readonly List<WebGpuEffects.ShapeKey> ShapeShadowQueue = new();
+	internal readonly List<WebGpuEffects.ShapeKey> ShapeShadowStale = new();
+
+	// Sends a rounded-rect layer shadow back through the sheet: replayed and blurred per card per frame.
+	internal static readonly bool NoShapeShadow = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_SHAPE_SHADOW") == "1";
+
 	// Escape hatch for the occlusion prepass: it changes what reaches the rasteriser, so a driver that gets the
 	// depth comparison wrong can be told apart from a bug in the geometry without a rebuild.
 	internal static readonly bool NoDepthOcclusion = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_DEPTH_OCCLUSION") == "1";

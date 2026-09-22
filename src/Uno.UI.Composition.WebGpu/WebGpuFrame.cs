@@ -52,6 +52,9 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		long t0 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 		Begin();
+		// Shapes queued by last frame's walk. Baked here, before the frame's own passes: opening one from inside
+		// the walk recurses through EncodePass.
+		Effects.FlushShapeBakes();
 		try
 		{
 			RenderInto(cmds, m, ClipData.None, Target, clear, overlay: overlay, depth: !WebGpuDevice.NoDepthOcclusion);
@@ -99,6 +102,7 @@ internal sealed unsafe partial class WebGpuFrame
 		_ = wgpuDevicePoll(_d.Dev, 0u, null);
 		foreach (var ls in LayerSurfaces) { _d.Pool.Return(ls.View); }
 		LayerSurfaces.Clear();
+		Effects.SweepShapeShadows();
 	}
 
 	// Stores a freshly built arena entry on its recording, handling the Dispose race: Dispose exchanged the field

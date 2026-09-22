@@ -18,7 +18,7 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-internal sealed unsafe class WebGpuEffects
+internal sealed unsafe partial class WebGpuEffects
 {
 	private readonly WebGpuFrame _f;
 	private readonly WebGpuDevice _d;

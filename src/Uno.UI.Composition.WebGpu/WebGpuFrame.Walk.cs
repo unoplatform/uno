@@ -810,6 +810,90 @@ internal sealed unsafe partial class WebGpuFrame
 		}
 	}
 
+	/// <summary>
+	/// The rounded rect a recording's opaque content fills, in the recording's own space. A drop shadow is the
+	/// blurred ALPHA of its content, so when one opaque shape covers everything the recording draws, the shadow is
+	/// that shape's -- the photo, scrim and caption inside a card contribute nothing. Memoised: a recording's
+	/// commands are immutable, so this is answered once and reused for its life.
+	/// </summary>
+	private static bool TrySilhouette(WebGpuRenderRecord rec, out Vector4 rect, out Vector4 radii)
+	{
+		if (rec.SilhouetteMemo is { } memo) { rect = memo.Rect; radii = memo.Radii; return memo.Known; }
+		var found = Silhouette(rec.Commands, CmdListBounds(rec.Commands), out rect, out radii);
+		rec.SilhouetteMemo = (rect, radii, found);
+		return found;
+	}
+
+	private static bool Silhouette(List<WebGpuCommand> cmds, in Vector4 bounds, out Vector4 rect, out Vector4 radii)
+	{
+		rect = default; radii = default;
+		if (bounds.Z <= bounds.X) { return false; }
+		foreach (var c in cmds)
+		{
+			// A nested recording: its own opaque shape can be the silhouette, moved into this space and cut by the
+			// clip the reference carries -- which is where a CornerRadius over overflowing content ends up, so
+			// dropping it hands back the unclipped, square inner shape.
+			if (c is ReplayRefCmd rr && rr.Commands is not null)
+			{
+				if (!Silhouette(rr.Commands, CmdListBounds(rr.Commands), out var ir, out var irad)) { continue; }
+				var moved = TransformBounds(ir, rr.Transform2);
+				if (!ClipSilhouette(rr.Clip, ref moved, ref irad)) { continue; }
+				if (Covers(moved, bounds)) { rect = moved; radii = irad; return true; }
+				continue;
+			}
+			if (c is RoundedRectCmd rq && OpaqueRrect(rq) && ClipIsPlain(rq.Clip))
+			{
+				var box = AaRect(rq.P0, rq.P1, rq.P2, rq.P3);
+				if (Covers(box, bounds)) { rect = box; radii = rq.Radii; return true; }
+			}
+			// An opaque image is a hard-edged quad; a rounded clip around it makes the outline rounded.
+			else if (c is ImageCmd im && im.SourceOpaque && im.Opacity >= 1f && im.TintMode == 0 && im.ColorMatrix is null)
+			{
+				var box = AaRect(im.P0, im.P1, im.P2, im.P3);
+				var ent = im.Clip.Entries;
+				if (ent is { Length: 1 } && !ent[0].Exclude && !ent[0].Mask && ent[0].Radii == ent[0].RadiiY)
+				{
+					var meet = Meet(box, ent[0].Rect);
+					if (Covers(meet, bounds)) { rect = meet; radii = ent[0].Radii; return true; }
+				}
+				else if (ent is null or { Length: 0 } && Covers(box, bounds))
+				{
+					rect = box; radii = Vector4.Zero; return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/// <summary>Cuts a silhouette by a clip. Only a single plain rounded-rect entry can be carried: anything else
+	/// leaves a shape this cannot describe, so the caller gives up.</summary>
+	private static bool ClipSilhouette(in ClipData cd, ref Vector4 rect, ref Vector4 radii)
+	{
+		if (cd.Paths is not null || cd.Coverage != 0) { return false; }
+		if (!cd.ScissorInert && IsFiniteAabb(cd.Aabb)) { rect = Meet(rect, cd.Aabb); }
+		var ents = cd.Entries;
+		if (ents is null || ents.Length == 0) { return rect.Z > rect.X && rect.W > rect.Y; }
+		if (ents.Length != 1) { return false; }
+		ref readonly var e = ref ents[0];
+		// Axis-aligned only: a rotated clip does not leave a rounded RECT.
+		if (e.Exclude || e.Mask || e.Radii != e.RadiiY
+			|| MathF.Abs(e.M.M12) > 1e-6f || MathF.Abs(e.M.M21) > 1e-6f) { return false; }
+		var er = new Vector4(
+			e.Rect.X * e.M.M11 + e.M.M31, e.Rect.Y * e.M.M22 + e.M.M32,
+			e.Rect.Z * e.M.M11 + e.M.M31, e.Rect.W * e.M.M22 + e.M.M32);
+		// Taking the clip's corners is only right where the clip is what bounds the shape.
+		if (er.X >= rect.X - 0.6f && er.Y >= rect.Y - 0.6f && er.Z <= rect.Z + 0.6f && er.W <= rect.W + 0.6f)
+		{
+			radii = e.Radii * MathF.Abs(e.M.M11);
+		}
+		rect = Meet(rect, er);
+		return rect.Z > rect.X && rect.W > rect.Y;
+	}
+
+	// Does `a` cover `b`, to within the half pixel an analytic edge is soft over?
+	private static bool Covers(in Vector4 a, in Vector4 b)
+		=> a.X <= b.X + 0.6f && a.Y <= b.Y + 0.6f && a.Z >= b.Z - 0.6f && a.W >= b.W - 0.6f;
+
 	// How much smaller a shadow layer may be rendered: everything the blur pyramid would have discarded at once,
 	// held back one level so the shortened pyramid still has a tap to do. Capped so a small blur stays 1:1.
 	private static int ShadowDownsample(float sigma) => 1 << Math.Clamp(WebGpuEffects.BlurLevels(sigma) - 1, 0, 2);
@@ -929,6 +1013,34 @@ internal sealed unsafe partial class WebGpuFrame
 		// A shadow layer is only ever read blurred, and the pyramid throws away three to four levels before its
 		// first tap, so rendering it pixel for pixel shades detail nothing ever looks at. Render it smaller and
 		// shorten the pyramid by the same amount: the shadow lands on the same texels either way.
+		// A shadow is the blurred ALPHA of its content. When that content is opaque out to a rounded outline, the
+		// shadow is that outline's -- so a wall of identical cards shares ONE blurred shape instead of each card
+		// being replayed into a sheet slot and the whole sheet blurred, every frame.
+		if (lyr.ShadowEffect is { } shfx && lyr.Commands.Count == 1 && lyr.Commands[0] is ReplayRefCmd shref
+			&& shref.Data is { } shrec && TrySilhouette(shrec, out var silR, out var silRad))
+		{
+			var placed = shref.Transform2 * m;
+			var devR = TransformBounds(silR, placed);
+			var natural = TransformBounds(CmdListBounds(lyr.Commands), m);
+			// Axis-aligned only: a rotated card's outline is no longer a rounded rect. And the content must lie
+			// INSIDE the shape -- a silhouette larger than the content is normal, since a card clipped by the
+			// viewport still casts its whole shadow, cut at composite time.
+			if (MathF.Abs(placed.M12) < 1e-6f && MathF.Abs(placed.M21) < 1e-6f
+				&& natural.X >= devR.X - 1f && natural.Y >= devR.Y - 1f
+				&& natural.Z <= devR.Z + 1f && natural.W <= devR.W + 1f)
+			{
+				float sig = MathF.Max(shfx.SigmaX, shfx.SigmaY);
+				if (Effects.TryShapeShadow(devR.Z - devR.X, devR.W - devR.Y, silRad.X * MathF.Abs(placed.M11), sig, out var shView, out var shPad))
+				{
+					var org = new Vector2(shfx.Dx + devR.X - shPad, shfx.Dy + devR.Y - shPad);
+					var sz = new Vector2(devR.Z - devR.X + 2f * shPad, devR.W - devR.Y + 2f * shPad);
+					ops.Add(DrawOp.Own(DrawKind.Image, MakeBuffer(TexturedQuad(org, sz, new Vector4(0f, 0f, 1f, 1f))), 6,
+						TintedImageBg(shView, shfx.Color), cd, MakeClipBg(cd)));
+					// A shadow layer is only ever a shadow; its content is replayed directly by the caller.
+					return;
+				}
+			}
+		}
 		int sdn = lyr.ShadowEffect is { } sfe ? ShadowDownsample(MathF.Max(sfe.SigmaX, sfe.SigmaY)) : 1;
 		float sSigma = lyr.ShadowEffect is { } sfg ? MathF.Max(sfg.SigmaX, sfg.SigmaY) / sdn : 0f;
 		int slotW = (subW + sdn - 1) / sdn, slotH = (subH + sdn - 1) / sdn;

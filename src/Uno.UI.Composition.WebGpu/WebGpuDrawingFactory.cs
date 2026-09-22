@@ -80,6 +80,10 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	// Memoised content key of the immutable command list: 0 once computed and found unpoolable.
 	internal long? ContentKeyMemo;
 	internal Vector4? IdentityBounds;
+	// Memoised silhouette: the rounded rect this recording's opaque content fills, in its own space, or none. A
+	// drop shadow is the blurred alpha of the content, so a recording opaque out to a rounded outline casts that
+	// rect's shadow whatever is painted inside it.
+	internal (Vector4 Rect, Vector4 Radii, bool Known)? SilhouetteMemo;
 	// The arena entry for this recording (the persistent retained state IRenderRecord is contracted to hold): built
 	// once on the render thread at first replay, reused every frame, freed (deferred to the render thread) when this
 	// recording is disposed. Written by the render thread, taken by the UI thread's Dispose — via Interlocked.
