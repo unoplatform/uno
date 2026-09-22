@@ -1413,6 +1413,8 @@ namespace Microsoft.UI.Xaml
 
 		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
 		// the plateau scale gets combined with the owning ScrollViewer's ZoomFactor if headers are present.
+		// WinUI gates the stored factor on CUIElement::UseGlobalScaleFactorForLayoutRounding() (IsManipulatable());
+		// here only the ScrollContentPresenter assigns it, and only to the elements DManip manipulates.
 		internal double GetScaleFactorForLayoutRounding()
 			=> _globalScaleFactorForLayoutRounding ?? RootScale.GetRasterizationScaleForElement(this);
 

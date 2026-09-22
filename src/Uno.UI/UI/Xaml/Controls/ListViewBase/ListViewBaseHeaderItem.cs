@@ -45,6 +45,9 @@ namespace Microsoft.UI.Xaml.Controls
 					isHandled = listView.OnGroupHeaderKeyDown(this, args.OriginalKey, args.Key);
 				}
 
+				// WinUI also calls ListViewBase::SetHandleKeyDownArgsFromItem when the header did not
+				// handle the key, so its OnKeyDown forwards the event to the ScrollViewer. Uno's
+				// ListViewBase.TryHandleKeyDown has no such origin gate, so there is nothing to set.
 				if (isHandled)
 				{
 					args.Handled = true;

@@ -424,6 +424,9 @@ partial class ListViewBase
 	// optionally provide the source and destination items.
 	public void StartViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)
 	{
+		// WinUI raises m_disableScrollingPlaceholders here (cleared in CompleteViewChangeTo) to hide
+		// data-virtualization placeholders during the transition. Uno has no placeholder pipeline
+		// (ShowsScrollingPlaceholders is [NotImplemented]), so there is nothing to suppress.
 	}
 
 	// Complete the change to the other view when this ListViewBase was
