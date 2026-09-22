@@ -48,7 +48,7 @@ You can find common prompts to use with agents in our [getting started](xref:Uno
 
 ### Docs MCP tools
 
-All four tools are read-only, and none requires a [license](xref:Uno.GetStarted.Licensing).
+All four tools are read-only and hosted, so they are available from [Community](xref:Uno.GetStarted.Licensing) upward, and in fact before any license is registered.
 
 | Tool | Purpose | Parameters |
 |---|---|---|
@@ -83,7 +83,7 @@ The App MCP follows a single-app model: when more than one app instance is conne
 
 ### Bridge tools
 
-These tools are provided by the DevServer MCP bridge itself rather than by the running app. None requires a [license](xref:Uno.GetStarted.Licensing), and they answer even before the app connects — so they remain available when the app tools below do not.
+These tools are provided by the DevServer MCP bridge itself rather than by the running app. They are included from [Community](xref:Uno.GetStarted.Licensing) upward and answer even before the app connects — indeed before any license is registered — so they remain available when the app tools below do not.
 
 | Tool | Purpose | Parameters |
 |---|---|---|
@@ -145,12 +145,11 @@ Two further tools expose the app's resources: `app_list_resources` and `app_read
 
 Because the tiers are cumulative, the number of tools an agent can see depends only on the seat:
 
-| Seat | Tools available | What it adds |
+| Seat | Tools available | What it includes |
 |---|---|---|
-| No license | 11 | The bridge tools and the documentation tools |
-| Community | 21 | The ten tools that start, observe and drive an app |
-| Pro | 31 | Element peer actions and DataContext, plus the eight Hot Design tools |
-| Business | 32 | `uno_app_get_memory_counters` |
+| Community | 21 | The bridge and documentation tools, plus the ten tools that start, observe and drive an app |
+| Pro | 31 | Everything in Community, plus element peer actions and DataContext and the eight Hot Design tools |
+| Business | 32 | Everything in Pro, plus `uno_app_get_memory_counters` |
 
 ## A worked example
 
