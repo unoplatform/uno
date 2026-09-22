@@ -35,7 +35,7 @@ public static partial class Validation
 		"IsEnabled",
 		typeof(bool),
 		typeof(Validation),
-		new FrameworkPropertyMetadata(default(bool)));
+		new FrameworkPropertyMetadata(default(bool), OnIsEnabledChanged));
 
 	/// <summary>
 	/// Whether the control's binding source currently reports errors for the bound property.
