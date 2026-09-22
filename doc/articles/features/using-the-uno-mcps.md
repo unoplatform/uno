@@ -6,19 +6,36 @@ uid: Uno.Features.Uno.MCPs
 
 Uno Platform provides two [MCPs](https://modelcontextprotocol.io/docs/getting-started/intro):
 
-- The Uno Platform Remote MCP, providing prompts and up-to-date documentation
-- The Uno Platform Local App MCP, providing interactive access to your running application
+- The **Docs MCP**, hosted remotely, providing prompts and up-to-date documentation
+- The **App MCP**, running locally, providing interactive access to your running application
 
-This document explains how to interact with both those MCPs. You can find further below descriptions of the provided tools and prompts.
+Between them, an agent sees four families of tools: the docs tools, the bridge tools that manage the local DevServer, the app tools that drive your running application, and any tools the application itself publishes.
 
-## MCP (Remote)
+## On this page
 
-This is a remotely hosted publicly and provides:
+- [Docs MCP (remote)](#docs-mcp-remote) — search and fetch documentation, and the predefined prompts
+- [App MCP (local)](#app-mcp-local) — bridge tools, app tools, and tools published by the running app
+- [A worked example](#a-worked-example) — driving an app end to end
+- [Registering and diagnosing Uno MCPs](#registering-and-diagnosing-uno-mcps) — the `uno-devserver mcp` command reference
+- [Troubleshooting](#troubleshooting-mcp-servers)
+
+> [!NOTE]
+> The tool set evolves with each Uno Platform release. If a tool listed here does not appear in your agent, check which version you are on and run `uno-devserver mcp status`.
+
+## Docs MCP (remote)
+
+This MCP is publicly hosted, needs no local installation and requires no license. Its endpoint is:
+
+```text
+https://mcp.platform.uno/v1
+```
+
+Most agents can be registered automatically — see [Registering and diagnosing Uno MCPs](#registering-and-diagnosing-uno-mcps). Use the endpoint above when configuring an agent manually. It provides:
 
 - A set of tools to search and fetch Uno Platform documentation
-- A set of prompts to create and develop Uno Platform applications.
+- A set of prompts to create and develop Uno Platform applications
 
-### Predefined Prompts
+### Predefined prompts
 
 The prompts provided by the MCP are automatically registered in your environment when supported by your AI agent (e.g., Claude, Codex, Copilot, etc.).
 
@@ -27,25 +44,25 @@ Here are the currently supported prompts:
 - `/new`, used to create a new Uno Platform app with the best practices in mind.
 - `/init`, used to "prime" your current chat with Uno's best practices. It's generally used in an existing app when adding new features.
 
-### Sample Prompts for Uno MCP Servers
-
 You can find common prompts to use with agents in our [getting started](xref:Uno.BuildYourApp.AI.Agents) section.
 
-### Uno MCP Tools
+### Docs MCP tools
 
-The Uno MCP tools are the following:
+All four tools are read-only.
 
-- `uno_platform_docs_search` used by Agents to search for specific topics. It returns snippets of relevant information.
-- `uno_platform_docs_fetch` used by Agents to get a specific document, grabbed through `uno_platform_docs_search`.
-- `uno_platform_agent_rules_init` used by Agents to "prime" the environment on how to interact with Uno Platform apps during development.
-- `uno_platform_usage_rules_init` used by Agents to "prime" the environment on how to Uno Platform's APIs in the best way possible
+| Tool | Purpose | Parameters |
+|---|---|---|
+| `uno_platform_docs_search` | Search the documentation for a topic. Returns snippets with the source path of each match. | `query`, `contentType` (`prose` or `code`), `topK` (1–50, default 8) |
+| `uno_platform_docs_fetch` | Fetch a full documentation page as markdown. Pass the `sourcePath` from a search result. | `sourcePath`, `anchor`, `maxChars` (100–50000, default 8000) |
+| `uno_platform_agent_rules_init` | Primes the environment on how to interact with Uno Platform apps during development. | — |
+| `uno_platform_usage_rules_init` | Primes the environment on how to use Uno Platform's APIs in the best way possible. | — |
 
 Those tools are suggested to the agent on how to be used best. In general, asking the agent "Make sure to search the Uno Platform docs to answer" will hint it to use those tools.
 
 > [!NOTE]
 > You can unselect `uno_platform_agent_rules_init` and `uno_platform_usage_rules_init` in your agent to avoid implicit priming, and you can use the `/init` prompt to achieve a similar result.
 
-## App MCP (Local)
+## App MCP (local)
 
 This MCP is running locally and provides agents with the ability to interact with a running app, in order to click, type, analyze or screenshot its content.
 
@@ -54,57 +71,79 @@ These tools give "eyes" and "hands" to Agents in order to validate their assumpt
 > [!NOTE]
 > If using Visual Studio 2022/2026, sometimes the Uno App MCP does not appear in the Visual Studio tools list. See [how to make the App MCP appear in Visual Studio](xref:Uno.UI.CommonIssues.AIAgents#the-app-mcp-does-not-appear-in-visual-studio).
 
+### What an agent can do with these tools
+
+The app tools drive a real application on your machine: they can click, type, invoke UI actions, and start or close the app. The read-only tools — screenshots, the visual tree, runtime info and diagnostics — only observe.
+
+Most agents let you choose which tools run automatically and which need confirmation. The read-only tools are good candidates for automatic approval; the ones that act on the app are worth confirming, at least until you are comfortable with how your agent uses them.
+
+### Which app the tools target
+
+The App MCP follows a single-app model: when more than one app instance is connected, the tools target the most recently connected one. Driving several apps from a single agent session is not supported — close an app before starting the next, or run separate sessions.
+
 ### Bridge tools
 
-These tools are provided by the DevServer MCP bridge itself rather than by the running app. They carry no license requirement and answer even before the app connects:
+These tools are provided by the DevServer MCP bridge itself rather than by the running app. They carry no license requirement and answer even before the app connects.
 
-- `uno_health`, used to get the health status of the DevServer MCP bridge, including connection state, tool count, discovered solutions, and any issues detected during startup
-- `uno_app_select_solution`, used to pick a solution when the workspace contains more than one. This restarts the DevServer, and is typically called when `uno_health` reports a `WorkspaceAmbiguous` issue
-- `uno_discover_tools`, used to re-query the full list of app tools with their descriptions and input schemas
-- `uno_execute_tool`, used to call an app tool by name, whether or not the agent's tool list already knows about it
-- `uno_app_initialize`, used to set the workspace root, resolve the solution and start the DevServer. Only exposed for agents that do not support [MCP roots](#mcp-roots-compatibility) — see that section below
+| Tool | Purpose | Parameters |
+|---|---|---|
+| `uno_health` | Health of the DevServer MCP bridge: connection state, tool count, discovered solutions, and any issues detected during startup. Read-only. | — |
+| `uno_discover_tools` | Re-query the full list of app tools, with their descriptions and input schemas. Read-only. | — |
+| `uno_execute_tool` | Call an app tool by name, whether or not your agent's tool list already knows about it. | `toolName`, `arguments` |
+| `uno_app_select_solution` | Pick a solution when the workspace contains more than one. **Restarts the DevServer.** Typically called when `uno_health` reports a `WorkspaceAmbiguous` issue. | `solutionPath`, `forceRestart` |
+| `uno_app_initialize` | Set the workspace root, resolve the solution and start the DevServer. Called once at the start of a session, and only exposed for agents that do not support [MCP roots](#mcp-roots-compatibility). | — |
 
-> [!NOTE]
-> The RemoteControl host declares a second tool also named `uno_health`, reporting add-in loading status and host version. The bridge de-duplicates the two, so an agent only ever sees one `uno_health`.
+### App MCP tools
 
-### App MCP Tools
+These tools require a license — see [licensing](xref:Uno.GetStarted.Licensing) for what each tier includes.
 
 The Community license MCP app tools are:
 
-- `uno_app_get_runtime_info`, used to get general information about the running app, such as its PID, OS, Platform, etc...
-- `uno_app_get_screenshot`, used to get a screenshot of the running app
-- `uno_app_pointer_click`, used to click at an X,Y coordinates in the app
-- `uno_app_key_press`, used to type individual keys (possibly with modifiers)
-- `uno_app_type_text`, used to type long strings of text in controls
-- `uno_app_visualtree_snapshot`, used to get a textual representation of the visual tree of the app
-- `uno_app_element_peer_default_action`, used to execute the default automation peer action on a UI element
-- `uno_app_close`, used to close the running app
-- `uno_app_start`, used to start the app with Hot Reload support
-- `uno_devserver_diagnostics`, used to get diagnostics for the current DevServer connection
+| Tool | Purpose | Parameters |
+|---|---|---|
+| `uno_app_start` | Start the app with Hot Reload support. | `projectPath`, `targetFramework`, `args`, `display`, `stdoutFile`, `connectionTimeoutSeconds` (1–300) |
+| `uno_app_close` | Close the running app. | — |
+| `uno_app_get_runtime_info` | General information about the running app, such as its PID, window title and uptime. Read-only. | — |
+| `uno_app_get_screenshot` | A screenshot of the running app, or of a single element. Read-only. | `fileType` (`png` or `jpeg`), `quality` (default 75), `path`, `elementRef` |
+| `uno_app_visualtree_snapshot` | A textual representation of the visual tree. Read-only. | `detail` (`compact`, `normal` or `full`), `includeHidden`, `elementRef` |
+| `uno_app_pointer_click` | Click at X,Y coordinates in the app. | `x`, `y`, `button`, `clickCount`, `delayBetweenPresseAndReleaseInMs` |
+| `uno_app_key_press` | Type an individual key, optionally with modifiers. | `virtualKey`, `virtualKeyModifiers`, `unicodeKey` |
+| `uno_app_type_text` | Type a longer string into the focused control. | `text`, `intervalInMs` |
+| `uno_app_element_peer_default_action` | Execute the default automation peer action on a UI element. | `elementRef` |
+| `uno_devserver_diagnostics` | Diagnostics for the current DevServer connection. Read-only. | — |
+
+> [!TIP]
+> `detail` on `uno_app_visualtree_snapshot` makes a large difference to what you get back. `compact` (the default) returns structure only; `normal` adds automation patterns, bindings, DataContext and state flags; `full` adds framework-internal nodes, bounds and offscreen elements. Start with `compact` and ask for more only when you need it.
 
 The Pro license App MCP app tools are:
 
-- `uno_app_element_peer_action`, used to invoke a specific element automation peer action
-- `uno_app_get_element_datacontext`, used to get a textual representation of the DataContext on a FrameworkElement
+| Tool | Purpose | Parameters |
+|---|---|---|
+| `uno_app_element_peer_action` | Invoke a specific automation peer action on an element. | `elementRef`, `action`, `actionParameters` |
+| `uno_app_get_element_datacontext` | A textual representation of the DataContext on a FrameworkElement. Read-only. | `elementRef` |
 
 The Business license App MCP app tools are:
 
-- `uno_app_get_memory_counters`, used to get the memory counters of the running app
+| Tool | Purpose | Parameters |
+|---|---|---|
+| `uno_app_get_memory_counters` | Memory counters for the running app. Read-only. | — |
 
-## Tools published by the running app
+### Tools published by the running app
 
 Beyond the fixed set above, a running app can publish its own tools, which the App MCP merges into its surface. The server prefixes every such tool with `app_`, so a tool an app publishes as `set_theme` reaches the agent as `app_set_theme`. Names already starting with `uno_` or `app_` are rejected, and a name colliding with one of the built-in tools is dropped in favor of the built-in.
 
 [Hot Design](xref:Uno.HotDesign.Overview) is the first component to use this. When a Hot Design-enabled app is running, these become available:
 
-- `app_hotdesign_set_mode`, used to show Hot Design over the running app
-- `app_hotdesign_set_app_mode`, used to choose what the design surface edits (`application`, `previews` or `themes`)
-- `app_hotdesign_set_form_factor`, used to set the design surface's size
-- `app_hotdesign_set_theme`, used to switch the nested app between light and dark
-- `app_hotdesign_create_preview`, used to add a preview for a control, or duplicate an existing one
-- `app_hotdesign_select_preview`, used to open a preview in the design surface
-- `app_hotdesign_delete_preview`, used to delete a preview
-- `app_hotdesign_screenshot_preview`, used to screenshot a preview off-screen, without changing mode or selection
+| Tool | Purpose | Parameters |
+|---|---|---|
+| `app_hotdesign_set_mode` | Show Hot Design over the running app. | `mode` (`in_app`) |
+| `app_hotdesign_set_app_mode` | Choose what the design surface edits. | `app_mode` (`application`, `previews` or `themes`) |
+| `app_hotdesign_set_form_factor` | Set the design surface's size — a named form factor, or explicit dimensions. | `form_factor`, or `width` and `height` |
+| `app_hotdesign_set_theme` | Switch the nested app between light and dark. | `theme` (`light` or `dark`) |
+| `app_hotdesign_create_preview` | Add a preview for a control, or duplicate an existing one. | `control_type`, `style_key`, `source_group_type_name`, `source_display_name` |
+| `app_hotdesign_select_preview` | Open a preview in the design surface. | `display_name` and `kind` (both required), `preview_name`, `parent_path`, `tab` |
+| `app_hotdesign_delete_preview` | Delete a preview. | `element_id` |
+| `app_hotdesign_screenshot_preview` | Screenshot a preview off-screen, without changing mode or selection. | `display_name` and `kind` (both required), `preview_name`, `parent_path`, `tab`, `file_type` |
 
 Two further tools expose the app's resources: `app_list_resources` and `app_read_resource`.
 
@@ -112,7 +151,20 @@ Two further tools expose the app's resources: `app_list_resources` and `app_read
 > These tools register when the app connects, which is normally *after* your agent has connected to the MCP. The bridge pushes a `tools/list_changed` notification only once per connection, so your agent will usually not be told that they appeared. Call `uno_discover_tools` after starting the app to pick them up, and `uno_execute_tool` to call one that your agent's tool list does not show.
 
 > [!NOTE]
-> Unlike the App MCP tools, app-published tools are listed regardless of licensing — the tool registry applies no license checks of its own, leaving that to each publisher. Without a Hot Design license the eight tools above are still listed, and each one returns an error when called.
+> The Hot Design tools are listed whether or not Hot Design has started. Until it is running and licensed, each one returns an error explaining what is missing.
+
+## A worked example
+
+A typical loop for an agent validating a change, using element references rather than raw coordinates:
+
+1. `uno_app_start` with the project's `.csproj` path and target framework, and a `connectionTimeoutSeconds` long enough for the platform (60–120 for WebAssembly, which has to load in a browser).
+2. `uno_discover_tools`, to pick up anything the app published on connection.
+3. `uno_app_visualtree_snapshot` with `detail: normal`, to locate the control and its element reference.
+4. `uno_app_element_peer_default_action` with that reference — more reliable than clicking coordinates, which shift when the layout changes.
+5. `uno_app_get_screenshot` to confirm the result visually, optionally passing the same `elementRef` to capture just the affected control.
+6. `uno_app_close` when finished.
+
+If a step fails because the app is not ready, call `uno_health` — it answers even while the DevServer is still starting, and reports what is missing.
 
 ## Registering and diagnosing Uno MCPs
 
@@ -267,6 +319,15 @@ For agents without roots support, the DevServer CLI auto-detects the missing cap
 
 ## Troubleshooting MCP Servers
 
+| Symptom | Likely cause | What to do |
+|---|---|---|
+| Tools published by the app (such as the Hot Design tools) never appear after starting the app | The bridge pushes `tools/list_changed` only once per connection, and the app connected after your agent did | Call `uno_discover_tools`, then `uno_execute_tool` to call one your agent's list still does not show |
+| The App MCP does not appear in the Visual Studio tools list | Known Visual Studio behavior | See [how to make the App MCP appear in Visual Studio](xref:Uno.UI.CommonIssues.AIAgents#the-app-mcp-does-not-appear-in-visual-studio) |
+| The Hot Design tools are listed, but every call returns an error | Hot Design has not started, or is not licensed | Call `app_hotdesign_set_mode` with `in_app` to start it; check your [license](xref:Uno.GetStarted.Licensing) if it reports one is missing |
+| Calls fail with the DevServer still starting up | The host process is not ready yet | Call `uno_health` for detailed diagnostics, then retry |
+| `uno_health` reports a `WorkspaceAmbiguous` issue | More than one solution in the workspace | Call `uno_app_select_solution` with the intended `.sln` or `.slnx` path |
+| No app tools at all, only the bridge tools | No license was granted for the App MCP tools | Check your [license](xref:Uno.GetStarted.Licensing) |
+
 You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs. For environment diagnostics, run `uno-devserver disco` — see [Diagnostics (disco)](xref:Uno.Features.DevServerDisco).
 
 ## See also
@@ -274,5 +335,6 @@ You can find additional information about [troubleshooting AI Agents](xref:Uno.U
 - [Dev Server](xref:Uno.DevServer) — the Dev Server CLI reference covering `disco`, `mcp`, and runtime flags.
 - [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) — inspect your local environment and Uno tool resolution.
 - [Supported agents and features](xref:Uno.GetStarted#supported-agents-features) — per-agent capability summary.
+- [Licensing](xref:Uno.GetStarted.Licensing) — what each license tier includes.
 - Per-agent setup guides: [Claude Code](xref:Uno.GetStarted.AI.Claude), [Codex CLI](xref:Uno.GetStarted.AI.Codex), [Cursor](xref:Uno.GetStarted.AI.Cursor), [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI), [Google Antigravity](xref:Uno.GetStarted.AI.GoogleAntigravity).
 - [Troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents).
