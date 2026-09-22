@@ -578,6 +578,32 @@ namespace Uno.UI
 		}
 
 		/// <summary>
+		/// Configuration for input validation, i.e. the transport of
+		/// <see cref="System.ComponentModel.INotifyDataErrorInfo"/> errors from a binding source to the
+		/// control bound to it.
+		/// </summary>
+		public static class Validation
+		{
+			/// <summary>
+			/// Enables input validation application-wide. Defaults to false, so applications that never validate
+			/// pay nothing for the machinery on the binding registration path.
+			/// </summary>
+			/// <remarks>
+			/// Must be set before the first binding is registered, which for XAML-declared bindings means before
+			/// <c>InitializeComponent</c> runs on the first page. Enabling it does not by itself validate
+			/// anything: each control opts in through <c>Uno.UI.Xaml.Controls.Validation.IsEnabled</c>.
+			/// </remarks>
+			public static bool IsEnabled { get; set; }
+
+			/// <summary>
+			/// Gets the validation property declared by <see cref="ValidationPropertyAttribute"/> on
+			/// <paramref name="type"/>, or null when it declares none. Cached per type, negative answers included.
+			/// </summary>
+			internal static Microsoft.UI.Xaml.DependencyProperty GetValidationProperty(Type type)
+				=> ValidationPropertyResolver.GetValidationProperty(type);
+		}
+
+		/// <summary>
 		/// This is for internal use to facilitate turning on/off certain logic that makes it easier/harder
 		/// to debug.
 		/// </summary>
