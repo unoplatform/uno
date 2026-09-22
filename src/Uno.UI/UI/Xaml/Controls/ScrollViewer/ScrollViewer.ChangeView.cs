@@ -170,8 +170,6 @@ namespace Microsoft.UI.Xaml.Controls
 				applyAsManip: true,
 				transformIsInertiaEnd: false,
 				isForMakeVisible: false);
-#else
-			return ChangeViewNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
 #endif
 		}
 	}
