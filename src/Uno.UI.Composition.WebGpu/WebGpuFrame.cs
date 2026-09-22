@@ -130,10 +130,10 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		// Scissor is in the CURRENT target's pixels; clip AABBs are absolute device coords, so rebase by the basis
 		// origin and clamp to its size (identity for the window / a full-size layer, a real shift for a sub-rect).
-		var limW = _basisW > 0f ? _basisW : Target.Width;
-		var limH = _basisH > 0f ? _basisH : Target.Height;
-		x = (int)MathF.Max(0, MathF.Floor(clip.X - _basisOx)); y = (int)MathF.Max(0, MathF.Floor(clip.Y - _basisOy));
-		int r = (int)MathF.Min(limW, MathF.Ceiling(clip.Z - _basisOx)); int b = (int)MathF.Min(limH, MathF.Ceiling(clip.W - _basisOy));
+		var limW = (_basisW > 0f ? _basisW : Target.Width) / _basisScale;
+		var limH = (_basisH > 0f ? _basisH : Target.Height) / _basisScale;
+		x = (int)MathF.Max(0, MathF.Floor((clip.X - _basisOx) / _basisScale)); y = (int)MathF.Max(0, MathF.Floor((clip.Y - _basisOy) / _basisScale));
+		int r = (int)MathF.Min(limW, MathF.Ceiling((clip.Z - _basisOx) / _basisScale)); int b = (int)MathF.Min(limH, MathF.Ceiling((clip.W - _basisOy) / _basisScale));
 		x = (int)MathF.Min(x, limW); y = (int)MathF.Min(y, limH);
 		w = r - x; h = b - y; return w > 0 && h > 0;
 	}
@@ -150,9 +150,15 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	private float BasisW => _basisW > 0f ? _basisW : Target.Width;
+	private float BasisScale => _basisScale;
 	private float BasisH => _basisH > 0f ? _basisH : Target.Height;
 
 	private static readonly Vector4 _emptyBounds = new(float.MaxValue, float.MaxValue, float.MinValue, float.MinValue);
+
+	// Device pixels per target pixel. 1 everywhere except a shadow layer, which is only ever read blurred and so is
+	// rendered smaller than the area it covers. The basis stays in DEVICE units (that is what `project` wants);
+	// this is what turns a device rect into target pixels for the scissor.
+	private float _basisScale = 1f;
 
 	// How many layers deep the content being built sits: 0 for the window, 1 inside a layer, and so on. A layer's
 	// content composites layers one level deeper, so the sheets holding those must render before it does.
@@ -980,7 +986,7 @@ internal sealed unsafe partial class WebGpuFrame
 		public List<DrawOp> Ops;
 		public List<BackdropCmd> Backdrops;
 		public VertBuf Solid, Rrect, Grad, Quad;
-		public float BasisOx, BasisOy, BasisW, BasisH;
+		public float BasisOx, BasisOy, BasisW, BasisH, BasisScale;
 		public Vector4 Bound;   // device rect every scissor stays within: a sheet slot; the whole target otherwise
 		public nint SolidBuf, RrectBuf, GradBuf, QuadBuf;
 		public nuint SolidBufBytes, RrectBufBytes, GradBufBytes, QuadBufBytes;
@@ -1008,17 +1014,18 @@ internal sealed unsafe partial class WebGpuFrame
 	/// <summary>Timestamp the current build started, for the op-build half of the stats line.</summary>
 
 	// Builds the ops for one command list under a basis: the whole draw-side work of a pass, none of the encoding.
-	internal PassBuild BuildPass(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound, List<WebGpuCommand> overlay = null)
+	internal PassBuild BuildPass(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound, List<WebGpuCommand> overlay = null, float basisScale = 1f)
 	{
 		long passStart = _emitStats && _passDepth == 0 ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 
-		var savedBasis = (_basisOx, _basisOy, _basisW, _basisH);
+		var savedBasis = (_basisOx, _basisOy, _basisW, _basisH, _basisScale);
+		_basisScale = basisScale;
 		_basisOx = basisOx;
 		_basisOy = basisOy;
 		_basisW = basisW > 0f ? basisW : target.Width;
 		_basisH = basisH > 0f ? basisH : target.Height;
 
-		var b = new PassBuild { BasisOx = _basisOx, BasisOy = _basisOy, BasisW = _basisW, BasisH = _basisH, Bound = bound };
+		var b = new PassBuild { BasisOx = _basisOx, BasisOy = _basisOy, BasisW = _basisW, BasisH = _basisH, BasisScale = _basisScale, Bound = bound };
 		var saved = (_solid, _rrect, _gradVerts, _quadVerts, _backdrops);
 		b.Ops = RentOps();
 		_solid = b.Solid = RentVerts();
@@ -1055,7 +1062,7 @@ internal sealed unsafe partial class WebGpuFrame
 		}
 
 		(_solid, _rrect, _gradVerts, _quadVerts, _backdrops) = saved;
-		(_basisOx, _basisOy, _basisW, _basisH) = savedBasis;
+		(_basisOx, _basisOy, _basisW, _basisH, _basisScale) = savedBasis;
 		return b;
 	}
 
@@ -1078,12 +1085,12 @@ internal sealed unsafe partial class WebGpuFrame
 		var pass = wgpuCommandEncoderBeginRenderPass(Encoder, &desc);
 		var encodeStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
-		var savedBasis = (_basisOx, _basisOy, _basisW, _basisH);
+		var savedBasis = (_basisOx, _basisOy, _basisW, _basisH, _basisScale);
 		var savedBound = _bound;
 		var enc = new PassEncoder(pass);
 		foreach (var b in builds)
 		{
-			(_basisOx, _basisOy, _basisW, _basisH) = (b.BasisOx, b.BasisOy, b.BasisW, b.BasisH);
+			(_basisOx, _basisOy, _basisW, _basisH, _basisScale) = (b.BasisOx, b.BasisOy, b.BasisW, b.BasisH, b.BasisScale <= 0f ? 1f : b.BasisScale);
 			_bound = b.Bound;
 			var pst = new PassOps
 			{
@@ -1111,7 +1118,7 @@ internal sealed unsafe partial class WebGpuFrame
 			}
 		}
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
-		(_basisOx, _basisOy, _basisW, _basisH) = savedBasis;
+		(_basisOx, _basisOy, _basisW, _basisH, _basisScale) = savedBasis;
 		_bound = savedBound;
 
 		wgpuRenderPassEncoderEnd(pass);

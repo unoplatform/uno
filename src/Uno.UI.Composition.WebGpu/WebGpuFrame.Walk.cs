@@ -793,6 +793,10 @@ internal sealed unsafe partial class WebGpuFrame
 		}
 	}
 
+	// How much smaller a shadow layer may be rendered: everything the blur pyramid would have discarded at once,
+	// held back one level so the shortened pyramid still has a tap to do. Capped so a small blur stays 1:1.
+	private static int ShadowDownsample(float sigma) => 1 << Math.Clamp(WebGpuEffects.BlurLevels(sigma) - 1, 0, 2);
+
 	// An atlas quad or mask is baked for one replay scale; a different one, or a transform that now allows the
 	// atlas where the build could not use it, rebuilds so the content is neither mis-sized nor left aliased.
 	// The subpixel phase the atlas masks were baked for: only the FRACTION of the placement matters, so a cached
@@ -900,11 +904,19 @@ internal sealed unsafe partial class WebGpuFrame
 		int slotX = 0, slotY = 0;
 		float tx = _basisOx, ty = _basisOy, tw = BasisW, th = BasisH;   // the target's device rect
 		LayerDepth++;
-		if (sub && Effects.TryReserveLayerSlot(subW, subH, lyr.ShadowEffect is { } sfe ? 1 << WebGpuEffects.BlurLevels(MathF.Max(sfe.SigmaX, sfe.SigmaY)) : 1, out sheet, out slotX, out slotY))
+		// A shadow layer is only ever read blurred, and the pyramid throws away three to four levels before its
+		// first tap, so rendering it pixel for pixel shades detail nothing ever looks at. Render it smaller and
+		// shorten the pyramid by the same amount: the shadow lands on the same texels either way.
+		int sdn = lyr.ShadowEffect is { } sfe ? ShadowDownsample(MathF.Max(sfe.SigmaX, sfe.SigmaY)) : 1;
+		float sSigma = lyr.ShadowEffect is { } sfg ? MathF.Max(sfg.SigmaX, sfg.SigmaY) / sdn : 0f;
+		int slotW = (subW + sdn - 1) / sdn, slotH = (subH + sdn - 1) / sdn;
+		if (sub && Effects.TryReserveLayerSlot(slotW, slotH, lyr.ShadowEffect is not null ? 1 << WebGpuEffects.BlurLevels(sSigma) : 1, out sheet, out slotX, out slotY))
 		{
 			surface = sheet.Surface;
 			tx = subOx; ty = subOy; tw = subW; th = subH;
-			sheet.Builds.Add(BuildPass(lyr.Commands, m, outer, surface, subOx - slotX, subOy - slotY, WebGpuEffects.LayerSheetSize, WebGpuEffects.LayerSheetSize, new Vector4(subOx, subOy, subOx + subW, subOy + subH)));
+			sheet.Builds.Add(BuildPass(lyr.Commands, m, outer, surface, subOx - sdn * slotX, subOy - sdn * slotY,
+				sdn * WebGpuEffects.LayerSheetSize, sdn * WebGpuEffects.LayerSheetSize,
+				new Vector4(subOx, subOy, subOx + subW, subOy + subH), null, sdn));
 		}
 		else if (sub)
 		{
@@ -933,9 +945,9 @@ internal sealed unsafe partial class WebGpuFrame
 				IntPtr blur; var uv = new Vector4(0f, 0f, 1f, 1f);
 				if (sheet is not null)
 				{
-					blur = Effects.LayerSheetBlur(sheet, MathF.Max(fx.SigmaX, fx.SigmaY));
-					float sx0 = rx - subOx + slotX, sy0 = ry - subOy + slotY;
-					uv = new Vector4(sx0, sy0, sx0 + rw, sy0 + rh) / WebGpuEffects.LayerSheetSize;
+					blur = Effects.LayerSheetBlur(sheet, sSigma);
+					float sx0 = slotX + (rx - subOx) / sdn, sy0 = slotY + (ry - subOy) / sdn;
+					uv = new Vector4(sx0, sy0, sx0 + rw / sdn, sy0 + rh / sdn) / WebGpuEffects.LayerSheetSize;
 				}
 				else
 				{

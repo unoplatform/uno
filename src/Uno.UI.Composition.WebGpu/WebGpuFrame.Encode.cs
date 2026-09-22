@@ -147,7 +147,7 @@ internal sealed unsafe partial class WebGpuFrame
 			if (!TryScissor(scissorBox, out var sx, out var sy, out var sw, out var sh)) { continue; }
 			// A widenable op's tight AABB is cull-only (checked above); the applied scissor is the full
 			// surface, so consecutive such ops dedup to a single SetScissorRect.
-			if (!split && op.SiteSlot == 0 && ScissorWidenable(op.Clip)) { sx = 0; sy = 0; sw = (int)BasisW; sh = (int)BasisH; }
+			if (!split && op.SiteSlot == 0 && ScissorWidenable(op.Clip)) { sx = 0; sy = 0; sw = (int)(BasisW / BasisScale); sh = (int)(BasisH / BasisScale); }
 			// On the layer sheet every draw stays inside its layer's slot, whatever its clip says.
 			if (_bound.X > float.MinValue)
 			{
