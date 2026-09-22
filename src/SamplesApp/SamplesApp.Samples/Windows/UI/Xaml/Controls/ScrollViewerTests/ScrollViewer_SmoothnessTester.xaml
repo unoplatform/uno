@@ -5,11 +5,21 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    x:Name="PageRoot"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
     <Grid>
-        <muxc:TabView IsAddTabButtonVisible="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ToggleButton
+            x:Name="ShowIndexToggle"
+            Margin="8"
+            Click="ShowIndexToggle_Click"
+            Content="Show index labels" />
+        <muxc:TabView Grid.Row="1" IsAddTabButtonVisible="False">
             <muxc:TabViewItem Header="StackPanel - Vertical" IsClosable="False">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <StackPanel
@@ -30,11 +40,19 @@
                 <ListView x:Name="ListViewHost">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Rectangle
+                            <Grid
                                 Width="300"
                                 Height="300"
-                                Margin="4"
-                                Fill="{Binding}" />
+                                Margin="0,0,0,4">
+                                <Rectangle Fill="{Binding Brush}" />
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="24"
+                                    Foreground="White"
+                                    Text="{Binding Index}"
+                                    Visibility="{Binding IndexLabelVisibility, ElementName=PageRoot}" />
+                            </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -47,10 +65,16 @@
                         </muxc:ItemsRepeater.Layout>
                         <muxc:ItemsRepeater.ItemTemplate>
                             <DataTemplate>
-                                <Rectangle
-                                    Width="300"
-                                    Height="300"
-                                    Fill="{Binding}" />
+                                <Grid Width="300" Height="300">
+                                    <Rectangle Fill="{Binding Brush}" />
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="24"
+                                        Foreground="White"
+                                        Text="{Binding Index}"
+                                        Visibility="{Binding IndexLabelVisibility, ElementName=PageRoot}" />
+                                </Grid>
                             </DataTemplate>
                         </muxc:ItemsRepeater.ItemTemplate>
                     </muxc:ItemsRepeater>
