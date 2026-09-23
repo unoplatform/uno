@@ -35,7 +35,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 	private volatile bool _renderRequested;
 	private volatile bool _surfaceReady;
 	private volatile bool _disposed;
-	private bool _firstFrameSignaled;
+	private volatile bool _firstFrameSignaled;
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private readonly object _renderLock = new();
 	private IntPtr _nativeWindow; // Must stay alive while Vulkan surfaces reference it
@@ -73,6 +73,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 	public void ResetRendererContext()
 	{
+		_firstFrameSignaled = false;
 		// Vulkan context will be recreated on next surface creation
 	}
 

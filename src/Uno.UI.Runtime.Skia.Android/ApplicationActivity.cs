@@ -112,6 +112,9 @@ namespace Microsoft.UI.Xaml
 
 		protected override void InitializeComponent()
 		{
+			// Reattachment can present a frame during base.OnCreate, before the new pre-draw listener is installed.
+			NativeWindowWrapper.Instance.ArmFirstFrameGate();
+
 			// The app was previously running, but application activity
 			// changed. Reparent content.
 			if (RelativeLayout is not null)
@@ -122,10 +125,10 @@ namespace Microsoft.UI.Xaml
 					parent.RemoveView(RelativeLayout);
 				}
 
-				this.SetContentView(RelativeLayout);
-
 				// Ensure the render view is reset
 				_renderView?.ResetRendererContext();
+
+				this.SetContentView(RelativeLayout);
 
 				var winUIWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
 				if (winUIWindow?.RootElement is { } root)
@@ -251,16 +254,14 @@ namespace Microsoft.UI.Xaml
 			// Calling EdgeToEdge.Enable keeps this behavior consistent on earlier SDK levels too.
 			EdgeToEdge.Enable(this);
 
-			base.OnCreate(bundle);
-
-			NativeWindowWrapper.Instance.OnActivityCreated();
-
-			// Hold the splash on the Skia path until the first Skia frame is presented (see the render views).
-			NativeWindowWrapper.Instance.ArmFirstFrameGate();
-
+			// NativePage.OnCreate can reattach retained content and invoke SetContentView synchronously.
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
 			LayoutProvider.InsetsChanged += OnInsetsChanged;
+
+			base.OnCreate(bundle);
+
+			NativeWindowWrapper.Instance.OnActivityCreated();
 
 			RaiseConfigurationChanges();
 
@@ -396,7 +397,11 @@ namespace Microsoft.UI.Xaml
 
 			CleanupBackPressedCallback();
 
-			NativeWindowWrapper.Instance.OnNativeClosed();
+			// Configuration recreation retains the managed window and its application-owned content.
+			if (!IsChangingConfigurations)
+			{
+				NativeWindowWrapper.Instance.OnNativeClosed();
+			}
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)

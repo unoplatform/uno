@@ -54,10 +54,8 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		RenderMode = Rendermode.WhenDirty;
 	}
 
-	public void ResetRendererContext()
-	{
-		_renderer.ResetContext();
-	}
+	// GL resources are released by the renderer when the reattached view creates its new EGL context.
+	public void ResetRendererContext() => _renderer.ResetFirstFrameState();
 
 	public void InvalidateRender()
 	{
@@ -149,7 +147,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 		internal bool HardwareAccelerated => _hardwareAccelerated;
 
-		private bool _firstFrameSignaled;
+		private volatile bool _firstFrameSignaled;
 
 		private GRContext? _context;
 		private GRGlFramebufferInfo _glInfo;
@@ -247,6 +245,12 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 		void IRenderer.OnSurfaceCreated(IGL10? gl, Javax.Microedition.Khronos.Egl.EGLConfig? config)
 		{
+			// Called on the GL thread for each new EGL context; objects owned by the previous context are already gone.
+			if (_context is not null)
+			{
+				_context.AbandonContext();
+				FreeContext();
+			}
 		}
 
 		protected override void Dispose(bool disposing)
@@ -271,6 +275,6 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			_context = null;
 		}
 
-		internal void ResetContext() => FreeContext();
+		internal void ResetFirstFrameState() => _firstFrameSignaled = false;
 	}
 }
