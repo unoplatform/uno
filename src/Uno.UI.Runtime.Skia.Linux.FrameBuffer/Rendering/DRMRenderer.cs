@@ -29,6 +29,7 @@ namespace Uno.UI.Runtime.Skia
 		private readonly IntPtr _eglSurface;
 		private readonly int _samples;
 		private readonly int _stencil;
+		private readonly GraphicsColorFormat _colorFormat;
 
 		private DRMGLRenderTarget? _target;
 		private readonly IntPtr _gbmTargetSurface;
@@ -171,6 +172,7 @@ namespace Uno.UI.Runtime.Skia
 				throw new InvalidOperationException($"{nameof(LibDrm.gbm_create_device)} failed");
 			}
 			_gbmTargetSurface = LibDrm.gbm_surface_create(device, modeInfo.Resolution.Width, modeInfo.Resolution.Height, drmInitOptions.GBMSurfaceColorFormat.ToInt(), LibDrm.GbmBoFlags.GBM_BO_USE_SCANOUT | LibDrm.GbmBoFlags.GBM_BO_USE_RENDERING);
+			_colorFormat = ToColorFormat(drmInitOptions.GBMSurfaceColorFormat);
 			if (_gbmTargetSurface == IntPtr.Zero)
 			{
 				throw new InvalidOperationException($"{nameof(LibDrm.gbm_surface_create)} failed");
@@ -396,17 +398,21 @@ namespace Uno.UI.Runtime.Skia
 		// The EGL window surface's default framebuffer (FBO 0) is the compose target; the Skia backend builds and
 		// owns the GRContext-GLES over it via the neutral IGLRenderTarget seam.
 		protected override IRenderTarget CreateTarget(int width, int height)
-			=> _target = new DRMGLRenderTarget(width, height, _samples, _stencil);
+			=> _target = new DRMGLRenderTarget(width, height, _samples, _stencil, _colorFormat);
 
-		private sealed class DRMGLRenderTarget(int width, int height, int samples, int stencil) : IGLRenderTarget
+		// The GBM surface format is the app's choice, so the neutral format has to follow it: a FourCC beginning
+		// with 'X' (XR24, XB24) has a padding byte where the others have alpha, and only then is an opaque wrap right.
+		private static GraphicsColorFormat ToColorFormat(FramebufferHostBuilder.DRMFourCCColorFormat format)
+			=> format.C1 == 'X' ? GraphicsColorFormat.Rgb888x : GraphicsColorFormat.Rgba8888;
+
+		private sealed class DRMGLRenderTarget(int width, int height, int samples, int stencil, GraphicsColorFormat colorFormat) : IGLRenderTarget
 		{
 			public uint FramebufferId => DefaultFramebuffer;
 			public int Width => width;
 			public int Height => height;
 			public int SampleCount => samples;
 			public int StencilBits => stencil;
-			// The scanout buffer is XRGB: no alpha channel, so an alpha-typed wrap would blend against the padding byte.
-			public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgb888x;
+			public GraphicsColorFormat ColorFormat => colorFormat;
 			public void Dispose() { }
 		}
 
