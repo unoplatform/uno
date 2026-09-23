@@ -91,7 +91,7 @@ namespace Microsoft.UI.Composition
 			{
 				if (FillBrush is { } fill && _fillGeometryWithTransformations is { } finalFillGeometryWithTransformations)
 				{
-					using var fillGeometry = GetTrimmedFilledGeometry(finalFillGeometryWithTransformations, Geometry);
+					using var fillGeometry = GetTrimmedFilledGeometry(finalFillGeometryWithTransformations, Geometry, GeometryFlatteningScale.From(session.Session.TotalMatrix));
 
 					// A solid colour (a theme/transition background, or a plain colour brush) can fill the geometry
 					// directly. Clip-to-shape + fill-rect is equivalent but forces a per-shape clip — a coverage
@@ -155,7 +155,7 @@ namespace Microsoft.UI.Composition
 						return;
 					}
 
-					using var strokeGeometry = GetTrimmedStrokeGeometry(geometryWithTransformations);
+					using var strokeGeometry = GetTrimmedStrokeGeometry(geometryWithTransformations, GeometryFlatteningScale.From(session.Session.TotalMatrix));
 
 					if (stroke is CompositionColorBrush strokeColor && stroke.CanPaint())
 					{
@@ -324,23 +324,28 @@ namespace Microsoft.UI.Composition
 		};
 
 		/// <summary>Strokes <paramref name="geometry"/> through the resolved trim window (see <see cref="TryResolveTrim"/>).</summary>
-		private IGeometry GetTrimmedStrokeGeometry(IGeometry geometry)
+		private IGeometry GetTrimmedStrokeGeometry(IGeometry geometry, float scale = 1f)
 		{
 			if (!TryResolveTrim(Geometry, out var start, out var end, out var wrapEnd))
 			{
-				return geometry.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f));
+				return geometry.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f), scale);
 			}
 
-			var trimmed = geometry.GetStrokeFillGeometry(GetStrokeStyle(start, end));
-			if (wrapEnd is not { } wrapped)
+			if (IsEmptyTrim(start, end, wrapEnd))
+			{
+				return EmptyGeometry();
+			}
+
+			var trimmed = geometry.GetStrokeFillGeometry(GetStrokeStyle(start, end), scale);
+			if (wrapEnd is not { } wrapped || wrapped <= 0f)
 			{
 				return trimmed;
 			}
 
 			using (trimmed)
-			using (var head = geometry.GetStrokeFillGeometry(GetStrokeStyle(0f, wrapped)))
+			using (var head = geometry.GetStrokeFillGeometry(GetStrokeStyle(0f, wrapped), scale))
 			{
-				return trimmed.Combine(head, GeometryCombineMode.Union);
+				return trimmed.Combine(head, GeometryCombineMode.Union, scale);
 			}
 		}
 
@@ -394,23 +399,36 @@ namespace Microsoft.UI.Composition
 			return value < 0f ? value + 1f : value;
 		}
 
-		private static IGeometry GetTrimmedFilledGeometry(IGeometry geometry, CompositionGeometry? source)
+		// A resolved window of zero length draws NOTHING, but the backends read "is there a trim?" back off the
+		// values, so asking for [0,0] there would mean "no trim" and draw the whole path. The empty case is
+		// therefore answered here instead of being handed down.
+		private static bool IsEmptyTrim(float start, float end, float? wrapEnd)
+			=> wrapEnd is { } wrapped ? wrapped <= 0f && start >= 1f : end <= start;
+
+		private static IGeometry EmptyGeometry() => GeometryFactory.Current.CreateRectangleGeometry(default);
+
+		private static IGeometry GetTrimmedFilledGeometry(IGeometry geometry, CompositionGeometry? source, float scale = 1f)
 		{
 			if (!TryResolveTrim(source, out var start, out var end, out var wrapEnd))
 			{
-				return geometry.GetFilledGeometry(0f, 0f);
+				return geometry.GetFilledGeometry(0f, 0f, scale);
 			}
 
-			var trimmed = geometry.GetFilledGeometry(start, end);
-			if (wrapEnd is not { } wrapped)
+			if (IsEmptyTrim(start, end, wrapEnd))
+			{
+				return EmptyGeometry();
+			}
+
+			var trimmed = geometry.GetFilledGeometry(start, end, scale);
+			if (wrapEnd is not { } wrapped || wrapped <= 0f)
 			{
 				return trimmed;
 			}
 
 			using (trimmed)
-			using (var head = geometry.GetFilledGeometry(0f, wrapped))
+			using (var head = geometry.GetFilledGeometry(0f, wrapped, scale))
 			{
-				return trimmed.Combine(head, GeometryCombineMode.Union);
+				return trimmed.Combine(head, GeometryCombineMode.Union, scale);
 			}
 		}
 
