@@ -300,7 +300,9 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 		/// </summary>
 		internal static string Sanitize(string name)
 		{
-			var builder = new StringBuilder(name.Length);
+			// name.Length is untrusted (a foreign assembly's string heap); cap the upfront allocation to what
+			// the truncation below actually keeps.
+			var builder = new StringBuilder(Math.Min(name.Length, MaxReportedTypeNameLength));
 
 			foreach (var c in name.Length > MaxReportedTypeNameLength ? name.Substring(0, MaxReportedTypeNameLength) : name)
 			{
