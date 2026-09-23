@@ -16,7 +16,9 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 internal sealed partial class ManagedGeometry
 {
-	public IGeometry GetStrokeFillGeometry(in StrokeStyle style)
+	public IGeometry GetStrokeFillGeometry(in StrokeStyle style) => GetStrokeFillGeometry(style, 1f);
+
+	public IGeometry GetStrokeFillGeometry(in StrokeStyle style, float scale)
 	{
 		var hw = style.Thickness / 2f;
 		if (hw <= 0)
@@ -26,20 +28,20 @@ internal sealed partial class ManagedGeometry
 
 		// Trim first (if requested), then dash, then stroke the resulting open runs.
 		var source = (style.TrimStart != 0f || style.TrimEnd != 0f)
-			? (ManagedGeometry)Trim(style.TrimStart, style.TrimEnd)
+			? Trim(style.TrimStart, style.TrimEnd, scale)
 			: this;
 
 		var pieces = new List<ManagedContour>();
-		foreach (var run in source.EnumerateStrokeRuns(style))
+		foreach (var run in source.EnumerateStrokeRuns(style, scale))
 		{
 			if (run.ZeroLengthDash)
 			{
-				AddCap(pieces, run.Points[0], -run.Tangent, hw, run.StartCap); // backward
-				AddCap(pieces, run.Points[0], run.Tangent, hw, run.EndCap); // forward
+				AddCap(pieces, run.Points[0], -run.Tangent, hw, run.StartCap, scale); // backward
+				AddCap(pieces, run.Points[0], run.Tangent, hw, run.EndCap, scale); // forward
 				continue;
 			}
 
-			StampRun(pieces, run.Points, run.Closed, run.StartCap, run.EndCap, hw, style);
+			StampRun(pieces, run.Points, run.Closed, run.StartCap, run.EndCap, hw, style, scale);
 		}
 
 		return new ManagedGeometry(pieces, GeometryFillRule.NonZero);
@@ -67,7 +69,7 @@ internal sealed partial class ManagedGeometry
 	}
 
 	/// <summary>Flattens each contour and splits it into the runs to stroke (one per dash, or the whole contour).</summary>
-	private IEnumerable<StrokeRun> EnumerateStrokeRuns(StrokeStyle style)
+	private IEnumerable<StrokeRun> EnumerateStrokeRuns(StrokeStyle style, float scale)
 	{
 		var hasDashes = style.DashArray is { Length: > 0 };
 		var dashes = hasDashes ? ScaleDashes(style.DashArray!, style.Thickness) : null;
@@ -81,7 +83,7 @@ internal sealed partial class ManagedGeometry
 			}
 
 			var points = new List<Vector2> { contour.Start };
-			FlattenInto(contour, includeImplicitClose: contour.Closed, points);
+			FlattenInto(contour, includeImplicitClose: contour.Closed, points, scale);
 
 			if (!hasDashes)
 			{
@@ -291,7 +293,7 @@ internal sealed partial class ManagedGeometry
 		return result;
 	}
 
-	private static void StampRun(List<ManagedContour> pieces, IReadOnlyList<Vector2> pts, bool closed, StrokeCap startCap, StrokeCap endCap, float hw, StrokeStyle style)
+	private static void StampRun(List<ManagedContour> pieces, IReadOnlyList<Vector2> pts, bool closed, StrokeCap startCap, StrokeCap endCap, float hw, StrokeStyle style, float scale)
 	{
 		// Drop consecutive duplicates so directions are well-defined.
 		var p = new List<Vector2>(pts.Count);
@@ -314,8 +316,8 @@ internal sealed partial class ManagedGeometry
 			// butt caps paint nothing. The tangent is undefined, so cap along ±X as Skia does.
 			if (p.Count == 1)
 			{
-				AddCap(pieces, p[0], new Vector2(-1, 0), hw, startCap);
-				AddCap(pieces, p[0], new Vector2(1, 0), hw, endCap);
+				AddCap(pieces, p[0], new Vector2(-1, 0), hw, startCap, scale);
+				AddCap(pieces, p[0], new Vector2(1, 0), hw, endCap, scale);
 			}
 
 			return;
@@ -332,18 +334,18 @@ internal sealed partial class ManagedGeometry
 		var lastVertex = closed ? count - 1 : count - 1;
 		for (var i = 1; i < lastVertex; i++)
 		{
-			AddJoin(pieces, p[i - 1], p[i], p[i + 1], hw, style);
+			AddJoin(pieces, p[i - 1], p[i], p[i + 1], hw, style, scale);
 		}
 
 		if (closed)
 		{
 			// Join across the closing vertex (p[0]==p[^1]).
-			AddJoin(pieces, p[count - 2], p[0], p[1], hw, style);
+			AddJoin(pieces, p[count - 2], p[0], p[1], hw, style, scale);
 		}
 		else
 		{
-			AddCap(pieces, p[0], Dir(p[1], p[0]), hw, startCap);
-			AddCap(pieces, p[count - 1], Dir(p[count - 2], p[count - 1]), hw, endCap);
+			AddCap(pieces, p[0], Dir(p[1], p[0]), hw, startCap, scale);
+			AddCap(pieces, p[count - 1], Dir(p[count - 2], p[count - 1]), hw, endCap, scale);
 		}
 	}
 
@@ -362,7 +364,7 @@ internal sealed partial class ManagedGeometry
 		AddPolygon(pieces, a + n, b + n, b - n, a - n);
 	}
 
-	private static void AddJoin(List<ManagedContour> pieces, Vector2 prev, Vector2 v, Vector2 next, float hw, StrokeStyle style)
+	private static void AddJoin(List<ManagedContour> pieces, Vector2 prev, Vector2 v, Vector2 next, float hw, StrokeStyle style, float scale)
 	{
 		var dIn = Dir(prev, v);
 		var dOut = Dir(v, next);
@@ -374,7 +376,7 @@ internal sealed partial class ManagedGeometry
 
 		if (style.LineJoin == StrokeJoin.Round)
 		{
-			AddDisc(pieces, v, hw);
+			AddDisc(pieces, v, hw, scale);
 			return;
 		}
 
@@ -464,13 +466,13 @@ internal sealed partial class ManagedGeometry
 		AddPolygon(pieces, bevelIn, bevelIn + dIn * ext, bevelOut - dOut * ext, bevelOut);
 	}
 
-	private static void AddCap(List<ManagedContour> pieces, Vector2 end, Vector2 outwardDir, float hw, StrokeCap cap)
+	private static void AddCap(List<ManagedContour> pieces, Vector2 end, Vector2 outwardDir, float hw, StrokeCap cap, float scale)
 	{
 		var n = Normal(outwardDir) * hw;
 		switch (cap)
 		{
 			case StrokeCap.Round:
-				AddSemicircle(pieces, end, outwardDir, hw);
+				AddSemicircle(pieces, end, outwardDir, hw, scale);
 				break;
 			case StrokeCap.Square:
 				var ext = outwardDir * hw;
@@ -486,10 +488,12 @@ internal sealed partial class ManagedGeometry
 	}
 
 	/// <summary>Half-disc at <paramref name="center"/> bulging toward <paramref name="outwardDir"/> (a round cap).</summary>
-	private static void AddSemicircle(List<ManagedContour> pieces, Vector2 center, Vector2 outwardDir, float radius)
+	private static void AddSemicircle(List<ManagedContour> pieces, Vector2 center, Vector2 outwardDir, float radius, float scale)
 	{
 		var startAngle = MathF.Atan2(-outwardDir.X, outwardDir.Y); // angle of the +normal (-dir.Y, dir.X)
-		const int steps = 16;
+		// Step count from the DEVICE radius: a cap that is 2px across locally is 20px across under a 10x ancestor
+		// scale, and the same 16 facets would then be visible.
+		var steps = Math.Clamp((int)MathF.Ceiling(radius * scale), 16, 48);
 		var pts = new Vector2[steps + 1];
 		for (var i = 0; i <= steps; i++)
 		{
@@ -500,9 +504,9 @@ internal sealed partial class ManagedGeometry
 		AddLoop(pieces, pts);
 	}
 
-	private static void AddDisc(List<ManagedContour> pieces, Vector2 center, float radius)
+	private static void AddDisc(List<ManagedContour> pieces, Vector2 center, float radius, float scale)
 	{
-		var steps = Math.Clamp((int)MathF.Ceiling(radius * 2f), 24, 96);
+		var steps = Math.Clamp((int)MathF.Ceiling(radius * 2f * scale), 24, 96);
 		var pts = new Vector2[steps];
 		for (var i = 0; i < steps; i++)
 		{

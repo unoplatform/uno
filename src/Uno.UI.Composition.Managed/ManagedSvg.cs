@@ -301,7 +301,7 @@ internal sealed class ManagedSvg : ISvgDocument
 			DashOffset = style.StrokeWidth > 0 ? style.DashOffset / style.StrokeWidth : 0f,
 		};
 
-		using var strokeFill = geometry.GetStrokeFillGeometry(strokeStyle);
+		using var strokeFill = geometry.GetStrokeFillGeometry(strokeStyle, GeometryFlatteningScale.From(session.TotalMatrix));
 		FillRegion(session, strokeFill, geometry, style.StrokeRef, style.ResolvedStroke, style.StrokeAlpha);
 	}
 

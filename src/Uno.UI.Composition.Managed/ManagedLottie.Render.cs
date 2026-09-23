@@ -88,7 +88,7 @@ internal sealed partial class ManagedLottie
 		{
 			if (it is TrimShape trim && combined is not null)
 			{
-				var trimmed = ApplyTrim(combined, trim, frame);
+				var trimmed = ApplyTrim(combined, trim, frame, GeometryFlatteningScale.From(session.TotalMatrix));
 				if (!ReferenceEquals(trimmed, combined))
 				{
 					combined.Dispose();
@@ -150,22 +150,24 @@ internal sealed partial class ManagedLottie
 			return;
 		}
 
-		using var widened = path.GetStrokeFillGeometry(new StrokeStyle
-		{
-			Thickness = width,
-			StartCap = cap,
-			EndCap = cap,
-			DashCap = cap,
-			LineJoin = join,
-			MiterLimit = 4f,
-		});
+		using var widened = path.GetStrokeFillGeometry(
+			new StrokeStyle
+			{
+				Thickness = width,
+				StartCap = cap,
+				EndCap = cap,
+				DashCap = cap,
+				LineJoin = join,
+				MiterLimit = 4f,
+			},
+			GeometryFlatteningScale.From(session.TotalMatrix));
 
 		session.DrawPath(widened, color);
 	}
 
 	// Trim [Start,End]% of the concatenated path length, rotated by Offset (deg, 360 = full). Returns the original
 	// when the trim is a no-op (full path). Wrap (range crossing the seam) is a best-effort union of the two arcs.
-	private static IGeometry? ApplyTrim(IGeometry geom, TrimShape trim, float frame)
+	private static IGeometry? ApplyTrim(IGeometry geom, TrimShape trim, float frame, float scale)
 	{
 		var offset = trim.Offset.Evaluate(frame) / 360f;
 		var a = trim.Start.Evaluate(frame) / 100f + offset;
@@ -189,12 +191,12 @@ internal sealed partial class ManagedLottie
 		b -= shift;
 		if (b <= 1f)
 		{
-			return geom.GetFilledGeometry(a, b);
+			return geom.GetFilledGeometry(a, b, scale);
 		}
 		// Wrap across the seam: [a,1] ∪ [0,b-1].
-		var g1 = geom.GetFilledGeometry(a, 1f);
-		var g2 = geom.GetFilledGeometry(0f, b - 1f);
-		var union = g1.Combine(g2, GeometryCombineMode.Union);
+		var g1 = geom.GetFilledGeometry(a, 1f, scale);
+		var g2 = geom.GetFilledGeometry(0f, b - 1f, scale);
+		var union = g1.Combine(g2, GeometryCombineMode.Union, scale);
 		g1.Dispose();
 		g2.Dispose();
 		return union;

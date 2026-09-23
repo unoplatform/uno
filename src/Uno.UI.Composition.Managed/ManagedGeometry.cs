@@ -72,40 +72,59 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 		}
 	}
 
+	/// <summary>A flattening result plus the scale it was subdivided for, in ONE object so that a concurrent
+	/// reader can never pair one scale's points with another scale's key (these caches are read from the record
+	/// and present threads alike).</summary>
+	private sealed class FlattenedAt<T>
+	{
+		public FlattenedAt(float scale, T value)
+		{
+			Scale = scale;
+			Value = value;
+		}
+
+		public float Scale { get; }
+
+		public T Value { get; }
+	}
+
 	// Flattened closed outlines ([0] = contour start, implicit close included), cached: the geometry is
 	// immutable and Combine ray-casts FillContains once per sub-edge, so re-flattening per call turns a
 	// single Combine into O(points²) curve evaluations.
-	private Vector2[][]? _flattenedOutlines;
+	private FlattenedAt<Vector2[][]>? _flattenedOutlines;
 
-	internal Vector2[][] FlattenedClosedOutlines
+	internal Vector2[][] GetFlattenedClosedOutlines(float scale)
 	{
-		get
+		if (_flattenedOutlines is { } cached && cached.Scale == scale)
 		{
-			if (_flattenedOutlines is null)
+			return cached.Value;
+		}
+
+		var outlines = new List<Vector2[]>(Contours.Count);
+		var pts = new List<Vector2>();
+		foreach (var contour in Contours)
+		{
+			if (contour.Segments.Length == 0)
 			{
-				var outlines = new List<Vector2[]>(Contours.Count);
-				var pts = new List<Vector2>();
-				foreach (var contour in Contours)
-				{
-					if (contour.Segments.Length == 0)
-					{
-						continue;
-					}
-
-					pts.Clear();
-					pts.Add(contour.Start);
-					FlattenInto(contour, includeImplicitClose: true, pts);
-					outlines.Add(pts.ToArray());
-				}
-
-				_flattenedOutlines = outlines.ToArray();
+				continue;
 			}
 
-			return _flattenedOutlines;
+			pts.Clear();
+			pts.Add(contour.Start);
+			FlattenInto(contour, includeImplicitClose: true, pts, scale);
+			outlines.Add(pts.ToArray());
 		}
+
+		var result = outlines.ToArray();
+		_flattenedOutlines = new FlattenedAt<Vector2[][]>(scale, result);
+		return result;
 	}
 
-	public bool FillContains(Vector2 point)
+	// Containment is scale-independent, so it reuses whatever flattening a paint-time call already cached instead
+	// of thrashing that cache between the hit-test scale and the render scale.
+	public bool FillContains(Vector2 point) => FillContains(point, _flattenedOutlines?.Scale ?? 1f);
+
+	private bool FillContains(Vector2 point, float scale)
 	{
 		// Outside the tight bounds a ray-cast can't cross anything.
 		var b = Bounds;
@@ -118,7 +137,7 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 		var winding = 0;
 		var crossings = 0;
 
-		foreach (var outline in FlattenedClosedOutlines)
+		foreach (var outline in GetFlattenedClosedOutlines(scale))
 		{
 			for (var i = 1; i < outline.Length; i++)
 			{
@@ -184,7 +203,9 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 
 	// Combine lives in ManagedGeometry.Combine.skia.cs.
 
-	public IGeometry GetFilledGeometry(float trimStart, float trimEnd)
+	public IGeometry GetFilledGeometry(float trimStart, float trimEnd) => GetFilledGeometry(trimStart, trimEnd, 1f);
+
+	public IGeometry GetFilledGeometry(float trimStart, float trimEnd, float scale)
 	{
 		// The fill path of a fill (non-stroke) is the path itself; a (0,0) trim means "no trimming". Return THIS
 		// rather than a re-wrap: an identical copy still has a new identity every frame, which makes every cache
@@ -195,18 +216,20 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 			return this;
 		}
 
-		return Trim(trimStart, trimEnd);
+		return Trim(trimStart, trimEnd, scale);
 	}
 
 	// GetStrokeFillGeometry lives in ManagedGeometry.Stroke.skia.cs.
 
-	public void StreamFlattened(IFlattenedPathSink sink)
+	public void StreamFlattened(IFlattenedPathSink sink) => StreamFlattened(sink, 1f);
+
+	public void StreamFlattened(IFlattenedPathSink sink, float scale)
 	{
-		// Flattening is transform-independent — the sink receives LOCAL points and maps them itself — and this
-		// type is immutable, so subdividing the curves once and keeping the result is always valid. A render
-		// backend that needs triangles re-streams the same geometry every frame, so without this every glyph,
-		// border and icon on screen is re-subdivided (and re-allocates a list per contour) each frame.
-		var flat = _flattened ??= BuildFlattened();
+		// The sink receives LOCAL points and maps them itself, and this type is immutable, so subdividing the
+		// curves once for a given scale and keeping the result is always valid. A render backend that needs
+		// triangles re-streams the same geometry every frame, so without this every glyph, border and icon on
+		// screen is re-subdivided (and re-allocates a list per contour) each frame.
+		var flat = GetFlattened(scale);
 		for (var i = 0; i < Contours.Count; i++)
 		{
 			var contour = Contours[i];
@@ -226,13 +249,26 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 		}
 	}
 
-	private Vector2[][]? _flattened;
+	private FlattenedAt<Vector2[][]>? _flattened;
 
 	/// <summary>
-	/// Maximum allowed distance (in the geometry's own units) between the flattened polyline and the true curve.
-	/// Glyphs and shapes reach the render backends in pixels, so this is effectively a sub-pixel budget.
+	/// Maximum allowed distance between the flattened polyline and the true curve, in DEVICE pixels — matching the
+	/// Skia engine's budget, which is the reference this one is compared against.
 	/// </summary>
-	private const float FlattenTolerance = 0.2f;
+	private const float DeviceFlattenTolerance = 0.1f;
+
+	/// <summary>
+	/// The local tolerance for a geometry rasterized at <paramref name="scale"/>. This engine flattens up front, in
+	/// the geometry's own coordinates, so without the caller's scale a shape magnified by an ancestor transform (or
+	/// by the rasterization scale) would facet — which is exactly what a raster-time flattener never does.
+	/// </summary>
+	private static float ToleranceForScale(float scale)
+	{
+		// A non-positive or non-finite scale means "unknown"; the upper clamp only keeps the division sane, since
+		// past it the step cap binds anyway.
+		var s = float.IsFinite(scale) && scale > 0f ? Math.Clamp(scale, 1f / 64f, 1024f) : 1f;
+		return DeviceFlattenTolerance / s;
+	}
 
 	/// <summary>Perpendicular distance from <paramref name="p"/> to the chord starting at <paramref name="start"/>.</summary>
 	private static float DeviationFromChord(Vector2 start, Vector2 chord, Vector2 p)
@@ -243,8 +279,13 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 		return len < 1e-6f ? v.Length() : MathF.Abs(v.X * chord.Y - v.Y * chord.X) / len;
 	}
 
-	private Vector2[][] BuildFlattened()
+	private Vector2[][] GetFlattened(float scale)
 	{
+		if (_flattened is { } cached && cached.Scale == scale)
+		{
+			return cached.Value;
+		}
+
 		var result = new Vector2[Contours.Count][];
 		var pts = new List<Vector2>();
 		for (var i = 0; i < Contours.Count; i++)
@@ -257,10 +298,11 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 			}
 
 			pts.Clear();
-			FlattenInto(contour, includeImplicitClose: false, pts);
+			FlattenInto(contour, includeImplicitClose: false, pts, scale);
 			result[i] = pts.ToArray();
 		}
 
+		_flattened = new FlattenedAt<Vector2[][]>(scale, result);
 		return result;
 	}
 
@@ -295,7 +337,7 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 	/// of the concatenated contour length (Skia's normal <c>CreateTrim</c>). Contours are flattened, so the
 	/// result is a polyline — matching the rendered curve within flattening tolerance.
 	/// </summary>
-	private ManagedGeometry Trim(float trimStart, float trimEnd)
+	private ManagedGeometry Trim(float trimStart, float trimEnd, float scale)
 	{
 		var polylines = new List<(Vector2[] Points, float StartLength)>();
 		var total = 0f;
@@ -307,7 +349,7 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 			}
 
 			var pts = new List<Vector2> { contour.Start };
-			FlattenInto(contour, includeImplicitClose: contour.Closed, pts);
+			FlattenInto(contour, includeImplicitClose: contour.Closed, pts, scale);
 
 			polylines.Add((pts.ToArray(), total));
 			for (var i = 1; i < pts.Count; i++)
@@ -486,8 +528,9 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 	/// <summary>Flattens a contour's segments into a polyline of end points (curves subdivided), appended
 	/// to <paramref name="output"/>. A plain loop rather than an iterator: this is the geometry engine's
 	/// hottest path and iterator MoveNext/alloc overhead is measurable there.</summary>
-	internal static void FlattenInto(ManagedContour contour, bool includeImplicitClose, List<Vector2> output)
+	internal static void FlattenInto(ManagedContour contour, bool includeImplicitClose, List<Vector2> output, float scale)
 	{
+		var tolerance = ToleranceForScale(scale);
 		var current = contour.Start;
 		foreach (var seg in contour.Segments)
 		{
@@ -507,7 +550,10 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 				var d1 = DeviationFromChord(current, chord, seg.C1);
 				var d2 = DeviationFromChord(current, chord, seg.C2);
 				var deviation = MathF.Max(d1, d2);
-				var steps = Math.Clamp((int)MathF.Ceiling(MathF.Sqrt(deviation / FlattenTolerance)), 1, 256);
+				// The cap is far above the Skia engine's 24 because that one never lowers its tolerance: it
+				// flattens in local units only, leaving the true curve to its own rasterizer. Here the tolerance
+				// is divided by the render scale, so the cap has to leave room for a magnified curve.
+				var steps = Math.Clamp((int)MathF.Ceiling(MathF.Sqrt(deviation / tolerance)), 1, 256);
 				for (var i = 1; i <= steps; i++)
 				{
 					output.Add(EvaluateCubic(current, seg.C1, seg.C2, seg.End, i / (float)steps));

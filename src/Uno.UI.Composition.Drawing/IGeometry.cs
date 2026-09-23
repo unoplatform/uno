@@ -39,14 +39,31 @@ public interface IGeometry : IDrawingResource
 	/// <summary>Returns a new geometry combining this one and <paramref name="other"/> per <paramref name="mode"/>.</summary>
 	IGeometry Combine(IGeometry other, GeometryCombineMode mode);
 
+	/// <summary>As <see cref="Combine(IGeometry, GeometryCombineMode)"/>, for a result rasterized at
+	/// <paramref name="scale"/> (see <see cref="GetStrokeFillGeometry(in StrokeStyle, float)"/>).</summary>
+	IGeometry Combine(IGeometry other, GeometryCombineMode mode, float scale) => Combine(other, mode);
+
 	/// <summary>Returns the fill region of this geometry, optionally trimmed to [<paramref name="trimStart"/>, <paramref name="trimEnd"/>].</summary>
 	IGeometry GetFilledGeometry(float trimStart, float trimEnd);
+
+	/// <summary>As <see cref="GetFilledGeometry(float, float)"/>, for a result rasterized at
+	/// <paramref name="scale"/> (see <see cref="GetStrokeFillGeometry(in StrokeStyle, float)"/>).</summary>
+	IGeometry GetFilledGeometry(float trimStart, float trimEnd, float scale) => GetFilledGeometry(trimStart, trimEnd);
 
 	/// <summary>
 	/// Returns the fill region produced by stroking this geometry with <paramref name="style"/>, matching
 	/// WinUI stroke semantics (caps, miter-clip, dash caps). The caller-owned result must be disposed.
 	/// </summary>
 	IGeometry GetStrokeFillGeometry(in StrokeStyle style);
+
+	/// <summary>
+	/// As <see cref="GetStrokeFillGeometry(in StrokeStyle)"/>, for a stroke rasterized at <paramref name="scale"/>:
+	/// the magnification between this geometry's own coordinates and device pixels (an ancestor scale transform, the
+	/// rasterization scale, …), which the geometry itself never sees. An engine that must flatten curves up front
+	/// subdivides for that scale instead of facetting once magnified; one that flattens at raster time ignores it,
+	/// which is what the default does. Derive it with <see cref="GeometryFlatteningScale"/>.
+	/// </summary>
+	IGeometry GetStrokeFillGeometry(in StrokeStyle style, float scale) => GetStrokeFillGeometry(style);
 
 	/// <summary>
 	/// When the geometry is known to be exactly one (rounded) rectangle contour, returns that shape so a
@@ -62,12 +79,35 @@ public interface IGeometry : IDrawingResource
 	/// </summary>
 	void StreamFlattened(IFlattenedPathSink sink);
 
+	/// <summary>As <see cref="StreamFlattened(IFlattenedPathSink)"/>, subdividing for a rasterization at
+	/// <paramref name="scale"/> (see <see cref="GetStrokeFillGeometry(in StrokeStyle, float)"/>).</summary>
+	void StreamFlattened(IFlattenedPathSink sink, float scale) => StreamFlattened(sink);
+
 	/// <summary>
 	/// Streams the geometry's outline to <paramref name="sink"/> as un-flattened path segments (béziers preserved),
 	/// so a backend with its own rasterizer can flatten at device resolution. The neutral geometry-to-path readback
 	/// that lets any backend consume any geometry; the fill rule travels separately on <see cref="FillRule"/>.
 	/// </summary>
 	void StreamSegments(IGeometrySink sink);
+}
+
+/// <summary>
+/// Derives the flattening scale for the scale-aware <see cref="IGeometry"/> operations from the transform the
+/// geometry will be rasterized under (a drawing session's <see cref="IDrawingSession.TotalMatrix"/>, an ancestor
+/// scale transform, …).
+/// </summary>
+public static class GeometryFlatteningScale
+{
+	/// <summary>The longer of the transform's two axis lengths — the worst-case magnification a curve sees.</summary>
+	public static float From(in Matrix3x2 matrix)
+		=> Axes(matrix.M11, matrix.M12, matrix.M21, matrix.M22);
+
+	/// <summary>As <see cref="From(in Matrix3x2)"/>, reading the 2D part of a 3D transform.</summary>
+	public static float From(in Matrix4x4 matrix)
+		=> Axes(matrix.M11, matrix.M12, matrix.M21, matrix.M22);
+
+	private static float Axes(float m11, float m12, float m21, float m22)
+		=> MathF.Max(MathF.Sqrt(m11 * m11 + m12 * m12), MathF.Sqrt(m21 * m21 + m22 * m22));
 }
 
 /// <summary>Receives flattened polyline contours from <see cref="IGeometry.StreamFlattened"/>.</summary>
