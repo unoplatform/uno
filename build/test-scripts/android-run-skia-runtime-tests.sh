@@ -57,13 +57,27 @@ then
 		EMU_ARCH=arm64-v8a
 	fi
 
+	# dl.google.com now and then serves a truncated package, and sdkmanager then fails with
+	# "Archive is not a ZIP archive". Downloading it again is enough.
+	sdk_install() {
+		for attempt in 1 2 3; do
+			if echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "$1" | tr '' '
+' | uniq; then
+				return 0
+			fi
+			echo "sdkmanager could not install $1 (attempt $attempt)"
+			sleep 10
+		done
+		return 1
+	}
+
 	# Install AVD files
-	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platform-tools'  | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'build-tools;35.0.0' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platforms;android-28' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-28;google_apis_playstore;$EMU_ARCH" | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;$EMU_ARCH" | tr '\r' '\n' | uniq
+	sdk_install 'platform-tools'
+	sdk_install 'build-tools;35.0.0'
+	sdk_install 'platforms;android-28'
+	sdk_install 'extras;android;m2repository'
+	sdk_install "system-images;android-28;google_apis_playstore;$EMU_ARCH"
+	sdk_install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;$EMU_ARCH"
 
 	# Create emulator
 	echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n "$AVD_NAME" --abi $EMU_ARCH -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;$EMU_ARCH" --sdcard 128M --force
