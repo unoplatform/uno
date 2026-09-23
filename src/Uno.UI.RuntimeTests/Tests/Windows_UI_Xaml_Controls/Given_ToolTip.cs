@@ -678,6 +678,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await TestServices.WindowHelper.WaitForIdle();
 				Assert.IsTrue(image.ActualWidth > 0 && image.ActualHeight > 0, "The image was not laid out with its bitmap.");
+
+				// Closing and reopening puts the tooltip back into the popup; a source assigned afterwards
+				// must still get through.
+				SUT.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var reopened = new TaskCompletionSource<bool>();
+				image.ImageOpened += (_, _) => reopened.TrySetResult(true);
+				image.ImageFailed += (_, _) => reopened.TrySetResult(false);
+				image.Source = new BitmapImage(new Uri("ms-appx:///Assets/StoreLogo.png"));
+
+				await Task.WhenAny(reopened.Task, Task.Delay(3000));
+
+				Assert.IsTrue(reopened.Task.IsCompleted, "The image did not open while the reopened tooltip was showing.");
+				Assert.IsTrue(await reopened.Task, "The image failed to load after reopening.");
 			}
 			finally
 			{

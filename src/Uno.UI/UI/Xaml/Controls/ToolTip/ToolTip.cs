@@ -168,8 +168,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void AttachToPopup()
 		{
-			if (Parent == null)
+			// The public Parent reports the popup once Popup.Child has been set, so the actual parent is
+			// what tells whether the tooltip is free to be shown by the popup.
+			var actualParent = this.GetParent();
+
+			if (actualParent is null || ReferenceEquals(actualParent, Popup.PopupPanel))
 			{
+				// Captured before any parenting: joining the popup panel inherits the panel's own
+				// DataContext, and the one the owner provides through ToolTipService.ToolTip must win.
+				var ownerDataContext = DataContext;
+
 				if (!ReferenceEquals(Popup.Child, this))
 				{
 					Popup.Child = this;
@@ -177,9 +185,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// Layout invalidations raised by the tooltip content (an image whose bitmap arrives after the
 				// tooltip opened, for instance) reach the layout root through the parent chain, so the popup
-				// panel has to stay the parent while the tooltip is showing. Parenting inherits the panel's
-				// own DataContext, so the one the owner provides through ToolTipService.ToolTip is put back.
-				var ownerDataContext = DataContext;
+				// panel has to stay the parent while the tooltip is showing.
 				this.SetParent(Popup.PopupPanel);
 				this.SetValue(DataContextProperty, ownerDataContext, DependencyPropertyValuePrecedences.Inheritance);
 			}
