@@ -1,8 +1,7 @@
 ﻿#nullable enable
-using System;
-using System.Collections.Generic;
+
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
+using DirectUI;
 using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls
@@ -73,9 +72,7 @@ namespace Uno.UI.Xaml.Controls
 		/// <param name="scrollViewer"></param>
 		/// <returns></returns>
 		public static bool GetShouldFallBackToNativeScrollBars(Microsoft.UI.Xaml.Controls.ScrollViewer scrollViewer)
-		{
-			return (bool)scrollViewer.GetValue(ShouldFallBackToNativeScrollBarsProperty);
-		}
+			=> (bool)scrollViewer.GetValue(ShouldFallBackToNativeScrollBarsProperty);
 
 		/// <summary>
 		/// Setter for ShouldFallBackToNativeScrollBars attached property. If true, and no <see cref="Microsoft.UI.Xaml.Primitives.ScrollBar"/> is
@@ -83,15 +80,55 @@ namespace Uno.UI.Xaml.Controls
 		/// If false, no scroll bars will be shown. True by default, for backward-compatibility.
 		/// </summary>
 		public static void SetShouldFallBackToNativeScrollBars(Microsoft.UI.Xaml.Controls.ScrollViewer scrollViewer, bool value)
-		{
-			scrollViewer.SetValue(ShouldFallBackToNativeScrollBarsProperty, value);
-		}
+			=> scrollViewer.SetValue(ShouldFallBackToNativeScrollBarsProperty, value);
 
 		[DynamicDependency(nameof(GetShouldFallBackToNativeScrollBars))]
 		[DynamicDependency(nameof(SetShouldFallBackToNativeScrollBars))]
 		public static readonly DependencyProperty ShouldFallBackToNativeScrollBarsProperty =
 			DependencyProperty.RegisterAttached("ShouldFallBackToNativeScrollBars", typeof(bool), typeof(ScrollViewer), new FrameworkPropertyMetadata(true));
+	}
+}
 
+namespace Microsoft.UI.Xaml.Controls
+{
+	public partial class ScrollViewer
+	{
+		partial void OnApplyTemplatePartial() => OnApplyTemplate_MuxPartial();
 
+		public void ZoomToFactor(float factor) =>
+			ZoomToFactorInternal(factor, delayAndFlushViewChanged: true, out _);
+
+		public void InvalidateScrollInfo() => ((IScrollOwner)this).InvalidateScrollInfoImpl();
+
+		partial void OnZoomModeChangedPartial(ZoomMode zoomMode)
+		{
+			OnManipulatabilityAffectingPropertyChanged(
+				pIsInLiveTree: null,
+				isCachedPropertyChanged: true,
+				isContentChanged: false,
+				isAffectingConfigurations: true,
+				isAffectingTouchConfiguration: false);
+
+			OnPrimaryContentAffectingPropertyChanged(
+				boundsChanged: true,
+				horizontalAlignmentChanged: false,
+				verticalAlignmentChanged: false,
+				zoomFactorBoundaryChanged: false);
+
+			if (_presenter is ScrollContentPresenter scp)
+			{
+				switch (zoomMode)
+				{
+					case ZoomMode.Disabled:
+						scp.OnMinZoomFactorChanged(1f);
+						scp.OnMaxZoomFactorChanged(1f);
+						break;
+					case ZoomMode.Enabled:
+						scp.OnMinZoomFactorChanged(MinZoomFactor);
+						scp.OnMaxZoomFactorChanged(MaxZoomFactor);
+						break;
+				}
+			}
+		}
 	}
 }

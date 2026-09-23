@@ -9,14 +9,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ScrollViewer : global::Microsoft.UI.Xaml.Controls.ContentControl, global::Microsoft.UI.Xaml.Controls.IScrollAnchorProvider
 	{
 		// Skipping already declared property BringIntoViewOnFocusChangeProperty
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CanContentRenderOutsideBoundsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"CanContentRenderOutsideBounds", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property CanContentRenderOutsideBoundsProperty
 		// Skipping already declared property ComputedHorizontalScrollBarVisibilityProperty
 		// Skipping already declared property ComputedVerticalScrollBarVisibilityProperty
 		// Skipping already declared property ExtentHeightProperty
@@ -27,71 +20,22 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property HorizontalScrollModeProperty
 		// Skipping already declared property HorizontalSnapPointsAlignmentProperty
 		// Skipping already declared property HorizontalSnapPointsTypeProperty
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsDeferredScrollingEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsDeferredScrollingEnabled", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property IsDeferredScrollingEnabledProperty
 		// Skipping already declared property IsHorizontalRailEnabledProperty
 		// Skipping already declared property IsHorizontalScrollChainingEnabledProperty
 		// Skipping already declared property IsScrollInertiaEnabledProperty
 		// Skipping already declared property IsVerticalRailEnabledProperty
 		// Skipping already declared property IsVerticalScrollChainingEnabledProperty
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsZoomChainingEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsZoomChainingEnabled", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsZoomInertiaEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsZoomInertiaEnabled", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LeftHeaderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(LeftHeader), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
-#endif
+		// Skipping already declared property IsZoomChainingEnabledProperty
+		// Skipping already declared property IsZoomInertiaEnabledProperty
+		// Skipping already declared property LeftHeaderProperty
 		// Skipping already declared property MaxZoomFactorProperty
 		// Skipping already declared property MinZoomFactorProperty
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ReduceViewportForCoreInputViewOcclusionsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ReduceViewportForCoreInputViewOcclusions), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property ReduceViewportForCoreInputViewOcclusionsProperty
 		// Skipping already declared property ScrollableHeightProperty
 		// Skipping already declared property ScrollableWidthProperty
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TopHeaderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TopHeader), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TopLeftHeaderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TopLeftHeader), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
-#endif
+		// Skipping already declared property TopHeaderProperty
+		// Skipping already declared property TopLeftHeaderProperty
 		// Skipping already declared property VerticalAnchorRatioProperty
 		// Skipping already declared property VerticalOffsetProperty
 		// Skipping already declared property VerticalScrollBarVisibilityProperty
@@ -102,37 +46,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ViewportWidthProperty
 		// Skipping already declared property ZoomFactorProperty
 		// Skipping already declared property ZoomModeProperty
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ZoomSnapPointsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ZoomSnapPoints), typeof(global::System.Collections.Generic.IList<float>),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<float>)));
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ZoomSnapPointsTypeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ZoomSnapPointsType), typeof(global::Microsoft.UI.Xaml.Controls.SnapPointsType),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SnapPointsType)));
-#endif
+		// Skipping already declared property ZoomSnapPointsProperty
+		// Skipping already declared property ZoomSnapPointsTypeProperty
 		// Skipping already declared property BringIntoViewOnFocusChange
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool CanContentRenderOutsideBounds
-		{
-			get
-			{
-				return (bool)this.GetValue(CanContentRenderOutsideBoundsProperty);
-			}
-			set
-			{
-				this.SetValue(CanContentRenderOutsideBoundsProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property CanContentRenderOutsideBounds
 		// Skipping already declared property ComputedHorizontalScrollBarVisibility
 		// Skipping already declared property ComputedVerticalScrollBarVisibility
 		// Skipping already declared property CurrentAnchor
@@ -144,113 +61,22 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property HorizontalScrollMode
 		// Skipping already declared property HorizontalSnapPointsAlignment
 		// Skipping already declared property HorizontalSnapPointsType
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IsDeferredScrollingEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsDeferredScrollingEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsDeferredScrollingEnabledProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property IsDeferredScrollingEnabled
 		// Skipping already declared property IsHorizontalRailEnabled
 		// Skipping already declared property IsHorizontalScrollChainingEnabled
 		// Skipping already declared property IsScrollInertiaEnabled
 		// Skipping already declared property IsVerticalRailEnabled
 		// Skipping already declared property IsVerticalScrollChainingEnabled
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IsZoomChainingEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsZoomChainingEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsZoomChainingEnabledProperty, value);
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IsZoomInertiaEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsZoomInertiaEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsZoomInertiaEnabledProperty, value);
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.UIElement LeftHeader
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(LeftHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(LeftHeaderProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property IsZoomChainingEnabled
+		// Skipping already declared property IsZoomInertiaEnabled
+		// Skipping already declared property LeftHeader
 		// Skipping already declared property MaxZoomFactor
 		// Skipping already declared property MinZoomFactor
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool ReduceViewportForCoreInputViewOcclusions
-		{
-			get
-			{
-				return (bool)this.GetValue(ReduceViewportForCoreInputViewOcclusionsProperty);
-			}
-			set
-			{
-				this.SetValue(ReduceViewportForCoreInputViewOcclusionsProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property ReduceViewportForCoreInputViewOcclusions
 		// Skipping already declared property ScrollableHeight
 		// Skipping already declared property ScrollableWidth
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.UIElement TopHeader
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(TopHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(TopHeaderProperty, value);
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.UIElement TopLeftHeader
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(TopLeftHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(TopLeftHeaderProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property TopHeader
+		// Skipping already declared property TopLeftHeader
 		// Skipping already declared property VerticalAnchorRatio
 		// Skipping already declared property VerticalOffset
 		// Skipping already declared property VerticalScrollBarVisibility
@@ -261,30 +87,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ViewportWidth
 		// Skipping already declared property ZoomFactor
 		// Skipping already declared property ZoomMode
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::System.Collections.Generic.IList<float> ZoomSnapPoints
-		{
-			get
-			{
-				return (global::System.Collections.Generic.IList<float>)this.GetValue(ZoomSnapPointsProperty);
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.Controls.SnapPointsType ZoomSnapPointsType
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.SnapPointsType)this.GetValue(ZoomSnapPointsTypeProperty);
-			}
-			set
-			{
-				this.SetValue(ZoomSnapPointsTypeProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property ZoomSnapPoints
+		// Skipping already declared property ZoomSnapPointsType
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ScrollViewer()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ScrollViewer()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetHorizontalScrollBarVisibility(Microsoft.UI.Xaml.DependencyObject)
@@ -299,70 +103,22 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsHorizontalScrollChainingEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsVerticalScrollChainingEnabled(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsVerticalScrollChainingEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static bool GetIsZoomChainingEnabled(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsZoomChainingEnabledProperty);
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static void SetIsZoomChainingEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isZoomChainingEnabled)
-		{
-			element.SetValue(IsZoomChainingEnabledProperty, isZoomChainingEnabled);
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsZoomChainingEnabled(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsZoomChainingEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsScrollInertiaEnabled(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsScrollInertiaEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static bool GetIsZoomInertiaEnabled(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsZoomInertiaEnabledProperty);
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static void SetIsZoomInertiaEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isZoomInertiaEnabled)
-		{
-			element.SetValue(IsZoomInertiaEnabledProperty, isZoomInertiaEnabled);
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsZoomInertiaEnabled(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsZoomInertiaEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetHorizontalScrollMode(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetHorizontalScrollMode(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Controls.ScrollMode)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetVerticalScrollMode(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetVerticalScrollMode(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Controls.ScrollMode)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetZoomMode(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetZoomMode(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Controls.ZoomMode)
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static bool GetCanContentRenderOutsideBounds(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(CanContentRenderOutsideBoundsProperty);
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static void SetCanContentRenderOutsideBounds(global::Microsoft.UI.Xaml.DependencyObject element, bool canContentRenderOutsideBounds)
-		{
-			element.SetValue(CanContentRenderOutsideBoundsProperty, canContentRenderOutsideBounds);
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static bool GetIsDeferredScrollingEnabled(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsDeferredScrollingEnabledProperty);
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static void SetIsDeferredScrollingEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isDeferredScrollingEnabled)
-		{
-			element.SetValue(IsDeferredScrollingEnabledProperty, isDeferredScrollingEnabled);
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetCanContentRenderOutsideBounds(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetCanContentRenderOutsideBounds(Microsoft.UI.Xaml.DependencyObject, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsDeferredScrollingEnabled(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsDeferredScrollingEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetBringIntoViewOnFocusChange(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetBringIntoViewOnFocusChange(Microsoft.UI.Xaml.DependencyObject, bool)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.BringIntoViewOnFocusChangeProperty.get
@@ -407,22 +163,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPointsTypeProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ScrollToHorizontalOffset(double)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ScrollToVerticalOffset(double)
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void ZoomToFactor(float factor)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "ZoomToFactor(float factor)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomToFactor(float)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ChangeView(double?, double?, float?)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ChangeView(double?, double?, float?, bool)
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void InvalidateScrollInfo()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "InvalidateScrollInfo()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.InvalidateScrollInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.AnchorRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.AnchorRequested.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.DirectManipulationCompleted.add
@@ -505,55 +249,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPointsType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPointsType.set
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.AnchorRequested
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public event global::System.EventHandler<object> DirectManipulationCompleted
-		{
-			[global::Uno.NotImplemented("__SKIA__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event DirectManipulationCompleted");
-			}
-			[global::Uno.NotImplemented("__SKIA__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event DirectManipulationCompleted");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public event global::System.EventHandler<object> DirectManipulationStarted
-		{
-			[global::Uno.NotImplemented("__SKIA__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event DirectManipulationStarted");
-			}
-			[global::Uno.NotImplemented("__SKIA__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event DirectManipulationStarted");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.DirectManipulationCompleted
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.DirectManipulationStarted
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.ViewChanged
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public event global::System.EventHandler<global::Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs> ViewChanging
-		{
-			[global::Uno.NotImplemented("__SKIA__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event ViewChanging");
-			}
-			[global::Uno.NotImplemented("__SKIA__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event ViewChanging");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.ViewChanging
 		// Processing: Microsoft.UI.Xaml.Controls.IScrollAnchorProvider
 	}
 }

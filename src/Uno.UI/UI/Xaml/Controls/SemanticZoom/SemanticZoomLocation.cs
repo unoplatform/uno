@@ -1,0 +1,43 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+// MUX Reference Microsoft.UI.Xaml.Controls.cs, commit 3c9c168844
+
+#nullable enable
+
+using Windows.Foundation;
+
+namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// Communicates information for items and view state in a SemanticZoom.
+/// </summary>
+public sealed partial class SemanticZoomLocation
+{
+	/// <summary>
+	/// Initializes a new instance of the SemanticZoomLocation class.
+	/// </summary>
+	public SemanticZoomLocation()
+	{
+		ZoomPoint = default;
+		Bounds = new Rect(0, 0, -1, -1);
+		Remainder = default;
+		IsBottomAlignment = true;
+	}
+
+	/// <summary>
+	/// Gets or sets the sizing bounds of the item as it exists in the current view of a SemanticZoom.
+	/// </summary>
+	public Rect Bounds { get; set; }
+
+	/// <summary>
+	/// Gets or sets the display item as it exists in the current view of a SemanticZoom.
+	/// </summary>
+	public object? Item { get; set; }
+
+	internal Point ZoomPoint { get; set; }
+
+	internal Rect Remainder { get; set; }
+
+	internal bool IsBottomAlignment { get; set; }
+}
