@@ -137,9 +137,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	{
 		try
 		{
-			TargetFrameworkVersion = TargetFramework.Contains('-')
-				? TargetFramework.Split('-')[0]
-				: TargetFramework;
+			TargetFrameworkVersion = TargetFramework.Split('-')[0];
 
 			_manifest = new PackageManifest(Log, TargetFrameworkVersion);
 			if (NuGetVersion.TryParse(_manifest.UnoVersion, out var unoVersion))
