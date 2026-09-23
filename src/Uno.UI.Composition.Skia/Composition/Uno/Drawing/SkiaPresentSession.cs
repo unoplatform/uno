@@ -14,16 +14,12 @@ internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 	// Non-null for a GPU-texture present (Metal/Vulkan): the GRContext to submit on present so the render lands
 	// in the texture/image before the host commits/blits it. The GRContext itself is cached by the renderer.
 	private readonly GRContext? _flushContext;
-	// Non-null when this session composes into a retained offscreen the backend owns: the surface the offscreen is
-	// blitted onto at present.
-	private readonly SKSurface? _presentTo;
 
 	public SkiaPresentSession(SKCanvas canvas, IDrawingFactory factory) : base(canvas, factory)
 		=> _saveCount = canvas.Save();
 
-	private SkiaPresentSession(SKSurface surface, GRContext? flushContext, bool ownsSurface, IDrawingFactory factory, SKSurface? presentTo = null) : base(surface.Canvas, factory)
+	private SkiaPresentSession(SKSurface surface, GRContext? flushContext, bool ownsSurface, IDrawingFactory factory) : base(surface.Canvas, factory)
 	{
-		_presentTo = presentTo;
 		_surface = surface;
 		_flushContext = flushContext;
 		_ownsSurface = ownsSurface;
@@ -49,25 +45,12 @@ internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 	public static SkiaPresentSession ForCachedGpuSurface(SKSurface cachedSurface, GRContext flushContext, IDrawingFactory factory)
 		=> new SkiaPresentSession(cachedSurface, flushContext, ownsSurface: false, factory);
 
-	/// <summary>Composes into a backend-owned offscreen blitted onto <paramref name="swapchain"/> at present, so a
-	/// host whose swapchain discards its contents still carries the previous frame forward.</summary>
-	public static SkiaPresentSession ForRetainedLayer(SKSurface layer, SKSurface swapchain, GRContext flushContext, IDrawingFactory factory)
-		=> new SkiaPresentSession(layer, flushContext, ownsSurface: false, factory, swapchain);
-
-	public bool PreservesContents => _presentTo is not null;
-
 	// Restore any state the composition (frame replay + overlay) left behind, flush the composition surface, then
 	// submit the GPU.
 	public void Dispose()
 	{
 		Canvas.RestoreToCount(_saveCount);
 		Canvas.Flush();
-		if (_presentTo is { } swapchain)
-		{
-			_surface!.Draw(swapchain.Canvas, 0, 0, null);
-			swapchain.Canvas.Flush();
-		}
-
 		// Submit, not just flush: the host's present runs on its own command buffer and can otherwise blit the
 		// texture before Skia's recorded work has been sent to the GPU.
 		_flushContext?.Flush(submit: true);

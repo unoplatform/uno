@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Diagnostics;
@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
+using Uno.UI.Runtime.Skia;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
@@ -60,9 +61,12 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGL;
 
-	// The renderer draws into the default framebuffer, which SwapBuffers leaves undefined — no retention yet, so the
-	// compositor repaints the whole frame. (Host-owned FBO retention to restore partial repaint is a follow-up.)
-	public bool PreservesContents => false;
+	// SwapBuffers leaves the default framebuffer undefined, so the frame is composed into a retained FBO this host
+	// owns and blitted over at present; that copy is what carries the previous frame forward.
+	public bool PreservesContents => _contentsPreserved;
+
+	private readonly GLRetainedFramebuffer _retained = new(Win32NativeOpenGLWrapper.GetProcAddressStatic);
+	private bool _contentsPreserved;
 
 	private Win32GLRenderTarget? _target;
 	// Whether the compositor acquired a target this tick; it skips drawing entirely when there is no recorded
@@ -192,9 +196,17 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 
 		width = Math.Max(1, width);
 		height = Math.Max(1, height);
-		if (_target is null || _target.Width != width || _target.Height != height)
+
+		// The retained FBO is single-sampled: Skia's coverage AA does not need the multisampling the window's
+		// pixel format asks for, and a multisampled attachment would need a resolve before the blit.
+		var retained = _retained.TryResize(width, height, out _contentsPreserved);
+		var id = retained ? _retained.FramebufferId : (uint)framebuffer;
+		var targetSamples = retained ? 0 : samples;
+		var targetStencil = retained ? _retained.StencilBits : stencil;
+
+		if (_target is null || _target.Width != width || _target.Height != height || _target.FramebufferId != id)
 		{
-			_target = new Win32GLRenderTarget((uint)framebuffer, samples, stencil, width, height);
+			_target = new Win32GLRenderTarget(id, targetSamples, targetStencil, width, height);
 		}
 		_frameAcquired = true;
 		return _target;
@@ -210,6 +222,8 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 		_frameAcquired = false;
 
 		_pacer?.OnFrameStart();
+
+		_retained.BlitToDefault();
 
 		var success = PInvoke.SwapBuffers(_hdc);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SwapBuffers)} failed: {Win32Helper.GetErrorMessage()}"); }
@@ -278,6 +292,12 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 	public void Dispose()
 	{
 		_pacer?.Dispose();
+		// The GL objects belong to this context, so they have to go while it is still current.
+		if (PInvoke.wglMakeCurrent(_hdc, _glContext))
+		{
+			_retained.Dispose();
+		}
+
 		ReleaseGlContext(_hwnd, _hdc, _glContext);
 	}
 

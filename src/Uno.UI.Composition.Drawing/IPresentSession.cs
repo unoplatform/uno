@@ -11,10 +11,4 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 public interface IPresentSession : IDrawingSession, IDisposable
 {
-	/// <summary>
-	/// True when what the previous frame composed is still in the surface this session draws into, so only the
-	/// damaged region has to be repainted. A backend that composes through a retained offscreen reports true even
-	/// on a host whose swapchain discards its contents, because the offscreen carries the pixels forward instead.
-	/// </summary>
-	bool PreservesContents => false;
 }

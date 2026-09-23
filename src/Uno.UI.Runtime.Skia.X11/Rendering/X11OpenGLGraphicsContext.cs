@@ -1,8 +1,9 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
+using Uno.UI.Runtime.Skia;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -34,9 +35,12 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext, I
 
 	public Func<string, nint> GetProcAddress => X11NativeOpenGLWrapper.GetProcAddressStatic;
 
-	// The renderer draws into the default framebuffer, which SwapBuffers leaves undefined — no retention yet, so the
-	// compositor repaints the whole frame. (Host-owned FBO retention to restore partial repaint is a follow-up.)
-	public bool PreservesContents => false;
+	// SwapBuffers leaves the default framebuffer undefined, so the frame is composed into a retained FBO this host
+	// owns and blitted over at present; that copy is what carries the previous frame forward.
+	public bool PreservesContents => _contentsPreserved;
+
+	private readonly GLRetainedFramebuffer _retained = new(X11NativeOpenGLWrapper.GetProcAddressStatic);
+	private bool _contentsPreserved;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -45,9 +49,13 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext, I
 		var glXInfo = _x11Window.glXInfo!.Value;
 		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
 		MakeCurrent();
-		if (_target is null || _target.Width != width || _target.Height != height)
+		var retained = _retained.TryResize(width, height, out _contentsPreserved);
+		var id = retained ? _retained.FramebufferId : DefaultFramebuffer;
+		if (_target is null || _target.Width != width || _target.Height != height || _target.FramebufferId != id)
 		{
-			_target = new X11GLRenderTarget(width, height, glXInfo.sampleCount, glXInfo.stencilBits);
+			// Single-sampled: Skia's coverage AA does not need the window's multisampling, and a multisampled
+			// attachment would need resolving before the blit.
+			_target = new X11GLRenderTarget(width, height, retained ? 0 : glXInfo.sampleCount, retained ? _retained.StencilBits : glXInfo.stencilBits, id);
 		}
 		_frameAcquired = true;
 		return _target;
@@ -62,6 +70,7 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext, I
 		_frameAcquired = false;
 
 		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
+		_retained.BlitToDefault();
 		GlxInterface.glXSwapBuffers(_x11Window.Display, _x11Window.Window);
 		GlxInterface.glXMakeCurrent(_x11Window.Display, X11Helper.None, IntPtr.Zero);
 	}
@@ -83,12 +92,15 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext, I
 	public void Dispose()
 	{
 		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
+		// The GL objects belong to this context, so they have to go while it is still current.
+		MakeCurrent();
+		_retained.Dispose();
 		GlxInterface.glXMakeCurrent(_x11Window.Display, X11Helper.None, IntPtr.Zero);
 	}
 
-	private sealed class X11GLRenderTarget(int width, int height, int sampleCount, int stencilBits) : IGLRenderTarget
+	private sealed class X11GLRenderTarget(int width, int height, int sampleCount, int stencilBits, uint framebufferId) : IGLRenderTarget
 	{
-		public uint FramebufferId => DefaultFramebuffer;
+		public uint FramebufferId => framebufferId;
 		public int SampleCount => sampleCount;
 		public int StencilBits => stencilBits;
 		public int Width => width;
