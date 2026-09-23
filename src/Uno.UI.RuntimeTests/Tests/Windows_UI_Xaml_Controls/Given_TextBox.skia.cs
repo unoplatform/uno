@@ -9025,6 +9025,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(25, SUT.SelectionStart);
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Then_Unload_Cancels()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+			Assert.IsTrue(SUT.Core.IsCaretDragActive);
+
+			// Calls OnUnloadedCore directly rather than detaching SUT from the tree: detaching also
+			// blurs it first, which independently cancels the drag and would mask a regression here.
+			// This is the ListView/ItemsRepeater recycling path, which can unload without a blur.
+			SUT.Core.OnUnloadedCore();
+
+			Assert.IsFalse(SUT.Core.IsCaretDragActive, "Unloading must cancel an in-flight drag.");
+			Assert.AreEqual(25, SUT.SelectionStart);
+		}
+
 		#endregion
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
