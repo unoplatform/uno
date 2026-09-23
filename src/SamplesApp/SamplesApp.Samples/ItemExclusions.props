@@ -4,22 +4,22 @@
 		<Page Remove="$(MSBuildThisFileDirectory)Msal\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Msal\**" />
 
-		<Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Media\RevealBrushes\**" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Media\RevealBrushes\**" />
-		<None Include="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Media\RevealBrushes\**"
-		      Link="Windows\UI\Xaml\Media\RevealBrushes\%(RecursiveDir)%(Filename)%(Extension)" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Media\RevealBrushes\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Media\RevealBrushes\**" />
+		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Media\RevealBrushes\**"
+		      Link="Microsoft\UI\Xaml\Media\RevealBrushes\%(RecursiveDir)%(Filename)%(Extension)" />
 
 		<Page Remove="$(MSBuildThisFileDirectory)Windows\Phone\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Windows\Phone\**" />
 		<None Include="$(MSBuildThisFileDirectory)Windows\Phone\**"
 		      Link="Windows\Phone\%(RecursiveDir)%(Filename)%(Extension)" />
 
-		<Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml.cs" />
-		<None Include="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml"
-		      Link="Windows\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml" />
-		<None Include="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml.cs"
-		      Link="Windows\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml.cs" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml.cs" />
+		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml"
+		      Link="Microsoft\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml" />
+		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml.cs"
+		      Link="Microsoft\UI\Xaml\Controls\Repeater\FlowLayout_Simple.xaml.cs" />
 
 		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\PagerControlTests\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\PagerControlTests\**" />
@@ -28,10 +28,10 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(UseWinUI)'=='true'">
-		<Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\WebView\**" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\WebView\**" />
-		<None Include="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\WebView\**"
-		      Link="Windows\UI\Xaml\Controls\WebView\%(RecursiveDir)%(Filename)%(Extension)" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView\**" />
+		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView\**"
+		      Link="Microsoft\UI\Xaml\Controls\WebView\%(RecursiveDir)%(Filename)%(Extension)" />
 
 		<!-- Some samples rely on internal types -->
 		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\ScrollViewTests\**" />
@@ -54,7 +54,7 @@
 	</ItemGroup>
 	<!-- SkiaSharp-free build: SKCanvasElement exposes raw SKCanvas (Uno.WinUI.Graphics2DSK) and cannot be neutral. -->
 	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'=='false'">
-		<Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Composition\SKCanvasElement_Simple.xaml" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Composition\SKCanvasElement_Simple.xaml.cs" />
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SKCanvasElement_Simple.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Composition\SKCanvasElement_Simple.xaml.cs" />
 	</ItemGroup>
 </Project>

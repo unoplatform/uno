@@ -23,8 +23,8 @@
              Link="Lottie\%(RecursiveDir)%(Filename)%(Extension)" />
     <Content Include="$(MSBuildThisFileDirectory)Asset_GetFileFromApplicationUriAsync.xml"
              Link="Asset_GetFileFromApplicationUriAsync.xml" />
-    <Content Include="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Media\Animation\BeginTime_MultipleAnimations_Expected.gif"
-             Link="Windows\UI\Xaml\Media\Animation\BeginTime_MultipleAnimations_Expected.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Media\Animation\BeginTime_MultipleAnimations_Expected.gif"
+             Link="Microsoft\UI\Xaml\Media\Animation\BeginTime_MultipleAnimations_Expected.gif" />
 
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\**\*.resw"
                  Link="UITestsStrings\%(RecursiveDir)%(Filename)%(Extension)" />
@@ -62,11 +62,11 @@
     <Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Core\SystemNavigationManagerTests\HardwareBackButton_Modes.xaml" />
     <Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Core\SystemNavigationManagerTests\HardwareBackButton_Modes.xaml.cs" />
 
-    <Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\EventTrigger_Loaded.xaml" />
-    <Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\EventTrigger_Loaded.xaml.cs" />
+    <Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\EventTrigger_Loaded.xaml" />
+    <Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\EventTrigger_Loaded.xaml.cs" />
 
-    <Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\TextBlockControl\TextBlock_FontFallback.xaml" />
-    <Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\TextBlockControl\TextBlock_FontFallback.xaml.cs" />
+    <Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\TextBlockControl\TextBlock_FontFallback.xaml" />
+    <Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\TextBlockControl\TextBlock_FontFallback.xaml.cs" />
 
     <Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\ScrollViewTests\ScrollViewTestHooksHelper.cs" />
   </ItemGroup>
