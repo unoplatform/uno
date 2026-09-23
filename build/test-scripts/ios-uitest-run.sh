@@ -314,8 +314,12 @@ wait_for_boot() {
 }
 
 echo "Waiting for the simulator to finish booting (started $(date))"
-if ! wait_for_boot "$UITEST_IOSDEVICE_ID" 180; then
-	echo "##vso[task.logissue type=warning]UNOBLD006: The simulator did not report a completed boot within 180s. Continuing anyway; the app install below will surface a hard failure if it is genuinely unusable."
+# A first boot runs the data migration, which alone took over 3 minutes on slow agents. Every job
+# that went on to launch the app on a half-booted simulator failed anyway (the app died or hung
+# until the job timeout), so give up instead: the harness re-run step then waits once more.
+if ! wait_for_boot "$UITEST_IOSDEVICE_ID" 480; then
+	echo "##vso[task.logissue type=error]UNOBLD006: The simulator did not report a completed boot within 480s."
+	exit 1
 fi
 echo "Simulator boot wait finished ($(date))"
 
