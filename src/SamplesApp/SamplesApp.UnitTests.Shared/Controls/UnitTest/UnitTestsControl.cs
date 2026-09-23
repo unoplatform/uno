@@ -1071,7 +1071,8 @@ namespace Uno.UI.Samples.Tests
 								{
 									// A cut-off test costs the same wait on every attempt. A TimeoutException a test
 									// raises from one of its own waits is an ordinary failure and stays retryable.
-									if (e is not TestBodyTimeoutException && _currentRun.CurrentRepeatCount < config.Attempts - 1)
+									if (e is not (TestBodyTimeoutException or NonRetryableTestFailureException)
+										&& _currentRun.CurrentRepeatCount < config.Attempts - 1)
 									{
 										// A retried test is reported as passed if a later attempt succeeds, and the
 										// retry loop sits inside this method while "Running test" is logged outside
