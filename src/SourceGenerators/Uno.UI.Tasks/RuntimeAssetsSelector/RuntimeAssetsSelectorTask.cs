@@ -40,6 +40,14 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		public string TargetPlatformIdentifier { get; set; } = "";
 
 		/// <summary>
+		/// The flavor requested by a cross-runtime library build (no runtime host), matching
+		/// <c>UnoRuntimeIdentifier</c> ("skia" or "webassembly"). A library has no per-platform head to derive
+		/// the flavor from — <see cref="TargetPlatformIdentifier"/> is empty for both — so it names the shared
+		/// folder directly. Empty for an application head, which always shares the "skia" folder instead.
+		/// </summary>
+		public string LibraryRuntimeIdentifier { get; set; } = "";
+
+		/// <summary>
 		/// Package-layout convention, frozen by every runtime-enabled package already published. Neither folder
 		/// names a drawing backend: "skia" holds the build every target framework drawn by Uno shares, and
 		/// "webassembly" the browser's WinRT implementation.
@@ -111,33 +119,58 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 				var platform = TargetPlatformIdentifier.ToLower(CultureInfo.InvariantCulture);
 				WinRTSource winRTSource;
-				switch (platform)
+				string sharedRuntimeIdentifier = SharedRuntimeFolder;
+
+				if (!string.IsNullOrEmpty(LibraryRuntimeIdentifier))
 				{
-					case "":
-					case "desktop":
-						winRTSource = WinRTSource.SharedFolder;
-						break;
+					// Library-authoring contract: there's no per-platform head here, so the identifier names
+					// the shared folder directly instead of being derived from TargetPlatformIdentifier.
+					switch (LibraryRuntimeIdentifier.ToLower(CultureInfo.InvariantCulture))
+					{
+						case "webassembly":
+							winRTSource = WinRTSource.WebAssemblyFolder;
+							sharedRuntimeIdentifier = WebAssemblyRuntimeFolder;
+							break;
 
-					case "browserwasm":
-						winRTSource = WinRTSource.WebAssemblyFolder;
-						break;
+						case "skia":
+							winRTSource = WinRTSource.SharedFolder;
+							break;
 
-					case "android":
-					case "ios":
-					case "tvos":
-						winRTSource = WinRTSource.PlatformLib;
-						break;
+						default:
+							this.Log.LogError($"The value '{LibraryRuntimeIdentifier}' is not expected for 'LibraryRuntimeIdentifier'");
+							return false;
+					}
+				}
+				else
+				{
+					switch (platform)
+					{
+						case "":
+						case "desktop":
+							winRTSource = WinRTSource.SharedFolder;
+							break;
 
-					default:
-						// Without this error an unknown platform would silently leave every runtime-enabled
-						// package on its reference facade, in a green build that only fails once it runs.
-						this.Log.LogError($"The target platform '{TargetPlatformIdentifier}' has no Uno Platform runtime assets");
-						return false;
+						case "browserwasm":
+							winRTSource = WinRTSource.WebAssemblyFolder;
+							break;
+
+						case "android":
+						case "ios":
+						case "tvos":
+							winRTSource = WinRTSource.PlatformLib;
+							break;
+
+						default:
+							// Without this error an unknown platform would silently leave every runtime-enabled
+							// package on its reference facade, in a green build that only fails once it runs.
+							this.Log.LogError($"The target platform '{TargetPlatformIdentifier}' has no Uno Platform runtime assets");
+							return false;
+					}
 				}
 
 				foreach (var package in UnoRuntimeEnabledPackage ?? Array.Empty<ITaskItem>())
 				{
-					HandleForRuntimeEnabled(package, runtimeCopyLocalItemsToAdd, runtimeCopyLocalItemsToRemove, compileFileDefinitionsToAdd, compileFileDefinitionsToRemove, pdbFilesToAdd, winRTSource, platform);
+					HandleForRuntimeEnabled(package, runtimeCopyLocalItemsToAdd, runtimeCopyLocalItemsToRemove, compileFileDefinitionsToAdd, compileFileDefinitionsToRemove, pdbFilesToAdd, winRTSource, platform, sharedRuntimeIdentifier);
 				}
 
 				RuntimeCopyLocalItemsToAdd = runtimeCopyLocalItemsToAdd.ToArray();
@@ -178,9 +211,9 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		/// The shared folder's file listing is the authoritative asset list: an assembly is deployed because it
 		/// appears here, and only then is it redirected per <see cref="WinRTSource"/>.
 		/// </remarks>
-		private string? GetPlatformSpecificDirectoryForRuntimeEnabled(string runtimeDirectory, Version targetFrameworkVersion)
+		private string? GetPlatformSpecificDirectoryForRuntimeEnabled(string runtimeDirectory, Version targetFrameworkVersion, string sharedRuntimeIdentifier)
 		{
-			var runtimeIdentifier = SharedRuntimeFolder;
+			var runtimeIdentifier = sharedRuntimeIdentifier;
 
 			this.Log.LogMessage($"Searching for '{runtimeIdentifier}' in '{runtimeDirectory}'");
 
@@ -305,7 +338,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			List<ITaskItem> compileFileDefinitionsToRemove,
 			List<ITaskItem> pdbFilesToAdd,
 			WinRTSource winRTSource,
-			string platform)
+			string platform,
+			string sharedRuntimeIdentifier)
 		{
 			var packageIdentity = package.GetMetadata("Identity");
 			this.Log.LogMessage($"Processing runtime-enabled package: {packageIdentity}");
@@ -322,7 +356,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 			runtimeCopyLocalItemsToRemove.AddRange(RuntimeCopyLocalItemsInput.Where(item => packageIdentity.Equals(item.GetMetadata("NuGetPackageId"), StringComparison.OrdinalIgnoreCase)));
 
-			var platformDirectory = GetPlatformSpecificDirectoryForRuntimeEnabled(runtimeDirectory, targetFrameworkVersion);
+			var platformDirectory = GetPlatformSpecificDirectoryForRuntimeEnabled(runtimeDirectory, targetFrameworkVersion, sharedRuntimeIdentifier);
 			if (platformDirectory is null)
 			{
 				// This can happen for "legacy convention" (uno-runtime/<runtime-identifier>) which is handled by MSBuild logic in ReplaceUnoRuntime
