@@ -31,7 +31,8 @@ public class Given_RuntimeEnabledPackage
 	private static (RuntimeAssetsSelectorTask_v0 Task, string PackageBasePath) CreateTask(
 		PackageCacheFixture fixture,
 		string targetPlatformIdentifier,
-		string platformTargetFramework = AndroidTargetFramework)
+		string platformTargetFramework = AndroidTargetFramework,
+		string libraryRuntimeIdentifier = "")
 	{
 		var packageBasePath = fixture.AddRuntimeEnabledPackage(
 			"Uno.WinRT",
@@ -51,6 +52,7 @@ public class Given_RuntimeEnabledPackage
 			BuildEngine = new RecordingBuildEngine(),
 			UnoRuntimeEnabledPackage = [PackageCacheFixture.Item("Uno.WinRT", ("PackageBasePath", packageBasePath))],
 			TargetPlatformIdentifier = targetPlatformIdentifier,
+			LibraryRuntimeIdentifier = libraryRuntimeIdentifier,
 			TargetFrameworkVersion = "v10.0",
 			ResolvedCompileFileDefinitionsInput =
 			[
@@ -136,6 +138,47 @@ public class Given_RuntimeEnabledPackage
 		}
 
 		added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Contoso.CrossRuntime.dll", StringComparison.Ordinal));
+	}
+
+	/// <summary>
+	/// A no-host cross-runtime library (UnoRuntimeIdentifier=webassembly, no head) has no
+	/// TargetPlatformIdentifier to derive a flavor from - it is empty for both skia and webassembly library
+	/// builds alike. LibraryRuntimeIdentifier is what tells the task apart, for every asset, not just WinRT ones.
+	/// </summary>
+	[TestMethod]
+	public void When_WebAssemblyLibrary_Then_Everything_Comes_From_The_WebAssembly_Runtime()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_WebAssemblyLibrary_Then_Everything_Comes_From_The_WebAssembly_Runtime));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeIdentifier: "webassembly");
+
+		task.Execute().Should().BeTrue();
+
+		var added = Paths(task.RuntimeCopyLocalItemsToAdd).ToList();
+
+		foreach (var assembly in WinRTAssemblies.Concat(OtherAssemblies))
+		{
+			added.Should().Contain(
+				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/webassembly/{assembly}.dll", StringComparison.Ordinal),
+				$"{assembly} must come from the webassembly folder for a webassembly-flavored library");
+		}
+
+		added.Should().NotContain(path => path.Contains("/skia/", StringComparison.Ordinal));
+	}
+
+	[TestMethod]
+	public void When_SkiaLibrary_Then_Everything_Comes_From_The_Skia_Runtime()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_SkiaLibrary_Then_Everything_Comes_From_The_Skia_Runtime));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeIdentifier: "skia");
+
+		task.Execute().Should().BeTrue();
+
+		var added = Paths(task.RuntimeCopyLocalItemsToAdd).ToList();
+
+		foreach (var assembly in WinRTAssemblies.Concat(OtherAssemblies))
+		{
+			added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/{assembly}.dll", StringComparison.Ordinal));
+		}
 	}
 
 	[TestMethod]
