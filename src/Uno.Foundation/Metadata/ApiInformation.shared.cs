@@ -47,6 +47,13 @@ public partial class ApiInformation
 				// See .nuget\packages\microsoft.windowsappsdk\1.6.241114003\lib\net6.0-windows10.0.18362.0\Microsoft.Windows.AppLifecycle.Projection.dll
 				return majorVersion <= 1; // WinAppSDK 1.6.241114003
 
+			case "Microsoft.Windows.AppNotifications.AppNotificationsContract":
+				// Stable App Notifications surface implemented through contract v3; v4 conferencing APIs are excluded.
+				return majorVersion <= 3;
+
+			case "Microsoft.Windows.AppNotifications.Builder.AppNotificationBuilderContract":
+				return majorVersion <= 2;
+
 			case "Uno.WinUI":
 #if HAS_UNO_WINUI
 				return true;

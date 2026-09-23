@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework Condition="'$(UnoTargetFrameworkOverride)' == ''">$(NetCurrent)</TargetFramework>
+		<TargetFramework Condition="'$(UnoTargetFrameworkOverride)' != ''">$(UnoTargetFrameworkOverride)</TargetFramework>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<UseAppHost>true</UseAppHost>
+		<RuntimeOutputPath Condition="'$(RuntimeOutputPath)' == ''">$(MSBuildThisFileDirectory)..\..\..\src\SamplesApp\SamplesApp\bin\$(Configuration)\$(TargetFramework)-desktop</RuntimeOutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="Uno.WinRT" HintPath="$(RuntimeOutputPath)\Uno.WinRT.dll" />
+		<Reference Include="Uno.Foundation" HintPath="$(RuntimeOutputPath)\Uno.Foundation.dll" />
+		<Reference Include="Uno.UI.Runtime.Skia.Win32" HintPath="$(RuntimeOutputPath)\Uno.UI.Runtime.Skia.Win32.dll" />
+		<Content Include="$(RuntimeOutputPath)\*.dll;$(RuntimeOutputPath)\*.winmd" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+		<Content Include="..\..\..\src\Common\uno.png" Link="uno.png" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+	<Target Name="ValidateRuntimeOutput" BeforeTargets="ResolveReferences">
+		<Error Condition="!Exists('$(RuntimeOutputPath)\Uno.UI.Runtime.Skia.Win32.dll')"
+			   Text="Build SamplesApp for Skia Win32 first, or set RuntimeOutputPath to its built output directory." />
+		<Error Condition="!Exists('$(RuntimeOutputPath)\Microsoft.Windows.AppLifecycle.Projection.dll')"
+			   Text="RuntimeOutputPath must contain the app-notification backend and its AppLifecycle projection." />
+	</Target>
+</Project>
