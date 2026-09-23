@@ -74,6 +74,8 @@ namespace Uno.UI.DataBinding
 				Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(this, previousStorage);
 			}
 
+			internal bool IsForAnimations => _forAnimations;
+
 			public BindingItem? Next { get; }
 			public string PropertyName { get; }
 
