@@ -57,11 +57,13 @@ internal sealed class SkiaFont : IFont
 
 	public float? UnderlinePosition => _metrics.UnderlinePosition;
 
-	public float? UnderlineThickness => _metrics.UnderlineThickness;
+	// A font that declares zero has not specified one -- the shipped symbols font does exactly that, and the
+	// consumer's fallback only applies when this is null.
+	public float? UnderlineThickness => _metrics.UnderlineThickness is { } t and > 0 ? t : null;
 
 	public float? StrikeoutPosition => _metrics.StrikeoutPosition;
 
-	public float? StrikeoutThickness => _metrics.StrikeoutThickness;
+	public float? StrikeoutThickness => _metrics.StrikeoutThickness is { } t and > 0 ? t : null;
 
 	public ushort GetGlyphIndex(int codepoint) => _font.GetGlyph(codepoint);
 
