@@ -213,7 +213,8 @@ internal static class SkiaImageDecoder
 			return SKImage.FromBitmap(bitmap);
 		}
 
-		var newBitmap = new SKBitmap(info);
+		// FromBitmap copies out of a mutable bitmap, so the rotated scratch is released right after.
+		using var newBitmap = new SKBitmap(info);
 		using var canvas = new SKCanvas(newBitmap);
 		canvas.SetMatrix(matrix);
 		canvas.DrawBitmap(bitmap, 0, 0, SKSamplingOptions.Default, null);

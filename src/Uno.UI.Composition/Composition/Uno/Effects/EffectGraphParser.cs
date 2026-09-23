@@ -112,6 +112,24 @@ internal static class EffectGraphParser
 			e.GetNamedPropertyMapping(name, out var index, out _);
 			return index != 0xFF && e.GetProperty(index) is bool value && value;
 		}
+		// Optional enum property (0xFF index == absent): a third-party Win2D-compatible effect need not map it, and
+		// the value arrives boxed either as the enum itself or as its numeric form.
+		bool PropEnumIs(string name, long expected)
+		{
+			e.GetNamedPropertyMapping(name, out var index, out _);
+			if (index == 0xFF)
+			{
+				return false;
+			}
+
+			return e.GetProperty(index) switch
+			{
+				uint value => value == expected,
+				int value => value == expected,
+				Enum value => Convert.ToInt64(value, System.Globalization.CultureInfo.InvariantCulture) == expected,
+				_ => false,
+			};
+		}
 		// An angle property, converted radians→degrees when the effect declares that mapping (lighting helpers want degrees).
 		float Angle(string name)
 		{
@@ -126,7 +144,7 @@ internal static class EffectGraphParser
 			case EffectType.GaussianBlurEffect:
 				{
 					var sigma = (float)Prop("BlurAmount");
-					var hardBorder = Prop("BorderMode") is uint borderMode && borderMode == 1; // EffectBorderMode.Hard
+					var hardBorder = PropEnumIs("BorderMode", 1); // EffectBorderMode.Hard
 					return new BlurEffectNode(Src(0), sigma, hardBorder);
 				}
 

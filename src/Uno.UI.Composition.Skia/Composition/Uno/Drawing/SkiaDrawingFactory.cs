@@ -4,6 +4,7 @@ using System;
 using System.Numerics;
 using Microsoft.UI.Composition;
 using SkiaSharp;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI;
 
@@ -220,7 +221,15 @@ internal sealed class SkiaDrawingFactory :
 			throw new System.ArgumentException("Texture was not produced by SkiaDrawingFactory.", nameof(texture));
 		}
 
-		return System.Threading.Tasks.Task.FromResult<IImage>(new SkiaImage(skia.Image));
+		// The returned image must own its pixels: the texture stays independently alive and disposable, and both
+		// wrappers free their SKImage.
+		using var bitmap = new SKBitmap(new SKImageInfo(skia.PixelWidth, skia.PixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul));
+		if (!skia.Image.ReadPixels(bitmap.Info, bitmap.GetPixels(), bitmap.RowBytes, 0, 0))
+		{
+			throw new System.InvalidOperationException("Failed to read the texture's pixels back.");
+		}
+
+		return System.Threading.Tasks.Task.FromResult<IImage>(new SkiaImage(SKImage.FromBitmap(bitmap)));
 	}
 
 	public ITexture CreateTexture(IImage image)
@@ -359,14 +368,32 @@ internal sealed class SkiaDrawingFactory :
 
 	public IEffectFilter? CreateEffectFilter(EffectNode tree, Rect bounds)
 	{
-		var filter = new SkiaEffectFuser().Fuse(tree, bounds.ToSKRect());
-		return filter is null ? null : new SkiaEffectFilter(filter);
+		var fuser = new SkiaEffectFuser();
+		var filter = fuser.FuseGraph(tree, bounds.ToSKRect());
+		if (filter is null)
+		{
+			// Nothing downstream surfaces this: the brush then paints nothing at all, so name what could not be realized.
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"The Skia backend could not realize the effect graph rooted at '{tree.GetType().Name}': {fuser.FailureReason}.");
+			}
+
+			return null;
+		}
+
+		return new SkiaEffectFilter(filter);
 	}
 
 	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, Color color)
-		=> new SkiaEffectFilter(SKImageFilter.CreateOffset(dx, dy, SKImageFilter.CreateCompose(
-			SKImageFilter.CreateBlur(sigmaX, sigmaY),
-			SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(color.ToSKColor(), SKBlendMode.Modulate)))));
+	{
+		// Skia filters are natively refcounted and each parent takes its own reference, so the interior wrappers are
+		// released as soon as the root is built.
+		using var tint = SKColorFilter.CreateBlendMode(color.ToSKColor(), SKBlendMode.Modulate);
+		using var tintFilter = SKImageFilter.CreateColorFilter(tint);
+		using var blur = SKImageFilter.CreateBlur(sigmaX, sigmaY);
+		using var composed = SKImageFilter.CreateCompose(blur, tintFilter);
+		return new SkiaEffectFilter(SKImageFilter.CreateOffset(dx, dy, composed));
+	}
 
 	private static SKShaderTileMode ToSK(GradientTileMode mode) => mode switch
 	{

@@ -29,14 +29,19 @@ namespace Microsoft.UI.Composition
 			paint.IsAntialias = true;
 			paint.IsStroke = false;
 			paint.Color = SKColors.White;
+			SKPathEffect? trim = null;
 			if (trimStart != default || trimEnd != default)
 			{
-				paint.PathEffect = SKPathEffect.CreateTrim(trimStart, trimEnd);
+				trim = SKPathEffect.CreateTrim(trimStart, trimEnd);
+				paint.PathEffect = trim;
 			}
 
 			var builder = _strokeSpareBuilder;
 			builder.Reset();
 			paint.GetFillPath(_geometry, builder);
+			// The spare paint outlives this call, so drop its native reference before releasing the effect.
+			paint.PathEffect = null;
+			trim?.Dispose();
 			return new SkiaGeometrySource2D(builder.Detach());
 		}
 
@@ -54,6 +59,7 @@ namespace Microsoft.UI.Composition
 			var needsCustomCaps = style.StartCap != style.EndCap || style.StartCap == StrokeCap.Triangle;
 
 			float[]? dashValues = null;
+			SKPathEffect? dashEffect = null;
 			if (style.DashArray is { Length: > 0 } dashArray)
 			{
 				paint.StrokeCap = ToSKStrokeCap(style.DashCap);
@@ -63,7 +69,7 @@ namespace Microsoft.UI.Composition
 					dashValues[i] = dashArray[i] * style.Thickness;
 				}
 
-				var dashEffect = SKPathEffect.CreateDash(dashValues, style.DashOffset * style.Thickness);
+				dashEffect = SKPathEffect.CreateDash(dashValues, style.DashOffset * style.Thickness);
 				if (dashEffect is not null)
 				{
 					paint.PathEffect = dashEffect;
@@ -78,15 +84,30 @@ namespace Microsoft.UI.Composition
 				paint.StrokeCap = ToSKStrokeCap(style.EndCap);
 			}
 
+			SKPathEffect? trim = null;
+			SKPathEffect? sum = null;
 			if (style.TrimStart != default || style.TrimEnd != default)
 			{
-				var trim = SKPathEffect.CreateTrim(style.TrimStart, style.TrimEnd);
-				paint.PathEffect = paint.PathEffect is { } existing ? SKPathEffect.CreateSum(existing, trim) : trim;
+				trim = SKPathEffect.CreateTrim(style.TrimStart, style.TrimEnd);
+				if (dashEffect is not null)
+				{
+					sum = SKPathEffect.CreateSum(dashEffect, trim);
+					paint.PathEffect = sum;
+				}
+				else
+				{
+					paint.PathEffect = trim;
+				}
 			}
 
 			var builder = _strokeSpareBuilder;
 			builder.Reset();
 			paint.GetFillPath(_geometry, builder);
+			// The spare paint outlives this call, so drop its native reference before releasing the effects.
+			paint.PathEffect = null;
+			sum?.Dispose();
+			trim?.Dispose();
+			dashEffect?.Dispose();
 
 			if (needsCustomCaps && style.DashArray is not { Length: > 0 })
 			{
@@ -408,7 +429,7 @@ namespace Microsoft.UI.Composition
 			var p3 = new SKPoint(position.X - normal.X * size + direction.X * size, position.Y - normal.Y * size + direction.Y * size);
 			var p4 = new SKPoint(position.X - normal.X * size, position.Y - normal.Y * size);
 
-			var builder = new SKPathBuilder();
+			using var builder = new SKPathBuilder();
 			builder.AddPoly(new[] { p1, p2, p3, p4 }, true);
 			return builder.Detach();
 		}
@@ -540,7 +561,7 @@ namespace Microsoft.UI.Composition
 
 			if (capType == StrokeCap.Round)
 			{
-				var builder = new SKPathBuilder();
+				using var builder = new SKPathBuilder();
 				// Build a semicircle oriented in the cap direction
 				var startAngle = (float)(Math.Atan2(normal.Y, normal.X) * 180 / Math.PI);
 				var rect = new SKRect(
@@ -554,7 +575,7 @@ namespace Microsoft.UI.Composition
 			}
 			else if (capType == StrokeCap.Square)
 			{
-				var builder = new SKPathBuilder();
+				using var builder = new SKPathBuilder();
 				// Rectangle extending halfWidth beyond endpoint in direction
 				var p1 = new SKPoint(position.X + normal.X * halfWidth, position.Y + normal.Y * halfWidth);
 				var p2 = new SKPoint(p1.X + direction.X * halfWidth, p1.Y + direction.Y * halfWidth);
@@ -565,7 +586,7 @@ namespace Microsoft.UI.Composition
 			}
 			else if (capType == StrokeCap.Triangle)
 			{
-				var builder = new SKPathBuilder();
+				using var builder = new SKPathBuilder();
 				// Isoceles triangle: base perpendicular to direction at endpoint, apex at halfWidth in direction
 				var base1 = new SKPoint(position.X + normal.X * halfWidth, position.Y + normal.Y * halfWidth);
 				var apex = new SKPoint(position.X + direction.X * halfWidth, position.Y + direction.Y * halfWidth);

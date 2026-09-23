@@ -10,7 +10,7 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>SkiaSharp-backed <see cref="IPathBuilder"/> that accumulates into an <see cref="SKPathBuilder"/>.</summary>
 internal sealed class SkiaPathBuilder : IPathBuilder, IPrimitiveGeometryBuilder
 {
-	private SKPathBuilder _builder = new();
+	private readonly SKPathBuilder _builder = new();
 
 	public void MoveTo(Vector2 point) => _builder.MoveTo(new SKPoint(point.X, point.Y));
 
@@ -34,7 +34,7 @@ internal sealed class SkiaPathBuilder : IPathBuilder, IPrimitiveGeometryBuilder
 
 	public void AddRoundedRectangle(Rect rect, float radiusX, float radiusY)
 	{
-		var roundRect = new SKRoundRect();
+		using var roundRect = new SKRoundRect();
 		var radius = new SKPoint(radiusX, radiusY);
 		roundRect.SetRectRadii(rect.ToSKRect(), new[] { radius, radius, radius, radius });
 		_builder.AddRoundRect(roundRect);
@@ -42,7 +42,7 @@ internal sealed class SkiaPathBuilder : IPathBuilder, IPrimitiveGeometryBuilder
 
 	public void AddRoundedRectangle(Rect rect, Vector2 topLeft, Vector2 topRight, Vector2 bottomRight, Vector2 bottomLeft)
 	{
-		var roundRect = new SKRoundRect();
+		using var roundRect = new SKRoundRect();
 		roundRect.SetRectRadii(rect.ToSKRect(), new[]
 		{
 			new SKPoint(topLeft.X, topLeft.Y),
@@ -78,9 +78,10 @@ internal sealed class SkiaPathBuilder : IPathBuilder, IPrimitiveGeometryBuilder
 
 	public IGeometry Build()
 	{
+		// The builder is reused rather than reallocated; Detach hands over an independent path.
 		var geometry = new SkiaGeometrySource2D(_builder.Detach());
-		_builder = new SKPathBuilder();
-		_fillRule = GeometryFillRule.NonZero;
+		_builder.Reset();
+		FillRule = GeometryFillRule.NonZero;
 		return geometry;
 	}
 }

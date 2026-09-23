@@ -32,6 +32,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Adapter.Microsoft.Extensions.Logging")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition.Drawing")]
+[assembly: InternalsVisibleTo("Uno.UI.Composition.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition.WebGpu")]
 [assembly: InternalsVisibleTo("Uno.UI.Dispatching")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia")]

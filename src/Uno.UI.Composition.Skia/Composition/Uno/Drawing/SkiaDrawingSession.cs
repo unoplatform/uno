@@ -150,7 +150,7 @@ internal class SkiaDrawingSession : IDrawingSession
 	{
 		// Annulus = outer round rect with the inner round rect clipped OUT (Difference), then filled.
 		_canvas.Save();
-		_canvas.ClipRoundRect(ToSK(inner), SKClipOperation.Difference, true);
+		_canvas.ClipRoundRect(ToSKInner(inner), SKClipOperation.Difference, true);
 		_canvas.DrawRoundRect(ToSK(outer), FillPaint(color));
 		_canvas.Restore();
 	}
@@ -180,7 +180,7 @@ internal class SkiaDrawingSession : IDrawingSession
 
 		// One canvas draw for the whole run. The cost here is per DrawPath — paint setup, clip test, coverage
 		// walk — so N placed instances as N draws is far worse than merging them into a single path first.
-		var builder = new SKPathBuilder();
+		using var builder = new SKPathBuilder();
 		foreach (var instance in instances)
 		{
 			using var lease = SkiaGeometryInterop.Lease(instance.Geometry);
@@ -368,9 +368,19 @@ internal class SkiaDrawingSession : IDrawingSession
 	private static SKClipOperation ToSK(ClipOperation op)
 		=> op == ClipOperation.Difference ? SKClipOperation.Difference : SKClipOperation.Intersect;
 
-	private static SKRoundRect ToSK(in RoundRectangle rr)
+	// Reused per drawing thread like _sparePaint: SetRectRadii fully reconfigures the instance, and the canvas
+	// copies the shape out of it before the next draw. Two, so a border can hold its outer and inner at once.
+	[ThreadStatic]
+	private static SKRoundRect? _spareRoundRect;
+	[ThreadStatic]
+	private static SKRoundRect? _spareInnerRoundRect;
+
+	private static SKRoundRect ToSK(in RoundRectangle rr) => SetRadii(_spareRoundRect ??= new SKRoundRect(), rr);
+
+	private static SKRoundRect ToSKInner(in RoundRectangle rr) => SetRadii(_spareInnerRoundRect ??= new SKRoundRect(), rr);
+
+	private static SKRoundRect SetRadii(SKRoundRect target, in RoundRectangle rr)
 	{
-		var skRoundRect = new SKRoundRect();
 		Span<SKPoint> radii = stackalloc SKPoint[]
 		{
 			new SKPoint(rr.TopLeft.X, rr.TopLeft.Y),
@@ -378,8 +388,8 @@ internal class SkiaDrawingSession : IDrawingSession
 			new SKPoint(rr.BottomRight.X, rr.BottomRight.Y),
 			new SKPoint(rr.BottomLeft.X, rr.BottomLeft.Y),
 		};
-		skRoundRect.SetRectRadii(rr.Rect.ToSKRect(), radii);
-		return skRoundRect;
+		target.SetRectRadii(rr.Rect.ToSKRect(), radii);
+		return target;
 	}
 
 	internal static SKBlendMode ToSKBlendMode(BlendMode mode) => mode switch

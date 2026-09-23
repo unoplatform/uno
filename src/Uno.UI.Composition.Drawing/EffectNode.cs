@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Collections.Generic;
 using System.Linq;
@@ -79,7 +79,9 @@ public sealed record ColorMatrixEffectNode(EffectNode Source, float[] Matrix) : 
 /// A gaussian blur of <see cref="Source"/>. <see cref="ClampEdge"/> clamps to the source edge (D2D
 /// <c>BorderMode.Hard</c> — no bleed, what a backdrop/acrylic blur wants) versus fading to transparent (the default).
 /// </summary>
-public sealed record BlurEffectNode(EffectNode Source, float Sigma, bool ClampEdge) : EffectNode
+// Downscale: the result is only ever read blurred, so a backend may run a wide blur at reduced resolution.
+// Opt-in, because a caller comparing against an exact full-resolution blur would see the difference.
+public sealed record BlurEffectNode(EffectNode Source, float Sigma, bool ClampEdge, bool Downscale = false) : EffectNode
 {
 	public override IReadOnlyList<EffectNode> Children => new[] { Source };
 }
