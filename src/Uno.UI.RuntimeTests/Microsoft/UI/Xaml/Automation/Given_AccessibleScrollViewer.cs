@@ -152,6 +152,47 @@ public class Given_AccessibleScrollViewer
 			"aria-roledescription must never be emitted on an element with no accessible name (FR-014).");
 	}
 
+	/// <summary>
+	/// Mirroring XAML focus into the semantic DOM must not let the browser scroll the semantic scroller
+	/// to reveal the node, as that scroll is fed back into the ScrollViewer. Programmatic focus does not
+	/// bring an element into view.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Programmatic_Focus_Outside_Viewport_Then_Not_Scrolled()
+	{
+		await EnsureAccessibilityEnabledAsync();
+
+		var target = new Button { Content = "Target" };
+		var scrollViewer = new ScrollViewer
+		{
+			Height = 200,
+			Content = new StackPanel
+			{
+				Children =
+				{
+					new Button { Content = "Top" },
+					new Border { Height = 2000 },
+					target,
+				},
+			},
+		};
+
+		await UITestHelper.Load(scrollViewer);
+		await UITestHelper.WaitFor(() => SemanticElementExists(target), timeoutMS: 5000,
+			message: "Timed out waiting for the target's semantic node.");
+
+		target.Focus(FocusState.Programmatic);
+
+		var semanticScrollTop = InvokeBrowserJs($"(function(){{let e = document.getElementById('{GetSemanticElementId(target)}'); let top = 0; while (e) {{ top = Math.max(top, e.scrollTop); e = e.parentElement; }} return String(top); }})()");
+		Assert.AreEqual("0", semanticScrollTop, "The browser scrolled a semantic ancestor to reveal the focused node.");
+
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(0, scrollViewer.VerticalOffset);
+	}
+
 
 
 
