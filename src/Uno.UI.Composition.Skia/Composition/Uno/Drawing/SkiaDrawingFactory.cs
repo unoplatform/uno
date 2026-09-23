@@ -120,7 +120,7 @@ internal sealed class SkiaDrawingFactory :
 			};
 			var renderTarget = new GRBackendRenderTarget(vk.Width, vk.Height, info);
 			// The colour type must match the image's own Vulkan format or Skia refuses the wrap and returns null.
-			var colorType = vk.ColorFormat == GraphicsColorFormat.Rgba8888 ? SKColorType.Rgba8888 : SKColorType.Bgra8888;
+			var colorType = ToColorType(vk.ColorFormat);
 			var surface = SKSurface.Create(_vulkanContext, renderTarget, GRSurfaceOrigin.TopLeft, colorType, SKColorSpace.CreateSrgb());
 			if (surface is null)
 			{
@@ -145,7 +145,7 @@ internal sealed class SkiaDrawingFactory :
 		_metalContext ??= GRContext.CreateMetal(new GRMtlBackendContext { DeviceHandle = _metalDevice!.Device, QueueHandle = _metalDevice!.Queue })
 			?? throw new System.NotSupportedException("Failed to create a Metal GRContext.");
 
-		var colorType = metal.ColorFormat == GraphicsColorFormat.Bgra8888 ? SKColorType.Bgra8888 : SKColorType.Rgba8888;
+		var colorType = ToColorType(metal.ColorFormat);
 		// The render target descriptor is consumed by SKSurface.Create; the surface is disposed on present.
 		using var target = new GRBackendRenderTarget(metal.Width, metal.Height, new GRMtlTextureInfo(metal.Texture));
 		var surface = SKSurface.Create(_metalContext, target, GRSurfaceOrigin.TopLeft, colorType)
@@ -157,6 +157,13 @@ internal sealed class SkiaDrawingFactory :
 	}
 
 	// Build/reuse a GRContext-GL and an SKSurface over the host's (already-current) window framebuffer.
+	internal static SKColorType ToColorType(GraphicsColorFormat format) => format switch
+	{
+		GraphicsColorFormat.Rgba8888 => SKColorType.Rgba8888,
+		GraphicsColorFormat.Rgb888x => SKColorType.Rgb888x,
+		_ => SKColorType.Bgra8888,
+	};
+
 	private IPresentSession PresentForGL(IGLRenderTarget gl)
 	{
 		// GLES/WebGL assemble the interface from the host's proc loader. Desktop GL uses SkiaSharp's compiled-in
@@ -193,13 +200,14 @@ internal sealed class SkiaDrawingFactory :
 			_glWidth = 0;
 			_glHeight = 0;
 
-			var info = new GRGlFramebufferInfo(gl.FramebufferId, SKColorType.Rgba8888.ToGlSizedFormat());
+			var colorType = ToColorType(gl.ColorFormat);
+			var info = new GRGlFramebufferInfo(gl.FramebufferId, colorType.ToGlSizedFormat());
 			// A host can report more GL_SAMPLES than Skia can wrap for this color type (common on Android GLES),
 			// and an unclamped count makes SKSurface.Create return null instead of quietly downgrading MSAA.
-			var samples = Math.Min(gl.SampleCount, _glContext.GetMaxSurfaceSampleCount(SKColorType.Rgba8888));
+			var samples = Math.Min(gl.SampleCount, _glContext.GetMaxSurfaceSampleCount(colorType));
 			var renderTarget = new GRBackendRenderTarget(gl.Width, gl.Height, samples, gl.StencilBits, info);
 			// BottomLeft to match OpenGL's origin.
-			var surface = SKSurface.Create(_glContext, renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888);
+			var surface = SKSurface.Create(_glContext, renderTarget, GRSurfaceOrigin.BottomLeft, colorType);
 			if (surface is null)
 			{
 				renderTarget.Dispose();

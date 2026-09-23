@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using SkiaSharp;
 
@@ -29,8 +29,10 @@ internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 	/// <summary>Wraps the host's neutral CPU framebuffer as an owned SKSurface to compose into (disposed on present).</summary>
 	public static SkiaPresentSession ForSoftware(ISoftwareRenderTarget target, IDrawingFactory factory)
 	{
-		var colorType = target.ColorFormat == GraphicsColorFormat.Rgba8888 ? SKColorType.Rgba8888 : SKColorType.Bgra8888;
-		var info = new SKImageInfo(target.Width, target.Height, colorType, SKAlphaType.Premul);
+		var colorType = SkiaDrawingFactory.ToColorType(target.ColorFormat);
+		// An opaque color type has no alpha channel to premultiply into; pairing it with Premul is invalid in Skia.
+		var alphaType = colorType == SKColorType.Rgb888x ? SKAlphaType.Opaque : SKAlphaType.Premul;
+		var info = new SKImageInfo(target.Width, target.Height, colorType, alphaType);
 		return new SkiaPresentSession(SKSurface.Create(info, target.Pixels, target.RowBytes), flushContext: null, ownsSurface: true, factory);
 	}
 

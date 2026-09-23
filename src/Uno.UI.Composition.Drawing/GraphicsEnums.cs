@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 namespace Uno.UI.Composition.Drawing;
 
@@ -22,5 +22,8 @@ public enum GraphicsColorFormat
 {
 	Bgra8888,
 	Rgba8888,
+
+	/// <summary>RGB with the fourth byte ignored, for a scanout buffer (DRM XRGB) that has no alpha channel.</summary>
+	Rgb888x,
 }
 

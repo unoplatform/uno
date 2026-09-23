@@ -405,7 +405,8 @@ namespace Uno.UI.Runtime.Skia
 			public int Height => height;
 			public int SampleCount => samples;
 			public int StencilBits => stencil;
-			public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+			// The scanout buffer is XRGB: no alpha channel, so an alpha-typed wrap would blend against the padding byte.
+			public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgb888x;
 			public void Dispose() { }
 		}
 
