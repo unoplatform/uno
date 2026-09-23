@@ -29,6 +29,7 @@ internal sealed class SkiaDrawingFactory :
 	private GRContext? _glContext;
 	private GRBackendRenderTarget? _glRenderTarget;
 	private SKSurface? _glSurface;
+	private SKSurface? _glLayer;
 	private int _glWidth;
 	private int _glHeight;
 
@@ -195,8 +196,10 @@ internal sealed class SkiaDrawingFactory :
 			// that a later frame could mistake for a live surface, or the window never recovers.
 			_glRenderTarget?.Dispose();
 			_glSurface?.Dispose();
+			_glLayer?.Dispose();
 			_glRenderTarget = null;
 			_glSurface = null;
+			_glLayer = null;
 			_glWidth = 0;
 			_glHeight = 0;
 
@@ -214,19 +217,33 @@ internal sealed class SkiaDrawingFactory :
 				throw new System.NotSupportedException("Skia could not wrap the host's OpenGL framebuffer.");
 			}
 
+			// A GL swap discards the framebuffer, so composing into it directly would make the damage region
+			// meaningless and repaint every frame whole. Compose into an offscreen that survives the swap instead,
+			// and blit it over at present.
+			var layerInfo = new SKImageInfo(Math.Max(1, gl.Width), Math.Max(1, gl.Height), colorType, SKAlphaType.Premul);
+			var layer = SKSurface.Create(_glContext, budgeted: true, layerInfo);
+			layer?.Canvas.Clear(SKColors.Transparent);
+			if (layer is null && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"Could not create the {gl.Width}x{gl.Height} retained layer; every frame will repaint whole.");
+			}
+
 			_glRenderTarget = renderTarget;
 			_glSurface = surface;
+			_glLayer = layer;
 			_glWidth = gl.Width;
 			_glHeight = gl.Height;
 		}
 
-		// Render straight into the host's framebuffer; retention (partial repaint) is the host's business (it hands
-		// back a stable framebuffer that survives its present when it preserves contents).
-		return new SkiaPresentSession(_glSurface.Canvas, this);
+		// A failed layer is not fatal: composing straight into the framebuffer still renders, it just repaints whole.
+		return _glLayer is { } retained
+			? SkiaPresentSession.ForRetainedLayer(retained, _glSurface, _glContext, this)
+			: new SkiaPresentSession(_glSurface.Canvas, this);
 	}
 
 	public void Dispose()
 	{
+		_glLayer?.Dispose();
 		_glSurface?.Dispose();
 		_glRenderTarget?.Dispose();
 		_glContext?.Dispose();

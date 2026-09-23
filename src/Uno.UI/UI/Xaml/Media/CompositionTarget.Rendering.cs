@@ -455,7 +455,10 @@ public partial class CompositionTarget
 				// Partial repaint: when unresized and the host preserves the swapchain's pixels, clip the clear+replay
 				// to the damage region so only the changed area is repainted; otherwise repaint the whole frame.
 				var hasDamage = !resized && lastRenderedFrame.damage is { } dmg && !dmg.IsEmpty;
-				var damageEligible = hasDamage && swapChain.PreservesContents;
+				// The host declares what its swapchain does; a backend composing through a retained offscreen preserves
+				// the contents even when the swapchain discards them.
+				var preservesContents = swapChain.PreservesContents || present.PreservesContents;
+				var damageEligible = hasDamage && preservesContents;
 				// Debug overlay paints the would-be damage region on a full repaint; deliberately not gated on
 				// PreservesContents so the viz works on full-repaint targets too.
 				var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
@@ -465,7 +468,7 @@ public partial class CompositionTarget
 				// target still holds the previous frame, so the clear+replay is skipped rather than repainted whole.
 				var nothingChanged = !resized
 					&& lastRenderedFrame.damage is null
-					&& swapChain.PreservesContents
+					&& preservesContents
 					&& !overlayEnabled
 					&& !_forceFullRepaint;
 
