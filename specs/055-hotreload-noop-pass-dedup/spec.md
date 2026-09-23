@@ -5,7 +5,9 @@
 **Status**: Resolved — implemented on this branch
 **Related**: [#23861](https://github.com/unoplatform/uno/issues/23861) (the blocked-compilation
 audit the parasite pass lands in), [spec 050](../050-hotreload-updatefile-workspace-gate/spec.md)
-(R6 — the per-request info file)
+(R6 — the per-request info file),
+[dotnet/roslyn#79898](https://github.com/dotnet/roslyn/issues/79898) (an empty intermediate
+update makes a *later* edit fail)
 
 ## Overview & Objectives
 
@@ -44,6 +46,16 @@ must not fork the solution, must not emit, and must not run the audit. The fix i
 **content-based and file-agnostic**; it lives in the solution update, where files are
 already read.
 
+The emit such a pass performs is not merely wasted work. An update Roslyn resolves to
+`status: None` corrupts the edit session's deleted-member bookkeeping, and the failure
+surfaces on a **later** edit as a `NullReferenceException` in
+`DefinitionMap.GetPreviousMethodHandle` / `GetPreviousPropertyHandle`
+([dotnet/roslyn#79898](https://github.com/dotnet/roslyn/issues/79898), open) — reported from
+the field as unoplatform/uno.hotdesign#8040, where the empty update
+(`Solution update 12.3 status: None`) sits one second before the crashing emit in the user's
+log. Hot reload then stays dead for the rest of the session. So a pass that forks for nothing
+does not cost a roundtrip: it arms a delayed failure of the next real edit.
+
 ## Requirements
 
 ### R1 — content-level no-op detection in the solution update
@@ -70,6 +82,14 @@ on-disk content with the document's current text and **skip identical writes**.
 - Skipped entries are surfaced on the result as `SolutionUpdateResult.UpToDateChanges`
   (a `ChangeSet`) — they were **consumed** (their content is in the solution), *not*
   ignored. The manager reports them with a single verbose line.
+- The analyzer-config refresh that follows an add/remove obeys the same rule, on both counts.
+  It runs only when an add/remove was **actually applied**: a requested add mutates nothing
+  when the document is already in the project (the updater de-duplicates it by path — a
+  re-observed creation) or when it targets no project in this solution, and an empty remove
+  list removes nothing, so the decision cannot be read off `ChangeSet.HasAddOrRemove`, which
+  describes what was *requested*. And when it does run, each config is compared before being
+  rewritten, exactly like the document texts above — rewriting byte-identical config text
+  forks the snapshot all the same, which is the fork this requirement exists to prevent.
 
 ### R2 — the info file stays a first-class change
 
@@ -125,6 +145,9 @@ Unit tests in `src/Uno.HotReload.Tests/`:
    returns the original solution + non-empty `UpToDateChanges`) → outcome `NoChanges`, the
    emitter is never invoked, no blocked-compilation audit line, and the up-to-date entries
    are reported.
+6. **De-duplicated add** (`Given_SolutionUpdater`): a change-set adding a document whose path
+   is already in the project → returned solution is reference-equal to the input, so the
+   analyzer-config refresh does not fork what the add itself did not mutate.
 
 ## Resolved decisions
 
