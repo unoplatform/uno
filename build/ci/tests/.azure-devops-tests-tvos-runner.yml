@@ -35,6 +35,9 @@ jobs:
     value: $(Pipeline.Workspace)/.nuget/packages
   - name: UITEST_ALLOW_RERUN
     value: ${{ parameters.UITEST_ALLOW_RERUN }}
+  # The first run only fails on failed tests when there is no second run to do it.
+  - name: FAIL_TESTS_ON_NO_RERUN
+    value: ${{ eq(parameters.UITEST_ALLOW_RERUN, 'false') }}
   - name: SamplesAppArtifactName
     value: ${{ parameters.SamplesAppArtifactName }}
   - ${{ if and(eq(parameters.SamplesAppArtifactName, ''), ne(parameters.BuildJobName, '')) }}:
@@ -75,21 +78,6 @@ jobs:
       rm -f ${HOME}/Library/Preferences/Xamarin/Settings.plist
     # https://github.com/actions/virtual-environments/issues/1932
     displayName: Apply workaround for Azure Devops issue 1932
-
-  - task: PowerShell@2
-    displayName: 'Fill Rerun Variable'
-    inputs:
-      ## Expression evaluation for task parameters is not supported
-      ## Invert UITEST_ALLOW_RERUN in a task
-      targetType: inline
-      script: |
-        Set-PSDebug -Trace 1
-        if( "${{ parameters.UITEST_ALLOW_RERUN }}" -eq "false") {
-          $val = "true"
-        } else {
-          $val = "false"
-        }
-        echo "##vso[task.setvariable variable=FAIL_TESTS_ON_NO_RERUN]$val"
 
   - bash: |
       TFM="$(netCurrentTargetFramework)-tvos" $(build.sourcesdirectory)/build/test-scripts/tvos-uitest-run.sh
