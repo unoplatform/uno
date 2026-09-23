@@ -255,8 +255,13 @@ namespace Microsoft.UI.Xaml
 
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
-			// Hold the splash on the Skia path until the first Skia frame is presented (see the render views).
+			// Hold the window's draws until a Skia frame is presented (see the render views).
 			NativeWindowWrapper.Instance.ArmFirstFrameGate();
+			if (_renderView is not null)
+			{
+				// A recreated Activity reuses the render view, so request the frame that releases the gate.
+				InvalidateRender();
+			}
 
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;

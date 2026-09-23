@@ -1,6 +1,7 @@
 ﻿#nullable disable
 
 using System;
+using System.Threading;
 using Android.App;
 using Android.Runtime;
 using Android.Util;
@@ -28,9 +29,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	private readonly DisplayInformation _displayInformation;
 	private bool _contentViewAttachedToWindow;
 
-	// Armed by the Skia render path so splash dismissal waits for the first Skia frame; cleared once that frame is
-	// on screen. Native Android never arms it, so its splash keeps dismissing as soon as content is attached.
-	private volatile bool _awaitingFirstFrame;
+	// Armed on every ApplicationActivity creation so its window's draws wait for a Skia frame; released by the render
+	// view once that frame is presented. The render view outlives a recreated Activity, so it must not keep its own
+	// "already signaled" state: OnPreDraw would then cancel every draw of the new window, forever.
+	private int _awaitingFirstFrame;
 
 	private Rect _previousTrueVisibleBounds;
 
@@ -272,11 +274,14 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 #pragma warning restore 618
 	}
 
-	// Called on the Skia path (in ApplicationActivity.OnCreate) so the splash is held until the first Skia frame.
-	internal void ArmFirstFrameGate() => _awaitingFirstFrame = true;
+	internal void ArmFirstFrameGate() => Volatile.Write(ref _awaitingFirstFrame, 1);
 
-	// Called on the GL/Vulkan render thread once the first Skia frame has been presented.
-	internal void NotifyFirstFrameRendered() => _awaitingFirstFrame = false;
+	/// <summary>
+	/// Called on the GL/Vulkan render thread after each presented frame.
+	/// Returns true only for the frame that released an armed gate.
+	/// </summary>
+	internal bool TryReleaseFirstFrameGate()
+		=> Volatile.Read(ref _awaitingFirstFrame) == 1 && Interlocked.Exchange(ref _awaitingFirstFrame, 0) == 1;
 
 	private void AddPreDrawListener()
 	{
@@ -313,7 +318,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		public bool OnPreDraw()
 		{
 			if (_windowWrapper._contentViewAttachedToWindow
-				&& !_windowWrapper._awaitingFirstFrame)
+				&& Volatile.Read(ref _windowWrapper._awaitingFirstFrame) == 0)
 			{
 				_windowWrapper.RemovePreDrawListener();
 				return true;
