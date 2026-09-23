@@ -50,7 +50,11 @@ namespace Microsoft.UI.Xaml
 
 		internal static RelativeLayout RelativeLayout { get; private set; } = null!;
 
-		internal LayoutProvider LayoutProvider { get; private set; } = null!;
+		private LayoutProvider? _layoutProvider;
+
+		// Lazy: a recreated Activity that keeps its window (e.g. Activity.Recreate) attaches the reused content,
+		// and so starts the provider, from InitializeComponent, before OnCreate would have created it.
+		internal LayoutProvider LayoutProvider => _layoutProvider ??= CreateLayoutProvider();
 
 		internal static ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
 
@@ -263,13 +267,19 @@ namespace Microsoft.UI.Xaml
 				InvalidateRender();
 			}
 
-			LayoutProvider = new LayoutProvider(this);
-			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
-			LayoutProvider.InsetsChanged += OnInsetsChanged;
+			_ = LayoutProvider;
 
 			RaiseConfigurationChanges();
 
 			InitializeBackPressedCallback();
+		}
+
+		private LayoutProvider CreateLayoutProvider()
+		{
+			LayoutProvider layoutProvider = new(this);
+			layoutProvider.KeyboardChanged += OnKeyboardChanged;
+			layoutProvider.InsetsChanged += OnInsetsChanged;
+			return layoutProvider;
 		}
 
 		protected override void OnStart()
