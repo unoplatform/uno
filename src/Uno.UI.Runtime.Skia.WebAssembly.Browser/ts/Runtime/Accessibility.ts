@@ -322,16 +322,18 @@ namespace Uno.UI.Runtime.Skia {
 		 * C# fires focus synchronously but the JS DOM mutation hasn't been flushed yet.
 		 */
 		public static focusSemanticElement(handle: number) {
+			// XAML owns scrolling: a browser scroll of a semantic scroller would be fed back
+			// into the ScrollViewer through the scroll listener.
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.focus();
+				element.focus({ preventScroll: true });
 			} else {
 				// Element might not be in DOM yet due to batched/deferred mutations.
 				// Retry once after the next animation frame.
 				requestAnimationFrame(() => {
 					const retryElement = Accessibility.getSemanticElementByHandle(handle);
 					if (retryElement) {
-						retryElement.focus();
+						retryElement.focus({ preventScroll: true });
 					} else {
 						Accessibility.debugWarn(`[A11y] TS focusSemanticElement: element NOT FOUND handle=${handle} (after retry)`);
 					}
