@@ -7,6 +7,16 @@ internal interface IAutomationPeerListener
 	void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue);
 	void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId);
 	void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child);
+	void NotifyAccessibilityViewChanged(
+		global::Microsoft.UI.Xaml.UIElement element,
+		AccessibilityView oldValue,
+		AccessibilityView newValue)
+	{
+		if (element.GetOrCreateAutomationPeer() is { } peer)
+		{
+			NotifyAutomationEvent(peer, AutomationEvents.StructureChanged);
+		}
+	}
 
 	/// <summary>
 	/// Mirrors WinUI's <c>CAutomationPeer::InvalidatePeer</c>: re-evaluate the peer's

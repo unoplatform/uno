@@ -7,6 +7,7 @@ using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -917,6 +918,7 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceSingleCollectionChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}");
 			}
 			UpdateItems(args);
+			(FrameworkElementAutomationPeer.FromElement(this) as ItemsControlAutomationPeer)?.OnItemsChanged(args);
 		}
 
 		/// <summary>
@@ -929,6 +931,7 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceGroupsChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}, NoOfGroups={NumberOfGroups}");
 			}
 			UpdateItems(args);
+			(FrameworkElementAutomationPeer.FromElement(this) as ItemsControlAutomationPeer)?.OnItemsChanged(args);
 		}
 
 		internal virtual void OnGroupPropertyChanged(ICollectionViewGroup group, int groupIndex)
@@ -1355,19 +1358,29 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void PrepareContainerForIndex(DependencyObject container, int index)
 		{
 			_containerBeingPrepared = container;
+			try
+			{
+				// This must be set before calling PrepareContainerForItemOverride
+				container.SetValue(IndexForItemContainerProperty, index);
 
-			// This must be set before calling PrepareContainerForItemOverride
-			container.SetValue(IndexForItemContainerProperty, index);
-
-			var item = ItemFromIndex(index);
-			PrepareContainerForItemOverride(container, item);
-			ContainerPreparedForItem(item, container as SelectorItem, index);
-
-			_containerBeingPrepared = null;
+				var item = ItemFromIndex(index);
+				PrepareContainerForItemOverride(container, item);
+				ContainerPreparedForItem(item, container as SelectorItem, index);
+			}
+			finally
+			{
+				_containerBeingPrepared = null;
+			}
 		}
 
 		internal virtual void ContainerPreparedForItem(object item, SelectorItem itemContainer, int itemIndex)
 		{
+#if __SKIA__
+			if (AutomationPeer.AutomationPeerListener is not null)
+			{
+				CachedAutomationPeer?.InvalidatePeer();
+			}
+#endif
 		}
 
 		/// <summary>

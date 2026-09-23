@@ -598,6 +598,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				"A decorative AccessibilityView=Raw ItemsRepeater must not be emitted as a virtualized listbox (FR-031).");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_AccessibilityView_Changes_Then_Wasm_Semantic_Membership_Is_Rebuilt()
+		{
+			var button = new Button { Content = "Membership target" };
+			AutomationProperties.SetAccessibilityView(button, AccessibilityView.Raw);
+
+			await UITestHelper.Load(button);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitForIdle();
+			Assert.IsFalse(SemanticElementExists(button));
+
+			AutomationProperties.SetAccessibilityView(button, AccessibilityView.Content);
+			await UITestHelper.WaitFor(
+				() => SemanticElementExists(button),
+				timeoutMS: 5000,
+				message: "AccessibilityView Raw-to-Content did not add the semantic element.");
+
+			AutomationProperties.SetAccessibilityView(button, AccessibilityView.Raw);
+			await UITestHelper.WaitFor(
+				() => !SemanticElementExists(button),
+				timeoutMS: 5000,
+				message: "AccessibilityView Content-to-Raw did not remove the semantic element.");
+		}
+
 		/// <summary>
 		/// FR-014: main/navigation/search are top-level landmarks identified by role alone — an unnamed
 		/// Main must keep role=main. Only region/form (incl. Custom→region) require a name; an unnamed

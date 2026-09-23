@@ -46,10 +46,9 @@ namespace SamplesApp.UITests
 
 		static SampleControlUITestBase()
 		{
-			AppInitializer.TestEnvironment.AndroidAppName = Constants.AndroidAppName;
+			AppInitializer.TestEnvironment.AndroidAppName = Constants.EffectiveAndroidAppName;
 			AppInitializer.TestEnvironment.WebAssemblyDefaultUri = Constants.WebAssemblyDefaultUri;
-			AppInitializer.TestEnvironment.iOSAppName = Constants.iOSAppName;
-			AppInitializer.TestEnvironment.AndroidAppName = Constants.AndroidAppName;
+			AppInitializer.TestEnvironment.iOSAppName = Constants.EffectiveIOSAppName;
 			AppInitializer.TestEnvironment.iOSDeviceNameOrId = Constants.iOSDeviceNameOrId;
 			AppInitializer.TestEnvironment.CurrentPlatform = Constants.CurrentPlatform;
 

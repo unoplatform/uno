@@ -53,6 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_popup = new Popup()
 			{
+				IsContentDialog = true,
 				LightDismissOverlayMode = LightDismissOverlayMode.On,
 			};
 

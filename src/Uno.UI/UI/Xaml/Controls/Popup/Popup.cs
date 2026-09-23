@@ -27,6 +27,8 @@ public partial class Popup
 
 	internal bool IsSubMenu { get; set; }
 
+	internal bool IsContentDialog { get; set; }
+
 	internal bool IsForFlyout => AssociatedFlyout != null;
 
 	private ManagedWeakReference _associatedFlyoutWeakRef;

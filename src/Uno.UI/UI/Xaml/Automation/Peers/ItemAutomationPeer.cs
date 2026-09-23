@@ -22,6 +22,8 @@ public partial class ItemAutomationPeer : AutomationPeer, IVirtualizedItemProvid
 {
 	private readonly object _item;
 	private readonly ItemsControlAutomationPeer _itemsControlAutomationPeer;
+	private WeakReference<UIElement>? _realizedContainer;
+	private UIElement? _boundingRectangleContainer;
 
 	public ItemAutomationPeer(object item, ItemsControlAutomationPeer parent)
 	{
@@ -43,14 +45,81 @@ public partial class ItemAutomationPeer : AutomationPeer, IVirtualizedItemProvid
 	{
 		if (_itemsControlAutomationPeer?.Owner is ItemsControl itemsControl)
 		{
+			if (_boundingRectangleContainer is { } queryContainer &&
+				ReferenceEquals(itemsControl.ItemFromContainer(queryContainer), _item))
+			{
+				return queryContainer;
+			}
+
+			if (_realizedContainer?.TryGetTarget(out var realizedContainer) is true &&
+				ReferenceEquals(itemsControl.ItemFromContainer(realizedContainer), _item))
+			{
+				return realizedContainer;
+			}
+
 			return itemsControl.ContainerFromItem(_item) as UIElement;
 		}
 
 		return null;
 	}
 
+	internal void SetRealizedContainer(UIElement container)
+	{
+		_realizedContainer ??= new WeakReference<UIElement>(container);
+		_realizedContainer.SetTarget(container);
+	}
+
+	internal void ReleaseRealizedContainer(UIElement container)
+	{
+		if (FrameworkElementAutomationPeer.FromElement(container) is { } containerPeer &&
+			ReferenceEquals(containerPeer.EventsSource, this))
+		{
+			containerPeer.EventsSource = null;
+		}
+
+		if (_realizedContainer?.TryGetTarget(out var realizedContainer) is true &&
+			ReferenceEquals(realizedContainer, container))
+		{
+			_realizedContainer = null;
+		}
+	}
+
+	internal int GetItemIndex()
+	{
+		if (_itemsControlAutomationPeer.Owner is ItemsControl itemsControl)
+		{
+			var container = GetContainer();
+			if (container is not null)
+			{
+				return itemsControl.IndexFromContainer(container);
+			}
+
+			return itemsControl.Items.IndexOf(_item);
+		}
+
+		return -1;
+	}
+
 	internal AutomationPeer? GetContainerPeer()
 		=> GetContainer()?.GetOrCreateAutomationPeer();
+
+	internal IList<AutomationPeer>? GetChildrenForContainer(UIElement container)
+		=> container.GetOrCreateAutomationPeer()?.GetChildren();
+
+	internal Rect GetBoundingRectangleForContainer(UIElement container)
+	{
+		// Native occurrences share the WinUI item peer, but not their container geometry.
+		var previousContainer = _boundingRectangleContainer;
+		_boundingRectangleContainer = container;
+		try
+		{
+			return GetBoundingRectangle();
+		}
+		finally
+		{
+			_boundingRectangleContainer = previousContainer;
+		}
+	}
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
