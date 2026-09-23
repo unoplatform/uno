@@ -69,7 +69,7 @@ public static partial class Validation
 		// expression here instead of waiting for the next path re-resolution.
 		if (sender is Control control
 			&& FeatureConfiguration.InputValidation.IsEnabled
-			&& FeatureConfiguration.InputValidation.GetValidationProperty(control.GetType()) is { } property)
+			&& FeatureConfiguration.InputValidation.ValidationProperties[control.GetType()] is { } property)
 		{
 			if (control.GetBindingExpression(property) is { } expression)
 			{
@@ -84,7 +84,7 @@ public static partial class Validation
 	}
 
 	private static bool IsValidationProperty(Control control, DependencyProperty property)
-		=> FeatureConfiguration.InputValidation.GetValidationProperty(control.GetType()) == property;
+		=> FeatureConfiguration.InputValidation.ValidationProperties[control.GetType()] == property;
 
 	private static void Synchronize(Control control, BindingExpression expression)
 	{
