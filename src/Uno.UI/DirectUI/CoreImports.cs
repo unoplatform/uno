@@ -21,7 +21,6 @@ internal enum VisualRelativeKind
 internal static class CoreImports
 {
 	// MUX Reference CoreImports.cpp, commit 2b8c7757e — DependencyObject_GetVisualRelative.
-	// Child is not ported: it has no caller in Uno.
 	internal static DependencyObject? DependencyObject_GetVisualRelative(UIElement element, VisualRelativeKind relativeLinkKind)
 	{
 		ArgumentNullException.ThrowIfNull(element);
@@ -30,6 +29,7 @@ internal static class CoreImports
 		{
 			VisualRelativeKind.Parent => element.GetParentInternal(),
 			VisualRelativeKind.Root => element.GetTreeRoot(publicParentOnly: true),
+			VisualRelativeKind.Child => throw new NotSupportedException("VisualRelativeKind.Child is not ported: it has no caller in Uno."),
 			_ => throw new ArgumentOutOfRangeException(nameof(relativeLinkKind)),
 		};
 	}
