@@ -54,6 +54,7 @@ else
 fi
 
 kill $WATCHDOG_PID 2>/dev/null || true
+wait $WATCHDOG_PID 2>/dev/null || true
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
