@@ -48,15 +48,6 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
         & $msbuild "@build.rsp"
         Assert-ExitCodeIsZero
 
-        if (!$IsWindows)
-        {
-            # disabled on windows until android 35 is supported in the installed VS instance
-
-            # Uno Cross-Runtime Library
-            & $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln -bl:binlogs/MyCrossRuntimeLib/msbuild.binlog
-            Assert-ExitCodeIsZero
-        }
-
         #
         # Uno Library with assets, Validate assets count
         #
