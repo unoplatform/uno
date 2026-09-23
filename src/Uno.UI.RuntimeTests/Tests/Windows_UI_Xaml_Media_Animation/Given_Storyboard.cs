@@ -28,16 +28,24 @@ public class Given_Storyboard
 		Storyboard.SetTargetProperty(animation, "Foreground");
 		var storyboard = new Storyboard { Children = { animation } };
 
-		storyboard.Begin();
-		await TestServices.WindowHelper.WaitFor(() => ReferenceEquals(target.Foreground, red));
+		try
+		{
+			storyboard.Begin();
+			await TestServices.WindowHelper.WaitFor(() => ReferenceEquals(target.Foreground, red));
 
-		// A local value set after the animation wins while it is filling.
-		target.Foreground = blue;
-		Assert.AreSame(blue, target.Foreground);
+			// A local value set after the animation wins while it is filling.
+			target.Foreground = blue;
+			Assert.AreSame(blue, target.Foreground);
 
-		// Restarting re-applies the very value the animated slot already holds, which must retake precedence.
-		storyboard.Begin();
-		await TestServices.WindowHelper.WaitFor(() => ReferenceEquals(target.Foreground, red), message: "The restarted animation should win over the older local value.");
+			// Restarting re-applies the very value the animated slot already holds, which must retake precedence.
+			storyboard.Begin();
+			await TestServices.WindowHelper.WaitFor(() => ReferenceEquals(target.Foreground, red), message: "The restarted animation should win over the older local value.");
+		}
+		finally
+		{
+			// A filling animation must not outlive the test.
+			storyboard.Stop();
+		}
 	}
 
 	[TestMethod]
