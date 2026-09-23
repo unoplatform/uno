@@ -20,7 +20,7 @@ public class Given_Enability_UITest
 {
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ButtonDisabled_Then_NoPointerEvents()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
@@ -56,7 +56,7 @@ public class Given_Enability_UITest
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ButtonDisabling_Then_NoMorePointerEvents()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)

@@ -14,9 +14,6 @@ public class Given_SplitView_UITest
 	// SplitView whose compact pane must occupy exactly CompactPaneLength, leaving the content area to its left unclipped.
 	[TestMethod]
 	[RunsOnUIThread]
-#if !HAS_RENDER_TARGET_BITMAP
-	[Ignore("Cannot take screenshot on this platform.")]
-#endif
 	public async Task When_RightPane_Clipped()
 	{
 		var targetRect = new Border

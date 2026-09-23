@@ -21,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_CheckBox_UITest
 {
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_TwoState_Tapped_Toggles()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
@@ -76,7 +76,7 @@ public class Given_CheckBox_UITest
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ThreeState_Tapped_Cycles()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)

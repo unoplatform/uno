@@ -41,7 +41,7 @@ public class Given_NumberBox_Uno_UITest : SampleControlUITestBase
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeWinUI)] // Screenshots need HAS_RENDER_TARGET_BITMAP, unavailable on native WASM (DOM); WinUI lacks InputInjector in the MSIX.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI lacks InputInjector in the MSIX.
 	public async Task When_Description_Is_Custom_Content()
 	{
 		var descriptionBorder = new Border
@@ -66,7 +66,7 @@ public class Given_NumberBox_Uno_UITest : SampleControlUITestBase
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
 	public async Task When_Text_Parsed_With_Custom_DecimalFormatter()
 	{
 		try

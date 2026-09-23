@@ -27,7 +27,6 @@ public class Given_Path_UITest
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm)]
 	[DataRow(DataStyle.PathDataString, FillRule.EvenOdd)]
 	[DataRow(DataStyle.PathDataString, FillRule.Nonzero)]
 	[DataRow(DataStyle.PathGeometryFigures, FillRule.EvenOdd)]
