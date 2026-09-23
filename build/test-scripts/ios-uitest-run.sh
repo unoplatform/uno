@@ -206,9 +206,17 @@ xcrun simctl list devices --json > $DEVICELIST_FILEPATH
 # https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
 export PATH=$PATH:~/.local/bin
 
+# Installing idb needs Homebrew, GitHub and PyPI, any of which can fail for a minute. That is no
+# reason to abort the job: the app install below falls back to `xcrun simctl install`.
+IDB_AVAILABLE=true
+
 if ! command -v idb >/dev/null 2>&1
 then
 	echo "Installing idb (fb-idb + idb-companion) pinned to Python 3.12"
+
+	set +e
+	(
+	set -e
 
 	# 1) Make sure we have a usable python3.12, but don't fail if Homebrew linking conflicts
 	if ! command -v python3.12 >/dev/null 2>&1; then
@@ -222,7 +230,6 @@ then
 
 	# 2) Install helpers
 	brew list --versions pipx >/dev/null 2>&1 || brew install pipx
-	brew tap facebook/fb >/dev/null 2>&1 || true
 	# Pin the tap to the v1.1.8 formula. Its tip (1.5.0.b2) requires macOS
 	# Sequoia and Xcode 26, which the macOS 14 UI test agents cannot satisfy,
 	# so `brew install idb-companion` aborts with "Unsatisfied requirements".
@@ -232,13 +239,23 @@ then
 	export HOMEBREW_NO_AUTO_UPDATE=1
 	IDB_TAP_REVISION=c0386793f59da10c619787f2aa18d938ef1d69c9
 	IDB_TAP_REPO="$(brew --repo facebook/fb)"
+
+	# `brew tap` fails now and then, twice in a row on the same agent in one build. A tap is only
+	# a git checkout under Taps/, so clone it directly when brew cannot.
+	for attempt in 1 2 3; do
+		[ -d "$IDB_TAP_REPO/.git" ] && break
+		echo "Tapping facebook/fb (attempt $attempt)"
+		brew tap facebook/fb && continue
+		rm -rf "$IDB_TAP_REPO"
+		git clone https://github.com/facebook/homebrew-fb "$IDB_TAP_REPO" && continue
+		rm -rf "$IDB_TAP_REPO"
+		sleep 15
+	done
 	if [ ! -d "$IDB_TAP_REPO/.git" ]; then
 		echo "Tap facebook/fb is not checked out at $IDB_TAP_REPO — cannot pin idb-companion." >&2
 		exit 1
 	fi
-	git -C "$IDB_TAP_REPO" fetch --depth 1 origin "$IDB_TAP_REVISION" \
-		|| git -C "$IDB_TAP_REPO" fetch --unshallow origin \
-		|| git -C "$IDB_TAP_REPO" fetch origin
+	git -C "$IDB_TAP_REPO" fetch --depth 1 origin "$IDB_TAP_REVISION" 		|| git -C "$IDB_TAP_REPO" fetch --unshallow origin 		|| git -C "$IDB_TAP_REPO" fetch origin
 	git -C "$IDB_TAP_REPO" checkout --detach --force "$IDB_TAP_REVISION"
 
 	# Newer Homebrew on the runner images gates third-party taps: installing
@@ -247,9 +264,7 @@ then
 	# formula we need (least privilege); fall back to tap-level trust for brew
 	# versions that only support that form. Older brews have no `trust` command
 	# at all — best effort, the install below still surfaces any real failure.
-	brew trust --formula facebook/fb/idb-companion >/dev/null 2>&1 \
-		|| brew trust facebook/fb >/dev/null 2>&1 \
-		|| true
+	brew trust --formula facebook/fb/idb-companion >/dev/null 2>&1 		|| brew trust facebook/fb >/dev/null 2>&1 		|| true
 	brew list --versions idb-companion >/dev/null 2>&1 || brew install idb-companion
 
 	# 3) Install fb-idb under Python 3.12
@@ -257,6 +272,14 @@ then
 	# Pinned: the companion is pinned to a tap revision, so leaving the Python client floating
 	# means an upstream release can change the harness under a fixed simulator/Xcode pair.
 	pipx install --force 'fb-idb==1.1.7'
+	)
+	IDB_SETUP_STATUS=$?
+	set -e
+
+	if [ "$IDB_SETUP_STATUS" -ne 0 ] || ! command -v idb >/dev/null 2>&1; then
+		IDB_AVAILABLE=false
+		echo "##vso[task.logissue type=warning]UNOBLD009: idb could not be installed (exit $IDB_SETUP_STATUS); the app will be installed with xcrun simctl"
+	fi
 else
 	echo "Using idb from: $(command -v idb)"
 fi
@@ -302,7 +325,9 @@ echo "Simulator boot wait finished ($(date))"
 # then fall back to simctl. simctl install is only the fallback because it was historically
 # unreliable here (microsoft/appcenter#2389), but an install that works is better than a
 # stage retry that pays for the artifact download and the toolchain install all over again.
-if ! idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"; then
+if [ "$IDB_AVAILABLE" != "true" ]; then
+	xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
+elif ! idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"; then
 	echo "##vso[task.logissue type=warning]idb install failed; retrying once with debug logging"
 	idb kill >/dev/null 2>&1 || true
 
