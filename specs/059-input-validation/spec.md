@@ -64,8 +64,8 @@ not change anything 059 establishes.
 
 Two unrelated static classes in this document sit next to each other, and are deliberately named apart:
 
-- **`Uno.UI.FeatureConfiguration.InputValidation`** — the global switch and the validation-property lookup
-  cache (§3.4).
+- **`Uno.UI.FeatureConfiguration.InputValidation`** — the global switch and the public validation-property
+  map (§3.4).
 - **`Validation`** — the attached-property owner holding `IsEnabled` / `HasErrors` / `Errors` (§4.1). Which
   namespace *this* one lands in is [Q3](#9-open-decisions).
 
@@ -410,14 +410,15 @@ It holds two things:
 an off position means apps that never validate pay nothing for the machinery. See [Q9](#9-open-decisions)
 for whether a chainable `UseInputValidation()` is *also* offered as a convenience over it.
 
-**2. The validation-property lookup cache.** Four constraints on its shape:
+**2. The validation-property map.** Four constraints on its shape:
 
 - **Key it `Type → DependencyProperty?`, not `HashSet<DependencyProperty>`.** A set of DPs would
   reintroduce exactly the per-DP-global problem §3.3 exists to fix — `RangeBase.ValueProperty` in the set
   means `ProgressBar` participates. **Cache the negative answer too**, or every non-participating control
   re-walks its attributes on every value change. The *singular* value is `AllowMultiple = false`
   ([D9](#7-decisions-locked)) showing through: if the attribute is ever widened, this widens to a list with
-  it, which is one more reason the lookup is a method and not an exposed map.
+  it — and since the map is public (third bullet), that widening is a binary break where a method over
+  an internal map would have absorbed it. That is the accepted price of the extensibility.
 - **UI-thread-affine, not concurrent.** `GetProperty` *throws* off the UI thread unless
   `FeatureConfiguration.DependencyProperty.DisableThreadingCheck` is set (`DependencyProperty.cs:373-376`),
   and its own `_getPropertyCache` is guarded by a shared mutable `_searchPropertyCacheEntry` static — the DP
@@ -425,9 +426,14 @@ for whether a chainable `UseInputValidation()` is *also* offered as a convenienc
   invent a concurrent one. **The distinction that matters: DP resolution is UI-thread-bound, but
   `ErrorsChanged` is not** — a view model may raise it from a background thread, so the error *sync* needs a
   dispatch hop that the *resolution* does not.
-- **Keep the map `internal`.** `FeatureConfiguration` is a public toggles surface; the cache is an
-  implementation detail. A public registration entry point, for controls that cannot carry the attribute, is
-  worth offering as a deliberate choice — but it should be a method, not an exposed dictionary.
+- **Expose the map; do not wrap it in a method.** A control that cannot carry the attribute — sealed, or
+  from a library that does not reference Uno — still has to be able to take part, and the map *is* that
+  registration entry point rather than something bolted next to it:
+  `FeatureConfiguration.InputValidation.ValidationProperties[typeof(X)] = X.TextProperty`, with `null` as the
+  explicit opt-out and `Remove` as the undo. A write supersedes an already memoized answer, so a registration
+  is not hostage to whether something read the type first. The type stays sealed with an internal constructor
+  and offers no `Clear()` — a process-wide registration surface that any library could wipe is not worth the
+  convenience.
 - **Do not pin types across a collectible ALC unload.** A plain `static Dictionary<Type, …>` in `Uno.UI`
   roots every key type and its assembly, which is the class of leak `specs/044-alc-memory-leak-fixes` and
   `specs/048-hotreload-collectible-alc-agent-teardown` exist to prevent. Either key weakly, or clear on ALC
@@ -576,13 +582,13 @@ That is the whole opt-in: one attached property on the control, and a binding wh
 | **D6a** | **Participation** is decided at `DependencyPropertyDetailsCollection.SetBinding` (`Bindings.cs:148`) — the point where both `SetBindingInternal` overloads converge, and where `ResourceBinding` is already structurally excluded. |
 | **D6b** | **Resolution** is a separate job with a different lifetime. The `INotifyDataErrorInfo` is the binding's **leaf** (`BindingExpression.DataItem`), not the root `DataContext`, and it is not resolvable at binding-set time. It is (re)resolved through `BindingExpression.OnValueChanged`. |
 | **D7** | `IInputValidationControl`'s event reuses the BCL handler type, `EventHandler<DataErrorsChangedEventArgs>` — no new delegate or args type. |
-| **D8** | The validation property is declared by **`[InputValidationProperty]` on the control type**, resolved through the existing `DependencyProperty.GetProperty(Type, string)` and cached `Type → DependencyProperty?` under `FeatureConfiguration.InputValidation`. A `FrameworkPropertyMetadataOptions` flag was **considered and rejected** (§3.3): a DP is registered once per inheritance branch and Uno has no `OverrideMetadata`, so a per-DP flag cannot distinguish `Slider` from `ProgressBar`. The enum is left untouched. |
+| **D8** | The validation property is declared by **`[InputValidationProperty]` on the control type**, resolved through the existing `DependencyProperty.GetProperty(Type, string)` and memoized in `FeatureConfiguration.InputValidation.ValidationProperties`, a **public, writable** `Type → DependencyProperty?` map that doubles as the registration entry point for controls which cannot carry the attribute (§3.4). A `FrameworkPropertyMetadataOptions` flag was **considered and rejected** (§3.3): a DP is registered once per inheritance branch and Uno has no `OverrideMetadata`, so a per-DP flag cannot distinguish `Slider` from `ProgressBar`. The enum is left untouched. |
 | **D9** | That attribute is **new and Uno-owned** — `InputValidationPropertyAttribute`, `AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)`, with `Name` as a constructor-set property. WinUI's `InputPropertyAttribute` is **neither reused nor honoured as a fallback**: it carries a different meaning (XAML child-element processing), and `ComboBox` already applies it for that meaning, which a fallback would misread as a validation opt-in (§3.3). `AllowMultiple = false` is a *for now* — `ComboBox` (`Text` **and** `SelectedItem`) is the case that would trigger a revisit, and widening `false → true` later is source- and binary-compatible for every type that applied it once. `Inherited = true` so that a third-party `MyTextBox : TextBox` participates unchanged, under the convention that the attribute is applied to the type owning the input and never to a shared base with non-validating subclasses. |
 | **D5** | *Deferred to spec 060* — error placement fixed by the control template in a first pass. |
 
 ## 8. Suggested sequencing
 
-1. `FeatureConfiguration.InputValidation` — the switch and the cache (§3.4). Self-contained, no behaviour change.
+1. `FeatureConfiguration.InputValidation` — the switch and the map (§3.4). Self-contained, no behaviour change.
 2. `InputValidationPropertyAttribute` and its resolution (§3.3), with unit tests over the `Slider`/`ProgressBar`
    and `ComboBox`/`FlipView` inheritance cases — those are what the flag route could not express, so they
    are the tests that justify the decision — plus one that a derived type's own attribute shadows its
@@ -646,9 +652,10 @@ are the rest.
 - **No read-only attached dependency property exists in Uno** — no `DependencyPropertyKey`, no
   `RegisterAttachedReadOnly`. `HasErrors` and `Errors` use a public getter with an internal setter, which
   leaves them technically settable from XAML through `SetValue`.
-- **`FeatureConfiguration` hosts no other cache**, so `InputValidation` is a new shape there. The lookup is
-  `internal` and backed by a `ConditionalWeakTable<Type, …>`, the established repo answer for a `Type`-keyed
-  cache that must not pin a collectible `AssemblyLoadContext`; no teardown hook is needed with weak keys.
+- **`FeatureConfiguration` hosts no other cache**, so `InputValidation` is a new shape there. The map is
+  **public and writable** — the registration entry point for controls that cannot carry the attribute — and
+  backed by a `ConditionalWeakTable<Type, …>`, the established repo answer for a `Type`-keyed cache that
+  must not pin a collectible `AssemblyLoadContext`; no teardown hook is needed with weak keys.
 - **The naming collision §1 flags reaches the code.** `Uno.UI.Xaml.Controls` also holds static `ComboBox` and
   `ScrollViewer` classes, so the participating controls alias the namespace rather than importing it.
 - **Most of the transport is unit-testable.** `Uno.UI.UnitTests` references the real Skia `Uno.UI` and needs

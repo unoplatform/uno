@@ -10,8 +10,9 @@ namespace Uno.UI.Xaml.Controls;
 /// </summary>
 /// <remarks>
 /// Uno only, and public so that third-party controls can participate. A control also has to declare its
-/// input through <see cref="InputValidationPropertyAttribute"/>; implementing this interface on its own reports
-/// nothing.
+/// input through <see cref="InputValidationPropertyAttribute"/>, or have it registered in
+/// <see cref="Uno.UI.FeatureConfiguration.InputValidation.ValidationProperties"/>, and to opt in through
+/// <see cref="Validation.IsEnabledProperty"/>; implementing this interface on its own reports nothing.
 /// </remarks>
 public interface IInputValidationControl
 {

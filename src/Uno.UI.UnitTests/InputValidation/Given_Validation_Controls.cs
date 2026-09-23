@@ -111,7 +111,7 @@ public partial class Given_Validation_Controls
 		Assert.AreEqual(1, raised, "the handler was removed");
 	}
 
-	private static DependencyProperty? Resolve<T>() => FeatureConfiguration.InputValidation.GetValidationProperty(typeof(T));
+	private static DependencyProperty? Resolve<T>() => FeatureConfiguration.InputValidation.ValidationProperties[typeof(T)];
 
 	private partial class CustomTextBox : TextBox;
 
