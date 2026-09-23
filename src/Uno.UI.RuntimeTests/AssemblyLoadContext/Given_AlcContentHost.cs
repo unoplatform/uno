@@ -847,6 +847,28 @@ public class Given_AlcContentHost
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_AlcWindow_ContentSet_Then_ContentChangedRaised()
+	{
+		var (_, alcWindow) = await StartSecondaryAlcAppWithWindowAsync(new[] { "--defer-content" });
+
+		UIElement? contentAtEvent = null;
+		var fireCount = 0;
+		alcWindow.ContentChanged += (_, _) =>
+		{
+			fireCount++;
+			contentAtEvent = alcWindow.Content;
+		};
+
+		ApplyDeferredContentFromSecondaryApp();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, fireCount, "ContentChanged should fire when secondary ALC content is redirected to the host");
+		Assert.IsNotNull(contentAtEvent, "Window.Content should already reflect the hosted content when ContentChanged fires");
+		Assert.AreSame(alcWindow.Content, contentAtEvent);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_Then_VisibleReturnsHostVisibility()
 	{
 		var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
