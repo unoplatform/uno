@@ -1,8 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Collections.Generic;
 using SkiaSharp;
 using Microsoft.UI.Composition;
 
@@ -20,16 +18,15 @@ internal sealed class SkiaEffectFuser
 	// deferred source", not "failed to build"). A parent op keeps a null child in that case and clears the flag once consumed.
 	private bool _isSource;
 
-	// Every Skia wrapper a fuse allocates. Skia filters, colour filters and shaders are natively refcounted and a
-	// parent takes its own reference on each input, so disposing all of these but the root frees exactly the orphans.
-	private readonly List<SKObject> _intermediates = new();
-
 	/// <summary>Why the last <see cref="FuseGraph"/> produced no filter; null when it produced one.</summary>
 	internal string? FailureReason { get; private set; }
 
 	/// <summary>
-	/// Fuses <paramref name="node"/> into a single filter and releases every intermediate the fuse allocated — only
-	/// the returned root reaches the caller. Null means the graph can't be realized (see <see cref="FailureReason"/>).
+	/// Fuses <paramref name="node"/> into a single filter DAG. Null means the graph can't be realized (see
+	/// <see cref="FailureReason"/>).
+	/// <para>The interior wrappers a fuse allocates are deliberately NOT disposed, and must not be held in a
+	/// collection either: doing so corrupted the heap under WebAssembly (every WASM runtime-test shard died
+	/// with "memory access out of bounds"). Their native objects are refcounted by their parents regardless.</para>
 	/// </summary>
 	internal SKImageFilter? FuseGraph(EffectNode node, SKRect bounds)
 	{
@@ -37,43 +34,15 @@ internal sealed class SkiaEffectFuser
 		_isSource = false;
 		FailureReason = null;
 
-		SKImageFilter? root = null;
-		try
+		var root = Fuse(node, bounds);
+		if (root is null)
 		{
-			root = Fuse(node, bounds);
-			if (root is null)
-			{
-				FailureReason ??= _isSource
-					? "the graph is a bare backdrop source with no operation applied"
-					: $"'{node.GetType().Name}' produced no filter";
-			}
-
-			return root;
-		}
-		finally
-		{
-			foreach (var intermediate in _intermediates)
-			{
-				if (!ReferenceEquals(intermediate, root))
-				{
-					intermediate.Dispose();
-				}
-			}
-
-			_intermediates.Clear();
-		}
-	}
-
-	// Skia's factories return null on failure, so the tracked resource is nullable in and nullable out.
-	[return: NotNullIfNotNull(nameof(resource))]
-	private T? Track<T>(T? resource) where T : SKObject
-	{
-		if (resource is not null)
-		{
-			_intermediates.Add(resource);
+			FailureReason ??= _isSource
+				? "the graph is a bare backdrop source with no operation applied"
+				: $"'{node.GetType().Name}' produced no filter";
 		}
 
-		return resource;
+		return root;
 	}
 
 	private SKImageFilter? Fail(string reason)
@@ -107,25 +76,25 @@ internal sealed class SkiaEffectFuser
 					{
 						// Plain finite image: place it back at bounds (it was rasterized in bounds-space at the origin).
 						var dst = new SKRect(bounds.Left, bounds.Top, bounds.Left + logical.Width, bounds.Top + logical.Height);
-						return Track(SKImageFilter.CreateImage(img, src, dst, new SKSamplingOptions(SKFilterMode.Linear)));
+						return SKImageFilter.CreateImage(img, src, dst, new SKSamplingOptions(SKFilterMode.Linear));
 					}
 
 					// BorderEffect: extend the source's own rectangle to infinity per the edge mode; downstream sampling
 					// over `bounds` then sees the tiled/mirrored/clamped fill. Mirrors the legacy Border realization.
-					var imageFilter = Track(SKImageFilter.CreateImage(img, src, logical, new SKSamplingOptions(SKFilterMode.Linear)));
+					var imageFilter = SKImageFilter.CreateImage(img, src, logical, new SKSamplingOptions(SKFilterMode.Linear));
 					var mode = PickExtend(texture.ExtendX, texture.ExtendY);
 					if (mode == SKShaderTileMode.Repeat)
 					{
-						return Track(SKImageFilter.CreateTile(logical, bounds, imageFilter));
+						return SKImageFilter.CreateTile(logical, bounds, imageFilter);
 					}
 
 					ReadOnlySpan<float> identityKernel = [0, 0, 0, 0, 1, 0, 0, 0, 0];
-					return Track(SKImageFilter.CreateMatrixConvolution(new SKSizeI(3, 3), identityKernel, 1f, 0f, new SKPointI(1, 1), mode, true, imageFilter, bounds));
+					return SKImageFilter.CreateMatrixConvolution(new SKSizeI(3, 3), identityKernel, 1f, 0f, new SKPointI(1, 1), mode, true, imageFilter, bounds);
 				}
 
 			case ColorInput color:
 				// ColorSource fills bounds; no input. Does not clear the backdrop flag (matches the legacy generator).
-				return Track(SKImageFilter.CreateColorFilter(Track(SKColorFilter.CreateBlendMode(color.Color.ToSKColor(), SKBlendMode.Src)), null, bounds));
+				return SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(color.Color.ToSKColor(), SKBlendMode.Src), null, bounds);
 
 			case ColorMatrixEffectNode cm:
 				{
@@ -136,7 +105,7 @@ internal sealed class SkiaEffectFuser
 					}
 
 					_isSource = false;
-					return Track(SKImageFilter.CreateColorFilter(Track(SKColorFilter.CreateColorMatrix(cm.Matrix)), source, bounds));
+					return SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(cm.Matrix), source, bounds);
 				}
 
 			case ModulateEffectNode modulate:
@@ -149,7 +118,7 @@ internal sealed class SkiaEffectFuser
 
 					_isSource = false;
 					// Tint: per-channel multiply by the colour, clamped to [0,1] — matches the legacy Tint realization.
-					return Track(SKImageFilter.CreateColorFilter(Track(SKColorFilter.CreateBlendMode(modulate.Color.ToSKColor(), SKBlendMode.Modulate)), source, bounds));
+					return SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(modulate.Color.ToSKColor(), SKBlendMode.Modulate), source, bounds);
 				}
 
 			case LuminanceToAlphaEffectNode luma:
@@ -161,7 +130,7 @@ internal sealed class SkiaEffectFuser
 					}
 
 					_isSource = false;
-					return Track(SKImageFilter.CreateColorFilter(Track(SKColorFilter.CreateLumaColor()), source, bounds));
+					return SKImageFilter.CreateColorFilter(SKColorFilter.CreateLumaColor(), source, bounds);
 				}
 
 			case ContrastEffectNode contrast:
@@ -227,11 +196,10 @@ internal sealed class SkiaEffectFuser
 						return Fail($"an effect shader failed to compile: {errors}");
 					}
 
-					Track(runtimeEffect);
 					var uniforms = new SKRuntimeEffectUniforms(runtimeEffect) { { "contrastValue", contrast.Contrast } };
 					var children = new SKRuntimeEffectChildren(runtimeEffect);
 					children.Add("input", null);
-					return Track(SKImageFilter.CreateColorFilter(Track(runtimeEffect.ToColorFilter(uniforms, children)), source, bounds));
+					return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), source, bounds);
 				}
 
 			case LinearTransferEffectNode transfer:
@@ -292,7 +260,6 @@ internal sealed class SkiaEffectFuser
 						return Fail($"an effect shader failed to compile: {errors}");
 					}
 
-					Track(runtimeEffect);
 					var uniforms = new SKRuntimeEffectUniforms(runtimeEffect)
 				{
 					{ "redOffset", transfer.Offsets[0] },
@@ -306,7 +273,7 @@ internal sealed class SkiaEffectFuser
 				};
 					var children = new SKRuntimeEffectChildren(runtimeEffect);
 					children.Add("input", null);
-					return Track(SKImageFilter.CreateColorFilter(Track(runtimeEffect.ToColorFilter(uniforms, children)), source, bounds));
+					return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), source, bounds);
 				}
 
 			case GammaTransferEffectNode gamma:
@@ -371,7 +338,6 @@ internal sealed class SkiaEffectFuser
 						return Fail($"an effect shader failed to compile: {errors}");
 					}
 
-					Track(runtimeEffect);
 					var uniforms = new SKRuntimeEffectUniforms(runtimeEffect)
 				{
 					{ "redAmplitude", gamma.Amplitudes[0] },
@@ -389,7 +355,7 @@ internal sealed class SkiaEffectFuser
 				};
 					var children = new SKRuntimeEffectChildren(runtimeEffect);
 					children.Add("input", null);
-					return Track(SKImageFilter.CreateColorFilter(Track(runtimeEffect.ToColorFilter(uniforms, children)), source, bounds));
+					return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), source, bounds);
 				}
 
 			case Transform2DEffectNode transform:
@@ -401,9 +367,9 @@ internal sealed class SkiaEffectFuser
 					}
 
 					_isSource = false;
-					return Track(SKImageFilter.CreateMerge(
-						(ReadOnlySpan<SKImageFilter>)[Track(SKImageFilter.CreateMatrix(transform.Matrix.ToSKMatrix(), new SKSamplingOptions(SKCubicResampler.CatmullRom), source))],
-						bounds));
+					return SKImageFilter.CreateMerge(
+						(ReadOnlySpan<SKImageFilter>)[SKImageFilter.CreateMatrix(transform.Matrix.ToSKMatrix(), new SKSamplingOptions(SKCubicResampler.CatmullRom), source)],
+						bounds);
 				}
 
 			case BlurEffectNode blur:
@@ -416,9 +382,9 @@ internal sealed class SkiaEffectFuser
 
 					_isSource = false;
 
-					return Track(blur.ClampEdge
+					return blur.ClampEdge
 						? SKImageFilter.CreateBlur(blur.Sigma, blur.Sigma, SKShaderTileMode.Clamp, source, bounds)
-						: SKImageFilter.CreateBlur(blur.Sigma, blur.Sigma, source, bounds));
+						: SKImageFilter.CreateBlur(blur.Sigma, blur.Sigma, source, bounds);
 				}
 
 			case BlendEffectNode blend:
@@ -436,7 +402,7 @@ internal sealed class SkiaEffectFuser
 					}
 
 					_isSource = false;
-					return Track(SKImageFilter.CreateBlendMode(SkiaDrawingSession.ToSKBlendMode(blend.Mode), background, foreground, bounds));
+					return SKImageFilter.CreateBlendMode(SkiaDrawingSession.ToSKBlendMode(blend.Mode), background, foreground, bounds);
 				}
 
 			case CompositeEffectNode composite:
@@ -459,7 +425,7 @@ internal sealed class SkiaEffectFuser
 						var next = Fuse(composite.Sources[i], bounds);
 						if (next is not null && !_isSource)
 						{
-							current = Track(SKImageFilter.CreateBlendMode(mode, current, next, bounds));
+							current = SKImageFilter.CreateBlendMode(mode, current, next, bounds);
 						}
 
 						_isSource = false;
@@ -483,7 +449,7 @@ internal sealed class SkiaEffectFuser
 					}
 
 					_isSource = false;
-					return Track(SKImageFilter.CreateBlendMode(SKBlendMode.SrcIn, maskFilter, sourceFilter, bounds));
+					return SKImageFilter.CreateBlendMode(SKBlendMode.SrcIn, maskFilter, sourceFilter, bounds);
 				}
 
 			case ArithmeticCompositeEffectNode arithmetic:
@@ -501,7 +467,7 @@ internal sealed class SkiaEffectFuser
 					}
 
 					_isSource = false;
-					return Track(SKImageFilter.CreateArithmetic(arithmetic.Multiply, arithmetic.Source1, arithmetic.Source2, arithmetic.Offset, false, background, foreground, bounds));
+					return SKImageFilter.CreateArithmetic(arithmetic.Multiply, arithmetic.Source1, arithmetic.Source2, arithmetic.Offset, false, background, foreground, bounds);
 				}
 
 			case CrossFadeEffectNode crossFade:
@@ -530,14 +496,14 @@ internal sealed class SkiaEffectFuser
 						return filter2;
 					}
 
-					var fbFilter = Track(SKImageFilter.CreateColorFilter(Track(SKColorFilter.CreateColorMatrix(
+					var fbFilter = SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(
 						new[]
 						{
 						weight, 0f,     0f,     0f,     0f,
 						0f,     weight, 0f,     0f,     0f,
 						0f,     0f,     weight, 0f,     0f,
 						0f,     0f,     0f,     weight, 0f,
-						})), filter2));
+						}), filter2);
 
 					var shader =
 	"""
@@ -557,12 +523,11 @@ internal sealed class SkiaEffectFuser
 						return Fail($"the cross-fade shader failed to compile: {crossFadeErrors}");
 					}
 
-					Track(crossFadeEffect);
 					var crossFadeUniforms = new SKRuntimeEffectUniforms(crossFadeEffect) { { "crossfade", weight } };
 					var crossFadeChildren = new SKRuntimeEffectChildren(crossFadeEffect);
 					crossFadeChildren.Add("input", null);
-					var amafFilter = Track(SKImageFilter.CreateColorFilter(Track(crossFadeEffect.ToColorFilter(crossFadeUniforms, crossFadeChildren)), filter1));
-					return Track(SKImageFilter.CreateBlendMode(SKBlendMode.Plus, fbFilter, amafFilter, bounds));
+					var amafFilter = SKImageFilter.CreateColorFilter(crossFadeEffect.ToColorFilter(crossFadeUniforms, crossFadeChildren), filter1);
+					return SKImageFilter.CreateBlendMode(SKBlendMode.Plus, fbFilter, amafFilter, bounds);
 				}
 
 			case WhiteNoiseEffectNode noise:
@@ -601,13 +566,12 @@ internal sealed class SkiaEffectFuser
 						return Fail($"the noise shader failed to compile: {noiseErrors}");
 					}
 
-					Track(noiseEffect);
 					var noiseUniforms = new SKRuntimeEffectUniforms(noiseEffect)
 				{
 					{ "frequency", new[] { noise.Frequency.X, noise.Frequency.Y } },
 					{ "offset", new[] { noise.Offset.X, noise.Offset.Y } },
 				};
-					return Track(SKImageFilter.CreateShader(Track(noiseEffect.ToShader(noiseUniforms)), false, bounds));
+					return SKImageFilter.CreateShader(noiseEffect.ToShader(noiseUniforms), false, bounds);
 				}
 
 			case LightingEffectNode lighting:
@@ -633,7 +597,7 @@ internal sealed class SkiaEffectFuser
 						_ => null,
 					};
 
-					return lit is null ? Fail($"unsupported lighting kind '{lighting.Kind}'") : Track(lit);
+					return lit is null ? Fail($"unsupported lighting kind '{lighting.Kind}'") : lit;
 				}
 
 			case UnsupportedEffectNode unsupported:
