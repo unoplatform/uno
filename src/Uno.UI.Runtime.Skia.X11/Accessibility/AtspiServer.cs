@@ -588,9 +588,9 @@ internal sealed class AtspiServer
 					var start = reader.ReadInt32();
 					var end = reader.ReadInt32();
 					var text = node.Text;
-					start = Math.Max(0, Math.Min(start, text.Length));
-					end = end < 0 ? text.Length : Math.Max(start, Math.Min(end, text.Length));
-					ReplyString(context, AtspiDbus.StringSignature, text.Substring(start, end - start));
+					var start16 = Utf16Index(text, Math.Max(0, start));
+					var end16 = end < 0 ? text.Length : Math.Max(start16, Utf16Index(text, end));
+					ReplyString(context, AtspiDbus.StringSignature, text.Substring(start16, end16 - start16));
 					break;
 				}
 				default:
@@ -619,9 +619,9 @@ internal sealed class AtspiServer
 					var s = reader.ReadString();
 					var len = reader.ReadInt32();
 					var current = node.Text;
-					pos = Math.Max(0, Math.Min(pos, current.Length));
-					var insert = len >= 0 && len < s.Length ? s.Substring(0, len) : s;
-					ReplyBool(context, _server._writeTarget.SetText(node, current.Insert(pos, insert)));
+					var pos16 = Utf16Index(current, Math.Max(0, pos));
+					var insert = len >= 0 && len < CharacterCount(s) ? s.Substring(0, Utf16Index(s, len)) : s;
+					ReplyBool(context, _server._writeTarget.SetText(node, current.Insert(pos16, insert)));
 					break;
 				}
 				case AtspiDbus.DeleteTextMethod:
@@ -629,14 +629,14 @@ internal sealed class AtspiServer
 					var start = reader.ReadInt32();
 					var end = reader.ReadInt32();
 					var current = node.Text;
-					start = Math.Max(0, Math.Min(start, current.Length));
-					end = Math.Max(start, Math.Min(end, current.Length));
-					if (start >= end)
+					var start16 = Utf16Index(current, Math.Max(0, start));
+					var end16 = Math.Max(start16, Utf16Index(current, Math.Max(0, end)));
+					if (start16 >= end16)
 					{
 						ReplyBool(context, false);
 						break;
 					}
-					ReplyBool(context, _server._writeTarget.SetText(node, current.Remove(start, end - start)));
+					ReplyBool(context, _server._writeTarget.SetText(node, current.Remove(start16, end16 - start16)));
 					break;
 				}
 				case AtspiDbus.CopyTextMethod:
@@ -819,7 +819,7 @@ internal sealed class AtspiServer
 					writer.WriteVariantDouble(0);
 					break;
 				case (AtspiDbus.TextInterface, AtspiDbus.CharacterCountProperty) when node.HasText:
-					writer.WriteVariantInt32(node.Text.Length);
+					writer.WriteVariantInt32(CharacterCount(node.Text));
 					break;
 				case (AtspiDbus.ActionInterface, AtspiDbus.NActionsProperty):
 					// libatspi reads NActions as a property (int), not only via GetNActions.
@@ -866,10 +866,34 @@ internal sealed class AtspiServer
 			context.Reply(writer.CreateMessage());
 		}
 
+		// AT-SPI Text offsets count Unicode characters (code points); C# strings index
+		// UTF-16 code units. Map without ever splitting a surrogate pair; offsets past
+		// the end clamp to the end.
+		private static int Utf16Index(string s, int characterOffset)
+		{
+			var i = 0;
+			for (; characterOffset > 0 && i < s.Length; characterOffset--)
+			{
+				i += char.IsSurrogatePair(s, i) ? 2 : 1;
+			}
+			return i;
+		}
+
+		private static int CharacterCount(string s)
+		{
+			var count = 0;
+			for (var i = 0; i < s.Length; i += char.IsSurrogatePair(s, i) ? 2 : 1)
+			{
+				count++;
+			}
+			return count;
+		}
+
 		private static void ReplyPosition(MethodContext context, AtspiNode node)
 		{
-			using var writer = context.CreateReplyWriter(AtspiDbus.PositionSignature);
-			writer.WriteStructureStart();
+			// Component.xml declares GetPosition as two separate out arguments (x, y) —
+			// only GetExtents replies with a struct.
+			using var writer = context.CreateReplyWriter(AtspiDbus.Int32PairSignature);
 			writer.WriteInt32(ToInt32(node.X));
 			writer.WriteInt32(ToInt32(node.Y));
 			context.Reply(writer.CreateMessage());
@@ -877,8 +901,7 @@ internal sealed class AtspiServer
 
 		private static void ReplySize(MethodContext context, AtspiNode node)
 		{
-			using var writer = context.CreateReplyWriter(AtspiDbus.PositionSignature);
-			writer.WriteStructureStart();
+			using var writer = context.CreateReplyWriter(AtspiDbus.Int32PairSignature);
 			writer.WriteInt32(ToInt32(node.W));
 			writer.WriteInt32(ToInt32(node.H));
 			context.Reply(writer.CreateMessage());
@@ -1205,7 +1228,7 @@ internal sealed class AtspiServer
 		public const string BoolSignature = "b";
 		public const string VariantSignature = "v";
 		public const string ExtentsSignature = "(iiii)";
-		public const string PositionSignature = "(ii)";
+		public const string Int32PairSignature = "ii";
 		public const string UInt32ArraySignature = "au";
 		public const string StringArraySignature = "as";
 		public const string StringDictionarySignature = "a{ss}";
