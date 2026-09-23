@@ -82,7 +82,13 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		void_objc_msgSend_bool(Handle, s_setAllowsNumberPadPopoverSelector.Handle, false);
 	}
 
-	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBoxCore core) => !core.AcceptsReturn;
+	public bool IsCompatible(IImeSessionHost host) => !host.AcceptsReturn;
+
+	public void NotifyImePositionChanged()
+	{
+		InputDelegate?.SelectionWillChange(this);
+		InputDelegate?.SelectionDidChange(this);
+	}
 
 	public override CGRect GetCaretRectForPosition(UITextPosition? position)
 		=> InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType) ? Bounds : base.GetCaretRectForPosition(position);
@@ -101,15 +107,15 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 	private void HandlePaste(Action baseAction)
 	{
-		var args = new TextControlPasteEventArgs();
-		TextBoxViewExtension?.Owner.Core?.RaisePaste(args);
-		if (!args.Handled)
+		if (TextBoxViewExtension?.Owner.Host is not IImeSessionHost host || !host.RaisePaste())
 		{
 			baseAction.Invoke();
 		}
 	}
 
-	public bool IsComposing => AppleUIKitImeTextBoxExtension.Instance.IsComposing;
+	public bool IsComposing => ImeExtension?.IsComposing == true;
+
+	private AppleUIKitImeTextBoxExtension? ImeExtension => TextBoxViewExtension?.GetImeExtension(this);
 
 	internal InvisibleTextBoxViewExtension TextBoxViewExtension => _textBoxViewExtension.GetTarget();
 
@@ -142,7 +148,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 		if (_textBoxViewExtension?.GetTarget() is { } textBoxView)
 		{
-			textBoxView.ProcessNativeTextInput(Text);
+			textBoxView.ProcessNativeTextInput(this, Text);
 		}
 	}
 
@@ -241,7 +247,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 				NativeTextSelection.SetSelectedTextRange(this, value);
 				if (!_settingSelectionFromManaged)
 				{
-					textBoxView.SyncSelectionToTextBox();
+					textBoxView.SyncSelectionToTextBox(this);
 				}
 			}
 		}
@@ -252,27 +258,34 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	public override void SetMarkedText(string markedText, NSRange selectedRange)
 	{
 		markedText ??= string.Empty;
-		AppleUIKitImeTextBoxExtension.Instance.OnSetMarkedText(markedText);
+		var imeExtension = ImeExtension;
 		base.SetMarkedText(markedText, selectedRange);
+		if (ReferenceEquals(imeExtension, ImeExtension))
+		{
+			imeExtension?.OnSetMarkedText(
+				markedText,
+				Math.Clamp((int)selectedRange.Location, 0, markedText.Length));
+		}
 	}
 
 	public new void InsertText(string text)
 	{
-		var wasComposing = AppleUIKitImeTextBoxExtension.Instance.IsComposing;
+		var imeExtension = ImeExtension;
+		var wasComposing = imeExtension?.IsComposing == true;
 		base.InsertText(text);
 
 		// Only fire composition events when completing an active IME composition
 		// (SetMarkedText was called first). Regular native keystrokes and
 		// BecomeFirstResponder's silent text restore should not trigger composition.
-		if (wasComposing)
+		if (wasComposing && ReferenceEquals(imeExtension, ImeExtension))
 		{
-			AppleUIKitImeTextBoxExtension.Instance.OnInsertText(text);
+			imeExtension!.OnInsertText(text);
 		}
 	}
 
 	public override void UnmarkText()
 	{
-		AppleUIKitImeTextBoxExtension.Instance.OnUnmarkText();
+		ImeExtension?.OnUnmarkText();
 		base.UnmarkText();
 	}
 
@@ -290,7 +303,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			return Bounds;
 		}
 
-		var caretRect = AppleUIKitImeTextBoxExtension.Instance.GetCaretRect();
+		var caretRect = ImeExtension?.GetCaretRect() ?? Windows.Foundation.Rect.Empty;
 		if (caretRect != Windows.Foundation.Rect.Empty && Superview is not null)
 		{
 			// GetCaretRect returns Uno logical coordinates (relative to the XamlRoot).

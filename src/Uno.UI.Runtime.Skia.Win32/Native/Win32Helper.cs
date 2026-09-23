@@ -114,7 +114,7 @@ internal static class Win32Helper
 		{
 			if (shouldFree?.Invoke() ?? true)
 			{
-				var success = PInvoke.GlobalFree(handle) != IntPtr.Zero;
+				var success = PInvoke.GlobalFree(handle) == IntPtr.Zero;
 				if (!success) { typeof(GlobalLockDisposable).LogError()?.Error($"{nameof(PInvoke.GlobalFree)} failed: {GetErrorMessage()}"); }
 			}
 		}

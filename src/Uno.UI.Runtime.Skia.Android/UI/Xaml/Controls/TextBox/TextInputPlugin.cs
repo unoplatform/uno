@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -23,6 +24,8 @@ internal sealed class TextInputPlugin
 	private ImeAction _imeAction;
 	private TextInputConnection? _inputConnection;
 	private EditorInfo? _editorInfo;
+	private IImeSessionHost? _activeHost;
+	private (int Start, int End)? _pendingCompositionRange;
 
 	/// <summary>
 	/// Gets the currently active <see cref="TextInputConnection"/>, if any.
@@ -35,7 +38,7 @@ internal sealed class TextInputPlugin
 	/// calls <c>OnCreateInputConnection</c>). The <see cref="AndroidImeTextBoxExtension"/>
 	/// uses this to re-subscribe to composition state changes on the new connection.
 	/// </summary>
-	internal event Action<TextInputConnection>? InputConnectionCreated;
+	internal event EventHandler<TextInputConnectionCreatedEventArgs>? InputConnectionCreated;
 
 	internal TextInputPlugin(View view)
 	{
@@ -47,43 +50,37 @@ internal sealed class TextInputPlugin
 		}
 	}
 
-	internal void NotifyViewEntered(TextBoxCore core, int virtualId)
+	internal void NotifyViewEntered(TextBoxCore textBox, int virtualId)
 	{
-		if (_afm == null || _inputConnection is null || _imm is null)
+		SetActiveHost(textBox);
+
+		if (_afm == null || _imm is null)
 		{
 			return;
 		}
 
-		if (_inputConnection.ActiveTextBox != core)
-		{
-			_imm.RestartInput(_view);
-		}
-
-		_inputConnection.ActiveTextBox = core;
-
-		var physicalRect = GetPhysicalRect(core);
+		var physicalRect = GetPhysicalRect(textBox.Owner);
 		_afm.NotifyViewEntered(_view, virtualId, new((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom));
 	}
 
-	private Windows.Foundation.Rect GetPhysicalRect(TextBoxCore core)
+	private Windows.Foundation.Rect GetPhysicalRect(Control textBox)
 	{
 		int[] offset = new int[2];
 		_view.GetLocationOnScreen(offset);
-		var owner = core.Owner;
-		var transform = UIElement.GetTransform(from: owner, to: null);
-		var logicalRect = transform.Transform(new Windows.Foundation.Rect(default, new Windows.Foundation.Size(owner.Visual.Size.X, owner.Visual.Size.Y)));
+		var transform = UIElement.GetTransform(from: textBox, to: null);
+		var logicalRect = transform.Transform(new Windows.Foundation.Rect(default, new Windows.Foundation.Size(textBox.Visual.Size.X, textBox.Visual.Size.Y)));
 		var physicalRect = logicalRect.LogicalToPhysicalPixels();
 		return physicalRect.OffsetRect(offset[0], offset[1]);
 	}
 
-	internal void NotifyViewExited(int virtualId)
+	internal void NotifyViewExited(TextBoxCore textBox, int virtualId)
 	{
-		if (_afm == null || _inputConnection is null)
+		ClearActiveHost(textBox);
+
+		if (_afm == null)
 		{
 			return;
 		}
-
-		_inputConnection.ActiveTextBox = null;
 
 		_afm.NotifyViewExited(_view, virtualId);
 	}
@@ -107,36 +104,125 @@ internal sealed class TextInputPlugin
 
 	internal void NotifyValueChanged(int virtualId, string newValue)
 	{
-		if (_afm == null /*|| !NeedsAutofill()*/)
+		this.LogDebug()?.Debug($"NotifyValueChanged: {newValue}");
+
+		_afm?.NotifyValueChanged(_view, virtualId, AutofillValue.ForText(newValue));
+		_inputConnection?.OnTextInputHostChanged();
+	}
+
+	internal void NotifySelectionChanged(TextBoxCore textBox)
+	{
+		if (ReferenceEquals(_activeHost, textBox))
+		{
+			_inputConnection?.OnTextInputHostChanged();
+		}
+	}
+
+	internal void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
+	{
+		SetActiveHost(host);
+		if (!activation.IsSoftwareKeyboardSuppressed)
+		{
+			ShowTextInput(host);
+		}
+	}
+
+	internal void EndImeSession(IImeSessionHost host) => ClearActiveHost(host);
+
+	internal void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update)
+	{
+		if (!ReferenceEquals(_activeHost, host))
 		{
 			return;
 		}
 
-		this.LogDebug()?.Debug($"NotifyValueChanged: {newValue}");
+		if ((update & (
+			ImeSessionUpdate.InputScope |
+			ImeSessionUpdate.TextPrediction |
+			ImeSessionUpdate.AcceptsReturn |
+			ImeSessionUpdate.SpellCheck)) != 0)
+		{
+			UpdateInputOptions(host);
+			_pendingCompositionRange = _inputConnection?.GetComposingRange();
+			_imm?.RestartInput(_view);
+		}
 
-		_afm.NotifyValueChanged(_view, virtualId, AutofillValue.ForText(newValue));
-		_inputConnection?.OnTextBoxTextChanged();
+		if ((update & ImeSessionUpdate.TextAndSelection) != 0)
+		{
+			_inputConnection?.OnTextInputHostChanged();
+			_inputConnection?.SendCursorAnchorInfo();
+		}
+
+		if ((update & ImeSessionUpdate.CandidateWindowAlignment) != 0)
+		{
+			_inputConnection?.SendCursorAnchorInfo();
+		}
 	}
 
-	internal void ShowTextInput(TextBoxCore core)
+	internal void ShowTextInput(IImeSessionHost host)
 	{
-		_inputTypes = ConvertInputScope(core);
-		_imeAction = TextBoxExtensions.GetInputReturnType(core.Owner).ToImeAction();
+		UpdateInputOptions(host);
+		SetActiveHost(host);
+		_view.RequestFocus();
+		_imm?.ShowSoftInput(_view, 0);
+	}
+
+	private void SetActiveHost(IImeSessionHost host)
+	{
+		UpdateInputOptions(host);
+		var changed = !ReferenceEquals(_activeHost, host);
+		_activeHost = host;
+		if (_inputConnection is { } connection)
+		{
+			connection.ActiveHost = host;
+		}
+
+		if (changed)
+		{
+			_imm?.RestartInput(_view);
+		}
+	}
+
+	private void ClearActiveHost(IImeSessionHost host)
+	{
+		if (!ReferenceEquals(_activeHost, host))
+		{
+			return;
+		}
+
+		_activeHost = null;
+		_pendingCompositionRange = null;
+		if (_inputConnection is { } connection && ReferenceEquals(connection.ActiveHost, host))
+		{
+			connection.ActiveHost = null;
+		}
+	}
+
+	private void UpdateInputOptions(IImeSessionHost host)
+	{
+		_inputTypes = ConvertInputScope(host);
+		_imeAction = host switch
+		{
+			TextBoxCore core => TextBoxExtensions.GetInputReturnType(core.Owner).ToImeAction(),
+			{ AcceptsReturn: false } => ImeAction.Done,
+			_ => ImeAction.None,
+		};
 
 		if (_editorInfo is not null)
 		{
-			_editorInfo.InputType = _inputTypes;
-
-			_editorInfo.ImeOptions = ImeFlags.NoFullscreen;
-
-			if (_imeAction != ImeAction.None)
-			{
-				_editorInfo.ImeOptions |= (ImeFlags)_imeAction;
-			}
+			ApplyInputOptions(_editorInfo);
 		}
+	}
 
-		_view.RequestFocus();
-		_imm?.ShowSoftInput(_view, 0);
+	private void ApplyInputOptions(EditorInfo editorInfo)
+	{
+		editorInfo.InputType = _inputTypes;
+		editorInfo.ImeOptions = ImeFlags.NoFullscreen;
+
+		if (_imeAction != ImeAction.None)
+		{
+			editorInfo.ImeOptions |= (ImeFlags)_imeAction;
+		}
 	}
 
 	internal void OnProvideAutofillVirtualStructure(ViewStructure? structure)
@@ -166,9 +252,9 @@ internal sealed class TextInputPlugin
 #endif
 	}
 
-	internal static InputTypes ConvertInputScope(TextBoxCore core)
+	internal static InputTypes ConvertInputScope(IImeSessionHost host)
 	{
-		var firstInputScope = core.InputScope.GetFirstInputScopeNameValue();
+		var firstInputScope = host.InputScope.GetFirstInputScopeNameValue();
 
 		if (firstInputScope is InputScopeNameValue.DateDayNumber or InputScopeNameValue.DateMonthNumber or InputScopeNameValue.DateYear)
 		{
@@ -194,7 +280,7 @@ internal sealed class TextInputPlugin
 		}
 
 		var textType = InputTypes.ClassText;
-		if (core.AcceptsReturn)
+		if (host.AcceptsReturn)
 		{
 			textType |= InputTypes.TextFlagMultiLine;
 		}
@@ -207,7 +293,7 @@ internal sealed class TextInputPlugin
 		{
 			textType |= InputTypes.TextVariationUri;
 		}
-		else if (core.IsPassword && core.IsPasswordRevealed)
+		else if (host is TextBoxCore { IsPassword: true, IsPasswordRevealed: true })
 		{
 			textType |= InputTypes.TextVariationVisiblePassword;
 		}
@@ -220,7 +306,7 @@ internal sealed class TextInputPlugin
 			textType |= InputTypes.TextVariationPostalAddress;
 		}
 
-		if (core.IsPassword)
+		if (host is TextBoxCore { IsPassword: true })
 		{
 			// Note: both required. Some devices ignore TYPE_TEXT_FLAG_NO_SUGGESTIONS.
 			textType |= InputTypes.TextFlagNoSuggestions;
@@ -228,7 +314,10 @@ internal sealed class TextInputPlugin
 		}
 		else
 		{
-			if (core.IsSpellCheckEnabled) textType |= InputTypes.TextFlagAutoCorrect;
+			if (host.IsSpellCheckEnabled && host.IsTextPredictionEnabled)
+			{
+				textType |= InputTypes.TextFlagAutoCorrect;
+			}
 
 			// Not yet supported
 			//if (!enableSuggestions)
@@ -239,7 +328,7 @@ internal sealed class TextInputPlugin
 			//}
 		}
 
-		if (core.CharacterCasing == CharacterCasing.Upper)
+		if (host.CharacterCasing == CharacterCasing.Upper)
 		{
 			textType |= InputTypes.TextFlagCapCharacters;
 		}
@@ -266,17 +355,17 @@ internal sealed class TextInputPlugin
 		if (editorInfo is not null)
 		{
 			_editorInfo = editorInfo;
-			_editorInfo.InputType = _inputTypes;
-			_editorInfo.ImeOptions = ImeFlags.NoFullscreen;
-
-			if (_imeAction != ImeAction.None)
-			{
-				_editorInfo.ImeOptions |= (ImeFlags)_imeAction;
-			}
+			ApplyInputOptions(_editorInfo);
 		}
 
 		_inputConnection = new TextInputConnection(_view, editorInfo ?? new(), HandleKeyEvent);
-		InputConnectionCreated?.Invoke(_inputConnection);
+		_inputConnection.ActiveHost = _activeHost;
+		if (_pendingCompositionRange is { } compositionRange && _activeHost?.IsComposing == true)
+		{
+			_inputConnection.RestoreComposingRange(compositionRange.Start, compositionRange.End);
+		}
+		_pendingCompositionRange = null;
+		InputConnectionCreated?.Invoke(this, new TextInputConnectionCreatedEventArgs(_inputConnection));
 		return _inputConnection;
 	}
 
@@ -311,4 +400,11 @@ internal sealed class TextInputPlugin
 
 		return false;
 	}
+}
+
+internal sealed class TextInputConnectionCreatedEventArgs : EventArgs
+{
+	internal TextInputConnectionCreatedEventArgs(TextInputConnection connection) => Connection = connection;
+
+	internal TextInputConnection Connection { get; }
 }

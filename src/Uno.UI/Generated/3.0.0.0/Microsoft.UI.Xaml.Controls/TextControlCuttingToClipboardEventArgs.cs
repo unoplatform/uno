@@ -3,30 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TextControlCuttingToClipboardEventArgs
 	{
-#if __SKIA__
-		internal TextControlCuttingToClipboardEventArgs()
-		{
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool Handled
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs", "Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs", "Handled");
-			}
-		}
-#endif
+		// Skipping already declared property Handled
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.Handled.set
 	}

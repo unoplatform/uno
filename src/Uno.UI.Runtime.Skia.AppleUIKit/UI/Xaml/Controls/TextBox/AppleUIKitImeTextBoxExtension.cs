@@ -1,6 +1,9 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
@@ -14,34 +17,80 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 /// on the hidden UITextField/UITextView proxies to the managed TextBox composition
 /// event lifecycle (Started → Updated → Completed → Ended).
 /// </summary>
-internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
+internal sealed class AppleUIKitImeTextBoxExtension : IHostScopedImeTextBoxExtension
 {
-	internal static AppleUIKitImeTextBoxExtension Instance { get; } = new();
-
 	private bool _isComposing;
 	private string _lastComposingText = string.Empty;
-	private TextBoxCore? _activeTextBox;
+	private IImeSessionHost? _activeTextBox;
+	private Rect _lastCaretRect = Rect.Empty;
 
 	public bool IsComposing => _isComposing;
 
 	public event EventHandler? CompositionStarted;
 	public event EventHandler<ImeCompositionEventArgs>? CompositionUpdated;
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
+	public event EventHandler<ImePartialCompositionEventArgs>? CompositionPartiallyCommitted
+	{
+		add { }
+		remove { }
+	}
+	public event EventHandler<ImeCompositionEventArgs>? CompositionCanceled;
 	public event EventHandler? CompositionEnded;
 
-	public void StartImeSession(TextBoxCore core)
+	// UIKit owns the candidate UI and does not expose its bounds.
+	public event EventHandler<ImeCandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged
 	{
-		if (core.IsPassword)
+		add { }
+		remove { }
+	}
+
+	public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
+	{
+		if (host is TextBoxCore { IsPassword: true })
 		{
 			return;
 		}
 
-		_activeTextBox = core;
+		_activeTextBox = host;
+		_lastCaretRect = Rect.Empty;
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug("IME session started (iOS)");
 		}
+	}
+
+	public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update)
+	{
+		if ((update & (
+			ImeSessionUpdate.InputScope |
+			ImeSessionUpdate.TextPrediction |
+			ImeSessionUpdate.AcceptsReturn |
+			ImeSessionUpdate.SpellCheck)) != 0)
+		{
+			host.TextBoxView?.Extension?.UpdateNativeView();
+		}
+
+		if ((update & (ImeSessionUpdate.CandidateWindowAlignment | ImeSessionUpdate.TextAndSelection)) != 0)
+		{
+			if ((update & ImeSessionUpdate.CandidateWindowAlignment) != 0)
+			{
+				_lastCaretRect = Rect.Empty;
+			}
+			var caretRect = GetCaretRect();
+			if (caretRect != Rect.Empty && !caretRect.Equals(_lastCaretRect))
+			{
+				_lastCaretRect = caretRect;
+				host.TextBoxView?.Extension?.UpdatePosition();
+				host.TextBoxView?.Extension?.NotifyImePositionChanged();
+			}
+		}
+	}
+
+	public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		return Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
 	}
 
 	public void EndImeSession()
@@ -54,12 +103,13 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 		}
 
 		_activeTextBox = null;
+		_lastCaretRect = Rect.Empty;
 	}
 
 	/// <summary>
 	/// Called from native view override when UITextInput.SetMarkedText is invoked.
 	/// </summary>
-	internal void OnSetMarkedText(string text)
+	internal void OnSetMarkedText(string text, int cursorPosition)
 	{
 		bool wasComposing = _isComposing;
 
@@ -71,21 +121,21 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 				_lastComposingText = text;
 
 				CompositionStarted?.Invoke(this, EventArgs.Empty);
-				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition));
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"Composition started: '{text}'");
+					this.Log().Trace($"Composition started (length: {text.Length}).");
 				}
 			}
 			else
 			{
 				_lastComposingText = text;
-				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition));
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"Composition updated: '{text}'");
+					this.Log().Trace($"Composition updated (length: {text.Length}).");
 				}
 			}
 		}
@@ -93,6 +143,7 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 		{
 			_isComposing = false;
 			_lastComposingText = string.Empty;
+			CompositionCanceled?.Invoke(this, new ImeCompositionEventArgs(string.Empty));
 			CompositionEnded?.Invoke(this, EventArgs.Empty);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
@@ -151,17 +202,8 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 	/// </summary>
 	internal Rect GetCaretRect()
 	{
-		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, Owner.XamlRoot: { } })
-		{
-			var selEnd = _activeTextBox.SelectionStart + _activeTextBox.SelectionLength;
-			var caretRect = parsedText.GetRectForIndex(selEnd);
-			var transform = _activeTextBox.TextBoxView.DisplayBlock.TransformToVisual(null);
-			var caretPoint = transform.TransformPoint(new Point(caretRect.Left, caretRect.Top));
-			var caretBottom = transform.TransformPoint(new Point(caretRect.Left, caretRect.Top + caretRect.Height));
-
-			return new Rect(caretPoint.X, caretPoint.Y, 1, caretBottom.Y - caretPoint.Y);
-		}
-
-		return Rect.Empty;
+		return _activeTextBox?.TryGetCandidateWindowRect(out var rect) == true
+			? rect
+			: Rect.Empty;
 	}
 }

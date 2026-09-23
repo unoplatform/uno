@@ -3,26 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CandidateWindowBoundsChangedEventArgs
 	{
-#if __SKIA__
-		internal CandidateWindowBoundsChangedEventArgs()
-		{
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Windows.Foundation.Rect Bounds
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.CandidateWindowBoundsChangedEventArgs", "Bounds");
-			}
-		}
-#endif
+		// Skipping already declared property Bounds
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CandidateWindowBoundsChangedEventArgs.Bounds.get
 	}
 }
