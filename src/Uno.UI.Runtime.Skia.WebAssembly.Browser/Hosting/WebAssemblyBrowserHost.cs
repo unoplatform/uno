@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
@@ -146,12 +146,14 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 	void IXamlRootHost.InvalidateRender()
 	{
 		_renderer?.InvalidateRender();
-		Window.CurrentSafe!.RootElement?.XamlRoot?.InvalidateOverlays();
+		Window.CurrentSafe?.RootElement?.XamlRoot?.InvalidateOverlays();
 	}
 
 	internal void RemoveSplashScreen() => NativeMethods.RemoveLoading();
 
-	UIElement? IXamlRootHost.RootElement => Window.CurrentSafe!.RootElement;
+	// Graphics initialization runs before the app has launched its window, and the contract is nullable for
+	// exactly that: asserting one exists crashed the browser host before it could render.
+	UIElement? IXamlRootHost.RootElement => Window.CurrentSafe?.RootElement;
 
 	private static partial class NativeMethods
 	{
