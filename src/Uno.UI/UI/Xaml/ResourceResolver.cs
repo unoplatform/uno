@@ -389,8 +389,12 @@ namespace Uno.UI
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
 
-				// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
-				updateReason &= ~ResourceUpdateReason.StaticResourceLoading;
+				// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP) —
+				// unless the lookup could not be attributed to an owning application, in which case the parse-time value is provisional.
+				if (!ShouldDeferStaticResourceToLoading(context))
+				{
+					updateReason &= ~ResourceUpdateReason.StaticResourceLoading;
+				}
 
 				if (updateReason == ResourceUpdateReason.None)
 				{
@@ -403,6 +407,27 @@ namespace Uno.UI
 			// still works (and HotReload re-resolution for parse-time-resolved values).
 			(owner as DependencyObject)?.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 		}
+
+		/// <summary>
+		/// Whether a {StaticResource} that resolved at parse time must still be re-resolved at load time,
+		/// because the parse-time lookup could not tell which application owns it.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="TryTopLevelRetrieval(in SpecializedResourceDictionary.ResourceKey, object, out object)"/> keys its
+		/// priority on <see cref="XamlParseContext.AssemblyLoadContext"/>: a context that identifies a secondary ALC queries
+		/// that app first; anything else — no context at all (<c>XamlReader.Load</c>), or a name-only context whose assembly
+		/// is loaded in several ALCs (<see cref="XamlParseContext.IsAssemblyLoadContextAmbiguous"/>) — is treated as the
+		/// host's, so a key the host and a secondary app both define resolves to the host's value. That is the right
+		/// answer for host XAML and the wrong one for the app's, and the name alone cannot tell them apart. Keeping
+		/// <see cref="ResourceUpdateReason.StaticResourceLoading"/> lets the load-time tree walk decide in visual-tree
+		/// scope instead, where <c>AlcContentHost</c> projects the owning app's dictionaries ahead of the host's; the walk
+		/// falls back to the same top-level lookup when nothing in scope matches, so host XAML keeps its value.
+		/// Only ever true while secondary apps are registered, so ordinary apps pay nothing.
+		/// </remarks>
+		internal static bool ShouldDeferStaticResourceToLoading(object context)
+			=> Application.HasSecondaryApps
+				&& (context is null
+					|| (context is XamlParseContext parseContext && parseContext.IsAssemblyLoadContextAmbiguous));
 
 		/// <summary>
 		/// Apply a pre-existing <see cref="ThemeResourceReference"/> from a Setter to a target DependencyObject.
