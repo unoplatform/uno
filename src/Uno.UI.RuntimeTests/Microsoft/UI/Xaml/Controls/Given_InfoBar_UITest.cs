@@ -28,26 +28,20 @@ public class Given_InfoBar_UITest
 			IsOpen = true,
 		};
 
-		try
-		{
-			await UITestHelper.Load(infoBar);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(infoBar);
 
-			var closeButton = FindChild<Button>(infoBar, "CloseButton");
-			Assert.IsNotNull(closeButton, "Close button should exist in the InfoBar template.");
-			Assert.AreEqual(Visibility.Visible, closeButton.Visibility, "Close button should be visible by default (IsClosable=true).");
+		var closeButton = FindChild<Button>(infoBar, "CloseButton");
+		Assert.IsNotNull(closeButton, "Close button should exist in the InfoBar template.");
+		Assert.AreEqual(Visibility.Visible, closeButton.Visibility, "Close button should be visible by default (IsClosable=true).");
 
-			infoBar.IsClosable = false;
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(Visibility.Collapsed, closeButton.Visibility, "Close button should be collapsed when IsClosable=false.");
+		infoBar.IsClosable = false;
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(Visibility.Collapsed, closeButton.Visibility, "Close button should be collapsed when IsClosable=false.");
 
-			infoBar.IsClosable = true;
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(Visibility.Visible, closeButton.Visibility, "Close button should be visible again when IsClosable=true.");
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		infoBar.IsClosable = true;
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(Visibility.Visible, closeButton.Visibility, "Close button should be visible again when IsClosable=true.");
 	}
 
 	[TestMethod]
@@ -60,22 +54,16 @@ public class Given_InfoBar_UITest
 			IsOpen = true,
 		};
 
-		try
-		{
-			await UITestHelper.Load(infoBar);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(infoBar);
 
-			var contentRoot = FindChild<FrameworkElement>(infoBar, "ContentRoot");
-			Assert.IsNotNull(contentRoot, "ContentRoot should exist in the InfoBar template.");
-			Assert.AreEqual(Visibility.Visible, contentRoot.Visibility, "InfoBar content should be visible when IsOpen=true.");
+		var contentRoot = FindChild<FrameworkElement>(infoBar, "ContentRoot");
+		Assert.IsNotNull(contentRoot, "ContentRoot should exist in the InfoBar template.");
+		Assert.AreEqual(Visibility.Visible, contentRoot.Visibility, "InfoBar content should be visible when IsOpen=true.");
 
-			infoBar.IsOpen = false;
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(Visibility.Collapsed, contentRoot.Visibility, "InfoBar content should be collapsed when IsOpen=false.");
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		infoBar.IsOpen = false;
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(Visibility.Collapsed, contentRoot.Visibility, "InfoBar content should be collapsed when IsOpen=false.");
 	}
 
 	[TestMethod]
@@ -90,18 +78,12 @@ public class Given_InfoBar_UITest
 			Message = "Message",
 		};
 
-		try
-		{
-			await UITestHelper.Load(infoBar, i => FindChild<FrameworkElement>(i, "ContentRoot") is not null);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(infoBar, i => FindChild<FrameworkElement>(i, "ContentRoot") is not null);
 
-			var contentRoot = FindChild<FrameworkElement>(infoBar, "ContentRoot");
-			Assert.IsNotNull(contentRoot, "ContentRoot should exist in the InfoBar template.");
-			Assert.AreEqual(Visibility.Collapsed, contentRoot.Visibility, "A default (IsOpen=false) InfoBar should keep its content collapsed.");
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		var contentRoot = FindChild<FrameworkElement>(infoBar, "ContentRoot");
+		Assert.IsNotNull(contentRoot, "ContentRoot should exist in the InfoBar template.");
+		Assert.AreEqual(Visibility.Collapsed, contentRoot.Visibility, "A default (IsOpen=false) InfoBar should keep its content collapsed.");
 	}
 
 	private static T? FindChild<T>(DependencyObject root, string name) where T : FrameworkElement

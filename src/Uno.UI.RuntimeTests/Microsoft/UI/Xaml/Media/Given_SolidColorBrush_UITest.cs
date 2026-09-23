@@ -63,33 +63,27 @@ public class Given_SolidColorBrush_UITest
 			Children = { border, grid, strokeEllipse, fillEllipse },
 		};
 
-		try
-		{
-			await UITestHelper.Load(root);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(root);
 
-			// Sample near the left edge (inside the 15px border/stroke stripe) for the
-			// border/stroke owners, and dead-center for the filled ellipse.
-			const float edgeOffset = 5f;
+		// Sample near the left edge (inside the 15px border/stroke stripe) for the
+		// border/stroke owners, and dead-center for the filled ellipse.
+		const float edgeOffset = 5f;
 
-			await AssertColorAt(border, edgeOffset, (float)(border.ActualHeight / 2), Colors.Green);
-			await AssertColorAt(grid, edgeOffset, (float)(grid.ActualHeight / 2), Colors.IndianRed);
-			await AssertColorAt(strokeEllipse, edgeOffset, (float)(strokeEllipse.ActualHeight / 2), Colors.Violet);
-			await AssertColorAt(fillEllipse, (float)(fillEllipse.ActualWidth / 2), (float)(fillEllipse.ActualHeight / 2), Colors.DarkGoldenrod);
+		await AssertColorAt(border, edgeOffset, (float)(border.ActualHeight / 2), Colors.Green);
+		await AssertColorAt(grid, edgeOffset, (float)(grid.ActualHeight / 2), Colors.IndianRed);
+		await AssertColorAt(strokeEllipse, edgeOffset, (float)(strokeEllipse.ActualHeight / 2), Colors.Violet);
+		await AssertColorAt(fillEllipse, (float)(fillEllipse.ActualWidth / 2), (float)(fillEllipse.ActualHeight / 2), Colors.DarkGoldenrod);
 
-			borderBrush.Color = Colors.Blue;
-			gridBrush.Color = Colors.Blue;
-			strokeBrush.Color = Colors.Blue;
-			fillBrush.Color = Colors.Blue;
+		borderBrush.Color = Colors.Blue;
+		gridBrush.Color = Colors.Blue;
+		strokeBrush.Color = Colors.Blue;
+		fillBrush.Color = Colors.Blue;
 
-			await AssertColorAt(border, edgeOffset, (float)(border.ActualHeight / 2), Colors.Blue);
-			await AssertColorAt(grid, edgeOffset, (float)(grid.ActualHeight / 2), Colors.Blue);
-			await AssertColorAt(strokeEllipse, edgeOffset, (float)(strokeEllipse.ActualHeight / 2), Colors.Blue);
-			await AssertColorAt(fillEllipse, (float)(fillEllipse.ActualWidth / 2), (float)(fillEllipse.ActualHeight / 2), Colors.Blue);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		await AssertColorAt(border, edgeOffset, (float)(border.ActualHeight / 2), Colors.Blue);
+		await AssertColorAt(grid, edgeOffset, (float)(grid.ActualHeight / 2), Colors.Blue);
+		await AssertColorAt(strokeEllipse, edgeOffset, (float)(strokeEllipse.ActualHeight / 2), Colors.Blue);
+		await AssertColorAt(fillEllipse, (float)(fillEllipse.ActualWidth / 2), (float)(fillEllipse.ActualHeight / 2), Colors.Blue);
 	}
 
 	private static async Task AssertColorAt(FrameworkElement element, float x, float y, Color expected)

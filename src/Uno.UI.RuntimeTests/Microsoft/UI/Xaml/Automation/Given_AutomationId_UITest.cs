@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Automation;
-using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UITest.Helpers.Queries;
@@ -20,26 +19,20 @@ public class Given_AutomationId_UITest : SampleControlUITestBase
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
 	public async Task When_ItemTemplate_Sets_AutomationId()
 	{
-		try
-		{
-			await RunAsync(SampleName);
+		using var _ = UITestHelper.ResetWindowContent();
+		await RunAsync(SampleName);
 
-			await UITestHelper.WaitFor(
-				() => FindByAutomationId("Item01") is not null,
-				timeoutMS: 5000,
-				message: "Timed out waiting for the bound AutomationProperties.AutomationId to be applied to the list items.");
+		await UITestHelper.WaitFor(
+			() => FindByAutomationId("Item01") is not null,
+			timeoutMS: 5000,
+			message: "Timed out waiting for the bound AutomationProperties.AutomationId to be applied to the list items.");
 
-			for (var i = 1; i <= 3; i++)
-			{
-				var automationId = $"Item{i:00}";
-				Assert.IsNotNull(
-					FindByAutomationId(automationId),
-					$"No element exposes the bound AutomationProperties.AutomationId '{automationId}'.");
-			}
-		}
-		finally
+		for (var i = 1; i <= 3; i++)
 		{
-			TestServices.WindowHelper.WindowContent = null;
+			var automationId = $"Item{i:00}";
+			Assert.IsNotNull(
+				FindByAutomationId(automationId),
+				$"No element exposes the bound AutomationProperties.AutomationId '{automationId}'.");
 		}
 	}
 
@@ -50,27 +43,21 @@ public class Given_AutomationId_UITest : SampleControlUITestBase
 	[DataRow("Item03", "Item 03", DisplayName = "Item03")]
 	public async Task When_Item_Tapped_Then_Result_Updated(string automationId, string expectedText)
 	{
-		try
-		{
-			await RunAsync(SampleName);
+		using var _ = UITestHelper.ResetWindowContent();
+		await RunAsync(SampleName);
 
-			await UITestHelper.WaitFor(
-				() => FindByAutomationId(automationId) is not null,
-				timeoutMS: 5000,
-				message: $"Timed out waiting for the list item with AutomationId '{automationId}'.");
+		await UITestHelper.WaitFor(
+			() => FindByAutomationId(automationId) is not null,
+			timeoutMS: 5000,
+			message: $"Timed out waiting for the list item with AutomationId '{automationId}'.");
 
-			var target = FindByAutomationId(automationId);
-			Assert.IsNotNull(target, $"No element exposes the AutomationId '{automationId}'.");
+		var target = FindByAutomationId(automationId);
+		Assert.IsNotNull(target, $"No element exposes the AutomationId '{automationId}'.");
 
-			var bounds = target.Rect;
-			App.TapCoordinates(bounds.CenterX, bounds.CenterY);
+		var bounds = target.Rect;
+		App.TapCoordinates(bounds.CenterX, bounds.CenterY);
 
-			await App.WaitForDependencyPropertyValueAsync(App.Marked("result"), "Text", expectedText);
-		}
-		finally
-		{
-			TestServices.WindowHelper.WindowContent = null;
-		}
+		await App.WaitForDependencyPropertyValueAsync(App.Marked("result"), "Text", expectedText);
 	}
 
 	private QueryResult FindByAutomationId(string automationId)

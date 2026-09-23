@@ -40,20 +40,14 @@ public class Given_AppXamlResources_UITest
 				</StackPanel>
 				""");
 
-			try
-			{
-				await UITestHelper.Load(root);
+			using var resetContent = UITestHelper.ResetWindowContent();
+			await UITestHelper.Load(root);
 
-				var themedBorder = (Border)root.FindName("ThemedBorder");
-				var staticBorder = (Border)root.FindName("StaticBorder");
+			var themedBorder = (Border)root.FindName("ThemedBorder");
+			var staticBorder = (Border)root.FindName("StaticBorder");
 
-				Assert.AreEqual(Colors.Yellow, ((SolidColorBrush)themedBorder.Background).Color);
-				Assert.AreEqual(Colors.Purple, ((SolidColorBrush)staticBorder.Background).Color);
-			}
-			finally
-			{
-				WindowHelper.WindowContent = null;
-			}
+			Assert.AreEqual(Colors.Yellow, ((SolidColorBrush)themedBorder.Background).Color);
+			Assert.AreEqual(Colors.Purple, ((SolidColorBrush)staticBorder.Background).Color);
 		}
 	}
 }

@@ -20,51 +20,41 @@ public class Given_Pivot_UITest
 	[TestMethod]
 	public async Task When_Non_PivotItem_Items()
 	{
-		var sut = BuildSut();
-		try
-		{
-			await UITestHelper.Load(sut.Root);
+		using var _ = UITestHelper.ResetWindowContent();
+		var sut = await LoadSut();
 
-			Assert.AreEqual("item 1", sut.Title.Text);
-			Assert.AreEqual("My Item 1 Content", sut.Content.Text);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		Assert.AreEqual("item 1", sut.Title.Text);
+		Assert.AreEqual("My Item 1 Content", sut.Content.Text);
 	}
 
 	[TestMethod]
 	public async Task When_Non_PivotItemChange_Validation()
 	{
-		var sut = BuildSut();
-		try
-		{
-			await UITestHelper.Load(sut.Root);
+		using var _ = UITestHelper.ResetWindowContent();
+		var sut = await LoadSut();
 
-			Assert.AreEqual("item 1", sut.Title.Text);
-			Assert.AreEqual("My Item 1 Content", sut.Content.Text);
+		Assert.AreEqual("item 1", sut.Title.Text);
+		Assert.AreEqual("My Item 1 Content", sut.Content.Text);
 
-			// Select the second item and assert the bound values follow.
-			sut.Pivot.SelectedIndex = 1;
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual("item 2", sut.Title.Text);
-			Assert.AreEqual("My Item 2 Content", sut.Content.Text);
+		// Select the second item and assert the bound values follow.
+		sut.Pivot.SelectedIndex = 1;
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("item 2", sut.Title.Text);
+		Assert.AreEqual("My Item 2 Content", sut.Content.Text);
 
-			// Select the first item again and assert.
-			sut.Pivot.SelectedIndex = 0;
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual("item 1", sut.Title.Text);
-			Assert.AreEqual("My Item 1 Content", sut.Content.Text);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		// Select the first item again and assert.
+		sut.Pivot.SelectedIndex = 0;
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("item 1", sut.Title.Text);
+		Assert.AreEqual("My Item 1 Content", sut.Content.Text);
 	}
 
-	private static (Grid Root, TextBlock Title, TextBlock Content, Pivot Pivot) BuildSut()
+	private static async Task<(TextBlock Title, TextBlock Content, Pivot Pivot)> LoadSut()
 	{
+		static DataTemplate CreateTemplate(string inner)
+			=> (DataTemplate)XamlReader.Load(
+				$"<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">{inner}</DataTemplate>");
+
 		var pivot = new Pivot
 		{
 			HeaderTemplate = CreateTemplate("<TextBlock Text=\"{Binding Title}\" />"),
@@ -93,12 +83,10 @@ public class Given_Pivot_UITest
 			Children = { header, pivot },
 		};
 
-		return (root, title, content, pivot);
-	}
+		await UITestHelper.Load(root);
 
-	private static DataTemplate CreateTemplate(string inner)
-		=> (DataTemplate)XamlReader.Load(
-			$"<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">{inner}</DataTemplate>");
+		return (title, content, pivot);
+	}
 
 	// Properties stay public so reflection-based {Binding} can resolve them.
 	private class MyCustomPivotItem

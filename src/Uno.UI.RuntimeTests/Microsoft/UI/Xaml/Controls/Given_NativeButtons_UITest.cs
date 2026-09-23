@@ -25,14 +25,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_NativeButtons_UITest
 {
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIslands)]
 	public async Task When_Button_Tapped_Fires_Click_Tapped_And_Command_Respecting_IsEnabled()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		var result = "No value";
 		var resultTapped = "No value";
 		var resultCommand = "No command";
@@ -61,55 +56,43 @@ public class Given_NativeButtons_UITest
 
 		var panel = new StackPanel { Children = { button01, button02, enableButton02 } };
 
-		try
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(panel);
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
+
+		async Task Tap(FrameworkElement target)
 		{
-			await UITestHelper.Load(panel);
-
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
-
-			async Task Tap(FrameworkElement target)
-			{
-				var center = target.TransformToVisual(TestServices.WindowHelper.XamlRoot.Content)
-					.TransformPoint(new Point(target.ActualWidth / 2, target.ActualHeight / 2));
-				mouse.Press(center);
-				mouse.Release();
-				await WaitForIdle();
-			}
-
-			await Tap(button01);
-			Assert.AreEqual("Button button01 Clicked (1)", result);
-			Assert.AreEqual("Button button01 Tapped (1)", resultTapped);
-			Assert.AreEqual("Command Button 01 (1)", resultCommand);
-
-			// button02 is disabled: tapping it must not raise Click/Tapped/Command.
-			await Tap(button02);
-			Assert.AreEqual("Button button01 Clicked (1)", result);
-			Assert.AreEqual("Button button01 Tapped (1)", resultTapped);
-			Assert.AreEqual("Command Button 01 (1)", resultCommand);
-
-			await Tap(enableButton02);
-			await Tap(button02);
-			Assert.AreEqual("Button button02 Clicked (2)", result);
-			Assert.AreEqual("Button button02 Tapped (2)", resultTapped);
-			Assert.AreEqual("Command Button 02 (2)", resultCommand);
+			var center = target.GetAbsoluteCenter();
+			mouse.Press(center);
+			mouse.Release();
+			await WaitForIdle();
 		}
-		finally
-		{
-			WindowContent = null;
-		}
+
+		await Tap(button01);
+		Assert.AreEqual("Button button01 Clicked (1)", result);
+		Assert.AreEqual("Button button01 Tapped (1)", resultTapped);
+		Assert.AreEqual("Command Button 01 (1)", resultCommand);
+
+		// button02 is disabled: tapping it must not raise Click/Tapped/Command.
+		await Tap(button02);
+		Assert.AreEqual("Button button01 Clicked (1)", result);
+		Assert.AreEqual("Button button01 Tapped (1)", resultTapped);
+		Assert.AreEqual("Command Button 01 (1)", resultCommand);
+
+		await Tap(enableButton02);
+		await Tap(button02);
+		Assert.AreEqual("Button button02 Clicked (2)", result);
+		Assert.AreEqual("Button button02 Tapped (2)", resultTapped);
+		Assert.AreEqual("Command Button 02 (2)", resultCommand);
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIslands)]
 	public async Task When_ToggleSwitch_Tapped_Fires_Toggled_Respecting_IsEnabled()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		var result = "No value";
 		var toggleCount = 0;
 
@@ -130,44 +113,37 @@ public class Given_NativeButtons_UITest
 
 		var panel = new StackPanel { Children = { toggleSwitch01, toggleSwitch02, enableToggleSwitch02 } };
 
-		try
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(panel);
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
+
+		async Task Tap(FrameworkElement target)
 		{
-			await UITestHelper.Load(panel);
-
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
-
-			async Task Tap(FrameworkElement target)
-			{
-				var center = target.TransformToVisual(TestServices.WindowHelper.XamlRoot.Content)
-					.TransformPoint(new Point(target.ActualWidth / 2, target.ActualHeight / 2));
-				mouse.Press(center);
-				mouse.Release();
-				await WaitForIdle();
-			}
-
-			await Tap(toggleSwitch01);
-			Assert.AreEqual("ToggleSwitch toggleSwitch01 Toggled True (1)", result);
-
-			await Tap(toggleSwitch01);
-			Assert.AreEqual("ToggleSwitch toggleSwitch01 Toggled False (2)", result);
-
-			// toggleSwitch02 is disabled: tapping it must not raise Toggled.
-			await Tap(toggleSwitch02);
-			Assert.AreEqual("ToggleSwitch toggleSwitch01 Toggled False (2)", result);
-
-			await Tap(enableToggleSwitch02);
-			await Tap(toggleSwitch02);
-			Assert.AreEqual("ToggleSwitch toggleSwitch02 Toggled True (3)", result);
-
-			await Tap(toggleSwitch02);
-			Assert.AreEqual("ToggleSwitch toggleSwitch02 Toggled False (4)", result);
+			var center = target.GetAbsoluteCenter();
+			mouse.Press(center);
+			mouse.Release();
+			await WaitForIdle();
 		}
-		finally
-		{
-			WindowContent = null;
-		}
+
+		await Tap(toggleSwitch01);
+		Assert.AreEqual("ToggleSwitch toggleSwitch01 Toggled True (1)", result);
+
+		await Tap(toggleSwitch01);
+		Assert.AreEqual("ToggleSwitch toggleSwitch01 Toggled False (2)", result);
+
+		// toggleSwitch02 is disabled: tapping it must not raise Toggled.
+		await Tap(toggleSwitch02);
+		Assert.AreEqual("ToggleSwitch toggleSwitch01 Toggled False (2)", result);
+
+		await Tap(enableToggleSwitch02);
+		await Tap(toggleSwitch02);
+		Assert.AreEqual("ToggleSwitch toggleSwitch02 Toggled True (3)", result);
+
+		await Tap(toggleSwitch02);
+		Assert.AreEqual("ToggleSwitch toggleSwitch02 Toggled False (4)", result);
 	}
 
 	private sealed class DelegateCommand : ICommand

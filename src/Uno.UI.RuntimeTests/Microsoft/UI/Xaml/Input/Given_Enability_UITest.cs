@@ -20,50 +20,34 @@ public class Given_Enability_UITest
 {
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIslands)]
 	public async Task When_ButtonDisabled_Then_NoPointerEvents()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		var output = new TextBlock();
 		var button = new Button { Content = "Disabled button", IsEnabled = false };
 		RegisterEvents(button, output);
 
 		var panel = new StackPanel { Children = { output, button } };
 
-		try
-		{
-			await UITestHelper.Load(panel);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(panel);
 
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
 
-			var center = GetCenter(button);
-			mouse.Tap(center);
-			await WaitForIdle();
+		var center = button.GetAbsoluteCenter();
+		mouse.Tap(center);
+		await WaitForIdle();
 
-			Assert.IsTrue(string.IsNullOrWhiteSpace(output.Text));
-		}
-		finally
-		{
-			TestServices.WindowHelper.WindowContent = null;
-		}
+		Assert.IsTrue(string.IsNullOrWhiteSpace(output.Text));
 	}
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIslands)]
 	public async Task When_ButtonDisabling_Then_NoMorePointerEvents()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		var output = new TextBlock();
 		var button = new Button { Content = "Disabling button" };
 		RegisterEvents(button, output);
@@ -71,30 +55,24 @@ public class Given_Enability_UITest
 
 		var panel = new StackPanel { Children = { output, button } };
 
-		try
-		{
-			await UITestHelper.Load(panel);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(panel);
 
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
 
-			var center = GetCenter(button);
+		var center = button.GetAbsoluteCenter();
 
-			// Tap invokes Click, which disables the button.
-			mouse.Tap(center);
-			await WaitForIdle();
+		// Tap invokes Click, which disables the button.
+		mouse.Tap(center);
+		await WaitForIdle();
 
-			// Dragging off a now-disabled button must not resurrect Pressed/Moved/Entered.
-			mouse.Drag(center, new Point(center.X, center.Y + 20));
-			await WaitForIdle();
+		// Dragging off a now-disabled button must not resurrect Pressed/Moved/Entered.
+		mouse.Drag(center, new Point(center.X, center.Y + 20));
+		await WaitForIdle();
 
-			CollectionAssert.Contains(new[] { "Click", "Exited", "Released" }, output.Text);
-		}
-		finally
-		{
-			TestServices.WindowHelper.WindowContent = null;
-		}
+		CollectionAssert.Contains(new[] { "Click", "Exited", "Released" }, output.Text);
 	}
 
 	private static void RegisterEvents(Button button, TextBlock output)
@@ -106,10 +84,6 @@ public class Given_Enability_UITest
 		button.PointerEntered += (snd, e) => output.Text = "Entered";
 		button.PointerExited += (snd, e) => output.Text = "Exited";
 	}
-
-	private static Point GetCenter(FrameworkElement element) =>
-		element.TransformToVisual(TestServices.WindowHelper.XamlRoot.Content)
-			.TransformPoint(new Point(element.ActualWidth / 2, element.ActualHeight / 2));
 }
 
 #endif

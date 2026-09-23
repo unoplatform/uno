@@ -21,14 +21,9 @@ public class Given_Control_UITest
 	// them again once IsEnabled is toggled back on.
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIslands)]
 	public async Task When_IsEnabled_Initially_False_And_Inherited()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		var counter = 0;
 
 		// A Border gives the ContentControl a guaranteed hit-testable surface; when the
@@ -49,41 +44,34 @@ public class Given_Control_UITest
 
 		var panel = new StackPanel { Children = { buttonUnderTest } };
 
-		try
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(panel);
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
+
+		async Task Tap()
 		{
-			await UITestHelper.Load(panel);
-
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
-
-			async Task Tap()
-			{
-				var center = buttonUnderTest.TransformToVisual(TestServices.WindowHelper.XamlRoot.Content)
-					.TransformPoint(new Point(buttonUnderTest.ActualWidth / 2, buttonUnderTest.ActualHeight / 2));
-				mouse.Press(center);
-				mouse.Release();
-				await WaitForIdle();
-			}
-
-			// Initially disabled: tapping must not raise PointerPressed.
-			Assert.AreEqual(0, counter);
-			await Tap();
-			Assert.AreEqual(0, counter);
-
-			// Re-enable and confirm the state took effect.
-			buttonUnderTest.IsEnabled = true;
+			var center = buttonUnderTest.GetAbsoluteCenter();
+			mouse.Press(center);
+			mouse.Release();
 			await WaitForIdle();
-			Assert.IsTrue(buttonUnderTest.IsEnabled);
+		}
 
-			// Now enabled: tapping raises PointerPressed exactly once.
-			await Tap();
-			Assert.AreEqual(1, counter);
-		}
-		finally
-		{
-			TestServices.WindowHelper.WindowContent = null;
-		}
+		// Initially disabled: tapping must not raise PointerPressed.
+		Assert.AreEqual(0, counter);
+		await Tap();
+		Assert.AreEqual(0, counter);
+
+		// Re-enable and confirm the state took effect.
+		buttonUnderTest.IsEnabled = true;
+		await WaitForIdle();
+		Assert.IsTrue(buttonUnderTest.IsEnabled);
+
+		// Now enabled: tapping raises PointerPressed exactly once.
+		await Tap();
+		Assert.AreEqual(1, counter);
 	}
 }
 

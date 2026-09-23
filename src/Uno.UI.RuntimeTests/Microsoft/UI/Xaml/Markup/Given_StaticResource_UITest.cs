@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SamplesApp.UITests;
 using Uno.UITest.Helpers.Queries;
 using static Private.Infrastructure.TestServices;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup;
 
@@ -20,18 +21,12 @@ public class Given_StaticResource_UITest : SampleControlUITestBase
 	[DataRow("ConverterResource_Text", "Hello Converter!", DisplayName = "Converter resource")]
 	public async Task When_StaticResource_Resolves(string elementName, string expected)
 	{
-		try
-		{
-			await RunAsync("UITests.Shared.Resources.StaticResource.StaticResource_Simple");
+		using var _ = UITestHelper.ResetWindowContent();
+		await RunAsync("UITests.Shared.Resources.StaticResource.StaticResource_Simple");
 
-			var element = App.Marked(elementName);
-			await App.WaitForDependencyPropertyValueAsync(element, "Text", expected);
+		var element = App.Marked(elementName);
+		await App.WaitForDependencyPropertyValueAsync(element, "Text", expected);
 
-			Assert.AreEqual(expected, element.GetDependencyPropertyValue<string>("Text"));
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		Assert.AreEqual(expected, element.GetDependencyPropertyValue<string>("Text"));
 	}
 }

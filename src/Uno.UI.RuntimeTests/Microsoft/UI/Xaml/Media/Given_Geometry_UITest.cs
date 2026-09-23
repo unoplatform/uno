@@ -33,17 +33,11 @@ public class Given_Geometry_UITest
 			Child = path
 		};
 
-		try
-		{
-			await UITestHelper.Load(border);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(border);
 
-			var screenshot = await UITestHelper.ScreenShot(border);
-			ImageAssert.HasColorAt(screenshot, (float)(border.ActualWidth / 2), (float)(border.ActualHeight / 2), Colors.Red, tolerance: 5);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		var screenshot = await UITestHelper.ScreenShot(border);
+		ImageAssert.HasColorAt(screenshot, (float)(border.ActualWidth / 2), (float)(border.ActualHeight / 2), Colors.Red, tolerance: 5);
 	}
 
 	[TestMethod]
@@ -66,16 +60,10 @@ public class Given_Geometry_UITest
 			Child = path
 		};
 
-		try
-		{
-			await UITestHelper.Load(border);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(border);
 
-			var screenshot = await UITestHelper.ScreenShot(border);
-			ImageAssert.HasColorAt(screenshot, (float)(border.ActualWidth / 2), (float)(border.ActualHeight / 2), Colors.Green, tolerance: 5);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		var screenshot = await UITestHelper.ScreenShot(border);
+		ImageAssert.HasColorAt(screenshot, (float)(border.ActualWidth / 2), (float)(border.ActualHeight / 2), Colors.Green, tolerance: 5);
 	}
 }
