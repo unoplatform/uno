@@ -30,6 +30,13 @@ report_harness_crash() {
 
 	if [ "$status" -ne 0 ] && [ "$UNO_TVOS_TESTS_STARTED" != "true" ]; then
 		echo "##vso[task.setvariable variable=UNO_TVOS_HARNESS_CRASHED]true"
+
+		# A failed first step fails the job even when the re-run step then passes, so leave the
+		# verdict to the re-run.
+		if [ "${UNO_HARNESS_RERUN_PENDING:-}" = "true" ]; then
+			echo "##vso[task.logissue type=warning]The test harness failed before any test started (exit $status); the re-run step will retry it."
+			exit 0
+		fi
 	fi
 }
 trap report_harness_crash EXIT
