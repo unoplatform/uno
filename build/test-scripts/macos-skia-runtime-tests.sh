@@ -59,6 +59,7 @@ APP_EXIT=${PIPESTATUS[0]}
 set -e
 
 kill $WATCHDOG_PID 2>/dev/null || true
+wait $WATCHDOG_PID 2>/dev/null || true
 echo "Runtime tests app exited with code $APP_EXIT"
 
 ## Export the failed tests list for reuse in a pipeline retry

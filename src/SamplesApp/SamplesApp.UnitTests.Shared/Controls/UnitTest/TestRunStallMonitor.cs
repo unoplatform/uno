@@ -82,17 +82,35 @@ internal sealed class TestRunStallMonitor : IDisposable
 			return null;
 		}
 
+		// The heartbeat needs a thread of its own, which the single-threaded browser runtime refuses to start.
+		if (OperatingSystem.IsBrowser())
+		{
+			Console.WriteLine($"{LogPrefix} disabled: no dedicated threads on this runtime");
+			return null;
+		}
+
 		var threshold = GetSeconds(StallThresholdVariable, defaultSeconds: 120);
 
-		Console.WriteLine(
-			$"{LogPrefix} enabled: interval={interval}s stallThreshold={threshold}s " +
-			$"pid={GetProcessIdSafe()} os={RuntimeDescription()}");
+		try
+		{
+			var monitor = new TestRunStallMonitor(
+				TimeSpan.FromSeconds(interval),
+				TimeSpan.FromSeconds(threshold),
+				dispatcherProbe,
+				idleProbe);
 
-		return new TestRunStallMonitor(
-			TimeSpan.FromSeconds(interval),
-			TimeSpan.FromSeconds(threshold),
-			dispatcherProbe,
-			idleProbe);
+			Console.WriteLine(
+				$"{LogPrefix} enabled: interval={interval}s stallThreshold={threshold}s " +
+				$"pid={GetProcessIdSafe()} os={RuntimeDescription()}");
+
+			return monitor;
+		}
+		catch (Exception e)
+		{
+			// The monitor must never be able to prevent the run it is only observing.
+			Console.WriteLine($"{LogPrefix} disabled: could not start ({e.GetType().Name}: {e.Message})");
+			return null;
+		}
 	}
 
 	private static int DefaultIntervalSeconds =>
@@ -211,14 +229,17 @@ internal sealed class TestRunStallMonitor : IDisposable
 	private static string ProbeThreadPool()
 	{
 		var sw = Stopwatch.StartNew();
-		var signal = new ManualResetEventSlim(false);
 
-		if (!ThreadPool.UnsafeQueueUserWorkItem(_ => signal.Set(), null))
+		// A task rather than a wait handle: a starved probe completes whenever the pool frees up, with
+		// nothing left to dispose or to be signalled after disposal.
+		var signal = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		if (!ThreadPool.UnsafeQueueUserWorkItem(_ => signal.TrySetResult(), null))
 		{
 			return "queue-failed";
 		}
 
-		return signal.Wait(ProbeTimeout)
+		return signal.Task.Wait(ProbeTimeout)
 			? $"{sw.ElapsedMilliseconds}ms"
 			: $"STARVED(>{ProbeTimeout.TotalSeconds:F0}s)";
 	}
@@ -264,8 +285,13 @@ internal sealed class TestRunStallMonitor : IDisposable
 
 		_disposed = true;
 		_cts.Cancel();
-		_thread.Join(TimeSpan.FromSeconds(2));
-		_cts.Dispose();
+
+		// A tick can be blocked in each of its three probes in turn; disposing the source under a live
+		// loop would fault its next wait.
+		if (_thread.Join(ProbeTimeout * 3 + TimeSpan.FromSeconds(2)))
+		{
+			_cts.Dispose();
+		}
 
 		Console.WriteLine($"{LogPrefix} stopped after {Format(_runElapsed.Elapsed)}");
 	}

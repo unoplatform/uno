@@ -38,6 +38,27 @@ export PATH="$PATH:$HOME/.dotnet/tools"
 
 log() { echo "[watchdog] $*"; }
 
+# timeout(1) is GNU coreutils: macOS agents may only have it as gtimeout, or not at all. A capture tool
+# pointed at a wedged process can hang itself, so bound it by hand when neither exists.
+with_timeout() {
+	local seconds=$1; shift
+	if command -v timeout >/dev/null 2>&1; then
+		timeout "$seconds" "$@"
+	elif command -v gtimeout >/dev/null 2>&1; then
+		gtimeout "$seconds" "$@"
+	else
+		"$@" &
+		local cmd=$!
+		( sleep "$seconds"; kill -9 "$cmd" 2>/dev/null ) &
+		local killer=$!
+		wait "$cmd"
+		local status=$?
+		kill "$killer" 2>/dev/null
+		wait "$killer" 2>/dev/null
+		return $status
+	fi
+}
+
 # Number of tests started so far. Re-scanning the whole log each poll costs little next to a
 # 15s interval, and needs no state to survive the app being restarted mid-run.
 progress_count() {
@@ -74,7 +95,7 @@ capture() {
 
 	# Managed stacks — the primary artefact for a managed deadlock or a hung await.
 	if command -v dotnet-stack >/dev/null 2>&1; then
-		timeout 120 dotnet-stack report --process-id "$pid" > "$dir/dotnet-stack.txt" 2>&1 \
+		with_timeout 120 dotnet-stack report --process-id "$pid" > "$dir/dotnet-stack.txt" 2>&1 \
 			|| log "dotnet-stack failed (see $dir/dotnet-stack.txt)"
 	fi
 
@@ -82,13 +103,13 @@ capture() {
 		Darwin)
 			# Native stacks for every thread, including AppKit/CoreAnimation frames that
 			# managed stacks cannot show. This is the artefact for a host-level livelock.
-			timeout 120 sample "$pid" 10 -f "$dir/sample.txt" >/dev/null 2>&1 \
+			with_timeout 120 sample "$pid" 10 -f "$dir/sample.txt" >/dev/null 2>&1 \
 				|| log "sample failed"
-			timeout 60 vmmap --summary "$pid" > "$dir/vmmap.txt" 2>&1 || true
+			with_timeout 60 vmmap --summary "$pid" > "$dir/vmmap.txt" 2>&1 || true
 			;;
 		Linux)
 			if command -v eu-stack >/dev/null 2>&1; then
-				timeout 120 eu-stack -p "$pid" > "$dir/eu-stack.txt" 2>&1 || true
+				with_timeout 120 eu-stack -p "$pid" > "$dir/eu-stack.txt" 2>&1 || true
 			fi
 			cat "/proc/$pid/status" > "$dir/proc-status.txt" 2>&1 || true
 			cat "/proc/$pid/wchan" > "$dir/proc-wchan.txt" 2>&1 || true
