@@ -21,6 +21,7 @@ using Windows.Storage.AccessCache;
 using System.Linq;
 using System.Collections.Immutable;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.Testing;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
@@ -67,32 +68,20 @@ public partial class Given_HotReloadWorkspace
 	// Hot reload tests are only available on Skia desktop targets
 	[Filters]
 	[TestMethod]
-	// Raises the harness default for this test, which builds an app before it runs one. A cut-off here is
-	// the harness's, so it is reported once and not retried; TestAppTimeout below only reaps the app.
+	// Raises the harness default for this test, which builds an app before it runs one. It must stay above
+	// TestAppTimeout so the app is killed and reported before the harness abandons the test.
 	[Timeout(8 * 60 * 1000)]
 	public async Task When_HotReloadScenario(string filters)
 	{
 		// Remove this class and this method from the filters
 		filters = string.Join(";", (filters?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>()).ToImmutableArray().RemoveAll(IsOuterTestFilter));
 
-		using var cts = new CancellationTokenSource(TestAppTimeout);
-
-		string resultFile;
-		try
-		{
-			resultFile = await RunTestApp(filters, cts.Token);
-		}
-		catch (OperationCanceledException) when (cts.IsCancellationRequested)
-		{
-			// Assert.Fail rather than TimeoutException: the harness retries a TimeoutException, and three
-			// attempts at a wedged session cost the shard the same wait over again.
-			Assert.Fail(
-				$"The hot reload test app did not complete within {TestAppTimeout} and was killed. " +
-				"This usually means a hot-reload never completed: look for an internal error in the " +
-				"dev-server output above.");
-
-			throw; // unreachable, Assert.Fail always throws
-		}
+		var resultFile = await RunWithinBudget(
+			ct => RunTestApp(filters, ct),
+			TestAppTimeout,
+			$"The hot reload test app did not complete within {TestAppTimeout} and was killed. " +
+			"This usually means a hot-reload never completed: look for an internal error in the " +
+			"dev-server output above.");
 
 		// Parse the nunit XML results file and extract all failed tests
 		var tests = NUnitXmlParser.GetTests(resultFile);
@@ -118,6 +107,27 @@ public partial class Given_HotReloadWorkspace
 		if (resultMessage.Length != 0)
 		{
 			Assert.Fail($"Tests failed:\n{resultMessage}");
+		}
+	}
+
+	/// <summary>
+	/// Runs <paramref name="run"/>, cancelling it once <paramref name="budget"/> elapses.
+	/// </summary>
+	/// <remarks>
+	/// Running out of budget is reported as a <see cref="NonRetryableTestFailureException"/>: a retry would
+	/// build and launch the app again only to wait out the same wedged session.
+	/// </remarks>
+	internal static async Task<T> RunWithinBudget<T>(Func<CancellationToken, Task<T>> run, TimeSpan budget, string timeoutMessage)
+	{
+		using var cts = new CancellationTokenSource(budget);
+
+		try
+		{
+			return await run(cts.Token);
+		}
+		catch (OperationCanceledException e) when (cts.IsCancellationRequested)
+		{
+			throw new NonRetryableTestFailureException(timeoutMessage, e);
 		}
 	}
 
