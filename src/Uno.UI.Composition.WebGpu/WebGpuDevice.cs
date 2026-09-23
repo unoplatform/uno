@@ -76,6 +76,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 				u[0] = 1f; u[3] = 1f;                                             // identity placement
 				u[10] = -1e9f; u[11] = -1e9f; u[14] = 1e9f; u[15] = 1e9f;         // no site aabb...
 				u[16] = -1e30f; u[17] = -1e30f; u[18] = 1e30f; u[19] = 1e30f;     // ...so everything is inside it
+
 				// Depth 1 = nearest, so a device-space op is never rejected by the occlusion prepass. It never
 				// occludes either: its DrawOp.Depth stays 0, which keeps it out of the prepass entirely.
 				u[12] = 1f;

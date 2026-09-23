@@ -1,4 +1,4 @@
-// One frame in flight: its command encoder, what it rented, and the passes it builds and encodes. The walk over the
+﻿// One frame in flight: its command encoder, what it rented, and the passes it builds and encodes. The walk over the
 // recorded tree is in WebGpuFrame.Walk.cs, the op builders in WebGpuFrame.Ops.cs, the encoding in
 // WebGpuFrame.Encode.cs; the frame's coverage masks and effects live on its WebGpuCoverage and WebGpuEffects.
 #nullable disable
@@ -330,6 +330,8 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		var cover = default(Vector4);
 		float coverArea = 0f;
+		// Scratch for the leftover bands, reused across ops: a stackalloc per iteration would grow the frame.
+		Span<Vector4> bands = stackalloc Vector4[4];
 		for (int i = ops.Count - 1; i >= 0; i--)
 		{
 			var op = ops[i];
@@ -348,7 +350,6 @@ internal sealed unsafe partial class WebGpuFrame
 				// Not covered outright, but maybe covered across its middle: redraw only the bands left over.
 				if (coverArea > 0f && op.CullScissor.Z <= op.CullScissor.X && PixelArea(touched) > SplitMinArea)
 				{
-					Span<Vector4> bands = stackalloc Vector4[4];
 					int n = Remainder(cover, touched, bands);
 					float kept = 0f;
 					for (int k = 0; k < n; k++) { kept += PixelArea(bands[k]); }
@@ -390,9 +391,13 @@ internal sealed unsafe partial class WebGpuFrame
 			var c = PrepassCover(op, b);
 			if (c == default) { continue; }
 			var z = op.Depth;
-			ReadOnlySpan<float> xs = stackalloc float[6] { c.X, c.Z, c.Z, c.X, c.Z, c.X };
-			ReadOnlySpan<float> ys = stackalloc float[6] { c.Y, c.Y, c.W, c.Y, c.W, c.W };
-			for (int i = 0; i < 6; i++) { v[o++] = xs[i]; v[o++] = ys[i]; v[o++] = z; }
+			// The cover rect as two triangles.
+			v[o++] = c.X; v[o++] = c.Y; v[o++] = z;
+			v[o++] = c.Z; v[o++] = c.Y; v[o++] = z;
+			v[o++] = c.Z; v[o++] = c.W; v[o++] = z;
+			v[o++] = c.X; v[o++] = c.Y; v[o++] = z;
+			v[o++] = c.Z; v[o++] = c.W; v[o++] = z;
+			v[o++] = c.X; v[o++] = c.W; v[o++] = z;
 		}
 		b.Prepass = v;
 		b.PrepassVerts = n * 6;

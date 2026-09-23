@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -177,8 +177,9 @@ internal static partial class ManagedImageDecoder
 	{
 		switch (disposalMethod)
 		{
-			case 2: // restore to background (transparent)
-				// Clamp to the canvas: a frame rect wider than the screen would otherwise wrap into the next row.
+			case 2:
+				// Restore to background (transparent), clamped to the canvas: a frame rect wider than the
+				// screen would otherwise wrap into the next row.
 				var right = Math.Min(left + frameWidth, canvasWidth);
 				var bottom = Math.Min(top + frameHeight, canvasHeight);
 				for (var y = Math.Max(0, top); y < bottom; y++)

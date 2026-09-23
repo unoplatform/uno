@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -66,7 +66,7 @@ internal sealed unsafe partial class WebGpuEffects
 		{
 			hit.LastUsed = _d.FrameSeq;
 			view = hit.View; pad = hit.Pad;
-				return true;
+			return true;
 		}
 
 		// A miss must NOT render here: this runs inside the walk, and opening a pass mid-build recurses through

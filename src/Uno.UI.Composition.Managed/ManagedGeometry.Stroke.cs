@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -491,6 +491,7 @@ internal sealed partial class ManagedGeometry
 	private static void AddSemicircle(List<ManagedContour> pieces, Vector2 center, Vector2 outwardDir, float radius, float scale)
 	{
 		var startAngle = MathF.Atan2(-outwardDir.X, outwardDir.Y); // angle of the +normal (-dir.Y, dir.X)
+
 		// Step count from the DEVICE radius: a cap that is 2px across locally is 20px across under a 10x ancestor
 		// scale, and the same 16 facets would then be visible.
 		var steps = Math.Clamp((int)MathF.Ceiling(radius * scale), 16, 48);
