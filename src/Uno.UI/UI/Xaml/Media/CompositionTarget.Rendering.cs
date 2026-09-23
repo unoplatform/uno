@@ -78,7 +78,7 @@ public partial class CompositionTarget
 		{
 			var target = kvp.Key;
 
-			(IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)? staleFrame;
+			(FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage)? staleFrame;
 			lock (target._frameGate)
 			{
 				staleFrame = target._lastRenderedFrame;
@@ -86,7 +86,7 @@ public partial class CompositionTarget
 			}
 			if (staleFrame is { } sf)
 			{
-				sf.frame.Dispose();
+				sf.frame.OnPipelineReleased();
 				sf.damage?.Dispose();
 			}
 
@@ -165,7 +165,11 @@ public partial class CompositionTarget
 		_phaseLayoutRuns++;
 	}
 
-	private (IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)? _lastRenderedFrame;
+	private (FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage)? _lastRenderedFrame;
+
+	// The frame handed to Rendering subscribers as FrameData, kept only while one is subscribed. A target that
+	// does not re-record still resends its last frame, so this outlives the pipeline's own reference.
+	private FrameHold? _renderingFrame;
 	// Damage (dirty region) accumulated between frames from AddDamage; folded into each frame's own damage during
 	// Render. Guarded by _frameGate.
 	private readonly DamageRegion _pendingDamage = new();
@@ -189,6 +193,9 @@ public partial class CompositionTarget
 			if (!_isRenderingActive)
 			{
 				_isRenderingActive = true;
+				// Ask the backend to keep a handable frame object from now on; it costs a wrapper per recording,
+				// so nothing pays for it until something subscribes.
+				global::Uno.UI.Composition.Drawing.RenderRecordingOptions.CaptureFrameData = true;
 				foreach (var (target, _) in _targets)
 				{
 					((ICompositionTarget)target).RequestNewFrame();
@@ -202,6 +209,13 @@ public partial class CompositionTarget
 			if (_rendering == null)
 			{
 				_isRenderingActive = false;
+				global::Uno.UI.Composition.Drawing.RenderRecordingOptions.CaptureFrameData = false;
+				foreach (var (target, _) in _targets)
+				{
+					var held = target._renderingFrame;
+					target._renderingFrame = null;
+					held?.Release(dataAccessed: false);
+				}
 			}
 		}
 	}
@@ -280,7 +294,7 @@ public partial class CompositionTarget
 		{
 			damageScale = _xamlRootRasterizationScale;
 		}
-		var previousFrame = default((IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)?);
+		var previousFrame = default((FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage)?);
 		lock (_frameGate)
 		{
 			previousFrame = _lastRenderedFrame;
@@ -294,12 +308,20 @@ public partial class CompositionTarget
 			}
 
 			frameDamage.ClampTo(frameRect);
-			_lastRenderedFrame = (frame, path, frameDamage.Detach(damageScale));
+			_lastRenderedFrame = (new FrameHold(frame), path, frameDamage.Detach(damageScale));
 		}
 
 		_fpsHelper.OnFrameRecorded();
 
-		previousFrame?.frame.Dispose();
+		if (_isRenderingActive && _lastRenderedFrame is { frame: { } recorded })
+		{
+			recorded.Retain();
+			var replaced = _renderingFrame;
+			_renderingFrame = recorded;
+			replaced?.Release(dataAccessed: false);
+		}
+
+		previousFrame?.frame.OnPipelineReleased();
 		previousFrame?.damage?.Dispose();
 
 		if (_isRenderingActive || _forceContinuousRender)
@@ -375,7 +397,7 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 		var phaseDrawT0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
 
-		(IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)? lastRenderedFrameNullable;
+		(FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
@@ -469,7 +491,7 @@ public partial class CompositionTarget
 					// The window's own background, when it has one: content smaller than the window (or with no
 					// background of its own) shows it, and a transparent clear would show through to nothing.
 					present.Clear(host?.BackgroundColor ?? global::Windows.UI.Colors.Transparent);
-					lastRenderedFrame.frame.Replay(present);
+					lastRenderedFrame.frame.Record.Replay(present);
 				}
 
 				present.Restore();
@@ -516,9 +538,9 @@ public partial class CompositionTarget
 	}
 
 
-	private void ReturnFrame((IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage) frame)
+	private void ReturnFrame((FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage) frame)
 	{
-		IRenderRecord? frameToDelete = null;
+		FrameHold? frameToDelete = null;
 		IGeometry? damageToDelete = null;
 
 		lock (_frameGate)
@@ -535,7 +557,7 @@ public partial class CompositionTarget
 			}
 		}
 
-		frameToDelete?.Dispose();
+		frameToDelete?.OnPipelineReleased();
 		damageToDelete?.Dispose();
 	}
 
@@ -566,6 +588,66 @@ public partial class CompositionTarget
 		present.DrawPath(outline, global::Windows.UI.Color.FromArgb(0xB0, 0xFF, 0x00, 0x00));
 	}
 
+	/// <summary>
+	/// Owns a recorded frame. It is disposed once the pipeline is done with it and no in-flight Rendering raise
+	/// still holds it -- unless a subscriber actually read it from the event args, in which case app code may
+	/// keep it and the GC reclaims it instead.
+	/// </summary>
+	internal sealed class FrameHold(IRenderRecord record)
+	{
+		private readonly object _gate = new();
+		private int _retainCount;
+		private bool _publicized;
+		private bool _pipelineReleased;
+		private bool _disposed;
+
+		public IRenderRecord Record { get; } = record;
+
+		public void Retain()
+		{
+			lock (_gate)
+			{
+				_retainCount++;
+			}
+		}
+
+		public void Release(bool dataAccessed)
+		{
+			bool dispose;
+			lock (_gate)
+			{
+				_retainCount--;
+				_publicized |= dataAccessed;
+				dispose = ShouldDispose();
+				_disposed |= dispose;
+			}
+
+			if (dispose)
+			{
+				Record.Dispose();
+			}
+		}
+
+		public void OnPipelineReleased()
+		{
+			bool dispose;
+			lock (_gate)
+			{
+				_pipelineReleased = true;
+				dispose = ShouldDispose();
+				_disposed |= dispose;
+			}
+
+			if (dispose)
+			{
+				Record.Dispose();
+			}
+		}
+
+		// Pure predicate: callers decide under the lock and dispose outside it.
+		private bool ShouldDispose() => !_disposed && _pipelineReleased && _retainCount <= 0 && !_publicized;
+	}
+
 	internal static void InvokeRendering()
 	{
 		if (NativeDispatcher.Main.HasThreadAccess)
@@ -580,10 +662,42 @@ public partial class CompositionTarget
 		static void InvokeRenderingCore()
 		{
 			var t0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
-			_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
-			if (_logFramePhases)
+
+			// Every live target's latest frame, including targets that did not re-record since the last raise:
+			// a subscriber reading FrameData expects one entry per window, not only the one that just drew.
+			List<FrameHold>? held = null;
+			List<(Window Window, object? Data)>? frameData = null;
+			foreach (var (target, _) in _targets)
 			{
-				_phaseTickTicks += Stopwatch.GetTimestamp() - t0;
+				if (target._renderingFrame is not { } frame || target.ContentRoot.GetOwnerWindow() is not { } window)
+				{
+					continue;
+				}
+
+				frame.Retain();
+				(held ??= new()).Add(frame);
+				(frameData ??= new()).Add((window, frame.Record.FrameData));
+			}
+
+			var args = new RenderingEventArgs(Stopwatch.GetElapsedTime(_start), frameData);
+			try
+			{
+				_rendering?.Invoke(null, args);
+			}
+			finally
+			{
+				if (held is not null)
+				{
+					foreach (var frame in held)
+					{
+						frame.Release(args.FrameDataAccessed);
+					}
+				}
+
+				if (_logFramePhases)
+				{
+					_phaseTickTicks += Stopwatch.GetTimestamp() - t0;
+				}
 			}
 		}
 	}

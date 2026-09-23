@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 
@@ -17,4 +17,11 @@ public interface IRenderRecord : IDisposable
 	/// it (single-registered-backend invariant). Only the command-list fallback replays onto any <see cref="IDrawingSession"/>.
 	/// </summary>
 	void Replay(IDrawingSession into);
+
+	/// <summary>
+	/// The backend's own frame object, handed out by <c>CompositionTarget.Rendering</c> as <c>FrameData</c>.
+	/// Skia returns its <c>SKPicture</c>; a backend with nothing meaningful to expose returns null. Only produced
+	/// while <see cref="RenderRecordingOptions.CaptureFrameData"/> is set, since it costs a managed wrapper per recording.
+	/// </summary>
+	object? FrameData => null;
 }

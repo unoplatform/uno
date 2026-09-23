@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using SkiaSharp;
 
@@ -18,6 +18,13 @@ internal sealed class SkiaCommandRecorder : SkiaDrawingSession, ICommandRecorder
 
 	public IRenderRecord Finish()
 	{
+		if (RenderRecordingOptions.CaptureFrameData)
+		{
+			var managed = _recorder.EndRecording();
+			ReturnRecorder(_recorder);
+			return new SkiaRenderRecord(managed);
+		}
+
 		var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
 		ReturnRecorder(_recorder);
 		return new SkiaRenderRecord(picture);

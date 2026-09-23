@@ -1,4 +1,4 @@
-#if __SKIA__
+﻿#if __SKIA__
 using System;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -47,6 +47,41 @@ public class Given_CompositionTarget
 		finally
 		{
 			FeatureConfiguration.Rendering.SkipVisualTreePainting = false;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Rendering_Carries_FrameData()
+	{
+		var border = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Colors.Green) };
+		await UITestHelper.Load(border);
+
+		var raised = new TaskCompletionSource<RenderingEventArgs>(TaskCreationOptions.RunContinuationsAsynchronously);
+		EventHandler<object> onRendering = (_, args) =>
+		{
+			if (args is RenderingEventArgs e && e.FrameData is { Count: > 0 })
+			{
+				raised.TrySetResult(e);
+			}
+		};
+
+		CompositionTarget.Rendering += onRendering;
+		try
+		{
+			border.Background = new SolidColorBrush(Colors.Blue);
+			await Task.WhenAny(raised.Task, Task.Delay(5000));
+			Assert.IsTrue(raised.Task.IsCompleted, "Rendering should be raised with frame data while a subscriber is attached.");
+
+			var frameData = raised.Task.Result.FrameData!;
+			var entry = frameData[0];
+			Assert.IsNotNull(entry.Window, "Each entry should name the window the frame belongs to.");
+			// Skia hands out its own SKPicture; a backend with nothing to expose hands out null.
+			Assert.IsInstanceOfType(entry.Data, typeof(SkiaSharp.SKPicture), "The Skia backend should expose the recorded frame as an SKPicture.");
+		}
+		finally
+		{
+			CompositionTarget.Rendering -= onRendering;
 		}
 	}
 }
