@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Numerics;
 using Windows.Foundation;
 using Windows.UI;
 using Uno.UI.Composition.Drawing;
@@ -27,6 +28,10 @@ internal class AcrylicMaterialBrush : CompositionBrush
 
 	private IEffectFilter? _filter;
 	private Rect _cachedBounds;
+	private Vector2 _cachedScale;
+	// The filter is device-bound, so a re-bound renderer (DrawingFactory.Current swapped after a context loss)
+	// invalidates it even at identical bounds.
+	private IDrawingFactory? _cachedFactory;
 
 	public AcrylicMaterialBrush(Compositor compositor) : base(compositor)
 	{
@@ -56,7 +61,7 @@ internal class AcrylicMaterialBrush : CompositionBrush
 		}
 		else
 		{
-			EnsureFilter(session.Factory, bounds);
+			EnsureFilter(session.Factory, bounds, GetRasterizationScale(session));
 			if (_filter is { } filter)
 			{
 				session.DrawEffectBackdrop(filter, opacity);
@@ -85,14 +90,20 @@ internal class AcrylicMaterialBrush : CompositionBrush
 		session.DrawImageTiled(texture, bounds, EdgeExtend.Wrap, EdgeExtend.Wrap, effectiveOpacity);
 	}
 
-	private void EnsureFilter(IDrawingFactory factory, Rect bounds)
+	private void EnsureFilter(IDrawingFactory factory, Rect bounds, Vector2 scale)
 	{
-		if (_filter is not null && _cachedBounds == bounds)
+		if (_filter is not null && _cachedBounds == bounds && _cachedScale == scale && ReferenceEquals(_cachedFactory, factory))
 		{
 			return;
 		}
 
-		_filter?.Dispose();
+		if (ReferenceEquals(_cachedFactory, factory))
+		{
+			_filter?.Dispose();
+		}
+
+		// A filter from a re-bound renderer belongs to a device that is gone; drop it rather than calling into it.
+		_filter = null;
 
 		// Backdrop → Gaussian blur → luminosity blend (with the luminosity colour) → colour blend (with the tint).
 		// Blur → Luminosity blend → Color blend, as a neutral effect tree.
@@ -107,6 +118,8 @@ internal class AcrylicMaterialBrush : CompositionBrush
 
 		_filter = factory.CreateEffectFilter(tree, bounds);
 		_cachedBounds = bounds;
+		_cachedScale = scale;
+		_cachedFactory = factory;
 	}
 
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)

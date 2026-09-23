@@ -102,11 +102,11 @@ public sealed partial class WebGpuDrawingFactory
 		return new WebGpuTexture(_device, tex, view, w, h);
 	}
 
-	private WebGpuTexture Blur(WebGpuTexture src, float sigma)
+	private WebGpuTexture Blur(WebGpuTexture src, float sigmaX, float sigmaY)
 	{
 		int w = src.PixelWidth, h = src.PixelHeight;
 		var surface = new WebGpuRenderSurface(_device, w, h, "offscreen-effect4");
-		new WebGpuFrame(_device, surface).Effects.BlurInto(src, sigma, sigma);
+		new WebGpuFrame(_device, surface).Effects.BlurInto(src, sigmaX, sigmaY);
 		var (tex, view) = surface.DetachColor();
 		surface.Dispose();
 		return new WebGpuTexture(_device, tex, view, w, h);
@@ -129,7 +129,22 @@ public sealed partial class WebGpuDrawingFactory
 	//
 	// The returned texture carries a reference the caller owns and must release, which is what lets every arm release
 	// its children uniformly — an arm cannot otherwise tell a tree-owned TextureInput leaf from one it just rendered.
-	private ITexture TryEvaluateTree(EffectNode node, Rect bounds)
+	// The rasterization scale the tree's texture leaves were produced at; the largest wins, since an offscreen
+	// sized for it can still hold a coarser sibling.
+	private static Vector2 TreeScale(EffectNode node)
+	{
+		var scale = node is TextureInput t ? new Vector2(t.ScaleX, t.ScaleY) : Vector2.One;
+		foreach (var child in node.Children)
+		{
+			scale = Vector2.Max(scale, TreeScale(child));
+		}
+
+		return scale;
+	}
+
+	// `scale` is the device pixels per logical unit the tree's texture leaves were rasterized at: everything sized
+	// from the DIP bounds here has to match them, or the arms of a blend disagree on resolution.
+	private ITexture TryEvaluateTree(EffectNode node, Rect bounds, Vector2 scale)
 	{
 		switch (node)
 		{
@@ -144,17 +159,17 @@ public sealed partial class WebGpuDrawingFactory
 
 					// A BorderEffect extends its source past its own rect, and downstream nodes sample over the whole
 					// bounds, so realize the extended fill as a bounds-sized input here.
-					int tw = Math.Max(1, (int)Math.Round(bounds.Width)), th = Math.Max(1, (int)Math.Round(bounds.Height));
+					int tw = Math.Max(1, (int)Math.Round(bounds.Width * scale.X)), th = Math.Max(1, (int)Math.Round(bounds.Height * scale.Y));
 					return RenderOffscreen(tw, th, s => s.DrawImageTiled(t.Texture, new Rect(0, 0, tw, th), t.ExtendX, t.ExtendY));
 				}
 			case ColorInput c:
 				{
-					int cw = Math.Max(1, (int)Math.Round(bounds.Width)), ch = Math.Max(1, (int)Math.Round(bounds.Height));
+					int cw = Math.Max(1, (int)Math.Round(bounds.Width * scale.X)), ch = Math.Max(1, (int)Math.Round(bounds.Height * scale.Y));
 					return RenderOffscreen(cw, ch, s => s.DrawRect(new Rect(0, 0, cw, ch), c.Color));
 				}
 			case ColorMatrixEffectNode cm:
 				{
-					if (TryEvaluateTree(cm.Source, bounds) is not { } src) { return null; }
+					if (TryEvaluateTree(cm.Source, bounds, scale) is not { } src) { return null; }
 					int w = src.PixelWidth, h = src.PixelHeight;
 					using var filter = CreateColorMatrixColorFilter(cm.Matrix);
 					var result = RenderOffscreen(w, h, s => s.DrawImage(src, 0, 0, filter));
@@ -163,8 +178,8 @@ public sealed partial class WebGpuDrawingFactory
 				}
 			case BlendEffectNode blend:
 				{
-					if (TryEvaluateTree(blend.Background, bounds) is not WebGpuTexture bg) { return null; }
-					if (TryEvaluateTree(blend.Foreground, bounds) is not WebGpuTexture fg) { bg.Release(); return null; }
+					if (TryEvaluateTree(blend.Background, bounds, scale) is not WebGpuTexture bg) { return null; }
+					if (TryEvaluateTree(blend.Foreground, bounds, scale) is not WebGpuTexture fg) { bg.Release(); return null; }
 					var result = RunBlend(bg, fg, BlendShaderId(blend.Mode));
 					bg.Release();
 					fg.Release();
@@ -173,11 +188,11 @@ public sealed partial class WebGpuDrawingFactory
 			case CompositeEffectNode comp:
 				{
 					if (comp.Sources.Count == 0) { return null; }
-					if (TryEvaluateTree(comp.Sources[0], bounds) is not WebGpuTexture acc) { return null; }
+					if (TryEvaluateTree(comp.Sources[0], bounds, scale) is not WebGpuTexture acc) { return null; }
 					int id = BlendShaderId(comp.Mode);
 					for (int i = 1; i < comp.Sources.Count; i++)
 					{
-						if (TryEvaluateTree(comp.Sources[i], bounds) is not WebGpuTexture next) { acc.Release(); return null; }
+						if (TryEvaluateTree(comp.Sources[i], bounds, scale) is not WebGpuTexture next) { acc.Release(); return null; }
 						var folded = RunBlend(acc, next, id) as WebGpuTexture;
 						acc.Release();
 						next.Release();
@@ -189,8 +204,8 @@ public sealed partial class WebGpuDrawingFactory
 				}
 			case CrossFadeEffectNode cf:
 				{
-					if (TryEvaluateTree(cf.SourceA, bounds) is not WebGpuTexture a) { return null; }
-					if (TryEvaluateTree(cf.SourceB, bounds) is not WebGpuTexture bb) { a.Release(); return null; }
+					if (TryEvaluateTree(cf.SourceA, bounds, scale) is not WebGpuTexture a) { return null; }
+					if (TryEvaluateTree(cf.SourceB, bounds, scale) is not WebGpuTexture bb) { a.Release(); return null; }
 					var result = RunCombine(a, bb, 1f - cf.Weight, cf.Weight, 0f, 0f, alphaMask: false);
 					a.Release();
 					bb.Release();
@@ -198,8 +213,8 @@ public sealed partial class WebGpuDrawingFactory
 				}
 			case ArithmeticCompositeEffectNode ar:
 				{
-					if (TryEvaluateTree(ar.Foreground, bounds) is not WebGpuTexture fg) { return null; }
-					if (TryEvaluateTree(ar.Background, bounds) is not WebGpuTexture bg) { fg.Release(); return null; }
+					if (TryEvaluateTree(ar.Foreground, bounds, scale) is not WebGpuTexture fg) { return null; }
+					if (TryEvaluateTree(ar.Background, bounds, scale) is not WebGpuTexture bg) { fg.Release(); return null; }
 					var result = RunCombine(fg, bg, ar.Source1, ar.Source2, ar.Multiply, ar.Offset, alphaMask: false);
 					fg.Release();
 					bg.Release();
@@ -207,8 +222,8 @@ public sealed partial class WebGpuDrawingFactory
 				}
 			case AlphaMaskEffectNode am:
 				{
-					if (TryEvaluateTree(am.Source, bounds) is not WebGpuTexture src2) { return null; }
-					if (TryEvaluateTree(am.Mask, bounds) is not WebGpuTexture mask) { src2.Release(); return null; }
+					if (TryEvaluateTree(am.Source, bounds, scale) is not WebGpuTexture src2) { return null; }
+					if (TryEvaluateTree(am.Mask, bounds, scale) is not WebGpuTexture mask) { src2.Release(); return null; }
 					var result = RunCombine(src2, mask, 0f, 0f, 0f, 0f, alphaMask: true);
 					src2.Release();
 					mask.Release();
@@ -216,12 +231,12 @@ public sealed partial class WebGpuDrawingFactory
 				}
 			case WhiteNoiseEffectNode n:
 				{
-					int w = Math.Max(1, (int)Math.Round(bounds.Width)), h = Math.Max(1, (int)Math.Round(bounds.Height));
+					int w = Math.Max(1, (int)Math.Round(bounds.Width * scale.X)), h = Math.Max(1, (int)Math.Round(bounds.Height * scale.Y));
 					return RunNoise(w, h, n.Frequency, n.Offset);
 				}
 			case ContrastEffectNode ct:
 				{
-					if (TryEvaluateTree(ct.Source, bounds) is not WebGpuTexture s) { return null; }
+					if (TryEvaluateTree(ct.Source, bounds, scale) is not WebGpuTexture s) { return null; }
 					var u = new float[20];
 					u[0] = 0f; u[1] = ct.Contrast; u[2] = ct.Clamp ? 1f : 0f;
 					var result = RunColorFunc(s, u);
@@ -230,7 +245,7 @@ public sealed partial class WebGpuDrawingFactory
 				}
 			case GammaTransferEffectNode g:
 				{
-					if (TryEvaluateTree(g.Source, bounds) is not WebGpuTexture s) { return null; }
+					if (TryEvaluateTree(g.Source, bounds, scale) is not WebGpuTexture s) { return null; }
 					var u = new float[20];
 					u[0] = 1f; u[2] = g.Clamp ? 1f : 0f;
 					u[4] = g.Amplitudes[0]; u[5] = g.Amplitudes[1]; u[6] = g.Amplitudes[2]; u[7] = g.Amplitudes[3];
@@ -243,24 +258,25 @@ public sealed partial class WebGpuDrawingFactory
 				}
 			case BlurEffectNode b:
 				{
-					if (TryEvaluateTree(b.Source, bounds) is not WebGpuTexture src) { return null; }
+					if (TryEvaluateTree(b.Source, bounds, scale) is not WebGpuTexture src) { return null; }
 					if (b.Sigma <= 0f) { return src; }
 					int w = src.PixelWidth, h = src.PixelHeight;
 					// A soft border — D2D's default — fades to transparent past the source edge, but the pyramid samples
 					// clamp-to-edge and would smear the edge texel outwards instead. Pad the source so the clamp has
 					// transparency to read, then crop the fade back to the source rect the way Skia crops to bounds.
 					// The pyramid itself is shared with the per-frame acrylic backdrop, which does want the clamp.
-					var margin = b.ClampEdge ? 0 : Math.Min(256, (int)MathF.Ceiling(b.Sigma * 3f));
+					float sigmaX = b.Sigma * scale.X, sigmaY = b.Sigma * scale.Y;
+					var margin = b.ClampEdge ? 0 : Math.Min(256, (int)MathF.Ceiling(MathF.Max(sigmaX, sigmaY) * 3f));
 					if (margin == 0)
 					{
-						var blurredOnly = Blur(src, b.Sigma);
+						var blurredOnly = Blur(src, sigmaX, sigmaY);
 						src.Release();
 						return blurredOnly;
 					}
 
 					var padded = (WebGpuTexture)RenderOffscreen(w + (2 * margin), h + (2 * margin), s => s.DrawImage(src, margin, margin));
 					src.Release();
-					var blurred = Blur(padded, b.Sigma);
+					var blurred = Blur(padded, sigmaX, sigmaY);
 					padded.Release();
 					var cropped = RenderOffscreen(w, h, s => s.DrawImage(blurred, -margin, -margin));
 					blurred.Release();
@@ -268,7 +284,7 @@ public sealed partial class WebGpuDrawingFactory
 				}
 			case UnsupportedEffectNode u:
 				// Pass-through: the child's reference transfers straight to our caller.
-				return u.Source is null ? null : TryEvaluateTree(u.Source, bounds);
+				return u.Source is null ? null : TryEvaluateTree(u.Source, bounds, scale);
 			default:
 				return null;   // SourceInput / Blend / Composite / … — later phases
 		}
@@ -281,7 +297,7 @@ public sealed partial class WebGpuDrawingFactory
 	// the tint, the inner Blend's is the luminosity colour.
 	public IEffectFilter CreateEffectFilter(EffectNode tree, Rect bounds)
 	{
-		if (!ContainsBackdrop(tree) && TryEvaluateTree(tree, bounds) is { } evaluated)
+		if (!ContainsBackdrop(tree) && TryEvaluateTree(tree, bounds, TreeScale(tree)) is { } evaluated)
 		{
 			return new WebGpuEffectFilter { EvaluatedTexture = evaluated, EvaluatedBounds = bounds };
 		}

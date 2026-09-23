@@ -96,20 +96,27 @@ internal sealed class SkiaEffectFuser
 					var img = ((SkiaTexture)texture.Texture).Image;
 					var src = new SKRect(0, 0, img.Width, img.Height);
 
+					// The filter DAG works in the effect's logical space (the canvas transform is applied when the
+					// filter runs), while the texture was rasterized at device resolution — so its destination is its
+					// pixel size divided by that scale, which lands it back at 1:1 device pixels.
+					var scaleX = texture.ScaleX > 0f ? texture.ScaleX : 1f;
+					var scaleY = texture.ScaleY > 0f ? texture.ScaleY : 1f;
+					var logical = new SKRect(0, 0, img.Width / scaleX, img.Height / scaleY);
+
 					if (texture.ExtendX == EdgeExtend.None && texture.ExtendY == EdgeExtend.None)
 					{
 						// Plain finite image: place it back at bounds (it was rasterized in bounds-space at the origin).
-						var dst = new SKRect(bounds.Left, bounds.Top, bounds.Left + img.Width, bounds.Top + img.Height);
+						var dst = new SKRect(bounds.Left, bounds.Top, bounds.Left + logical.Width, bounds.Top + logical.Height);
 						return Track(SKImageFilter.CreateImage(img, src, dst, new SKSamplingOptions(SKFilterMode.Linear)));
 					}
 
 					// BorderEffect: extend the source's own rectangle to infinity per the edge mode; downstream sampling
 					// over `bounds` then sees the tiled/mirrored/clamped fill. Mirrors the legacy Border realization.
-					var imageFilter = Track(SKImageFilter.CreateImage(img, src, src, new SKSamplingOptions(SKFilterMode.Linear)));
+					var imageFilter = Track(SKImageFilter.CreateImage(img, src, logical, new SKSamplingOptions(SKFilterMode.Linear)));
 					var mode = PickExtend(texture.ExtendX, texture.ExtendY);
 					if (mode == SKShaderTileMode.Repeat)
 					{
-						return Track(SKImageFilter.CreateTile(src, bounds, imageFilter));
+						return Track(SKImageFilter.CreateTile(logical, bounds, imageFilter));
 					}
 
 					ReadOnlySpan<float> identityKernel = [0, 0, 0, 0, 1, 0, 0, 0, 0];

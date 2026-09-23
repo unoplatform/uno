@@ -662,11 +662,18 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity)
 	{
 		if (filter is not WebGpuEffectFilter fx) { return; }
-		// General non-backdrop evaluator result: the whole tree was rendered to a texture — just draw it at the
-		// effect bounds (no backdrop capture).
-		if (fx.EvaluatedTexture is { } evaluated)
+		// General non-backdrop evaluator result: the whole tree was rendered to a texture — just draw it over the
+		// effect bounds (no backdrop capture). Over the bounds rather than 1:1, because the tree rasterizes its
+		// sources at device resolution, so above 100% scaling the texture is larger than the bounds it covers.
+		if (fx.EvaluatedTexture is WebGpuTexture evaluated)
 		{
-			DrawImage(evaluated, (float)fx.EvaluatedBounds.Left, (float)fx.EvaluatedBounds.Top, opacity);
+			var b = fx.EvaluatedBounds;
+			if (evaluated.PixelWidth > 0 && evaluated.PixelHeight > 0 && b.Width > 0 && b.Height > 0)
+			{
+				TrackTexture(evaluated);
+				_target.Add(ImageQuad(evaluated, (float)b.Left, (float)b.Top, (float)b.Width, (float)b.Height, opacity));
+			}
+
 			return;
 		}
 		// Opaque acrylic OR a zero-blur acrylic: a fully-opaque tint completely covers the blurred backdrop, and a
