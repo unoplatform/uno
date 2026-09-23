@@ -8370,6 +8370,185 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		#endregion
 
+		/// <summary>
+		/// The invisible &lt;input /&gt; the WASM head keeps in the DOM for text entry must track the
+		/// ContentElement, not the DisplayBlock. The DisplayBlock shrink-wraps the text, so sizing the
+		/// element from it made it grow by a character's width on every keystroke. Browser password
+		/// managers anchor their affordances to the &lt;input /&gt; bounds, so users saw the 1Password badge
+		/// start at the left edge of an empty PasswordBox and march right as they typed.
+		///
+		/// This was latent until the element was actually sized: the TS wrote a unitless
+		/// <c>style.width = `${width}`</c>, which is invalid CSS and silently dropped, until the unit was
+		/// added. So this asserts the width the element *ends up with*, which is what regressed.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Typing_Then_Invisible_Input_Tracks_ContentElement_Not_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Width = 200 };
+
+			try
+			{
+				await UITestHelper.Load(SUT, x => x.IsLoaded);
+
+				TakeEntrySession(SUT);
+				await WindowHelper.WaitForIdle();
+
+				if (!TracksTheFocusedTextBox(SUT))
+				{
+					return;
+				}
+
+				double HiddenInputWidth() => GetHiddenInputRect()?.Width ?? -1;
+
+				Assert.IsTrue(await SettlesTo(() => HiddenInputWidth() > 0),
+					$"the invisible <input /> should have been sized; it is {DescribeHiddenInput()}");
+
+				if (SUT.FindVisualChildByName("ContentElement") is not Control contentElement)
+				{
+					Assert.Fail("Could not locate the ContentElement template part.");
+					return;
+				}
+
+				// Deliberately compared against the content area at each point rather than against a constant:
+				// the DeleteButton appears once the focused TextBox is non-empty, which legitimately narrows the
+				// ContentElement. Tracking it is correct; tracking the text is the regression.
+				double ContentWidth() => contentElement.ActualWidth - (contentElement.Padding.Left + contentElement.Padding.Right);
+
+				var widthWhenEmpty = HiddenInputWidth();
+				Assert.AreEqual(ContentWidth(), widthWhenEmpty, delta: 2,
+					$"An empty TextBox must size the invisible <input /> to the content area, not to the (empty) text. " +
+					$"Got {widthWhenEmpty}, expected ~{ContentWidth()}.");
+
+				// 'w' is among the widest glyphs, so a per-character regression shows up immediately.
+				foreach (var c in "wwwwwwwwww")
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+					await WindowHelper.WaitForIdle();
+				}
+
+				var widthAfterTyping = HiddenInputWidth();
+				Assert.AreEqual(ContentWidth(), widthAfterTyping, delta: 2,
+					$"After typing, the invisible <input /> must still match the content area ({ContentWidth()}), but it " +
+					$"was {widthAfterTyping}. Sizing it from the DisplayBlock makes it track the text instead, which is " +
+					$"what drifts password-manager badges across the field.");
+			}
+			finally
+			{
+				await ReleaseSharedInput();
+			}
+		}
+
+		/// <summary>
+		/// The invisible &lt;input /&gt; must also sit *on* the field it serves, not merely be the right size.
+		/// Anchoring it on the DisplayBlock let it slide away as long text scrolled or TextAlignment moved the
+		/// block, and under RightToLeft the mirrored transform put it almost entirely outside the control.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Focused_Then_Invisible_Input_Is_Positioned_Over_The_Field()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			try
+			{
+				foreach (var flowDirection in new[] { FlowDirection.LeftToRight, FlowDirection.RightToLeft })
+				{
+					var SUT = new TextBox { Width = 200, FlowDirection = flowDirection };
+					var host = new Border { Width = 400, Height = 100, Child = SUT };
+					await UITestHelper.Load(host, x => x.IsLoaded);
+
+					TakeEntrySession(SUT, flowDirection.ToString());
+					await WindowHelper.WaitForIdle();
+
+					if (!TracksTheFocusedTextBox(SUT))
+					{
+						return;
+					}
+
+					Assert.IsTrue(await SettlesTo(() => GetHiddenInputRect()?.Width > 0),
+						$"{flowDirection}: the invisible <input /> should have been sized; it is {DescribeHiddenInput()}");
+
+					// Long enough to overflow the field, so a DisplayBlock-anchored element scrolls out of it.
+					foreach (var c in "wwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
+					{
+						SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+					}
+					await WindowHelper.WaitForIdle();
+
+					if (GetHiddenInputRect() is not { } input)
+					{
+						Assert.Fail($"{flowDirection}: the invisible <input /> went missing; it is {DescribeHiddenInput()}");
+						return;
+					}
+
+					var (fieldLeft, fieldRight) = GetHorizontalSpan(SUT);
+
+					// Asserted as containment rather than against the computed origin, so this stays a check on the
+					// observable outcome instead of restating the implementation.
+					Assert.IsTrue(
+						input.Left >= fieldLeft - 2 && input.Right <= fieldRight + 2,
+						$"{flowDirection}: the invisible <input /> must stay within the TextBox. Input spans " +
+						$"{input.Left}..{input.Right}, field spans {fieldLeft}..{fieldRight}.");
+				}
+			}
+			finally
+			{
+				await ReleaseSharedInput();
+			}
+		}
+
+		/// <summary>
+		/// Focuses <paramref name="textBox"/> and asserts it owns the entry session before anything reads the
+		/// shared &lt;input /&gt;. Focus that quietly failed, or that a previous test still holds, would otherwise
+		/// leave the assertions measuring some other TextBox's input — passing without exercising this SUT.
+		/// </summary>
+		private static void TakeEntrySession(TextBox textBox, string context = "")
+		{
+			var prefix = context.Length == 0 ? "" : context + ": ";
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic), $"{prefix}TextBox should take focus");
+			Assert.AreEqual(textBox, FocusManager.GetFocusedElement(textBox.XamlRoot), $"{prefix}TextBox should own the entry session");
+		}
+
+		/// <summary>
+		/// Whether the shared &lt;input /&gt; is currently the element being positioned over <paramref name="textBox"/>,
+		/// which is the precondition for asserting anything about its size or position.
+		///
+		/// Two hosts legitimately have nothing to measure. Accessibility routes text entry through the per-element
+		/// semantic &lt;input /&gt; and detaches the shared one; once any accessibility test has enabled it, it stays on
+		/// for the rest of the browser session. And iOS parks the input off-screen so WebKit has no rect to reveal,
+		/// ignoring every size and position it is given. Both policies are pinned by
+		/// <see cref="When_Focused_In_Browser_Then_Hidden_Input_Placement_Matches_Host"/>, so they are skipped rather
+		/// than re-asserted here.
+		/// </summary>
+		private static bool TracksTheFocusedTextBox(TextBox textBox)
+			=> !SemanticElementExists(textBox) && ExpectedPlacementForHost() == "tracking";
+
+		// The runtime-test engine only unloads test content when IsUnloadingTestContent is set, which the
+		// CI/headless path does not: leaving a focused TextBox would keep the shared input in the DOM for
+		// whatever runs next.
+		private static async Task ReleaseSharedInput()
+		{
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+		}
+
+		/// <summary>
+		/// The element's horizontal span in root coordinates, derived from both corners so it is correct under a
+		/// mirrored (RightToLeft) subtree, where transforming the origin yields the right edge.
+		/// </summary>
+		private static (double Left, double Right) GetHorizontalSpan(FrameworkElement element)
+		{
+			var transform = element.TransformToVisual(null);
+			var a = transform.TransformPoint(default).X;
+			var b = transform.TransformPoint(new Point(element.ActualWidth, 0)).X;
+			return (Math.Min(a, b), Math.Max(a, b));
+		}
+
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{
 			private bool _hideCaret;

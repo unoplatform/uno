@@ -248,40 +248,6 @@ public class Given_Frame
 		Assert.HasCount(2, SUT.ForwardStack);
 	}
 
-#if !__SKIA__ // This test only applies to legacy frame which keeps all pages in memory
-	[TestMethod]
-	public void When_RemovedPage()
-	{
-		var SUT = new Frame()
-		{
-		};
-
-		SUT.Navigate(typeof(MyPage));
-
-		var myPage1 = SUT.Content as MyPage;
-		Assert.IsNotNull(myPage1);
-		Assert.AreEqual(SUT, myPage1.Frame);
-
-		SUT.Navigate(typeof(MyPage));
-
-		var myPage2 = SUT.Content as MyPage;
-		Assert.IsNotNull(myPage2);
-		Assert.AreEqual(SUT, myPage2.Frame);
-
-		SUT.GoBack();
-
-		Assert.AreEqual(myPage1, SUT.Content);
-		Assert.IsNotNull(myPage2.Frame);
-
-		SUT.Navigate(typeof(MyPage));
-
-		var myPage3 = SUT.Content as MyPage;
-
-		Assert.AreEqual(myPage3, SUT.Content);
-		Assert.IsNull(myPage2.Frame);
-	}
-#endif
-
 	[TestMethod]
 	public void When_Tracking_SourcePageType()
 	{
@@ -463,16 +429,36 @@ public class Given_Frame
 		var exception = Assert.ThrowsExactly<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInCtorPage)));
 		Assert.AreEqual("Crashed", exception.Message);
 #if HAS_UNO
-		if (FeatureConfiguration.Frame.UseWinUIBehavior)
-		{
-			// This is only valid with WinUI Frame behavior
-			Assert.IsFalse(navigationFailed);
-		}
+		Assert.IsFalse(navigationFailed);
 #endif
 	}
 
 	[TestMethod]
 	public async Task When_Exception_In_OnNavigatedTo()
+	{
+		var SUT = new Frame()
+		{
+			Width = 200,
+			Height = 200
+		};
+
+		bool navigationFailed = false;
+		SUT.NavigationFailed += (s, e) => navigationFailed = true;
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+		SUT.Navigate(typeof(MyPage));
+		var previousContent = SUT.Content;
+
+		var exception = Assert.ThrowsExactly<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInOnNavigatedToPage)));
+		Assert.AreEqual("Crashed", exception.Message);
+		Assert.IsTrue(navigationFailed);
+		Assert.AreSame(previousContent, SUT.Content);
+	}
+
+	[TestMethod]
+	public async Task When_Exception_In_OnNavigatedTo_And_NavigationFailed_Handled()
 	{
 		var SUT = new Frame()
 		{
@@ -487,12 +473,25 @@ public class Given_Frame
 			e.Handled = true;
 		};
 
-		TestServices.WindowHelper.WindowContent = SUT;
-		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		try
+		{
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
 
-		var exception = Assert.ThrowsExactly<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInOnNavigatedToPage)));
-		Assert.AreEqual("Crashed", exception.Message);
-		Assert.IsTrue(navigationFailed);
+			SUT.Navigate(typeof(MyPage));
+			var previousContent = SUT.Content;
+
+			// A handled NavigationFailed lets the app continue: no exception, previous content restored.
+			var result = SUT.Navigate(typeof(ExceptionInOnNavigatedToPage));
+
+			Assert.IsTrue(navigationFailed);
+			Assert.IsTrue(result);
+			Assert.AreSame(previousContent, SUT.Content);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]

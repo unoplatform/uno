@@ -478,6 +478,19 @@ CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICult
 
 If a single codebase must target both pre-7.0 and 7.0, guard the calls with `#if`.
 
+The cross-platform `Frame.UseWinUIBehavior` and `Page.IsPoolingEnabled` flags are also removed, along
+with the `Microsoft.UI.Xaml.PagePool` type and the `FrameNavigationHelper.GetInstance` and
+`FrameNavigationHelper.EnsurePageInitialized` helpers. `Frame` now always uses the WinUI navigation
+model, which was already the default on Skia, so only apps that set `UseWinUIBehavior` to `false` see
+a difference:
+
+- Back-stack pages are no longer all kept in memory. A page is cached according to its
+  `NavigationCacheMode` and the frame's `CacheSize`, so a page with the default
+  `NavigationCacheMode.Disabled` is recreated when you navigate back to it. Set
+  `NavigationCacheMode="Required"` (or `Enabled`) on pages that must keep their state.
+- `GetNavigationState` and `SetNavigationState` now serialize and restore the navigation history
+  instead of only storing the string.
+
 ### Behavioral changes (same API, different result)
 
 Because rendering moves from `Canvas`/`CALayer`/CSS to Skia, expect subtle differences and

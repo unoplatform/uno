@@ -286,26 +286,6 @@ namespace Uno.UI
 			public static double? DefaultCacheLength { get; set; } = 1.0;
 		}
 
-		public static class Page
-		{
-			/// <summary>
-			/// Enables reuse of <see cref="Page"/> instances. Enabling can improve performance when using <see cref="Frame"/> navigation.
-			/// </summary>
-			public static bool IsPoolingEnabled { get; set; }
-		}
-
-		public static class Frame
-		{
-			/// <summary>
-			/// On non-Skia targets, Frame pools page instances to improve performance by default.
-			/// To follow the WinUI behavior, set this to true. Skia uses WinUI behavior by default.
-			/// </summary>
-			public static bool UseWinUIBehavior { get; set; }
-#if __SKIA__
-				= true;
-#endif
-		}
-
 		public static class SelectorItem
 		{
 			/// <summary>
