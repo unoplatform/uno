@@ -946,7 +946,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					using (writer.BlockInvariant("internal static {0} {1} {{ get; }} = new {0}()", ParseContextPropertyType, ParseContextPropertyName))
 					{
 						writer.AppendLineIndented($"AssemblyName = \"{_metadataHelper.AssemblyName}\",");
-						if (_enableAlcAppSupport)
+
+						// The load context identifies THIS copy of the assembly, which the name alone cannot: a library
+						// compiled without UnoEnableAlcAppSupport and later loaded into a secondary AssemblyLoadContext
+						// next to the host's copy of the same assembly would otherwise resolve its context by name at
+						// runtime, and the name matches both copies (see XamlParseContext.AssemblyLoadContext). The
+						// value is correct for ordinary apps too (the default context), so it is emitted whenever the
+						// target runtime has the type, and always when ALC support was requested explicitly.
+						if (_enableAlcAppSupport || _generatorContext.Compilation.GetTypeByMetadataName("System.Runtime.Loader.AssemblyLoadContext") is not null)
 						{
 							writer.AppendLineIndented("AssemblyLoadContext = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(GlobalStaticResources).Assembly),");
 						}
