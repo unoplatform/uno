@@ -16,9 +16,6 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 internal sealed class SkiaEffectFuser
 {
-	// Above this sigma an opted-in blur is downscaled first (the threshold master's acrylic used).
-	private const float BlurDownscaleSigma = 8f;
-
 	// Set when the current subtree resolved to the implicit source leaf (a null child filter that means "the
 	// deferred source", not "failed to build"). A parent op keeps a null child in that case and clears the flag once consumed.
 	private bool _isSource;
@@ -407,26 +404,6 @@ internal sealed class SkiaEffectFuser
 					}
 
 					_isSource = false;
-
-					// An opted-in wide blur runs at reduced resolution: cost falls with the square of the factor and
-					// the result is read blurred anyway. The crop is the blur's own reach, not the tight bounds --
-					// cropping at the element edge darkens it, which is what the backdrop tests catch.
-					var scale = blur.Downscale ? Math.Max(1, (int)(blur.Sigma / BlurDownscaleSigma)) : 1;
-					if (scale > 1)
-					{
-						var inv = 1f / scale;
-						var sampling = new SKSamplingOptions(SKFilterMode.Linear);
-						var downscaled = Track(SKImageFilter.CreateMatrix(SKMatrix.CreateScale(inv, inv), sampling, source));
-						var reduced = Track(blur.ClampEdge
-							? SKImageFilter.CreateBlur(blur.Sigma * inv, blur.Sigma * inv, SKShaderTileMode.Clamp, downscaled)
-							: SKImageFilter.CreateBlur(blur.Sigma * inv, blur.Sigma * inv, downscaled));
-						var upscaled = Track(SKImageFilter.CreateMatrix(SKMatrix.CreateScale(scale, scale), sampling, reduced));
-						var reach = 3f * blur.Sigma;
-						var blurBounds = SKRect.Create(
-							bounds.Left - reach, bounds.Top - reach,
-							bounds.Width + (2f * reach), bounds.Height + (2f * reach));
-						return Track(SKImageFilter.CreateMerge((ReadOnlySpan<SKImageFilter>)[upscaled], blurBounds));
-					}
 
 					return Track(blur.ClampEdge
 						? SKImageFilter.CreateBlur(blur.Sigma, blur.Sigma, SKShaderTileMode.Clamp, source, bounds)

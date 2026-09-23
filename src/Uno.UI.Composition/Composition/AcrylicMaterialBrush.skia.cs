@@ -99,9 +99,7 @@ internal class AcrylicMaterialBrush : CompositionBrush
 		EffectNode tree =
 			new BlendEffectNode(
 				new BlendEffectNode(
-					// Acrylic is the one blur wide enough, and repainted often enough, to be worth running at
-					// reduced resolution: sigma 30 over a whole window, every frame it is on screen.
-					new BlurEffectNode(new SourceInput(), _blurSigma, ClampEdge: true, Downscale: true),
+					new BlurEffectNode(new SourceInput(), _blurSigma, ClampEdge: true),
 					new ColorInput(_luminosityColor),
 					BlendMode.Luminosity),
 				new ColorInput(_tintColor),
