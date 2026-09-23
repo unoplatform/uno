@@ -727,6 +727,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			// If setting Content to a new View, recreate the template
 			ContentTemplateRoot = null;
 		}
+		else if (ContentTemplateRoot is not null && !Equals(this.ResolveContentTemplate(), _dataTemplateUsedLastUpdate))
+		{
+			// WinUI drops the outgoing template child (CContentPresenter::Invalidate) before the new content becomes
+			// the DataContext (CContentPresenter::ApplyTemplate), so the old tree never rebinds to the new content.
+			ContentTemplateRoot = null;
+		}
 
 		// We need to overrides the local value of DataContext with Content's value here.
 		// But if the content value is the result of a binding without explicit sources: TemplatedParent, ElementName...
