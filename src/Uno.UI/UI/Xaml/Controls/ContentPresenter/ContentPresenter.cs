@@ -721,17 +721,26 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	protected virtual void OnContentChanged(object oldValue, object newValue)
 	{
+		DataTemplate resolvedTemplate = null;
+		var isTemplateResolved = false;
+
 		if (oldValue is View || newValue is View)
 		{
 			// Make sure not to reuse the previous Content as a ContentTemplateRoot (i.e., in case there's no data template)
 			// If setting Content to a new View, recreate the template
 			ContentTemplateRoot = null;
 		}
-		else if (ContentTemplateRoot is not null && !Equals(this.ResolveContentTemplate(), _dataTemplateUsedLastUpdate))
+		else if (ContentTemplateRoot is not null)
 		{
 			// WinUI drops the outgoing template child (CContentPresenter::Invalidate) before the new content becomes
 			// the DataContext (CContentPresenter::ApplyTemplate), so the old tree never rebinds to the new content.
-			ContentTemplateRoot = null;
+			resolvedTemplate = this.ResolveContentTemplate();
+			isTemplateResolved = true;
+
+			if (!Equals(resolvedTemplate, _dataTemplateUsedLastUpdate))
+			{
+				ContentTemplateRoot = null;
+			}
 		}
 
 		// We need to overrides the local value of DataContext with Content's value here.
@@ -746,7 +755,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		TryRegisterNativeElement(oldValue, newValue);
 
-		SetUpdateTemplate();
+		SetUpdateTemplate(resolvedTemplate, isTemplateResolved);
 	}
 
 	private void TrySetDataContextFromContent(object value)
@@ -974,7 +983,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-	public void UpdateContentTemplateRoot()
+	public void UpdateContentTemplateRoot() => UpdateContentTemplateRoot(resolvedTemplate: null, isTemplateResolved: false);
+
+	/// <param name="resolvedTemplate">The template already resolved by the caller, so the selector is not run twice.</param>
+	private void UpdateContentTemplateRoot(DataTemplate resolvedTemplate, bool isTemplateResolved)
 	{
 		if (Visibility == Visibility.Collapsed)
 		{
@@ -988,7 +1000,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 
 		//ContentTemplate/ContentTemplateSelector will only be applied to a control with no Template, normally the innermost element
-		var dataTemplate = this.ResolveContentTemplate();
+		var dataTemplate = isTemplateResolved ? resolvedTemplate : this.ResolveContentTemplate();
 
 		// Subscribe to template updates so presenter can refresh when factory changes (when feature is activated)
 		if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
@@ -1247,9 +1259,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	partial void DetachNativeElement(object content);
 
 
-	private void SetUpdateTemplate()
+	private void SetUpdateTemplate() => SetUpdateTemplate(resolvedTemplate: null, isTemplateResolved: false);
+
+	private void SetUpdateTemplate(DataTemplate resolvedTemplate, bool isTemplateResolved)
 	{
-		UpdateContentTemplateRoot();
+		UpdateContentTemplateRoot(resolvedTemplate, isTemplateResolved);
 		SetUpdateTemplatePartial();
 	}
 
