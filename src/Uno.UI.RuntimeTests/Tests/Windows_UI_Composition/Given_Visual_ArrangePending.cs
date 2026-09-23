@@ -135,6 +135,9 @@ public class Given_Visual_ArrangePending
 
 		public double RasterizationScale => 1;
 
+		// No recording happens through this double; the process default is the right fallback.
+		public Uno.UI.Composition.Drawing.IDrawingFactory? Renderer => null;
+
 		public event EventHandler? RasterizationScaleChanged
 		{
 			add { }

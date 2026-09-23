@@ -40,8 +40,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// fallback (also forced by the ForceFallbackRetainedRendering test seam). Replay is on the IRenderRecord
 	// (data.Replay(session)); a native recording only replays into its own backend's session, the command-list
 	// fallback into any.
-	private static ICommandRecorder CreateRecording()
-		=> ForceFallbackRetainedRendering ? new CommandListRecorder() : DrawingFactory.Current.CreateRecording();
+	// The visual's own target supplies the backend: with two windows open the process-wide factory holds
+	// whichever registered last, so one window would record through the other's device.
+	private static ICommandRecorder CreateRecording(Visual visual)
+		=> ForceFallbackRetainedRendering
+			? new CommandListRecorder()
+			: (visual.CompositionTarget?.Renderer ?? DrawingFactory.Current).CreateRecording();
 
 	private bool _enablePictureCollapsingOptimization;
 	private int _pictureCollapsingOptimizationFrameThreshold;
@@ -65,6 +69,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// so ancestor moves — e.g. scrolling — keep it valid; invalidated like _childrenContent plus own PaintDirty).
 	private IRenderRecord? _shadowFallbackContent;
 	private float _shadowFallbackOpacity;
+	private Matrix4x4 _shadowFallbackMatrix;
+	private bool _hasShadowFallbackDamageRect;
+	private Rect _shadowFallbackDamageRect;
 	// Cached analytic-shadow silhouette walk result (regions are in this visual's local space, so ancestor moves
 	// keep them valid). The walk does per-visual geometry booleans over the whole subtree — far too expensive to
 	// redo every frame for every shadowed item in a scrolling list. Same invalidation gates as the fallback cache.
@@ -575,7 +582,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					|| RequiresRepaintOnEveryFrame
 					|| _shadowFallbackOpacity != session.Opacity)
 				{
-					var recording = CreateRecording();
+					var recording = CreateRecording(this);
 					// child.Render will reapply the total transform matrix, so we need to invert ours.
 					Matrix4x4.Invert(TotalMatrix, out var rootTransform);
 					_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
@@ -599,6 +606,29 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					{
 						_shadowFallbackContent = null;
 					}
+				}
+
+				// Replaying under a changed matrix (an ancestor moved, e.g. scrolling): nothing inside the record
+				// contributes its move damage, so damage this subtree's effective clip at its previous and current
+				// placements instead -- the same compensation the cached children replay makes below.
+				if (session.Damage is { } shadowDamage && TotalMatrix != _shadowFallbackMatrix)
+				{
+					if (_hasShadowFallbackDamageRect)
+					{
+						shadowDamage.UnionRect(_shadowFallbackDamageRect);
+					}
+
+					var shadowClip = GetTotalClipPath(skipPostPaintingClipping: false);
+					var shadowBounds = shadowClip.IsEmpty ? default : shadowClip.Bounds;
+					shadowClip.Release();
+					_hasShadowFallbackDamageRect = !IsRectEmpty(shadowBounds);
+					if (_hasShadowFallbackDamageRect)
+					{
+						shadowDamage.UnionRect(shadowBounds);
+						_shadowFallbackDamageRect = shadowBounds;
+					}
+
+					_shadowFallbackMatrix = TotalMatrix;
 				}
 
 				session.Session.SaveLayer(ShadowState.GetShadowFilter(session.Session.Factory));
@@ -634,7 +664,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
 
-					var recording = CreateRecording();
+					var recording = CreateRecording(visual);
 					_factory.CreateInstance(visual, recording, ref session.RootTransform, session.Opacity, session.Damage, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
@@ -702,7 +732,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				var recording = CreateRecording();
+				var recording = CreateRecording(visual);
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(visual, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);

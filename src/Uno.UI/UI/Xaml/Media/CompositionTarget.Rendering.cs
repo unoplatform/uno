@@ -58,6 +58,11 @@ public partial class CompositionTarget
 	// WebGPU device import): Render() must SKIP the frame rather than force the throwing renderer getter.
 	private bool HasRenderer => _renderer is not null || DrawingRegistration.DefaultRenderer is not null;
 
+	// Visuals record through their own target's backend rather than the process-wide factory; null before one
+	// is registered, where the caller falls back to that factory.
+	global::Uno.UI.Composition.Drawing.IDrawingFactory? ICompositionTarget.Renderer
+		=> _renderer ?? DrawingRegistration.DefaultRenderer;
+
 	// Neutral→typed narrowing for phase-2 present: downcast the target to its bound kind and dispatch to the
 	// backend's typed IDrawingFactory<TTarget>.BeginPresent, keeping the single cast Uno-side.
 	private static IPresentSession BeginPresent(IDrawingFactory backend, IRenderTarget target)

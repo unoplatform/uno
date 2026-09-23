@@ -72,20 +72,28 @@ namespace Microsoft.UI.Composition
 				DisposeTexture();
 				return null;
 			}
-			if (!ReferenceEquals(img, _texturedImage))
+			// Keyed on the factory as well as the image: a texture belongs to one device, and a renderer re-bind
+			// (an Android GL context loss, or another window registering) leaves the cached one bound to a device
+			// nothing draws on any more.
+			var factory = DrawingFactory.Current;
+			if (!ReferenceEquals(img, _texturedImage) || !ReferenceEquals(factory, _textureFactory))
 			{
 				DisposeTexture();
-				_texture = DrawingFactory.Current.CreateTexture(img);
+				_texture = factory.CreateTexture(img);
 				_texturedImage = img;
+				_textureFactory = factory;
 			}
 			return _texture;
 		}
+
+		private global::Uno.UI.Composition.Drawing.IDrawingFactory? _textureFactory;
 
 		private void DisposeTexture()
 		{
 			_texture?.Dispose();
 			_texture = null;
 			_texturedImage = null;
+			_textureFactory = null;
 		}
 
 		/// <summary>Wraps a backend-produced image (e.g. a rendered SVG, an offscreen snapshot, or raw pixels

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using Windows.ApplicationModel.VoiceCommands;
@@ -16,6 +16,13 @@ internal interface ICompositionTarget
 	event EventHandler? RasterizationScaleChanged;
 
 #if __SKIA__
+	/// <summary>
+	/// The backend this target presents through. Recording and texture creation go through it rather than the
+	/// process-wide <see cref="global::Uno.UI.Composition.Drawing.DrawingFactory.Current"/>, which holds whichever
+	/// window registered LAST -- with two windows open that is the wrong device for one of them.
+	/// </summary>
+	global::Uno.UI.Composition.Drawing.IDrawingFactory? Renderer { get; }
+
 	void RequestNewFrame();
 
 	/// <summary>Marks a rectangular area (root/frame coordinates) dirty so the next frame repaints it, even if no
