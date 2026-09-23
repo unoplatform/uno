@@ -6,6 +6,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -42,6 +43,55 @@ public partial class Given_VisualStateManager
 		VisualStateManager.GoToState(control, "Red", true);
 		await Task.Delay(1000);
 		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)border.Background).Color);
+	}
+
+	[TestMethod]
+	public async Task When_Setter_Value_Equals_Inherited_Value_Setter_Still_Wins()
+	{
+		// The setter's value is the very brush the target already inherits.
+		var host = (UserControl)XamlReader.Load(
+			"""
+			<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<UserControl.Resources>
+					<SolidColorBrush x:Key="SharedBrush" Color="Red" />
+				</UserControl.Resources>
+				<UserControl.Foreground>
+					<StaticResource ResourceKey="SharedBrush" />
+				</UserControl.Foreground>
+				<Grid>
+					<VisualStateManager.VisualStateGroups>
+						<VisualStateGroup>
+							<VisualState x:Name="Active">
+								<VisualState.StateTriggers>
+									<StateTrigger IsActive="False" />
+								</VisualState.StateTriggers>
+								<VisualState.Setters>
+									<Setter Target="target.Foreground" Value="{StaticResource SharedBrush}" />
+								</VisualState.Setters>
+							</VisualState>
+						</VisualStateGroup>
+					</VisualStateManager.VisualStateGroups>
+					<ContentControl x:Name="target" Content="Target" />
+				</Grid>
+			</UserControl>
+			""");
+
+		await UITestHelper.Load(host);
+
+		var target = (ContentControl)host.FindName("target");
+		var group = VisualStateManager.GetVisualStateGroups((Grid)host.Content)[0];
+		var trigger = (StateTrigger)group.States[0].StateTriggers[0];
+		var sharedBrush = host.Resources["SharedBrush"];
+		Assert.AreSame(sharedBrush, target.Foreground);
+
+		trigger.IsActive = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		host.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Blue);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreSame(sharedBrush, target.Foreground, "The active setter should keep its value over the inherited one.");
 	}
 
 	[TestMethod]
