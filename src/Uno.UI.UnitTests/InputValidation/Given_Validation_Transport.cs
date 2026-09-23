@@ -229,6 +229,35 @@ public partial class Given_Validation_Transport
 	}
 
 	[TestMethod]
+	public void When_Validation_Property_Is_Registered_Then_Errors_Flow()
+	{
+		// The same control taking part through the map instead of the attribute, which is the whole point of
+		// the map being public.
+		var properties = FeatureConfiguration.InputValidation.ValidationProperties;
+
+		try
+		{
+			properties[typeof(NonValidatingControl)] = NonValidatingControl.TextProperty;
+
+			var source = new Person();
+			var control = new NonValidatingControl { DataContext = source };
+			Validation.SetIsEnabled(control, true);
+			control.SetBinding(NonValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
+
+			source.SetErrors(nameof(Person.Name), "required");
+
+			Assert.IsTrue(Validation.GetHasErrors(control));
+			CollectionAssert.AreEqual(
+				new object[] { "required" },
+				Validation.GetErrors(control).Cast<object>().ToArray());
+		}
+		finally
+		{
+			properties.Remove(typeof(NonValidatingControl));
+		}
+	}
+
+	[TestMethod]
 	public void When_Source_Does_Not_Implement_The_Interface()
 	{
 		var control = new ValidatingControl { DataContext = new PlainSource() };

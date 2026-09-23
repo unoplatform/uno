@@ -596,11 +596,11 @@ namespace Uno.UI
 			public static bool IsEnabled { get; set; }
 
 			/// <summary>
-			/// Gets the validation property declared by <see cref="InputValidationPropertyAttribute"/> on
-			/// <paramref name="type"/>, or null when it declares none. Cached per type, negative answers included.
+			/// The type-to-property map the transport reads to decide which dependency property of a control
+			/// carries its input. Populated on demand from <see cref="InputValidationPropertyAttribute"/>, and
+			/// writable so that a control which cannot carry the attribute can be registered from outside Uno.
 			/// </summary>
-			internal static Microsoft.UI.Xaml.DependencyProperty GetValidationProperty(Type type)
-				=> InputValidationPropertyResolver.GetValidationProperty(type);
+			public static InputValidationPropertyMap ValidationProperties { get; } = new();
 		}
 
 		/// <summary>
