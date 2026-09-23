@@ -35,6 +35,8 @@ namespace Microsoft.UI.Composition
 		/// The device pixels per logical unit of <paramref name="session"/>'s current transform, per axis. Content
 		/// rasterized offscreen has to be sized by this: rasterizing at logical size and letting the session magnify
 		/// the result is a visible softening at any scale above 1.
+		/// <para>Quantized to powers of two, because callers cache on it: an animating scale would otherwise be a
+		/// new value every frame and re-rasterize the whole graph at every step of a zoom.</para>
 		/// </summary>
 		private protected static Vector2 GetRasterizationScale(IDrawingSession session)
 		{
@@ -44,10 +46,26 @@ namespace Microsoft.UI.Composition
 			var x = MathF.Sqrt((matrix.M11 * matrix.M11) + (matrix.M12 * matrix.M12));
 			var y = MathF.Sqrt((matrix.M21 * matrix.M21) + (matrix.M22 * matrix.M22));
 
-			return new Vector2(Clamp(x), Clamp(y));
+			return new Vector2(Quantize(x), Quantize(y));
 
-			static float Clamp(float scale)
-				=> !float.IsFinite(scale) || scale <= 0f ? 1f : MathF.Min(scale, MaxRasterizationScale);
+			static float Quantize(float scale)
+			{
+				if (!float.IsFinite(scale) || scale <= 0f)
+				{
+					return 1f;
+				}
+
+				// Rounded up, so the texture is never coarser than the transform asks for.
+				var octave = MathF.Pow(2f, MathF.Ceiling(MathF.Log2(scale)));
+
+				// Log2 of an exact power of two can land a hair above the integer, which would jump a whole octave.
+				if (octave >= scale * 2f)
+				{
+					octave *= 0.5f;
+				}
+
+				return MathF.Min(octave, MaxRasterizationScale);
+			}
 		}
 
 		internal virtual bool CanPaint() => false;

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using System.Numerics;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Drawing;
@@ -23,8 +24,11 @@ namespace Microsoft.UI.Composition
 				? new Rect(0, 0, sourceSize.X, sourceSize.Y)
 				: bounds;
 
-			var pixelWidth = (int)sourceBounds.Width;
-			var pixelHeight = (int)sourceBounds.Height;
+			// Device resolution, not logical: the nine-slice is stretched into the destination under the session's
+			// transform, so a logical-sized texture is magnified (and softened) by exactly that scale.
+			var scale = GetRasterizationScale(session);
+			var pixelWidth = (int)Math.Ceiling(sourceBounds.Width * scale.X);
+			var pixelHeight = (int)Math.Ceiling(sourceBounds.Height * scale.Y);
 			if (pixelWidth <= 0 || pixelHeight <= 0)
 			{
 				return true;
@@ -33,15 +37,19 @@ namespace Microsoft.UI.Composition
 			// Rasterize the source brush into an offscreen backend texture and draw it nine-sliced onto the target
 			// (no CPU round-trip — the offscreen result is already the texture the draw verb consumes).
 			// The source's own graph has to be built before the offscreen pass opens: parsing it inside would nest
-			// another offscreen inside this one, which a backend that cannot re-enter a pass refuses.
-			// Vector2.One: this offscreen is logical-sized and drawn with an identity transform, so the source must
-			// prepare at the same scale it is about to paint at — a mismatch makes it rebuild inside the pass.
-			Source.PrepareForOffscreenRasterization(session.Factory, sourceBounds, Vector2.One);
-			using var texture = session.Factory.RenderOffscreen(pixelWidth, pixelHeight, s => Source.TryPaint(s, opacity, sourceBounds));
+			// another offscreen inside this one, which a backend that cannot re-enter a pass refuses, and it must
+			// prepare at the same scale it is about to paint at or it rebuilds inside the pass anyway.
+			Source.PrepareForOffscreenRasterization(session.Factory, sourceBounds, scale);
+			using var texture = session.Factory.RenderOffscreen(pixelWidth, pixelHeight, s =>
+			{
+				s.Scale(scale.X, scale.Y);
+				Source.TryPaint(s, opacity, sourceBounds);
+			});
 
+			// The slice rectangle is in image pixels, so it follows the texture to device resolution.
 			var centerSlice = new Rect(
-				new Point(LeftInset * LeftInsetScale, TopInset * TopInsetScale),
-				new Point(sourceBounds.Width - (RightInset * RightInsetScale), sourceBounds.Height - (BottomInset * BottomInsetScale)));
+				new Point(LeftInset * LeftInsetScale * scale.X, TopInset * TopInsetScale * scale.Y),
+				new Point((sourceBounds.Width - (RightInset * RightInsetScale)) * scale.X, (sourceBounds.Height - (BottomInset * BottomInsetScale)) * scale.Y));
 
 			session.DrawImageNineSlice(texture, centerSlice, bounds, IsCenterHollow);
 			return true;
