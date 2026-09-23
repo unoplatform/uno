@@ -143,13 +143,15 @@ public class Given_ProgressRing
 		try
 		{
 			await LoadSettledRing(SUT);
-			Assert.IsTrue(await CountPixels(SUT, IsRed) > 0, "The ring should paint the red foreground brush before it is mutated.");
+			var before = await CountRedAndLimePixels(SUT);
+			Assert.IsTrue(before.Red > 0, $"The ring should paint the red foreground brush before it is mutated, but {before}.");
 
 			foreground.Color = Microsoft.UI.Colors.Lime;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(await CountPixels(SUT, IsLime) > 0, "The ring should repaint in the brush's new colour.");
-			Assert.AreEqual(0, await CountPixels(SUT, IsRed), "The ring should keep no pixel of the brush's old colour.");
+			var after = await CountRedAndLimePixels(SUT);
+			Assert.IsTrue(after.Lime > 0, $"The ring should repaint in the brush's new colour, but {after}.");
+			Assert.AreEqual(0, after.Red, $"The ring should keep no pixel of the brush's old colour, but {after}.");
 		}
 		finally
 		{
@@ -170,13 +172,15 @@ public class Given_ProgressRing
 		try
 		{
 			await LoadSettledRing(SUT);
-			Assert.IsTrue(await CountPixels(SUT, IsRed) > 0, "The ring's track should paint the red background brush before it is mutated.");
+			var before = await CountRedAndLimePixels(SUT);
+			Assert.IsTrue(before.Red > 0, $"The ring's track should paint the red background brush before it is mutated, but {before}.");
 
 			background.Color = Microsoft.UI.Colors.Lime;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(await CountPixels(SUT, IsLime) > 0, "The ring's track should repaint in the brush's new colour.");
-			Assert.AreEqual(0, await CountPixels(SUT, IsRed), "The ring's track should keep no pixel of the brush's old colour.");
+			var after = await CountRedAndLimePixels(SUT);
+			Assert.IsTrue(after.Lime > 0, $"The ring's track should repaint in the brush's new colour, but {after}.");
+			Assert.AreEqual(0, after.Red, $"The ring's track should keep no pixel of the brush's old colour, but {after}.");
 		}
 		finally
 		{
@@ -216,24 +220,37 @@ public class Given_ProgressRing
 			"The determinate progress animation should settle on its final value.");
 	}
 
-	private static async Task<int> CountPixels(FrameworkElement element, Func<Color, bool> isMatch)
+	// Both counts come from one screenshot so the assertions describe the same frame, and the whole
+	// tally is returned rather than a verdict so a failure names what was actually on screen.
+	private static async Task<RingPixels> CountRedAndLimePixels(FrameworkElement element)
 	{
 		var bitmap = await UITestHelper.ScreenShot(element);
 		await bitmap.Populate();
 
-		var count = 0;
+		var red = 0;
+		var lime = 0;
 		for (var x = 0; x < bitmap.Width; x++)
 		{
 			for (var y = 0; y < bitmap.Height; y++)
 			{
-				if (isMatch(bitmap.GetPixel(x, y)))
+				var pixel = bitmap.GetPixel(x, y);
+				if (IsRed(pixel))
 				{
-					count++;
+					red++;
+				}
+				else if (IsLime(pixel))
+				{
+					lime++;
 				}
 			}
 		}
 
-		return count;
+		return new RingPixels(red, lime);
+	}
+
+	private record struct RingPixels(int Red, int Lime)
+	{
+		public override string ToString() => $"red={Red}px, lime={Lime}px";
 	}
 
 	// Anti-aliased edges blend the ring into the page, so a match demands an opaque, clearly
