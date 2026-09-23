@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference depends.cpp, commit fc2f82117
 //
@@ -19,7 +19,10 @@
 
 using System;
 using Microsoft.UI.Xaml.Documents;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Islands;
 
 namespace Microsoft.UI.Xaml;
 
@@ -413,5 +416,22 @@ public partial class DependencyObject
 		//	inputServices->ObjectLeavingTree(this);
 		//}
 	}
-}
 
+	// MUX Reference depends.cpp, commit 2b8c7757e — CDependencyObject::GetTreeRoot.
+	// IsObjectAnActiveRootVisual is approximated by a type check on RootVisual.
+	internal DependencyObject GetTreeRoot(bool publicParentOnly = false)
+	{
+		DependencyObject pBase = this;
+		DependencyObject? pParent = pBase.GetParentInternal(publicParentOnly);
+		bool parentIsRootVisual = pParent is RootVisual;
+
+		while (pParent is not null && (!publicParentOnly || !parentIsRootVisual) && pParent is not XamlIslandRoot)
+		{
+			pBase = pParent;
+			pParent = pParent.GetParentInternal(publicParentOnly);
+			parentIsRootVisual = pParent is RootVisual;
+		}
+
+		return pBase;
+	}
+}
