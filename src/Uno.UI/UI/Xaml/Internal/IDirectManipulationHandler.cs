@@ -61,6 +61,17 @@ internal interface IDirectManipulationHandler
 
 	void OnUpdated(GestureRecognizer recognizer, ManipulationUpdatedEventArgs args, ref ManipulationDelta unhandledDelta) { }
 
+	/// <summary>
+	/// Invoked on the handler that claimed the inertia when a pointer pressed over the coasting content takes
+	/// it over, right before the manipulation is completed and a new one is started in its place.
+	/// </summary>
+	/// <remarks>
+	/// This is the only notification a handler settling the inertia itself receives for that press: the
+	/// completion is suppressed because it is a resume, and <see cref="OnStarted"/> follows only once the
+	/// finger has travelled the device's start threshold — which a finger held still never does.
+	/// </remarks>
+	void OnInertiaInterrupted(GestureRecognizer recognizer) { }
+
 	/// <remarks>
 	/// Be aware that unlike manipulations on a UIElement, we can "resume" it, so this can be invoked more than once.
 	/// </remarks>

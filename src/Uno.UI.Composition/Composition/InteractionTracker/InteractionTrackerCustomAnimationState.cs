@@ -35,7 +35,7 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 	{
 	}
 
-	internal override void ReceivePointerWheel(int delta, bool isHorizontal)
+	internal override void ReceivePointerWheel(double delta, bool isHorizontal)
 	{
 	}
 

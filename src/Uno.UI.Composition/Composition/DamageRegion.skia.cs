@@ -28,10 +28,19 @@ internal sealed class DamageRegion : IDisposable
 	private SKRect _allBounds;
 	private int _rectCount;
 
-	internal bool IsEmpty => _rectCount == 0 && _exact.IsEmpty;
+	// A render callback enqueued before the owning target unregistered can still reach the region afterwards;
+	// a contribution written to the freed native paths would be an access violation, so drop it instead.
+	private bool _disposed;
+
+	internal bool IsEmpty => _disposed || (_rectCount == 0 && _exact.IsEmpty);
 
 	internal void UnionRect(SKRect rect)
 	{
+		if (_disposed)
+		{
+			return;
+		}
+
 		// Not SKRect.IsEmpty: that is only true for an all-zero rect, so a zero-area or inverted one would reach
 		// the bookkeeping below, where SKRect.Union drops it while SKPathBuilder.AddRect would normalize and
 		// keep it — leaving the bounds no longer covering the contours.
@@ -77,7 +86,7 @@ internal sealed class DamageRegion : IDisposable
 	/// <summary>Adds a contribution whose exact geometry matters (a repainted visual, not a moved one).</summary>
 	internal void Union(SKPath addition)
 	{
-		if (addition.IsEmpty)
+		if (_disposed || addition.IsEmpty)
 		{
 			return;
 		}
@@ -96,6 +105,11 @@ internal sealed class DamageRegion : IDisposable
 
 	internal void Reset()
 	{
+		if (_disposed)
+		{
+			return;
+		}
+
 		// Reset, never dispose-and-recreate: the builder is reusable, and churning a native object per frame is
 		// exactly the pressure this type exists to avoid. Reset() restores the Winding fill type.
 		_rects.Reset();
@@ -113,8 +127,11 @@ internal sealed class DamageRegion : IDisposable
 	{
 		destination.Reset();
 
-		// Detach() already emptied the builder, so a throw between here and Reset() would leave the region
-		// claiming rects it no longer holds. Reset unconditionally to keep the next frame sane.
+		if (_disposed)
+		{
+			return;
+		}
+
 		try
 		{
 			if (_rectCount > 0)
@@ -139,10 +156,23 @@ internal sealed class DamageRegion : IDisposable
 				destination.Op(frame, SKPathOp.Intersect, destination);
 			}
 		}
-		finally
+		catch
 		{
-			Reset();
+			// The frame this snapshot was for never reaches the screen, but the dispatcher logs and swallows
+			// what escapes the render callback, so the app keeps rendering: dropping this frame's damage would
+			// leave those pixels stale. Detach() may already have emptied the builder, so re-open on the bounds
+			// — a superset of every rect contribution — and leave _exact for the next frame to repaint.
+			_rects.Reset();
+			if (_rectCount > 0)
+			{
+				_open = _allBounds;
+				_rectCount = 1;
+			}
+
+			throw;
 		}
+
+		Reset();
 	}
 
 	// Frame-sized rects square to more than float can hold precisely.
@@ -150,6 +180,12 @@ internal sealed class DamageRegion : IDisposable
 
 	public void Dispose()
 	{
+		if (_disposed)
+		{
+			return;
+		}
+
+		_disposed = true;
 		_rects.Dispose();
 		_exact.Dispose();
 	}

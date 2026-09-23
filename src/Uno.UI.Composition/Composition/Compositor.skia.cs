@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
@@ -39,7 +40,22 @@ public partial class Compositor
 
 	internal static bool SkipVisualTreePainting { get; set; }
 
-	internal bool IsAnimating => _runningAnimations.Count > 0;
+	// Frame drivers (e.g. the wheel decay) are motion too, so "wait until animations settle" must cover
+	// them. They live on the CompositionTarget, which this assembly cannot name, so they are counted.
+	private static int _frameDriverCount;
+
+	/// <summary>Resolves the target that ticks frame drivers carrying no visual of their own.</summary>
+	/// <remarks>
+	/// TODO Uno: an InteractionTracker has no visual, so it cannot name its own window. Thread one
+	/// through and this indirection goes away, along with its multi-window caveat.
+	/// </remarks>
+	internal static Func<ICompositionTarget?>? FrameDriverTargetResolver { get; set; }
+
+	internal static void AddFrameDriver() => Interlocked.Increment(ref _frameDriverCount);
+
+	internal static void RemoveFrameDriver() => Interlocked.Decrement(ref _frameDriverCount);
+
+	internal bool IsAnimating => _runningAnimations.Count > 0 || Volatile.Read(ref _frameDriverCount) > 0;
 
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
 	{
