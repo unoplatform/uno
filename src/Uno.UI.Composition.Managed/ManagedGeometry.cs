@@ -132,11 +132,11 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 	public IGeometry Transform(Matrix3x2 matrix)
 	{
 		// Nothing to bake in, and this type is immutable, so the instance can be shared — which also keeps any
-		// cache keyed on geometry identity intact. Still hand back a reference of its own: every other path returns
-		// a new geometry, and a caller that disposed this one would otherwise be freeing its own input.
+		// cache keyed on geometry identity intact. No AddRef: callers dispose the result rather than releasing it,
+		// and Dispose only ever drops the creation reference once, so a reference taken here could never be given
+		// back. Sharing is safe here because Free is a no-op for a managed geometry.
 		if (matrix.IsIdentity)
 		{
-			AddRef();
 			return this;
 		}
 
@@ -188,11 +188,10 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 	{
 		// The fill path of a fill (non-stroke) is the path itself; a (0,0) trim means "no trimming". Return THIS
 		// rather than a re-wrap: an identical copy still has a new identity every frame, which makes every cache
-		// keyed on the geometry miss and rebuild. Safe — the type is immutable. Hand back a reference of its own
-		// (as Transform does): the caller owns and disposes the result, and that must not free its own input.
+		// keyed on the geometry miss and rebuild. Safe — the type is immutable, and as in Transform no reference is
+		// taken, because the callers dispose the result and a one-shot Dispose can never balance an AddRef.
 		if (trimStart == 0f && trimEnd == 0f)
 		{
-			AddRef();
 			return this;
 		}
 

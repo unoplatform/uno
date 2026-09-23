@@ -35,6 +35,10 @@ internal static partial class ManagedImageDecoder
 		var frames = new List<byte[]>();
 		var durations = new List<int>();
 
+		// Every frame is kept as a full canvas copy, so an unbounded frame count is an unbounded allocation.
+		var canvasBytes = (long)screenWidth * screenHeight * 4;
+		var maxFrames = (int)Math.Max(1, MaxDecodedBytes / Math.Max(1, canvasBytes));
+
 		// Persistent canvas that each frame composites onto (per GIF disposal semantics).
 		var canvas = new byte[screenWidth * screenHeight * 4];
 		byte[]? previousCanvas = null;
@@ -74,12 +78,23 @@ internal static partial class ManagedImageDecoder
 				break;
 			}
 
+			if (frames.Count >= maxFrames)
+			{
+				break;
+			}
+
 			var left = ReadU16LE(d, p);
 			var top = ReadU16LE(d, p + 2);
 			var frameWidth = ReadU16LE(d, p + 4);
 			var frameHeight = ReadU16LE(d, p + 6);
 			var imgPacked = d[p + 8];
 			p += 9;
+
+			// The image descriptor's own rect drives the index buffer, independently of the logical screen.
+			if (ExceedsPixelCap(frameWidth, frameHeight))
+			{
+				return false;
+			}
 
 			var localTable = globalTable;
 			if ((imgPacked & 0x80) != 0)
@@ -293,11 +308,16 @@ internal static partial class ManagedImageDecoder
 			var currentCode = code;
 			if (code >= next)
 			{
+				if (previousCode < 0)
+				{
+					return output; // first code after a clear can't be a KwKwK back-reference — corrupt, stop here
+				}
+
 				stack[sp++] = firstByte[previousCode]; // KwKwK
 				currentCode = previousCode;
 			}
 
-			while (currentCode >= clearCode)
+			while (currentCode >= clearCode && sp < stack.Length)
 			{
 				stack[sp++] = suffix[currentCode];
 				currentCode = prefix[currentCode];

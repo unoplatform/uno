@@ -8,7 +8,8 @@ namespace Uno.UI.Composition.Drawing;
 internal static partial class ManagedImageDecoder
 {
 	// WebP: decodes both still variants — lossless (VP8L) and lossy (VP8, the RFC 6386 intra decoder). The ALPH
-	// chunk is not decoded, so an alpha-bearing lossy WebP comes out opaque. Animated WebP is not handled.
+	// chunk is not decoded, so a lossy WebP carrying one is declined rather than rendered opaque. Animated WebP is
+	// not handled.
 	private static bool TryDecodeWebp(byte[] d, [NotNullWhen(true)] out DecodedImage? decoded)
 	{
 		decoded = null;
@@ -18,6 +19,7 @@ internal static partial class ManagedImageDecoder
 		}
 
 		var p = 12;
+		var hasAlphaChunk = false;
 		while (p + 8 <= d.Length)
 		{
 			var id = (char)d[p] + "" + (char)d[p + 1] + (char)d[p + 2] + (char)d[p + 3];
@@ -31,14 +33,21 @@ internal static partial class ManagedImageDecoder
 
 			if (id == "VP8 ")
 			{
-				// A truncated chunk still decodes as far as it goes, so clamp rather than reject.
-				return TryDecodeVp8(d, chunk, (int)Math.Min(size, (uint)Math.Max(0, d.Length - chunk)), out decoded);
+				// The alpha plane is not decoded, and rendering such a file opaque is worse than declining it.
+				if (hasAlphaChunk || size > int.MaxValue || (long)chunk + size > d.Length)
+				{
+					return false;
+				}
+
+				return TryDecodeVp8(d, chunk, (int)size, out decoded);
 			}
 
 			if (id is "ANIM" or "ANMF")
 			{
 				return false; // animated WebP is not handled here
 			}
+
+			hasAlphaChunk |= id == "ALPH";
 
 			// Unsigned size + bounds check keeps `p` moving forward; a crafted huge size can no longer wrap it.
 			if (size > int.MaxValue || (long)chunk + size > d.Length)
@@ -112,9 +121,11 @@ internal static partial class ManagedImageDecoder
 
 			width = ReadBits(14) + 1;
 			height = ReadBits(14) + 1;
-			if (ExceedsPixelCap(width, height))
+			// 4 bytes of ARGB plus the 4-byte BGRA output; a 14-bit header pair can ask for gigabytes before a
+			// single pixel is read.
+			if (ExceedsPixelCap(width, height, 8))
 			{
-				return false; // a 14-bit header pair can ask for ~1 GB before a single pixel is read
+				return false;
 			}
 
 			ReadBits(1); // alpha_is_used

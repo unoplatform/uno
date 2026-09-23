@@ -48,9 +48,27 @@ internal static partial class ManagedImageDecoder
 			compression = (int)ReadU32LE(d, 30);
 		}
 
-		if (ExceedsPixelCap(width, height) || compression != 0 || bpp is not (24 or 32 or 8))
+		// BI_BITFIELDS channel masks — and the alpha mask a BITMAPV4/V5 header carries — are explicit statements
+		// about the fourth byte, so they are read before deciding anything about alpha.
+		uint redMask = 0, greenMask = 0, blueMask = 0, alphaMask = 0;
+		if (!coreHeader && compression == 3 && d.Length >= 66)
 		{
-			return false; // only uncompressed 8/24/32-bit BMPs, within the pixel cap
+			redMask = ReadU32LE(d, 54);
+			greenMask = ReadU32LE(d, 58);
+			blueMask = ReadU32LE(d, 62);
+			if (dibSize >= 108 && d.Length >= 70)
+			{
+				alphaMask = ReadU32LE(d, 66);
+			}
+		}
+
+		var bitfieldsBgra = compression == 3 && bpp == 32
+			&& redMask == 0x00FF0000 && greenMask == 0x0000FF00 && blueMask == 0x000000FF
+			&& alphaMask is 0 or 0xFF000000;
+
+		if (ExceedsPixelCap(width, height) || bpp is not (24 or 32 or 8) || (compression != 0 && !bitfieldsBgra))
+		{
+			return false; // only uncompressed 8/24/32-bit BMPs (BGRA bit-fields included), within the pixel cap
 		}
 
 		byte[]? palette = null; // BGR triples, always 256 entries so an out-of-range index can't read past the end
@@ -86,10 +104,12 @@ internal static partial class ManagedImageDecoder
 			return false;
 		}
 
-		// 32-bit BI_RGB declares no alpha mask, and most writers (MS Paint, a BitBlt capture) leave the byte at 0.
-		// Opacity has to be decided from the source bytes: premultiplying an all-zero alpha destroys the colour,
-		// and restoring A = 255 afterwards can only produce black.
-		var ignoreAlpha = bpp != 32 || IsSourceAlphaAllZero(d, pixelOffset, stride, width, height);
+		// An explicit alpha mask says the fourth byte IS alpha (that is what our own encoder writes), so it wins.
+		// Only 32-bit BI_RGB leaves the byte undefined — most writers (MS Paint, a BitBlt capture) leave it at 0 —
+		// and there the bytes are all we have: premultiplying an all-zero alpha destroys the colour, and restoring
+		// A = 255 afterwards can only produce black.
+		var ignoreAlpha = bpp != 32
+			|| (alphaMask != 0xFF000000 && IsSourceAlphaAllZero(d, pixelOffset, stride, width, height));
 		var bgra = new byte[width * height * 4];
 
 		for (var row = 0; row < height; row++)

@@ -53,7 +53,9 @@ namespace Microsoft.UI.Composition
 
 		bool IGeometry.IsEmpty => _geometry.IsEmpty;
 
-		int IGeometry.SegmentCount => _geometry.PointCount;
+		// Verbs, not points: a cubic is one segment but three points. This still counts the move/close verbs, which
+		// an exact count would not, but those are per-contour and an exact count needs a full path walk.
+		int IGeometry.SegmentCount => _geometry.VerbCount;
 
 		bool IGeometry.FillContains(Vector2 point) => _geometry.Contains(point.X, point.Y);
 

@@ -161,7 +161,12 @@ internal sealed class CffTable
 		int localBias;
 		if (_fdLocalSubrs is not null && _fdSelect is not null)
 		{
-			var fd = _fdSelect[glyph];
+			var fd = glyph < _fdSelect.Length ? _fdSelect[glyph] : 0;
+			if (fd >= _fdLocalSubrs.Length)
+			{
+				return;
+			}
+
 			localSubrs = _fdLocalSubrs[fd];
 			localBias = _fdLocalBias![fd];
 		}
@@ -317,8 +322,11 @@ internal sealed class CffTable
 		private readonly float _oy;
 		private readonly float _scale;
 
+		private const int MaxSubrDepth = 10;
+
 		private readonly double[] _stack = new double[48];
 		private int _sp;
+		private int _depth;
 		private double _x;
 		private double _y;
 		private int _nStems;
@@ -350,6 +358,13 @@ internal sealed class CffTable
 
 		public void Run(int start, int end)
 		{
+			// A truncated or hostile font must emit nothing rather than throw out of the render walk, and a subr
+			// that calls itself must not recurse into an uncatchable StackOverflowException.
+			if (start < 0 || end > _data.Length || _depth > MaxSubrDepth)
+			{
+				return;
+			}
+
 			var p = start;
 			while (p < end && !_stopped)
 			{
@@ -359,6 +374,11 @@ internal sealed class CffTable
 					double value;
 					if (b0 == 28)
 					{
+						if (p + 2 > end)
+						{
+							return;
+						}
+
 						value = (short)ManagedFont.U16(_data, p);
 						p += 2;
 					}
@@ -368,14 +388,29 @@ internal sealed class CffTable
 					}
 					else if (b0 < 251)
 					{
+						if (p >= end)
+						{
+							return;
+						}
+
 						value = (b0 - 247) * 256 + _data[p++] + 108;
 					}
 					else if (b0 < 255)
 					{
+						if (p >= end)
+						{
+							return;
+						}
+
 						value = -(b0 - 251) * 256 - _data[p++] - 108;
 					}
 					else // 255: 16.16 fixed
 					{
+						if (p + 4 > end)
+						{
+							return;
+						}
+
 						value = (int)ManagedFont.U32(_data, p) / 65536.0;
 						p += 4;
 					}
@@ -399,17 +434,29 @@ internal sealed class CffTable
 						break;
 					case 21: // rmoveto
 						PeelWidth(2);
-						MoveTo(_x + _stack[_sp - 2], _y + _stack[_sp - 1]);
+						if (_sp >= 2)
+						{
+							MoveTo(_x + _stack[_sp - 2], _y + _stack[_sp - 1]);
+						}
+
 						_sp = 0;
 						break;
 					case 22: // hmoveto
 						PeelWidth(1);
-						MoveTo(_x + _stack[_sp - 1], _y);
+						if (_sp >= 1)
+						{
+							MoveTo(_x + _stack[_sp - 1], _y);
+						}
+
 						_sp = 0;
 						break;
 					case 4: // vmoveto
 						PeelWidth(1);
-						MoveTo(_x, _y + _stack[_sp - 1]);
+						if (_sp >= 1)
+						{
+							MoveTo(_x, _y + _stack[_sp - 1]);
+						}
+
 						_sp = 0;
 						break;
 					case 5: // rlineto
@@ -468,19 +515,33 @@ internal sealed class CffTable
 						break;
 					case 10: // callsubr
 						{
+							if (_sp < 1)
+							{
+								return;
+							}
+
 							var index = (int)_stack[--_sp] + _localBias;
 							if (index >= 0 && index < _localSubrs.Count)
 							{
+								_depth++;
 								Run(_localSubrs.Start(index), _localSubrs.End(index));
+								_depth--;
 							}
 							break;
 						}
 					case 29: // callgsubr
 						{
+							if (_sp < 1)
+							{
+								return;
+							}
+
 							var index = (int)_stack[--_sp] + _globalBias;
 							if (index >= 0 && index < _globalSubrs.Count)
 							{
+								_depth++;
 								Run(_globalSubrs.Start(index), _globalSubrs.End(index));
+								_depth--;
 							}
 							break;
 						}
@@ -490,6 +551,11 @@ internal sealed class CffTable
 						_stopped = true;
 						return;
 					case 12: // escape
+						if (p >= end)
+						{
+							return;
+						}
+
 						Escape(_data[p++]);
 						break;
 					default:
@@ -503,25 +569,25 @@ internal sealed class CffTable
 		{
 			switch (b1)
 			{
-				case 34: // hflex
+				case 34 when _sp >= 7: // hflex
 					{
 						var y0 = _y;
 						RelativeCurve(_stack[0], 0, _stack[1], _stack[2], _stack[3], 0);
 						RelativeCurve(_stack[4], 0, _stack[5], y0 - _y, _stack[6], 0);
 						break;
 					}
-				case 36: // hflex1
+				case 36 when _sp >= 9: // hflex1
 					{
 						var y0 = _y;
 						RelativeCurve(_stack[0], _stack[1], _stack[2], _stack[3], _stack[4], 0);
 						RelativeCurve(_stack[5], 0, _stack[6], _stack[7], _stack[8], y0 - _y);
 						break;
 					}
-				case 35: // flex
+				case 35 when _sp >= 12: // flex
 					RelativeCurve(_stack[0], _stack[1], _stack[2], _stack[3], _stack[4], _stack[5]);
 					RelativeCurve(_stack[6], _stack[7], _stack[8], _stack[9], _stack[10], _stack[11]);
 					break;
-				case 37: // flex1
+				case 37 when _sp >= 11: // flex1
 					{
 						var x0 = _x;
 						var y0 = _y;

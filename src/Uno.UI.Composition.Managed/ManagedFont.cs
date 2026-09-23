@@ -530,6 +530,12 @@ internal sealed class ManagedFont : IFont
 			return false;
 		}
 
+		var locaEnd = _loca + (_longLoca ? (glyph + 1) * 4 + 4 : (glyph + 1) * 2 + 2);
+		if (locaEnd > _data.Length || locaEnd < 0)
+		{
+			return false;
+		}
+
 		int start, end;
 		if (_longLoca)
 		{
@@ -542,7 +548,7 @@ internal sealed class ManagedFont : IFont
 			end = U16(_data, _loca + (glyph + 1) * 2) * 2;
 		}
 
-		return end > start && S16(_data, _glyf + start) < 0;
+		return start >= 0 && end > start && _glyf + start + 2 <= _data.Length && S16(_data, _glyf + start) < 0;
 	}
 
 	public void BuildGlyphRun(IGeometryFactory geometry, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements)
@@ -670,6 +676,14 @@ internal sealed class ManagedFont : IFont
 			return;
 		}
 
+		// A truncated font (a partial download still passes TryCreate) must emit nothing rather than throw out of
+		// the record walk, so every read below is bounded by the glyph's own loca extent.
+		var locaEnd = _loca + (_longLoca ? (glyph + 1) * 4 + 4 : (glyph + 1) * 2 + 2);
+		if (locaEnd > _data.Length || locaEnd < 0)
+		{
+			return;
+		}
+
 		int start, end;
 		if (_longLoca)
 		{
@@ -682,9 +696,15 @@ internal sealed class ManagedFont : IFont
 			end = U16(_data, _loca + (glyph + 1) * 2) * 2;
 		}
 
-		if (end <= start)
+		if (start < 0 || end <= start)
 		{
 			return; // empty glyph (e.g. space)
+		}
+
+		var limit = _glyf + end;
+		if (limit > _data.Length || limit < 0 || _glyf + start + 10 > limit)
+		{
+			return;
 		}
 
 		var p = _glyf + start;
@@ -693,7 +713,12 @@ internal sealed class ManagedFont : IFont
 
 		if (numContours < 0)
 		{
-			EmitCompositeGlyf(builder, p, originX, originY, scale, componentTransform, depth);
+			EmitCompositeGlyf(builder, p, limit, originX, originY, scale, componentTransform, depth);
+			return;
+		}
+
+		if (p + numContours * 2 > limit)
+		{
 			return;
 		}
 
@@ -701,10 +726,19 @@ internal sealed class ManagedFont : IFont
 		for (var c = 0; c < numContours; c++, p += 2)
 		{
 			endPts[c] = U16(_data, p);
+			if (c > 0 && endPts[c] < endPts[c - 1])
+			{
+				return; // non-decreasing endPts, else a contour indexes past the point arrays
+			}
 		}
 
 		var numPoints = numContours == 0 ? 0 : endPts[numContours - 1] + 1;
 		if (numPoints == 0)
+		{
+			return;
+		}
+
+		if (p + 2 > limit)
 		{
 			return;
 		}
@@ -715,10 +749,20 @@ internal sealed class ManagedFont : IFont
 		var flags = new byte[numPoints];
 		for (var i = 0; i < numPoints;)
 		{
+			if (p >= limit)
+			{
+				return;
+			}
+
 			var flag = _data[p++];
 			flags[i++] = flag;
 			if ((flag & 0x08) != 0) // REPEAT_FLAG
 			{
+				if (p >= limit)
+				{
+					return;
+				}
+
 				var repeat = _data[p++];
 				while (repeat-- > 0 && i < numPoints)
 				{
@@ -734,11 +778,21 @@ internal sealed class ManagedFont : IFont
 			var flag = flags[i];
 			if ((flag & 0x02) != 0) // X_SHORT_VECTOR
 			{
+				if (p >= limit)
+				{
+					return;
+				}
+
 				var dx = _data[p++];
 				x += (flag & 0x10) != 0 ? dx : -dx;
 			}
 			else if ((flag & 0x10) == 0) // not X_IS_SAME
 			{
+				if (p + 2 > limit)
+				{
+					return;
+				}
+
 				x += S16(_data, p);
 				p += 2;
 			}
@@ -753,11 +807,21 @@ internal sealed class ManagedFont : IFont
 			var flag = flags[i];
 			if ((flag & 0x04) != 0) // Y_SHORT_VECTOR
 			{
+				if (p >= limit)
+				{
+					return;
+				}
+
 				var dy = _data[p++];
 				y += (flag & 0x20) != 0 ? dy : -dy;
 			}
 			else if ((flag & 0x20) == 0) // not Y_IS_SAME
 			{
+				if (p + 2 > limit)
+				{
+					return;
+				}
+
 				y += S16(_data, p);
 				p += 2;
 			}
@@ -779,11 +843,16 @@ internal sealed class ManagedFont : IFont
 		}
 	}
 
-	private void EmitCompositeGlyf(IPathBuilder builder, int p, float originX, float originY, float scale, Matrix3x2 parentTransform, int depth)
+	private void EmitCompositeGlyf(IPathBuilder builder, int p, int limit, float originX, float originY, float scale, Matrix3x2 parentTransform, int depth)
 	{
 		bool more;
 		do
 		{
+			if (p + 4 > limit)
+			{
+				return;
+			}
+
 			var flags = (ushort)U16(_data, p);
 			p += 2;
 			var componentGlyph = (ushort)U16(_data, p);
@@ -793,12 +862,22 @@ internal sealed class ManagedFont : IFont
 			float dx, dy;
 			if ((flags & 0x0001) != 0) // ARG_1_AND_2_ARE_WORDS
 			{
+				if (p + 4 > limit)
+				{
+					return;
+				}
+
 				dx = S16(_data, p);
 				dy = S16(_data, p + 2);
 				p += 4;
 			}
 			else
 			{
+				if (p + 2 > limit)
+				{
+					return;
+				}
+
 				dx = (sbyte)_data[p];
 				dy = (sbyte)_data[p + 1];
 				p += 2;
@@ -806,6 +885,12 @@ internal sealed class ManagedFont : IFont
 
 			// Point-matching args (bit1 clear) are rare; treat both as an offset (a small positional approximation).
 			float a = 1f, b = 0f, c = 0f, d = 1f;
+			var transformBytes = (flags & 0x0008) != 0 ? 2 : (flags & 0x0040) != 0 ? 4 : (flags & 0x0080) != 0 ? 8 : 0;
+			if (p + transformBytes > limit)
+			{
+				return;
+			}
+
 			if ((flags & 0x0008) != 0) // WE_HAVE_A_SCALE
 			{
 				a = d = F2Dot14(p);
@@ -1128,6 +1213,11 @@ internal sealed class ManagedFont : IFont
 			for (var i = 0; i < numLayers; i++)
 			{
 				var p = _layerRecords + (firstLayer + i) * 4;
+				if (p < 0 || p + 4 > _data.Length)
+				{
+					break; // truncated table: emit the layers that are there rather than throwing
+				}
+
 				layers.Add(((ushort)U16(_data, p), U16(_data, p + 2)));
 			}
 
@@ -1145,6 +1235,11 @@ internal sealed class ManagedFont : IFont
 			{
 				var mid = (lo + hi) >> 1;
 				var p = _baseGlyphRecords + mid * 6;
+				if (p < 0 || p + 6 > _data.Length)
+				{
+					return false;
+				}
+
 				var gid = U16(_data, p);
 				if (gid == glyph)
 				{

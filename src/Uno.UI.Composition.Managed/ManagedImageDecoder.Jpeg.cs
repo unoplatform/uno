@@ -182,6 +182,19 @@ internal static partial class ManagedImageDecoder
 			_mcusPerLine = (_width + 8 * _hMax - 1) / (8 * _hMax);
 			_mcusPerColumn = (_height + 8 * _vMax - 1) / (8 * _vMax);
 
+			// Coefficients are 4 bytes per pixel PER COMPONENT, so the dimension cap alone is not enough: measure
+			// the real allocation before making it.
+			var bytes = (long)_width * _height * 4;
+			foreach (var c in _components)
+			{
+				bytes += (long)(_mcusPerLine * c.H) * (_mcusPerColumn * c.V) * 64 * 4;
+			}
+
+			if (ExceedsByteCap(bytes))
+			{
+				throw new NotSupportedException("JPEG dimensions exceed the decode allocation cap.");
+			}
+
 			foreach (var c in _components)
 			{
 				c.BlocksPerLine = (int)Math.Ceiling((double)_width * c.H / _hMax / 8);

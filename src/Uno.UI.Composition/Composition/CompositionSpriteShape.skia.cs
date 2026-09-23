@@ -294,7 +294,7 @@ namespace Microsoft.UI.Composition
 		// What CompositionShape.Render applies to the session before painting: the shape's CombinedTransformMatrix
 		// (Scale/Rotation/TransformMatrix around CenterPoint) and then its Offset, matching the Translate + Concat
 		// order there. TryGetRenderBounds must apply it too so damage matches the painted pixels.
-		private Matrix3x2 GetRenderTransform()
+		internal Matrix3x2 GetRenderTransform()
 		{
 			var transform = CombinedTransformMatrix;
 			var offset = Offset;

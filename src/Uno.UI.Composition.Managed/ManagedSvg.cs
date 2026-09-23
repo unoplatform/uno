@@ -30,6 +30,9 @@ internal sealed class ManagedSvg : ISvgDocument
 	private readonly IGeometryFactory _geometry;
 	private readonly IDrawingFactory _drawing;
 
+	private const int MaxUseDepth = 8;
+	private int _useDepth;
+
 	private ManagedSvg(XElement root, IGeometryFactory geometry, IDrawingFactory drawing)
 	{
 		_root = root;
@@ -174,6 +177,26 @@ internal sealed class ManagedSvg : ISvgDocument
 			return;
 		}
 
+		// A <use> may resolve to its own ancestor; without a depth cap that recursion is a process-killing
+		// StackOverflowException rather than a catchable failure.
+		if (_useDepth >= MaxUseDepth)
+		{
+			return;
+		}
+
+		_useDepth++;
+		try
+		{
+			RenderUseTarget(session, el, style, target);
+		}
+		finally
+		{
+			_useDepth--;
+		}
+	}
+
+	private void RenderUseTarget(IDrawingSession session, XElement el, SvgStyle style, XElement target)
+	{
 		var saved = session.SaveCount;
 		session.Save();
 		session.Translate(Len(el, "x"), Len(el, "y"));

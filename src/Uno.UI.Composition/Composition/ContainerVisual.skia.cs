@@ -118,21 +118,24 @@ public partial class ContainerVisual : Visual
 	/// <remarks>This does NOT take the clipping into account.</remarks>
 	internal virtual bool HitTest(Point relativeLocation) => new Rect(0, 0, Size.X, Size.Y).Contains(relativeLocation);
 
-	internal Rect? GetArrangeClipPathInElementCoordinateSpace() => GetArrangeClip(out _);
+	internal Rect? GetArrangeClipPathInElementCoordinateSpace() => GetArrangeClip(out _, out _);
 
 	/// <summary>
-	/// The arrange clip in this visual's coordinates. <paramref name="skew"/> is the mapping that was applied to
-	/// get there when it is not axis aligned, in which case the returned rect is only the bounding box of the real
-	/// clip and a caller that can express a shape should use the mapping instead.
+	/// The arrange clip in this visual's coordinates. When an ancestor clip is mapped here by something that is
+	/// not axis aligned, the returned rect is only the BOUNDING BOX of the real clip: <paramref name="mapping"/>
+	/// is then the transform and <paramref name="source"/> the rect it applies to, so a caller that can express a
+	/// shape maps those itself rather than using the box.
 	/// </summary>
-	private Rect? GetArrangeClip(out Matrix3x2? skew)
+	private Rect? GetArrangeClip(out Rect source, out Matrix3x2? mapping)
 	{
-		skew = null;
+		source = default;
+		mapping = null;
 		if (LayoutClip is not { isAncestorClip: var isAncestorClip, rect: var rect })
 		{
 			return default;
 		}
 
+		source = rect;
 		if (isAncestorClip)
 		{
 			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
@@ -142,7 +145,7 @@ public partial class ContainerVisual : Visual
 				var matrix = childToParentTransform.ToMatrix3x2();
 				if (matrix.M12 != 0 || matrix.M21 != 0)
 				{
-					skew = matrix;
+					mapping = matrix;
 				}
 
 				rect = rect.Transform(matrix);
@@ -154,22 +157,16 @@ public partial class ContainerVisual : Visual
 
 	/// <summary>The arrange clip as a shape, which a rotated ancestor clip needs: its bounding box would let
 	/// roughly the corners through.</summary>
-	private IGeometry? CreateArrangeClipGeometry()
+	private IGeometry CreateArrangeClipGeometry(Rect rect, Rect source, Matrix3x2? mapping)
 	{
-		if (GetArrangeClip(out var skew) is not { } rect)
-		{
-			return null;
-		}
-
-		if (skew is not { } matrix)
+		if (mapping is not { } matrix)
 		{
 			return GeometryFactory.Current.CreateRectangleGeometry(rect);
 		}
 
-		// rect is already the mapped bounding box, so the source rect is rebuilt and mapped as a shape instead.
-		Matrix3x2.Invert(matrix, out var inverse);
-		var local = rect.Transform(inverse);
-		var localGeometry = GeometryFactory.Current.CreateRectangleGeometry(local);
+		// From the SOURCE rect, mapped once. Re-deriving it from the bounding box would inflate it again by the
+		// same factor the box already cost.
+		var localGeometry = GeometryFactory.Current.CreateRectangleGeometry(source);
 		var transformed = localGeometry.Transform(matrix);
 		localGeometry.Release();
 		return transformed;
@@ -178,14 +175,15 @@ public partial class ContainerVisual : Visual
 	internal override void ApplyPrePaintingClipping(IDrawingSession session)
 	{
 		base.ApplyPrePaintingClipping(session);
-		if (GetArrangeClip(out var skew) is { } rect)
+		if (GetArrangeClip(out var source, out var mapping) is { } rect)
 		{
-			if (skew is null)
+			if (mapping is null)
 			{
 				session.ClipRect(rect);
 			}
-			else if (CreateArrangeClipGeometry() is { } clip)
+			else
 			{
+				var clip = CreateArrangeClipGeometry(rect, source, mapping);
 				session.ClipPath(clip);
 				clip.Release();
 			}
@@ -206,12 +204,12 @@ public partial class ContainerVisual : Visual
 	internal override IGeometry? GetPrePaintingClipping()
 	{
 		var baseClip = base.GetPrePaintingClipping();
-		if (GetArrangeClipPathInElementCoordinateSpace() is not { } rect)
+		if (GetArrangeClip(out var arrangeSource, out var arrangeMapping) is not { } rect)
 		{
 			return baseClip;
 		}
 
-		var arrangeClip = CreateArrangeClipGeometry() ?? GeometryFactory.Current.CreateRectangleGeometry(rect);
+		var arrangeClip = CreateArrangeClipGeometry(rect, arrangeSource, arrangeMapping);
 		return baseClip is null
 			? arrangeClip
 			: IntersectOwned(baseClip, arrangeClip);

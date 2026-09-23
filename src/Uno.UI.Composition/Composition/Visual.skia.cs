@@ -753,20 +753,27 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return clipPath;
 		}
 
-		// A 2D matrix cannot carry a projection, so a projective visual contributes no clip rather than the wrong
-		// one: an over-wide airspace cut-out shows the native window, an over-narrow one crops it.
-		if (!TotalMatrix.IsPlanarAffine())
+		// A 2D matrix cannot carry a projection, so a projective visual's own clip is not mapped at all rather than
+		// mapped wrongly -- it simply narrows nothing. The walk still has to continue: bailing out here would stop
+		// a native host under a projection from ever being unioned in, and it would vanish altogether.
+		var planar = TotalMatrix.IsPlanarAffine();
+		var localMatrix = planar ? TotalMatrix.ToMatrix3x2() : Matrix3x2.Identity;
+		IGeometry localClip;
+		if (planar)
 		{
-			return clipPath;
+			var ownClip = GetPrePaintingClipping() ?? GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y));
+			var ownClipInParent = ownClip.Transform(localMatrix);
+			ownClip.Release();
+			// clipFromParent belongs to the caller, so it is not released here.
+			localClip = ownClipInParent.Combine(clipFromParent, GeometryCombineMode.Intersect);
+			ownClipInParent.Release();
 		}
-
-		var localMatrix = TotalMatrix.ToMatrix3x2();
-		var ownClip = GetPrePaintingClipping() ?? GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y));
-		var ownClipInParent = ownClip.Transform(localMatrix);
-		ownClip.Release();
-		// clipFromParent belongs to the caller, so it is not released here.
-		var localClip = ownClipInParent.Combine(clipFromParent, GeometryCombineMode.Intersect);
-		ownClipInParent.Release();
+		else
+		{
+			// Borrowed from the caller: AddRef so the single Release below is balanced either way.
+			clipFromParent.AddRef();
+			localClip = clipFromParent;
+		}
 
 		if (IsNativeHostVisual || CanPaint())
 		{
@@ -779,7 +786,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		var childClip = localClip;
-		if (GetPostPaintingClipping() is { } postClip)
+		if (planar && GetPostPaintingClipping() is { } postClip)
 		{
 			var postClipInParent = postClip.Transform(localMatrix);
 			postClip.Release();
@@ -903,19 +910,20 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// it only depends on the subtree's content — ancestor moves (scrolling) keep it valid. Re-walking every
 		// frame costs per-visual geometry booleans over the whole subtree, so reuse the last verdict + regions
 		// under the same gates as the fallback-recording cache.
+		// Ahead of the cache, not inside it: a TransformMatrix change raises no PaintDirty and deliberately keeps
+		// this visual's own shadow cache, so a caster animating into a projection would otherwise keep replaying
+		// regions walked while it was still affine.
+		if (!TotalMatrix.IsPlanarAffine())
+		{
+			_hasAnalyticShadowVerdict = false;
+			return false;
+		}
+
 		var cacheValid = _hasAnalyticShadowVerdict && !_shadowSubtreeChangedThisFrame
 			&& (_flags & VisualFlags.PaintDirty) == 0
 			&& !RequiresRepaintOnEveryFrame;
 		if (!cacheValid)
 		{
-			// The whole walk maps geometry with 2D matrices, which cannot carry a projection: a perspective
-			// caster falls back to the picture-based shadow instead of casting from the wrong silhouette.
-			if (!TotalMatrix.IsPlanarAffine())
-			{
-				_hasAnalyticShadowVerdict = false;
-				return false;
-			}
-
 			var rootMatrix = TotalMatrix.ToMatrix3x2();
 			if (!Matrix3x2.Invert(rootMatrix, out var inverseRoot))
 			{

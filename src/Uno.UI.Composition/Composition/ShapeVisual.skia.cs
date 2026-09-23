@@ -220,6 +220,16 @@ public partial class ShapeVisual
 			{
 				continue;
 			}
+			// The shape's own transform, which CompositionShape.Render applies before painting it. Without it the
+			// silhouette is the untransformed geometry, so a shape carrying an Offset or a rotation -- typical of
+			// LottieGen output -- casts its shadow in the wrong place.
+			if (sprite.GetRenderTransform() is { IsIdentity: false } shapeTransform)
+			{
+				var untransformed = geometry;
+				geometry = geometry.Transform(shapeTransform);
+				untransformed.Dispose();
+			}
+
 			if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
 			{
 				var m = Matrix3x2.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y)

@@ -95,11 +95,15 @@ internal sealed class SkiaDrawingFactory :
 
 		if (_vulkanSurface is null || _vulkanImage != vk.Image || vk.Width != _vulkanWidth || vk.Height != _vulkanHeight)
 		{
-			_vulkanWidth = vk.Width;
-			_vulkanHeight = vk.Height;
-			_vulkanImage = vk.Image;
+			// Drop the cache (fields and keys together) before rebuilding: a failed wrap must leave nothing behind
+			// that a later frame could mistake for a live surface, or the window never recovers.
 			_vulkanRenderTarget?.Dispose();
 			_vulkanSurface?.Dispose();
+			_vulkanRenderTarget = null;
+			_vulkanSurface = null;
+			_vulkanImage = 0;
+			_vulkanWidth = 0;
+			_vulkanHeight = 0;
 
 			var info = new GRVkImageInfo
 			{
@@ -114,11 +118,21 @@ internal sealed class SkiaDrawingFactory :
 				Protected = vk.Protected,
 				Alloc = new GRVkAlloc { Memory = vk.Memory, Size = vk.MemorySize },
 			};
-			_vulkanRenderTarget = new GRBackendRenderTarget(vk.Width, vk.Height, info);
+			var renderTarget = new GRBackendRenderTarget(vk.Width, vk.Height, info);
 			// The colour type must match the image's own Vulkan format or Skia refuses the wrap and returns null.
 			var colorType = vk.ColorFormat == GraphicsColorFormat.Rgba8888 ? SKColorType.Rgba8888 : SKColorType.Bgra8888;
-			_vulkanSurface = SKSurface.Create(_vulkanContext, _vulkanRenderTarget, GRSurfaceOrigin.TopLeft, colorType, SKColorSpace.CreateSrgb())
-				?? throw new System.NotSupportedException($"Skia could not wrap the host's Vulkan image ({colorType}, format {vk.Format}).");
+			var surface = SKSurface.Create(_vulkanContext, renderTarget, GRSurfaceOrigin.TopLeft, colorType, SKColorSpace.CreateSrgb());
+			if (surface is null)
+			{
+				renderTarget.Dispose();
+				throw new System.NotSupportedException($"Skia could not wrap the host's Vulkan image ({colorType}, format {vk.Format}).");
+			}
+
+			_vulkanRenderTarget = renderTarget;
+			_vulkanSurface = surface;
+			_vulkanImage = vk.Image;
+			_vulkanWidth = vk.Width;
+			_vulkanHeight = vk.Height;
 		}
 
 		return SkiaPresentSession.ForCachedGpuSurface(_vulkanSurface, _vulkanContext, this);
@@ -132,11 +146,10 @@ internal sealed class SkiaDrawingFactory :
 			?? throw new System.NotSupportedException("Failed to create a Metal GRContext.");
 
 		var colorType = metal.ColorFormat == GraphicsColorFormat.Bgra8888 ? SKColorType.Bgra8888 : SKColorType.Rgba8888;
-		var target = new GRBackendRenderTarget(metal.Width, metal.Height, new GRMtlTextureInfo(metal.Texture));
+		// The render target descriptor is consumed by SKSurface.Create; the surface is disposed on present.
+		using var target = new GRBackendRenderTarget(metal.Width, metal.Height, new GRMtlTextureInfo(metal.Texture));
 		var surface = SKSurface.Create(_metalContext, target, GRSurfaceOrigin.TopLeft, colorType)
 			?? throw new System.NotSupportedException($"Skia could not wrap the host's Metal texture ({colorType}).");
-		// The render target descriptor is consumed by SKSurface.Create; the surface is disposed on present.
-		target.Dispose();
 
 		// Render straight into the host's texture; retention (partial repaint) is the host's business (it hands back a
 		// stable texture when it preserves contents).
@@ -171,19 +184,32 @@ internal sealed class SkiaDrawingFactory :
 
 		if (_glSurface is null || gl.Width != _glWidth || gl.Height != _glHeight)
 		{
-			_glWidth = gl.Width;
-			_glHeight = gl.Height;
+			// Drop the cache (fields and keys together) before rebuilding: a failed wrap must leave nothing behind
+			// that a later frame could mistake for a live surface, or the window never recovers.
 			_glRenderTarget?.Dispose();
 			_glSurface?.Dispose();
+			_glRenderTarget = null;
+			_glSurface = null;
+			_glWidth = 0;
+			_glHeight = 0;
 
 			var info = new GRGlFramebufferInfo(gl.FramebufferId, SKColorType.Rgba8888.ToGlSizedFormat());
 			// A host can report more GL_SAMPLES than Skia can wrap for this color type (common on Android GLES),
 			// and an unclamped count makes SKSurface.Create return null instead of quietly downgrading MSAA.
 			var samples = Math.Min(gl.SampleCount, _glContext.GetMaxSurfaceSampleCount(SKColorType.Rgba8888));
-			_glRenderTarget = new GRBackendRenderTarget(gl.Width, gl.Height, samples, gl.StencilBits, info);
+			var renderTarget = new GRBackendRenderTarget(gl.Width, gl.Height, samples, gl.StencilBits, info);
 			// BottomLeft to match OpenGL's origin.
-			_glSurface = SKSurface.Create(_glContext, _glRenderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888)
-				?? throw new System.NotSupportedException("Skia could not wrap the host's OpenGL framebuffer.");
+			var surface = SKSurface.Create(_glContext, renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888);
+			if (surface is null)
+			{
+				renderTarget.Dispose();
+				throw new System.NotSupportedException("Skia could not wrap the host's OpenGL framebuffer.");
+			}
+
+			_glRenderTarget = renderTarget;
+			_glSurface = surface;
+			_glWidth = gl.Width;
+			_glHeight = gl.Height;
 		}
 
 		// Render straight into the host's framebuffer; retention (partial repaint) is the host's business (it hands

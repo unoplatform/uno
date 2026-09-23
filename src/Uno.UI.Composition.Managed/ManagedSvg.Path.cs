@@ -19,6 +19,7 @@ internal sealed class SvgPathParser
 	private float _lastQx, _lastQy; // last quad control (for T)
 	private char _lastCommand;
 	private bool _open;
+	private bool _error;
 
 	public SvgPathParser(string d, IPathBuilder builder)
 	{
@@ -36,6 +37,7 @@ internal sealed class SvgPathParser
 				break;
 			}
 
+			var progress = _pos;
 			var c = _d[_pos];
 			char command;
 			if (char.IsLetter(c))
@@ -55,6 +57,13 @@ internal sealed class SvgPathParser
 			}
 
 			Execute(command);
+			if (_error || _pos == progress)
+			{
+				// SVG renders a malformed 'd' up to the error; bail out instead of re-reading a character
+				// no operand scanner can consume, which would spin forever.
+				break;
+			}
+
 			_lastCommand = command;
 		}
 
@@ -149,6 +158,11 @@ internal sealed class SvgPathParser
 
 	private void MoveTo(float x, float y)
 	{
+		if (_error)
+		{
+			return;
+		}
+
 		if (_open)
 		{
 			_builder.Close();
@@ -162,6 +176,11 @@ internal sealed class SvgPathParser
 
 	private void LineTo(float x, float y)
 	{
+		if (_error)
+		{
+			return;
+		}
+
 		EnsureOpen();
 		_builder.LineTo(new Vector2(x, y));
 		_cx = x;
@@ -170,6 +189,11 @@ internal sealed class SvgPathParser
 
 	private void CubicTo(Vector2 c1, Vector2 c2, Vector2 e)
 	{
+		if (_error)
+		{
+			return;
+		}
+
 		EnsureOpen();
 		_builder.CubicTo(c1, c2, e);
 		_lastCx = c2.X;
@@ -180,6 +204,11 @@ internal sealed class SvgPathParser
 
 	private void QuadTo(Vector2 c1, Vector2 e)
 	{
+		if (_error)
+		{
+			return;
+		}
+
 		EnsureOpen();
 		_builder.QuadraticTo(c1, e);
 		_lastQx = c1.X;
@@ -190,6 +219,11 @@ internal sealed class SvgPathParser
 
 	private void ArcTo(float rx, float ry, float rotDeg, int large, int sweep, float x2, float y2)
 	{
+		if (_error)
+		{
+			return;
+		}
+
 		EnsureOpen();
 		var x1 = _cx;
 		var y1 = _cy;
@@ -305,12 +339,12 @@ internal sealed class SvgPathParser
 	private int Flag()
 	{
 		SkipSep();
-		if (_pos < _d.Length)
+		if (_pos < _d.Length && _d[_pos] is '0' or '1')
 		{
-			var c = _d[_pos++];
-			return c == '1' ? 1 : 0;
+			return _d[_pos++] == '1' ? 1 : 0;
 		}
 
+		_error = true;
 		return 0;
 	}
 
@@ -350,6 +384,14 @@ internal sealed class SvgPathParser
 			}
 		}
 
-		return float.TryParse(_d.AsSpan(start, _pos - start), NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 0f;
+		if (float.TryParse(_d.AsSpan(start, _pos - start), NumberStyles.Float, CultureInfo.InvariantCulture, out var v))
+		{
+			return v;
+		}
+
+		// Nothing consumable here: flag the error so the caller stops rather than looping on the same character.
+		_error = true;
+		_pos = start;
+		return 0f;
 	}
 }

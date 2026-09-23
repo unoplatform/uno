@@ -645,7 +645,12 @@ public partial class CompositionTarget
 		}
 
 		// Pure predicate: callers decide under the lock and dispose outside it.
-		private bool ShouldDispose() => !_disposed && _pipelineReleased && _retainCount <= 0 && !_publicized;
+		//
+		// Being publicized suppresses disposal only when the record actually handed something out: the object a
+		// subscriber may still hold is then a managed one the GC can reclaim. A record with nothing to expose has
+		// only a native handle behind it, and leaving that undisposed would leak it for the process lifetime.
+		private bool ShouldDispose()
+			=> !_disposed && _pipelineReleased && _retainCount <= 0 && !(_publicized && Record.FrameData is not null);
 	}
 
 	internal static void InvokeRendering()

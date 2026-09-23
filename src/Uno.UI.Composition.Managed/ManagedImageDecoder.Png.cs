@@ -96,17 +96,29 @@ internal static partial class ManagedImageDecoder
 			}
 		}
 
-		idat.Position = 0;
-		using var inflate = new ZLibStream(idat, CompressionMode.Decompress);
 		var bitsPerPixel = channels * bitDepth;
 		var bytesPerPixel = Math.Max(1, bitsPerPixel / 8);
+
+		// The unfiltered scanlines are allocated from the header alone, on top of the BGRA output: up to 8 bytes per
+		// pixel for 16-bit RGBA. Re-check the cap against that real cost before allocating either buffer.
+		if (idat.Length == 0 || ExceedsPixelCap(width, height, 4 + (bitsPerPixel + 7) / 8))
+		{
+			return false;
+		}
+
+		idat.Position = 0;
+		using var inflate = new ZLibStream(idat, CompressionMode.Decompress);
 		var bgra = new byte[width * height * 4];
 
 		if (interlace == 0)
 		{
 			var stride = (width * bitsPerPixel + 7) / 8;
 			var raw = new byte[(stride + 1) * height];
-			ReadExactly(inflate, raw);
+			if (ReadExactly(inflate, raw) == 0)
+			{
+				return false; // no scanline data at all
+			}
+
 			DecodePass(raw, 0, width, height, 0, 0, 1, 1, bgra, width, bitsPerPixel, bytesPerPixel, bitDepth, colorType, palette, paletteAlpha, colorKey);
 		}
 		else
@@ -128,7 +140,10 @@ internal static partial class ManagedImageDecoder
 			}
 
 			var raw = new byte[total];
-			ReadExactly(inflate, raw);
+			if (ReadExactly(inflate, raw) == 0)
+			{
+				return false; // no scanline data at all
+			}
 
 			var offset = 0;
 			for (var i = 0; i < 7; i++)
@@ -320,7 +335,8 @@ internal static partial class ManagedImageDecoder
 		return (b >> shift) & mask;
 	}
 
-	private static void ReadExactly(Stream stream, byte[] buffer)
+	/// <summary>Fills <paramref name="buffer"/> and returns how many bytes were read; the rest stays zero-filled.</summary>
+	private static int ReadExactly(Stream stream, byte[] buffer)
 	{
 		var read = 0;
 		while (read < buffer.Length)
@@ -333,6 +349,8 @@ internal static partial class ManagedImageDecoder
 
 			read += n;
 		}
+
+		return read;
 	}
 
 	private static uint ReadU32(byte[] d, int o) => ((uint)d[o] << 24) | ((uint)d[o + 1] << 16) | ((uint)d[o + 2] << 8) | d[o + 3];

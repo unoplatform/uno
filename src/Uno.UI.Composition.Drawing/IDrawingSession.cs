@@ -133,8 +133,10 @@ public interface IDrawingSession
 
 	/// <summary>
 	/// Draws <paramref name="silhouette"/> as a soft shadow: coverage blurred by (<paramref name="sigmaX"/>,
-	/// <paramref name="sigmaY"/>) device pixels and filled with <paramref name="color"/>; <paramref name="additive"/>
-	/// sums overlapping contributions.
+	/// <paramref name="sigmaY"/>) and filled with <paramref name="color"/>; <paramref name="additive"/>
+	/// sums overlapping contributions. The sigmas are in the session's CURRENT coordinate space, not device
+	/// pixels -- the session transform scales them, the way a mask filter does -- so the same value blurs twice
+	/// as wide at a 2x rasterization scale.
 	/// </summary>
 	void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive);
 

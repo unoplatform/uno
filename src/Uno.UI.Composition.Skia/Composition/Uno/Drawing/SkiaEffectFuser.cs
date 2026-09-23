@@ -33,6 +33,10 @@ internal sealed class SkiaEffectFuser
 	/// </summary>
 	internal SKImageFilter? FuseGraph(EffectNode node, SKRect bounds)
 	{
+		// Per-fuse state: a reused instance must not inherit the previous graph's source flag or failure.
+		_isSource = false;
+		FailureReason = null;
+
 		SKImageFilter? root = null;
 		try
 		{

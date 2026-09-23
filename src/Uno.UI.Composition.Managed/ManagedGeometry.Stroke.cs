@@ -140,29 +140,46 @@ internal sealed partial class ManagedGeometry
 		while (pos < pathLength)
 		{
 			var segLen = dashes[idx % dashes.Length];
-			if (segLen > 0)
+			var isOn = idx % 2 == 0;
+			if (segLen <= 0)
 			{
-				var isOn = idx % 2 == 0;
-				if (isOn)
+				// A zero-length "on" interval is the canonical dotted-line idiom ("0 8" with a round cap): it
+				// covers no length, so all it paints is its two caps where the pattern has reached.
+				if (isOn && pos >= 0f && pos <= pathLength && TryPointAt(points, pos, out var dot, out var dotTangent))
 				{
-					var from = MathF.Max(pos, 0f);
-					var to = MathF.Min(pos + segLen, pathLength);
-					if (from < to)
+					yield return new StrokeRun(
+						new[] { dot },
+						closed: false,
+						pos <= 0f && !closed ? style.StartCap : style.DashCap,
+						pos >= pathLength && !closed ? style.EndCap : style.DashCap)
 					{
-						var sub = ExtractSubPolyline(points, from, to);
-						if (sub.Count >= 2)
-						{
-							// Path ends use the real start/end caps; internal dash boundaries use the dash cap.
-							var startCap = from <= 0f && !closed ? style.StartCap : style.DashCap;
-							var endCap = to >= pathLength && !closed ? style.EndCap : style.DashCap;
-							yield return new StrokeRun(sub, closed: false, startCap, endCap);
-						}
-					}
+						ZeroLengthDash = true,
+						Tangent = dotTangent,
+					};
 				}
 
-				pos += segLen;
+				idx++;
+				continue;
 			}
 
+			if (isOn)
+			{
+				var from = MathF.Max(pos, 0f);
+				var to = MathF.Min(pos + segLen, pathLength);
+				if (from < to)
+				{
+					var sub = ExtractSubPolyline(points, from, to);
+					if (sub.Count >= 2)
+					{
+						// Path ends use the real start/end caps; internal dash boundaries use the dash cap.
+						var startCap = from <= 0f && !closed ? style.StartCap : style.DashCap;
+						var endCap = to >= pathLength && !closed ? style.EndCap : style.DashCap;
+						yield return new StrokeRun(sub, closed: false, startCap, endCap);
+					}
+				}
+			}
+
+			pos += segLen;
 			idx++;
 		}
 
@@ -206,6 +223,35 @@ internal sealed partial class ManagedGeometry
 			idx++;
 		}
 
+		return false;
+	}
+
+	/// <summary>Point and forward tangent at <paramref name="distance"/> along the polyline.</summary>
+	private static bool TryPointAt(List<Vector2> points, float distance, out Vector2 point, out Vector2 tangent)
+	{
+		var pos = 0f;
+		for (var i = 1; i < points.Count; i++)
+		{
+			var a = points[i - 1];
+			var b = points[i];
+			var segLen = Vector2.Distance(a, b);
+			if (segLen <= 0)
+			{
+				continue;
+			}
+
+			if (distance <= pos + segLen)
+			{
+				point = Vector2.Lerp(a, b, MathF.Max(0f, distance - pos) / segLen);
+				tangent = Dir(a, b);
+				return true;
+			}
+
+			pos += segLen;
+		}
+
+		point = default;
+		tangent = default;
 		return false;
 	}
 

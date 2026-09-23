@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -79,21 +79,30 @@ internal sealed class SkiaFontProvider : IFontProvider
 			return FontFallback.MatchCharacterAsync(this, codepoint, weight, stretch, style, fontSize);
 		}
 
-		IFont? font;
+		IFont? familyFont;
 		var familyKey = (typeface.FamilyName, weight.Weight, stretch, style, fontSize);
 		lock (_matchCharacterGate)
 		{
-			_matchedFamilyCache.TryGetValue(familyKey, out font);
+			_matchedFamilyCache.TryGetValue(familyKey, out familyFont);
 		}
 
-		// MatchCharacter ignores the requested style, so re-resolve the family it found for the run's
-		// weight/stretch/style; the matched face stands when no styled face still covers the codepoint.
-		font ??= MatchStyledFamily(typeface.FamilyName, codepoint, weight, stretch, style, fontSize)
-			?? MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
+		// The family entry was verified against some other codepoint, so its styled face may not cover this one;
+		// reusing it unchecked would render .notdef. MatchCharacter also ignores the requested style, so re-resolve
+		// the family it found for the run's weight/stretch/style; the matched face stands when no styled face covers it.
+		var font = familyFont is not null && familyFont.ContainsGlyph(codepoint)
+			? familyFont
+			: MatchStyledFamily(typeface.FamilyName, codepoint, weight, stretch, style, fontSize)
+				?? MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
 
 		lock (_matchCharacterGate)
 		{
-			_matchedFamilyCache[familyKey] = font;
+			// A per-codepoint fallback must not displace the family entry — the codepoints it does serve have to keep
+			// sharing that one instance, or segment grouping breaks contextual shaping.
+			if (familyFont is null)
+			{
+				_matchedFamilyCache[familyKey] = font;
+			}
+
 			_matchCharacterCache[key] = font;
 		}
 
@@ -124,8 +133,29 @@ internal sealed class SkiaFontProvider : IFontProvider
 			return null;
 		}
 
-		var font = MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
-		return font.ContainsGlyph(codepoint) ? font : null;
+		var styled = ApplyVariableFontAxes(typeface, weight, stretch, style);
+
+		// Coverage is probed on the SKFont, before it is wrapped: the typeface-level lookups are obsolete in this
+		// SkiaSharp, and a styled face can drop blocks the matched one had -- returning it then renders .notdef.
+		var skFont = new SKFont(styled, fontSize)
+		{
+			Edging = SKFontEdging.SubpixelAntialias,
+			Subpixel = true,
+		};
+
+		if (!skFont.ContainsGlyph(codepoint))
+		{
+			skFont.Dispose();
+			if (!ReferenceEquals(styled, typeface))
+			{
+				// The variation clone is ours alone; the family face may be shared by the font manager's cache.
+				styled.Dispose();
+			}
+
+			return null;
+		}
+
+		return new SkiaFont(skFont);
 	}
 
 	private static IFont MakeFont(SKTypeface typeface, float fontSize)

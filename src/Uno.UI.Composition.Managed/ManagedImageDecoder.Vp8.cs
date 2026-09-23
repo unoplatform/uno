@@ -129,6 +129,9 @@ internal static partial class ManagedImageDecoder
 				Array.Clear(_leftU, 0, 2);
 				Array.Clear(_leftV, 0, 2);
 				_leftY2 = 0;
+				// The left B-mode context restarts at B_DC_PRED on each row; carrying the previous row's last
+				// macroblock over picks the wrong mode probabilities and desynchronises the bool decoder.
+				Array.Clear(_leftBModes, 0, 4);
 				var token = _tokens[mbY % _tokens.Length];
 
 				for (var mbX = 0; mbX < _mbW; mbX++)
@@ -164,7 +167,8 @@ internal static partial class ManagedImageDecoder
 
 			Width = (_data[o + 6] | (_data[o + 7] << 8)) & 0x3FFF;
 			Height = (_data[o + 8] | (_data[o + 9] << 8)) & 0x3FFF;
-			if (Width <= 0 || Height <= 0)
+			// 1.5 bytes of YUV planes plus the 4-byte BGRA output, all sized from a 14-bit header pair.
+			if (Width <= 0 || Height <= 0 || ExceedsPixelCap(Width, Height, 6))
 			{
 				return false;
 			}
@@ -792,18 +796,23 @@ internal static partial class ManagedImageDecoder
 				a[1 + i] = hasTop ? _y[(y0 - 1) * _yStride + x0 + i] : 127;
 			}
 
-			// Top-right 4 samples: available from the row above when within bounds; else replicate the last top sample.
+			// Top-right 4 samples. The right-column subblocks (7/11/15 as well as 3) must read the row above the
+			// MACROBLOCK: the columns to their right belong to the next macroblock, which is not decoded yet.
+			var rightColumn = (x0 & 15) == 12;
+			var mbLeft = x0 & ~15;
+			var topRightRow = rightColumn ? (y0 & ~15) - 1 : y0 - 1;
 			for (var i = 0; i < 4; i++)
 			{
+				if (topRightRow < 0)
+				{
+					a[5 + i] = rightColumn ? 127 : a[4];
+					continue;
+				}
+
 				var tx = x0 + 4 + i;
-				if (hasTop && tx < _yStride)
-				{
-					a[5 + i] = _y[(y0 - 1) * _yStride + tx];
-				}
-				else
-				{
-					a[5 + i] = a[4]; // replicate top[3]
-				}
+				a[5 + i] = tx < _yStride
+					? _y[topRightRow * _yStride + tx]
+					: _y[topRightRow * _yStride + mbLeft + 15]; // last macroblock of the row: replicate above[15]
 			}
 
 			for (var i = 0; i < 4; i++)
@@ -1172,9 +1181,10 @@ internal static partial class ManagedImageDecoder
 					var cx = x >> 1;
 					var uv = _u[cy * _cStride + cx] - 128;
 					var vv = _v[cy * _cStride + cx] - 128;
-					var r = Clip8((int)(yv + 1.402 * vv + 0.5));
-					var g = Clip8((int)(yv - 0.344136 * uv - 0.714136 * vv + 0.5));
-					var b = Clip8((int)(yv + 1.772 * uv + 0.5));
+					var luma = 1.164 * (yv - 16);
+					var r = Clip8((int)(luma + 1.596 * vv + 0.5));
+					var g = Clip8((int)(luma - 0.813 * vv - 0.391 * uv + 0.5));
+					var b = Clip8((int)(luma + 2.018 * uv + 0.5));
 					SetPixelPremul(bgra, (y * Width + x) * 4, r, g, b, 255);
 				}
 			}

@@ -178,9 +178,34 @@ internal class SkiaDrawingSession : IDrawingSession
 			return;
 		}
 
-		// One canvas draw for the whole run. The cost here is per DrawPath — paint setup, clip test, coverage
+		// A merged path carries a single fill rule, so a run mixing rules has to be drawn instance by instance.
+		var fillRule = instances[0].Geometry.FillRule;
+		var uniform = true;
+		for (var i = 1; i < instances.Length && uniform; i++)
+		{
+			uniform = instances[i].Geometry.FillRule == fillRule;
+		}
+
+		if (!uniform)
+		{
+			foreach (var instance in instances)
+			{
+				_canvas.Save();
+				_canvas.Translate(instance.Offset.X, instance.Offset.Y);
+				DrawPath(instance.Geometry, color);
+				_canvas.Restore();
+			}
+
+			return;
+		}
+
+		// One merged canvas draw for the whole run. The cost here is per DrawPath — paint setup, clip test, coverage
 		// walk — so N placed instances as N draws is far worse than merging them into a single path first.
-		using var builder = new SKPathBuilder();
+		using var builder = new SKPathBuilder
+		{
+			FillType = fillRule == GeometryFillRule.EvenOdd ? SKPathFillType.EvenOdd : SKPathFillType.Winding,
+		};
+
 		foreach (var instance in instances)
 		{
 			using var lease = SkiaGeometryInterop.Lease(instance.Geometry);
@@ -200,14 +225,24 @@ internal class SkiaDrawingSession : IDrawingSession
 		paint.Color = color.ToSKColor();
 		paint.IsAntialias = true;
 		paint.BlendMode = additive ? SKBlendMode.Plus : SKBlendMode.SrcOver;
-		paint.MaskFilter = sigmaX > 0f ? BlurFilter(sigmaX) : null;
 
-		if (sigmaX.Equals(sigmaY) || sigmaX.Equals(0f))
+		if (sigmaX.Equals(sigmaY) || (sigmaX <= 0f && sigmaY <= 0f))
 		{
+			paint.MaskFilter = sigmaX > 0f ? BlurFilter(sigmaX) : null;
 			_canvas.DrawPath(skPath, paint);
+		}
+		else if (sigmaX <= 0f || sigmaY <= 0f)
+		{
+			// The CTM trick below derives one axis' sigma from the other's by a scale, which cannot express a zero
+			// on either axis (it would collapse the path), so use an image filter, whose sigmas are independent.
+			using var blur = SKImageFilter.CreateBlur(MathF.Max(sigmaX, 0f), MathF.Max(sigmaY, 0f));
+			paint.ImageFilter = blur;
+			_canvas.DrawPath(skPath, paint);
+			paint.ImageFilter = null;
 		}
 		else
 		{
+			paint.MaskFilter = BlurFilter(sigmaX);
 			// Anisotropic blur via respectCTM: the mask blur (isotropic, sigma = sigmaX) is scaled by the CTM
 			// per axis. Scaling the canvas Y by sigmaY/sigmaX makes the device Y-blur = sigmaY, and pre-scaling
 			// the path Y by the inverse cancels the visual stretch so the shape lands at its original position.
