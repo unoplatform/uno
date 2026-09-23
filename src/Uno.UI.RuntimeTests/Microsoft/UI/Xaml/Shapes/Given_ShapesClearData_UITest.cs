@@ -22,83 +22,59 @@ public class Given_ShapesClearData_UITest
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6846")]
 	public async Task When_Data_Set_Path_Renders()
 	{
-		var border = CreateHost(out var path);
-		path.Width = 150;
-		path.Height = 150;
+		var border = CreateHost(new Size(150, 150), new Size(150, 150), out var path);
 		path.Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), PathData);
 		path.Fill = new SolidColorBrush(Microsoft.UI.Colors.Green);
 
-		try
-		{
-			await UITestHelper.Load(border);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(border);
 
-			var screenshot = await UITestHelper.ScreenShot(border);
-			var center = new Point(border.ActualWidth / 2, border.ActualHeight / 2);
-			ImageAssert.HasColorAt(screenshot, center, Microsoft.UI.Colors.Green);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		var screenshot = await UITestHelper.ScreenShot(border);
+		var center = new Point(border.ActualWidth / 2, border.ActualHeight / 2);
+		ImageAssert.HasColorAt(screenshot, center, Microsoft.UI.Colors.Green);
 	}
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6846")]
 	public async Task When_Data_Cleared_On_Loaded_Path_Does_Not_Render()
 	{
-		var border = CreateHost(out var path);
-		path.Width = 100;
-		path.Height = 150;
+		var border = CreateHost(new Size(150, 150), new Size(100, 150), out var path);
 		path.Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), PathData);
 		path.Fill = new SolidColorBrush(Microsoft.UI.Colors.Red);
 		// Mirrors the sample: clearing Data once the Path has loaded must stop it from rendering.
 		path.Loaded += (s, e) => ((Path)s).Data = null;
 
-		try
-		{
-			await UITestHelper.Load(border);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(border);
 
-			var screenshot = await UITestHelper.ScreenShot(border);
-			var center = new Point(border.ActualWidth / 2, border.ActualHeight / 2);
-			ImageAssert.HasColorAt(screenshot, center, Microsoft.UI.Colors.White);
-			ImageAssert.DoesNotHaveColorAt(screenshot, center, Microsoft.UI.Colors.Red);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		var screenshot = await UITestHelper.ScreenShot(border);
+		var center = new Point(border.ActualWidth / 2, border.ActualHeight / 2);
+		ImageAssert.HasColorAt(screenshot, center, Microsoft.UI.Colors.White);
+		ImageAssert.DoesNotHaveColorAt(screenshot, center, Microsoft.UI.Colors.Red);
 	}
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6846")]
 	public async Task When_No_Data_Path_Does_Not_Render()
 	{
-		var border = CreateHost(out var path);
-		path.Width = 100;
-		path.Height = 150;
+		var border = CreateHost(new Size(150, 150), new Size(100, 150), out var path);
 		path.Fill = new SolidColorBrush(Microsoft.UI.Colors.Red);
 
-		try
-		{
-			await UITestHelper.Load(border);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(border);
 
-			var screenshot = await UITestHelper.ScreenShot(border);
-			var center = new Point(border.ActualWidth / 2, border.ActualHeight / 2);
-			ImageAssert.HasColorAt(screenshot, center, Microsoft.UI.Colors.White);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		var screenshot = await UITestHelper.ScreenShot(border);
+		var center = new Point(border.ActualWidth / 2, border.ActualHeight / 2);
+		ImageAssert.HasColorAt(screenshot, center, Microsoft.UI.Colors.White);
 	}
 
-	private static Border CreateHost(out Path path)
+	private static Border CreateHost(Size borderSize, Size pathSize, out Path path)
 	{
-		path = new Path();
+		path = new Path { Width = pathSize.Width, Height = pathSize.Height };
 		return new Border
 		{
-			Width = 150,
-			Height = 150,
+			Width = borderSize.Width,
+			Height = borderSize.Height,
 			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
 			BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.DeepSkyBlue),
 			BorderThickness = new Thickness(3),

@@ -21,14 +21,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_CheckBox_UITest
 {
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIslands)]
 	public async Task When_TwoState_Tapped_Toggles()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		string? result = null;
 		var checkBox = new CheckBox { Name = "twoState01", Content = "Two State" };
 		checkBox.Checked += (s, e) => result = $"Checked {checkBox.Name} {checkBox.IsChecked}";
@@ -37,53 +32,41 @@ public class Given_CheckBox_UITest
 
 		var panel = new StackPanel { Children = { checkBox } };
 
-		try
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(panel);
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
+
+		async Task Tap()
 		{
-			await UITestHelper.Load(panel);
-
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
-
-			async Task Tap()
-			{
-				var center = checkBox.TransformToVisual(TestServices.WindowHelper.XamlRoot.Content)
-					.TransformPoint(new Point(checkBox.ActualWidth / 2, checkBox.ActualHeight / 2));
-				mouse.Press(center);
-				mouse.Release();
-				await WaitForIdle();
-			}
-
-			// Initial state: unchecked.
-			Assert.AreEqual(false, checkBox.IsChecked);
-
-			await Tap();
-			Assert.AreEqual(true, checkBox.IsChecked);
-			Assert.AreEqual("Checked twoState01 True", result);
-
-			await Tap();
-			Assert.AreEqual(false, checkBox.IsChecked);
-			Assert.AreEqual("Unchecked twoState01 False", result);
-
-			await Tap();
-			Assert.AreEqual(true, checkBox.IsChecked);
-			Assert.AreEqual("Checked twoState01 True", result);
+			var center = checkBox.GetAbsoluteCenter();
+			mouse.Press(center);
+			mouse.Release();
+			await WaitForIdle();
 		}
-		finally
-		{
-			WindowContent = null;
-		}
+
+		// Initial state: unchecked.
+		Assert.AreEqual(false, checkBox.IsChecked);
+
+		await Tap();
+		Assert.AreEqual(true, checkBox.IsChecked);
+		Assert.AreEqual("Checked twoState01 True", result);
+
+		await Tap();
+		Assert.AreEqual(false, checkBox.IsChecked);
+		Assert.AreEqual("Unchecked twoState01 False", result);
+
+		await Tap();
+		Assert.AreEqual(true, checkBox.IsChecked);
+		Assert.AreEqual("Checked twoState01 True", result);
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIslands)]
 	public async Task When_ThreeState_Tapped_Cycles()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		string? result = null;
 		var checkBox = new CheckBox { Name = "threeState01", Content = "Three State", IsThreeState = true };
 		checkBox.Checked += (s, e) => result = $"Checked {checkBox.Name} {checkBox.IsChecked}";
@@ -92,46 +75,39 @@ public class Given_CheckBox_UITest
 
 		var panel = new StackPanel { Children = { checkBox } };
 
-		try
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(panel);
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
+
+		async Task Tap()
 		{
-			await UITestHelper.Load(panel);
-
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
-
-			async Task Tap()
-			{
-				var center = checkBox.TransformToVisual(TestServices.WindowHelper.XamlRoot.Content)
-					.TransformPoint(new Point(checkBox.ActualWidth / 2, checkBox.ActualHeight / 2));
-				mouse.Press(center);
-				mouse.Release();
-				await WaitForIdle();
-			}
-
-			// Initial state: unchecked.
-			Assert.AreEqual(false, checkBox.IsChecked);
-
-			await Tap();
-			Assert.AreEqual(true, checkBox.IsChecked);
-			Assert.AreEqual("Checked threeState01 True", result);
-
-			await Tap();
-			Assert.IsNull(checkBox.IsChecked);
-			Assert.AreEqual("Indeterminate threeState01 ", result);
-
-			await Tap();
-			Assert.AreEqual(false, checkBox.IsChecked);
-			Assert.AreEqual("Unchecked threeState01 False", result);
-
-			await Tap();
-			Assert.AreEqual(true, checkBox.IsChecked);
-			Assert.AreEqual("Checked threeState01 True", result);
+			var center = checkBox.GetAbsoluteCenter();
+			mouse.Press(center);
+			mouse.Release();
+			await WaitForIdle();
 		}
-		finally
-		{
-			WindowContent = null;
-		}
+
+		// Initial state: unchecked.
+		Assert.AreEqual(false, checkBox.IsChecked);
+
+		await Tap();
+		Assert.AreEqual(true, checkBox.IsChecked);
+		Assert.AreEqual("Checked threeState01 True", result);
+
+		await Tap();
+		Assert.IsNull(checkBox.IsChecked);
+		Assert.AreEqual("Indeterminate threeState01 ", result);
+
+		await Tap();
+		Assert.AreEqual(false, checkBox.IsChecked);
+		Assert.AreEqual("Unchecked threeState01 False", result);
+
+		await Tap();
+		Assert.AreEqual(true, checkBox.IsChecked);
+		Assert.AreEqual("Checked threeState01 True", result);
 	}
 }
 

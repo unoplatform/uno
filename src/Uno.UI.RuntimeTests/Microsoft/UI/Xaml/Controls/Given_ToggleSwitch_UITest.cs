@@ -18,17 +18,11 @@ public class Given_ToggleSwitch_UITest
 		var headerText = new TextBlock { Text = "Test ToggleSwitch Header" };
 		var toggleSwitch = new ToggleSwitch { Header = headerText };
 
-		try
-		{
-			await UITestHelper.Load(toggleSwitch);
-			await WindowHelper.WaitForLoaded(headerText);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(toggleSwitch);
+		await WindowHelper.WaitForLoaded(headerText);
 
-			Assert.IsTrue(headerText.IsLoaded);
-			Assert.AreEqual("Test ToggleSwitch Header", headerText.Text);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		Assert.IsTrue(headerText.IsLoaded);
+		Assert.AreEqual("Test ToggleSwitch Header", headerText.Text);
 	}
 }

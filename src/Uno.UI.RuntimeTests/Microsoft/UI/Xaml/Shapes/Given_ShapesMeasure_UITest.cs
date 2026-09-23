@@ -37,17 +37,11 @@ public class Given_ShapesMeasure_UITest
 			Content = content,
 		};
 
-		try
-		{
-			await UITestHelper.Load(sut);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(sut);
 
-			// A Collapsed shape must not be measured, so it must not inflate the scrollable extent.
-			Assert.AreEqual(0d, sut.ScrollableWidth, "ScrollViewer should not be horizontally scrollable");
-			Assert.AreEqual(0d, sut.ScrollableHeight, "ScrollViewer should not be vertically scrollable");
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		// A Collapsed shape must not be measured, so it must not inflate the scrollable extent.
+		Assert.AreEqual(0d, sut.ScrollableWidth, "ScrollViewer should not be horizontally scrollable");
+		Assert.AreEqual(0d, sut.ScrollableHeight, "ScrollViewer should not be vertically scrollable");
 	}
 }

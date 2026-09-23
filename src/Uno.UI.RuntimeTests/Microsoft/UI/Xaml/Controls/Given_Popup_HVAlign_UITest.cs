@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
@@ -52,26 +53,24 @@ public class Given_Popup_HVAlign_UITest
 			Children = { popup },
 		};
 
-		try
-		{
-			await UITestHelper.Load(zone);
-
-			popup.IsOpen = true;
-			await WindowHelper.WaitForIdle();
-
-			var zoneRect = zone.GetAbsoluteBounds();
-			var popupRect = popupContent.GetAbsoluteBounds();
-
-			var expectedX = zoneRect.X + (zoneRect.Width * xMul);
-			var expectedY = zoneRect.Y + (zoneRect.Height * yMul);
-
-			Assert.AreEqual(expectedX, popupRect.X, 1d, "Popup X placement");
-			Assert.AreEqual(expectedY, popupRect.Y, 1d, "Popup Y placement");
-		}
-		finally
+		using var cleanup = Disposable.Create(() =>
 		{
 			popup.IsOpen = false;
 			WindowHelper.WindowContent = null;
-		}
+		});
+
+		await UITestHelper.Load(zone);
+
+		popup.IsOpen = true;
+		await WindowHelper.WaitForIdle();
+
+		var zoneRect = zone.GetAbsoluteBounds();
+		var popupRect = popupContent.GetAbsoluteBounds();
+
+		var expectedX = zoneRect.X + (zoneRect.Width * xMul);
+		var expectedY = zoneRect.Y + (zoneRect.Height * yMul);
+
+		Assert.AreEqual(expectedX, popupRect.X, 1d, "Popup X placement");
+		Assert.AreEqual(expectedY, popupRect.Y, 1d, "Popup Y placement");
 	}
 }
