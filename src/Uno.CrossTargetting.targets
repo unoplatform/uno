@@ -136,7 +136,7 @@
 	<Target Name="_UnoOverrideNuget"
 		  AfterTargets="AfterBuild"
 		  DependsOnTargets="BuiltProjectOutputGroup"
-		  Condition="'$(UnoNugetOverrideVersion)'!='' and ('$(UnoRuntimeFlavor)'=='' or '$(UnoRuntimeFlavor)'=='Reference')">
+		  Condition="'$(UnoNugetOverrideVersion)'!='' and ('$(UnoRuntimeFlavor)'=='' or '$(UnoRuntimeFlavor)'=='Reference') and ('$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference')">
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
