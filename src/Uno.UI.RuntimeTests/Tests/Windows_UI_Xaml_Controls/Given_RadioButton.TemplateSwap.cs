@@ -25,24 +25,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			return checkBox;
 		}
 
-		/// <summary>
-		/// The native WinUI head never applies the ContentTemplateSelector of this page's presenter (it shows the default
-		/// TextBlock even though the selector returns a template), so the selector path is only exercised on Uno.
-		/// </summary>
-		private static void SkipSelectorPathOnNativeWinUI()
-		{
-#if !HAS_UNO
-			Assert.Inconclusive("The ContentTemplateSelector path is not applied by the WinUI head in this page.");
-#endif
-		}
-
+		// WinUI's ContentPresenter only runs its ContentTemplateSelector when ContentTemplate or the selector changes
+		// (ContentPresenter_Partial.cpp), not when Content changes, so the selector scenarios only run on Uno.
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24354")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Radio_Template_Replaced_By_CheckBox_Template()
 		{
-			SkipSelectorPathOnNativeWinUI();
-
 			var radioField = new PickerModel(PickerKind.Radio, "Radio", "Small", "Medium", "Large");
 			var checkBoxField = new PickerModel(PickerKind.CheckBox, "CheckBox", "A", "B", "C");
 
@@ -77,15 +67,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24354")]
-		[DataRow(true)]
-		[DataRow(false)]
-		public async Task When_Radio_Template_Content_Swapped_Between_Models(bool nullContentFirst)
-		{
-			if (!nullContentFirst)
-			{
-				SkipSelectorPathOnNativeWinUI();
-			}
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public Task When_Radio_Template_Content_Swapped_Between_Models_Through_Selector() => SwapContentBetweenModels(nullContentFirst: false);
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24354")]
+		public Task When_Radio_Template_Content_Swapped_Between_Models_After_Nulling_Content() => SwapContentBetweenModels(nullContentFirst: true);
+
+		private static async Task SwapContentBetweenModels(bool nullContentFirst)
+		{
 			var field1 = new PickerModel(PickerKind.Radio, "Field1", "Small", "Medium", "Large");
 			var checkBoxField = new PickerModel(PickerKind.CheckBox, "CheckBox", "A", "B", "C");
 			var field2 = new PickerModel(PickerKind.Radio, "Field2", "Red", "Green", "Blue");
@@ -139,15 +130,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24354")]
-		[DataRow(true)]
-		[DataRow(false)]
-		public async Task When_Content_Swapped_Repeatedly_Within_One_Tick(bool nullContentFirst)
-		{
-			if (!nullContentFirst)
-			{
-				SkipSelectorPathOnNativeWinUI();
-			}
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public Task When_Content_Swapped_Repeatedly_Within_One_Tick_Through_Selector() => SwapContentRepeatedlyWithinOneTick(nullContentFirst: false);
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24354")]
+		public Task When_Content_Swapped_Repeatedly_Within_One_Tick_After_Nulling_Content() => SwapContentRepeatedlyWithinOneTick(nullContentFirst: true);
+
+		private static async Task SwapContentRepeatedlyWithinOneTick(bool nullContentFirst)
+		{
 			var field1 = new PickerModel(PickerKind.Radio, "Field1", "Small", "Medium", "Large");
 			var field2 = new PickerModel(PickerKind.Radio, "Field2", "Red", "Green", "Blue");
 
