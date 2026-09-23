@@ -84,7 +84,7 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 			await WebAssemblyWindowWrapper.Initialize();
 
 			CompositionTarget.FrameRenderingOptions = (false, false);
-			_renderer = new BrowserRenderer(this, _forceSoftwareRendering);
+			_renderer = await BrowserRenderer.CreateAsync(this, _forceSoftwareRendering);
 		}
 	}
 

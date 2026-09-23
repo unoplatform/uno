@@ -15,7 +15,7 @@ namespace Uno.UI.Runtime.Skia.Win32;
 /// the whole frame; <see cref="Present"/> blits the render image to the swapchain and releases it. The ctor throws
 /// when Vulkan is unavailable so negotiation falls through to the next kind.
 /// </summary>
-internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext, IWin32PacedContext
+internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext, IWin32PacedContext, IWin32PresentReporting
 {
 	private readonly VulkanContext _vk;
 	// MAILBOX present returns without blocking, so the render thread is paced here; otherwise it spins at
@@ -23,7 +23,10 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 	private readonly Win32RenderPacer _pacer;
 	private IDisposable? _frameLock;
 	private bool _skipPresent;
+	private bool _presented;
 	private int _width, _height;
+
+	public bool PresentedLastFrame => _presented;
 
 	public Win32VulkanGraphicsContext(HWND hwnd)
 	{
@@ -92,6 +95,7 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 
 	public void Present()
 	{
+		_presented = false;
 		// No frame was acquired this tick (the compositor skipped drawing — e.g. no recorded frame yet or empty
 		// bounds), so the device lock was never taken; there is nothing to blit/present.
 		if (_frameLock is null)
@@ -108,6 +112,7 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 		else
 		{
 			_vk.BlitAndPresent();
+			_presented = true;
 			_pacer.WaitForNextFrame();
 		}
 

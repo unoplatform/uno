@@ -32,6 +32,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Supplies the SkiaSharpStaticLibrary items build/…targets links into every WASM head; the package's
+		     nuspec dependency is what carries them to a customer head. -->
+		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.WebAssembly" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" />

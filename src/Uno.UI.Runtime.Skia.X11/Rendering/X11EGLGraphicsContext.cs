@@ -23,6 +23,9 @@ internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContex
 	private readonly int _samples;
 	private readonly int _stencil;
 	private X11EGLRenderTarget? _target;
+	// Whether the compositor acquired a target this tick; it skips drawing entirely when there is no recorded
+	// frame yet or the bounds are empty, and swapping then shows an uninitialised back buffer.
+	private bool _frameAcquired;
 
 	public X11EGLGraphicsContext(X11Window x11Window)
 	{
@@ -56,11 +59,18 @@ internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContex
 		{
 			_target = new X11EGLRenderTarget(width, height, _samples, _stencil);
 		}
+		_frameAcquired = true;
 		return _target;
 	}
 
 	public void Present()
 	{
+		if (!_frameAcquired)
+		{
+			return;
+		}
+		_frameAcquired = false;
+
 		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
 		if (!EglHelper.EglSwapBuffers(_eglDisplay, _eglSurface))
 		{

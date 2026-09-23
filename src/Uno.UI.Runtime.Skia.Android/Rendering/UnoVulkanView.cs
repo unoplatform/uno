@@ -82,6 +82,11 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 
 	public void SurfaceCreated(ISurfaceHolder holder)
 	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("UnoVulkanView: SurfaceCreated");
+		}
+
 		_surfaceReady = true;
 		_renderThread = new Thread(RenderLoop) { Name = "UnoVulkanRenderThread", IsBackground = true };
 		_renderThread.Start(holder);
@@ -89,27 +94,58 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 
 	public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
 	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"UnoVulkanView: SurfaceChanged {width}x{height}");
+		}
+
+		var sizeChanged = width != _width || height != _height;
 		_width = width;
 		_height = height;
+
+		// The swapchain is window-scoped and never resizes itself here: a driver that pre-rotates keeps returning
+		// VK_SUCCESS, so without this a rotation presents the new-size image stretched into the old swapchain.
+		// Resize takes the device lock, serializing against a live render thread, and no-ops before the first surface.
+		if (sizeChanged)
+		{
+			_vulkanContext.Resize(width, height);
+		}
+
 		InvalidateRender();
 	}
 
 	public void SurfaceDestroyed(ISurfaceHolder holder)
 	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("UnoVulkanView: SurfaceDestroyed");
+		}
+
 		_surfaceReady = false;
 		_renderEvent.Set();
-		_renderThread?.Join(TimeSpan.FromSeconds(2));
+		if (!(_renderThread?.Join(TimeSpan.FromSeconds(2)) ?? true) && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("UnoVulkanView: the render thread is still inside a frame; teardown waits on the device lock");
+		}
+
 		_renderThread = null;
 
-		// Before the swapchain: the backend built its own command pools, images and pipelines on it, and
-		// destroying the swapchain while those are still alive leaves the driver dereferencing them (a SIGSEGV
-		// inside vkDestroySwapchainKHR). The device itself outlives the surface (see _vulkanContext.Dispose in
-		// Dispose(bool)); surface re-creation negotiates a fresh backend against the same device.
-		(_renderer as IDisposable)?.Dispose();
-		_renderer = null;
+		// A first frame that builds pipelines and shaders can outlast the Join above, so the GPU teardown runs under
+		// the device lock every frame also holds — destroying pipelines and command pools the render thread is still
+		// recording into is a SIGSEGV or a lost device. CompositionTarget presents in a finally, so the frame lock is
+		// always released and this cannot deadlock.
+		using (_disposed ? null : _vulkanContext.Lock())
+		{
+			// Before the swapchain: the backend built its own command pools, images and pipelines on it, and
+			// destroying the swapchain while those are still alive leaves the driver dereferencing them (a SIGSEGV
+			// inside vkDestroySwapchainKHR). The device itself outlives the surface (see _vulkanContext.Dispose in
+			// Dispose(bool)); surface re-creation negotiates a fresh backend against the same device.
+			(_renderer as IDisposable)?.Dispose();
+			_renderer = null;
 
-		_context?.Dispose();
-		_context = null;
+			_context?.Dispose();
+			_context = null;
+		}
 
 		if (_nativeWindow != IntPtr.Zero)
 		{
@@ -128,7 +164,18 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		try
 		{
 			InitializeVulkan(holder);
+		}
+		catch (Exception ex)
+		{
+			// Backend negotiation runs here, on the render thread, so the activity's try/catch around the view
+			// constructor cannot cover it — hand the window to the canvas view rather than leave it black.
+			this.Log().Error("UnoVulkanView: Vulkan initialization failed, falling back to the canvas view", ex);
+			ApplicationActivity.FallbackToCanvasView();
+			return;
+		}
 
+		try
+		{
 			while (_surfaceReady && !_disposed)
 			{
 				_renderEvent.Wait(TimeSpan.FromMilliseconds(100));
@@ -185,6 +232,12 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
 			init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;
+
+		if (this.Log().IsEnabled(LogLevel.Information))
+		{
+			var (deviceName, driverVersion) = _vulkanContext.GetDeviceInfo();
+			this.Log().Info($"Vulkan rendering initialized: {deviceName}, {driverVersion}");
+		}
 	}
 
 	private void RenderFrame()
@@ -307,6 +360,10 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			_disposed = true;
 			_renderEvent.Set();
 			_renderThread?.Join(TimeSpan.FromSeconds(2));
+			// Strictly innermost-first: the backend's GRContext-Vulkan owns pipelines and pools built on the
+			// swapchain, which in turn is built on the device — vkDestroyDevice must be last.
+			(_renderer as IDisposable)?.Dispose();
+			_renderer = null;
 			_context?.Dispose();
 			_context = null;
 			// Releases the retained instance and device kept alive across surface re-creations.

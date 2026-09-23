@@ -24,7 +24,7 @@ internal partial class BrowserRenderer
 	private int _renderCount;
 	private bool _pendingInvalidate;
 
-	public BrowserRenderer(IXamlRootHost host, bool forceSoftwareRendering)
+	private BrowserRenderer(IXamlRootHost host)
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -32,9 +32,17 @@ internal partial class BrowserRenderer
 		}
 
 		_host = host;
+	}
 
-		// Context creation is async (the WebGPU device import runs in JS), so kick it off and render once ready.
-		_ = InitAsync(forceSoftwareRendering);
+	/// <summary>
+	/// Creates the renderer and awaits its graphics initialization (async because the WebGPU device import runs in
+	/// JS), so a failure surfaces on the host's startup path instead of leaving a page that never renders.
+	/// </summary>
+	internal static async Task<BrowserRenderer> CreateAsync(IXamlRootHost host, bool forceSoftwareRendering)
+	{
+		var renderer = new BrowserRenderer(host);
+		await renderer.InitAsync(forceSoftwareRendering);
+		return renderer;
 	}
 
 	private async Task InitAsync(bool forceSoftwareRendering)
@@ -57,7 +65,8 @@ internal partial class BrowserRenderer
 		{
 			// Terminal: stop re-arming the frame pump, since nothing will ever set _context now.
 			_initFailed = true;
-			this.Log().Error($"Browser graphics init failed: {e.Message}.");
+			this.Log().Error("Browser graphics initialization failed; the app cannot render.", e);
+			throw new InvalidOperationException("Unable to create renderer", e);
 		}
 	}
 
@@ -73,7 +82,7 @@ internal partial class BrowserRenderer
 				return WebGlBrowserRenderer.TryCreate(out var gl) ? new WasmGLGraphicsContext(gl) : null;
 			case GraphicsContextKind.Software:
 				return SoftwareBrowserRenderer.TryCreate(out var sw) ? new WasmSoftwareGraphicsContext(sw) : null;
-			case GraphicsContextKind.WebGpu:
+			case GraphicsContextKind.WebGpu when !forceSoftwareRendering:
 				// WebGpuContext is a lightweight renderer-agnostic assembly whose emdawnwebgpu link is always
 				// present for WASM via WebGpu.Init's targets, so no reflection or opt-in-link is needed.
 				return await global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateWasmAsync(WebAssemblyWindowWrapper.Instance.CanvasId);

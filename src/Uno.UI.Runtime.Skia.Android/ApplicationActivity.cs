@@ -317,18 +317,75 @@ namespace Microsoft.UI.Xaml
 			// failed bring-up falls through to the canvas view rather than aborting.
 			if (FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid)
 			{
-				try
+				// Gate on the declared hardware feature first: without it, loading libvulkan.so and driving device
+				// creation can abort inside the driver, which is not a catchable managed exception.
+				if (!PackageManager?.HasSystemFeature(PackageManager.FeatureVulkanHardwareLevel) ?? true)
 				{
-					return new UnoVulkanView(this);
+					typeof(ApplicationActivity).Log().Warn("Device does not support Vulkan. Falling back to OpenGL ES.");
 				}
-				catch (Exception ex)
+				else
 				{
-					typeof(ApplicationActivity).Log().Warn($"Vulkan rendering not available: {ex.Message}. Falling back.");
+					// Vulkan feature flags are static device configuration and can be declared even when the driver
+					// cannot actually render (common on emulators) — the view constructor creates the Vulkan device
+					// and throws when the driver is unusable.
+					try
+					{
+						return new UnoVulkanView(this);
+					}
+					catch (Exception ex)
+					{
+						typeof(ApplicationActivity).Log().Warn($"Vulkan rendering not available: {ex.Message}. Falling back.");
+					}
 				}
 			}
 
 			// The canvas view renders GLES or software per UseOpenGLOnSkiaAndroid (chosen in its OnSurfaceCreated).
 			return new UnoCanvasView(this);
+		}
+
+		/// <summary>
+		/// Swaps the active render view for the GL/canvas one after a GPU backend failed to initialize on its own
+		/// render thread. <see cref="CreateRenderView"/>'s try/catch only covers the view constructor, so without
+		/// this a failed negotiation leaves a dead render thread and a permanently black window.
+		/// </summary>
+		internal static void FallbackToCanvasView()
+		{
+			var instance = Instance;
+			var layout = RelativeLayout;
+			if (instance is null || layout is null || _renderView is UnoCanvasView)
+			{
+				return;
+			}
+
+			instance.RunOnUiThread(() =>
+			{
+				if (_renderView is UnoCanvasView)
+				{
+					return;
+				}
+
+				typeof(ApplicationActivity).Log().Warn("Falling back to the OpenGL ES/software render view.");
+
+				if (_renderViewAsView is { } failed)
+				{
+					layout.RemoveView(failed);
+					// Deferred: removing the view still delivers surfaceDestroyed to it, and disposing the managed
+					// peer before that callback lands faults inside it.
+					layout.Post(() => failed.Dispose());
+				}
+
+				var canvasView = new UnoCanvasView(instance);
+				canvasView.LayoutParameters = new ViewGroup.LayoutParams(
+					ViewGroup.LayoutParams.MatchParent,
+					ViewGroup.LayoutParams.MatchParent);
+				_renderView = canvasView;
+				_renderViewAsView = canvasView;
+
+				// Index 0 keeps it under the native layer host, matching the order OnStart adds them in.
+				layout.AddView(canvasView, 0);
+
+				instance.InvalidateRender();
+			});
 		}
 
 		internal void InvalidateRender()

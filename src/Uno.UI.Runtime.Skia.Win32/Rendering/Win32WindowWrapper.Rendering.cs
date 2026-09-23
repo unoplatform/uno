@@ -91,6 +91,11 @@ internal partial class Win32WindowWrapper
 		}
 
 		ct.Renderer = _renderer;
-		return ct.OnNativePlatformFrameRequested(_context);
+		var clipPath = ct.OnNativePlatformFrameRequested(_context);
+
+		// The context skips its present when no frame was acquired (nothing recorded yet, empty bounds) or drops
+		// one (a just-resized swapchain); reporting a present the synchronous show/resize path never got would let
+		// it show the window before the first frame is on screen.
+		return _context is IWin32PresentReporting { PresentedLastFrame: false } ? null : clipPath;
 	}
 }

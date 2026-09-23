@@ -39,7 +39,6 @@ namespace Uno.UI.Runtime.Skia {
 					fbo: currentGLctx.getParameter(currentGLctx.FRAMEBUFFER_BINDING),
 					stencil: currentGLctx.getParameter(currentGLctx.STENCIL_BITS),
 					sample: 0, // TODO: currentGLctx.getParameter(GLctx.SAMPLES)
-					actualSamples: currentGLctx.getParameter(currentGLctx.SAMPLES),
 					depth: currentGLctx.getParameter(currentGLctx.DEPTH_BITS),
 				};
 			} catch (e) {

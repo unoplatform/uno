@@ -24,12 +24,21 @@ internal interface IWin32PacedContext
 }
 
 /// <summary>
+/// Implemented by contexts that can skip a present (no frame was acquired this tick, or the frame was dropped), so
+/// the render thread signals present-completion only for frames that actually reached the window.
+/// </summary>
+internal interface IWin32PresentReporting
+{
+	bool PresentedLastFrame { get; }
+}
+
+/// <summary>
 /// Backend-neutral OpenGL <see cref="ISwapChain"/> for Win32: owns the WGL context + <c>SwapBuffers</c>.
 /// <see cref="AcquireRenderTarget"/> makes the context current and hands the backend an <see cref="IGLRenderTarget"/>;
 /// <see cref="Present"/> swaps and releases current. Returns <see langword="null"/> on failure so negotiation
 /// falls through to the software context.
 /// </summary>
-internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContext, IGLDeviceContext
+internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContext, IWin32PresentReporting, IGLDeviceContext
 {
 	[UnmanagedFunctionPointer(CallingConvention.Winapi)]
 	private delegate int WglSwapIntervalEXT(int interval);
@@ -59,6 +68,9 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 	// Whether the compositor acquired a target this tick; it skips drawing entirely when there is no recorded
 	// frame yet or the bounds are empty, and swapping then shows an uninitialised back buffer.
 	private bool _frameAcquired;
+	private bool _presented;
+
+	public bool PresentedLastFrame => _presented;
 
 	public Func<string, nint> GetProcAddress => Win32NativeOpenGLWrapper.GetProcAddressStatic;
 
@@ -190,6 +202,7 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 
 	public void Present()
 	{
+		_presented = false;
 		if (!_frameAcquired)
 		{
 			return;
@@ -200,6 +213,7 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 
 		var success = PInvoke.SwapBuffers(_hdc);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SwapBuffers)} failed: {Win32Helper.GetErrorMessage()}"); }
+		_presented = success;
 
 		// Fixed-FrameRate path: SwapBuffers ran with swap interval 0 (non-blocking), so pace the
 		// loop with the timer. When following the refresh, swap interval 1 already blocked above.
@@ -285,7 +299,7 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 /// <c>BitBlt</c> present. <see cref="AcquireRenderTarget"/> (re)creates the DIB on resize and hands the backend
 /// an <see cref="ISoftwareRenderTarget"/>.
 /// </summary>
-internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedContext
+internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedContext, IWin32PresentReporting
 {
 	private readonly HWND _hwnd;
 	private readonly Win32RenderPacer _pacer;
@@ -315,6 +329,9 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 	// Whether the compositor acquired a target this tick; it skips drawing entirely when there is no recorded
 	// frame yet or the bounds are empty, and blitting then shows an uninitialised DIB.
 	private bool _frameAcquired;
+	private bool _presented;
+
+	public bool PresentedLastFrame => _presented;
 
 	public unsafe IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -359,6 +376,7 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 
 	public void Present()
 	{
+		_presented = false;
 		if (!_frameAcquired)
 		{
 			return;
@@ -399,6 +417,7 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 
 		var success2 = PInvoke.BitBlt(paintDc, 0, 0, _width, _height, bitmapDc, 0, 0, ROP_CODE.SRCCOPY);
 		if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.BitBlt)} failed: {Win32Helper.GetErrorMessage()}"); }
+		_presented = success2;
 
 		// BitBlt returns instantly, so block until the compositor's next vsync to pace the loop.
 		_pacer.WaitForNextFrame();

@@ -367,12 +367,27 @@ namespace Uno.UI.Runtime.Skia
 			{
 				return;
 			}
-			Volatile.Write(ref @this._invalidateRenderCalledWhileWaitingForPageFlip, false);
-			@this.Render();
-			Volatile.Write(ref @this._waitingForPageFlip, false);
-			if (Volatile.Read(ref @this._invalidateRenderCalledWhileWaitingForPageFlip))
+			@this.OnPageFlipCore();
+		}
+
+		// Nothing may throw out of OnPageFlip: it is called from libdrm's frame, where a managed exception terminates
+		// the process, and a flip gate left closed stalls the loop for good.
+		private void OnPageFlipCore()
+		{
+			try
 			{
-				@this.InvalidateRender();
+				Volatile.Write(ref _invalidateRenderCalledWhileWaitingForPageFlip, false);
+				Render();
+				Volatile.Write(ref _waitingForPageFlip, false);
+				if (Volatile.Read(ref _invalidateRenderCalledWhileWaitingForPageFlip))
+				{
+					InvalidateRender();
+				}
+			}
+			catch (Exception e)
+			{
+				Volatile.Write(ref _waitingForPageFlip, false);
+				this.LogError()?.Error($"The DRM page-flip handler failed; the next invalidation re-arms it: {e}");
 			}
 		}
 

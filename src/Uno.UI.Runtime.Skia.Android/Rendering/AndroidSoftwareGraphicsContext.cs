@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using Android.Opengl;
 using Android.Runtime;
 using Java.Nio;
@@ -38,6 +39,11 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 		"varying vec2 vTex;\n" +
 		"uniform sampler2D uTex;\n" +
 		"void main() { gl_FragColor = texture2D(uTex, vTex); }\n";
+
+	// Resources of a context disposed off the GL thread (ResetRendererContext is a UI-thread call): a GL delete
+	// issued with no current context silently no-ops, and the CPU buffer can still back a live Skia surface.
+	// Drained by the next Present, on the GL thread, once the replacement context has been negotiated.
+	private static readonly ConcurrentQueue<(int Program, int Texture, ByteBuffer? Buffer)> _pendingDisposal = new();
 
 	private ByteBuffer? _buffer;
 	private nint _pixels;
@@ -82,6 +88,7 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 			return;
 		}
 
+		DrainPendingDisposal();
 		EnsureGL();
 
 		GLES20.GlViewport(0, 0, _width, _height);
@@ -104,6 +111,24 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 
 		GLES20.GlDisableVertexAttribArray(_posLocation);
 		GLES20.GlDisableVertexAttribArray(_texLocation);
+	}
+
+	private static void DrainPendingDisposal()
+	{
+		while (_pendingDisposal.TryDequeue(out var pending))
+		{
+			if (pending.Texture != 0)
+			{
+				GLES20.GlDeleteTextures(1, new[] { pending.Texture }, 0);
+			}
+
+			if (pending.Program != 0)
+			{
+				GLES20.GlDeleteProgram(pending.Program);
+			}
+
+			pending.Buffer?.Dispose();
+		}
 	}
 
 	private void EnsureGL()
@@ -177,24 +202,20 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 
 	public void Dispose()
 	{
-		if (_glInitialized)
+		// Queued rather than deleted inline: this can run on the UI thread, where the GL deletes would no-op and
+		// the backend may still hold an SKSurface over the buffer.
+		if (_program != 0 || _texture != 0 || _buffer is not null)
 		{
-			if (_texture != 0)
-			{
-				GLES20.GlDeleteTextures(1, new[] { _texture }, 0);
-				_texture = 0;
-			}
-			if (_program != 0)
-			{
-				GLES20.GlDeleteProgram(_program);
-				_program = 0;
-			}
-			_quadBuffer?.Dispose();
-			_quadBuffer = null;
-			_glInitialized = false;
+			_pendingDisposal.Enqueue((_program, _texture, _buffer));
 		}
 
-		_buffer?.Dispose();
+		_program = 0;
+		_texture = 0;
+		_glInitialized = false;
+
+		_quadBuffer?.Dispose();
+		_quadBuffer = null;
+
 		_buffer = null;
 		_pixels = 0;
 		_target = null;

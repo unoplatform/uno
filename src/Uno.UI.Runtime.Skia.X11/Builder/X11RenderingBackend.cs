@@ -6,23 +6,26 @@ namespace Uno.UI.Hosting;
 /// </summary>
 public enum X11RenderingBackend
 {
+	// 0 is unused: it was the removed Default member, and the values below must keep the meaning an
+	// already-compiled caller passes.
+
 	/// <summary>
 	/// Vulkan hardware acceleration.
 	/// </summary>
-	Vulkan,
+	Vulkan = 1,
 
 	/// <summary>
 	/// OpenGL via GLX.
 	/// </summary>
-	OpenGL,
+	OpenGL = 2,
 
 	/// <summary>
 	/// OpenGL ES via EGL.
 	/// </summary>
-	OpenGLES,
+	OpenGLES = 3,
 
 	/// <summary>
 	/// CPU-based software rendering. No GPU acceleration.
 	/// </summary>
-	Software,
+	Software = 4,
 }

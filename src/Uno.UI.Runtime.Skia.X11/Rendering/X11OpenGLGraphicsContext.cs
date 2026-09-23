@@ -16,6 +16,9 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext, I
 
 	private readonly X11Window _x11Window;
 	private X11GLRenderTarget? _target;
+	// Whether the compositor acquired a target this tick; it skips drawing entirely when there is no recorded
+	// frame yet or the bounds are empty, and swapping then shows an uninitialised back buffer.
+	private bool _frameAcquired;
 
 	public X11OpenGLGraphicsContext(X11Window x11Window)
 	{
@@ -46,11 +49,18 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext, I
 		{
 			_target = new X11GLRenderTarget(width, height, glXInfo.sampleCount, glXInfo.stencilBits);
 		}
+		_frameAcquired = true;
 		return _target;
 	}
 
 	public void Present()
 	{
+		if (!_frameAcquired)
+		{
+			return;
+		}
+		_frameAcquired = false;
+
 		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
 		GlxInterface.glXSwapBuffers(_x11Window.Display, _x11Window.Window);
 		GlxInterface.glXMakeCurrent(_x11Window.Display, X11Helper.None, IntPtr.Zero);

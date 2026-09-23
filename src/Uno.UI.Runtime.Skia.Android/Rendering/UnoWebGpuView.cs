@@ -15,6 +15,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -34,6 +35,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 	private volatile bool _renderRequested;
 	private volatile bool _surfaceReady;
 	private volatile bool _disposed;
+	private bool _firstFrameSignaled;
 	private int _width, _height;
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private IntPtr _nativeWindow; // Must stay alive while the wgpu surface references it
@@ -70,6 +72,11 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 
 	public void SurfaceCreated(ISurfaceHolder holder)
 	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("UnoWebGpuView: SurfaceCreated");
+		}
+
 		_surfaceReady = true;
 		_renderThread = new Thread(RenderLoop) { Name = "UnoWebGpuRenderThread", IsBackground = true };
 		_renderThread.Start(holder);
@@ -77,6 +84,11 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 
 	public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
 	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"UnoWebGpuView: SurfaceChanged {width}x{height}");
+		}
+
 		_width = width;
 		_height = height;
 		InvalidateRender();
@@ -84,10 +96,20 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 
 	public void SurfaceDestroyed(ISurfaceHolder holder)
 	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("UnoWebGpuView: SurfaceDestroyed");
+		}
+
 		_surfaceReady = false;
 		_renderEvent.Set();
 		_renderThread?.Join(TimeSpan.FromSeconds(2));
 		_renderThread = null;
+
+		// Before the swapchain: the backend built its own device objects on it, and tearing the swapchain down
+		// first leaves the driver dereferencing them. Surface re-creation negotiates a fresh backend.
+		(_renderer as IDisposable)?.Dispose();
+		_renderer = null;
 
 		_context?.Dispose();
 		_context = null;
@@ -109,7 +131,18 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		try
 		{
 			InitializeWebGpu(holder);
+		}
+		catch (Exception ex)
+		{
+			// Backend negotiation runs here, on the render thread, so the activity's try/catch around the view
+			// constructor cannot cover it — hand the window to the canvas view rather than leave it black.
+			this.Log().Error("UnoWebGpuView: WebGPU initialization failed, falling back to the canvas view", ex);
+			ApplicationActivity.FallbackToCanvasView();
+			return;
+		}
 
+		try
+		{
 			while (_surfaceReady && !_disposed)
 			{
 				_renderEvent.Wait(TimeSpan.FromMilliseconds(100));
@@ -140,6 +173,8 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 
 		// Keep the ANativeWindow alive for the wgpu surface's lifetime (the swapchain references it).
 		_nativeWindow = ANativeWindow_fromSurface(JNIEnv.Handle, surface.Handle);
+		// surface must stay alive across the interop call above, or it can be collected mid-call.
+		GC.KeepAlive(surface);
 		if (_nativeWindow == IntPtr.Zero)
 		{
 			throw new InvalidOperationException("Failed to get ANativeWindow from Surface");
@@ -178,10 +213,28 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 			return;
 		}
 
-		compositionTarget.Renderer = _renderer!;
-		var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
+		// Contained per frame: letting it reach the loop would end the render thread for good, freezing the app on
+		// its last frame while input keeps being delivered.
+		try
+		{
+			compositionTarget.Renderer = _renderer!;
+			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
 
-		ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+
+			if (!_firstFrameSignaled)
+			{
+				_firstFrameSignaled = true;
+				NativeWindowWrapper.Instance.NotifyFirstFrameRendered();
+				// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
+				ApplicationActivity.RelativeLayout?.Post(() =>
+					ApplicationActivity.RelativeLayout?.Invalidate());
+			}
+		}
+		catch (Exception ex)
+		{
+			this.Log().Error("UnoWebGpuView: frame render failed", ex);
+		}
 	}
 
 	#endregion
@@ -267,6 +320,9 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 			_disposed = true;
 			_renderEvent.Set();
 			_renderThread?.Join(TimeSpan.FromSeconds(2));
+			// The backend owns device objects built on the swapchain, so it goes first.
+			(_renderer as IDisposable)?.Dispose();
+			_renderer = null;
 			_context?.Dispose();
 			_context = null;
 			if (_nativeWindow != IntPtr.Zero)

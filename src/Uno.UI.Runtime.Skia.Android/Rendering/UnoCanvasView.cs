@@ -1,5 +1,6 @@
 ﻿using Uno.UI.Composition.Drawing;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Android.Content;
 using Android.Graphics;
@@ -148,9 +149,12 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		{
 			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
 
+			// Negotiating lazily here keeps a lost race self-healing: ResetContext() runs on the UI thread when the
+			// activity re-parents this view, and it can land after OnSurfaceCreated has already fired on the GL
+			// thread — without this every later frame would return and the app would freeze on its last frame.
 			if (_context is null)
 			{
-				return; // context negotiated on OnSurfaceCreated; nothing to render before then
+				EnsureContext();
 			}
 
 			// The context wraps the ambient EGL context; the backend renders into the default framebuffer and
@@ -178,18 +182,26 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 		void IRenderer.OnSurfaceCreated(IGL10? gl, Javax.Microedition.Khronos.Egl.EGLConfig? config)
 		{
-			// GLSurfaceView has just made-current the EGL context on its render thread; negotiate here so the
-			// backend's GRContext-GLES is built on the GL thread against the current context. UseOpenGLOnSkiaAndroid
-			// picks GLES (ambient context) vs CPU raster blitted to the GL framebuffer.
+			// Fires again after a genuine EGL context loss (despite PreserveEGLContextOnPause), so the previous
+			// backend and context must go before re-negotiating against the new one.
+			FreeContext();
+			EnsureContext();
+		}
+
+		/// <summary>
+		/// Negotiates the backend on the GL thread, where GLSurfaceView has made its EGL context current — the
+		/// backend's GRContext-GLES has to be built against that current context. UseOpenGLOnSkiaAndroid picks
+		/// GLES (ambient context) vs CPU raster blitted to the GL framebuffer.
+		/// </summary>
+		[MemberNotNull(nameof(_context), nameof(_renderer))]
+		private void EnsureContext()
+		{
 			var useGL = FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid;
 			GraphicsRegistry.ContextFactory = kind => System.Threading.Tasks.Task.FromResult<ISwapChain?>(
 				useGL
 					? (kind == GraphicsContextKind.OpenGLES ? new AndroidGLGraphicsContext() : null)
 					: (kind == GraphicsContextKind.Software ? new AndroidSoftwareGraphicsContext() : null));
 			var init = GraphicsRegistry.Initialize();
-			// OnSurfaceCreated fires again after a genuine EGL context loss (despite PreserveEGLContextOnPause);
-			// dispose the previous context before rebinding so re-negotiation doesn't leak it.
-			_context?.Dispose();
 			_context = init.Context;
 			_renderer = init.Renderer;
 			// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
@@ -207,6 +219,11 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 		private void FreeContext()
 		{
+			// The backend holds the GRContext-GLES built over this context, so it goes first; leaving it behind
+			// leaks a GPU context per re-negotiation.
+			(_renderer as IDisposable)?.Dispose();
+			_renderer = null;
+
 			_context?.Dispose();
 			_context = null;
 		}
