@@ -272,6 +272,9 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 	partial void OnUnloadedPartial()
 	{
+		// Unload can happen mid-drag without an intervening blur (e.g. ListView/ItemsRepeater
+		// recycling), which would otherwise strand IsCaretDragActive permanently true.
+		CancelCaretDrag();
 		_forceFocusedVisualState = false;
 		_timer.Stop();
 		_gripperPresenter?.Hide();

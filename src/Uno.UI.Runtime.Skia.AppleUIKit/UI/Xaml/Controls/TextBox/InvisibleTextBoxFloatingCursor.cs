@@ -11,6 +11,20 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 /// managed <see cref="TextBox"/>. Shared by both invisible proxies, which derive from
 /// <see cref="UIKit.UITextField"/> and <see cref="UIKit.UITextView"/> and so have no common base.
 /// </summary>
+/// <remarks>
+/// Caret-drag participants, native to managed:
+/// <list type="bullet">
+/// <item><c>Singleline</c>/<c>MultilineInvisibleTextBoxView</c> — the UITextField/UITextView
+/// subclasses that receive the gesture and raise the floating-cursor callbacks.</item>
+/// <item><c>InvisibleTextBoxFloatingCursor</c> (this class) — turns those callbacks into
+/// cumulative offsets.</item>
+/// <item><c>InvisibleTextBoxViewExtension</c> — forwards the gesture phases to the managed
+/// <c>TextBoxCore</c>, and cancels it on IME composition / decline.</item>
+/// <item><c>TextBoxCore</c> (<c>TextBoxCore.CaretDrag.cs</c>) — the platform-agnostic state
+/// machine: hit-tests the drag, previews the caret, and applies the selection on commit.</item>
+/// <item><c>TextBoxView</c> — cancels an in-flight drag on focus loss and on unload.</item>
+/// </list>
+/// </remarks>
 internal sealed class InvisibleTextBoxFloatingCursor
 {
 	/// <summary>
