@@ -12,6 +12,13 @@
 
 			<!-- A Reference library builds against the reference facades on purpose: nothing is replaced, required or validated. -->
 			<_UnoRuntimeIsReferenceLibrary Condition=" '$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())' == 'reference' ">true</_UnoRuntimeIsReferenceLibrary>
+
+			<!--
+			Only a no-host cross-runtime library needs this: it has no per-platform head to derive a flavor
+			from, so RuntimeAssetsSelectorTask_v0/RuntimeAssetsValidatorTask_v0 are told the shared folder
+			directly. An application head keeps deriving it from TargetPlatformIdentifier.
+			-->
+			<_UnoTaskLibraryRuntimeIdentifier Condition=" '$(UnoHasRuntimeHost)' != 'true' ">$(_LibraryUnoRuntimeIdentifier)</_UnoTaskLibraryRuntimeIdentifier>
 		</PropertyGroup>
 	</Target>
 
@@ -62,6 +69,7 @@
 			Condition="'$(_UnoRuntimeIsReferenceLibrary)' != 'true'"
 			UnoRuntimeEnabledPackage="@(UnoRuntimeEnabledPackage)"
 			TargetPlatformIdentifier="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))"
+			LibraryRuntimeIdentifier="$(_UnoTaskLibraryRuntimeIdentifier)"
 			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
 			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)"
 			TargetFrameworkVersion="$(TargetFrameworkVersion)">
