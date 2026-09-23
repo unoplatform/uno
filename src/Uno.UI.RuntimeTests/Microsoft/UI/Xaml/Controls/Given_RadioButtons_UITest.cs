@@ -39,27 +39,21 @@ public class Given_RadioButtons_UITest
 			}
 		}
 
-		try
-		{
-			await UITestHelper.Load(sut);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(sut);
 
-			// Select by index -> the container at that index becomes checked.
-			sut.SelectedIndex = 1;
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(1, sut.SelectedIndex);
-			Assert.IsTrue(items[1].IsChecked == true, "Item 1 should be checked after SelectedIndex = 1");
+		// Select by index -> the container at that index becomes checked.
+		sut.SelectedIndex = 1;
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(1, sut.SelectedIndex);
+		Assert.IsTrue(items[1].IsChecked == true, "Item 1 should be checked after SelectedIndex = 1");
 
-			// Select by item -> the new item is checked and the previous one is cleared.
-			sut.SelectedItem = items[3];
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(3, sut.SelectedIndex);
-			Assert.IsTrue(items[3].IsChecked == true, "Item 3 should be checked after SelectedItem = items[3]");
-			Assert.IsFalse(items[1].IsChecked == true, "Item 1 should be unchecked after selecting item 3");
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		// Select by item -> the new item is checked and the previous one is cleared.
+		sut.SelectedItem = items[3];
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(3, sut.SelectedIndex);
+		Assert.IsTrue(items[3].IsChecked == true, "Item 3 should be checked after SelectedItem = items[3]");
+		Assert.IsFalse(items[1].IsChecked == true, "Item 1 should be unchecked after selecting item 3");
 	}
 
 	// Migrated from SamplesApp.UITests RadioButtonsTests/Given_RadioButtons.SelectionOnLoad.
@@ -77,14 +71,8 @@ public class Given_RadioButtons_UITest
 		sut.Items.Add(systemThemeRadio);
 		sut.SelectedIndex = 0;
 
-		try
-		{
-			await UITestHelper.Load(sut);
-			Assert.IsTrue(lightThemeRadio.IsChecked == true, "First item should be checked after load");
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(sut);
+		Assert.IsTrue(lightThemeRadio.IsChecked == true, "First item should be checked after load");
 	}
 }

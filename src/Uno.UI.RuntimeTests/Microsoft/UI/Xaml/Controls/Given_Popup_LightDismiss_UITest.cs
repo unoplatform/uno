@@ -1,6 +1,7 @@
 #if HAS_INPUT_INJECTOR || WINAPPSDK
 #nullable enable
 
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -11,6 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.Disposables;
 using Uno.UI.DevTools.Input;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
@@ -32,11 +34,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_Popup_LightDismiss_UITest
 {
 	private const RuntimeTestPlatforms InjectionUnsupported =
-		RuntimeTestPlatforms.NativeWinUI;
+		RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIslands;
 
-	private static Point GetCenter(FrameworkElement element)
-		=> element.TransformToVisual(TestServices.WindowHelper.XamlRoot.Content)
-			.TransformPoint(new Point(element.ActualWidth / 2, element.ActualHeight / 2));
+	private static void AssertOpenStates(string state, Popup[] popups, params bool[] expected)
+		=> CollectionAssert.AreEqual(expected, popups.Select(p => p.IsOpen).ToArray(), $"IsOpen of popup1..{popups.Length} ({state})");
 
 	private static Popup CreateLightDismissPopup(double horizontalOffset, double verticalOffset)
 		=> new()
@@ -56,177 +57,127 @@ public class Given_Popup_LightDismiss_UITest
 	[PlatformCondition(ConditionMode.Exclude, InjectionUnsupported)]
 	public async Task When_MultiplePopups_Dismissed_ForwardOrder()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		var popup1 = CreateLightDismissPopup(150, 150);
 		var popup2 = CreateLightDismissPopup(250, 150);
 		var popup3 = CreateLightDismissPopup(150, 250);
 		var popup4 = CreateLightDismissPopup(250, 250);
+		var popups = new[] { popup1, popup2, popup3, popup4 };
 		var outsideAnchor = new Border { Width = 10, Height = 10, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
 
-		try
-		{
-			TestServices.WindowHelper.WindowContent = outsideAnchor;
-			await TestServices.WindowHelper.WaitForLoaded(outsideAnchor);
-
-			var xamlRoot = TestServices.WindowHelper.XamlRoot;
-			popup1.XamlRoot = popup2.XamlRoot = popup3.XamlRoot = popup4.XamlRoot = xamlRoot;
-
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
-
-			async Task TapOutside()
-			{
-				mouse.Press(GetCenter(outsideAnchor));
-				mouse.Release();
-				await TestServices.WindowHelper.WaitForIdle();
-			}
-
-			Assert.IsFalse(popup1.IsOpen);
-			Assert.IsFalse(popup2.IsOpen);
-			Assert.IsFalse(popup3.IsOpen);
-			Assert.IsFalse(popup4.IsOpen);
-
-			// Open all 4 dismissible popups; popup4 (opened last) is topmost.
-			popup1.IsOpen = true;
-			popup2.IsOpen = true;
-			popup3.IsOpen = true;
-			popup4.IsOpen = true;
-			await TestServices.WindowHelper.WaitForIdle();
-
-			Assert.IsTrue(popup1.IsOpen);
-			Assert.IsTrue(popup2.IsOpen);
-			Assert.IsTrue(popup3.IsOpen);
-			Assert.IsTrue(popup4.IsOpen);
-
-			// Each outside tap dismisses only the topmost (most-recently-opened) popup.
-			await TapOutside();
-			Assert.IsTrue(popup1.IsOpen);
-			Assert.IsTrue(popup2.IsOpen);
-			Assert.IsTrue(popup3.IsOpen);
-			Assert.IsFalse(popup4.IsOpen);
-
-			await TapOutside();
-			Assert.IsTrue(popup1.IsOpen);
-			Assert.IsTrue(popup2.IsOpen);
-			Assert.IsFalse(popup3.IsOpen);
-			Assert.IsFalse(popup4.IsOpen);
-
-			await TapOutside();
-			Assert.IsTrue(popup1.IsOpen);
-			Assert.IsFalse(popup2.IsOpen);
-			Assert.IsFalse(popup3.IsOpen);
-			Assert.IsFalse(popup4.IsOpen);
-
-			await TapOutside();
-			Assert.IsFalse(popup1.IsOpen);
-			Assert.IsFalse(popup2.IsOpen);
-			Assert.IsFalse(popup3.IsOpen);
-			Assert.IsFalse(popup4.IsOpen);
-		}
-		finally
+		using var cleanup = Disposable.Create(() =>
 		{
 			popup1.IsOpen = false;
 			popup2.IsOpen = false;
 			popup3.IsOpen = false;
 			popup4.IsOpen = false;
 			TestServices.WindowHelper.WindowContent = null;
+		});
+
+		TestServices.WindowHelper.WindowContent = outsideAnchor;
+		await TestServices.WindowHelper.WaitForLoaded(outsideAnchor);
+
+		var xamlRoot = TestServices.WindowHelper.XamlRoot;
+		popup1.XamlRoot = popup2.XamlRoot = popup3.XamlRoot = popup4.XamlRoot = xamlRoot;
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
+
+		async Task TapOutside()
+		{
+			mouse.Press(outsideAnchor.GetAbsoluteCenter());
+			mouse.Release();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
+
+		AssertOpenStates("initial state", popups, false, false, false, false);
+
+		// Open all 4 dismissible popups; popup4 (opened last) is topmost.
+		popup1.IsOpen = true;
+		popup2.IsOpen = true;
+		popup3.IsOpen = true;
+		popup4.IsOpen = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		AssertOpenStates("all opened", popups, true, true, true, true);
+
+		// Each outside tap dismisses only the topmost (most-recently-opened) popup.
+		await TapOutside();
+		AssertOpenStates("tapped once", popups, true, true, true, false);
+
+		await TapOutside();
+		AssertOpenStates("tapped twice", popups, true, true, false, false);
+
+		await TapOutside();
+		AssertOpenStates("tapped thrice", popups, true, false, false, false);
+
+		await TapOutside();
+		AssertOpenStates("tapped four times", popups, false, false, false, false);
 	}
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, InjectionUnsupported)]
 	public async Task When_MultiplePopups_Dismissed_ReverseOrder()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		var popup1 = CreateLightDismissPopup(150, 150);
 		var popup2 = CreateLightDismissPopup(250, 150);
 		var popup3 = CreateLightDismissPopup(150, 250);
 		var popup4 = CreateLightDismissPopup(250, 250);
+		var popups = new[] { popup1, popup2, popup3, popup4 };
 		var outsideAnchor = new Border { Width = 10, Height = 10, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
 
-		try
-		{
-			TestServices.WindowHelper.WindowContent = outsideAnchor;
-			await TestServices.WindowHelper.WaitForLoaded(outsideAnchor);
-
-			var xamlRoot = TestServices.WindowHelper.XamlRoot;
-			popup1.XamlRoot = popup2.XamlRoot = popup3.XamlRoot = popup4.XamlRoot = xamlRoot;
-
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
-
-			async Task TapOutside()
-			{
-				mouse.Press(GetCenter(outsideAnchor));
-				mouse.Release();
-				await TestServices.WindowHelper.WaitForIdle();
-			}
-
-			// Open in reverse order (4, 3, 2, 1); popup1 (opened last) is topmost.
-			popup4.IsOpen = true;
-			popup3.IsOpen = true;
-			popup2.IsOpen = true;
-			popup1.IsOpen = true;
-			await TestServices.WindowHelper.WaitForIdle();
-
-			Assert.IsTrue(popup1.IsOpen);
-			Assert.IsTrue(popup2.IsOpen);
-			Assert.IsTrue(popup3.IsOpen);
-			Assert.IsTrue(popup4.IsOpen);
-
-			await TapOutside();
-			Assert.IsFalse(popup1.IsOpen);
-			Assert.IsTrue(popup2.IsOpen);
-			Assert.IsTrue(popup3.IsOpen);
-			Assert.IsTrue(popup4.IsOpen);
-
-			await TapOutside();
-			Assert.IsFalse(popup1.IsOpen);
-			Assert.IsFalse(popup2.IsOpen);
-			Assert.IsTrue(popup3.IsOpen);
-			Assert.IsTrue(popup4.IsOpen);
-
-			await TapOutside();
-			Assert.IsFalse(popup1.IsOpen);
-			Assert.IsFalse(popup2.IsOpen);
-			Assert.IsFalse(popup3.IsOpen);
-			Assert.IsTrue(popup4.IsOpen);
-
-			await TapOutside();
-			Assert.IsFalse(popup1.IsOpen);
-			Assert.IsFalse(popup2.IsOpen);
-			Assert.IsFalse(popup3.IsOpen);
-			Assert.IsFalse(popup4.IsOpen);
-		}
-		finally
+		using var cleanup = Disposable.Create(() =>
 		{
 			popup1.IsOpen = false;
 			popup2.IsOpen = false;
 			popup3.IsOpen = false;
 			popup4.IsOpen = false;
 			TestServices.WindowHelper.WindowContent = null;
+		});
+
+		TestServices.WindowHelper.WindowContent = outsideAnchor;
+		await TestServices.WindowHelper.WaitForLoaded(outsideAnchor);
+
+		var xamlRoot = TestServices.WindowHelper.XamlRoot;
+		popup1.XamlRoot = popup2.XamlRoot = popup3.XamlRoot = popup4.XamlRoot = xamlRoot;
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
+
+		async Task TapOutside()
+		{
+			mouse.Press(outsideAnchor.GetAbsoluteCenter());
+			mouse.Release();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
+
+		// Open in reverse order (4, 3, 2, 1); popup1 (opened last) is topmost.
+		popup4.IsOpen = true;
+		popup3.IsOpen = true;
+		popup2.IsOpen = true;
+		popup1.IsOpen = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		AssertOpenStates("all opened", popups, true, true, true, true);
+
+		await TapOutside();
+		AssertOpenStates("tapped once", popups, false, true, true, true);
+
+		await TapOutside();
+		AssertOpenStates("tapped twice", popups, false, false, true, true);
+
+		await TapOutside();
+		AssertOpenStates("tapped thrice", popups, false, false, false, true);
+
+		await TapOutside();
+		AssertOpenStates("tapped four times", popups, false, false, false, false);
 	}
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, InjectionUnsupported)]
 	public async Task When_MultiplePopups_WithOneNonDismissablePopup()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		var popup1 = CreateLightDismissPopup(150, 150);
 		var popup2 = CreateLightDismissPopup(250, 150);
 		var popup3 = CreateLightDismissPopup(150, 250);
@@ -244,72 +195,7 @@ public class Given_Popup_LightDismiss_UITest
 
 		var outsideAnchor = new Border { Width = 10, Height = 10, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
 
-		try
-		{
-			TestServices.WindowHelper.WindowContent = outsideAnchor;
-			await TestServices.WindowHelper.WaitForLoaded(outsideAnchor);
-
-			var xamlRoot = TestServices.WindowHelper.XamlRoot;
-			popup1.XamlRoot = popup2.XamlRoot = popup3.XamlRoot = popup4.XamlRoot = popup5.XamlRoot = xamlRoot;
-
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
-
-			async Task Tap(Point point)
-			{
-				mouse.Press(point);
-				mouse.Release();
-				await TestServices.WindowHelper.WaitForIdle();
-			}
-
-			Assert.IsFalse(popup1.IsOpen);
-			Assert.IsFalse(popup5.IsOpen);
-
-			popup1.IsOpen = true;
-			popup2.IsOpen = true;
-			popup3.IsOpen = true;
-			popup4.IsOpen = true;
-			popup5.IsOpen = true;
-			await TestServices.WindowHelper.WaitForLoaded(closeButton);
-
-			Assert.IsTrue(popup1.IsOpen);
-			Assert.IsTrue(popup2.IsOpen);
-			Assert.IsTrue(popup3.IsOpen);
-			Assert.IsTrue(popup4.IsOpen);
-			Assert.IsTrue(popup5.IsOpen);
-
-			// Tapping the button inside the non-dismissable popup closes only that popup (its own Click handler).
-			await Tap(GetCenter(closeButton));
-			Assert.IsTrue(popup1.IsOpen);
-			Assert.IsTrue(popup2.IsOpen);
-			Assert.IsTrue(popup3.IsOpen);
-			Assert.IsTrue(popup4.IsOpen);
-			Assert.IsFalse(popup5.IsOpen);
-
-			// The remaining dismissible popups still close one at a time from the top, even though
-			// the (now closed) non-dismissable popup5 had been the topmost.
-			var outsidePoint = GetCenter(outsideAnchor);
-
-			await Tap(outsidePoint);
-			Assert.IsTrue(popup1.IsOpen);
-			Assert.IsTrue(popup2.IsOpen);
-			Assert.IsTrue(popup3.IsOpen);
-			Assert.IsFalse(popup4.IsOpen);
-
-			await Tap(outsidePoint);
-			Assert.IsTrue(popup1.IsOpen);
-			Assert.IsTrue(popup2.IsOpen);
-			Assert.IsFalse(popup3.IsOpen);
-
-			await Tap(outsidePoint);
-			Assert.IsTrue(popup1.IsOpen);
-			Assert.IsFalse(popup2.IsOpen);
-
-			await Tap(outsidePoint);
-			Assert.IsFalse(popup1.IsOpen);
-		}
-		finally
+		using var cleanup = Disposable.Create(() =>
 		{
 			popup1.IsOpen = false;
 			popup2.IsOpen = false;
@@ -317,18 +203,76 @@ public class Given_Popup_LightDismiss_UITest
 			popup4.IsOpen = false;
 			popup5.IsOpen = false;
 			TestServices.WindowHelper.WindowContent = null;
+		});
+
+		TestServices.WindowHelper.WindowContent = outsideAnchor;
+		await TestServices.WindowHelper.WaitForLoaded(outsideAnchor);
+
+		var xamlRoot = TestServices.WindowHelper.XamlRoot;
+		popup1.XamlRoot = popup2.XamlRoot = popup3.XamlRoot = popup4.XamlRoot = popup5.XamlRoot = xamlRoot;
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
+
+		async Task Tap(Point point)
+		{
+			mouse.Press(point);
+			mouse.Release();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
+
+		Assert.IsFalse(popup1.IsOpen);
+		Assert.IsFalse(popup5.IsOpen);
+
+		popup1.IsOpen = true;
+		popup2.IsOpen = true;
+		popup3.IsOpen = true;
+		popup4.IsOpen = true;
+		popup5.IsOpen = true;
+		await TestServices.WindowHelper.WaitForLoaded(closeButton);
+
+		Assert.IsTrue(popup1.IsOpen);
+		Assert.IsTrue(popup2.IsOpen);
+		Assert.IsTrue(popup3.IsOpen);
+		Assert.IsTrue(popup4.IsOpen);
+		Assert.IsTrue(popup5.IsOpen);
+
+		// Tapping the button inside the non-dismissable popup closes only that popup (its own Click handler).
+		await Tap(closeButton.GetAbsoluteCenter());
+		Assert.IsTrue(popup1.IsOpen);
+		Assert.IsTrue(popup2.IsOpen);
+		Assert.IsTrue(popup3.IsOpen);
+		Assert.IsTrue(popup4.IsOpen);
+		Assert.IsFalse(popup5.IsOpen);
+
+		// The remaining dismissible popups still close one at a time from the top, even though
+		// the (now closed) non-dismissable popup5 had been the topmost.
+		var outsidePoint = outsideAnchor.GetAbsoluteCenter();
+
+		await Tap(outsidePoint);
+		Assert.IsTrue(popup1.IsOpen);
+		Assert.IsTrue(popup2.IsOpen);
+		Assert.IsTrue(popup3.IsOpen);
+		Assert.IsFalse(popup4.IsOpen);
+
+		await Tap(outsidePoint);
+		Assert.IsTrue(popup1.IsOpen);
+		Assert.IsTrue(popup2.IsOpen);
+		Assert.IsFalse(popup3.IsOpen);
+
+		await Tap(outsidePoint);
+		Assert.IsTrue(popup1.IsOpen);
+		Assert.IsFalse(popup2.IsOpen);
+
+		await Tap(outsidePoint);
+		Assert.IsFalse(popup1.IsOpen);
 	}
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, InjectionUnsupported)]
 	public async Task When_Dismissible_Popup_OutsideTap_DismissesWithoutClickThrough()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		var contentPressed = false;
 		var popupContent = new Border { Width = 220, Height = 140, Background = new SolidColorBrush(Colors.DarkGreen) };
 		popupContent.PointerPressed += (_, _) => contentPressed = true;
@@ -344,57 +288,50 @@ public class Given_Popup_LightDismiss_UITest
 		Canvas.SetTop(actionButton, 200);
 		canvas.Children.Add(actionButton);
 
-		try
-		{
-			TestServices.WindowHelper.WindowContent = canvas;
-			await TestServices.WindowHelper.WaitForLoaded(actionButton);
-
-			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
-
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
-
-			async Task Tap(Point point)
-			{
-				mouse.Press(point);
-				mouse.Release();
-				await TestServices.WindowHelper.WaitForIdle();
-			}
-
-			Assert.IsFalse(popup.IsOpen);
-
-			popup.IsOpen = true;
-			await TestServices.WindowHelper.WaitForLoaded(popupContent);
-			Assert.IsTrue(popup.IsOpen);
-
-			// Tapping the popup's own content should not dismiss it.
-			await Tap(GetCenter(popupContent));
-			Assert.IsTrue(contentPressed);
-			Assert.IsTrue(popup.IsOpen);
-
-			// Tapping outside the (dismissible) popup closes it, and the tap is swallowed by the
-			// light-dismiss layer — the underlying button's Click never fires.
-			await Tap(GetCenter(actionButton));
-			Assert.IsFalse(popup.IsOpen);
-			Assert.AreEqual(0, actionClickCount);
-		}
-		finally
+		using var cleanup = Disposable.Create(() =>
 		{
 			popup.IsOpen = false;
 			TestServices.WindowHelper.WindowContent = null;
+		});
+
+		TestServices.WindowHelper.WindowContent = canvas;
+		await TestServices.WindowHelper.WaitForLoaded(actionButton);
+
+		popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
+
+		async Task Tap(Point point)
+		{
+			mouse.Press(point);
+			mouse.Release();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
+
+		Assert.IsFalse(popup.IsOpen);
+
+		popup.IsOpen = true;
+		await TestServices.WindowHelper.WaitForLoaded(popupContent);
+		Assert.IsTrue(popup.IsOpen);
+
+		// Tapping the popup's own content should not dismiss it.
+		await Tap(popupContent.GetAbsoluteCenter());
+		Assert.IsTrue(contentPressed);
+		Assert.IsTrue(popup.IsOpen);
+
+		// Tapping outside the (dismissible) popup closes it, and the tap is swallowed by the
+		// light-dismiss layer — the underlying button's Click never fires.
+		await Tap(actionButton.GetAbsoluteCenter());
+		Assert.IsFalse(popup.IsOpen);
+		Assert.AreEqual(0, actionClickCount);
 	}
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, InjectionUnsupported)]
 	public async Task When_Undismissible_Popup_OutsideTap_ClicksThroughWithoutDismissing()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		var contentPressed = false;
 		var popupContent = new Border { Width = 220, Height = 140, Background = new SolidColorBrush(Colors.DarkGreen) };
 		popupContent.PointerPressed += (_, _) => contentPressed = true;
@@ -410,59 +347,52 @@ public class Given_Popup_LightDismiss_UITest
 		Canvas.SetTop(actionButton, 200);
 		canvas.Children.Add(actionButton);
 
-		try
-		{
-			TestServices.WindowHelper.WindowContent = canvas;
-			await TestServices.WindowHelper.WaitForLoaded(actionButton);
-
-			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
-
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
-
-			async Task Tap(Point point)
-			{
-				mouse.Press(point);
-				mouse.Release();
-				await TestServices.WindowHelper.WaitForIdle();
-			}
-
-			popup.IsOpen = true;
-			await TestServices.WindowHelper.WaitForLoaded(popupContent);
-			Assert.IsTrue(popup.IsOpen);
-
-			await Tap(GetCenter(popupContent));
-			Assert.IsTrue(contentPressed);
-			Assert.IsTrue(popup.IsOpen);
-
-			// A non-dismissable popup doesn't occupy the light-dismiss hit-test layer, so the tap
-			// falls through to the button underneath: its Click fires, and the popup stays open.
-			await Tap(GetCenter(actionButton));
-			Assert.AreEqual(1, actionClickCount);
-			Assert.IsTrue(popup.IsOpen);
-
-			// Dismiss it explicitly (mirrors the sample's "Reset" button).
-			popup.IsOpen = false;
-			await TestServices.WindowHelper.WaitForIdle();
-			Assert.IsFalse(popup.IsOpen);
-		}
-		finally
+		using var cleanup = Disposable.Create(() =>
 		{
 			popup.IsOpen = false;
 			TestServices.WindowHelper.WindowContent = null;
+		});
+
+		TestServices.WindowHelper.WindowContent = canvas;
+		await TestServices.WindowHelper.WaitForLoaded(actionButton);
+
+		popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
+
+		async Task Tap(Point point)
+		{
+			mouse.Press(point);
+			mouse.Release();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
+
+		popup.IsOpen = true;
+		await TestServices.WindowHelper.WaitForLoaded(popupContent);
+		Assert.IsTrue(popup.IsOpen);
+
+		await Tap(popupContent.GetAbsoluteCenter());
+		Assert.IsTrue(contentPressed);
+		Assert.IsTrue(popup.IsOpen);
+
+		// A non-dismissable popup doesn't occupy the light-dismiss hit-test layer, so the tap
+		// falls through to the button underneath: its Click fires, and the popup stays open.
+		await Tap(actionButton.GetAbsoluteCenter());
+		Assert.AreEqual(1, actionClickCount);
+		Assert.IsTrue(popup.IsOpen);
+
+		// Dismiss it explicitly (mirrors the sample's "Reset" button).
+		popup.IsOpen = false;
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.IsFalse(popup.IsOpen);
 	}
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, InjectionUnsupported)]
 	public async Task When_Flyout_ContentTap_DoesNotDismiss_TransparentAreaTap_Dismisses()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		var contentPressed = false;
 		var opaqueContent = new Border
 		{
@@ -503,54 +433,47 @@ public class Given_Popup_LightDismiss_UITest
 
 		var owner = new Button { Content = "Owner", Width = 100, Height = 40 };
 
-		try
-		{
-			TestServices.WindowHelper.WindowContent = owner;
-			await TestServices.WindowHelper.WaitForLoaded(owner);
-
-			flyout.ShowAt(owner);
-			await TestServices.WindowHelper.WaitForLoaded(flyoutRoot);
-			Assert.IsTrue(flyout.IsOpen);
-
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
-
-			async Task Tap(Point point)
-			{
-				mouse.Press(point);
-				mouse.Release();
-				await TestServices.WindowHelper.WaitForIdle();
-			}
-
-			// Tapping the flyout's own (opaque) content should not dismiss it.
-			await Tap(GetCenter(opaqueContent));
-			Assert.IsTrue(contentPressed);
-			Assert.IsTrue(flyout.IsOpen);
-
-			// Tapping the flyout's hit-test-transparent area (bottom-right corner, uncovered by
-			// opaqueContent) falls through to the light-dismiss layer and closes it.
-			var transparentPoint = flyoutRoot.TransformToVisual(TestServices.WindowHelper.XamlRoot.Content)
-				.TransformPoint(new Point(flyoutRoot.ActualWidth - 10, flyoutRoot.ActualHeight - 10));
-			await Tap(transparentPoint);
-			Assert.IsFalse(flyout.IsOpen);
-		}
-		finally
+		using var cleanup = Disposable.Create(() =>
 		{
 			flyout.Hide();
 			TestServices.WindowHelper.WindowContent = null;
+		});
+
+		TestServices.WindowHelper.WindowContent = owner;
+		await TestServices.WindowHelper.WaitForLoaded(owner);
+
+		flyout.ShowAt(owner);
+		await TestServices.WindowHelper.WaitForLoaded(flyoutRoot);
+		Assert.IsTrue(flyout.IsOpen);
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
+
+		async Task Tap(Point point)
+		{
+			mouse.Press(point);
+			mouse.Release();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
+
+		// Tapping the flyout's own (opaque) content should not dismiss it.
+		await Tap(opaqueContent.GetAbsoluteCenter());
+		Assert.IsTrue(contentPressed);
+		Assert.IsTrue(flyout.IsOpen);
+
+		// Tapping the flyout's hit-test-transparent area (bottom-right corner, uncovered by
+		// opaqueContent) falls through to the light-dismiss layer and closes it.
+		var transparentPoint = flyoutRoot.TransformToVisual(TestServices.WindowHelper.XamlRoot.Content)
+			.TransformPoint(new Point(flyoutRoot.ActualWidth - 10, flyoutRoot.ActualHeight - 10));
+		await Tap(transparentPoint);
+		Assert.IsFalse(flyout.IsOpen);
 	}
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, InjectionUnsupported)]
 	public async Task When_ComboBox_OutsideTap_ClosesDropdownWithoutClickThrough()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			return;
-		}
-
 		var comboBox = new ComboBox { ItemsSource = new[] { "One", "Two", "Three" }, Width = 150 };
 
 		var actionClickCount = 0;
@@ -565,39 +488,37 @@ public class Given_Popup_LightDismiss_UITest
 		canvas.Children.Add(comboBox);
 		canvas.Children.Add(actionButton);
 
-		try
-		{
-			TestServices.WindowHelper.WindowContent = canvas;
-			await TestServices.WindowHelper.WaitForLoaded(comboBox);
-			await TestServices.WindowHelper.WaitForLoaded(actionButton);
-
-			var injector = InputInjector.TryCreate();
-			Assert.IsNotNull(injector);
-			using var mouse = injector.GetMouse();
-
-			async Task Tap(FrameworkElement element)
-			{
-				mouse.Press(GetCenter(element));
-				mouse.Release();
-				await TestServices.WindowHelper.WaitForIdle();
-			}
-
-			Assert.IsFalse(comboBox.IsDropDownOpen);
-
-			await Tap(comboBox);
-			Assert.IsTrue(comboBox.IsDropDownOpen);
-
-			// Tapping outside the dropdown dismisses it (the ComboBox's dropdown popup is
-			// light-dismiss-enabled), swallowing the tap so the underlying button's Click never fires.
-			await Tap(actionButton);
-			Assert.IsFalse(comboBox.IsDropDownOpen);
-			Assert.AreEqual(0, actionClickCount);
-		}
-		finally
+		using var cleanup = Disposable.Create(() =>
 		{
 			comboBox.IsDropDownOpen = false;
 			TestServices.WindowHelper.WindowContent = null;
+		});
+
+		TestServices.WindowHelper.WindowContent = canvas;
+		await TestServices.WindowHelper.WaitForLoaded(comboBox);
+		await TestServices.WindowHelper.WaitForLoaded(actionButton);
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+		using var mouse = injector.GetMouse();
+
+		async Task Tap(FrameworkElement element)
+		{
+			mouse.Press(element.GetAbsoluteCenter());
+			mouse.Release();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
+
+		Assert.IsFalse(comboBox.IsDropDownOpen);
+
+		await Tap(comboBox);
+		Assert.IsTrue(comboBox.IsDropDownOpen);
+
+		// Tapping outside the dropdown dismisses it (the ComboBox's dropdown popup is
+		// light-dismiss-enabled), swallowing the tap so the underlying button's Click never fires.
+		await Tap(actionButton);
+		Assert.IsFalse(comboBox.IsDropDownOpen);
+		Assert.AreEqual(0, actionClickCount);
 	}
 }
 #endif

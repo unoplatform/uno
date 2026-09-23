@@ -49,33 +49,27 @@ public class Given_SplitView_UITest
 			Children = { targetRect, split },
 		};
 
-		try
-		{
-			await UITestHelper.Load(root);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(root);
 
-			// Sample 4px inside TargetRect's own right edge (which is inset by CompactPaneLength)
-			// to stay clear of anti-aliasing at the content/pane boundary.
-			var x = targetRect.ActualWidth - 4;
-			var y = targetRect.ActualHeight / 2;
+		// Sample 4px inside TargetRect's own right edge (which is inset by CompactPaneLength)
+		// to stay clear of anti-aliasing at the content/pane boundary.
+		var x = targetRect.ActualWidth - 4;
+		var y = targetRect.ActualHeight / 2;
 
-			var compactScreenshot = await UITestHelper.ScreenShot(root);
-			ImageAssert.HasColorAtChild(compactScreenshot, targetRect, x, y, Microsoft.UI.Colors.Blue);
+		var compactScreenshot = await UITestHelper.ScreenShot(root);
+		ImageAssert.HasColorAtChild(compactScreenshot, targetRect, x, y, Microsoft.UI.Colors.Blue);
 
-			split.IsPaneOpen = true;
-			await UITestHelper.WaitForIdle();
+		split.IsPaneOpen = true;
+		await UITestHelper.WaitForIdle();
 
-			var expandedScreenshot = await UITestHelper.ScreenShot(root);
-			ImageAssert.HasColorAtChild(expandedScreenshot, targetRect, x, y, Microsoft.UI.Colors.Red);
+		var expandedScreenshot = await UITestHelper.ScreenShot(root);
+		ImageAssert.HasColorAtChild(expandedScreenshot, targetRect, x, y, Microsoft.UI.Colors.Red);
 
-			split.IsPaneOpen = false;
-			await UITestHelper.WaitForIdle();
+		split.IsPaneOpen = false;
+		await UITestHelper.WaitForIdle();
 
-			var compactAgainScreenshot = await UITestHelper.ScreenShot(root);
-			ImageAssert.HasColorAtChild(compactAgainScreenshot, targetRect, x, y, Microsoft.UI.Colors.Blue);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		var compactAgainScreenshot = await UITestHelper.ScreenShot(root);
+		ImageAssert.HasColorAtChild(compactAgainScreenshot, targetRect, x, y, Microsoft.UI.Colors.Blue);
 	}
 }

@@ -53,26 +53,20 @@ public class Given_Path_UITest
 			Children = { path },
 		};
 
-		try
-		{
-			await UITestHelper.Load(container);
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(container);
 
-			var screenshot = await UITestHelper.ScreenShot(container);
+		var screenshot = await UITestHelper.ScreenShot(container);
 
-			// Inner "hole" figure always punches through, regardless of the fill rule.
-			ImageAssert.HasColorAt(screenshot, new Point(15, 45), Microsoft.UI.Colors.Beige);
+		// Inner "hole" figure always punches through, regardless of the fill rule.
+		ImageAssert.HasColorAt(screenshot, new Point(15, 45), Microsoft.UI.Colors.Beige);
 
-			// EvenOdd: overlapping self-intersection cancels out the fill at the center.
-			// Nonzero: overlapping windings accumulate, so the center stays filled.
-			var expectedCenterColor = fillRule is FillRule.EvenOdd ? Microsoft.UI.Colors.Beige : fillColor;
-			ImageAssert.HasColorAt(screenshot, new Point(45, 45), expectedCenterColor);
+		// EvenOdd: overlapping self-intersection cancels out the fill at the center.
+		// Nonzero: overlapping windings accumulate, so the center stays filled.
+		var expectedCenterColor = fillRule is FillRule.EvenOdd ? Microsoft.UI.Colors.Beige : fillColor;
+		ImageAssert.HasColorAt(screenshot, new Point(45, 45), expectedCenterColor);
 
-			ImageAssert.HasColorAt(screenshot, new Point(76, 45), fillColor);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
+		ImageAssert.HasColorAt(screenshot, new Point(76, 45), fillColor);
 	}
 
 	private static Geometry BuildData(DataStyle style, FillRule fillRule) => style switch
