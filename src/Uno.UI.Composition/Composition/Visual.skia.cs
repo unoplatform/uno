@@ -753,6 +753,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return clipPath;
 		}
 
+		// A 2D matrix cannot carry a projection, so a projective visual contributes no clip rather than the wrong
+		// one: an over-wide airspace cut-out shows the native window, an over-narrow one crops it.
+		if (!TotalMatrix.IsPlanarAffine())
+		{
+			return clipPath;
+		}
+
 		var localMatrix = TotalMatrix.ToMatrix3x2();
 		var ownClip = GetPrePaintingClipping() ?? GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y));
 		var ownClipInParent = ownClip.Transform(localMatrix);
@@ -800,6 +807,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		var dst = Parent is Visual parent
 			? parent.GetTotalClipPath(false)
 			: GeometryFactory.Current.CreateRectangleGeometry(InfiniteClipRect);
+
+		// Same as above: without a projective transform this visual's own clips cannot be mapped, and reporting
+		// no narrowing only ever widens what callers think is visible.
+		if (!TotalMatrix.IsPlanarAffine())
+		{
+			return dst;
+		}
 
 		var totalMatrix = TotalMatrix.ToMatrix3x2();
 		if (GetPrePaintingClipping() is { } pre)
@@ -1006,6 +1020,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (visual != shadowRoot && visual.ShadowState is not null)
 		{
 			return true;
+		}
+
+		// The root was checked before the walk, but a descendant can carry its own projection, and its silhouette
+		// would then be mapped by an affine approximation.
+		if (!visual.TotalMatrix.IsPlanarAffine())
+		{
+			return false;
 		}
 
 		var toRoot = visual.TotalMatrix.ToMatrix3x2() * inverseRootMatrix;
