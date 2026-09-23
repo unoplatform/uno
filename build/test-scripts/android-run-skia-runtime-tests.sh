@@ -173,6 +173,10 @@ else
 	TIMEOUT=$((${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1} * 60))
 fi
 
+# Pulling the results and logcat, the transform tool and the publish steps need a few minutes.
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/ci-job-budget.sh
+TIMEOUT=$(uno_job_wait_budget "$TIMEOUT" 300)
+
 END_TIME=$((SECONDS+TIMEOUT))
 
 echo "Waiting for $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH to be available..."
@@ -201,6 +205,10 @@ while [[ $SECONDS -lt $END_TIME ]]; do
         break
     fi
 done
+
+if [[ $SECONDS -ge $END_TIME ]]; then
+	echo "##vso[task.logissue type=error]The test run did not finish within ${TIMEOUT}s."
+fi
 
 $ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH $UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME || echo "ERROR: could not adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH"
 

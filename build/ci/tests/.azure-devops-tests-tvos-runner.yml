@@ -45,6 +45,10 @@ jobs:
       value: $[ dependencies.${{ parameters.BuildJobName }}.outputs['set_tvos_artifact.SamplesAppArtifactName'] ]
 
   steps:
+  - template: ../templates/job-deadline.yml
+    parameters:
+      timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
+
   - checkout: self
     clean: true
 

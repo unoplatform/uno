@@ -413,6 +413,9 @@ then
 	# Set the timeout in seconds 
 	UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
 	TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
+	# Collecting the device logs, the transform tool and the publish steps need several minutes.
+	source $BUILD_SOURCESDIRECTORY/build/test-scripts/ci-job-budget.sh
+	TIMEOUT=$(uno_job_wait_budget "$TIMEOUT" 600)
 	INTERVAL=15
 	END_TIME=$((SECONDS+TIMEOUT))
 
