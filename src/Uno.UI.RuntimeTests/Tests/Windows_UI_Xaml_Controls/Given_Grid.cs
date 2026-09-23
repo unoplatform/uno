@@ -147,7 +147,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.AreEqual(new Size(gridDesiredWidthExpected, gridDesiredHeightExpected), desiredSize);
 
-#if !__ANDROID__ && !__APPLE_UIKIT__ // These assertions fail on Android/iOS because layout slots aren't set the same way as UWP
 				var layoutRect0Actual = LayoutInformation.GetLayoutSlot(SUT.Children[0] as FrameworkElement);
 				var layoutRect0Expected = new Rect(child0LeftExpected, child0TopExpected, child0WidthExpected, child0HeightExpected);
 				Assert.AreEqual(layoutRect0Expected, layoutRect0Actual);
@@ -175,7 +174,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var layoutRect6Actual = LayoutInformation.GetLayoutSlot(SUT.Children[6] as FrameworkElement);
 				var layoutRect6Expected = new Rect(child6LeftExpected, child6TopExpected, child6WidthExpected, child6HeightExpected);
 				Assert.AreEqual(layoutRect6Expected, layoutRect6Actual);
-#endif
 
 				TestServices.WindowHelper.WindowContent = null;
 			});
@@ -186,8 +184,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif __WASM__
-		[Ignore("Failing on WASM: https://github.com/unoplatform/uno/issues/17742")]
 #endif
 		public async Task When_Grid_Child_Canvas_ZIndex()
 		{
@@ -320,13 +316,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = SUT;
 			await TestServices.WindowHelper.WaitForLoaded(SUT);
 			await TestServices.WindowHelper.WaitForIdle();
-
-			// We have a problem on IOS and Android where SUT isn't relayouted after the padding
-			// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
-#if __APPLE_UIKIT__ || __ANDROID__
-			SUT.InvalidateMeasure();
-			SUT.UpdateLayout();
-#endif
 
 			Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
 		}
@@ -544,18 +533,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(SUT);
 			Assert.AreEqual(Visibility.Visible, SUT.Visibility);
 
-#if !__ANDROID__ && !__APPLE_UIKIT__ // The Grid contents doesn't seem to actually display properly when added this way, but at least it should not throw an exception.
 			Assert.AreEqual(27, SUT.ActualHeight);
 			NumberAssert.Greater(SUT.ActualWidth, 0);
-#endif
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresScaling(1f)]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("Fails on Android and iOS.")]
-#endif
 		public async Task When_Negative_Margin_Should_Not_Clip()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -631,9 +615,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresScaling(1f)]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("Fails on Android and iOS.")]
-#endif
 		public async Task When_RenderTransform_Ensure_Correct_Clipping()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))

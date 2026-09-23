@@ -22,7 +22,7 @@ public partial class Given_PipsPager
 	[RunsOnUIThread]
 	// SkiaWasm excluded: render-loop-driven BringIntoView scroll stalls under the headless xvfb browser (flaky). #23524
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_SelectedIndex_Beyond_MaxVisiblePips_All_Visible_Pips_Are_Realized()
 	{
 		// Repro for the trailing-pips-disappear bug: with NumberOfPages > MaxVisiblePips,
@@ -105,7 +105,6 @@ public partial class Given_PipsPager
 				$"ScrollViewer offset={horizontalOffset}, viewport={viewportWidth}, extent={extentWidth}");
 		}
 
-#if HAS_RENDER_TARGET_BITMAP
 		// Visual check — the previous assertions only verify layout state. This catches
 		// the case where pips are at the right coordinates but never make it to the
 		// rendered output (clip / opacity / composition issue). The bug clipped the
@@ -133,16 +132,11 @@ public partial class Given_PipsPager
 			$"Expected pip ink in the pager's trailing half (>= x={trailingStart}). " +
 			$"Before the fix the inner ItemsRepeater was clipped at viewport-width, so the trailing pips never rendered. " +
 			$"ScrollViewer offset={horizontalOffset}, viewport={viewportWidth}, extent={extentWidth}.");
-#endif
 	}
 
 	[TestMethod]
 	[RunsOnUIThread]
-#if __WASM__
-	[Ignore("RenderTargetBitmap is not implemented on WASM.")]
-#else
 	[Ignore("Fails even on Windows, very flaky on Uno.")] // Flaky #9080
-#endif
 	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages_Horizontal()
 	{
 		var SUT = new PipsPager
@@ -166,11 +160,7 @@ public partial class Given_PipsPager
 
 	[TestMethod]
 	[RunsOnUIThread]
-#if __WASM__
-	[Ignore("RenderTargetBitmap is not implemented on WASM.")]
-#else
 	[Ignore("Very flaky on Uno.")] // Flaky #9080
-#endif
 	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages_Vertical()
 	{
 		var SUT = new PipsPager

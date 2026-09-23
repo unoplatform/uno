@@ -57,9 +57,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[CombinatorialData]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("Layouter doesn't work properly")]
-#endif
 		public async Task Check_Border_Margin(bool useCustomControl)
 		{
 			double outerDimension = 300;
@@ -124,9 +121,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
 		public async Task When_Non_Empty_Null_Border()
 		{
 			static Border CreateBorder(Color color)
@@ -174,9 +168,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __ANDROID__
-		[Ignore("It doesn't yet work properly on Android")]
-#endif
 		public async Task When_Clip_And_CornerRadius()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -209,9 +200,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __ANDROID__
-		[Ignore("It doesn't yet work properly on Android")]
-#endif
 		public async Task When_Nested_Rounded_Clips_Exceed_Four()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -237,9 +225,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __ANDROID__
-		[Ignore("It doesn't yet work properly on Android")]
-#endif
 		public async Task When_Rotated_Rounded_Clip()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -269,9 +254,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __ANDROID__
-		[Ignore("Fails on Android")]
-#endif
 		public async Task When_Clipped_With_TransformMatrix()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -411,7 +393,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				ExpectedPixels.At(sample.X + eighth, sample.Bottom - eighth).Named("bottom left corner").WithPixelTolerance(2, 2).Pixel(white)
 			);
 
-#if __WASM__ && false // See https://github.com/unoplatform/uno/issues/5440 for the scenario being tested.
+#if false // See https://github.com/unoplatform/uno/issues/5440 for the scenario being tested.
 			var sample2 = _app.GetPhysicalRect("Sample2");
 
 			var top = sample2.Y + 1;
@@ -580,9 +562,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-		[Ignore("Not supported yet")]
-#endif
 		[CombinatorialData]
 		public async Task Border_CornerRadiusAndClip_Clipping(bool useNullBackground)
 		{
@@ -649,9 +628,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task Border_LinearGradient()
 		{
-#if __APPLE_UIKIT__
-			Assert.Inconclusive(); // iOS not working currently. https://github.com/unoplatform/uno/issues/6749
-#endif
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
@@ -1098,9 +1074,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task Border_AntiAlias()
 		{
 
-#if !__ANDROID__
 			Assert.Inconclusive();
-#endif
 			const string secondRectBlueish = "#ff9e9eff";
 
 			var SUT = new Border_AntiAlias();

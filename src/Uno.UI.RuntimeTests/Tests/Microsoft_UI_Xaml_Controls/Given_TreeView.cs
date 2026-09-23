@@ -25,11 +25,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 using Uno.UI.DevTools.Input;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#else
 using Uno.UI;
-#endif
 
 using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
 using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
@@ -113,9 +109,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[CombinatorialData]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
-#endif
 		public async Task When_Scrolled_IsExpanded_Should_Be_Preserved(bool bindIsExpanded)
 		{
 			var itemsSource = Enumerable.Range(0, 8).Select(i =>
@@ -196,9 +189,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
-#endif
 		public async Task When_TreeViewItem_Collapsed_Children_Removed_From_Tree()
 		{
 			var treeView = new TreeView
@@ -422,9 +412,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual(-1, listControl.SelectedIndex);
 		}
 
-#if __APPLE_UIKIT__
-		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
-#endif
 		[TestMethod]
 		public async Task When_Setting_SelectedItem_TakesEffect()
 		{
@@ -543,9 +530,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
-#endif
 		[CombinatorialData]
 		public async Task When_SelectedItem_Expanded(
 			[CombinatorialValues("1", "111")] string labelToSelect, bool useBinding)
@@ -603,9 +587,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
-#endif
 		[DataRow("1")]
 		[DataRow("111")]
 		public async Task When_IsSelectedItem_Expanded(string labelToSelect)
@@ -654,9 +635,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
-#endif
 		public async Task When_SelectedItem_NotExpandedToExpanded()
 		{
 			var tvm = new TestTreeViewModel
@@ -721,9 +699,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
-#endif
 		public async Task When_IsSelectedItem_NotExpandedToExpanded()
 		{
 			var tvm = new TestTreeViewModel
@@ -788,9 +763,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
-#endif
 		public async Task When_SelectedItem_ParentCollapsed()
 		{
 			var tvm = new TestTreeViewModel
@@ -861,9 +833,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
-#endif
 		public async Task When_IsSelectedItem_ParentCollapsed()
 		{
 			var tvm = new TestTreeViewModel

@@ -54,9 +54,6 @@ public partial class Given_InteractionTracker
 	}
 
 	[TestMethod]
-#if !HAS_COMPOSITION_API
-	[Ignore("Composition APIs are not supported on this platform.")]
-#endif
 	public async Task When_TryUpdatePositionWithAdditionalVelocity_SingleCall()
 	{
 		var border = new Border()
@@ -118,9 +115,6 @@ public partial class Given_InteractionTracker
 	}
 
 	[TestMethod]
-#if !HAS_COMPOSITION_API
-	[Ignore("Composition APIs are not supported on this platform.")]
-#endif
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIOS)] // Flaky on Skia iOS #9080
 	public async Task When_TryUpdatePositionWithAdditionalVelocity_TwoCalls()
 	{
@@ -184,9 +178,7 @@ public partial class Given_InteractionTracker
 	}
 
 	[RequiresFullWindow]
-#if !HAS_COMPOSITION_API
-	[Ignore("Composition APIs are not supported on this platform.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #elif !HAS_UNO
 	[Ignore("Test fails on Windows. For some reason, Drag isn't doing what we expect it to for an unknown reason.")]
@@ -278,9 +270,7 @@ public partial class Given_InteractionTracker
 #if HAS_UNO
 	[TestMethod]
 	[RequiresFullWindow]
-#if !HAS_COMPOSITION_API
-	[Ignore("Composition APIs are not supported on this platform.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_MouseWheel()

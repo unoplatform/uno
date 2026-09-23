@@ -49,7 +49,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeMobile)]
 		public async Task When_BaselineOffset_Reflects_First_Line()
 		{
 			var SUT = new RichTextBlock { FontSize = 24 };
@@ -78,7 +77,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeMobile)]
 		public async Task When_TextLineBounds_Trims_Line_Height()
 		{
 			static RichTextBlock Create(TextLineBounds bounds)

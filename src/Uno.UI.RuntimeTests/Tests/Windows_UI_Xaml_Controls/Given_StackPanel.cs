@@ -43,9 +43,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __APPLE_UIKIT__
-		[Ignore("Fails on iOS")]
-#endif
 		public async Task When_Adding_Or_Removing_Child_Should_Re_Measure()
 		{
 			var SUT = new MyStackPanel()
@@ -146,13 +143,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(SUT);
 			await WindowHelper.WaitForIdle();
 
-			// We have a problem on IOS and Android where SUT isn't relayouted after the padding
-			// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
-#if __APPLE_UIKIT__ || __ANDROID__
-			SUT.InvalidateMeasure();
-			SUT.UpdateLayout();
-#endif
-
 			Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
 		}
 
@@ -176,24 +166,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.Equal(typeof(TextBox), typeof(TextBlock), typeof(Button));
 
 			await WindowHelper.WaitForIdle();
-
-#if __WASM__
-			// Ensure children are synchronized in the DOM
-			var js = $@"
-				(function() {{
-					var stackPanel = document.getElementById(""{pnl.HtmlId}"");
-					var result = """";
-					for(const elem of stackPanel.children) {{
-						result = result + "";"" + elem.id;
-					}}
-					return result;
-				}})();";
-			var expectedIds = ";" + string.Join(";", pnl.Children.Select(c => c.HtmlId));
-
-			var ids = global::Uno.Foundation.WebAssemblyRuntime.InvokeJS(js);
-
-			ids.Should().Be(expectedIds, "Expected from DOM");
-#endif
 		}
 
 

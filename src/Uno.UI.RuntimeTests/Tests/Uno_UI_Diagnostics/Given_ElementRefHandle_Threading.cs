@@ -1,9 +1,8 @@
 // The threading check itself is platform-agnostic, but this test cannot be expressed
 // on single-threaded runtimes: Task.Run executes synchronously on the UI thread, so
 // there is no way to call from a non-UI thread to trigger the check.
-// Native WASM (!__WASM__) is always single-threaded. Skia WASM Browser is excluded
-// at the method level via [PlatformCondition] for the same reason.
-#if HAS_UNO && !__WASM__
+// Skia WASM Browser is single-threaded and is excluded at the method level via [PlatformCondition].
+#if HAS_UNO
 using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
@@ -31,7 +30,7 @@ public class Given_ElementRefHandle_Threading
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.NativeUIKit)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	public void When_GetOrCreate_FromBackgroundThread_Throws()
 	{
 		var registry = new ElementRefHandleRegistry();

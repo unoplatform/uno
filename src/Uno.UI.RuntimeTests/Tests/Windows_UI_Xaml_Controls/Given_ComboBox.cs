@@ -28,16 +28,6 @@ using Uno.UI.Extensions;
 using Combinatorial.MSTest;
 using Uno.UI.DevTools.Input;
 
-#if __APPLE_UIKIT__
-using _UIViewController = UIKit.UIViewController;
-using Uno.UI.Controls;
-
-using Windows.UI.Core;
-using Microsoft.UI.Xaml.Media.Animation;
-using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MultiFrame;
-using Microsoft.UI.Xaml.Controls.Primitives;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
@@ -275,10 +265,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 					await WindowHelper.WaitForLoaded(SUT);
 
-#if !__ANDROID__ && !__APPLE_UIKIT__ // This does not hold on Android or iOS, possibly because ComboBox is not virtualized
 					Assert.AreEqual(0, CounterGrid.CreationCount);
 					Assert.AreEqual(0, CounterGrid2.CreationCount);
-#endif
 
 					SUT.IsDropDownOpen = true;
 
@@ -300,9 +288,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("ComboBox is currently not virtualized on iOS and Android - #556")] // https://github.com/unoplatform/uno/issues/556
-#endif
 		public async Task Check_Creation_Count_Many_Items()
 		{
 			var source = Enumerable.Range(0, 500).ToArray();
@@ -340,79 +325,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if __APPLE_UIKIT__
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task Check_DropDown_Flyout_Margin_When_In_Modal()
-		{
-			MultiFrame multiFrame = new();
-			var showModalButton = new Button();
-
-			multiFrame.Children.Add(showModalButton);
-
-			var source = Enumerable.Range(0, 6).ToArray();
-			var SUT = new ComboBox
-			{
-				ItemsSource = source,
-				Text = "Alignment",
-				VerticalAlignment = VerticalAlignment.Center,
-				PlaceholderText = "Testing",
-				Style = ComboBoxWithSeparatorStyle
-			};
-
-			var modalPage = new Page();
-			var gridContainer = new Grid()
-			{
-				Background = SolidColorBrushHelper.LightGreen
-			};
-
-			async void OpenModal(object sender, RoutedEventArgs e)
-			{
-				gridContainer.Children.Add(SUT);
-				modalPage.Content = gridContainer;
-
-				await multiFrame.OpenModal(FrameSectionsTransitionInfo.NativeiOSModal, modalPage);
-			}
-
-			try
-			{
-				var homePage = new Page();
-				showModalButton.Click += OpenModal;
-				homePage.Content = multiFrame;
-
-				WindowHelper.WindowContent = homePage;
-
-				await WindowHelper.WaitForLoaded(homePage);
-
-				// Open Modal
-				showModalButton.RaiseClick();
-
-				await WindowHelper.WaitForLoaded(modalPage);
-
-				SUT.IsDropDownOpen = true;
-
-				await WindowHelper.WaitForIdle();
-
-				var locationX = SUT.GetAbsoluteBoundsRect().Location.X;
-
-				var popup = SUT.FindFirstChild<Popup>();
-				var childX = popup?.Child?.Frame.X ?? 0;
-
-				Assert.IsNotNull(ComboBoxWithSeparatorStyle);
-				Assert.IsNotNull(popup);
-				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(locationX, childX, "ComboBox vs ComboBox.PopUp.Child Frame.X are not equal");
-			}
-			finally
-			{
-				showModalButton.Click -= OpenModal;
-				SUT.IsDropDownOpen = false;
-				await multiFrame.CloseModal();
-				WindowHelper.WindowContent = null;
-			}
-		}
-#endif
-
 		[TestMethod]
 		public async Task Check_Dropdown_Measure_Count()
 		{
@@ -441,11 +353,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				NumberAssert.Greater(MeasureCountCarouselPanel.MeasureCount, 0);
 				NumberAssert.Greater(MeasureCountCarouselPanel.ArrangeCount, 0);
 
-#if __APPLE_UIKIT__
-				const int MaxAllowedCount = 15; // TODO: figure out why iOS measures more times
-#else
 				const int MaxAllowedCount = 5;
-#endif
 				NumberAssert.Less(MeasureCountCarouselPanel.MeasureCount, MaxAllowedCount);
 				NumberAssert.Less(MeasureCountCarouselPanel.ArrangeCount, MaxAllowedCount);
 			}
@@ -1427,11 +1335,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // https://github.com/unoplatform/uno-private/issues/1297, flaky on Skia WASM #9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // https://github.com/unoplatform/uno-private/issues/1297, flaky on Skia WASM #9080
 		public Task When_ComboBox_ScrollIntoView_SelectedItem() => When_ComboBox_ScrollIntoView_Selection(viaIndex: false);
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // https://github.com/unoplatform/uno-private/issues/1297, flaky on Skia WASM #9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // https://github.com/unoplatform/uno-private/issues/1297, flaky on Skia WASM #9080
 		public Task When_ComboBox_ScrollIntoView_SelectedIndex() => When_ComboBox_ScrollIntoView_Selection(viaIndex: true);
 
 		private async Task When_ComboBox_ScrollIntoView_Selection(bool viaIndex)
@@ -1633,356 +1541,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 	}
-
-
-#if __APPLE_UIKIT__
-	#region "Helper classes for the iOS Modal Page (UIModalPresentationStyle.pageSheet)"
-	public partial class MultiFrame : Grid
-	{
-		private readonly TaskCompletionSource<bool> _isReady = new TaskCompletionSource<bool>();
-
-		private CoreDispatcher _dispatcher => Dispatcher;
-
-		public MultiFrame()
-		{
-			Loaded += OnLoaded;
-		}
-
-		private void OnLoaded(object sender, RoutedEventArgs e)
-		{
-			_isReady.TrySetResult(true);
-		}
-
-		public async Task OpenModal(FrameSectionsTransitionInfo transitionInfo, Page page) // Runs on background thread.
-		{
-			var uiViewController = new UiViewController(page);
-
-			var rootController = UIKit.UIApplication.SharedApplication.KeyWindow.RootViewController;
-
-			await rootController.PresentViewControllerAsync(uiViewController, animated: false);
-		}
-
-		public async Task CloseModal()
-		{
-			try
-			{
-				var rootController = UIKit.UIApplication.SharedApplication.KeyWindow.RootViewController;
-
-				await rootController.DismissViewControllerAsync(false);
-			}
-			catch (Exception) { /* purposely */ }
-		}
-
-		public class UiViewController : _UIViewController
-		{
-			public UiViewController(Page frame)
-			{
-				View = frame;
-			}
-
-			public UIViewControllerSectionsTransitionInfo OpeningTransitionInfo { get; set; }
-
-			public void SetTransitionInfo(UIViewControllerSectionsTransitionInfo transitionInfo)
-			{
-				ModalInPresentation = !transitionInfo.AllowDismissFromGesture;
-				ModalPresentationStyle = transitionInfo.ModalPresentationStyle;
-				ModalTransitionStyle = transitionInfo.ModalTransitionStyle;
-			}
-		}
-
-		public abstract class FrameSectionsTransitionInfo : SectionsTransitionInfo
-		{
-			/// <summary>
-			/// The type of <see cref="FrameSectionsTransitionInfo"/>.
-			/// </summary>
-			public abstract FrameSectionsTransitionInfoTypes Type { get; }
-
-			/// <summary>
-			/// Gets the transition info for a suppressed transition. There is not visual animation when using this transition info.
-			/// </summary>
-			public static DelegatingFrameSectionsTransitionInfo SuppressTransition { get; } = new DelegatingFrameSectionsTransitionInfo(ExecuteSuppressTransition);
-
-			/// <summary>
-			/// The new frame fades in or the previous frame fades out, depending on the layering.
-			/// </summary>
-			public static DelegatingFrameSectionsTransitionInfo FadeInOrFadeOut { get; } = new DelegatingFrameSectionsTransitionInfo(ExecuteFadeInOrFadeOut);
-
-			/// <summary>
-			/// The new frame slides up, hiding the previous frame.
-			/// </summary>
-			public static DelegatingFrameSectionsTransitionInfo SlideUp { get; } = new DelegatingFrameSectionsTransitionInfo(ExecuteSlideUp);
-
-			/// <summary>
-			/// The previous frame slides down, revealing the new frame.
-			/// </summary>
-			public static DelegatingFrameSectionsTransitionInfo SlideDown { get; } = new DelegatingFrameSectionsTransitionInfo(ExecuteSlideDown);
-
-			/// <summary>
-			/// The frames are animated using a UIViewController with the default configuration.
-			/// </summary>
-			public static UIViewControllerSectionsTransitionInfo NativeiOSModal { get; } = new UIViewControllerSectionsTransitionInfo();
-
-			private static Task ExecuteSlideDown(Frame frameToHide, Frame frameToShow, bool frameToShowIsAboveFrameToHide)
-			{
-				return Animations.SlideFrame1DownToRevealFrame2(frameToHide, frameToShow);
-			}
-
-			private static Task ExecuteSlideUp(Frame frameToHide, Frame frameToShow, bool frameToShowIsAboveFrameToHide)
-			{
-				return Animations.SlideFrame2UpwardsToHideFrame1(frameToHide, frameToShow);
-			}
-
-			private static Task ExecuteFadeInOrFadeOut(Frame frameToHide, Frame frameToShow, bool frameToShowIsAboveFrameToHide)
-			{
-				if (frameToShowIsAboveFrameToHide)
-				{
-					return Animations.FadeInFrame2ToHideFrame1(frameToHide, frameToShow);
-				}
-				else
-				{
-					return Animations.FadeOutFrame1ToRevealFrame2(frameToHide, frameToShow);
-				}
-			}
-
-			private static Task ExecuteSuppressTransition(Frame frameToHide, Frame frameToShow, bool frameToShowIsAboveFrameToHide)
-			{
-				return Animations.CollapseFrame1AndShowFrame2(frameToHide, frameToShow);
-			}
-		}
-
-		public enum FrameSectionsTransitionInfoTypes
-		{
-			/// <summary>
-			/// The transition is applied by changing properties or animating properties of <see cref="Frame"/> objects.
-			/// This is associated with the <see cref="DelegatingFrameSectionsTransitionInfo"/> class.
-			/// </summary>
-			FrameBased,
-
-			/// <summary>
-			/// The transition is applied by using the native iOS transitions offered by UIKit.
-			/// This is associated with the <see cref="UIViewControllerSectionsTransitionInfo"/> class.
-			/// </summary>
-			UIViewControllerBased
-		}
-
-		public class DelegatingFrameSectionsTransitionInfo : FrameSectionsTransitionInfo
-		{
-			private readonly FrameSectionsTransitionDelegate _frameTranstion;
-
-			/// <summary>
-			/// Creates a new instance of <see cref="DelegatingFrameSectionsTransitionInfo"/>.
-			/// </summary>
-			/// <param name="frameTranstion">The method describing the transition.</param>
-			public DelegatingFrameSectionsTransitionInfo(FrameSectionsTransitionDelegate frameTranstion)
-			{
-				_frameTranstion = frameTranstion;
-			}
-
-			///<inheritdoc/>
-			public override FrameSectionsTransitionInfoTypes Type => FrameSectionsTransitionInfoTypes.FrameBased;
-
-			/// <summary>
-			/// Runs the transition.
-			/// </summary>
-			/// <param name="frameToHide">The <see cref="Frame"/> that must be hidden after the transition.</param>
-			/// <param name="frameToShow">The <see cref="Frame"/> that must be visible after the transition.</param>
-			/// <param name="frameToShowIsAboveFrameToHide">Flag indicating whether the frame to show is above the frame to hide in their parent container.</param>
-			/// <returns>Task running the transition operation.</returns>
-			public Task Run(Frame frameToHide, Frame frameToShow, bool frameToShowIsAboveFrameToHide)
-			{
-				return _frameTranstion(frameToHide, frameToShow, frameToShowIsAboveFrameToHide);
-			}
-		}
-
-		public delegate Task FrameSectionsTransitionDelegate(Frame frameToHide, Frame frameToShow, bool frameToShowIsAboveFrameToHide);
-
-		public class UIViewControllerSectionsTransitionInfo : FrameSectionsTransitionInfo
-		{
-			public UIViewControllerSectionsTransitionInfo(bool allowDismissFromGesture = true, UIKit.UIModalPresentationStyle modalPresentationStyle = UIKit.UIModalPresentationStyle.PageSheet, UIKit.UIModalTransitionStyle modalTransitionStyle = UIKit.UIModalTransitionStyle.CoverVertical)
-			{
-				AllowDismissFromGesture = allowDismissFromGesture;
-				ModalPresentationStyle = modalPresentationStyle;
-				ModalTransitionStyle = modalTransitionStyle;
-			}
-
-			public bool AllowDismissFromGesture { get; }
-
-			public UIKit.UIModalPresentationStyle ModalPresentationStyle { get; }
-
-			public UIKit.UIModalTransitionStyle ModalTransitionStyle { get; }
-
-			public override FrameSectionsTransitionInfoTypes Type => FrameSectionsTransitionInfoTypes.UIViewControllerBased;
-		}
-
-		public static class Animations
-		{
-			/// <summary>
-			/// The default duration of built-in animations, in seconds.
-			/// </summary>
-			public const double DefaultDuration = 0.250;
-
-			/// <summary>
-			/// Fades out <paramref name="frame1"/> to reveal <paramref name="frame2"/>.
-			/// </summary>
-			public static Task FadeOutFrame1ToRevealFrame2(Frame frame1, Frame frame2)
-			{
-				// 1. Disable the currently visible frame during the animation.
-				frame1.IsHitTestVisible = false;
-
-				// 2. Make the next frame visible so that we see it as the previous frame fades out.
-				frame2.Opacity = 1;
-
-				frame2.Visibility = Visibility.Visible;
-				frame2.IsHitTestVisible = true;
-
-				// 3. Fade out the frame.
-				var storyboard = new Storyboard();
-				AddFadeOut(storyboard, frame1);
-				storyboard.Begin();
-
-				return Task.CompletedTask;
-			}
-
-			/// <summary>
-			/// Fades in <paramref name="frame1"/> to hide <paramref name="frame2"/>.
-			/// </summary>
-			public static Task FadeInFrame2ToHideFrame1(Frame frame1, Frame frame2)
-			{
-				// 1. Disable the currently visible frame during the animation.
-				frame1.IsHitTestVisible = false;
-
-				// 2. Make the next frame visible, but transparent.
-				frame2.Opacity = 0;
-				frame2.Visibility = Visibility.Visible;
-
-				// 3. Fade in the frame.
-				var storyboard = new Storyboard();
-				AddFadeIn(storyboard, frame2);
-				storyboard.Begin();
-
-				// 4. Once the next frame is visible, enable it.
-				frame2.IsHitTestVisible = true;
-
-				return Task.CompletedTask;
-			}
-
-			/// <summary>
-			/// Slides <paramref name="frame2"/> upwards to hide <paramref name="frame1"/>.
-			/// </summary>
-			public static Task SlideFrame2UpwardsToHideFrame1(Frame frame1, Frame frame2)
-			{
-				frame1.IsHitTestVisible = false;
-				((TranslateTransform)frame2.RenderTransform).Y = frame1.ActualHeight;
-				frame2.Opacity = 1;
-				frame2.Visibility = Visibility.Visible;
-
-				var storyboard = new Storyboard();
-				AddSlideInFromBottom(storyboard, (TranslateTransform)frame2.RenderTransform);
-				storyboard.Begin();
-
-				frame2.IsHitTestVisible = true;
-
-				return Task.CompletedTask;
-			}
-
-			/// <summary>
-			/// Slides down <paramref name="frame1"/> to releave <paramref name="frame2"/>.
-			/// </summary>
-			public static Task SlideFrame1DownToRevealFrame2(Frame frame1, Frame frame2)
-			{
-				frame1.IsHitTestVisible = false;
-				frame2.Opacity = 1;
-				frame2.Visibility = Visibility.Visible;
-
-				var storyboard = new Storyboard();
-				AddSlideBackToBottom(storyboard, (TranslateTransform)frame1.RenderTransform, frame2.ActualHeight);
-				storyboard.Begin();
-
-				frame2.IsHitTestVisible = true;
-
-				return Task.CompletedTask;
-			}
-
-			/// <summary>
-			/// Collapses <paramref name="frame1"/> and make <paramref name="frame2"/> visible.
-			/// </summary>
-			public static Task CollapseFrame1AndShowFrame2(Frame frame1, Frame frame2)
-			{
-				frame1.Visibility = Visibility.Collapsed;
-				frame2.IsHitTestVisible = false;
-
-				frame2.Visibility = Visibility.Visible;
-				frame2.Opacity = 1;
-				frame2.IsHitTestVisible = true;
-
-				return Task.CompletedTask;
-			}
-
-			private static void AddFadeIn(Storyboard storyboard, DependencyObject target)
-			{
-				var animation = new DoubleAnimation()
-				{
-					To = 1,
-					Duration = new Duration(TimeSpan.FromSeconds(DefaultDuration)),
-					EasingFunction = new QuadraticEase() { EasingMode = EasingMode.EaseInOut }
-				};
-
-				Storyboard.SetTarget(animation, target);
-				Storyboard.SetTargetProperty(animation, "Opacity");
-
-				storyboard.Children.Add(animation);
-			}
-
-			private static void AddFadeOut(Storyboard storyboard, DependencyObject target)
-			{
-				var animation = new DoubleAnimation()
-				{
-					To = 0,
-					Duration = new Duration(TimeSpan.FromSeconds(DefaultDuration)),
-					EasingFunction = new QuadraticEase() { EasingMode = EasingMode.EaseInOut }
-				};
-
-				Storyboard.SetTarget(animation, target);
-				Storyboard.SetTargetProperty(animation, "Opacity");
-
-				storyboard.Children.Add(animation);
-			}
-
-			private static void AddSlideInFromBottom(Storyboard storyboard, TranslateTransform target)
-			{
-				var animation = new DoubleAnimation()
-				{
-					To = 0,
-					Duration = new Duration(TimeSpan.FromSeconds(DefaultDuration)),
-					EasingFunction = new QuadraticEase() { EasingMode = EasingMode.EaseOut }
-				};
-
-				Storyboard.SetTarget(animation, target);
-				Storyboard.SetTargetProperty(animation, "Y");
-
-				storyboard.Children.Add(animation);
-			}
-
-			private static void AddSlideBackToBottom(Storyboard storyboard, TranslateTransform target, double translation)
-			{
-				var animation = new DoubleAnimation()
-				{
-					To = translation,
-					Duration = new Duration(TimeSpan.FromSeconds(DefaultDuration)),
-					EasingFunction = new QuadraticEase() { EasingMode = EasingMode.EaseOut }
-				};
-
-				Storyboard.SetTarget(animation, target);
-				Storyboard.SetTargetProperty(animation, "Y");
-
-				storyboard.Children.Add(animation);
-			}
-		}
-
-		public abstract class SectionsTransitionInfo
-		{
-		}
-	}
-	#endregion
-#endif
 }

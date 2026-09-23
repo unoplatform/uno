@@ -67,14 +67,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			[CombinatorialValues(0, 10)] int border,
 			[CombinatorialValues(0, 10)] int margin)
 		{
-#if __WASM__
-			if (border > 0)
-			{
-				Assert.Inconclusive("Border are not included in LayoutSlot on wasm https://github.com/unoplatform/uno/issues/6999");
-				return;
-			}
-#endif
-
 			Border sut;
 			var root = new Border
 			{
@@ -116,14 +108,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			[CombinatorialValues(0, 10)] int border,
 			[CombinatorialValues(0, 10)] int margin)
 		{
-#if __WASM__
-			if (border > 0)
-			{
-				Assert.Inconclusive("Border are not included in LayoutSlot on wasm https://github.com/unoplatform/uno/issues/6999");
-				return;
-			}
-#endif
-
 			Border sut;
 			var root = new Grid
 			{
@@ -264,7 +248,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			[CombinatorialValues(0, 10)] int border,
 			[CombinatorialValues(0, 10)] int margin)
 		{
-#if __SKIA__ || __WASM__
+#if __SKIA__
 			if (margin > 0)
 			{
 				Assert.Inconclusive("Margin are not supported by SV https://github.com/unoplatform/uno/issues/7000");
@@ -311,7 +295,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			bool canHorizontallyScroll,
 			bool canVerticallyScroll)
 		{
-#if __SKIA__ || __WASM__
+#if __SKIA__
 			if (margin > 0)
 			{
 				Assert.Inconclusive("Margin are not supported by SV https://github.com/unoplatform/uno/issues/7000");

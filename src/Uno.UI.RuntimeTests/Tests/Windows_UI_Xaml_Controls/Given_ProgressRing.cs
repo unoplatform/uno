@@ -27,12 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ProgressRing_Visible()
 		{
-			const int expectedSize =
-#if __ANDROID__
-				48; //Natively set as 48 for Android; 20 for other platforms
-#else
-				20;
-#endif
+			const int expectedSize = 20;
 			var ring = new ProgressRing() { IsActive = true };
 			try
 			{

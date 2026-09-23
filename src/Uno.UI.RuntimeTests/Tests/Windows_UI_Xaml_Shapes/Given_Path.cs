@@ -176,9 +176,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
-#if !__SKIA__ && !WINAPPSDK
-		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
-#endif
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Geometry_Transform_Translates_Rendering()
 		{
@@ -209,9 +206,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if !__SKIA__ && !WINAPPSDK
-		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
-#endif
 		public async Task When_Geometry_Transform_Changed_At_Runtime()
 		{
 			var translate = new TranslateTransform { X = 0, Y = 0 };
@@ -249,9 +243,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
-#if !__SKIA__ && !WINAPPSDK
-		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
-#endif
 		public async Task When_GeometryGroup_Children_Have_Transforms()
 		{
 			var path = new Path
@@ -291,9 +282,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19957")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if !__SKIA__ && !WINAPPSDK
-		[Ignore("PolyLineSegment stroke rendering is validated on Skia and WinUI.")]
-#endif
 		public async Task When_PolyLineSegment_Is_Stroked_Renders_All_Points()
 		{
 			// A PathGeometry containing a LineSegment followed by a PolyLineSegment,
@@ -353,7 +341,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 #if !WINAPPSDK
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2228")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 		public async Task When_Path_ArcTo_Multiple_Arcs_Does_Not_Throw()
 		{
 			var path = new Path

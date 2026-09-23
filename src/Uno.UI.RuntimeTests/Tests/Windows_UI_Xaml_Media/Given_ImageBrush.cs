@@ -45,24 +45,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		[DataRow(Stretch.Fill, false)]
 		[DataRow(Stretch.Fill, true)]
-#if !__APPLE_UIKIT__
 		// See https://github.com/unoplatform/uno/issues/9080
 		[DataRow(Stretch.UniformToFill, false)]
-#endif
 		[DataRow(Stretch.UniformToFill, true)]
-#if !__ANDROID__
 		// Stretch.None is broken on Android.
 		// See https://github.com/unoplatform/uno/pull/7238#issuecomment-937667565
 		[DataRow(Stretch.None, false)]
 		[DataRow(Stretch.None, true)]
-#endif
-#if !__APPLE_UIKIT__
 		// See https://github.com/unoplatform/uno/issues/9080
 		[DataRow(Stretch.Uniform, false)]
-#endif
 		[DataRow(Stretch.Uniform, true)]
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit)] // Flaky on UIKit - #9080
 		public async Task When_Stretch(Stretch stretch, bool useRectangle)
 		{
 			const string Redish = "#FFEB1C24";
@@ -111,7 +104,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			await TestHelper.RetryAssert(async () =>
 			{
 				float BorderOffset =
-#if __APPLE_UIKIT__ || __SKIA__
+#if __SKIA__
 					6;
 #else
 					3;

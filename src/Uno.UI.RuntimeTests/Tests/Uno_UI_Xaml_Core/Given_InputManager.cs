@@ -260,9 +260,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #elif __SKIA__
 	[Ignore("Disabled due to https://github.com/unoplatform/uno-private/issues/878")]
@@ -712,9 +710,7 @@ public class Given_InputManager
 
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #elif RUNTIME_NATIVE_AOT
 	[Ignore("TODO: figure out why this fails, how to fix")]
@@ -765,9 +761,7 @@ public class Given_InputManager
 
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_DirectManipulationInertial_Then_SubsequentManipulationStillPassingThrough()
@@ -817,9 +811,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_DirectManipulationInertial_Then_ReverseScrollWorks()
@@ -896,9 +888,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_DirectManipulationMultiple_Then_RunsIndependently()
@@ -966,9 +956,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_DirectManipulationMultiple_Then_RunsIndependently_2()
@@ -1196,9 +1184,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_DirectManipulationMixedWithUIElementManipulation_Then_TopMostWins()
@@ -1265,9 +1251,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_DirectManipulationMixedWithUIElementManipulationInDifferentDirection_Then_TopMostWins()
@@ -1332,9 +1316,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_DirectManipulationMixedWithUIElementManipulation_Then_TopMostWinsAndChainingWorks()
@@ -1400,9 +1382,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	[DataRow(ManipulationModes.None, false)]
@@ -1474,9 +1454,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_ToggleSwitchToggledInScrollViewer_Then_ScrollStillWorks()
@@ -1540,9 +1518,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_SwipeControlInListView_Then_VerticalScrollStillWorks()

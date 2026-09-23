@@ -17,9 +17,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView
 	{
 		public static Rect StartupVisibleBounds { get; set; }
 
-#if !__ANDROID__
 		[Ignore]
-#endif
 		[TestMethod]
 		public void When_StartupVisibleBounds_Has_Value()
 		{

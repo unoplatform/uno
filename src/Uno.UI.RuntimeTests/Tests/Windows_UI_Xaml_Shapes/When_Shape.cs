@@ -1,5 +1,4 @@
-﻿#if __APPLE_UIKIT__ || __SKIA__ || WINAPPSDK
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -56,7 +55,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 #endif
 
-#if __SKIA__ || WINAPPSDK
 		[TestMethod]
 		public void When_StrokeMiterLimit_Default()
 		{
@@ -836,7 +834,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			Assert.IsTrue(MathEx.ApproxEqual(100, SUT.LayoutSlotWithMarginsAndAlignments.Height, 1E-3));
 		}
 #endif
-#endif
 
 #if HAS_UNO
 		[TestMethod]
@@ -1116,4 +1113,3 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 #endif
 	}
 }
-#endif

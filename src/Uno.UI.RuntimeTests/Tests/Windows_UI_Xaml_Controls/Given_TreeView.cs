@@ -30,9 +30,6 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
-#if __APPLE_UIKIT__
-[Ignore("Test is unstable on iOS currently")]
-#endif
 [TestClass]
 [RunsOnUIThread]
 [PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
@@ -166,9 +163,6 @@ public class Given_TreeView
 	}
 #endif
 
-#if __ANDROID__
-	[Ignore("Test is not operational on Android, items are not returned properly https://github.com/unoplatform/uno/issues/9080")]
-#endif
 	[TestMethod]
 	public async Task When_Open_Close_Root_Twice_Keep_State()
 	{
