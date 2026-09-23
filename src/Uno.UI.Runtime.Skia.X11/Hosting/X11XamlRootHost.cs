@@ -436,12 +436,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// like a rapid sequence of presses and releases and CoreWindow.GetKeyState reports it as not held
 		// in between. Detectable auto-repeat delivers repeated key presses instead, as every other
 		// platform does.
-		if (X11Helper.XkbSetDetectableAutoRepeat(display, 1, out var detectableAutoRepeatSupported) == 0 || detectableAutoRepeatSupported == 0)
+		if ((X11Helper.XkbSetDetectableAutoRepeat(display, 1, out var detectableAutoRepeatSupported) == 0 || detectableAutoRepeatSupported == 0)
+			&& this.Log().IsEnabled(LogLevel.Warning))
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn("XLIB: detectable auto-repeat is unavailable, a held key will be reported as repeatedly pressed and released.");
-			}
+			this.Log().Warn("XLIB: detectable auto-repeat is unavailable, a held key will be reported as repeatedly pressed and released.");
 		}
 
 		int screen = XLib.XDefaultScreen(display);
