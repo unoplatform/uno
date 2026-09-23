@@ -265,7 +265,7 @@ If you want to migrate to the new Single Project, you can follow the [Migrating 
 
 Uno Platform 5.1 does not contain breaking changes that require attention when upgrading.
 
-This version however introduces the MSBuild Uno.SDK, which provides support for smaller project files and better Visual Studio integration. Using the Uno.Sdk was optional in this release and previous project templates were fully supported; as of Uno Platform 7.0 it is required — see [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7). If you want to migrate to Uno.Sdk based projects, you can follow the [Migrating Projects to Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
+This version however introduces the MSBuild `Uno.Sdk`, which provides support for smaller project files and better Visual Studio integration. Using the Uno.Sdk was optional in this release and previous project templates were fully supported; as of Uno Platform 7.0 it is required — see [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7). If you want to migrate to Uno.Sdk based projects, you can follow the [Migrating Projects to Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
 
 ## Uno Platform 5.0
 
