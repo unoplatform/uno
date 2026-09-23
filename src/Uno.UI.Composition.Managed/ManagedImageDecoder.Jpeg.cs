@@ -9,7 +9,7 @@ internal static partial class ManagedImageDecoder
 {
 	// JPEG decode: baseline (SOF0/1) and progressive (SOF2), Huffman only. Coefficients for every block are
 	// accumulated across scans into a per-component buffer (indexed by zig-zag position), then dequantized,
-	// de-zig-zagged, IDCT'd and colour-converted once all scans are read. Arithmetic/lossless fall back to Skia.
+	// de-zig-zagged, IDCT'd and colour-converted once all scans are read. Arithmetic/lossless coding is not handled.
 	private static bool TryDecodeJpeg(byte[] d, [NotNullWhen(true)] out DecodedImage? decoded)
 	{
 		decoded = null;
@@ -33,6 +33,7 @@ internal static partial class ManagedImageDecoder
 		private int _restartInterval;
 		private int _width, _height;
 		private int _orientation = 1;
+		private int _adobeTransform = -1; // APP14 colour transform; -1 = no Adobe marker
 		private bool _progressive;
 		private JpegComponent[]? _components;
 		private int _hMax = 1, _vMax = 1;
@@ -80,6 +81,7 @@ internal static partial class ManagedImageDecoder
 					case 0xC4: ParseHuffman(segStart, segEnd); break;
 					case 0xDD: _restartInterval = (_d[segStart] << 8) | _d[segStart + 1]; break;
 					case 0xE1: _orientation = TryReadExifOrientation(_d, segStart, segEnd) ?? _orientation; break;
+					case 0xEE: _adobeTransform = TryReadAdobeTransform(_d, segStart, segEnd) ?? _adobeTransform; break;
 					case 0xC0 or 0xC1 or 0xC2: // baseline / extended / progressive
 						_progressive = marker == 0xC2;
 						ParseFrame(segStart);
@@ -161,7 +163,7 @@ internal static partial class ManagedImageDecoder
 			_width = (_d[q + 2] << 8) | _d[q + 3];
 			if (ExceedsPixelCap(_width, _height))
 			{
-				// Bail (caught by TryDecode's guard → graceful Skia fallback) before the dimension-driven allocations.
+				// Bail before the dimension-driven allocations; TryDecode reports the failure as "not decoded".
 				throw new NotSupportedException("JPEG dimensions exceed the decode pixel cap.");
 			}
 			var count = _d[q + 4];
@@ -528,35 +530,64 @@ internal static partial class ManagedImageDecoder
 				}
 			}
 
-			return ToRgb(_width, _height, _components, _hMax, _vMax);
+			return ToRgb(_width, _height, _components, _hMax, _vMax, _adobeTransform);
 		}
 	}
 
-	private static DecodedImage ToRgb(int width, int height, JpegComponent[] components, int hMax, int vMax)
+	private static DecodedImage ToRgb(int width, int height, JpegComponent[] components, int hMax, int vMax, int adobeTransform)
 	{
 		var bgra = new byte[width * height * 4];
-		var grayscale = components.Length == 1;
-		var y = components[0];
-		var cb = grayscale ? null : components[1];
-		var cr = grayscale ? null : components[2];
+		var grayscale = components.Length < 3;
+
+		// APP14 decides the colour transform when it is present. Without it, three components are YCbCr unless
+		// the component ids spell R/G/B; four components are always Adobe's CMYK (transform 2 = YCCK).
+		var ycc = components.Length switch
+		{
+			3 => adobeTransform >= 0
+				? adobeTransform != 0
+				: !(components[0].Id == 'R' && components[1].Id == 'G' && components[2].Id == 'B'),
+			4 => adobeTransform == 2,
+			_ => false,
+		};
 
 		for (var py = 0; py < height; py++)
 		{
 			for (var px = 0; px < width; px++)
 			{
-				var yVal = Sample(y, px, py, hMax, vMax);
 				byte r, g, b;
 				if (grayscale)
 				{
-					r = g = b = (byte)yVal;
+					r = g = b = (byte)Sample(components[0], px, py, hMax, vMax);
 				}
 				else
 				{
-					var cbVal = Sample(cb!, px, py, hMax, vMax) - 128;
-					var crVal = Sample(cr!, px, py, hMax, vMax) - 128;
-					r = Clamp(yVal + 1.402 * crVal);
-					g = Clamp(yVal - 0.344136 * cbVal - 0.714136 * crVal);
-					b = Clamp(yVal + 1.772 * cbVal);
+					var c0 = Sample(components[0], px, py, hMax, vMax);
+					var c1 = Sample(components[1], px, py, hMax, vMax);
+					var c2 = Sample(components[2], px, py, hMax, vMax);
+					if (ycc)
+					{
+						var cbVal = c1 - 128;
+						var crVal = c2 - 128;
+						r = Clamp(c0 + 1.402 * crVal);
+						g = Clamp(c0 - 0.344136 * cbVal - 0.714136 * crVal);
+						b = Clamp(c0 + 1.772 * cbVal);
+					}
+					else
+					{
+						r = (byte)c0;
+						g = (byte)c1;
+						b = (byte)c2;
+					}
+
+					if (components.Length >= 4)
+					{
+						// Adobe stores CMYK inverted, so the three channels above are already 255-C/M/Y and the
+						// fourth is 255-K; multiplying them out gives the RGB value.
+						var k = Sample(components[3], px, py, hMax, vMax);
+						r = (byte)(r * k / 255);
+						g = (byte)(g * k / 255);
+						b = (byte)(b * k / 255);
+					}
 				}
 
 				SetPixelPremul(bgra, (py * width + px) * 4, r, g, b, 255);
@@ -564,6 +595,17 @@ internal static partial class ManagedImageDecoder
 		}
 
 		return new DecodedImage(width, height, new[] { bgra }, DecodedImage.SingleFrameDurations);
+	}
+
+	// APP14 "Adobe" marker: the transform byte is the last of the 12-byte payload (0 = none/CMYK, 1 = YCbCr, 2 = YCCK).
+	private static int? TryReadAdobeTransform(byte[] d, int start, int end)
+	{
+		if (end - start < 12 || d[start] != 'A' || d[start + 1] != 'd' || d[start + 2] != 'o' || d[start + 3] != 'b' || d[start + 4] != 'e')
+		{
+			return null;
+		}
+
+		return d[start + 11];
 	}
 
 	private static int? TryReadExifOrientation(byte[] d, int start, int end)

@@ -24,7 +24,7 @@ namespace Uno.UI.Composition.Drawing;
 /// </remarks>
 public sealed class ManagedFontProvider : IFontProvider
 {
-	private sealed record FaceEntry(string Path, int TtcIndex, int Weight, int WidthClass, bool Italic);
+	private sealed record FaceEntry(string Path, int TtcIndex, string Family, int Weight, int WidthClass, bool Italic);
 
 	private readonly object _gate = new();
 	private Dictionary<string, List<FaceEntry>>? _byFamily; // family (lower-invariant) -> faces
@@ -33,7 +33,7 @@ public sealed class ManagedFontProvider : IFontProvider
 	// Optional app-bundled sfnt blob, used as the guaranteed default when no system font is available
 	// (iOS/WASM); parsed once per size.
 	private readonly byte[]? _bundledDefaultFont;
-	private readonly Dictionary<int, IFont?> _bundledDefaultBySize = new();
+	private readonly Dictionary<float, IFont?> _bundledDefaultBySize = new();
 
 	/// <summary>Creates a system-font provider.</summary>
 	/// <param name="bundledDefaultFont">
@@ -42,11 +42,12 @@ public sealed class ManagedFontProvider : IFontProvider
 	/// </param>
 	public ManagedFontProvider(byte[]? bundledDefaultFont = null) => _bundledDefaultFont = bundledDefaultFont;
 
-	// Loaded fonts, keyed by file + collection index + pixel size.
-	private readonly Dictionary<(string Path, int TtcIndex, int Size), ManagedFont?> _loaded = new();
+	// Loaded fonts, keyed by file + collection index + pixel size. ManagedFont bakes the pixel size into every
+	// metric it reports, so the size must be part of the key exactly — rounding it aliases 14.9px onto 14px.
+	private readonly Dictionary<(string Path, int TtcIndex, float Size), ManagedFont?> _loaded = new();
 
 	// Codepoint fallback results, keyed by codepoint + requested style + size.
-	private readonly Dictionary<(int Codepoint, int Weight, FontStretch Stretch, FontStyle Style, int Size), IFont?> _matchCharacterCache = new();
+	private readonly Dictionary<(int Codepoint, int Weight, FontStretch Stretch, FontStyle Style, float Size), IFont?> _matchCharacterCache = new();
 
 	// Default-font family preference, first present wins.
 	private static readonly string[] _defaultFamilies =
@@ -89,7 +90,7 @@ public sealed class ManagedFontProvider : IFontProvider
 
 	public ValueTask<IFont?> MatchCharacterAsync(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
-		var key = (codepoint, weight.Weight, stretch, style, (int)fontSize);
+		var key = (codepoint, weight.Weight, stretch, style, fontSize);
 		lock (_gate)
 		{
 			if (_matchCharacterCache.TryGetValue(key, out var cached))
@@ -105,7 +106,9 @@ public sealed class ManagedFontProvider : IFontProvider
 		{
 			if (Load(face, fontSize) is ManagedFont font && font.ContainsGlyph(codepoint))
 			{
-				result = font;
+				// Coverage is found in enumeration order, which says nothing about the requested style; re-resolve
+				// the family it landed in so a bold run keeps its weight (the matched face stands if none does).
+				result = MatchStyledFamily(face.Family, codepoint, weight, stretch, style, fontSize) ?? font;
 				break;
 			}
 		}
@@ -161,7 +164,7 @@ public sealed class ManagedFontProvider : IFontProvider
 			return null;
 		}
 
-		var key = (int)fontSize;
+		var key = fontSize;
 		lock (_gate)
 		{
 			if (_bundledDefaultBySize.TryGetValue(key, out var cached))
@@ -177,7 +180,7 @@ public sealed class ManagedFontProvider : IFontProvider
 
 	private ManagedFont? Load(FaceEntry face, float fontSize)
 	{
-		var key = (face.Path, face.TtcIndex, (int)fontSize);
+		var key = (face.Path, face.TtcIndex, fontSize);
 		lock (_gate)
 		{
 			if (_loaded.TryGetValue(key, out var cached))
@@ -208,6 +211,37 @@ public sealed class ManagedFontProvider : IFontProvider
 		return font;
 	}
 
+	/// <summary>
+	/// Resolves <paramref name="family"/> for the requested style, or <c>null</c> when no face of that family
+	/// covers <paramref name="codepoint"/> (a family can be listed for a face that lacks the character).
+	/// </summary>
+	private IFont? MatchStyledFamily(string family, int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+	{
+		if (family.Length == 0 || !_byFamily!.TryGetValue(family.ToLowerInvariant(), out var faces))
+		{
+			return null;
+		}
+
+		ManagedFont? best = null;
+		var bestScore = int.MaxValue;
+		foreach (var face in faces)
+		{
+			var score = StyleScore(face, weight.Weight, ToWidthClass(stretch), IsItalic(style));
+			if (score >= bestScore)
+			{
+				continue;
+			}
+
+			if (Load(face, fontSize) is ManagedFont font && font.ContainsGlyph(codepoint))
+			{
+				bestScore = score;
+				best = font;
+			}
+		}
+
+		return best;
+	}
+
 	// Nearest match: an italic mismatch is the heaviest penalty, then weight distance, then width distance.
 	private static FaceEntry? PickBestFace(List<FaceEntry> faces, int weight, int widthClass, bool italic)
 	{
@@ -215,9 +249,7 @@ public sealed class ManagedFontProvider : IFontProvider
 		var bestScore = int.MaxValue;
 		foreach (var face in faces)
 		{
-			var score = Math.Abs(face.Weight - weight)
-				+ Math.Abs(face.WidthClass - widthClass) * 100
-				+ (face.Italic == italic ? 0 : 100_000);
+			var score = StyleScore(face, weight, widthClass, italic);
 			if (score < bestScore)
 			{
 				bestScore = score;
@@ -227,6 +259,11 @@ public sealed class ManagedFontProvider : IFontProvider
 
 		return best;
 	}
+
+	private static int StyleScore(FaceEntry face, int weight, int widthClass, bool italic) =>
+		Math.Abs(face.Weight - weight)
+		+ Math.Abs(face.WidthClass - widthClass) * 100
+		+ (face.Italic == italic ? 0 : 100_000);
 
 	private void EnsureIndex()
 	{
@@ -277,7 +314,7 @@ public sealed class ManagedFontProvider : IFontProvider
 							continue;
 						}
 
-						var entry = new FaceEntry(file, ttcIndex, weight, widthClass, italic);
+						var entry = new FaceEntry(file, ttcIndex, family, weight, widthClass, italic);
 						allFaces.Add(entry);
 
 						var famKey = family.ToLowerInvariant();

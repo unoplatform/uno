@@ -305,6 +305,18 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 		}
 
 		var radii = new Vector2(w * 0.5f, h * 0.5f);
+		var center = new Vector2(cx, cy);
+
+		// Extremes plus in-box controls are also satisfied by a concave astroid; each quadrant must actually
+		// trace the ellipse, or the reported shape clips with a silhouette the path never had.
+		for (int i = 0; i < 4; i++)
+		{
+			if (!IsEllipticalQuadrant(seg[i], pts[i], center, radii))
+			{
+				return null;
+			}
+		}
+
 		return new RoundRectangle
 		{
 			Rect = new Rect(minX, minY, w, h),
@@ -313,6 +325,32 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 			BottomRight = radii,
 			BottomLeft = radii,
 		};
+	}
+
+	/// <summary>
+	/// True when a cubic quarter-arc really traces the ellipse of <paramref name="center"/>/<paramref name="radii"/>:
+	/// both control points bulge away from the centre (not a scallop), and the curve's midpoint lands on the ellipse.
+	/// </summary>
+	private static bool IsEllipticalQuadrant(in ManagedPathSegment cubic, Vector2 from, Vector2 center, Vector2 radii)
+	{
+		if (radii.X <= 0f || radii.Y <= 0f)
+		{
+			return false;
+		}
+
+		var chord = cubic.End - from;
+		var inward = Cross(chord, center - from);
+		if (Cross(chord, cubic.C1 - from) * inward > 0f || Cross(chord, cubic.C2 - from) * inward > 0f)
+		{
+			return false;
+		}
+
+		var mid = ManagedGeometry.EvaluateCubic(from, cubic.C1, cubic.C2, cubic.End, 0.5f);
+		var u = (mid.X - center.X) / radii.X;
+		var v = (mid.Y - center.Y) / radii.Y;
+		return MathF.Abs(MathF.Sqrt(u * u + v * v) - 1f) <= 0.02f;
+
+		static float Cross(Vector2 a, Vector2 b) => a.X * b.Y - a.Y * b.X;
 	}
 
 	/// <summary>
@@ -359,9 +397,12 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 			return null;
 		}
 
-		// Every corner's control points must stay inside that corner's box, or it is not an arc.
-		if (!CornerInBox(seg[1], seg[0].End, new Vector2(r, t)) || !CornerInBox(seg[3], seg[2].End, new Vector2(r, b))
-			|| !CornerInBox(seg[5], seg[4].End, new Vector2(l, b)) || !CornerInBox(seg[7], seg[6].End, new Vector2(l, t)))
+		// Every corner must be a real outward arc. A box test alone also accepts an inward scallop (a "ticket"
+		// corner), which would then clip as if it were convex.
+		if (!IsCornerArc(seg[1], seg[0].End, new Vector2(r, t), new Vector2(r - topRight.X, t + topRight.Y), topRight)
+			|| !IsCornerArc(seg[3], seg[2].End, new Vector2(r, b), new Vector2(r - bottomRight.X, b - bottomRight.Y), bottomRight)
+			|| !IsCornerArc(seg[5], seg[4].End, new Vector2(l, b), new Vector2(l + bottomLeft.X, b - bottomLeft.Y), bottomLeft)
+			|| !IsCornerArc(seg[7], seg[6].End, new Vector2(l, t), new Vector2(l + topLeft.X, t + topLeft.Y), topLeft))
 		{
 			return null;
 		}
@@ -375,14 +416,20 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 			BottomLeft = bottomLeft,
 		};
 
-		static bool CornerInBox(in ManagedPathSegment cubic, Vector2 from, Vector2 corner)
+		static bool IsCornerArc(in ManagedPathSegment cubic, Vector2 from, Vector2 corner, Vector2 center, Vector2 radii)
 		{
 			float minX = MathF.Min(MathF.Min(from.X, cubic.End.X), corner.X) - 0.01f;
 			float maxX = MathF.Max(MathF.Max(from.X, cubic.End.X), corner.X) + 0.01f;
 			float minY = MathF.Min(MathF.Min(from.Y, cubic.End.Y), corner.Y) - 0.01f;
 			float maxY = MathF.Max(MathF.Max(from.Y, cubic.End.Y), corner.Y) + 0.01f;
-			return cubic.C1.X >= minX && cubic.C1.X <= maxX && cubic.C1.Y >= minY && cubic.C1.Y <= maxY
-				&& cubic.C2.X >= minX && cubic.C2.X <= maxX && cubic.C2.Y >= minY && cubic.C2.Y <= maxY;
+			if (cubic.C1.X < minX || cubic.C1.X > maxX || cubic.C1.Y < minY || cubic.C1.Y > maxY
+				|| cubic.C2.X < minX || cubic.C2.X > maxX || cubic.C2.Y < minY || cubic.C2.Y > maxY)
+			{
+				return false;
+			}
+
+			// A degenerate (zero-radius) corner has no arc to verify; the box test already pinned it to the corner.
+			return radii.X <= 0.01f || radii.Y <= 0.01f || IsEllipticalQuadrant(cubic, from, center, radii);
 		}
 	}
 

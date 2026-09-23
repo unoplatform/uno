@@ -27,7 +27,7 @@ internal static partial class ManagedImageDecoder
 			p += globalTable.Length;
 		}
 
-		if (screenWidth <= 0 || screenHeight <= 0)
+		if (ExceedsPixelCap(screenWidth, screenHeight))
 		{
 			return false;
 		}
@@ -108,11 +108,13 @@ internal static partial class ManagedImageDecoder
 			frames.Add((byte[])canvas.Clone());
 			durations.Add(delayMs);
 
-			ApplyDisposal(canvas, screenWidth, disposalMethod, left, top, frameWidth, frameHeight, previousCanvas);
+			ApplyDisposal(canvas, screenWidth, screenHeight, disposalMethod, left, top, frameWidth, frameHeight, previousCanvas);
 
-			// Reset per-frame graphic control state.
+			// Reset per-frame graphic control state: each frame carries its own graphic control extension, so a
+			// delay must not leak from the previous frame.
 			transparentIndex = -1;
 			disposalMethod = 0;
+			delayMs = 100;
 		}
 
 		if (frames.Count == 0)
@@ -156,20 +158,20 @@ internal static partial class ManagedImageDecoder
 		}
 	}
 
-	private static void ApplyDisposal(byte[] canvas, int canvasWidth, int disposalMethod, int left, int top, int frameWidth, int frameHeight, byte[]? previousCanvas)
+	private static void ApplyDisposal(byte[] canvas, int canvasWidth, int canvasHeight, int disposalMethod, int left, int top, int frameWidth, int frameHeight, byte[]? previousCanvas)
 	{
 		switch (disposalMethod)
 		{
 			case 2: // restore to background (transparent)
-				for (var y = top; y < top + frameHeight; y++)
+				// Clamp to the canvas: a frame rect wider than the screen would otherwise wrap into the next row.
+				var right = Math.Min(left + frameWidth, canvasWidth);
+				var bottom = Math.Min(top + frameHeight, canvasHeight);
+				for (var y = Math.Max(0, top); y < bottom; y++)
 				{
-					for (var x = left; x < left + frameWidth; x++)
+					for (var x = Math.Max(0, left); x < right; x++)
 					{
 						var o = (y * canvasWidth + x) * 4;
-						if (o >= 0 && o + 3 < canvas.Length)
-						{
-							canvas[o] = canvas[o + 1] = canvas[o + 2] = canvas[o + 3] = 0;
-						}
+						canvas[o] = canvas[o + 1] = canvas[o + 2] = canvas[o + 3] = 0;
 					}
 				}
 				break;

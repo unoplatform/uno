@@ -7,8 +7,8 @@ namespace Uno.UI.Composition.Drawing;
 
 internal static partial class ManagedImageDecoder
 {
-	// WebP: decodes the lossless (VP8L) variant fully. Lossy (VP8 — a video-codec-scale intra decoder) and
-	// animated WebP are routed back to the Skia codec.
+	// WebP: decodes both still variants — lossless (VP8L) and lossy (VP8, the RFC 6386 intra decoder). The ALPH
+	// chunk is not decoded, so an alpha-bearing lossy WebP comes out opaque. Animated WebP is not handled.
 	private static bool TryDecodeWebp(byte[] d, [NotNullWhen(true)] out DecodedImage? decoded)
 	{
 		decoded = null;
@@ -29,9 +29,15 @@ internal static partial class ManagedImageDecoder
 				return TryDecodeVp8l(d, chunk, out decoded);
 			}
 
-			if (id is "ANIM" or "ANMF" or "VP8 ")
+			if (id == "VP8 ")
 			{
-				return false; // animation / lossy -> Skia codec
+				// A truncated chunk still decodes as far as it goes, so clamp rather than reject.
+				return TryDecodeVp8(d, chunk, (int)Math.Min(size, (uint)Math.Max(0, d.Length - chunk)), out decoded);
+			}
+
+			if (id is "ANIM" or "ANMF")
+			{
+				return false; // animated WebP is not handled here
 			}
 
 			// Unsigned size + bounds check keeps `p` moving forward; a crafted huge size can no longer wrap it.
@@ -106,6 +112,11 @@ internal static partial class ManagedImageDecoder
 
 			width = ReadBits(14) + 1;
 			height = ReadBits(14) + 1;
+			if (ExceedsPixelCap(width, height))
+			{
+				return false; // a 14-bit header pair can ask for ~1 GB before a single pixel is read
+			}
+
 			ReadBits(1); // alpha_is_used
 			if (ReadBits(3) != 0) // version
 			{

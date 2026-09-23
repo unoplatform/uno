@@ -114,7 +114,7 @@ internal sealed partial class ManagedLottie
 					var w = stroke.Width.Evaluate(frame);
 					if (w > 0)
 					{
-						session.StrokePath(combined, WithOpacity(stroke.Color.Evaluate(frame), localOpacity * stroke.Opacity.Evaluate(frame) / 100f), w);
+						StrokeCombined(session, combined, WithOpacity(stroke.Color.Evaluate(frame), localOpacity * stroke.Opacity.Evaluate(frame) / 100f), w, stroke.Cap, stroke.Join);
 					}
 				}
 			}
@@ -133,6 +133,36 @@ internal sealed partial class ManagedLottie
 		session.Restore();
 	}
 
+	/// <summary>
+	/// Strokes the group's combined path. <see cref="IDrawingSession.StrokePath"/> implies flat caps and is gated on
+	/// <see cref="DrawingCapabilities.NativeStroking"/>, so anything else is widened to a fill — a rounded cap is what
+	/// a rotating-arc spinner, the commonest Lottie asset, is made of.
+	/// </summary>
+	private static void StrokeCombined(IDrawingSession session, IGeometry path, Color color, float width, int lottieCap, int lottieJoin)
+	{
+		// Lottie line styles: cap 1=butt, 2=round, 3=square; join 1=miter, 2=round, 3=bevel.
+		var cap = lottieCap switch { 2 => StrokeCap.Round, 3 => StrokeCap.Square, _ => StrokeCap.Butt };
+		var join = lottieJoin switch { 2 => StrokeJoin.Round, 3 => StrokeJoin.Bevel, _ => StrokeJoin.Miter };
+
+		if (cap == StrokeCap.Butt && DrawingCapabilities.NativeStroking)
+		{
+			session.StrokePath(path, color, width, join);
+			return;
+		}
+
+		using var widened = path.GetStrokeFillGeometry(new StrokeStyle
+		{
+			Thickness = width,
+			StartCap = cap,
+			EndCap = cap,
+			DashCap = cap,
+			LineJoin = join,
+			MiterLimit = 4f,
+		});
+
+		session.DrawPath(widened, color);
+	}
+
 	// Trim [Start,End]% of the concatenated path length, rotated by Offset (deg, 360 = full). Returns the original
 	// when the trim is a no-op (full path). Wrap (range crossing the seam) is a best-effort union of the two arcs.
 	private static IGeometry? ApplyTrim(IGeometry geom, TrimShape trim, float frame)
@@ -147,7 +177,7 @@ internal sealed partial class ManagedLottie
 		var len = b - a;
 		if (len <= 1e-4f)
 		{
-			return geom.GetFilledGeometry(0f, 0f) is { } empty ? empty : geom;   // nothing visible
+			return null;   // fully collapsed trim: nothing visible
 		}
 		if (len >= 1f)
 		{

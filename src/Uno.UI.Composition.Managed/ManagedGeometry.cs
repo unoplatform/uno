@@ -188,9 +188,11 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 	{
 		// The fill path of a fill (non-stroke) is the path itself; a (0,0) trim means "no trimming". Return THIS
 		// rather than a re-wrap: an identical copy still has a new identity every frame, which makes every cache
-		// keyed on the geometry miss and rebuild. Safe — the type is immutable.
+		// keyed on the geometry miss and rebuild. Safe — the type is immutable. Hand back a reference of its own
+		// (as Transform does): the caller owns and disposes the result, and that must not free its own input.
 		if (trimStart == 0f && trimEnd == 0f)
 		{
+			AddRef();
 			return this;
 		}
 

@@ -264,10 +264,12 @@ internal sealed partial class ManagedGeometry
 
 		if (p.Count < 2)
 		{
-			// A degenerate run (single point) still renders a round/square dot when capped.
-			if (p.Count == 1 && startCap == StrokeCap.Round)
+			// A zero-length subpath still paints a dot from its caps (a disc for Round, a full square for Square);
+			// butt caps paint nothing. The tangent is undefined, so cap along ±X as Skia does.
+			if (p.Count == 1)
 			{
-				AddDisc(pieces, p[0], hw);
+				AddCap(pieces, p[0], new Vector2(-1, 0), hw, startCap);
+				AddCap(pieces, p[0], new Vector2(1, 0), hw, endCap);
 			}
 
 			return;
@@ -339,15 +341,19 @@ internal sealed partial class ManagedGeometry
 
 		if (style.LineJoin is StrokeJoin.Miter or StrokeJoin.MiterOrBevel)
 		{
-			AddMiterJoin(pieces, v, dIn, dOut, hw, style.MiterLimit <= 0 ? 10f : style.MiterLimit);
+			// D2D truncates a Miter join at the limit but BEVELS a MiterOrBevel one; the bevel filler above
+			// already is that bevel, so an over-limit MiterOrBevel just adds nothing more.
+			AddMiterJoin(pieces, v, dIn, dOut, hw, style.MiterLimit <= 0 ? 10f : style.MiterLimit,
+				clipOverLimit: style.LineJoin == StrokeJoin.Miter);
 		}
 	}
 
 	/// <summary>
-	/// Adds the outer-side miter geometry: a full pointed tip within the limit, otherwise the WinUI
-	/// miter-clip trapezoid truncated at the limit (matching SkiaGeometrySource2D's DoLimitedMiter).
+	/// Adds the outer-side miter geometry: a full pointed tip within the limit, otherwise (when
+	/// <paramref name="clipOverLimit"/>) the WinUI miter-clip trapezoid truncated at the limit (matching
+	/// SkiaGeometrySource2D's DoLimitedMiter), or nothing at all — leaving the plain bevel.
 	/// </summary>
-	private static void AddMiterJoin(List<ManagedContour> pieces, Vector2 v, Vector2 dIn, Vector2 dOut, float hw, float miterLimit)
+	private static void AddMiterJoin(List<ManagedContour> pieces, Vector2 v, Vector2 dIn, Vector2 dOut, float hw, float miterLimit, bool clipOverLimit)
 	{
 		var dot = dIn.X * dOut.X + dIn.Y * dOut.Y;
 		var sinHalfSq = (1 + dot) / 2;
@@ -387,6 +393,11 @@ internal sealed partial class ManagedGeometry
 				AddTriangle(pieces, bevelIn, tip, bevelOut);
 			}
 
+			return;
+		}
+
+		if (!clipOverLimit)
+		{
 			return;
 		}
 

@@ -80,6 +80,22 @@ internal static partial class ManagedImageDecoder
 			return false;
 		}
 
+		// On a greyscale (0) or truecolour (2) image, tRNS is a transparent colour KEY in raw sample values,
+		// not the per-index alpha table it is for a palette image.
+		int[]? colorKey = null;
+		if (paletteAlpha is not null && colorType is 0 or 2)
+		{
+			var samples = colorType == 0 ? 1 : 3;
+			if (paletteAlpha.Length >= samples * 2)
+			{
+				colorKey = new int[samples];
+				for (var i = 0; i < samples; i++)
+				{
+					colorKey[i] = (paletteAlpha[i * 2] << 8) | paletteAlpha[i * 2 + 1];
+				}
+			}
+		}
+
 		idat.Position = 0;
 		using var inflate = new ZLibStream(idat, CompressionMode.Decompress);
 		var bitsPerPixel = channels * bitDepth;
@@ -91,7 +107,7 @@ internal static partial class ManagedImageDecoder
 			var stride = (width * bitsPerPixel + 7) / 8;
 			var raw = new byte[(stride + 1) * height];
 			ReadExactly(inflate, raw);
-			DecodePass(raw, 0, width, height, 0, 0, 1, 1, bgra, width, bitsPerPixel, bytesPerPixel, bitDepth, colorType, palette, paletteAlpha);
+			DecodePass(raw, 0, width, height, 0, 0, 1, 1, bgra, width, bitsPerPixel, bytesPerPixel, bitDepth, colorType, palette, paletteAlpha, colorKey);
 		}
 		else
 		{
@@ -121,7 +137,7 @@ internal static partial class ManagedImageDecoder
 				var (pw, ph) = PassSize(width, height, startX, startY, stepX, stepY);
 				if (pw > 0 && ph > 0)
 				{
-					offset = DecodePass(raw, offset, pw, ph, startX, startY, stepX, stepY, bgra, width, bitsPerPixel, bytesPerPixel, bitDepth, colorType, palette, paletteAlpha);
+					offset = DecodePass(raw, offset, pw, ph, startX, startY, stepX, stepY, bgra, width, bitsPerPixel, bytesPerPixel, bitDepth, colorType, palette, paletteAlpha, colorKey);
 				}
 			}
 		}
@@ -134,7 +150,7 @@ internal static partial class ManagedImageDecoder
 		=> (width > startX ? (width - startX + stepX - 1) / stepX : 0, height > startY ? (height - startY + stepY - 1) / stepY : 0);
 
 	private static int DecodePass(byte[] raw, int offset, int passW, int passH, int startX, int startY, int stepX, int stepY,
-		byte[] bgra, int width, int bitsPerPixel, int bytesPerPixel, int bitDepth, int colorType, byte[]? palette, byte[]? paletteAlpha)
+		byte[] bgra, int width, int bitsPerPixel, int bytesPerPixel, int bitDepth, int colorType, byte[]? palette, byte[]? paletteAlpha, int[]? colorKey)
 	{
 		var stride = (passW * bitsPerPixel + 7) / 8;
 		var previous = new byte[stride];
@@ -150,7 +166,7 @@ internal static partial class ManagedImageDecoder
 			for (var px = 0; px < passW; px++)
 			{
 				var outX = startX + px * stepX;
-				EmitPixel(current, px, bgra, (outY * width + outX) * 4, bitDepth, colorType, palette, paletteAlpha);
+				EmitPixel(current, px, bgra, (outY * width + outX) * 4, bitDepth, colorType, palette, paletteAlpha, colorKey);
 			}
 
 			(previous, current) = (current, previous);
@@ -203,19 +219,33 @@ internal static partial class ManagedImageDecoder
 		return pa <= pb && pa <= pc ? a : pb <= pc ? b : c;
 	}
 
-	private static void EmitPixel(byte[] line, int x, byte[] bgra, int outOffset, int bitDepth, int colorType, byte[]? palette, byte[]? paletteAlpha)
+	private static void EmitPixel(byte[] line, int x, byte[] bgra, int outOffset, int bitDepth, int colorType, byte[]? palette, byte[]? paletteAlpha, int[]? colorKey)
 	{
 		byte r, g, b, a = 255;
 		switch (colorType)
 		{
 			case 0: // grayscale
-				r = g = b = SampleChannel(line, x, 0, 1, bitDepth);
-				break;
+				{
+					var gray = SampleRaw(line, x, 0, 1, bitDepth);
+					r = g = b = ScaleSample(gray, bitDepth);
+					if (colorKey is not null && gray == colorKey[0])
+					{
+						a = 0;
+					}
+					break;
+				}
 			case 2: // RGB (8/16-bit)
-				r = SampleChannel(line, x, 0, 3, bitDepth);
-				g = SampleChannel(line, x, 1, 3, bitDepth);
-				b = SampleChannel(line, x, 2, 3, bitDepth);
-				break;
+				{
+					int rs = SampleRaw(line, x, 0, 3, bitDepth), gs = SampleRaw(line, x, 1, 3, bitDepth), bs = SampleRaw(line, x, 2, 3, bitDepth);
+					r = ScaleSample(rs, bitDepth);
+					g = ScaleSample(gs, bitDepth);
+					b = ScaleSample(bs, bitDepth);
+					if (colorKey is not null && rs == colorKey[0] && gs == colorKey[1] && bs == colorKey[2])
+					{
+						a = 0;
+					}
+					break;
+				}
 			case 3: // palette
 				{
 					var index = ReadIndex(line, x, bitDepth);
@@ -239,6 +269,25 @@ internal static partial class ManagedImageDecoder
 
 		SetPixelPremul(bgra, outOffset, r, g, b, a);
 	}
+
+	// The raw sample, unscaled: a tRNS colour key is matched in the image's own bit depth.
+	private static int SampleRaw(byte[] line, int x, int channel, int channels, int bitDepth)
+	{
+		var i = x * channels + channel;
+		return bitDepth switch
+		{
+			8 => line[i],
+			16 => (line[i * 2] << 8) | line[i * 2 + 1],
+			_ => ReadSubByte(line, i, bitDepth),
+		};
+	}
+
+	private static byte ScaleSample(int value, int bitDepth) => bitDepth switch
+	{
+		8 => (byte)value,
+		16 => (byte)(value >> 8),
+		_ => (byte)(value * 255 / ((1 << bitDepth) - 1)),
+	};
 
 	private static byte SampleChannel(byte[] line, int x, int channel, int channels, int bitDepth)
 	{

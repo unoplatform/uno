@@ -11,36 +11,85 @@ internal static partial class ManagedImageDecoder
 	{
 		decoded = null;
 
+		if (d.Length < 26)
+		{
+			return false;
+		}
+
 		var pixelOffset = (int)ReadU32LE(d, 10);
 		var dibSize = (int)ReadU32LE(d, 14);
-		var width = (int)ReadU32LE(d, 18);
-		var rawHeight = (int)ReadU32LE(d, 22);
-		var topDown = rawHeight < 0;
-		var height = Math.Abs(rawHeight);
-		var bpp = ReadU16LE(d, 28);
-		var compression = (int)ReadU32LE(d, 30);
+
+		// BITMAPCOREHEADER (OS/2 v1) stores 16-bit dimensions, has no compression field, and uses 3-byte
+		// palette entries; reading it with the BITMAPINFOHEADER layout yields garbage.
+		var coreHeader = dibSize == 12;
+
+		int width, height, bpp, compression;
+		bool topDown;
+		if (coreHeader)
+		{
+			width = ReadU16LE(d, 18);
+			height = ReadU16LE(d, 20);
+			topDown = false;
+			bpp = ReadU16LE(d, 24);
+			compression = 0;
+		}
+		else
+		{
+			if (d.Length < 34)
+			{
+				return false;
+			}
+
+			width = (int)ReadU32LE(d, 18);
+			var rawHeight = (int)ReadU32LE(d, 22);
+			topDown = rawHeight < 0;
+			height = rawHeight == int.MinValue ? 0 : Math.Abs(rawHeight);
+			bpp = ReadU16LE(d, 28);
+			compression = (int)ReadU32LE(d, 30);
+		}
 
 		if (ExceedsPixelCap(width, height) || compression != 0 || bpp is not (24 or 32 or 8))
 		{
-			return false; // only uncompressed 8/24/32-bit BMPs (within the pixel cap); the rest fall back to the codec
+			return false; // only uncompressed 8/24/32-bit BMPs, within the pixel cap
 		}
 
-		byte[]? palette = null;
+		byte[]? palette = null; // BGR triples, always 256 entries so an out-of-range index can't read past the end
 		if (bpp == 8)
 		{
-			var colorsUsed = (int)ReadU32LE(d, 46);
-			if (colorsUsed == 0)
+			var entrySize = coreHeader ? 3 : 4;
+			var colorsUsed = coreHeader || d.Length < 50 ? 256 : (int)ReadU32LE(d, 46);
+			if (colorsUsed is <= 0 or > 256)
 			{
 				colorsUsed = 256;
 			}
 
 			var paletteOffset = 14 + dibSize;
-			palette = new byte[colorsUsed * 4]; // BGRA (X)
-			Array.Copy(d, paletteOffset, palette, 0, Math.Min(palette.Length, d.Length - paletteOffset));
+			palette = new byte[256 * 3];
+			for (var i = 0; i < colorsUsed; i++)
+			{
+				var p = paletteOffset + i * entrySize;
+				if (p < 0 || p + 3 > d.Length)
+				{
+					break;
+				}
+
+				palette[i * 3] = d[p];
+				palette[i * 3 + 1] = d[p + 1];
+				palette[i * 3 + 2] = d[p + 2];
+			}
 		}
 
 		var bytesPerPixel = bpp / 8;
 		var stride = (width * bytesPerPixel + 3) & ~3; // rows padded to 4 bytes
+		if (pixelOffset < 0 || (long)pixelOffset + (long)stride * height > d.Length)
+		{
+			return false;
+		}
+
+		// 32-bit BI_RGB declares no alpha mask, and most writers (MS Paint, a BitBlt capture) leave the byte at 0.
+		// Opacity has to be decided from the source bytes: premultiplying an all-zero alpha destroys the colour,
+		// and restoring A = 255 afterwards can only produce black.
+		var ignoreAlpha = bpp != 32 || IsSourceAlphaAllZero(d, pixelOffset, stride, width, height);
 		var bgra = new byte[width * height * 4];
 
 		for (var row = 0; row < height; row++)
@@ -53,7 +102,7 @@ internal static partial class ManagedImageDecoder
 				byte r, g, b, a = 255;
 				if (bpp == 8)
 				{
-					var index = d[src + x] * 4;
+					var index = d[src + x] * 3;
 					b = palette![index];
 					g = palette[index + 1];
 					r = palette[index + 2];
@@ -64,7 +113,7 @@ internal static partial class ManagedImageDecoder
 					b = d[o];
 					g = d[o + 1];
 					r = d[o + 2];
-					if (bpp == 32)
+					if (!ignoreAlpha)
 					{
 						a = d[o + 3];
 					}
@@ -74,35 +123,25 @@ internal static partial class ManagedImageDecoder
 			}
 		}
 
-		// 32-bit BI_RGB with an all-zero alpha channel means "no alpha" — treat as opaque.
-		if (bpp == 32 && IsAlphaAllZero(bgra))
-		{
-			ForceOpaque(bgra);
-		}
-
 		decoded = new DecodedImage(width, height, new[] { bgra }, DecodedImage.SingleFrameDurations);
 		return true;
 	}
 
-	private static bool IsAlphaAllZero(byte[] bgra)
+	private static bool IsSourceAlphaAllZero(byte[] d, int pixelOffset, int stride, int width, int height)
 	{
-		for (var i = 3; i < bgra.Length; i += 4)
+		for (var row = 0; row < height; row++)
 		{
-			if (bgra[i] != 0)
+			var o = pixelOffset + row * stride + 3;
+			for (var x = 0; x < width; x++, o += 4)
 			{
-				return false;
+				if (d[o] != 0)
+				{
+					return false;
+				}
 			}
 		}
 
 		return true;
-	}
-
-	private static void ForceOpaque(byte[] bgra)
-	{
-		for (var i = 3; i < bgra.Length; i += 4)
-		{
-			bgra[i] = 255;
-		}
 	}
 
 	private static uint ReadU32LE(byte[] d, int o) => (uint)(d[o] | (d[o + 1] << 8) | (d[o + 2] << 16) | (d[o + 3] << 24));
