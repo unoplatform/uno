@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel_Resources;
 public class Given_ResourceLoader_UITest : SampleControlUITestBase
 {
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // RunAsync is only supported on Skia/WASM runtime hosts.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // RunAsync is only supported on Skia/WASM runtime hosts.
 	public async Task When_XUid_Resolves_From_Default_And_Named_Resource_Files()
 	{
 		try
