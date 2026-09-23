@@ -32,7 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_Popup_LightDismiss_UITest
 {
 	private const RuntimeTestPlatforms InjectionUnsupported =
-		RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm;
+		RuntimeTestPlatforms.NativeWinUI;
 
 	private static Point GetCenter(FrameworkElement element)
 		=> element.TransformToVisual(TestServices.WindowHelper.XamlRoot.Content)

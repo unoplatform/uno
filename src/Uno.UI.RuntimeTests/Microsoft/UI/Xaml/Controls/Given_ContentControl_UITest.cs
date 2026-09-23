@@ -14,7 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_ContentControl_UITest : SampleControlUITestBase
 {
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
 	public async Task When_ContentPresenter_Template_Binds_And_Updates_On_Content_Change()
 	{
 		try
@@ -46,7 +46,7 @@ public class Given_ContentControl_UITest : SampleControlUITestBase
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
 	public async Task When_ContentPresenter_ContentTemplate_Toggled()
 	{
 		try
@@ -71,7 +71,7 @@ public class Given_ContentControl_UITest : SampleControlUITestBase
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
 	public async Task When_ContentControl_ContentTemplate_Toggled()
 	{
 		try

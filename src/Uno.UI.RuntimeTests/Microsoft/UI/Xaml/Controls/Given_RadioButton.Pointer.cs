@@ -18,7 +18,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Tapped_Selects_And_Respects_IsEnabled()
 		{
 			if (TestServices.WindowHelper.IsXamlIsland)
@@ -78,7 +78,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Tapped_Twice_Does_Not_Uncheck()
 		{
 			if (TestServices.WindowHelper.IsXamlIsland)
@@ -129,7 +129,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_IsEnabled_Toggled_State_Is_Preserved()
 		{
 			if (TestServices.WindowHelper.IsXamlIsland)

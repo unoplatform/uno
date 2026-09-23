@@ -22,7 +22,7 @@ public class Given_FocusInput_UITest
 {
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Tapped_FocusState_Is_Pointer()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)

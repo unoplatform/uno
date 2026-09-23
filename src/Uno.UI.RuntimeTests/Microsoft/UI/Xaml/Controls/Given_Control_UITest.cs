@@ -21,7 +21,7 @@ public class Given_Control_UITest
 	// them again once IsEnabled is toggled back on.
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_IsEnabled_Initially_False_And_Inherited()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)

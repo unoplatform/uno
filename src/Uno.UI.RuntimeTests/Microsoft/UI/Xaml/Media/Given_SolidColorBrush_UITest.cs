@@ -16,9 +16,6 @@ public class Given_SolidColorBrush_UITest
 	// Mutating an existing SolidColorBrush's Color (rather than replacing the brush instance)
 	// must still invalidate the render of every owner that references it.
 	[TestMethod]
-#if !HAS_RENDER_TARGET_BITMAP
-	[Ignore("Cannot take screenshot on this platform.")]
-#endif
 	public async Task When_SolidColorBrush_Color_Changed()
 	{
 		var borderBrush = new SolidColorBrush(Colors.Green);

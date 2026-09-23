@@ -17,7 +17,7 @@ public class Given_AutomationId_UITest : SampleControlUITestBase
 	private const string SampleName = "UITests.Shared.Windows_UI.Xaml_Automation.AutomationProperties_AutomationId";
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
 	public async Task When_ItemTemplate_Sets_AutomationId()
 	{
 		try
@@ -44,7 +44,7 @@ public class Given_AutomationId_UITest : SampleControlUITestBase
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // RunAsync + pointer injection are only supported on Skia/WASM runtime hosts.
 	[DataRow("Item01", "Item 01", DisplayName = "Item01")]
 	[DataRow("Item02", "Item 02", DisplayName = "Item02")]
 	[DataRow("Item03", "Item 03", DisplayName = "Item03")]

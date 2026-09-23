@@ -13,7 +13,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes;
 
 [TestClass]
 [RunsOnUIThread]
-[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm)]
 public class Given_ShapesClearData_UITest
 {
 	// "D" shaped geometry used by the original UITest sample (Path_ClearData).

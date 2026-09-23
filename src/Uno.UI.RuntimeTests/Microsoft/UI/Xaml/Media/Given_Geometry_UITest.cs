@@ -14,7 +14,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 public class Given_Geometry_UITest
 {
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm)]
 	public async Task When_EllipseGeometry()
 	{
 		var path = new Path
@@ -48,7 +47,6 @@ public class Given_Geometry_UITest
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm)]
 	public async Task When_LineGeometry()
 	{
 		var path = new Path

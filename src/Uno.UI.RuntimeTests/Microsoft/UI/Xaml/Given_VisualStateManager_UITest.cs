@@ -19,7 +19,7 @@ public class Given_VisualStateManager_UITest : SampleControlUITestBase
 	// are excluded (RunAsync throws PlatformNotSupportedException there).
 	// RunAsync loads samples only on Skia/native-WASM hosts and needs the input injector,
 	// so exclude every native head (native WASM included).
-	private const RuntimeTestPlatforms UnsupportedPlatforms = RuntimeTestPlatforms.Native;
+	private const RuntimeTestPlatforms UnsupportedPlatforms = RuntimeTestPlatforms.NativeWinUI;
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, UnsupportedPlatforms)]

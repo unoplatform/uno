@@ -14,9 +14,6 @@ public class Given_LinearGradientBrush_UITest
 {
 	[TestMethod]
 	[RunsOnUIThread]
-#if !HAS_RENDER_TARGET_BITMAP
-	[Ignore("Cannot take screenshot on this platform.")]
-#endif
 	public async Task When_GradientStops_Changed()
 	{
 		// Colors mirror the LinearGradientBrush_Change_Stops sample's UnoGreen/UnoBlue/UnoPurple/UnoRed resources.
@@ -65,9 +62,6 @@ public class Given_LinearGradientBrush_UITest
 
 	[TestMethod]
 	[RunsOnUIThread]
-#if !HAS_RENDER_TARGET_BITMAP
-	[Ignore("Cannot take screenshot on this platform.")]
-#endif
 	public async Task When_Opacity_Is_Specified()
 	{
 		var grid = new Grid

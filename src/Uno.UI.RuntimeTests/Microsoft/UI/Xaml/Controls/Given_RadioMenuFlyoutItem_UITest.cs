@@ -6,7 +6,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 [TestClass]
 [RunsOnUIThread]
-[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 public class Given_RadioMenuFlyoutItem_UITest
 {
 	// Migrated from SamplesApp.UITests RadioMenuFlyoutItemTests.Given_RadioMenuFlyoutItem

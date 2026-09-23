@@ -25,7 +25,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_NativeButtons_UITest
 {
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Button_Tapped_Fires_Click_Tapped_And_Command_Respecting_IsEnabled()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
@@ -102,7 +102,7 @@ public class Given_NativeButtons_UITest
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ToggleSwitch_Tapped_Fires_Toggled_Respecting_IsEnabled()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
