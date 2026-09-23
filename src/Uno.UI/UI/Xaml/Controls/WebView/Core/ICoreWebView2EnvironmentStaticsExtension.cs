@@ -1,5 +1,8 @@
 #nullable enable
 
+using System.Threading.Tasks;
+using Uno.UI.Xaml.Controls;
+
 namespace Microsoft.Web.WebView2.Core;
 
 /// <remarks>
@@ -13,4 +16,6 @@ internal interface ICoreWebView2EnvironmentStaticsExtension
 	string GetAvailableBrowserVersionString(string? browserExecutableFolder);
 
 	int CompareBrowserVersionString(string browserVersionString1, string browserVersionString2);
+
+	Task<INativeWebViewEnvironment> CreateEnvironmentAsync(CoreWebView2Environment environment);
 }

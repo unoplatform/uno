@@ -3,36 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2ContentLoadingEventArgs
 	{
-#if __SKIA__
-		internal CoreWebView2ContentLoadingEventArgs()
-		{
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IsErrorPage
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs", "IsErrorPage");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public ulong NavigationId
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs", "NavigationId");
-			}
-		}
-#endif
+		// Skipping already declared property IsErrorPage
+		// Skipping already declared property NavigationId
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs.IsErrorPage.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs.NavigationId.get
 	}

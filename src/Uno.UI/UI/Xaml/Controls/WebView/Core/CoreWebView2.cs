@@ -4,9 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text.Json;
+using Windows.Storage.Streams;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
@@ -27,6 +30,7 @@ public partial class CoreWebView2
 
 	private readonly Dictionary<string, string> _hostToFolderMap = new();
 	private readonly IWebView _owner;
+	private readonly CoreWebView2Environment _defaultEnvironment = new(browserExecutableFolder: null, userDataFolder: null, options: null);
 
 	private bool _scrollEnabled = true;
 	private INativeWebView? _nativeWebView;
@@ -34,31 +38,162 @@ public partial class CoreWebView2
 	private readonly List<WebResourceRequestedFilter> _webResourceRequestedFilters = new();
 	internal long _navigationId;
 	private object? _processedSource;
+	private bool _initializationRequested;
+	private bool _nativeCreationInProgress;
+	private bool _isClosed;
+#if __SKIA__
+	private INativeWebView? _loadedNativeWebView;
+#endif
 
 	internal CoreWebView2(IWebView owner)
 	{
 		HostToFolderMap = _hostToFolderMap.AsReadOnly();
 		_owner = owner;
+		Settings = new CoreWebView2Settings(this);
+		Settings.UserAgentChanged += OnSettingsUserAgentChanged;
+		Settings.IsScriptEnabledChanged += OnSettingsIsScriptEnabledChanged;
+		Settings.IsZoomControlEnabledChanged += OnSettingsIsZoomControlEnabledChanged;
+	}
+
+	private void OnSettingsUserAgentChanged(object? sender, EventArgs e)
+	{
+		if (_nativeWebView is ISupportsUserAgent ua)
+		{
+			ua.UserAgent = Settings.RequestedUserAgent;
+		}
+	}
+
+	private void OnSettingsIsScriptEnabledChanged(object? sender, EventArgs e)
+	{
+		if (_nativeWebView is ISupportsScriptEnabled se)
+		{
+			se.IsScriptEnabled = Settings.IsScriptEnabled;
+		}
+	}
+
+	private void OnSettingsIsZoomControlEnabledChanged(object? sender, EventArgs e)
+	{
+		if (_nativeWebView is ISupportsZoomControl zc)
+		{
+			zc.IsZoomControlEnabled = Settings.IsZoomControlEnabled;
+		}
 	}
 
 	internal IWebView Owner => _owner;
 
+	internal INativeWebView? NativeWebViewForCookies => _nativeWebView;
+	internal INativeWebViewController? NativeController => _nativeWebView as INativeWebViewController;
+	internal string? NativeUserAgent => (_nativeWebView as ISupportsUserAgent)?.UserAgent;
+
+	internal CoreWebView2Environment? CustomEnvironment { get; private set; }
+
+	internal CoreWebView2ControllerOptions? CustomControllerOptions { get; private set; }
+
+	internal void SetCustomEnvironment(CoreWebView2Environment? environment, CoreWebView2ControllerOptions? controllerOptions)
+	{
+		environment ??= _defaultEnvironment;
+		if (!environment.IsDefaultEnvironment)
+		{
+			ValidateEnvironmentForCurrentPlatform(environment, controllerOptions);
+		}
+		environment.AttachOwner(this);
+		CustomEnvironment = environment;
+		CustomControllerOptions = controllerOptions;
+	}
+
+	internal static void ValidateEnvironmentForCurrentPlatform(CoreWebView2Environment environment, CoreWebView2ControllerOptions? controllerOptions)
+	{
+		if (OperatingSystem.IsBrowser())
+		{
+			if (!string.IsNullOrEmpty(environment.BrowserExecutableFolder)
+				|| !string.IsNullOrEmpty(environment.RequestedUserDataFolder)
+				|| environment.Options?.HasNonDefaultValues == true
+				|| controllerOptions is { IsInPrivateModeEnabled: true }
+				|| controllerOptions?.HasUnsupportedWebKitOptions == true)
+			{
+				throw new NotSupportedException("Custom CoreWebView2 environments and controller options are not supported by the WebAssembly browser host.");
+			}
+		}
+		else if (OperatingSystem.IsMacOS())
+		{
+			if (!string.IsNullOrEmpty(environment.BrowserExecutableFolder)
+				|| !string.IsNullOrEmpty(environment.RequestedUserDataFolder)
+				|| environment.Options?.HasNonDefaultValues == true
+				|| controllerOptions?.HasUnsupportedWebKitOptions == true)
+			{
+				throw new NotSupportedException("The Skia macOS WebKit host supports only the IsInPrivateModeEnabled controller option.");
+			}
+		}
+		else if (!OperatingSystem.IsWindows()
+			&& (!string.IsNullOrEmpty(environment.BrowserExecutableFolder)
+				|| !string.IsNullOrEmpty(environment.RequestedUserDataFolder)
+				|| environment.Options?.HasNonDefaultValues == true
+				|| controllerOptions is { IsInPrivateModeEnabled: true }
+				|| controllerOptions?.HasUnsupportedWebKitOptions == true))
+		{
+			throw new NotSupportedException("Custom CoreWebView2 environments and controller options are not supported on this platform.");
+		}
+	}
+
 	internal IReadOnlyDictionary<string, string> HostToFolderMap { get; }
 
-#if __SKIA__
-	internal void OnLoaded() => (_nativeWebView as ICleanableNativeWebView)?.OnLoaded();
+	private CoreWebView2CookieManager? _cookieManager;
 
-	internal void OnUnloaded() => (_nativeWebView as ICleanableNativeWebView)?.OnUnloaded();
+	/// <summary>
+	/// Gets the cookie manager for the running WebView. Calls into the manager
+	/// will throw NotSupportedException on platforms that cannot enumerate cookies
+	/// (notably the WebAssembly browser host).
+	/// </summary>
+	public CoreWebView2CookieManager CookieManager
+	{
+		get
+		{
+			ThrowIfClosed();
+			return _cookieManager ??= new CoreWebView2CookieManager(this);
+		}
+	}
+
+#if __SKIA__
+	internal void OnLoaded()
+	{
+		if (!_isClosed)
+		{
+			if (_initializationRequested && _nativeWebView is null)
+			{
+				OnOwnerApplyTemplate();
+			}
+
+			EnsureNativeWebViewLoaded();
+		}
+	}
+
+	internal void OnUnloaded()
+	{
+		(_loadedNativeWebView as ICleanableNativeWebView)?.OnUnloaded();
+		_loadedNativeWebView = null;
+	}
+
+	private void EnsureNativeWebViewLoaded()
+	{
+		if (_owner.IsLoaded
+			&& _nativeWebView is ICleanableNativeWebView cleanable
+			&& !ReferenceEquals(_loadedNativeWebView, _nativeWebView))
+		{
+			cleanable.OnLoaded();
+			_loadedNativeWebView = _nativeWebView;
+		}
+	}
 #endif
 
 	/// <summary>
 	/// Gets the CoreWebView2Settings object contains various modifiable
 	/// settings for the running WebView.
 	/// </summary>
-	public CoreWebView2Settings Settings { get; } = new();
+	public CoreWebView2Settings Settings { get; }
 
 	public void Navigate(string uri)
 	{
+		ThrowIfClosed();
 		if (!Uri.TryCreate(uri, UriKind.Absolute, out var actualUri))
 		{
 			throw new ArgumentException("The passed in value is not an absolute URI", nameof(uri));
@@ -75,6 +210,7 @@ public partial class CoreWebView2
 
 	public void NavigateToString(string htmlContent)
 	{
+		ThrowIfClosed();
 		_processedSource = htmlContent;
 		if (_owner.SwitchSourceBeforeNavigating)
 		{
@@ -86,6 +222,7 @@ public partial class CoreWebView2
 
 	public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
 	{
+		ThrowIfClosed();
 		if (hostName is null)
 		{
 			throw new ArgumentNullException(nameof(hostName));
@@ -108,6 +245,7 @@ public partial class CoreWebView2
 
 	public void ClearVirtualHostNameToFolderMapping(string hostName)
 	{
+		ThrowIfClosed();
 		if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
 		{
 			supportsVirtualHostMapping.ClearVirtualHostNameToFolderMapping(hostName);
@@ -139,6 +277,7 @@ public partial class CoreWebView2
 
 	internal void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage)
 	{
+		ThrowIfClosed();
 		if (requestMessage?.RequestUri is null)
 		{
 			throw new ArgumentException("Invalid request message. It does not have a RequestUri.", nameof(requestMessage));
@@ -154,16 +293,34 @@ public partial class CoreWebView2
 		UpdateFromInternalSource();
 	}
 
-	public void GoBack() => _nativeWebView?.GoBack();
+	public void GoBack()
+	{
+		ThrowIfClosed();
+		_nativeWebView?.GoBack();
+	}
 
-	public void GoForward() => _nativeWebView?.GoForward();
+	public void GoForward()
+	{
+		ThrowIfClosed();
+		_nativeWebView?.GoForward();
+	}
 
-	public void Stop() => _nativeWebView?.Stop();
+	public void Stop()
+	{
+		ThrowIfClosed();
+		_nativeWebView?.Stop();
+	}
 
-	public void Reload() => _nativeWebView?.Reload();
+	public void Reload()
+	{
+		ThrowIfClosed();
+		_nativeWebView?.Reload();
+	}
 
-	public IAsyncOperation<string?> ExecuteScriptAsync(string javaScript) =>
-		AsyncOperation.FromTask(ct =>
+	public IAsyncOperation<string?> ExecuteScriptAsync(string javaScript)
+	{
+		ThrowIfClosed();
+		return AsyncOperation.FromTask(ct =>
 		{
 			if (_nativeWebView is null)
 			{
@@ -172,6 +329,74 @@ public partial class CoreWebView2
 
 			return _nativeWebView.ExecuteScriptAsync(javaScript, ct);
 		});
+	}
+
+	/// <summary>
+	/// Posts a message that is received by JavaScript code in the page via
+	/// window.chrome.webview.addEventListener('message', handler). The argument
+	/// is treated as a JSON-encoded value and made available as event.data.
+	/// </summary>
+	public void PostWebMessageAsJson(string webMessageAsJson)
+	{
+		ThrowIfClosed();
+		if (webMessageAsJson is null)
+		{
+			throw new ArgumentNullException(nameof(webMessageAsJson));
+		}
+
+		try
+		{
+			using var _ = JsonDocument.Parse(webMessageAsJson);
+		}
+		catch (JsonException ex)
+		{
+			throw new ArgumentException("The message must contain one valid JSON value.", nameof(webMessageAsJson), ex);
+		}
+
+		EnsureWebMessagingEnabled();
+
+		if (_nativeWebView is ISupportsPostWebMessage native)
+		{
+			native.PostWebMessageAsJson(webMessageAsJson);
+		}
+		else
+		{
+			throw new NotSupportedException("Host-to-page web messaging requires a document-start message bridge and is not supported on this platform.");
+		}
+	}
+
+	/// <summary>
+	/// Posts a message that is received by JavaScript code in the page via
+	/// window.chrome.webview.addEventListener('message', handler). The argument
+	/// is treated as a plain string and made available as event.data.
+	/// </summary>
+	public void PostWebMessageAsString(string webMessageAsString)
+	{
+		ThrowIfClosed();
+		if (webMessageAsString is null)
+		{
+			throw new ArgumentNullException(nameof(webMessageAsString));
+		}
+
+		EnsureWebMessagingEnabled();
+
+		if (_nativeWebView is ISupportsPostWebMessage native)
+		{
+			native.PostWebMessageAsString(webMessageAsString);
+		}
+		else
+		{
+			throw new NotSupportedException("Host-to-page web messaging requires a document-start message bridge and is not supported on this platform.");
+		}
+	}
+
+	private void EnsureWebMessagingEnabled()
+	{
+		if (!Settings.IsWebMessageEnabled)
+		{
+			throw new UnauthorizedAccessException("Web messaging is disabled by CoreWebView2Settings.IsWebMessageEnabled.");
+		}
+	}
 
 	internal async Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken ct)
 	{
@@ -183,19 +408,186 @@ public partial class CoreWebView2
 		return await _nativeWebView.InvokeScriptAsync(script, arguments, ct);
 	}
 
+	/// <summary>
+	/// Adds a JavaScript snippet that is run before any other scripts on every new
+	/// top-level document (and any sub-documents). Returns an opaque identifier that
+	/// can be passed to RemoveScriptToExecuteOnDocumentCreated to revoke it.
+	/// </summary>
+	public IAsyncOperation<string> AddScriptToExecuteOnDocumentCreatedAsync(string javaScript)
+	{
+		ThrowIfClosed();
+		if (javaScript is null)
+		{
+			throw new ArgumentNullException(nameof(javaScript));
+		}
+
+		return AsyncOperation.FromTask(async ct =>
+		{
+			if (_nativeWebView is ISupportsDocumentCreatedScripts native)
+			{
+				return await native.AddScriptToExecuteOnDocumentCreatedAsync(javaScript, ct);
+			}
+
+			throw new NotSupportedException(
+				"AddScriptToExecuteOnDocumentCreatedAsync is not supported on this platform.");
+		});
+	}
+
+	/// <summary>
+	/// Removes a previously registered document-created script. The identifier is
+	/// the value returned by AddScriptToExecuteOnDocumentCreatedAsync.
+	/// </summary>
+	public void RemoveScriptToExecuteOnDocumentCreated(string id)
+	{
+		ThrowIfClosed();
+		if (id is null)
+		{
+			throw new ArgumentNullException(nameof(id));
+		}
+
+		if (_nativeWebView is ISupportsDocumentCreatedScripts native)
+		{
+			native.RemoveScriptToExecuteOnDocumentCreated(id);
+		}
+	}
+
+	/// <summary>
+	/// Renders the current top-level document to a PDF and returns the stream.
+	/// </summary>
+	public IAsyncOperation<IRandomAccessStream> PrintToPdfStreamAsync(CoreWebView2PrintSettings? printSettings)
+	{
+		ThrowIfClosed();
+		return AsyncOperation.FromTask(async ct =>
+		{
+			if (_nativeWebView is not ISupportsPrint print)
+			{
+				throw new NotSupportedException("CoreWebView2.PrintToPdfStreamAsync is not supported on this platform.");
+			}
+
+			var stream = await print.PrintToPdfStreamAsync(printSettings, ct);
+			return stream.AsRandomAccessStream();
+		});
+	}
+
+	/// <summary>
+	/// Shows the platform print UI for the current page.
+	/// </summary>
+	public void ShowPrintUI(CoreWebView2PrintDialogKind printDialogKind)
+	{
+		ThrowIfClosed();
+		if (_nativeWebView is not ISupportsPrint print)
+		{
+			throw new NotSupportedException("CoreWebView2.ShowPrintUI is not supported on this platform.");
+		}
+
+		_ = print.ShowPrintUIAsync(printDialogKind, CancellationToken.None).ContinueWith(
+			static (task, state) => ((CoreWebView2)state!).Log().Error(
+				"Unable to show the WebView print UI.",
+				task.Exception!.GetBaseException()),
+			this,
+			CancellationToken.None,
+			TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+			TaskScheduler.Default);
+	}
+
+	public event global::Windows.Foundation.TypedEventHandler<CoreWebView2, CoreWebView2ContentLoadingEventArgs>? ContentLoading;
+	public event global::Windows.Foundation.TypedEventHandler<CoreWebView2, CoreWebView2DOMContentLoadedEventArgs>? DOMContentLoaded;
+
+	internal void RaiseContentLoading(CoreWebView2ContentLoadingEventArgs args)
+	{
+		if (!_isClosed)
+		{
+			ContentLoading?.Invoke(this, args);
+		}
+	}
+
+	internal void RaiseDOMContentLoaded(CoreWebView2DOMContentLoadedEventArgs args)
+	{
+		if (!_isClosed)
+		{
+			DOMContentLoaded?.Invoke(this, args);
+		}
+	}
+	internal void RaiseContentLoading(bool isErrorPage = false) => RaiseContentLoading(new CoreWebView2ContentLoadingEventArgs(isErrorPage, (ulong)_navigationId));
+	internal void RaiseDOMContentLoaded() => RaiseDOMContentLoaded(new CoreWebView2DOMContentLoadedEventArgs((ulong)_navigationId));
+
 	internal void OnOwnerApplyTemplate()
 	{
-		DetachWebResourceRequestedSupport();
-		_nativeWebView = GetNativeWebViewFromTemplate();
-		AttachWebResourceRequestedSupport();
+		if (_isClosed || _nativeWebView is not null || _nativeCreationInProgress
+			|| (!_owner.IsLoaded && !OperatingSystem.IsWindows())
+			|| (_owner.RequiresExplicitInitialization && !_initializationRequested))
+		{
+			return;
+		}
 
-		// Signal that native WebView is now initialized
-		_nativeWebViewInitializedTcs.TrySetResult(true);
+		_nativeCreationInProgress = true;
+		_ = InitializeNativeWebViewAsync();
+	}
 
-		//The native WebView already navigate to a blank page if no source is set.
-		//Avoid a bug where invoke GoBack() on WebView do nothing in Android 4.4
-		UpdateFromInternalSource();
-		OnScrollEnabledChanged(_scrollEnabled);
+	private async Task InitializeNativeWebViewAsync()
+	{
+		try
+		{
+			DetachWebResourceRequestedSupport();
+			_nativeWebView = GetNativeWebViewFromTemplate();
+			if (_nativeWebView is IAsyncNativeWebView asynchronous)
+			{
+				await asynchronous.InitializeAsync();
+			}
+			if (_isClosed)
+			{
+				(_nativeWebView as ISupportsClose)?.Close();
+				_nativeWebView = null;
+				return;
+			}
+			if (_nativeWebView is null)
+			{
+				_nativeWebViewInitializedTcs.TrySetException(
+					new InvalidOperationException("The WebView2 control template did not create a native WebView."));
+				return;
+			}
+
+			AttachWebResourceRequestedSupport();
+			ApplySettingsToNativeWebView();
+#if __SKIA__
+			EnsureNativeWebViewLoaded();
+#endif
+
+			// Signal that native WebView is now initialized before applying a queued
+			// Source, matching WinUI's CoreWebView2Initialized event ordering.
+			_nativeWebViewInitializedTcs.TrySetResult(true);
+
+			// The native WebView already navigates to a blank page if no source is set.
+			// Avoid a bug where invoking GoBack() on WebView does nothing in Android 4.4.
+			UpdateFromInternalSource();
+			OnScrollEnabledChanged(_scrollEnabled);
+		}
+		catch (Exception error)
+		{
+			_nativeWebViewInitializedTcs.TrySetException(error);
+		}
+		finally
+		{
+			_nativeCreationInProgress = false;
+		}
+	}
+
+	private void ApplySettingsToNativeWebView()
+	{
+		if (_nativeWebView is ISupportsUserAgent ua && Settings.RequestedUserAgent is { } userAgent)
+		{
+			ua.UserAgent = userAgent;
+		}
+
+		if (_nativeWebView is ISupportsScriptEnabled se)
+		{
+			se.IsScriptEnabled = Settings.IsScriptEnabled;
+		}
+
+		if (_nativeWebView is ISupportsZoomControl zc)
+		{
+			zc.IsZoomControlEnabled = Settings.IsZoomControlEnabled;
+		}
 	}
 
 	internal void OnScrollEnabledChanged(bool newValue)
@@ -206,11 +598,20 @@ public partial class CoreWebView2
 
 	internal void OnDocumentTitleChanged()
 	{
-		DocumentTitleChanged?.Invoke(this, null);
+		if (!_isClosed)
+		{
+			DocumentTitleChanged?.Invoke(this, null);
+		}
 	}
 
-	internal void RaiseNavigationStarting(object? navigationData, out bool cancel)
+	internal void RaiseNavigationStarting(object? navigationData, out bool cancel, ulong? navigationId = null, bool isRedirected = false, bool isUserInitiated = false)
 	{
+		if (_isClosed)
+		{
+			cancel = true;
+			return;
+		}
+
 		string? uriString = null;
 		if (navigationData is Uri uri)
 		{
@@ -224,11 +625,30 @@ public partial class CoreWebView2
 			uriString = string.Format(CultureInfo.InvariantCulture, DataUriFormatString, base64String);
 		}
 
-		var newNavigationId = Interlocked.Increment(ref _navigationId);
-		var args = new CoreWebView2NavigationStartingEventArgs((ulong)newNavigationId, uriString);
+		var actualNavigationId = navigationId ?? (ulong)Interlocked.Increment(ref _navigationId);
+		if (navigationId.HasValue)
+		{
+			Interlocked.Exchange(ref _navigationId, unchecked((long)actualNavigationId));
+		}
+
+		var args = new CoreWebView2NavigationStartingEventArgs(actualNavigationId, uriString, isRedirected, isUserInitiated);
 		NavigationStarting?.Invoke(this, args);
 
 		cancel = args.Cancel;
+
+		if (cancel && _nativeWebView is not IReportsCanceledNavigations)
+		{
+			// WebView2 reports a cancelled navigation through NavigationCompleted with
+			// OperationCanceled. Engines that don't surface the cancellation themselves
+			// get the completion synthesized here so the contract is the same everywhere.
+			RaiseNavigationCompleted(
+				navigationData as Uri,
+				isSuccess: false,
+				httpStatusCode: 0,
+				CoreWebView2WebErrorStatus.OperationCanceled,
+				shouldSetSource: false,
+				navigationId: actualNavigationId);
+		}
 	}
 
 	internal void RaiseNewWindowRequested(string target, Uri referer, out bool handled)
@@ -239,14 +659,32 @@ public partial class CoreWebView2
 		handled = args.Handled;
 	}
 
-	internal void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus, bool shouldSetSource = true)
+	internal void RaiseNavigationCompleted(
+		Uri? uri,
+		bool isSuccess,
+		int httpStatusCode,
+		CoreWebView2WebErrorStatus errorStatus,
+		bool shouldSetSource = true,
+		ulong? navigationId = null)
 	{
+		if (_isClosed)
+		{
+			return;
+		}
+
 		if (shouldSetSource)
 		{
 			Source = (uri ?? BlankUri).ToString();
 		}
 
-		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs((ulong)_navigationId, uri, isSuccess, httpStatusCode, errorStatus));
+		NavigationCompleted?.Invoke(
+			this,
+			new CoreWebView2NavigationCompletedEventArgs(
+				navigationId ?? (ulong)_navigationId,
+				uri,
+				isSuccess,
+				httpStatusCode,
+				errorStatus));
 	}
 
 	internal void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, null);
@@ -259,6 +697,11 @@ public partial class CoreWebView2
 
 	internal void RaiseWebMessageReceived(string message)
 	{
+		if (_isClosed || !Settings.IsWebMessageEnabled)
+		{
+			return;
+		}
+
 		// WebMessageReceived must be called on the UI thread.
 		if (_owner.Dispatcher.HasThreadAccess)
 		{
@@ -268,7 +711,13 @@ public partial class CoreWebView2
 		{
 			_ = _owner.Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
-				() => WebMessageReceived?.Invoke(this, new(message)));
+				() =>
+				{
+					if (!_isClosed && Settings.IsWebMessageEnabled)
+					{
+						WebMessageReceived?.Invoke(this, new(message));
+					}
+				});
 		}
 	}
 
@@ -283,6 +732,7 @@ public partial class CoreWebView2
 
 	public void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
 	{
+		ThrowIfClosed();
 		if (uri is null)
 		{
 			throw new ArgumentNullException(nameof(uri));
@@ -301,6 +751,7 @@ public partial class CoreWebView2
 
 	public void RemoveWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
 	{
+		ThrowIfClosed();
 		if (uri is null)
 		{
 			throw new ArgumentNullException(nameof(uri));
@@ -324,8 +775,65 @@ public partial class CoreWebView2
 
 
 
-	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new TaskCompletionSource<bool>();
-	internal Task EnsureNativeWebViewAsync() => _nativeWebViewInitializedTcs.Task;
+	private readonly TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+	internal Task EnsureNativeWebViewAsync()
+	{
+		ThrowIfClosed();
+		_initializationRequested = true;
+		if (_nativeWebView is null)
+		{
+			OnOwnerApplyTemplate();
+		}
+
+		return _nativeWebViewInitializedTcs.Task;
+	}
+
+	internal void Close()
+	{
+		if (_isClosed)
+		{
+			return;
+		}
+
+		_isClosed = true;
+		Settings.UserAgentChanged -= OnSettingsUserAgentChanged;
+		Settings.IsScriptEnabledChanged -= OnSettingsIsScriptEnabledChanged;
+		Settings.IsZoomControlEnabledChanged -= OnSettingsIsZoomControlEnabledChanged;
+		Settings.OnOwnerClosed();
+		DetachWebResourceRequestedSupport();
+		var nativeWebView = _nativeWebView;
+		_nativeWebView = null;
+		_processedSource = null;
+
+		try
+		{
+			(nativeWebView as ICleanableNativeWebView)?.OnUnloaded();
+#if __SKIA__
+			_loadedNativeWebView = null;
+#endif
+			if (nativeWebView is ISupportsClose close)
+			{
+				close.Close();
+			}
+			else
+			{
+				nativeWebView?.Stop();
+			}
+		}
+		finally
+		{
+			SetHistoryProperties(canGoBack: false, canGoForward: false);
+			_nativeWebViewInitializedTcs.TrySetException(new ObjectDisposedException(nameof(CoreWebView2)));
+		}
+	}
+
+	private void ThrowIfClosed()
+	{
+		if (_isClosed)
+		{
+			throw new ObjectDisposedException(nameof(CoreWebView2));
+		}
+	}
 	internal static bool GetIsHistoryEntryValid(string url) =>
 		!url.IsNullOrWhiteSpace() &&
 		!url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);
@@ -333,7 +841,7 @@ public partial class CoreWebView2
 	[MemberNotNullWhen(true, nameof(_nativeWebView))]
 	private bool VerifyWebViewAvailability()
 	{
-		if (_nativeWebView == null)
+		if (_nativeWebView == null || !_nativeWebViewInitializedTcs.Task.IsCompletedSuccessfully)
 		{
 			if (_owner.IsLoaded)
 			{
@@ -442,7 +950,12 @@ public partial class CoreWebView2
 
 	internal INativeWebView? GetNativeWebViewFromTemplate()
 	{
-		if (VisualTreeHelper.GetChild((DependencyObject)_owner, 0) is not ContentPresenter { Name: "WebViewTemplateRoot" } contentPresenter)
+		var contentPresenter = _owner is Microsoft.UI.Xaml.Controls.WebView2 webView2
+			? webView2.GetNativePresenter()
+			: VisualTreeHelper.GetChildrenCount((DependencyObject)_owner) > 0
+				? VisualTreeHelper.GetChild((DependencyObject)_owner, 0) as ContentPresenter
+				: null;
+		if (contentPresenter is not { Name: "WebViewTemplateRoot" })
 		{
 			return null;
 		}
@@ -455,4 +968,3 @@ public partial class CoreWebView2
 		return null;
 	}
 }
-

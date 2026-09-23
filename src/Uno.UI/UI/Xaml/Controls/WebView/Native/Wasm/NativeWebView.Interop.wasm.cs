@@ -38,6 +38,15 @@ internal static partial class NativeWebView
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.executeScript")]
 		internal static partial string? ExecuteScript(ElementId htmlId, string script);
 
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.postWebMessage")]
+		internal static partial void PostWebMessage(ElementId htmlId, string payload, bool isJson);
+
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.canPostWebMessage")]
+		internal static partial bool CanPostWebMessage(ElementId htmlId);
+
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.showPrintUI")]
+		internal static partial void ShowPrintUI(ElementId htmlId);
+
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.getDocumentTitle")]
 		internal static partial string? GetDocumentTitle(ElementId htmlId);
 
@@ -58,5 +67,8 @@ internal static partial class NativeWebView
 
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.cleanupEvents")]
 		internal static partial void CleanupEvents(ElementId htmlId);
+
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.close")]
+		internal static partial void Close(ElementId htmlId);
 	}
 }

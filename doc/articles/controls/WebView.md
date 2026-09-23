@@ -28,6 +28,10 @@ Afterward, you can perform actions such as navigating to an HTML string:
 MyWebView.NavigateToString("<html><body><p>Hello world!</p></body></html>");
 ```
 
+`CoreWebView2` is `null` until initialization succeeds. Setting `Source` initializes it implicitly; loading an otherwise blank control does not. On Windows, explicit initialization can complete before the control is attached to a window. Other native hosts may require the control to be loaded first.
+
+Subscribe to `CoreWebView2Initialized` to inspect its `Exception` property. A failed native creation can complete `EnsureCoreWebView2Async` without producing a core object, so check `CoreWebView2` before using it. A later call can retry initialization. Concurrent initialization requests await the first request; once initialization succeeds, non-null environment and controller arguments must match the original objects by reference.
+
 ## Desktop support
 
 To enable `WebView` on the `-desktop` target, add the `WebView` Uno Feature in your `.csproj`:
@@ -73,13 +77,13 @@ await webView.ExecuteScriptAsync("eval({'test': 1})"); // Returns a string conta
 ```javascript
 function postWebViewMessage(message){
     try{
-        if (window.hasOwnProperty("chrome") && typeof chrome.webview !== undefined) {
+        if (window.hasOwnProperty("chrome") && typeof chrome.webview !== "undefined") {
             // Windows
             chrome.webview.postMessage(message);
         } else if (window.hasOwnProperty("unoWebView")) {
             // Android
             unoWebView.postMessage(JSON.stringify(message));
-        } else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
+        } else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== "undefined") {
             // iOS and macOS
             webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
         }
@@ -106,6 +110,70 @@ webView.WebMessageReceived += (s, e) =>
 ```
 
 The `WebMessageAsJson` property contains a JSON-encoded string of the data passed to `postWebViewMessage` above.
+
+## C# to JavaScript communication
+
+Use `PostWebMessageAsString` or `PostWebMessageAsJson` to send a message from C# to the current page:
+
+```csharp
+await webView.EnsureCoreWebView2Async();
+
+webView.CoreWebView2.PostWebMessageAsString("hello");
+webView.CoreWebView2.PostWebMessageAsJson("""{"command":"refresh"}""");
+```
+
+Receive these messages in JavaScript through the WebView2-compatible message event:
+
+```javascript
+window.chrome.webview.addEventListener("message", event => {
+    console.log(event.data);
+});
+```
+
+`PostWebMessageAsJson` validates that its argument contains one JSON value. Both methods throw when `CoreWebView2Settings.IsWebMessageEnabled` is `false`.
+
+Windows uses the native WebView2 channel. iOS, macOS, and X11 install the compatibility bridge at document start, before page scripts register message listeners.
+
+On WebAssembly, messaging is available only for the current document loaded by `NavigateToString`, where Uno can insert the bridge before page scripts. URI navigation (`Source` or `Navigate`), including same-origin URIs, does not have a document-start injection hook; host-to-page messaging throws `NotSupportedException` for those documents. Cross-origin iframe restrictions are not bypassed.
+
+The current Android provider does not support host-to-page messaging and throws `NotSupportedException`. Android's page-to-host `unoWebView.postMessage(JSON.stringify(message))` channel remains available.
+
+## Running scripts when a document is created
+
+`AddScriptToExecuteOnDocumentCreatedAsync` registers JavaScript that runs at the start of each subsequent document:
+
+```csharp
+var scriptId = await webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(
+    "window.unoHostAvailable = true;");
+
+// Remove the registration when it is no longer needed.
+webView.CoreWebView2.RemoveScriptToExecuteOnDocumentCreated(scriptId);
+```
+
+Document-created scripts are supported on Windows, iOS, macOS, and X11. They are not supported by the WebAssembly iframe host or the current Android provider; registration and removal throw `NotSupportedException`. Android's `OnPageStarted` callback is not a document-start hook. Supporting this contract there requires a document-start-capable AndroidX WebKit provider, which is not a dependency of the current implementation.
+
+## WebView settings
+
+The following settings are available through `CoreWebView2.Settings`:
+
+```csharp
+await webView.EnsureCoreWebView2Async();
+
+webView.CoreWebView2.Settings.UserAgent = "MyApp/1.0";
+webView.CoreWebView2.Settings.IsScriptEnabled = true;
+webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+```
+
+Platform browser restrictions still apply. WebAssembly cannot override its user agent or disable scripts and browser zoom. Some WebKit-based hosts retain the requested zoom setting without changing native gesture behavior.
+
+The WinRT `UserAgent` contract ignores `null` and empty assignments. On Windows, the getter reports the actual browser user agent. To restore the default, capture it before applying an override and assign that saved value:
+
+```csharp
+var defaultUserAgent = webView.CoreWebView2.Settings.UserAgent;
+webView.CoreWebView2.Settings.UserAgent = "MyApp/1.0";
+// Later, before the next navigation:
+webView.CoreWebView2.Settings.UserAgent = defaultUserAgent;
+```
 
 ## Navigating to web content in the application package
 
@@ -202,12 +270,106 @@ public App()
 }
 ```
 
+### Per-control environment and profile options
+
+Use the `EnsureCoreWebView2Async` overloads to initialize a control with a custom environment and controller options:
+
+```csharp
+var environmentOptions = new CoreWebView2EnvironmentOptions
+{
+    AdditionalBrowserArguments = "--disable-features=ExampleFeature",
+    Language = "en-US",
+};
+
+var userDataFolder = Path.Combine(
+    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+    "MyApp",
+    "WebViewProfiles",
+    "Profile1");
+
+var environment = await CoreWebView2Environment.CreateWithOptionsAsync(
+    browserExecutableFolder: null,
+    userDataFolder,
+    environmentOptions);
+
+var controllerOptions = environment.CreateCoreWebView2ControllerOptions();
+controllerOptions.ProfileName = "Profile1";
+controllerOptions.IsInPrivateModeEnabled = true;
+
+await webView.EnsureCoreWebView2Async(environment, controllerOptions);
+```
+
+Windows supports these environment and controller options through the WebView2Aot backend. The macOS Skia host supports private mode. Other custom environment combinations throw `NotSupportedException` when the native browser cannot provide equivalent behavior.
+
+On Windows, the environment factories create a real native environment before returning. The same environment may be shared by multiple controls. Closing one control does not invalidate the environment or the other controls that use it.
+
+Native environments sharing a user-data folder must use compatible options, including language. Use separate folders for independent configurations or tests.
+
+## Cookies
+
+Use `CoreWebView2.CookieManager` to create, query, update, and delete cookies:
+
+```csharp
+var manager = webView.CoreWebView2.CookieManager;
+var cookie = manager.CreateCookie("session", "value", "example.com", "/");
+cookie.IsSecure = true;
+cookie.IsHttpOnly = true;
+
+manager.AddOrUpdateCookie(cookie);
+var cookies = await manager.GetCookiesAsync("https://example.com/");
+manager.DeleteCookie(cookie);
+```
+
+Windows, Apple platforms, and Android expose their native cookie stores. Android requires an absolute URI when querying cookies and cannot enumerate every cookie in the profile. Cookie management is not available on WebAssembly or the X11 WebKitGTK host.
+
+Cookie domains retain their scope: `login.example.com` is host-only, while `.login.example.com` also matches subdomains. Native response headers omit `Domain` for host-only cookies and derive their host from the response URL. Cookie updates and exact-identity deletion preserve this distinction; do not remove a leading dot from `Domain` before passing a cookie back to the manager.
+
+Cookie values cannot contain semicolons or ASCII control characters. This is checked both when creating a cookie and when adding a cookie whose value has been changed. Quotes, commas, and non-ASCII text are not rejected by this validation, matching Chromium's cookie-value grammar.
+
+On iOS, cookies are created through the native response-header parser so `HttpOnly` and `SameSite` are retained. If the installed OS cannot preserve the requested attributes, the operation throws `NotSupportedException` rather than storing a weaker cookie. Android writes these attributes and expiry to its native store, but its cookie-query API returns only names and values, not the original attributes or host-only/domain scope. On Android, retain the original cookie identity for updates and deletion rather than inferring it from a URI query.
+
+## Printing
+
+Use `PrintToPdfStreamAsync` to capture the current document as PDF, or `ShowPrintUI` to open the platform print UI:
+
+```csharp
+var settings = webView.CoreWebView2.Environment.CreatePrintSettings();
+settings.Orientation = CoreWebView2PrintOrientation.Landscape;
+settings.ShouldPrintBackgrounds = true;
+
+using var pdf = await webView.CoreWebView2.PrintToPdfStreamAsync(settings);
+webView.CoreWebView2.ShowPrintUI(CoreWebView2PrintDialogKind.System);
+```
+
+PDF output is supported on Windows, macOS, iOS, and X11. Android and WebAssembly can show print UI but do not provide PDF streams through this API. Some platform print engines support only a subset of `CoreWebView2PrintSettings` and throw `NotSupportedException` for unsupported combinations.
+
+## Lifecycle and cleanup
+
+In addition to navigation events, `CoreWebView2` exposes `ContentLoading`, `DOMContentLoaded`, `DocumentTitleChanged`, `HistoryChanged`, and `SourceChanged`.
+
+The document/content events depend on equivalent callbacks from the native browser backend and may not be available on every target.
+
+On WebAssembly, `NavigateToString` signals `ContentLoading` from the inserted document-start script and `DOMContentLoaded` from that document's DOM event. `NavigationCompleted` follows the iframe `load` event. URI navigations do not expose content-start or DOM-ready callbacks to the iframe host, so `ContentLoading` and `DOMContentLoaded` are not raised for them; neither event is synthesized at load completion.
+
+The `NavigateToString` message bridge is installed before `ContentLoading` is raised, so a handler can post initialization messages. Delivery remains asynchronous; the page must register its message listener before delivery.
+
+A Content Security Policy that blocks the inserted `NavigateToString` script also prevents its messaging bridge and document-event callbacks.
+
+Setting `CoreWebView2NavigationStartingEventArgs.Cancel` leaves the current document intact and completes the abandoned navigation with a `NavigationCompleted` whose `IsSuccess` is `false` and whose `WebErrorStatus` is `CoreWebView2WebErrorStatus.OperationCanceled`, matching WebView2 on every target.
+
+Removing a control from the visual tree does not close its browser. Reattachment preserves the core and its document.
+
+Call `WebView2.Close()` when the control will not be used again. Closing releases native browser resources, clears `CoreWebView2`, resets `CanGoBack` and `CanGoForward`, and preserves `Source`. Closing is terminal: initialization and a new non-null `Source` are rejected with `ObjectDisposedException`. `Reload`, `NavigateToString`, and `ExecuteScriptAsync` require a valid core and throw `InvalidOperationException` without one. `GoBack` and `GoForward` are no-ops when a valid core or the corresponding history entry is absent.
+
+The native presenter is detached before its browser is destroyed. Android destroys its WebView and unregisters its clients and JavaScript interface; iOS removes delegates and script handlers before disposal; X11 removes GTK handlers and destroys its windows; macOS releases its native peer. Closing does not clear the shared profile's cookies.
+
+On Android, cancellation after a file-chooser activity is launched retains launch tracking until that specific activity arrives, then finishes it without transferring it to the picker. On X11, queued navigation work checks provider lifetime at both the managed dispatcher and GTK callbacks, including work queued before `Close()`.
+
+On Windows, `CoreWebView2.ProcessFailed` is forwarded to `WebView2.CoreProcessFailed`. A browser-process exit clears the core and history state; call `EnsureCoreWebView2Async` or set a new `Source` to recreate it using the existing environment. A renderer-process exit retains the core and can be recovered with `Reload`.
+
 ## Querying the environment and the profile (Windows)
 
-On Windows (Skia Desktop) a subset of `CoreWebView2Environment` and `CoreWebView2Profile` is implemented. On every other target these members throw `NotImplementedException`, as they did before.
-
-> [!NOTE]
-> This requires .NET 10 or later. An app targeting .NET 9 keeps the previous `NotImplementedException` behavior for all of the members below.
+Live `CoreWebView2Environment` and `CoreWebView2Profile` metadata is implemented on Windows (Skia Desktop). On other targets, members without an equivalent native capability throw `NotImplementedException`.
 
 ### Which browser is installed
 
@@ -227,7 +389,7 @@ catch (FileNotFoundException)
 
 Passing a `browserExecutableFolder` is authoritative: if no browser is found there, the call fails rather than falling back to the installed one. The version string carries a channel suffix on non-stable channels (for example `120.0.2210.91 beta`), so parse only the leading token. Note that these are static members, resolved through the Skia host — call them after the application host has started.
 
-The overload taking `CoreWebView2EnvironmentOptions` is **not** implemented, because that options type is itself unimplemented and could not be honored.
+`CreateWithOptionsAsync` accepts `CoreWebView2EnvironmentOptions` as shown above. The separate browser-version-query overload taking options remains unsupported.
 
 ### Environment and profile of a running WebView2
 
@@ -247,10 +409,7 @@ var profile = webView.CoreWebView2.Profile;
 
 `FailureReportFolderPath` is created lazily by the browser, so the directory may not exist yet.
 
-> [!NOTE]
-> Unlike the static members above, these three are provided by the default WebView2 backend only. An app that opts into the other backend with `UNO_WEBVIEW2_BACKEND=microsoft.web.webview2` gets `NotImplementedException` from them.
->
-> `ProfileName` is currently always empty on Windows. Uno creates the WebView without controller options, so no profile name is requested — the profile still resolves to the default one, and `ProfilePath` (a directory under `UserDataFolder`) is the reliable way to identify it.
+`ProfileName` reflects the native profile, including names requested through controller options. `ProfilePath` identifies its directory under `UserDataFolder`. Environment metadata remains available after an individual control is closed.
 
 ### Clearing browsing data
 
@@ -270,7 +429,7 @@ await webView.CoreWebView2.Profile.ClearBrowsingDataAsync(
     DateTimeOffset.UtcNow);
 ```
 
-Clearing a large profile can take several seconds and the displayed content may reload underneath. `CoreWebView2CookieManager` is not implemented, so reading cookies or deleting an individual cookie by name is not available — only bulk clearing.
+Clearing a large profile can take several seconds and the displayed content may reload underneath.
 
 ## Linux specifics
 

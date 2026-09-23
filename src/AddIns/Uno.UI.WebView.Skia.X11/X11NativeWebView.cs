@@ -1,3 +1,5 @@
+﻿#nullable enable
+
 using System;
 using System.IO;
 using System.Net.Http;
@@ -8,7 +10,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using GLib;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
@@ -39,8 +40,180 @@ public class X11NativeWebViewProvider(CoreWebView2 coreWebView2) : INativeWebVie
 	INativeWebView INativeWebViewProvider.CreateNativeWebView(ContentPresenter contentPresenter) => new X11NativeWebView(coreWebView2, contentPresenter);
 }
 
-public class X11NativeWebView : INativeWebView
+public class X11NativeWebView : INativeWebView, ISupportsClose, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsPostWebMessage, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
 {
+	async Task<Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
+	{
+		ct.ThrowIfCancellationRequested();
+		var tempFile = Path.Join(Path.GetTempPath(), "uno-webview-" + Guid.NewGuid().ToString("N") + ".pdf");
+		var tempFileUri = new UriBuilder(Uri.UriSchemeFile, string.Empty) { Path = tempFile }.Uri.AbsoluteUri;
+		var tcs = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+		using var reg = ct.Register(() => tcs.TrySetCanceled(ct));
+		RunOnGtkThread(() =>
+		{
+			WebKit.PrintOperation? op = null;
+			void DisposeOperation()
+			{
+				op?.Dispose();
+				op = null;
+			}
+
+			try
+			{
+				op = new WebKit.PrintOperation(_webview);
+				var printSettings = new Gtk.PrintSettings();
+				printSettings.Set("output-uri", tempFileUri);
+				printSettings.Set("output-file-format", "pdf");
+				op.PrintSettings = printSettings;
+				op.Finished += (_, _) =>
+				{
+					DisposeOperation();
+					if (!tcs.TrySetResult(tempFile))
+					{
+						DeleteTemporaryPrintFile(tempFile);
+					}
+				};
+				op.Failed += (_, _) =>
+				{
+					DisposeOperation();
+					DeleteTemporaryPrintFile(tempFile);
+					tcs.TrySetException(new InvalidOperationException("Print failed"));
+				};
+				op.Print();
+			}
+			catch (Exception e)
+			{
+				DisposeOperation();
+				DeleteTemporaryPrintFile(tempFile);
+				tcs.TrySetException(e);
+			}
+		});
+		var path = await tcs.Task;
+		try
+		{
+			var bytes = await File.ReadAllBytesAsync(path, ct);
+			return new MemoryStream(bytes, writable: false);
+		}
+		finally
+		{
+			DeleteTemporaryPrintFile(path);
+		}
+	}
+
+	async Task<CoreWebView2PrintStatus> ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
+	{
+		ct.ThrowIfCancellationRequested();
+		var result = await RunOnGtkThreadAsync(() =>
+		{
+			using var op = new WebKit.PrintOperation(_webview);
+			return op.RunDialog(_window);
+		}).WaitAsync(ct);
+		return result == WebKit.PrintOperationResponse.Print
+			? CoreWebView2PrintStatus.Succeeded
+			: CoreWebView2PrintStatus.OtherError;
+	}
+
+	private void DeleteTemporaryPrintFile(string path)
+	{
+		try
+		{
+			File.Delete(path);
+		}
+		catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"Unable to delete temporary print file '{path}'.", e);
+			}
+		}
+	}
+
+	private const string X11CookiesNotSupported =
+		"CoreWebView2.CookieManager is not currently surfaced on the X11/WebKitGTK target. " +
+		"Use WebKit.WebContext.CookieManager directly via TryGetPlatformHandle for now.";
+
+	Task<System.Collections.Generic.IReadOnlyList<CoreWebView2Cookie>> ISupportsCookieManager.GetCookiesAsync(string uri, CancellationToken ct)
+		=> throw new NotSupportedException(X11CookiesNotSupported);
+
+	void ISupportsCookieManager.AddOrUpdateCookie(CoreWebView2Cookie cookie) => throw new NotSupportedException(X11CookiesNotSupported);
+
+	void ISupportsCookieManager.DeleteCookie(CoreWebView2Cookie cookie) => throw new NotSupportedException(X11CookiesNotSupported);
+
+	void ISupportsCookieManager.DeleteCookies(string name, string? uri) => throw new NotSupportedException(X11CookiesNotSupported);
+
+	void ISupportsCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path) => throw new NotSupportedException(X11CookiesNotSupported);
+
+	void ISupportsCookieManager.DeleteAllCookies() => throw new NotSupportedException(X11CookiesNotSupported);
+
+	private bool _requestedIsZoomControlEnabled = true;
+	private readonly System.Collections.Generic.Dictionary<string, string> _documentCreatedScripts = new();
+
+	Task<string> ISupportsDocumentCreatedScripts.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript, CancellationToken ct)
+	{
+		var id = Guid.NewGuid().ToString();
+		_documentCreatedScripts[id] = javaScript;
+		RunOnGtkThread(() =>
+		{
+			using var script = new WebKit.UserScript(
+				javaScript,
+				WebKit.UserContentInjectedFrames.AllFrames,
+				WebKit.UserScriptInjectionTime.Start,
+				null,
+				null);
+			_webview.UserContentManager.AddScript(script);
+		});
+		return Task.FromResult(id);
+	}
+
+	void ISupportsDocumentCreatedScripts.RemoveScriptToExecuteOnDocumentCreated(string id)
+	{
+		if (!_documentCreatedScripts.Remove(id))
+		{
+			return;
+		}
+
+		RunOnGtkThread(() =>
+		{
+			_webview.UserContentManager.RemoveAllScripts();
+			AddWebMessageBridge();
+			foreach (var remaining in _documentCreatedScripts.Values)
+			{
+				using var script = new WebKit.UserScript(
+					remaining,
+					WebKit.UserContentInjectedFrames.AllFrames,
+					WebKit.UserScriptInjectionTime.Start,
+					null,
+					null);
+				_webview.UserContentManager.AddScript(script);
+			}
+		});
+	}
+
+	string? ISupportsUserAgent.UserAgent
+	{
+		get => RunOnGtkThread(() => _webview.Settings.UserAgent);
+		set => RunOnGtkThread(() => _webview.Settings.UserAgent = value);
+	}
+
+	bool ISupportsScriptEnabled.IsScriptEnabled
+	{
+		get => RunOnGtkThread(() => _webview.Settings.EnableJavascript);
+		set => RunOnGtkThread(() => _webview.Settings.EnableJavascript = value);
+	}
+
+	bool ISupportsZoomControl.IsZoomControlEnabled
+	{
+		get => _requestedIsZoomControlEnabled;
+		set
+		{
+			_requestedIsZoomControlEnabled = value;
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info("CoreWebView2Settings.IsZoomControlEnabled is not honored on the X11/WebKitGTK target.");
+			}
+		}
+	}
+
 	[ThreadStatic] private static bool _isGtkThread;
 	private static readonly Exception? _initException;
 	private static readonly bool _usingWebKit2Gtk41;
@@ -52,6 +225,8 @@ public class X11NativeWebView : INativeWebView
 	private readonly string _title = $"Uno WebView {Random.Shared.Next()}";
 
 	private bool _dontRaiseNextNavigationCompleted;
+	private bool _isCancelling;
+	private volatile bool _isClosed;
 
 	[DllImport("libc", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
 	private static extern int setenv(string name, string value, int overwrite);
@@ -170,6 +345,7 @@ public class X11NativeWebView : INativeWebView
 			_webview.LoadFailed += WebViewOnLoadFailed;
 			_webview.UserContentManager.RegisterScriptMessageHandler("unoWebView");
 			_webview.UserContentManager.ScriptMessageReceived += UserContentManagerOnScriptMessageReceived;
+			AddWebMessageBridge();
 			_webview.AddNotification(WebViewNotificationHandler);
 			_window.Add(_webview);
 			_webview.ShowAll();
@@ -206,14 +382,83 @@ public class X11NativeWebView : INativeWebView
 			RunOnGtkThread(() => _window.ShowAll());
 		}
 
-		presenter.Loaded += (_, _) => RunOnGtkThread(() => _window.ShowAll());
-		presenter.Unloaded += (_, _) => RunOnGtkThread(() => _window.Hide());
+		presenter.Loaded += OnPresenterLoaded;
+		presenter.Unloaded += OnPresenterUnloaded;
 	}
 
 	~X11NativeWebView()
 	{
-		RunOnGtkThread(() => _window.Close());
+		if (_window is { } window)
+		{
+			GLib.Idle.Add(() =>
+			{
+				window.Destroy();
+				window.Dispose();
+				return false;
+			});
+		}
 	}
+
+	private void OnPresenterLoaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs args) => RunOnGtkThread(() =>
+	{
+		if (!_isClosed)
+		{
+			_window.ShowAll();
+		}
+	});
+
+	private void OnPresenterUnloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs args) => RunOnGtkThread(() =>
+	{
+		if (!_isClosed)
+		{
+			_window.Hide();
+		}
+	});
+
+	void ISupportsClose.Close()
+	{
+		if (_isClosed)
+		{
+			return;
+		}
+
+		_isClosed = true;
+		_presenter.Loaded -= OnPresenterLoaded;
+		_presenter.Unloaded -= OnPresenterUnloaded;
+		_presenter.Content = null;
+		RunOnGtkThread(() =>
+		{
+			_webview.LoadChanged -= WebViewOnLoadChanged;
+			_webview.LoadFailed -= WebViewOnLoadFailed;
+			_webview.RemoveNotification(WebViewNotificationHandler);
+			_webview.UserContentManager.ScriptMessageReceived -= UserContentManagerOnScriptMessageReceived;
+			_webview.UserContentManager.UnregisterScriptMessageHandler("unoWebView");
+			_webview.UserContentManager.RemoveAllScripts();
+			_webview.StopLoading();
+			_window.Remove(_webview);
+			_webview.Destroy();
+			_webview.Dispose();
+			_window.Destroy();
+			_window.Dispose();
+		});
+		_documentCreatedScripts.Clear();
+		GC.SuppressFinalize(this);
+	}
+
+	private void AddWebMessageBridge()
+	{
+		using var script = new WebKit.UserScript(
+			WebViewMessageBridge.CreateScript("window.webkit.messageHandlers.unoWebView.postMessage(message);"),
+			WebKit.UserContentInjectedFrames.TopFrame,
+			WebKit.UserScriptInjectionTime.Start,
+			null,
+			null);
+		_webview.UserContentManager.AddScript(script);
+	}
+
+	void ISupportsPostWebMessage.PostWebMessageAsJson(string json) => WebViewMessageBridge.PostMessage(this, json, isJson: true);
+
+	void ISupportsPostWebMessage.PostWebMessageAsString(string message) => WebViewMessageBridge.PostMessage(this, message, isJson: false);
 
 	public string DocumentTitle => RunOnGtkThread(() => _webview.Title);
 
@@ -241,6 +486,24 @@ public class X11NativeWebView : INativeWebView
 			});
 			return tcs.Task.GetAwaiter().GetResult();
 		}
+	}
+
+	private static Task<T> RunOnGtkThreadAsync<T>(Func<T> func)
+	{
+		var tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+		GLib.Idle.Add(() =>
+		{
+			try
+			{
+				tcs.TrySetResult(func());
+			}
+			catch (Exception e)
+			{
+				tcs.TrySetException(e);
+			}
+			return false;
+		});
+		return tcs.Task;
 	}
 
 	private static void RunOnGtkThread(Action func)
@@ -324,7 +587,7 @@ public class X11NativeWebView : INativeWebView
 	public Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
 	{
 		var tcs = new TaskCompletionSource<string?>();
-		_webview.RunJavascript(script, null, (wv, res) =>
+		RunOnGtkThread(() => _webview.RunJavascript(script, null, (wv, res) =>
 		{
 			// INCREDIBLY IMPORTANT NOTES
 			// Read JSValue only once. Each time result.JsValue is read, it increments the ref count
@@ -346,7 +609,7 @@ public class X11NativeWebView : INativeWebView
 				// you'll get a double free.
 				GC.SuppressFinalize(jsval);
 			}
-			catch (GException e)
+			catch (GLib.GException e)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
@@ -354,7 +617,7 @@ public class X11NativeWebView : INativeWebView
 				}
 				tcs.SetException(e);
 			}
-		});
+		}));
 		return tcs.Task;
 	}
 
@@ -376,24 +639,37 @@ public class X11NativeWebView : INativeWebView
 
 	private void WebViewOnLoadChanged(object o, LoadChangedArgs args)
 	{
+		if (_isClosed)
+		{
+			return;
+		}
+
 		switch (args.LoadEvent)
 		{
 			case LoadEvent.Started:
 				{
 					if (Uri.TryCreate(_webview.Uri, UriKind.Absolute, out var uri))
 					{
-						_presenter.DispatcherQueue.TryEnqueue(() =>
-						{
-							_coreWebView.RaiseNavigationStarting(uri, out var cancel);
-							if (cancel)
+						_presenter.DispatcherQueue.TryEnqueue(X11WebViewNavigationStarting.CreateCallback(
+							() => _isClosed,
+							() =>
 							{
+								_isCancelling = false;
+								_coreWebView.RaiseNavigationStarting(uri, out var cancel);
+								return cancel;
+							},
+							stopLoading =>
+							{
+								// The shared layer already raised the OperationCanceled completion,
+								// so the load-failed callback triggered by StopLoading must stay silent.
+								_isCancelling = true;
 								GLib.Idle.Add(() =>
 								{
-									_webview.StopLoading();
+									stopLoading();
 									return false;
 								});
-							}
-						});
+							},
+							() => _webview.StopLoading()));
 					}
 				}
 				break;
@@ -412,12 +688,20 @@ public class X11NativeWebView : INativeWebView
 					{
 						_presenter.DispatcherQueue.TryEnqueue(() =>
 						{
+							if (_isClosed)
+							{
+								return;
+							}
+
 							_coreWebView.SetHistoryProperties(canGoBack, canGoForward);
 							_coreWebView.RaiseHistoryChanged();
 							Uri.TryCreate(uriString, UriKind.Absolute, out var uri);
 							_presenter.DispatcherQueue.TryEnqueue(() =>
 							{
-								_coreWebView.RaiseNavigationCompleted(uri, isSuccess: true, httpStatusCode: 200, errorStatus: CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
+								if (!_isClosed)
+								{
+									_coreWebView.RaiseNavigationCompleted(uri, isSuccess: true, httpStatusCode: 200, errorStatus: CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
+								}
 							});
 						});
 					}
@@ -428,17 +712,31 @@ public class X11NativeWebView : INativeWebView
 
 	private void WebViewOnLoadFailed(object o, LoadFailedArgs args)
 	{
+		if (_isClosed)
+		{
+			return;
+		}
+
 		_dontRaiseNextNavigationCompleted = true;
+		if (_isCancelling)
+		{
+			_isCancelling = false;
+			return;
+		}
+
 		Uri.TryCreate(args.FailingUri, UriKind.Absolute, out var uri);
 		_presenter.DispatcherQueue.TryEnqueue(() =>
 		{
-			_coreWebView.RaiseNavigationCompleted(uri, isSuccess: false, httpStatusCode: 0, errorStatus: CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
+			if (!_isClosed)
+			{
+				_coreWebView.RaiseNavigationCompleted(uri, isSuccess: false, httpStatusCode: 0, errorStatus: CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
+			}
 		});
 	}
 
-	private void WebViewNotificationHandler(object o, NotifyArgs args)
+	private void WebViewNotificationHandler(object o, GLib.NotifyArgs args)
 	{
-		if (args.Property == "title")
+		if (!_isClosed && args.Property == "title")
 		{
 			_coreWebView.OnDocumentTitleChanged();
 		}
@@ -453,7 +751,10 @@ public class X11NativeWebView : INativeWebView
 		GC.SuppressFinalize(value); // see comments in ExecuteScriptAsync
 		_presenter.DispatcherQueue.TryEnqueue(() =>
 		{
-			_coreWebView.RaiseWebMessageReceived(str);
+			if (!_isClosed)
+			{
+				_coreWebView.RaiseWebMessageReceived(str);
+			}
 		});
 	}
 

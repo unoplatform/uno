@@ -118,6 +118,8 @@
 		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourcesGenerator\ResourceQualifierPathResolver.cs">
 			<Link>Resources\ResourceQualifierPathResolver.cs</Link>
 		</Compile>
+		<Compile Include="..\Uno.UI.Runtime.Skia.Android\UI\Xaml\Controls\WebView\Native\Android\WebViewActivityLaunch.cs" Link="Windows_UI_XAML_Controls\WebView2Tests\WebViewActivityLaunch.cs" />
+		<Compile Include="..\AddIns\Uno.UI.WebView.Skia.X11\X11WebViewNavigationStarting.cs" Link="Windows_UI_XAML_Controls\WebView2Tests\X11WebViewNavigationStarting.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<!--
