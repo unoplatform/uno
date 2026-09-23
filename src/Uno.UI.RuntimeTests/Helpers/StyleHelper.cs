@@ -20,6 +20,10 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// <summary>
 		/// Adds <paramref name="resources"/> to <see cref="Application.Resources"/> for the duration of the test, then removes it.
 		/// </summary>
+		/// <remarks>
+		/// Unload any content that references these resources before disposing: on native WinUI, a later theme
+		/// change re-resolving a removed {ThemeResource} crashes the process.
+		/// </remarks>
 		public static IDisposable UseAppLevelResources(ResourceDictionary resources)
 		{
 			var appResources = Application.Current.Resources;
