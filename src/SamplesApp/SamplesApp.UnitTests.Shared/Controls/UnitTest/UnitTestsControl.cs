@@ -1144,6 +1144,12 @@ namespace Uno.UI.Samples.Tests
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					CloseRemainingPopups();
+
+					if (Uno.UI.RuntimeTests.Helpers.StyleHelper.RestoreLeakedUwpStyles())
+					{
+						_log?.Warn("The test left UWP styles applied (StyleHelper.UseUwpStyles was not disposed); restored Fluent styles.");
+					}
+
 					if (config.IsUnloadingTestContent)
 					{
 						TestServices.WindowHelper.WindowContent = null;
