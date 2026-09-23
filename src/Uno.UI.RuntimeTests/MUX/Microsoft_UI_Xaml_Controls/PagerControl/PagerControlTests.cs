@@ -54,7 +54,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			});
 		}
 
-#if !__ANDROID__
 		[TestMethod]
 		public async Task VerifyNumberPanelButtonUIABehavior()
 		{
@@ -84,7 +83,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				}
 			});
 		}
-#endif
 
 		[TestMethod]
 		[Ignore("ComboBox version of the control is slow on Android/iOS (issue #3144)")]

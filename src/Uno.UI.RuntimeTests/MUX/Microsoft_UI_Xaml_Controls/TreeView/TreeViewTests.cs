@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-#if !WINDOWS_UWP
 
 using MUXControlsTestApp.Utilities;
 using System;
@@ -384,9 +383,6 @@ namespace MUXControlsTestApp
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
-#endif
 		public async Task ValidateTreeViewItemSourceChangeUpdatesChevronOpacity()
 		{
 			TreeView treeView = null;
@@ -526,9 +522,6 @@ namespace MUXControlsTestApp
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
-#endif
 		public async Task TreeViewPendingSelectedNodesTest()
 		{
 			TreeView treeView = null;
@@ -572,9 +565,6 @@ namespace MUXControlsTestApp
 		//}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
-#endif
 		public async Task TreeViewSelectionChangedSingleMode()
 		{
 			TreeView treeView = null;
@@ -849,4 +839,3 @@ namespace MUXControlsTestApp
 		}
 	}
 }
-#endif

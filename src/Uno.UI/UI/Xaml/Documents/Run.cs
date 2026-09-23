@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.UI.Xaml.Markup;
@@ -42,6 +42,8 @@ namespace Microsoft.UI.Xaml.Documents
 		public void OnTextChanged()
 		{
 			OnTextChangedPartial();
+			// The run's length feeds every ancestor's cached position counts, so drop those first.
+			MarkDirty();
 			InvalidateInlines(true);
 			InvalidateSegmentsPartial();
 		}
@@ -53,60 +55,60 @@ namespace Microsoft.UI.Xaml.Documents
 		protected override void OnForegroundChanged()
 		{
 			base.OnForegroundChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 		}
 
 		protected override void OnFontFamilyChanged()
 		{
 			base.OnFontFamilyChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontSizeChanged()
 		{
 			base.OnFontSizeChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontStretchChanged()
 		{
 			base.OnFontStretchChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontWeightChanged()
 		{
 			base.OnFontWeightChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnBaseLineAlignmentChanged()
 		{
 			base.OnBaseLineAlignmentChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 		}
 
 		protected override void OnCharacterSpacingChanged()
 		{
 			base.OnCharacterSpacingChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 		}
 
 		protected override void OnTextDecorationsChanged()
 		{
 			base.OnTextDecorationsChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 		}
 
 		partial void InvalidateSegmentsPartial();
@@ -128,10 +130,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(Run),
 				new FrameworkPropertyMetadata(default(FlowDirection), FrameworkPropertyMetadataOptions.Inherits, (DependencyObject dO, DependencyPropertyChangedEventArgs args) => ((Run)dO).OnFlowDirectionChanged()));
 
-		private void OnFlowDirectionChanged()
-		{
-			InvalidateInlines(false);
-		}
+		private void OnFlowDirectionChanged() => InvalidateInlinesForFormatChange();
 
 		private static (int CodePoint, int Length) GetCodePoint(ReadOnlySpan<char> text, int i)
 		{

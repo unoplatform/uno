@@ -245,8 +245,12 @@ internal readonly partial struct UnicodeText
 					// the exact symbol names at compile times (even DllImport.EntryPoint doesn't work) and do the
 					// method mapping by reflection.
 					// On WASM, NativeLibrary.TryGetExport is supported, but not on NativeAOT.
-					var (methodName, type) = OperatingSystem.IsBrowser() ? ($"uno_{typeof(T).Name}", typeof(BrowserICUSymbols)) : ($"{typeof(T).Name}_{_icuVersion}", typeof(IOSICUSymbols));
-					var method = type.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+					const BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Static;
+					MethodInfo? method = null;
+					Type type;
+					method = OperatingSystem.IsBrowser()
+						? (type = typeof(BrowserICUSymbols)).GetMethod($"uno_{typeof(T).Name}", flags)
+						: (type = typeof(IOSICUSymbols)).GetMethod($"{typeof(T).Name}_{_icuVersion}", flags);
 					if (method is null)
 					{
 						throw new InvalidOperationException($"Failed to find {typeof(T).Name} in {type.Name}.");

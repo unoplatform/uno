@@ -9,14 +9,6 @@ using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.DevTools.Input;
 
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.CommandBarPages;
-
-#if __APPLE_UIKIT__
-using Uno.UI.Controls;
-using Uno.UI.Helpers.WinUI;
-using UIKit;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
@@ -69,9 +61,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("VerticalAlignment asserts fail. Might be because of different timing.")]
-#endif
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Expanded_Then_Collapsed_MoreButton_VerticalAlignment()
 		{
@@ -96,53 +85,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 
 			var moreButton = (Button)SUT.FindName("MoreButton");
-#if !__ANDROID__ // layout timings are different on android
 			Assert.AreEqual(48, moreButton.ActualHeight);
-#endif
 			Assert.AreEqual(VerticalAlignment.Top, moreButton.VerticalAlignment);
 
 			SUT.IsOpen = true;
 			await WindowHelper.WaitForIdle();
-#if !__ANDROID__ // layout timings are different on android
 			Assert.AreEqual(64, moreButton.ActualHeight);
-#endif
 			Assert.AreEqual(VerticalAlignment.Stretch, moreButton.VerticalAlignment);
 
 			SUT.IsOpen = false;
 			await Task.Delay(1000); // wait for animations
-#if !__ANDROID__ // layout timings are different on android
 			Assert.AreEqual(48, moreButton.ActualHeight);
-#endif
 			Assert.AreEqual(VerticalAlignment.Top, moreButton.VerticalAlignment);
 		}
-
-#if __APPLE_UIKIT__
-		[TestMethod]
-		[RequiresFullWindow]
-
-		public async Task Can_Navigate_Forward_And_Backwards()
-		{
-			var frame = new Frame() { Width = 400, Height = 400 };
-			var content = new Grid { Children = { frame } };
-
-			WindowHelper.WindowContent = content;
-			await WindowHelper.WaitForIdle();
-
-			var firstNavBar = await frame.NavigateAndGetNavBar<CommandBarFirstPage>();
-
-			await WindowHelper.WaitForLoaded(firstNavBar);
-
-			var secondNavBar = await frame.NavigateAndGetNavBar<CommandBarSecondPage>();
-
-			await WindowHelper.WaitForLoaded(secondNavBar);
-
-			await Task.Delay(1000);
-
-			frame.GoBack();
-
-			await WindowHelper.WaitForLoaded(firstNavBar);
-		}
-#endif
 
 		[TestMethod]
 		public async Task When_IsOpen_True_LayoutCycle()
@@ -215,30 +170,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 
-#if __APPLE_UIKIT__
-	public static class NavigationBarTestHelper
-	{
-		public static UINavigationBar GetNativeNavBar(this CommandBar navBar) => navBar
-			?.TryGetNative<CommandBar, CommandBarRenderer, UINavigationBar>(out var native) ?? false ? native : null;
-
-		public static UINavigationItem GetNativeNavItem(this CommandBar navBar) => navBar
-			?.TryGetNative<CommandBar, CommandBarNavigationItemRenderer, UINavigationItem>(out var native) ?? false ? native : null;
-
-
-		public static Task<CommandBar> NavigateAndGetNavBar<TPage>(this Frame frame) where TPage : Page
-		{
-			return frame.NavigateAndGetNavBar(typeof(TPage));
-		}
-
-		public static async Task<CommandBar> NavigateAndGetNavBar(this Frame frame, Type pageType)
-		{
-			frame.Navigate(pageType);
-			await WindowHelper.WaitForIdle();
-
-			var page = frame.Content as Page;
-			await WindowHelper.WaitForLoaded(page!);
-			return SharedHelpers.FindInVisualTreeByType<CommandBar>(page);
-		}
-	}
-#endif
 }

@@ -19,9 +19,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_ResourceDictionary
 	{
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("iOS and macOS don't yet load/unload from resources - https://github.com/unoplatform/uno/issues/5208")]
-#endif
 		public async Task When_FrameworkElement_In_Resources_Should_Receive_Loaded_Unloaded()
 		{
 			var textBlock = new TextBlock();
@@ -80,17 +77,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 #if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
-#elif __ANDROID__
-			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
 #else
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,TextBlockUnloaded,", result);
 #endif
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("iOS and macOS don't yet load/unload from resources - https://github.com/unoplatform/uno/issues/5208")]
-#endif
 		public async Task When_FrameworkElement_In_Resources_Then_Removed_Should_Receive_Loaded_Unloaded()
 		{
 			var textBlock = new TextBlock();
@@ -137,8 +129,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 #if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,", result);
-#elif __ANDROID__
-			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,", result);
 #else
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,", result);
 #endif
@@ -147,8 +137,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 #if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
-#elif __ANDROID__
-			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
 #else
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,TextBlockUnloaded,", result);
 #endif

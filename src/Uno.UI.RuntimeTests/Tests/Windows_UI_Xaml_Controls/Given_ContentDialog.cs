@@ -158,7 +158,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Uncapped_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog(unconstrained: true)
@@ -420,10 +420,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		//#if !__ANDROID__ && !__APPLE_UIKIT__ // Fails on Android because keyboard does not appear when TextBox inside native popup is programmatically focussed - https://github.com/unoplatform/uno/issues/7995
-#if !__APPLE_UIKIT__
 		[Ignore("Test applies to platforms using software keyboard")]
-#endif
 		public async Task When_Soft_Keyboard_And_VisibleBounds()
 		{
 			var nativeUnsafeArea = ScreenHelper.GetUnsafeArea();
@@ -492,8 +489,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __SKIA__ || __WASM__
-		[Ignore("Currently fails on Skia/WASM, tracked by #15981")]
+#if __SKIA__
+		[Ignore("Currently fails on Skia, tracked by #15981")]
 #endif
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Has_VisibleBounds_LayoutRoot_Respects_VisibleBounds()
@@ -794,16 +791,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				window.Close();
 			}
-		}
-#endif
-
-#if __ANDROID__
-		// Fails because keyboard does not appear when TextBox is programmatically focussed, or appearance is not correctly registered - https://github.com/unoplatform/uno/issues/7995
-		[Ignore()]
-		[TestMethod]
-		public async Task When_Soft_Keyboard_And_VisibleBounds_Managed()
-		{
-			await When_Soft_Keyboard_And_VisibleBounds();
 		}
 #endif
 

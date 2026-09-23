@@ -37,10 +37,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Android | RuntimeTestPlatforms.IOS)]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("Fails on Android and iOS")]
-#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_Time_Zone()
 		{
 			for (int offset = -14; offset <= 14; offset++)
@@ -116,9 +113,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("https://github.com/unoplatform/uno/issues/9080")] // Works locally but not in chromium
-#endif
 		public async Task When_CanadaFrench_Culture_Column_Order()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -143,9 +137,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("https://github.com/unoplatform/uno/issues/9080")] // Works locally but not in chromium
-#endif
 		public async Task When_Czech_Culture_Column_Order()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -170,9 +161,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("https://github.com/unoplatform/uno/issues/9080")] // Works locally but not in chromium
-#endif
 		public async Task When_Hungarian_Culture_Column_Order()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -305,14 +293,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			openFlyoutsCount = FlyoutBase.OpenFlyouts.Count;
 			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
 #endif
-
-#if __ANDROID__ || __APPLE_UIKIT__
-			if (useNative)
-			{
-				var nativeDatePickerFlyout = (NativeDatePickerFlyout)associatedFlyout;
-				Assert.IsFalse(nativeDatePickerFlyout.IsNativeDialogOpen);
-			}
-#endif
 		}
 
 		[TestMethod]
@@ -354,90 +334,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			datePickerFlyout.Hide();
 
 			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
-
-#if __ANDROID__ || __APPLE_UIKIT__
-			if (useNative)
-			{
-				var nativeDatePickerFlyout = (NativeDatePickerFlyout)datePickerFlyout;
-				Assert.IsFalse(nativeDatePickerFlyout.IsNativeDialogOpen);
-			}
-#endif
 		}
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		[TestMethod]
-		public async Task When_Default_Flyout_Date_Native()
-		{
-			var now = DateTimeOffset.UtcNow;
-			var datePicker = new Microsoft.UI.Xaml.Controls.DatePicker();
-			datePicker.UseNativeStyle = true;
-
-			TestServices.WindowHelper.WindowContent = datePicker;
-
-			await TestServices.WindowHelper.WaitForLoaded(datePicker);
-
-			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
-
-			var openFlyouts = FlyoutBase.OpenFlyouts;
-			Assert.HasCount(1, openFlyouts);
-			var associatedFlyout = openFlyouts[0];
-			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.NativeDatePickerFlyout));
-
-			var datePickerFlyout = (NativeDatePickerFlyout)associatedFlyout;
-
-			try
-			{
-				Assert.AreEqual(DatePicker.NullDateSentinelValue, datePickerFlyout.Date);
-				Assert.AreEqual(now.Day, datePickerFlyout.NativeDialogDate.Day);
-				Assert.AreEqual(now.Month, datePickerFlyout.NativeDialogDate.Month);
-				Assert.AreEqual(now.Year, datePickerFlyout.NativeDialogDate.Year);
-			}
-			finally
-			{
-				datePickerFlyout.Hide();
-			}
-		}
-#endif
-
-#if __IOS__
-		[TestMethod]
-		[RequiresFullWindow]
-		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15263")]
-		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
-		{
-			// Native iOS DatePicker reads CoreApplication.RequestedTheme for
-			// OverrideUserInterfaceStyle, so application-level theme is needed.
-			using var _ = ThemeHelper.UseApplicationDarkTheme();
-			await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Dark);
-		}
-
-		[TestMethod]
-		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15263")]
-		public async Task When_App_Theme_Light_Native_Flyout_Theme() => await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Light);
-
-		private async Task When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle expectedStyle)
-		{
-			var datePicker = new Microsoft.UI.Xaml.Controls.DatePicker();
-			datePicker.UseNativeStyle = true;
-
-			TestServices.WindowHelper.WindowContent = datePicker;
-
-			await TestServices.WindowHelper.WaitForLoaded(datePicker);
-
-			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
-
-			var openFlyouts = FlyoutBase.OpenFlyouts;
-			Assert.HasCount(1, openFlyouts);
-			var associatedFlyout = openFlyouts[0];
-			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
-			var datePickerFlyout = (DatePickerFlyout)associatedFlyout;
-
-			var nativeDatePickerFlyout = (NativeDatePickerFlyout)datePickerFlyout;
-
-			var nativeDatePicker = nativeDatePickerFlyout._selector;
-			Assert.AreEqual(expectedStyle, nativeDatePicker.OverrideUserInterfaceStyle);
-		}
-#endif
 
 		private static IDisposable SetAmbiantLanguage(string language)
 		{

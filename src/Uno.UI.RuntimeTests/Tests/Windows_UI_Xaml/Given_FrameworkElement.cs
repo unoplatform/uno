@@ -25,17 +25,7 @@ using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml.Markup;
 
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using _View = UIKit.UIView;
-#else
 using _View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -300,23 +290,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if __WASM__
-		// TODO Android does not handle measure invalidation properly
-		[TestMethod]
-		public Task When_Measure_Once() =>
-			RunOnUIThread.ExecuteAsync(() =>
-			{
-				var SUT = new MyControl01();
-
-				SUT.Measure(new Size(10, 10));
-				Assert.HasCount(1, SUT.MeasureOverrides);
-				Assert.AreEqual(new Size(10, 10), SUT.MeasureOverrides[0]);
-
-				SUT.Measure(new Size(10, 10));
-				Assert.HasCount(1, SUT.MeasureOverrides);
-			});
-#endif
-
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow("Auto", "Auto", double.NaN, double.NaN)]
@@ -560,9 +533,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ // #9282 for macOS
-		[Ignore]
-#endif
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_InvalidateDuringMeasure_Then_GetReMeasured()
 		{
@@ -580,7 +550,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// count == 1 on WinUI
-#if __SKIA__ || __WASM__
+#if __SKIA__
 			Assert.AreEqual(1, count);
 #else
 			Assert.AreEqual(2, count);
@@ -589,9 +559,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore]
-#endif
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_InvalidateDuringArrange_Then_GetReArranged()
 		{
@@ -701,9 +668,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 
 		[TestMethod]
-#if __WASM__
-		[Ignore] // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
-#endif
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public Task MeasureOverride_With_Nan_In_Grid() =>
 			RunOnUIThread.ExecuteAsync(() =>
@@ -720,28 +684,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
 			});
 
-#if __WASM__
-		// TODO Android does not handle measure invalidation properly
-		[TestMethod]
-		public Task When_Grid_Measure_And_Invalidate() =>
-			RunOnUIThread.ExecuteAsync(() =>
-			{
-				var grid = new Grid();
-				var SUT = new MyControl01();
-
-				grid.Children.Add(SUT);
-
-				grid.Measure(new Size(10, 10));
-				Assert.HasCount(1, SUT.MeasureOverrides);
-				Assert.AreEqual(new Size(10, 10), SUT.MeasureOverrides[0]);
-
-				grid.InvalidateMeasure();
-
-				grid.Measure(new Size(10, 10));
-				Assert.HasCount(1, SUT.MeasureOverrides);
-			});
-#endif
-
 		public partial class MyGrid : Grid
 		{
 			public Size AvailableSizeUsedForMeasure { get; private set; }
@@ -755,9 +697,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("Layouter doesn't work properly")]
-#endif
 		public async Task When_MinWidth_SmallerThan_AvailableSize()
 		{
 			Border content = null;
@@ -918,43 +857,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var resultStr = $"{GetStr(childDecorator)}|{GetStr(childBorder)}|{GetStr(innerChild)}";
 
-#if __APPLE_UIKIT__ || __ANDROID__
-			var layout = parentBorder.ShowLocalVisualTree();
-#else
 			var layout = "";
-#endif
 
 			Assert.AreEqual(expectedResult, resultStr, layout);
 		}
-
-#if __ANDROID__
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_Native_Parent_And_Measure_Infinite()
-		{
-			const int InnerBorderHeight = 47;
-			var native = new MyLinearLayout();
-			var inner = new Border { Width = 200, Height = InnerBorderHeight };
-			var outer = new Grid() { VerticalAlignment = VerticalAlignment.Center };
-			var panel = new StackPanel();
-
-			native.Child = inner;
-			outer.Children.Add(native);
-			panel.Children.Add(outer);
-
-			TestServices.WindowHelper.WindowContent = panel;
-			await TestServices.WindowHelper.WaitForIdle(); //StretchAffectsMeasure is set when Loaded is called
-
-			panel.Measure(new Size(1000, 1000));
-
-			var measuredHeightLogical = Math.Round(Uno.UI.ViewHelper.PhysicalToLogicalPixels(outer.MeasuredHeight));
-			Assert.AreEqual(InnerBorderHeight, measuredHeightLogical);
-
-			outer.Arrange(new Rect(0, 0, 1000, 1000));
-			var actualHeight = Math.Round(outer.ActualHeight);
-			Assert.AreEqual(InnerBorderHeight, actualHeight);
-		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -1099,31 +1005,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				new Uri("ms-appx:///Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml/Controls/ButtonUserControl.xaml"),
 				sut.BaseUri);
 		}
-
-#if __APPLE_UIKIT__
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_HasNativeChildren_Should_Measure_And_Arrange()
-		{
-			var sut = new MyNativeContainer() { Width = 100, Height = 100 };
-			var nativeView = new UILabel() { Text = "Hello Uno Platform" };
-
-			sut.AddChild(nativeView);
-
-			var hostPanel = new Grid { Children = { sut } };
-
-			TestServices.WindowHelper.WindowContent = hostPanel;
-			await TestServices.WindowHelper.WaitForIdle();
-
-			Assert.HasCount(1, sut.Subviews);
-
-			Assert.AreEqual(100, nativeView.Frame.Width);
-			Assert.AreEqual(100, nativeView.Frame.Height);
-
-			Assert.AreEqual(0, nativeView.Frame.X);
-			Assert.AreEqual(0, nativeView.Frame.Y);
-		}
-#endif
 
 #if UNO_REFERENCE_API
 		// Those tests only validate the current behavior which should be reviewed by https://github.com/unoplatform/uno/issues/2895
@@ -1408,8 +1289,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 
-	public partial class MyNativeContainer : FrameworkElement { }
-
 	public partial class AspectRatioView : FrameworkElement
 	{
 		public double AspectRatio { get; set; } = 1.5;
@@ -1424,11 +1303,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	public partial class ObservableLayoutingControl : FrameworkElement
 	{
-		public
-#if __ANDROID__
-		new
-#endif
-		event TypedEventHandler<ObservableLayoutingControl, Size> OnMeasure;
+		public event TypedEventHandler<ObservableLayoutingControl, Size> OnMeasure;
 
 		public event TypedEventHandler<ObservableLayoutingControl, Size> OnArrange;
 

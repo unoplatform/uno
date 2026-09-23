@@ -46,7 +46,7 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	// On wasm the read is served from the last-write cache, so no clipboard-read permission is needed.
-	[PlatformCondition(Include, NativeIOS | NativeAndroid | SkiaWin32 | SkiaIOS | Wasm)]
+	[PlatformCondition(Include, SkiaWin32 | SkiaIOS | SkiaWasm)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23962")]
 	public async Task When_GetSet_Clipboard_Text()
 	{
@@ -64,23 +64,6 @@ partial class Given_Clipboard
 		var text = await view.GetTextAsync();
 
 		Assert.AreEqual(TestString, text);
-	}
-
-	[TestMethod]
-	[RunsOnUIThread]
-	[PlatformCondition(Include, NativeAndroid)]
-	public async Task When_GetSet_Clipboard_Uri()
-	{
-		var package = new DataPackage();
-		var uri = new Uri(UriAddress);
-		package.SetUri(uri);
-		Clipboard.SetContent(package);
-
-		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Uri));
-
-		var view = Clipboard.GetContent();
-		var result = await view.GetUriAsync();
-		Assert.AreEqual(uri, result);
 	}
 
 	[TestMethod]
@@ -147,13 +130,13 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public void When_SetContent_Null()
 		=> Assert.ThrowsExactly<ArgumentNullException>(() => Clipboard.SetContent(null));
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_SetContent_ContentChanged()
 	{
 		var raised = 0;
@@ -178,7 +161,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_GetSet_Clipboard_Text_And_Html()
 	{
 		const string html = "<b>bold</b>";
@@ -201,7 +184,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Clear_Contains_Nothing()
 	{
 		var package = new DataPackage();
@@ -225,7 +208,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_GetSet_Clipboard_CustomFormat()
 	{
 		const string customFormat = "application/x-uno-test";
@@ -247,7 +230,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_GetSet_Clipboard_WebLink()
 	{
 		var package = new DataPackage();
@@ -267,7 +250,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	[DataRow("uno-test://open/item")]
 	[DataRow("httpx://open/item")]
 	public async Task When_GetSet_Clipboard_ApplicationLink(string address)
@@ -290,7 +273,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Paste_Event_With_Malformed_Uri_List()
 	{
 #if HAS_UNO
@@ -314,7 +297,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Paste_Shortcut_Precedes_Paste_Event()
 	{
 #if HAS_UNO
@@ -351,7 +334,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Paste_Event_With_Files()
 	{
 #if HAS_UNO
@@ -391,7 +374,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Paste_Event_With_Image()
 	{
 #if HAS_UNO
@@ -418,7 +401,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_SetContent_After_Paste()
 	{
 #if HAS_UNO
@@ -447,7 +430,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_View_Outlives_Clipboard_Change()
 	{
 #if HAS_UNO
@@ -482,7 +465,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Paste_Supersedes_Own_Content()
 	{
 #if HAS_UNO
@@ -516,7 +499,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Copy_Event_Invalidates_Paste()
 	{
 #if HAS_UNO
@@ -541,7 +524,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_SetContent_Superseded_Before_Write()
 	{
 #if HAS_UNO
@@ -596,7 +579,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_ContentChanged_Handler_Clears_During_SetContent()
 	{
 #if HAS_UNO
@@ -637,7 +620,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Clear_While_Write_Pending()
 	{
 #if HAS_UNO
@@ -670,7 +653,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_SetContent_Write_Is_Issued_Before_Data_Is_Ready()
 	{
 #if HAS_UNO
@@ -711,7 +694,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Paste_Shortcut_Follows_Fresh_Paste()
 	{
 #if HAS_UNO
@@ -742,7 +725,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Custom_Format_Is_Standard_Mime_Type()
 	{
 #if HAS_UNO
@@ -775,7 +758,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Bitmap_Transcoded_Without_OffscreenCanvas()
 	{
 #if HAS_UNO
@@ -805,7 +788,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Clipboard_Representation_Fails_To_Read()
 	{
 #if HAS_UNO
@@ -838,7 +821,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Clipboard_Read_Fails()
 	{
 #if HAS_UNO
@@ -866,7 +849,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Clipboard_Read_Is_Denied()
 	{
 #if HAS_UNO
@@ -900,7 +883,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Paste_Handled_By_Target_Raises_ContentChanged()
 	{
 #if HAS_UNO
@@ -938,7 +921,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_SetContent_Empty_Package()
 	{
 #if HAS_UNO
@@ -969,7 +952,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_GetSet_Clipboard_Custom_Image_Format()
 	{
 		const string svgFormat = "image/svg+xml";
@@ -991,7 +974,7 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, Wasm)]
+	[PlatformCondition(Include, SkiaWasm)]
 	public async Task When_Clipboard_Files_Are_Released()
 	{
 #if HAS_UNO

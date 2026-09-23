@@ -15,8 +15,6 @@ using Uno.UI.RuntimeTests.Helpers;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __APPLE_UIKIT__
-using UIKit;
 #else
 using Uno.UI;
 #endif
@@ -26,20 +24,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class Given_ListViewBase
 	{
-		// Due to physical/logical pixel conversion on Android, measurements aren't exact
-		private double Epsilon =>
-#if __ANDROID__
-			0.5
-#else
-			0
-#endif
-			;
+		private double Epsilon => 0;
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
-#endif
 		public async Task When_ListView_Parent_Unstretched()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -73,9 +61,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
-#endif
 		public async Task When_ListView_Parent_Unstretched_Scrolled()
 		{
 			var source = Enumerable.Range(0, 50).ToArray();
@@ -113,9 +98,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
-#endif
 		[RunsOnUIThread]
 		public async Task When_Item_Margins()
 		{
@@ -276,87 +258,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if __APPLE_UIKIT__
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Item_Recycled_DuringScroll()
-		{
-			var lines = new[]
-			{
-				"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"Donec tristique metus vel aliquet malesuada.",
-				"Quisque efficitur diam pulvinar sapien luctus cursus.",
-				"Fusce in tortor vitae risus pretium malesuada quis vitae lacus.",
-				"Quisque vitae viverra nunc, ut placerat libero.",
-				"Etiam metus ligula, facilisis et odio vitae, placerat ornare nunc.",
-				"Nulla facilisi. Cras id nisi elit.",
-				"Mauris pharetra quam lacinia purus interdum, vitae suscipit lorem lobortis.",
-			};
-			var source = Enumerable.Range(0, 100)
-				.Select(x => string.Join(" ", lines.Take(2 * (2 + x % 3)).Prepend($"#{x}:")))
-				.ToArray();
-
-			var SUT = new ListView
-			{
-				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = WrappingTextBlockItemTemplate,
-				ItemsSource = source,
-				Height = 500,
-				Width = 350,
-			};
-
-			SUT.ContainerContentChanging += (s, e) =>
-			{
-				Console.WriteLine($"@xy ContainerContentChanging: #{e.ItemIndex}, InRecycleQueue={e.InRecycleQueue}");
-			};
-
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForNonNull(() => SUT.FindFirstChild<ItemsPresenter>());
-			await WindowHelper.WaitForIdle();
-
-			var sv = SUT.FindFirstChild<ScrollViewer>();
-			var itemHeights = Enumerable.Range(0, 3)
-				.Select(x => (ListViewItem)SUT.ContainerFromIndex(x))
-				.Select(x => LayoutInformation.GetLayoutSlot(x).Height)
-				.ToArray();
-
-			Assert.IsTrue(itemHeights[0] < itemHeights[1] && itemHeights[1] < itemHeights[2], "Set of item heights should be in ascending order: " + string.Join(" < ", itemHeights));
-
-			var snapshots = new List<(int Index, Rect? ClippedFrame)>();
-			(int Index, ListViewItem Container)? previousContainer = null;
-			SUT.ContainerContentChanging += (s, e) =>
-			{
-				// The clean up occurs after this event, so we have to check the previous one when the next is being prepared.
-				if (previousContainer is { } previous)
-				{
-					// We should not throw/assert here, as this event is coming straight from native without any exception-guard.
-					// Throwing in this context will cause the app to crash directly.
-					snapshots.Add((previous.Index, previous.Container.ClippedFrame));
-				}
-
-				previousContainer = (e.ItemIndex, (ListViewItem)e.ItemContainer);
-			};
-
-			await ScrollToAndWait(SUT, sv.ExtentHeight);
-			await ScrollToAndWait(SUT, 0);
-
-			string FormatRect(Rect? rect) => rect is { } x ? $"[{x.Width:0.#}x{x.Height:0.#}@{x.Left:0.#},{x.Top:0.#}]" : "null";
-
-			foreach (var (index, frame) in snapshots)
-			{
-				var variantIndex = index % 3;
-				var expectedHeight = itemHeights[variantIndex];
-
-				Assert.IsTrue(frame is not { } cf || cf.Height == expectedHeight, $"Item's ClippedFrame shouldve been cleared, or be of expected height: Row={index} ('{variantIndex}), ClippedFrame={FormatRect(frame)}, ExpectedHeight={expectedHeight}");
-			}
-		}
-#endif
-
-		[TestMethod]
-		[RunsOnUIThread]
-#if __WASM__
-		[Ignore("Test is flaky")]
-#elif __SKIA__
+#if __SKIA__
 		[Ignore("Disabled due to https://github.com/unoplatform/uno-private/issues/878")]
 #endif
 		public async Task When_ItemsPresenter_MinHeight()
@@ -452,47 +356,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => Math.Abs(SUT.ActualHeight - 29) <= Epsilon, message: $"ListView failed to shrink from removing item: (ActualHeight: {SUT.ActualHeight})");
 		}
 
-#if __APPLE_UIKIT__ || __ANDROID__
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Item_With_NegativeMargin_AsdAsd() // todo@xy: remove asdasd
-		{
-			const string PathData = "M 2 2 H 18 V 18 H 2 Z M 3 3 V 17 H 17 V 3 Z"; // 18x18 square with 1px border located at 2,2
-			var setup = new ListView
-			{
-				ItemsSource = Enumerable.Range(0, 1).ToArray(),
-				ItemTemplate = XamlHelper.LoadXaml<DataTemplate>($$"""
-					<DataTemplate>
-						<Grid Background="SkyBlue">
-							<Border x:Name="SutBorder" Background="Pink">
-								<PathIcon x:Name="SUT"
-									Data="{{PathData}}" Foreground="Red"
-									Width="20" Height="20"
-									Margin="0,-10,0,0"
-									HorizontalAlignment="Center" VerticalAlignment="Center" />
-							</Border>
-						</Grid>
-					</DataTemplate>
-				"""),
-			};
-
-			await UITestHelper.Load(setup);
-
-			// We can't really test rotating the device in the context of runtime tests. But still, this is a good repro.
-			// When loaded, we should see a red square, whose lower half is sitting in a pink background.
-			// When you rotate the device (portrait <-> landscape), the red square should still be fully visible.
-
-			// Previously, there is a bug where rotating could cause the view with negative padding to be clipped.
-			// The visual hierarchy needs a special setup, it is just the easiest to replicate with a ListView...
-
-			// It can be verified by checking `.Layer.Mask` remains consistent for the visual tree under ListView,
-			// before and after the device rotation. In this case, it was the SutBorder that magically had a `.Layer.Mask` assigned.
-		}
-#endif
-
-		[TestMethod]
-		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid)]
 		public async Task When_Move_Then_SetSelectedIndex_No_Blank_Above()
 		{
 			const string Data = "Alfa,Bravo,Charlie,Delta,Echo,Foxtrot,Golf,Hotel,India,Juliett,Kilo,Lima,Mike,November,Oscar,Papa,Quebec,Romeo,Sierra,Tango,Uniform,Victor,Whiskey,X-ray,Yankee,Zulu";

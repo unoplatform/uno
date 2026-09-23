@@ -33,8 +33,6 @@ using Colors = Windows.UI.Colors;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __APPLE_UIKIT__
-using UIKit;
 #elif __SKIA__
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
@@ -132,9 +130,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
 		public async Task When_BorderThickness_Zero()
 		{
 			var grid = new Grid
@@ -167,9 +162,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
 		public async Task When_IsEnabled_With_Text_Changes()
 		{
 			var grid = new Grid
@@ -201,16 +193,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await ImageAssert.AreNotEqualAsync(enabledScreenshot, disabledScreenshot);
 		}
-
-#if __ANDROID__
-		[TestMethod]
-		public void When_InputScope_Null_And_ImeOptions()
-		{
-			var tb = new TextBox();
-			tb.InputScope = null;
-			tb.ImeOptions = Android.Views.InputMethods.ImeAction.Search;
-		}
-#endif
 
 #if HAS_UNO
 		[TestMethod]
@@ -376,9 +358,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, textBox.SelectionLength);
 		}
 
-#if __APPLE_UIKIT__
-		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
-#endif
 		[TestMethod]
 		public async Task When_SelectionStart_Set()
 		{
@@ -414,9 +393,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(3, textBox.SelectionStart);
 		}
 
-#if __APPLE_UIKIT__
-		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
-#endif
 		[TestMethod]
 		public async Task When_Focus_Changes_SelectionStart_Preserved()
 		{
@@ -492,79 +468,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(textbox.IsEnabled);
 			Assert.AreEqual(contentPresenter.Foreground, foregroundColor);
 		}
-
-#if __ANDROID__
-		[TestMethod]
-		public async Task When_Text_IsWrapping_Set()
-		{
-			var textbox = new TextBox();
-
-			textbox.Width = 100;
-			StackPanel panel = new() { Orientation = Orientation.Vertical };
-			panel.Children.Add(textbox);
-			WindowHelper.WindowContent = panel;
-			await WindowHelper.WaitForLoaded(textbox);
-			var originalActualHeigth = textbox.ActualHeight;
-			textbox.Text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremaaaaaaaaaaaaaaaaaa";
-			textbox.TextWrapping = TextWrapping.Wrap;
-			await WindowHelper.WaitForIdle();
-			textbox.ActualHeight.Should().BeGreaterThan(originalActualHeigth);
-		}
-
-
-		[TestMethod]
-		public async Task When_Text_IsNoWrap_Set()
-		{
-			var textbox = new TextBox();
-
-			textbox.Width = 100;
-			StackPanel panel = new() { Orientation = Orientation.Vertical };
-			panel.Children.Add(textbox);
-			WindowHelper.WindowContent = panel;
-			await WindowHelper.WaitForLoaded(textbox);
-			var originalActualHeigth = textbox.ActualHeight;
-			textbox.Text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremaaaaaaaaaaaaaaaaaa";
-			textbox.TextWrapping = TextWrapping.NoWrap;
-			await WindowHelper.WaitForIdle();
-			textbox.ActualHeight.Should().Be(originalActualHeigth);
-		}
-
-
-		[TestMethod]
-		public async Task When_AcceptsReturn_Set()
-		{
-			var textbox = new TextBox();
-
-			textbox.Width = 100;
-			StackPanel panel = new() { Orientation = Orientation.Vertical };
-			panel.Children.Add(textbox);
-			WindowHelper.WindowContent = panel;
-			await WindowHelper.WaitForLoaded(textbox);
-			var originalActualHeigth = textbox.ActualHeight;
-			textbox.AcceptsReturn = true;
-			textbox.Text = "Sed ut perspiciatis unde omnis iste natus \nerror sit voluptatem accusantium doloremaaaaaaaaaaaaaaaaaa";
-			await WindowHelper.WaitForIdle();
-			textbox.ActualHeight.Should().BeGreaterThan(originalActualHeigth * 2);
-		}
-
-		[TestMethod]
-		public async Task When_AcceptsReturn_Set_On_Init()
-		{
-			var textbox = new TextBox();
-			textbox.AcceptsReturn = true;
-			textbox.Text = "Sed ut perspiciatis unde omnis iste natus \nerror sit voluptatem accusantium doloremaaaaaaaaaaaaaaaaaa";
-			textbox.Width = 100;
-
-			StackPanel panel = new() { Orientation = Orientation.Vertical };
-			panel.Children.Add(textbox);
-			WindowHelper.WindowContent = panel;
-			await WindowHelper.WaitForLoaded(textbox);
-			var originalActualHeigth = textbox.ActualHeight;
-			textbox.AcceptsReturn = false;
-			await WindowHelper.WaitForIdle();
-			textbox.ActualHeight.Should().BeLessThan(originalActualHeigth / 2);
-		}
-#endif
 
 		[TestMethod]
 		public async Task When_SelectedText_StartZero()
@@ -732,101 +635,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(initialText + "5", textBox.Text);
 		}
 
-#if __ANDROID__
-		[TestMethod]
-		public async Task When_ReadOnly_TextBoxView()
-		{
-			var textBox = new TextBox
-			{
-				Text = "Text",
-				IsReadOnly = true
-			};
-
-			WindowHelper.WindowContent = textBox;
-			await WindowHelper.WaitForLoaded(textBox);
-
-			Assert.IsTrue(textBox.TextBoxView.Focusable);
-			Assert.IsTrue(textBox.TextBoxView.FocusableInTouchMode);
-			Assert.IsTrue(textBox.TextBoxView.Clickable);
-			Assert.IsTrue(textBox.TextBoxView.LongClickable);
-		}
-
-		[TestMethod]
-		public async Task When_NotTabStop_TextBoxView()
-		{
-			var textBox = new TextBox
-			{
-				Text = "Text",
-				IsTabStop = false
-			};
-
-			WindowHelper.WindowContent = textBox;
-			await WindowHelper.WaitForLoaded(textBox);
-
-			Assert.IsFalse(textBox.TextBoxView.Focusable);
-			Assert.IsFalse(textBox.TextBoxView.FocusableInTouchMode);
-			Assert.IsFalse(textBox.TextBoxView.Clickable);
-			Assert.IsFalse(textBox.TextBoxView.LongClickable);
-		}
-
-		[TestMethod]
-		public async Task When_ReadOnly_NotTabStop_TextBoxView()
-		{
-			var textBox = new TextBox
-			{
-				Text = "Text",
-				IsTabStop = false,
-				IsReadOnly = true
-			};
-
-			WindowHelper.WindowContent = textBox;
-			await WindowHelper.WaitForLoaded(textBox);
-
-			Assert.IsFalse(textBox.TextBoxView.Focusable);
-			Assert.IsFalse(textBox.TextBoxView.FocusableInTouchMode);
-			Assert.IsFalse(textBox.TextBoxView.Clickable);
-			Assert.IsFalse(textBox.TextBoxView.LongClickable);
-		}
-
-
-		[TestMethod]
-		public async Task When_ReadOnly_Update_Text_Native_View()
-		{
-			var textBox = new TextBox
-			{
-				Text = "Text",
-				IsReadOnly = true,
-				IsTabStop = false
-			};
-
-			WindowHelper.WindowContent = textBox;
-			await WindowHelper.WaitForLoaded(textBox);
-
-			textBox.Text = "Something";
-
-			Assert.AreEqual("Something", textBox.TextBoxView.Text);
-		}
-
-		[TestMethod]
-		[CombinatorialData]
-		public async Task When_Default_Foreground_TextBoxView(bool useDarkTheme)
-		{
-			using var _ = useDarkTheme ? ThemeHelper.UseDarkTheme() : default;
-
-			var SUT = new TextBox { Text = "Asd" };
-
-			await UITestHelper.Load(SUT);
-			var expected = GetBrushColor(SUT.Foreground);
-			var forwarded = GetBrushColor(SUT.TextBoxView.Foreground);
-			var native = new Color((uint)SUT.TextBoxView.CurrentTextColor);
-
-			Assert.AreEqual(expected, forwarded);
-			Assert.AreEqual(expected, native);
-
-			Color? GetBrushColor(Brush brush) => (brush as SolidColorBrush)?.Color;
-		}
-#endif
-
 		[TestMethod]
 		public async Task When_ReadOnly_Update_Text()
 		{
@@ -872,23 +680,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(updatedText.Length, textBox.SelectionLength);
 		}
 
-#if __ANDROID__
-		[TestMethod]
-		public async Task When_TextBox_ImeAction_Enter()
-		{
-			var textBox = new TextBox
-			{
-				Text = "Text",
-			};
-
-			WindowHelper.WindowContent = textBox;
-			await WindowHelper.WaitForLoaded(textBox);
-
-			var act = () => textBox.OnEditorAction(textBox.TextBoxView, Android.Views.InputMethods.ImeAction.Next, null);
-			act.Should().NotThrow();
-		}
-#endif
-
 		[TestMethod]
 #if __SKIA__
 		[Ignore("Fails on Skia")]
@@ -915,10 +706,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __SKIA__ || __APPLE_UIKIT__
-		[Ignore("Fails on Skia and iOS")]
-		// On iOS, the failure is: AssertFailedException: Expected value to be greater than 1199.0, but found 1199.0.
-		// Since the number is large, it looks like the TextBox is taking the full height.
+#if __SKIA__
+		[Ignore("Fails on Skia")]
 #endif
 		public async Task When_TextBox_Wrap_Fluent()
 		{
@@ -983,9 +772,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __ANDROID__
-		[Ignore("https://github.com/unoplatform/uno/issues/15457")]
-#endif
 		public async Task When_GotFocus_BringIntoView()
 		{
 			var tb = new TextBox();
@@ -1009,23 +795,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			ts.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
-#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
-			await Task.Delay(2000);
-#endif
 
 			Assert.AreEqual(0, SUT.VerticalOffset);
 			SUT.ScrollToVerticalOffset(99999);
 
 			await WindowHelper.WaitForIdle();
-#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
-			await Task.Delay(2000);
-#endif
 
 			tb.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
-#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
-			await Task.Delay(2000);
-#endif
 
 			Assert.AreEqual(0, SUT.VerticalOffset);
 		}
@@ -1094,7 +871,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.Android | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Focus_Immediately()
 		{
 			var inputPaneShown = false;

@@ -8,11 +8,7 @@ using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
-	//Web Assembly does not have a helper that take screenshots yet
 	//MacOs interprets colors differently
-#if __WASM__
-	[Ignore]
-#endif
 	[TestClass]
 	[RunsOnUIThread]
 	public class Basics_AutomatedTransformation
@@ -197,12 +193,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		private async Task<RawBitmap> Arrange(FrameworkElement SUT)
 		{
-#if __ANDROID__
-			if (SUT is Android.Views.View view && view.Parent is Controls.BindableView bindableView)
-			{
-				bindableView.RemoveView(view);
-			}
-#endif
 			await UITestHelper.Load(SUT);
 			var result = await UITestHelper.ScreenShot(SUT);
 			await WindowHelper.WaitForIdle();
