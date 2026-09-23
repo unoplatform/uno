@@ -230,6 +230,7 @@ public partial class Window
 				var callingAssembly = Assembly.GetCallingAssembly();
 				if (TrySetContentFromSecondaryAlc(value, host, callingAssembly))
 				{
+					OnContentChanged();
 					return;
 				}
 			}
