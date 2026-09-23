@@ -127,12 +127,8 @@ public class Given_PdfDocument
 		var stream = GetSreamFromResource(PdfDocument_Name_Protected)?.AsRandomAccessStream();
 		Assert.IsNotNull(stream, "Not valid stream");
 
-#if __ANDROID__
-		await Assert.ThrowsAsync<NotImplementedException>(async () => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid));
-#else
 		var pdfDocument = await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid);
 		await CheckDocumentAsync(pdfDocument, ReferencePageImage_ProtectedUri, hasPassword: true);
-#endif
 	}
 
 	[TestMethod]
@@ -141,9 +137,7 @@ public class Given_PdfDocument
 		var stream = GetSreamFromResource(PdfDocument_Name_Protected)?.AsRandomAccessStream();
 		Assert.IsNotNull(stream, "Not valid stream");
 
-#if __ANDROID__
-		await Assert.ThrowsAsync<NotImplementedException>(async () => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Invalid));
-#elif !HAS_UNO
+#if !HAS_UNO
 		await Assert.ThrowsAsync<Exception>(async () => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Invalid));
 #else
 		var pdfDocument = await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid);
@@ -181,12 +175,8 @@ public class Given_PdfDocument
 			await source.CopyToAsync(ws);
 		}
 
-#if __ANDROID__
-		await Assert.ThrowsAsync<NotImplementedException>(async () => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid));
-#else
 		var pdfDocument = await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Valid);
 		await CheckDocumentAsync(pdfDocument, ReferencePageImage_ProtectedUri, hasPassword: true);
-#endif
 	}
 
 	[TestMethod]
@@ -202,9 +192,7 @@ public class Given_PdfDocument
 			await source.CopyToAsync(ws);
 		}
 
-#if __ANDROID__
-		await Assert.ThrowsAsync<NotImplementedException>(async () => await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Invalid));
-#elif !HAS_UNO
+#if !HAS_UNO
 		await Assert.ThrowsAsync<Exception>(async () => await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Invalid));
 #else
 		var pdfDocument = await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Invalid);

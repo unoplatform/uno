@@ -1,4 +1,4 @@
-﻿#if __APPLE_UIKIT__ || __SKIA__ || WINAPPSDK
+﻿#if __SKIA__ || WINAPPSDK
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -81,9 +81,6 @@ public class Given_Rectangle
 	[DataRow(60.0d, 70.0d, 10.0d, 59.0d, 69.0d)]
 	[DataRow(10.0d, 80.0d, 30.0d, 39d, 109.0d)]
 	[RequiresFullWindow]
-#if __APPLE_UIKIT__
-	[Ignore("Does not work on iOS")]
-#endif
 	public async Task When_StrokeThickness_Is_GreaterThan_Or_Equals_Width(double width, double height, double strokeThickness, double expectedWidth, double expectedHeight)
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -119,9 +116,6 @@ public class Given_Rectangle
 	[DataRow(19.0d, 19.0d, 199.0d)]
 	[DataRow(20.0d, 39.0d, 219.0d)]
 	[RequiresFullWindow]
-#if __APPLE_UIKIT__
-	[Ignore("Does not work on iOS")]
-#endif
 	public async Task When_StrokeThickness_Should_Arrange_Correctly(double strokeThickness, double expectedGreenWidth, double expectedGreenHeight)
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -170,51 +164,5 @@ public class Given_Rectangle
 
 		Assert.AreEqual(greenBounds.Top - redBounds.Top, redBounds.Bottom - greenBounds.Bottom);
 	}
-
-#if __APPLE_UIKIT__
-	[TestMethod]
-	public async Task When_Fill_Is_AcrylicBrush()
-	{
-		var unhandledExceptionFired = false;
-		void OnUnhandled(object sender, global::Microsoft.UI.Xaml.UnhandledExceptionEventArgs args)
-		{
-			unhandledExceptionFired = true;
-			args.Handled = true;
-		}
-		try
-		{
-			global::Microsoft.UI.Xaml.Application.Current.UnhandledException += OnUnhandled;
-			var rectangle = new Rectangle()
-			{
-				Width = 100,
-				Height = 100,
-				Fill = new AcrylicBrush()
-				{
-					BackgroundSource = AcrylicBackgroundSource.Backdrop,
-					TintColor = Microsoft.UI.Colors.Red,
-					TintOpacity = 0.5,
-					FallbackColor = Microsoft.UI.Colors.Green,
-				},
-			};
-			var root = new Grid
-			{
-				HorizontalAlignment = HorizontalAlignment.Left,
-				VerticalAlignment = VerticalAlignment.Top,
-				Children =
-				{
-					rectangle,
-				},
-			};
-			await UITestHelper.Load(root);
-			var screenshot = await UITestHelper.ScreenShot(rectangle);
-			ImageAssert.HasColorAt(screenshot, new(50, 50), Microsoft.UI.Colors.Green, tolerance: 0);
-			unhandledExceptionFired.Should().BeFalse();
-		}
-		finally
-		{
-			Application.Current.UnhandledException -= OnUnhandled;
-		}
-	}
-#endif
 }
 #endif

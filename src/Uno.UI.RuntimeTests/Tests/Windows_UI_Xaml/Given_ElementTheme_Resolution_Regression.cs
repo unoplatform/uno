@@ -32,9 +32,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		// directly with the requested-theme-for-subtree slot scoped to Dark then Light (mimicking
 		// load-under-Dark then switch-to-Light) — the dictionary leaf reads the slot like WinUI's
 		// EnsureActiveThemeDictionary (Resources.cpp:764-768). The slot only drives resolution on
-		// enhanced-lifecycle targets, so native mobile is excluded.
+		// enhanced-lifecycle targets.
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeMobile)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task Probe_Direct_Dictionary_Theme_Lookup()
 		{
 			var originalTheme = Application.Current.RequestedTheme;
@@ -75,7 +75,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		// Bug 1: the page in the sample sets its own RequestedTheme at runtime; its Background must follow.
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Runtime_Self_Theme_Change_Updates_Own_Background()
 		{
 			var originalTheme = Application.Current.RequestedTheme;
@@ -114,7 +114,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		// Bug 2a: TextBox directly under a parse-time Light pin (matches the existing CheckBox control test shape).
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ParseTime_Light_Pin_Direct_TextBox_Border_Resolves_Light()
 		{
 			await AssertTextBoxBorderLight(nested: false);
@@ -123,7 +123,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		// Bug 2b: TextBox nested under Default-theme intermediates inside the Light pin, matching the sample's
 		// Light column (Light Border -> card Border (Default) -> StackPanel -> TextBox).
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ParseTime_Light_Pin_Nested_TextBox_Border_Resolves_Light()
 		{
 			await AssertTextBoxBorderLight(nested: true);

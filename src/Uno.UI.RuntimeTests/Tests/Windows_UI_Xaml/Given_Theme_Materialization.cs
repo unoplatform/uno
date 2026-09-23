@@ -26,8 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 /// from a process-global ambient. Each repro is a Light element-level island under a Dark ambient,
 /// asserting the materialized child resolves Light. The ambient OS theme is pinned via
 /// <see cref="ThemeHelper.UseSystemThemeOverride"/> so they fail on master regardless of the
-/// machine OS theme. Native targets support OS + application theme only, so element-level tests are
-/// excluded per-method (<c>[PlatformCondition(Exclude, NativeAndroid | NativeIOS)]</c>).
+/// machine OS theme.
 /// </summary>
 [TestClass]
 [RunsOnUIThread]
@@ -85,7 +84,7 @@ public class Given_Theme_Materialization
 	[RequiresFullWindow]
 	// SkiaWasm excluded: ScrollIntoView/virtualization realization stalls under the headless xvfb browser (flaky). #23524
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.SkiaWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Virtualized_Item_In_Light_Island_Under_Dark_Ambient_Resolves_Light()
 	{
 		// S1. A ListView item realized (initially and after ScrollIntoView) inside a
@@ -145,7 +144,6 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_Item_Recycled_Across_Unload_Reload_Keeps_Light()
 	{
 		// S2. A row in a Light island is realized, the island is unloaded (tab switch / recycle),
@@ -208,7 +206,7 @@ public class Given_Theme_Materialization
 	[RequiresFullWindow]
 	// SkiaWasm excluded: ScrollIntoView/virtualization realization stalls under the headless xvfb browser (flaky). #23524
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.SkiaWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Nested_Template_Cell_Scrolled_Into_View_Resolves_Light()
 	{
 		// S3. A cell materialized on scroll — through a nested ContentControl template, like a data
@@ -267,14 +265,11 @@ public class Given_Theme_Materialization
 	// ---- T4 — S4: flyout first open from a Light region uses that region's theme ----
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_Flyout_First_Open_From_Light_Region_Uses_Region_Theme()
 	{
 		// S4. A flyout opened from a Light island must show Light content on the FIRST open under a
 		// Dark ambient (today it heals only on the second open). Asserts the resolved sentinel value,
 		// not just ActualTheme, and that first-open == second-open.
-		// Excluded on native: element-level theme inheritance is a Skia/WASM feature — native targets
-		// support OS + application theme only (the flyout follows the app/OS theme there).
 		// Sentinel at app level so {ThemeResource SentinelBrush} resolves at XamlReader.Load parse on WinUI.
 		using var _appSentinel = StyleHelper.UseAppLevelResources(BuildSentinelAppResources());
 #if HAS_UNO
@@ -334,13 +329,10 @@ public class Given_Theme_Materialization
 	// ---- T5 — S4: popup first open inherits the opener's theme ----
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_Popup_First_Open_In_Light_Region_Has_Region_Theme()
 	{
 		// S4 (isolated popup path). A bare Popup whose child binds the sentinel must resolve the
 		// opener island's Light theme on the FIRST open under a Dark ambient.
-		// Excluded on native: element-level theme inheritance is a Skia/WASM feature — native targets
-		// support OS + application theme only (the popup child follows the app/OS theme there).
 		// Sentinel at app level so {ThemeResource SentinelBrush} resolves at XamlReader.Load parse on WinUI.
 		using var _appSentinel = StyleHelper.UseAppLevelResources(BuildSentinelAppResources());
 #if HAS_UNO
@@ -389,7 +381,6 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_Control_Added_At_Runtime_Into_Light_Island_Resolves_Light()
 	{
 		// S5. A control created and added at runtime into an already-loaded RequestedTheme="Light"
@@ -443,7 +434,6 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_ToggleSwitch_PointerOver_In_Light_Island_Resolves_Light()
 	{
 		// Repro of the reported ToggleSwitch hover-stroke bug: a ToggleSwitch in a Light island under a
@@ -501,40 +491,7 @@ public class Given_Theme_Materialization
 #if HAS_UNO
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.NativeWasm)]
-	public async Task When_NativeWasm_HighContrast_Does_Not_Select_HighContrast_Dictionary()
-	{
-		var originalSystemTheme = SystemThemeHelper.SystemThemeOverride;
-		var originalHighContrast = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride;
-		using var lightApp = ThemeHelper.UseApplicationLightTheme();
-		var dictionary = new ResourceDictionary
-		{
-			ThemeDictionaries =
-			{
-				["Light"] = new ResourceDictionary { ["Sentinel"] = "Light" },
-				["HighContrast"] = new ResourceDictionary { ["Sentinel"] = "HighContrast" },
-			},
-		};
-
-		try
-		{
-			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = true;
-			SystemThemeHelper.SystemThemeOverride = SystemTheme.Dark;
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual("Light", dictionary["Sentinel"]);
-		}
-		finally
-		{
-			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = originalHighContrast;
-			SystemThemeHelper.SystemThemeOverride = originalSystemTheme;
-			await WindowHelper.WaitForIdle();
-		}
-	}
-
-	[TestMethod]
-	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ToggleSwitch_PointerOver_Keyframe_In_Light_Island_Resolves_Light()
 	{
 		// Faithful repro of the reported ToggleSwitch hover-stroke bug. A ToggleSwitch in a Light island
@@ -598,7 +555,7 @@ public class Given_Theme_Materialization
 	[TestMethod]
 	[RequiresFullWindow]
 	// NativeWinUI excluded: Frame.Navigate triggers a fatal 0xC0000005 access violation. https://github.com/unoplatform/uno/issues/23477
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Frame_Navigates_After_Theme_Switch_New_Page_Inherits_Theme()
 	{
 		// Repro of the reported GC Toolkit bug: the app root's RequestedTheme is switched to Dark (the
@@ -652,7 +609,7 @@ public class Given_Theme_Materialization
 	[TestMethod]
 	[RequiresFullWindow]
 	// NativeWinUI excluded: Frame.Navigate triggers a fatal 0xC0000005 access violation. https://github.com/unoplatform/uno/issues/23477
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Navigated_ToggleSwitch_PointerOver_In_Light_Island_Resolves_Light()
 	{
 		// Faithful repro of the Stopwatch ToggleSwitch hover bug: a stable Light island (root
@@ -695,7 +652,7 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Cached_Page_Renavigated_After_Theme_Switch_Inherits_Theme()
 	{
 		// Repro of the reported GC Toolkit bug: a Frame page with NavigationCacheMode is themed, the
@@ -741,7 +698,7 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_App_Theme_Switches_ThemeResource_Values_Update()
 	{
 		// Public app-dark-switch regression guard. Switching app Light→Dark must flip bound
@@ -786,7 +743,6 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_Inherited_Foreground_At_Theme_Boundary_Stays_Boundary_Theme()
 	{
 		// General correctness (foreground-freeze emulation) underpinning the S1/S2 text symptoms.
@@ -829,7 +785,6 @@ public class Given_Theme_Materialization
 #if HAS_UNO
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_App_Theme_Explicit_OS_Change_Is_Suppressed()
 	{
 		// OS/theme-leak narrative. With an explicit app theme (Light), a simulated OS switch to
@@ -877,7 +832,6 @@ public class Given_Theme_Materialization
 #if HAS_UNO
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_Element_Dark_Island_And_Fallback_Does_Not_Leak_Dark()
 	{
 		// Decision = DITCH custom themes (Phase 6). (a) Element RequestedTheme="Dark" under app Light
@@ -936,7 +890,6 @@ public class Given_Theme_Materialization
 #if HAS_UNO
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_Custom_Theme_Name_Is_Ditched_Resolves_Standard()
 	{
 		// Decision = DITCH custom themes (custom-theme.md → Option B). A non-Light/Dark custom name must no
@@ -1170,7 +1123,6 @@ public class Given_Theme_Materialization
 	[TestMethod]
 	// Native (non-enhanced-lifecycle) targets do not read the core requested-theme-for-subtree slot, so the
 	// bridge is a balanced no-op there; the resolution-outcome assertions only hold on enhanced targets.
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_PushRequestedThemeForSubTreeByName_Scopes_Resolution()
 	{
 		// Contract for external markup packages (Uno.Extensions.Markup / C# Markup): a balanced
@@ -1231,7 +1183,7 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Flyout_On_Live_Button_NonUIElement_DOs_Inherit_Island_Theme()
 	{
 		// Mechanism test for the CDependencyObject-level Enter walk (DependencyObject.mux.cs,

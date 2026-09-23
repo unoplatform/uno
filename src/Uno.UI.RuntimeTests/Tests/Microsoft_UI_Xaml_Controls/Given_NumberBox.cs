@@ -12,8 +12,6 @@ using static Private.Infrastructure.TestServices;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __APPLE_UIKIT__
-using UIKit;
 #endif
 
 #if !HAS_UNO_WINUI

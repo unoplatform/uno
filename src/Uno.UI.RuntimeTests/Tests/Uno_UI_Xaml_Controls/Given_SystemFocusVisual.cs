@@ -1,4 +1,4 @@
-#if __WASM__ || __SKIA__
+#if __SKIA__
 using System;
 using System.Drawing;
 using System.Linq;
@@ -86,9 +86,6 @@ public class Given_SystemFocusVisual
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__
-	[Ignore("Disabled on iOS/Android https://github.com/unoplatform/uno/issues/9080")]
-#endif
 	public async Task When_Focused_Element_Transformed()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)

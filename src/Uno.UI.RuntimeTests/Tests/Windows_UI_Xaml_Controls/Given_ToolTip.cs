@@ -239,7 +239,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if !__APPLE_UIKIT__ // Disabled due to #10791
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public Task When_Switch_Theme_Fluent() => When_Switch_Theme_Inner(brush => (brush as AcrylicBrush).TintColor);
@@ -298,7 +297,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			}
 		}
-#endif
 
 #if HAS_UNO
 		[TestMethod]
@@ -492,9 +490,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 #if HAS_UNO
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("Currently fails on Android and iOS")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		[TestMethod]
@@ -602,7 +598,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/484")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Owner-subtree theme override is Skia-only; WinUI honors OS/app theme only
 		public async Task When_ToolTip_Label_Uses_Owner_Subtree_Theme_Light_Under_Dark_App()
 		{
 #if HAS_UNO

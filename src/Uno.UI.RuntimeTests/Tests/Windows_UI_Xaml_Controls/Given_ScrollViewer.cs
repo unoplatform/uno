@@ -18,7 +18,6 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.ViewManagement;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -27,7 +26,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.DevTools.Input;
 
 using static Private.Infrastructure.TestServices;
-using Disposable = Uno.Disposables.Disposable;
 using ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
 using ScrollViewer = Microsoft.UI.Xaml.Controls.ScrollViewer;
 
@@ -678,9 +676,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WPF Islands and Skia WASM #9080
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Nested_ScrollViewers_WheelChanged()
@@ -817,13 +813,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		// Both iOS and macOS animation were disabled and will be fixed under uno-private#1788
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not using animations
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not using animations
 		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
 		{
 			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
@@ -973,11 +967,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-#if __WASM__
-		// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
-		// Details here: https://github.com/unoplatform/uno/issues/7000
-		[Ignore]
-#endif
 		public async Task When_ScrollViewer_Centered_With_Margin_Inside_Tall_Rectangle()
 		{
 			const int ContentHeight = 300;
@@ -1010,11 +999,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
-		// Details here: https://github.com/unoplatform/uno/issues/7000
-		[Ignore]
-#endif
 		public async Task When_ScrollViewer_Centered_With_Margin_Inside_Wide_Rectangle()
 		{
 			const int ContentWidth = 300;
@@ -1257,158 +1241,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 
-#if __ANDROID__
 		[TestMethod]
 		[RunsOnUIThread]
-		[RequiresFullWindow]
-		public async Task When_NonNested_BringIntoView()
-		{
-			if (ContextHelper.Current is not Android.App.Activity activity)
-			{
-				Assert.Inconclusive("The current android activity is not accessible.");
-				return;
-			}
-
-			// set AdjustNothing mode and prepare for cleanup
-			var oldMode = activity.Window.Attributes.SoftInputMode;
-			activity.Window.SetSoftInputMode(oldMode & ~Android.Views.SoftInput.MaskAdjust | Android.Views.SoftInput.AdjustNothing);
-			using var cleanup = Disposable.Create(() => activity.Window.SetSoftInputMode(oldMode));
-
-			// load a tmp textbox to ...
-			var tmpTextbox = new TextBox();
-			WindowHelper.WindowContent = tmpTextbox;
-			await WindowHelper.WaitForLoaded(tmpTextbox);
-			await WindowHelper.WaitForIdle();
-			tmpTextbox.Focus(FocusState.Programmatic);
-
-			// ... measure keyboard height
-			var kb = InputPane.GetForCurrentView();
-			await WindowHelper.WaitFor(() => kb.Visible, message: "Failed to summon keyboard via Focus(FocusState.Programmatic).");
-			await WindowHelper.WaitFor(() => kb.OccludedRect.Height > 0, message: "Failed to summon keyboard via Focus(FocusState.Programmatic).");
-			var kbHeight = kb.OccludedRect.Height;
-			kb.Visible = false;
-
-			// load actual test setup
-			// ScrollViewer's viewport is set to be 50px taller than the keyboard.
-			// There is a 200px tall filler Rectangle above the TextBox, guaranteeing the latter will be hidden behind keyboard.
-			var SUT = new TextBox();
-			var panel = new StackPanel()
-			{
-				Spacing = 5,
-				Children =
-				{
-					new Microsoft.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
-					SUT,
-				},
-			};
-			var sv = new ScrollViewer()
-			{
-				Height = kbHeight + 50,
-				Content = panel,
-				VerticalAlignment = VerticalAlignment.Bottom
-			};
-			var container = new Border() { Child = sv };
-
-			WindowHelper.WindowContent = container;
-			await WindowHelper.WaitForLoaded(container);
-			await WindowHelper.WaitForIdle();
-
-			// when the TextBox is focused, we expect BringIntoView to push the TextBox above the keyboard
-			// note: This test can be flaky, as it would randomly close the keyboard right after opening it.
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitFor(() => kb.Visible, message: "Failed to summon keyboard via Focus(FocusState.Programmatic).");
-			Assert.IsTrue(SUT.ActualHeight < 50, $"TextBox should be no taller than 50px. (ActualHeight = {SUT.ActualHeight})");
-
-			var minOffset = 200 - (50 - SUT.ActualHeight); // tbox sticks to the top of viewport
-			var maxOffset = 205; // tbox sticks to the bottom of viewport
-			await WindowHelper.WaitFor<double>(
-				() => sv.VerticalOffset,
-				default, // unused, since are we doing between comparison
-				value => $"Failed to make keyboard appear above keyboard. (sv.VOffset = {value})",
-				comparer: (value, _) => minOffset <= value && value <= maxOffset);
-		}
-
-		[TestMethod]
-		[RunsOnUIThread]
-		[RequiresFullWindow]
-		public async Task When_DoublyNested_BringIntoView()
-		{
-			// note: Compared to When_NonNested_BringIntoView, we are using 2 SVs here, one nesting another.
-			// Other than that, the expected result should still be the same, as in the outer SV should be the one
-			// being padded and scrolled by the same amount, AND NOT the inner one.
-			if (ContextHelper.Current is not Android.App.Activity activity)
-			{
-				Assert.Inconclusive("The current android activity is not accessible.");
-				return;
-			}
-
-			// set AdjustNothing mode and prepare for cleanup
-			var oldMode = activity.Window.Attributes.SoftInputMode;
-			activity.Window.SetSoftInputMode(oldMode & ~Android.Views.SoftInput.MaskAdjust | Android.Views.SoftInput.AdjustNothing);
-			using var cleanup = Disposable.Create(() => activity.Window.SetSoftInputMode(oldMode));
-
-			// load a tmp textbox to ...
-			var tmpTextbox = new TextBox();
-			WindowHelper.WindowContent = tmpTextbox;
-			await WindowHelper.WaitForLoaded(tmpTextbox);
-			await WindowHelper.WaitForIdle();
-			tmpTextbox.Focus(FocusState.Programmatic);
-
-			// ... measure keyboard height
-			var kb = InputPane.GetForCurrentView();
-			await WindowHelper.WaitFor(() => kb.Visible, message: "Failed to summon keyboard via Focus(FocusState.Programmatic).");
-			await WindowHelper.WaitFor(() => kb.OccludedRect.Height > 0, message: "Failed to summon keyboard via Focus(FocusState.Programmatic).");
-			var kbHeight = kb.OccludedRect.Height;
-			kb.Visible = false;
-
-			// load actual test setup
-			// ScrollViewer's viewport is set to be 50px taller than the keyboard.
-			// There is a 200px tall filler Rectangle above the TextBox, guaranteeing the latter will be hidden behind keyboard.
-			var SUT = new TextBox();
-			var panel = new StackPanel()
-			{
-				Spacing = 5,
-				Children =
-				{
-					new Microsoft.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
-					SUT,
-				},
-			};
-			var innerSV = new ScrollViewer() { Content = panel };
-			var outerSV = new ScrollViewer()
-			{
-				Height = kbHeight + 50,
-				Content = innerSV,
-				VerticalAlignment = VerticalAlignment.Bottom
-			};
-			var container = new Border() { Child = outerSV };
-
-			WindowHelper.WindowContent = container;
-			await WindowHelper.WaitForLoaded(container);
-			await WindowHelper.WaitForIdle();
-
-			// when the TextBox is focused, we expect BringIntoView to push the TextBox above the keyboard
-			// note: This test can be flaky, as it would randomly close the keyboard right after opening it.
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitFor(() => kb.Visible, message: "Failed to summon keyboard via Focus(FocusState.Programmatic).");
-			Assert.IsTrue(SUT.ActualHeight < 50, $"TextBox should be no taller than 50px. (ActualHeight = {SUT.ActualHeight})");
-
-			var minOffset = 200 - (50 - SUT.ActualHeight); // tbox sticks to the top of viewport
-			var maxOffset = 205; // tbox sticks to the bottom of viewport
-			await WindowHelper.WaitFor<double>(
-				() => outerSV.VerticalOffset,
-				default, // unused, since are we doing between comparison
-				value => $"Failed to make keyboard appear above keyboard. (sv.VOffset = {value})",
-				comparer: (value, _) => minOffset <= value && value <= maxOffset);
-		}
-
-#endif
-
-		[TestMethod]
-		[RunsOnUIThread]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 #if RUNTIME_NATIVE_AOT
@@ -1501,9 +1336,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_ReversedMouseWheel_Then_ScrollInReversedDirection()
@@ -1556,9 +1389,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22007")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Shift_MouseWheel_Then_ScrollHorizontally()
@@ -1681,18 +1512,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			// The content inside the SCP should move, not the SCP itself
-#if __SKIA__ || __WASM__
+#if __SKIA__
 			// "Only skia uses Visuals for TransformToVisual. The visual-less implementation adjusts the offset on the SCP itself instead of the child."
 			Assert.AreEqual(ttv, ((MatrixTransform)scp.TransformToVisual(null)).ToMatrix(Point.Zero));
 #else
 			Assert.AreEqual(ttv * new Matrix3x2(1, 0, 0, 1, 0, -100), ((MatrixTransform)scp.TransformToVisual(null)).ToMatrix(Point.Zero));
 #endif
 
-#if __WASM__ // incorrect
-			Assert.AreEqual(childTtvMatrix, ((MatrixTransform)((UIElement)scp.Content).TransformToVisual(null)).ToMatrix(Point.Zero));
-#else
 			Assert.AreEqual(childTtvMatrix * new Matrix3x2(1, 0, 0, 1, 0, -100), ((MatrixTransform)((UIElement)scp.Content).TransformToVisual(null)).ToMatrix(Point.Zero));
-#endif
 		}
 #endif
 
@@ -1799,9 +1626,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO // ScrollViewerUpdatesMode is Uno-specific
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_ContentHasNoBackground_Then_StillTouchScrollable()
@@ -1838,9 +1663,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_TouchScrollDown_Then_Chain()
@@ -1897,9 +1720,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_TouchScrollDownWithInertia_Then_DoNotChainInertia()
@@ -2053,13 +1874,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO // ScrollViewer.UpdatesMode is Uno-specific
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		// Both iOS and macOS animation were disabled and will be fixed under uno-private#1788
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not processing them as discrete events
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not processing them as discrete events
 		public async Task When_ViewChanged_From_MouseWheel()
 		{
 			// setup is a 100x100 ScrollViewer with a 2000px tall Border
@@ -2110,9 +1929,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_TouchFlickOnNonScrollable_Then_InertiaDoesNotAssert()

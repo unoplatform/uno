@@ -217,11 +217,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("WaitOne doesn't work on mono.")]
-#else
 		[Ignore("Fails on all targets https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		public async Task ValidateFractionalWidthDoesNotCrash()
 		{
 			ColorSpectrum colorSpectrum = null;

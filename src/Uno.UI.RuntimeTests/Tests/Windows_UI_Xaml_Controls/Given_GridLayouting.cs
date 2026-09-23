@@ -82,9 +82,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_One_Element()
 	{
 		using var _ = new AssertionScope();
@@ -107,9 +104,6 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Grid_Has_One_Element_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center()
 	{
@@ -144,9 +138,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Two_Elements_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -193,9 +184,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_One_Colums_And_One_Row_And_No_Size_Spec()
 	{
 		using var _ = new AssertionScope();
@@ -231,9 +219,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Two_Colums_And_One_Row_And_No_Size_Spec()
 	{
 		using var _ = new AssertionScope();
@@ -275,9 +260,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Two_Colums_And_One_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -332,9 +314,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Two_Colums_And_One_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Stretch_And_Padding()
 	{
 		using var _ = new AssertionScope();
@@ -385,9 +364,6 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Grid_Has_Two_Colums_And_One_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_With_ColumnSpan_And_Centered()
 	{
@@ -443,9 +419,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Two_Rows_And_One_Column_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_With_RowSpan_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -499,9 +472,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Two_Rows_And_One_Column_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -554,9 +524,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Two_Rows_And_One_Column_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Stretch_And_Padding()
 	{
 		using var _ = new AssertionScope();
@@ -610,9 +577,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Two_Colums_And_Two_Rows_And_No_Size_Spec()
 	{
 		using var _ = new AssertionScope();
@@ -683,9 +647,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Two_Colums_And_Two_Rows_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -773,11 +734,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#elif __ANDROID__
-	[Ignore("Fails on Android in CI, but passes locally.")]
-#endif
 	[RequiresScaling(1f)]
 	public void When_Grid_Has_Two_Star_Uneven_Colums_And_One_Row()
 	{
@@ -812,15 +768,6 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(40.0 / 3.0, 20));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 40.0 / 3.0, 20));
-
-		c2.SizePassedToArrangeOverride.Should().Be(new Size(10, 20));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(40.0 / 3.0, 0, 20.0 / 3.0, 20));
-
-		measuredSize.Should().Be(new Size(50.0 / 3.0, 10));
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(13, 20));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 13, 20));
 
@@ -828,18 +775,12 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(13, 0, 7, 20));
 
 		measuredSize.Should().Be(new Size(17, 10));
-#endif
 
 		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#elif __ANDROID__
-	[Ignore("Fails on Android in CI, but passes locally.")]
-#endif
 	public void When_Grid_Has_One_Absolute_Column_And_One_Star_Column_And_One_Row()
 	{
 		using var _ = new AssertionScope();
@@ -873,22 +814,9 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __APPLE_UIKIT__
-		c1.DesiredSize.Should().Be(new Size(16.0 / 3.0, 10));
-#else
 		c1.DesiredSize.Should().Be(new Size(5, 10));
-#endif
 		c2.DesiredSize.Should().Be(new Size(10, 10));
 
-#if __ANDROID__ || __APPLE_UIKIT__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(16.0 / 3.0, 10));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 16.0 / 3.0, 20));
-
-		c2.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(16.0 / 3.0, 0, 44.0 / 3.0, 20));
-
-		measuredSize.Should().Be(new Size(46.0 / 3.0, 10));
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 5, 20));
 
@@ -896,16 +824,12 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(5, 0, 15, 20));
 
 		measuredSize.Should().Be(new Size(15, 10));
-#endif
 
 		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_One_Variable_Sized_Element_With_ColSpan_and_Three_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -944,11 +868,6 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#elif __ANDROID__
-	[Ignore("Fails on Android in CI, but passes locally.")]
-#endif
 	[RequiresScaling(1f)]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Grid_Has_Two_Variable_Sized_Element_With_ColSpan_and_One_Auto_Columns()
@@ -982,22 +901,10 @@ public partial class Given_GridLayouting
 		SUT.Children.Add(c2);
 
 		SUT.Measure(new Size(30, 30));
-#if __ANDROID__ || __APPLE_UIKIT__
-		SUT.DesiredSize.Should().Be(new Size(52.0 / 3.0, 5));
-#elif __WASM__
-		SUT.DesiredSize.Should().Be(new Size(17.5, 5));
-#else
 		SUT.DesiredSize.Should().Be(new Size(17, 5));
-#endif
 		//SUT.UnclippedDesiredSize.Should().Be(new Size(20, 5));
 
-#if __ANDROID__ || __APPLE_UIKIT__
-		c1.DesiredSize.Should().Be(new Size(52.0 / 3.0, 5));
-#elif __WASM__
-		c1.DesiredSize.Should().Be(new Size(17.5, 5));
-#else
 		c1.DesiredSize.Should().Be(new Size(17, 5));
-#endif
 		//c1.UnclippedDesiredSize.Should().Be(new Size(0, 0));
 
 		c2.DesiredSize.Should().Be(new Size(5, 5));
@@ -1007,32 +914,15 @@ public partial class Given_GridLayouting
 
 		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 30, 30));
 
-#if __ANDROID__ || __APPLE_UIKIT__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(17.5, 30));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 17.5, 30));
-
-		c2.SizePassedToArrangeOverride.Should().Be(new Size(5, 30));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(12.5, 0, 5, 30));
-#elif __WASM__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(20, 30));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 17.5, 30));
-
-		c2.SizePassedToArrangeOverride.Should().Be(new Size(5, 30));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(12.5, 0, 5, 30));
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(20, 30));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 17, 30));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(5, 30));
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(12, 0, 5, 30));
-#endif
 		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	[RequiresScaling(1f)]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Grid_Has_One_Element_With_ColSpan_and_Three_Columns()
@@ -1058,13 +948,8 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(40.0 / 3.0, 20));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 40.0 / 3.0, 20));
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(13, 20));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 13, 20));
-#endif
 
 		measuredSize.Should().Be(new Size(10, 10));
 		SUT.Children.Should().HaveCount(1);
@@ -1072,9 +957,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Three_Element_With_ColSpan_and_Four_Progressing_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -1124,11 +1006,7 @@ public partial class Given_GridLayouting
 
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __APPLE_UIKIT__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(6, 10));
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
-#endif
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 6, 10));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(10, 11));
@@ -1141,9 +1019,6 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	[RequiresScaling(1f)]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Grid_Has_One_Element_With_ColSpan_and_RowSpan_and_Three_Columns()
@@ -1174,13 +1049,8 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(40.0 / 3.0, 40.0 / 3.0));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 40.0 / 3.0, 40.0 / 3.0));
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(13, 13));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 13, 13));
-#endif
 
 		measuredSize.Should().Be(new Size(10, 10));
 		SUT.Children.Should().HaveCount(1);
@@ -1188,9 +1058,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	[RequiresScaling(1f)]
 	public void When_Grid_Has_One_Element_With_ColSpan_and_RowSpan_and_Three_Columns_And_Middle()
 	{
@@ -1220,22 +1087,14 @@ public partial class Given_GridLayouting
 		SUT.Measure(new Size(20, 20));
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(40.0 / 3.0, 40.0 / 3.0));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(20.0 / 3.0, 20.0 / 3.0, 40.0 / 3.0, 40.0 / 3.0));
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(13, 13));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(7, 7, 13, 13));
-#endif
 		measuredSize.Should().Be(new Size(10, 10));
 		SUT.Children.Should().HaveCount(1);
 	}
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	[RequiresScaling(1f)]
 	public void When_Grid_Has_One_Element_With_ColSpan_Overflow_and_Three_Columns()
 	{
@@ -1268,9 +1127,6 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS for child.SizePassedToArrangeOverride https://github.com/unoplatform/uno/issues/9080")]
-#endif
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Grid_RowCollection_Changes()
 	{
@@ -1307,7 +1163,7 @@ public partial class Given_GridLayouting
 		child.SizePassedToArrangeOverride.Should().Be(new Size(20, 10));
 		LayoutInformation.GetLayoutSlot(child).Should().Be(new Rect(0, 5, 20, 10));
 
-#if HAS_UNO && !(__ANDROID__ || __APPLE_UIKIT__)
+#if HAS_UNO
 		SUT.IsMeasureDirty.Should().BeFalse();
 		SUT.IsMeasureDirtyOrMeasureDirtyPath.Should().BeFalse();
 #endif
@@ -1319,9 +1175,6 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Grid_ColumnCollection_Changes()
 	{
@@ -1410,9 +1263,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Two_Columns_And_VerticalAlignment_Top()
 	{
 		using var _ = new AssertionScope();
@@ -1448,9 +1298,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Two_StarColums_One_Variable_Column_And_Two_StarRows_One_Variable_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -1514,9 +1361,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#endif
 	public void When_Grid_Has_Two_StarColums_One_Variable_Column_And_Two_StarRows_One_Variable_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered_With_RowSpan_And_ColumnSpan()
 	{
 		using var _ = new AssertionScope();
@@ -1600,11 +1444,6 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-	[Ignore("Fails on iOS.")]
-#elif __ANDROID__
-	[Ignore("Fails on Android in CI, but passes locally.")]
-#endif
 	public void When_Row_Out_Of_Range()
 	{
 		using var _ = new AssertionScope();
@@ -1624,11 +1463,7 @@ public partial class Given_GridLayouting
 		SUT.Children.Add(c2);
 
 		SUT.Measure(new Size(100, 1000));
-#if __ANDROID__ || __APPLE_UIKIT__
-		SUT.DesiredSize.Should().Be(new Size(31.0 / 3.0, 32.0 / 3.0));
-#else
 		SUT.DesiredSize.Should().Be(new Size(10, 10));
-#endif
 
 		SUT.Arrange(new Rect(0, 0, 100, 1000));
 
@@ -1838,11 +1673,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetAvailableSize(SUT).Should().Be(new Size(20, 20), because: "SUT AvailableSize");
 		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 20, 20), because: "SUT LayoutSlot");
 
-#if __APPLE_UIKIT__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(0, 0), because: "c1.SizePassedToArrangeOverride");
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToArrangeOverride");
-#endif
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToMeasureOverride");
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20), because: "c1 AvailableSize");
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 20, 20), because: "c1 LayoutSlot");
@@ -1885,11 +1716,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetAvailableSize(SUT).Should().Be(new Size(20, 20), because: "SUT AvailableSize");
 		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 20, 20), because: "SUT LayoutSlot");
 
-#if __APPLE_UIKIT__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(0, 0), because: "c1.SizePassedToArrangeOverride");
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(12, 10), because: "c1.SizePassedToArrangeOverride");
-#endif
 
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(12, 10), because: "c1.SizePassedToMeasureOverride");
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(16, 16), because: "c1 AvailableSize");
@@ -1993,11 +1820,7 @@ public partial class Given_GridLayouting
 
 		SUT.Arrange(new Rect(0, 0, 50, 50));
 
-#if __APPLE_UIKIT__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(0, 0), because: "c1.SizePassedToArrangeOverride");
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToArrangeOverride");
-#endif
 
 #if UNO_REFERENCE_API
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToMeasureOverride");
@@ -2054,11 +1877,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetAvailableSize(SUT).Should().Be(new Size(20, 20), because: "SUT AvailableSize");
 		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 50, 50), because: "SUT LayoutSlot");
 
-#if __APPLE_UIKIT__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(0, 0), because: "c1.SizePassedToArrangeOverride");
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToArrangeOverride");
-#endif
 
 #if UNO_REFERENCE_API
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToMeasureOverride");
@@ -2108,11 +1927,7 @@ public partial class Given_GridLayouting
 
 		SUT.Arrange(new Rect(0, 0, 50, 50));
 
-#if __APPLE_UIKIT__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(0, 0), because: "c1.SizePassedToArrangeOverride");
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToArrangeOverride");
-#endif
 
 #if UNO_REFERENCE_API
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToMeasureOverride");
@@ -2161,11 +1976,7 @@ public partial class Given_GridLayouting
 
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(100, 0, 100, 300), because: "c1 LayoutSlot");
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(double.PositiveInfinity, 300), because: "c1 AvailableSize");
-#if __APPLE_UIKIT__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(0, 0), because: "c1.SizePassedToArrangeOverride");
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(50, 50), because: "c1.SizePassedToArrangeOverride");
-#endif
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(50, 50), because: "c1.SizePassedToMeasureOverride");
 		SUT.Children.Should().HaveCount(1);
 	}
@@ -2323,15 +2134,9 @@ public partial class Given_GridLayouting
 
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 8.5f, 8.0));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(8.5f, 8.0f, 3, 4));
-		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(11.5f, 12.0f, 8.5f, 8.0f));
-#else
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 8.0f, 8.0f));
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(8.0f, 8.0f, 3, 4));
 		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(11.0f, 12.0f, 9.0f, 8.0f));
-#endif
 		SUT.Children.Should().HaveCount(3);
 	}
 
@@ -2427,18 +2232,10 @@ public partial class Given_GridLayouting
 
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 8.5f, 5.5f));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(8.5f, 5.5f, 3, 5.5f));
-		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(11.5f, 11, 8.5f, 9));
-		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(0, 5.5f, 8.5f, 5.5f));
-
-#else
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 8.0f, 6.0f));
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(8.0f, 6.0f, 3, 5.0f));
 		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(11.0f, 11, 9.0f, 9));
 		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(0, 6.0f, 8.0f, 5.0f));
-#endif
 
 		SUT.Children.Should().HaveCount(4);
 	}
@@ -2936,22 +2733,13 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Size(20, 5), c1.DesiredSize);
 		Assert.AreEqual(new Size(11, 11), c2.RequestedDesiredSize);
 		Assert.AreEqual(new Rect(11, 0, 89, 11), LayoutInformation.GetLayoutSlot(c1));
-#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
-		Assert.AreEqual(new Vector3(45.5f, 3, 0), c1.ActualOffset);
-#else
 		Assert.AreEqual(new Vector3(46, 3, 0), c1.ActualOffset);
-#endif
 		Assert.AreEqual(new Size(20, 5), c1.RenderSize);
 		Assert.AreEqual(new Rect(0, 0, 11, 11), LayoutInformation.GetLayoutSlot(c2));
 		Assert.AreEqual(1, c1.MeasureCallCount, "c1.MeasureCallCount");
 		Assert.AreEqual(1, c2.MeasureCallCount, "c2.MeasureCallCount"); // The measure count is 1 because the grid has a recognized pattern (Nx1). It would be 2 otherwise.
-#if __APPLE_UIKIT__
-		Assert.AreEqual(0, c1.ArrangeCallCount, "c1.ArrangeCallCount");
-		Assert.AreEqual(0, c2.ArrangeCallCount, "c2.ArrangeCallCount");
-#else
 		Assert.AreEqual(1, c1.ArrangeCallCount, "c1.ArrangeCallCount");
 		Assert.AreEqual(1, c2.ArrangeCallCount, "c2.ArrangeCallCount");
-#endif
 
 		Assert.HasCount(2, SUT.Children);
 	}

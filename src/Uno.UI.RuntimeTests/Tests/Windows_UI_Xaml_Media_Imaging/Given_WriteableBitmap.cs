@@ -28,9 +28,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 	public class Given_WriteableBitmap
 	{
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("fails")]
-#endif
 		public async Task When_Invalidated()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -137,9 +134,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __WASM__
-		[Ignore("https://github.com/unoplatform/uno/issues/12445")]
-#endif
 		public async Task When_WriteableBitmap_SetSource_Should_Update_PixelWidth_And_PixelHeight()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))

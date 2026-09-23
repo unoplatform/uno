@@ -17,7 +17,7 @@ using System.Diagnostics;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
 [TestClass]
-[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // RedirectVisual requires composition
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // RedirectVisual requires composition
 public class Given_RedirectVisual
 {
 #if HAS_UNO

@@ -32,7 +32,6 @@ public class Given_Visual_ArrangePending
 	// whether or not the suppression works.
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task When_Child_Never_Arranged_Then_It_Does_Not_Paint()
 	{
 		var suppressed = new NeverArrangesChildrenPanel

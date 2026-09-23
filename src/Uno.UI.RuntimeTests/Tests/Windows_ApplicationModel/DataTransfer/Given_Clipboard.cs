@@ -46,7 +46,7 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	// note: do not enable this for wasm, without adjust default clipboard permission
-	[PlatformCondition(Include, NativeIOS | NativeAndroid | SkiaWin32 | SkiaIOS)]
+	[PlatformCondition(Include, SkiaWin32 | SkiaIOS)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23962")]
 	public async Task When_GetSet_Clipboard_Text()
 	{
@@ -64,23 +64,6 @@ partial class Given_Clipboard
 		var text = await view.GetTextAsync();
 
 		Assert.AreEqual(TestString, text);
-	}
-
-	[TestMethod]
-	[RunsOnUIThread]
-	[PlatformCondition(Include, NativeAndroid)]
-	public async Task When_GetSet_Clipboard_Uri()
-	{
-		var package = new DataPackage();
-		var uri = new Uri(UriAddress);
-		package.SetUri(uri);
-		Clipboard.SetContent(package);
-
-		await DelayForClipboard();
-
-		var view = Clipboard.GetContent();
-		var result = await view.GetUriAsync();
-		Assert.AreEqual(uri, result);
 	}
 
 	[TestMethod]
@@ -146,7 +129,7 @@ partial class Given_Clipboard
 		// On Android/iOS, SetContent dispatches the write asynchronously
 		// via CoreDispatcher.Main.RunAsync. On Wasm, clipboard access is also async.
 		var platform = RuntimeTestsPlatformHelper.CurrentPlatform;
-		if ((RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.Android | RuntimeTestPlatforms.IOS).HasFlag(platform))
+		if ((RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS).HasFlag(platform))
 		{
 			await Task.Delay(1000);
 		}
