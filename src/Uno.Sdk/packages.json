@@ -4,6 +4,8 @@
 		"version": "DefaultUnoVersion",
 		"packages": [
 			"Uno.WinUI",
+			"Uno.UI.Composition.Skia",
+			"Uno.UI.Composition.WebGpu",
 			"Uno.UI.Adapter.Microsoft.Extensions.Logging",
 			"Uno.WinUI.GooglePlay",
 			"Uno.WinUI.Foldable",

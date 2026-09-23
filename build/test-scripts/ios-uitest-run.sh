@@ -363,7 +363,12 @@ then
 	fi
 
 	UNO_IOS_TESTS_STARTED=true
-	xcrun simctl launch "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
+	# Capture the app's own output into the published logs, as the tvOS runner does: a startup failure
+	# otherwise leaves nothing to diagnose, since the managed exception reaches neither the device log nor the
+	# crash report. stderr carries it -- simctl notes log output usually goes there.
+	APP_STDOUT="$LOG_FILEPATH/app-stdout-${UITEST_RUNTIME_TEST_GROUP}.log"
+	APP_STDERR="$LOG_FILEPATH/app-stderr-${UITEST_RUNTIME_TEST_GROUP}.log"
+	xcrun simctl launch --stdout="$APP_STDOUT" --stderr="$APP_STDERR" "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
 
 	# get the process id for the app
 	export APP_PID=`xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}'`

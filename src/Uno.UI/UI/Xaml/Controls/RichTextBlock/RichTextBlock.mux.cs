@@ -9,7 +9,6 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using SkiaSharp;
 using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Composition;
@@ -382,30 +381,30 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void Draw(in Visual.PaintingSession session)
 		{
-			var canvas = session.Canvas;
-			canvas.Save();
-			canvas.Translate((float)Padding.Left, (float)Padding.Top);
+			var drawingSession = session.Session;
+			drawingSession.Save();
+			drawingSession.Translate((float)Padding.Left, (float)Padding.Top);
 
 			for (int p = 0; p < _paragraphLayouts.Count; p++)
 			{
 				var layout = _paragraphLayouts[p];
-				canvas.Save();
-				canvas.Translate((float)layout.Margin.Left, layout.YOffset);
+				drawingSession.Save();
+				drawingSession.Translate((float)layout.Margin.Left, layout.YOffset);
 
 				// The engine arranges only the lines that fit (MaxLines, or the slice handed to a linked
 				// overflow), but ParsedText renders the whole paragraph in one call. Clip to the arranged
 				// slice so the lines the page node left out are not overdrawn.
-				canvas.ClipRect(new SKRect(0, 0, (float)layout.Size.Width, (float)layout.Size.Height));
+				drawingSession.ClipRect(new Rect(0, 0, layout.Size.Width, layout.Size.Height));
 
 				// Build highlighters for this paragraph (including selection)
 				var paragraphHighlighters = GetParagraphHighlighters(layout, layout.BlockIndex);
 
 				layout.ParsedText.Draw(this, session, null, paragraphHighlighters, compositionRange: null, layout.FirstLine, layout.LineCount);
 
-				canvas.Restore();
+				drawingSession.Restore();
 			}
 
-			canvas.Restore();
+			drawingSession.Restore();
 		}
 
 		internal IEnumerable<TextHighlighter> GetParagraphHighlighters(ParagraphLayout layout, int paragraphIndex)
@@ -940,14 +939,12 @@ namespace Microsoft.UI.Xaml.Controls
 				_owner = new WeakReference<RichTextBlock>(owner);
 			}
 
-			internal override SKPath? Paint(in PaintingSession session)
+			internal override void Paint(in PaintingSession session)
 			{
 				if (_owner.TryGetTarget(out var owner))
 				{
 					owner.Draw(in session);
 				}
-
-				return null;
 			}
 
 			internal override bool CanPaint() => true;

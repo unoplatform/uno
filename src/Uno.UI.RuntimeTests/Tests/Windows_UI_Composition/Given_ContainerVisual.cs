@@ -143,14 +143,6 @@ public class Given_ContainerVisual
 		// via RenderRootVisual. This used to throw a NullReferenceException (issue #22416).
 		Assert.IsNull(visual.Parent);
 
-		// SKPath overload (the one used by GetPrePaintingClipping during rendering).
-		using var path = new SKPath();
-		Assert.IsTrue(visual.GetArrangeClipPathInElementCoordinateSpace(path));
-		Assert.AreEqual(0f, path.Bounds.Left, 0.01f);
-		Assert.AreEqual(0f, path.Bounds.Top, 0.01f);
-		Assert.AreEqual(50f, path.Bounds.Right, 0.01f);
-		Assert.AreEqual(40f, path.Bounds.Bottom, 0.01f);
-
 		// Rect? overload.
 		var rect = visual.GetArrangeClipPathInElementCoordinateSpace();
 		Assert.IsNotNull(rect);
@@ -177,7 +169,95 @@ public class Given_ContainerVisual
 
 		// Rendering a parent-less Panel-like visual carrying an ancestor layout clip used to throw a
 		// NullReferenceException inside GetArrangeClipPathInElementCoordinateSpace (issue #22416).
-		visual.RenderRootVisual(surface.Canvas, Vector2.Zero);
+		visual.RenderRootVisual(new global::Uno.UI.Composition.Drawing.SkiaDrawingSession(surface.Canvas, new global::Uno.UI.Composition.Drawing.SkiaDrawingFactory()), Vector2.Zero);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Retained_Fallback_Renders_Identically()
+	{
+		// The backend's native retained path (SkiaSharp's SKPicture) and the command-list fallback a backend
+		// without native retention gets must produce identical output. Render the same scene each way and compare.
+		// The scene exercises per-visual paint, child rendering, corner clipping, and the non-analytic shadow
+		// fallback (gradient content + ThemeShadow) — all of which record and replay through the retained seam.
+		var retained = BuildRenderComparisonScene();
+		await UITestHelper.Load(retained);
+		var expected = await UITestHelper.ScreenShot(retained);
+
+		try
+		{
+			global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering = true;
+			var fallback = BuildRenderComparisonScene();
+			await UITestHelper.Load(fallback);
+			var actual = await UITestHelper.ScreenShot(fallback);
+
+			await ImageAssert.AreEqualAsync(actual, expected);
+		}
+		finally
+		{
+			global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering = false;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_PictureCollapsing_Produces_Identical_Output()
+	{
+		// Force the picture-collapsing optimization (record a stable subtree into one SKPicture and replay it)
+		// by dropping its frame/visual-count thresholds to zero, and verify the collapsed output still matches
+		// the immediate (uncollapsed) render.
+		var origFrame = global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold;
+		var origCount = global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold;
+		try
+		{
+			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold = 0;
+			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold = 0;
+
+			var collapsed = BuildRenderComparisonScene();
+			await UITestHelper.Load(collapsed);
+			// First render collapses + caches _childrenContent; the screenshot render then replays the cache.
+			await TestServices.WindowHelper.WaitForIdle();
+			var expected = await UITestHelper.ScreenShot(collapsed);
+
+			global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering = true;
+			var immediate = BuildRenderComparisonScene();
+			await UITestHelper.Load(immediate);
+			var actual = await UITestHelper.ScreenShot(immediate);
+
+			await ImageAssert.AreEqualAsync(actual, expected);
+		}
+		finally
+		{
+			global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering = false;
+			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold = origFrame;
+			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold = origCount;
+		}
+	}
+
+	private static FrameworkElement BuildRenderComparisonScene()
+	{
+		var gradient = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(1, 1) };
+		gradient.GradientStops.Add(new GradientStop { Color = Colors.Orange, Offset = 0 });
+		gradient.GradientStops.Add(new GradientStop { Color = Colors.Purple, Offset = 1 });
+
+		var border = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = gradient,
+			CornerRadius = new CornerRadius(20),
+			BorderBrush = new SolidColorBrush(Colors.DarkBlue),
+			BorderThickness = new Thickness(4),
+			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Center,
+			Shadow = new ThemeShadow(),
+			Translation = new Vector3(0, 0, 32),
+			Child = new Ellipse { Width = 50, Height = 50, Fill = new SolidColorBrush(Colors.LimeGreen) }
+		};
+
+		var host = new Grid { Width = 180, Height = 180, Background = new SolidColorBrush(Colors.White) };
+		host.Children.Add(border);
+		return host;
 	}
 
 	private class FrameCounterSKCanvasElement : SKCanvasElement

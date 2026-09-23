@@ -9,6 +9,7 @@ using System.Globalization;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Uno.UI.Composition.Drawing;
 using Windows.UI.Text;
 using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
@@ -845,16 +846,16 @@ internal static class BlockLayoutHelpers
 	// UnicodeText measures its own ellipsis, including the fallback when the font has no glyph for it.
 	internal static float MeasureShapedAdvance(FontDetails fontDetails, char character)
 	{
-		using var buffer = new HarfBuzzSharp.Buffer();
-		buffer.AddUtf16(character.ToString());
-		buffer.GuessSegmentProperties();
+		Span<char> text = stackalloc char[1];
+		text[0] = character;
 
-		fontDetails.Font.Shape(buffer);
+		// GlyphRun advances are already in pixels at the font's size, so no text scale is applied here.
+		var run = fontDetails.FontHandle.Shape(text, TextDirection.LeftToRight);
 
 		var advance = 0f;
-		foreach (var position in buffer.GetGlyphPositionSpan())
+		foreach (var glyphAdvance in run.Advances)
 		{
-			advance += position.XAdvance * fontDetails.TextScale.textScaleX;
+			advance += glyphAdvance;
 		}
 
 		return advance;

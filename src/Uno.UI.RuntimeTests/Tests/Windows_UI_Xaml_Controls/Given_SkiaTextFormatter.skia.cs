@@ -62,7 +62,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var inlines = paragraph.Inlines.TraversedTree.leafTree;
 				var (defaultFont, _) = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle);
 
-				var source = new TestParagraphSource(inlines, defaultFont.SKFontSize);
+				var source = new TestParagraphSource(inlines, defaultFont.FontSize);
 				var runProperties = new TextRunProperties(defaultFont, SUT.FontSize, false, false, 0, null, CultureInfo.CurrentCulture, CultureInfo.CurrentCulture);
 				var paragraphProperties = new TextParagraphProperties(FlowDirection.LeftToRight, runProperties, 0, TextWrapping.Wrap, TextLineBounds.Full, TextAlignment.Left);
 
@@ -72,7 +72,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var expected = ParsedText.ParseText(
 					new Size(wrappingWidth, double.PositiveInfinity),
 					inlines,
-					defaultFont.SKFontSize,
+					defaultFont.FontSize,
 					maxLines: 0,
 					lineHeight: 0,
 					LineStackingStrategy.MaxHeight,
@@ -135,7 +135,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var inlines = paragraph.Inlines.TraversedTree.leafTree;
 				var (defaultFont, _) = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle);
 
-				var source = new TestParagraphSource(inlines, defaultFont.SKFontSize);
+				var source = new TestParagraphSource(inlines, defaultFont.FontSize);
 				var runProperties = new TextRunProperties(defaultFont, SUT.FontSize, false, false, 0, null, CultureInfo.CurrentCulture, CultureInfo.CurrentCulture);
 				var wrap = new TextParagraphProperties(FlowDirection.LeftToRight, runProperties, 0, TextWrapping.Wrap, TextLineBounds.Full, TextAlignment.Left);
 				var noWrap = new TextParagraphProperties(FlowDirection.LeftToRight, runProperties, 0, TextWrapping.NoWrap, TextLineBounds.Full, TextAlignment.Left);
@@ -170,7 +170,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var inlines = paragraph.Inlines.TraversedTree.leafTree;
 				var (defaultFont, _) = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle);
 
-				var source = new TestParagraphSource(inlines, defaultFont.SKFontSize);
+				var source = new TestParagraphSource(inlines, defaultFont.FontSize);
 				var runProperties = new TextRunProperties(defaultFont, SUT.FontSize, false, false, 0, null, CultureInfo.CurrentCulture, CultureInfo.CurrentCulture);
 				var paragraphProperties = new TextParagraphProperties(FlowDirection.LeftToRight, runProperties, 0, TextWrapping.Wrap, TextLineBounds.Full, TextAlignment.Left);
 				var wrappingWidth = SUT.ActualWidth;

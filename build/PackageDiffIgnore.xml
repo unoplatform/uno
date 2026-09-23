@@ -2385,6 +2385,25 @@
 		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.TemplateMaterializationSettings" reason="BC01: moved to the Uno.UI namespace, alongside FrameworkTemplateBuilder and TemplateManager -- it is Uno plumbing with no WinUI counterpart (uno#18672, breaking changes for 7.0)" />
 
+		  <!-- Font fallback moved behind the drawing-backend seam into Uno.UI.Composition.Drawing and became internal; it was Uno plumbing sitting in a WinUI namespace, with no WinUI counterpart. -->
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.IFontFallbackService behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.CoverageTableFontFallbackService behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.FontFallbackCoverageRange" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.FontFallbackCoverageRange behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.EmptyFontFallbackService" reason="Removed the no-op fallback service; the seam represents the absence of a fallback service as no service at all (breaking changes for 7.0)" />
+
+		  <!-- SVG moved behind the drawing-backend seam: the renderer is supplied through the host builder instead of an ApiExtension-registered public interface. -->
+		  <Member fullName="Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider" reason="Replaced by the internal Uno.UI.Composition.Drawing.ISvgRenderer, supplied through IUnoPlatformHostBuilder.SvgRenderer() (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Svg.SvgProvider" reason="The Uno.UI.Svg add-in now implements the internal ISvgRenderer as SkiaSvgRenderer; it is registered through the host builder rather than exposed as a public provider (breaking changes for 7.0)" />
+
+		  <!-- The Lottie source types moved out of the Uno.UI.Lottie add-in into Uno.UI, where the SkiaSharp-free
+		       managed engine lives; the add-in keeps only the internal Skottie-backed renderer. Same namespaces and
+		       same public shape, so they read as removed only against the Uno.WinUI.Lottie package. -->
+		  <Member fullName="Uno.UI.Lottie.LottieVisualSourceProvider" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualOptions" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualSource" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.ThemableLottieVisualSource" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+
 		  <!-- Legacy Frame navigation mode removed: Frame always follows WinUI. The FeatureConfiguration holders lose their only flag, and the page pool had no other user (members paired in <Properties>/<Methods> below). -->
 		  <Member fullName="Uno.UI.FeatureConfiguration/Frame" reason="Removed empty FeatureConfiguration.Frame holder after deleting UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Page" reason="Removed empty FeatureConfiguration.Page holder after deleting IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
@@ -2502,6 +2521,11 @@
 		  <!-- Reference compilation produced are gone. _fullyInitialized sat under !UNO_HAS_ENHANCED_LIFECYCLE, -->
 		  <!-- which Skia defines, so it never existed in the build lib/ now ships.                            -->
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.NavigationViewItemBase::_fullyInitialized" reason="Reference flavor folded into Skia; field was compiled only under !UNO_HAS_ENHANCED_LIFECYCLE (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- The Win32 host no longer has a "pick for me" backend value: the graphics registry negotiates the
+		       order, and the host opts out of kinds instead (ForceRenderingBackend/DisableRenderingBackends). -->
+		  <Member fullName="Uno.UI.Hosting.Win32RenderingBackend Uno.UI.Hosting.Win32RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Hosting.X11RenderingBackend Uno.UI.Hosting.X11RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
 	  </Fields>
 	  <Properties>
 		  <!-- Fluent resources-version selector removed: only version 2 exists and WinAppSDK has no equivalent surface. Accessors paired in the <Methods> block below (BC71, breaking changes for 7.0). -->
@@ -3317,6 +3341,11 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.set_EventsBubblingInManagedCode(Uno.UI.Xaml.RoutedEventFlag value)" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
 		  <!-- Binary-compat shim for the removed Setter<T> (see <Types> above); no source callers. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Removed SetterBase.set_Property shim (BC63, breaking changes for 7.0)" />
+
+		  <!-- Renamed to ForceRenderingBackend, paired with the new DisableRenderingBackends: with negotiation in
+		       place the old name read as "prefer", when it actually pinned a single backend. -->
+		  <Member fullName="Uno.UI.Hosting.Win32HostBuilder Uno.UI.Hosting.Win32HostBuilder.RenderingBackend(Uno.UI.Hosting.Win32RenderingBackend backend)" reason="Renamed to ForceRenderingBackend now that the graphics registry negotiates (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Hosting.X11HostBuilder Uno.UI.Hosting.X11HostBuilder.RenderingBackend(Uno.UI.Hosting.X11RenderingBackend backend)" reason="Renamed to ForceRenderingBackend now that the graphics registry negotiates (breaking changes for 7.0)" />
 
 		  <!-- DependencyObject is now a base class (BC26). The dependency-property store, binder and TemplatedParent
 		       members it used to surface on every type (via the DependencyObjectGenerator per-type mixin) are now
@@ -3866,6 +3895,25 @@
 		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.TemplateMaterializationSettings" reason="BC01: moved to the Uno.UI namespace, alongside FrameworkTemplateBuilder and TemplateManager -- it is Uno plumbing with no WinUI counterpart (uno#18672, breaking changes for 7.0)" />
 
+		  <!-- Font fallback moved behind the drawing-backend seam into Uno.UI.Composition.Drawing and became internal; it was Uno plumbing sitting in a WinUI namespace, with no WinUI counterpart. -->
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.IFontFallbackService behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.CoverageTableFontFallbackService behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.FontFallbackCoverageRange" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.FontFallbackCoverageRange behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.EmptyFontFallbackService" reason="Removed the no-op fallback service; the seam represents the absence of a fallback service as no service at all (breaking changes for 7.0)" />
+
+		  <!-- SVG moved behind the drawing-backend seam: the renderer is supplied through the host builder instead of an ApiExtension-registered public interface. -->
+		  <Member fullName="Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider" reason="Replaced by the internal Uno.UI.Composition.Drawing.ISvgRenderer, supplied through IUnoPlatformHostBuilder.SvgRenderer() (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Svg.SvgProvider" reason="The Uno.UI.Svg add-in now implements the internal ISvgRenderer as SkiaSvgRenderer; it is registered through the host builder rather than exposed as a public provider (breaking changes for 7.0)" />
+
+		  <!-- The Lottie source types moved out of the Uno.UI.Lottie add-in into Uno.UI, where the SkiaSharp-free
+		       managed engine lives; the add-in keeps only the internal Skottie-backed renderer. Same namespaces and
+		       same public shape, so they read as removed only against the Uno.WinUI.Lottie package. -->
+		  <Member fullName="Uno.UI.Lottie.LottieVisualSourceProvider" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualOptions" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualSource" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.ThemableLottieVisualSource" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+
 		  <!-- Legacy Frame navigation mode removed: Frame always follows WinUI. The FeatureConfiguration holders lose their only flag, and the page pool had no other user (members paired in <Properties>/<Methods> below). -->
 		  <Member fullName="Uno.UI.FeatureConfiguration/Frame" reason="Removed empty FeatureConfiguration.Frame holder after deleting UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Page" reason="Removed empty FeatureConfiguration.Page holder after deleting IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
@@ -3983,6 +4031,11 @@
 		  <!-- Reference compilation produced are gone. _fullyInitialized sat under !UNO_HAS_ENHANCED_LIFECYCLE, -->
 		  <!-- which Skia defines, so it never existed in the build lib/ now ships.                            -->
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.NavigationViewItemBase::_fullyInitialized" reason="Reference flavor folded into Skia; field was compiled only under !UNO_HAS_ENHANCED_LIFECYCLE (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- The Win32 host no longer has a "pick for me" backend value: the graphics registry negotiates the
+		       order, and the host opts out of kinds instead (ForceRenderingBackend/DisableRenderingBackends). -->
+		  <Member fullName="Uno.UI.Hosting.Win32RenderingBackend Uno.UI.Hosting.Win32RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Hosting.X11RenderingBackend Uno.UI.Hosting.X11RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
 	  </Fields>
 	  <Properties>
 		  <!-- Fluent resources-version selector removed: only version 2 exists and WinAppSDK has no equivalent surface. Accessors paired in the <Methods> block below (BC71, breaking changes for 7.0). -->
@@ -4798,6 +4851,11 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.set_EventsBubblingInManagedCode(Uno.UI.Xaml.RoutedEventFlag value)" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
 		  <!-- Binary-compat shim for the removed Setter<T> (see <Types> above); no source callers. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Removed SetterBase.set_Property shim (BC63, breaking changes for 7.0)" />
+
+		  <!-- Renamed to ForceRenderingBackend, paired with the new DisableRenderingBackends: with negotiation in
+		       place the old name read as "prefer", when it actually pinned a single backend. -->
+		  <Member fullName="Uno.UI.Hosting.Win32HostBuilder Uno.UI.Hosting.Win32HostBuilder.RenderingBackend(Uno.UI.Hosting.Win32RenderingBackend backend)" reason="Renamed to ForceRenderingBackend now that the graphics registry negotiates (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Hosting.X11HostBuilder Uno.UI.Hosting.X11HostBuilder.RenderingBackend(Uno.UI.Hosting.X11RenderingBackend backend)" reason="Renamed to ForceRenderingBackend now that the graphics registry negotiates (breaking changes for 7.0)" />
 
 		  <!-- DependencyObject is now a base class (BC26). The dependency-property store, binder and TemplatedParent
 		       members it used to surface on every type (via the DependencyObjectGenerator per-type mixin) are now

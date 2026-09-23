@@ -1,18 +1,14 @@
+﻿using Uno.UI.Composition.Drawing;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using Microsoft.UI.Input;
-using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
-using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
-using KeyEventArgs = global::Windows.UI.Core.KeyEventArgs;
-using CharacterReceivedEventArgs = global::Windows.UI.Core.CharacterReceivedEventArgs;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
-using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -26,26 +22,30 @@ using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Media;
 using Window = Microsoft.UI.Xaml.Window;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
+using KeyEventArgs = global::Windows.UI.Core.KeyEventArgs;
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
+using CharacterReceivedEventArgs = global::Windows.UI.Core.CharacterReceivedEventArgs;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource, IAccessibilityOwner
 {
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
+	private readonly FrameRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly MacOSWindowNative _nativeWindow;
 	private readonly Window _winUIWindow;
 	private readonly XamlRoot _xamlRoot;
 	private readonly DisplayInformation _displayInformation;
-	private readonly GRContext? _context;
+	// The negotiated graphics context (Skia-on-Metal, software, or WebGPU on the CAMetalLayer).
+	private ISwapChain _context = null!;
+	// The per-window backend factory, installed on this window's CompositionTarget each frame.
+	private IDrawingFactory _renderer = null!;
 	private MacOSRenderThread? _metalRenderThread;
-	private SKBitmap? _bitmap;
-	private SKSurface? _surface;
-	private readonly RetainedLayer _retainedLayer = new();
-	private int _rowBytes;
-	private volatile bool _initializationCompleted;
 	// Written by the software/legacy draw paths on the main thread and by the Metal render thread.
+	private volatile bool _initializationCompleted;
 	private volatile string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
 	private MacOSAccessibility? _accessibility;
@@ -60,21 +60,48 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		// RegisterForBackgroundColor();
 
+		// Neutral graphics pipeline: the host registers a per-kind context factory and negotiates; the app-registered backend owns the kind order.
 		var host = MacSkiaHost.Current;
-		switch (host.RenderSurfaceType)
+		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateContext(kind, host.RenderSurfaceType));
+
+		var init = GraphicsRegistry.Initialize();
+		_context = init.Context;
+		_renderer = init.Renderer;
+
+		// A context that owns the layer's present (e.g. WebGPU) drives the drawable itself, so switch the native draw to
+		// tick-only to avoid contending for the layer's drawables; Skia-on-Metal is driven by our own render thread.
+		if (host.RenderSurfaceType != RenderSurfaceType.Software && _context is not MacOSMetalGraphicsContext)
 		{
-			case RenderSurfaceType.Metal:
+			NativeUno.uno_window_set_external_present(_nativeWindow.Handle, true);
+		}
+		else if (_context is MacOSMetalGraphicsContext)
+		{
+			InitializeMetalRenderThread();
+		}
+	}
+
+	/// <summary>
+	/// Creates the macOS context for a requested kind: Skia-on-Metal from the NSWindow device/queue, software from a CPU
+	/// framebuffer, WebGpu from the view's CAMetalLayer. GPU kinds are declined when configured for software.
+	/// </summary>
+	private ISwapChain? CreateContext(GraphicsContextKind kind, RenderSurfaceType surfaceType)
+	{
+		var software = surfaceType == RenderSurfaceType.Software;
+		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
+		if (scale <= 0) { scale = 1; }
+
+		switch (kind)
+		{
+			case GraphicsContextKind.Metal when !software:
 				NativeUno.uno_window_get_metal_handles(_nativeWindow.Handle, out var device, out var queue);
-				var ctx = new GRMtlBackendContext()
-				{
-					DeviceHandle = device,
-					QueueHandle = queue,
-				};
-				_context = GRContext.CreateMetal(ctx);
-				InitializeMetalRenderThread();
-				break;
-			case RenderSurfaceType.Software:
-				break;
+				return new MacOSMetalGraphicsContext(_nativeWindow.Handle, device, queue);
+			case GraphicsContextKind.WebGpu when !software:
+				var layer = NativeUno.uno_window_get_metal_layer(_nativeWindow.Handle);
+				return layer == 0 ? null : global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateMetal(layer, scale);
+			case GraphicsContextKind.Software:
+				return new MacOSSoftwareGraphicsContext();
+			default:
+				return null;
 		}
 	}
 
@@ -96,11 +123,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	private void InitializeMetalRenderThread()
 	{
-		if (_context is null)
-		{
-			return;
-		}
-
 		var screenFps = NativeUno.uno_window_get_refresh_rate(_nativeWindow.Handle);
 		var targetFps = ResolveTargetFps(screenFps);
 
@@ -116,7 +138,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				$"pacing at {targetFps.ToString("0.##", CultureInfo.InvariantCulture)} fps.");
 		}
 
-		_metalRenderThread = new MacOSRenderThread(_nativeWindow.Handle, _context, RenderThreadMetalDraw, targetFps);
+		_metalRenderThread = new MacOSRenderThread(_nativeWindow.Handle, RenderThreadMetalDraw, targetFps);
 	}
 
 	/// <summary>
@@ -130,19 +152,19 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			: FeatureConfiguration.CompositionTarget.FrameRate;
 
 	/// <summary>
-	/// Called on the render thread. Draws the recorded SKPicture into the Metal texture
-	/// acquired from the layer; the render loop flushes and presents after this returns.
+	/// Called on the render thread. Composes the frame into the context's own texture and presents it,
+	/// and reports whether the frame reached the screen.
 	/// </summary>
-	private void RenderThreadMetalDraw(double nativeWidth, double nativeHeight, nint texture)
+	private bool RenderThreadMetalDraw(double nativeWidth, double nativeHeight)
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"Window {_nativeWindow.Handle} render thread drawing {nativeWidth}x{nativeHeight} texture: {texture}");
+			this.Log().Trace($"Window {_nativeWindow.Handle} render thread drawing {nativeWidth}x{nativeHeight}");
 		}
 
-		if (RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
+		if (RootElement?.Visual.CompositionTarget is not CompositionTarget ct || _context is not MacOSMetalGraphicsContext metal)
 		{
-			return;
+			return false;
 		}
 
 		// FIXME: we get the first (native) updates for window sizes before we have completed the (managed)
@@ -166,23 +188,12 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				_metalRenderThread?.RequestFrame();
 			}, NativeDispatcherPriority.Normal);
 
-			return;
+			return false;
 		}
 
-		// The app is drawn into a retained layer sized from the managed XamlRoot bounds, which can
-		// briefly disagree with the drawable size while a resize is in flight. Only the blit below
-		// targets the drawable, so the swapchain surface must use the texture's own dimensions.
-		// The layer also survives across frames, which is what keeps damage-region rendering usable
-		// even though the drawable rotates every frame.
-		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(
-			_retainedLayer.Surface?.Canvas,
-			size => _retainedLayer.EnsureSurface(_context!, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas);
-
-		using (var target = new GRBackendRenderTarget((int)nativeWidth, (int)nativeHeight, new GRMtlTextureInfo(texture)))
-		using (var swapchainSurface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888))
-		{
-			_retainedLayer.Present(swapchainSurface);
-		}
+		ct.Renderer = _renderer;
+		// Present (drawable acquire + blit) happens inside this call, through the context.
+		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context);
 
 		// uno_window_clip_svg mutates AppKit view layers, which must be touched only on the
 		// main thread; this method runs on the render thread, so marshal the update there.
@@ -205,15 +216,17 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				}
 			}, NativeDispatcherPriority.Normal);
 		}
+
+		return metal.LastPresentSucceeded;
 	}
 
 	private void MetalDraw(double nativeWidth, double nativeHeight, nint texture)
 	{
 		if (_metalRenderThread is not null)
 		{
-			// The render thread owns the GRContext and the retained layer on the Metal path. AppKit
-			// should not reach this (the view is paused), but bail out rather than risk drawing from
-			// the main thread concurrently with it.
+			// The render thread owns the graphics context on the Metal path. AppKit should not reach
+			// this (the view is paused), but bail out rather than risk drawing from the main thread
+			// concurrently with it.
 			return;
 		}
 
@@ -236,17 +249,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
-			_retainedLayer.Surface?.Canvas,
-			size => _retainedLayer.EnsureSurface(_context!, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas);
+		var ct = (CompositionTarget)RootElement!.Visual.CompositionTarget!;
+		ct.Renderer = _renderer;
+		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context);
 
-		using (var target = new GRBackendRenderTarget((int)nativeWidth, (int)nativeHeight, new GRMtlTextureInfo(texture)))
-		using (var swapchainSurface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888))
+		string? clip = null;
+		if (!nativeElementClipPath.IsEmpty)
 		{
-			_retainedLayer.Present(swapchainSurface);
+			clip = nativeElementClipPath.ToSvgPathData();
 		}
-
-		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
 		if (clip != _lastSvgClipPath)
 		{
 			// if too early it's possible that the native element has not been arranged yet
@@ -256,8 +267,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				_lastSvgClipPath = clip;
 			}
 		}
-
-		_context?.Flush();
 	}
 
 	private unsafe void SoftDraw(double nativeWidth, double nativeHeight, nint* data, int* rowBytes, int* size)
@@ -281,19 +290,17 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		// The rendered buffer is read back out of the context's target and handed to the native SoftDraw.
+		var ct = (CompositionTarget)RootElement!.Visual.CompositionTarget!;
+		ct.Renderer = _renderer;
+		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context);
+		var softwareTarget = (_context as MacOSSoftwareGraphicsContext)?.CurrentTarget;
+
+		string? clip = null;
+		if (!nativeElementClipPath.IsEmpty)
 		{
-			_bitmap?.Dispose();
-			_surface?.Dispose();
-
-			var info = new SKImageInfo((int)size.Width, (int)size.Height, SKColorType.Rgba8888, SKAlphaType.Premul);
-			_bitmap = new SKBitmap(info);
-			_surface = SKSurface.Create(info, _bitmap.GetPixels());
-			_rowBytes = info.RowBytes;
-			return _surface.Canvas;
-		});
-
-		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
+			clip = nativeElementClipPath.ToSvgPathData();
+		}
 		if (clip != _lastSvgClipPath)
 		{
 			// if too early it's possible that the native element has not been arranged yet
@@ -304,11 +311,11 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		if (_bitmap is not null)
+		if (softwareTarget is not null)
 		{
-			*data = _bitmap.GetPixels(out var bitmapSize);
-			*size = (int)bitmapSize;
-			*rowBytes = _rowBytes;
+			*data = softwareTarget.Pixels;
+			*size = softwareTarget.Height * softwareTarget.RowBytes;
+			*rowBytes = softwareTarget.RowBytes;
 		}
 	}
 
@@ -318,10 +325,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	public static unsafe void Register()
 	{
-		// From managed code this will load `libSkiaSharp` from `netX0/runtimes/osx/native/libSkiaSharp.dylib` so
-		// `libUnoNativeMac.dylib` will find it already available and won't try to load it from `@rpath/libSkiaSharp.dylib`
-		NativeSkia.gr_direct_context_make_metal(0, 0);
-
 		NativeUno.uno_set_drawing_callbacks(&MetalDraw, &SoftDraw, &Resize);
 
 		NativeUno.uno_set_window_events_callbacks(&OnRawKeyDown, &OnRawKeyUp, &OnMouseEvent, &OnMoveEvent, &Resize);
@@ -888,12 +891,16 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			var window = GetWindowHost(handle);
 			if (window is not null)
 			{
-				// Stop the render thread before tearing down the native window / GRContext.
+				// Stop the render thread before tearing down the native window / graphics context.
 				window._metalRenderThread?.Dispose();
 				window._metalRenderThread = null;
 				Unregister(handle);
 				window._nativeWindow.Destroyed();
 				window.Closed?.Invoke(window, EventArgs.Empty);
+				// Before the context it is bound to, and safe even though DrawingFactory.Current may still point
+				// here: Dispose frees only the GPU contexts, while everything reached through Current is CPU-side.
+				(window._renderer as IDisposable)?.Dispose();
+				window._context?.Dispose();
 			}
 		}
 		catch (Exception e)
@@ -955,9 +962,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	// --- Render thread ---
 
 	/// <summary>
-	/// Dedicated render thread for macOS Metal: acquires a drawable, draws the recorded
-	/// SKPicture, flushes, then presents — all off the UI thread so a slow present / VSync
-	/// wait never blocks input or layout. Mirrors the Win32 render thread and the iOS
+	/// Dedicated render thread for macOS Metal: draws the recorded SKPicture into the context's
+	/// texture, then presents it onto a freshly acquired drawable — all off the UI thread so a slow
+	/// present / VSync wait never blocks input or layout. Mirrors the Win32 render thread and the iOS
 	/// CADisplayLink render thread.
 	/// </summary>
 	/// <remarks>
@@ -984,8 +991,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		/// <summary>Minimum interval between "still cannot present" warnings.</summary>
 		private const int FailureLogIntervalMs = 5000;
 
-		/// <summary>A successful acquisition slower than this is worth reporting.</summary>
-		private const int SlowAcquireMs = 100;
+		/// <summary>A presented frame slower than this is worth reporting.</summary>
+		private const int SlowFrameMs = 100;
 
 		private readonly Thread _thread;
 		private readonly AutoResetEvent _frameSignal = new(false);
@@ -993,20 +1000,19 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		private readonly ManualResetEventSlim _shutdown = new(false);
 		private readonly FramePacer _framePacer;
 		private readonly nint _windowHandle;
-		private readonly GRContext _context;
-		private readonly Action<double, double, nint> _drawFrame;
+		/// <summary>Draws and presents one frame at the given pixel size; false when it could not be presented.</summary>
+		private readonly Func<double, double, bool> _drawFrame;
 		private volatile bool _disposed;
 
 		// Render-thread only.
 		private int _consecutiveFailures;
 		private long _firstFailureTimestamp;
 		private long _lastFailureLogTimestamp;
-		private long _lastAcquireLogTimestamp;
+		private long _lastFrameLogTimestamp;
 
-		internal MacOSRenderThread(nint windowHandle, GRContext context, Action<double, double, nint> drawFrame, double targetFps)
+		internal MacOSRenderThread(nint windowHandle, Func<double, double, bool> drawFrame, double targetFps)
 		{
 			_windowHandle = windowHandle;
-			_context = context;
 			_drawFrame = drawFrame;
 			_framePacer = new FramePacer(targetFps, SignalFrameDue);
 			_thread = new Thread(RenderLoop) { Name = "Uno macOS Render Thread", IsBackground = true };
@@ -1079,26 +1085,20 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				var framePresented = false;
 				try
 				{
-					// Timed: whether nextDrawable blocks (and for how long) on a given machine is the
-					// single fact that separates "the render thread is stuck" from "the render thread is
-					// idle and something else is slow". Nothing else records it.
-					var acquireStart = Stopwatch.GetTimestamp();
-					var acquired = NativeUno.uno_window_acquire_next_frame(_windowHandle, out var texture, out var width, out var height);
-					ReportAcquire(acquired, ElapsedMsSince(acquireStart));
-
-					if (acquired)
+					if (NativeUno.uno_window_get_drawable_size(_windowHandle, out var width, out var height))
 					{
-						_drawFrame(width, height, texture);
+						// Timed: the draw ends in a nextDrawable wait, and whether that blocks (and for how
+						// long) on a given machine is the single fact that separates "the render thread is
+						// stuck" from "the render thread is idle and something else is slow".
+						var frameStart = Stopwatch.GetTimestamp();
+						framePresented = _drawFrame(width, height);
+						ReportFrame(framePresented, ElapsedMsSince(frameStart));
+					}
 
-						// submit: true commits the Metal command buffer before present (matches the iOS path).
-						_context.Flush(submit: true);
-
-						// Present the drawable; may block on VSync / drawable availability.
-						NativeUno.uno_window_present_frame(_windowHandle);
-
+					if (framePresented)
+					{
 						// Only a frame that actually reached the screen may release a waiter.
 						_presentedEvent.Set();
-						framePresented = true;
 					}
 				}
 				catch (Exception ex)
@@ -1109,11 +1109,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					{
 						this.Log().Error($"macOS render thread error: {ex}");
 					}
-
-					// The drawable is only released by uno_window_present_frame, which we did not reach.
-					// Drop it explicitly, otherwise repeated failures exhaust the layer's drawable pool
-					// and every later nextDrawable call blocks then returns nil.
-					NativeUno.uno_window_discard_frame(_windowHandle);
 				}
 
 				if (framePresented)
@@ -1174,13 +1169,13 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		/// <summary>
-		/// Surfaces a drawable acquisition that failed, or succeeded but blocked. Both are reported the
+		/// Surfaces a frame that could not be presented, or was presented but slow. Both are reported the
 		/// first time and then at most once per <see cref="FailureLogIntervalMs"/>, so a pathological
 		/// agent shows up in the log immediately instead of only after several consecutive failures.
 		/// </summary>
-		private void ReportAcquire(bool acquired, long elapsedMs)
+		private void ReportFrame(bool presented, long elapsedMs)
 		{
-			if (acquired && elapsedMs < SlowAcquireMs)
+			if (presented && elapsedMs < SlowFrameMs)
 			{
 				return;
 			}
@@ -1190,15 +1185,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				return;
 			}
 
-			if (_lastAcquireLogTimestamp != 0 && ElapsedMsSince(_lastAcquireLogTimestamp) < FailureLogIntervalMs)
+			if (_lastFrameLogTimestamp != 0 && ElapsedMsSince(_lastFrameLogTimestamp) < FailureLogIntervalMs)
 			{
 				return;
 			}
 
-			_lastAcquireLogTimestamp = Stopwatch.GetTimestamp();
+			_lastFrameLogTimestamp = Stopwatch.GetTimestamp();
 			this.Log().Warn(
-				$"macOS drawable acquisition {(acquired ? "was slow" : "returned no drawable")} for window "
-				+ $"{_windowHandle}: nextDrawable took {elapsedMs}ms.");
+				$"macOS render thread frame {(presented ? "was slow" : "was not presented")} for window "
+				+ $"{_windowHandle}: draw and present took {elapsedMs}ms.");
 		}
 
 		private void ReportPersistentFailure()
@@ -1250,7 +1245,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		/// <c>nextDrawable</c> and the present complete in bounded time (a vsync wait, or ~1s and a
 		/// nil drawable when the window is occluded), so the thread always exits. A retry backoff
 		/// waits on <see cref="_shutdown"/> rather than sleeping, so it is cut short here. The caller
-		/// tears down the native window and the <see cref="GRContext"/> right after this returns, and
+		/// tears down the native window and the graphics context right after this returns, and
 		/// the render thread is their sole other user, so it must be guaranteed stopped first.
 		/// </summary>
 		public void Dispose()

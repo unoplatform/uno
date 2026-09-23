@@ -43,7 +43,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 				var expected = ParsedText.ParseText(
 					new Size(width, double.PositiveInfinity),
 					inlines,
-					defaultFont.SKFontSize,
+					defaultFont.FontSize,
 					maxLines: 0,
 					lineHeight: 0,
 					LineStackingStrategy.MaxHeight,
