@@ -11,6 +11,12 @@ public static class PlatformMarker
     public static string Asset => "ios";
 
     public static string IOSOnlyApi() => UIKit.UIDevice.CurrentDevice.SystemVersion;
+#elif __WASM__
+    public static string Asset => "wasm";
+#elif __DESKTOP__
+    public static string Asset => "desktop";
+#elif WINDOWS
+    public static string Asset => "win";
 #else
     public static string Asset => "generic";
 #endif

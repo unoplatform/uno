@@ -7,6 +7,12 @@ public static class PlatformMarker
     public static string Asset => "android";
 #elif __IOS__
     public static string Asset => "ios";
+#elif __WASM__
+    public static string Asset => "wasm";
+#elif __DESKTOP__
+    public static string Asset => "desktop";
+#elif WINDOWS
+    public static string Asset => "win";
 #else
     public static string Asset => "generic";
 #endif
@@ -14,5 +20,6 @@ public static class PlatformMarker
     public static string RuntimePlatform =>
         OperatingSystem.IsAndroid() ? "android"
         : OperatingSystem.IsIOS() ? "ios"
+        : OperatingSystem.IsBrowser() ? "browser"
         : "other";
 }
