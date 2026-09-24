@@ -1,118 +1,36 @@
 ﻿<Project>
 
 	<!--
-	Drops the wgpu native payload from an app that cannot reach the WebGPU backend.
+	Drops the wgpu native payload from an app that cannot reach it.
 
 	Skia renders by default wherever it is referenced (UnoPlatformHostBuilder.TryLightUpGraphicsBackend), so an app
-	that names both features reaches WebGPU only through its own code. Unused references are not emitted into a
-	compiled assembly, so "does this app go near WebGPU" is a compile-time fact.
+	that names both features reaches WebGPU only through its own code. DetectWebGpuUsage_v0 reads that out of the
+	compiled metadata: a reference to a WebGPU assembly, a P/Invoke into the native module, or registering a graphics
+	backend at all. That last one is deliberately broad, because the provider an app registers may be a WebGPU one we
+	did not write, and metadata cannot say which it is.
 
-	The payload is kept on ANY hint of use, not only of the Uno backend: an app may register a graphics backend of
-	its own over the same native, or P/Invoke it directly. So it is also kept when the app names a native module or
-	registers a backend at all, neither of which can be identified from here.
-
-	Deliberately conservative: it only engages when Skia is also present (without Skia, WebGPU is the only renderer
-	and the native is always required), and any doubt keeps the payload. Set UnoWebGpuForceNative=true to keep it
-	regardless, e.g. when a NuGet library registers the backend on the app's behalf.
+	Every uncertainty keeps the payload, including an assembly that cannot be read. UnoWebGpuForceNative=true keeps it
+	outright, for a registration that lives in a NuGet package where this cannot see it. To drop it deliberately, do
+	not name the webgpu feature.
 	-->
 
-	<UsingTask TaskName="UnoDetectWebGpuUsage" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
-		<ParameterGroup>
-			<Assemblies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
-			<Used ParameterType="System.Boolean" Output="true" />
-			<Reason ParameterType="System.String" Output="true" />
-		</ParameterGroup>
-		<Task>
-			<Code Type="Fragment" Language="cs"><![CDATA[
-				// Names that betray an app going near WebGPU, matched case-insensitively against the raw bytes. An
-				// assembly reference and a P/Invoke module name are UTF-8 (#Strings) while a reflective literal is UTF-16
-				// (#US), so each is sought in both. Matching too eagerly only keeps the payload, which is the safe way to
-				// be wrong.
-				//   webgpu          the Uno backend assemblies, and the [DllImport("webgpu")] module name
-				//   wgpu_native     the library's own file name, for an app that loads it itself
-				//   graphicsbackend the app registers SOME backend; which one cannot be told from here, so assume it needs this
-				var names = new string[] { "webgpu", "wgpu_native", "graphicsbackend" };
-				var needles = new System.Collections.Generic.List<byte[]>();
-				foreach (var name in names)
-				{
-					var ascii = System.Text.Encoding.ASCII.GetBytes(name);
-					needles.Add(ascii);
-					var utf16 = new byte[ascii.Length * 2];
-					for (var k = 0; k < ascii.Length; k++) { utf16[k * 2] = ascii[k]; }
-					needles.Add(utf16);
-				}
-
-				Used = false;
-				Reason = "";
-				foreach (var item in Assemblies)
-				{
-					var path = item.GetMetadata("FullPath");
-					if (!System.IO.File.Exists(path))
-					{
-						continue;
-					}
-
-					byte[] bytes;
-					try
-					{
-						bytes = System.IO.File.ReadAllBytes(path);
-					}
-					catch (System.IO.IOException)
-					{
-						// Unreadable means unknown, and unknown keeps the payload.
-						Used = true;
-						Reason = System.IO.Path.GetFileName(path) + " could not be read";
-						break;
-					}
-
-					// Lowercase ASCII once, so matching is case-insensitive without allocating per comparison.
-					for (var i = 0; i < bytes.Length; i++)
-					{
-						if (bytes[i] >= 65 && bytes[i] <= 90) { bytes[i] = (byte)(bytes[i] + 32); }
-					}
-
-					foreach (var needle in needles)
-					{
-						for (var i = 0; i + needle.Length <= bytes.Length && !Used; i++)
-						{
-							var match = true;
-							for (var j = 0; j < needle.Length; j++)
-							{
-								if (bytes[i + j] != needle[j]) { match = false; break; }
-							}
-
-							Used = match;
-						}
-
-						if (Used)
-						{
-							Reason = System.IO.Path.GetFileName(path);
-							break;
-						}
-					}
-
-					if (Used)
-					{
-						break;
-					}
-				}
-			]]></Code>
-		</Task>
-	</UsingTask>
+	<UsingTask TaskName="Uno.Sdk.Tasks.DetectWebGpuUsage_v0" AssemblyFile="$(UnoSdkTasksAssembly)"
+			   Condition="'$(UnoSdkTasksAssembly)' != '' And Exists('$(UnoSdkTasksAssembly)')" />
 
 	<Target Name="_UnoWebGpuDetectUsage"
 			AfterTargets="CoreCompile"
-			Condition="'$(UnoWebGpuForceNative)' != 'true' And '@(IntermediateAssembly)' != ''">
+			Condition="'$(UnoWebGpuForceNative)' != 'true' And '@(IntermediateAssembly)' != ''
+					   And '$(UnoSdkTasksAssembly)' != '' And Exists('$(UnoSdkTasksAssembly)')">
 		<!-- The app's own assemblies: the head plus anything it builds alongside. A registration can live in either. -->
 		<ItemGroup>
 			<_UnoWebGpuScan Include="@(IntermediateAssembly)" />
 			<_UnoWebGpuScan Include="@(_ResolvedProjectReferencePaths)" />
 		</ItemGroup>
 
-		<UnoDetectWebGpuUsage Assemblies="@(_UnoWebGpuScan)" Condition="'@(_UnoWebGpuScan)' != ''">
-			<Output TaskParameter="Used" PropertyName="_UnoWebGpuReferencedByApp" />
+		<Uno.Sdk.Tasks.DetectWebGpuUsage_v0 Assemblies="@(_UnoWebGpuScan)" Condition="'@(_UnoWebGpuScan)' != ''">
+			<Output TaskParameter="CanReachWebGpu" PropertyName="_UnoWebGpuReferencedByApp" />
 			<Output TaskParameter="Reason" PropertyName="_UnoWebGpuReferencedBy" />
-		</UnoDetectWebGpuUsage>
+		</Uno.Sdk.Tasks.DetectWebGpuUsage_v0>
 
 		<PropertyGroup>
 			<!-- Only ever drop when Skia is present to render instead. -->

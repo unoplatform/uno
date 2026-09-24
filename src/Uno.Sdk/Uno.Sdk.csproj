@@ -31,6 +31,8 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<!-- Reads compiled metadata for the WebGPU reachability check (DetectWebGpuUsage_v0). -->
+		<PackageReference Include="System.Reflection.Metadata" Version="8.0.0" />
 		<PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
 		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
