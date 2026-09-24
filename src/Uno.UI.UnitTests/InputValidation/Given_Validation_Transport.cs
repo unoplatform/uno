@@ -36,7 +36,7 @@ public partial class Given_Validation_Transport
 	}
 
 	[TestMethod]
-	public void When_IsEnabled_False()
+	public void When_Mode_Disabled()
 	{
 		var (control, source) = Bind(enable: false);
 		source.SetErrors(nameof(Person.Name), "required");
@@ -69,7 +69,7 @@ public partial class Given_Validation_Transport
 		// For {Binding Customer.Name} the INotifyDataErrorInfo is Customer, not the page view model.
 		var root = new Wrapper { Customer = new Person() };
 		var control = new ValidatingControl { DataContext = root };
-		Validation.SetIsEnabled(control, true);
+		Validation.SetInputValidationMode(control, InputValidationMode.Auto);
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath("Customer.Name") });
 
 		root.Customer.SetErrors(nameof(Person.Name), "required");
@@ -82,7 +82,7 @@ public partial class Given_Validation_Transport
 	{
 		var root = new Wrapper { Customer = new Person() };
 		var control = new ValidatingControl { DataContext = root };
-		Validation.SetIsEnabled(control, true);
+		Validation.SetInputValidationMode(control, InputValidationMode.Auto);
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath("Customer.Name") });
 
 		root.Customer.SetErrors(nameof(Person.Name), "required");
@@ -133,7 +133,7 @@ public partial class Given_Validation_Transport
 	}
 
 	[TestMethod]
-	public void When_IsEnabled_Set_After_The_Binding()
+	public void When_Mode_Set_After_The_Binding()
 	{
 		// Generated XAML applies the binding before the attached property.
 		var source = new Person();
@@ -143,19 +143,19 @@ public partial class Given_Validation_Transport
 		source.SetErrors(nameof(Person.Name), "required");
 		Assert.IsFalse(Validation.GetHasErrors(control), "not opted in yet");
 
-		Validation.SetIsEnabled(control, true);
+		Validation.SetInputValidationMode(control, InputValidationMode.Auto);
 
 		Assert.IsTrue(Validation.GetHasErrors(control));
 	}
 
 	[TestMethod]
-	public void When_IsEnabled_Turned_Off()
+	public void When_Mode_Turned_Off()
 	{
 		var (control, source) = Bind();
 		source.SetErrors(nameof(Person.Name), "required");
 		Assert.IsTrue(Validation.GetHasErrors(control));
 
-		Validation.SetIsEnabled(control, false);
+		Validation.SetInputValidationMode(control, InputValidationMode.Disabled);
 
 		Assert.IsFalse(Validation.GetHasErrors(control));
 	}
@@ -170,7 +170,7 @@ public partial class Given_Validation_Transport
 		source.SetErrors(nameof(Person.Name), "required");
 
 		var control = new ValidatingControl { DataContext = source };
-		Validation.SetIsEnabled(control, true);
+		Validation.SetInputValidationMode(control, InputValidationMode.Auto);
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
 
 		Assert.AreEqual(string.Empty, control.Text);
@@ -220,7 +220,7 @@ public partial class Given_Validation_Transport
 	{
 		var source = new Person();
 		var control = new NonValidatingControl { DataContext = source };
-		Validation.SetIsEnabled(control, true);
+		Validation.SetInputValidationMode(control, InputValidationMode.Auto);
 		control.SetBinding(NonValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
 
 		source.SetErrors(nameof(Person.Name), "required");
@@ -241,7 +241,7 @@ public partial class Given_Validation_Transport
 
 			var source = new Person();
 			var control = new NonValidatingControl { DataContext = source };
-			Validation.SetIsEnabled(control, true);
+			Validation.SetInputValidationMode(control, InputValidationMode.Auto);
 			control.SetBinding(NonValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
 
 			source.SetErrors(nameof(Person.Name), "required");
@@ -261,7 +261,7 @@ public partial class Given_Validation_Transport
 	public void When_Source_Does_Not_Implement_The_Interface()
 	{
 		var control = new ValidatingControl { DataContext = new PlainSource() };
-		Validation.SetIsEnabled(control, true);
+		Validation.SetInputValidationMode(control, InputValidationMode.Auto);
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath("Name") });
 
 		Assert.IsFalse(Validation.GetHasErrors(control));
@@ -275,7 +275,7 @@ public partial class Given_Validation_Transport
 		// microsoft-ui-xaml#4642 in reverse, validating {Binding} but silently never an x:Bind.
 		var page = new Page { ViewModel = new Person() };
 		var control = new ValidatingControl();
-		Validation.SetIsEnabled(control, true);
+		Validation.SetInputValidationMode(control, InputValidationMode.Auto);
 
 		var binding = new Binding { Mode = BindingMode.OneWay, CompiledSource = page };
 		binding.SetBindingXBindProvider(
@@ -316,7 +316,7 @@ public partial class Given_Validation_Transport
 	private static WeakReference BindAndForget(Person source)
 	{
 		var control = new ValidatingControl { DataContext = source };
-		Validation.SetIsEnabled(control, true);
+		Validation.SetInputValidationMode(control, InputValidationMode.Auto);
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
 
 		source.SetErrors(nameof(Person.Name), "required");
@@ -332,7 +332,7 @@ public partial class Given_Validation_Transport
 
 		if (enable)
 		{
-			Validation.SetIsEnabled(control, true);
+			Validation.SetInputValidationMode(control, InputValidationMode.Auto);
 		}
 
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });

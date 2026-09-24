@@ -62,7 +62,7 @@ public static partial class Validation
 		}
 	}
 
-	private static void OnIsEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	private static void OnInputValidationModeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
 		// Generated XAML sets the binding before this attached property, and at that point the element is
 		// still parentless with a null DataContext, so registration cannot be gated on it. Pull the current
@@ -88,7 +88,7 @@ public static partial class Validation
 
 	private static void Synchronize(Control control, BindingExpression expression)
 	{
-		if (!GetIsEnabled(control))
+		if (!IsValidationEnabled(control))
 		{
 			ClearIfOwned(control, expression);
 			return;
