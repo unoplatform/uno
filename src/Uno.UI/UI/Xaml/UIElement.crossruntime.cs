@@ -129,7 +129,8 @@ namespace Microsoft.UI.Xaml
 		internal Point GetPosition(Point position, UIElement relativeTo)
 			=> TransformToVisual(relativeTo).TransformPoint(position);
 
-		private void ChildEnter(UIElement child, DependencyObject namescopeOwner, EnterParams @params)
+#nullable enable
+		private void ChildEnter(UIElement child, DependencyObject? namescopeOwner, EnterParams @params)
 		{
 			// Uno TODO: WinUI has much more complex logic than this.
 			// WinUI's CDOCollection::ChildEnter always calls child->Enter() (the outer Enter),
@@ -154,6 +155,7 @@ namespace Microsoft.UI.Xaml
 				child.EnterTree(namescopeOwner, @params);
 			}
 		}
+#nullable restore
 
 #if DEBUG
 
