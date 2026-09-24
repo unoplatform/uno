@@ -316,24 +316,18 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnStart()
 		{
-			// The render stack must exist before base.OnStart(): that call synchronously reaches
+			// The layouts must exist before base.OnStart(): that call synchronously reaches
 			// Application.Start -> OnLaunched -> CreateWindow, after which the host is registered
 			// and InvalidateRender() can run against RelativeLayout. This state is per-activity, so
 			// unlike the previous process-wide stack it is null again on every re-creation.
-			if (!_started)
+			var isFirstStart = !_started;
+			if (isFirstStart)
 			{
 				_started = true;
 				RelativeLayout = new RelativeLayout(this);
 				RelativeLayout.LayoutParameters = new ViewGroup.LayoutParams(
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
-
-				_renderView = CreateRenderView();
-				_renderViewAsView = (View)_renderView;
-				_renderViewAsView.LayoutParameters = new ViewGroup.LayoutParams(
-					ViewGroup.LayoutParams.MatchParent,
-					ViewGroup.LayoutParams.MatchParent);
-				RelativeLayout.AddView(_renderViewAsView);
 
 				_nativeLayerHost = new ClippedRelativeLayout(this);
 				_nativeLayerHost.LayoutParameters = new ViewGroup.LayoutParams(
@@ -342,11 +336,25 @@ namespace Microsoft.UI.Xaml
 				RelativeLayout.AddView(NativeLayerHost);
 			}
 
+			base.OnStart();
+
+			if (isFirstStart)
+			{
+				// Picked only after base.OnStart(): on first launch that call builds the host, which
+				// registers the drawing backend and applies the builder's rendering options.
+				_renderView = CreateRenderView();
+				_renderViewAsView = (View)_renderView;
+				_renderViewAsView.LayoutParameters = new ViewGroup.LayoutParams(
+					ViewGroup.LayoutParams.MatchParent,
+					ViewGroup.LayoutParams.MatchParent);
+
+				// Index 0 keeps it under the native layer host.
+				RelativeLayout.AddView(_renderViewAsView, 0);
+			}
+
 			// The window was handed over in OnCreate, before this render view existed; state bound to
 			// it, such as an IME session's plugin, can only rebind now.
 			_wrapper?.NotifyDrivingActivityReady();
-
-			base.OnStart();
 
 			// On activity re-creation (deep-link, process restore) the managed Window already
 			// exists with its content loaded, but CreateWindow won't run again for this new
@@ -418,15 +426,16 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void FallbackToCanvasView()
 		{
+			// A null render view means OnDestroy already tore the stack down.
 			var layout = RelativeLayout;
-			if (layout is null || _renderView is UnoCanvasView)
+			if (layout is null || _renderView is null or UnoCanvasView)
 			{
 				return;
 			}
 
 			RunOnUiThread(() =>
 			{
-				if (_renderView is UnoCanvasView)
+				if (_renderView is null or UnoCanvasView)
 				{
 					return;
 				}
@@ -448,7 +457,7 @@ namespace Microsoft.UI.Xaml
 				_renderView = canvasView;
 				_renderViewAsView = canvasView;
 
-				// Index 0 keeps it under the native layer host, matching the order OnStart adds them in.
+				// Index 0 keeps it under the native layer host, as in OnStart.
 				layout.AddView(canvasView, 0);
 
 				InvalidateRender();
