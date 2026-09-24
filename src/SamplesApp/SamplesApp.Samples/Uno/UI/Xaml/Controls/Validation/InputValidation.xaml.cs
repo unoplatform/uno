@@ -115,8 +115,8 @@ public class SignUpViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
 public class ErrorsToStringConverter : IValueConverter
 {
 	public object Convert(object value, Type targetType, object parameter, string language)
-		=> value is IEnumerable errors
-			? string.Join(" ", errors.Cast<object>().Select(error => error?.ToString()))
+		=> value is IEnumerable<InputValidationError> errors
+			? string.Join(" ", errors.Select(error => error.ErrorMessage))
 			: "";
 
 	public object ConvertBack(object value, Type targetType, object parameter, string language)
