@@ -182,11 +182,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		internal static string GetUnoRuntime(string targetFramework, string defineConstants)
 		{
-			var targetFrameworkParts = targetFramework?.Split(new[] { '-' }, 2);
-			if (targetFrameworkParts?.Length == 2)
+			var separatorIndex = targetFramework?.IndexOf('-') ?? -1;
+			if (separatorIndex >= 0 && targetFramework is not null)
 			{
 				// trim trailing version, eg: android12.3
-				var identifier = targetFrameworkParts[1].TrimEnd('.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+				var identifier = targetFramework.Substring(separatorIndex + 1).TrimEnd('.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
 
 				return identifier.ToLowerInvariant() switch
 				{
