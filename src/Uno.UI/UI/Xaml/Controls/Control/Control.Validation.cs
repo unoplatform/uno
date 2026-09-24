@@ -12,15 +12,22 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Control
 {
-	internal const string ValidationDisabledState = "ValidationDisabled";
-	internal const string CompactValidationEnabledState = "CompactValidationEnabled";
-	internal const string InlineValidationEnabledState = "InlineValidationEnabled";
-	internal const string CompactErrorsState = "CompactErrors";
-	internal const string InlineErrorsState = "InlineErrors";
-	internal const string ErrorsClearedState = "ErrorsCleared";
+	internal static class InputValidationEnabledStates
+	{
+		internal const string ValidationDisabled = nameof(ValidationDisabled);
+		internal const string CompactValidationEnabled = nameof(CompactValidationEnabled);
+		internal const string InlineValidationEnabled = nameof(InlineValidationEnabled);
+	}
+
+	internal static class InputValidationErrorStates
+	{
+		internal const string CompactErrors = nameof(CompactErrors);
+		internal const string InlineErrors = nameof(InlineErrors);
+		internal const string ErrorsCleared = nameof(ErrorsCleared);
+	}
 
 	/// <summary>
-	/// Applies the InputValidationEnabledStates and InputValidationErrorStates visual state groups.
+	/// Applies the <see cref="InputValidationEnabledStates"/> and <see cref="InputValidationErrorStates"/> visual state groups.
 	/// </summary>
 	/// <remarks>
 	/// Call it from <c>ChangeVisualState</c> in any control that participates in input validation. It is not
@@ -45,15 +52,15 @@ public partial class Control
 
 		if (participant.InputValidationKind == InputValidationKind.Inline)
 		{
-			GoToState(false, InlineValidationEnabledState);
-			GoToState(false, hasErrors ? InlineErrorsState : ErrorsClearedState);
+			GoToState(false, InputValidationEnabledStates.InlineValidationEnabled);
+			GoToState(false, hasErrors ? InputValidationErrorStates.InlineErrors : InputValidationErrorStates.ErrorsCleared);
 		}
 		else
 		{
 			// Auto resolves to Compact, as it does in WinUI: ShowErrorsInline is `kind == Inline`, and
 			// nothing ever maps Auto to anything else.
-			GoToState(false, CompactValidationEnabledState);
-			GoToState(false, hasErrors ? CompactErrorsState : ErrorsClearedState);
+			GoToState(false, InputValidationEnabledStates.CompactValidationEnabled);
+			GoToState(false, hasErrors ? InputValidationErrorStates.CompactErrors : InputValidationErrorStates.ErrorsCleared);
 		}
 	}
 
@@ -66,5 +73,5 @@ public partial class Control
 	/// <remarks>
 	/// Like WinUI's disabled branch, this deliberately leaves the error states group where it was.
 	/// </remarks>
-	internal void ClearValidationStates() => GoToState(false, ValidationDisabledState);
+	internal void ClearValidationStates() => GoToState(false, InputValidationEnabledStates.ValidationDisabled);
 }
