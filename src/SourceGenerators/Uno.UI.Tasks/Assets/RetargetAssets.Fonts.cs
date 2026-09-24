@@ -72,14 +72,23 @@ public partial class RetargetAssets_v0
 
 	private string[] EnumerateFontsFromPList(string iosAppManifest)
 	{
+		// IosAppManifest is optional (not [Required]); some heads (e.g. a tvOS single-project that has no
+		// Info.plist wired) provide no manifest. With nothing to read there are no pre-existing fonts to
+		// preserve, so return an empty set rather than throwing from XmlDocument.Load(null).
+		if (string.IsNullOrEmpty(iosAppManifest) || !File.Exists(iosAppManifest))
+		{
+			return Array.Empty<string>();
+		}
+
 		XmlDocument doc = new();
 		doc.Load(iosAppManifest);
 
 		// Get the list of registered fonts in the info.plist
 		return doc
 			.SelectNodes("//key[text()='UIAppFonts']/following-sibling::array[1]/string")
-			.OfType<XmlNode>()
+			?.OfType<XmlNode>()
 			.Select(n => n.InnerText)
-			.ToArray();
+			.ToArray()
+			?? Array.Empty<string>();
 	}
 }
