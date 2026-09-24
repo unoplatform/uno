@@ -174,20 +174,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		// The WebGpu UnoFeature is the opt-in: it is what references Uno.UI.Composition.WebGpu, so the assembly
-		// being resolvable here IS the app asking for it. A head without the feature falls through to the Skia
-		// default below. Geometry goes to the managed engine, which WebGPU flattens.
-		if (CreateInstanceOf<Drawing.IGraphicsProvider>(WebGpuGraphicsProviderTypeName) is { } webGpuProvider)
-		{
-			Drawing.GraphicsRegistry.RegisterDefault(new[] { webGpuProvider });
-			if (!Drawing.GeometryFactory.IsRegistered
-				&& CreateInstanceOf<Drawing.IGeometryFactory>(ManagedGeometryFactoryTypeName) is { } managedGeometry)
-			{
-				Drawing.GeometryFactory.RegisterDefault(managedGeometry);
-			}
-			return;
-		}
-
+		// Skia is the default renderer wherever it is referenced: naming the WebGpu feature makes the backend
+		// available, but a head opts into it by registering it on the host builder (handled above).
 		if (InvokeSkiaFactory<Drawing.IGraphicsProvider>("CreateGraphicsProvider") is { } provider)
 		{
 			Drawing.GraphicsRegistry.RegisterDefault(new[] { provider });
@@ -195,6 +183,20 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			if (InvokeSkiaFactory<Drawing.IDrawingFactory>("CreateDefaultRenderer") is { } renderer)
 			{
 				Drawing.DrawingRegistration.RegisterDefaultRenderer(renderer);
+			}
+
+			return;
+		}
+
+		// No Skia: a SkiaSharp-free app, where WebGPU is the only renderer there is. Geometry goes to the managed
+		// engine, which WebGPU flattens.
+		if (CreateInstanceOf<Drawing.IGraphicsProvider>(WebGpuGraphicsProviderTypeName) is { } webGpuProvider)
+		{
+			Drawing.GraphicsRegistry.RegisterDefault(new[] { webGpuProvider });
+			if (!Drawing.GeometryFactory.IsRegistered
+				&& CreateInstanceOf<Drawing.IGeometryFactory>(ManagedGeometryFactoryTypeName) is { } managedGeometry)
+			{
+				Drawing.GeometryFactory.RegisterDefault(managedGeometry);
 			}
 		}
 	}

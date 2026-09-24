@@ -12,7 +12,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 /// <summary>
 /// WebGPU-backed render view for AppleUIKit (iOS/tvOS): a <c>UIView</c> whose backing
 /// <see cref="CAMetalLayer"/> drives a wgpu swapchain, drawn through the neutral
-/// <c>CompositionTarget.OnNativePlatformFrameRequested</c> seam. Opt in with the WebGpu UnoFeature; needs an Apple device build
+/// <c>CompositionTarget.OnNativePlatformFrameRequested</c> seam. Opt in by registering the WebGPU backend on the host builder; needs an Apple device build
 /// with the wgpu-native iOS static lib linked via wgpu-native.targets.
 /// </summary>
 internal sealed partial class UnoWebGpuMetalView : UIView, IAppleUIKitRenderView
