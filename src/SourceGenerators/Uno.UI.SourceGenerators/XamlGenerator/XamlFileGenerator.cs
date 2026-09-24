@@ -6555,7 +6555,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							using (TryGenerateDeferedLoadStrategy(writer, knownType, xamlObjectDefinition))
 							{
-								using (writer.BlockInvariant("new {0}", GetGlobalizedTypeName(fullTypeName)))
+								using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(knownType)))
 								{
 									TrySetParsing(writer, knownType, isInitializer: true);
 									RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
@@ -7047,6 +7047,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return false;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Android views hosted as object content (e.g. ContentControl.Content) need a Context to be constructed.
+		/// </summary>
+		private string GenerateConstructorParameters(INamedTypeSymbol? type)
+		{
+			if (IsType(type, Generation.AndroidViewSymbol.Value))
+			{
+				var hasContextConstructor = type.Constructors.Any(c => c.Parameters.Length == 1 && SymbolEqualityComparer.Default.Equals(c.Parameters[0].Type, Generation.AndroidContentContextSymbol.Value));
+
+				if (hasContextConstructor)
+				{
+					return "(global::Uno.UI.ContextHelper.Current)";
+				}
+			}
+
+			return "";
 		}
 
 		private bool HasCustomInitializer(INamedTypeSymbol? propertyType)
