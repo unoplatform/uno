@@ -254,9 +254,10 @@ public partial class Given_HotReloadWorkspace
 			output: builder
 		);
 
+		using var cts = new CancellationTokenSource(BuildTimeout);
+
 		try
 		{
-			using var cts = new CancellationTokenSource(BuildTimeout);
 			await ProcessHelpers.WaitForExitAsync(process, "HRAppBuild", cts.Token);
 
 			if (process.ExitCode != 0)
@@ -264,10 +265,12 @@ public partial class Given_HotReloadWorkspace
 				throw new InvalidOperationException($"Failed to build app{Environment.NewLine}{builder}");
 			}
 		}
-		catch (OperationCanceledException)
+		catch (OperationCanceledException e) when (cts.IsCancellationRequested)
 		{
-			throw new InvalidOperationException(
-				$"Building the hot reload app did not complete within {BuildTimeout}.{Environment.NewLine}{builder}");
+			// Non-retryable whatever BuildTimeout is relative to the harness budget: a retry would only
+			// wait out the same hung build.
+			throw new NonRetryableTestFailureException(
+				$"Building the hot reload app did not complete within {BuildTimeout}.{Environment.NewLine}{builder}", e);
 		}
 		finally
 		{
