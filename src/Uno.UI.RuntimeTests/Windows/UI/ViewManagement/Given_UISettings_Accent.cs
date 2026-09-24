@@ -15,7 +15,7 @@ public class Given_UISettings_Accent
 {
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4444")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_OverrideAccentColor_Updates_GetColorValue_And_Resources()
 	{
 #if HAS_UNO
