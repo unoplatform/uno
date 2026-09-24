@@ -46,6 +46,13 @@ internal static class ThemeResolution
 			return owner.WalkTheme;
 		}
 
+		// With no established owner theme (an app that never ran a theme walk), ResolveOwnerTheme would fall
+		// back to the requested-theme-for-subtree slot, which mid-boundary carries the very theme the pin escapes.
+		if (owner is null || owner.GetTheme() == Theme.None)
+		{
+			return Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetBaseTheme() | GetApplicationHighContrastTheme();
+		}
+
 		return ResolveOwnerTheme(owner);
 	}
 
