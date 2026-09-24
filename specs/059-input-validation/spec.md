@@ -669,12 +669,31 @@ group 060 §2 proposed, and porting that machine required reshaping parts of thi
 than edited into the decisions above, so the reasoning that produced them stays legible.
 
 - **D2 — `Validation.IsEnabled` no longer exists.** Participation is now
-  `Validation.InputValidationMode != InputValidationMode.Disabled`, which is exactly WinUI's
+  `InputValidationMode != InputValidationMode.Disabled`, which is exactly WinUI's
   `CControl::IsValidationEnabled`. The property is still opt-in per control and still gates registration and
   sync, so the *decision* stands; only its spelling changed. Its default is `Disabled` rather than the enum's
   zero value `Auto`, a deliberate divergence: WinUI's equivalent only gates visuals, whereas here it also
-  gates the `INotifyDataErrorInfo` subscription. `Validation.InputValidationKind` was added beside it.
-- **Q1 — resolved.** The element type behind `Errors` is `InputValidationError`, carrying the source error's
+  gates the `INotifyDataErrorInfo` subscription. `InputValidationKind` was added beside it.
+
+- **Every property of `IInputValidationControl` is a dependency property registered by the control itself**,
+  and none of them is attached any more. WinUI registers them per control too — `TextBox_InputValidationMode`,
+  `TextBox_HasValidationErrors`, `TextBox_ValidationErrors`, `TextBox_ErrorTemplate` and friends are all
+  per-control entries in its property index. That is what lets a `Style` `Setter` target them and a `Binding`
+  drive them, neither of which works against a property forwarding to an attached value.
+
+  The consequence for this spec is that **§4.1's attached read model is gone**: `Validation.HasErrors` and
+  `Validation.Errors` are replaced by `HasValidationErrors` and `ValidationErrors` on the control, so an app
+  binds `{Binding HasValidationErrors, ElementName=…}` rather than the parenthesized attached path. `Validation`
+  keeps no public surface at all — it is now the transport plumbing, and `IInputValidationControl` is the API.
+
+  Framework code reaches the properties two ways. Reads go through the interface, which is the C# equivalent
+  of WinUI's four `switch (GetTypeIndex())` helpers, fallback included: a control that does not implement it
+  is never enabled, exactly as an unknown property index means `Disabled` there. The one write — the
+  framework setting `HasValidationErrors` — resolves the control's own property by name through
+  `DependencyProperty.GetProperty`, which is already memoized and walks the base-type chain, so `CheckBox`
+  finds what `ToggleButton` registered. Resolving by name rather than by a closed type switch is what keeps
+  third-party controls working.
+- **Q1 — resolved.** The element type behind `ValidationErrors` is `InputValidationError`, carrying the source error's
   `ToString()` as `ErrorMessage`, which is what WinUI's `DefaultInputValidationErrorTemplate` binds against.
   The property is now a `ValidationErrorsCollection` **mutated in place** rather than a fresh snapshot per
   synchronization — so the note above about a fresh instance being load-bearing is superseded: identity is
@@ -682,7 +701,8 @@ than edited into the decisions above, so the reasoning that produced them stays 
   read, so a control that never reports an error never allocates one.
 - **D1 — `IInputValidationControl` is WinUI's full interface**, moved to `Microsoft.UI.Xaml.Controls` with
   the enums and error types. `ValidationContext` is the one member not ported, commented out in place.
-  `ErrorTemplate`, held back here for want of a consumer, ships with it.
+  `ErrorTemplate`, held back here for want of a consumer, ships with it — as a dependency property, so a
+  theme's style can set it once §4 of spec 060 gives it something to render.
 - **D7 — `ErrorChanged` survives** beside WinUI's `HasValidationErrorsChanged` and `ValidationError`, because
   it is the only one of the three that carries the source's `DataErrorsChangedEventArgs` unchanged.
 - **Q3 / Q11 — partially reversed.** `Validation` itself stays in `Uno.UI.Xaml.Controls` as decided, but the
