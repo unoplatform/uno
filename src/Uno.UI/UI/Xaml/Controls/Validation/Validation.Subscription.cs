@@ -65,11 +65,15 @@ public static partial class Validation
 
 	private static void OnInputValidationModeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
+		if (sender is not Control control)
+		{
+			return;
+		}
+
 		// Generated XAML sets the binding before this attached property, and at that point the element is
 		// still parentless with a null DataContext, so registration cannot be gated on it. Pull the current
 		// expression here instead of waiting for the next path re-resolution.
-		if (sender is Control control
-			&& FeatureConfiguration.InputValidation.IsEnabled
+		if (FeatureConfiguration.InputValidation.IsEnabled
 			&& FeatureConfiguration.InputValidation.ValidationProperties[control.GetType()] is { } property)
 		{
 			if (control.GetBindingExpression(property) is { } expression)
@@ -81,6 +85,26 @@ public static partial class Validation
 			{
 				ClearIfOwned(control, expression: null);
 			}
+		}
+
+		// After the errors have settled, so that enabling a control whose source already has errors does not
+		// show a cleared state first. The clear is outside the guard above: opting out has to leave the group
+		// even when the global switch was turned off in between.
+		if (IsValidationEnabled(control))
+		{
+			control.UpdateValidationStatesInternal();
+		}
+		else
+		{
+			control.ClearValidationStates();
+		}
+	}
+
+	private static void OnInputValidationKindChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	{
+		if (sender is Control control)
+		{
+			control.UpdateValidationStatesInternal();
 		}
 	}
 
@@ -266,12 +290,19 @@ public static partial class Validation
 	/// </summary>
 	private static void OnHasErrorsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
-		if (sender is Control control and IInputValidationControl validationControl)
+		if (sender is not Control control)
+		{
+			return;
+		}
+
+		if (control is IInputValidationControl validationControl)
 		{
 			GetHasValidationErrorsChangedHandler(control)?.Invoke(
 				validationControl,
 				new HasValidationErrorsChangedEventArgs((bool)args.NewValue));
 		}
+
+		control.UpdateValidationStatesInternal();
 	}
 
 	private sealed class ValidationState : IDisposable
