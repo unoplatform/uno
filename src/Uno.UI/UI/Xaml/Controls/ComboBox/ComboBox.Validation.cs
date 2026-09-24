@@ -22,7 +22,7 @@ public partial class ComboBox : IInputValidationControl
 			typeof(ComboBox),
 			new FrameworkPropertyMetadata(
 				InputValidationMode.Disabled,
-				UnoValidation.Validation.OnInputValidationModeChanged));
+				OnInputValidationModeChanged));
 
 	/// <summary>
 	/// Identifies the <see cref="InputValidationKind"/> dependency property.
@@ -34,7 +34,7 @@ public partial class ComboBox : IInputValidationControl
 			typeof(ComboBox),
 			new FrameworkPropertyMetadata(
 				InputValidationKind.Auto,
-				UnoValidation.Validation.OnInputValidationKindChanged));
+				OnInputValidationKindChanged));
 
 	/// <summary>
 	/// Identifies the <see cref="HasValidationErrors"/> dependency property.
@@ -46,7 +46,7 @@ public partial class ComboBox : IInputValidationControl
 			typeof(ComboBox),
 			new FrameworkPropertyMetadata(
 				default(bool),
-				UnoValidation.Validation.OnHasValidationErrorsChanged));
+				OnHasValidationErrorsChanged));
 
 	/// <summary>
 	/// Identifies the <see cref="ValidationErrors"/> dependency property.
@@ -88,7 +88,7 @@ public partial class ComboBox : IInputValidationControl
 
 	/// <inheritdoc />
 	public IObservableVector<InputValidationError> ValidationErrors
-		=> UnoValidation.Validation.GetOrCreateErrors(this, ValidationErrorsProperty);
+		=> GetOrCreateValidationErrors(ValidationErrorsProperty);
 
 	/// <inheritdoc />
 	public DataTemplate? ErrorTemplate
@@ -100,21 +100,21 @@ public partial class ComboBox : IInputValidationControl
 	/// <inheritdoc />
 	public event TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs> HasValidationErrorsChanged
 	{
-		add => UnoValidation.Validation.AddHasValidationErrorsChangedHandler(this, value);
-		remove => UnoValidation.Validation.RemoveHasValidationErrorsChangedHandler(this, value);
+		add => AddHasValidationErrorsChangedHandler(value);
+		remove => RemoveHasValidationErrorsChangedHandler(value);
 	}
 
 	/// <inheritdoc />
 	public event TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs> ValidationError
 	{
-		add => UnoValidation.Validation.AddValidationErrorHandler(this, value);
-		remove => UnoValidation.Validation.RemoveValidationErrorHandler(this, value);
+		add => AddValidationErrorHandler(value);
+		remove => RemoveValidationErrorHandler(value);
 	}
 
 	/// <inheritdoc />
 	public event EventHandler<DataErrorsChangedEventArgs> ErrorChanged
 	{
-		add => UnoValidation.Validation.AddErrorChangedHandler(this, value);
-		remove => UnoValidation.Validation.RemoveErrorChangedHandler(this, value);
+		add => AddErrorChangedHandler(value);
+		remove => RemoveErrorChangedHandler(value);
 	}
 }
