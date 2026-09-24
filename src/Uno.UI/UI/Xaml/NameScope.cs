@@ -122,6 +122,9 @@ public class NameScope : INameScope
 			return;
 		}
 
+		// One winner per name across both stores, otherwise FindName could surface a stale entry.
+		RemoveForeignName(name);
+
 		if (Owner is { } owner)
 		{
 			var context = owner.GetContext();
@@ -156,6 +159,8 @@ public class NameScope : INameScope
 			return;
 		}
 
+		RemoveOwnedName(name);
+
 		_foreignNames ??= new Dictionary<string, ManagedWeakReference>(StringComparer.Ordinal);
 
 		if (_foreignNames.TryGetValue(name, out var existing))
@@ -177,6 +182,12 @@ public class NameScope : INameScope
 
 	public void UnregisterName(string name)
 	{
+		RemoveOwnedName(name);
+		RemoveForeignName(name);
+	}
+
+	private void RemoveOwnedName(string name)
+	{
 		if (Owner is { } owner)
 		{
 			owner.GetContext().NameScopeRoot.GetTable(owner, NameScopeType.StandardNameScope)?.TryRemove(name);
@@ -186,7 +197,10 @@ public class NameScope : INameScope
 		{
 			WeakReferencePool.ReturnWeakReference(this, reference);
 		}
+	}
 
+	private void RemoveForeignName(string name)
+	{
 		if (_foreignNames is not null && _foreignNames.Remove(name, out var foreign))
 		{
 			WeakReferencePool.ReturnWeakReference(this, foreign);
