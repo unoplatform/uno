@@ -472,7 +472,11 @@ namespace Microsoft.UI.Xaml
 
 			CleanupBackPressedCallback();
 
-			NativeWindowWrapper.Instance.OnNativeClosed();
+			// A configuration-driven recreation keeps the window and its content for the new Activity.
+			if (!IsChangingConfigurations)
+			{
+				NativeWindowWrapper.Instance.OnNativeClosed();
+			}
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)
