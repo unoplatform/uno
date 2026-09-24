@@ -11,7 +11,7 @@
 		<AssemblyName>Uno.UI.Composition.WebGpu.Init</AssemblyName>
 		<PackageId>Uno.WinUI.Composition.WebGpu.Init</PackageId>
 		<RootNamespace>Uno.UI.Composition.WebGpu</RootNamespace>
-		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 		<Description>WebGPU "init half" for Uno Platform: the renderer-agnostic on-window context/surface/device creation (WebGpuContext) that a host references to serve the WebGpu context kind. Carries NO native assets — those ship with the WebGPU renderer package, referenced only by an app that opts into WebGPU.</Description>
