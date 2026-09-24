@@ -66,7 +66,7 @@ public partial class Given_Validation_Controls
 	{
 		var source = new Model();
 		var textBox = new TextBox { DataContext = source };
-		Validation.SetIsEnabled(textBox, true);
+		Validation.SetInputValidationMode(textBox, InputValidationMode.Auto);
 		textBox.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(Model.Name)) });
 
 		source.SetError(nameof(Model.Name), "required");
@@ -82,7 +82,7 @@ public partial class Given_Validation_Controls
 	{
 		var source = new Model();
 		var textBox = new TextBox { DataContext = source };
-		Validation.SetIsEnabled(textBox, true);
+		Validation.SetInputValidationMode(textBox, InputValidationMode.Auto);
 		textBox.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(Model.Name)) });
 
 		object? sender = null;

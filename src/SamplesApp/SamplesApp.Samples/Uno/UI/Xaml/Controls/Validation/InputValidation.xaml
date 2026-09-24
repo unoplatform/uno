@@ -33,7 +33,7 @@
             <StackPanel Spacing="4">
                 <TextBox
                     x:Name="UserNameBox"
-                    uno:Validation.IsEnabled="True"
+                    uno:Validation.InputValidationMode="Auto"
                     Header="User name (5 characters minimum)"
                     Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock
@@ -48,7 +48,7 @@
                 <TextBlock Text="Age (18 to 120)" />
                 <Slider
                     x:Name="AgeSlider"
-                    uno:Validation.IsEnabled="True"
+                    uno:Validation.InputValidationMode="Auto"
                     Maximum="150"
                     Minimum="0"
                     Value="{Binding Age, Mode=TwoWay}" />
