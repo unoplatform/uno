@@ -1,12 +1,12 @@
 <Project>
 
 	<!--
-	Compiles WebGpuProbe.cs into whichever project imports this, so a template test can build an app that reaches
-	the WebGPU backend. Passed as CustomBeforeMicrosoftCommonTargets, since the scenario table drives builds
-	through command-line arguments only and the template itself must stay untouched.
+	Compiles WebGpuProbe.cs into the project named by UnoWebGpuProbeProject, so a scenario can make an app reach
+	the WebGPU backend either directly or through a library it references. It arrives as
+	CustomBeforeMicrosoftCommonTargets, which every project in the graph imports, hence the name check.
 	-->
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(UnoWebGpuProbeProject)' != '' And '$(MSBuildProjectName)' == '$(UnoWebGpuProbeProject)'">
 		<Compile Include="$(MSBuildThisFileDirectory)WebGpuProbe.cs" />
 	</ItemGroup>
 

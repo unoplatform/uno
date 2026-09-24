@@ -238,7 +238,7 @@ $projects =
         @(), @(), @("libSkiaSharp.dll"), @("webgpu.dll")),
 
     # Both named and the app's own code names the backend: it is reachable, so the native ships.
-    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu", "-p:CustomBeforeMicrosoftCommonTargets=$env:BUILD_SOURCESDIRECTORY\build\test-scripts\webgpu-probe\InjectProbe.targets"), @("NetCore"),
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu", "-p:CustomBeforeMicrosoftCommonTargets=$env:BUILD_SOURCESDIRECTORY\build\test-scripts\webgpu-probe\InjectProbe.targets", "-p:UnoWebGpuProbeProject=uno56netcurrent"), @("NetCore"),
         @(), @(), @("webgpu.dll", "libSkiaSharp.dll"), @()),
 
     # WebGPU named alone: skia is NOT implied, so the app is SkiaSharp-free and the native ships.
@@ -265,6 +265,13 @@ $projects =
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-browserwasm"), @("macOS", "NetCore")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-desktop"), @("macOS", "NetCore")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-android"), @("macOS", "NetCore")),
+
+    # The reach can be transitive: the head names nothing, and only the library it references goes near the
+    # backend. The control builds the same solution without that library code, so a pass cannot be vacuous.
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu"), @("NetCore"),
+        @(), @(), @("libSkiaSharp.dll"), @("webgpu.dll")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu", "-p:CustomBeforeMicrosoftCommonTargets=$env:BUILD_SOURCESDIRECTORY\build\test-scripts\webgpu-probe\InjectProbe.targets", "-p:UnoWebGpuProbeProject=uno53lib"), @("NetCore"),
+        @(), @(), @("webgpu.dll", "libSkiaSharp.dll"), @()),
 
     ## Note for contributors
     ##
