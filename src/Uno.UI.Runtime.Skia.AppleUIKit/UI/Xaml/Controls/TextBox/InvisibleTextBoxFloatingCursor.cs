@@ -22,8 +22,10 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 /// <c>TextBoxCore</c>, and cancels it on IME composition / decline.</item>
 /// <item><c>TextBoxCore</c> (<c>TextBoxCore.CaretDrag.cs</c>) — the platform-agnostic state
 /// machine: hit-tests the drag, previews the caret, and applies the selection on commit.</item>
-/// <item><c>TextBoxView</c> — cancels an in-flight drag on focus loss and on unload.</item>
+/// <item><c>TextBoxView</c> / <c>TextBoxCore</c> — cancel an in-flight drag on focus loss / unload.</item>
 /// </list>
+/// See <c>doc/articles/uno-development/textbox-caret-selection-internals.md</c> for the wider caret and
+/// selection picture.
 /// </remarks>
 internal sealed class InvisibleTextBoxFloatingCursor
 {
