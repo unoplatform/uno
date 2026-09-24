@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 
-namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests;
+namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers;
 
 [TestClass]
 [RunsOnUIThread]
@@ -20,8 +20,7 @@ public class Given_StyleHelper
 		Assert.IsGreaterThan(0, initialCount, "The test app is expected to use Fluent styles");
 
 		// Mirrors a test that throws before disposing its UWP styles override.
-		var leaked = StyleHelper.UseUwpStyles();
-		try
+		using (StyleHelper.UseUwpStyles())
 		{
 			Assert.AreEqual(initialCount - 1, XamlControlsResourcesCount());
 
@@ -29,10 +28,6 @@ public class Given_StyleHelper
 
 			Assert.AreEqual(initialCount, XamlControlsResourcesCount());
 			Assert.IsTrue(Application.Current.Resources.ContainsKey("TextFillColorPrimaryBrush"));
-		}
-		finally
-		{
-			leaked.Dispose();
 		}
 
 		// The late dispose of the leaked override must not insert the dictionary a second time.
