@@ -116,10 +116,8 @@ internal static class SymbolMatchingHelpers
 			// The divergence here shouldn't be problematic/noticeable.
 			return true;
 		}
-		// Skipping accessibility check for now. It causes two issues:
-		// 1. For some reason, Roslyn is returning private accessibility for some public properties (Specifically, for some interface implementations).
-		// 2. For types declared without explicit accessibility, it's going to be considered internal (however, the generated file later will have the correct accessibility)
-		var result = /*uapSymbol.DeclaredAccessibility == unoSymbol.DeclaredAccessibility &&*/
+		// Type accessibility is left to the compiler: it rejects a hand-written partial that conflicts with the generated one.
+		var result = (uapSymbol is INamedTypeSymbol || uapSymbol.DeclaredAccessibility == GetExternalAccessibility(unoSymbol)) &&
 			uapSymbol.IsAbstract == unoSymbol.IsAbstract &&
 			uapSymbol.IsOverride == unoSymbol.IsOverride &&
 			StripGlobal(uapSymbol.Name) == StripGlobal(unoSymbol.Name) &&
@@ -129,6 +127,10 @@ internal static class SymbolMatchingHelpers
 			uapSymbol.IsVirtual == unoSymbol.IsVirtual;
 		return result;
 	}
+
+	// Uno uses "protected internal" so framework code can reach protected members; outside the assembly it is "protected".
+	private static Accessibility GetExternalAccessibility(ISymbol symbol)
+		=> symbol.DeclaredAccessibility is Accessibility.ProtectedOrInternal ? Accessibility.Protected : symbol.DeclaredAccessibility;
 
 	private static string StripGlobal(string s)
 	{
@@ -160,15 +162,11 @@ internal static class SymbolMatchingHelpers
 		{
 			return false;
 		}
-		// TODO:
-		//if (uapProperty.IsReadOnly != unoProperty.IsReadOnly)
-		//{
-		//	return false;
-		//}
-		//if (uapProperty.IsWriteOnly != unoProperty.IsWriteOnly)
-		//{
-		//	return false;
-		//}
+		if (IsPubliclyAccessible(uapProperty.GetMethod) != IsPubliclyAccessible(unoProperty.GetMethod) ||
+			IsPubliclyAccessible(uapProperty.SetMethod) != IsPubliclyAccessible(unoProperty.SetMethod))
+		{
+			return false;
+		}
 		if (uapProperty.IsIndexer != unoProperty.IsIndexer)
 		{
 			return false;
@@ -191,6 +189,9 @@ internal static class SymbolMatchingHelpers
 
 		return true;
 	}
+
+	private static bool IsPubliclyAccessible(IMethodSymbol accessor)
+		=> accessor?.DeclaredAccessibility is Accessibility.Public or Accessibility.Protected or Accessibility.ProtectedOrInternal;
 
 	private static bool AreMethodsMatching(IMethodSymbol uapMethod, IMethodSymbol unoMethod)
 	{
