@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -141,6 +143,74 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			scope.UnregisterName("plain");
 			Assert.IsNull(scope.FindName("plain"));
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public void When_Plain_Object_Replaces_DependencyObject_Plain_Object_Wins(bool ownerFirst)
+		{
+			NameScope scope = new();
+			var owner = new Border();
+			var element = new Border();
+			var plain = new object();
+			if (ownerFirst)
+			{
+				scope.Owner = owner;
+			}
+
+			scope.RegisterName("key", element);
+			scope.RegisterName("key", plain);
+			scope.Owner = owner;
+
+			Assert.AreEqual(plain, scope.FindName("key"));
+			Assert.IsNull(Root.GetNamedObjectIfExists("key", owner, NameScopeType.StandardNameScope));
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public void When_DependencyObject_Replaces_Plain_Object_DependencyObject_Wins(bool ownerFirst)
+		{
+			NameScope scope = new();
+			var owner = new Border();
+			var element = new Border();
+			if (ownerFirst)
+			{
+				scope.Owner = owner;
+			}
+
+			scope.RegisterName("key", new object());
+			scope.RegisterName("key", element);
+			scope.Owner = owner;
+
+			Assert.AreEqual(element, scope.FindName("key"));
+		}
+
+		[TestMethod]
+		public void When_Replacing_DependencyObject_Is_Collected_Overwritten_Plain_Object_Does_Not_Resurface()
+		{
+			NameScope scope = new();
+			var owner = new Border();
+			scope.Owner = owner;
+			var plainRef = RegisterPlainThenElement(scope, "key");
+
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			GC.Collect();
+
+			Assert.IsNull(scope.FindName("key"));
+			GC.KeepAlive(plainRef);
+			GC.KeepAlive(owner);
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		private static object RegisterPlainThenElement(NameScope scope, string name)
+		{
+			var plain = new object();
+			scope.RegisterName(name, plain);
+			scope.RegisterName(name, new Border());
+			return plain;
 		}
 
 		[TestMethod]
