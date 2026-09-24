@@ -115,6 +115,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnFocusStateChanged(FocusState focusState)
 		{
+			if (focusState == FocusState.Unfocused)
+			{
+				Core?.CancelCaretDrag();
+			}
+
 			if (_useInvisibleNativeTextView)
 			{
 				// We don't care about actual entry here, just making
