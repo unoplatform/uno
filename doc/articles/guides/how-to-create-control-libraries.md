@@ -56,6 +56,67 @@ You can find the [full ControlLibrary sample code](https://github.com/unoplatfor
    <myControlLib:MyTemplatedControl />
    ```
 
+## Adding a bindable Command property
+
+If your control contains an interactive element (for example a `Button` in its control template) that should invoke a command on the consumer's view model, expose an `ICommand`-typed dependency property. When the command instance changes, detach from the previous value's `CanExecuteChanged` event and attach to the new one, then refresh any state that depends on `CanExecute`. Using a `SerialDisposable` (from the `Uno.Disposables` package, included with Uno.WinUI) makes sure the previous subscription is always released - this is the same pattern `AppBarButton` uses internally:
+
+```csharp
+using System.Windows.Input;
+using Microsoft.UI.Xaml;
+using Uno.Disposables;
+
+public partial class MyTemplatedControl : Control
+{
+    private readonly SerialDisposable _commandSubscription = new();
+
+    public ICommand Command
+    {
+        get => (ICommand)GetValue(CommandProperty);
+        set => SetValue(CommandProperty, value);
+    }
+
+    public static readonly DependencyProperty CommandProperty =
+        DependencyProperty.Register(
+            nameof(Command),
+            typeof(ICommand),
+            typeof(MyTemplatedControl),
+            new PropertyMetadata(null, OnCommandChanged));
+
+    private static void OnCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        => ((MyTemplatedControl)d).OnCommandChanged((ICommand)e.NewValue);
+
+    private void OnCommandChanged(ICommand command)
+    {
+        // Assigning a new Disposable disposes the previous one, which detaches
+        // CanExecuteChanged from the old command instance.
+        _commandSubscription.Disposable = null;
+
+        if (command is not null)
+        {
+            command.CanExecuteChanged += OnCanExecuteChanged;
+            _commandSubscription.Disposable =
+                Disposable.Create(() => command.CanExecuteChanged -= OnCanExecuteChanged);
+        }
+
+        UpdateControlState();
+    }
+
+    private void OnCanExecuteChanged(object sender, object e) => UpdateControlState();
+
+    private void UpdateControlState()
+    {
+        // Example: reflect the command's CanExecute result in the control.
+        IsEnabled = Command?.CanExecute(null) ?? true;
+    }
+}
+```
+
+You can then bind the property from XAML like any other command:
+
+```xml
+<myControlLib:MyTemplatedControl Command="{x:Bind ViewModel.SaveCommand}" />
+```
+
 ## Moving the control style in a separate resource dictionary
 
 Placing XAML styles in different files can be useful to make the XAML more readable and easier to browse.
