@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			remove => _completedHandlers?.Remove(value);
 		}
 
-		public Timeline()
+		protected Timeline()
 		{
 			IsAutoPropertyInheritanceEnabled = false;
 
