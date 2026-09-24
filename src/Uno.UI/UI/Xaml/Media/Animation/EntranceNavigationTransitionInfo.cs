@@ -130,13 +130,9 @@ public partial class EntranceNavigationTransitionInfo : NavigationTransitionInfo
 		{
 			foreach (var weakRef in s_targetElements)
 			{
-				if (weakRef.TryGetTarget(out var targetElement))
+				if (weakRef.TryGetTarget(out var targetElement) && IsAncestor(page, targetElement))
 				{
-					// Check if target element is a descendant of the page
-					if (IsAncestor(page, targetElement))
-					{
-						return targetElement;
-					}
+					return targetElement;
 				}
 			}
 		}

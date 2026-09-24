@@ -227,12 +227,9 @@ public partial class CommonNavigationTransitionInfo : NavigationTransitionInfo
 		{
 			foreach (var weakRef in s_staggerElements)
 			{
-				if (weakRef.TryGetTarget(out var element))
+				if (weakRef.TryGetTarget(out var element) && IsAncestor(page, element))
 				{
-					if (IsAncestor(page, element))
-					{
-						result.Add(element);
-					}
+					result.Add(element);
 				}
 			}
 		}
