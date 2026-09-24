@@ -450,7 +450,8 @@ find $UNO_TESTS_LOCAL_TESTS_FILE -name "*.dmp" -exec cp -v {} $LOG_FILEPATH \;
 xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png || true
 
 # Collecting, shutting down and dumping the device logs costs 2-6 minutes per shard and only helps
-# diagnose a crash or a failure, so skip it for a run that produced results with no failures.
+# diagnose a failing shard, so skip it for a run that produced results with no failures. A crash
+# mid-run leaves no results file (runtime tests write it once, at the end), so it still collects.
 if [ -f "$UNO_ORIGINAL_TEST_RESULTS" ] && ! grep -Eq 'result="(Failed|Error)"' "$UNO_ORIGINAL_TEST_RESULTS"; then
 	echo "All tests passed; skipping the device log collection"
 else
