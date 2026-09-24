@@ -38,8 +38,19 @@ public static class ApplicationDataMigrator
 	{
 		var standard = NSUserDefaults.StandardUserDefaults;
 
+		// Pre-7.0 values live in the app's own persistent domain; dictionaryRepresentation would also
+		// scan the global and registration domains.
+		var standardDomain = NSBundle.MainBundle.BundleIdentifier is { } bundleId
+			? standard.PersistentDomainForName(bundleId)
+			: standard.ToDictionary();
+
+		if (standardDomain is null)
+		{
+			return 0;
+		}
+
 		return LegacySettingsMigration.Migrate(
-			new NSUserDefaultsStore(standard, standard.ToDictionary()),
+			new NSUserDefaultsStore(standard, standardDomain),
 			new NSUserDefaultsStore(UnoUserDefaults.Instance, UnoUserDefaults.Domain));
 	}
 
