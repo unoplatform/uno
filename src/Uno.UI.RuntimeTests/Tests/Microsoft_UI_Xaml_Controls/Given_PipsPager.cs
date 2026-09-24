@@ -136,25 +136,31 @@ public partial class Given_PipsPager
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[Ignore("Fails even on Windows, very flaky on Uno.")] // Flaky #9080
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16513")]
 	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages_Horizontal()
 	{
+		// Previously ignored as flaky (#9080): it relied on fixed-timing waits and a
+		// transparent screenshot. Use an opaque background, a known theme, and
+		// composition-aware idle waits - the same pattern as the neighboring
+		// When_SelectedIndex_Beyond_MaxVisiblePips_All_Visible_Pips_Are_Realized test.
 		var SUT = new PipsPager
 		{
 			NumberOfPages = 7,
-			MaxVisiblePips = 5
+			MaxVisiblePips = 5,
+			RequestedTheme = ElementTheme.Light,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
 		};
 
 		await UITestHelper.Load(SUT);
 
-		var initialScreenshot = await UITestHelper.ScreenShot(SUT);
+		var initialScreenshot = await UITestHelper.ScreenShot(SUT, opaque: true);
 
 		var color = initialScreenshot.GetPixel(initialScreenshot.Width - 5, initialScreenshot.Height / 2);
 
 		SUT.SelectedPageIndex = 3;
-		await TestServices.WindowHelper.WaitForIdle();
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
-		var scrolledScreenshot = await UITestHelper.ScreenShot(SUT);
+		var scrolledScreenshot = await UITestHelper.ScreenShot(SUT, opaque: true);
 		ImageAssert.HasColorAt(scrolledScreenshot, scrolledScreenshot.Width - 5, scrolledScreenshot.Height / 2, color);
 	}
 
