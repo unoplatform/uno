@@ -100,7 +100,7 @@ namespace Uno.UI
 			private static Windows.UI.Color? _overrideAccentColor;
 
 			/// <summary>
-			/// Override the system accent color. Shade variants are computed automatically.
+			/// Override the system accent color. Shade variants are derived using the Windows algorithm.
 			/// Set to null to revert to the OS accent color (or default blue if unavailable).
 			/// </summary>
 			public static Windows.UI.Color? OverrideAccentColor
@@ -109,11 +109,19 @@ namespace Uno.UI
 				set
 				{
 					_overrideAccentColor = value;
-					Uno.Helpers.Theming.AccentColorHelper.SetOverridePalette(
-						value is { } color
-							? Uno.Helpers.Theming.AccentColorPalette.FromAccentColor(color)
-							: null);
+					Uno.Helpers.Theming.AccentColorHelper.SetOverrideAccentColor(value);
 				}
+			}
+
+			/// <summary>
+			/// When deriving shades from a single accent color (<see cref="OverrideAccentColor"/>, or the OS accent on
+			/// platforms that only expose one color), also adjust the accent's lightness the way Windows does for a
+			/// color picked in its Settings. Defaults to false, which keeps the accent exactly as provided.
+			/// </summary>
+			public static bool NormalizeAccentColor
+			{
+				get => Uno.Helpers.Theming.AccentColorHelper.NormalizeAccentColor;
+				set => Uno.Helpers.Theming.AccentColorHelper.SetNormalizeAccentColor(value);
 			}
 		}
 
