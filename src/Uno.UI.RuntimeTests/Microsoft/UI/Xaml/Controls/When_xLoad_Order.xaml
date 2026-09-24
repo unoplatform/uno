@@ -7,6 +7,7 @@
 
 	<Grid x:Name="root"
 				x:FieldModifier="public" Background="Orange" Width="200" Height="200">
+		<!-- OneTime on purpose: the sources never notify, so the test re-applies them with Bindings.Update(). -->
 		<Border x:Name="tb01"
 				x:FieldModifier="public"
 				x:Load="{x:Bind IsLoaded1, Mode=OneTime}" 
