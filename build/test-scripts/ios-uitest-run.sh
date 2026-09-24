@@ -199,6 +199,15 @@ export DEVICELIST_FILEPATH=$LOG_FILEPATH/DeviceList-$LOG_PREFIX.json
 echo "Listing iOS simulators to $DEVICELIST_FILEPATH"
 xcrun simctl list devices --json > $DEVICELIST_FILEPATH
 
+# Booting and the idb install below each take ~3 minutes; start the boot first so they overlap.
+echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
+xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
+
+# Build the transform tool in the background too; it is only needed once the tests have run.
+TRANSFORM_TOOL_BUILD_LOG=$LOG_FILEPATH/NUnitTransformTool-build.log
+dotnet build $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool > "$TRANSFORM_TOOL_BUILD_LOG" 2>&1 &
+TRANSFORM_TOOL_BUILD_PID=$!
+
 # Check for the presence of idb, and install it if it's not present
 # NOTE: fb-idb currently breaks under Python 3.14 (asyncio get_event_loop change),
 # so we pin fb-idb to Python 3.12 to avoid "There is no current event loop in thread 'MainThread'".
@@ -264,8 +273,6 @@ fi
 ##
 ## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
 ##
-echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
-xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
 
 # `xcrun simctl bootstatus -b` blocks until the device reports a finished boot, but it has no
 # timeout of its own and macOS ships no timeout(1). Run it under a watchdog: a simulator that
@@ -312,10 +319,13 @@ if ! idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"; the
 	fi
 fi
 
-## Pre-build the transform tool to get early warnings
-pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-dotnet build
-popd
+## Fail early if the transform tool did not build
+if ! wait "$TRANSFORM_TOOL_BUILD_PID"; then
+	cat "$TRANSFORM_TOOL_BUILD_LOG"
+	echo "##vso[task.logissue type=error]The NUnitTransformTool build failed"
+	exit 1
+fi
+cat "$TRANSFORM_TOOL_BUILD_LOG"
 
 cd $BUILD_SOURCESDIRECTORY/build
 
@@ -439,15 +449,22 @@ find $UNO_TESTS_LOCAL_TESTS_FILE -name "*.dmp" -exec cp -v {} $LOG_FILEPATH \;
 ## Take a screenshot
 xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png || true
 
-## Capture the device logs
-xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH || true
+# Collecting, shutting down and dumping the device logs costs 2-6 minutes per shard and only helps
+# diagnose a failing shard, so skip it for a run that produced results with no failures. A crash
+# mid-run leaves no results file (runtime tests write it once, at the end), so it still collects.
+if [ -f "$UNO_ORIGINAL_TEST_RESULTS" ] && ! grep -Eq 'result="(Failed|Error)"' "$UNO_ORIGINAL_TEST_RESULTS"; then
+	echo "All tests passed; skipping the device log collection"
+else
+	## Capture the device logs
+	xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH || true
 
-## Shutting down simulator to reclaim memory
-echo "Shutting down simulator"
-xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
+	## Shutting down simulator to reclaim memory
+	echo "Shutting down simulator"
+	xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
-echo "Dumping device logs to $LOG_FILEPATH_FULL"
-log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL || true
+	echo "Dumping device logs to $LOG_FILEPATH_FULL"
+	log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL || true
+fi
 
 echo "Searching for failures in device logs"
 if [ ! -s "$LOG_FILEPATH_FULL" ]; then
@@ -478,19 +495,19 @@ pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 echo "Running NUnitTransformTool"
 
 ## Fail the build when no test results could be read
-dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
+dotnet run --no-build fail-empty $UNO_ORIGINAL_TEST_RESULTS
 
 if [ $? -eq 0 ]; then
-	dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+	dotnet run --no-build list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
 fi
 
 if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
 then
 	## Fail the build when no runtime test results could be read
-	dotnet run fail-empty $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE
+	dotnet run --no-build fail-empty $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE
 
 	if [ $? -eq 0 ]; then
-		dotnet run list-failed $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_TESTS_RUNTIMETESTS_FAILED_LIST
+		dotnet run --no-build list-failed $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_TESTS_RUNTIMETESTS_FAILED_LIST
 	fi
 fi
 
