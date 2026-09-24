@@ -59,6 +59,20 @@ public static partial class Validation
 		new FrameworkPropertyMetadata(InputValidationKind.Auto));
 
 	/// <summary>
+	/// The template used to present the control's validation errors.
+	/// </summary>
+	public static DependencyProperty ErrorTemplateProperty
+	{
+		[DynamicDependency(nameof(GetErrorTemplate))]
+		[DynamicDependency(nameof(SetErrorTemplate))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+		"ErrorTemplate",
+		typeof(DataTemplate),
+		typeof(Validation),
+		new FrameworkPropertyMetadata(default(DataTemplate)));
+
+	/// <summary>
 	/// Whether the control's binding source currently reports errors for the bound property.
 	/// </summary>
 	/// <remarks>Written by the framework; setting it from application code has no meaningful effect.</remarks>
@@ -115,6 +129,18 @@ public static partial class Validation
 	/// </summary>
 	public static void SetInputValidationKind(Control control, InputValidationKind value)
 		=> control.SetValue(InputValidationKindProperty, value);
+
+	/// <summary>
+	/// Gets the template used to present <paramref name="control"/>'s validation errors.
+	/// </summary>
+	public static DataTemplate? GetErrorTemplate(Control control)
+		=> (DataTemplate?)control.GetValue(ErrorTemplateProperty);
+
+	/// <summary>
+	/// Sets the template used to present <paramref name="control"/>'s validation errors.
+	/// </summary>
+	public static void SetErrorTemplate(Control control, DataTemplate? value)
+		=> control.SetValue(ErrorTemplateProperty, value);
 
 	/// <summary>
 	/// Whether <paramref name="control"/> participates in input validation.
