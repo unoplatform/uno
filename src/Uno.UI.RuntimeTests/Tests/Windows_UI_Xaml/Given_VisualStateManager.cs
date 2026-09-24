@@ -46,6 +46,7 @@ public partial class Given_VisualStateManager
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24600")]
 	public async Task When_Setter_Value_Equals_Inherited_Value_Setter_Still_Wins()
 	{
 		// The setter's value is the very brush the target already inherits.

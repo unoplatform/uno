@@ -13,6 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation;
 public class Given_Storyboard
 {
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24600")]
 	public async Task When_Begin_Again_After_Local_Value_Animated_Value_Wins()
 	{
 		var red = new SolidColorBrush(Microsoft.UI.Colors.Red);

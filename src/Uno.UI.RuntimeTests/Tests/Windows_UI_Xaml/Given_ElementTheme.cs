@@ -4699,6 +4699,7 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24600")]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Editable_ComboBox_Refocused_In_Dark_Theme_Text_Is_Light()
