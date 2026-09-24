@@ -46,9 +46,13 @@
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\android-x64\lib\libwgpu_native.so" target="runtimes\android-x64\native\libwgpu_native.so" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\android-x86\lib\libwgpu_native.so" target="runtimes\android-x86\native\libwgpu_native.so" />
 
-		<!-- iOS links the static archive into the app image, so it cannot come from runtimes/; the package's own
-		     targets hands the right slice to the Apple SDK as a NativeReference. -->
+		<!-- The package's own targets, and the native-payload trimming it imports. That import is guarded by
+		     Exists(), so leaving the second file out disables the trimming with no error at all. -->
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.UI.Composition.WebGpu.targets" target="buildTransitive\Uno.UI.Composition.WebGpu.targets" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.UI.Composition.WebGpu.NativeTrim.targets" target="buildTransitive\Uno.UI.Composition.WebGpu.NativeTrim.targets" />
+
+		<!-- iOS links the static archive into the app image, so it cannot come from runtimes/; the targets above
+		     hands the right slice to the Apple SDK as a NativeReference. -->
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\ios-arm64\lib\libwgpu_native.a" target="buildTransitive\native\ios-arm64\libwgpu_native.a" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\iossimulator-arm64\lib\libwgpu_native.a" target="buildTransitive\native\iossimulator-arm64\libwgpu_native.a" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\iossimulator-x64\lib\libwgpu_native.a" target="buildTransitive\native\iossimulator-x64\libwgpu_native.a" />
