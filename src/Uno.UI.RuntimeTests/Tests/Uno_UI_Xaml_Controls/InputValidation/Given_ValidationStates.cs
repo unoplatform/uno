@@ -171,6 +171,28 @@ public class Given_ValidationStates
 	}
 
 	[TestMethod]
+	public async Task When_Control_Has_No_Visual_State_Method_Then_Template_Realization_Applies()
+	{
+		// NumberBox participates but has no ChangeVisualState override, so no per-control call site
+		// re-applies the states for it. With errors already reported before the template exists, the
+		// InvokeApplyTemplate anchor is the only thing that can put it in one.
+		var source = new ErrorSource();
+		var sut = new NumberBox { DataContext = source };
+		UnoValidation.Validation.SetInputValidationMode(sut, InputValidationMode.Auto);
+		sut.SetBinding(NumberBox.ValueProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Number)) });
+
+		source.SetErrorsFor(nameof(ErrorSource.Number), "required");
+		Assert.IsTrue(
+			UnoValidation.Validation.GetHasErrors(sut),
+			"the error should reach the control before any template exists");
+
+		sut.Template = (ControlTemplate)XamlReader.Load(TemplateXaml);
+		await UITestHelper.Load(sut);
+
+		Assert.AreEqual("CompactErrors", StateOf(sut, ErrorStates));
+	}
+
+	[TestMethod]
 	public async Task When_Control_Does_Not_Participate_Then_No_State()
 	{
 		var sut = new CheckBox { Template = (ControlTemplate)XamlReader.Load(TemplateXaml) };
@@ -248,16 +270,20 @@ public class Given_ValidationStates
 
 		public bool? Value { get; set; }
 
+		public double Number { get; set; }
+
 		public bool HasErrors => _errors.Length != 0;
 
 		public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
 		public IEnumerable GetErrors(string? propertyName) => _errors;
 
-		public void SetErrors(params string[] errors)
+		public void SetErrors(params string[] errors) => SetErrorsFor(nameof(Value), errors);
+
+		public void SetErrorsFor(string propertyName, params string[] errors)
 		{
 			_errors = errors;
-			ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Value)));
+			ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
 		}
 	}
 }
