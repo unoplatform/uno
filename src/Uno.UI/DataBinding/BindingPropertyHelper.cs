@@ -472,9 +472,23 @@ namespace Uno.UI.DataBinding
 				yield return current;
 			}
 
-			foreach (var iface in type.GetInterfaces())
+			// Generic interfaces first, so an array indexer resolves to IList<T>.Item rather than IList.Item (object).
+			var interfaces = type.GetInterfaces();
+
+			foreach (var iface in interfaces)
 			{
-				yield return iface;
+				if (iface.IsGenericType)
+				{
+					yield return iface;
+				}
+			}
+
+			foreach (var iface in interfaces)
+			{
+				if (!iface.IsGenericType)
+				{
+					yield return iface;
+				}
 			}
 		}
 
