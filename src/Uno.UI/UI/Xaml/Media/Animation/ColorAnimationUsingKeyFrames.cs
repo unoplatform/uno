@@ -418,8 +418,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// snapshotted at InitializeAnimators, so its next tick re-applies a pre-switch interpolated color
 			// and the re-apply here is transient until the run ends (where the now-fresh _finalValue holds).
 			// Re-seeding running animators from the re-resolved keyframes is the fuller fix, tracked as follow-up.
+			// Paused is excluded: writing the endpoint would jump a held mid-transition value, whereas WinUI
+			// keeps the paused clock and recomputes at the retained progress.
 			_finalValue = FindFinalValue() ?? default;
-			if (State != TimelineState.Stopped)
+			if (State is TimelineState.Active or TimelineState.Filling)
 			{
 				SetValue(_finalValue);
 			}
