@@ -72,15 +72,15 @@ public class Given_MergedAppResources_ThemeResource
 
 				var directBorder = (Border)view.FindName("DirectBorder");
 
-				var lightBrush = directBorder.Background as SolidColorBrush;
-				Assert.IsNotNull(lightBrush);
+				Assert.IsInstanceOfType(directBorder.Background, typeof(SolidColorBrush));
+				var lightBrush = (SolidColorBrush)directBorder.Background;
 				Assert.AreEqual(Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF), lightBrush.Color);
 
 				view.RequestedTheme = ElementTheme.Dark;
 				await WindowHelper.WaitForIdle();
 
-				var darkBrush = directBorder.Background as SolidColorBrush;
-				Assert.IsNotNull(darkBrush);
+				Assert.IsInstanceOfType(directBorder.Background, typeof(SolidColorBrush));
+				var darkBrush = (SolidColorBrush)directBorder.Background;
 				Assert.AreEqual(Color.FromArgb(0xFF, 0x16, 0x18, 0x1A), darkBrush.Color);
 			}
 			finally
