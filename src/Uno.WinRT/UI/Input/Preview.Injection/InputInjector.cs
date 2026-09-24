@@ -336,11 +336,7 @@ public partial class InputInjector
 		// Real input reads the OS key state after the transition has been applied, so pressing Shift
 		// already reports Shift. The tracker is only updated once the routed event reaches UIElement,
 		// so fold the current transition in by hand to keep injected args identical to real ones.
-		var modifiers = GetTrackedModifiers();
-		if (GetModifierFlag(key) is { } flag)
-		{
-			modifiers = info.IsKeyUp ? modifiers & ~flag : modifiers | flag;
-		}
+		var modifiers = GetTrackedModifiers(key, isTransitionDown: !info.IsKeyUp);
 
 		var wasKeyDown = KeyboardStateTracker.GetKeyState(key).HasFlag(CoreVirtualKeyStates.Down);
 		var args = info.ToEventArgs(modifiers, _capsLock, wasKeyDown);
@@ -424,42 +420,48 @@ public partial class InputInjector
 	}
 
 	/// <summary>
-	/// The modifier flag a key contributes while held, or <c>null</c> when the key is not a modifier.
+	/// Gets the held modifiers, optionally as they will be once <paramref name="transitionKey"/>
+	/// has gone down or up. A modifier stays held while any of its keys is still down.
 	/// </summary>
-	private static VirtualKeyModifiers? GetModifierFlag(VirtualKey key) => key switch
-	{
-		VirtualKey.Shift or VirtualKey.LeftShift or VirtualKey.RightShift => VirtualKeyModifiers.Shift,
-		VirtualKey.Control or VirtualKey.LeftControl or VirtualKey.RightControl => VirtualKeyModifiers.Control,
-		VirtualKey.Menu or VirtualKey.LeftMenu or VirtualKey.RightMenu => VirtualKeyModifiers.Menu,
-		VirtualKey.LeftWindows or VirtualKey.RightWindows => VirtualKeyModifiers.Windows,
-		_ => null,
-	};
-
-	private static VirtualKeyModifiers GetTrackedModifiers()
+	private static VirtualKeyModifiers GetTrackedModifiers(VirtualKey? transitionKey = null, bool isTransitionDown = false)
 	{
 		var modifiers = VirtualKeyModifiers.None;
 
-		if (IsDown(VirtualKey.Shift))
+		if (IsHeld(VirtualKey.Shift, VirtualKey.LeftShift, VirtualKey.RightShift))
 		{
 			modifiers |= VirtualKeyModifiers.Shift;
 		}
 
-		if (IsDown(VirtualKey.Control))
+		if (IsHeld(VirtualKey.Control, VirtualKey.LeftControl, VirtualKey.RightControl))
 		{
 			modifiers |= VirtualKeyModifiers.Control;
 		}
 
-		if (IsDown(VirtualKey.Menu))
+		if (IsHeld(VirtualKey.Menu, VirtualKey.LeftMenu, VirtualKey.RightMenu))
 		{
 			modifiers |= VirtualKeyModifiers.Menu;
 		}
 
-		if (IsDown(VirtualKey.LeftWindows) || IsDown(VirtualKey.RightWindows))
+		// Windows has no side-agnostic virtual key.
+		if (IsHeld(null, VirtualKey.LeftWindows, VirtualKey.RightWindows))
 		{
 			modifiers |= VirtualKeyModifiers.Windows;
 		}
 
 		return modifiers;
+
+		bool IsHeld(VirtualKey? aggregate, VirtualKey left, VirtualKey right)
+		{
+			if (transitionKey is { } key && (key == aggregate || key == left || key == right))
+			{
+				// The tracker has not seen this transition yet, so its aggregate state is stale.
+				return isTransitionDown
+					|| (key != left && IsDown(left))
+					|| (key != right && IsDown(right));
+			}
+
+			return (aggregate is { } a && IsDown(a)) || IsDown(left) || IsDown(right);
+		}
 
 		static bool IsDown(VirtualKey key)
 			=> KeyboardStateTracker.GetKeyState(key).HasFlag(CoreVirtualKeyStates.Down);
