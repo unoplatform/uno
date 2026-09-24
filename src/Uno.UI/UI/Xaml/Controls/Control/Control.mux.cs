@@ -248,10 +248,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return false;
 		}
 
-		private protected void EnsureValidationVisuals()
-		{
-			// TODO Uno: Not supported yet #4839
-		}
+		private protected void EnsureValidationVisuals() => UpdateValidationStates();
 
 		private protected void InvokeValidationCommand(object control, string value)
 		{

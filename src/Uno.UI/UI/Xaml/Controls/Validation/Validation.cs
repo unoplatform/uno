@@ -56,7 +56,7 @@ public static partial class Validation
 		"InputValidationKind",
 		typeof(InputValidationKind),
 		typeof(Validation),
-		new FrameworkPropertyMetadata(InputValidationKind.Auto));
+		new FrameworkPropertyMetadata(InputValidationKind.Auto, OnInputValidationKindChanged));
 
 	/// <summary>
 	/// The template used to present the control's validation errors.
