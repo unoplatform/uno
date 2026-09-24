@@ -50,7 +50,8 @@ leaves the error group where it was.
 **Q6 is answered.** Three framework triggers, plus per-control call sites:
 
 1. The `Validation.HasErrors` changed callback — covers all eight participants with no per-control code.
-2. The `InputValidationMode` / `InputValidationKind` changed callbacks.
+2. The `InputValidationMode` / `InputValidationKind` / `HasValidationErrors` changed callbacks — shared
+   statics on `Validation`, which each participating control registers its own dependency properties with.
 3. `FrameworkElement.InvokeApplyTemplate`, immediately after `OnApplyTemplate()` — which also answers §2.2's
    open sub-question about re-application after template realization. Measured by mutation, not assumed: with
    it removed, a `NumberBox` that reported errors before its template existed lands in no state at all. A
