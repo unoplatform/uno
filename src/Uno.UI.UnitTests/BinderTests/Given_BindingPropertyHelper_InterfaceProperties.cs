@@ -36,6 +36,15 @@ public partial class Given_BindingPropertyHelper_InterfaceProperties
 	}
 
 	[TestMethod]
+	public void When_GetPropertyType_InterfaceIndexer_Array()
+	{
+		// The getter takes an array fast path; the type lookup has to walk the interfaces.
+		var propertyType = BindingPropertyHelper.GetPropertyType(typeof(string[]), "[0]", false);
+
+		Assert.AreEqual(typeof(string), propertyType);
+	}
+
+	[TestMethod]
 	public void When_GetPropertyType_InterfaceProperty_List()
 	{
 		var propertyType = BindingPropertyHelper.GetPropertyType(typeof(List<string>), "Count", false);
