@@ -241,9 +241,21 @@ $projects =
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu", "-p:CustomBeforeMicrosoftCommonTargets=$env:BUILD_SOURCESDIRECTORY\build\test-scripts\webgpu-probe\InjectProbe.targets", "-p:UnoWebGpuProbeProject=uno56netcurrent"), @("NetCore"),
         @(), @(), @("webgpu.dll", "libSkiaSharp.dll"), @()),
 
-    # WebGPU named alone: skia is NOT implied, so the app is SkiaSharp-free and the native ships.
+    # WebGPU named alone: skia is NOT implied, so no Skia renderer is referenced and the native ships.
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=WebGpu"), @("NetCore"),
-        @(), @(), @("webgpu.dll"), @("libSkiaSharp.dll")),
+        @(), @(), @("webgpu.dll"), @("Uno.UI.Composition.Skia.dll")),
+
+    # Lottie and SVG draw through SkiaSharp add-ins over a neutral seam that Uno.WinUI also implements without
+    # SkiaSharp, so both need a Skia renderer to draw with. Lottie rides along with it (pure managed, small);
+    # SVG keeps its own feature. Without Skia, neither add-in ships and the managed engine serves the seam.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia"), @("NetCore"),
+        @(), @(), @("Uno.UI.Lottie.dll", "SkiaSharp.Skottie.dll"), @("Uno.UI.Svg.dll")),
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Svg"), @("NetCore"),
+        @(), @(), @("Uno.UI.Svg.dll"), @()),
+
+    # No Skia renderer: nothing for either add-in to draw with, even when the feature asks for it.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=WebGpu%3BSvg"), @("NetCore"),
+        @(), @(), @("webgpu.dll"), @("Uno.UI.Lottie.dll", "Uno.UI.Svg.dll", "SkiaSharp.Skottie.dll")),
 
     # 5.6 net-current runtime folder validation
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @(), @("macOS", "NetCore")),

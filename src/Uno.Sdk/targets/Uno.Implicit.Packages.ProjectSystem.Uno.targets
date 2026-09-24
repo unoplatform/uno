@@ -4,10 +4,6 @@
 		in order for VS and C# Dev Kit to show nuget references in their respective solution explorers.
 		The version is not required, and VS/Code waits for some design-time targets to be executed to evaluate it.
 	-->
-	<ItemGroup>
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
-	</ItemGroup>
-
 	<!-- This file is only imported for Uno Platform targets (not WinAppSDK). The Skia backend and its
 	     SkiaSharp bindings are referenced when the 'skia' feature is present (implied by default), so a
 	     skia-free build (e.g. WebGPU-only) drops them. -->
@@ -21,7 +17,15 @@
 		<_UnoProjectSystemPackageReference Include="Uno.UI.Composition.WebGpu" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'">
+	<!-- Lottie and SVG each ship a SkiaSharp add-in over a neutral seam that Uno.WinUI also implements without
+	     SkiaSharp, so without a Skia renderer there is nothing for the add-in to draw with and the host builder
+	     resolves the managed engine instead. Lottie stays implicit because it is pure managed and adds ~144 KB
+	     where SkiaSharp is already present, which is not worth downgrading every app to the managed engine. -->
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) AND $(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" />
 	</ItemGroup>
 
@@ -30,6 +34,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(IsPackable)' != 'true' AND $(UnoFeatures.Contains(';skia;'))">
+		<!-- Uno.WinUI.Lottie declares Skottie only on its mobile groups, so the plain TFMs need it injected here. -->
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Svg.Skia" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'" />
 	</ItemGroup>
