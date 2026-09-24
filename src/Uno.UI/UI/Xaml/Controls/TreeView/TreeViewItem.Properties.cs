@@ -87,7 +87,7 @@ public partial class TreeViewItem
 	public TreeViewItemTemplateSettings TreeViewItemTemplateSettings
 	{
 		get => (TreeViewItemTemplateSettings)GetValue(TreeViewItemTemplateSettingsProperty);
-		set => SetValue(TreeViewItemTemplateSettingsProperty, value);
+		internal set => SetValue(TreeViewItemTemplateSettingsProperty, value);
 	}
 
 	/// <summary>

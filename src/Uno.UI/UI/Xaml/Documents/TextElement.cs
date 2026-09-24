@@ -331,7 +331,7 @@ namespace Microsoft.UI.Xaml.Documents
 		public string Name
 		{
 			get => _name;
-			set
+			internal set
 			{
 				if (_name != value)
 				{

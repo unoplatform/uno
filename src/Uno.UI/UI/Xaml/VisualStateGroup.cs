@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml
 
 		public VisualState CurrentState => _current.state;
 
-		public string Name { get; set; }
+		public string Name { get; internal set; }
 
 		#region States Dependency Property
 

@@ -205,7 +205,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
 			get { return (global::Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
-			set { SetValue(MediaPlayerProperty, value); }
+			internal set { SetValue(MediaPlayerProperty, value); }
 		}
 
 		public static DependencyProperty MediaPlayerProperty { get; } =

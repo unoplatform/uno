@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public ColorKeyFrameCollection KeyFrames
 		{
 			get => (ColorKeyFrameCollection)GetValue(KeyFramesProperty);
-			set => SetValue(KeyFramesProperty, value);
+			internal set => SetValue(KeyFramesProperty, value);
 		}
 		private static void OnKeyFramesChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
 		{

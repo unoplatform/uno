@@ -9,11 +9,11 @@ namespace Microsoft.UI.Xaml.Markup
 	{
 		internal const DynamicallyAccessedMemberTypes TypeRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
 
-		public Type DeclaringType { get; set; }
+		public Type DeclaringType { get; internal set; }
 
-		public string Name { get; set; }
+		public string Name { get; internal set; }
 
 		[DynamicallyAccessedMembers(TypeRequirements)]
-		public Type Type { get; set; }
+		public Type Type { get; internal set; }
 	}
 }

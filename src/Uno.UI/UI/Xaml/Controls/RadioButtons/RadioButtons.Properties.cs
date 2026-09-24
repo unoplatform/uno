@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public IList<object> Items
 		{
 			get => (IList<object>)GetValue(ItemsProperty);
-			set => SetValue(ItemsProperty, value);
+			internal set => SetValue(ItemsProperty, value);
 		}
 
 		public static DependencyProperty ItemsProperty { get; } =

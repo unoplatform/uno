@@ -111,7 +111,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public Panel ItemsPanelRoot
 		{
 			get { return _itemsPanelRoot; }
-			set
+			internal set
 			{
 				if (_itemsPanelRoot is DependencyObject provider)
 				{

@@ -97,7 +97,7 @@ namespace Windows.Media.Playback
 		public MediaPlaybackState PlaybackState
 		{
 			get => _playbackState;
-			set
+			internal set
 			{
 				if (_playbackState != value)
 				{

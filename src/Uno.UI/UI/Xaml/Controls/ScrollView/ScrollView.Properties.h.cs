@@ -10,7 +10,7 @@ public partial class ScrollView : Control
 	public Visibility ComputedHorizontalScrollBarVisibility
 	{
 		get { return (Visibility)GetValue(ComputedHorizontalScrollBarVisibilityProperty); }
-		set { SetValue(ComputedHorizontalScrollBarVisibilityProperty, value); }
+		internal set { SetValue(ComputedHorizontalScrollBarVisibilityProperty, value); }
 	}
 
 	public static DependencyProperty ComputedHorizontalScrollBarVisibilityProperty { get; } =
@@ -23,7 +23,7 @@ public partial class ScrollView : Control
 	public ScrollingScrollMode ComputedHorizontalScrollMode
 	{
 		get => (ScrollingScrollMode)GetValue(ComputedHorizontalScrollModeProperty);
-		set => SetValue(ComputedHorizontalScrollModeProperty, value);
+		internal set => SetValue(ComputedHorizontalScrollModeProperty, value);
 	}
 
 	public static DependencyProperty ComputedHorizontalScrollModeProperty { get; } =
@@ -36,7 +36,7 @@ public partial class ScrollView : Control
 	public Visibility ComputedVerticalScrollBarVisibility
 	{
 		get => (Visibility)GetValue(ComputedVerticalScrollBarVisibilityProperty);
-		set => SetValue(ComputedVerticalScrollBarVisibilityProperty, value);
+		internal set => SetValue(ComputedVerticalScrollBarVisibilityProperty, value);
 	}
 
 	public static DependencyProperty ComputedVerticalScrollBarVisibilityProperty { get; } =
@@ -50,7 +50,7 @@ public partial class ScrollView : Control
 	public ScrollingScrollMode ComputedVerticalScrollMode
 	{
 		get => (ScrollingScrollMode)GetValue(ComputedVerticalScrollModeProperty);
-		set => SetValue(ComputedVerticalScrollModeProperty, value);
+		internal set => SetValue(ComputedVerticalScrollModeProperty, value);
 	}
 
 	public static DependencyProperty ComputedVerticalScrollModeProperty { get; } =
