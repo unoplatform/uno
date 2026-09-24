@@ -13,31 +13,89 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 [UnoValidation.InputValidationProperty(nameof(IsChecked))]
 public partial class ToggleButton : IInputValidationControl
 {
-	/// <inheritdoc />
-	public IObservableVector<InputValidationError> ValidationErrors => UnoValidation.Validation.GetErrors(this);
+	/// <summary>
+	/// Identifies the <see cref="InputValidationMode"/> dependency property.
+	/// </summary>
+	public static DependencyProperty InputValidationModeProperty { get; } =
+		DependencyProperty.Register(
+			nameof(InputValidationMode),
+			typeof(InputValidationMode),
+			typeof(ToggleButton),
+			new FrameworkPropertyMetadata(
+				InputValidationMode.Disabled,
+				UnoValidation.Validation.OnInputValidationModeChanged));
 
-	/// <inheritdoc />
-	public bool HasValidationErrors => UnoValidation.Validation.GetHasErrors(this);
+	/// <summary>
+	/// Identifies the <see cref="InputValidationKind"/> dependency property.
+	/// </summary>
+	public static DependencyProperty InputValidationKindProperty { get; } =
+		DependencyProperty.Register(
+			nameof(InputValidationKind),
+			typeof(InputValidationKind),
+			typeof(ToggleButton),
+			new FrameworkPropertyMetadata(
+				InputValidationKind.Auto,
+				UnoValidation.Validation.OnInputValidationKindChanged));
 
-	/// <inheritdoc />
-	public DataTemplate? ErrorTemplate
-	{
-		get => UnoValidation.Validation.GetErrorTemplate(this);
-		set => UnoValidation.Validation.SetErrorTemplate(this, value);
-	}
+	/// <summary>
+	/// Identifies the <see cref="HasValidationErrors"/> dependency property.
+	/// </summary>
+	public static DependencyProperty HasValidationErrorsProperty { get; } =
+		DependencyProperty.Register(
+			nameof(HasValidationErrors),
+			typeof(bool),
+			typeof(ToggleButton),
+			new FrameworkPropertyMetadata(
+				default(bool),
+				UnoValidation.Validation.OnHasValidationErrorsChanged));
+
+	/// <summary>
+	/// Identifies the <see cref="ValidationErrors"/> dependency property.
+	/// </summary>
+	public static DependencyProperty ValidationErrorsProperty { get; } =
+		DependencyProperty.Register(
+			nameof(ValidationErrors),
+			typeof(IObservableVector<InputValidationError>),
+			typeof(ToggleButton),
+			new FrameworkPropertyMetadata(default(IObservableVector<InputValidationError>)));
+
+	/// <summary>
+	/// Identifies the <see cref="ErrorTemplate"/> dependency property.
+	/// </summary>
+	public static DependencyProperty ErrorTemplateProperty { get; } =
+		DependencyProperty.Register(
+			nameof(ErrorTemplate),
+			typeof(DataTemplate),
+			typeof(ToggleButton),
+			new FrameworkPropertyMetadata(default(DataTemplate)));
 
 	/// <inheritdoc />
 	public InputValidationMode InputValidationMode
 	{
-		get => UnoValidation.Validation.GetInputValidationMode(this);
-		set => UnoValidation.Validation.SetInputValidationMode(this, value);
+		get => (InputValidationMode)GetValue(InputValidationModeProperty);
+		set => SetValue(InputValidationModeProperty, value);
 	}
 
 	/// <inheritdoc />
 	public InputValidationKind InputValidationKind
 	{
-		get => UnoValidation.Validation.GetInputValidationKind(this);
-		set => UnoValidation.Validation.SetInputValidationKind(this, value);
+		get => (InputValidationKind)GetValue(InputValidationKindProperty);
+		set => SetValue(InputValidationKindProperty, value);
+	}
+
+	/// <inheritdoc />
+	/// <remarks>Written by the framework. Uno has no read-only dependency property to express that.</remarks>
+	public bool HasValidationErrors => (bool)GetValue(HasValidationErrorsProperty);
+
+	/// <inheritdoc />
+	public IObservableVector<InputValidationError> ValidationErrors
+		=> UnoValidation.Validation.GetOrCreateErrors(this, ValidationErrorsProperty);
+
+	/// <inheritdoc />
+	public DataTemplate? ErrorTemplate
+	{
+		get => (DataTemplate?)GetValue(ErrorTemplateProperty);
+		set => SetValue(ErrorTemplateProperty, value);
 	}
 
 	/// <inheritdoc />
