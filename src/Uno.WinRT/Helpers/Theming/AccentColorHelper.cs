@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Windows.UI;
 
 namespace Uno.Helpers.Theming;
 
@@ -10,6 +11,7 @@ namespace Uno.Helpers.Theming;
 /// </summary>
 internal static partial class AccentColorHelper
 {
+	private static Color? _overrideAccentColor;
 	private static AccentColorPalette? _overridePalette;
 	private static AccentColorPalette? _cachedPlatformPalette;
 	private static bool _platformPaletteQueried;
@@ -35,9 +37,49 @@ internal static partial class AccentColorHelper
 	}
 
 	/// <summary>
-	/// Sets or clears the override accent color palette.
+	/// Gets whether palettes derived from a single accent color adjust the accent itself like Windows does.
+	/// </summary>
+	internal static bool NormalizeAccentColor { get; private set; }
+
+	/// <summary>
+	/// Sets or clears the override accent color; its shades are derived like Windows does.
+	/// </summary>
+	internal static void SetOverrideAccentColor(Color? accent)
+	{
+		_overrideAccentColor = accent;
+		ApplyOverride(accent is { } color ? AccentColorPalette.FromAccentColor(color) : null);
+	}
+
+	/// <summary>
+	/// Sets or clears an exact override palette, bypassing shade derivation.
 	/// </summary>
 	internal static void SetOverridePalette(AccentColorPalette? palette)
+	{
+		_overrideAccentColor = null;
+		ApplyOverride(palette);
+	}
+
+	internal static void SetNormalizeAccentColor(bool normalize)
+	{
+		if (NormalizeAccentColor == normalize)
+		{
+			return;
+		}
+
+		NormalizeAccentColor = normalize;
+
+		// Re-derive everything computed from a single accent color.
+		_cachedPlatformPalette = null;
+		_platformPaletteQueried = false;
+		if (_overrideAccentColor is { } accent)
+		{
+			_overridePalette = AccentColorPalette.FromAccentColor(accent);
+		}
+
+		RaiseAccentColorChanged();
+	}
+
+	private static void ApplyOverride(AccentColorPalette? palette)
 	{
 		_overridePalette = palette;
 
