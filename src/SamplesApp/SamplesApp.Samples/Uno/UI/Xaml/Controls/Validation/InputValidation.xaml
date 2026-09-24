@@ -33,31 +33,31 @@
             <StackPanel Spacing="4">
                 <TextBox
                     x:Name="UserNameBox"
-                    uno:Validation.InputValidationMode="Auto"
                     Header="User name (5 characters minimum)"
+                    InputValidationMode="Auto"
                     Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock
                     x:Name="UserNameErrors"
                     Foreground="Red"
-                    Text="{Binding (uno:Validation.Errors), ElementName=UserNameBox, Converter={StaticResource ErrorsToString}}"
+                    Text="{Binding ValidationErrors, ElementName=UserNameBox, Converter={StaticResource ErrorsToString}}"
                     TextWrapping="Wrap"
-                    Visibility="{Binding (uno:Validation.HasErrors), ElementName=UserNameBox, Converter={StaticResource BoolToVisibility}}" />
+                    Visibility="{Binding HasValidationErrors, ElementName=UserNameBox, Converter={StaticResource BoolToVisibility}}" />
             </StackPanel>
 
             <StackPanel Spacing="4">
                 <TextBlock Text="Age (18 to 120)" />
                 <Slider
                     x:Name="AgeSlider"
-                    uno:Validation.InputValidationMode="Auto"
+                    InputValidationMode="Auto"
                     Maximum="150"
                     Minimum="0"
                     Value="{Binding Age, Mode=TwoWay}" />
                 <TextBlock
                     x:Name="AgeErrors"
                     Foreground="Red"
-                    Text="{Binding (uno:Validation.Errors), ElementName=AgeSlider, Converter={StaticResource ErrorsToString}}"
+                    Text="{Binding ValidationErrors, ElementName=AgeSlider, Converter={StaticResource ErrorsToString}}"
                     TextWrapping="Wrap"
-                    Visibility="{Binding (uno:Validation.HasErrors), ElementName=AgeSlider, Converter={StaticResource BoolToVisibility}}" />
+                    Visibility="{Binding HasValidationErrors, ElementName=AgeSlider, Converter={StaticResource BoolToVisibility}}" />
             </StackPanel>
 
         </StackPanel>

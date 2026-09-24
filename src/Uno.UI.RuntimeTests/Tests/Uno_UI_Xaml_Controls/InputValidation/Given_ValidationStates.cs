@@ -140,7 +140,7 @@ public class Given_ValidationStates
 		await WindowHelper.WaitForIdle();
 		Assert.AreEqual("CompactErrors", StateOf(sut, ErrorStates));
 
-		UnoValidation.Validation.SetInputValidationMode(sut, InputValidationMode.Disabled);
+		sut.InputValidationMode = InputValidationMode.Disabled;
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreEqual("ValidationDisabled", StateOf(sut, EnabledStates));
@@ -156,12 +156,12 @@ public class Given_ValidationStates
 		// The case that makes the template-realization trigger load-bearing rather than defensive.
 		var source = new ErrorSource();
 		var sut = new CheckBox { DataContext = source };
-		UnoValidation.Validation.SetInputValidationMode(sut, InputValidationMode.Auto);
+		sut.InputValidationMode = InputValidationMode.Auto;
 		sut.SetBinding(ToggleButton.IsCheckedProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		source.SetErrors("required");
 		Assert.IsTrue(
-			UnoValidation.Validation.GetHasErrors(sut),
+			sut.HasValidationErrors,
 			"the error should reach the control before any template exists");
 
 		sut.Template = (ControlTemplate)XamlReader.Load(TemplateXaml);
@@ -178,17 +178,70 @@ public class Given_ValidationStates
 		// InvokeApplyTemplate anchor is the only thing that can put it in one.
 		var source = new ErrorSource();
 		var sut = new NumberBox { DataContext = source };
-		UnoValidation.Validation.SetInputValidationMode(sut, InputValidationMode.Auto);
+		sut.InputValidationMode = InputValidationMode.Auto;
 		sut.SetBinding(NumberBox.ValueProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Number)) });
 
 		source.SetErrorsFor(nameof(ErrorSource.Number), "required");
 		Assert.IsTrue(
-			UnoValidation.Validation.GetHasErrors(sut),
+			sut.HasValidationErrors,
 			"the error should reach the control before any template exists");
 
 		sut.Template = (ControlTemplate)XamlReader.Load(TemplateXaml);
 		await UITestHelper.Load(sut);
 
+		Assert.AreEqual("CompactErrors", StateOf(sut, ErrorStates));
+	}
+
+	[TestMethod]
+	public async Task When_Mode_Set_Through_A_Style_Then_Participates()
+	{
+		// The reason InputValidationMode is a dependency property on the control rather than an attached one:
+		// a Setter can target it. It could not target a plain property forwarding to an attached value.
+		var style = (Style)XamlReader.Load("""
+			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				   TargetType="CheckBox">
+				<Setter Property="InputValidationMode" Value="Auto" />
+				<Setter Property="InputValidationKind" Value="Inline" />
+			</Style>
+			""");
+
+		var source = new ErrorSource();
+		var sut = new CheckBox
+		{
+			DataContext = source,
+			Style = style,
+			Template = (ControlTemplate)XamlReader.Load(TemplateXaml),
+		};
+		sut.SetBinding(ToggleButton.IsCheckedProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
+
+		await UITestHelper.Load(sut);
+
+		Assert.AreEqual(InputValidationMode.Auto, sut.InputValidationMode);
+		Assert.AreEqual("InlineValidationEnabled", StateOf(sut, EnabledStates));
+
+		source.SetErrors("required");
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("InlineErrors", StateOf(sut, ErrorStates));
+	}
+
+	[TestMethod]
+	public async Task When_Mode_Is_Bound_Then_Participation_Follows()
+	{
+		// Also only possible against a dependency property.
+		var source = new ErrorSource();
+		var sut = new CheckBox
+		{
+			DataContext = source,
+			Template = (ControlTemplate)XamlReader.Load(TemplateXaml),
+		};
+		sut.SetBinding(CheckBox.InputValidationModeProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.ValidationMode)) });
+		sut.SetBinding(ToggleButton.IsCheckedProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
+
+		source.SetErrors("required");
+		await UITestHelper.Load(sut);
+
+		Assert.AreEqual(InputValidationMode.Auto, sut.InputValidationMode);
 		Assert.AreEqual("CompactErrors", StateOf(sut, ErrorStates));
 	}
 
@@ -241,8 +294,8 @@ public class Given_ValidationStates
 			Template = (ControlTemplate)XamlReader.Load(TemplateXaml),
 		};
 
-		UnoValidation.Validation.SetInputValidationKind(sut, kind);
-		UnoValidation.Validation.SetInputValidationMode(sut, InputValidationMode.Auto);
+		sut.InputValidationKind = kind;
+		sut.InputValidationMode = InputValidationMode.Auto;
 		sut.SetBinding(ToggleButton.IsCheckedProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		await UITestHelper.Load(sut);
@@ -271,6 +324,8 @@ public class Given_ValidationStates
 		public bool? Value { get; set; }
 
 		public double Number { get; set; }
+
+		public InputValidationMode ValidationMode { get; set; } = InputValidationMode.Auto;
 
 		public bool HasErrors => _errors.Length != 0;
 

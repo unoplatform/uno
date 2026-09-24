@@ -63,7 +63,11 @@ public static partial class Validation
 		}
 	}
 
-	private static void OnInputValidationModeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	/// <summary>
+	/// The changed callback every participating control registers its InputValidationMode with. Shared rather
+	/// than per-control so that the registration each of them carries stays a single line.
+	/// </summary>
+	internal static void OnInputValidationModeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
 		if (sender is not Control control)
 		{
@@ -100,7 +104,8 @@ public static partial class Validation
 		}
 	}
 
-	private static void OnInputValidationKindChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	/// <inheritdoc cref="OnInputValidationModeChanged"/>
+	internal static void OnInputValidationKindChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
 		if (sender is Control control)
 		{
@@ -176,7 +181,9 @@ public static partial class Validation
 			}
 		}
 
-		var errors = incoming.Count == 0 ? TryGetErrors(control) : (ValidationErrorsCollection)GetErrors(control);
+		var errors = incoming.Count == 0
+			? TryGetErrors(control)
+			: (control as IInputValidationControl)?.ValidationErrors;
 
 		if (errors is not null)
 		{
@@ -285,10 +292,11 @@ public static partial class Validation
 	}
 
 	/// <summary>
-	/// Raised from the HasErrors changed callback, so that it fires once per transition rather than once per
-	/// synchronization.
+	/// The changed callback every participating control registers its HasValidationErrors with. Raising the
+	/// event here rather than at the point errors are reconciled is what makes it fire once per transition
+	/// rather than once per synchronization.
 	/// </summary>
-	private static void OnHasErrorsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	internal static void OnHasValidationErrorsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
 		if (sender is not Control control)
 		{
