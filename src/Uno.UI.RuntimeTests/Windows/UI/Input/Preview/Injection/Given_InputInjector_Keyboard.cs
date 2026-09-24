@@ -13,7 +13,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.DevTools.Input;
-using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
@@ -132,6 +131,111 @@ public class Given_InputInjector_Keyboard
 		finally
 		{
 			injector.InjectKeyboardInput(new[] { KeyUp(VirtualKey.Shift) });
+		}
+	}
+
+	[TestMethod]
+	[DataRow(VirtualKey.LeftShift, VirtualKey.RightShift)]
+	[DataRow(VirtualKey.RightShift, VirtualKey.LeftShift)]
+	public async Task When_Releasing_One_Shift_While_Other_Held_Keeps_Uppercase(VirtualKey released, VirtualKey held)
+	{
+		var injector = GetInjector();
+		var textBox = new TextBox();
+		await UITestHelper.Load(textBox);
+		textBox.Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		try
+		{
+			injector.InjectKeyboardInput(new[]
+			{
+				Key(released),
+				Key(held),
+				KeyUp(released),
+				Key(VirtualKey.A),
+				KeyUp(VirtualKey.A),
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("A", textBox.Text);
+		}
+		finally
+		{
+			injector.InjectKeyboardInput(new[] { KeyUp(released), KeyUp(held) });
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Releasing_One_Control_While_Other_Held_Suppresses_Character()
+	{
+		var injector = GetInjector();
+		var textBox = new TextBox();
+		await UITestHelper.Load(textBox);
+		textBox.Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var characters = new List<char>();
+		textBox.AddHandler(
+			UIElement.CharacterReceivedEvent,
+			new TypedEventHandler<UIElement, CharacterReceivedRoutedEventArgs>((_, e) => characters.Add(e.Character)),
+			handledEventsToo: true);
+
+		try
+		{
+			injector.InjectKeyboardInput(new[]
+			{
+				Key(VirtualKey.LeftControl),
+				Key(VirtualKey.RightControl),
+				KeyUp(VirtualKey.LeftControl),
+				Key(VirtualKey.B),
+				KeyUp(VirtualKey.B),
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+
+			CollectionAssert.AreEqual(Array.Empty<char>(), characters);
+		}
+		finally
+		{
+			injector.InjectKeyboardInput(new[] { KeyUp(VirtualKey.LeftControl), KeyUp(VirtualKey.RightControl) });
+		}
+	}
+
+	[TestMethod]
+	[DataRow(VirtualKey.LeftShift, VirtualKey.RightShift, VirtualKeyModifiers.Shift)]
+	[DataRow(VirtualKey.LeftControl, VirtualKey.RightControl, VirtualKeyModifiers.Control)]
+	[DataRow(VirtualKey.LeftMenu, VirtualKey.RightMenu, VirtualKeyModifiers.Menu)]
+	[DataRow(VirtualKey.LeftWindows, VirtualKey.RightWindows, VirtualKeyModifiers.Windows)]
+	public async Task When_Releasing_One_Side_While_Other_Held_Reports_Modifier(VirtualKey released, VirtualKey held, VirtualKeyModifiers expected)
+	{
+		var injector = GetInjector();
+		var button = new Button { Content = "Target" };
+		await UITestHelper.Load(button);
+		button.Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		VirtualKeyModifiers? releaseModifiers = null;
+		button.AddHandler(
+			UIElement.KeyUpEvent,
+			new KeyEventHandler((_, e) =>
+			{
+				if (e.Key == released)
+				{
+					releaseModifiers ??= e.KeyboardModifiers;
+				}
+			}),
+			handledEventsToo: true);
+
+		try
+		{
+			injector.InjectKeyboardInput(new[] { Key(released), Key(held), KeyUp(released) });
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(releaseModifiers);
+			Assert.IsTrue(releaseModifiers!.Value.HasFlag(expected), $"Expected {expected} while {held} is held, got {releaseModifiers}.");
+		}
+		finally
+		{
+			injector.InjectKeyboardInput(new[] { KeyUp(released), KeyUp(held) });
 		}
 	}
 
