@@ -85,7 +85,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 #if HAS_UNO
 		[TestCleanup]
-		public void Cleanup() => TestServices.WindowHelper.WindowContent = null;
+		public void Cleanup()
+		{
+			DisableAccessibility();
+			TestServices.WindowHelper.WindowContent = null;
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]
