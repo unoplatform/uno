@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Foundation;
 using Uno.Storage.Internal;
@@ -15,9 +16,6 @@ namespace Uno.Storage;
 /// </summary>
 public static class ApplicationDataMigrator
 {
-	private static readonly HashSet<string> _legacyTypeNames =
-		new(DataTypeSerializer.SupportedTypes.Select(type => type.FullName!), StringComparer.Ordinal);
-
 	/// <summary>
 	/// Moves application settings written by Uno Platform versions prior to 7.0 out of
 	/// <see cref="NSUserDefaults.StandardUserDefaults"/> and into the dedicated <c>UnoApplicationData</c>
@@ -25,6 +23,9 @@ public static class ApplicationDataMigrator
 	/// <see cref="ApplicationData.RoamingSettings"/> since 7.0.
 	/// </summary>
 	/// <returns>The number of legacy entries taken out of the standard user defaults.</returns>
+	/// <exception cref="IOException">
+	/// The suite could not be saved. Nothing was removed from the standard user defaults, so a later call can retry.
+	/// </exception>
 	/// <remarks>
 	/// Nothing moves unless this is called, so an app that never shipped on a pre-7.0 version of Uno
 	/// Platform never needs it. Call it during startup, before the settings are first read.
@@ -35,52 +36,44 @@ public static class ApplicationDataMigrator
 	/// </remarks>
 	public static int MigrateSettings()
 	{
-		var source = NSUserDefaults.StandardUserDefaults;
-		var target = UnoUserDefaults.Instance;
-		var targetDomain = UnoUserDefaults.Domain;
+		var standard = NSUserDefaults.StandardUserDefaults;
 
-		List<string>? legacyKeys = null;
-
-		foreach (var pair in source.ToDictionary())
-		{
-			if (pair.Key is not NSString key || pair.Value is null || pair.Value.ToString() is not { } valueText || !IsLegacyValue(valueText))
-			{
-				continue;
-			}
-
-			// Anything already written through the 7.0 API is newer than what was left behind, so it wins.
-			if (!targetDomain.ContainsKey(key))
-			{
-				target.SetValueForKey(pair.Value, key);
-			}
-
-			(legacyKeys ??= new List<string>()).Add(key.ToString());
-		}
-
-		if (legacyKeys is null)
-		{
-			return 0;
-		}
-
-		// NSUserDefaults has no transaction. Committing every write before the first delete is what makes
-		// an interrupted migration recoverable: a crash can leave an entry in both places - and the next
-		// call finishes the job - but never in neither.
-		target.Synchronize();
-
-		foreach (var legacyKey in legacyKeys)
-		{
-			source.RemoveObject(legacyKey);
-		}
-
-		source.Synchronize();
-
-		return legacyKeys.Count;
+		return LegacySettingsMigration.Migrate(
+			new NSUserDefaultsStore(standard, standard.ToDictionary()),
+			new NSUserDefaultsStore(UnoUserDefaults.Instance, UnoUserDefaults.Domain));
 	}
 
-	private static bool IsLegacyValue(string value)
+	private sealed class NSUserDefaultsStore : ISettingsMigrationStore
 	{
-		var separatorIndex = value.IndexOf(':');
+		private readonly NSUserDefaults _defaults;
+		private readonly NSDictionary _domain;
 
-		return separatorIndex > 0 && _legacyTypeNames.Contains(value.Substring(0, separatorIndex));
+		public NSUserDefaultsStore(NSUserDefaults defaults, NSDictionary domain)
+		{
+			_defaults = defaults;
+			_domain = domain;
+		}
+
+		public IEnumerable<KeyValuePair<string, object>> Entries
+		{
+			get
+			{
+				foreach (var pair in _domain)
+				{
+					if (pair.Key is NSString key && key.ToString() is { } name && pair.Value is { } value)
+					{
+						yield return new(name, value);
+					}
+				}
+			}
+		}
+
+		public bool ContainsKey(string key) => _domain.ContainsKey((NSString)key);
+
+		public void SetValue(string key, object value) => _defaults.SetValueForKey((NSObject)value, (NSString)key);
+
+		public void Remove(string key) => _defaults.RemoveObject(key);
+
+		public bool Synchronize() => _defaults.Synchronize();
 	}
 }
