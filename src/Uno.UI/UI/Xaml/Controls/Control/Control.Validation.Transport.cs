@@ -114,7 +114,7 @@ public partial class Control
 		// After the errors have settled, so that enabling a control whose source already has errors does not
 		// show a cleared state first. The clear is outside the guard above: opting out has to leave the group
 		// even when the global switch was turned off in between.
-		if (IsValidationEnabled)
+		if (ValidationParticipant is not null)
 		{
 			UpdateValidationStates();
 		}
@@ -141,7 +141,7 @@ public partial class Control
 
 	private void SynchronizeValidation(BindingExpression expression)
 	{
-		if (!IsValidationEnabled)
+		if (ValidationParticipant is null)
 		{
 			ClearValidationIfOwned(expression);
 			return;
