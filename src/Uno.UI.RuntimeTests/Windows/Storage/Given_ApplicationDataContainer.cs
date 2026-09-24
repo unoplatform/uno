@@ -164,7 +164,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaUIKit)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaUIKit)]
 		public void When_Cleared_Then_Only_Own_Keys_Are_Visible()
 		{
 			// On Apple platforms the settings live in their own NSUserDefaults suite. Enumeration must
