@@ -47,12 +47,13 @@ applied with `useTransitions: false`; a missing group is silent, as WinUI discar
 `InputValidationKind.Auto` is never resolved and behaves as `Compact`; and the disabled branch deliberately
 leaves the error group where it was.
 
-**Q6 is answered.** Three framework triggers, plus per-control call sites:
+**Q6 is answered.** Two framework triggers, plus per-control call sites:
 
-1. The `Validation.HasErrors` changed callback — covers all eight participants with no per-control code.
-2. The `InputValidationMode` / `InputValidationKind` / `HasValidationErrors` changed callbacks — shared
-   statics on `Validation`, which each participating control registers its own dependency properties with.
-3. `FrameworkElement.InvokeApplyTemplate`, immediately after `OnApplyTemplate()` — which also answers §2.2's
+1. The `InputValidationMode` / `InputValidationKind` / `HasValidationErrors` changed callbacks — protected
+   statics on `Control`, which each participating control registers its own dependency properties with.
+   Covers all eight participants with no per-control code, and being protected rather than internal is what
+   lets a control outside Uno.UI register against the same three.
+2. `FrameworkElement.InvokeApplyTemplate`, immediately after `OnApplyTemplate()` — which also answers §2.2's
    open sub-question about re-application after template realization. Measured by mutation, not assumed: with
    it removed, a `NumberBox` that reported errors before its template existed lands in no state at all. A
    `CheckBox` masks this, because its own `ChangeVisualState` call site runs after the template applies.
@@ -65,8 +66,8 @@ what says `CheckBox` and `RadioButton` need their own call despite deriving from
 holds exactly as written: `TextBox` and `PasswordBox` take the call in their `UpdateVisualState` override
 instead, which is also where WinUI puts it (`CTextBoxBase::UpdateVisualState:3591`).
 
-`IInputValidationControl.ErrorTemplate` (§5) shipped with this, backed by a `Validation.ErrorTemplate`
-attached property. Nothing renders it yet — that needs §4.
+`IInputValidationControl.ErrorTemplate` (§5) shipped with this, as a dependency property registered by each
+participating control. Nothing renders it yet — that needs §4.
 
 ### 2.1–2.2 The original proposal, as written
 
