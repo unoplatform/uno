@@ -45,11 +45,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_TextBlock
 	{
-#if __ANDROID__
-		[Ignore("Visually looks good, but fails :(")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
 		[TestMethod]
 		[DataRow((ushort)400, FontStyle.Italic, FontStretch.Condensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_Condensed-MediumItalic.ttf")]
 		[DataRow((ushort)400, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-Regular.ttf")]
@@ -167,8 +162,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task Check_FontFallback()
 		{
 			var SUT = new TextBlock { Text = "示例文本", FontSize = 24 };
-			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
-			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+			var font = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.FontHandle;
+			Assert.IsFalse(font.ContainsGlyph(SUT.Text[0]));
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
 
@@ -201,8 +196,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				LineHeight = 34,
 			};
 
-			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
-			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+			var font = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.FontHandle;
+			Assert.IsFalse(font.ContainsGlyph(SUT.Text[0]));
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
 
@@ -248,8 +243,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/NotoSansArabic-Regular.ttf"),
 			};
 
-			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
-			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+			var font = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.FontHandle;
+			Assert.IsFalse(font.ContainsGlyph(SUT.Text[0]));
 
 			var matched = false;
 
@@ -496,9 +491,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("Fails")]
-#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Multiline_Wrapping_Text_Ends_In_Too_Many_Spaces()
 		{
 			var SUT = new TextBlock
@@ -742,6 +735,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Inlines_Transitively_Change()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -760,24 +754,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var bitmap = await UITestHelper.ScreenShot(SUT);
 			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), ((SolidColorBrush)Uno.UI.Xaml.Media.DefaultBrushes.TextForegroundBrush).Color, tolerance: 15);
-		}
-#endif
-
-#if __WASM__
-		[TestMethod]
-		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19380")]
-		public async Task When_Changing_Text_Through_Inlines()
-		{
-			var SUT = new TextBlock { Text = "Initial Text" };
-			await Uno.UI.RuntimeTests.Helpers.UITestHelper.Load(SUT);
-			var width = Uno.UI.Xaml.WindowManagerInterop.GetClientViewSize(SUT.HtmlId).clientSize.Width;
-
-			SUT.Inlines.Clear();
-			SUT.Inlines.Add(new Run { Text = "Updated Text" });
-
-			await Uno.UI.RuntimeTests.Helpers.UITestHelper.WaitForIdle();
-
-			Uno.UI.Xaml.WindowManagerInterop.GetClientViewSize(SUT.HtmlId).clientSize.Width.Should().BeApproximately(width, precision: width * 0.4);
 		}
 #endif
 
@@ -884,9 +860,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !__ANDROID__
 		[Ignore("Android-only test for AndroidAssets backward compatibility")]
-#endif
 		public async Task When_FontFamily_In_AndroidAsset()
 		{
 			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
@@ -917,9 +891,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
 		public async Task When_SolidColorBrush_With_Opacity()
 		{
 			var SUT = new TextBlock
@@ -961,9 +932,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
 		public async Task When_Text_Wrapped_At_LineBreak()
 		{
 			var tb1 = new TextBlock()
@@ -1000,23 +968,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(container);
 			await WindowHelper.WaitFor(() => SUT.DesiredSize != default);
 
-#if !__WASM__ // Disabled due to #14231
 			Assert.AreEqual(0, SUT.DesiredSize.Width);
-#endif
 			Assert.IsGreaterThan(0, SUT.DesiredSize.Height);
 		}
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/289")]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("Layout logic forces DesiredSize to be smaller than availableSize, which prevents us from fixing the behaviour to match wasm and skia.")]
-#endif
 		[DataRow(TextTrimming.None)]
-#if __WASM__
-		[DataRow(TextTrimming.Clip)]
-		[DataRow(TextTrimming.CharacterEllipsis)]
-		[DataRow(TextTrimming.WordEllipsis)]
-#endif
 		public async Task When_Text_Does_Not_Fit(TextTrimming trimming)
 		{
 			var lv = new ListView()
@@ -1044,7 +1002,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if !__APPLE_UIKIT__ // Line height is not supported on iOS
 		[TestMethod]
 		public async Task When_Empty_TextBlock_LineHeight_Override()
 		{
@@ -1059,12 +1016,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(container);
 			await WindowHelper.WaitFor(() => SUT.DesiredSize != default);
 
-#if !__WASM__ // Disabled due to #14231
 			Assert.AreEqual(0, SUT.DesiredSize.Width);
-#endif
 			Assert.AreEqual(100, SUT.DesiredSize.Height);
 		}
-#endif
 
 		[TestMethod]
 		public async Task When_Empty_TextBlocks_Stacked()
@@ -1249,7 +1203,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 		}
 
-#if HAS_RENDER_TARGET_BITMAP
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21322")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
@@ -1283,7 +1236,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var screenshot2 = await UITestHelper.ScreenShot(duplicate);
 			await ImageAssert.AreSimilarAsync(screenshot, screenshot2);
 		}
-#endif
 
 
 #if __SKIA__
@@ -1383,8 +1335,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_PointerDrag()
 		{
@@ -1431,8 +1381,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_TappedMouse_Then_ClearSelection()
 		{
@@ -1669,8 +1617,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_DoubleTapped()
 		{
@@ -1719,8 +1665,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_Chunking_DoubleTapped()
 		{
@@ -1762,8 +1706,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_Wrapping_DoubleTapped()
 		{
@@ -1814,8 +1756,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif __WASM__
-		[Ignore("Requires authorization to access to the clipboard on WASM.")]
 #endif
 		// Clipboard is currently not available on skia-WASM
 		[TestMethod]
@@ -1857,8 +1797,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif __WASM__
-		[Ignore("Requires authorization to access to the clipboard on WASM.")]
 #endif
 		// Clipboard is currently not available on skia-WASM
 		// Flaky on Skia.iOS uno-private#795
@@ -1975,8 +1913,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		// Clipboard is currently not available on skia-WASM
 		[TestMethod]
@@ -2032,11 +1968,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24126")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Command-bar overflow timing is only validated on Skia #9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Command-bar overflow timing is only validated on Skia #9080
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_ContextMenu_SelectAll()
 		{
@@ -2145,8 +2079,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_TouchScroll_Then_DoesNotSelectText()
 		{
@@ -2179,8 +2111,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_TouchScroll_Then_DoesNotAlterSelection()
 		{
@@ -2553,5 +2483,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_BaselineOffset_Reflects_First_Line()
+		{
+			var unpadded = new TextBlock { Text = "Baseline", FontSize = 24 };
+			var padded = new TextBlock { Text = "Baseline", FontSize = 24, Padding = new Thickness(20) };
+			var panel = new StackPanel();
+			panel.Children.Add(unpadded);
+			panel.Children.Add(padded);
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				await WindowHelper.WaitForIdle();
+
+				var baseline = unpadded.BaselineOffset;
+
+				// The first line's baseline ≈ the font ascent; for FontSize=24 it lands well inside
+				// (0.5·FontSize, 1.5·FontSize) (CTextBlock::GetBaselineOffset).
+				Assert.IsTrue(baseline > unpadded.FontSize * 0.5, $"BaselineOffset {baseline} should exceed half the font size ({unpadded.FontSize})");
+				Assert.IsTrue(baseline < unpadded.FontSize * 1.5, $"BaselineOffset {baseline} should be within 1.5x the font size ({unpadded.FontSize})");
+
+				// WinUI measures the baseline from the content box, so Padding must not change it
+				// (CTextBlock::GetBaselineOffset DWrite branch adds no padding). This also runs on
+				// NativeWinUI, so it doubles as a parity check.
+				Assert.AreEqual(baseline, padded.BaselineOffset, 0.5, "BaselineOffset must be independent of Padding");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_TextLineBounds_Trims_Line_Height()
+		{
+			static TextBlock Create(TextLineBounds bounds) => new() { Text = "Bounds", FontSize = 24, TextLineBounds = bounds };
+
+			var full = Create(TextLineBounds.Full);
+			var trimToBaseline = Create(TextLineBounds.TrimToBaseline);
+			var tight = Create(TextLineBounds.Tight);
+
+			var panel = new StackPanel();
+			panel.Children.Add(full);
+			panel.Children.Add(trimToBaseline);
+			panel.Children.Add(tight);
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				await WindowHelper.WaitForIdle();
+
+				// CCompositeFontFamily::GetTextLineBoundsMetrics — Full keeps ascent+descent, TrimToBaseline
+				// drops the descent, and Tight trims to cap height at both ends.
+				Assert.IsTrue(tight.ActualHeight > 0, $"Tight height should be positive (was {tight.ActualHeight})");
+				Assert.IsTrue(trimToBaseline.ActualHeight < full.ActualHeight,
+					$"TrimToBaseline height {trimToBaseline.ActualHeight} should be less than Full height {full.ActualHeight}");
+				Assert.IsTrue(tight.ActualHeight < trimToBaseline.ActualHeight,
+					$"Tight height {tight.ActualHeight} should be less than TrimToBaseline height {trimToBaseline.ActualHeight}");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }

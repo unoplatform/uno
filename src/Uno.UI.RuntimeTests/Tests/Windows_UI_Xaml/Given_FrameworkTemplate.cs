@@ -7,13 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 
-#if __ANDROID__
-using View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -59,6 +53,21 @@ partial class Given_FrameworkTemplate // tests
 
 		// Act & Assert
 		Assert.AreNotEqual(template1, template2);
+	}
+
+	[TestMethod]
+	public void When_CreatedThroughMarkupHelper_Then_BehavesLikeDirectConstruction()
+	{
+		// Arrange
+		FrameworkTemplateBuilder factory = (_, _) => new Border();
+		var viaCtor = new FrameworkTemplate(null, factory);
+
+		// Act
+		var viaMarkupHelper = Uno.UI.Helpers.MarkupHelper.CreateFrameworkTemplate(null, factory);
+
+		// Assert
+		Assert.AreEqual(viaCtor, viaMarkupHelper);
+		Assert.AreEqual(viaCtor.GetHashCode(), viaMarkupHelper.GetHashCode());
 	}
 
 	[TestMethod]

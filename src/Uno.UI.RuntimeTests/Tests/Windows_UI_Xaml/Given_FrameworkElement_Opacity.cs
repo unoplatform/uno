@@ -63,7 +63,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			width = SUT.ImageOpacity0_5.ActualWidth;
 			height = SUT.ImageOpacity0_5.ActualHeight;
-			ImageAssert.HasColorAtChild(si, SUT.ImageOpacity0_5, width / 2, height / 2, "#FFFEF3C2");
+			// Half opacity over white lands this pixel exactly on .5 in every channel, so which way it rounds is the
+			// rasteriser's to choose - as When_Opacity_Inner already allows for the same image.
+			ImageAssert.HasColorAtChild(si, SUT.ImageOpacity0_5, width / 2, height / 2, "#FFFEF3C2", tolerance: 1);
 		}
 
 		[TestMethod]

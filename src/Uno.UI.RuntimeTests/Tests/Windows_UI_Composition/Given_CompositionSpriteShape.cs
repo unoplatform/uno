@@ -21,7 +21,6 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas;
-using SkiaSharp;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
@@ -400,10 +399,10 @@ public class Given_CompositionSpriteShape
 			$"Stroke height mismatch. Expected ~{expectedStrokePixels}px (±{tolerance}), got {strokePixels:F2}px (physical coverage: {coveragePhysical:F2}, scale: {rasterizationScale}).");
 	}
 
-	// Regression guard for damage-region rendering: the geometry a shape reports for the damage region
-	// (GetRenderPath / TryGetRenderBounds) must match the transform CompositionShape.Render applies to the
-	// canvas — its Offset and CombinedTransformMatrix (Scale/Rotation around CenterPoint). Before the fix these
-	// ignored Offset/Rotation, so an animating AnimatedIcon (whose shapes rotate about a centre and are offset)
+	// Regression guard for damage-region rendering: the bounds a shape reports for the damage region
+	// (TryGetRenderBounds) must match the transform CompositionShape.Render applies to the canvas — its
+	// Offset and CombinedTransformMatrix (Scale/Rotation around CenterPoint). Before the fix these ignored
+	// Offset/Rotation, so an animating AnimatedIcon (whose shapes rotate about a centre and are offset)
 	// damaged the wrong region and left the previous frame's pixels un-erased.
 	[TestMethod]
 	[RunsOnUIThread]
@@ -412,17 +411,12 @@ public class Given_CompositionSpriteShape
 		var shape = CreateUnitRectShape(20, 10);
 
 		Assert.IsTrue(shape.TryGetRenderBounds(out var baseline));
-		AssertRectClose(new SKRect(0, 0, 20, 10), baseline);
+		AssertRectClose(new Rect(0, 0, 20, 10), baseline);
 
 		shape.Offset = new Vector2(100, 50);
 
 		Assert.IsTrue(shape.TryGetRenderBounds(out var moved));
-		AssertRectClose(new SKRect(100, 50, 120, 60), moved);
-
-		using var builder = new SKPathBuilder();
-		Assert.IsTrue(shape.GetRenderPath(builder));
-		using var path = builder.Detach();
-		AssertRectClose(new SKRect(100, 50, 120, 60), path.Bounds);
+		AssertRectClose(new Rect(100, 50, 20, 10), moved);
 	}
 
 	[TestMethod]
@@ -434,15 +428,10 @@ public class Given_CompositionSpriteShape
 		shape.RotationAngleInDegrees = 90;
 
 		// A 20x10 rect rotated 90° about its centre (10,5) becomes a 10x20 AABB centred at (10,5).
-		var expected = new SKRect(5, -5, 15, 15);
+		var expected = new Rect(5, -5, 10, 20);
 
 		Assert.IsTrue(shape.TryGetRenderBounds(out var rotated));
 		AssertRectClose(expected, rotated);
-
-		using var builder = new SKPathBuilder();
-		Assert.IsTrue(shape.GetRenderPath(builder));
-		using var path = builder.Detach();
-		AssertRectClose(expected, path.Bounds);
 	}
 
 	private static CompositionSpriteShape CreateUnitRectShape(float width, float height)
@@ -461,7 +450,7 @@ public class Given_CompositionSpriteShape
 		return shape;
 	}
 
-	private static void AssertRectClose(SKRect expected, SKRect actual, float tolerance = 0.5f)
+	private static void AssertRectClose(Rect expected, Rect actual, double tolerance = 0.5)
 		=> Assert.IsTrue(
 			Math.Abs(expected.Left - actual.Left) <= tolerance
 			&& Math.Abs(expected.Top - actual.Top) <= tolerance

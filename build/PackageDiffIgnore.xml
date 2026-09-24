@@ -2377,10 +2377,37 @@
 		  <Member fullName="Uno.UI.Runtime.Skia.Android.AndroidHost" reason="AndroidHost reduced to internal; use UseAndroid() on the host builder (breaking changes for 7.0)" />
 		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>/<Methods> below). -->
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
+		  <!-- WASM DOM renderer removal: the DOM-interop event payload type is unraisable now that its only producer (UIElementWasmExtensions) is gone. -->
+		  <Member fullName="Uno.Extensions.HtmlCustomEventArgs" reason="Removed with the WebAssembly DOM renderer and its HTML interop surface (breaking changes for 7.0, uno#8339)" />
+
 		  <!-- BC01: legacy templated-parent mechanism removed; the template factory is now a plain System.Func (uno#18672, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.FrameworkTemplateBuilder" reason="BC01: legacy template builder delegate removed with the ambient TemplatedParentScope (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.TemplateMaterializationSettings" reason="BC01: moved to the Uno.UI namespace, alongside FrameworkTemplateBuilder and TemplateManager -- it is Uno plumbing with no WinUI counterpart (uno#18672, breaking changes for 7.0)" />
+
+		  <!-- Font fallback moved behind the drawing-backend seam into Uno.UI.Composition.Drawing and became internal; it was Uno plumbing sitting in a WinUI namespace, with no WinUI counterpart. -->
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.IFontFallbackService behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.CoverageTableFontFallbackService behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.FontFallbackCoverageRange" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.FontFallbackCoverageRange behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.EmptyFontFallbackService" reason="Removed the no-op fallback service; the seam represents the absence of a fallback service as no service at all (breaking changes for 7.0)" />
+
+		  <!-- SVG moved behind the drawing-backend seam: the renderer is supplied through the host builder instead of an ApiExtension-registered public interface. -->
+		  <Member fullName="Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider" reason="Replaced by the internal Uno.UI.Composition.Drawing.ISvgRenderer, supplied through IUnoPlatformHostBuilder.SvgRenderer() (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Svg.SvgProvider" reason="The Uno.UI.Svg add-in now implements the internal ISvgRenderer as SkiaSvgRenderer; it is registered through the host builder rather than exposed as a public provider (breaking changes for 7.0)" />
+
+		  <!-- The Lottie source types moved out of the Uno.UI.Lottie add-in into Uno.UI, where the SkiaSharp-free
+		       managed engine lives; the add-in keeps only the internal Skottie-backed renderer. Same namespaces and
+		       same public shape, so they read as removed only against the Uno.WinUI.Lottie package. -->
+		  <Member fullName="Uno.UI.Lottie.LottieVisualSourceProvider" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualOptions" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualSource" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.ThemableLottieVisualSource" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+
+		  <!-- Legacy Frame navigation mode removed: Frame always follows WinUI. The FeatureConfiguration holders lose their only flag, and the page pool had no other user (members paired in <Properties>/<Methods> below). -->
+		  <Member fullName="Uno.UI.FeatureConfiguration/Frame" reason="Removed empty FeatureConfiguration.Frame holder after deleting UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/Page" reason="Removed empty FeatureConfiguration.Page holder after deleting IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.PagePool" reason="Removed the Page instance pool; only the legacy Frame navigation mode used it (breaking changes for 7.0, uno#8339)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -2459,6 +2486,10 @@
 		  <!-- DependencyObject as class (BC26): fields of the removed DependencyObjectStore (incl. its nested TraceProvider). -->
 		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
 
+		  <!-- BC62: Application.TraceProvider's misspelled LauchedStart/LauchedStop consts were corrected to LaunchedStart/LaunchedStop; the old spellings read as removed fields. -->
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStart" reason="Corrected the LauchedStart typo to LaunchedStart (BC62, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStop" reason="Corrected the LauchedStop typo to LaunchedStop (BC62, breaking changes for 7.0)" />
+
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
 		  <!-- Duration.Type had no counterpart at all in WinUI's projected Duration, which reaches the state through HasTimeSpan and comparison with Automatic/Forever; it is internal now. -->
@@ -2490,6 +2521,11 @@
 		  <!-- Reference compilation produced are gone. _fullyInitialized sat under !UNO_HAS_ENHANCED_LIFECYCLE, -->
 		  <!-- which Skia defines, so it never existed in the build lib/ now ships.                            -->
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.NavigationViewItemBase::_fullyInitialized" reason="Reference flavor folded into Skia; field was compiled only under !UNO_HAS_ENHANCED_LIFECYCLE (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- The Win32 host no longer has a "pick for me" backend value: the graphics registry negotiates the
+		       order, and the host opts out of kinds instead (ForceRenderingBackend/DisableRenderingBackends). -->
+		  <Member fullName="Uno.UI.Hosting.Win32RenderingBackend Uno.UI.Hosting.Win32RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Hosting.X11RenderingBackend Uno.UI.Hosting.X11RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
 	  </Fields>
 	  <Properties>
 		  <!-- Fluent resources-version selector removed: only version 2 exists and WinAppSDK has no equivalent surface. Accessors paired in the <Methods> block below (BC71, breaking changes for 7.0). -->
@@ -2767,6 +2803,7 @@
 		  <!-- Uno-only public members removed/hidden to match WinUI (accessors paired in <Methods> below). -->
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata::DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.SwipeItems::Size()" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
 		  <!-- ScrollControllerPanRequestedEventArgs.PointerPoint retyped from Windows.UI.Input.PointerPoint to Microsoft.UI.Input.PointerPoint (getter/ctor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Retyped ScrollControllerPanRequestedEventArgs.PointerPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
 
@@ -2786,6 +2823,12 @@
 
 		  <!-- BC01: TemplateMaterializationSettings moved to the Uno.UI namespace, and its per-member callback gave way to the OnMemberCreated instance method so the templated parent cannot be captured strongly (accessors paired in <Methods> below). -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings::(TemplatedParent|TemplateMemberCreatedCallback)\(\)" reason="BC01: type moved to Uno.UI; TemplateMemberCreatedCallback replaced by OnMemberCreated (uno#18672, breaking changes for 7.0)" isRegex="true" />
+
+		  <!-- Legacy Frame navigation mode flags (accessors paired in <Methods> below). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Frame::UseWinUIBehavior()" reason="Removed Frame.UseWinUIBehavior; Frame always follows WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page::IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled; only the legacy Frame navigation mode pooled pages (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -3299,6 +3342,11 @@
 		  <!-- Binary-compat shim for the removed Setter<T> (see <Types> above); no source callers. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Removed SetterBase.set_Property shim (BC63, breaking changes for 7.0)" />
 
+		  <!-- Renamed to ForceRenderingBackend, paired with the new DisableRenderingBackends: with negotiation in
+		       place the old name read as "prefer", when it actually pinned a single backend. -->
+		  <Member fullName="Uno.UI.Hosting.Win32HostBuilder Uno.UI.Hosting.Win32HostBuilder.RenderingBackend(Uno.UI.Hosting.Win32RenderingBackend backend)" reason="Renamed to ForceRenderingBackend now that the graphics registry negotiates (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Hosting.X11HostBuilder Uno.UI.Hosting.X11HostBuilder.RenderingBackend(Uno.UI.Hosting.X11RenderingBackend backend)" reason="Renamed to ForceRenderingBackend now that the graphics registry negotiates (breaking changes for 7.0)" />
+
 		  <!-- DependencyObject is now a base class (BC26). The dependency-property store, binder and TemplatedParent
 		       members it used to surface on every type (via the DependencyObjectGenerator per-type mixin) are now
 		       inherited from the DependencyObject base, so the diff reports them "removed" on each previously-declaring
@@ -3415,6 +3463,20 @@
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border.get_ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.OnIsDropDownOpenChanged(System.Boolean oldIsDropDownOpen, System.Boolean newIsDropDownOpen)" reason="Hid Uno-only ComboBox.OnIsDropDownOpenChanged (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.set_BackStack(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Navigation.PageStackEntry&gt; value)" reason="Removed Frame.BackStack setter to match WinUI get-only property (breaking changes for 7.0, uno#8339)" />
+		  <!-- SwipeItems keeps only its IList<SwipeItem> projection: the never-implemented First/GetMany/ReplaceAll are removed, the other IVector<T> members are internal, and VectorChanged is an explicit IObservableVector<SwipeItem> implementation (get_Size/VectorChanged paired in <Properties>/<Events>). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.SwipeItem Microsoft.UI.Xaml.Controls.SwipeItems.First()" reason="Removed Uno-only SwipeItems.First; not part of WinUI's IList projection (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.SwipeItems.GetMany(System.UInt32 startIndex, Microsoft.UI.Xaml.Controls.SwipeItem[] items)" reason="Removed Uno-only SwipeItems.GetMany; not part of WinUI's IList projection (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.ReplaceAll(Microsoft.UI.Xaml.Controls.SwipeItem[] items)" reason="Removed Uno-only SwipeItems.ReplaceAll; not part of WinUI's IList projection (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.SwipeItem Microsoft.UI.Xaml.Controls.SwipeItems.GetAt(System.UInt32 index)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.SwipeItems.get_Size()" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.SwipeItems.IndexOf(Microsoft.UI.Xaml.Controls.SwipeItem value, System.UInt32&amp; index)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.SetAt(System.UInt32 index, Microsoft.UI.Xaml.Controls.SwipeItem value)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.InsertAt(System.UInt32 index, Microsoft.UI.Xaml.Controls.SwipeItem value)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.RemoveAt(System.UInt32 index)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.Append(Microsoft.UI.Xaml.Controls.SwipeItem value)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.RemoveAtEnd()" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.add_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; value)" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.remove_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; value)" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- OnTemplateRecycled made an explicit interface implementation (BC), so the public methods read as removed. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.OnTemplateRecycled()" reason="Made OnTemplateRecycled an explicit interface implementation (breaking changes for 7.0, uno#8339)" />
@@ -3489,6 +3551,19 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Legacy Frame navigation mode: flag accessors (paired with the <Properties> entries above), the OnContentChanged override that synced the legacy current entry, and the FrameNavigationHelper members that read the legacy per-entry page instance. -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Frame.get_UseWinUIBehavior()" reason="Removed Frame.UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Frame.set_UseWinUIBehavior(System.Boolean value)" reason="Removed Frame.UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page.get_IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Page.set_IsPoolingEnabled(System.Boolean value)" reason="Removed Page.IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool.get_TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PagePool.set_TimeToLive(System.TimeSpan value)" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool.get_IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PagePool.set_IsPoolingEnabled(System.Boolean value)" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.OnContentChanged(System.Object oldValue, System.Object newValue)" reason="Removed Frame override that synced the legacy navigation entry; ContentControl.OnContentChanged still applies (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.GetInstance(Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.EnsurePageInitialized(Microsoft.UI.Xaml.Controls.Frame frame, Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
@@ -3496,6 +3571,7 @@
 		  <Member fullName="Microsoft.UI.Xaml.WindowActivatedEventHandler Microsoft.UI.Xaml.Window::Activated" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler Microsoft.UI.Xaml.Window::SizeChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler Microsoft.UI.Xaml.Window::VisibilityChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; Microsoft.UI.Xaml.Controls.SwipeItems::VectorChanged" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- ====================================================================== -->
 		  <!-- BEGIN WinUI sync (Category B): shadow event removals.                  -->
@@ -3553,6 +3629,12 @@
 		  <Member fullName="Uno.UI.FluentTheme.v2" reason="Merged the Uno.UI.FluentTheme.v2 assembly into Uno.UI.FluentTheme; the v2 suffix was an artifact of the removed Fluent V1/V2 split (BC71, breaking changes for 7.0)" />
 	  </Assemblies>
 	  <Types>
+		  <!-- Uno.UI.Lottie shipped a vendored copy of the corefx System.Json parser as public types; it was replaced by the in-box System.Text.Json. -->
+		  <Member fullName="System.Json.JsonValue" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
+		  <Member fullName="System.Json.JsonObject" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
+		  <Member fullName="System.Json.JsonArray" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
+		  <Member fullName="System.Json.JsonPrimitive" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
+		  <Member fullName="System.Json.JsonType" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
 		  <!-- Fluent V1 public surface, removed with the Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.XamlControlsResourcesV1" reason="Removed XamlControlsResourcesV1; it sourced an empty V1 dictionary and had no consumers (BC71, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FluentTheme.v1.GlobalStaticResources" reason="Generated with the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" />
@@ -3805,10 +3887,37 @@
 		  <Member fullName="Uno.UI.Runtime.Skia.Android.AndroidHost" reason="AndroidHost reduced to internal; use UseAndroid() on the host builder (breaking changes for 7.0)" />
 		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>/<Methods> below). -->
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
+		  <!-- WASM DOM renderer removal: the DOM-interop event payload type is unraisable now that its only producer (UIElementWasmExtensions) is gone. -->
+		  <Member fullName="Uno.Extensions.HtmlCustomEventArgs" reason="Removed with the WebAssembly DOM renderer and its HTML interop surface (breaking changes for 7.0, uno#8339)" />
+
 		  <!-- BC01: legacy templated-parent mechanism removed; the template factory is now a plain System.Func (uno#18672, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.FrameworkTemplateBuilder" reason="BC01: legacy template builder delegate removed with the ambient TemplatedParentScope (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.TemplateMaterializationSettings" reason="BC01: moved to the Uno.UI namespace, alongside FrameworkTemplateBuilder and TemplateManager -- it is Uno plumbing with no WinUI counterpart (uno#18672, breaking changes for 7.0)" />
+
+		  <!-- Font fallback moved behind the drawing-backend seam into Uno.UI.Composition.Drawing and became internal; it was Uno plumbing sitting in a WinUI namespace, with no WinUI counterpart. -->
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.IFontFallbackService behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.CoverageTableFontFallbackService behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.FontFallbackCoverageRange" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.FontFallbackCoverageRange behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.EmptyFontFallbackService" reason="Removed the no-op fallback service; the seam represents the absence of a fallback service as no service at all (breaking changes for 7.0)" />
+
+		  <!-- SVG moved behind the drawing-backend seam: the renderer is supplied through the host builder instead of an ApiExtension-registered public interface. -->
+		  <Member fullName="Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider" reason="Replaced by the internal Uno.UI.Composition.Drawing.ISvgRenderer, supplied through IUnoPlatformHostBuilder.SvgRenderer() (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Svg.SvgProvider" reason="The Uno.UI.Svg add-in now implements the internal ISvgRenderer as SkiaSvgRenderer; it is registered through the host builder rather than exposed as a public provider (breaking changes for 7.0)" />
+
+		  <!-- The Lottie source types moved out of the Uno.UI.Lottie add-in into Uno.UI, where the SkiaSharp-free
+		       managed engine lives; the add-in keeps only the internal Skottie-backed renderer. Same namespaces and
+		       same public shape, so they read as removed only against the Uno.WinUI.Lottie package. -->
+		  <Member fullName="Uno.UI.Lottie.LottieVisualSourceProvider" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualOptions" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualSource" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.ThemableLottieVisualSource" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+
+		  <!-- Legacy Frame navigation mode removed: Frame always follows WinUI. The FeatureConfiguration holders lose their only flag, and the page pool had no other user (members paired in <Properties>/<Methods> below). -->
+		  <Member fullName="Uno.UI.FeatureConfiguration/Frame" reason="Removed empty FeatureConfiguration.Frame holder after deleting UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/Page" reason="Removed empty FeatureConfiguration.Page holder after deleting IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.PagePool" reason="Removed the Page instance pool; only the legacy Frame navigation mode used it (breaking changes for 7.0, uno#8339)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -3887,6 +3996,10 @@
 		  <!-- DependencyObject as class (BC26): fields of the removed DependencyObjectStore (incl. its nested TraceProvider). -->
 		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
 
+		  <!-- BC62: Application.TraceProvider's misspelled LauchedStart/LauchedStop consts were corrected to LaunchedStart/LaunchedStop; the old spellings read as removed fields. -->
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStart" reason="Corrected the LauchedStart typo to LaunchedStart (BC62, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStop" reason="Corrected the LauchedStop typo to LaunchedStop (BC62, breaking changes for 7.0)" />
+
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
 		  <!-- Duration.Type had no counterpart at all in WinUI's projected Duration, which reaches the state through HasTimeSpan and comparison with Automatic/Forever; it is internal now. -->
@@ -3918,6 +4031,11 @@
 		  <!-- Reference compilation produced are gone. _fullyInitialized sat under !UNO_HAS_ENHANCED_LIFECYCLE, -->
 		  <!-- which Skia defines, so it never existed in the build lib/ now ships.                            -->
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.NavigationViewItemBase::_fullyInitialized" reason="Reference flavor folded into Skia; field was compiled only under !UNO_HAS_ENHANCED_LIFECYCLE (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- The Win32 host no longer has a "pick for me" backend value: the graphics registry negotiates the
+		       order, and the host opts out of kinds instead (ForceRenderingBackend/DisableRenderingBackends). -->
+		  <Member fullName="Uno.UI.Hosting.Win32RenderingBackend Uno.UI.Hosting.Win32RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Hosting.X11RenderingBackend Uno.UI.Hosting.X11RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
 	  </Fields>
 	  <Properties>
 		  <!-- Fluent resources-version selector removed: only version 2 exists and WinAppSDK has no equivalent surface. Accessors paired in the <Methods> block below (BC71, breaking changes for 7.0). -->
@@ -4195,6 +4313,7 @@
 		  <!-- Uno-only public members removed/hidden to match WinUI (accessors paired in <Methods> below). -->
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata::DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.SwipeItems::Size()" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
 		  <!-- ScrollControllerPanRequestedEventArgs.PointerPoint retyped from Windows.UI.Input.PointerPoint to Microsoft.UI.Input.PointerPoint (getter/ctor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Retyped ScrollControllerPanRequestedEventArgs.PointerPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
 
@@ -4214,6 +4333,12 @@
 
 		  <!-- BC01: TemplateMaterializationSettings moved to the Uno.UI namespace, and its per-member callback gave way to the OnMemberCreated instance method so the templated parent cannot be captured strongly (accessors paired in <Methods> below). -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings::(TemplatedParent|TemplateMemberCreatedCallback)\(\)" reason="BC01: type moved to Uno.UI; TemplateMemberCreatedCallback replaced by OnMemberCreated (uno#18672, breaking changes for 7.0)" isRegex="true" />
+
+		  <!-- Legacy Frame navigation mode flags (accessors paired in <Methods> below). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Frame::UseWinUIBehavior()" reason="Removed Frame.UseWinUIBehavior; Frame always follows WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page::IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled; only the legacy Frame navigation mode pooled pages (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -4727,6 +4852,11 @@
 		  <!-- Binary-compat shim for the removed Setter<T> (see <Types> above); no source callers. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Removed SetterBase.set_Property shim (BC63, breaking changes for 7.0)" />
 
+		  <!-- Renamed to ForceRenderingBackend, paired with the new DisableRenderingBackends: with negotiation in
+		       place the old name read as "prefer", when it actually pinned a single backend. -->
+		  <Member fullName="Uno.UI.Hosting.Win32HostBuilder Uno.UI.Hosting.Win32HostBuilder.RenderingBackend(Uno.UI.Hosting.Win32RenderingBackend backend)" reason="Renamed to ForceRenderingBackend now that the graphics registry negotiates (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Hosting.X11HostBuilder Uno.UI.Hosting.X11HostBuilder.RenderingBackend(Uno.UI.Hosting.X11RenderingBackend backend)" reason="Renamed to ForceRenderingBackend now that the graphics registry negotiates (breaking changes for 7.0)" />
+
 		  <!-- DependencyObject is now a base class (BC26). The dependency-property store, binder and TemplatedParent
 		       members it used to surface on every type (via the DependencyObjectGenerator per-type mixin) are now
 		       inherited from the DependencyObject base, so the diff reports them "removed" on each previously-declaring
@@ -4843,6 +4973,20 @@
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border.get_ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.OnIsDropDownOpenChanged(System.Boolean oldIsDropDownOpen, System.Boolean newIsDropDownOpen)" reason="Hid Uno-only ComboBox.OnIsDropDownOpenChanged (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.set_BackStack(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Navigation.PageStackEntry&gt; value)" reason="Removed Frame.BackStack setter to match WinUI get-only property (breaking changes for 7.0, uno#8339)" />
+		  <!-- SwipeItems keeps only its IList<SwipeItem> projection: the never-implemented First/GetMany/ReplaceAll are removed, the other IVector<T> members are internal, and VectorChanged is an explicit IObservableVector<SwipeItem> implementation (get_Size/VectorChanged paired in <Properties>/<Events>). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.SwipeItem Microsoft.UI.Xaml.Controls.SwipeItems.First()" reason="Removed Uno-only SwipeItems.First; not part of WinUI's IList projection (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.SwipeItems.GetMany(System.UInt32 startIndex, Microsoft.UI.Xaml.Controls.SwipeItem[] items)" reason="Removed Uno-only SwipeItems.GetMany; not part of WinUI's IList projection (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.ReplaceAll(Microsoft.UI.Xaml.Controls.SwipeItem[] items)" reason="Removed Uno-only SwipeItems.ReplaceAll; not part of WinUI's IList projection (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.SwipeItem Microsoft.UI.Xaml.Controls.SwipeItems.GetAt(System.UInt32 index)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.SwipeItems.get_Size()" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.SwipeItems.IndexOf(Microsoft.UI.Xaml.Controls.SwipeItem value, System.UInt32&amp; index)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.SetAt(System.UInt32 index, Microsoft.UI.Xaml.Controls.SwipeItem value)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.InsertAt(System.UInt32 index, Microsoft.UI.Xaml.Controls.SwipeItem value)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.RemoveAt(System.UInt32 index)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.Append(Microsoft.UI.Xaml.Controls.SwipeItem value)" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.RemoveAtEnd()" reason="Hid Uno-only SwipeItems IVector members; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.add_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; value)" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SwipeItems.remove_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; value)" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- OnTemplateRecycled made an explicit interface implementation (BC), so the public methods read as removed. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.OnTemplateRecycled()" reason="Made OnTemplateRecycled an explicit interface implementation (breaking changes for 7.0, uno#8339)" />
@@ -4917,6 +5061,19 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Legacy Frame navigation mode: flag accessors (paired with the <Properties> entries above), the OnContentChanged override that synced the legacy current entry, and the FrameNavigationHelper members that read the legacy per-entry page instance. -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Frame.get_UseWinUIBehavior()" reason="Removed Frame.UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Frame.set_UseWinUIBehavior(System.Boolean value)" reason="Removed Frame.UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page.get_IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Page.set_IsPoolingEnabled(System.Boolean value)" reason="Removed Page.IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool.get_TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PagePool.set_TimeToLive(System.TimeSpan value)" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool.get_IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PagePool.set_IsPoolingEnabled(System.Boolean value)" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.OnContentChanged(System.Object oldValue, System.Object newValue)" reason="Removed Frame override that synced the legacy navigation entry; ContentControl.OnContentChanged still applies (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.GetInstance(Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.EnsurePageInitialized(Microsoft.UI.Xaml.Controls.Frame frame, Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
@@ -4924,6 +5081,7 @@
 		  <Member fullName="Microsoft.UI.Xaml.WindowActivatedEventHandler Microsoft.UI.Xaml.Window::Activated" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler Microsoft.UI.Xaml.Window::SizeChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler Microsoft.UI.Xaml.Window::VisibilityChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Microsoft.UI.Xaml.Controls.SwipeItem&gt; Microsoft.UI.Xaml.Controls.SwipeItems::VectorChanged" reason="SwipeItems.VectorChanged is an explicit IObservableVector implementation; WinUI projects IList only (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- ====================================================================== -->
 		  <!-- BEGIN WinUI sync (Category B): shadow event removals.                  -->

@@ -12,7 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics_Imaging
 	{
 		[TestMethod]
 		[DynamicData(nameof(GetEncoders))]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_CreateAsync_With(Guid encoderId, bool notImplementedException)
 		{
 			Exception excption = default;
@@ -50,7 +50,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics_Imaging
 			yield return new object[] { BitmapEncoder.PngEncoderId, false };
 			yield return new object[] { BitmapEncoder.TiffEncoderId, false };
 #else
-			if (OperatingSystem.IsAndroid())
+			// The per-OS lists below are the *native* encoders. A Skia head encodes through the neutral codec on
+			// every OS except the browser, which keeps its own, so it falls through to the shared list.
+			if (OperatingSystem.IsBrowser())
+			{
+				yield return new object[] { BitmapEncoder.BmpEncoderId, true };
+				yield return new object[] { BitmapEncoder.GifEncoderId, true };
+				yield return new object[] { BitmapEncoder.HeifEncoderId, true };
+				yield return new object[] { BitmapEncoder.JpegEncoderId, true };
+				yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
+				yield return new object[] { BitmapEncoder.PngEncoderId, true };
+				yield return new object[] { BitmapEncoder.TiffEncoderId, true };
+			}
+#if !__SKIA__
+			else if (OperatingSystem.IsAndroid())
 			{
 				yield return new object[] { BitmapEncoder.BmpEncoderId, true };
 				yield return new object[] { BitmapEncoder.GifEncoderId, true };
@@ -70,7 +83,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics_Imaging
 				yield return new object[] { BitmapEncoder.PngEncoderId, false };
 				yield return new object[] { BitmapEncoder.TiffEncoderId, true };
 			}
-#if !__SKIA__
 			else if (OperatingSystem.IsMacOS())
 			{
 				yield return new object[] { BitmapEncoder.BmpEncoderId, true };
@@ -82,16 +94,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics_Imaging
 				yield return new object[] { BitmapEncoder.TiffEncoderId, false };
 			}
 #endif
-			else if (OperatingSystem.IsBrowser())
-			{
-				yield return new object[] { BitmapEncoder.BmpEncoderId, true };
-				yield return new object[] { BitmapEncoder.GifEncoderId, true };
-				yield return new object[] { BitmapEncoder.HeifEncoderId, true };
-				yield return new object[] { BitmapEncoder.JpegEncoderId, true };
-				yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
-				yield return new object[] { BitmapEncoder.PngEncoderId, true };
-				yield return new object[] { BitmapEncoder.TiffEncoderId, true };
-			}
 			else
 			{
 				yield return new object[] { BitmapEncoder.BmpEncoderId, false };

@@ -23,8 +23,6 @@ using Uno.UI.Xaml.Input;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __APPLE_UIKIT__
-using UIKit;
 #else
 using Uno.UI;
 #endif
@@ -227,9 +225,6 @@ namespace Private.Infrastructure
 						message: $"Timeout waiting on {element} to be loaded",
 						timeoutMS: timeoutMS);
 				}
-#if __WASM__   // Adjust for re-layout failures in When_Inline_Items_SelectedIndex, When_Observable_ItemsSource_And_Added, When_Presenter_Doesnt_Take_Up_All_Space
-				await Do();
-#else
 				var dispatcher = UnitTestDispatcherCompat.From(element);
 
 				if (dispatcher.HasThreadAccess)
@@ -255,7 +250,6 @@ namespace Private.Infrastructure
 
 					await cts.Task;
 				}
-#endif
 			}
 
 			internal static async Task WaitForRelayouted(FrameworkElement frameworkElement)

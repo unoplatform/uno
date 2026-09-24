@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -22,8 +23,9 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Combinatorial.MSTest;
 
-#if __APPLE_UIKIT__
-using UIKit;
+#if __SKIA__
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -46,7 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var expectedGlyph = SymbolIcon.ConvertSymbolValueToGlyph((int)Symbol.Home);
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 			var tb = SUT.FindChildren<TextBlock>().Single(tb => tb.Text.Length == 1 && tb.Text[0] == expectedGlyph);
 #else
 			var tb = (TextBlock)SUT.EnumerateAllChildren().SingleOrDefault(c => c is TextBlock textBlock && textBlock.Text.Length == 1 && textBlock.Text[0] == expectedGlyph);
@@ -56,14 +58,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var tbBounds = tb.GetAbsoluteBounds();
 
-#if __WASM__
-			Assert.AreEqual(new Size(13, 12), new Size(tbBounds.Width, tbBounds.Height));
-#elif __ANDROID__
-			Assert.AreEqual(new Size(12, 14), new Size(tbBounds.Width, tbBounds.Height));
-#else
 			// 12, 12 is the right behavior here.
 			Assert.AreEqual(new Size(12, 12), new Size(tbBounds.Width, tbBounds.Height));
-#endif
 		}
 #endif
 
@@ -109,6 +105,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			SUT.IsSuggestionListOpen.Should().BeTrue();
 		}
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_ItemsSource_Changes_Then_SuggestionsList_Raises_LayoutInvalidated()
+		{
+			var items = new ObservableCollection<string> { "first" };
+			var sut = new AutoSuggestBox { ItemsSource = items };
+			var listener = new LayoutInvalidatedListener();
+			var previous = AutomationPeer.TestAutomationPeerListener;
+
+			try
+			{
+				AutomationPeer.TestAutomationPeerListener = listener;
+
+				items.Add("before-template");
+				Assert.AreEqual(0, listener.EventCount, "No event should be raised before the suggestions list part exists.");
+
+				await UITestHelper.Load(sut);
+				listener.Reset();
+
+				items.Add("after-template");
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, listener.EventCount, "The suggestions list should raise one layout invalidation.");
+				var suggestionsList = (ListView)sut.GetTemplateChild("SuggestionsList");
+				Assert.AreSame(FrameworkElementAutomationPeer.CreatePeerForElement(suggestionsList), listener.LastPeer);
+			}
+			finally
+			{
+				AutomationPeer.TestAutomationPeerListener = previous;
+				WindowHelper.WindowContent = null;
+			}
+		}
+#endif
 
 		[TestMethod]
 		public async Task When_Text_Changed_UserInput()
@@ -231,9 +261,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		// Clipboard is currently not available on skia-WASM
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
-#if __WASM__
-		[Ignore("WASM requires user confirmation to accept reading the clipboard.")]
-#endif
 		public async Task When_UserInput_Paste()
 		{
 #if __SKIA__
@@ -547,12 +574,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.HasCount(2, listView.Items);
 			Assert.AreEqual("a1", listView.Items[0].ToString());
 			Assert.AreEqual("a2", listView.Items[1].ToString());
-#if __WASM__
-			//ItemsPanelRoot.Children works only on wasm
-			Assert.HasCount(2, listView.ItemsPanelRoot.Children);
-			Assert.AreEqual("a1", (listView.ItemsPanelRoot.Children[0] as ContentControl).Content.ToString());
-			Assert.AreEqual("a2", (listView.ItemsPanelRoot.Children[1] as ContentControl).Content.ToString());
-#endif
 		}
 #endif
 
@@ -1033,7 +1054,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		// Flaky on Android Skia: placement is asserted before the suggestion list settles on its final height, so
+		// the popup is positioned for a shorter child. https://github.com/unoplatform/uno/issues/24480
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)]
 #if RUNTIME_NATIVE_AOT
 		[Ignore("TODO: figure out why this fails, how to fix")]
 #endif  // RUNTIME_NATIVE_AOT
@@ -1053,7 +1076,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid)]
 #if RUNTIME_NATIVE_AOT
 		[Ignore("TODO: figure out why this fails, how to fix")]
 #endif  // RUNTIME_NATIVE_AOT
@@ -1184,9 +1206,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/ziidms-private/issues/54")]
-#if ANDROID && IS_CI
-		[Ignore("This test is failing on Android in CI only.")]
-#endif
 		public async Task When_Loaded_Unloaded()
 		{
 			var SUT = new AutoSuggestBox();
@@ -1272,6 +1291,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			oldPopupRect.Y.Should().BeLessThan(newPopupRect.Y);
 		}
+#endif
+
+#if __SKIA__
+#nullable enable annotations
+		private sealed class LayoutInvalidatedListener : IAutomationPeerListener
+		{
+			public int EventCount { get; private set; }
+			public AutomationPeer? LastPeer { get; private set; }
+
+			public bool ListenerExistsHelper(AutomationEvents eventId) => eventId == AutomationEvents.LayoutInvalidated;
+
+			public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
+			{
+				if (eventId == AutomationEvents.LayoutInvalidated)
+				{
+					EventCount++;
+					LastPeer = peer;
+				}
+			}
+
+			public void Reset()
+			{
+				EventCount = 0;
+				LastPeer = null;
+			}
+
+			public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) { }
+			public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child) { }
+			public void NotifyInvalidatePeer(AutomationPeer peer) { }
+			public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue) { }
+			public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId) { }
+			public void NotifyTextEditTextChangedEvent(AutomationPeer peer, AutomationTextEditChangeType changeType, IReadOnlyList<string> changedData) { }
+		}
+#nullable restore annotations
 #endif
 	}
 }

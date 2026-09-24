@@ -86,11 +86,18 @@ namespace SamplesApp.Droid
 			}
 		}
 
-		protected override UnoPlatformHost CreateHost() =>
-			UnoPlatformHostBuilder.Create()
+		protected override UnoPlatformHost CreateHost()
+		{
+			var builder = UnoPlatformHostBuilder.Create()
 				.App(() => new App())
-				.UseAndroid()
-				.Build();
+				.UseAndroid();
+
+			// Register the drawing backend + content seams, as every other head does. Without this the
+			// builder has no renderer, font provider, image decoder or geometry engine and Build() throws.
+			global::SamplesApp.DrawingBackendConfiguration.Configure(builder);
+
+			return builder.Build();
+		}
 
 		public override void OnCreate()
 		{

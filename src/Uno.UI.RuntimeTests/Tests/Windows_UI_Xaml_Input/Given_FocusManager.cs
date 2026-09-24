@@ -530,9 +530,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("https://github.com/unoplatform/uno/issues/15457")]
-#endif
 		public async Task When_FocusChanged_PreventScroll()
 		{
 			var ts1 = new ToggleSwitch();
@@ -555,18 +552,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 			ts2.Focus(FocusState.Programmatic);
 			await TestServices.WindowHelper.WaitForIdle();
-#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
-			await Task.Delay(2000);
-#endif
 
 			Assert.AreEqual(0, SUT.VerticalOffset);
 			SUT.ScrollToVerticalOffset(99999);
 
 			ts1.Focus(FocusState.Programmatic);
 			await TestServices.WindowHelper.WaitForIdle();
-#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
-			await Task.Delay(2000);
-#endif
 
 			Assert.AreEqual(SUT.ScrollableHeight, SUT.VerticalOffset);
 		}

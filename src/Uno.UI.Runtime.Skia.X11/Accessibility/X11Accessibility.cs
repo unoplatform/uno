@@ -626,6 +626,8 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		}
 	}
 
+	protected override void UpdateRoleDescription(nint handle, string? roleDescription) { }
+
 	protected override void UpdateHelpText(nint handle, string? helpText)
 	{
 		if (_nodesByHandle.TryGetValue(handle, out var node))

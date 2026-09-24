@@ -1,5 +1,4 @@
-﻿#if !WINDOWS_UWP
-// MUX Reference: TabViewTests.cs, commit 27052f7
+﻿// MUX Reference: TabViewTests.cs, commit 27052f7
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
@@ -44,14 +43,12 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 	public partial class TabViewTests : MUXApiTestBase
 	{
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)] // Due to lifecycle differences , this test fails on iOS native.
 		public async Task VerifyCompactTabWidthVisualStates_ItemsMode()
 		{
 			await VerifyCompactTabWidthVisualStates();
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)] // Due to lifecycle differences , this test fails on iOS native.
 		public async Task VerifyCompactTabWidthVisualStates_ItemsSourceMode()
 		{
 			await VerifyCompactTabWidthVisualStates(isItemsSourceMode: true);
@@ -461,4 +458,3 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 	}
 }
-#endif

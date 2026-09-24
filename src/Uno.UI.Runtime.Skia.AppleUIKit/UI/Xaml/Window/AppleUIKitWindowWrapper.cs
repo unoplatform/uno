@@ -57,13 +57,17 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #if !__TVOS__
 		var keyboardWillShow = UIKeyboard.Notifications.ObserveWillShow(OnKeyboardWillShow);
 		var keyboardWillHide = UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
+		var keyboardWillChangeFrame = UIKeyboard.Notifications.ObserveWillChangeFrame(OnKeyboardWillChangeFrame);
 		_subscriptions.Add(Disposable.Create(() =>
 		{
 			keyboardWillShow.Dispose();
 			keyboardWillHide.Dispose();
+			keyboardWillChangeFrame.Dispose();
 		}));
 #endif
 
+		// Must precede SetNativeWindow, which starts observing size: without RasterizationScale
+		// the first SetSizes reports 0x0 pixels.
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += OnDpiChanged;
 		_subscriptions.Add(Disposable.Create(() => _displayInformation.DpiChanged -= OnDpiChanged));
@@ -238,6 +242,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		Close();
 
+		// Before the map loses the host: the render loop is driven by a display link on its own thread and keeps
+		// calling back for the lifetime of the process otherwise, rendering into a context being torn down.
+		_mainController.StopRendering();
+
 		XamlRootMap.Unregister(_xamlRoot);
 		_nativeWindow = null;
 	}
@@ -330,6 +338,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController.VisibleBoundsChanged += OnVisibleBoundsChanged;
 		_subscriptions.Add(Disposable.Create(() => _mainController.VisibleBoundsChanged -= OnVisibleBoundsChanged));
 
+#if !__TVOS__
+		// tvOS has no status bar, and StatusBar.GetForCurrentView() is [NotImplemented]
+		// there, so it would throw during window creation.
 		var statusBar = StatusBar.GetForCurrentView();
 		void OnStatusBarVisibilityChanged(StatusBar sender, object args) => RaiseNativeSizeChanged();
 		statusBar.Showing += OnStatusBarVisibilityChanged;
@@ -339,6 +350,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			statusBar.Showing -= OnStatusBarVisibilityChanged;
 			statusBar.Hiding -= OnStatusBarVisibilityChanged;
 		}));
+#endif
 
 		RaiseNativeSizeChanged();
 	}
@@ -401,6 +413,40 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			}
 
 			_inputPane.OccludedRect = ((NSValue?)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey))?.CGRectValue ?? default;
+		}
+		catch (Exception ex)
+		{
+			// The app must not crash if any managed exception happens in the
+			// native callback
+			Application.Current.RaiseRecoverableUnhandledException(ex);
+		}
+	}
+
+	private void OnKeyboardWillChangeFrame(object? sender, UIKeyboardEventArgs e)
+	{
+		try
+		{
+			// Only refreshes the rect of a keyboard that is already up - the show and hide notifications
+			// own the transitions. This is what keeps the occluded rect accurate when the keyboard resizes
+			// without being re-shown, as it does when focus moves between inputs whose accessory views
+			// differ (see TextBoxExtensions.ShowKeyboardDismissButton).
+			if (!_inputPane.Visible || e.Notification.UserInfo is null)
+			{
+				return;
+			}
+
+			if (((NSValue?)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey))?.CGRectValue is not { } frame)
+			{
+				return;
+			}
+
+			// A keyboard on its way out reports a frame below the screen; that one belongs to WillHide.
+			if (!frame.IntersectsWith(UIScreen.MainScreen.Bounds))
+			{
+				return;
+			}
+
+			_inputPane.OccludedRect = frame;
 		}
 		catch (Exception ex)
 		{

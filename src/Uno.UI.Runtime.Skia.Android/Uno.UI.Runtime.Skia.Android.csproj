@@ -44,13 +44,23 @@
 		<AndroidJavaSource Include="..\Uno.UI.BindingHelper.Android\Uno\UI\UnoWebViewHandlerJavascriptInterface.java" />
 	</ItemGroup>
 
+	<!--
+	  _CompileBindingJava is what puts the compiled java in @(EmbeddedJar), and it only runs on the
+	  build path. The pack pass reaches _CreateAar through ResolveReferences instead, so it rewrites
+	  the .aar with no jar in it. Re-declare the jar so every pass produces the same .aar.
+	-->
+	<Target Name="_UnoKeepBindingJarInAar" BeforeTargets="_CreateAarCache" Condition="Exists('$(_AndroidIntermediateBindingClassesZip)')">
+		<ItemGroup>
+			<EmbeddedJar Include="$(_AndroidIntermediateBindingClassesZip)" Condition="'@(EmbeddedJar)' == ''" />
+		</ItemGroup>
+	</Target>
+
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="HarfBuzzSharp" />
-		<PackageReference Include="SkiaSharp.Views" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
-		<!--<PackageReference Include="SkiaSharp.NativeAssets.Android" />
-		<PackageReference Include="HarfBuzzSharp.NativeAssets.Android" />-->
+		<!-- Uno.WinRT's SAF storage binds AndroidX.DocumentFile, but its hand-authored nuspec declares no
+		     android dependencies. Declared here because this package generates its nuspec and ships in every Android head. -->
+		<PackageReference Include="Xamarin.AndroidX.DocumentFile" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -58,15 +68,17 @@
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
+		<!-- WebGPU "init half": the host calls WebGpuContext.Create* to build a WebGpu window+context for the
+		     GraphicsContextKind.WebGpu kind. The host uses only the renderer-agnostic init API, not the renderer. -->
+		<ProjectReference Include="..\Uno.UI.Composition.WebGpu.Init\Uno.UI.Composition.WebGpu.Init.csproj" />
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="build/*.*">
-			<Pack>true</Pack>
-			<PackagePath>build</PackagePath>
-		</Content>
+		<!-- None rather than Content: the Android SDK rejects @(Content) with XA0101, and these are
+		     packaging inputs only. -->
+		<None Include="build/*.*" Pack="true" PackagePath="build" />
 	</ItemGroup>
 
 	<!--<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />-->

@@ -149,13 +149,11 @@ internal class PackageManifest
 		public const string WinAppSdkBuildTools = nameof(WinAppSdkBuildTools);
 		public const string WinAppSdkBuildToolsWinApp = nameof(WinAppSdkBuildToolsWinApp);
 		public const string MicrosoftLoggingConsole = nameof(MicrosoftLoggingConsole);
-		public const string WindowsCompatibility = nameof(WindowsCompatibility);
 		public const string MsalClient = nameof(MsalClient);
 		public const string Mvvm = nameof(Mvvm);
 		public const string Prism = nameof(Prism);
 		public const string UnoFonts = nameof(UnoFonts);
 		public const string AndroidMaterial = nameof(AndroidMaterial);
-		public const string AndroidXLegacySupportV4 = nameof(AndroidXLegacySupportV4);
 		public const string AndroidXSplashScreen = nameof(AndroidXSplashScreen);
 		public const string AndroidXAppCompat = nameof(AndroidXAppCompat);
 		public const string AndroidXRecyclerView = nameof(AndroidXRecyclerView);

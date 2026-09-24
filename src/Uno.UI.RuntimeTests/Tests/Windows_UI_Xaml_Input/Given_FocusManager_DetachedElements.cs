@@ -15,7 +15,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 	/// focus-candidate searches skip them (CUIElement::IsFocusable requires IsActive()).
 	/// </summary>
 	[TestClass]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeMobile)]
 	public class Given_FocusManager_DetachedElements
 	{
 		[TestMethod]

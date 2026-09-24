@@ -1,27 +1,26 @@
 namespace Uno.UI.Hosting;
 
 /// <summary>
-/// Specifies the rendering backend for the Win32 Skia host.
+/// A rendering backend (GPU API) offered by the Win32 Skia host, used with
+/// <see cref="Win32HostBuilder.ForceRenderingBackend"/> and <see cref="Win32HostBuilder.DisableRenderingBackends"/>.
 /// </summary>
 public enum Win32RenderingBackend
 {
-	/// <summary>
-	/// Platform default: try Vulkan, fall back to OpenGL, then software.
-	/// </summary>
-	Default,
+	// 0 is unused: it was the removed Default member, and the values below must keep the meaning an
+	// already-compiled caller passes.
 
 	/// <summary>
-	/// Vulkan hardware acceleration. Falls back to OpenGL or software if unavailable.
+	/// Vulkan hardware acceleration.
 	/// </summary>
-	Vulkan,
+	Vulkan = 1,
 
 	/// <summary>
-	/// OpenGL via WGL. Falls back to software if unavailable.
+	/// OpenGL via WGL.
 	/// </summary>
-	OpenGL,
+	OpenGL = 2,
 
 	/// <summary>
 	/// CPU-based software rendering. No GPU acceleration.
 	/// </summary>
-	Software,
+	Software = 3,
 }

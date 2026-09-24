@@ -1,17 +1,17 @@
-#nullable enable
+﻿#nullable enable
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
@@ -22,58 +22,162 @@ public partial class CompositionTarget
 {
 	internal static (bool invertNativeElementClipPath, bool applyScalingToNativeElementClipPath) FrameRenderingOptions { get; set; } = (false, true);
 
+	/// <summary>
+	/// The active rendering backend that owns the frame record/present lifecycle. A head may install its own
+	/// (e.g. WebGPU); otherwise it falls back to the registered backend's default, throwing if none is registered.
+	/// </summary>
+	// Per-window backend factory: each CompositionTarget presents through the factory bound to its OWN window's
+	// graphics context. This must be per-window (not a process-wide static) because a GRContext is bound to the
+	// context it was created on (e.g. one GL/Vulkan context per X11 window), so a single renderer cannot be shared
+	// across windows — doing so crashes when one window's context is torn down. Each head installs it per frame.
+	private IDrawingFactory? _renderer;
+
+	internal IDrawingFactory Renderer
+	{
+		get => _renderer
+			?? DrawingRegistration.DefaultRenderer
+			?? throw new global::System.InvalidOperationException(
+				"No graphics backend registered. Register one through the host builder (.GraphicsBackend) and/or the head must set CompositionTarget.Renderer before the first frame.");
+		set
+		{
+			// Invalidate on ANY change, including the first assignment from null: the getter already falls back to a
+			// default renderer, so frames may have been recorded before a head assigns its own (async on WASM/WebGPU).
+			var changed = !ReferenceEquals(_renderer, value);
+			_renderer = value;
+
+			// The retained frame and cached per-visual recordings belong to the previous backend and can't be replayed
+			// by the new one; discard them and request a fresh frame so the tree re-records under the new renderer.
+			if (changed)
+			{
+				InvalidateAllRecordings();
+			}
+		}
+	}
+
+	// Non-throwing peek at renderer availability. False while a declared backend initializes asynchronously (WASM
+	// WebGPU device import): Render() must SKIP the frame rather than force the throwing renderer getter.
+	private bool HasRenderer => _renderer is not null || DrawingRegistration.DefaultRenderer is not null;
+
+	// Visuals record through their own target's backend rather than the process-wide factory; null before one
+	// is registered, where the caller falls back to that factory.
+	global::Uno.UI.Composition.Drawing.IDrawingFactory? ICompositionTarget.Renderer
+		=> _renderer ?? DrawingRegistration.DefaultRenderer;
+
+	// Neutral→typed narrowing for phase-2 present: downcast the target to its bound kind and dispatch to the
+	// backend's typed IDrawingFactory<TTarget>.BeginPresent, keeping the single cast Uno-side.
+	private static IPresentSession BeginPresent(IDrawingFactory backend, IRenderTarget target)
+		=> target switch
+		{
+			IGLRenderTarget gl when backend is IDrawingFactory<IGLRenderTarget> b => b.BeginPresent(gl),
+			ISoftwareRenderTarget sw when backend is IDrawingFactory<ISoftwareRenderTarget> b => b.BeginPresent(sw),
+			IMetalRenderTarget m when backend is IDrawingFactory<IMetalRenderTarget> b => b.BeginPresent(m),
+			IVulkanRenderTarget vk when backend is IDrawingFactory<IVulkanRenderTarget> b => b.BeginPresent(vk),
+			IWebGpuRenderTarget w when backend is IDrawingFactory<IWebGpuRenderTarget> b => b.BeginPresent(w),
+			_ => throw new global::System.NotSupportedException(
+				$"The active backend cannot present onto a render target of type {target.GetType().Name}."),
+		};
+
+	private static void InvalidateAllRecordings()
+	{
+		foreach (var kvp in _targets)
+		{
+			var target = kvp.Key;
+
+			(FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage)? staleFrame;
+			lock (target._frameGate)
+			{
+				staleFrame = target._lastRenderedFrame;
+				target._lastRenderedFrame = null;
+			}
+			if (staleFrame is { } sf)
+			{
+				sf.frame.OnPipelineReleased();
+				sf.damage?.Dispose();
+			}
+
+			// The hosts assign Renderer from their rendering thread, and walking the tree from there races the UI
+			// thread building and tearing down visuals mid-test (a null child, then a NullReferenceException deep
+			// in the walk). A renderer change is rare, so costing it one frame of stale recordings is cheap.
+			if (NativeDispatcher.Main.HasThreadAccess)
+			{
+				InvalidateRecordingsCore(target);
+			}
+			else
+			{
+				NativeDispatcher.Main.Enqueue(() => InvalidateRecordingsCore(target), NativeDispatcherPriority.Normal);
+			}
+		}
+	}
+
+	private static void InvalidateRecordingsCore(CompositionTarget target)
+	{
+		if (target.ContentRoot?.VisualTree?.RootElement?.Visual is { } rootVisual)
+		{
+			rootVisual.InvalidatePaintRecursive();
+		}
+
+		((ICompositionTarget)target).RequestNewFrame();
+	}
+
 	private static readonly long _start = Stopwatch.GetTimestamp();
 	// We're using this table as a set with weakref keys. values are always null
 	private static readonly ConditionalWeakTable<CompositionTarget, object> _targets = new();
 	private static bool _isRenderingActive;
 
-	// Enqueued from the UI thread, drained on the rendering thread during Draw.
-	private readonly ConcurrentQueue<RenderJob> _renderJobs = new();
-
 	static CompositionTarget()
 	{
-		XamlRootMap.Unregistered += (_, xamlRoot) =>
-		{
-			var target = xamlRoot.VisualTree.ContentRoot.CompositionTarget;
-			// A closing window stops calling Draw; fail its pending render jobs so awaiters fall
-			// back to software rendering instead of hanging.
-			target.FailPendingRenderJobs();
-			OnTargetUnregistered(target);
-		};
+		// A closing window stops calling Draw; fail its pending render jobs so awaiters fall
+		// back to software rendering instead of hanging.
 	}
 
-	// Latest recorded frame per live target. Only touched on the UI thread. Entries are retained
-	// until replaced by a newer frame or until the target unregisters, so a Rendering raise can
-	// resend the last picture of a target that hasn't re-rendered since (e.g. a window minimized
-	// on hosts that stop servicing invalidations, like macOS).
-	private static readonly Dictionary<CompositionTarget, FramePicture> _latestFrames = new();
-
-	// Only touched on the UI thread.
-	private static bool _renderingRaiseScheduled;
-
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
+	private readonly FrameRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly Lock _frameGate = new();
 	private readonly Lock _xamlRootBoundsGate = new();
 
 	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
 	private Size _lastCanvasSize = Size.Empty;
-	private static SKPath? _lastNativeClipPath;
+	private static IGeometry? _lastNativeClipPath;
 	private float _lastRasterizationScale = 1;
-	private static SKPath? _lastScaledNativeClipPath;
-
-	private readonly DamageRegion _pendingDamage = new();
-
-	// Recycled per-frame damage snapshot paths. At most a couple of frames are ever in flight, so reusing
-	// their SKPaths avoids allocating (and finalizing) a native path every frame. Only touched under
-	// _frameGate, like the frame slot itself.
-	private readonly Stack<SKPath> _damageSnapshotPool = new();
-
-	// Returned as the native-element clip path when there's no recorded frame yet. The clip path is
-	// borrowed read-only by hosts (never mutated or disposed), so a single shared instance is safe.
-	private static readonly SKPath _emptyPath = new();
+	private static IGeometry? _lastScaledNativeClipPath;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (FramePicture picture, SKPath nativeElementClipPath, SKPath damage)? _lastRenderedFrame;
+	// UNO_FORCE_FULL_REPAINT=1 disables damage-clipped partial repaints (benchmarking: measures true full-frame cost).
+	private static readonly bool _forceFullRepaint =
+		Environment.GetEnvironmentVariable("UNO_FORCE_FULL_REPAINT") is "1" or "true";
+
+	// UNO_LOG_FRAME_PHASES=1 prints per-phase frame timing averages every 60 frames (benchmarking).
+	private static readonly bool _logFramePhases =
+		Environment.GetEnvironmentVariable("UNO_LOG_FRAME_PHASES") is "1" or "true";
+
+	// UNO_FORCE_CONTINUOUS_RENDER=1 re-requests a frame after every render (benchmarking: saturates the pipeline).
+	private static readonly bool _forceContinuousRender =
+		Environment.GetEnvironmentVariable("UNO_FORCE_CONTINUOUS_RENDER") is "1" or "true";
+	private static long _phaseRecordTicks, _phaseFinishTicks, _phaseDrawTicks, _phaseGapTicks, _phaseLastRenderEnd;
+	private static int _phaseRenderFrames, _phaseDrawFrames;
+	// Itemization of the between-render "gap": Rendering-event handlers (the app's per-frame tick), the layout
+	// pass (CoreServices.OnTick's UpdateLayout), GC activity, and a frame-interval histogram for vsync misses.
+	private static long _phaseTickTicks, _phaseLayoutTicks, _phaseLastRenderStart, _phaseMaxIntervalTicks;
+	private static int _phaseLayoutRuns, _phaseOver20, _phaseOver33;
+	private static int _phaseGc0, _phaseGc1, _phaseGc2;
+	private static TimeSpan _phaseGcPause;
+
+	internal static bool IsFramePhaseLoggingEnabled => _logFramePhases;
+
+	/// <summary>Accumulates the duration of one layout pass (see CoreServices.OnTick) into the frame-phase log.</summary>
+	internal static void PhaseAddLayout(long ticks)
+	{
+		_phaseLayoutTicks += ticks;
+		_phaseLayoutRuns++;
+	}
+
+	private (FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage)? _lastRenderedFrame;
+
+	// The frame handed to Rendering subscribers as FrameData, kept only while one is subscribed. A target that
+	// does not re-record still resends its last frame, so this outlives the pipeline's own reference.
+	private FrameHold? _renderingFrame;
+	// Damage (dirty region) accumulated between frames from AddDamage; folded into each frame's own damage during
+	// Render. Guarded by _frameGate.
+	private readonly DamageRegion _pendingDamage = new();
 	// only set and read under _xamlRootBoundsGate
 	private Size _xamlRootBounds;
 	// only set and read under _xamlRootBoundsGate
@@ -94,6 +198,9 @@ public partial class CompositionTarget
 			if (!_isRenderingActive)
 			{
 				_isRenderingActive = true;
+				// Ask the backend to keep a handable frame object from now on; it costs a wrapper per recording,
+				// so nothing pays for it until something subscribes.
+				global::Uno.UI.Composition.Drawing.RenderRecordingOptions.CaptureFrameData = true;
 				foreach (var (target, _) in _targets)
 				{
 					((ICompositionTarget)target).RequestNewFrame();
@@ -107,6 +214,13 @@ public partial class CompositionTarget
 			if (_rendering == null)
 			{
 				_isRenderingActive = false;
+				global::Uno.UI.Composition.Drawing.RenderRecordingOptions.CaptureFrameData = false;
+				foreach (var (target, _) in _targets)
+				{
+					var held = target._renderingFrame;
+					target._renderingFrame = null;
+					held?.Release(dataAccessed: false);
+				}
 			}
 		}
 	}
@@ -117,55 +231,105 @@ public partial class CompositionTarget
 
 		NativeDispatcher.CheckThreadAccess();
 
+		if (!HasRenderer)
+		{
+			// Declared backend still initializing (async WebGPU device import on WASM); skip the frame rather than
+			// fall back to another backend — a fresh frame is requested once the head installs CompositionTarget.Renderer.
+			return;
+		}
+
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
 
-		var (picture, path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordPictureAndReturnPath(
+		// Phase 1 (UI thread): record the visual tree into a backend session, finishing to an opaque frame. The
+		// per-frame damage accumulator (seeded with carried-over damage) is clamped to drive a partial repaint at present.
+		var frameDamage = new DamageRegion();
+		var frameRect = new Rect(0, 0, bounds.Width, bounds.Height);
+		lock (_frameGate)
+		{
+			frameDamage.Union(_pendingDamage);
+			_pendingDamage.Reset();
+		}
+
+		var phaseT0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
+		if (_logFramePhases && _phaseLastRenderEnd != 0)
+		{
+			_phaseGapTicks += phaseT0 - _phaseLastRenderEnd;
+		}
+		if (_logFramePhases)
+		{
+			if (_phaseLastRenderStart != 0)
+			{
+				var interval = phaseT0 - _phaseLastRenderStart;
+				if (interval > _phaseMaxIntervalTicks) { _phaseMaxIntervalTicks = interval; }
+				var intervalMs = interval * 1000.0 / Stopwatch.Frequency;
+				if (intervalMs > 20) { _phaseOver20++; }
+				if (intervalMs > 33.4) { _phaseOver33++; }
+			}
+			_phaseLastRenderStart = phaseT0;
+		}
+		var recording = Renderer.CreateRecording();
+		var (path, nativeVisualsInZOrder) = FrameRenderHelper.RecordFrame(
+			recording,
 			(float)bounds.Width,
 			(float)bounds.Height,
 			rootElement.Visual,
-			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
-			damage: _pendingDamage);
-
-		if (_fpsHelper.TryGetDamageBounds(out var fpsBounds))
+			FrameRenderingOptions.invertNativeElementClipPath,
+			frameDamage);
+		var phaseT1 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
+		var frame = recording.Finish();
+		if (_logFramePhases)
 		{
-			_pendingDamage.UnionRect(fpsBounds);
+			var phaseT2 = Stopwatch.GetTimestamp();
+			_phaseRecordTicks += phaseT1 - phaseT0;
+			_phaseFinishTicks += phaseT2 - phaseT1;
+		}
+		// The FPS overlay paints translucent, antialiased pixels straight onto the target after the replay, so its
+		// area has to be damaged too — left out, it would composite over a region this frame never cleared and
+		// accumulate on top of the previous frame's panel.
+		if (_fpsHelper.TryGetOverlayBounds() is { } overlayBounds)
+		{
+			frameDamage.UnionRect(overlayBounds);
 		}
 
-		var framePicture = new FramePicture(picture);
-		var frameRect = new SKRect(0, 0, (float)bounds.Width, (float)bounds.Height);
-		var previousFrame = default((FramePicture picture, SKPath path, SKPath damage)?);
-		SKPath damageSnapshot;
+		// Snapped with the scale the present path will apply. If the scale changes before the frame is presented,
+		// that present sees `resized` and skips the damage clip entirely, so a stale value here cannot be used.
+		float damageScale;
+		lock (_xamlRootBoundsGate)
+		{
+			damageScale = _xamlRootRasterizationScale;
+		}
+		var previousFrame = default((FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage)?);
 		lock (_frameGate)
 		{
 			previousFrame = _lastRenderedFrame;
 
-			if (previousFrame is { damage: var carried } && !carried.IsEmpty)
+			// A previous frame that was recorded but never presented (its slot was still occupied) is being
+			// dropped, and this one replaces it on screen, so it has to repaint what that one would have.
+			// Presented frames carry no damage (see Draw).
+			if (previousFrame is { damage: { } carried })
 			{
-				_pendingDamage.Union(carried);
+				frameDamage.Union(carried);
 			}
 
-			damageSnapshot = _damageSnapshotPool.Count > 0 ? _damageSnapshotPool.Pop() : new SKPath();
-			_pendingDamage.SnapshotAndReset(damageSnapshot, frameRect);
-
-			_lastRenderedFrame = (framePicture, path, damageSnapshot);
-
-			// The previous frame is being superseded in place (it wasn't borrowed for present, since the
-			// slot was non-null); its snapshot is no longer referenced, so recycle it for the next frame.
-			if (previousFrame is { damage: var superseded })
-			{
-				_damageSnapshotPool.Push(superseded);
-			}
+			frameDamage.ClampTo(frameRect);
+			_lastRenderedFrame = (new FrameHold(frame), path, frameDamage.Detach(damageScale));
 		}
 
 		_fpsHelper.OnFrameRecorded();
 
-		if (previousFrame is { } prev)
+		if (_isRenderingActive && _lastRenderedFrame is { frame: { } recorded })
 		{
-			prev.picture.OnPipelineReleased();
+			recorded.Retain();
+			var replaced = _renderingFrame;
+			_renderingFrame = recorded;
+			replaced?.Release(dataAccessed: false);
 		}
 
-		if (_isRenderingActive)
+		previousFrame?.frame.OnPipelineReleased();
+		previousFrame?.damage?.Dispose();
+
+		if (_isRenderingActive || _forceContinuousRender)
 		{
 			((ICompositionTarget)this).RequestNewFrame();
 		}
@@ -196,71 +360,49 @@ public partial class CompositionTarget
 
 		FrameRendered?.Invoke();
 
-		OnFramePictureRecorded(this, framePicture);
-
+		if (_logFramePhases)
+		{
+			_phaseLastRenderEnd = Stopwatch.GetTimestamp();
+			if (++_phaseRenderFrames >= 60)
+			{
+				double Ms(long t, int c) => c == 0 ? 0 : t * 1000.0 / Stopwatch.Frequency / c;
+				var gc0 = GC.CollectionCount(0);
+				var gc1 = GC.CollectionCount(1);
+				var gc2 = GC.CollectionCount(2);
+				var pause = TimeSpan.Zero;
+				try
+				{
+					var total = GC.GetTotalPauseDuration();
+					pause = _phaseGcPause == TimeSpan.Zero ? TimeSpan.Zero : total - _phaseGcPause;
+					_phaseGcPause = total;
+				}
+				catch (Exception) { /* not available on every runtime */ }
+				var measures = UIElement.LayoutMeasureCoreCount;
+				var arranges = UIElement.LayoutArrangeCoreCount;
+				UIElement.LayoutMeasureCoreCount = 0;
+				UIElement.LayoutArrangeCoreCount = 0;
+				Console.WriteLine(
+					$"[frame-phases] record={Ms(_phaseRecordTicks, _phaseRenderFrames):F1}ms finish={Ms(_phaseFinishTicks, _phaseRenderFrames):F1}ms draw={Ms(_phaseDrawTicks, Math.Max(_phaseDrawFrames, 1)):F1}ms tick={Ms(_phaseTickTicks, _phaseRenderFrames):F1}ms layout={Ms(_phaseLayoutTicks, Math.Max(_phaseLayoutRuns, 1)):F1}ms({_phaseLayoutRuns}) gap={Ms(_phaseGapTicks, _phaseRenderFrames):F1}ms"
+					+ $" | measures={measures} arranges={arranges}"
+					+ $" | >20ms={_phaseOver20} >33ms={_phaseOver33} max={_phaseMaxIntervalTicks * 1000.0 / Stopwatch.Frequency:F1}ms"
+					+ $" | gc0=+{gc0 - _phaseGc0} gc1=+{gc1 - _phaseGc1} gc2=+{gc2 - _phaseGc2} pause={pause.TotalMilliseconds:F1}ms heap={GC.GetTotalMemory(false) / (1024 * 1024)}MB"
+					+ $" (avg/frame, {_phaseRenderFrames} renders, {_phaseDrawFrames} draws)");
+				_phaseGc0 = gc0;
+				_phaseGc1 = gc1;
+				_phaseGc2 = gc2;
+				_phaseRecordTicks = _phaseFinishTicks = _phaseDrawTicks = _phaseGapTicks = _phaseTickTicks = _phaseLayoutTicks = _phaseMaxIntervalTicks = 0;
+				_phaseRenderFrames = _phaseDrawFrames = _phaseLayoutRuns = _phaseOver20 = _phaseOver33 = 0;
+			}
+		}
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
-	void ICompositionTarget.AddDamage(SKRect bounds)
-	{
-		NativeDispatcher.CheckThreadAccess();
-		_pendingDamage.UnionRect(bounds);
-	}
-
-	void ICompositionTarget.AddDamage(SKPath region)
-	{
-		NativeDispatcher.CheckThreadAccess();
-		_pendingDamage.Union(region);
-	}
-
-	private readonly SKPaint _damageOutsetPaint = new() { Style = SKPaintStyle.Stroke, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
-	private readonly SKPathBuilder _damageOutsetBandBuilder = new();
-	private readonly SKPath _outsetDamage = new();
-
-	// Rendering is antialiased: it writes device pixels whose centers lie outside the drawn geometry,
-	// while the non-AA damage clip only includes pixels whose centers lie inside the damage region.
-	// When a damage edge lands between device pixels (fractional rasterization scale), that AA fringe
-	// is written but never replayed and accumulates as stale artifacts. Outsetting the clip by one
-	// device pixel covers every pixel the damaged content may have touched; the replayed picture is
-	// the full frame, so over-covering is always correct.
-	private SKPath OutsetDamageForPresent(SKPath damage, float rasterizationScale)
-	{
-		if (damage.IsEmpty)
-		{
-			return damage;
-		}
-
-		// The stroke straddles the edge, so a width of 2 device pixels outsets the fill by 1.
-		_damageOutsetPaint.StrokeWidth = 2 / rasterizationScale;
-		_damageOutsetBandBuilder.Reset();
-		_damageOutsetPaint.GetFillPath(damage, _damageOutsetBandBuilder);
-		using var band = _damageOutsetBandBuilder.Detach();
-		_outsetDamage.Reset();
-		damage.Op(band, SKPathOp.Union, _outsetDamage);
-		return _outsetDamage;
-	}
-
-	private static readonly SKPaint _damageOverlayFill = new() { Color = new SKColor(0xFF, 0x00, 0x00, 0x30), Style = SKPaintStyle.Fill };
-	private static readonly SKPaint _damageOverlayStroke = new() { Color = new SKColor(0xFF, 0x00, 0x00, 0xB0), Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
-
-	private static void DrawDamageRegionOverlay(SKCanvas canvas, SKPath damage)
-	{
-		canvas.DrawPath(damage, _damageOverlayFill);
-		canvas.DrawPath(damage, _damageOverlayStroke);
-	}
-
-	private SKPath Draw(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
+	private IGeometry Draw(ISwapChain swapChain, Matrix4x4? rootTransform = null, Action<IDrawingSession>? overlay = null)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
+		var phaseDrawT0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
 
-		// Run pending render jobs even when there's no frame to present. When the canvas
-		// doesn't exist yet, jobs stay queued for the next pass (the one that will create it).
-		if (canvas is not null && !_renderJobs.IsEmpty)
-		{
-			RunRenderJobs(canvas.Context as GRContext);
-		}
-
-		(FramePicture picture, SKPath nativeElementClipPath, SKPath damage)? lastRenderedFrameNullable;
+		(FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
@@ -273,7 +415,7 @@ public partial class CompositionTarget
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
-			return _emptyPath;
+			return FrameRenderHelper.EmptyClipPath;
 		}
 		else
 		{
@@ -292,63 +434,104 @@ public partial class CompositionTarget
 				// the canvas to 0x0 which may crash on some targets
 				return lastRenderedFrame.nativeElementClipPath;
 			}
-			var canvasRecreated = canvas is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
-			if (canvasRecreated)
+			// The swapchain owns sizing/caching: acquire every frame at the DPI-scaled bounds; it returns the cached
+			// target while the size is unchanged and recreates it on resize.
+			var target = swapChain.AcquireRenderTarget(
+				(int)Math.Round(xamlRootBounds.Width * rasterizationScale),
+				(int)Math.Round(xamlRootBounds.Height * rasterizationScale));
+			var resized = _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
+			if (resized)
 			{
-				canvas = resizeFunc(new Size(Math.Round(xamlRootBounds.Width * rasterizationScale), Math.Round(xamlRootBounds.Height * rasterizationScale)));
 				_lastCanvasSize = xamlRootBounds;
 				_lastRasterizationScale = rasterizationScale;
 				_lastScaledNativeClipPath = null;
-
-				// Jobs that couldn't run at method entry because the canvas didn't exist yet.
-				if (!_renderJobs.IsEmpty)
-				{
-					RunRenderJobs(canvas.Context as GRContext);
-				}
 			}
 
-			canvas!.Save();
-			if (rasterizationScale != 1)
-			{
-				canvas.Scale(rasterizationScale, rasterizationScale);
-			}
-
-			var damage = lastRenderedFrame.damage;
-			var useDamageRegion = !canvasRecreated;
-			var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
-
-			if (useDamageRegion && !overlayEnabled)
-			{
-				canvas.ClipPath(OutsetDamageForPresent(damage, rasterizationScale), antialias: false);
-			}
+			var host = ContentRoot.XamlRoot is { } xamlRootForHost ? XamlRootMap.GetHostForRoot(xamlRootForHost) : null;
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			SkiaRenderHelper.RenderPicture(
-				canvas,
-				lastRenderedFrame.picture.Picture,
-				SKColors.Transparent,
-				_fpsHelper.DrawFps);
-
-			if (overlayEnabled && useDamageRegion && !damage.IsEmpty)
+			using (var present = BeginPresent(Renderer, target))
 			{
-				DrawDamageRegionOverlay(canvas, damage);
+				// Partial repaint: when unresized and the host preserves the swapchain's pixels, clip the clear+replay
+				// to the damage region so only the changed area is repainted; otherwise repaint the whole frame.
+				var hasDamage = !resized && lastRenderedFrame.damage is { } dmg && !dmg.IsEmpty;
+				var preservesContents = swapChain.PreservesContents;
+				var damageEligible = hasDamage && preservesContents;
+				// Debug overlay paints the would-be damage region on a full repaint; deliberately not gated on
+				// PreservesContents so the viz works on full-repaint targets too.
+				var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
+				var useDamage = damageEligible && !overlayEnabled && !_forceFullRepaint;
+				// Detach returns null both for "nothing was damaged" and for "no damage information", but a frame
+				// is only ever recorded with tracking on, so on an unresized frame null means nothing changed. The
+				// target still holds the previous frame, so the clear+replay is skipped rather than repainted whole.
+				var nothingChanged = !resized
+					&& lastRenderedFrame.damage is null
+					&& preservesContents
+					&& !overlayEnabled
+					&& !_forceFullRepaint;
+
+				// Scaling (DPI) is applied through the neutral session so it works for any backend.
+				present.Save();
+				// A host may impose an outermost transform (e.g. framebuffer display orientation) that must wrap
+				// the whole composition, applied before the DPI scale so content and scale rotate together.
+				if (rootTransform is { } rt)
+				{
+					present.Concat(rt);
+				}
+				if (rasterizationScale != 1)
+				{
+					present.Scale(rasterizationScale, rasterizationScale);
+				}
+				// Clip clear+replay to the damage region so only the damaged area is repainted; FPS/overlay draw
+				// outside this scope so they aren't restricted to it.
+				present.Save();
+				if (!nothingChanged)
+				{
+					if (useDamage)
+					{
+						// Clipped as-is: contributions are already outset for the antialiased fringe
+						// (Visual.OutsetForAntialiasing), so no widening is needed here.
+						present.ClipPath(lastRenderedFrame.damage!, ClipOperation.Intersect);
+					}
+
+					// The window's own background, when it has one: content smaller than the window (or with no
+					// background of its own) shows it, and a transparent clear would show through to nothing.
+					present.Clear(host?.BackgroundColor ?? global::Windows.UI.Colors.Transparent);
+					lastRenderedFrame.frame.Record.Replay(present);
+				}
+
+				present.Restore();
+				if (overlayEnabled && hasDamage)
+				{
+					DrawDamageRegionOverlay(present, lastRenderedFrame.damage!);
+				}
+				_fpsHelper.DrawFps(present);
+				// A host overlay (e.g. the framebuffer software cursor) draws on top of the frame, under the same
+				// orientation + DPI transform as the content.
+				overlay?.Invoke(present);
+				present.Restore();
 			}
 
-			canvas.Restore();
-
-			// This frame's damage is now presented; clear it so Render's carry-forward doesn't re-damage it next frame.
-			lastRenderedFrame.damage.Reset();
+			// This frame's damage is now presented; drop it so Render's carry-forward doesn't re-damage it next frame.
+			lastRenderedFrame.damage?.Dispose();
+			lastRenderedFrame.damage = null;
 			ReturnFrame(lastRenderedFrame);
+
+			if (_logFramePhases)
+			{
+				_phaseDrawTicks += Stopwatch.GetTimestamp() - phaseDrawT0;
+				_phaseDrawFrames++;
+			}
+
+			InvokeRendering();
 
 			if (FrameRenderingOptions.applyScalingToNativeElementClipPath && rasterizationScale != 1)
 			{
 				if (_lastNativeClipPath != lastRenderedFrame.nativeElementClipPath || _lastScaledNativeClipPath == null)
 				{
-					_lastScaledNativeClipPath = new();
-
-					lastRenderedFrame
+					_lastScaledNativeClipPath = lastRenderedFrame
 						.nativeElementClipPath
-						.Transform(SKMatrix.CreateScale(rasterizationScale, rasterizationScale), _lastScaledNativeClipPath);
+						.Transform(Matrix3x2.CreateScale(rasterizationScale, rasterizationScale));
 
 					_lastNativeClipPath = lastRenderedFrame.nativeElementClipPath;
 				}
@@ -360,89 +543,11 @@ public partial class CompositionTarget
 		}
 	}
 
-	/// <summary>
-	/// Schedules <paramref name="render"/> to run during the next native render pass — on the
-	/// rendering thread, with the GRContext current — and invalidates so that pass happens
-	/// promptly. The task completes true once the action has run, or false when it couldn't be
-	/// executed (software rendering, the window is shutting down, or the action threw); the
-	/// caller should then fall back to rendering in software.
-	/// </summary>
-	internal Task<bool> TryExecuteOnNextRenderAsync(Action<GRContext> render)
+
+	private void ReturnFrame((FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage) frame)
 	{
-		NativeDispatcher.CheckThreadAccess();
-
-		var job = new RenderJob(render);
-		_renderJobs.Enqueue(job);
-
-		if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
-		{
-			host.InvalidateRender();
-		}
-		else
-		{
-			// No host to render a pass; don't leave the awaiter hanging.
-			FailPendingRenderJobs();
-		}
-
-		return job.Task;
-	}
-
-	private void RunRenderJobs(GRContext? context)
-	{
-		if (context is null)
-		{
-			// No GPU context (raster canvas): this target renders in software. Fail the jobs so
-			// callers fall back to software rendering instead of waiting for a context that
-			// never comes.
-			FailPendingRenderJobs();
-			return;
-		}
-
-		while (_renderJobs.TryDequeue(out var job))
-		{
-			job.Run(context);
-		}
-	}
-
-	private void FailPendingRenderJobs()
-	{
-		while (_renderJobs.TryDequeue(out var job))
-		{
-			job.Fail();
-		}
-	}
-
-	private sealed class RenderJob(Action<GRContext> render)
-	{
-		// RunContinuationsAsynchronously so completing a job never runs the awaiter's
-		// continuation inline on the rendering thread, which would stall frame presentation.
-		private readonly TaskCompletionSource<bool> _tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
-
-		public Task<bool> Task => _tcs.Task;
-
-		public void Run(GRContext context)
-		{
-			try
-			{
-				render(context);
-				_tcs.TrySetResult(true);
-			}
-			catch (Exception e)
-			{
-				if (typeof(CompositionTarget).Log().IsEnabled(LogLevel.Error))
-				{
-					typeof(CompositionTarget).Log().Error("Render job failed.", e);
-				}
-				_tcs.TrySetResult(false);
-			}
-		}
-
-		public void Fail() => _tcs.TrySetResult(false);
-	}
-
-	private void ReturnFrame((FramePicture picture, SKPath path, SKPath damage) frame)
-	{
-		var releasedPicture = default(FramePicture);
+		FrameHold? frameToDelete = null;
+		IGeometry? damageToDelete = null;
 
 		lock (_frameGate)
 		{
@@ -453,91 +558,56 @@ public partial class CompositionTarget
 			}
 			else
 			{
-				releasedPicture = frame.picture;
-				// This presented frame is superseded by a newer one; its snapshot (already rewound in Draw)
-				// is done — recycle it.
-				_damageSnapshotPool.Push(frame.damage);
+				frameToDelete = frame.frame;
+				damageToDelete = frame.damage;
 			}
 		}
 
-		// Delete it then
-		releasedPicture?.OnPipelineReleased();
+		frameToDelete?.OnPipelineReleased();
+		damageToDelete?.Dispose();
 	}
 
-	private static void OnFramePictureRecorded(CompositionTarget target, FramePicture picture)
+	void ICompositionTarget.AddDamage(Rect bounds)
 	{
-		picture.Retain();
-		if (_latestFrames.TryGetValue(target, out var replaced))
+		NativeDispatcher.CheckThreadAccess();
+		lock (_frameGate)
 		{
-			replaced.Release(pictureAccessed: false);
-		}
-		_latestFrames[target] = picture;
-
-		if (_isRenderingActive && !_renderingRaiseScheduled)
-		{
-			_renderingRaiseScheduled = true;
-			NativeDispatcher.Main.Enqueue(RaiseRendering, NativeDispatcherPriority.High);
+			_pendingDamage.UnionRect(bounds);
 		}
 	}
 
-	// Raises Rendering once per batch of recorded frames, with the latest picture of every live
-	// target — including targets that haven't re-rendered since the last raise, whose previous
-	// picture is resent. Synchronous callout to app code.
-	private static void RaiseRendering()
+	void ICompositionTarget.AddDamage(IGeometry region)
 	{
-		_renderingRaiseScheduled = false;
-
-		var pictures = new FramePicture[_latestFrames.Count];
-		var frameData = new List<(Window Window, object Data)>(_latestFrames.Count);
-		var i = 0;
-		foreach (var (target, picture) in _latestFrames)
+		NativeDispatcher.CheckThreadAccess();
+		lock (_frameGate)
 		{
-			picture.Retain();
-			pictures[i++] = picture;
-			if (target.ContentRoot.GetOwnerWindow() is { } window)
-			{
-				frameData.Add((window, picture.Picture));
-			}
-		}
-
-		var args = new RenderingEventArgs(Stopwatch.GetElapsedTime(_start), frameData);
-		try
-		{
-			_rendering?.Invoke(null, args);
-		}
-		finally
-		{
-			foreach (var picture in pictures)
-			{
-				picture.Release(args.FrameDataAccessed);
-			}
+			_pendingDamage.Union(region);
 		}
 	}
 
-	private static void OnTargetUnregistered(CompositionTarget target)
+	// Debug viz (FeatureConfiguration.Rendering.DamageRegionOverlay): paints the damage region as a translucent
+	// red fill + outline over the fully-repainted frame.
+	private static void DrawDamageRegionOverlay(IPresentSession present, IGeometry damage)
 	{
-		_targets.Remove(target);
-		if (_latestFrames.Remove(target, out var picture))
-		{
-			picture.Release(pictureAccessed: false);
-		}
+		present.DrawPath(damage, global::Windows.UI.Color.FromArgb(0x30, 0xFF, 0x00, 0x00));
+		using var outline = damage.GetStrokeFillGeometry(new StrokeStyle { Thickness = 1f });
+		present.DrawPath(outline, global::Windows.UI.Color.FromArgb(0xB0, 0xFF, 0x00, 0x00));
 	}
 
 	/// <summary>
-	/// Owns a frame's recorded picture. The picture is disposed deterministically once the
-	/// pipeline released it and all retentions (the latest-frame cache, in-flight Rendering
-	/// raises) are gone — unless a Rendering subscriber actually read it from the event args,
-	/// in which case user code may still hold it and the GC reclaims it instead.
+	/// Owns a recorded frame. It is disposed once the pipeline is done with it and no in-flight Rendering raise
+	/// still holds it -- unless a subscriber actually read it from the event args, in which case app code may
+	/// keep it and the GC reclaims it instead.
 	/// </summary>
-	internal sealed class FramePicture(SKPicture picture)
+	internal sealed class FrameHold(IRenderRecord record)
 	{
-		private readonly Lock _gate = new();
+		private readonly object _gate = new();
 		private int _retainCount;
 		private bool _publicized;
-		private bool _releasedByPipeline;
+		private bool _pipelineReleased;
 		private bool _disposed;
 
-		public SKPicture Picture { get; } = picture;
+		public IRenderRecord Record { get; } = record;
 
 		public void Retain()
 		{
@@ -547,20 +617,20 @@ public partial class CompositionTarget
 			}
 		}
 
-		public void Release(bool pictureAccessed)
+		public void Release(bool dataAccessed)
 		{
 			bool dispose;
 			lock (_gate)
 			{
 				_retainCount--;
-				_publicized |= pictureAccessed;
+				_publicized |= dataAccessed;
 				dispose = ShouldDispose();
 				_disposed |= dispose;
 			}
 
 			if (dispose)
 			{
-				Picture.Dispose();
+				Record.Dispose();
 			}
 		}
 
@@ -569,18 +639,77 @@ public partial class CompositionTarget
 			bool dispose;
 			lock (_gate)
 			{
-				_releasedByPipeline = true;
+				_pipelineReleased = true;
 				dispose = ShouldDispose();
 				_disposed |= dispose;
 			}
 
 			if (dispose)
 			{
-				Picture.Dispose();
+				Record.Dispose();
 			}
 		}
 
-		// only call under _gate
-		private bool ShouldDispose() => !_disposed && !_publicized && _releasedByPipeline && _retainCount == 0;
+		// Pure predicate: callers decide under the lock and dispose outside it.
+		//
+		// Being publicized suppresses disposal only when the record actually handed something out: the object a
+		// subscriber may still hold is then a managed one the GC can reclaim. A record with nothing to expose has
+		// only a native handle behind it, and leaving that undisposed would leak it for the process lifetime.
+		private bool ShouldDispose()
+			=> !_disposed && _pipelineReleased && _retainCount <= 0 && !(_publicized && Record.FrameData is not null);
+	}
+
+	internal static void InvokeRendering()
+	{
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			InvokeRenderingCore();
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(InvokeRenderingCore, NativeDispatcherPriority.High);
+		}
+
+		static void InvokeRenderingCore()
+		{
+			var t0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
+
+			// Every live target's latest frame, including targets that did not re-record since the last raise:
+			// a subscriber reading FrameData expects one entry per window, not only the one that just drew.
+			List<FrameHold>? held = null;
+			List<(Window Window, object? Data)>? frameData = null;
+			foreach (var (target, _) in _targets)
+			{
+				if (target._renderingFrame is not { } frame || target.ContentRoot.GetOwnerWindow() is not { } window)
+				{
+					continue;
+				}
+
+				frame.Retain();
+				(held ??= new()).Add(frame);
+				(frameData ??= new()).Add((window, frame.Record.FrameData));
+			}
+
+			var args = new RenderingEventArgs(Stopwatch.GetElapsedTime(_start), frameData);
+			try
+			{
+				_rendering?.Invoke(null, args);
+			}
+			finally
+			{
+				if (held is not null)
+				{
+					foreach (var frame in held)
+					{
+						frame.Release(args.FrameDataAccessed);
+					}
+				}
+
+				if (_logFramePhases)
+				{
+					_phaseTickTicks += Stopwatch.GetTimestamp() - t0;
+				}
+			}
+		}
 	}
 }

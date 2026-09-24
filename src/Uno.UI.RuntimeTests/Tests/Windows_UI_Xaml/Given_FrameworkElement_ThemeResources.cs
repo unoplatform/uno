@@ -12,8 +12,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __APPLE_UIKIT__
-using UIKit;
 #else
 using Uno.UI;
 #endif
@@ -26,7 +24,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_FrameworkElement_ThemeResources
 	{
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		// Not [RequiresFullWindow]/UseApplicationLightTheme: this test sets WindowContent=null mid-run,
 		// which nulls XamlRoot.Content in full-window mode (breaking UseDarkTheme). It runs embedded and
 		// relies on the host staying Light (IsAppThemeLight + the UseDarkTheme restore fix) for determinism.

@@ -17,8 +17,6 @@ using Windows.ApplicationModel.UserDataTasks.DataProvider;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __APPLE_UIKIT__
-using UIKit;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -30,9 +28,6 @@ public class Given_FrameworkTemplatePool
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
-	//#if __ANDROID__
-	//[Ignore("https://github.com/unoplatform/uno/issues/13969")]
-	//#endif
 	[Ignore("#18317 With TemplatedParent rework, the recycling part was not re-introduced/updated.")]
 	public async Task When_Recycle()
 	{

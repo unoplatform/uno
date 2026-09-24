@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -46,7 +46,6 @@ public partial class Window
 	private WindowType _windowType;
 
 	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
-	private WeakEventHelper.WeakEventCollection? _backgroundChangedHandlers;
 
 	internal Window(WindowType windowType, Assembly? callingAssembly = null)
 	{
@@ -615,7 +614,11 @@ public partial class Window
 		{
 			_background = value;
 
-			_backgroundChangedHandlers?.Invoke(this, EventArgs.Empty);
+			// The frame clear reads this at present time, so an otherwise idle window needs a frame to show it.
+			if (_windowImplementation.XamlRoot is { } xamlRoot)
+			{
+				global::Uno.UI.Hosting.XamlRootMap.GetHostForRoot(xamlRoot)?.InvalidateRender();
+			}
 		}
 	}
 
@@ -631,14 +634,6 @@ public partial class Window
 		}
 #endif
 	}
-
-	internal IDisposable RegisterBackgroundChangedEvent(EventHandler handler)
-		=> WeakEventHelper.RegisterEvent(
-			_backgroundChangedHandlers ??= new(),
-			handler,
-			(h, s, e) =>
-				(h as EventHandler)?.Invoke(s, (EventArgs)e!)
-		);
 
 	/// <summary>
 	/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.

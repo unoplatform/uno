@@ -20,6 +20,49 @@ public class Given_GradientBrush
 {
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Stops_Coincide_Then_Past_The_Last_Wins()
+	{
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+		{
+			Assert.Inconclusive(); // RenderTargetBitmap is not supported on this platform.
+		}
+
+		// Two stops at the SAME offset are a hard switch, and everything past it takes the last colour. The
+		// focused TextBox border is built this way: a 2px gradient anchored at the bottom paints the accent
+		// underline while the rest of the ring stays grey. Sampling before the first stop and past the last are
+		// both true at a coincident offset, so a backend that tests them in the wrong order floods the whole
+		// shape with the first colour.
+		var rect = new Rectangle
+		{
+			Width = 100,
+			Height = 100,
+			Fill = new LinearGradientBrush
+			{
+				MappingMode = BrushMappingMode.Absolute,
+				StartPoint = new Windows.Foundation.Point(0, 0),
+				EndPoint = new Windows.Foundation.Point(0, 2),
+				GradientStops =
+				{
+					new GradientStop { Color = Colors.Red, Offset = 1 },
+					new GradientStop { Color = Colors.Blue, Offset = 1 },
+				},
+			},
+		};
+
+		WindowHelper.WindowContent = rect;
+		await WindowHelper.WaitForLoaded(rect);
+		await WindowHelper.WaitForIdle();
+
+		var renderer = new RenderTargetBitmap();
+		await renderer.RenderAsync(rect);
+		var bitmap = await RawBitmap.From(renderer, rect);
+
+		// Well past the 2px axis: the last stop's colour.
+		ImageAssert.HasColorAt(bitmap, 50, 60, Colors.Blue, tolerance: 5);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_GradientStop_Color_Changes()
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -47,19 +90,12 @@ public class Given_GradientBrush
 		await renderer.RenderAsync(rect);
 
 		var bitmap = await RawBitmap.From(renderer, rect);
-#if __APPLE_UIKIT__
-		ImageAssert.HasColorAt(bitmap, 0, 0, Colors.Blue, tolerance: 55);
-#else
 		ImageAssert.HasColorAt(bitmap, 0, 0, Colors.Blue, tolerance: 5);
-#endif
 	}
 
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresScaling(1f)]
-#if __ANDROID__ || __APPLE_UIKIT__
-	[Ignore("Fails on Android and iOS")]
-#endif
 	public async Task When_RadialGradientBrush_Ellipse_With_Non_Equal_Center_And_Origin()
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -108,9 +144,6 @@ public class Given_GradientBrush
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresScaling(1f)]
-#if __ANDROID__ || __APPLE_UIKIT__
-	[Ignore("Fails on Android and iOS")]
-#endif
 	public async Task When_RadialGradientBrush_Ellipse_With_Equal_Center_And_Origin()
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -159,9 +192,6 @@ public class Given_GradientBrush
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresScaling(1f)]
-#if __ANDROID__ || __APPLE_UIKIT__
-	[Ignore("Fails on Android and iOS")]
-#endif
 	public async Task When_RadialGradientBrush_Circle_With_Non_Equal_Center_And_Origin()
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -210,9 +240,6 @@ public class Given_GradientBrush
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresScaling(1f)]
-#if __ANDROID__ || __APPLE_UIKIT__
-	[Ignore("Fails on Android and iOS")]
-#endif
 	public async Task When_RadialGradientBrush_Circle_With_Equal_Center_And_Origin()
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))

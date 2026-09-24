@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -14,7 +14,6 @@ using Rectangle = System.Drawing.Rectangle;
 using System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
-using SkiaSharp;
 using Uno.UI.Composition;
 #endif
 
@@ -32,7 +31,6 @@ public class Given_Visual_ArrangePending
 	// whether or not the suppression works.
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task When_Child_Never_Arranged_Then_It_Does_Not_Paint()
 	{
 		var suppressed = new NeverArrangesChildrenPanel
@@ -136,6 +134,9 @@ public class Given_Visual_ArrangePending
 
 		public double RasterizationScale => 1;
 
+		// No recording happens through this double; the process default is the right fallback.
+		public Uno.UI.Composition.Drawing.IDrawingFactory? Renderer => null;
+
 		public event EventHandler? RasterizationScaleChanged
 		{
 			add { }
@@ -144,9 +145,9 @@ public class Given_Visual_ArrangePending
 
 		public void RequestNewFrame() => NewFrameRequests++;
 
-		public void AddDamage(SKRect bounds) { }
+		public void AddDamage(Windows.Foundation.Rect bounds) { }
 
-		public void AddDamage(SKPath region) { }
+		public void AddDamage(Uno.UI.Composition.Drawing.IGeometry region) { }
 
 		public void TryRedirectForManipulation(Microsoft.UI.Input.PointerPoint pointerPoint, InteractionTracker tracker) { }
 	}

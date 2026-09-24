@@ -74,7 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 #if __SKIA__
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_LocalResource_ScaleQualifier()
 		{
 			var path = new Uri("ms-appx:///Assets/scale-test.png");
@@ -117,7 +117,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #endif
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_BundleImages_Loaded_StreamsAreDisposed()
 		{
 			var panel = new StackPanel { Orientation = Orientation.Horizontal };
@@ -345,7 +345,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		[Ignore("Flaky for skia targets: https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)] // https://github.com/unoplatform/uno/issues/9080
 		public async Task When_Uri_Nullified()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))

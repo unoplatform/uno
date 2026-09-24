@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
-		<!-- Skia + mobile by default; the Windows samples head (BuildGraphics3DGLForWindows) builds
-		     Skia + WinUI only, since that CI agent has no Android/Apple mobile workloads. -->
-		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' == ''">$(TargetFrameworks);$(NetAndroidPreviousAndCurrent);$(NetPreviousNetCoreApple)</TargetFrameworks>
+		<!-- Skia + mobile by default. The Windows samples head (BuildGraphics3DGLForWindows) builds Skia + WinUI,
+		     and the reference build (BuildGraphics3DGLSkiaOnly) builds Skia alone: neither of those CI agents has
+		     the Android/Apple mobile workloads installed. -->
+		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' == '' and '$(BuildGraphics3DGLSkiaOnly)' == ''">$(TargetFrameworks);$(NetAndroidPreviousAndCurrent);$(NetPreviousNetCoreApple)</TargetFrameworks>
 		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' != ''">$(TargetFrameworks);$(NetUWPOrWinUI);$(NetCurrentUWPOrWinUI)</TargetFrameworks>
 
 		<RootNamespace>Uno.WinUI.Graphics3DGL</RootNamespace>
@@ -55,8 +56,9 @@
 				<WindowsPackageType>None</WindowsPackageType>
 			</PropertyGroup>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" />
-				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" />
+				<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
+				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" PrivateAssets="all" />
+				<PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.6.0" PrivateAssets="all" />
 				<PackageReference Include="Uno.Core.Extensions.Disposables" />
 
 				<Compile Include="Windows\WindowsRenderingNativeMethods.cs" />
