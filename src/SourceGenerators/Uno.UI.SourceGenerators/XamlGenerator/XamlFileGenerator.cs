@@ -4576,7 +4576,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							throw new XamlGenerationException("TwoWay binding to static properties is not supported", bindNode);
 						}
 
-						return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ({staticContextFunction.Expression}), null))";
+						return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ {WithStaticObservation($"global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ({staticContextFunction.Expression}), null)", modeMember, rawFunction)})";
 					}
 					else
 					{
@@ -4652,7 +4652,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray}))";
+				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ {WithStaticObservation($"global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray})", modeMember, rawFunction)})";
 			}
 			else
 			{
@@ -4742,24 +4742,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
-				// For static-rooted x:Bind paths (e.g., local:StaticClass.MyObj.Value),
-				// generate additional static observation sources so that INPC changes on
-				// the static instance's properties are properly observed.
-				var staticObservationSuffix = "";
-				if (modeMember != "OneTime"
-					&& !string.IsNullOrEmpty(rawFunction)
-					&& TryGetStaticRootAndInstancePath(rawFunction, out var staticRoot, out var instancePath))
-				{
-					staticObservationSuffix = $", {staticRoot}, new string[] {{\"{instancePath.Replace("\"", "\\\"")}\"}}";
-				}
-
-				if (staticObservationSuffix.Length > 0)
-				{
-					return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetXBindStaticPropertyPaths(global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}){staticObservationSuffix}))";
-				}
-
-				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
+				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ {WithStaticObservation($"global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray})", modeMember, rawFunction)})";
 			}
+		}
+
+		/// <summary>
+		/// Wraps an x:Bind provider call so that a static-rooted path (e.g. local:StaticClass.MyObj.Value)
+		/// also observes INPC changes on the instance reached through the static member.
+		/// </summary>
+		private string WithStaticObservation(string providerCall, string modeMember, string rawFunction)
+		{
+			if (modeMember != "OneTime"
+				&& !string.IsNullOrEmpty(rawFunction)
+				&& TryGetStaticRootAndInstancePath(rawFunction, out var staticRoot, out var instancePath))
+			{
+				return $"global::Uno.UI.Xaml.BindingHelper.SetXBindStaticPropertyPaths({providerCall}, {staticRoot}, new string[] {{\"{instancePath.Replace("\"", "\\\"")}\"}})";
+			}
+
+			return providerCall;
 		}
 
 		/// <summary>
