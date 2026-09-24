@@ -662,6 +662,36 @@ are the rest.
   no visual tree to exercise bindings, so the four lifecycle hazards, the leaf-not-root case, the
   initial-value-equals-default case and the compiled-binding path all live there rather than in runtime tests.
 
+## 10b. Superseded by the WinUI alignment pass
+
+Spec 060's visuals were implemented against **WinUI's own state machine** rather than the `ValidationStates`
+group 060 §2 proposed, and porting that machine required reshaping parts of this spec. Recorded here rather
+than edited into the decisions above, so the reasoning that produced them stays legible.
+
+- **D2 — `Validation.IsEnabled` no longer exists.** Participation is now
+  `Validation.InputValidationMode != InputValidationMode.Disabled`, which is exactly WinUI's
+  `CControl::IsValidationEnabled`. The property is still opt-in per control and still gates registration and
+  sync, so the *decision* stands; only its spelling changed. Its default is `Disabled` rather than the enum's
+  zero value `Auto`, a deliberate divergence: WinUI's equivalent only gates visuals, whereas here it also
+  gates the `INotifyDataErrorInfo` subscription. `Validation.InputValidationKind` was added beside it.
+- **Q1 — resolved.** The element type behind `Errors` is `InputValidationError`, carrying the source error's
+  `ToString()` as `ErrorMessage`, which is what WinUI's `DefaultInputValidationErrorTemplate` binds against.
+  The property is now a `ValidationErrorsCollection` **mutated in place** rather than a fresh snapshot per
+  synchronization — so the note above about a fresh instance being load-bearing is superseded: identity is
+  now what a binding depends on, and `VectorChanged` is what notifies. The collection is created on first
+  read, so a control that never reports an error never allocates one.
+- **D1 — `IInputValidationControl` is WinUI's full interface**, moved to `Microsoft.UI.Xaml.Controls` with
+  the enums and error types. `ValidationContext` is the one member not ported, commented out in place.
+  `ErrorTemplate`, held back here for want of a consumer, ships with it.
+- **D7 — `ErrorChanged` survives** beside WinUI's `HasValidationErrorsChanged` and `ValidationError`, because
+  it is the only one of the three that carries the source's `DataErrorsChangedEventArgs` unchanged.
+- **Q3 / Q11 — partially reversed.** `Validation` itself stays in `Uno.UI.Xaml.Controls` as decided, but the
+  interface, enums and error types took their WinUI names in `Microsoft.UI.Xaml.Controls`. That is a
+  **deliberate parity risk**: every one of those types is `PrivateApiContract` / `Feature_InputValidation` in
+  WinUI's private IDL and has never shipped publicly, so if microsoft-ui-xaml#179 ever ships with a different
+  shape, the names collide. `HasValidationErrorsChangedEventArgs` is the exception — public `WinUIContract`,
+  and it already existed in Uno as a `[Uno.NotImplemented]` generated stub, now hand-written.
+
 ## 11. References
 
 - [`INotifyDataErrorInfo`](https://learn.microsoft.com/dotnet/api/system.componentmodel.inotifydataerrorinfo)

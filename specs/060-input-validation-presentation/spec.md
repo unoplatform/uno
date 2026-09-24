@@ -1,38 +1,79 @@
 # Input validation — presentation
 
-**Status**: Deferred
+**Status**: Partially implemented — §2 and §5 shipped; §4 (templates) and §3/Q10 remain
 **Audience**: Internal engineering (Uno Platform maintainers)
 **Created**: 2026-09-22
 
-> Second of two, and **not scheduled**. `specs/059-input-validation/spec.md` is the prerequisite: it delivers
-> the transport layer and the bindable read model (`Validation.IsEnabled` / `HasErrors` / `Errors`), which is
-> enough for an app to render its own error text. This spec covers the *built-in* visuals — control
-> templates, the error presenter and the `ValidationStates` visual state group.
+> Second of two. `specs/059-input-validation/spec.md` is the prerequisite: it delivers the transport layer
+> and the bindable read model, which is enough for an app to render its own error text. This spec covers the
+> *built-in* visuals — control templates, the error presenter and the validation visual state group.
 >
-> It is recorded now rather than later because two of its findings are **blocking**, not merely unfinished:
-> §2 shows the obvious mechanism for driving the visual states is closed, and §3 shows a second visual state
-> group cannot be given priority over `CommonStates`. Both were discovered while designing 059, and both
-> would otherwise be rediscovered at implementation time.
+> **§2 has been implemented, and not as this document proposed.** The states are WinUI's own, and the
+> `ChangeVisualState` route it declared closed was reopened. §2.0 records what shipped; §2.1 and §2.2 are
+> kept verbatim below because the audit in them is what made the shipped design possible, and because two of
+> their three findings still hold. §3 is **untouched and still blocking**, and is now known to bite: WinUI's
+> error states recolour `BorderElement.BorderBrush`, a property `CommonStates` owns.
 
 ## 1. Scope
 
 | In | Out |
 |---|---|
-| The `ValidationStates` visual state group (§2) | Everything in spec 059 — the transport layer, the attached properties, the validation-property attribute |
+| The validation visual state groups (§2) — **shipped**, see §2.0 | Everything in spec 059 — the transport layer, the attached properties, the validation-property attribute |
 | Visual-state contention with `CommonStates` (§3) | |
 | Per-control template changes and the error presenter (§4) | |
-| `IInputValidationControl.ErrorTemplate` (§5) | |
+| `IInputValidationControl.ErrorTemplate` (§5) — **shipped**, unrendered until §4 | |
 | The floated `IsRequired` indicator (§6) | |
 
-`grep -rn "ValidationStates" src` returns **zero hits**, so the group name collides with nothing.
+The group names collide with nothing: before implementation `grep -rn "ValidationStates" src` returned zero
+hits, and the names that shipped are WinUI's `InputValidationEnabledStates` / `InputValidationErrorStates`,
+which were equally absent.
 
-## 2. The `ValidationStates` group — and what drives it
+## 2. The validation visual state groups — and what drives them
 
-The proposal is one new visual state group on `Control`:
+### 2.0 What shipped (supersedes the proposal below)
+
+The proposal in this section was **one** new group, `ValidationStates`, with
+`ValidationNone | ValidationError | ValidationSuccess`. That was **withdrawn**. What shipped is a direct port
+of WinUI's `CControl::EnsureValidationVisuals` (`Control.cpp:1858`) — **two** groups:
+
+| Group | States |
+|---|---|
+| `InputValidationEnabledStates` | `CompactValidationEnabled`, `InlineValidationEnabled`, `ValidationDisabled` |
+| `InputValidationErrorStates` | `CompactErrors`, `InlineErrors`, `ErrorsCleared` |
+
+Driven by `protected void Control.UpdateValidationStates()`, with the pre-existing
+`Control.EnsureValidationVisuals` stub forwarding to it. Fidelity points worth keeping: transitions are always
+applied with `useTransitions: false`; a missing group is silent, as WinUI discards every `GoToState` result;
+`InputValidationKind.Auto` is never resolved and behaves as `Compact`; and the disabled branch deliberately
+leaves the error group where it was.
+
+**Q6 is answered.** Three framework triggers, plus per-control call sites:
+
+1. The `Validation.HasErrors` changed callback — covers all eight participants with no per-control code.
+2. The `InputValidationMode` / `InputValidationKind` changed callbacks.
+3. `FrameworkElement.InvokeApplyTemplate`, immediately after `OnApplyTemplate()` — which also answers §2.2's
+   open sub-question about re-application after template realization. Measured by mutation, not assumed: with
+   it removed, a `NumberBox` that reported errors before its template existed lands in no state at all. A
+   `CheckBox` masks this, because its own `ChangeVisualState` call site runs after the template applies.
+
+**On §2.1's three objections.** Objection 1 (`private protected`) is sidestepped rather than solved: nothing
+overrides `ChangeVisualState`: controls *call* a `protected`, non-virtual helper, which a third-party control
+can also call from wherever it drives its own states. Objection 2 (19 of 31 overrides skip the base call) is
+moot for the same reason — every call site is explicit — but the audit remains load-bearing, because it is
+what says `CheckBox` and `RadioButton` need their own call despite deriving from `ToggleButton`. Objection 3
+holds exactly as written: `TextBox` and `PasswordBox` take the call in their `UpdateVisualState` override
+instead, which is also where WinUI puts it (`CTextBoxBase::UpdateVisualState:3591`).
+
+`IInputValidationControl.ErrorTemplate` (§5) shipped with this, backed by a `Validation.ErrorTemplate`
+attached property. Nothing renders it yet — that needs §4.
+
+### 2.1–2.2 The original proposal, as written
+
+The proposal was one new visual state group on `Control`:
 `ValidationNone | ValidationError | ValidationSuccess`.
 
-**What drives the transitions is undecided (Q6).** The obvious route is closed, and the audit that closed it
-is the useful part of this section.
+**What drives the transitions was undecided (Q6).** The obvious route looked closed, and the audit that
+closed it is the useful part of this section — and is what the shipped design in §2.0 is built on.
 
 ### 2.1 `ChangeVisualState` cannot carry it
 
@@ -88,7 +129,11 @@ Open sub-question if that route is taken: **re-application after template realiz
 anchor is `Control.ApplyTemplate()` → `InvokeApplyTemplate`; `FrameworkElement.OnApplyTemplate` is
 `protected virtual` and has the same base-call problem as `ChangeVisualState`.
 
-## 3. Visual-state contention — `ValidationStates` vs `CommonStates` (Q10)
+## 3. Visual-state contention — the validation groups vs `CommonStates` (Q10)
+
+> Written before §2.0 shipped, so it says `ValidationStates` throughout. The argument is unchanged and
+> applies to whichever group writes second — read it as `InputValidationErrorStates`, which is the one
+> that carries setters in WinUI's templates.
 
 A second visual state group is independent for **state selection** and shared for **property writes**. Only
 the first half is intuitive, and assuming it is the whole story is the trap.
@@ -154,7 +199,7 @@ above `Animations`, is fixed at DP registration and so is not addressable per in
 ## 4. Per-control template changes
 
 Each participating control's default template needs an extra row hosting the **error presenter**, its
-visibility driven by the `ValidationStates` group. That is the whole requirement.
+visibility driven by the `InputValidationErrorStates` group. That is the whole requirement.
 
 **This is a smaller change than it sounds, because `Description` is already exactly this pattern.**
 
@@ -238,8 +283,8 @@ are not lost:
 
 | | Question |
 |---|---|
-| **Q6** | What drives the `ValidationStates` transitions. The audit in §2 closes the `ChangeVisualState` and `UpdateVisualState` routes; `GoToState`-from-callback is recorded as a candidate, **not adopted**. Includes the re-application-after-template-realization sub-question. |
-| **Q10** | Whether the error visual may recolour the border / header / text at all — and if so, which of options A–C in §3.2 pays for it. Option 0 (disjoint property sets) keeps §4 as written correct. |
+| ~~**Q6**~~ | **Answered — see §2.0.** `Control.UpdateValidationStates`, called from three framework triggers plus explicit per-control call sites. The re-application sub-question is answered by the `InvokeApplyTemplate` anchor. |
+| **Q10** | Whether the error visual may recolour the border / header / text at all — and if so, which of options A–C in §3.2 pays for it. **Now a live question, not a hypothetical**: WinUI's own `CompactErrors` and `InlineErrors` both set `BorderElement.BorderBrush`, which `CommonStates` also writes, so porting its templates verbatim walks straight into §3. Option 0 is no longer available if parity is the goal. |
 | **Q4** | *(only if `IsRequired` is adopted)* the `*` indicator misaligns labels; is `bool?` the answer? |
 | **Q7** | *(only if `IsRequired` is adopted)* whether templates need a dedicated column for the indicator. |
 | **D5** | Whether placement stays template-fixed, or moves to an Avalonia-style presenter control — see §7. |
