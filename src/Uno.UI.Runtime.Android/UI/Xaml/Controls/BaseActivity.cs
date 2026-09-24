@@ -374,9 +374,11 @@ namespace Uno.UI
 			}
 		}
 
+		private static long NextActivation() => Interlocked.Increment(ref _activationCount);
+
 		private void SetAsCurrent()
 		{
-			_lastActivation = Interlocked.Increment(ref _activationCount);
+			_lastActivation = NextActivation();
 			ContextHelper.Current = this;
 			if (Interlocked.Exchange(ref _current, this) != this)
 			{
