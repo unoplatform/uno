@@ -85,20 +85,29 @@ internal static partial class KeyboardStateTracker
 
 	private static void SetStateOnNonSideKeys(VirtualKey key, CoreVirtualKeyStates state)
 	{
-		if (key == VirtualKey.LeftShift || key == VirtualKey.RightShift)
+		switch (key)
 		{
-			_keyStates[VirtualKey.Shift] = state;
+			case VirtualKey.LeftShift or VirtualKey.RightShift:
+				SetAggregateState(VirtualKey.Shift, state, key == VirtualKey.LeftShift ? VirtualKey.RightShift : VirtualKey.LeftShift);
+				break;
+			case VirtualKey.LeftControl or VirtualKey.RightControl:
+				SetAggregateState(VirtualKey.Control, state, key == VirtualKey.LeftControl ? VirtualKey.RightControl : VirtualKey.LeftControl);
+				break;
+			case VirtualKey.LeftMenu or VirtualKey.RightMenu:
+				SetAggregateState(VirtualKey.Menu, state, key == VirtualKey.LeftMenu ? VirtualKey.RightMenu : VirtualKey.LeftMenu);
+				break;
+		}
+	}
+
+	// Like Win32 GetKeyState(VK_SHIFT), the aggregate key stays down while either side is held.
+	private static void SetAggregateState(VirtualKey aggregate, CoreVirtualKeyStates state, VirtualKey otherSide)
+	{
+		if (GetKeyState(otherSide).HasFlag(CoreVirtualKeyStates.Down))
+		{
+			state |= CoreVirtualKeyStates.Down;
 		}
 
-		if (key == VirtualKey.LeftControl || key == VirtualKey.RightControl)
-		{
-			_keyStates[VirtualKey.Control] = state;
-		}
-
-		if (key == VirtualKey.LeftMenu || key == VirtualKey.RightMenu)
-		{
-			_keyStates[VirtualKey.Menu] = state;
-		}
+		_keyStates[aggregate] = state;
 	}
 
 	// Platforms disagree on which entry a modifier key press writes: X11 reports the side key and
