@@ -50,10 +50,10 @@ namespace Uno.UI
 		public static Android.Content.Context ApplicationContext => Android.App.Application.Context;
 
 		/// <summary>
-		/// Tries getting the current foreground activity context.
+		/// Tries getting the context of the most recently active live activity (see <see cref="Current"/>).
 		/// </summary>
-		/// <param name="context">The foreground activity context if available.</param>
-		/// <returns>true if a foreground activity context is available, otherwise false.</returns>
+		/// <param name="context">The activity context if available.</param>
+		/// <returns>true if a live activity context is available, otherwise false.</returns>
 		internal static bool TryGetCurrent(out Android.Content.Context? context)
 		{
 			context = _current;
@@ -61,9 +61,9 @@ namespace Uno.UI
 		}
 
 		/// <summary>
-		/// Repoints the foreground context, used by the activity lifecycle when the current
+		/// Repoints <see cref="Current"/>, used by the activity lifecycle when the current
 		/// activity is torn down. Passing <c>null</c> leaves <see cref="Current"/> without a
-		/// foreground activity; app-scoped callers should use <see cref="ApplicationContext"/>.
+		/// live activity; app-scoped callers should use <see cref="ApplicationContext"/>.
 		/// </summary>
 		internal static void SetForeground(Android.Content.Context? context) => _current = context;
 	}
