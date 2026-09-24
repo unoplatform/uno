@@ -2615,6 +2615,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 													writer.AppendLineIndented(",");
 												}
 											}
+
+											// Other initializer members (e.g. from x:Uid) can follow the collection.
+											writer.AppendLineIndented(",");
 										}
 										else
 										{
