@@ -1077,6 +1077,9 @@ namespace Microsoft.UI.Xaml
 
 			base.LeaveImpl(@params);
 
+			// A Leave before the Loading pass voids the Enter's styles.
+			_stylesAppliedOnEnter = false;
+
 			ReconfigureViewportPropagation(isLeavingTree: true);
 		}
 	}
