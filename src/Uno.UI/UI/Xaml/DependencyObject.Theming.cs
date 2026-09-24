@@ -846,12 +846,9 @@ public partial class DependencyObject
 		// SetModifierValueBeingSet(true) when the property HasModifiers (true while animated), which makes the
 		// !IsModifierValueBeingSet() guard at PropertySystem.cpp:1649 false and SKIPS the hardcoded
 		// SetBaseValue(.., BaseValueSourceLocal) at :1651 entirely (Theming.cpp:405-410) — so the base is never
-		// re-stamped and the local-newer bit is never set. Uno has no such gate (ApplyResource/SetResourceBinding
-		// default to Local), so it reuses the counter-based suppress it already wraps the global theme switch in
-		// (CoreServices.RaiseThemeChanged, Application.OnResourcesChanged), extended here to the per-element choke
-		// point. This masks the flag-flip rather than skipping the re-stamp; a faithful port of WinUI's
-		// modifier-being-set gate (which would let the suppress be removed) is tracked as follow-up. Counter-based,
-		// so it nests safely under the global guard; try/finally so the counter unwinds on an exception in any phase.
+		// re-stamped and the local-newer bit is never set. Uno ports that gate: ArmModifierValueBeingSet wraps the
+		// value write in UpdateThemeReference (Phase 1) and SetResourceBindingValue (Phase 2), so this per-element
+		// entry point needs no suppress of its own.
 		UpdateResourceBindingsCore(updateReason, resourceContextProvider, containingDictionary);
 	}
 
