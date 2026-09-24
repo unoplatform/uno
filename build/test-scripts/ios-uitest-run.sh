@@ -449,15 +449,21 @@ find $UNO_TESTS_LOCAL_TESTS_FILE -name "*.dmp" -exec cp -v {} $LOG_FILEPATH \;
 ## Take a screenshot
 xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png || true
 
-## Capture the device logs
-xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH || true
+# Collecting, shutting down and dumping the device logs costs 2-6 minutes per shard and only helps
+# diagnose a crash or a failure, so skip it for a run that produced results with no failures.
+if [ -f "$UNO_ORIGINAL_TEST_RESULTS" ] && ! grep -Eq 'result="(Failed|Error)"' "$UNO_ORIGINAL_TEST_RESULTS"; then
+	echo "All tests passed; skipping the device log collection"
+else
+	## Capture the device logs
+	xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH || true
 
-## Shutting down simulator to reclaim memory
-echo "Shutting down simulator"
-xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
+	## Shutting down simulator to reclaim memory
+	echo "Shutting down simulator"
+	xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
-echo "Dumping device logs to $LOG_FILEPATH_FULL"
-log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL || true
+	echo "Dumping device logs to $LOG_FILEPATH_FULL"
+	log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL || true
+fi
 
 echo "Searching for failures in device logs"
 if [ ! -s "$LOG_FILEPATH_FULL" ]; then
