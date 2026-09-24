@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
 
 	<PropertyGroup>
 		<!-- Where the sdk's own task assembly sits, so package targets can use its tasks without guessing. -->

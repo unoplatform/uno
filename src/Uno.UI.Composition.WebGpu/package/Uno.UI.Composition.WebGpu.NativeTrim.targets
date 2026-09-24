@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
 
 	<!--
 	Drops the wgpu native payload from an app that cannot reach it.
