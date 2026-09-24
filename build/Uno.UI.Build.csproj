@@ -195,7 +195,7 @@
 		<PropertyGroup>
 			<!--
 				NoWarn codes are comma-separated: a semicolon would end the property and drop the rest of the list.
-				NU5123: Long paths - disabled as tragets in Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive have too long paths
+				NU5123: Long paths - disabled as targets in Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive have too long paths
 			-->
 			<NuSpecNoWarn>NU5100,NU5105,NU5131,NU5123</NuSpecNoWarn>
 			<NuSpecProperties>branch=$(NBGV_BuildingRef);commitid=$(NBGV_GitCommitId)</NuSpecProperties>
