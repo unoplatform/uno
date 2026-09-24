@@ -41,16 +41,29 @@ public partial class InputInjector
 		managers.Add(new WeakReference<IInputInjectorTarget>(manager));
 	}
 
-	private static IInputInjectorTarget? GetFirstTarget()
+	private static IInputInjectorTarget? GetFirstTarget() => FindTarget(activeOnly: false);
+
+	/// <summary>
+	/// Finds the first live target, pruning collected ones on the way so closed windows do not pile up.
+	/// </summary>
+	private static IInputInjectorTarget? FindTarget(bool activeOnly)
 	{
 		if (_inputManagers is { } managers)
 		{
-			foreach (var weak in managers)
+			for (var i = 0; i < managers.Count;)
 			{
-				if (weak.TryGetTarget(out var target))
+				if (!managers[i].TryGetTarget(out var target))
+				{
+					managers.RemoveAt(i);
+					continue;
+				}
+
+				if (!activeOnly || target.IsActive)
 				{
 					return target;
 				}
+
+				i++;
 			}
 		}
 
@@ -311,21 +324,28 @@ public partial class InputInjector
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 	public void InjectKeyboardInput(IEnumerable<InjectedInputKeyboardInfo> input)
 	{
+		foreach (var info in ValidateKeyboardBatch(input))
+		{
+			InjectKeyboardInputCore(info);
+		}
+	}
+
+	/// <summary>
+	/// Validates the whole batch before anything is dispatched: throwing mid-dispatch would leave
+	/// injected modifier keys latched in the process-wide KeyboardStateTracker with no key-up to release them.
+	/// </summary>
+	private static IReadOnlyList<InjectedInputKeyboardInfo> ValidateKeyboardBatch(IEnumerable<InjectedInputKeyboardInfo> input)
+	{
 		ArgumentNullException.ThrowIfNull(input);
 		EnsureUIThread();
 
-		// Validate the whole batch first: throwing mid-dispatch would leave injected modifier keys
-		// latched in the process-wide KeyboardStateTracker with no key-up to release them.
 		var infos = input as IReadOnlyList<InjectedInputKeyboardInfo> ?? input.ToList();
 		for (var i = 0; i < infos.Count; i++)
 		{
 			infos[i].Validate(i);
 		}
 
-		foreach (var info in infos)
-		{
-			InjectKeyboardInputCore(info);
-		}
+		return infos;
 	}
 
 	private void InjectKeyboardInputCore(InjectedInputKeyboardInfo info)
@@ -371,18 +391,7 @@ public partial class InputInjector
 	// TODO: Move as extension method
 	internal async ValueTask InjectKeyboardInputAsync(IEnumerable<InjectedInputKeyboardInfo> input, CancellationToken ct)
 	{
-		ArgumentNullException.ThrowIfNull(input);
-		EnsureUIThread();
-
-		// Validate up front, like the synchronous overload: dispatching per key would otherwise
-		// deliver part of the batch before a later invalid entry throws.
-		var infos = input as IReadOnlyList<InjectedInputKeyboardInfo> ?? input.ToList();
-		for (var i = 0; i < infos.Count; i++)
-		{
-			infos[i].Validate(i);
-		}
-
-		foreach (var info in infos)
+		foreach (var info in ValidateKeyboardBatch(input))
 		{
 			InjectKeyboardInputCore(info);
 			await WaitForIdle(ct);
@@ -400,15 +409,9 @@ public partial class InputInjector
 	/// </remarks>
 	private IInputInjectorTarget ResolveKeyboardTarget()
 	{
-		if (_inputManagers is { } managers)
+		if (FindTarget(activeOnly: true) is { } target)
 		{
-			foreach (var weak in managers)
-			{
-				if (weak.TryGetTarget(out var target) && target.IsActive)
-				{
-					return target;
-				}
-			}
+			return target;
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
