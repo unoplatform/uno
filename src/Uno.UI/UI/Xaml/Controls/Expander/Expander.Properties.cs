@@ -5,6 +5,7 @@
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -106,7 +107,7 @@ public partial class Expander
 			typeof(bool),
 			typeof(Expander),
 			new FrameworkPropertyMetadata(
-				false,
+				BoolBoxes.False,
 				(s, e) => (s as Expander)?.OnIsExpandedPropertyChanged(e)));
 
 	/// <summary>

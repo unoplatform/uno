@@ -1,6 +1,7 @@
 ﻿using System;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -67,11 +68,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (args.Property == AllowFocusOnInteractionProperty)
 			{
-				Content?.SetValue(AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
+				Content?.SetValue(AllowFocusOnInteractionProperty, Boxer.Box(AllowFocusOnInteraction));
 			}
 			else if (args.Property == AllowFocusWhenDisabledProperty)
 			{
-				Content?.SetValue(AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
+				Content?.SetValue(AllowFocusWhenDisabledProperty, Boxer.Box(AllowFocusWhenDisabled));
 			}
 
 			base.OnPropertyChanged2(args);
@@ -81,8 +82,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnContentChanged(oldValue, newValue);
 
-			Content?.SetValue(AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
-			Content?.SetValue(AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
+			Content?.SetValue(AllowFocusOnInteractionProperty, Boxer.Box(AllowFocusOnInteraction));
+			Content?.SetValue(AllowFocusWhenDisabledProperty, Boxer.Box(AllowFocusWhenDisabled));
 		}
 
 		protected override bool CanCreateTemplateWithoutParent { get; } = true;

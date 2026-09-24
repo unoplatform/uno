@@ -13,6 +13,7 @@ using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml
 {
@@ -31,7 +32,7 @@ namespace Microsoft.UI.Xaml
 			nameof(IsHitTestVisible),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(defaultValue: true, propertyChangedCallback: (s, e) => ((UIElement)s).OnIsHitTestVisibleChanged((bool)e.OldValue, (bool)e.NewValue))
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.True, propertyChangedCallback: (s, e) => ((UIElement)s).OnIsHitTestVisibleChanged((bool)e.OldValue, (bool)e.NewValue))
 			{
 				PropMethodCall = HitTestVisible,
 			}
@@ -43,7 +44,7 @@ namespace Microsoft.UI.Xaml
 			var element = (UIElement)instance;
 			if (isGet)
 			{
-				return Boxes.Box(element._isHitTestVisible);
+				return Boxer.Box(element._isHitTestVisible);
 			}
 
 			var newValue = (bool)valueToSet!;
@@ -51,11 +52,11 @@ namespace Microsoft.UI.Xaml
 			{
 				element._isHitTestVisible = newValue;
 				// The value has changed.
-				return true;
+				return BoolBoxes.True;
 			}
 
 			// The value didn't change.
-			return false;
+			return BoolBoxes.False;
 		}
 #nullable restore
 
