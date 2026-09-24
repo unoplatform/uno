@@ -1051,13 +1051,12 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		private void InvokeClassHandler(RoutedEvent routedEvent, RoutedEventArgs args)
 		{
-			// WinUI dispatches the built-in OnXxx overrides through CEventManager::RaiseUIElementEvents /
-			// RaiseControlEvents, both of which drop the callback's HRESULT: a class handler that fails
-			// neither aborts the raise nor stops the event bubbling to the parents. Mirror that here so a
-			// failure inside a framework control cannot surface at the RaiseEvent() call site -- notably
-			// ItemsRepeater rejecting a BringIntoViewRequested that targets the repeater itself, which
-			// WinUI throws on too and swallows at exactly this point (uno#21421).
-			// Handlers registered by application code run through InvokeHandlers and still propagate.
+			// WinUI dispatches every class handler (the OnXxx overrides, ContextRequested included) through
+			// CEventManager::RaiseUIElementEvents / RaiseControlEvents, both of which drop the callback's
+			// HRESULT: a failing class handler neither aborts the raise nor stops the bubbling. Mirror that
+			// for all class handlers -- e.g. ItemsRepeater rejecting a BringIntoViewRequested that targets
+			// the repeater itself, which WinUI throws on too and swallows here (uno#21421).
+			// This covers overrides only; event subscriptions run through InvokeHandlers and still propagate.
 			try
 			{
 				InvokeClassHandlerCore(routedEvent, args);
