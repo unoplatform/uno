@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -109,7 +109,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	private const string ManagedSvgRendererTypeName = "Uno.UI.Composition.Drawing.ManagedSvgRenderer, Uno.UI.Composition.Managed";
 
 	// Lottie: the Skottie add-in (Uno.UI.Lottie) is the default when referenced, else the SkiaSharp-free managed
-	// engine (Uno.UI.Composition.Managed). UNO_MANAGED_LOTTIE=1 forces the managed engine even when Skottie is present.
+	// engine (Uno.UI.Composition.Managed). An app that wants the managed engine either drops the add-in reference
+	// or calls IUnoPlatformHostBuilder.LottieRenderer, which this light-up leaves alone.
 	private const string SkottieLottieRendererTypeName = "Uno.UI.Lottie.SkottieLottieRenderer, Uno.UI.Lottie";
 	private const string ManagedLottieRendererTypeName = "Uno.UI.Composition.Drawing.ManagedLottieRenderer, Uno.UI.Composition.Managed";
 
@@ -171,11 +172,10 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		// UNO_WEBGPU opts an app into the WebGPU renderer (over the managed geometry engine, which WebGPU
-		// flattens) without any head code: the backend is probed reflectively, so a head that doesn't ship the
-		// WebGPU assemblies — or a probe failure — falls through to the Skia default below.
-		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain"
-			&& CreateInstanceOf<Drawing.IGraphicsProvider>(WebGpuGraphicsProviderTypeName) is { } webGpuProvider)
+		// The WebGpu UnoFeature is the opt-in: it is what references Uno.UI.Composition.WebGpu, so the assembly
+		// being resolvable here IS the app asking for it. A head without the feature falls through to the Skia
+		// default below. Geometry goes to the managed engine, which WebGPU flattens.
+		if (CreateInstanceOf<Drawing.IGraphicsProvider>(WebGpuGraphicsProviderTypeName) is { } webGpuProvider)
 		{
 			Drawing.GraphicsRegistry.RegisterDefault(new[] { webGpuProvider });
 			if (!Drawing.GeometryFactory.IsRegistered
@@ -243,8 +243,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		var forceManaged = Environment.GetEnvironmentVariable("UNO_MANAGED_LOTTIE") is "1" or "true";
-		var renderer = (forceManaged ? null : InvokeStaticFactory<Drawing.ILottieRenderer>(SkottieLottieRendererTypeName, "CreateLottieRenderer"))
+		var renderer = InvokeStaticFactory<Drawing.ILottieRenderer>(SkottieLottieRendererTypeName, "CreateLottieRenderer")
 			?? InvokeStaticFactory<Drawing.ILottieRenderer>(ManagedLottieRendererTypeName, "CreateLottieRenderer");
 		if (renderer is not null)
 		{

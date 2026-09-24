@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
@@ -10,7 +10,7 @@ namespace Uno.UI.Composition.Drawing;
 /// The framework's SkiaSharp-free managed Lottie (Bodymovin) engine — an <see cref="ILottieRenderer"/> that parses
 /// the animation JSON and draws each frame straight through the neutral <see cref="IDrawingSession"/> (no Skottie,
 /// no rasterize-to-SKSurface), so Lottie plays on any backend. Resolved as the default only when the Skottie add-in
-/// (Uno.UI.Lottie) isn't referenced, or forced with <c>UNO_MANAGED_LOTTIE=1</c>. v1 covers the shape-layer subset
+/// (Uno.UI.Lottie) isn't referenced, or when a head registers it explicitly. v1 covers the shape-layer subset
 /// (see <see cref="ManagedLottie"/>).
 /// </summary>
 public sealed class ManagedLottieRenderer : ILottieRenderer
