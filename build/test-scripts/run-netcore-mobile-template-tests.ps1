@@ -202,14 +202,15 @@ $projects =
     # 5.6 net-current with XAML trimming validation - wasm
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-browserwasm", "-p:UnoXamlResourcesTrimming=true", "-p:WasmShellILLinkerEnabled=true"), @("macOS", "NetCore", "Publish")),
 
-    # 5.6 multi-platform template - covers the Android and iOS application heads.
+    # 5.6 multi-platform template - covers the Android, iOS and WinAppSDK application heads.
     # The app references a multi-targeted package (Uno56NugetLibrary) and a plain net11.0 one
     # (Uno56NugetPlainLibrary), so both must be packed into the "Solution Packages" feed before the app
-    # can restore. The app validates that mobile heads keep each package's own TFM asset.
+    # can restore. The app validates that every head uses each package's own TFM asset.
     @(3, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore", "CleanNugetTemp", "NoBuildClean")),
     @(3, "5.6/uno56droidioswasmskia/Uno56NugetPlainLibrary/Uno56NugetPlainLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore", "CleanNugetTemp", "NoBuildClean")),
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-f", "net11.0-android"), @("macOS", "NetCore")),
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-f", "net11.0-ios"), @("macOS", "NetCore")),
+    @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-p:Platform=x64", "-p:TargetFramework=net11.0-windows10.0.26100"), @()),
 
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0"), @("macOS", "NetCore")),
