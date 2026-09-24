@@ -228,6 +228,12 @@ namespace Microsoft.UI.Xaml
 				// If there's no overload, the default Control.OnApplyTemplate will be invoked,
 				// which will just P/Invoke back to the native CControl::OnApplyTemplate.
 				OnApplyTemplate();
+
+				// GoToState does nothing before a template exists, so a control that is already in error when
+				// its template is realized would otherwise come up in no validation state at all. Anchored
+				// here rather than in OnApplyTemplate, which is virtual and widely overridden without a base
+				// call.
+				pControl?.UpdateValidationStatesInternal();
 			}
 
 			// UNO TODO:
