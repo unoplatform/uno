@@ -1396,7 +1396,7 @@ namespace Uno.UI.Samples.Tests
 			if (completed == timeoutTask)
 			{
 				_ = task.ContinueWith(
-					t => _log?.Info($"{what} completed after the harness cut it off ({t.Status}). Any failure reported between the cut-off and now may come from it."),
+					t => _log?.Info($"{what} completed after the harness cut it off ({t.Status}{(t.Exception is { } ex ? ": " + ex.Flatten().InnerException?.Message : "")}). Any failure reported between the cut-off and now may come from it."),
 					TaskScheduler.Default);
 
 				throw new TestBodyTimeoutException($"{what} timed out after {timeout}");
