@@ -231,18 +231,18 @@ public class Given_Hyperlink
 
 #if HAS_UNO
 	/// <summary>
-	/// Overrides the accent color to the default blue (#FF0078D7) for deterministic test results,
-	/// restoring the previous value on dispose.
+	/// Installs the default accent palette for deterministic test results,
+	/// restoring the previous override on dispose.
 	/// </summary>
 	internal struct AccentColorOverride : IDisposable
 	{
-		private static readonly Color DefaultBlueAccent = Color.FromArgb(0xFF, 0x00, 0x78, 0xD7);
 		private readonly Color? _previous;
 
 		public AccentColorOverride()
 		{
 			_previous = FeatureConfiguration.AccentColor.OverrideAccentColor;
-			FeatureConfiguration.AccentColor.OverrideAccentColor = DefaultBlueAccent;
+			// FromAccentColor only approximates the shades, so install the exact default palette.
+			Uno.Helpers.Theming.AccentColorHelper.SetOverridePalette(Uno.Helpers.Theming.AccentColorPalette.Default);
 		}
 
 		public void Dispose()
