@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
@@ -61,6 +63,39 @@ namespace Uno.UI.RuntimeTests.Tests.XBindStaticInpcTests
 				await WindowHelper.WaitForIdle();
 
 				Assert.AreEqual("7", page.NestedRootTextBlock.Text, "Initial bound text should reflect Value=7.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(false, DisplayName = "Untyped DataTemplate")]
+		[DataRow(true, DisplayName = "Typed DataTemplate")]
+		public async Task When_Static_Member_Root_In_DataTemplate_INPC_Updates_Propagate_12608(bool typedTemplate)
+		{
+			XBindStaticInpcApp_12608.MyObj = new XBindStaticInpcObject_12608 { Value = 0 };
+
+			try
+			{
+				var page = new XBindStaticInpcPage_12608();
+				var host = typedTemplate ? page.TypedTemplateHostControl : page.UntypedTemplateHostControl;
+				host.Content = new XBindStaticInpcObject_12608();
+
+				WindowHelper.WindowContent = page;
+				await WindowHelper.WaitForLoaded(page);
+				await WindowHelper.WaitForIdle();
+
+				var textBlock = host.FindFirstDescendant<TextBlock>();
+				Assert.IsNotNull(textBlock, "The DataTemplate should have been materialized.");
+				Assert.AreEqual("0", textBlock.Text, "Initial bound text should reflect Value=0.");
+
+				XBindStaticInpcApp_12608.MyObj.Value = 42;
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("42", textBlock.Text, "x:Bind (OneWay) through a static-class root inside a DataTemplate should propagate INPC updates.");
 			}
 			finally
 			{
