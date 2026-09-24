@@ -3,6 +3,7 @@
 // MUX Reference BlockTextElement.h (CBlock), tag winui3/release/2.4.0, commit e8442d07a
 using System;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -63,7 +64,7 @@ public partial class Block : TextElement
 	public double LineHeight
 	{
 		get => (double)GetValue(LineHeightProperty);
-		set => SetValue(LineHeightProperty, value);
+		set => SetValue(LineHeightProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty LineHeightProperty { get; } =
@@ -72,7 +73,7 @@ public partial class Block : TextElement
 			typeof(double),
 			typeof(Block),
 			new FrameworkPropertyMetadata(
-				0.0,
+				DoubleBoxes.Zero,
 				propertyChangedCallback: (s, e) => ((Block)s).OnBlockPropertyChanged()));
 
 	#endregion
