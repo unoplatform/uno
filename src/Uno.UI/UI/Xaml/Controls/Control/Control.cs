@@ -466,7 +466,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="childName">The name of the template part.</param>
 		/// <returns>The first template part of the specified name; otherwise, null.</returns>
-		public DependencyObject GetTemplateChild(string childName)
+		protected internal DependencyObject GetTemplateChild(string childName)
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as DependencyObject
 				?? FindName(childName) as DependencyObject;
