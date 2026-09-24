@@ -231,8 +231,8 @@ public class Given_Hyperlink
 
 #if HAS_UNO
 	/// <summary>
-	/// Installs the default accent palette for deterministic test results,
-	/// restoring the previous override on dispose.
+	/// Installs the default accent palette for deterministic test results (like WinUI's test accent override,
+	/// which returns fixed shades), restoring the previous override on dispose.
 	/// </summary>
 	internal struct AccentColorOverride : IDisposable
 	{
@@ -241,7 +241,6 @@ public class Given_Hyperlink
 		public AccentColorOverride()
 		{
 			_previous = FeatureConfiguration.AccentColor.OverrideAccentColor;
-			// FromAccentColor only approximates the shades, so install the exact default palette.
 			Uno.Helpers.Theming.AccentColorHelper.SetOverridePalette(Uno.Helpers.Theming.AccentColorPalette.Default);
 		}
 
