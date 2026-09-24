@@ -11,7 +11,7 @@ using Mono.Collections.Generic;
 
 namespace Uno.ReferenceImplComparer
 {
-	class Program
+	internal class Program
 	{
 		static int Main(string[] args)
 		{
@@ -49,7 +49,11 @@ namespace Uno.ReferenceImplComparer
 
 						var runtimeAssemblyDefinition = ReadAssemblyDefinition(runtimeAssembly);
 
-						hasErrors |= CompareAssemblies(referenceAssemblyDefinition, runtimeAssemblyDefinition, identifier);
+						foreach (var error in CompareAssemblies(referenceAssemblyDefinition, runtimeAssemblyDefinition, identifier))
+						{
+							Console.Error.WriteLine($"Error: {error}");
+							hasErrors = true;
+						}
 					}
 				}
 			}
@@ -88,9 +92,9 @@ namespace Uno.ReferenceImplComparer
 				(@event.RemoveMethod is not null && IsAccessible(@event.RemoveMethod));
 		}
 
-		private static bool CompareAssemblies(AssemblyDefinition referenceAssembly, AssemblyDefinition runtimeAssembly, string identifier)
+		internal static List<string> CompareAssemblies(AssemblyDefinition referenceAssembly, AssemblyDefinition runtimeAssembly, string identifier)
 		{
-			var hasError = false;
+			var errors = new List<string>();
 			var referenceTypes = referenceAssembly.MainModule.GetTypes();
 			var runtimeTypes = runtimeAssembly.MainModule.GetTypes().ToDictionary(t => t.FullName);
 
@@ -106,28 +110,25 @@ namespace Uno.ReferenceImplComparer
 				{
 					if (referenceType.BaseType?.FullName != runtimeType.BaseType?.FullName)
 					{
-						Console.Error.WriteLine($"Error: {referenceType.FullName} base type is different {referenceType.BaseType?.FullName} in reference, {runtimeType.BaseType?.FullName} in {identifier}");
-						hasError = true;
+						errors.Add($"{referenceType.FullName} base type is different {referenceType.BaseType?.FullName} in reference, {runtimeType.BaseType?.FullName} in {identifier}");
 					}
 
-					hasError |= CompareMembers(referenceType.Methods.Where(IsAccessible), runtimeType.Methods.Where(IsAccessible), identifier);
-					hasError |= CompareMembers(referenceType.Properties.Where(IsAccessible), runtimeType.Properties.Where(IsAccessible), identifier);
-					hasError |= CompareMembers(referenceType.Fields.Where(IsAccessible), runtimeType.Fields.Where(IsAccessible), identifier);
-					hasError |= CompareMembers(referenceType.Events.Where(IsAccessible), runtimeType.Events.Where(IsAccessible), identifier);
+					CompareMembers(referenceType.Methods.Where(IsAccessible), runtimeType.Methods.Where(IsAccessible), identifier, errors);
+					CompareMembers(referenceType.Properties.Where(IsAccessible), runtimeType.Properties.Where(IsAccessible), identifier, errors);
+					CompareMembers(referenceType.Fields.Where(IsAccessible), runtimeType.Fields.Where(IsAccessible), identifier, errors);
+					CompareMembers(referenceType.Events.Where(IsAccessible), runtimeType.Events.Where(IsAccessible), identifier, errors);
 				}
 				else
 				{
-					Console.Error.WriteLine($"Error: The type {referenceType} is missing from ");
-					hasError = true;
+					errors.Add($"The type {referenceType} is missing from {identifier}");
 				}
 			}
 
-			return hasError;
+			return errors;
 		}
 
-		private static bool CompareMembers(IEnumerable<MemberReference> referenceMembers, IEnumerable<MemberReference> runtimeMembers, string identifier)
+		private static void CompareMembers(IEnumerable<MemberReference> referenceMembers, IEnumerable<MemberReference> runtimeMembers, string identifier, List<string> errors)
 		{
-			var hasError = false;
 			var runtimeMembersLookup = runtimeMembers.ToDictionary(m => m.ToString());
 			var referenceMembersLookup = referenceMembers.ToDictionary(m => m.ToString());
 
@@ -135,8 +136,7 @@ namespace Uno.ReferenceImplComparer
 			{
 				if (!runtimeMembersLookup.ContainsKey(referenceMember.ToString()))
 				{
-					Console.Error.WriteLine($"Error: The member {referenceMember} cannot be found in {identifier}");
-					hasError = true;
+					errors.Add($"The member {referenceMember} cannot be found in {identifier}");
 				}
 			}
 
@@ -161,12 +161,9 @@ namespace Uno.ReferenceImplComparer
 
 				if (!referenceMembersLookup.ContainsKey(runtimeMember.ToString()))
 				{
-					Console.Error.WriteLine($"Error: The member {runtimeMember} cannot be found in reference API");
-					hasError = true;
+					errors.Add($"The member {runtimeMember} cannot be found in reference API");
 				}
 			}
-
-			return hasError;
 		}
 
 		private static AssemblyDefinition ReadAssemblyDefinition(string assemblyPath)
