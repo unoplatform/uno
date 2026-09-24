@@ -45,11 +45,13 @@ internal sealed class TestRunStallMonitor : IDisposable
 
 	private volatile string _currentTest = "(none)";
 	private long _currentTestStartedAt;
-	private bool _disposed;
+	private int _disposed;
 
-	// A blocked idle queue never completes its probe, so exactly one stays outstanding and its
-	// age is reported. Enqueuing a fresh one per tick would pile up work that all runs at once
-	// the moment the queue drains.
+	// A blocked queue never completes its probe, so exactly one stays outstanding and its age is
+	// reported. Enqueuing a fresh one per tick would pile up work that all runs at once the moment
+	// the queue drains, and would hide how long it was stuck.
+	private Task? _dispatcherProbeTask;
+	private long _dispatcherProbeStartedAt;
 	private Task? _idleProbeTask;
 	private long _idleProbeStartedAt;
 
@@ -168,60 +170,45 @@ internal sealed class TestRunStallMonitor : IDisposable
 	}
 
 	private string ProbeDispatcher()
-	{
-		if (_dispatcherProbe is null)
-		{
-			return "n/a";
-		}
-
-		var sw = Stopwatch.StartNew();
-		try
-		{
-			var task = _dispatcherProbe();
-			return task.Wait(ProbeTimeout)
-				? $"{sw.ElapsedMilliseconds}ms"
-				: $"BLOCKED(>{ProbeTimeout.TotalSeconds:F0}s)";
-		}
-		catch (Exception e)
-		{
-			return $"error({e.GetType().Name})";
-		}
-	}
+		=> ProbeQueue(_dispatcherProbe, ref _dispatcherProbeTask, ref _dispatcherProbeStartedAt);
 
 	/// <summary>
 	/// Round-trip of an idle-priority work item -- the queue every <c>WaitForIdle</c> waits on.
 	/// </summary>
 	private string ProbeIdleQueue()
+		=> ProbeQueue(_idleProbe, ref _idleProbeTask, ref _idleProbeStartedAt);
+
+	private string ProbeQueue(Func<Task>? probe, ref Task? pending, ref long startedAt)
 	{
-		if (_idleProbe is null)
+		if (probe is null)
 		{
 			return "n/a";
 		}
 
-		if (_idleProbeTask is { IsCompleted: false })
+		if (pending is { IsCompleted: false })
 		{
-			var blockedFor = TimeSpan.FromMilliseconds(_runElapsed.ElapsedMilliseconds - _idleProbeStartedAt);
+			var blockedFor = TimeSpan.FromMilliseconds(_runElapsed.ElapsedMilliseconds - startedAt);
 			return $"BLOCKED({Format(blockedFor)})";
 		}
 
 		var sw = Stopwatch.StartNew();
 		try
 		{
-			_idleProbeStartedAt = _runElapsed.ElapsedMilliseconds;
-			var task = _idleProbe();
-			_idleProbeTask = task;
+			startedAt = _runElapsed.ElapsedMilliseconds;
+			var task = probe();
+			pending = task;
 
 			if (!task.Wait(ProbeTimeout))
 			{
 				return $"BLOCKED(>{ProbeTimeout.TotalSeconds:F0}s)";
 			}
 
-			_idleProbeTask = null;
+			pending = null;
 			return $"{sw.ElapsedMilliseconds}ms";
 		}
 		catch (Exception e)
 		{
-			_idleProbeTask = null;
+			pending = null;
 			return $"error({e.GetType().Name})";
 		}
 	}
@@ -278,12 +265,11 @@ internal sealed class TestRunStallMonitor : IDisposable
 
 	public void Dispose()
 	{
-		if (_disposed)
+		if (Interlocked.Exchange(ref _disposed, 1) != 0)
 		{
 			return;
 		}
 
-		_disposed = true;
 		_cts.Cancel();
 
 		// A tick can be blocked in each of its three probes in turn; disposing the source under a live
