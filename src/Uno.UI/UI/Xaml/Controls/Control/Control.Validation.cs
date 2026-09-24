@@ -31,15 +31,17 @@ public partial class Control
 	}
 
 	/// <summary>
-	/// Whether this control participates in input validation.
+	/// This control as an input validation participant, or null when it does not participate.
 	/// </summary>
 	/// <remarks>
 	/// Mirrors <c>CControl::IsValidationEnabled</c>: every mode but <see cref="InputValidationMode.Disabled"/>
 	/// counts as enabled, and a control that does not implement the interface is never enabled — which is
 	/// what WinUI's type-index switch expresses by returning an unknown property index.
 	/// </remarks>
-	private bool IsValidationEnabled
-		=> this is IInputValidationControl { InputValidationMode: not InputValidationMode.Disabled };
+	private IInputValidationControl? ValidationParticipant
+		=> this is IInputValidationControl { InputValidationMode: not InputValidationMode.Disabled } participant
+			? participant
+			: null;
 
 	/// <summary>
 	/// Applies the <see cref="InputValidationEnabledStates"/> and <see cref="InputValidationErrorStates"/> visual state groups.
@@ -57,8 +59,7 @@ public partial class Control
 	{
 		// Validation is opt-in per control, so for nearly every control this is the whole method — and it
 		// runs on the visual-state path and on every template application.
-		if (!FeatureConfiguration.InputValidation.IsEnabled
-			|| this is not IInputValidationControl { InputValidationMode: not InputValidationMode.Disabled } participant)
+		if (!FeatureConfiguration.InputValidation.IsEnabled || ValidationParticipant is not { } participant)
 		{
 			return;
 		}
