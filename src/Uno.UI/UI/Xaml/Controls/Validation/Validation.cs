@@ -1,10 +1,10 @@
 #nullable enable
 
 using System;
-using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation.Collections;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -71,27 +71,26 @@ public static partial class Validation
 		"HasErrors",
 		typeof(bool),
 		typeof(Validation),
-		new FrameworkPropertyMetadata(default(bool)));
+		new FrameworkPropertyMetadata(default(bool), OnHasErrorsChanged));
 
 	/// <summary>
 	/// The errors reported by the control's binding source for the bound property, as returned by
 	/// <see cref="System.ComponentModel.INotifyDataErrorInfo.GetErrors"/>.
 	/// </summary>
 	/// <remarks>
-	/// The element type is whatever the source produced — this slice applies no policy to it, and ships no
-	/// converter to render it. A fresh instance is assigned on every synchronization, so that a binding to
-	/// this property is notified even when the source reuses its error collection.
+	/// Each error is projected to an <see cref="InputValidationError"/> carrying its
+	/// <see cref="object.ToString"/> as the message. The collection is mutated in place rather than replaced,
+	/// so its identity — and any binding to it — survives every synchronization.
 	/// </remarks>
 	public static DependencyProperty ErrorsProperty
 	{
 		[DynamicDependency(nameof(GetErrors))]
-		[DynamicDependency(nameof(SetErrors))]
 		get;
 	} = DependencyProperty.RegisterAttached(
 		"Errors",
-		typeof(IEnumerable),
+		typeof(ValidationErrorsCollection),
 		typeof(Validation),
-		new FrameworkPropertyMetadata(Array.Empty<object>()));
+		new FrameworkPropertyMetadata(default(ValidationErrorsCollection)));
 
 	/// <summary>
 	/// Gets whether <paramref name="control"/> participates in input validation, and how its errors are presented.
@@ -137,7 +136,25 @@ public static partial class Validation
 	/// <summary>
 	/// Gets the errors reported by <paramref name="control"/>'s binding source.
 	/// </summary>
-	public static IEnumerable GetErrors(Control control) => (IEnumerable)control.GetValue(ErrorsProperty);
+	/// <remarks>
+	/// Creates the collection on first access, mirroring the on-demand creation WinUI declares on the
+	/// equivalent property. Framework code that only needs to look uses <see cref="TryGetErrors"/> instead, so
+	/// that a control which never reports an error never allocates one.
+	/// </remarks>
+	public static IObservableVector<InputValidationError> GetErrors(Control control)
+	{
+		if (control.GetValue(ErrorsProperty) is not ValidationErrorsCollection errors)
+		{
+			errors = new ValidationErrorsCollection();
+			control.SetValue(ErrorsProperty, errors);
+		}
 
-	internal static void SetErrors(Control control, IEnumerable value) => control.SetValue(ErrorsProperty, value);
+		return errors;
+	}
+
+	/// <summary>
+	/// The errors of <paramref name="control"/>, or null when it has never reported one.
+	/// </summary>
+	internal static ValidationErrorsCollection? TryGetErrors(Control control)
+		=> control.GetValue(ErrorsProperty) as ValidationErrorsCollection;
 }

@@ -42,7 +42,7 @@ public partial class Given_Validation_Transport
 		source.SetErrors(nameof(Person.Name), "required");
 
 		Assert.IsFalse(Validation.GetHasErrors(control));
-		CollectionAssert.AreEqual(Array.Empty<object>(), Validation.GetErrors(control).Cast<object>().ToArray());
+		CollectionAssert.AreEqual(Array.Empty<object>(), Validation.GetErrors(control).Select(e => e.ErrorMessage).ToArray());
 	}
 
 	[TestMethod]
@@ -55,12 +55,12 @@ public partial class Given_Validation_Transport
 		Assert.IsTrue(Validation.GetHasErrors(control));
 		CollectionAssert.AreEqual(
 			new object[] { "required", "too short" },
-			Validation.GetErrors(control).Cast<object>().ToArray());
+			Validation.GetErrors(control).Select(e => e.ErrorMessage).ToArray());
 
 		source.SetErrors(nameof(Person.Name));
 
 		Assert.IsFalse(Validation.GetHasErrors(control));
-		Assert.AreEqual(0, Validation.GetErrors(control).Cast<object>().Count());
+		Assert.AreEqual(0, Validation.GetErrors(control).Count);
 	}
 
 	[TestMethod]
@@ -117,10 +117,10 @@ public partial class Given_Validation_Transport
 	}
 
 	[TestMethod]
-	public void When_Synchronized_Then_Errors_Is_A_Fresh_Instance()
+	public void When_Synchronized_Then_Errors_Keeps_Its_Instance()
 	{
-		// The source hands back the same list instance; without a fresh snapshot the dependency property
-		// would see no change and the binding of the application would never refresh.
+		// The collection is mutated in place rather than replaced, so a binding to it is notified by
+		// VectorChanged and never has to be re-resolved.
 		var (control, source) = Bind();
 
 		source.SetErrors(nameof(Person.Name), "required");
@@ -129,7 +129,7 @@ public partial class Given_Validation_Transport
 		source.RaiseErrorsChanged(nameof(Person.Name));
 		var second = Validation.GetErrors(control);
 
-		Assert.AreNotSame(first, second);
+		Assert.AreSame(first, second);
 	}
 
 	[TestMethod]
@@ -197,7 +197,7 @@ public partial class Given_Validation_Transport
 		Assert.IsTrue(Validation.GetHasErrors(control), "the old source must no longer be observed");
 		CollectionAssert.AreEqual(
 			new object[] { "required" },
-			Validation.GetErrors(control).Cast<object>().ToArray());
+			Validation.GetErrors(control).Select(e => e.ErrorMessage).ToArray());
 	}
 
 	[TestMethod]
@@ -249,7 +249,7 @@ public partial class Given_Validation_Transport
 			Assert.IsTrue(Validation.GetHasErrors(control));
 			CollectionAssert.AreEqual(
 				new object[] { "required" },
-				Validation.GetErrors(control).Cast<object>().ToArray());
+				Validation.GetErrors(control).Select(e => e.ErrorMessage).ToArray());
 		}
 		finally
 		{
@@ -292,7 +292,7 @@ public partial class Given_Validation_Transport
 		Assert.IsTrue(Validation.GetHasErrors(control));
 		CollectionAssert.AreEqual(
 			new object[] { "required" },
-			Validation.GetErrors(control).Cast<object>().ToArray());
+			Validation.GetErrors(control).Select(e => e.ErrorMessage).ToArray());
 	}
 
 	[TestMethod]
