@@ -5,12 +5,12 @@
 
 	Skia renders by default wherever it is referenced (UnoPlatformHostBuilder.TryLightUpGraphicsBackend), so an app
 	that names both features reaches WebGPU only through its own code. DetectWebGpuUsage_v0 reads that out of the
-	compiled metadata, where an unused reference is never emitted. All WebGPU plumbing is ours, so binding to one
-	of our WebGPU assemblies is the whole question.
+	compiled metadata, where an unused reference is never emitted. All WebGPU plumbing is ours, so binding to the
+	backend assembly is the whole question.
 
-	Every uncertainty keeps the payload, including an assembly that cannot be read. UnoWebGpuForceNative=true keeps it
-	outright, for a registration that lives in a NuGet package where this cannot see it. To drop it deliberately, do
-	not name the webgpu feature.
+	Every managed assembly the app ships is examined, so a registration inside a package is seen as readily as
+	one in the app's own code. Anything unreadable keeps the payload. To drop it deliberately, do not name the
+	webgpu feature.
 	-->
 
 	<UsingTask TaskName="Uno.Sdk.Tasks.DetectWebGpuUsage_v0" AssemblyFile="$(UnoSdkTasksAssembly)"
@@ -18,12 +18,13 @@
 
 	<Target Name="_UnoWebGpuDetectUsage"
 			AfterTargets="CoreCompile"
-			Condition="'$(UnoWebGpuForceNative)' != 'true' And '@(IntermediateAssembly)' != ''
+			Condition="'@(IntermediateAssembly)' != ''
 					   And '$(UnoSdkTasksAssembly)' != '' And Exists('$(UnoSdkTasksAssembly)')">
-		<!-- The app's own assemblies: the head plus anything it builds alongside. A registration can live in either. -->
+		<!-- Everything managed that ships with the app: its own assembly, plus every reference it carries, so a
+		     backend registered by a package counts too. -->
 		<ItemGroup>
 			<_UnoWebGpuScan Include="@(IntermediateAssembly)" />
-			<_UnoWebGpuScan Include="@(_ResolvedProjectReferencePaths)" />
+			<_UnoWebGpuScan Include="@(ReferenceCopyLocalPaths)" Condition="'%(Extension)' == '.dll'" />
 		</ItemGroup>
 
 		<Uno.Sdk.Tasks.DetectWebGpuUsage_v0 Assemblies="@(_UnoWebGpuScan)" Condition="'@(_UnoWebGpuScan)' != ''">
@@ -39,9 +40,9 @@
 		</PropertyGroup>
 
 		<Message Importance="normal" Condition="'$(_UnoWebGpuNativeUnused)' == 'true'"
-				 Text="Nothing in this app goes near WebGPU and Skia is present, so the wgpu native payload is omitted. Set UnoWebGpuForceNative=true to keep it." />
+				 Text="Nothing in this app goes near WebGPU and Skia is present, so the wgpu native payload is omitted." />
 		<Message Importance="low" Condition="'$(_UnoWebGpuReferencedByApp)' == 'true'"
-				 Text="Keeping the wgpu native payload: $(_UnoWebGpuReferencedBy) names WebGPU or registers a graphics backend." />
+				 Text="Keeping the wgpu native payload: $(_UnoWebGpuReferencedBy)." />
 	</Target>
 
 	<!-- Build output and publish resolve the payload through separate item lists, so both are filtered. The
