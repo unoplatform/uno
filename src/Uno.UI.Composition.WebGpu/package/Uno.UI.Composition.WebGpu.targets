@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 
 	<!-- Where the payloads live. Defaults to this package's own layout; the in-repo heads override them to
 	     their obj cache and import this file, so repo builds exercise the very wiring consumers get. -->
@@ -88,5 +88,9 @@
 			<_WasmPInvokeModules Include="webgpu" />
 		</ItemGroup>
 	</Target>
+
+	<!-- Omits the native payload for an app that cannot reach the backend (see the file for the rule). -->
+	<Import Project="$(MSBuildThisFileDirectory)Uno.UI.Composition.WebGpu.NativeTrim.targets"
+			Condition="Exists('$(MSBuildThisFileDirectory)Uno.UI.Composition.WebGpu.NativeTrim.targets')" />
 
 </Project>

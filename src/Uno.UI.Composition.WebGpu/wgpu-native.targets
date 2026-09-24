@@ -127,7 +127,7 @@
 	     packs into every APK lib/<abi>/, shadowing the real per-ABI bionic binaries (dlopen then fails on libdl.so.2). -->
 	<Target Name="ProvisionWgpuNative" AfterTargets="Build" DependsOnTargets="_FetchWgpuNative">
 		<Message Importance="high" Text="ProvisionWgpuNative: asset=$(_WgpuAsset) outputType=$(OutputType) -> $(OutDir)$(_WgpuOutputFile)" />
-		<Copy Condition="'$(_WgpuAsset)' != '' And '$(OutDir)' != '' And '$(OutputType)' != 'Library'"
+		<Copy Condition="'$(_WgpuAsset)' != '' And '$(OutDir)' != '' And '$(OutputType)' != 'Library' And '$(_UnoWebGpuNativeUnused)' != 'true'"
 			SourceFiles="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" DestinationFiles="$(OutDir)$(_WgpuOutputFile)" SkipUnchangedFiles="true" />
 	</Target>
 
@@ -137,7 +137,7 @@
 	     to the ResolvedFileToPublish that ComputeFilesToPublish just built, before the copy targets consume it. -->
 	<Target Name="_AddWgpuNativeToPublish" AfterTargets="ComputeFilesToPublish" DependsOnTargets="_FetchWgpuNative">
 		<ItemGroup>
-			<ResolvedFileToPublish Include="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" Condition="'$(_WgpuNativeFile)' != ''">
+			<ResolvedFileToPublish Include="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" Condition="'$(_WgpuNativeFile)' != '' And '$(_UnoWebGpuNativeUnused)' != 'true'">
 				<RelativePath>$(_WgpuOutputFile)</RelativePath>
 				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 			</ResolvedFileToPublish>
