@@ -60,8 +60,6 @@
 		<CompilerVisibleProperty Include="UnoForceIncludeServerProcessorsConfiguration" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
 		<CompilerVisibleProperty Include="RuntimeIdentifier" />
-		<CompilerVisibleProperty Include="UnoRuntimeIdentifier" />
-		<CompilerVisibleProperty Include="UnoWinRTRuntimeIdentifier" />
 		<CompilerVisibleProperty Include="UnoHotReloadMode" />
 
 		<CompilerVisibleProperty Include="SolutionFileName" />
