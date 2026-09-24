@@ -58,10 +58,26 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="_UnoWebGpuDropNativeFromPublish"
-			AfterTargets="ComputeResolvedFilesToPublishList"
-			Condition="'$(_UnoWebGpuNativeUnused)' == 'true'">
-		<ItemGroup>
+	<!--
+	Runs after ILLink, which the SDK keeps as an empty placeholder in the publish chain when nothing trims, so
+	this is the one place both answers are in hand.
+
+	An app that trims has a better answer than the metadata scan: ILLink marks the whole closure, so it sees a
+	backend reached through a framework interface or a virtual call, which reading reference tables cannot. If it
+	dropped the managed backend, nothing survives to call into the native. No Skia gate here, unlike the scan: the
+	code that would P/Invoke is gone either way. NativeAOT sets PublishTrimmed, so it takes this path too.
+	-->
+	<Target Name="_UnoWebGpuDropNativeFromPublish" AfterTargets="ILLink">
+		<ItemGroup Condition="'$(PublishTrimmed)' == 'true'">
+			<_UnoWebGpuManagedToPublish Include="@(ResolvedFileToPublish)" Condition="'%(Filename)' == 'Uno.UI.Composition.WebGpu'" />
+		</ItemGroup>
+
+		<PropertyGroup Condition="'$(PublishTrimmed)' == 'true' And '@(_UnoWebGpuManagedToPublish)' == ''">
+			<_UnoWebGpuNativeUnused>true</_UnoWebGpuNativeUnused>
+			<_UnoWebGpuReferencedBy>trimming removed the managed backend</_UnoWebGpuReferencedBy>
+		</PropertyGroup>
+
+		<ItemGroup Condition="'$(_UnoWebGpuNativeUnused)' == 'true'">
 			<ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Filename)' == 'webgpu' Or '%(Filename)' == 'libwebgpu'
 										 Or '%(Filename)' == 'wgpu_native' Or '%(Filename)' == 'libwgpu_native'" />
 		</ItemGroup>
