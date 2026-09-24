@@ -53,8 +53,6 @@ namespace Microsoft.UI.Xaml
 		private bool _warnedAboutTranslation;
 #endif
 
-		private static readonly Type[] _bringIntoViewRequestedArgs = new[] { typeof(BringIntoViewRequestedEventArgs) };
-
 		private string _uid;
 
 		private Vector3 _translation = Vector3.Zero;
