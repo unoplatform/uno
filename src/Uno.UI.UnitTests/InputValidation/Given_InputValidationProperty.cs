@@ -132,9 +132,9 @@ public partial class Given_InputValidationProperty
 	}
 
 	/// <summary>
-	/// The read model has to be reachable from a binding path: the XAML generator rewrites
-	/// <c>{Binding (uno:Validation.Errors)}</c> to <c>(Uno.UI.Xaml.Controls:Validation.Errors)</c>, so the
-	/// owner type sits outside the default xmlns.
+	/// The read model has to be reachable from a binding path. Now that it is a pair of dependency properties
+	/// on the control rather than attached ones, the path is an ordinary property name — no parenthesized
+	/// attached syntax, and no owner type outside the default xmlns.
 	/// </summary>
 	[TestMethod]
 	public void When_Binding_To_Read_Model()
@@ -147,23 +147,23 @@ public partial class Given_InputValidationProperty
 			Border.TagProperty,
 			new Binding
 			{
-				Path = new PropertyPath("(Uno.UI.Xaml.Controls:Validation.HasErrors)"),
+				Path = new PropertyPath(nameof(TextBox.HasValidationErrors)),
 				Source = source,
 			});
 		errors.SetBinding(
 			Border.TagProperty,
 			new Binding
 			{
-				Path = new PropertyPath("(Uno.UI.Xaml.Controls:Validation.Errors)"),
+				Path = new PropertyPath(nameof(TextBox.ValidationErrors)),
 				Source = source,
 			});
 
 		Assert.AreEqual(false, hasErrors.Tag);
 
-		Validation.SetHasErrors(source, true);
+		source.SetValue(TextBox.HasValidationErrorsProperty, true);
 
 		// Reading the property is what materializes the collection, and so what pushes it to the binding.
-		var reported = Validation.GetErrors(source);
+		var reported = source.ValidationErrors;
 		reported.Add(new InputValidationError("must not be empty"));
 
 		Assert.AreEqual(true, hasErrors.Tag);

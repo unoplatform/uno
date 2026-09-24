@@ -35,14 +35,15 @@ public partial class Control
 	{
 		// Validation is opt-in per control, so for nearly every control this is the whole method — and it
 		// runs on the visual-state path and on every template application.
-		if (!FeatureConfiguration.InputValidation.IsEnabled || !Validation.IsValidationEnabled(this))
+		if (!FeatureConfiguration.InputValidation.IsEnabled
+			|| this is not IInputValidationControl { InputValidationMode: not InputValidationMode.Disabled } participant)
 		{
 			return;
 		}
 
-		var hasErrors = Validation.GetHasErrors(this);
+		var hasErrors = participant.HasValidationErrors;
 
-		if (Validation.GetInputValidationKind(this) == InputValidationKind.Inline)
+		if (participant.InputValidationKind == InputValidationKind.Inline)
 		{
 			GoToState(false, InlineValidationEnabledState);
 			GoToState(false, hasErrors ? InlineErrorsState : ErrorsClearedState);

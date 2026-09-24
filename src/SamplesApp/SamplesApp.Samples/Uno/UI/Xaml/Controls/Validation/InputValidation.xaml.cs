@@ -11,7 +11,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Uno_UI_Xaml_Controls.Validation;
 
-[Sample("Validation", Name = "InputValidation", Description = "INotifyDataErrorInfo errors surfaced on uno:Validation.HasErrors / .Errors")]
+[Sample("Validation", Name = "InputValidation", Description = "INotifyDataErrorInfo errors surfaced on IInputValidationControl.HasValidationErrors / .ValidationErrors")]
 public sealed partial class InputValidation : Page
 {
 	public InputValidation()
