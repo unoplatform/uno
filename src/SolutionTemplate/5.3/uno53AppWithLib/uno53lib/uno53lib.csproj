@@ -22,6 +22,8 @@
     <!--
     <UnoFeatures></UnoFeatures>
     -->
+    <!-- The library takes the same feature set as the head, so a test can make it reach a backend. -->
+    <UnoFeatures Condition=" '$(UnoFeaturesOverride)' != '' ">$(UnoFeaturesOverride)</UnoFeatures>
   </PropertyGroup>
 
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
