@@ -61,8 +61,7 @@ then
 	# "Archive is not a ZIP archive". Downloading it again is enough.
 	sdk_install() {
 		for attempt in 1 2 3; do
-			if echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "$1" | tr '' '
-' | uniq; then
+			if echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "$1" | tr '\r' '\n' | uniq; then
 				return 0
 			fi
 			echo "sdkmanager could not install $1 (attempt $attempt)"
