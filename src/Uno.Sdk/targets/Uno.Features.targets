@@ -7,9 +7,10 @@
 		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
 
 		<!-- A renderer is required, so 'skia' is implied when the app names none. Naming 'webgpu' counts as
-		     naming one, which is what lets an app be SkiaSharp-free; listing both keeps both (WebGPU renders,
-		     Skia still serves the text/image seams). The legacy 'nativerenderer' token is ignored, and
-		     'skiarenderer' is mapped to 'skia' for backwards compatibility. -->
+		     naming one, which is what lets an app be SkiaSharp-free. Listing both references both, and Skia
+		     still renders by default; the head opts into WebGPU on the host builder. The legacy
+		     'nativerenderer' token is ignored, and 'skiarenderer' is mapped to 'skia' for backwards
+		     compatibility. -->
 		<UnoFeatures>$(UnoFeatures.Replace(';nativerenderer;', ';'))</UnoFeatures>
 		<UnoFeatures>$(UnoFeatures.Replace(';skiarenderer;', ';'))</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;'))">$(UnoFeatures)skia;</UnoFeatures>

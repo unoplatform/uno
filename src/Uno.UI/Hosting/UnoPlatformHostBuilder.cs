@@ -174,22 +174,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		// The WebGpu UnoFeature is the opt-in: it is what references Uno.UI.Composition.WebGpu, so the assembly
-		// being resolvable here IS the app asking for it. A head without the feature falls through to the Skia
-		// default below. Geometry goes to the managed engine, which WebGPU flattens.
-		if (InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(WebGpuGraphicsProviderTypeName, throwOnError: false)
-			?.GetConstructor(Type.EmptyTypes)) is { } webGpuProvider)
-		{
-			Drawing.GraphicsRegistry.RegisterDefault(new[] { webGpuProvider });
-			if (!Drawing.GeometryFactory.IsRegistered
-				&& InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedGeometryFactoryTypeName, throwOnError: false)
-					?.GetConstructor(Type.EmptyTypes)) is { } managedGeometry)
-			{
-				Drawing.GeometryFactory.RegisterDefault(managedGeometry);
-			}
-			return;
-		}
-
+		// Skia is the default renderer wherever it is referenced: naming the WebGpu feature makes the backend
+		// available, but a head opts into it by registering it on the host builder (handled above).
 		if (InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
 			?.GetMethod("CreateGraphicsProvider", FactoryFlags, Type.EmptyTypes)) is { } provider)
 		{
@@ -199,6 +185,22 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 				?.GetMethod("CreateDefaultRenderer", FactoryFlags, Type.EmptyTypes)) is { } renderer)
 			{
 				Drawing.DrawingRegistration.RegisterDefaultRenderer(renderer);
+			}
+
+			return;
+		}
+
+		// No Skia: a SkiaSharp-free app, where WebGPU is the only renderer there is. Geometry goes to the managed
+		// engine, which WebGPU flattens.
+		if (InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(WebGpuGraphicsProviderTypeName, throwOnError: false)
+			?.GetConstructor(Type.EmptyTypes)) is { } webGpuProvider)
+		{
+			Drawing.GraphicsRegistry.RegisterDefault(new[] { webGpuProvider });
+			if (!Drawing.GeometryFactory.IsRegistered
+				&& InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedGeometryFactoryTypeName, throwOnError: false)
+					?.GetConstructor(Type.EmptyTypes)) is { } managedGeometry)
+			{
+				Drawing.GeometryFactory.RegisterDefault(managedGeometry);
 			}
 		}
 	}
