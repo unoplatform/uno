@@ -167,6 +167,7 @@ while true; do
 
 	if [ "$HARD_TIMEOUT_SECONDS" -gt 0 ] && [ "$ELAPSED" -ge "$HARD_TIMEOUT_SECONDS" ]; then
 		log "hard timeout reached after ${ELAPSED}s — capturing then terminating pid $PID"
+		# One-shot and terminal, so it deliberately ignores MAX_CAPTURES.
 		CAPTURES=$(( CAPTURES + 1 ))
 		capture "hard timeout after ${ELAPSED}s" "$CAPTURES" "$PID"
 
