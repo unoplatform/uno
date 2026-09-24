@@ -14,6 +14,7 @@ namespace Uno.UI.Runtime.Skia {
 
 		// Managed callbacks from C#
 		private static managedEnableAccessibility: any;
+		private static managedDisableAccessibility: any;
 		private static managedOnScroll: any;
 		private static managedOnInvoke: any;
 		private static managedOnToggle: any;
@@ -65,6 +66,7 @@ namespace Uno.UI.Runtime.Skia {
 			// Wire up managed callbacks from WebAssemblyAccessibility.cs
 			const accessibilityExports = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility;
 			this.managedEnableAccessibility = accessibilityExports.EnableAccessibility;
+			this.managedDisableAccessibility = accessibilityExports.DisableAccessibility;
 			this.managedIsAutoEnableAccessibility = accessibilityExports.IsAutoEnableAccessibility;
 			this.managedOnScroll = accessibilityExports.OnScroll;
 			this.managedOnInvoke = accessibilityExports.OnInvoke;
@@ -88,27 +90,7 @@ namespace Uno.UI.Runtime.Skia {
 			const autoEnable = this.managedIsAutoEnableAccessibility();
 
 			if (!autoEnable) {
-				// Create enable accessibility button (for screen reader activation)
-				this.enableAccessibilityButton = document.createElement("div");
-				this.enableAccessibilityButton.id = "uno-enable-accessibility";
-				this.enableAccessibilityButton.setAttribute("aria-live", "polite");
-				this.enableAccessibilityButton.setAttribute("role", "button");
-				this.enableAccessibilityButton.setAttribute("tabindex", "0");
-				this.enableAccessibilityButton.setAttribute("aria-label", "Enable accessibility");
-				this.enableAccessibilityButton.addEventListener("click", this.onEnableAccessibilityButtonClicked.bind(this));
-
-				// Also add a keydown listener so keyboard users can activate it via Enter/Space
-				this.enableAccessibilityButton.addEventListener("keydown", (e) => {
-					if (e.key === "Enter" || e.key === " ") {
-						e.preventDefault();
-						this.onEnableAccessibilityButtonClicked(e as any);
-					}
-				});
-
-				// Prepend so the button is the first focusable element in the DOM,
-				// reachable by the very first Tab press (inspired by Flutter's
-				// DesktopSemanticsEnabler which prepends its placeholder to <body>).
-				this.containerElement.prepend(this.enableAccessibilityButton);
+				Accessibility.addEnableAccessibilityButton();
 			}
 
 			// Create semantic DOM root container (hidden but accessible).
@@ -260,6 +242,59 @@ namespace Uno.UI.Runtime.Skia {
 					ariaLiveElement.removeChild(child);
 				}
 			}, 300);
+		}
+
+		private static addEnableAccessibilityButton() {
+			// Create enable accessibility button (for screen reader activation)
+			this.enableAccessibilityButton = document.createElement("div");
+			this.enableAccessibilityButton.id = "uno-enable-accessibility";
+			this.enableAccessibilityButton.setAttribute("aria-live", "polite");
+			this.enableAccessibilityButton.setAttribute("role", "button");
+			this.enableAccessibilityButton.setAttribute("tabindex", "0");
+			this.enableAccessibilityButton.setAttribute("aria-label", "Enable accessibility");
+			this.enableAccessibilityButton.addEventListener("click", this.onEnableAccessibilityButtonClicked.bind(this));
+
+			// Also add a keydown listener so keyboard users can activate it via Enter/Space
+			this.enableAccessibilityButton.addEventListener("keydown", (e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					e.preventDefault();
+					this.onEnableAccessibilityButtonClicked(e as any);
+				}
+			});
+
+			// Prepend so the button is the first focusable element in the DOM,
+			// reachable by the very first Tab press (inspired by Flutter's
+			// DesktopSemanticsEnabler which prepends its placeholder to <body>).
+			this.containerElement.prepend(this.enableAccessibilityButton);
+		}
+
+		/**
+		 * Tears the semantic DOM down again (see WebAssemblyAccessibility.DisableAccessibility).
+		 * Used by runtime tests so accessibility does not stay on for every test that follows.
+		 */
+		public static disableAccessibility() {
+			this.managedDisableAccessibility();
+		}
+
+		/**
+		 * Called by the managed side once it has unhooked itself: removes every semantic element,
+		 * the focus sentinels and the live regions, and brings the enable button back.
+		 */
+		public static resetSemanticsRoot() {
+			SemanticElements.resetVirtualizedMutations();
+			while (this.semanticsRoot?.firstChild) {
+				this.semanticsRoot.removeChild(this.semanticsRoot.firstChild);
+			}
+			this.focusSentinelStart?.remove();
+			this.focusSentinelEnd?.remove();
+			this.focusSentinelStart = null;
+			this.focusSentinelEnd = null;
+			this.isDepartingFocus = false;
+			LiveRegion.teardown();
+
+			if (!this.managedIsAutoEnableAccessibility() && !Accessibility.isEnableAccessibilityButtonActive()) {
+				Accessibility.addEnableAccessibilityButton();
+			}
 		}
 
 		/**
