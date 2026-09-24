@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Data
 		}
 
 		private BindingPath[] _updateSources;
-		private BindingPath[] _staticUpdateSources;
+		private readonly BindingPath[] _staticUpdateSources;
 
 		public string TargetName => TargetPropertyDetails.Property.Name;
 
@@ -144,15 +144,12 @@ namespace Microsoft.UI.Xaml.Data
 				var staticPaths = new List<BindingPath>();
 				foreach (var (source, paths) in ParentBinding.XBindStaticPropertyPaths)
 				{
-					foreach (var path in paths)
+					foreach (var path in paths.Where(p => !string.IsNullOrEmpty(p)))
 					{
-						if (!string.IsNullOrEmpty(path))
+						staticPaths.Add(new BindingPath(path: path, fallbackValue: null, forAnimations: false, allowPrivateMembers: true)
 						{
-							staticPaths.Add(new BindingPath(path: path, fallbackValue: null, forAnimations: false, allowPrivateMembers: true)
-							{
-								DataContext = source
-							});
-						}
+							DataContext = source
+						});
 					}
 				}
 
