@@ -441,8 +441,18 @@ namespace SamplesApp
 
 			if (!string.IsNullOrEmpty(args))
 			{
-				var dlg = new MessageDialog(args, "Launch arguments");
-				await dlg.ShowAsync();
+				try
+				{
+					var dlg = new MessageDialog(args, "Launch arguments");
+					await dlg.ShowAsync();
+				}
+				catch (Exception ex)
+				{
+					// ContentDialog.ShowAsync() can fail this early in startup (e.g. before the
+					// window is associated with a visual tree); this dialog is a debug affordance,
+					// not critical path, so don't let it take the app down.
+					_log?.Error($"Could not show the launch-arguments dialog for '{args}' - {ex}");
+				}
 			}
 
 			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)

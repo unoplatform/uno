@@ -263,29 +263,29 @@ partial class App
 
 	private bool TryNavigateToLaunchSample(string args)
 	{
-		const string samplePrefix = "sample=";
 		try
 		{
-			args = Uri.UnescapeDataString(args);
+			// TrimStart('?') accepts the same value the in-app "copy link" button produces
+			// (SampleChooserContent.QueryString), which is prefixed for use as a URL query string.
+			var query = ParseArgs(Uri.UnescapeDataString(args).TrimStart('?'));
 
-			if (string.IsNullOrEmpty(args) || !args.StartsWith(samplePrefix))
+			if (!query.TryGetValue("sample", out var identifier))
 			{
 				return false;
 			}
 
-			args = args.Substring(samplePrefix.Length);
+			// Further space-separated launch args (e.g. --FeatureConfiguration overrides) are not part
+			// of the sample identifier.
+			identifier = identifier.Split(' ', 2)[0];
 
-			// The deep link is the first token only — further space-separated launch args (e.g.
-			// --FeatureConfiguration overrides) and additional URL query parameters (&key=value on WASM)
-			// are not part of the sample path.
-			args = args.Split(new[] { ' ', '&' }, 2)[0];
+			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { IsSampleIndexLoaded: true } vm)
+			{
+				// A definitive no-match falls through to the regular launch-argument handling.
+				return vm.TrySelectSample(CancellationToken.None, identifier);
+			}
 
-			var pathParts = args.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-			var category = pathParts[0];
-			var sampleName = pathParts[1];
-
-			// Sample discovery is async and races the launch: retry until the chooser knows the sample.
-			_ = NavigateWithRetriesAsync(category, sampleName);
+			// Sample discovery is async and races the launch: wait until the chooser knows its samples.
+			_ = NavigateWithRetriesAsync(identifier);
 			return true;
 		}
 		catch (Exception ex)
@@ -295,24 +295,26 @@ partial class App
 		return false;
 	}
 
-	private static async Task NavigateWithRetriesAsync(string category, string sampleName)
+	private static async Task NavigateWithRetriesAsync(string identifier)
 	{
 		try
 		{
 			for (var i = 0; i < 40; i++)
 			{
-				if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm
-					&& vm.TrySetSelectedSample(CancellationToken.None, category, sampleName))
+				if (SampleControl.Presentation.SampleChooserViewModel.Instance is { IsSampleIndexLoaded: true } vm)
 				{
-					Console.WriteLine($"Navigated to launch sample {category}/{sampleName}");
+					if (!vm.TrySelectSample(CancellationToken.None, identifier))
+					{
+						Console.WriteLine(vm.DumpSampleIndexForDiagnostics(identifier.Split('/')[0]));
+					}
+
 					return;
 				}
 
 				await Task.Delay(250);
 			}
 
-			Console.WriteLine($"Launch sample {category}/{sampleName} was not found.");
-			Console.WriteLine(SampleControl.Presentation.SampleChooserViewModel.Instance?.DumpSampleIndexForDiagnostics(category) ?? "no view model");
+			Console.WriteLine($"Launch sample '{identifier}' was not resolved: the sample index did not load in time.");
 		}
 		catch (Exception ex)
 		{
