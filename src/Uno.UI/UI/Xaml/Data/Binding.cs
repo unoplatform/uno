@@ -210,6 +210,11 @@ namespace Microsoft.UI.Xaml.Data
 
 		internal void SetXBindStaticPropertyPaths(object source, string[] paths)
 		{
+			if (paths is not { Length: > 0 })
+			{
+				return;
+			}
+
 			if (XBindStaticPropertyPaths is null)
 			{
 				XBindStaticPropertyPaths = new[] { (source, paths) };

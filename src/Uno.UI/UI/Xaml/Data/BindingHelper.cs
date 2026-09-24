@@ -33,7 +33,7 @@ namespace Uno.UI.Xaml
 		/// Used by generated code to monitor INPC changes on objects accessed through static members.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Binding SetXBindStaticPropertyPaths(Binding binding, object source, string[] paths)
+		public static Binding SetXBindStaticPropertyPaths(Binding binding, object? source, string[]? paths)
 		{
 			binding.SetXBindStaticPropertyPaths(source, paths);
 			return binding;
