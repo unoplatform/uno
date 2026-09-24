@@ -975,15 +975,18 @@ Uno Platform version keeps its old values in the standard defaults, where the
 `ApplicationData` API no longer looks — until you ask for them:
 
 ```csharp
+#if __IOS__ || __TVOS__
 // Call once during startup, before the settings are first read.
 var migrated = Uno.Storage.ApplicationDataMigrator.MigrateSettings();
+#endif
 ```
 
 `MigrateSettings()` moves the entries an earlier Uno Platform version wrote (recognized by
 Uno's serialized `TypeName:value` format) out of the standard defaults and into the
 `UnoApplicationData` suite, and returns how many it took. It is safe to call on every
 launch: a key that already exists in the new suite keeps its current value, and an install
-with nothing to migrate is a no-op.
+with nothing to migrate is a no-op. If the new suite cannot be saved, it throws an
+`IOException` and leaves the old values where they are, so a later launch can retry.
 
 Also update native/interop code that reads these values directly from the standard defaults:
 
