@@ -693,7 +693,7 @@ namespace Microsoft.UI.Xaml.Data
 		{
 			if (IsValidationSource)
 			{
-				Uno.UI.Xaml.Controls.Validation.OnValidationSourceChanged(this);
+				Microsoft.UI.Xaml.Controls.Control.OnValidationSourceChanged(this);
 			}
 
 			if (ParentBinding.XBindSelector != null)

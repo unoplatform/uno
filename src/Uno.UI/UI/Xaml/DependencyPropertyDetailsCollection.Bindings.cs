@@ -164,7 +164,7 @@ namespace Microsoft.UI.Xaml
 
 				if (global::Uno.UI.FeatureConfiguration.InputValidation.IsEnabled)
 				{
-					global::Uno.UI.Xaml.Controls.Validation.OnBindingSet(Owner, dependencyProperty, bindingExpression);
+					global::Microsoft.UI.Xaml.Controls.Control.OnValidationBindingSet(Owner, dependencyProperty, bindingExpression);
 				}
 
 				if (!Equals(binding.RelativeSource, RelativeSource.TemplatedParent))

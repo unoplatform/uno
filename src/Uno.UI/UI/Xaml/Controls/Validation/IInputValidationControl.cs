@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 // MUX Reference dxaml\xcp\dxaml\idl\winrt\main\microsoft.ui.xaml.private.idl, tag winui3/release/1.8.2, commit 45013c4ed
@@ -19,12 +19,11 @@ namespace Microsoft.UI.Xaml.Controls;
 /// Public so that third-party controls can participate. A control also has to declare its input through
 /// <see cref="Uno.UI.Xaml.Controls.InputValidationPropertyAttribute"/>, or have it registered in
 /// <see cref="Uno.UI.FeatureConfiguration.InputValidation.ValidationProperties"/>, and to opt in through
-/// <see cref="Uno.UI.Xaml.Controls.Validation.InputValidationModeProperty"/>; implementing this interface on
-/// its own reports nothing.
+/// <see cref="InputValidationMode"/>; implementing this interface on its own reports nothing.
 /// <para>
-/// In WinUI every member below is a dependency property registered on each participating control. In Uno they
-/// are attached properties on <see cref="Uno.UI.Xaml.Controls.Validation"/>, which an implementer forwards to,
-/// so that no control needs storage of its own and a third-party control participates without registering any.
+/// As in WinUI, every member below is a dependency property the participating control registers itself. The
+/// storage and the events behind them come from the protected input validation members of
+/// <see cref="Control"/>, which a control outside Uno.UI registers its own properties with.
 /// </para>
 /// </remarks>
 public interface IInputValidationControl

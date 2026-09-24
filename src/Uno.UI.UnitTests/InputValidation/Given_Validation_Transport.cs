@@ -355,7 +355,7 @@ public partial class Given_Validation_Transport
 				typeof(ValidationControlBase),
 				new FrameworkPropertyMetadata(
 					InputValidationMode.Disabled,
-					Validation.OnInputValidationModeChanged));
+					OnInputValidationModeChanged));
 
 		public static DependencyProperty InputValidationKindProperty { get; } =
 			DependencyProperty.Register(
@@ -364,7 +364,7 @@ public partial class Given_Validation_Transport
 				typeof(ValidationControlBase),
 				new FrameworkPropertyMetadata(
 					InputValidationKind.Auto,
-					Validation.OnInputValidationKindChanged));
+					OnInputValidationKindChanged));
 
 		public static DependencyProperty HasValidationErrorsProperty { get; } =
 			DependencyProperty.Register(
@@ -373,7 +373,7 @@ public partial class Given_Validation_Transport
 				typeof(ValidationControlBase),
 				new FrameworkPropertyMetadata(
 					default(bool),
-					Validation.OnHasValidationErrorsChanged));
+					OnHasValidationErrorsChanged));
 
 		public static DependencyProperty ValidationErrorsProperty { get; } =
 			DependencyProperty.Register(
@@ -404,7 +404,7 @@ public partial class Given_Validation_Transport
 		public bool HasValidationErrors => (bool)GetValue(HasValidationErrorsProperty);
 
 		public IObservableVector<InputValidationError> ValidationErrors
-			=> Validation.GetOrCreateErrors(this, ValidationErrorsProperty);
+			=> GetOrCreateValidationErrors(ValidationErrorsProperty);
 
 		public DataTemplate? ErrorTemplate
 		{
@@ -414,20 +414,20 @@ public partial class Given_Validation_Transport
 
 		public event TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs> HasValidationErrorsChanged
 		{
-			add => Validation.AddHasValidationErrorsChangedHandler(this, value);
-			remove => Validation.RemoveHasValidationErrorsChangedHandler(this, value);
+			add => AddHasValidationErrorsChangedHandler(value);
+			remove => RemoveHasValidationErrorsChangedHandler(value);
 		}
 
 		public event TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs> ValidationError
 		{
-			add => Validation.AddValidationErrorHandler(this, value);
-			remove => Validation.RemoveValidationErrorHandler(this, value);
+			add => AddValidationErrorHandler(value);
+			remove => RemoveValidationErrorHandler(value);
 		}
 
 		public event EventHandler<DataErrorsChangedEventArgs> ErrorChanged
 		{
-			add => Validation.AddErrorChangedHandler(this, value);
-			remove => Validation.RemoveErrorChangedHandler(this, value);
+			add => AddErrorChangedHandler(value);
+			remove => RemoveErrorChangedHandler(value);
 		}
 	}
 
