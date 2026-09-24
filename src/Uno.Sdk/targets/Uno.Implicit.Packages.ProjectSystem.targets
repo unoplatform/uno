@@ -94,7 +94,9 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Fonts.OpenSans" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<!-- SKCanvasElement authoring API. It draws through SkiaSharp, so it follows the Skia renderer: a head that
+	     renders with something else opts in by naming 'skia'. -->
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
 
