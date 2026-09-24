@@ -6,7 +6,7 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace Uno.Storage
 {
-	public partial class NativeStorageItem
+	internal partial class NativeStorageItem
 	{
 		private const string GuidSplit = ";";
 
