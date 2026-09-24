@@ -29,7 +29,13 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	private CompositionSpriteShape? _backgroundShape; // Never null after _backgroundBrush is set
 	private CompositionSpriteShape? _borderShape; // Never null after _borderBrush is set
 	private CompositionClip? _backgroundClip;
+<<<<<<< HEAD
 	private SKRoundRect? _borderPathOuterRect;
+=======
+	private RoundRectangle? _borderPathOuterRect;
+	// The pre-painting round-rect geometry, keyed on the round rect it was built from.
+	private (RoundRectangle rect, IGeometry geometry)? _prePaintingRoundRect;
+>>>>>>> 9726017 (perf(composition): Cache the border pre-painting round rect)
 	// state set here but affects children
 	private RectangleClip? _childClipCausedByCornerRadius;
 
@@ -152,9 +158,18 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 		if (_cornerRadius != CornerRadius.None && _borderPathOuterRect is { } rect)
 		{
+<<<<<<< HEAD
 			if (base.GetPrePaintingClipping(dst))
 			{
 				var path = _sparePrePaintingClippingPath;
+=======
+			// Not rebuilt per frame: this runs for every rounded border on every frame.
+			var roundRect = GetOrBuildPrePaintingRoundRectGeometry(rect);
+			return baseClip is null
+				? roundRect
+				: IntersectOwned(baseClip, roundRect);
+		}
+>>>>>>> 9726017 (perf(composition): Cache the border pre-painting round rect)
 
 				path.Rewind();
 
@@ -350,7 +365,25 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		return backgroundPath;
 	}
 
+<<<<<<< HEAD
 	private unsafe SKPath CreateBorderPath(SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
+=======
+	private IGeometry GetOrBuildPrePaintingRoundRectGeometry(RoundRectangle rect)
+	{
+		if (_prePaintingRoundRect is not { } cached || cached.rect != rect)
+		{
+			_prePaintingRoundRect?.geometry.Release();
+			cached = (rect, BuildRoundRectGeometry(rect));
+			_prePaintingRoundRect = cached;
+		}
+
+		// The cache keeps its own reference, so hand the caller one of theirs.
+		cached.geometry.AddRef();
+		return cached.geometry;
+	}
+
+	private static RoundRectangle ToRoundRect(Rect rect, NonUniformCornerRadius radii) => new()
+>>>>>>> 9726017 (perf(composition): Cache the border pre-painting round rect)
 	{
 		var borderPath = new SKPath();
 
