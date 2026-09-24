@@ -15,3 +15,11 @@ In the case of **WebAssembly**, an additional security check is required to be a
 WinRTFeatureConfiguration.Midi.RequestSystemExclusiveAccess = true;
 #endif
 ```
+
+On **WebAssembly**, the browser asks the user for MIDI access the first time devices are enumerated or a port is opened. To ask at a moment of your choosing instead, for example in response to a button click, call `Uno.Devices.Midi.WasmMidiAccess.RequestAsync()`, which returns whether access was granted:
+
+```csharp
+#if __WASM__
+var granted = await Uno.Devices.Midi.WasmMidiAccess.RequestAsync();
+#endif
+```
