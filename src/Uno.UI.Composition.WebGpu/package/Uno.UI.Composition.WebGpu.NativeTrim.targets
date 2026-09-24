@@ -44,13 +44,16 @@
 				 Text="Keeping the wgpu native payload: $(_UnoWebGpuReferencedBy) names WebGPU or registers a graphics backend." />
 	</Target>
 
-	<!-- Build output and publish resolve the payload through separate item lists, so both are filtered. -->
+	<!-- Build output and publish resolve the payload through separate item lists, so both are filtered. The
+	     payload ships under the DllImport's own name (webgpu/libwebgpu); only the android per-ABI slice keeps
+	     the wgpu_native one. Exact names, so the managed assembly beside it is never mistaken for it. -->
 	<Target Name="_UnoWebGpuDropNativeFromOutput"
 			AfterTargets="_UnoWebGpuDetectUsage"
 			BeforeTargets="CopyFilesToOutputDirectory"
 			Condition="'$(_UnoWebGpuNativeUnused)' == 'true'">
 		<ItemGroup>
-			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::Copy('%(Filename)').Contains('wgpu_native'))" />
+			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="'%(Filename)' == 'webgpu' Or '%(Filename)' == 'libwebgpu'
+										 Or '%(Filename)' == 'wgpu_native' Or '%(Filename)' == 'libwgpu_native'" />
 		</ItemGroup>
 	</Target>
 
@@ -58,7 +61,8 @@
 			AfterTargets="ComputeResolvedFilesToPublishList"
 			Condition="'$(_UnoWebGpuNativeUnused)' == 'true'">
 		<ItemGroup>
-			<ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="$([System.String]::Copy('%(Filename)').Contains('wgpu_native'))" />
+			<ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Filename)' == 'webgpu' Or '%(Filename)' == 'libwebgpu'
+										 Or '%(Filename)' == 'wgpu_native' Or '%(Filename)' == 'libwgpu_native'" />
 		</ItemGroup>
 	</Target>
 
