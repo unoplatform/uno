@@ -29,13 +29,13 @@
 			<!-- END UWP-excluded -->
 
 			<!--
-				SkiaSharp/HarfBuzzSharp are declared here because lib/ now carries the Skia build:
-				Uno.UI.Composition binds SkiaSharp and Uno.UI binds HarfBuzzSharp. Omitting them
-				yields CS0012 for any consumer touching a SkiaSharp-typed member.
+				HarfBuzzSharp is declared here because Uno.UI.Composition.Managed binds it for text
+				shaping. Nothing in this package binds SkiaSharp any more: the drawing backends ship
+				separately, so a head whose renderer is not Skia pulls in no SkiaSharp at all.
 
-				nuspec does not expand MSBuild properties, so the SkiaSharp/HarfBuzzSharp versions
-				below are literals that must be updated by hand to match $(SkiaSharpVersion) and
-				$(HarfbuzzSharpVersion) in src/Directory.Build.targets whenever those are bumped.
+				nuspec does not expand MSBuild properties, so the HarfBuzzSharp version below is a
+				literal that must be updated by hand to match $(HarfbuzzSharpVersion) in
+				src/Directory.Build.targets whenever it is bumped.
 			-->
 
 			<!--
@@ -55,7 +55,6 @@
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.9.4" />
 				<dependency id="Uno.WinRT" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="4.151.1" />
 				<dependency id="HarfBuzzSharp" version="14.2.1.1" />
 			</group>
 
@@ -65,7 +64,6 @@
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.9.4" />
 				<dependency id="Uno.WinRT" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="4.151.1" />
 				<dependency id="HarfBuzzSharp" version="14.2.1.1" />
 			</group>
 		</dependencies>
