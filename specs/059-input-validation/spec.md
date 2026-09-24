@@ -454,7 +454,12 @@ and `ComboBox.partial.mux.cs:369` / `:1388` already call them. They are the only
 
 The half of the presentation layer that ships in 059. The visuals are spec 060.
 
-### 4.1 The `Validation` attached-property owner
+### 4.1 The `Validation` attached-property owner — superseded
+
+> **Superseded, see [§10b](#10b-superseded-by-the-winui-alignment-pass).** This read model never shipped as
+> attached properties: every member of `IInputValidationControl` is a dependency property the participating
+> control registers itself, and the `Validation` class named below no longer exists — its transport folded
+> into `Control`. The section is kept because §10b's decisions are written against it.
 
 A static class owning attached dependency properties, scoped to `Control`.
 
@@ -638,20 +643,21 @@ are the rest.
   was negatively cached — so `{Binding (Owner.Property)}` read its initial value once and never subscribed to
   changes. This affected any attached-property binding path, `Canvas.Left` included; regression tests are in
   `Uno.UI.UnitTests/DependencyProperty/Given_DependencyProperty.AttachedPath.cs`.
-- **Owner type matters for an attached property meant to be reachable from a binding path.** `Validation`
-  registers with `typeof(Validation)` and resolves. `ComboBox.Uno.cs` instead registers
+- **Owner type matters for an attached property meant to be reachable from a binding path.** The transport's
+  four attached properties register with `typeof(Control)`, which is free precisely because none of them is
+  reachable from a binding path — they are read and written through `GetValue`/`SetValue` directly. `ComboBox.Uno.cs` instead registers
   `DropDownPreferredPlacement` with the *MUX* `ComboBox` as owner while the path names the Uno static class,
   so the registry lookup misses and that property cannot be observed through a binding path. Pre-existing,
   out of scope here, worth its own issue.
-- **Ordering: neither `SetBinding` nor `Validation.IsEnabled` can be assumed to come first.** Generated XAML
+- **Ordering: neither `SetBinding` nor `InputValidationMode` can be assumed to come first.** Generated XAML
   emits the two as sequential assignments in document order, so the attribute order in the markup decides —
   and XamlStyler reorders attributes, so it is not even stable per file. Either way the element is parentless
   with a null `DataContext` at that point, so the leaf is unresolvable regardless. Registration therefore
-  cannot be gated on `Validation.IsEnabled`: it marks the expression unconditionally, the *sync* is gated,
+  cannot be gated on `InputValidationMode`: it marks the expression unconditionally, the *sync* is gated,
   and the changed callback pulls the current expression. Both orders are covered by tests.
-- **No read-only attached dependency property exists in Uno** — no `DependencyPropertyKey`, no
-  `RegisterAttachedReadOnly`. `HasErrors` and `Errors` use a public getter with an internal setter, which
-  leaves them technically settable from XAML through `SetValue`.
+- **No read-only dependency property exists in Uno** — no `DependencyPropertyKey`, no
+  `RegisterAttachedReadOnly`. `HasValidationErrors` and `ValidationErrors` expose a getter only, but the
+  underlying property stays technically settable from XAML through `SetValue`.
 - **`FeatureConfiguration` hosts no other cache**, so `InputValidation` is a new shape there. The map is
   **public and writable** — the registration entry point for controls that cannot carry the attribute — and
   backed by a `ConditionalWeakTable<Type, …>`, the established repo answer for a `Type`-keyed cache that
@@ -684,7 +690,7 @@ than edited into the decisions above, so the reasoning that produced them stays 
   The consequence for this spec is that **§4.1's attached read model is gone**: `Validation.HasErrors` and
   `Validation.Errors` are replaced by `HasValidationErrors` and `ValidationErrors` on the control, so an app
   binds `{Binding HasValidationErrors, ElementName=…}` rather than the parenthesized attached path. `Validation`
-  keeps no public surface at all — it is now the transport plumbing, and `IInputValidationControl` is the API.
+  is gone entirely — see D3 — and `IInputValidationControl` is the API.
 
   Framework code reaches the properties two ways. Reads go through the interface, which is the C# equivalent
   of WinUI's four `switch (GetTypeIndex())` helpers, fallback included: a control that does not implement it
@@ -705,8 +711,21 @@ than edited into the decisions above, so the reasoning that produced them stays 
   theme's style can set it once §4 of spec 060 gives it something to render.
 - **D7 — `ErrorChanged` survives** beside WinUI's `HasValidationErrorsChanged` and `ValidationError`, because
   it is the only one of the three that carries the source's `DataErrorsChangedEventArgs` unchanged.
-- **Q3 / Q11 — partially reversed.** `Validation` itself stays in `Uno.UI.Xaml.Controls` as decided, but the
-  interface, enums and error types took their WinUI names in `Microsoft.UI.Xaml.Controls`. That is a
+- **D3 — the `Validation` class no longer exists.** Left with no public members, it was a public type that
+  was pure plumbing. Its transport folded onto `Control`, which is where WinUI keeps the equivalent
+  (`CControl::IsValidationEnabled`, `CControl::EnsureValidationVisuals`) and where every entry point already
+  pointed — participation was always `Control`-typed, so it always required deriving from `Control`.
+
+  The fold also fixed a defect the attached model had hidden: the participation members were `internal`, so
+  the "third-party controls can participate" the interface promises was not actually reachable. A control
+  outside Uno.UI got the transport for free but could not hook the three changed callbacks or back its three
+  events, which would therefore never fire. They are now `protected`, and `Uno.UI.Tests.ViewLibrary` — a
+  project deliberately outside `InternalsVisibleTo` — carries a participating control so that the contract
+  fails at compile time if it ever regresses. One sharp edge worth recording: `FrameworkPropertyMetadata`'s
+  `(value, callback)` overload is `internal`, so such a control registers with `PropertyMetadata`.
+- **Q3 / Q11 — partially reversed.** Only `InputValidationPropertyAttribute` and `InputValidationPropertyMap`
+  remain in `Uno.UI.Xaml.Controls`; the interface, enums and error types took their WinUI names in
+  `Microsoft.UI.Xaml.Controls`. That is a
   **deliberate parity risk**: every one of those types is `PrivateApiContract` / `Feature_InputValidation` in
   WinUI's private IDL and has never shipped publicly, so if microsoft-ui-xaml#179 ever ships with a different
   shape, the names collide. `HasValidationErrorsChangedEventArgs` is the exception — public `WinUIContract`,
