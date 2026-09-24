@@ -92,7 +92,7 @@
 	</Target>
 
 	<!-- Omits the native payload for an app that cannot reach the backend (see the file for the rule). -->
-	<Import Project="$(MSBuildThisFileDirectory)Uno.UI.Composition.WebGpu.NativeTrim.targets"
-			Condition="Exists('$(MSBuildThisFileDirectory)Uno.UI.Composition.WebGpu.NativeTrim.targets')" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.WinUI.Composition.WebGpu.NativeTrim.targets"
+			Condition="Exists('$(MSBuildThisFileDirectory)Uno.WinUI.Composition.WebGpu.NativeTrim.targets')" />
 
 </Project>

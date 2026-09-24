@@ -51,7 +51,13 @@ public sealed class DetectWebGpuUsage_v0 : Task
 			{
 				reason = Inspect(path);
 			}
-			catch (Exception e) when (e is BadImageFormatException or IOException or UnauthorizedAccessException)
+			catch (BadImageFormatException)
+			{
+				// Not a PE at all, so it holds no reference to anything. A placeholder or empty file carrying a
+				// .dll extension lands here, and calling that unknown would disable the trimming with no sign.
+				reason = null;
+			}
+			catch (Exception e) when (e is IOException or UnauthorizedAccessException)
 			{
 				// Unreadable means unknown, and unknown has to keep the payload.
 				CanReachWebGpu = true;
