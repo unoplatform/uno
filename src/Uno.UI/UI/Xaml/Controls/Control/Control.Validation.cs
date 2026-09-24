@@ -81,19 +81,27 @@ public partial class Control
 	}
 
 	/// <summary>
-	/// Reaches <see cref="UpdateValidationStates"/> from <see cref="FrameworkElement"/>, which as the base
-	/// type cannot see a protected member of this one.
-	/// </summary>
-	internal void UpdateValidationStatesInternal() => UpdateValidationStates();
-
-	/// <summary>
-	/// Leaves the groups when the control stops participating — the one transition
-	/// <see cref="UpdateValidationStates"/> cannot make, because it short-circuits on exactly that condition.
+	/// Applies the validation states from outside this type — from <see cref="FrameworkElement"/>, which as the
+	/// base type cannot see a protected member of this one, and from the mode changed callback, which is the
+	/// only caller that has to be able to leave the groups.
 	/// </summary>
 	/// <remarks>
-	/// Like WinUI's disabled branch, this deliberately leaves the error states group where it was.
+	/// Leaving the groups is the one transition <see cref="UpdateValidationStates"/> cannot make, because it
+	/// short-circuits on exactly that condition. Like WinUI's disabled branch, it deliberately leaves the error
+	/// states group where it was, and it is outside the feature guard: opting out has to leave the group even
+	/// when the global switch was turned off in between.
 	/// </remarks>
-	private void ClearValidationStates() => GoToState(false, InputValidationEnabledStates.ValidationDisabled);
+	internal void UpdateValidationStatesInternal()
+	{
+		if (ValidationParticipant is not null)
+		{
+			UpdateValidationStates();
+		}
+		else
+		{
+			GoToState(false, InputValidationEnabledStates.ValidationDisabled);
+		}
+	}
 
 	/// <summary>
 	/// The changed callback a participating control registers its InputValidationMode with.
