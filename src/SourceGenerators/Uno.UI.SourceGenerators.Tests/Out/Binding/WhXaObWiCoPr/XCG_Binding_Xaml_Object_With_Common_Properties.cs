@@ -96,6 +96,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						)
 						,
 					}
+					,
 				}
 				.Binding_Xaml_Object_With_Common_Properties_32c9951cc1e205007e0c313480b9e8bf_XamlApply((Binding_Xaml_Object_With_Common_Properties_32c9951cc1e205007e0c313480b9e8bfXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
