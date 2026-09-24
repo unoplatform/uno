@@ -15,6 +15,7 @@ public class Given_ApplicationActivity
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24598")]
 	[DynamicDependency("get_Instance", "Microsoft.UI.Xaml.ApplicationActivity", "Uno.UI.Runtime.Skia.Android")]
 	[DynamicDependency("Recreate", "Android.App.Activity", "Mono.Android")]
 	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
