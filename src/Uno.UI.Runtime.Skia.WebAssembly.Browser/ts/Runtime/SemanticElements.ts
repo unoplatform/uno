@@ -589,14 +589,7 @@ namespace Uno.UI.Runtime.Skia {
 			Accessibility.updateElementFocusability(element, isFocusable);
 
 			element.value = value;
-			const maxLen = value.length;
-			const initialSelectionStart = Math.max(0, Math.min(selectionStart, maxLen));
-			const initialSelectionEnd = Math.max(initialSelectionStart, Math.min(selectionEnd, maxLen));
-			try {
-				element.setSelectionRange(initialSelectionStart, initialSelectionEnd);
-			} catch {
-				// Some browsers/input types may reject selection updates before focus.
-			}
+			this.setTextSelection(element, selectionStart, selectionEnd);
 
 			if (isReadOnly) {
 				element.readOnly = true;
@@ -610,28 +603,81 @@ namespace Uno.UI.Runtime.Skia {
 			// moves focus to the semantic element instead of the invisible TextBox <input>.
 			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(element, multiline);
 
+			let passwordEdit: { value: string; start: number; end: number } | null = null;
+			let composingPassword = false;
+			let suppressPasswordInput = false;
+			const capturePasswordEdit = () => {
+				passwordEdit = {
+					value: element.value,
+					start: element.selectionStart ?? 0,
+					end: element.selectionEnd ?? 0
+				};
+			};
+			const synchronizeText = () => {
+				let value = element.value;
+				const start = element.selectionStart ?? 0;
+				const end = element.selectionEnd ?? start;
+				const backward = element.selectionDirection === 'backward';
+				let replacementStart = -1;
+				let replacementLength = -1;
+				if (passwordEdit) {
+					// Preserve the managed password outside the edit; DOM bullets are not its text.
+					const previous = passwordEdit;
+					const prefixLimit = Math.min(previous.start, start);
+					const suffixLimit = Math.min(previous.value.length - previous.end, value.length - end);
+					let prefix = 0;
+					let suffix = 0;
+					while (prefix < prefixLimit && previous.value[prefix] === value[prefix]) {
+						prefix++;
+					}
+					while (suffix < suffixLimit &&
+						previous.value[previous.value.length - suffix - 1] === value[value.length - suffix - 1]) {
+						suffix++;
+					}
+					replacementStart = prefix;
+					replacementLength = previous.value.length - prefix - suffix;
+					value = value.substring(prefix, value.length - suffix);
+				}
+				passwordEdit = null;
+				if (callbacks.onTextInput) {
+					callbacks.onTextInput(handle, value, backward ? end : start, backward ? start : end, replacementStart, replacementLength);
+				}
+			};
+
+			if (password) {
+				element.addEventListener('beforeinput', (event: InputEvent) => {
+					if (!composingPassword) {
+						if (!event.inputType.toLowerCase().includes('composition')) {
+							suppressPasswordInput = false;
+						}
+						capturePasswordEdit();
+					}
+				});
+				element.addEventListener('compositionstart', () => {
+					capturePasswordEdit();
+					composingPassword = true;
+				});
+			}
+
 			// Input event handler for text changes (T050)
 			element.addEventListener('input', () => {
-				if (callbacks.onTextInput) {
-					callbacks.onTextInput(
-						handle,
-						element.value,
-						element.selectionStart ?? 0,
-						element.selectionEnd ?? 0
-					);
+				if (password && (composingPassword || suppressPasswordInput)) {
+					if (suppressPasswordInput) {
+						suppressPasswordInput = false;
+						passwordEdit = null;
+					}
+					return;
 				}
+				synchronizeText();
 			});
 
 			// Handle IME composition events for international text input (T055)
 			element.addEventListener('compositionend', () => {
-				if (callbacks.onTextInput) {
-					callbacks.onTextInput(
-						handle,
-						element.value,
-						element.selectionStart ?? 0,
-						element.selectionEnd ?? 0
-					);
+				if (password) {
+					composingPassword = false;
+					suppressPasswordInput = true;
 				}
+				synchronizeText();
 			});
 
 			this.appendToParent(element, parentHandle, index);
@@ -662,7 +708,7 @@ namespace Uno.UI.Runtime.Skia {
 			// not hardcoded here (FR-028).
 			Accessibility.updateElementFocusability(element, isFocusable);
 
-			this.setAriaStringAttribute(element, 'aria-label', selectedValue);
+			element.appendChild(document.createTextNode(selectedValue ?? ''));
 
 			const callbacks = this.getCallbacks();
 
@@ -693,6 +739,18 @@ namespace Uno.UI.Runtime.Skia {
 			});
 
 			this.appendToParent(element, parentHandle, index);
+		}
+
+		public static updateComboBoxValue(handle: number, selectedValue: string): void {
+			const element = document.getElementById(`uno-semantics-${handle}`);
+			if (element) {
+				// Keep the value separate from the name and preserve any semantic child controls.
+				if (element.firstChild?.nodeType === Node.TEXT_NODE) {
+					element.firstChild.nodeValue = selectedValue;
+				} else {
+					element.insertBefore(document.createTextNode(selectedValue), element.firstChild);
+				}
+			}
 		}
 
 		/**
@@ -797,8 +855,19 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
+		private static setTextSelection(element: HTMLInputElement | HTMLTextAreaElement, selectionAnchor: number, selectionCaret: number): void {
+			const maxLen = element.value.length;
+			const anchor = Math.max(0, Math.min(selectionAnchor, maxLen));
+			const caret = Math.max(0, Math.min(selectionCaret, maxLen));
+			try {
+				element.setSelectionRange(Math.min(anchor, caret), Math.max(anchor, caret), anchor > caret ? 'backward' : 'forward');
+			} catch {
+				// Some input types may reject selection updates before focus.
+			}
+		}
+
 		/**
-		 * Updates the value of a text input element.
+		 * Updates the value and directed selection of a text input element.
 		 */
 		public static updateTextBoxValue(
 			handle: number,
@@ -816,15 +885,7 @@ namespace Uno.UI.Runtime.Skia {
 				// Negative sentinel from C# means "do not touch selection".
 				// This preserves the browser-managed caret for browser-originated a11y text input.
 				if (selectionStart >= 0 && selectionEnd >= 0) {
-					// Validate selection range to prevent exceptions
-					const maxLen = value.length;
-					const start = Math.max(0, Math.min(selectionStart, maxLen));
-					const end = Math.max(start, Math.min(selectionEnd, maxLen));
-					try {
-						element.setSelectionRange(start, end);
-					} catch {
-						// Some input types (e.g., password in some browsers) don't support setSelectionRange
-					}
+					this.setTextSelection(element, selectionStart, selectionEnd);
 				}
 			}
 		}
@@ -888,6 +949,10 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the selected state of a list item element.
 		 */
 		public static updateSelectionState(handle: number, selected: boolean): void {
+			const pending = SemanticElements.pendingVirtualizedSelection.get(handle);
+			if (pending) {
+				pending.selected = selected;
+			}
 			const element = document.getElementById(`uno-semantics-${handle}`);
 			if (element) {
 				element.setAttribute('aria-selected', String(selected));
@@ -1103,6 +1168,9 @@ namespace Uno.UI.Runtime.Skia {
 			});
 			// WAI-ARIA tree item keyboard pattern
 			element.addEventListener('keydown', (e) => {
+				if (e.target !== element) {
+					return;
+				}
 				const currentExpanded = element.getAttribute('aria-expanded');
 				if (e.key === 'Enter' || e.key === ' ') {
 					e.preventDefault();
@@ -1119,7 +1187,8 @@ namespace Uno.UI.Runtime.Skia {
 					} else if (currentExpanded === 'true') {
 						// Move to first child
 						e.preventDefault();
-						const firstChild = element.querySelector('[role="treeitem"]') as HTMLElement;
+						const firstChild = SemanticElements.getNavigableTreeItems(element.closest('[role="tree"]'))
+							.find(item => item !== element && element.contains(item));
 						if (firstChild) {
 							firstChild.focus();
 						}
@@ -1142,7 +1211,7 @@ namespace Uno.UI.Runtime.Skia {
 				} else if (e.key === 'ArrowDown') {
 					// Move to next visible tree item
 					e.preventDefault();
-					const allItems = Array.from(element.closest('[role="tree"]')?.querySelectorAll('[role="treeitem"]') ?? []) as HTMLElement[];
+					const allItems = SemanticElements.getNavigableTreeItems(element.closest('[role="tree"]'));
 					const currentIndex = allItems.indexOf(element);
 					if (currentIndex >= 0 && currentIndex < allItems.length - 1) {
 						allItems[currentIndex + 1].focus();
@@ -1150,7 +1219,7 @@ namespace Uno.UI.Runtime.Skia {
 				} else if (e.key === 'ArrowUp') {
 					// Move to previous visible tree item
 					e.preventDefault();
-					const allItems = Array.from(element.closest('[role="tree"]')?.querySelectorAll('[role="treeitem"]') ?? []) as HTMLElement[];
+					const allItems = SemanticElements.getNavigableTreeItems(element.closest('[role="tree"]'));
 					const currentIndex = allItems.indexOf(element);
 					if (currentIndex > 0) {
 						allItems[currentIndex - 1].focus();
@@ -1158,21 +1227,44 @@ namespace Uno.UI.Runtime.Skia {
 				} else if (e.key === 'Home') {
 					// Move to first tree item
 					e.preventDefault();
-					const firstItem = element.closest('[role="tree"]')?.querySelector('[role="treeitem"]') as HTMLElement;
+					const firstItem = SemanticElements.getNavigableTreeItems(element.closest('[role="tree"]'))[0];
 					if (firstItem) {
 						firstItem.focus();
 					}
 				} else if (e.key === 'End') {
 					// Move to last tree item
 					e.preventDefault();
-					const allItems = element.closest('[role="tree"]')?.querySelectorAll('[role="treeitem"]');
-					if (allItems && allItems.length > 0) {
-						(allItems[allItems.length - 1] as HTMLElement).focus();
+					const allItems = SemanticElements.getNavigableTreeItems(element.closest('[role="tree"]'));
+					if (allItems.length > 0) {
+						allItems[allItems.length - 1].focus();
 					}
 				}
 			});
 
 			this.appendToParent(element, parentHandle, index);
+		}
+
+		private static getNavigableTreeItems(tree: Element | null): HTMLElement[] {
+			if (!tree) {
+				return [];
+			}
+
+			return Array.from(tree.querySelectorAll<HTMLElement>('[role="treeitem"]')).filter(item => {
+				if (item.closest('[role="tree"]') !== tree) {
+					return false;
+				}
+
+				for (let ancestor: HTMLElement | null = item; ancestor; ancestor = ancestor.parentElement) {
+					const style = getComputedStyle(ancestor);
+					if (ancestor.hidden || ancestor.getAttribute('aria-hidden') === 'true' ||
+						style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse' ||
+						(ancestor !== item && ancestor.matches('[role="treeitem"][aria-expanded="false"]'))) {
+						return false;
+					}
+				}
+
+				return true;
+			});
 		}
 
 		/**
@@ -1425,6 +1517,7 @@ namespace Uno.UI.Runtime.Skia {
 		 */
 		private static virtualizedMutationQueue: (() => void)[] = [];
 		private static virtualizedRafId: number = 0;
+		private static pendingVirtualizedSelection = new Map<number, { selected: boolean | null }>();
 
 		/**
 		 * Schedules a virtualized mutation to be flushed in the next animation frame.
@@ -1509,9 +1602,17 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			role: string,
-			label: string
+			label: string,
+			selected: boolean | null,
+			automationId: string
 		): void {
+			const pendingSelection = { selected };
+			SemanticElements.pendingVirtualizedSelection.set(itemHandle, pendingSelection);
 			SemanticElements.scheduleVirtualizedMutation(() => {
+				const selection = SemanticElements.pendingVirtualizedSelection.get(itemHandle) ?? pendingSelection;
+				if (selection === pendingSelection) {
+					SemanticElements.pendingVirtualizedSelection.delete(itemHandle);
+				}
 				const container = document.getElementById(`uno-semantics-${containerHandle}`);
 				if (!container) {
 					return;
@@ -1523,9 +1624,9 @@ namespace Uno.UI.Runtime.Skia {
 				if (existingItem) {
 					existingItem.setAttribute('aria-posinset', String(index + 1));
 					existingItem.setAttribute('aria-setsize', String(totalCount));
-					if (label) {
-						existingItem.setAttribute('aria-label', label);
-					}
+					SemanticElements.setAriaStringAttribute(existingItem, 'aria-label', label);
+					SemanticElements.setAriaStringAttribute(existingItem, 'aria-selected', selection.selected?.toString());
+					SemanticElements.setAriaStringAttribute(existingItem, 'xamlautomationid', automationId);
 					// Ensure item is inside the correct container
 					if (existingItem.parentElement !== container) {
 						container.appendChild(existingItem);
@@ -1539,6 +1640,8 @@ namespace Uno.UI.Runtime.Skia {
 				// aria-posinset is 1-based, index is 0-based
 				element.setAttribute('aria-posinset', String(index + 1));
 				element.setAttribute('aria-setsize', String(totalCount));
+				SemanticElements.setAriaStringAttribute(element, 'aria-selected', selection.selected?.toString());
+				SemanticElements.setAriaStringAttribute(element, 'xamlautomationid', automationId);
 				element.tabIndex = -1;
 				element.style.pointerEvents = 'none';
 

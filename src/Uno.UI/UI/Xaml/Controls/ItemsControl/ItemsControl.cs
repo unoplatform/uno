@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Windows.Foundation.Collections;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
@@ -917,6 +918,7 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceSingleCollectionChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}");
 			}
 			UpdateItems(args);
+			(FrameworkElementAutomationPeer.FromElement(this) as ItemsControlAutomationPeer)?.OnItemsChanged(args);
 		}
 
 		/// <summary>
@@ -929,6 +931,7 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceGroupsChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}, NoOfGroups={NumberOfGroups}");
 			}
 			UpdateItems(args);
+			(FrameworkElementAutomationPeer.FromElement(this) as ItemsControlAutomationPeer)?.OnItemsChanged(args);
 		}
 
 		internal virtual void OnGroupPropertyChanged(ICollectionViewGroup group, int groupIndex)
@@ -1167,6 +1170,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			ClearContainerForItemOverride(element, item);
 			ContainerClearedForItem(item, element as SelectorItem);
+
+			if (element is UIElement container &&
+				FrameworkElementAutomationPeer.FromElement(container) is { EventsSource: ItemAutomationPeer itemPeer } containerPeer &&
+				ReferenceEquals(itemPeer.ItemsControlAutomationPeer.Owner, this))
+			{
+				containerPeer.EventsSource = null;
+			}
 
 			UIElement.PrepareForRecycle(element);
 

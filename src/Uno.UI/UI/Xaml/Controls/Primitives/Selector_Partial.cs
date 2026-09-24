@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference Selector_Partial.cpp (RaiseIsSelectedChangedAutomationEvent), tag winui3/release/1.8.4, commit dc46907e
 
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,8 @@ using System.Linq;
 using System.Text;
 using DirectUI;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -26,6 +29,22 @@ partial class Selector
 	{
 		get => m_tpDataSourceAsSelectionInfo;
 		set => m_tpDataSourceAsSelectionInfo = value;
+	}
+
+	internal void RaiseIsSelectedChangedAutomationEvent(DependencyObject container, bool isSelected)
+	{
+		if (!AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged))
+		{
+			return;
+		}
+
+		var item = ItemFromContainer(container);
+		if (item is not null && item != DependencyProperty.UnsetValue &&
+			GetOrCreateAutomationPeer() is ItemsControlAutomationPeer ownerPeer &&
+			ownerPeer.CreateItemAutomationPeer(item) is { } itemPeer)
+		{
+			itemPeer.RaisePropertyChangedEvent(SelectionItemPatternIdentifiers.IsSelectedProperty, !isSelected, isSelected);
+		}
 	}
 
 	/// <summary>

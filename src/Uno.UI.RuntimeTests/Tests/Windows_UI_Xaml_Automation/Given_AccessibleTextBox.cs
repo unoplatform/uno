@@ -189,6 +189,86 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.IsTrue(valueProvider.IsReadOnly, "Read-only TextBox should report IsReadOnly=true");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(PasswordRevealMode.Peek)]
+		[DataRow(PasswordRevealMode.Visible)]
+		public async Task When_PasswordBox_Password_Changes_Then_Dom_Value_Live_Syncs(PasswordRevealMode revealMode)
+		{
+#if __SKIA__
+			var passwordBox = new PasswordBox { PasswordRevealMode = revealMode, Password = "initial" };
+			var panel = new StackPanel { Children = { passwordBox } };
+			try
+			{
+				await UITestHelper.Load(panel);
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(passwordBox), timeoutMS: 5000);
+				Assert.AreEqual("password", GetSemanticInputType(passwordBox));
+				Assert.AreEqual(new string('•', 7), GetSemanticInputValue(passwordBox));
+
+				passwordBox.Password = "secret";
+				await UITestHelper.WaitFor(() => GetSemanticInputValue(passwordBox) == new string('•', 6), timeoutMS: 5000);
+				passwordBox.Focus(FocusState.Programmatic);
+				passwordBox.SelectAll();
+				await UITestHelper.WaitForIdle();
+				Assert.AreEqual(new string('•', 6), GetSemanticInputValue(passwordBox), "Focus and selection synchronization must not publish cleartext.");
+				passwordBox.Password = "longer secret";
+				await UITestHelper.WaitFor(() => GetSemanticInputValue(passwordBox) == new string('•', 13), timeoutMS: 5000);
+				passwordBox.Password = string.Empty;
+				await UITestHelper.WaitFor(() => GetSemanticInputValue(passwordBox) == string.Empty, timeoutMS: 5000);
+
+				panel.Children.Remove(passwordBox);
+				await UITestHelper.WaitFor(() => !SemanticElementExists(passwordBox), timeoutMS: 5000);
+				passwordBox.Password = "detached";
+				Assert.IsFalse(SemanticElementExists(passwordBox));
+				panel.Children.Add(passwordBox);
+				await UITestHelper.WaitFor(() => GetSemanticInputValue(passwordBox) == new string('•', 8), timeoutMS: 5000);
+				passwordBox.Password = "back";
+				await UITestHelper.WaitFor(() => GetSemanticInputValue(passwordBox) == new string('•', 4), timeoutMS: 5000);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+				await UITestHelper.WaitForIdle();
+			}
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_PasswordBox_Semantic_Input_Then_Unchanged_Characters_Are_Preserved()
+		{
+#if __SKIA__
+			var passwordBox = new PasswordBox { Password = "secret" };
+			try
+			{
+				await UITestHelper.Load(passwordBox);
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(passwordBox), timeoutMS: 5000);
+
+				EditSemanticPassword(passwordBox, 6, 6, 6, 6, "!");
+				await UITestHelper.WaitFor(() => passwordBox.Password == "secret!", timeoutMS: 5000);
+				EditSemanticPassword(passwordBox, 0, 1, 0, 1, "S");
+				await UITestHelper.WaitFor(() => passwordBox.Password == "Secret!", timeoutMS: 5000);
+				EditSemanticPassword(passwordBox, 7, 7, 6, 7, string.Empty);
+				await UITestHelper.WaitFor(() => passwordBox.Password == "Secret", timeoutMS: 5000);
+				EditSemanticPassword(passwordBox, 3, 3, 3, 3, "•");
+				await UITestHelper.WaitFor(() => passwordBox.Password == "Sec•ret", timeoutMS: 5000);
+				Assert.AreEqual(new string('•', 7), GetSemanticInputValue(passwordBox));
+
+				EditSemanticPassword(passwordBox, 0, 7, 0, 7, "reset");
+				await UITestHelper.WaitFor(() => passwordBox.Password == "reset", timeoutMS: 5000);
+				Assert.AreEqual(new string('•', 5), GetSemanticInputValue(passwordBox));
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+#endif
+		}
+
 #if __SKIA__
 		/// <summary>
 		/// Verifies that browser-originated typing through the semantic textbox keeps
@@ -348,6 +428,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		private static string GetSemanticTextBoxValue(TextBox textBox)
 			=> InvokeBrowserJs($"(function(){{const element = document.getElementById('{GetSemanticElementId(textBox)}'); return element ? element.value : '';}})()");
+
+		private static string GetSemanticInputValue(UIElement element)
+			=> InvokeBrowserJs($"document.getElementById('{GetSemanticElementId(element)}')?.value ?? ''");
+
+		private static void EditSemanticPassword(PasswordBox passwordBox, int selectionStart, int selectionEnd, int replacementStart, int replacementEnd, string text)
+		{
+			var value = System.Text.Json.JsonSerializer.Serialize(text);
+			InvokeBrowserJs($$"""
+				(function() {
+					const input = document.getElementById('{{GetSemanticElementId(passwordBox)}}');
+					input.setSelectionRange({{selectionStart}}, {{selectionEnd}});
+					input.dispatchEvent(new InputEvent('beforeinput', { bubbles: true, inputType: 'insertText' }));
+					const inserted = {{value}};
+					input.value = input.value.slice(0, {{replacementStart}}) + inserted + input.value.slice({{replacementEnd}});
+					const caret = {{replacementStart}} + inserted.length;
+					input.setSelectionRange(caret, caret);
+					input.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText' }));
+					return 'ok';
+				})()
+				""");
+		}
 
 		private static string GetSemanticTextBoxCaret(TextBox textBox)
 			=> InvokeBrowserJs($"(function(){{const element = document.getElementById('{GetSemanticElementId(textBox)}'); return element ? String(element.selectionStart ?? -1) : '-1';}})()");

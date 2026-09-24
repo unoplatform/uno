@@ -409,6 +409,10 @@ internal static partial class SemanticElementFactory
 				placeholder = core.PlaceholderText;
 				selectionStart = Math.Max(0, Math.Min(core.SelectionStart, value.Length));
 				selectionEnd = Math.Max(selectionStart, Math.Min(core.SelectionStart + core.SelectionLength, value.Length));
+				if (core.IsBackwardSelection)
+				{
+					(selectionStart, selectionEnd) = (selectionEnd, selectionStart);
+				}
 			}
 		}
 
@@ -456,16 +460,9 @@ internal static partial class SemanticElementFactory
 		string? selectedValue = null;
 
 		if (peer is FrameworkElementAutomationPeer frameworkPeer &&
-			frameworkPeer.Owner is ComboBox comboBox &&
-			comboBox.SelectedItem is { } selected)
+			frameworkPeer.Owner is ComboBox comboBox)
 		{
-			// Mirror WinUI selection-text resolution: prefer the value pattern (which honors
-			// DisplayMemberPath / item-template-bound value providers), fall back to ToString
-			// only when no value provider is exposed. This avoids announcing a type name for
-			// non-string item view models.
-			selectedValue = (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
-				? valueProvider.Value
-				: selected.ToString();
+			selectedValue = ResolveComboBoxValue(peer, comboBox);
 		}
 
 		NativeMethods.CreateComboBoxElement(
@@ -481,6 +478,11 @@ internal static partial class SemanticElementFactory
 			isFocusable);
 		return true;
 	}
+
+	internal static string ResolveComboBoxValue(AutomationPeer peer, ComboBox comboBox)
+		=> peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider
+			? valueProvider.Value ?? string.Empty
+			: comboBox.GetSelectedValueTextForAutomation();
 
 	/// <summary>
 	/// Creates a listbox semantic element.

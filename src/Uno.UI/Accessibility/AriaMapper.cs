@@ -55,7 +55,6 @@ public static class AriaMapper
 		{ AutomationControlType.Pane, "region" },
 		{ AutomationControlType.Spinner, "spinbutton" },
 		{ AutomationControlType.StatusBar, "status" },
-		{ AutomationControlType.Thumb, "slider" },
 		{ AutomationControlType.ToolBar, "toolbar" },
 		{ AutomationControlType.Custom, "generic" },
 	};
