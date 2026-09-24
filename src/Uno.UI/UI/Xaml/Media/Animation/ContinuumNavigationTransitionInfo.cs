@@ -337,12 +337,9 @@ public partial class ContinuumNavigationTransitionInfo : NavigationTransitionInf
 		{
 			foreach (var weakRef in s_entranceElements)
 			{
-				if (weakRef.TryGetTarget(out var element))
+				if (weakRef.TryGetTarget(out var element) && IsAncestor(page, element))
 				{
-					if (IsAncestor(page, element))
-					{
-						result.Add(element);
-					}
+					result.Add(element);
 				}
 			}
 		}
@@ -358,12 +355,9 @@ public partial class ContinuumNavigationTransitionInfo : NavigationTransitionInf
 		{
 			foreach (var weakRef in s_exitElements)
 			{
-				if (weakRef.TryGetTarget(out var element))
+				if (weakRef.TryGetTarget(out var element) && IsAncestor(page, element))
 				{
-					if (IsAncestor(page, element))
-					{
-						result.Add(element);
-					}
+					result.Add(element);
 				}
 			}
 		}

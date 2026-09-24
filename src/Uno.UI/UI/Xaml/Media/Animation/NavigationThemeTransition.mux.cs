@@ -194,19 +194,11 @@ public partial class NavigationThemeTransition
 		return null;
 	}
 
-	private static NavigationTrigger GetNavigationTrigger(bool isBackNavigation, bool isEntering)
+	private static NavigationTrigger GetNavigationTrigger(bool isBackNavigation, bool isEntering) => (isBackNavigation, isEntering) switch
 	{
-		if (isBackNavigation)
-		{
-			return isEntering
-				? NavigationTrigger.BackNavigatingTo
-				: NavigationTrigger.BackNavigatingAway;
-		}
-		else
-		{
-			return isEntering
-				? NavigationTrigger.NavigatingTo
-				: NavigationTrigger.NavigatingAway;
-		}
-	}
+		(true, true) => NavigationTrigger.BackNavigatingTo,
+		(true, false) => NavigationTrigger.BackNavigatingAway,
+		(false, true) => NavigationTrigger.NavigatingTo,
+		(false, false) => NavigationTrigger.NavigatingAway,
+	};
 }
