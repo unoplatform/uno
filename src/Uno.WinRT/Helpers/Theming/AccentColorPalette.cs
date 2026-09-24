@@ -42,37 +42,11 @@ internal readonly struct AccentColorPalette
 	);
 
 	/// <summary>
-	/// Computes a full accent color palette from a single accent color by blending
-	/// lighter and darker shades via linear RGB interpolation.
+	/// Derives a full accent palette from a single accent color using the Windows 11 shade algorithm.
 	/// </summary>
 	/// <remarks>
-	/// Light shades are blended toward white, dark shades toward black.
-	/// Factors were reverse-engineered from Windows default blue (#0078D7) and its palette.
-	/// This is a linear-RGB approximation and diverges from the Windows HSL-based palette
-	/// (most visibly for warm hues). It is only used where the OS exposes a single accent color
-	/// (macOS, Android); the Win32 host reads the real OS palette from the registry.
+	/// Honors <see cref="AccentColorHelper.NormalizeAccentColor"/>, which controls whether the accent itself is adjusted like Windows does.
 	/// </remarks>
-	public static AccentColorPalette FromAccentColor(Color accent)
-	{
-		return new AccentColorPalette(
-			accent: accent,
-			light1: Lerp(accent, Colors.White, 0.26),
-			light2: Lerp(accent, Colors.White, 0.46),
-			light3: Lerp(accent, Colors.White, 0.65),
-			dark1: Lerp(accent, Colors.Black, 0.26),
-			dark2: Lerp(accent, Colors.Black, 0.46),
-			dark3: Lerp(accent, Colors.Black, 0.65)
-		);
-	}
-
-	private static Color Lerp(Color from, Color to, double factor)
-	{
-		// Accent shades are always fully opaque, so the output alpha is intentionally pinned to 0xFF.
-		return Color.FromArgb(
-			0xFF,
-			(byte)(from.R + (to.R - from.R) * factor),
-			(byte)(from.G + (to.G - from.G) * factor),
-			(byte)(from.B + (to.B - from.B) * factor)
-		);
-	}
+	public static AccentColorPalette FromAccentColor(Color accent) =>
+		AccentPaletteGenerator.Generate(accent, AccentColorHelper.NormalizeAccentColor);
 }
