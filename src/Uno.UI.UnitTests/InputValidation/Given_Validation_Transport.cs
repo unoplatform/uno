@@ -343,8 +343,9 @@ public partial class Given_Validation_Transport
 	}
 
 	/// <summary>
-	/// Stands in for a third-party control: it implements the interface and registers all five dependency
-	/// properties itself, exactly as a control outside Uno.UI would have to.
+	/// Implements the interface and registers all five dependency properties itself, the way a participating
+	/// control does. It sits in this assembly, which sees Uno.UI's internals, so it is not evidence about the
+	/// third-party contract — <see cref="Given_Validation_ThirdParty"/> is.
 	/// </summary>
 	private partial class ValidationControlBase : Control, IInputValidationControl
 	{
