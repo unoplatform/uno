@@ -57,7 +57,7 @@ Skia host already implements `IUnoKeyboardInputSource` and every key funnels int
 
 ```
 Host (Win32 WndProc / X11 / NSEvent / libinput / DOM / Android / UIKit)
-  → IUnoKeyboardInputSource.KeyDown/KeyUp        src/Uno.UWP/UI/Core/Internal/IUnoKeyboardInputSource.cs
+  → IUnoKeyboardInputSource.KeyDown/KeyUp        src/Uno.WinRT/UI/Core/Internal/IUnoKeyboardInputSource.cs
   → KeyboardManager.OnKey(KeyEventArgs, bool)    src/Uno.UI/UI/Xaml/Internal/InputManager.Keyboard.skia.cs:53
 ```
 
@@ -75,7 +75,7 @@ all, gain keyboard input purely from the injector.
 ### 1. The seam
 
 ```csharp
-// src/Uno.UWP/UI/Input/Preview.Injection/IInputInjectorTarget.cs
+// src/Uno.WinRT/UI/Input/Preview.Injection/IInputInjectorTarget.cs
 internal interface IInputInjectorTarget
 {
     void InjectPointerAdded(PointerEventArgs args);
@@ -90,7 +90,7 @@ internal interface IInputInjectorTarget
 ```
 
 Two directional methods mirror both the pointer trio and the host's `KeyDown`/`KeyUp` events.
-`KeyEventArgs` lives in `Uno.UWP`, so the interface stays reference-clean.
+`KeyEventArgs` lives in `Uno.WinRT`, so the interface stays reference-clean.
 
 `InputManager` gets a new unsuffixed `InputManager.Keyboard.cs` carrying the explicit interface
 implementations forwarding to `partial void`s, with bodies only in `InputManager.Keyboard.skia.cs`:
@@ -158,7 +158,7 @@ no-op with a warning rather than letting `FocusManager.GetFocusedElement(null)` 
 
 ### 3. `InjectedInputKeyboardInfo` → `KeyEventArgs`
 
-Hand-written partial at `src/Uno.UWP/UI/Input/Preview.Injection/InjectedInputKeyboardInfo.cs`,
+Hand-written partial at `src/Uno.WinRT/UI/Input/Preview.Injection/InjectedInputKeyboardInfo.cs`,
 following the `InjectedInputMouseInfo.ToEventArgs` template.
 
 | Option | Behaviour |
@@ -186,7 +186,7 @@ the existing `KeyRoutedEventArgs.MapToChar` fallback would insert text *without*
 `CharacterReceived`, because `OnKey` raises it from `KeyEventArgs.UnicodeKey`, not from the routed
 args — a WinUI divergence.
 
-An injector-private, invariant-US table in `Uno.UWP`, following the Win32 host's rules:
+An injector-private, invariant-US table in `Uno.WinRT`, following the Win32 host's rules:
 
 - No character for `Tab` — otherwise injected Tab inserts `'\t'` *and* breaks focus navigation.
 - Filter control characters except `'\r'`/`'\n'`; `Enter` → `'\r'`.
@@ -234,7 +234,7 @@ isolated commit so it can be reverted independently.
 ## Public surface & generated files
 
 `InjectKeyboardInput` is declared unconditionally in the existing cross-platform partial
-`src/Uno.UWP/UI/Input/Preview.Injection/InputInjector.cs`, exactly as `InjectMouseInput` already is,
+`src/Uno.WinRT/UI/Input/Preview.Injection/InputInjector.cs`, exactly as `InjectMouseInput` already is,
 carrying `[Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__NETSTD_REFERENCE__")]`.
 
 The sync generator then collapses the generated stub to a
