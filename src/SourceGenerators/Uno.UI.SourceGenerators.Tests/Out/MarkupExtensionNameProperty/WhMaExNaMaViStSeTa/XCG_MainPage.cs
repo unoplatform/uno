@@ -75,23 +75,21 @@ namespace TestRepro
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
 						new global::Microsoft.UI.Xaml.VisualStateGroup
 						{
-							Name = "HoverStates",
 							// Source MainPage.xaml (Line 12:5)
 							States = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.VisualState
 									{
-										Name = "MemoryButtonsVisible",
 										// Source MainPage.xaml (Line 13:6)
 									}
 									.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 									{
 									__nameScope.RegisterName("MemoryButtonsVisible", __p1);
 									__that.MemoryButtonsVisible = __p1;
+									global::Uno.UI.Helpers.MarkupHelper.SetXName(__p1, "MemoryButtonsVisible");
 									global::Uno.UI.Helpers.MarkupHelper.SetVisualStateLazy(__p1, () => 
 									{
-										__p1.Name = "MemoryButtonsVisible";
 										__p1.Setters.Add(
 											global::MyProject.GlobalStaticResources.__PreserveProperties(
 												new global::Microsoft.UI.Xaml.Setter
@@ -108,14 +106,15 @@ namespace TestRepro
 									}
 									))
 								)
-							,
 								,
 							}
+							,
 						}
 						.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
 						{
 						__nameScope.RegisterName("HoverStates", __p1);
 						__that.HoverStates = __p1;
+						global::Uno.UI.Helpers.MarkupHelper.SetXName(__p1, "HoverStates");
 						}
 						))
 					)

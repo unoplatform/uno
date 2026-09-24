@@ -225,7 +225,6 @@ namespace TestRepro
 							global::MyProject.GlobalStaticResources.__PreserveProperties(
 								new global::Microsoft.UI.Xaml.VisualState
 								{
-									Name = "WideState",
 									StateTriggers = 
 									{
 										global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -247,7 +246,6 @@ namespace TestRepro
 							global::MyProject.GlobalStaticResources.__PreserveProperties(
 								new global::Microsoft.UI.Xaml.VisualState
 								{
-									Name = "NarrowState",
 									StateTriggers = 
 									{
 										global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -265,9 +263,9 @@ namespace TestRepro
 								}
 								.GenericApply(__that, __nameScope, ApplyTo_Pag_VisStaGroΞ0_VisStaGroΞ1_VisSta)
 							)
-						,
 							,
 						}
+						,
 					}
 				)
 				,	}
@@ -289,9 +287,9 @@ namespace TestRepro
 		{
 			__nameScope.RegisterName("WideState", __p1);
 			__that.WideState = __p1;
+			global::Uno.UI.Helpers.MarkupHelper.SetXName(__p1, "WideState");
 			global::Uno.UI.Helpers.MarkupHelper.SetVisualStateLazy(__p1, () => 
 			{
-				__p1.Name = "WideState";
 				__p1.Setters.Add(
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
 						new global::Microsoft.UI.Xaml.Setter
@@ -322,9 +320,9 @@ namespace TestRepro
 		{
 			__nameScope.RegisterName("NarrowState", __p1);
 			__that.NarrowState = __p1;
+			global::Uno.UI.Helpers.MarkupHelper.SetXName(__p1, "NarrowState");
 			global::Uno.UI.Helpers.MarkupHelper.SetVisualStateLazy(__p1, () => 
 			{
-				__p1.Name = "NarrowState";
 				__p1.Setters.Add(
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
 						new global::Microsoft.UI.Xaml.Setter
@@ -429,9 +427,9 @@ namespace TestRepro
 									}
 									.GenericApply(__that, __nameScope, __settings, ApplyTo_Ξ0_StaPanΞ1_But)
 								)
-							,
 								,
 							}
+							,
 						}
 						.GenericApply(__that, __nameScope, __settings, ApplyTo_Ξ0_StaPan)
 					)

@@ -62,7 +62,7 @@ public partial class Package
 		private set => _displayName = value;
 	}
 
-	public Uri? Logo { get; set; }
+	public Uri? Logo { get; internal set; }
 
 	internal static void SetEntryAssembly(Assembly entryAssembly)
 	{

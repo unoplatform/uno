@@ -16,7 +16,7 @@ public partial class CommandBarFlyoutCommandBar : CommandBar
 	public CommandBarFlyoutCommandBarTemplateSettings FlyoutTemplateSettings
 	{
 		get => (CommandBarFlyoutCommandBarTemplateSettings)GetValue(FlyoutTemplateSettingsProperty);
-		set => SetValue(FlyoutTemplateSettingsProperty, value);
+		internal set => SetValue(FlyoutTemplateSettingsProperty, value);
 	}
 
 	internal static DependencyProperty FlyoutTemplateSettingsProperty { get; } =

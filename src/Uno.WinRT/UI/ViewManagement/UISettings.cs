@@ -242,7 +242,7 @@ namespace Windows.UI.ViewManagement
 		}
 
 		[NotImplemented]
-		public bool AutoHideScrollBars { get; set; } = true;
+		public bool AutoHideScrollBars { get; internal set; } = true;
 
 		[NotImplemented]
 		public global::Windows.UI.Color UIElementColor(global::Windows.UI.ViewManagement.UIElementType desiredElement)
