@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
 
 	<!-- Where the payloads live. Defaults to this package's own layout; the in-repo heads override them to
 	     their obj cache and import this file, so repo builds exercise the very wiring consumers get. -->
