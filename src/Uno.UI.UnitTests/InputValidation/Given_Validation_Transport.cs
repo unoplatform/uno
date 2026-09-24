@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
@@ -63,6 +64,21 @@ public partial class Given_Validation_Transport
 
 		Assert.IsFalse(control.HasValidationErrors);
 		Assert.AreEqual(0, control.ValidationErrors.Count);
+	}
+
+	[TestMethod]
+	public void When_Errors_Are_Not_Strings()
+	{
+		// INotifyDataErrorInfo yields an untyped IEnumerable, and the ObservableValidator of the MVVM Toolkit
+		// fills it with ValidationResult. Only its ToString() reaches InputValidationError.
+		var (control, source) = Bind();
+
+		source.SetErrors(nameof(Person.Name), new ValidationResult("The Name field is required."));
+
+		Assert.IsTrue(control.HasValidationErrors);
+		CollectionAssert.AreEqual(
+			new object[] { "The Name field is required." },
+			control.ValidationErrors.Select(e => e.ErrorMessage).ToArray());
 	}
 
 	[TestMethod]
