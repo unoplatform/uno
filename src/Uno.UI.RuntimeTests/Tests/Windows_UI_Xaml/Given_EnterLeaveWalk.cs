@@ -1,3 +1,4 @@
+#if HAS_UNO
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -131,3 +132,4 @@ public class Given_EnterLeaveWalk
 		}
 	}
 }
+#endif
