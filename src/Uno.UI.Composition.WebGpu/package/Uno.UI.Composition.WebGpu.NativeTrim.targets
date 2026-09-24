@@ -5,9 +5,8 @@
 
 	Skia renders by default wherever it is referenced (UnoPlatformHostBuilder.TryLightUpGraphicsBackend), so an app
 	that names both features reaches WebGPU only through its own code. DetectWebGpuUsage_v0 reads that out of the
-	compiled metadata: a reference to a WebGPU assembly, a P/Invoke into the native module, or registering a graphics
-	backend at all. That last one is deliberately broad, because the provider an app registers may be a WebGPU one we
-	did not write, and metadata cannot say which it is.
+	compiled metadata, where an unused reference is never emitted. All WebGPU plumbing is ours, so binding to one
+	of our WebGPU assemblies is the whole question.
 
 	Every uncertainty keeps the payload, including an assembly that cannot be read. UnoWebGpuForceNative=true keeps it
 	outright, for a registration that lives in a NuGet package where this cannot see it. To drop it deliberately, do
