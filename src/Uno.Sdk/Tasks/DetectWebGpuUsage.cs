@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
@@ -12,24 +11,15 @@ namespace Uno.Sdk.Tasks;
 /// Answers whether an app can reach the WebGPU native library, so a build that cannot is spared its payload.
 ///
 /// Reads compiled metadata rather than matching names in text: an unused reference is never emitted, so what an
-/// assembly records is what its code actually binds to. Three things count as reach, and any one keeps the payload:
-/// a reference to a WebGPU assembly, a P/Invoke into the native module, or registering a graphics backend at all
-/// (which provider it registers cannot be known here, and it may well be a WebGPU one we did not write).
+/// assembly records is what its code actually binds to. All WebGPU plumbing is ours, so binding to one of our
+/// WebGPU assemblies is the whole question - a name occurring in a literal, a comment or a lookalike type is not
+/// a reference and does not count.
 /// </summary>
 public sealed class DetectWebGpuUsage_v0 : Task
 {
 	// The Uno backend assemblies. Matched on the full name or a dotted child ('.Init'), never as a substring, so a
-	//'Contoso.WebGpuHelpers' does not read as ours.
+	// 'Contoso.WebGpuHelpers' does not read as ours.
 	private const string WebGpuAssemblyName = "Uno.UI.Composition.WebGpu";
-
-	// The native the payload provides. A P/Invoke names it without 'lib' or a file extension, but normalize anyway
-	// so an explicit "libwgpu_native.so" is recognized too.
-	private static readonly string[] NativeModules = { "webgpu", "wgpu_native" };
-
-	// Registering a backend goes through this extension method; the call site records both names.
-	private const string HostBuilderExtensionsType = "UnoPlatformHostBuilderExtensions";
-	private const string HostBuilderExtensionsNamespace = "Uno.UI.Hosting";
-	private const string RegisterBackendMethod = "GraphicsBackend";
 
 	/// <summary>The app's own assemblies: its head, plus anything built alongside it.</summary>
 	[Required]
@@ -98,59 +88,6 @@ public sealed class DetectWebGpuUsage_v0 : Task
 			}
 		}
 
-		foreach (var handle in reader.MethodDefinitions)
-		{
-			var method = reader.GetMethodDefinition(handle);
-			if ((method.Attributes & System.Reflection.MethodAttributes.PinvokeImpl) == 0)
-			{
-				continue;
-			}
-
-			var import = method.GetImport();
-			if (import.Module.IsNil)
-			{
-				continue;
-			}
-
-			var module = Normalize(reader.GetString(reader.GetModuleReference(import.Module).Name));
-			foreach (var native in NativeModules)
-			{
-				if (module == native)
-				{
-					return $"P/Invokes '{module}'";
-				}
-			}
-		}
-
-		foreach (var handle in reader.MemberReferences)
-		{
-			var member = reader.GetMemberReference(handle);
-			if (reader.GetString(member.Name) != RegisterBackendMethod
-				|| member.Parent.Kind != HandleKind.TypeReference)
-			{
-				continue;
-			}
-
-			var declaring = reader.GetTypeReference((TypeReferenceHandle)member.Parent);
-			if (reader.GetString(declaring.Name) == HostBuilderExtensionsType
-				&& reader.GetString(declaring.Namespace) == HostBuilderExtensionsNamespace)
-			{
-				return "registers a graphics backend";
-			}
-		}
-
 		return null;
-	}
-
-	/// <summary>A module name reduced to what the loader matches on: no 'lib' prefix, no file extension.</summary>
-	private static string Normalize(string module)
-	{
-		var name = Path.GetFileNameWithoutExtension(module);
-		if (name.StartsWith("lib", StringComparison.OrdinalIgnoreCase) && name.Length > 3)
-		{
-			name = name.Substring(3);
-		}
-
-		return name.ToLowerInvariant();
 	}
 }
