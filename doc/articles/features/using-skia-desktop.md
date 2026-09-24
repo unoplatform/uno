@@ -118,6 +118,8 @@ When running using X11 Wayland compatibility (e.g. recent Ubuntu releases), DPI 
 
 The X11 support uses DBus for various interactions with the system, such as file selection. Make sure that dbus is installed.
 
+System appearance settings are read from the [XDG desktop portal](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.Settings.html) (`org.freedesktop.portal.Settings`) over the session bus: the light or dark theme, the high contrast mode, the text scaling factor and the [system accent color](windows-ui-viewmanagement.md#system-accent-color). The portal is normally installed and started by the desktop environment (`xdg-desktop-portal` plus a backend such as `xdg-desktop-portal-gnome` or `xdg-desktop-portal-kde`). Each setting needs a backend that exposes it; the accent color requires version 2 of the Settings portal with the `accent-color` key, available on GNOME 47+ and KDE Plasma 6. When the session bus, the portal or the backend is not available, Uno Platform logs the failure and falls back to the defaults (light theme, default blue accent).
+
 ## .NET Native AOT support
 
 Building an Uno Platform Skia Desktop app with .NET (7+) Native AOT requires Uno Platform 4.7 (or later).
