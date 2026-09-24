@@ -56,7 +56,7 @@ Using the `GetColorValue` method, you can retrieve the system `Background` and `
 | Android | Material You dynamic colors (Android 12 and later) | Read at startup |
 | iOS, WebAssembly, Linux (framebuffer) | Not available, default palette | ✖ |
 
-When the platform does not expose an accent color, the default blue palette (`#0078D7`) is used. Windows exposes its full palette of seven shades; the other platforms expose a single color and Uno Platform derives the lighter and darker shades from it, so they can differ slightly from the shades Windows would produce for the same accent.
+When the platform does not expose an accent color, the default blue palette (`#0078D7`) is used. Windows exposes its full palette of seven shades; the other platforms expose a single color and Uno Platform derives the lighter and darker shades from it using the same algorithm as Windows. When a color is picked in Windows Settings, Windows may also adjust the lightness of the accent itself. By default, Uno Platform keeps the accent exactly as provided and derives the shades around it; to reproduce the Windows adjustment, set `Uno.UI.FeatureConfiguration.AccentColor.NormalizeAccentColor` to `true`, see [Normalizing the accent color](../feature-flags.md#normalizing-the-accent-color).
 
 `ColorValuesChanged` is raised when the accent color changes at runtime. `{ThemeResource}` references to the accent resources update automatically; as in WinUI, `{StaticResource}` references keep the value they resolved to.
 

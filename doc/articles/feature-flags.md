@@ -41,7 +41,19 @@ Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor = Windows.UI.Color.F
 #endif
 ```
 
-The lighter and darker shades are derived from the color you provide. Set the property back to `null` to follow the operating system again. Changing the override at runtime raises `UISettings.ColorValuesChanged` and updates `{ThemeResource}` references to the accent resources.
+The lighter and darker shades are derived from the color you provide, using the same algorithm as Windows. Set the property back to `null` to follow the operating system again. Changing the override at runtime raises `UISettings.ColorValuesChanged` and updates `{ThemeResource}` references to the accent resources.
+
+### Normalizing the accent color
+
+When a color is picked as the accent in Windows Settings, Windows may adjust its lightness before deriving the shades, for example very light or very dark colors are moved toward a medium lightness. By default, Uno Platform keeps the accent exactly as provided, both for `OverrideAccentColor` and for the accent reported by platforms that expose a single color (macOS, Linux, Android). Set `Uno.UI.FeatureConfiguration.AccentColor.NormalizeAccentColor` to `true` to apply the same adjustment as Windows:
+
+```csharp
+#if HAS_UNO
+Uno.UI.FeatureConfiguration.AccentColor.NormalizeAccentColor = true;
+#endif
+```
+
+Changing this setting at runtime re-derives the palette and raises `UISettings.ColorValuesChanged`. It does not affect the palette read from Windows, which the operating system already provides in full. Default: `false`.
 
 ## ComboBox
 
