@@ -77,6 +77,7 @@ namespace TestRepro
 								)
 								,
 							}
+							,
 						}
 					)
 				;
