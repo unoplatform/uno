@@ -19,9 +19,15 @@ function Assert-OutputFiles()
     param ([string]$projectPath, [string[]]$expectPresent, [string[]]$expectAbsent)
 
     # Verifies what a build actually shipped, so a case can assert both that a payload is present and that
-    # another was left out.
+    # another was left out. Scoped to the Release output: the Debug build that runs first pulls packages a
+    # Release build does not (HotDesign and its SkiaSharp chain), and obj/ holds copies of its own.
 
-    $projectDir = Split-Path -Parent $projectPath
+    $projectDir = Join-Path (Split-Path -Parent $projectPath) "bin/Release"
+    if (-not (Test-Path $projectDir))
+    {
+        # Without this an absent-assertion would pass on an output tree that was never produced.
+        throw "Expected a Release output at $projectDir, but it does not exist."
+    }
 
     foreach ($relative in $expectPresent)
     {
@@ -241,9 +247,10 @@ $projects =
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu", "-p:CustomBeforeMicrosoftCommonTargets=$env:BUILD_SOURCESDIRECTORY\build\test-scripts\webgpu-probe\InjectProbe.targets", "-p:UnoWebGpuProbeProject=uno56netcurrent"), @("NetCore"),
         @(), @(), @("webgpu.dll", "libSkiaSharp.dll"), @()),
 
-    # WebGPU named alone: skia is NOT implied, so no Skia renderer is referenced and the native ships.
+    # WebGPU named alone: skia is NOT implied, so nothing pulls SkiaSharp by any route and the app ships none
+    # of it, managed or native, while the wgpu payload does ship.
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=WebGpu"), @("NetCore"),
-        @(), @(), @("webgpu.dll"), @("Uno.UI.Composition.Skia.dll")),
+        @(), @(), @("webgpu.dll"), @("Uno.UI.Composition.Skia.dll", "SkiaSharp.dll", "libSkiaSharp.dll")),
 
     # Lottie and SVG draw through SkiaSharp add-ins over a neutral seam that Uno.WinUI also implements without
     # SkiaSharp, so both need a Skia renderer to draw with. Lottie rides along with it (pure managed, small);

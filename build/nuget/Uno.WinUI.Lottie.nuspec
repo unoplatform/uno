@@ -22,10 +22,12 @@
 
 		<dependencies>
 			<group targetFramework="net10.0">
+				<dependency id="SkiaSharp.Skottie" version="4.151.1" />
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 
 			<group targetFramework="net11.0">
+				<dependency id="SkiaSharp.Skottie" version="4.151.1" />
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 
