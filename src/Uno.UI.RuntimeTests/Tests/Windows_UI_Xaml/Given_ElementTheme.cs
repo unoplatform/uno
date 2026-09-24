@@ -4699,6 +4699,51 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24600")]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Editable_ComboBox_Refocused_In_Dark_Theme_Text_Is_Light()
+	{
+		// Leaving the Focused state unfreezes ContentElement back to the shared Dark text brush,
+		// the very instance the Focused Foreground setter resolves to on re-entry. The setter must
+		// still take effect, or the RequestedTheme=Light boundary sees a default Foreground and
+		// freezes the Light default text brush over the display block.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var comboBox = new ComboBox { Width = 150, IsEditable = true };
+		var otherButton = new Button { Content = "Other" };
+		var root = new StackPanel { Children = { comboBox, otherButton } };
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		var editableText = comboBox.FindFirstDescendant<TextBox>("EditableText");
+		Assert.IsNotNull(editableText, "EditableText should exist in the ComboBox template");
+
+		editableText.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		otherButton.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		editableText.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		editableText.Text = "888";
+		await WindowHelper.WaitForIdle();
+
+		AssertFocusedStateResolvedDark(editableText);
+
+		var displayBlock = editableText.FindFirstDescendant<TextBlock>(tb => tb.Text == "888");
+		Assert.IsNotNull(displayBlock, "The text display block should exist in the TextBox visual tree");
+
+		var foreground = displayBlock.Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "The display block Foreground should be a SolidColorBrush");
+		Assert.IsTrue((foreground.Color.R + foreground.Color.G + foreground.Color.B) / 3 > 200,
+			$"Refocused editable ComboBox text should be light in dark theme, but was {foreground.Color}");
+	}
+
+	[TestMethod]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
