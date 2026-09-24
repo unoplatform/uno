@@ -55,7 +55,7 @@ namespace Windows.System
 
 		public static IAsyncOperation<bool> LaunchFileAsync(IStorageFile file)
 		{
-#if __IOS__ || __ANDROID__ || __WASM__ || __SKIA__
+#if __IOS__ || __TVOS__ || __ANDROID__ || __WASM__ || __SKIA__
 
 			if (file == null)
 			{
