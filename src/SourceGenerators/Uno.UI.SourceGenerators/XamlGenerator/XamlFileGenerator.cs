@@ -3587,6 +3587,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 
 								writer.AppendLineInvariantIndented("__that.{0} = {1};", value, writer.AppliedParameterName);
+
+								if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace && HasNonPublicNameSetter(objectDefinition.Type))
+								{
+									// WinUI sets x:Name on types like VisualState whose Name is get-only.
+									writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.Helpers.MarkupHelper.SetXName({writer.AppliedParameterName}, \"{value}\");");
+								}
+
 								// value is validated as non-null in ValidateName call above.
 								RegisterBackingField(type, value!, FindObjectFieldAccessibility(objectDefinition));
 							}
@@ -6285,7 +6292,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// but is considered of an unknown type. This can happen when providing the
 						// name of a control using x:Name instead of Name.
 						var hasNameProperty = HasProperty(objectDefinition.Type, "Name");
-						if (hasNameProperty)
+						if (hasNameProperty && !HasNonPublicNameSetter(objectDefinition.Type))
 						{
 							writer.AppendLineInvariantIndented("{0} = \"{1}\"{2}", fullValueSetter, member.Value, closingPunctuation);
 						}
