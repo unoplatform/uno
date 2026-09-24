@@ -237,9 +237,9 @@ $projects =
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu"), @("NetCore"),
         @(), @(), @("libSkiaSharp.dll"), @("webgpu.dll")),
 
-    # Same, with the override: the payload is kept for an app whose registration this cannot see.
-    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu", "-p:UnoWebGpuForceNative=true"), @("NetCore"),
-        @(), @(), @("webgpu.dll"), @()),
+    # Both named and the app's own code names the backend: it is reachable, so the native ships.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu", "-p:CustomBeforeMicrosoftCommonTargets=$env:BUILD_SOURCESDIRECTORY\build\test-scripts\webgpu-probe\InjectProbe.targets"), @("NetCore"),
+        @(), @(), @("webgpu.dll", "libSkiaSharp.dll"), @()),
 
     # WebGPU named alone: skia is NOT implied, so the app is SkiaSharp-free and the native ships.
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=WebGpu"), @("NetCore"),

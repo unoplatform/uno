@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
@@ -8,24 +8,27 @@ using Microsoft.Build.Utilities;
 namespace Uno.Sdk.Tasks;
 
 /// <summary>
-/// Answers whether an app can reach the WebGPU native library, so a build that cannot is spared its payload.
+/// Answers whether an app can reach the WebGPU backend, so a build that cannot is spared its native payload.
 ///
 /// Reads compiled metadata rather than matching names in text: an unused reference is never emitted, so what an
-/// assembly records is what its code actually binds to. All WebGPU plumbing is ours, so binding to one of our
-/// WebGPU assemblies is the whole question - a name occurring in a literal, a comment or a lookalike type is not
-/// a reference and does not count.
+/// assembly records is what its code actually binds to. A name occurring in a literal, a comment or a lookalike
+/// type is not a reference and does not count.
+///
+/// Every managed assembly the app ships is examined, not just its own, so a registration coming from a package is
+/// seen too.
 /// </summary>
 public sealed class DetectWebGpuUsage_v0 : Task
 {
-	// The Uno backend assemblies. Matched on the full name or a dotted child ('.Init'), never as a substring, so a
-	// 'Contoso.WebGpuHelpers' does not read as ours.
+	// The assembly holding the backend, matched whole so a 'Contoso.WebGpuHelpers' does not read as ours. Its
+	// interop sibling ('.Init') is deliberately not a signal: every Skia host references it for the WebGpu arm of
+	// its context factory, an arm only a registered backend can reach, so that reference is in every app.
 	private const string WebGpuAssemblyName = "Uno.UI.Composition.WebGpu";
 
-	/// <summary>The app's own assemblies: its head, plus anything built alongside it.</summary>
+	/// <summary>Every managed assembly the app ships.</summary>
 	[Required]
 	public ITaskItem[] Assemblies { get; set; } = Array.Empty<ITaskItem>();
 
-	/// <summary>True when any of them can reach the native, or when one could not be read.</summary>
+	/// <summary>True when any of them can reach the backend, or when one could not be read.</summary>
 	[Output]
 	public bool CanReachWebGpu { get; private set; }
 
@@ -67,7 +70,11 @@ public sealed class DetectWebGpuUsage_v0 : Task
 		return true;
 	}
 
-	/// <summary>The reason this assembly can reach the native, or null when it cannot.</summary>
+	/// <summary>True when this assembly is part of the backend itself, which cannot count as reaching it.</summary>
+	private static bool IsWebGpuAssembly(string name)
+		=> name == WebGpuAssemblyName || name.StartsWith(WebGpuAssemblyName + ".", StringComparison.Ordinal);
+
+	/// <summary>The reason this assembly can reach the backend, or null when it cannot.</summary>
 	private static string? Inspect(string path)
 	{
 		using var stream = File.OpenRead(path);
@@ -78,11 +85,15 @@ public sealed class DetectWebGpuUsage_v0 : Task
 		}
 
 		var reader = pe.GetMetadataReader();
+		if (reader.IsAssembly && IsWebGpuAssembly(reader.GetString(reader.GetAssemblyDefinition().Name)))
+		{
+			return null;
+		}
 
 		foreach (var handle in reader.AssemblyReferences)
 		{
 			var name = reader.GetString(reader.GetAssemblyReference(handle).Name);
-			if (name == WebGpuAssemblyName || name.StartsWith(WebGpuAssemblyName + ".", StringComparison.Ordinal))
+			if (name == WebGpuAssemblyName)
 			{
 				return $"references {name}";
 			}
