@@ -59,6 +59,31 @@ namespace Uno.UI.Tests.Uno_UI_Core
 		}
 
 		[TestMethod]
+		[DataRow(VirtualKey.LeftShift, VirtualKey.RightShift, VirtualKey.Shift)]
+		[DataRow(VirtualKey.RightControl, VirtualKey.LeftControl, VirtualKey.Control)]
+		[DataRow(VirtualKey.LeftMenu, VirtualKey.RightMenu, VirtualKey.Menu)]
+		public void When_One_Side_Released_Aggregate_Stays_Down(VirtualKey released, VirtualKey held, VirtualKey aggregate)
+		{
+			try
+			{
+				KeyboardStateTracker.OnKeyDown(released);
+				KeyboardStateTracker.OnKeyDown(held);
+				KeyboardStateTracker.OnKeyUp(released);
+
+				Assert.IsTrue(KeyboardStateTracker.GetKeyState(aggregate).HasFlag(CoreVirtualKeyStates.Down));
+
+				KeyboardStateTracker.OnKeyUp(held);
+
+				Assert.IsFalse(KeyboardStateTracker.GetKeyState(aggregate).HasFlag(CoreVirtualKeyStates.Down));
+			}
+			finally
+			{
+				KeyboardStateTracker.OnKeyUp(released);
+				KeyboardStateTracker.OnKeyUp(held);
+			}
+		}
+
+		[TestMethod]
 		public void When_Even_KeyDown()
 		{
 			for (int i = 0; i < 10; i++)
