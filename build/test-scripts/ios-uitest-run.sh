@@ -262,7 +262,9 @@ then
 		echo "Tap facebook/fb is not checked out at $IDB_TAP_REPO — cannot pin idb-companion." >&2
 		exit 1
 	fi
-	git -C "$IDB_TAP_REPO" fetch --depth 1 origin "$IDB_TAP_REVISION" 		|| git -C "$IDB_TAP_REPO" fetch --unshallow origin 		|| git -C "$IDB_TAP_REPO" fetch origin
+	git -C "$IDB_TAP_REPO" fetch --depth 1 origin "$IDB_TAP_REVISION" \
+		|| git -C "$IDB_TAP_REPO" fetch --unshallow origin \
+		|| git -C "$IDB_TAP_REPO" fetch origin
 	git -C "$IDB_TAP_REPO" checkout --detach --force "$IDB_TAP_REVISION"
 
 	# Newer Homebrew on the runner images gates third-party taps: installing
@@ -271,7 +273,9 @@ then
 	# formula we need (least privilege); fall back to tap-level trust for brew
 	# versions that only support that form. Older brews have no `trust` command
 	# at all — best effort, the install below still surfaces any real failure.
-	brew trust --formula facebook/fb/idb-companion >/dev/null 2>&1 		|| brew trust facebook/fb >/dev/null 2>&1 		|| true
+	brew trust --formula facebook/fb/idb-companion >/dev/null 2>&1 \
+		|| brew trust facebook/fb >/dev/null 2>&1 \
+		|| true
 	brew list --versions idb-companion >/dev/null 2>&1 || brew install idb-companion
 
 	# 3) Install fb-idb under Python 3.12
