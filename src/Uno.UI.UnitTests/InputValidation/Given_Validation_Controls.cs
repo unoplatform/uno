@@ -74,7 +74,7 @@ public partial class Given_Validation_Controls
 		Assert.IsTrue(Validation.GetHasErrors(textBox));
 		CollectionAssert.AreEqual(
 			new object[] { "required" },
-			Validation.GetErrors(textBox).Cast<object>().ToArray());
+			Validation.GetErrors(textBox).Select(e => e.ErrorMessage).ToArray());
 	}
 
 	[TestMethod]

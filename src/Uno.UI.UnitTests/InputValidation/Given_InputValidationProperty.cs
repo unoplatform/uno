@@ -160,9 +160,11 @@ public partial class Given_InputValidationProperty
 
 		Assert.AreEqual(false, hasErrors.Tag);
 
-		var reported = new object[] { "must not be empty" };
 		Validation.SetHasErrors(source, true);
-		Validation.SetErrors(source, reported);
+
+		// Reading the property is what materializes the collection, and so what pushes it to the binding.
+		var reported = Validation.GetErrors(source);
+		reported.Add(new InputValidationError("must not be empty"));
 
 		Assert.AreEqual(true, hasErrors.Tag);
 		Assert.AreSame(reported, errors.Tag);

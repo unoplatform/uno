@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Data;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
+using Windows.Foundation;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -126,13 +127,57 @@ public static partial class Validation
 			state.Dispose();
 			control.ClearValue(ValidationStateProperty);
 
-			SetHasErrors(control, false);
-			SetErrors(control, Array.Empty<object>());
+			UpdateErrors(control, sourceErrors: null);
 		}
 	}
 
 	private static ValidationState? GetValidationState(Control control)
 		=> control.GetValue(ValidationStateProperty) as ValidationState;
+
+	/// <summary>
+	/// Reconciles the errors of <paramref name="control"/> with what its source now reports, mutating the
+	/// collection in place so that its identity — and any binding to it — survives. Raises one
+	/// ValidationError per element added or removed, as WinUI's ValidationErrorsCollection does, then settles
+	/// HasErrors, whose changed callback is what drives the visuals.
+	/// </summary>
+	private static void UpdateErrors(Control control, IEnumerable? sourceErrors)
+	{
+		var incoming = new List<string>();
+
+		if (sourceErrors is not null)
+		{
+			foreach (var error in sourceErrors)
+			{
+				incoming.Add(error?.ToString() ?? string.Empty);
+			}
+		}
+
+		var errors = incoming.Count == 0 ? TryGetErrors(control) : (ValidationErrorsCollection)GetErrors(control);
+
+		if (errors is not null)
+		{
+			// Drop what the source no longer reports. Matching on the message keeps the instance of an error
+			// that is still present, so a binding to it is not churned on every synchronization.
+			for (var i = errors.Count - 1; i >= 0; i--)
+			{
+				if (!incoming.Remove(errors[i].ErrorMessage))
+				{
+					var removed = errors[i];
+					errors.RemoveAt(i);
+					RaiseValidationError(control, InputValidationErrorEventAction.Removed, removed);
+				}
+			}
+
+			foreach (var message in incoming)
+			{
+				var added = new InputValidationError(message);
+				errors.Add(added);
+				RaiseValidationError(control, InputValidationErrorEventAction.Added, added);
+			}
+		}
+
+		SetHasErrors(control, errors is { Count: > 0 });
+	}
 
 	/// <summary>
 	/// Backs <see cref="IInputValidationControl.ErrorChanged"/> for every participating control, so that no
@@ -161,6 +206,73 @@ public static partial class Validation
 
 	private static void RaiseErrorChanged(Control control, DataErrorsChangedEventArgs args)
 		=> GetErrorChangedHandler(control)?.Invoke(control, args);
+
+	/// <summary>
+	/// Backs <see cref="IInputValidationControl.HasValidationErrorsChanged"/> and
+	/// <see cref="IInputValidationControl.ValidationError"/>, on the same no-per-control-storage principle as
+	/// <see cref="ErrorChangedHandlerProperty"/>.
+	/// </summary>
+	private static DependencyProperty HasValidationErrorsChangedHandlerProperty { get; } =
+		DependencyProperty.RegisterAttached(
+			"HasValidationErrorsChangedHandler",
+			typeof(TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs>),
+			typeof(Validation),
+			new FrameworkPropertyMetadata(default(TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs>)));
+
+	private static DependencyProperty ValidationErrorHandlerProperty { get; } =
+		DependencyProperty.RegisterAttached(
+			"ValidationErrorHandler",
+			typeof(TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs>),
+			typeof(Validation),
+			new FrameworkPropertyMetadata(default(TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs>)));
+
+	internal static void AddHasValidationErrorsChangedHandler(Control control, TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs> handler)
+		=> control.SetValue(
+			HasValidationErrorsChangedHandlerProperty,
+			Delegate.Combine(GetHasValidationErrorsChangedHandler(control), handler));
+
+	internal static void RemoveHasValidationErrorsChangedHandler(Control control, TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs> handler)
+		=> control.SetValue(
+			HasValidationErrorsChangedHandlerProperty,
+			Delegate.Remove(GetHasValidationErrorsChangedHandler(control), handler));
+
+	private static TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs>? GetHasValidationErrorsChangedHandler(Control control)
+		=> control.GetValue(HasValidationErrorsChangedHandlerProperty) as TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs>;
+
+	internal static void AddValidationErrorHandler(Control control, TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs> handler)
+		=> control.SetValue(
+			ValidationErrorHandlerProperty,
+			Delegate.Combine(GetValidationErrorHandler(control), handler));
+
+	internal static void RemoveValidationErrorHandler(Control control, TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs> handler)
+		=> control.SetValue(
+			ValidationErrorHandlerProperty,
+			Delegate.Remove(GetValidationErrorHandler(control), handler));
+
+	private static TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs>? GetValidationErrorHandler(Control control)
+		=> control.GetValue(ValidationErrorHandlerProperty) as TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs>;
+
+	private static void RaiseValidationError(Control control, InputValidationErrorEventAction action, InputValidationError error)
+	{
+		if (control is IInputValidationControl sender)
+		{
+			GetValidationErrorHandler(control)?.Invoke(sender, new InputValidationErrorEventArgs(action, error));
+		}
+	}
+
+	/// <summary>
+	/// Raised from the HasErrors changed callback, so that it fires once per transition rather than once per
+	/// synchronization.
+	/// </summary>
+	private static void OnHasErrorsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	{
+		if (sender is Control control and IInputValidationControl validationControl)
+		{
+			GetHasValidationErrorsChangedHandler(control)?.Invoke(
+				validationControl,
+				new HasValidationErrorsChangedEventArgs((bool)args.NewValue));
+		}
+	}
 
 	private sealed class ValidationState : IDisposable
 	{
@@ -218,10 +330,7 @@ public static partial class Validation
 				return;
 			}
 
-			var errors = Materialize(source.GetErrors(_propertyName));
-
-			SetErrors(_control, errors);
-			SetHasErrors(_control, errors.Length != 0);
+			UpdateErrors(_control, source.GetErrors(_propertyName));
 
 			if (args is not null)
 			{
@@ -266,23 +375,6 @@ public static partial class Validation
 				WeakReferencePool.ReturnWeakReference(null, stateWeak);
 				WeakReferencePool.ReturnWeakReference(null, sourceWeak);
 			});
-		}
-
-		private static object[] Materialize(IEnumerable? errors)
-		{
-			List<object>? materialized = null;
-
-			if (errors is not null)
-			{
-				foreach (var error in errors)
-				{
-					(materialized ??= new List<object>()).Add(error);
-				}
-			}
-
-			// A fresh instance on every synchronization: the dependency property change is what refreshes
-			// the binding of the application, and sources commonly hand back the same collection instance.
-			return materialized?.ToArray() ?? Array.Empty<object>();
 		}
 	}
 }
