@@ -42,9 +42,6 @@ public static partial class Validation
 	internal static bool IsValidationEnabled(Control control)
 		=> control is IInputValidationControl { InputValidationMode: not InputValidationMode.Disabled };
 
-	internal static bool GetHasErrors(Control control)
-		=> control is IInputValidationControl { HasValidationErrors: true };
-
 	internal static void SetHasErrors(Control control, bool value)
 	{
 		if (GetTargetProperty(control, nameof(IInputValidationControl.HasValidationErrors)) is { } property)
