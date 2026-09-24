@@ -29,6 +29,8 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	private CompositionSpriteShape? _borderShape; // Never null after _borderBrush is set
 	private CompositionClip? _backgroundClip;
 	private RoundRectangle? _borderPathOuterRect;
+	// The pre-painting round-rect geometry, keyed on the round rect it was built from.
+	private (RoundRectangle rect, IGeometry geometry)? _prePaintingRoundRect;
 	// state set here but affects children
 	private RectangleClip? _childClipCausedByCornerRadius;
 
@@ -160,7 +162,8 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		var baseClip = base.GetPrePaintingClipping();
 		if (_cornerRadius != CornerRadius.None && _borderPathOuterRect is { } rect)
 		{
-			var roundRect = BuildRoundRectGeometry(rect);
+			// Not rebuilt per frame: this runs for every rounded border on every frame.
+			var roundRect = GetOrBuildPrePaintingRoundRectGeometry(rect);
 			return baseClip is null
 				? roundRect
 				: IntersectOwned(baseClip, roundRect);
@@ -348,6 +351,20 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
 		builder.AddRoundedRectangle(roundRect.Rect, roundRect.TopLeft, roundRect.TopRight, roundRect.BottomRight, roundRect.BottomLeft);
 		return builder.Build();
+	}
+
+	private IGeometry GetOrBuildPrePaintingRoundRectGeometry(RoundRectangle rect)
+	{
+		if (_prePaintingRoundRect is not { } cached || cached.rect != rect)
+		{
+			_prePaintingRoundRect?.geometry.Release();
+			cached = (rect, BuildRoundRectGeometry(rect));
+			_prePaintingRoundRect = cached;
+		}
+
+		// The cache keeps its own reference, so hand the caller one of theirs.
+		cached.geometry.AddRef();
+		return cached.geometry;
 	}
 
 	private static RoundRectangle ToRoundRect(Rect rect, NonUniformCornerRadius radii) => new()
