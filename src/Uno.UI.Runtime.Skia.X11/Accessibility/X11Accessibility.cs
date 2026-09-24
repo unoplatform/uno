@@ -44,6 +44,13 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	private bool _treeInitialized;
 	private bool _treeBuildQueued;
 	private int _nextPath = 1;
+
+	// AT-SPI clients cache object references across tree changes; a rebuild must
+	// republish the same element at the same path or a cached reference silently
+	// resolves to a different control (including routing writes to the wrong one).
+	// Keyed by element identity, populated lazily, never cleared on rebuild.
+	private readonly Dictionary<nint, string> _pathsByHandle = new();
+	private readonly Dictionary<(nint Combo, int Index), string> _itemPathsByComboIndex = new();
 	// Window top-left in screen space, captured per build; added to each node's
 	// client-space offset so AT-SPI extents are absolute screen coordinates.
 	private double _originX;
@@ -183,7 +190,6 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		{
 			_nodesByHandle.Clear();
 			_elementsByHandle.Clear();
-			_nextPath = 1;
 			(_originX, _originY) = GetWindowOrigin();
 			_root = BuildRootNode(rootElement);
 			_treeInitialized = true;
@@ -253,7 +259,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			return;
 		}
 
-		var node = BuildNode(child, parent, NodePathPrefix + _nextPath++);
+		var node = BuildNode(child, parent, GetOrCreatePath(child.Visual.Handle));
 		parent.Children.Add(node);
 
 		// ComboBox items live in a popup outside the visual tree; BuildNode surfaces
@@ -437,7 +443,9 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			var (itemRole, itemRoleName) = AtspiRoleMap.GetRole(AutomationControlType.ListItem);
 			var itemNode = new AtspiNode
 			{
-				Path = NodePathPrefix + _nextPath++,
+				Path = itemElement is not null
+					? GetOrCreatePath(itemElement.Visual.Handle)
+					: GetOrCreateItemPath(comboNode.Handle, index),
 				Name = (itemElement?.Content ?? item)?.ToString() ?? $"item {index}",
 				Role = itemRole,
 				RoleName = itemRoleName,
@@ -458,6 +466,28 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			}
 			comboNode.Children.Add(itemNode);
 		}
+	}
+
+	private string GetOrCreatePath(nint handle)
+	{
+		if (!_pathsByHandle.TryGetValue(handle, out var path))
+		{
+			path = NodePathPrefix + _nextPath++;
+			_pathsByHandle[handle] = path;
+		}
+		return path;
+	}
+
+	// Data-only combo items have no container element (Handle stays 0), so their
+	// identity is the owning combo plus the item index.
+	private string GetOrCreateItemPath(nint comboHandle, int index)
+	{
+		if (!_itemPathsByComboIndex.TryGetValue((comboHandle, index), out var path))
+		{
+			path = NodePathPrefix + _nextPath++;
+			_itemPathsByComboIndex[(comboHandle, index)] = path;
+		}
+		return path;
 	}
 
 	private static string ResolveName(AutomationPeer? peer)
@@ -840,6 +870,8 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		_root = null;
 		_nodesByHandle.Clear();
 		_elementsByHandle.Clear();
+		_pathsByHandle.Clear();
+		_itemPathsByComboIndex.Clear();
 		_elementsSnapshot = new Dictionary<nint, UIElement>();
 		_focusedNode = null;
 		_treeInitialized = false;
