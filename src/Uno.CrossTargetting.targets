@@ -36,8 +36,9 @@
 	</ItemGroup>
 
 	<!--
-  List of known constants. They are repository-only: consumer projects get none of them, see
-  doc/articles/uno-development/preprocessor-symbols.md.
+  List of known constants for building this repository. Consumer projects get their own set from
+  build/nuget/uno.winui.common.targets and the Uno.Sdk; only __WASM__ and UNO_REFERENCE_API overlap,
+  the latter with a different meaning. See doc/articles/uno-development/preprocessor-symbols.md.
   - __SKIA__: Used when building for the Skia backend
   - __WASM__: Used when building for the WebAssembly backend
   - UNO_REFERENCE_API: True for Skia, Wasm and Reference. The name is historical: for a consumer this is
