@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tmds.DBus.Protocol;
@@ -463,7 +464,7 @@ internal sealed class AtspiServer
 					Properties(context, node, member);
 					break;
 				case AtspiDbus.IntrospectableInterface when member == AtspiDbus.IntrospectMethod:
-					ReplyString(context, AtspiDbus.StringSignature, AtspiDbus.IntrospectionXml);
+					ReplyIntrospection(context, node);
 					break;
 				default:
 					context.ReplyUnknownMethodError();
@@ -1003,38 +1004,61 @@ internal sealed class AtspiServer
 			context.Reply(writer.CreateMessage());
 		}
 
+		// Single source of truth for a node's AT-SPI interfaces, so GetInterfaces and
+		// Introspect can never disagree.
+		private static List<string> InterfaceNames(AtspiNode node)
+		{
+			var names = new List<string> { AtspiDbus.AccessibleInterface, AtspiDbus.ComponentInterface };
+			if (node.Parent is null)
+			{
+				names.Add(AtspiDbus.ApplicationInterface);
+			}
+			if (Actionable(node))
+			{
+				names.Add(AtspiDbus.ActionInterface);
+			}
+			if (node.HasRange)
+			{
+				names.Add(AtspiDbus.ValueInterface);
+			}
+			if (node.HasText)
+			{
+				names.Add(AtspiDbus.TextInterface);
+			}
+			if (node.Editable)
+			{
+				names.Add(AtspiDbus.EditableTextInterface);
+			}
+			if (HasSelectableChildren(node))
+			{
+				names.Add(AtspiDbus.SelectionInterface);
+			}
+			return names;
+		}
+
 		private static void ReplyInterfaces(MethodContext context, AtspiNode node)
 		{
 			using var writer = context.CreateReplyWriter(AtspiDbus.StringArraySignature);
 			var array = writer.WriteArrayStart(DBusType.String);
-			writer.WriteString(AtspiDbus.AccessibleInterface);
-			writer.WriteString(AtspiDbus.ComponentInterface);
-			if (node.Parent is null)
+			foreach (var name in InterfaceNames(node))
 			{
-				writer.WriteString(AtspiDbus.ApplicationInterface);
-			}
-			if (Actionable(node))
-			{
-				writer.WriteString(AtspiDbus.ActionInterface);
-			}
-			if (node.HasRange)
-			{
-				writer.WriteString(AtspiDbus.ValueInterface);
-			}
-			if (node.HasText)
-			{
-				writer.WriteString(AtspiDbus.TextInterface);
-			}
-			if (node.Editable)
-			{
-				writer.WriteString(AtspiDbus.EditableTextInterface);
-			}
-			if (HasSelectableChildren(node))
-			{
-				writer.WriteString(AtspiDbus.SelectionInterface);
+				writer.WriteString(name);
 			}
 			writer.WriteArrayEnd(array);
 			context.Reply(writer.CreateMessage());
+		}
+
+		private static void ReplyIntrospection(MethodContext context, AtspiNode node)
+		{
+			var xml = new StringBuilder("<node>");
+			foreach (var name in InterfaceNames(node))
+			{
+				xml.Append("<interface name=\"").Append(name).Append("\"/>");
+			}
+			xml.Append("<interface name=\"").Append(AtspiDbus.PropertiesInterface).Append("\"/>");
+			xml.Append("<interface name=\"").Append(AtspiDbus.IntrospectableInterface).Append("\"/>");
+			xml.Append("</node>");
+			ReplyString(context, AtspiDbus.StringSignature, xml.ToString());
 		}
 
 		private static void ReplyString(MethodContext context, string signature, string value)
@@ -1240,7 +1264,6 @@ internal sealed class AtspiServer
 		public const string PropertyChangeMember = "PropertyChange";
 		public const string SelectionChangedMember = "SelectionChanged";
 		public const string ChildrenChangedMember = "ChildrenChanged";
-		public const string IntrospectionXml = "<node/>";
 		public const string ApplicationRoleName = "application";
 		public const uint WidgetLayer = 3; // ATSPI_LAYER_WIDGET
 		public const uint ApplicationRole = 75;
