@@ -14,6 +14,10 @@ namespace Uno.UI.RuntimeTests.Tests
 		public TextBlock BoundTextBlock => BoundText;
 
 		public TextBlock NestedRootTextBlock => NestedRootText;
+
+		public ContentControl UntypedTemplateHostControl => UntypedTemplateHost;
+
+		public ContentControl TypedTemplateHostControl => TypedTemplateHost;
 	}
 
 	public class XBindStaticInpcObject_12608 : INotifyPropertyChanged

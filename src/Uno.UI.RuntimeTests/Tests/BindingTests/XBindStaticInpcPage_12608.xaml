@@ -9,5 +9,23 @@
         <!--  The segment after the static type is a nested type, not a value: it must not become an observation root.  -->
         <TextBlock x:Name="NestedRootText"
                    Text="{x:Bind local:XBindStaticInpcApp_12608.Nested.MyObj.Value, Mode=OneWay}" />
+
+        <ContentControl x:Name="UntypedTemplateHost">
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <TextBlock x:Name="UntypedTemplateText"
+                               Text="{x:Bind local:XBindStaticInpcApp_12608.MyObj.Value, Mode=OneWay}" />
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
+
+        <ContentControl x:Name="TypedTemplateHost">
+            <ContentControl.ContentTemplate>
+                <DataTemplate x:DataType="local:XBindStaticInpcObject_12608">
+                    <TextBlock x:Name="TypedTemplateText"
+                               Text="{x:Bind local:XBindStaticInpcApp_12608.MyObj.Value, Mode=OneWay}" />
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
     </StackPanel>
 </Page>
