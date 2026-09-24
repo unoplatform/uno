@@ -14,6 +14,38 @@ function Assert-ExitCodeIsZero()
 	}
 }
 
+function Assert-OutputFiles()
+{
+    param ([string]$projectPath, [string[]]$expectPresent, [string[]]$expectAbsent)
+
+    # Verifies what a build actually shipped, so a case can assert both that a payload is present and that
+    # another was left out.
+
+    $projectDir = Split-Path -Parent $projectPath
+
+    foreach ($relative in $expectPresent)
+    {
+        $matches = @(Get-ChildItem -Path $projectDir -Filter $relative -Recurse -File -ErrorAction SilentlyContinue)
+        if ($matches.Length -eq 0)
+        {
+            throw "Expected '$relative' in the output of $projectPath, but it is missing."
+        }
+
+        Write-Host "OK: '$relative' present in $projectPath"
+    }
+
+    foreach ($relative in $expectAbsent)
+    {
+        $matches = @(Get-ChildItem -Path $projectDir -Filter $relative -Recurse -File -ErrorAction SilentlyContinue)
+        if ($matches.Length -ne 0)
+        {
+            throw "Did not expect '$relative' in the output of $projectPath, found: $($matches[0].FullName)"
+        }
+
+        Write-Host "OK: '$relative' absent from $projectPath"
+    }
+}
+
 function CleanupTree()
 {
     git clean -fdx -e *.binlog
@@ -193,6 +225,26 @@ $projects =
     @(2, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-r", "osx-x64", "-p:PublishAot=true"), @("OnlyMacOS", "NetCore", "Publish"),
         @("5.6/uno56netcurrent/uno56netcurrent/bin/Release/net11.0-desktop/osx-x64/publish/uno56netcurrent"), @("--exit")),
 
+    # Renderer selection and its native payload. 'skia' is implied only when the app names no renderer, and the
+    # wgpu native ships only where the app can actually reach the WebGPU backend, so each case asserts what
+    # landed in the output rather than just that the build succeeded.
+    #
+    # No renderer named: skia is implied, the WebGpu package is never referenced.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop"), @("NetCore"),
+        @(), @(), @("libSkiaSharp.dll"), @("webgpu.dll")),
+
+    # Both named, but nothing in the app goes near WebGPU: the backend is unreachable, so its native is left out.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu"), @("NetCore"),
+        @(), @(), @("libSkiaSharp.dll"), @("webgpu.dll")),
+
+    # Same, with the override: the payload is kept for an app whose registration this cannot see.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu", "-p:UnoWebGpuForceNative=true"), @("NetCore"),
+        @(), @(), @("webgpu.dll"), @()),
+
+    # WebGPU named alone: skia is NOT implied, so the app is SkiaSharp-free and the native ships.
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=WebGpu"), @("NetCore"),
+        @(), @(), @("webgpu.dll"), @("libSkiaSharp.dll")),
+
     # 5.6 net-current runtime folder validation
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @(), @("macOS", "NetCore")),
     
@@ -237,6 +289,8 @@ for($i = 0; $i -lt $projects.Length; $i++)
     $buildOptions=$projects[$i][3];
     $runCommand=$projects[$i][4];
     $runOptions=$projects[$i][5];
+    $expectPresent=$projects[$i][6];
+    $expectAbsent=$projects[$i][7];
     $runOnMacOS = $buildOptions -contains "macOS"
     $runOnlyOnMacOS = $buildOptions -contains "OnlyMacOS"
     $buildWithNetCore = $buildOptions -contains "NetCore"
@@ -260,6 +314,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
     {
         Write-Host "Skipping on Windows: $projectPath with $projectOptions"
         continue
+    }
+
+    if (($expectPresent.Length -gt 0) -or ($expectAbsent.Length -gt 0))
+    {
+        # The assertions read the output tree, so a previous case's payload must not still be sitting in it.
+        $projectBin = Join-Path (Split-Path -Parent $projectPath) "bin"
+        if (Test-Path $projectBin) { Remove-Item -Recurse -Force $projectBin }
     }
 
     # Disable most costly features to speed up the build
@@ -297,6 +358,11 @@ for($i = 0; $i -lt $projects.Length; $i++)
             Write-Host "Executing: $runCommand $runOptions"
             & $runCommand $runOptions
             Assert-ExitCodeIsZero
+        }
+
+        if (($expectPresent.Length -gt 0) -or ($expectAbsent.Length -gt 0))
+        {
+            Assert-OutputFiles -projectPath "$projectPath" -expectPresent $expectPresent -expectAbsent $expectAbsent
         }
  
         if(!$NoBuildClean)
