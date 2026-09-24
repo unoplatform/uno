@@ -23,6 +23,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	[TestClass]
 	public class Given_AccessibleComboBox
 	{
+#if HAS_UNO
+		[TestCleanup]
+		public void DisableAccessibilityAfterTest() => DisableAccessibility();
+#endif
+
 		/// <summary>
 		/// T057: Verifies that a closed ComboBox reports aria-expanded="false".
 		/// </summary>

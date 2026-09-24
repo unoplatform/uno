@@ -22,6 +22,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	[TestClass]
 	public class Given_AccessibleCheckBox
 	{
+#if HAS_UNO
+		[TestCleanup]
+		public void DisableAccessibilityAfterTest() => DisableAccessibility();
+#endif
+
 		/// <summary>
 		/// T036: Verifies that a focused checkbox exposes its checked state
 		/// via the IToggleProvider pattern. This maps to aria-checked.
