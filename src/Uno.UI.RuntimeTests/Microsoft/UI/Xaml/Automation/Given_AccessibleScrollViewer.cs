@@ -160,6 +160,7 @@ public class Given_AccessibleScrollViewer
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24596")]
 	public async Task When_ChangeView_Then_Offset_Is_Not_Reverted_By_Semantic_Scroller()
 	{
 		var content = new StackPanel();
@@ -180,8 +181,9 @@ public class Given_AccessibleScrollViewer
 		{
 			scrollViewer.ChangeView(null, offset, null, disableAnimation: true);
 
-			// The browser raises the scroll event on its next animation frame.
-			for (var i = 0; i < 5; i++)
+			// Fixed settle window rather than WaitFor: we assert the offset does NOT revert, so there is
+			// no condition to poll. The browser raises the echoed scroll event on its next animation frame.
+			for (var i = 0; i < 10; i++)
 			{
 				await Task.Delay(50);
 				await UITestHelper.WaitForIdle();
