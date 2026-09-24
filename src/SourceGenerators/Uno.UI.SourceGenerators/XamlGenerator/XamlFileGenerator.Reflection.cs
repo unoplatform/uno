@@ -141,6 +141,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return type.GetPropertyWithName(propertyName) is not null;
 		}
 
+		private bool HasNonPublicNameSetter(XamlType xamlType)
+			=> FindType(xamlType)?.GetPropertyWithName("Name") is { SetMethod: not { DeclaredAccessibility: Accessibility.Public } };
+
 		private bool IsRun(INamedTypeSymbol? symbol)
 		{
 			return IsType(symbol, Generation.RunSymbol.Value);
