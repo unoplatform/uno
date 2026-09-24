@@ -47,11 +47,9 @@ public class Given_MixinGenerators
 		var output = DependencyPropertyMixinGenerator.Generate();
 
 		// The mixins are only generated into Uno.UI, which targets Skia alone — a platform
-		// conditional here can never be true.
-		output.Should().NotContain("__ANDROID__");
-		output.Should().NotContain("__APPLE_UIKIT__");
-		output.Should().NotContain("__IOS__");
-		output.Should().NotContain("UNO_REFERENCE_API");
+		// conditional here can never be true. The UNO_MIXIN_GENERATION guard is the only one allowed.
+		output.Should().Contain("#if ", Exactly.Once());
+		output.Should().NotContain("#elif");
 	}
 
 	[TestMethod]
