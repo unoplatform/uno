@@ -130,6 +130,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				GoToState(useTransitions, "Unfocused");
 			}
+
+			UpdateValidationStates();
 		}
 
 		/// <summary>

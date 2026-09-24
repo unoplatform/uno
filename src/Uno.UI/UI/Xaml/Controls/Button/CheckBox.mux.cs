@@ -203,6 +203,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				GoToState(useTransitions, "Unfocused");
 			}
+
+			UpdateValidationStates();
 		}
 	}
 }
