@@ -4,7 +4,7 @@ using Uno.Foundation;
 
 namespace Windows.System;
 
-public partial class MemoryManager
+public static partial class MemoryManager
 {
 	internal static bool IsAvailable { get; private set; }
 #if __ANDROID__ || __WASM__ || __SKIA__

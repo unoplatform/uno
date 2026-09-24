@@ -16,8 +16,12 @@ namespace Windows.UI
 #else
 	public
 #endif
-	static partial class Colors
+	partial class Colors
 	{
+		private Colors()
+		{
+		}
+
 		public static Color FromARGB(byte a, byte r, byte g, byte b) => new(a, r, g, b);
 
 		public static Color FromInteger(int color) => new((uint)color);
