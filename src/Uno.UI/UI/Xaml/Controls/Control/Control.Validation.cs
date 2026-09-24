@@ -5,8 +5,12 @@
 
 #nullable enable
 
+using System;
+using System.ComponentModel;
 using Uno.UI;
-using Validation = Uno.UI.Xaml.Controls.Validation;
+using Uno.UI.Xaml.Controls;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -25,6 +29,17 @@ public partial class Control
 		internal const string InlineErrors = nameof(InlineErrors);
 		internal const string ErrorsCleared = nameof(ErrorsCleared);
 	}
+
+	/// <summary>
+	/// Whether this control participates in input validation.
+	/// </summary>
+	/// <remarks>
+	/// Mirrors <c>CControl::IsValidationEnabled</c>: every mode but <see cref="InputValidationMode.Disabled"/>
+	/// counts as enabled, and a control that does not implement the interface is never enabled — which is
+	/// what WinUI's type-index switch expresses by returning an unknown property index.
+	/// </remarks>
+	private bool IsValidationEnabled
+		=> this is IInputValidationControl { InputValidationMode: not InputValidationMode.Disabled };
 
 	/// <summary>
 	/// Applies the <see cref="InputValidationEnabledStates"/> and <see cref="InputValidationErrorStates"/> visual state groups.
@@ -57,13 +72,17 @@ public partial class Control
 		}
 		else
 		{
-			// Auto resolves to Compact, as it does in WinUI: ShowErrorsInline is `kind == Inline`, and
+			// Auto resolves to Compact, as it does in WinUI: ShowErrorsInline is "kind == Inline", and
 			// nothing ever maps Auto to anything else.
 			GoToState(false, InputValidationEnabledStates.CompactValidationEnabled);
 			GoToState(false, hasErrors ? InputValidationErrorStates.CompactErrors : InputValidationErrorStates.ErrorsCleared);
 		}
 	}
 
+	/// <summary>
+	/// Reaches <see cref="UpdateValidationStates"/> from <see cref="FrameworkElement"/>, which as the base
+	/// type cannot see a protected member of this one.
+	/// </summary>
 	internal void UpdateValidationStatesInternal() => UpdateValidationStates();
 
 	/// <summary>
@@ -73,5 +92,103 @@ public partial class Control
 	/// <remarks>
 	/// Like WinUI's disabled branch, this deliberately leaves the error states group where it was.
 	/// </remarks>
-	internal void ClearValidationStates() => GoToState(false, InputValidationEnabledStates.ValidationDisabled);
+	private void ClearValidationStates() => GoToState(false, InputValidationEnabledStates.ValidationDisabled);
+
+	/// <summary>
+	/// The changed callback a participating control registers its InputValidationMode with.
+	/// </summary>
+	/// <remarks>
+	/// Protected rather than internal because a control defined outside Uno.UI participates by registering
+	/// these same dependency properties itself. Such a control registers with <see cref="PropertyMetadata"/>:
+	/// the <see cref="FrameworkPropertyMetadata"/> overload taking a value and a callback is internal.
+	/// </remarks>
+	protected static void OnInputValidationModeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	{
+		if (sender is Control control)
+		{
+			control.OnValidationModeChanged();
+		}
+	}
+
+	/// <inheritdoc cref="OnInputValidationModeChanged"/>
+	protected static void OnInputValidationKindChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	{
+		if (sender is Control control)
+		{
+			control.UpdateValidationStates();
+		}
+	}
+
+	/// <inheritdoc cref="OnInputValidationModeChanged"/>
+	/// <remarks>
+	/// Raising HasValidationErrorsChanged from here rather than from where the errors are reconciled is what
+	/// makes it fire once per transition rather than once per synchronization.
+	/// </remarks>
+	protected static void OnHasValidationErrorsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	{
+		if (sender is Control control)
+		{
+			control.RaiseHasValidationErrorsChanged((bool)args.NewValue);
+		}
+	}
+
+	/// <summary>
+	/// Backs <see cref="IInputValidationControl.ValidationErrors"/>: the collection is created on first read,
+	/// and its identity then stays stable for the life of the control.
+	/// </summary>
+	/// <param name="property">The ValidationErrors dependency property the control registered.</param>
+	protected IObservableVector<InputValidationError> GetOrCreateValidationErrors(DependencyProperty property)
+	{
+		if (GetValue(property) is not ValidationErrorsCollection errors)
+		{
+			errors = new ValidationErrorsCollection();
+			SetValue(property, errors);
+		}
+
+		return errors;
+	}
+
+	/// <summary>
+	/// Backs <see cref="IInputValidationControl.HasValidationErrorsChanged"/>, so that no control needs
+	/// storage of its own.
+	/// </summary>
+	protected void AddHasValidationErrorsChangedHandler(TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs> handler)
+		=> SetValue(
+			HasValidationErrorsChangedHandlerProperty,
+			Delegate.Combine(GetHasValidationErrorsChangedHandler(), handler));
+
+	/// <inheritdoc cref="AddHasValidationErrorsChangedHandler"/>
+	protected void RemoveHasValidationErrorsChangedHandler(TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs> handler)
+		=> SetValue(
+			HasValidationErrorsChangedHandlerProperty,
+			Delegate.Remove(GetHasValidationErrorsChangedHandler(), handler));
+
+	/// <summary>
+	/// Backs <see cref="IInputValidationControl.ValidationError"/>.
+	/// </summary>
+	protected void AddValidationErrorHandler(TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs> handler)
+		=> SetValue(
+			ValidationErrorHandlerProperty,
+			Delegate.Combine(GetValidationErrorHandler(), handler));
+
+	/// <inheritdoc cref="AddValidationErrorHandler"/>
+	protected void RemoveValidationErrorHandler(TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs> handler)
+		=> SetValue(
+			ValidationErrorHandlerProperty,
+			Delegate.Remove(GetValidationErrorHandler(), handler));
+
+	/// <summary>
+	/// Backs <see cref="IInputValidationControl.ErrorChanged"/>. Kept apart from the subscription state, which
+	/// comes and goes with the binding while handlers must survive a rebind.
+	/// </summary>
+	protected void AddErrorChangedHandler(EventHandler<DataErrorsChangedEventArgs> handler)
+		=> SetValue(
+			ErrorChangedHandlerProperty,
+			Delegate.Combine(GetErrorChangedHandler(), handler));
+
+	/// <inheritdoc cref="AddErrorChangedHandler"/>
+	protected void RemoveErrorChangedHandler(EventHandler<DataErrorsChangedEventArgs> handler)
+		=> SetValue(
+			ErrorChangedHandlerProperty,
+			Delegate.Remove(GetErrorChangedHandler(), handler));
 }

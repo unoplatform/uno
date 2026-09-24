@@ -221,7 +221,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_binding is { IsValidationSource: true } validationSource)
 			{
-				global::Uno.UI.Xaml.Controls.Validation.OnValidationBindingCleared(validationSource);
+				global::Microsoft.UI.Xaml.Controls.Control.OnValidationBindingCleared(validationSource);
 			}
 
 			_binding?.Dispose();
