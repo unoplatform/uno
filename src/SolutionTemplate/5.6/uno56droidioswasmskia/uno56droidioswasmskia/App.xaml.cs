@@ -20,6 +20,8 @@ public partial class App : Application
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         MainWindow = new Window();
+
+        Console.WriteLine($"PLATFORM-ASSET-E2E: {PlatformAssetValidation.Run()}");
 #if DEBUG
         MainWindow.UseStudio();
 #endif

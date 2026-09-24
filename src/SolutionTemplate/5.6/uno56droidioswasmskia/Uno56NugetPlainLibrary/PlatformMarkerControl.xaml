@@ -1,0 +1,18 @@
+<UserControl
+    x:Class="UnoPlainLibrary.PlatformMarkerControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:android="http://uno.ui/android"
+    xmlns:ios="http://uno.ui/ios"
+    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:not_ios="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="android ios">
+
+  <StackPanel x:Name="Markers">
+    <android:TextBlock Text="android" />
+    <ios:TextBlock Text="ios" />
+    <not_android:TextBlock Text="not_android" />
+    <not_ios:TextBlock Text="not_ios" />
+  </StackPanel>
+</UserControl>
