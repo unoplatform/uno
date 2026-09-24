@@ -95,10 +95,19 @@ namespace Uno.ReferenceImplComparer
 		internal static List<string> CompareAssemblies(AssemblyDefinition referenceAssembly, AssemblyDefinition runtimeAssembly, string identifier)
 		{
 			var errors = new List<string>();
-			var referenceTypes = referenceAssembly.MainModule.GetTypes();
+			var referenceTypes = referenceAssembly.MainModule.GetTypes().ToDictionary(t => t.FullName);
 			var runtimeTypes = runtimeAssembly.MainModule.GetTypes().ToDictionary(t => t.FullName);
 
-			foreach (var referenceType in referenceTypes.Where(IsAccessible))
+			// Apps compile against the reference, so a runtime-only public type is API no app can use portably.
+			foreach (var runtimeType in runtimeTypes.Values.Where(IsAccessible))
+			{
+				if (!referenceTypes.TryGetValue(runtimeType.FullName, out var referenceType) || !IsAccessible(referenceType))
+				{
+					errors.Add($"The type {runtimeType} in {identifier} cannot be found in reference API");
+				}
+			}
+
+			foreach (var referenceType in referenceTypes.Values.Where(IsAccessible))
 			{
 				if (referenceType.FullName == "Microsoft.UI.Xaml.Documents.TextElement")
 				{
@@ -113,6 +122,8 @@ namespace Uno.ReferenceImplComparer
 						errors.Add($"{referenceType.FullName} base type is different {referenceType.BaseType?.FullName} in reference, {runtimeType.BaseType?.FullName} in {identifier}");
 					}
 
+					CompareInterfaces(referenceType, runtimeType, identifier, errors);
+
 					CompareMembers(referenceType.Methods.Where(IsAccessible), runtimeType.Methods.Where(IsAccessible), identifier, errors);
 					CompareMembers(referenceType.Properties.Where(IsAccessible), runtimeType.Properties.Where(IsAccessible), identifier, errors);
 					CompareMembers(referenceType.Fields.Where(IsAccessible), runtimeType.Fields.Where(IsAccessible), identifier, errors);
@@ -126,6 +137,29 @@ namespace Uno.ReferenceImplComparer
 
 			return errors;
 		}
+
+		private static void CompareInterfaces(TypeDefinition referenceType, TypeDefinition runtimeType, string identifier, List<string> errors)
+		{
+			var referenceInterfaces = GetAccessibleInterfaces(referenceType);
+			var runtimeInterfaces = GetAccessibleInterfaces(runtimeType);
+
+			foreach (var missing in referenceInterfaces.Except(runtimeInterfaces))
+			{
+				errors.Add($"{referenceType.FullName} implements {missing} in reference, but not in {identifier}");
+			}
+
+			foreach (var extra in runtimeInterfaces.Except(referenceInterfaces))
+			{
+				errors.Add($"{referenceType.FullName} implements {extra} in {identifier}, but not in reference");
+			}
+		}
+
+		private static HashSet<string> GetAccessibleInterfaces(TypeDefinition type)
+			=> type.Interfaces
+				.Select(i => i.InterfaceType)
+				.Where(i => i.GetElementType() is not TypeDefinition definition || IsAccessible(definition))
+				.Select(i => i.FullName)
+				.ToHashSet();
 
 		private static void CompareMembers(IEnumerable<MemberReference> referenceMembers, IEnumerable<MemberReference> runtimeMembers, string identifier, List<string> errors)
 		{
