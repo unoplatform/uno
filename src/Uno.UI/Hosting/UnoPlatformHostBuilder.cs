@@ -102,6 +102,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	private const string SkiaBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackend, Uno.UI.Composition.Skia";
 	private const string WebGpuGraphicsProviderTypeName = "Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider, Uno.UI.Composition.WebGpu";
 	private const string ManagedGeometryFactoryTypeName = "Uno.UI.Composition.Drawing.ManagedGeometryFactory, Uno.UI.Composition.Managed";
+	private const string ManagedFontProviderTypeName = "Uno.UI.Composition.Drawing.ManagedFontProvider, Uno.UI.Composition.Managed";
+	private const string ManagedImageDecoderTypeName = "Uno.UI.Composition.Drawing.ManagedImageDecoderBackend, Uno.UI.Composition.Managed";
 
 	// SVG has no core Skia impl: the Svg.Skia renderer ships as the optional Uno.UI.Svg add-in, with the managed
 	// engine as the built-in fallback.
@@ -199,7 +201,16 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	private static void TryLightUpFontProvider()
 	{
-		if (!Drawing.FontProvider.IsRegistered && InvokeSkiaFactory<Drawing.IFontProvider>("CreateFontProvider") is { } fontProvider)
+		if (Drawing.FontProvider.IsRegistered)
+		{
+			return;
+		}
+
+		// The managed engine is the fallback for a SkiaSharp-free head. It reads the system fonts, so it needs a
+		// bundled default passed in where those cannot be enumerated (iOS, WASM) - such a head registers its own.
+		var fontProvider = InvokeSkiaFactory<Drawing.IFontProvider>("CreateFontProvider")
+			?? CreateInstanceOf<Drawing.IFontProvider>(ManagedFontProviderTypeName);
+		if (fontProvider is not null)
 		{
 			Drawing.FontProvider.RegisterDefault(fontProvider);
 		}
@@ -207,7 +218,14 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	private static void TryLightUpImageDecoder()
 	{
-		if (!Drawing.ImageEncoderDecoder.IsRegistered && InvokeSkiaFactory<Drawing.IImageEncoderDecoder>("CreateImageDecoder") is { } decoder)
+		if (Drawing.ImageEncoderDecoder.IsRegistered)
+		{
+			return;
+		}
+
+		var decoder = InvokeSkiaFactory<Drawing.IImageEncoderDecoder>("CreateImageDecoder")
+			?? CreateInstanceOf<Drawing.IImageEncoderDecoder>(ManagedImageDecoderTypeName);
+		if (decoder is not null)
 		{
 			Drawing.ImageEncoderDecoder.RegisterDefault(decoder);
 		}
@@ -215,7 +233,14 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	private static void TryLightUpGeometryFactory()
 	{
-		if (!Drawing.GeometryFactory.IsRegistered && InvokeSkiaFactory<Drawing.IGeometryFactory>("CreateGeometryFactory") is { } geometryFactory)
+		if (Drawing.GeometryFactory.IsRegistered)
+		{
+			return;
+		}
+
+		var geometryFactory = InvokeSkiaFactory<Drawing.IGeometryFactory>("CreateGeometryFactory")
+			?? CreateInstanceOf<Drawing.IGeometryFactory>(ManagedGeometryFactoryTypeName);
+		if (geometryFactory is not null)
 		{
 			Drawing.GeometryFactory.RegisterDefault(geometryFactory);
 		}
