@@ -16,7 +16,7 @@ namespace Windows.UI.Input.Preview.Injection;
 /// </remarks>
 internal static class InjectedInputKeyboardCharacterMap
 {
-	// VK codes without a Windows.System.VirtualKey name.
+	// VK codes without a Windows.System.VirtualKey name: // value (without/with)-Shift key
 	private const ushort VkOem1 = 0xBA;      // ;:
 	private const ushort VkOemPlus = 0xBB;   // =+
 	private const ushort VkOemComma = 0xBC;  // ,<
@@ -97,17 +97,17 @@ internal static class InjectedInputKeyboardCharacterMap
 			(ushort)VirtualKey.Subtract => '-',
 			(ushort)VirtualKey.Decimal => '.',
 			(ushort)VirtualKey.Divide => '/',
-			VkOem1 => shift ? ':' : ';',
-			VkOemPlus => shift ? '+' : '=',
-			VkOemComma => shift ? '<' : ',',
-			VkOemMinus => shift ? '_' : '-',
-			VkOemPeriod => shift ? '>' : '.',
-			VkOem2 => shift ? '?' : '/',
-			VkOem3 => shift ? '~' : '`',
-			VkOem4 => shift ? '{' : '[',
-			VkOem5 => shift ? '|' : '\\',
-			VkOem6 => shift ? '}' : ']',
-			VkOem7 => shift ? '"' : '\'',
+			VkOem1 => !shift ? ';' : ':',
+			VkOemPlus => !shift ? '=' : '+',
+			VkOemComma => !shift ? ',' : '<',
+			VkOemMinus => !shift ? '-' : '_',
+			VkOemPeriod => !shift ? '.' : '>',
+			VkOem2 => !shift ? '/' : '?',
+			VkOem3 => !shift ? '`' : '~',
+			VkOem4 => !shift ? '[' : '{',
+			VkOem5 => !shift ? '\\' : '|',
+			VkOem6 => !shift ? ']' : '}',
+			VkOem7 => !shift ? '\'' : '"',
 			_ => null,
 		};
 	}
