@@ -17,6 +17,10 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 	private readonly Func<AnimationKeyFrame<T>, T> _resolve;
 	private readonly Compositor _compositor;
 	private long _lastTimestamp;
+
+	// Like a composition commit, an animation starts at the first frame that evaluates it, not when it was
+	// requested: a start between frames would otherwise show the time since the request in that first frame.
+	private bool _isAwaitingFirstFrame = true;
 	private double _playhead;
 	private bool _isPaused;
 	private float _playbackRate = 1.0f;
@@ -56,6 +60,12 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 
 	public (object Value, bool ShouldStop) Evaluate()
 	{
+		if (_isAwaitingFirstFrame)
+		{
+			_isAwaitingFirstFrame = false;
+			_lastTimestamp = _compositor.AnimationTimestampInTicks;
+		}
+
 		var currentProgress = UpdateProgress(out var shouldStop);
 		if (shouldStop)
 		{
@@ -136,7 +146,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 			return;
 		}
 
-		_lastTimestamp = _compositor.TimestampInTicks;
+		_isAwaitingFirstFrame = true;
 		_isPaused = false;
 	}
 
@@ -198,7 +208,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 
 	private void AdvanceToCurrentTimestamp()
 	{
-		if (_isPaused)
+		if (_isPaused || _isAwaitingFirstFrame)
 		{
 			return;
 		}
