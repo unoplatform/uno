@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
@@ -11,6 +12,7 @@ using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
@@ -39,7 +41,8 @@ internal static class ScrollSmoothnessDrivers
 
 	public static async Task RunAsync(string scenario, Control sv, ScrollSmoothnessProbe probe, CancellationToken ct)
 	{
-		var center = sv.TransformToVisual(null).TransformPoint(new Point(sv.ActualWidth / 2, sv.ActualHeight / 2));
+		var bounds = sv.TransformToVisual(null).TransformBounds(new Rect(0, 0, sv.ActualWidth, sv.ActualHeight));
+		var center = new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2);
 		var scrollable = ScrollSmoothnessProbe.GetScrollableSize(sv);
 		var vertical = scrollable.Vertical >= scrollable.Horizontal;
 
@@ -67,11 +70,11 @@ internal static class ScrollSmoothnessDrivers
 				break;
 			case "touch-fling":
 				// 25 px per 8 ms sample = 3125 px/s, released while still moving.
-				await PlayAsync(TouchSteps(touchStart, center, vertical, sampleMs: 8, pxPerSample: 25, samples: 16, holdBeforeReleaseMs: 0), probe, ct);
+				await PlayAsync(TouchSteps(touchStart, center, bounds, vertical, sampleMs: 8, pxPerSample: 25, samples: 16, holdBeforeReleaseMs: 0), probe, ct);
 				break;
 			case "touch-drag":
 				// 3 px per 8 ms sample = 375 px/s (whole pixels: injected positions are integers), stopped before release.
-				await PlayAsync(TouchSteps(touchStart, center, vertical, sampleMs: 8, pxPerSample: 3, samples: 150, holdBeforeReleaseMs: 150), probe, ct);
+				await PlayAsync(TouchSteps(touchStart, center, bounds, vertical, sampleMs: 8, pxPerSample: 3, samples: 150, holdBeforeReleaseMs: 150), probe, ct);
 				break;
 			case "key-down":
 				// Keyboard auto-repeat at ~30 Hz.
@@ -170,7 +173,7 @@ internal static class ScrollSmoothnessDrivers
 	// UNO_SCROLL_PROBE_REUSE_TOUCH_ID=1 keeps pointer id 1 for every gesture, like digitizers that recycle ids.
 	private static readonly bool _reuseTouchId = Environment.GetEnvironmentVariable("UNO_SCROLL_PROBE_REUSE_TOUCH_ID") == "1";
 
-	private static IEnumerable<Step> TouchSteps(Point? start, Point center, bool vertical, int sampleMs, int pxPerSample, int samples, int holdBeforeReleaseMs)
+	private static IEnumerable<Step> TouchSteps(Point? start, Point center, Rect bounds, bool vertical, int sampleMs, int pxPerSample, int samples, int holdBeforeReleaseMs)
 	{
 		var id = _reuseTouchId ? 1 : _nextTouchId++;
 		// Start below/right of the center so the drag towards the origin stays inside the viewport.
@@ -181,13 +184,20 @@ internal static class ScrollSmoothnessDrivers
 		{
 			(x, y) = ((int)s.X, (int)s.Y);
 		}
-		else if (vertical)
-		{
-			y += Math.Min(travel / 2, (int)center.Y / 2);
-		}
 		else
 		{
-			x += Math.Min(travel / 2, (int)center.X / 2);
+			if (vertical)
+			{
+				y += Math.Min(travel / 2, (int)center.Y / 2);
+			}
+			else
+			{
+				x += Math.Min(travel / 2, (int)center.X / 2);
+			}
+
+			// Keep the press inside the scroller: below it sits the sample's description panel.
+			x = Math.Min(x, (int)(bounds.Right - 20));
+			y = Math.Min(y, (int)(bounds.Bottom - 20));
 		}
 
 		const InjectedInputPointerOptions contact = InjectedInputPointerOptions.FirstButton | InjectedInputPointerOptions.InRange | InjectedInputPointerOptions.InContact | InjectedInputPointerOptions.Primary;
