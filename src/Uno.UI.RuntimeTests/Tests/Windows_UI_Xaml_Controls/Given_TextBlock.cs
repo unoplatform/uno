@@ -1966,6 +1966,90 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(SUT.Text, await ClipboardHelper.WaitForTextAsync(SUT.Text));
 		}
 
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24681")]
+		[DataRow(VirtualKeyModifiers.Shift)]
+		[DataRow(VirtualKeyModifiers.Menu)]
+		public async Task When_IsTextSelectionEnabled_SelectAll_With_Extra_Modifier_Is_Ignored(VirtualKeyModifiers extra)
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var commandModifier = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, commandModifier | extra));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(string.Empty, SUT.SelectedText);
+		}
+
+		// Clipboard is currently not available on skia-WASM
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24681")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(VirtualKeyModifiers.Shift)]
+		[DataRow(VirtualKeyModifiers.Menu)]
+		public async Task When_IsTextSelectionEnabled_Copy_With_Extra_Modifier_Is_Ignored(VirtualKeyModifiers extra)
+		{
+#if __SKIA__
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+#endif
+
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+			SUT.SelectAll();
+
+			var seed = await ClipboardHelper.SeedDummyData();
+			var commandModifier = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, commandModifier | extra));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(seed, await ClipboardHelper.WaitForTextAsync(seed));
+		}
+
+		// Clipboard is currently not available on skia-WASM
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24681")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_IsTextSelectionEnabled_Command_Insert_Copies()
+		{
+#if __SKIA__
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+#endif
+
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+			SUT.SelectAll();
+			await ClipboardHelper.SeedDummyData();
+
+			var commandModifier = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Insert, commandModifier));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.Text, await ClipboardHelper.WaitForTextAsync(SUT.Text));
+		}
+
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24126")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Command-bar overflow timing is only validated on Skia #9080
