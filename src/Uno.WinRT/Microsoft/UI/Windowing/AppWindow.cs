@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -25,16 +26,14 @@ internal
 partial class AppWindow
 {
 	private static readonly ConcurrentDictionary<MUXWindowId, AppWindow> _windowIdMap = new();
-	private static ulong _windowIdIterator;
-
 	private INativeAppWindow _nativeAppWindow;
 
 	private AppWindowPresenter _presenter;
 	private string _titleCache; // only use this until the _nativeAppWindow is set
 
-	internal AppWindow()
+	internal AppWindow(ulong nativeId)
 	{
-		Id = new(Interlocked.Increment(ref _windowIdIterator));
+		Id = new(nativeId);
 
 		TitleBar = new(this);
 
@@ -133,17 +132,6 @@ partial class AppWindow
 	/// the whole ALC. Called from ALC window close.
 	/// </summary>
 	internal static void DestroyForWindowId(MUXWindowId windowId) => _windowIdMap.TryRemove(windowId, out _);
-
-	internal static void SkipMainWindowId()
-	{
-		// In case of Uno Islands we currently have no "main window",
-		// so we must avoid assigning the first created secondary window
-		// Id = 1, otherwise it would be considered as the main window.
-		if (!CoreApplication.IsFullFledgedApp && _windowIdIterator == 0)
-		{
-			_windowIdIterator++;
-		}
-	}
 
 	/// <summary>
 	/// Sets the icon for the window.

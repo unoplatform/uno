@@ -282,4 +282,17 @@ internal partial class ContentRoot
 			_ => null
 		};
 	}
+
+	internal ContentIslandEnvironment? ContentIslandEnvironment
+	{
+		get
+		{
+			if (Type is ContentRootType.XamlIslandRoot && XamlIslandRoot is not null)
+			{
+				return XamlIslandRoot.ContentIslandEnvironment;
+			}
+
+			return null;
+		}
+	}
 }

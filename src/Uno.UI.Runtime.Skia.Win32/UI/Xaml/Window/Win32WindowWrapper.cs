@@ -165,6 +165,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 	}
 
+	public override ulong NativeWindowId => (ulong)_hwnd.Value;
+
 	private unsafe void OnSystemThemeChanged(object? _, EventArgs __)
 	{
 		BOOL value = Win32SystemThemeHelperExtension.Instance.GetSystemTheme() is SystemTheme.Dark;
