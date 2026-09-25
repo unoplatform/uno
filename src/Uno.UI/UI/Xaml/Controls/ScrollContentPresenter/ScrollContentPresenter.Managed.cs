@@ -542,7 +542,16 @@ namespace Microsoft.UI.Xaml.Controls
 					scrollAnimation.AnimationFrame -= OnFrame;
 					scrollAnimation.Stopped -= OnStopped;
 
-					Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), false);
+					// A completed animation stops while evaluating its last frame, before that value is applied, so
+					// the AnchorPoint still holds the previous frame: publish where it was going instead.
+					if (scrollAnimation.Progress >= 1)
+					{
+						Updated(horizontalOffset, verticalOffset, false);
+					}
+					else
+					{
+						Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), false);
+					}
 				}
 
 				double GetAnimatedHorizontalOffset() => Math.Round(-visual.AnchorPoint.X + centeringOffsetX);
