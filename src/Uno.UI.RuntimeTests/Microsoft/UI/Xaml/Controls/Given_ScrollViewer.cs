@@ -739,7 +739,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, outer.VerticalOffset);
 			Assert.IsGreaterThan(0d, inner.VerticalOffset, "Inner Vertical Offset is not greater than 0");
 
-			mouse.Wheel(-500, steps: 5);
+			// A notch scrolls 15% of the 20px inner viewport, so it takes many to saturate it before chaining.
+			mouse.Wheel(-12000, steps: 40);
 
 			// Poll until the inner SV has scrolled all the way to the bottom. The large wheel
 			// delta saturates the inner SV and then chains the remainder to the outer SV; we must
@@ -2567,6 +2568,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1500, SUT.VerticalOffset);
 		}
 #endif
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaMacOS)] // Apple wheels apply small deltas 1:1
+		[DataRow(100, 120, 1, 15)]
+		[DataRow(200, 120, 1, 30)]
+		[DataRow(600, 30, 4, 90)]
+		public async Task When_Wheel_Then_Scrolls_A_Share_Of_The_Viewport(int height, int delta, int events, double expected)
+		{
+#if HAS_INPUT_INJECTOR
+			// Measured on WinUI 3: 0.15 * viewport * delta / 120, with no 48px floor and no rounding per event.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = height,
+				Content = new Border { Width = 180, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			var bounds = await UITestHelper.Load(SUT);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var mouse = input.GetMouse();
+			mouse.MoveTo(bounds.GetCenter());
+
+			for (var i = 0; i < events; i++)
+			{
+				mouse.Wheel(-delta);
+			}
+
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			Assert.AreEqual(expected, SUT.VerticalOffset, 0.01);
+#else
+			await Task.CompletedTask;
+#endif
+		}
 
 		// A flick fast enough to launch a fling: the velocity tracker fits the recent gesture, so it needs
 		// several moves spread over real time rather than one long jump.
