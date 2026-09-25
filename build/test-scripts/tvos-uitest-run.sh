@@ -200,6 +200,7 @@ if [ -f "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST" ] && [ "$UITEST_IGNORE_RERUN_FILE"
 	fi
 
 	export SIMCTL_CHILD_UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_RUNTIMETESTS_FAILED_LIST | base64 -b 0`
+	UNO_RERUN_FIRST_PASS=false
 
 	# echo the failed filter list, if not empty
 	if [ -n "$SIMCTL_CHILD_UITEST_RUNTIME_TESTS_FILTER" ]; then
@@ -256,6 +257,31 @@ if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
 	cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
 else
 	echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
+fi
+
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/runtime-tests-rerun.sh
+
+if uno_rerun_prepare "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" 600; then
+	RERUN_RESULT_FILE=/tmp/RerunResult-`date +"%Y%m%d%H%M%S"`.xml
+
+	xcrun simctl terminate "$UITEST_TVOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID" || true
+	SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE="$RERUN_RESULT_FILE" 	SIMCTL_CHILD_UITEST_RUNTIME_TESTS_FILTER="$UNO_RERUN_FILTER" 		xcrun simctl launch --stdout="$LOG_FILEPATH/app-stdout-${UITEST_RUNTIME_TEST_GROUP}-rerun.log" --stderr="$LOG_FILEPATH/app-stderr-${UITEST_RUNTIME_TEST_GROUP}-rerun.log" "$UITEST_TVOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
+
+	RERUN_APP_PID=`xcrun simctl spawn "$UITEST_TVOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}' || true`
+	RERUN_END_TIME=$((SECONDS+UNO_RERUN_TIMEOUT))
+
+	while [[ ! -f "$RERUN_RESULT_FILE" && $SECONDS -lt $RERUN_END_TIME ]]; do
+		sleep $INTERVAL
+
+		if [ -n "$RERUN_APP_PID" ] && ! ps -p $RERUN_APP_PID > /dev/null; then
+			echo "The app is not running anymore"
+			break
+		fi
+	done
+
+	cp -fv "$RERUN_RESULT_FILE" $LOG_FILEPATH/ || true
+	uno_rerun_merge "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$RERUN_RESULT_FILE"
+	cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
 fi
 
 # export the simulator logs
