@@ -49,6 +49,13 @@ report_harness_crash() {
 
 	if [ "$status" -ne 0 ] && [ "$UNO_IOS_TESTS_STARTED" != "true" ]; then
 		echo "##vso[task.setvariable variable=UNO_IOS_HARNESS_CRASHED]true"
+
+		# A failed first step fails the job even when the re-run step then passes, so leave the
+		# verdict to the re-run.
+		if [ "${UNO_HARNESS_RERUN_PENDING:-}" = "true" ]; then
+			echo "##vso[task.logissue type=warning]The test harness failed before any test started (exit $status); the re-run step will retry it."
+			exit 0
+		fi
 	fi
 }
 trap report_harness_crash EXIT
@@ -215,9 +222,17 @@ TRANSFORM_TOOL_BUILD_PID=$!
 # https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
 export PATH=$PATH:~/.local/bin
 
+# Installing idb needs Homebrew, GitHub and PyPI, any of which can fail for a minute. That is no
+# reason to abort the job: the app install below falls back to `xcrun simctl install`.
+IDB_AVAILABLE=true
+
 if ! command -v idb >/dev/null 2>&1
 then
 	echo "Installing idb (fb-idb + idb-companion) pinned to Python 3.12"
+
+	set +e
+	(
+	set -e
 
 	# 1) Make sure we have a usable python3.12, but don't fail if Homebrew linking conflicts
 	if ! command -v python3.12 >/dev/null 2>&1; then
@@ -231,7 +246,6 @@ then
 
 	# 2) Install helpers
 	brew list --versions pipx >/dev/null 2>&1 || brew install pipx
-	brew tap facebook/fb >/dev/null 2>&1 || true
 	# Pin the tap to the v1.1.8 formula. Its tip (1.5.0.b2) requires macOS
 	# Sequoia and Xcode 26, which the macOS 14 UI test agents cannot satisfy,
 	# so `brew install idb-companion` aborts with "Unsatisfied requirements".
@@ -241,6 +255,18 @@ then
 	export HOMEBREW_NO_AUTO_UPDATE=1
 	IDB_TAP_REVISION=c0386793f59da10c619787f2aa18d938ef1d69c9
 	IDB_TAP_REPO="$(brew --repo facebook/fb)"
+
+	# `brew tap` fails now and then, twice in a row on the same agent in one build. A tap is only
+	# a git checkout under Taps/, so clone it directly when brew cannot.
+	for attempt in 1 2 3; do
+		[ -d "$IDB_TAP_REPO/.git" ] && break
+		echo "Tapping facebook/fb (attempt $attempt)"
+		brew tap facebook/fb && continue
+		rm -rf "$IDB_TAP_REPO"
+		git clone https://github.com/facebook/homebrew-fb "$IDB_TAP_REPO" && continue
+		rm -rf "$IDB_TAP_REPO"
+		sleep 15
+	done
 	if [ ! -d "$IDB_TAP_REPO/.git" ]; then
 		echo "Tap facebook/fb is not checked out at $IDB_TAP_REPO — cannot pin idb-companion." >&2
 		exit 1
@@ -266,6 +292,14 @@ then
 	# Pinned: the companion is pinned to a tap revision, so leaving the Python client floating
 	# means an upstream release can change the harness under a fixed simulator/Xcode pair.
 	pipx install --force 'fb-idb==1.1.7'
+	)
+	IDB_SETUP_STATUS=$?
+	set -e
+
+	if [ "$IDB_SETUP_STATUS" -ne 0 ] || ! command -v idb >/dev/null 2>&1; then
+		IDB_AVAILABLE=false
+		echo "##vso[task.logissue type=warning]UNOBLD009: idb could not be installed (exit $IDB_SETUP_STATUS); the app will be installed with xcrun simctl"
+	fi
 else
 	echo "Using idb from: $(command -v idb)"
 fi
@@ -298,8 +332,12 @@ wait_for_boot() {
 }
 
 echo "Waiting for the simulator to finish booting (started $(date))"
-if ! wait_for_boot "$UITEST_IOSDEVICE_ID" 180; then
-	echo "##vso[task.logissue type=warning]UNOBLD006: The simulator did not report a completed boot within 180s. Continuing anyway; the app install below will surface a hard failure if it is genuinely unusable."
+# A first boot runs the data migration, which alone took over 3 minutes on slow agents. Every job
+# that went on to launch the app on a half-booted simulator failed anyway (the app died or hung
+# until the job timeout), so give up instead: the harness re-run step then waits once more.
+if ! wait_for_boot "$UITEST_IOSDEVICE_ID" 480; then
+	echo "##vso[task.logissue type=error]UNOBLD006: The simulator did not report a completed boot within 480s."
+	exit 1
 fi
 echo "Simulator boot wait finished ($(date))"
 
@@ -309,7 +347,9 @@ echo "Simulator boot wait finished ($(date))"
 # then fall back to simctl. simctl install is only the fallback because it was historically
 # unreliable here (microsoft/appcenter#2389), but an install that works is better than a
 # stage retry that pays for the artifact download and the toolchain install all over again.
-if ! idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"; then
+if [ "$IDB_AVAILABLE" != "true" ]; then
+	xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
+elif ! idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"; then
 	echo "##vso[task.logissue type=warning]idb install failed; retrying once with debug logging"
 	idb kill >/dev/null 2>&1 || true
 
@@ -387,6 +427,9 @@ then
 	# Set the timeout in seconds 
 	UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
 	TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
+	# Collecting the device logs, the transform tool and the publish steps need several minutes.
+	source $BUILD_SOURCESDIRECTORY/build/test-scripts/ci-job-budget.sh
+	TIMEOUT=$(uno_job_wait_budget "$TIMEOUT" 600)
 	INTERVAL=15
 	END_TIME=$((SECONDS+TIMEOUT))
 

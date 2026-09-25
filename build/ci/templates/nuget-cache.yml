@@ -6,6 +6,7 @@ steps:
   - powershell: |
       New-Item -ItemType Directory -Force "${{ parameters.nugetPackages }}"
     displayName: Create nuget packages cache folder
+    retryCountOnTaskFailure: 2
 
   - script: |
       compact /c "${{ parameters.nugetPackages }}"
