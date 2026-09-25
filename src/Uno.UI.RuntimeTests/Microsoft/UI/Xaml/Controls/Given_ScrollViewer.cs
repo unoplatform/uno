@@ -2505,6 +2505,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(stopwatch.ElapsedMilliseconds < 500, $"A 20px animated scroll took {stopwatch.ElapsedMilliseconds}ms.");
 		}
 
+#if __SKIA__
+		[TestMethod]
+		public async Task When_ChangeView_Animated_Then_Eases_Like_ScrollPresenter()
+		{
+			// WinUI's ScrollPresenter animates offset changes with the composition default easing, a gentle
+			// cubic bezier: a tenth of the way in it has covered ~15% of the distance, where Power(Out, 10) is at 65%.
+			var content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) };
+			var SUT = new ScrollViewer { Width = 200, Height = 200, Content = content };
+			await UITestHelper.Load(SUT);
+
+			var visual = ElementCompositionPreview.GetElementVisual(content);
+			var stopwatch = new System.Diagnostics.Stopwatch();
+			var samples = new List<(double Ms, double Offset)>();
+			EventHandler<object> onRendering = (_, _) => samples.Add((stopwatch.Elapsed.TotalMilliseconds, -visual.AnchorPoint.Y));
+
+			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += onRendering;
+			try
+			{
+				stopwatch.Start();
+				SUT.ChangeView(null, 200, null, disableAnimation: false); // 200px, so the full 1000ms
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			}
+			finally
+			{
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= onRendering;
+			}
+
+			var early = samples.First(sample => sample.Ms >= 100);
+			Assert.IsTrue(early.Offset / 200 < 0.4, $"{early.Ms:F0}ms in, the scroll already covered {early.Offset / 200:P0} of its distance");
+			Assert.AreEqual(200, SUT.VerticalOffset);
+		}
+#endif
+
 		// A flick fast enough to launch a fling: the velocity tracker fits the recent gesture, so it needs
 		// several moves spread over real time rather than one long jump.
 		private static async Task FlickUp(InputInjector input, Point from)
