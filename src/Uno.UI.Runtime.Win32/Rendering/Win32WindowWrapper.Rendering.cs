@@ -90,7 +90,6 @@ internal partial class Win32WindowWrapper
 			return null;
 		}
 
-		ct.Renderer = _renderer;
 		var clipPath = ct.OnNativePlatformFrameRequested(_context);
 
 		// The context skips its present when no frame was acquired (nothing recorded yet, empty bounds) or drops
