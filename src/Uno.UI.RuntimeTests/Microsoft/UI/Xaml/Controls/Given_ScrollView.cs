@@ -26,6 +26,23 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_ScrollView
 {
+	/// <summary>A precision touchpad reports wheel deltas finer than one 120-unit detent, and each must still scroll.</summary>
+	[TestMethod]
+	public async Task When_Wheel_Delta_Below_A_Detent_Then_Scrolls()
+	{
+		var (sut, bounds) = await LoadTallScrollView();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+		mouse.MoveTo(Center(bounds));
+		mouse.Wheel(-30);
+
+		await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 0, message: "a sub-detent wheel delta should scroll");
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+		Assert.AreEqual(12, sut.VerticalOffset, 0.5, "a quarter detent should scroll a quarter of the 48px a detent scrolls");
+	}
+
 	/// <summary>
 	/// The tracker's position is what the frame recorded in the same tick has to show: raising its change from a
 	/// dispatcher continuation instead left the content a hop behind the tracker.
