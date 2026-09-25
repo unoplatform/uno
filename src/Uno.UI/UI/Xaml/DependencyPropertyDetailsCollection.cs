@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml
 								newBinding.RelativeSource = new RelativeSource(relativeSource.Mode);
 							}
 
-							otherStore.SetBinding(newDP, newBinding);
+							otherStore.SetBindingInternal(newDP, newBinding);
 						}
 					}
 				}

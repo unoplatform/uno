@@ -135,7 +135,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 			var state = new VisualState();
 
 			var trigger = new StateTrigger();
-			trigger.SetBinding(StateTrigger.IsActiveProperty, new Binding() { Path = "a" });
+			trigger.SetBindingInternal(StateTrigger.IsActiveProperty, new Binding() { Path = "a" });
 			state.StateTriggers.Add(trigger);
 
 			group.States.Add(state);
@@ -164,7 +164,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 			var trigger = new StateTrigger();
 
-			trigger.SetBinding(StateTrigger.IsActiveProperty, new Binding() { Path = "a" });
+			trigger.SetBindingInternal(StateTrigger.IsActiveProperty, new Binding() { Path = "a" });
 
 			var groups = new List<VisualStateGroup>();
 
@@ -199,14 +199,14 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 			Assert.AreEqual(GridUnitType.Star, columnDefinition.Width.GridUnitType);
 			Assert.AreEqual(GridUnitType.Star, rowDefinition.Height.GridUnitType);
 
-			columnDefinition.SetBinding(ColumnDefinition.WidthProperty, new Binding() { Path = "a" });
+			columnDefinition.SetBindingInternal(ColumnDefinition.WidthProperty, new Binding() { Path = "a" });
 
 			Assert.AreEqual(GridUnitType.Pixel, columnDefinition.Width.GridUnitType);
 			Assert.AreEqual(42, columnDefinition.Width.Value);
 
 			Assert.AreEqual(GridUnitType.Star, rowDefinition.Height.GridUnitType);
 
-			rowDefinition.SetBinding(RowDefinition.HeightProperty, new Binding() { Path = "b" });
+			rowDefinition.SetBindingInternal(RowDefinition.HeightProperty, new Binding() { Path = "b" });
 
 			Assert.AreEqual(GridUnitType.Pixel, rowDefinition.Height.GridUnitType);
 			Assert.AreEqual(43, rowDefinition.Height.Value);
@@ -222,7 +222,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 			grid.DataContext = new { a = "42" };
 
 			var columnDefinition = new ColumnDefinition();
-			columnDefinition.SetBinding(ColumnDefinition.WidthProperty, new Binding() { Path = "a" });
+			columnDefinition.SetBindingInternal(ColumnDefinition.WidthProperty, new Binding() { Path = "a" });
 
 			Assert.AreEqual(GridUnitType.Star, columnDefinition.Width.GridUnitType);
 
@@ -243,7 +243,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 			grid.DataContext = new { a = "#FF00ff00" };
 
-			brush.SetBinding(Microsoft.UI.Xaml.Media.SolidColorBrush.ColorProperty, new Binding { Path = "a" });
+			brush.SetBindingInternal(Microsoft.UI.Xaml.Media.SolidColorBrush.ColorProperty, new Binding { Path = "a" });
 
 			// DataContext is public on FrameworkElement only (WinUI parity). A brush has no DataContext of its own;
 			// its {Binding}s resolve against the ambient DataContext of the connected element (WinUI inheritance-context).

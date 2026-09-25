@@ -21,7 +21,7 @@ public partial class BitmapIcon : IconElement, IThemeChangeAware
 		_image = new Image();
 		AddIconChild(_image);
 
-		_image.SetBinding(
+		_image.SetBindingInternal(
 			dependencyProperty: Image.SourceProperty,
 			binding: new Binding { Source = this, Path = nameof(UriSource) }
 		);

@@ -1271,7 +1271,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					container.SetBinding(contentProperty, new Binding
+					container.SetBindingInternal(contentProperty, new Binding
 					{
 						Path = displayMemberPath,
 						Source = item

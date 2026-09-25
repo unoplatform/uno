@@ -27,7 +27,7 @@ namespace Uno.UI.Tests.BinderTests_StandardProperty
 		{
 			var SUT = new MyObject();
 
-			SUT.SetBinding("Name", new Binding());
+			SUT.SetBindingInternal("Name", new Binding());
 
 			SUT.DataContext = "Test";
 
