@@ -431,6 +431,27 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	partial void OnSizeChanged(Vector2 value)
 		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
 
+	// A RenderTransform on any element — including one pruned from the accessibility tree — changes
+	// where its descendants are on screen, so it has to refresh accessibility geometry just like an
+	// offset or size change does.
+	partial void OnTransformMatrixChanged(Matrix4x4 value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+	partial void OnScaleChanged(Vector3 value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+	partial void OnOrientationChanged(Quaternion value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+	partial void OnRotationAngleChanged(float value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+	partial void OnRotationAxisChanged(Vector3 value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+	partial void OnCenterPointChanged(Vector3 value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
 	partial void OnIsVisibleChanged(bool value)
 	{
 		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);

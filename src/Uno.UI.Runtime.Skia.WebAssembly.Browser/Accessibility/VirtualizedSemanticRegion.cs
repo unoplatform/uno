@@ -19,9 +19,9 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 {
 	private readonly IntPtr _containerHandle;
 	private readonly Dictionary<int, IntPtr> _realizedHandles = new();
-	// Parallel set kept in sync with _realizedHandles.Values so ContainsRealizedHandle
-	// is O(1) on the focus/lookup hot path instead of O(n) Dictionary.ContainsValue.
-	private readonly HashSet<IntPtr> _realizedHandleSet = new();
+	// Reverse ownership keeps membership O(1) and distinguishes a moved container
+	// from a stale clearing notification for its previous index.
+	private readonly Dictionary<IntPtr, int> _realizedIndices = new();
 	private int _totalItemCount;
 	private bool _isFocusPinned;
 	private int? _pinnedIndex;
@@ -53,7 +53,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	/// <summary>Gets the data index of the pinned (focused) item, if any.</summary>
 	internal int? PinnedIndex => _pinnedIndex;
 	/// <summary>True if the given item handle currently has a realized DOM node in this region.</summary>
-	internal bool ContainsRealizedHandle(IntPtr handle) => _realizedHandleSet.Contains(handle);
+	internal bool ContainsRealizedHandle(IntPtr handle) => _realizedIndices.ContainsKey(handle);
 
 	/// <summary>
 	/// Called when an item is realized (ElementPrepared).
@@ -67,12 +67,38 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		_totalItemCount = totalCount;
 		if (_realizedHandles.TryGetValue(index, out var existing) && existing != itemHandle)
 		{
-			_realizedHandleSet.Remove(existing);
+			_realizedIndices.Remove(existing);
 		}
-		_realizedHandles[index] = itemHandle;
-		_realizedHandleSet.Add(itemHandle);
+		SetRealizedIndex(itemHandle, index);
 		NativeMethods.AddVirtualizedItem(_containerHandle, itemHandle, index, totalCount, x, y, width, height, role, label);
 		WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
+	}
+
+	internal void OnItemIndexChanged(IntPtr itemHandle, int index, int totalCount)
+	{
+		// Decorative items receive index notifications too, but have no semantic ownership.
+		if (!_realizedIndices.ContainsKey(itemHandle))
+		{
+			return;
+		}
+
+		_totalItemCount = totalCount;
+		// A shifted index can still be occupied until that container's own notification arrives.
+		// Unlike replacement during preparation, shifting must not evict the other live handle.
+		SetRealizedIndex(itemHandle, index);
+		NativeMethods.UpdateVirtualizedItemIndex(itemHandle, index, totalCount);
+	}
+
+	private void SetRealizedIndex(IntPtr itemHandle, int index)
+	{
+		if (_realizedIndices.TryGetValue(itemHandle, out var previousIndex)
+			&& _realizedHandles.TryGetValue(previousIndex, out var previousHandle)
+			&& previousHandle == itemHandle)
+		{
+			_realizedHandles.Remove(previousIndex);
+		}
+		_realizedHandles[index] = itemHandle;
+		_realizedIndices[itemHandle] = index;
 	}
 
 	/// <summary>
@@ -80,6 +106,16 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	/// </summary>
 	internal void OnItemUnrealized(IntPtr itemHandle, int index)
 	{
+		var hasCurrentIndex = _realizedIndices.TryGetValue(itemHandle, out var currentIndex);
+		if (hasCurrentIndex && index >= 0 && currentIndex != index)
+		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"ItemUnrealized skipped (stale index) container={_containerHandle} item={itemHandle} index={index} currentIndex={currentIndex}");
+			}
+			return;
+		}
+
 		// Don't remove if focus-pinned
 		if (_isFocusPinned && _pinnedIndex == index)
 		{
@@ -90,6 +126,12 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 			return;
 		}
 
+		// A removed explicit container may no longer have an index in its ItemsControl.
+		if (index < 0 && hasCurrentIndex)
+		{
+			index = currentIndex;
+		}
+
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"ItemUnrealized container={_containerHandle} item={itemHandle} index={index}");
@@ -98,13 +140,13 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		// Only clear the index mapping when it still points at the same handle. If a new item was
 		// realized into this index before the unrealize callback arrived (race that OnItemRealized
 		// already partially handles), the index now belongs to a different live handle and must
-		// not be evicted. The handle being unrealized is always purged from _realizedHandleSet
+		// not be evicted. The handle being unrealized is purged from the reverse mapping
 		// independently so DOM/state stay in sync.
 		if (_realizedHandles.TryGetValue(index, out var current) && current == itemHandle)
 		{
 			_realizedHandles.Remove(index);
 		}
-		_realizedHandleSet.Remove(itemHandle);
+		_realizedIndices.Remove(itemHandle);
 		NativeMethods.RemoveVirtualizedItem(itemHandle);
 		WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 	}
@@ -158,7 +200,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 			}
 			_disposed = true;
 			_realizedHandles.Clear();
-			_realizedHandleSet.Clear();
+			_realizedIndices.Clear();
 			NativeMethods.UnregisterVirtualizedContainer(_containerHandle);
 			WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 		}
@@ -174,6 +216,9 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.removeVirtualizedItem")]
 		internal static partial void RemoveVirtualizedItem(IntPtr itemHandle);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateVirtualizedItemIndex")]
+		internal static partial void UpdateVirtualizedItemIndex(IntPtr itemHandle, int index, int totalCount);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateVirtualizedItemCount")]
 		internal static partial void UpdateVirtualizedItemCount(IntPtr containerHandle, int totalCount);
