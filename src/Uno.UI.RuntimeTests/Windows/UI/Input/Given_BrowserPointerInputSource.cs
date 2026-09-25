@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using Microsoft.UI.Input;
 using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
 using System.Reflection;
@@ -20,6 +21,7 @@ public class Given_BrowserPointerInputSource
 	// enums in BrowserPointerInputSource, which themselves match the DOM PointerEvent contract.
 	private const int PointerDown = 1 << 2;
 	private const int PointerUp = 1 << 3;
+	private const int Wheel = 1 << 7;
 	private const int ButtonsX1 = 8; // back button held
 	private const int ButtonsX2 = 16; // forward button held
 	private const int UpdateX1 = 3; // back button updated
@@ -39,7 +41,66 @@ public class Given_BrowserPointerInputSource
 		Assert.AreEqual(expected, actual);
 	}
 
-	private static PointerUpdateKind RaiseNativePointerEvent(byte @event, int buttons, int buttonUpdate)
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public void When_WheelDeltaIsFractional_Then_AccumulatesAcrossEvents()
+	{
+		// Four consecutive trackpad ticks of 0.4 CSS px each (deltaMode=PIXEL). Each event reports the
+		// raw fractional delta as-is (unlike Win32/X11, where the OS already accumulates fractional
+		// notches into an int before delivering the message), so the source must carry the remainder
+		// across events instead of truncating every event to 0.
+		var deltas = RaiseWheelEvents(wheelDeltaY: -0.4, count: 4);
+
+		// 0.4+0.4+0.4+0.4 = 1.6px total: the third tick is the first to cross a whole unit (1), and the
+		// leftover 0.6 remainder isn't enough to cross another one, so only one event carries a delta.
+		CollectionAssert.AreEqual(new[] { 1 }, deltas);
+	}
+
+	private static List<int> RaiseWheelEvents(double wheelDeltaY, int count)
+	{
+		var type = ResolveBrowserPointerInputSourceType();
+		var source = CreateUninitializedSource(type);
+
+		var deltas = new List<int>();
+		TypedEventHandler<object, PointerEventArgs> handler = (_, e) => deltas.Add(e.CurrentPoint.Properties.MouseWheelDelta);
+
+		var wheelChanged = type.GetEvent("PointerWheelChanged")!;
+		wheelChanged.AddEventHandler(source, handler);
+
+		try
+		{
+			var onNativeEvent = type.GetMethod("OnNativeEvent", BindingFlags.NonPublic | BindingFlags.Static)!;
+			for (var i = 0; i < count; i++)
+			{
+				onNativeEvent.Invoke(null, new object[]
+				{
+					source,
+					(byte)Wheel,
+					/* timestamp */ 0d,
+					/* deviceType */ (int)Windows.Devices.Input.PointerDeviceType.Mouse,
+					/* pointerId */ 1d,
+					/* x */ 0d,
+					/* y */ 0d,
+					/* ctrl */ false,
+					/* shift */ false,
+					/* buttons */ 0,
+					/* buttonUpdate */ 0,
+					/* pressure */ 0.5d,
+					/* wheelDeltaX */ 0d,
+					wheelDeltaY,
+					/* hasRelatedTarget */ false,
+				});
+			}
+		}
+		finally
+		{
+			wheelChanged.RemoveEventHandler(source, handler);
+		}
+
+		return deltas;
+	}
+
+	private static Type ResolveBrowserPointerInputSourceType()
 	{
 		var type =
 			Type.GetType("Uno.UI.Runtime.BrowserPointerInputSource, Uno.UI")
@@ -47,8 +108,16 @@ public class Given_BrowserPointerInputSource
 
 		Assert.IsNotNull(type, "BrowserPointerInputSource type was not found in the loaded WASM assemblies.");
 
-		// Bypass the constructor: it calls into JS to register the source, which we don't want from a test.
-		var source = RuntimeHelpers.GetUninitializedObject(type);
+		return type!;
+	}
+
+	// Bypass the constructor: it calls into JS to register the source, which we don't want from a test.
+	private static object CreateUninitializedSource(Type type) => RuntimeHelpers.GetUninitializedObject(type);
+
+	private static PointerUpdateKind RaiseNativePointerEvent(byte @event, int buttons, int buttonUpdate)
+	{
+		var type = ResolveBrowserPointerInputSourceType();
+		var source = CreateUninitializedSource(type);
 
 		PointerEventArgs? captured = null;
 		TypedEventHandler<object, PointerEventArgs> handler = (_, e) => captured = e;
