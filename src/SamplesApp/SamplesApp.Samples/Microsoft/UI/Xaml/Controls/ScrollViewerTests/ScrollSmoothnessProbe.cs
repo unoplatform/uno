@@ -206,6 +206,15 @@ internal sealed class ScrollSmoothnessProbe
 		result.MotionPx = Math.Abs(Axis(window[^1].R) - Axis(window[0].R));
 		result.MovingFrames = window.Count;
 		result.Fps = result.MotionMs > 0 ? (window.Count - 1) * 1000.0 / result.MotionMs : 0;
+		var newFrames = 0;
+		for (var i = 1; i < window.Count; i++)
+		{
+			if (window[i].P.Sequence != window[i - 1].P.Sequence)
+			{
+				newFrames++;
+			}
+		}
+		result.NewFps = result.MotionMs > 0 ? newFrames * 1000.0 / result.MotionMs : 0;
 		result.IntervalP50 = period;
 		result.IntervalP95 = Percentile(sortedIntervals, 0.95);
 		result.IntervalP99 = Percentile(sortedIntervals, 0.99);
@@ -320,6 +329,9 @@ internal sealed class ScrollSmoothnessResult
 	public double MotionMs { get; set; }
 	public double MotionPx { get; set; }
 	public double Fps { get; set; }
+
+	/// <summary>Presents that showed a newly recorded frame, per second; <see cref="Fps"/> also counts repeats.</summary>
+	public double NewFps { get; set; }
 	public double IntervalP50 { get; set; }
 	public double IntervalP95 { get; set; }
 	public double IntervalP99 { get; set; }
@@ -343,7 +355,7 @@ internal sealed class ScrollSmoothnessResult
 
 	public string ToSummary()
 		=> string.Create(CultureInfo.InvariantCulture,
-			$"{Scenario,-14} fps {Fps,5:F1}  frame p50 {IntervalP50,5:F1} p95 {IntervalP95,5:F1} p99 {IntervalP99,5:F1} max {IntervalMax,6:F1}ms  long {LongFrames,3} stall>250 {HostStalls,2}  " +
+			$"{Scenario,-14} fps {Fps,5:F1} new {NewFps,5:F1}  frame p50 {IntervalP50,5:F1} p95 {IntervalP95,5:F1} p99 {IntervalP99,5:F1} max {IntervalMax,6:F1}ms  long {LongFrames,3} stall>250 {HostStalls,2}  " +
 			$"step max {MaxStepPx,5:F0}px repeat {RepeatedFrames,3} stall {StalledFrames,3} back {BackwardSteps,2}({MaxBackwardPx:F1}px)  " +
 			$"judder rms {JudderRmsPx,5:F2} p95 {JudderP95Px,5:F2} max {JudderMaxPx,6:F2}px  rec→pres {RecordToPresentP50,4:F1}/{RecordToPresentP95,4:F1}ms  " +
 			$"react {FirstInputToMoveMs,5:F1}ms  {MovingFrames} frames/{MotionMs:F0}ms/{MotionPx:F0}px");
@@ -352,7 +364,7 @@ internal sealed class ScrollSmoothnessResult
 	{
 		var sb = new StringBuilder();
 		sb.Append(CultureInfo.InvariantCulture, $"{{\"platform\":\"{platform}\",\"scenario\":\"{Scenario}\",\"records\":{Records},\"presents\":{Presents},\"movingFrames\":{MovingFrames}");
-		sb.Append(CultureInfo.InvariantCulture, $",\"motionMs\":{MotionMs:F1},\"motionPx\":{MotionPx:F1},\"fps\":{Fps:F2}");
+		sb.Append(CultureInfo.InvariantCulture, $",\"motionMs\":{MotionMs:F1},\"motionPx\":{MotionPx:F1},\"fps\":{Fps:F2},\"newFps\":{NewFps:F2}");
 		sb.Append(CultureInfo.InvariantCulture, $",\"intervalP50\":{IntervalP50:F2},\"intervalP95\":{IntervalP95:F2},\"intervalP99\":{IntervalP99:F2},\"intervalMax\":{IntervalMax:F2},\"longFrames\":{LongFrames},\"hostStalls\":{HostStalls}");
 		sb.Append(CultureInfo.InvariantCulture, $",\"repeatedFrames\":{RepeatedFrames},\"stalledFrames\":{StalledFrames},\"backwardSteps\":{BackwardSteps},\"maxBackwardPx\":{MaxBackwardPx:F2},\"maxStepPx\":{MaxStepPx:F2}");
 		sb.Append(CultureInfo.InvariantCulture, $",\"judderRmsPx\":{JudderRmsPx:F3},\"judderP95Px\":{JudderP95Px:F3},\"judderMaxPx\":{JudderMaxPx:F3}");
