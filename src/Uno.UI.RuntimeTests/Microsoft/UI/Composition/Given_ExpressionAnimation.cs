@@ -201,9 +201,8 @@ public partial class Given_ExpressionAnimation
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16570")]
-#if !__SKIA__
-	[Ignore("Only supported on Skia")]
-#endif
+	// WinUI already reports "Translation" in visual.Properties once SetIsTranslationEnabled is set, before any animation starts.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Animating_CompositionPropertySet()
 	{
 		var border = new Border()
@@ -246,9 +245,8 @@ public partial class Given_ExpressionAnimation
 	// and starts it on many targets. Each target must keep the parameters it was started with, not the
 	// last-configured ones. (This is why the "L" in the LottieFiles logo used to disappear.)
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("ExpressionAnimation evaluation is Skia-only")]
-#endif
+	// WinUI's CompositionPropertySet.TryGetScalar returns the stored value, not the animated one (reads 0).
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Reusable_Expression_Started_On_Multiple_Targets()
 	{
 		var border = new Border() { Width = 100, Height = 100 };

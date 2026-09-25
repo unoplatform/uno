@@ -42,31 +42,26 @@
 	<ItemGroup Condition="'$(ShouldRunGenerator)'=='true'">
 		<CompilerVisibleProperty Include="XamlSourceGeneratorTracingFolder" />
 		<CompilerVisibleProperty Include="TargetFramework" />
-		<CompilerVisibleProperty Include="ProjectTypeGuidsProperty" />
 		<CompilerVisibleProperty Include="MSBuildProjectFullPath" />
 		<CompilerVisibleProperty Include="RootNamespace" />
 		<CompilerVisibleProperty Include="DefineConstantsProperty" />
 		<CompilerVisibleProperty Include="Configuration" />
 		<CompilerVisibleProperty Include="IntermediateOutputPath" />
 		<CompilerVisibleProperty Include="AndroidApplication" />
-		<CompilerVisibleProperty Include="OutputType" />
 		<CompilerVisibleProperty Include="MSBuildProjectName" />
 		<CompilerVisibleProperty Include="BuildingProject" />
 		<CompilerVisibleProperty Include="DesignTimeBuild" />
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
 		<CompilerVisibleProperty Include="BuildingInsideVisualStudio" />
 		<CompilerVisibleProperty Include="UnoPlatformIDE" />
-		<CompilerVisibleProperty Include="IsHotReloadHost" />
 		<CompilerVisibleProperty Include="UnoGenerateXamlSourcesProvider" />
 		<CompilerVisibleProperty Include="UnoForceHotReloadCodeGen" />
 		<CompilerVisibleProperty Include="UnoForceIncludeProjectConfiguration" />
 		<CompilerVisibleProperty Include="UnoForceIncludeServerProcessorsConfiguration" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
-		<CompilerVisibleProperty Include="UnoDisableHotRestartHelperGeneration" />
 		<CompilerVisibleProperty Include="RuntimeIdentifier" />
 		<CompilerVisibleProperty Include="UnoRuntimeIdentifier" />
 		<CompilerVisibleProperty Include="UnoWinRTRuntimeIdentifier" />
-		<CompilerVisibleProperty Include="UnoUIRuntimeIdentifier" />
 		<CompilerVisibleProperty Include="UnoHotReloadMode" />
 
 		<CompilerVisibleProperty Include="SolutionFileName" />
@@ -83,11 +78,10 @@
 		<CompilerVisibleProperty Include="DevEnvDir" />
 		<CompilerVisibleProperty Include="MSBuildVersion" />
 
-		<CompilerVisibleProperty Include="UseWPF" />
-		<CompilerVisibleProperty Include="IsUnoHead" />
 		<CompilerVisibleProperty Include="UnoRemoteControlPort" />
 		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
 		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
+		<!-- Not read by any generator: a changed cookie changes the generated editorconfig, which forces CoreCompile to rerun. -->
 		<CompilerVisibleProperty Include="UnoRemoteControlConfigCookie" />
 		<CompilerVisibleProperty Include="UnoHotReloadDiagnosticsLogPath" />
 		<CompilerVisibleProperty Include="AppendRuntimeIdentifierToOutputPath" />
@@ -107,7 +101,6 @@
 		<CompilerVisibleProperty Include="UnoGlobalXamlNamespaceUri" />
 		<CompilerVisibleProperty Include="UnoXamlResourcesTrimming"/>
 		<CompilerVisibleProperty Include="UnoEnableAlcAppSupport"/>
-		<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
 		<CompilerVisibleProperty Include="AssemblyName"/>
 
 		<CompilerVisibleProperty Include="UnoDefaultFont" />
@@ -283,12 +276,6 @@
 			<Output
 					TaskParameter="Value"
 					PropertyName="XamlGeneratorAnalyzerSuppressionsProperty" />
-		</CreateProperty>
-
-		<CreateProperty Value="$(ProjectTypeGuids.Replace(';',','))">
-			<Output
-					TaskParameter="Value"
-					PropertyName="ProjectTypeGuidsProperty" />
 		</CreateProperty>
 
 		<CreateProperty Value="$(DefineConstants.Replace(';',','))">

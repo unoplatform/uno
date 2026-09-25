@@ -36,7 +36,9 @@
 	</ItemGroup>
 
 	<!--
-  List of known constants:
+  List of known constants for building this repository. Consumer projects get their own set from
+  build/nuget/uno.winui.common.targets and the Uno.Sdk; only __WASM__ and UNO_REFERENCE_API overlap,
+  the latter with a different meaning. See doc/articles/uno-development/preprocessor-symbols.md.
   - __SKIA__: Used when building for the Skia backend
   - __WASM__: Used when building for the WebAssembly backend
   - UNO_REFERENCE_API: True for Skia, Wasm and Reference. The name is historical: for a consumer this is
@@ -140,9 +142,11 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			
-			<!-- Current nuget publishing uses netX.0-android30.0 -->
-			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
+
+			<!-- Android API folder is published per net major version: see build/nuget/Uno.WinRT.nuspec / Uno.Foundation.nuspec. -->
+			<_OverrideAndroidApiLevel Condition="$([MSBuild]::GetTargetFrameworkVersion('$(_OverrideTargetFramework)')) == '10.0'">30.0</_OverrideAndroidApiLevel>
+			<_OverrideAndroidApiLevel Condition="$([MSBuild]::GetTargetFrameworkVersion('$(_OverrideTargetFramework)')) == '11.0'">36.0</_OverrideAndroidApiLevel>
+			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android')) AND '$(_OverrideAndroidApiLevel)' != ''">$(_OverrideTargetFramework)$(_OverrideAndroidApiLevel)</_OverrideTargetFramework>
 
 			<_overridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</_overridePackageId>
 			<_overridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName.ToLowerInvariant())</_overridePackageId>
@@ -207,8 +211,10 @@
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
 
-			<!-- Current nuget publishing uses netX.0-android30.0 -->
-			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
+			<!-- Android API folder is published per net major version: see build/nuget/Uno.WinRT.nuspec / Uno.Foundation.nuspec. -->
+			<_OverrideAndroidApiLevel Condition="$([MSBuild]::GetTargetFrameworkVersion('$(_OverrideTargetFramework)')) == '10.0'">30.0</_OverrideAndroidApiLevel>
+			<_OverrideAndroidApiLevel Condition="$([MSBuild]::GetTargetFrameworkVersion('$(_OverrideTargetFramework)')) == '11.0'">36.0</_OverrideAndroidApiLevel>
+			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android')) AND '$(_OverrideAndroidApiLevel)' != ''">$(_OverrideTargetFramework)$(_OverrideAndroidApiLevel)</_OverrideTargetFramework>
 
 			<CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
 			<CommonOverridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</CommonOverridePackageId>

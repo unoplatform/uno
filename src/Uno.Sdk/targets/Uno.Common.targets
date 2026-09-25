@@ -131,7 +131,7 @@
 		<UnoDspImportColors Include="Styles\*.zip" Generator="CSharp" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
 	</ItemGroup>
 
-	<ItemGroup Condition="($(UnoFeatures.Contains(';configuration;')) OR $(UnoFeatures.Contains(';Extensions;'))) AND Exists('appsettings.json')">
+	<ItemGroup Condition="($(UnoFeatures.Contains(';configuration;')) OR $(UnoFeatures.Contains(';extensions;'))) AND Exists('appsettings.json')">
 		<EmbeddedResource Include="appsettings.json" />
 		<EmbeddedResource Include="appsettings.*.json" DependentUpon="appsettings.json" />
 	</ItemGroup>

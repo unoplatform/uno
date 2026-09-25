@@ -21,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ScrollViewerTests;
 [RunsOnUIThread]
 public class Given_ScrollViewer_ScrollChaining
 {
-#if HAS_UNO && UNO_HAS_MANAGED_SCROLL_PRESENTER
+#if HAS_UNO
 	private const double ViewportSize = 200;
 	private const double InnerContentHeight = 500;
 	private const double OuterContentHeight = 2000;

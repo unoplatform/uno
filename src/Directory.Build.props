@@ -188,9 +188,6 @@
 
 		<IsAppleUIKit>false</IsAppleUIKit>
 		<IsAppleUIKit Condition="$(IsIOS) or $(IsTvOS)">true</IsAppleUIKit>
-
-		<IsApple>false</IsApple>
-		<IsApple Condition="$(IsIOS) or $(IsTvOS)">true</IsApple>
 	</PropertyGroup>
 
 	<PropertyGroup>

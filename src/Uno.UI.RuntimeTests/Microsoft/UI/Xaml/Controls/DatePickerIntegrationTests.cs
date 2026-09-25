@@ -17,6 +17,8 @@ using AwesomeAssertions.Execution;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using System.Threading;
+using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 
 
 #if HAS_UNO
@@ -199,8 +201,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			await datePickerValueChangedEvent.Task;
 		}
 
-#if LOOPING_SELECTOR_AVAILABLE // TODO: Remove this when LoopingSelector is available https://github.com/unoplatform/uno/issues/4880
 		[TestMethod]
+		// WinAppSDK: KeyboardHelper is a no-op there, and DoClickUsingAP detaches Click off the UI thread (RPC_E_WRONG_THREAD).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task CanChooseDate()
 		{
 			// Verify that the DatePicker control can be used to choose a Date.
@@ -220,10 +223,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				datePicker.MinYear = minYear;
 			});
 
-			var dateChangedEvent = new TaskCompletionSource<object>();
-
-			var cts = new CancellationTokenSource(1000);
-			cts.Token.Register(() => dateChangedEvent.TrySetException(new TimeoutException()));
+			var dateChangedEvent = new Event();
 
 			datePicker.DateChanged += OnDatePickerOnDateChanged;
 
@@ -232,22 +232,22 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				Assert.AreEqual(initialDate, args.OldDate);
 				Assert.AreEqual(dateToSelect, args.NewDate);
 
-				dateChangedEvent.TrySetResult(null);
+				dateChangedEvent.Set();
 			}
 
-			DateTimePickerHelper.OpenDateTimePicker(datePicker);
-			TestServices.WindowHelper.WaitForIdle();
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+			await TestServices.WindowHelper.WaitForIdle();
 
-			DateTimePickerHelper.SelectDateInOpenDatePickerFlyout(dateToSelect, minYear.Year, LoopingSelectorHelper.SelectionMode.Keyboard);
-			await dateChangedEvent.Task;
+			await DateTimePickerHelper.SelectDateInOpenDatePickerFlyout(CreateCalendar(dateToSelect), minYear.Year, LoopingSelectorHelper.SelectionMode.Keyboard);
+			await dateChangedEvent.WaitForDefault();
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Assert.AreEqual(dateToSelect, datePicker.Date);
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
-#endif
+
 		private async Task<DatePicker> SetupDatePickerTest()
 		{
 			DatePicker datePicker = null;
@@ -447,41 +447,30 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		}
 #endif
 
-#if FOCUS_IMPLEMENTED
 		[TestMethod]
+		[Ignore("Skia: once the DatePickerFlyout has been closed and reopened, a touch pan on its LoopingSelector no longer changes the selection, so the second open/close cycle times out. WinAppSDK: KeyboardHelper is a no-op.")]
 		public async Task CanOpenAndCloseUsingKeyboard()
 		{
 			var datePicker = await SetupDatePickerTest();
 
-			var dateChangedEvent = new TaskCompletionSource<object>();
-
-			var cts = new CancellationTokenSource(1000);
-			cts.Token.Register(() => dateChangedEvent.TrySetException(new TimeoutException()));
-
-			var dateChangedRegistration = CreateSafeEventRegistration(DatePicker, DateChanged);
-			dateChangedRegistration.Attach(datePicker, [&]() {
-				dateChangedEvent.Set();
-			});
+			var dateChangedEvent = new Event();
+			datePicker.DateChanged += (s, e) => dateChangedEvent.Set();
 
 			this.Log().Info("Ensuring datePicker has focus.");
-			FocusTestHelper.EnsureFocus(datePicker, FocusState.Keyboard);
+			await FocusTestHelper.EnsureFocus(datePicker, FocusState.Keyboard);
 
 			this.Log().Info("Try to open and close DatePicker using space key press");
-			DateTimePickerHelper.OpenAndCloseDateTimePickerUsingKeyboard(" ", " ", dateChangedEvent);
+			await DateTimePickerHelper.OpenAndCloseDateTimePickerUsingKeyboard(" ", " ", dateChangedEvent);
 
 			this.Log().Info("Try to open and close DatePicker using enter");
-			DateTimePickerHelper.OpenAndCloseDateTimePickerUsingKeyboard("$d$_enter#$u$_enter", "$d$_enter#$u$_enter",
-				dateChangedEvent);
+			await DateTimePickerHelper.OpenAndCloseDateTimePickerUsingKeyboard("$d$_enter#$u$_enter", "$d$_enter#$u$_enter", dateChangedEvent);
 
 			this.Log().Info("Try to open and close DatePicker using Alt+Down");
-			DateTimePickerHelper.OpenAndCloseDateTimePickerUsingKeyboard("$d$_alt#$d$_down#$u$_down#$u$_alt",
-				"$d$_alt#$d$_down#$u$_down#$u$_alt", dateChangedEvent);
+			await DateTimePickerHelper.OpenAndCloseDateTimePickerUsingKeyboard("$d$_alt#$d$_down#$u$_down#$u$_alt", "$d$_alt#$d$_down#$u$_down#$u$_alt", dateChangedEvent);
 
 			this.Log().Info("Try to open and close DatePicker using Alt+Up");
-			DateTimePickerHelper.OpenAndCloseDateTimePickerUsingKeyboard("$d$_alt#$d$_up#$u$_up#$u$_alt",
-				"$d$_alt#$d$_up#$u$_up#$u$_alt", dateChangedEvent);
+			await DateTimePickerHelper.OpenAndCloseDateTimePickerUsingKeyboard("$d$_alt#$d$_up#$u$_up#$u$_alt", "$d$_alt#$d$_up#$u$_up#$u$_alt", dateChangedEvent);
 		}
-#endif
 
 		[TestMethod]
 		[DataRow("GregorianCalendar")]
@@ -964,8 +953,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			await ControlHelper.ClickFlyoutCloseButton(datePicker, true /* isAccept */);
 		}
 
-#if LOOPING_SELECTOR_AVAILABLE // TODO: Remove this when LoopingSelector is available https://github.com/unoplatform/uno/issues/4880
 		[TestMethod]
+		// WinAppSDK: the injected tap never raises Click, so DoClickUsingTap waits forever.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task DatePickerShouldMaintainTime()
 		{
 			// Even though the DatePicker only deals with dates, the Date property is of type DateTime and so has a time component
@@ -983,10 +973,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			calendar.Second = 30;
 			calendar.Period = 1;
 
-			var dateChangedEvent = new TaskCompletionSource<object>();
-
-			var cts = new CancellationTokenSource(1000);
-			cts.Token.Register(() => dateChangedEvent.TrySetException(new TimeoutException()));
+			var dateChangedEvent = new Event();
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -994,17 +981,17 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				TestServices.WindowHelper.WindowContent = rootGrid;
 
 				datePicker = new DatePicker();
-				datePicker.SelectedDate = (calendar);
+				datePicker.SelectedDate = calendar.GetDateTime();
 
 				datePicker.DateChanged += (sender, args) =>
 				{
-					dateChangedEvent.TrySetResult(null);
+					dateChangedEvent.Set();
 				};
 
 				rootGrid.Children.Add(datePicker);
 			});
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			//We verify that the DateTime was not changed by the DatePicker:
 			await RunOnUIThread.ExecuteAsync(() =>
@@ -1029,18 +1016,19 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			this.Log().Info("Launch the date picker flyout by using Tap.");
 			await ControlHelper.DoClickUsingTap(await GetFlyoutButtonFromDatePicker(datePicker));
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			this.Log().Info("Pan the looping selectors.");
-			LoopingSelectorHelper.PanDateTimeLoopingSelector();
+			await LoopingSelectorHelper.PanDateTimeLoopingSelector();
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
+			dateChangedEvent.Reset();
 			this.Log().Info("Close the picker flyout.");
-			ControlHelper.ClickFlyoutCloseButton(datePicker, true /* isAccept */);
+			await ControlHelper.ClickFlyoutCloseButton(datePicker, true /* isAccept */);
 
-			await dateChangedEvent.Task;
-			TestServices.WindowHelper.WaitForIdle();
+			await dateChangedEvent.WaitForDefault();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			// After changing the Date, the time component should remain unaffected:
 			await RunOnUIThread.ExecuteAsync(() =>
@@ -1054,7 +1042,6 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				Assert.AreEqual(calendarNew.Period, calendar.Period);
 			});
 		}
-#endif
 
 		[TestMethod]
 		[Ignore]
@@ -1143,8 +1130,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			await VerifyHasPlaceholder(datePicker);
 		}
 
-#if LOOPING_SELECTOR_AVAILABLE // TODO: Remove this when LoopingSelector is available https://github.com/unoplatform/uno/issues/4880
 		[TestMethod]
+		// WinAppSDK: KeyboardHelper is a no-op there, and DoClickUsingAP detaches Click off the UI thread (RPC_E_WRONG_THREAD).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task SelectingDateSetsSelectedDate()
 		{
 			var datePicker = await SetupDatePickerTest();
@@ -1156,12 +1144,12 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			});
 
 			this.Log().Info("Selecting January 1, 2018.");
-			DateTimePickerHelper.OpenDateTimePicker(datePicker);
-			TestServices.WindowHelper.WaitForIdle();
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+			await TestServices.WindowHelper.WaitForIdle();
 
-			DateTimePickerHelper.SelectDateInOpenDatePickerFlyout(targetDate, targetDate.Year,
+			await DateTimePickerHelper.SelectDateInOpenDatePickerFlyout(CreateCalendar(targetDate), targetDate.Year,
 				LoopingSelectorHelper.SelectionMode.Keyboard);
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -1171,7 +1159,6 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				VerifyDatesAreEqual(targetDate, datePicker.SelectedDate.Value);
 			});
 		}
-#endif
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]

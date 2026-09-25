@@ -65,8 +65,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? UnoWasmBootstrapVersion { get; set; }
 
-	public string? UnoUniversalImageLoaderVersion { get; set; }
-
 	public string? AndroidMaterialVersion { get; set; }
 
 	public string? AndroidXSplashScreenVersion { get; set; }
@@ -244,7 +242,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.VlcNativeWindowsAssets, VlcNativeWindowsAssetsVersion)
 			.UpdateManifest(PackageManifest.Group.MicrosoftWebView2, MicrosoftWebView2Version)
 			.UpdateManifest(PackageManifest.Group.CoreLogging, UnoCoreLoggingSingletonVersion)
-			.UpdateManifest(PackageManifest.Group.UniversalImageLoading, UnoUniversalImageLoaderVersion)
 			.UpdateManifest(PackageManifest.Group.Dsp, UnoDspTasksVersion)
 			.UpdateManifest(PackageManifest.Group.Resizetizer, UnoResizetizerVersion)
 			.UpdateManifest(PackageManifest.Group.SdkExtras, UnoSdkExtrasVersion)
