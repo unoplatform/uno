@@ -132,6 +132,13 @@ public interface IDrawingSession
 	}
 
 	/// <summary>
+	/// Draws a shaped glyph run through the backend's own text pipeline (glyph cache, scaler hinting). Returns
+	/// <c>false</c> when the backend cannot draw <paramref name="font"/> natively; the caller then fills the run's
+	/// outlines instead.
+	/// </summary>
+	bool TryDrawGlyphRun(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color) => false;
+
+	/// <summary>
 	/// Draws <paramref name="silhouette"/> as a soft shadow: coverage blurred by (<paramref name="sigmaX"/>,
 	/// <paramref name="sigmaY"/>) and filled with <paramref name="color"/>; <paramref name="additive"/>
 	/// sums overlapping contributions. The sigmas are in the session's CURRENT coordinate space, not device
