@@ -550,7 +550,9 @@ public class Given_Visual_Damage
 #if __SKIA__
 	private static void RenderFrame(ContainerVisual root, DamageRegion damage)
 	{
-		var recording = DrawingFactory.Current.CreateRecording();
+		// The detached tree under test renders with the main window's backend: nothing process-wide holds one.
+		var factory = Private.Infrastructure.TestServices.WindowHelper.XamlRoot!.VisualTree.RootElement!.Visual.CompositionTarget!.Renderer!;
+		var recording = factory.CreateRecording();
 		FrameRenderHelper.RecordFrame(recording, 200, 200, root, invertPath: false, damage: damage);
 		recording.Finish()?.Dispose();
 	}

@@ -223,7 +223,6 @@ internal static class GraphicsRegistry
 						continue;
 					}
 
-					DrawingFactory.Register(backendFactory);
 					if (typeof(GraphicsRegistry).Log().IsEnabled(LogLevel.Information))
 					{
 						typeof(GraphicsRegistry).Log().Info($"Graphics backend '{backend.GetType().Name}' won negotiation on context kind '{kind}'.");

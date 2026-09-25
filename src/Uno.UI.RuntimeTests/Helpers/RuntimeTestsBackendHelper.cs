@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,9 +19,13 @@ internal static class RuntimeTestsBackendHelper
 #if __SKIA__
 		try
 		{
-			return Uno.UI.Composition.Drawing.DrawingFactory.Current.GetType().Assembly.GetName().Name switch
+			// The main window's negotiated backend. There is no process-wide holder to ask: a factory belongs to
+			// the window that negotiated it.
+			var renderer = Private.Infrastructure.TestServices.WindowHelper.XamlRoot?.VisualTree.RootElement?.Visual.CompositionTarget?.Renderer;
+			return renderer?.GetType().Assembly.GetName().Name switch
 			{
 				"Uno.UI.Composition.WebGpu" => RuntimeTestBackends.WebGpu,
+				null => RuntimeTestBackends.None,
 				_ => RuntimeTestBackends.Skia,
 			};
 		}
