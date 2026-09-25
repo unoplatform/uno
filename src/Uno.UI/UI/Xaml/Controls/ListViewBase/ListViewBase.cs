@@ -86,6 +86,14 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
+			// For keyboard Home/End/Page keys that didn't come from an item, scroll the ScrollViewer.
+			if (args.Key is VirtualKey.Home or VirtualKey.End or VirtualKey.PageUp or VirtualKey.PageDown &&
+				!IsKeyDownFromItem(args))
+			{
+				ElementScrollViewerScrollInDirection(args.Key);
+				return true;
+			}
+
 			var focusedElement = XamlRoot is { } xamlRoot ?
 				FocusManager.GetFocusedElement(XamlRoot) :
 				null;
@@ -120,6 +128,21 @@ namespace Microsoft.UI.Xaml.Controls
 						return false;
 				}
 			}
+		}
+
+		// WinUI's items flag this (SetHandleKeyDownArgsFromItem) when the key bubbles through them unhandled.
+		private bool IsKeyDownFromItem(KeyRoutedEventArgs args)
+		{
+			for (var current = args.OriginalSource as DependencyObject; current is not null && current != this; current = Media.VisualTreeHelper.GetParent(current))
+			{
+				if (current is ListViewBaseHeaderItem
+					|| (current is SelectorItem && ItemsControlFromItemContainer(current) == this))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		private bool TryMoveKeyboardFocusAndSelection(int offset, VirtualKeyModifiers modifiers)
