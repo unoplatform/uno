@@ -238,6 +238,35 @@ public class Given_Compositor
 	}
 
 	/// <summary>
+	/// While nothing animates, frames only come when something changes, so the gaps between them are all there is
+	/// to sample. They must not become the interval: a motion starting from rest back-dates its first frame by it,
+	/// and a 350ms back-date plays most of a wheel notch in a single frame.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Frames_Are_Sparse_Then_Frame_Interval_Is_Not_Skewed()
+	{
+		var clock = new Uno.UI.Composition.FrameClock();
+
+		var raw = TimeSpan.TicksPerSecond;
+		for (var i = 0; i < 20; i++)
+		{
+			raw += 350 * TimeSpan.TicksPerMillisecond;
+			clock.NextTimestamp(raw);
+		}
+
+		Assert.AreEqual(TimeSpan.TicksPerSecond / 60, clock.IntervalInTicks, $"sparse frames skewed the interval to {Ms(clock.IntervalInTicks)}ms");
+
+		for (var i = 0; i < 10; i++)
+		{
+			raw += Period;
+			clock.NextTimestamp(raw);
+		}
+
+		Assert.AreEqual(Period, clock.IntervalInTicks, "the interval should come from the first continuous frames");
+	}
+
+	/// <summary>
 	/// A record evaluates its animations against the frame's timestamp, not the instant the record happened to
 	/// run at, so every animation in the frame moves on the same even grid as the frame drivers.
 	/// </summary>
