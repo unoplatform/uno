@@ -742,6 +742,35 @@ namespace Microsoft.UI.Xaml.Controls
 				=> distance < 0 ? from > 0 : distance > 0 && from < max;
 		}
 
+		/// <summary>
+		/// Glides to the given offsets on the wheel's curve, retargeting any glide in flight so that repeated
+		/// requests (a held key) keep one continuous motion instead of restarting it.
+		/// </summary>
+		internal void GlideTo(double? horizontalOffset, double? verticalOffset)
+		{
+			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
+			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);
+
+			var targetH = horizontalOffset is { } h ? Math.Clamp(h, 0, maxH) : TargetHorizontalOffset;
+			var targetV = verticalOffset is { } v ? Math.Clamp(v, 0, maxV) : TargetVerticalOffset;
+
+			if (targetH == TargetHorizontalOffset && targetV == TargetVerticalOffset)
+			{
+				return;
+			}
+
+			if (!AddWheelImpulse(targetH - TargetHorizontalOffset, targetV - TargetVerticalOffset))
+			{
+				// No composition target to glide on yet: land there directly.
+				Set(horizontalOffset: horizontalOffset, verticalOffset: verticalOffset, options: new(DisableAnimation: true));
+				return;
+			}
+
+			// Exactly on the requested offsets rather than on the sum of distances.
+			_wheelMotionH.MoveTargetTo(targetH);
+			_wheelMotionV.MoveTargetTo(targetV);
+		}
+
 		internal void StopWheelMotion()
 		{
 			if (!_isWheelMotionRunning)

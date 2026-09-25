@@ -1332,6 +1332,19 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
+		/// <summary>
+		/// Scrolls for a key press as WinUI does through DManip: an animated glide rather than a jump. Each press adds
+		/// to the glide in flight, so a held key's auto-repeat keeps one continuous motion.
+		/// </summary>
+		private void GlideForKeyboard(double? horizontalOffset, double? verticalOffset)
+		{
+			_horizontalOffsetIntent = horizontalOffset ?? _horizontalOffsetIntent;
+			_verticalOffsetIntent = verticalOffset ?? _verticalOffsetIntent;
+
+			AdjustOffsetsForSnapPoints(ref horizontalOffset, ref verticalOffset, null, canBypassSingle: true);
+			Presenter?.GlideTo(horizontalOffset, verticalOffset);
+		}
+
 		public void ScrollToHorizontalOffset(double offset)
 			=> ChangeView(offset, null, null, true);
 
@@ -1780,12 +1793,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (canScrollHorizontally && key is VirtualKey.Left or VirtualKey.Right)
 				{
-					ScrollToHorizontalOffset(newOffset);
+					GlideForKeyboard(newOffset, null);
 					args.Handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
 				}
 				else if (canScrollVertically && key is not (VirtualKey.Left or VirtualKey.Right))
 				{
-					ScrollToVerticalOffset(newOffset);
+					GlideForKeyboard(null, newOffset);
 					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
 				}
 
