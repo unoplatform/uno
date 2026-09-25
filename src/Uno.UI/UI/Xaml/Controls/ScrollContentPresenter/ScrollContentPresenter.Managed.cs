@@ -514,11 +514,28 @@ namespace Microsoft.UI.Xaml.Controls
 				// Scroll offset animation
 				var scrollAnimation = compositor.CreateVector2KeyFrameAnimation();
 				scrollAnimation.InsertKeyFrame(1.0f, target, easing);
-				scrollAnimation.Duration = TimeSpan.FromSeconds(1);
+
+				// Scaled with the distance, as WinUI's ScrollPresenter does; the legacy ScrollViewer's own curve lives in DManip.
+				var distance = Vector2.Distance(visual.AnchorPoint, target);
+				scrollAnimation.Duration = TimeSpan.FromMilliseconds(Math.Clamp(
+					distance * Primitives.ScrollPresenter.s_offsetsChangeMsPerUnit,
+					Primitives.ScrollPresenter.s_offsetsChangeMinMs,
+					Primitives.ScrollPresenter.s_offsetsChangeMaxMs));
 				// AnchorPoint also carries the centering offset, which has to be removed to get back the logical scroll offsets.
-				void OnFrame(CompositionAnimation? _) => Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), true);
+				var stopped = false;
+				void OnFrame(CompositionAnimation? _)
+				{
+					// A completed animation stops from within this same raise, after OnStopped published the final offset.
+					if (stopped)
+					{
+						return;
+					}
+
+					Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), true);
+				}
 				void OnStopped(object? _, EventArgs __)
 				{
+					stopped = true;
 					scrollAnimation.AnimationFrame -= OnFrame;
 					scrollAnimation.Stopped -= OnStopped;
 
@@ -528,10 +545,12 @@ namespace Microsoft.UI.Xaml.Controls
 				double GetAnimatedHorizontalOffset() => Math.Round(-visual.AnchorPoint.X + centeringOffsetX);
 				double GetAnimatedVerticalOffset() => Math.Round(-visual.AnchorPoint.Y + centeringOffsetY);
 
-				scrollAnimation.AnimationFrame += OnFrame;
 				scrollAnimation.Stopped += OnStopped;
 
 				visual.StartAnimation(nameof(Visual.AnchorPoint), scrollAnimation);
+
+				// After StartAnimation, so it runs after the handler that applies the frame's value, not before it.
+				scrollAnimation.AnimationFrame += OnFrame;
 
 				// Zoom animation (if zoom is changing)
 				if (Math.Abs(visual.Scale.X - zoom) > 0.0001f)
