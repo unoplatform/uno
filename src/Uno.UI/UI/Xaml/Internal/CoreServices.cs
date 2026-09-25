@@ -111,6 +111,10 @@ namespace Uno.UI.Xaml.Core
 			// -----------------------------
 			// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
 
+			// Before layout and before the record: what the frame's motion writes is then an ordinary pre-frame
+			// invalidation, and the layout it dirties is cleaned by this same tick instead of the next one.
+			CompositionTarget.RaiseFrameTick();
+
 			// This happens for Islands.
 			if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland })
 			{
