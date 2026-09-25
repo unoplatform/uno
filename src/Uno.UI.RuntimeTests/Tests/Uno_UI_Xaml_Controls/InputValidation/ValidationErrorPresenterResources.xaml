@@ -1,0 +1,23 @@
+<ResourceDictionary x:Class="Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Controls.InputValidation.ValidationErrorPresenterResources"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<!-- Compiled rather than parsed at runtime: XamlReader does not honor x:Load, and the stub is what is under test. -->
+	<ControlTemplate x:Key="PresenterTemplate" TargetType="Control">
+		<Grid Width="100" Height="32">
+			<ContentPresenter x:Name="ErrorPresenter" x:Load="False" />
+		</Grid>
+	</ControlTemplate>
+
+	<ControlTemplate x:Key="NoPresenterTemplate" TargetType="Control">
+		<Grid Width="100" Height="32" />
+	</ControlTemplate>
+
+	<DataTemplate x:Key="ErrorTextTemplate">
+		<TextBlock Text="error" />
+	</DataTemplate>
+
+	<DataTemplate x:Key="ErrorBorderTemplate">
+		<Border />
+	</DataTemplate>
+</ResourceDictionary>
