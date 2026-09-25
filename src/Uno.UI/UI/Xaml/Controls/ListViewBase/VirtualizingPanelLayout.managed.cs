@@ -501,7 +501,6 @@ namespace Microsoft.UI.Xaml.Controls
 			OwnerPanel.ShouldInterceptInvalidate = ShouldMeasuredBreadthStretch;
 
 			Generator.ClearScrappedViews();
-			Generator.UpdateVisibilities();
 
 			OwnerPanel.ShouldInterceptInvalidate = false;
 		}
