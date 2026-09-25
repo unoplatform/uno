@@ -500,6 +500,18 @@ In addition to the per-file suffixes described above, the Uno.Sdk recognizes a s
 
 The location of each folder can be overridden via the matching MSBuild property if your project uses a different layout: `PlatformsProjectFolder`, `AndroidProjectFolder`, `iOSProjectFolder`, `tvOSProjectFolder`, `DesktopProjectFolder`, `WasmProjectFolder`, `WindowsProjectFolder`.
 
+## High Refresh Rate on iPhone
+
+iPhones with ProMotion displays only render above 60 Hz when the app's `Info.plist` sets `CADisableMinimumFrameDurationOnPhone` to `true`. For projects using the Uno.Sdk, this key is added automatically, so animations and scrolling can run at up to 120 Hz on those devices. iPads are not affected: they use their display's full refresh rate without this key.
+
+A value set explicitly in your own `Platforms/iOS/Info.plist` takes precedence. To keep iPhones at 60 Hz, for example to reduce power use, disable it in your project file:
+
+```xml
+<PropertyGroup>
+  <UnoDisableHighRefreshRate>true</UnoDisableHighRefreshRate>
+</PropertyGroup>
+```
+
 ## Apple Privacy Manifest Support
 
 Starting May 1st, 2024, Apple requires the inclusion of a new file, the [Privacy Manifest file](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files) (named `PrivacyInfo.xcprivacy`), in app bundles. This file is crucial for complying with updated privacy regulations.
