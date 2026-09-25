@@ -1138,12 +1138,18 @@ namespace Microsoft.UI.Xaml.Controls
 			// recompute coerces toward this offset instead of snapping back to a stale programmatic one.
 			_verticalOffsetIntent = offset;
 
+			// ThumbTrack fires once per drag-delta while the user is holding the thumb. WinUI marks the
+			// whole drag as an "intermediate view changed mode" (ScrollViewer_Partial.cpp) so those ticks
+			// skip arrange/snap and only the final release (EndScroll) does the full, snapped update.
+			var isThumbTrack = e.ScrollEventType == ScrollEventType.ThumbTrack;
+
 			ChangeViewCore(
 				horizontalOffset: null,
 				verticalOffset: offset,
 				zoomFactor: null,
 				disableAnimation: immediate,
-				shouldSnap: true);
+				shouldSnap: !isThumbTrack,
+				isIntermediate: isThumbTrack);
 		}
 
 		private void OnHorizontalScrollBarScrolled(object sender, ScrollEventArgs e)
@@ -1166,12 +1172,16 @@ namespace Microsoft.UI.Xaml.Controls
 			// Arm the intent — see OnVerticalScrollBarScrolled.
 			_horizontalOffsetIntent = offset;
 
+			// See OnVerticalScrollBarScrolled for why ThumbTrack is treated as intermediate.
+			var isThumbTrack = e.ScrollEventType == ScrollEventType.ThumbTrack;
+
 			ChangeViewCore(
 				horizontalOffset: offset,
 				verticalOffset: null,
 				zoomFactor: null,
 				disableAnimation: immediate,
-				shouldSnap: true);
+				shouldSnap: !isThumbTrack,
+				isIntermediate: isThumbTrack);
 		}
 		#endregion
 
@@ -1567,7 +1577,8 @@ namespace Microsoft.UI.Xaml.Controls
 			double? verticalOffset,
 			float? zoomFactor,
 			bool disableAnimation,
-			bool shouldSnap)
+			bool shouldSnap,
+			bool isIntermediate = false)
 		{
 			if (horizontalOffset is null && verticalOffset is null && zoomFactor is null)
 			{
@@ -1579,7 +1590,7 @@ namespace Microsoft.UI.Xaml.Controls
 				AdjustOffsetsForSnapPoints(ref horizontalOffset, ref verticalOffset, zoomFactor, canBypassSingle: true);
 			}
 
-			return ChangeViewNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
+			return ChangeViewNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation, isIntermediate);
 		}
 
 		#region Scroll indicators visual states (Managed scroll bars only)
