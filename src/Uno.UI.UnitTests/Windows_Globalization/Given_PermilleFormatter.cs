@@ -134,6 +134,19 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		public void When_NumberRounderProducesInfinity_Then_FormatSpecialValue()
+		{
+			var sut = MakeFormatter();
+			sut.NumberRounder = new IncrementNumberRounder
+			{
+				Increment = 1e308,
+				RoundingAlgorithm = RoundingAlgorithm.RoundAwayFromZero,
+			};
+
+			Assert.AreEqual("∞", sut.FormatDouble(1.5e308));
+		}
+
+		[TestMethod]
 		public void When_FormatDoubleUsingSignificantDigitsNumberRounder()
 		{
 			var sut = MakeFormatter();

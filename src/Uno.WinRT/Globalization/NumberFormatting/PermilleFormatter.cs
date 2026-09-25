@@ -59,6 +59,11 @@ public partial class PermilleFormatter : INumberFormatterOptions, INumberFormatt
 		if (NumberRounder != null)
 		{
 			value = NumberRounder.RoundDouble(value);
+
+			if (!_formatterHelper.TryValidate(value, out text))
+			{
+				return text;
+			}
 		}
 
 		var stringBuilder = StringBuilderCache.Acquire();
