@@ -50,9 +50,10 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 		//var position = _interactionTracker.Position;
 		//_interactionTracker.MinPosition = Vector3.Min(_interactionTracker.MinPosition, position);
 		//_interactionTracker.MaxPosition = Vector3.Max(_interactionTracker.MaxPosition, position);
-
-		_handler.Start();
 	}
+
+	// Not from the enqueued EnterState: that would start every inertia a dispatcher hop late.
+	internal override void OnActivated() => _handler.Start();
 
 	internal override void StartUserManipulation()
 	{
