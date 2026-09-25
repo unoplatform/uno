@@ -1773,13 +1773,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnKeyDown(KeyRoutedEventArgs args)
 		{
+			if (args.KeyboardModifiers != _platformCtrlKey)
+			{
+				return;
+			}
+
 			switch (args.Key)
 			{
-				case VirtualKey.C when args.KeyboardModifiers.HasFlag(_platformCtrlKey):
+				case VirtualKey.C:
+				case VirtualKey.Insert:
 					CopySelectionToClipboard();
 					args.Handled = true;
 					break;
-				case VirtualKey.A when args.KeyboardModifiers.HasFlag(_platformCtrlKey):
+				case VirtualKey.A:
 					SelectAll();
 					args.Handled = true;
 					break;
