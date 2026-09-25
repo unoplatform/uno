@@ -72,6 +72,25 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal FlyoutPlacementMode EffectivePlacement => m_hasPlacementOverride ? m_placementOverride : Placement;
 
+		/// <summary>
+		/// Gets the effective placement for the given flow direction: the side the flyout opens on is reversed for right-to-left,
+		/// while edge alignments (the AlignedLeft/AlignedRight suffixes) stay physical, matching WinUI's GetEffectivePlacementMode
+		/// which only mirrors the major placement.
+		/// </summary>
+		internal FlyoutPlacementMode GetEffectivePlacement(FlowDirection flowDirection)
+			=> flowDirection is FlowDirection.RightToLeft ? MirrorPlacement(EffectivePlacement) : EffectivePlacement;
+
+		private static FlyoutPlacementMode MirrorPlacement(FlyoutPlacementMode placement) => placement switch
+		{
+			FlyoutPlacementMode.Left => FlyoutPlacementMode.Right,
+			FlyoutPlacementMode.Right => FlyoutPlacementMode.Left,
+			FlyoutPlacementMode.LeftEdgeAlignedTop => FlyoutPlacementMode.RightEdgeAlignedTop,
+			FlyoutPlacementMode.LeftEdgeAlignedBottom => FlyoutPlacementMode.RightEdgeAlignedBottom,
+			FlyoutPlacementMode.RightEdgeAlignedTop => FlyoutPlacementMode.LeftEdgeAlignedTop,
+			FlyoutPlacementMode.RightEdgeAlignedBottom => FlyoutPlacementMode.LeftEdgeAlignedBottom,
+			_ => placement,
+		};
+
 		protected FlyoutBase()
 		{
 		}
@@ -589,7 +608,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				}
 			}
 
-			_popup.DesiredPlacement = EffectivePlacement switch
+			// Placements are expressed relative to the target's flow direction, so horizontal ones are reversed for right-to-left targets
+			// (WinUI: GetEffectivePlacementMode). The popup panel positions the popup in left-to-right window coordinates.
+			_popup.DesiredPlacement = GetEffectivePlacement(placementTarget?.FlowDirection ?? FlowDirection.LeftToRight) switch
 			{
 				FlyoutPlacementMode.Top => PopupPlacementMode.Top,
 				FlyoutPlacementMode.Bottom => PopupPlacementMode.Bottom,
@@ -994,8 +1015,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			double maxWidth = double.NaN;
 			double maxHeight = double.NaN;
 			FrameworkElement spPopupAsFE;
-			FlowDirection flowDirection = FlowDirection.LeftToRight;
-			//FlowDirection targetFlowDirection = FlowDirection.LeftToRight;
 			bool isMenuFlyout = this is MenuFlyout;
 			bool preferTopPlacement = false;
 
@@ -1005,7 +1024,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			horizontalOffset = m_targetPoint.X;
 			verticalOffset = m_targetPoint.Y;
 
-			FlyoutPlacementMode placementMode = EffectivePlacement;
+			// Uno: unlike WinUI, which computes positioned flyouts in a coordinate space that is mirrored for right-to-left, the target
+			// point and the presenter rect are in left-to-right window coordinates here. Right-to-left is accounted for by reversing the
+			// horizontal placements and by opening menus towards the left of their point.
+			FlowDirection flowDirection = _popup.FlowDirection;
+			bool isRightToLeft = flowDirection is FlowDirection.RightToLeft;
+			FlyoutPlacementMode placementMode = GetEffectivePlacement(flowDirection);
 
 			// We want to preserve existing MenuFlyout behavior - it will continue to ignore the Placement property.
 			// We also don't want to adjust anything if we've been positioned for a DatePicker or TimePicker -
@@ -1047,6 +1071,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						horizontalOffset -= presenterSize.Width;
 						break;
 				}
+			}
+
+			if (isMenuFlyout && isRightToLeft)
+			{
+				// In right-to-left the point is the trailing (right) edge of a menu, which opens towards the left.
+				horizontalOffset -= presenterSize.Width;
 			}
 
 			preferTopPlacement = (m_inputDeviceTypeUsedToOpen == InputDeviceType.Touch) && isMenuFlyout;
@@ -1208,55 +1238,31 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				//(m_tpPresenter as Control.put_MaxHeight(
 				//	double.IsNaN(maxHeight) ? availableWindowRect.Height : Math.Min(maxHeight, availableWindowRect.Height)));
 
-				if (flowDirection == FlowDirection.LeftToRight)
+				// Adjust the target position if the current target is out of the Xaml window bounds
+				if (horizontalOffset + presenterSize.Width > availableWindowRect.X + availableWindowRect.Width)
 				{
-					// Adjust the target position if the current target is out of the Xaml window bounds
-					if (horizontalOffset + presenterSize.Width > availableWindowRect.X + availableWindowRect.Width)
+					if (m_isPositionedAtPoint)
 					{
-						if (m_isPositionedAtPoint)
-						{
-							// Update the target horizontal position if the target is out of the available rect
-							horizontalOffset -= Math.Min(presenterSize.Width, horizontalOffset);
-						}
-						else
-						{
-							// Used for date and time picker flyouts
-							horizontalOffset = availableWindowRect.X + availableWindowRect.Width - presenterSize.Width;
-							horizontalOffset = Math.Max(availableWindowRect.X, horizontalOffset);
-						}
+						// Update the target horizontal position if the target is out of the available rect
+						horizontalOffset -= Math.Min(presenterSize.Width, horizontalOffset);
+					}
+					else
+					{
+						// Used for date and time picker flyouts
+						horizontalOffset = availableWindowRect.X + availableWindowRect.Width - presenterSize.Width;
 					}
 				}
-				else
+				else if (horizontalOffset < availableWindowRect.X)
 				{
-					// Adjust the target position if the current target is out of the Xaml window bounds
-					if (horizontalOffset - presenterSize.Width < availableWindowRect.X)
+					if (m_isPositionedAtPoint)
 					{
-						if (m_isPositionedAtPoint)
-						{
-							// Update the target horizontal position if the target is out of the available rect
-							horizontalOffset += Math.Min(presenterSize.Width, (availableWindowRect.Width + availableWindowRect.X - horizontalOffset));
-						}
-						else
-						{
-							// Used for date and time picker flyouts
-							horizontalOffset = presenterSize.Width + availableWindowRect.X;
-							horizontalOffset = Math.Min(availableWindowRect.Width + availableWindowRect.X, horizontalOffset);
-						}
+						// Open towards the other side of the point when the presenter does not fit on this side (e.g. a right-to-left menu
+						// opened close to the left edge of the window).
+						horizontalOffset += Math.Min(presenterSize.Width, availableWindowRect.X + availableWindowRect.Width - (horizontalOffset + presenterSize.Width));
 					}
 				}
 
-				//// If we couldn't actually fit to the left, flip back to show right.
-				//if (shiftLeftForRightHandedness)
-				//{
-				//	if (!isRTL && horizontalOffset < availableWindowRect.X)
-				//	{
-				//		horizontalOffset += presenterSize.Width;
-				//	}
-				//	else if (isRTL && horizontalOffset + presenterSize.Width >= availableWindowRect.Width)
-				//	{
-				//		horizontalOffset -= presenterSize.Width;
-				//	}
-				//}
+				horizontalOffset = Math.Max(availableWindowRect.X, horizontalOffset);
 
 				// If opening up would cause the flyout to get clipped, we fall back to opening down:
 				if (preferTopPlacement && verticalOffset < availableWindowRect.Y)
@@ -1289,9 +1295,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				//m_tpPopup.VerticalOffset = verticalOffset;
 			}
 
-			double leftMostEdge = (flowDirection == FlowDirection.LeftToRight) ? horizontalOffset : horizontalOffset - presenterSize.Width;
-
-			presenterRect.X = leftMostEdge;
+			presenterRect.X = horizontalOffset;
 			presenterRect.Y = verticalOffset;
 			presenterRect.Width = presenterSize.Width;
 			presenterRect.Height = presenterSize.Height;
