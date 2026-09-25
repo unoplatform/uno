@@ -43,7 +43,6 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Changes ScrollPresenter offsets using ScrollTo, ScrollBy, AddScrollVelocity and AnimationMode/SnapPointsMode enum values.")]
-	[Ignore("ScrollingAnimationMode.Enabled requires InteractionTracker's CustomAnimation state")]
 	public async Task BasicOffsetChanges()
 	{
 		ScrollPresenter scrollPresenter = null;
@@ -303,7 +302,6 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Cancels an animated offsets change.")]
-	[Ignore("ScrollingAnimationMode.Enabled requires InteractionTracker's CustomAnimation state")]
 	public async Task BasicOffsetsChangeCancelation()
 	{
 		ScrollPresenter scrollPresenter = null;
@@ -511,7 +509,6 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Performs an animated offsets change with an overridden duration.")]
-	[Ignore("ScrollingAnimationMode.Enabled requires InteractionTracker's CustomAnimation state")]
 	public async Task OffsetsChangeWithCustomDuration()
 	{
 		//using (PrivateLoggingHelper privateLoggingHelper = new PrivateLoggingHelper("ScrollPresenter"))
@@ -701,7 +698,6 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Interrupts an animated offsets change with another one.")]
-	[Ignore("ScrollingAnimationMode.Enabled requires InteractionTracker's CustomAnimation state")]
 	public async Task InterruptOffsetsChangeWithOffsetsChange()
 	{
 		await InterruptViewChange(ViewChangeInterruptionKind.OffsetsChangeByOffsetsChange);
@@ -1329,7 +1325,6 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Requests an animated offsets change before loading scrollPresenter.")]
-	[Ignore("ScrollingAnimationMode.Enabled requires InteractionTracker's CustomAnimation state")]
 	public async Task AnimateOffsetsBeforeLoading()
 	{
 		await ChangeOffsetsBeforeLoading(true /*animate*/);
