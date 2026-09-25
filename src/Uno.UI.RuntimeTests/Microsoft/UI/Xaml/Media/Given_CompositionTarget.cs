@@ -265,6 +265,41 @@ public class Given_CompositionTarget
 		}
 	}
 
+	/// <summary>
+	/// A driver starting after a pause must get the current frame's timestamp, not the last one before the pause:
+	/// motion dates its start from its first tick, so a stale one plays the whole pause out in the next frame.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Frame_Driver_Starts_After_A_Pause_Then_First_Step_Is_One_Frame()
+	{
+		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
+		await UITestHelper.Load(border);
+		var target = (CompositionTarget)border.Visual.CompositionTarget!;
+
+		// A frame nothing ticks from, then a pause.
+		border.Background = new SolidColorBrush(Colors.Blue);
+		await UITestHelper.WaitForIdle();
+		await Task.Delay(300);
+
+		var timestamps = new System.Collections.Generic.List<long>();
+		EventHandler<long> driver = (_, timestamp) => timestamps.Add(timestamp);
+		target.FrameStarting += driver;
+		try
+		{
+			await TestServices.WindowHelper.WaitFor(() => timestamps.Count >= 3, message: "the driver should keep ticking");
+		}
+		finally
+		{
+			target.FrameStarting -= driver;
+		}
+
+		var firstStep = timestamps[1] - timestamps[0];
+		Assert.IsTrue(
+			firstStep < 3 * target.FrameIntervalInTicks,
+			$"the first step spanned {firstStep / (double)TimeSpan.TicksPerMillisecond:F1}ms, longer than a few frames");
+	}
+
 	private static async Task<(int Ticks, int Frames)> CountDriverTicks(CompositionTarget target, EventHandler<long> driver)
 	{
 		var ticks = 0;
