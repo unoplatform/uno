@@ -66,7 +66,7 @@ public partial class CompositionTarget
 	//             | Repeat... |-|                                       |                                                                                                                 |                        |                                 |
 	//             |-----------| |                                       |                                                                                                                 |                        |                                 |
 	//                           |                                       |                                                                                                                 |                        |                                 |
-	private readonly object _renderingStateGate = new();
+	private readonly Lock _renderingStateGate = new();
 
 	private bool _renderRequested; // only set or read under _renderingStateGate
 	private bool _renderedAheadOfTime; // only set or read under _renderingStateGate
@@ -206,10 +206,7 @@ public partial class CompositionTarget
 			}
 			else if (RenderRequested)
 			{
-				lock (_renderingStateGate)
-				{
-					RenderRequested = false;
-				}
+				RenderRequested = false;
 				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)} fired from {nameof(EnqueueRenderCallback)}");
 				Render();
 			}
