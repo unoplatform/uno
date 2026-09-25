@@ -66,7 +66,9 @@ public partial class Slider : IInputValidationControl
 			nameof(ErrorTemplate),
 			typeof(DataTemplate),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(default(DataTemplate)));
+			new FrameworkPropertyMetadata(
+				default(DataTemplate),
+				OnErrorTemplateChanged));
 
 	/// <inheritdoc />
 	public InputValidationMode InputValidationMode

@@ -66,7 +66,9 @@ public partial class NumberBox : IInputValidationControl
 			nameof(ErrorTemplate),
 			typeof(DataTemplate),
 			typeof(NumberBox),
-			new FrameworkPropertyMetadata(default(DataTemplate)));
+			new FrameworkPropertyMetadata(
+				default(DataTemplate),
+				OnErrorTemplateChanged));
 
 	/// <inheritdoc />
 	public InputValidationMode InputValidationMode

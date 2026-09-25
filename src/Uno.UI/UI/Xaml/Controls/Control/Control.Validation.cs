@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-// MUX Reference CControl.cpp -- CControl::EnsureValidationVisuals, tag winui3/release/1.8.2, commit 45013c4ed
+// MUX Reference CControl.cpp -- CControl::EnsureValidationVisuals, CControl::EnsureErrors, CControl::DeferErrors, tag winui3/release/1.8.2, commit 45013c4ed
 
 #nullable enable
 
@@ -104,6 +104,71 @@ public partial class Control
 	}
 
 	/// <summary>
+	/// Re-applies the validation visuals once the template exists.
+	/// </summary>
+	/// <remarks>
+	/// Uno: WinUI calls neither from template application, so errors reported before the template is realized
+	/// never reach its ErrorPresenter there.
+	/// </remarks>
+	internal void OnValidationTemplateApplied()
+	{
+		UpdateValidationStatesInternal();
+
+		if (ValidationParticipant is { HasValidationErrors: true })
+		{
+			EnsureErrors();
+		}
+	}
+
+	private void EnsureErrors()
+	{
+		if (!FeatureConfiguration.InputValidation.IsEnabled || ValidationParticipant is not { } participant)
+		{
+			return;
+		}
+
+		// When an error occurs, we want to undefer the error presenter and load the error template. We want to hook up
+		// the appropriate data context so that controls can use {Binding} in their ErrorTemplates
+		if (GetTemplateChild("ErrorPresenter") is ContentPresenter errorPresenter)
+		{
+			EnsureValidationVisuals();
+			if (participant.ErrorTemplate is { } errorTemplate
+				&& errorTemplate.LoadContent() is FrameworkElement loadedContent)
+			{
+				loadedContent.DataContext = this;
+
+				object content = loadedContent;
+
+				if (participant.InputValidationKind != InputValidationKind.Inline)
+				{
+					// We aren't showing errors inline, get the default compact template and set the errors as the content of the
+					// tooltip. We then use the tree created from the compact template as the content for the presenter
+					if (ResourceResolver.ResolveTopLevelResource("DefaultCompactErrorIconTemplate") is DataTemplate compactTemplate
+						&& compactTemplate.LoadContent() is { } iconContent)
+					{
+						if (ToolTipService.GetToolTip(iconContent) is ContentControl toolTip)
+						{
+							toolTip.Content = loadedContent;
+						}
+
+						content = iconContent;
+					}
+				}
+
+				errorPresenter.Content = content;
+			}
+		}
+	}
+
+	private void DeferErrors()
+	{
+		// Uno: there is no TryDefer, so a realized presenter stays realized — the outcome WinUI already accepts for
+		// a template without x:Load — and the InputValidationErrorStates group is what hides it. The presenter is
+		// not looked up either: in Uno, that would realize it.
+		EnsureValidationVisuals();
+	}
+
+	/// <summary>
 	/// The changed callback a participating control registers its InputValidationMode with.
 	/// </summary>
 	/// <remarks>
@@ -125,6 +190,15 @@ public partial class Control
 		if (sender is Control control)
 		{
 			control.UpdateValidationStates();
+		}
+	}
+
+	/// <inheritdoc cref="OnInputValidationModeChanged"/>
+	protected static void OnErrorTemplateChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	{
+		if (sender is Control { ValidationParticipant.HasValidationErrors: true } control)
+		{
+			control.EnsureErrors();
 		}
 	}
 
