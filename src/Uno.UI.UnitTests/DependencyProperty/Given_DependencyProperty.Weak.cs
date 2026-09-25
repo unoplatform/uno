@@ -45,7 +45,7 @@ namespace Uno.UI.Tests.BinderTests_Weak
 		{
 			var SUT = new MyNativeObject();
 			var source = new MyObject();
-			SUT.SetBinding(
+			SUT.SetBindingInternal(
 					MyNativeObject.MyValueProperty,
 					new Binding
 					{
@@ -66,7 +66,7 @@ namespace Uno.UI.Tests.BinderTests_Weak
 		{
 			var SUT = new MyNativeObject();
 			var source = new MyObject();
-			SUT.SetBinding(
+			SUT.SetBindingInternal(
 					MyNativeObject.MyValueProperty,
 					new Binding
 					{

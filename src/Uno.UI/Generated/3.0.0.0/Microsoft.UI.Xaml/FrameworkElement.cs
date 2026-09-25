@@ -142,7 +142,7 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.VerticalAlignmentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WidthProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FindName(string)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.SetBinding(Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)
+		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.SetBinding(Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.GetBindingExpression(Microsoft.UI.Xaml.DependencyProperty)
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged.remove

@@ -4330,11 +4330,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							IsType(ownerType, Generation.DependencyObjectSymbol.Value)
 						);
 
+					var bindingTarget = prefix?.TrimEnd('.') is { Length: > 0 } receiver ? receiver : "this";
+
 					if (isDependencyProperty)
 					{
 						var propertyOwner = declaringType;
 
-						using (writer.Indent($"{prefix}SetBinding(", $"){postfix}"))
+						using (writer.Indent($"global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding({bindingTarget},", $"){postfix}"))
 						{
 							writer.AppendLineIndented($"{propertyOwner!.GetFullyQualifiedTypeIncludingGlobal()}.{member.Member.Name}Property,");
 							WriteBinding(isTemplateBindingAttachedProperty: templateBindingNode is not null && IsAttachedProperty(declaringType, member.Member.Name));
@@ -4347,9 +4349,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						var pocoBuilder = isOwnerDependencyObject ? "" : $"GetDependencyObjectForXBind().";
+						var target = isOwnerDependencyObject ? bindingTarget : $"{bindingTarget}.GetDependencyObjectForXBind()";
 
-						using (writer.Indent($"{prefix}{pocoBuilder}SetBinding(", $"){postfix}"))
+						using (writer.Indent($"global::Uno.UI.Xaml.BindingHelper.SetBinding({target},", $"){postfix}"))
 						{
 							writer.AppendLineIndented($"\"{member.Member.Name}\",");
 							WriteBinding(isTemplateBindingAttachedProperty: false);

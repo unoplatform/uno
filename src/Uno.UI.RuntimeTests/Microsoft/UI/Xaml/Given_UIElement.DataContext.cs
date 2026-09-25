@@ -82,7 +82,7 @@ partial class Given_UIElement
 		var dc = new { Data = "Context" };
 
 		var run = new Run();
-		run.SetBinding(Run.TextProperty, new Binding { Path = new(nameof(dc.Data)) });
+		BindingOperations.SetBinding(run, Run.TextProperty, new Binding { Path = new(nameof(dc.Data)) });
 		var tblock = new TextBlock();
 		tblock.Inlines.Add(run);
 		tblock.DataContext = dc;
@@ -100,7 +100,7 @@ partial class Given_UIElement
 	{
 		var brush = new SolidColorBrush(Colors.SkyBlue);
 		// Color tracks the ambient DataContext: it updates only while the brush's inheritance-context is live.
-		brush.SetBinding(SolidColorBrush.ColorProperty, new Binding { Path = new("Color") });
+		BindingOperations.SetBinding(brush, SolidColorBrush.ColorProperty, new Binding { Path = new("Color") });
 
 		// variant: assignment order: foreground > dc
 
@@ -128,7 +128,7 @@ partial class Given_UIElement
 	public async Task MultiParentNonFE_Direct_DataContext_Propagation_WorksOnlyOnce2()
 	{
 		var brush = new SolidColorBrush(Colors.SkyBlue);
-		brush.SetBinding(SolidColorBrush.ColorProperty, new Binding { Path = new("Color") });
+		BindingOperations.SetBinding(brush, SolidColorBrush.ColorProperty, new Binding { Path = new("Color") });
 
 		// variant: assignment order: dc > foreground
 
@@ -182,7 +182,7 @@ partial class Given_UIElement
 		{
 			var brush = new SolidColorBrush(Colors.SkyBlue);
 			// Color tracks the ambient DataContext: it updates only while the brush's inheritance-context is live.
-			brush.SetBinding(SolidColorBrush.ColorProperty, new Binding { Path = new("Color") });
+			BindingOperations.SetBinding(brush, SolidColorBrush.ColorProperty, new Binding { Path = new("Color") });
 
 			var setup0 = new
 			{
