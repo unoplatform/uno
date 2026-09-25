@@ -1,4 +1,6 @@
-﻿#nullable enable
+﻿// MUX Reference RadioButton_Partial.cpp, commit 2b8c7757e
+
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -315,28 +317,18 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private DependencyObject? GetParentForGroup(bool groupNameExists, RadioButton radioButton)
+		private static DependencyObject? GetParentForGroup(bool groupNameExists, RadioButton radioButton)
 		{
-			DependencyObject? parent = null;
-			DependencyObject? radioButtonParent;
-
-			// If there is no groupName, then get the parent of the RadioButton.
-			if (!groupNameExists)
-			{
-				radioButtonParent = radioButton.Parent;
-			}
-			// Otherwise, use the root
-			else
-			{
-				radioButtonParent = VisualTree.GetRootForElement(radioButton); //Uno specific: Return RootVisual instead of VisualTreeHelper.GetRootStatic(radioButton);
-			}
-
-			if (radioButtonParent != null)
-			{
-				parent = radioButtonParent;
-			}
-
-			return parent;
+			// Previously we used to return the DXaml peer but that requires us to be able to get the peer of the parent and
+			// there are scenarios when we are trying to get the parent for an item not in the tree that is the process
+			// of being destructed.  In this case we will try to resurrect the peer and will fail.  In addition, the methods
+			// used to get the DXaml peer always return null if the element is not in the active tree.  This caused us to
+			// improperly group all radio buttons not in the tree into a single group and we end up unchecking the wrong buttons.
+			// So currently we only walk the core side which ensure we always have some kind of a parent AND does not get
+			// the Dxaml peer when it isn't needed.
+			return CoreImports.DependencyObject_GetVisualRelative(
+				radioButton,
+				groupNameExists ? VisualRelativeKind.Root : VisualRelativeKind.Parent);
 		}
 
 		internal void AutomationRadioButtonOnToggle()
