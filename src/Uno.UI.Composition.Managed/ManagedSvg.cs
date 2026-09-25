@@ -28,16 +28,14 @@ internal sealed class ManagedSvg : ISvgDocument
 	private readonly Dictionary<string, XElement> _byId = new();
 	// The registered factories, injected at parse — the renderer never reaches a global holder (no IVT into Drawing).
 	private readonly IGeometryFactory _geometry;
-	private readonly IDrawingFactory _drawing;
 
 	private const int MaxUseDepth = 8;
 	private int _useDepth;
 
-	private ManagedSvg(XElement root, IGeometryFactory geometry, IDrawingFactory drawing)
+	private ManagedSvg(XElement root, IGeometryFactory geometry)
 	{
 		_root = root;
 		_geometry = geometry;
-		_drawing = drawing;
 		foreach (var el in root.DescendantsAndSelf())
 		{
 			var id = (string?)el.Attribute("id");
@@ -57,7 +55,7 @@ internal sealed class ManagedSvg : ISvgDocument
 	// The managed engine renders straight into the session each frame and retains no backend resource; nothing to release.
 	public void Dispose() { }
 
-	public static bool TryParse(byte[] svg, IGeometryFactory geometry, IDrawingFactory drawing, out ManagedSvg document)
+	public static bool TryParse(byte[] svg, IGeometryFactory geometry, out ManagedSvg document)
 	{
 		document = null!;
 		try
@@ -69,7 +67,7 @@ internal sealed class ManagedSvg : ISvgDocument
 				return false;
 			}
 
-			document = new ManagedSvg(xdoc.Root, geometry, drawing);
+			document = new ManagedSvg(xdoc.Root, geometry);
 			return document.SourceSize is { Width: > 0, Height: > 0 };
 		}
 		catch
@@ -252,7 +250,7 @@ internal sealed class ManagedSvg : ISvgDocument
 	// resolves, else with a solid color. Gradient fills clip to the region and paint its bounds with the shader.
 	private void FillRegion(IDrawingSession session, IGeometry clip, IGeometry gradientBounds, string? gradientRef, Color solid, float alpha)
 	{
-		if (gradientRef is { } reference && ResolveGradient(reference, gradientBounds, alpha) is { } shader)
+		if (gradientRef is { } reference && ResolveGradient(session.Factory, reference, gradientBounds, alpha) is { } shader)
 		{
 			using (shader)
 			{
@@ -321,7 +319,9 @@ internal sealed class ManagedSvg : ISvgDocument
 		return scaled;
 	}
 
-	private IShader? ResolveGradient(string reference, IGeometry geometry, float alpha)
+	// The factory comes from the drawing session rather than a field: a gradient shader is device-bound, and
+	// the device is only known when the document is actually being drawn, not when it was parsed.
+	private IShader? ResolveGradient(IDrawingFactory drawing, string reference, IGeometry geometry, float alpha)
 	{
 		if (!reference.StartsWith('#') || !_byId.TryGetValue(reference[1..], out var grad))
 		{
@@ -357,7 +357,7 @@ internal sealed class ManagedSvg : ISvgDocument
 			// which is exactly what the per-axis radii of the shader express.
 			var radiusX = objectBoundingBox ? rFrac * (float)bounds.Width : rFrac;
 			var radiusY = objectBoundingBox ? rFrac * (float)bounds.Height : rFrac;
-			return _drawing.CreateRadialGradientShader(
+			return drawing.CreateRadialGradientShader(
 				new Vector2(MapX(cxFrac), MapY(cyFrac)),
 				new Vector2(MapX(Frac("fx", cxFrac)), MapY(Frac("fy", cyFrac))),
 				radiusX,
@@ -372,7 +372,7 @@ internal sealed class ManagedSvg : ISvgDocument
 		var y1 = MapY(Frac("y1", 0f));
 		var x2 = MapX(Frac("x2", 1f));
 		var y2 = MapY(Frac("y2", 0f));
-		return _drawing.CreateLinearGradientShader(
+		return drawing.CreateLinearGradientShader(
 			new Vector2(x1, y1), new Vector2(x2, y2), colors, positions, tileMode, localMatrix);
 	}
 

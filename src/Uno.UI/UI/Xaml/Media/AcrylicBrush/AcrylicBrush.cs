@@ -239,21 +239,20 @@ namespace Microsoft.UI.Xaml.Media
 			CompositionBrush = _brush;
 		}
 
-		// The noise texture is a small static asset tiled across every acrylic, so it is decoded and uploaded once
-		// and shared. It is keyed on the factory that minted it: a texture belongs to one backend device, and the
-		// factory is per window, so a second window must not be handed the first window's texture.
+		// The noise is a small static asset tiled across every acrylic, so it is decoded once and shared. It stays
+		// a CPU-side image here: turning it into a texture binds it to one device, and which device that is only
+		// becomes known when a session paints it.
 		private static readonly object _noiseGate = new();
-		private static global::Uno.UI.Composition.Drawing.ITexture? _sharedNoiseTexture;
-		private static global::Uno.UI.Composition.Drawing.IDrawingFactory? _sharedNoiseFactory;
+		private static global::Uno.UI.Composition.Drawing.IImage? _sharedNoiseImage;
+		private static bool _noiseDecodeFailed;
 
-		private static global::Uno.UI.Composition.Drawing.ITexture? EnsureNoiseTexture()
+		private static global::Uno.UI.Composition.Drawing.IImage? EnsureNoiseImage()
 		{
-			var factory = global::Uno.UI.Composition.Drawing.DrawingFactory.Current;
 			lock (_noiseGate)
 			{
-				if (_sharedNoiseTexture is not null && ReferenceEquals(_sharedNoiseFactory, factory))
+				if (_sharedNoiseImage is not null || _noiseDecodeFailed)
 				{
-					return _sharedNoiseTexture;
+					return _sharedNoiseImage;
 				}
 
 				using var stream = typeof(AcrylicBrush).Assembly.GetManifestResourceStream(EffectNames.NoiseAsset);
@@ -261,12 +260,12 @@ namespace Microsoft.UI.Xaml.Media
 					|| !global::Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current.TryDecode(stream, null, null, out var frames)
 					|| frames.Frames.Count == 0)
 				{
+					_noiseDecodeFailed = true;
 					return null;
 				}
 
-				_sharedNoiseTexture = factory.CreateTexture(frames.Frames[0]);
-				_sharedNoiseFactory = factory;
-				return _sharedNoiseTexture;
+				_sharedNoiseImage = frames.Frames[0];
+				return _sharedNoiseImage;
 			}
 		}
 
@@ -274,7 +273,7 @@ namespace Microsoft.UI.Xaml.Media
 		// drawing seam, rather than a WinUI composition-effect graph.
 		private CompositionBrush CreateAcrylicBrushDirect(Compositor compositor)
 		{
-			if (EnsureNoiseTexture() is not { } noise)
+			if (EnsureNoiseImage() is not { } noise)
 			{
 				return compositor.CreateColorBrush(FallbackColor);
 			}
@@ -291,7 +290,7 @@ namespace Microsoft.UI.Xaml.Media
 				TintColor = tintColor,
 				BlurSigma = BlurRadius,
 				NoiseOpacity = NoiseOpacity,
-				NoiseTexture = noise,
+				NoiseImage = noise,
 			};
 		}
 

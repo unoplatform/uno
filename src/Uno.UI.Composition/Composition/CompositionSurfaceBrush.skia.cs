@@ -124,7 +124,7 @@ namespace Microsoft.UI.Composition
 			matrix *= RelativeTransform;
 			matrix *= Matrix3x2.CreateScale((float)bounds.Width, (float)bounds.Height);
 
-			if (scs.GetTexture() is not { } texture)
+			if (scs.GetTexture(session.Factory) is not { } texture)
 			{
 				return true;
 			}
