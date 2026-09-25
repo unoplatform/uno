@@ -368,8 +368,6 @@ public partial class GestureRecognizer
 					_handler = null;
 				}
 			}
-
-			~CompositionInertiaProcessorTimer() => Stop();
 		}
 #endif
 	}
