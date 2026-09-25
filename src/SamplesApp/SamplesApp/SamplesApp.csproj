@@ -833,4 +833,24 @@
 			<_NativeExecutableFrameworks Remove="System" />
 		</ItemGroup>
 	</Target>
+
+	<!--
+	The display version mirrors the Uno.WinUI package version (7.0.0-dev.684 -> 7.0.684), so a TestFlight
+	build maps back to its commit. The build number is the CI run id: unique per run, including re-runs of
+	the same commit, which App Store Connect would otherwise reject as a duplicate.
+	-->
+	<Target Name="GenerateVersion"
+			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName"
+			Condition="'$(NBGV_AssemblyInformationalVersion)' != ''">
+		<PropertyGroup>
+			<_VersionHeight>$(NBGV_VersionHeight)</_VersionHeight>
+			<_VersionHeight Condition="'$(_VersionHeight)' == ''">0</_VersionHeight>
+			<_BuildNumber>$(BUILD_BUILDID)</_BuildNumber>
+			<_BuildNumber Condition="'$(_BuildNumber)' == ''">$(_VersionHeight)</_BuildNumber>
+
+			<ApplicationDisplayVersion>$(NBGV_VersionMajor).$(NBGV_VersionMinor).$(_VersionHeight)</ApplicationDisplayVersion>
+			<ApplicationVersion>$(_BuildNumber)</ApplicationVersion>
+			<InformationalVersion>$(NBGV_AssemblyInformationalVersion)</InformationalVersion>
+		</PropertyGroup>
+	</Target>
 </Project>
