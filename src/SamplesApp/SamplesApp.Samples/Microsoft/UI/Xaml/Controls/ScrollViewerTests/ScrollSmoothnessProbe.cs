@@ -283,7 +283,11 @@ internal sealed class ScrollSmoothnessProbe
 				result.MaxBackwardPx = Math.Max(result.MaxBackwardPx, Math.Abs(step));
 			}
 
-			result.MaxStepPx = Math.Max(result.MaxStepPx, Math.Abs(step));
+			if (Math.Abs(step) > result.MaxStepPx)
+			{
+				result.MaxStepPx = Math.Abs(step);
+				result.MaxStepAtMs = Ms(p.Timestamp - window[0].P.Timestamp);
+			}
 		}
 
 		// Judder: how far each frame sits from a local quadratic through its two neighbours on each side, at the
@@ -387,6 +391,9 @@ internal sealed class ScrollSmoothnessResult
 	public int BackwardSteps { get; set; }
 	public double MaxBackwardPx { get; set; }
 	public double MaxStepPx { get; set; }
+
+	/// <summary>When the largest step was presented, from the start of the motion: early points at a catch-up jump.</summary>
+	public double MaxStepAtMs { get; set; }
 	public double JudderRmsPx { get; set; }
 	public double JudderP95Px { get; set; }
 	public double JudderMaxPx { get; set; }
@@ -398,7 +405,7 @@ internal sealed class ScrollSmoothnessResult
 	public string ToSummary()
 		=> string.Create(CultureInfo.InvariantCulture,
 			$"{Scenario,-14} fps {Fps,5:F1} new {NewFps,5:F1}  frame p50 {IntervalP50,5:F1} p95 {IntervalP95,5:F1} p99 {IntervalP99,5:F1} max {IntervalMax,6:F1}ms  long {LongFrames,3} stall>250 {HostStalls,2}  " +
-			$"step max {MaxStepPx,5:F0}px repeat {RepeatedFrames,3} stall {StalledFrames,3} back {BackwardSteps,2}({MaxBackwardPx:F1}px)  " +
+			$"step max {MaxStepPx,5:F0}px@{MaxStepAtMs:F0}ms repeat {RepeatedFrames,3} stall {StalledFrames,3} back {BackwardSteps,2}({MaxBackwardPx:F1}px)  " +
 			$"judder rms {JudderRmsPx,5:F2} p95 {JudderP95Px,5:F2} max {JudderMaxPx,6:F2}px  rec→pres {RecordToPresentP50,4:F1}/{RecordToPresentP95,4:F1}ms  " +
 			$"react {FirstInputToMoveMs,5:F1}ms  {MovingFrames} frames/{MotionMs:F0}ms/{MotionPx:F0}px");
 
@@ -408,7 +415,7 @@ internal sealed class ScrollSmoothnessResult
 		sb.Append(CultureInfo.InvariantCulture, $"{{\"platform\":\"{platform}\",\"scenario\":\"{Scenario}\",\"records\":{Records},\"presents\":{Presents},\"movingFrames\":{MovingFrames}");
 		sb.Append(CultureInfo.InvariantCulture, $",\"motionMs\":{MotionMs:F1},\"motionPx\":{MotionPx:F1},\"fps\":{Fps:F2},\"newFps\":{NewFps:F2}");
 		sb.Append(CultureInfo.InvariantCulture, $",\"intervalP50\":{IntervalP50:F2},\"intervalP95\":{IntervalP95:F2},\"intervalP99\":{IntervalP99:F2},\"intervalMax\":{IntervalMax:F2},\"longFrames\":{LongFrames},\"hostStalls\":{HostStalls}");
-		sb.Append(CultureInfo.InvariantCulture, $",\"repeatedFrames\":{RepeatedFrames},\"stalledFrames\":{StalledFrames},\"backwardSteps\":{BackwardSteps},\"maxBackwardPx\":{MaxBackwardPx:F2},\"maxStepPx\":{MaxStepPx:F2}");
+		sb.Append(CultureInfo.InvariantCulture, $",\"repeatedFrames\":{RepeatedFrames},\"stalledFrames\":{StalledFrames},\"backwardSteps\":{BackwardSteps},\"maxBackwardPx\":{MaxBackwardPx:F2},\"maxStepPx\":{MaxStepPx:F2},\"maxStepAtMs\":{MaxStepAtMs:F1}");
 		sb.Append(CultureInfo.InvariantCulture, $",\"judderRmsPx\":{JudderRmsPx:F3},\"judderP95Px\":{JudderP95Px:F3},\"judderMaxPx\":{JudderMaxPx:F3}");
 		sb.Append(CultureInfo.InvariantCulture, $",\"recordToPresentP50\":{RecordToPresentP50:F2},\"recordToPresentP95\":{RecordToPresentP95:F2},\"firstInputToMoveMs\":{FirstInputToMoveMs:F2}");
 		if (includeTrace)
