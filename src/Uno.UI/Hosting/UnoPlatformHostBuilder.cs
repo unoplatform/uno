@@ -113,7 +113,12 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	private const string SkottieLottieRendererTypeName = "Uno.UI.Lottie.SkottieLottieRenderer, Uno.UI.Lottie";
 	private const string ManagedLottieRendererTypeName = "Uno.UI.Composition.Drawing.ManagedLottieRenderer, Uno.UI.Composition.Managed";
 
+	// The type names below must reach Type.GetType as literals, and the result flow into an annotated field or
+	// parameter: that is what lets the trimmer (and NativeAOT) keep the members invoked reflectively.
+	private const DynamicallyAccessedMemberTypes FactoryMethods = DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods;
+
 	private static readonly object _fallbackGate = new();
+	[DynamicallyAccessedMembers(FactoryMethods)]
 	private static Type? _skiaBackendType;
 	private static bool _skiaBackendTypeResolved;
 
@@ -175,11 +180,11 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		// flattens) without any head code: the backend is probed reflectively, so a head that doesn't ship the
 		// WebGPU assemblies — or a probe failure — falls through to the Skia default below.
 		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain"
-			&& CreateInstanceOf<Drawing.IGraphicsProvider>(WebGpuGraphicsProviderTypeName) is { } webGpuProvider)
+			&& CreateInstanceOf<Drawing.IGraphicsProvider>(Type.GetType(WebGpuGraphicsProviderTypeName, throwOnError: false)) is { } webGpuProvider)
 		{
 			Drawing.GraphicsRegistry.RegisterDefault(new[] { webGpuProvider });
 			if (!Drawing.GeometryFactory.IsRegistered
-				&& CreateInstanceOf<Drawing.IGeometryFactory>(ManagedGeometryFactoryTypeName) is { } managedGeometry)
+				&& CreateInstanceOf<Drawing.IGeometryFactory>(Type.GetType(ManagedGeometryFactoryTypeName, throwOnError: false)) is { } managedGeometry)
 			{
 				Drawing.GeometryFactory.RegisterDefault(managedGeometry);
 			}
@@ -228,8 +233,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		var renderer = InvokeStaticFactory<Drawing.ISvgRenderer>(SvgAddInBackendTypeName, "CreateSvgRenderer")
-			?? CreateInstanceOf<Drawing.ISvgRenderer>(ManagedSvgRendererTypeName);
+		var renderer = InvokeStaticFactory<Drawing.ISvgRenderer>(Type.GetType(SvgAddInBackendTypeName, throwOnError: false), "CreateSvgRenderer")
+			?? CreateInstanceOf<Drawing.ISvgRenderer>(Type.GetType(ManagedSvgRendererTypeName, throwOnError: false));
 		if (renderer is not null)
 		{
 			Drawing.SvgRenderer.RegisterDefault(renderer);
@@ -244,8 +249,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		}
 
 		var forceManaged = Environment.GetEnvironmentVariable("UNO_MANAGED_LOTTIE") is "1" or "true";
-		var renderer = (forceManaged ? null : InvokeStaticFactory<Drawing.ILottieRenderer>(SkottieLottieRendererTypeName, "CreateLottieRenderer"))
-			?? InvokeStaticFactory<Drawing.ILottieRenderer>(ManagedLottieRendererTypeName, "CreateLottieRenderer");
+		var renderer = (forceManaged ? null : InvokeStaticFactory<Drawing.ILottieRenderer>(Type.GetType(SkottieLottieRendererTypeName, throwOnError: false), "CreateLottieRenderer"))
+			?? InvokeStaticFactory<Drawing.ILottieRenderer>(Type.GetType(ManagedLottieRendererTypeName, throwOnError: false), "CreateLottieRenderer");
 		if (renderer is not null)
 		{
 			Drawing.LottieRenderer.RegisterDefault(renderer);
@@ -254,8 +259,6 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	/// <summary>Reflectively calls a parameterless static factory on the Skia backend, cast to the neutral seam
 	/// <typeparamref name="T"/>. Null if the backend assembly isn't present or the call fails.</summary>
-	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers its backend explicitly.")]
-	[UnconditionalSuppressMessage("Trimming", "IL2080", Justification = "Best-effort fallback; a trimmed/AOT app registers its backend explicitly.")]
 	private static T? InvokeSkiaFactory<T>(string methodName) where T : class
 	{
 		try
@@ -286,37 +289,32 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	/// <summary>Reflectively calls a parameterless static factory on an arbitrary assembly-qualified type (for seams
 	/// served by an add-in rather than the core Skia backend). Null if the type/assembly isn't present or the call fails.</summary>
-	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
-	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
-	private static T? InvokeStaticFactory<T>(string typeName, string methodName) where T : class
+	private static T? InvokeStaticFactory<T>([DynamicallyAccessedMembers(FactoryMethods)] Type? type, string methodName) where T : class
 	{
 		try
 		{
-			return Type.GetType(typeName, throwOnError: false)
+			return type
 				?.GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, Type.EmptyTypes)
 				?.Invoke(null, null) as T;
 		}
 		catch (Exception e)
 		{
-			LogFallbackFailure($"{typeName}.{methodName}", e);
+			LogFallbackFailure($"{type}.{methodName}", e);
 			return null;
 		}
 	}
 
-	/// <summary>Reflectively constructs an assembly-qualified type via its public parameterless constructor, cast to
+	/// <summary>Reflectively constructs a type via its public parameterless constructor, cast to
 	/// the neutral seam interface <typeparamref name="T"/>. Null if the type/assembly isn't present or the call fails.</summary>
-	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
-	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
-	private static T? CreateInstanceOf<T>(string typeName) where T : class
+	private static T? CreateInstanceOf<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] Type? type) where T : class
 	{
 		try
 		{
-			var type = Type.GetType(typeName, throwOnError: false);
 			return type is null ? null : Activator.CreateInstance(type) as T;
 		}
 		catch (Exception e)
 		{
-			LogFallbackFailure(typeName, e);
+			LogFallbackFailure($"{type}", e);
 			return null;
 		}
 	}
