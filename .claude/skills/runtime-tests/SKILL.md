@@ -28,7 +28,7 @@ Determine what to run from the user's input:
 - **Specific test method**: e.g., `Given_Button.When_ContentSet` → resolve to fully qualified name
 - **Multiple tests**: Pipe-separated list of fully qualified names
 
-If the user provides partial names, search `src/Uno.UI.RuntimeTests/Tests/` to resolve fully qualified test names (namespace + class + method).
+If the user provides partial names, search `src/Uno.UI.RuntimeTests/` to resolve fully qualified test names (namespace + class + method).
 
 **Determine target platform** from user input. Supported platforms:
 
@@ -247,7 +247,7 @@ kill $HTTP_PID $COMPANION_PID 2>/dev/null || true
 - Entry point: `src/SamplesApp/SamplesApp.Shared/App.Tests.cs`
 - Filter decoding: `src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UITests/Presentation/SampleChooserViewModel.cs`
 - Config: `src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UnitTest/UnitTestEngineConfig.cs`
-- Test location: `src/Uno.UI.RuntimeTests/Tests/`
+- Test location: `src/Uno.UI.RuntimeTests/`
 - WASM CI script: `build/test-scripts/wasm-run-skia-runtime-tests.sh`
 - WASM companion server: `build/test-scripts/skia-browserwasm-file-creation-server.py`
 - Test-authoring conventions: `.claude/rules/runtime-tests.md`
