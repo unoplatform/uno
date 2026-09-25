@@ -67,8 +67,9 @@ public partial class InteractionTracker : CompositionObject
 			var scale = _scale;
 			NativeDispatcher.Main.Enqueue(() =>
 			{
-				Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, scale, requestId));
+				// Moves the bound visuals first: the owner's effective viewport update reads their Translation.
 				OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
+				Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, scale, requestId));
 			});
 		}
 	}
