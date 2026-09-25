@@ -1550,33 +1550,6 @@ namespace Uno.WinAppSDKSyncGenerator
 
 		private bool SkipMethod(INamedTypeSymbol type, IMethodSymbol method)
 		{
-			if (method.ContainingType.Name == "Grid")
-			{
-				switch (method.Name)
-				{
-					// WinUI takes a FrameworkElement, Uno takes a UIElement.
-					case "SetRow":
-					case "SetRowSpan":
-					case "SetColumn":
-					case "SetColumnSpan":
-					case "GetRow":
-					case "GetRowSpan":
-					case "GetColumn":
-					case "GetColumnSpan":
-						return true;
-				}
-			}
-
-			if (method.ContainingType.Name == "FrameworkElement")
-			{
-				switch (method.Name)
-				{
-					// Declared on DependencyObject in Uno.
-					case "SetBinding":
-						return true;
-				}
-			}
-
 			if (method.ContainingType.Name == "SwapChainPanel")
 			{
 				switch (method.Name)
@@ -2048,17 +2021,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				switch (property.Name)
 				{
 					case "CoreWebView2":
-						return true;
-				}
-			}
-
-			if (property.ContainingType.Name == "UIElement")
-			{
-				switch (property.Name)
-				{
-					// Declared on FrameworkElement in Uno.
-					case "Transitions":
-					case "TransitionsProperty":
 						return true;
 				}
 			}
