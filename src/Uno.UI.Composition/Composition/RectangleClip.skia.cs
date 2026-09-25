@@ -7,7 +7,7 @@ namespace Microsoft.UI.Composition;
 
 partial class RectangleClip
 {
-	private IGeometry? _clipPath;
+	private (RoundRectangle rect, IGeometry path)? _clipPath;
 
 	private protected override Rect? GetBoundsCore(Visual visual)
 	{
@@ -20,31 +20,30 @@ partial class RectangleClip
 
 	internal override IGeometry? GetClipPath(Visual visual)
 	{
-		// This runs for every rounded visual on every frame. The path depends only on this clip's own
-		// properties -- GetBoundsCore ignores the visual -- so build it once and let OnPropertyChangedCore
-		// drop it when any of them changes.
-		if (_clipPath is null)
+		if (GetClipRoundedRect(visual) is not { } rect)
 		{
-			if (GetBounds(visual) is not { } bounds)
-			{
-				return null;
-			}
+			return null;
+		}
 
+		// This runs for every rounded visual on every frame, so only rebuild the path when its geometry changes.
+		if (_clipPath is null || _clipPath.Value.rect != rect)
+		{
+			_clipPath?.path.Release();
 			var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
-			builder.AddRoundedRectangle(bounds, _topLeftRadius, _topRightRadius, _bottomRightRadius, _bottomLeftRadius);
-			_clipPath = builder.Build();
+			builder.AddRoundedRectangle(rect.Rect, rect.TopLeft, rect.TopRight, rect.BottomRight, rect.BottomLeft);
+			_clipPath = (rect, builder.Build());
 		}
 
 		// The cache keeps its own reference, so hand the caller one of theirs.
-		_clipPath.AddRef();
-		return _clipPath;
+		_clipPath.Value.path.AddRef();
+		return _clipPath.Value.path;
 	}
 
-	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+	private protected override void DisposeInternal()
 	{
-		_clipPath?.Release();
+		_clipPath?.path.Release();
 		_clipPath = null;
-		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
+		base.DisposeInternal();
 	}
 
 	private protected override Rect? GetClipRect(Visual visual)
