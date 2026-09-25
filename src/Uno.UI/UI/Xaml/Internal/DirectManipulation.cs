@@ -79,7 +79,8 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 		_recognizer = new GestureRecognizer(this)
 		{
 			GestureSettings = GestureSettingsHelper.Manipulations,
-			PatchCases = WinRTFeatureConfiguration.GestureRecognizer.PatchCasesForDirectManipulation
+			PatchCases = WinRTFeatureConfiguration.GestureRecognizer.PatchCasesForDirectManipulation,
+			ReportsUnquantizedDeltas = true
 		};
 		_recognizer.ManipulationStarting += _onDirectManipulationStarting;
 		_recognizer.ManipulationStarted += _onDirectManipulationStarted;
