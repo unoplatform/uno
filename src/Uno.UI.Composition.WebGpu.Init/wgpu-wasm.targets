@@ -110,6 +110,6 @@
 
 	<!-- The wiring an external app gets, imported against this repo's provisioned copies so a repo wasm
 	     build exercises exactly that code. Last, so the roots set above win. -->
-	<Import Project="..\Uno.UI.Composition.WebGpu\package\Uno.UI.Composition.WebGpu.targets" />
+	<Import Project="..\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.targets" />
 
 </Project>

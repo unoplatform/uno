@@ -50,7 +50,11 @@ namespace Microsoft.UI.Xaml
 
 		internal static RelativeLayout RelativeLayout { get; private set; } = null!;
 
-		internal LayoutProvider LayoutProvider { get; private set; } = null!;
+		private LayoutProvider? _layoutProvider;
+
+		// Lazy: a recreated Activity that keeps its window (e.g. Activity.Recreate) attaches the reused content,
+		// and so starts the provider, from InitializeComponent, before OnCreate would have created it.
+		internal LayoutProvider LayoutProvider => _layoutProvider ??= CreateLayoutProvider();
 
 		internal static ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
 
@@ -255,16 +259,27 @@ namespace Microsoft.UI.Xaml
 
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
-			// Hold the splash on the Skia path until the first Skia frame is presented (see the render views).
+			// Hold the window's draws until a Skia frame is presented (see the render views).
 			NativeWindowWrapper.Instance.ArmFirstFrameGate();
+			if (_renderView is not null)
+			{
+				// A recreated Activity reuses the render view, so request the frame that releases the gate.
+				InvalidateRender();
+			}
 
-			LayoutProvider = new LayoutProvider(this);
-			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
-			LayoutProvider.InsetsChanged += OnInsetsChanged;
+			_ = LayoutProvider;
 
 			RaiseConfigurationChanges();
 
 			InitializeBackPressedCallback();
+		}
+
+		private LayoutProvider CreateLayoutProvider()
+		{
+			LayoutProvider layoutProvider = new(this);
+			layoutProvider.KeyboardChanged += OnKeyboardChanged;
+			layoutProvider.InsetsChanged += OnInsetsChanged;
+			return layoutProvider;
 		}
 
 		protected override void OnStart()
@@ -457,7 +472,11 @@ namespace Microsoft.UI.Xaml
 
 			CleanupBackPressedCallback();
 
-			NativeWindowWrapper.Instance.OnNativeClosed();
+			// A configuration-driven recreation keeps the window and its content for the new Activity.
+			if (!IsChangingConfigurations)
+			{
+				NativeWindowWrapper.Instance.OnNativeClosed();
+			}
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)
