@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 
@@ -24,6 +25,10 @@ internal class AndroidSkiaXamlRootHost : IXamlRootHost
 	internal AndroidKeyboardInputSource KeyboardSource => _wrapper.KeyboardSource;
 
 	void IXamlRootHost.InvalidateRender() => Activity.InvalidateRender();
+
+	// Whatever the activity's render view negotiated for its current surface. It changes when the surface is
+	// re-created, so it is read through rather than stored.
+	IDrawingFactory? IXamlRootHost.Renderer => _wrapper.CurrentActivity?.RenderView?.Renderer;
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
 

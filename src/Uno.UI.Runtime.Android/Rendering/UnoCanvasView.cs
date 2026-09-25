@@ -98,6 +98,8 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		}
 	}
 
+	public IDrawingFactory? Renderer => _renderer.Renderer;
+
 	public void InvalidateRender()
 	{
 		ExploreByTouchHelper.InvalidateRoot();
@@ -189,6 +191,8 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		private ISwapChain? _context;
 		private IDrawingFactory? _renderer;
 
+		internal IDrawingFactory? Renderer => Volatile.Read(ref _renderer);
+
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
 			if (_torndown)
@@ -220,7 +224,6 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 			// The context wraps the ambient EGL context; the backend renders into the default framebuffer and
 			// GLSurfaceView swaps implicitly (Present is a no-op).
-			compositionTarget.Renderer = _renderer!;
 			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(_context);
 
 			if (_activity.NativeLayerHost is { } nativeLayerHost)
@@ -269,7 +272,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 					: (kind == GraphicsContextKind.Software ? new AndroidSoftwareGraphicsContext() : null));
 			var init = GraphicsRegistry.Initialize();
 			_context = init.Context;
-			_renderer = init.Renderer;
+			Volatile.Write(ref _renderer, init.Renderer);
 			// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
 			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
 		}
@@ -287,8 +290,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		{
 			// The backend holds the GRContext-GLES built over this context, so it goes first; leaving it behind
 			// leaks a GPU context per re-negotiation.
-			(_renderer as IDisposable)?.Dispose();
-			_renderer = null;
+			(Interlocked.Exchange(ref _renderer, null) as IDisposable)?.Dispose();
 
 			_context?.Dispose();
 			_context = null;

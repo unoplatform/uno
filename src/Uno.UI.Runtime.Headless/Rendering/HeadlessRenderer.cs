@@ -25,6 +25,9 @@ internal sealed class HeadlessRenderer : IDisposable
 	private readonly Uno.UI.Composition.Drawing.ISwapChain _swapChain;
 	private readonly Uno.UI.Composition.Drawing.IDrawingFactory _rendererFactory;
 
+	/// <summary>The negotiated backend, read by the window host so its CompositionTarget can resolve one.</summary>
+	internal Uno.UI.Composition.Drawing.IDrawingFactory Factory => _rendererFactory;
+
 	public HeadlessRenderer(IXamlRootHost host, Uno.UI.Composition.Drawing.ISwapChain swapChain, Uno.UI.Composition.Drawing.IDrawingFactory rendererFactory)
 	{
 		_host = host;
@@ -86,7 +89,6 @@ internal sealed class HeadlessRenderer : IDisposable
 			Thread.Sleep(15);
 		}
 
-		ct.Renderer = _rendererFactory;
 		ct.OnNativePlatformFrameRequested(_swapChain);
 	}
 
