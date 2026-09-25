@@ -404,7 +404,7 @@ public partial class Given_Validation_Transport
 				nameof(ErrorTemplate),
 				typeof(DataTemplate),
 				typeof(ValidationControlBase),
-				new FrameworkPropertyMetadata(default(DataTemplate)));
+				new FrameworkPropertyMetadata(default(DataTemplate), OnErrorTemplateChanged));
 
 		public InputValidationMode InputValidationMode
 		{

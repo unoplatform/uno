@@ -111,6 +111,15 @@ public partial class Control
 			}
 		}
 
+		if (ValidationParticipant is { HasValidationErrors: true })
+		{
+			EnsureErrors();
+		}
+		else if (this is IInputValidationControl { HasValidationErrors: true })
+		{
+			DeferErrors();
+		}
+
 		// After the errors have settled, so that enabling a control whose source already has errors does not
 		// show a cleared state first.
 		UpdateValidationStatesInternal();
@@ -126,6 +135,17 @@ public partial class Control
 		}
 
 		UpdateValidationStates();
+
+		// The equivalent of WinUI's RaiseValidationErrorEvent check, which loads the error template on the first
+		// error and defers it on the last.
+		if (!newValue)
+		{
+			DeferErrors();
+		}
+		else if (ValidationParticipant is not null)
+		{
+			EnsureErrors();
+		}
 	}
 
 	private bool IsValidationInputProperty(DependencyProperty property)

@@ -233,7 +233,7 @@ namespace Microsoft.UI.Xaml
 				// its template is realized would otherwise come up in no validation state at all. Anchored
 				// here rather than in OnApplyTemplate, which is virtual and widely overridden without a base
 				// call.
-				pControl?.UpdateValidationStatesInternal();
+				pControl?.OnValidationTemplateApplied();
 			}
 
 			// UNO TODO:
