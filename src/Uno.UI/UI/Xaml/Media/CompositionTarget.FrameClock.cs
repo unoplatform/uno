@@ -81,6 +81,9 @@ public partial class CompositionTarget
 	{
 		if (!HasFrameTickWork)
 		{
+			// No tick will use this frame's timestamp, and one armed later (a driver starting after a pause) would
+			// otherwise take it as current and date its motion from however long ago this frame was.
+			_isFrameTimestampFresh = false;
 			return;
 		}
 
