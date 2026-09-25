@@ -575,6 +575,63 @@ public class Given_ItemsRepeater_FastScroll
 #endif
 	}
 
+	[TestMethod]
+	public async Task When_EffectiveViewportShiftIsSubPixel_Then_MeasureIsSkipped()
+	{
+		// WinUI tolerates viewport jitter below 0.01px (ViewportManagerWithPlatformFeatures.cpp,
+		// UpdateViewport's roundingTolerance) so a fractional scroll tick doesn't re-measure the
+		// whole repeater. Drives ItemsRepeater.RaiseEffectiveViewportChanged directly so the test
+		// doesn't depend on the compositor producing an exact sub-pixel viewport.
+		var items = Enumerable.Range(0, 50).Select(i => new ItemModel(i, 40, ColorForIndex(i))).ToArray();
+		var source = new ObservableCollection<ItemModel>(items);
+		var layout = new CountingStackLayout { Orientation = Orientation.Vertical };
+		var template = (DataTemplate)XamlReader.Load(ItemTemplateXaml);
+
+		ItemsRepeater repeater = new()
+		{
+			ItemsSource = source,
+			Layout = layout,
+			ItemTemplate = template,
+			// Cache buffer growth (ViewportManager.RegisterCacheBuildWork) schedules its own
+			// idle-driven InvalidateMeasure calls independent of viewport changes; disabling it keeps
+			// the measure count in this test attributable only to the viewport deltas under test.
+			HorizontalCacheLength = 0,
+			VerticalCacheLength = 0,
+		};
+
+		ScrollViewer scroller = new()
+		{
+			Width = 300,
+			Height = 600,
+			Content = repeater,
+		};
+
+		var sut = new SutHandle(scroller, repeater, source);
+		await LoadAsync(sut);
+
+		// Seed a known viewport so the deltas below are measured from a fixed starting point.
+		repeater.RaiseEffectiveViewportChanged(new EffectiveViewportChangedEventArgs(new Rect(0, 0, 300, 600)));
+		repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+		var countAfterSeed = layout.MeasureCount;
+
+		// Sub-tolerance shift (0.005 < the 0.01 rounding tolerance) must not invalidate measure.
+		repeater.RaiseEffectiveViewportChanged(new EffectiveViewportChangedEventArgs(new Rect(0, 0.005, 300, 600)));
+		repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		layout.MeasureCount.Should().Be(countAfterSeed,
+			"a viewport shift below the 0.01px rounding tolerance must not invalidate measure (WinUI parity)");
+
+		// A real shift must still invalidate measure.
+		repeater.RaiseEffectiveViewportChanged(new EffectiveViewportChangedEventArgs(new Rect(0, 5, 300, 600)));
+		repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		layout.MeasureCount.Should().BeGreaterThan(countAfterSeed,
+			"a real viewport shift must still invalidate measure");
+	}
+
 	// ----- helpers -----
 
 	// Mixed-template sample SUT: mimics the studio.live multi-template subagent markdown UI's
@@ -817,4 +874,16 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	private sealed record SutHandle(ScrollViewer Scroller, ItemsRepeater Repeater, ObservableCollection<ItemModel> Source);
+
+	// Counts MeasureOverride calls so a test can assert a viewport change did (or didn't) trigger one.
+	private sealed class CountingStackLayout : StackLayout
+	{
+		public int MeasureCount { get; private set; }
+
+		protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
+		{
+			MeasureCount++;
+			return base.MeasureOverride(context, availableSize);
+		}
+	}
 }
