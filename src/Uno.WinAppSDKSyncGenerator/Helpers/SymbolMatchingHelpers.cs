@@ -123,7 +123,7 @@ internal static class SymbolMatchingHelpers
 			uapSymbol.IsAbstract == unoSymbol.IsAbstract &&
 			uapSymbol.IsOverride == unoSymbol.IsOverride &&
 			StripGlobal(uapSymbol.Name) == StripGlobal(unoSymbol.Name) &&
-			// Temporary skip named type: Until we match seal-ness and static-ness with UWP.
+			// Temporary skip named type: Until we match seal-ness with WinUI.
 			(uapSymbol.IsSealed == unoSymbol.IsSealed || uapSymbol.Kind == SymbolKind.NamedType) &&
 			(uapSymbol.IsStatic == unoSymbol.IsStatic) &&
 			uapSymbol.IsVirtual == unoSymbol.IsVirtual;

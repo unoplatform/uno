@@ -3,7 +3,7 @@
 #if !IS_UNIT_TESTS
 namespace Windows.ApplicationModel.DataTransfer
 {
-	public partial class StandardDataFormats
+	public static partial class StandardDataFormats
 	{
 		public static string UserActivityJsonArray { get; } = "UserActivityJsonArray";
 		public static string WebLink { get; } = "UniformResourceLocatorW";

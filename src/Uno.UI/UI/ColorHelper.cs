@@ -10,8 +10,12 @@ namespace Microsoft.UI;
 namespace Windows.UI;
 #endif
 
-public static partial class ColorHelper
+public partial class ColorHelper
 {
+	private ColorHelper()
+	{
+	}
+
 	/// <summary>
 	/// Retrieves the display name of the specified color.
 	/// </summary>

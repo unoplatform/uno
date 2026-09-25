@@ -15,7 +15,7 @@ using MessageUI;
 
 namespace Windows.ApplicationModel.Email
 {
-	public partial class EmailManager
+	public static partial class EmailManager
 	{
 		private static async Task ShowComposeNewEmailInternalAsync(EmailMessage message)
 		{

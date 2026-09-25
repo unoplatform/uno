@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Windows.Devices.Bluetooth
 {
-	public partial class BluetoothLEAppearanceCategories
+	public static partial class BluetoothLEAppearanceCategories
 	{
 		public static ushort BarcodeScanner => 11;
 		public static ushort BloodPressure => 14;
