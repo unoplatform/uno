@@ -22,6 +22,9 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 {
 	private readonly float _scale;
 	private readonly HeadlessRenderer _renderer;
+
+	// Read by this window's CompositionTarget the first time it needs a backend.
+	Uno.UI.Composition.Drawing.IDrawingFactory? IXamlRootHost.Renderer => _renderer.Factory;
 	private int _rawWidth;
 	private int _rawHeight;
 	private bool _closed;

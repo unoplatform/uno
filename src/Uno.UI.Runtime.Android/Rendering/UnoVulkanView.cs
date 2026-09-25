@@ -77,6 +77,8 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		Holder!.AddCallback(this);
 	}
 
+	public global::Uno.UI.Composition.Drawing.IDrawingFactory? Renderer => Volatile.Read(ref _renderer);
+
 	public void InvalidateRender()
 	{
 		_framePacer.RequestFrame();
@@ -165,8 +167,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			// destroying the swapchain while those are still alive leaves the driver dereferencing them (a SIGSEGV
 			// inside vkDestroySwapchainKHR). The device itself outlives the surface (see _vulkanContext.Dispose in
 			// Dispose(bool)); surface re-creation negotiates a fresh backend against the same device.
-			(_renderer as IDisposable)?.Dispose();
-			_renderer = null;
+			(Interlocked.Exchange(ref _renderer, null) as IDisposable)?.Dispose();
 
 			_context?.Dispose();
 			_context = null;
@@ -253,7 +254,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 					: null);
 		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
 		_context = init.Context;
-		_renderer = init.Renderer;
+		Volatile.Write(ref _renderer, init.Renderer);
 		// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
 			init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;
@@ -286,7 +287,6 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		// its last frame while input keeps being delivered.
 		try
 		{
-			compositionTarget.Renderer = _renderer!;
 			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
 
 			if (_activity.NativeLayerHost is { } nativeLayerHost)
@@ -439,8 +439,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 
 		// Strictly innermost-first: the backend's GRContext-Vulkan owns pipelines and pools built on the
 		// swapchain, which in turn is built on the device — vkDestroyDevice must be last.
-		(_renderer as IDisposable)?.Dispose();
-		_renderer = null;
+		(Interlocked.Exchange(ref _renderer, null) as IDisposable)?.Dispose();
 		_context?.Dispose();
 		_context = null;
 		// Releases the retained instance and device kept alive across surface re-creations.
