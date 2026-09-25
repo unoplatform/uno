@@ -243,6 +243,7 @@ public partial class CompositionTarget
 		finally
 		{
 			swapChain.Present();
+			RaiseFramePresented();
 		}
 	}
 
