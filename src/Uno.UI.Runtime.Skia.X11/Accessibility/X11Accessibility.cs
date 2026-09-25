@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -44,6 +45,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	private bool _treeInitialized;
 	private bool _treeBuildQueued;
 	private int _nextPath = 1;
+	private double _scale = 1.0;
 
 	// AT-SPI clients cache object references across tree changes; a rebuild must
 	// republish the same element at the same path or a cached reference silently
@@ -79,6 +81,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		// Subscribe on the UI thread so a RootElement that only becomes available
 		// after the server starts still triggers the initial tree build.
 		_window.Activated += OnWindowActivated;
+		_window.AppWindow.Changed += OnAppWindowChanged;
 
 		StartServerSafely();
 	}
@@ -191,6 +194,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			_nodesByHandle.Clear();
 			_elementsByHandle.Clear();
 			(_originX, _originY) = GetWindowOrigin();
+			_scale = rootElement.XamlRoot?.RasterizationScale ?? 1.0;
 			_root = BuildRootNode(rootElement);
 			_treeInitialized = true;
 			// Publish an immutable element snapshot before the tree so the reader-thread
@@ -297,12 +301,13 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			RoleName = roleName,
 			Name = ResolveName(peer),
 			Parent = parent,
-			X = offset.X + _originX,
-			Y = offset.Y + _originY,
-			W = size.X,
-			H = size.Y,
+			X = offset.X * _scale + _originX,
+			Y = offset.Y * _scale + _originY,
+			W = size.X * _scale,
+			H = size.Y * _scale,
 			Enabled = peer?.IsEnabled() ?? true,
 			Focusable = peer?.IsKeyboardFocusable() ?? false,
+			Offscreen = !element.Visual.IsVisible,
 			ItemIndex = parent?.Children.Count ?? -1,
 		};
 
@@ -512,7 +517,8 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		QueueRebuildIfNeeded();
 		if (_server is { } server && _nodesByHandle.TryGetValue(parent.Visual.Handle, out var parentNode))
 		{
-			server.EmitChildrenChanged(parentNode, added: true, index ?? -1);
+			var childNode = _nodesByHandle.TryGetValue(child.Visual.Handle, out var addedNode) ? addedNode : null;
+			server.EmitChildrenChanged(parentNode, added: true, index ?? -1, childNode);
 		}
 	}
 
@@ -522,7 +528,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		{
 			var childNode = _nodesByHandle.TryGetValue(child.Visual.Handle, out var removed) ? removed : null;
 			var index = childNode is not null ? parentNode.Children.IndexOf(childNode) : -1;
-			server.EmitChildrenChanged(parentNode, added: false, index);
+			server.EmitChildrenChanged(parentNode, added: false, index, childNode);
 		}
 		QueueRebuildIfNeeded();
 	}
@@ -550,6 +556,30 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		}
 	}
 
+	// ConfigureNotify lands here through NativeWindowWrapperBase; shift every published
+	// bound by the origin delta so boxes stay in screen space after a window move.
+	private void OnAppWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
+	{
+		if (!args.DidPositionChange || !_treeInitialized || IsDisposed)
+		{
+			return;
+		}
+
+		var (originX, originY) = GetWindowOrigin();
+		var (deltaX, deltaY) = (originX - _originX, originY - _originY);
+		if (deltaX == 0 && deltaY == 0)
+		{
+			return;
+		}
+
+		(_originX, _originY) = (originX, originY);
+		foreach (var node in _nodesByHandle.Values)
+		{
+			node.X += deltaX;
+			node.Y += deltaY;
+		}
+	}
+
 	protected override void OnSizeOrOffsetChanged(Visual visual)
 	{
 		if (!IsAccessibilityEnabled || !_treeInitialized)
@@ -565,10 +595,10 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		}
 
 		var offset = GetAbsoluteOffset(containerVisual);
-		node.X = offset.X + _originX;
-		node.Y = offset.Y + _originY;
-		node.W = containerVisual.Size.X;
-		node.H = containerVisual.Size.Y;
+		node.X = offset.X * _scale + _originX;
+		node.Y = offset.Y * _scale + _originY;
+		node.W = containerVisual.Size.X * _scale;
+		node.H = containerVisual.Size.Y * _scale;
 	}
 
 	protected override void UpdateName(nint handle, AutomationPeer peer, string? label)
@@ -663,6 +693,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		if (_nodesByHandle.TryGetValue(handle, out var node))
 		{
 			node.Description = helpText;
+			_server?.EmitPropertyChange(node, "accessible-description", node.Description ?? string.Empty);
 		}
 	}
 
@@ -773,12 +804,28 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 
 	bool AtspiServer.IWriteTarget.SelectChild(AtspiNode node, int index)
 	{
-		if (!_elementsSnapshot.TryGetValue(node.Handle, out var element) || element is not ComboBox comboBox)
+		if (_elementsSnapshot.TryGetValue(node.Handle, out var element) && element is ComboBox comboBox)
+		{
+			return comboBox.DispatcherQueue.TryEnqueue(() => SelectChildOnUiThread(comboBox, index));
+		}
+
+		// Other selection containers (ListBox/ListView): drive the item's own provider.
+		if (index < 0 || index >= node.Children.Count ||
+			!_elementsSnapshot.TryGetValue(node.Children[index].Handle, out var itemElement))
 		{
 			return false;
 		}
 
-		return comboBox.DispatcherQueue.TryEnqueue(() => SelectChildOnUiThread(comboBox, index));
+		return itemElement.DispatcherQueue.TryEnqueue(() => SelectItemOnUiThread(itemElement));
+	}
+
+	private static void SelectItemOnUiThread(UIElement element)
+	{
+		var peer = element.GetOrCreateAutomationPeer();
+		if (peer?.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+		{
+			selectionItemProvider.AddToSelection();
+		}
 	}
 
 	private static void InvokeOnUiThread(UIElement element)
@@ -860,6 +907,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		}
 
 		_window.Activated -= OnWindowActivated;
+		_window.AppWindow.Changed -= OnAppWindowChanged;
 
 		AtspiServer? server;
 		lock (_serverGate)

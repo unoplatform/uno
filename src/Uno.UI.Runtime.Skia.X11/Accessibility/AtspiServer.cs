@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -241,19 +242,22 @@ internal sealed class AtspiServer
 		}
 	}
 
-	public void EmitChildrenChanged(AtspiNode parent, bool added, int index)
+	public void EmitChildrenChanged(AtspiNode parent, bool added, int index, AtspiNode? child)
 	{
 		try
 		{
-			// The child reference would ideally ride as a variant of (so); expressing a
-			// variant-of-struct is awkward in Tmds.DBus.Protocol 0.92, so the variant is
-			// left empty — clients re-fetch children on this signal, which is sufficient.
+			var childReference = GetReference(child);
 			var writer = _connection.GetMessageWriter();
 			writer.WriteSignalHeader(null, parent.Path, AtspiDbus.EventObjectInterface, AtspiDbus.ChildrenChangedMember, AtspiDbus.StateChangedSignature);
 			writer.WriteString(added ? "add" : "remove");
 			writer.WriteInt32(index);
 			writer.WriteInt32(0);
-			writer.WriteVariantInt32(0);
+			// The child rides as a variant of (so), written as an explicit signature plus
+			// struct — the same shape the Parent property reply uses.
+			writer.WriteSignature(AtspiDbus.ReferenceSignature);
+			writer.WriteStructureStart();
+			writer.WriteString(childReference.Service);
+			writer.WriteObjectPath(childReference.Path);
 			writer.WriteStructureStart();
 			writer.WriteString(_uniqueName);
 			writer.WriteObjectPath(AtspiDbus.RootPath);
@@ -660,8 +664,8 @@ internal sealed class AtspiServer
 				case AtspiDbus.GetSelectedChildMethod:
 				{
 					var index = context.Request.GetBodyReader().ReadInt32();
-					var selected = index == 0 ? node.Children.Find(c => c.Selected) : null;
-					ReplyReference(context, _server.GetReference(selected));
+					var selected = index >= 0 ? node.Children.FindAll(c => c.Selected) : null;
+					ReplyReference(context, _server.GetReference(selected is not null && index < selected.Count ? selected[index] : null));
 					break;
 				}
 				case AtspiDbus.SelectChildMethod:
@@ -677,7 +681,7 @@ internal sealed class AtspiServer
 					break;
 				}
 				case AtspiDbus.GetNSelectedChildrenMethod:
-					ReplyInt32(context, node.Children.Exists(c => c.Selected) ? 1 : 0);
+					ReplyInt32(context, node.Children.Count(c => c.Selected));
 					break;
 				case AtspiDbus.DeselectSelectedChildMethod:
 				case AtspiDbus.DeselectChildMethod:
@@ -913,7 +917,8 @@ internal sealed class AtspiServer
 			var reader = context.Request.GetBodyReader();
 			var x = reader.ReadInt32();
 			var y = reader.ReadInt32();
-			_ = reader.ReadUInt32();
+			var coordType = reader.ReadUInt32();
+			(x, y) = TranslateToScreen(node, x, y, coordType);
 			ReplyBool(context, Contains(node, x, y));
 		}
 
@@ -922,8 +927,27 @@ internal sealed class AtspiServer
 			var reader = context.Request.GetBodyReader();
 			var x = reader.ReadInt32();
 			var y = reader.ReadInt32();
-			_ = reader.ReadUInt32();
+			var coordType = reader.ReadUInt32();
+			(x, y) = TranslateToScreen(node, x, y, coordType);
 			ReplyReference(context, _server.GetReference(FindAccessibleAtPoint(node, x, y)));
+		}
+
+		// Published bounds are absolute screen coordinates, so window-relative input
+		// points shift by the window origin (the application root's own position).
+		private static (int X, int Y) TranslateToScreen(AtspiNode node, int x, int y, uint coordType)
+		{
+			if (coordType != AtspiDbus.WindowCoordType)
+			{
+				return (x, y);
+			}
+
+			var root = node;
+			while (root.Parent is { } parent)
+			{
+				root = parent;
+			}
+
+			return (x + (int)root.X, y + (int)root.Y);
 		}
 
 		private void ReplyStates(MethodContext context, AtspiNode node)
@@ -1194,6 +1218,7 @@ internal sealed class AtspiServer
 		public const string GetSizeMethod = "GetSize";
 		public const string GetLayerMethod = "GetLayer";
 		public const string ContainsMethod = "Contains";
+		public const uint WindowCoordType = 1;
 		public const string GetAccessibleAtPointMethod = "GetAccessibleAtPoint";
 		public const string GrabFocusMethod = "GrabFocus";
 		public const string GetNActionsMethod = "GetNActions";
