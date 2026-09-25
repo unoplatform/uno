@@ -2,21 +2,117 @@
 
 using System;
 using System.Numerics;
+using Uno.UI.Composition;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Composition.Interactions;
 
 internal sealed class InteractionTrackerCustomAnimationState : InteractionTrackerState
 {
-	public InteractionTrackerCustomAnimationState(InteractionTracker interactionTracker) : base(interactionTracker)
+	private readonly CompositionAnimation _animation;
+	private readonly int _requestId;
+	private readonly bool _isScaleAnimation;
+	private readonly Vector3 _centerPoint;
+	private bool _isAnimationRunning;
+	private ICompositionTarget? _target;
+
+	private InteractionTrackerCustomAnimationState(
+		InteractionTracker interactionTracker,
+		CompositionAnimation animation,
+		int requestId,
+		bool isScaleAnimation,
+		Vector3 centerPoint) : base(interactionTracker)
 	{
+		_requestId = requestId;
+		_isScaleAnimation = isScaleAnimation;
+		_centerPoint = centerPoint;
+
+		// Expression animations snapshot their state per target; keyframe animations return themselves.
+		_animation = animation.CloneAnimation();
+		_animation.Start(isScaleAnimation ? nameof(InteractionTracker.Scale) : nameof(InteractionTracker.Position), default, interactionTracker);
+		_isAnimationRunning = true;
+
+		if (_animation is KeyFrameAnimation keyFrameAnimation)
+		{
+			keyFrameAnimation.Stopped += OnAnimationStopped;
+		}
 	}
+
+	internal static InteractionTrackerCustomAnimationState ForPosition(InteractionTracker interactionTracker, CompositionAnimation animation, int requestId)
+		=> new(interactionTracker, animation, requestId, isScaleAnimation: false, centerPoint: default);
+
+	internal static InteractionTrackerCustomAnimationState ForScale(InteractionTracker interactionTracker, CompositionAnimation animation, Vector3 centerPoint, int requestId)
+		=> new(interactionTracker, animation, requestId, isScaleAnimation: true, centerPoint);
 
 	protected override void EnterState(IInteractionTrackerOwner? owner)
 	{
-		// TODO: Args.
-		owner?.CustomAnimationStateEntered(_interactionTracker, new());
+		if (_disposed)
+		{
+			return;
+		}
+
+		owner?.CustomAnimationStateEntered(_interactionTracker, new InteractionTrackerCustomAnimationStateEnteredArgs(_requestId, isFromBinding: false));
 	}
+
+	internal override void OnActivated()
+	{
+		if (_interactionTracker.FrameTarget is { } target)
+		{
+			_target = target;
+			target.FrameStarting += OnFrameStarting;
+		}
+		else
+		{
+			// Nothing would ever advance the animation: jump to its end rather than never completing.
+			ApplyValue(_animation is KeyFrameAnimation keyFrameAnimation ? keyFrameAnimation.Evaluate(1.0f) : _animation.Evaluate());
+			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, _requestId));
+		}
+	}
+
+	private void OnFrameStarting(object? sender, long timestamp)
+	{
+		// The owner hears about the animation before it moves anything.
+		if (_disposed || !HasEntered)
+		{
+			return;
+		}
+
+		// Evaluated at the frame's timestamp, like the animations a record ticks.
+		var compositor = _interactionTracker.Compositor;
+		compositor.FrameTimestampInTicks = timestamp;
+		try
+		{
+			ApplyValue(_animation.Evaluate());
+		}
+		finally
+		{
+			compositor.FrameTimestampInTicks = null;
+		}
+
+		if (!_isAnimationRunning)
+		{
+			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, _requestId));
+		}
+	}
+
+	private void ApplyValue(object? value)
+	{
+		if (_isScaleAnimation)
+		{
+			if (value is float scale)
+			{
+				scale = Math.Clamp(scale, _interactionTracker.MinScale, _interactionTracker.MaxScale);
+				_interactionTracker.SetScale(scale, _centerPoint, _requestId);
+			}
+		}
+		else if (value is Vector3 position)
+		{
+			position = Vector3.Clamp(position, _interactionTracker.MinPosition, _interactionTracker.MaxPosition);
+			_interactionTracker.SetPosition(position, _requestId);
+		}
+	}
+
+	private void OnAnimationStopped(object? sender, EventArgs e) => _isAnimationRunning = false;
 
 	internal override void StartUserManipulation()
 	{
@@ -41,8 +137,6 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 
 	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId)
 	{
-		// TODO: Stop current animation. Currently, the TryUpdate[Position|Scale]WithAnimation methods are not implemented.
-
 		// State changes to inertia with inertia modifiers evaluated using requested velocity as initial velocity.
 		// TODO: inertia modifiers not yet implemented.
 		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, requestId, isFromPointerWheel: false));
@@ -64,5 +158,27 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 		value = Math.Clamp(value, _interactionTracker.MinScale, _interactionTracker.MaxScale);
 		_interactionTracker.SetScale(value, centerPoint, requestId);
 		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId));
+	}
+
+	public override void Dispose()
+	{
+		base.Dispose();
+
+		if (_animation is KeyFrameAnimation keyFrameAnimation)
+		{
+			keyFrameAnimation.Stopped -= OnAnimationStopped;
+		}
+
+		if (_isAnimationRunning)
+		{
+			_isAnimationRunning = false;
+			_animation.Stop();
+		}
+
+		if (_target is { } target)
+		{
+			_target = null;
+			target.FrameStarting -= OnFrameStarting;
+		}
 	}
 }

@@ -184,6 +184,20 @@ public partial class InteractionTracker : CompositionObject
 	public int TryUpdatePositionBy(Vector3 amount, InteractionTrackerClampingOption option)
 		=> TryUpdatePosition(Position + amount, option);
 
+	public int TryUpdatePositionWithAnimation(CompositionAnimation animation)
+	{
+		var id = Interlocked.Increment(ref _currentRequestId);
+		_state.TryUpdatePositionWithAnimation(animation, id);
+		return id;
+	}
+
+	public int TryUpdateScaleWithAnimation(CompositionAnimation animation, Vector3 centerPoint)
+	{
+		var id = Interlocked.Increment(ref _currentRequestId);
+		_state.TryUpdateScaleWithAnimation(animation, centerPoint, id);
+		return id;
+	}
+
 	/// <summary>
 	/// Tries to update the scale to the specified value.
 	/// </summary>
