@@ -46,8 +46,9 @@ public partial class CompositionTarget
 			{
 				Compositor.AddFrameDriver();
 
-				// A tick rather than a frame: a new driver would otherwise wait for a frame that may never come.
-				ArmFrameTick();
+				// The next frame arms its tick. Arming one right away would tick every driver a second time within
+				// the frame whenever one is swapped for another, as the InteractionTracker does on every wheel notch.
+				((ICompositionTarget)this).RequestNewFrame();
 			}
 		}
 		remove
