@@ -79,6 +79,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		[DataRow(200)]
 		[DataRow(10)]
+		[RequiresScaling(1f)]
 		public async Task When_Both_Layouting_Clip_And_Clip_DP(double newClipValue)
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -133,6 +134,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_TranslateTransform_And_Clip()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
