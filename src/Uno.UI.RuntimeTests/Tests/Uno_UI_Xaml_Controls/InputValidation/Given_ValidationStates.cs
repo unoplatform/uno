@@ -246,12 +246,14 @@ public class Given_ValidationStates
 	}
 
 	[TestMethod]
-	public async Task When_Control_Does_Not_Participate_Then_No_State()
+	public async Task When_Control_Does_Not_Participate_Then_Disabled_And_No_Error_State()
 	{
 		var sut = new CheckBox { Template = (ControlTemplate)XamlReader.Load(TemplateXaml) };
 		await UITestHelper.Load(sut);
 
-		Assert.IsNull(StateOf(sut, EnabledStates));
+		// Template realization applies the disabled branch of EnsureValidationVisuals, which leaves the error
+		// group untouched.
+		Assert.AreEqual("ValidationDisabled", StateOf(sut, EnabledStates));
 		Assert.IsNull(StateOf(sut, ErrorStates));
 	}
 
