@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata minClientVersion="5.0">
-		<id>Uno.UI.Composition.WebGpu</id>
+		<id>Uno.WinUI.Composition.WebGpu</id>
 		<version>0.0.1</version>
 		<authors>Uno Platform</authors>
 		<icon>uno.png</icon>
@@ -13,11 +13,11 @@
 		<dependencies>
 			<group targetFramework="net10.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Uno.UI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
+				<dependency id="Uno.WinUI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
 			</group>
 			<group targetFramework="net11.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Uno.UI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
+				<dependency id="Uno.WinUI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
 			</group>
 		</dependencies>
 	</metadata>
@@ -48,7 +48,7 @@
 
 		<!-- iOS links the static archive into the app image, so it cannot come from runtimes/; the package's own
 		     targets hands the right slice to the Apple SDK as a NativeReference. -->
-		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.UI.Composition.WebGpu.targets" target="buildTransitive\Uno.UI.Composition.WebGpu.targets" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.targets" target="buildTransitive\Uno.WinUI.Composition.WebGpu.targets" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\ios-arm64\lib\libwgpu_native.a" target="buildTransitive\native\ios-arm64\libwgpu_native.a" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\iossimulator-arm64\lib\libwgpu_native.a" target="buildTransitive\native\iossimulator-arm64\libwgpu_native.a" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\iossimulator-x64\lib\libwgpu_native.a" target="buildTransitive\native\iossimulator-x64\libwgpu_native.a" />
