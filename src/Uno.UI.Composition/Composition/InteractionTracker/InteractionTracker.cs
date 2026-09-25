@@ -153,7 +153,8 @@ public partial class InteractionTracker : CompositionObject
 		_state.ReceiveInertiaStarting(-linearVelocity);
 	}
 
-	internal void ReceivePointerWheel(int mouseWheelTicks, bool isHorizontal)
+	/// <param name="mouseWheelTicks">Detents scrolled, fractional for touchpads that report deltas finer than one detent.</param>
+	internal void ReceivePointerWheel(double mouseWheelTicks, bool isHorizontal)
 	{
 		// On WinUI, this depends on mouse setting "how many lines to scroll each time"
 		// The default Windows setting is 3 lines, and each line is 16px.
