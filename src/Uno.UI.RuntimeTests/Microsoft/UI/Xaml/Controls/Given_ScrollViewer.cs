@@ -477,7 +477,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				for (var i = 0; i < 4; i++)
 				{
-					await KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
+					await KeyboardHelper.Down();
 					await Task.Delay(30);
 				}
 
@@ -488,7 +488,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= onRendering;
 			}
 
-			Assert.AreEqual(4 * SUT.ActualHeight, SUT.VerticalOffset, "four pages should land exactly four viewports down");
+			Assert.AreEqual(4 * 26d, SUT.VerticalOffset, "four arrow presses should land exactly four lines down");
 			Assert.AreEqual(1, finals, "each key should add to the glide in flight instead of ending it");
 
 			var moving = positions.Zip(positions.Skip(1), (a, b) => b - a).Count(step => step > 0.01);
