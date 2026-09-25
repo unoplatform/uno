@@ -44,6 +44,12 @@ public partial class Compositor
 
 	internal bool IsAnimating => _runningAnimations.Count > 0 || Volatile.Read(ref _frameDriverCount) > 0;
 
+	/// <summary>The timestamp of the frame being recorded, or null outside of a record.</summary>
+	internal long? FrameTimestampInTicks { get; set; }
+
+	/// <summary>The time animations evaluate against: the frame's while recording, the real clock otherwise.</summary>
+	internal long AnimationTimestampInTicks => FrameTimestampInTicks ?? TimestampInTicks;
+
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
 	{
 		// Feed the animation into the innermost active scoped batch so its Completed event waits
