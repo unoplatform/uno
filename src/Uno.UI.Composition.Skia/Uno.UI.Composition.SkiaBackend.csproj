@@ -13,6 +13,7 @@
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Composition.Skia</AssemblyName>
+		<PackageId>Uno.WinUI.Composition.Skia</PackageId>
 		<RootNamespace>Uno.UI.Composition</RootNamespace>
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;IS_UNO_COMPOSITION</DefineConstants>
 

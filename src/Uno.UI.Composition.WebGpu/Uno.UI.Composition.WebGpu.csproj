@@ -9,6 +9,7 @@
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Composition.WebGpu</AssemblyName>
+		<PackageId>Uno.WinUI.Composition.WebGpu</PackageId>
 		<RootNamespace>Uno.UI.Composition.WebGpu</RootNamespace>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>

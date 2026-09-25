@@ -12,13 +12,13 @@
 	     SkiaSharp bindings are referenced when the 'skia' feature is present (implied by default), so a
 	     skia-free build (e.g. WebGPU-only) drops them. -->
 	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.UI.Composition.Skia" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Composition.Skia" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
 	</ItemGroup>
 
 	<!-- The WebGPU backend is additive: it coexists with Skia and the runtime negotiates which one to use. -->
 	<ItemGroup Condition="$(UnoFeatures.Contains(';webgpu;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.UI.Composition.WebGpu" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Composition.WebGpu" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'">
