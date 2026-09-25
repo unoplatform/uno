@@ -1,6 +1,6 @@
 # Input validation — presentation
 
-**Status**: Partially implemented — §2 and §5 shipped; §4 (templates) and §3/Q10 remain
+**Status**: Partially implemented — §2, §5 and the error presenter plumbing (§4.1) shipped; §4 (templates) and §3/Q10 remain
 **Audience**: Internal engineering (Uno Platform maintainers)
 **Created**: 2026-09-22
 
@@ -21,7 +21,7 @@
 | The validation visual state groups (§2) — **shipped**, see §2.0 | Everything in spec 059 — the transport layer, the attached properties, the validation-property attribute |
 | Visual-state contention with `CommonStates` (§3) | |
 | Per-control template changes and the error presenter (§4) | |
-| `IInputValidationControl.ErrorTemplate` (§5) — **shipped**, unrendered until §4 | |
+| `IInputValidationControl.ErrorTemplate` (§5) — **shipped**; rendered by §4.1 into any template that has an `ErrorPresenter` | |
 | The floated `IsRequired` indicator (§6) | |
 
 The group names collide with nothing: before implementation `grep -rn "ValidationStates" src` returned zero
@@ -231,6 +231,28 @@ Existing visual state groups on the Fluent TextBox: exactly two — `CommonState
 >   do not edit it.
 > - The tracked non-Fluent fallback is `src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml` (TextBox
 >   `ControlTemplate` at `:236`), which needs the same change.
+
+### 4.1 What shipped — the ErrorPresenter plumbing
+
+A port of `CControl::EnsureErrors` / `CControl::DeferErrors` (`Control.cpp:1712`). On the first error the
+template's `ErrorPresenter` (`ContentPresenter`, normally `x:Load="False"`) is realized and given the loaded
+`ErrorTemplate`, whose `DataContext` is the control. `Compact` (and `Auto`) wraps it in the tooltip of
+`DefaultCompactErrorIconTemplate`, now in `Style/Generic/SystemResources.xaml` as in WinUI's `generic.xaml`.
+
+Triggers, as in WinUI: the first error (WinUI's `RaiseValidationErrorEvent` check, here the `HasValidationErrors`
+changed callback), `InputValidationMode` changed, and `ErrorTemplate` changed — through a new protected
+`OnErrorTemplateChanged` each participant registers. Changing `InputValidationKind` only refreshes the states,
+as in WinUI, so the content keeps its shape until the next first error.
+
+Deviations:
+
+- **Template application also calls it**, from the same `InvokeApplyTemplate` anchor as §2.0. WinUI does not,
+  so errors reported before the template exists never reach its presenter there. Proven by mutation.
+- **`DeferErrors` does not defer.** Uno has no `TryDefer`, and in Uno a name lookup realizes a stub, so it only
+  re-applies the states; the `InputValidationErrorStates` group is what hides the presenter.
+
+None of the built-in templates has an `ErrorPresenter` yet, so this is inert in the shipping styles until the
+template work above lands.
 
 ## 5. `IInputValidationControl.ErrorTemplate`
 
