@@ -237,6 +237,77 @@ public class Given_Compositor
 		Assert.IsTrue(worst > 0, $"the second motion froze or stepped back, worst step was {Ms(worst)}ms");
 	}
 
+	/// <summary>
+	/// A record evaluates its animations against the frame's timestamp, not the instant the record happened to
+	/// run at, so every animation in the frame moves on the same even grid as the frame drivers.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Recording_Then_KeyFrame_Animation_Evaluates_At_Frame_Time()
+	{
+		var compositor = Compositor.GetSharedCompositor();
+		var (animation, start) = StartSecondsAnimation(compositor);
+		try
+		{
+			compositor.FrameTimestampInTicks = start + 250 * TimeSpan.TicksPerSecond;
+
+			Assert.AreEqual(250f, (float)animation.Evaluate(), 0.01f, "the animation should be evaluated at the frame's timestamp");
+		}
+		finally
+		{
+			compositor.FrameTimestampInTicks = null;
+			animation.Stop();
+		}
+	}
+
+	/// <summary>
+	/// The real clock and the frame clock take turns, and the frame clock may run ahead of the real one: the
+	/// playhead must never move backwards when the next reading is behind the previous one.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Frame_Time_Is_Ahead_Of_Real_Clock_Then_KeyFrame_Animation_Never_Steps_Back()
+	{
+		var compositor = Compositor.GetSharedCompositor();
+		var (animation, start) = StartSecondsAnimation(compositor);
+		try
+		{
+			compositor.FrameTimestampInTicks = start + 250 * TimeSpan.TicksPerSecond;
+			animation.Evaluate();
+
+			compositor.FrameTimestampInTicks = start + 100 * TimeSpan.TicksPerSecond;
+			Assert.AreEqual(250f, (float)animation.Evaluate(), 0.01f, "an earlier frame timestamp must not rewind the animation");
+
+			compositor.FrameTimestampInTicks = null;
+			Assert.AreEqual(250f, (float)animation.Evaluate(), 0.01f, "the real clock, behind the frame one, must not rewind the animation");
+
+			compositor.FrameTimestampInTicks = start + 260 * TimeSpan.TicksPerSecond;
+			Assert.AreEqual(260f, (float)animation.Evaluate(), 0.01f, "the animation should resume from where it was");
+		}
+		finally
+		{
+			compositor.FrameTimestampInTicks = null;
+			animation.Stop();
+		}
+	}
+
+	// Linear over 1000s, so the value reads as the number of seconds elapsed.
+	private static (ScalarKeyFrameAnimation Animation, long Start) StartSecondsAnimation(Compositor compositor)
+	{
+		var animation = compositor.CreateScalarKeyFrameAnimation();
+		animation.InsertKeyFrame(0f, 0f, compositor.CreateLinearEasingFunction());
+		animation.InsertKeyFrame(1f, 1000f, compositor.CreateLinearEasingFunction());
+		animation.Duration = TimeSpan.FromSeconds(1000);
+
+		var properties = compositor.CreatePropertySet();
+		properties.InsertScalar("Value", 0f);
+
+		var start = compositor.TimestampInTicks;
+		properties.StartAnimation("Value", animation);
+
+		return (animation, start);
+	}
+
 	private static long[] Deltas(long[] values)
 		=> Enumerable.Range(1, values.Length - 1).Select(i => values[i] - values[i - 1]).ToArray();
 
