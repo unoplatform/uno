@@ -8,8 +8,12 @@ namespace Microsoft.UI.Composition.Interactions;
 
 internal sealed class InteractionTrackerInteractingState : InteractionTrackerState
 {
-	public InteractionTrackerInteractingState(InteractionTracker interactionTracker) : base(interactionTracker)
+	// Entered on the press rather than once the manipulation started, so the start that follows is expected.
+	private bool _isAwaitingManipulationStart;
+
+	public InteractionTrackerInteractingState(InteractionTracker interactionTracker, bool isInterruptingInertia = false) : base(interactionTracker)
 	{
+		_isAwaitingManipulationStart = isInterruptingInertia;
 	}
 
 	protected override void EnterState(IInteractionTrackerOwner? owner)
@@ -19,6 +23,12 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 
 	internal override void StartUserManipulation()
 	{
+		if (_isAwaitingManipulationStart)
+		{
+			_isAwaitingManipulationStart = false;
+			return;
+		}
+
 		// This probably shouldn't happen.
 		// We ignore.
 		if (this.Log().IsEnabled(LogLevel.Error))

@@ -33,6 +33,7 @@ internal abstract class InteractionTrackerState : IDisposable
 	/// </summary>
 	internal virtual void OnActivated() { }
 
+	internal virtual void InterruptInertia() { }
 	internal abstract void StartUserManipulation();
 	internal abstract void CompleteUserManipulation(Vector3 linearVelocity);
 	internal abstract void ReceiveManipulationDelta(Point translationDelta);
