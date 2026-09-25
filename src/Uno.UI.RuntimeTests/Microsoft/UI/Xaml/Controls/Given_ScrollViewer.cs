@@ -2536,6 +2536,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(early.Offset / 200 < 0.4, $"{early.Ms:F0}ms in, the scroll already covered {early.Offset / 200:P0} of its distance");
 			Assert.AreEqual(200, SUT.VerticalOffset);
 		}
+
+		[TestMethod]
+		public async Task When_ChangeView_Animated_Then_Final_Offset_Is_The_Target()
+		{
+			// The last frame of an animated scroll can move by several pixels; the final ViewChanged must report where
+			// the scroll ended, not the frame before it.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			await UITestHelper.Load(SUT);
+
+			double? final = null;
+			SUT.ViewChanged += (_, e) =>
+			{
+				if (!e.IsIntermediate)
+				{
+					final = SUT.VerticalOffset;
+				}
+			};
+
+			SUT.ChangeView(null, 1500, null, disableAnimation: false);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await WindowHelper.WaitFor(() => final is not null);
+
+			Assert.AreEqual(1500, final);
+			Assert.AreEqual(1500, SUT.VerticalOffset);
+		}
 #endif
 
 		// A flick fast enough to launch a fling: the velocity tracker fits the recent gesture, so it needs
