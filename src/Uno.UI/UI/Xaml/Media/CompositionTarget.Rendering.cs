@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
@@ -128,6 +129,9 @@ public partial class CompositionTarget
 	{
 		// A closing window stops calling Draw; fail its pending render jobs so awaiters fall
 		// back to software rendering instead of hanging.
+
+		InteractionTrackerFrameClock.AddFrameHandler = handler => Rendering += handler;
+		InteractionTrackerFrameClock.RemoveFrameHandler = handler => Rendering -= handler;
 	}
 
 	private readonly FrameRenderHelper.FpsHelper _fpsHelper = new();

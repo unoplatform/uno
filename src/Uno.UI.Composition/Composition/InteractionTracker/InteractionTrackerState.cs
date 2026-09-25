@@ -27,5 +27,12 @@ internal abstract class InteractionTrackerState : IDisposable
 	internal abstract void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId);
 	internal abstract void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId);
 	internal abstract void TryUpdateScale(float value, Vector3 centerPoint, int requestId);
+
+	// Idle, Inertia and CustomAnimation all (re-)enter CustomAnimation.
+	internal virtual void TryUpdatePositionWithAnimation(CompositionAnimation animation, int requestId)
+		=> _interactionTracker.ChangeState(InteractionTrackerCustomAnimationState.ForPosition(_interactionTracker, animation, requestId));
+
+	internal virtual void TryUpdateScaleWithAnimation(CompositionAnimation animation, Vector3 centerPoint, int requestId)
+		=> _interactionTracker.ChangeState(InteractionTrackerCustomAnimationState.ForScale(_interactionTracker, animation, centerPoint, requestId));
 	public virtual void Dispose() => _disposed = true;
 }
