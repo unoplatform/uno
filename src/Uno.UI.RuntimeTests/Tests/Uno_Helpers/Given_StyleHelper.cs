@@ -24,7 +24,7 @@ public class Given_StyleHelper
 		{
 			Assert.AreEqual(initialCount - 1, XamlControlsResourcesCount());
 
-			Assert.IsTrue(StyleHelper.RestoreLeakedUwpStyles());
+			Assert.IsTrue(StyleHelper.RestoreFluentStyles());
 
 			Assert.AreEqual(initialCount, XamlControlsResourcesCount());
 			Assert.IsTrue(Application.Current.Resources.ContainsKey("TextFillColorPrimaryBrush"));
@@ -43,7 +43,7 @@ public class Given_StyleHelper
 		{
 		}
 
-		Assert.IsFalse(StyleHelper.RestoreLeakedUwpStyles());
+		Assert.IsFalse(StyleHelper.RestoreFluentStyles());
 		Assert.AreEqual(initialCount, XamlControlsResourcesCount());
 	}
 

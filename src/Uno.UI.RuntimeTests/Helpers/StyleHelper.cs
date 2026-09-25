@@ -83,8 +83,8 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// Restores Fluent styles if a test exited without disposing <see cref="UseUwpStyles"/>,
 		/// so the leak does not cascade into every later test of the run.
 		/// </summary>
-		/// <returns>True if Fluent styles had leaked and were restored.</returns>
-		public static bool RestoreLeakedUwpStyles()
+		/// <returns>True if UWP styles had leaked and Fluent styles were restored.</returns>
+		public static bool RestoreFluentStyles()
 		{
 #if WINAPPSDK
 			return false;

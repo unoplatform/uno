@@ -1145,7 +1145,7 @@ namespace Uno.UI.Samples.Tests
 				{
 					CloseRemainingPopups();
 
-					if (Uno.UI.RuntimeTests.Helpers.StyleHelper.RestoreLeakedUwpStyles())
+					if (Uno.UI.RuntimeTests.Helpers.StyleHelper.RestoreFluentStyles())
 					{
 						_log?.Warn("The test left UWP styles applied (StyleHelper.UseUwpStyles was not disposed); restored Fluent styles.");
 					}
