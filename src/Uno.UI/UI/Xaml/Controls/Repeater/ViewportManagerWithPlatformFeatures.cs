@@ -549,6 +549,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// WinUI tolerates viewport jitter below this threshold (ViewportManagerWithPlatformFeatures.cpp,
+		// UpdateViewport) so that sub-pixel scroll ticks don't each trigger a full measure pass.
+		private const double ViewportRoundingTolerance = 0.01;
+
 		void UpdateViewport(Rect viewport)
 		{
 			// Disabled for non-virtualizing layout in RadioButtons, may need to be revisited (https://github.com/unoplatform/uno/issues/4752)
@@ -569,13 +573,21 @@ namespace Microsoft.UI.Xaml.Controls
 				// We got cleared.
 				m_visibleWindow = default;
 			}
-			else
+			else if (Math.Abs(previousVisibleWindow.X - currentVisibleWindow.X) > ViewportRoundingTolerance ||
+				Math.Abs(previousVisibleWindow.Y - currentVisibleWindow.Y) > ViewportRoundingTolerance ||
+				Math.Abs(previousVisibleWindow.Width - currentVisibleWindow.Width) > ViewportRoundingTolerance ||
+				Math.Abs(previousVisibleWindow.Height - currentVisibleWindow.Height) > ViewportRoundingTolerance)
 			{
 				REPEATER_TRACE_INFO("%ls: \tUsed Viewport: (%.0f,%.0f,%.0f,%.0f).(%.0f,%.0f,%.0f,%.0f). \n",
 					GetLayoutId(),
 					previousVisibleWindow.X, previousVisibleWindow.Y, previousVisibleWindow.Width, previousVisibleWindow.Height,
 					currentVisibleWindow.X, currentVisibleWindow.Y, currentVisibleWindow.Width, currentVisibleWindow.Height);
 				m_visibleWindow = currentVisibleWindow;
+			}
+			else
+			{
+				// Below the rounding tolerance: not a real change, skip the measure invalidation below.
+				return;
 			}
 
 			{
