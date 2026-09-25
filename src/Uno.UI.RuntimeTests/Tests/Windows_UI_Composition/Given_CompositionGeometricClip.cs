@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 
@@ -105,6 +106,36 @@ public class Given_CompositionGeometricClip
 		ImageAssert.HasColorAt(screenshot, 100, 175, Colors.White, tolerance: 10);  // strip 4
 		ImageAssert.HasColorAt(screenshot, 160, 160, Colors.White, tolerance: 10);  // the circle
 		ImageAssert.HasColorAt(screenshot, 35, 100, Colors.White, tolerance: 10);   // strip 6
+	}
+
+	[TestMethod]
+	public async Task When_Rounded_Rectangle_Clip_Mutated_In_Place()
+	{
+		// The rounded clip path is cached across frames; hit-testing and damage read it, so mutating the same
+		// instance must still hand out the new geometry.
+		var host = new Border { Width = 200, Height = 200 };
+		await UITestHelper.Load(host);
+
+		var compositor = ElementCompositionPreview.GetElementVisual(host).Compositor;
+		var sprite = compositor.CreateSpriteVisual();
+		sprite.Size = new Vector2(200, 200);
+		var clip = compositor.CreateRectangleClip(0, 0, 200, 200);
+		clip.TopLeftRadius = clip.TopRightRadius = clip.BottomRightRadius = clip.BottomLeftRadius = new Vector2(10, 10);
+
+		var before = clip.GetClipPath(sprite);
+		Assert.IsNotNull(before);
+		Assert.AreEqual(new Rect(0, 0, 200, 200), before.Bounds);
+		before.Release();
+
+		clip.Left = 100;
+		clip.BottomRightRadius = new Vector2(60, 60);
+
+		var after = clip.GetClipPath(sprite);
+		Assert.IsNotNull(after);
+		Assert.AreEqual(new Rect(100, 0, 100, 200), after.Bounds);
+		Assert.IsTrue(after.FillContains(new Vector2(150, 100)));
+		Assert.IsFalse(after.FillContains(new Vector2(195, 195)), "The enlarged corner radius was not applied.");
+		after.Release();
 	}
 
 	private static CanvasGeometry Triangle(Vector2 a, Vector2 b, Vector2 c)
