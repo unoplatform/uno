@@ -329,6 +329,9 @@ assembly it has always lived in is itself renamed `Uno` → `Uno.WinRT` in 7.0.
 - **Composition:** `Uno.CompositionConfiguration.Options.UseCompositorThread` (the Android
   RenderNode compositor thread). Remove the flag; Skia composition needs no dedicated
   native render thread.
+- **`Windows.Media.Playback.IMediaPlaybackList`:** an empty interface that is not part of WinUI and
+  was only exposed on some targets. `MediaPlaybackList` still implements `IMediaPlaybackSource`;
+  use that type or `MediaPlaybackList` directly.
 - **Deprecated UIKit disposal helper:** `Uno.Foundation.NSObjectExtensions.ValidateDispose`,
   deprecated since Uno 5.x. Remove the call from your `NSObject`/`UIView` `Dispose`
   overrides — Skia does not host native views, so there is nothing to validate.

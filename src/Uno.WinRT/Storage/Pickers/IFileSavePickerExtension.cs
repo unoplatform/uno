@@ -1,4 +1,4 @@
-﻿#if __SKIA__ || __IOS__
+﻿#if __SKIA__ || __IOS__ || __WASM__ || __NETSTD_REFERENCE__
 #nullable enable
 
 using System.Threading.Tasks;

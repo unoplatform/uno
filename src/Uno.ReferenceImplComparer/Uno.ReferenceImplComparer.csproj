@@ -10,4 +10,8 @@
 		<PackageReference Include="Mono.Cecil" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="Uno.ReferenceImplComparer.Tests" />
+	</ItemGroup>
+
 </Project>

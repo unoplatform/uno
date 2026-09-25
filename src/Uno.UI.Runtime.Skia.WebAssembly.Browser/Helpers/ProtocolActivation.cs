@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Web;
@@ -101,9 +102,9 @@ namespace Uno.Helpers
 			NativeMethods.RegisterProtocolHandler(scheme, uriString, prompt);
 		}
 
-		internal static bool TryParseActivationUri(string queryArguments, out Uri uri)
+		internal static bool TryParseActivationUri(string queryArguments, [NotNullWhen(true)] out Uri? uri)
 		{
-			NameValueCollection queryValues = null;
+			NameValueCollection? queryValues = null;
 			uri = null;
 			try
 			{
