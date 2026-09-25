@@ -382,6 +382,13 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		return cached.geometry;
 	}
 
+	private protected override void DisposeInternal()
+	{
+		_prePaintingRoundRect?.geometry.Release();
+		_prePaintingRoundRect = null;
+		base.DisposeInternal();
+	}
+
 	private static RoundRectangle ToRoundRect(Rect rect, NonUniformCornerRadius radii) => new()
 >>>>>>> 9726017 (perf(composition): Cache the border pre-painting round rect)
 	{
