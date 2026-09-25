@@ -187,6 +187,29 @@ public partial class CompositionTarget
 
 	internal event Action? FrameRendered;
 
+	/// <summary>
+	/// Raised on the presenting thread once a frame reached the swapchain. Diagnostics only (scroll smoothness probe);
+	/// a repeated <see cref="FramePresentedInfo.Sequence"/> means the previous frame was shown again.
+	/// </summary>
+	internal event EventHandler<FramePresentedInfo>? FramePresented;
+
+	private long _recordSequence;
+
+	// Set by Draw, raised once the swapchain presented; only touched from the presenting thread.
+	private (long Sequence, bool Unchanged)? _pendingPresent;
+
+	private void RaiseFramePresented()
+	{
+		if (_pendingPresent is { } pending)
+		{
+			_pendingPresent = null;
+			FramePresented?.Invoke(this, new FramePresentedInfo(pending.Sequence, Stopwatch.GetTimestamp(), pending.Unchanged));
+		}
+	}
+
+	/// <summary>Sequence number of the frame most recently recorded by <see cref="Render"/>; UI thread only.</summary>
+	internal long LastRecordedSequence => _recordSequence;
+
 	private static event EventHandler<object>? _rendering;
 
 	public static event EventHandler<object>? Rendering
@@ -313,7 +336,7 @@ public partial class CompositionTarget
 			}
 
 			frameDamage.ClampTo(frameRect);
-			_lastRenderedFrame = (new FrameHold(frame), path, frameDamage.Detach(damageScale));
+			_lastRenderedFrame = (new FrameHold(frame) { Sequence = ++_recordSequence }, path, frameDamage.Detach(damageScale));
 		}
 
 		_fpsHelper.OnFrameRecorded();
@@ -450,6 +473,7 @@ public partial class CompositionTarget
 			var host = ContentRoot.XamlRoot is { } xamlRootForHost ? XamlRootMap.GetHostForRoot(xamlRootForHost) : null;
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
+			var presentedUnchanged = false;
 			using (var present = BeginPresent(Renderer, target))
 			{
 				// Partial repaint: when unresized and the host preserves the swapchain's pixels, clip the clear+replay
@@ -469,6 +493,7 @@ public partial class CompositionTarget
 					&& preservesContents
 					&& !overlayEnabled
 					&& !_forceFullRepaint;
+				presentedUnchanged = nothingChanged;
 
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();
@@ -510,6 +535,11 @@ public partial class CompositionTarget
 				// orientation + DPI transform as the content.
 				overlay?.Invoke(present);
 				present.Restore();
+			}
+
+			if (FramePresented is not null)
+			{
+				_pendingPresent = (lastRenderedFrame.frame.Sequence, presentedUnchanged);
 			}
 
 			// This frame's damage is now presented; drop it so Render's carry-forward doesn't re-damage it next frame.
@@ -608,6 +638,8 @@ public partial class CompositionTarget
 		private bool _disposed;
 
 		public IRenderRecord Record { get; } = record;
+
+		public long Sequence { get; init; }
 
 		public void Retain()
 		{
@@ -713,3 +745,8 @@ public partial class CompositionTarget
 		}
 	}
 }
+
+/// <param name="Sequence">The presented frame's <see cref="CompositionTarget.LastRecordedSequence"/>.</param>
+/// <param name="Timestamp">A <see cref="Stopwatch.GetTimestamp"/> taken right after the swapchain presented.</param>
+/// <param name="Unchanged">The frame carried no damage, so the target was left as it was.</param>
+internal readonly record struct FramePresentedInfo(long Sequence, long Timestamp, bool Unchanged);
