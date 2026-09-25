@@ -16,7 +16,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
+		<UnoRuntimeFlavor>Wasm</UnoRuntimeFlavor>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 	</PropertyGroup>

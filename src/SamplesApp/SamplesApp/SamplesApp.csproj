@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 	<!--
 	Uno.Sdk is imported by path rather than via Sdk="Uno.Sdk.Private": an Sdk attribute resolves through
 	NuGet at evaluation time, so a fresh clone could not load this project until the SDK had been packed.
@@ -55,14 +55,15 @@
 		<AssemblyName Condition="'$(_Platform)' == 'windows'">SamplesApp.Windows</AssemblyName>
 
 		<!--
-		Every non-WinUI TFM renders with Skia, so the runtime identifier is Skia on all of them. That is
-		what defines __SKIA__ (Uno.CrossTargetting.targets) and includes the .skia.cs variants. The
-		platform file suffixes are gated on $(IsAndroid)/$(IsAppleUIKit), not on this, so the head's own
-		.Android.cs/.iOS.cs entry points are still compiled. WinUI leaves it empty (native rendering).
+		Every non-WinUI TFM renders with Skia, so the runtime flavor is Generic on all of them, and this
+		head is now the only source — the Uno.Sdk no longer sets it. That is what defines __SKIA__
+		(Uno.CrossTargetting.targets) and includes the .skia.cs variants. The platform file suffixes are
+		gated on $(IsAndroid)/$(IsAppleUIKit), not on this, so the head's own .Android.cs/.iOS.cs entry
+		points are still compiled. WinUI leaves it empty (native rendering).
 		-->
 		<!-- True for every non-WinUI TFM (desktop/wasm/android/ios/tvos) — gates the Skia framework refs. -->
 		<_IsSkiaTfm Condition="'$(_Platform)' != 'windows'">true</_IsSkiaTfm>
-		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND '$(_IsSkiaTfm)' == 'true'">Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeFlavor Condition="'$(UnoRuntimeFlavor)' == '' AND '$(_IsSkiaTfm)' == 'true'">Generic</UnoRuntimeFlavor>
 		<!-- Apple UIKit (iOS + tvOS; no MacCatalyst). NOTE: these TFMs require macOS to build — not
 		     compile-validated on Windows. -->
 		<_IsUIKit Condition="'$(_Platform)' == 'ios' OR '$(_Platform)' == 'tvos'">true</_IsUIKit>
@@ -617,16 +618,16 @@
 
 	<!--
 	Android resources must sit directly under mipmap-<dpi>\. Uno.Resizetizer builds the app icon
-	destination as <mipmap-dpi>\<the icon's project-relative folder>\<name>.png, and because the head
-	declares UnoRuntimeIdentifier=Skia the package's windows/skia targets also run on android, where
-	UpdatePathOfUnoIcon stamps Link=Assets\Icons\icon.svg onto the item. The generated file then lands
-	in mipmap-xxhdpi\Assets\Icons\icon.png and aapt2 rejects it with APT2144. Setting Link here keeps
-	that stamping away — both branches of UpdatePathOfUnoIcon skip items that already carry one — and
-	flattens the output to mipmap-<dpi>\icon.png, which is what @mipmap/icon resolves to.
+	destination as <mipmap-dpi>\<the icon's project-relative folder>\<name>.png. When this head set
+	UnoRuntimeIdentifier=Skia on every non-WinUI TFM, the package's windows/skia targets also ran on
+	android, where UpdatePathOfUnoIcon stamps Link=Assets\Icons\icon.svg onto the item, so the file
+	landed in mipmap-xxhdpi\Assets\Icons\icon.png and aapt2 rejected it with APT2144. Setting Link here
+	keeps that stamping away and flattens the output to mipmap-<dpi>\icon.png (@mipmap/icon).
+	Only desktop sets UnoRuntimeIdentifier now (Uno.Sdk's Resizetizer shim), so android no longer imports
+	the windows/skia targets and this is expected to be inert.
 	Android only: on desktop the relative Link is what lays the scale-suffixed logos out under Assets\.
 	The resizetizer warns that UnoIcon.Link "will be ignored"; it is not, it is read as the output alias.
-	TODO Uno (resizetizer app kind): drop once the Uno.Resizetizer version in Uno.Sdk's packages.json
-	carries unoplatform/uno.resizetizer#377 — android then stops importing the windows/skia targets.
+	TODO Uno (resizetizer app kind): drop once an android build confirms the icon output without it.
 	-->
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
 		<UnoIcon Update="Assets\Icons\icon.svg" Link="icon.svg" />
@@ -773,15 +774,16 @@
 	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.targets" />
 
 	<!--
-	Uno.Resizetizer decides "is this a Skia app" from $(UnoRuntimeIdentifier) alone, which this head sets
-	on every non-WinUI TFM. On android and ios its platform branch and its skia branch therefore both
-	match, and the skia one is evaluated last, so UnoResizetizerPlatformType lands on 'wpf': android gets
-	no mipmap/* resources and aapt2 fails on the manifest's @mipmap/icon (APT2260), while ios silently
-	ships an icon.ico instead of an asset catalog. This has to sit below the import above, because that
+	Uno.Resizetizer decides "is this a Skia app" from $(UnoRuntimeIdentifier) alone (or a desktop TFM).
+	When this head set it on every non-WinUI TFM, android and ios matched both their platform branch and
+	the skia one, which is evaluated last, so UnoResizetizerPlatformType landed on 'wpf': android got no
+	mipmap/* resources and aapt2 failed on the manifest's @mipmap/icon (APT2260), while ios silently
+	shipped an icon.ico instead of an asset catalog. This has to sit below the import above, because that
 	is where the package's targets — and the property they overwrite — come from.
-	TODO Uno (resizetizer app kind): this block and the splash manifest one below both go away once the
-	Uno.Resizetizer version in Uno.Sdk's packages.json carries unoplatform/uno.resizetizer#377, which
-	stops a Skia-rendered platform head matching the skia app kind in the first place.
+	Only desktop sets UnoRuntimeIdentifier now (Uno.Sdk's Resizetizer shim), so the double match should
+	no longer happen and this block and the splash manifest one below are expected to be inert.
+	TODO Uno (resizetizer app kind): drop both once android and ios builds confirm the icon and splash
+	output without them.
 	-->
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">
 		<UnoResizetizerPlatformType>android</UnoResizetizerPlatformType>
@@ -791,7 +793,7 @@
 	</PropertyGroup>
 
 	<!--
-	Second casualty of that same double match: the apple and the skia targets files each define a target
+	Second casualty of that same (former) double match: the apple and the skia targets files each define a target
 	named ProcessUnoSplashScreens, and the skia one is imported last, so it replaces the apple one. Only
 	the apple version publishes the UnoInfo.plist that GenerateUnoSplashApple writes as a
 	PartialAppManifest, and that partial manifest is what repoints UILaunchStoryboardName at the generated
