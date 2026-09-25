@@ -99,6 +99,9 @@ partial class App
 		return false;
 	}
 
+	/// <summary>The key/value pairs of the <c>sample=</c> launch argument, so a sample can take its own options.</summary>
+	internal static IReadOnlyDictionary<string, string>? LaunchQuery { get; private set; }
+
 	private static Dictionary<string, string> ParseArgs(string args)
 		=> args.Split('&').ToDictionary(
 			p => p.Split('=', 2).First(),
@@ -268,6 +271,7 @@ partial class App
 			// TrimStart('?') accepts the same value the in-app "copy link" button produces
 			// (SampleChooserContent.QueryString), which is prefixed for use as a URL query string.
 			var query = ParseArgs(Uri.UnescapeDataString(args).TrimStart('?'));
+			LaunchQuery = query;
 
 			if (!query.TryGetValue("sample", out var identifier))
 			{
