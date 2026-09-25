@@ -59,6 +59,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	// same factory the renderer uses (rather than the global DrawingFactory.Current).
 	internal IDrawingFactory GraphicsFactory { get; private set; } = null!;
 
+	// The window's CompositionTarget reads this when it first needs a backend, so it never records under
+	// one and presents under another.
+	IDrawingFactory? IXamlRootHost.Renderer => _renderer;
+
 	private Win32Accessibility? _accessibility;
 	private bool _rendererDisposed;
 	private bool _forcePaintOnNextEraseBkgndOrNcPaint = true;
@@ -419,7 +423,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
 			XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
 		}
-		// Force an early SKPicture record so the render thread has fresh content to present.
+		// Force an early SKPicture record so the render thread has fresh content to present. The target resolves
+		// its backend from this host on the way in, so the frame is recorded under the backend that presents it.
 		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
 		// Signal the render thread and wait briefly for the present to land.
 		// Bounded so an unresponsive GPU does not stall WM_SIZE / WM_MOVE / ShowCore.

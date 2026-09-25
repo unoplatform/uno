@@ -83,6 +83,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private X11Window? _x11Window;
 	private X11Window? _x11TopWindow;
 	private IX11Renderer? _renderer;
+	// This window's negotiated backend, read by its CompositionTarget when it first needs one.
+	private Uno.UI.Composition.Drawing.IDrawingFactory? _drawingFactory;
+	Uno.UI.Composition.Drawing.IDrawingFactory? IXamlRootHost.Renderer => _drawingFactory;
 
 	private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
@@ -452,6 +455,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		var init = GraphicsRegistry.Initialize();
 		// The renderer is installed per-window on the CompositionTarget by the render driver each frame (each X11
 		// window owns a distinct GPU context, so the backend factory is per-window, never a process-wide singleton).
+		_drawingFactory = init.Renderer;
 		_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, init.Context, init.Renderer);
 		// Report whether the negotiated context rasterizes on the CPU (effect brushes read this while recording).
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =

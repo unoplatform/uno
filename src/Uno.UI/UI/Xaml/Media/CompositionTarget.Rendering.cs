@@ -34,19 +34,18 @@ public partial class CompositionTarget
 
 	internal IDrawingFactory Renderer
 	{
-		get => _renderer
-			?? DrawingRegistration.DefaultRenderer
+		get => ResolveRenderer()
 			?? throw new global::System.InvalidOperationException(
 				"No graphics backend registered. Register one through the host builder (.GraphicsBackend) and/or the head must set CompositionTarget.Renderer before the first frame.");
 		set
 		{
-			// Invalidate on ANY change, including the first assignment from null: the getter already falls back to a
-			// default renderer, so frames may have been recorded before a head assigns its own (async on WASM/WebGPU).
 			var changed = !ReferenceEquals(_renderer, value);
 			_renderer = value;
 
 			// The retained frame and cached per-visual recordings belong to the previous backend and can't be replayed
 			// by the new one; discard them and request a fresh frame so the tree re-records under the new renderer.
+			// Only a genuine swap (a device reset) reaches here: the first backend is discovered by ResolveRenderer,
+			// which is not a change.
 			if (changed)
 			{
 				InvalidateAllRecordings();
@@ -54,14 +53,37 @@ public partial class CompositionTarget
 		}
 	}
 
+	/// <summary>
+	/// The backend for this window, taken from its host the first time one is needed and remembered after.
+	/// <para>
+	/// Pulled rather than pushed: a host that assigned it while drawing would be claiming the backend AFTER a frame
+	/// could already have been recorded without one, and the resulting invalidation would throw that frame away.
+	/// Reading it here cannot race the recording that needs it, so no frame is ever recorded under a backend other
+	/// than the one that presents it, and the first resolve costs no invalidation.
+	/// </para>
+	/// </summary>
+	private IDrawingFactory? ResolveRenderer()
+	{
+		if (_renderer is not null)
+		{
+			return _renderer;
+		}
+
+		var xamlRoot = ContentRoot.VisualTree.RootElement?.XamlRoot;
+		if (xamlRoot is not null && XamlRootMap.GetHostForRoot(xamlRoot)?.Renderer is { } hostRenderer)
+		{
+			_renderer = hostRenderer;
+		}
+
+		return _renderer;
+	}
+
 	// Non-throwing peek at renderer availability. False while a declared backend initializes asynchronously (WASM
 	// WebGPU device import): Render() must SKIP the frame rather than force the throwing renderer getter.
-	private bool HasRenderer => _renderer is not null || DrawingRegistration.DefaultRenderer is not null;
+	private bool HasRenderer => ResolveRenderer() is not null;
 
-	// Visuals record through their own target's backend rather than the process-wide factory; null before one
-	// is registered, where the caller falls back to that factory.
-	global::Uno.UI.Composition.Drawing.IDrawingFactory? ICompositionTarget.Renderer
-		=> _renderer ?? DrawingRegistration.DefaultRenderer;
+	// Visuals record through their own target's backend rather than the process-wide factory.
+	global::Uno.UI.Composition.Drawing.IDrawingFactory? ICompositionTarget.Renderer => ResolveRenderer();
 
 	// Neutral→typed narrowing for phase-2 present: downcast the target to its bound kind and dispatch to the
 	// backend's typed IDrawingFactory<TTarget>.BeginPresent, keeping the single cast Uno-side.

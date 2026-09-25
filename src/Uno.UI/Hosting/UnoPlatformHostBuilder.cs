@@ -189,11 +189,6 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		if (InvokeSkiaFactory<Drawing.IGraphicsProvider>("CreateGraphicsProvider") is { } provider)
 		{
 			Drawing.GraphicsRegistry.RegisterDefault(new[] { provider });
-
-			if (InvokeSkiaFactory<Drawing.IDrawingFactory>("CreateDefaultRenderer") is { } renderer)
-			{
-				Drawing.DrawingRegistration.RegisterDefaultRenderer(renderer);
-			}
 		}
 	}
 
