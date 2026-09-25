@@ -20,6 +20,9 @@ internal sealed class FrameClock
 	// A gap this many periods long is the loop having been idle, not an interval the display ran at.
 	private const int IdleGapPeriods = 4;
 
+	// No display refreshes slower than this.
+	private const long MaxFrameIntervalInTicks = TimeSpan.TicksPerSecond / 20;
+
 	private readonly long[] _deltas = new long[Window];
 	private int _index;
 	private int _count;
@@ -51,8 +54,9 @@ internal sealed class FrameClock
 
 		var period = _count >= MinSamples ? Median() : 0;
 
-		// Admitting an idle gap would skew the median, which motion also back-dates its launch by.
-		if (period > 0 && delta >= period * IdleGapPeriods)
+		// Admitting an idle gap would skew the median, which motion also back-dates its launch by. The absolute
+		// bound matters while frames are sparse: gaps are all there is to sample, and the median would become one.
+		if (delta > MaxFrameIntervalInTicks || (period > 0 && delta >= period * IdleGapPeriods))
 		{
 			return _clock = Math.Max(raw, previous);
 		}
