@@ -39,6 +39,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	public class Given_AccessibleDataGrid
 	{
 #if HAS_UNO
+		[TestCleanup]
+		public void DisableAccessibilityAfterTest() => DisableAccessibility();
+#endif
+
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_ColumnHeader_Then_SemanticType_Is_ColumnHeader()

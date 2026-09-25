@@ -27,6 +27,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 public class Given_AccessibleHeading
 {
 #if HAS_UNO
+	[TestCleanup]
+	public void DisableAccessibilityAfterTest() => DisableAccessibility();
+#endif
+
+#if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
 	[DataRow(AutomationHeadingLevel.Level1, 1)]

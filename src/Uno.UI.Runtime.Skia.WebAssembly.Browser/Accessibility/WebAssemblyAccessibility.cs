@@ -65,9 +65,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private LiveRegionManager? _liveRegionManager;
 	private FocusSynchronizer? _focusSynchronizer;
 	private UIElement? _focusSearchRoot;
+	private DirectUI.FocusController? _focusController;
 	private bool _suppressDeparture;
 	internal ModalFocusScope? ActiveModalScope { get; set; }
 	private readonly List<VirtualizedSemanticRegion> _virtualizedRegions = new();
+	// Unsubscribe actions for the ContentDialogs whose Opened/Closed events drive modal focus scopes.
+	// Weak so a dialog that left the tree is not kept alive; it stays subscribed so Closed still runs.
+	private readonly ConditionalWeakTable<ContentDialog, Action> _trackedDialogs = new();
 	private const int PreserveTextSelectionSentinel = -1;
 
 	/// <summary>
@@ -558,16 +562,24 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				false);
 			_virtualizedRegions.Add(region);
 
-			repeater.ElementPrepared += (s, e) =>
-				EmitRealizedItem(region, repeater.Visual.Handle, e.Element, e.Index, repeater.ItemsSourceView?.Count ?? 0, "option");
+			void OnElementPrepared(ItemsRepeater s, ItemsRepeaterElementPreparedEventArgs e)
+				=> EmitRealizedItem(region, repeater.Visual.Handle, e.Element, e.Index, repeater.ItemsSourceView?.Count ?? 0, "option");
 
-			repeater.ElementClearing += (s, e) =>
+			void OnElementClearing(ItemsRepeater s, ItemsRepeaterElementClearingEventArgs e)
 			{
 				var info = ItemsRepeater.GetVirtualizationInfo(e.Element);
 				if (info is not null)
 				{
 					region.OnItemUnrealized(e.Element.Visual.Handle, info.Index);
 				}
+			}
+
+			repeater.ElementPrepared += OnElementPrepared;
+			repeater.ElementClearing += OnElementClearing;
+			region.Detach = () =>
+			{
+				repeater.ElementPrepared -= OnElementPrepared;
+				repeater.ElementClearing -= OnElementClearing;
 			};
 
 			// Backfill items realized before this container was registered (the AOM-build / Enable-
@@ -595,7 +607,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			var itemRole = isGrid ? "row" : "option";
 
-			listView.ContainerContentChanging += (s, e) =>
+			void OnContainerContentChanging(ListViewBase s, ContainerContentChangingEventArgs e)
 			{
 				if (!e.InRecycleQueue)
 				{
@@ -608,7 +620,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					region.OnItemUnrealized(itemElement.Visual.Handle, e.ItemIndex);
 				}
-			};
+			}
+
+			listView.ContainerContentChanging += OnContainerContentChanging;
+			region.Detach = () => listView.ContainerContentChanging -= OnContainerContentChanging;
 
 			// Backfill already-materialized containers (the Enable-Accessibility-after-load flow).
 			var totalCount = listView.Items?.Count ?? 0;
@@ -670,9 +685,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	private void TryRegisterModalDialog(UIElement element)
 	{
-		if (element is ContentDialog dialog)
+		if (element is ContentDialog dialog && !_trackedDialogs.TryGetValue(dialog, out _))
 		{
-			dialog.Opened += (s, e) =>
+			void OnOpened(ContentDialog s, ContentDialogOpenedEventArgs e)
 			{
 				if (!IsAccessibilityEnabled)
 				{
@@ -704,9 +719,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					NativeMethods.AnnounceAssertive(dialogTitle);
 				}
-			};
+			}
 
-			dialog.Closed += (s, e) =>
+			void OnClosed(ContentDialog s, ContentDialogClosedEventArgs e)
 			{
 				if (!IsAccessibilityEnabled || ActiveModalScope is null)
 				{
@@ -725,7 +740,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						lrm.ActiveModalHandle = parentScope?.ModalHandle ?? IntPtr.Zero;
 					}
 				}
-			};
+			}
+
+			dialog.Opened += OnOpened;
+			dialog.Closed += OnClosed;
+			_trackedDialogs.AddOrUpdate(dialog, () =>
+			{
+				dialog.Opened -= OnOpened;
+				dialog.Closed -= OnClosed;
+			});
 		}
 	}
 
@@ -963,9 +986,91 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		var focusManager = global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(rootElement);
 		if (focusManager is not null)
 		{
-			focusManager.FocusObserver.FocusController.FocusDeparting -= @this.OnFocusDeparting;
-			focusManager.FocusObserver.FocusController.FocusDeparting += @this.OnFocusDeparting;
+			@this._focusController = focusManager.FocusObserver.FocusController;
+			@this._focusController.FocusDeparting -= @this.OnFocusDeparting;
+			@this._focusController.FocusDeparting += @this.OnFocusDeparting;
 		}
+	}
+
+	/// <summary>
+	/// Undoes <see cref="EnableAccessibility"/>: removes the semantic DOM and unhooks every subsystem,
+	/// so the app is back to its non-accessible cost and focus behavior. It can be enabled again.
+	/// </summary>
+	[JSExport]
+	public static void DisableAccessibility()
+	{
+		var @this = Instance;
+		if (!@this._isAccessibilityEnabled)
+		{
+			return;
+		}
+
+		if (@this.Log().IsEnabled(LogLevel.Debug))
+		{
+			@this.Log().Debug("[A11y] DisableAccessibility() called");
+		}
+
+		// Cleared first so any handler still subscribed below bails out while we tear down.
+		@this._isAccessibilityEnabled = false;
+
+		if (@this._focusController is { } focusController)
+		{
+			focusController.FocusDeparting -= @this.OnFocusDeparting;
+			@this._focusController = null;
+		}
+
+		FocusManager.SuppressNativeFocus = false;
+		if (Control.OnIsFocusableChangedCallback == @this.UpdateIsFocusable)
+		{
+			Control.OnIsFocusableChangedCallback = null;
+		}
+
+		@this._focusSynchronizer?.Uninitialize();
+		@this._focusSynchronizer = null;
+		@this._liveRegionManager?.ClearPending();
+		@this._liveRegionManager = null;
+
+		for (var scope = @this.ActiveModalScope; scope is not null; scope = scope.ParentScope)
+		{
+			scope.Deactivate();
+		}
+		@this.ActiveModalScope = null;
+
+		foreach (var comboBox in @this._trackedComboBoxes.ToArray())
+		{
+			@this.TryUnregisterComboBox(comboBox);
+		}
+
+		foreach (var region in @this._virtualizedRegions)
+		{
+			region.Dispose();
+		}
+		@this._virtualizedRegions.Clear();
+
+		foreach (var (_, detach) in @this._trackedDialogs)
+		{
+			detach();
+		}
+		@this._trackedDialogs.Clear();
+
+		lock (@this._updateLock)
+		{
+			@this._debounceTimer?.Dispose();
+			@this._debounceTimer = null;
+			@this._pendingUpdates.Clear();
+		}
+
+		@this._semanticParentMap.Clear();
+		@this._prunedHandles.Clear();
+		@this._pendingLabelledBy.Clear();
+		@this._relationshipPeers.Clear();
+		@this._relationshipRefreshQueued = false;
+		@this._onChildAddedDepth = 0;
+		@this._rootElementHandle = IntPtr.Zero;
+		@this._focusSearchRoot = null;
+		@this._suppressDeparture = false;
+
+		NativeMethods.ResetSemanticsRoot();
 	}
 
 	[JSExport]
@@ -2743,6 +2848,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.focusSemanticElement")]
 		internal static partial void FocusSemanticElement(IntPtr handle);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.resetSemanticsRoot")]
+		internal static partial void ResetSemanticsRoot();
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.installFocusSentinels")]
 		internal static partial void InstallFocusSentinels();

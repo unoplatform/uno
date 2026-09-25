@@ -26,6 +26,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 public class Given_AccessibleScrollViewer
 {
 #if HAS_UNO
+	[TestCleanup]
+	public void DisableAccessibilityAfterTest() => DisableAccessibility();
+#endif
+
+#if HAS_UNO
 	/// <summary>
 	/// A non-scrollable ScrollViewer (content fits the viewport) must NOT get role=region, even when
 	/// it is named — there is nothing to scroll, so it is not a meaningful landmark (FR-013).

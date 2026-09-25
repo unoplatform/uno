@@ -71,6 +71,14 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		/**
+		 * Removes the live region elements. Called when accessibility is disabled.
+		 */
+		public static teardown(): void {
+			LiveRegion.politeRegion?.remove();
+			LiveRegion.assertiveRegion?.remove();
+		}
+
+		/**
 		 * Clears any pending content from both live regions.
 		 */
 		public static clearPendingAnnouncements(): void {

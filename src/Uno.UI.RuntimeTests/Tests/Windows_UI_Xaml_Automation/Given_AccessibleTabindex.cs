@@ -39,6 +39,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	public class Given_AccessibleTabindex
 	{
 #if HAS_UNO
+		[TestCleanup]
+		public void DisableAccessibilityAfterTest() => DisableAccessibility();
+#endif
+
+#if HAS_UNO
 		/// <summary>
 		/// FR-006: a heading (AutomationProperties.HeadingLevel set) must NOT be a tab stop.
 		/// Pre-fix, createHeadingElement hardcodes tabIndex=0; the contract removes the tabindex

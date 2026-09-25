@@ -25,6 +25,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[TestCleanup]
 		public void Cleanup()
 		{
+			DisableAccessibility();
+
 			// Reset the tree between tests so the accessibility/semantic DOM from one test does not
 			// leak into the next (the semantic tree is a single shared DOM per app instance).
 			TestServices.WindowHelper.WindowContent = null;
