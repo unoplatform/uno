@@ -896,6 +896,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				window._metalRenderThread = null;
 				Unregister(handle);
 				window._nativeWindow.Destroyed();
+				// After Destroyed(), which tears down accessibility while the map is still well-formed. This is what
+				// releases the closed target's frame drivers.
+				XamlRootMap.Unregister(window._xamlRoot);
 				window.Closed?.Invoke(window, EventArgs.Empty);
 				// Before the context it is bound to, and safe even though DrawingFactory.Current may still point
 				// here: Dispose frees only the GPU contexts, while everything reached through Current is CPU-side.
