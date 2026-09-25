@@ -181,22 +181,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = border.FindVisualChildByType<ScrollViewer>();
 
 			await KeyboardHelper.Down();
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			await KeyboardHelper.Down();
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			await KeyboardHelper.Right();
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			await KeyboardHelper.Right();
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			// Horizontal and vertical scrolling amounts should be independent, and each depend on the corresponding ActualSize dimension
 			Assert.AreEqual(verticalDelta * 2, SUT.VerticalOffset);
 			Assert.AreEqual(horizontalDelta * 2, SUT.HorizontalOffset);
 
 			await KeyboardHelper.Up();
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			await KeyboardHelper.Left();
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			Assert.AreEqual(verticalDelta, SUT.VerticalOffset);
 			Assert.AreEqual(horizontalDelta, SUT.HorizontalOffset);
@@ -420,30 +420,85 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = border.FindVisualChildByType<ScrollViewer>();
 
 			await KeyboardHelper.PageDown();
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(175, SUT.VerticalOffset);
 			Assert.AreEqual(0, SUT.HorizontalOffset);
 
 			await KeyboardHelper.PageDown();
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(350, SUT.VerticalOffset);
 			Assert.AreEqual(0, SUT.HorizontalOffset);
 
 			await KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(175, SUT.VerticalOffset);
 			Assert.AreEqual(0, SUT.HorizontalOffset);
 
 			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(0, SUT.VerticalOffset);
 			Assert.AreEqual(0, SUT.HorizontalOffset);
 
 			await KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(1825, SUT.VerticalOffset);
 			Assert.AreEqual(0, SUT.HorizontalOffset);
 		}
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_Keys_Pressed_In_A_Row_Then_Glides_Continuously()
+		{
+			// Like WinUI (DManip), a key glides rather than jumps, and a held key's repeats add to the glide in flight
+			// instead of restarting it: the content moves over several frames, never backwards, and ends exactly once.
+			var content = new Border { Width = 2000, Height = 2000, Child = new ItemsControl() };
+			var SUT = new ScrollViewer
+			{
+				Width = 175,
+				Height = 175,
+				VerticalScrollMode = ScrollMode.Enabled,
+				Content = content,
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			content.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var visual = ElementCompositionPreview.GetElementVisual(content);
+			var positions = new List<double>();
+			EventHandler<object> onRendering = (_, _) => positions.Add(-visual.AnchorPoint.Y);
+
+			var finals = 0;
+			SUT.ViewChanged += (_, e) => finals += e.IsIntermediate ? 0 : 1;
+
+			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += onRendering;
+			try
+			{
+				for (var i = 0; i < 4; i++)
+				{
+					await KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
+					await Task.Delay(30);
+				}
+
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			}
+			finally
+			{
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= onRendering;
+			}
+
+			Assert.AreEqual(4 * SUT.ActualHeight, SUT.VerticalOffset, "four pages should land exactly four viewports down");
+			Assert.AreEqual(1, finals, "each key should add to the glide in flight instead of ending it");
+
+			var moving = positions.Zip(positions.Skip(1), (a, b) => b - a).Count(step => step > 0.01);
+			Assert.IsTrue(moving >= 10, $"expected a glide over many frames, got {moving} moving frames");
+			for (var i = 1; i < positions.Count; i++)
+			{
+				Assert.IsTrue(positions[i] >= positions[i - 1] - 0.01, $"the glide stepped back at frame {i}: {positions[i - 1]} -> {positions[i]}");
+			}
+		}
+#endif
 
 		[TestMethod]
 		public async Task When_Args_Handled_Home_End_PageDown_PageUp()
@@ -480,35 +535,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			await KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(0, keyDownCount);
 
 			await KeyboardHelper.PageDown();
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(0, keyDownCount);
 
 			await KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(0, keyDownCount);
 
 			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(1, keyDownCount);
 
 			await KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(1, keyDownCount);
 
 			await KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(2, keyDownCount);
 
 			await KeyboardHelper.PageDown();
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(2, keyDownCount);
 
 			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			Assert.AreEqual(2, keyDownCount);
 		}
 
