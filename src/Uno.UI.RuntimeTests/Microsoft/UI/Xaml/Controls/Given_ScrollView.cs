@@ -96,6 +96,38 @@ public class Given_ScrollView
 		Assert.AreEqual(0, mismatches, $"{mismatches} of {frames} recorded frames showed a position the tracker had already left");
 	}
 
+	/// <summary>A finger pressed and held on coasting content stops it, without having to move first.</summary>
+	[TestMethod]
+	public async Task When_Finger_Held_On_Coasting_Content_Then_Stops()
+	{
+		var (sut, bounds) = await LoadTallScrollView();
+		var center = Center(bounds);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		finger.Press(center);
+		finger.MoveTo(new Point(center.X, center.Y - 200), steps: 10, stepOffsetInMilliseconds: 5);
+		finger.Release();
+
+		await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 250, message: "the fling should coast past where the finger lifted");
+
+		finger.Press(center);
+		try
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			var held = sut.VerticalOffset;
+
+			await Task.Delay(300);
+
+			Assert.AreEqual(held, sut.VerticalOffset, 1, "the content should not move under a finger held still");
+		}
+		finally
+		{
+			finger.Release();
+		}
+	}
+
 	private static async Task<(ScrollView ScrollView, Rect Bounds)> LoadTallScrollView()
 	{
 		var sut = new ScrollView
