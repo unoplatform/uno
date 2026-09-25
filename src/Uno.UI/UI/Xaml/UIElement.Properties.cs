@@ -12,6 +12,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.Helpers;
 using Uno.UI.Helpers.Boxes;
 
@@ -81,6 +82,15 @@ namespace Microsoft.UI.Xaml
 		{
 			get => GetVisibilityValue();
 			set => SetVisibilityValue(value);
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = null)]
+		public static DependencyProperty TransitionsProperty { get; } = CreateTransitionsProperty();
+
+		public TransitionCollection Transitions
+		{
+			get => GetTransitionsValue();
+			set => SetTransitionsValue(value);
 		}
 
 		/// <summary>

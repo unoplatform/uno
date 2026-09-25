@@ -187,6 +187,7 @@ namespace Microsoft.UI.Xaml
 			typeof(global::Microsoft.UI.Xaml.UIElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Media3D.Transform3D)));
 #endif
+		// Skipping already declared property TransitionsProperty
 		// Skipping already declared property UseLayoutRoundingProperty
 		// Skipping already declared property UseSystemFocusVisualsProperty
 		// Skipping already declared property VisibilityProperty
@@ -571,6 +572,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
+		// Skipping already declared property Transitions
 		// Skipping already declared property Translation
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
