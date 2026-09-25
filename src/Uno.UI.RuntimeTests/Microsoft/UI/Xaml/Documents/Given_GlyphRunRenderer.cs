@@ -37,8 +37,10 @@ public class Given_GlyphRunRenderer
 
 		var (run, positions, info, baseline) = Layout(font, fontSize);
 
+		// A CPU Skia factory: these surfaces are Skia, whatever backend the window presents with.
+		using var factory = new SkiaDrawingFactory();
 		using var actual = CreateSurface(info);
-		new SkiaDrawingSession(actual.Canvas, DrawingFactory.Current).DrawGlyphRun(font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
+		new SkiaDrawingSession(actual.Canvas, factory).DrawGlyphRun(font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
 
 		// Spelled out rather than read from SkiaFontProvider so the Windows-only grayscale edging is covered too.
 		var edging = OperatingSystem.IsWindows() ? SKFontEdging.Antialias : SKFontEdging.SubpixelAntialias;
@@ -74,11 +76,13 @@ public class Given_GlyphRunRenderer
 
 		var (run, positions, info, baseline) = Layout(font, fontSize);
 
+		// A CPU Skia factory: these surfaces are Skia, whatever backend the window presents with.
+		using var factory = new SkiaDrawingFactory();
 		using var actual = CreateSurface(info);
-		new SkiaDrawingSession(actual.Canvas, DrawingFactory.Current).DrawGlyphRun(new ForeignFont(font), run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
+		new SkiaDrawingSession(actual.Canvas, factory).DrawGlyphRun(new ForeignFont(font), run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
 
 		using var expected = CreateSurface(info);
-		GlyphRunRenderer.Draw(new SkiaDrawingSession(expected.Canvas, DrawingFactory.Current), font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
+		GlyphRunRenderer.Draw(new SkiaDrawingSession(expected.Canvas, factory), font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
 
 		var mismatches = CountMismatches(actual, expected, info, out var inked);
 		Assert.IsTrue(inked > 0, "The fallback drew nothing.");
