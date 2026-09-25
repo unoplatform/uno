@@ -49,6 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		[RequiresFullWindow]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresScaling(1f)] // Asserts exact measure/arrange sizes against the requested ones.
 		public async Task When_ScrollViewer_Resized()
 		{
 			var content = new Border
@@ -108,6 +109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresScaling(1f)] // Compares the viewport against an exact pixel width.
 		public async Task When_Presenter_Doesnt_Take_Up_All_Space()
 		{
 			const int ContentWidth = 700;
@@ -386,6 +388,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)] // Page size derives from the viewport, which is not a whole number at other scales.
 		public async Task When_Home_End_PageDown_PageUp()
 		{
 			var border = new Border
@@ -1160,6 +1163,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)] // Asserts an exact extent/viewport match, which rounding at other scales breaks.
 		public async Task When_NonRound_Content_Height()
 		{
 			var outerScrollViewer = new ScrollViewer()
