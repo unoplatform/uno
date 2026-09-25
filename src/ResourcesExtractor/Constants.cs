@@ -2,7 +2,7 @@
 
 public static class Constants
 {
-    public const string ReswFileStart = """
+	public const string ReswFileStart = """
         <?xml version="1.0" encoding="utf-8"?>
         <root>
           <!-- 
@@ -125,7 +125,7 @@ public static class Constants
         
         """;
 
-    public const string ReswFileEnd = """
+	public const string ReswFileEnd = """
         </root>
 
         """;

@@ -13,6 +13,9 @@ namespace ResourcesExtractor;
 
 public sealed partial class MainWindow : Window
 {
+	[GeneratedRegex(@"#define (.+?)\s+(\d+)")]
+	private static partial Regex DefineRegex();
+
 	private static List<(string ResourceName, int ResourceId)> GetResources()
 	{
 		var allResources = new List<(string ResourceName, int ResourceId)>();
@@ -34,9 +37,9 @@ public sealed partial class MainWindow : Window
 		var resources = new List<(string ResourceName, int ResourceId)>();
 		foreach (var line in lines)
 		{
-			if (line.StartsWith("#define"))
+			if (line.StartsWith("#define", StringComparison.Ordinal))
 			{
-				var match = Regex.Match(line, @"#define (.+?)\s+(\d+)");
+				var match = DefineRegex().Match(line);
 				var resourceName = match.Groups[1].Value;
 				var resourceId = int.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
 				resources.Add((resourceName, resourceId));

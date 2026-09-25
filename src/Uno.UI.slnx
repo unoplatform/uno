@@ -157,6 +157,13 @@
     <Project Path="FontFallbackPreprocessor/FontFallbackPreprocessor.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
+    <Project Path="ResourcesExtractor/ResourcesExtractor.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+      <Platform Solution="*|Any CPU" Project="x64" />
+      <Platform Solution="*|ARM" Project="x64" />
+      <Platform Solution="*|iPhone" Project="x64" />
+      <Platform Solution="*|iPhoneSimulator" Project="x64" />
+    </Project>
     <Project Path="Uno.NUnitTransformTool/Uno.NUnitTransformTool.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>

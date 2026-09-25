@@ -12,6 +12,9 @@
 		<LangVersion>12.0</LangVersion>
 		<EnableMsixTooling>true</EnableMsixTooling>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<!-- Opt out of the src-wide XAML globbing in favor of the WinAppSDK defaults -->
+		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
+		<EnableDefaultPageItems>true</EnableDefaultPageItems>
 	</PropertyGroup>
 
 	<ItemGroup>
