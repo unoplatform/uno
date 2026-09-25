@@ -160,7 +160,6 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 			// The context wraps the ambient EGL context; the backend renders into the default framebuffer and
 			// GLSurfaceView swaps implicitly (Present is a no-op).
 			var ct = (CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!;
-			ct.Renderer = _renderer!;
 			var nativeClipPath = ct.OnNativePlatformFrameRequested(_context);
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
@@ -204,6 +203,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 			var init = GraphicsRegistry.Initialize();
 			_context = init.Context;
 			_renderer = init.Renderer;
+			AndroidSkiaXamlRootHost.Publish(init.Renderer);
 			// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
 			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
 		}

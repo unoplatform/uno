@@ -26,6 +26,10 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 		private Func<Application> _appBuilder;
 		private FrameBufferRenderer? _renderer;
+
+		// Read by the CompositionTarget the first time it needs a backend.
+		private Uno.UI.Composition.Drawing.IDrawingFactory? _drawingFactory;
+		Uno.UI.Composition.Drawing.IDrawingFactory? IXamlRootHost.Renderer => _drawingFactory;
 		private Thread? _consoleInterceptionThread;
 		private ManualResetEvent _terminationGate = new(false);
 		private readonly FramebufferHostBuilder _hostBuilder;
@@ -217,6 +221,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 					k == kind ? new FrameBufferGraphicsContext(kind) : null);
 			var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
 			_renderer.SetSwapChain(init.Context);
+			_drawingFactory = init.Renderer;
 			_renderer.SetRenderer(init.Renderer);
 			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
 				init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;

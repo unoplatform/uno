@@ -29,6 +29,9 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 	private readonly bool _forceSoftwareRendering;
 	private readonly Func<Application> _appBuilder;
 	private BrowserRenderer? _renderer;
+
+	// Read by the CompositionTarget the first time it needs a backend.
+	Uno.UI.Composition.Drawing.IDrawingFactory? IXamlRootHost.Renderer => _renderer?.Factory;
 	private readonly ManualResetEvent _terminationGate = new(false);
 
 	/// <summary>

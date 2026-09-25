@@ -229,6 +229,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
 		_context = init.Context;
 		_renderer = init.Renderer;
+		AndroidSkiaXamlRootHost.Publish(init.Renderer);
 		// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
 			init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;
@@ -257,7 +258,6 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		// its last frame while input keeps being delivered.
 		try
 		{
-			compositionTarget.Renderer = _renderer!;
 			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;

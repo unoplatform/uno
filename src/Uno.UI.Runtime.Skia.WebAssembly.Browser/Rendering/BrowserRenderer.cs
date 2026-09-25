@@ -19,6 +19,9 @@ internal partial class BrowserRenderer
 	// null until ready while frames re-arm meanwhile.
 	private ISwapChain? _context;
 	private IDrawingFactory? _renderer;
+
+	/// <summary>The negotiated backend, read by the host so its CompositionTarget can resolve one.</summary>
+	internal IDrawingFactory? Factory => _renderer;
 	private bool _initFailed;
 
 	private int _renderCount;
@@ -143,7 +146,6 @@ internal partial class BrowserRenderer
 
 		// The context owns the surface/present; the backend (whichever won negotiation) wraps the acquired target.
 		// The renderer is per-window (bound to this window's context), installed on its CompositionTarget each frame.
-		compositionTarget.Renderer = _renderer!;
 		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_context);
 		ApplyNativeElementClip(currentClipPath);
 
