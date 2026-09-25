@@ -509,7 +509,10 @@ namespace Microsoft.UI.Xaml.Controls
 			else
 			{
 				var compositor = visual.Compositor;
-				var easing = CompositionEasingFunction.CreatePowerEasingFunction(compositor, CompositionEasingFunctionMode.Out, 10);
+
+				// The composition default, which WinUI's ScrollPresenter animates offset changes with: its
+				// GetPositionAnimation inserts the final keyframe without an easing (ScrollPresenter.cpp, winui3/release/2.5.1).
+				var easing = Compositor.GetDefaultEasingFunction();
 
 				// Scroll offset animation
 				var scrollAnimation = compositor.CreateVector2KeyFrameAnimation();
