@@ -43,6 +43,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private ISwapChain _context = null!;
 	// The per-window backend factory, installed on this window's CompositionTarget each frame.
 	private IDrawingFactory _renderer = null!;
+
+	// Read by this window's CompositionTarget when it first needs a backend, so a frame is never recorded
+	// under one backend and presented under another.
+	IDrawingFactory? IXamlRootHost.Renderer => _renderer;
 	private MacOSRenderThread? _metalRenderThread;
 	// Written by the software/legacy draw paths on the main thread and by the Metal render thread.
 	private volatile bool _initializationCompleted;
@@ -191,7 +195,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			return false;
 		}
 
-		ct.Renderer = _renderer;
 		// Present (drawable acquire + blit) happens inside this call, through the context.
 		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context);
 
@@ -250,7 +253,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		var ct = (CompositionTarget)RootElement!.Visual.CompositionTarget!;
-		ct.Renderer = _renderer;
 		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context);
 
 		string? clip = null;
@@ -292,7 +294,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		// The rendered buffer is read back out of the context's target and handed to the native SoftDraw.
 		var ct = (CompositionTarget)RootElement!.Visual.CompositionTarget!;
-		ct.Renderer = _renderer;
 		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context);
 		var softwareTarget = (_context as MacOSSoftwareGraphicsContext)?.CurrentTarget;
 

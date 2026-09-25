@@ -180,13 +180,6 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			?.GetMethod("CreateGraphicsProvider", FactoryFlags, Type.EmptyTypes)) is { } provider)
 		{
 			Drawing.GraphicsRegistry.RegisterDefault(new[] { provider });
-
-			if (InvokeFactory<Drawing.IDrawingFactory>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
-				?.GetMethod("CreateDefaultRenderer", FactoryFlags, Type.EmptyTypes)) is { } renderer)
-			{
-				Drawing.DrawingRegistration.RegisterDefaultRenderer(renderer);
-			}
-
 			return;
 		}
 
