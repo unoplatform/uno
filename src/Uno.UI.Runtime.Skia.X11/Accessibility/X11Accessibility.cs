@@ -515,22 +515,31 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	{
 		TrySubscribeScrollSource(child);
 		QueueRebuildIfNeeded();
-		if (_server is { } server && _nodesByHandle.TryGetValue(parent.Visual.Handle, out var parentNode))
+		// Emit after the queued rebuild (FIFO on the same queue), so a client that
+		// re-fetches children on this signal observes the updated tree.
+		X11XamlRootHost.QueueAction(_host, () =>
 		{
-			var childNode = _nodesByHandle.TryGetValue(child.Visual.Handle, out var addedNode) ? addedNode : null;
-			server.EmitChildrenChanged(parentNode, added: true, index ?? -1, childNode);
-		}
+			if (_server is { } server && _nodesByHandle.TryGetValue(parent.Visual.Handle, out var parentNode))
+			{
+				var childNode = _nodesByHandle.TryGetValue(child.Visual.Handle, out var addedNode) ? addedNode : null;
+				server.EmitChildrenChanged(parentNode, added: true, index ?? -1, childNode);
+			}
+		});
 	}
 
 	protected override void OnChildRemoved(UIElement parent, UIElement child)
 	{
-		if (_server is { } server && _nodesByHandle.TryGetValue(parent.Visual.Handle, out var parentNode))
-		{
-			var childNode = _nodesByHandle.TryGetValue(child.Visual.Handle, out var removed) ? removed : null;
-			var index = childNode is not null ? parentNode.Children.IndexOf(childNode) : -1;
-			server.EmitChildrenChanged(parentNode, added: false, index, childNode);
-		}
+		// Capture the removed child's node and position before the rebuild forgets them.
+		var removedNode = _nodesByHandle.TryGetValue(child.Visual.Handle, out var removed) ? removed : null;
+		var removedIndex = removedNode?.Parent?.Children.IndexOf(removedNode) ?? -1;
 		QueueRebuildIfNeeded();
+		X11XamlRootHost.QueueAction(_host, () =>
+		{
+			if (_server is { } server && _nodesByHandle.TryGetValue(parent.Visual.Handle, out var parentNode))
+			{
+				server.EmitChildrenChanged(parentNode, added: false, removedIndex, removedNode);
+			}
+		});
 	}
 
 	public override void NotifyInvalidatePeer(AutomationPeer peer)

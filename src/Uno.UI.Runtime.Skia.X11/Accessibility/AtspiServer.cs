@@ -932,22 +932,25 @@ internal sealed class AtspiServer
 			ReplyReference(context, _server.GetReference(FindAccessibleAtPoint(node, x, y)));
 		}
 
-		// Published bounds are absolute screen coordinates, so window-relative input
-		// points shift by the window origin (the application root's own position).
+		// Published bounds are absolute screen coordinates, so window- and
+		// parent-relative input points shift by that ancestor's own position.
 		private static (int X, int Y) TranslateToScreen(AtspiNode node, int x, int y, uint coordType)
 		{
-			if (coordType != AtspiDbus.WindowCoordType)
+			switch (coordType)
 			{
-				return (x, y);
+				case AtspiDbus.WindowCoordType:
+					var root = node;
+					while (root.Parent is { } rootParent)
+					{
+						root = rootParent;
+					}
+					return (x + (int)root.X, y + (int)root.Y);
+				case AtspiDbus.ParentCoordType:
+					var origin = node.Parent ?? node;
+					return (x + (int)origin.X, y + (int)origin.Y);
+				default:
+					return (x, y);
 			}
-
-			var root = node;
-			while (root.Parent is { } parent)
-			{
-				root = parent;
-			}
-
-			return (x + (int)root.X, y + (int)root.Y);
 		}
 
 		private void ReplyStates(MethodContext context, AtspiNode node)
@@ -1219,6 +1222,7 @@ internal sealed class AtspiServer
 		public const string GetLayerMethod = "GetLayer";
 		public const string ContainsMethod = "Contains";
 		public const uint WindowCoordType = 1;
+		public const uint ParentCoordType = 2;
 		public const string GetAccessibleAtPointMethod = "GetAccessibleAtPoint";
 		public const string GrabFocusMethod = "GrabFocus";
 		public const string GetNActionsMethod = "GetNActions";
