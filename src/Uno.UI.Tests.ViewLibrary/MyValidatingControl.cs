@@ -55,7 +55,7 @@ public partial class MyValidatingControlBase : Control, IInputValidationControl
 			nameof(ErrorTemplate),
 			typeof(DataTemplate),
 			typeof(MyValidatingControlBase),
-			new PropertyMetadata(default(DataTemplate)));
+			new PropertyMetadata(default(DataTemplate), Control.OnErrorTemplateChanged));
 
 	public InputValidationMode InputValidationMode
 	{

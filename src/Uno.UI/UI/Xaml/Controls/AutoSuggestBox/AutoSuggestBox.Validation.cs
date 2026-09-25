@@ -66,7 +66,9 @@ public partial class AutoSuggestBox : IInputValidationControl
 			nameof(ErrorTemplate),
 			typeof(DataTemplate),
 			typeof(AutoSuggestBox),
-			new FrameworkPropertyMetadata(default(DataTemplate)));
+			new FrameworkPropertyMetadata(
+				default(DataTemplate),
+				OnErrorTemplateChanged));
 
 	/// <inheritdoc />
 	public InputValidationMode InputValidationMode

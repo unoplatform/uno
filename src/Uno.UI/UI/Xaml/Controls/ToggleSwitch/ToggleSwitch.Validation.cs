@@ -66,7 +66,9 @@ public partial class ToggleSwitch : IInputValidationControl
 			nameof(ErrorTemplate),
 			typeof(DataTemplate),
 			typeof(ToggleSwitch),
-			new FrameworkPropertyMetadata(default(DataTemplate)));
+			new FrameworkPropertyMetadata(
+				default(DataTemplate),
+				OnErrorTemplateChanged));
 
 	/// <inheritdoc />
 	public InputValidationMode InputValidationMode

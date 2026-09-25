@@ -66,7 +66,9 @@ public partial class ComboBox : IInputValidationControl
 			nameof(ErrorTemplate),
 			typeof(DataTemplate),
 			typeof(ComboBox),
-			new FrameworkPropertyMetadata(default(DataTemplate)));
+			new FrameworkPropertyMetadata(
+				default(DataTemplate),
+				OnErrorTemplateChanged));
 
 	/// <inheritdoc />
 	public InputValidationMode InputValidationMode

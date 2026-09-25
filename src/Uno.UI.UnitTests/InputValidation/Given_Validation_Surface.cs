@@ -27,6 +27,7 @@ public class Given_Validation_Surface
 		"OnInputValidationModeChanged",
 		"OnInputValidationKindChanged",
 		"OnHasValidationErrorsChanged",
+		"OnErrorTemplateChanged",
 		"GetOrCreateValidationErrors",
 		"AddHasValidationErrorsChangedHandler",
 		"RemoveHasValidationErrorsChangedHandler",
