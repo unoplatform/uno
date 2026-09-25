@@ -470,10 +470,23 @@ namespace Microsoft.UI.Xaml
 		private void RaiseConfigurationChanges()
 		{
 			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
-			//ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();
+			ScheduleFontScaleRefresh(Window?.DecorView);
 		}
+
+		private static void ScheduleFontScaleRefresh(View? decorView)
+		{
+			// Defer until Android has propagated the new configuration.
+			// The dispatcher covers calls before a decor view exists.
+			if (decorView?.Post(RefreshFontScale) is not true)
+			{
+				NativeDispatcher.Main.Enqueue(RefreshFontScale);
+			}
+		}
+
+		private static void RefreshFontScale() =>
+			WinUICoreServices.Instance.UpdateFontScale(UISettings.GetTextScaleFactorValue());
 
 #pragma warning disable CS0618 // deprecated members
 #pragma warning disable CS0672 // deprecated members
