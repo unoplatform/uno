@@ -2473,6 +2473,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+		[TestMethod]
+		public async Task When_ChangeView_Animated_Short_Distance_Then_Settles_Quickly()
+		{
+			// Like WinUI's ScrollPresenter, the animation lasts 5ms per pixel within [50ms, 1000ms], so a short
+			// hop does not crawl for a whole second.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			await UITestHelper.Load(SUT);
+
+			var completed = new TaskCompletionSource();
+			SUT.ViewChanged += (_, e) =>
+			{
+				if (!e.IsIntermediate)
+				{
+					completed.TrySetResult();
+				}
+			};
+
+			var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+			SUT.ChangeView(null, 20, null, disableAnimation: false);
+			await Task.WhenAny(completed.Task, Task.Delay(3000));
+			stopwatch.Stop();
+
+			Assert.IsTrue(completed.Task.IsCompleted, "The animated scroll never completed.");
+			Assert.AreEqual(20, SUT.VerticalOffset, 0.5);
+			Assert.IsTrue(stopwatch.ElapsedMilliseconds < 500, $"A 20px animated scroll took {stopwatch.ElapsedMilliseconds}ms.");
+		}
+
 		// A flick fast enough to launch a fling: the velocity tracker fits the recent gesture, so it needs
 		// several moves spread over real time rather than one long jump.
 		private static async Task FlickUp(InputInjector input, Point from)
