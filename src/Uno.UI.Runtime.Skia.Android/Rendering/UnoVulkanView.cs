@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using Android.Content;
 using Android.Graphics;
@@ -87,8 +87,10 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		}
 
 		_surfaceReady = true;
+		_renderRequested = true;
 		_renderThread = new Thread(RenderLoop) { Name = "UnoVulkanRenderThread", IsBackground = true };
 		_renderThread.Start(holder);
+		_renderEvent.Set();
 	}
 
 	public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
