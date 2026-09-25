@@ -34,6 +34,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property AllowFocusOnInteractionProperty
 		// Skipping already declared property AllowFocusWhenDisabledProperty
+		// Skipping already declared property DataContextProperty
 		// Skipping already declared property FlowDirectionProperty
 		// Skipping already declared property FocusVisualMarginProperty
 		// Skipping already declared property FocusVisualPrimaryBrushProperty
@@ -67,6 +68,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property AllowFocusOnInteraction
 		// Skipping already declared property AllowFocusWhenDisabled
 		// Skipping already declared property BaseUri
+		// Skipping already declared property DataContext
 		// Skipping already declared property FlowDirection
 		// Skipping already declared property FocusVisualMargin
 		// Skipping already declared property FocusVisualPrimaryBrush
@@ -141,7 +143,7 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WidthProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FindName(string)
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.SetBinding(Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.GetBindingExpression(Microsoft.UI.Xaml.DependencyProperty)
+		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.GetBindingExpression(Microsoft.UI.Xaml.DependencyProperty)
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.DataContextChanged.add
@@ -219,6 +221,7 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Width.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Width.set
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged
+		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.DataContextChanged
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.EffectiveViewportChanged
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.LayoutUpdated
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.Loaded

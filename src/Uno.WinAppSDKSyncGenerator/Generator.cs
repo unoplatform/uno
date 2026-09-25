@@ -1296,7 +1296,7 @@ namespace Uno.WinAppSDKSyncGenerator
 		{
 			foreach (var eventMember in type.GetMembers().OfType<IEventSymbol>())
 			{
-				if (!IsNotWinAppSDKMapping(type, eventMember) || SkipEvent(eventMember))
+				if (!IsNotWinAppSDKMapping(type, eventMember))
 				{
 					continue;
 				}
@@ -1554,8 +1554,7 @@ namespace Uno.WinAppSDKSyncGenerator
 			{
 				switch (method.Name)
 				{
-					// The base type does not match for this parameter until Uno adjusts the
-					// hierarchy based on IFrameworkElement.
+					// WinUI takes a FrameworkElement, Uno takes a UIElement.
 					case "SetRow":
 					case "SetRowSpan":
 					case "SetColumn":
@@ -1572,9 +1571,7 @@ namespace Uno.WinAppSDKSyncGenerator
 			{
 				switch (method.Name)
 				{
-					// Those two members are located in DependencyObject but will need to be
-					// moved up.
-					case "GetBindingExpression":
+					// Declared on DependencyObject in Uno.
 					case "SetBinding":
 						return true;
 				}
@@ -1712,21 +1709,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				return true;
 			}
 
-			return false;
-		}
-
-		private bool SkipEvent(IEventSymbol eventMember)
-		{
-			if (eventMember.ContainingType.Name == "FrameworkElement")
-			{
-				switch (eventMember.Name)
-				{
-					// Those two members are located in DependencyObject but will need to be
-					// moved up.
-					case "DataContextChanged":
-						return true;
-				}
-			}
 			return false;
 		}
 
@@ -2074,29 +2056,9 @@ namespace Uno.WinAppSDKSyncGenerator
 			{
 				switch (property.Name)
 				{
-					case "Opacity":
-					case "OpacityProperty":
-					case "Visibility":
-					case "VisibilityProperty":
-					case "IsHitTestVisible":
-					case "IsHitTestVisibleProperty":
+					// Declared on FrameworkElement in Uno.
 					case "Transitions":
 					case "TransitionsProperty":
-					case "RenderTransform":
-					case "RenderTransformProperty":
-					case "RenderTransformOrigin":
-					case "RenderTransformOriginProperty":
-						return true;
-				}
-			}
-
-			if (property.ContainingType.Name == "FrameworkElement")
-			{
-				switch (property.Name)
-				{
-					// This is ignored until DataContext becomes an actual DP.
-					case "DataContext":
-					case "DataContextProperty":
 						return true;
 				}
 			}
