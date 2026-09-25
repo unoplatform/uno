@@ -1,9 +1,9 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
-using System.Diagnostics;
 using System.Numerics;
-using System.Threading;
+using Uno.Foundation.Logging;
+using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition.Interactions;
 
@@ -15,13 +15,12 @@ internal sealed partial class InteractionTrackerActiveInputInertiaHandler : IInt
 	private readonly AxisHelper _zHelper;
 	private readonly int _requestId;
 
-	private Timer? _timer;
-	private Stopwatch? _stopwatch;
+	private ICompositionTarget? _target;
+	private EventHandler<long>? _handler;
+	private long _startTimestamp;
 
-	// InteractionTracker works at 60 FPS, per documentation
-	// https://learn.microsoft.com/en-us/windows/uwp/composition/interaction-tracker-manipulations#why-use-interactiontracker
-	// > InteractionTracker was built to utilize the new Animation engine that operates on an independent thread at 60 FPS,resulting in smooth motion.
-	private const int IntervalInMilliseconds = 17; // Ceiling of 1000/60
+	/// <summary>Seconds since the motion started, as of the frame being processed.</summary>
+	internal float ElapsedInSeconds { get; private set; }
 
 	public Vector3 InitialVelocity => new Vector3(_xHelper.InitialVelocity, _yHelper.InitialVelocity, _zHelper.InitialVelocity);
 	public Vector3 FinalPosition => new Vector3(_xHelper.FinalValue, _yHelper.FinalValue, _zHelper.FinalValue);
@@ -37,41 +36,76 @@ internal sealed partial class InteractionTrackerActiveInputInertiaHandler : IInt
 		_requestId = requestId;
 	}
 
+	/// <summary>Advanced once per frame, on the UI thread, from the frame's timestamp.</summary>
 	public void Start()
 	{
-		if (_timer is not null)
+		if (_handler is not null)
 		{
-			throw new InvalidOperationException("Cannot start inertia timer twice.");
+			throw new InvalidOperationException("Cannot start inertia twice.");
 		}
 
-		_stopwatch = Stopwatch.StartNew();
-		_timer = new Timer(OnTick, null, 0, IntervalInMilliseconds);
+		if (_interactionTracker.FrameTarget is not { } target)
+		{
+			// Nothing would ever advance the motion, and advancing is the only way out of the inertia state.
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("No composition target to advance the inertia; completing it immediately.");
+			}
+
+			Complete();
+			return;
+		}
+
+		_startTimestamp = 0;
+		_target = target;
+		_handler = OnFrameStarting;
+		target.FrameStarting += _handler;
 	}
 
 	public void Stop()
 	{
-		_timer?.Dispose();
-		_stopwatch?.Stop();
+		if (_handler is not null)
+		{
+			_target!.FrameStarting -= _handler;
+			_handler = null;
+			_target = null;
+		}
 	}
 
-	private void OnTick(object? state)
+	private void OnFrameStarting(object? sender, long timestamp)
 	{
-		var currentElapsedInSeconds = _stopwatch!.ElapsedMilliseconds / 1000.0f;
+		if (_startTimestamp == 0)
+		{
+			// A tick already queued can run before the owner hears about the inertia, which must come first.
+			if (!_interactionTracker.State.HasEntered)
+			{
+				return;
+			}
+
+			// Back-dated by a frame, so the first frame moves by a whole frame's worth.
+			_startTimestamp = timestamp - _target!.FrameIntervalInTicks;
+		}
+
+		ElapsedInSeconds = (float)((timestamp - _startTimestamp) / (double)TimeSpan.TicksPerSecond);
 
 		if (_xHelper.HasCompleted && _yHelper.HasCompleted && _zHelper.HasCompleted)
 		{
-			_interactionTracker.SetPosition(FinalModifiedPosition, _requestId);
-			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, _requestId));
-			_timer!.Dispose();
-			_stopwatch!.Stop();
+			Complete();
 			return;
 		}
 
 		var newPosition = new Vector3(
-			_xHelper.GetPosition(currentElapsedInSeconds),
-			_yHelper.GetPosition(currentElapsedInSeconds),
-			_zHelper.GetPosition(currentElapsedInSeconds));
+			_xHelper.GetPosition(ElapsedInSeconds),
+			_yHelper.GetPosition(ElapsedInSeconds),
+			_zHelper.GetPosition(ElapsedInSeconds));
 
 		_interactionTracker.SetPosition(newPosition, _requestId);
+	}
+
+	private void Complete()
+	{
+		Stop();
+		_interactionTracker.SetPosition(FinalModifiedPosition, _requestId);
+		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, _requestId));
 	}
 }
