@@ -810,9 +810,9 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
 
 ### Members restricted to their WinUI declaring types
 
-Two members that Uno declared far too broadly are now declared exactly where WinUI declares
-them. Neither changes behavior where the member survives — they break code that reached the
-member through a base type that never had it in WinUI.
+Several members that Uno declared on the wrong type are now declared exactly where WinUI
+declares them. None changes behavior where the member survives — they break code that reached
+the member through a type that never had it in WinUI.
 
 - **`Background` is no longer on `FrameworkElement`.** WinUI declares `Brush Background` on
   exactly eight types, and 7.0 now matches: `Control`, `Panel`, `Border`, `ContentPresenter`,
@@ -871,6 +871,24 @@ member through a base type that never had it in WinUI.
   carries a `DataContext`, but the placement target's `DataContext` is forwarded onto the
   flyout presenter when the flyout opens and cleared when it closes, so `{Binding}` inside
   flyout content still resolves against the target's view model — as it does in WinUI.
+
+- **`SetBinding` is on `FrameworkElement` only.** Uno declared `SetBinding(DependencyProperty,
+  BindingBase)`, plus an Uno-only `SetBinding(string, BindingBase)` overload, on every
+  `DependencyObject`. WinUI has `FrameworkElement.SetBinding` alone, and 7.0 now matches.
+  To bind a property of a non-`FrameworkElement` object (a `Brush`, a `Transform`, …) from
+  code, use `BindingOperations.SetBinding(target, property, binding)`, as in WinUI. XAML is
+  unaffected, but a library that contains XAML must be recompiled against 7.0.
+
+- **`Transitions` is on `UIElement`.** Uno declared `Transitions` and `TransitionsProperty` on
+  `FrameworkElement`; WinUI declares them on `UIElement`. Code using the property is
+  unaffected, but a reference to `FrameworkElement.TransitionsProperty` must become
+  `UIElement.TransitionsProperty`.
+
+- **`Grid` attached-property accessors take a `FrameworkElement`.** `Grid.GetRow`/`SetRow`,
+  `GetColumn`/`SetColumn`, `GetRowSpan`/`SetRowSpan` and `GetColumnSpan`/`SetColumnSpan`
+  took a `UIElement` in Uno; WinUI takes a `FrameworkElement`, and 7.0 now matches. Pass a
+  `FrameworkElement`-typed reference, or set the attached property directly with
+  `element.SetValue(Grid.RowProperty, value)`.
 
 ### WinRT projection alignment (WinUI parity)
 
@@ -1237,17 +1255,20 @@ be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
 15. Move `.DataContext` reads/writes and `DataContextChanged` subscriptions off
    non-`FrameworkElement` objects (`Brush`, `Transform`, `FlyoutBase`, …) onto the owning
    element — `{Binding}` on those objects still resolves.
-16. Raise `SupportedOSPlatformVersion` to **15.0** (iOS/tvOS) and **24.0** (Android), and
+16. Replace `SetBinding` calls on non-`FrameworkElement` objects with
+   `BindingOperations.SetBinding`, re-point `FrameworkElement.TransitionsProperty` at
+   `UIElement`, and pass `FrameworkElement`-typed references to the `Grid` row/column accessors.
+17. Raise `SupportedOSPlatformVersion` to **15.0** (iOS/tvOS) and **24.0** (Android), and
    `TargetPlatformMinVersion` to **10.0.19041.0** (WinAppSDK), in any head that pins them
    explicitly.
-17. If you use `Window.SystemBackdrop`, make your own root `Page`/panel transparent — the
+18. If you use `Window.SystemBackdrop`, make your own root `Page`/panel transparent — the
    framework no longer does it for you.
-18. Remove any `UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` or `UnoWinRTRuntimeIdentifier` property from
+19. Remove any `UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` or `UnoWinRTRuntimeIdentifier` property from
    application heads, and replace `UnoRuntimeIdentifier` with `UnoRuntimeVariant` in cross-runtime libraries —
    UNOB0024 points them out.
-19. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+20. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
-20. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
+21. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
    bring pre-7.0 application settings into the `UnoApplicationData` container, and update any
    native/interop code that read them from `NSUserDefaults.StandardUserDefaults`.
 
