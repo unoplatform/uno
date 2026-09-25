@@ -92,6 +92,10 @@ public partial class InteractionTracker : CompositionObject
 		}
 	}
 
+	/// <summary>A pointer pressed on coasting content: it stops under the finger, as the manipulation now owns it.</summary>
+	internal void InterruptInertia()
+		=> _state.InterruptInertia();
+
 	internal void SetScale(float newScale, Vector3 centerPoint, int requestId)
 	{
 		var oldScale = _scale;

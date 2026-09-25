@@ -55,6 +55,9 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 	// Not from the enqueued EnterState: that would start every inertia a dispatcher hop late.
 	internal override void OnActivated() => _handler.Start();
 
+	internal override void InterruptInertia()
+		=> _interactionTracker.ChangeState(new InteractionTrackerInteractingState(_interactionTracker, isInterruptingInertia: true));
+
 	internal override void StartUserManipulation()
 	{
 		_interactionTracker.ChangeState(new InteractionTrackerInteractingState(_interactionTracker));
