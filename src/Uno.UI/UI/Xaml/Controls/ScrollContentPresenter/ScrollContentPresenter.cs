@@ -323,9 +323,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						success = Set(
-							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
-							disableAnimation: false);
+						success = AddWheelImpulse(GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta), 0);
 					}
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
@@ -341,9 +339,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						success = Set(
-							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-							disableAnimation: false);
+						success = AddWheelImpulse(0, GetVerticalScrollWheelDelta(DesiredSize, -delta));
 					}
 				}
 
