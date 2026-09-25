@@ -530,6 +530,12 @@ namespace SamplesApp
 				// Exclude logs below this level
 				builder.SetMinimumLevel(LogLevel.Debug);
 #endif
+				// UNO_SAMPLES_TRACE=Category;Other.Category enables trace logs without a rebuild, in any configuration.
+				foreach (var category in (Environment.GetEnvironmentVariable("UNO_SAMPLES_TRACE") ?? "").Split(';', StringSplitOptions.RemoveEmptyEntries))
+				{
+					builder.AddFilter(category, LogLevel.Trace);
+				}
+
 				// Runtime Tests control logging
 				builder.AddFilter("Uno.UI.Samples.Tests", LogLevel.Information);
 
