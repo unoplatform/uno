@@ -20,6 +20,7 @@ public partial class CompositionTarget
 	private bool _isFrameTimestampFresh;
 
 	private static long _lastRenderingTimestamp;
+	private static bool _isAnyFrameTickArmed;
 
 	/// <summary>
 	/// Raised once per frame from the tick that precedes the record (before layout), with the timestamp every
@@ -84,6 +85,7 @@ public partial class CompositionTarget
 		}
 
 		_frameTickArmed = true;
+		_isAnyFrameTickArmed = true;
 		CoreServices.RequestAdditionalFrame();
 	}
 
@@ -111,6 +113,14 @@ public partial class CompositionTarget
 	/// </summary>
 	internal static void RaiseFrameTick()
 	{
+		// Most ticks are for layout alone, and walking the targets allocates an enumerator.
+		if (!_isAnyFrameTickArmed)
+		{
+			return;
+		}
+
+		_isAnyFrameTickArmed = false;
+
 		long? renderingTimestamp = null;
 
 		foreach (var (target, _) in _targets)
