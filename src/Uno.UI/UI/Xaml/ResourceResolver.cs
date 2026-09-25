@@ -500,11 +500,9 @@ namespace Uno.UI
 
 			if (scope != null)
 			{
-				var dictionaries = (scope.Target as DependencyObject)?.GetResourceDictionaries(true);
-
-				if (dictionaries != null)
+				if (scope.Target is DependencyObject dependencyObject)
 				{
-					foreach (var dict in dictionaries)
+					foreach (var dict in dependencyObject.EnumerateResourceDictionaries(includeAppResources: true))
 					{
 						if (dict.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
 						{
