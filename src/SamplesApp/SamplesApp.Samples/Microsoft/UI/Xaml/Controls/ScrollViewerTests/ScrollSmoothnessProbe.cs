@@ -211,6 +211,7 @@ internal sealed class ScrollSmoothnessProbe
 		result.IntervalP99 = Percentile(sortedIntervals, 0.99);
 		result.IntervalMax = sortedIntervals[^1];
 		result.LongFrames = intervals.Count(x => x > period * 1.5);
+		result.HostStalls = intervals.Count(static x => x > 250);
 
 		var direction = Math.Sign(Axis(window[^1].R) - Axis(window[0].R));
 		var residuals = new List<double>(window.Count);
@@ -324,6 +325,9 @@ internal sealed class ScrollSmoothnessResult
 	public double IntervalP99 { get; set; }
 	public double IntervalMax { get; set; }
 	public int LongFrames { get; set; }
+
+	/// <summary>Gaps over 250 ms between presented frames: the host stopped presenting, not a scroll-logic hitch.</summary>
+	public int HostStalls { get; set; }
 	public int RepeatedFrames { get; set; }
 	public int StalledFrames { get; set; }
 	public int BackwardSteps { get; set; }
@@ -339,7 +343,7 @@ internal sealed class ScrollSmoothnessResult
 
 	public string ToSummary()
 		=> string.Create(CultureInfo.InvariantCulture,
-			$"{Scenario,-14} fps {Fps,5:F1}  frame p50 {IntervalP50,5:F1} p95 {IntervalP95,5:F1} p99 {IntervalP99,5:F1} max {IntervalMax,6:F1}ms  long {LongFrames,3}  " +
+			$"{Scenario,-14} fps {Fps,5:F1}  frame p50 {IntervalP50,5:F1} p95 {IntervalP95,5:F1} p99 {IntervalP99,5:F1} max {IntervalMax,6:F1}ms  long {LongFrames,3} stall>250 {HostStalls,2}  " +
 			$"step max {MaxStepPx,5:F0}px repeat {RepeatedFrames,3} stall {StalledFrames,3} back {BackwardSteps,2}({MaxBackwardPx:F1}px)  " +
 			$"judder rms {JudderRmsPx,5:F2} p95 {JudderP95Px,5:F2} max {JudderMaxPx,6:F2}px  rec→pres {RecordToPresentP50,4:F1}/{RecordToPresentP95,4:F1}ms  " +
 			$"react {FirstInputToMoveMs,5:F1}ms  {MovingFrames} frames/{MotionMs:F0}ms/{MotionPx:F0}px");
@@ -349,7 +353,7 @@ internal sealed class ScrollSmoothnessResult
 		var sb = new StringBuilder();
 		sb.Append(CultureInfo.InvariantCulture, $"{{\"platform\":\"{platform}\",\"scenario\":\"{Scenario}\",\"records\":{Records},\"presents\":{Presents},\"movingFrames\":{MovingFrames}");
 		sb.Append(CultureInfo.InvariantCulture, $",\"motionMs\":{MotionMs:F1},\"motionPx\":{MotionPx:F1},\"fps\":{Fps:F2}");
-		sb.Append(CultureInfo.InvariantCulture, $",\"intervalP50\":{IntervalP50:F2},\"intervalP95\":{IntervalP95:F2},\"intervalP99\":{IntervalP99:F2},\"intervalMax\":{IntervalMax:F2},\"longFrames\":{LongFrames}");
+		sb.Append(CultureInfo.InvariantCulture, $",\"intervalP50\":{IntervalP50:F2},\"intervalP95\":{IntervalP95:F2},\"intervalP99\":{IntervalP99:F2},\"intervalMax\":{IntervalMax:F2},\"longFrames\":{LongFrames},\"hostStalls\":{HostStalls}");
 		sb.Append(CultureInfo.InvariantCulture, $",\"repeatedFrames\":{RepeatedFrames},\"stalledFrames\":{StalledFrames},\"backwardSteps\":{BackwardSteps},\"maxBackwardPx\":{MaxBackwardPx:F2},\"maxStepPx\":{MaxStepPx:F2}");
 		sb.Append(CultureInfo.InvariantCulture, $",\"judderRmsPx\":{JudderRmsPx:F3},\"judderP95Px\":{JudderP95Px:F3},\"judderMaxPx\":{JudderMaxPx:F3}");
 		sb.Append(CultureInfo.InvariantCulture, $",\"recordToPresentP50\":{RecordToPresentP50:F2},\"recordToPresentP95\":{RecordToPresentP95:F2},\"firstInputToMoveMs\":{FirstInputToMoveMs:F2}");
