@@ -1,27 +1,25 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
-using System.Diagnostics;
 using System.Numerics;
-using System.Threading;
+using Uno.Foundation.Logging;
+using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition.Interactions;
 
 internal class InteractionTrackerPointerWheelInertiaHandler : IInteractionTrackerInertiaHandler
 {
-	// InteractionTracker works at 60 FPS, per documentation
-	// https://learn.microsoft.com/en-us/windows/uwp/composition/interaction-tracker-manipulations#why-use-interactiontracker
-	// > InteractionTracker was built to utilize the new Animation engine that operates on an independent thread at 60 FPS,resulting in smooth motion.
-	private const int IntervalInMilliseconds = 17; // Ceiling of 1000/60
-
-	private Timer? _timer;
-	private Stopwatch? _stopwatch;
+	private const double DurationInMilliseconds = 250;
 
 	private readonly InteractionTracker _interactionTracker;
 	private readonly Vector3 _minPosition;
 	private readonly Vector3 _maxPosition;
 	private readonly Vector3 _initialPosition;
 	private readonly Vector3 _calculatedFinalPosition;
+
+	private ICompositionTarget? _target;
+	private EventHandler<long>? _handler;
+	private long _startTimestamp;
 
 	public InteractionTrackerPointerWheelInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities)
 	{
@@ -33,7 +31,7 @@ internal class InteractionTrackerPointerWheelInertiaHandler : IInteractionTracke
 		InitialVelocity = translationVelocities;
 
 		// This handler works with constant velocity for 0.25 second.
-		_calculatedFinalPosition = interactionTracker.Position + InitialVelocity * 0.25f;
+		_calculatedFinalPosition = interactionTracker.Position + InitialVelocity * (float)(DurationInMilliseconds / 1000);
 	}
 
 	public Vector3 InitialVelocity { get; }
@@ -44,46 +42,79 @@ internal class InteractionTrackerPointerWheelInertiaHandler : IInteractionTracke
 
 	public float FinalScale => _interactionTracker.Scale; // TODO: Scale not yet implemented
 
+	/// <summary>Advanced once per frame, on the UI thread, from the frame's timestamp.</summary>
 	public void Start()
 	{
-		if (_timer is not null)
+		if (_handler is not null)
 		{
-			throw new InvalidOperationException("Cannot start inertia timer twice.");
+			throw new InvalidOperationException("Cannot start inertia twice.");
 		}
 
-		_stopwatch = Stopwatch.StartNew();
-		_timer = new Timer(OnTick, null, 0, IntervalInMilliseconds);
+		if (_interactionTracker.FrameTarget is not { } target)
+		{
+			// Nothing would ever advance the motion, and advancing is the only way out of the inertia state.
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("No composition target to advance the wheel inertia; completing it immediately.");
+			}
+
+			Complete();
+			return;
+		}
+
+		_startTimestamp = 0;
+		_target = target;
+		_handler = OnFrameStarting;
+		target.FrameStarting += _handler;
 	}
 
 	public void Stop()
 	{
-		_timer?.Dispose();
-		_stopwatch?.Stop();
+		if (_handler is not null)
+		{
+			_target!.FrameStarting -= _handler;
+			_handler = null;
+			_target = null;
+		}
 	}
 
-	private void OnTick(object? state)
+	private void OnFrameStarting(object? sender, long timestamp)
 	{
-		var currentElapsed = _stopwatch!.ElapsedMilliseconds;
-
-		if (currentElapsed >= 250)
+		if (_startTimestamp == 0)
 		{
-			_interactionTracker.SetPosition(FinalModifiedPosition, requestId: 0);
-			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId: 0));
-			_timer!.Dispose();
-			_stopwatch!.Stop();
+			// A tick already queued can run before the owner hears about the inertia, which must come first.
+			if (!_interactionTracker.State.HasEntered)
+			{
+				return;
+			}
+
+			// Back-dated by a frame, so the first frame moves by a whole frame's worth.
+			_startTimestamp = timestamp - _target!.FrameIntervalInTicks;
+		}
+
+		var elapsedInMilliseconds = (timestamp - _startTimestamp) / (double)TimeSpan.TicksPerMillisecond;
+		if (elapsedInMilliseconds >= DurationInMilliseconds)
+		{
+			Complete();
 			return;
 		}
 
-		var newPosition = _initialPosition + (currentElapsed / 1000.0f) * InitialVelocity;
+		var newPosition = _initialPosition + (float)(elapsedInMilliseconds / 1000) * InitialVelocity;
 		var clampedNewPosition = Vector3.Clamp(newPosition, _minPosition, _maxPosition);
 
 		_interactionTracker.SetPosition(clampedNewPosition, requestId: 0);
 
 		if (clampedNewPosition.Equals(FinalModifiedPosition))
 		{
+			Stop();
 			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId: 0));
-			_timer!.Dispose();
-			_stopwatch!.Stop();
 		}
+	}
+
+	private void Complete()
+	{
+		Stop();
+		_interactionTracker.SetPosition(FinalModifiedPosition, requestId: 0);
+		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId: 0));
 	}
 }

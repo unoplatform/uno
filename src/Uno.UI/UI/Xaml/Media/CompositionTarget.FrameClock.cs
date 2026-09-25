@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using Microsoft.UI.Composition;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
@@ -67,8 +68,22 @@ public partial class CompositionTarget
 		}
 	}
 
+	event EventHandler<long>? ICompositionTarget.FrameStarting
+	{
+		add => FrameStarting += value;
+		remove => FrameStarting -= value;
+	}
+
+	long ICompositionTarget.FrameIntervalInTicks => FrameIntervalInTicks;
+
 	/// <summary>Estimated interval between presented frames, for drivers that need a nominal step.</summary>
 	internal long FrameIntervalInTicks => _frameClock.IntervalInTicks;
+
+	/// <summary>The target for frame drivers with no visual of their own, such as a free-standing InteractionTracker.</summary>
+	/// <remarks>Falls back to the primary XamlRoot so an island host, which has no Window, still resolves one.</remarks>
+	private static CompositionTarget? MainFrameDriverTarget
+		=> (global::Uno.UI.ApplicationHelper.WindowsInternal.FirstOrDefault()?.RootElement?.XamlRoot
+			?? CoreServices.GetXamlRoot())?.VisualTree.ContentRoot.CompositionTarget;
 
 	private bool HasFrameTickWork => _frameStarting is not null || _isRenderingActive;
 
