@@ -300,6 +300,59 @@ public class Given_CompositionTarget
 			$"the first step spanned {firstStep / (double)TimeSpan.TicksPerMillisecond:F1}ms, longer than a few frames");
 	}
 
+	/// <summary>
+	/// Swapping one driver for another between frames, as the InteractionTracker does on every wheel notch, must
+	/// not tick the new one a second time within the frame: the extra tick advances the motion off the frame grid.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Frame_Driver_Swapped_Between_Frames_Then_Ticked_Once_Per_Frame()
+	{
+		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
+		await UITestHelper.Load(border);
+		var target = (CompositionTarget)border.Visual.CompositionTarget!;
+		var dispatcherQueue = border.DispatcherQueue;
+
+		var ticks = 0;
+		var frames = 0;
+		EventHandler<long> current = null;
+		EventHandler<long> MakeDriver() => (_, _) => ticks++;
+		void Swap()
+		{
+			if (current is null)
+			{
+				return;
+			}
+
+			target.FrameStarting -= current;
+			current = MakeDriver();
+			target.FrameStarting += current;
+		}
+
+		Action onFrameRendered = () =>
+		{
+			frames++;
+			dispatcherQueue.TryEnqueue(Swap);
+		};
+
+		current = MakeDriver();
+		target.FrameStarting += current;
+		target.FrameRendered += onFrameRendered;
+		try
+		{
+			await Task.Delay(1000);
+		}
+		finally
+		{
+			target.FrameRendered -= onFrameRendered;
+			target.FrameStarting -= current;
+			current = null;
+		}
+
+		Assert.IsTrue(frames >= 5, $"the pipeline should keep producing frames, got {frames}");
+		Assert.IsTrue(ticks <= frames + 2, $"a swapped driver must tick once per frame, got {ticks} ticks for {frames} frames");
+	}
+
 	private static async Task<(int Ticks, int Frames)> CountDriverTicks(CompositionTarget target, EventHandler<long> driver)
 	{
 		var ticks = 0;
