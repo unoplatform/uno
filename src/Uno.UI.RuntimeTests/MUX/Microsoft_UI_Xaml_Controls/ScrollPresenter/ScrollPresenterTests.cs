@@ -693,7 +693,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Listens to the ScrollPresenter.Content.EffectiveViewportChanged event and expects it to be raised while changing offsets.")]
-	[Ignore("ScrollingAnimationMode.Enabled requires InteractionTracker's CustomAnimation state")]
+	[Ignore("EffectiveViewportChangedEventArgs.BringIntoViewDistanceX/Y are not implemented")]
 	public async Task ListenToContentEffectiveViewportChanged()
 	{
 		ScrollPresenter scrollPresenter = null;
