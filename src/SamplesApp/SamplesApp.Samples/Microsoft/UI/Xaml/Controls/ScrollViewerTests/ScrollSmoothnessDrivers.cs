@@ -37,6 +37,14 @@ internal static class ScrollSmoothnessDrivers
 		"changeview",
 	};
 
+	/// <summary>
+	/// Records while something outside the app scrolls (a person, adb, CDP touch events), so the host's native input
+	/// path is measured too. Not part of "all".
+	/// </summary>
+	public const string ExternalScenario = "external";
+
+	public static int ExternalDurationMs { get; set; } = 5000;
+
 	private readonly record struct Step(double AtMs, Action<InputInjector> Inject, string Kind);
 
 	public static async Task RunAsync(string scenario, Control sv, ScrollSmoothnessProbe probe, CancellationToken ct)
@@ -86,6 +94,11 @@ internal static class ScrollSmoothnessDrivers
 			case "changeview":
 				probe.MarkInput("changeview");
 				ScrollBy(sv, vertical ? 0 : 3000, vertical ? 3000 : 0, animate: true);
+				break;
+			case ExternalScenario:
+				var bounds2 = sv.TransformToVisual(null).TransformBounds(new Rect(0, 0, sv.ActualWidth, sv.ActualHeight));
+				Console.WriteLine(FormattableString.Invariant($"[scroll-probe] external-start {{\"x\":{bounds2.X:F0},\"y\":{bounds2.Y:F0},\"width\":{bounds2.Width:F0},\"height\":{bounds2.Height:F0}}}"));
+				await Task.Delay(ExternalDurationMs, ct);
 				break;
 			default:
 				throw new ArgumentOutOfRangeException(nameof(scenario), scenario, null);

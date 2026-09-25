@@ -50,6 +50,9 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 
 #if HAS_UNO
 	private ScrollSmoothnessProbe? _manualProbe;
+	private static bool _consoleTrace;
+	private bool _isRunning;
+	private bool _holdResults;
 	private CancellationTokenSource? _runCts;
 #endif
 
@@ -147,6 +150,11 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 		}
 
 		var names = scenarios is "" or "all" ? ScrollSmoothnessDrivers.Scenarios : scenarios.Split(',');
+		_consoleTrace = query.TryGetValue("scrolltrace", out var trace) && trace == "1";
+		if (query.TryGetValue("scrollexternalms", out var externalMs) && int.TryParse(externalMs, out var ms))
+		{
+			ScrollSmoothnessDrivers.ExternalDurationMs = ms;
+		}
 		var tabs = query.TryGetValue("scrolltabs", out var tabList)
 			? tabList.Split(',').Select(int.Parse).ToArray()
 			: new[] { 0 };
@@ -154,6 +162,7 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 		// Let the first frames and any startup work settle before measuring.
 		await Task.Delay(1500);
 
+		_holdResults = true;
 		foreach (var tab in tabs)
 		{
 			Tabs.SelectedIndex = tab;
@@ -161,6 +170,8 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 			await RunScenariosAsync(names);
 		}
 
+		_holdResults = false;
+		FlushResults();
 		Console.WriteLine("[scroll-probe] done");
 	}
 
@@ -198,6 +209,7 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 		_runCts?.Cancel();
 		var cts = _runCts = new CancellationTokenSource();
 		RunScenarioButton.IsEnabled = RunAllButton.IsEnabled = false;
+		_isRunning = true;
 		try
 		{
 			foreach (var scenario in scenarios)
@@ -221,6 +233,11 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 		}
 		finally
 		{
+			_isRunning = false;
+			if (!_holdResults)
+			{
+				FlushResults();
+			}
 			RunScenarioButton.IsEnabled = RunAllButton.IsEnabled = true;
 		}
 	}
@@ -297,20 +314,31 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 		var json = result.ToJson(Platform, includeTrace: true).Insert(1, $"\"tab\":\"{tab}\",");
 		_jsonResults.Add(json);
 
-		// Console readers (logcat, browser console) cut long lines, so the trace only goes to the clipboard copy.
-		Console.WriteLine("[scroll-probe] " + result.ToJson(Platform, includeTrace: false).Insert(1, $"\"tab\":\"{tab}\","));
+		// Console readers (logcat) cut long lines, so the trace goes to the console only when asked (&scrolltrace=1).
+		Console.WriteLine("[scroll-probe] " + result.ToJson(Platform, includeTrace: _consoleTrace).Insert(1, $"\"tab\":\"{tab}\","));
 	}
 
+	private readonly StringBuilder _resultsBuffer = new();
+
+	// Buffered while a run is in progress: moving the TextBox caret scrolls its inner ScrollViewer, which disturbs
+	// the frames being measured (it triggers ~1 s Metal drawable stalls on macOS).
 	private void AppendLine(string line)
 	{
-		var sb = new StringBuilder(ResultsText.Text);
-		if (sb.Length > 0)
+		if (_resultsBuffer.Length > 0)
 		{
-			sb.Append('\n');
+			_resultsBuffer.Append('\n');
 		}
 
-		sb.Append(line);
-		ResultsText.Text = sb.ToString();
+		_resultsBuffer.Append(line);
+		if (!_isRunning && !_holdResults)
+		{
+			FlushResults();
+		}
+	}
+
+	private void FlushResults()
+	{
+		ResultsText.Text = _resultsBuffer.ToString();
 		ResultsText.SelectionStart = ResultsText.Text.Length;
 	}
 #else
