@@ -766,8 +766,11 @@ internal sealed class AtspiServer
 					break;
 				}
 				case AtspiDbus.GetAllPropertiesMethod:
-					ReplyEmptyVariantDictionary(context);
+				{
+					var propertyInterface = context.Request.GetBodyReader().ReadString();
+					ReplyAllProperties(context, node, propertyInterface);
 					break;
+				}
 				default:
 					context.ReplyUnknownMethodError();
 					break;
@@ -776,8 +779,58 @@ internal sealed class AtspiServer
 
 		private void ReplyVariant(MethodContext context, AtspiNode node, string propertyInterface, string property)
 		{
-			using var writer = context.CreateReplyWriter(AtspiDbus.VariantSignature);
+			var writer = context.CreateReplyWriter(AtspiDbus.VariantSignature);
+			try
+			{
+				WritePropertyValue(ref writer, node, propertyInterface, property);
+				context.Reply(writer.CreateMessage());
+			}
+			finally
+			{
+				writer.Dispose();
+			}
+		}
 
+		private static readonly string[] _accessibleProperties =
+			[AtspiDbus.NameProperty, AtspiDbus.DescriptionProperty, AtspiDbus.AccessibleIdProperty, AtspiDbus.ChildCountProperty, AtspiDbus.ParentProperty];
+		private static readonly string[] _applicationProperties =
+			[AtspiDbus.LocaleProperty, AtspiDbus.ToolkitNameProperty, AtspiDbus.VersionProperty, AtspiDbus.AtspiVersionProperty];
+		private static readonly string[] _valueProperties =
+			[AtspiDbus.CurrentValueProperty, AtspiDbus.MinimumValueProperty, AtspiDbus.MaximumValueProperty, AtspiDbus.MinimumIncrementProperty];
+
+		private void ReplyAllProperties(MethodContext context, AtspiNode node, string propertyInterface)
+		{
+			var properties = propertyInterface switch
+			{
+				AtspiDbus.AccessibleInterface => _accessibleProperties,
+				AtspiDbus.ApplicationInterface when node.Parent is null => _applicationProperties,
+				AtspiDbus.ValueInterface when node.HasRange => _valueProperties,
+				AtspiDbus.TextInterface when node.HasText => [AtspiDbus.CharacterCountProperty],
+				AtspiDbus.ActionInterface when Actionable(node) => [AtspiDbus.NActionsProperty],
+				_ => Array.Empty<string>(),
+			};
+
+			var writer = context.CreateReplyWriter(AtspiDbus.VariantDictionarySignature);
+			try
+			{
+				var dictionary = writer.WriteDictionaryStart();
+				foreach (var property in properties)
+				{
+					writer.WriteDictionaryEntryStart();
+					writer.WriteString(property);
+					WritePropertyValue(ref writer, node, propertyInterface, property);
+				}
+				writer.WriteDictionaryEnd(dictionary);
+				context.Reply(writer.CreateMessage());
+			}
+			finally
+			{
+				writer.Dispose();
+			}
+		}
+
+		private void WritePropertyValue(ref MessageWriter writer, AtspiNode node, string propertyInterface, string property)
+		{
 			switch (propertyInterface, property)
 			{
 				case (AtspiDbus.AccessibleInterface, AtspiDbus.NameProperty):
@@ -834,8 +887,6 @@ internal sealed class AtspiServer
 					writer.WriteVariantString(AtspiDbus.EmptyString);
 					break;
 			}
-
-			context.Reply(writer.CreateMessage());
 		}
 
 		private void ReplyChildAtIndex(MethodContext context, AtspiNode node)
@@ -1156,14 +1207,6 @@ internal sealed class AtspiServer
 				writer.WriteString(key);
 				writer.WriteString(value);
 			}
-			writer.WriteDictionaryEnd(dictionary);
-			context.Reply(writer.CreateMessage());
-		}
-
-		private static void ReplyEmptyVariantDictionary(MethodContext context)
-		{
-			using var writer = context.CreateReplyWriter(AtspiDbus.VariantDictionarySignature);
-			var dictionary = writer.WriteDictionaryStart();
 			writer.WriteDictionaryEnd(dictionary);
 			context.Reply(writer.CreateMessage());
 		}
