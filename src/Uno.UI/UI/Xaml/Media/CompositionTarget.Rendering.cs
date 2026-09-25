@@ -268,13 +268,24 @@ public partial class CompositionTarget
 			_phaseLastRenderStart = phaseT0;
 		}
 		var recording = Renderer.CreateRecording();
-		var (path, nativeVisualsInZOrder) = FrameRenderHelper.RecordFrame(
-			recording,
-			(float)bounds.Width,
-			(float)bounds.Height,
-			rootElement.Visual,
-			FrameRenderingOptions.invertNativeElementClipPath,
-			frameDamage);
+		var compositor = Compositor.GetSharedCompositor();
+		compositor.FrameTimestampInTicks = _frameTimestamp != 0 ? _frameTimestamp : null;
+		IGeometry path;
+		List<Visual> nativeVisualsInZOrder;
+		try
+		{
+			(path, nativeVisualsInZOrder) = FrameRenderHelper.RecordFrame(
+				recording,
+				(float)bounds.Width,
+				(float)bounds.Height,
+				rootElement.Visual,
+				FrameRenderingOptions.invertNativeElementClipPath,
+				frameDamage);
+		}
+		finally
+		{
+			compositor.FrameTimestampInTicks = null;
+		}
 		var phaseT1 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
 		var frame = recording.Finish();
 		if (_logFramePhases)

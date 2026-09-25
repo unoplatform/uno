@@ -203,9 +203,11 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 			return;
 		}
 
-		var now = _compositor.TimestampInTicks;
+		// Records evaluate against the frame's timestamp and everything else against the real clock, which
+		// can be ahead of it, so a backward step is expected and must not move the playhead.
+		var now = _compositor.AnimationTimestampInTicks;
 		var delta = now - _lastTimestamp;
-		if (delta == 0)
+		if (delta <= 0)
 		{
 			return;
 		}
