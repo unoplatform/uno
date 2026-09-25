@@ -193,32 +193,66 @@ internal sealed class ScrollSmoothnessProbe
 		var window = frames.GetRange(first, last - first + 1);
 		static double Ms(long ticks) => ticks * 1000.0 / Stopwatch.Frequency;
 
+		// Only intervals inside motion count: a pause longer than MaxPauseMs between two moves (e.g. discrete key
+		// presses) is the input being idle, not a slow frame. A single slow frame that ends in a move still counts.
+		const double MaxPauseMs = 250;
+		var moving = new bool[window.Count];
+		for (var i = 1; i < window.Count; i++)
+		{
+			moving[i] = Axis(window[i].R) != Axis(window[i - 1].R);
+		}
+
+		var counted = new bool[window.Count];
+		var previousMove = -1;
+		for (var i = 1; i < window.Count; i++)
+		{
+			if (!moving[i])
+			{
+				continue;
+			}
+
+			counted[i] = true;
+			if (previousMove > 0 && Ms(window[i].P.Timestamp - window[previousMove].P.Timestamp) <= MaxPauseMs)
+			{
+				for (var j = previousMove + 1; j < i; j++)
+				{
+					counted[j] = true;
+				}
+			}
+
+			previousMove = i;
+		}
+
 		var intervals = new List<double>(window.Count);
 		for (var i = 1; i < window.Count; i++)
 		{
-			intervals.Add(Ms(window[i].P.Timestamp - window[i - 1].P.Timestamp));
+			if (counted[i])
+			{
+				intervals.Add(Ms(window[i].P.Timestamp - window[i - 1].P.Timestamp));
+			}
 		}
 
 		var sortedIntervals = intervals.OrderBy(static x => x).ToArray();
 		var period = Percentile(sortedIntervals, 0.5);
+		var activeMs = intervals.Sum();
 
 		result.MotionMs = Ms(window[^1].P.Timestamp - window[0].P.Timestamp);
 		result.MotionPx = Math.Abs(Axis(window[^1].R) - Axis(window[0].R));
 		result.MovingFrames = window.Count;
-		result.Fps = result.MotionMs > 0 ? (window.Count - 1) * 1000.0 / result.MotionMs : 0;
+		result.Fps = activeMs > 0 ? intervals.Count * 1000.0 / activeMs : 0;
 		var newFrames = 0;
 		for (var i = 1; i < window.Count; i++)
 		{
-			if (window[i].P.Sequence != window[i - 1].P.Sequence)
+			if (counted[i] && window[i].P.Sequence != window[i - 1].P.Sequence)
 			{
 				newFrames++;
 			}
 		}
-		result.NewFps = result.MotionMs > 0 ? newFrames * 1000.0 / result.MotionMs : 0;
+		result.NewFps = activeMs > 0 ? newFrames * 1000.0 / activeMs : 0;
 		result.IntervalP50 = period;
 		result.IntervalP95 = Percentile(sortedIntervals, 0.95);
 		result.IntervalP99 = Percentile(sortedIntervals, 0.99);
-		result.IntervalMax = sortedIntervals[^1];
+		result.IntervalMax = sortedIntervals.Length > 0 ? sortedIntervals[^1] : 0;
 		result.LongFrames = intervals.Count(x => x > period * 1.5);
 		result.HostStalls = intervals.Count(static x => x > 250);
 
@@ -226,6 +260,11 @@ internal sealed class ScrollSmoothnessProbe
 		var residuals = new List<double>(window.Count);
 		for (var i = 1; i < window.Count; i++)
 		{
+			if (!counted[i])
+			{
+				continue;
+			}
+
 			var (p, r) = window[i];
 			var (pp, pr) = window[i - 1];
 			var step = Axis(r) - Axis(pr);
@@ -252,7 +291,10 @@ internal sealed class ScrollSmoothnessProbe
 		// remains is uneven motion as the eye sees it: offsets sampled at the wrong time, dropped or doubled steps.
 		for (var i = 2; i + 2 < window.Count; i++)
 		{
-			residuals.Add(QuadraticResidual(window, i, Axis));
+			if (counted[i - 1] && counted[i] && counted[i + 1] && counted[i + 2])
+			{
+				residuals.Add(QuadraticResidual(window, i, Axis));
+			}
 		}
 
 		if (residuals.Count > 0)
