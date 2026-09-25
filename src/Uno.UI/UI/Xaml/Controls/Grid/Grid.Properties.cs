@@ -8,7 +8,6 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
-using View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -119,9 +118,9 @@ namespace Microsoft.UI.Xaml.Controls
 		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
 		public static DependencyProperty RowProperty { get; } = CreateRowProperty();
 
-		public static int GetRow(View view) => GetRowValue(view);
+		public static int GetRow(FrameworkElement element) => GetRowValue(element);
 
-		public static void SetRow(View view, int row) => SetRowValue(view, row);
+		public static void SetRow(FrameworkElement element, int value) => SetRowValue(element, value);
 
 		private static void OnRowChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
@@ -136,9 +135,9 @@ namespace Microsoft.UI.Xaml.Controls
 		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
 		public static DependencyProperty ColumnProperty { get; } = CreateColumnProperty();
 
-		public static int GetColumn(View view) => GetColumnValue(view);
+		public static int GetColumn(FrameworkElement element) => GetColumnValue(element);
 
-		public static void SetColumn(View view, int column) => SetColumnValue(view, column);
+		public static void SetColumn(FrameworkElement element, int value) => SetColumnValue(element, value);
 
 		private static void OnColumnChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
@@ -154,16 +153,16 @@ namespace Microsoft.UI.Xaml.Controls
 		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
 		public static DependencyProperty RowSpanProperty { get; } = CreateRowSpanProperty();
 
-		public static int GetRowSpan(View view) => GetRowSpanValue(view as UIElement);
+		public static int GetRowSpan(FrameworkElement element) => GetRowSpanValue(element);
 
-		public static void SetRowSpan(View view, int rowSpan)
+		public static void SetRowSpan(FrameworkElement element, int value)
 		{
-			if (rowSpan <= 0)
+			if (value <= 0)
 			{
-				throw new ArgumentException("The value must be above zero", nameof(rowSpan));
+				throw new ArgumentException("The value must be above zero", nameof(value));
 			}
 
-			SetRowSpanValue(view as UIElement, rowSpan);
+			SetRowSpanValue(element, value);
 		}
 
 		private static void OnRowSpanChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
@@ -179,16 +178,16 @@ namespace Microsoft.UI.Xaml.Controls
 		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
 		public static DependencyProperty ColumnSpanProperty { get; } = CreateColumnSpanProperty();
 
-		public static int GetColumnSpan(View view) => GetColumnSpanValue(view as UIElement);
+		public static int GetColumnSpan(FrameworkElement element) => GetColumnSpanValue(element);
 
-		public static void SetColumnSpan(View view, int columnSpan)
+		public static void SetColumnSpan(FrameworkElement element, int value)
 		{
-			if (columnSpan <= 0)
+			if (value <= 0)
 			{
-				throw new ArgumentException("The value must be above zero", nameof(columnSpan));
+				throw new ArgumentException("The value must be above zero", nameof(value));
 			}
 
-			SetColumnSpanValue(view as UIElement, columnSpan);
+			SetColumnSpanValue(element, value);
 		}
 
 		private static void OnColumnSpanChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
