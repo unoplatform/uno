@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Transactions;
 using System.Xml;
 using Mono.Cecil;
 using Mono.Collections.Generic;
+using Uno.NUnitTransformTool;
 
 namespace Uno.ReferenceImplComparer
 {
@@ -24,7 +26,69 @@ namespace Uno.ReferenceImplComparer
 					return ListFailedTests(args[1], args[2]);
 				case "fail-empty":
 					return FailOnEmptyResults(args[1]);
+				case "rerun-filter":
+					return WriteRerunFilter(args[1], int.Parse(args[2], CultureInfo.InvariantCulture), args[3]);
+				case "merge-rerun":
+					return MergeRerunResults(args[1], args[2], args[3]);
 			}
+
+			return 0;
+		}
+
+		private static XmlDocument LoadResults(string inputFile)
+		{
+			var doc = new XmlDocument();
+			doc.LoadXml(File.ReadAllText(inputFile));
+			return doc;
+		}
+
+		/// <summary>
+		/// Writes the base64 runtime tests filter of the failed tests to <paramref name="outputFile"/>, only when
+		/// there are between 1 and <paramref name="maxFailures"/> of them: more is a real break, not worth re-running.
+		/// </summary>
+		private static int WriteRerunFilter(string inputFile, int maxFailures, string outputFile)
+		{
+			File.Delete(outputFile);
+
+			var failedTests = RuntimeTestsRerun.GetFailedTestNames(LoadResults(inputFile));
+
+			if (failedTests.Count == 0)
+			{
+				Console.WriteLine($"No failed tests in {inputFile}, nothing to re-run.");
+			}
+			else if (failedTests.Count > maxFailures)
+			{
+				Console.WriteLine($"{failedTests.Count} failed tests in {inputFile}, more than the {maxFailures} worth re-running.");
+			}
+			else
+			{
+				Console.WriteLine($"Re-running {failedTests.Count} failed tests from {inputFile}.");
+
+				var filter = RuntimeTestsRerun.GetFailedTestsFilter(failedTests);
+				File.WriteAllText(outputFile, Convert.ToBase64String(Encoding.UTF8.GetBytes(filter)));
+			}
+
+			return 0;
+		}
+
+		private static int MergeRerunResults(string originalFile, string rerunFile, string outputFile)
+		{
+			var original = LoadResults(originalFile);
+			var result = RuntimeTestsRerun.Merge(original, LoadResults(rerunFile));
+
+			foreach (var test in result.Recovered)
+			{
+				Console.WriteLine($"##vso[task.logissue type=warning]Flaky test: {test} failed, then passed when re-run in a fresh app process.");
+			}
+
+			foreach (var test in result.StillFailing)
+			{
+				Console.WriteLine($"Still failing after the re-run: {test}");
+			}
+
+			Console.WriteLine($"The re-run recovered {result.Recovered.Count} of {result.Recovered.Count + result.StillFailing.Count} failed tests.");
+
+			original.Save(outputFile);
 
 			return 0;
 		}
@@ -52,25 +116,7 @@ namespace Uno.ReferenceImplComparer
 
 		private static int ListFailedTests(string inputFile, string outputFile)
 		{
-			var doc = new XmlDocument();
-			doc.LoadXml(File.ReadAllText(inputFile));
-
-			var failedNodes = doc.SelectNodes("//test-case[@result='Failed']")!;
-
-			var failedTests = new List<string>();
-			foreach (var failedNode in failedNodes.OfType<XmlElement>())
-			{
-				var name = failedNode.GetAttribute("fullname");
-
-				// This is used to remove the test parameters from the test name, which are not used by the nunit-console runner.
-				var simpleName = SimpleNameRegex().Replace(name, "");
-
-				failedTests.Add(simpleName);
-			}
-
-			// Parameterized cases collapse onto the same name once the arguments are stripped, so the
-			// same test would otherwise be listed -- and re-run -- once per failing case.
-			var distinctTests = failedTests.Distinct().ToList();
+			var distinctTests = RuntimeTestsRerun.GetFailedTestNames(LoadResults(inputFile));
 
 			// Reported before the sentinel is appended, so the count is the number of real failures,
 			// and named so the retry decision can be made from this log even when the results file
@@ -82,18 +128,9 @@ namespace Uno.ReferenceImplComparer
 				Console.WriteLine($"  {failedTest}");
 			}
 
-			// Add a dummy line to be used to rerun the test running in case 
-			// tests get canceled. This condition happens when running nunit-console
-			// and the retry attribute which markes runners as cancelled and fails any
-			// subsequent test.
-			distinctTests.Add("invalid-test-for-retry");
-
-			File.WriteAllText(outputFile, string.Join(" | ", distinctTests));
+			File.WriteAllText(outputFile, RuntimeTestsRerun.GetFailedTestsFilter(distinctTests));
 
 			return 0;
 		}
-
-		[GeneratedRegex(@"\(([^)]*)\)")]
-		private static partial Regex SimpleNameRegex();
 	}
 }
