@@ -576,6 +576,58 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_ScrollBarThumbDragged_Then_ViewChangedIsIntermediateUntilRelease()
+	{
+		// WinUI puts the whole thumb drag in an "intermediate view changed mode"
+		// (ScrollViewer_Partial.cpp: EnterIntermediateViewChangedMode on ScrollEventType_ThumbTrack)
+		// so each drag tick raises ViewChanged(IsIntermediate=true) and skips arrange/snap; only the
+		// release (EndScroll) raises the final, non-intermediate ViewChanged. Guards
+		// ScrollViewer.OnVerticalScrollBarScrolled routing ThumbTrack through ChangeViewCore's
+		// isIntermediate flag.
+		var sut = CreateMixedTemplateSut(itemCount: 150, viewport: new Size(360, 600));
+		await LoadAsync(sut);
+
+		var verticalScrollBar = sut.Scroller.ElementVerticalScrollBar;
+		verticalScrollBar.Should().NotBeNull("the vertical scrollbar must be materialized to drive its Scroll handler.");
+
+		var intermediateFlags = new List<bool>();
+		sut.Scroller.ViewChanged += (_, e) => intermediateFlags.Add(e.IsIntermediate);
+
+		for (var i = 1; i <= 5; i++)
+		{
+			sut.Scroller.OnVerticalScrollBarScrolled(
+				verticalScrollBar,
+				new Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs
+				{
+					ScrollEventType = Microsoft.UI.Xaml.Controls.Primitives.ScrollEventType.ThumbTrack,
+					NewValue = i * 20.0,
+				});
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		intermediateFlags.Should().NotBeEmpty("each ThumbTrack tick must raise ViewChanged");
+		intermediateFlags.Should().OnlyContain(f => f,
+			"every ThumbTrack tick must be marked IsIntermediate, matching WinUI's intermediate view-changed mode");
+
+		intermediateFlags.Clear();
+		sut.Scroller.OnVerticalScrollBarScrolled(
+			verticalScrollBar,
+			new Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs
+			{
+				// Must differ from the last ThumbTrack value (100.0): Set() only raises ViewChanged
+				// when the offset actually moves, so an EndScroll at the same value as the last tick
+				// would raise nothing and tell us nothing about the intermediate flag.
+				ScrollEventType = Microsoft.UI.Xaml.Controls.Primitives.ScrollEventType.EndScroll,
+				NewValue = 120.0,
+			});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		intermediateFlags.Should().Contain(f => !f,
+			"releasing the thumb (EndScroll) must raise a final, non-intermediate ViewChanged");
+	}
+
+	[TestMethod]
 	public async Task When_EffectiveViewportShiftIsSubPixel_Then_MeasureIsSkipped()
 	{
 		// WinUI tolerates viewport jitter below 0.01px (ViewportManagerWithPlatformFeatures.cpp,
