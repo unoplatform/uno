@@ -21,6 +21,7 @@ mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`
+	UNO_RERUN_FIRST_PASS=false
 
 	# echo the failed filter list, if not empty
 	if [ -n "$UITEST_RUNTIME_TESTS_FILTER" ]; then
@@ -40,6 +41,21 @@ if [ "$USE_XVFB" = "true" ]; then
 	xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.dll --runtime-tests=$TEST_RESULTS_FILE' || true # sometimes we crash during app shutdown, so we're forcing a 0 exit code
 else
 	dotnet SamplesApp.dll --runtime-tests=$TEST_RESULTS_FILE || true
+fi
+
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/runtime-tests-rerun.sh
+
+if uno_rerun_prepare "$TEST_RESULTS_FILE" 0; then
+	RERUN_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-linux${UNO_TEST_RESULT_LABEL}-runtime-tests-rerun.xml
+	export UITEST_RUNTIME_TESTS_FILTER=$UNO_RERUN_FILTER
+
+	if [ "$USE_XVFB" = "true" ]; then
+		uno_rerun_run xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.dll --runtime-tests="$0"' "$RERUN_RESULTS_FILE"
+	else
+		uno_rerun_run dotnet SamplesApp.dll --runtime-tests=$RERUN_RESULTS_FILE
+	fi
+
+	uno_rerun_merge "$TEST_RESULTS_FILE" "$RERUN_RESULTS_FILE"
 fi
 
 ## Export the failed tests list for reuse in a pipeline retry

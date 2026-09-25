@@ -22,6 +22,7 @@ mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -b 0`
+	UNO_RERUN_FIRST_PASS=false
 
 	# echo the failed filter list, if not empty
 	if [ -n "$UITEST_RUNTIME_TESTS_FILTER" ]; then
@@ -41,6 +42,16 @@ export DOTNET_CreateDumpLogToFile="$BUILD_SOURCESDIRECTORY/build/uitests-failure
 export DOTNET_EnableCrashReport=1
 
 dotnet SamplesApp.dll --runtime-tests=$TEST_RESULTS_FILE
+
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/runtime-tests-rerun.sh
+
+if uno_rerun_prepare "$TEST_RESULTS_FILE" 0; then
+	RERUN_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-macos-runtime-tests-rerun.xml
+	export UITEST_RUNTIME_TESTS_FILTER=$UNO_RERUN_FILTER
+
+	uno_rerun_run dotnet SamplesApp.dll --runtime-tests=$RERUN_RESULTS_FILE
+	uno_rerun_merge "$TEST_RESULTS_FILE" "$RERUN_RESULTS_FILE"
+fi
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
