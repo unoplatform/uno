@@ -278,9 +278,37 @@ public class Given_Compositor
 		var (animation, start) = StartSecondsAnimation(compositor);
 		try
 		{
-			compositor.FrameTimestampInTicks = start + 250 * TimeSpan.TicksPerSecond;
+			var firstFrame = start + TimeSpan.TicksPerSecond;
+			compositor.FrameTimestampInTicks = firstFrame;
+			animation.Evaluate();
 
+			compositor.FrameTimestampInTicks = firstFrame + 250 * TimeSpan.TicksPerSecond;
 			Assert.AreEqual(250f, (float)animation.Evaluate(), 0.01f, "the animation should be evaluated at the frame's timestamp");
+		}
+		finally
+		{
+			compositor.FrameTimestampInTicks = null;
+			animation.Stop();
+		}
+	}
+
+	/// <summary>
+	/// Like a composition commit, an animation starts at the first frame that shows it: one started between frames
+	/// must not show the time since it was requested in that frame, which for an ease-out is a large first step.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Started_Between_Frames_Then_First_Frame_Shows_Its_Start()
+	{
+		var compositor = Compositor.GetSharedCompositor();
+		var (animation, start) = StartSecondsAnimation(compositor);
+		try
+		{
+			compositor.FrameTimestampInTicks = start + 30 * TimeSpan.TicksPerMillisecond;
+			Assert.AreEqual(0f, (float)animation.Evaluate(), 0.0001f, "the first frame should show the animation's start");
+
+			compositor.FrameTimestampInTicks = start + 40 * TimeSpan.TicksPerMillisecond;
+			Assert.AreEqual(0.01f, (float)animation.Evaluate(), 0.0001f, "the next frame should have moved by one frame's worth");
 		}
 		finally
 		{
@@ -301,6 +329,9 @@ public class Given_Compositor
 		var (animation, start) = StartSecondsAnimation(compositor);
 		try
 		{
+			compositor.FrameTimestampInTicks = start;
+			animation.Evaluate();
+
 			compositor.FrameTimestampInTicks = start + 250 * TimeSpan.TicksPerSecond;
 			animation.Evaluate();
 
