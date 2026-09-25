@@ -38,7 +38,6 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 	private volatile bool _renderRequested;
 	private volatile bool _surfaceReady;
 	private volatile bool _disposed;
-	private bool _firstFrameSignaled;
 	private int _width, _height;
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private IntPtr _nativeWindow; // Must stay alive while the Vulkan surface references it
@@ -262,10 +261,8 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 
-			if (!_firstFrameSignaled)
+			if (NativeWindowWrapper.Instance.TryReleaseFirstFrameGate())
 			{
-				_firstFrameSignaled = true;
-				NativeWindowWrapper.Instance.NotifyFirstFrameRendered();
 				// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
 				ApplicationActivity.RelativeLayout?.Post(() =>
 					ApplicationActivity.RelativeLayout?.Invalidate());

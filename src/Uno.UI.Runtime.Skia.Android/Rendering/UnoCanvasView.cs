@@ -140,8 +140,6 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 	// and modified to also add rendering without OpenGL
 	private class InternalRenderer() : Java.Lang.Object, IRenderer
 	{
-		private bool _firstFrameSignaled;
-
 		private ISwapChain? _context;
 		private IDrawingFactory? _renderer;
 
@@ -165,10 +163,8 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 
-			if (!_firstFrameSignaled)
+			if (NativeWindowWrapper.Instance.TryReleaseFirstFrameGate())
 			{
-				_firstFrameSignaled = true;
-				NativeWindowWrapper.Instance.NotifyFirstFrameRendered();
 				// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
 				ApplicationActivity.RelativeLayout?.Post(() =>
 					ApplicationActivity.RelativeLayout?.Invalidate());
