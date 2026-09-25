@@ -70,12 +70,38 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			PreferredFramesPerSecond = fps;
 
 			this.LogDebug()?.LogDebug($"UnoMetalView: {nameof(PreferredFramesPerSecond)} = {fps}");
+			ReportIfCappedAt60Hz(fps);
 
 			Device = device;
 
 			Delegate = this;
 
 			StartRenderThread();
+		}
+
+		private static int _highRefreshRateCapReported;
+
+		/// <summary>
+		/// iPhones only render above 60 Hz when Info.plist sets CADisableMinimumFrameDurationOnPhone, so without it a
+		/// ProMotion iPhone silently stays at 60 Hz. Explains that once per process.
+		/// </summary>
+		private void ReportIfCappedAt60Hz(nint maximumFps)
+		{
+			if (maximumFps <= 60
+				|| UIDevice.CurrentDevice.UserInterfaceIdiom != UIUserInterfaceIdiom.Phone
+				|| NSBundle.MainBundle.ObjectForInfoDictionary("CADisableMinimumFrameDurationOnPhone") is NSNumber { BoolValue: true }
+				|| Interlocked.Exchange(ref _highRefreshRateCapReported, 1) != 0)
+			{
+				return;
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info(
+					$"This iPhone can display {maximumFps} Hz, but rendering is capped at 60 Hz because Info.plist does not set " +
+					"CADisableMinimumFrameDurationOnPhone to true. Uno.Sdk projects get it by default unless UnoDisableHighRefreshRate " +
+					"is set; other projects can add the key to Info.plist.");
+			}
 		}
 
 		private void StartRenderThread()
