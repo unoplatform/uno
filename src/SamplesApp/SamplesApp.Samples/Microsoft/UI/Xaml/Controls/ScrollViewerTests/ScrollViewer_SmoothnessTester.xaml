@@ -12,14 +12,48 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ToggleButton
-            x:Name="ShowIndexToggle"
+        <StackPanel
             Margin="8"
-            Click="ShowIndexToggle_Click"
-            Content="Show index labels" />
-        <muxc:TabView Grid.Row="1" IsAddTabButtonVisible="False">
+            Orientation="Horizontal"
+            Spacing="8">
+            <ToggleButton
+                x:Name="ShowIndexToggle"
+                Click="ShowIndexToggle_Click"
+                Content="Show index labels" />
+            <ComboBox x:Name="ScenarioPicker" MinWidth="140" />
+            <Button
+                x:Name="RunScenarioButton"
+                Click="RunScenario_Click"
+                Content="Run" />
+            <Button
+                x:Name="RunAllButton"
+                Click="RunAll_Click"
+                Content="Run all" />
+            <ToggleButton
+                x:Name="RecordToggle"
+                Click="RecordToggle_Click"
+                Content="Record manual scroll" />
+            <Button Click="CopyResults_Click" Content="Copy JSON" />
+        </StackPanel>
+        <TextBox
+            x:Name="ResultsText"
+            Grid.Row="1"
+            Height="160"
+            Margin="8,0,8,8"
+            AcceptsReturn="True"
+            FontFamily="Consolas"
+            FontSize="11"
+            IsReadOnly="True"
+            PlaceholderText="Pick a tab, then Run a scenario: the synthetic input and the frame probe measure the scroller in the selected tab."
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            TextWrapping="NoWrap" />
+        <muxc:TabView
+            x:Name="Tabs"
+            Grid.Row="2"
+            IsAddTabButtonVisible="False">
             <muxc:TabViewItem Header="StackPanel - Vertical" IsClosable="False">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <StackPanel
@@ -79,6 +113,37 @@
                         </muxc:ItemsRepeater.ItemTemplate>
                     </muxc:ItemsRepeater>
                 </ScrollViewer>
+            </muxc:TabViewItem>
+            <muxc:TabViewItem Header="ScrollView - Vertical" IsClosable="False">
+                <muxc:ScrollView HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled">
+                    <StackPanel
+                        x:Name="ScrollViewStack"
+                        Orientation="Vertical"
+                        Spacing="4" />
+                </muxc:ScrollView>
+            </muxc:TabViewItem>
+            <muxc:TabViewItem Header="ScrollView - ItemsRepeater" IsClosable="False">
+                <muxc:ScrollView HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled">
+                    <muxc:ItemsRepeater x:Name="ScrollViewRepeaterHost">
+                        <muxc:ItemsRepeater.Layout>
+                            <muxc:StackLayout Orientation="Vertical" Spacing="4" />
+                        </muxc:ItemsRepeater.Layout>
+                        <muxc:ItemsRepeater.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Width="300" Height="300">
+                                    <Rectangle Fill="{Binding Brush}" />
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="24"
+                                        Foreground="White"
+                                        Text="{Binding Index}"
+                                        Visibility="{Binding IndexLabelVisibility, ElementName=PageRoot}" />
+                                </Grid>
+                            </DataTemplate>
+                        </muxc:ItemsRepeater.ItemTemplate>
+                    </muxc:ItemsRepeater>
+                </muxc:ScrollView>
             </muxc:TabViewItem>
         </muxc:TabView>
     </Grid>
