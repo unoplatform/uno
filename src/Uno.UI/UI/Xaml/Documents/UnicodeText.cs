@@ -137,6 +137,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly List<(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations)> _runBreaks;
 	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 	private readonly Size _availableSize;
+	private readonly bool _isHeightTruncated;
 
 	internal unsafe UnicodeText(
 		Size availableSize,
@@ -266,6 +267,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			calculatedSize = new Size(0, emptyHeight);
 			_firstLineBaseline = emptyBaseline;
 			_availableSize = availableSize;
+			_isHeightTruncated = false;
 			_xyTable = [];
 			_indexToCluster = [];
 			_clustersInLogicalOrder = [];
@@ -559,6 +561,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		var textEndsInLineBreak = IsLineBreak(_text, _text.Length);
+		var heightTruncated = false;
 		float totalHeight = 0;
 		int nextTrimPointLookupStart = 0;
 		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
@@ -571,7 +574,9 @@ internal readonly partial struct UnicodeText : IParsedText
 					? GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight
 					: 0;
 			var actualLineCount = lines.Count + (textEndsInLineBreak ? 1 : 0);
-			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1) || (lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height);
+			var droppedByHeight = lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height;
+			heightTruncated |= droppedByHeight;
+			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1) || droppedByHeight;
 
 			var lineWidth = line.width;
 			LinkedListNode<Cluster> lastClusterIncludedInLine = line.clusterLast;
@@ -800,6 +805,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		_corrections = isSpellCheckEnabled ? _spellCheckingService.Value?.SpellCheck(WordBoundaries, _text) : null;
 		calculatedSize = new Size(maxLineWidth, totalHeight);
 		_availableSize = availableSize;
+		_isHeightTruncated = heightTruncated;
 	}
 
 	// Printable ASCII (plus tab) has no mandatory line breaks and needs no ICU break analysis for NoWrap text.
@@ -815,6 +821,13 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		return true;
 	}
+
+	/// <summary>
+	/// True when at least one line was dropped because it did not fit in the available height.
+	/// Mirrors WinUI's <c>m_pBreak != nullptr</c> test in <c>BlockNode::CanBypassMeasure</c>: a layout
+	/// that was cut short by the height constraint can only be reused at the very same height.
+	/// </summary>
+	internal bool IsHeightTruncated => _isHeightTruncated;
 
 	private static IEnumerable<LinkedListNode<Cluster>> EnumeratePossibleCharacterTrimmingBreaks(Line line)
 	{
