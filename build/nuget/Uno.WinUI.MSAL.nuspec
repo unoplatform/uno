@@ -10,6 +10,7 @@
 		<description>This package provides the extensions to MSAL (Microsoft.Identity.Client) for an Uno Platform application.</description>
 		<copyright>Uno Platform</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+		<!-- One group per lib folder, so consumers resolve an exact match instead of the nearest compatible one. -->
 		<dependencies>
 			<group targetFramework="net10.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
@@ -26,7 +27,15 @@
 			</group>
 			END UWP-specific -->
 
-			<group targetFramework="net10.0-android36.0">
+			<!-- BEGIN WinUI-specific -->
+			<!-- The Windows flavour builds against WinAppSDK rather than Uno.WinUI. -->
+			<group targetFramework="net10.0-windows10.0.19041.0">
+				<dependency id="Microsoft.WindowsAppSDK" version="2.4.0" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
+			</group>
+			<!-- END WinUI-specific -->
+
+			<group targetFramework="net10.0-android">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
@@ -38,7 +47,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
-			<group targetFramework="net11.0-android37.0">
+			<group targetFramework="net11.0-android">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>

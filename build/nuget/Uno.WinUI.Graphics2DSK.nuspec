@@ -10,8 +10,13 @@
 		<description>This package provides 2D graphics extensions for an Uno Platform application.</description>
 		<copyright>Uno Platform</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+		<!-- One group per lib folder: the netX.0 assembly also serves the mobile heads, which resolve the netX.0 group. -->
 		<dependencies>
 			<group targetFramework="net10.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="SkiaSharp" version="4.151.1" />
+			</group>
+			<group targetFramework="net11.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="SkiaSharp" version="4.151.1" />
 			</group>
@@ -20,29 +25,9 @@
 				<dependency id="Microsoft.WindowsAppSDK" version="2.4.0" />
 				<dependency id="SkiaSharp" version="4.151.1" />
 			</group>
-
-			<group targetFramework="net10.0-android36.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="4.151.1" />
-			</group>
-			<group targetFramework="net11.0-android37.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="4.151.1" />
-			</group>
-			<group targetFramework="net10.0-ios26.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="4.151.1" />
-			</group>
-			<group targetFramework="net11.0-ios26.5">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="4.151.1" />
-			</group>
-			<group targetFramework="net10.0-tvos26.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="4.151.1" />
-			</group>
-			<group targetFramework="net11.0-tvos26.5">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+			<!-- Without it, NuGet prefers the net11.0 group (Uno.WinUI) on a net11.0-windows head. -->
+			<group targetFramework="net11.0-windows10.0.19041.0">
+				<dependency id="Microsoft.WindowsAppSDK" version="2.4.0" />
 				<dependency id="SkiaSharp" version="4.151.1" />
 			</group>
 		</dependencies>
@@ -55,6 +40,8 @@
 		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Uno.WinUI.Graphics2DSK.Crossruntime\Release\net11.0\Uno.WinUI.Graphics2DSK.*" target="lib\net11.0" />
 
 		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Uno.WinUI.Graphics2DSK.Windows\Release\net10.0-windows10.0.19041.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-windows10.0.19041.0" />
+		<!-- Duplicated so a net11.0-windows head picks the WinAppSDK build over lib\net11.0 (the Skia one). -->
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Uno.WinUI.Graphics2DSK.Windows\Release\net10.0-windows10.0.19041.0\Uno.WinUI.Graphics2DSK.*" target="lib\net11.0-windows10.0.19041.0" />
 	</files>
 
 </package>
