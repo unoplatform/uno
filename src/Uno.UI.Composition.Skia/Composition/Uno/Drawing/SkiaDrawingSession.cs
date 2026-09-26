@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Composition;
 using SkiaSharp;
 using Windows.Foundation;
@@ -19,6 +20,10 @@ internal class SkiaDrawingSession : IDrawingSession
 	// fully reconfigures it from the verb's arguments, so no state leaks between draws.
 	[ThreadStatic]
 	private static SKPaint? _sparePaint;
+
+	// Build() resets the builder, so one per drawing thread is reused for every glyph run.
+	[ThreadStatic]
+	private static SKTextBlobBuilder? _textBlobBuilder;
 
 	// Recording happens on the render/UI thread and can nest (a subtree recording contains per-visual
 	// content recordings), so recorders are pooled per thread and rented/returned around each recording.
@@ -159,6 +164,29 @@ internal class SkiaDrawingSession : IDrawingSession
 	{
 		using var lease = SkiaGeometryInterop.Lease(geometry);
 		_canvas.DrawPath(lease.Path, FillPaint(color));
+	}
+
+	public bool TryDrawGlyphRun(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color)
+	{
+		if (font is not SkiaFont skiaFont)
+		{
+			return false;
+		}
+
+		if (glyphs.IsEmpty)
+		{
+			return true;
+		}
+
+		var builder = _textBlobBuilder ??= new SKTextBlobBuilder();
+		builder.AddPositionedRun(glyphs, skiaFont.NativeFont, MemoryMarshal.Cast<Vector2, SKPoint>(positions));
+		using var blob = builder.Build();
+		if (blob is not null)
+		{
+			_canvas.DrawText(blob, 0, baselineY, FillPaint(color));
+		}
+
+		return true;
 	}
 
 	public void DrawPaths(ReadOnlySpan<PathInstance> instances, Color color)

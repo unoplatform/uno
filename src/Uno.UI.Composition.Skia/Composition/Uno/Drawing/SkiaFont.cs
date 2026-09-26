@@ -48,6 +48,8 @@ internal sealed class SkiaFont : IFont
 
 	public bool HasColorGlyphs { get; }
 
+	internal SKFont NativeFont => _font;
+
 	public float Ascent => _metrics.Ascent;
 
 	public float Descent => _metrics.Descent;
