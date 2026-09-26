@@ -1128,6 +1128,7 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresScaling(1f)]
 	public async Task When_Grid_RowCollection_Changes()
 	{
 		var SUT = new Grid();
@@ -1176,6 +1177,7 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresScaling(1f)]
 	public async Task When_Grid_ColumnCollection_Changes()
 	{
 		using var _ = new AssertionScope();
