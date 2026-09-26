@@ -65,7 +65,7 @@ namespace TestRepro
 						)
 						,
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
-							new Microsoft.UI.Xaml.ElementStub( () => 
+							new Microsoft.UI.Xaml.ElementStub(() => 
 							new global::Microsoft.UI.Xaml.Controls.Border
 							{
 								IsParsing = true,

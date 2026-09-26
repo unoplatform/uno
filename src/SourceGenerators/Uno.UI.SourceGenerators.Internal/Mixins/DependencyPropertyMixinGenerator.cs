@@ -131,17 +131,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-#if __APPLE_UIKIT__
-using Color = UIKit.UIColor;
-using View = UIKit.UIView;
-#elif __ANDROID__
-using Color = Android.Resource.Color;
-using View = Android.Views.View;
-#elif IS_UNIT_TESTS || UNO_REFERENCE_API
-using Color = System.Object;
-using View = Microsoft.UI.Xaml.FrameworkElement;
-#endif";
+using Microsoft.UI.Xaml.Controls.Primitives;";
 
 	#region Data Model
 
@@ -211,17 +201,6 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 					"VerticalAlignment.Center",
 					frameworkPropertyOption: "AffectsArrange"),
 			}),
-			new ClassDefinition("Picker", "__IOS__", "public", new[]
-			{
-				new PropertyDefinition("ItemsSource", "object", "null"),
-				new PropertyDefinition("SelectedItem", "object", "null"),
-				new PropertyDefinition("SelectedIndex", "int", "-1"),
-				new PropertyDefinition("ItemTemplate", "DataTemplate", "null", frameworkPropertyOption: "ValueDoesNotInheritDataContext"),
-				new PropertyDefinition("ItemContainerStyle", "Style", "null", frameworkPropertyOption: "ValueDoesNotInheritDataContext"),
-				new PropertyDefinition("ItemTemplateSelector", "DataTemplateSelector", "null"),
-				new PropertyDefinition("DisplayMemberPath", "string", "string.Empty"), // TODO: Move to ItemsControl
-				new PropertyDefinition("Placeholder", "object", "null"),
-			}),
 			new ClassDefinition("ComboBox", "true", "public", new[]
 			{
 				new PropertyDefinition("PlaceholderText", "string", "string.Empty"),
@@ -250,7 +229,6 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 				new PropertyDefinition("GroupHeaderPlacement", "GroupHeaderPlacement", "GroupHeaderPlacement.Top"),
 				new PropertyDefinition("GroupPadding", "Thickness", "Thickness.Empty"),
 				new PropertyDefinition("Orientation", "Orientation", "Orientation.Vertical"),
-				new PropertyDefinition("CacheLength", "double", "4.0", condition: "__ANDROID__"),
 			}),
 			// https://msdn.microsoft.com/library/windows/apps/windows.ui.xaml.controls.itemswrapgrid.aspx
 			new ClassDefinition("ItemsWrapGrid", "true", "public", new[]
@@ -262,7 +240,6 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 				new PropertyDefinition("ItemWidth", "double", "Double.NaN"),
 				new PropertyDefinition("Orientation", "Orientation", "Orientation.Vertical"),
 				new PropertyDefinition("MaximumRowsOrColumns", "int", "-1"),
-				new PropertyDefinition("CacheLength", "double", "4.0", condition: "__ANDROID__"),
 			}),
 			new ClassDefinition("VirtualizingPanelLayout", "true", "public", new[]
 			{
@@ -270,16 +247,6 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 				new PropertyDefinition("GroupHeaderPlacement", "GroupHeaderPlacement", "GroupHeaderPlacement.Top"),
 				new PropertyDefinition("GroupPadding", "Thickness", "Thickness.Empty"),
 				new PropertyDefinition("CacheLength", "double", "4.0"),
-			}),
-			// ItemsWrapGridLayout only derives from DependencyObject (via VirtualizingPanelLayout) in the native
-			// (!UNO_REFERENCE_API) build. UNO_REFERENCE_API is defined for Skia, WebAssembly and Reference, where
-			// ItemsWrapGridLayout is a baseless type, so the mixin must match that availability to avoid generating
-			// DependencyObject plumbing on a non-DO type.
-			new ClassDefinition("ItemsWrapGridLayout", "!UNO_REFERENCE_API", "internal", new[]
-			{
-				new PropertyDefinition("ItemHeight", "double", "Double.NaN"),
-				new PropertyDefinition("ItemWidth", "double", "Double.NaN"),
-				new PropertyDefinition("MaximumRowsOrColumns", "int", "-1"),
 			}),
 			new ClassDefinition("DatePickerSelector", "true", "public", new[]
 			{
@@ -316,30 +283,6 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 				new PropertyDefinition("IsLightDismissEnabled", "bool", "false"),
 			}),
 		}),
-		new NamespaceDefinition("Uno.UI.Controls.Legacy", new[]
-		{
-			new ClassDefinition("ListViewBase", "__APPLE_UIKIT__", "public", new[]
-			{
-				new PropertyDefinition("DisplayMemberPath", "string", "string.Empty"),
-			}),
-			new ClassDefinition("ListView", "__ANDROID__", "public", new[]
-			{
-				new PropertyDefinition("DisplayMemberPath", "string", "string.Empty"),
-			}),
-			new ClassDefinition("HorizontalListView", "__ANDROID__", "public", new[]
-			{
-				new PropertyDefinition("DisplayMemberPath", "string", "string.Empty"),
-			}),
-			new ClassDefinition("GridView", "__ANDROID__", "public", new[]
-			{
-				new PropertyDefinition("DisplayMemberPath", "string", "string.Empty"),
-			}),
-			new ClassDefinition("HorizontalGridView", "__ANDROID__", "public", new[]
-			{
-				new PropertyDefinition("DisplayMemberPath", "string", "string.Empty"),
-			}),
-		}),
-		// The T4 ends with .Namespace("Microsoft.UI.Xaml.Controls.Primitives") which is empty — a no-op from the builder
 	};
 
 	#endregion
