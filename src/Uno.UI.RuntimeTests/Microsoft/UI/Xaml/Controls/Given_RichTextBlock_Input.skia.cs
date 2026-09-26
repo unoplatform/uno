@@ -396,6 +396,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24681")]
+		[DataRow(VirtualKeyModifiers.Shift)]
+		[DataRow(VirtualKeyModifiers.Menu)]
+		[Timeout(120_000)]
+		public async Task When_CommandA_With_Extra_Modifier_Is_Ignored(VirtualKeyModifiers extra)
+		{
+			var SUT = CreateSingleLine("Keyboard select all content");
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				var commandModifier = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, commandModifier | extra));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(string.Empty, SUT.SelectedText);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24681")]
+		[Timeout(120_000)]
+		public async Task When_CommandInsert_Copies_Selection()
+		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
+			var SUT = CreateSingleLine("Copy this text with the keyboard");
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+				SUT.SelectAll();
+				await ClipboardHelper.SeedDummyData();
+
+				var commandModifier = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Insert, commandModifier));
+				await WindowHelper.WaitForIdle();
+
+				var clipboard = await Clipboard.GetContent()!.GetTextAsync();
+				Assert.IsTrue(
+					clipboard.Contains("Copy this text with the keyboard"),
+					$"Command+Insert should copy the selected text to the clipboard (was '{clipboard}')");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 		[TestMethod]
 		[Timeout(120_000)]
 		public async Task When_CopySelectionToClipboard_Api_Copies_Across_Paragraphs()
