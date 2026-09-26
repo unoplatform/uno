@@ -13,8 +13,8 @@
 	"lib": [ "ES2018", "DOM", "DOM.Iterable" ]
   },
 	"include": [
-		"../Uno.UI/ts/types/**/*",
-		"../Uno.UI/ts/Windows/UI/Xaml/Controls/WebView.ts",
+		"../Uno.WinRT/ts/types/**/*",
+		"../Uno.UI.Composition.WebGpu/ts/Runtime/WebGpuInit.ts",
 		"ts/**/*",
 		"tsBindings/**/*"
 	]

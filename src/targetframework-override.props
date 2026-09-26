@@ -14,9 +14,19 @@
 		">true</_ShouldUseNoPlatformOverride>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<!-- 'desktop' and 'browserwasm' are Uno.Sdk *head* monikers: no library here has such a TFM,
+		     both being plainly Skia, so a head-shaped override (net10.0-desktop) has to select the
+		     platform-less TFM rather than be taken verbatim. Only SamplesApp.csproj, whose every TFM
+		     carries a platform, re-applies the moniker after importing this file. -->
+		<_UnoOverridePlatform>$([MSBuild]::GetTargetPlatformIdentifier('$(UnoTargetFrameworkOverride)'))</_UnoOverridePlatform>
+		<_UnoEffectiveTargetFrameworkOverride>$(UnoTargetFrameworkOverride)</_UnoEffectiveTargetFrameworkOverride>
+		<_UnoEffectiveTargetFrameworkOverride Condition="'$(_UnoOverridePlatform)' == 'desktop' OR '$(_UnoOverridePlatform)' == 'browserwasm'">net$([MSBuild]::GetTargetFrameworkVersion('$(UnoTargetFrameworkOverride)'))</_UnoEffectiveTargetFrameworkOverride>
+	</PropertyGroup>
+
 	<Import Condition="'$(_ShouldUseNoPlatformOverride)'=='true'" Project="targetframework-override-noplatform.props" />
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!='' AND '$(_ShouldUseNoPlatformOverride)' == 'false'">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+		<TargetFrameworks>$(_UnoEffectiveTargetFrameworkOverride)</TargetFrameworks>
 		<TargetFrameworks Condition="'$(TargetFrameworks)'=='$(NetPrevious)-ios' and '$(OutputType)'!='Exe'">$(NetPrevious)-ios$(NetPreviousAppleOSVersion)</TargetFrameworks>
 		<TargetFrameworks Condition="'$(TargetFrameworks)'=='$(NetCurrent)-ios' and '$(OutputType)'!='Exe'">$(NetCurrent)-ios$(NetCurrentAppleOSVersion)</TargetFrameworks>
 		<TargetFrameworks Condition="'$(TargetFrameworks)'=='$(NetPrevious)-tvos' and '$(OutputType)'!='Exe'">$(NetPrevious)-tvos$(NetPreviousAppleOSVersion)</TargetFrameworks>

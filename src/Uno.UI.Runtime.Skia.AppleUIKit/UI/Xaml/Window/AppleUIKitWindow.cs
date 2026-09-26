@@ -13,6 +13,14 @@ internal partial class AppleUIKitWindow : UIWindow
 {
 	internal event Action? FrameChanged;
 
+	internal AppleUIKitWindow()
+	{
+	}
+
+	internal AppleUIKitWindow(UIWindowScene scene) : base(scene)
+	{
+	}
+
 	public override CGRect Frame
 	{
 		get => base.Frame;

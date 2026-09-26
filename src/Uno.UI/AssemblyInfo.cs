@@ -3,7 +3,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Uno.Foundation.Diagnostics.CodeAnalysis;
 using Uno.Foundation.Extensibility;
-using Uno.UI.Graphics;
 
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
 [assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
@@ -13,12 +12,8 @@ using Uno.UI.Graphics;
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Lottie")]
-[assembly: InternalsVisibleTo("Uno.UI.Svg")]
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
 [assembly: InternalsVisibleTo("SamplesApp")]
-[assembly: InternalsVisibleTo("SamplesApp.Droid")]
-[assembly: InternalsVisibleTo("SamplesApp.macOS")]
-[assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.X11")]
@@ -40,7 +35,6 @@ using Uno.UI.Graphics;
 
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.MacOS")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Headless")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.X11")]
@@ -48,7 +42,5 @@ using Uno.UI.Graphics;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.WebAssembly.Browser")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
-[assembly: InternalsVisibleTo("SamplesApp.Skia.Generic")]
-[assembly: InternalsVisibleTo("SamplesApp.Skia.WebAssembly.Browser")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.HRApp.Skia")]
 [assembly: InternalsVisibleTo("Uno.WinUI.SpellChecking")]

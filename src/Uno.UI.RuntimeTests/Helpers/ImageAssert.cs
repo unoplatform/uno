@@ -12,6 +12,7 @@ using SamplesApp.UITests;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml;
 using Windows.Storage.Streams;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Foundation;
 
@@ -218,10 +219,38 @@ public static partial class ImageAssert
 	}
 
 	public static async Task AreEqualAsync(RawBitmap actual, RawBitmap expected)
+		=> await AreEqualAsync(actual, expected, tolerance: 0);
+
+	/// <summary>
+	/// Asserts the two bitmaps match pixel for pixel, allowing each channel to differ by at most
+	/// <paramref name="tolerance"/> (0 = identical). On failure the message says how many pixels differ and where.
+	/// </summary>
+	public static async Task AreEqualAsync(RawBitmap actual, RawBitmap expected, byte tolerance)
 	{
-		if (!await AreRenderTargetBitmapsEqualAsync(actual.Bitmap, expected.Bitmap))
+		var a = actual.Bitmap; var e = expected.Bitmap;
+		if (a.PixelWidth != e.PixelWidth || a.PixelHeight != e.PixelHeight)
 		{
-			Assert.Fail("The bitmaps are not the same");
+			Assert.Fail($"The bitmaps are not the same size: {a.PixelWidth}x{a.PixelHeight} vs {e.PixelWidth}x{e.PixelHeight}");
+		}
+		var ba = (await a.GetPixelsAsync()).ToArray();
+		var be = (await e.GetPixelsAsync()).ToArray();
+		int w = a.PixelWidth, h = a.PixelHeight, n = 0, minX = w, minY = h, maxX = -1, maxY = -1, maxD = 0;
+		var sb = new StringBuilder();
+		for (int y = 0; y < h; y++)
+		{
+			for (int x = 0; x < w; x++)
+			{
+				int i = (y * w + x) * 4, d = 0;
+				for (int c = 0; c < 4; c++) { d = Math.Max(d, Math.Abs(ba[i + c] - be[i + c])); }
+				if (d <= tolerance) { continue; }
+				n++; maxD = Math.Max(maxD, d);
+				minX = Math.Min(minX, x); minY = Math.Min(minY, y); maxX = Math.Max(maxX, x); maxY = Math.Max(maxY, y);
+				if (n <= 8) { sb.Append($" ({x},{y}) actual={ba[i + 2]},{ba[i + 1]},{ba[i]},{ba[i + 3]} expected={be[i + 2]},{be[i + 1]},{be[i]},{be[i + 3]};"); }
+			}
+		}
+		if (n > 0)
+		{
+			Assert.Fail($"The bitmaps are not the same: {n} pixel(s) differ by up to {maxD} in [{minX},{minY}]-[{maxX},{maxY}] of {w}x{h}:{sb}");
 		}
 	}
 

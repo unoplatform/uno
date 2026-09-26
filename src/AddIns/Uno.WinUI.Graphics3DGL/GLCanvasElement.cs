@@ -34,7 +34,7 @@ namespace Uno.WinUI.Graphics3DGL;
 /// </summary>
 /// <remarks>
 /// This is only available on WinUI and on skia-based targets running with hardware acceleration.
-/// This is currently available on the WPF, Win32, X11, macOS, and WebAssembly Skia targets (and WinUI).
+/// This is currently available on the Win32, X11, macOS, and WebAssembly Skia targets (and WinUI).
 /// </remarks>
 public abstract partial class GLCanvasElement : Grid, INativeContext
 {
@@ -106,6 +106,13 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// and logged — as a warning on the first occurrence, then at Debug level.
 	/// </remarks>
 	protected abstract void RenderOverride(GL gl);
+
+	/// <summary>
+	/// Called when this element cannot render because no usable OpenGL context is available: no wrapper for the
+	/// platform, a context below the required version, or a framebuffer that failed to build. An inheritor with
+	/// another way to draw switches to it here.
+	/// </summary>
+	protected virtual void OnGLUnavailable() { }
 
 	/// <param name="getWindowFunc">A function that returns the Window object that this element belongs to. This parameter is only used on WinUI. On Uno Platform, it can be set to null.</param>
 #if WINAPPSDK
@@ -264,10 +271,10 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private class GLVisual(GLCanvasElement owner, Compositor compositor) : BorderVisual(compositor)
 	{
-		internal override SkiaSharp.SKPath? Paint(in PaintingSession session)
+		internal override void Paint(in PaintingSession session)
 		{
 			NativeDispatcher.Main.Enqueue(owner.Render, NativeDispatcherPriority.High);
-			return base.Paint(session);
+			base.Paint(session);
 		}
 	}
 #endif
@@ -316,6 +323,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		if (_nativeOpenGlWrapper is null)
 		{
 			IsGLInitialized = false;
+			OnGLUnavailable();
 			return;
 		}
 
@@ -327,6 +335,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			if (IsGLInitialized == false)
 			{
 				// The framebuffer creation failed and already recorded the failure.
+				OnGLUnavailable();
 				return;
 			}
 

@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Helpers;
 using Uno.UI;
-using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel;
 using Windows.Graphics.Display;
@@ -192,7 +191,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				var (decodeWidth, decodeHeight) = GetDecodePixelSize();
 				// Reads the property rather than the normalized AbsoluteUri, so a UriSource assigned
 				// directly (ctor, x:Bind, Setter, code-behind) still needs the local-resource mapping.
-				var uri = UriSource is { } uriSource ? XamlFilePathHelper.NormalizeMsResourceFilesUri(uriSource) : null;
+				var uri = UriSource is { } uriSource ? global::Uno.UI.Xaml.XamlFilePathHelper.NormalizeMsResourceFilesUri(uriSource) : null;
 				if (uri is null)
 				{
 					if (_stream is null)
@@ -236,9 +235,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						}
 						else if (imageData.Kind == ImageDataKind.CompositionSurface)
 						{
-							var image = imageData.CompositionSurface.Image;
-							PixelWidth = image.Width;
-							PixelHeight = image.Height;
+							var image = ((global::Microsoft.UI.Composition.CompositionImageSurface)imageData.CompositionSurface!).Image;
+							PixelWidth = image.PixelWidth;
+							PixelHeight = image.PixelHeight;
 							RaiseImageOpened();
 						}
 
@@ -295,9 +294,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					}
 					else if (imageData.Kind == ImageDataKind.CompositionSurface)
 					{
-						var image = imageData.CompositionSurface.Image;
-						PixelWidth = image.Width;
-						PixelHeight = image.Height;
+						var image = ((global::Microsoft.UI.Composition.CompositionImageSurface)imageData.CompositionSurface!).Image;
+						PixelWidth = image.PixelWidth;
+						PixelHeight = image.PixelHeight;
 						RaiseImageOpened();
 					}
 

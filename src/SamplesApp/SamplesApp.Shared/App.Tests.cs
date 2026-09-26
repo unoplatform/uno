@@ -190,6 +190,14 @@ partial class App
 			return false;
 		}
 
+		// System.CommandLine's parse-error path calls Console.ResetColor(), which throws PlatformNotSupportedException
+		// on WASM. Only invoke it for an actual --auto-screenshots command so other launch args (e.g. "sample=...")
+		// fall through to TryNavigateToLaunchSample instead of crashing launch-argument handling.
+		if (!args.Contains("--auto-screenshots", StringComparison.Ordinal))
+		{
+			return false;
+		}
+
 		var autoScreenshotsOption = new Option<string>("--auto-screenshots");
 		var totalGroupsOption = new Option<int>("--total-groups", getDefaultValue: () => 1);
 		var currentGroupIndexOption = new Option<int>("--current-group-index", getDefaultValue: () => 0);
@@ -255,23 +263,29 @@ partial class App
 
 	private bool TryNavigateToLaunchSample(string args)
 	{
-		const string samplePrefix = "sample=";
 		try
 		{
-			args = Uri.UnescapeDataString(args);
+			// TrimStart('?') accepts the same value the in-app "copy link" button produces
+			// (SampleChooserContent.QueryString), which is prefixed for use as a URL query string.
+			var query = ParseArgs(Uri.UnescapeDataString(args).TrimStart('?'));
 
-			if (string.IsNullOrEmpty(args) || !args.StartsWith(samplePrefix))
+			if (!query.TryGetValue("sample", out var identifier))
 			{
 				return false;
 			}
 
-			args = args.Substring(samplePrefix.Length);
+			// Further space-separated launch args (e.g. --FeatureConfiguration overrides) are not part
+			// of the sample identifier.
+			identifier = identifier.Split(' ', 2)[0];
 
-			var pathParts = args.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-			var category = pathParts[0];
-			var sampleName = pathParts[1];
+			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { IsSampleIndexLoaded: true } vm)
+			{
+				// A definitive no-match falls through to the regular launch-argument handling.
+				return vm.TrySelectSample(CancellationToken.None, identifier);
+			}
 
-			SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, category, sampleName);
+			// Sample discovery is async and races the launch: wait until the chooser knows its samples.
+			_ = NavigateWithRetriesAsync(identifier);
 			return true;
 		}
 		catch (Exception ex)
@@ -279,6 +293,33 @@ partial class App
 			_log?.Error($"Could not navigate to initial sample - {ex}");
 		}
 		return false;
+	}
+
+	private static async Task NavigateWithRetriesAsync(string identifier)
+	{
+		try
+		{
+			for (var i = 0; i < 40; i++)
+			{
+				if (SampleControl.Presentation.SampleChooserViewModel.Instance is { IsSampleIndexLoaded: true } vm)
+				{
+					if (!vm.TrySelectSample(CancellationToken.None, identifier))
+					{
+						Console.WriteLine(vm.DumpSampleIndexForDiagnostics(identifier.Split('/')[0]));
+					}
+
+					return;
+				}
+
+				await Task.Delay(250);
+			}
+
+			Console.WriteLine($"Launch sample '{identifier}' was not resolved: the sample index did not load in time.");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Launch sample navigation failed: {ex}");
+		}
 	}
 
 #if __IOS__

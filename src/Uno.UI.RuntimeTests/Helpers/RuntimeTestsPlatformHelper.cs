@@ -52,10 +52,6 @@ internal static class RuntimeTestsPlatformHelper
 		return singlePlatform switch
 		{
 			RuntimeTestPlatforms.NativeWinUI => IsWinUI(),
-			RuntimeTestPlatforms.NativeWasm => IsNativeWasm(),
-			RuntimeTestPlatforms.NativeAndroid => IsNativeAndroid(),
-			RuntimeTestPlatforms.NativeIOS => IsNativeIOS(),
-			RuntimeTestPlatforms.NativeTvOS => IsNativetvOS(),
 			RuntimeTestPlatforms.SkiaWin32 => IsSkia() && IsSkiaWin32(),
 			RuntimeTestPlatforms.SkiaX11 => IsSkia() && IsSkiaX11(),
 			RuntimeTestPlatforms.SkiaMacOS => IsSkia() && IsSkiaMacOS(),
@@ -111,40 +107,4 @@ internal static class RuntimeTestsPlatformHelper
 #else
 		=> false;
 #endif
-
-	private static bool IsNativeWasm()
-	{
-#if __WASM__
-		return true;
-#else
-		return false;
-#endif
-	}
-
-	private static bool IsNativeAndroid()
-	{
-#if __ANDROID__
-		return true;
-#else
-		return false;
-#endif
-	}
-
-	private static bool IsNativeIOS()
-	{
-#if __IOS__
-		return true;
-#else
-		return false;
-#endif
-	}
-
-	private static bool IsNativetvOS()
-	{
-#if __TVOS__
-		return true;
-#else
-		return false;
-#endif
-	}
 }

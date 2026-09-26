@@ -10,7 +10,7 @@ namespace Windows.Foundation.Metadata;
 /// Enables you to detect whether a specified member, type, or API contract is present
 /// so that you can safely make API calls across a variety of devices.
 /// </summary>
-public partial class ApiInformation
+public static partial class ApiInformation
 {
 	const DynamicallyAccessedMemberTypes PublicMembers = DynamicallyAccessedMemberTypes.PublicEvents |
 		DynamicallyAccessedMemberTypes.PublicFields |

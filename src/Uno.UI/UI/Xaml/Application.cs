@@ -33,7 +33,6 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
 using Uno.Foundation;
-using System.Diagnostics;
 using Windows.UI.Core;
 using System.Threading;
 using System.Globalization;
@@ -137,9 +136,8 @@ namespace Microsoft.UI.Xaml
 		private static void RegisterExtensions()
 		{
 			ApiExtensibility.Register<MessageDialog>(typeof(IMessageDialogExtension), dialog => new MessageDialogExtension(dialog));
-#if __SKIA__
-			ApiExtensibility.Register(typeof(Uno.UI.Graphics.SKCanvasVisualBaseFactory), _ => new Uno.UI.Graphics.SKCanvasVisualFactory());
-#endif
+			// The Skia SKCanvasElement visual factory is registered by the Skia backend (SkiaBackend.Register),
+			// since SKCanvasVisual lives in the backend assembly beside SkiaDrawingSession.
 		}
 
 		static partial void InitializePartialStatic();
@@ -779,12 +777,6 @@ namespace Microsoft.UI.Xaml
 			_dispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;
 		}
 
-#if REPORT_FPS
-		static FrameRateLogger _renderFpsLogger = new FrameRateLogger(typeof(Application), "Render");
-#endif
-		private long _lastRender = Stopwatch.GetTimestamp();
-
-
 		internal ISkiaApplicationHost? Host { get; set; }
 
 		private void SetCurrentLanguage()
@@ -822,6 +814,12 @@ namespace Microsoft.UI.Xaml
 		private static partial Application? StartPartial(Func<ApplicationInitializationCallbackParams, Application?> callback)
 		{
 			_startInvoked = true;
+
+			// The framework is backend-agnostic and packaged once: it does NOT install a drawing backend. The app
+			// entry registers one before Application.Start reaches the first layout/font resolution through
+			// DrawingFactory.Current — Uno.UI.Composition.Skia.SkiaBackend.Register() for a Skia build, or
+			// Uno.UI.Composition.Drawing.ManagedBackend.Register() for a SkiaSharp-free build. Missing registration
+			// surfaces as a clear DrawingFactory.Current "no backend registered" exception.
 
 			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 

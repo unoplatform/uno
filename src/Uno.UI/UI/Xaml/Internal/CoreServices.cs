@@ -73,6 +73,29 @@ namespace Uno.UI.Xaml.Core
 		{
 			_isAdditionalFrameRequested = 0;
 
+#if __SKIA__
+			// Feeds the layout slice of the UNO_LOG_FRAME_PHASES itemization (see CompositionTarget.Rendering.skia.cs).
+			var phaseTicksT0 = Microsoft.UI.Xaml.Media.CompositionTarget.IsFramePhaseLoggingEnabled
+				? global::System.Diagnostics.Stopwatch.GetTimestamp()
+				: 0L;
+			try
+			{
+				UpdateLayoutForAllRoots();
+			}
+			finally
+			{
+				if (phaseTicksT0 != 0)
+				{
+					Microsoft.UI.Xaml.Media.CompositionTarget.PhaseAddLayout(global::System.Diagnostics.Stopwatch.GetTimestamp() - phaseTicksT0);
+				}
+			}
+#else
+			UpdateLayoutForAllRoots();
+#endif
+		}
+
+		private static void UpdateLayoutForAllRoots()
+		{
 			// NOTE: The below code should really be replaced with just this:
 			// ----------------------------
 			//if (GetXamlRoot()?.VisualTree?.RootElement is { } root)

@@ -1,0 +1,533 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Private.Infrastructure;
+using Windows.Storage;
+using static Private.Infrastructure.TestServices;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media;
+using Windows.UI;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Extensions;
+using Windows.Foundation.Metadata;
+using Microsoft.UI.Xaml;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using Windows.Storage.Streams;
+using System.Diagnostics;
+
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
+{
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_BitmapSource
+	{
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_SetSource_Then_StreamClonedSynchronously()
+		{
+			var sut = new BitmapImage();
+			var stream = new Given_BitmapSource_Stream();
+			var raStream = stream.AsRandomAccessStream();
+
+			var success = false;
+			try
+			{
+				sut.SetSource(raStream);
+			}
+			catch (Given_BitmapSource_Exception ex) when (ex.Caller is nameof(Given_BitmapSource_Stream.Read))
+			{
+				success = true;
+			}
+
+			Assert.IsTrue(success);
+		}
+
+		[TestMethod]
+		public async Task When_SetSourceAsync_Then_StreamClonedSynchronously()
+		{
+			var sut = new BitmapImage();
+			var stream = new Given_BitmapSource_Stream();
+			var raStream = stream.AsRandomAccessStream();
+
+			var success = false;
+			try
+			{
+				await sut.SetSourceAsync(raStream);
+			}
+			catch (Given_BitmapSource_Exception ex) when (ex.Caller is nameof(Given_BitmapSource_Stream.Read))
+			{
+				success = true;
+			}
+
+			Assert.IsTrue(success);
+		}
+
+#if __SKIA__
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaTvOS)]
+		public async Task When_LocalResource_ScaleQualifier()
+		{
+			var path = new Uri("ms-appx:///Assets/scale-test.png");
+			var resolved = await BitmapImage.TryResolveLocalResource(path, scaleOverride: Windows.Graphics.Display.ResolutionScale.Scale400Percent);
+
+			Assert.Contains("scale-400", resolved.PathAndQuery, $"Resolved asset path did not contain the expected .scale-400 qualifier: {resolved}");
+		}
+#endif
+
+#if __SKIA__ // Not yet supported on the other platforms (https://github.com/unoplatform/uno/issues/8909)
+		[TestMethod]
+		// The ms-appdata load never completes on Skia Linux, and the awaited TCS has no timeout, so the job hangs to its limit (#23967).
+		// Android goes silent the same way: first seen under NativeAOT (#24271), then on plain Android Skia
+		// once #24003 fixed the shard partition and the test actually started running there.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaAndroid)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23967")]
+		// Backstop for the storage calls below, which the inner WaitAsync does not cover.
+		[Timeout(60000)]
+		public async Task When_MsAppData()
+		{
+			var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			await file.CopyAsync(ApplicationData.Current.LocalFolder, "ingredient3.png", NameCollisionOption.ReplaceExisting);
+
+			var image = new Image();
+			WindowHelper.WindowContent = image;
+
+			var sut = new BitmapImage();
+			sut.UriSource = new Uri("ms-appdata:///local/ingredient3.png");
+
+			image.Source = sut;
+
+			TaskCompletionSource<bool> tcs = new();
+			sut.ImageOpened += (s, e) => tcs.TrySetResult(true);
+			sut.ImageFailed += (s, e) => tcs.TrySetException(new Exception($"Image failed to load: {e.ErrorMessage}"));
+
+			// Neither event fires on some Skia legs (#23967). Without a timeout the bare await
+			// hangs until the 60-minute job cap, which loses the results file for the whole suite.
+			await tcs.Task.WaitAsync(TimeSpan.FromSeconds(30));
+		}
+#endif
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_BundleImages_Loaded_StreamsAreDisposed()
+		{
+			var panel = new StackPanel { Orientation = Orientation.Horizontal };
+			WindowHelper.WindowContent = panel;
+
+			var imageUris = new[]
+			{
+				"ms-appx:///Assets/ingredient3.png",
+				"ms-appx:///Assets/BlueSquare.png",
+				"ms-appx:///Assets/StoreLogo.png"
+			};
+
+			var loadTasks = new List<Task>();
+			var images = new List<Image>();
+			var bitmapImages = new List<BitmapImage>();
+
+			foreach (var uri in imageUris)
+			{
+				var image = new Image { Width = 50, Height = 50 };
+				var bitmapImage = new BitmapImage();
+
+				var tcs = new TaskCompletionSource<bool>();
+				bitmapImage.ImageOpened += (s, e) => tcs.TrySetResult(true);
+				bitmapImage.ImageFailed += (s, e) => tcs.TrySetException(new Exception($"Failed to load {uri}: {e.ErrorMessage}"));
+
+				bitmapImage.UriSource = new Uri(uri);
+				image.Source = bitmapImage;
+				panel.Children.Add(image);
+
+				images.Add(image);
+				bitmapImages.Add(bitmapImage);
+				loadTasks.Add(tcs.Task);
+			}
+
+			await Task.WhenAll(loadTasks);
+
+			foreach (var bitmapImage in bitmapImages)
+			{
+				Assert.IsGreaterThan(0, bitmapImage.PixelWidth, "Image should have valid pixel dimensions after loading");
+			}
+
+			foreach (var image in images)
+			{
+				image.Source = null;
+			}
+			foreach (var bitmapImage in bitmapImages)
+			{
+				bitmapImage.UriSource = null;
+			}
+			panel.Children.Clear();
+
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(100);
+
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			GC.Collect();
+
+			Assert.HasCount(imageUris.Length, images, "All images were processed");
+		}
+
+		[TestMethod]
+		// Same Skia Linux hang as When_MsAppData (#23967): never reached in CI, but it awaits the same unbounded TCS.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer | RuntimeTestPlatforms.SkiaX11)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23967")]
+		public async Task When_MsAppData_StreamDisposed_FileNotLocked()
+		{
+			var fileName = $"test_stream_disposed_{Guid.NewGuid()}.png";
+
+			var sourceFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			var copiedFile = await sourceFile.CopyAsync(ApplicationData.Current.LocalFolder, fileName, NameCollisionOption.ReplaceExisting);
+			var filePath = copiedFile.Path;
+
+			try
+			{
+				var image = new Image();
+				WindowHelper.WindowContent = image;
+
+				var bitmapImage = new BitmapImage();
+
+				TaskCompletionSource<bool> imageOpenedTcs = new();
+				bitmapImage.ImageOpened += (s, e) => imageOpenedTcs.TrySetResult(true);
+				bitmapImage.ImageFailed += (s, e) => imageOpenedTcs.TrySetException(new Exception($"Image failed to load: {e.ErrorMessage}"));
+
+				bitmapImage.UriSource = new Uri($"ms-appdata:///local/{fileName}");
+				image.Source = bitmapImage;
+
+				await imageOpenedTcs.Task;
+
+				await Task.Delay(100);
+
+				image.Source = null;
+				bitmapImage.UriSource = null;
+
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(100);
+
+				Exception lockException = null;
+				try
+				{
+					using var exclusiveStream = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+					exclusiveStream.WriteByte(0);
+				}
+				catch (IOException ex)
+				{
+					lockException = ex;
+				}
+
+				Assert.IsNull(lockException, $"File is still locked after image load completed. This indicates the stream was not properly disposed. Exception: {lockException?.Message}");
+			}
+			finally
+			{
+				try
+				{
+					File.Delete(filePath);
+				}
+				catch (Exception deleteEx)
+				{
+					// Best-effort cleanup: log and ignore failures when deleting the temporary test file.
+					Debug.WriteLine($"Failed to delete temporary test file '{filePath}': {deleteEx}");
+				}
+			}
+		}
+
+#if !WINAPPSDK
+		[TestMethod]
+		public void When_SetSource_Stream_Then_StreamClonedSynchronously()
+		{
+			var sut = new BitmapImage();
+			var stream = new Given_BitmapSource_Stream();
+
+			var success = false;
+			try
+			{
+				sut.SetSource(stream);
+			}
+			catch (Given_BitmapSource_Exception ex) when (ex.Caller is nameof(Given_BitmapSource_Stream.Read))
+			{
+				success = true;
+			}
+
+			Assert.IsTrue(success);
+		}
+
+		[TestMethod]
+		public void When_SetSourceAsync_Stream_Then_StreamClonedSynchronously()
+		{
+			var sut = new BitmapImage();
+			var stream = new Given_BitmapSource_Stream();
+
+			var success = false;
+			try
+			{
+				sut.SetSourceAsync(stream); // Note: We do not await the task here. It has to fail within the method itself!
+			}
+			catch (Given_BitmapSource_Exception ex) when (ex.Caller is nameof(Given_BitmapSource_Stream.Read))
+			{
+				success = true;
+			}
+
+			Assert.IsTrue(success);
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_SetSource_Cloned_InMemoryRandomAccessStream()
+		{
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			using var stream = await file.OpenStream(CancellationToken.None, FileAccessMode.Read, StorageOpenOptions.AllowOnlyReaders);
+
+			var byteArray = new byte[stream.Length];
+			await stream.ReadExactlyAsync(byteArray, 0, byteArray.Length);
+
+			var stream2 = new InMemoryRandomAccessStream();
+			await stream2.WriteAsync(byteArray.AsBuffer());
+			stream2.Seek(0);
+
+			var success = true;
+			try
+			{
+				var source = new BitmapImage();
+				source.SetSource(stream2);
+				var image = new Image();
+				await UITestHelper.Load(image, image1 => image1.IsLoaded);
+				image.Source = source;
+			}
+			catch (Exception)
+			{
+				success = false;
+			}
+
+			Assert.IsTrue(success);
+		}
+#endif
+
+		[TestMethod]
+		public async Task When_ImageBrush_Source_Changes()
+		{
+			var imageBrush = new ImageBrush();
+			var bitmapImage = new BitmapImage();
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/BlueSquare.png");
+			imageBrush.ImageSource = bitmapImage;
+
+			var stackPanel = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				Background = imageBrush,
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForLoaded(stackPanel);
+
+
+			imageBrush.ImageOpened += ImageBrush_ImageOpened;
+			var imageOpened = false;
+			void ImageBrush_ImageOpened(object sender, RoutedEventArgs e) => imageOpened = true;
+
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/test_image_100_150.png");
+			await WindowHelper.WaitFor(() => imageOpened);
+		}
+
+#if __SKIA__
+		[Ignore("Flaky for skia targets: https://github.com/unoplatform/uno/issues/9080")]
+#endif
+		[TestMethod]
+		public async Task When_Uri_Nullified()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive("Taking screenshots is not possible on this target platform.");
+			}
+
+			var image = new Image();
+			var bitmapImage = new BitmapImage();
+			image.Source = bitmapImage;
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Colors.Red),
+			};
+			border.Child = image;
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+
+			var initialScreenshot = await UITestHelper.ScreenShot(border);
+
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/BlueSquare.png");
+
+			await WindowHelper.WaitForIdle();
+
+#if __SKIA__ // Flaky on native
+			await WindowHelper.WaitForOpened(bitmapImage);
+#endif
+
+			var screenshotWithImage = await UITestHelper.ScreenShot(border);
+
+			await ImageAssert.AreNotEqualAsync(initialScreenshot, screenshotWithImage);
+
+			bitmapImage.UriSource = null;
+
+			var screenshotWithoutImage = await UITestHelper.ScreenShot(border);
+
+			var sw = Stopwatch.StartNew();
+			while (
+				!await ImageAssert.AreRenderTargetBitmapsEqualAsync(screenshotWithoutImage.Bitmap, initialScreenshot.Bitmap)
+				&& sw.ElapsedMilliseconds < 5000
+			)
+			{
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(100);
+
+				screenshotWithoutImage = await UITestHelper.ScreenShot(border);
+			}
+
+			await ImageAssert.AreEqualAsync(screenshotWithoutImage, initialScreenshot);
+		}
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_DecodePixelWidth_Only()
+		{
+			// test_image_200_300.png is 200x300. Setting DecodePixelWidth=100 should
+			// decode at 100x150, preserving the 2:3 aspect ratio.
+			var bitmapImage = new BitmapImage();
+			bitmapImage.DecodePixelWidth = 100;
+
+			var image = new Image { Width = 200, Height = 300 };
+			WindowHelper.WindowContent = image;
+
+			var openedTask = WindowHelper.WaitForOpened(bitmapImage);
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/test_image_200_300.png");
+			image.Source = bitmapImage;
+
+			await openedTask;
+
+			Assert.AreEqual(100, bitmapImage.PixelWidth, "PixelWidth should match DecodePixelWidth");
+			Assert.AreEqual(150, bitmapImage.PixelHeight, "PixelHeight should preserve aspect ratio");
+		}
+
+		[TestMethod]
+		public async Task When_DecodePixelHeight_Only()
+		{
+			// test_image_200_300.png is 200x300. Setting DecodePixelHeight=150 should
+			// decode at 100x150, preserving the 2:3 aspect ratio.
+			var bitmapImage = new BitmapImage();
+			bitmapImage.DecodePixelHeight = 150;
+
+			var image = new Image { Width = 200, Height = 300 };
+			WindowHelper.WindowContent = image;
+
+			var openedTask = WindowHelper.WaitForOpened(bitmapImage);
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/test_image_200_300.png");
+			image.Source = bitmapImage;
+
+			await openedTask;
+
+			Assert.AreEqual(100, bitmapImage.PixelWidth, "PixelWidth should preserve aspect ratio");
+			Assert.AreEqual(150, bitmapImage.PixelHeight, "PixelHeight should match DecodePixelHeight");
+		}
+
+		[TestMethod]
+		public async Task When_DecodePixelWidth_And_Height()
+		{
+			// When both are set, they are used as-is with no aspect ratio enforcement.
+			var bitmapImage = new BitmapImage();
+			bitmapImage.DecodePixelWidth = 80;
+			bitmapImage.DecodePixelHeight = 60;
+
+			var image = new Image { Width = 200, Height = 300 };
+			WindowHelper.WindowContent = image;
+
+			var openedTask = WindowHelper.WaitForOpened(bitmapImage);
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/test_image_200_300.png");
+			image.Source = bitmapImage;
+
+			await openedTask;
+
+			Assert.AreEqual(80, bitmapImage.PixelWidth, "PixelWidth should match DecodePixelWidth");
+			Assert.AreEqual(60, bitmapImage.PixelHeight, "PixelHeight should match DecodePixelHeight");
+		}
+
+		[TestMethod]
+		public async Task When_No_DecodePixel_Set()
+		{
+			// Regression: full resolution when no decode pixel is set.
+			var bitmapImage = new BitmapImage();
+
+			var image = new Image { Width = 200, Height = 300 };
+			WindowHelper.WindowContent = image;
+
+			var openedTask = WindowHelper.WaitForOpened(bitmapImage);
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/test_image_200_300.png");
+			image.Source = bitmapImage;
+
+			await openedTask;
+
+			Assert.AreEqual(200, bitmapImage.PixelWidth, "PixelWidth should be full resolution");
+			Assert.AreEqual(300, bitmapImage.PixelHeight, "PixelHeight should be full resolution");
+		}
+
+		[TestMethod]
+		public async Task When_DecodePixelWidth_With_Stream()
+		{
+			// Tests stream-based loading with decode pixel.
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/test_image_200_300.png"));
+			using var stream = await file.OpenReadAsync();
+
+			var bitmapImage = new BitmapImage();
+			bitmapImage.DecodePixelWidth = 100;
+
+			var image = new Image { Width = 200, Height = 300 };
+			WindowHelper.WindowContent = image;
+
+			var openedTask = WindowHelper.WaitForOpened(bitmapImage);
+			bitmapImage.SetSource(stream);
+			image.Source = bitmapImage;
+
+			await openedTask;
+
+			Assert.AreEqual(100, bitmapImage.PixelWidth, "PixelWidth should match DecodePixelWidth");
+			Assert.AreEqual(150, bitmapImage.PixelHeight, "PixelHeight should preserve aspect ratio");
+		}
+#endif
+
+		private class Given_BitmapSource_Exception : Exception
+		{
+			public string Caller { get; }
+
+			public Given_BitmapSource_Exception([CallerMemberName] string caller = null)
+			{
+				Caller = caller;
+			}
+		}
+
+		public class Given_BitmapSource_Stream : Stream
+		{
+			public override void Flush() => throw new Given_BitmapSource_Exception();
+			public override int Read(byte[] buffer, int offset, int count) => throw new Given_BitmapSource_Exception();
+			public override long Seek(long offset, SeekOrigin origin) => throw new Given_BitmapSource_Exception();
+			public override void SetLength(long value) => throw new Given_BitmapSource_Exception();
+			public override void Write(byte[] buffer, int offset, int count) => throw new Given_BitmapSource_Exception();
+
+			public override bool CanRead { get; } = true;
+			public override bool CanSeek { get; } = true;
+			public override bool CanWrite { get; }
+			public override long Length { get; } = 1024;
+			public override long Position { get; set; }
+		}
+	}
+}

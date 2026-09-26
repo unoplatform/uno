@@ -1439,6 +1439,17 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		/**
+		 * Drops queued virtualized mutations; used when the semantic DOM is torn down.
+		 */
+		public static resetVirtualizedMutations(): void {
+			if (SemanticElements.virtualizedRafId !== 0) {
+				cancelAnimationFrame(SemanticElements.virtualizedRafId);
+				SemanticElements.virtualizedRafId = 0;
+			}
+			SemanticElements.virtualizedMutationQueue = [];
+		}
+
+		/**
 		 * Flushes all queued virtualized mutations.
 		 */
 		private static flushVirtualizedMutations(): void {

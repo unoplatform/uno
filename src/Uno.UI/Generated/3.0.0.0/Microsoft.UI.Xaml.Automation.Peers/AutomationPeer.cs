@@ -57,13 +57,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetControlledPeers()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetAnnotations()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.SetParent(Microsoft.UI.Xaml.Automation.Peers.AutomationPeer)
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void RaiseTextEditTextChangedEvent(global::Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType, global::System.Collections.Generic.IReadOnlyList<string> changedData)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.RaiseTextEditTextChangedEvent(Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType, System.Collections.Generic.IReadOnlyList<string>)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetPositionInSet()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetSizeOfSet()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetLevel()

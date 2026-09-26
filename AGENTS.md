@@ -14,7 +14,7 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 |-------|---------|---------|
 | Add Sample | `/add-sample` | Creating SamplesApp sample pages with correct registration |
 | Runtime Tests | `/runtime-tests` | Building and running Uno runtime tests (Skia Desktop/WASM) |
-| WinUI Runtime Tests | `/winui-runtime-tests` | Running runtime tests against native WinUI on Windows |
+| WinUI Runtime Tests | `/winui-runtime-tests` | Running runtime tests against native WinUI on Windows (via `winapp run` — no MSIX packaging, signing or elevation) |
 | WinUI Porting | `/winui-port` | Porting WinUI C++ code to Uno Platform C# (full deep reference) |
 | DevServer | `/devserver` | DevServer CLI/Host build, test, MCP proxy, add-in discovery |
 | Docs Build | `/docs-build` | Building, previewing & validating the docs website (DocFX), incl. external-doc commit bumps in `import_external_docs.ps1` |
@@ -68,6 +68,8 @@ These load **automatically** when you touch matching files — you don't invoke 
 | `.reference.cs` | Reference implementation |
 | `.crossruntime.cs` | Skia + WebAssembly + Reference (shared) |
 
+Only projects that build per-platform variants compile the platform suffixes: the WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) and platform-specific runtime or add-in projects. The `Uno.UI` project builds once, for Skia, and excludes `.Android.cs`, `.UIKit.cs` and `.wasm.cs` files by default. A platform runtime project can still link such a file from under `src/Uno.UI`: `Uno.UI.Runtime.Skia.WebAssembly.Browser` compiles the `NativeWebView` and TextBox input-scope `.wasm.cs` partials. Judge a file by the MSBuild project that compiles it, not by its path.
+
 ### Key Source Directories
 
 - `src/Uno.UI/` - Core UI framework (WinUI controls, layout, XAML runtime)
@@ -114,7 +116,7 @@ dotnet build … -p:UnoTargetFrameworkOverride=net10.0 -p:UnoFastDevBuild=true
 - `UnoTargetFrameworkOverride` — restricts cross-targeted projects to a single TFM, skipping the redundant net9.0 outputs while you iterate on net10.0 (or vice versa).
 - `UnoFastDevBuild` — disables `RunAnalyzersDuringBuild`, `EnforceCodeStyleInBuild`, and the `Microsoft.CodeAnalysis.NetAnalyzers` package for local builds. **Guarded by `ContinuousIntegrationBuild`, so CI is never affected** — analyzer-strict checks still run on every PR. Set persistently via the `UNO_FAST_DEV_BUILD=true` environment variable if you'd rather not edit the file.
 
-Combined impact on `SamplesApp.Skia.Generic` (Windows, 32-core, warm NuGet cache): clean build ~3:23 → ~1:59, incremental rebuild after a Uno.UI edit ~2:23 → ~0:58. The `/runtime-tests` skill passes both flags by default (use `strict` to opt out for CI-equivalent coverage).
+Combined impact on the `SamplesApp` desktop head (Windows, 32-core, warm NuGet cache): clean build ~3:23 → ~1:59, incremental rebuild after a Uno.UI edit ~2:23 → ~0:58. The `/runtime-tests` skill passes both flags by default (use `strict` to opt out for CI-equivalent coverage).
 
 **Do not commit `crosstargeting_override.props`** — it is per-developer config and is intentionally `.gitignore`d.
 
@@ -143,35 +145,32 @@ dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj    # Unit tests (40-60s)
 
 ### Platform Abstraction
 
-Single C#/XAML codebase → WinUI 3 API → Platform-specific runtimes (Skia, WebAssembly, Native)
+Single C#/XAML codebase → WinUI 3 API → Skia-rendered UI, hosted by a Skia runtime per platform (Desktop Win32/macOS/X11/framebuffer, Android, iOS/tvOS, WebAssembly)
 
-### Rendering Engines
+### Rendering Engine
 
-- **Skia**: Cross-platform (Desktop Win32, macOS, Linux, Skia Android/iOS)
-- **Native**: Platform controls (UIKit, Android Views, DOM elements)
+- **Skia** renders the UI on every target: Desktop Win32, macOS and Linux, plus Android, iOS/tvOS and WebAssembly.
+- The native renderers (Android Views, UIKit, WASM DOM) were removed in 7.0. A native view can still be embedded alongside the Skia tree through the host embedding APIs (`doc/articles/native-views.md`).
 
-### Development scope: Skia-first (IMPORTANT)
+### Development scope: Skia-only UI (IMPORTANT)
 
-**Unless a task explicitly states otherwise, new features and enhancements target the Skia targets only** (Desktop Win32/macOS/Linux and Skia-on-Android/iOS/WASM). The **native targets** — native Android Views, native iOS/UIKit, WASM DOM — are **maintenance-only**: don't build new features for them, but **don't break them either** (keep them compiling and behaving as-is).
+**The UI layer (`Uno.UI` and everything built on it) is Skia-only.** There are no native UI renderers to maintain or extend. Don't reintroduce native-view inheritance, DOM rendering or per-platform UI partials. Put platform-specific UI behavior behind `OperatingSystem.IsX()` checks or `ApiExtensibility`, as described in `.claude/rules/platform-targeting.md`.
 
-This applies to the **UI rendering layer** (`Uno.UI` native views), *not* to platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.WinRT`/`Uno.Foundation`) are still actively enhanced**, because the Skia targets compile and consume those same per-platform implementations (e.g. Skia-on-Android uses the Android implementation of a file picker, sensor, contacts, etc.).
+This covers the UI rendering layer, *not* platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.WinRT`/`Uno.Foundation`) keep per-platform implementations and are still actively enhanced**, because the Skia targets consume them (e.g. Skia-on-Android uses the Android implementation of a file picker, sensor, contacts, etc.).
 
 ### Platform Base Classes
 
-| Platform | Inheritance |
-|----------|-------------|
-| Android native | `ViewGroup` → `UnoViewGroup` (Java) → `BindableView` → `UIElement` |
-| iOS native | `UIView` → `BindableUIView` → `UIElement` |
-| WebAssembly native | UIElements map to DOM elements (default: "div") |
-| Skia | `IRenderer` interface for rendering pipeline |
+`UIElement` derives from `DependencyObject` on every target; there is no native view base class. Each element's composition `Visual` is drawn onto a Skia surface supplied by the platform's host.
 
 ### XAML Compilation
 
 XAML files are parsed to C# via source generators (`XamlFileGenerator` in `Uno.UI.SourceGenerators`), not .xbf like WinUI. Generates `InitializeComponent()`, named fields, and x:Bind expressions.
 
-### DependencyObject on Mobile
+### DependencyObject
 
-On Android/iOS, `DependencyObject` is an **interface** (not base class) since `UIElement` must inherit from native view classes. Source generators provide the implementation via `DependencyObjectGenerator`.
+`DependencyObject` is a **class** on every target, as in WinUI — inherit from it directly.
+
+Before 7.0 it was an *interface*, because the native Android/iOS renderers forced `UIElement` to inherit a native view class, and a `DependencyObjectGenerator` supplied the implementation. Rendering is Skia everywhere now, so the interface and that generator are both gone.
 
 ### Project Organization
 
@@ -191,7 +190,9 @@ Auto-generated stubs marked with `[Uno.NotImplemented]` allow compilation but wa
 
 ### Public Documentation and Spec References (MANDATORY)
 
-When editing specifications, documentation, or other repo-tracked design artifacts intended to be shareable:
+These rules cover files committed to the repo: specifications, documentation, and other repo-tracked design artifacts intended to be shareable. They do not cover pull request descriptions or PR and issue comments, which may link to private issues, pull requests, and repositories (see [Pull Requests & Issues](#pull-requests--issues)).
+
+When editing those files:
 
 1. **Do not reference private artifacts** from the document.
    - Do not link to private issues, private pull requests, private boards, private docs, or private repositories.
@@ -221,7 +222,7 @@ Run these after making changes:
 2. **Unit tests**: `dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj --no-build`
 3. **Runtime tests** (UI changes): Use `/runtime-tests` skill (Skia Desktop default, pass test class/method name as argument)
 4. **WinUI parity** (validate against native WinUI): Use `/winui-runtime-tests` skill
-5. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Skia.Generic && dotnet run`
+5. **Sample app** (visual changes): `dotnet run --project src/SamplesApp/SamplesApp -f net11.0-desktop`. To jump straight to one sample instead of the picker, append `-- sample=<Category>/<SampleName>` (category optional — a bare sample name or its fully-qualified type name also resolves), e.g. `-- sample=Buttons/Button_Events`. Console output confirms a match or reports why none was found.
 6. **XAML formatting** (SamplesApp changes): `dotnet xstyler -d src/SamplesApp -r`
 
 ### SamplesApp: Add XAML files
@@ -271,7 +272,7 @@ Add tests to `Uno.UI.RuntimeTests`. Key helpers:
 ### Partial Classes
 
 Extensive use for:
-- Platform-specific code: `MyControl.Android.cs`, `MyControl.iOS.cs`
+- Platform-specific code in per-platform projects: `MyApi.Android.cs`, `MyApi.UIKit.cs`
 - Generated code: `MyPage.xaml.g.cs`
 - Logical separation: `MyControl.Properties.cs` for DependencyProperties
 
@@ -332,9 +333,9 @@ A GitHub Actions workflow enforces formatting on PRs that touch SamplesApp XAML 
 
 ## Common Pitfalls
 
-1. **DependencyObject is an interface** on Android/iOS - don't inherit, implement
+1. **DependencyObject is a class** - inherit from it directly, as in WinUI
 2. **Generated files are regenerated** - never edit `Generated/` folders
-3. **Visual tree differs by platform** - Android/iOS use native hierarchy; WebAssembly uses DOM; Skia uses rendering tree
+3. **The visual tree is the Skia rendering tree** on every target
 4. **Partial methods** used for extensibility: `OnLoaded()`, `OnUnloaded()`
 5. **NuGet cache corruption** - delete `%USERPROFILE%\.nuget\packages\uno.ui` if debugging fails
 6. **Long paths on Windows** - enable via registry if needed
@@ -381,6 +382,7 @@ When asked to open a PR or file an issue, **base it on the repo's existing templ
 - **PRs** → fill out every section of `.github/PULL_REQUEST_TEMPLATE.md` and submit it as the body (e.g. `gh pr create --body-file <filled>.md`).
 - **Issues** → pick the matching GitHub issue **form** under `.github/ISSUE_TEMPLATE/` (`bug-report`, `enhancement`, `documentation-issue`/`-request`, `samples-issue`/`-request`, `feedback`, `support-request`, `success-story`) and fill its required fields (`gh issue create --template <name>.yml`).
 - **Every PR must reference an associated issue** (unless it's a pure-documentation change). Before opening the PR, settle the issue: use the one identified in the conversation; else search for an existing match (`gh issue list --search "<keywords>"`); else create one from the forms above. Put its number on the template's first line — `**GitHub Issue:** closes #XYZ` — so merging the PR auto-closes the issue.
+- **The associated issue may live in a private repository.** Link it rather than creating a public duplicate, using the `owner/repo#N` form (e.g. `closes unoplatform/<private-repo>#123`) so GitHub resolves it across repositories. PR descriptions and comments may also link related private pull requests.
 
 ---
 

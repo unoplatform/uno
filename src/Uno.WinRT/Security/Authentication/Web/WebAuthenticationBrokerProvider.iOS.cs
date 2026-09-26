@@ -18,10 +18,9 @@ namespace Uno.AuthenticationBroker
 	{
 		private const string asWebAuthenticationSessionErrorDomain = "com.apple.AuthenticationServices.WebAuthenticationSession";
 		private const int asWebAuthenticationSessionErrorCodeCanceledLogin = 1;
-#if __IOS__
 		private const string sfAuthenticationErrorDomain = "com.apple.SafariServices.Authentication";
 		private const int sfAuthenticationErrorCanceledLogin = 1;
-#endif
+
 		protected virtual async Task<WebAuthenticationResult> AuthenticateAsyncCore(
 			WebAuthenticationOptions options,
 			Uri requestUri,
@@ -48,12 +47,10 @@ namespace Uno.AuthenticationBroker
 				{
 					aswas.Cancel();
 				}
-#if __IOS__
 				else if (w is SFAuthenticationSession sfwas)
 				{
 					sfwas.Cancel();
 				}
-#endif
 
 				w?.Dispose();
 				was = null;
@@ -78,19 +75,12 @@ namespace Uno.AuthenticationBroker
 			// is a fully defined url
 			var scheme = callbackUri.Scheme;
 
-#if __IOS__
 			if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))
-#else
-			var osVersion = NSProcessInfo.ProcessInfo.OperatingSystemVersion;
-			if (new Version((int)osVersion.Major, (int)osVersion.Minor) >= new Version(10, 15))
-#endif
 			{
 				var aswas = new ASWebAuthenticationSession(startUrl, callbackUrlScheme: scheme, AuthSessionCallback);
 				was = aswas;
 
-#if __IOS__
 				if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
-#endif
 				{
 					aswas.PresentationContextProvider = new PresentationContextProviderToSharedKeyWindow();
 					aswas.PrefersEphemeralWebBrowserSession =
@@ -115,7 +105,6 @@ namespace Uno.AuthenticationBroker
 					}
 				}
 			}
-#if __IOS__
 			else
 			{
 				if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
@@ -134,7 +123,6 @@ namespace Uno.AuthenticationBroker
 					throw new InvalidOperationException("iOS v11+ is required for this implementation of WebAuthenticationBroker.");
 				}
 			}
-#endif
 
 			try
 			{
@@ -173,19 +161,12 @@ namespace Uno.AuthenticationBroker
 		private static bool IsUserCanceledLogin(NSError error)
 			=> (error.Domain == asWebAuthenticationSessionErrorDomain &&
 				error.Code == asWebAuthenticationSessionErrorCodeCanceledLogin)
-#if __IOS__
 				|| (error.Domain == sfAuthenticationErrorDomain &&
-					error.Code == sfAuthenticationErrorCanceledLogin)
-#endif
-				;
+					error.Code == sfAuthenticationErrorCanceledLogin);
 
 		private class PresentationContextProviderToSharedKeyWindow : NSObject, IASWebAuthenticationPresentationContextProviding
 		{
-#if __IOS__
 			public UIWindow GetPresentationAnchor(ASWebAuthenticationSession session) => UIApplication.SharedApplication.KeyWindow!;
-#else
-			public NSWindow GetPresentationAnchor(ASWebAuthenticationSession session) => NSApplication.SharedApplication.KeyWindow!;
-#endif
 		}
 
 		protected virtual IEnumerable<string> GetApplicationCustomSchemes()

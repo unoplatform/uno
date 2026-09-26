@@ -1,18 +1,16 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.UI.Xaml.Markup;
 using System.Diagnostics;
-using HarfBuzzSharp;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
-using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = Microsoft.UI.Xaml.Documents.TextFormatting.GlyphInfo;
 #nullable enable
-using SegmentInfo = (int LeadingSpaces, int TrailingSpaces, int LineBreakLength, SkiaSharp.SKTypeface? Typeface, int NextStartingIndex);
+using SegmentInfo = (int LeadingSpaces, int TrailingSpaces, int LineBreakLength, Uno.UI.Composition.Drawing.IFont? Font, int NextStartingIndex);
 #nullable disable
 
 namespace Microsoft.UI.Xaml.Documents
@@ -42,6 +40,8 @@ namespace Microsoft.UI.Xaml.Documents
 		public void OnTextChanged()
 		{
 			OnTextChangedPartial();
+			// The run's length feeds every ancestor's cached position counts, so drop those first.
+			MarkDirty();
 			InvalidateInlines(true);
 			InvalidateSegmentsPartial();
 		}
@@ -53,60 +53,60 @@ namespace Microsoft.UI.Xaml.Documents
 		protected override void OnForegroundChanged()
 		{
 			base.OnForegroundChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 		}
 
 		protected override void OnFontFamilyChanged()
 		{
 			base.OnFontFamilyChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontSizeChanged()
 		{
 			base.OnFontSizeChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontStretchChanged()
 		{
 			base.OnFontStretchChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontWeightChanged()
 		{
 			base.OnFontWeightChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnBaseLineAlignmentChanged()
 		{
 			base.OnBaseLineAlignmentChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 		}
 
 		protected override void OnCharacterSpacingChanged()
 		{
 			base.OnCharacterSpacingChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 		}
 
 		protected override void OnTextDecorationsChanged()
 		{
 			base.OnTextDecorationsChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange();
 		}
 
 		partial void InvalidateSegmentsPartial();
@@ -128,10 +128,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(Run),
 				new FrameworkPropertyMetadata(default(FlowDirection), FrameworkPropertyMetadataOptions.Inherits, (DependencyObject dO, DependencyPropertyChangedEventArgs args) => ((Run)dO).OnFlowDirectionChanged()));
 
-		private void OnFlowDirectionChanged()
-		{
-			InvalidateInlines(false);
-		}
+		private void OnFlowDirectionChanged() => InvalidateInlinesForFormatChange();
 
 		private static (int CodePoint, int Length) GetCodePoint(ReadOnlySpan<char> text, int i)
 		{
@@ -148,19 +145,19 @@ namespace Microsoft.UI.Xaml.Documents
 
 		private SegmentInfo GetSegmentStartingFrom(int i, ReadOnlySpan<char> text)
 		{
-			var skFont = FontInfo.SKFont;
+			var fontInfo = FontInfo;
 
-			var defaultTypeface = skFont.Typeface;
+			var defaultFont = fontInfo.FontHandle;
 
 			if (i < text.Length && text[i] == '\t')
 			{
-				return (LeadingSpaces: 0, TrailingSpaces: 0, LineBreakLength: 0, Typeface: defaultTypeface, NextStartingIndex: i + 1);
+				return (LeadingSpaces: 0, TrailingSpaces: 0, LineBreakLength: 0, Font: defaultFont, NextStartingIndex: i + 1);
 			}
 
 			int leadingSpaces = 0;
 			int trailingSpaces = 0;
 			int lineBreakLength = 0;
-			SKTypeface? segmentTypeface = null;
+			IFont? segmentFont = null;
 
 			// Count leading spaces
 			while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]) && text[i] != '\t')
@@ -172,7 +169,7 @@ namespace Microsoft.UI.Xaml.Documents
 				// 1. A fallback font that may be calculated later in this method may have different AdvanceX value for space character
 				// 2. The specified font could actually contain actual drawing for the space character. This is extremely uncommon and is currently
 				//    not supported by the drawing logic, where we just advance x-coordinate to emulate space characters.
-				segmentTypeface = defaultTypeface;
+				segmentFont = defaultFont;
 
 				i++;
 			}
@@ -189,14 +186,14 @@ namespace Microsoft.UI.Xaml.Documents
 				// Also, we don't consider tabs "spaces" since they don't get the general space treatment.
 				if (text[i] == '\t')
 				{
-					return (leadingSpaces, trailingSpaces, lineBreakLength, segmentTypeface, i);
+					return (leadingSpaces, trailingSpaces, lineBreakLength, segmentFont, i);
 				}
 
 				if (Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1)))
 				{
 					if (char.IsWhiteSpace(text[i]))
 					{
-						if (segmentTypeface is not null && segmentTypeface != defaultTypeface)
+						if (segmentFont is not null && !SameFont(segmentFont, defaultFont))
 						{
 							// Don't include the trailing space in the current segment if it doesn't use the originally specified font.
 							// The reasons are the same as explained for leading spaces in the beginning of this method.
@@ -212,11 +209,20 @@ namespace Microsoft.UI.Xaml.Documents
 
 				var (codepoint, codepointLength) = GetCodePoint(text, i);
 
-				var currentTypeface = skFont.ContainsGlyph(codepoint)
-					? defaultTypeface
-					: SKFontManager.Default.MatchCharacter(codepoint);
+				// This legacy segmentation path is synchronous, so it only consults the synchronously-available (installed)
+				// match; deferred fallback (e.g. browser Noto fetch) is handled by the active UnicodeText path.
+				IFont? currentFont;
+				if (defaultFont.ContainsGlyph(codepoint))
+				{
+					currentFont = defaultFont;
+				}
+				else
+				{
+					var match = FontProvider.Current.MatchCharacterAsync(codepoint, FontWeight, FontStretch, FontStyle, (float)FontSize);
+					currentFont = match.IsCompletedSuccessfully ? match.Result : null;
+				}
 
-				if (currentTypeface is null)
+				if (currentFont is null)
 				{
 					// The requested glyph isn't found by the OS.
 					if (this.Log().IsEnabled(LogLevel.Trace))
@@ -227,14 +233,14 @@ namespace Microsoft.UI.Xaml.Documents
 					// Move over the current codepoint.
 					i += codepointLength;
 				}
-				else if (segmentTypeface is null || currentTypeface == segmentTypeface)
+				else if (segmentFont is null || SameFont(currentFont, segmentFont))
 				{
-					segmentTypeface = currentTypeface;
+					segmentFont = currentFont;
 					i += codepointLength;
 				}
 				else
 				{
-					// Always break the current segment if the previous typeface and the current typeface are both non-null
+					// Always break the current segment if the previous font and the current font are both non-null
 					// and are different.
 					break;
 				}
@@ -252,7 +258,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 					if (char.IsWhiteSpace(text[i]) && text[i] != '\t')
 					{
-						if (segmentTypeface is not null && segmentTypeface != defaultTypeface)
+						if (segmentFont is not null && !SameFont(segmentFont, defaultFont))
 						{
 							// Don't include the trailing space in the current segment if it doesn't use the originally specified font.
 							// The reasons are the same as explained for leading spaces in the beginning of this method.
@@ -269,128 +275,77 @@ namespace Microsoft.UI.Xaml.Documents
 				}
 			}
 
-			return (leadingSpaces, trailingSpaces, lineBreakLength, segmentTypeface, i);
+			return (leadingSpaces, trailingSpaces, lineBreakLength, segmentFont, i);
 		}
+
+		// Two handles are the "same font" for segment-grouping when they refer to the same family (fallback
+		// resolution may return distinct IFont instances for the same physical font). An empty family name
+		// carries no identity, so it never matches: a font with no typeface would otherwise group with any other.
+		private static bool SameFont(IFont a, IFont b)
+			=> ReferenceEquals(a, b) || (a.FamilyName.Length > 0 && a.FamilyName == b.FamilyName);
 
 		private List<Segment> GetSegments()
 		{
 			// TODO: Implement Bidi algorithm here to split segments by direction prior to doing the below processing on each directional piece.
 			// TODO: Implement fallback font for international char segments
 			List<Segment> segments = new();
-			using HarfBuzzSharp.Buffer buffer = new();
 			var fontInfo = FontInfo;
-			var defaultTypeface = fontInfo.SKFont.Typeface;
-			var defaultFont = fontInfo.Font;
-			var fontSize = fontInfo.SKFontSize;
-
-			defaultFont.GetScale(out int defaultFontScale, out _);
-			float defaultTextSizeY = fontInfo.SKFontSize / defaultFontScale;
-			float defaultTextSizeX = defaultTextSizeY * fontInfo.SKFontScaleX;
+			var defaultFontHandle = fontInfo.FontHandle;
 
 			var text = Text.AsSpan();
 			int i = 0;
 
 			while (i < text.Length)
 			{
-				var (leadingSpaces, trailingSpaces, lineBreakLength, typeface, nextStartingIndex) = GetSegmentStartingFrom(i, text);
+				var (leadingSpaces, trailingSpaces, lineBreakLength, fontHandle, nextStartingIndex) = GetSegmentStartingFrom(i, text);
 
 				int length = nextStartingIndex - i;
 				FontDetails? fallbackFont = null;
-				Font font;
-				int fontScale;
-				float textSizeY;
-				float textSizeX;
-				if (typeface is not null && typeface != defaultTypeface)
+				IFont segmentFont;
+				// By reference, not by family: the handle is only here because the default could not render this
+				// codepoint, so a packaged subset that declares the same family name as the installed font it was
+				// cut from still has to be treated as a different font -- grouping them draws .notdef.
+				if (fontHandle is not null && !ReferenceEquals(fontHandle, defaultFontHandle))
 				{
-					var (details, task) = FontDetailsCache.GetFont(typeface.FamilyName, (float)FontSize, FontWeight, FontStretch, FontStyle);
-					if (task.IsCompletedSuccessfully)
-					{
-						fallbackFont = task.Result;
-					}
-					else
-					{
-						task.ContinueWith(_ =>
-						{
-							NativeDispatcher.Main.Enqueue(OnFontLoaded);
-						});
-						fallbackFont = details;
-					}
-
-					font = fallbackFont.Font;
-					font.GetScale(out fontScale, out _);
-					textSizeY = fontSize / fontScale;
-					textSizeX = textSizeY * fontInfo.SKFontScaleX;
+					// The handle already carries the requested weight/stretch/style (the provider resolved the
+					// fallback family for them), so it only needs wrapping with this run's size.
+					fallbackFont = FontDetails.Create(fontHandle, (float)FontSize);
+					segmentFont = fallbackFont.FontHandle;
 				}
 				else
 				{
-					font = defaultFont;
-					fontScale = defaultFontScale;
-					textSizeY = defaultTextSizeY;
-					textSizeX = defaultTextSizeX;
+					segmentFont = defaultFontHandle;
 				}
 
 				if (length > 0)
 				{
-					if (lineBreakLength == 2)
-					{
-						buffer.AddUtf16(text.Slice(i, length - 1)); // Skip second line break char so that it is considered part of the same cluster as the first
-					}
-					else
-					{
-						buffer.AddUtf16(text.Slice(i, length));
-					}
+					// Skip the second line break char so it stays part of the same cluster as the first.
+					var shapedLength = lineBreakLength == 2 ? length - 1 : length;
 
-					// TODO: Set the segment properties instead of using HB guessing like below.
-					// - Set direction using Bidi algorithm.
-					// - Set Language and Script on buffer. From HarfBuzz docs:
-
-					// Script is crucial for choosing the proper shaping behaviour for scripts that require it (e.g. Arabic) and the which OpenType features defined
-					// in the font to be applied.
-
-					// Languages are crucial for selecting which OpenType feature to apply to the buffer which can result in applying language-specific behaviour.
-					// Languages are orthogonal to the scripts, and though they are related, they are different concepts and should not be confused with each other.
-
-					// buffer.Direction = ...
-					// buffer.Language = ...
-					// buffer.Script = ...
-
-					// Guess the above properties for now before shaping:
-					buffer.GuessSegmentProperties();
-					var direction = buffer.Direction == Direction.LeftToRight ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
+					// Legacy non-bidi path (superseded by UnicodeText): the shaper guesses each segment's direction
+					// from its script. Ligatures are disabled because a TextBox needs each source char to stay
+					// separately addressable (uno#15528, uno#16788).
+					var glyphRun = segmentFont.Shape(text.Slice(i, shapedLength), out var textDirection, enableLigatures: false);
+					var direction = textDirection is TextDirection.RightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 					if (direction == FlowDirection.LeftToRight &&
-						segments.Count > 0 && segments[segments.Count - 1].Direction == FlowDirection.RightToLeft &&
+						segments.Count > 0 && segments[^1].Direction == FlowDirection.RightToLeft &&
 						trailingSpaces + leadingSpaces == length)
 					{
-						// If the current segment consists of spaces only, it will be considered LeftToRight.
-						// But if the previous segment was RightToLeft, we want the current segment to also be RTL.
-						// This is quite hacky, it feels like GetRenderOrderedSegmentSpans is buggy and a real fix needs to go there.
+						// A spaces-only segment is guessed LeftToRight; keep it with the RightToLeft segment it follows.
 						direction = FlowDirection.RightToLeft;
 					}
 
-					// We don't support ligatures for now since they can cause buggy behaviour in TextBox
-					// where multiple chars in a TextBox are turned into a single glyph.
-					//https://github.com/unoplatform/uno/issues/15528
-					// https://github.com/unoplatform/uno/issues/16788
-					// https://harfbuzz.github.io/shaping-opentype-features.html
-					font.Shape(buffer, new Feature(new Tag('l', 'i', 'g', 'a'), 0));
-
-					if (buffer.Direction == Direction.RightToLeft)
-					{
-						buffer.ReverseClusters();
-					}
-
-					var glyphs = GetGlyphs(buffer, i, textSizeX, textSizeY);
+					var glyphs = GetGlyphs(glyphRun, i, textDirection is TextDirection.RightToLeft);
 
 					Debug.Assert(!(Text.AsSpan(i, length).Contains('\t')) || length == 1);
 					if (length == 1 && text[i] == '\t')
 					{
-						glyphs[0] = glyphs[0] with { GlyphId = _getSpaceGlyph(fontInfo.Font) };
+						glyphs[0] = glyphs[0] with { GlyphId = defaultFontHandle.GetGlyphIndex(' ') };
 					}
 
 					var segment = new Segment(this, direction, i, length, leadingSpaces, trailingSpaces, lineBreakLength, glyphs, fallbackFont);
 
 					segments.Add(segment);
-					buffer.ClearContents();
 				}
 
 				i = nextStartingIndex;
@@ -400,28 +355,39 @@ namespace Microsoft.UI.Xaml.Documents
 
 			// Local functions:
 
-			static List<GlyphInfo> GetGlyphs(Buffer buffer, int clusterStart, float textSizeX, float textSizeY)
+			static List<GlyphInfo> GetGlyphs(GlyphRun glyphRun, int clusterStart, bool rtl)
 			{
-				int length = buffer.Length;
-				var hbGlyphs = buffer.GetGlyphInfoSpan();
-				var hbPositions = buffer.GetGlyphPositionSpan();
+				var count = glyphRun.Count;
+				List<TextFormatting.GlyphInfo> glyphs = new(count);
 
-				List<TextFormatting.GlyphInfo> glyphs = new(length);
-
-				for (int i = 0; i < length; i++)
+				// Offsets/advances are already in pixels (IFont.Shape scaled them).
+				for (var index = 0; index < count; index++)
 				{
-					var hbGlyph = hbGlyphs[i];
-					var hbPos = hbPositions[i];
+					glyphs.Add(new TextFormatting.GlyphInfo(
+						glyphRun.Glyphs[index],
+						clusterStart + glyphRun.Clusters[index],
+						glyphRun.Advances[index],
+						glyphRun.Offsets[index].X,
+						glyphRun.Offsets[index].Y));
+				}
 
-					TextFormatting.GlyphInfo glyph = new(
-						(ushort)hbGlyph.Codepoint,
-						clusterStart + (int)hbGlyph.Cluster,
-						hbPos.XAdvance * textSizeX,
-						hbPos.XOffset * textSizeX,
-						hbPos.YOffset * textSizeY
-					);
+				if (rtl)
+				{
+					// Mirror hb_buffer_reverse_clusters: the shaper emits an RTL run in visual order, so reversing it
+					// gives ascending clusters, and re-reversing each cluster keeps a mark next to the base it attaches
+					// to (the pen advances in list order, so a flat reverse drops it one advance away).
+					glyphs.Reverse();
+					for (var start = 0; start < count;)
+					{
+						var end = start + 1;
+						while (end < count && glyphs[end].Cluster == glyphs[start].Cluster)
+						{
+							end++;
+						}
 
-					glyphs.Add(glyph);
+						glyphs.Reverse(start, end - start);
+						start = end;
+					}
 				}
 
 				return glyphs;
@@ -456,17 +422,6 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		partial void InvalidateSegmentsPartial() => _segments = null;
-
-		private static readonly Func<Font, ushort> _getSpaceGlyph =
-			((Func<Font, ushort>?)(font =>
-			{
-				using var buffer = new HarfBuzzSharp.Buffer();
-				buffer.AddUtf8(" ");
-				buffer.GuessSegmentProperties();
-				font.Shape(buffer);
-				return (ushort)buffer.GlyphInfos[0].Codepoint;
-			}))
-			.AsMemoized();
 #nullable disable
 	}
 }
