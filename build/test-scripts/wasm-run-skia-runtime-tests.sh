@@ -29,7 +29,6 @@ python $BUILD_SOURCESDIRECTORY/build/test-scripts/skia-browserwasm-file-creation
 sleep 10
 
 export RESULTS_FILE="$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"
-export RESULTS_CANARY_FILE="$RESULTS_FILE.canary"
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-wasm-runtimetests-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
 
@@ -45,9 +44,7 @@ mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`
-
-    # Replace the `=` with `!` to avoid url encoding issues
-    UITEST_RUNTIME_TESTS_FILTER=${UITEST_RUNTIME_TESTS_FILTER//=/!}
+	UNO_RERUN_FIRST_PASS=false
 
 	# echo the failed filter list, if not empty
 	if [ -n "$UNO_TESTS_FAILED_LIST" ]; then
@@ -57,79 +54,108 @@ else
     export UITEST_RUNTIME_TESTS_FILTER=""
 fi
 
-rawurlencode "$RESULTS_FILE"
-RESULTS_FILE_ENCODED=$ENCODED_RESULT
+# Opens the app in chrome and waits for it to write <results-file>. Returns 1 when the app did not
+# start (no canary file), 2 when the run did not complete within <wait-seconds>.
+run_runtime_tests() {
+	local results_file="$1"
+	local filter="$2"
+	local wait_seconds="$3"
 
-rawurlencode "$UITEST_RUNTIME_TESTS_FILTER"
-UITEST_RUNTIME_TESTS_FILTER_ENCODED=$ENCODED_RESULT
+	# Replace the `=` with `!` to avoid url encoding issues
+	filter=${filter//=/!}
 
-RUNTIME_TESTS_URL="http://localhost:8000/?--runtime-tests=${RESULTS_FILE_ENCODED}&--runtime-tests-group=${UITEST_RUNTIME_TEST_GROUP}&--runtime-tests-group-count=${UITEST_RUNTIME_TEST_GROUP_COUNT}&--runtime-test-filter=${UITEST_RUNTIME_TESTS_FILTER_ENCODED}"
+	rawurlencode "$results_file"
+	local results_file_encoded=$ENCODED_RESULT
 
-TRY_COUNT=0
+	rawurlencode "$filter"
+	local filter_encoded=$ENCODED_RESULT
 
-while [ $TRY_COUNT -lt 5 ]; do
-    # we use xvfb instead of headless chrome because using --enable-logging with --headless doesn't
-    # print the logs as expected
-    # for some reason, you have to run the next line twice or else it doesn't work
-    killall -9 chrome || true
-    killall -9 xvfb-run || true
-    killall -9 Xvfb || true
-    killall -9 chrome_crashpad_handler || true
-    # We now launch a fluxbox window manager alongside chrome (see below); kill any stray instance
-    # from a previous attempt so retries do not accumulate fluxbox processes.
-    killall -9 fluxbox || true
-    rm -fr /tmp/.X99-lock || true
-    # Under xvfb the browser needs a real screen (size + 24-bit depth) AND a window manager, otherwise
-    # the window is treated as background/zero-size and Chromium throttles requestAnimationFrame/timers
-    # to ~1Hz, stalling render-loop-driven scroll/BringIntoView/virtualization animations -> the runtime
-    # tests that wait on them time out (flaky WASM-Skia). Mirror linux-skia-runtime-tests.sh: define a
-    # screen, run a window manager (fluxbox), keep a visible window size, and disable bg throttling.
-    # (fluxbox degrades gracefully: if it is unavailable the backgrounded launch is a no-op and chrome
-    # still runs.) --autoplay-policy lifts the gesture requirement on HTMLMediaElement.play(), which
-    # otherwise rejects with NotAllowedError and stalls every media playback test. The URL is passed
-    # as a positional arg to avoid re-quoting its '&'/'='/'?' chars.
-    # --no-first-run/--no-default-browser-check/--disable-search-engine-choice-screen stop the first-run
-    # experience from swallowing the command-line URL on the agent's brand-new profile: without them
-    # chrome starts but never navigates, so the canary never appears.
-    xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size=1920,1080 "$1"' _ "${RUNTIME_TESTS_URL}" &
+	local runtime_tests_url="http://localhost:8000/?--runtime-tests=${results_file_encoded}&--runtime-tests-group=${UITEST_RUNTIME_TEST_GROUP}&--runtime-tests-group-count=${UITEST_RUNTIME_TEST_GROUP_COUNT}&--runtime-test-filter=${filter_encoded}"
 
-    # wait one minute for the canary file to be created, otherwise fail the script.
-    # This may happen if xvfb-run of chrome fails to start
-    for i in {1..6}; do
-        if test -f "$RESULTS_CANARY_FILE"; then
-            break
-        fi
-        sleep 10
-    done
+	TRY_COUNT=0
 
-    # if the canary file exists, continue
-    if test -f "$RESULTS_CANARY_FILE"; then
-        break
-    fi
+	while [ $TRY_COUNT -lt 5 ]; do
+		# we use xvfb instead of headless chrome because using --enable-logging with --headless doesn't
+		# print the logs as expected
+		# for some reason, you have to run the next line twice or else it doesn't work
+		killall -9 chrome || true
+		killall -9 xvfb-run || true
+		killall -9 Xvfb || true
+		killall -9 chrome_crashpad_handler || true
+		# We now launch a fluxbox window manager alongside chrome (see below); kill any stray instance
+		# from a previous attempt so retries do not accumulate fluxbox processes.
+		killall -9 fluxbox || true
+		rm -fr /tmp/.X99-lock || true
+		# Under xvfb the browser needs a real screen (size + 24-bit depth) AND a window manager, otherwise
+		# the window is treated as background/zero-size and Chromium throttles requestAnimationFrame/timers
+		# to ~1Hz, stalling render-loop-driven scroll/BringIntoView/virtualization animations -> the runtime
+		# tests that wait on them time out (flaky WASM-Skia). Mirror linux-skia-runtime-tests.sh: define a
+		# screen, run a window manager (fluxbox), keep a visible window size, and disable bg throttling.
+		# (fluxbox degrades gracefully: if it is unavailable the backgrounded launch is a no-op and chrome
+		# still runs.) --autoplay-policy lifts the gesture requirement on HTMLMediaElement.play(), which
+		# otherwise rejects with NotAllowedError and stalls every media playback test. The URL is passed
+		# as a positional arg to avoid re-quoting its '&'/'='/'?' chars.
+		# --no-first-run/--no-default-browser-check/--disable-search-engine-choice-screen stop the first-run
+		# experience from swallowing the command-line URL on the agent's brand-new profile: without them
+		# chrome starts but never navigates, so the canary never appears.
+		xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size=1920,1080 "$1"' _ "${runtime_tests_url}" &
 
-    TRY_COUNT=$((TRY_COUNT+1))
-    echo "Canary file not found. retrying... (Tried $TRY_COUNT times)"
-done
+		# wait one minute for the canary file to be created, otherwise fail the script.
+		# This may happen if xvfb-run of chrome fails to start
+		for i in {1..6}; do
+			if test -f "$results_file.canary"; then
+				break
+			fi
+			sleep 10
+		done
+
+		# if the canary file exists, continue
+		if test -f "$results_file.canary"; then
+			break
+		fi
+
+		TRY_COUNT=$((TRY_COUNT+1))
+		echo "Canary file not found. retrying... (Tried $TRY_COUNT times)"
+	done
+
+	if ! test -f "$results_file.canary"; then
+		return 1
+	fi
+
+	# Bound the wait: if the browser started (the canary exists) but the run never produces a
+	# results file, this loop otherwise spins until the 60-minute job timeout kills the job, which
+	# reports as an opaque agent timeout rather than as a stalled test run.
+	local waited=0
+	while ! test -f "$results_file"; do
+		if [ $waited -ge $wait_seconds ]; then
+			return 2
+		fi
+		sleep 10
+		waited=$((waited + 10))
+	done
+}
+
+RESULTS_WAIT_SECONDS=2100
+RUN_STATUS=0
+run_runtime_tests "$RESULTS_FILE" "$UITEST_RUNTIME_TESTS_FILTER" $RESULTS_WAIT_SECONDS || RUN_STATUS=$?
 
 # if the canary file does not exist show a message and exit
-if ! test -f "$RESULTS_CANARY_FILE"; then
+if [ $RUN_STATUS -eq 1 ]; then
     echo "Canary file not found. The app may not have started? Exiting."
     exit 1
+elif [ $RUN_STATUS -eq 2 ]; then
+	echo "##vso[task.logissue type=error]UNOBLD005: The runtime tests did not produce $RESULTS_FILE within $((RESULTS_WAIT_SECONDS / 60)) minutes. The app started (the canary file exists) but the run never completed."
+	exit 1
 fi
 
-# Bound the wait: if the browser started (the canary exists) but the run never produces a
-# results file, this loop otherwise spins until the 60-minute job timeout kills the job, which
-# reports as an opaque agent timeout rather than as a stalled test run.
-RESULTS_WAIT_SECONDS=2100
-WAITED=0
-while ! test -f "$RESULTS_FILE"; do
-    if [ $WAITED -ge $RESULTS_WAIT_SECONDS ]; then
-        echo "##vso[task.logissue type=error]UNOBLD005: The runtime tests did not produce $RESULTS_FILE within $((RESULTS_WAIT_SECONDS / 60)) minutes. The app started (the canary file exists) but the run never completed."
-        exit 1
-    fi
-    sleep 10
-    WAITED=$((WAITED + 10))
-done
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/runtime-tests-rerun.sh
+
+if uno_rerun_prepare "$RESULTS_FILE" 0; then
+	RERUN_RESULTS_FILE="$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-rerun.xml"
+
+	run_runtime_tests "$RERUN_RESULTS_FILE" "$UNO_RERUN_FILTER" $UNO_RERUN_TIMEOUT || true
+	uno_rerun_merge "$RESULTS_FILE" "$RERUN_RESULTS_FILE"
+fi
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool

@@ -21,6 +21,7 @@ mkdir -p $LOGS_PATH
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`
+	UNO_RERUN_FIRST_PASS=false
 
 	# echo the failed filter list, if not empty
 	if [ -n "$UNO_TESTS_FAILED_LIST" ]; then
@@ -232,6 +233,37 @@ $ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log
 if [ ! -f "$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME" ]; then
 	echo "ERROR: The test results file $UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME does not exist (did nunit crash ?)"
 	exit 1
+fi
+
+source $BUILD_SOURCESDIRECTORY/build/test-scripts/runtime-tests-rerun.sh
+
+# Pulling the results and logcat, the transform tool and the publish steps need a few minutes.
+if uno_rerun_prepare "$UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH" 300; then
+	RERUN_RESULT_FILENAME="RerunResult-`date +"%Y%m%d%H%M%S"`.xml"
+	RERUN_RESULT_DEVICE_PATH="$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_BASE_PATH/$RERUN_RESULT_FILENAME"
+	RERUN_RESULT_LOCAL_PATH="$LOGS_PATH/$RERUN_RESULT_FILENAME"
+
+	$ANDROID_HOME/platform-tools/adb shell am force-stop "$UNO_UITEST_APP_ID"
+	$ANDROID_HOME/platform-tools/adb shell am start 	  -n "$UNO_UITEST_ACTIVITY" 	  -e UITEST_RUNTIME_TEST_GROUP "$UITEST_RUNTIME_TEST_GROUP" 	  -e UITEST_RUNTIME_TEST_GROUP_COUNT "$UITEST_RUNTIME_TEST_GROUP_COUNT" 	  -e UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$RERUN_RESULT_DEVICE_PATH" 	  -e UITEST_RUNTIME_TESTS_FILTER "$UNO_RERUN_FILTER"
+
+	RERUN_END_TIME=$((SECONDS+UNO_RERUN_TIMEOUT))
+	while [[ $SECONDS -lt $RERUN_END_TIME ]]; do
+		sleep 10
+
+		if $ANDROID_HOME/platform-tools/adb shell test -e "$RERUN_RESULT_DEVICE_PATH" ; then
+			break
+		fi
+
+		if ! $ANDROID_HOME/platform-tools/adb shell ps | grep "$UNO_UITEST_APP_ID" > /dev/null; then
+			echo "The app is not running anymore"
+			break
+		fi
+	done
+
+	$ANDROID_HOME/platform-tools/adb pull "$RERUN_RESULT_DEVICE_PATH" "$RERUN_RESULT_LOCAL_PATH" || echo "ERROR: could not adb pull $RERUN_RESULT_DEVICE_PATH"
+	$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME-rerun.txt || true
+
+	uno_rerun_merge "$UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH" "$RERUN_RESULT_LOCAL_PATH"
 fi
 
 ## Export the failed tests list for reuse in a pipeline retry
