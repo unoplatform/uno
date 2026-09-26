@@ -2829,6 +2829,9 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page::IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled; only the legacy Frame navigation mode pooled pages (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <!-- Transitions moved from FrameworkElement to UIElement, as in WinUI (accessors paired in <Methods> below). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement::Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" />
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -3385,10 +3388,19 @@
 
 		  <!-- No-op AdjustArrange(Size) (always returned its input) declared on the internal IFrameworkElement; publicly surfaced only as this implicit implementation on FrameworkElement. The lone caller in the legacy Layouter path is inlined. -->
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.FrameworkElement.AdjustArrange(Windows.Foundation.Size finalSize)" reason="Removed no-op AdjustArrange (BC70, breaking changes for 7.0)" />
+		  <!-- Grid attached-property accessors take a FrameworkElement, as in WinUI (was UIElement, or the native view type on the native heads). -->
+		  <Member fullName="System\.(Int32|Void) Microsoft\.UI\.Xaml\.Controls\.Grid(::|\.)(Get|Set)(Row|Column)(Span)?\(.+ view(, System\.Int32 \w+)?\)" reason="Grid accessors narrowed to FrameworkElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" isRegex="true" />
+		  <!-- Transitions moved from FrameworkElement to UIElement, as in WinUI; still resolves through inheritance (properties paired in <Properties> above). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement.get_Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_Transitions(Microsoft.UI.Xaml.Media.Animation.TransitionCollection value)" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement.get_TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" />
+		  <!-- SetBinding moved from DependencyObject to FrameworkElement, as in WinUI. The XAML generator now emits BindingOperations.SetBinding and BindingHelper.SetBinding instead. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(Microsoft.UI.Xaml.DependencyProperty dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="SetBinding moved to FrameworkElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(System.String dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="Uno-only string overload replaced by BindingHelper.SetBinding (breaking changes for 7.0, uno-private#2107)" />
 
 		  <!-- DependencyObject as class (BC26): Uno-only members demoted to internal. Recorded explicitly rather than
 		       relying on the declaring-type wildcards above, so the demotion stays documented if those are tightened.
-		       The two SetBinding overloads the XAML generator emits into consuming assemblies stay public. -->
+		       -->
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.DependencyObject.get_IsStoreInitialized()" reason="DependencyObject as class: removed, was a constant with no consumer (BC26, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(System.Object target, System.String dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="DependencyObject as class: demoted to internal, not emitted by the XAML generator and no consumer (BC26, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBindingValue(System.Object value, System.String propertyName)" reason="DependencyObject as class: demoted to internal, Uno-only binder plumbing (BC26, breaking changes for 7.0)" />
@@ -4339,6 +4351,9 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page::IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled; only the legacy Frame navigation mode pooled pages (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
+		  <!-- Transitions moved from FrameworkElement to UIElement, as in WinUI (accessors paired in <Methods> below). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement::Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" />
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -4895,10 +4910,19 @@
 
 		  <!-- No-op AdjustArrange(Size) (always returned its input) declared on the internal IFrameworkElement; publicly surfaced only as this implicit implementation on FrameworkElement. The lone caller in the legacy Layouter path is inlined. -->
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.FrameworkElement.AdjustArrange(Windows.Foundation.Size finalSize)" reason="Removed no-op AdjustArrange (BC70, breaking changes for 7.0)" />
+		  <!-- Grid attached-property accessors take a FrameworkElement, as in WinUI (was UIElement, or the native view type on the native heads). -->
+		  <Member fullName="System\.(Int32|Void) Microsoft\.UI\.Xaml\.Controls\.Grid(::|\.)(Get|Set)(Row|Column)(Span)?\(.+ view(, System\.Int32 \w+)?\)" reason="Grid accessors narrowed to FrameworkElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" isRegex="true" />
+		  <!-- Transitions moved from FrameworkElement to UIElement, as in WinUI; still resolves through inheritance (properties paired in <Properties> above). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement.get_Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_Transitions(Microsoft.UI.Xaml.Media.Animation.TransitionCollection value)" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement.get_TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" />
+		  <!-- SetBinding moved from DependencyObject to FrameworkElement, as in WinUI. The XAML generator now emits BindingOperations.SetBinding and BindingHelper.SetBinding instead. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(Microsoft.UI.Xaml.DependencyProperty dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="SetBinding moved to FrameworkElement for WinUI parity (breaking changes for 7.0, uno-private#2107)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(System.String dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="Uno-only string overload replaced by BindingHelper.SetBinding (breaking changes for 7.0, uno-private#2107)" />
 
 		  <!-- DependencyObject as class (BC26): Uno-only members demoted to internal. Recorded explicitly rather than
 		       relying on the declaring-type wildcards above, so the demotion stays documented if those are tightened.
-		       The two SetBinding overloads the XAML generator emits into consuming assemblies stay public. -->
+		       -->
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.DependencyObject.get_IsStoreInitialized()" reason="DependencyObject as class: removed, was a constant with no consumer (BC26, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(System.Object target, System.String dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="DependencyObject as class: demoted to internal, not emitted by the XAML generator and no consumer (BC26, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBindingValue(System.Object value, System.String propertyName)" reason="DependencyObject as class: demoted to internal, Uno-only binder plumbing (BC26, breaking changes for 7.0)" />

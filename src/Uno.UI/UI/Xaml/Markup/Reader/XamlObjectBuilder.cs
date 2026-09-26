@@ -1131,7 +1131,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				if (dependencyProperty != null)
 				{
-					provider.SetBinding(dependencyProperty, binding);
+					provider.SetBindingInternal(dependencyProperty, binding);
 				}
 				else if (TypeResolver.GetPropertyByName(member.Owner.Type, member.Member.Name) is PropertyInfo propertyInfo)
 				{

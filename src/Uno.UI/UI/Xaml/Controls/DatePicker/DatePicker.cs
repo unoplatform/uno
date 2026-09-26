@@ -2073,7 +2073,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (m_tpFirstSpacerColumn != null && spColumns != null)
 				{
 					columnIndex = spColumns.IndexOf(m_tpFirstSpacerColumn);
-					Grid.SetColumn(m_tpFirstPickerSpacing, columnIndex);
+					m_tpFirstPickerSpacing.SetValue(Grid.ColumnProperty, columnIndex);
 				}
 			}
 			if (m_tpSecondPickerSpacing != null)
@@ -2085,7 +2085,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (m_tpSecondSpacerColumn != null && spColumns != null)
 				{
 					columnIndex = spColumns.IndexOf(m_tpSecondSpacerColumn);
-					Grid.SetColumn(m_tpSecondPickerSpacing, columnIndex);
+					m_tpSecondPickerSpacing.SetValue(Grid.ColumnProperty, columnIndex);
 				}
 			}
 		}

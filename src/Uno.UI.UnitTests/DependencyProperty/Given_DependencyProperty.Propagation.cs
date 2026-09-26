@@ -424,7 +424,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				var t1 = new VisualTransition();
 				var sb = new Storyboard();
 				anim = new DoubleAnimation();
-				anim.SetBinding(DoubleAnimation.ToProperty, new Binding() { Path = "Tag", RelativeSource = RelativeSource.TemplatedParent });
+				anim.SetBindingInternal(DoubleAnimation.ToProperty, new Binding() { Path = "Tag", RelativeSource = RelativeSource.TemplatedParent });
 				sb.Children.Add(anim);
 				t1.Storyboard = sb;
 				vg.Transitions.Add(t1);

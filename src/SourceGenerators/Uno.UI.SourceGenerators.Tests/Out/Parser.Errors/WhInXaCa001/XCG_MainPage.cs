@@ -145,7 +145,7 @@ namespace TestRepro
 													/* _isTopLevelDictionary:False */
 													__that._component_0 = __p1;
 													global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "EmptyPage.Header.Title");
-													__p1.SetBinding(
+													global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 														global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 														new Microsoft.UI.Xaml.Data.Binding()
 														{
@@ -172,7 +172,7 @@ namespace TestRepro
 													/* _isTopLevelDictionary:False */
 													__that._component_1 = __p1;
 													global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "EmptyPage.Header.Subtitle");
-													__p1.SetBinding(
+													global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 														global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 														new Microsoft.UI.Xaml.Data.Binding()
 														{
@@ -275,7 +275,7 @@ namespace TestRepro
 													__that._component_2 = __p1;
 													global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "EmptyPage.Header.Open");
 													global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MaterialFilledButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-													__p1.SetBinding(
+													global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 														global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 														new Microsoft.UI.Xaml.Data.Binding()
 														{
@@ -350,7 +350,7 @@ namespace TestRepro
 															{
 															/* _isTopLevelDictionary:False */
 															__that._component_4 = __p1;
-															__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
@@ -375,7 +375,7 @@ namespace TestRepro
 															{
 															/* _isTopLevelDictionary:False */
 															__that._component_5 = __p1;
-															__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
@@ -474,7 +474,7 @@ namespace TestRepro
 																					__that._component_6 = __p1;
 																					global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "EmptyPage.Hero.Clone");
 																					global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MaterialOutlinedButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-																					__p1.SetBinding(
+																					global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																						global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 																						new Microsoft.UI.Xaml.Data.Binding()
 																						{
@@ -550,7 +550,7 @@ namespace TestRepro
 																					__that._component_7 = __p1;
 																					global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "EmptyPage.Hero.Star");
 																					global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MaterialOutlinedButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-																					__p1.SetBinding(
+																					global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																						global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 																						new Microsoft.UI.Xaml.Data.Binding()
 																						{
@@ -645,7 +645,7 @@ namespace TestRepro
 																					__that._component_8 = __p1;
 																					global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "EmptyPage.Hero.Refresh");
 																					global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MaterialFilledButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-																					__p1.SetBinding(
+																					global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																						global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 																						new Microsoft.UI.Xaml.Data.Binding()
 																						{
@@ -704,7 +704,7 @@ namespace TestRepro
 												}
 												.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler7)(__p1 => 
 												{
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Controls.ItemsControl.ItemsSourceProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
@@ -751,7 +751,7 @@ namespace TestRepro
 												{
 												/* _isTopLevelDictionary:False */
 												__that._component_10 = __p1;
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Controls.ListView.ItemsSourceProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
@@ -887,7 +887,7 @@ namespace TestRepro
 												__that._component_12 = __p1;
 												global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "EmptyPage.Rail.NewIssue");
 												global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MaterialFilledButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
@@ -963,7 +963,7 @@ namespace TestRepro
 												__that._component_13 = __p1;
 												global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "EmptyPage.Rail.NewPR");
 												global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MaterialOutlinedButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
@@ -1039,7 +1039,7 @@ namespace TestRepro
 												__that._component_14 = __p1;
 												global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "EmptyPage.Rail.Merge");
 												global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MaterialFilledButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
@@ -1115,7 +1115,7 @@ namespace TestRepro
 												__that._component_15 = __p1;
 												global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "EmptyPage.Rail.Deploy");
 												global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MaterialOutlinedButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
@@ -1165,7 +1165,7 @@ namespace TestRepro
 															{
 															/* _isTopLevelDictionary:False */
 															__that._component_17 = __p1;
-															__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
@@ -1191,7 +1191,7 @@ namespace TestRepro
 															{
 															/* _isTopLevelDictionary:False */
 															__that._component_18 = __p1;
-															__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																global::Microsoft.UI.Xaml.Controls.ProgressBar.ValueProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
@@ -1251,7 +1251,7 @@ namespace TestRepro
 															}
 															.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
 															{
-															__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																global::Microsoft.UI.Xaml.Controls.CheckBox.IsCheckedProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
@@ -1273,7 +1273,7 @@ namespace TestRepro
 															}
 															.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
 															{
-															__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																global::Microsoft.UI.Xaml.Controls.CheckBox.IsCheckedProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
@@ -1338,7 +1338,7 @@ namespace TestRepro
 										{
 										/* _isTopLevelDictionary:False */
 										__that._component_21 = __p1;
-										__p1.SetBinding(
+										global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 											global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 											new Microsoft.UI.Xaml.Data.Binding()
 											{
@@ -1517,7 +1517,7 @@ namespace TestRepro
 									global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 									/* _isTopLevelDictionary:False */
 									__that._component_0 = __p1;
-									__p1.SetBinding(
+									global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 										global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 										new Microsoft.UI.Xaml.Data.Binding()
 										{
@@ -1542,7 +1542,7 @@ namespace TestRepro
 									global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 									/* _isTopLevelDictionary:False */
 									__that._component_1 = __p1;
-									__p1.SetBinding(
+									global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 										global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 										new Microsoft.UI.Xaml.Data.Binding()
 										{
@@ -1571,7 +1571,7 @@ namespace TestRepro
 												.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler14)(__p1 => 
 												{
 												global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Documents.Run.TextProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
@@ -1629,7 +1629,7 @@ namespace TestRepro
 												.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler14)(__p1 => 
 												{
 												global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Documents.Run.TextProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
@@ -1776,7 +1776,7 @@ namespace TestRepro
 												global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 												/* _isTopLevelDictionary:False */
 												__that._component_0 = __p1;
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
@@ -1802,7 +1802,7 @@ namespace TestRepro
 												global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 												/* _isTopLevelDictionary:False */
 												__that._component_1 = __p1;
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
@@ -1867,7 +1867,7 @@ namespace TestRepro
 												/* _isTopLevelDictionary:False */
 												__that._component_2 = __p1;
 												global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MaterialTextButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
@@ -1875,7 +1875,7 @@ namespace TestRepro
 														RelativeSource = new RelativeSource(default),
 													}
 												);
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Controls.Button.CommandParameterProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 												);
@@ -1915,7 +1915,7 @@ namespace TestRepro
 												/* _isTopLevelDictionary:False */
 												__that._component_3 = __p1;
 												global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MaterialTextButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Controls.Button.CommandProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
@@ -1923,7 +1923,7 @@ namespace TestRepro
 														RelativeSource = new RelativeSource(default),
 													}
 												);
-												__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 													global::Microsoft.UI.Xaml.Controls.Button.CommandParameterProperty,
 													new Microsoft.UI.Xaml.Data.Binding()
 												);

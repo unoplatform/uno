@@ -304,7 +304,7 @@ namespace Microsoft.UI.Xaml
 
 			if (target is DependencyObject provider)
 			{
-				provider.SetBinding(dependencyProperty, binding);
+				provider.SetBindingInternal(dependencyProperty, binding);
 			}
 			else
 			{
@@ -354,7 +354,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var binding = new ResourceBinding(resourceKey, updateReason, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath);
-			SetBinding(dependencyProperty, binding);
+			SetBindingInternal(dependencyProperty, binding);
 		}
 
 		internal void SetBindingInternal(string dependencyProperty, BindingBase binding)
@@ -391,7 +391,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty)
 		{
-			SetBinding(
+			SetBindingInternal(
 				targetProperty,
 				new Binding
 				{

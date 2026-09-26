@@ -33,7 +33,7 @@ namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 
 			var target = new Control1();
 
-			target.SetBinding(
+			target.SetBindingInternal(
 				Control1.OtherControlProperty,
 				new Binding($"{nameof(source.OtherControl)}.({typeof(Attachable).Namespace}:{nameof(Attachable)}.MyValue)")
 				{

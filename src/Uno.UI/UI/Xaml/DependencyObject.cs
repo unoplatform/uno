@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -46,20 +45,6 @@ namespace Microsoft.UI.Xaml
 		public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => RegisterPropertyChangedCallbackInternal(dp, callback);
 
 		public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) => UnregisterPropertyChangedCallbackInternal(dp, token);
-
-		// Uno-only, but public because the XAML source generator emits calls to these into the
-		// consuming assembly (XamlFileGenerator emits the DependencyProperty overload for DPs and
-		// the string overload for the x:Bind/POCO path).
-		/// <summary>
-		/// Set a binding using a regular or attached DependencyProperty
-		/// </summary>
-		/// <param name="dependencyProperty">The dependency property to bind</param>
-		/// <param name="binding">The binding expression</param>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void SetBinding(DependencyProperty dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void SetBinding(string dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
 
 		internal ManagedWeakReference SelfWeakReference
 		{
