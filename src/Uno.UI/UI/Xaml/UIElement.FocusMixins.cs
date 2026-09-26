@@ -2,6 +2,7 @@
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Rendering;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers.Boxes;
 
 #nullable enable
 
@@ -12,14 +13,8 @@ namespace Microsoft.UI.Xaml
 
 	public partial class UIElement
 	{
-		public FocusState FocusState
-		{
-			get => GetFocusStateValue();
-			set => SetFocusStateValue(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = default(FocusState))]
-		public static DependencyProperty FocusStateProperty { get; } = CreateFocusStateProperty();
+		public partial FocusState FocusState { get; set; }
 
 		public bool IsTabStop
 		{
@@ -33,66 +28,30 @@ namespace Microsoft.UI.Xaml
 				typeof(bool),
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(
-					(bool)false, // This is true for Control descendants (handled by overriding the default in the Control constructor
+					BoolBoxes.False, // This is true for Control descendants (handled by overriding the default in the Control constructor
 					(s, e) => ((UIElement)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
 			);
 
 		private protected virtual void OnIsTabStopChanged(bool oldValue, bool newValue) { }
 
-		public int TabIndex
-		{
-			get => GetTabIndexValue();
-			set => SetTabIndexValue(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = int.MaxValue)]
-		public static DependencyProperty TabIndexProperty { get; } = CreateTabIndexProperty();
-
-		public DependencyObject XYFocusUp
-		{
-			get => GetXYFocusUpValue();
-			set => SetXYFocusUpValue(value);
-		}
+		public partial int TabIndex { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(DependencyObject))]
-		public static DependencyProperty XYFocusUpProperty { get; } = CreateXYFocusUpProperty();
-
-		public DependencyObject XYFocusDown
-		{
-			get => GetXYFocusDownValue();
-			set => SetXYFocusDownValue(value);
-		}
+		public partial DependencyObject XYFocusUp { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(DependencyObject))]
-		public static DependencyProperty XYFocusDownProperty { get; } = CreateXYFocusDownProperty();
-
-		public DependencyObject XYFocusLeft
-		{
-			get => GetXYFocusLeftValue();
-			set => SetXYFocusLeftValue(value);
-		}
+		public partial DependencyObject XYFocusDown { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(DependencyObject))]
-		public static DependencyProperty XYFocusLeftProperty { get; } = CreateXYFocusLeftProperty();
-
-		public DependencyObject XYFocusRight
-		{
-			get => GetXYFocusRightValue();
-			set => SetXYFocusRightValue(value);
-		}
+		public partial DependencyObject XYFocusLeft { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(DependencyObject))]
-		public static DependencyProperty XYFocusRightProperty { get; } = CreateXYFocusRightProperty();
-
-		public bool UseSystemFocusVisuals
-		{
-			get => GetUseSystemFocusVisualsValue();
-			set => SetUseSystemFocusVisualsValue(value);
-		}
+		public partial DependencyObject XYFocusRight { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = false)]
-		public static DependencyProperty UseSystemFocusVisualsProperty { get; } = CreateUseSystemFocusVisualsProperty();
+		public partial bool UseSystemFocusVisuals { get; set; }
 
 		internal virtual void UpdateFocusState(FocusState focusState)
 		{

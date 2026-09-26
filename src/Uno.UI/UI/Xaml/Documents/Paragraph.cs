@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Markup;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -26,7 +27,7 @@ public partial class Paragraph : Block
 	public double TextIndent
 	{
 		get => (double)GetValue(TextIndentProperty);
-		set => SetValue(TextIndentProperty, value);
+		set => SetValue(TextIndentProperty, Boxer.Box(value));
 	}
 
 	public InlineCollection Inlines { get; }
@@ -36,7 +37,7 @@ public partial class Paragraph : Block
 			name: nameof(TextIndent),
 			propertyType: typeof(double),
 			ownerType: typeof(global::Microsoft.UI.Xaml.Documents.Paragraph),
-			typeMetadata: new FrameworkPropertyMetadata(0.0)
+			typeMetadata: new FrameworkPropertyMetadata(DoubleBoxes.Zero)
 		);
 
 	public Paragraph() : base()

@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Microsoft.UI.Composition;
 using Uno.UI.Controls;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 
@@ -178,13 +179,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	#region BackgroundSizing DepedencyProperty
 	[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
-	public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
-
-	public BackgroundSizing BackgroundSizing
-	{
-		get => GetBackgroundSizingValue();
-		set => SetBackgroundSizingValue(value);
-	}
+	public partial BackgroundSizing BackgroundSizing { get; set; }
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{
 		this.UpdateBackgroundSizing();
@@ -243,7 +238,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	public double FontSize
 	{
 		get { return (double)this.GetValue(FontSizeProperty); }
-		set { this.SetValue(FontSizeProperty, value); }
+		set { this.SetValue(FontSizeProperty, Boxer.Box(value)); }
 	}
 
 	public static DependencyProperty FontSizeProperty { get; } =
@@ -274,7 +269,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(bool),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				true,
+				BoolBoxes.True,
 #if __SKIA__
 				// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
 				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
@@ -330,14 +325,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	#region FontStretch
 
-	public FontStretch FontStretch
-	{
-		get => GetFontStretchValue();
-		set => SetFontStretchValue(value);
-	}
-
 	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
-	public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
+	public partial FontStretch FontStretch { get; set; }
 	#endregion
 
 	#region TextWrapping Dependency Property
@@ -373,7 +362,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	public int MaxLines
 	{
 		get { return (int)this.GetValue(MaxLinesProperty); }
-		set { this.SetValue(MaxLinesProperty, value); }
+		set { this.SetValue(MaxLinesProperty, Boxer.Box(value)); }
 	}
 
 	public static DependencyProperty MaxLinesProperty { get; } =
@@ -382,7 +371,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(int),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0,
+				defaultValue: IntBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnMaxLinesChanged()
 			)
@@ -581,13 +570,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
 
 	[GeneratedDependencyProperty(ChangedCallback = true)]
-	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
-
-	public CornerRadius CornerRadius
-	{
-		get => GetCornerRadiusValue();
-		set => SetCornerRadiusValue(value);
-	}
+	public partial CornerRadius CornerRadius { get; set; }
 
 	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{

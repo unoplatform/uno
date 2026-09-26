@@ -4,6 +4,7 @@
 
 using System;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -71,8 +72,8 @@ public partial class PagerControlAutomationPeer : FrameworkElementAutomationPeer
 		if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
 		{
 			RaisePropertyChangedEvent(SelectionPatternIdentifiers.SelectionProperty,
-				oldIndex,
-				newIndex);
+				Boxer.Box(oldIndex),
+				Boxer.Box(newIndex));
 		}
 	}
 }
