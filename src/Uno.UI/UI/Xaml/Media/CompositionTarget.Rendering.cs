@@ -119,15 +119,14 @@ public partial class CompositionTarget
 		((ICompositionTarget)target).RequestNewFrame();
 	}
 
-	private static readonly long _start = Stopwatch.GetTimestamp();
+	private static readonly long _startTimestamp = Compositor.GetSharedCompositor().TimestampInTicks;
 	// We're using this table as a set with weakref keys. values are always null
 	private static readonly ConditionalWeakTable<CompositionTarget, object> _targets = new();
 	private static bool _isRenderingActive;
 
 	static CompositionTarget()
 	{
-		// A closing window stops calling Draw; fail its pending render jobs so awaiters fall
-		// back to software rendering instead of hanging.
+		XamlRootMap.Unregistered += static (_, xamlRoot) => xamlRoot.VisualTree.ContentRoot.CompositionTarget.ClearFrameDrivers();
 	}
 
 	private readonly FrameRenderHelper.FpsHelper _fpsHelper = new();
@@ -269,13 +268,24 @@ public partial class CompositionTarget
 			_phaseLastRenderStart = phaseT0;
 		}
 		var recording = Renderer.CreateRecording();
-		var (path, nativeVisualsInZOrder) = FrameRenderHelper.RecordFrame(
-			recording,
-			(float)bounds.Width,
-			(float)bounds.Height,
-			rootElement.Visual,
-			FrameRenderingOptions.invertNativeElementClipPath,
-			frameDamage);
+		var compositor = Compositor.GetSharedCompositor();
+		compositor.FrameTimestampInTicks = _frameTimestamp != 0 ? _frameTimestamp : null;
+		IGeometry path;
+		List<Visual> nativeVisualsInZOrder;
+		try
+		{
+			(path, nativeVisualsInZOrder) = FrameRenderHelper.RecordFrame(
+				recording,
+				(float)bounds.Width,
+				(float)bounds.Height,
+				rootElement.Visual,
+				FrameRenderingOptions.invertNativeElementClipPath,
+				frameDamage);
+		}
+		finally
+		{
+			compositor.FrameTimestampInTicks = null;
+		}
 		var phaseT1 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
 		var frame = recording.Finish();
 		if (_logFramePhases)
@@ -523,8 +533,6 @@ public partial class CompositionTarget
 				_phaseDrawFrames++;
 			}
 
-			InvokeRendering();
-
 			if (FrameRenderingOptions.applyScalingToNativeElementClipPath && rasterizationScale != 1)
 			{
 				if (_lastNativeClipPath != lastRenderedFrame.nativeElementClipPath || _lastScaledNativeClipPath == null)
@@ -659,56 +667,48 @@ public partial class CompositionTarget
 			=> !_disposed && _pipelineReleased && _retainCount <= 0 && !(_publicized && Record.FrameData is not null);
 	}
 
-	internal static void InvokeRendering()
+	/// <summary>
+	/// Raises <see cref="Rendering"/> from the frame tick, before layout and before the record, so what a handler
+	/// writes lands in the frame recorded by the same tick.
+	/// </summary>
+	private static void InvokeRendering(long frameTimestamp)
 	{
-		if (NativeDispatcher.Main.HasThreadAccess)
-		{
-			InvokeRenderingCore();
-		}
-		else
-		{
-			NativeDispatcher.Main.Enqueue(InvokeRenderingCore, NativeDispatcherPriority.High);
-		}
+		var t0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
 
-		static void InvokeRenderingCore()
+		// Every live target's latest frame, including targets that did not re-record since the last raise:
+		// a subscriber reading FrameData expects one entry per window, not only the one that just drew.
+		List<FrameHold>? held = null;
+		List<(Window Window, object? Data)>? frameData = null;
+		foreach (var (target, _) in _targets)
 		{
-			var t0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
-
-			// Every live target's latest frame, including targets that did not re-record since the last raise:
-			// a subscriber reading FrameData expects one entry per window, not only the one that just drew.
-			List<FrameHold>? held = null;
-			List<(Window Window, object? Data)>? frameData = null;
-			foreach (var (target, _) in _targets)
+			if (target._renderingFrame is not { } frame || target.ContentRoot.GetOwnerWindow() is not { } window)
 			{
-				if (target._renderingFrame is not { } frame || target.ContentRoot.GetOwnerWindow() is not { } window)
-				{
-					continue;
-				}
-
-				frame.Retain();
-				(held ??= new()).Add(frame);
-				(frameData ??= new()).Add((window, frame.Record.FrameData));
+				continue;
 			}
 
-			var args = new RenderingEventArgs(Stopwatch.GetElapsedTime(_start), frameData);
-			try
-			{
-				_rendering?.Invoke(null, args);
-			}
-			finally
-			{
-				if (held is not null)
-				{
-					foreach (var frame in held)
-					{
-						frame.Release(args.FrameDataAccessed);
-					}
-				}
+			frame.Retain();
+			(held ??= new()).Add(frame);
+			(frameData ??= new()).Add((window, frame.Record.FrameData));
+		}
 
-				if (_logFramePhases)
+		var args = new RenderingEventArgs(TimeSpan.FromTicks(frameTimestamp - _startTimestamp), frameData);
+		try
+		{
+			_rendering?.Invoke(null, args);
+		}
+		finally
+		{
+			if (held is not null)
+			{
+				foreach (var frame in held)
 				{
-					_phaseTickTicks += Stopwatch.GetTimestamp() - t0;
+					frame.Release(args.FrameDataAccessed);
 				}
+			}
+
+			if (_logFramePhases)
+			{
+				_phaseTickTicks += Stopwatch.GetTimestamp() - t0;
 			}
 		}
 	}

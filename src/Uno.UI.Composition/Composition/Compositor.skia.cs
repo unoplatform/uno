@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
 using Uno.UI.Dispatching;
@@ -33,7 +34,21 @@ public partial class Compositor
 
 	internal static bool SkipVisualTreePainting { get; set; }
 
-	internal bool IsAnimating => _runningAnimations.Count > 0;
+	// Frame drivers are motion too, so "wait until animations settle" must cover them. They live on the
+	// CompositionTarget, which this assembly cannot name, so they are counted.
+	private static int _frameDriverCount;
+
+	internal static void AddFrameDriver() => Interlocked.Increment(ref _frameDriverCount);
+
+	internal static void RemoveFrameDriver() => Interlocked.Decrement(ref _frameDriverCount);
+
+	internal bool IsAnimating => _runningAnimations.Count > 0 || Volatile.Read(ref _frameDriverCount) > 0;
+
+	/// <summary>The timestamp of the frame being recorded, or null outside of a record.</summary>
+	internal long? FrameTimestampInTicks { get; set; }
+
+	/// <summary>The time animations evaluate against: the frame's while recording, the real clock otherwise.</summary>
+	internal long AnimationTimestampInTicks => FrameTimestampInTicks ?? TimestampInTicks;
 
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
 	{
