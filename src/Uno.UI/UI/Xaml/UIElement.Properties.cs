@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Windows.UI.Core;
-using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Xaml.Input;
-using Uno.UI.Helpers;
+using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml
 {
@@ -127,11 +127,11 @@ namespace Microsoft.UI.Xaml
 			var visualTree = Uno.UI.Xaml.Core.VisualTree.GetForElement(this, Uno.UI.Xaml.Core.VisualTree.LookupOptions.NoFallback);
 			if (oldValue is KeyboardAcceleratorCollection oldCollection)
 			{
-				oldCollection.Leave(this, new LeaveParams(false) { IsForKeyboardAccelerator = true, VisualTree = visualTree });
+				oldCollection.UnregisterLiveAccelerators(this, new LeaveParams(false) { IsForKeyboardAccelerator = true, VisualTree = visualTree });
 			}
 			if (newValue is KeyboardAcceleratorCollection newCollection)
 			{
-				newCollection.Enter(this, new EnterParams(false) { IsForKeyboardAccelerator = true, VisualTree = visualTree });
+				newCollection.RegisterLiveAccelerators(this, new EnterParams(false) { IsForKeyboardAccelerator = true, VisualTree = visualTree });
 			}
 #endif
 		}

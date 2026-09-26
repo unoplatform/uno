@@ -3,27 +3,26 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
-
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using Uno.UI.DataBinding;
-using Uno.UI.Xaml.Core;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
-using System.Runtime.CompilerServices;
-using Microsoft.UI.Dispatching;
-using Windows.System;
 using View = Microsoft.UI.Xaml.UIElement;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -80,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Propagates Enter to the flyout's content for keyboard accelerator registration.
 		/// Subclasses (Flyout, MenuFlyout) override to propagate to their specific content.
 		/// </summary>
-		internal new virtual void Enter(DependencyObject pNamescopeOwner, EnterParams @params)
+		internal virtual void PropagateKeyboardAcceleratorEnter(DependencyObject pNamescopeOwner, EnterParams @params)
 		{
 		}
 
@@ -88,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Propagates Leave to the flyout's content for keyboard accelerator unregistration.
 		/// Subclasses (Flyout, MenuFlyout) override to propagate to their specific content.
 		/// </summary>
-		internal new virtual void Leave(DependencyObject pNamescopeOwner, LeaveParams @params)
+		internal virtual void PropagateKeyboardAcceleratorLeave(DependencyObject pNamescopeOwner, LeaveParams @params)
 		{
 		}
 

@@ -11,26 +11,26 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class Button : ButtonBase
 	{
 		// MUX Reference: CButton::EnterImpl in Button.cpp
-		internal override void EnterImpl(EnterParams @params, int depth)
+		internal override void EnterImpl(DependencyObject namescopeOwner, EnterParams @params)
 		{
-			base.EnterImpl(@params, depth);
+			base.EnterImpl(namescopeOwner, @params);
 
 			var flyout = Flyout;
 			if (flyout is not null)
 			{
-				flyout.Enter(null, @params);
+				flyout.PropagateKeyboardAcceleratorEnter(null, @params);
 			}
 		}
 
 		// MUX Reference: CButton::LeaveImpl in Button.cpp
-		internal override void LeaveImpl(LeaveParams @params)
+		internal override void LeaveImpl(DependencyObject namescopeOwner, LeaveParams @params)
 		{
-			base.LeaveImpl(@params);
+			base.LeaveImpl(namescopeOwner, @params);
 
 			var flyout = Flyout;
 			if (flyout is not null)
 			{
-				flyout.Leave(null, @params);
+				flyout.PropagateKeyboardAcceleratorLeave(null, @params);
 			}
 		}
 		// TODO Uno: Uncomment this code and all commented out code related to this field once we know where

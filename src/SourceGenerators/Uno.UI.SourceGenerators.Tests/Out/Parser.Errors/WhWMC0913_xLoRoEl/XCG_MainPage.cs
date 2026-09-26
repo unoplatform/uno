@@ -38,6 +38,7 @@ namespace TestRepro
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
+			__nameScope.Owner = this;
 			var __that = this;
 			base.IsParsing = true;
 			// Source MainPage.xaml (Line 1:3)
@@ -60,6 +61,7 @@ namespace TestRepro
 			}
 			))
 			;
+			__nameScope.MarkOwnerAsPossiblyHavingDefinitionName();
 			OnInitializeCompleted();
 
 		}

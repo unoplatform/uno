@@ -38,6 +38,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
+			__nameScope.Owner = this;
 			var __that = this;
 			base.IsParsing = true;
 			// Source Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 1:2)
@@ -114,6 +115,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			}
 			))
 			;
+			__nameScope.MarkOwnerAsPossiblyHavingDefinitionName();
 			OnInitializeCompleted();
 
 			Bindings = new Binding_Xaml_Object_With_Xaml_Object_Properties_Bindings(this);

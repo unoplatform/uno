@@ -5,9 +5,9 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class Flyout
 {
-	internal override void Enter(DependencyObject pNamescopeOwner, EnterParams @params)
+	internal override void PropagateKeyboardAcceleratorEnter(DependencyObject pNamescopeOwner, EnterParams @params)
 	{
-		base.Enter(pNamescopeOwner, @params);
+		base.PropagateKeyboardAcceleratorEnter(pNamescopeOwner, @params);
 
 		var content = Content;
 		if (content is not null)
@@ -24,14 +24,14 @@ partial class Flyout
 			visualTree ??= (this.GetParent() as DependencyObject)?.GetVisualTree();
 #endif
 			//This is a dead enter to register any keyboard accelerators that may be present in the Flyout Content
-			var newParams = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
-			content.Enter(newParams, 0);
+			var newParams = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree, Depth = 0 };
+			content.EnterTree(pNamescopeOwner, newParams);
 		}
 	}
 
-	internal override void Leave(DependencyObject pNamescopeOwner, LeaveParams @params)
+	internal override void PropagateKeyboardAcceleratorLeave(DependencyObject pNamescopeOwner, LeaveParams @params)
 	{
-		base.Leave(pNamescopeOwner, @params);
+		base.PropagateKeyboardAcceleratorLeave(pNamescopeOwner, @params);
 
 		var content = Content;
 		if (content is not null)
@@ -41,7 +41,7 @@ partial class Flyout
 			visualTree ??= (this.GetParent() as DependencyObject)?.GetVisualTree();
 #endif
 			var newParams = new LeaveParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
-			content.Leave(newParams);
+			content.LeaveTree(pNamescopeOwner, newParams);
 		}
 	}
 }

@@ -145,7 +145,7 @@ public partial class DependencyObject
 	//
 	// Derived classes are expected to first call <base>::EnterImpl, and
 	// then call Enter on any "children".
-	internal void EnterImpl(DependencyObject? namescopeOwner, EnterParams @params)
+	internal virtual void EnterImpl(DependencyObject? namescopeOwner, EnterParams @params)
 	{
 		// Mark the object as in the live tree
 		// Enter cannot make a Live object non-live
@@ -344,7 +344,7 @@ public partial class DependencyObject
 	// would do similar cleanup on their final leave. This enables appropriate sharing.
 	// Hence an element should not cleanup resources for its
 	// child/property in its leave.
-	internal void LeaveImpl(DependencyObject? namescopeOwner, LeaveParams @params)
+	internal virtual void LeaveImpl(DependencyObject? namescopeOwner, LeaveParams @params)
 	{
 		// Raise InheritanceContextChanged for the live leave.  We need to do this before m_bitFields.fLive is updated.
 		// params.fIsLive cannot be used because it is updated before we get here.
