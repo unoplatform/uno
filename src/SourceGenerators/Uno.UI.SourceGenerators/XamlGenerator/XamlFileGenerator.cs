@@ -35,6 +35,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private static readonly char[] _dotArray = new[] { '.' };
 		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
+		private static readonly char[] _complexExpressionChars = new[] { '(', '[', '?', ')' };
 
 		private static readonly Dictionary<string, string[]> _knownNamespaces = new Dictionary<string, string[]>
 		{
@@ -4575,7 +4576,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							throw new XamlGenerationException("TwoWay binding to static properties is not supported", bindNode);
 						}
 
-						return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ({staticContextFunction.Expression}), null))";
+						return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ {WithStaticObservation($"global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ({staticContextFunction.Expression}), null)", modeMember, rawFunction)})";
 					}
 					else
 					{
@@ -4651,7 +4652,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray}))";
+				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ {WithStaticObservation($"global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray})", modeMember, rawFunction)})";
 			}
 			else
 			{
@@ -4741,9 +4742,117 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
-				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
+				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ {WithStaticObservation($"global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray})", modeMember, rawFunction)})";
 			}
 		}
+
+		/// <summary>
+		/// Wraps an x:Bind provider call so that a static-rooted path (e.g. local:StaticClass.MyObj.Value)
+		/// also observes INPC changes on the instance reached through the static member.
+		/// </summary>
+		private string WithStaticObservation(string providerCall, string modeMember, string rawFunction)
+		{
+			if (modeMember != "OneTime"
+				&& !string.IsNullOrEmpty(rawFunction)
+				&& TryGetStaticRootAndInstancePath(rawFunction, out var staticRoot, out var instancePath))
+			{
+				return $"global::Uno.UI.Xaml.BindingHelper.SetXBindStaticPropertyPaths({providerCall}, {staticRoot}, new string[] {{\"{instancePath.Replace("\"", "\\\"")}\"}})";
+			}
+
+			return providerCall;
+		}
+
+		/// <summary>
+		/// For a static-rooted x:Bind path (e.g., "global::Namespace.StaticClass.MyObj.Value"),
+		/// determines the static root expression and the instance property path.
+		/// </summary>
+		/// <param name="rawFunction">The namespace-rewritten x:Bind expression</param>
+		/// <param name="staticRoot">Output: the static root expression (e.g., "global::Namespace.StaticClass.MyObj")</param>
+		/// <param name="instancePath">Output: the instance property path (e.g., "Value")</param>
+		/// <returns>True if the path was successfully split</returns>
+		private bool TryGetStaticRootAndInstancePath(string rawFunction, out string staticRoot, out string instancePath)
+		{
+			staticRoot = "";
+			instancePath = "";
+
+			if (!rawFunction.StartsWith("global::", StringComparison.Ordinal))
+			{
+				return false;
+			}
+
+			// Don't handle complex expressions (function calls, indexers, casts, null-conditionals)
+			if (rawFunction.IndexOfAny(_complexExpressionChars) != -1)
+			{
+				return false;
+			}
+
+			var withoutGlobal = rawFunction.Substring("global::".Length);
+
+			// Try progressively longer type name candidates to find the static type
+			var lastDotPos = -1;
+			while (true)
+			{
+				var nextDotPos = withoutGlobal.IndexOf('.', lastDotPos + 1);
+				if (nextDotPos == -1)
+				{
+					break;
+				}
+
+				var candidateName = withoutGlobal.Substring(0, nextDotPos);
+				if (_metadataHelper.FindTypeByFullName(candidateName) is INamedTypeSymbol candidateType)
+				{
+					// Found the type. The rest after the type is the member path.
+					var restAfterType = withoutGlobal.Substring(nextDotPos + 1);
+					var firstDotInRest = restAfterType.IndexOf('.');
+
+					if (firstDotInRest == -1)
+					{
+						// Path is just "global::Type.Member" with no instance path to observe
+						return false;
+					}
+
+					var firstMember = restAfterType.Substring(0, firstDotInRest);
+
+					// The segment right after the type must be a readable static property or field.
+					// A nested type, a method group or an instance member would emit an expression
+					// that does not compile, so fall back to the unobserved behavior instead.
+					if (!IsReadableStaticValueMember(candidateType, firstMember))
+					{
+						return false;
+					}
+
+					staticRoot = "global::" + candidateName + "." + firstMember;
+					instancePath = restAfterType.Substring(firstDotInRest + 1);
+					return true;
+				}
+
+				lastDotPos = nextDotPos;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Determines whether <paramref name="memberName"/> is a static property or field of
+		/// <paramref name="type"/> that the generated code is allowed to read.
+		/// </summary>
+		private bool IsReadableStaticValueMember(INamedTypeSymbol type, string memberName)
+		{
+			if (type.GetPropertyWithName(memberName) is { IsStatic: true, GetMethod: { } getMethod })
+			{
+				return IsAccessibleFromGeneratedCode(getMethod);
+			}
+
+			if (type.GetFieldWithName(memberName) is { IsStatic: true } field)
+			{
+				return IsAccessibleFromGeneratedCode(field);
+			}
+
+			return false;
+		}
+
+		private bool IsAccessibleFromGeneratedCode(ISymbol symbol)
+			=> _metadataHelper.Compilation.IsSymbolAccessibleWithin(symbol, _metadataHelper.Compilation.Assembly);
 
 		private ITypeSymbol GetXBindPropertyPathType(string propertyPath, INamedTypeSymbol? rootType, IXamlLocation location)
 		{
