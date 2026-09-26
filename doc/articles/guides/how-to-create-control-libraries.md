@@ -63,6 +63,7 @@ If your control contains an interactive element (for example a `Button` in its c
 ```csharp
 using System.Windows.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
 
 public partial class MyTemplatedControl : Control
