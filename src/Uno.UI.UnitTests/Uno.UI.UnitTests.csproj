@@ -118,6 +118,10 @@
 		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourcesGenerator\ResourceQualifierPathResolver.cs">
 			<Link>Resources\ResourceQualifierPathResolver.cs</Link>
 		</Compile>
+		<!-- Pure math split out of the Win32/X11 pointer input sources so it's testable without a real
+		     HWND/X11 display (neither runtime host project has its own unit test harness). -->
+		<Compile Include="..\Uno.UI.Runtime.Skia.Win32\Devices\Input\Win32PointerCoordinateMath.cs" Link="Windows_UI_Input\Win32PointerCoordinateMath.cs" />
+		<Compile Include="..\Uno.UI.Runtime.Skia.X11\Devices\Input\X11PointerCoordinateMath.cs" Link="Windows_UI_Input\X11PointerCoordinateMath.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<!--

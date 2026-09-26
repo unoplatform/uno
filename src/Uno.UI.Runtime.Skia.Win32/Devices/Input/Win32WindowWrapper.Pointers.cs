@@ -90,7 +90,7 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 	public void ReleasePointerCapture(PointerIdentifier pointer) => ReleasePointerCapture();
 
-	private ushort ReadCommonWParamInfo(WPARAM wParam, out POINTER_INFO pointerInfo, out POINTER_INPUT_TYPE pointerType, out System.Drawing.Point position, out System.Drawing.Point rawPosition)
+	private ushort ReadCommonWParamInfo(WPARAM wParam, out POINTER_INFO pointerInfo, out POINTER_INPUT_TYPE pointerType, out Point position, out Point rawPosition)
 	{
 		var pointerId = Win32Helper.GET_POINTERID_WPARAM(wParam);
 
@@ -104,17 +104,25 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 			throw new InvalidOperationException($"{nameof(PInvoke.GetPointerInfo)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		position = pointerInfo.ptPixelLocation;
-		rawPosition = pointerInfo.ptPixelLocationRaw;
-		var success = PInvoke.ScreenToClient(_hwnd, ref position);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
-		var success2 = PInvoke.ScreenToClient(_hwnd, ref rawPosition);
-		if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
-
 		var scale = XamlRoot!.RasterizationScale;
-		position = new System.Drawing.Point((int)(position.X / scale), (int)(position.Y / scale));
-		rawPosition = new System.Drawing.Point((int)(rawPosition.X / scale), (int)(rawPosition.Y / scale));
+
+		// Touch and pen carry a HIMETRIC position, which is ~26x finer than the pointer's logical pixel grid:
+		// truncating to whole logical pixels quantizes a slow drag into steps, and at 150% or 200% throws away
+		// precision the digitizer actually reported. Mouse stays on ptPixelLocation, which is integer anyway.
+		var useHimetric = pointerType is POINTER_INPUT_TYPE.PT_TOUCH or POINTER_INPUT_TYPE.PT_PEN;
+
+		position = ToClientLogical(pointerInfo.ptPixelLocation, pointerInfo.ptHimetricLocation, useHimetric, scale);
+		rawPosition = ToClientLogical(pointerInfo.ptPixelLocationRaw, pointerInfo.ptHimetricLocationRaw, useHimetric, scale);
 		return pointerId;
+	}
+
+	private Point ToClientLogical(System.Drawing.Point screenPx, System.Drawing.Point screenHimetric, bool useHimetric, double scale)
+	{
+		var clientPx = screenPx;
+		var success = PInvoke.ScreenToClient(_hwnd, ref clientPx);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
+
+		return Win32PointerCoordinateMath.ComputeClientLogical((screenPx.X, screenPx.Y), (clientPx.X, clientPx.Y), (screenHimetric.X, screenHimetric.Y), useHimetric, scale);
 	}
 
 	private void OnPointerCaptureChanged(WPARAM wParam)
