@@ -1,5 +1,7 @@
 # Uno Platform DevServer CLI
 
+<!-- mcp-name: uno.platform/uno-app -->
+
 The Uno DevServer CLI (`uno-devserver`) manages the local development server for [Uno Platform](https://platform.uno) projects. It handles DevServer lifecycle, IDE channel communication, add-in discovery, and exposes an MCP (Model Context Protocol) interface for AI-powered development tools.
 
 ## Installation
