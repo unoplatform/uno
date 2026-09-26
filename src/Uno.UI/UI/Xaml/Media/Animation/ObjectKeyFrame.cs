@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class ObjectKeyFrame : DependencyObject, IKeyFrame<object>
 	{
-		public ObjectKeyFrame()
+		protected ObjectKeyFrame()
 		{
 			IsAutoPropertyInheritanceEnabled = false;
 			InitializeBinder();

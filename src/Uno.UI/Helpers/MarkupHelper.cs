@@ -40,6 +40,26 @@ namespace Uno.UI.Helpers
 		}
 
 		/// <summary>
+		/// Sets the x:Name of an element whose Name property is get-only, as the WinUI XAML parser does.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void SetXName(object target, string name)
+		{
+			switch (target)
+			{
+				case VisualState visualState:
+					visualState.Name = name;
+					break;
+				case VisualStateGroup visualStateGroup:
+					visualStateGroup.Name = name;
+					break;
+				case Microsoft.UI.Xaml.Documents.TextElement textElement:
+					textElement.Name = name;
+					break;
+			}
+		}
+
+		/// <summary>
 		/// Gets the Uid defined via <see cref="SetXUid(object, string)"/>
 		/// </summary>
 		/// <param name="target">The target object</param>

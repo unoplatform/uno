@@ -124,13 +124,13 @@ public partial class ScrollPresenter :
 	public ScrollingScrollMode ComputedHorizontalScrollMode
 	{
 		get => (ScrollingScrollMode)GetValue(ComputedHorizontalScrollModeProperty);
-		set => SetValue(ComputedHorizontalScrollModeProperty, value);
+		internal set => SetValue(ComputedHorizontalScrollModeProperty, value);
 	}
 
 	public ScrollingScrollMode ComputedVerticalScrollMode
 	{
 		get => (ScrollingScrollMode)GetValue(ComputedVerticalScrollModeProperty);
-		set => SetValue(ComputedVerticalScrollModeProperty, value);
+		internal set => SetValue(ComputedVerticalScrollModeProperty, value);
 	}
 
 	public ScrollingChainMode ZoomChainMode

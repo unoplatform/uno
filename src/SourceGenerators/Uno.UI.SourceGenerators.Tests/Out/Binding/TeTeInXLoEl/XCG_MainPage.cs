@@ -84,6 +84,7 @@ namespace TestRepro
 												)
 												,
 											}
+											,
 										}
 										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 										{
@@ -142,6 +143,7 @@ namespace TestRepro
 												)
 												,
 											}
+											,
 										}
 										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 										{
@@ -154,6 +156,7 @@ namespace TestRepro
 									)
 									,
 								}
+								,
 							}
 							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 							{
@@ -221,6 +224,7 @@ namespace TestRepro
 						)
 						,
 					}
+					,
 				}
 				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
@@ -356,6 +360,7 @@ namespace TestRepro
 								)
 								,
 							}
+							,
 						}
 						.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 						{

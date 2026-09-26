@@ -61,6 +61,7 @@ namespace TestRepro
 								)
 								,
 							}
+							,
 						}
 						.GenericApply(__that, __nameScope, __ResourceOwner_1, ApplyTo_Pag_ResΞ0_Sty)
 					)
@@ -89,6 +90,7 @@ namespace TestRepro
 								)
 								,
 							}
+							,
 						}
 						.GenericApply(__that, __nameScope, __ResourceOwner_1, ApplyTo_Pag_ResΞ1_Sty)
 					)

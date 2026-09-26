@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public new bool IsPointerOver
 		{
 			get => base.IsPointerOver;
-			set => base.IsPointerOver = value;
+			internal set => base.IsPointerOver = value;
 		}
 
 		private void InitializeProperties()

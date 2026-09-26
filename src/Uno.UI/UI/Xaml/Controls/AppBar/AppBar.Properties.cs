@@ -89,7 +89,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public AppBarTemplateSettings TemplateSettings
 		{
 			get => (AppBarTemplateSettings)GetValue(TemplateSettingsProperty);
-			set => SetValue(TemplateSettingsProperty, value);
+			internal set => SetValue(TemplateSettingsProperty, value);
 		}
 		public static DependencyProperty TemplateSettingsProperty { get; } =
 			DependencyProperty.Register(nameof(TemplateSettings), typeof(AppBarTemplateSettings), typeof(AppBar), new FrameworkPropertyMetadata(null));

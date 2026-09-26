@@ -163,7 +163,7 @@ namespace Microsoft.UI.Composition
 		public ContainerVisual? Parent
 		{
 			get => _parent;
-			set
+			internal set
 			{
 				if (!ReferenceEquals(_parent, value))
 				{

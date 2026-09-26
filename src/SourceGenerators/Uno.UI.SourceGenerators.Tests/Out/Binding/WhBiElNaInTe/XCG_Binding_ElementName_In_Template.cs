@@ -73,6 +73,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						)
 						,
 					}
+					,
 				}
 				.Binding_ElementName_In_Template_d9353a41d6883de0ddf51bf7c4e43f1e_XamlApply((Binding_ElementName_In_Template_d9353a41d6883de0ddf51bf7c4e43f1eXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{

@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public CommandBarTemplateSettings CommandBarTemplateSettings
 		{
 			get { return (CommandBarTemplateSettings)this.GetValue(CommandBarTemplateSettingsProperty); }
-			set { this.SetValue(CommandBarTemplateSettingsProperty, value); }
+			internal set { this.SetValue(CommandBarTemplateSettingsProperty, value); }
 		}
 		public static DependencyProperty CommandBarTemplateSettingsProperty { get; } =
 			DependencyProperty.Register(nameof(CommandBarTemplateSettings), typeof(CommandBarTemplateSettings), typeof(CommandBar), new FrameworkPropertyMetadata(null));

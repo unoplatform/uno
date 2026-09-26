@@ -580,7 +580,7 @@ public partial class NavigationView
 	public NavigationViewTemplateSettings TemplateSettings
 	{
 		get => (NavigationViewTemplateSettings)GetValue(TemplateSettingsProperty);
-		set => SetValue(TemplateSettingsProperty, value);
+		internal set => SetValue(TemplateSettingsProperty, value);
 	}
 
 	/// <summary>

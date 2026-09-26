@@ -42,6 +42,6 @@ public partial class ProgressBar
 	public ProgressBarTemplateSettings TemplateSettings
 	{
 		get => (ProgressBarTemplateSettings)GetValue(TemplateSettingsProperty);
-		set => SetValue(TemplateSettingsProperty, value);
+		internal set => SetValue(TemplateSettingsProperty, value);
 	}
 }

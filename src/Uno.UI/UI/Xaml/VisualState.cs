@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		public string Name { get; set; }
+		public string Name { get; internal set; }
 
 		#region StoryBoard DependencyProperty
 

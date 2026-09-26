@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml
 		public FocusState FocusState
 		{
 			get => GetFocusStateValue();
-			set => SetFocusStateValue(value);
+			internal set => SetFocusStateValue(value);
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = default(FocusState))]

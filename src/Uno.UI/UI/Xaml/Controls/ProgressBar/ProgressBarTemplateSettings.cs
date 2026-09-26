@@ -15,7 +15,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double ContainerAnimationStartPosition
 	{
 		get => (double)GetValue(ContainerAnimationStartPositionProperty);
-		set => SetValue(ContainerAnimationStartPositionProperty, value);
+		internal set => SetValue(ContainerAnimationStartPositionProperty, value);
 	}
 
 	public static DependencyProperty ContainerAnimationEndPositionProperty { get; } = DependencyProperty.Register(
@@ -24,7 +24,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double ContainerAnimationEndPosition
 	{
 		get => (double)GetValue(ContainerAnimationEndPositionProperty);
-		set => SetValue(ContainerAnimationEndPositionProperty, value);
+		internal set => SetValue(ContainerAnimationEndPositionProperty, value);
 	}
 
 	public static DependencyProperty Container2AnimationStartPositionProperty { get; } = DependencyProperty.Register(
@@ -33,7 +33,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double Container2AnimationStartPosition
 	{
 		get => (double)GetValue(Container2AnimationStartPositionProperty);
-		set => SetValue(Container2AnimationStartPositionProperty, value);
+		internal set => SetValue(Container2AnimationStartPositionProperty, value);
 	}
 
 	public static DependencyProperty Container2AnimationEndPositionProperty { get; } = DependencyProperty.Register(
@@ -42,7 +42,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double Container2AnimationEndPosition
 	{
 		get => (double)GetValue(Container2AnimationEndPositionProperty);
-		set => SetValue(Container2AnimationEndPositionProperty, value);
+		internal set => SetValue(Container2AnimationEndPositionProperty, value);
 	}
 
 	public static DependencyProperty EllipseAnimationEndPositionProperty { get; } = DependencyProperty.Register(
@@ -51,7 +51,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double EllipseAnimationEndPosition
 	{
 		get => (double)GetValue(EllipseAnimationEndPositionProperty);
-		set => SetValue(EllipseAnimationEndPositionProperty, value);
+		internal set => SetValue(EllipseAnimationEndPositionProperty, value);
 	}
 
 	public static DependencyProperty EllipseAnimationWellPositionProperty { get; } = DependencyProperty.Register(
@@ -60,7 +60,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double EllipseAnimationWellPosition
 	{
 		get => (double)GetValue(EllipseAnimationWellPositionProperty);
-		set => SetValue(EllipseAnimationWellPositionProperty, value);
+		internal set => SetValue(EllipseAnimationWellPositionProperty, value);
 	}
 
 	public static DependencyProperty EllipseDiameterProperty { get; } = DependencyProperty.Register(
@@ -69,7 +69,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double EllipseDiameter
 	{
 		get => (double)GetValue(EllipseDiameterProperty);
-		set => SetValue(EllipseDiameterProperty, value);
+		internal set => SetValue(EllipseDiameterProperty, value);
 	}
 
 	public static DependencyProperty EllipseOffsetProperty { get; } = DependencyProperty.Register(
@@ -78,7 +78,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double EllipseOffset
 	{
 		get => (double)GetValue(EllipseOffsetProperty);
-		set => SetValue(EllipseOffsetProperty, value);
+		internal set => SetValue(EllipseOffsetProperty, value);
 	}
 
 	public static DependencyProperty ContainerAnimationMidPositionProperty { get; } = DependencyProperty.Register(
@@ -87,7 +87,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double ContainerAnimationMidPosition
 	{
 		get => (double)GetValue(ContainerAnimationMidPositionProperty);
-		set => SetValue(ContainerAnimationMidPositionProperty, value);
+		internal set => SetValue(ContainerAnimationMidPositionProperty, value);
 	}
 
 	public static DependencyProperty IndicatorLengthDeltaProperty { get; } = DependencyProperty.Register(
@@ -96,7 +96,7 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public double IndicatorLengthDelta
 	{
 		get => (double)GetValue(IndicatorLengthDeltaProperty);
-		set => SetValue(IndicatorLengthDeltaProperty, value);
+		internal set => SetValue(IndicatorLengthDeltaProperty, value);
 	}
 
 	public static DependencyProperty ClipRectProperty { get; } = DependencyProperty.Register(
@@ -105,6 +105,6 @@ public partial class ProgressBarTemplateSettings : DependencyObject
 	public RectangleGeometry ClipRect
 	{
 		get => (RectangleGeometry)GetValue(ClipRectProperty);
-		set => SetValue(ClipRectProperty, value);
+		internal set => SetValue(ClipRectProperty, value);
 	}
 }

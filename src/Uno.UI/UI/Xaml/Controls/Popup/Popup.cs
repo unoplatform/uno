@@ -258,7 +258,7 @@ public partial class Popup
 	public PopupPlacementMode ActualPlacement
 	{
 		get => _actualPlacement;
-		set
+		internal set
 		{
 			if (_actualPlacement != value)
 			{
