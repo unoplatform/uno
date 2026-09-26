@@ -575,6 +575,115 @@ public class Given_ItemsRepeater_FastScroll
 #endif
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_ScrollBarThumbDragged_Then_ViewChangedIsIntermediateUntilRelease()
+	{
+		// WinUI puts the whole thumb drag in an "intermediate view changed mode"
+		// (ScrollViewer_Partial.cpp: EnterIntermediateViewChangedMode on ScrollEventType_ThumbTrack)
+		// so each drag tick raises ViewChanged(IsIntermediate=true) and skips arrange/snap; only the
+		// release (EndScroll) raises the final, non-intermediate ViewChanged. Guards
+		// ScrollViewer.OnVerticalScrollBarScrolled routing ThumbTrack through ChangeViewCore's
+		// isIntermediate flag.
+		var sut = CreateMixedTemplateSut(itemCount: 150, viewport: new Size(360, 600));
+		await LoadAsync(sut);
+
+		var verticalScrollBar = sut.Scroller.ElementVerticalScrollBar;
+		verticalScrollBar.Should().NotBeNull("the vertical scrollbar must be materialized to drive its Scroll handler.");
+
+		var intermediateFlags = new List<bool>();
+		sut.Scroller.ViewChanged += (_, e) => intermediateFlags.Add(e.IsIntermediate);
+
+		for (var i = 1; i <= 5; i++)
+		{
+			sut.Scroller.OnVerticalScrollBarScrolled(
+				verticalScrollBar,
+				new Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs
+				{
+					ScrollEventType = Microsoft.UI.Xaml.Controls.Primitives.ScrollEventType.ThumbTrack,
+					NewValue = i * 20.0,
+				});
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		intermediateFlags.Should().NotBeEmpty("each ThumbTrack tick must raise ViewChanged");
+		intermediateFlags.Should().OnlyContain(f => f,
+			"every ThumbTrack tick must be marked IsIntermediate, matching WinUI's intermediate view-changed mode");
+
+		intermediateFlags.Clear();
+		sut.Scroller.OnVerticalScrollBarScrolled(
+			verticalScrollBar,
+			new Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs
+			{
+				// Must differ from the last ThumbTrack value (100.0): Set() only raises ViewChanged
+				// when the offset actually moves, so an EndScroll at the same value as the last tick
+				// would raise nothing and tell us nothing about the intermediate flag.
+				ScrollEventType = Microsoft.UI.Xaml.Controls.Primitives.ScrollEventType.EndScroll,
+				NewValue = 120.0,
+			});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		intermediateFlags.Should().Contain(f => !f,
+			"releasing the thumb (EndScroll) must raise a final, non-intermediate ViewChanged");
+	}
+
+	[TestMethod]
+	public async Task When_EffectiveViewportShiftIsSubPixel_Then_MeasureIsSkipped()
+	{
+		// WinUI tolerates viewport jitter below 0.01px (ViewportManagerWithPlatformFeatures.cpp,
+		// UpdateViewport's roundingTolerance) so a fractional scroll tick doesn't re-measure the
+		// whole repeater. Drives ItemsRepeater.RaiseEffectiveViewportChanged directly so the test
+		// doesn't depend on the compositor producing an exact sub-pixel viewport.
+		var items = Enumerable.Range(0, 50).Select(i => new ItemModel(i, 40, ColorForIndex(i))).ToArray();
+		var source = new ObservableCollection<ItemModel>(items);
+		var layout = new CountingStackLayout { Orientation = Orientation.Vertical };
+		var template = (DataTemplate)XamlReader.Load(ItemTemplateXaml);
+
+		ItemsRepeater repeater = new()
+		{
+			ItemsSource = source,
+			Layout = layout,
+			ItemTemplate = template,
+			// Cache buffer growth (ViewportManager.RegisterCacheBuildWork) schedules its own
+			// idle-driven InvalidateMeasure calls independent of viewport changes; disabling it keeps
+			// the measure count in this test attributable only to the viewport deltas under test.
+			HorizontalCacheLength = 0,
+			VerticalCacheLength = 0,
+		};
+
+		ScrollViewer scroller = new()
+		{
+			Width = 300,
+			Height = 600,
+			Content = repeater,
+		};
+
+		var sut = new SutHandle(scroller, repeater, source);
+		await LoadAsync(sut);
+
+		// Seed a known viewport so the deltas below are measured from a fixed starting point.
+		repeater.RaiseEffectiveViewportChanged(new EffectiveViewportChangedEventArgs(new Rect(0, 0, 300, 600)));
+		repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+		var countAfterSeed = layout.MeasureCount;
+
+		// Sub-tolerance shift (0.005 < the 0.01 rounding tolerance) must not invalidate measure.
+		repeater.RaiseEffectiveViewportChanged(new EffectiveViewportChangedEventArgs(new Rect(0, 0.005, 300, 600)));
+		repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		layout.MeasureCount.Should().Be(countAfterSeed,
+			"a viewport shift below the 0.01px rounding tolerance must not invalidate measure (WinUI parity)");
+
+		// A real shift must still invalidate measure.
+		repeater.RaiseEffectiveViewportChanged(new EffectiveViewportChangedEventArgs(new Rect(0, 5, 300, 600)));
+		repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		layout.MeasureCount.Should().BeGreaterThan(countAfterSeed,
+			"a real viewport shift must still invalidate measure");
+	}
+
 	// ----- helpers -----
 
 	// Mixed-template sample SUT: mimics the studio.live multi-template subagent markdown UI's
@@ -817,4 +926,16 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	private sealed record SutHandle(ScrollViewer Scroller, ItemsRepeater Repeater, ObservableCollection<ItemModel> Source);
+
+	// Counts MeasureOverride calls so a test can assert a viewport change did (or didn't) trigger one.
+	private sealed class CountingStackLayout : StackLayout
+	{
+		public int MeasureCount { get; private set; }
+
+		protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
+		{
+			MeasureCount++;
+			return base.MeasureOverride(context, availableSize);
+		}
+	}
 }
