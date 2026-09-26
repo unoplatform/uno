@@ -2,6 +2,7 @@
 
 using System;
 using Uno.Collections;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml;
 
@@ -29,8 +30,9 @@ public partial class DependencyObject
 			return false;
 		}
 
+		// The entries are object-valued, so every Set boxed a bool before it used the shared boxes.
 		internal void Set(object key, bool isAncestor)
-			=> _entries[key] = isAncestor;
+			=> _entries[key] = Boxes.Box(isAncestor);
 
 		internal void Clear()
 			=> _entries.Clear();
