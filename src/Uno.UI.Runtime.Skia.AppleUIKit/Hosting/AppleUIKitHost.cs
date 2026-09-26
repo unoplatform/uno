@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
+using Foundation;
 using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Extensions;
@@ -13,11 +15,11 @@ internal class AppleUIKitHost : SkiaHost, ISkiaApplicationHost
 	private readonly Type? _uiApplicationDelegateOverride;
 
 	/// <summary>
-	/// Creates a host for an Uno Skia Android application.
+	/// Creates a host for an Uno Skia iOS/tvOS application.
 	/// </summary>
 	/// <param name="appBuilder">App builder.</param>
 	/// <remarks>
-	/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
+	/// NSProcessInfo.Arguments is used to fill LaunchEventArgs.Arguments.
 	/// </remarks>
 	public AppleUIKitHost(Func<Application> appBuilder, Type? uiApplicationDelegateOverride)
 	{
@@ -38,6 +40,12 @@ internal class AppleUIKitHost : SkiaHost, ISkiaApplicationHost
 				var app = _appBuilder.Invoke();
 				app.Host = this;
 			};
+
+			// The .NET iOS runtime does not forward argv to Environment.GetCommandLineArgs().
+			if (NSProcessInfo.ProcessInfo.Arguments is { Length: > 1 } processArgs)
+			{
+				Application.SetArguments(string.Join(" ", processArgs.Skip(1)));
+			}
 
 			var delegateType = _uiApplicationDelegateOverride ?? typeof(UnoUIApplicationDelegate);
 
