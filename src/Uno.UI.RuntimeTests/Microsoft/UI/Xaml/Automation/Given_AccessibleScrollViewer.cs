@@ -152,6 +152,47 @@ public class Given_AccessibleScrollViewer
 			"aria-roledescription must never be emitted on an element with no accessible name (FR-014).");
 	}
 
+	/// <summary>
+	/// The semantic scroller's range comes from its semantic children, not from the XAML extent, so the
+	/// browser clamps the offset mirrored from the ScrollViewer. The scroll event raised by that clamp
+	/// must not be fed back as a user scroll.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24596")]
+	public async Task When_ChangeView_Then_Offset_Is_Not_Reverted_By_Semantic_Scroller()
+	{
+		var content = new StackPanel();
+		for (var i = 0; i < 30; i++)
+		{
+			content.Children.Add(new Button { Content = $"Item {i}", Height = 40 });
+		}
+
+		var scrollViewer = new ScrollViewer { Width = 200, Height = 200, Content = content };
+
+		await EnsureAccessibilityEnabledAsync();
+		await UITestHelper.Load(scrollViewer);
+		await UITestHelper.WaitFor(() => SemanticElementExists(scrollViewer), timeoutMS: 5000,
+			message: "Timed out waiting for the ScrollViewer's semantic node.");
+		await UITestHelper.WaitForIdle();
+
+		foreach (var offset in new[] { 300.0, 900.0, 1000.0 })
+		{
+			scrollViewer.ChangeView(null, offset, null, disableAnimation: true);
+
+			// Fixed settle window rather than WaitFor: we assert the offset does NOT revert, so there is
+			// no condition to poll. The browser raises the echoed scroll event on its next animation frame.
+			for (var i = 0; i < 10; i++)
+			{
+				await Task.Delay(50);
+				await UITestHelper.WaitForIdle();
+			}
+
+			Assert.AreEqual(offset, scrollViewer.VerticalOffset, 1, "The ScrollViewer was scrolled back by the semantic DOM.");
+		}
+	}
+
 
 
 
