@@ -1332,6 +1332,26 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
+		/// <summary>
+		/// Scrolls for a key press as WinUI does through DManip: animated rather than a jump. Arrows glide on the wheel's
+		/// decay, each press adding to the glide in flight so a held key's auto-repeat keeps one continuous motion; the
+		/// page and extent keys animate like an animated ChangeView.
+		/// </summary>
+		private void GlideForKeyboard(VirtualKey key, double? horizontalOffset, double? verticalOffset)
+		{
+			if (key is VirtualKey.PageUp or VirtualKey.PageDown or VirtualKey.Home or VirtualKey.End)
+			{
+				ChangeView(horizontalOffset, verticalOffset, null, disableAnimation: false);
+				return;
+			}
+
+			_horizontalOffsetIntent = horizontalOffset ?? _horizontalOffsetIntent;
+			_verticalOffsetIntent = verticalOffset ?? _verticalOffsetIntent;
+
+			AdjustOffsetsForSnapPoints(ref horizontalOffset, ref verticalOffset, null, canBypassSingle: true);
+			Presenter?.GlideTo(horizontalOffset, verticalOffset);
+		}
+
 		public void ScrollToHorizontalOffset(double offset)
 			=> ChangeView(offset, null, null, true);
 
@@ -1780,12 +1800,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (canScrollHorizontally && key is VirtualKey.Left or VirtualKey.Right)
 				{
-					ScrollToHorizontalOffset(newOffset);
+					GlideForKeyboard(key, newOffset, null);
 					args.Handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
 				}
 				else if (canScrollVertically && key is not (VirtualKey.Left or VirtualKey.Right))
 				{
-					ScrollToVerticalOffset(newOffset);
+					GlideForKeyboard(key, null, newOffset);
 					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
 				}
 
