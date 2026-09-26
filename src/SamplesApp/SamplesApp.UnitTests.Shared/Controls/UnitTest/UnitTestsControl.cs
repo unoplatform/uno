@@ -501,6 +501,43 @@ namespace Uno.UI.Samples.Tests
 				Update);
 		}
 
+		/// <summary>
+		/// Replaces characters XML cannot carry - unpaired surrogates and control characters - with a
+		/// printable escape. A single one of them anywhere in the document makes the whole results
+		/// file unparseable, costing the entire run instead of the one test that produced it.
+		/// </summary>
+		private static string ToXmlSafe(string value)
+		{
+			if (string.IsNullOrEmpty(value))
+			{
+				return value ?? string.Empty;
+			}
+
+			StringBuilder builder = null;
+			for (var i = 0; i < value.Length; i++)
+			{
+				var c = value[i];
+
+				if (char.IsHighSurrogate(c) && i + 1 < value.Length && char.IsLowSurrogate(value[i + 1]))
+				{
+					builder?.Append(c).Append(value[i + 1]);
+					i++;
+					continue;
+				}
+
+				if (XmlConvert.IsXmlChar(c))
+				{
+					builder?.Append(c);
+					continue;
+				}
+
+				builder ??= new StringBuilder(value.Length + 8).Append(value, 0, i);
+				builder.Append("U+").Append(((int)c).ToString("X4", CultureInfo.InvariantCulture));
+			}
+
+			return builder?.ToString() ?? value;
+		}
+
 		private static string GenerateNUnitTestResults(List<TestCaseResult> testCases, TestRun testRun)
 		{
 			var resultsId = Guid.NewGuid().ToString();
@@ -559,15 +596,15 @@ namespace Uno.UI.Samples.Tests
 				var testCaseNode = doc.CreateElement("test-case");
 				testSuiteFixtureNode.AppendChild(testCaseNode);
 
-				testCaseNode.SetAttribute("name", run.TestName);
-				testCaseNode.SetAttribute("fullname", run.FullName);
+				testCaseNode.SetAttribute("name", ToXmlSafe(run.TestName));
+				testCaseNode.SetAttribute("fullname", ToXmlSafe(run.FullName));
 				if (run.ClassName is not null)
 				{
-					testCaseNode.SetAttribute("classname", run.ClassName);
+					testCaseNode.SetAttribute("classname", ToXmlSafe(run.ClassName));
 				}
 				if (run.MethodName is not null)
 				{
-					testCaseNode.SetAttribute("methodname", run.MethodName);
+					testCaseNode.SetAttribute("methodname", ToXmlSafe(run.MethodName));
 				}
 				testCaseNode.SetAttribute("duration", run.Duration.TotalSeconds.ToString(CultureInfo.InvariantCulture));
 				testCaseNode.SetAttribute("time", "0");
@@ -581,14 +618,14 @@ namespace Uno.UI.Samples.Tests
 
 					var messageNode = doc.CreateElement("message");
 					failureNode.AppendChild(messageNode);
-					messageNode.InnerText = run.Message;
+					messageNode.InnerText = ToXmlSafe(run.Message);
 				}
 
 				if (run.ConsoleOutput is not null)
 				{
 					var outputNode = doc.CreateElement("output");
 					testCaseNode.AppendChild(outputNode);
-					outputNode.InnerText = run.ConsoleOutput;
+					outputNode.InnerText = ToXmlSafe(run.ConsoleOutput);
 				}
 			}
 

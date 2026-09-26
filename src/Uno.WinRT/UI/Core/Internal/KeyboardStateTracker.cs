@@ -82,20 +82,30 @@ internal static partial class KeyboardStateTracker
 
 	private static void SetStateOnNonSideKeys(VirtualKey key)
 	{
-		if (key == VirtualKey.LeftShift || key == VirtualKey.RightShift)
+		switch (key)
 		{
-			_keyStates[VirtualKey.Shift] = _keyStates[key];
+			case VirtualKey.LeftShift or VirtualKey.RightShift:
+				SetAggregateState(VirtualKey.Shift, key, key == VirtualKey.LeftShift ? VirtualKey.RightShift : VirtualKey.LeftShift);
+				break;
+			case VirtualKey.LeftControl or VirtualKey.RightControl:
+				SetAggregateState(VirtualKey.Control, key, key == VirtualKey.LeftControl ? VirtualKey.RightControl : VirtualKey.LeftControl);
+				break;
+			case VirtualKey.LeftMenu or VirtualKey.RightMenu:
+				SetAggregateState(VirtualKey.Menu, key, key == VirtualKey.LeftMenu ? VirtualKey.RightMenu : VirtualKey.LeftMenu);
+				break;
+		}
+	}
+
+	// Like Win32 GetKeyState(VK_SHIFT), the aggregate key stays down while either side is held.
+	private static void SetAggregateState(VirtualKey aggregate, VirtualKey changedSide, VirtualKey otherSide)
+	{
+		var state = _keyStates[changedSide];
+		if (GetKeyState(otherSide).HasFlag(CoreVirtualKeyStates.Down))
+		{
+			state |= CoreVirtualKeyStates.Down;
 		}
 
-		if (key == VirtualKey.LeftControl || key == VirtualKey.RightControl)
-		{
-			_keyStates[VirtualKey.Control] = _keyStates[key];
-		}
-
-		if (key == VirtualKey.LeftMenu || key == VirtualKey.RightMenu)
-		{
-			_keyStates[VirtualKey.Menu] = _keyStates[key];
-		}
+		_keyStates[aggregate] = state;
 	}
 
 	internal static void Reset() => _keyStates.Clear();

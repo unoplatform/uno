@@ -3,9 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
+using Uno.UI.Core;
 using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Core;
@@ -14,23 +16,63 @@ namespace Windows.UI.Input.Preview.Injection;
 
 public partial class InputInjector
 {
-	[ThreadStatic] private static IInputInjectorTarget? _inputManager;
+	// One entry per ContentRoot created on this thread. Pointer injection keeps using the first
+	// (matching the historical behavior), while keyboard injection resolves the active window,
+	// mirroring how the Windows implementation targets the foreground window.
+	// Weak, so a closed window's InputManager and visual tree are not pinned for the process lifetime.
+	[ThreadStatic] private static List<WeakReference<IInputInjectorTarget>>? _inputManagers;
 
 	internal static void SetTargetForCurrentThread(IInputInjectorTarget manager)
 	{
-		if (_inputManager is not null &&
-			_inputManager != manager &&
-			manager.Log().IsEnabled(LogLevel.Warning))
+		var managers = _inputManagers ??= new();
+
+		for (var i = managers.Count - 1; i >= 0; i--)
 		{
-			manager.Log().LogWarning($"InputInjector is already set for this thread.");
+			if (!managers[i].TryGetTarget(out var existing))
+			{
+				managers.RemoveAt(i);
+			}
+			else if (existing == manager)
+			{
+				return;
+			}
 		}
 
-		_inputManager ??= manager; // Set only once per thread.
+		managers.Add(new WeakReference<IInputInjectorTarget>(manager));
+	}
+
+	private static IInputInjectorTarget? GetFirstTarget() => FindTarget(activeOnly: false);
+
+	/// <summary>
+	/// Finds the first live target, pruning collected ones on the way so closed windows do not pile up.
+	/// </summary>
+	private static IInputInjectorTarget? FindTarget(bool activeOnly)
+	{
+		if (_inputManagers is { } managers)
+		{
+			for (var i = 0; i < managers.Count;)
+			{
+				if (!managers[i].TryGetTarget(out var target))
+				{
+					managers.RemoveAt(i);
+					continue;
+				}
+
+				if (!activeOnly || target.IsActive)
+				{
+					return target;
+				}
+
+				i++;
+			}
+		}
+
+		return null;
 	}
 
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 	public static InputInjector? TryCreate()
-		=> _inputManager is not null ? new InputInjector(_inputManager) : null;
+		=> GetFirstTarget() is { } target ? new InputInjector(target) : null;
 
 	/// <summary>
 	/// Creates an <see cref="InputInjector"/> whose injected pointer events carry
@@ -62,6 +104,14 @@ public partial class InputInjector
 	private (InjectedInputState state, bool isAdded)? _touch;
 	private (InjectedInputState state, bool isAdded)? _pen;
 	private object? _relativeRoot;
+
+	// Process-wide like KeyboardStateTracker, because TryCreate() mints a new injector per call
+	// and per-instance latching would silently reset between them.
+	// CoreVirtualKeyStates.Locked cannot carry this: the routed-event pipeline feeds
+	// KeyboardStateTracker once per ancestor while bubbling, toggling the Locked bit each time.
+	private static bool _capsLock;
+
+	private static void ToggleCapsLock() => _capsLock = !_capsLock;
 
 	/// <summary>
 	/// Gets the current state of the mouse pointer
@@ -243,6 +293,183 @@ public partial class InputInjector
 		}
 	}
 
+	/// <summary>
+	/// Simulates a sequence of keyboard events.
+	/// </summary>
+	/// <param name="input">The keyboard events to inject, delivered synchronously and in order.</param>
+	/// <remarks>
+	/// <para>
+	/// Injected keys travel the real input pipeline of the active window — focus manager, focused
+	/// element, <c>PreviewKeyDown</c>, <c>KeyDown</c>, bubbling, keyboard accelerators, then
+	/// <c>KeyUp</c> — so focus navigation, accelerators and text input behave as they do for a user.
+	/// Modifier state is tracked, so a Ctrl key-down must itself be injected for a Ctrl-based
+	/// accelerator to match; setting modifiers on the event alone is not enough. This matches Windows.
+	/// </para>
+	/// <para>
+	/// Uno Platform differs from Windows in that injection is in-process: events never reach other
+	/// applications or the operating system. Injected keys cannot start, feed or commit an IME
+	/// composition, and are silently ignored by a text box while one is in progress. Characters are
+	/// synthesized against an invariant US layout unless
+	/// <see cref="InjectedInputKeyOptions.Unicode"/> is used, key repeats are never generated
+	/// automatically, and mixing injected and real keyboard input is not supported. Windows also
+	/// rejects batches larger than 16 events; Uno Platform accepts any length, so keep batches at or
+	/// below 16 for code that must run on both.
+	/// </para>
+	/// </remarks>
+	/// <exception cref="ArgumentException">
+	/// An entry sets <see cref="InjectedInputKeyOptions.Unicode"/> together with a non-zero
+	/// <see cref="InjectedInputKeyboardInfo.VirtualKey"/>. The batch is validated before anything is
+	/// dispatched, so no partial input is delivered.
+	/// </exception>
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+	public void InjectKeyboardInput(IEnumerable<InjectedInputKeyboardInfo> input)
+	{
+		foreach (var info in ValidateKeyboardBatch(input))
+		{
+			InjectKeyboardInputCore(info);
+		}
+	}
+
+	/// <summary>
+	/// Validates the whole batch before anything is dispatched: throwing mid-dispatch would leave
+	/// injected modifier keys latched in the process-wide KeyboardStateTracker with no key-up to release them.
+	/// </summary>
+	private static IReadOnlyList<InjectedInputKeyboardInfo> ValidateKeyboardBatch(IEnumerable<InjectedInputKeyboardInfo> input)
+	{
+		ArgumentNullException.ThrowIfNull(input);
+		EnsureUIThread();
+
+		var infos = input as IReadOnlyList<InjectedInputKeyboardInfo> ?? input.ToList();
+		for (var i = 0; i < infos.Count; i++)
+		{
+			infos[i].Validate(i);
+		}
+
+		return infos;
+	}
+
+	private void InjectKeyboardInputCore(InjectedInputKeyboardInfo info)
+	{
+		var target = ResolveKeyboardTarget();
+		var key = info.EffectiveVirtualKey;
+
+		// Real input reads the OS key state after the transition has been applied, so pressing Shift
+		// already reports Shift. The tracker is only updated once the routed event reaches UIElement,
+		// so fold the current transition in by hand to keep injected args identical to real ones.
+		var modifiers = GetTrackedModifiers(key, isTransitionDown: !info.IsKeyUp);
+
+		var wasKeyDown = KeyboardStateTracker.GetKeyState(key).HasFlag(CoreVirtualKeyStates.Down);
+		var args = info.ToEventArgs(modifiers, _capsLock, wasKeyDown);
+
+		if (info.IsKeyUp)
+		{
+			target.InjectKeyUp(args);
+		}
+		else
+		{
+			if (info.VirtualKey == (ushort)VirtualKey.CapitalLock)
+			{
+				ToggleCapsLock();
+			}
+
+			target.InjectKeyDown(args);
+		}
+	}
+
+	/// <summary>
+	/// Injection drives the routed-event pipeline directly and reads the shared keyboard state,
+	/// neither of which is thread-safe, so it carries the same UI-thread affinity as real input.
+	/// </summary>
+	private static void EnsureUIThread()
+	{
+		if (DispatcherQueue.GetForCurrentThread() is null)
+		{
+			throw new InvalidOperationException("Keyboard injection must be performed on the UI thread.");
+		}
+	}
+
+	// TODO: Move as extension method
+	internal async ValueTask InjectKeyboardInputAsync(IEnumerable<InjectedInputKeyboardInfo> input, CancellationToken ct)
+	{
+		foreach (var info in ValidateKeyboardBatch(input))
+		{
+			InjectKeyboardInputCore(info);
+			await WaitForIdle(ct);
+		}
+	}
+
+	/// <summary>
+	/// Resolves the target owning the active window, so injected keys reach the focused window's
+	/// focus manager. Falls back to the injector's own target when no window reports as active.
+	/// </summary>
+	/// <remarks>
+	/// Hosts that never report activation (macOS today) leave every window in the default
+	/// <see cref="CoreWindowActivationState.CodeActivated"/> state, so the first registered target
+	/// wins there and multi-window injection is not yet supported on them.
+	/// </remarks>
+	private IInputInjectorTarget ResolveKeyboardTarget()
+	{
+		if (FindTarget(activeOnly: true) is { } target)
+		{
+			return target;
+		}
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("No active window found for keyboard injection; using the injector's original target.");
+		}
+
+		return _target;
+	}
+
+	/// <summary>
+	/// Gets the held modifiers, optionally as they will be once <paramref name="transitionKey"/>
+	/// has gone down or up. A modifier stays held while any of its keys is still down.
+	/// </summary>
+	private static VirtualKeyModifiers GetTrackedModifiers(VirtualKey? transitionKey = null, bool isTransitionDown = false)
+	{
+		var modifiers = VirtualKeyModifiers.None;
+
+		if (IsHeld(VirtualKey.Shift, VirtualKey.LeftShift, VirtualKey.RightShift))
+		{
+			modifiers |= VirtualKeyModifiers.Shift;
+		}
+
+		if (IsHeld(VirtualKey.Control, VirtualKey.LeftControl, VirtualKey.RightControl))
+		{
+			modifiers |= VirtualKeyModifiers.Control;
+		}
+
+		if (IsHeld(VirtualKey.Menu, VirtualKey.LeftMenu, VirtualKey.RightMenu))
+		{
+			modifiers |= VirtualKeyModifiers.Menu;
+		}
+
+		// Windows has no side-agnostic virtual key.
+		if (IsHeld(null, VirtualKey.LeftWindows, VirtualKey.RightWindows))
+		{
+			modifiers |= VirtualKeyModifiers.Windows;
+		}
+
+		return modifiers;
+
+		bool IsHeld(VirtualKey? aggregate, VirtualKey left, VirtualKey right)
+		{
+			if (transitionKey is { } key && (key == aggregate || key == left || key == right))
+			{
+				// The tracker has not seen this transition yet, so its aggregate state is stale.
+				return isTransitionDown
+					|| (key != left && IsDown(left))
+					|| (key != right && IsDown(right));
+			}
+
+			return (aggregate is { } a && IsDown(a)) || IsDown(left) || IsDown(right);
+		}
+
+		static bool IsDown(VirtualKey key)
+			=> KeyboardStateTracker.GetKeyState(key).HasFlag(CoreVirtualKeyStates.Down);
+	}
+
 	private const InjectedInputMouseOptions _mouseButtonDown = InjectedInputMouseOptions.LeftDown | InjectedInputMouseOptions.MiddleDown | InjectedInputMouseOptions.RightDown | InjectedInputMouseOptions.XDown;
 
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
@@ -255,7 +482,9 @@ public partial class InputInjector
 				_mouse.StartNewSequence();
 			}
 
-			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
+			// Pick up modifiers held by injected keyboard input, so Ctrl+Click can be composed
+			// from InjectKeyboardInput and InjectMouseInput.
+			var args = info.ToEventArgs(_mouse!, GetTrackedModifiers());
 			_mouse!.Update(args);
 
 			DispatchPointerUpdated(args);
@@ -272,7 +501,7 @@ public partial class InputInjector
 				_mouse.StartNewSequence();
 			}
 
-			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
+			var args = info.ToEventArgs(_mouse!, GetTrackedModifiers());
 			_mouse!.Update(args);
 
 			DispatchPointerUpdated(args);
