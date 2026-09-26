@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -32,23 +34,121 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public partial class ApplicationActivity : Controls.NativePage
 	{
-		private static IUnoRenderView? _renderView;
-		private static View? _renderViewAsView;
-		private static ClippedRelativeLayout? _nativeLayerHost;
+		private IUnoRenderView? _renderView;
+		private View? _renderViewAsView;
+		private ClippedRelativeLayout? _nativeLayerHost;
 
-		internal static IUnoRenderView? RenderView => _renderView;
+		internal IUnoRenderView? RenderView => _renderView;
 
 		private InputPane _inputPane;
 
-		private static bool _started;
+		private bool _started;
 		private bool _isContentViewSet;
 
-		/// <summary>
-		/// The windows model implies only one managed activity.
-		/// </summary>
-		internal static ApplicationActivity Instance { get; private set; } = null!;
+		private NativeWindowWrapper? _wrapper;
 
-		internal static RelativeLayout RelativeLayout { get; private set; } = null!;
+		private const string WindowIdExtra = "__uno_window_id";
+		private static int _nextWindowId;
+		private static readonly ConcurrentDictionary<int, NativeWindowWrapper> _pendingWindows = new();
+
+		/// <summary>
+		/// Asks Android for a task to host <paramref name="wrapper"/>'s window. The wrapper is parked
+		/// until the activity Android launches picks it up by id in <see cref="Wrapper"/>.
+		/// </summary>
+		/// <remarks>
+		/// NewDocument|MultipleTask is what puts the activity in a task of its own, which is what makes
+		/// it a separate window: the user can then place it side by side from the recents list.
+		/// </remarks>
+		internal static void LaunchForWindow(NativeWindowWrapper wrapper)
+		{
+			if (BaseActivity.Current is not { } launcher)
+			{
+				throw new InvalidOperationException("A secondary window can only be opened while an activity is running.");
+			}
+
+			var id = Interlocked.Increment(ref _nextWindowId);
+			_pendingWindows[id] = wrapper;
+
+			// Same activity class as the one already running: the app declares exactly one, and a
+			// second instance of it is what hosts the second window.
+			var intent = new Intent(launcher, launcher.GetType());
+			intent.AddFlags(global::Android.Content.ActivityFlags.NewDocument | global::Android.Content.ActivityFlags.MultipleTask);
+			intent.PutExtra(WindowIdExtra, id);
+
+			launcher.StartActivity(intent);
+		}
+
+		/// <summary>
+		/// The native wrapper for the window this activity drives. Created lazily so the early
+		/// lifecycle callbacks (which run before the managed Window exists) can drive it. On
+		/// activity re-creation the wrapper already bound to the window is reused and re-pointed
+		/// at this activity, since the managed Window outlives individual activities.
+		/// </summary>
+		internal NativeWindowWrapper Wrapper
+		{
+			get
+			{
+				if (_wrapper is null)
+				{
+					_wrapper = ResolveWrapper();
+					_wrapper.CurrentActivity = this;
+				}
+
+				return _wrapper;
+			}
+		}
+
+		private NativeWindowWrapper ResolveWrapper()
+		{
+			// Launched to host a specific window: take the wrapper parked for it. Consumed by id so a
+			// re-created activity keeps the same window rather than claiming a new one.
+			if (Intent?.GetIntExtra(WindowIdExtra, 0) is > 0 and var windowId)
+			{
+				if (_pendingWindows.TryRemove(windowId, out var pending))
+				{
+					_adoptedWindowId = windowId;
+					_adoptedWindows[windowId] = pending;
+					return pending;
+				}
+
+				if (_adoptedWindows.TryGetValue(windowId, out var adopted))
+				{
+					// Re-created (configuration change, process restore): re-point the window's
+					// existing wrapper at this activity instead of building a second one.
+					_adoptedWindowId = windowId;
+					return adopted;
+				}
+			}
+
+			// The activity that started the app: it drives the main window, whose wrapper it created
+			// before any managed Window existed, and re-adopts across re-creation.
+			return Microsoft.UI.Xaml.Window.CurrentSafe?.NativeWrapper as NativeWindowWrapper
+				?? new NativeWindowWrapper(this);
+		}
+
+		private int _adoptedWindowId;
+		private static readonly ConcurrentDictionary<int, NativeWindowWrapper> _adoptedWindows = new();
+
+		/// <summary>
+		/// The root element of the window hosted by this activity, once the window has been created.
+		/// </summary>
+		internal UIElement? RootElement => _wrapper?.Window?.RootElement;
+
+		private protected override void OnNativeActivationChanged(global::Windows.UI.Core.CoreWindowActivationState state)
+			=> Wrapper.OnNativeActivated(state);
+
+		private protected override void OnNativeVisibilityChanged(bool isVisible)
+			=> Wrapper.OnNativeVisibilityChanged(isVisible);
+
+		/// <summary>
+		/// False once another activity has taken over this activity's window. An outgoing activity
+		/// still runs OnPause/OnStop after its replacement resumed, and forwarding those would
+		/// deactivate and background the window the replacement now drives.
+		/// </summary>
+		private protected override bool IsDrivingWindow
+			=> _wrapper is null || ReferenceEquals(_wrapper.CurrentActivity, this);
+
+		internal RelativeLayout RelativeLayout { get; private set; } = null!;
 
 		private LayoutProvider? _layoutProvider;
 
@@ -56,7 +156,7 @@ namespace Microsoft.UI.Xaml
 		// and so starts the provider, from InitializeComponent, before OnCreate would have created it.
 		internal LayoutProvider LayoutProvider => _layoutProvider ??= CreateLayoutProvider();
 
-		internal static ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
+		internal ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
 
 		public ApplicationActivity(IntPtr ptr, JniHandleOwnership owner) : base(ptr, owner)
 		{
@@ -71,8 +171,6 @@ namespace Microsoft.UI.Xaml
 		[MemberNotNull(nameof(_inputPane))]
 		private void Initialize()
 		{
-			Instance = this;
-
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
@@ -97,7 +195,11 @@ namespace Microsoft.UI.Xaml
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
 			RaiseConfigurationChanges();
-			SimpleOrientationSensor.GetDefault()!.OrientationChanged += OnSensorOrientationChanged;
+
+			// OnAttachedToWindow can run more than once per activity, so keep the subscription single.
+			var orientationSensor = SimpleOrientationSensor.GetDefault()!;
+			orientationSensor.OrientationChanged -= OnSensorOrientationChanged;
+			orientationSensor.OrientationChanged += OnSensorOrientationChanged;
 
 			// Note: Deep-linking will cause a new instance of this Activity and its DecorView to be created.
 			// This means any event handlers or listeners attached to these objects in previous instances will not be present.
@@ -114,31 +216,10 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 
+		// Content attach and reactivation on activity re-creation happen in OnStart, once this
+		// activity has built its own render surface.
 		protected override void InitializeComponent()
 		{
-			// The app was previously running, but application activity
-			// changed. Reparent content.
-			if (RelativeLayout is not null)
-			{
-				// Reparent the current layout to this activity
-				if (RelativeLayout.Parent is ViewGroup parent)
-				{
-					parent.RemoveView(RelativeLayout);
-				}
-
-				this.SetContentView(RelativeLayout);
-
-				// Ensure the render view is reset
-				_renderView?.ResetRendererContext();
-
-				var winUIWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
-				if (winUIWindow?.RootElement is { } root)
-				{
-					// Reactivate the window
-					winUIWindow.Activate();
-					InvalidateRender();
-				}
-			}
 		}
 
 		public override bool DispatchKeyEvent(KeyEvent? e)
@@ -148,7 +229,7 @@ namespace Microsoft.UI.Xaml
 				return base.DispatchKeyEvent(e);
 			}
 
-			var handled = AndroidKeyboardInputSource.Instance.OnNativeKeyEvent(e);
+			var handled = Wrapper.KeyboardSource.OnNativeKeyEvent(e);
 
 			if (!handled)
 			{
@@ -181,7 +262,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_renderViewAsView?.GetLocationInWindow(_locationInWindow);
-			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
+			Wrapper.PointerSource.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
 
 			// As the AndroidCorePointerInputSource can dispatch event asynchronously, we always return true to prevent the system from dispatching the event
 			// as we assume that anyway we are the fully opaque (i.e. the pointer should not be dispatch to any element under this current ApplicationActivity).
@@ -208,7 +289,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_renderViewAsView?.GetLocationInWindow(_locationInWindow);
-			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
+			Wrapper.PointerSource.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
 
 			// As the AndroidCorePointerInputSource can dispatch event asynchronously, we always return true to prevent the system from dispatching the event
 			// as we assume that anyway we are the fully opaque (i.e. the pointer should not be dispatch to any element under this current ApplicationActivity).
@@ -245,7 +326,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnKeyboardChanged(Rect keyboard)
 		{
-			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
+			Wrapper.RaiseNativeSizeChanged();
 			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
 		}
 
@@ -257,10 +338,19 @@ namespace Microsoft.UI.Xaml
 
 			base.OnCreate(bundle);
 
-			NativeWindowWrapper.Instance.OnActivityCreated();
+			Wrapper.OnActivityCreated();
+
+			// Track and observe this activity's window system UI visibility on its per-window wrapper.
+			var decorView = this.Window!.DecorView;
+#pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
+			Wrapper.SystemUiVisibility = (int)decorView.SystemUiVisibility;
+			decorView.SetOnSystemUiVisibilityChangeListener(new OnSystemUiVisibilityChangeListener(this));
+#pragma warning restore CA1422 // Validate platform compatibility
+#pragma warning restore 618
 
 			// Hold the window's draws until a Skia frame is presented (see the render views).
-			NativeWindowWrapper.Instance.ArmFirstFrameGate();
+			Wrapper.ArmFirstFrameGate();
 			if (_renderView is not null)
 			{
 				// A recreated Activity reuses the render view, so request the frame that releases the gate.
@@ -284,12 +374,12 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnStart()
 		{
-			base.OnStart();
-
-			// OnStart gets fired either after onCreate (first launch) or after onRestart
-			// (go out of app then back again). We only want to do this once, hence
-			// the flag.
-			if (!_started)
+			// The layouts must exist before base.OnStart(): that call synchronously reaches
+			// Application.Start -> OnLaunched -> CreateWindow, after which the host is registered
+			// and InvalidateRender() can run against RelativeLayout. This state is per-activity, so
+			// unlike the previous process-wide stack it is null again on every re-creation.
+			var isFirstStart = !_started;
+			if (isFirstStart)
 			{
 				_started = true;
 				RelativeLayout = new RelativeLayout(this);
@@ -297,18 +387,51 @@ namespace Microsoft.UI.Xaml
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
 
-				_renderView = CreateRenderView();
-				_renderViewAsView = (View)_renderView;
-				_renderViewAsView.LayoutParameters = new ViewGroup.LayoutParams(
-					ViewGroup.LayoutParams.MatchParent,
-					ViewGroup.LayoutParams.MatchParent);
-				RelativeLayout.AddView(_renderViewAsView);
-
 				_nativeLayerHost = new ClippedRelativeLayout(this);
 				_nativeLayerHost.LayoutParameters = new ViewGroup.LayoutParams(
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
 				RelativeLayout.AddView(NativeLayerHost);
+			}
+
+			base.OnStart();
+
+			if (isFirstStart)
+			{
+				// Picked only after base.OnStart(): on first launch that call builds the host, which
+				// registers the drawing backend and applies the builder's rendering options.
+				_renderView = CreateRenderView();
+				_renderViewAsView = (View)_renderView;
+				_renderViewAsView.LayoutParameters = new ViewGroup.LayoutParams(
+					ViewGroup.LayoutParams.MatchParent,
+					ViewGroup.LayoutParams.MatchParent);
+
+				// Index 0 keeps it under the native layer host.
+				RelativeLayout.AddView(_renderViewAsView, 0);
+			}
+
+			// The window was handed over in OnCreate, before this render view existed; state bound to
+			// it, such as an IME session's plugin, can only rebind now.
+			_wrapper?.NotifyDrivingActivityReady();
+
+			// A secondary window is activated before Android has given it an activity, so its show
+			// was deferred until one existed with a render stack to attach to. That is now.
+			Wrapper.CompleteDeferredShow();
+
+			// On activity re-creation (deep-link, process restore) the managed Window already
+			// exists with its content loaded, but CreateWindow won't run again for this new
+			// activity. Attach this activity's freshly-built surface and reactivate the window.
+			if (!_isContentViewSet && Wrapper.Window is { RootElement: not null } existingWindow)
+			{
+				EnsureContentView();
+
+				if (existingWindow.RootElement.XamlRoot is { } xamlRoot && _nativeLayerHost is { } nativeLayerHost)
+				{
+					AndroidSkiaNativeElementHostingExtension.AdoptNativeElements(xamlRoot, nativeLayerHost);
+				}
+
+				existingWindow.Activate();
+				InvalidateRender();
 			}
 		}
 
@@ -363,18 +486,18 @@ namespace Microsoft.UI.Xaml
 		/// render thread. <see cref="CreateRenderView"/>'s try/catch only covers the view constructor, so without
 		/// this a failed negotiation leaves a dead render thread and a permanently black window.
 		/// </summary>
-		internal static void FallbackToCanvasView()
+		internal void FallbackToCanvasView()
 		{
-			var instance = Instance;
+			// A null render view means OnDestroy already tore the stack down.
 			var layout = RelativeLayout;
-			if (instance is null || layout is null || _renderView is UnoCanvasView)
+			if (layout is null || _renderView is null or UnoCanvasView)
 			{
 				return;
 			}
 
-			instance.RunOnUiThread(() =>
+			RunOnUiThread(() =>
 			{
-				if (_renderView is UnoCanvasView)
+				if (_renderView is null or UnoCanvasView)
 				{
 					return;
 				}
@@ -389,38 +512,48 @@ namespace Microsoft.UI.Xaml
 					layout.Post(() => failed.Dispose());
 				}
 
-				var canvasView = new UnoCanvasView(instance);
+				var canvasView = new UnoCanvasView(this);
 				canvasView.LayoutParameters = new ViewGroup.LayoutParams(
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
 				_renderView = canvasView;
 				_renderViewAsView = canvasView;
 
-				// Index 0 keeps it under the native layer host, matching the order OnStart adds them in.
+				// Index 0 keeps it under the native layer host, as in OnStart.
 				layout.AddView(canvasView, 0);
 
-				instance.InvalidateRender();
+				InvalidateRender();
 			});
 		}
 
 		internal void InvalidateRender()
 		{
+			// The wrapper resolves this activity from OnCreate onwards, so a render request can
+			// reach it before OnStart has built the render stack this invalidates.
+			if (!_started)
+			{
+				return;
+			}
+
 			_renderView?.InvalidateRender();
 			RelativeLayout.Invalidate();
 		}
 
 		private void OnInsetsChanged(Thickness insets)
 		{
-			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
+			Wrapper.RaiseNativeSizeChanged();
 		}
 
 		public override void SetContentView(View? view)
 		{
+			IsContentViewAttachedToWindow = false;
+
 			if (view != null)
 			{
 				if (view.IsAttachedToWindow)
 				{
 					LayoutProvider.Start(view);
+					RaiseContentViewAttachedToWindow();
 				}
 				else
 				{
@@ -428,7 +561,7 @@ namespace Microsoft.UI.Xaml
 					handler = (s, e) =>
 					{
 						LayoutProvider.Start(view);
-						ContentViewAttachedToWindow?.Invoke(this, EventArgs.Empty);
+						RaiseContentViewAttachedToWindow();
 						view.ViewAttachedToWindow -= handler;
 					};
 					view.ViewAttachedToWindow += handler;
@@ -437,6 +570,19 @@ namespace Microsoft.UI.Xaml
 
 			base.SetContentView(view);
 		}
+
+		private void RaiseContentViewAttachedToWindow()
+		{
+			IsContentViewAttachedToWindow = true;
+			ContentViewAttachedToWindow?.Invoke(this, EventArgs.Empty);
+		}
+
+		/// <summary>
+		/// Whether this activity's content view is attached to the native window. The wrapper's
+		/// pre-draw gate needs the state and not just <see cref="ContentViewAttachedToWindow"/>,
+		/// because the attach can happen before the wrapper subscribes.
+		/// </summary>
+		internal bool IsContentViewAttachedToWindow { get; private set; }
 
 		internal event EventHandler? ContentViewAttachedToWindow;
 
@@ -464,18 +610,48 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnDestroy()
 		{
+			// The render stack is per-activity and the peer finalizer never runs the managed
+			// dispose path, so the GL/Vulkan context has to be released explicitly. This must
+			// precede base.OnDestroy(): NativePage detaches the content view there, which stops
+			// the GL thread the teardown is queued on.
+			_renderView?.TeardownRenderer();
+			_renderView = null;
+			_renderViewAsView = null;
+			_nativeLayerHost = null;
+
 			base.OnDestroy();
 
 			LayoutProvider.Stop();
 			LayoutProvider.KeyboardChanged -= OnKeyboardChanged;
 			LayoutProvider.InsetsChanged -= OnInsetsChanged;
 
+			// These are subscribed on process-wide singletons, so a missing -= keeps this activity
+			// (and its render stack) alive for the life of the process, once per re-creation.
+			_inputPane.Showing -= OnInputPaneVisibilityChanged;
+			_inputPane.Hiding -= OnInputPaneVisibilityChanged;
+			SimpleOrientationSensor.GetDefault()!.OrientationChanged -= OnSensorOrientationChanged;
+
 			CleanupBackPressedCallback();
 
-			// A configuration-driven recreation keeps the window and its content for the new Activity.
-			if (!IsChangingConfigurations)
+			// Only a finishing activity that still owns the window closes it. The system also destroys
+			// activities it re-creates later (configuration changes, reclaiming memory), and in the
+			// StartActivity/Finish restart idiom the successor has already taken the wrapper.
+			if (IsFinishing && _wrapper is { } wrapper && ReferenceEquals(wrapper.CurrentActivity, this))
 			{
-				NativeWindowWrapper.Instance.OnNativeClosed();
+				// The window goes away with its task instead of unloading its tree, so the native
+				// elements it hosted are never detached by their presenters.
+				if (RootElement?.XamlRoot is { } xamlRoot)
+				{
+					AndroidSkiaNativeElementHostingExtension.ReleaseNativeElements(xamlRoot);
+				}
+
+				wrapper.OnNativeClosed();
+
+				// The window is gone with its task, so stop holding its wrapper for re-adoption.
+				if (_adoptedWindowId is > 0 and var windowId)
+				{
+					_adoptedWindows.TryRemove(windowId, out _);
+				}
 			}
 		}
 
@@ -488,7 +664,7 @@ namespace Microsoft.UI.Xaml
 
 		private void RaiseConfigurationChanges()
 		{
-			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
+			Wrapper.RaiseNativeSizeChanged();
 			//ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();
