@@ -281,6 +281,7 @@
 		pre-unification head used) is the correct value.
 		-->
 		<WasmShellWebAppBasePath>./</WasmShellWebAppBasePath>
+		<UseMonoRuntime>false</UseMonoRuntime>
 	</PropertyGroup>
 	<!-- Opt-in AOT publish for the perf lane (-p:UnoWasmAot=true). Head-scoped: RunAOTCompilation/PublishTrimmed set
 	     globally break the netstandard2.0 generator projects in the graph. Only the opt-in (BCL) assemblies are trimmed:
@@ -330,7 +331,6 @@
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Silk.NET.OpenGL.dll" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
-		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
