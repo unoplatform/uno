@@ -164,6 +164,7 @@ public partial class NavigationView
 	private TopNavigationViewDataProvider m_topDataProvider;
 
 	private SelectionModel m_selectionModel = new();
+	private readonly List<global::System.WeakReference<NavigationViewItem>> m_selectedAncestors = new();
 	private IList<object> m_selectionModelSource;
 
 	private ItemsSourceView m_menuItemsSource;
