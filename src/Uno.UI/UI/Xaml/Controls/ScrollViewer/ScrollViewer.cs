@@ -1850,7 +1850,22 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void HandleVerticalScroll(ScrollEventType scrollEventType, double offset = 0)
 		{
-			//UNO TODO: Implement HandleVerticalScroll on ScrollViewer
+			// If style changes and Content cannot be found - just exit.
+			if (Presenter is null)
+			{
+				return;
+			}
+
+			var oldOffset = VerticalOffset;
+			var newOffset = GetScrollTargetOffset(scrollEventType, oldOffset, offset, ViewportHeight);
+
+			// Clamp the new offset at this stage to prevent unnecessary layout.
+			newOffset = Math.Min(ScrollableHeight, Math.Max(newOffset, 0.0));
+
+			if (!NumericExtensions.AreClose(oldOffset, newOffset))
+			{
+				ScrollToVerticalOffset(newOffset);
+			}
 		}
 
 		/// <summary>
@@ -1858,8 +1873,38 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void HandleHorizontalScroll(ScrollEventType scrollEventType, double offset = 0)
 		{
-			//UNO TODO: Implement HandleHorizontalScroll on ScrollViewer
+			// If style changes and Content cannot be found - just exit.
+			if (Presenter is null)
+			{
+				return;
+			}
+
+			var oldOffset = HorizontalOffset;
+			var newOffset = GetScrollTargetOffset(scrollEventType, oldOffset, offset, ViewportWidth);
+
+			// Clamp the new offset at this stage to prevent unnecessary layout.
+			newOffset = Math.Min(ScrollableWidth, Math.Max(newOffset, 0.0));
+
+			if (!NumericExtensions.AreClose(oldOffset, newOffset))
+			{
+				ScrollToHorizontalOffset(newOffset);
+			}
 		}
+
+		// Uno specific: WinUI delegates the line and page steps to IScrollInfo (ScrollContentPresenter),
+		// which moves by ScrollViewerLineDelta (16) and by one viewport respectively.
+		private static double GetScrollTargetOffset(ScrollEventType scrollEventType, double oldOffset, double offset, double viewport)
+			=> scrollEventType switch
+			{
+				ScrollEventType.ThumbPosition or ScrollEventType.ThumbTrack => offset,
+				ScrollEventType.LargeDecrement => oldOffset - viewport,
+				ScrollEventType.LargeIncrement => oldOffset + viewport,
+				ScrollEventType.SmallDecrement => oldOffset - 16,
+				ScrollEventType.SmallIncrement => oldOffset + 16,
+				ScrollEventType.First => double.MinValue,
+				ScrollEventType.Last => double.MaxValue,
+				_ => oldOffset,
+			};
 
 		/// <summary>
 		/// Determines whether this ScrollViewer is pannable.

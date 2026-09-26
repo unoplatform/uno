@@ -2079,6 +2079,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Page_Keys_Not_From_Item_ListView_Scrolls()
+		{
+			var SUT = new ListView
+			{
+				Height = 200,
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate,
+				ItemsSource = Enumerable.Range(0, 100).ToArray(),
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var sv = (ScrollViewer)SUT.GetTemplateChild("ScrollViewer");
+			var viewport = sv.ViewportHeight;
+			Assert.IsTrue(sv.ScrollableHeight > viewport * 2);
+
+			async Task Press(string key)
+			{
+				// Raised on the ListView itself, like a key pressed while the list (not an item) has focus.
+				await KeyboardHelper.PressKeySequence($"$d$_{key}#$u$_{key}", SUT);
+				await WindowHelper.WaitForIdle();
+			}
+
+			await Press("pagedown");
+			sv.VerticalOffset.Should().BeApproximately(viewport, 1);
+
+			await Press("pagedown");
+			sv.VerticalOffset.Should().BeApproximately(viewport * 2, 1);
+
+			await Press("pageup");
+			sv.VerticalOffset.Should().BeApproximately(viewport, 1);
+
+			await Press("end");
+			sv.VerticalOffset.Should().BeApproximately(sv.ScrollableHeight, 1);
+
+			await Press("home");
+			sv.VerticalOffset.Should().BeApproximately(0, 1);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia)] // Especially flaky on all Skia targets #9080
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_And_Back_Half_Size()
 		{

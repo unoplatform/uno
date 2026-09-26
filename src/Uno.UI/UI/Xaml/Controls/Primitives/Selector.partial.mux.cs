@@ -77,109 +77,78 @@ partial class Selector
 		m_customValuesAllowed = allow;
 	}
 
-	private void ElementScrollViewerScrollInDirection(
+	// Call ElementScrollViewer.ScrollInDirection if possible.
+	private protected void ElementScrollViewerScrollInDirection(
 		VirtualKey key,
 		bool animate = false)
 	{
-		//// When moving to C++20 this probably needs to change to the following:
-		//// if (nullptr != m_tpScrollViewer)
-		//// There is ambiguity as to which comparison operator should be used and that warning is treated as a break.
-		//if (null != m_tpScrollViewer)
-		//{
-		//	if (animate)
-		//	{
-		//		// This is a move request within a header or footer. Only perform an animated move when the hosting panel is a modern panel. Moves from item to item
-		//		// are only animated for modern panels. So for consistency, moves within headers are only animated for modern panels as well.
+		if (m_tpScrollViewer is null)
+		{
+			return;
+		}
 
-		//		ctl::ComPtr<IPanel> spPanel;
-		//		ctl::ComPtr<IModernCollectionBasePanel> spModernPanel;
+		// TODO Uno: Animated moves (modern panels only in WinUI) and ScrollViewer.ScrollInDirection are not supported.
+		var (physicalOrientation, _ /*pLogicalOrientation*/) = GetItemsHostOrientations();
+		var isVertical = physicalOrientation == Orientation.Vertical;
+		var invert = FlowDirection == FlowDirection.RightToLeft;
 
-		//		IFC(get_ItemsHost(&spPanel));
-		//		spModernPanel = spPanel.AsOrNull<IModernCollectionBasePanel>();
-
-		//		animate = spModernPanel != nullptr;
-		//	}
-
-		//	if (animate)
-		//	{
-		//		IFC(m_tpScrollViewer.Cast<ScrollViewer>()->ScrollInDirection(key, true /*animate*/));
-		//	}
-
-		//	else
-		//	{
-		//		xaml_controls::Orientation physicalOrientation = xaml_controls::Orientation_Vertical;
-		//		xaml::FlowDirection direction = xaml::FlowDirection_LeftToRight;
-		//		BOOLEAN isVertical = FALSE;
-		//		BOOLEAN invert = FALSE;
-
-		//		IFC(GetItemsHostOrientations(&physicalOrientation, NULL /*pLogicalOrientation*/));
-		//		isVertical = (physicalOrientation == xaml_controls::Orientation_Vertical);
-
-		//		IFC(get_FlowDirection(&direction));
-		//		invert = direction == xaml::FlowDirection_RightToLeft;
-
-		//		switch (key)
-		//		{
-		//			case wsy::VirtualKey_PageUp:
-		//				if (isVertical)
-		//				{
-		//					IFC(m_tpScrollViewer.Cast<ScrollViewer>()->PageUp());
-		//				}
-		//				else
-		//				{
-		//					if (invert)
-		//					{
-		//						IFC(m_tpScrollViewer.Cast<ScrollViewer>()->PageRight());
-		//					}
-		//					else
-		//					{
-		//						IFC(m_tpScrollViewer.Cast<ScrollViewer>()->PageLeft());
-		//					}
-		//				}
-		//				break;
-		//			case wsy::VirtualKey_PageDown:
-		//				if (isVertical)
-		//				{
-		//					IFC(m_tpScrollViewer.Cast<ScrollViewer>()->PageDown());
-		//				}
-		//				else
-		//				{
-		//					if (invert)
-		//					{
-		//						IFC(m_tpScrollViewer.Cast<ScrollViewer>()->PageLeft());
-		//					}
-		//					else
-		//					{
-		//						IFC(m_tpScrollViewer.Cast<ScrollViewer>()->PageRight());
-		//					}
-		//				}
-		//				break;
-		//			case wsy::VirtualKey_Home:
-		//				if (isVertical)
-		//				{
-		//					IFC(m_tpScrollViewer.Cast<ScrollViewer>()->HandleVerticalScroll(xaml_primitives::ScrollEventType_First));
-		//				}
-		//				else
-		//				{
-		//					IFC(m_tpScrollViewer.Cast<ScrollViewer>()->HandleHorizontalScroll(xaml_primitives::ScrollEventType_First));
-		//				}
-		//				break;
-		//			case wsy::VirtualKey_End:
-		//				if (isVertical)
-		//				{
-		//					IFC(m_tpScrollViewer.Cast<ScrollViewer>()->HandleVerticalScroll(xaml_primitives::ScrollEventType_Last));
-		//				}
-		//				else
-		//				{
-		//					IFC(m_tpScrollViewer.Cast<ScrollViewer>()->HandleHorizontalScroll(xaml_primitives::ScrollEventType_Last));
-		//				}
-		//				break;
-		//			default:
-		//				IFC(m_tpScrollViewer.Cast<ScrollViewer>()->ScrollInDirection(key, false /*animate*/));
-		//				break;
-		//		}
-		//	}
-		//}
+		switch (key)
+		{
+			case VirtualKey.PageUp:
+				if (isVertical)
+				{
+					m_tpScrollViewer.PageUp();
+				}
+				else
+				{
+					if (invert)
+					{
+						m_tpScrollViewer.PageRight();
+					}
+					else
+					{
+						m_tpScrollViewer.PageLeft();
+					}
+				}
+				break;
+			case VirtualKey.PageDown:
+				if (isVertical)
+				{
+					m_tpScrollViewer.PageDown();
+				}
+				else
+				{
+					if (invert)
+					{
+						m_tpScrollViewer.PageLeft();
+					}
+					else
+					{
+						m_tpScrollViewer.PageRight();
+					}
+				}
+				break;
+			case VirtualKey.Home:
+				if (isVertical)
+				{
+					m_tpScrollViewer.HandleVerticalScroll(ScrollEventType.First);
+				}
+				else
+				{
+					m_tpScrollViewer.HandleHorizontalScroll(ScrollEventType.First);
+				}
+				break;
+			case VirtualKey.End:
+				if (isVertical)
+				{
+					m_tpScrollViewer.HandleVerticalScroll(ScrollEventType.Last);
+				}
+				else
+				{
+					m_tpScrollViewer.HandleHorizontalScroll(ScrollEventType.Last);
+				}
+				break;
+		}
 	}
 
 	internal void HandleNavigationKey(
