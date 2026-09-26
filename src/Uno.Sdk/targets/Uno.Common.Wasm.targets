@@ -169,5 +169,5 @@
 
 
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Wasm.targets"
-			Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
+			Condition=" $(_IsUnoSingleProject) == 'true' " />
 </Project>

@@ -33,12 +33,10 @@
 		<ImplicitPackagesResolver_v0
 				IntermediateOutput="$(_UnoCacheFolder)"
 				SdkDebugging="$(UnoSdkDebugging)"
-				SingleProject="$(_IsUnoSingleProjectAndLegacy)"
 				Optimize="$(Optimize)"
 				OutputType="$(_ImplicitRestoreOutputType)"
 				UnoFeatures="$(UnoFeatures)"
 				TargetFramework="$(TargetFramework)"
-				ProjectName="$(MSBuildProjectName)"
 				ImplicitPackageReferences="@(_UnoProjectSystemPackageReference)"
 				PackageReferences="@(PackageReference)"
 				PackageVersions="@(PackageVersion)"

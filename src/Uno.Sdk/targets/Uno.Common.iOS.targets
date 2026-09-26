@@ -8,5 +8,5 @@
 		<IsMSALSupported>true</IsMSALSupported>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOS.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOS.targets" Condition=" $(_IsUnoSingleProject) == 'true' " />
 </Project>
