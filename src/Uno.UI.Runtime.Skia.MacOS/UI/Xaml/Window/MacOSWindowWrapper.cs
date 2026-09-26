@@ -1,7 +1,9 @@
 using System.ComponentModel;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
@@ -11,6 +13,7 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 internal class MacOSWindowWrapper : NativeWindowWrapperBase
 {
 	private readonly MacOSWindowNative _nativeWindow;
+	private int _activationQueued;
 
 	public MacOSWindowWrapper(MacOSWindowNative nativeWindow, Window window, XamlRoot xamlRoot, Size initialSize) : base(window, xamlRoot)
 	{
@@ -43,7 +46,30 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 
 	internal protected override void Activate()
 	{
-		NativeUno.uno_window_activate(_nativeWindow.Handle);
+		if (Interlocked.Exchange(ref _activationQueued, 1) != 0)
+		{
+			return;
+		}
+
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			// Shown queues root loading at high priority. Let that run, then record the
+			// laid-out first frame before AppKit makes the window visible.
+			Volatile.Write(ref _activationQueued, 0);
+			try
+			{
+				XamlRoot?.VisualTree.RootElement.UpdateLayout();
+				(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+			}
+			finally
+			{
+				// A failing layout pass must not leave the window hidden; the handle is cleared if it closed meanwhile.
+				if (_nativeWindow.Handle != nint.Zero)
+				{
+					NativeUno.uno_window_activate(_nativeWindow.Handle);
+				}
+			}
+		}, NativeDispatcherPriority.Normal);
 	}
 
 	protected override void CloseCore()
