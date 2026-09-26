@@ -89,10 +89,12 @@ stages:
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
-      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
+      # The shards run on the build image and Xcode: it ships the matching simulator runtime
+      # preinstalled, and the macOS 14 test image is being retired.
+      vmMacImageTest: '${{ parameters.vmMacImage }}'
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootTest: '${{ parameters.xCodeRootTest }}'
+      xCodeRootTest: '${{ parameters.xCodeRootBuild }}'
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
       poolName: '${{ parameters.poolName }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
