@@ -32,9 +32,12 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;
 
-	// The Vulkan render image is stable across frames (resized only on change), so it keeps the previous frame's
-	// pixels — the compositor can repaint only the damaged region.
-	public bool PreservesContents => true;
+	private bool _firstFramePresented;
+
+	// The Vulkan render image is stable across frames once the first frame has been presented on this swapchain,
+	// so subsequent frames can repaint only the damaged region. On a newly initialized swapchain, the previous
+	// frame's contents are not preserved and the entire frame must be repainted.
+	public bool PreservesContents => _firstFramePresented;
 
 	// Neutral device face — the GRVkBackendContext inputs the Skia backend reads to build its GRContext-Vulkan.
 	public nint Instance => _vk.InstancePtr;
@@ -75,6 +78,7 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 		}
 
 		_vk.BlitAndPresent();
+		_firstFramePresented = true;
 		_frameLock.Dispose();
 		_frameLock = null;
 	}
@@ -93,5 +97,6 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 		// The device is owned by UnoVulkanView and reused for the next surface; only the window-scoped
 		// swapchain/render image are released here.
 		_vk.DisposeSurfaceResources();
+		_firstFramePresented = false;
 	}
 }
