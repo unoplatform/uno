@@ -162,6 +162,49 @@ public class Given_SolutionUpdater
 		result.UpToDateChanges.GetAllPaths().Should().BeEmpty();
 	}
 
+	[TestMethod]
+	[Description(
+		"Spec 055 R1: an add the updater de-duplicates (the document is already in the project) brings " +
+		"no content change, so the analyzer-config refresh must not fork the snapshot either — a forked " +
+		"snapshot costs an EmitSolutionUpdateAsync roundtrip with nothing to emit, which is the empty " +
+		"intermediate update of dotnet/roslyn#79898.")]
+	public async Task When_AddedDocumentIsAlreadyInProject_Then_OriginalSolutionInstanceReturned()
+	{
+		var ct = TestContext.CancellationTokenSource.Token;
+		using var temp = new TempDirectory();
+		var projectPath = await temp.WriteFileAsync("TestProject.csproj", "<Project />", ct);
+		var modelPath = await temp.WriteFileAsync("Model.cs", "class Model { }", ct);
+		var configPath = await temp.WriteFileAsync(".editorconfig", "is_global = true", ct);
+
+		using var workspace = new AdhocWorkspace();
+		var projectId = ProjectId.CreateNewId();
+		var documentId = DocumentId.CreateNewId(projectId);
+		var configId = DocumentId.CreateNewId(projectId);
+		var solution = workspace.CurrentSolution
+			.AddProject(ProjectInfo.Create(
+				projectId,
+				VersionStamp.Create(),
+				"TestProject",
+				"TestProject",
+				LanguageNames.CSharp,
+				filePath: projectPath))
+			.AddDocument(documentId, "Model.cs", SourceText.From("class Model { }"), filePath: modelPath)
+			.AddAnalyzerConfigDocument(configId, ".editorconfig", SourceText.From("is_global = true"), filePath: configPath);
+
+		// Realize the texts, as the initial compilation does on the real workspace.
+		_ = await solution.GetDocument(documentId)!.GetTextAsync(ct);
+		_ = await solution.GetAnalyzerConfigDocument(configId)!.GetTextAsync(ct);
+
+		var added = new AddedDocumentInfo(
+			ProjectInfo.Create(projectId, VersionStamp.Create(), "TestProject", "TestProject", LanguageNames.CSharp, filePath: projectPath),
+			DocumentInfo.Create(DocumentId.CreateNewId(projectId), "Model.cs", filePath: modelPath));
+
+		var result = await new SolutionUpdater().UpdateAsync(solution, ChangeSet.Empty with { AddedDocuments = [added] }, ct);
+
+		result.Solution.Should().BeSameAs(solution,
+			"a de-duplicated add changes nothing, so the pass must stay a silent NoChanges instead of emitting an empty update");
+	}
+
 	private static ChangeSet Edits(ImmutableArray<Document> documents, ImmutableArray<TextDocument> additionalDocuments = default)
 		=> ChangeSet.Empty with
 		{
