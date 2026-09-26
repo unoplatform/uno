@@ -213,6 +213,52 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Description("Selecting the current solution restarts the session when the monitor loop already exited (e.g. SdkNotInCache on a freshly scaffolded solution) (#152/#153)")]
+	public async Task WhenSelectingCurrentSolutionAfterMonitorExited_DevServerRestarts()
+	{
+		var root = CreateTempDirectory();
+		DevServerMonitor? monitor = null;
+
+		try
+		{
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
+			var solutionPath = Path.Combine(workspaceDirectory, "MyApp.slnx");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var workspaceResolution = await resolver.ResolveAsync(root);
+
+			var created = CreateSubject();
+			var subject = created.Subject;
+			var healthService = created.HealthService;
+			monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", workspaceResolution with { SelectionSource = WorkspaceSelectionSource.UserSelected });
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			// Simulate a monitor loop that gave up (NotAnUnoWorkspace / ServerFailed) while
+			// the lifecycle manager still believes the DevServer was started.
+			SetPrivateField(monitor, "_monitor", Task.CompletedTask);
+			healthService.DevServerStarted = true;
+			monitor.IsMonitoring.Should().BeFalse();
+
+			var result = await subject.SelectSolutionAsync(solutionPath);
+
+			result.Status.Should().Be("restarted");
+			result.DevServerAction.Should().Be("Restart");
+			monitor.IsMonitoring.Should().BeTrue();
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
 	[Description("Selecting a different valid Uno solution restarts the DevServer on the newly selected workspace")]
 	public async Task WhenSelectingDifferentUnoSolution_DevServerRestartsOnSelectedWorkspace()
 	{
