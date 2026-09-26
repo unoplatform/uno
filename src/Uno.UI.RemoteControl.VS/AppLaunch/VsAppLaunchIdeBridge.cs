@@ -12,7 +12,7 @@ namespace Uno.UI.RemoteControl.VS.AppLaunch;
 /// <summary>
 /// Bridges IDE events (Play/Run command and solution build lifecycle) to the VsAppLaunchStateService.
 /// </summary>
-internal sealed class VsAppLaunchIdeBridge : IDisposable
+internal sealed class VsAppLaunchIdeBridge : IAsyncDisposable
 {
 	private readonly AsyncPackage _package;
 	private readonly DTE2 _dte;
@@ -161,9 +161,10 @@ internal sealed class VsAppLaunchIdeBridge : IDisposable
 		public int OnActiveProjectCfgChange(IVsHierarchy pIVsHierarchy) => VSConstants.S_OK;
 	}
 
-	public void Dispose()
+	public async ValueTask DisposeAsync()
 	{
-		ThreadHelper.ThrowIfNotOnUIThread();
+		// IVsSolutionBuildManager2 and DTE CommandEvents are UI-thread-affine; the package's DisposalToken bounds the hop at VS shutdown.
+		await _package.JoinableTaskFactory.SwitchToMainThreadAsync(_package.DisposalToken);
 
 		try
 		{
