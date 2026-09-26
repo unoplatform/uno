@@ -53,11 +53,6 @@ namespace Microsoft.UI.Xaml
 		private bool _warnedAboutTranslation;
 #endif
 
-		private static readonly TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> OnBringIntoViewRequestedHandler =
-			(UIElement sender, BringIntoViewRequestedEventArgs args) => sender.OnBringIntoViewRequested(args);
-
-		private static readonly Type[] _bringIntoViewRequestedArgs = new[] { typeof(BringIntoViewRequestedEventArgs) };
-
 		private string _uid;
 
 		private Vector3 _translation = Vector3.Zero;
@@ -99,11 +94,6 @@ namespace Microsoft.UI.Xaml
 		/// <remarks>This differs from the XamlRoot be being true for the root element of a native Popup.</remarks>
 		internal bool IsVisualTreeRoot { get; set; }
 
-		private void Initialize()
-		{
-			SubscribeToOverridenRoutedEvents();
-		}
-
 #if SUPPORTS_RTL
 		internal Matrix3x2 GetFlowDirectionTransform()
 		{
@@ -144,20 +134,6 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 #endif
-
-		private void SubscribeToOverridenRoutedEvents()
-		{
-			// Overridden Events are registered from constructor to ensure they are
-			// registered first in event handlers.
-			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
-
-			var implementedEvents = GetImplementedRoutedEvents();
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.BringIntoViewRequested))
-			{
-				BringIntoViewRequested += OnBringIntoViewRequestedHandler;
-			}
-		}
 
 		internal RoutedEventFlag GetImplementedRoutedEvents()
 		{
@@ -1552,7 +1528,6 @@ namespace Microsoft.UI.Xaml
 		{
 			_isFrameworkElement = this is FrameworkElement;
 
-			Initialize();
 			InitializePointers();
 
 			UpdateHitTest();
