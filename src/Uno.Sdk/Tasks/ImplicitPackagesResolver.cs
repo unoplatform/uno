@@ -401,6 +401,21 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			var isUnoPreview = _unoVersion?.IsPreview ?? false;
 			var preview = packageId.StartsWith("Uno.", StringComparison.InvariantCulture) && isUnoPreview;
 			version = client.GetVersion(packageId, preview);
+			if (version is null)
+			{
+				Log.LogError(subcategory: "",
+					errorCode: "UNOB0021",
+					helpKeyword: null,
+					helpLink: "https://aka.platform.uno/UNOB0021",
+					file: null,
+					lineNumber: 0,
+					columnNumber: 0,
+					endLineNumber: 0,
+					endColumnNumber: 0,
+					message: $"The package '{packageId}' has no version in the Uno.Sdk package manifest and does not exist on nuget.org. Update the Uno.Sdk, or add a PackageReference with an explicit version.");
+				return;
+			}
+
 			Log.LogMessage(MessageImportance.High, "Retrieved the latest package version '{0}' for the package '{1}'.", version, packageId);
 		}
 
