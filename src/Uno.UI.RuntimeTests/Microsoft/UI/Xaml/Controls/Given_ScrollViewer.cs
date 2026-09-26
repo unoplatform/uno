@@ -739,7 +739,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, outer.VerticalOffset);
 			Assert.IsGreaterThan(0d, inner.VerticalOffset, "Inner Vertical Offset is not greater than 0");
 
-			mouse.Wheel(-500, steps: 5);
+			// A notch scrolls 15% of the 20px inner viewport, so it takes many to saturate it before chaining.
+			mouse.Wheel(-12000, steps: 40);
 
 			// Poll until the inner SV has scrolled all the way to the bottom. The large wheel
 			// delta saturates the inner SV and then chains the remainder to the outer SV; we must
@@ -2442,34 +2443,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_UNO
 		[Ignore("The scroll simulations are internal to Uno.")]
 #endif
-		public void When_Wheel_Impulse_Then_Decay_Rests_Where_It_Was_Projected()
+		public void When_Wheel_Notch_Then_Follows_The_WinUI_Curve()
 		{
 #if HAS_UNO
-			// A detent is an impulse carrying a known distance, and wheel chaining decides whether there is room
-			// left from where the motion in flight will come to rest — so the projection has to be the truth.
-			const double Origin = 40;
-			const double Distance = 250;
-			const int MaxFrames = 600;
+			// Measured on WinUI 3's ScrollViewer: a fixed 220ms ease-out whose first frame covers 22% of the distance,
+			// half-way at ~47ms and 90% at ~145ms, landing exactly on the target.
+			const double Distance = 100;
+			const long Frame = TimeSpan.TicksPerSecond / 120;
 
-			ScrollDecaySimulation decay = new();
-			decay.Start(Origin, TimeSpan.TicksPerSecond / 60);
-			decay.AddImpulse(Distance);
+			ScrollWheelSimulation wheel = new();
+			wheel.Start(0);
+			wheel.AddDistance(Distance);
+			Assert.AreEqual(Distance, wheel.ProjectedEnd, "the notch should target the distance it carries");
 
-			Assert.AreEqual(Origin + Distance, decay.ProjectedEnd, delta: 0.001, "The impulse does not project to the distance it carries.");
-
-			var timestamp = 0L;
-			var frames = 0;
-			while (decay.Tick(timestamp += TimeSpan.TicksPerSecond / 60, 0, 10_000) && ++frames < MaxFrames)
+			var timestamp = TimeSpan.TicksPerSecond;
+			var positions = new List<(double Ms, double Position)>();
+			while (wheel.Tick(timestamp, 0, 10_000))
 			{
+				positions.Add(((timestamp - TimeSpan.TicksPerSecond) / (double)TimeSpan.TicksPerMillisecond, wheel.Position));
+				timestamp += Frame;
 			}
 
-			Assert.IsTrue(frames < MaxFrames, "The decay never settled.");
+			var frameMs = Frame / (double)TimeSpan.TicksPerMillisecond;
+			Assert.AreEqual(0.22 * Distance, positions[0].Position, 0.001, "the first frame should cover 22% of the distance");
+			Assert.AreEqual(47, positions.First(p => p.Position >= Distance / 2).Ms, frameMs, "half-way time");
+			Assert.AreEqual(145, positions.First(p => p.Position >= Distance * 0.9).Ms, frameMs, "90% time");
+			Assert.IsTrue(positions.Count * frameMs <= 225, $"the curve took {positions.Count * frameMs:F0}ms to settle");
+			Assert.AreEqual(Distance, wheel.Position, "the curve should land exactly on the target");
+#endif
+		}
 
-			Assert.AreEqual(
-				Origin + Distance,
-				decay.Position,
-				delta: 0.001,
-				$"Integrating the decay came to rest at {decay.Position:F2}, not at its projected {Origin + Distance:F2}.");
+		[TestMethod]
+#if !HAS_UNO
+		[Ignore("The scroll simulations are internal to Uno.")]
+#endif
+		public void When_Wheel_Notch_Mid_Motion_Then_Restarts_From_The_Current_Position()
+		{
+#if HAS_UNO
+			const long Frame = TimeSpan.TicksPerSecond / 120;
+
+			ScrollWheelSimulation wheel = new();
+			wheel.Start(0);
+			wheel.AddDistance(100);
+
+			var timestamp = TimeSpan.TicksPerSecond;
+			for (var i = 0; i < 5; i++, timestamp += Frame)
+			{
+				wheel.Tick(timestamp, 0, 10_000);
+			}
+
+			var before = wheel.Position;
+			wheel.AddDistance(100);
+			wheel.Tick(timestamp, 0, 10_000);
+
+			Assert.AreEqual(200, wheel.ProjectedEnd, "the second notch should add to the target");
+			Assert.AreEqual(before + 0.22 * (200 - before), wheel.Position, 0.001, "the curve should restart from where the motion was");
 #endif
 		}
 
@@ -2567,6 +2595,93 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1500, SUT.VerticalOffset);
 		}
 #endif
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaMacOS)] // Apple wheels apply small deltas 1:1
+		[DataRow(100, 120, 1, 15)]
+		[DataRow(200, 120, 1, 30)]
+		[DataRow(600, 30, 4, 90)]
+		public async Task When_Wheel_Then_Scrolls_A_Share_Of_The_Viewport(int height, int delta, int events, double expected)
+		{
+#if HAS_INPUT_INJECTOR
+			// Measured on WinUI 3: 0.15 * viewport * delta / 120, with no 48px floor and no rounding per event.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = height,
+				Content = new Border { Width = 180, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			var bounds = await UITestHelper.Load(SUT);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var mouse = input.GetMouse();
+			mouse.MoveTo(bounds.GetCenter());
+
+			for (var i = 0; i < events; i++)
+			{
+				mouse.Wheel(-delta);
+			}
+
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			Assert.AreEqual(expected, SUT.VerticalOffset, 0.01);
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaMacOS)] // Apple wheels apply each event immediately
+		public async Task When_Wheel_Notches_Then_Settles_Shortly_After_The_Last()
+		{
+#if HAS_INPUT_INJECTOR
+			// WinUI settles ~215ms after the last notch, however many came before it.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new Border { Width = 180, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			var bounds = await UITestHelper.Load(SUT);
+
+			var stopwatch = new System.Diagnostics.Stopwatch();
+			double? settledMs = null;
+			SUT.ViewChanged += (_, e) =>
+			{
+				if (!e.IsIntermediate)
+				{
+					settledMs = stopwatch.Elapsed.TotalMilliseconds;
+				}
+			};
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var mouse = input.GetMouse();
+			mouse.MoveTo(bounds.GetCenter());
+
+			for (var i = 0; i < 3; i++)
+			{
+				mouse.WheelDown();
+				await Task.Delay(60);
+			}
+
+			stopwatch.Start();
+			mouse.WheelDown();
+
+			await WindowHelper.WaitFor(() => settledMs is not null, timeoutMS: 3000, message: "the wheel scroll never settled");
+
+			// 220ms of curve, plus up to a couple of frames between the input and the frame it starts on.
+			Assert.IsTrue(settledMs <= 255, $"the scroll settled {settledMs:F0}ms after the last notch");
+			Assert.AreEqual(4 * 30, SUT.VerticalOffset, 0.01, "four notches of 15% of the viewport");
+#else
+			await Task.CompletedTask;
+#endif
+		}
 
 		// A flick fast enough to launch a fling: the velocity tracker fits the recent gesture, so it needs
 		// several moves spread over real time rather than one long jump.

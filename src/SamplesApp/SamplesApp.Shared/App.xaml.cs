@@ -418,6 +418,9 @@ namespace SamplesApp
 			var args = launchActivatedEventArgs.Arguments ?? "";
 #endif
 
+			// --FeatureConfiguration switches are applied at startup; left in, they break the sample= deep link.
+			args = string.Join(" ", args.Split(' ', StringSplitOptions.RemoveEmptyEntries).Where(arg => !arg.StartsWith("--FeatureConfiguration.", StringComparison.Ordinal)));
+
 			Console.WriteLine($"HandleLaunchArguments: {args}");
 
 			// Check the "sample=" deep link before the System.CommandLine-based handlers: on
