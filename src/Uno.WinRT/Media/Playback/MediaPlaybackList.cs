@@ -4,7 +4,7 @@ using Windows.Media.Playback;
 
 namespace Windows.Media.Playback
 {
-	public partial class MediaPlaybackList : IMediaPlaybackList, IMediaPlaybackSource
+	public partial class MediaPlaybackList : IMediaPlaybackSource
 	{
 		public IObservableVector<MediaPlaybackItem> Items { get; } = new ObservableVector<MediaPlaybackItem>();
 	}

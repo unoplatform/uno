@@ -6,7 +6,7 @@ using NativeMethods = __Windows.__System.MemoryManager.NativeMethods;
 
 namespace Windows.System
 {
-	public partial class MemoryManager
+	public static partial class MemoryManager
 	{
 		public static ulong AppMemoryUsage
 		{

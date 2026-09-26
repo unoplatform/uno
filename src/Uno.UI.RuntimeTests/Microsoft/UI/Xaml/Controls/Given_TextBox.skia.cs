@@ -1,0 +1,9070 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Combinatorial.MSTest;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Media3D;
+using MUXControlsTestApp.Utilities;
+using SamplesApp.UITests;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.UI.Helpers;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.DevTools.Input;
+using Uno.UI.Xaml.Core;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
+using Windows.System;
+using Windows.UI;
+using Windows.UI.Core;
+using Windows.UI.Input.Preview.Injection;
+using Uno.ApplicationModel.DataTransfer;
+using Uno.Foundation.Extensibility;
+using Uno.UI.Xaml.Controls.Extensions;
+using static Private.Infrastructure.TestServices;
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
+using Color = Windows.UI.Color;
+using Point = Windows.Foundation.Point;
+
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
+{
+	/// <summary>
+	/// This partial is for testing the skia-based TextBox implementation.
+	/// Most tests here should set HideCaret to true and then set it back
+	/// at the end of the test.
+	/// </summary>
+	public partial class Given_TextBox
+	{
+		// The browser head types through one shared hidden <input>. Where it is placed is per-host: desktop
+		// browsers keep it over the focused TextBox, iOS parks it off-screen so WebKit has nothing to reveal
+		// and cannot pan the page (see keepsInputOffscreen in BrowserInvisibleTextBoxViewExtension.ts). The
+		// runtime tests run in whichever browser hosts them, so assert the invariant of the reported policy.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24526")]
+		public async Task When_Focused_In_Browser_Then_Hidden_Input_Placement_Matches_Host()
+		{
+			var SUT = new TextBox
+			{
+				Width = 200,
+				Margin = new Thickness(40, 60, 0, 0),
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			try
+			{
+				await UITestHelper.Load(new Grid { Width = 400, Height = 400, Children = { SUT } });
+
+				// Focus has to land on this TextBox: the input is shared, so a failed focus could otherwise be
+				// assessed against an element a previous test left behind.
+				Assert.IsTrue(SUT.Focus(FocusState.Programmatic), "TextBox should take focus");
+				Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot), "TextBox should own the entry session");
+
+				// Accessibility routes text entry through the per-element semantic <input> and detaches the shared
+				// one, so the placement policy only applies when it is off. Any earlier accessibility test latches
+				// it on for the rest of the browser session, which is how the suite reaches this test on CI.
+				if (SemanticElementExists(SUT))
+				{
+					Assert.IsTrue(await SettlesTo(() => GetHiddenInputRect() is null),
+						$"accessibility owns text entry, so the shared input should be detached; it is {DescribeHiddenInput()}");
+					return;
+				}
+
+				var placement = ExpectedPlacementForHost();
+				// Reported after the wait, not through WaitFor's message, which is formatted at call time and so
+				// would describe the state before the wait rather than the state that failed it.
+				Assert.IsTrue(await SettlesTo(() => GetHiddenInputPlacement() == placement),
+					$"expected the hidden input to report '{placement}'; it is {DescribeHiddenInput()}");
+
+				var bounds = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
+				await UITestHelper.WaitFor(() => IsPlacedFor(placement, bounds, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input placed for '{placement}' against the focused TextBox {bounds}");
+
+				SUT.Margin = new Thickness(40, 200, 0, 0);
+				await WindowHelper.WaitForIdle();
+
+				var moved = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
+				Assert.IsTrue(moved.Y >= bounds.Y + 100, $"TextBox should have moved down, was {bounds}, now {moved}");
+				await UITestHelper.WaitFor(() => IsPlacedFor(placement, moved, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input still placed for '{placement}' after the TextBox moved to {moved}");
+
+				// Moving focus to a second TextBox reuses the shared input instead of creating one, which is how
+				// every entry session after the first behaves once another control has already used it.
+				var second = new TextBox { Width = 200, Margin = new Thickness(40, 20, 0, 0), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+				((Grid)WindowHelper.WindowContent).Children.Add(second);
+				await UITestHelper.WaitForLoaded(second);
+
+				Assert.IsTrue(second.Focus(FocusState.Programmatic), "second TextBox should take focus");
+				var secondBounds = second.TransformToVisual(null).TransformBounds(new Rect(0, 0, second.ActualWidth, second.ActualHeight));
+				Assert.IsTrue(await SettlesTo(() => GetHiddenInputPlacement() == placement),
+					$"expected the reused input to report '{placement}'; it is {DescribeHiddenInput()}");
+				await UITestHelper.WaitFor(() => IsPlacedFor(placement, secondBounds, GetHiddenInputRect()), timeoutMS: 3000, message: $"reused input placed for '{placement}' against the second TextBox {secondBounds}");
+			}
+			finally
+			{
+				// The runtime-test engine only unloads test content when IsUnloadingTestContent is set, which the
+				// CI/headless path does not: leaving a focused TextBox would keep the shared input in the DOM for
+				// whatever runs next.
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// "tracking": the input sits over the TextBox's inner text block, so it is within the TextBox bounds
+		// (inflated by a pixel to absorb device-pixel rounding between the XAML and DOM rects). "offscreen":
+		// entirely above the viewport, whatever the TextBox does, so there is no rect for the browser to
+		// scroll into view. A missing input reads as null and satisfies neither: an empty rect would
+		// otherwise pass the off-screen check by default.
+		private static bool IsPlacedFor(string placement, Rect textBox, Rect? inputRect)
+			=> inputRect is { } input
+				&& (placement == "offscreen"
+					? input.Bottom < 0
+					: input.Width > 0 && input.Height > 0 && textBox.InflateBy(new Thickness(1)).Contains(input));
+
+		// Polls instead of UITestHelper.WaitFor so the caller can assert with state captured after the wait.
+		private static async Task<bool> SettlesTo(Func<bool> condition, int timeoutMS = 5000)
+		{
+			var giveUp = DateTimeOffset.UtcNow.AddMilliseconds(timeoutMS);
+			while (DateTimeOffset.UtcNow < giveUp)
+			{
+				if (condition())
+				{
+					return true;
+				}
+
+				await WindowHelper.WaitForIdle();
+			}
+
+			return condition();
+		}
+
+		// Everything a failure needs to tell "the input was never created" apart from "it was placed wrongly".
+		private static string DescribeHiddenInput()
+			=> InvokeBrowserJs("""
+				(function() {
+					const e = document.getElementById('uno-input');
+					const a = document.activeElement;
+					const active = a ? (a.id || a.tagName) : 'none';
+					if (!e) {
+						return 'absent (activeElement=' + active + ')';
+					}
+
+					const r = e.getBoundingClientRect();
+					return "placement='" + (e.dataset.unoPlacement ?? '') + "' rect=" + [r.x, r.y, r.width, r.height].map(Math.round).join(',')
+						+ ' activeElement=' + active + ' focused=' + (a === e);
+				})()
+				""");
+
+		// Restates the host predicate rather than reading back what the page reports: deriving the expectation
+		// from data-uno-placement would pass even if the gate itself regressed (off-screen on a desktop
+		// browser, or tracking on iOS), which is the contract this test exists to pin.
+		private static string ExpectedPlacementForHost()
+			=> InvokeBrowserJs("""
+				(function() {
+					const p = navigator.platform ?? '';
+					const isIOS = /iP(ad|hone|od)/.test(p) || (p === 'MacIntel' && (navigator.maxTouchPoints ?? 0) > 1);
+					return isIOS ? 'offscreen' : 'tracking';
+				})()
+				""");
+
+		private static string GetHiddenInputPlacement()
+			=> InvokeBrowserJs("""
+				(function() {
+					const e = document.getElementById('uno-input');
+					return e ? (e.dataset.unoPlacement ?? '') : '';
+				})()
+				""");
+
+		// Reads the rendered rect rather than the inline styles, so a CSS-level placement or sizing regression
+		// is caught too. Null when the input is absent or the rect cannot be read, which is never a pass.
+		private static Rect? GetHiddenInputRect()
+		{
+			var raw = InvokeBrowserJs("""
+				(function() {
+					const e = document.getElementById('uno-input');
+					if (!e) {
+						return '';
+					}
+
+					const r = e.getBoundingClientRect();
+					return r.x + ',' + r.y + ',' + r.width + ',' + r.height;
+				})()
+				""");
+			var parts = raw.Split(',');
+			if (parts.Length != 4)
+			{
+				return null;
+			}
+
+			var values = new double[4];
+			for (var i = 0; i < 4; i++)
+			{
+				if (!double.TryParse(parts[i], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out values[i]))
+				{
+					return null;
+				}
+			}
+
+			return new Rect(values[0], values[1], values[2], values[3]);
+		}
+
+		[TestMethod]
+		public async Task When_Basic_Input()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var text = "Hello world";
+			foreach (var c in text)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.AreEqual(text, SUT.Text);
+			Assert.AreEqual(11, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Basic_Input_Event_Sequence()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var eventLog = "";
+			SUT.KeyDown += (_, _) => eventLog += $"KeyDown Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+			SUT.KeyUp += (_, _) => eventLog += $"KeyUp Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+			SUT.PreviewKeyDown += (_, _) => eventLog += $"PreviewKeyDown Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+			SUT.PreviewKeyUp += (_, _) => eventLog += $"PreviewKeyUpKeyUp Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+			SUT.SelectionChanging += (_, _) => eventLog += $"SelectionChanging Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+			SUT.SelectionChanged += (_, _) => eventLog += $"SelectionChanged Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+			SUT.TextChanged += (_, _) => eventLog += $"TextChanged Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+
+			var downArgs = new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'a');
+			var upArgs = new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None);
+			SUT.SafeRaiseTunnelingEvent(UIElement.PreviewKeyDownEvent, downArgs);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, downArgs);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseTunnelingEvent(UIElement.PreviewKeyUpEvent, upArgs);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, upArgs);
+			await WindowHelper.WaitForIdle();
+
+			// WinUI has Text="" when SelectionChanging is fired and Text="a" when SelectionChanged is fired.
+			// We fire SelectionChanging after the Text is updated, which both makes more sense and is easier to
+			// get right with the way our version is written.
+			Assert.AreEqual(
+				"""
+                PreviewKeyDown Text= SelectionStart=0 SelectionLength=0
+                KeyDown Text= SelectionStart=0 SelectionLength=0
+                SelectionChanging Text=a SelectionStart=0 SelectionLength=0
+                SelectionChanged Text=a SelectionStart=1 SelectionLength=0
+                TextChanged Text=a SelectionStart=1 SelectionLength=0
+                PreviewKeyUpKeyUp Text=a SelectionStart=1 SelectionLength=0
+                KeyUp Text=a SelectionStart=1 SelectionLength=0
+                
+                """.Replace("\r\n", "\n"), eventLog);
+		}
+
+		[TestMethod]
+		public async Task When_Public_KeyDown_Subscription_Changes_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+			SUT.KeyDown += (sender, args) =>
+			{
+				if (args.Key == VirtualKey.T)
+				{
+					SUT.Text = "Ramez";
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			await KeyboardHelper.PressKeySequence("t", SUT);
+
+			Assert.AreEqual("tRamez", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Basic_Input_With_ArrowKeys()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			foreach (var c in "world")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.AreEqual(5, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			for (int i = 1; i <= 5; i++)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(5 - i, SUT.SelectionStart);
+				Assert.AreEqual(0, SUT.SelectionLength);
+			}
+
+			foreach (var c in "Hello ")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.AreEqual("Hello world", SUT.Text);
+			Assert.AreEqual(6, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Basic_Input_With_Home_End()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			foreach (var c in "world")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			foreach (var c in "Hello ")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.AreEqual("Hello world", SUT.Text);
+			Assert.AreEqual(6, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.End, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(11, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_End_And_Shift_End_At_Position_Zero()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await KeyboardHelper.InputText("hello world", SUT);
+
+			// Move cursor to position 0
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart, "Cursor should be at position 0 after Home");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Press End at position 0 - should move to end of line
+			await KeyboardHelper.PressKeySequence("$d$_end#$u$_end", SUT);
+			Assert.AreEqual(11, SUT.SelectionStart, "End key at position 0 should move cursor to end of text");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Move back to position 0
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Press Shift+End at position 0 - should select all text
+			await KeyboardHelper.PressKeySequence("$d$_shift#$d$_end#$u$_end#$u$_shift", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart, "Shift+End at position 0 should keep SelectionStart at 0");
+			Assert.AreEqual(11, SUT.SelectionLength, "Shift+End at position 0 should select all text");
+		}
+
+		[TestMethod]
+		public async Task When_Home_Empty_TextBox()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.RaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+		}
+
+		[TestMethod]
+		public async Task When_Selection_With_Keyboard_NoMod_And_Shift()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			foreach (var c in "Hello world")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			// Make sure the typing phase has fully settled before starting the measured selection loop.
+			// On Skia-WASM the selection state can transiently report a stale value through a queued
+			// dispatcher continuation; reading _selection while it is stale would offset the whole loop
+			// by one. Waiting for the caret to actually reach the end of the text removes that race.
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "caret settled at end of text (expected Start=11, Length=0)");
+
+			for (var i = 1; i <= 11; i++)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+				await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 - i && SUT.SelectionLength == i, message: $"Shift+Left iteration {i} (expected Start={11 - i}, Length={i})");
+			}
+
+			for (var i = 1; i <= 5; i++)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
+				await WindowHelper.WaitFor(() => SUT.SelectionStart == i && SUT.SelectionLength == 11 - i, message: $"Shift+Right iteration {i} (expected Start={i}, Length={11 - i})");
+			}
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 5 && SUT.SelectionLength == 0, message: "Left collapses selection to its start (expected Start=5, Length=0)");
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.End, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 5 && SUT.SelectionLength == 6, message: "Shift+End extends to end of text (expected Start=5, Length=6)");
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "Right collapses selection to its end (expected Start=11, Length=0)");
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 0 && SUT.SelectionLength == 11, message: "Shift+Home extends to start of text (expected Start=0, Length=11)");
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "Right collapses selection to its end (expected Start=11, Length=0)");
+		}
+
+		[TestMethod]
+		public async Task When_Keyboard_Selection_Backwards_ScrollViewer_Offset()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Width = 150 };
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			foreach (var c in "some text that is longer than the width of the text box")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
+
+			Assert.AreNotEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
+
+			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
+
+			for (int i = 0; i < 5; i++)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
+				await WindowHelper.WaitForIdle();
+			}
+
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
+
+			// The ScrollViewer shouldn't move as long as the caret is still in view.
+			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
+		}
+
+		[TestMethod]
+		public async Task When_Ctrl_End_ScrollViewer_Vertical_Offset()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Height = 90,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Gravida dictum fusce ut placerat orci nulla. Luctus venenatis lectus magna fringilla urna porttitor rhoncus. Faucibus vitae aliquet nec ullamcorper. Sem fringilla ut morbi tincidunt. Imperdiet proin fermentum leo vel orci. Velit aliquet sagittis id consectetur. Faucibus et molestie ac feugiat sed lectus vestibulum. Morbi enim nunc faucibus a pellentesque sit amet porttitor. Elementum sagittis vitae et leo duis ut diam. Pulvinar pellentesque habitant morbi tristique senectus et netus et malesuada. Id porta nibh venenatis cras sed felis eget velit aliquet. Feugiat pretium nibh ipsum consequat nisl. Adipiscing diam donec adipiscing tristique risus nec feugiat. Consequat semper viverra nam libero justo laoreet sit. Non tellus orci ac auctor augue mauris augue neque. Dolor purus non enim praesent."
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).VerticalOffset);
+
+			// on Apple platforms moving to the end of the document is done with `Command` + `Down`
+			var isAppleKeyboard = DeviceTargetHelper.UsesAppleKeyboardLayout;
+			var key = isAppleKeyboard ? VirtualKey.Down : VirtualKey.End;
+			var mod = isAppleKeyboard ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, mod));
+			await WindowHelper.WaitForIdle();
+
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
+
+			((ScrollViewer)SUT.ContentElement).VerticalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableHeight, 1.0);
+		}
+
+		[TestMethod]
+		public async Task When_Trailing_Space_Overflows_ScrollViewer_Viewport()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "some text that is longer than the width of the text box"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var scrollableWidthWithoutTrailingSpaces = ((ScrollViewer)SUT.ContentElement).ScrollableWidth;
+
+			SUT.Text += new string(' ', 20);
+			await UITestHelper.WaitForIdle();
+			Assert.IsGreaterThan(scrollableWidthWithoutTrailingSpaces + 50, ((ScrollViewer)SUT.ContentElement).ScrollableWidth);
+		}
+
+		[TestMethod]
+		public async Task When_Ctrl_A()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "hello world"
+			};
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, _platformCtrlKey, unicodeKey: 'a'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, keyDownCount);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, _platformCtrlKey, unicodeKey: 'a'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, keyDownCount);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Shift()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "hello world"
+			};
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Shift, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello world", SUT.Text);
+
+			// Release the key so the process-wide KeyboardStateTracker doesn't carry
+			// a stuck "Shift is Down" state into subsequent tests.
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Shift, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+		}
+
+		[TestMethod]
+		public async Task When_Alt_Or_Win_Key_Alone()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "hello world" };
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Test Option/Alt keys
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Menu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(1, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Menu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(2, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(3, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+
+			// Test Command/Windows keys
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(4, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(5, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+
+			await WindowHelper.WaitForIdle();
+		}
+
+		[TestMethod]
+		public async Task When_Ctrl_Home_End()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "lorem\nipsum\r\ndolor"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var key = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.Down : VirtualKey.End;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			key = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.Up : VirtualKey.Home;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		// SkiaWasm excluded: real WASM-specific TextBox bug — Ctrl+Delete leaves the wrong caret/selection
+		// (passes on all other Skia targets). Tracked for a proper fix, not flakiness. #23525
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23525")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Ctrl_Delete()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "lorem ipsum dolor"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// on Apple platforms it's option (menu/alt) and backspace to delete a word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, mod));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ipsum dolor", SUT.Text);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, mod));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("dolor", SUT.Text);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Ctrl_Backspace()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "lorem ipsum dolor"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			// on Apple platforms it's option (menu/alt) and backspace to delete a word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, mod));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("lorem ipsum ", SUT.Text);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, mod));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("lorem ", SUT.Text);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Enter_But_Not_Multiline()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(2, 0);
+			await WindowHelper.WaitForIdle();
+
+			var size = SUT.ActualSize;
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Enter, VirtualKeyModifiers.None, unicodeKey: '\r'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(size, SUT.ActualSize);
+		}
+
+		[TestMethod]
+		public async Task When_Selection_With_Keyboard_NoMod_Ctrl_And_Shift()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			foreach (var c in "Hello &(%&^( w0.rld")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+
+			// on Apple platforms you use `option` (alt/menu) and `right` to move to the next word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(6, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(13, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(15, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(16, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(19, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Move_Word_Left_With_Keyboard()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "abc def ghi"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			// on Apple platforms moving to the previous word is `option` (alt/menu) + `left`
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+
+			// Each step polls with its own message so a failure identifies which word-left it was.
+			// Polling only covers a late move; if the `if (HasPointerCapture) return;` guard in
+			// KeyDownLeftArrow makes it a no-op instead, the wait still times out here.
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				8,
+				messageBuilder: start => $"1st word-left should move the caret to the start of 'ghi', was {start} (length {SUT.SelectionLength})");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				4,
+				messageBuilder: start => $"2nd word-left should move the caret to the start of 'def', was {start} (length {SUT.SelectionLength})");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				0,
+				messageBuilder: start => $"3rd word-left should move the caret to the start of 'abc', was {start} (length {SUT.SelectionLength})");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// selecting the previous word is `shift` + the same modifier
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			mod |= VirtualKeyModifiers.Shift;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				8,
+				messageBuilder: start => $"1st shift+word-left should select 'ghi', was {start} (length {SUT.SelectionLength})");
+			Assert.AreEqual(3, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				4,
+				messageBuilder: start => $"2nd shift+word-left should extend the selection to 'def ghi', was {start} (length {SUT.SelectionLength})");
+			Assert.AreEqual(7, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				0,
+				messageBuilder: start => $"3rd shift+word-left should extend the selection to the whole text, was {start} (length {SUT.SelectionLength})");
+			Assert.AreEqual(11, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Move_To_Line_Start_End_With_Keyboard()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "abc def\rghi jkl"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// caret in the middle of the second line
+			SUT.Select(10, 0);
+			await WindowHelper.WaitForIdle();
+
+			// on Apple platforms moving to the end of the line is `command` + `right`
+			var isAppleKeyboard = DeviceTargetHelper.UsesAppleKeyboardLayout;
+			var endKey = isAppleKeyboard ? VirtualKey.Right : VirtualKey.End;
+			var homeKey = isAppleKeyboard ? VirtualKey.Left : VirtualKey.Home;
+			var mod = isAppleKeyboard ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.None;
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, endKey, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(15, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, homeKey, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(8, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// selecting to the start/end of the line is `shift` + the same keys
+			SUT.Select(10, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, homeKey, mod | VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(8, SUT.SelectionStart);
+			Assert.AreEqual(2, SUT.SelectionLength);
+
+			SUT.Select(10, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, endKey, mod | VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(5, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Text_Bigger_Than_TextBox()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			foreach (var c in "This should be a lot longer than the width of the TextBox.")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			var sv = SUT.FindVisualChildByType<ScrollViewer>();
+
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
+			sv.HorizontalOffset.Should().BeGreaterThan(0);
+
+			var isiOS = OperatingSystem.IsIOS();
+			if (!isiOS)
+			{
+				//TODO: this is flaky on iOS. Fails on CI but passes locally.
+				Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset, "HorizontalOffset should be equal to ScrollableWidth after typing long text");
+			}
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
+			sv.ScrollableWidth.Should().BeGreaterThan(0);
+			Assert.AreEqual(0, sv.HorizontalOffset, "HorizontalOffset should be 0 after Home key press");
+		}
+
+		[TestMethod]
+		public async Task When_KeyDown_Bubbles_Out()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 100,
+				Text = "Hello world"
+			};
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, keyDownCount);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, keyDownCount);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.End, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, keyDownCount);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.End, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(3, keyDownCount);
+
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.Select(2, 0);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(4, keyDownCount);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(4, keyDownCount);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(5, keyDownCount);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(6, keyDownCount);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.Select(0, 0);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(7, keyDownCount);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(7, keyDownCount);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.Select(SUT.Text.Length, 0);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(7, keyDownCount);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, VirtualKeyModifiers.None, unicodeKey: 'A'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(8, keyDownCount);
+		}
+
+		[TestMethod]
+		public async Task When_Selection_Initial_Then_Text_Changed()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40,
+				Text = "Initial"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Text = "Changed";
+
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_ReadOnly()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40,
+				Text = "Initial",
+				IsReadOnly = true
+			};
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, VirtualKeyModifiers.None, unicodeKey: 'A'));
+
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Initial", SUT.Text);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(1, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
+
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(2, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
+
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(2, keyDownCount);
+		}
+
+		[TestMethod]
+		public async Task When_Long_Text_Unfocused()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 80,
+				Text = "This should be a lot longer than the width of the TextBox."
+			};
+
+			var btn = new Button();
+
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					SUT,
+					btn
+				}
+			};
+
+
+			WindowHelper.WindowContent = sp;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var sv = SUT.FindVisualChildByType<ScrollViewer>();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+			// DeleteButton Takes space to the right of sv
+			LayoutInformation.GetLayoutSlot(SUT).Right.Should().BeGreaterThan(LayoutInformation.GetLayoutSlot(sv).Right + 10);
+
+			btn.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			LayoutInformation.GetLayoutSlot(SUT).Right.Should().BeLessThan(LayoutInformation.GetLayoutSlot(sv).Right + 10);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_Scrolling_Updates_With_Movement()
+		{
+			if (OperatingSystem.IsLinux() || OperatingSystem.IsBrowser())
+			{
+				Assert.Inconclusive("There are small differences in fonts between Linux and other platforms, so the numbers aren't exactly the same.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 64, // == TextControlThemeMinWidth for UWP styles
+				Text = "This should be a lot longer than the width of the TextBox."
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var sv = SUT.FindVisualChildByType<ScrollViewer>();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
+			Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset, "sv.ScrollableWidth is not equal to sv.HorizontalOffset");
+
+			for (var i = 0; i < 6; i++)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
+				Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset, $"Index: {i} sv.ScrollableWidth is not equal to sv.HorizontalOffset");
+			}
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
+			sv.HorizontalOffset.Should().BeLessThan(sv.ScrollableWidth);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
+			Assert.AreEqual(0, sv.HorizontalOffset);
+
+			for (var i = 0; i < 6; i++)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
+				Assert.AreEqual(0, sv.HorizontalOffset, $"Index: {i} sv.HorizontalOffset is not 0");
+			}
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
+			sv.HorizontalOffset.Should().BeGreaterThan(0);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
+		public async Task When_Scrolling_Updates_After_Backspace()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "This should be a lot longer than the width of the TextBox."
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var sv = SUT.FindVisualChildByType<ScrollViewer>();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+			// DeleteButton Takes space to the right of sv
+			LayoutInformation.GetLayoutSlot(SUT).Right.Should().BeGreaterThan(LayoutInformation.GetLayoutSlot(sv).Right + 10);
+
+			var svRight = LayoutInformation.GetLayoutSlot(SUT).Right;
+			for (var i = 0; i < 5; i++)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.None));
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(svRight, LayoutInformation.GetLayoutSlot(SUT).Right);
+			}
+
+			// on Apple platforms we use `option` (menu/alt) + `delete` to remove word at the left
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			for (var i = 0; i < 10; i++)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, mod));
+				await WindowHelper.WaitForIdle();
+			}
+
+			// Accounting for font difference on Wasm Skia, until we unify with Open Sans.
+			Assert.AreEqual(OperatingSystem.IsBrowser() ? 4 : 0, sv.ScrollableWidth);
+		}
+
+		// Clipboard is currently not available on skia-WASM
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Scrolling_Updates_After_Pasting_Long_Text()
+		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "This should be a lot longer than the width of the TextBox.";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+#if HAS_UNO
+			// The animation may take some time to finish
+
+			await WindowHelper.WaitFor(() =>
+			{
+				if (SUT.ContentElement is ScrollViewer sv)
+				{
+					return Math.Abs(sv.HorizontalOffset - sv.ScrollableWidth) < 1.0;
+				}
+
+				return false;
+			}, 5000);
+#endif
+
+			((ScrollViewer)SUT.ContentElement).HorizontalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableWidth, 5.0);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_Pointer_Tap()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
+				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
+				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_Tap_After_Ending_Spaces()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 350,
+				Text = "Hello world          ",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(new Point(bounds.Right - 30, bounds.GetMidY()));
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_Shift_Tap()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 130,
+				Text = "Hello world",
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var selectionEnd = SUT.SelectionStart;
+
+			mouse.MoveBy(-20, 0);
+			mouse.Press(VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(selectionEnd, SUT.SelectionStart + SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_Pointer_RightClick_No_Selection()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
+				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
+				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Fails in Skia UIKit CI - https://github.com/unoplatform/uno-private/issues/808
+		public async Task When_Pointer_RightClick_Selection()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world",
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/OpenSans/OpenSans.ttf")
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(2, 2);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// Right tapping should move the caret to the current pointer location and open the context menu
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-100, 0); // click out
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			// clicking inside the TextBox to dismiss the context menu should NOT move the caret
+			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_Pointer_Hold_Drag()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
+				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
+				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-51, 0);
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_Hold_Drag_OutOfBounds()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
+				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
+				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(0, 50);
+			mouse.MoveBy(-150, 0);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(10, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_LongText_Pointer_Hold_Drag_OutOfBounds()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
+				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
+				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "This should be a lot longer than the width of the TextBox.",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(0, 50);
+			mouse.MoveBy(-150, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(10, SUT.SelectionLength);
+
+			mouse.MoveBy(0, 50);
+			mouse.MoveBy(600, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length - 10, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Chunk_DoubleTapped()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(6, SUT.SelectionStart);
+			Assert.AreEqual(5, SUT.SelectionLength);
+
+			// the selection should start on the left
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(6, SUT.SelectionStart);
+			Assert.AreEqual(4, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WASM #9080
+		public async Task When_Chunk_DoubleTapHeld()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 6 && SUT.SelectionLength == 5, message: "double-tap selects the word under the pointer (expected Start=6, Length=5)");
+
+			mouse.MoveBy(-40, 0);
+			// Wait for the held-drag to extend the chunk selection to the left edge AND establish the
+			// backward selection direction. On Skia-WASM the injected move is delivered through the input
+			// pipeline and the SelectInternal that flips selectionEndsAtTheStart may settle after the first
+			// idle pass, so we poll for the complete target state instead of asserting on a single idle.
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 0 && SUT.SelectionLength == SUT.Text.Length && SUT.IsBackwardSelection, message: $"held-drag extends selection left as a backward selection (expected Start=0, Length={SUT.Text.Length}, IsBackward=true)");
+
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			// the selection should start on the right
+			Assert.IsTrue(SUT.IsBackwardSelection);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 1 && SUT.SelectionLength == SUT.Text.Length - 1, message: $"Shift+Right shrinks the backward selection from the left (expected Start=1, Length={SUT.Text.Length - 1})");
+		}
+
+		[TestMethod]
+		public async Task When_Chunk_TripleTapped()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
+
+			// the selection should start on the left
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_Typing_While_Pointer_Held()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
+				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
+				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-51, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Hello world", SUT.Text);
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[DataRow(VirtualKey.Left, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.Right, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.Up, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.Down, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.Home, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.End, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.Back, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.Delete, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.A, VirtualKeyModifiers.Control)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_Move_Caret_While_Pointer_Held(VirtualKey key, VirtualKeyModifiers modifiers)
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
+				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
+				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+			};
+
+			var handled = false;
+			SUT.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, e) => handled = e.Handled), true);
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-51, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, modifiers));
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(handled);
+			Assert.AreEqual("Hello world", SUT.Text);
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Cut_While_Pointer_Held()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
+				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
+				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-51, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.X, _platformCtrlKey));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Hd", SUT.Text);
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(10, -1);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(1, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+#if __SKIA__
+		[Ignore("Disabled due to https://github.com/unoplatform/uno-private/issues/878")]
+#endif
+		public async Task When_Paste_While_Pointer_Held()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Clipboard can't be read in managed code for security reasons.
+				// An actual attempt to paste will work, because the native HTML
+				// input is what will receive the key event, and the browser will be
+				// responsible for changing the text.
+				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
+			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var dp = new DataPackage();
+			var text = "copied content";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-51, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, _platformCtrlKey));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Hcopied contentd", SUT.Text);
+			Assert.AreEqual(15, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(0, -1); // nudge the mouse a bit to recalculate selection, this is the behaviour on WinUI as well
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.AreEqual(13, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_Escape_While_Pointer_Held()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
+				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
+				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-51, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveBy(-10, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+
+			// We're pretty much "not pressed" at all at this point, even if we're technically still holding the mouse
+			// so we can actually type stuff in!
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, VirtualKeyModifiers.None, unicodeKey: 'a'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Had", SUT.Text);
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_NonAscii_Characters()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var text = "صباح الخير";
+			foreach (var c in text)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.AreEqual(text, SUT.Text);
+		}
+
+		[TestMethod]
+		[CombinatorialData]
+		public async Task When_Copy_Paste(bool useInsert)
+		{
+			if (useInsert && DeviceTargetHelper.UsesAppleKeyboardLayout)
+			{
+				Assert.Inconclusive("There's no `Insert` key on Apple keyboards");
+				// it's replaced by the `fn` key, which is a modifier
+			}
+			if (OperatingSystem.IsBrowser())
+			{
+				// Clipboard can't be read in managed code for security reasons.
+				// An actual attempt to paste will work, because the native HTML
+				// input is what will receive the key event, and the browser will be
+				// responsible for changing the text.
+				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
+			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			var handled = false;
+			SUT.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, args) => handled |= args.Handled), true);
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var dp = new DataPackage();
+			var text = "copied content";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			void Paste()
+			{
+				if (useInsert)
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Insert, VirtualKeyModifiers.Shift));
+				}
+				else
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, _platformCtrlKey, unicodeKey: 'v'));
+				}
+			}
+
+			void Copy()
+			{
+				if (useInsert)
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Insert, VirtualKeyModifiers.Control));
+				}
+				else
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, _platformCtrlKey, unicodeKey: 'c'));
+				}
+			}
+
+			Paste();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(handled);
+			Assert.AreEqual(text, SUT.Text);
+
+			SUT.Select(2, 4);
+			await WindowHelper.WaitForIdle();
+			Copy();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(handled);
+			Assert.AreEqual(SUT.Text.Substring(2, 4), await ClipboardHelper.WaitForTextAsync(SUT.Text.Substring(2, 4)));
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.AreEqual(4, SUT.SelectionLength);
+
+			SUT.Select(SUT.Text.Length - 1, 0);
+			await WindowHelper.WaitForIdle();
+			Paste();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(handled);
+			Assert.AreEqual("copied contenpiedt", SUT.Text);
+			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(6, 3);
+			await WindowHelper.WaitForIdle();
+			Paste();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(handled);
+			Assert.AreEqual("copiedpiedntenpiedt", SUT.Text);
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Cut_Paste()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Clipboard can't be read in managed code for security reasons.
+				// An actual attempt to paste will work, because the native HTML
+				// input is what will receive the key event, and the browser will be
+				// responsible for changing the text.
+				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
+			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			var handled = false;
+			SUT.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, args) => handled |= args.Handled), true);
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Select(2, 4);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.X, _platformCtrlKey, unicodeKey: 'x'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(handled);
+			Assert.AreEqual("llo ", await ClipboardHelper.WaitForTextAsync("llo "));
+			Assert.AreEqual("Heworld", SUT.Text);
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(SUT.Text.Length - 1, 0);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, _platformCtrlKey, unicodeKey: 'v'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(handled);
+			Assert.AreEqual("Heworlllo d", SUT.Text);
+			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(6, 3);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, _platformCtrlKey, unicodeKey: 'v'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Heworlllo  d", SUT.Text);
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		// Clipboard is currently not available on skia-WASM
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Paste_History_Remains_Intact()
+		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "initial"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "copied content";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+			await Task.Delay(500);
+
+			// This actually matches WinUI. text comes before "initial" and text2 comes after text
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(text + "initial", SUT.Text);
+
+			var dp2 = new DataPackage();
+			var text2 = "copied content 2";
+			dp2.SetText(text2);
+			Clipboard.SetContent(dp2);
+			await Task.Delay(500);
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(text + text2 + "initial", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(text + "initial", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("initial", SUT.Text);
+		}
+
+		// Clipboard is currently not available on skia-WASM
+		// Newline handling is different on Skia.UIKit targets due to native input sync #788
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Paste_The_Same_Text()
+		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "copied\r\ncontent"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "copied\r\ncontent";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("copied\rcontent".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_Simple()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Text = "hello";
+			await WindowHelper.WaitForIdle();
+
+			var height = SUT.ActualHeight;
+
+			SUT.Text = "hello\rworld";
+			await WindowHelper.WaitForIdle();
+
+			SUT.ActualHeight.Should().BeGreaterThan(height * 1.2);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_LineFeed()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Text = "lorem\nipsum\r\ndolor";
+
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("lorem\ripsum\rdolor", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_Return_Selected()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Text = "hello\rworld";
+			SUT.Select(4, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("o\r", SUT.SelectedText);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("o\rw", SUT.SelectedText);
+		}
+
+		[TestMethod]
+		public async Task When_Up_WithWithout_Shift()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "Lorem ipsum"
+			};
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Select(4, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(4, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(1, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(4, SUT.SelectionLength);
+			Assert.AreEqual(1, keyDownCount);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Multiline_NewLine_UpDown()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "Lorem ipsum\rdolor sit\ramet consectetur\radipiscing"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(17, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			// Accounting for font difference on Wasm Skia, until we unify with Open Sans.
+			Assert.AreEqual(OperatingSystem.IsBrowser() ? 5 : 4, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(17, SUT.SelectionStart); // notice how up -> down -> up doesn't necessarily end up back where it started, this is correct
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			// Accounting for font difference on Wasm Skia, until we unify with Open Sans.
+			Assert.AreEqual(OperatingSystem.IsBrowser() ? 5 : 4, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(17, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_UpDown_Caret_Position_Preserved()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "abcdef\rabc\rabcdefghi"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select("abcdef".Length, 0);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef\rabc".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef\rabc\rabcdef".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			// hitting down on the last line goes to the end BUT doesn't change the logical caret column position.
+			Assert.AreEqual("abcdef\rabc\rabcdefghi".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef\rabc".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
+		public async Task When_Multiline_Wrapping_UpDown()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 120,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Lorem ipsum dolor sit amet consectetur adipiscing"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(17, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			// Accounting for font difference on Wasm Skia, until we unify with Open Sans.
+			Assert.AreEqual(OperatingSystem.IsBrowser() ? 5 : 4, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			// Accounting for font difference on Wasm Skia, until we unify with Open Sans.
+			Assert.AreEqual(17, SUT.SelectionStart); // notice how up -> down -> up doesn't necessarily end up back where it started, this is correct
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			// Accounting for font difference on Wasm Skia, until we unify with Open Sans.
+			Assert.AreEqual(OperatingSystem.IsBrowser() ? 5 : 4, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			// Accounting for font difference on Wasm Skia, until we unify with Open Sans.
+			Assert.AreEqual(17, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_NewLine_LeftRight()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				AcceptsReturn = true,
+				Text = "Lorem ipsum\rdolor sit\ramet consectetur\radipiscing"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(11, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(12, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_Wrapping_LeftRight()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 120,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Lorem ipsum dolor sit amet consectetur adipiscing"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(11, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(12, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_Keyboard_Chunking()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text =
+				"""
+				Lorem 
+				     
+				
+				ipsum
+
+				&&^
+				    
+				
+				
+				"""
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// on Apple platforms selecting the next word is `shift` + `option` (alt/menu) + `right`
+			var mod = VirtualKeyModifiers.Shift | (DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(6, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(7, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(12, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(13, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(14, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(19, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(20, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(21, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(24, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(25, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(29, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(30, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(31, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_Text_Ends_In_Return()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var height = SUT.ActualHeight;
+
+			SUT.Text += "\r";
+
+			SUT.ActualHeight.Should().BeGreaterThan(height * 1.2);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_Multiline_Wrapping_Text_Ends_In_Too_Many_Spaces()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var height = SUT.ActualHeight;
+
+			SUT.Text = "mmmmmmmmm               ";
+
+			// Trailing space shouldn't wrap
+			Assert.AreEqual(height, SUT.ActualHeight);
+		}
+
+		[TestMethod]
+		public async Task When_Text_Changed_Events()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "hello world"
+			};
+
+			var output = "";
+			SUT.TextChanged += (o, _) => output += $"TextChanged {((TextBox)o).Text}\n";
+			SUT.SelectionChanged += (o, _) => output += $"SelectionChanged {((TextBox)o).Text}\n";
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, VirtualKeyModifiers.Shift, unicodeKey: 'a'));
+			await WindowHelper.WaitForIdle();
+
+			var expected =
+			"""
+			TextChanged hello world
+			SelectionChanged ahello world
+			TextChanged ahello world
+			
+			""";
+
+			Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
+		}
+
+		[TestMethod]
+		public async Task When_SelectionChanging()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "hello world"
+			};
+
+			var selectionChangedCount = 0;
+			var selectionChangingCount = 0;
+			SUT.SelectionChanging += (_, e) =>
+			{
+				selectionChangingCount++;
+				e.Cancel = true;
+			};
+			SUT.SelectionChanged += (_, _) => selectionChangedCount++;
+
+			await UITestHelper.Load(SUT);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, selectionChangingCount);
+			Assert.AreEqual(0, selectionChangedCount);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18371")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WASM #9080
+		public async Task When_BeforeTextChanging_Resets_Selection_Direction()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "adasgasg"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			// Select from the end to right after the first character
+			for (int i = 0; i < SUT.Text.Length - 1; i++)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+				await WindowHelper.WaitForIdle();
+			}
+
+			// Wait for the backward selection built above to fully settle (and let any pending
+			// SelectionChanged from the loop drain) BEFORE subscribing the counter. Otherwise, on
+			// Skia-WASM a late SelectionChanged from the loop can be observed by the counter and be
+			// mis-attributed to the (canceled) text input below, inflating the count to 1.
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 1 && SUT.SelectionLength == SUT.Text.Length - 1 && SUT.IsBackwardSelection, message: $"backward selection settled before subscribing (expected Start=1, Length={SUT.Text.Length - 1}, IsBackward=true)");
+			await WindowHelper.WaitForIdle();
+
+			SUT.BeforeTextChanging += (_, args) => args.Cancel = args.NewText == "as";
+
+			var selectionChangedCount = 0;
+			SUT.SelectionChanged += (_, _) => selectionChangedCount++;
+
+			await KeyboardHelper.InputText("s");
+			await WindowHelper.WaitForIdle();
+			// The text change is canceled by BeforeTextChanging, so the selection is unchanged (only its
+			// direction is reset) and no SelectionChanged should be raised.
+			Assert.AreEqual(0, selectionChangedCount);
+
+			// when we press Shift+Left now, the selection "end" is on the right, so the selection shrinks.
+			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionLength);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(SUT.Text.Length - 2, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Fails in Skia UIKit CI - https://github.com/unoplatform/uno-private/issues/808
+		public async Task When_Multiline_Pointer_Tap()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
+				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
+				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 250,
+				AcceptsReturn = true,
+				Text = "Lorem\ripsum dolor sit\ramet consectetur\radipiscing",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.Location.Offset(145, 50));
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(38, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveTo(bounds.GetCenter() - new Point(40, 10));
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(17, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_Pointer_DoubleTap()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 250,
+				AcceptsReturn = true,
+				Text = "Lorem\ripsum dolor sit\ramet consectetur\radipiscing"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveTo(bounds.GetCenter() - new Point(40, 10));
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(12, SUT.SelectionStart);
+			Assert.AreEqual(6, SUT.SelectionLength);
+
+			mouse.MoveBy(-41, 10);
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(12, SUT.SelectionStart);
+			Assert.AreEqual(15, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(12, SUT.SelectionStart);
+			Assert.AreEqual(14, SUT.SelectionLength);
+
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(22, SUT.SelectionStart);
+			Assert.AreEqual(5, SUT.SelectionLength);
+
+			mouse.MoveBy(41, -10);
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(12, SUT.SelectionStart);
+			Assert.AreEqual(15, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(13, SUT.SelectionStart);
+			Assert.AreEqual(14, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_Wrapping_Pointer_DoubleTap()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "first line\rsecond longlonglongworddddddddddddddd"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			// clicking at the end of a wrapping line should select starting from the wrapped part of the line (i.e. the continuing line after)
+			Assert.AreEqual(18, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length - 18, SUT.SelectionLength);
+		}
+
+		// Clipboard is currently not available on skia-WASM
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_SurrogatePair_Copy()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Clipboard can't be read for security reasons.
+				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
+			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "🚫 Hello world"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.CopySelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Hello ", await ClipboardHelper.WaitForTextAsync("Hello "));
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_Multiline_Pointer_TripleTap()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 250,
+				AcceptsReturn = true,
+				Text = "elit aliquam\rullamcorper\rcommodoprimis\rornare himenaeos"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(25, SUT.SelectionStart);
+			Assert.AreEqual(14, SUT.SelectionLength);
+
+			mouse.MoveBy(0, 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(25, SUT.SelectionStart);
+			Assert.AreEqual(30, SUT.SelectionLength);
+
+			mouse.MoveBy(0, -30);
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(25, SUT.SelectionStart);
+			Assert.AreEqual(14, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_Multiline_Pointer_TripleTap_With_Wrapping()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 250,
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				FontSize = 12,
+				Text =
+					"""
+					Lorem ipsum dolor sit amet consectetur adipiscing, elit aliquam u
+					llamcorper commodo primis ornare himenaeos, inceptos tellus accumsan praesent laoreet. Pharetra semper ullamcorper neque mollis vestibulum luctus gravida facilisi rhoncus, rutrum massa bibendum vitae imp
+					erdiet quisque fames dignissim, varius curae erat risus platea orci quis scelerisque. Auctor erat vestibulum enim sodales sapien nam litora rhoncus condimentum praesent, platea dui odio eros integer id gravida turpis semper nisi maecenas, nascetur dictumst sed arcu aenean varius dis leo habitant.
+					"""
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(270, SUT.SelectionStart);
+			Assert.AreEqual(297, SUT.SelectionLength);
+
+			mouse.MoveBy(0, -50);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(66, SUT.SelectionStart);
+			Assert.AreEqual(501, SUT.SelectionLength);
+
+			mouse.MoveBy(0, -100);
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Text_Cleared_No_Paint()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 250,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(100);
+
+			var canvas = SUT.FindVisualChildByType<ScrollViewer>();
+			var initial = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.HasColorInRectangle(initial, new Rectangle(System.Drawing.Point.Empty, initial.Size), SUT.SelectionHighlightColor.Color);
+
+			SUT.Text = "";
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(100);
+
+			// No residual colors on canvas
+			var cleared = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.DoesNotHaveColorInRectangle(cleared, new Rectangle(System.Drawing.Point.Empty, cleared.Size), SUT.SelectionHighlightColor.Color);
+		}
+
+		[TestMethod]
+		[DataRow(false, null, true)]
+		[DataRow(true, null, false)]
+		[DataRow(false, TextAlignment.Left, true)]
+		[DataRow(true, TextAlignment.Left, true)]
+		[DataRow(false, TextAlignment.Right, false)]
+		[DataRow(true, TextAlignment.Right, false)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // no arabic font support until https://github.com/unoplatform/uno/pull/22240
+		public async Task When_TextAlignment(bool rtlText, TextAlignment? alignment, bool textShouldEndUpOnTheLeft)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 250,
+				Foreground = new SolidColorBrush(Colors.Red),
+				Text = rtlText ? "تيست" : "Test",
+			};
+
+			if (alignment is not null)
+			{
+				SUT.TextAlignment = alignment.Value;
+			}
+
+			var bounds = await UITestHelper.Load(SUT);
+			var left = new Rectangle()
+			{
+				X = 0,
+				Width = (int)(bounds.Width / 2),
+				Y = 0,
+				Height = (int)bounds.Height
+			};
+			var right = left with { X = (int)(bounds.Width / 2) };
+
+			var screenshot1 = await UITestHelper.ScreenShot(SUT);
+
+			if (textShouldEndUpOnTheLeft)
+			{
+				ImageAssert.HasColorInRectangle(screenshot1, left, Colors.Red);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, right, Colors.Red);
+			}
+			else
+			{
+				ImageAssert.HasColorInRectangle(screenshot1, right, Colors.Red);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, left, Colors.Red);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Single_Letter_Selected()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "A" };
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			SUT.SelectAll();
+			await UITestHelper.WaitForIdle();
+
+			var canvas = SUT.FindVisualChildByType<ScrollViewer>();
+			var screenshot = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.HasColorInRectangle(screenshot, new Rectangle(System.Drawing.Point.Empty, screenshot.Size), SUT.SelectionHighlightColor.Color);
+		}
+
+		[TestMethod]
+		public async Task When_Undo_Redo_Basic()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Undo_Redo_Keyboard_Basic()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Z, _platformCtrlKey, unicodeKey: 'z'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Y, _platformCtrlKey, unicodeKey: 'z'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Typing_with_Backspace_Undo_Redo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Typing_Over_Selection_Undo_Redo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(6, 5);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello hello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(6, SUT.SelectionStart);
+			Assert.AreEqual(5, SUT.SelectionLength);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello hello", SUT.Text);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Undo_Redo_ContextMenu_Basic()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() => (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			Clipboard.Clear();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await KeyboardHelper.InputText("hello", SUT);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// Right-click to open context menu
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout);
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+			await WindowHelper.WaitFor(() => flyout.IsOpen);
+
+			var undoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Z && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(undoButton, "Undo button should be present in the context menu");
+
+			await WindowHelper.WaitFor(() => undoButton.IsLoaded);
+
+			mouse.MoveTo(undoButton.GetAbsoluteBounds().GetCenter());
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => !flyout.IsOpen);
+
+			Assert.AreEqual("", SUT.Text);
+
+			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// Right-click to open context menu again
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
+
+			await WindowHelper.WaitFor(() => flyout.IsOpen);
+
+			var redoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Y && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(redoButton, "Redo button should be present in the context menu");
+			await WindowHelper.WaitFor(() => redoButton.IsLoaded);
+
+			mouse.MoveTo(redoButton.GetAbsoluteBounds().GetCenter());
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_Right_Tap_Selection_Persists()
+		{
+			if (OperatingSystem.IsIOS())
+			{
+				Assert.Inconclusive("Currently failing on iOS");
+				return;
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() => (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(10, 10));
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.MoveBy(8, 0);
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var selection = (SUT.SelectionStart, SUT.SelectionLength);
+
+			mouse.MoveBy(-4, 0);
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(selection, (SUT.SelectionStart, SUT.SelectionLength));
+		}
+
+		[TestMethod]
+		public async Task When_Text_Changed_History_Cleared()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.Text = "Changed";
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Changed", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Changed", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Changed", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_ClearUndoRedoHistory()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.ClearUndoRedoHistory();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Typing_Nothing()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None)); // break typing run
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("he", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("he", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+		}
+
+		[TestMethod]
+		[DataRow(VirtualKey.Y)] // redo
+		[DataRow(VirtualKey.C)] // copy
+		public async Task When_Redo_Copy_DoesNot_Break_Typing(VirtualKey key)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+		}
+
+		[TestMethod]
+		[DataRow(VirtualKey.X)] // cut
+		[DataRow(VirtualKey.V)] // paste
+		public async Task When_Cut_Paste_Breaks_Typing(VirtualKey key)
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Clipboard can't be read in managed code for security reasons.
+				// An actual attempt to paste will work, because the native HTML
+				// input is what will receive the key event, and the browser will be
+				// responsible for changing the text.
+				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
+			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var dataPackage = new DataPackage();
+			dataPackage.SetText("");
+			Clipboard.SetContent(dataPackage); // even with nothing to paste, typing still breaks
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("he", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("he", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_CanRedo_CanUndo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.CanRedo);
+			Assert.IsFalse(SUT.CanUndo);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None)); // break typing run
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hellohello", SUT.Text);
+
+			Assert.IsFalse(SUT.CanRedo);
+			Assert.IsTrue(SUT.CanUndo);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+
+			Assert.IsTrue(SUT.CanRedo);
+			Assert.IsTrue(SUT.CanUndo);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+
+			Assert.IsTrue(SUT.CanRedo);
+			Assert.IsFalse(SUT.CanUndo);
+
+			SUT.Redo();
+
+			Assert.IsTrue(SUT.CanRedo);
+			Assert.IsTrue(SUT.CanUndo);
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_Clicked_Typing_Ends()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hellohello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hellohello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_Pressed_Undo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			// no release
+			await WindowHelper.WaitForIdle();
+
+			// Shouldn't be able to undo
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_Pressed_Redo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			// no release
+			await WindowHelper.WaitForIdle();
+
+			// Shouldn't be able to redo
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Unfocused_Typing_Ends()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			var sp = new StackPanel()
+			{
+				Children =
+				{
+					SUT,
+					new TextBox() { Text="focus dummy" }
+				}
+			};
+
+			WindowHelper.WindowContent = sp;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			VisualTree.GetFocusManagerForElement(SUT)!.TryMoveFocusInstance(FocusNavigationDirection.Next);
+			await WindowHelper.WaitForIdle();
+
+			await Task.Delay(5000);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hellohello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hellohello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Caret_Moves_Typing_Ends()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hellllo", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hellllo", SUT.Text);
+		}
+
+		[TestMethod]
+		// SkiaWasm excluded: real WASM-specific TextBox bug — repeated Delete + Undo coalesces to the
+		// wrong undo granularity (passes on all other Skia targets). Tracked for a proper fix. #23525
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23525")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Repeated_Delete_Undo_Redo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "hello"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("lo", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("llo", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("ello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("ello", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("llo", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("lo", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("o", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Ctrl_Delete_Undo_Redo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// on Apple platforms it's option (menu/alt) and backspace to delete a word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, mod));
+			await WindowHelper.WaitForIdle();
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(6, SUT.SelectionLength); // When Ctrl-delete is undone, we select what was (un)deleted!!!
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("world", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Paste_Does_Not_Change_Text()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// TODO: Investigate what goes wrong here on Wasm Skia.
+				Assert.Inconclusive("Not working on Wasm Skia, unknown issue.");
+			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "t"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.End, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "t";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		public async Task When_Variable_Width_Tab()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "\tabc"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await UITestHelper.Load(SUT);
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			SUT.Text = "a\tabc";
+			await WindowHelper.WaitForIdle();
+			var bitmap2 = await UITestHelper.ScreenShot(SUT);
+
+			// The two strings put "abc" on the same tab stop, so everything from x=20 on should match. Allow a small
+			// per-channel tolerance: the two renders can differ by a few levels in the glyphs' antialiased fringe
+			// (sub-pixel rasterization), which is imperceptible. A real misalignment would shift whole pixels (>100).
+			const int tolerance = 16;
+			for (var x = 20; x < bitmap.Width; x++)
+			{
+				for (var y = 0; y < bitmap.Height; y++)
+				{
+					var expected = bitmap.GetPixel(x, y);
+					var actual = bitmap2.GetPixel(x, y);
+					Assert.IsTrue(
+						Math.Abs(expected.A - actual.A) <= tolerance &&
+						Math.Abs(expected.R - actual.R) <= tolerance &&
+						Math.Abs(expected.G - actual.G) <= tolerance &&
+						Math.Abs(expected.B - actual.B) <= tolerance,
+						$"Pixel ({x},{y}) differs beyond tolerance {tolerance}: {expected} vs {actual}");
+				}
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Tab_Forces_NewLine_When_Not_Enough_Width()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// WinUI actually wraps when width <= 114, not <= 113 like we have here.
+			// But when width == 114, WinUI has a bug where it wraps, but it doesn't
+			// increase the height of the TextBox, so most of the new line (due to wrapping)
+			// is out of view :/.
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new TextBox
+					{
+						Width = 114,
+						TextWrapping = TextWrapping.Wrap,
+						Text = "\t\t",
+						FontFamily = new FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf")
+					},
+					new TextBox
+					{
+						Width = 113,
+						TextWrapping = TextWrapping.Wrap,
+						Text = "\t\t",
+						FontFamily = new FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf")
+					},
+				}
+			};
+
+			await UITestHelper.Load(sp);
+
+			Assert.AreNotEqual(sp.Children[0].ActualSize.Y, sp.Children[1].ActualSize.Y);
+		}
+
+		[TestMethod]
+		public async Task When_Caret_Color_DarkMode()
+		{
+			// The TextBox is purposefully empty. We want the only content pixels to come from the caret.
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Light mode: caret should appear as a dark pixel on the white background.
+			// The exact rendered color depends on visual tree opacity and compositing,
+			// so we use a threshold check rather than exact color matching.
+			var random = new Random();
+			var i = 0;
+			for (; i < 20; i++)
+			{
+				await Task.Delay(random.Next(75, 126));
+				var screenshot = await UITestHelper.ScreenShot(SUT);
+				if (HasDarkPixelOnlyInLeftHalf(screenshot))
+				{
+					break;
+				}
+			}
+
+			Assert.IsLessThan(20, i, "Light mode: caret not found as dark pixel in left half");
+
+			using var _2 = ThemeHelper.UseDarkTheme();
+			await WindowHelper.WaitForIdle();
+
+			// Re-focus to force visual states to re-apply with the new theme resources.
+			// Visual state animations (e.g., TextControlBackgroundFocused) use ThemeResource
+			// values that were resolved when the state was first entered.
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Dark mode: caret should appear as a lighter pixel on the dark background.
+			for (; i < 20; i++)
+			{
+				await Task.Delay(random.Next(75, 126));
+				var screenshot = await UITestHelper.ScreenShot(SUT);
+				if (HasLightPixelOnlyInLeftHalf(screenshot))
+				{
+					break;
+				}
+			}
+
+			Assert.IsLessThan(20, i, "Dark mode: caret not found as light pixel in left half");
+		}
+
+		/// <summary>
+		/// Checks if the left half has a dark pixel (luminance &lt; 200) that isn't in the right half.
+		/// Used for detecting the caret in light mode where the exact color depends on compositing.
+		/// </summary>
+		private static bool HasDarkPixelOnlyInLeftHalf(RawBitmap screenshot)
+		{
+			var innerMargin = 3; // Skip border pixels
+			var midX = screenshot.Width / 2;
+			var darkColors = new System.Collections.Generic.HashSet<Color>();
+			for (var x = innerMargin; x < midX; x++)
+			{
+				for (var y = innerMargin; y < screenshot.Height - innerMargin; y++)
+				{
+					var px = screenshot.GetPixel(x, y);
+					if (px.A > 0x20 && (px.R + px.G + px.B) / 3 < 200)
+					{
+						darkColors.Add(px);
+					}
+				}
+			}
+
+			foreach (var dark in darkColors)
+			{
+				if (!HasColorInRectangle(screenshot, new Rectangle(midX, 0, midX, screenshot.Height), dark))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Checks if the left half has a lighter pixel than the background,
+		/// that isn't in the right half. Used for detecting the caret in dark mode.
+		/// </summary>
+		private static bool HasLightPixelOnlyInLeftHalf(RawBitmap screenshot)
+		{
+			var innerMargin = 3;
+			var midX = screenshot.Width / 2;
+
+			// Determine the dominant background color in the right half (no caret there)
+			var bgPixel = screenshot.GetPixel(screenshot.Width - innerMargin - 5, screenshot.Height / 2);
+			var bgLum = (bgPixel.R + bgPixel.G + bgPixel.B) / 3;
+
+			for (var x = innerMargin; x < midX; x++)
+			{
+				for (var y = innerMargin; y < screenshot.Height - innerMargin; y++)
+				{
+					var px = screenshot.GetPixel(x, y);
+					var pxLum = (px.R + px.G + px.B) / 3;
+					// Look for pixels significantly lighter than the background
+					if (px != bgPixel && pxLum > bgLum + 50)
+					{
+						if (!HasColorInRectangle(screenshot, new Rectangle(midX, 0, midX, screenshot.Height), px))
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
+		[TestMethod]
+		public async Task When_PasswordBox_TextRevealed()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// Overlay isn't supported on Wasm Skia.
+				Assert.Inconclusive("Not supported on Wasm Skia.");
+			}
+
+			var SUT = new PasswordBox()
+			{
+				Width = 150
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 't'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 's'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 't'));
+			await WindowHelper.WaitForIdle();
+
+#if !HAS_UNO
+			char defaultPasswordBoxChar = '\u25CF';
+#else
+			char defaultPasswordBoxChar = PasswordBox.DefaultPasswordChar[0];
+#endif
+
+			Assert.AreEqual(new string(defaultPasswordBoxChar, 4), SUT.Core.TextBoxView.DisplayBlock.Text);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var revealButton = (FrameworkElement)SUT.FindName("RevealButton");
+			mouse.MoveTo(revealButton.GetAbsoluteBoundsRect().GetCenter());
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("test", SUT.Core.TextBoxView.DisplayBlock.Text);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno.chefs/issues/1472")]
+		public async Task When_PasswordBox_Focus_Changes()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var stackPanel = new StackPanel()
+			{
+				Padding = new Thickness(10),
+				Spacing = 8
+			};
+			var button = new Button()
+			{
+				Content = "Focus"
+			};
+			var passwordBox = new PasswordBox
+			{
+				IsPasswordRevealButtonEnabled = false,
+				Width = 150
+			};
+
+			stackPanel.Children.Add(passwordBox);
+			stackPanel.Children.Add(button);
+
+			await UITestHelper.Load(stackPanel);
+
+			passwordBox.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+
+			var screenshotEmpty = await UITestHelper.ScreenShot(passwordBox);
+
+			passwordBox.Password = "1234567890";
+			await WindowHelper.WaitForIdle();
+
+			var screenshotFilled = await UITestHelper.ScreenShot(passwordBox);
+
+			await ImageAssert.AreNotEqualAsync(screenshotEmpty, screenshotFilled);
+
+			button.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+
+			// Re-focus
+			passwordBox.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+			var screenshotRefocused = await UITestHelper.ScreenShot(passwordBox);
+
+			await ImageAssert.AreEqualAsync(screenshotRefocused, screenshotFilled);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // Desktop touch-selection convention; mobile conventions tested separately
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
+		public async Task When_TextBox_Touch_Tapped_At_End()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Text", SUT.SelectedText);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // Desktop touch-selection convention; mobile conventions tested separately
+		public async Task When_First_Second_Tap_Caret_Thumb_Shows()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual("Text", SUT.SelectedText);
+
+			// clicking inside the selected area keeps the selection
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual("Text", SUT.SelectedText);
+
+			// clicking outside the selected area drops it
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter() + new Point(100, 0));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
+			Assert.AreEqual("", SUT.SelectedText);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // Desktop touch-selection convention; mobile conventions tested separately
+		public async Task When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// A single touch tap near the left selects the first word and shows both selection thumbs.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(bounds.Left + 15, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				message: "first tap should select the word and show both thumbs");
+			var lengthBeforeDrag = SUT.SelectionLength;
+
+			// The gripper popups are (re)positioned asynchronously on a later frame, so GetAbsoluteBoundsRect
+			// is stale right after selecting. Wait until the end gripper is actually placed over the control
+			// before pressing it, otherwise the press can miss and the drag becomes a no-op (test flake).
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.end.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "end gripper should be positioned over the TextBox before dragging it");
+
+			// Drag the end gripper to the right to extend the selection, spanning >800ms press-to-release
+			// (a deliberate readjust naturally exceeds the hold threshold).
+			var endGripperCenter = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect().GetCenter();
+			finger.Press(endGripperCenter);
+			finger.MoveBy(60, 0, stepOffsetInMilliseconds: 100); // spans >800ms, past the hold threshold, so a bug would open the context menu
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The drag readjusted (extended) the selection...
+			Assert.IsTrue(SUT.SelectionLength > lengthBeforeDrag, $"drag should extend the selection (was {lengthBeforeDrag}, now {SUT.SelectionLength})");
+			// ...and both thumbs must remain visible (the readjust must not be mistaken for a long-press that opens the context menu and hides the thumbs).
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public Task When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs_Android()
+			=> AssertGripperDragReadjustsWordSelection(TextBoxCore.TouchTextSelectionConvention.Android);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaUIKit)] // iOS convention: run on Desktop (dev) + real iOS only
+		public Task When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs_iOS()
+			=> AssertGripperDragReadjustsWordSelection(TextBoxCore.TouchTextSelectionConvention.iOS);
+
+		// Native iOS/Android sister of When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs: on mobile a
+		// single tap only places a caret, so the word selection comes from a double-tap. Dragging the end
+		// gripper then readjusts (extends) the selection, and spanning past the 800ms hold threshold must NOT
+		// be mistaken for a long-press (which word-selects on Android / caret-drags on iOS) and must keep both thumbs.
+		private static async Task AssertGripperDragReadjustsWordSelection(TextBoxCore.TouchTextSelectionConvention convention)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough to drag",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Double-tap the first word (back-to-back, no idle between) to select it and show both thumbs.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var wordPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+			finger.Press(wordPoint);
+			finger.Release();
+			finger.Press(wordPoint);
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				message: "double-tap should select the word and show both thumbs");
+			var lengthBeforeDrag = SUT.SelectionLength;
+
+			// The gripper popups are (re)positioned asynchronously on a later frame, so GetAbsoluteBoundsRect
+			// is stale right after selecting. Wait until the end gripper is actually placed over the control
+			// before pressing it, otherwise the press can miss and the drag becomes a no-op (test flake).
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.end.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "end gripper should be positioned over the TextBox before dragging it");
+
+			// Grab the end THUMB near its bottom edge (what a real finger hits): the thumb hangs a full line
+			// below the caret, so sampling from the center can spill onto the next render line.
+			var gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
+			finger.MoveBy(60, 0, stepOffsetInMilliseconds: 100); // spans >800ms, past the hold threshold, so a bug would trigger the long-press
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The drag readjusted (extended) the selection...
+			Assert.IsTrue(SUT.SelectionLength > lengthBeforeDrag, $"drag should extend the selection (was {lengthBeforeDrag}, now {SUT.SelectionLength})");
+			// ...and both thumbs must remain visible (the readjust must not be mistaken for a long-press that changes the selection and hides thumbs).
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+		}
+
+		[TestMethod]
+		public async Task When_Touch_Single_Handle_Drag_From_Thumb_Keeps_Caret_In_Line()
+		{
+			var SUT = new TextBox
+			{
+				Width = 300,
+				Text = "The quick brown fox jumps over",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			// Single Android tap mid-text -> collapsed caret + single insertion handle (EndOnly).
+			finger.Press(new Point(bounds.Left + 90, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "tap should place the single insertion handle");
+
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.end.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "insertion handle should be positioned over the TextBox before dragging");
+
+			// Grab the THUMB near its bottom edge (what a real finger hits) rather than the gripper's center.
+			// The thumb hangs a full line below the caret; sampling the drag point without correcting for that
+			// spilled onto the next render line and snapped the caret to the end of the text (see the Y offset
+			// in TextSelectionGripperPresenter.OnGripperPointerMoved).
+			var gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
+			finger.MoveBy(20, 0, stepOffsetInMilliseconds: 20);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The caret should track the finger mid-text, NOT jump to the end of the text.
+			Assert.IsTrue(SUT.SelectionStart < SUT.Text.Length, $"caret should NOT jump to end of text (len {SUT.Text.Length}, now {SUT.SelectionStart})");
+		}
+
+		[TestMethod]
+		public async Task When_Touch_Handle_Drag_Off_Text_Vertically_Still_Adjusts()
+		{
+			var SUT = new TextBox
+			{
+				Width = 300,
+				Text = "The quick brown fox jumps over",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			// Single Android tap mid-text -> collapsed caret + single insertion handle (EndOnly).
+			finger.Press(new Point(bounds.GetCenter().X, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "tap should place the single insertion handle");
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting is { } vg && vg.end.GetAbsoluteBoundsRect().Width > 0,
+				timeoutMS: 3000,
+				message: "insertion handle should be positioned before dragging");
+
+			var caretBefore = SUT.SelectionStart;
+			Assert.IsTrue(caretBefore > 2 && caretBefore < SUT.Text.Length - 2, $"precondition: caret should be mid-text (now {caretBefore})");
+
+			// Grab the thumb and drag LEFT while far BELOW the text. The Y is off the text, but the caret should
+			// still follow the finger left (clamped Y) instead of snapping to the line's start.
+			var gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
+			finger.MoveBy(-30, 300, stepOffsetInMilliseconds: 20);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.SelectionStart < caretBefore, $"caret should move left while dragging below the text (before {caretBefore}, now {SUT.SelectionStart})");
+			Assert.IsTrue(SUT.SelectionStart > 0, $"caret should NOT snap to start of line (now {SUT.SelectionStart})");
+
+			var caretAfterLeft = SUT.SelectionStart;
+
+			// Grab the thumb again and drag RIGHT while far ABOVE the text: the caret follows the finger right.
+			gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
+			finger.MoveBy(60, -300, stepOffsetInMilliseconds: 20);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.SelectionStart > caretAfterLeft, $"caret should move right while dragging above the text (before {caretAfterLeft}, now {SUT.SelectionStart})");
+			Assert.IsTrue(SUT.SelectionStart < SUT.Text.Length, $"caret should NOT snap to end of line (now {SUT.SelectionStart})");
+		}
+
+		[TestMethod]
+		public Task When_Touch_SingleTap_Places_Caret_Android()
+			=> AssertTouchSingleTapPlacesCaret(TextBoxCore.TouchTextSelectionConvention.Android, TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing);
+
+		[TestMethod]
+		public Task When_Touch_SingleTap_Places_Caret_iOS()
+			=> AssertTouchSingleTapPlacesCaret(TextBoxCore.TouchTextSelectionConvention.iOS, TextBoxCore.CaretDisplayMode.ThumblessCaretShowing);
+
+		[TestMethod]
+		public Task When_Touch_DoubleTap_Selects_Word_Android()
+			=> AssertTouchDoubleTapSelectsWord(TextBoxCore.TouchTextSelectionConvention.Android);
+
+		[TestMethod]
+		public Task When_Touch_DoubleTap_Selects_Word_iOS()
+			=> AssertTouchDoubleTapSelectsWord(TextBoxCore.TouchTextSelectionConvention.iOS);
+
+		[TestMethod]
+		public Task When_Touch_Tap_Collapses_Selection_Android()
+			=> AssertTouchTapCollapsesSelection(TextBoxCore.TouchTextSelectionConvention.Android);
+
+		[TestMethod]
+		public Task When_Touch_Tap_Collapses_Selection_iOS()
+			=> AssertTouchTapCollapsesSelection(TextBoxCore.TouchTextSelectionConvention.iOS);
+
+		// Native iOS/Android: a single tap places a caret (it does NOT select a word like the Windows convention).
+		private static async Task AssertTouchSingleTapPlacesCaret(TextBoxCore.TouchTextSelectionConvention convention, TextBoxCore.CaretDisplayMode expectedCaret)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.SelectedText);
+			// The thumbless iOS caret blinks on a 500 ms timer, so sampling CaretMode once fails when the assert
+			// lands on the hidden half; the thumbed Android mode stops the timer and matches immediately.
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == expectedCaret,
+				timeoutMS: 3000,
+				message: $"tap should settle the caret in {expectedCaret}");
+		}
+
+		// Native iOS/Android: a double-tap selects the word under the tap.
+		private static async Task AssertTouchDoubleTapSelectsWord(TextBoxCore.TouchTextSelectionConvention convention)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Two back-to-back taps (no idle between) fall inside the multi-tap window.
+			var center = SUT.GetAbsoluteBoundsRect().GetCenter();
+			finger.Press(center);
+			finger.Release();
+			finger.Press(center);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Text", SUT.SelectedText);
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+		}
+
+		[TestMethod]
+		public async Task When_Touch_DoubleTap_Android_After_Handle_Shown()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Tap ON the first word (near the left) so the insertion handle lands over the tapped character.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var point = new Point(bounds.Left + 20, bounds.GetCenter().Y);
+
+			// First tap: Android places a caret with the single insertion handle.
+			finger.Press(point);
+			finger.Release();
+			await WindowHelper.WaitForIdle(); // let the insertion handle render + position (a real double-tap has this gap)
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "insertion handle should be visible after the first Android tap");
+
+			// Second tap a few px away: still lands on the insertion handle (within its hit-rect) yet within the
+			// multi-tap window, so the double-tap must still select the word instead of being eaten by the handle.
+			finger.Press(new Point(point.X + 4, point.Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Some", SUT.SelectedText); // native Android selects just the word, not the trailing space
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+		}
+
+		// Regression: tapping the single Android insertion handle re-sampled the finger point, which sits on the
+		// thumb a line below the caret, so GetIndexAt spilled onto the next render line and jumped the caret to the
+		// end of the text. A tap on the handle must keep the caret where the handle already is. Sister (no-drag case)
+		// of When_Touch_Single_Handle_Drag_From_Thumb_Keeps_Caret_In_Line.
+		[TestMethod]
+		public async Task When_Touch_Tap_Handle_From_Thumb_Keeps_Caret_Android()
+		{
+			var SUT = new TextBox
+			{
+				Width = 300,
+				Text = "The quick brown fox jumps over",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			// Single Android tap mid-text -> collapsed caret + single insertion handle (EndOnly).
+			finger.Press(new Point(bounds.Left + 90, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "tap should place the single insertion handle");
+
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.end.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "insertion handle should be positioned over the TextBox before tapping it");
+
+			var caretBeforeTap = SUT.SelectionStart;
+			Assert.IsTrue(caretBeforeTap < SUT.Text.Length, $"the first tap should place the caret mid-text (len {SUT.Text.Length}, was {caretBeforeTap})");
+
+			// Wait past the 500ms multi-tap window so tapping the handle is a single tap (not double-tap-to-select-word).
+			await Task.Delay(600);
+
+			// Tap the THUMB near its bottom edge (what a real finger hits) — the geometry that used to jump the caret.
+			var gripperBounds = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(gripperBounds.GetCenter().X, gripperBounds.Bottom - 2));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The tap keeps a collapsed caret exactly where the handle was — it must NOT jump to the end of the text.
+			Assert.AreEqual(0, SUT.SelectionLength, "tapping the handle keeps a collapsed caret");
+			Assert.AreEqual(caretBeforeTap, SUT.SelectionStart, $"tapping the insertion handle must not move the caret (len {SUT.Text.Length}, was {caretBeforeTap}, now {SUT.SelectionStart})");
+		}
+
+		// Native Android: tapping the single insertion handle re-opens the selection flyout even over a collapsed
+		// caret (no selection), mirroring the native insertion-handle popup. This is an Uno addition beyond the WinUI
+		// port, which shows the SelectionFlyout only for a non-empty selection. The clipboard is cleared so Paste is
+		// unavailable: Select All alone must keep the flyout open, since a transient flyout with no primary command
+		// self-hides (see TextCommandBarFlyout's Opened handler).
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_Tap_Insertion_Handle_Opens_Flyout_Android()
+		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				ClearClipboard();
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// First tap: Android places a collapsed caret with the single insertion handle.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(bounds.Left + 20, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "the first Android tap should place the single insertion handle");
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "the insertion handle should be visible after the first Android tap");
+
+			// Empty the clipboard so Paste is unavailable — Select All is then the only command, the scenario that
+			// used to leave the flyout with no primary command and self-hide.
+			Clipboard.Clear();
+			await WindowHelper.WaitFor(() => !SUT.CanPasteClipboardContent, message: "the clipboard should read empty so Paste is unavailable");
+
+			// Wait past the 500ms multi-tap window so the handle tap is a single tap (not a double-tap-to-select-word).
+			await Task.Delay(600);
+
+			// Tap the insertion handle itself (grab near its bottom edge, what a real finger hits).
+			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			// The flyout visibility update is queued to the dispatcher; wait for it to actually open instead of a fixed delay.
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "tapping the insertion handle should open the selection flyout over the collapsed caret, even with an empty clipboard");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.SelectedText, "tapping the handle keeps a collapsed caret (no word selected)");
+
+			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
+			{
+				Assert.Fail("the selection flyout should be a TextCommandBarFlyout");
+				return;
+			}
+
+			// Select All keeps the flyout usable with an empty clipboard; Copy and Paste are absent (nothing is
+			// selected, nothing to paste).
+			var (hasSelectAll, _, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+			Assert.IsTrue(hasSelectAll, "Select All should be available over a collapsed caret (there is text to select)");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available over a collapsed caret (nothing is selected)");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available with an empty clipboard");
+
+			// Select All must sit in the primary bar (so the flyout has a primary command and stays open) and, like
+			// Cut/Copy/Paste, must show its text label there — not render as a bare icon — so it reads as a command.
+			var selectAllButton = flyout.PrimaryCommands
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.A && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(selectAllButton, "Select All should be a primary (bar) command so the flyout stays open");
+			Assert.IsNotNull(selectAllButton.Icon, "the primary Select All button should have an icon, matching Cut/Copy/Paste");
+
+			if (selectAllButton.FindVisualChildByName("TextLabel") is not TextBlock selectAllLabel)
+			{
+				Assert.Fail("the primary Select All button template should expose a TextLabel");
+				return;
+			}
+			Assert.AreEqual(Visibility.Visible, selectAllLabel.Visibility, "the primary Select All button must show its text label (like Cut/Copy/Paste), not just an icon");
+			Assert.IsFalse(string.IsNullOrEmpty(selectAllLabel.Text), "the primary Select All button label must have text");
+
+			// With Select All in the primary bar there is nothing in the overflow, so the "..." overflow button must
+			// not appear (it would otherwise show a dangling "..." over an empty menu, because the labelled primary bar
+			// is taller than the command bar's compact height). See TextCommandBarFlyout.UpdateButtons.
+			Assert.AreEqual(0, flyout.SecondaryCommands.Count, "the insertion-caret flyout should have no secondary commands");
+			if (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+					.Select(p => p.Child?.FindVisualChildByType<CommandBarFlyoutCommandBar>())
+					.FirstOrDefault(c => c is not null) is not { } commandBar)
+			{
+				Assert.Fail("the open selection flyout should host a CommandBarFlyoutCommandBar");
+				return;
+			}
+			if (commandBar.FindVisualChildByName("MoreButton") is not FrameworkElement moreButton)
+			{
+				Assert.Fail("the command bar template should expose a MoreButton");
+				return;
+			}
+			Assert.AreEqual(Visibility.Collapsed, moreButton.Visibility, "the overflow (\"...\") button must be hidden when the flyout has no secondary commands");
+		}
+
+		// Over an EMPTY PasswordBox with clipboard content, Paste is the only available command and, under a touch/pen
+		// flyout, is promoted to the primary bar with nothing in the overflow — the lone-primary/no-secondary case. Like
+		// Cut/Copy/Paste in a selection flyout, that primary Paste button must show its text label, not render as a bare
+		// icon — the same primary-bar label miss that hit a lone Select All. A PasswordBox is used because a TextBox
+		// always offers Select All on touch, so it can no longer reach a lone-primary bar.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // touch flyout path: run on Desktop (dev) + real Android only
+		public async Task When_Touch_Paste_Only_PasswordBox_Flyout_Shows_Label()
+		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				ClearClipboard();
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			// Empty PasswordBox: its Select All needs Password.Length > 0, so a populated clipboard leaves Paste as the
+			// sole command — the lone-primary/no-secondary flyout.
+			var SUT = new PasswordBox
+			{
+				Width = 400
+			};
+
+			await UITestHelper.Load(SUT);
+
+			// Seed the clipboard before focusing: focus reads it live, so Paste is available without waiting for the
+			// ContentChanged notification (a 1s poll on macOS).
+			await SetClipboardText("clipboard text");
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.CanPasteClipboardContent, "the clipboard should read non-empty so Paste is available");
+
+			// A touch tap sets the last input device to Touch so the flyout opens in primary-commands mode (Paste on the
+			// bar). The tap only places a caret in the empty box (no selection), matching how a touch-opened context
+			// flyout reaches this state on device.
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+			flyout.ShowAt(SUT);
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => flyout.IsOpen, message: "the context flyout should open over the empty box");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(flyout.InputDevicePrefersPrimaryCommands, "the touch tap should open the flyout in primary-commands mode (Paste on the bar)");
+
+			// Empty box + clipboard content: Paste is the only command (no selection → no Copy; no text → no Select All),
+			// sitting alone in the primary bar with an empty overflow.
+			var (hasSelectAll, _, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+			Assert.IsTrue(hasPaste, "Paste should be available over an empty password box when the clipboard has content");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available over an empty password box (nothing is selected)");
+			Assert.IsFalse(hasSelectAll, "Select All should NOT be available over an empty password box");
+			Assert.AreEqual(1, flyout.PrimaryCommands.Count, "Paste should be the lone primary command over an empty password box");
+			Assert.AreEqual(0, flyout.SecondaryCommands.Count, "the Paste-only flyout should have no secondary commands");
+
+			var pasteButton = flyout.PrimaryCommands
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.V && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(pasteButton, "Paste should be a primary (bar) command over an empty password box with clipboard content");
+			Assert.IsNotNull(pasteButton.Icon, "the primary Paste button should have an icon");
+
+			// The lone primary Paste button must show its text label, not just its icon — the reported bug.
+			if (pasteButton.FindVisualChildByName("TextLabel") is not TextBlock pasteLabel)
+			{
+				Assert.Fail("the primary Paste button template should expose a TextLabel");
+				return;
+			}
+			Assert.AreEqual(Visibility.Visible, pasteLabel.Visibility, "the lone primary Paste button must show its text label, not just an icon");
+			Assert.IsFalse(string.IsNullOrEmpty(pasteLabel.Text), "the primary Paste button label must have text");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
+		public Task When_Touch_Tap_Empty_Places_Caret_Android()
+			=> AssertTouchTapOnEmptyBoxPlacesCaret(TextBoxCore.TouchTextSelectionConvention.Android, TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Tap_Empty_Places_Caret_iOS()
+			=> AssertTouchTapOnEmptyBoxPlacesCaret(TextBoxCore.TouchTextSelectionConvention.iOS, TextBoxCore.CaretDisplayMode.ThumblessCaretShowing);
+
+		// Native iOS/Android: a single tap in an EMPTY field places the caret - Android with its insertion handle, iOS
+		// as a bare caret. The empty box used to swallow the tap entirely (the tap-to-caret path was gated on non-empty
+		// text), leaving no caret affordance and no handle to open the flyout from. A single tap must NOT pop the
+		// flyout though: that belongs to the double-tap / long-press / handle-tap.
+		private static async Task AssertTouchTapOnEmptyBoxPlacesCaret(TextBoxCore.TouchTextSelectionConvention convention, TextBoxCore.CaretDisplayMode expectedCaret)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitFor(() => SUT.CaretMode == expectedCaret, message: $"a tap in the empty box should leave the {convention} caret");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart, "the caret should sit at the only available index");
+			Assert.AreEqual(0, SUT.SelectionLength, "there is nothing to select in an empty box");
+			if (convention == TextBoxCore.TouchTextSelectionConvention.Android)
+			{
+				Assert.IsNotNull(SUT.VisibleGrippersForTesting, "Android should show the insertion handle so it can open the flyout");
+			}
+
+			// A single tap is not a flyout gesture.
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse((SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true, "a single tap must not open the selection flyout");
+		}
+
+		#region A touch-selected TextBox must not lock its enclosing ScrollViewer
+
+		// A TextBox parked in the middle of a tall scrollable form. There is filler above it (so it can be scrolled
+		// down to the viewport's bottom edge) and much more below (so it can be scrolled entirely out of view), plus
+		// room below the box to start a drag without the finger ever touching the box itself.
+		private static (ScrollViewer scrollViewer, TextBox textBox) CreateScrollableForm(
+			string text,
+			TextBoxCore.TouchTextSelectionConvention convention,
+			double fillerAbove = 120)
+		{
+			var textBox = new TextBox
+			{
+				Width = 280,
+				Height = 40,
+				Text = text,
+				TouchSelectionConvention = convention,
+			};
+
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 320,
+				Height = 300,
+				Content = new StackPanel
+				{
+					Children =
+					{
+						// Transparent (not null) so the filler hit-tests: the scroll drags start on it.
+						new Border { Height = fillerAbove, Background = new SolidColorBrush(Colors.Transparent) },
+						textBox,
+						new Border { Height = 1200, Background = new SolidColorBrush(Colors.Transparent) },
+					}
+				}
+			};
+
+			return (scrollViewer, textBox);
+		}
+
+		private static bool IsGripperShowing(TextBox textBox)
+			=> textBox.VisibleGrippersForTesting is { } grippers && grippers.end.IsShowing;
+
+		// With a touch caret live in a TextBox (the Android insertion handle, or a full selection), an enclosing
+		// ScrollViewer used to refuse to scroll away from it: ScrollViewer.ClampOffsetsToFocusedTextBox rewrote the
+		// offset back onto the TextBox after every scroll and discarded touch inertia outright. The defect that
+		// clamp was working around - grippers still painting after the TextBox scrolled out of view - is now
+		// handled where it belongs, by culling them against the ancestor-clipped bounds
+		// (TextSelectionGripperPresenter.Update), so the scroll lock is gone.
+		private static async Task AssertTouchCaretDoesNotLockScrollViewer(
+			string text,
+			TextBoxCore.TouchTextSelectionConvention convention,
+			TextBoxCore.CaretDisplayMode expectedCaret,
+			bool doubleTap,
+			bool flick)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var (scrollViewer, SUT) = CreateScrollableForm(text, convention);
+			await UITestHelper.Load(scrollViewer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var tapPoint = SUT.GetAbsoluteBoundsRect().GetCenter();
+			finger.Press(tapPoint);
+			finger.Release();
+			if (doubleTap)
+			{
+				finger.Press(tapPoint);
+				finger.Release();
+			}
+
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == expectedCaret,
+				message: $"the {convention} touch gesture should leave the caret in {expectedCaret} - the mode that used to arm the scroll lock");
+
+			// Past the multi-tap window, so the drag that follows is not folded into the tap gesture.
+			await Task.Delay(600);
+
+			// A double-tap also pops the selection toolbar, and its light-dismiss overlay would swallow the drag
+			// below instead of letting it reach the ScrollViewer. On a device the first drag simply dismisses it;
+			// dismiss it here (after its dispatched open has run) so a single drag can be asserted on.
+			SUT.SelectionFlyout?.Hide();
+			await WindowHelper.WaitForIdle();
+
+			// Drag upwards on the filler below the box: the form scrolls down and the TextBox leaves the viewport.
+			var svBounds = scrollViewer.GetAbsoluteBoundsRect();
+			var from = new Point(svBounds.GetCenter().X, svBounds.Bottom - 30);
+			var to = new Point(svBounds.GetCenter().X, svBounds.Bottom - 230);
+			if (flick)
+			{
+				// A fast flick goes down the inertia path in ScrollContentPresenter, which the lock used to hijack
+				// (CompleteGesture + a clamped projected end offset) instead of letting inertia run.
+				finger.Drag(from, to, steps: 4, stepOffsetInMilliseconds: 1);
+			}
+			else
+			{
+				finger.Drag(from, to);
+			}
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsGreaterThan(100d, scrollViewer.VerticalOffset, "the drag should have scrolled the form down");
+
+			// The lock fired from a timer armed on scroll-end (FeatureConfiguration.ScrollViewer.SnapDelay, 250ms by
+			// default), so give it more than that to yank the offset back before asserting it stayed put.
+			await Task.Delay(FeatureConfiguration.ScrollViewer.SnapDelay + TimeSpan.FromMilliseconds(750));
+			await WindowHelper.WaitForIdle();
+
+			// Asserting on where the box ended up rather than on an offset threshold: the clamp's target was the
+			// TextBox's own offset inside the content (CreateScrollableForm's fillerAbove), which clears any threshold
+			// low enough to be safe. What the lock did was put the box back against the viewport edge, so requiring it
+			// to be fully outside the viewport is what discriminates.
+			var boxBounds = SUT.GetAbsoluteBoundsRect();
+			var viewport = scrollViewer.GetAbsoluteBoundsRect();
+			Assert.IsTrue(
+				boxBounds.Bottom <= viewport.Top || boxBounds.Top >= viewport.Bottom,
+				$"the ScrollViewer must not scroll back to the focused TextBox (box {boxBounds}, viewport {viewport})");
+			Assert.AreEqual(expectedCaret, SUT.CaretMode, "scrolling away must not disturb the touch caret");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
+		public Task When_Touch_Tap_Does_Not_Lock_ScrollViewer_Android()
+			=> AssertTouchCaretDoesNotLockScrollViewer(
+				"Some Text",
+				TextBoxCore.TouchTextSelectionConvention.Android,
+				TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				doubleTap: false,
+				flick: false);
+
+		// The empty-field variant only started reaching the lock once an empty box stopped swallowing the tap: it
+		// now places the Android insertion handle like a filled one, which is what used to arm the clamp.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Tap_Empty_Does_Not_Lock_ScrollViewer_Android()
+			=> AssertTouchCaretDoesNotLockScrollViewer(
+				"",
+				TextBoxCore.TouchTextSelectionConvention.Android,
+				TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				doubleTap: false,
+				flick: false);
+
+		// Both conventions reach the two-thumb mode through double-tap-to-select-word, so this is the iOS repro too.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Selection_Does_Not_Lock_ScrollViewer_Android()
+			=> AssertTouchCaretDoesNotLockScrollViewer(
+				"Some Text",
+				TextBoxCore.TouchTextSelectionConvention.Android,
+				TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				doubleTap: true,
+				flick: false);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Selection_Does_Not_Lock_ScrollViewer_iOS()
+			=> AssertTouchCaretDoesNotLockScrollViewer(
+				"Some Text",
+				TextBoxCore.TouchTextSelectionConvention.iOS,
+				TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				doubleTap: true,
+				flick: false);
+
+		// Guards the ScrollContentPresenter half of the lock: the timer test alone would still pass if inertia
+		// stayed hijacked.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Selection_Flick_Does_Not_Lock_ScrollViewer_Android()
+			=> AssertTouchCaretDoesNotLockScrollViewer(
+				"Some Text",
+				TextBoxCore.TouchTextSelectionConvention.Android,
+				TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				doubleTap: true,
+				flick: true);
+
+		// The grippers live in a popup that no ScrollViewer clips, so they used to keep painting at their old screen
+		// position (over the app's status/nav bar) once the TextBox scrolled out of the viewport. They are now culled
+		// against the TextBox's ancestor-clipped bounds. This is what made removing the scroll lock safe, so it has
+		// to stay covered.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_Scrolled_Out_Of_View_Grippers_Are_Hidden()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var (scrollViewer, SUT) = CreateScrollableForm("Some Text", TextBoxCore.TouchTextSelectionConvention.Android);
+			await UITestHelper.Load(scrollViewer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), message: "the tap should show the insertion handle");
+
+			// Scroll the TextBox entirely above the viewport.
+			scrollViewer.ChangeView(null, 400, null, disableAnimation: true);
+			await WindowHelper.WaitFor(() => scrollViewer.VerticalOffset > 300, message: "the form should have scrolled");
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be hidden once the TextBox is scrolled out of view");
+
+			scrollViewer.ChangeView(null, 0, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must come back when the TextBox is scrolled back into view");
+		}
+
+		// The edge case that made handles paint over the system bars, and the reason culling tests the point the
+		// thumb hangs from rather than the caret line as a whole: a caret line straddling the viewport's edge is
+		// still (fractionally) visible, but its thumb - a full thumb-height below the line - paints entirely outside.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_Caret_Line_Straddles_Viewport_Edge_Grippers_Are_Hidden()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			// Enough filler above the box that it can be parked anywhere in the viewport, bottom edge included.
+			var (scrollViewer, SUT) = CreateScrollableForm("Some Text", TextBoxCore.TouchTextSelectionConvention.Android, fillerAbove: 400);
+			await UITestHelper.Load(scrollViewer);
+
+			scrollViewer.ChangeView(null, 200, null, disableAnimation: true);
+			await WindowHelper.WaitFor(() => scrollViewer.VerticalOffset > 190, message: "the form should have scrolled the box into view");
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), message: "the tap should show the insertion handle");
+			await WindowHelper.WaitForIdle();
+
+			// The gripper spans the caret line plus the thumb below it, so it hangs from
+			// (gripper bottom - ThumbSize) - that is the point that has to stay inside the viewport.
+			var gripper = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			var thumbAnchorY = gripper.Bottom - CaretWithStemAndThumb.ThumbSize;
+			var viewportBottom = scrollViewer.GetAbsoluteBoundsRect().Bottom;
+
+			// Scrolling up by this much would put the anchor exactly on the viewport's bottom edge.
+			var offsetAtEdge = scrollViewer.VerticalOffset - (viewportBottom - thumbAnchorY);
+
+			// A few px short of the edge: the anchor is still inside, so the handle stays up. Waiting on the gripper's
+			// own reported position, not just on idle: WaitForIdle pumps the dispatcher without necessarily producing a
+			// rendered frame, and both the reposition and the culling only happen in the per-frame Update.
+			var gripperTopBefore = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect().Top;
+			scrollViewer.ChangeView(null, offsetAtEdge + 6, null, disableAnimation: true);
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect().Top != gripperTopBefore,
+				timeoutMS: 5000,
+				message: "the scroll should have repositioned the handle");
+			Assert.IsTrue(IsGripperShowing(SUT), "the handle should still show while the point it hangs from is inside the viewport");
+
+			// The band just below the viewport is where a thumb hanging from an anchor on the edge lands - the
+			// accepted sub-thumb-height overhang. Asserting on that ink is what makes the cull below meaningful:
+			// IsShowing alone is the very flag Cull sets, so it cannot tell us the thumb stopped painting.
+			var root = (FrameworkElement)WindowHelper.XamlRoot.VisualTree.RootElement;
+			var svBounds = scrollViewer.GetAbsoluteBoundsRect();
+			var bandBelowViewport = new Rectangle(
+				(int)svBounds.Left,
+				(int)svBounds.Bottom + 1,
+				(int)svBounds.Width,
+				(int)CaretWithStemAndThumb.ThumbSize);
+			ImageAssert.HasColorInRectangle(
+				await UITestHelper.ScreenShot(root),
+				bandBelowViewport,
+				CaretWithStemAndThumb.ThumbFillColor,
+				tolerance: 20);
+
+			// A few px past it and the thumb would hang entirely below the viewport, over whatever is painted there.
+			scrollViewer.ChangeView(null, offsetAtEdge - 6, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be hidden once the point it hangs from leaves the viewport");
+
+			ImageAssert.DoesNotHaveColorInRectangle(
+				await UITestHelper.ScreenShot(root),
+				bandBelowViewport,
+				CaretWithStemAndThumb.ThumbFillColor,
+				tolerance: 20);
+		}
+
+		// The other half of the culling contract: a gripper the finger is holding must NOT be culled when its
+		// anchor crosses the clip edge. Cull() collapses the gripper, and collapsing an element releases its
+		// pointer captures, so culling mid-drag used to abort the gesture - the caret froze on the last line that
+		// was still inside the viewport and the remaining finger movement went nowhere.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_Gripper_Dragged_Past_Viewport_Edge_Drag_Keeps_Tracking()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			// A multi-line box taller than its own text - so its inner ScrollViewer never scrolls and nothing
+			// chases the caret - inside a ScrollViewer far too short to show all of it: the lower lines are
+			// clipped away, and dragging the handle onto one of them crosses the clip edge.
+			var SUT = new TextBox
+			{
+				Width = 280,
+				Height = 400,
+				AcceptsReturn = true,
+				Text = string.Join("\r", Enumerable.Range(1, 10).Select(i => $"Line {i}")),
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android,
+			};
+
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 320,
+				Height = 150,
+				Content = new StackPanel { Children = { SUT } }
+			};
+			await UITestHelper.Load(scrollViewer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Tap the first line to place the Android insertion handle on it.
+			var boxBounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(boxBounds.Left + 20, boxBounds.Top + 8));
+			finger.Release();
+			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), message: "the tap should show the insertion handle");
+
+			// The handle's popup is placed on a later frame, so wait until it is actually over the box before
+			// pressing it - otherwise the press misses and the drag is a no-op.
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect() is { Width: > 0 } g
+					&& g.Top < scrollViewer.GetAbsoluteBoundsRect().Bottom,
+				timeoutMS: 3000,
+				message: "the insertion handle should be positioned before dragging it");
+
+			// Past the multi-tap window, so the drag that follows is its own gesture.
+			await Task.Delay(600);
+
+			// Small steps on purpose: one of them lands the caret on the first line below the viewport, which is the
+			// step that used to cull the gripper and drop its capture. A single big move would sample the last line
+			// in one go (sampleY is clamped to the text's span) and pass either way.
+			// The real delay matters as much as the step size - culling only happens in the per-frame Update, and
+			// WaitForIdle pumps the dispatcher without necessarily producing a rendered frame, so back-to-back
+			// injected moves never give culling a chance to run at all.
+			finger.Press(SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect().GetCenter());
+			for (var i = 0; i < 8; i++)
+			{
+				finger.MoveBy(0, 30, stepOffsetInMilliseconds: 10);
+				await Task.Delay(60);
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.IsTrue(IsGripperShowing(SUT), "the handle must stay up while the finger is still holding it");
+
+			var caretAtEndOfDrag = SUT.SelectionStart;
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The finger ended below every line, so the caret must have tracked all the way to the last one.
+			var lastLineStart = SUT.Text.LastIndexOf('\r') + 1;
+			Assert.IsGreaterThan(1, lastLineStart, "premise: the TextBox must hold several lines");
+			Assert.IsTrue(
+				caretAtEndOfDrag >= lastLineStart,
+				$"the drag must keep tracking the finger after the handle's anchor leaves the viewport (the caret ended at {caretAtEndOfDrag}, the last line starts at {lastLineStart})");
+
+			// The premise: nothing scrolled the form to follow the caret, so the anchor really did cross the clip.
+			Assert.AreEqual(0d, scrollViewer.VerticalOffset, "the form must not have scrolled to chase the caret");
+
+			// And once the finger is off, the handle is culled again - it now points below the viewport.
+			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be culled again once the drag ends below the viewport");
+		}
+
+		#endregion
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
+		public Task When_Touch_DoubleTap_Empty_Opens_Flyout_Android()
+			=> AssertTouchGestureOnEmptyBoxOpensFlyout(TextBoxCore.TouchTextSelectionConvention.Android, longPress: false);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_DoubleTap_Empty_Opens_Flyout_iOS()
+			=> AssertTouchGestureOnEmptyBoxOpensFlyout(TextBoxCore.TouchTextSelectionConvention.iOS, longPress: false);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_LongPress_Empty_Opens_Flyout_Android()
+			=> AssertTouchGestureOnEmptyBoxOpensFlyout(TextBoxCore.TouchTextSelectionConvention.Android, longPress: true);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_LongPress_Empty_Opens_Flyout_iOS()
+			=> AssertTouchGestureOnEmptyBoxOpensFlyout(TextBoxCore.TouchTextSelectionConvention.iOS, longPress: true);
+
+		// Native iOS/Android pop the text flyout (Paste) over an EMPTY field on a double-tap or a long-press. Neither
+		// gesture has a word to select nor a caret to drag there, so the mobile conventions used to swallow it and show
+		// nothing at all. The clipboard is populated so Paste exists: with no command the flyout self-hides (correctly).
+		private async Task AssertTouchGestureOnEmptyBoxOpensFlyout(TextBoxCore.TouchTextSelectionConvention convention, bool longPress)
+		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				ClearClipboard();
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			// Seed the clipboard before focusing: focus reads it live, so Paste is available without waiting for the
+			// ContentChanged notification (a 1s poll on macOS).
+			await SetClipboardText("clipboard text");
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.CanPasteClipboardContent, "the clipboard should read non-empty so Paste is available");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var center = SUT.GetAbsoluteBoundsRect().GetCenter();
+
+			if (longPress)
+			{
+				finger.Press(center);
+				await Task.Delay(1200); // cross the 800ms Holding-gesture threshold
+				finger.Release();
+			}
+			else
+			{
+				// Two back-to-back taps (no idle between) fall inside the multi-tap window.
+				finger.Press(center);
+				finger.Release();
+				finger.Press(center);
+				finger.Release();
+			}
+
+			await WindowHelper.WaitForIdle();
+			// The flyout visibility update is queued to the dispatcher; wait for it to actually open.
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: $"the {(longPress ? "long-press" : "double-tap")} should open the selection flyout over the empty box");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.SelectedText, "there is nothing to select in an empty box");
+			// The thumbless iOS caret blinks on a 500 ms timer, so it can be mid-blink by the time the flyout opens.
+			var expectedCaret = convention == TextBoxCore.TouchTextSelectionConvention.Android
+				? TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing
+				: TextBoxCore.CaretDisplayMode.ThumblessCaretShowing;
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == expectedCaret,
+				timeoutMS: 3000,
+				message: $"the gesture should leave the convention's collapsed caret ({expectedCaret})");
+
+			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
+			{
+				Assert.Fail("the selection flyout should be a TextCommandBarFlyout");
+				return;
+			}
+
+			var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+			Assert.IsTrue(hasPaste, "Paste should be available over an empty box when the clipboard has content");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available over an empty box (nothing is selected)");
+			Assert.IsFalse(hasCut, "Cut should NOT be available over an empty box (nothing is selected)");
+			Assert.IsTrue(hasSelectAll, "Select All stays available on touch even over an empty box, so the gesture always has a command");
+		}
+
+		// On touch, Select All is available even over an empty box, so a double-tap opens the flyout with Select All
+		// alone - no Paste (empty clipboard), no Copy/Cut (nothing selected).
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_Touch_DoubleTap_Empty_Without_Clipboard_Opens_Flyout_Android()
+		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			Clipboard.Clear();
+			await WindowHelper.WaitFor(() => !SUT.CanPasteClipboardContent, message: "the clipboard should read empty so Paste is unavailable");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var center = SUT.GetAbsoluteBoundsRect().GetCenter();
+			finger.Press(center);
+			finger.Release();
+			finger.Press(center);
+			finger.Release();
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "Select All alone should keep the empty-box flyout open with an empty clipboard");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode, "the gesture should still place the Android insertion caret");
+
+			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
+			{
+				Assert.Fail("the selection flyout should be a TextCommandBarFlyout");
+				return;
+			}
+
+			var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+			Assert.IsTrue(hasSelectAll, "Select All is available on touch even over an empty box");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available with an empty clipboard");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available (nothing is selected)");
+			Assert.IsFalse(hasCut, "Cut should NOT be available (nothing is selected)");
+			Assert.AreEqual(1, flyout.PrimaryCommands.Count, "Select All should be the lone primary command");
+			Assert.AreEqual(0, flyout.SecondaryCommands.Count, "nothing should land in the overflow");
+		}
+
+		// The counterpart that keeps HasTouchPrimaryCommandsFor honest: an empty PasswordBox with an empty clipboard is
+		// the remaining case with genuinely no primary command (its Select All needs Password.Length > 0 and routes to
+		// the overflow anyway), so the gesture must not open a flyout at all there.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_Touch_DoubleTap_Empty_PasswordBox_Without_Clipboard_Shows_No_Flyout()
+		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new PasswordBox
+			{
+				Width = 400,
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			Clipboard.Clear();
+			await WindowHelper.WaitFor(() => !SUT.CanPasteClipboardContent, message: "the clipboard should read empty so Paste is unavailable");
+
+			// Counting Opened is what separates "never opened" from "opened then self-hid" — the latter leaves
+			// IsOpen false too, but flashes an empty popup on screen.
+			var openedCount = 0;
+			void onOpened(object sender, object e) => openedCount++;
+			SUT.SelectionFlyout.Opened += onOpened;
+			using var ___ = new DisposableAction(() => SUT.SelectionFlyout.Opened -= onOpened);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var center = SUT.GetAbsoluteBoundsRect().GetCenter();
+			finger.Press(center);
+			finger.Release();
+			finger.Press(center);
+			finger.Release();
+
+			// Give any queued flyout-visibility update time to run before asserting nothing opened.
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, openedCount, "an empty password box with an empty clipboard has no command, so the flyout must never open (not even to self-hide)");
+			Assert.IsFalse((SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true, "no flyout should open with nothing to show");
+		}
+
+		// PasswordBox derives from TextBox and shares the touch gesture path, so the empty-field flyout runs there too:
+		// it must open with Paste over the masked (here empty) display text rather than throw or show nothing.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_Touch_LongPress_Empty_PasswordBox_Opens_Flyout_Android()
+		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				ClearClipboard();
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = new PasswordBox
+			{
+				Width = 400,
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			// Seed the clipboard before focusing: focus reads it live, so Paste is available without waiting for the
+			// ContentChanged notification (a 1s poll on macOS).
+			await SetClipboardText("clipboard text");
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.CanPasteClipboardContent, "the clipboard should read non-empty so Paste is available");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(1200); // cross the 800ms Holding-gesture threshold
+			finger.Release();
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "the long-press should open the selection flyout over the empty password box");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.Password, "a long-press must not alter the password");
+
+			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
+			{
+				Assert.Fail("the selection flyout should be a TextCommandBarFlyout");
+				return;
+			}
+
+			var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+			Assert.IsTrue(hasPaste, "Paste should be available over an empty password box when the clipboard has content");
+			Assert.IsFalse(hasCopy, "Copy is never offered on a PasswordBox");
+			Assert.IsFalse(hasCut, "Cut is never offered on a PasswordBox");
+			Assert.IsFalse(hasSelectAll, "Select All should NOT be available over an empty password box");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
+		public Task When_Touch_Tap_Selection_Thumb_Keeps_Selection_Android()
+			=> AssertTouchTapSelectionThumbKeepsSelection(TextBoxCore.TouchTextSelectionConvention.Android, tapStartThumb: false);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Tap_Start_Selection_Thumb_Keeps_Selection_Android()
+			=> AssertTouchTapSelectionThumbKeepsSelection(TextBoxCore.TouchTextSelectionConvention.Android, tapStartThumb: true);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Tap_Selection_Thumb_Keeps_Selection_iOS()
+			=> AssertTouchTapSelectionThumbKeepsSelection(TextBoxCore.TouchTextSelectionConvention.iOS, tapStartThumb: false);
+
+		// Native iOS/Android: with a range selected (both thumbs showing), tapping either thumb must KEEP the
+		// selection - the thumb is a selection edge, not a caret. It used to route through the caret-placing tap path
+		// and collapse the selection to length 0, wiping the user's selection on a stray tap.
+		// The tap is delivered through the gripper host seam instead of by injecting at the thumb's coordinates:
+		// grippers live in popups clipped to the TextBox, so in the (short) test host the thumb hangs outside the
+		// control and a coordinate-aimed tap silently lands on the text - or on nothing - rather than the gripper.
+		private static async Task AssertTouchTapSelectionThumbKeepsSelection(TextBoxCore.TouchTextSelectionConvention convention, bool tapStartThumb)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Double-tap the first word to select it and show both thumbs.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var wordPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+			finger.Press(wordPoint);
+			finger.Release();
+			finger.Press(wordPoint);
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.SelectedText == "Some" && SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				message: "the double-tap should select the word and show both thumbs");
+
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "both selection thumbs should be showing before tapping one");
+
+			// A real thumb tap arrives as a single tap well after the double-tap, so stamp the pointer point past the
+			// multi-tap window - otherwise the gripper folds it into the double-tap and selects a word instead.
+			var last = PointerRoutedEventArgs.LastPointerEvent?.GetCurrentPoint(null)
+				?? throw new InvalidOperationException("the injected taps should have left a pointer point");
+			var press = new Microsoft.UI.Input.PointerPoint(
+				last.FrameId,
+				last.Timestamp + 1_000_000, // +1s, past the 500ms multi-tap window
+				last.PointerDevice,
+				last.PointerId,
+				last.RawPosition,
+				last.Position,
+				last.IsInContact,
+				last.Properties);
+
+			// The presenter pins a gripper tap to the selection edge the thumb points at, never to the finger's
+			// position on the thumb (see TextSelectionGripperPresenter.OnGripperPointerReleased).
+			var anchorIndex = tapStartThumb ? SUT.SelectionStart : SUT.SelectionStart + SUT.SelectionLength;
+			((ITextSelectionGripperHost)SUT.Core).OnGripperTapped(press, anchorIndex);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Some", SUT.SelectedText, $"tapping the {(tapStartThumb ? "start" : "end")} thumb (anchor {anchorIndex}) must keep the selection, not collapse it");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "both thumbs must remain after tapping one of them");
+		}
+
+		// Repro: with a full selection's touch flyout open (both thumbs showing), Select All sits in the OVERFLOW
+		// (it's a secondary command while text is selected). Opening the overflow ("...") realizes it there; then
+		// collapsing the selection to a caret and reopening the flyout promotes Select All to the lone primary
+		// command. That overflow-realized-then-promoted button must still show BOTH its icon and its text label,
+		// like Cut/Copy/Paste - not render as a bare icon. The overflow->primary re-parent is the path the
+		// creation-time style workaround misses, distinct from When_Touch_Tap_Insertion_Handle_Opens_Flyout_Android
+		// (which never realizes Select All in the overflow first).
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_SelectAll_Overflow_Then_Collapse_Flyout_Shows_SelectAll_Label()
+		{
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+			{
+				ClearClipboard();
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false);
+			});
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "asd qwertyuiopasdfghjkl",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// A touch double-tap selects the word, shows both thumbs and opens the selection flyout - the touch path
+			// that surfaces the bug (a programmatic SelectAll sets neither the touch input mode nor the thumbs).
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var wordPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+			// Well right of both thumbs (which sit at the "asd" edges) but still over text, so the collapsing tap
+			// lands on plain text rather than on a thumb - tapping a thumb keeps the selection.
+			var farPoint = new Point(bounds.Left + 140, bounds.GetCenter().Y);
+			finger.Press(wordPoint);
+			finger.Release();
+			finger.Press(wordPoint);
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.SelectedText == "asd" && SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				message: "the double-tap should select all the text and show both thumbs");
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "the selection flyout should open over the full selection");
+			await WindowHelper.WaitForIdle();
+
+			// Empty the clipboard so Paste is unavailable - over the collapsed caret Select All is then the lone command.
+			Clipboard.Clear();
+			await WindowHelper.WaitFor(() => !SUT.CanPasteClipboardContent, message: "the clipboard should read empty so Paste is unavailable");
+
+			// Click the overflow ("...") button: expand the bar so Select All (a secondary command while the selection
+			// stands) is realized in the overflow.
+			if (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+					.Select(p => p.Child?.FindVisualChildByType<CommandBarFlyoutCommandBar>())
+					.FirstOrDefault(c => c is not null) is not { } commandBar)
+			{
+				Assert.Fail("the open selection flyout should host a CommandBarFlyoutCommandBar");
+				return;
+			}
+			if (commandBar.FindVisualChildByName("MoreButton") is not FrameworkElement moreButton)
+			{
+				Assert.Fail("the command bar template should expose a MoreButton");
+				return;
+			}
+			await WindowHelper.WaitFor(() => moreButton.Visibility == Visibility.Visible && moreButton.GetAbsoluteBoundsRect().Width > 0, message: "the overflow (\"...\") button should be shown while the full selection keeps Select All in the overflow");
+			await Task.Delay(600); // clear the multi-tap window from the double-tap before tapping the MoreButton
+			finger.Press(moreButton.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitFor(() => commandBar.IsOpen, message: "tapping the overflow button should open the command bar (realizing Select All in the overflow)");
+			await WindowHelper.WaitForIdle();
+
+			// Select All has now been realized once in the overflow. Fully hide the flyout so the reopening tap works
+			// from a closed state - reopening an already-open flyout via the gripper races its async Hide (worse after
+			// the overflow toggle) and no-ops.
+			SUT.SelectionFlyout?.Hide();
+			await WindowHelper.WaitFor(() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen != true, message: "the selection flyout should close before collapsing the selection");
+			await WindowHelper.WaitForIdle();
+
+			// Wait past the 500ms multi-tap window so the next tap is a single tap (collapse to a caret) rather than a
+			// double-tap-to-select-word.
+			await Task.Delay(600);
+
+			// A plain tap in the text collapses the selection to a caret with the single insertion handle (native
+			// Android). Tapping a selection thumb would NOT do this - it keeps the selection.
+			finger.Press(farPoint);
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.SelectedText == "" && SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "a plain tap should collapse the selection to the single insertion handle");
+
+			// The gripper popups are (re)positioned on a later frame, so GetAbsoluteBoundsRect is stale right after the
+			// collapse. Wait until the insertion handle is actually placed over the control before tapping it.
+			await WindowHelper.WaitFor(
+				() =>
+				{
+					if (SUT.VisibleGrippersForTesting is not { } vg)
+					{
+						return false;
+					}
+					var g = vg.end.GetAbsoluteBoundsRect();
+					var s = SUT.GetAbsoluteBoundsRect();
+					return g.Width > 0 && g.Left < s.Right && s.Left < g.Right && g.Top < s.Bottom && s.Top < g.Bottom;
+				},
+				timeoutMS: 3000,
+				message: "the insertion handle should be positioned over the TextBox before tapping it");
+
+			await Task.Delay(600); // a single tap on the handle, not a double-tap-to-select-word
+
+			// Tap the insertion handle (grab near its bottom edge, what a real finger hits) to reopen the flyout over
+			// the caret - now with Select All promoted from the overflow to the lone primary command.
+			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			finger.Press(new Point(handle.GetCenter().X, handle.Bottom - 2));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "tapping the insertion handle should reopen the selection flyout over the collapsed caret");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.SelectedText, "the reopened flyout should sit over a collapsed caret");
+
+			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
+			{
+				Assert.Fail("the selection flyout should be a TextCommandBarFlyout");
+				return;
+			}
+
+			// Empty clipboard + collapsed caret => Select All is the lone command (no Cut/Copy, no Paste).
+			var (hasSelectAll, _, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+			Assert.IsTrue(hasSelectAll, "Select All should be available over a collapsed caret (there is text to select)");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available over a collapsed caret (nothing is selected)");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available with an empty clipboard");
+
+			// Select All must sit in the primary bar and, like Cut/Copy/Paste, must show BOTH its icon and its text
+			// label there - not render as a bare icon. This is the reported bug on the overflow -> primary path.
+			var selectAllButton = flyout.PrimaryCommands
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.A && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(selectAllButton, "Select All should be a primary (bar) command so the flyout stays open");
+			Assert.IsNotNull(selectAllButton.Icon, "the primary Select All button should have an icon, matching Cut/Copy/Paste");
+
+			if (selectAllButton.FindVisualChildByName("TextLabel") is not TextBlock selectAllLabel)
+			{
+				Assert.Fail("the primary Select All button template should expose a TextLabel");
+				return;
+			}
+			Assert.AreEqual(Visibility.Visible, selectAllLabel.Visibility, "the primary Select All button must show its text label (like Cut/Copy/Paste), not just an icon");
+			Assert.IsFalse(string.IsNullOrEmpty(selectAllLabel.Text), "the primary Select All button label must have text");
+		}
+
+		// Repro: touch-select a misspelled word so the selection flyout (Transient) includes the "proofing" submenu
+		// button in its overflow. Expanding the overflow ("...") must NOT auto-open the proofing submenu - the WinUI
+		// auto-open only belongs to the context menu (Standard show mode) that opens already expanded. In the Transient
+		// selection flyout the proofing button only loads once the user taps the overflow, and auto-opening there
+		// hijacks that tap.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_Flyout_Overflow_Does_Not_AutoOpen_Proofing()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "helllo", // a single misspelled word, so a touch double-tap selects it whole
+				IsSpellCheckEnabled = true,
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Double-tap the word to select it whole, show both thumbs and open the (Transient) selection flyout.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var wordPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+			finger.Press(wordPoint);
+			finger.Release();
+			finger.Press(wordPoint);
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.SelectedText == "helllo",
+				message: "the double-tap should select the whole misspelled word");
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "the selection flyout should open over the selected word");
+			await WindowHelper.WaitForIdle();
+
+			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
+			{
+				Assert.Fail("the selection flyout should be a TextCommandBarFlyout");
+				return;
+			}
+
+			// The proofing button is the only secondary command carrying a (MenuFlyout) submenu. If spell-check is
+			// unavailable on this host or the word yielded no suggestions, the button is absent - nothing to assert.
+			if (flyout.SecondaryCommands.OfType<AppBarButton>().FirstOrDefault(b => b.Flyout is MenuFlyout) is not { } proofingButton
+				|| proofingButton.Flyout is not MenuFlyout proofingMenu
+				|| proofingMenu.Items.Count == 0)
+			{
+				Assert.Inconclusive("The proofing menu was not populated (spell-check service unavailable or no suggestions for the test word).");
+				return;
+			}
+
+			// Find the command bar and its overflow ("...") button.
+			if (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+					.Select(p => p.Child?.FindVisualChildByType<CommandBarFlyoutCommandBar>())
+					.FirstOrDefault(c => c is not null) is not { } commandBar)
+			{
+				Assert.Fail("the open selection flyout should host a CommandBarFlyoutCommandBar");
+				return;
+			}
+			if (commandBar.FindVisualChildByName("MoreButton") is not FrameworkElement moreButton)
+			{
+				Assert.Fail("the command bar template should expose a MoreButton");
+				return;
+			}
+			await WindowHelper.WaitFor(() => moreButton.Visibility == Visibility.Visible && moreButton.GetAbsoluteBoundsRect().Width > 0, message: "the overflow (\"...\") button should be shown while the proofing button sits in the overflow");
+
+			// Tap the overflow to expand the bar - this realizes the proofing button (firing its Loaded handler, the
+			// code path under test). Wait past the multi-tap window from the double-tap first.
+			await Task.Delay(600);
+			finger.Press(moreButton.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitFor(() => commandBar.IsOpen, message: "tapping the overflow button should expand the command bar");
+			// Confirm the proofing button actually loaded, so the assertion below is not vacuous.
+			await WindowHelper.WaitFor(() => proofingButton.IsLoaded, message: "the proofing button should be realized once the overflow is expanded");
+			await WindowHelper.WaitForIdle();
+
+			// The auto-open (when it misfires) is scheduled ~100ms after the button loads; wait well past that.
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(proofingMenu.IsOpen, "the proofing submenu must not auto-open when the overflow is expanded in a Transient selection flyout");
+		}
+
+		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).
+		private static async Task AssertTouchTapCollapsesSelection(TextBoxCore.TouchTextSelectionConvention convention)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Some Text", SUT.SelectedText);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Tap near the left edge, inside the selected text.
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(bounds.Left + 15, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.SelectedText);
+		}
+
+		[TestMethod]
+		public Task When_Touch_LongPress_Selects_Word_Android()
+			=> AssertTouchLongPress(TextBoxCore.TouchTextSelectionConvention.Android, expectWordSelected: true);
+
+		[TestMethod]
+		public Task When_Touch_LongPress_Keeps_ContextMenu_Desktop()
+			=> AssertTouchLongPress(TextBoxCore.TouchTextSelectionConvention.Desktop, expectWordSelected: false);
+
+		// A touch long-press on a mobile convention must select the word BEFORE the text control's flyout
+		// computes its commands. Regression: the inner DisplayBlock's ContextRequested class handler used to
+		// open the ContextFlyout with an empty selection (Cut/Copy omitted) before OnContextRequestedImpl
+		// selected the word. Driven with a real injected hold so the whole bubbling path is exercised.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_LongPress_Flyout_Includes_Copy_Android()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(1200); // cross the 800ms Holding-gesture threshold
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			// The flyout visibility update is queued to the dispatcher; wait for a flyout to actually open instead of a fixed delay.
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true
+					|| (SUT.ContextFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "a text command flyout should open after the long-press");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Text", SUT.SelectedText, "the long-press should have selected the word");
+
+			var openFlyout =
+				(SUT.SelectionFlyout as TextCommandBarFlyout) is { IsOpen: true } sel ? sel :
+				(SUT.ContextFlyout as TextCommandBarFlyout) is { IsOpen: true } ctx ? ctx :
+				null;
+
+			Assert.IsNotNull(openFlyout, "a text command flyout should be open after the long-press");
+
+			var (_, hasCut, hasCopy, _) = GetAvailableCommands(openFlyout);
+
+			Assert.IsTrue(hasCopy, "Copy should be available: the word is selected");
+			Assert.IsTrue(hasCut, "Cut should be available: the word is selected");
+		}
+
+		// A touch/pen flyout routes Cut/Copy/Paste into the primary bar, which CommandBarFlyout does not close on
+		// invoke (it only wires that up for secondary commands). Copy is what exposes it: unlike Cut/Paste it leaves
+		// the text untouched, so nothing else closed the flyout and it lingered over the text after copying.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_Flyout_Copy_Closes_Flyout_Android()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(1200); // cross the 800ms Holding-gesture threshold
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			// The flyout visibility update is queued to the dispatcher; wait for a flyout to actually open instead of a fixed delay.
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true
+					|| (SUT.ContextFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "a text command flyout should open after the long-press");
+			await WindowHelper.WaitForIdle();
+
+			var openFlyout =
+				(SUT.SelectionFlyout as TextCommandBarFlyout) is { IsOpen: true } sel ? sel :
+				(SUT.ContextFlyout as TextCommandBarFlyout) is { IsOpen: true } ctx ? ctx :
+				null;
+
+			Assert.IsNotNull(openFlyout, "a text command flyout should be open after the long-press");
+			Assert.AreEqual("Text", SUT.SelectedText, "the long-press should have selected the word");
+
+			// On touch/pen, Copy sits in the primary bar (see TextCommandBarFlyout.UpdateButtons) - the path under test.
+			var copyButton = openFlyout.PrimaryCommands
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(copyButton, "Copy should be a primary (bar) command on a touch-opened flyout");
+
+			// Invoke it through AppBarButton.OnClick, the same path a tap takes, without hit-testing inside the popup.
+			if (FrameworkElementAutomationPeer.CreatePeerForElement(copyButton) is not ButtonAutomationPeer copyPeer)
+			{
+				Assert.Fail("the Copy button should expose a ButtonAutomationPeer");
+				return;
+			}
+			copyPeer.Invoke();
+
+			await WindowHelper.WaitFor(
+				() => !openFlyout.IsOpen,
+				message: "invoking Copy should close the touch selection flyout");
+
+			// Copy must not disturb what it copied.
+			Assert.AreEqual("Text", SUT.SelectedText, "the selection should survive Copy");
+		}
+
+		// Repro for the long-press gripper path: after a touch long-press selects the word on the Android
+		// convention, BOTH selection thumbs must actually lay out and stay visible (not just the flyout).
+		// Sister of When_Touch_LongPress_Flyout_Includes_Copy_Android, which only checks the flyout commands
+		// and so would pass even if the flyout-focus path hid the thumbs.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
+		public async Task When_Touch_LongPress_Shows_Grippers_Android()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(1200); // cross the 800ms Holding-gesture threshold
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			// The word-select + flyout-visibility update are queued to the dispatcher; wait for the selection to settle.
+			await WindowHelper.WaitFor(() => SUT.SelectedText == "Text", message: "the long-press should have selected the word");
+			// Force the selection flyout to actually open (the user's real scenario) so the flyout-focus path runs...
+			await WindowHelper.WaitFor(
+				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true
+					|| (SUT.ContextFlyout as TextCommandBarFlyout)?.IsOpen == true,
+				message: "a text command flyout should open after the long-press");
+			await WindowHelper.WaitForIdle(); // ...and let it settle before checking the steady state.
+
+			// Steady state (Assert, not WaitFor): after the flyout opens, the word must stay selected AND both
+			// thumbs must remain — a bug that flips CaretMode back to thumbless leaves the highlight but drops the thumbs.
+			Assert.AreEqual("Text", SUT.SelectedText, "selection should persist while the flyout is open");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "both thumbs must survive the flyout opening");
+			Assert.IsTrue(
+				SUT.VisibleGrippersForTesting is { } vg
+					&& vg.start.GetAbsoluteBoundsRect().Width > 0
+					&& vg.end.GetAbsoluteBoundsRect().Width > 0,
+				"both selection thumbs should stay laid out and visible while the flyout is open");
+		}
+
+		// Sibling guard for the desktop/mouse path: a right-click over the text (whose ContextRequested
+		// originates on the inner DisplayBlock and bubbles to the TextBox) must still open the ContextFlyout,
+		// reflecting the current selection. Guards the OnContextRequestedCore DisplayBlock deferral.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mouse path: run on Desktop (dev) + real Android only
+		public async Task When_RightClick_Over_Selection_Flyout_Includes_Copy()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Width = 400, Text = "Some Text" };
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var overText = new Point(bounds.Left + 20, bounds.GetCenter().Y); // inside "Some Text" and inside the selection
+			mouse.PressRight(overText);
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(150);
+			await WindowHelper.WaitForIdle();
+
+			if (SUT.ContextFlyout is not TextCommandBarFlyout contextFlyout || !contextFlyout.IsOpen)
+			{
+				Assert.Fail("the ContextFlyout should open on right-click over the text");
+				return;
+			}
+
+			var (_, hasCut, hasCopy, _) = GetAvailableCommands(contextFlyout);
+			Assert.IsTrue(hasCopy, $"Copy should be available (selectedText='{SUT.SelectedText}')");
+			Assert.IsTrue(hasCut, $"Cut should be available (selectedText='{SUT.SelectedText}')");
+
+			contextFlyout.Hide();
+		}
+
+		// Mouse counterpart of When_Touch_Flyout_Copy_Closes_Flyout_Android: with a pointer, Cut/Copy/Paste stay in
+		// the overflow, where CommandBarFlyout already closes the flyout on Click. Guards that the touch/pen primary-bar
+		// close doesn't alter (or become needed by) the mouse path.
+		[TestMethod]
+		// Skia-iOS is excluded: there a mouse is not the real device, and the selection collapses when the flyout
+		// closes - pre-existing behavior this mouse path does not change.
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_RightClick_Flyout_Copy_Closes_Flyout()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox { Width = 400, Text = "Some Text" };
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			mouse.PressRight(new Point(bounds.Left + 20, bounds.GetCenter().Y)); // inside "Some Text" and the selection
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(150);
+			await WindowHelper.WaitForIdle();
+
+			if (SUT.ContextFlyout is not TextCommandBarFlyout contextFlyout || !contextFlyout.IsOpen)
+			{
+				Assert.Fail("the ContextFlyout should open on right-click over the text");
+				return;
+			}
+
+			// A mouse-opened flyout keeps Cut/Copy/Paste in the overflow (see TextCommandBarFlyout.UpdateButtons).
+			var copyButton = contextFlyout.SecondaryCommands
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(copyButton, "Copy should be a secondary (overflow) command on a mouse-opened flyout");
+			Assert.AreEqual(0, contextFlyout.PrimaryCommands.OfType<AppBarButton>().Count(
+				b => b.KeyboardAccelerators.Any(ka => ka.Key is VirtualKey.X or VirtualKey.C or VirtualKey.V && ka.Modifiers.HasFlag(_platformCtrlKey))),
+				"Cut/Copy/Paste must not reach the primary bar on a mouse-opened flyout");
+
+			if (FrameworkElementAutomationPeer.CreatePeerForElement(copyButton) is not ButtonAutomationPeer copyPeer)
+			{
+				Assert.Fail("the Copy button should expose a ButtonAutomationPeer");
+				return;
+			}
+			copyPeer.Invoke();
+
+			await WindowHelper.WaitFor(
+				() => !contextFlyout.IsOpen,
+				message: "invoking Copy should close the mouse-opened context flyout");
+
+			Assert.AreEqual("Some Text", SUT.SelectedText, "the selection should survive Copy");
+		}
+
+		// Native Android: a touch long-press selects the word (and suppresses the context menu).
+		// The Desktop convention keeps the default context-menu behavior (no auto word selection).
+		private static async Task AssertTouchLongPress(TextBoxCore.TouchTextSelectionConvention convention, bool expectWordSelected)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			// A touch long-press surfaces as a touch-originated ContextRequested (raised by the Holding
+			// gesture in the framework). Raise it directly to exercise the TextBox's handling
+			// deterministically, without depending on the 800ms hold timer.
+			var args = new ContextRequestedEventArgs { IsTouchInput = true };
+			args.SetGlobalPoint(SUT.GetAbsoluteBoundsRect().GetCenter());
+			SUT.SafeRaiseEvent(UIElement.ContextRequestedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			if (expectWordSelected)
+			{
+				Assert.AreEqual("Text", SUT.SelectedText);
+				Assert.IsTrue(args.Handled); // context menu suppressed
+			}
+			else
+			{
+				Assert.AreEqual("", SUT.SelectedText);
+			}
+		}
+
+		[TestMethod]
+		public Task When_Touch_Hold_Does_Not_Flag_ContextMenu_Android()
+			=> AssertTouchHoldDoesNotFlagContextMenuOnHolding(TextBoxCore.TouchTextSelectionConvention.Android);
+
+		[TestMethod]
+		public Task When_Touch_Hold_Does_Not_Flag_ContextMenu_iOS()
+			=> AssertTouchHoldDoesNotFlagContextMenuOnHolding(TextBoxCore.TouchTextSelectionConvention.iOS);
+
+		// Native iOS/Android handle a touch-and-hold without opening a context menu. Routing it through the
+		// ContextMenuProcessor (the path the Holding gesture uses) must NOT flag the hold as menu-showing;
+		// otherwise a later HoldingState.Canceled (the finger moving during the caret-drag / after word-select)
+		// would spuriously raise ContextCanceled or close a light-dismiss popup the TextBox lives in.
+		private static async Task AssertTouchHoldDoesNotFlagContextMenuOnHolding(TextBoxCore.TouchTextSelectionConvention convention)
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				TouchSelectionConvention = convention
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var processor = VisualTree.GetContentRootForElement(SUT)?.InputManager?.ContextMenuProcessor;
+			Assert.IsNotNull(processor);
+			var nonNullProcessor = processor ?? throw new InvalidOperationException("ContextMenuProcessor should be available for this test.");
+			nonNullProcessor.SetIsContextMenuOnHolding(false);
+
+			nonNullProcessor.RaiseContextRequestedEvent(SUT, SUT.GetAbsoluteBoundsRect().GetCenter(), isTouchInput: true);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(nonNullProcessor.IsContextMenuOnHolding, "a mobile touch-and-hold is handled without a context menu, so it must not be flagged as menu-showing");
+		}
+
+		// Native iOS: a touch long-press begins dragging the caret; the caret follows the finger and
+		// no selection is created (no context menu).
+		[TestMethod]
+		public async Task When_Touch_LongPress_Drags_Caret_iOS()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text long enough",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			var startPoint = new Point(bounds.Left + 15, bounds.GetCenter().Y);
+
+			// Press, then simulate the 800ms hold as a touch ContextRequested (the iOS long-press
+			// entry) so the caret-drag starts and captures the pointer, without waiting on the timer.
+			finger.Press(startPoint);
+			var args = new ContextRequestedEventArgs { IsTouchInput = true };
+			args.SetGlobalPoint(startPoint);
+			SUT.SafeRaiseEvent(UIElement.ContextRequestedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(args.Handled); // context menu suppressed
+			Assert.AreEqual(0, SUT.SelectionLength); // a caret, not a selection
+			var caretAfterPress = SUT.SelectionStart;
+
+			// Dragging the finger to the right moves the caret with it (still no selection).
+			finger.MoveBy(150, 0, stepOffsetInMilliseconds: 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.IsTrue(SUT.SelectionStart > caretAfterPress, $"caret should advance with the drag (was {caretAfterPress}, now {SUT.SelectionStart})");
+
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionLength);
+			// The capture taken to drag the caret must be released on pointer up, not held past the gesture.
+			Assert.AreEqual(0, SUT.PointerCaptures?.Count ?? 0, "the caret-drag pointer capture must be released on release");
+		}
+
+		// Was When_Touch_Focused_Then_Scrolled_Away, which asserted that a touch-focused TextBox stayed pinned
+		// inside its ScrollViewer. That lock is gone - it left forms the user could not scroll away from - so the
+		// same scenario now asserts the opposite. What the lock was really working around, grippers left painting
+		// over whatever the TextBox scrolled onto, is handled by culling them instead; see
+		// When_Scrolled_Out_Of_View_Grippers_Are_Hidden.
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
+		// Flaky on Android Skia: the injected drag only partly reaches the ScrollViewer (37px of a 200px drag), so
+		// it runs on Desktop only for now. https://github.com/unoplatform/uno/issues/24480
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // mobile conventions: run on Desktop (dev)
+		public async Task When_Touch_Focused_Then_Scrolled_Away_The_Scroll_Sticks()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text",
+				// Pinned instead of left to the platform default, so every target reaches the same state: on the
+				// Android convention a single tap leaves the insertion handle up, where iOS leaves a thumbless caret
+				// and Desktop selects the tapped word. The handle is the state the removed scroll lock keyed on.
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			var sv = new ScrollViewer()
+			{
+				Height = 100,
+				Content = new StackPanel()
+				{
+					Children =
+					{
+						new Microsoft.UI.Xaml.Shapes.Rectangle()
+						{
+							Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+							Width = 100,
+							Height = 500
+						},
+						SUT,
+						new Microsoft.UI.Xaml.Shapes.Rectangle()
+						{
+							Fill = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+							Width = 100,
+							Height = 500
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(sv);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Park the box in the viewport with an explicit offset instead of a bring-into-view, and bound it on both
+			// sides: past 500 the box would be pushed off the top of the viewport and the geometry below stops holding.
+			sv.ChangeView(null, 470, null, disableAnimation: true);
+			await WindowHelper.WaitFor(
+				() => sv.VerticalOffset is > 400 and < 490,
+				message: "the TextBox should be parked inside the viewport before it is tapped");
+			await UITestHelper.WaitForIdle(true);
+
+			// One tap, not two. A second tap selects the word and pops the selection flyout, and then the scroll
+			// gesture below has nowhere to land: the flyout's light-dismiss overlay fills the window, so a press on
+			// it is consumed dismissing the flyout instead of scrolling, and the toolbar itself is placed above the
+			// selection, overlapping the viewport - a press there goes to its buttons. Both are correct behaviour;
+			// they just cost the gesture this test needs.
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "the tap should leave the insertion handle up");
+			await UITestHelper.WaitForIdle(true);
+
+			// Premises spelled out rather than left to a mute "the offset did not move": the touch conventions can
+			// only be observed on CI, so each half of the scenario has to say when it is the one that broke.
+			Assert.AreNotEqual(FocusState.Unfocused, SUT.FocusState, "the tap should have focused the TextBox");
+			Assert.AreEqual(0, SUT.SelectionLength, "the tap should leave a caret, not a selection");
+			Assert.IsFalse(
+				SUT.SelectionFlyout?.IsOpen is true,
+				"the selection flyout must not be up - the scroll gesture would go to it instead of the ScrollViewer");
+
+			// Drag the filler above the box rather than the box itself, so the gesture is unambiguously a scroll
+			// and not a text gesture on any target.
+			var viewport = sv.GetAbsoluteBoundsRect();
+			var dragStart = new Point(viewport.GetCenter().X, (viewport.Top + SUT.GetAbsoluteBoundsRect().Top) / 2);
+
+			var offsetBeforeScroll = sv.VerticalOffset;
+			finger.Press(dragStart);
+			await UITestHelper.WaitForIdle(true);
+			finger.MoveBy(0, 300, stepOffsetInMilliseconds: 20);
+			await UITestHelper.WaitForIdle(true);
+			finger.Release();
+			await UITestHelper.WaitForIdle(true);
+
+			// Long enough to cover the scroll-end snap timer the old lock used to yank the offset back with.
+			await Task.Delay(TimeSpan.FromSeconds(2));
+
+			Assert.IsGreaterThan(
+				200d,
+				offsetBeforeScroll - sv.VerticalOffset,
+				$"the scroll the user performed must stick (offset {offsetBeforeScroll} -> {sv.VerticalOffset}, "
+				+ $"caret {SUT.CaretMode}, selection {SUT.SelectionStart}/{SUT.SelectionLength}, "
+				+ $"flyout {SUT.SelectionFlyout?.IsOpen}, dragged from {dragStart} in {viewport})");
+
+			// Spelled out rather than an IsGreaterThan whose argument order reads backwards: the box must have left
+			// the viewport entirely, which is exactly what the old pin prevented.
+			var boxBounds = SUT.GetAbsoluteBoundsRect();
+			Assert.IsTrue(
+				boxBounds.Top >= viewport.Bottom,
+				$"the focused TextBox must be allowed to leave the viewport (box {boxBounds}, viewport {viewport})");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/1199")]
+		public async Task When_TextBox_TextChange_Not_Trigger_Selection_Change_To_Start()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var selectionChangedToStart = false;
+
+			var displayBlock = SUT.TextBoxView.DisplayBlock;
+			displayBlock.SelectionChanged += (s, e) =>
+			{
+				if (displayBlock.SelectionStart.Offset == 0)
+				{
+					selectionChangedToStart = true;
+				}
+			};
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Text = "Some Text 2";
+
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(selectionChangedToStart, "SelectionChanged event should not be triggered when TextBox text is changed.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19327")]
+		public async Task When_Setting_Short_Text_And_Previous_Selection_Is_OutOfBounds()
+		{
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "longer text",
+				TextWrapping = TextWrapping.Wrap,
+				AcceptsReturn = true
+			};
+
+			SUT.KeyUp += (_, e) =>
+			{
+				SUT.Text = "shorter";
+				e.Handled = true;
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Keyboard);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.RaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.RaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // needs paste permission
+		public async Task When_MaxLine_Paste()
+		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				MaxLength = 10,
+				Text = "0123456789",
+				SelectionStart = 4,
+				SelectionLength = 2
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "abcdefgh";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("0123ab6789", SUT.Text);
+			Assert.AreEqual(6, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20857")]
+		public async Task When_Rearranged_Without_Remeasuring()
+		{
+			var SUT1 = new TextBox { Text = "text", TextAlignment = TextAlignment.End };
+			var btn1 = new Button { Content = "button" };
+			var grid1 = new Grid
+			{
+				ColumnDefinitions =
+				{
+					new ColumnDefinition { Width = GridLengthHelper.OneStar },
+					new ColumnDefinition { Width = GridLengthHelper.Auto }
+				},
+				Children =
+				{
+					SUT1,
+					FluentExtensions.Apply(btn1, btn => Grid.SetColumn(btn, 1))
+				}
+			};
+			await UITestHelper.Load(grid1);
+
+			var screenshot1 = await UITestHelper.ScreenShot(SUT1);
+
+			var SUT2 = new TextBox { Text = "text", TextAlignment = TextAlignment.End };
+			var btn2 = new Button { Content = "button" };
+			btn2.Visibility = Visibility.Collapsed; // difference here
+			var grid2 = new Grid
+			{
+				ColumnDefinitions =
+				{
+					new ColumnDefinition { Width = GridLengthHelper.OneStar },
+					new ColumnDefinition { Width = GridLengthHelper.Auto }
+				},
+				Children =
+				{
+					SUT2,
+					FluentExtensions.Apply(btn2, btn => Grid.SetColumn(btn, 1))
+				}
+			};
+			await UITestHelper.Load(grid2);
+			btn2.Visibility = Visibility.Visible;
+			await UITestHelper.WaitForIdle();
+
+			var screenshot2 = await UITestHelper.ScreenShot(SUT2);
+			await ImageAssert.AreEqualAsync(screenshot1, screenshot2);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // Desktop touch-selection convention; mobile conventions tested separately
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21961")]
+		public async Task When_Caret_Positioning_With_Complex_Transformations()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Test"
+			};
+			textBox.RenderTransform = new RotateTransform { Angle = 30 };
+			var viewbox = new Viewbox
+			{
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				Width = 200,
+				Height = 200,
+				Child = textBox
+			};
+			await UITestHelper.Load(viewbox);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			// Double tap the TextBox with finger to ensure we have "touch" based carets
+			using var finger = injector.GetFinger();
+			var textBoxBounds = textBox.GetAbsoluteBoundsRect();
+			var center = textBoxBounds.GetCenter();
+			finger.Press(center);
+			finger.Release();
+			await WindowHelper.WaitFor(() => textBox.FocusState == FocusState.Pointer);
+			textBox.SelectAll();
+
+			// Everything should be selected
+			Assert.AreEqual(0, textBox.SelectionStart);
+			Assert.AreEqual(textBox.Text.Length, textBox.SelectionLength);
+
+			// Wait for the caret popups to appear
+			await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.Child.FindFirstChild<Microsoft.UI.Xaml.Shapes.Ellipse>() is not null).Any());
+
+			// Get the caret popups
+			var caretPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.Child.FindFirstChild<Microsoft.UI.Xaml.Shapes.Ellipse>() is not null).ToList();
+			// We should have two caret popups (start and end)
+			Assert.HasCount(2, caretPopups);
+
+			// Validate the Ellipses of the carets are intersecting the bottom border of the TextBox
+			var textBoxTransform = textBox.TransformToVisual(null);
+			var bottomLeft = textBoxTransform.TransformPoint(new Point(0, textBox.ActualHeight));
+			var bottomRight = textBoxTransform.TransformPoint(new Point(textBox.ActualWidth, textBox.ActualHeight));
+
+			foreach (var popup in caretPopups)
+			{
+				var ellipse = popup.Child.FindFirstChild<Microsoft.UI.Xaml.Shapes.Ellipse>()!;
+				Assert.IsNotNull(ellipse);
+
+				// center in local space
+				var localCenter = new Point(ellipse.Width / 2, ellipse.Height / 2);
+
+				// pick a boundary point on the right side in local space
+				var localBoundary = new Point(ellipse.Width, ellipse.Height / 2);
+
+				// transform both to visual space
+				var ellipseTransform = ellipse.TransformToVisual(null);
+				var ellipseCenter = ellipseTransform.TransformPoint(localCenter);
+				var boundary = ellipseTransform.TransformPoint(localBoundary);
+
+				// actual radius after rotation/scale/etc.
+				double radius = Math.Sqrt(Math.Pow(boundary.X - ellipseCenter.X, 2) + Math.Pow(boundary.Y - ellipseCenter.Y, 2));
+				// Check that the line from bottomLeft to bottomRight intersects the ellipse using DistancePointToSegment
+				var distance = DistancePointToSegment(ellipseCenter, bottomLeft, bottomRight);
+				Assert.IsLessThan(radius, distance, "Caret ellipse should intersect the bottom border of the TextBox");
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20988")]
+		public async Task When_Ctrl_Letter_Should_Not_Type()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Simulate pressing Ctrl+S (an unhandled Ctrl+letter shortcut)
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.S, VirtualKeyModifiers.Control, unicodeKey: 's'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(string.Empty, SUT.Text, "Ctrl+S should not insert any character.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20988")]
+		public async Task When_Alt_Letter_Should_Not_Type()
+		{
+			if (DeviceTargetHelper.UsesAppleKeyboardLayout)
+			{
+				// On Apple platforms, Alt (Option) key is used for special character input,
+				// so it should not be suppressed.
+				Assert.Inconclusive("Alt (Option) key behavior differs on Apple platforms.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Simulate pressing Alt+S (an unhandled Alt+letter shortcut)
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.S, VirtualKeyModifiers.Menu, unicodeKey: 's'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(string.Empty, SUT.Text, "Alt+S should not insert any character.");
+		}
+
+		private double DistancePointToSegment(Point p, Point a, Point b)
+		{
+			var ax = a.X; var ay = a.Y;
+			var bx = b.X; var by = b.Y;
+			var px = p.X; var py = p.Y;
+
+			var abx = bx - ax;
+			var aby = by - ay;
+			var apx = px - ax;
+			var apy = py - ay;
+
+			// Project AP onto AB, clamp to [0,1]
+			double abLenSq = abx * abx + aby * aby;
+			double t = (apx * abx + apy * aby) / abLenSq;
+			t = Math.Clamp(t, 0, 1);
+
+			// Closest point
+			var cx = ax + t * abx;
+			var cy = ay + t * aby;
+
+			// Distance to closest point
+			var dx = px - cx;
+			var dy = py - cy;
+			return Math.Sqrt(dx * dx + dy * dy);
+		}
+
+		private static bool HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor)
+		{
+			for (var x = rect.Left; x < rect.Right; x++)
+			{
+				for (var y = rect.Top; y < rect.Bottom; y++)
+				{
+					var pixel = screenshot.GetPixel(x, y);
+					if (expectedColor == pixel)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+#if HAS_UNO // SelectAll is not available for PasswordBox on WinUI.
+		[TestMethod]
+		public async Task When_PasswordBox_ContextFlyout_Commands_Available()
+		{
+			try
+			{
+				if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+				{
+					Assert.Inconclusive("Clipboard is not available on this platform.");
+				}
+				var SUT = new PasswordBox { Password = "secret pass", Width = 200 };
+				CopyPlaceholderTextToClipboard();
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Core.Select(0, 4);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "PasswordBox should have TextCommandBarFlyout as ContextFlyout");
+				var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+				flyout.ShowAt(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+
+				Assert.IsFalse(hasCut, "Cut should NOT be available for PasswordBox (security)");
+				Assert.IsFalse(hasCopy, "Copy should NOT be available for PasswordBox (security)");
+				Assert.IsTrue(hasPaste, "Paste should be available for PasswordBox");
+				Assert.IsTrue(hasSelectAll, "Select All should be available for PasswordBox");
+
+				flyout.Hide();
+			}
+			finally
+			{
+				ClearClipboard();
+			}
+		}
+#endif
+
+		[TestMethod]
+		public async Task When_Selection_Background_Has_No_Gaps_Between_Characters()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "____",
+				FontSize = 14,
+				Width = 300,
+				SelectionHighlightColor = new SolidColorBrush(Colors.Red),
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			SUT.SelectAll();
+			await UITestHelper.WaitForIdle();
+
+			var tb = SUT.FindVisualChildByType<TextBlock>();
+			var screenshot = await UITestHelper.ScreenShot(tb);
+			for (int i = 0; i < 20; i++)
+			{
+				screenshot.GetPixel(i, screenshot.Height / 2).Should().Be(Colors.Red, $"Selection background should have no gaps at x={i}");
+			}
+		}
+
+		[TestMethod]
+		// Skia-WASM: the TextBox grows but the outer ScrollViewer never scrolls further in time, see https://github.com/unoplatform/uno/issues/24157
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_OuterScrollViewer_BringIntoView_Scrolls_To_Caret()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// Build enough text so the TextBox is taller than the ScrollViewer viewport.
+			var sb = new System.Text.StringBuilder();
+			for (int i = 0; i < 40; i++)
+			{
+				sb.AppendLine($"Line {i}");
+			}
+
+			var textBox = new TextBox
+			{
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = sb.ToString(),
+				// Disable internal scrolling so the outer ScrollViewer handles it.
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			// Disable internal ScrollViewer scrolling via attached properties.
+			ScrollViewer.SetVerticalScrollMode(textBox, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(textBox, ScrollBarVisibility.Disabled);
+
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 300,
+				Content = textBox,
+			};
+
+			await UITestHelper.Load(outerScrollViewer);
+
+			// Place cursor at the end (bottom of the TextBox).
+			textBox.Focus(FocusState.Programmatic);
+			textBox.SelectionStart = textBox.Text.Length;
+			await WindowHelper.WaitForIdle();
+
+			// The outer ScrollViewer should have scrolled down to bring the caret into view.
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > 0,
+				timeoutMS: 5000,
+				message: "Outer ScrollViewer should scroll to bring the caret at the end into view.");
+
+			var offsetAfterFocus = outerScrollViewer.VerticalOffset;
+			var extentAfterFocus = outerScrollViewer.ExtentHeight;
+
+			// Now type an Enter to add a new line — the caret moves further down.
+			textBox.SafeRaiseEvent(UIElement.KeyDownEvent,
+				new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None, unicodeKey: '\r'));
+			await WindowHelper.WaitForIdle();
+
+			// The Enter triggers a re-layout + BringIntoView scroll that can exceed a short timeout on
+			// slower runtimes (e.g. WASM); give the settle enough room. Extent and offset are waited on
+			// separately so a timeout says whether the TextBox never grew, or grew but never scrolled.
+			// AcceptsReturn above makes the WASM invisible input a <textarea>, which never matches the
+			// `instanceof HTMLInputElement` check in BrowserInvisibleTextBoxViewExtension.ts, so the DOM
+			// selection path is inert for this test.
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.ExtentHeight,
+				extentAfterFocus,
+				messageBuilder: extent => $"TextBox did not grow after adding a new line: extent {extent} (was {extentAfterFocus}), offset {outerScrollViewer.VerticalOffset}, scrollable {outerScrollViewer.ScrollableHeight}",
+				comparer: (actual, previous) => actual > previous,
+				timeoutMS: 5000);
+
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset,
+				offsetAfterFocus,
+				messageBuilder: offset => $"TextBox grew but the outer ScrollViewer did not scroll further: offset {offset} (was {offsetAfterFocus}), extent {outerScrollViewer.ExtentHeight}, scrollable {outerScrollViewer.ScrollableHeight}",
+				comparer: (actual, previous) => actual > previous,
+				timeoutMS: 5000);
+		}
+
+		[TestMethod]
+		public async Task When_OuterScrollViewer_Caret_Middle_Does_Not_Scroll_To_Bottom()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// Build enough text so the TextBox is taller than the ScrollViewer viewport.
+			var sb = new System.Text.StringBuilder();
+			for (int i = 0; i < 60; i++)
+			{
+				sb.AppendLine($"Line {i}");
+			}
+
+			var textBox = new TextBox
+			{
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = sb.ToString(),
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			ScrollViewer.SetVerticalScrollMode(textBox, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(textBox, ScrollBarVisibility.Disabled);
+
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 300,
+				Content = textBox,
+			};
+
+			await UITestHelper.Load(outerScrollViewer);
+
+			// Place cursor at roughly the middle of the text.
+			textBox.Focus(FocusState.Programmatic);
+			textBox.SelectionStart = textBox.Text.Length / 2;
+			await WindowHelper.WaitForIdle();
+
+			// Wait for the ScrollViewer to scroll to the caret.
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > 0,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll to bring the caret into view.");
+
+			// The scroll offset for cursor at the middle should be less than
+			// the maximum scrollable height (it should NOT scroll to the bottom).
+			Assert.IsTrue(outerScrollViewer.VerticalOffset < outerScrollViewer.ScrollableHeight,
+				"Outer ScrollViewer should scroll to the caret at the middle, not to the bottom.");
+		}
+
+		#region IME Composition Tests
+
+		[TestMethod]
+		public async Task When_IME_Composition_Committed()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+			fake.SimulateCompositionUpdate("你");
+			await WindowHelper.WaitForIdle();
+			fake.SimulateCompositionComplete("你好");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("你好", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Direct_Commit_Without_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "ab" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SelectionStart = 1;
+			await WindowHelper.WaitForIdle();
+
+			// An Alt+numpad code on Win32 (or a single-key IME commit on X11/macOS) is
+			// delivered as Started → Completed → Ended with no intermediate updates.
+			fake.SimulateDirectCommit("š");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ašb", SUT.Text);
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.IsFalse(SUT.IsComposing);
+
+			// A direct commit replaces the active selection, like regular typing.
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+			fake.SimulateDirectCommit("é");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("é", SUT.Text);
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Direct_Commit_ReadOnly()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "ab", IsReadOnly = true };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateDirectCommit("š");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ab", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Direct_Commit_Without_Focused_TextBox()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "ab" };
+			var button = new Button { Content = "other" };
+			WindowHelper.WindowContent = new StackPanel { Children = { SUT, button } };
+			await WindowHelper.WaitForLoaded(SUT);
+			button.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateDirectCommit("š");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ab", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22254")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+		public async Task When_Win32_AltCode_Char_Arrives_On_KeyUp()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var compositionEvents = 0;
+			SUT.TextCompositionStarted += (_, _) => compositionEvents++;
+			SUT.TextCompositionEnded += (_, _) => compositionEvents++;
+
+			CharacterReceivedRoutedEventArgs characterReceivedArgs = null;
+			SUT.AddHandler(
+				UIElement.CharacterReceivedEvent,
+				new TypedEventHandler<UIElement, CharacterReceivedRoutedEventArgs>((_, e) => characterReceivedArgs = e),
+				handledEventsToo: true);
+
+			var hwnd = ((Uno.UI.NativeElementHosting.Win32NativeWindow)WindowHelper.CurrentTestWindow.NativeWindow!).Hwnd;
+
+			// An Alt+numpad code (e.g. Alt+0154 → 'š') reaches the app as a WM_CHAR that
+			// TranslateMessage queues behind the Alt key-up, not behind a keydown. Post that
+			// exact message pair so the real WndProc/event-loop path handles it.
+			const uint WM_KEYUP = 0x0101;
+			const uint WM_CHAR = 0x0102;
+			const nuint VK_MENU = 0x12;
+			PostMessage(hwnd, WM_KEYUP, VK_MENU, 0);
+			PostMessage(hwnd, WM_CHAR, 'š', 0);
+
+			await WindowHelper.WaitFor(() => SUT.Text.Length > 0);
+			Assert.AreEqual("š", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+
+			// The character is delivered through CharacterReceived, not through a fake IME composition.
+			Assert.AreEqual(0, compositionEvents);
+			Assert.IsNotNull(characterReceivedArgs);
+			Assert.AreEqual('š', characterReceivedArgs.Character);
+			Assert.IsTrue(characterReceivedArgs.KeyStatus.IsKeyReleased);
+			Assert.IsTrue(characterReceivedArgs.Handled);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22254")]
+		public async Task When_CharacterReceived_On_KeyRelease_Inserts()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "ab" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SelectionStart = 1;
+			await WindowHelper.WaitForIdle();
+
+			var compositionEvents = 0;
+			SUT.TextCompositionStarted += (_, _) => compositionEvents++;
+			SUT.TextCompositionEnded += (_, _) => compositionEvents++;
+
+			// A character composed on a key release (Windows Alt+numpad code) arrives without
+			// an associated keydown; TextBox inserts it from CharacterReceived.
+			var args = new CharacterReceivedRoutedEventArgs(SUT, 'š', new CorePhysicalKeyStatus { IsKeyReleased = true, RepeatCount = 1 });
+			SUT.SafeRaiseEvent(UIElement.CharacterReceivedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ašb", SUT.Text);
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.IsTrue(args.Handled);
+			Assert.AreEqual(0, compositionEvents);
+
+			// A key-release character replaces the active selection, like regular typing.
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.CharacterReceivedEvent, new CharacterReceivedRoutedEventArgs(SUT, 'é', new CorePhysicalKeyStatus { IsKeyReleased = true, RepeatCount = 1 }));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("é", SUT.Text);
+			Assert.AreEqual(1, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22254")]
+		public async Task When_CharacterReceived_On_KeyRelease_ReadOnly()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "ab", IsReadOnly = true };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var args = new CharacterReceivedRoutedEventArgs(SUT, 'š', new CorePhysicalKeyStatus { IsKeyReleased = true, RepeatCount = 1 });
+			SUT.SafeRaiseEvent(UIElement.CharacterReceivedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ab", SUT.Text);
+			Assert.IsFalse(args.Handled);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22254")]
+		public async Task When_CharacterReceived_On_KeyRelease_PasswordBox()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new PasswordBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Alt+numpad codes work in PasswordBox on WinUI; CharacterReceived doesn't depend
+			// on an IME session, so the same path serves PasswordBox.
+			SUT.SafeRaiseEvent(UIElement.CharacterReceivedEvent, new CharacterReceivedRoutedEventArgs(SUT, 'š', new CorePhysicalKeyStatus { IsKeyReleased = true, RepeatCount = 1 }));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("š", SUT.Password);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterReceived_On_KeyPress_Does_Not_Insert()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Characters delivered with a key press are inserted by the KeyDown path; the
+			// CharacterReceived class handler must not insert them a second time.
+			var args = new CharacterReceivedRoutedEventArgs(SUT, 'a', new CorePhysicalKeyStatus { RepeatCount = 1 });
+			SUT.SafeRaiseEvent(UIElement.CharacterReceivedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.Text);
+			Assert.IsFalse(args.Handled);
+		}
+
+		[TestMethod]
+		public async Task When_Typing_Raises_CharacterReceived_After_KeyDown()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var sequence = new List<string>();
+			SUT.AddHandler(
+				UIElement.KeyDownEvent,
+				new KeyEventHandler((_, _) => sequence.Add("KeyDown")),
+				handledEventsToo: true);
+			SUT.AddHandler(
+				UIElement.CharacterReceivedEvent,
+				new TypedEventHandler<UIElement, CharacterReceivedRoutedEventArgs>((_, e) => sequence.Add($"CharacterReceived:{e.Character}")),
+				handledEventsToo: true);
+
+			var keyboard = WindowHelper.XamlRoot.VisualTree.ContentRoot.InputManager.Keyboard;
+			keyboard.OnKeyTestingOnly(new KeyEventArgs("test", VirtualKey.A, VirtualKeyModifiers.None, new CorePhysicalKeyStatus(), unicodeKey: 'a'), true);
+			await WindowHelper.WaitForIdle();
+			keyboard.OnKeyTestingOnly(new KeyEventArgs("test", VirtualKey.A, VirtualKeyModifiers.None, new CorePhysicalKeyStatus(), unicodeKey: 'a'), false);
+			await WindowHelper.WaitForIdle();
+
+			// The character is inserted exactly once (by the KeyDown path), and CharacterReceived
+			// is raised after KeyDown, matching the WM_KEYDOWN → WM_CHAR ordering on Windows.
+			Assert.AreEqual("a", SUT.Text);
+			CollectionAssert.AreEqual(new[] { "KeyDown", "CharacterReceived:a" }, sequence);
+		}
+
+		[DllImport("user32.dll", CharSet = CharSet.Unicode)]
+		private static extern bool PostMessage(nint hWnd, uint msg, nuint wParam, nint lParam);
+
+		[TestMethod]
+		public async Task When_IME_Composition_Cancelled()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			// Cancel without committing — text should retain last composition
+			fake.SimulateCompositionCancel();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ni", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Events_Fired()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			TextCompositionStartedEventArgs startedArgs = null;
+			TextCompositionChangedEventArgs changedArgs = null;
+			TextCompositionEndedEventArgs endedArgs = null;
+
+			SUT.TextCompositionStarted += (s, e) => startedArgs = e;
+			SUT.TextCompositionChanged += (s, e) => changedArgs = e;
+			SUT.TextCompositionEnded += (s, e) => endedArgs = e;
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(startedArgs);
+			Assert.AreEqual(0, startedArgs.StartIndex);
+			Assert.IsNotNull(changedArgs);
+			Assert.AreEqual(0, changedArgs.StartIndex);
+			Assert.AreEqual(2, changedArgs.Length);
+
+			fake.SimulateCompositionComplete("你");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(endedArgs);
+			Assert.AreEqual(0, endedArgs.StartIndex);
+			Assert.AreEqual(1, endedArgs.Length);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_StartIndex_Correct()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Type "Hello" first
+			foreach (var c in "Hello")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.AreEqual("Hello", SUT.Text);
+
+			TextCompositionStartedEventArgs startedArgs = null;
+			SUT.TextCompositionStarted += (s, e) => startedArgs = e;
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(startedArgs);
+			Assert.AreEqual(5, startedArgs.StartIndex);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Keyboard_Input_Suppressed_During_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			var textBeforeKey = SUT.Text;
+
+			// Send a regular character during composition — should be ignored
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'x'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(textBeforeKey, SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_In_Middle_Of_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "Hello World" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Position cursor at index 5 (between "Hello" and " World")
+			SUT.SelectionStart = 5;
+			SUT.SelectionLength = 0;
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate(" beautiful");
+			await WindowHelper.WaitForIdle();
+			fake.SimulateCompositionComplete(" beautiful");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Hello beautiful World", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_IME_ReadOnly_TextBox_Ignores_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "Original", IsReadOnly = true };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Original", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_External_Text_Change_Cancels_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+
+			// Externally set text during composition
+			SUT.Text = "Replaced";
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.IsComposing);
+			Assert.AreEqual("Replaced", SUT.Text);
+			Assert.IsTrue(fake.EndImeSessionCalled, "EndImeSession should be called when composition is cancelled by external text change");
+		}
+
+		[TestMethod]
+		public async Task When_IME_External_Text_Change_From_Binding_Cancels_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+
+			// Simulate a binding update by setting Text in TextChanged handler
+			SUT.TextChanged += (s, e) =>
+			{
+				if (SUT.Text == "ni")
+				{
+					// This mimics a binding that transforms the text
+					SUT.Text = "override";
+				}
+			};
+
+			// Trigger TextChanged by committing — but the handler overrides the text
+			fake.SimulateCompositionComplete("ni");
+			await WindowHelper.WaitForIdle();
+
+			// The composition committed "ni", then TextChanged set "override"
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_SelectionStart_Change_During_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "Hello" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Position at end
+			SUT.SelectionStart = 5;
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+			Assert.AreEqual("Helloni", SUT.Text);
+
+			// Externally change SelectionStart during composition
+			SUT.SelectionStart = 0;
+			await WindowHelper.WaitForIdle();
+
+			// SelectionStart change should work — it doesn't change Text,
+			// so composition state should remain intact
+			Assert.AreEqual(0, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Caret_Follows_CursorPosition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("nihao", cursorPosition: 5);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, SUT.SelectionStart); // cursor at end of "nihao"
+
+			// Simulate cursor moving within composition (e.g., arrow key)
+			fake.SimulateCompositionUpdate("nihao", cursorPosition: 2);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, SUT.SelectionStart); // cursor after "ni"
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Internal_Text_Change_Does_Not_Cancel()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+			// Reset after focus setup — EndImeSession may be called during focus management
+			fake.EndImeSessionCalled = false;
+
+			// Another composition update — internal change, should NOT cancel
+			fake.SimulateCompositionUpdate("nihao");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+			Assert.IsFalse(fake.EndImeSessionCalled, "EndImeSession should NOT be called for IME-driven text changes");
+			Assert.AreEqual("nihao", SUT.Text);
+		}
+
+		private class FakeImeTextBoxExtension : IImeTextBoxExtension
+		{
+			public bool IsComposing { get; private set; }
+			public bool EndImeSessionCalled { get; set; }
+
+			public event EventHandler CompositionStarted;
+			public event EventHandler<ImeCompositionEventArgs> CompositionUpdated;
+			public event EventHandler<ImeCompositionEventArgs> CompositionCompleted;
+			public event EventHandler CompositionEnded;
+
+			public void StartImeSession(TextBoxCore core) { }
+
+			public void EndImeSession()
+			{
+				EndImeSessionCalled = true;
+				if (IsComposing)
+				{
+					IsComposing = false;
+					CompositionEnded?.Invoke(this, EventArgs.Empty);
+				}
+			}
+
+			public void SimulateCompositionStart()
+			{
+				IsComposing = true;
+				CompositionStarted?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateCompositionUpdate(string text, int cursorPosition = -1)
+			{
+				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition));
+			}
+
+			public void SimulateCompositionComplete(string text)
+			{
+				IsComposing = false;
+				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateDirectCommit(string text)
+			{
+				CompositionStarted?.Invoke(this, EventArgs.Empty);
+				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateCompositionCancel()
+			{
+				IsComposing = false;
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
+		}
+
+		#endregion
+
+		/// <summary>
+		/// The invisible &lt;input /&gt; the WASM head keeps in the DOM for text entry must track the
+		/// ContentElement, not the DisplayBlock. The DisplayBlock shrink-wraps the text, so sizing the
+		/// element from it made it grow by a character's width on every keystroke. Browser password
+		/// managers anchor their affordances to the &lt;input /&gt; bounds, so users saw the 1Password badge
+		/// start at the left edge of an empty PasswordBox and march right as they typed.
+		///
+		/// This was latent until the element was actually sized: the TS wrote a unitless
+		/// <c>style.width = `${width}`</c>, which is invalid CSS and silently dropped, until the unit was
+		/// added. So this asserts the width the element *ends up with*, which is what regressed.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Typing_Then_Invisible_Input_Tracks_ContentElement_Not_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Width = 200 };
+
+			try
+			{
+				await UITestHelper.Load(SUT, x => x.IsLoaded);
+
+				TakeEntrySession(SUT);
+				await WindowHelper.WaitForIdle();
+
+				if (!TracksTheFocusedTextBox(SUT))
+				{
+					return;
+				}
+
+				double HiddenInputWidth() => GetHiddenInputRect()?.Width ?? -1;
+
+				Assert.IsTrue(await SettlesTo(() => HiddenInputWidth() > 0),
+					$"the invisible <input /> should have been sized; it is {DescribeHiddenInput()}");
+
+				if (SUT.FindVisualChildByName("ContentElement") is not Control contentElement)
+				{
+					Assert.Fail("Could not locate the ContentElement template part.");
+					return;
+				}
+
+				// Deliberately compared against the content area at each point rather than against a constant:
+				// the DeleteButton appears once the focused TextBox is non-empty, which legitimately narrows the
+				// ContentElement. Tracking it is correct; tracking the text is the regression.
+				double ContentWidth() => contentElement.ActualWidth - (contentElement.Padding.Left + contentElement.Padding.Right);
+
+				var widthWhenEmpty = HiddenInputWidth();
+				Assert.AreEqual(ContentWidth(), widthWhenEmpty, delta: 2,
+					$"An empty TextBox must size the invisible <input /> to the content area, not to the (empty) text. " +
+					$"Got {widthWhenEmpty}, expected ~{ContentWidth()}.");
+
+				// 'w' is among the widest glyphs, so a per-character regression shows up immediately.
+				foreach (var c in "wwwwwwwwww")
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+					await WindowHelper.WaitForIdle();
+				}
+
+				var widthAfterTyping = HiddenInputWidth();
+				Assert.AreEqual(ContentWidth(), widthAfterTyping, delta: 2,
+					$"After typing, the invisible <input /> must still match the content area ({ContentWidth()}), but it " +
+					$"was {widthAfterTyping}. Sizing it from the DisplayBlock makes it track the text instead, which is " +
+					$"what drifts password-manager badges across the field.");
+			}
+			finally
+			{
+				await ReleaseSharedInput();
+			}
+		}
+
+		/// <summary>
+		/// The invisible &lt;input /&gt; must also sit *on* the field it serves, not merely be the right size.
+		/// Anchoring it on the DisplayBlock let it slide away as long text scrolled or TextAlignment moved the
+		/// block, and under RightToLeft the mirrored transform put it almost entirely outside the control.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Focused_Then_Invisible_Input_Is_Positioned_Over_The_Field()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			try
+			{
+				foreach (var flowDirection in new[] { FlowDirection.LeftToRight, FlowDirection.RightToLeft })
+				{
+					var SUT = new TextBox { Width = 200, FlowDirection = flowDirection };
+					var host = new Border { Width = 400, Height = 100, Child = SUT };
+					await UITestHelper.Load(host, x => x.IsLoaded);
+
+					TakeEntrySession(SUT, flowDirection.ToString());
+					await WindowHelper.WaitForIdle();
+
+					if (!TracksTheFocusedTextBox(SUT))
+					{
+						return;
+					}
+
+					Assert.IsTrue(await SettlesTo(() => GetHiddenInputRect()?.Width > 0),
+						$"{flowDirection}: the invisible <input /> should have been sized; it is {DescribeHiddenInput()}");
+
+					// Long enough to overflow the field, so a DisplayBlock-anchored element scrolls out of it.
+					foreach (var c in "wwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
+					{
+						SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+					}
+					await WindowHelper.WaitForIdle();
+
+					if (GetHiddenInputRect() is not { } input)
+					{
+						Assert.Fail($"{flowDirection}: the invisible <input /> went missing; it is {DescribeHiddenInput()}");
+						return;
+					}
+
+					var (fieldLeft, fieldRight) = GetHorizontalSpan(SUT);
+
+					// Asserted as containment rather than against the computed origin, so this stays a check on the
+					// observable outcome instead of restating the implementation.
+					Assert.IsTrue(
+						input.Left >= fieldLeft - 2 && input.Right <= fieldRight + 2,
+						$"{flowDirection}: the invisible <input /> must stay within the TextBox. Input spans " +
+						$"{input.Left}..{input.Right}, field spans {fieldLeft}..{fieldRight}.");
+				}
+			}
+			finally
+			{
+				await ReleaseSharedInput();
+			}
+		}
+
+		/// <summary>
+		/// Focuses <paramref name="textBox"/> and asserts it owns the entry session before anything reads the
+		/// shared &lt;input /&gt;. Focus that quietly failed, or that a previous test still holds, would otherwise
+		/// leave the assertions measuring some other TextBox's input — passing without exercising this SUT.
+		/// </summary>
+		private static void TakeEntrySession(TextBox textBox, string context = "")
+		{
+			var prefix = context.Length == 0 ? "" : context + ": ";
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic), $"{prefix}TextBox should take focus");
+			Assert.AreEqual(textBox, FocusManager.GetFocusedElement(textBox.XamlRoot), $"{prefix}TextBox should own the entry session");
+		}
+
+		/// <summary>
+		/// Whether the shared &lt;input /&gt; is currently the element being positioned over <paramref name="textBox"/>,
+		/// which is the precondition for asserting anything about its size or position.
+		///
+		/// Two hosts legitimately have nothing to measure. Accessibility routes text entry through the per-element
+		/// semantic &lt;input /&gt; and detaches the shared one; once any accessibility test has enabled it, it stays on
+		/// for the rest of the browser session. And iOS parks the input off-screen so WebKit has no rect to reveal,
+		/// ignoring every size and position it is given. Both policies are pinned by
+		/// <see cref="When_Focused_In_Browser_Then_Hidden_Input_Placement_Matches_Host"/>, so they are skipped rather
+		/// than re-asserted here.
+		/// </summary>
+		private static bool TracksTheFocusedTextBox(TextBox textBox)
+			=> !SemanticElementExists(textBox) && ExpectedPlacementForHost() == "tracking";
+
+		// The runtime-test engine only unloads test content when IsUnloadingTestContent is set, which the
+		// CI/headless path does not: leaving a focused TextBox would keep the shared input in the DOM for
+		// whatever runs next.
+		private static async Task ReleaseSharedInput()
+		{
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+		}
+
+		/// <summary>
+		/// The element's horizontal span in root coordinates, derived from both corners so it is correct under a
+		/// mirrored (RightToLeft) subtree, where transforming the origin yields the right edge.
+		/// </summary>
+		private static (double Left, double Right) GetHorizontalSpan(FrameworkElement element)
+		{
+			var transform = element.TransformToVisual(null);
+			var a = transform.TransformPoint(default).X;
+			var b = transform.TransformPoint(new Point(element.ActualWidth, 0)).X;
+			return (Math.Min(a, b), Math.Max(a, b));
+		}
+
+		#region Caret drag gesture (iOS space-bar trackpad / floating cursor)
+
+		private static async Task<TextBox> SetUpCaretDragTextBox(string text, bool acceptsReturn = false)
+		{
+			var SUT = new TextBox
+			{
+				// AcceptsReturn must precede Text: a single-line TextBox truncates to the first line.
+				AcceptsReturn = acceptsReturn,
+				Text = text,
+				Width = 300,
+				Height = acceptsReturn ? 200 : double.NaN,
+				FontSize = 16,
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			return SUT;
+		}
+
+		// Horizontal distance that reliably crosses several characters at the sizes used above.
+		private const double CaretDragStep = 60;
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Previews_Without_Committing_Selection()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			var selectionChangedCount = 0;
+			SUT.SelectionChanged += (_, _) => selectionChangedCount++;
+
+			Assert.IsTrue(SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default));
+			Assert.IsTrue(SUT.Core.IsCaretDragActive);
+
+			Assert.IsTrue(SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(-CaretDragStep, 0)));
+			await WindowHelper.WaitForIdle();
+
+			// The whole point of the design: the drag previews, it does not commit.
+			Assert.AreEqual(25, SUT.SelectionStart);
+			Assert.AreEqual(0, selectionChangedCount);
+
+			Assert.IsTrue(SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default));
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.Core.IsCaretDragActive);
+			Assert.IsTrue(SUT.SelectionStart < 25, $"Caret should have moved left, but SelectionStart is {SUT.SelectionStart}.");
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(1, selectionChangedCount, "A whole gesture must raise exactly one SelectionChanged.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Moves_Right_And_Left()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(12, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(CaretDragStep, 0));
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			var afterRight = SUT.SelectionStart;
+			Assert.IsTrue(afterRight > 12, $"Dragging right should advance the caret, got {afterRight}.");
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.SelectionStart < afterRight, $"Dragging left should retreat the caret, got {SUT.SelectionStart}.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Uses_Cumulative_Offset()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(0, 0);
+			await WindowHelper.WaitForIdle();
+
+			// One update at 3x the step must land where three updates ramping to 3x land, because
+			// the offset is measured from the gesture origin rather than the previous callback.
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(CaretDragStep * 3, 0));
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			var single = SUT.SelectionStart;
+			Assert.IsTrue(single > 0, "The drag did not move the caret at all, so the comparison below would be vacuous.");
+
+			SUT.Select(0, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(CaretDragStep, 0));
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(CaretDragStep * 2, 0));
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(CaretDragStep * 3, 0));
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(single, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Ends_Without_Update_Then_NoOp()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(4, 11);
+			await WindowHelper.WaitForIdle();
+
+			var selectionChangedCount = 0;
+			SUT.SelectionChanged += (_, _) => selectionChangedCount++;
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			// A tap-and-release on the space bar must not collapse an existing selection.
+			Assert.AreEqual(4, SUT.SelectionStart);
+			Assert.AreEqual(11, SUT.SelectionLength);
+			Assert.AreEqual(0, selectionChangedCount);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Cancelled_Then_Selection_Unchanged()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Cancel, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.Core.IsCaretDragActive);
+			Assert.AreEqual(25, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Overshoots_Then_Clamps_Into_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var text = "The quick brown fox jumps";
+			var SUT = await SetUpCaretDragTextBox(text);
+			SUT.Select(12, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(-100000, -100000));
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			// GetIndexAt returns -1 on a miss; a clamped drag must never produce a negative index.
+			Assert.AreEqual(0, SUT.SelectionStart);
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(100000, 100000));
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(text.Length, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Vertical_On_Multiline_Then_Changes_Line()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("first line here\rsecond line here\rthird line here", acceptsReturn: true);
+			Assert.AreEqual(3, SUT.Text.Split('\r').Length, "The multiline set-up did not keep its line breaks.");
+			SUT.Select(5, 0); // on the first line
+			await WindowHelper.WaitForIdle();
+
+			var firstLineRect = SUT.TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(5);
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(0, firstLineRect.Height));
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.SelectionStart > 15, $"Caret should have dropped past the first line break, got {SUT.SelectionStart}.");
+
+			var landedRect = SUT.TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(SUT.SelectionStart);
+			Assert.IsTrue(landedRect.Top > firstLineRect.Top, "Caret should be on a lower line.");
+			// A vertical-only drag should keep roughly the same column.
+			Assert.IsTrue(Math.Abs(landedRect.Left - firstLineRect.Left) < 12, $"Column drifted: {firstLineRect.Left} -> {landedRect.Left}.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Then_Caret_Stops_Blinking()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			FeatureConfiguration.TextBox.HideCaret = false;
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+
+			// The blink interval is 500ms; the caret must stay visible across a few of them.
+			for (var i = 0; i < 4; i++)
+			{
+				await Task.Delay(200);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(TextBoxCore.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, $"Caret blinked away at iteration {i}.");
+				Assert.IsNotNull(SUT.TextBoxView.DisplayBlock.RenderCaret);
+			}
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			// ...and blinking must resume afterwards. Generous headroom over the 500ms interval so a
+			// loaded CI shard doesn't turn this flaky.
+			var blinkedOff = false;
+			for (var i = 0; i < 40 && !blinkedOff; i++)
+			{
+				await Task.Delay(100);
+				await WindowHelper.WaitForIdle();
+				blinkedOff = SUT.CaretMode == TextBoxCore.CaretDisplayMode.ThumblessCaretHidden;
+			}
+
+			Assert.IsTrue(blinkedOff, "Blinking did not resume after the gesture ended.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Starts_On_Hidden_Caret_Then_Blinking_Resumes()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			FeatureConfiguration.TextBox.HideCaret = false;
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			// Catch the caret in the hidden half of its blink, so the mode restored at the end of the
+			// gesture is the one that never restarts the timer on its own.
+			var caretHidden = false;
+			for (var i = 0; i < 40 && !caretHidden; i++)
+			{
+				await Task.Delay(100);
+				await WindowHelper.WaitForIdle();
+				caretHidden = SUT.CaretMode == TextBoxCore.CaretDisplayMode.ThumblessCaretHidden;
+			}
+
+			Assert.IsTrue(caretHidden, "The caret never blinked off, so the test could not set itself up.");
+
+			// End without an Update: nothing is committed, so SelectPartial never runs to rescue the mode.
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, "The caret must be showing again once the gesture ends.");
+
+			var blinkedOff = false;
+			for (var i = 0; i < 40 && !blinkedOff; i++)
+			{
+				await Task.Delay(100);
+				await WindowHelper.WaitForIdle();
+				blinkedOff = SUT.CaretMode == TextBoxCore.CaretDisplayMode.ThumblessCaretHidden;
+			}
+
+			Assert.IsTrue(blinkedOff, "Blinking did not resume after a gesture that began on a hidden caret.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Previews_Caret_Without_Moving_Selection()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			FeatureConfiguration.TextBox.HideCaret = false;
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+			await WindowHelper.WaitForIdle();
+
+			var renderCaret = SUT.TextBoxView.DisplayBlock.RenderCaret;
+			Assert.IsTrue(renderCaret.HasValue, "The caret should be rendered during the drag.");
+			var previewCaret = renderCaret.Value;
+			Assert.IsTrue(previewCaret.index < 25, $"The rendered caret should preview the drag, but it is at {previewCaret.index}.");
+			Assert.AreEqual(25, SUT.SelectionStart, "The selection must not follow the preview.");
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Cancel, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(25, SUT.TextBoxView.DisplayBlock.RenderCaret!.Value.index, "Cancelling must restore the caret to the selection.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Beyond_Viewport_Then_Scrolls_To_Follow_Preview()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			FeatureConfiguration.TextBox.HideCaret = false;
+
+			var SUT = await SetUpCaretDragTextBox(
+				"The quick brown fox jumps over the lazy dog while the caret keeps travelling right past the edge");
+			SUT.Select(0, 0);
+			await WindowHelper.WaitForIdle();
+
+			var sv = (ScrollViewer)SUT.ContentElement;
+			Assert.IsGreaterThan(0, sv.ScrollableWidth, "The text must overflow for this test to mean anything.");
+			Assert.AreEqual(0, sv.HorizontalOffset);
+
+			// Drag to the far end of the text, expressed in the same text coordinates the gesture uses.
+			var parsedText = SUT.TextBoxView.DisplayBlock.ParsedText;
+			var travel = parsedText.GetRectForIndex(SUT.Text.Length).Left - parsedText.GetRectForIndex(0).Left;
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(travel, 0));
+			await WindowHelper.WaitForIdle();
+
+			var previewIndex = SUT.TextBoxView.DisplayBlock.RenderCaret!.Value.index;
+			var caretRect = parsedText.GetRectForIndex(previewIndex);
+
+			// ChangeView animates, so poll on the invariant that matters: the previewed caret ends up
+			// inside the visible viewport.
+			await WindowHelper.WaitFor(
+				() => caretRect.Left >= sv.HorizontalOffset - 1
+					&& caretRect.Right <= sv.HorizontalOffset + sv.ViewportWidth + 1,
+				message: $"Caret at {caretRect.Left} never came into the viewport (width {sv.ViewportWidth})");
+
+			Assert.IsGreaterThan(0, sv.HorizontalOffset, "The viewport should have followed the previewed caret.");
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(previewIndex, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_On_Touch_Then_Insertion_Handle_Survives()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// The iOS convention taps to a bare caret, so the Android one is what exercises a
+			// caret drag starting from a mode that carries a handle.
+			var SUT = new TextBox
+			{
+				Width = 300,
+				Text = "The quick brown fox jumps over",
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(bounds.Left + 90, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "tap should place the insertion handle");
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, "The thumb should be hidden while dragging.");
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(-40, 0));
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode,
+				"The insertion handle must come back after the gesture.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Declined()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var readOnly = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			readOnly.IsReadOnly = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(readOnly.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default), "Read-only should decline.");
+			Assert.IsFalse(readOnly.Core.IsCaretDragActive);
+
+			// An Update without a Begin must not throw or move anything.
+			readOnly.IsReadOnly = false;
+			readOnly.Select(7, 0);
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(readOnly.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(CaretDragStep, 0)));
+			Assert.AreEqual(7, readOnly.SelectionStart);
+
+			var unfocused = new TextBox { Text = "The quick brown fox jumps", Width = 300 };
+			WindowHelper.WindowContent = unfocused;
+			await WindowHelper.WaitForLoaded(unfocused);
+			Assert.IsFalse(unfocused.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default), "Unfocused should decline.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Rebegins_Without_End()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			// UIKit is known to send unbalanced Begin/Begin/End sequences.
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			// The second Begin re-anchors and drops the pending preview, so End commits nothing.
+			Assert.IsFalse(SUT.Core.IsCaretDragActive);
+			Assert.AreEqual(25, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Then_Unfocus_Cancels()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			var other = new Button { Content = "other" };
+			var panel = new StackPanel();
+			WindowHelper.WindowContent = panel;
+			panel.Children.Add(SUT);
+			panel.Children.Add(other);
+			await WindowHelper.WaitForLoaded(other);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+
+			other.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.Core.IsCaretDragActive, "Losing focus must cancel an in-flight drag.");
+			Assert.AreEqual(25, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Then_Unload_Cancels()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Begin, default);
+			SUT.Core.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+			Assert.IsTrue(SUT.Core.IsCaretDragActive);
+
+			// Calls OnUnloadedCore directly rather than detaching SUT from the tree: detaching also
+			// blurs it first, which independently cancels the drag and would mask a regression here.
+			// This is the ListView/ItemsRepeater recycling path, which can unload without a blur.
+			SUT.Core.OnUnloadedCore();
+
+			Assert.IsFalse(SUT.Core.IsCaretDragActive, "Unloading must cancel an in-flight drag.");
+			Assert.AreEqual(25, SUT.SelectionStart);
+		}
+
+		#endregion
+
+		private class TextBoxFeatureConfigDisposable : IDisposable
+		{
+			private bool _hideCaret;
+
+			public TextBoxFeatureConfigDisposable()
+			{
+				_hideCaret = FeatureConfiguration.TextBox.HideCaret;
+
+				FeatureConfiguration.TextBox.HideCaret = true;
+			}
+
+			public void Dispose()
+			{
+				FeatureConfiguration.TextBox.HideCaret = _hideCaret;
+			}
+		}
+	}
+}

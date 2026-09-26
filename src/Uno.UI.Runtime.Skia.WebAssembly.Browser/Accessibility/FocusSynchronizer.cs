@@ -62,6 +62,18 @@ internal sealed partial class FocusSynchronizer
 	}
 
 	/// <summary>
+	/// Undoes <see cref="Initialize"/> when accessibility is disabled.
+	/// </summary>
+	internal void Uninitialize()
+	{
+		FocusManager.GotFocus -= OnXamlGotFocus;
+		FocusManager.LostFocus -= OnXamlLostFocus;
+		UntrackFocusedElement();
+		_currentFocusedHandle = IntPtr.Zero;
+		_previousFocusedHandle = IntPtr.Zero;
+	}
+
+	/// <summary>
 	/// Syncs the currently-focused XAML element to the semantic DOM on first initialization.
 	/// This handles the case where a control (e.g. TextBox) was focused before accessibility
 	/// was enabled, so the GotFocus subscription above won't fire retroactively.
@@ -242,7 +254,7 @@ internal sealed partial class FocusSynchronizer
 		// Unsubscribe from previous element
 		UntrackFocusedElement();
 
-		_trackedElement = element;
+		_trackedElement = new WeakReference<UIElement>(element);
 
 		// Track IsEnabled changes
 		if (element is Control control)
@@ -259,25 +271,29 @@ internal sealed partial class FocusSynchronizer
 
 	private void UntrackFocusedElement()
 	{
-		if (_trackedElement is null)
+		if (_trackedElement is not { } reference)
 		{
 			return;
 		}
 
-		if (_trackedElement is Control control)
+		_trackedElement = null;
+		if (!reference.TryGetTarget(out var element))
+		{
+			return;
+		}
+
+		if (element is Control control)
 		{
 			control.IsEnabledChanged -= OnTrackedElementIsEnabledChanged;
 		}
 
-		if (_trackedElement is FrameworkElement fe)
+		if (element is FrameworkElement fe)
 		{
 			fe.Unloaded -= OnTrackedElementUnloaded;
 		}
-
-		_trackedElement = null;
 	}
 
-	private UIElement? _trackedElement;
+	private WeakReference<UIElement>? _trackedElement;
 
 	private void OnTrackedElementIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
 	{

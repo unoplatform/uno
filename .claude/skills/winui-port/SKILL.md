@@ -463,7 +463,7 @@ Auto-detect and port these associated types from the same source directory:
    - Unit tests (typically in a `*Tests*` directory near the control source)
    - UI/interaction tests
 2. Convert C++ tests to Uno RuntimeTests format:
-   - Place tests in `src/Uno.UI.RuntimeTests/Tests/` in an appropriate subdirectory
+   - Place tests in `src/Uno.UI.RuntimeTests/` in an appropriate subdirectory
    - Use the Uno RuntimeTest patterns:
      ```csharp
      [TestMethod]

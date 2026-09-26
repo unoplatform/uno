@@ -67,8 +67,8 @@
   <ItemGroup Condition=" '$(MicrosoftNetCompilersToolsetVersion)' != ''">
     <!--This override is used to validate the use of specific version of the C# Compiler-->
 	<!-- Both compiler version and CodeStyle package version should be kept in sync -->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
-	<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" PrivateAssets="all" />
+	<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" PrivateAssets="all" />
   </ItemGroup>
 
 	<PropertyGroup>
@@ -141,6 +141,9 @@
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.SkiaBackend.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Managed.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Drawing.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.csproj</_AdjustedOutputProjects>
@@ -245,7 +248,7 @@
 				<AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
 			</PropertyGroup>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0-preview.24454.1" PrivateAssets="All" />
+				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="All" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
@@ -269,9 +272,11 @@
 				<!-- Optional: Include PDB in the built .nupkg -->
 				<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 			</PropertyGroup>
-			<ItemGroup>
-				<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
-			</ItemGroup>
+			<!--
+				SourceLink itself is provided implicitly by the .NET SDK (Microsoft.NET.Sdk.SourceLink.props), so no
+				PackageReference is needed. Referencing one would suppress the SDK's copy and pin an older, unmaintained
+				Microsoft.Build.Tasks.Git.
+			-->
 		</When>
 	</Choose>
 

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Runtime.Skia.Native;
 using Uno.Foundation.Logging;
 using System.Text.RegularExpressions;
@@ -24,15 +24,14 @@ namespace Uno.UI.Runtime.Skia
 	{
 		private const uint DefaultFramebuffer = 0;
 
-		private readonly GRContext _grContext;
 		private readonly IntPtr _eglDisplay;
 		private readonly IntPtr _glContext;
 		private readonly IntPtr _eglSurface;
 		private readonly int _samples;
 		private readonly int _stencil;
+		private readonly GraphicsColorFormat _colorFormat;
 
-		private GRBackendRenderTarget? _renderTarget;
-		private SKSurface? _glFbSurface;
+		private DRMGLRenderTarget? _target;
 		private readonly IntPtr _gbmTargetSurface;
 		private readonly int _card;
 		private IntPtr _currentBo;
@@ -173,6 +172,7 @@ namespace Uno.UI.Runtime.Skia
 				throw new InvalidOperationException($"{nameof(LibDrm.gbm_create_device)} failed");
 			}
 			_gbmTargetSurface = LibDrm.gbm_surface_create(device, modeInfo.Resolution.Width, modeInfo.Resolution.Height, drmInitOptions.GBMSurfaceColorFormat.ToInt(), LibDrm.GbmBoFlags.GBM_BO_USE_SCANOUT | LibDrm.GbmBoFlags.GBM_BO_USE_RENDERING);
+			_colorFormat = ToColorFormat(drmInitOptions.GBMSurfaceColorFormat);
 			if (_gbmTargetSurface == IntPtr.Zero)
 			{
 				throw new InvalidOperationException($"{nameof(LibDrm.gbm_surface_create)} failed");
@@ -241,20 +241,6 @@ namespace Uno.UI.Runtime.Skia
 			}
 
 			_currentBo = bo;
-
-			var glInterface = GRGlInterface.CreateGles(EglHelper.EglGetProcAddress);
-
-			if (glInterface == null)
-			{
-				throw new NotSupportedException($"{nameof(GRGlInterface)}.{nameof(GRGlInterface.CreateGles)} failed");
-			}
-
-			var context = GRContext.CreateGl(glInterface);
-			if (context == null)
-			{
-				throw new NotSupportedException($"{nameof(GRContext)}.{nameof(GRContext.CreateGl)} failed");
-			}
-			_grContext = context;
 
 			FrameBufferWindowWrapper.Instance.SetSize(new Size(modeInfo.Resolution.Width, modeInfo.Resolution.Height));
 
@@ -383,37 +369,51 @@ namespace Uno.UI.Runtime.Skia
 			{
 				return;
 			}
-			Volatile.Write(ref @this._invalidateRenderCalledWhileWaitingForPageFlip, false);
-			@this.Render();
-			Volatile.Write(ref @this._waitingForPageFlip, false);
-			if (Volatile.Read(ref @this._invalidateRenderCalledWhileWaitingForPageFlip))
+			@this.OnPageFlipCore();
+		}
+
+		// Nothing may throw out of OnPageFlip: it is called from libdrm's frame, where a managed exception terminates
+		// the process, and a flip gate left closed stalls the loop for good.
+		private void OnPageFlipCore()
+		{
+			try
 			{
-				@this.InvalidateRender();
+				Volatile.Write(ref _invalidateRenderCalledWhileWaitingForPageFlip, false);
+				Render();
+				Volatile.Write(ref _waitingForPageFlip, false);
+				if (Volatile.Read(ref _invalidateRenderCalledWhileWaitingForPageFlip))
+				{
+					InvalidateRender();
+				}
+			}
+			catch (Exception e)
+			{
+				Volatile.Write(ref _waitingForPageFlip, false);
+				this.LogError()?.Error($"The DRM page-flip handler failed; the next invalidation re-arms it: {e}");
 			}
 		}
 
-		protected override SKSurface UpdateSize(int width, int height)
+		protected override IRenderTarget? CurrentTarget => _target;
+
+		// The EGL window surface's default framebuffer (FBO 0) is the compose target; the Skia backend builds and
+		// owns the GRContext-GLES over it via the neutral IGLRenderTarget seam.
+		protected override IRenderTarget CreateTarget(int width, int height)
+			=> _target = new DRMGLRenderTarget(width, height, _samples, _stencil, _colorFormat);
+
+		// The GBM surface format is the app's choice, so the neutral format has to follow it: a FourCC beginning
+		// with 'X' (XR24, XB24) has a padding byte where the others have alpha, and only then is an opaque wrap right.
+		private static GraphicsColorFormat ToColorFormat(FramebufferHostBuilder.DRMFourCCColorFormat format)
+			=> format.C1 == 'X' ? GraphicsColorFormat.Rgb888x : GraphicsColorFormat.Rgba8888;
+
+		private sealed class DRMGLRenderTarget(int width, int height, int samples, int stencil, GraphicsColorFormat colorFormat) : IGLRenderTarget
 		{
-			_glFbSurface?.Dispose();
-			_renderTarget?.Dispose();
-
-			var grSurfaceOrigin = GRSurfaceOrigin.BottomLeft; // to match OpenGL's origin
-			var glInfo = new GRGlFramebufferInfo(DefaultFramebuffer, SKColorType.Rgb888x.ToGlSizedFormat());
-			_renderTarget = new GRBackendRenderTarget(width, height, _samples, _stencil, glInfo);
-			_glFbSurface = SKSurface.Create(_grContext, _renderTarget, grSurfaceOrigin, SKColorType.Rgb888x);
-
-			return SKSurface.Create(_grContext, budgeted: true, new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul))
-				?? throw new InvalidOperationException("Failed to create the DRM retained composition surface.");
-		}
-
-		protected override void PresentToOutput(int degrees, int transX, int transY)
-		{
-			if (_surface is { } composition && _glFbSurface is { } glFb)
-			{
-				composition.Draw(glFb.Canvas, 0, 0, null);
-				DrawCursor(glFb.Canvas, degrees, transX, transY);
-				glFb.Canvas.Flush();
-			}
+			public uint FramebufferId => DefaultFramebuffer;
+			public int Width => width;
+			public int Height => height;
+			public int SampleCount => samples;
+			public int StencilBits => stencil;
+			public GraphicsColorFormat ColorFormat => colorFormat;
+			public void Dispose() { }
 		}
 
 		private uint CreateFbForBo(IntPtr bo)

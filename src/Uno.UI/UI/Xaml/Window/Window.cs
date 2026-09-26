@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -46,7 +46,6 @@ public partial class Window
 	private WindowType _windowType;
 
 	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
-	private WeakEventHelper.WeakEventCollection? _backgroundChangedHandlers;
 
 	internal Window(WindowType windowType, Assembly? callingAssembly = null)
 	{
@@ -155,7 +154,7 @@ public partial class Window
 	/// <summary>
 	/// Occurs when the window has successfully been activated.
 	/// </summary>
-	public event WindowActivatedEventHandler? Activated
+	public event TypedEventHandler<object, WindowActivatedEventArgs> Activated
 	{
 		add
 		{
@@ -170,7 +169,7 @@ public partial class Window
 	/// <summary>
 	/// Occurs when the app window has first rendered or has changed its rendering size.
 	/// </summary>
-	public event WindowSizeChangedEventHandler? SizeChanged
+	public event TypedEventHandler<object, WindowSizeChangedEventArgs> SizeChanged
 	{
 		add
 		{
@@ -185,7 +184,7 @@ public partial class Window
 	/// <summary>
 	/// Occurs when the value of the Visible property changes.
 	/// </summary>
-	public event WindowVisibilityChangedEventHandler? VisibilityChanged
+	public event TypedEventHandler<object, WindowVisibilityChangedEventArgs> VisibilityChanged
 	{
 		add
 		{
@@ -615,7 +614,11 @@ public partial class Window
 		{
 			_background = value;
 
-			_backgroundChangedHandlers?.Invoke(this, EventArgs.Empty);
+			// The frame clear reads this at present time, so an otherwise idle window needs a frame to show it.
+			if (_windowImplementation.XamlRoot is { } xamlRoot)
+			{
+				global::Uno.UI.Hosting.XamlRootMap.GetHostForRoot(xamlRoot)?.InvalidateRender();
+			}
 		}
 	}
 
@@ -632,25 +635,17 @@ public partial class Window
 #endif
 	}
 
-	internal IDisposable RegisterBackgroundChangedEvent(EventHandler handler)
-		=> WeakEventHelper.RegisterEvent(
-			_backgroundChangedHandlers ??= new(),
-			handler,
-			(h, s, e) =>
-				(h as EventHandler)?.Invoke(s, (EventArgs)e!)
-		);
-
 	/// <summary>
 	/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.
 	/// </summary>
 	/// <returns>A disposable instance that will cancel the registration.</returns>
-	internal IDisposable RegisterSizeChangedEvent(Microsoft.UI.Xaml.WindowSizeChangedEventHandler handler)
+	internal IDisposable RegisterSizeChangedEvent(TypedEventHandler<object, WindowSizeChangedEventArgs> handler)
 	{
 		return WeakEventHelper.RegisterEvent(
 			_sizeChangedHandlers ??= new(),
 			handler,
 			(h, s, e) =>
-				(h as Microsoft.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e!)
+				(h as TypedEventHandler<object, WindowSizeChangedEventArgs>)?.Invoke(s, (WindowSizeChangedEventArgs)e!)
 		);
 	}
 

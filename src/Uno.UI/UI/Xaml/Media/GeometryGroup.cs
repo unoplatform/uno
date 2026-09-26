@@ -3,8 +3,8 @@ using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 
 using Rect = Windows.Foundation.Rect;
-using SkiaSharp;
-using Uno.UI.UI.Xaml.Media;
+using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -94,19 +94,21 @@ namespace Microsoft.UI.Xaml.Media
 			return default;
 		}
 
-		internal override SKPath GetSKPath()
+		internal override IGeometry GetGeometry()
 		{
-			var builder = new SKPathBuilder();
+			var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
+			builder.FillRule = FillRule == FillRule.EvenOdd ? GeometryFillRule.EvenOdd : GeometryFillRule.NonZero;
 
 			foreach (var geometry in Children)
 			{
-				// Use GetTransformedSKPath so each child's own Transform is applied
-				var geometryPath = geometry.GetTransformedSKPath();
-				builder.AddPath(geometryPath, SKPathAddMode.Append);
+				// Use GetTransformedGeometry so each child's own Transform is applied
+				if (geometry.GetTransformedGeometry() is { } childGeometry)
+				{
+					builder.AddGeometry(childGeometry);
+				}
 			}
 
-			builder.FillType = FillRule.ToSkiaFillType();
-			return builder.Detach();
+			return builder.Build();
 		}
 	}
 }

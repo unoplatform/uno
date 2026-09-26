@@ -46,6 +46,10 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 
 	/// <summary>Gets the handle of the virtualized container visual.</summary>
 	internal IntPtr ContainerHandle => _containerHandle;
+
+	/// <summary>Unsubscribes the container events that feed this region; run on dispose.</summary>
+	internal Action? Detach { get; set; }
+
 	/// <summary>Gets the total number of items in the data source.</summary>
 	internal int TotalItemCount => _totalItemCount;
 	/// <summary>Gets whether a focused item is pinned to prevent recycling.</summary>
@@ -72,6 +76,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		_realizedHandles[index] = itemHandle;
 		_realizedHandleSet.Add(itemHandle);
 		NativeMethods.AddVirtualizedItem(_containerHandle, itemHandle, index, totalCount, x, y, width, height, role, label);
+		WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 	}
 
 	/// <summary>
@@ -105,6 +110,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		}
 		_realizedHandleSet.Remove(itemHandle);
 		NativeMethods.RemoveVirtualizedItem(itemHandle);
+		WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 	}
 
 	/// <summary>
@@ -155,9 +161,12 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 				this.Log().Debug($"Dispose container={_containerHandle} realizedCount={_realizedHandles.Count}");
 			}
 			_disposed = true;
+			Detach?.Invoke();
+			Detach = null;
 			_realizedHandles.Clear();
 			_realizedHandleSet.Clear();
 			NativeMethods.UnregisterVirtualizedContainer(_containerHandle);
+			WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 		}
 	}
 

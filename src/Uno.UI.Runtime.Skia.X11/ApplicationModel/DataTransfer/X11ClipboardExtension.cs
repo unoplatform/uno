@@ -53,7 +53,6 @@ using System.Threading.Tasks;
 using System.Web;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
-using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -989,35 +988,6 @@ internal class X11ClipboardExtension : IClipboardExtension
 		}
 
 		return null;
-	}
-
-	private static SKBitmap WaitForImage(X11Window x11Window, IntPtr format, IntPtr selection)
-	{
-		var bytes = WaitForBytes(x11Window, format, selection);
-
-		using var stream = new MemoryStream(bytes);
-		using var codec = SKCodec.Create(stream);
-		if (codec is null)
-		{
-			if (_logger.IsEnabled(LogLevel.Error))
-			{
-				_logger.Error($"Unable to create an SKCodec instance from received clipboard data.");
-			}
-			return null;
-		}
-
-		using var bitmap = new SKBitmap(codec.Info.Width, codec.Info.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
-		var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels());
-		if (result != SKCodecResult.Success)
-		{
-			if (_logger.IsEnabled(LogLevel.Error))
-			{
-				_logger.Error($"Unable to decode clipboard data into an image.");
-			}
-			return null;
-		}
-
-		return bitmap;
 	}
 
 	private IntPtr GetTimestamp()

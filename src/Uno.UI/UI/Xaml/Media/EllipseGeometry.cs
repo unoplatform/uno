@@ -1,7 +1,7 @@
 using System;
 using Windows.Foundation;
 using System.Numerics;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Media
@@ -54,6 +54,6 @@ namespace Microsoft.UI.Xaml.Media
 
 		partial void InitPartials();
 
-		internal override SKPath GetSKPath() => CompositionGeometry.BuildEllipseGeometry(Center.ToVector2(), new Vector2((float)RadiusX, (float)RadiusY));
+		internal override IGeometry GetGeometry() => CompositionGeometry.BuildEllipseGeometry(Center.ToVector2(), new Vector2((float)RadiusX, (float)RadiusY));
 	}
 }

@@ -38,10 +38,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="HarfBuzzSharp" />
-		<PackageReference Include="SkiaSharp.Views" />
-		<PackageReference Include="Uno.icu-ios" />
+		<!--
+		Uno.icu-ios only ships iOS slices, and its targets pick the device archives for
+		any RID that does not contain 'iossimulator', so a tvOS head would force-load
+		iOS-device arm64 objects and fail the native link. Uno.icu-tvos carries the
+		tvos/tvossimulator slices instead. One of the two is required on every Apple
+		UIKit head: UnicodeText.ICU reaches ICU through [DllImport("__Internal")], which
+		the native linker resolves at link time, so without it the head fails to link
+		with undefined _u_*_77 / _ubidi_*_77 symbols.
+		-->
+		<PackageReference Include="Uno.icu-ios" Condition="'$(IsTvOS)' != 'true'" />
+		<PackageReference Include="Uno.icu-tvos" Condition="'$(IsTvOS)' == 'true'" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -50,6 +58,12 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
+		<!-- WebGPU "init half": the host calls WebGpuContext.Create* to build a WebGpu window+context for the
+		     GraphicsContextKind.WebGpu kind. The host uses only the renderer-agnostic init API, not the renderer. -->
+		<ProjectReference Include="..\Uno.UI.Composition.WebGpu.Init\Uno.UI.Composition.WebGpu.Init.csproj" />
+		<!-- WebGPU render path (UnoWebGpuMetalView, opt-in via UNO_WEBGPU). The wgpu-native iOS static
+		     library must be linked by the app head (see wgpu-native.targets iOS provisioning) so DllImport("webgpu")
+		     resolves to the main program (WebGpuLoader.GetMainProgramHandle). -->
 	</ItemGroup>
 
 	<ItemGroup>
