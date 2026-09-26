@@ -126,6 +126,7 @@ public partial class CompositionTarget
 
 	static CompositionTarget()
 	{
+		Compositor.FrameDriverTargetResolver = static () => MainFrameDriverTarget;
 		XamlRootMap.Unregistered += static (_, xamlRoot) => xamlRoot.VisualTree.ContentRoot.CompositionTarget.ClearFrameDrivers();
 	}
 
