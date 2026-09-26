@@ -30,6 +30,9 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 	private int _lastFullTextLength;
 	private bool _sessionActive;
 	private TextInputConnection? _subscribedConnection;
+	private TextInputPlugin? _subscribedPlugin;
+	private Uno.UI.Xaml.Controls.NativeWindowWrapper? _boundWrapper;
+	private XamlRoot? _xamlRoot;
 
 	public bool IsComposing => _isComposing;
 
@@ -38,7 +41,9 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
 	public event EventHandler? CompositionEnded;
 
-	private static TextInputPlugin? Plugin => ApplicationActivity.RenderView?.TextInputPlugin;
+	// TODO #13827: the foreground-activity fallback is ambiguous once multiple windows exist.
+	private TextInputPlugin? Plugin
+		=> (AndroidSkiaXamlRootHost.GetActivity(_xamlRoot) ?? BaseActivity.Current as ApplicationActivity)?.RenderView?.TextInputPlugin;
 
 	public void StartImeSession(TextBoxCore core)
 	{
@@ -47,15 +52,19 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 			return;
 		}
 
+		_xamlRoot = core.Owner.XamlRoot;
 		_sessionActive = true;
 
-		if (Plugin is { } plugin)
+		// The wrapper outlives the activities driving its window, so it is what can tell an active
+		// session that the render view (and with it the plugin) was replaced.
+		_boundWrapper = AndroidSkiaXamlRootHost.GetActivity(_xamlRoot)?.Wrapper;
+		if (_boundWrapper is { } wrapper)
 		{
-			plugin.InputConnectionCreated -= OnInputConnectionCreated;
-			plugin.InputConnectionCreated += OnInputConnectionCreated;
-
-			SubscribeToConnection(plugin.ActiveInputConnection);
+			wrapper.CurrentActivityChanged -= OnCurrentActivityChanged;
+			wrapper.CurrentActivityChanged += OnCurrentActivityChanged;
 		}
+
+		BindToPlugin(Plugin);
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -63,15 +72,68 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 		}
 	}
 
+	/// <summary>
+	/// Points the session at <paramref name="plugin"/>, moving the subscriptions off the previous
+	/// one. Re-creating the activity that drives the window replaces the render view and with it
+	/// the plugin, while the focused TextBox keeps its session.
+	/// </summary>
+	private void BindToPlugin(TextInputPlugin? plugin)
+	{
+		if (plugin is null)
+		{
+			// The activity takes the window in OnCreate and only builds its render view -- and with
+			// it the plugin -- in OnStart. Keep the current binding until one exists, rather than
+			// unbinding the session into nothing.
+			return;
+		}
+
+		if (ReferenceEquals(plugin, _subscribedPlugin))
+		{
+			return;
+		}
+
+		if (_subscribedPlugin is { } previous)
+		{
+			previous.InputConnectionCreated -= OnInputConnectionCreated;
+		}
+
+		UnsubscribeFromConnection();
+		_subscribedPlugin = plugin;
+
+		plugin.InputConnectionCreated += OnInputConnectionCreated;
+		SubscribeToConnection(plugin.ActiveInputConnection);
+	}
+
+	/// <summary>
+	/// Moves an active session onto the replacement activity's plugin. The managed TextBox keeps
+	/// its session across the re-creation, so nothing else re-runs <see cref="StartImeSession"/>.
+	/// </summary>
+	private void OnCurrentActivityChanged(object? sender, EventArgs args)
+	{
+		if (_sessionActive)
+		{
+			BindToPlugin(Plugin);
+		}
+	}
+
 	public void EndImeSession()
 	{
 		_sessionActive = false;
 
+		if (_boundWrapper is { } wrapper)
+		{
+			wrapper.CurrentActivityChanged -= OnCurrentActivityChanged;
+			_boundWrapper = null;
+		}
+
 		UnsubscribeFromConnection();
 
-		if (Plugin is { } plugin)
+		// The plugin this session subscribed to, not whichever one resolves now: after a
+		// re-creation those differ, and unsubscribing from the new one leaves the old handler live.
+		if (_subscribedPlugin is { } plugin)
 		{
 			plugin.InputConnectionCreated -= OnInputConnectionCreated;
+			_subscribedPlugin = null;
 		}
 
 		if (_isComposing)

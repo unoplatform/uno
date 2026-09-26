@@ -2408,6 +2408,9 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/Frame" reason="Removed empty FeatureConfiguration.Frame holder after deleting UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Page" reason="Removed empty FeatureConfiguration.Page holder after deleting IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.PagePool" reason="Removed the Page instance pool; only the legacy Frame navigation mode used it (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Skia-Android de-singletoning: this Java listener is constructed by the host with its owning activity and was never usable by app code, which had no way to supply one. -->
+		  <Member fullName="Uno.UI.OnSystemUiVisibilityChangeListener" reason="OnSystemUiVisibilityChangeListener reduced to internal; it is bound to the activity that owns the window (breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -3918,6 +3921,9 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/Frame" reason="Removed empty FeatureConfiguration.Frame holder after deleting UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Page" reason="Removed empty FeatureConfiguration.Page holder after deleting IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.PagePool" reason="Removed the Page instance pool; only the legacy Frame navigation mode used it (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Skia-Android de-singletoning: this Java listener is constructed by the host with its owning activity and was never usable by app code, which had no way to supply one. -->
+		  <Member fullName="Uno.UI.OnSystemUiVisibilityChangeListener" reason="OnSystemUiVisibilityChangeListener reduced to internal; it is bound to the activity that owns the window (breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->

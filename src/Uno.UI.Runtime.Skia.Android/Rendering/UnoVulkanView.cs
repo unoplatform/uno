@@ -43,9 +43,12 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 	private IntPtr _nativeWindow; // Must stay alive while the Vulkan surface references it
 	private readonly VulkanContext _vulkanContext = new();
 	private readonly AndroidVulkanSurfaceFactory _surfaceFactory = new();
+	private readonly ApplicationActivity _activity;
 
-	public UnoVulkanView(Context context) : base(context)
+	public UnoVulkanView(ApplicationActivity activity) : base(activity)
 	{
+		_activity = activity;
+
 		// Create the window-independent Vulkan resources (instance, device) right away: this throws when the
 		// driver is unusable, letting the caller fall back to the OpenGL ES view. The window-scoped part
 		// (swapchain) is completed on the render thread once a surface exists.
@@ -72,11 +75,6 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		_renderEvent.Set();
 	}
 
-	public void ResetRendererContext()
-	{
-		// The swapchain is recreated on the next surface creation; the device is retained.
-	}
-
 	#region SurfaceHolder.Callback
 
 	public void SurfaceCreated(ISurfaceHolder holder)
@@ -87,8 +85,9 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		}
 
 		_surfaceReady = true;
-		_renderThread = new Thread(RenderLoop) { Name = "UnoVulkanRenderThread", IsBackground = true };
-		_renderThread.Start(holder);
+		Thread renderThread = new(RenderLoop) { Name = "UnoVulkanRenderThread", IsBackground = true };
+		Volatile.Write(ref _renderThread, renderThread);
+		renderThread.Start(holder);
 	}
 
 	public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
@@ -121,13 +120,23 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		}
 
 		_surfaceReady = false;
+
+		// Android can destroy the surface after the activity's OnDestroy, by which point
+		// TeardownRenderer has stopped the render thread and released everything below.
+		if (_disposed)
+		{
+			return;
+		}
+
 		_renderEvent.Set();
 		if (!(_renderThread?.Join(TimeSpan.FromSeconds(2)) ?? true) && this.Log().IsEnabled(LogLevel.Warning))
 		{
 			this.Log().Warn("UnoVulkanView: the render thread is still inside a frame; teardown waits on the device lock");
 		}
 
-		_renderThread = null;
+		// Clearing the reference also retires a thread that outlived the timeout: RenderLoop exits
+		// once it is no longer the current render thread, so it cannot resume on the next surface.
+		Volatile.Write(ref _renderThread, null);
 
 		// A first frame that builds pipelines and shaders can outlast the Join above, so the GPU teardown runs under
 		// the device lock every frame also holds — destroying pipelines and command pools the render thread is still
@@ -169,13 +178,13 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			// Backend negotiation runs here, on the render thread, so the activity's try/catch around the view
 			// constructor cannot cover it — hand the window to the canvas view rather than leave it black.
 			this.Log().Error("UnoVulkanView: Vulkan initialization failed, falling back to the canvas view", ex);
-			ApplicationActivity.FallbackToCanvasView();
+			_activity.FallbackToCanvasView();
 			return;
 		}
 
 		try
 		{
-			while (_surfaceReady && !_disposed)
+			while (_surfaceReady && !_disposed && ReferenceEquals(Volatile.Read(ref _renderThread), Thread.CurrentThread))
 			{
 				_renderEvent.Wait(TimeSpan.FromMilliseconds(100));
 				_renderEvent.Reset();
@@ -246,9 +255,13 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			return;
 		}
 
-		var compositionTarget = Microsoft.UI.Xaml.Window.CurrentSafe?.RootElement?.Visual.CompositionTarget as CompositionTarget;
+		var compositionTarget = _activity.RootElement?.Visual.CompositionTarget as CompositionTarget;
 		if (compositionTarget is null)
 		{
+			// OnNativePlatformFrameRequested is the only thing that clears the target's
+			// RenderRequested flag, so dropping the frame outright would make every later
+			// RequestNewFrame a no-op. Re-arm so the loop retries once the window is ready.
+			_renderRequested = true;
 			return;
 		}
 
@@ -259,13 +272,16 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			compositionTarget.Renderer = _renderer!;
 			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
 
-			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+			if (_activity.NativeLayerHost is { } nativeLayerHost)
+			{
+				nativeLayerHost.Path = nativeClipPath;
+			}
 
-			if (NativeWindowWrapper.Instance.TryReleaseFirstFrameGate())
+			if (_activity.Wrapper.TryReleaseFirstFrameGate())
 			{
 				// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
-				ApplicationActivity.RelativeLayout?.Post(() =>
-					ApplicationActivity.RelativeLayout?.Invalidate());
+				_activity.RelativeLayout?.Post(() =>
+					_activity.RelativeLayout?.Invalidate());
 			}
 		}
 		catch (Exception ex)
@@ -350,27 +366,52 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 
 	#endregion
 
+	public void TeardownRenderer()
+	{
+		if (_disposed)
+		{
+			return;
+		}
+
+		_disposed = true;
+		_renderEvent.Set();
+		var stopped = _renderThread?.Join(TimeSpan.FromSeconds(2)) ?? true;
+		Volatile.Write(ref _renderThread, null);
+
+		if (!stopped)
+		{
+			// The render thread is still inside a frame, holding the Vulkan context and the native
+			// window. Releasing them here would free objects it is about to touch, so leave them to
+			// the process teardown rather than corrupt the driver.
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("The Vulkan render thread did not stop within the timeout; its resources are left to the process teardown.");
+			}
+
+			return;
+		}
+
+		// Strictly innermost-first: the backend's GRContext-Vulkan owns pipelines and pools built on the
+		// swapchain, which in turn is built on the device — vkDestroyDevice must be last.
+		(_renderer as IDisposable)?.Dispose();
+		_renderer = null;
+		_context?.Dispose();
+		_context = null;
+		// Releases the retained instance and device kept alive across surface re-creations.
+		_vulkanContext.Dispose();
+		if (_nativeWindow != IntPtr.Zero)
+		{
+			ANativeWindow_release(_nativeWindow);
+			_nativeWindow = IntPtr.Zero;
+		}
+		_renderEvent.Dispose();
+	}
+
 	protected override void Dispose(bool disposing)
 	{
 		if (disposing)
 		{
-			_disposed = true;
-			_renderEvent.Set();
-			_renderThread?.Join(TimeSpan.FromSeconds(2));
-			// Strictly innermost-first: the backend's GRContext-Vulkan owns pipelines and pools built on the
-			// swapchain, which in turn is built on the device — vkDestroyDevice must be last.
-			(_renderer as IDisposable)?.Dispose();
-			_renderer = null;
-			_context?.Dispose();
-			_context = null;
-			// Releases the retained instance and device kept alive across surface re-creations.
-			_vulkanContext.Dispose();
-			if (_nativeWindow != IntPtr.Zero)
-			{
-				ANativeWindow_release(_nativeWindow);
-				_nativeWindow = IntPtr.Zero;
-			}
-			_renderEvent.Dispose();
+			TeardownRenderer();
 		}
 		base.Dispose(disposing);
 	}

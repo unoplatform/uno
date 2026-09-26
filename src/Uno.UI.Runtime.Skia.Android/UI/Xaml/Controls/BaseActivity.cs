@@ -59,6 +59,9 @@ namespace Uno.UI
 		private static int _instanceCount;
 		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
 		private static BaseActivity? _current;
+		private static long _activationCount;
+
+		private long _lastActivation;
 
 		/// <summary>
 		/// Unique identifier for this instance of an activity.
@@ -129,18 +132,26 @@ namespace Uno.UI
 		public BaseActivity(IntPtr handle, JniHandleOwnership transfer)
 			: base(handle, transfer)
 		{
-			ContextHelper.Current = this;
 			Initialize();
 		}
 
 		public BaseActivity()
 		{
-			ContextHelper.Current = this;
 			Initialize();
 		}
 
 		private void Initialize()
 		{
+			// Seed the ambient context only while no activity holds it: add-ins created below
+			// (e.g. Uno.UI.Foldable) resolve their lifecycle events through ContextHelper.Current
+			// and throw when it is null. Claiming it unconditionally would let an activity that is
+			// merely being constructed displace the live foreground one; from OnCreate onwards
+			// SetAsCurrent/ResignCurrent are the sole writers.
+			if (!ContextHelper.TryGetCurrent(out _))
+			{
+				ContextHelper.Current = this;
+			}
+
 			// Eagerly create the ApplicationView instance for IBaseActivityEvents
 			// to be useable (specifically for the Create event)
 			ApplicationView.GetOrCreateForWindowId(AppWindow.MainWindowId);
@@ -237,7 +248,7 @@ namespace Uno.UI
 
 			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
-				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true);
+				OnNativeVisibilityChanged(true);
 			});
 		}
 
@@ -264,7 +275,7 @@ namespace Uno.UI
 			SetAsCurrent();
 
 			Microsoft.UI.Xaml.Application.Current?.RaiseResuming();
-			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+			OnNativeActivationChanged(CoreWindowActivationState.CodeActivated);
 		}
 
 		public override void OnTopResumedActivityChanged(bool isTopResumedActivity)
@@ -277,7 +288,7 @@ namespace Uno.UI
 
 		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
-			NativeWindowWrapper.Instance.OnNativeActivated(
+			OnNativeActivationChanged(
 				isTopResumedActivity ?
 					CoreWindowActivationState.CodeActivated :
 					CoreWindowActivationState.Deactivated);
@@ -295,7 +306,10 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
+			if (IsDrivingWindow)
+			{
+				OnNativeActivationChanged(CoreWindowActivationState.Deactivated);
+			}
 		}
 
 		protected override void OnStop()
@@ -316,7 +330,14 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
+			// An outgoing activity reaches OnStop after its replacement has resumed and taken the
+			// window. Hiding and suspending from here would apply to the live replacement.
+			if (!IsDrivingWindow)
+			{
+				return;
+			}
+
+			OnNativeVisibilityChanged(false);
 			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 
@@ -328,10 +349,36 @@ namespace Uno.UI
 
 		partial void InnerDestroy();
 
-		partial void InnerDestroy() => ResignCurrent();
+		partial void InnerDestroy()
+		{
+			ResignCurrent();
+
+			// Never leave a destroyed activity as the ambient foreground context: hand over to a
+			// live one when there is another, and clear it when there is not. Clearing matters as
+			// much as handing over -- on a re-creation the replacement activity is constructed
+			// after this runs, and Initialize() seeds Current only while no activity holds it. A
+			// stale reference here would read as "claimed" and leave the destroyed activity in
+			// place for everything the replacement's constructor touches.
+			if (ContextHelper.TryGetCurrent(out var current) && ReferenceEquals(current, this))
+			{
+				BaseActivity? next;
+				lock (_instances)
+				{
+					// _instances is only pruned on Dispose, so it can still hold activities already torn down.
+					next = _instances.Values
+						.Where(activity => !ReferenceEquals(activity, this) && !activity.IsDestroyed && !activity.IsFinishing)
+						.MaxBy(activity => activity._lastActivation);
+				}
+
+				ContextHelper.SetForeground(next);
+			}
+		}
+
+		private static long NextActivation() => Interlocked.Increment(ref _activationCount);
 
 		private void SetAsCurrent()
 		{
+			_lastActivation = NextActivation();
 			ContextHelper.Current = this;
 			if (Interlocked.Exchange(ref _current, this) != this)
 			{
@@ -347,6 +394,26 @@ namespace Uno.UI
 				CurrentChanged?.Invoke(this, new CurrentActivityChangedEventArgs(null));
 			}
 		}
+
+		/// <summary>
+		/// Notifies a derived activity that the window it drives changed activation state.
+		/// </summary>
+		private protected virtual void OnNativeActivationChanged(CoreWindowActivationState state)
+		{
+		}
+
+		/// <summary>
+		/// Notifies a derived activity that the window it drives changed visibility.
+		/// </summary>
+		private protected virtual void OnNativeVisibilityChanged(bool isVisible)
+		{
+		}
+
+		/// <summary>
+		/// Whether this activity still drives the window it was bound to. Lifecycle callbacks of an
+		/// activity that has already handed its window over must not reach that window.
+		/// </summary>
+		private protected virtual bool IsDrivingWindow => true;
 		#endregion
 
 		#region Instance discovery management
