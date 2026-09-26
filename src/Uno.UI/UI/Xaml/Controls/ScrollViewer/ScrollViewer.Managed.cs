@@ -163,8 +163,8 @@ namespace Microsoft.UI.Xaml.Controls
 				// Use scaled extent to account for zoom
 				var (contentExtent, presenterViewportSize, offset) = orientation switch
 				{
-					Orientation.Vertical => (ExtentHeight * ZoomFactor, ViewportHeight, VerticalOffset),
-					_ => (ExtentWidth * ZoomFactor, ViewportWidth, HorizontalOffset),
+					Orientation.Vertical => (ExtentHeight * ZoomFactor, ViewportHeight, CurrentPresenterVerticalOffset),
+					_ => (ExtentWidth * ZoomFactor, ViewportWidth, CurrentPresenterHorizontalOffset),
 				};
 				var viewportEnd = offset + presenterViewportSize;
 				var overscroll = contentExtent - viewportEnd;
@@ -179,13 +179,18 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (orientation == Orientation.Vertical)
 			{
-				ChangeView(null, VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+				ChangeView(null, CurrentPresenterVerticalOffset + scrollAdjustment, null, disableAnimation: true);
 			}
 			else
 			{
-				ChangeView(HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+				ChangeView(CurrentPresenterHorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
 			}
 		}
+
+		// While touch / inertia updates are deferred (cf. RequestUpdate), the offset DPs lag behind the presenter.
+		private double CurrentPresenterHorizontalOffset => _hasPendingUpdate ? _pendingHorizontalOffset : HorizontalOffset;
+
+		private double CurrentPresenterVerticalOffset => _hasPendingUpdate ? _pendingVerticalOffset : VerticalOffset;
 		#endregion
 	}
 }
