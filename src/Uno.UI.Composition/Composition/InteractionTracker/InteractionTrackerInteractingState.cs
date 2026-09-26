@@ -70,4 +70,14 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 	{
 		_interactionTracker.Owner?.RequestIgnored(_interactionTracker, new InteractionTrackerRequestIgnoredArgs(requestId));
 	}
+
+	internal override void TryUpdatePositionWithAnimation(CompositionAnimation animation, int requestId)
+	{
+		_interactionTracker.Owner?.RequestIgnored(_interactionTracker, new InteractionTrackerRequestIgnoredArgs(requestId));
+	}
+
+	internal override void TryUpdateScaleWithAnimation(CompositionAnimation animation, Vector3 centerPoint, int requestId)
+	{
+		_interactionTracker.Owner?.RequestIgnored(_interactionTracker, new InteractionTrackerRequestIgnoredArgs(requestId));
+	}
 }
