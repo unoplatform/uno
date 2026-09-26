@@ -26,6 +26,12 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 	private ulong _bootTime;
 	private PointerPoint? _lastPoint;
 
+	// The browser reports raw fractional CSS-pixel wheel deltas on every event (unlike Win32/X11, where
+	// the OS already accumulates fractional notches into an int before delivering the message), so a
+	// per-axis accumulator is needed to avoid dropping sub-unit deltas. See WheelDeltaAccumulator.
+	private WheelDeltaAccumulator _verticalWheelAccumulator;
+	private WheelDeltaAccumulator _horizontalWheelAccumulator;
+
 #pragma warning disable CS0067 // Some event are not raised on skia browser ... yet!
 	public event TypedEventHandler<object, Windows.UI.Core.PointerEventArgs>? PointerCaptureLost;
 #pragma warning restore CS0067 // Some event are not raised on skia browser ... yet!
@@ -96,7 +102,10 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 			var keyModifiers = GetKeyModifiers(ctrl, shift);
 			var position = new Point(x, y);
 
-			var properties = GetProperties(pointerType, isInRange, (HtmlPointerButtonsState)buttons, (HtmlPointerButtonUpdate)buttonUpdate, wheel: (false, -wheelDeltaY), pressure);
+			// Accumulate even when this isn't a wheel event: wheelDeltaY is always 0 in that case, so
+			// Accumulate(0) is a no-op and the remainder from a previous wheel event is preserved.
+			var verticalWheelDelta = that._verticalWheelAccumulator.Accumulate(-wheelDeltaY);
+			var properties = GetProperties(pointerType, isInRange, (HtmlPointerButtonsState)buttons, (HtmlPointerButtonUpdate)buttonUpdate, wheel: (false, verticalWheelDelta), pressure);
 
 			var point = new PointerPoint(frameId, ts, pointerDevice, pointerIdentifier.Id, position, position, isInContact, properties);
 			var args = new PointerEventArgs(point, keyModifiers);
@@ -127,18 +136,22 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 					break;
 
 				case HtmlPointerEvent.wheel:
-					if (wheelDeltaY is not 0)
+					if (verticalWheelDelta is not 0)
 					{
 						that.PointerWheelChanged?.Invoke(that, args);
 					}
 
 					if (wheelDeltaX is not 0)
 					{
-						properties = GetProperties(pointerType, isInRange, (HtmlPointerButtonsState)buttons, (HtmlPointerButtonUpdate)buttonUpdate, wheel: (true, wheelDeltaX), pressure);
-						point = new PointerPoint(frameId, ts, pointerDevice, pointerIdentifier.Id, position, position, isInContact, properties);
-						args = new PointerEventArgs(point, keyModifiers);
+						var horizontalWheelDelta = that._horizontalWheelAccumulator.Accumulate(wheelDeltaX);
+						if (horizontalWheelDelta is not 0)
+						{
+							properties = GetProperties(pointerType, isInRange, (HtmlPointerButtonsState)buttons, (HtmlPointerButtonUpdate)buttonUpdate, wheel: (true, horizontalWheelDelta), pressure);
+							point = new PointerPoint(frameId, ts, pointerDevice, pointerIdentifier.Id, position, position, isInContact, properties);
+							args = new PointerEventArgs(point, keyModifiers);
 
-						that.PointerWheelChanged?.Invoke(that, args);
+							that.PointerWheelChanged?.Invoke(that, args);
+						}
 					}
 
 					break;
@@ -316,7 +329,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 		bool isInRange,
 		HtmlPointerButtonsState buttons,
 		HtmlPointerButtonUpdate buttonUpdate,
-		(bool isHorizontalWheel, double delta) wheel,
+		(bool isHorizontalWheel, int delta) wheel,
 		double pressure)
 	{
 		var props = new PointerPointProperties
@@ -330,7 +343,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 			IsXButton2Pressed = buttons.HasFlag(HtmlPointerButtonsState.X2),
 			IsEraser = buttons.HasFlag(HtmlPointerButtonsState.Eraser),
 			IsHorizontalMouseWheel = wheel.isHorizontalWheel,
-			MouseWheelDelta = (int)wheel.delta
+			MouseWheelDelta = wheel.delta
 		};
 
 		switch (deviceType)
