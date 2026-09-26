@@ -309,9 +309,9 @@ public partial class Given_InteractionTracker
 			TrackerLogsConstructingHelper.GetInertiaStateEntered(
 				trackerPosition: new(0.0f, 0.0f, 0.0f),
 				requestId: 0,
-				naturalRestingPosition: new(0.0f, 48.0f, 0.0f),
-				modifiedRestingPosition: new(0.0f, 48.0f, 0.0f),
-				positionVelocityInPixelsPerSecond: new(0.0f, 192.0f, 0.0f)),
+				naturalRestingPosition: new(0.0f, 32.0f, 0.0f),
+				modifiedRestingPosition: new(0.0f, 32.0f, 0.0f),
+				positionVelocityInPixelsPerSecond: new(0.0f, 32f * 1.5f / 0.257f, 0.0f)),
 			helper.Current);
 
 		helper.Advance();
@@ -322,16 +322,16 @@ public partial class Given_InteractionTracker
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetValuesChanged(
-				trackerPosition: new(0.0f, 48.0f, 0.0f),
+				trackerPosition: new(0.0f, 32.0f, 0.0f),
 				requestId: 0,
-				argsPosition: new(0.0f, 48.0f, 0.0f)),
+				argsPosition: new(0.0f, 32.0f, 0.0f)),
 			helper.Current);
 
 		helper.Advance();
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetIdleStateEntered(
-				trackerPosition: new(0.0f, 48.0f, 0.0f),
+				trackerPosition: new(0.0f, 32.0f, 0.0f),
 				requestId: 0),
 			helper.Current);
 

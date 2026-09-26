@@ -160,11 +160,9 @@ public partial class InteractionTracker : CompositionObject
 	/// <param name="mouseWheelTicks">Detents scrolled, fractional for touchpads that report deltas finer than one detent.</param>
 	internal void ReceivePointerWheel(double mouseWheelTicks, bool isHorizontal)
 	{
-		// On WinUI, this depends on mouse setting "how many lines to scroll each time"
-		// The default Windows setting is 3 lines, and each line is 16px.
-		// Note: the value for each line may vary depending on scaling.
-		// For now, we just use 16*3=48.
-		var delta = mouseWheelTicks * 48;
+		// Measured on WinUI 3: a notch moves a ScrollView 32 DIP, whatever the viewport and the display scale's
+		// physical pixels. The curve lives in the closed-source compositor, so there is no constant to port.
+		var delta = mouseWheelTicks * 32;
 		_state.ReceivePointerWheel(-delta, isHorizontal);
 	}
 
