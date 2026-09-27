@@ -16,6 +16,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
 [assembly: InternalsVisibleTo("Uno.UI.GooglePlay")]
 [assembly: InternalsVisibleTo("Uno.UI.Lottie")]
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics2DSK")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.MacOS")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32.Support")]
