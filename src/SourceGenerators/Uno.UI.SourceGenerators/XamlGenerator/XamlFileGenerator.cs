@@ -3765,7 +3765,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							uiAutomationId = assignedName;
 						}
 
-						BuildUiAutomationId(writer, uiAutomationId);
+						BuildUiAutomationId(writer, writer.AppliedParameterName, uiAutomationId, objectDefinition);
 					}
 
 					BuildStatementLocalizedProperties(writer, objectDefinition, writer.AppliedParameterName);
@@ -4101,7 +4101,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildUiAutomationId(IIndentedStringBuilder writer, string? uiAutomationId)
+		private void BuildUiAutomationId(IIndentedStringBuilder writer, string closureName, string? uiAutomationId, XamlObjectDefinition parent)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			if (uiAutomationId.IsNullOrEmpty())
@@ -4110,6 +4110,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			writer.AppendLineInvariantIndented("// UI automation id: {0}", uiAutomationId);
+
+			// Hosted native views are outside Uno's automation tree; UI test drivers find them by these native ids
+			if (IsType(parent.Type, Generation.AndroidViewSymbol.Value))
+			{
+				writer.AppendLineInvariantIndented("{0}.ContentDescription = \"{1}\";", closureName, uiAutomationId);
+			}
+			else if (IsType(parent.Type, Generation.IOSViewSymbol.Value))
+			{
+				writer.AppendLineInvariantIndented("{0}.AccessibilityIdentifier = \"{1}\";", closureName, uiAutomationId);
+			}
 		}
 
 		private bool IsRelativePanelSiblingProperty(string name)
