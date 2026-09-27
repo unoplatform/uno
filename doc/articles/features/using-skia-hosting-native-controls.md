@@ -42,6 +42,45 @@ Setting the `Opacity` of the wrapping `ContentControl` will also set the opacity
 > [!NOTE]
 > As of Uno Platform 6.0, setting the opacity of native elements is not supported on X11.
 
+## Scrolling a native HTML element inside a ScrollViewer (WebAssembly)
+
+On WebAssembly, an Uno Platform `ScrollViewer` is painted onto the canvas rather than being a DOM scroll container, so the browser has nothing to hand a scroll gesture over to when that gesture starts inside a `BrowserHtmlElement`. By default the native element keeps the whole gesture: a scrollable native child scrolls until its own boundary and then simply stops, and dragging over non-scrollable native content does not scroll the page at all.
+
+Set `BrowserHtmlElement.InputPolicy` to `Negotiated` to opt into scroll chaining:
+
+```csharp
+var element = BrowserHtmlElement.CreateHtmlElement("div");
+element.InputPolicy = BrowserHtmlElementInputPolicy.Negotiated;
+```
+
+With this policy:
+
+- A scrollable native element scrolls first, and only what it cannot consume at its boundary is transferred to the enclosing `ScrollViewer`, chaining outwards through nested `ScrollViewer`s.
+- A gesture over non-scrollable native content scrolls the enclosing `ScrollViewer` directly.
+- Taps, focus, text selection and keyboard input stay native.
+
+The default is `NativeOnly`, which preserves the behavior described above.
+
+Chaining honors `ScrollViewer.IsHorizontalScrollChainingEnabled` and `IsVerticalScrollChainingEnabled`: a `ScrollViewer` that opts out of chaining absorbs the remaining delta instead of passing it to its own ancestors.
+
+Inertia honors `ScrollViewer.IsScrollInertiaEnabled`: during the fling that follows a released touch drag, a `ScrollViewer` with inertia disabled neither scrolls nor lets the fling continue past it. The native element itself still decays its own momentum until it reaches its boundary.
+
+> [!NOTE]
+> Form controls (`input`, `textarea`, `select`) and `contenteditable` regions — and their descendants — always keep their full native touch behavior and never participate in chaining, so caret dragging and text selection are unaffected. Content hosted in an `iframe` also stays native-only, because pointer events do not cross the frame boundary and its scroll position cannot be observed from the hosting document.
+
+Because single-finger panning is driven by Uno in `Negotiated` mode, the negotiated subtree is set to `touch-action: pinch-zoom`.
+
+> [!IMPORTANT]
+> Pinch-zoom keeps working, but **double-tap-to-zoom is disabled** inside the negotiated element. Multi-touch gestures are not arbitrated: as soon as a second finger goes down, the whole interaction is handed back to the browser.
+
+### Troubleshooting
+
+If a drag over negotiated content does not scroll the enclosing `ScrollViewer`:
+
+- Confirm `InputPolicy` is set to `Negotiated` — it is `NativeOnly` by default, and it must be set on the element that is assigned as the `ContentPresenter`/`ContentControl` content, not on a nested element.
+- Confirm the target is not inside an `iframe`, a form control, or a `contenteditable` region.
+- Enable `Debug` logging on `Uno.UI.Runtime.Skia.BrowserNativeElementHostingExtension` — it logs when a delta arrives for an unknown element and when no `ScrollViewer` in the ancestry consumed one.
+
 ## Limitations
 
 The native control is rendered by the native windowing system and cannot be styled by Uno Platform styles.

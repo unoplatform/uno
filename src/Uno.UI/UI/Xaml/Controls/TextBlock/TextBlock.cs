@@ -735,6 +735,32 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region TextLineBounds Dependency Property
+
+		/// <summary>
+		/// Gets or sets a value that indicates how the line box height is determined for each line of
+		/// text displayed in the <see cref="TextBlock"/>.
+		/// </summary>
+		public TextLineBounds TextLineBounds
+		{
+			get => (TextLineBounds)GetValue(TextLineBoundsProperty);
+			set => SetValue(TextLineBoundsProperty, value);
+		}
+
+		public static DependencyProperty TextLineBoundsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(TextLineBounds),
+				typeof(TextLineBounds),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					defaultValue: TextLineBounds.Full,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).InvalidateTextBlock()
+				)
+			);
+
+		#endregion
+
 		#region LineStackingStrategy Dependency Property
 
 		public LineStackingStrategy LineStackingStrategy
@@ -1313,9 +1339,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_inlines is not null)
 			{
-				foreach (var inline in _inlines)
+				var enumerator = _inlines.GetEnumeratorFast();
+				while (enumerator.MoveNext())
 				{
-					((DependencyObject)inline).UpdateResourceBindings(updateReason, resourceContextProvider: this);
+					((DependencyObject)enumerator.Current).UpdateResourceBindings(updateReason, resourceContextProvider: this);
 				}
 			}
 		}
@@ -1480,6 +1507,7 @@ namespace Microsoft.UI.Xaml.Controls
 				MaxLines,
 				(float)LineHeight,
 				LineStackingStrategy,
+				TextLineBounds,
 				FlowDirection,
 				adjustedTextAlignment,
 				TextWrapping,
@@ -1593,6 +1621,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal (int index, CompositionBrush brush)? RenderCaret
 		{
+			get => _caretPaint;
 			set
 			{
 				if (_caretPaint != value)
@@ -1605,8 +1634,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void Draw(in Visual.PaintingSession session)
 		{
-			session.Canvas.Save();
-			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
+			session.Session.Save();
+			session.Session.Translate((float)Padding.Left, (float)Padding.Top);
 			var highligherters = _renderSelection ? TextHighlighters.Append(new TextHighlighter
 			{
 				Background = SelectionHighlightColor,
@@ -1631,7 +1660,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
 				highligherters,
 				compositionRange);
-			session.Canvas.Restore();
+			session.Session.Restore();
 			DrawingFinished?.Invoke(this, EventArgs.Empty);
 		}
 

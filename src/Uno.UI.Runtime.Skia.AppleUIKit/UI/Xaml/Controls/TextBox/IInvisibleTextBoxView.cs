@@ -21,6 +21,11 @@ internal interface IInvisibleTextBoxView
 
 	void Select(int start, int length);
 
+	/// <summary>
+	/// Attaches the view shown above the soft keyboard while this input is editing, or clears it when null.
+	/// </summary>
+	void SetKeyboardAccessoryView(UIView? accessoryView);
+
 	UITextAutocapitalizationType AutocapitalizationType { get; set; }
 
 	UIKeyboardType KeyboardType { get; set; }

@@ -25,6 +25,12 @@ jobs:
   # test only restores three NuGet packages and walks their static AssemblyRef tables.
   - template: ../templates/dotnet-install.yml
 
+  # The add-in packages this gate restores (Uno.Settings.DevServer, Uno.UI.HotDesign,
+  # Uno.UI.App.Mcp) publish their stable builds to the internal unoplatformdev feed, not
+  # nuget.org. Without this the restore only sees the public prerelease line and NU1103s
+  # on every pinned version in src/Uno.Sdk/packages.json.
+  - template: ../templates/uno-dev-feed.yml
+
   # Regression gate: Uno.Sdk.AddInVersionValidation.Tests scans every DevServer add-in
   # declared in src/Uno.Sdk/packages.json for cross-package AssemblyRef version mismatches.
   # The job is intentionally RED whenever the add-in maintainers ship a Uno.Sdk version

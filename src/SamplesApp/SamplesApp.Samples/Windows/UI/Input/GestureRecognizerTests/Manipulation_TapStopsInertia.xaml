@@ -1,0 +1,81 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Input.GestureRecognizerTests.Manipulation_TapStopsInertia"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="16" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Style="{ThemeResource SubtitleTextBlockStyle}"
+            Text="Tap to stop the momentum" />
+
+        <TextBlock
+            Grid.Row="1"
+            Text="Flick the list with a finger, then tap a row while it is still coasting. By default - which is the WinUI behavior - that tap both stops the momentum and selects the row. With the opt-in below it only stops the momentum, and a second tap selects."
+            TextWrapping="WrapWholeWords" />
+
+        <CheckBox
+            x:Name="OptIn"
+            Grid.Row="2"
+            Checked="OptIn_Changed"
+            Content="ManipulationExtensions.IsTapToStopInertiaEnabled"
+            Unchecked="OptIn_Changed" />
+
+        <TextBlock x:Name="Status" Grid.Row="3" />
+
+        <!--
+            The viewport translates its content itself through ManipulationMode, like the CommunityToolkit
+            DataGrid does: the momentum is then run by the GestureRecognizer of this very element, and not by
+            the direct-manipulation of a ScrollViewer.
+        -->
+        <Border
+            x:Name="Viewport"
+            Grid.Row="4"
+            Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}"
+            ManipulationCompleted="Viewport_ManipulationCompleted"
+            ManipulationDelta="Viewport_ManipulationDelta"
+            ManipulationInertiaStarting="Viewport_ManipulationInertiaStarting"
+            ManipulationMode="TranslateY,TranslateInertia">
+            <Border.Clip>
+                <RectangleGeometry x:Name="ViewportClip" />
+            </Border.Clip>
+
+            <ItemsControl x:Name="Rows" VerticalAlignment="Top">
+                <ItemsControl.RenderTransform>
+                    <TranslateTransform x:Name="RowsTransform" />
+                </ItemsControl.RenderTransform>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Height="44"
+                            Margin="0,0,0,1"
+                            Padding="12,0"
+                            Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                            BorderBrush="{ThemeResource SystemControlHighlightAccentBrush}"
+                            BorderThickness="0"
+                            Tapped="Row_Tapped">
+                            <TextBlock VerticalAlignment="Center" Text="{Binding}" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+    </Grid>
+</Page>

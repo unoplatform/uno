@@ -299,6 +299,31 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		// UNO_PERF_CYCLE benchmark sweep: shows every snapshot-eligible sample for a fixed dwell, with
+		// PERF-NAV console markers so an external harness can attribute per-second FPS lines to samples.
+		internal async Task CycleAllSamplesForPerf(int dwellSeconds, CancellationToken ct)
+		{
+			var samples = GetSampleChooserContentsForSnapshotTests().ToArray();
+			Console.WriteLine($"PERF-CYCLE: {samples.Length} samples");
+			foreach (var sample in samples)
+			{
+				try
+				{
+					Console.WriteLine($"PERF-NAV: {sample.ControlName}");
+					ShowNewSection(ct, Section.SamplesContent);
+					SelectedLibrarySample = sample;
+					var (content, _) = await UpdateContent(ct, sample);
+					ContentPhone = content;
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine($"PERF-NAV-FAILED: {sample.ControlName}: {e.Message}");
+				}
+				await Task.Delay(TimeSpan.FromSeconds(dwellSeconds), ct);
+			}
+			Console.WriteLine("PERF-CYCLE: done");
+		}
+
 		private async Task RecordAllTestsInner(string folderName, int totalGroups, int currentGroupIndex, CancellationToken ct, Action doneAction = null)
 		{
 			try
@@ -1133,27 +1158,88 @@ namespace SampleControl.Presentation
 		}
 
 		public void SetSelectedSample(CancellationToken token, string categoryName, string sampleName)
-		{
-			var category = _allCategories.FirstOrDefault(
-				c => c.Category != null &&
-				c.Category.Equals(categoryName, StringComparison.InvariantCultureIgnoreCase));
+			=> TrySetSelectedSample(token, categoryName, sampleName);
 
-			if (category == null)
+		/// <summary>False until sample discovery has populated the categories.</summary>
+		public bool IsSampleIndexLoaded => _allCategories is not null;
+
+		/// <summary>Diagnostic dump of the sample index for launch deep-link troubleshooting.</summary>
+		public string DumpSampleIndexForDiagnostics(string categoryFilter)
+		{
+			if (_allCategories is null)
 			{
-				return;
+				return "categories not loaded";
 			}
 
-			var sample = category.SamplesContent.FirstOrDefault(
-				s => s.ControlName != null && s.ControlName.Equals(sampleName, StringComparison.InvariantCultureIgnoreCase));
+			var categories = string.Join(", ", _allCategories.Select(c => c.Category));
+			var matches = _allCategories
+				.Where(c => c.Category?.IndexOf(categoryFilter, StringComparison.OrdinalIgnoreCase) >= 0)
+				.SelectMany(c => c.SamplesContent.Select(s => $"{c.Category}/{s.ControlName}"));
+			return $"categories: {categories} || matches: {string.Join(", ", matches)}";
+		}
+
+		/// <summary>Navigates to a sample by category + control name; false when the sample isn't (yet)
+		/// known — sample discovery is async, so early callers (launch deep links) should retry.</summary>
+		public bool TrySetSelectedSample(CancellationToken token, string categoryName, string sampleName)
+		{
+			var sample = FindSample(categoryName, sampleName);
 
 			if (sample == null)
 			{
-				return;
+				return false;
 			}
 
 			ShowNewSection(token, Section.SamplesContent);
 
 			SelectedLibrarySample = sample;
+			return true;
+		}
+
+		private SampleChooserContent FindSample(string categoryName, string sampleName)
+			=> _allCategories?
+				.FirstOrDefault(c => c.Category != null && c.Category.Equals(categoryName, StringComparison.InvariantCultureIgnoreCase))
+				?.SamplesContent.FirstOrDefault(s => s.ControlName != null && s.ControlName.Equals(sampleName, StringComparison.InvariantCultureIgnoreCase));
+
+		/// <summary>
+		/// Resolves a sample from a single deep-link identifier and navigates to it. Accepts
+		/// "Category/SampleName" (as produced by the in-app share-link), a bare sample name, or a
+		/// sample's fully-qualified type name. Used for launch-argument navigation (see "sample="
+		/// in <see cref="SamplesApp.App"/>).
+		/// </summary>
+		public bool TrySelectSample(CancellationToken token, string identifier)
+		{
+			if (string.IsNullOrEmpty(identifier) || _allCategories is null)
+			{
+				return false;
+			}
+
+			var parts = identifier.Split('/', StringSplitOptions.RemoveEmptyEntries);
+			var allSamples = _allCategories.SelectMany(c => c.SamplesContent);
+
+			SampleChooserContent sample = parts.Length switch
+			{
+				2 => FindSample(parts[0], parts[1]),
+				1 => allSamples.FirstOrDefault(s =>
+					s.ControlType.FullName.Equals(identifier, StringComparison.InvariantCultureIgnoreCase) ||
+					(s.ControlName != null && s.ControlName.Equals(identifier, StringComparison.InvariantCultureIgnoreCase))),
+				_ => null,
+			};
+
+			if (sample is null)
+			{
+				Console.WriteLine($"[SampleChooser] Could not find a sample matching '{identifier}'. Use 'Category/SampleName', a sample name, or its fully-qualified type name.");
+				return false;
+			}
+
+			ShowNewSection(token, Section.SamplesContent);
+			SelectedLibrarySample = sample;
+
+			// Launching straight into a sample is a focused, one-off scenario - start with the
+			// sample list collapsed instead of covering the sample.
+			IsSplitVisible = false;
+
+			Console.WriteLine($"[SampleChooser] Navigated to sample '{sample.ControlType.FullName}'.");
+			return true;
 		}
 
 		public async Task SetSelectedSample(CancellationToken ct, string metadataName)

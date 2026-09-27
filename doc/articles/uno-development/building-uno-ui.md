@@ -112,8 +112,7 @@ Refer to the [guidelines for breaking changes](../contributing/guidelines/breaki
 
 ### Updating the Nuget packages used by the Uno.UI solution
 
-The versions used are centralized in the [Directory.Build.targets](https://github.com/unoplatform/uno/blob/master/src/Directory.Build.targets) file, and all the
-locations where `<PackageReference />` are used.
+The solution uses [NuGet Central Package Management](https://learn.microsoft.com/nuget/consume-packages/central-package-management): every package version is declared in the [Directory.Packages.props](https://github.com/unoplatform/uno/blob/master/src/Directory.Packages.props) file, and `<PackageReference />` items in project files carry no `Version`. When a project needs a different version, it sets `VersionOverride` to one of the named version properties defined in that same file.
 
 When updating the versions of NuGet packages, make sure to update all the .nuspec files in the [`build/nuget` folder](https://github.com/unoplatform/uno/tree/master/build/nuget).
 

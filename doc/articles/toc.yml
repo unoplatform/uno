@@ -402,6 +402,8 @@
             href: uno-development/themeresource-internals.md
           - name: InteractionTracker internals
             href: uno-development/interaction-tracker-internals.md
+          - name: TextBox caret and selection
+            href: uno-development/textbox-caret-selection-internals.md
       - name: Building Uno.UI
         href: uno-development/building-uno-ui.md
       - name: Debugging Uno.UI

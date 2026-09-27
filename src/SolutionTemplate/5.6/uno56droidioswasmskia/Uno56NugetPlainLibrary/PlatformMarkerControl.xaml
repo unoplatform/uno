@@ -1,0 +1,30 @@
+<UserControl
+    x:Class="UnoPlainLibrary.PlatformMarkerControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:android="http://uno.ui/android"
+    xmlns:ios="http://uno.ui/ios"
+    xmlns:wasm="http://uno.ui/wasm"
+    xmlns:desktop="http://uno.ui/desktop"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:not_ios="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:not_wasm="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:not_desktop="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:not_win="http://uno.ui/not_win"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="android ios wasm desktop not_win">
+
+  <StackPanel x:Name="Markers">
+    <android:TextBlock Text="android" />
+    <ios:TextBlock Text="ios" />
+    <wasm:TextBlock Text="wasm" />
+    <desktop:TextBlock Text="desktop" />
+    <win:TextBlock Text="win" />
+    <not_android:TextBlock Text="not_android" />
+    <not_ios:TextBlock Text="not_ios" />
+    <not_wasm:TextBlock Text="not_wasm" />
+    <not_desktop:TextBlock Text="not_desktop" />
+    <not_win:TextBlock Text="not_win" />
+  </StackPanel>
+</UserControl>

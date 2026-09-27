@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Native;
 using Windows.ApplicationModel.Activation;
@@ -16,6 +15,14 @@ using Windows.Foundation;
 
 namespace Uno.UI.Runtime.Skia
 {
+	/// <summary>The framebuffer's on-device pixel layout, decoupled from any rendering backend.</summary>
+	internal enum FramebufferColorFormat
+	{
+		Bgra8888,
+		Rgba8888,
+		Rgb565,
+	}
+
 	/// <summary>
 	/// Linux FrameBuffer device support
 	/// </summary>
@@ -40,7 +47,7 @@ namespace Uno.UI.Runtime.Skia
 		/// <summary>
 		/// Pixel format information
 		/// </summary>
-		public SKColorType PixelFormat =>
+		public FramebufferColorFormat PixelFormat =>
 			_screenInfo.bits_per_pixel switch
 			{
 				// 32 bits
@@ -64,8 +71,8 @@ namespace Uno.UI.Runtime.Skia
 				//		  transp.msb_right = 0
 				32 => _screenInfo.blue.offset switch
 				{
-					0 => SKColorType.Bgra8888,
-					16 => SKColorType.Rgba8888,
+					0 => FramebufferColorFormat.Bgra8888,
+					16 => FramebufferColorFormat.Rgba8888,
 					_ => throw new NotSupportedException($"Framebuffer configuration with blue offset of {_screenInfo.blue.offset} is not yet supported")
 				},
 
@@ -90,7 +97,7 @@ namespace Uno.UI.Runtime.Skia
 				//	  transp.msb_right = 0
 
 				16 => _screenInfo.red.offset == 11
-					? SKColorType.Rgb565
+					? FramebufferColorFormat.Rgb565
 					: throw new NotSupportedException($"RGB555 is not supported by Uno Platform"),
 
 				_ => throw new NotSupportedException($"{_screenInfo.bits_per_pixel} bpp framebuffer is not supported"),

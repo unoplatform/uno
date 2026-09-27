@@ -85,7 +85,14 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBoxCore core) => !core.AcceptsReturn;
 
 	public override CGRect GetCaretRectForPosition(UITextPosition? position)
-		=> InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType) ? Bounds : base.GetCaretRectForPosition(position);
+	{
+		if (_floatingCursor.IsActive)
+		{
+			return InvisibleTextBoxFloatingCursor.DragCaretRect;
+		}
+
+		return InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType) ? base.Bounds : base.GetCaretRectForPosition(position);
+	}
 
 	public override void Paste(NSObject? sender) => HandlePaste(() => base.Paste(sender));
 
@@ -198,6 +205,23 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		return result;
 	}
 
+	public void SetKeyboardAccessoryView(UIView? accessoryView)
+	{
+		if (InputAccessoryView == accessoryView)
+		{
+			return;
+		}
+
+		InputAccessoryView = accessoryView;
+
+		// Setting it before the view becomes first responder is enough for the keyboard to come up
+		// with the accessory; changing it during an editing session needs the input views reloaded.
+		if (IsFirstResponder)
+		{
+			ReloadInputViews();
+		}
+	}
+
 	public void Select(int start, int length)
 	{
 		try
@@ -222,13 +246,38 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			if (textBoxView != null && SelectedTextRange != value)
 			{
 				NativeTextSelection.SetSelectedTextRange(this, value);
-				if (!_settingSelectionFromManaged)
+				if (!_settingSelectionFromManaged && !textBoxView.IsCaretDragActive)
 				{
 					textBoxView.SyncSelectionToTextBox();
 				}
 			}
 		}
 	}
+
+	#region Floating cursor (space-bar trackpad gesture)
+
+	private readonly InvisibleTextBoxFloatingCursor _floatingCursor = new();
+
+	// UIKit clamps the floating cursor point to these, so the control-sized bounds would stop the
+	// gesture short of the text. Reverted as soon as the drag ends.
+	public override CGRect Bounds
+	{
+		get => _floatingCursor.IsActive ? InvisibleTextBoxFloatingCursor.DragBounds : base.Bounds;
+		set => base.Bounds = value;
+	}
+
+	// No base call on purpose: UIKit would map the point against this field's system-font layout,
+	// which has no relation to the Skia-rendered text.
+	public override void BeginFloatingCursor(CGPoint point)
+		=> _floatingCursor.Begin(TextBoxViewExtension);
+
+	public override void UpdateFloatingCursor(CGPoint point)
+		=> _floatingCursor.Update(TextBoxViewExtension, point);
+
+	public override void EndFloatingCursor()
+		=> _floatingCursor.End(TextBoxViewExtension);
+
+	#endregion
 
 	#region IME Composition (UITextInput overrides)
 
@@ -270,7 +319,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	{
 		if (InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType))
 		{
-			return Bounds;
+			return base.Bounds;
 		}
 
 		var caretRect = AppleUIKitImeTextBoxExtension.Instance.GetCaretRect();

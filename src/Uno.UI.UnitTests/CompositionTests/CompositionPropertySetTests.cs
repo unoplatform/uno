@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Input;
@@ -108,17 +108,20 @@ public class CompositionPropertySetTests
 	{
 		public double RasterizationScale => 1;
 
+		// No recording happens through this double; the process default is the right fallback.
+		public Uno.UI.Composition.Drawing.IDrawingFactory Renderer => null;
+
 		public event EventHandler RasterizationScaleChanged
 		{
 			add { }
 			remove { }
 		}
 
-		public void AddDamage(SKRect bounds)
+		public void AddDamage(Windows.Foundation.Rect bounds)
 		{
 		}
 
-		public void AddDamage(SKPath region)
+		public void AddDamage(Uno.UI.Composition.Drawing.IGeometry region)
 		{
 		}
 

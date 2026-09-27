@@ -17,7 +17,7 @@
     <ApplicationVersion>1</ApplicationVersion>
     <AndroidManifest>Android\AndroidManifest.xml</AndroidManifest>
     <IsUnoHead>true</IsUnoHead>
-    <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net11.0-ios'">26.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net11.0-ios'">15.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net11.0-android'">24.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(RuntimeIdentifier)'==''">

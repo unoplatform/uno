@@ -109,7 +109,6 @@ namespace Microsoft.UI.Xaml.Tests.Common
 				this.AddEvent();
 			});
 
-#if !__WASM__
 			// SkiaWasm can't call .Wait() on .NET 11: it throws PlatformNotSupportedException.
 			if (!OperatingSystem.IsBrowser())
 			{
@@ -122,7 +121,6 @@ namespace Microsoft.UI.Xaml.Tests.Common
 					this.CaptureScreenAsync("Before").Wait(this.DefaultTimeout);
 				}
 			}
-#endif
 
 			// In local testing, given `class Example { public event MyDelegateType E; }`, where EventTester<Example, …>` is used --
 			// thus adding `Example.E` to reflection metadata -- then `MyDelegateType.Invoke` is *also* present in reflection metadata.
@@ -389,17 +387,6 @@ namespace Microsoft.UI.Xaml.Tests.Common
 		{
 			var tcs = new TaskCompletionSource<bool>();
 
-#if __WASM__
-			var sw = Stopwatch.StartNew();
-
-			var result = false;
-			while (!(result = await this.resetEvent.WaitOne(0)) && sw.Elapsed < timeout)
-			{
-				Console.WriteLine("waiting...");
-				await Task.Delay(100);
-			}
-
-#else
 			Console.WriteLine("Before StartNew...");
 			await Task.Factory.StartNew(async () =>
 			{
@@ -414,7 +401,6 @@ namespace Microsoft.UI.Xaml.Tests.Common
 			});
 
 			var result = await tcs.Task;
-#endif
 
 			if (!result)
 			{
@@ -488,7 +474,6 @@ namespace Microsoft.UI.Xaml.Tests.Common
 					//	Log.Comment($"Disposing Event '{this.eventName}', executions count: {this.ExecuteCount}");
 					//}
 
-#if !__WASM__
 					// SkiaWasm can't call .Wait() on .NET 11: it throws PlatformNotSupportedException.
 					if (!OperatingSystem.IsBrowser())
 					{
@@ -501,7 +486,6 @@ namespace Microsoft.UI.Xaml.Tests.Common
 							this.CaptureScreenAsync("After").Wait(this.DefaultTimeout);
 						}
 					}
-#endif
 
 					resetEvent.Dispose();
 					this.isDisposing = false;

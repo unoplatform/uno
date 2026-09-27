@@ -81,6 +81,7 @@ internal sealed class HostHealthTool
 					Version = GetAssemblyVersion(),
 				};
 			})
+			.WithHttpTransport()
 			.WithTools<HostHealthTool>()
 			.WithListResourcesHandler((ctx, ct) =>
 			{

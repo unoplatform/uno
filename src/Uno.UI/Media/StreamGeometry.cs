@@ -8,9 +8,8 @@ using Uno.UI.Extensions;
 
 #if __SKIA__
 using Microsoft.UI.Composition;
-using Path = SkiaSharp.SKPath;
-using SkiaSharp;
-using Uno.UI.UI.Xaml.Media;
+using Path = Uno.UI.Composition.Drawing.IGeometry;
+using Uno.UI.Composition.Drawing;
 #else
 using Path = System.Object;
 #endif
@@ -29,34 +28,46 @@ namespace Uno.Media
 			return new PathStreamGeometryContext(this);
 		}
 
-		internal void Close(Path bezierPath_)
+#if __SKIA__
+		private IPathBuilder _pendingBuilder;
+
+		// The winding rule is baked in at Build time, so the build waits for the first read: the rule is only
+		// known from the markup after the context has closed (Uno.Media.Parsers, and any caller assigning
+		// FillRule after its using block), and a built geometry can no longer be re-ruled.
+		internal void Close(IPathBuilder builder)
 		{
-			bezierPath = bezierPath_;
+			_pendingBuilder = builder;
+			bezierPath = null;
 		}
 
-#if __SKIA__
-		internal override SKPath GetSKPath()
+		private Path EnsureGeometry()
 		{
-			bezierPath.FillType = FillRule.ToSkiaFillType();
+			if (bezierPath is null && _pendingBuilder is { } builder)
+			{
+				builder.FillRule = FillRule == FillRule.EvenOdd ? GeometryFillRule.EvenOdd : GeometryFillRule.NonZero;
+				bezierPath = builder.Build();
+				_pendingBuilder = null;
+			}
+
 			return bezierPath;
 		}
 
+		internal override IGeometry GetGeometry() => EnsureGeometry();
+
 		private protected override Windows.Foundation.Rect ComputeBounds()
 		{
-			if (bezierPath is null)
+			if (EnsureGeometry() is not { IsEmpty: false } geometry)
 			{
 				return default;
 			}
 
-			var path = GetSKPath();
-			if (path.IsEmpty)
-			{
-				return default;
-			}
-
-			var b = path.Bounds;
-			var rect = new Windows.Foundation.Rect(b.Left, b.Top, b.Width, b.Height);
+			var rect = geometry.Bounds;
 			return Transform is { } transform ? transform.TransformBounds(rect) : rect;
+		}
+#else
+		internal void Close(Path bezierPath_)
+		{
+			bezierPath = bezierPath_;
 		}
 #endif
 

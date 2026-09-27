@@ -4,6 +4,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using DirectUI;
@@ -61,7 +62,7 @@ partial class InputManager
 				_inputManager.LastInputDeviceType = InputDeviceType.Keyboard;
 			}
 
-			var originalSource1 = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
+			var originalSource1 = GetKeyRoutedSource(FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot));
 
 			var routedArgs = new KeyRoutedEventArgs(originalSource1, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
 			{
@@ -72,7 +73,22 @@ partial class InputManager
 			originalSource1.RaiseTunnelingEvent(down ? UIElement.PreviewKeyDownEvent : UIElement.PreviewKeyUpEvent, routedArgs);
 
 			// On WinUI, if the focus changes during PreviewKey<Down|Up>, the Key<Up|Down> event bubbles from the new focused element.
-			var originalSource2 = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
+			var focusedElement = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot);
+			var originalSource2 = GetKeyRoutedSource(focusedElement);
+
+			// A focused text element is not a UIElement, so Uno hands it the key here; WinUI's CHyperlink
+			// registers its own KeyDown/KeyUp listeners on itself instead (Hyperlink.cpp).
+			if (!routedArgs.Handled && focusedElement is TextElement focusedTextElement)
+			{
+				if (down)
+				{
+					focusedTextElement.OnKeyDown(args.VirtualKey);
+				}
+				else
+				{
+					focusedTextElement.OnKeyUp(args.VirtualKey);
+				}
+			}
 
 			// WinUI doesn't reuse the same args object, but creates a new routed args object and copies the Handled value
 			// To reduce allocations, we reuse the same routed args object twice.
@@ -132,7 +148,7 @@ partial class InputManager
 
 		private void RaiseCharacterReceived(char character, CorePhysicalKeyStatus keyStatus)
 		{
-			var originalSource = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
+			var originalSource = GetKeyRoutedSource(FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot));
 
 			var routedArgs = new CharacterReceivedRoutedEventArgs(originalSource, character, keyStatus)
 			{
@@ -141,6 +157,13 @@ partial class InputManager
 
 			originalSource.RaiseEvent(UIElement.CharacterReceivedEvent, routedArgs);
 		}
+
+		// A focused text element is not a UIElement; like WinUI's walk through non-public parents, its key
+		// events bubble from the control whose inline tree holds it.
+		private UIElement GetKeyRoutedSource(object focusedElement)
+			=> focusedElement as UIElement
+				?? (focusedElement as TextElement)?.GetContainingFrameworkElement()
+				?? _inputManager.ContentRoot.VisualTree.RootElement;
 
 		/// <summary>
 		/// ONLY USE THIS FOR TESTS

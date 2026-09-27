@@ -28,7 +28,7 @@ Determine what to run from the user's input:
 - **Specific test method**: e.g., `Given_Button.When_ContentSet` → resolve to fully qualified name
 - **Multiple tests**: Pipe-separated list of fully qualified names
 
-If the user provides partial names, search `src/Uno.UI.RuntimeTests/Tests/` to resolve fully qualified test names (namespace + class + method).
+If the user provides partial names, search `src/Uno.UI.RuntimeTests/` to resolve fully qualified test names (namespace + class + method).
 
 **Determine target platform** from user input. Supported platforms:
 
@@ -43,22 +43,22 @@ Choose **Skia WASM** only when:
 - The user explicitly asks for WASM/browser testing, OR
 - The bug or behavior is WASM-specific (e.g., DOM interaction, browser rendering, JS interop)
 
-**Strict mode**: If the user input contains the keyword `strict`, omit the `-p:UnoFastDevBuild=true` and `-p:UnoTargetFrameworkOverride=net10.0` flags from the build command in Phase 1 so the build runs with full CI-equivalent analyzer coverage and all cross-targeted TFMs. Use this only when verifying that a change still compiles cleanly under CI strictness — for normal iteration the default (fast) flags should be left on.
+**Strict mode**: If the user input contains the keyword `strict`, omit the `-p:UnoFastDevBuild=true` and `-p:UnoTargetFrameworkOverride=net11.0-desktop` flags from the build command in Phase 1 so the build runs with full CI-equivalent analyzer coverage and all cross-targeted TFMs. Use this only when verifying that a change still compiles cleanly under CI strictness — for normal iteration the default (fast) flags should be left on.
 
 ### Phase 1: Build the Test App
 
 **CRITICAL**: Set timeout to 15+ minutes. **NEVER cancel builds.**
 
-The default build commands below pass `-p:UnoFastDevBuild=true` (disables analyzers for local iteration — has no effect on CI) and `-p:UnoTargetFrameworkOverride=net10.0` (skips the redundant net9.0 cross-targeted output for Skia libraries). Combined, these cut a clean `SamplesApp.Skia.Generic` build from ~3:23 → ~1:59 and a Uno.UI-incremental rebuild from ~2:23 → ~0:58 on a 32-core Windows machine. Omit both flags if the user requested `strict` mode (see Phase 0).
+The default build commands below pass `-p:UnoFastDevBuild=true` (disables analyzers for local iteration — has no effect on CI) and `-p:UnoTargetFrameworkOverride=net11.0-desktop` (skips the redundant cross-targeted output for Skia libraries). Combined, these cut a clean `SamplesApp` desktop build from ~3:23 → ~1:59 and a Uno.UI-incremental rebuild from ~2:23 → ~0:58 on a 32-core Windows machine. Omit both flags if the user requested `strict` mode (see Phase 0).
 
 #### Skia Desktop (default)
 ```bash
-dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0
+dotnet build src/SamplesApp/SamplesApp/SamplesApp.csproj -c Release -f net11.0-desktop -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net11.0-desktop
 ```
 
 #### Skia WASM
 ```bash
-dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0
+dotnet publish src/SamplesApp/SamplesApp/SamplesApp.csproj -c Release -f net11.0-browserwasm -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net11.0-browserwasm
 ```
 
 Note: WASM requires `publish` (not just `build`) to produce the static web assets needed for hosting.
@@ -105,13 +105,13 @@ If running specific tests (not all tests):
 
 Navigate to the build output and execute:
 ```bash
-cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+cd src/SamplesApp/SamplesApp/bin/Release/net11.0-desktop
+dotnet SamplesApp.dll --runtime-tests=test-results.xml
 ```
 
 If running filtered tests, set the env var first:
 ```bash
-export UITEST_RUNTIME_TESTS_FILTER=$(echo -n "fully.qualified.TestName" | base64) && cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0 && dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+export UITEST_RUNTIME_TESTS_FILTER=$(echo -n "fully.qualified.TestName" | base64) && cd src/SamplesApp/SamplesApp/bin/Release/net11.0-desktop && dotnet SamplesApp.dll --runtime-tests=test-results.xml
 ```
 
 Results are output in NUnit XML format to `test-results.xml` (relative to CWD).
@@ -122,7 +122,7 @@ WASM tests run in a browser. The published app is served over HTTP, and test par
 
 **Step 1: Locate the publish output**
 ```bash
-PUBLISH_DIR="src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/bin/Release/net10.0/publish/wwwroot"
+PUBLISH_DIR="src/SamplesApp/SamplesApp/bin/Release/net11.0-browserwasm/publish/wwwroot"
 ```
 
 **Step 2: Start the HTTP file server and the file-creation companion server**
@@ -220,9 +220,9 @@ kill $HTTP_PID $COMPANION_PID 2>/dev/null || true
 
 | | Skia Desktop | Skia WASM |
 |-|-------------|-----------|
-| **Project** | `SamplesApp.Skia.Generic` | `SamplesApp.Skia.WebAssembly.Browser` |
-| **Build command** | `dotnet build ... -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0` | `dotnet publish ... -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0` |
-| **Run method** | `dotnet SamplesApp.Skia.Generic.dll --runtime-tests=...` | Browser navigates to URL with query params |
+| **Project** | `SamplesApp` (`net11.0-desktop`) | `SamplesApp` (`net11.0-browserwasm`) |
+| **Build command** | `dotnet build ... -c Release -f net11.0-desktop -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net11.0-desktop` | `dotnet publish ... -c Release -f net11.0-browserwasm -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net11.0-browserwasm` |
+| **Run method** | `dotnet SamplesApp.dll --runtime-tests=...` | Browser navigates to URL with query params |
 | **Filter delivery** | `UITEST_RUNTIME_TESTS_FILTER` env var | `--runtime-test-filter` URL query param |
 | **Base64 `=` handling** | Standard base64 | Replace `=` with `!` before URL-encoding |
 | **Results delivery** | Written directly to disk | Written via companion HTTP server on port+1 |
@@ -247,7 +247,7 @@ kill $HTTP_PID $COMPANION_PID 2>/dev/null || true
 - Entry point: `src/SamplesApp/SamplesApp.Shared/App.Tests.cs`
 - Filter decoding: `src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UITests/Presentation/SampleChooserViewModel.cs`
 - Config: `src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UnitTest/UnitTestEngineConfig.cs`
-- Test location: `src/Uno.UI.RuntimeTests/Tests/`
+- Test location: `src/Uno.UI.RuntimeTests/`
 - WASM CI script: `build/test-scripts/wasm-run-skia-runtime-tests.sh`
 - WASM companion server: `build/test-scripts/skia-browserwasm-file-creation-server.py`
 - Test-authoring conventions: `.claude/rules/runtime-tests.md`

@@ -163,6 +163,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		#region Click
 		private Pointer _pressedPointer;
+		private bool _isLinkNavigationKeyDown;
 		internal void SetPointerPressed(Pointer pointer)
 		{
 			_pressedPointer = pointer;
@@ -182,6 +183,30 @@ namespace Microsoft.UI.Xaml.Documents
 			else
 			{
 				return false;
+			}
+		}
+
+		// CHyperlink::IsLinkNavigationKey
+		private static bool IsLinkNavigationKey(VirtualKey key) => key is VirtualKey.Enter or VirtualKey.Space;
+
+		// CHyperlink::KeyDownEventListener - leaves the event unhandled, so it keeps bubbling to the host.
+		internal override void OnKeyDown(VirtualKey key)
+		{
+			if (IsLinkNavigationKey(key))
+			{
+				_isLinkNavigationKeyDown = true;
+				SetCurrentForeground();
+			}
+		}
+
+		// CHyperlink::KeyUpEventListener - only navigate when this link saw a navigation key down.
+		internal override void OnKeyUp(VirtualKey key)
+		{
+			if (_isLinkNavigationKeyDown && IsLinkNavigationKey(key))
+			{
+				_isLinkNavigationKeyDown = false;
+				SetCurrentForeground();
+				OnClick();
 			}
 		}
 
@@ -226,7 +251,8 @@ namespace Microsoft.UI.Xaml.Documents
 			var core = Uno.UI.Xaml.Core.CoreServices.Instance;
 			var ownerTheme = ThemeResolution.ResolveOwnerTheme(GetContainingFrameworkElement());
 
-			if (_pressedPointer is { })
+			// HYPERLINK_PRESSED covers both a held pointer and a held navigation key.
+			if (_pressedPointer is { } || _isLinkNavigationKeyDown)
 			{
 				var pressedBrush = core.LookupThemeResource(ownerTheme, HyperlinkForegroundPressedKey)
 					?? core.LookupThemeResource(ownerTheme, "SystemControlHighlightBaseMediumLowBrush");

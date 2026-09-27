@@ -62,6 +62,12 @@ namespace Uno.UI
 		private static readonly ConditionalWeakTable<ResourceDictionary, HighContrastResourceState>
 			_highContrastResourceStates = [];
 
+		/// <summary>
+		/// <see cref="ConditionalWeakTable{TKey, TValue}"/> exposes no count. This one only drops on an explicit
+		/// removal, so entries lost to GC keep it above zero and just cost a no-op restore walk.
+		/// </summary>
+		private static int _highContrastResourceStateCount;
+
 		private static readonly object _alcDictionariesLock = new();
 
 		private static int _assemblyRef = -1;
@@ -451,7 +457,12 @@ namespace Uno.UI
 			// (bindingPath.DataContext is the setter target), scoped onto the core
 			// requested-theme-for-subtree slot like WinUI's LookupThemeResource(theme, key); the
 			// resolution leaf reads the slot (EnsureActiveThemeDictionary, Resources.cpp:764-768).
-			var ownerTheme = ThemeResolution.ResolveOwnerTheme(bindingPath.DataContext as DependencyObject);
+			// When a previous state entry applied a RequestedTheme boundary onto the target that is
+			// still active (state re-entry), resolve outside that boundary instead (#24021).
+			var target = bindingPath.DataContext as DependencyObject;
+			var ownerTheme =
+				target?.GetVisualStateSetterResolutionTheme()
+				?? ThemeResolution.ResolveOwnerTheme(target);
 			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
 			if (TryVisualTreeRetrieval(resourceKey, context, out var value, out var providingDictionary)
 				&& bindingPath.DataContext != null)
@@ -1271,8 +1282,25 @@ namespace Uno.UI
 			IReadOnlyList<ColorAndBrushResourceInfo> resources,
 			bool restoreDefaults = false)
 		{
+			// An override is only ever recorded while high contrast is active, so restoring defaults
+			// while none is recorded cannot change a value. Skipping the walk keeps the HighContrast
+			// theme dictionaries lazy, which is what this costs at startup on a normal machine.
+			if (restoreDefaults && _highContrastResourceStateCount == 0)
+			{
+				return;
+			}
+
 			var visited = new HashSet<ResourceDictionary>(ReferenceEqualityComparer.Instance);
 			UpdateSystemColorAndBrushResourcesCore(rootDictionary, resources, restoreDefaults, visited);
+		}
+
+		/// <summary>
+		/// Test hook: forgets all recorded high-contrast overrides so tests don't leak state into each other.
+		/// </summary>
+		internal static void ResetHighContrastResourceStates()
+		{
+			_highContrastResourceStates.Clear();
+			_highContrastResourceStateCount = 0;
 		}
 
 		private static void UpdateSystemColorAndBrushResourcesCore(
@@ -1342,7 +1370,11 @@ namespace Uno.UI
 					{
 						state ??= _highContrastResourceStates.GetValue(
 							themeDictionary,
-							static _ => new HighContrastResourceState());
+							static _ =>
+							{
+								_highContrastResourceStateCount++;
+								return new HighContrastResourceState();
+							});
 						var targetColor = state.GetTargetColor(
 							resource.ColorKey,
 							currentColor,
@@ -1361,7 +1393,11 @@ namespace Uno.UI
 					{
 						state ??= _highContrastResourceStates.GetValue(
 							themeDictionary,
-							static _ => new HighContrastResourceState());
+							static _ =>
+							{
+								_highContrastResourceStateCount++;
+								return new HighContrastResourceState();
+							});
 						var targetColor = state.GetTargetColor(
 							brushKey,
 							brush.Color,
@@ -1374,9 +1410,9 @@ namespace Uno.UI
 					}
 				}
 
-				if (restoreDefaults && state is not null)
+				if (restoreDefaults && state is not null && _highContrastResourceStates.Remove(themeDictionary))
 				{
-					_highContrastResourceStates.Remove(themeDictionary);
+					_highContrastResourceStateCount--;
 				}
 			}
 

@@ -61,6 +61,12 @@ namespace Uno.UI.Tests
 			icuType?
 				.GetMethod("SetDataAssembly", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
 				?.Invoke(null, new object[] { typeof(Global).Assembly });
+
+			// The drawing seams are installed by the host builder, which this process never runs. Register the
+			// managed engine (already referenced) so XAML that materializes geometry or measures text works.
+			global::Uno.UI.Composition.Drawing.GeometryFactory.RegisterDefault(new global::Uno.UI.Composition.Drawing.ManagedGeometryFactory());
+			global::Uno.UI.Composition.Drawing.FontProvider.RegisterDefault(new global::Uno.UI.Composition.Drawing.ManagedFontProvider());
+			global::Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current = new global::Uno.UI.Composition.Drawing.ManagedImageDecoderBackend();
 		}
 	}
 }

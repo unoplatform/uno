@@ -257,6 +257,15 @@ namespace Uno.UI
 
 		internal static Rect DeflateBy(this Rect left, Thickness right) => left.InflateBy(right.GetInverse());
 
+		/// <summary>
+		/// Determines whether <paramref name="right"/> is entirely contained within <paramref name="left"/>.
+		/// </summary>
+		internal static bool Contains(this Rect left, Rect right)
+			=> right.Left >= left.Left
+				&& right.Top >= left.Top
+				&& right.Right <= left.Right
+				&& right.Bottom <= left.Bottom;
+
 		internal static double NumberOrDefault(this double value, double defaultValue)
 		{
 			return IsNaN(value)

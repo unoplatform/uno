@@ -63,12 +63,12 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 			TestWebView.NavigateToString(HtmlContent);
 		}
 
-		private void OnNavigationCompleted(WebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
+		private void OnNavigationCompleted(Microsoft.UI.Xaml.Controls.WebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
 		{
 			LogMessage($"[Navigation completed, success={args.IsSuccess}]");
 		}
 
-		private void OnWebMessageReceived(WebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
+		private void OnWebMessageReceived(Microsoft.UI.Xaml.Controls.WebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
 		{
 			var message = args.TryGetWebMessageAsString();
 			LogMessage($"#{++_messageCount}: {message}");

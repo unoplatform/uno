@@ -36,7 +36,6 @@ internal partial class X11XamlRootHost
 		while (_renderLoopRunning)
 		{
 			_renderRequested.WaitOne();
-
 			_framePacer.OnFrameStart();
 			_renderer?.Render();
 		}

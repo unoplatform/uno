@@ -16,6 +16,8 @@ namespace Uno.UI.Xaml.Controls;
 
 internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 {
+	public virtual bool IsClosingCancellable => NativeWindowFactory.SupportsClosingCancellation;
+
 	public const int InitialWidth = 1024;
 	public const int InitialHeight = 640;
 

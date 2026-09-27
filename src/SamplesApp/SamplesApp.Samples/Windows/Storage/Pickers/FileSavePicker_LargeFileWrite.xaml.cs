@@ -30,7 +30,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			this.Loaded += (_, _) => UpdatePickerModeText();
 			this.Unloaded += (_, _) =>
 			{
-#if __CROSSRUNTIME__
+#if __WASM__
 				WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApiWithFallback;
 #endif
 			};
@@ -38,7 +38,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		private void OnPickerModeChanged(object sender, RoutedEventArgs e)
 		{
-#if __CROSSRUNTIME__
+#if __WASM__
 			// The configuration is a global that other picker samples also set, so make
 			// this sample's mode explicit rather than inheriting whatever ran before.
 			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = ForceDownloadFallback.IsChecked == true
@@ -50,7 +50,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		private void UpdatePickerModeText()
 		{
-#if __CROSSRUNTIME__
+#if __WASM__
 			if (OperatingSystem.IsBrowser())
 			{
 				var configuration = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;

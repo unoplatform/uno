@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FlipView
+	public partial class FlipView : global::Microsoft.UI.Xaml.Controls.Primitives.Selector
 	{
 		// Skipping already declared property UseTouchAnimationsForAllNavigationProperty
 		// Skipping already declared property UseTouchAnimationsForAllNavigation

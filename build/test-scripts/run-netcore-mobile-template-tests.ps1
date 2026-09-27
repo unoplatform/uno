@@ -69,25 +69,8 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
 
     popd
 
-    # XAML Trimming build smoke test
-    # See https://github.com/unoplatform/uno/issues/9632
-    # dotnet publish -c Debug -r win-x64 -p:PublishTrimmed=true -p:SelfContained=true -p:UnoXamlResourcesTrimming=true MyAppXamlTrim\MyAppXamlTrim.Skia.Gtk\MyAppXamlTrim.Skia.Gtk.csproj
-    # Assert-ExitCodeIsZero
-    # 
-    # dotnet run -c Debug --project src\Uno.XamlTrimmingValidator\Uno.XamlTrimmingValidator.csproj -- --hints-file=build\assets\MyAppXamlTrim-hints.txt --target-assembly=MyAppXamlTrim\MyAppXamlTrim.Skia.Gtk\bin\Debug\net6.0\win-x64\publish\Uno.UI.dll
-    # Assert-ExitCodeIsZero
-
     if ($IsWindows) 
     {
-        dotnet build MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj -c Release -p:UnoXamlResourcesTrimming=true -p:WasmShellGenerateCompressedFiles=false -p:WasmShellILLinkerEnabled=true -bl:binlogs/MyAppXamlTrim.Wasm/release/msbuild.binlog
-        Assert-ExitCodeIsZero
-
-        dotnet run --project ..\Uno.ResourceTrimmingValidator\Uno.ResourceTrimmingValidator.csproj -- -a (Get-ChildItem MyAppXamlTrim.Wasm.clr -Recurse).FullName -r Strings.en.Resources.upri -x Strings.fr.Resources.upri
-        Assert-ExitCodeIsZero
-
-        dotnet run --project ..\Uno.ResourceTrimmingValidator\Uno.ResourceTrimmingValidator.csproj -- -a (Get-ChildItem Uno.UI.clr -Recurse).FullName -r Resources.Strings.en.Resources.upri -r UI.Xaml.DragDrop.Strings.en-US.Resources.upri -x Resources.Strings.cs-CZ.Resources.upri
-        Assert-ExitCodeIsZero
-
         # Uno Library
         # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
         $responseFile = @(
@@ -219,11 +202,15 @@ $projects =
     # 5.6 net-current with XAML trimming validation - wasm
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-browserwasm", "-p:UnoXamlResourcesTrimming=true", "-p:WasmShellILLinkerEnabled=true"), @("macOS", "NetCore", "Publish")),
 
-    # 5.6 multi-platform template - covers the Android application head (Platforms/Android).
-    # The app carries a PackageReference on Uno56NugetLibrary, so that package must be packed
-    # into the "Solution Packages" feed before the app can restore.
+    # 5.6 multi-platform template - covers the Android, iOS and WinAppSDK application heads.
+    # The app references a multi-targeted package (Uno56NugetLibrary) and a plain net11.0 one
+    # (Uno56NugetPlainLibrary), so both must be packed into the "Solution Packages" feed before the app
+    # can restore. The app validates that every head uses each package's own TFM asset.
     @(3, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore", "CleanNugetTemp", "NoBuildClean")),
+    @(3, "5.6/uno56droidioswasmskia/Uno56NugetPlainLibrary/Uno56NugetPlainLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore", "CleanNugetTemp", "NoBuildClean")),
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-f", "net11.0-android"), @("macOS", "NetCore")),
+    @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-f", "net11.0-ios"), @("macOS", "NetCore")),
+    @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-p:Platform=x64", "-p:TargetFramework=net11.0-windows10.0.26100"), @()),
 
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0"), @("macOS", "NetCore")),

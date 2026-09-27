@@ -14,6 +14,7 @@ namespace Uno.UI.Runtime.Skia {
 
 		// Managed callbacks from C#
 		private static managedEnableAccessibility: any;
+		private static managedDisableAccessibility: any;
 		private static managedOnScroll: any;
 		private static managedOnInvoke: any;
 		private static managedOnToggle: any;
@@ -65,6 +66,7 @@ namespace Uno.UI.Runtime.Skia {
 			// Wire up managed callbacks from WebAssemblyAccessibility.cs
 			const accessibilityExports = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility;
 			this.managedEnableAccessibility = accessibilityExports.EnableAccessibility;
+			this.managedDisableAccessibility = accessibilityExports.DisableAccessibility;
 			this.managedIsAutoEnableAccessibility = accessibilityExports.IsAutoEnableAccessibility;
 			this.managedOnScroll = accessibilityExports.OnScroll;
 			this.managedOnInvoke = accessibilityExports.OnInvoke;
@@ -88,27 +90,7 @@ namespace Uno.UI.Runtime.Skia {
 			const autoEnable = this.managedIsAutoEnableAccessibility();
 
 			if (!autoEnable) {
-				// Create enable accessibility button (for screen reader activation)
-				this.enableAccessibilityButton = document.createElement("div");
-				this.enableAccessibilityButton.id = "uno-enable-accessibility";
-				this.enableAccessibilityButton.setAttribute("aria-live", "polite");
-				this.enableAccessibilityButton.setAttribute("role", "button");
-				this.enableAccessibilityButton.setAttribute("tabindex", "0");
-				this.enableAccessibilityButton.setAttribute("aria-label", "Enable accessibility");
-				this.enableAccessibilityButton.addEventListener("click", this.onEnableAccessibilityButtonClicked.bind(this));
-
-				// Also add a keydown listener so keyboard users can activate it via Enter/Space
-				this.enableAccessibilityButton.addEventListener("keydown", (e) => {
-					if (e.key === "Enter" || e.key === " ") {
-						e.preventDefault();
-						this.onEnableAccessibilityButtonClicked(e as any);
-					}
-				});
-
-				// Prepend so the button is the first focusable element in the DOM,
-				// reachable by the very first Tab press (inspired by Flutter's
-				// DesktopSemanticsEnabler which prepends its placeholder to <body>).
-				this.containerElement.prepend(this.enableAccessibilityButton);
+				Accessibility.addEnableAccessibilityButton();
 			}
 
 			// Create semantic DOM root container (hidden but accessible).
@@ -260,6 +242,59 @@ namespace Uno.UI.Runtime.Skia {
 					ariaLiveElement.removeChild(child);
 				}
 			}, 300);
+		}
+
+		private static addEnableAccessibilityButton() {
+			// Create enable accessibility button (for screen reader activation)
+			this.enableAccessibilityButton = document.createElement("div");
+			this.enableAccessibilityButton.id = "uno-enable-accessibility";
+			this.enableAccessibilityButton.setAttribute("aria-live", "polite");
+			this.enableAccessibilityButton.setAttribute("role", "button");
+			this.enableAccessibilityButton.setAttribute("tabindex", "0");
+			this.enableAccessibilityButton.setAttribute("aria-label", "Enable accessibility");
+			this.enableAccessibilityButton.addEventListener("click", this.onEnableAccessibilityButtonClicked.bind(this));
+
+			// Also add a keydown listener so keyboard users can activate it via Enter/Space
+			this.enableAccessibilityButton.addEventListener("keydown", (e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					e.preventDefault();
+					this.onEnableAccessibilityButtonClicked(e as any);
+				}
+			});
+
+			// Prepend so the button is the first focusable element in the DOM,
+			// reachable by the very first Tab press (inspired by Flutter's
+			// DesktopSemanticsEnabler which prepends its placeholder to <body>).
+			this.containerElement.prepend(this.enableAccessibilityButton);
+		}
+
+		/**
+		 * Tears the semantic DOM down again (see WebAssemblyAccessibility.DisableAccessibility).
+		 * Used by runtime tests so accessibility does not stay on for every test that follows.
+		 */
+		public static disableAccessibility() {
+			this.managedDisableAccessibility();
+		}
+
+		/**
+		 * Called by the managed side once it has unhooked itself: removes every semantic element,
+		 * the focus sentinels and the live regions, and brings the enable button back.
+		 */
+		public static resetSemanticsRoot() {
+			SemanticElements.resetVirtualizedMutations();
+			while (this.semanticsRoot?.firstChild) {
+				this.semanticsRoot.removeChild(this.semanticsRoot.firstChild);
+			}
+			this.focusSentinelStart?.remove();
+			this.focusSentinelEnd?.remove();
+			this.focusSentinelStart = null;
+			this.focusSentinelEnd = null;
+			this.isDepartingFocus = false;
+			LiveRegion.teardown();
+
+			if (!this.managedIsAutoEnableAccessibility() && !Accessibility.isEnableAccessibilityButtonActive()) {
+				Accessibility.addEnableAccessibilityButton();
+			}
 		}
 
 		/**
@@ -580,7 +615,11 @@ namespace Uno.UI.Runtime.Skia {
 				// Write the TRIMMED value so live-sync matches the creation-time path
 				// (setAriaStringAttribute) and never persists leading/trailing whitespace.
 				const trimmed = automationId ? automationId.trim() : "";
-				if (trimmed.length > 0) {
+				// WA-04: aria-labelledby takes ARIA precedence over aria-label. Never set a competing
+				// aria-label when the element is already named by aria-labelledby (order-independent
+				// with the aria-label removal in updateAriaLabelledBy) — this covers the case where a
+				// late live-update re-applies the name after the labelledby drain.
+				if (trimmed.length > 0 && !element.hasAttribute("aria-labelledby")) {
 					element.setAttribute("aria-label", trimmed);
 				} else {
 					element.removeAttribute("aria-label");
@@ -606,10 +645,14 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the ARIA landmark role on a semantic element.
 		 * VoiceOver rotor uses landmarks (main, navigation, search, etc.) for quick navigation.
 		 */
-		public static updateLandmarkRole(handle: number, role: string): void {
+		public static updateLandmarkRole(handle: number, role: string | null): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("role", role);
+				if (role) {
+					element.setAttribute("role", role);
+				} else {
+					element.removeAttribute("role");
+				}
 			}
 		}
 
@@ -620,7 +663,11 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateAriaRoleDescription(handle: number, roleDescription: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("aria-roledescription", roleDescription);
+				if (roleDescription) {
+					element.setAttribute("aria-roledescription", roleDescription);
+				} else {
+					element.removeAttribute("aria-roledescription");
+				}
 			}
 		}
 
@@ -823,6 +870,10 @@ namespace Uno.UI.Runtime.Skia {
 			if (element) {
 				if (idList) {
 					element.setAttribute("aria-labelledby", idList);
+					// WA-04: aria-labelledby takes ARIA precedence over aria-label. Remove any competing
+					// aria-label so the element is not named twice — this also handles the two-phase
+					// build where aria-label was applied before the labeller's semantic node existed.
+					element.removeAttribute("aria-label");
 				} else {
 					element.removeAttribute("aria-labelledby");
 				}

@@ -7,7 +7,7 @@ using Uno.UI;
 
 namespace Windows.System
 {
-	public partial class MemoryManager
+	public static partial class MemoryManager
 	{
 		private static ulong _appMemoryUsage;
 		private static ulong _appMemoryUsageLimit;

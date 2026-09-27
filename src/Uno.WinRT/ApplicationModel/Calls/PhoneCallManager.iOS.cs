@@ -10,7 +10,7 @@ using Windows.System;
 
 namespace Windows.ApplicationModel.Calls
 {
-	public partial class PhoneCallManager
+	public static partial class PhoneCallManager
 	{
 		private static readonly CXCallObserver _callObserver;
 

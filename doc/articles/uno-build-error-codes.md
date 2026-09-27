@@ -197,6 +197,21 @@ To suppress it:
 </PropertyGroup>
 ```
 
+### UNOB0021: A package has no version in the Uno.Sdk manifest and does not exist on nuget.org
+
+The Uno.Sdk adds some package references implicitly and takes their versions from its package manifest. When the manifest has no version for one of them, the Uno.Sdk falls back to the latest version on nuget.org. This error means that package isn't on nuget.org at all, which usually means the Uno.Sdk version you use was built against packages that are only available on a private feed.
+
+To fix this issue:
+
+- Update to a newer Uno.Sdk version, or
+- Reference the package explicitly with a version, which replaces the implicit reference (with Central Package Management, put the version in a `PackageVersion` item instead):
+
+```xml
+<ItemGroup>
+  <PackageReference Include="Uno.UI.Composition.Skia" Version="X.X.X" />
+</ItemGroup>
+```
+
 ## Compiler Errors
 
 ### UNO0001

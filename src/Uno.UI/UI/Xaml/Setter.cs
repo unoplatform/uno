@@ -199,7 +199,7 @@ namespace Microsoft.UI.Xaml
 
 		private void RefreshBindingPath()
 			// force binding value to re-evaluate the source and use converters
-			=> GetBindingExpression(InternalValueProperty)?.RefreshTarget();
+			=> GetBindingExpressionInternal(InternalValueProperty)?.RefreshTarget();
 
 		internal BindingPath? TryGetOrCreateBindingPath(IFrameworkElement owner)
 		{

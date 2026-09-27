@@ -46,7 +46,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
 		<PackageReference Include="MSTest" />
 		<PackageReference Include="AwesomeAssertions" />
-		<PackageReference Include="Moq" Version="4.17.2" />
+		<PackageReference Include="Moq" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" PrivateAssets="all" />
 		<!--
 			Text measurement on Skia uses ICU. A real Skia host pulls the native ICU
@@ -87,6 +87,9 @@
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="Lottie\animation.json" />
+		<EmbeddedResource Include="Lottie\animation-null-members.json" />
+		<EmbeddedResource Include="Lottie\animation-numbers.json" />
+		<EmbeddedResource Include="Lottie\animation-trailing-comma.json" />
 		<EmbeddedResource Include="Windows_Data_Xml\DomTests\basictest.xml" />
 		<EmbeddedResource Include="Windows_UI_XAML_Controls\UserControlTests\UserControl_WriteOnlyProperty_UserControl.xaml">
 			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
@@ -97,15 +100,15 @@
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
 	<ItemGroup>
-		<Page Include="..\SamplesApp\SamplesApp.Samples\Windows\UI\Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
+		<Page Include="..\SamplesApp\SamplesApp.Samples\Microsoft\UI\Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl.VS\AbsolutePathComparer.cs">
 		  <Link>Helpers\AbsolutePathComparer.cs</Link>
 		</Compile>
 		<Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
-		<Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\Given_ListViewBase_Items.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\Given_ListViewBase_Items.cs" />
-		<Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\GroupingObservableCollection.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\GroupingObservableCollection.cs" />
+		<Compile Include="..\Uno.UI.RuntimeTests\Microsoft\UI\Xaml\Controls\Given_ListViewBase_Items.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\Given_ListViewBase_Items.cs" />
+		<Compile Include="..\Uno.UI.RuntimeTests\Microsoft\UI\Xaml\Controls\GroupingObservableCollection.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\GroupingObservableCollection.cs" />
 		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourceConverters\AndroidResourceConverter.cs">
 			<Link>Resources\AndroidResourceConverter.cs</Link>
 		</Compile>
@@ -130,6 +133,7 @@
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
 
 		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />

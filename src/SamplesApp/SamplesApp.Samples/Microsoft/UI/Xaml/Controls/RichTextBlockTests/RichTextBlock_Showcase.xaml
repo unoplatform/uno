@@ -1,0 +1,809 @@
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.RichTextBlockControl.RichTextBlock_Showcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="2000"
+    d:DesignWidth="480"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <!--  Chrome styles are theme-aware; demo content sets explicit colors only where the feature IS the color.  -->
+        <Style x:Key="ShowcaseSectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="0,20,0,2" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+        </Style>
+        <Style x:Key="ShowcaseCaption" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+        </Style>
+        <Style x:Key="ShowcaseDesc" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+        </Style>
+        <Style x:Key="ShowcaseReadout" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontFamily" Value="Consolas" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Foreground" Value="{ThemeResource SystemFillColorSuccessBrush}" />
+        </Style>
+        <Style x:Key="ShowcaseCard" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="14" />
+        </Style>
+        <Style x:Key="ShowcaseFrame" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource ControlFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled">
+        <StackPanel
+            MaxWidth="820"
+            Padding="16"
+            HorizontalAlignment="Left"
+            Spacing="12">
+
+            <!--  Intro  -->
+            <TextBlock
+                FontSize="26"
+                FontWeight="Bold"
+                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                Text="RichTextBlock — WinUI parity bench" />
+            <TextBlock Style="{StaticResource ShowcaseDesc}">
+                <Run Text="A side-by-side comparison bench for RichTextBlock. Every card exercises a distinct feature, property or edge case. Run this same sample on native WinUI and on Uno Platform (Skia) and scroll them side by side to spot rendering or behavior gaps. Interactive readouts print in a monospace green font; a card that shows" />
+                <Run
+                    FontWeight="Bold"
+                    Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                    Text=" ⚠ not supported" />
+                <Run Text="marks an API that threw on this platform." />
+            </TextBlock>
+
+            <!--  ============================================================  -->
+            <!--  SECTION 1 — Inline formatting &amp; runs  -->
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="1 · Inline formatting &amp; runs" />
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="1.1 · Plain Run" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="The baseline case: a single Run inside one Paragraph, using the inherited default foreground." />
+                    <Border MaxWidth="380" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run Text="The quick brown fox jumps over the lazy dog." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="1.2 · Bold / Italic / Underline elements" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="The Bold, Italic and Underline inline wrappers, then all three nested together." />
+                    <Border MaxWidth="380" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run Text="Normal, " />
+                                <Bold>bold</Bold>
+                                <Run Text=", " />
+                                <Italic>italic</Italic>
+                                <Run Text=", " />
+                                <Underline>underline</Underline>
+                                <Run Text=", and " />
+                                <Bold>
+                                    <Italic>
+                                        <Underline>all three</Underline>
+                                    </Italic>
+                                </Bold>
+                                <Run Text="." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="1.3 · Span grouping shared formatting" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="A Span applies FontFamily/Foreground/FontStyle to a group of child inlines at once." />
+                    <Border MaxWidth="380" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run Text="Before span. " />
+                                <Span
+                                    FontFamily="Georgia"
+                                    FontStyle="Italic"
+                                    Foreground="#2E7D32">
+                                    <Run Text="This whole " />
+                                    <Bold>span</Bold>
+                                    <Run Text=" shares Georgia italic green." />
+                                </Span>
+                                <Run Text=" After span." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="1.4 · FontWeight scale" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Per-run FontWeight from Thin to Black — reveals which weights the font/renderer actually resolves." />
+                    <Border MaxWidth="400" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run FontWeight="Thin" Text="Thin " />
+                                <Run FontWeight="ExtraLight" Text="ExtraLight " />
+                                <Run FontWeight="Light" Text="Light " />
+                                <Run FontWeight="Normal" Text="Normal " />
+                                <Run FontWeight="Medium" Text="Medium " />
+                                <Run FontWeight="SemiBold" Text="SemiBold " />
+                                <Run FontWeight="Bold" Text="Bold " />
+                                <Run FontWeight="ExtraBold" Text="ExtraBold " />
+                                <Run FontWeight="Black" Text="Black" />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="1.5 · FontStyle &amp; FontStretch" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Normal / Italic / Oblique styles and Condensed → Expanded stretches (stretch needs a font family that ships the widths)." />
+                    <Border MaxWidth="400" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run FontStyle="Normal" Text="Normal " />
+                                <Run FontStyle="Italic" Text="Italic " />
+                                <Run FontStyle="Oblique" Text="Oblique" />
+                                <LineBreak />
+                                <Run FontStretch="Condensed" Text="Condensed " />
+                                <Run FontStretch="Normal" Text="Normal " />
+                                <Run FontStretch="Expanded" Text="Expanded" />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="1.6 · FontFamily per run" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Mixing a sans, a monospace and a serif family within one line." />
+                    <Border MaxWidth="400" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run FontFamily="Segoe UI" Text="Segoe UI · " />
+                                <Run FontFamily="Consolas" Text="Consolas · " />
+                                <Run FontFamily="Georgia" Text="Georgia · " />
+                                <Run FontFamily="Cambria" Text="Cambria" />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="1.7 · Foreground colors &amp; TextDecorations" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Explicit per-run brushes plus Underline, Strikethrough, and both combined." />
+                    <Border MaxWidth="420" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run Foreground="#D32F2F" Text="Red " />
+                                <Run Foreground="#1976D2" Text="Blue " />
+                                <Run Foreground="#388E3C" Text="Green " />
+                                <Run Foreground="#F57C00" Text="Orange" />
+                                <LineBreak />
+                                <Run Text="Underline  " TextDecorations="Underline" />
+                                <Run Text="Strikethrough  " TextDecorations="Strikethrough" />
+                                <Run Text="Both" TextDecorations="Underline, Strikethrough" />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="1.8 · CharacterSpacing" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="CharacterSpacing is in 1/1000 em. Compare tight (-50), normal (0) and loose (300)." />
+                    <Border MaxWidth="420" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run CharacterSpacing="-50" Text="Tight spacing" />
+                                <LineBreak />
+                                <Run CharacterSpacing="0" Text="Normal spacing" />
+                                <LineBreak />
+                                <Run CharacterSpacing="300" Text="Loose spacing" />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="1.9 · OpenType typography" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Typography attached properties: Superscript/Subscript variants, small caps, and a slashed fraction (font must supply the glyphs)." />
+                    <Border MaxWidth="420" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run Text="E = mc" />
+                                <Run Text="2" Typography.Variants="Superscript" />
+                                <Run Text="   H" />
+                                <Run Text="2" Typography.Variants="Subscript" />
+                                <Run Text="O   " />
+                                <Run Text="small caps   " Typography.Capitals="SmallCaps" />
+                                <Run Text="1/2" Typography.Fraction="Slashed" />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!--  ============================================================  -->
+            <!--  SECTION 2 — Hyperlinks  -->
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="2 · Hyperlinks" />
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="2.1 · NavigateUri, Click, nested content" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="A NavigateUri link, a Click-handler link (updates the readout), a link wrapping bold content, and two links in one line." />
+                    <Border MaxWidth="440" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run Text="Visit the " />
+                                <Hyperlink NavigateUri="https://platform.uno/">Uno Platform site</Hyperlink>
+                                <Run Text=", or " />
+                                <Hyperlink Click="OnShowcaseHyperlinkClick">click me</Hyperlink>
+                                <Run Text=". A link can wrap " />
+                                <Hyperlink NavigateUri="https://github.com/unoplatform/uno">
+                                    <Bold>bold</Bold>
+                                    content
+                                </Hyperlink>
+                                <Run Text="." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <TextBlock
+                        x:Name="HyperlinkReadout"
+                        Style="{StaticResource ShowcaseReadout}"
+                        Text="(click the link above)" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="2.2 · Hyperlink UnderlineStyle" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="UnderlineStyle=None removes the default underline while keeping link behavior." />
+                    <Border MaxWidth="440" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Hyperlink NavigateUri="https://platform.uno/" UnderlineStyle="Single">Single (default)</Hyperlink>
+                                <Run Text="   ·   " />
+                                <Hyperlink NavigateUri="https://platform.uno/" UnderlineStyle="None">None</Hyperlink>
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!--  ============================================================  -->
+            <!--  SECTION 3 — InlineUIContainer  -->
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="3 · InlineUIContainer (embedded UIElements)" />
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="3.1 · Inline Button, shape and badge" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="A UIElement flows inline with the text via InlineUIContainer. Watch baseline alignment against the surrounding text." />
+                    <Border MaxWidth="460" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run Text="A button " />
+                                <InlineUIContainer>
+                                    <Button Padding="8,2" Content="Click" />
+                                </InlineUIContainer>
+                                <Run Text=" then a shape " />
+                                <InlineUIContainer>
+                                    <Ellipse
+                                        Width="16"
+                                        Height="16"
+                                        Fill="#7B1FA2" />
+                                </InlineUIContainer>
+                                <Run Text=" then a badge " />
+                                <InlineUIContainer>
+                                    <Border
+                                        Padding="6,1"
+                                        Background="#1976D2"
+                                        CornerRadius="8">
+                                        <TextBlock
+                                            FontSize="11"
+                                            Foreground="White"
+                                            Text="NEW" />
+                                    </Border>
+                                </InlineUIContainer>
+                                <Run Text=" and more wrapping text that continues past the embedded elements to show flow." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!--  ============================================================  -->
+            <!--  SECTION 4 — Paragraphs &amp; blocks  -->
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="4 · Paragraphs &amp; blocks" />
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="4.1 · Multiple paragraphs, indent &amp; margins" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Several Paragraphs with per-paragraph TextIndent and Margin, plus an empty paragraph acting as a blank line." />
+                    <Border MaxWidth="460" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph TextIndent="28">
+                                <Run Text="First paragraph with a 28px first-line indent. The wrapped lines return to the left edge while only the first line is pushed in." />
+                            </Paragraph>
+                            <Paragraph Margin="0,10,0,0">
+                                <Run Text="Second paragraph separated by a 10px top margin." />
+                            </Paragraph>
+                            <Paragraph />
+                            <Paragraph Margin="24,10,0,0">
+                                <Run Text="Fourth paragraph, indented 24px from the left via Margin, after a blank empty paragraph." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!--  ============================================================  -->
+            <!--  SECTION 5 — Text layout  -->
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="5 · Text layout" />
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="5.1 · TextWrapping" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Wrap (RichTextBlock default), NoWrap, and WrapWholeWords, each in a 220px frame." />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Border Width="220" Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlock TextWrapping="Wrap">
+                                <Paragraph>
+                                    <Run Text="Wrap: this long line breaks at the container edge, even mid-supercalifragilistic word." />
+                                </Paragraph>
+                            </RichTextBlock>
+                        </Border>
+                        <Border Width="220" Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlock TextWrapping="WrapWholeWords">
+                                <Paragraph>
+                                    <Run Text="WrapWholeWords: breaks only between whole words, never mid-supercalifragilistic word." />
+                                </Paragraph>
+                            </RichTextBlock>
+                        </Border>
+                    </StackPanel>
+                    <Border Width="220" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock TextWrapping="NoWrap">
+                            <Paragraph>
+                                <Run Text="NoWrap: this line does not wrap and overflows the frame horizontally." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="5.2 · TextTrimming" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="None, Clip, CharacterEllipsis and WordEllipsis, each on a single non-wrapping line." />
+                    <Border Width="260" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock TextTrimming="None" TextWrapping="NoWrap">
+                            <Paragraph><Run Text="None — the overflowing text is not trimmed at all." /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <Border Width="260" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock TextTrimming="Clip" TextWrapping="NoWrap">
+                            <Paragraph><Run Text="Clip — the overflowing text is hard-clipped at the edge." /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <Border Width="260" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap">
+                            <Paragraph><Run Text="CharacterEllipsis — trimmed mid-word with a trailing ellipsis." /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <Border Width="260" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock TextTrimming="WordEllipsis" TextWrapping="NoWrap">
+                            <Paragraph><Run Text="WordEllipsis — trimmed at a word boundary with a trailing ellipsis." /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="5.3 · MaxLines + trimming" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="MaxLines=2 with CharacterEllipsis clamps a wrapping block and appends an ellipsis on the last line." />
+                    <Border Width="320" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock MaxLines="2" TextTrimming="CharacterEllipsis">
+                            <Paragraph>
+                                <Run Text="This block is limited to two lines. There is far more content here than fits, so the second line should end with an ellipsis while the rest is dropped from layout entirely." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="5.4 · TextAlignment" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Left, Center, Right, Justify and DetectFromContent, each in a fixed-width frame." />
+                    <Border Width="360" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock TextAlignment="Left">
+                            <Paragraph><Run Text="Left aligned — the default reading direction." /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <Border Width="360" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock TextAlignment="Center">
+                            <Paragraph><Run Text="Center aligned text." /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <Border Width="360" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock TextAlignment="Right">
+                            <Paragraph><Run Text="Right aligned text." /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <Border Width="360" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock TextAlignment="Justify">
+                            <Paragraph><Run Text="Justify aligned text spreads the inter-word spacing so both edges line up on every full line of a wrapping paragraph." /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="5.5 · Padding &amp; TextIndent (control level)" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Control-level Padding insets the text box; control-level TextIndent indents the first line of each paragraph." />
+                    <Border Width="360" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock Padding="18" TextIndent="24">
+                            <Paragraph>
+                                <Run Text="This control has 18px padding all around and a 24px first-line indent applied at the control level (inherited by paragraphs)." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="5.6 · LineHeight &amp; LineStackingStrategy" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="LineHeight=30 with MaxHeight vs BlockLineHeight strategy — compare inter-line spacing." />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Border Width="260" Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlock LineHeight="30" LineStackingStrategy="MaxHeight">
+                                <Paragraph><Run Text="MaxHeight strategy with LineHeight=30. Line one, line two, line three of wrapping text." /></Paragraph>
+                            </RichTextBlock>
+                        </Border>
+                        <Border Width="260" Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlock LineHeight="30" LineStackingStrategy="BlockLineHeight">
+                                <Paragraph><Run Text="BlockLineHeight strategy with LineHeight=30. Line one, line two, line three of wrapping text." /></Paragraph>
+                            </RichTextBlock>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="5.7 · TextLineBounds" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Full / Tight / TrimToCapHeight / TrimToBaseline change the vertical extent reserved per line (visible against the frame edges)." />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Border Width="180" Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlock TextLineBounds="Full">
+                                <Paragraph><Run FontSize="22" Text="Full Ágjpy" /></Paragraph>
+                            </RichTextBlock>
+                        </Border>
+                        <Border Width="180" Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlock TextLineBounds="Tight">
+                                <Paragraph><Run FontSize="22" Text="Tight Ágjpy" /></Paragraph>
+                            </RichTextBlock>
+                        </Border>
+                        <Border Width="180" Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlock TextLineBounds="TrimToCapHeight">
+                                <Paragraph><Run FontSize="22" Text="Cap Ágjpy" /></Paragraph>
+                            </RichTextBlock>
+                        </Border>
+                        <Border Width="180" Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlock TextLineBounds="TrimToBaseline">
+                                <Paragraph><Run FontSize="22" Text="Base Ágjpy" /></Paragraph>
+                            </RichTextBlock>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!--  ============================================================  -->
+            <!--  SECTION 6 — Fonts &amp; typography (control level)  -->
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="6 · Control-level fonts &amp; typography" />
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="6.1 · Control font properties &amp; mixed sizes" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="FontFamily/Size/Weight/Style set on the control, then a line mixing several font sizes to show baseline alignment." />
+                    <Border MaxWidth="460" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock
+                            FontFamily="Georgia"
+                            FontSize="18"
+                            FontStyle="Italic"
+                            FontWeight="SemiBold">
+                            <Paragraph>
+                                <Run Text="Control set to Georgia 18 SemiBold Italic." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <Border MaxWidth="460" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run FontSize="12" Text="12 " />
+                                <Run FontSize="18" Text="18 " />
+                                <Run FontSize="28" Text="28 " />
+                                <Run FontSize="40" Text="40 " />
+                                <Run FontSize="14" Text="back to 14 — all sitting on one baseline." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="6.2 · IsColorFontEnabled &amp; OpticalMarginAlignment" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Color emoji with IsColorFontEnabled on vs off, and OpticalMarginAlignment=TrimSideBearings on a large glyph." />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Border Width="200" Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlock IsColorFontEnabled="True">
+                                <Paragraph><Run FontSize="24" Text="Color on 😀🎨🌈🔥" /></Paragraph>
+                            </RichTextBlock>
+                        </Border>
+                        <Border Width="200" Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlock IsColorFontEnabled="False">
+                                <Paragraph><Run FontSize="24" Text="Color off 😀🎨🌈🔥" /></Paragraph>
+                            </RichTextBlock>
+                        </Border>
+                    </StackPanel>
+                    <Border MaxWidth="460" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock OpticalMarginAlignment="TrimSideBearings">
+                            <Paragraph><Run FontSize="34" Text="“Trim side bearings”" /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!--  ============================================================  -->
+            <!--  SECTION 7 — Direction &amp; internationalization  -->
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="7 · Direction &amp; internationalization" />
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="7.1 · FlowDirection &amp; TextReadingOrder" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="A RightToLeft control, and DetectFromContent reading order on a bidirectional line mixing Latin and Arabic." />
+                    <Border Width="360" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock FlowDirection="RightToLeft">
+                            <Paragraph><Run Text="مرحبا بالعالم — RightToLeft flow direction." /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <Border Width="360" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock TextReadingOrder="DetectFromContent">
+                            <Paragraph><Run Text="English then العربية then back to English." /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="7.2 · Scripts &amp; emoji" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="CJK, Hebrew, Devanagari and a ZWJ emoji family sequence — checks shaping and complex-cluster support." />
+                    <Border MaxWidth="460" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run Text="你好，世界　こんにちは　안녕하세요" />
+                                <LineBreak />
+                                <Run Text="שלום עולם · नमस्ते दुनिया" />
+                                <LineBreak />
+                                <Run FontSize="22" Text="👨‍👩‍👧‍👦 👋🏽 🧑🏻‍💻 🏳️‍🌈" />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!--  ============================================================  -->
+            <!--  SECTION 8 — Selection  -->
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="8 · Selection" />
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="8.1 · IsTextSelectionEnabled, custom highlight, copy" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Drag to select. SelectionHighlightColor is customized; SelectionChanged prints the live SelectedText; the buttons drive SelectAll and CopySelectionToClipboard." />
+                    <Border MaxWidth="500" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock
+                            x:Name="SelectionSample"
+                            IsTextSelectionEnabled="True"
+                            SelectionChanged="OnShowcaseSelectionChanged">
+                            <RichTextBlock.SelectionHighlightColor>
+                                <SolidColorBrush Color="#80FFC107" />
+                            </RichTextBlock.SelectionHighlightColor>
+                            <Paragraph>
+                                <Run Text="Select any part of this text. The selection uses a custom amber highlight brush. " />
+                                <Bold>Bold</Bold>
+                                <Run Text=" and " />
+                                <Italic>italic</Italic>
+                                <Run Text=" runs are included so you can confirm selection spans mixed formatting correctly across run boundaries." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Click="OnShowcaseSelectAll" Content="Select all" />
+                        <Button Click="OnShowcaseCopySelection" Content="Copy selection" />
+                    </StackPanel>
+                    <TextBlock
+                        x:Name="SelectionReadout"
+                        Style="{StaticResource ShowcaseReadout}"
+                        Text="SelectedText: (none)" />
+                </StackPanel>
+            </Border>
+
+            <!--  ============================================================  -->
+            <!--  SECTION 9 — Text highlighters  -->
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="9 · Text highlighters" />
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="9.1 · Multiple ranges, foreground override, overlap" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="TextHighlighters are applied in code-behind (TextRange has no XAML syntax): a background-only range, a foreground+background range, a cross-paragraph range, and an overlapping pair to exercise the merge algorithm." />
+                    <Border MaxWidth="500" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock x:Name="HighlighterSample">
+                            <Paragraph>
+                                <Run Text="Highlighters can paint background only, or override the foreground too, and can span across paragraph boundaries." />
+                            </Paragraph>
+                            <Paragraph>
+                                <Run Text="This second paragraph is partly covered by a highlight that started in the first paragraph, and also has its own overlapping highlight." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!--  ============================================================  -->
+            <!--  SECTION 10 — Overflow (linked chain)  -->
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="10 · Overflow &amp; linked columns" />
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="10.1 · Master → overflow → overflow chain" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="A height-limited master RichTextBlock flows its overflow into two chained RichTextBlockOverflow columns. HasOverflowContent / IsTextTrimmed read out below." />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Border
+                            Width="180"
+                            Height="120"
+                            Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlock x:Name="OverflowMaster" OverflowContentTarget="{Binding ElementName=Overflow1}">
+                                <Paragraph>
+                                    <Run Text="This master column is only 120px tall, so most of its content must flow out. RichTextBlockOverflow columns pick up exactly where the previous one stopped, mid-paragraph, forming a linked multi-column text flow. Keep reading and the text should continue seamlessly into the next column, then the one after that, without dropping or duplicating a single word along the way from start to finish." />
+                                </Paragraph>
+                            </RichTextBlock>
+                        </Border>
+                        <Border
+                            Width="180"
+                            Height="120"
+                            Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlockOverflow x:Name="Overflow1" OverflowContentTarget="{Binding ElementName=Overflow2}" />
+                        </Border>
+                        <Border
+                            Width="180"
+                            Height="120"
+                            Style="{StaticResource ShowcaseFrame}">
+                            <RichTextBlockOverflow x:Name="Overflow2" />
+                        </Border>
+                    </StackPanel>
+                    <Button Click="OnShowcaseRefreshOverflow" Content="Refresh readout" />
+                    <TextBlock
+                        x:Name="OverflowReadout"
+                        Style="{StaticResource ShowcaseReadout}"
+                        Text="(refresh to read HasOverflowContent / IsTextTrimmed)" />
+                </StackPanel>
+            </Border>
+
+            <!--  ============================================================  -->
+            <!--  SECTION 11 — Programmatic &amp; text pointers  -->
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="11 · Programmatic content &amp; text pointers" />
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="11.1 · Built entirely in code-behind" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="The RichTextBlock below is constructed at runtime — Blocks, Paragraphs, Runs and a Hyperlink added via the object model." />
+                    <Border
+                        x:Name="ProgrammaticHost"
+                        MaxWidth="500"
+                        Style="{StaticResource ShowcaseFrame}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="11.2 · TextPointer hit-testing &amp; ranges" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="Tap anywhere in the text to resolve GetPositionFromPoint into a character offset. ContentStart / ContentEnd / BaselineOffset are read on load (BaselineOffset may be unimplemented on some platforms)." />
+                    <Border MaxWidth="500" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock x:Name="PointerSample" Tapped="OnShowcasePointerTapped">
+                            <Paragraph>
+                                <Run Text="Tap on any character in this paragraph and the resolved text-pointer offset will be printed below. This exercises the hit-testing path that selection and accessibility both rely on." />
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <TextBlock
+                        x:Name="PointerReadout"
+                        Style="{StaticResource ShowcaseReadout}"
+                        Text="(tap the text above)" />
+                </StackPanel>
+            </Border>
+
+            <!--  ============================================================  -->
+            <!--  SECTION 12 — Edge cases  -->
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="12 · Edge cases" />
+
+            <Border Style="{StaticResource ShowcaseCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource ShowcaseCaption}" Text="12.1 · Empty, long token, whitespace, huge glyph" />
+                    <TextBlock Style="{StaticResource ShowcaseDesc}" Text="An empty RichTextBlock (renders nothing), an unbreakable long token, leading/inner whitespace and tabs, and a very large font size." />
+                    <Border
+                        Width="320"
+                        MinHeight="24"
+                        Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock />
+                    </Border>
+                    <Border Width="220" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock TextWrapping="Wrap">
+                            <Paragraph><Run Text="Supercalifragilisticexpialidocious_antidisestablishmentarianism_pneumonoultramicroscopicsilicovolcanoconiosis" /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <Border MaxWidth="460" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph><Run xml:space="preserve" Text="   leading spaces · inner&#x09;tab&#x09;stops · trailing   " /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                    <Border MaxWidth="460" Style="{StaticResource ShowcaseFrame}">
+                        <RichTextBlock>
+                            <Paragraph><Run FontSize="64" Text="Big 64px" /></Paragraph>
+                        </RichTextBlock>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
