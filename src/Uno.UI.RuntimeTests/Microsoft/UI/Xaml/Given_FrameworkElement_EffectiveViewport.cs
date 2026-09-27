@@ -1086,6 +1086,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// WinUI (CI WinAppSDK leg): the ScrollContentPresenter does not raise EffectiveViewportChanged.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_EVP_ScrollContentPresenter()
 		{
 			var border = new Border

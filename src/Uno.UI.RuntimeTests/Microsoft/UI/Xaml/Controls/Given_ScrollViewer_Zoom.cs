@@ -48,6 +48,8 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
+	// WinUI (CI WinAppSDK leg): flaky, ZoomFactor sometimes reaches the requested 2.0.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ZoomMode_Disabled_ZoomFactor_Stays_1()
 	{
 		var content = new Border

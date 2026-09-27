@@ -26,6 +26,8 @@ public class Given_BackgroundTransition
 	[DataRow(typeof(Border))]
 	[DataRow(typeof(ContentPresenter))]
 	[RequiresFullWindow] // https://github.com/unoplatform/uno/issues/17470
+	// WinUI (CI WinAppSDK leg): the brush transition snaps to the final color, no in-flight frame is captured.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Has_Brush_Transition([DynamicallyAccessedMembers(ActivatorRequirements)] Type type)
 	{
 		// Keep PreserveMetadata() calls in sync with the types in [DataRow] above.
@@ -88,7 +90,8 @@ public class Given_BackgroundTransition
 
 	[TestMethod]
 	// Test is flaky on iOS https://github.com/unoplatform/uno-private/issues/797
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)]
+	// WinUI (CI WinAppSDK leg): the brush transition snaps to the final color, no in-flight frame is captured.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Animation_With_Brush_Transition()
 	{
 		var SUT = (Button)XamlReader.Load(

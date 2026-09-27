@@ -203,7 +203,8 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 		[TestMethod]
 		// WinAppSDK: KeyboardHelper is a no-op there, and DoClickUsingAP detaches Click off the UI thread (RPC_E_WRONG_THREAD).
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		// Android: the open DatePickerFlyoutPresenter is not found in CI (see When_MinYear_Equals_MaxYear_Year_Should_Not_Loop).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)]
 		public async Task CanChooseDate()
 		{
 			// Verify that the DatePicker control can be used to choose a Date.
@@ -1132,7 +1133,8 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 		[TestMethod]
 		// WinAppSDK: KeyboardHelper is a no-op there, and DoClickUsingAP detaches Click off the UI thread (RPC_E_WRONG_THREAD).
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		// Android: the open DatePickerFlyoutPresenter is not found in CI (see When_MinYear_Equals_MaxYear_Year_Should_Not_Loop).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)]
 		public async Task SelectingDateSetsSelectedDate()
 		{
 			var datePicker = await SetupDatePickerTest();

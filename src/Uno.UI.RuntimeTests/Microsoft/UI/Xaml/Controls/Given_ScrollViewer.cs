@@ -388,6 +388,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		// WinAppSDK: KeyboardHelper is a no-op there.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Home_End_PageDown_PageUp()
 		{
 			var border = new Border
@@ -445,6 +447,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		// WinAppSDK: KeyboardHelper is a no-op there.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Args_Handled_Home_End_PageDown_PageUp()
 		{
 			var SUT = new ScrollViewer
@@ -512,6 +516,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		// WinAppSDK: KeyboardHelper is a no-op there.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Args_Handled_ArrowKeys()
 		{
 			var SUT = new ScrollViewer

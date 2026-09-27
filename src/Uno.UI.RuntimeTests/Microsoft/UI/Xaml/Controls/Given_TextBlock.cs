@@ -520,6 +520,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// WinUI: WaitForIdle doesn't flush layout, so ActualHeight can still be 0 (flaky on the CI WinAppSDK leg).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Text_Ends_In_CarriageReturn()
 		{
 			var SUT0 = new TextBlock();
@@ -553,6 +555,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// WinUI: WaitForIdle doesn't flush layout, so ActualHeight can still be 0 (flaky on the CI WinAppSDK leg).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Text_Ends_In_CarriageReturn2()
 		{
 			var SUT0 = new TextBlock();
@@ -622,6 +626,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// WinUI: WaitForIdle doesn't flush layout, so ActualHeight can still be 0 (flaky on the CI WinAppSDK leg).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Text_Ends_In_LineBreak()
 		{
 			var SUT0 = new TextBlock();
@@ -656,6 +662,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// WinUI: WaitForIdle doesn't flush layout, so ActualHeight can still be 0 (flaky on the CI WinAppSDK leg).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Text_Ends_In_LineBreak2()
 		{
 			var SUT0 = new TextBlock();

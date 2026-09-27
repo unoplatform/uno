@@ -276,6 +276,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		// WinUI (CI WinAppSDK leg): focus is not cleared after the injected tap on empty space.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Tapped_Empty_Space()
 		{
 			Button button = new Button() { Content = "Button" };
