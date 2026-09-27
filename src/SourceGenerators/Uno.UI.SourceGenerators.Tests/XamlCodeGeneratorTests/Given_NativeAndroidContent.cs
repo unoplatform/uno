@@ -66,4 +66,50 @@ public class Given_NativeAndroidContent
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task When_Named_Native_View_With_UiAutomationMapping()
+	{
+		var xamlFile = new XamlFile(
+			"MainPage.xaml",
+			"""
+			<Page x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:widget="using:Android.Widget">
+				<ContentControl>
+					<widget:TextView x:Name="NativeText" />
+				</ContentControl>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					""",
+					ContextHelperStub,
+				}
+			},
+			ReferenceAssemblies = _Dotnet.CurrentAndroid.ReferenceAssemblies,
+			GlobalConfigOverride = new Dictionary<string, string> { { "build_property.IsUiAutomationMappingEnabled", "true" } },
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }
