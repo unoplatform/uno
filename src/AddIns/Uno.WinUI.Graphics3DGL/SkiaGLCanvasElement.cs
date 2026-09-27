@@ -2,19 +2,23 @@
 using System;
 using Silk.NET.OpenGL;
 using SkiaSharp;
-using Uno.WinUI.Graphics3DGL;
 using Windows.Foundation;
 
-namespace Uno.WinUI.Graphics2DSK;
+namespace Uno.WinUI.Graphics3DGL;
 
 /// <summary>
-/// Self-contained Skia-on-GL island backing <see cref="SKCanvasElement"/>: renders the user's SkiaSharp drawing
-/// into <see cref="GLCanvasElement"/>'s own offscreen GL framebuffer through a dedicated <see cref="GRContext"/>,
-/// independent of the app's active render backend. <see cref="GLCanvasElement"/> reads it back and composites it.
+/// Self-contained Skia-on-GL island backing Graphics2DSK's <c>SKCanvasElement</c> when the active render backend
+/// exposes no <see cref="SKCanvas"/>: renders the SkiaSharp drawing into this element's offscreen GL framebuffer
+/// through a dedicated <see cref="GRContext"/>, which <see cref="GLCanvasElement"/> reads back and composites.
 /// </summary>
+/// <remarks>
+/// Lives here rather than in Graphics2DSK so that Graphics2DSK has no reference to this optional add-in.
+/// Graphics2DSK creates it by name; keep the type name and constructor in sync with <c>SKCanvasElement</c>.
+/// </remarks>
 internal sealed class SkiaGLCanvasElement : GLCanvasElement
 {
-	private readonly SKCanvasElement _owner;
+	private readonly Action<SKCanvas, Size> _render;
+	private readonly Action _onUnavailable;
 
 	private GRContext? _grContext;
 	private GRBackendRenderTarget? _renderTarget;
@@ -22,9 +26,10 @@ internal sealed class SkiaGLCanvasElement : GLCanvasElement
 	private int _surfaceWidth;
 	private int _surfaceHeight;
 
-	public SkiaGLCanvasElement(SKCanvasElement owner) : base(null)
+	public SkiaGLCanvasElement(Action<SKCanvas, Size> render, Action onUnavailable) : base(null)
 	{
-		_owner = owner;
+		_render = render;
+		_onUnavailable = onUnavailable;
 	}
 
 	protected override void Init(GL gl)
@@ -35,7 +40,7 @@ internal sealed class SkiaGLCanvasElement : GLCanvasElement
 			GRGlInterface.Create() ?? throw new NotSupportedException("OpenGL is not available (GRGlInterface create failed)."));
 	}
 
-	protected override void OnGLUnavailable() => _owner.OnIslandUnavailable();
+	protected override void OnGLUnavailable() => _onUnavailable();
 
 	protected override void OnDestroy(GL gl)
 	{
@@ -83,7 +88,7 @@ internal sealed class SkiaGLCanvasElement : GLCanvasElement
 		canvas.Save();
 		// Keep drawing inside the element's area.
 		canvas.ClipRect(new SKRect(0, 0, width, height));
-		_owner.InvokeRenderOverride(canvas, new Size(width, height));
+		_render(canvas, new Size(width, height));
 		canvas.Restore();
 
 		_grContext.Flush();
