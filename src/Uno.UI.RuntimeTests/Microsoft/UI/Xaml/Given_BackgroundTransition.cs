@@ -25,9 +25,9 @@ public class Given_BackgroundTransition
 	[DataRow(typeof(StackPanel))]
 	[DataRow(typeof(Border))]
 	[DataRow(typeof(ContentPresenter))]
-	[RequiresFullWindow] // https://github.com/unoplatform/uno/issues/17470
 	// WinUI (CI WinAppSDK leg): the brush transition snaps to the final color, no in-flight frame is captured.
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow] // https://github.com/unoplatform/uno/issues/17470
 	public async Task When_Has_Brush_Transition([DynamicallyAccessedMembers(ActivatorRequirements)] Type type)
 	{
 		// Keep PreserveMetadata() calls in sync with the types in [DataRow] above.
