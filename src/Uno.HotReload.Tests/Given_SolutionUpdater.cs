@@ -205,6 +205,49 @@ public class Given_SolutionUpdater
 			"a de-duplicated add changes nothing, so the pass must stay a silent NoChanges instead of emitting an empty update");
 	}
 
+	[TestMethod]
+	[Description(
+		"Spec 055 R1, positive side: a genuine add (a path not already in the project) IS an applied " +
+		"mutation, so the analyzer-config refresh must still run and pick up the new on-disk config — " +
+		"the gate distinguishes applied from requested, it does not disable the refresh.")]
+	public async Task When_DocumentIsGenuinelyAdded_Then_AnalyzerConfigIsRefreshed()
+	{
+		var ct = TestContext.CancellationTokenSource.Token;
+		using var temp = new TempDirectory();
+		var projectPath = await temp.WriteFileAsync("TestProject.csproj", "<Project />", ct);
+		var addedPath = await temp.WriteFileAsync("Added.cs", "class Added { }", ct);
+		// The config on disk is ahead of the snapshot: this is what the refresh exists to pick up
+		// (e.g. GeneratedMSBuildEditorConfig gaining the SourceItemGroup of the new file).
+		var configPath = await temp.WriteFileAsync(".editorconfig", "is_global = true\nbuild_metadata.AdditionalFiles.SourceItemGroup = Page", ct);
+
+		using var workspace = new AdhocWorkspace();
+		var projectId = ProjectId.CreateNewId();
+		var configId = DocumentId.CreateNewId(projectId);
+		var solution = workspace.CurrentSolution
+			.AddProject(ProjectInfo.Create(
+				projectId,
+				VersionStamp.Create(),
+				"TestProject",
+				"TestProject",
+				LanguageNames.CSharp,
+				filePath: projectPath))
+			.AddAnalyzerConfigDocument(configId, ".editorconfig", SourceText.From("is_global = true"), filePath: configPath);
+
+		// Realize the text, as the initial compilation does on the real workspace.
+		_ = await solution.GetAnalyzerConfigDocument(configId)!.GetTextAsync(ct);
+
+		var added = new AddedDocumentInfo(
+			ProjectInfo.Create(projectId, VersionStamp.Create(), "TestProject", "TestProject", LanguageNames.CSharp, filePath: projectPath),
+			DocumentInfo.Create(DocumentId.CreateNewId(projectId), "Added.cs", filePath: addedPath));
+
+		var result = await new SolutionUpdater().UpdateAsync(solution, ChangeSet.Empty with { AddedDocuments = [added] }, ct);
+
+		result.Solution.Should().NotBeSameAs(solution, "a genuine add mutates the document set");
+		result.Solution.Projects.Single().Documents.Should().ContainSingle(d => d.Name == "Added.cs");
+		(await result.Solution.GetAnalyzerConfigDocument(configId)!.GetTextAsync(ct)).ToString()
+			.Should().Contain("SourceItemGroup", "the applied add must still refresh the analyzer config from disk");
+	}
+
 	private static ChangeSet Edits(ImmutableArray<Document> documents, ImmutableArray<TextDocument> additionalDocuments = default)
 		=> ChangeSet.Empty with
 		{
