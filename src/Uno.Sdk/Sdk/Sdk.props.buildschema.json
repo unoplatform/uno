@@ -178,10 +178,6 @@
 			"description": "Provides an explicit override for the version of Uno Logging to use.",
 			"type": "nuget-version"
 		},
-		"WindowsCompatibilityVersion": {
-			"description": "Provides an explicit override for the version of Windows.Compatibility to use.",
-			"type": "nuget-version"
-		},
 		"UnoWasmBootstrapVersion": {
 			"description": "Provides an explicit override for the version of the Uno.Wasm.Bootstrap packages to use.",
 			"type": "nuget-version"
@@ -192,10 +188,6 @@
 		},
 		"AndroidMaterialVersion": {
 			"description": "Provides an explicit override for the version of Android Material to use.",
-			"type": "nuget-version"
-		},
-		"AndroidXLegacySupportV4Version": {
-			"description": "Provides an explicit override for the version of AndroidX.Legacy.Support.V4 to use.",
 			"type": "nuget-version"
 		},
 		"AndroidXSplashScreenVersion": {
@@ -547,10 +539,6 @@
 					"description": "Adds support for Serialization using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-serialization"
 				},
-				"SkiaRenderer": {
-					"description": "No-op, kept for backwards compatibility. Skia is always used as the UI renderer on Uno Platform targets. The WinAppSDK target always renders natively with WinUI.",
-					"helpUrl": "https://aka.platform.uno/skia-rendering"
-				},
 				"Storage": {
 					"description": "Adds support for Storage using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-storage"
@@ -586,6 +574,10 @@
 				"Skia": {
 					"description": "Adds support for SkiaSharp.",
 					"helpUrl": "https://aka.platform.uno/feature-skia"
+				},
+				"WebGpu": {
+					"description": "Adds the WebGPU rendering backend, used alongside the default Skia backend.",
+					"helpUrl": "https://aka.platform.uno/feature-webgpu"
 				},
 				"Lottie": {
 					"description": "Adds support for Lottie animations.",

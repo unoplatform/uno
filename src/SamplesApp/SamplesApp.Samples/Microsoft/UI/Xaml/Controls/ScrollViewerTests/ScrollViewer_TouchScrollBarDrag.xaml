@@ -1,0 +1,96 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_TouchScrollBarDrag"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="16" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Style="{ThemeResource SubtitleTextBlockStyle}"
+            Text="Drag the scroll bar thumb with a finger" />
+
+        <TextBlock
+            Grid.Row="1"
+            Text="Drag the thumb of the scroll bar on the right of the list, and of the standalone bar next to it. By default - which is the WinUI behavior - touch is ignored by the scroll bar parts and nothing moves. With the opt-in below, a finger drags the thumb, and the bar stays interactive instead of fading, since touch has no hover to reveal it with. Panning the content with a finger must keep working either way. The bars are Auto, so unchecking the wide content should leave no horizontal bar at all."
+            TextWrapping="WrapWholeWords" />
+
+        <StackPanel
+            Grid.Row="2"
+            Orientation="Horizontal"
+            Spacing="24">
+            <CheckBox
+                x:Name="OptIn"
+                Checked="OptIn_Changed"
+                Content="ScrollBarExtensions.IsTouchThumbDragEnabled"
+                Unchecked="OptIn_Changed" />
+            <CheckBox
+                x:Name="WideContent"
+                Checked="WideContent_Changed"
+                Content="Wide content (horizontal overflow)"
+                IsChecked="True"
+                Unchecked="WideContent_Changed" />
+        </StackPanel>
+
+        <TextBlock
+            x:Name="Status"
+            Grid.Row="3"
+            TextWrapping="WrapWholeWords" />
+
+        <Grid Grid.Row="4" ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!--  The bars of this one are template parts, so the opt-in is applied from the code-behind.  -->
+            <ScrollViewer
+                x:Name="Viewport"
+                HorizontalScrollBarVisibility="Auto"
+                HorizontalScrollMode="Enabled"
+                VerticalScrollBarVisibility="Auto"
+                VerticalScrollMode="Enabled">
+                <ItemsControl x:Name="Rows" Width="2000">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Height="44"
+                                Margin="0,0,0,1"
+                                Padding="12,0"
+                                Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
+                                <TextBlock VerticalAlignment="Center" Text="{Binding}" />
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!--  A ScrollBar hosted on its own - the shape the CommunityToolkit DataGrid uses - has nothing to raise its indicator.  -->
+            <StackPanel Grid.Column="1" Spacing="4">
+                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Text="Standalone" />
+                <ScrollBar
+                    x:Name="StandaloneScrollBar"
+                    Width="24"
+                    Height="240"
+                    IsTabStop="False"
+                    Maximum="100"
+                    Orientation="Vertical"
+                    Scroll="ScrollBar_Scroll"
+                    ViewportSize="100"
+                    Visibility="Visible" />
+                <TextBlock x:Name="StandaloneValue" Style="{ThemeResource CaptionTextBlockStyle}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

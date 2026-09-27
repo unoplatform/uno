@@ -1,6 +1,7 @@
 parameters:
   vmLinuxPool: ''
   XAML_FLAVOR_BUILD: ''
+  jobTimeoutInMinutes: 45
 
 jobs:
 ##
@@ -9,7 +10,7 @@ jobs:
 
 - job: Android_Tests
   displayName: ' ' ## Name is concatenated with the matrix group name
-  timeoutInMinutes: 45
+  timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
   dependsOn: Skia_Android_Tests_Build
   pool: ${{ parameters.vmLinuxPool }}
@@ -28,7 +29,7 @@ jobs:
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 0
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 4
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
         TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
@@ -69,6 +70,10 @@ jobs:
         UITEST_TEST_TIMEOUT: '2600s'
 
   steps:
+  - template: ../templates/job-deadline.yml
+    parameters:
+      timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
+
   - checkout: self
     clean: true
 

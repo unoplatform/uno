@@ -381,7 +381,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	private const int _connectionRetryInterval = 5_000;
 
 	private readonly StatusSink _status;
-	private static readonly TimeSpan _keepAliveInterval = TimeSpan.FromSeconds(30);
+	private static readonly TimeSpan _keepAliveInterval = KeepAliveMessage.Interval;
 	private static RemoteControlClient? _instance;
 	private readonly (string endpoint, int port)[]? _serverAddresses;
 	private readonly Dictionary<string, IClientProcessor> _processors = new();

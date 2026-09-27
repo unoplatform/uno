@@ -22,7 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.72.1" />
+		<PackageReference Include="Microsoft.Identity.Client" />
 	</ItemGroup>
 
 	<ItemGroup>

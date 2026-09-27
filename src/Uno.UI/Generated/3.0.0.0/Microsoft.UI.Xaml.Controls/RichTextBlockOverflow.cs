@@ -8,148 +8,20 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class RichTextBlockOverflow : global::Microsoft.UI.Xaml.FrameworkElement
 	{
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HasOverflowContentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HasOverflowContent), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsTextTrimmedProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextTrimmed), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty MaxLinesProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxLines), typeof(int),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(int)));
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty OverflowContentTargetProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(OverflowContentTarget), typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)));
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty PaddingProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Padding), typeof(global::Microsoft.UI.Xaml.Thickness),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public double BaselineOffset
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "BaselineOffset");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer ContentEnd
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "ContentEnd");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.Controls.RichTextBlock ContentSource
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "ContentSource");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer ContentStart
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "ContentStart");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool HasOverflowContent
-		{
-			get
-			{
-				return (bool)this.GetValue(HasOverflowContentProperty);
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IsTextTrimmed
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTextTrimmedProperty);
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public int MaxLines
-		{
-			get
-			{
-				return (int)this.GetValue(MaxLinesProperty);
-			}
-			set
-			{
-				this.SetValue(MaxLinesProperty, value);
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow OverflowContentTarget
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)this.GetValue(OverflowContentTargetProperty);
-			}
-			set
-			{
-				this.SetValue(OverflowContentTargetProperty, value);
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.Thickness Padding
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(PaddingProperty);
-			}
-			set
-			{
-				this.SetValue(PaddingProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property HasOverflowContentProperty
+		// Skipping already declared property IsTextTrimmedProperty
+		// Skipping already declared property MaxLinesProperty
+		// Skipping already declared property OverflowContentTargetProperty
+		// Skipping already declared property PaddingProperty
+		// Skipping already declared property BaselineOffset
+		// Skipping already declared property ContentEnd
+		// Skipping already declared property ContentSource
+		// Skipping already declared property ContentStart
+		// Skipping already declared property HasOverflowContent
+		// Skipping already declared property IsTextTrimmed
+		// Skipping already declared property MaxLines
+		// Skipping already declared property OverflowContentTarget
+		// Skipping already declared property Padding
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.RichTextBlockOverflow()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.RichTextBlockOverflow()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.HasOverflowContentProperty.get
@@ -157,13 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.MaxLinesProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.OverflowContentTargetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.PaddingProperty.get
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer GetPositionFromPoint(global::Windows.Foundation.Point point)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "GetPositionFromPoint(Point point)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.GetPositionFromPoint(Windows.Foundation.Point)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmedChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmedChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.BaselineOffset.get
@@ -178,21 +44,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.OverflowContentTarget.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.Padding.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.Padding.set
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow, global::Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged
-		{
-			[global::Uno.NotImplemented("__SKIA__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "event IsTextTrimmedChanged");
-			}
-			[global::Uno.NotImplemented("__SKIA__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "event IsTextTrimmedChanged");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmedChanged
 	}
 }

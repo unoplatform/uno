@@ -1,0 +1,312 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.UI.Extensions;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;
+using Uno.UI.DevTools.Input;
+using Windows.Foundation;
+using Windows.UI;
+using static Private.Infrastructure.TestServices;
+
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
+{
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_VisualTreeHelper
+	{
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void OpenPopups_Flyouts_Unique()
+		{
+			var button = new Microsoft.UI.Xaml.Controls.Button();
+			var flyout = new Flyout();
+			FlyoutBase.SetAttachedFlyout(button, flyout);
+			WindowHelper.WindowContent = button;
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
+			FlyoutBase.ShowAttachedFlyout(button);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
+			flyout.Hide();
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void OpenPopups_Popups_Unique()
+		{
+			var popup = new Popup();
+			popup.XamlRoot = WindowHelper.XamlRoot;
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
+			popup.IsOpen = true;
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
+			popup.IsOpen = false;
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void OpenPopups_Popups_Include_Instance()
+		{
+			var popup = new Popup();
+			popup.XamlRoot = WindowHelper.XamlRoot;
+			popup.IsOpen = true;
+			CollectionAssert.Contains(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ToArray(), popup);
+			popup.IsOpen = false;
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RunsOnUIThread]
+		public async Task OpenPopups_MenuFlyout_HitTest()
+		{
+			// setup a button with menu flyout
+			var nestedItem1 = new MenuFlyoutItem() { Text = "QweQweQwe QweQweQwe" };
+			var nestedItem2 = new MenuFlyoutItem() { Text = "ZxcZxcZxc ZxcZxcZxc" };
+			var menu = new MenuFlyout() { Items = { nestedItem1, nestedItem2 } };
+			var sut = new Button() { Flyout = menu };
+			await UITestHelper.Load(sut);
+
+			// force open the menu, via button click
+			using var cleanup = Disposable.Create(() =>
+			{
+				menu.Hide();
+				UITestHelper.CloseAllPopups();
+			});
+			sut.ProgrammaticClick();
+			await UITestHelper.WaitForIdle();
+
+			// check if the flyout is opened
+			var popup = VisualTreeHelper
+				.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+				.FirstOrDefault(x => x.Child is MenuFlyoutPresenter);
+			Assert.IsNotNull(popup, "Expected to find the MenuFlyout's Popup in the visual tree");
+
+			// hit-test for MenuFlyoutPresenter
+			var rect = nestedItem1.GetAbsoluteBounds();
+			var center = rect.GetCenter();
+			var matches = VisualTreeHelper.FindElementsInHostCoordinates(center, popup.Child, includeAllElements: true).ToArray();
+			Assert.IsTrue(matches.Contains(popup.Child), "Expected to find the element in the FindElementsInHostCoordinates results");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Nested_Setup_HitTest()
+		{
+			var sut = new Border
+			{
+				Name = "sut",
+				Width = 10,
+				Height = 10,
+				Background = new SolidColorBrush(Colors.Blue),
+			};
+			var wrapper = new Border
+			{
+				Name = "wrapper",
+				Width = 10,
+				Height = 10,
+				HorizontalAlignment = HorizontalAlignment.Right,
+				VerticalAlignment = VerticalAlignment.Bottom,
+				Child = sut,
+				Background = new SolidColorBrush(Colors.Green),
+			};
+			var setup = new Border
+			{
+				Name = "setup",
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Colors.Red),
+				Child = wrapper,
+			};
+			await UITestHelper.Load(setup);
+
+			var rect = sut.GetAbsoluteBounds();
+			var center = rect.GetCenter();
+			var matches = VisualTreeHelper.FindElementsInHostCoordinates(center, setup, includeAllElements: true).ToArray();
+
+			Assert.IsTrue(matches.Contains(sut), "Expected to find the element in the FindElementsInHostCoordinates results");
+		}
+#endif
+
+#if !WINAPPSDK // Testing internal Uno methods
+		[TestMethod]
+		[RunsOnUIThread]
+#if !UNO_HAS_MANAGED_POINTERS
+		[Ignore("Root visual tree elements are not configured properly to use managed hit testing.")]
+#endif
+		public async Task When_HitTestTranslatedElement()
+		{
+			Border root, transformed, nested;
+			root = new Border
+			{
+				Name = "Root",
+				Width = 512,
+				Height = 512,
+				Background = new SolidColorBrush(Colors.DeepSkyBlue),
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Child = transformed = new Border
+				{
+					Name = "Transformed",
+					Width = 128,
+					Height = 128,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					RenderTransform = new TranslateTransform { X = 128, Y = 128 },
+					HorizontalAlignment = HorizontalAlignment.Center,
+					VerticalAlignment = VerticalAlignment.Center,
+					Child = nested = new Border
+					{
+						Name = "Nested",
+						Width = 64,
+						Height = 64,
+						Background = new SolidColorBrush(Colors.Chartreuse),
+						HorizontalAlignment = HorizontalAlignment.Center,
+						VerticalAlignment = VerticalAlignment.Center,
+					}
+				}
+			};
+
+			var position = (await UITestHelper.Load(root)).Location;
+
+			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(256), root.XamlRoot?.VisualTree.RootElement).element!, "Root");
+			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(256 + 65), root.XamlRoot?.VisualTree.RootElement).element!, "Transformed");
+			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(256 + 128), root.XamlRoot?.VisualTree.RootElement).element!, "Nested");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !UNO_HAS_MANAGED_POINTERS
+		[Ignore("Root visual tree elements are not configured properly to use managed hit testing.")]
+#endif
+		public async Task When_ElementStub_Not_Counted()
+		{
+			var SUT = new xLoad_Visibility();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(SUT));
+			Assert.IsNull(VisualTreeHelper.GetChild(SUT, 0));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		// WinUI throws for an invalid index; Uno has always returned null and apps depend on it.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_GetChild_Index_Out_Of_Range()
+		{
+			var SUT = new Border { Width = 32, Height = 32, Child = new TextBlock() };
+			await UITestHelper.Load(SUT);
+
+			Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(SUT));
+			Assert.IsNotNull(VisualTreeHelper.GetChild(SUT, 0));
+			Assert.IsNull(VisualTreeHelper.GetChild(SUT, 1));
+			Assert.IsNull(VisualTreeHelper.GetChild(SUT, -1));
+			Assert.IsNull(VisualTreeHelper.GetChild(SUT, int.MinValue));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !UNO_HAS_MANAGED_POINTERS
+		[Ignore("Root visual tree elements are not configured properly to use managed hit testing.")]
+#endif
+		public async Task When_HitTestScaledElement()
+		{
+			Border root, transformed, nested;
+			root = new Border
+			{
+				Name = "Root",
+				Width = 512,
+				Height = 512,
+				Background = new SolidColorBrush(Colors.DeepSkyBlue),
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Child = transformed = new Border
+				{
+					Name = "Transformed",
+					Width = 128,
+					Height = 128,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					RenderTransform = new ScaleTransform { ScaleX = 2, ScaleY = 2 },
+					RenderTransformOrigin = new Point(.5, .5),
+					HorizontalAlignment = HorizontalAlignment.Center,
+					VerticalAlignment = VerticalAlignment.Center,
+					Child = nested = new Border
+					{
+						Name = "Nested",
+						Width = 64,
+						Height = 64,
+						Background = new SolidColorBrush(Colors.Chartreuse),
+						HorizontalAlignment = HorizontalAlignment.Center,
+						VerticalAlignment = VerticalAlignment.Center,
+					}
+				}
+			};
+
+			var position = (await UITestHelper.Load(root)).Location;
+
+			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(128 - 5), root.XamlRoot?.VisualTree.RootElement).element!, "Root");
+			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(128 + 5), root.XamlRoot?.VisualTree.RootElement).element!, "Transformed");
+			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(256 - 60), root.XamlRoot?.VisualTree.RootElement).element!, "Nested");
+		}
+
+		private static void AssertName(UIElement element, string expectedName)
+		{
+			((FrameworkElement)element).Name!.Should().Be(expectedName);
+		}
+
+		private static IEnumerable<Point> GetPointsInside(Rect rect, double perimeterOffset)
+		{
+			if (perimeterOffset >= rect.Width || perimeterOffset >= rect.Height)
+			{
+				throw new ArgumentException($"Offset {perimeterOffset} is too large to fit inside Rect {rect}");
+			}
+
+			yield return rect.GetCenter();
+
+			var interiorXs = new[] { rect.Left + perimeterOffset, rect.Right - perimeterOffset };
+			var interiorYs = new[] { rect.Top + perimeterOffset, rect.Bottom - perimeterOffset };
+			foreach (var x in interiorXs)
+			{
+				foreach (var y in interiorYs)
+				{
+					yield return new Point(x, y);
+				}
+			}
+		}
+#endif
+
+		private static IEnumerable<Point> GetPointsOutside(Rect rect, double perimeterOffset)
+		{
+			var exteriorXs = new[] { rect.Left - perimeterOffset, rect.Left, rect.Right, rect.Right + perimeterOffset };
+			var exteriorYs = new[] { rect.Top - perimeterOffset, rect.Bottom + perimeterOffset };
+			foreach (var x in exteriorXs)
+			{
+				foreach (var y in exteriorYs)
+				{
+					yield return new Point(x, y);
+				}
+			}
+
+			var remainingXs = new[] { rect.Left - perimeterOffset, rect.Right + perimeterOffset };
+			var remainingYs = new[] { rect.Top, rect.Bottom };
+			foreach (var x in remainingXs)
+			{
+				foreach (var y in remainingYs)
+				{
+					yield return new Point(x, y);
+				}
+			}
+		}
+	}
+}

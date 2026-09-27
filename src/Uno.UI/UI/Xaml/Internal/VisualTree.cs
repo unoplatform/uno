@@ -702,7 +702,7 @@ namespace Uno.UI.Xaml.Core
 
 				if (currentAncestor is XamlIslandRoot xamlIslandRoot)
 				{
-					return xamlIslandRoot.ContentRoot.VisualTree;
+					return xamlIslandRoot.ContentRoot?.VisualTree;
 				}
 				else if (currentAncestor is RootVisual rootVisual)
 				{

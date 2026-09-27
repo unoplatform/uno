@@ -177,6 +177,8 @@ namespace Uno.UI.RemoteControl.Host
 					{
 						services.AddRouting();
 						services.Configure<RemoteControlOptions>(builder.Configuration);
+						// Concurrent hot-reload workspace cap (see #24205): bind at startup.
+						services.Configure<Uno.UI.RemoteControl.Server.HotReloadWorkspaceOptions>(builder.Configuration.GetSection("HotReload"));
 					});
 
 				builder.Services.AddSingleton<IIdeChannel>(_ =>

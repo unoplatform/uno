@@ -11,10 +11,16 @@ namespace UITests.Windows_UI_ViewManagement
 	//  1. Tapping a TextBox must keep the keyboard open (no self-dismiss).
 	//  2. LostFocus must fire when the keyboard is dismissed / focus leaves the field.
 	//  3. The focused field near the bottom must scroll above the on-screen keyboard.
-	// These reproduce only on a real touch device (iPad Safari/Chrome), not desktop or the iOS Simulator.
+	//  4. Moving focus between fields of a side panel must keep the keyboard open and must not let Safari
+	//     pan the page (the panel's ScrollViewer is the only thing allowed to move).
+	//  5. Dragging inside the side panel scrolls the panel, not the whole page.
+	// 1-3 reproduce only on a real touch device (iPad Safari/Chrome). 4-5 also reproduce in the iOS Simulator:
+	// with the field focused, toggle I/O > Keyboard > Connect Hardware Keyboard on and off to force a keyboard
+	// frame change.
 	[Sample("Windows.UI.ViewManagement", Description = "On-device checks for Skia WASM soft-keyboard focus (auto-dismiss, LostFocus, bring-into-view).", IsManualTest = true, IgnoreInSnapshotTests = true)]
 	public sealed partial class SoftKeyboardFocusTests : Page
 	{
+		private string _focusedFieldName = "(none)";
 		private int _gotFocusCount;
 		private int _lostFocusCount;
 
@@ -37,6 +43,20 @@ namespace UITests.Windows_UI_ViewManagement
 			UpdateFocusState();
 		}
 
+		private void OnPanelFieldGotFocus(object sender, RoutedEventArgs e)
+		{
+			var name = (sender as FrameworkElement)?.Name;
+			_focusedFieldName = string.IsNullOrEmpty(name) ? sender.GetType().Name : name;
+			UpdatePanelState();
+		}
+
+		// The offset has to follow the panel, not just the focus: checks 4 and 5 are about which element moves,
+		// so the readout is only useful if it keeps up during the bring-into-view and the drag.
+		private void OnSidePanelViewChanged(object sender, ScrollViewerViewChangedEventArgs e) => UpdatePanelState();
+
+		private void UpdatePanelState()
+			=> PanelFocusTextBlock.Text = $"Focused field: {_focusedFieldName}   Panel offset: {SidePanelScrollViewer.VerticalOffset:0}";
+
 		private void UpdateFocusState()
 		{
 			FocusStateTextBlock.Text =
@@ -57,7 +77,9 @@ namespace UITests.Windows_UI_ViewManagement
 			var inputPane = InputPane.GetForCurrentView();
 			inputPane.Showing += OnInputPaneShowing;
 			inputPane.Hiding += OnInputPaneHiding;
+			SidePanelScrollViewer.ViewChanged += OnSidePanelViewChanged;
 			UpdateFocusState();
+			UpdatePanelState();
 		}
 
 		private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -65,6 +87,7 @@ namespace UITests.Windows_UI_ViewManagement
 			var inputPane = InputPane.GetForCurrentView();
 			inputPane.Showing -= OnInputPaneShowing;
 			inputPane.Hiding -= OnInputPaneHiding;
+			SidePanelScrollViewer.ViewChanged -= OnSidePanelViewChanged;
 		}
 	}
 }

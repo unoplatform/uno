@@ -1,6 +1,7 @@
 ﻿#nullable disable
 
 using System;
+using System.Threading;
 using Android.App;
 using Android.Runtime;
 using Android.Util;
@@ -27,6 +28,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	private readonly ActivationPreDrawListener _preDrawListener;
 	private readonly DisplayInformation _displayInformation;
 	private bool _contentViewAttachedToWindow;
+
+	// Armed on every ApplicationActivity creation so its window's draws wait for a Skia frame; released by the render
+	// view once that frame is presented. The render view outlives a recreated Activity, so it must not keep its own
+	// "already signaled" state: OnPreDraw would then cancel every draw of the new window, forever.
+	private int _awaitingFirstFrame;
 
 	private Rect _previousTrueVisibleBounds;
 
@@ -268,6 +274,15 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 #pragma warning restore 618
 	}
 
+	internal void ArmFirstFrameGate() => Volatile.Write(ref _awaitingFirstFrame, 1);
+
+	/// <summary>
+	/// Called on the GL/Vulkan render thread after each presented frame.
+	/// Returns true only for the frame that released an armed gate.
+	/// </summary>
+	internal bool TryReleaseFirstFrameGate()
+		=> Volatile.Read(ref _awaitingFirstFrame) == 1 && Interlocked.Exchange(ref _awaitingFirstFrame, 0) == 1;
+
 	private void AddPreDrawListener()
 	{
 		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
@@ -302,7 +317,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 		public bool OnPreDraw()
 		{
-			if (_windowWrapper._contentViewAttachedToWindow)
+			if (_windowWrapper._contentViewAttachedToWindow
+				&& Volatile.Read(ref _windowWrapper._awaitingFirstFrame) == 0)
 			{
 				_windowWrapper.RemovePreDrawListener();
 				return true;

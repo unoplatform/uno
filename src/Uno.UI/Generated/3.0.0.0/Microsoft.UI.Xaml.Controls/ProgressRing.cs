@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ProgressRing
+	public partial class ProgressRing : global::Microsoft.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property IsActiveProperty
 		// Skipping already declared property IsIndeterminateProperty

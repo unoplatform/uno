@@ -27,6 +27,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private Panel? _layoutRoot;
 		private double _oldValue = 0d;
 		private LoadedAsset _loadedAsset;
+		private Action? _foregroundBrushChanged;
+		private Action? _backgroundBrushChanged;
+		private IDisposable? _foregroundBrushSubscription;
+		private IDisposable? _backgroundBrushSubscription;
 
 		private enum LoadedAsset : byte
 		{
@@ -134,9 +138,19 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty dp) => SetLottieForegroundColor();
+		// A brush can change colour without the property changing - a re-evaluated theme resource is
+		// mutated in place - so follow the assigned brush too, not just the property it is assigned to.
+		private void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty dp)
+		{
+			_foregroundBrushSubscription?.Dispose();
+			_foregroundBrushSubscription = Brush.SetupBrushChanged(Foreground, ref _foregroundBrushChanged, SetLottieForegroundColor);
+		}
 
-		private void OnBackgroundPropertyChanged(DependencyObject sender, DependencyProperty dp) => SetLottieBackgroundColor();
+		private void OnBackgroundPropertyChanged(DependencyObject sender, DependencyProperty dp)
+		{
+			_backgroundBrushSubscription?.Dispose();
+			_backgroundBrushSubscription = Brush.SetupBrushChanged(Background, ref _backgroundBrushChanged, SetLottieBackgroundColor);
+		}
 
 		private void SetLottieForegroundColor()
 		{

@@ -15,7 +15,9 @@ namespace Microsoft.UI.Xaml
 			TimeSpan = timeSpan;
 		}
 
-		public DurationType Type;
+		// WinUI's projected Duration exposes no Type member; it is reachable only through
+		// HasTimeSpan and comparison with Automatic/Forever.
+		internal DurationType Type { get; private set; }
 		public TimeSpan TimeSpan { get; }
 
 		public static implicit operator Duration(string timeSpan)

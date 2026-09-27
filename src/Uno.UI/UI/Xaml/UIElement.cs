@@ -108,9 +108,15 @@ namespace Microsoft.UI.Xaml
 		internal Matrix3x2 GetFlowDirectionTransform()
 		{
 			var inMirroredSubtree = ShouldMirrorVisual();
-			var isMirroredTextBlock = this is TextBlock { FlowDirection: FlowDirection.RightToLeft };
 
-			return inMirroredSubtree ^ isMirroredTextBlock
+			// Text surfaces lay their own content out for right-to-left: the engines emit glyphs in
+			// visual order and align the lines themselves, so the element-level flip would mirror
+			// output that is already correct. WinUI cancels the flip with a second mirror inside its
+			// text drawing context; here it is suppressed instead.
+			var isMirroredTextSurface = this is FrameworkElement { FlowDirection: FlowDirection.RightToLeft }
+				and (TextBlock or RichTextBlock or RichTextBlockOverflow);
+
+			return inMirroredSubtree ^ isMirroredTextSurface
 				? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f)
 				: Matrix3x2.Identity;
 		}
@@ -127,7 +133,9 @@ namespace Microsoft.UI.Xaml
 			{
 				if (parent is FrameworkElement feParent)
 				{
-					return feParent is not PopupPanel && fe.FlowDirection != feParent.FlowDirection;
+					// The popup panel covers the whole window and positions its child in absolute coordinates, so it never mirrors itself;
+					// popup content (whose flow direction is forwarded from the flyout's placement target) mirrors relative to the panel.
+					return fe is not PopupPanel && fe.FlowDirection != feParent.FlowDirection;
 				}
 
 				parent = VisualTreeHelper.GetParent(parent);

@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TimePickerFlyoutPresenter
+	public partial class TimePickerFlyoutPresenter : global::Microsoft.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property IsDefaultShadowEnabledProperty
 		// Skipping already declared property IsDefaultShadowEnabled

@@ -153,16 +153,12 @@ public sealed partial class Geolocator
 				var accessStatus = default(GeolocationAccessStatus);
 				var tsc = new TaskCompletionSource<CLAuthorizationStatus>();
 
-#if __IOS__ || __TVOS__
 				// Workaround for a bug in Xamarin.iOS https://github.com/unoplatform/uno/issues/4853
 				var @delegate = new CLLocationManagerDelegate();
 
 				mgr.Delegate = @delegate;
 
 				@delegate.AuthorizationChanged += (s, e) =>
-#else
-				mgr.AuthorizationChanged += (s, e) =>
-#endif
 				{
 					if (e.Status != CLAuthorizationStatus.NotDetermined)
 					{
@@ -170,9 +166,7 @@ public sealed partial class Geolocator
 					}
 				};
 
-#if __IOS__ || __TVOS__ //required only for iOS
 				mgr.RequestWhenInUseAuthorization();
-#endif
 
 				if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined)
 				{
@@ -229,7 +223,6 @@ public sealed partial class Geolocator
 		}
 	}
 
-#if __IOS__ || __TVOS__
 	private class CLLocationManagerDelegate : NSObject, ICLLocationManagerDelegate
 	{
 		public event EventHandler<CLAuthorizationChangedEventArgs> AuthorizationChanged;
@@ -240,5 +233,4 @@ public sealed partial class Geolocator
 			AuthorizationChanged?.Invoke(manager, new CLAuthorizationChangedEventArgs(status));
 		}
 	}
-#endif
 }

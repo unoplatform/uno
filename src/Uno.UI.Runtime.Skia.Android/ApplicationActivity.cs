@@ -13,10 +13,10 @@ using Android.Widget;
 using AndroidX.Activity;
 using AndroidX.Core.Graphics;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Uno.UI.Runtime.Skia.Android;
 using Uno.UI.Xaml.Controls;
@@ -32,11 +32,11 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public partial class ApplicationActivity : Controls.NativePage
 	{
-		private static IUnoSkiaRenderView? _renderView;
+		private static IUnoRenderView? _renderView;
 		private static View? _renderViewAsView;
 		private static ClippedRelativeLayout? _nativeLayerHost;
 
-		internal static IUnoSkiaRenderView? RenderView => _renderView;
+		internal static IUnoRenderView? RenderView => _renderView;
 
 		private InputPane _inputPane;
 
@@ -50,7 +50,11 @@ namespace Microsoft.UI.Xaml
 
 		internal static RelativeLayout RelativeLayout { get; private set; } = null!;
 
-		internal LayoutProvider LayoutProvider { get; private set; } = null!;
+		private LayoutProvider? _layoutProvider;
+
+		// Lazy: a recreated Activity that keeps its window (e.g. Activity.Recreate) attaches the reused content,
+		// and so starts the provider, from InitializeComponent, before OnCreate would have created it.
+		internal LayoutProvider LayoutProvider => _layoutProvider ??= CreateLayoutProvider();
 
 		internal static ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
 
@@ -166,7 +170,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var nativelyHandled = false;
-			if (_nativeLayerHost?.Path.Contains(ev.GetX(), ev.GetY()) ?? false)
+			if (_nativeLayerHost?.Path?.FillContains(new global::System.Numerics.Vector2(ev.GetX(), ev.GetY())) ?? false)
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
 				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
@@ -193,7 +197,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var nativelyHandled = false;
-			if (_nativeLayerHost?.Path.Contains(ev.GetX(), ev.GetY()) ?? false)
+			if (_nativeLayerHost?.Path?.FillContains(new global::System.Numerics.Vector2(ev.GetX(), ev.GetY())) ?? false)
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
 				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
@@ -255,13 +259,27 @@ namespace Microsoft.UI.Xaml
 
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
-			LayoutProvider = new LayoutProvider(this);
-			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
-			LayoutProvider.InsetsChanged += OnInsetsChanged;
+			// Hold the window's draws until a Skia frame is presented (see the render views).
+			NativeWindowWrapper.Instance.ArmFirstFrameGate();
+			if (_renderView is not null)
+			{
+				// A recreated Activity reuses the render view, so request the frame that releases the gate.
+				InvalidateRender();
+			}
+
+			_ = LayoutProvider;
 
 			RaiseConfigurationChanges();
 
 			InitializeBackPressedCallback();
+		}
+
+		private LayoutProvider CreateLayoutProvider()
+		{
+			LayoutProvider layoutProvider = new(this);
+			layoutProvider.KeyboardChanged += OnKeyboardChanged;
+			layoutProvider.InsetsChanged += OnInsetsChanged;
+			return layoutProvider;
 		}
 
 		protected override void OnStart()
@@ -294,34 +312,95 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private IUnoSkiaRenderView CreateRenderView()
+		private IUnoRenderView CreateRenderView()
 		{
+			// Pick the Android view class matching the registered backend's context kind (host reads the neutral kind).
+			if (global::Uno.UI.Composition.Drawing.GraphicsRegistry.HasBackendPreferring(
+				global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu))
+			{
+				try
+				{
+					return new UnoWebGpuView(this);
+				}
+				catch (Exception ex)
+				{
+					typeof(ApplicationActivity).Log().Warn($"WebGPU rendering not available: {ex.Message}. Falling back.");
+				}
+			}
+
+			// Default (UseVulkan): Vulkan when supported, else the canvas view. Vulkan can fail at runtime, so a
+			// failed bring-up falls through to the canvas view rather than aborting.
 			if (FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid)
 			{
+				// Gate on the declared hardware feature first: without it, loading libvulkan.so and driving device
+				// creation can abort inside the driver, which is not a catchable managed exception.
 				if (!PackageManager?.HasSystemFeature(PackageManager.FeatureVulkanHardwareLevel) ?? true)
 				{
-					typeof(ApplicationActivity).Log().Warn($"Device does not support Vulkan. Falling back to OpenGL ES.");
+					typeof(ApplicationActivity).Log().Warn("Device does not support Vulkan. Falling back to OpenGL ES.");
 				}
 				else
 				{
-					// Vulkan feature flags are static device configuration and can be declared even when
-					// the driver cannot actually render (common on emulators) — the view constructor
-					// creates the Vulkan device and throws when the driver is unusable.
+					// Vulkan feature flags are static device configuration and can be declared even when the driver
+					// cannot actually render (common on emulators) — the view constructor creates the Vulkan device
+					// and throws when the driver is unusable.
 					try
 					{
-						return new UnoSKVulkanView(this);
+						return new UnoVulkanView(this);
 					}
 					catch (Exception ex)
 					{
-						if (typeof(ApplicationActivity).Log().IsEnabled(LogLevel.Warning))
-						{
-							typeof(ApplicationActivity).Log().Warn($"Vulkan rendering not available: {ex.Message}. Falling back to OpenGL ES.");
-						}
+						typeof(ApplicationActivity).Log().Warn($"Vulkan rendering not available: {ex.Message}. Falling back.");
 					}
 				}
 			}
 
-			return new UnoSKCanvasView(this);
+			// The canvas view renders GLES or software per UseOpenGLOnSkiaAndroid (chosen in its OnSurfaceCreated).
+			return new UnoCanvasView(this);
+		}
+
+		/// <summary>
+		/// Swaps the active render view for the GL/canvas one after a GPU backend failed to initialize on its own
+		/// render thread. <see cref="CreateRenderView"/>'s try/catch only covers the view constructor, so without
+		/// this a failed negotiation leaves a dead render thread and a permanently black window.
+		/// </summary>
+		internal static void FallbackToCanvasView()
+		{
+			var instance = Instance;
+			var layout = RelativeLayout;
+			if (instance is null || layout is null || _renderView is UnoCanvasView)
+			{
+				return;
+			}
+
+			instance.RunOnUiThread(() =>
+			{
+				if (_renderView is UnoCanvasView)
+				{
+					return;
+				}
+
+				typeof(ApplicationActivity).Log().Warn("Falling back to the OpenGL ES/software render view.");
+
+				if (_renderViewAsView is { } failed)
+				{
+					layout.RemoveView(failed);
+					// Deferred: removing the view still delivers surfaceDestroyed to it, and disposing the managed
+					// peer before that callback lands faults inside it.
+					layout.Post(() => failed.Dispose());
+				}
+
+				var canvasView = new UnoCanvasView(instance);
+				canvasView.LayoutParameters = new ViewGroup.LayoutParams(
+					ViewGroup.LayoutParams.MatchParent,
+					ViewGroup.LayoutParams.MatchParent);
+				_renderView = canvasView;
+				_renderViewAsView = canvasView;
+
+				// Index 0 keeps it under the native layer host, matching the order OnStart adds them in.
+				layout.AddView(canvasView, 0);
+
+				instance.InvalidateRender();
+			});
 		}
 
 		internal void InvalidateRender()
@@ -393,7 +472,11 @@ namespace Microsoft.UI.Xaml
 
 			CleanupBackPressedCallback();
 
-			NativeWindowWrapper.Instance.OnNativeClosed();
+			// A configuration-driven recreation keeps the window and its content for the new Activity.
+			if (!IsChangingConfigurations)
+			{
+				NativeWindowWrapper.Instance.OnNativeClosed();
+			}
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)
@@ -493,7 +576,7 @@ namespace Microsoft.UI.Xaml
 
 		internal partial class ClippedRelativeLayout : RelativeLayout
 		{
-			private SKPath _path = new SKPath();
+			private IGeometry? _path;
 			private Path _androidPath = new Path();
 			private string _svgClipPath = "";
 
@@ -502,24 +585,22 @@ namespace Microsoft.UI.Xaml
 				SetWillNotDraw(false);
 			}
 
-			public SKPath Path
+			// Neutral clip geometry: SVG path data + fill rule drive the Android clip path, FillContains hit-testing.
+			public IGeometry? Path
 			{
 				get => _path;
 				set
 				{
-					var svgClipPath = value.ToSvgPathData();
+					var svgClipPath = value?.ToSvgPathData() ?? "";
 					if (_svgClipPath != svgClipPath)
 					{
 						_path = value;
 						_svgClipPath = svgClipPath;
 						_androidPath = PathParser.CreatePathFromPathData(_svgClipPath)!;
-						_androidPath.SetFillType(value.FillType switch
+						_androidPath.SetFillType((value?.FillRule ?? GeometryFillRule.NonZero) switch
 						{
-							SKPathFillType.Winding => APath.FillType.Winding!,
-							SKPathFillType.EvenOdd => APath.FillType.EvenOdd!,
-							SKPathFillType.InverseWinding => APath.FillType.InverseWinding!,
-							SKPathFillType.InverseEvenOdd => APath.FillType.InverseEvenOdd!,
-							_ => throw new ArgumentOutOfRangeException()
+							GeometryFillRule.EvenOdd => APath.FillType.EvenOdd!,
+							_ => APath.FillType.Winding!,
 						});
 						Invalidate();
 					}

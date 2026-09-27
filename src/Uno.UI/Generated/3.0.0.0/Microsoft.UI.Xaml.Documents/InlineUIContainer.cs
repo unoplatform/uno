@@ -4,32 +4,13 @@
 namespace Microsoft.UI.Xaml.Documents
 {
 	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Child")]
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class InlineUIContainer : global::Microsoft.UI.Xaml.Documents.Inline
 	{
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.UIElement Child
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.InlineUIContainer", "Child");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.InlineUIContainer", "Child");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public InlineUIContainer() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.InlineUIContainer", "InlineUIContainer()");
-		}
-#endif
+		// Skipping already declared property Child
+		// Skipping already declared method Microsoft.UI.Xaml.Documents.InlineUIContainer.InlineUIContainer()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.InlineUIContainer()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.Child.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.Child.set

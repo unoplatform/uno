@@ -321,8 +321,8 @@ NSWindow* uno_window_create(double width, double height)
     id device = uno_application_get_metal_device();
     if (device) {
         UNOMetalFlippedView *v = [[UNOMetalFlippedView alloc] initWithFrame:size device:device];
-        // Disable MTKView auto-draw; frames are driven by the managed render thread via
-        // uno_window_acquire_next_frame / uno_window_present_frame.
+        // Disable MTKView auto-draw; frames are driven by the managed render thread, which composes
+        // into its own texture and hands it to uno_window_present_texture.
         v.paused = YES;
         v.enableSetNeedsDisplay = NO;
         v.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
@@ -1056,6 +1056,35 @@ void uno_window_get_metal_handles(UNOWindow* window, void** device, void** queue
     *queue = (__bridge void *)(window.metalViewDelegate.queue);
 #if DEBUG
     NSLog(@"uno_window_get_metal device %p queue %p", device, queue);
+#endif
+}
+
+void* uno_window_get_metal_layer(UNOWindow* window)
+{
+    NSView* view = window.renderingView;
+    if ([view isKindOfClass:[MTKView class]])
+    {
+        // MTKView's backing layer is a CAMetalLayer — hand it to the managed Metal-surface backend for CreateMetalSurface.
+        return (__bridge void *)(view.layer);
+    }
+    return NULL;
+}
+
+void uno_window_set_external_present(UNOWindow* window, bool enabled)
+{
+    if (window.metalViewDelegate != nil)
+    {
+        window.metalViewDelegate.externalPresent = enabled;
+    }
+    // The managed render thread only drives Skia-on-Metal. An external-present context is ticked from
+    // drawInMTKView, so the paused view must redraw on setNeedsDisplay (uno_window_invalidate).
+    NSView* view = window.renderingView;
+    if ([view isKindOfClass:[MTKView class]])
+    {
+        ((MTKView*)view).enableSetNeedsDisplay = enabled;
+    }
+#if DEBUG
+    NSLog(@"uno_window_set_external_present %p -> %s", window, enabled ? "true" : "false");
 #endif
 }
 

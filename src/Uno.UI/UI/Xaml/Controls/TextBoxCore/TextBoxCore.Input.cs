@@ -13,7 +13,6 @@ using Microsoft.UI.Xaml.Internal;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
-using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.UI;
@@ -273,6 +272,9 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 	partial void OnUnloadedPartial()
 	{
+		// Unload can happen mid-drag without an intervening blur (e.g. ListView/ItemsRepeater
+		// recycling), which would otherwise strand IsCaretDragActive permanently true.
+		CancelCaretDrag();
 		_forceFocusedVisualState = false;
 		_timer.Stop();
 		_gripperPresenter?.Hide();
@@ -505,7 +507,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 			var isFocused = FocusState != FocusState.Unfocused || _forceFocusedVisualState;
 			displayBlock.RenderSelection = isFocused;
 			if (CaretMode is CaretDisplayMode.ThumblessCaretShowing &&
-				SelectionLength == 0 &&
+				(SelectionLength == 0 || _caretDragPreviewIndex is not null) &&
 				isFocused &&
 				!IsReadOnly &&
 				!FeatureConfiguration.TextBox.HideCaret)
@@ -515,7 +517,12 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 				// so we use the TextBox's own Foreground (element-theme-aware via
 				// ThemeResource) with fully opaque alpha for maximum caret visibility.
 				var caretBrush = GetOpaqueCaretBrush();
-				displayBlock.RenderCaret = (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength, caretBrush);
+				// A caret drag previews its position without committing the selection until the
+				// gesture ends, so the preview wins while it is active. Text can shrink mid-drag.
+				var caretIndex = _caretDragPreviewIndex is { } previewIndex
+					? Math.Clamp(previewIndex, 0, Text.Length)
+					: (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength);
+				displayBlock.RenderCaret = (caretIndex, caretBrush);
 			}
 			else
 			{
@@ -763,6 +770,13 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 			var (selectionStart, selectionEnd) = _selection.selectionEndsAtTheStart ? (_selection.start + _selection.length, _selection.start) : (_selection.start, _selection.start + _selection.length);
 			var index = putSelectionEndInVisibleViewport ? selectionEnd : selectionStart;
+
+			// A caret drag moves the previewed caret without committing the selection, so the
+			// viewport has to follow the preview instead.
+			if (_caretDragPreviewIndex is { } caretDragIndex)
+			{
+				index = Math.Clamp(caretDragIndex, 0, Text.Length);
+			}
 
 			var caretRect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(index) with { Width = TextBlock.CaretThickness };
 

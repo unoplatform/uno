@@ -1,0 +1,44 @@
+<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.BrowserHtmlElementTests.BrowserHtmlElement_NativeScrollNegotiation"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <ScrollViewer x:Name="OuterScrollViewer">
+        <StackPanel Padding="24" Spacing="16">
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="BrowserHtmlElement native scroll negotiation" />
+            <TextBlock TextWrapping="Wrap">
+                This manual WebAssembly repro places a native HTML overlay inside an Uno Platform ScrollViewer. With negotiation enabled, dragging over the paragraph or the button scrolls the outer ScrollViewer, and the inner native region scrolls first while it still has content in the drag direction, handing over only what is left at its boundary. The text input keeps its full native behavior and never scrolls the page.
+            </TextBlock>
+            <Border
+                Height="280"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                CornerRadius="4">
+                <TextBlock Margin="16" Text="Uno Platform content before the native element" />
+            </Border>
+            <CheckBox
+                x:Name="EnableInnerScroll"
+                Checked="OnInnerScrollToggled"
+                Content="Enable the inner native scroll region"
+                IsChecked="True"
+                Unchecked="OnInnerScrollToggled" />
+            <CheckBox
+                x:Name="EnableNegotiatedInput"
+                Checked="OnNegotiatedInputToggled"
+                Content="Enable negotiated native scroll handoff"
+                IsChecked="False"
+                Unchecked="OnNegotiatedInputToggled" />
+            <TextBlock x:Name="NativeHostStatus" Text="Native host: awaiting setup." />
+            <ContentPresenter
+                x:Name="NativeHost"
+                Height="240"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch" />
+            <Border
+                Height="720"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                CornerRadius="4">
+                <TextBlock Margin="16" Text="Uno Platform content after the native element" />
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

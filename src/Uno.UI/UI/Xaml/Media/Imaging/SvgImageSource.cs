@@ -10,10 +10,10 @@ using Uno;
 using Uno.UI.Xaml.Media;
 using System.Net.Http;
 using Uno.Helpers;
+using Uno.Foundation.Logging;
 using Windows.Application­Model;
 using Microsoft.UI.Composition;
-using SkiaSharp;
-using System.Reflection;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Media.Imaging;
 
@@ -50,9 +50,6 @@ public partial class SvgImageSource : ImageSource
 
 	private void Initialize()
 	{
-#if __SKIA__
-		InitSvgProvider();
-#endif
 		InitPartial();
 	}
 
@@ -158,59 +155,32 @@ public partial class SvgImageSource : ImageSource
 
 		return $"{GetType().Name}/-empty-";
 	}
+#endif
 
-#nullable disable
-	private static MethodInfo _fromPictureMethod;
+	// The retained parsed SVG (from the registered ISvgRenderer); set when the markup parses.
+	private ISvgDocument? _svgDocument;
 
-	private protected unsafe override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
+	// One surface per parsed document, shared by every consumer of this source: the surface owns the document and
+	// disposes it, so a re-open or an unload releases exactly one owner (see Unload).
+	private CompositionSvgSurface? _svgSurface;
+
+	private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 	{
 		if (TryOpenSvgImageData(ct, out var imageTask))
 		{
 			asyncImage = imageTask.ContinueWith(task =>
 			{
 				var imageData = task.Result;
-				if (imageData is { Kind: ImageDataKind.ByteArray, ByteArray: not null } &&
-					_svgProvider?.TryGetLoadedDataAsPictureAsync() is SKPicture picture)
+
+				// The registered ISvgRenderer retains the parsed vector; the live composition surface replays it each
+				// frame at the display size — resolution-independent (crisp at any scale), no intermediate
+				// rasterization. Consumed like any other image surface (e.g. by Image's surface brush).
+				if (_svgSurface is { } surface)
 				{
-					var sourceSize = _svgProvider.SourceSize;
-
-					_fromPictureMethod ??= typeof(SKImage).GetMethod(
-						"FromPicture",
-						BindingFlags.NonPublic | BindingFlags.Static,
-						new[] {
-							typeof(SKPicture),
-							typeof(SKSizeI),
-							typeof(SKMatrix).MakePointerType(),
-							typeof(SKPaint),
-							typeof(bool),
-							typeof(SKColorSpace),
-							typeof(SKSurfaceProperties) });
-
-					if (_fromPictureMethod is null)
-					{
-						throw new InvalidOperationException("Unable to find the 'FromPicture' method on SKImage");
-					}
-
-					var matrix = SKMatrix.Identity;
-
-					var skImage = (SKImage)_fromPictureMethod.Invoke(
-						null,
-						[
-							picture,
-							new SKSizeI((int)sourceSize.Width, (int)sourceSize.Height),
-							Pointer.Box(&matrix, typeof(SKMatrix*)),
-							new SKPaint(),
-							false,
-							SKColorSpace.CreateSrgb(),
-							new SKSurfaceProperties(SKPixelGeometry.Unknown)
-					]);
-
-					return ImageData.FromCompositionSurface(new(skImage));
+					return ImageData.FromCompositionSurface(surface);
 				}
-				else
-				{
-					return ImageData.Empty;
-				}
+
+				return imageData.Kind == ImageDataKind.Error ? imageData : ImageData.Empty;
 			}, ct);
 			return true;
 		}
@@ -244,6 +214,4 @@ public partial class SvgImageSource : ImageSource
 			return ImageData.FromError(e);
 		}
 	}
-#nullable enable
-#endif
 }

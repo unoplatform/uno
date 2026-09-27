@@ -1,4 +1,4 @@
-using Color = Windows.UI.Color;
+﻿using Color = Windows.UI.Color;
 using System;
 using System.IO;
 using Windows.UI;
@@ -139,13 +139,6 @@ namespace Microsoft.UI.Xaml.Media
 		internal Color TintColorWithTintOpacity => TintColor.WithOpacity(TintOpacity);
 
 #nullable enable
-		private static Lazy<SkiaSharp.SKImage?> _noiseImage = new(() =>
-		{
-			using Stream? imgStream = typeof(AcrylicBrush).Assembly.GetManifestResourceStream(NoiseAssetResourceName);
-			return imgStream is not null
-				? SkiaSharp.SKImage.FromEncodedData(imgStream)
-				: null;
-		});
 		private CompositionEffectBrush? _noiseBrush;
 		private CompositionBrush? _brush;
 		private bool _isUsingOpaqueBrush;
@@ -153,8 +146,6 @@ namespace Microsoft.UI.Xaml.Media
 
 		private const float BlurRadius = 30.0f;
 		private const float NoiseOpacity = 0.02f;
-
-		private const string NoiseAssetResourceName = "Uno.UI.Resources.NoiseAsset256x256.png";
 
 		private struct EffectNames
 		{
@@ -234,6 +225,8 @@ namespace Microsoft.UI.Xaml.Media
 			_brush?.Dispose();
 			if (forceCreateAcrylicBrush)
 			{
+				// Default to the direct material brush; the WinUI-style composition-effect graph is opt-in via
+				// AcrylicBrush.UseCompositionEffectBrush.
 				_brush = AcrylicBrushExtensions.GetUseCompositionEffectBrush(this)
 					? CreateAcrylicBrushViaCompositionEffect(compositor, useCrossFadeEffect)
 					: CreateAcrylicBrushDirect(compositor);
@@ -246,11 +239,42 @@ namespace Microsoft.UI.Xaml.Media
 			CompositionBrush = _brush;
 		}
 
-		#region Direct SkiaAcrylicBrush path
+		// The noise texture is a small static asset tiled across every acrylic, so it is decoded and uploaded once
+		// and shared. It is keyed on the factory that minted it: a texture belongs to one backend device, and the
+		// factory is per window, so a second window must not be handed the first window's texture.
+		private static readonly object _noiseGate = new();
+		private static global::Uno.UI.Composition.Drawing.ITexture? _sharedNoiseTexture;
+		private static global::Uno.UI.Composition.Drawing.IDrawingFactory? _sharedNoiseFactory;
 
+		private static global::Uno.UI.Composition.Drawing.ITexture? EnsureNoiseTexture()
+		{
+			var factory = global::Uno.UI.Composition.Drawing.DrawingFactory.Current;
+			lock (_noiseGate)
+			{
+				if (_sharedNoiseTexture is not null && ReferenceEquals(_sharedNoiseFactory, factory))
+				{
+					return _sharedNoiseTexture;
+				}
+
+				using var stream = typeof(AcrylicBrush).Assembly.GetManifestResourceStream(EffectNames.NoiseAsset);
+				if (stream is null
+					|| !global::Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current.TryDecode(stream, null, null, out var frames)
+					|| frames.Frames.Count == 0)
+				{
+					return null;
+				}
+
+				_sharedNoiseTexture = factory.CreateTexture(frames.Frames[0]);
+				_sharedNoiseFactory = factory;
+				return _sharedNoiseTexture;
+			}
+		}
+
+		// The direct acrylic material: a dedicated brush doing backdrop blur + luminosity + tint + noise on the neutral
+		// drawing seam, rather than a WinUI composition-effect graph.
 		private CompositionBrush CreateAcrylicBrushDirect(Compositor compositor)
 		{
-			if (_noiseImage.Value is null)
+			if (EnsureNoiseTexture() is not { } noise)
 			{
 				return compositor.CreateColorBrush(FallbackColor);
 			}
@@ -260,23 +284,18 @@ namespace Microsoft.UI.Xaml.Media
 
 			_isUsingOpaqueBrush = tintColor.A == 255;
 
-			var skLuminosity = new SkiaSharp.SKColor(luminosityColor.R, luminosityColor.G, luminosityColor.B, luminosityColor.A);
-			var skTint = new SkiaSharp.SKColor(tintColor.R, tintColor.G, tintColor.B, tintColor.A);
-
-			var existingBrush = new SkiaAcrylicBrush(Compositor.GetSharedCompositor());
-			existingBrush.IsOpaque = _isUsingOpaqueBrush;
-			existingBrush.LuminosityColor = skLuminosity;
-			existingBrush.TintColor = skTint;
-			existingBrush.BlurSigma = BlurRadius;
-			existingBrush.NoiseOpacity = NoiseOpacity;
-			existingBrush.NoiseImage = _noiseImage.Value;
-
-			return existingBrush;
+			return new global::Microsoft.UI.Composition.AcrylicMaterialBrush(compositor)
+			{
+				IsOpaque = _isUsingOpaqueBrush,
+				LuminosityColor = luminosityColor,
+				TintColor = tintColor,
+				BlurSigma = BlurRadius,
+				NoiseOpacity = NoiseOpacity,
+				NoiseTexture = noise,
+			};
 		}
 
-		#endregion
-
-		#region CompositionEffectBrush path (legacy, behind flag)
+		#region CompositionEffectBrush path
 
 		private CompositionBrush CreateAcrylicBrushViaCompositionEffect(Compositor compositor, bool useCrossFadeEffect)
 		{
@@ -307,8 +326,8 @@ namespace Microsoft.UI.Xaml.Media
 			// Set noise image source
 			acrylicBrush.SetSourceParameter("Noise", _noiseBrush);
 
-			// Clamp the backdrop blur to prevent color bleeding from neighboring elements
-			acrylicBrush.UseBackdropBlurClamp = true;
+			// The backdrop blur clamps to the element edge (no colour bleed from neighbours) via the blur effect's
+			// BorderMode = Hard, set where the GaussianBlurEffect is built below.
 
 			// TODO: Composition properties aren't supported yet
 			/*acrylicBrush.Properties.InsertColor("TintColor.Color", tintColor);
@@ -332,7 +351,7 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				Compositor compositor = Compositor.GetSharedCompositor();
 				CompositionSurfaceBrush surfaceBrush = compositor.CreateSurfaceBrush();
-				SkiaCompositionSurface surface = new SkiaCompositionSurface();
+				CompositionImageSurface surface = new CompositionImageSurface();
 				using Stream? imgStream = GetType().Assembly.GetManifestResourceStream(EffectNames.NoiseAsset);
 
 				if (imgStream is not null && surface.LoadFromStream(256, 256, imgStream).success)

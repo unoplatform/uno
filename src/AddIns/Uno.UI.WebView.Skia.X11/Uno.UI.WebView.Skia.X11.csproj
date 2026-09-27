@@ -28,7 +28,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="WebkitGtkSharp" Version="3.24.24.117-develop" />
+		<PackageReference Include="WebkitGtkSharp" />
 		<PackageReference Include="Uno.Core.Extensions.Logging" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 

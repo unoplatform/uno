@@ -69,6 +69,10 @@ namespace Uno.UI.NativeElementHosting {
 		}
 
 		public static detachNativeElement(content: string) {
+			// A fling still running against this element would keep scrolling a ScrollViewer it is no
+			// longer part of.
+			Uno.UI.Runtime.Skia.BrowserPointerInputSource.cancelNativeScrollInertiaFor(content);
+
 			let element = this.getElementOrThrow(content);
 			element.hidden = true;
 		}
@@ -174,6 +178,25 @@ namespace Uno.UI.NativeElementHosting {
 			const element = this.getElementOrThrow(elementId);
 
 			element.innerHTML = html;
+		}
+
+		/**
+		 * Input policies of the hosted elements, keyed by element reference.
+		 * The map - not the DOM attribute - is the source of truth: hosted HTML is app- or third-party-supplied
+		 * and could otherwise carry a data-uno-native-input-policy attribute of its own to opt itself in.
+		 * The attribute is still written because uno.css keys the touch-action override off it.
+		 */
+		private static inputPolicies = new WeakMap<HTMLElement, { policy: number, unoElementId: number }>();
+
+		public static setInputPolicy(elementId: string, unoElementId: number, value: number) {
+			const element = this.getElementOrThrow(elementId);
+			BrowserHtmlElement.inputPolicies.set(element, { policy: value, unoElementId: unoElementId });
+			element.dataset.unoNativeInputPolicy = value.toString();
+		}
+
+		/** Returns the policy registered by managed code for this exact element, or null if it has none. */
+		public static getInputPolicy(element: HTMLElement): { policy: number, unoElementId: number } | null {
+			return BrowserHtmlElement.inputPolicies.get(element) ?? null;
 		}
 
 		public static registerNativeHtmlEvent(owner: any, elementId: string, eventName: string, managedHandler: string) {

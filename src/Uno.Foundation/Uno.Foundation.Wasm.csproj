@@ -21,7 +21,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
+		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" />
 	</ItemGroup>
 
 	<ItemGroup>

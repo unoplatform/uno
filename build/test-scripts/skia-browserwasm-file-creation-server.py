@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 from http.server import SimpleHTTPRequestHandler, HTTPServer
@@ -13,7 +14,9 @@ class FileCreationRequestHandler(SimpleHTTPRequestHandler):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
         try:
-            data = eval(post_data.decode('utf-8'))
+            # The body is JSON: System.Text.Json escapes a supplementary character as a \uXXXX surrogate pair,
+            # which json.loads combines back into one character (a Python literal would keep the halves apart).
+            data = json.loads(post_data.decode('utf-8'))
             filename = data.get('FilePath')
             string_to_write = data.get('Content')
 

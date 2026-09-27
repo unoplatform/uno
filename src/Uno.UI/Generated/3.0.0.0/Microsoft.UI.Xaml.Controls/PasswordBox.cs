@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PasswordBox
+	public partial class PasswordBox : global::Microsoft.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property CanPasteClipboardContentProperty
 		// Skipping already declared property DescriptionProperty

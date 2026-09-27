@@ -139,9 +139,9 @@ namespace Uno.UI
 		public static class DependencyObject
 		{
 			/// <summary>
-			/// When set to true, the <see cref="DependencyObject"/> will create hard references
-			/// instead of weak references for some highly used fields, in common cases to improve the
-			/// overall performance.
+			/// When set to true, a loaded <see cref="DependencyObject"/> holds its parent through a hard
+			/// reference instead of a weak one, to improve the overall performance. The reference is
+			/// released when the element is unloaded.
 			/// </summary>
 			public static bool IsStoreHardReferenceEnabled { get; set; }
 				= true;
@@ -192,19 +192,6 @@ namespace Uno.UI
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>
 			public static float? MaximumTextScaleFactor { get; set; }
-
-			/// <summary>
-			/// Overrides the font fallback mechanism used to resolve typefaces for codepoints
-			/// that the requested font family cannot render. When <c>null</c> (the default),
-			/// the platform-registered service is used.
-			/// </summary>
-			/// <remarks>
-			/// Customers wanting to keep the built-in coverage but change how font bytes are obtained
-			/// (e.g. to avoid CORS restrictions on WebAssembly) typically supply a
-			/// <see cref="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService"/>
-			/// constructed with their own coverage table and stream provider.
-			/// </remarks>
-			public static Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService FallbackService { get; set; }
 
 			/// <summary>
 			/// Overrides the OS-reported text scale factor with a manual value.
@@ -297,26 +284,6 @@ namespace Uno.UI
 			/// the default value at the UWP default of 4.0.
 			/// </summary>
 			public static double? DefaultCacheLength { get; set; } = 1.0;
-		}
-
-		public static class Page
-		{
-			/// <summary>
-			/// Enables reuse of <see cref="Page"/> instances. Enabling can improve performance when using <see cref="Frame"/> navigation.
-			/// </summary>
-			public static bool IsPoolingEnabled { get; set; }
-		}
-
-		public static class Frame
-		{
-			/// <summary>
-			/// On non-Skia targets, Frame pools page instances to improve performance by default.
-			/// To follow the WinUI behavior, set this to true. Skia uses WinUI behavior by default.
-			/// </summary>
-			public static bool UseWinUIBehavior { get; set; }
-#if __SKIA__
-				= true;
-#endif
 		}
 
 		public static class SelectorItem
@@ -493,39 +460,6 @@ namespace Uno.UI
 
 		public static class Rendering
 		{
-			/// <summary>
-			/// Determines if OpenGL rendering should be enabled on the X11 target. If null, defaults to
-			/// OpenGL if available. Otherwise, software rendering will be used.
-			/// </summary>
-			public static bool? UseOpenGLOnX11 { get; set; }
-
-			/// <summary>
-			/// Determines if OpenGL ES + EGL should be used instead of OpenGL + GLX if both are available. This value is only
-			/// used if <see cref="UseOpenGLOnX11"/> is true or null. This property only affects the order of attempting
-			/// to create a GL/GlES context but even when true, if the preferred API fails, the other will be attempted.
-			/// </summary>
-			public static bool PreferGLESOverGLOnX11 { get; set; }
-
-			/// <summary>
-			/// Determines if OpenGL rendering should be enabled on the Win32 target. If null, defaults to
-			/// OpenGL if available. Otherwise, software rendering will be used.
-			/// </summary>
-			public static bool? UseOpenGLOnWin32 { get; set; }
-
-			/// <summary>
-			/// Determines if Vulkan rendering should be enabled on the X11 target.
-			/// Defaults to true: Vulkan is used for hardware-accelerated rendering when available, falling back to
-			/// OpenGL (or software rendering) if Vulkan is unavailable.
-			/// </summary>
-			public static bool UseVulkanOnX11 { get; set; } = true;
-
-			/// <summary>
-			/// Determines if Vulkan rendering should be enabled on the Win32 target.
-			/// Defaults to true: Vulkan is used for hardware-accelerated rendering when available, falling back to
-			/// OpenGL (or software rendering) if Vulkan is unavailable.
-			/// </summary>
-			public static bool UseVulkanOnWin32 { get; set; } = true;
-
 			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
 			/// </summary>

@@ -1,4 +1,4 @@
-﻿namespace Uno.UI.Runtime.Skia {
+namespace Uno.UI.Runtime.Skia {
 	//import PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 	export enum HtmlPointerEvent {
@@ -29,9 +29,32 @@
 		Mouse = 2,
 	}
 
+	export enum NativeElementInputPolicy {
+		NativeOnly = 0,
+		Negotiated = 1,
+	}
+
+	interface NativeScrollGesture {
+		pointerId: number;
+		root: HTMLElement;
+		unoElementId: number;
+		scrollTarget: HTMLElement | null;
+		startX: number;
+		startY: number;
+		lastX: number;
+		lastY: number;
+		lastTimestamp: number;
+		velocityX: number;
+		velocityY: number;
+		started: boolean;
+		primaryAxis: "horizontal" | "vertical" | null;
+		unoOwnsGesture: boolean;
+	}
+
 	export class BrowserPointerInputSource {
 
 		private static _exports: any;
+		private static _instance: BrowserPointerInputSource | null = null;
 		
 		public static async initialize(inputSource: any) {
 			if (BrowserPointerInputSource._exports == undefined) {
@@ -57,10 +80,15 @@
 		private _bootTime: Number;
 		// Cached reference to #uno-native-element-host. Refreshed if detached/replaced.
 		private _nativeElementHost: HTMLElement | null = null;
+		private _nativeScrollGesture: NativeScrollGesture | null = null;
+		private _nativeScrollInertiaFrame: number | null = null;
+		private _nativeScrollInertiaSession = 0;
+		private _nativeScrollInertiaGesture: NativeScrollGesture | null = null;
 
 		private constructor(manageSource: any) {
 			this._bootTime = Date.now() - performance.now();
 			this._source = manageSource;
+			BrowserPointerInputSource._instance = this;
 
 			BrowserPointerInputSource._exports.OnInitialized(manageSource, this._bootTime);
 			this.subscribePointerEvents(); // Subscribe only after the managed initialization is done
@@ -75,7 +103,7 @@
 			element.addEventListener("pointerup", this.onPointerEventReceived.bind(this), { capture: true });
 			//element.addEventListener("lostpointercapture", this.onPointerEventReceived.bind(this), { capture: true });
 			element.addEventListener("pointercancel", this.onPointerEventReceived.bind(this), { capture: true });
-			element.addEventListener("pointermove", this.onPointerEventReceived.bind(this), { capture: true });
+			element.addEventListener("pointermove", this.onPointerEventReceived.bind(this), { capture: true, passive: false });
 			element.addEventListener("wheel", this.onPointerEventReceived.bind(this), { capture: true, passive: false });
 		}
 
@@ -130,7 +158,374 @@
 			return false;
 		}
 
-		private onPointerEventReceived(evt: PointerEvent): void {
+		/**
+		 * Returns the hosted element the event originated from - the direct child of #uno-native-element-host -
+		 * together with the policy managed code registered for it. Resolution is by position in the tree and by
+		 * element identity, never by reading an attribute off the event target: hosted HTML can carry any
+		 * attribute it likes and must not be able to opt itself into a policy the app did not set.
+		 */
+		private getNativeInputHost(eventTarget: EventTarget | null): { root: HTMLElement, policy: NativeElementInputPolicy, unoElementId: number } | null {
+			const hostElement = this.getNativeElementHostCached();
+			if (hostElement === null) {
+				return null;
+			}
+
+			let currentNode = eventTarget as Node | null;
+
+			while (currentNode !== null) {
+				if (currentNode instanceof HTMLElement && currentNode.parentNode === hostElement) {
+					const registration = Uno.UI.NativeElementHosting.BrowserHtmlElement.getInputPolicy(currentNode);
+
+					return registration === null
+						? null
+						: {
+							root: currentNode,
+							policy: registration.policy === NativeElementInputPolicy.Negotiated
+								? NativeElementInputPolicy.Negotiated
+								: NativeElementInputPolicy.NativeOnly,
+							unoElementId: registration.unoElementId,
+						};
+				}
+
+				const parent = currentNode.parentNode;
+				if (parent) {
+					currentNode = parent;
+					continue;
+				}
+
+				const root = currentNode.getRootNode();
+				if (root instanceof ShadowRoot && root.host) {
+					currentNode = root.host;
+					continue;
+				}
+
+				break;
+			}
+
+			return null;
+		}
+
+		// Mirrors the exclusions in uno.css: these keep their native touch-action, so the browser still pans
+		// and selects in them. A gesture anywhere inside one stays entirely native - negotiating it here as
+		// well would apply the browser's own panning a second time. Iframes are in the list because pointer
+		// events do not cross the frame boundary: the embedded document stays native-only until it explicitly
+		// registers a bridge capable of reporting its scroll residual.
+		private static readonly nativeInputSelector = "input, textarea, select, iframe, [contenteditable]";
+
+		private findScrollableElement(target: EventTarget | null, root: HTMLElement): HTMLElement | null {
+			let current = target instanceof HTMLElement ? target : null;
+			while (current !== null) {
+				if (current instanceof HTMLIFrameElement) {
+					return null;
+				}
+
+				const style = window.getComputedStyle(current);
+				if ((style.overflowX === "auto" || style.overflowX === "scroll" || style.overflowY === "auto" || style.overflowY === "scroll")
+					&& (current.scrollWidth > current.clientWidth || current.scrollHeight > current.clientHeight)) {
+					return current;
+				}
+
+				if (current === root) {
+					break;
+				}
+
+				current = current.parentElement;
+			}
+
+			return null;
+		}
+
+		private applyNativeScrollDelta(gesture: NativeScrollGesture, horizontalDelta: number, verticalDelta: number, isIntermediate: boolean = true, isInertial: boolean = false): boolean {
+			if (gesture.primaryAxis === "horizontal") {
+				verticalDelta = 0;
+			} else if (gesture.primaryAxis === "vertical") {
+				horizontalDelta = 0;
+			}
+
+			let remainingHorizontalDelta = horizontalDelta;
+			let remainingVerticalDelta = verticalDelta;
+
+			// Non-scrollable native content has nothing to consume the gesture, so Uno takes it immediately.
+			if (!gesture.unoOwnsGesture && gesture.scrollTarget === null) {
+				gesture.unoOwnsGesture = true;
+			}
+
+			if (!gesture.unoOwnsGesture && gesture.scrollTarget !== null) {
+				const initialScrollLeft = gesture.scrollTarget.scrollLeft;
+				const initialScrollTop = gesture.scrollTarget.scrollTop;
+				const scrollRange = Math.max(gesture.scrollTarget.scrollWidth - gesture.scrollTarget.clientWidth, 0);
+				const maximumScrollTop = Math.max(gesture.scrollTarget.scrollHeight - gesture.scrollTarget.clientHeight, 0);
+
+				// In a right-to-left scroller scrollLeft runs from -scrollRange (fully scrolled) to 0, so the
+				// clamping bounds - not just the sign of the delta - depend on the direction.
+				const isRightToLeft = window.getComputedStyle(gesture.scrollTarget).direction === "rtl";
+				const minimumScrollLeft = isRightToLeft ? -scrollRange : 0;
+				const maximumScrollLeft = isRightToLeft ? 0 : scrollRange;
+
+				const requestedScrollLeft = initialScrollLeft + horizontalDelta;
+				const requestedScrollTop = initialScrollTop + verticalDelta;
+				const nextScrollLeft = Math.min(Math.max(requestedScrollLeft, minimumScrollLeft), maximumScrollLeft);
+				const nextScrollTop = Math.min(Math.max(requestedScrollTop, 0), maximumScrollTop);
+
+				gesture.scrollTarget.scrollLeft = nextScrollLeft;
+				gesture.scrollTarget.scrollTop = nextScrollTop;
+
+				// Do not use the observed scroll offset to calculate residual input: browsers may
+				// round it. That would incorrectly hand a fractional drag to Uno before the
+				// native scroller reaches an actual boundary.
+				remainingHorizontalDelta = requestedScrollLeft - nextScrollLeft;
+				remainingVerticalDelta = requestedScrollTop - nextScrollTop;
+
+				if (Math.abs(remainingHorizontalDelta) > 0.01 || Math.abs(remainingVerticalDelta) > 0.01) {
+					gesture.unoOwnsGesture = true;
+				}
+			}
+
+			if (gesture.unoOwnsGesture) {
+				return BrowserPointerInputSource._exports.OnNativeScrollDelta(
+					gesture.unoElementId,
+					remainingHorizontalDelta,
+					remainingVerticalDelta,
+					isIntermediate,
+					isInertial) !== 0;
+			}
+
+			return remainingHorizontalDelta !== horizontalDelta || remainingVerticalDelta !== verticalDelta;
+		}
+
+		private cancelNativeScrollInertia(): void {
+			this._nativeScrollInertiaSession++;
+			if (this._nativeScrollInertiaFrame !== null) {
+				cancelAnimationFrame(this._nativeScrollInertiaFrame);
+				this._nativeScrollInertiaFrame = null;
+
+				if (this._nativeScrollInertiaGesture !== null) {
+					this.completeNativeScroll(this._nativeScrollInertiaGesture);
+				}
+			}
+
+			this._nativeScrollInertiaGesture = null;
+		}
+
+		/** Public entry point so a detached element cannot leave a fling running against it. */
+		public static cancelNativeScrollInertiaFor(elementId: string): void {
+			const instance = BrowserPointerInputSource._instance;
+			if (instance !== null && instance._nativeScrollInertiaGesture?.root.id === elementId) {
+				instance.cancelNativeScrollInertia();
+			}
+		}
+
+		/**
+		 * Closes a chained scroll sequence so the ScrollViewers see a final non-intermediate view change.
+		 * Every delta during a drag or fling is reported as intermediate; without this, consumers that treat
+		 * IsIntermediate=false as "the scroll ended" would never observe the end.
+		 */
+		private completeNativeScroll(gesture: NativeScrollGesture): void {
+			if (!gesture.unoOwnsGesture) {
+				return;
+			}
+
+			try {
+				BrowserPointerInputSource._exports.OnNativeScrollCompleted(gesture.unoElementId);
+			} catch (e) {
+				console.warn(`Failed to complete negotiated native scroll: ${e}`);
+			}
+		}
+
+		private startNativeScrollInertia(gesture: NativeScrollGesture): void {
+			const minimumVelocity = 0.01;
+			if (Math.abs(gesture.velocityX) < minimumVelocity && Math.abs(gesture.velocityY) < minimumVelocity) {
+				return;
+			}
+
+			this.cancelNativeScrollInertia();
+			const session = this._nativeScrollInertiaSession;
+			this._nativeScrollInertiaGesture = gesture;
+			let lastTimestamp = performance.now();
+
+			const stop = () => {
+				this._nativeScrollInertiaFrame = null;
+				this._nativeScrollInertiaGesture = null;
+				this.completeNativeScroll(gesture);
+			};
+
+			const step = (timestamp: number) => {
+				if (session !== this._nativeScrollInertiaSession) {
+					return;
+				}
+
+				// The element can be removed or the app torn down mid-fling; keep flinging only what is
+				// still on screen.
+				if (!gesture.root.isConnected) {
+					stop();
+					return;
+				}
+
+				const elapsed = Math.min(timestamp - lastTimestamp, 64);
+				lastTimestamp = timestamp;
+				gesture.velocityX *= Math.pow(0.95, elapsed / (1000 / 60));
+				gesture.velocityY *= Math.pow(0.95, elapsed / (1000 / 60));
+
+				if (Math.abs(gesture.velocityX) < minimumVelocity && Math.abs(gesture.velocityY) < minimumVelocity) {
+					stop();
+					return;
+				}
+
+				try {
+					// isInertial lets the managed side honor ScrollViewer.IsScrollInertiaEnabled: a delta refused
+					// there stops the fling, while the native scrollTarget keeps its own momentum until then.
+					if (this.applyNativeScrollDelta(gesture, gesture.velocityX * elapsed, gesture.velocityY * elapsed, /* isIntermediate */ true, /* isInertial */ true)) {
+						this._nativeScrollInertiaFrame = requestAnimationFrame(step);
+					} else {
+						stop();
+					}
+				} catch (e) {
+					console.warn(`Failed to apply negotiated native scroll inertia: ${e}`);
+					stop();
+				}
+			};
+
+			this._nativeScrollInertiaFrame = requestAnimationFrame(step);
+		}
+
+		private tryHandleNegotiatedNativeInput(evt: PointerEvent | WheelEvent): boolean {
+			const host = this.getNativeInputHost(evt.target);
+			if (host === null || host.policy === NativeElementInputPolicy.NativeOnly) {
+				return false;
+			}
+
+			const root = host.root;
+
+			if (evt.target instanceof Element && evt.target.closest(BrowserPointerInputSource.nativeInputSelector) !== null) {
+				return false;
+			}
+
+			if (evt instanceof WheelEvent) {
+				// Ctrl+wheel is browser zoom, not scroll - leave it to the normal pipeline, which already
+				// carves it out when BrowserInputHelper.isBrowserZoomEnabled.
+				if (evt.ctrlKey && BrowserInputHelper.isBrowserZoomEnabled) {
+					return false;
+				}
+
+				// A wheel burst is not a touch gesture, but it still supersedes a fling that is still running.
+				this.cancelNativeScrollInertia();
+
+				const gesture: NativeScrollGesture = {
+					pointerId: 0,
+					root,
+					unoElementId: host.unoElementId,
+					scrollTarget: this.findScrollableElement(evt.target, root),
+					startX: evt.clientX,
+					startY: evt.clientY,
+					lastX: evt.clientX,
+					lastY: evt.clientY,
+					lastTimestamp: evt.timeStamp,
+					velocityX: 0,
+					velocityY: 0,
+					started: true,
+					primaryAxis: Math.abs(evt.deltaX) > Math.abs(evt.deltaY) ? "horizontal" : "vertical",
+					unoOwnsGesture: false,
+				};
+
+				const didScroll = this.applyNativeScrollDelta(gesture, evt.deltaX, evt.deltaY);
+				if (didScroll) {
+					evt.preventDefault();
+				}
+				return true;
+			}
+
+			if (evt.pointerType !== "touch" && evt.pointerType !== "pen") {
+				return false;
+			}
+
+			if (evt.type === "pointerdown") {
+				if (this._nativeScrollGesture !== null && this._nativeScrollGesture.pointerId !== evt.pointerId) {
+					// A second finger means a multi-touch gesture (pinch/zoom) which this negotiation does not
+					// arbitrate. Drop our single-pointer gesture and leave the whole interaction to the browser,
+					// which still has pinch-zoom available (see the touch-action rule in uno.css).
+					this.completeNativeScroll(this._nativeScrollGesture);
+					this._nativeScrollGesture = null;
+					return false;
+				}
+
+				this.cancelNativeScrollInertia();
+				this._nativeScrollGesture = {
+					pointerId: evt.pointerId,
+					root,
+					unoElementId: host.unoElementId,
+					scrollTarget: this.findScrollableElement(evt.target, root),
+					startX: evt.clientX,
+					startY: evt.clientY,
+					lastX: evt.clientX,
+					lastY: evt.clientY,
+					lastTimestamp: evt.timeStamp,
+					velocityX: 0,
+					velocityY: 0,
+					started: false,
+					primaryAxis: null,
+					unoOwnsGesture: false,
+				};
+				return true;
+			}
+
+			const gesture = this._nativeScrollGesture;
+			if (gesture === null || gesture.pointerId !== evt.pointerId) {
+				return true;
+			}
+
+			if (evt.type === "pointercancel") {
+				this._nativeScrollGesture = null;
+				this.completeNativeScroll(gesture);
+				return true;
+			}
+
+			if (evt.type === "pointermove") {
+				let horizontalDelta = gesture.lastX - evt.clientX;
+				let verticalDelta = gesture.lastY - evt.clientY;
+				if (!gesture.started) {
+					if (Math.hypot(evt.clientX - gesture.startX, evt.clientY - gesture.startY) < 8) {
+						gesture.lastX = evt.clientX;
+						gesture.lastY = evt.clientY;
+						gesture.lastTimestamp = evt.timeStamp;
+						return true;
+					}
+
+					gesture.started = true;
+					horizontalDelta = gesture.startX - evt.clientX;
+					verticalDelta = gesture.startY - evt.clientY;
+					gesture.primaryAxis = Math.abs(horizontalDelta) > Math.abs(verticalDelta) ? "horizontal" : "vertical";
+				}
+
+				const elapsed = Math.max(evt.timeStamp - gesture.lastTimestamp, 1);
+				gesture.velocityX = gesture.velocityX * 0.7 + horizontalDelta / elapsed * 0.3;
+				gesture.velocityY = gesture.velocityY * 0.7 + verticalDelta / elapsed * 0.3;
+				gesture.lastX = evt.clientX;
+				gesture.lastY = evt.clientY;
+				gesture.lastTimestamp = evt.timeStamp;
+				this.applyNativeScrollDelta(gesture, horizontalDelta, verticalDelta);
+				evt.preventDefault();
+				return true;
+			}
+
+			if (evt.type === "pointerup") {
+				this._nativeScrollGesture = null;
+
+				// startNativeScrollInertia reports the completion itself once the fling decays, so only close
+				// the sequence here when no fling is taking over.
+				if (gesture.started) {
+					this.startNativeScrollInertia(gesture);
+					if (this._nativeScrollInertiaGesture === null) {
+						this.completeNativeScroll(gesture);
+					}
+				} else {
+					this.completeNativeScroll(gesture);
+				}
+			}
+
+			return true;
+		}
+
+		private onPointerEventReceived(evt: PointerEvent | WheelEvent): void {
 			let id = (evt.target as HTMLElement)?.id;
 			if (id === "uno-enable-accessibility") {
 				// We have a div to enable accessibility (see enableA11y in WebAssemblyWindowWrapper).
@@ -139,6 +534,10 @@
 			}
 
 			if (this.isEventFromNativeElementHost(evt.target)) {
+				if (this.tryHandleNegotiatedNativeInput(evt)) {
+					return;
+				}
+
 				// Events from the native host are handled by the native control directly.
 				// We don't want to interfere with them.
 				return;

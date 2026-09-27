@@ -69,7 +69,6 @@ You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props
     Serialization;
     Localization;
     Navigation;
-    SkiaRenderer;
 </UnoFeatures>
 ```
 
@@ -111,8 +110,7 @@ Here are the supported features:
 | `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
 | `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
 | `SimpleTheme`        | Adds support for the [Simple Design Theme](xref:Uno.Themes.Simple.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the Simple Design Toolkit library.                                                    |
-| `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
-| `SkiaRenderer`       | No-op, kept for backwards compatibility. Skia is always used as the graphics rendering engine on Uno Platform targets. The WinAppSDK target is not provided by Uno Platform and always renders natively with WinUI. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia). |
+| `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp) — the default rendering backend on Uno Platform targets. It is implied even when not listed, and the legacy `SkiaRenderer` feature is mapped to it for backwards compatibility. The WinAppSDK target is not provided by Uno Platform and always renders natively with WinUI. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia). |
 | `SpellChecking`      | Adds support for [spell-checking](xref:Uno.Features.SpellChecking) in TextBox controls on all Skia-based targets via [Uno.WinUI.SpellChecking](https://www.nuget.org/packages/Uno.WinUI.SpellChecking).                                    |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
 | `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, and Android. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
@@ -155,7 +153,6 @@ Here are the supported properties:
 | `AndroidXAppCompatVersion`          | [Xamarin.AndroidX.AppCompat](https://www.nuget.org/packages/Xamarin.AndroidX.AppCompat)                              | Offers backward-compatible versions of Android components with AndroidX.                                       |
 | `AndroidXBrowserVersion`            | [Xamarin.AndroidX.Browser](https://www.nuget.org/packages/Xamarin.AndroidX.Browser)                                  | Contains components to implement browser features with AndroidX.                                               |
 | `AndroidXCollectionVersion`         | [Xamarin.AndroidX.Collection](https://www.nuget.org/packages/Xamarin.AndroidX.Collection) and similar packages       | Provides AndroidX extensions for collections like sparse arrays and bundles.                                   |
-| `AndroidXLegacySupportV4Version`    | [Xamarin.AndroidX.Legacy.Support.V4](https://www.nuget.org/packages/Xamarin.AndroidX.Legacy.Support.V4)              | Supports older Android versions with AndroidX compatibility libraries.                                         |
 | `AndroidXSplashScreenVersion`    | [Xamarin.AndroidX.Core.SplashScreen](https://www.nuget.org/packages/Xamarin.AndroidX.Core.SplashScreen)              | Support for Android splash screen customization.                                         |
 | `AndroidXNavigationVersion`         | [Xamarin.AndroidX.Navigation.UI](https://www.nuget.org/packages/Xamarin.AndroidX.Navigation.UI) and similar packages | Facilitates navigation within an Android app using AndroidX.                                                   |
 | `AndroidXRecyclerViewVersion`       | [Xamarin.AndroidX.RecyclerView](https://www.nuget.org/packages/Xamarin.AndroidX.RecyclerView)                        | Implements a flexible view for providing a limited window into large datasets with AndroidX.                   |
@@ -173,7 +170,6 @@ Here are the supported properties:
 | `WinAppSdkBuildToolsVersion`        | [Microsoft.Windows.SDK.BuildTools](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools)                  | Contains the tools required to build applications for the Microsoft Windows App SDK.                           |
 | `WinAppSdkBuildToolsWinAppVersion`  | [Microsoft.Windows.SDK.BuildTools.WinApp](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools.WinApp)    | Enables `dotnet run` to launch the packaged WinAppSDK app with package identity. See [Running packaged WinUI apps with `dotnet run`](#running-packaged-winui-apps-with-dotnet-run). |
 | `WinAppSdkVersion`                  | [Microsoft.WindowsAppSDK](https://www.nuget.org/packages/Microsoft.WindowsAppSDK)                                    | Provides project templates and tools for building Windows applications.                                        |
-| `WindowsCompatibilityVersion`       | [Microsoft.Windows.Compatibility](https://www.nuget.org/packages/Microsoft.Windows.Compatibility)                    | Enables Windows desktop apps to use .NET Core by providing access to additional Windows APIs.                  |
 
 ---
 
@@ -200,7 +196,6 @@ Those properties can be set from `Directory.Build.props` or may be set in the `c
         Navigation;
         ThemeService;
         Mvvm;
-        SkiaRenderer;
       </UnoFeatures>
       
       <UnoToolkitVersion>6.3.6</UnoToolkitVersion>

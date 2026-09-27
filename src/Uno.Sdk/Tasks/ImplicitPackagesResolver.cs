@@ -63,15 +63,11 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? MicrosoftWebView2Version { get; set; }
 
-	public string? WindowsCompatibilityVersion { get; set; }
-
 	public string? UnoWasmBootstrapVersion { get; set; }
 
 	public string? UnoUniversalImageLoaderVersion { get; set; }
 
 	public string? AndroidMaterialVersion { get; set; }
-
-	public string? AndroidXLegacySupportV4Version { get; set; }
 
 	public string? AndroidXSplashScreenVersion { get; set; }
 
@@ -261,13 +257,11 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.WinAppSdkBuildTools, WinAppSdkBuildToolsVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdkBuildToolsWinApp, WinAppSdkBuildToolsWinAppVersion)
 			.UpdateManifest(PackageManifest.Group.MicrosoftLoggingConsole, MicrosoftLoggingVersion)
-			.UpdateManifest(PackageManifest.Group.WindowsCompatibility, WindowsCompatibilityVersion)
 			.UpdateManifest(PackageManifest.Group.MsalClient, MicrosoftIdentityClientVersion)
 			.UpdateManifest(PackageManifest.Group.Mvvm, CommunityToolkitMvvmVersion)
 			.UpdateManifest(PackageManifest.Group.Prism, PrismVersion)
 			.UpdateManifest(PackageManifest.Group.UnoFonts, UnoFontsVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidMaterial, AndroidMaterialVersion)
-			.UpdateManifest(PackageManifest.Group.AndroidXLegacySupportV4, AndroidXLegacySupportV4Version)
 			.UpdateManifest(PackageManifest.Group.AndroidXSplashScreen, AndroidXSplashScreenVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXAppCompat, AndroidXAppCompatVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXRecyclerView, AndroidXRecyclerViewVersion)
@@ -284,7 +278,10 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.Extensions, UnoExtensionsVersion)
 			.UpdateManifest(PackageManifest.Group.Toolkit, UnoToolkitVersion)
 			.UpdateManifest(PackageManifest.Group.Themes, UnoThemesVersion)
-			.UpdateManifest(PackageManifest.Group.Maui, MauiVersion);
+			.UpdateManifest(PackageManifest.Group.Maui, MauiVersion)
+			// MauiCompatibility is a separate group only so the net11 override does not apply
+			// to it - MauiVersion must still move all of the MAUI packages together.
+			.UpdateManifest(PackageManifest.Group.MauiCompatibility, MauiVersion);
 	}
 
 	private UnoFeature[] GetFeatures()
@@ -404,6 +401,21 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			var isUnoPreview = _unoVersion?.IsPreview ?? false;
 			var preview = packageId.StartsWith("Uno.", StringComparison.InvariantCulture) && isUnoPreview;
 			version = client.GetVersion(packageId, preview);
+			if (version is null)
+			{
+				Log.LogError(subcategory: "",
+					errorCode: "UNOB0021",
+					helpKeyword: null,
+					helpLink: "https://aka.platform.uno/UNOB0021",
+					file: null,
+					lineNumber: 0,
+					columnNumber: 0,
+					endLineNumber: 0,
+					endColumnNumber: 0,
+					message: $"The package '{packageId}' has no version in the Uno.Sdk package manifest and does not exist on nuget.org. Update the Uno.Sdk, or add a PackageReference with an explicit version.");
+				return;
+			}
+
 			Log.LogMessage(MessageImportance.High, "Retrieved the latest package version '{0}' for the package '{1}'.", version, packageId);
 		}
 

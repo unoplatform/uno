@@ -77,6 +77,11 @@ namespace Uno.WinAppSDKSyncGenerator
 
 			var writtenMethods = new List<IMethodSymbol>();
 
+			if (type.TypeKind == TypeKind.Class)
+			{
+				EnsureMatchingStaticness(type, allSymbols);
+			}
+
 			var winAppSDKAttributes = type.GetAttributes().Where(a => !IsIgnoredAttribute(a)).ToList();
 
 			// Determine which platforms are missing each attribute so we can
@@ -251,6 +256,22 @@ namespace Uno.WinAppSDKSyncGenerator
 						}
 						MissingEnumMembers = null;
 					}
+				}
+			}
+		}
+
+		private static void EnsureMatchingStaticness(INamedTypeSymbol type, PlatformSymbols<INamedTypeSymbol> allSymbols)
+		{
+			var unoSymbols = new[] { allSymbols.AndroidSymbol, allSymbols.IOSSymbol, allSymbols.TvOSSymbol, allSymbols.NetStdReferenceSymbol, allSymbols.WasmSymbol, allSymbols.SkiaSymbol };
+
+			foreach (var unoSymbol in unoSymbols)
+			{
+				// Generated/ is deleted before loading, so only hand-written declarations are visible here.
+				if (unoSymbol is { DeclaringSyntaxReferences.Length: > 0 } && unoSymbol.IsStatic != type.IsStatic)
+				{
+					var declarations = string.Join(", ", unoSymbol.DeclaringSyntaxReferences.Select(r => r.SyntaxTree.FilePath));
+					throw new InvalidOperationException(
+						$"'{type.ToDisplayString()}' must {(type.IsStatic ? "" : "not ")}be static to match WinAppSDK ({declarations}).");
 				}
 			}
 		}

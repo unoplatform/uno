@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -375,6 +374,40 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 			Assert.IsNull(sub1WR.Target);
 			Assert.IsNull(sub1Store.Target);
+		}
+
+		[TestMethod]
+		public void When_Store_Populated_Then_Owner_Collected()
+		{
+			// The property details collection holds its owning DependencyObject strongly, so the two
+			// form a reference cycle. That is only safe while the collection never escapes its owner:
+			// the cycle is then unreachable as a unit and the tracing GC reclaims it whole. This pins
+			// that invariant - if the collection (or a closure capturing it) is ever handed to a
+			// longer-lived structure, the owner stops being collectable and this fails.
+			WeakReference ownerWR, childWR;
+
+			void Create()
+			{
+				var owner = new MyObject();
+				var child = new SubObject();
+
+				// Populate the store, and give the owner an inheriting child so it also mints the
+				// pooled self weak reference - the other per-instance state this branch made lazy.
+				owner.SubObject = child;
+				owner.DataContext = new object();
+
+				ownerWR = new WeakReference(owner);
+				childWR = new WeakReference(child);
+			}
+
+			Create();
+
+			GC.Collect(2, GCCollectionMode.Forced);
+			GC.WaitForPendingFinalizers();
+			GC.Collect(2, GCCollectionMode.Forced);
+
+			Assert.IsNull(ownerWR.Target);
+			Assert.IsNull(childWR.Target);
 		}
 
 		[TestMethod]

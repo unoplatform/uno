@@ -23,6 +23,8 @@
                 1) Tap the field below several times — the keyboard must stay open.
                 2) Dismiss it — LostFocus must fire (counter increments).
                 3) Scroll down and focus the bottom field — it must move above the keyboard.
+                4) In the side panel, tap Title then AutoNumber — the keyboard must stay open and the page must not shift.
+                5) Drag inside the side panel — only the panel scrolls.
             </TextBlock>
             <TextBox
                 x:Name="FocusTextBox"
@@ -33,20 +35,105 @@
                 x:Name="FocusStateTextBlock"
                 FontFamily="Consolas"
                 Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+            <TextBlock
+                x:Name="PanelFocusTextBlock"
+                FontFamily="Consolas"
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
         </StackPanel>
 
-        <ScrollViewer Grid.Row="1">
-            <StackPanel Padding="12" Spacing="12">
-                <TextBlock Text="Scroll down to the field at the very bottom, then focus it." />
-                <Border Height="900" Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
+        <!--
+            Row 1: content beside a narrow side panel, the layout of the customer report: the panel's
+            ScrollViewer is constrained, its fields sit near the keyboard's top edge once it opens, and
+            the content beside it must stay put while the panel scrolls.
+        -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="380" />
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer Grid.Column="0">
+                <StackPanel Padding="12" Spacing="12">
+                    <TextBlock Text="Scroll down to the field at the very bottom, then focus it." />
+                    <Border Height="900" Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="(spacer to push the field below the fold)" />
+                    </Border>
+                    <TextBox
+                        x:Name="BottomField"
+                        GotFocus="OnPanelFieldGotFocus"
+                        PlaceholderText="Bottom field — should scroll above the keyboard" />
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border
+                Grid.Column="1"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+                BorderThickness="1,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
                     <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="(spacer to push the field below the fold)" />
-                </Border>
-                <TextBox PlaceholderText="Bottom field — should scroll above the keyboard" />
-            </StackPanel>
-        </ScrollViewer>
+                        Padding="12,8"
+                        FontWeight="SemiBold"
+                        Text="Side panel — 4) tap Title, then tap AutoNumber: the keyboard must stay open and only the panel may move. 5) Drag inside the panel: it must scroll, not the page."
+                        TextWrapping="Wrap" />
+                    <ScrollViewer x:Name="SidePanelScrollViewer" Grid.Row="1">
+                        <StackPanel Padding="12" Spacing="6">
+                            <TextBlock Text="Title" />
+                            <TextBox x:Name="PanelTitle" GotFocus="OnPanelFieldGotFocus" />
+                            <TextBlock
+                                Margin="0,12,0,0"
+                                FontWeight="SemiBold"
+                                Text="Table" />
+                            <TextBlock Text="AutoNumber" />
+                            <TextBox
+                                x:Name="PanelAutoNumber"
+                                GotFocus="OnPanelFieldGotFocus"
+                                InputScope="Number"
+                                Text="0003" />
+                            <CheckBox Content="Boolean" />
+                            <TextBlock Text="DateTime" />
+                            <TextBox
+                                x:Name="PanelDateTime"
+                                GotFocus="OnPanelFieldGotFocus"
+                                Text="08/12/2026 10:00 AM" />
+                            <TextBlock Text="AutoNumber2" />
+                            <TextBox
+                                x:Name="PanelAutoNumber2"
+                                GotFocus="OnPanelFieldGotFocus"
+                                InputScope="Number"
+                                Text="0003" />
+                            <CheckBox Content="Boolean2" />
+                            <TextBlock Text="DateTime2" />
+                            <TextBox
+                                x:Name="PanelDateTime2"
+                                GotFocus="OnPanelFieldGotFocus"
+                                Text="08/12/2026 10:00 AM" />
+                            <TextBlock Text="Notes" />
+                            <TextBox
+                                x:Name="PanelNotes"
+                                Height="96"
+                                AcceptsReturn="True"
+                                GotFocus="OnPanelFieldGotFocus"
+                                TextWrapping="Wrap" />
+                            <TextBlock Text="Field 7" />
+                            <TextBox x:Name="PanelField7" GotFocus="OnPanelFieldGotFocus" />
+                            <TextBlock Text="Field 8" />
+                            <TextBox x:Name="PanelField8" GotFocus="OnPanelFieldGotFocus" />
+                            <TextBlock Text="Field 9" />
+                            <TextBox x:Name="PanelField9" GotFocus="OnPanelFieldGotFocus" />
+                            <TextBlock Text="Field 10 (last)" />
+                            <TextBox x:Name="PanelField10" GotFocus="OnPanelFieldGotFocus" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
 
         <TextBlock
             x:Name="OccludedRectTextBlock"

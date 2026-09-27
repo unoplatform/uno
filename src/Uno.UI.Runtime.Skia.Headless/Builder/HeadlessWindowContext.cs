@@ -9,7 +9,7 @@ namespace Uno.UI.Runtime.Skia;
 /// <see cref="HeadlessHostBuilder.ConfigureWindow"/> configurator so callers can return
 /// per-window <see cref="HeadlessWindowOptions"/>.
 /// </summary>
-public readonly struct HeadlessWindowContext
+public readonly record struct HeadlessWindowContext
 {
 	internal HeadlessWindowContext(int index, Window window)
 	{

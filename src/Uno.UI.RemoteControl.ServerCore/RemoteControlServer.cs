@@ -41,6 +41,16 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 	private readonly IApplicationLaunchMonitor _launchMonitor;
 	private readonly IRemoteControlProcessorFactory _processorFactory;
 
+	// Multiplier applied to KeepAliveMessage.Interval to obtain the receive watchdog timeout.
+	private const double KeepAliveTimeoutFactor = 2.1;
+
+	/// <summary>
+	/// Optional configuration override (in milliseconds) for the keep-alive receive watchdog timeout.
+	/// Primarily for tests, so a regression test can assert the reaping behavior with a sub-second
+	/// window instead of the production default of <c>KeepAliveMessage.Interval * KeepAliveTimeoutFactor</c>.
+	/// </summary>
+	public const string KeepAliveTimeoutConfigurationKey = "uno-devserver:keep-alive-timeout-ms";
+
 	/// <summary>
 	/// Creates a per-connection server instance. The supplied <paramref name="serviceProvider"/> must be the scoped provider created by the host for that connection.
 	/// It is reused to resolve optional connection services (telemetry, launch monitor) and to materialize processors via dependency injection.
@@ -95,8 +105,41 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 
 		await _ideChannel.WaitForReady(ct);
 
-		while (await transport.ReceiveAsync(ct) is Frame frame)
+		// A connected client sends a KeepAliveMessage every KeepAliveMessage.Interval. If we do not
+		// receive ANY frame for more than 2.1x that interval, the peer is presumed dead (e.g. a
+		// half-open socket left by a crash, a network drop, or a client that reconnected on a new
+		// socket without closing this one). We tear the connection down so its scope — and the
+		// hot-reload workspace it owns — is disposed instead of lingering. See #24206.
+		var keepAliveTimeout = ResolveKeepAliveTimeout();
+		while (true)
 		{
+			Frame? frame;
+			using (var receiveCts = CancellationTokenSource.CreateLinkedTokenSource(ct))
+			{
+				receiveCts.CancelAfter(keepAliveTimeout);
+				try
+				{
+					frame = await transport.ReceiveAsync(receiveCts.Token);
+				}
+				catch (OperationCanceledException) when (receiveCts.IsCancellationRequested && !ct.IsCancellationRequested)
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().LogWarning("No frame received within {Timeout} ({Factor}x the {Interval} keep-alive interval); closing the presumed-dead connection.", keepAliveTimeout, KeepAliveTimeoutFactor, KeepAliveMessage.Interval);
+					}
+
+					// Proactively close so the peer (and the in-process test harness) observes the teardown;
+					// exiting the loop then disposes the connection scope, workspace and EnC session.
+					await transport.CloseAsync().ConfigureAwait(false);
+					break;
+				}
+			}
+
+			if (frame is null)
+			{
+				break;
+			}
+
 			try
 			{
 				if (frame.Scope == WellKnownScopes.DevServerChannel)
@@ -160,6 +203,19 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 				}
 			}
 		}
+	}
+
+	private TimeSpan ResolveKeepAliveTimeout()
+	{
+		// Overridable via configuration (primarily for tests); production uses the 2.1x default.
+		if (_configuration.GetValue(KeepAliveTimeoutConfigurationKey) is { Length: > 0 } raw
+			&& int.TryParse(raw, out var milliseconds)
+			&& milliseconds > 0)
+		{
+			return TimeSpan.FromMilliseconds(milliseconds);
+		}
+
+		return KeepAliveMessage.Interval * KeepAliveTimeoutFactor;
 	}
 
 	private static bool IsTransportClosure(Exception error)

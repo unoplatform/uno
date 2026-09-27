@@ -18,6 +18,10 @@
 #>
 param(
     [string]$PackagesJsonPath,
+    # TFM of the base pin set - the framework a group applies to when it has no
+    # versionOverride. Resolved from $(NetPrevious) in Directory.Build.props when not
+    # supplied, so it cannot drift out of sync the way the previous hardcoded value did.
+    [string]$BaseTfm,
     [switch]$WarningOnly
 )
 
@@ -26,17 +30,32 @@ $ErrorActionPreference = 'Stop'
 # Auto-detect: only fail on master or PRs targeting master.
 # All other branches (release, feature, dev) use warning-only mode since they
 # may reference packages not yet published to NuGet.org.
+#
+# Build.SourceBranch always carries the refs/heads/ prefix, but ADO supplies
+# System.PullRequest.TargetBranch WITHOUT it for GitHub pull requests. Normalize both
+# before comparing, otherwise every PR to master silently falls through to warning-only
+# and the check only ever fails post-merge, on master, where it blocks everyone.
 if (-not $WarningOnly) {
-    $branch = $env:BUILD_SOURCEBRANCH
-    $targetBranch = $env:SYSTEM_PULLREQUEST_TARGETBRANCH
-    $isMaster = $branch -eq 'refs/heads/master'
-    $isPRToMaster = $targetBranch -eq 'refs/heads/master'
+    $branch = ($env:BUILD_SOURCEBRANCH -replace '^refs/heads/', '')
+    $targetBranch = ($env:SYSTEM_PULLREQUEST_TARGETBRANCH -replace '^refs/heads/', '')
+    $isMaster = $branch -eq 'master'
+    $isPRToMaster = $targetBranch -eq 'master'
 
     if (-not $isMaster -and -not $isPRToMaster) {
-        Write-Host "Non-master branch (source: $branch, target: $targetBranch) - running in warning-only mode." -ForegroundColor Yellow
+        Write-Host "Not master and not a PR to master (source: $branch, target: $targetBranch) - running in warning-only mode." -ForegroundColor Yellow
         $WarningOnly = $true
     }
 }
+
+# Base pin set TFM: read $(NetPrevious) from Directory.Build.props unless overridden.
+if (-not $BaseTfm) {
+    $propsPath = Join-Path $PSScriptRoot '../../../Directory.Build.props'
+    if (-not (Test-Path $propsPath)) { throw "Cannot resolve BaseTfm: $propsPath not found." }
+    $match = Select-String -Path $propsPath -Pattern '<NetPrevious>([^<]+)</NetPrevious>' | Select-Object -First 1
+    if (-not $match) { throw "Cannot resolve BaseTfm: <NetPrevious> not found in $propsPath." }
+    $BaseTfm = $match.Matches[0].Groups[1].Value
+}
+Write-Host "Base pin set TFM: $BaseTfm"
 
 # Resolve path
 if (-not $PackagesJsonPath) {
@@ -225,14 +244,14 @@ function Test-DependencyFloors($Pinned, [string]$SetLabel, [string]$TfmPrefix, [
     }
 }
 
-# Effective pin sets: base versions (net9.0 apps) plus one set per versionOverride TFM.
+# Effective pin sets: base versions ($BaseTfm apps) plus one set per versionOverride TFM.
 $overrideTfms = @()
 foreach ($group in $json) {
     if ($group.PSObject.Properties['versionOverride'] -and $null -ne $group.versionOverride) {
         $overrideTfms += $group.versionOverride.PSObject.Properties.Name
     }
 }
-$tfmSets = @(@{ Label = 'base/net9.0'; Tfm = 'net9.0'; OverrideKey = $null })
+$tfmSets = @(@{ Label = "base/$BaseTfm"; Tfm = $BaseTfm; OverrideKey = $null })
 foreach ($tfm in ($overrideTfms | Sort-Object -Unique)) {
     $tfmSets += @{ Label = $tfm; Tfm = $tfm; OverrideKey = $tfm }
 }
@@ -282,7 +301,7 @@ if ($errors.Count -gt 0) {
     }
     if ($WarningOnly) {
         Write-Host ""
-        Write-Host "Running in warning-only mode (stable branch) - not failing the build." -ForegroundColor Yellow
+        Write-Host "Running in warning-only mode (not master, not a PR to master) - not failing the build." -ForegroundColor Yellow
         exit 0
     }
     exit 1

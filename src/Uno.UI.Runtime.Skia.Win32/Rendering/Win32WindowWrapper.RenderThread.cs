@@ -1,6 +1,6 @@
+using Uno.UI.Composition.Drawing;
 using System;
 using System.Threading;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -8,25 +8,23 @@ namespace Uno.UI.Runtime.Skia.Win32;
 internal partial class Win32WindowWrapper
 {
 	/// <summary>
-	/// Dedicated render thread that owns Draw + CopyPixels (SwapBuffers/BitBlt), mirroring
-	/// WPF's milcore render thread. The UI thread records SKPictures and signals presents.
+	/// Dedicated render thread that owns the draw + present, mirroring WPF's milcore render thread. The UI thread
+	/// records pictures and signals presents; this thread acquires the context's target, renders, and presents
+	/// (SwapBuffers/BitBlt/swapchain present — may block for VSync).
 	/// </summary>
 	private sealed class RenderThread : IDisposable
 	{
 		private readonly Thread _thread;
 		private readonly AutoResetEvent _frameSignal = new(false);
 		private readonly ManualResetEventSlim _presentedEvent = new(false);
-		private readonly IRenderer _renderer;
-		private readonly Func<(SKPath clipPath, int width, int height)?> _drawFrame;
-		private readonly Action<SKPath> _onClipPathUpdated;
+		private readonly Func<IGeometry?> _drawFrame;
+		private readonly Action<IGeometry> _onClipPathUpdated;
 		private volatile bool _disposed;
 
 		internal RenderThread(
-			IRenderer renderer,
-			Func<(SKPath, int, int)?> drawFrame,
-			Action<SKPath> onClipPathUpdated)
+			Func<IGeometry?> drawFrame,
+			Action<IGeometry> onClipPathUpdated)
 		{
-			_renderer = renderer;
 			_drawFrame = drawFrame;
 			_onClipPathUpdated = onClipPathUpdated;
 			_thread = new Thread(RenderLoop) { Name = "Uno Render Thread", IsBackground = true };
@@ -59,32 +57,19 @@ internal partial class Win32WindowWrapper
 					break;
 				}
 
-				var startPaintSucceeded = false;
 				try
 				{
-					_renderer.StartPaint();
-					startPaintSucceeded = true;
-
-					var result = _drawFrame();
-					if (result is { } frame)
+					// DrawFrame drives the frame through OnNativePlatformFrameRequested, which presents (SwapBuffers/
+					// BitBlt/swapchain present — may block for VSync) before returning the clip path.
+					if (_drawFrame() is { } clipPath)
 					{
-						var (clipPath, width, height) = frame;
 						_onClipPathUpdated(clipPath);
-						_renderer.CopyPixels(width, height); // SwapBuffers/BitBlt — may block for VSync
-
 						_presentedEvent.Set();
 					}
 				}
 				catch (Exception ex)
 				{
 					typeof(RenderThread).LogError()?.Error($"Render thread error: {ex}");
-				}
-				finally
-				{
-					if (startPaintSucceeded)
-					{
-						_renderer.EndPaint();
-					}
 				}
 			}
 		}
@@ -94,8 +79,8 @@ internal partial class Win32WindowWrapper
 		/// primitives. The join is intentionally unbounded: the loop only delays observing
 		/// <see cref="_disposed"/> while a present is in flight, and a present completes in bounded
 		/// time (a vsync wait, or a GPU TDR reset for a hung present), so the thread always exits.
-		/// The caller must dispose the renderer and surface only after this returns — once the
-		/// thread, the sole user of those resources, is guaranteed stopped.
+		/// The caller must dispose the context only after this returns — once the thread, the sole
+		/// user of that resource, is guaranteed stopped.
 		/// </summary>
 		public void Dispose()
 		{

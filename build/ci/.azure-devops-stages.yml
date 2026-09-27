@@ -140,11 +140,10 @@ stages:
   displayName: Tests - Screenshots
   # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
   condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.ScreenshotsRequired'], 'true')))
+  # Only the Linux and Windows stages publish screenshot-tests-results. Waiting on the mobile and
+  # WASM stages put this comparison behind iOS, the slowest stage, for no gain.
   dependsOn:
     - Setup
-    - runtime_tests_skia_browser
-    - runtime_tests_skia_android
-    - runtime_tests_skia_ios
     - runtime_tests_skia_linux
     - runtime_tests_skia_windows
 
@@ -169,9 +168,13 @@ stages:
 ##
 ## Publishing
 ##
+# A servicing/* branch continues a previous version line after master has moved on
+# to a newer one, so it publishes dev packages the same way master does. The same
+# pattern is added to the CI triggers, the dev-feed push step and version.json's
+# publicReleaseRefSpec.
 - stage: Publish_Dev
   displayName: 'Publish - Dev NuGet'
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/servicing/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: binaries_build_winui
   jobs:
   - template: publish/.azure-devops-publish-nuget-dev.yml

@@ -34,8 +34,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_inner.RemoveAt(index);
 		}
 
-		IEnumerable<DefinitionBase> DefinitionCollectionBase.GetItems() => _inner;
-
 		DefinitionBase DefinitionCollectionBase.GetItem(int index) => _inner[index];
 
 		public ColumnDefinition this[int index]

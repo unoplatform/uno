@@ -9,7 +9,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$appPackagesDir = Join-Path $RepoRoot "src\SamplesApp\SamplesApp.Windows\AppPackages"
+$appPackagesDir = Join-Path $RepoRoot "src\SamplesApp\SamplesApp\AppPackages"
 
 # --- Step 1: Remove existing SamplesApp ---
 $existing = Get-AppxPackage -Name '*SamplesApp*' -ErrorAction SilentlyContinue

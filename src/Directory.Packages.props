@@ -1,0 +1,244 @@
+<Project>
+
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<CommunityToolkitMvvmVersion>8.2.2</CommunityToolkitMvvmVersion>
+		<MSTestVersion>4.2.1</MSTestVersion>
+		<MicrosoftTestingPlatformVersion>2.2.1</MicrosoftTestingPlatformVersion>
+		<SkiaSharpVersion>4.151.1</SkiaSharpVersion>
+		<HarfbuzzSharpVersion>14.2.1.1</HarfbuzzSharpVersion>
+		<UnoICUVersion>77.3.0-dev.4</UnoICUVersion>
+		<!-- Uno.icu-tvos was introduced after that line and only ships 77.4.0-dev.1, which in turn
+		     is not published for -wasm/-win. Same ICU major, so the _77 symbol suffix still matches.
+		     Fold this back into UnoICUVersion once one version exists for every platform. -->
+		<UnoICUTvOSVersion>77.4.0-dev.1</UnoICUTvOSVersion>
+		<UnoXamlMergeTaskVersion>1.27.0-dev.44</UnoXamlMergeTaskVersion>
+
+		<!-- Roslyn line for tools and tests. Dev-server hosts take theirs from Uno.DevServer.Roslyn.props (spec 053). -->
+		<RoslynVersion>4.14.0</RoslynVersion>
+		<!-- Oldest compiler the shipped source generators must load in -->
+		<RoslynGeneratorFloorVersion>4.0.1</RoslynGeneratorFloorVersion>
+		<!-- Oldest compiler Uno.Analyzers must load in -->
+		<RoslynAnalyzerFloorVersion>4.0.0</RoslynAnalyzerFloorVersion>
+		<!-- Generators that only run inside this repository's own build -->
+		<RoslynInternalGeneratorVersion>4.4.0-2.final</RoslynInternalGeneratorVersion>
+
+		<!-- The WebView2 version Microsoft.WindowsAppSDK itself depends on, for the WinAppSDK API sync -->
+		<WinAppSDKWebView2Version>1.0.3856.49</WinAppSDKWebView2Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageVersion Include="AwesomeAssertions" Version="9.2.0" />
+		<PackageVersion Include="Basic.Reference.Assemblies.Net100" Version="1.8.4" />
+		<PackageVersion Include="BenchmarkDotNet" Version="0.11.4-develop" />
+		<PackageVersion Include="Combinatorial.MSTest" Version="2.0.0" />
+		<PackageVersion Include="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
+		<PackageVersion Include="CommunityToolkit.WinUI.Lottie" Version="8.0.0-rc" />
+		<PackageVersion Include="coverlet.collector" Version="6.0.0" />
+		<PackageVersion Include="GtkSharp" Version="3.24.24.38" />
+		<PackageVersion Include="HarfBuzzSharp" Version="$(HarfbuzzSharpVersion)" />
+		<PackageVersion Include="HarfBuzzSharp.NativeAssets.iOS" Version="$(HarfbuzzSharpVersion)" />
+		<PackageVersion Include="HarfBuzzSharp.NativeAssets.Linux" Version="$(HarfbuzzSharpVersion)" />
+		<PackageVersion Include="HarfBuzzSharp.NativeAssets.macOS" Version="$(HarfbuzzSharpVersion)" />
+		<PackageVersion Include="HarfBuzzSharp.NativeAssets.tvOS" Version="$(HarfbuzzSharpVersion)" />
+		<PackageVersion Include="HarfBuzzSharp.NativeAssets.WebAssembly" Version="$(HarfbuzzSharpVersion)" />
+		<PackageVersion Include="IdentityModel.OidcClient" Version="6.0.0" />
+		<PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
+		<PackageVersion Include="LibVLCSharp" Version="3.9.7.1" />
+		<PackageVersion Include="MessagePack" Version="3.1.7" />
+		<PackageVersion Include="Microsoft.AppCenter" Version="5.0.3" />
+		<PackageVersion Include="Microsoft.Bcl.TimeProvider" Version="9.0.9" />
+		<PackageVersion Include="Microsoft.Build" Version="18.7.1" />
+		<PackageVersion Include="Microsoft.Build.Framework" Version="18.7.1" />
+		<PackageVersion Include="Microsoft.Build.Tasks.Core" Version="18.7.1" />
+		<PackageVersion Include="Microsoft.Build.Utilities.Core" Version="18.7.1" />
+		<PackageVersion Include="Microsoft.CodeAnalysis" Version="$(RoslynVersion)" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="$(RoslynVersion)" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="$(RoslynVersion)" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.2" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(RoslynVersion)" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.3" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(RoslynVersion)" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.Features" Version="$(RoslynVersion)" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0-preview.24454.1" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="$(RoslynVersion)" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(RoslynVersion)" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(RoslynVersion)" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(RoslynVersion)" />
+		<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.1" />
+		<PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.9.0" />
+		<!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
+		<PackageVersion Include="Microsoft.Graph" Version="5.56.0" />
+		<PackageVersion Include="Microsoft.Identity.Client" Version="4.72.1" />
+		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
+		<PackageVersion Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
+		<PackageVersion Include="Microsoft.IO.Redist" Version="6.0.1" />
+		<PackageVersion Include="Microsoft.Kiota.Abstractions" Version="1.22.2" />
+		<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
+		<PackageVersion Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.9" />
+		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
+		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
+		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
+		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
+		<PackageVersion Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
+		<PackageVersion Include="Microsoft.Testing.Extensions.HangDump" Version="$(MicrosoftTestingPlatformVersion)" />
+		<PackageVersion Include="Microsoft.Testing.Extensions.TrxReport" Version="$(MicrosoftTestingPlatformVersion)" />
+		<PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
+		<PackageVersion Include="Microsoft.VisualStudio.LanguageServices" Version="4.4.0" />
+		<PackageVersion Include="Microsoft.VisualStudio.ProjectSystem" Version="17.0.1313-pre" />
+		<PackageVersion Include="Microsoft.VisualStudio.ProjectSystem.Managed" Version="2.0.6142705" />
+		<PackageVersion Include="Microsoft.VisualStudio.SDK" Version="17.4.33103.184" />
+		<PackageVersion Include="Microsoft.VisualStudio.Services.InteractiveClient" Version="16.153.0" />
+		<PackageVersion Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />
+		<PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.9.28" />
+		<PackageVersion Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
+		<PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
+		<PackageVersion Include="Microsoft.Win32.SystemEvents" Version="11.0.0-rc.1.26425.128" />
+		<PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
+		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
+		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.6.0" />
+		<PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
+		<PackageVersion Include="ModelContextProtocol" Version="1.1.0" />
+		<PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.1.0" />
+		<PackageVersion Include="Mono.Cecil" Version="0.11.6" />
+		<PackageVersion Include="Mono.Options" Version="6.12.0.148" />
+		<PackageVersion Include="Moq" Version="4.17.2" />
+		<PackageVersion Include="MSTest" Version="$(MSTestVersion)" />
+		<PackageVersion Include="MSTest.Analyzers" Version="$(MSTestVersion)" />
+		<PackageVersion Include="MSTest.TestAdapter" Version="$(MSTestVersion)" />
+		<PackageVersion Include="MSTest.TestFramework" Version="$(MSTestVersion)" />
+		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageVersion Include="NuGet.Packaging" Version="6.3.4" />
+		<PackageVersion Include="NuGet.VisualStudio" Version="4.5.0" />
+		<PackageVersion Include="NUnit" Version="3.14.0" />
+		<PackageVersion Include="NUnit3TestAdapter" Version="6.2.0" />
+		<PackageVersion Include="NunitXml.TestLogger" Version="3.1.15" />
+		<PackageVersion Include="PolySharp" Version="1.14.1" />
+		<PackageVersion Include="Refit" Version="8.0.0" />
+		<PackageVersion Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
+		<PackageVersion Include="Silk.NET.OpenGL" Version="2.16.0" />
+		<PackageVersion Include="SkiaSharp" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="SkiaSharp.NativeAssets.macOS" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="SkiaSharp.NativeAssets.tvOS" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="SkiaSharp.Views.WPF" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="Spectre.Console" Version="0.49.1" />
+		<PackageVersion Include="StreamJsonRpc" Version="2.17.11" />
+		<PackageVersion Include="Svg.Skia" Version="3.0.6" />
+		<PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
+		<PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+		<PackageVersion Include="System.Data.SqlClient" Version="4.8.6" />
+		<PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
+		<PackageVersion Include="System.Management" Version="8.0.0" />
+		<PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
+		<PackageVersion Include="System.Private.Uri" Version="4.3.2" />
+		<PackageVersion Include="System.Reactive" Version="6.0.0" />
+		<PackageVersion Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
+		<PackageVersion Include="System.Security.Cryptography.Xml" Version="10.0.10" />
+		<PackageVersion Include="System.Text.Json" Version="8.0.5" />
+		<PackageVersion Include="System.ValueTuple" Version="4.5.0" />
+		<PackageVersion Include="Tmds.DBus.Generator" Version="0.92.0" />
+		<PackageVersion Include="Tmds.DBus.Protocol" Version="0.92.0" />
+		<PackageVersion Include="Unity" Version="5.11.10" />
+		<PackageVersion Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
+		<PackageVersion Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
+		<PackageVersion Include="Uno.Core.Extensions" Version="5.0.0-dev.28" />
+		<PackageVersion Include="Uno.Core.Extensions.Compatibility" Version="5.0.0-dev.28" />
+		<PackageVersion Include="Uno.Core.Extensions.Disposables" Version="5.0.0-dev.28" />
+		<PackageVersion Include="Uno.Core.Extensions.Logging" Version="5.0.0-dev.28" />
+		<PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="5.0.0-dev.28" />
+		<PackageVersion Include="Uno.Core.Extensions.Threading" Version="5.0.0-dev.28" />
+		<PackageVersion Include="Uno.DevTools.Telemetry" Version="1.3.3" />
+		<PackageVersion Include="Uno.Diagnostics.Eventing" Version="2.0.1" />
+		<PackageVersion Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
+		<PackageVersion Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />
+		<PackageVersion Include="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
+		<PackageVersion Include="Uno.Fonts.Fluent" Version="2.9.4" />
+		<PackageVersion Include="Uno.Fonts.OpenSans" Version="2.9.4" />
+		<PackageVersion Include="Uno.icu-ios" Version="$(UnoICUVersion)" />
+		<PackageVersion Include="Uno.icu-macos" Version="$(UnoICUVersion)" />
+		<PackageVersion Include="Uno.icu-tvos" Version="$(UnoICUTvOSVersion)" />
+		<PackageVersion Include="Uno.icu-wasm" Version="$(UnoICUVersion)" />
+		<PackageVersion Include="Uno.icu-win" Version="$(UnoICUVersion)" />
+		<PackageVersion Include="Uno.MonoAnalyzers" Version="1.0.0" />
+		<PackageVersion Include="Uno.Resizetizer" Version="1.11.0-dev.17" />
+		<PackageVersion Include="Uno.UI.RuntimeTests.Engine" Version="0.36.0-dev.124" />
+		<PackageVersion Include="Uno.UITest" Version="1.1.0-dev.70" />
+		<PackageVersion Include="Uno.UITest.Helpers" Version="1.1.0-dev.70" />
+		<PackageVersion Include="Uno.UITest.Selenium" Version="1.1.0-dev.70" />
+		<PackageVersion Include="Uno.UITest.Xamarin" Version="1.1.0-dev.70" />
+		<PackageVersion Include="Uno.UniversalImageLoader" Version="1.9.36" />
+		<PackageVersion Include="Uno.Wasm.Bootstrap" Version="10.0.0-dev.24" />
+		<PackageVersion Include="Uno.XamlMerge.Task" Version="$(UnoXamlMergeTaskVersion)" />
+		<PackageVersion Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1" />
+		<PackageVersion Include="WebkitGtkSharp" Version="3.24.24.117-develop" />
+		<PackageVersion Include="WebView2Aot" Version="1.5.0" />
+		<PackageVersion Include="Xamarin.DuoSdk" Version="0.0.3.4" />
+		<PackageVersion Include="Xamarin.TestCloud.Agent" Version="0.23.2" />
+		<PackageVersion Include="Xamarin.UITest" Version="4.3.5" />
+		<PackageVersion Include="YamlDotNet" Version="12.0.2" />
+	</ItemGroup>
+
+	<!-- Shared by every Android TFM; only split per TFM when a binding requires a newer .NET for Android -->
+	<ItemGroup>
+		<PackageVersion Include="Xamarin.AndroidX.AppCompat" Version="1.8.0" />
+		<PackageVersion Include="Xamarin.AndroidX.Browser" Version="1.10.0.1" />
+		<PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.3" />
+		<PackageVersion Include="Xamarin.AndroidX.DocumentFile" Version="1.1.0.4" />
+		<PackageVersion Include="Xamarin.AndroidX.RecyclerView" Version="1.4.0.6" />
+		<PackageVersion Include="Xamarin.AndroidX.Window.WindowJava" Version="1.5.1.3" />
+		<PackageVersion Include="Xamarin.Google.Android.Material" Version="1.14.0.6" />
+		<PackageVersion Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.21" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == '$(NetPrevious)' ">
+		<PackageVersion Update="Microsoft.Win32.SystemEvents" Version="10.0.9" />
+	</ItemGroup>
+
+	<!-- MSBuild task assemblies on netstandard2.0 compile against the oldest MSBuild they load in -->
+	<ItemGroup Condition=" $([MSBuild]::GetTargetFrameworkIdentifier($(TargetFramework))) == '.NETStandard' ">
+		<PackageVersion Update="Microsoft.Build" Version="15.9.20" />
+		<PackageVersion Update="Microsoft.Build.Framework" Version="17.8.43" />
+		<PackageVersion Update="Microsoft.Build.Tasks.Core" Version="17.8.43" />
+		<PackageVersion Update="Microsoft.Build.Utilities.Core" Version="17.8.43" />
+	</ItemGroup>
+
+	<!-- Dev-server host projects import Uno.DevServer.Roslyn.props, which pins one Roslyn/MSBuild line per served SDK (spec 053) -->
+	<ItemGroup Condition=" '$(DevServerRoslynVersion)' != '' ">
+		<PackageVersion Update="Microsoft.CodeAnalysis" Version="$(DevServerRoslynVersion)" />
+		<PackageVersion Update="Microsoft.CodeAnalysis.Common" Version="$(DevServerRoslynVersion)" />
+		<PackageVersion Update="Microsoft.CodeAnalysis.CSharp" Version="$(DevServerRoslynVersion)" />
+		<PackageVersion Update="Microsoft.CodeAnalysis.CSharp.Features" Version="$(DevServerRoslynVersion)" />
+		<PackageVersion Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(DevServerRoslynVersion)" />
+		<PackageVersion Update="Microsoft.CodeAnalysis.Features" Version="$(DevServerRoslynVersion)" />
+		<PackageVersion Update="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(DevServerRoslynVersion)" />
+		<PackageVersion Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(DevServerRoslynVersion)" />
+		<PackageVersion Update="Microsoft.Build" Version="$(DevServerMSBuildVersion)" />
+		<PackageVersion Update="Microsoft.Build.Framework" Version="$(DevServerMSBuildToolsVersion)" />
+		<PackageVersion Update="Microsoft.Build.Tasks.Core" Version="$(DevServerMSBuildToolsVersion)" />
+		<PackageVersion Update="Microsoft.Build.Utilities.Core" Version="$(DevServerMSBuildToolsVersion)" />
+	</ItemGroup>
+
+	<!-- Only set when validating a specific C# compiler; see MicrosoftNetCompilersToolsetVersion in Directory.Build.props -->
+	<ItemGroup Condition=" '$(MicrosoftNetCompilersToolsetVersion)' != '' ">
+		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="$(MicrosoftNetCompilersToolsetVersion)" />
+		<PackageVersion Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilersToolsetVersion)" />
+	</ItemGroup>
+
+</Project>
