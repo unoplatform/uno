@@ -426,7 +426,7 @@ public class Given_AnimatedVisualPlayer
 
 		await UITestHelper.Load(host);
 
-		await source.SetSourceAsync(FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset);
+		await source.SetSourceAsync(new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json"));
 		await TestServices.WindowHelper.WaitFor(() => player.IsAnimatedVisualLoaded, timeoutMS: 5000, "The Lottie source should load.");
 		await TestServices.WindowHelper.WaitForIdle();
 
