@@ -956,7 +956,8 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 		[TestMethod]
 		// WinAppSDK: the injected tap never raises Click, so DoClickUsingTap waits forever.
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		// Android: the open DatePickerFlyoutPresenter is not found in CI (see When_MinYear_Equals_MaxYear_Year_Should_Not_Loop).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)]
 		public async Task DatePickerShouldMaintainTime()
 		{
 			// Even though the DatePicker only deals with dates, the Date property is of type DateTime and so has a time component
