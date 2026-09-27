@@ -546,6 +546,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(ToggleButton),
 				typeof(Uno.UI.Controls.Legacy.ProgressRing),
 				typeof(Xaml.Controls.AlcContentHost),
+				// A FrameworkElement in WinUI (WebView has no WinUI 3 counterpart), templated only by Uno.
+				typeof(WebView),
+				typeof(WebView2),
 			};
 
 			allControlTypes = allControlTypes.Except(builtInControls);
