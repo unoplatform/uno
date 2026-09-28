@@ -1,21 +1,18 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 
 namespace Uno.UI.SourceGenerators.Internal;
 
 /// <summary>
-/// Flags boxing conversions for which <c>Uno.UI.Helpers.Boxes</c> already keeps a cached instance,
-/// and calls that bind to a typed <c>SetValue</c> overload through an implicit numeric conversion
+/// Flags boxing conversions on the dependency property value path for which <c>Uno.UI.Helpers.Boxes</c> already
+/// keeps a cached instance, and calls that bind to a typed <c>SetValue</c> overload through an implicit numeric conversion
 /// (e.g. a <c>float</c> reaching a <c>double</c> overload), which would store the wrong boxed type.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
@@ -59,10 +56,7 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 				if (!conversion.IsBoxing ||
 					conversionOperation.Type?.SpecialType != SpecialType.System_Object ||
 					!HasSpecialBox(conversionOperation, hasFlagMethod) ||
-					conversionOperation.Syntax.Parent is not { } parent ||
-					parent.IsKind(SyntaxKind.AttributeArgument) ||
-					IsStringConcatenationOperand(conversionOperation) ||
-					IsInOmittedConditionalCall(conversionOperation, context.CancellationToken))
+					!IsDependencyPropertyValue(conversionOperation, context.ContainingSymbol))
 				{
 					return;
 				}
@@ -98,15 +92,73 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 	}
 
 	/// <summary>
-	/// Whether the conversion is the implicit one the compiler inserts for a string concatenation operand
-	/// (<c>s + value</c> or <c>s += value</c>). The compiler lowers those to a <c>ToString()</c> call and the box never
-	/// reaches IL, so "fixing" one with <c>Boxes.Box</c> would introduce the very allocation this rule is meant to
-	/// remove. An explicit <c>(object)value</c> operand does box, so it is still reported.
+	/// Whether the boxed value flows into the property system: an argument of a call that takes a
+	/// <c>DependencyProperty</c> (<c>SetValue</c>, <c>SetCurrentValue</c>...) or builds a <c>PropertyMetadata</c>, or the
+	/// result of a DP callback (coercion, <c>PropMethodCall</c>, default value). Boxes anywhere else are left alone.
 	/// </summary>
-	private static bool IsStringConcatenationOperand(IConversionOperation operation)
-		=> operation.IsImplicit &&
-			operation.Parent is IBinaryOperation { OperatorKind: BinaryOperatorKind.Add } or ICompoundAssignmentOperation { OperatorKind: BinaryOperatorKind.Add } &&
-			operation.Parent.Type?.SpecialType == SpecialType.System_String;
+	private static bool IsDependencyPropertyValue(IOperation operation, ISymbol containingSymbol)
+	{
+		var value = operation;
+		while (value.Parent is IConversionOperation ||
+			(value.Parent is IConditionalOperation conditional && conditional.Condition != value))
+		{
+			value = value.Parent;
+		}
+
+		return value.Parent switch
+		{
+			IArgumentOperation { Parent: IInvocationOperation invocation } => IsDependencyPropertyApi(invocation.TargetMethod),
+			IArgumentOperation { Parent: IObjectCreationOperation { Constructor: { } constructor } } => IsDependencyPropertyApi(constructor),
+			IReturnOperation => GetEnclosingFunction(value, containingSymbol) is { ReturnType.SpecialType: SpecialType.System_Object } function &&
+				function.Parameters.Any(p => IsPropertySystemType(p.Type)),
+			_ => false,
+		};
+	}
+
+	private static bool IsDependencyPropertyApi(IMethodSymbol method)
+	{
+		foreach (var parameter in method.Parameters)
+		{
+			if (IsType(parameter.Type, "Microsoft.UI.Xaml", "DependencyProperty"))
+			{
+				return true;
+			}
+		}
+
+		for (var type = method.ContainingType; type is not null; type = type.BaseType)
+		{
+			if (IsType(type, "Microsoft.UI.Xaml", "PropertyMetadata"))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static IMethodSymbol? GetEnclosingFunction(IOperation operation, ISymbol containingSymbol)
+	{
+		for (var current = operation.Parent; current is not null; current = current.Parent)
+		{
+			switch (current)
+			{
+				case IAnonymousFunctionOperation lambda:
+					return lambda.Symbol;
+				case ILocalFunctionOperation localFunction:
+					return localFunction.Symbol;
+			}
+		}
+
+		return containingSymbol as IMethodSymbol;
+	}
+
+	// The parameter types that make an object-returning function a DP callback: coercion
+	// (DependencyPropertyValuePrecedences), PropMethodCall (DependencyObject) or a per-property lookup.
+	private static bool IsPropertySystemType(ITypeSymbol type)
+		=> IsType(type, "Microsoft.UI.Xaml", "DependencyProperty") ||
+			IsType(type, "Microsoft.UI.Xaml", "DependencyObject") ||
+			IsType(type, "Microsoft.UI.Xaml", "DependencyPropertyValuePrecedences");
+
 
 	// Arguments are in evaluation order, which differs from parameter order when named arguments are reordered.
 	private static IArgumentOperation? GetArgumentForParameter(IInvocationOperation invocation, int ordinal)
@@ -138,83 +190,6 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 
 	internal static bool IsType(ITypeSymbol? type, string containingNamespace, string name)
 		=> type?.Name == name && type.ContainingNamespace?.ToDisplayString() == containingNamespace;
-
-	/// <summary>
-	/// Whether the conversion is an argument to a <see cref="System.Diagnostics.ConditionalAttribute"/> call that is
-	/// omitted at this location. The whole call is dropped at emit, so the boxing never happens - reporting it would
-	/// only churn tracing code (REPEATER_TRACE_INFO and friends) for no runtime gain.
-	/// </summary>
-	private static bool IsInOmittedConditionalCall(IConversionOperation operation, CancellationToken cancellationToken)
-	{
-		// A params argument is wrapped in an implicit array creation, so walk up rather than
-		// expecting the argument to be the direct parent.
-		IOperation? current = operation.Parent;
-		while (current is IConversionOperation or IArgumentOperation or IArrayInitializerOperation or IArrayCreationOperation)
-		{
-			current = current.Parent;
-		}
-
-		if (current is not IInvocationOperation invocation)
-		{
-			return false;
-		}
-
-		HashSet<string>? definedSymbols = null;
-		var isConditional = false;
-		foreach (var attribute in invocation.TargetMethod.GetAttributes())
-		{
-			if (IsType(attribute.AttributeClass, "System.Diagnostics", "ConditionalAttribute") &&
-				attribute.ConstructorArguments.Length == 1 &&
-				attribute.ConstructorArguments[0].Value is string condition)
-			{
-				definedSymbols ??= GetDefinedSymbols(operation.Syntax, cancellationToken);
-
-				// Conditions are ORed: a single defined symbol keeps the call.
-				if (definedSymbols is null || definedSymbols.Contains(condition))
-				{
-					return false;
-				}
-
-				isConditional = true;
-			}
-		}
-
-		return isConditional;
-	}
-
-	/// <summary>
-	/// The preprocessor symbols defined at <paramref name="node"/>, including the file's own <c>#define</c> and
-	/// <c>#undef</c> directives, which the parse options do not carry.
-	/// </summary>
-	private static HashSet<string>? GetDefinedSymbols(SyntaxNode node, CancellationToken cancellationToken)
-	{
-		if (node.SyntaxTree.Options is not CSharpParseOptions parseOptions)
-		{
-			return null;
-		}
-
-		HashSet<string> symbols = new(parseOptions.PreprocessorSymbolNames);
-		var directive = node.SyntaxTree.GetCompilationUnitRoot(cancellationToken).GetFirstDirective();
-		while (directive is not null && directive.SpanStart < node.SpanStart)
-		{
-			if (directive.IsActive)
-			{
-				switch (directive)
-				{
-					case DefineDirectiveTriviaSyntax define:
-						symbols.Add(define.Name.ValueText);
-						break;
-					case UndefDirectiveTriviaSyntax undef:
-						symbols.Remove(undef.Name.ValueText);
-						break;
-				}
-			}
-
-			directive = directive.GetNextDirective();
-		}
-
-		return symbols;
-	}
 
 	private static bool HasSpecialBox(IConversionOperation operation, IMethodSymbol hasFlagMethod)
 	{
