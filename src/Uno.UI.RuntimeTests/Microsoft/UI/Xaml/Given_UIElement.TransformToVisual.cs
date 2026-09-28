@@ -32,6 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresScaling(1f)]
 		public async Task When_TransformToVisual_WithMargin()
 		{
 			FrameworkElement inner = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.DarkBlue) };
@@ -199,6 +200,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresScaling(1f)]
 		public async Task When_TransformToVisual_WithTransformOrigin()
 		{
 			var sut = new Border
@@ -801,6 +803,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[RequiresScaling(1f)]
 		public async Task When_Basic_Triple_Nesting()
 		{
 			var setup = await SetupTripleScrollViewerScenarioAsync();
@@ -839,6 +842,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		[RequiresFullWindow]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresScaling(1f)]
 		public async Task When_Triple_Nesting_Scroll_Paddings()
 		{
 			var setup = await SetupTripleScrollViewerScenarioAsync();
