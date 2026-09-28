@@ -111,6 +111,9 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 			IArgumentOperation { Parent: IObjectCreationOperation { Constructor: { } constructor } } => IsDependencyPropertyApi(constructor),
 			IReturnOperation => GetEnclosingFunction(value, containingSymbol) is { ReturnType.SpecialType: SpecialType.System_Object } function &&
 				function.Parameters.Any(p => IsPropertySystemType(p.Type)),
+			// GetDefaultValue2(DependencyProperty, out object) hands the value back through its out parameter.
+			ISimpleAssignmentOperation { Target: IParameterReferenceOperation { Parameter.RefKind: RefKind.Out } } assignment when assignment.Value == value =>
+				GetEnclosingFunction(value, containingSymbol) is { } function && function.Parameters.Any(p => IsPropertySystemType(p.Type)),
 			_ => false,
 		};
 	}
