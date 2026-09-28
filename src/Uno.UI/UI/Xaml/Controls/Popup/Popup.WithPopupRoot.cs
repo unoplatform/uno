@@ -6,7 +6,6 @@ using System;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Extensions;
-using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI.Dispatching;
@@ -83,11 +82,11 @@ public partial class Popup
 		if (newIsOpen)
 		{
 			// TODO: Add EventManager.RaiseEvent method and use it here.
-			NativeDispatcher.Main.Enqueue(() => Opened?.Invoke(this, Boxer.Box(newIsOpen)), NativeDispatcherPriority.Normal);
+			NativeDispatcher.Main.Enqueue(() => Opened?.Invoke(this, newIsOpen), NativeDispatcherPriority.Normal);
 		}
 		else
 		{
-			NativeDispatcher.Main.Enqueue(() => Closed?.Invoke(this, Boxer.Box(newIsOpen)), NativeDispatcherPriority.Normal);
+			NativeDispatcher.Main.Enqueue(() => Closed?.Invoke(this, newIsOpen), NativeDispatcherPriority.Normal);
 		}
 	}
 

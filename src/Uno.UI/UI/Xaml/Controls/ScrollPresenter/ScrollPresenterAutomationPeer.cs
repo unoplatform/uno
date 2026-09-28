@@ -4,7 +4,6 @@
 using System;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno.UI.Helpers.Boxes;
 
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
@@ -236,8 +235,8 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 			m_horizontallyScrollable = newHorizontallyScrollable;
 			RaisePropertyChangedEvent(
 				ScrollPatternIdentifiers.HorizontallyScrollableProperty,
-				Boxer.Box(oldHorizontallyScrollable),
-				Boxer.Box(newHorizontallyScrollable));
+				oldHorizontallyScrollable,
+				newHorizontallyScrollable);
 		}
 
 		if (newVerticallyScrollable != m_verticallyScrollable)
@@ -246,8 +245,8 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 			m_verticallyScrollable = newVerticallyScrollable;
 			RaisePropertyChangedEvent(
 				ScrollPatternIdentifiers.HorizontallyScrollableProperty,
-				Boxer.Box(oldVerticallyScrollable),
-				Boxer.Box(newVerticallyScrollable));
+				oldVerticallyScrollable,
+				newVerticallyScrollable);
 		}
 
 		if (newHorizontalViewSize != m_horizontalViewSize)
@@ -256,8 +255,8 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 			m_horizontalViewSize = newHorizontalViewSize;
 			RaisePropertyChangedEvent(
 				ScrollPatternIdentifiers.HorizontalViewSizeProperty,
-				Boxer.Box(oldHorizontalViewSize),
-				Boxer.Box(newHorizontalViewSize));
+				oldHorizontalViewSize,
+				newHorizontalViewSize);
 		}
 
 		if (newVerticalViewSize != m_verticalViewSize)
@@ -266,8 +265,8 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 			m_verticalViewSize = newVerticalViewSize;
 			RaisePropertyChangedEvent(
 				ScrollPatternIdentifiers.VerticalViewSizeProperty,
-				Boxer.Box(oldVerticalViewSize),
-				Boxer.Box(newVerticalViewSize));
+				oldVerticalViewSize,
+				newVerticalViewSize);
 		}
 
 		if (newHorizontalScrollPercent != m_horizontalScrollPercent)
@@ -276,8 +275,8 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 			m_horizontalScrollPercent = newHorizontalScrollPercent;
 			RaisePropertyChangedEvent(
 				ScrollPatternIdentifiers.HorizontalScrollPercentProperty,
-				Boxer.Box(oldHorizontalScrollPercent),
-				Boxer.Box(newHorizontalScrollPercent));
+				oldHorizontalScrollPercent,
+				newHorizontalScrollPercent);
 		}
 
 		if (newVerticalScrollPercent != m_verticalScrollPercent)
@@ -286,8 +285,8 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 			m_verticalScrollPercent = newVerticalScrollPercent;
 			RaisePropertyChangedEvent(
 				ScrollPatternIdentifiers.VerticalScrollPercentProperty,
-				Boxer.Box(oldVerticalScrollPercent),
-				Boxer.Box(newVerticalScrollPercent));
+				oldVerticalScrollPercent,
+				newVerticalScrollPercent);
 		}
 	}
 

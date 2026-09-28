@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -103,7 +102,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 				return StringUtil.FormatString(
 					resourceStringWithName,
-					Boxer.Box(value),
+					value,
 					ColorHelper.ToDisplayName(color));
 			}
 			else
@@ -126,7 +125,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 				return StringUtil.FormatString(
 					resourceStringWithoutName,
-					Boxer.Box(value));
+					value);
 			}
 		}
 	}

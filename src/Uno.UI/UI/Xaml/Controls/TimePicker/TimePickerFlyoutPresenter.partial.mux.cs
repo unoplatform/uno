@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
-using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
@@ -1190,5 +1189,5 @@ partial class TimePickerFlyoutPresenter
 		return minuteIncrement;
 	}
 
-	private static object GetDefaultIsDefaultShadowEnabled() => BoolBoxes.True;
+	private static object GetDefaultIsDefaultShadowEnabled() => true;
 }

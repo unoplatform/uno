@@ -16,7 +16,6 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Documents.BlockLayout;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
 using static Microsoft.UI.Xaml.Controls._Tracing;
-using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Automation.Peers.Text;
 
@@ -1434,7 +1433,7 @@ internal sealed partial class TextRangeAdapter : ITextRangeProvider
 			case AutomationTextAttributesEnum.FontNameAttribute:
 				return pContainingElement.FontFamily?.Source ?? string.Empty;
 			case AutomationTextAttributesEnum.FontSizeAttribute:
-				return Boxer.Box(pContainingElement.FontSize);
+				return pContainingElement.FontSize;
 			case AutomationTextAttributesEnum.FontWeightAttribute:
 				return pContainingElement.FontWeight.Weight;
 			case AutomationTextAttributesEnum.ForegroundColorAttribute:
@@ -1449,27 +1448,27 @@ internal sealed partial class TextRangeAdapter : ITextRangeProvider
 					{
 						textIndent = rtb.TextIndent;
 					}
-					return Boxer.Box(textIndent + pParagraph.TextIndent);
+					return textIndent + pParagraph.TextIndent;
 				}
-				return DoubleBoxes.Zero;
+				return 0d;
 			case AutomationTextAttributesEnum.IsHiddenAttribute:
-				return BoolBoxes.False;
+				return false;
 			case AutomationTextAttributesEnum.IsItalicAttribute:
-				return Boxer.Box(pContainingElement.FontStyle is global::Windows.UI.Text.FontStyle.Italic or global::Windows.UI.Text.FontStyle.Oblique);
+				return pContainingElement.FontStyle is global::Windows.UI.Text.FontStyle.Italic or global::Windows.UI.Text.FontStyle.Oblique;
 			case AutomationTextAttributesEnum.IsReadOnlyAttribute:
-				return BoolBoxes.True;
+				return true;
 			case AutomationTextAttributesEnum.MarginBottomAttribute:
-				return Boxer.Box(_pTextOwner.Margin.Bottom + (pParagraph?.Margin.Bottom ?? 0));
+				return _pTextOwner.Margin.Bottom + (pParagraph?.Margin.Bottom ?? 0);
 			case AutomationTextAttributesEnum.MarginLeadingAttribute:
-				return Boxer.Box(_pTextOwner.Margin.Left + (pParagraph?.Margin.Left ?? 0));
+				return _pTextOwner.Margin.Left + (pParagraph?.Margin.Left ?? 0);
 			case AutomationTextAttributesEnum.MarginTopAttribute:
-				return Boxer.Box(_pTextOwner.Margin.Top + (pParagraph?.Margin.Top ?? 0));
+				return _pTextOwner.Margin.Top + (pParagraph?.Margin.Top ?? 0);
 			case AutomationTextAttributesEnum.MarginTrailingAttribute:
-				return Boxer.Box(_pTextOwner.Margin.Right + (pParagraph?.Margin.Right ?? 0));
+				return _pTextOwner.Margin.Right + (pParagraph?.Margin.Right ?? 0);
 			case AutomationTextAttributesEnum.IsSubscriptAttribute:
-				return Boxer.Box(Typography.GetVariants(pContainingElement) == Microsoft.UI.Xaml.FontVariants.Subscript);
+				return Typography.GetVariants(pContainingElement) == Microsoft.UI.Xaml.FontVariants.Subscript;
 			case AutomationTextAttributesEnum.IsSuperscriptAttribute:
-				return Boxer.Box(Typography.GetVariants(pContainingElement) == Microsoft.UI.Xaml.FontVariants.Superscript);
+				return Typography.GetVariants(pContainingElement) == Microsoft.UI.Xaml.FontVariants.Superscript;
 			default:
 				// TODO Uno (UIA): UnderlineStyle/StrikethroughStyle/Underline/Strikethrough color attributes
 				// require TextFormatting.TextDecorations access on the element. Not surfaced yet.

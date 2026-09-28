@@ -56,21 +56,21 @@ public partial class RangeBase : Control
 		{
 			HandlePropertyChanged(
 			args,
-			(automationPeer, oldValue, newValue) => automationPeer.RaiseMinimumPropertyChangedEvent(Boxer.Box(oldValue), Boxer.Box(newValue)),
+			(automationPeer, oldValue, newValue) => automationPeer.RaiseMinimumPropertyChangedEvent(oldValue, newValue),
 			(rangeBase, oldValue, newValue) => rangeBase.OnMinimumChanged(oldValue, newValue));
 		}
 		else if (args.Property == MaximumProperty)
 		{
 			HandlePropertyChanged(
 			args,
-			(automationPeer, oldValue, newValue) => automationPeer.RaiseMaximumPropertyChangedEvent(Boxer.Box(oldValue), Boxer.Box(newValue)),
+			(automationPeer, oldValue, newValue) => automationPeer.RaiseMaximumPropertyChangedEvent(oldValue, newValue),
 			(rangeBase, oldValue, newValue) => rangeBase.OnMaximumChanged(oldValue, newValue));
 		}
 		else if (args.Property == ValueProperty)
 		{
 			HandlePropertyChanged(
 			args,
-			(automationPeer, oldValue, newValue) => automationPeer.RaiseValuePropertyChangedEvent(Boxer.Box(oldValue), Boxer.Box(newValue)),
+			(automationPeer, oldValue, newValue) => automationPeer.RaiseValuePropertyChangedEvent(oldValue, newValue),
 			(rangeBase, oldValue, newValue) => rangeBase.OnValueChanged(oldValue, newValue));
 		}
 	}

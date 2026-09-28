@@ -6,7 +6,6 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
-using Uno.UI.Helpers.Boxes;
 using System.Diagnostics;
 using System.ComponentModel;
 using Microsoft.UI.Xaml;
@@ -215,7 +214,7 @@ namespace Uno.UI.DataBinding
 
 				foreach (var activref in q)
 				{
-					sb.AppendFormatInvariant("\t{0}: {1}, [{2}]\r\n", activref.Item1, Boxer.Box(activref.Item2), string.Join(", ", activref.Item3));
+					sb.AppendFormatInvariant("\t{0}: {1}, [{2}]\r\n", activref.Item1, activref.Item2, string.Join(", ", activref.Item3));
 				}
 
 				if (IsEnabled && typeof(BinderReferenceHolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
@@ -257,7 +256,7 @@ namespace Uno.UI.DataBinding
 
 			foreach (var activref in q)
 			{
-				sb.AppendFormatInvariant("\t{0}: {1}\r\n", activref.Type, Boxer.Box(activref.Diff));
+				sb.AppendFormatInvariant("\t{0}: {1}\r\n", activref.Type, activref.Diff);
 			}
 
 			if (IsEnabled && typeof(BinderReferenceHolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
@@ -294,13 +293,13 @@ namespace Uno.UI.DataBinding
 				sb.Append("Inactive DependencyObject references: \r\n");
 				foreach (var rs in GetInactiveViewReferencesStats())
 				{
-					sb.AppendFormatInvariant("\t{0}: {1}\r\n", rs.Item1, Boxer.Box(rs.Item2));
+					sb.AppendFormatInvariant("\t{0}: {1}\r\n", rs.Item1, rs.Item2);
 				}
 
 				sb.Append("Active DependencyObject references: \r\n");
 				foreach (var rs in GetReferenceStats())
 				{
-					sb.AppendFormatInvariant("\t{0}: {1}\r\n", rs.Item1, Boxer.Box(rs.Item2));
+					sb.AppendFormatInvariant("\t{0}: {1}\r\n", rs.Item1, rs.Item2);
 				}
 
 				if (IsEnabled && typeof(BinderReferenceHolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))

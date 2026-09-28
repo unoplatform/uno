@@ -136,18 +136,18 @@ public partial class TabViewItem : ListViewItem
 		var strOut = string.Format(
 			CultureInfo.InvariantCulture,
 			data,
-			Boxer.Box(height),
-			Boxer.Box(leftCorner),
-			Boxer.Box(leftCorner),
-			Boxer.Box(leftCorner),
-			Boxer.Box(leftCorner),
-			Boxer.Box(leftCorner),
-			Boxer.Box(ActualWidth - (leftCorner + rightCorner)),
-			Boxer.Box(rightCorner),
-			Boxer.Box(rightCorner),
-			Boxer.Box(rightCorner),
-			Boxer.Box(rightCorner),
-			Boxer.Box(height - (4.0 + rightCorner)));
+			height,
+			leftCorner,
+			leftCorner,
+			leftCorner,
+			leftCorner,
+			leftCorner,
+			ActualWidth - (leftCorner + rightCorner),
+			rightCorner,
+			rightCorner,
+			rightCorner,
+			rightCorner,
+			height - (4.0 + rightCorner));
 
 		var geometry = XamlReader.Load(strOut) as Geometry;
 

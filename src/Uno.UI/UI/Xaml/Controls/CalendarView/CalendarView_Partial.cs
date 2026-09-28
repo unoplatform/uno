@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Globalization;
@@ -1716,7 +1715,7 @@ namespace Microsoft.UI.Xaml.Controls
 					var offset = bounds.Y + verticalDistance * bounds.Height;
 
 					// 4. scroll to target item's offset (with animation)
-					spVerticalOffset = Boxer.Box(offset);
+					spVerticalOffset = offset;
 					spVerticalOffsetReference = offset; // (double)spVerticalOffset;
 
 					handled = pScrollViewer.ChangeView(
