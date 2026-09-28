@@ -11,32 +11,11 @@ namespace Windows.Graphics
 		// Forced skipping of method Windows.Graphics.PointInt32.PointInt32()
 		// Skipping already declared method Windows.Graphics.PointInt32.PointInt32(int, int)
 		// Forced skipping of method Windows.Graphics.PointInt32.PointInt32(int, int)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(PointInt32 x, PointInt32 y)
-			=> x.X == y.X
-			&& x.Y == y.Y;
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(PointInt32 x, PointInt32 y)
-			=> !(x.X == y.X
-				&& x.Y == y.Y);
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(PointInt32 other)
-			=> X == other.X
-			&& Y == other.Y;
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj)
-			=> obj is PointInt32 that
-			&& X == that.X
-			&& Y == that.Y;
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode()
-			=> X.GetHashCode()
-			^ Y.GetHashCode();
-#endif
+		// Skipping already declared method Windows.Graphics.PointInt32.operator ==(Windows.Graphics.PointInt32, Windows.Graphics.PointInt32)
+		// Skipping already declared method Windows.Graphics.PointInt32.operator !=(Windows.Graphics.PointInt32, Windows.Graphics.PointInt32)
+		// Skipping already declared method Windows.Graphics.PointInt32.Equals(Windows.Graphics.PointInt32)
+		// Skipping already declared method Windows.Graphics.PointInt32.Equals(object)
+		// Skipping already declared method Windows.Graphics.PointInt32.GetHashCode()
 		// Skipping already declared field Windows.Graphics.PointInt32.X
 		// Skipping already declared field Windows.Graphics.PointInt32.Y
 	}

@@ -13,13 +13,7 @@ namespace Windows.Graphics
 		// Forced skipping of method Windows.Graphics.RectInt32.RectInt32(int, int, int, int)
 		// Skipping already declared method Windows.Graphics.RectInt32.operator ==(Windows.Graphics.RectInt32, Windows.Graphics.RectInt32)
 		// Skipping already declared method Windows.Graphics.RectInt32.operator !=(Windows.Graphics.RectInt32, Windows.Graphics.RectInt32)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(RectInt32 other)
-			=> X == other.X
-			&& Y == other.Y
-			&& Width == other.Width
-			&& Height == other.Height;
-#endif
+		// Skipping already declared method Windows.Graphics.RectInt32.Equals(Windows.Graphics.RectInt32)
 		// Skipping already declared method Windows.Graphics.RectInt32.Equals(object)
 		// Skipping already declared method Windows.Graphics.RectInt32.GetHashCode()
 		// Skipping already declared field Windows.Graphics.RectInt32.X
