@@ -1245,7 +1245,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				ColumnDefinitions =
 				{
-					new ColumnDefinition { Width = 200 }
+					new ColumnDefinition { Width = new GridLength(200) }
 				},
 				Children = { SUT }
 			};
