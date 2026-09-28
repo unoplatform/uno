@@ -51,7 +51,7 @@ The emit such a pass performs is not merely wasted work. An update Roslyn resolv
 surfaces on a **later** edit as a `NullReferenceException` in
 `DefinitionMap.GetPreviousMethodHandle` / `GetPreviousPropertyHandle`
 ([dotnet/roslyn#79898](https://github.com/dotnet/roslyn/issues/79898), open) — reported from
-the field as unoplatform/uno.hotdesign#8040, where the empty update
+the field through an internal tracker, where the empty update
 (`Solution update 12.3 status: None`) sits one second before the crashing emit in the user's
 log. Hot reload then stays dead for the rest of the session. So a pass that forks for nothing
 does not cost a roundtrip: it arms a delayed failure of the next real edit.
@@ -148,6 +148,10 @@ Unit tests in `src/Uno.HotReload.Tests/`:
 6. **De-duplicated add** (`Given_SolutionUpdater`): a change-set adding a document whose path
    is already in the project → returned solution is reference-equal to the input, so the
    analyzer-config refresh does not fork what the add itself did not mutate.
+7. **Genuine add** (`Given_SolutionUpdater`): a change-set adding a path the project does not
+   have → the solution is forked, the document is added, and the analyzer-config text is
+   refreshed from disk. The gate distinguishes applied from requested; it does not disable the
+   refresh.
 
 ## Resolved decisions
 
