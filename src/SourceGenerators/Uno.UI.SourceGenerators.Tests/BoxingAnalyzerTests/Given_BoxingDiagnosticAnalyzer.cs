@@ -6,81 +6,60 @@ namespace Uno.UI.SourceGenerators.Tests.BoxingAnalyzerTests;
 public class Given_BoxingDiagnosticAnalyzer
 {
 	[TestMethod]
-	public async Task When_Conditional_Symbol_Is_Undefined_Then_Call_Is_Omitted_And_Not_Reported()
-		=> await AssertReportedAsync(ConditionalCall(attributes: """[Conditional("ON")]"""), expected: false);
+	[DataRow("void M(DependencyProperty p) => SetValue(p, true);")]
+	[DataRow("void M(DependencyProperty p) => SetValue(p, (object)1);")]
+	[DataRow("void M(DependencyProperty p, bool value) => SetValue(p, value);")]
+	[DataRow("void M(DependencyProperty p, bool flag) => SetValue(p, flag ? 1.0 : 0.0);")]
+	[DataRow("void M(DependencyProperty p, bool flag) => SetValue(p, flag ? (object)true : \"x\");")]
+	public async Task When_Boxed_Into_DependencyProperty_Value_Api_Then_Reported(string member)
+		=> await AssertReportedAsync(Member(member), expected: true);
 
 	[TestMethod]
-	public async Task When_Conditional_Symbol_Is_Defined_Then_Reported()
-		=> await AssertReportedAsync(ConditionalCall(attributes: """[Conditional("ON")]"""), expected: true, "ON");
+	[DataRow("object M() => new PropertyMetadata(false);")]
+	[DataRow("object M() => new FrameworkPropertyMetadata(defaultValue: 0.0);")]
+	public async Task When_Boxed_As_PropertyMetadata_Default_Then_Reported(string member)
+		=> await AssertReportedAsync(Member(member), expected: true);
 
 	[TestMethod]
-	[DataRow("ON")]
-	[DataRow("OFF")]
-	public async Task When_Any_Of_Multiple_Conditional_Symbols_Is_Defined_Then_Reported(string definedSymbol)
-		=> await AssertReportedAsync(ConditionalCall(attributes: """[Conditional("ON"), Conditional("OFF")]"""), expected: true, definedSymbol);
+	[DataRow("object M(DependencyProperty p) => true;")]
+	[DataRow("object M(DependencyObject d, bool isGet, object valueToSet) => 1;")]
+	[DataRow("object M(object baseValue, DependencyPropertyValuePrecedences precedence) { return false; }")]
+	[DataRow("CoerceValueCallback M() => (d, baseValue, precedence) => 0.0;")]
+	[DataRow("PropMethodCall M() => (instance, isGet, valueToSet) => true;")]
+	public async Task When_Returned_From_DependencyProperty_Callback_Then_Reported(string member)
+		=> await AssertReportedAsync(Member(member), expected: true);
 
 	[TestMethod]
-	public async Task When_None_Of_Multiple_Conditional_Symbols_Is_Defined_Then_Not_Reported()
-		=> await AssertReportedAsync(ConditionalCall(attributes: """[Conditional("ON"), Conditional("OFF")]"""), expected: false);
+	[DataRow("object M() => true;")]
+	[DataRow("object M(int value) => value;")]
+	[DataRow("string M(int value) => string.Format(\"{0}\", value);")]
+	[DataRow("void M(System.Text.StringBuilder builder, int value) => builder.AppendFormat(\"{0}\", value);")]
+	[DataRow("object[] M() => new object[] { true };")]
+	[DataRow("object M(DependencyProperty p) => new object[] { true };")]
+	[DataRow("void M(DependencyProperty p) { System.Func<object> f = () => true; }")]
+	[DataRow("bool M(DependencyProperty p) => Equals(GetHashCode(), 0);")]
+	public async Task When_Boxed_Outside_DependencyProperty_Value_Path_Then_Not_Reported(string member)
+		=> await AssertReportedAsync(Member(member), expected: false);
 
 	[TestMethod]
-	public async Task When_Conditional_Symbol_Is_Defined_In_File_Then_Reported()
-		=> await AssertReportedAsync(ConditionalCall(attributes: """[Conditional("ON")]""", directives: "#define ON"), expected: true);
+	[DataRow("string M(DependencyProperty p, bool value) => \"x\" + value;")]
+	[DataRow("string M(DependencyProperty p, bool value) { var s = \"x\"; s += value; return s; }")]
+	public async Task When_String_Concatenation_Then_Not_Reported(string member)
+		=> await AssertReportedAsync(Member(member), expected: false);
 
 	[TestMethod]
-	public async Task When_Conditional_Symbol_Is_Undefined_In_File_Then_Not_Reported()
-		=> await AssertReportedAsync(ConditionalCall(attributes: """[Conditional("ON")]""", directives: "#undef ON"), expected: false, "ON");
-
-	[TestMethod]
-	public async Task When_Conditional_Symbol_Is_Defined_In_Inactive_Region_Then_Not_Reported()
-		=> await AssertReportedAsync(ConditionalCall(attributes: """[Conditional("ON")]""", directives: "#if NEVER\r\n#define ON\r\n#endif"), expected: false);
-
-	[TestMethod]
-	public async Task When_Conditional_Attribute_Is_Not_The_Compiler_One_Then_Reported()
-		=> await AssertReportedAsync(
-			"""
-			namespace Test
-			{
-				public sealed class ConditionalAttribute : System.Attribute
-				{
-					public ConditionalAttribute(string condition)
-					{
-					}
-				}
-
-				public class C
-				{
-					[Conditional("OFF")]
-					private static void Trace(object value)
-					{
-					}
-
-					public void M() => Trace(true);
-				}
-			}
-			""",
-			expected: true);
-
-	[TestMethod]
-	[DataRow("object M() => 0.0;", true)]
-	[DataRow("object M() => 1.0;", true)]
-	[DataRow("object M() => -0.0;", false)]
-	[DataRow("object M() => 2.0;", false)]
+	[DataRow("void M(DependencyProperty p) => SetValue(p, 0.0);", true)]
+	[DataRow("void M(DependencyProperty p) => SetValue(p, 1.0);", true)]
+	[DataRow("void M(DependencyProperty p) => SetValue(p, -0.0);", false)]
+	[DataRow("void M(DependencyProperty p) => SetValue(p, 2.0);", false)]
 	public async Task When_Double_Constant(string member, bool expected)
 		=> await AssertReportedAsync(Member(member), expected);
 
 	[TestMethod]
-	[DataRow("string M(bool value) => \"x\" + value;", false)]
-	[DataRow("string M(bool value) { var s = \"x\"; s += value; return s; }", false)]
-	[DataRow("string M(bool value) => \"x\" + (object)value;", true)]
-	public async Task When_String_Concatenation(string member, bool expected)
-		=> await AssertReportedAsync(Member(member), expected);
-
-	[TestMethod]
-	[DataRow("object M(global::Uno.UI.Xaml.RoutedEventFlag flag) => flag;", true)]
-	[DataRow("object M(RoutedEventFlag flag) => flag;", false)]
-	[DataRow("object M() => global::Uno.UI.Xaml.RoutedEventFlag.PointerPressed;", true)]
-	[DataRow("object M() => global::Uno.UI.Xaml.RoutedEventFlag.PointerPressed | global::Uno.UI.Xaml.RoutedEventFlag.PointerReleased;", false)]
+	[DataRow("void M(DependencyProperty p, global::Uno.UI.Xaml.RoutedEventFlag flag) => SetValue(p, flag);", true)]
+	[DataRow("void M(DependencyProperty p, RoutedEventFlag flag) => SetValue(p, flag);", false)]
+	[DataRow("void M(DependencyProperty p) => SetValue(p, global::Uno.UI.Xaml.RoutedEventFlag.PointerPressed);", true)]
+	[DataRow("void M(DependencyProperty p) => SetValue(p, global::Uno.UI.Xaml.RoutedEventFlag.PointerPressed | global::Uno.UI.Xaml.RoutedEventFlag.PointerReleased);", false)]
 	public async Task When_RoutedEventFlag(string member, bool expected)
 		=> await AssertReportedAsync(Member(member, "public enum RoutedEventFlag { None }"), expected);
 
@@ -102,39 +81,23 @@ public class Given_BoxingDiagnosticAnalyzer
 		}
 	}
 
-	private static async Task AssertReportedAsync(string source, bool expected, params string[] preprocessorSymbols)
+	private static async Task AssertReportedAsync(string source, bool expected)
 	{
-		var diagnostics = await GetDiagnosticsAsync(CreateDocument(source, preprocessorSymbols));
+		var diagnostics = await GetDiagnosticsAsync(CreateDocument(source));
 
 		diagnostics.Any(d => d.Id == BoxingDiagnosticId).Should().Be(expected);
 	}
 
 	private static string Member(string member, string siblingType = "") => $$"""
+		using Microsoft.UI.Xaml;
+
 		namespace Test
 		{
 			{{siblingType}}
 
-			public class C
+			public class C : DependencyObject
 			{
 				public {{member}}
-			}
-		}
-		""";
-
-	private static string ConditionalCall(string attributes, string directives = "") => $$"""
-		{{directives}}
-		using System.Diagnostics;
-
-		namespace Test
-		{
-			public class C
-			{
-				{{attributes}}
-				private static void Trace(object value)
-				{
-				}
-
-				public void M() => Trace(true);
 			}
 		}
 		""";

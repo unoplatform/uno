@@ -63,6 +63,36 @@ internal static class BoxingAnalyzerHarness
 			public sealed class DependencyProperty
 			{
 			}
+
+			public class DependencyObject
+			{
+				public void SetValue(DependencyProperty dp, object value)
+				{
+				}
+			}
+
+			public enum DependencyPropertyValuePrecedences
+			{
+				Local,
+			}
+
+			public class PropertyMetadata
+			{
+				public PropertyMetadata(object defaultValue)
+				{
+				}
+			}
+
+			public class FrameworkPropertyMetadata : PropertyMetadata
+			{
+				public FrameworkPropertyMetadata(object defaultValue) : base(defaultValue)
+				{
+				}
+			}
+
+			public delegate object CoerceValueCallback(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences precedence);
+
+			public delegate object PropMethodCall(DependencyObject instance, bool isGet, object valueToSet);
 		}
 		""";
 
