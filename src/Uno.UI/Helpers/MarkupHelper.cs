@@ -40,22 +40,14 @@ namespace Uno.UI.Helpers
 		}
 
 		/// <summary>
-		/// Sets the x:Name of an element whose Name property is get-only, as the WinUI XAML parser does.
+		/// Sets the x:Name of an element implementing <see cref="IXNameProvider"/>, whose Name property is get-only.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void SetXName(object target, string name)
 		{
-			switch (target)
+			if (target is IXNameProvider provider)
 			{
-				case VisualState visualState:
-					visualState.Name = name;
-					break;
-				case VisualStateGroup visualStateGroup:
-					visualStateGroup.Name = name;
-					break;
-				case Microsoft.UI.Xaml.Documents.TextElement textElement:
-					textElement.Name = name;
-					break;
+				provider.SetXName(name);
 			}
 		}
 

@@ -3559,10 +3559,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								writer.AppendLineInvariantIndented("__that.{0} = {1};", value, writer.AppliedParameterName);
 
-								if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace && HasNonPublicNameSetter(objectDefinition.Type))
+								if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace && IsXNameProvider(objectDefinition.Type))
 								{
-									// WinUI sets x:Name on types like VisualState whose Name is get-only.
-									writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.Helpers.MarkupHelper.SetXName({writer.AppliedParameterName}, \"{value}\");");
+									BuildSetXName(writer, value);
 								}
 
 								// value is validated as non-null in ValidateName call above.
@@ -3572,6 +3571,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
 							{
 								writer.AppendLineInvariantIndented("// x:Name {0}", member.Value, member.Value);
+
+								if (IsXNameProvider(objectDefinition.Type))
+								{
+									BuildSetXName(writer, value);
+								}
 							}
 							else if (member.Member.Name == "Key")
 							{
@@ -6274,7 +6278,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// but is considered of an unknown type. This can happen when providing the
 						// name of a control using x:Name instead of Name.
 						var hasNameProperty = HasProperty(objectDefinition.Type, "Name");
-						if (hasNameProperty && !HasNonPublicNameSetter(objectDefinition.Type))
+						if (hasNameProperty && !IsXNameProvider(objectDefinition.Type))
 						{
 							writer.AppendLineInvariantIndented("{0} = \"{1}\"{2}", fullValueSetter, member.Value, closingPunctuation);
 						}
@@ -6282,6 +6286,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
+
+		// WinUI sets x:Name on types like VisualState whose Name is get-only.
+		private static void BuildSetXName(XamlLazyApplyBlockIIndentedStringBuilder writer, string? name)
+			=> writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.Helpers.MarkupHelper.SetXName({writer.AppliedParameterName}, \"{name}\");");
 
 		private bool IsLazyVisualStateManagerProperty(XamlMemberDefinition member)
 			=> member.Owner != null
