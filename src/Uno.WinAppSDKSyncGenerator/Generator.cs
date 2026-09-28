@@ -348,7 +348,10 @@ namespace Uno.WinAppSDKSyncGenerator
 			}
 
 			var @namespace = type.ContainingNamespace.ToString();
-			if (@namespace.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal))
+			// Microsoft.UI.Content shares Composition's WinAppSDK assembly (Microsoft.InteractiveExperiences.Projection),
+			// and ContentIsland depends on Composition types, so both are hosted in Uno.UI.Composition.
+			if (@namespace.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal) ||
+				@namespace.StartsWith("Microsoft.UI.Content", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
 			}
@@ -378,21 +381,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				@namespace.StartsWith("Windows.Foundation.Metadata", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
-			}
-
-			// INTENTIONALLY RETAINED REDIRECTS:
-			// These namespaces' WinUI-correct assembly cannot host their hand-written implementations
-			// without a dedicated seam, so their generated stubs stay in the legacy location for now.
-			// Tracked by https://github.com/unoplatform/uno/issues/22927
-
-			// Microsoft.UI.Content: WinAppSDK sources these from Microsoft.InteractiveExperiences.Projection
-			// (would route to Uno.WinRT), but ContentIsland/ContentSite and their stubs depend on
-			// Uno.UI.Composition types (Compositor, Visual, ICompositionSupportsSystemBackdrop, IClosableNotifier),
-			// which Uno.WinRT cannot reference. The stubs therefore stay in Uno.UI for now; the eventual
-			// Uno home is Uno.UI.Composition, which requires a layering seam not yet in place.
-			else if (@namespace.StartsWith("Microsoft.UI.Content", StringComparison.Ordinal))
-			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
 
 			if (type.Name.Contains("AsyncAction", StringComparison.Ordinal) ||

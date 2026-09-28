@@ -3938,6 +3938,35 @@
 		  <!-- WinRT.Interop window interop relocated from Uno.UI to Uno.WinRT, matching WinAppSDK (Microsoft.Windows.SDK.NET); Uno.UI now backs it through ApiExtensibility (#22927, breaking changes for 7.0). -->
 		  <Member fullName="WinRT.Interop.InitializeWithWindow" reason="Relocated WinRT.Interop.InitializeWithWindow from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#22927, breaking changes for 7.0)" />
 		  <Member fullName="WinRT.Interop.WindowNative" reason="Relocated WinRT.Interop.WindowNative from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#22927, breaking changes for 7.0)" />
+		  <!-- Microsoft.UI.Content relocated from Uno.UI to Uno.UI.Composition, next to Microsoft.UI.Composition which shares its WinAppSDK assembly (Microsoft.InteractiveExperiences.Projection) (#2065, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Content.ChildSiteLink" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentAutomationOptions" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentCoordinateConverter" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentCoordinateRoundingMode" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentDeferral" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentEnvironmentSettingChangedEventArgs" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentIsland" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentIslandEnvironment" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentIslandStateChangedEventArgs" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentLayoutDirection" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSite" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSiteEnvironment" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSiteEnvironmentView" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSiteView" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.ContentSizePolicy" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.DesktopAttachedSiteBridge" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.DesktopChildSiteBridge" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.DesktopPopupSiteBridge" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.DesktopSiteBridge" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.IContentSiteAutomation" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.IContentSiteBridge" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.IContentSiteInput" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.IContentSiteLink" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Content.PopupAnchor" reason="Relocated Microsoft.UI.Content.* from Uno.UI to Uno.UI.Composition (#2065, breaking changes for 7.0)" />
 
 		  <!-- Uno-only menu-plumbing interfaces reduced to internal; WinUI has no public counterparts. -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenu" reason="Reduced Uno-only IMenu to internal (breaking changes for 7.0, uno#8339)" />
