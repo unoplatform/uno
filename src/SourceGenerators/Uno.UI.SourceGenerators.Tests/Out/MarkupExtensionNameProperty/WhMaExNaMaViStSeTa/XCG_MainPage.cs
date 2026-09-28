@@ -146,13 +146,13 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _HoverStatesSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _HoverStatesSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "HoverStates");
 		private global::Microsoft.UI.Xaml.VisualStateGroup HoverStates
 		{
 			get => (global::Microsoft.UI.Xaml.VisualStateGroup)_HoverStatesSubject.ElementInstance;
 			set => _HoverStatesSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _MemoryButtonsVisibleSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _MemoryButtonsVisibleSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "MemoryButtonsVisible");
 		private global::Microsoft.UI.Xaml.VisualState MemoryButtonsVisible
 		{
 			get => (global::Microsoft.UI.Xaml.VisualState)_MemoryButtonsVisibleSubject.ElementInstance;

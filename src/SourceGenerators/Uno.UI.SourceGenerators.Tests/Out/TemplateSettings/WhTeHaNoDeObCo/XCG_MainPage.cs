@@ -208,7 +208,7 @@ namespace TestRepro
 				private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ShadowsSubjectBackingPseudoField { get; set; }
 				private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ShadowsSubject
 				{
-					get => _ShadowsSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+					get => _ShadowsSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "Shadows");
 				}
 				private global::TestRepro.ShadowCollection Shadows
 				{

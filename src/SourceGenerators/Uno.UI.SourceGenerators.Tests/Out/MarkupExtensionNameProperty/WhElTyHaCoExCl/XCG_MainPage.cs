@@ -148,19 +148,19 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _MyBadgeSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _MyBadgeSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "MyBadge");
 		private global::TestRepro.Badge MyBadge
 		{
 			get => (global::TestRepro.Badge)_MyBadgeSubject.ElementInstance;
 			set => _MyBadgeSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _StatesSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _StatesSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "States");
 		private global::Microsoft.UI.Xaml.VisualStateGroup States
 		{
 			get => (global::Microsoft.UI.Xaml.VisualStateGroup)_StatesSubject.ElementInstance;
 			set => _StatesSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _VisibleSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _VisibleSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "Visible");
 		private global::Microsoft.UI.Xaml.VisualState Visible
 		{
 			get => (global::Microsoft.UI.Xaml.VisualState)_VisibleSubject.ElementInstance;
