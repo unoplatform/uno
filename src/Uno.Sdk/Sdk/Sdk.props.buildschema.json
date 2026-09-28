@@ -559,6 +559,10 @@
 					"description": "Adds support for the Simple Design Toolkit.",
 					"helpUrl": "https://aka.platform.uno/feature-simpletheme"
 				},
+				"FluentTheme": {
+					"description": "Adds support for the Fluent semantic theme, layered on the built-in Fluent styles.",
+					"helpUrl": "https://aka.platform.uno/feature-fluenttheme"
+				},
 				"Dsp": {
 					"description": "Adds support for the Uno.Dsp.Tasks package.",
 					"helpUrl": "https://aka.platform.uno/feature-dsp"
