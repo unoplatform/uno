@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers.Boxes;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -113,7 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(AutoPlay),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(true, OnAutoPlayChanged));
+				new FrameworkPropertyMetadata(BoolBoxes.True, OnAutoPlayChanged));
 
 		private static void OnAutoPlayChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -141,7 +142,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFullWindow),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure, OnIsFullWindowChanged));
+				new FrameworkPropertyMetadata(BoolBoxes.False, FrameworkPropertyMetadataOptions.AffectsMeasure, OnIsFullWindowChanged));
 
 
 		private static void OnIsFullWindowChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -282,7 +283,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(AreTransportControlsEnabled),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+				new FrameworkPropertyMetadata(BoolBoxes.False, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 

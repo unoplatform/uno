@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(EnableDependentAnimation), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(EnableDependentAnimationProperty, value);
+				this.SetValue(EnableDependentAnimationProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

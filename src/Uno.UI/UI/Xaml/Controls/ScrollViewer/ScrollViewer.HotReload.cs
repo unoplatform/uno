@@ -23,8 +23,12 @@ internal static partial class ScrollViewerMetadataUpdateHandler
 				_log.Debug($"Saving state of {element.GetDebugDepth()}-{element.GetDebugName()} (v: {sv.VerticalOffset} | h: {sv.HorizontalOffset})");
 			}
 
+			// Compile-linked into Uno.UI.Extras.Windows, which does not reference Uno.UI and so cannot
+			// see Boxes - and this runs once per Hot Reload, not on a hot path.
+#pragma warning disable UnoInternal0002
 			stateDictionary["VOffset"] = sv.VerticalOffset;
 			stateDictionary["HOffset"] = sv.HorizontalOffset;
+#pragma warning restore UnoInternal0002
 		}
 	}
 

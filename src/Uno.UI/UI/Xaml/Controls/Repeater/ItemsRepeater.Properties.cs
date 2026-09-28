@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -81,7 +82,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double HorizontalCacheLength
 		{
 			get => (double)GetValue(HorizontalCacheLengthProperty);
-			set => SetValue(HorizontalCacheLengthProperty, value);
+			set => SetValue(HorizontalCacheLengthProperty, Boxer.Box(value));
 		}
 		#endregion
 
@@ -92,7 +93,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double VerticalCacheLength
 		{
 			get => (double)GetValue(VerticalCacheLengthProperty);
-			set => SetValue(VerticalCacheLengthProperty, value);
+			set => SetValue(VerticalCacheLengthProperty, Boxer.Box(value));
 		}
 		#endregion
 

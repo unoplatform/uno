@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Windows.Foundation;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
@@ -910,7 +911,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (currentIndex < firstRemainingIndex)
 				{
-					_containersForIndexRepair.Add(container, -1);
+					_containersForIndexRepair.Add(container, IntBoxes.NegativeOne);
 				}
 				else
 				{
