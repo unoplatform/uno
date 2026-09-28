@@ -1,35 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<Target Name="_UnoComputeLibraryRuntimeIdentifier">
+	<!--
+	The flavor a cross-runtime library declares, lowercased: it is also the uno-runtime folder it packs into
+	and loads from. UnoRuntimeIdentifier is the deprecated spelling (UNOB0024), mapped onto the new names.
+	-->
+	<Target Name="_UnoComputeDeclaredRuntimeFlavor">
 		<PropertyGroup>
-			<!--
-			The legacy netstandard2.0 convention's folder, named by the library that packs into it. A head has
-			no say in it: every value a head could have set resolved to this one.
-			-->
-			<_LibraryUnoRuntimeIdentifier>$(UnoRuntimeIdentifier)</_LibraryUnoRuntimeIdentifier>
-			<_LibraryUnoRuntimeIdentifier Condition=" '$(UnoHasRuntimeHost)' == 'true' or '$(_LibraryUnoRuntimeIdentifier)' == '' ">skia</_LibraryUnoRuntimeIdentifier>
+			<_UnoDeclaredRuntimeFlavor>$(UnoRuntimeFlavor.ToLowerInvariant())</_UnoDeclaredRuntimeFlavor>
+			<_UnoDeclaredRuntimeFlavor Condition=" '$(_UnoDeclaredRuntimeFlavor)' == '' ">$(UnoRuntimeIdentifier.ToLowerInvariant())</_UnoDeclaredRuntimeFlavor>
+			<_UnoDeclaredRuntimeFlavor Condition=" '$(_UnoDeclaredRuntimeFlavor)' == 'skia' ">generic</_UnoDeclaredRuntimeFlavor>
+			<_UnoDeclaredRuntimeFlavor Condition=" '$(_UnoDeclaredRuntimeFlavor)' == 'webassembly' ">wasm</_UnoDeclaredRuntimeFlavor>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="_UnoComputeLibraryRuntimeFlavor" DependsOnTargets="_UnoComputeDeclaredRuntimeFlavor">
+		<PropertyGroup>
+			<!-- A head has no say in the folder: it always loads the shared one, and redirects WinRT from its platform. -->
+			<_LibraryUnoRuntimeFlavor>$(_UnoDeclaredRuntimeFlavor)</_LibraryUnoRuntimeFlavor>
+			<_LibraryUnoRuntimeFlavor Condition=" '$(UnoHasRuntimeHost)' == 'true' or '$(_LibraryUnoRuntimeFlavor)' == '' ">generic</_LibraryUnoRuntimeFlavor>
 
 			<!-- A Reference library builds against the reference facades on purpose: nothing is replaced, required or validated. -->
-			<_UnoRuntimeIsReferenceLibrary Condition=" '$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())' == 'reference' ">true</_UnoRuntimeIsReferenceLibrary>
+			<_UnoRuntimeIsReferenceLibrary Condition=" '$(_LibraryUnoRuntimeFlavor)' == 'reference' ">true</_UnoRuntimeIsReferenceLibrary>
 
-			<!--
-			Only a no-host cross-runtime library needs this: it has no per-platform head to derive a flavor
-			from, so RuntimeAssetsSelectorTask_v0/RuntimeAssetsValidatorTask_v0 are told the shared folder
-			directly. An application head keeps deriving it from TargetPlatformIdentifier.
-			-->
-			<_UnoTaskLibraryRuntimeIdentifier Condition=" '$(UnoHasRuntimeHost)' != 'true' ">$(_LibraryUnoRuntimeIdentifier)</_UnoTaskLibraryRuntimeIdentifier>
+			<!-- Only a no-host library passes its flavor: a head derives it from TargetPlatformIdentifier. -->
+			<_UnoTaskLibraryRuntimeFlavor Condition=" '$(UnoHasRuntimeHost)' != 'true' ">$(_LibraryUnoRuntimeFlavor)</_UnoTaskLibraryRuntimeFlavor>
 		</PropertyGroup>
 	</Target>
 
 	<!-- Target used to override the uno-runtime targets -->
 	<!--
-	UnoRuntimeIdentifier keeps the target running for a cross-runtime library, which sets it without
-	referencing a runtime host. Dropping it here would leave such a library's output on the reference facades.
+	The flavor keeps the target running for a cross-runtime library, which sets it without referencing a
+	runtime host. Dropping it here would leave such a library's output on the reference facades.
 	-->
 	<Target Name="ReplaceUnoRuntime"
-				Condition="'$(UnoHasRuntimeHost)' == 'true' or '$(UnoRuntimeIdentifier)' != ''"
-				DependsOnTargets="_UnoComputeLibraryRuntimeIdentifier"
+				Condition="'$(UnoHasRuntimeHost)' == 'true' or '$(UnoRuntimeFlavor)' != '' or '$(UnoRuntimeIdentifier)' != ''"
+				DependsOnTargets="_UnoComputeLibraryRuntimeFlavor"
 				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile;ResolveLockFileReferences">
 
 		<ItemGroup>
@@ -42,10 +48,10 @@
 			-->
 			<!-- Add the files for the current selected runtime identifier -->
 			<RuntimeCopyLocalItemsMerged
-							Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
+							Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_LibraryUnoRuntimeFlavor)/*.dll"
 							NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
 			<RuntimeCopyLocalItemsMerged
-				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
+				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_LibraryUnoRuntimeFlavor)/*.dll"
 				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
 
 			<!-- Add metadata so the .deps.json file is generated properly (.NET 5+) -->
@@ -55,11 +61,11 @@
 				CopyLocal="true"
 				DestinationSubPath="%(FileName)%(Extension)"
 				CopyToPublishDirectory="true"
-				PathInPackage="uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/%(FileName)%(Extension)" />
+				PathInPackage="uno-runtime/$(_LibraryUnoRuntimeFlavor)/%(FileName)%(Extension)" />
 
 			<!-- Publish pdb files -->
-			<ReferenceCopyLocalPaths Condition=" '$(Optimize)' != 'true' " Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
-			<ReferenceCopyLocalPaths Condition=" '$(Optimize)' != 'true' " Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+			<ReferenceCopyLocalPaths Condition=" '$(Optimize)' != 'true' " Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_LibraryUnoRuntimeFlavor)/*.pdb" />
+			<ReferenceCopyLocalPaths Condition=" '$(Optimize)' != 'true' " Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_LibraryUnoRuntimeFlavor)/*.pdb" />
 		</ItemGroup>
 
 		<!-- 
@@ -69,7 +75,7 @@
 			Condition="'$(_UnoRuntimeIsReferenceLibrary)' != 'true'"
 			UnoRuntimeEnabledPackage="@(UnoRuntimeEnabledPackage)"
 			TargetPlatformIdentifier="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))"
-			LibraryRuntimeIdentifier="$(_UnoTaskLibraryRuntimeIdentifier)"
+			LibraryRuntimeFlavor="$(_UnoTaskLibraryRuntimeFlavor)"
 			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
 			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)"
 			TargetFrameworkVersion="$(TargetFrameworkVersion)">
@@ -121,7 +127,7 @@
 			Condition="'@(_UnoRuntimeEnabledPackage_Unresolved)'!='' AND '$(_UnoRuntimeIsReferenceLibrary)'!='true' AND '$(UnoDisableUNOB0023Validation)'!='true' AND '$(DesignTimeBuild)'!='true'" />
 	</Target>
 
-	<Target Name="_UnoValidateRuntimeAssets" BeforeTargets="CoreCompile" DependsOnTargets="_UnoComputeLibraryRuntimeIdentifier">
+	<Target Name="_UnoValidateRuntimeAssets" BeforeTargets="CoreCompile" DependsOnTargets="_UnoComputeLibraryRuntimeFlavor">
 		<PropertyGroup>
 			<!-- Normalized so a value other than 'true' cannot fail the task's boolean parameter conversion. -->
 			<_UnoDisableUNOB0020Validation>false</_UnoDisableUNOB0020Validation>
@@ -149,7 +155,14 @@
 			BeforeTargets="CoreCompile"
 			DependsOnTargets="_UnoValidateRuntimeAssets" />
 
-	<Target Name="_UnoWarnObsoleteRuntimeIdentifiers" BeforeTargets="BeforeBuild">
+	<Target Name="_UnoWarnObsoleteRuntimeIdentifiers" BeforeTargets="BeforeBuild" DependsOnTargets="_UnoComputeDeclaredRuntimeFlavor">
+		<PropertyGroup>
+			<_UnoSuggestedRuntimeFlavor>$(_UnoDeclaredRuntimeFlavor)</_UnoSuggestedRuntimeFlavor>
+			<_UnoSuggestedRuntimeFlavor Condition=" '$(_UnoDeclaredRuntimeFlavor)' == 'generic' ">Generic</_UnoSuggestedRuntimeFlavor>
+			<_UnoSuggestedRuntimeFlavor Condition=" '$(_UnoDeclaredRuntimeFlavor)' == 'wasm' ">Wasm</_UnoSuggestedRuntimeFlavor>
+			<_UnoSuggestedRuntimeFlavor Condition=" '$(_UnoDeclaredRuntimeFlavor)' == 'reference' ">Reference</_UnoSuggestedRuntimeFlavor>
+		</PropertyGroup>
+
 		<!-- Ungated: these two only ever selected assets for a head, so they are dead in every project shape. -->
 		<Warning
 			Code="UNOB0024"
@@ -157,16 +170,18 @@
 			Text="UnoUIRuntimeIdentifier and UnoWinRTRuntimeIdentifier no longer have any effect and can be removed. Runtime assets are selected from the target framework. See https://aka.platform.uno/UNOB0024"
 			Condition="('$(UnoUIRuntimeIdentifier)'!='' OR '$(UnoWinRTRuntimeIdentifier)'!='') AND '$(UnoDisableUNOB0024Validation)'!='true'" />
 
-		<!--
-		This one is gated: UnoRuntimeIdentifier still names the uno-runtime folder a cross-runtime library
-		packs into, so only a head may be warned. Gated on UnoHasRuntimeHost rather than IsUnoHead, which
-		only the Uno.Sdk sets: a hand-rolled head is exactly the shape likely to still carry it.
-		-->
+		<!-- Gated on UnoHasRuntimeHost rather than IsUnoHead, which only the Uno.Sdk sets: a hand-rolled head is exactly the shape likely to still carry it. -->
 		<Warning
 			Code="UNOB0024"
 			HelpLink="https://aka.platform.uno/UNOB0024"
 			Text="UnoRuntimeIdentifier no longer selects runtime assets for an application head and can be removed. Runtime assets are selected from the target framework. See https://aka.platform.uno/UNOB0024"
 			Condition="'$(UnoRuntimeIdentifier)'!='' AND '$(UnoHasRuntimeHost)'=='true' AND '$(UnoDisableUNOB0024Validation)'!='true'" />
+
+		<Warning
+			Code="UNOB0024"
+			HelpLink="https://aka.platform.uno/UNOB0024"
+			Text="UnoRuntimeIdentifier is deprecated for cross-runtime libraries. Set UnoRuntimeFlavor to '$(_UnoSuggestedRuntimeFlavor)' instead. See https://aka.platform.uno/UNOB0024"
+			Condition="'$(UnoRuntimeIdentifier)'!='' AND '$(UnoRuntimeFlavor)'=='' AND '$(UnoHasRuntimeHost)'!='true' AND '$(UnoDisableUNOB0024Validation)'!='true'" />
 	</Target>
 
 	<!--
@@ -180,11 +195,11 @@
 			Code="UNOB0025"
 			HelpLink="https://aka.platform.uno/UNOB0025"
 			Text="This project references runtime-enabled package(s) [@(UnoRuntimeEnabledPackage)] but no Uno Platform runtime host, so the reference assemblies will be deployed and will fail at runtime. Check that the Uno.WinUI.Runtime.Skia.* package version matches Uno.WinUI. See https://aka.platform.uno/UNOB0025"
-			Condition="'@(UnoRuntimeEnabledPackage)'!='' AND '$(UnoHasRuntimeHost)'!='true' AND '$(UnoRuntimeIdentifier)'=='' AND ('$(OutputType)'=='Exe' OR '$(OutputType)'=='WinExe') AND '$(UnoDisableUNOB0025Validation)'!='true'" />
+			Condition="'@(UnoRuntimeEnabledPackage)'!='' AND '$(UnoHasRuntimeHost)'!='true' AND '$(UnoRuntimeFlavor)'=='' AND '$(UnoRuntimeIdentifier)'=='' AND ('$(OutputType)'=='Exe' OR '$(OutputType)'=='WinExe') AND '$(UnoDisableUNOB0025Validation)'!='true'" />
 	</Target>
 
 	<!-- Force a rebuild on runtime files changes -->
-	<ItemGroup Condition="'$(UnoHasRuntimeHost)'=='true' OR '$(UnoRuntimeIdentifier)'!=''">
+	<ItemGroup Condition="'$(UnoHasRuntimeHost)'=='true' OR '$(UnoRuntimeFlavor)'!='' OR '$(UnoRuntimeIdentifier)'!=''">
 		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../uno-runtime/*" />
 	</ItemGroup>
 

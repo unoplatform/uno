@@ -4,9 +4,10 @@
     <IsPackable>false</IsPackable>
     <RootNamespace>MyCrossRuntimeLib</RootNamespace>
     <AssemblyName>MyCrossRuntimeLib</AssemblyName>
-    <DefineConstants>$(DefineConstants);WINUI</DefineConstants>
+    <UnoRuntimeFlavor>Wasm</UnoRuntimeFlavor>
+    <DefineConstants>$(DefineConstants);WINUI;__WASM__</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Uno.WinUI.Runtime.WebAssembly" Version="$(NBGV_SemVer2)" />
+    <PackageReference Include="Uno.WinUI" Version="$(NBGV_SemVer2)" />
   </ItemGroup>
 </Project>

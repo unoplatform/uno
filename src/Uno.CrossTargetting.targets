@@ -226,12 +226,8 @@
 			<_UnoOverrideUsesRuntimeFolder Condition="('$(CommonOverridePackageId)'=='uno.winrt' or '$(CommonOverridePackageId)'=='uno.foundation') and '$(UnoRuntimeFlavor)'!='' and '$(UnoRuntimeFlavor)'!='Reference'">true</_UnoOverrideUsesRuntimeFolder>
 
 			<_TargetNugetFolder Condition="'$(_UnoOverrideUsesRuntimeFolder)'!='true'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-			<!--
-			The published uno-runtime folder names are a packaging convention frozen by the nuspecs, not the
-			flavour's value. The dev-loop override has to write into the folder the packages actually ship.
-			-->
-			<_UnoRuntimeFolderName Condition="'$(UnoRuntimeFlavor)'=='Generic'">skia</_UnoRuntimeFolderName>
-			<_UnoRuntimeFolderName Condition="'$(UnoRuntimeFlavor)'=='Wasm'">webassembly</_UnoRuntimeFolderName>
+			<_UnoRuntimeFolderName Condition="'$(UnoRuntimeFlavor)'=='Generic'">generic</_UnoRuntimeFolderName>
+			<_UnoRuntimeFolderName Condition="'$(UnoRuntimeFlavor)'=='Wasm'">wasm</_UnoRuntimeFolderName>
 
 			<_TargetNugetFolder Condition="'$(_UnoOverrideUsesRuntimeFolder)'=='true'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(_UnoRuntimeFolderName)</_TargetNugetFolder>
 			<!-- Track ownership so shared package folders are cleaned safely. -->

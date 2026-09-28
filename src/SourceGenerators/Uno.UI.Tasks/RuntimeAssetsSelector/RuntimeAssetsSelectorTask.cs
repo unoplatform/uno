@@ -40,21 +40,20 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		public string TargetPlatformIdentifier { get; set; } = "";
 
 		/// <summary>
-		/// The flavor requested by a cross-runtime library build (no runtime host), matching
-		/// <c>UnoRuntimeIdentifier</c> ("skia" or "webassembly"). A library has no per-platform head to derive
-		/// the flavor from — <see cref="TargetPlatformIdentifier"/> is empty for both — so it names the shared
-		/// folder directly. Empty for an application head, which always shares the "skia" folder instead.
+		/// The <c>UnoRuntimeFlavor</c> of a cross-runtime library build (no runtime host): "generic" or "wasm".
+		/// A library has no per-platform head to derive it from, so it names the shared folder directly.
+		/// Empty for an application head, which derives it from <see cref="TargetPlatformIdentifier"/>.
 		/// </summary>
-		public string LibraryRuntimeIdentifier { get; set; } = "";
+		public string LibraryRuntimeFlavor { get; set; } = "";
 
 		/// <summary>
-		/// Package-layout convention, frozen by every runtime-enabled package already published. Neither folder
-		/// names a drawing backend: "skia" holds the build every target framework drawn by Uno shares, and
-		/// "webassembly" the browser's WinRT implementation.
+		/// The <c>UnoRuntimeFlavor</c> values, lowercased. "generic" holds the build every target framework drawn
+		/// by Uno shares, and "wasm" the browser's WinRT implementation. A folder miss is not an error here, so
+		/// ReplaceUnoRuntime reports it as UNOB0023.
 		/// </summary>
-		private const string SharedRuntimeFolder = "skia";
+		private const string SharedRuntimeFolder = "generic";
 
-		private const string WebAssemblyRuntimeFolder = "webassembly";
+		private const string WasmRuntimeFolder = "wasm";
 
 		/// <summary>
 		/// Where a package's WinRT assemblies come from. Everything else always comes from the shared folder.
@@ -65,7 +64,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			SharedFolder,
 
 			/// <summary>Browser heads: the sibling folder next to the shared one.</summary>
-			WebAssemblyFolder,
+			WasmFolder,
 
 			/// <summary>Mobile heads: the package's own lib/netX.0-&lt;platform&gt; asset.</summary>
 			PlatformLib,
@@ -103,7 +102,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				// For runtime-enabled packages the assemblies always come from the shared runtime folder, except
 				// the WinRT ones (see IsWinRTAssembly), which follow the head's platform:
 				//     - desktop and headless: the shared folder holds the implementation already.
-				//     - browser: the sibling webassembly folder. Compile references are left alone, since the
+				//     - browser: the sibling wasm folder. Compile references are left alone, since the
 				//       platform-neutral surface is the one to bind against.
 				//     - android, iOS and tvOS: the package's own lib/netX.0-<platform> asset, and compile
 				//       references are rewritten so a WinRT call binds the platform implementation.
@@ -119,25 +118,25 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 				var platform = TargetPlatformIdentifier.ToLower(CultureInfo.InvariantCulture);
 				WinRTSource winRTSource;
-				string sharedRuntimeIdentifier = SharedRuntimeFolder;
+				string sharedRuntimeFolder = SharedRuntimeFolder;
 
-				if (!string.IsNullOrEmpty(LibraryRuntimeIdentifier))
+				if (!string.IsNullOrEmpty(LibraryRuntimeFlavor))
 				{
-					// Library-authoring contract: there's no per-platform head here, so the identifier names
+					// Library-authoring contract: there's no per-platform head here, so the flavor names
 					// the shared folder directly instead of being derived from TargetPlatformIdentifier.
-					switch (LibraryRuntimeIdentifier.ToLower(CultureInfo.InvariantCulture))
+					switch (LibraryRuntimeFlavor.ToLower(CultureInfo.InvariantCulture))
 					{
-						case "webassembly":
-							winRTSource = WinRTSource.WebAssemblyFolder;
-							sharedRuntimeIdentifier = WebAssemblyRuntimeFolder;
+						case WasmRuntimeFolder:
+							winRTSource = WinRTSource.WasmFolder;
+							sharedRuntimeFolder = WasmRuntimeFolder;
 							break;
 
-						case "skia":
+						case SharedRuntimeFolder:
 							winRTSource = WinRTSource.SharedFolder;
 							break;
 
 						default:
-							this.Log.LogError($"The value '{LibraryRuntimeIdentifier}' is not expected for 'LibraryRuntimeIdentifier'");
+							this.Log.LogError($"The value '{LibraryRuntimeFlavor}' is not expected for 'LibraryRuntimeFlavor'");
 							return false;
 					}
 				}
@@ -151,7 +150,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 							break;
 
 						case "browserwasm":
-							winRTSource = WinRTSource.WebAssemblyFolder;
+							winRTSource = WinRTSource.WasmFolder;
 							break;
 
 						case "android":
@@ -170,7 +169,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 				foreach (var package in UnoRuntimeEnabledPackage ?? Array.Empty<ITaskItem>())
 				{
-					HandleForRuntimeEnabled(package, runtimeCopyLocalItemsToAdd, runtimeCopyLocalItemsToRemove, compileFileDefinitionsToAdd, compileFileDefinitionsToRemove, pdbFilesToAdd, winRTSource, platform, sharedRuntimeIdentifier);
+					HandleForRuntimeEnabled(package, runtimeCopyLocalItemsToAdd, runtimeCopyLocalItemsToRemove, compileFileDefinitionsToAdd, compileFileDefinitionsToRemove, pdbFilesToAdd, winRTSource, platform, sharedRuntimeFolder);
 				}
 
 				RuntimeCopyLocalItemsToAdd = runtimeCopyLocalItemsToAdd.ToArray();
@@ -211,11 +210,9 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		/// The shared folder's file listing is the authoritative asset list: an assembly is deployed because it
 		/// appears here, and only then is it redirected per <see cref="WinRTSource"/>.
 		/// </remarks>
-		private string? GetPlatformSpecificDirectoryForRuntimeEnabled(string runtimeDirectory, Version targetFrameworkVersion, string sharedRuntimeIdentifier)
+		private string? GetPlatformSpecificDirectoryForRuntimeEnabled(string runtimeDirectory, Version targetFrameworkVersion, string sharedRuntimeFolder)
 		{
-			var runtimeIdentifier = sharedRuntimeIdentifier;
-
-			this.Log.LogMessage($"Searching for '{runtimeIdentifier}' in '{runtimeDirectory}'");
+			this.Log.LogMessage($"Searching for '{sharedRuntimeFolder}' in '{runtimeDirectory}'");
 
 			for (int i = LatestSupportedDotnetVersion; i >= EarliestSupportedDotnetVersion; i--)
 			{
@@ -223,7 +220,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 				if (targetFrameworkVersion >= new Version(i, 0))
 				{
-					var directory = Path.Combine(runtimeDirectory, tfm, runtimeIdentifier);
+					var directory = Path.Combine(runtimeDirectory, tfm, sharedRuntimeFolder);
 					if (Directory.Exists(directory))
 					{
 						return directory;
@@ -235,7 +232,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				}
 			}
 
-			var netstdDirectory = Path.Combine(runtimeDirectory, "netstandard2.0", runtimeIdentifier);
+			var netstdDirectory = Path.Combine(runtimeDirectory, "netstandard2.0", sharedRuntimeFolder);
 			if (Directory.Exists(netstdDirectory))
 			{
 				return netstdDirectory;
@@ -284,15 +281,15 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			// <NuGetPackageRoot>/<PackageName>/<PackageVersion>/uno-runtime/<TargetFramework>/<RuntimeFolder>/<AssemblyName>.dll
 			assembly = Path.GetFullPath(assembly);
 			var unoRuntimeTfmDirectory = Path.GetDirectoryName(Path.GetDirectoryName(assembly));
-			if (winRTSource == WinRTSource.WebAssemblyFolder)
+			if (winRTSource == WinRTSource.WasmFolder)
 			{
-				var webAssemblyAsset = Path.GetFullPath(Path.Combine(unoRuntimeTfmDirectory, WebAssemblyRuntimeFolder, Path.GetFileName(assembly)));
-				if (!File.Exists(webAssemblyAsset))
+				var wasmAsset = Path.GetFullPath(Path.Combine(unoRuntimeTfmDirectory, WasmRuntimeFolder, Path.GetFileName(assembly)));
+				if (!File.Exists(wasmAsset))
 				{
-					throw new Exception($"Cannot get WinRT assembly for '{assembly}', the expected asset '{webAssemblyAsset}' does not exist");
+					throw new Exception($"Cannot get WinRT assembly for '{assembly}', the expected asset '{wasmAsset}' does not exist");
 				}
 
-				return webAssemblyAsset;
+				return wasmAsset;
 			}
 
 			var packageRoot = Path.GetDirectoryName(Path.GetDirectoryName(unoRuntimeTfmDirectory));
@@ -339,7 +336,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			List<ITaskItem> pdbFilesToAdd,
 			WinRTSource winRTSource,
 			string platform,
-			string sharedRuntimeIdentifier)
+			string sharedRuntimeFolder)
 		{
 			var packageIdentity = package.GetMetadata("Identity");
 			this.Log.LogMessage($"Processing runtime-enabled package: {packageIdentity}");
@@ -356,10 +353,10 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 			runtimeCopyLocalItemsToRemove.AddRange(RuntimeCopyLocalItemsInput.Where(item => packageIdentity.Equals(item.GetMetadata("NuGetPackageId"), StringComparison.OrdinalIgnoreCase)));
 
-			var platformDirectory = GetPlatformSpecificDirectoryForRuntimeEnabled(runtimeDirectory, targetFrameworkVersion, sharedRuntimeIdentifier);
+			var platformDirectory = GetPlatformSpecificDirectoryForRuntimeEnabled(runtimeDirectory, targetFrameworkVersion, sharedRuntimeFolder);
 			if (platformDirectory is null)
 			{
-				// This can happen for "legacy convention" (uno-runtime/<runtime-identifier>) which is handled by MSBuild logic in ReplaceUnoRuntime
+				// This can happen for "legacy convention" (uno-runtime/<flavor>) which is handled by MSBuild logic in ReplaceUnoRuntime
 				this.Log.LogMessage("Cannot find platform-specific directory for runtime-enabled package");
 				this.Log.LogMessage($"\tThe uno-runtime directory: {runtimeDirectory}");
 				this.Log.LogMessage($"\tThe TFM version: {targetFrameworkVersion}");

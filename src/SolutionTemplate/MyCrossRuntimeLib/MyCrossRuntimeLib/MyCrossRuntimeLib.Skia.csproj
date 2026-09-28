@@ -4,7 +4,7 @@
     <IsPackable>false</IsPackable>
     <RootNamespace>MyCrossRuntimeLib</RootNamespace>
     <AssemblyName>MyCrossRuntimeLib</AssemblyName>
-    <UnoRuntimeIdentifier>skia</UnoRuntimeIdentifier>
+    <UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
     <DefineConstants>$(DefineConstants);WINUI;__SKIA__</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
