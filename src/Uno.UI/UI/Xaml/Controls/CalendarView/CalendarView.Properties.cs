@@ -727,7 +727,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CalendarItemBorderThickness), typeof(global::Microsoft.UI.Xaml.Thickness),
 			typeof(global::Microsoft.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(Thickness.Empty));
+			new FrameworkPropertyMetadata(default(Thickness)));
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty CalendarItemForegroundProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -1081,7 +1081,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(DayItemCornerRadius), typeof(global::Microsoft.UI.Xaml.CornerRadius),
 			typeof(global::Microsoft.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(CornerRadius.None));
+			new FrameworkPropertyMetadata(default(CornerRadius)));
 
 		/// <summary>
 		/// Uno specific property
@@ -1090,7 +1090,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CalendarItemCornerRadius), typeof(global::Microsoft.UI.Xaml.CornerRadius),
 			typeof(global::Microsoft.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(CornerRadius.None));
+			new FrameworkPropertyMetadata(default(CornerRadius)));
 
 		/// <summary>
 		/// Uno specific property
