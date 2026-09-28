@@ -108,25 +108,6 @@ namespace Uno.WinAppSDKSyncGenerator
 		/// </summary>
 		protected bool CurrentTypeEmitsNonSkiaDefines { get; private set; } = true;
 
-		private static readonly string[] _unoUINamespaces = new[]
-		{
-			"Windows.UI.Xaml",
-			"Windows.UI.Composition",
-			"Windows.UI.Dispatching",
-			"Microsoft.UI.Xaml",
-			"Microsoft.Web",
-			"Microsoft.Foundation",
-			"Microsoft.UI.Composition",
-			"Microsoft.UI.Dispatching",
-			"Microsoft.UI.Text",
-			"Microsoft.UI.Content",
-			"Microsoft.UI.Windowing",
-			"Microsoft.UI.Input",
-			"Microsoft.System",
-			"Microsoft.Graphics",
-			"Microsoft.Windows.ApplicationModel.Resources",
-			};
-
 		static Generator()
 		{
 			RegisterAssemblyLoader();
