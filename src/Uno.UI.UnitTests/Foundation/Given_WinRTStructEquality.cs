@@ -44,6 +44,7 @@ public class Given_WinRTStructEquality
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24776")]
 	public void When_RectInt32()
 	{
 		RectInt32 value = new(1, 2, 3, 4);
@@ -54,6 +55,7 @@ public class Given_WinRTStructEquality
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24776")]
 	public void When_DisplayAdapterId()
 	{
 		DisplayAdapterId value = new() { LowPart = 1, HighPart = 2 };
@@ -64,6 +66,7 @@ public class Given_WinRTStructEquality
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24776")]
 	public void When_RawElementProviderRuntimeId()
 	{
 		RawElementProviderRuntimeId value = new() { Part1 = 1, Part2 = 2 };
@@ -74,6 +77,7 @@ public class Given_WinRTStructEquality
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24776")]
 	public void When_LoadMoreItemsResult()
 	{
 		LoadMoreItemsResult value = new() { Count = 5 };
@@ -84,6 +88,7 @@ public class Given_WinRTStructEquality
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24776")]
 	public void When_TextRange()
 	{
 		TextRange value = new() { StartIndex = 1, Length = 2 };
@@ -95,6 +100,7 @@ public class Given_WinRTStructEquality
 
 #pragma warning disable UNO0001 // BitmapSize is a NotImplemented stub; its generated equality still works.
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24776")]
 	public void When_NotImplemented_Struct()
 	{
 		BitmapSize value = new() { Width = 1, Height = 2 };
