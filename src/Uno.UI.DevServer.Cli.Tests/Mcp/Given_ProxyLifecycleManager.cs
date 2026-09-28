@@ -222,7 +222,7 @@ public class Given_ProxyLifecycleManager
 		try
 		{
 			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
-			var solutionPath = Path.Combine(workspaceDirectory, "MyApp.slnx");
+			var solutionPath = Path.Join(workspaceDirectory, "MyApp.slnx");
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 			var workspaceResolution = await resolver.ResolveAsync(root);
 
