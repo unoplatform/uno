@@ -177,6 +177,46 @@ public class Given_Visual_Damage
 #endif
 	}
 
+	// SKCanvasElement (Lottie, ProgressRing, AnimatedIcon) repaints every frame; its damage must stay within its
+	// own bounds, otherwise every frame repaints the whole window.
+	[TestMethod]
+	[RunsOnUIThread]
+#if !__SKIA__
+	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
+#endif
+	public async Task When_SKCanvasVisual_Repaints_Then_Damage_Stays_Within_Its_Bounds()
+	{
+#if __SKIA__
+		var compositor = Compositor.GetSharedCompositor();
+
+		var root = compositor.CreateContainerVisual();
+		root.Size = new Vector2(200, 200);
+
+		var canvasVisual = new Uno.UI.Graphics.SKCanvasVisual((_, _) => { }, compositor)
+		{
+			Size = new Vector2(40, 40),
+			Offset = new Vector3(20, 20, 0),
+		};
+		root.Children.InsertAtTop(canvasVisual);
+
+		using var damage = new DamageRegion();
+		RenderFrame(root, damage);
+		damage.Reset();
+
+		canvasVisual.Invalidate();
+		RenderFrame(root, damage);
+
+		using var reported = SnapshotDamage(damage);
+
+		Assert.IsTrue(reported.Contains(40, 40), $"The repainted canvas is not damaged (damage bounds: {reported.Bounds}).");
+		Assert.IsTrue(
+			reported.Bounds.Right <= 70 && reported.Bounds.Bottom <= 70,
+			$"Damage spills far outside the 40x40 canvas at (20, 20) (damage bounds: {reported.Bounds}).");
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
 #if __SKIA__
 	private static void RenderFrame(ContainerVisual root, DamageRegion damage)
 	{
