@@ -631,19 +631,19 @@ namespace TestRepro
 			this.Bindings.UpdateResources();
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _ActivitiesListSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _ActivitiesListSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "ActivitiesList");
 		private global::Microsoft.UI.Xaml.Controls.ListView ActivitiesList
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.ListView)_ActivitiesListSubject.ElementInstance;
 			set => _ActivitiesListSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _DetailPanelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _DetailPanelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "DetailPanel");
 		private global::Microsoft.UI.Xaml.Controls.Border DetailPanel
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Border)_DetailPanelSubject.ElementInstance;
 			set => _DetailPanelSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _PreviewColumnSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _PreviewColumnSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "PreviewColumn");
 		private global::Microsoft.UI.Xaml.Controls.ColumnDefinition PreviewColumn
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.ColumnDefinition)_PreviewColumnSubject.ElementInstance;
@@ -1067,7 +1067,8 @@ namespace TestRepro
 																		new Microsoft.UI.Xaml.Data.Binding()
 																		{
 																			Path = @"EditDurationCommand",
-																			ElementName = _ActivitiesListSubject,
+																			ElementName = "ActivitiesList",
+																			ElementNameSubject = _ActivitiesListSubject,
 																		}
 																	);
 																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);

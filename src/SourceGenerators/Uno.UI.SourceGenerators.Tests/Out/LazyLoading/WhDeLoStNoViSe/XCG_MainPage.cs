@@ -135,7 +135,7 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _LazyLoadedBorderSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _LazyLoadedBorderSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "LazyLoadedBorder");
 		private global::Microsoft.UI.Xaml.Controls.Border LazyLoadedBorder
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Border)_LazyLoadedBorderSubject.ElementInstance;

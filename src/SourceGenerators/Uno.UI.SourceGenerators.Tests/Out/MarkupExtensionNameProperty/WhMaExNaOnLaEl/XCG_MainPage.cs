@@ -148,13 +148,13 @@ namespace TestRepro
 			this.Bindings.UpdateResources();
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _ExitButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _ExitButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "ExitButton");
 		private global::Microsoft.UI.Xaml.Controls.Button ExitButton
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Button)_ExitButtonSubject.ElementInstance;
 			set => _ExitButtonSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _LayoutRootSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _LayoutRootSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "LayoutRoot");
 		private global::Microsoft.UI.Xaml.Controls.Grid LayoutRoot
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Grid)_LayoutRootSubject.ElementInstance;

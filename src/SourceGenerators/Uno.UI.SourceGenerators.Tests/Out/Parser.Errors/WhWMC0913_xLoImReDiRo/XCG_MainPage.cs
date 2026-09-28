@@ -92,7 +92,7 @@ namespace TestRepro
 			MyName.UpdateResourceBindings();
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _MyNameSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _MyNameSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "MyName");
 		private global::Microsoft.UI.Xaml.Controls.Border MyName
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Border)_MyNameSubject.ElementInstance;

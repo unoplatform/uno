@@ -4038,6 +4038,9 @@
 		  <Member fullName="Uno.UI.Hosting.X11RenderingBackend Uno.UI.Hosting.X11RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
 	  </Fields>
 	  <Properties>
+		  <!-- Property types aligned to the WinUI metadata (#2086, breaking changes for 7.0). -->
+		  <Member fullName="System.Object Microsoft.UI.Xaml.Data.Binding::ElementName()" reason="WinUI sync: Binding.ElementName narrowed from object to string to match WinUI metadata (#2086, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.IEasingFunction Microsoft.UI.Xaml.Media.Animation.DoubleAnimation::EasingFunction()" reason="WinUI sync: DoubleAnimation.EasingFunction changed from IEasingFunction to EasingFunctionBase to match WinUI metadata (#2086, breaking changes for 7.0)" />
 		  <!-- Fluent resources-version selector removed: only version 2 exists and WinAppSDK has no equivalent surface. Accessors paired in the <Methods> block below (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.XamlControlsResources::ControlsResourcesVersion()" reason="Removed the Uno-only XamlControlsResources.ControlsResourcesVersion property; version 2 was already forced unconditionally (BC71, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.XamlControlsResources::ControlsResourcesVersionProperty()" reason="Removed the ControlsResourcesVersionProperty DP with its property (BC71, breaking changes for 7.0)" />
@@ -5074,6 +5077,11 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.OnContentChanged(System.Object oldValue, System.Object newValue)" reason="Removed Frame override that synced the legacy navigation entry; ContentControl.OnContentChanged still applies (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.GetInstance(Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.EnsurePageInitialized(Microsoft.UI.Xaml.Controls.Frame frame, Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
+		  <!-- Binding.ElementName (object->string) and DoubleAnimation.EasingFunction (IEasingFunction->EasingFunctionBase) accessors, aligned to WinUI metadata (#2086, breaking changes for 7.0). -->
+		  <Member fullName="System.Object Microsoft.UI.Xaml.Data.Binding.get_ElementName()" reason="WinUI sync: Binding.ElementName narrowed from object to string (#2086, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.Binding.set_ElementName(System.Object value)" reason="WinUI sync: Binding.ElementName narrowed from object to string (#2086, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.IEasingFunction Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.get_EasingFunction()" reason="WinUI sync: DoubleAnimation.EasingFunction changed from IEasingFunction to EasingFunctionBase (#2086, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.set_EasingFunction(Microsoft.UI.Xaml.Media.Animation.IEasingFunction value)" reason="WinUI sync: DoubleAnimation.EasingFunction changed from IEasingFunction to EasingFunctionBase (#2086, breaking changes for 7.0)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
