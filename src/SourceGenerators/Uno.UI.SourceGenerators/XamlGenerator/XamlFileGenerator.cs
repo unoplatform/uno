@@ -3532,8 +3532,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							var value = member.Value?.ToString();
 
 							if (
-								member.Member.Name == "Name"
-								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
+								IsXNameMember(member, objectDefinition.Type)
 								&& !isMemberInsideResourceDictionary.isInside
 							)
 							{
@@ -3559,7 +3558,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								writer.AppendLineInvariantIndented("__that.{0} = {1};", value, writer.AppliedParameterName);
 
-								if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace && IsXNameProvider(objectDefinition.Type))
+								if (IsXNameMember(member, objectDefinition.Type) && IsXNameProvider(objectDefinition.Type))
 								{
 									BuildSetXName(writer, value);
 								}
@@ -3567,8 +3566,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								// value is validated as non-null in ValidateName call above.
 								RegisterBackingField(type, value!, FindObjectFieldAccessibility(objectDefinition));
 							}
-							else if (member.Member.Name == "Name"
-								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+							else if (IsXNameMember(member, objectDefinition.Type))
 							{
 								writer.AppendLineInvariantIndented("// x:Name {0}", member.Value, member.Value);
 
@@ -6094,6 +6092,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					&& !IsAttachedProperty(type, member.Member.Name)
 					&& !IsLazyVisualStateManagerProperty(member)
 					&& _metadataHelper.FindEventType(type, member.Member.Name) == null
+					&& !IsXNameMember(member, objectDefinition.Type)
 					&& member.Member.Name != "_UnknownContent"; // We are defining the elements of a collection explicitly declared in XAML
 			}
 
