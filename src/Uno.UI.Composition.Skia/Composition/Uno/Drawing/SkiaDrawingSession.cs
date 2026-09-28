@@ -166,16 +166,17 @@ internal class SkiaDrawingSession : IDrawingSession
 		_canvas.DrawPath(lease.Path, FillPaint(color));
 	}
 
-	public bool TryDrawGlyphRun(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color)
+	public void DrawGlyphRun(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color)
 	{
 		if (font is not SkiaFont skiaFont)
 		{
-			return false;
+			GlyphRunRenderer.Draw(this, font, glyphs, positions, baselineY, color);
+			return;
 		}
 
 		if (glyphs.IsEmpty)
 		{
-			return true;
+			return;
 		}
 
 		var builder = _textBlobBuilder ??= new SKTextBlobBuilder();
@@ -185,8 +186,6 @@ internal class SkiaDrawingSession : IDrawingSession
 		{
 			_canvas.DrawText(blob, 0, baselineY, FillPaint(color));
 		}
-
-		return true;
 	}
 
 	public void DrawPaths(ReadOnlySpan<PathInstance> instances, Color color)

@@ -430,7 +430,7 @@ internal static class FrameRenderHelper
 				penX += font.GetGlyphAdvance(glyph);
 			}
 
-			Microsoft.UI.Xaml.Documents.GlyphRunRenderer.Draw(session, font, glyphs, positions, 0f, color);
+			session.DrawGlyphRun(font, glyphs, positions, 0f, color);
 		}
 
 		private static void DrawSpeedometerIcon(IDrawingSession session, float x, float y)

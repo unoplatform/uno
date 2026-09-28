@@ -1224,7 +1224,7 @@ internal readonly struct ParsedText : IParsedText
 
 	private static void DrawText(FontDetails fontInfo, Span<Vector2> positions, Span<ushort> glyphs,
 		IDrawingSession drawingSession, float y, Color color)
-		=> GlyphRunRenderer.Draw(drawingSession, fontInfo.FontHandle, glyphs, positions, y, color);
+		=> drawingSession.DrawGlyphRun(fontInfo.FontHandle, glyphs, positions, y, color);
 
 	// TextHighlightRenderer::GetDefaultHighlighterBrushes — the fallback when a highlighter's brush is
 	// unset or not a SolidColorBrush.

@@ -4,19 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using Windows.UI;
-using Uno.UI.Composition.Drawing;
 
-namespace Microsoft.UI.Xaml.Documents;
+namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// Draws a shaped glyph run through the backend's own text pipeline when it has one; otherwise builds it into
-/// neutral <see cref="GlyphRunElement"/>s and renders each: a
+/// The default <see cref="IDrawingSession.DrawGlyphRun"/>, which works with any <see cref="IFont"/>: builds the run
+/// into neutral <see cref="GlyphRunElement"/>s and renders each: a
 /// monochrome outline (filled with the text colour), COLR vector layers (each filled with its own colour), or a
 /// rasterized colour glyph whose neutral BGRA pixels are turned into an image (via the registered image decoder) and
 /// uploaded to a texture. The font never touches the render backend; that upload happens here. Any geometry produced
-/// by the font is disposed once drawing completes.
+/// by the font is disposed once drawing completes. A backend overriding <see cref="IDrawingSession.DrawGlyphRun"/>
+/// calls this for fonts it cannot draw natively.
 /// </summary>
-internal static class GlyphRunRenderer
+public static class GlyphRunRenderer
 {
 	// Reused per render thread (Draw runs to completion before returning, so it is never reentrant on one thread).
 	[ThreadStatic]
@@ -28,11 +28,6 @@ internal static class GlyphRunRenderer
 
 	public static void Draw(IDrawingSession session, IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color)
 	{
-		if (session.TryDrawGlyphRun(font, glyphs, positions, baselineY, color))
-		{
-			return;
-		}
-
 		var elements = _elements ??= new List<GlyphRunElement>();
 		elements.Clear();
 		List<PathInstance>? pending = null;
