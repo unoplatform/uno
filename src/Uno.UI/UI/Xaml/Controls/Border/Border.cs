@@ -102,7 +102,7 @@ public partial class Border : FrameworkElement
 	#endregion
 
 	#region CornerRadius
-	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+	private static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
 	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
 	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
@@ -167,7 +167,7 @@ public partial class Border : FrameworkElement
 	#endregion
 
 	#region Padding DependencyProperty
-	private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
+	private static Thickness GetPaddingDefaultValue() => default(Thickness);
 
 	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
@@ -202,7 +202,7 @@ public partial class Border : FrameworkElement
 	#endregion
 
 	#region BorderThickness DependencyProperty
-	private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
+	private static Thickness GetBorderThicknessDefaultValue() => default(Thickness);
 
 	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();

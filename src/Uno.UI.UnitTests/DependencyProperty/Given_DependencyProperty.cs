@@ -320,7 +320,7 @@ namespace Uno.UI.Tests.BinderTests
 				switch (raisedCount++)
 				{
 					case 0:
-						Assert.AreEqual(Thickness.Empty, e.OldValue);
+						Assert.AreEqual(default(Thickness), e.OldValue);
 						Assert.AreEqual(new Thickness(2), e.NewValue);
 						break;
 
@@ -335,7 +335,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			};
 
-			var testProperty = DependencyProperty.Register(nameof(When_SetValue_Thickness_And_SameValue_Then_RaisedOnce), typeof(Thickness), typeof(MockDependencyObject), new PropertyMetadata(Thickness.Empty, cb));
+			var testProperty = DependencyProperty.Register(nameof(When_SetValue_Thickness_And_SameValue_Then_RaisedOnce), typeof(Thickness), typeof(MockDependencyObject), new PropertyMetadata(default(Thickness), cb));
 
 			SUT.SetValue(testProperty, new Thickness(2));
 			Assert.AreEqual(new Thickness(2), SUT.GetValue(testProperty));
@@ -1595,7 +1595,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			sut.ClearValue(Border.StyleProperty);
 
-			sut.BorderThickness.Should().Be(Thickness.Empty, "After removing style");
+			sut.BorderThickness.Should().Be(default(Thickness), "After removing style");
 			sut.Tag.Should().Be(DependencyPropertyValuePrecedences.DefaultValue, "After removing style");
 		}
 

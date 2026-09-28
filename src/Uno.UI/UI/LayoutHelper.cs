@@ -219,7 +219,7 @@ namespace Uno.UI
 
 		internal static Size Subtract(this Size left, Thickness right)
 		{
-			if (right == Thickness.Empty)
+			if (right == default(Thickness))
 			{
 				return left;
 			}

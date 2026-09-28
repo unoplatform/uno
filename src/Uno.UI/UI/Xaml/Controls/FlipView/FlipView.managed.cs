@@ -952,7 +952,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyObject pElement = (DependencyObject)(element);
 			FlipViewItem pFlipViewItem = null;
 			double value = 0.0;
-			Thickness flipViewItemMargin = Thickness.Empty;
+			Thickness flipViewItemMargin = default(Thickness);
 
 			// Cast container to known type
 			pFlipViewItem = (FlipViewItem)(pElement);
@@ -998,7 +998,7 @@ namespace Microsoft.UI.Xaml.Controls
 			double height = 0.0;
 			double value = 0.0;
 			int nCount = 0;
-			Thickness flipViewItemMargin = Thickness.Empty;
+			Thickness flipViewItemMargin = default(Thickness);
 
 			// Get desired container width/height
 			width = GetDesiredItemWidth();

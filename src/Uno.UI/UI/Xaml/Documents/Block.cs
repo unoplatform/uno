@@ -117,7 +117,7 @@ public partial class Block : TextElement
 			typeof(Thickness),
 			typeof(Block),
 			new FrameworkPropertyMetadata(
-				Thickness.Empty,
+				default(Thickness),
 				propertyChangedCallback: (s, e) => ((Block)s).OnBlockPropertyChanged(),
 				coerceValueCallback: CoerceMargin));
 

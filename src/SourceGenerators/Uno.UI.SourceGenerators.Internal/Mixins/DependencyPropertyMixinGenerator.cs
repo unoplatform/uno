@@ -250,7 +250,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;";
 			{
 				new PropertyDefinition("AreStickyGroupHeadersEnabled", "bool", "true"),
 				new PropertyDefinition("GroupHeaderPlacement", "GroupHeaderPlacement", "GroupHeaderPlacement.Top"),
-				new PropertyDefinition("GroupPadding", "Thickness", "Thickness.Empty"),
+				new PropertyDefinition("GroupPadding", "Thickness", "default(Thickness)"),
 				new PropertyDefinition("Orientation", "Orientation", "Orientation.Vertical"),
 			}),
 			// https://msdn.microsoft.com/library/windows/apps/windows.ui.xaml.controls.itemswrapgrid.aspx
@@ -258,7 +258,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;";
 			{
 				new PropertyDefinition("AreStickyGroupHeadersEnabled", "bool", "true"),
 				new PropertyDefinition("GroupHeaderPlacement", "GroupHeaderPlacement", "GroupHeaderPlacement.Top"),
-				new PropertyDefinition("GroupPadding", "Thickness", "Thickness.Empty"),
+				new PropertyDefinition("GroupPadding", "Thickness", "default(Thickness)"),
 				new PropertyDefinition("ItemHeight", "double", "Double.NaN"),
 				new PropertyDefinition("ItemWidth", "double", "Double.NaN"),
 				new PropertyDefinition("Orientation", "Orientation", "Orientation.Vertical"),
@@ -268,7 +268,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;";
 			{
 				new PropertyDefinition("AreStickyGroupHeadersEnabled", "bool", "true"),
 				new PropertyDefinition("GroupHeaderPlacement", "GroupHeaderPlacement", "GroupHeaderPlacement.Top"),
-				new PropertyDefinition("GroupPadding", "Thickness", "Thickness.Empty"),
+				new PropertyDefinition("GroupPadding", "Thickness", "default(Thickness)"),
 				new PropertyDefinition("CacheLength", "double", "4.0"),
 			}),
 			new ClassDefinition("DatePickerSelector", "true", "public", new[]
