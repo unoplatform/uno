@@ -93,7 +93,7 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _NativeTextSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _NativeTextSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "NativeText");
 		private global::Android.Widget.TextView NativeText
 		{
 			get => (global::Android.Widget.TextView)_NativeTextSubject.ElementInstance;
