@@ -18,19 +18,30 @@ namespace Windows.UI.Text.Core
 #endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.CoreTextRange(int, int)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(CoreTextRange x, CoreTextRange y) => x.StartCaretPosition == y.StartCaretPosition && x.EndCaretPosition == y.EndCaretPosition;
+		public static bool operator ==(CoreTextRange x, CoreTextRange y)
+			=> x.StartCaretPosition == y.StartCaretPosition
+			&& x.EndCaretPosition == y.EndCaretPosition;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(CoreTextRange x, CoreTextRange y) => !(x.StartCaretPosition == y.StartCaretPosition && x.EndCaretPosition == y.EndCaretPosition);
+		public static bool operator !=(CoreTextRange x, CoreTextRange y)
+			=> !(x.StartCaretPosition == y.StartCaretPosition
+				&& x.EndCaretPosition == y.EndCaretPosition);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(CoreTextRange other) => StartCaretPosition == other.StartCaretPosition && EndCaretPosition == other.EndCaretPosition;
+		public bool Equals(CoreTextRange other)
+			=> StartCaretPosition == other.StartCaretPosition
+			&& EndCaretPosition == other.EndCaretPosition;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is CoreTextRange that && StartCaretPosition == that.StartCaretPosition && EndCaretPosition == that.EndCaretPosition;
+		public override bool Equals(object obj)
+			=> obj is CoreTextRange that
+			&& StartCaretPosition == that.StartCaretPosition
+			&& EndCaretPosition == that.EndCaretPosition;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => StartCaretPosition.GetHashCode() ^ EndCaretPosition.GetHashCode();
+		public override int GetHashCode()
+			=> StartCaretPosition.GetHashCode()
+			^ EndCaretPosition.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int StartCaretPosition;

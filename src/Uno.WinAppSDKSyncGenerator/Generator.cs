@@ -1092,18 +1092,19 @@ namespace Uno.WinAppSDKSyncGenerator
 			// Same semantics as CsWinRT, but each member compares fields itself instead of delegating (Equals => ==):
 			// a hand-written partial may implement == via Equals, and delegating back would recurse forever.
 			var name = type.Name;
-			string FieldsEqual(string x, string y) => string.Join(" && ", fields.Select(f => $"{x}{f.Name} == {y}{f.Name}"));
-			var fieldsHash = string.Join(" ^ ", fields.Select(f => $"{f.Name}.GetHashCode()"));
+			string FieldsEqual(string x, string y, string indent = "\t")
+				=> string.Join($"\n{indent}&& ", fields.Select(f => $"{x}{f.Name} == {y}{f.Name}"));
+			var fieldsHash = string.Join("\n\t^ ", fields.Select(f => $"{f.Name}.GetHashCode()"));
 
 			foreach (var method in type.GetMembers().OfType<IMethodSymbol>())
 			{
 				var code = method switch
 				{
-					{ Name: WellKnownMemberNames.EqualityOperatorName } => $"public static bool operator ==({name} x, {name} y) => {FieldsEqual("x.", "y.")};",
-					{ Name: WellKnownMemberNames.InequalityOperatorName } => $"public static bool operator !=({name} x, {name} y) => !({FieldsEqual("x.", "y.")});",
-					{ Name: "Equals", Parameters: [{ Type.SpecialType: SpecialType.System_Object }] } => $"public override bool Equals(object obj) => obj is {name} that && {FieldsEqual("", "that.")};",
-					{ Name: "Equals", Parameters.Length: 1 } => $"public bool Equals({name} other) => {FieldsEqual("", "other.")};",
-					{ Name: "GetHashCode", Parameters.IsEmpty: true } => $"public override int GetHashCode() => {fieldsHash};",
+					{ Name: WellKnownMemberNames.EqualityOperatorName } => $"public static bool operator ==({name} x, {name} y)\n\t=> {FieldsEqual("x.", "y.")};",
+					{ Name: WellKnownMemberNames.InequalityOperatorName } => $"public static bool operator !=({name} x, {name} y)\n\t=> !({FieldsEqual("x.", "y.", "\t\t")});",
+					{ Name: "Equals", Parameters: [{ Type.SpecialType: SpecialType.System_Object }] } => $"public override bool Equals(object obj)\n\t=> obj is {name} that\n\t&& {FieldsEqual("", "that.")};",
+					{ Name: "Equals", Parameters.Length: 1 } => $"public bool Equals({name} other)\n\t=> {FieldsEqual("", "other.")};",
+					{ Name: "GetHashCode", Parameters.IsEmpty: true } => $"public override int GetHashCode()\n\t=> {fieldsHash};",
 					_ => null,
 				};
 
@@ -1126,7 +1127,10 @@ namespace Uno.WinAppSDKSyncGenerator
 				if (declared.HasUndefined)
 				{
 					declared.AppendIf(b);
-					b.AppendLineInvariant("{0}", code);
+					foreach (var line in code.Split('\n'))
+					{
+						b.AppendLineInvariant("{0}", line);
+					}
 					using (b.Indent(-b.CurrentLevel))
 					{
 						b.AppendLineInvariant("#endif");

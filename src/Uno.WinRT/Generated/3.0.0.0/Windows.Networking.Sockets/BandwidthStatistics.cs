@@ -18,19 +18,50 @@ namespace Windows.Networking.Sockets
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.BandwidthStatistics.BandwidthStatistics(ulong, ulong, ulong, ulong, bool, bool)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(BandwidthStatistics x, BandwidthStatistics y) => x.OutboundBitsPerSecond == y.OutboundBitsPerSecond && x.InboundBitsPerSecond == y.InboundBitsPerSecond && x.OutboundBitsPerSecondInstability == y.OutboundBitsPerSecondInstability && x.InboundBitsPerSecondInstability == y.InboundBitsPerSecondInstability && x.OutboundBandwidthPeaked == y.OutboundBandwidthPeaked && x.InboundBandwidthPeaked == y.InboundBandwidthPeaked;
+		public static bool operator ==(BandwidthStatistics x, BandwidthStatistics y)
+			=> x.OutboundBitsPerSecond == y.OutboundBitsPerSecond
+			&& x.InboundBitsPerSecond == y.InboundBitsPerSecond
+			&& x.OutboundBitsPerSecondInstability == y.OutboundBitsPerSecondInstability
+			&& x.InboundBitsPerSecondInstability == y.InboundBitsPerSecondInstability
+			&& x.OutboundBandwidthPeaked == y.OutboundBandwidthPeaked
+			&& x.InboundBandwidthPeaked == y.InboundBandwidthPeaked;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(BandwidthStatistics x, BandwidthStatistics y) => !(x.OutboundBitsPerSecond == y.OutboundBitsPerSecond && x.InboundBitsPerSecond == y.InboundBitsPerSecond && x.OutboundBitsPerSecondInstability == y.OutboundBitsPerSecondInstability && x.InboundBitsPerSecondInstability == y.InboundBitsPerSecondInstability && x.OutboundBandwidthPeaked == y.OutboundBandwidthPeaked && x.InboundBandwidthPeaked == y.InboundBandwidthPeaked);
+		public static bool operator !=(BandwidthStatistics x, BandwidthStatistics y)
+			=> !(x.OutboundBitsPerSecond == y.OutboundBitsPerSecond
+				&& x.InboundBitsPerSecond == y.InboundBitsPerSecond
+				&& x.OutboundBitsPerSecondInstability == y.OutboundBitsPerSecondInstability
+				&& x.InboundBitsPerSecondInstability == y.InboundBitsPerSecondInstability
+				&& x.OutboundBandwidthPeaked == y.OutboundBandwidthPeaked
+				&& x.InboundBandwidthPeaked == y.InboundBandwidthPeaked);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(BandwidthStatistics other) => OutboundBitsPerSecond == other.OutboundBitsPerSecond && InboundBitsPerSecond == other.InboundBitsPerSecond && OutboundBitsPerSecondInstability == other.OutboundBitsPerSecondInstability && InboundBitsPerSecondInstability == other.InboundBitsPerSecondInstability && OutboundBandwidthPeaked == other.OutboundBandwidthPeaked && InboundBandwidthPeaked == other.InboundBandwidthPeaked;
+		public bool Equals(BandwidthStatistics other)
+			=> OutboundBitsPerSecond == other.OutboundBitsPerSecond
+			&& InboundBitsPerSecond == other.InboundBitsPerSecond
+			&& OutboundBitsPerSecondInstability == other.OutboundBitsPerSecondInstability
+			&& InboundBitsPerSecondInstability == other.InboundBitsPerSecondInstability
+			&& OutboundBandwidthPeaked == other.OutboundBandwidthPeaked
+			&& InboundBandwidthPeaked == other.InboundBandwidthPeaked;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is BandwidthStatistics that && OutboundBitsPerSecond == that.OutboundBitsPerSecond && InboundBitsPerSecond == that.InboundBitsPerSecond && OutboundBitsPerSecondInstability == that.OutboundBitsPerSecondInstability && InboundBitsPerSecondInstability == that.InboundBitsPerSecondInstability && OutboundBandwidthPeaked == that.OutboundBandwidthPeaked && InboundBandwidthPeaked == that.InboundBandwidthPeaked;
+		public override bool Equals(object obj)
+			=> obj is BandwidthStatistics that
+			&& OutboundBitsPerSecond == that.OutboundBitsPerSecond
+			&& InboundBitsPerSecond == that.InboundBitsPerSecond
+			&& OutboundBitsPerSecondInstability == that.OutboundBitsPerSecondInstability
+			&& InboundBitsPerSecondInstability == that.InboundBitsPerSecondInstability
+			&& OutboundBandwidthPeaked == that.OutboundBandwidthPeaked
+			&& InboundBandwidthPeaked == that.InboundBandwidthPeaked;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => OutboundBitsPerSecond.GetHashCode() ^ InboundBitsPerSecond.GetHashCode() ^ OutboundBitsPerSecondInstability.GetHashCode() ^ InboundBitsPerSecondInstability.GetHashCode() ^ OutboundBandwidthPeaked.GetHashCode() ^ InboundBandwidthPeaked.GetHashCode();
+		public override int GetHashCode()
+			=> OutboundBitsPerSecond.GetHashCode()
+			^ InboundBitsPerSecond.GetHashCode()
+			^ OutboundBitsPerSecondInstability.GetHashCode()
+			^ InboundBitsPerSecondInstability.GetHashCode()
+			^ OutboundBandwidthPeaked.GetHashCode()
+			^ InboundBandwidthPeaked.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong OutboundBitsPerSecond;

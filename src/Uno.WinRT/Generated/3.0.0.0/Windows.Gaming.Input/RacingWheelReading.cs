@@ -18,19 +18,60 @@ namespace Windows.Gaming.Input
 #endif
 		// Forced skipping of method Windows.Gaming.Input.RacingWheelReading.RacingWheelReading(ulong, Windows.Gaming.Input.RacingWheelButtons, int, double, double, double, double, double)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(RacingWheelReading x, RacingWheelReading y) => x.Timestamp == y.Timestamp && x.Buttons == y.Buttons && x.PatternShifterGear == y.PatternShifterGear && x.Wheel == y.Wheel && x.Throttle == y.Throttle && x.Brake == y.Brake && x.Clutch == y.Clutch && x.Handbrake == y.Handbrake;
+		public static bool operator ==(RacingWheelReading x, RacingWheelReading y)
+			=> x.Timestamp == y.Timestamp
+			&& x.Buttons == y.Buttons
+			&& x.PatternShifterGear == y.PatternShifterGear
+			&& x.Wheel == y.Wheel
+			&& x.Throttle == y.Throttle
+			&& x.Brake == y.Brake
+			&& x.Clutch == y.Clutch
+			&& x.Handbrake == y.Handbrake;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(RacingWheelReading x, RacingWheelReading y) => !(x.Timestamp == y.Timestamp && x.Buttons == y.Buttons && x.PatternShifterGear == y.PatternShifterGear && x.Wheel == y.Wheel && x.Throttle == y.Throttle && x.Brake == y.Brake && x.Clutch == y.Clutch && x.Handbrake == y.Handbrake);
+		public static bool operator !=(RacingWheelReading x, RacingWheelReading y)
+			=> !(x.Timestamp == y.Timestamp
+				&& x.Buttons == y.Buttons
+				&& x.PatternShifterGear == y.PatternShifterGear
+				&& x.Wheel == y.Wheel
+				&& x.Throttle == y.Throttle
+				&& x.Brake == y.Brake
+				&& x.Clutch == y.Clutch
+				&& x.Handbrake == y.Handbrake);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(RacingWheelReading other) => Timestamp == other.Timestamp && Buttons == other.Buttons && PatternShifterGear == other.PatternShifterGear && Wheel == other.Wheel && Throttle == other.Throttle && Brake == other.Brake && Clutch == other.Clutch && Handbrake == other.Handbrake;
+		public bool Equals(RacingWheelReading other)
+			=> Timestamp == other.Timestamp
+			&& Buttons == other.Buttons
+			&& PatternShifterGear == other.PatternShifterGear
+			&& Wheel == other.Wheel
+			&& Throttle == other.Throttle
+			&& Brake == other.Brake
+			&& Clutch == other.Clutch
+			&& Handbrake == other.Handbrake;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is RacingWheelReading that && Timestamp == that.Timestamp && Buttons == that.Buttons && PatternShifterGear == that.PatternShifterGear && Wheel == that.Wheel && Throttle == that.Throttle && Brake == that.Brake && Clutch == that.Clutch && Handbrake == that.Handbrake;
+		public override bool Equals(object obj)
+			=> obj is RacingWheelReading that
+			&& Timestamp == that.Timestamp
+			&& Buttons == that.Buttons
+			&& PatternShifterGear == that.PatternShifterGear
+			&& Wheel == that.Wheel
+			&& Throttle == that.Throttle
+			&& Brake == that.Brake
+			&& Clutch == that.Clutch
+			&& Handbrake == that.Handbrake;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Timestamp.GetHashCode() ^ Buttons.GetHashCode() ^ PatternShifterGear.GetHashCode() ^ Wheel.GetHashCode() ^ Throttle.GetHashCode() ^ Brake.GetHashCode() ^ Clutch.GetHashCode() ^ Handbrake.GetHashCode();
+		public override int GetHashCode()
+			=> Timestamp.GetHashCode()
+			^ Buttons.GetHashCode()
+			^ PatternShifterGear.GetHashCode()
+			^ Wheel.GetHashCode()
+			^ Throttle.GetHashCode()
+			^ Brake.GetHashCode()
+			^ Clutch.GetHashCode()
+			^ Handbrake.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Timestamp;

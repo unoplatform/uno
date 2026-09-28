@@ -12,19 +12,30 @@ namespace Windows.Graphics
 		// Skipping already declared method Windows.Graphics.SizeInt32.SizeInt32(int, int)
 		// Forced skipping of method Windows.Graphics.SizeInt32.SizeInt32(int, int)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(SizeInt32 x, SizeInt32 y) => x.Width == y.Width && x.Height == y.Height;
+		public static bool operator ==(SizeInt32 x, SizeInt32 y)
+			=> x.Width == y.Width
+			&& x.Height == y.Height;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(SizeInt32 x, SizeInt32 y) => !(x.Width == y.Width && x.Height == y.Height);
+		public static bool operator !=(SizeInt32 x, SizeInt32 y)
+			=> !(x.Width == y.Width
+				&& x.Height == y.Height);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(SizeInt32 other) => Width == other.Width && Height == other.Height;
+		public bool Equals(SizeInt32 other)
+			=> Width == other.Width
+			&& Height == other.Height;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is SizeInt32 that && Width == that.Width && Height == that.Height;
+		public override bool Equals(object obj)
+			=> obj is SizeInt32 that
+			&& Width == that.Width
+			&& Height == that.Height;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Width.GetHashCode() ^ Height.GetHashCode();
+		public override int GetHashCode()
+			=> Width.GetHashCode()
+			^ Height.GetHashCode();
 #endif
 		// Skipping already declared field Windows.Graphics.SizeInt32.Width
 		// Skipping already declared field Windows.Graphics.SizeInt32.Height

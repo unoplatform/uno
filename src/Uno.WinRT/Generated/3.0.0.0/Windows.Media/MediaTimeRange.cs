@@ -18,19 +18,30 @@ namespace Windows.Media
 #endif
 		// Forced skipping of method Windows.Media.MediaTimeRange.MediaTimeRange(System.TimeSpan, System.TimeSpan)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(MediaTimeRange x, MediaTimeRange y) => x.Start == y.Start && x.End == y.End;
+		public static bool operator ==(MediaTimeRange x, MediaTimeRange y)
+			=> x.Start == y.Start
+			&& x.End == y.End;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(MediaTimeRange x, MediaTimeRange y) => !(x.Start == y.Start && x.End == y.End);
+		public static bool operator !=(MediaTimeRange x, MediaTimeRange y)
+			=> !(x.Start == y.Start
+				&& x.End == y.End);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(MediaTimeRange other) => Start == other.Start && End == other.End;
+		public bool Equals(MediaTimeRange other)
+			=> Start == other.Start
+			&& End == other.End;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is MediaTimeRange that && Start == that.Start && End == that.End;
+		public override bool Equals(object obj)
+			=> obj is MediaTimeRange that
+			&& Start == that.Start
+			&& End == that.End;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Start.GetHashCode() ^ End.GetHashCode();
+		public override int GetHashCode()
+			=> Start.GetHashCode()
+			^ End.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.TimeSpan Start;

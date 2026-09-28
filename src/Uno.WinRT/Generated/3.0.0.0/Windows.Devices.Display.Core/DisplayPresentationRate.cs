@@ -18,19 +18,30 @@ namespace Windows.Devices.Display.Core
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPresentationRate.DisplayPresentationRate(Windows.Foundation.Numerics.Rational, int)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(DisplayPresentationRate x, DisplayPresentationRate y) => x.VerticalSyncRate == y.VerticalSyncRate && x.VerticalSyncsPerPresentation == y.VerticalSyncsPerPresentation;
+		public static bool operator ==(DisplayPresentationRate x, DisplayPresentationRate y)
+			=> x.VerticalSyncRate == y.VerticalSyncRate
+			&& x.VerticalSyncsPerPresentation == y.VerticalSyncsPerPresentation;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(DisplayPresentationRate x, DisplayPresentationRate y) => !(x.VerticalSyncRate == y.VerticalSyncRate && x.VerticalSyncsPerPresentation == y.VerticalSyncsPerPresentation);
+		public static bool operator !=(DisplayPresentationRate x, DisplayPresentationRate y)
+			=> !(x.VerticalSyncRate == y.VerticalSyncRate
+				&& x.VerticalSyncsPerPresentation == y.VerticalSyncsPerPresentation);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(DisplayPresentationRate other) => VerticalSyncRate == other.VerticalSyncRate && VerticalSyncsPerPresentation == other.VerticalSyncsPerPresentation;
+		public bool Equals(DisplayPresentationRate other)
+			=> VerticalSyncRate == other.VerticalSyncRate
+			&& VerticalSyncsPerPresentation == other.VerticalSyncsPerPresentation;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is DisplayPresentationRate that && VerticalSyncRate == that.VerticalSyncRate && VerticalSyncsPerPresentation == that.VerticalSyncsPerPresentation;
+		public override bool Equals(object obj)
+			=> obj is DisplayPresentationRate that
+			&& VerticalSyncRate == that.VerticalSyncRate
+			&& VerticalSyncsPerPresentation == that.VerticalSyncsPerPresentation;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => VerticalSyncRate.GetHashCode() ^ VerticalSyncsPerPresentation.GetHashCode();
+		public override int GetHashCode()
+			=> VerticalSyncRate.GetHashCode()
+			^ VerticalSyncsPerPresentation.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Foundation.Numerics.Rational VerticalSyncRate;

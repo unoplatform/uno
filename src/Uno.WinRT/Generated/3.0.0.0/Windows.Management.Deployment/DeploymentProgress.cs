@@ -18,19 +18,30 @@ namespace Windows.Management.Deployment
 #endif
 		// Forced skipping of method Windows.Management.Deployment.DeploymentProgress.DeploymentProgress(Windows.Management.Deployment.DeploymentProgressState, uint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(DeploymentProgress x, DeploymentProgress y) => x.state == y.state && x.percentage == y.percentage;
+		public static bool operator ==(DeploymentProgress x, DeploymentProgress y)
+			=> x.state == y.state
+			&& x.percentage == y.percentage;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(DeploymentProgress x, DeploymentProgress y) => !(x.state == y.state && x.percentage == y.percentage);
+		public static bool operator !=(DeploymentProgress x, DeploymentProgress y)
+			=> !(x.state == y.state
+				&& x.percentage == y.percentage);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(DeploymentProgress other) => state == other.state && percentage == other.percentage;
+		public bool Equals(DeploymentProgress other)
+			=> state == other.state
+			&& percentage == other.percentage;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is DeploymentProgress that && state == that.state && percentage == that.percentage;
+		public override bool Equals(object obj)
+			=> obj is DeploymentProgress that
+			&& state == that.state
+			&& percentage == that.percentage;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => state.GetHashCode() ^ percentage.GetHashCode();
+		public override int GetHashCode()
+			=> state.GetHashCode()
+			^ percentage.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Management.Deployment.DeploymentProgressState state;

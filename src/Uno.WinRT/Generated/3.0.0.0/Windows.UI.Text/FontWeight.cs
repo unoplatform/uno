@@ -14,7 +14,8 @@ namespace Windows.UI.Text
 		// Skipping already declared method Windows.UI.Text.FontWeight.operator ==(Windows.UI.Text.FontWeight, Windows.UI.Text.FontWeight)
 		// Skipping already declared method Windows.UI.Text.FontWeight.operator !=(Windows.UI.Text.FontWeight, Windows.UI.Text.FontWeight)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(FontWeight other) => Weight == other.Weight;
+		public bool Equals(FontWeight other)
+			=> Weight == other.Weight;
 #endif
 		// Skipping already declared method Windows.UI.Text.FontWeight.Equals(object)
 		// Skipping already declared method Windows.UI.Text.FontWeight.GetHashCode()

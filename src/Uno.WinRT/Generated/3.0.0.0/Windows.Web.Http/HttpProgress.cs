@@ -18,19 +18,50 @@ namespace Windows.Web.Http
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpProgress.HttpProgress(Windows.Web.Http.HttpProgressStage, ulong, ulong?, ulong, ulong?, uint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(HttpProgress x, HttpProgress y) => x.Stage == y.Stage && x.BytesSent == y.BytesSent && x.TotalBytesToSend == y.TotalBytesToSend && x.BytesReceived == y.BytesReceived && x.TotalBytesToReceive == y.TotalBytesToReceive && x.Retries == y.Retries;
+		public static bool operator ==(HttpProgress x, HttpProgress y)
+			=> x.Stage == y.Stage
+			&& x.BytesSent == y.BytesSent
+			&& x.TotalBytesToSend == y.TotalBytesToSend
+			&& x.BytesReceived == y.BytesReceived
+			&& x.TotalBytesToReceive == y.TotalBytesToReceive
+			&& x.Retries == y.Retries;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(HttpProgress x, HttpProgress y) => !(x.Stage == y.Stage && x.BytesSent == y.BytesSent && x.TotalBytesToSend == y.TotalBytesToSend && x.BytesReceived == y.BytesReceived && x.TotalBytesToReceive == y.TotalBytesToReceive && x.Retries == y.Retries);
+		public static bool operator !=(HttpProgress x, HttpProgress y)
+			=> !(x.Stage == y.Stage
+				&& x.BytesSent == y.BytesSent
+				&& x.TotalBytesToSend == y.TotalBytesToSend
+				&& x.BytesReceived == y.BytesReceived
+				&& x.TotalBytesToReceive == y.TotalBytesToReceive
+				&& x.Retries == y.Retries);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(HttpProgress other) => Stage == other.Stage && BytesSent == other.BytesSent && TotalBytesToSend == other.TotalBytesToSend && BytesReceived == other.BytesReceived && TotalBytesToReceive == other.TotalBytesToReceive && Retries == other.Retries;
+		public bool Equals(HttpProgress other)
+			=> Stage == other.Stage
+			&& BytesSent == other.BytesSent
+			&& TotalBytesToSend == other.TotalBytesToSend
+			&& BytesReceived == other.BytesReceived
+			&& TotalBytesToReceive == other.TotalBytesToReceive
+			&& Retries == other.Retries;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is HttpProgress that && Stage == that.Stage && BytesSent == that.BytesSent && TotalBytesToSend == that.TotalBytesToSend && BytesReceived == that.BytesReceived && TotalBytesToReceive == that.TotalBytesToReceive && Retries == that.Retries;
+		public override bool Equals(object obj)
+			=> obj is HttpProgress that
+			&& Stage == that.Stage
+			&& BytesSent == that.BytesSent
+			&& TotalBytesToSend == that.TotalBytesToSend
+			&& BytesReceived == that.BytesReceived
+			&& TotalBytesToReceive == that.TotalBytesToReceive
+			&& Retries == that.Retries;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Stage.GetHashCode() ^ BytesSent.GetHashCode() ^ TotalBytesToSend.GetHashCode() ^ BytesReceived.GetHashCode() ^ TotalBytesToReceive.GetHashCode() ^ Retries.GetHashCode();
+		public override int GetHashCode()
+			=> Stage.GetHashCode()
+			^ BytesSent.GetHashCode()
+			^ TotalBytesToSend.GetHashCode()
+			^ BytesReceived.GetHashCode()
+			^ TotalBytesToReceive.GetHashCode()
+			^ Retries.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Web.Http.HttpProgressStage Stage;

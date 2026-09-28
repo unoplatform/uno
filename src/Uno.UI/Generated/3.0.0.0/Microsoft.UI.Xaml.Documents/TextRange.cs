@@ -18,19 +18,30 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.TextRange(int, int)
 #if __SKIA__
-		public static bool operator ==(TextRange x, TextRange y) => x.StartIndex == y.StartIndex && x.Length == y.Length;
+		public static bool operator ==(TextRange x, TextRange y)
+			=> x.StartIndex == y.StartIndex
+			&& x.Length == y.Length;
 #endif
 #if __SKIA__
-		public static bool operator !=(TextRange x, TextRange y) => !(x.StartIndex == y.StartIndex && x.Length == y.Length);
+		public static bool operator !=(TextRange x, TextRange y)
+			=> !(x.StartIndex == y.StartIndex
+				&& x.Length == y.Length);
 #endif
 #if __SKIA__
-		public bool Equals(TextRange other) => StartIndex == other.StartIndex && Length == other.Length;
+		public bool Equals(TextRange other)
+			=> StartIndex == other.StartIndex
+			&& Length == other.Length;
 #endif
 #if __SKIA__
-		public override bool Equals(object obj) => obj is TextRange that && StartIndex == that.StartIndex && Length == that.Length;
+		public override bool Equals(object obj)
+			=> obj is TextRange that
+			&& StartIndex == that.StartIndex
+			&& Length == that.Length;
 #endif
 #if __SKIA__
-		public override int GetHashCode() => StartIndex.GetHashCode() ^ Length.GetHashCode();
+		public override int GetHashCode()
+			=> StartIndex.GetHashCode()
+			^ Length.GetHashCode();
 #endif
 		// Skipping already declared field Microsoft.UI.Xaml.Documents.TextRange.StartIndex
 		// Skipping already declared field Microsoft.UI.Xaml.Documents.TextRange.Length

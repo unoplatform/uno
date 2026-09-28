@@ -18,19 +18,30 @@ namespace Windows.Data.Text
 #endif
 		// Forced skipping of method Windows.Data.Text.TextSegment.TextSegment(uint, uint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(TextSegment x, TextSegment y) => x.StartPosition == y.StartPosition && x.Length == y.Length;
+		public static bool operator ==(TextSegment x, TextSegment y)
+			=> x.StartPosition == y.StartPosition
+			&& x.Length == y.Length;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(TextSegment x, TextSegment y) => !(x.StartPosition == y.StartPosition && x.Length == y.Length);
+		public static bool operator !=(TextSegment x, TextSegment y)
+			=> !(x.StartPosition == y.StartPosition
+				&& x.Length == y.Length);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(TextSegment other) => StartPosition == other.StartPosition && Length == other.Length;
+		public bool Equals(TextSegment other)
+			=> StartPosition == other.StartPosition
+			&& Length == other.Length;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is TextSegment that && StartPosition == that.StartPosition && Length == that.Length;
+		public override bool Equals(object obj)
+			=> obj is TextSegment that
+			&& StartPosition == that.StartPosition
+			&& Length == that.Length;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => StartPosition.GetHashCode() ^ Length.GetHashCode();
+		public override int GetHashCode()
+			=> StartPosition.GetHashCode()
+			^ Length.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint StartPosition;

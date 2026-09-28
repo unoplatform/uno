@@ -18,19 +18,30 @@ namespace Windows.Gaming.Input.Custom
 #endif
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress.GipFirmwareUpdateProgress(double, uint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(GipFirmwareUpdateProgress x, GipFirmwareUpdateProgress y) => x.PercentCompleted == y.PercentCompleted && x.CurrentComponentId == y.CurrentComponentId;
+		public static bool operator ==(GipFirmwareUpdateProgress x, GipFirmwareUpdateProgress y)
+			=> x.PercentCompleted == y.PercentCompleted
+			&& x.CurrentComponentId == y.CurrentComponentId;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(GipFirmwareUpdateProgress x, GipFirmwareUpdateProgress y) => !(x.PercentCompleted == y.PercentCompleted && x.CurrentComponentId == y.CurrentComponentId);
+		public static bool operator !=(GipFirmwareUpdateProgress x, GipFirmwareUpdateProgress y)
+			=> !(x.PercentCompleted == y.PercentCompleted
+				&& x.CurrentComponentId == y.CurrentComponentId);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(GipFirmwareUpdateProgress other) => PercentCompleted == other.PercentCompleted && CurrentComponentId == other.CurrentComponentId;
+		public bool Equals(GipFirmwareUpdateProgress other)
+			=> PercentCompleted == other.PercentCompleted
+			&& CurrentComponentId == other.CurrentComponentId;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is GipFirmwareUpdateProgress that && PercentCompleted == that.PercentCompleted && CurrentComponentId == that.CurrentComponentId;
+		public override bool Equals(object obj)
+			=> obj is GipFirmwareUpdateProgress that
+			&& PercentCompleted == that.PercentCompleted
+			&& CurrentComponentId == that.CurrentComponentId;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => PercentCompleted.GetHashCode() ^ CurrentComponentId.GetHashCode();
+		public override int GetHashCode()
+			=> PercentCompleted.GetHashCode()
+			^ CurrentComponentId.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double PercentCompleted;

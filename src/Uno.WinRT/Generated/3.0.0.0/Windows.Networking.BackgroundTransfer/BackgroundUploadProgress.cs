@@ -18,19 +18,55 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploadProgress.BackgroundUploadProgress(ulong, ulong, ulong, ulong, Windows.Networking.BackgroundTransfer.BackgroundTransferStatus, bool, bool)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(BackgroundUploadProgress x, BackgroundUploadProgress y) => x.BytesReceived == y.BytesReceived && x.BytesSent == y.BytesSent && x.TotalBytesToReceive == y.TotalBytesToReceive && x.TotalBytesToSend == y.TotalBytesToSend && x.Status == y.Status && x.HasResponseChanged == y.HasResponseChanged && x.HasRestarted == y.HasRestarted;
+		public static bool operator ==(BackgroundUploadProgress x, BackgroundUploadProgress y)
+			=> x.BytesReceived == y.BytesReceived
+			&& x.BytesSent == y.BytesSent
+			&& x.TotalBytesToReceive == y.TotalBytesToReceive
+			&& x.TotalBytesToSend == y.TotalBytesToSend
+			&& x.Status == y.Status
+			&& x.HasResponseChanged == y.HasResponseChanged
+			&& x.HasRestarted == y.HasRestarted;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(BackgroundUploadProgress x, BackgroundUploadProgress y) => !(x.BytesReceived == y.BytesReceived && x.BytesSent == y.BytesSent && x.TotalBytesToReceive == y.TotalBytesToReceive && x.TotalBytesToSend == y.TotalBytesToSend && x.Status == y.Status && x.HasResponseChanged == y.HasResponseChanged && x.HasRestarted == y.HasRestarted);
+		public static bool operator !=(BackgroundUploadProgress x, BackgroundUploadProgress y)
+			=> !(x.BytesReceived == y.BytesReceived
+				&& x.BytesSent == y.BytesSent
+				&& x.TotalBytesToReceive == y.TotalBytesToReceive
+				&& x.TotalBytesToSend == y.TotalBytesToSend
+				&& x.Status == y.Status
+				&& x.HasResponseChanged == y.HasResponseChanged
+				&& x.HasRestarted == y.HasRestarted);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(BackgroundUploadProgress other) => BytesReceived == other.BytesReceived && BytesSent == other.BytesSent && TotalBytesToReceive == other.TotalBytesToReceive && TotalBytesToSend == other.TotalBytesToSend && Status == other.Status && HasResponseChanged == other.HasResponseChanged && HasRestarted == other.HasRestarted;
+		public bool Equals(BackgroundUploadProgress other)
+			=> BytesReceived == other.BytesReceived
+			&& BytesSent == other.BytesSent
+			&& TotalBytesToReceive == other.TotalBytesToReceive
+			&& TotalBytesToSend == other.TotalBytesToSend
+			&& Status == other.Status
+			&& HasResponseChanged == other.HasResponseChanged
+			&& HasRestarted == other.HasRestarted;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is BackgroundUploadProgress that && BytesReceived == that.BytesReceived && BytesSent == that.BytesSent && TotalBytesToReceive == that.TotalBytesToReceive && TotalBytesToSend == that.TotalBytesToSend && Status == that.Status && HasResponseChanged == that.HasResponseChanged && HasRestarted == that.HasRestarted;
+		public override bool Equals(object obj)
+			=> obj is BackgroundUploadProgress that
+			&& BytesReceived == that.BytesReceived
+			&& BytesSent == that.BytesSent
+			&& TotalBytesToReceive == that.TotalBytesToReceive
+			&& TotalBytesToSend == that.TotalBytesToSend
+			&& Status == that.Status
+			&& HasResponseChanged == that.HasResponseChanged
+			&& HasRestarted == that.HasRestarted;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => BytesReceived.GetHashCode() ^ BytesSent.GetHashCode() ^ TotalBytesToReceive.GetHashCode() ^ TotalBytesToSend.GetHashCode() ^ Status.GetHashCode() ^ HasResponseChanged.GetHashCode() ^ HasRestarted.GetHashCode();
+		public override int GetHashCode()
+			=> BytesReceived.GetHashCode()
+			^ BytesSent.GetHashCode()
+			^ TotalBytesToReceive.GetHashCode()
+			^ TotalBytesToSend.GetHashCode()
+			^ Status.GetHashCode()
+			^ HasResponseChanged.GetHashCode()
+			^ HasRestarted.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong BytesReceived;

@@ -18,19 +18,45 @@ namespace Windows.Media.Core
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextPadding.TimedTextPadding(double, double, double, double, Windows.Media.Core.TimedTextUnit)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(TimedTextPadding x, TimedTextPadding y) => x.Before == y.Before && x.After == y.After && x.Start == y.Start && x.End == y.End && x.Unit == y.Unit;
+		public static bool operator ==(TimedTextPadding x, TimedTextPadding y)
+			=> x.Before == y.Before
+			&& x.After == y.After
+			&& x.Start == y.Start
+			&& x.End == y.End
+			&& x.Unit == y.Unit;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(TimedTextPadding x, TimedTextPadding y) => !(x.Before == y.Before && x.After == y.After && x.Start == y.Start && x.End == y.End && x.Unit == y.Unit);
+		public static bool operator !=(TimedTextPadding x, TimedTextPadding y)
+			=> !(x.Before == y.Before
+				&& x.After == y.After
+				&& x.Start == y.Start
+				&& x.End == y.End
+				&& x.Unit == y.Unit);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(TimedTextPadding other) => Before == other.Before && After == other.After && Start == other.Start && End == other.End && Unit == other.Unit;
+		public bool Equals(TimedTextPadding other)
+			=> Before == other.Before
+			&& After == other.After
+			&& Start == other.Start
+			&& End == other.End
+			&& Unit == other.Unit;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is TimedTextPadding that && Before == that.Before && After == that.After && Start == that.Start && End == that.End && Unit == that.Unit;
+		public override bool Equals(object obj)
+			=> obj is TimedTextPadding that
+			&& Before == that.Before
+			&& After == that.After
+			&& Start == that.Start
+			&& End == that.End
+			&& Unit == that.Unit;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Before.GetHashCode() ^ After.GetHashCode() ^ Start.GetHashCode() ^ End.GetHashCode() ^ Unit.GetHashCode();
+		public override int GetHashCode()
+			=> Before.GetHashCode()
+			^ After.GetHashCode()
+			^ Start.GetHashCode()
+			^ End.GetHashCode()
+			^ Unit.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double Before;

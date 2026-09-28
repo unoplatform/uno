@@ -18,19 +18,35 @@ namespace Windows.Media.Core
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextSize.TimedTextSize(double, double, Windows.Media.Core.TimedTextUnit)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(TimedTextSize x, TimedTextSize y) => x.Height == y.Height && x.Width == y.Width && x.Unit == y.Unit;
+		public static bool operator ==(TimedTextSize x, TimedTextSize y)
+			=> x.Height == y.Height
+			&& x.Width == y.Width
+			&& x.Unit == y.Unit;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(TimedTextSize x, TimedTextSize y) => !(x.Height == y.Height && x.Width == y.Width && x.Unit == y.Unit);
+		public static bool operator !=(TimedTextSize x, TimedTextSize y)
+			=> !(x.Height == y.Height
+				&& x.Width == y.Width
+				&& x.Unit == y.Unit);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(TimedTextSize other) => Height == other.Height && Width == other.Width && Unit == other.Unit;
+		public bool Equals(TimedTextSize other)
+			=> Height == other.Height
+			&& Width == other.Width
+			&& Unit == other.Unit;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is TimedTextSize that && Height == that.Height && Width == that.Width && Unit == that.Unit;
+		public override bool Equals(object obj)
+			=> obj is TimedTextSize that
+			&& Height == that.Height
+			&& Width == that.Width
+			&& Unit == that.Unit;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Height.GetHashCode() ^ Width.GetHashCode() ^ Unit.GetHashCode();
+		public override int GetHashCode()
+			=> Height.GetHashCode()
+			^ Width.GetHashCode()
+			^ Unit.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double Height;

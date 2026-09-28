@@ -18,19 +18,40 @@ namespace Windows.Graphics.DirectX.Direct3D11
 #endif
 		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription.Direct3DSurfaceDescription(int, int, Windows.Graphics.DirectX.DirectXPixelFormat, Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(Direct3DSurfaceDescription x, Direct3DSurfaceDescription y) => x.Width == y.Width && x.Height == y.Height && x.Format == y.Format && x.MultisampleDescription == y.MultisampleDescription;
+		public static bool operator ==(Direct3DSurfaceDescription x, Direct3DSurfaceDescription y)
+			=> x.Width == y.Width
+			&& x.Height == y.Height
+			&& x.Format == y.Format
+			&& x.MultisampleDescription == y.MultisampleDescription;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(Direct3DSurfaceDescription x, Direct3DSurfaceDescription y) => !(x.Width == y.Width && x.Height == y.Height && x.Format == y.Format && x.MultisampleDescription == y.MultisampleDescription);
+		public static bool operator !=(Direct3DSurfaceDescription x, Direct3DSurfaceDescription y)
+			=> !(x.Width == y.Width
+				&& x.Height == y.Height
+				&& x.Format == y.Format
+				&& x.MultisampleDescription == y.MultisampleDescription);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(Direct3DSurfaceDescription other) => Width == other.Width && Height == other.Height && Format == other.Format && MultisampleDescription == other.MultisampleDescription;
+		public bool Equals(Direct3DSurfaceDescription other)
+			=> Width == other.Width
+			&& Height == other.Height
+			&& Format == other.Format
+			&& MultisampleDescription == other.MultisampleDescription;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is Direct3DSurfaceDescription that && Width == that.Width && Height == that.Height && Format == that.Format && MultisampleDescription == that.MultisampleDescription;
+		public override bool Equals(object obj)
+			=> obj is Direct3DSurfaceDescription that
+			&& Width == that.Width
+			&& Height == that.Height
+			&& Format == that.Format
+			&& MultisampleDescription == that.MultisampleDescription;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Width.GetHashCode() ^ Height.GetHashCode() ^ Format.GetHashCode() ^ MultisampleDescription.GetHashCode();
+		public override int GetHashCode()
+			=> Width.GetHashCode()
+			^ Height.GetHashCode()
+			^ Format.GetHashCode()
+			^ MultisampleDescription.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int Width;

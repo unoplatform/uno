@@ -18,19 +18,30 @@ namespace Windows.Graphics
 #endif
 		// Forced skipping of method Windows.Graphics.DisplayAdapterId.DisplayAdapterId(uint, int)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(DisplayAdapterId x, DisplayAdapterId y) => x.LowPart == y.LowPart && x.HighPart == y.HighPart;
+		public static bool operator ==(DisplayAdapterId x, DisplayAdapterId y)
+			=> x.LowPart == y.LowPart
+			&& x.HighPart == y.HighPart;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(DisplayAdapterId x, DisplayAdapterId y) => !(x.LowPart == y.LowPart && x.HighPart == y.HighPart);
+		public static bool operator !=(DisplayAdapterId x, DisplayAdapterId y)
+			=> !(x.LowPart == y.LowPart
+				&& x.HighPart == y.HighPart);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(DisplayAdapterId other) => LowPart == other.LowPart && HighPart == other.HighPart;
+		public bool Equals(DisplayAdapterId other)
+			=> LowPart == other.LowPart
+			&& HighPart == other.HighPart;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is DisplayAdapterId that && LowPart == that.LowPart && HighPart == that.HighPart;
+		public override bool Equals(object obj)
+			=> obj is DisplayAdapterId that
+			&& LowPart == that.LowPart
+			&& HighPart == that.HighPart;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => LowPart.GetHashCode() ^ HighPart.GetHashCode();
+		public override int GetHashCode()
+			=> LowPart.GetHashCode()
+			^ HighPart.GetHashCode();
 #endif
 		// Skipping already declared field Windows.Graphics.DisplayAdapterId.LowPart
 		// Skipping already declared field Windows.Graphics.DisplayAdapterId.HighPart

@@ -18,19 +18,40 @@ namespace Windows.Graphics.Imaging
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.BitmapBounds(uint, uint, uint, uint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(BitmapBounds x, BitmapBounds y) => x.X == y.X && x.Y == y.Y && x.Width == y.Width && x.Height == y.Height;
+		public static bool operator ==(BitmapBounds x, BitmapBounds y)
+			=> x.X == y.X
+			&& x.Y == y.Y
+			&& x.Width == y.Width
+			&& x.Height == y.Height;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(BitmapBounds x, BitmapBounds y) => !(x.X == y.X && x.Y == y.Y && x.Width == y.Width && x.Height == y.Height);
+		public static bool operator !=(BitmapBounds x, BitmapBounds y)
+			=> !(x.X == y.X
+				&& x.Y == y.Y
+				&& x.Width == y.Width
+				&& x.Height == y.Height);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(BitmapBounds other) => X == other.X && Y == other.Y && Width == other.Width && Height == other.Height;
+		public bool Equals(BitmapBounds other)
+			=> X == other.X
+			&& Y == other.Y
+			&& Width == other.Width
+			&& Height == other.Height;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is BitmapBounds that && X == that.X && Y == that.Y && Width == that.Width && Height == that.Height;
+		public override bool Equals(object obj)
+			=> obj is BitmapBounds that
+			&& X == that.X
+			&& Y == that.Y
+			&& Width == that.Width
+			&& Height == that.Height;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode() ^ Width.GetHashCode() ^ Height.GetHashCode();
+		public override int GetHashCode()
+			=> X.GetHashCode()
+			^ Y.GetHashCode()
+			^ Width.GetHashCode()
+			^ Height.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint X;

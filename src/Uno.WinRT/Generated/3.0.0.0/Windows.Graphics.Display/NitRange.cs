@@ -18,19 +18,35 @@ namespace Windows.Graphics.Display
 #endif
 		// Forced skipping of method Windows.Graphics.Display.NitRange.NitRange(float, float, float)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(NitRange x, NitRange y) => x.MinNits == y.MinNits && x.MaxNits == y.MaxNits && x.StepSizeNits == y.StepSizeNits;
+		public static bool operator ==(NitRange x, NitRange y)
+			=> x.MinNits == y.MinNits
+			&& x.MaxNits == y.MaxNits
+			&& x.StepSizeNits == y.StepSizeNits;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(NitRange x, NitRange y) => !(x.MinNits == y.MinNits && x.MaxNits == y.MaxNits && x.StepSizeNits == y.StepSizeNits);
+		public static bool operator !=(NitRange x, NitRange y)
+			=> !(x.MinNits == y.MinNits
+				&& x.MaxNits == y.MaxNits
+				&& x.StepSizeNits == y.StepSizeNits);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(NitRange other) => MinNits == other.MinNits && MaxNits == other.MaxNits && StepSizeNits == other.StepSizeNits;
+		public bool Equals(NitRange other)
+			=> MinNits == other.MinNits
+			&& MaxNits == other.MaxNits
+			&& StepSizeNits == other.StepSizeNits;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is NitRange that && MinNits == that.MinNits && MaxNits == that.MaxNits && StepSizeNits == that.StepSizeNits;
+		public override bool Equals(object obj)
+			=> obj is NitRange that
+			&& MinNits == that.MinNits
+			&& MaxNits == that.MaxNits
+			&& StepSizeNits == that.StepSizeNits;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => MinNits.GetHashCode() ^ MaxNits.GetHashCode() ^ StepSizeNits.GetHashCode();
+		public override int GetHashCode()
+			=> MinNits.GetHashCode()
+			^ MaxNits.GetHashCode()
+			^ StepSizeNits.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public float MinNits;

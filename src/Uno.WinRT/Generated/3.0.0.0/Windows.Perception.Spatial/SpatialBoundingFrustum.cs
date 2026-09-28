@@ -18,19 +18,50 @@ namespace Windows.Perception.Spatial
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingFrustum.SpatialBoundingFrustum(System.Numerics.Plane, System.Numerics.Plane, System.Numerics.Plane, System.Numerics.Plane, System.Numerics.Plane, System.Numerics.Plane)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(SpatialBoundingFrustum x, SpatialBoundingFrustum y) => x.Near == y.Near && x.Far == y.Far && x.Right == y.Right && x.Left == y.Left && x.Top == y.Top && x.Bottom == y.Bottom;
+		public static bool operator ==(SpatialBoundingFrustum x, SpatialBoundingFrustum y)
+			=> x.Near == y.Near
+			&& x.Far == y.Far
+			&& x.Right == y.Right
+			&& x.Left == y.Left
+			&& x.Top == y.Top
+			&& x.Bottom == y.Bottom;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(SpatialBoundingFrustum x, SpatialBoundingFrustum y) => !(x.Near == y.Near && x.Far == y.Far && x.Right == y.Right && x.Left == y.Left && x.Top == y.Top && x.Bottom == y.Bottom);
+		public static bool operator !=(SpatialBoundingFrustum x, SpatialBoundingFrustum y)
+			=> !(x.Near == y.Near
+				&& x.Far == y.Far
+				&& x.Right == y.Right
+				&& x.Left == y.Left
+				&& x.Top == y.Top
+				&& x.Bottom == y.Bottom);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(SpatialBoundingFrustum other) => Near == other.Near && Far == other.Far && Right == other.Right && Left == other.Left && Top == other.Top && Bottom == other.Bottom;
+		public bool Equals(SpatialBoundingFrustum other)
+			=> Near == other.Near
+			&& Far == other.Far
+			&& Right == other.Right
+			&& Left == other.Left
+			&& Top == other.Top
+			&& Bottom == other.Bottom;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is SpatialBoundingFrustum that && Near == that.Near && Far == that.Far && Right == that.Right && Left == that.Left && Top == that.Top && Bottom == that.Bottom;
+		public override bool Equals(object obj)
+			=> obj is SpatialBoundingFrustum that
+			&& Near == that.Near
+			&& Far == that.Far
+			&& Right == that.Right
+			&& Left == that.Left
+			&& Top == that.Top
+			&& Bottom == that.Bottom;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Near.GetHashCode() ^ Far.GetHashCode() ^ Right.GetHashCode() ^ Left.GetHashCode() ^ Top.GetHashCode() ^ Bottom.GetHashCode();
+		public override int GetHashCode()
+			=> Near.GetHashCode()
+			^ Far.GetHashCode()
+			^ Right.GetHashCode()
+			^ Left.GetHashCode()
+			^ Top.GetHashCode()
+			^ Bottom.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Plane Near;

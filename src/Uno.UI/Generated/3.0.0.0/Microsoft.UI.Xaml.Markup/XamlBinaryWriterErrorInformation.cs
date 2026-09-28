@@ -18,19 +18,35 @@ namespace Microsoft.UI.Xaml.Markup
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.XamlBinaryWriterErrorInformation(uint, uint, uint)
 #if __SKIA__
-		public static bool operator ==(XamlBinaryWriterErrorInformation x, XamlBinaryWriterErrorInformation y) => x.InputStreamIndex == y.InputStreamIndex && x.LineNumber == y.LineNumber && x.LinePosition == y.LinePosition;
+		public static bool operator ==(XamlBinaryWriterErrorInformation x, XamlBinaryWriterErrorInformation y)
+			=> x.InputStreamIndex == y.InputStreamIndex
+			&& x.LineNumber == y.LineNumber
+			&& x.LinePosition == y.LinePosition;
 #endif
 #if __SKIA__
-		public static bool operator !=(XamlBinaryWriterErrorInformation x, XamlBinaryWriterErrorInformation y) => !(x.InputStreamIndex == y.InputStreamIndex && x.LineNumber == y.LineNumber && x.LinePosition == y.LinePosition);
+		public static bool operator !=(XamlBinaryWriterErrorInformation x, XamlBinaryWriterErrorInformation y)
+			=> !(x.InputStreamIndex == y.InputStreamIndex
+				&& x.LineNumber == y.LineNumber
+				&& x.LinePosition == y.LinePosition);
 #endif
 #if __SKIA__
-		public bool Equals(XamlBinaryWriterErrorInformation other) => InputStreamIndex == other.InputStreamIndex && LineNumber == other.LineNumber && LinePosition == other.LinePosition;
+		public bool Equals(XamlBinaryWriterErrorInformation other)
+			=> InputStreamIndex == other.InputStreamIndex
+			&& LineNumber == other.LineNumber
+			&& LinePosition == other.LinePosition;
 #endif
 #if __SKIA__
-		public override bool Equals(object obj) => obj is XamlBinaryWriterErrorInformation that && InputStreamIndex == that.InputStreamIndex && LineNumber == that.LineNumber && LinePosition == that.LinePosition;
+		public override bool Equals(object obj)
+			=> obj is XamlBinaryWriterErrorInformation that
+			&& InputStreamIndex == that.InputStreamIndex
+			&& LineNumber == that.LineNumber
+			&& LinePosition == that.LinePosition;
 #endif
 #if __SKIA__
-		public override int GetHashCode() => InputStreamIndex.GetHashCode() ^ LineNumber.GetHashCode() ^ LinePosition.GetHashCode();
+		public override int GetHashCode()
+			=> InputStreamIndex.GetHashCode()
+			^ LineNumber.GetHashCode()
+			^ LinePosition.GetHashCode();
 #endif
 #if __SKIA__
 		public uint InputStreamIndex;

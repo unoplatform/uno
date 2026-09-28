@@ -18,19 +18,30 @@ namespace Windows.Perception.Spatial
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingBox.SpatialBoundingBox(System.Numerics.Vector3, System.Numerics.Vector3)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(SpatialBoundingBox x, SpatialBoundingBox y) => x.Center == y.Center && x.Extents == y.Extents;
+		public static bool operator ==(SpatialBoundingBox x, SpatialBoundingBox y)
+			=> x.Center == y.Center
+			&& x.Extents == y.Extents;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(SpatialBoundingBox x, SpatialBoundingBox y) => !(x.Center == y.Center && x.Extents == y.Extents);
+		public static bool operator !=(SpatialBoundingBox x, SpatialBoundingBox y)
+			=> !(x.Center == y.Center
+				&& x.Extents == y.Extents);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(SpatialBoundingBox other) => Center == other.Center && Extents == other.Extents;
+		public bool Equals(SpatialBoundingBox other)
+			=> Center == other.Center
+			&& Extents == other.Extents;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is SpatialBoundingBox that && Center == that.Center && Extents == that.Extents;
+		public override bool Equals(object obj)
+			=> obj is SpatialBoundingBox that
+			&& Center == that.Center
+			&& Extents == that.Extents;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Center.GetHashCode() ^ Extents.GetHashCode();
+		public override int GetHashCode()
+			=> Center.GetHashCode()
+			^ Extents.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Center;

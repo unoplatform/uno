@@ -18,19 +18,30 @@ namespace Windows.Networking.Connectivity
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsageStates.NetworkUsageStates(Windows.Networking.Connectivity.TriStates, Windows.Networking.Connectivity.TriStates)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(NetworkUsageStates x, NetworkUsageStates y) => x.Roaming == y.Roaming && x.Shared == y.Shared;
+		public static bool operator ==(NetworkUsageStates x, NetworkUsageStates y)
+			=> x.Roaming == y.Roaming
+			&& x.Shared == y.Shared;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(NetworkUsageStates x, NetworkUsageStates y) => !(x.Roaming == y.Roaming && x.Shared == y.Shared);
+		public static bool operator !=(NetworkUsageStates x, NetworkUsageStates y)
+			=> !(x.Roaming == y.Roaming
+				&& x.Shared == y.Shared);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(NetworkUsageStates other) => Roaming == other.Roaming && Shared == other.Shared;
+		public bool Equals(NetworkUsageStates other)
+			=> Roaming == other.Roaming
+			&& Shared == other.Shared;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is NetworkUsageStates that && Roaming == that.Roaming && Shared == that.Shared;
+		public override bool Equals(object obj)
+			=> obj is NetworkUsageStates that
+			&& Roaming == that.Roaming
+			&& Shared == that.Shared;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Roaming.GetHashCode() ^ Shared.GetHashCode();
+		public override int GetHashCode()
+			=> Roaming.GetHashCode()
+			^ Shared.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Networking.Connectivity.TriStates Roaming;

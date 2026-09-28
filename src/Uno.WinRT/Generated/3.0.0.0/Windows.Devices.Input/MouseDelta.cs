@@ -18,19 +18,30 @@ namespace Windows.Devices.Input
 #endif
 		// Forced skipping of method Windows.Devices.Input.MouseDelta.MouseDelta(int, int)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(MouseDelta x, MouseDelta y) => x.X == y.X && x.Y == y.Y;
+		public static bool operator ==(MouseDelta x, MouseDelta y)
+			=> x.X == y.X
+			&& x.Y == y.Y;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(MouseDelta x, MouseDelta y) => !(x.X == y.X && x.Y == y.Y);
+		public static bool operator !=(MouseDelta x, MouseDelta y)
+			=> !(x.X == y.X
+				&& x.Y == y.Y);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(MouseDelta other) => X == other.X && Y == other.Y;
+		public bool Equals(MouseDelta other)
+			=> X == other.X
+			&& Y == other.Y;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is MouseDelta that && X == that.X && Y == that.Y;
+		public override bool Equals(object obj)
+			=> obj is MouseDelta that
+			&& X == that.X
+			&& Y == that.Y;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode();
+		public override int GetHashCode()
+			=> X.GetHashCode()
+			^ Y.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int X;

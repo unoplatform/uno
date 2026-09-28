@@ -18,19 +18,25 @@ namespace Windows.Graphics.Holographic
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameId.HolographicFrameId(ulong)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(HolographicFrameId x, HolographicFrameId y) => x.Value == y.Value;
+		public static bool operator ==(HolographicFrameId x, HolographicFrameId y)
+			=> x.Value == y.Value;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(HolographicFrameId x, HolographicFrameId y) => !(x.Value == y.Value);
+		public static bool operator !=(HolographicFrameId x, HolographicFrameId y)
+			=> !(x.Value == y.Value);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(HolographicFrameId other) => Value == other.Value;
+		public bool Equals(HolographicFrameId other)
+			=> Value == other.Value;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is HolographicFrameId that && Value == that.Value;
+		public override bool Equals(object obj)
+			=> obj is HolographicFrameId that
+			&& Value == that.Value;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Value.GetHashCode();
+		public override int GetHashCode()
+			=> Value.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Value;

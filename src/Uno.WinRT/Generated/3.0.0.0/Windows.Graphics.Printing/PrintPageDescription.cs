@@ -18,19 +18,40 @@ namespace Windows.Graphics.Printing
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageDescription.PrintPageDescription(Windows.Foundation.Size, Windows.Foundation.Rect, uint, uint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(PrintPageDescription x, PrintPageDescription y) => x.PageSize == y.PageSize && x.ImageableRect == y.ImageableRect && x.DpiX == y.DpiX && x.DpiY == y.DpiY;
+		public static bool operator ==(PrintPageDescription x, PrintPageDescription y)
+			=> x.PageSize == y.PageSize
+			&& x.ImageableRect == y.ImageableRect
+			&& x.DpiX == y.DpiX
+			&& x.DpiY == y.DpiY;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(PrintPageDescription x, PrintPageDescription y) => !(x.PageSize == y.PageSize && x.ImageableRect == y.ImageableRect && x.DpiX == y.DpiX && x.DpiY == y.DpiY);
+		public static bool operator !=(PrintPageDescription x, PrintPageDescription y)
+			=> !(x.PageSize == y.PageSize
+				&& x.ImageableRect == y.ImageableRect
+				&& x.DpiX == y.DpiX
+				&& x.DpiY == y.DpiY);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(PrintPageDescription other) => PageSize == other.PageSize && ImageableRect == other.ImageableRect && DpiX == other.DpiX && DpiY == other.DpiY;
+		public bool Equals(PrintPageDescription other)
+			=> PageSize == other.PageSize
+			&& ImageableRect == other.ImageableRect
+			&& DpiX == other.DpiX
+			&& DpiY == other.DpiY;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is PrintPageDescription that && PageSize == that.PageSize && ImageableRect == that.ImageableRect && DpiX == that.DpiX && DpiY == that.DpiY;
+		public override bool Equals(object obj)
+			=> obj is PrintPageDescription that
+			&& PageSize == that.PageSize
+			&& ImageableRect == that.ImageableRect
+			&& DpiX == that.DpiX
+			&& DpiY == that.DpiY;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => PageSize.GetHashCode() ^ ImageableRect.GetHashCode() ^ DpiX.GetHashCode() ^ DpiY.GetHashCode();
+		public override int GetHashCode()
+			=> PageSize.GetHashCode()
+			^ ImageableRect.GetHashCode()
+			^ DpiX.GetHashCode()
+			^ DpiY.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Foundation.Size PageSize;

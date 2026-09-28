@@ -18,19 +18,30 @@ namespace Windows.Gaming.Input
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.ArcadeStickReading(ulong, Windows.Gaming.Input.ArcadeStickButtons)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(ArcadeStickReading x, ArcadeStickReading y) => x.Timestamp == y.Timestamp && x.Buttons == y.Buttons;
+		public static bool operator ==(ArcadeStickReading x, ArcadeStickReading y)
+			=> x.Timestamp == y.Timestamp
+			&& x.Buttons == y.Buttons;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(ArcadeStickReading x, ArcadeStickReading y) => !(x.Timestamp == y.Timestamp && x.Buttons == y.Buttons);
+		public static bool operator !=(ArcadeStickReading x, ArcadeStickReading y)
+			=> !(x.Timestamp == y.Timestamp
+				&& x.Buttons == y.Buttons);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(ArcadeStickReading other) => Timestamp == other.Timestamp && Buttons == other.Buttons;
+		public bool Equals(ArcadeStickReading other)
+			=> Timestamp == other.Timestamp
+			&& Buttons == other.Buttons;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is ArcadeStickReading that && Timestamp == that.Timestamp && Buttons == that.Buttons;
+		public override bool Equals(object obj)
+			=> obj is ArcadeStickReading that
+			&& Timestamp == that.Timestamp
+			&& Buttons == that.Buttons;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Timestamp.GetHashCode() ^ Buttons.GetHashCode();
+		public override int GetHashCode()
+			=> Timestamp.GetHashCode()
+			^ Buttons.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Timestamp;

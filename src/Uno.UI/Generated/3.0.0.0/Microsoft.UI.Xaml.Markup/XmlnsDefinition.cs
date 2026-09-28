@@ -18,19 +18,30 @@ namespace Microsoft.UI.Xaml.Markup
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.XmlnsDefinition(string, string)
 #if __SKIA__
-		public static bool operator ==(XmlnsDefinition x, XmlnsDefinition y) => x.XmlNamespace == y.XmlNamespace && x.Namespace == y.Namespace;
+		public static bool operator ==(XmlnsDefinition x, XmlnsDefinition y)
+			=> x.XmlNamespace == y.XmlNamespace
+			&& x.Namespace == y.Namespace;
 #endif
 #if __SKIA__
-		public static bool operator !=(XmlnsDefinition x, XmlnsDefinition y) => !(x.XmlNamespace == y.XmlNamespace && x.Namespace == y.Namespace);
+		public static bool operator !=(XmlnsDefinition x, XmlnsDefinition y)
+			=> !(x.XmlNamespace == y.XmlNamespace
+				&& x.Namespace == y.Namespace);
 #endif
 #if __SKIA__
-		public bool Equals(XmlnsDefinition other) => XmlNamespace == other.XmlNamespace && Namespace == other.Namespace;
+		public bool Equals(XmlnsDefinition other)
+			=> XmlNamespace == other.XmlNamespace
+			&& Namespace == other.Namespace;
 #endif
 #if __SKIA__
-		public override bool Equals(object obj) => obj is XmlnsDefinition that && XmlNamespace == that.XmlNamespace && Namespace == that.Namespace;
+		public override bool Equals(object obj)
+			=> obj is XmlnsDefinition that
+			&& XmlNamespace == that.XmlNamespace
+			&& Namespace == that.Namespace;
 #endif
 #if __SKIA__
-		public override int GetHashCode() => XmlNamespace.GetHashCode() ^ Namespace.GetHashCode();
+		public override int GetHashCode()
+			=> XmlNamespace.GetHashCode()
+			^ Namespace.GetHashCode();
 #endif
 #if __SKIA__
 		public string XmlNamespace;

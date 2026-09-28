@@ -18,19 +18,30 @@ namespace Windows.Perception.Spatial
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.SpatialRay(System.Numerics.Vector3, System.Numerics.Vector3)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(SpatialRay x, SpatialRay y) => x.Origin == y.Origin && x.Direction == y.Direction;
+		public static bool operator ==(SpatialRay x, SpatialRay y)
+			=> x.Origin == y.Origin
+			&& x.Direction == y.Direction;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(SpatialRay x, SpatialRay y) => !(x.Origin == y.Origin && x.Direction == y.Direction);
+		public static bool operator !=(SpatialRay x, SpatialRay y)
+			=> !(x.Origin == y.Origin
+				&& x.Direction == y.Direction);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(SpatialRay other) => Origin == other.Origin && Direction == other.Direction;
+		public bool Equals(SpatialRay other)
+			=> Origin == other.Origin
+			&& Direction == other.Direction;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is SpatialRay that && Origin == that.Origin && Direction == that.Direction;
+		public override bool Equals(object obj)
+			=> obj is SpatialRay that
+			&& Origin == that.Origin
+			&& Direction == that.Direction;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Origin.GetHashCode() ^ Direction.GetHashCode();
+		public override int GetHashCode()
+			=> Origin.GetHashCode()
+			^ Direction.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Origin;

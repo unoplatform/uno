@@ -18,19 +18,40 @@ namespace Windows.Graphics.Imaging
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.BitmapPlaneDescription(int, int, int, int)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(BitmapPlaneDescription x, BitmapPlaneDescription y) => x.StartIndex == y.StartIndex && x.Width == y.Width && x.Height == y.Height && x.Stride == y.Stride;
+		public static bool operator ==(BitmapPlaneDescription x, BitmapPlaneDescription y)
+			=> x.StartIndex == y.StartIndex
+			&& x.Width == y.Width
+			&& x.Height == y.Height
+			&& x.Stride == y.Stride;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(BitmapPlaneDescription x, BitmapPlaneDescription y) => !(x.StartIndex == y.StartIndex && x.Width == y.Width && x.Height == y.Height && x.Stride == y.Stride);
+		public static bool operator !=(BitmapPlaneDescription x, BitmapPlaneDescription y)
+			=> !(x.StartIndex == y.StartIndex
+				&& x.Width == y.Width
+				&& x.Height == y.Height
+				&& x.Stride == y.Stride);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(BitmapPlaneDescription other) => StartIndex == other.StartIndex && Width == other.Width && Height == other.Height && Stride == other.Stride;
+		public bool Equals(BitmapPlaneDescription other)
+			=> StartIndex == other.StartIndex
+			&& Width == other.Width
+			&& Height == other.Height
+			&& Stride == other.Stride;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is BitmapPlaneDescription that && StartIndex == that.StartIndex && Width == that.Width && Height == that.Height && Stride == that.Stride;
+		public override bool Equals(object obj)
+			=> obj is BitmapPlaneDescription that
+			&& StartIndex == that.StartIndex
+			&& Width == that.Width
+			&& Height == that.Height
+			&& Stride == that.Stride;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => StartIndex.GetHashCode() ^ Width.GetHashCode() ^ Height.GetHashCode() ^ Stride.GetHashCode();
+		public override int GetHashCode()
+			=> StartIndex.GetHashCode()
+			^ Width.GetHashCode()
+			^ Height.GetHashCode()
+			^ Stride.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int StartIndex;

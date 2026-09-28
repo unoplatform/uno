@@ -18,19 +18,40 @@ namespace Windows.Networking.Sockets
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.RoundTripTimeStatistics.RoundTripTimeStatistics(uint, uint, uint, uint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(RoundTripTimeStatistics x, RoundTripTimeStatistics y) => x.Variance == y.Variance && x.Max == y.Max && x.Min == y.Min && x.Sum == y.Sum;
+		public static bool operator ==(RoundTripTimeStatistics x, RoundTripTimeStatistics y)
+			=> x.Variance == y.Variance
+			&& x.Max == y.Max
+			&& x.Min == y.Min
+			&& x.Sum == y.Sum;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(RoundTripTimeStatistics x, RoundTripTimeStatistics y) => !(x.Variance == y.Variance && x.Max == y.Max && x.Min == y.Min && x.Sum == y.Sum);
+		public static bool operator !=(RoundTripTimeStatistics x, RoundTripTimeStatistics y)
+			=> !(x.Variance == y.Variance
+				&& x.Max == y.Max
+				&& x.Min == y.Min
+				&& x.Sum == y.Sum);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(RoundTripTimeStatistics other) => Variance == other.Variance && Max == other.Max && Min == other.Min && Sum == other.Sum;
+		public bool Equals(RoundTripTimeStatistics other)
+			=> Variance == other.Variance
+			&& Max == other.Max
+			&& Min == other.Min
+			&& Sum == other.Sum;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is RoundTripTimeStatistics that && Variance == that.Variance && Max == that.Max && Min == that.Min && Sum == that.Sum;
+		public override bool Equals(object obj)
+			=> obj is RoundTripTimeStatistics that
+			&& Variance == that.Variance
+			&& Max == that.Max
+			&& Min == that.Min
+			&& Sum == that.Sum;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Variance.GetHashCode() ^ Max.GetHashCode() ^ Min.GetHashCode() ^ Sum.GetHashCode();
+		public override int GetHashCode()
+			=> Variance.GetHashCode()
+			^ Max.GetHashCode()
+			^ Min.GetHashCode()
+			^ Sum.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint Variance;

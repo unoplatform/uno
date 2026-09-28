@@ -18,19 +18,45 @@ namespace Windows.Media.Import
 #endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportProgress.PhotoImportProgress(uint, uint, ulong, ulong, double)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(PhotoImportProgress x, PhotoImportProgress y) => x.ItemsImported == y.ItemsImported && x.TotalItemsToImport == y.TotalItemsToImport && x.BytesImported == y.BytesImported && x.TotalBytesToImport == y.TotalBytesToImport && x.ImportProgress == y.ImportProgress;
+		public static bool operator ==(PhotoImportProgress x, PhotoImportProgress y)
+			=> x.ItemsImported == y.ItemsImported
+			&& x.TotalItemsToImport == y.TotalItemsToImport
+			&& x.BytesImported == y.BytesImported
+			&& x.TotalBytesToImport == y.TotalBytesToImport
+			&& x.ImportProgress == y.ImportProgress;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(PhotoImportProgress x, PhotoImportProgress y) => !(x.ItemsImported == y.ItemsImported && x.TotalItemsToImport == y.TotalItemsToImport && x.BytesImported == y.BytesImported && x.TotalBytesToImport == y.TotalBytesToImport && x.ImportProgress == y.ImportProgress);
+		public static bool operator !=(PhotoImportProgress x, PhotoImportProgress y)
+			=> !(x.ItemsImported == y.ItemsImported
+				&& x.TotalItemsToImport == y.TotalItemsToImport
+				&& x.BytesImported == y.BytesImported
+				&& x.TotalBytesToImport == y.TotalBytesToImport
+				&& x.ImportProgress == y.ImportProgress);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(PhotoImportProgress other) => ItemsImported == other.ItemsImported && TotalItemsToImport == other.TotalItemsToImport && BytesImported == other.BytesImported && TotalBytesToImport == other.TotalBytesToImport && ImportProgress == other.ImportProgress;
+		public bool Equals(PhotoImportProgress other)
+			=> ItemsImported == other.ItemsImported
+			&& TotalItemsToImport == other.TotalItemsToImport
+			&& BytesImported == other.BytesImported
+			&& TotalBytesToImport == other.TotalBytesToImport
+			&& ImportProgress == other.ImportProgress;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is PhotoImportProgress that && ItemsImported == that.ItemsImported && TotalItemsToImport == that.TotalItemsToImport && BytesImported == that.BytesImported && TotalBytesToImport == that.TotalBytesToImport && ImportProgress == that.ImportProgress;
+		public override bool Equals(object obj)
+			=> obj is PhotoImportProgress that
+			&& ItemsImported == that.ItemsImported
+			&& TotalItemsToImport == that.TotalItemsToImport
+			&& BytesImported == that.BytesImported
+			&& TotalBytesToImport == that.TotalBytesToImport
+			&& ImportProgress == that.ImportProgress;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => ItemsImported.GetHashCode() ^ TotalItemsToImport.GetHashCode() ^ BytesImported.GetHashCode() ^ TotalBytesToImport.GetHashCode() ^ ImportProgress.GetHashCode();
+		public override int GetHashCode()
+			=> ItemsImported.GetHashCode()
+			^ TotalItemsToImport.GetHashCode()
+			^ BytesImported.GetHashCode()
+			^ TotalBytesToImport.GetHashCode()
+			^ ImportProgress.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint ItemsImported;

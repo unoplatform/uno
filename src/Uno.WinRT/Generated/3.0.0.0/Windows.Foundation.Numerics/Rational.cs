@@ -18,19 +18,30 @@ namespace Windows.Foundation.Numerics
 #endif
 		// Forced skipping of method Windows.Foundation.Numerics.Rational.Rational(uint, uint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(Rational x, Rational y) => x.Numerator == y.Numerator && x.Denominator == y.Denominator;
+		public static bool operator ==(Rational x, Rational y)
+			=> x.Numerator == y.Numerator
+			&& x.Denominator == y.Denominator;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(Rational x, Rational y) => !(x.Numerator == y.Numerator && x.Denominator == y.Denominator);
+		public static bool operator !=(Rational x, Rational y)
+			=> !(x.Numerator == y.Numerator
+				&& x.Denominator == y.Denominator);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(Rational other) => Numerator == other.Numerator && Denominator == other.Denominator;
+		public bool Equals(Rational other)
+			=> Numerator == other.Numerator
+			&& Denominator == other.Denominator;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is Rational that && Numerator == that.Numerator && Denominator == that.Denominator;
+		public override bool Equals(object obj)
+			=> obj is Rational that
+			&& Numerator == that.Numerator
+			&& Denominator == that.Denominator;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => Numerator.GetHashCode() ^ Denominator.GetHashCode();
+		public override int GetHashCode()
+			=> Numerator.GetHashCode()
+			^ Denominator.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint Numerator;

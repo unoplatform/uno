@@ -18,19 +18,40 @@ namespace Windows.Web.Syndication
 #endif
 		// Forced skipping of method Windows.Web.Syndication.TransferProgress.TransferProgress(uint, uint, uint, uint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator ==(TransferProgress x, TransferProgress y) => x.BytesSent == y.BytesSent && x.TotalBytesToSend == y.TotalBytesToSend && x.BytesRetrieved == y.BytesRetrieved && x.TotalBytesToRetrieve == y.TotalBytesToRetrieve;
+		public static bool operator ==(TransferProgress x, TransferProgress y)
+			=> x.BytesSent == y.BytesSent
+			&& x.TotalBytesToSend == y.TotalBytesToSend
+			&& x.BytesRetrieved == y.BytesRetrieved
+			&& x.TotalBytesToRetrieve == y.TotalBytesToRetrieve;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public static bool operator !=(TransferProgress x, TransferProgress y) => !(x.BytesSent == y.BytesSent && x.TotalBytesToSend == y.TotalBytesToSend && x.BytesRetrieved == y.BytesRetrieved && x.TotalBytesToRetrieve == y.TotalBytesToRetrieve);
+		public static bool operator !=(TransferProgress x, TransferProgress y)
+			=> !(x.BytesSent == y.BytesSent
+				&& x.TotalBytesToSend == y.TotalBytesToSend
+				&& x.BytesRetrieved == y.BytesRetrieved
+				&& x.TotalBytesToRetrieve == y.TotalBytesToRetrieve);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public bool Equals(TransferProgress other) => BytesSent == other.BytesSent && TotalBytesToSend == other.TotalBytesToSend && BytesRetrieved == other.BytesRetrieved && TotalBytesToRetrieve == other.TotalBytesToRetrieve;
+		public bool Equals(TransferProgress other)
+			=> BytesSent == other.BytesSent
+			&& TotalBytesToSend == other.TotalBytesToSend
+			&& BytesRetrieved == other.BytesRetrieved
+			&& TotalBytesToRetrieve == other.TotalBytesToRetrieve;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override bool Equals(object obj) => obj is TransferProgress that && BytesSent == that.BytesSent && TotalBytesToSend == that.TotalBytesToSend && BytesRetrieved == that.BytesRetrieved && TotalBytesToRetrieve == that.TotalBytesToRetrieve;
+		public override bool Equals(object obj)
+			=> obj is TransferProgress that
+			&& BytesSent == that.BytesSent
+			&& TotalBytesToSend == that.TotalBytesToSend
+			&& BytesRetrieved == that.BytesRetrieved
+			&& TotalBytesToRetrieve == that.TotalBytesToRetrieve;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public override int GetHashCode() => BytesSent.GetHashCode() ^ TotalBytesToSend.GetHashCode() ^ BytesRetrieved.GetHashCode() ^ TotalBytesToRetrieve.GetHashCode();
+		public override int GetHashCode()
+			=> BytesSent.GetHashCode()
+			^ TotalBytesToSend.GetHashCode()
+			^ BytesRetrieved.GetHashCode()
+			^ TotalBytesToRetrieve.GetHashCode();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint BytesSent;
