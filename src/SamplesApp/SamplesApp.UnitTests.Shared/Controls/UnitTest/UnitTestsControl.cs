@@ -20,6 +20,7 @@ using Uno.UI.Samples.Helper;
 using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Core;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;

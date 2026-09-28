@@ -184,7 +184,7 @@ public static class FontFallback
 					{
 						var bytes = File.ReadAllBytes(path);
 						// The probe is only used for ContainsGlyph, so the style/size are immaterial.
-						if (provider.CreateFont(bytes, null, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal, 16f) is { } probe)
+						if (provider.CreateFont(bytes, null, new FontWeight(400), FontStretch.Normal, FontStyle.Normal, 16f) is { } probe)
 						{
 							loaded.Add((path, probe));
 						}

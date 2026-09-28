@@ -39,6 +39,7 @@ using System.Globalization;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using System.Threading.Tasks;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using System.Collections.Generic;
 using Microsoft.UI.Composition;

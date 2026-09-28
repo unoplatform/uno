@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Uno.UI;
 using Uno.UI.Helpers.Boxes;

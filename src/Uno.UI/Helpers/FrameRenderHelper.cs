@@ -9,6 +9,7 @@ using System.Numerics;
 using System.Threading;
 using Windows.Foundation;
 using Windows.UI;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Microsoft.UI;
 using Microsoft.UI.Composition;

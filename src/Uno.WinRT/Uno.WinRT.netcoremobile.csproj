@@ -55,7 +55,6 @@
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\UI\Input\WinRT\*.cs" />
-		<Compile Include="..\Uno.UI\UI\Text\FontWeights.cs" />
 	</ItemGroup>
 
 </Project>

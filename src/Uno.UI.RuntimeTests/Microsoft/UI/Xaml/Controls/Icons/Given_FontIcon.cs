@@ -6,6 +6,7 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI;
 using Windows.UI;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Icons;
