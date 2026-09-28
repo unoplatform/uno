@@ -1063,6 +1063,93 @@ namespace Uno.WinAppSDKSyncGenerator
 			return iface.Name is "IFormattable" or "IEquatable" or "IDynamicInterfaceCastable" or "ICustomQueryInterface" or "IUnmanagedVirtualMethodTableProvider";
 		}
 
+		// IEquatable<T> on a WinRT struct is backed by the memberwise members from BuildStructEquality.
+		private static bool IsSelfEquatableStructInterface(INamedTypeSymbol type, INamedTypeSymbol iface)
+			=> HasProjectedStructEquality(type)
+				&& iface is { Name: "IEquatable", TypeArguments.Length: 1 }
+				&& SymbolEqualityComparer.Default.Equals(iface.TypeArguments[0], type);
+
+		private static bool HasProjectedStructEquality(INamedTypeSymbol type)
+			=> type.TypeKind == TypeKind.Struct && !type.GetMembers(WellKnownMemberNames.EqualityOperatorName).IsEmpty;
+
+		/// <summary>
+		/// Emits the memberwise equality members CsWinRT projects on WinRT structs (see write_struct in
+		/// CsWinRT's code_writers.h), for each platform whose hand-written partial doesn't declare them.
+		/// </summary>
+		protected void BuildStructEquality(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types)
+		{
+			if (!HasProjectedStructEquality(type))
+			{
+				return;
+			}
+
+			var fields = type.GetMembers().OfType<IFieldSymbol>().Where(f => !f.IsStatic && f.DeclaredAccessibility == Accessibility.Public).ToArray();
+			if (fields.Length == 0)
+			{
+				return;
+			}
+
+			// Same semantics as CsWinRT, but each member compares fields itself instead of delegating (Equals => ==):
+			// a hand-written partial may implement == via Equals, and delegating back would recurse forever.
+			var name = type.Name;
+			string FieldsEqual(string x, string y) => string.Join(" && ", fields.Select(f => $"{x}{f.Name} == {y}{f.Name}"));
+			var fieldsHash = string.Join(" ^ ", fields.Select(f => $"{f.Name}.GetHashCode()"));
+
+			foreach (var method in type.GetMembers().OfType<IMethodSymbol>())
+			{
+				var code = method switch
+				{
+					{ Name: WellKnownMemberNames.EqualityOperatorName } => $"public static bool operator ==({name} x, {name} y) => {FieldsEqual("x.", "y.")};",
+					{ Name: WellKnownMemberNames.InequalityOperatorName } => $"public static bool operator !=({name} x, {name} y) => !({FieldsEqual("x.", "y.")});",
+					{ Name: "Equals", Parameters: [{ Type.SpecialType: SpecialType.System_Object }] } => $"public override bool Equals(object obj) => obj is {name} that && {FieldsEqual("", "that.")};",
+					{ Name: "Equals", Parameters.Length: 1 } => $"public bool Equals({name} other) => {FieldsEqual("", "other.")};",
+					{ Name: "GetHashCode", Parameters.IsEmpty: true } => $"public override int GetHashCode() => {fieldsHash};",
+					_ => null,
+				};
+
+				if (code is null)
+				{
+					continue;
+				}
+
+				var declared = new PlatformSymbols<IMethodSymbol>(
+					androidType: FindDeclaredMethod(types.AndroidSymbol, method),
+					iOSType: FindDeclaredMethod(types.IOSSymbol, method),
+					tvOSType: FindDeclaredMethod(types.TvOSSymbol, method),
+					netStdRerefenceType: FindDeclaredMethod(types.NetStdReferenceSymbol, method),
+					wasmType: FindDeclaredMethod(types.WasmSymbol, method),
+					skiaType: FindDeclaredMethod(types.SkiaSymbol, method),
+					uapType: method,
+					emitNonSkiaDefines: CurrentTypeEmitsNonSkiaDefines
+				);
+
+				if (declared.HasUndefined)
+				{
+					declared.AppendIf(b);
+					b.AppendLineInvariant("{0}", code);
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant("#endif");
+					}
+				}
+				else
+				{
+					b.AppendLineInvariant($"// Skipping already declared method {method}");
+				}
+			}
+		}
+
+		// Unlike FindMatchingMethod, ignores inherited members (ValueType.Equals/GetHashCode) and modifier differences.
+		private static IMethodSymbol FindDeclaredMethod(INamedTypeSymbol unoType, IMethodSymbol uapMethod)
+			=> unoType?
+				.GetMembers(uapMethod.Name)
+				.OfType<IMethodSymbol>()
+				.FirstOrDefault(m =>
+					m.Locations.None(l => PlatformSymbols<IMethodSymbol>.IsGeneratedFile(l.SourceTree?.FilePath ?? ""))
+					&& m.Parameters.Length == uapMethod.Parameters.Length
+					&& m.Parameters.Zip(uapMethod.Parameters).All(p =>
+						p.First.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == p.Second.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)));
+
 		protected string BuildInterfaces(INamedTypeSymbol type)
 		{
 			var ifaces = new List<string>();
@@ -1074,7 +1161,7 @@ namespace Uno.WinAppSDKSyncGenerator
 
 			foreach (var iface in type.Interfaces)
 			{
-				if (ShouldSkipInterface(iface))
+				if (ShouldSkipInterface(iface) && !IsSelfEquatableStructInterface(type, iface))
 				{
 					continue;
 				}
