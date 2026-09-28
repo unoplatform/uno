@@ -695,36 +695,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		return peer is not null ? FindExistingProviderForPeer(peer, resolveEventsSource: true) : null;
 	}
 
+	// Like WinUI, raise no BoundingRectangle change on layout: UIA clients pull it on demand, and raising it
+	// for every moved element made each scroll frame pay a native UIA call per realized element.
 	protected override void OnSizeOrOffsetChanged(Visual visual)
 	{
-		// UIA pulls BoundingRectangle on demand, so we only need to notify
-		// clients that the property has changed so they re-query it.
-		if (visual is ContainerVisual containerVisual
-			&& containerVisual.Owner?.Target is UIElement owner
-			&& TryGetLiveProvider(owner, out var provider))
-		{
-			try
-			{
-				_ = Win32UIAutomationInterop.UiaRaiseAutomationPropertyChangedEvent(
-					provider,
-					Win32UIAutomationInterop.UIA_BoundingRectanglePropertyId,
-					null,
-					null);
-			}
-			catch (Exception ex) when (
-				ex is System.Runtime.InteropServices.COMException
-					or DllNotFoundException
-					or EntryPointNotFoundException
-					or BadImageFormatException
-					or TypeLoadException
-					or System.Runtime.InteropServices.SEHException)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"Failed to raise BoundingRectangle changed event: {ex.Message}");
-				}
-			}
-		}
 	}
 
 	private void CleanupProviders(UIElement element)
