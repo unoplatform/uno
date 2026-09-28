@@ -220,6 +220,12 @@ internal sealed class SkiaDrawingFactory :
 			_glHeight = gl.Height;
 		}
 
+		// A host that retains through its own framebuffer blits with raw GL calls at present, which rebinds
+		// GL_FRAMEBUFFER behind Skia's back. Skia caches GL state, so without this it keeps believing the host's
+		// framebuffer is bound and draws into the default one instead — the window then freezes on the last frame
+		// the blit legitimately copied.
+		_glContext.ResetContext();
+
 		// Straight into whatever framebuffer the host handed over; retention (so the damage region survives the
 		// host's present) is the host's business, not the backend's.
 		return new SkiaPresentSession(_glSurface.Canvas, this);
