@@ -21,11 +21,7 @@ using Microsoft.UI.Xaml.Data;
 using Uno.UI.DevTools.Input;
 
 
-#if HAS_UNO_WINUI || WINAPPSDK || WINUI
 using Colors = Microsoft.UI.Colors;
-#else
-using Colors = Windows.UI.Colors;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
