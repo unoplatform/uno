@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using DirectUI;
 using Microsoft.UI.Xaml.Internal;
+using Uno.UI.Core;
 using Uno.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core;
@@ -53,6 +54,8 @@ partial class InputManager
 
 		private void OnKey(KeyEventArgs args, bool down)
 		{
+			SyncModifierStates(args.KeyboardModifiers);
+
 			if (XboxUtility.IsGamepadNavigationInput(args.VirtualKey))
 			{
 				_inputManager.LastInputDeviceType = InputDeviceType.GamepadOrRemote;
@@ -137,6 +140,33 @@ partial class InputManager
 			}
 
 			args.Handled = routedArgs.Handled;
+		}
+
+		/// <summary>
+		/// Repairs the tracked modifier state from the modifiers the event carries, which report the
+		/// real state of every modifier at the time it was raised. Key downs and key ups on their own
+		/// cannot be trusted to stay paired - a modifier released while the browser or the OS holds
+		/// focus never produces a key up - so the tracker would otherwise report it as held for the
+		/// rest of the session.
+		/// </summary>
+		/// <remarks>
+		/// Runs before the event is dispatched, so a handler reading CoreWindow.GetKeyState sees the
+		/// corrected state. The key this event is about needs no special treatment: the key down/up
+		/// applied while the event bubbles lands after this and wins.
+		/// </remarks>
+		private static void SyncModifierStates(VirtualKeyModifiers modifiers)
+		{
+			KeyboardStateTracker.SyncModifierState(VirtualKey.Control, modifiers.HasFlag(VirtualKeyModifiers.Control));
+			KeyboardStateTracker.SyncModifierState(VirtualKey.Shift, modifiers.HasFlag(VirtualKeyModifiers.Shift));
+			KeyboardStateTracker.SyncModifierState(VirtualKey.Menu, modifiers.HasFlag(VirtualKeyModifiers.Menu));
+
+			if (!modifiers.HasFlag(VirtualKeyModifiers.Windows))
+			{
+				// There is no combined Windows key to correct, and a press cannot be attributed to a
+				// side, so only the release - which rules out both - can be applied here.
+				KeyboardStateTracker.SyncModifierState(VirtualKey.LeftWindows, false);
+				KeyboardStateTracker.SyncModifierState(VirtualKey.RightWindows, false);
+			}
 		}
 
 		/// <summary>
