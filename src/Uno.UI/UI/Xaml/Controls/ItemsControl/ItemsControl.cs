@@ -1455,7 +1455,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var index = IndexFromItem(item);
-			var containerFromIndex = index == -1 ? null : MaterializedContainers.FirstOrDefault(materializedContainer => Equals(Boxer.Box(IndexFromContainer(materializedContainer)), Boxer.Box(index)));
+			var containerFromIndex = index == -1 ? null : MaterializedContainers.FirstOrDefault(materializedContainer => IndexFromContainer(materializedContainer) == index);
 			EnsureContainerItemsControlProperty(containerFromIndex);
 			return containerFromIndex;
 		}
@@ -1520,7 +1520,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal virtual DependencyObject ContainerFromIndexInner(int index)
 		{
-			return MaterializedContainers.FirstOrDefault(materializedContainer => Equals(materializedContainer.GetValue(IndexForItemContainerProperty), Boxer.Box(index)));
+			return MaterializedContainers.FirstOrDefault(materializedContainer => materializedContainer.GetValue(IndexForItemContainerProperty) is int containerIndex && containerIndex == index);
 		}
 
 		/// <summary>
