@@ -26,6 +26,7 @@ public class Given_BoxingDiagnosticAnalyzer
 	[DataRow("object M(object baseValue, DependencyPropertyValuePrecedences precedence) { return false; }")]
 	[DataRow("CoerceValueCallback M() => (d, baseValue, precedence) => 0.0;")]
 	[DataRow("PropMethodCall M() => (instance, isGet, valueToSet) => true;")]
+	[DataRow("bool M(DependencyProperty p, out object value) { value = 1.0; return true; }")]
 	public async Task When_Returned_From_DependencyProperty_Callback_Then_Reported(string member)
 		=> await AssertReportedAsync(Member(member), expected: true);
 
@@ -38,6 +39,8 @@ public class Given_BoxingDiagnosticAnalyzer
 	[DataRow("object M(DependencyProperty p) => new object[] { true };")]
 	[DataRow("void M(DependencyProperty p) { System.Func<object> f = () => true; }")]
 	[DataRow("bool M(DependencyProperty p) => Equals(GetHashCode(), 0);")]
+	[DataRow("bool M(int index, out object value) { value = index; return true; }")]
+	[DataRow("void M(DependencyProperty p) { object value; value = true; }")]
 	public async Task When_Boxed_Outside_DependencyProperty_Value_Path_Then_Not_Reported(string member)
 		=> await AssertReportedAsync(Member(member), expected: false);
 
