@@ -58,18 +58,17 @@ You can find the [full ControlLibrary sample code](https://github.com/unoplatfor
 
 ## Adding a bindable Command property
 
-If your control contains an interactive element (for example a `Button` in its control template) that should invoke a command on the consumer's view model, expose an `ICommand`-typed dependency property. When the command instance changes, detach from the previous value's `CanExecuteChanged` event and attach to the new one, then refresh any state that depends on `CanExecute`. Using a `SerialDisposable` (from the `Uno.Disposables` package, included with Uno.WinUI) makes sure the previous subscription is always released - this is the same pattern `AppBarButton` uses internally:
+If your templated control contains a `Button` that should run a command from the consumer's view model, expose an `ICommand` dependency property and pass it to the template's button. The button handles `CanExecuteChanged`, updates its enabled state without overwriting an explicit `IsEnabled="False"`, and detaches its command handler when it leaves the visual tree. You do not need to subscribe to `CanExecuteChanged` in the outer control for this case.
+
+Add the property to `MyTemplatedControl`:
 
 ```csharp
 using System.Windows.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Uno.Disposables;
 
 public partial class MyTemplatedControl : Control
 {
-    private readonly SerialDisposable _commandSubscription = new();
-
     public ICommand Command
     {
         get => (ICommand)GetValue(CommandProperty);
@@ -81,42 +80,31 @@ public partial class MyTemplatedControl : Control
             nameof(Command),
             typeof(ICommand),
             typeof(MyTemplatedControl),
-            new PropertyMetadata(null, OnCommandChanged));
-
-    private static void OnCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        => ((MyTemplatedControl)d).OnCommandChanged((ICommand)e.NewValue);
-
-    private void OnCommandChanged(ICommand command)
-    {
-        // Assigning a new Disposable disposes the previous one, which detaches
-        // CanExecuteChanged from the old command instance.
-        _commandSubscription.Disposable = null;
-
-        if (command is not null)
-        {
-            command.CanExecuteChanged += OnCanExecuteChanged;
-            _commandSubscription.Disposable =
-                Disposable.Create(() => command.CanExecuteChanged -= OnCanExecuteChanged);
-        }
-
-        UpdateControlState();
-    }
-
-    private void OnCanExecuteChanged(object sender, object e) => UpdateControlState();
-
-    private void UpdateControlState()
-    {
-        // Example: reflect the command's CanExecute result in the control.
-        IsEnabled = Command?.CanExecute(null) ?? true;
-    }
+            new PropertyMetadata(null));
 }
 ```
 
-You can then bind the property from XAML like any other command:
+In the control template in `Generic.xaml`, bind the inner button's `Command` to that property on the templated control:
+
+```xml
+<Style TargetType="local:MyTemplatedControl">
+    <Setter Property="Template">
+        <Setter.Value>
+            <ControlTemplate TargetType="local:MyTemplatedControl">
+                <Button Content="Save" Command="{TemplateBinding Command}" />
+            </ControlTemplate>
+        </Setter.Value>
+    </Setter>
+</Style>
+```
+
+You can then bind the property from the consuming page:
 
 ```xml
 <myControlLib:MyTemplatedControl Command="{x:Bind ViewModel.SaveCommand}" />
 ```
+
+If your control itself needs to react to `CanExecuteChanged` for a purpose beyond the template button, attach to the current command when the control loads, detach when it unloads or the command changes, and refresh the state when it loads again. Do not assign `IsEnabled = Command.CanExecute(...)` on the outer control: that would overwrite an `IsEnabled` value set by the consumer.
 
 ## Moving the control style in a separate resource dictionary
 
