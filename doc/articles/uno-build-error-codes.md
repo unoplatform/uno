@@ -220,7 +220,7 @@ To suppress it:
 
 `UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` and `UnoWinRTRuntimeIdentifier` used to tell the build which runtime assets to deploy. As of Uno Platform 7.0 that is decided by the target framework, so setting them on an application head no longer selects anything and they can be removed.
 
-`UnoRuntimeIdentifier` keeps one meaning: a cross-runtime *library* uses it to name the `uno-runtime/<identifier>` folder its output is packed into, and to opt that library into runtime replacement. It is not reported for that use.
+A cross-runtime *library* used `UnoRuntimeIdentifier` to name the `uno-runtime` folder its output is packed into. It now sets `UnoRuntimeFlavor` instead — `Generic`, `Wasm` or `Reference` — and the folders are named after it (`uno-runtime/<tfm>/generic` and `uno-runtime/<tfm>/wasm`, formerly `skia` and `webassembly`). The old property is still honored for a library, mapping `skia` to `Generic` and `webassembly` to `Wasm`, and this warning names the value to use.
 
 To suppress it:
 

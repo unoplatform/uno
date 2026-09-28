@@ -59,8 +59,8 @@ Everything else always comes from the shared runtime folder.
 
 | `TargetPlatformIdentifier` | WinRT assemblies | Compile references |
 |---|---|---|
-| `` (headless), `desktop` | `uno-runtime/<tfm>/skia` — same as everything else | untouched |
-| `browserwasm` | `uno-runtime/<tfm>/webassembly` | untouched |
+| `` (headless), `desktop` | `uno-runtime/<tfm>/generic` — same as everything else | untouched |
+| `browserwasm` | `uno-runtime/<tfm>/wasm` | untouched |
 | `android`, `ios`, `tvos` | the package's `lib/netX.0-<platform>` | rewritten |
 | anything else | — | build error |
 
@@ -69,17 +69,19 @@ carried, and it is now asserted by a test.
 
 ## 4. Two disciplines this depended on
 
-### 4.1 The property value is not the folder name
+### 4.1 The folder is the flavour
 
-`uno-runtime/<tfm>/skia` and `.../webassembly` are paths inside packages **already on nuget.org**. They are now
-named constants in the task, with a comment saying what they mean, rather than whatever a property happened to
-hold.
+The `uno-runtime/<tfm>/<folder>` names are the `UnoRuntimeFlavor` values lowercased: `generic` and `wasm`,
+renamed in 7.0 from `skia` and `webassembly`. 7.0 breaks binary compatibility with every 6.x library anyway,
+and nothing versioned apart from Uno reads the folders — only our nuspecs, the selector task and the packing
+targets, all of which ship together.
 
-Moving them is disproportionate to any benefit, because a folder miss is not an error: the resolver returns
-`null`, the handler logs and returns, and **the build succeeds while shipping the reference facade**, which
-throws `NotImplementedException` when the application runs. Five independent encodings of the convention exist
-(two nuspecs, the task, the MSBuild glob in `uno.winui.runtime-replace.targets`, `src/Uno.CrossTargetting.targets`)
-and nothing cross-checks them.
+A folder miss is still not an error inside the task: the resolver returns `null`, the handler logs and returns.
+Left alone, **the build would succeed while shipping the reference facade**, which throws
+`NotImplementedException` when the application runs. That is why the rename waited on §4.2: UNOB0023 turns
+a package in the old layout, or a version skew between 7.0 previews, into a build error. Five encodings of the
+convention exist (two nuspecs, the task, the MSBuild glob in `uno.winui.runtime-replace.targets`,
+`src/Uno.CrossTargetting.targets`); the task's constants document them.
 
 ### 4.2 Every silent path became loud first
 
@@ -112,8 +114,9 @@ exercised the do-nothing path and would have stayed green through a change that 
   described them, so who sets them is unknown, and silently dropping their effect is the outcome to prevent.
   It is gated on `UnoHasRuntimeHost`, not `IsUnoHead` — the latter is set only by the Uno.Sdk, and a
   hand-rolled head is exactly the shape likely to still carry these.
-- **A cross-runtime library keeps runtime replacement.** Such a library sets `UnoRuntimeIdentifier` without
-  referencing a runtime host, so `ReplaceUnoRuntime` is gated on either signal. Gating on the host alone would
+- **A cross-runtime library keeps runtime replacement.** Such a library sets `UnoRuntimeFlavor` (or the
+  deprecated `UnoRuntimeIdentifier`) without referencing a runtime host, so `ReplaceUnoRuntime` is gated on
+  either signal. Gating on the host alone would
   have left the library's own output on the reference facades.
 - `_UnoValidateReferencesUnoRuntimeIdentifier` is renamed to `_UnoValidateRuntimeAssets`, with the old name
   kept as an alias target. The alias carries `BeforeTargets="CoreCompile"` of its own: MSBuild schedules a
@@ -130,38 +133,34 @@ exercised the do-nothing path and would have stayed green through a change that 
   frameworks, and whether `SkiaSharp.Skottie` and `Svg.Skia` are usable on `browserwasm` has to be
   established first. Separate change.
 
-## 6. The two names, now separated
+## 6. One name: `UnoRuntimeFlavor`
 
-The property carried two unrelated jobs under one name. They are now two names:
+`UnoRuntimeFlavor` names **which build of a multi-flavour project this is** — nothing more. It is not a .NET
+`RuntimeIdentifier` (a browser head sets `RuntimeIdentifier=browser-wasm` right next to it) and not a drawing
+backend: `Uno.UI` compiles once and resolves its backend at run time, so no build-time value can name one.
+`Skia` became `Generic` because that flavour is the build every drawn-by-Uno target framework shares;
+`WebAssembly` became `Wasm`, matching `*.wasm.cs`, `wasm:` and `__WASM__`.
 
-| | In-repo build flavour | Library-authoring contract |
-|---|---|---|
-| Property | `UnoRuntimeFlavor` | `UnoRuntimeIdentifier` |
-| Set by | the 33 multi-flavour and single-flavour projects under `src/` | a third-party cross-runtime library |
-| Values | `Generic`, `Wasm`, `Reference` | the `uno-runtime/<name>` folder to pack into |
-| Read by | `src/Uno.CrossTargetting.targets` (never packed) | `build/nuget/uno.winui.cross-runtime.targets` (shipped) |
+| Values | `Generic`, `Wasm`, `Reference` |
+|---|---|
+| Set by | the multi-flavour and single-flavour projects under `src/`, and third-party cross-runtime libraries |
+| Read by | `src/Uno.CrossTargetting.targets` (in-repo symbols and suffixes) and `build/nuget/uno.winui.*.targets` (packing and replacement) |
+| Folder | the value lowercased: `uno-runtime/<tfm>/generic`, `uno-runtime/<tfm>/wasm` |
 
-`UnoRuntimeFlavor` names **which build of a multi-flavour project this is** — nothing more. It is not a runtime
-identifier and not a drawing backend: `Uno.UI` compiles once and resolves its backend at run time, so no
-build-time value can name one. `Skia` became `Generic` because that flavour is the build every drawn-by-Uno
-target framework shares; `WebAssembly` became `Wasm`, matching `*.wasm.cs`, `wasm:` and `__WASM__`.
+`UnoRuntimeIdentifier` stays accepted from a cross-runtime library as a deprecated spelling: `skia` maps to
+`generic`, `webassembly` to `wasm`, and UNOB0024 names the value to use instead. It is not reused for the new
+values, because packages versioned apart from Uno test it for `'Skia'` and `'WebAssembly'` — Uno.Resizetizer
+decides "is this a Skia app" from it, which is also why `Uno.Common.Desktop.targets` still sets
+`UnoRuntimeIdentifier=Skia` on desktop heads until Resizetizer reads `UnoHasRuntimeHost`.
 
-**Why the rename could not move the published layout.** `build/nuget/Uno.WinRT.nuspec` and
-`Uno.Foundation.nuspec` hardcode both the source path (`bin\Uno.WinRT.Skia\…`, a project name) and the target
-(`uno-runtime\net11.0\skia`). Nothing there reads the property, and no in-repo project imports the
-`build/nuget` packing targets — those exist for third-party library authors, where `UnoRuntimeIdentifier`
-remains the contract. The only in-repo place a flavour value became a folder path was the
-`UnoNugetOverrideVersion` dev loop, which now maps through `_UnoRuntimeFolderName` (`Generic` → `skia`,
-`Wasm` → `webassembly`) so it writes where the packages actually ship.
-
-The library-authoring model is superseded by multi-targeting now that per-platform target frameworks behave
-normally (spec 056 and the 7.0 platform-asset change). Documented as superseded; not removed, because
-published packages depend on the *consuming* half.
+**The cross-runtime model stays.** An Uno.Sdk library can multi-target `net10.0-desktop` and
+`net10.0-browserwasm` instead, but those target platforms are defined by the Uno.Sdk: a library built with
+plain `Microsoft.NET.Sdk` cannot target them, and .NET's own `net10.0-browser` is a different platform to
+NuGet. For such a library the `uno-runtime` replacement is the only build-time desktop/browser split, and
+at least one is published (`SkiaSharp.Views.Uno.WinUI`).
 
 ## 7. Deliberately not done
 
-- **Renaming the `uno-runtime/<tfm>/{skia,webassembly}` folders.** See §4.1. If it ever happens it needs the
-  UNOB0023 guard shipped and soaked first, plus a released transition period probing both names.
 - **The third-party wasm enumeration defect.** On a browser head, a third-party cross-runtime package's
   assembly is taken from the shared folder rather than its browser build. Real, but a behaviour change for
   shipped packages and not what this work is about.
@@ -169,19 +168,17 @@ published packages depend on the *consuming* half.
   `__SKIA__` and selects `*.skia.cs`, so the symbol and the suffix are the last in-repo spellings of `skia` on
   this axis. Renaming them is mechanical but touches thousands of `#if` sites, which is why it is its own
   change rather than a rider on this one.
-- **The `uno-runtime/<tfm>/{skia,webassembly}` folder names themselves**, and the `skia` host pseudo-platform
-  in the hot-reload protocol. Both are shipped surface that a drawing-backend axis would actually collide
-  with, and both need coordinating with the drawing-backend work (unoplatform/uno#24153) rather than being
-  decided here.
 - **The `skia` host pseudo-platform in the hot-reload protocol** — reported for a desktop head by
   `GetRuntimeTargetFramework` and matched server-side by the `['', 'desktop', 'skia']` family. It re-occupies
   the name the moment this work frees it, so freeing `skia` is incomplete until it moves. Belongs with the
-  drawing-backend work.
+  drawing-backend work (unoplatform/uno#24153).
+- **Dropping the `UnoRuntimeIdentifier=Skia` desktop shim.** It waits on a Uno.Resizetizer release that detects
+  a Skia app from the target platform and `UnoHasRuntimeHost`.
 
 ## 8. An invariant worth writing down
 
 `HandleForRuntimeEnabled` enumerates `*.dll` over the **shared** folder and only then redirects individual
 assemblies. That folder's file listing is therefore the *authoritative asset list*: an assembly a package ships
-only under `webassembly` and not under `skia` is silently dropped on a browser head. Uno's own packages are
+only under `wasm` and not under `generic` is silently dropped on a browser head. Uno's own packages are
 unaffected because their file sets are identical, but anything that changes the enumeration basis — including
 fixing §7's third-party defect — must account for this first.

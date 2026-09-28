@@ -347,10 +347,26 @@ Consequences worth knowing about:
 - The `RuntimeAssetsSelectorTask_v0` MSBuild task no longer accepts the three identifier parameters. This
   matters only if you invoked that task directly, which Uno Platform's own targets are the only known caller of.
 
-`UnoRuntimeIdentifier` keeps one meaning, for library authors only: it names the `uno-runtime/<identifier>`
-folder that a cross-runtime library packs its per-runtime output into. That authoring model is superseded by
-multi-targeting — a library wanting platform-specific implementations should target `net10.0-android`,
-`net10.0-ios` and so on, which now behaves as it does in any .NET project.
+#### Cross-runtime libraries
+
+A cross-runtime library — one that packs a desktop and a browser build of itself into `uno-runtime/` — now
+declares which build each project is with `UnoRuntimeFlavor`, and the folders are renamed to match:
+
+| Before 7.0 | 7.0 | Folder |
+|---|---|---|
+| `<UnoRuntimeIdentifier>skia</UnoRuntimeIdentifier>` | `<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>` | `uno-runtime/<tfm>/generic` (was `skia`) |
+| `<UnoRuntimeIdentifier>webassembly</UnoRuntimeIdentifier>` | `<UnoRuntimeFlavor>Wasm</UnoRuntimeFlavor>` | `uno-runtime/<tfm>/wasm` (was `webassembly`) |
+| `<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>` | `<UnoRuntimeFlavor>Reference</UnoRuntimeFlavor>` | none — `lib/<tfm>` |
+
+The old property still works and is reported as UNOB0024 with the value to use instead. Such a library has to
+be rebuilt against 7.0 anyway; a package still in the old layout is reported as
+[UNOB0023](xref:Build.Solution.error-codes#unob0023-a-runtime-enabled-package-provided-no-runtime-assembly)
+when an application consumes it, rather than failing when it runs.
+
+A library built with the Uno.Sdk can instead multi-target `net10.0-desktop`, `net10.0-browserwasm`,
+`net10.0-android` and so on, which behaves as it does in any .NET project. The cross-runtime model remains for
+libraries built with plain `Microsoft.NET.Sdk`, which cannot target the Uno.Sdk's `desktop` and `browserwasm`
+platforms.
 
 ### Public API removed
 
@@ -1214,7 +1230,8 @@ be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
 17. If you use `Window.SystemBackdrop`, make your own root `Page`/panel transparent — the
    framework no longer does it for you.
 18. Remove any `UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` or `UnoWinRTRuntimeIdentifier` property from
-   application heads — UNOB0024 points them out.
+   application heads, and replace `UnoRuntimeIdentifier` with `UnoRuntimeFlavor` in cross-runtime libraries —
+   UNOB0024 points them out.
 19. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 20. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
