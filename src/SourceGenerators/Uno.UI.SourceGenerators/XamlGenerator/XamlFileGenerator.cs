@@ -5999,7 +5999,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var explicitCast = string.Empty;
 				if (propertyType?.SpecialType == SpecialType.System_Object &&
 					!isPositionalParameter &&
-					FindType(m.Owner?.Type) is { } actualValueType)
+					FindType(m.Owner?.Type) is { } actualValueType &&
+					// In attribute syntax the owner is the Binding itself, not a typed value.
+					!SymbolEqualityComparer.Default.Equals(actualValueType, Generation.DataBindingSymbol.Value))
 				{
 					targetValueType = actualValueType;
 
