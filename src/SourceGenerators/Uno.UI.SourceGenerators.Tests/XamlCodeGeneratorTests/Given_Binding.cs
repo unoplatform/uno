@@ -390,6 +390,36 @@ public class Given_Binding
 	}
 
 	[TestMethod]
+	public async Task When_FallbackValue_Literal_On_Object_Property()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", """
+	<Page
+		x:Class="TestRepro.MainPage"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+		<ContentControl Content="{Binding P, FallbackValue=0}" />
+	</Page>
+	"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					_emptyCodeBehind,
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task TestDefaultBindingModeInDataTemplateInsideResourceDictionary()
 	{
 		var xamlFile = new XamlFile("MyResourceDictionary.xaml", """
