@@ -32,7 +32,7 @@ public class Given_RuntimeEnabledPackage
 		PackageCacheFixture fixture,
 		string targetPlatformIdentifier,
 		string platformTargetFramework = AndroidTargetFramework,
-		string libraryRuntimeIdentifier = "")
+		string libraryRuntimeFlavor = "")
 	{
 		var packageBasePath = fixture.AddRuntimeEnabledPackage(
 			"Uno.WinRT",
@@ -41,7 +41,7 @@ public class Given_RuntimeEnabledPackage
 			platformTargetFramework,
 			WinRTAssemblies,
 			OtherAssemblies,
-			["skia", "webassembly"]);
+			["generic", "wasm"]);
 
 		// A plain netX.0 library: it only ships a platform-neutral asset and is not runtime-enabled.
 		var plainLibrary = fixture.AddPackage("Contoso.Sensors", "2.0.0", "net10.0-android35.0", NeutralTargetFramework, []);
@@ -52,7 +52,7 @@ public class Given_RuntimeEnabledPackage
 			BuildEngine = new RecordingBuildEngine(),
 			UnoRuntimeEnabledPackage = [PackageCacheFixture.Item("Uno.WinRT", ("PackageBasePath", packageBasePath))],
 			TargetPlatformIdentifier = targetPlatformIdentifier,
-			LibraryRuntimeIdentifier = libraryRuntimeIdentifier,
+			LibraryRuntimeFlavor = libraryRuntimeFlavor,
 			TargetFrameworkVersion = "v10.0",
 			ResolvedCompileFileDefinitionsInput =
 			[
@@ -99,9 +99,9 @@ public class Given_RuntimeEnabledPackage
 		}
 
 		// Everything else stays on the shared build.
-		added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Contoso.CrossRuntime.dll", StringComparison.Ordinal));
-		added.Should().NotContain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Uno.WinRT.dll", StringComparison.Ordinal));
-		added.Should().NotContain(path => path.Contains("/webassembly/", StringComparison.Ordinal));
+		added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/generic/Contoso.CrossRuntime.dll", StringComparison.Ordinal));
+		added.Should().NotContain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/generic/Uno.WinRT.dll", StringComparison.Ordinal));
+		added.Should().NotContain(path => path.Contains("/wasm/", StringComparison.Ordinal));
 	}
 
 	public static IEnumerable<object[]> MobilePlatformData
@@ -122,9 +122,9 @@ public class Given_RuntimeEnabledPackage
 	}
 
 	[TestMethod]
-	public void When_WebAssemblyHead_Then_WinRT_Assemblies_Come_From_The_WebAssembly_Runtime()
+	public void When_WebAssemblyHead_Then_WinRT_Assemblies_Come_From_The_Wasm_Runtime()
 	{
-		using var fixture = new PackageCacheFixture(nameof(When_WebAssemblyHead_Then_WinRT_Assemblies_Come_From_The_WebAssembly_Runtime));
+		using var fixture = new PackageCacheFixture(nameof(When_WebAssemblyHead_Then_WinRT_Assemblies_Come_From_The_Wasm_Runtime));
 		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "browserwasm");
 
 		task.Execute().Should().BeTrue();
@@ -134,22 +134,22 @@ public class Given_RuntimeEnabledPackage
 		foreach (var winRTAssembly in WinRTAssemblies)
 		{
 			added.Should().Contain(
-				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/webassembly/{winRTAssembly}.dll", StringComparison.Ordinal));
+				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/wasm/{winRTAssembly}.dll", StringComparison.Ordinal));
 		}
 
-		added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Contoso.CrossRuntime.dll", StringComparison.Ordinal));
+		added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/generic/Contoso.CrossRuntime.dll", StringComparison.Ordinal));
 	}
 
 	/// <summary>
-	/// A no-host cross-runtime library (UnoRuntimeIdentifier=webassembly, no head) has no
-	/// TargetPlatformIdentifier to derive a flavor from - it is empty for both skia and webassembly library
-	/// builds alike. LibraryRuntimeIdentifier is what tells the task apart, for every asset, not just WinRT ones.
+	/// A no-host cross-runtime library (UnoRuntimeFlavor=Wasm, no head) has no
+	/// TargetPlatformIdentifier to derive a flavor from - it is empty for both generic and wasm library
+	/// builds alike. LibraryRuntimeFlavor is what tells the task apart, for every asset, not just WinRT ones.
 	/// </summary>
 	[TestMethod]
-	public void When_WebAssemblyLibrary_Then_Everything_Comes_From_The_WebAssembly_Runtime()
+	public void When_WasmLibrary_Then_Everything_Comes_From_The_Wasm_Runtime()
 	{
-		using var fixture = new PackageCacheFixture(nameof(When_WebAssemblyLibrary_Then_Everything_Comes_From_The_WebAssembly_Runtime));
-		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeIdentifier: "webassembly");
+		using var fixture = new PackageCacheFixture(nameof(When_WasmLibrary_Then_Everything_Comes_From_The_Wasm_Runtime));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeFlavor: "wasm");
 
 		task.Execute().Should().BeTrue();
 
@@ -158,18 +158,18 @@ public class Given_RuntimeEnabledPackage
 		foreach (var assembly in WinRTAssemblies.Concat(OtherAssemblies))
 		{
 			added.Should().Contain(
-				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/webassembly/{assembly}.dll", StringComparison.Ordinal),
-				$"{assembly} must come from the webassembly folder for a webassembly-flavored library");
+				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/wasm/{assembly}.dll", StringComparison.Ordinal),
+				$"{assembly} must come from the wasm folder for a wasm-flavored library");
 		}
 
-		added.Should().NotContain(path => path.Contains("/skia/", StringComparison.Ordinal));
+		added.Should().NotContain(path => path.Contains("/generic/", StringComparison.Ordinal));
 	}
 
 	[TestMethod]
-	public void When_SkiaLibrary_Then_Everything_Comes_From_The_Skia_Runtime()
+	public void When_GenericLibrary_Then_Everything_Comes_From_The_Generic_Runtime()
 	{
-		using var fixture = new PackageCacheFixture(nameof(When_SkiaLibrary_Then_Everything_Comes_From_The_Skia_Runtime));
-		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeIdentifier: "skia");
+		using var fixture = new PackageCacheFixture(nameof(When_GenericLibrary_Then_Everything_Comes_From_The_Generic_Runtime));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeFlavor: "generic");
 
 		task.Execute().Should().BeTrue();
 
@@ -177,14 +177,14 @@ public class Given_RuntimeEnabledPackage
 
 		foreach (var assembly in WinRTAssemblies.Concat(OtherAssemblies))
 		{
-			added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/{assembly}.dll", StringComparison.Ordinal));
+			added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/generic/{assembly}.dll", StringComparison.Ordinal));
 		}
 	}
 
 	[TestMethod]
-	public void When_DesktopHead_Then_Everything_Comes_From_The_Skia_Runtime()
+	public void When_DesktopHead_Then_Everything_Comes_From_The_Generic_Runtime()
 	{
-		using var fixture = new PackageCacheFixture(nameof(When_DesktopHead_Then_Everything_Comes_From_The_Skia_Runtime));
+		using var fixture = new PackageCacheFixture(nameof(When_DesktopHead_Then_Everything_Comes_From_The_Generic_Runtime));
 		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "desktop");
 
 		task.Execute().Should().BeTrue();
@@ -194,7 +194,7 @@ public class Given_RuntimeEnabledPackage
 		foreach (var assembly in WinRTAssemblies.Concat(OtherAssemblies))
 		{
 			added.Should().Contain(
-				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/{assembly}.dll", StringComparison.Ordinal));
+				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/generic/{assembly}.dll", StringComparison.Ordinal));
 		}
 
 		// Desktop heads keep compiling against the platform-neutral surface.
@@ -217,8 +217,36 @@ public class Given_RuntimeEnabledPackage
 		foreach (var assembly in WinRTAssemblies.Concat(OtherAssemblies))
 		{
 			added.Should().Contain(
-				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/{assembly}.dll", StringComparison.Ordinal));
+				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/generic/{assembly}.dll", StringComparison.Ordinal));
 		}
+	}
+
+	[TestMethod]
+	public void When_Package_Uses_The_Pre_7_Folder_Names_Then_Nothing_Is_Resolved()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_Package_Uses_The_Pre_7_Folder_Names_Then_Nothing_Is_Resolved));
+		var packageBasePath = fixture.AddRuntimeEnabledPackage(
+			"Contoso.Legacy",
+			"1.0.0",
+			NeutralTargetFramework,
+			AndroidTargetFramework,
+			[],
+			["Contoso.Legacy"],
+			["skia", "webassembly"]);
+
+		var task = new RuntimeAssetsSelectorTask_v0
+		{
+			BuildEngine = new RecordingBuildEngine(),
+			UnoRuntimeEnabledPackage = [PackageCacheFixture.Item("Contoso.Legacy", ("PackageBasePath", packageBasePath))],
+			TargetPlatformIdentifier = "desktop",
+			TargetFrameworkVersion = "v10.0",
+			ResolvedCompileFileDefinitionsInput = [],
+			RuntimeCopyLocalItemsInput = [],
+		};
+
+		// ReplaceUnoRuntime turns this empty result into UNOB0023 rather than deploying the reference facade.
+		task.Execute().Should().BeTrue();
+		task.RuntimeCopyLocalItemsToAdd.Should().BeEmpty();
 	}
 
 	[TestMethod]

@@ -27,7 +27,7 @@ public class Given_RuntimeAssetsSelectorTask
 			runtimeEnabledPlatformTargetFramework,
 			["Uno.WinRT"],
 			[],
-			["skia", "webassembly"]);
+			["generic", "wasm"]);
 
 		return new()
 		{
