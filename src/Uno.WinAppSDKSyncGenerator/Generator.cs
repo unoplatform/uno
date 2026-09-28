@@ -417,13 +417,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
-			// Microsoft.Web.WebView2.Core: sourced from Microsoft.Web.WebView2.Core.Projection (no assembly-switch
-			// case). The hand-written CoreWebView2 implementation is coupled to the Uno.UI visual tree
-			// (VisualTreeHelper/ContentPresenter/IWebView), so the projection is hosted in Uno.UI.
-			else if (@namespace.StartsWith("Microsoft.Web.WebView2", StringComparison.Ordinal))
-			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
-			}
 			// WinRT.Interop.WindowNative / InitializeWithWindow: the generated home per the WinRT.Runtime
 			// assembly is Uno.Foundation, but the hand-written implementations depend on
 			// Microsoft.UI.Xaml.Window (Uno.UI). Relocating requires an ApiExtensibility seam.
@@ -466,6 +459,11 @@ namespace Uno.WinAppSDKSyncGenerator
 					return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 
 				case "Microsoft.WinUI":
+					return @"..\..\..\Uno.UI\Generated\3.0.0.0";
+
+				// WinUI ships WebView2.Core as a separate package, which Uno has no counterpart for.
+				// CoreWebView2 is backed by the WebView2 control's native hosting, so it lives with the control.
+				case "Microsoft.Web.WebView2.Core.Projection":
 					return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 
 				default:
