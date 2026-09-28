@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using MUXControlsTestApp.Utilities;

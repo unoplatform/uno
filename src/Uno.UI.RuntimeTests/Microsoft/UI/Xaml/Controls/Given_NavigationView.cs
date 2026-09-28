@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using MUXC = Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml.Markup;
 using SamplesApp.UITests;

@@ -9,6 +9,7 @@ using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Graphics;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;

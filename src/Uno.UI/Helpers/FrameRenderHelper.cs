@@ -9,7 +9,9 @@ using System.Numerics;
 using System.Threading;
 using Windows.Foundation;
 using Windows.UI;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
+using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -44,7 +46,7 @@ internal static class FrameRenderHelper
 	/// </summary>
 	internal static (IGeometry nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordFrame(ICommandRecorder session, float width, float height, ContainerVisual rootVisual, bool invertPath, DamageRegion? damage = null)
 	{
-		session.Clear(global::Windows.UI.Colors.Transparent);
+		session.Clear(global::Microsoft.UI.Colors.Transparent);
 
 		rootVisual.Compositor.RenderRootVisual(session, rootVisual, damage);
 

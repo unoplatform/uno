@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.UI.Composition;
 using Uno.UI;
+using Microsoft.UI;
 using Windows.UI;
 
 #if __SKIA__

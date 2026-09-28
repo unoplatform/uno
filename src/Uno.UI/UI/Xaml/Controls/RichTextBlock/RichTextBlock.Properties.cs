@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Windows.Foundation;
 using Microsoft.UI.Input;

@@ -8,6 +8,7 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Graphics.Display;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;

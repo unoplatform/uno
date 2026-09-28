@@ -1,14 +1,9 @@
-﻿// This file is included in both Uno.dll (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
-using System;
+﻿using System;
 using System.ComponentModel;
 using Uno.Extensions;
 using WindowsColor = Windows.UI.Color;
 
-#if IS_UNO_UI_PROJECT
 namespace Microsoft.UI;
-#else
-namespace Windows.UI;
-#endif
 
 public partial class ColorHelper
 {

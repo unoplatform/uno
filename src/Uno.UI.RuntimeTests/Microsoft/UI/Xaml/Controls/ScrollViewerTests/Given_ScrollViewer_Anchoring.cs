@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Windows.Foundation.Metadata;
+using Microsoft.UI;
 using Windows.UI;
 
 using static Private.Infrastructure.TestServices;

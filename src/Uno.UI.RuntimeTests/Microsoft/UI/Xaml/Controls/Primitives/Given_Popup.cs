@@ -352,7 +352,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 				var content = new Border
 				{
-					Background = new SolidColorBrush(Windows.UI.Colors.Red),
+					Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
 					HorizontalAlignment = HorizontalAlignment.Stretch,
 					VerticalAlignment = VerticalAlignment.Stretch,
 				};

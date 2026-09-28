@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Uno.UI.Samples.Controls;

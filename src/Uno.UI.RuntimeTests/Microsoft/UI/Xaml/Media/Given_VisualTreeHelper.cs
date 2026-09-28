@@ -17,6 +17,7 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;
 using Uno.UI.DevTools.Input;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using static Private.Infrastructure.TestServices;
 

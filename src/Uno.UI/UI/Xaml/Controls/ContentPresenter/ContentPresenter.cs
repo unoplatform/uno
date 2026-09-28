@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 using Uno.UI;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Microsoft.UI.Composition;
 using Uno.UI.Controls;

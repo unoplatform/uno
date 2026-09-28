@@ -1,21 +1,11 @@
-﻿// This file is included in both Uno.dll (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
-#if IS_UNO_UI_PROJECT
 using Windows.UI.Text;
+
 namespace Microsoft.UI.Text
-#else
-namespace Windows.UI.Text
-#endif
 {
-#if !IS_UNO_UI_PROJECT
-	internal
-#else
-	public
-#endif
-	partial class FontWeights
+	public partial class FontWeights
 	{
 		private static FontWeight? _thin;
 		private static FontWeight? _extraLight;

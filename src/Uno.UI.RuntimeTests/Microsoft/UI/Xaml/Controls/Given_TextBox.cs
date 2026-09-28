@@ -25,11 +25,7 @@ using Windows.UI.ViewManagement;
 using Private.Infrastructure;
 using Combinatorial.MSTest;
 
-#if HAS_UNO_WINUI || WINAPPSDK || WINUI
 using Colors = Microsoft.UI.Colors;
-#else
-using Colors = Windows.UI.Colors;
-#endif
 
 #if WINAPPSDK
 using Uno.UI.Extensions;

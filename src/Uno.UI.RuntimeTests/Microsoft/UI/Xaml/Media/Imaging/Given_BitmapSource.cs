@@ -14,6 +14,7 @@ using Windows.Storage;
 using static Private.Infrastructure.TestServices;
 using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI;
 using Windows.UI;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Extensions;

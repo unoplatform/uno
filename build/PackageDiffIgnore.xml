@@ -2363,6 +2363,9 @@
 		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceManager" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceMap" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Colors" reason="Relocated Microsoft.UI.Colors from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.InteractiveExperiences.Projection) (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.ColorHelper" reason="Relocated Microsoft.UI.ColorHelper from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.InteractiveExperiences.Projection) (breaking changes for 7.0)" />
+		  <Member fullName="Windows.UI.ColorHelper" reason="Removed Windows.UI.ColorHelper from Uno.WinRT; it is UWP XAML-only (Microsoft.Windows.UI.Xaml projection) and not part of the WinAppSDK contract (breaking changes for 7.0)" />
 
 		  <!-- Uno-only menu-plumbing interfaces reduced to internal; WinUI has no public counterparts. -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenu" reason="Reduced Uno-only IMenu to internal (breaking changes for 7.0, uno#8339)" />
@@ -3873,6 +3876,9 @@
 		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceManager" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceMap" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Colors" reason="Relocated Microsoft.UI.Colors from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.InteractiveExperiences.Projection) (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.ColorHelper" reason="Relocated Microsoft.UI.ColorHelper from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.InteractiveExperiences.Projection) (breaking changes for 7.0)" />
+		  <Member fullName="Windows.UI.ColorHelper" reason="Removed Windows.UI.ColorHelper from Uno.WinRT; it is UWP XAML-only (Microsoft.Windows.UI.Xaml projection) and not part of the WinAppSDK contract (breaking changes for 7.0)" />
 
 		  <!-- Uno-only menu-plumbing interfaces reduced to internal; WinUI has no public counterparts. -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenu" reason="Reduced Uno-only IMenu to internal (breaking changes for 7.0, uno#8339)" />

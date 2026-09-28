@@ -17,6 +17,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using Expander = Microsoft.UI.Xaml.Controls.Expander;
 using MUXControlsTestApp.Utilities;

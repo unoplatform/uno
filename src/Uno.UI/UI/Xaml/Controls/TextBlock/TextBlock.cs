@@ -18,6 +18,7 @@ using System.Collections;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Windows.Foundation;
 using Windows.UI.Input;

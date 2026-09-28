@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using Rectangle = System.Drawing.Rectangle;
 

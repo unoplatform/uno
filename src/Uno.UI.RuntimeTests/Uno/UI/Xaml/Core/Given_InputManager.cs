@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.ApplicationModel.Appointments;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;

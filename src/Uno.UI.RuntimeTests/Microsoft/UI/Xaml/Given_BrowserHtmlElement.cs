@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Microsoft.UI;
 using Windows.UI;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.NativeElementHosting;

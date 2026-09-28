@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI;
 using Windows.UI;
 using System.Windows.Input;
 using Microsoft.UI.Xaml.Automation;

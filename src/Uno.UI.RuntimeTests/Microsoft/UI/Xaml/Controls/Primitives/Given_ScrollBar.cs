@@ -13,6 +13,7 @@ using Uno.UI.DevTools.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 

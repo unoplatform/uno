@@ -12,6 +12,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml;
+using Microsoft.UI;
 using Windows.UI;
 using Private.Infrastructure;
 using System.Threading.Tasks;

@@ -1,6 +1,7 @@
 ﻿using System;
 using Uno.UI.Helpers.Boxes;
 using Windows.Globalization;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 

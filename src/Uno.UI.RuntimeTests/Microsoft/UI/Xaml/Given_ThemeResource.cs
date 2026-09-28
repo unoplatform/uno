@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml.Markup;
 using static Private.Infrastructure.TestServices;

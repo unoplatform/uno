@@ -13,6 +13,7 @@ using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;

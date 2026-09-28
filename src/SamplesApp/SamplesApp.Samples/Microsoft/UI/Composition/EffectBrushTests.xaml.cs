@@ -2,6 +2,7 @@
 using System.Numerics;
 using Uno.UI.Samples.Controls;
 
+using Microsoft.UI;
 using Windows.UI;
 
 #if WINDOWS_UWP

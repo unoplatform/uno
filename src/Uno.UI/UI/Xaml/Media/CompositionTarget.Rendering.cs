@@ -496,7 +496,7 @@ public partial class CompositionTarget
 
 					// The window's own background, when it has one: content smaller than the window (or with no
 					// background of its own) shows it, and a transparent clear would show through to nothing.
-					present.Clear(host?.BackgroundColor ?? global::Windows.UI.Colors.Transparent);
+					present.Clear(host?.BackgroundColor ?? global::Microsoft.UI.Colors.Transparent);
 					lastRenderedFrame.frame.Record.Replay(present);
 				}
 

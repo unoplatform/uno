@@ -3,6 +3,7 @@ using Uno.UI;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Markup;
 using System.ComponentModel;
