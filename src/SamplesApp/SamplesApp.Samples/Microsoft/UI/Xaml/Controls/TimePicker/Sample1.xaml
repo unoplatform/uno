@@ -7,10 +7,8 @@
     xmlns:ios="http://nventive.com/ios"
     xmlns:local="using:ControlTests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:native_android="using:Android.Widget"
-    xmlns:native_ios="using:UIKit"
     xmlns:not_win="http://uno.ui/not_win"
-    mc:Ignorable="not_win android ios native_ios native_android">
+    mc:Ignorable="not_win android ios">
 
     <controls:SampleControl SampleDescription="style:default - clock:24h - increment:1 - time:now">
         <controls:SampleControl.SampleContent>

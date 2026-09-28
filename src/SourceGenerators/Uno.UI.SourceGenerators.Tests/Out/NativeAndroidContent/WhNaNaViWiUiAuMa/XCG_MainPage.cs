@@ -40,40 +40,31 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			Resources["TestButtonResource"] = 
+			// Source MainPage.xaml (Line 1:2)
+			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
-				new global::Microsoft.UI.Xaml.Controls.Button
+				new global::Microsoft.UI.Xaml.Controls.ContentControl
 				{
 					IsParsing = true,
-					// Source MainPage.xaml (Line 5:4)
+					// Source MainPage.xaml (Line 5:3)
 					Content = 
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new Microsoft.UI.Xaml.ElementStub(() => 
-						new global::Microsoft.UI.Xaml.Controls.Border
+						new global::Android.Widget.TextView(global::Uno.UI.ContextHelper.Current)
 						{
-							IsParsing = true,
-							Name = "NestedMember",
-							// Source MainPage.xaml (Line 6:5)
+							// Source MainPage.xaml (Line 6:4)
 						}
 						.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 						{
-						__nameScope.RegisterName("NestedMember", __p1);
-						__that.NestedMember = __p1;
-						// Load False
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
-						__p1.CreationComplete();
-						}
-						))
-						)						.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-						{
-						__p1.Name = "NestedMember";
-						_NestedMemberSubject.ElementInstance = __p1;
+						__nameScope.RegisterName("NativeText", __p1);
+						__that.NativeText = __p1;
+						// UI automation id: NativeText
+						__p1.ContentDescription = "NativeText";
 						}
 						))
 					)
 					,
 				}
-				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 				__p1.CreationComplete();
@@ -81,18 +72,16 @@ namespace TestRepro
 				))
 			)
 			;
-			// Source MainPage.xaml (Line 1:2)
-			;
 			
 			this
-			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
 			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
 			// Class TestRepro.MainPage
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
@@ -104,11 +93,11 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _NestedMemberSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "NestedMember");
-		private global::Microsoft.UI.Xaml.Controls.Border NestedMember
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _NativeTextSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Android.Widget.TextView NativeText
 		{
-			get => (global::Microsoft.UI.Xaml.Controls.Border)_NestedMemberSubject.ElementInstance;
-			set => _NestedMemberSubject.ElementInstance = value;
+			get => (global::Android.Widget.TextView)_NativeTextSubject.ElementInstance;
+			set => _NativeTextSubject.ElementInstance = value;
 		}
 	}
 }
@@ -116,30 +105,23 @@ namespace MyProject
 {
 	static class MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Border instance);
+		public delegate void XamlApplyHandler0(global::Android.Widget.TextView instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Border MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Border instance, XamlApplyHandler0 handler)
+		public static global::Android.Widget.TextView MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Android.Widget.TextView instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.ElementStub instance);
+		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.ContentControl instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.ElementStub MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.ElementStub instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Controls.ContentControl MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.ContentControl instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Button instance);
+		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Button MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Button instance, XamlApplyHandler2 handler)
-		{
-			handler(instance);
-			return instance;
-		}
-		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.Page instance);
-		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler3 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;

@@ -303,12 +303,7 @@ namespace TestRepro
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class EmptyDataTemplatePage_Bindings : IEmptyDataTemplatePage_Bindings
 		{
-			#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-			private global::System.WeakReference _ownerReference;
-			private global::TestRepro.EmptyDataTemplatePage Owner { get => (global::TestRepro.EmptyDataTemplatePage)_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }
-			#else
 			private global::TestRepro.EmptyDataTemplatePage Owner { get; set; }
-			#endif
 			public EmptyDataTemplatePage_Bindings(global::TestRepro.EmptyDataTemplatePage owner)
 			{
 				Owner = owner;
