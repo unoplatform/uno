@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Graphics;
 using Windows.Graphics.Imaging;
+using Windows.UI.Text;
 
 namespace Uno.UI.Tests.Foundation;
 
@@ -96,6 +97,17 @@ public class Given_WinRTStructEquality
 		Assert.IsTrue(value == new TextRange { StartIndex = 1, Length = 2 });
 		Assert.IsTrue(value != new TextRange { StartIndex = 1, Length = 3 });
 		AssertMemberwiseEquality(value, new TextRange { StartIndex = 1, Length = 2 }, new TextRange { StartIndex = 0, Length = 2 }, new TextRange { StartIndex = 1, Length = 0 });
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24776")]
+	public void When_FontWeight()
+	{
+		FontWeight value = new(400);
+
+		Assert.IsTrue(value == new FontWeight(400));
+		Assert.IsTrue(value != new FontWeight(700));
+		AssertMemberwiseEquality(value, new FontWeight(400), new FontWeight(700));
 	}
 
 #pragma warning disable UNO0001 // BitmapSize is a NotImplemented stub; its generated equality still works.
