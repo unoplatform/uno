@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
+using Microsoft.UI;
 using Windows.UI;
 using static Private.Infrastructure.TestServices;
 

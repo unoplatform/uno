@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Uno.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation.Metadata;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml;

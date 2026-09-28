@@ -16,6 +16,7 @@ using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Uno.Extensions;

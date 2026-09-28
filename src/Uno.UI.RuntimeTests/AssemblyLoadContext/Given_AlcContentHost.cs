@@ -241,7 +241,7 @@ public class Given_AlcContentHost
 		// A fresh host carrying its OWN consumer-defined Light theme dictionary.
 		var probe = new AlcContentHost();
 		var hostOwnedLight = new ResourceDictionary();
-		hostOwnedLight["HostOwnedThemeColor"] = Windows.UI.Colors.Red;
+		hostOwnedLight["HostOwnedThemeColor"] = Microsoft.UI.Colors.Red;
 		probe.Resources.ThemeDictionaries["Light"] = hostOwnedLight;
 
 		// Project the secondary app's resources: its Light dictionary overwrites the host's same-key one.
@@ -718,7 +718,7 @@ public class Given_AlcContentHost
 		};
 
 		// Set first content — event should fire once.
-		var content1 = new Border { Background = new SolidColorBrush(Windows.UI.Colors.Blue) };
+		var content1 = new Border { Background = new SolidColorBrush(Microsoft.UI.Colors.Blue) };
 		host.Content = content1;
 
 		Assert.AreEqual(1, fireCount, "ContentChanged should fire once after the first content is set.");

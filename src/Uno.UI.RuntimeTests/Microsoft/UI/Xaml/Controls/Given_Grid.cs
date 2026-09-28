@@ -12,6 +12,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;

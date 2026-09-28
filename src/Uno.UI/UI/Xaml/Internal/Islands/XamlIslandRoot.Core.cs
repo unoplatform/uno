@@ -2,6 +2,7 @@
 
 using System;
 using DirectUI;
+using Microsoft.UI;
 using Microsoft.UI.Content;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

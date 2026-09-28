@@ -1,4 +1,5 @@
-﻿using Windows.UI;
+﻿using Microsoft.UI;
+using Windows.UI;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Windows_UI

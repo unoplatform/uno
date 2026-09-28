@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Private.Infrastructure;
 using SamplesApp.UITests;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using static Private.Infrastructure.TestServices;
 

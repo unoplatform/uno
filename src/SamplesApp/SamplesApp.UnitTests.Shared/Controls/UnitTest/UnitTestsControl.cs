@@ -17,6 +17,7 @@ using SampleControl.Presentation;
 using Uno.Disposables;
 using Uno.Testing;
 using Uno.UI.Samples.Helper;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Text;

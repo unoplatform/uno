@@ -2,6 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 using System;
 using System.Collections.Concurrent;
+using Microsoft.UI;
 using Uno;
 using Uno.Helpers.Theming;
 using Windows.Foundation;

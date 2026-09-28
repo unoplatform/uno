@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Text;

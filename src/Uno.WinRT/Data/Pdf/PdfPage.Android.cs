@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Android.Graphics;
 using Android.Graphics.Pdf;
+using Microsoft.UI;
 using Uno;
 using Windows.Foundation;
 using Windows.Storage.Streams;

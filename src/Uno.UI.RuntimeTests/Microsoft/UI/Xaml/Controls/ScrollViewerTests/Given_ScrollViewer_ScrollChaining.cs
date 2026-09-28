@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI;
 using Windows.UI;
 
 using static Private.Infrastructure.TestServices;

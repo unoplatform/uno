@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;

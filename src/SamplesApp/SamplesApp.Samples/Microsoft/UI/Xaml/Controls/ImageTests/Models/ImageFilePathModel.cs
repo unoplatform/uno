@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI;
 using Microsoft.UI.Xaml.Media;
 using System.IO;
+using Microsoft.UI;
 using Windows.UI;
 using Uno.Extensions;
 using System.ComponentModel;

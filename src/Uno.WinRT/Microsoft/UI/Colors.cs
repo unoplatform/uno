@@ -1,22 +1,12 @@
-﻿// This file is included in both Uno.dll (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 using Color = global::Windows.UI.Color;
 
-#if IS_UNO_UI_PROJECT
 namespace Microsoft.UI
-#else
-namespace Windows.UI
-#endif
 {
-#if !IS_UNO_UI_PROJECT
-	internal
-#else
-	public
-#endif
-	partial class Colors
+	public partial class Colors
 	{
 		private Colors()
 		{

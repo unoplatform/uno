@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Graphics.Effects;
+using Microsoft.UI;
 using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;

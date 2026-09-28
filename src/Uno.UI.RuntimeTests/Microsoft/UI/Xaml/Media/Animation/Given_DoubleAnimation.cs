@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;

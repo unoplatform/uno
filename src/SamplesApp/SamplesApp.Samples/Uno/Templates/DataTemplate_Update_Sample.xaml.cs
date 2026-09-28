@@ -32,7 +32,7 @@ namespace Uno.UI.Samples.UITests.Templates
 					{
 						Width = 60,
 						Height = 40,
-						Fill = new SolidColorBrush(Windows.UI.Colors.Red)
+						Fill = new SolidColorBrush(Microsoft.UI.Colors.Red)
 					};
 					var grid = new Grid();
 					grid.Children.Add(rect);
@@ -53,7 +53,7 @@ namespace Uno.UI.Samples.UITests.Templates
 					{
 						Width = 60,
 						Height = 40,
-						Fill = new SolidColorBrush(Windows.UI.Colors.Blue)
+						Fill = new SolidColorBrush(Microsoft.UI.Colors.Blue)
 					};
 					var grid = new Grid();
 					grid.Children.Add(rect);

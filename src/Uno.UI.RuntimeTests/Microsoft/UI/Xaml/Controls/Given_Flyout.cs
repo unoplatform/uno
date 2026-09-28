@@ -12,6 +12,7 @@ using Uno.UI.RuntimeTests.FlyoutPages;
 using Uno.UI.RuntimeTests.FramePages;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;

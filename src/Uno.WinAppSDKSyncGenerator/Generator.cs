@@ -398,10 +398,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			{
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
-			else if (@namespace == "Microsoft.UI" && type.Name is "Colors" or "ColorHelper" or "FontWeights")
-			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
-			}
 
 			// INTENTIONALLY RETAINED REDIRECTS:
 			// These namespaces' WinUI-correct assembly cannot host their hand-written implementations

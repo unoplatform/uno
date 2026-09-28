@@ -4,6 +4,7 @@ using AwesomeAssertions.Execution;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

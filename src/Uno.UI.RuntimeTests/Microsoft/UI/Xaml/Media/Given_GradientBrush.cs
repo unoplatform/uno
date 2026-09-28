@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation.Metadata;
+using Microsoft.UI;
 using Windows.UI;
 using static Private.Infrastructure.TestServices;
 

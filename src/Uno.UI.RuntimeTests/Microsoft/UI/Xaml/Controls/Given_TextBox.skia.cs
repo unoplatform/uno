@@ -23,6 +23,7 @@ using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.System;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
