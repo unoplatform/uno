@@ -13,8 +13,6 @@ namespace Microsoft.UI.Xaml;
 #endif
 public partial struct Thickness : IEquatable<Thickness>
 {
-	public static readonly Thickness Empty;
-
 	public Thickness(double uniformLength)
 		: this()
 	{

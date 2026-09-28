@@ -23,12 +23,6 @@ namespace Microsoft.UI.Xaml
 
 		public bool IsStar { get { return GridUnitType == Xaml.GridUnitType.Star; } }
 
-		public static implicit operator GridLength(string value)
-			=> FromString(value);
-
-		public static implicit operator GridLength(double value)
-			=> new GridLength(value);
-
 		public GridLength(double pixels) : this(pixels, GridUnitType.Pixel)
 		{
 		}
