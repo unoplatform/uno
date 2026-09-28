@@ -6,7 +6,7 @@ namespace Microsoft.UI.Input
 #if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct PhysicalKeyStatus
+	public partial struct PhysicalKeyStatus : global::System.IEquatable<global::Microsoft.UI.Input.PhysicalKeyStatus>
 	{
 		// Forced skipping of method Microsoft.UI.Input.PhysicalKeyStatus.PhysicalKeyStatus()
 #if __SKIA__
@@ -17,6 +17,21 @@ namespace Microsoft.UI.Input
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.PhysicalKeyStatus.PhysicalKeyStatus(uint, uint, bool, bool, bool, bool)
+#if __SKIA__
+		public static bool operator ==(PhysicalKeyStatus x, PhysicalKeyStatus y) => x.RepeatCount == y.RepeatCount && x.ScanCode == y.ScanCode && x.IsExtendedKey == y.IsExtendedKey && x.IsMenuKeyDown == y.IsMenuKeyDown && x.WasKeyDown == y.WasKeyDown && x.IsKeyReleased == y.IsKeyReleased;
+#endif
+#if __SKIA__
+		public static bool operator !=(PhysicalKeyStatus x, PhysicalKeyStatus y) => !(x.RepeatCount == y.RepeatCount && x.ScanCode == y.ScanCode && x.IsExtendedKey == y.IsExtendedKey && x.IsMenuKeyDown == y.IsMenuKeyDown && x.WasKeyDown == y.WasKeyDown && x.IsKeyReleased == y.IsKeyReleased);
+#endif
+#if __SKIA__
+		public bool Equals(PhysicalKeyStatus other) => RepeatCount == other.RepeatCount && ScanCode == other.ScanCode && IsExtendedKey == other.IsExtendedKey && IsMenuKeyDown == other.IsMenuKeyDown && WasKeyDown == other.WasKeyDown && IsKeyReleased == other.IsKeyReleased;
+#endif
+#if __SKIA__
+		public override bool Equals(object obj) => obj is PhysicalKeyStatus that && RepeatCount == that.RepeatCount && ScanCode == that.ScanCode && IsExtendedKey == that.IsExtendedKey && IsMenuKeyDown == that.IsMenuKeyDown && WasKeyDown == that.WasKeyDown && IsKeyReleased == that.IsKeyReleased;
+#endif
+#if __SKIA__
+		public override int GetHashCode() => RepeatCount.GetHashCode() ^ ScanCode.GetHashCode() ^ IsExtendedKey.GetHashCode() ^ IsMenuKeyDown.GetHashCode() ^ WasKeyDown.GetHashCode() ^ IsKeyReleased.GetHashCode();
+#endif
 #if __SKIA__
 		public uint RepeatCount;
 #endif

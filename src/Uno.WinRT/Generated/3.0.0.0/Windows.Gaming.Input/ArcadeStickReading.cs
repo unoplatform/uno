@@ -6,7 +6,7 @@ namespace Windows.Gaming.Input
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct ArcadeStickReading
+	public partial struct ArcadeStickReading : global::System.IEquatable<global::Windows.Gaming.Input.ArcadeStickReading>
 	{
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.ArcadeStickReading()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.ArcadeStickReading(ulong, Windows.Gaming.Input.ArcadeStickButtons)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(ArcadeStickReading x, ArcadeStickReading y) => x.Timestamp == y.Timestamp && x.Buttons == y.Buttons;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(ArcadeStickReading x, ArcadeStickReading y) => !(x.Timestamp == y.Timestamp && x.Buttons == y.Buttons);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(ArcadeStickReading other) => Timestamp == other.Timestamp && Buttons == other.Buttons;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is ArcadeStickReading that && Timestamp == that.Timestamp && Buttons == that.Buttons;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => Timestamp.GetHashCode() ^ Buttons.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Timestamp;
 #endif

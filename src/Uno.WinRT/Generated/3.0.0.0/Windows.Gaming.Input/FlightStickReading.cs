@@ -6,7 +6,7 @@ namespace Windows.Gaming.Input
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct FlightStickReading
+	public partial struct FlightStickReading : global::System.IEquatable<global::Windows.Gaming.Input.FlightStickReading>
 	{
 		// Forced skipping of method Windows.Gaming.Input.FlightStickReading.FlightStickReading()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.FlightStickReading.FlightStickReading(ulong, Windows.Gaming.Input.FlightStickButtons, Windows.Gaming.Input.GameControllerSwitchPosition, double, double, double, double)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(FlightStickReading x, FlightStickReading y) => x.Timestamp == y.Timestamp && x.Buttons == y.Buttons && x.HatSwitch == y.HatSwitch && x.Roll == y.Roll && x.Pitch == y.Pitch && x.Yaw == y.Yaw && x.Throttle == y.Throttle;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(FlightStickReading x, FlightStickReading y) => !(x.Timestamp == y.Timestamp && x.Buttons == y.Buttons && x.HatSwitch == y.HatSwitch && x.Roll == y.Roll && x.Pitch == y.Pitch && x.Yaw == y.Yaw && x.Throttle == y.Throttle);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(FlightStickReading other) => Timestamp == other.Timestamp && Buttons == other.Buttons && HatSwitch == other.HatSwitch && Roll == other.Roll && Pitch == other.Pitch && Yaw == other.Yaw && Throttle == other.Throttle;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is FlightStickReading that && Timestamp == that.Timestamp && Buttons == that.Buttons && HatSwitch == that.HatSwitch && Roll == that.Roll && Pitch == that.Pitch && Yaw == that.Yaw && Throttle == that.Throttle;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => Timestamp.GetHashCode() ^ Buttons.GetHashCode() ^ HatSwitch.GetHashCode() ^ Roll.GetHashCode() ^ Pitch.GetHashCode() ^ Yaw.GetHashCode() ^ Throttle.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Timestamp;
 #endif

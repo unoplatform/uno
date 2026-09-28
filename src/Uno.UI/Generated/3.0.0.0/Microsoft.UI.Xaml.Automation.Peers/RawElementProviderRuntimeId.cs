@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct RawElementProviderRuntimeId
+	public partial struct RawElementProviderRuntimeId : global::System.IEquatable<global::Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId>
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.RawElementProviderRuntimeId()
 #if __SKIA__
@@ -17,6 +17,21 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.RawElementProviderRuntimeId(uint, uint)
+#if __SKIA__
+		public static bool operator ==(RawElementProviderRuntimeId x, RawElementProviderRuntimeId y) => x.Part1 == y.Part1 && x.Part2 == y.Part2;
+#endif
+#if __SKIA__
+		public static bool operator !=(RawElementProviderRuntimeId x, RawElementProviderRuntimeId y) => !(x.Part1 == y.Part1 && x.Part2 == y.Part2);
+#endif
+#if __SKIA__
+		public bool Equals(RawElementProviderRuntimeId other) => Part1 == other.Part1 && Part2 == other.Part2;
+#endif
+#if __SKIA__
+		public override bool Equals(object obj) => obj is RawElementProviderRuntimeId that && Part1 == that.Part1 && Part2 == that.Part2;
+#endif
+#if __SKIA__
+		public override int GetHashCode() => Part1.GetHashCode() ^ Part2.GetHashCode();
+#endif
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Part1
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Part2
 	}

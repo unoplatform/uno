@@ -6,7 +6,7 @@ namespace Windows.Storage.Search
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct SortEntry
+	public partial struct SortEntry : global::System.IEquatable<global::Windows.Storage.Search.SortEntry>
 	{
 		// Forced skipping of method Windows.Storage.Search.SortEntry.SortEntry()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Storage.Search
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.SortEntry.SortEntry(string, bool)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(SortEntry x, SortEntry y) => x.PropertyName == y.PropertyName && x.AscendingOrder == y.AscendingOrder;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(SortEntry x, SortEntry y) => !(x.PropertyName == y.PropertyName && x.AscendingOrder == y.AscendingOrder);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(SortEntry other) => PropertyName == other.PropertyName && AscendingOrder == other.AscendingOrder;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is SortEntry that && PropertyName == that.PropertyName && AscendingOrder == that.AscendingOrder;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => PropertyName.GetHashCode() ^ AscendingOrder.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public string PropertyName;
 #endif

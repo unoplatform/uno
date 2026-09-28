@@ -6,7 +6,7 @@ namespace Windows.Graphics.Display.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct HdmiDisplayHdr2086Metadata
+	public partial struct HdmiDisplayHdr2086Metadata : global::System.IEquatable<global::Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata>
 	{
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata.HdmiDisplayHdr2086Metadata()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Graphics.Display.Core
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata.HdmiDisplayHdr2086Metadata(ushort, ushort, ushort, ushort, ushort, ushort, ushort, ushort, ushort, ushort, ushort, ushort)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(HdmiDisplayHdr2086Metadata x, HdmiDisplayHdr2086Metadata y) => x.RedPrimaryX == y.RedPrimaryX && x.RedPrimaryY == y.RedPrimaryY && x.GreenPrimaryX == y.GreenPrimaryX && x.GreenPrimaryY == y.GreenPrimaryY && x.BluePrimaryX == y.BluePrimaryX && x.BluePrimaryY == y.BluePrimaryY && x.WhitePointX == y.WhitePointX && x.WhitePointY == y.WhitePointY && x.MaxMasteringLuminance == y.MaxMasteringLuminance && x.MinMasteringLuminance == y.MinMasteringLuminance && x.MaxContentLightLevel == y.MaxContentLightLevel && x.MaxFrameAverageLightLevel == y.MaxFrameAverageLightLevel;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(HdmiDisplayHdr2086Metadata x, HdmiDisplayHdr2086Metadata y) => !(x.RedPrimaryX == y.RedPrimaryX && x.RedPrimaryY == y.RedPrimaryY && x.GreenPrimaryX == y.GreenPrimaryX && x.GreenPrimaryY == y.GreenPrimaryY && x.BluePrimaryX == y.BluePrimaryX && x.BluePrimaryY == y.BluePrimaryY && x.WhitePointX == y.WhitePointX && x.WhitePointY == y.WhitePointY && x.MaxMasteringLuminance == y.MaxMasteringLuminance && x.MinMasteringLuminance == y.MinMasteringLuminance && x.MaxContentLightLevel == y.MaxContentLightLevel && x.MaxFrameAverageLightLevel == y.MaxFrameAverageLightLevel);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(HdmiDisplayHdr2086Metadata other) => RedPrimaryX == other.RedPrimaryX && RedPrimaryY == other.RedPrimaryY && GreenPrimaryX == other.GreenPrimaryX && GreenPrimaryY == other.GreenPrimaryY && BluePrimaryX == other.BluePrimaryX && BluePrimaryY == other.BluePrimaryY && WhitePointX == other.WhitePointX && WhitePointY == other.WhitePointY && MaxMasteringLuminance == other.MaxMasteringLuminance && MinMasteringLuminance == other.MinMasteringLuminance && MaxContentLightLevel == other.MaxContentLightLevel && MaxFrameAverageLightLevel == other.MaxFrameAverageLightLevel;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is HdmiDisplayHdr2086Metadata that && RedPrimaryX == that.RedPrimaryX && RedPrimaryY == that.RedPrimaryY && GreenPrimaryX == that.GreenPrimaryX && GreenPrimaryY == that.GreenPrimaryY && BluePrimaryX == that.BluePrimaryX && BluePrimaryY == that.BluePrimaryY && WhitePointX == that.WhitePointX && WhitePointY == that.WhitePointY && MaxMasteringLuminance == that.MaxMasteringLuminance && MinMasteringLuminance == that.MinMasteringLuminance && MaxContentLightLevel == that.MaxContentLightLevel && MaxFrameAverageLightLevel == that.MaxFrameAverageLightLevel;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => RedPrimaryX.GetHashCode() ^ RedPrimaryY.GetHashCode() ^ GreenPrimaryX.GetHashCode() ^ GreenPrimaryY.GetHashCode() ^ BluePrimaryX.GetHashCode() ^ BluePrimaryY.GetHashCode() ^ WhitePointX.GetHashCode() ^ WhitePointY.GetHashCode() ^ MaxMasteringLuminance.GetHashCode() ^ MinMasteringLuminance.GetHashCode() ^ MaxContentLightLevel.GetHashCode() ^ MaxFrameAverageLightLevel.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ushort RedPrimaryX;
 #endif

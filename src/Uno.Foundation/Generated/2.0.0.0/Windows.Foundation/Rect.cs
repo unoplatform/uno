@@ -60,5 +60,10 @@ namespace Windows.Foundation
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Rect.System.IFormattable.ToString(string, System.IFormatProvider)
+		// Skipping already declared method Windows.Foundation.Rect.Equals(Windows.Foundation.Rect)
+		// Skipping already declared method Windows.Foundation.Rect.operator ==(Windows.Foundation.Rect, Windows.Foundation.Rect)
+		// Skipping already declared method Windows.Foundation.Rect.operator !=(Windows.Foundation.Rect, Windows.Foundation.Rect)
+		// Skipping already declared method Windows.Foundation.Rect.Equals(object)
+		// Skipping already declared method Windows.Foundation.Rect.GetHashCode()
 	}
 }

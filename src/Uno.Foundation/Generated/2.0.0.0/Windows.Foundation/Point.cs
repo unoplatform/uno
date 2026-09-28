@@ -28,5 +28,10 @@ namespace Windows.Foundation
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Point.System.IFormattable.ToString(string, System.IFormatProvider)
+		// Skipping already declared method Windows.Foundation.Point.operator ==(Windows.Foundation.Point, Windows.Foundation.Point)
+		// Skipping already declared method Windows.Foundation.Point.operator !=(Windows.Foundation.Point, Windows.Foundation.Point)
+		// Skipping already declared method Windows.Foundation.Point.Equals(object)
+		// Skipping already declared method Windows.Foundation.Point.Equals(Windows.Foundation.Point)
+		// Skipping already declared method Windows.Foundation.Point.GetHashCode()
 	}
 }

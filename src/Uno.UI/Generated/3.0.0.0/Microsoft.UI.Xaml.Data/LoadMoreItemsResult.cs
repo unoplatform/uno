@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Data
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct LoadMoreItemsResult
+	public partial struct LoadMoreItemsResult : global::System.IEquatable<global::Microsoft.UI.Xaml.Data.LoadMoreItemsResult>
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.LoadMoreItemsResult()
 #if __SKIA__
@@ -17,6 +17,21 @@ namespace Microsoft.UI.Xaml.Data
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.LoadMoreItemsResult(uint)
+#if __SKIA__
+		public static bool operator ==(LoadMoreItemsResult x, LoadMoreItemsResult y) => x.Count == y.Count;
+#endif
+#if __SKIA__
+		public static bool operator !=(LoadMoreItemsResult x, LoadMoreItemsResult y) => !(x.Count == y.Count);
+#endif
+#if __SKIA__
+		public bool Equals(LoadMoreItemsResult other) => Count == other.Count;
+#endif
+#if __SKIA__
+		public override bool Equals(object obj) => obj is LoadMoreItemsResult that && Count == that.Count;
+#endif
+#if __SKIA__
+		public override int GetHashCode() => Count.GetHashCode();
+#endif
 		// Skipping already declared field Microsoft.UI.Xaml.Data.LoadMoreItemsResult.Count
 	}
 }

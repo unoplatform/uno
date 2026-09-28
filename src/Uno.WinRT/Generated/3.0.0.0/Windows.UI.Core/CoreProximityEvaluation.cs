@@ -6,7 +6,7 @@ namespace Windows.UI.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct CoreProximityEvaluation
+	public partial struct CoreProximityEvaluation : global::System.IEquatable<global::Windows.UI.Core.CoreProximityEvaluation>
 	{
 		// Forced skipping of method Windows.UI.Core.CoreProximityEvaluation.CoreProximityEvaluation()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.UI.Core
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreProximityEvaluation.CoreProximityEvaluation(int, Windows.Foundation.Point)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(CoreProximityEvaluation x, CoreProximityEvaluation y) => x.Score == y.Score && x.AdjustedPoint == y.AdjustedPoint;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(CoreProximityEvaluation x, CoreProximityEvaluation y) => !(x.Score == y.Score && x.AdjustedPoint == y.AdjustedPoint);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(CoreProximityEvaluation other) => Score == other.Score && AdjustedPoint == other.AdjustedPoint;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is CoreProximityEvaluation that && Score == that.Score && AdjustedPoint == that.AdjustedPoint;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => Score.GetHashCode() ^ AdjustedPoint.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int Score;
 #endif

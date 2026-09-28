@@ -6,7 +6,7 @@ namespace Windows.Graphics.Holographic
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct HolographicAdapterId
+	public partial struct HolographicAdapterId : global::System.IEquatable<global::Windows.Graphics.Holographic.HolographicAdapterId>
 	{
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.HolographicAdapterId()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Graphics.Holographic
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.HolographicAdapterId(uint, int)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(HolographicAdapterId x, HolographicAdapterId y) => x.LowPart == y.LowPart && x.HighPart == y.HighPart;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(HolographicAdapterId x, HolographicAdapterId y) => !(x.LowPart == y.LowPart && x.HighPart == y.HighPart);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(HolographicAdapterId other) => LowPart == other.LowPart && HighPart == other.HighPart;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is HolographicAdapterId that && LowPart == that.LowPart && HighPart == that.HighPart;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => LowPart.GetHashCode() ^ HighPart.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint LowPart;
 #endif

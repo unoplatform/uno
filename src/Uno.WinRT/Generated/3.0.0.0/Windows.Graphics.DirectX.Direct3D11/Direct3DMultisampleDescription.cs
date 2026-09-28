@@ -6,7 +6,7 @@ namespace Windows.Graphics.DirectX.Direct3D11
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct Direct3DMultisampleDescription
+	public partial struct Direct3DMultisampleDescription : global::System.IEquatable<global::Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription>
 	{
 		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription.Direct3DMultisampleDescription()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Graphics.DirectX.Direct3D11
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription.Direct3DMultisampleDescription(int, int)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(Direct3DMultisampleDescription x, Direct3DMultisampleDescription y) => x.Count == y.Count && x.Quality == y.Quality;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(Direct3DMultisampleDescription x, Direct3DMultisampleDescription y) => !(x.Count == y.Count && x.Quality == y.Quality);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(Direct3DMultisampleDescription other) => Count == other.Count && Quality == other.Quality;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is Direct3DMultisampleDescription that && Count == that.Count && Quality == that.Quality;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => Count.GetHashCode() ^ Quality.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int Count;
 #endif

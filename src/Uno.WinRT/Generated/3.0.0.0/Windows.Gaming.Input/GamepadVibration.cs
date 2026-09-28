@@ -6,7 +6,7 @@ namespace Windows.Gaming.Input
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct GamepadVibration
+	public partial struct GamepadVibration : global::System.IEquatable<global::Windows.Gaming.Input.GamepadVibration>
 	{
 		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.GamepadVibration()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.GamepadVibration(double, double, double, double)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(GamepadVibration x, GamepadVibration y) => x.LeftMotor == y.LeftMotor && x.RightMotor == y.RightMotor && x.LeftTrigger == y.LeftTrigger && x.RightTrigger == y.RightTrigger;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(GamepadVibration x, GamepadVibration y) => !(x.LeftMotor == y.LeftMotor && x.RightMotor == y.RightMotor && x.LeftTrigger == y.LeftTrigger && x.RightTrigger == y.RightTrigger);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(GamepadVibration other) => LeftMotor == other.LeftMotor && RightMotor == other.RightMotor && LeftTrigger == other.LeftTrigger && RightTrigger == other.RightTrigger;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is GamepadVibration that && LeftMotor == that.LeftMotor && RightMotor == that.RightMotor && LeftTrigger == that.LeftTrigger && RightTrigger == that.RightTrigger;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => LeftMotor.GetHashCode() ^ RightMotor.GetHashCode() ^ LeftTrigger.GetHashCode() ^ RightTrigger.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double LeftMotor;
 #endif

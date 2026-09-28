@@ -6,7 +6,7 @@ namespace Windows.Networking.NetworkOperators
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct ProfileUsage
+	public partial struct ProfileUsage : global::System.IEquatable<global::Windows.Networking.NetworkOperators.ProfileUsage>
 	{
 		// Forced skipping of method Windows.Networking.NetworkOperators.ProfileUsage.ProfileUsage()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ProfileUsage.ProfileUsage(uint, System.DateTimeOffset)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(ProfileUsage x, ProfileUsage y) => x.UsageInMegabytes == y.UsageInMegabytes && x.LastSyncTime == y.LastSyncTime;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(ProfileUsage x, ProfileUsage y) => !(x.UsageInMegabytes == y.UsageInMegabytes && x.LastSyncTime == y.LastSyncTime);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(ProfileUsage other) => UsageInMegabytes == other.UsageInMegabytes && LastSyncTime == other.LastSyncTime;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is ProfileUsage that && UsageInMegabytes == that.UsageInMegabytes && LastSyncTime == that.LastSyncTime;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => UsageInMegabytes.GetHashCode() ^ LastSyncTime.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint UsageInMegabytes;
 #endif

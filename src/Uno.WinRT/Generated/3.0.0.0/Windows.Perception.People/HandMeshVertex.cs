@@ -6,7 +6,7 @@ namespace Windows.Perception.People
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct HandMeshVertex
+	public partial struct HandMeshVertex : global::System.IEquatable<global::Windows.Perception.People.HandMeshVertex>
 	{
 		// Forced skipping of method Windows.Perception.People.HandMeshVertex.HandMeshVertex()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Perception.People
 		}
 #endif
 		// Forced skipping of method Windows.Perception.People.HandMeshVertex.HandMeshVertex(System.Numerics.Vector3, System.Numerics.Vector3)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(HandMeshVertex x, HandMeshVertex y) => x.Position == y.Position && x.Normal == y.Normal;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(HandMeshVertex x, HandMeshVertex y) => !(x.Position == y.Position && x.Normal == y.Normal);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(HandMeshVertex other) => Position == other.Position && Normal == other.Normal;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is HandMeshVertex that && Position == that.Position && Normal == that.Normal;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => Position.GetHashCode() ^ Normal.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Position;
 #endif

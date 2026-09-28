@@ -6,7 +6,7 @@ namespace Windows.Media.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct MseTimeRange
+	public partial struct MseTimeRange : global::System.IEquatable<global::Windows.Media.Core.MseTimeRange>
 	{
 		// Forced skipping of method Windows.Media.Core.MseTimeRange.MseTimeRange()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MseTimeRange.MseTimeRange(System.TimeSpan, System.TimeSpan)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(MseTimeRange x, MseTimeRange y) => x.Start == y.Start && x.End == y.End;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(MseTimeRange x, MseTimeRange y) => !(x.Start == y.Start && x.End == y.End);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(MseTimeRange other) => Start == other.Start && End == other.End;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is MseTimeRange that && Start == that.Start && End == that.End;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => Start.GetHashCode() ^ End.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.TimeSpan Start;
 #endif

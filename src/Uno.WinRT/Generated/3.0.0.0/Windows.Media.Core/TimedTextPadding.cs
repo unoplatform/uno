@@ -6,7 +6,7 @@ namespace Windows.Media.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct TimedTextPadding
+	public partial struct TimedTextPadding : global::System.IEquatable<global::Windows.Media.Core.TimedTextPadding>
 	{
 		// Forced skipping of method Windows.Media.Core.TimedTextPadding.TimedTextPadding()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextPadding.TimedTextPadding(double, double, double, double, Windows.Media.Core.TimedTextUnit)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(TimedTextPadding x, TimedTextPadding y) => x.Before == y.Before && x.After == y.After && x.Start == y.Start && x.End == y.End && x.Unit == y.Unit;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(TimedTextPadding x, TimedTextPadding y) => !(x.Before == y.Before && x.After == y.After && x.Start == y.Start && x.End == y.End && x.Unit == y.Unit);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(TimedTextPadding other) => Before == other.Before && After == other.After && Start == other.Start && End == other.End && Unit == other.Unit;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is TimedTextPadding that && Before == that.Before && After == that.After && Start == that.Start && End == that.End && Unit == that.Unit;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => Before.GetHashCode() ^ After.GetHashCode() ^ Start.GetHashCode() ^ End.GetHashCode() ^ Unit.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double Before;
 #endif

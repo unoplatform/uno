@@ -6,7 +6,7 @@ namespace Windows.Networking.NetworkOperators
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct ESimProfileInstallProgress
+	public partial struct ESimProfileInstallProgress : global::System.IEquatable<global::Windows.Networking.NetworkOperators.ESimProfileInstallProgress>
 	{
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileInstallProgress.ESimProfileInstallProgress()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileInstallProgress.ESimProfileInstallProgress(int, int)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(ESimProfileInstallProgress x, ESimProfileInstallProgress y) => x.TotalSizeInBytes == y.TotalSizeInBytes && x.InstalledSizeInBytes == y.InstalledSizeInBytes;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(ESimProfileInstallProgress x, ESimProfileInstallProgress y) => !(x.TotalSizeInBytes == y.TotalSizeInBytes && x.InstalledSizeInBytes == y.InstalledSizeInBytes);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(ESimProfileInstallProgress other) => TotalSizeInBytes == other.TotalSizeInBytes && InstalledSizeInBytes == other.InstalledSizeInBytes;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is ESimProfileInstallProgress that && TotalSizeInBytes == that.TotalSizeInBytes && InstalledSizeInBytes == that.InstalledSizeInBytes;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => TotalSizeInBytes.GetHashCode() ^ InstalledSizeInBytes.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int TotalSizeInBytes;
 #endif

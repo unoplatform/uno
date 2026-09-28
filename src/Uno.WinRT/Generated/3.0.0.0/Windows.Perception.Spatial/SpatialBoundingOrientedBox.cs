@@ -6,7 +6,7 @@ namespace Windows.Perception.Spatial
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct SpatialBoundingOrientedBox
+	public partial struct SpatialBoundingOrientedBox : global::System.IEquatable<global::Windows.Perception.Spatial.SpatialBoundingOrientedBox>
 	{
 		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingOrientedBox.SpatialBoundingOrientedBox()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Perception.Spatial
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingOrientedBox.SpatialBoundingOrientedBox(System.Numerics.Vector3, System.Numerics.Vector3, System.Numerics.Quaternion)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(SpatialBoundingOrientedBox x, SpatialBoundingOrientedBox y) => x.Center == y.Center && x.Extents == y.Extents && x.Orientation == y.Orientation;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(SpatialBoundingOrientedBox x, SpatialBoundingOrientedBox y) => !(x.Center == y.Center && x.Extents == y.Extents && x.Orientation == y.Orientation);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(SpatialBoundingOrientedBox other) => Center == other.Center && Extents == other.Extents && Orientation == other.Orientation;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is SpatialBoundingOrientedBox that && Center == that.Center && Extents == that.Extents && Orientation == that.Orientation;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => Center.GetHashCode() ^ Extents.GetHashCode() ^ Orientation.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Center;
 #endif

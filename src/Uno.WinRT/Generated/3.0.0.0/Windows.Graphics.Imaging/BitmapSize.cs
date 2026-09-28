@@ -6,7 +6,7 @@ namespace Windows.Graphics.Imaging
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct BitmapSize
+	public partial struct BitmapSize : global::System.IEquatable<global::Windows.Graphics.Imaging.BitmapSize>
 	{
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapSize.BitmapSize()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapSize.BitmapSize(uint, uint)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(BitmapSize x, BitmapSize y) => x.Width == y.Width && x.Height == y.Height;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(BitmapSize x, BitmapSize y) => !(x.Width == y.Width && x.Height == y.Height);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(BitmapSize other) => Width == other.Width && Height == other.Height;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is BitmapSize that && Width == that.Width && Height == that.Height;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => Width.GetHashCode() ^ Height.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint Width;
 #endif

@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Resources.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct ResourceLayoutInfo
+	public partial struct ResourceLayoutInfo : global::System.IEquatable<global::Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo>
 	{
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.ResourceLayoutInfo()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.ApplicationModel.Resources.Core
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.ResourceLayoutInfo(uint, uint, uint, uint, int)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(ResourceLayoutInfo x, ResourceLayoutInfo y) => x.MajorVersion == y.MajorVersion && x.MinorVersion == y.MinorVersion && x.ResourceSubtreeCount == y.ResourceSubtreeCount && x.NamedResourceCount == y.NamedResourceCount && x.Checksum == y.Checksum;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(ResourceLayoutInfo x, ResourceLayoutInfo y) => !(x.MajorVersion == y.MajorVersion && x.MinorVersion == y.MinorVersion && x.ResourceSubtreeCount == y.ResourceSubtreeCount && x.NamedResourceCount == y.NamedResourceCount && x.Checksum == y.Checksum);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(ResourceLayoutInfo other) => MajorVersion == other.MajorVersion && MinorVersion == other.MinorVersion && ResourceSubtreeCount == other.ResourceSubtreeCount && NamedResourceCount == other.NamedResourceCount && Checksum == other.Checksum;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is ResourceLayoutInfo that && MajorVersion == that.MajorVersion && MinorVersion == that.MinorVersion && ResourceSubtreeCount == that.ResourceSubtreeCount && NamedResourceCount == that.NamedResourceCount && Checksum == that.Checksum;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => MajorVersion.GetHashCode() ^ MinorVersion.GetHashCode() ^ ResourceSubtreeCount.GetHashCode() ^ NamedResourceCount.GetHashCode() ^ Checksum.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint MajorVersion;
 #endif

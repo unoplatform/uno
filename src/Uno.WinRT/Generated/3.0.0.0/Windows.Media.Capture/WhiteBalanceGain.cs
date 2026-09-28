@@ -6,7 +6,7 @@ namespace Windows.Media.Capture
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct WhiteBalanceGain
+	public partial struct WhiteBalanceGain : global::System.IEquatable<global::Windows.Media.Capture.WhiteBalanceGain>
 	{
 		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.WhiteBalanceGain()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,21 @@ namespace Windows.Media.Capture
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.WhiteBalanceGain(double, double, double)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(WhiteBalanceGain x, WhiteBalanceGain y) => x.R == y.R && x.G == y.G && x.B == y.B;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(WhiteBalanceGain x, WhiteBalanceGain y) => !(x.R == y.R && x.G == y.G && x.B == y.B);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(WhiteBalanceGain other) => R == other.R && G == other.G && B == other.B;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj) => obj is WhiteBalanceGain that && R == that.R && G == that.G && B == that.B;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode() => R.GetHashCode() ^ G.GetHashCode() ^ B.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double R;
 #endif
