@@ -97,22 +97,25 @@ public partial class InputPane
 			Hiding?.Invoke(this, args);
 		}
 
-		if (!args.EnsuredFocusedElementInView)
+		var ensureFocusedElementInView = !args.EnsuredFocusedElementInView;
+
+		UpdateRootViewport(ensureFocusedElementInView);
+
+		if (ensureFocusedElementInView && Visible)
 		{
 			// Wait for proper element to be focused
 			_ = UI.Core.CoreDispatcher.Main.RunAsync(
 				UI.Core.CoreDispatcherPriority.Normal,
-				() => EnsureFocusedElementInViewPartial()
+				EnsureFocusedElementInView
 			);
 		}
 	}
 
-	partial void EnsureFocusedElementInViewPartial();
-
 #nullable enable
+	// WinUI's ExtraPixelsForBringIntoView: the margin kept between the focused element and the input pane.
+	private const double ExtraPixelsForBringIntoView = 20;
+
 	private Lazy<IInputPaneExtension?>? _inputPaneExtension;
-	private IDisposable? _padScrollContentPresenter;
-	private ScrollContentPresenter? _paddedScrollContentPresenter;
 
 	partial void InitializePlatform()
 	{
@@ -127,66 +130,44 @@ public partial class InputPane
 
 	private bool TryHidePlatform() => _inputPaneExtension?.Value?.TryHide() ?? false;
 
-	partial void EnsureFocusedElementInViewPartial()
+	private static XamlRoot? GetXamlRoot() => Window.InitialWindow?.Content?.XamlRoot;
+
+	// Like WinUI's RootScrollViewer, the root viewport ends at the top of the input pane, unless the app
+	// handled the occlusion itself.
+	private void UpdateRootViewport(bool ensureFocusedElementInView)
 	{
-		var initialWindow = Window.InitialWindow;
-		if (initialWindow is null)
+		if (GetXamlRoot()?.VisualTree.RootElement is not { } rootElement
+			|| rootElement is not Uno.UI.Xaml.Core.IRootElement { RootElementLogic: { } rootElementLogic })
 		{
 			return;
 		}
 
-		var xamlRoot = initialWindow.Content?.XamlRoot;
+		rootElementLogic.SetInputPaneViewportHeight(Visible && ensureFocusedElementInView
+			? Math.Clamp(OccludedRect.Y, 0, rootElement.ActualSize.Y)
+			: null);
+	}
 
-		UIElement? focusedElement = null;
-		ScrollContentPresenter? scp = null;
-
-		if (xamlRoot is not null && Visible)
-		{
-			focusedElement = FocusManager.GetFocusedElement(xamlRoot) as UIElement;
-			scp = focusedElement?.FindFirstParent<ScrollContentPresenter>();
-
-			// ScrollViewer can be nested, but the outer-most SV isn't necessarily the one to handle this "padded" scroll.
-			// Only the first SV that is constrained would be the one, as unconstrained SV can just expand freely.
-			while (scp is not null
-				&& double.IsPositiveInfinity(scp.m_previousAvailableSize.Height)
-				&& scp.FindFirstParent<ScrollContentPresenter>(includeCurrent: false) is { } outerScv)
-			{
-				scp = outerScv;
-			}
-		}
-
-		if (_paddedScrollContentPresenter is not null && _paddedScrollContentPresenter != scp)
-		{
-			// The occlusion no longer targets this presenter (focus moved or the pane hid): restore it.
-			_padScrollContentPresenter?.Dispose();
-			_padScrollContentPresenter = null;
-			_paddedScrollContentPresenter = null;
-		}
-
-		if (focusedElement is null)
+	private void EnsureFocusedElementInView()
+	{
+		if (!Visible
+			|| GetXamlRoot() is not { } xamlRoot
+			|| FocusManager.GetFocusedElement(xamlRoot) is not UIElement focusedElement)
 		{
 			return;
 		}
 
-		if (scp is not null)
+		var size = focusedElement.RenderSize;
+		var targetRect = new Rect(0, 0, size.Width, size.Height);
+		if (size.Height + (2 * ExtraPixelsForBringIntoView) <= OccludedRect.Y)
 		{
-			// Deliberately no restore-then-re-pad for the same presenter: the occlusion is reported
-			// continuously while the keyboard animates, and restoring first would make Pad measure a
-			// viewport whose layout still reflects the previous padding. Pad compensates internally.
-			scp.UpdateLayout();
-			_padScrollContentPresenter = scp.Pad(OccludedRect);
-			_paddedScrollContentPresenter = scp;
+			targetRect = new Rect(0, -ExtraPixelsForBringIntoView, size.Width, size.Height + (2 * ExtraPixelsForBringIntoView));
 		}
 
-		// As we changed the layout properties of the ScrollContentPresenter, we need to wait for the next layout pass for
-		// the scrollable height to be updated.
-		_ = UI.Core.CoreDispatcher.Main.RunAsync(
-			UI.Core.CoreDispatcherPriority.Normal, () =>
-			{
-				focusedElement.UpdateLayout();
-				focusedElement.StartBringIntoView();
-			}
-		);
+		focusedElement.StartBringIntoView(new BringIntoViewOptions
+		{
+			AnimationDesired = false,
+			TargetRect = targetRect,
+		});
 	}
 #nullable disable
 }
