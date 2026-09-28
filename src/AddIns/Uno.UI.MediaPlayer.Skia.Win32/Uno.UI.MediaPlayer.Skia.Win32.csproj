@@ -17,6 +17,7 @@
 
 		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -36,22 +37,6 @@
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.MediaPlayer.Skia.X11\SharedMediaPlayerExtension.cs" />
 	</ItemGroup>
-
-	<Target Name="_UnoUIUnoUIMediaPlayerSkiaWin32OverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
-		<PropertyGroup>
-			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\uno.ui.mediaplayer.skia.win32\$(UnoNugetOverrideVersion)\uno-runtime\skia</_TargetNugetFolder>
-		</PropertyGroup>
-		<ItemGroup>
-			<_OutputFiles Include="$(TargetDir)**" />
-		</ItemGroup>
-		<MakeDir Directories="$(_TargetNugetFolder)" />
-
-		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
-
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
-	</Target>
 
 	<ItemGroup>
 		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
