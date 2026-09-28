@@ -102,3 +102,35 @@ The default paths above can be overridden using the following feature flags:
 These properties need to be set before the application is initialized. The best place for this is `Program.cs`, before the `UnoPlatformHostBuilder` instance is created.
 
 If you intend to support both Windows and Unix-based systems for the Desktop target, make the path conditional utilizing `RuntimeInformation.IsOSPlatform(OSPlatform.Windows)`.
+
+## Settings storage on iOS and tvOS
+
+On iOS and tvOS, `LocalSettings` and `RoamingSettings` are backed by a dedicated `NSUserDefaults` suite named `UnoApplicationData`, persisted as `Library/Preferences/UnoApplicationData.plist` inside the application sandbox. Both settings containers share this single backing store.
+
+Only the keys stored in that suite are visible through `ApplicationData`. The keys the OS and Apple frameworks keep in `NSUserDefaults.StandardUserDefaults`, and any your own native code writes there, are never enumerated by `Values.Keys` nor removed by `Values.Clear()`.
+
+If you need to access the stored values from native or interop code, open the suite explicitly:
+
+```csharp
+var unoDefaults = new NSUserDefaults("UnoApplicationData", NSUserDefaultsType.SuiteName);
+```
+
+### Privacy manifest
+
+`NSUserDefaults` is one of Apple's [required reason APIs](https://developer.apple.com/documentation/bundleresources/describing-use-of-required-reason-api), so an app that uses `LocalSettings` or `RoamingSettings` on iOS or tvOS must declare it in its [privacy manifest](xref:Uno.Features.Uno.Sdk#apple-privacy-manifest-support). Otherwise, App Store Connect rejects the upload. Make sure `Platforms/iOS/PrivacyInfo.xcprivacy` declares it inside the `NSPrivacyAccessedAPITypes` array of the manifest's root dictionary:
+
+```xml
+<dict>
+    <key>NSPrivacyAccessedAPIType</key>
+    <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+    <key>NSPrivacyAccessedAPITypeReasons</key>
+    <array>
+        <string>CA92.1</string>
+    </array>
+</dict>
+```
+
+The `CA92.1` reason covers reading and writing data that only the app itself can access, which matches the `UnoApplicationData` suite.
+
+> [!NOTE]
+> Before Uno Platform 7.0, settings were stored directly in `NSUserDefaults.StandardUserDefaults`. Values written by those versions stay there, and remain invisible to `ApplicationData`, until the app explicitly migrates them. See the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for details.
