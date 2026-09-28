@@ -320,8 +320,14 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 				var expectedNames = new HashSet<string>();
 				foreach (var tree in compilation.SyntaxTrees.Skip(project.DocumentIds.Count))
 				{
-					WriteTreeToDiskIfNecessary(tree, resourceDirectory);
-					expectedNames.Add(GetSnapshotName(tree));
+					// Output of a generator a test adds on top is asserted on by that test instead.
+					if (GetSnapshotName(tree) is not { } name)
+					{
+						continue;
+					}
+
+					WriteTreeToDiskIfNecessary(tree, name, resourceDirectory);
+					expectedNames.Add(name);
 				}
 
 				var currentTestPrefix = SnapshotResourcePrefix;
@@ -417,7 +423,7 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 			private string SnapshotResourcePrefix
 				=> $"Uno.UI.SourceGenerators.Tests.{TestOutputFolderName}.{SnapshotFolder}.{_testMethodName}.";
 
-			private string GetSnapshotName(SyntaxTree tree)
+			private string? GetSnapshotName(SyntaxTree tree)
 			{
 				var generatorName = new DirectoryInfo(tree.FilePath).Parent!.Name;
 				generatorName = generatorName.Substring(generatorName.LastIndexOf('.') + 1);
@@ -430,7 +436,7 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 					}
 				}
 
-				throw new InvalidOperationException($"Unexpected generator name '{generatorName}'");
+				return null;
 			}
 
 			/// <summary>
@@ -493,14 +499,12 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 				=> Path.GetFileNameWithoutExtension(xamlFileName).Replace(" ", "_").Replace(".", "_");
 
 			[Conditional("WRITE_EXPECTED")]
-			private void WriteTreeToDiskIfNecessary(SyntaxTree tree, string resourceDirectory)
+			private void WriteTreeToDiskIfNecessary(SyntaxTree tree, string name, string resourceDirectory)
 			{
 				if (tree.Encoding is null)
 				{
 					throw new ArgumentException("Syntax tree encoding was not specified");
 				}
-
-				var name = GetSnapshotName(tree);
 
 				var filePath = Path.Combine(resourceDirectory, name);
 				Directory.CreateDirectory(resourceDirectory);
