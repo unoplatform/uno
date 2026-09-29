@@ -108,7 +108,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			// PrimaryClipDescription only describes the clip. Unlike PrimaryClip it does not count as
 			// reading the clipboard, so it does not raise the system "pasted from your clipboard"
 			// notice -- whose overlay also swallows the next tap aimed at the app.
-			if (ContextHelper.Current?.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
+			if (ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
 			{
 				containsText = manager.PrimaryClipDescription is { } description
 					&& (description.HasMimeType(ClipDescription.MimetypeTextPlain)
