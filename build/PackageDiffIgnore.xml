@@ -2846,6 +2846,7 @@
 
 		  <!-- Legacy Frame navigation mode flags (accessors paired in <Methods> below). -->
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Frame::UseWinUIBehavior()" reason="Removed Frame.UseWinUIBehavior; Frame always follows WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.ApplicationRequiresPointerMode Microsoft.UI.Xaml.Application::RequiresPointerMode()" reason="Made internal; not part of the public WinAppSDK Application surface (accessors paired in &lt;Methods&gt;; breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page::IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled; only the legacy Frame navigation mode pooled pages (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
@@ -4439,6 +4440,7 @@
 
 		  <!-- Legacy Frame navigation mode flags (accessors paired in <Methods> below). -->
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Frame::UseWinUIBehavior()" reason="Removed Frame.UseWinUIBehavior; Frame always follows WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.ApplicationRequiresPointerMode Microsoft.UI.Xaml.Application::RequiresPointerMode()" reason="Made internal; not part of the public WinAppSDK Application surface (accessors paired in &lt;Methods&gt;; breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Page::IsPoolingEnabled()" reason="Removed Page.IsPoolingEnabled; only the legacy Frame navigation mode pooled pages (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
