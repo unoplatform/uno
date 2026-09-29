@@ -74,8 +74,13 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	/// <summary>Called when a child is removed from the visual tree. Platform handles tree updates.</summary>
 	protected abstract void OnChildRemoved(UIElement parent, UIElement child);
 
-	/// <summary>Called when a visual's offset or size changes. Platform handles position updates.</summary>
-	protected abstract void OnSizeOrOffsetChanged(Microsoft.UI.Composition.Visual visual);
+	/// <summary>
+	/// Called when a visual's offset or size changes, for platforms that push positions to their native tree.
+	/// Pull-based platforms (Win32 UIA, like WinUI) leave it empty: clients query bounds on demand.
+	/// </summary>
+	protected virtual void OnSizeOrOffsetChanged(Microsoft.UI.Composition.Visual visual)
+	{
+	}
 
 	// ──────────────────────────────────────────────────────────────
 	//  Abstract: Property updates (called from shared routing)

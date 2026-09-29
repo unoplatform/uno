@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Microsoft.UI.Composition;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -693,38 +692,6 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 		var peer = element.CachedAutomationPeer;
 		return peer is not null ? FindExistingProviderForPeer(peer, resolveEventsSource: true) : null;
-	}
-
-	protected override void OnSizeOrOffsetChanged(Visual visual)
-	{
-		// UIA pulls BoundingRectangle on demand, so we only need to notify
-		// clients that the property has changed so they re-query it.
-		if (visual is ContainerVisual containerVisual
-			&& containerVisual.Owner?.Target is UIElement owner
-			&& TryGetLiveProvider(owner, out var provider))
-		{
-			try
-			{
-				_ = Win32UIAutomationInterop.UiaRaiseAutomationPropertyChangedEvent(
-					provider,
-					Win32UIAutomationInterop.UIA_BoundingRectanglePropertyId,
-					null,
-					null);
-			}
-			catch (Exception ex) when (
-				ex is System.Runtime.InteropServices.COMException
-					or DllNotFoundException
-					or EntryPointNotFoundException
-					or BadImageFormatException
-					or TypeLoadException
-					or System.Runtime.InteropServices.SEHException)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"Failed to raise BoundingRectangle changed event: {ex.Message}");
-				}
-			}
-		}
 	}
 
 	private void CleanupProviders(UIElement element)
