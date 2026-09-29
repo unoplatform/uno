@@ -91,7 +91,7 @@ public class Given_AndroidSkiaXamlRootHost
 		var wrapper = GetMember(activity, "Wrapper");
 		Assert.IsNotNull(wrapper);
 		Assert.AreEqual(
-			false,
+			0,
 			GetField(wrapper, "_awaitingFirstFrame"),
 			"The first-frame gate must be released once the window has presented a frame.");
 	}
