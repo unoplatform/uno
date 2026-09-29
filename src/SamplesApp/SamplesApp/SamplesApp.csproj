@@ -617,16 +617,8 @@
 	</ItemGroup>
 
 	<!--
-	Android resources must sit directly under mipmap-<dpi>\. Uno.Resizetizer builds the app icon
-	destination as <mipmap-dpi>\<the icon's project-relative folder>\<name>.png. When this head set
-	UnoRuntimeIdentifier=Skia on every non-WinUI TFM, the package's windows/skia targets also ran on
-	android, where UpdatePathOfUnoIcon stamps Link=Assets\Icons\icon.svg onto the item, so the file
-	landed in mipmap-xxhdpi\Assets\Icons\icon.png and aapt2 rejected it with APT2144. Setting Link here
-	keeps that stamping away and flattens the output to mipmap-<dpi>\icon.png (@mipmap/icon).
-	Only desktop sets UnoRuntimeIdentifier now (Uno.Sdk's Resizetizer shim), so android no longer imports
-	the windows/skia targets and this is expected to be inert.
-	Android only: on desktop the relative Link is what lays the scale-suffixed logos out under Assets\.
-	The resizetizer warns that UnoIcon.Link "will be ignored"; it is not, it is read as the output alias.
+	Flattens the Android icon to mipmap-<dpi>\icon.png should Resizetizer's skia targets run on android
+	(aapt2 APT2144 otherwise). Android only: on desktop the relative Link lays the logos out under Assets\.
 	TODO Uno (resizetizer app kind): drop once an android build confirms the icon output without it.
 	-->
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
@@ -774,16 +766,10 @@
 	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.targets" />
 
 	<!--
-	Uno.Resizetizer decides "is this a Skia app" from $(UnoRuntimeIdentifier) alone (or a desktop TFM).
-	When this head set it on every non-WinUI TFM, android and ios matched both their platform branch and
-	the skia one, which is evaluated last, so UnoResizetizerPlatformType landed on 'wpf': android got no
-	mipmap/* resources and aapt2 failed on the manifest's @mipmap/icon (APT2260), while ios silently
-	shipped an icon.ico instead of an asset catalog. This has to sit below the import above, because that
-	is where the package's targets — and the property they overwrite — come from.
-	Only desktop sets UnoRuntimeIdentifier now (Uno.Sdk's Resizetizer shim), so the double match should
-	no longer happen and this block and the splash manifest one below are expected to be inert.
-	TODO Uno (resizetizer app kind): drop both once android and ios builds confirm the icon and splash
-	output without them.
+	Pins Resizetizer's platform in case a head matches both its mobile and skia branches, which would
+	resolve to 'wpf'. Below the import, since that is where the package sets the property.
+	TODO Uno (resizetizer app kind): drop, with the splash manifest block below, once android and ios
+	builds confirm the icon and splash output without them.
 	-->
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">
 		<UnoResizetizerPlatformType>android</UnoResizetizerPlatformType>
@@ -793,8 +779,8 @@
 	</PropertyGroup>
 
 	<!--
-	Second casualty of that same (former) double match: the apple and the skia targets files each define a target
-	named ProcessUnoSplashScreens, and the skia one is imported last, so it replaces the apple one. Only
+	Same double match: the apple and the skia targets files each define a target named
+	ProcessUnoSplashScreens, and the skia one is imported last, so it replaces the apple one. Only
 	the apple version publishes the UnoInfo.plist that GenerateUnoSplashApple writes as a
 	PartialAppManifest, and that partial manifest is what repoints UILaunchStoryboardName at the generated
 	UnoSplash storyboard. Left unpublished, the bundle keeps Info.plist's UILaunchStoryboardName=LaunchScreen
