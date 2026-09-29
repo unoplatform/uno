@@ -287,9 +287,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			_activateOnShow |= activateWindow;
 			if (!_launchPending && !_closeRequested)
 			{
-				// The default state reads as activated, so the adopting activity's resume would not
-				// register as a change and the window would never raise Activated.
-				ActivationState = CoreWindowActivationState.Deactivated;
 				_launchPending = true;
 				ApplicationActivity.LaunchForWindow(this);
 			}

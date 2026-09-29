@@ -392,11 +392,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		{
 			NativeWindowWrapper?.Show(true);
 
-			// A wrapper can defer its show until the native window exists; it then reports activation itself.
-			if (NativeWindowWrapper is { WasShown: true })
-			{
-				OnActivationStateChanged(CoreWindowActivationState.CodeActivated);
-			}
+			OnActivationStateChanged(CoreWindowActivationState.CodeActivated);
 
 			if (!_splashDismissed)
 			{
