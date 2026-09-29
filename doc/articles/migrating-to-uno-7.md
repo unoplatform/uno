@@ -346,6 +346,9 @@ Consequences worth knowing about:
   targets, which 7.0 removes, and `ProgressRing` no longer needs the Lottie package it asked for.
 - The `RuntimeAssetsSelectorTask_v0` MSBuild task no longer accepts the three identifier parameters. This
   matters only if you invoked that task directly, which Uno Platform's own targets are the only known caller of.
+- The three properties are no longer exposed to analyzers and source generators as `CompilerVisibleProperty`
+  items, so `build_property.UnoRuntimeIdentifier` and its two siblings read as empty. Detect the platform from the
+  target framework instead.
 
 #### Cross-runtime libraries
 
@@ -354,9 +357,14 @@ declares which build each project is with `UnoRuntimeVariant`, and the folders a
 
 | Before 7.0 | 7.0 | Folder |
 |---|---|---|
-| `<UnoRuntimeIdentifier>skia</UnoRuntimeIdentifier>` | `<UnoRuntimeVariant>Generic</UnoRuntimeVariant>` | `uno-runtime/<tfm>/generic` (was `skia`) |
-| `<UnoRuntimeIdentifier>webassembly</UnoRuntimeIdentifier>` | `<UnoRuntimeVariant>Wasm</UnoRuntimeVariant>` | `uno-runtime/<tfm>/wasm` (was `webassembly`) |
+| `<UnoRuntimeIdentifier>skia</UnoRuntimeIdentifier>` | `<UnoRuntimeVariant>Generic</UnoRuntimeVariant>` | `generic` (was `skia`) |
+| `<UnoRuntimeIdentifier>webassembly</UnoRuntimeIdentifier>` | `<UnoRuntimeVariant>Wasm</UnoRuntimeVariant>` | `wasm` (was `webassembly`) |
 | `<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>` | `<UnoRuntimeVariant>Reference</UnoRuntimeVariant>` | none — `lib/<tfm>` |
+
+A library that packs its builds through `UnoRuntimeProjectReference` gets `uno-runtime/generic` and
+`uno-runtime/wasm`; one that lays its package out by hand can also use `uno-runtime/<tfm>/generic` and
+`uno-runtime/<tfm>/wasm`. Custom packing targets that call `UnoRuntimeGetTargetPath` read the folder from the
+returned item's `UnoRuntimeVariant` metadata, which replaces `UnoRuntimeIdentifier`.
 
 The old property still works and is reported as UNOB0024 with the value to use instead. Such a library has to
 be rebuilt against 7.0 anyway; a package still in the old layout is reported as
