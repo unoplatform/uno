@@ -6,7 +6,7 @@
 	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
-		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;UNO_REFERENCE_API;UNO_ISLANDS</DefineConstants>
+		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;__UNO__;UNO_REFERENCE_API;UNO_ISLANDS</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 	</PropertyGroup>

@@ -20,14 +20,13 @@ public class Given_BackgroundTransition
 {
 	private const DynamicallyAccessedMemberTypes ActivatorRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
 
-#if !__SKIA__
-	[Ignore]
-#endif
 	[TestMethod]
 	[DataRow(typeof(Grid))]
 	[DataRow(typeof(StackPanel))]
 	[DataRow(typeof(Border))]
 	[DataRow(typeof(ContentPresenter))]
+	// WinUI (CI WinAppSDK leg): the brush transition snaps to the final color, no in-flight frame is captured.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	[RequiresFullWindow] // https://github.com/unoplatform/uno/issues/17470
 	public async Task When_Has_Brush_Transition([DynamicallyAccessedMembers(ActivatorRequirements)] Type type)
 	{
@@ -89,12 +88,10 @@ public class Given_BackgroundTransition
 		}
 	}
 
-#if !__SKIA__
-	[Ignore]
-#endif
 	[TestMethod]
 	// Test is flaky on iOS https://github.com/unoplatform/uno-private/issues/797
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)]
+	// WinUI (CI WinAppSDK leg): the brush transition snaps to the final color, no in-flight frame is captured.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Animation_With_Brush_Transition()
 	{
 		var SUT = (Button)XamlReader.Load(

@@ -52,18 +52,43 @@ On iOS, CameraCaptureUI uses the native `UIImagePickerController` to capture med
 
 #### WinUI
 
-On WinUI, `CameraCaptureUI` provides a unified interface for capturing photos and videos, fully leveraging the platform's APIs. WinUI support is coming with v1.7+.
+On WinUI, `CameraCaptureUI` provides a unified interface for capturing photos and videos, fully leveraging the platform's APIs. It lives in the `Microsoft.Windows.Media.Capture` namespace (not `Windows.Media.Capture`), and its constructor takes the `WindowId` of the window to associate the capture UI with:
+
+```csharp
+#if WINDOWS
+using Microsoft.Windows.Media.Capture;
+#endif
+
+public async Task CapturePhotoAsync()
+{
+#if WINDOWS
+    var captureUI = new CameraCaptureUI(App.MainWindow.AppWindow.Id);
+    captureUI.PhotoSettings.Format = CameraCaptureUIPhotoFormat.Jpeg;
+
+    var file = await captureUI.CaptureFileAsync(CameraCaptureUIMode.Photo);
+
+    if (file != null)
+    {
+        // Handle the captured file (e.g., save or display it)
+    }
+    else
+    {
+        // Handle the cancellation or error
+    }
+#endif
+}
+```
 
 ### Example
 
 ```csharp
-#if __ANDROID__ || __IOS__ || __WINDOWS__
+#if __ANDROID__ || __IOS__
 using Windows.Media.Capture;
 #endif
 
 public async Task CapturePhotoAsync()
 {
-#if __ANDROID__ || __IOS__ || __WINDOWS__
+#if __ANDROID__ || __IOS__
     var captureUI = new CameraCaptureUI();
     captureUI.PhotoSettings.Format = CameraCaptureUIPhotoFormat.Jpeg;
     

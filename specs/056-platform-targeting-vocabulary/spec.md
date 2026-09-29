@@ -144,12 +144,18 @@ have the same naming problem as `skia:` and go with the `skia` deprecation.
 |---|---|
 | `UNO_REFERENCE_API` | Nothing to do with the Reference API, which no longer exists for the UI layer. Either rename with an alias, or document the real meaning |
 
-**Resolved — documented, no new symbol.** Tracing the definitions corrected the premise above: every
-`Uno.WinUI.Runtime.Skia.*` package defines `UNO_REFERENCE_API`, including the Android, Apple UIKit and
-WebAssembly ones. It is therefore *not* "the target framework has no platform identifier" — it is the host axis,
-exactly the condition `HAS_UNO` already expresses. A new spelling would have been a third name for one condition,
-so `platform-specific-csharp.md` now documents `UNO_REFERENCE_API` as a legacy synonym of `HAS_UNO` and points
-new code at `HAS_UNO`.
+**Resolved — one definition site, no new symbol.** An earlier version of this note said every
+`Uno.WinUI.Runtime.Skia.*` package defines `UNO_REFERENCE_API`, which made it the host axis. For consumers that
+was not uniform: the runtime packages reach only some project shapes (the desktop runtimes only executables, the
+mobile ones only Uno.Sdk projects), and `uno.winui.common.targets` added it only for platform-less target
+frameworks. A `netX.0-desktop` class library, or a mobile library without the Uno.Sdk, compiled the `#else` branch
+of `#if UNO_REFERENCE_API`.
+
+`uno.winui.common.targets` now defines `UNO_REFERENCE_API`, `HAS_UNO_SKIA` and `__UNO_SKIA__` next to `HAS_UNO`
+for every non-WinAppSDK consumer, and the runtime packages define no symbols. `UNO_REFERENCE_API` is therefore
+exactly the host axis, and `platform-specific-csharp.md` documents it as a legacy synonym of `HAS_UNO`. A new
+spelling would have been a third name for one condition. Inside this repository it still means
+`__CROSSRUNTIME__`.
 
 ## 5. Migration
 

@@ -18,14 +18,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 [TestClass]
 public class Given_CompositionVisualSurface
 {
-#if !__SKIA__
-	[Ignore]
-#endif
 	[TestMethod]
 	[RunsOnUIThread]
+	// WinUI's RenderTargetBitmap doesn't capture the SetElementChildVisual content, so the screenshots differ.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_SourceVisual_Changes()
 	{
-		var compositor = Window.Current.Compositor;
 		var expected = new Image
 		{
 			Width = 200,
@@ -39,6 +37,7 @@ public class Given_CompositionVisualSurface
 			Height = 200
 		};
 
+		var compositor = ElementCompositionPreview.GetElementVisual(sut).Compositor;
 		var visualSurface = compositor.CreateVisualSurface();
 		visualSurface.SourceVisual = ElementCompositionPreview.GetElementVisual(expected);
 		visualSurface.SourceSize = new(200, 200);

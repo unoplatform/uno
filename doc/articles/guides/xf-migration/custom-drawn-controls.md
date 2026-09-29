@@ -54,16 +54,11 @@ Because the `SkiaSharp.Views` libraries depend on the base `SkiaSharp` library, 
 
 ### Code Changes for WinUI 3.0 Support
 
-The only necessary changes in the code were to support WinUI 3.0 (and hence the `Uno.WinUI` implementation) by changing the using statements. This is handled using an `#if` directive so that the single file can be retained in multiple projects:
+The only necessary change in the code was to support WinUI 3.0 (and hence the `Uno.WinUI` implementation) by updating the using statements from their UWP equivalents:
 
 ```csharp
-#if WINUI
-    using Microsoft.UI.Xaml;
-    using SkiaSharp.Views.Windows;
-#else
-    using Windows.UI.Xaml;
-    using SkiaSharp.Views.UWP;
-#endif
+using Microsoft.UI.Xaml;
+using SkiaSharp.Views.Windows;
 ```
 
 ### The OnPaintCanvas Method

@@ -50,9 +50,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18694")]
-#if !__SKIA__
-		[Ignore("PathFigure.IsFilled's interaction with Path is only implemented on Skia.")]
-#endif
 		public async Task When_PathGeometry_Figures_Not_Filled_ColorBrush()
 		{
 			var SUT = new Path
@@ -121,9 +118,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18694")]
-#if !__SKIA__
-		[Ignore("PathFigure.IsFilled's interaction with Path is only implemented on Skia.")]
-#endif
 		public async Task When_PathGeometry_Figures_Not_Filled_ImageBrush()
 		{
 			var brush = new ImageBrush() { ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/rect.png")) };
@@ -357,9 +351,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2228")]
-#if !__SKIA__
-		[Ignore("StreamGeometry elliptical arcs are only implemented on Skia (issue #2228 scope).")]
-#endif
+		// WinUI measures a Path that isn't in the live tree as 0x0.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_SvgPath_String_With_Elliptical_Arc_Parses()
 		{
 			// SVG path strings with elliptical arc commands (rx != ry) used to throw
