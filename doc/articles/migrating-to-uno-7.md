@@ -1079,7 +1079,7 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
    framework no longer does it for you.
 18. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
-18. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
+19. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
    bring pre-7.0 application settings into the `UnoApplicationData` container, and update any
    native/interop code that read them from `NSUserDefaults.StandardUserDefaults`.
 
