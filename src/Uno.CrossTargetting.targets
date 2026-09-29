@@ -226,8 +226,8 @@
 			<_UnoOverrideUsesRuntimeFolder Condition="('$(CommonOverridePackageId)'=='uno.winrt' or '$(CommonOverridePackageId)'=='uno.foundation') and '$(UnoRuntimeVariant)'!='' and '$(UnoRuntimeVariant)'!='Reference'">true</_UnoOverrideUsesRuntimeFolder>
 
 			<_TargetNugetFolder Condition="'$(_UnoOverrideUsesRuntimeFolder)'!='true'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-			<_UnoRuntimeFolderName Condition="'$(UnoRuntimeVariant)'=='Generic'">generic</_UnoRuntimeFolderName>
-			<_UnoRuntimeFolderName Condition="'$(UnoRuntimeVariant)'=='Wasm'">wasm</_UnoRuntimeFolderName>
+			<!-- The folder is the variant lowercased, as in uno.winui.runtime-replace.targets. -->
+			<_UnoRuntimeFolderName Condition="'$(UnoRuntimeVariant)'=='Generic' or '$(UnoRuntimeVariant)'=='Wasm'">$(UnoRuntimeVariant.ToLowerInvariant())</_UnoRuntimeFolderName>
 
 			<_TargetNugetFolder Condition="'$(_UnoOverrideUsesRuntimeFolder)'=='true'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(_UnoRuntimeFolderName)</_TargetNugetFolder>
 			<!-- Track ownership so shared package folders are cleaned safely. -->
