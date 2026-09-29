@@ -19,7 +19,7 @@ namespace Uno.UI.Runtime.Android;
 /// throw, and app authors cannot switch to <c>RunAsync</c> because the call site is
 /// owned by <see cref="NativeApplication"/>.
 /// </remarks>
-internal sealed class AndroidHost : SkiaHost, ISkiaApplicationHost
+internal sealed class AndroidHost : UnoPlatformHost, IApplicationHost
 {
 	private readonly Func<Application> _appBuilder;
 

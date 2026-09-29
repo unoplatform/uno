@@ -19,7 +19,7 @@ using WUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Headless;
 
-public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IDisposable
+public class HeadlessHost : UnoPlatformHost, IApplicationHost, IDisposable
 {
 	private readonly EventLoop _eventLoop;
 	private readonly ManualResetEvent _terminationGate = new(false);

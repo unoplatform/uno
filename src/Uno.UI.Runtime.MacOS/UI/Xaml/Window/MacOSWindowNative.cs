@@ -30,11 +30,11 @@ internal class MacOSWindowNative
 
 		initialSize = new Size(initialWidth, initialHeight);
 
-		if (MacSkiaHost.Current.InitialWindow is null)
+		if (MacOSHost.Current.InitialWindow is null)
 		{
 			// the first window was already created much earlier in native code
 			Handle = NativeUno.uno_app_get_main_window();
-			MacSkiaHost.Current.InitialWindow = this;
+			MacOSHost.Current.InitialWindow = this;
 		}
 		else
 		{

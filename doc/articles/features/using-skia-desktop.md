@@ -33,7 +33,7 @@ var host = UnoPlatformHostBuilder.Create()
 host.Run();
 ```
 
-This builder allows us to configure the SkiaHost and setup which platforms will be supported at runtime. The builder evaluates the platform's availability one by one, in the order of definition.
+This builder allows us to configure the host and set up which platforms will be supported at runtime. The builder evaluates the platform's availability one by one, in the order of definition.
 
 ### Additional setup
 

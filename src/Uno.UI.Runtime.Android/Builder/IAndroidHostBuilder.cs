@@ -5,7 +5,7 @@ namespace Uno.UI.Hosting;
 /// <summary>
 /// Android-specific options for the Uno Platform host.
 /// </summary>
-public interface IAndroidSkiaHostBuilder
+public interface IAndroidHostBuilder
 {
 	/// <summary>
 	/// Enables or disables the Vulkan render view. When enabled (the default) and the device
@@ -18,7 +18,7 @@ public interface IAndroidSkiaHostBuilder
 	/// It is deliberately independent from <see cref="UseOpenGL"/>: the Vulkan path can fail at
 	/// runtime, so both values remain meaningful for a single configuration.
 	/// </remarks>
-	IAndroidSkiaHostBuilder UseVulkan(bool enabled = true);
+	IAndroidHostBuilder UseVulkan(bool enabled = true);
 
 	/// <summary>
 	/// Enables or disables OpenGL ES acceleration of the canvas render view — the view used
@@ -29,5 +29,5 @@ public interface IAndroidSkiaHostBuilder
 	/// When called, this takes precedence over <see cref="FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid"/>;
 	/// if it is never called, any value already set on that flag is preserved.
 	/// </remarks>
-	IAndroidSkiaHostBuilder UseOpenGL(bool enabled = true);
+	IAndroidHostBuilder UseOpenGL(bool enabled = true);
 }

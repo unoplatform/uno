@@ -5,7 +5,7 @@ namespace Uno.UI.Hosting;
 
 public static class HostBuilder
 {
-	public static IUnoPlatformHostBuilder UseAppleUIKit(this IUnoPlatformHostBuilder builder, Action<IAppleUIKitSkiaHostBuilder>? appleUIKitBuilder = null)
+	public static IUnoPlatformHostBuilder UseAppleUIKit(this IUnoPlatformHostBuilder builder, Action<IAppleUIKitHostBuilder>? appleUIKitBuilder = null)
 	{
 		builder.AddHostBuilder(() =>
 		{

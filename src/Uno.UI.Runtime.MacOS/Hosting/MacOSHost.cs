@@ -9,10 +9,11 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.MacOS;
 
-public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
+public class MacOSHost : UnoPlatformHost, IApplicationHost
 {
 	/// <summary>
 	/// The application builder used to create the application instance, used in normal startup.
@@ -36,9 +37,9 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 	private static bool _isRunning;
 
 	[ThreadStatic] private static bool _isDispatcherThread;
-	[ThreadStatic] private static MacSkiaHost? _current;
+	[ThreadStatic] private static MacOSHost? _current;
 
-	static MacSkiaHost()
+	static MacOSHost()
 	{
 		MacOSWindowHost.Register(); // must be initialized first to load libSkiaSharp
 
@@ -66,14 +67,14 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => MacOSImeTextBoxExtension.Instance);
 	}
 
-	public MacSkiaHost(Func<Application> appBuilder)
+	public MacOSHost(Func<Application> appBuilder)
 	{
 		_current = this;
 		_appBuilder = appBuilder;
 		_instanceAppBuilder = appBuilder;
 	}
 
-	internal static MacSkiaHost Current => _current!;
+	internal static MacOSHost Current => _current!;
 
 	internal MacOSWindowNative? InitialWindow { get; set; }
 

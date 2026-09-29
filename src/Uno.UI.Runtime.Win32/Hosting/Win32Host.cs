@@ -36,7 +36,7 @@ using Uno.UI.UI.Input.Internal;
 
 namespace Uno.UI.Runtime.Win32;
 
-public class Win32Host : SkiaHost, ISkiaApplicationHost
+public class Win32Host : UnoPlatformHost, IApplicationHost
 {
 	private UIntPtr _gdiPlusToken;
 	private readonly Func<Application> _appBuilder;

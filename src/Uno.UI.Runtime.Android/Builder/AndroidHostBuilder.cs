@@ -5,7 +5,7 @@ using Uno.UI.Runtime.Android;
 
 namespace Uno.UI.Hosting;
 
-internal sealed class AndroidHostBuilder : IPlatformHostBuilder, IAndroidSkiaHostBuilder
+internal sealed class AndroidHostBuilder : IPlatformHostBuilder, IAndroidHostBuilder
 {
 	private bool? _useVulkan;
 	private bool? _useOpenGL;
@@ -14,13 +14,13 @@ internal sealed class AndroidHostBuilder : IPlatformHostBuilder, IAndroidSkiaHos
 	{
 	}
 
-	public IAndroidSkiaHostBuilder UseVulkan(bool enabled = true)
+	public IAndroidHostBuilder UseVulkan(bool enabled = true)
 	{
 		_useVulkan = enabled;
 		return this;
 	}
 
-	public IAndroidSkiaHostBuilder UseOpenGL(bool enabled = true)
+	public IAndroidHostBuilder UseOpenGL(bool enabled = true)
 	{
 		_useOpenGL = enabled;
 		return this;
