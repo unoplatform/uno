@@ -342,8 +342,8 @@ Consequences worth knowing about:
   rather than a build message followed by a `NotImplementedException` when the application runs. A head that
   references such packages without a runtime host at all is reported as
   [UNOB0025](xref:Build.Solution.error-codes#unob0025-runtime-enabled-packages-are-referenced-without-a-runtime-host).
-- `UNO0007` no longer reports a missing `MediaPlayerElement` package: it only ever did so for the native
-  WebAssembly and GTK targets, which 7.0 removes. Its `ProgressRing` half is unchanged.
+- `UNO0007` is retired. Its `MediaPlayerElement` check only ever fired for the native WebAssembly and GTK
+  targets, which 7.0 removes, and `ProgressRing` no longer needs the Lottie package it asked for.
 - The `RuntimeAssetsSelectorTask_v0` MSBuild task no longer accepts the three identifier parameters. This
   matters only if you invoked that task directly, which Uno Platform's own targets are the only known caller of.
 
