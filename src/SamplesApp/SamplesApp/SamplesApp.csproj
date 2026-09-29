@@ -353,8 +353,8 @@
 		</WasmShellExtraFilesToDeploy>
 	</ItemGroup>
 
-	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\Uno.WinUI.Runtime.WebAssembly.Browser.props" />
-	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\Uno.WinUI.Runtime.WebAssembly.Browser.targets" />
+	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\Uno.WinUI.Runtime.BrowserWasm.props" />
+	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\Uno.WinUI.Runtime.BrowserWasm.targets" />
 	<!-- ==================== android (Skia) ==================== -->
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />

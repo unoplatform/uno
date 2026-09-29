@@ -19,7 +19,7 @@
 		<!-- NU5123: Long paths - disabled as tragets in Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive have too long paths -->
 		<NoWarn>$(NoWarn);NU5123</NoWarn>
 
-		<PackageId>Uno.WinUI.Runtime.WebAssembly.Browser</PackageId>
+		<PackageId>Uno.WinUI.Runtime.BrowserWasm</PackageId>
 		<!-- The assembly name still carries the old Skia segment, so it cannot derive the package id -->
 		<CommonOverridePackageId>$(PackageId)</CommonOverridePackageId>
 
