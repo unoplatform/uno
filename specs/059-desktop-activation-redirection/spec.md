@@ -45,7 +45,7 @@ Three hosts feed that funnel today:
 |------|------|:---:|:---:|
 | Android | `NativeApplication.ReportActivation` (`src/Uno.UI.Runtime.Skia.Android/UI/Xaml/NativeApplication.cs`) | ✅ | ✅ |
 | iOS / tvOS | `AppleUIKitActivation.Report` (`src/Uno.UI.Runtime.Skia.AppleUIKit/AppleUIKitActivation.cs:59`) | ✅ | ✅ |
-| WebAssembly | `WebAssemblyBrowserHost.TryReportProtocolActivation` (`…/Hosting/WebAssemblyBrowserHost.cs:174-191`) | ✅ | n/a |
+| WebAssembly | `WebAssemblyBrowserHost.TryReportProtocolActivation` (`…/Hosting/WebAssemblyBrowserHost.cs:172-189`) | ✅ | n/a |
 | **Win32 / macOS / X11 / FrameBuffer** | **none** | ❌ | ❌ |
 
 `ActivationRegistrationManager` is entirely `[Uno.NotImplemented]` on every target
@@ -220,7 +220,7 @@ three markers in the documented order, and for (2)/(3) logs at `Warning` and fal
 plain `Launch` with the marker token **removed** from the arguments the app sees — the same "Uno
 Platform's transport detail is not the app's launch argument" rule the WebAssembly host already
 applies to the `unoprotocolactivation` query key
-(`src/Uno.UI.Runtime.Skia.WebAssembly.Browser/Hosting/WebAssemblyBrowserHost.cs:185`).
+(`src/Uno.UI.Runtime.Skia.WebAssembly.Browser/Hosting/WebAssemblyBrowserHost.cs:183`).
 
 ### 1.5 `ms-encodedlaunch`: what it is and whether Uno Platform needs it
 
@@ -662,9 +662,9 @@ Convention: keep `[Uno.NotImplemented]` on those targets, which routes through
 
 WebAssembly is the one target that *has* the capability but exposes it through an Uno Platform-only
 API. `Uno.Helpers.ProtocolActivation.RegisterCustomScheme(string scheme, Uri domain, string prompt)`
-(`src/Uno.WinRT/Helpers/ProtocolActivation.wasm.cs:49-102`) validates the scheme against the
+(`src/Uno.UI.Runtime.Skia.WebAssembly.Browser/Helpers/ProtocolActivation.cs:46-99`) validates the scheme against the
 `navigator.registerProtocolHandler` rules — either one of 23 predefined schemes
-(`ProtocolActivation.wasm.cs:16-40`) or a `web+`-prefixed lowercase-ASCII name — appends
+(`ProtocolActivation.cs:13-38`) or a `web+`-prefixed lowercase-ASCII name — appends
 `?unoprotocolactivation=` plus the `%s` placeholder to the given domain, and calls
 `navigator.registerProtocolHandler` (`:101`).
 
@@ -681,7 +681,7 @@ Parameter mapping:
 | `exePath` | ignored — the handler URL is derived from `document.baseURI` |
 
 The one parameter with no home is `domain`, which `RegisterCustomScheme` requires and validates as
-absolute (`ProtocolActivation.wasm.cs:83-91`). It is not a real degree of freedom:
+absolute (`ProtocolActivation.cs:80-88`). It is not a real degree of freedom:
 `registerProtocolHandler` rejects a URL outside the page's own origin, so the only value that ever
 works is the app's own origin. Deriving it from `document.baseURI` is strictly more correct than
 asking the caller, and removes the class of bug where a stale hard-coded `http://localhost:55838/`
@@ -1152,7 +1152,7 @@ intended change, and no template generates such an argument today.
 from inside a running test host, so it splits:
 
 - **Already runtime-tested:** the funnel's own semantics are covered by
-  `src/Uno.UI.RuntimeTests/Tests/Windows_ApplicationModel/Given_AppInstance.cs` — that
+  `src/Uno.UI.RuntimeTests/Windows/ApplicationModel/Given_AppInstance.cs` — that
   `SetOrRaiseActivation` stores before launch and raises after, that `GetActivatedEventArgs()` keeps
   returning the *launch* activation after a later one is raised, that it is stable across calls, and
   that `FromActivatedEventArgs` maps a protocol payload. **Extend that class rather than starting a
@@ -1188,7 +1188,7 @@ is no point registering a scheme the app cannot then read.
 | Win32 registry implementation + `SHChangeNotify` + packaged detection | `src/Uno.UI.Runtime.Skia.Win32/ApplicationModel/Activation/Win32ActivationRegistrationExtension.cs` *(new)*, `Hosting/Win32Host.cs` |
 | macOS LaunchServices + login items | `src/Uno.UI.Runtime.Skia.MacOS/ApplicationModel/Activation/MacOSActivationRegistrationExtension.cs` *(new)*, `UnoNativeMac/UnoNativeMac/UNOApplication.{h,m}`, `Native/NativeUno.cs`, `Hosting/MacSkiaHost.cs` |
 | Linux `.desktop` + `xdg-mime` + autostart | `src/Uno.UI.Runtime.Skia.X11/ApplicationModel/Activation/X11ActivationRegistrationExtension.cs` *(new)*, `Hosting/X11ApplicationHost.cs` |
-| WebAssembly: fold in `RegisterCustomScheme`; **remove** it | `src/Uno.WinRT/Helpers/ProtocolActivation.wasm.cs`, `src/Uno.UI.Runtime.Skia.WebAssembly.Browser/…`, `doc/articles/features/protocol-activation.md` |
+| WebAssembly: fold in `RegisterCustomScheme`; **remove** it | `src/Uno.UI.Runtime.Skia.WebAssembly.Browser/Helpers/ProtocolActivation.cs`, `src/Uno.UI.Runtime.Skia.WebAssembly.Browser/Hosting/WebAssemblyBrowserHost.cs`, `doc/articles/features/protocol-activation.md` |
 | Promote the six methods out of the generated stub | `src/Uno.WinRT/Generated/3.0.0.0/Microsoft.Windows.AppLifecycle/ActivationRegistrationManager.cs`, plus a new hand-written partial |
 | Breaking-change note for `RegisterCustomScheme` | release notes + docs |
 
@@ -1341,7 +1341,7 @@ change travels with an already-breaking release), **4b–4e and 5 after**.
   `StartupTaskActivatedEventArgs.cs`
 - `src/Uno.WinRT/ApplicationModel/Activation/ProtocolActivatedEventArgs.cs`,
   `LaunchActivatedEventArgs.cs`, `ActivationKind.cs`
-- `src/Uno.WinRT/Helpers/ProtocolActivation.wasm.cs`
+- `src/Uno.UI.Runtime.Skia.WebAssembly.Browser/Helpers/ProtocolActivation.cs`
 - `src/Uno.WinRT/System/WindowsLauncherExtension.skia.cs` — registry-access precedent
 - `src/Uno.UI/UI/Xaml/Application.cs` — `InvokeOnLaunched`, `GetLaunchArguments`,
   `GetCommandLineArgsWithoutExecutable`, `SetArguments`
@@ -1354,9 +1354,9 @@ change travels with an already-breaking release), **4b–4e and 5 after**.
 - `src/Uno.UI.Runtime.Skia.Android/UI/Xaml/NativeApplication.cs` — reference ingestion
 - `src/Uno.UI.Runtime.Skia.AppleUIKit/AppleUIKitActivation.cs` — reference ingestion
 - `src/Uno.UI.Runtime.Skia.WebAssembly.Browser/Hosting/WebAssemblyBrowserHost.cs` — reference ingestion
-- `src/Uno.UI.RuntimeTests/Tests/Windows_ApplicationModel/Given_AppInstance.cs` — existing coverage of
+- `src/Uno.UI.RuntimeTests/Windows/ApplicationModel/Given_AppInstance.cs` — existing coverage of
   the funnel's semantics; the class Phases 2 and 4 extend
-- `src/Uno.UI.RuntimeTests/Tests/Windows_ApplicationModel/Given_ProtocolActivation.cs` — the model for
+- `src/Uno.UI.RuntimeTests/Windows/ApplicationModel/Given_ProtocolActivation.cs` — the model for
   the Phase 1 parser cases
 - `src/SamplesApp/SamplesApp.Shared/App.xaml.cs` — activation reporting used by the manual matrices
 - `doc/articles/features/protocol-activation.md` — public docs; already `AppInstance`-shaped, with a
