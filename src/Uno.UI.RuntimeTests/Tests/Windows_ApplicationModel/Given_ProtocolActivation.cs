@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+#if HAS_UNO
 using System;
 using Uno.Helpers;
 
@@ -64,3 +65,4 @@ public class Given_ProtocolActivation
 		Assert.AreEqual(Query, remainingArguments);
 	}
 }
+#endif

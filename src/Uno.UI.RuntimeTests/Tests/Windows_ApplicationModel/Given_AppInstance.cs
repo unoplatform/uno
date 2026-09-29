@@ -20,12 +20,10 @@ public class Given_AppInstance
 		Assert.IsNotNull(args);
 		Assert.AreEqual(ExtendedActivationKind.Launch, args.Kind);
 
-		var launchArgs = args.Data as LaunchActivatedEventArgs;
-		Assert.IsNotNull(launchArgs, $"A Launch activation must carry a LaunchActivatedEventArgs, got {args.Data?.GetType().FullName ?? "<null>"}.");
+		// Microsoft's own AppLifecycle sample reads the payload through this interface; the concrete type differs.
+		var launchArgs = args.Data as ILaunchActivatedEventArgs;
+		Assert.IsNotNull(launchArgs, $"A Launch activation must carry an ILaunchActivatedEventArgs, got {args.Data?.GetType().FullName ?? "<null>"}.");
 		Assert.IsNotNull(launchArgs!.Arguments);
-
-		// Microsoft's own AppLifecycle sample reads the payload through this interface.
-		Assert.IsInstanceOfType<ILaunchActivatedEventArgs>(args.Data);
 	}
 
 	[TestMethod]
@@ -41,6 +39,7 @@ public class Given_AppInstance
 		Assert.AreEqual(first.Kind, second.Kind);
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	public void When_SetOrRaiseActivation_After_Launch()
 	{
@@ -98,6 +97,8 @@ public class Given_AppInstance
 		Assert.AreNotSame(raised, after);
 	}
 
+#endif
+
 	[TestMethod]
 	public void When_GetCurrent()
 	{
@@ -112,6 +113,7 @@ public class Given_AppInstance
 		Assert.AreSame(instance, instances[0]);
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	public void When_FindOrRegisterForKey()
 	{
@@ -171,4 +173,5 @@ public class Given_AppInstance
 	private static AppActivationArguments CreateProtocolActivation(string uri)
 		=> AppActivationArguments.CreateProtocol(
 			new ProtocolActivatedEventArgs(new Uri(uri), ApplicationExecutionState.NotRunning));
+#endif
 }
