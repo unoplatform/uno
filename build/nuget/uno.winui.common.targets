@@ -92,7 +92,7 @@
 
 	<!--
 		Uno.UI / Uno.WinUI are deliberately absent from UnoRuntimeEnabledPackage: lib/ carries the
-		Skia build directly, so there is no runtime flavor to swap in. Uno.WinRT and Uno.Foundation
+		Skia build directly, so there is no runtime variant to swap in. Uno.WinRT and Uno.Foundation
 		still register themselves (see their own .props).
 	-->
 

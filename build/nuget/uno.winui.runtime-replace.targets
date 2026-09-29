@@ -32,10 +32,9 @@
 		</PropertyGroup>
 	</Target>
 
-	<!-- Target used to override the uno-runtime targets -->
 	<!--
-	The variant keeps the target running for a cross-runtime library, which sets it without referencing a
-	runtime host. Dropping it here would leave such a library's output on the reference facades.
+	Swaps runtime-enabled packages' reference assemblies for their uno-runtime implementations. The variant
+	keeps it running for a cross-runtime library, which sets it without referencing a runtime host.
 	-->
 	<Target Name="ReplaceUnoRuntime"
 				Condition="'$(UnoHasRuntimeHost)' == 'true' or '$(UnoRuntimeVariant)' != '' or '$(UnoRuntimeIdentifier)' != ''"
