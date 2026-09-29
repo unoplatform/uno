@@ -145,12 +145,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsXNameProvider(XamlType xamlType)
 			=> Generation.XNameProviderSymbol.Value is { } provider && IsImplementingInterface(FindType(xamlType), provider);
 
-		// Intentional WinUI divergence: WinUI's XAML compiler rejects a plain Name on a TextElement (WMC0050, Name is get-only),
-		// but its docs describe TextElement.Name as settable from XAML and its runtime parser accepts it, so Uno treats it as x:Name.
+		// Intentional WinUI divergence: WinUI's XAML compiler rejects a plain Name where Name is get-only (WMC0050),
+		// but its runtime parser accepts it like x:Name, and so does Uno.
 		private bool IsXNameMember(XamlMemberDefinition member, XamlType objectType)
 			=> member.Member.Name == "Name"
-				&& (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
-					|| IsType(FindType(objectType), Generation.TextElementSymbol.Value));
+				&& (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace || IsXNameProvider(objectType));
 
 		private bool IsRun(INamedTypeSymbol? symbol)
 		{

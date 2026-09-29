@@ -177,7 +177,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// Documents
 			public const string Run = Namespaces.Documents + ".Run";
-			public const string TextElement = Namespaces.Documents + ".TextElement";
 			public const string Span = Namespaces.Documents + ".Span";
 
 			// Markup

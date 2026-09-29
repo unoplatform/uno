@@ -155,7 +155,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol> ResourceDictionarySymbol { get; }
 		internal Lazy<INamedTypeSymbol> TextBlockSymbol { get; }
 		internal Lazy<INamedTypeSymbol> RunSymbol { get; }
-		internal Lazy<INamedTypeSymbol> TextElementSymbol { get; }
 		internal Lazy<INamedTypeSymbol> SpanSymbol { get; }
 		internal Lazy<INamedTypeSymbol> BorderSymbol { get; }
 		internal Lazy<INamedTypeSymbol> SolidColorBrushSymbol { get; }
@@ -349,7 +348,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			ResourceDictionarySymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ResourceDictionary);
 			TextBlockSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.TextBlock);
 			RunSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Run);
-			TextElementSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.TextElement);
 			SpanSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Span);
 			BorderSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Border);
 			SolidColorBrushSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.SolidColorBrush);
