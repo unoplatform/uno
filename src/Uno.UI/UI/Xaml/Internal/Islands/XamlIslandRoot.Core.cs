@@ -66,7 +66,9 @@ internal partial class XamlIslandRoot
 		if (BackdropBackground != mode)
 		{
 			BackdropBackground = mode;
+#if UNO_HAS_BORDER_VISUAL
 			this.UpdateBackground();
+#endif
 		}
 	}
 
@@ -75,10 +77,12 @@ internal partial class XamlIslandRoot
 	/// </summary>
 	internal void RefreshBackdropBackground()
 	{
+#if UNO_HAS_BORDER_VISUAL
 		if (BackdropBackground == BackdropBackgroundMode.Fallback)
 		{
 			this.UpdateBackground();
 		}
+#endif
 	}
 
 	private void SetPublicRootVisual(
