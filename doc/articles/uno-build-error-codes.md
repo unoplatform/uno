@@ -200,6 +200,17 @@ To fix this issue:
 </ItemGroup>
 ```
 
+### UNOB0022: The `SingleProject` property is no longer supported
+
+`SingleProject` was the Uno Platform 5.1-and-earlier spelling of `UnoSingleProject`. It no longer selects the single-project layout, so leaving it in place would silently build the project as if it were not a single project.
+
+Rename the property in your `.csproj`:
+
+```diff
+- <SingleProject>true</SingleProject>
++ <UnoSingleProject>true</UnoSingleProject>
+```
+
 ### UNOB0023: A runtime-enabled package provided no runtime assembly
 
 Packages such as `Uno.WinRT` and `Uno.Foundation` ship a platform-neutral compile surface under `lib/` and the assemblies that actually run under `uno-runtime/`. This diagnostic reports that one of them contributed no runtime assembly for the target framework being built, which means the reference assemblies would be deployed instead and every call into them would throw `NotImplementedException` at runtime.
@@ -270,7 +281,6 @@ To suppress it:
 <PropertyGroup>
   <UnoDisableUNOB0026Validation>true</UnoDisableUNOB0026Validation>
 </PropertyGroup>
-```
 
 ### UNOB0027: The file suffix is no longer recognized by Uno Platform 7.0
 
@@ -284,7 +294,7 @@ Uno Platform 7.0 removed the `*.Apple.cs`, `*.iOSmacOS.cs`, and `*.reference.cs`
 
 `*.skia.cs` is still recognized, but it now compiles for every target framework except the WinAppSDK one, not only for `netX.0-desktop`. See [Platform targeting in multi-targeted libraries](xref:Uno.Development.MigratingToUno7) for the other changes.
 
-### UNOB0021: Uno Platform application projects must use the Uno.Sdk
+### UNOB0028: Uno Platform application projects must use the Uno.Sdk
 
 Starting with Uno Platform 7.0, an application must be built with the [`Uno.Sdk`](xref:Uno.Features.Uno.Sdk). The legacy project format — a `Microsoft.NET.Sdk` project referencing the `Uno.WinUI` package, together with one head project per platform (`MyApp.Mobile`, `MyApp.Wasm`, `MyApp.Skia.Gtk`, `MyApp.Windows`, …) — is no longer supported.
 
@@ -296,19 +306,8 @@ If your project is an executable that merely links `Uno.WinUI` as a library — 
 
 ```xml
 <PropertyGroup>
-  <UnoDisableUNOB0021Validation>true</UnoDisableUNOB0021Validation>
+  <UnoDisableUNOB0028Validation>true</UnoDisableUNOB0028Validation>
 </PropertyGroup>
-```
-
-### UNOB0022: The `SingleProject` property is no longer supported
-
-`SingleProject` was the Uno Platform 5.1-and-earlier spelling of `UnoSingleProject`. It no longer selects the single-project layout, so leaving it in place would silently build the project as if it were not a single project.
-
-Rename the property in your `.csproj`:
-
-```diff
-- <SingleProject>true</SingleProject>
-+ <UnoSingleProject>true</UnoSingleProject>
 ```
 
 ## Compiler Errors
