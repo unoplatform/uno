@@ -59,6 +59,21 @@ Tips:
 - Make your own page and control backgrounds transparent so the backdrop shows through (for example: `Page.Background = new SolidColorBrush(Colors.Transparent)` or via XAML). Setting a backdrop drops the window's own root background, but your content is left untouched — as in WinUI, an opaque page hides the material.
 - On Windows, ensure your app is running on a supported Windows 11 build (22621+). Uno logs a warning when an unsupported backdrop is requested on older builds.
 
+> [!IMPORTANT]
+> **Behavior change.** Earlier releases walked the whole visual tree when a backdrop was set and
+> replaced every opaque `SolidColorBrush` background (`Panel`, `Border`, `ContentPresenter`,
+> `Control`) with a transparent one. That is not what WinUI does: it was observable from app code
+> (a `Grid` painted red read back as `Transparent`) and stopped `{ThemeResource}` backgrounds from
+> updating on theme changes. Uno now matches WinUI and only drops the window's own root background.
+>
+> If the material is now hidden behind your content, make the surface you want it to show through
+> transparent yourself, typically the root `Page` or panel. This is what WinUI has always required,
+> so the same markup works on Windows:
+>
+> ```xml
+> <Page Background="Transparent">
+> ```
+
 ## Unsupported platforms
 
 Materials are drawn by the native window: DWM on Windows and `NSVisualEffectView` on macOS. Heads
