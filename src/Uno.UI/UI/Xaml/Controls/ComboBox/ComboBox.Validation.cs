@@ -9,7 +9,7 @@ using UnoValidation = Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-[UnoValidation.InputValidationProperty(nameof(SelectedItem))]
+[UnoValidation.InputValidationProperty(nameof(Text))]
 public partial class ComboBox : IInputValidationControl
 {
 	/// <summary>

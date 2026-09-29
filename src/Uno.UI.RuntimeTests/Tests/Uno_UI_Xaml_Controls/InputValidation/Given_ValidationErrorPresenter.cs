@@ -9,7 +9,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
@@ -141,14 +140,14 @@ public class Given_ValidationErrorPresenter
 		// Uno deviation: WinUI does not call EnsureErrors on template application, so this is what the
 		// InvokeApplyTemplate anchor adds.
 		var source = new ErrorSource();
-		var sut = new CheckBox
+		var sut = new TextBox
 		{
 			DataContext = source,
 			InputValidationKind = InputValidationKind.Inline,
 			ErrorTemplate = ErrorTextTemplate,
 		};
 		sut.InputValidationMode = InputValidationMode.Auto;
-		sut.SetBinding(ToggleButton.IsCheckedProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
+		sut.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		source.SetErrors("required");
 		Assert.IsTrue(sut.HasValidationErrors, "the error should reach the control before any template exists");
@@ -190,14 +189,14 @@ public class Given_ValidationErrorPresenter
 		Assert.IsTrue(sut.HasValidationErrors);
 	}
 
-	private static async Task<(CheckBox Sut, ErrorSource Source)> Bind(
+	private static async Task<(TextBox Sut, ErrorSource Source)> Bind(
 		InputValidationKind kind = InputValidationKind.Auto,
 		InputValidationMode mode = InputValidationMode.Auto,
 		bool hasErrorTemplate = true,
 		ControlTemplate? template = null)
 	{
 		var source = new ErrorSource();
-		var sut = new CheckBox
+		var sut = new TextBox
 		{
 			DataContext = source,
 			Template = template ?? PresenterTemplate,
@@ -206,7 +205,7 @@ public class Given_ValidationErrorPresenter
 		};
 
 		sut.InputValidationMode = mode;
-		sut.SetBinding(ToggleButton.IsCheckedProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
+		sut.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		await UITestHelper.Load(sut);
 
@@ -229,7 +228,7 @@ public class Given_ValidationErrorPresenter
 	{
 		private string[] _errors = Array.Empty<string>();
 
-		public bool? Value { get; set; }
+		public string? Value { get; set; }
 
 		public bool HasErrors => _errors.Length != 0;
 

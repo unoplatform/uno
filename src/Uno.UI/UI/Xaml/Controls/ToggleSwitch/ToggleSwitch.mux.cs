@@ -108,8 +108,6 @@ namespace Microsoft.UI.Xaml.Controls
 				GoToState(useTransitions, isOn ? "On" : "Off");
 				GoToState(useTransitions, isOn ? "OnContent" : "OffContent");
 			}
-
-			UpdateValidationStates();
 		}
 
 		protected override void OnApplyTemplate()

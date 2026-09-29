@@ -604,8 +604,6 @@ public partial class Slider
 		{
 			GoToState(useTransitions, "FocusDisengaged");
 		}
-
-		UpdateValidationStates();
 	}
 
 	// Apply a template to the Slider.

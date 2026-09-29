@@ -252,8 +252,8 @@ public partial class Control
 	/// The stand-in for WinUI's <c>GetTargetHasErrorsProperty</c> / <c>GetTargetErrorsProperty</c>, which
 	/// switch on a type index over a closed set of four controls. Resolving by name instead keeps
 	/// third-party controls working, and costs nothing per call: <see cref="DependencyProperty.GetProperty"/>
-	/// is already memoized, and it walks the base-type chain, so <c>CheckBox</c> finds what
-	/// <c>ToggleButton</c> registered. No <see cref="Control"/>-owned attached property may therefore be
+	/// is already memoized, and it walks the base-type chain, so a <c>TextBox</c> subclass finds what
+	/// <c>TextBox</c> registered. No <see cref="Control"/>-owned attached property may therefore be
 	/// named after an <see cref="IInputValidationControl"/> member.
 	/// </remarks>
 	private DependencyProperty? GetValidationProperty(string name)

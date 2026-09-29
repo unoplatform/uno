@@ -31,7 +31,7 @@ public class SignUpViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
 	private readonly Dictionary<string, List<object>> _errors = new();
 
 	private string _userName = "";
-	private double _age;
+	private string _password = "";
 
 	public string UserName
 	{
@@ -44,14 +44,14 @@ public class SignUpViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
 		}
 	}
 
-	public double Age
+	public string Password
 	{
-		get => _age;
+		get => _password;
 		set
 		{
-			_age = value;
+			_password = value;
 			OnPropertyChanged();
-			Validate(value, nameof(Age));
+			Validate(value, nameof(Password));
 		}
 	}
 
@@ -84,10 +84,10 @@ public class SignUpViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
 				}
 				break;
 
-			case nameof(Age):
-				if ((double)value is < 18 or > 120)
+			case nameof(Password):
+				if (value is not string { Length: >= 8 })
 				{
-					errors.Add("Must be between 18 and 120.");
+					errors.Add("At least 8 characters, please.");
 				}
 				break;
 		}
