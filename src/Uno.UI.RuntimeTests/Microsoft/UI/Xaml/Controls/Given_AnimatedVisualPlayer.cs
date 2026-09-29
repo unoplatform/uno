@@ -193,6 +193,11 @@ public class Given_AnimatedVisualPlayer
 		await TestServices.WindowHelper.WaitFor(() => GetPlayerProgress(player) > 0.2, timeoutMS: 2000, "Looped play should advance before freezing.");
 
 		player.PlaybackRate = 0;
+
+		// The rate change freezes the playhead at the compositor's current time, which the property set only
+		// reflects after the next tick; sampling right away can trail it by a frame on slow devices.
+		await Task.Delay(TimeSpan.FromMilliseconds(100));
+		await TestServices.WindowHelper.WaitForIdle();
 		var frozenProgress = GetPlayerProgress(player);
 
 		await Task.Delay(TimeSpan.FromMilliseconds(200));
