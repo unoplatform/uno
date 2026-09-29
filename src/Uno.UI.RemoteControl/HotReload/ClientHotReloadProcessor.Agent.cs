@@ -121,9 +121,13 @@ namespace Uno.UI.RemoteControl.HotReload
 			_supportsMetadataUpdates = devServerEnabled || vsEnabled;
 			_serverMetadataUpdatesEnabled = devServerEnabled;
 
-			if (this.Log().IsEnabled(LogLevel.Trace))
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Trace($"ServerMetadataUpdates Enabled:{_serverMetadataUpdatesEnabled} DebuggerAttached:{Debugger.IsAttached} BuildingInsideVS: {buildingInsideVisualStudio} RunningInsideVSCodeExtension: {_runningInsideVSCodeExtension} Desktop: {isDesktop} Browser: {isBrowser}");
+				this.Log().Debug(
+					$"Metadata updates supported: {_supportsMetadataUpdates} (dev server: {devServerEnabled}, VS: {vsEnabled}). " +
+					$"Forced: {isForcedMetadata}, DebuggerAttached: {Debugger.IsAttached}, BuildingInsideVS: {buildingInsideVisualStudio}, " +
+					$"RunningInsideVSCodeExtension: {_runningInsideVSCodeExtension}, Desktop: {isDesktop}, Browser: {isBrowser}, " +
+					$"Android: {OperatingSystem.IsAndroid()}, iOS: {OperatingSystem.IsIOS()}, tvOS: {OperatingSystem.IsTvOS()}");
 			}
 		}
 
