@@ -6,7 +6,7 @@ namespace Windows.Media.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct TimedTextPoint
+	public partial struct TimedTextPoint : global::System.IEquatable<global::Windows.Media.Core.TimedTextPoint>
 	{
 		// Forced skipping of method Windows.Media.Core.TimedTextPoint.TimedTextPoint()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,37 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextPoint.TimedTextPoint(double, double, Windows.Media.Core.TimedTextUnit)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(TimedTextPoint x, TimedTextPoint y)
+			=> x.X == y.X
+			&& x.Y == y.Y
+			&& x.Unit == y.Unit;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(TimedTextPoint x, TimedTextPoint y)
+			=> !(x.X == y.X
+				&& x.Y == y.Y
+				&& x.Unit == y.Unit);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(TimedTextPoint other)
+			=> X == other.X
+			&& Y == other.Y
+			&& Unit == other.Unit;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is TimedTextPoint that
+			&& X == that.X
+			&& Y == that.Y
+			&& Unit == that.Unit;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> X.GetHashCode()
+			^ Y.GetHashCode()
+			^ Unit.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double X;
 #endif

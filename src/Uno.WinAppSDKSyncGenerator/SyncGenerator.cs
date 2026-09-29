@@ -231,6 +231,7 @@ namespace Uno.WinAppSDKSyncGenerator
 						BuildProperties(type, b, allSymbols);
 						BuildMethods(type, b, allSymbols, writtenMethods);
 						BuildEvents(type, b, allSymbols);
+						BuildStructEquality(type, b, allSymbols);
 					}
 
 					BuildFields(type, b, allSymbols);

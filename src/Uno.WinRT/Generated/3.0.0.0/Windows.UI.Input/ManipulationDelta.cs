@@ -6,7 +6,7 @@ namespace Windows.UI.Input
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct ManipulationDelta
+	public partial struct ManipulationDelta : global::System.IEquatable<global::Windows.UI.Input.ManipulationDelta>
 	{
 		// Forced skipping of method Windows.UI.Input.ManipulationDelta.ManipulationDelta()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,11 @@ namespace Windows.UI.Input
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.ManipulationDelta.ManipulationDelta(Windows.Foundation.Point, float, float, float)
+		// Skipping already declared method Windows.UI.Input.ManipulationDelta.operator ==(Windows.UI.Input.ManipulationDelta, Windows.UI.Input.ManipulationDelta)
+		// Skipping already declared method Windows.UI.Input.ManipulationDelta.operator !=(Windows.UI.Input.ManipulationDelta, Windows.UI.Input.ManipulationDelta)
+		// Skipping already declared method Windows.UI.Input.ManipulationDelta.Equals(Windows.UI.Input.ManipulationDelta)
+		// Skipping already declared method Windows.UI.Input.ManipulationDelta.Equals(object)
+		// Skipping already declared method Windows.UI.Input.ManipulationDelta.GetHashCode()
 		// Skipping already declared field Windows.UI.Input.ManipulationDelta.Translation
 		// Skipping already declared field Windows.UI.Input.ManipulationDelta.Scale
 		// Skipping already declared field Windows.UI.Input.ManipulationDelta.Rotation

@@ -6,11 +6,16 @@ namespace Windows.Graphics
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct PointInt32
+	public partial struct PointInt32 : global::System.IEquatable<global::Windows.Graphics.PointInt32>
 	{
 		// Forced skipping of method Windows.Graphics.PointInt32.PointInt32()
 		// Skipping already declared method Windows.Graphics.PointInt32.PointInt32(int, int)
 		// Forced skipping of method Windows.Graphics.PointInt32.PointInt32(int, int)
+		// Skipping already declared method Windows.Graphics.PointInt32.operator ==(Windows.Graphics.PointInt32, Windows.Graphics.PointInt32)
+		// Skipping already declared method Windows.Graphics.PointInt32.operator !=(Windows.Graphics.PointInt32, Windows.Graphics.PointInt32)
+		// Skipping already declared method Windows.Graphics.PointInt32.Equals(Windows.Graphics.PointInt32)
+		// Skipping already declared method Windows.Graphics.PointInt32.Equals(object)
+		// Skipping already declared method Windows.Graphics.PointInt32.GetHashCode()
 		// Skipping already declared field Windows.Graphics.PointInt32.X
 		// Skipping already declared field Windows.Graphics.PointInt32.Y
 	}
