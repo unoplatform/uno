@@ -7,14 +7,12 @@
 		<UnoHasRuntimeHost>true</UnoHasRuntimeHost>
 
 		<!--
-		Compatibility shim for the pinned Uno.Resizetizer package (see Directory.Build.targets), which still
-		decides "is this a Skia app" from this property alone (see SamplesApp.csproj's Resizetizer notes).
-		Desktop has no other signal telling Resizetizer apart from a native WinUI head, so this stays until
-		that package reads UnoHasRuntimeHost instead. Defaulted off since it is us, not the head author,
-		setting it - an explicit UnoDisableUNOB0024Validation=false still re-enables the warning.
+		Compatibility shim for Uno.Resizetizer, which still decides "is this a Skia app" from this property
+		until it reads UnoHasRuntimeHost. The marker exempts only this value from UNOB0024, so a head that
+		sets one of the retired properties itself is still warned.
 		-->
-		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
-		<UnoDisableUNOB0024Validation Condition="'$(UnoDisableUNOB0024Validation)'==''">true</UnoDisableUNOB0024Validation>
+		<_UnoRuntimeIdentifierResizetizerShim Condition="'$(UnoRuntimeIdentifier)'==''">true</_UnoRuntimeIdentifierResizetizerShim>
+		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)'==''">Skia</UnoRuntimeIdentifier>
 
 		<IsMSALSupported>true</IsMSALSupported>
 
