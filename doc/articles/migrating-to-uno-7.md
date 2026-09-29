@@ -1514,7 +1514,7 @@ Concretely, the following are no longer supported:
 
 - Getting Uno Platform into an app head through a `PackageReference` to `Uno.WinUI` on a plain
   `Microsoft.NET.Sdk` project. Application heads that do this now fail with
-  [UNOB0021](xref:Build.Solution.error-codes#unob0021-uno-platform-application-projects-must-use-the-unosdk).
+  [UNOB0028](xref:Build.Solution.error-codes#unob0028-uno-platform-application-projects-must-use-the-unosdk).
 - The one-head-project-per-platform layout (`MyApp` shared library + `MyApp.Mobile`,
   `MyApp.Wasm`, `MyApp.Skia.Gtk`, `MyApp.Skia.Linux.FrameBuffer`, `MyApp.Windows`, `MyApp.UWP`,
   and `MyApp.Shared`/`.shproj` projects). One cross-targeted project replaces all of them.
