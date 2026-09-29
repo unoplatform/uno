@@ -185,8 +185,12 @@ at least one is published (`SkiaSharp.Views.Uno.WinUI`).
   `GetRuntimeTargetFramework` and matched server-side by the `['', 'desktop', 'skia']` family. It re-occupies
   the name the moment this work frees it, so freeing `skia` is incomplete until it moves. Belongs with the
   drawing-backend work (unoplatform/uno#24153).
-- **Dropping the `UnoRuntimeIdentifier=Skia` desktop shim.** It waits on a Uno.Resizetizer release that detects
-  a Skia app from the target platform and `UnoHasRuntimeHost`.
+- **Retiring the compatibility surface.** Each piece has its own trigger:
+  - the `UnoRuntimeIdentifier=Skia` shim in `Uno.Common.Desktop.targets` and the desktop-type host props goes in
+    the first 7.x release whose Uno.Sdk pins a Uno.Resizetizer that detects a Skia app from the target platform
+    and `UnoHasRuntimeHost` — not a breaking change;
+  - the deprecated library spelling of `UnoRuntimeIdentifier`, and the `_UnoValidateReferencesUnoRuntimeIdentifier`
+    alias target, go in the next major version, with a migration-guide entry.
 
 ## 8. An invariant worth writing down
 

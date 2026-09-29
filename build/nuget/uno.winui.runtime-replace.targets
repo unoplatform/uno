@@ -3,7 +3,8 @@
 
 	<!--
 	The variant a cross-runtime library declares, lowercased: it is also the uno-runtime folder it packs into
-	and loads from. UnoRuntimeIdentifier is the deprecated spelling (UNOB0024), mapped onto the new names.
+	and loads from. UnoRuntimeIdentifier is the deprecated spelling (UNOB0024), mapped onto the new names; drop
+	that mapping in the next major version.
 	-->
 	<Target Name="_UnoComputeDeclaredRuntimeVariant">
 		<PropertyGroup>
@@ -152,7 +153,7 @@
 
 	<!--
 	Runs so that a project hooking Before/AfterTargets on the previous name still fires: MSBuild schedules
-	such a hook only when its anchor target actually executes.
+	such a hook only when its anchor target actually executes. Remove in the next major version.
 	-->
 	<Target Name="_UnoValidateReferencesUnoRuntimeIdentifier"
 			BeforeTargets="CoreCompile"
