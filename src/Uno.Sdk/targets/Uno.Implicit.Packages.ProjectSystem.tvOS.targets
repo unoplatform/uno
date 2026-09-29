@@ -12,10 +12,10 @@
 	-->
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.AppleUIKit" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.AppleUIKit" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.AppleUIKit" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.AppleUIKit" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
 	</ItemGroup>
 </Project>

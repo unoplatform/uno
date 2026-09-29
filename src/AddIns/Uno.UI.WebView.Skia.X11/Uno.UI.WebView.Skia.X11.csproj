@@ -10,8 +10,8 @@
 		<RootNamespace>Uno.UI.WebView.Skia.X11</RootNamespace>
 
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<PackageId>Uno.WinUI.WebView.Skia.X11</PackageId>
-		<Description>This package provides support for WebView for Uno Platform Skia+X11 apps</Description>
+		<PackageId>Uno.WinUI.WebView.X11</PackageId>
+		<Description>This package provides support for WebView for Uno Platform X11 apps</Description>
 
 		<!--
 		  "A stable release of a package should not have a prerelease dependency."

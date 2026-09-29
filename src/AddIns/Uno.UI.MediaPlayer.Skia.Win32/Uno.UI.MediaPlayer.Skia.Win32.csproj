@@ -10,8 +10,8 @@
 		<RootNamespace>Uno.UI.MediaPlayer.Skia.Win32</RootNamespace>
 
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<PackageId>Uno.WinUI.MediaPlayer.Skia.Win32</PackageId>
-		<Description>This package provides support for MediaPlayerElement for Uno Platform Skia+Win32 apps</Description>
+		<PackageId>Uno.WinUI.MediaPlayer.Win32</PackageId>
+		<Description>This package provides support for MediaPlayerElement for Uno Platform Win32 apps</Description>
 
 		<DefineConstants>$(DefineConstants);IS_MPE_WIN32</DefineConstants>
 
