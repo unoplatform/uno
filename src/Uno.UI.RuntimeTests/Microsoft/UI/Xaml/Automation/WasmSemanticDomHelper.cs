@@ -43,7 +43,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				return;
 			}
 
-			InvokeBrowserJs("(function(){globalThis.Uno.UI.Runtime.Skia.Accessibility.disableAccessibility(); return 'ok';})()");
+			InvokeBrowserJs("(function(){globalThis.Uno.UI.Runtime.Accessibility.disableAccessibility(); return 'ok';})()");
 		}
 
 		/// <summary>

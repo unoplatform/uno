@@ -164,14 +164,14 @@
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Generic.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32\Uno.UI.Runtime.Skia.Win32.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32.Support\Uno.UI.Runtime.Skia.Win32.Support.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Linux.FrameBuffer\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.MacOS\Uno.UI.Runtime.Skia.MacOS.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.Win32\Uno.UI.MediaPlayer.Skia.Win32.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.X11\Uno.UI.MediaPlayer.Skia.X11.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.WebView.Skia.X11\Uno.UI.WebView.Skia.X11.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Win32\Uno.UI.Runtime.Win32.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Win32.Support\Uno.UI.Runtime.Win32.Support.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.X11\Uno.UI.Runtime.X11.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Linux.FrameBuffer\Uno.UI.Runtime.Linux.FrameBuffer.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.MacOS\Uno.UI.Runtime.MacOS.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Win32\Uno.UI.MediaPlayer.Win32.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.X11\Uno.UI.MediaPlayer.X11.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.WebView.X11\Uno.UI.WebView.X11.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Generic.csproj" />
 	</ItemGroup>
 
@@ -180,7 +180,7 @@
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.WebAssembly.Browser\Uno.UI.Runtime.WebAssembly.Browser.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Generic.csproj" />
 	</ItemGroup>
 
@@ -353,14 +353,14 @@
 		</WasmShellExtraFilesToDeploy>
 	</ItemGroup>
 
-	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\Uno.WinUI.Runtime.WebAssembly.Browser.props" />
-	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\Uno.WinUI.Runtime.WebAssembly.Browser.targets" />
+	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.WebAssembly.Browser\build\Uno.WinUI.Runtime.WebAssembly.Browser.props" />
+	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.WebAssembly.Browser\build\Uno.WinUI.Runtime.WebAssembly.Browser.targets" />
 	<!-- ==================== android (Skia) ==================== -->
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Android\Uno.UI.Runtime.Android.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.GooglePlay\Uno.UI.GooglePlay.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Foldable\Uno.UI.Foldable.netcoremobile.csproj" />
@@ -409,8 +409,8 @@
 		<TrimmerRootDescriptor Include="Platforms\Android\LinkerConfig.xml" />
 	</ItemGroup>
 
-	<Import Condition="'$(_Platform)' == 'android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\Uno.WinUI.Runtime.Android.props" />
-	<Import Condition="'$(_Platform)' == 'android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\Uno.WinUI.Runtime.Android.targets" />
+	<Import Condition="'$(_Platform)' == 'android'" Project="..\..\Uno.UI.Runtime.Android\build\Uno.WinUI.Runtime.Android.props" />
+	<Import Condition="'$(_Platform)' == 'android'" Project="..\..\Uno.UI.Runtime.Android\build\Uno.WinUI.Runtime.Android.targets" />
 
 	<!-- ==================== iOS + tvOS (AppleUIKit + Skia) — REQUIRES macOS to build ==================== -->
 	<!-- Not compile-validated on Windows. -->
@@ -419,7 +419,7 @@
 		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.AppleUIKit\Uno.UI.Runtime.AppleUIKit.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_IsUIKit)' == 'true'">
@@ -557,8 +557,8 @@
 		<MtouchLink>Full</MtouchLink>
 	</PropertyGroup>
 
-	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\Uno.WinUI.Runtime.AppleUIKit.props" />
-	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\Uno.WinUI.Runtime.AppleUIKit.targets" />
+	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.AppleUIKit\build\Uno.WinUI.Runtime.AppleUIKit.props" />
+	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.AppleUIKit\build\Uno.WinUI.Runtime.AppleUIKit.targets" />
 
 	<!-- ==================== Windows build configuration ==================== -->
 	<PropertyGroup Condition="'$(_Platform)' == 'windows'">
@@ -641,7 +641,7 @@
 	<!-- Stage the macOS native host dylib so the desktop artifact (built on Windows, run on macOS
 	     agents) can dlopen it. It comes from the native-assets-macos artifact, not a ProjectReference. -->
 	<PropertyGroup Condition="'$(_Platform)' == 'desktop'">
-		<_libUnoNativeMacPath>$(MSBuildThisFileDirectory)..\..\Uno.UI.Runtime.Skia.MacOS\UnoNativeMac\build\$(Configuration)\libUnoNativeMac.dylib</_libUnoNativeMacPath>
+		<_libUnoNativeMacPath>$(MSBuildThisFileDirectory)..\..\Uno.UI.Runtime.MacOS\UnoNativeMac\build\$(Configuration)\libUnoNativeMac.dylib</_libUnoNativeMacPath>
 	</PropertyGroup>
 	<Target Name="BuildUnoNativeMac" BeforeTargets="Compile"
 	        Condition="'$(_Platform)' == 'desktop' AND Exists('$(_libUnoNativeMacPath)')">

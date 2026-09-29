@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="../../targetframework-override-noplatform.props" />
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.WebView.X11</AssemblyName>
+		<RootNamespace>Uno.UI.WebView.X11</RootNamespace>
+
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<PackageId>Uno.WinUI.WebView.X11</PackageId>
+		<Description>This package provides support for WebView for Uno Platform X11 apps</Description>
+
+		<!--
+		  "A stable release of a package should not have a prerelease dependency."
+		  because of WebkitGtkSharp 3.24.24.117-develop
+		  -->
+		<NoWarn>$(NoWarn);NU5104</NoWarn>
+
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
+		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="WebkitGtkSharp" />
+		<PackageReference Include="Uno.Core.Extensions.Logging" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
+
+		<ProjectReference Include="..\..\Uno.UI.Runtime.X11\Uno.UI.Runtime.X11.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include=".\..\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+	</ItemGroup>
+</Project>

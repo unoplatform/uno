@@ -15,40 +15,40 @@ public static partial class WebGpuJsInterop
 {
 	/// <summary>Creates a WebGPU device in JS and imports it into the given wgpu instance. Returns the imported
 	/// WGPUDevice pointer, or 0 on failure.</summary>
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.createImportedDevice")]
+	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.createImportedDevice")]
 	public static partial Task<int> CreateImportedDeviceAsync(int instancePtr);
 
 	/// <summary>Reverse-looks-up the live JS object emdawn's handle table has for a wgpu handle pointer (here: a
 	/// device). Lets the neutral context expose the JS GPUDevice as the honest browser handle.</summary>
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.getJsObject")]
+	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.getJsObject")]
 	public static partial JSObject GetJsObject(int handlePtr);
 
 	/// <summary>Imports a JS GPUDevice object into emdawn's handle table under the given instance and returns its
 	/// wgpu WGPUDevice pointer. A backend calls this to convert the neutral JS handle to a native pointer.</summary>
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.importDevice")]
+	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.importDevice")]
 	public static partial int ImportDevice(JSObject jsDevice, int instancePtr);
 
 	/// <summary>Creates the offscreen resolve texture in JS (jsDevice.createTexture, rgba8unorm) — JS-primary,
 	/// symmetric with the JS-created device — imports it into emdawn's handle table and returns its wgpu texture
 	/// pointer. The host derives the view (and its JS object) from this.</summary>
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.createAndImportOffscreenTexture")]
+	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.createAndImportOffscreenTexture")]
 	public static partial int CreateAndImportOffscreenTexture(JSObject jsDevice, int width, int height, int usage);
 
 	/// <summary>Imports a JS GPUTextureView object into emdawn's handle table and returns its wgpu view pointer.
 	/// A backend calls this to convert IWebGpuRenderTarget.JsColorView to a native view it can render into.</summary>
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.importTextureView")]
+	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.importTextureView")]
 	public static partial int ImportTextureView(JSObject jsView, int parentPtr);
 
 	/// <summary>Maps a readback buffer (by its wgpu handle ptr) off the event loop and inspects it as RGBA8
 	/// (rows padded to <paramref name="bytesPerRow"/>). Returns the non-transparent pixel count, or -1 on failure,
 	/// and stashes a PNG of the frame on window.__unoLastFramePng.</summary>
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.mapReadStats")]
+	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.mapReadStats")]
 	public static partial Task<int> MapReadStatsAsync(int bufferPtr, int width, int height, int bytesPerRow);
 
 	/// <summary>Maps a readback buffer (by its wgpu handle ptr) off the event loop and returns its first
 	/// <paramref name="byteLen"/> bytes as base64 (marshals cleanly as a string). Backs
 	/// WebGpuDrawingFactory.SnapshotAsync (RenderTargetBitmap) on WASM.</summary>
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.mapReadBase64")]
+	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.mapReadBase64")]
 	public static partial Task<string> MapReadBase64Async(int bufferPtr, int byteLen);
 
 	/// <summary>Counts a presented frame as in flight until the queue (by its wgpu handle ptr) has finished all work

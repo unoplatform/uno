@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 ///   c) the AccessibilityRouter resolves peers / elements to their owning window's instance;
 ///   d) the router's Resolve returns null for elements whose window has been disposed.
 ///
-/// Uses reflection to access internal types in Uno.UI.Runtime.Skia and its host
+/// Uses reflection to access internal types in Uno.UI.Runtime and its host
 /// assemblies because the RuntimeTests project does not take a compile-time
 /// dependency on those runtime assemblies — only the Skia Desktop host loads them.
 ///
@@ -304,7 +304,7 @@ public class Given_MultiWindowAccessibility
 	}
 
 	// ──────────────────────────────────────────────────────────────
-	//  Reflection helpers — access internal types in Uno.UI.Runtime.Skia
+	//  Reflection helpers — access internal types in Uno.UI.Runtime
 	//  and the host assembly without taking a compile-time reference.
 	// ──────────────────────────────────────────────────────────────
 
@@ -329,7 +329,7 @@ public class Given_MultiWindowAccessibility
 			return null;
 		}
 
-		var ownerType = FindType("Uno.UI.Runtime.Skia.IAccessibilityOwner");
+		var ownerType = FindType("Uno.UI.Runtime.IAccessibilityOwner");
 		return ownerType is not null && ownerType.IsInstanceOfType(host) ? host : null;
 	}
 
@@ -347,7 +347,7 @@ public class Given_MultiWindowAccessibility
 		}
 
 		// Fall back to explicit interface implementation lookup.
-		var iface = FindType("Uno.UI.Runtime.Skia.IAccessibilityOwner");
+		var iface = FindType("Uno.UI.Runtime.IAccessibilityOwner");
 		if (iface is null)
 		{
 			return null;
@@ -374,7 +374,7 @@ public class Given_MultiWindowAccessibility
 
 	private static object? RouterResolveElement(UIElement element)
 	{
-		var router = FindType("Uno.UI.Runtime.Skia.AccessibilityRouter")
+		var router = FindType("Uno.UI.Runtime.AccessibilityRouter")
 			?? throw new InvalidOperationException("AccessibilityRouter type not found.");
 		var resolve = router.GetMethod(
 			"Resolve",
@@ -388,7 +388,7 @@ public class Given_MultiWindowAccessibility
 
 	private static object? RouterResolvePeer(AutomationPeer peer)
 	{
-		var router = FindType("Uno.UI.Runtime.Skia.AccessibilityRouter")
+		var router = FindType("Uno.UI.Runtime.AccessibilityRouter")
 			?? throw new InvalidOperationException("AccessibilityRouter type not found.");
 		var resolve = router.GetMethod(
 			"Resolve",

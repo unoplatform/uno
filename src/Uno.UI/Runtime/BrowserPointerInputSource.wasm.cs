@@ -57,7 +57,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 		Initialize(this);
 	}
 
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserPointerInputSource.initialize")]
+	[JSImport("globalThis.Uno.UI.Runtime.BrowserPointerInputSource.initialize")]
 	private static partial void Initialize([JSMarshalAs<JSType.Any>] object inputSource);
 
 	[JSExport]
@@ -238,7 +238,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 		}
 	}
 
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserPointerInputSource.setPointerCapture")]
+	[JSImport("globalThis.Uno.UI.Runtime.BrowserPointerInputSource.setPointerCapture")]
 	private static partial void SetPointerCaptureNative(double pointerId); // double as it might be negative on safari for iOS
 
 	public void ReleasePointerCapture()
@@ -261,7 +261,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 		}
 	}
 
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserPointerInputSource.releasePointerCapture")]
+	[JSImport("globalThis.Uno.UI.Runtime.BrowserPointerInputSource.releasePointerCapture")]
 	private static partial void ReleasePointerCaptureNative(double pointerId); // double as it might be negative on safari for iOS
 	#endregion
 

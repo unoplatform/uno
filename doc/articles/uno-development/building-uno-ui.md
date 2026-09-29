@@ -51,7 +51,7 @@ The step-by-step process is:
 1. To confirm that everything works:
    - For iOS/Android native you can right-click on the `Uno.UI` project
    - For WebAssembly/native, you can right-click on the `Uno.UI.Runtime.WebAssembly` project
-   - For Skia, you can right-click on the corresponding `Uno.UI.Runtime.Skia.[Win32|X11|macOS|iOS|Android|Wpf]` project
+   - For Skia, you can right-click on the corresponding `Uno.UI.Runtime.[Win32|X11|macOS|iOS|Android|Wpf]` project
 1. Optionally adjust additional parameters in `crosstargeting_override.props`, such as `UnoDisableNetAnalyzers`, which can improve the build time during debugging sessions.
 
 Once you've built successfully, for the next steps, [consult the guide here](debugging-uno-ui.md) for debugging Uno.UI.

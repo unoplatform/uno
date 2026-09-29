@@ -56,7 +56,7 @@ builder.SetMinimumLevel(LogLevel.Debug);
 Then change the logging level of the Skia Host to `Information` or `Debug`:
 
 ```csharp
-builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Information);
+builder.AddFilter("Uno.UI.Runtime", LogLevel.Information);
 ```
 
 You may also need to initialize the logging system earlier than what is found in Uno.UI's default templates by calling this in `Main`:

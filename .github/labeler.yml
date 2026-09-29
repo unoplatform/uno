@@ -38,12 +38,12 @@ area/skia ✏️:
   - changed-files:
     - any-glob-to-any-file:
       - '**/*.skia.cs'
-      - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/*
-      - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/**/*
-      - src/Uno.UI.Runtime.Skia.Android/*
-      - src/Uno.UI.Runtime.Skia.Android/**/*
-      - src/Uno.UI.Runtime.Skia.AppleUIKit/*
-      - src/Uno.UI.Runtime.Skia.AppleUIKit/**/*
+      - src/Uno.UI.Runtime.Linux.FrameBuffer/*
+      - src/Uno.UI.Runtime.Linux.FrameBuffer/**/*
+      - src/Uno.UI.Runtime.Android/*
+      - src/Uno.UI.Runtime.Android/**/*
+      - src/Uno.UI.Runtime.AppleUIKit/*
+      - src/Uno.UI.Runtime.AppleUIKit/**/*
 
 area/solution-templates:
   - changed-files:
@@ -65,8 +65,8 @@ platform/android 🤖:
       - src/Uno.UI.BindingHelper.Android/**/*
       - '**/*.Android.cs'
       - '**/*.Xamarin.cs'
-      - src/Uno.UI.Runtime.Skia.Android/*
-      - src/Uno.UI.Runtime.Skia.Android/**/*
+      - src/Uno.UI.Runtime.Android/*
+      - src/Uno.UI.Runtime.Android/**/*
 
 platform/wasm 🌐:
   - changed-files:
@@ -78,8 +78,8 @@ platform/wasm 🌐:
       - src/Uno.Foundation.Runtime.WebAssembly/**/*
       - src/Uno.UI.Runtime.WebAssembly/*
       - src/Uno.UI.Runtime.WebAssembly/**/*
-      - src/Uno.UI.Runtime.Skia.WebAssembly.Browser/*
-      - src/Uno.UI.Runtime.Skia.WebAssembly.Browser/**/*
+      - src/Uno.UI.Runtime.WebAssembly.Browser/*
+      - src/Uno.UI.Runtime.WebAssembly.Browser/**/*
 
 platform/ios 🍎:
   - changed-files:
@@ -89,17 +89,17 @@ platform/ios 🍎:
       - '**/*.iOSmacOS.cs'
       - '**/*.Apple.cs'
       - '**/*.Xamarin.cs'
-      - src/Uno.UI.Runtime.Skia.AppleUIKit/*
-      - src/Uno.UI.Runtime.Skia.AppleUIKit/**/*
+      - src/Uno.UI.Runtime.AppleUIKit/*
+      - src/Uno.UI.Runtime.AppleUIKit/**/*
 
 platform/macos 🍏:
   - changed-files:
     - any-glob-to-any-file:
-      - src/Uno.UI.Runtime.Skia.MacOS/*
-      - src/Uno.UI.Runtime.Skia.MacOS/**/*
+      - src/Uno.UI.Runtime.MacOS/*
+      - src/Uno.UI.Runtime.MacOS/**/*
 
 platform/x11 🐧:
   - changed-files:
     - any-glob-to-any-file:
-      - src/Uno.UI.Runtime.Skia.X11/*
-      - src/Uno.UI.Runtime.Skia.X11/**/*
+      - src/Uno.UI.Runtime.X11/*
+      - src/Uno.UI.Runtime.X11/**/*
