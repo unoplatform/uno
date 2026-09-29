@@ -6,144 +6,52 @@ namespace Microsoft.Windows.AppLifecycle
 #if false || false || false || false || false || false
 	public enum ExtendedActivationKind
 	{
-#if false || false || false || false || false || false
-		Launch = 0,
-#endif
-#if false || false || false || false || false || false
-		Search = 1,
-#endif
-#if false || false || false || false || false || false
-		ShareTarget = 2,
-#endif
-#if false || false || false || false || false || false
-		File = 3,
-#endif
-#if false || false || false || false || false || false
-		Protocol = 4,
-#endif
-#if false || false || false || false || false || false
-		FileOpenPicker = 5,
-#endif
-#if false || false || false || false || false || false
-		FileSavePicker = 6,
-#endif
-#if false || false || false || false || false || false
-		CachedFileUpdater = 7,
-#endif
-#if false || false || false || false || false || false
-		ContactPicker = 8,
-#endif
-#if false || false || false || false || false || false
-		Device = 9,
-#endif
-#if false || false || false || false || false || false
-		PrintTaskSettings = 10,
-#endif
-#if false || false || false || false || false || false
-		CameraSettings = 11,
-#endif
-#if false || false || false || false || false || false
-		RestrictedLaunch = 12,
-#endif
-#if false || false || false || false || false || false
-		AppointmentsProvider = 13,
-#endif
-#if false || false || false || false || false || false
-		Contact = 14,
-#endif
-#if false || false || false || false || false || false
-		LockScreenCall = 15,
-#endif
-#if false || false || false || false || false || false
-		VoiceCommand = 16,
-#endif
-#if false || false || false || false || false || false
-		LockScreen = 17,
-#endif
-#if false || false || false || false || false || false
-		PickerReturned = 1000,
-#endif
-#if false || false || false || false || false || false
-		WalletAction = 1001,
-#endif
-#if false || false || false || false || false || false
-		PickFileContinuation = 1002,
-#endif
-#if false || false || false || false || false || false
-		PickSaveFileContinuation = 1003,
-#endif
-#if false || false || false || false || false || false
-		PickFolderContinuation = 1004,
-#endif
-#if false || false || false || false || false || false
-		WebAuthenticationBrokerContinuation = 1005,
-#endif
-#if false || false || false || false || false || false
-		WebAccountProvider = 1006,
-#endif
-#if false || false || false || false || false || false
-		ComponentUI = 1007,
-#endif
-#if false || false || false || false || false || false
-		ProtocolForResults = 1009,
-#endif
-#if false || false || false || false || false || false
-		ToastNotification = 1010,
-#endif
-#if false || false || false || false || false || false
-		Print3DWorkflow = 1011,
-#endif
-#if false || false || false || false || false || false
-		DialReceiver = 1012,
-#endif
-#if false || false || false || false || false || false
-		DevicePairing = 1013,
-#endif
-#if false || false || false || false || false || false
-		UserDataAccountsProvider = 1014,
-#endif
-#if false || false || false || false || false || false
-		FilePickerExperience = 1015,
-#endif
-#if false || false || false || false || false || false
-		LockScreenComponent = 1016,
-#endif
-#if false || false || false || false || false || false
-		ContactPanel = 1017,
-#endif
-#if false || false || false || false || false || false
-		PrintWorkflowForegroundTask = 1018,
-#endif
-#if false || false || false || false || false || false
-		GameUIProvider = 1019,
-#endif
-#if false || false || false || false || false || false
-		StartupTask = 1020,
-#endif
-#if false || false || false || false || false || false
-		CommandLineLaunch = 1021,
-#endif
-#if false || false || false || false || false || false
-		BarcodeScannerProvider = 1022,
-#endif
-#if false || false || false || false || false || false
-		PrintSupportJobUI = 1023,
-#endif
-#if false || false || false || false || false || false
-		PrintSupportSettingsUI = 1024,
-#endif
-#if false || false || false || false || false || false
-		PhoneCallActivation = 1025,
-#endif
-#if false || false || false || false || false || false
-		VpnForeground = 1026,
-#endif
-#if false || false || false || false || false || false
-		Push = 5000,
-#endif
-#if false || false || false || false || false || false
-		AppNotification = 5001,
-#endif
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.Launch
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.Search
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.ShareTarget
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.File
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.Protocol
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.FileOpenPicker
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.FileSavePicker
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.CachedFileUpdater
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.ContactPicker
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.Device
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.PrintTaskSettings
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.CameraSettings
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.RestrictedLaunch
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.AppointmentsProvider
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.Contact
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.LockScreenCall
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.VoiceCommand
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.LockScreen
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.PickerReturned
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.WalletAction
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.PickFileContinuation
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.PickSaveFileContinuation
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.PickFolderContinuation
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.WebAuthenticationBrokerContinuation
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.WebAccountProvider
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.ComponentUI
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.ProtocolForResults
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.ToastNotification
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.Print3DWorkflow
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.DialReceiver
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.DevicePairing
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.UserDataAccountsProvider
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.FilePickerExperience
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.LockScreenComponent
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.ContactPanel
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.PrintWorkflowForegroundTask
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.GameUIProvider
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.StartupTask
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.CommandLineLaunch
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.BarcodeScannerProvider
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.PrintSupportJobUI
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.PrintSupportSettingsUI
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.PhoneCallActivation
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.VpnForeground
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.Push
+		// Skipping already declared field Microsoft.Windows.AppLifecycle.ExtendedActivationKind.AppNotification
 	}
 #endif
 }
