@@ -1748,9 +1748,14 @@ internal readonly partial struct UnicodeText : IParsedText
 		return null;
 	}
 
-	private static unsafe void AppendBoundaries(int boundaryType, string text, int outputBaseOffset, List<int> list)
+	internal static unsafe void AppendBoundaries(int boundaryType, string text, int outputBaseOffset, List<int> list)
 	{
-		fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
+		// ubrk_open takes the locale as a NUL-terminated char* (not UTF-16), otherwise ICU only sees its first letter.
+		var localeName = CultureInfo.CurrentUICulture.Name;
+		Span<byte> localeBytes = stackalloc byte[Encoding.UTF8.GetMaxByteCount(localeName.Length) + 1];
+		localeBytes[Encoding.UTF8.GetBytes(localeName, localeBytes)] = 0;
+
+		fixed (byte* locale = localeBytes)
 		{
 			fixed (char* textPtr = &text.GetPinnableReference())
 			{
