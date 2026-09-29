@@ -106,7 +106,7 @@ internal static partial class ImageSourceHelpers
 	}
 
 	// https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/6.0/byte-array-interop#receive-byte-array-in-javascript-from-net-1
-	[JSImport($"globalThis.Uno.UI.Runtime.Skia.ImageLoader.loadFromArray")]
+	[JSImport($"globalThis.Uno.UI.Runtime.ImageLoader.loadFromArray")]
 	private static partial Task<JSObject> LoadFromArray(byte[] array);
 #endif
 

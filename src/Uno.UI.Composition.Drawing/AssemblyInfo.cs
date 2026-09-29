@@ -12,14 +12,14 @@ using System.Runtime.CompilerServices;
 // The graphics negotiator (GraphicsRegistry, GraphicsInitialization, GraphicsContextFactory) is framework
 // host-plumbing, not third-party API, so it is internal + IVT'd to the Skia hosts; the third-party backend SPI
 // (IGraphicsProvider/IGraphicsContext/GraphicsContextKind/IDrawingFactory) stays public.
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.X11")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.MacOS")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.WebAssembly.Browser")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Headless")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.X11")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Win32")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.MacOS")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly.Browser")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Linux.FrameBuffer")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.AppleUIKit")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Android")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Headless")]
 
 // Runtime tests drive the registration seam directly to record frames outside a host.
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]

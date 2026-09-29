@@ -68,14 +68,14 @@ These load **automatically** when you touch matching files — you don't invoke 
 | `.reference.cs` | Reference implementation |
 | `.crossruntime.cs` | Skia + WebAssembly + Reference (shared) |
 
-Only projects that build per-platform variants compile the platform suffixes: the WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) and platform-specific runtime or add-in projects. The `Uno.UI` project builds once, for Skia, and excludes `.Android.cs`, `.UIKit.cs` and `.wasm.cs` files by default. A platform runtime project can still link such a file from under `src/Uno.UI`: `Uno.UI.Runtime.Skia.WebAssembly.Browser` compiles the `NativeWebView` and TextBox input-scope `.wasm.cs` partials. Judge a file by the MSBuild project that compiles it, not by its path.
+Only projects that build per-platform variants compile the platform suffixes: the WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) and platform-specific runtime or add-in projects. The `Uno.UI` project builds once, for Skia, and excludes `.Android.cs`, `.UIKit.cs` and `.wasm.cs` files by default. A platform runtime project can still link such a file from under `src/Uno.UI`: `Uno.UI.Runtime.WebAssembly.Browser` compiles the `NativeWebView` and TextBox input-scope `.wasm.cs` partials. Judge a file by the MSBuild project that compiles it, not by its path.
 
 ### Key Source Directories
 
 - `src/Uno.UI/` - Core UI framework (WinUI controls, layout, XAML runtime)
 - `src/Uno.WinRT/` - Non-UI WinRT APIs (platform-specific assemblies)
 - `src/Uno.Foundation/` - Foundation APIs (platform-specific assemblies)
-- `src/Uno.UI.Runtime.Skia.*/` - Skia platform runtimes
+- `src/Uno.UI.Runtime.*/` - Skia platform runtimes
 - `src/SourceGenerators/` - XAML parser, DependencyProperty generator
 - `src/SamplesApp/` - Sample app for validation and tests
 - `src/Uno.UI.RuntimeTests/` - Platform runtime tests
@@ -178,7 +178,7 @@ The WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) keeps per-
 
 ### Runtime Target Selection
 
-For Skia, `RuntimeAssetsSelectorTask` ensures `Uno.UI` uses `netX` (generic) target for all Skia platforms. `Uno.WinRT` and `Uno.Foundation` use platform-specific assemblies. Use runtime checks like `OperatingSystem.IsAndroid()` for platform-specific behavior on Skia for libraries above and including `Uno.UI`, or use `ApiExtensibility` with platform-specific implementations in `Runtime.Skia` projects.
+For Skia, `RuntimeAssetsSelectorTask` ensures `Uno.UI` uses `netX` (generic) target for all Skia platforms. `Uno.WinRT` and `Uno.Foundation` use platform-specific assemblies. Use runtime checks like `OperatingSystem.IsAndroid()` for platform-specific behavior on Skia for libraries above and including `Uno.UI`, or use `ApiExtensibility` with platform-specific implementations in `Uno.UI.Runtime.*` projects.
 
 ### NotImplemented Stubs
 

@@ -1,0 +1,497 @@
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Windows.Foundation;
+using Uno.UI.Composition.Drawing;
+using Uno.UI.Runtime.Native;
+using Uno.Foundation.Logging;
+using System.Text.RegularExpressions;
+using System.Threading;
+using Windows.Graphics.Display;
+using Windows.Graphics.Interop.Direct2D;
+using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
+using Uno.UI.Helpers;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Linux.FrameBuffer.UI;
+using System.Runtime.CompilerServices;
+
+namespace Uno.UI.Runtime
+{
+	internal partial class DRMRenderer : FrameBufferRenderer
+	{
+		private const uint DefaultFramebuffer = 0;
+
+		private readonly IntPtr _eglDisplay;
+		private readonly IntPtr _glContext;
+		private readonly IntPtr _eglSurface;
+		private readonly int _samples;
+		private readonly int _stencil;
+		private readonly GraphicsColorFormat _colorFormat;
+
+		private DRMGLRenderTarget? _target;
+		private readonly IntPtr _gbmTargetSurface;
+		private readonly int _card;
+		private IntPtr _currentBo;
+		private readonly uint _crtc;
+		private readonly uint _encoder;
+		private bool _waitingForPageFlip;
+		private bool _invalidateRenderCalledWhileWaitingForPageFlip;
+		private readonly GCHandle _selfHandle;
+
+		private LibDrm.drmModeCrtc _savedCrtc;
+		private uint _savedConnectorId;
+		private volatile bool _disposed;
+		private bool _crtcRestored;
+
+		public readonly record struct DRMInitOptions(string? CardPath, FramebufferHostBuilder.DRMConnectorChooserDelegate? DRMConnectorChooser, FramebufferHostBuilder.DRMFourCCColorFormat GBMSurfaceColorFormat);
+
+		public unsafe DRMRenderer(IXamlRootHost host, DRMInitOptions drmInitOptions, MouseIndicatorOptions mouseIndicatorOptions) : base(host, mouseIndicatorOptions)
+		{
+			_selfHandle = GCHandle.Alloc(this);
+
+			if (drmInitOptions.CardPath is not null)
+			{
+				_card = Libc.open(drmInitOptions.CardPath, Libc.O_RDWR, 0);
+				if (_card == -1)
+				{
+					var errno = Marshal.GetLastWin32Error();
+					var errnoStringPtr = Libc.strerror(errno);
+					var errorString = Marshal.PtrToStringAnsi(errnoStringPtr);
+					throw new InvalidOperationException($"Couldn't open {drmInitOptions.CardPath} ({errno}): {errorString}");
+				}
+				else
+				{
+					this.LogInfo()?.Info($"Found DRM device {drmInitOptions.CardPath}");
+				}
+			}
+			else
+			{
+				var files = Directory.GetFiles("/dev/dri/");
+
+				foreach (var file in files)
+				{
+					if (DRMCardPathRegex().Match(file).Success)
+					{
+						_card = Libc.open(file, Libc.O_RDWR, 0);
+						if (_card == -1)
+						{
+							var errno = Marshal.GetLastWin32Error();
+							var errnoStringPtr = Libc.strerror(errno);
+							var errorString = Marshal.PtrToStringAnsi(errnoStringPtr);
+							this.LogDebug()?.LogDebug($"Couldn't open {file} ({errno}): {errorString}");
+						}
+						else
+						{
+							this.LogInfo()?.Info($"Found DRM device {file}");
+							break;
+						}
+					}
+				}
+				if (_card == -1)
+				{
+					throw new FileNotFoundException("Couldn't open any DRM card matching /dev/dri/card[0-9]+");
+				}
+			}
+
+			var resources = new DrmResources(_card);
+			this.LogDebug()?.Debug($"DRM resources dump:\n{resources.Dump()}");
+
+			if (resources.Connectors.Count == 0)
+			{
+				throw new Exception("No DRM connectors found");
+			}
+
+			var connectors =
+				resources.Connectors
+				.Where(c => c is { Connection: DrmModeConnection.DRM_MODE_CONNECTED, Modes.Count: > 0 })
+				.ToList();
+			DrmConnector? connector = default;
+			if (drmInitOptions.DRMConnectorChooser is { } chooser)
+			{
+				var connectorsForChooser =
+					connectors
+						.Select(c => new FramebufferHostBuilder.DRMConnector((uint)c.ConnectorType, c.ConnectorTypeId, c.Id, c.Name))
+						.ToList();
+				if (chooser(connectorsForChooser) is var chosenConnectorIndex && connectorsForChooser.Count > chosenConnectorIndex && chosenConnectorIndex >= 0)
+				{
+					connector = connectors[chosenConnectorIndex];
+				}
+				else
+				{
+					throw new InvalidOperationException($"The connector chosen with {nameof(FramebufferHostBuilder.DRMConnectorChooser)} does not have a usable CRTC+encoder combination");
+				}
+			}
+			else
+			{
+				// We use the first connector that has a usable encoder+crtc combination
+				foreach (var connectorCandidate in connectors)
+				{
+					var encoderIds = resources.Encoders.Keys.AsEnumerable();
+					if (resources.Encoders.ContainsKey(connectorCandidate.EncoderId))
+					{
+						// if connector is already modeset to use a specific encoder, then let's try reusing it first
+						encoderIds = encoderIds.Prepend(connectorCandidate.EncoderId);
+					}
+					foreach (var encoderId in encoderIds)
+					{
+						var encoder = resources.Encoders[encoderId];
+						if (encoder.PossibleCrtcs.Any(crtc => crtc.crtc_id == encoder.Encoder.crtc_id))
+						{
+							connector = connectorCandidate;
+							_encoder = encoderId;
+							_crtc = encoder.Encoder.crtc_id;
+							break;
+						}
+						else if (encoder.PossibleCrtcs.Count > 0)
+						{
+							connector = connectorCandidate;
+							_encoder = encoderId;
+							// possible crtcs are ordered from best to worst
+							_crtc = encoder.PossibleCrtcs.First().crtc_id;
+							break;
+						}
+					}
+				}
+
+				if (connector is null)
+				{
+					throw new InvalidOperationException("Cannot find any connectors with a usable CRTC+encoder combination");
+				}
+			}
+
+			Debug.Assert(connector is not null && resources.Encoders[_encoder].PossibleCrtcs.Any(crtc => _crtc == crtc.crtc_id));
+
+			var modeInfo = connector.Modes.FirstOrDefault(m => m.IsPreferred, connector.Modes[0]);
+
+			var device = LibDrm.gbm_create_device(_card);
+			if (device == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"{nameof(LibDrm.gbm_create_device)} failed");
+			}
+			_gbmTargetSurface = LibDrm.gbm_surface_create(device, modeInfo.Resolution.Width, modeInfo.Resolution.Height, drmInitOptions.GBMSurfaceColorFormat.ToInt(), LibDrm.GbmBoFlags.GBM_BO_USE_SCANOUT | LibDrm.GbmBoFlags.GBM_BO_USE_RENDERING);
+			_colorFormat = ToColorFormat(drmInitOptions.GBMSurfaceColorFormat);
+			if (_gbmTargetSurface == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"{nameof(LibDrm.gbm_surface_create)} failed");
+			}
+
+			try
+			{
+				_eglDisplay = EglHelper.EglGetPlatformDisplay(/* EGL_PLATFORM_GBM_KHR */ 0x31D7, device, null);
+				if (_eglDisplay == IntPtr.Zero)
+				{
+					throw new InvalidOperationException($"{nameof(EglHelper.EglGetPlatformDisplay)} failed : {Enum.GetName(EglHelper.EglGetError())}");
+				}
+			}
+			catch (Exception e)
+			{
+				this.LogDebug()?.Debug(e.Message);
+				_eglDisplay = EglHelper.EglGetPlatformDisplayEXT(/* EGL_PLATFORM_GBM_KHR */ 0x31D7, device, null);
+				if (_eglDisplay == IntPtr.Zero)
+				{
+					throw new InvalidOperationException($"{nameof(EglHelper.EglGetPlatformDisplayEXT)} failed : {Enum.GetName(EglHelper.EglGetError())}");
+				}
+			}
+
+			(_eglSurface, _glContext, var major, var minor, _samples, _stencil)
+				= EglHelper.InitializeGles2Context(_eglDisplay, _gbmTargetSurface);
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info($"Found EGL version {major}.{minor}.");
+			}
+
+			using var _ = MakeCurrent();
+
+			this.Log().Info($"Using {EglHelper.GetGlVersionString()} for rendering.");
+
+			if (!EglHelper.EglSwapBuffers(_eglDisplay, _eglSurface))
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(EglHelper.EglSwapBuffers)} failed during Renderer init: {Enum.GetName(EglHelper.EglGetError())}");
+				}
+			}
+
+			var bo = LibDrm.gbm_surface_lock_front_buffer(_gbmTargetSurface);
+			if (bo == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"{nameof(LibDrm.gbm_surface_lock_front_buffer)} failed during DRM CRTC setup.");
+			}
+			var fbId = CreateFbForBo(bo);
+			var connectorId = connector.Id;
+			var mode = modeInfo.Mode;
+
+			// Save the current CRTC state so we can restore it on exit, which allows
+			// the kernel fbcon to reattach and the CLI prompt to reappear.
+			var savedCrtc = LibDrm.drmModeGetCrtc(_card, _crtc);
+			if (savedCrtc != null)
+			{
+				_savedCrtc = *savedCrtc;
+				_savedConnectorId = connectorId;
+				LibDrm.drmModeFreeCrtc(savedCrtc);
+			}
+
+			var res = LibDrm.drmModeSetCrtc(_card, _crtc, fbId, 0, 0, &connectorId, 1, &mode);
+			if (res != 0)
+			{
+				throw new InvalidOperationException($"{nameof(LibDrm.drmModeSetCrtc)} failed with error code {res}");
+			}
+
+			_currentBo = bo;
+
+			FrameBufferWindowWrapper.Instance.SetSize(new Size(modeInfo.Resolution.Width, modeInfo.Resolution.Height));
+
+			new Thread(PageFlipLoop) { IsBackground = true, Name = "DRM pageflip loop" }.Start();
+		}
+
+		private unsafe int CalculateRefreshRate(LibDrm.drmModeModeInfo* mode)
+		{
+			var res = (int)(mode->clock * 1000000L / mode->htotal + mode->vtotal / 2) / mode->vtotal;
+
+			if ((mode->flags & /* DRM_MODE_FLAG_INTERLACE */ (1 << 4)) != 0)
+			{
+				res *= 2;
+			}
+
+			if ((mode->flags & /* DRM_MODE_FLAG_DBLSCAN */ (1 << 5)) != 0)
+			{
+				res /= 2;
+			}
+
+			if (mode->vscan > 1)
+			{
+				res /= mode->vscan;
+			}
+
+			return res / 1000;
+		}
+
+		public override unsafe void InvalidateRender()
+		{
+			if (_disposed)
+			{
+				return;
+			}
+
+			Volatile.Write(ref _invalidateRenderCalledWhileWaitingForPageFlip, true);
+			if (Interlocked.Exchange(ref _waitingForPageFlip, true))
+			{
+				return;
+			}
+
+			using (MakeCurrent())
+			{
+				if (!EglHelper.EglSwapBuffers(_eglDisplay, _eglSurface))
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"{nameof(EglHelper.EglSwapBuffers)} failed.");
+					}
+				}
+			}
+			var nextBo = LibDrm.gbm_surface_lock_front_buffer(_gbmTargetSurface);
+			if (nextBo == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"{nameof(LibDrm.gbm_surface_lock_front_buffer)} failed");
+			}
+
+			LibDrm.gbm_surface_release_buffer(_gbmTargetSurface, _currentBo);
+			_currentBo = nextBo;
+
+			var fb = CreateFbForBo(nextBo);
+			var res = LibDrm.drmModePageFlip(_card, _crtc, fb, LibDrm.DrmModePageFlip.Event, (void*)GCHandle.ToIntPtr(_selfHandle));
+			if (res != 0)
+			{
+				throw new InvalidOperationException($"{nameof(LibDrm.drmModePageFlip)} failed ({res})");
+			}
+		}
+
+		protected override IDisposable MakeCurrent()
+		{
+			var glContext = EglHelper.EglGetCurrentContext();
+			var readSurface = EglHelper.EglGetCurrentSurface(EglHelper.EGL_READ);
+			var drawSurface = EglHelper.EglGetCurrentSurface(EglHelper.EGL_DRAW);
+			if (!EglHelper.EglMakeCurrent(_eglDisplay, _eglSurface, _eglSurface, _glContext))
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(EglHelper.EglMakeCurrent)} failed.");
+				}
+			}
+			return Disposable.Create(() =>
+			{
+				if (!EglHelper.EglMakeCurrent(_eglDisplay, drawSurface, readSurface, glContext))
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"{nameof(EglHelper.EglMakeCurrent)} failed.");
+					}
+				}
+			});
+		}
+
+		private unsafe void PageFlipLoop()
+		{
+			var ctx = new LibDrm.DrmEventContext
+			{
+				version = 4,
+				page_flip_handler2 = &OnPageFlip
+			};
+			while (true)
+			{
+				var pfd = new pollfd { events = 1, fd = _card };
+				var res = Libc.poll(&pfd, new IntPtr(1), -1);
+				if (res < 0)
+				{
+					var errno = Marshal.GetLastWin32Error();
+					var errnoStringPtr = Libc.strerror(errno);
+					var errorString = Marshal.PtrToStringAnsi(errnoStringPtr);
+					throw new InvalidOperationException($"{nameof(Libc.poll)} failed ({errno}) : {errorString}");
+				}
+
+				res = LibDrm.drmHandleEvent(_card, &ctx);
+				if (res != 0)
+				{
+					throw new InvalidOperationException($"{nameof(LibDrm.drmHandleEvent)} failed ({res})");
+				}
+			}
+		}
+
+		[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+		private static unsafe void OnPageFlip(int fd, uint sequence, uint tv_sec, uint tv_usec, uint crtd_id, void* user_data)
+		{
+			var handle = GCHandle.FromIntPtr((IntPtr)user_data);
+			var @this = (DRMRenderer)handle.Target!;
+			if (@this._disposed)
+			{
+				return;
+			}
+			@this.OnPageFlipCore();
+		}
+
+		// Nothing may throw out of OnPageFlip: it is called from libdrm's frame, where a managed exception terminates
+		// the process, and a flip gate left closed stalls the loop for good.
+		private void OnPageFlipCore()
+		{
+			try
+			{
+				Volatile.Write(ref _invalidateRenderCalledWhileWaitingForPageFlip, false);
+				Render();
+				Volatile.Write(ref _waitingForPageFlip, false);
+				if (Volatile.Read(ref _invalidateRenderCalledWhileWaitingForPageFlip))
+				{
+					InvalidateRender();
+				}
+			}
+			catch (Exception e)
+			{
+				Volatile.Write(ref _waitingForPageFlip, false);
+				this.LogError()?.Error($"The DRM page-flip handler failed; the next invalidation re-arms it: {e}");
+			}
+		}
+
+		protected override IRenderTarget? CurrentTarget => _target;
+
+		// The EGL window surface's default framebuffer (FBO 0) is the compose target; the Skia backend builds and
+		// owns the GRContext-GLES over it via the neutral IGLRenderTarget seam.
+		protected override IRenderTarget CreateTarget(int width, int height)
+			=> _target = new DRMGLRenderTarget(width, height, _samples, _stencil, _colorFormat);
+
+		// The GBM surface format is the app's choice, so the neutral format has to follow it: a FourCC beginning
+		// with 'X' (XR24, XB24) has a padding byte where the others have alpha, and only then is an opaque wrap right.
+		private static GraphicsColorFormat ToColorFormat(FramebufferHostBuilder.DRMFourCCColorFormat format)
+			=> format.C1 == 'X' ? GraphicsColorFormat.Rgb888x : GraphicsColorFormat.Rgba8888;
+
+		private sealed class DRMGLRenderTarget(int width, int height, int samples, int stencil, GraphicsColorFormat colorFormat) : IGLRenderTarget
+		{
+			public uint FramebufferId => DefaultFramebuffer;
+			public int Width => width;
+			public int Height => height;
+			public int SampleCount => samples;
+			public int StencilBits => stencil;
+			public GraphicsColorFormat ColorFormat => colorFormat;
+			public void Dispose() { }
+		}
+
+		private uint CreateFbForBo(IntPtr bo)
+		{
+			if (bo == IntPtr.Zero)
+				throw new ArgumentException("bo is 0");
+			var data = LibDrm.gbm_bo_get_user_data(bo);
+			if (data != IntPtr.Zero)
+				return (uint)data.ToInt32();
+
+			var w = LibDrm.gbm_bo_get_width(bo);
+			var h = LibDrm.gbm_bo_get_height(bo);
+			var stride = LibDrm.gbm_bo_get_stride(bo);
+			var handle = LibDrm.gbm_bo_get_handle(bo).u32;
+			var format = LibDrm.gbm_bo_get_format(bo);
+
+			// prepare for the new ioctl call
+			var handles = new uint[] { handle, 0, 0, 0 };
+			var pitches = new uint[] { stride, 0, 0, 0 };
+			var offsets = new uint[4];
+
+			var ret = LibDrm.drmModeAddFB2(_card, w, h, format, handles, pitches,
+				offsets, out var fbHandle, 0);
+			if (ret != 0)
+			{
+				throw new InvalidOperationException($"{nameof(LibDrm.drmModeAddFB2)} failed {ret}");
+			}
+
+			LibDrm.gbm_bo_set_user_data(bo, new IntPtr((int)fbHandle), OnBoFree);
+
+			return fbHandle;
+		}
+
+		private void OnBoFree(IntPtr bo, IntPtr fbHandle) => LibDrm.drmModeRmFB(_card, fbHandle.ToInt32());
+
+		public override unsafe void Dispose()
+		{
+			if (_disposed)
+			{
+				return;
+			}
+			_disposed = true;
+
+			if (_crtcRestored)
+			{
+				return;
+			}
+			_crtcRestored = true;
+
+			try
+			{
+				var connectorId = _savedConnectorId;
+				int restoreRes;
+				if (_savedCrtc.mode_valid != 0 && connectorId != 0)
+				{
+					fixed (LibDrm.drmModeModeInfo* modePtr = &_savedCrtc.mode)
+					{
+						restoreRes = LibDrm.drmModeSetCrtc(_card, _crtc, _savedCrtc.buffer_id, _savedCrtc.x, _savedCrtc.y, &connectorId, 1, modePtr);
+					}
+				}
+				else
+				{
+					// Nothing was driving the CRTC before us: disable it so the driver releases it.
+					restoreRes = LibDrm.drmModeSetCrtc(_card, _crtc, 0, 0, 0, null, 0, null);
+				}
+
+				if (restoreRes != 0)
+				{
+					this.LogDebug()?.Debug($"{nameof(LibDrm.drmModeSetCrtc)} returned {restoreRes} while restoring the original CRTC state on exit.");
+				}
+			}
+			catch (Exception e)
+			{
+				this.LogDebug()?.Debug($"Failed to restore the original CRTC state on exit: {e.Message}");
+			}
+		}
+
+		[GeneratedRegex("card[0-9]+")]
+		private static partial Regex DRMCardPathRegex();
+	}
+}

@@ -1,4 +1,4 @@
-namespace Uno.UI.Runtime.Skia {
+namespace Uno.UI.Runtime {
 	// Browser WebGPU device bring-up, SkiaSharp-Graphite-style: create the adapter+device in JavaScript
 	// (navigator.gpu, awaited as a Task via [JSImport]) and graft the JS GPUDevice into emdawnwebgpu's C
 	// handle table via Module.unoWebGpuImportDevice (installed by the emdawn __postset patch). This avoids the

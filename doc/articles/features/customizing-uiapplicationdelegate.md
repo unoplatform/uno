@@ -8,10 +8,10 @@ Uno Platform provides the ability to provide custom behavior for `UIApplicationD
 
 ## Skia rendering
 
-In Skia-based apps, the `App` type no longer derives from `UIApplicationDelegate`. Instead, Uno Platform provides `Uno.UI.Runtime.Skia.AppleUIKit.UnoUIApplicationDelegate`. If you decide to implement your own application lifecycle handling, create a new type that derives from it:
+In Skia-based apps, the `App` type no longer derives from `UIApplicationDelegate`. Instead, Uno Platform provides `Uno.UI.Runtime.AppleUIKit.UnoUIApplicationDelegate`. If you decide to implement your own application lifecycle handling, create a new type that derives from it:
 
 ```csharp
-public class MyApplicationDelegate : Uno.UI.Runtime.Skia.AppleUIKit.UnoUIApplicationDelegate
+public class MyApplicationDelegate : Uno.UI.Runtime.AppleUIKit.UnoUIApplicationDelegate
 {
     // Your own code or overrides
 }

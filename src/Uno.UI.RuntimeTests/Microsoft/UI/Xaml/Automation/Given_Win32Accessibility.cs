@@ -377,7 +377,7 @@ public class Given_Win32Accessibility
 	[TestMethod]
 	public void When_Traversing_Deep_Cyclic_Descendants()
 	{
-		var accessibilityType = FindType("Uno.UI.Runtime.Skia.Win32.Win32Accessibility")
+		var accessibilityType = FindType("Uno.UI.Runtime.Win32.Win32Accessibility")
 			?? throw new InvalidOperationException("Win32Accessibility type not found.");
 		var traverse = accessibilityType.GetMethod(
 			"TraverseDescendants",
@@ -428,7 +428,7 @@ public class Given_Win32Accessibility
 
 	private static object? ResolveAccessibility(UIElement element)
 	{
-		var router = FindType("Uno.UI.Runtime.Skia.AccessibilityRouter")
+		var router = FindType("Uno.UI.Runtime.AccessibilityRouter")
 			?? throw new InvalidOperationException("AccessibilityRouter type not found.");
 		var resolve = router.GetMethod(
 			"Resolve",

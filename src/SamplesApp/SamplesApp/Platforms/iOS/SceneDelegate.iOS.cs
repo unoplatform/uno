@@ -1,5 +1,5 @@
 ﻿using Foundation;
-using Uno.UI.Runtime.Skia.AppleUIKit;
+using Uno.UI.Runtime.AppleUIKit;
 
 namespace SamplesApp.iOS;
 

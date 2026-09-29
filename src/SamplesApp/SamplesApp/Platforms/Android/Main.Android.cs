@@ -11,7 +11,7 @@ using Uno.UI.Foldable;
 using Windows.UI.ViewManagement;
 using Uno.UI;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.Android;
+using Uno.UI.Runtime.Android;
 
 [assembly: UsesFeature("android.software.leanback", Required = false)]
 [assembly: UsesFeature("android.hardware.touchscreen", Required = false)]

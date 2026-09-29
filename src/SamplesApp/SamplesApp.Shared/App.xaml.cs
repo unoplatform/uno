@@ -546,14 +546,13 @@ namespace SamplesApp
 				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Debug);
 
 				// Display Skia related information
-				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
+				builder.AddFilter("Uno.UI.Runtime.", LogLevel.Debug);
 
 				// Surface the graphics-backend negotiation result (which renderer/context kind won)
 				builder.AddFilter("Uno.UI.Composition.Drawing", LogLevel.Information);
-				builder.AddFilter("Uno.WinUI.Runtime.Skia", LogLevel.Debug);
 				builder.AddFilter("Uno.UI.Skia", LogLevel.Debug);
 
-				// builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Trace);
+				// builder.AddFilter("Uno.UI.Runtime.", LogLevel.Trace);
 
 				// builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
 				// builder.AddFilter("Microsoft.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );

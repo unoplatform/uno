@@ -71,7 +71,7 @@ Then, here are the steps to use a local build of Uno.UI in another application:
 1. Open the appropriate Uno.UI solution filter and build the following:
    - For iOS/Android native, you can right-click on the `Uno.UI` project
    - For WebAssembly/native, you can right-click on the `Uno.UI.Runtime.WebAssembly` project
-   - For Skia, you can right-click on the corresponding `Uno.UI.Runtime.Skia.[Win32|X11|macOS|iOS|Android|Wpf]` project.
+   - For Skia, you can right-click on the corresponding `Uno.UI.Runtime.[Win32|X11|macOS|iOS|Android|Wpf]` project.
 
 To debug Uno.UI code in the application, follow these steps (using `FrameworkElement.MeasureOverride()` as an example):
 
@@ -104,7 +104,7 @@ If this is the case:
 
 - In your debugged app, install another package version you've never debugged with
 - Make sure to build the app once to populate the NuGet cache
-- Rebuild the Uno.UI project (or **Uno.UI.WebAssembly**/**Uno.UI.Runtime.Skia.\***) to replace the binaries with your debug versions
+- Rebuild the Uno.UI project (or **Uno.UI.WebAssembly**/**Uno.UI.Runtime.\***) to replace the binaries with your debug versions
 - Rebuild your app and debug it again
 
 ## Microsoft Source Link support

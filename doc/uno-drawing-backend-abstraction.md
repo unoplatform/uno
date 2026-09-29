@@ -347,11 +347,11 @@ Three ways to remove that dependency:
 - **B) Platform font APIs behind a seam (recommended target).** Define an `IFontManager` extensibility point
   (mirroring `IFontProvider`): `family + style → font bytes/handle`, plus the existing
   codepoint→fallback. Provide it via `ApiExtensibility` with per-runtime implementations in the
-  `Uno.UI.Runtime.Skia.*` projects — **DirectWrite** (Win32), **CoreText** (macOS/iOS), **fontconfig**
+  `Uno.UI.Runtime.*` projects — **DirectWrite** (Win32), **CoreText** (macOS/iOS), **fontconfig**
   (Linux), **Android font APIs** (Android).
   *Pro:* correct, locale-aware matching + fallback chains for free; the text *logic* (metrics/shaping/render)
   becomes Skia-less regardless of resolver; matches the rest of this design (platform specifics live in
-  `Runtime.Skia.*`, core stays neutral).
+  `Uno.UI.Runtime.*`, core stays neutral).
   *Con:* several native implementations to write and maintain; variable-font positioning still needs handling
   (either the platform API instances it, or we do it in `ManagedFont`).
 
@@ -823,9 +823,9 @@ backend itself is pluggable. They are **removed**:
 
 | Removed API | Assembly |
 |-------------|----------|
-| `X11RenderingBackend` enum (`Vulkan`/`OpenGL`/`OpenGLES`/`Software`) + `X11HostBuilder.ForceRenderingBackend(…)` / `DisableRenderingBackends(…)` | `Uno.UI.Runtime.Skia.X11` |
-| `Win32RenderingBackend` enum (`Vulkan`/`OpenGL`/`Software`) + `Win32HostBuilder.ForceRenderingBackend(…)` / `DisableRenderingBackends(…)` | `Uno.UI.Runtime.Skia.Win32` |
-| `RenderSurfaceType` enum (`Auto`/`Metal`/`Software`; `Software`/`OpenGL`) | `Uno.UI.Runtime.Skia.MacOS`, `Uno.UI.Runtime.Skia.Win32` |
+| `X11RenderingBackend` enum (`Vulkan`/`OpenGL`/`OpenGLES`/`Software`) + `X11HostBuilder.ForceRenderingBackend(…)` / `DisableRenderingBackends(…)` | `Uno.UI.Runtime.X11` |
+| `Win32RenderingBackend` enum (`Vulkan`/`OpenGL`/`Software`) + `Win32HostBuilder.ForceRenderingBackend(…)` / `DisableRenderingBackends(…)` | `Uno.UI.Runtime.Win32` |
+| `RenderSurfaceType` enum (`Auto`/`Metal`/`Software`; `Software`/`OpenGL`) | `Uno.UI.Runtime.MacOS`, `Uno.UI.Runtime.Win32` |
 | `FeatureConfiguration.Rendering.{UseOpenGLOnX11, PreferGLESOverGLOnX11, UseVulkanOnX11, UseOpenGLOnWin32, UseVulkanOnWin32}` (replaced by the host-builder methods above) | `Uno.UI` |
 
 **Rationale.** The host builder now selects a *graphics backend* (Skia / WebGPU / third party); the
