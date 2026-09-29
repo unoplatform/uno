@@ -57,6 +57,7 @@ public partial class BindingTests
 #if __SKIA__ && HAS_UNO_WINUI
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16520")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)] // A second window backgrounds the test runner.
 	public async Task When_XBind_In_Window()
 	{
 		if (!Uno.UI.Xaml.Controls.NativeWindowFactory.SupportsMultipleWindows)

@@ -742,7 +742,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20842")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaAndroid)]
 		public async Task When_Window_Resized()
 		{
 			if (!Uno.UI.Xaml.Controls.NativeWindowFactory.SupportsMultipleWindows)

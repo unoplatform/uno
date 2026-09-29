@@ -5,6 +5,8 @@ using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.UI.Hosting;
+using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Windowing;
 
@@ -94,6 +96,54 @@ public class Given_AndroidSkiaXamlRootHost
 			0,
 			GetField(wrapper, "_awaitingFirstFrame"),
 			"The first-frame gate must be released once the window has presented a frame.");
+	}
+
+	[TestMethod]
+	public void When_Main_Window_Then_Close_Only_Hides_It()
+	{
+		// Android keeps the process after the main task finishes and shows the main window again
+		// on the next launch, so closing it must not be final. Secondary windows go with their task.
+		Assert.IsFalse(TestServices.WindowHelper.CurrentTestWindow.NativeWrapper!.ClosesPermanently);
+
+		var secondary = new Window();
+		try
+		{
+			Assert.IsTrue(secondary.NativeWrapper!.ClosesPermanently);
+		}
+		finally
+		{
+			secondary.Close();
+		}
+	}
+
+	[TestMethod]
+	public void When_Title_Set_Before_Activation_Then_It_Is_Kept()
+	{
+		// A secondary window has no activity until it is activated.
+		var secondary = new Window();
+		try
+		{
+			secondary.Title = "Secondary window";
+
+			Assert.AreEqual("Secondary window", secondary.Title);
+		}
+		finally
+		{
+			secondary.Close();
+		}
+	}
+
+	[TestMethod]
+	public void When_Secondary_Window_Closed_Before_Activation_Then_Host_Is_Released()
+	{
+		var secondary = new Window();
+		var xamlRoot = ((NativeWindowWrapperBase)secondary.NativeWrapper!).XamlRoot!;
+		Assert.IsNotNull(XamlRootMap.GetHostForRoot(xamlRoot));
+
+		secondary.Close();
+
+		// No activity will ever be destroyed for it, so the close itself must drop the registration.
+		Assert.IsNull(XamlRootMap.GetHostForRoot(xamlRoot));
 	}
 
 	private static object? GetHostForCurrentWindow()
