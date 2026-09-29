@@ -2,7 +2,7 @@
 
 namespace Windows.ApplicationModel.DataTransfer
 {
-	public partial class Clipboard
+	public static partial class Clipboard
 	{
 		/// <summary>
 		/// Whether the clipboard holds text, answered from the clipboard's description where the
