@@ -46,8 +46,6 @@ public partial class Visual
 
 	internal void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage, bool clipChanged, Rect clipRect)
 	{
-		try
-		{
 		if (damage is null)
 		{
 			return;
@@ -94,15 +92,8 @@ public partial class Visual
 			damage.UnionRect(_lastRenderBounds);
 			_hasLastRenderBounds = false;
 		}
-		}
-		finally
-		{
-		}
 	}
 
-	/// <summary>Root-space rect bounds of the clips in effect for this visual's own content: its own and its
-	/// ancestors' rect-shaped clips intersected (see <see cref="GetLocalCullClipBounds"/>); non-rect clips
-	/// contribute nothing, which only widens the result.</summary>
 	/// <summary>
 	/// Narrows the clip bounds inherited from the parent by this visual's own rect-shaped clip, in root
 	/// coordinates. Threading this down the render walk keeps it O(1) per visual; recomputing it bottom-up
