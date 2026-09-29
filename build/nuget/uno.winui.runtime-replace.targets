@@ -186,11 +186,6 @@
 			Condition="'$(_UnoMissingRuntimeHost)'=='true' AND '$(UnoUIRuntimeIdentifier)'==''" />
 	</Target>
 
-	<!-- Force a rebuild on runtime files changes -->
-	<ItemGroup Condition="'$(UnoHasRuntimeHost)'=='true' OR '$(UnoRuntimeVariant)'!='' OR '$(UnoRuntimeIdentifier)'!=''">
-		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../uno-runtime/*" />
-	</ItemGroup>
-
 
 	<Target Name="RemovePdbFilesFromOutput"
 			AfterTargets="ReplaceUnoRuntime;ResolveLockFileCopyLocalFiles"
