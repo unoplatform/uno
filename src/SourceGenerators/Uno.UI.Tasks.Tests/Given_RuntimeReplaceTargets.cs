@@ -239,6 +239,42 @@ public class Given_RuntimeReplaceTargets
 	}
 
 	[TestMethod]
+	public void When_Packing_UnoRuntimeProjectReferences_Then_Only_Generic_And_Wasm_Builds_Go_Under_uno_runtime()
+	{
+		using var fixture = CreateFixture();
+		var project = CreateProject(fixture);
+
+		// A variant build stand-in: GetTargetPath is all UnoRuntimeGetTargetPath needs from it.
+		Directory.CreateDirectory(project.Directory);
+		File.WriteAllText(
+			Path.Combine(project.Directory, "Variant.proj"),
+			$"""
+			<Project>
+				<Import Project="{RepositoryPaths.Get("build", "nuget", "uno.winui.runtime-replace.targets")}" />
+				<Import Project="{RepositoryPaths.Get("build", "nuget", "uno.winui.cross-runtime.targets")}" />
+				<Target Name="GetTargetPath">
+					<ItemGroup>
+						<TargetPathWithTargetPlatformMoniker Include="$(MSBuildProjectDirectory)/bin/$(UnoRuntimeVariant)/Contoso.dll" />
+					</ItemGroup>
+				</Target>
+			</Project>
+			""");
+
+		var result = project
+			.ImportCrossRuntimeTargets()
+			.Property("BuildingProject", "true")
+			.Item("<UnoRuntimeProjectReference Include=\"Variant.proj\" AdditionalProperties=\"UnoRuntimeVariant=Generic\" />")
+			.Item("<UnoRuntimeProjectReference Include=\"Variant.proj\" AdditionalProperties=\"UnoRuntimeVariant=Wasm\" />")
+			.Item("<UnoRuntimeProjectReference Include=\"Variant.proj\" AdditionalProperties=\"UnoRuntimeVariant=Reference\" />")
+			.Raw("<Target Name=\"ResolveProjectReferences\" />")
+			.Run("ResolvePrepareUnoRuntimeProjectReferences", items: ["TfmSpecificPackageFile"]);
+
+		result.Succeeded.Should().BeTrue(result.Log);
+		result.Items("TfmSpecificPackageFile", "PackagePath").Should().BeEquivalentTo(["uno-runtime/generic", "uno-runtime/wasm"]);
+		result.Log.Should().Contain("UnoRuntimeVariant is 'reference', so it is not packed");
+	}
+
+	[TestMethod]
 	public void When_A_Consumer_Hooks_The_Previous_Validation_Target_Then_The_Hook_Runs()
 	{
 		using var fixture = CreateFixture();

@@ -52,6 +52,15 @@ internal sealed class RuntimeReplaceProject
 
 	private readonly List<string> _raw = [];
 
+	private bool _importCrossRuntimeTargets;
+
+	/// <summary>Also imports uno.winui.cross-runtime.targets, which packs UnoRuntimeProjectReference outputs.</summary>
+	public RuntimeReplaceProject ImportCrossRuntimeTargets()
+	{
+		_importCrossRuntimeTargets = true;
+		return this;
+	}
+
 	public Result Run(string target, string[]? properties = null, string[]? items = null)
 	{
 		System.IO.Directory.CreateDirectory(Directory);
@@ -101,6 +110,10 @@ internal sealed class RuntimeReplaceProject
 		builder.AppendLine($"\t<UsingTask AssemblyFile=\"{tasksAssembly}\" TaskName=\"Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0\" TaskFactory=\"TaskHostFactory\" Runtime=\"CurrentRuntime\" Architecture=\"CurrentArchitecture\" />");
 		builder.AppendLine($"\t<UsingTask AssemblyFile=\"{tasksAssembly}\" TaskName=\"Uno.UI.Tasks.RuntimeAssetsValidator.RuntimeAssetsValidatorTask_v0\" TaskFactory=\"TaskHostFactory\" Runtime=\"CurrentRuntime\" Architecture=\"CurrentArchitecture\" />");
 		builder.AppendLine($"\t<Import Project=\"{RepositoryPaths.Get("build", "nuget", "uno.winui.runtime-replace.targets")}\" />");
+		if (_importCrossRuntimeTargets)
+		{
+			builder.AppendLine($"\t<Import Project=\"{RepositoryPaths.Get("build", "nuget", "uno.winui.cross-runtime.targets")}\" />");
+		}
 
 		// Stand-ins for the SDK targets the shipped ones hook, so each can be run on its own.
 		builder.AppendLine("\t<Target Name=\"BeforeBuild\" />");
@@ -127,11 +140,11 @@ internal sealed class RuntimeReplaceProject
 			return json.RootElement.GetProperty("Properties").GetProperty(name).GetString() ?? "";
 		}
 
-		public IReadOnlyList<string> Items(string name)
+		public IReadOnlyList<string> Items(string name, string metadata = "Identity")
 		{
 			using var json = ParseJson();
 			return json.RootElement.GetProperty("Items").GetProperty(name).EnumerateArray()
-				.Select(item => item.GetProperty("Identity").GetString()!.Replace('\\', '/'))
+				.Select(item => item.GetProperty(metadata).GetString()!.Replace('\\', '/'))
 				.ToList();
 		}
 
@@ -143,7 +156,9 @@ internal sealed class RuntimeReplaceProject
 				throw new InvalidOperationException($"No JSON in the msbuild output:{Environment.NewLine}{Output}{Environment.NewLine}{Log}");
 			}
 
-			return JsonDocument.Parse(Output[start..]);
+			// Warnings can follow the JSON on the console, so read just the first value.
+			var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(Output[start..]));
+			return JsonDocument.ParseValue(ref reader);
 		}
 	}
 }
