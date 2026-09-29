@@ -8,12 +8,10 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
 	</ItemGroup>
 
-	<!-- This file is only imported for Uno Platform targets (not WinAppSDK). The Skia backend and its
-	     SkiaSharp bindings are referenced when the 'skia' feature is present (implied by default), so a
-	     skia-free build (e.g. WebGPU-only) drops them. -->
+	<!-- This file is only imported for Uno Platform targets (not WinAppSDK). The Skia backend is referenced
+	     when the 'skia' feature is present (implied by default), so a skia-free build (e.g. WebGPU-only) drops it. -->
 	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Composition.Skia" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
 	</ItemGroup>
 
 	<!-- The WebGPU backend is additive: it coexists with Skia and the runtime negotiates which one to use. -->
