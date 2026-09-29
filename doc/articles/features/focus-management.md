@@ -24,7 +24,7 @@ Support for programmatic focus is fully implemented on all Uno Platform targets 
 
 ## Keyboard focus
 
-Keyboard focus handling support is available on all targets, including iOS.
+Keyboard focus handling support is available on all targets.
 
 ## Disabling initial focus on Page
 
