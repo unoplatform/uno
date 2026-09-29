@@ -84,10 +84,14 @@ startup. Failing with UNOB0023 is the better of the two.
 A folder miss is still not an error inside the task: the resolver returns `null`, the handler logs and returns.
 Left alone, **the build would succeed while shipping the reference facade**, which throws
 `NotImplementedException` when the application runs. That is why the rename waited on §4.2: UNOB0023 turns
-a package in the old layout, or a version skew between 7.0 previews, into a build error. Four encodings of the
-convention exist (two nuspecs, the task, `src/Uno.CrossTargetting.targets`); the task's constants document them.
-The pre-4.6 layout without a target framework folder (`uno-runtime/<folder>`, and `uno-runtime/netstandard2.0/`)
-is no longer read: every package in it predates 7.0 and used the old folder names.
+a package in the old layout, or a version skew between 7.0 previews, into a build error. Five encodings of the
+convention exist (two nuspecs, the task, the MSBuild glob in `uno.winui.runtime-replace.targets`,
+`src/Uno.CrossTargetting.targets`); the task's constants document them.
+
+The glob reads `uno-runtime/<folder>` with no target framework folder. That is not only a pre-4.6 leftover: it is
+what `UnoRuntimeProjectReference` packs, since NuGet does not add a target framework to a `TfmSpecificPackageFile`
+path, so every library made from the cross-runtime template ships that layout. The task's
+`uno-runtime/netstandard2.0/<folder>` probe is gone; nothing in 7.0 produces it.
 
 ### 4.2 Every silent path became loud first
 
