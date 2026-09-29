@@ -224,7 +224,17 @@ To suppress it:
 
 `UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` and `UnoWinRTRuntimeIdentifier` used to tell the build which runtime assets to deploy. As of Uno Platform 7.0 that is decided by the target framework, so setting them on an application head no longer selects anything and they can be removed.
 
-A cross-runtime *library* used `UnoRuntimeIdentifier` to name the `uno-runtime` folder its output is packed into. It now sets `UnoRuntimeVariant` instead — `Generic`, `Wasm` or `Reference` — and the folders are named after it (`uno-runtime/<tfm>/generic` and `uno-runtime/<tfm>/wasm`, formerly `skia` and `webassembly`). The old property is still honored for a library, mapping `skia` to `Generic` and `webassembly` to `Wasm`, and this warning names the value to use.
+A cross-runtime *library* used `UnoRuntimeIdentifier` to name the `uno-runtime` folder its output is packed into. It now sets `UnoRuntimeVariant` instead — `Generic`, `Wasm` or `Reference` — and the folders are named after it (`generic` and `wasm`, formerly `skia` and `webassembly`). The old property is still honored for a library, mapping `skia` to `Generic` and `webassembly` to `Wasm`.
+
+The warning therefore covers three situations, each with its own message:
+
+| Message | Where | What to do |
+|---|---|---|
+| `UnoUIRuntimeIdentifier and UnoWinRTRuntimeIdentifier no longer have any effect` | any project | remove them |
+| `UnoRuntimeIdentifier no longer selects runtime assets for an application head` | a project with a Uno Platform runtime host | remove it |
+| `UnoRuntimeIdentifier is deprecated for cross-runtime libraries` | a library without a runtime host | set the `UnoRuntimeVariant` value the message names |
+
+The Uno.Sdk and the desktop runtime packages still set `UnoRuntimeIdentifier=Skia` themselves, for the benefit of `Uno.Resizetizer`; that value is not reported.
 
 To suppress it:
 
