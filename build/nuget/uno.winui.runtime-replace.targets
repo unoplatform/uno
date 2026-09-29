@@ -177,7 +177,7 @@
 		<Warning
 			Code="UNOB0025"
 			HelpLink="https://aka.platform.uno/UNOB0025"
-			Text="This project references runtime-enabled package(s) [@(UnoRuntimeEnabledPackage)] but no Uno Platform runtime host, so the reference assemblies will be deployed and will fail at runtime. Check that the Uno.WinUI.Runtime.Skia.* package version matches Uno.WinUI. See https://aka.platform.uno/UNOB0025"
+			Text="This project references runtime-enabled package(s) [@(UnoRuntimeEnabledPackage)] but no Uno Platform runtime host (UnoHasRuntimeHost is not set), so the reference assemblies will be deployed and will fail at runtime. Check that a Uno.WinUI.Runtime.Skia.* package is referenced at the Uno.WinUI version. See https://aka.platform.uno/UNOB0025"
 			Condition="'$(_UnoMissingRuntimeHost)'=='true' AND '$(UnoUIRuntimeIdentifier)'==''" />
 	</Target>
 
