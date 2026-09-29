@@ -45,7 +45,7 @@ Three hosts feed that funnel today:
 |------|------|:---:|:---:|
 | Android | `NativeApplication.ReportActivation` (`src/Uno.UI.Runtime.Android/NativeApplication.cs`) | ✅ | ✅ |
 | iOS / tvOS | `AppleUIKitActivation.Report` (`src/Uno.UI.Runtime.AppleUIKit/AppleUIKitActivation.cs:59`) | ✅ | ✅ |
-| WebAssembly | `WebAssemblyBrowserHost.TryReportProtocolActivation` (`…/Hosting/WebAssemblyBrowserHost.cs:174-191`) | ✅ | n/a |
+| WebAssembly | `WebAssemblyBrowserHost.TryReportProtocolActivation` (`…/Hosting/WebAssemblyBrowserHost.cs:172-189`) | ✅ | n/a |
 | **Win32 / macOS / X11 / FrameBuffer** | **none** | ❌ | ❌ |
 
 `ActivationRegistrationManager` is entirely `[Uno.NotImplemented]` on every target
@@ -220,7 +220,7 @@ three markers in the documented order, and for (2)/(3) logs at `Warning` and fal
 plain `Launch` with the marker token **removed** from the arguments the app sees — the same "Uno
 Platform's transport detail is not the app's launch argument" rule the WebAssembly host already
 applies to the `unoprotocolactivation` query key
-(`src/Uno.UI.Runtime.Skia.WebAssembly.Browser/Hosting/WebAssemblyBrowserHost.cs:185`).
+(`src/Uno.UI.Runtime.WebAssembly.Browser/Hosting/WebAssemblyBrowserHost.cs:183`).
 
 ### 1.5 `ms-encodedlaunch`: what it is and whether Uno Platform needs it
 
@@ -369,7 +369,7 @@ redirection work in §4 can be added without touching any host's ingestion code.
 
 ### 2.1 Win32
 
-**Cold start.** `Win32Host.RunLoop` (`src/Uno.UI.Runtime.Skia.Win32/Hosting/Win32Host.cs:165-173`)
+**Cold start.** `Win32Host.RunLoop` (`src/Uno.UI.Runtime.Win32/Hosting/Win32Host.cs:165-173`)
 schedules `Application.Start` onto the Win32 event loop. Classification must happen in
 `Win32Host.Initialize` (`:156-163`) or at the top of `RunLoop`, before that schedule, so the stored
 activation is visible to `OnLaunched`.
@@ -388,7 +388,7 @@ named-mutex + named-pipe seam in §4.4 subsumes it.
 
 | File | Change |
 |---|---|
-| `src/Uno.UI.Runtime.Skia.Win32/Hosting/Win32Host.cs` | classify + report in `Initialize`; register the activation extension |
+| `src/Uno.UI.Runtime.Win32/Hosting/Win32Host.cs` | classify + report in `Initialize`; register the activation extension |
 | `src/Uno.WinRT/Microsoft/Windows/AppLifecycle/CommandLineActivationParser.cs` | new, §1.6 |
 
 ### 2.2 macOS
@@ -399,8 +399,8 @@ LaunchServices for a URL scheme receives `application:openURLs:` — on both col
 `applicationDidFinishLaunching:`) and while running.
 
 **Where it hooks in.** The delegate is `UNOApplicationDelegate`, declared at
-`src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.h:68-77` and implemented at
-`src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.m:286-363`. It is installed
+`src/Uno.UI.Runtime.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.h:68-77` and implemented at
+`src/Uno.UI.Runtime.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.m:286-363`. It is installed
 at `UNOApplication.m:131` (`app.delegate = ad = [[UNOApplicationDelegate alloc] init];`). The
 existing `applicationDidFinishLaunching:` (`UNOApplication.m:288-297`) is what calls back into
 managed code to start the app, via the function-pointer pattern
@@ -413,11 +413,11 @@ a `typedef`'d function pointer, a setter, and a getter). Managed side:
 
 | File | Change |
 |---|---|
-| `src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.h` | `typedef bool (*application_open_urls_fn_ptr)(const char* url);` + setter/getter; declare `application:openURLs:` on `UNOApplicationDelegate` |
-| `src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.m` | implement `application:openURLs:`, forward each URL |
-| `src/Uno.UI.Runtime.Skia.MacOS/Native/NativeUno.cs` | P/Invoke for the setter |
-| `src/Uno.UI.Runtime.Skia.MacOS/Hosting/MacSkiaHost.cs` | register the `[UnmanagedCallersOnly]` callback next to the existing registrations; classify the command line in `StartApp` (`:156-180`) before `Application.Start` (`:172`) |
-| `src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/UnoNativeMac.xcodeproj/project.pbxproj` | no new file, so no membership change needed |
+| `src/Uno.UI.Runtime.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.h` | `typedef bool (*application_open_urls_fn_ptr)(const char* url);` + setter/getter; declare `application:openURLs:` on `UNOApplicationDelegate` |
+| `src/Uno.UI.Runtime.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.m` | implement `application:openURLs:`, forward each URL |
+| `src/Uno.UI.Runtime.MacOS/Native/NativeUno.cs` | P/Invoke for the setter |
+| `src/Uno.UI.Runtime.MacOS/Hosting/MacOSHost.cs` | register the `[UnmanagedCallersOnly]` callback next to the existing registrations; classify the command line in `StartApp` (`:156-180`) before `Application.Start` (`:172`) |
+| `src/Uno.UI.Runtime.MacOS/UnoNativeMac/UnoNativeMac.xcodeproj/project.pbxproj` | no new file, so no membership change needed |
 
 **Ordering trap.** `application:openURLs:` for a cold URL launch can arrive *before*
 `applicationDidFinishLaunching:` completes, and therefore before `Application.Start` has run and
@@ -436,7 +436,7 @@ the documented AppKit surface.
 ### 2.3 Linux / X11
 
 **Cold start.** `X11ApplicationHost.StartApp`
-(`src/Uno.UI.Runtime.Skia.X11/Hosting/X11ApplicationHost.cs:287-298`) calls `Application.Start`;
+(`src/Uno.UI.Runtime.X11/Hosting/X11ApplicationHost.cs:287-298`) calls `Application.Start`;
 classification goes in `Initialize` (`:300-307`), which already runs synchronously before the run
 loop.
 
@@ -456,7 +456,7 @@ by well-known name and call `org.freedesktop.Application.Open(aay, a{sv})` (or `
 hand-rolled socket: the bus owns the "already running?" question, so `Open` on a running app is
 delivered to that app with no race. Uno Platform already has the whole client stack —
 `Tmds.DBus.Protocol` is referenced by the X11 host
-(`src/Uno.UI.Runtime.Skia.X11/Uno.UI.Runtime.Skia.X11.csproj:25-26`) and used by four existing
+(`src/Uno.UI.Runtime.X11/Uno.UI.Runtime.X11.csproj:25-26`) and used by four existing
 features (`Helpers/Theming/LinuxSystemThemeHelper.cs`, `IME/FcitxInputMethod.cs`,
 `IME/IBusInputMethod.cs`, `Storage/Pickers/LinuxFilePickerExtension.cs`) — but only as a *client*.
 Serving `org.freedesktop.Application` means owning a bus name and exporting an object, which is new
@@ -466,16 +466,16 @@ ground for this codebase. That is why it is Phase 4 material and not Phase 2.
 
 | File | Change |
 |---|---|
-| `src/Uno.UI.Runtime.Skia.X11/Hosting/X11ApplicationHost.cs` | classify + report in `Initialize` |
-| `src/Uno.UI.Runtime.Skia.X11/ApplicationModel/Activation/X11ActivationRegistrationExtension.cs` | new — `.desktop` writing, §3.2.3 |
-| `src/Uno.UI.Runtime.Skia.X11/dbus-interfaces/org.freedesktop.Application.xml` | new — generated types for the served interface |
-| `src/Uno.UI.Runtime.Skia.X11/Uno.UI.Runtime.Skia.X11.csproj` | add the `AdditionalFiles` entry next to the existing ones (`:30-38`) |
+| `src/Uno.UI.Runtime.X11/Hosting/X11ApplicationHost.cs` | classify + report in `Initialize` |
+| `src/Uno.UI.Runtime.X11/ApplicationModel/Activation/X11ActivationRegistrationExtension.cs` | new — `.desktop` writing, §3.2.3 |
+| `src/Uno.UI.Runtime.X11/dbus-interfaces/org.freedesktop.Application.xml` | new — generated types for the served interface |
+| `src/Uno.UI.Runtime.X11/Uno.UI.Runtime.X11.csproj` | add the `AdditionalFiles` entry next to the existing ones (`:30-38`) |
 
 ### 2.4 Linux FrameBuffer
 
 FrameBuffer has no window system, no desktop database, no session-bus assumption and no shell to
 route a URI. `FramebufferHost`
-(`src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/Hosting/FramebufferHost.cs:213`) calls
+(`src/Uno.UI.Runtime.Linux.FrameBuffer/Hosting/FramebufferHost.cs:213`) calls
 `Application.Start` directly.
 
 **Scope: argument classification only.** The host runs `CommandLineActivationParser` so that a
@@ -493,7 +493,7 @@ it must be stated in the docs support matrix rather than left as an inferred gap
 
 | File | Change |
 |---|---|
-| `src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/Hosting/FramebufferHost.cs` | classify + report before `Application.Start` |
+| `src/Uno.UI.Runtime.Linux.FrameBuffer/Hosting/FramebufferHost.cs` | classify + report before `Application.Start` |
 
 ---
 
@@ -662,9 +662,9 @@ Convention: keep `[Uno.NotImplemented]` on those targets, which routes through
 
 WebAssembly is the one target that *has* the capability but exposes it through an Uno Platform-only
 API. `Uno.Helpers.ProtocolActivation.RegisterCustomScheme(string scheme, Uri domain, string prompt)`
-(`src/Uno.WinRT/Helpers/ProtocolActivation.wasm.cs:49-102`) validates the scheme against the
+(`src/Uno.UI.Runtime.WebAssembly.Browser/Helpers/ProtocolActivation.cs:46-99`) validates the scheme against the
 `navigator.registerProtocolHandler` rules — either one of 23 predefined schemes
-(`ProtocolActivation.wasm.cs:16-40`) or a `web+`-prefixed lowercase-ASCII name — appends
+(`ProtocolActivation.cs:13-38`) or a `web+`-prefixed lowercase-ASCII name — appends
 `?unoprotocolactivation=` plus the `%s` placeholder to the given domain, and calls
 `navigator.registerProtocolHandler` (`:101`).
 
@@ -681,7 +681,7 @@ Parameter mapping:
 | `exePath` | ignored — the handler URL is derived from `document.baseURI` |
 
 The one parameter with no home is `domain`, which `RegisterCustomScheme` requires and validates as
-absolute (`ProtocolActivation.wasm.cs:83-91`). It is not a real degree of freedom:
+absolute (`ProtocolActivation.cs:80-88`). It is not a real degree of freedom:
 `registerProtocolHandler` rejects a URL outside the page's own origin, so the only value that ever
 works is the app's own origin. Deriving it from `document.baseURI` is strictly more correct than
 asking the caller, and removes the class of bug where a stale hard-coded `http://localhost:55838/`
@@ -1018,7 +1018,7 @@ desktop head and found at runtime, which is a build-system cost out of proportio
 **Ordering requirement.** `Restart` must not return on success — it must not return at all. The
 implementation starts the successor, then requests application exit through the host's existing
 `ICoreApplicationExtension` path (`Win32CoreApplicationExtension.Exit`, referenced from
-`src/Uno.UI.Runtime.Skia.Win32/Hosting/Win32Host.cs:210-215`). Returning a value while the process
+`src/Uno.UI.Runtime.Win32/Hosting/Win32Host.cs:210-215`). Returning a value while the process
 keeps running would make the API mean the opposite of what it means on Windows.
 
 ---
@@ -1141,18 +1141,18 @@ intended change, and no template generates such an argument today.
 
 | Target | Files |
 |---|---|
-| Win32 | `src/Uno.UI.Runtime.Skia.Win32/Hosting/Win32Host.cs` |
-| X11 | `src/Uno.UI.Runtime.Skia.X11/Hosting/X11ApplicationHost.cs` |
-| FrameBuffer | `src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/Hosting/FramebufferHost.cs` |
-| macOS — command line | `src/Uno.UI.Runtime.Skia.MacOS/Hosting/MacSkiaHost.cs` |
-| macOS — `application:openURLs:` | `UnoNativeMac/UnoNativeMac/UNOApplication.{h,m}`, `Native/NativeUno.cs`, `Hosting/MacSkiaHost.cs` |
+| Win32 | `src/Uno.UI.Runtime.Win32/Hosting/Win32Host.cs` |
+| X11 | `src/Uno.UI.Runtime.X11/Hosting/X11ApplicationHost.cs` |
+| FrameBuffer | `src/Uno.UI.Runtime.Linux.FrameBuffer/Hosting/FramebufferHost.cs` |
+| macOS — command line | `src/Uno.UI.Runtime.MacOS/Hosting/MacOSHost.cs` |
+| macOS — `application:openURLs:` | `UnoNativeMac/UnoNativeMac/UNOApplication.{h,m}`, `Native/NativeUno.cs`, `Hosting/MacOSHost.cs` |
 | Docs | `doc/articles/features/protocol-activation.md` — flip the "Skia Desktop (Windows, macOS, Linux)" row from "❌ Not yet" to per-target availability, and add a desktop registration section |
 
 **Validation.** Command-line activation on desktop is launch-time by nature and cannot be reached
 from inside a running test host, so it splits:
 
 - **Already runtime-tested:** the funnel's own semantics are covered by
-  `src/Uno.UI.RuntimeTests/Tests/Windows_ApplicationModel/Given_AppInstance.cs` — that
+  `src/Uno.UI.RuntimeTests/Windows/ApplicationModel/Given_AppInstance.cs` — that
   `SetOrRaiseActivation` stores before launch and raises after, that `GetActivatedEventArgs()` keeps
   returning the *launch* activation after a later one is raised, that it is stable across calls, and
   that `FromActivatedEventArgs` maps a protocol payload. **Extend that class rather than starting a
@@ -1185,10 +1185,10 @@ is no point registering a scheme the app cannot then read.
 
 | Deliverable | Files |
 |---|---|
-| Win32 registry implementation + `SHChangeNotify` + packaged detection | `src/Uno.UI.Runtime.Skia.Win32/ApplicationModel/Activation/Win32ActivationRegistrationExtension.cs` *(new)*, `Hosting/Win32Host.cs` |
-| macOS LaunchServices + login items | `src/Uno.UI.Runtime.Skia.MacOS/ApplicationModel/Activation/MacOSActivationRegistrationExtension.cs` *(new)*, `UnoNativeMac/UnoNativeMac/UNOApplication.{h,m}`, `Native/NativeUno.cs`, `Hosting/MacSkiaHost.cs` |
-| Linux `.desktop` + `xdg-mime` + autostart | `src/Uno.UI.Runtime.Skia.X11/ApplicationModel/Activation/X11ActivationRegistrationExtension.cs` *(new)*, `Hosting/X11ApplicationHost.cs` |
-| WebAssembly: fold in `RegisterCustomScheme`; **remove** it | `src/Uno.WinRT/Helpers/ProtocolActivation.wasm.cs`, `src/Uno.UI.Runtime.Skia.WebAssembly.Browser/…`, `doc/articles/features/protocol-activation.md` |
+| Win32 registry implementation + `SHChangeNotify` + packaged detection | `src/Uno.UI.Runtime.Win32/ApplicationModel/Activation/Win32ActivationRegistrationExtension.cs` *(new)*, `Hosting/Win32Host.cs` |
+| macOS LaunchServices + login items | `src/Uno.UI.Runtime.MacOS/ApplicationModel/Activation/MacOSActivationRegistrationExtension.cs` *(new)*, `UnoNativeMac/UnoNativeMac/UNOApplication.{h,m}`, `Native/NativeUno.cs`, `Hosting/MacOSHost.cs` |
+| Linux `.desktop` + `xdg-mime` + autostart | `src/Uno.UI.Runtime.X11/ApplicationModel/Activation/X11ActivationRegistrationExtension.cs` *(new)*, `Hosting/X11ApplicationHost.cs` |
+| WebAssembly: fold in `RegisterCustomScheme`; **remove** it | `src/Uno.UI.Runtime.WebAssembly.Browser/Helpers/ProtocolActivation.cs`, `src/Uno.UI.Runtime.WebAssembly.Browser/Hosting/WebAssemblyBrowserHost.cs`, `doc/articles/features/protocol-activation.md` |
 | Promote the six methods out of the generated stub | `src/Uno.WinRT/Generated/3.0.0.0/Microsoft.Windows.AppLifecycle/ActivationRegistrationManager.cs`, plus a new hand-written partial |
 | Breaking-change note for `RegisterCustomScheme` | release notes + docs |
 
@@ -1215,9 +1215,9 @@ and makes `FindOrRegisterForKey` nullable — a source-breaking change. Staged p
 | Sub-phase | Deliverable | Files |
 |---|---|---|
 | 4a | The seam; per-instance `AppInstance` members; nullable `FindOrRegisterForKey`. **No host registers it.** | `src/Uno.WinRT/Microsoft/Windows/AppLifecycle/ISingleInstanceExtension.cs` *(new)*, `AppInstance.cs` |
-| 4b | Win32 named mutex + named pipe, behind an opt-in feature flag | `src/Uno.UI.Runtime.Skia.Win32/ApplicationModel/Activation/Win32SingleInstanceExtension.cs` *(new)*, `Hosting/Win32Host.cs`, `src/Uno.UI/FeatureConfiguration.cs` |
-| 4c | macOS degenerate implementation | `src/Uno.UI.Runtime.Skia.MacOS/ApplicationModel/Activation/MacOSSingleInstanceExtension.cs` *(new)* |
-| 4d | X11 D-Bus name ownership + `org.freedesktop.Application` | `src/Uno.UI.Runtime.Skia.X11/ApplicationModel/Activation/X11SingleInstanceExtension.cs` *(new)*, `dbus-interfaces/org.freedesktop.Application.xml` *(new)*, `Uno.UI.Runtime.Skia.X11.csproj` |
+| 4b | Win32 named mutex + named pipe, behind an opt-in feature flag | `src/Uno.UI.Runtime.Win32/ApplicationModel/Activation/Win32SingleInstanceExtension.cs` *(new)*, `Hosting/Win32Host.cs`, `src/Uno.UI/FeatureConfiguration.cs` |
+| 4c | macOS degenerate implementation | `src/Uno.UI.Runtime.MacOS/ApplicationModel/Activation/MacOSSingleInstanceExtension.cs` *(new)* |
+| 4d | X11 D-Bus name ownership + `org.freedesktop.Application` | `src/Uno.UI.Runtime.X11/ApplicationModel/Activation/X11SingleInstanceExtension.cs` *(new)*, `dbus-interfaces/org.freedesktop.Application.xml` *(new)*, `Uno.UI.Runtime.X11.csproj` |
 | 4e | Flip the default on Win32 | `FeatureConfiguration`, breaking-changes list |
 
 **Validation.** Two levels:
@@ -1341,22 +1341,22 @@ change travels with an already-breaking release), **4b–4e and 5 after**.
   `StartupTaskActivatedEventArgs.cs`
 - `src/Uno.WinRT/ApplicationModel/Activation/ProtocolActivatedEventArgs.cs`,
   `LaunchActivatedEventArgs.cs`, `ActivationKind.cs`
-- `src/Uno.WinRT/Helpers/ProtocolActivation.wasm.cs`
+- `src/Uno.UI.Runtime.WebAssembly.Browser/Helpers/ProtocolActivation.cs`
 - `src/Uno.WinRT/System/WindowsLauncherExtension.skia.cs` — registry-access precedent
 - `src/Uno.UI/UI/Xaml/Application.cs` — `InvokeOnLaunched`, `GetLaunchArguments`,
   `GetCommandLineArgsWithoutExecutable`, `SetArguments`
-- `src/Uno.UI.Runtime.Skia.Win32/Hosting/Win32Host.cs`
-- `src/Uno.UI.Runtime.Skia.X11/Hosting/X11ApplicationHost.cs`,
-  `Uno.UI.Runtime.Skia.X11.csproj` (D-Bus generator wiring)
-- `src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/Hosting/FramebufferHost.cs`
-- `src/Uno.UI.Runtime.Skia.MacOS/Hosting/MacSkiaHost.cs`,
+- `src/Uno.UI.Runtime.Win32/Hosting/Win32Host.cs`
+- `src/Uno.UI.Runtime.X11/Hosting/X11ApplicationHost.cs`,
+  `Uno.UI.Runtime.X11.csproj` (D-Bus generator wiring)
+- `src/Uno.UI.Runtime.Linux.FrameBuffer/Hosting/FramebufferHost.cs`
+- `src/Uno.UI.Runtime.MacOS/Hosting/MacOSHost.cs`,
   `UnoNativeMac/UnoNativeMac/UNOApplication.{h,m}`, `Native/NativeUno.cs`
 - `src/Uno.UI.Runtime.Android/NativeApplication.cs` — reference ingestion
 - `src/Uno.UI.Runtime.AppleUIKit/AppleUIKitActivation.cs` — reference ingestion
-- `src/Uno.UI.Runtime.Skia.WebAssembly.Browser/Hosting/WebAssemblyBrowserHost.cs` — reference ingestion
-- `src/Uno.UI.RuntimeTests/Tests/Windows_ApplicationModel/Given_AppInstance.cs` — existing coverage of
+- `src/Uno.UI.Runtime.WebAssembly.Browser/Hosting/WebAssemblyBrowserHost.cs` — reference ingestion
+- `src/Uno.UI.RuntimeTests/Windows/ApplicationModel/Given_AppInstance.cs` — existing coverage of
   the funnel's semantics; the class Phases 2 and 4 extend
-- `src/Uno.UI.RuntimeTests/Tests/Windows_ApplicationModel/Given_ProtocolActivation.cs` — the model for
+- `src/Uno.UI.RuntimeTests/Windows/ApplicationModel/Given_ProtocolActivation.cs` — the model for
   the Phase 1 parser cases
 - `src/SamplesApp/SamplesApp.Shared/App.xaml.cs` — activation reporting used by the manual matrices
 - `doc/articles/features/protocol-activation.md` — public docs; already `AppInstance`-shaped, with a
