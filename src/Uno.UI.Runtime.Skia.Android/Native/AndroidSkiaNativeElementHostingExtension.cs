@@ -45,17 +45,17 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 	{
 		if (content is View view)
 		{
+			// A secondary window loads its tree before Android gives it an activity; the view is then
+			// kept here and placed by AdoptNativeElements once the activity has its layer.
+			_attachedViews[view] = _owner;
+
 			if (NativeLayerHost is { } host)
 			{
 				host.AddView(view);
-				_attachedViews[view] = _owner;
 			}
-			else
+			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Cannot attach native element because {nameof(ApplicationActivity.NativeLayerHost)} is null.");
-				}
+				this.Log().Debug($"Deferring native element attach until the window's {nameof(ApplicationActivity.NativeLayerHost)} exists.");
 			}
 		}
 	}
@@ -76,20 +76,21 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 
 	/// <summary>
 	/// Moves the native views of <paramref name="xamlRoot"/> into <paramref name="host"/>, keeping their
-	/// z-order. A re-created activity takes over a window whose tree is already loaded, so no
-	/// presenter attaches again and the views would otherwise stay in the previous activity's layer.
+	/// z-order. An activity taking over a window whose tree is already loaded (re-creation, or a
+	/// secondary window's first activity) sees no presenter attach again, so the views would otherwise
+	/// stay in the previous activity's layer, or in none.
 	/// </summary>
 	internal static void AdoptNativeElements(XamlRoot xamlRoot, ViewGroup host)
 	{
 		var views = _attachedViews
-			.Where(entry => entry.Value.XamlRoot == xamlRoot && entry.Key.Parent is ViewGroup parent && parent != host)
+			.Where(entry => entry.Value.XamlRoot == xamlRoot && entry.Key.Parent != host)
 			.Select(entry => entry.Key)
-			.OrderBy(view => ((ViewGroup)view.Parent!).IndexOfChild(view))
+			.OrderBy(view => view.Parent is ViewGroup parent ? parent.IndexOfChild(view) : int.MaxValue)
 			.ToList();
 
 		foreach (var view in views)
 		{
-			((ViewGroup)view.Parent!).RemoveView(view);
+			(view.Parent as ViewGroup)?.RemoveView(view);
 			host.AddView(view);
 		}
 	}

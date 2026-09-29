@@ -18,6 +18,7 @@ using Windows.UI.ViewManagement;
 using Size = Windows.Foundation.Size;
 using MUX = Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Android;
 
 namespace Uno.UI.Xaml.Controls;
@@ -25,7 +26,12 @@ namespace Uno.UI.Xaml.Controls;
 internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapper
 {
 	private ApplicationActivity _activity;
-	private bool _showPending;
+	private readonly bool _isMainWindow;
+	private bool _launchPending;
+	private bool _activateOnShow;
+	private bool _closeRequested;
+	private bool _released;
+	private string _title;
 	private readonly ActivationPreDrawListener _preDrawListener;
 	private readonly DisplayInformation _displayInformation;
 	private bool _contentViewAttachedToWindow;
@@ -42,7 +48,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	/// </summary>
 	public NativeWindowWrapper(ApplicationActivity activity)
 		: this()
-		=> _activity = activity;
+	{
+		_activity = activity;
+		_isMainWindow = true;
+	}
 
 	/// <summary>
 	/// Creates a wrapper for a window whose hosting activity does not exist yet. <see cref="ShowCore"/>
@@ -54,9 +63,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += RaiseNativeSizeChanged;
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
-		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		_displayInformation.DpiChanged += OnDpiChanged;
 		DispatchDpiChanged();
 	}
+
+	/// <summary>
+	/// The main window only hides when closed, as on single-window targets: Android keeps the process,
+	/// and the next launch of the app shows it again rather than starting over. Every other window
+	/// lives in a task of its own and is gone with it.
+	/// </summary>
+	public override bool ClosesPermanently => !_isMainWindow;
+
+	internal bool IsMainWindow => _isMainWindow;
 
 	public override object NativeWindow => _activity?.Window;
 
@@ -75,6 +93,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			}
 
 			_activity = value;
+
+			// A title set before the window had an activity to show it on.
+			if (value is not null && _title is not null)
+			{
+				value.Title = _title;
+			}
+
 			CurrentActivityChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
@@ -98,14 +123,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal AndroidKeyboardInputSource KeyboardSource { get; } = new();
 
+	private void OnDpiChanged(DisplayInformation sender, object args) => DispatchDpiChanged();
+
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 	public override string Title
 	{
-		get => _activity?.Title ?? string.Empty;
+		get => _title ?? _activity?.Title ?? string.Empty;
 		set
 		{
+			_title = value;
+
 			if (_activity is { } activity)
 			{
 				activity.Title = value;
@@ -121,18 +150,90 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeClosed() => RaiseClosing();
+	/// <summary>
+	/// Called when the activity driving this window finishes. A close the app requested itself has
+	/// already run, so only a close by the system (back, recents) is reported to the window.
+	/// </summary>
+	internal void OnNativeClosed()
+	{
+		if (!_closeRequested)
+		{
+			RaiseClosing();
+		}
+
+		if (ClosesPermanently)
+		{
+			Release();
+		}
+		else
+		{
+			_closeRequested = false;
+		}
+	}
 
 	/// <summary>
-	/// Closing a window means finishing the task hosting it. The main window's activity is left
-	/// alone: finishing it would close the whole app rather than a window.
+	/// Closing a window finishes the activity hosting it: a secondary window's task is removed with
+	/// it, while the main window's task stays in recents to be launched again.
 	/// </summary>
 	protected override void CloseCore()
 	{
-		if (_activity is { } activity && !ReferenceEquals(Window, MUX.Window.CurrentSafe))
+		_closeRequested = true;
+
+		if (_launchPending)
 		{
-			activity.FinishAndRemoveTask();
+			// Android may still start the activity; it then finds no window to adopt and finishes.
+			_launchPending = false;
+			ApplicationActivity.CancelLaunch(this);
 		}
+
+		if (_activity is { } activity)
+		{
+			if (!activity.IsFinishing)
+			{
+				if (_isMainWindow)
+				{
+					activity.Finish();
+				}
+				else
+				{
+					activity.FinishAndRemoveTask();
+				}
+			}
+		}
+		else
+		{
+			// No activity ever adopted this window, so no OnDestroy will release it.
+			Release();
+		}
+	}
+
+	/// <summary>
+	/// Drops everything that keeps a permanently closed window reachable from process-wide state.
+	/// </summary>
+	private void Release()
+	{
+		if (_released)
+		{
+			return;
+		}
+
+		_released = true;
+
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= RaiseNativeSizeChanged;
+		_displayInformation.DpiChanged -= OnDpiChanged;
+		if (MUX.Application.Current is { } application)
+		{
+			application.RequestedThemeChanged -= OnRequestedThemeChanged;
+		}
+
+		if (XamlRoot is { } xamlRoot)
+		{
+			AndroidSkiaNativeElementHostingExtension.ReleaseNativeElements(xamlRoot);
+			XamlRootMap.Unregister(xamlRoot);
+		}
+
+		RemovePreDrawListener();
+		_activity = null;
 	}
 
 	internal void RaiseNativeSizeChanged()
@@ -170,43 +271,69 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			return;
 		}
 
-		if (_activity is not { } activity)
+		if (_activity is { } activity)
 		{
-			// A secondary window has no activity until Android hands us one. Ask for a task to host
-			// it and stop here: the activity that adopts this window calls CompleteDeferredShow from
-			// its OnStart, once it has built the render stack there is nothing to attach to before.
-			_showPending = true;
-			ApplicationActivity.LaunchForWindow(this);
-			return;
-		}
-
-		ShowForActivity(activity);
-	}
-
-	/// <summary>
-	/// Runs a show that <see cref="ShowCore"/> deferred because the window had no activity yet.
-	/// Called by the adopting activity once its render stack exists; a no-op otherwise.
-	/// </summary>
-	internal void CompleteDeferredShow()
-	{
-		if (_showPending && _activity is { } activity)
-		{
-			_showPending = false;
 			ShowForActivity(activity);
 		}
 	}
 
+	public override void Show(bool activateWindow)
+	{
+		if (_activity is null && !WasShown && MUX.Window.ContentHostOverride is null)
+		{
+			// A secondary window has no activity until Android hands it one. Ask for a task to host
+			// it, and only report the window shown once an activity adopted it (CompleteDeferredShow):
+			// there is no native window before that, and a close could not undo a reported show.
+			_activateOnShow |= activateWindow;
+			if (!_launchPending && !_closeRequested)
+			{
+				// The default state reads as activated, so the adopting activity's resume would not
+				// register as a change and the window would never raise Activated.
+				ActivationState = CoreWindowActivationState.Deactivated;
+				_launchPending = true;
+				ApplicationActivity.LaunchForWindow(this);
+			}
+
+			return;
+		}
+
+		base.Show(activateWindow);
+	}
+
+	/// <summary>
+	/// Runs a show that <see cref="Show"/> deferred because the window had no activity yet.
+	/// Called by the adopting activity once its render stack exists; a no-op otherwise.
+	/// </summary>
+	/// <returns>Whether a deferred show ran.</returns>
+	internal bool CompleteDeferredShow()
+	{
+		if (_launchPending && _activity is not null)
+		{
+			_launchPending = false;
+			var activate = _activateOnShow;
+			_activateOnShow = false;
+			Show(activate);
+			return true;
+		}
+
+		return false;
+	}
+
 	private void ShowForActivity(ApplicationActivity activity)
 	{
-		MUX.Application.Current.RequestedThemeChanged += (_, _) =>
-		{
-			if (MUX.Application.Current.InitializationComplete)
-			{
-				ApplySystemOverlaysTheming();
-			}
-		};
+		// The main window is shown again after each close, so keep the subscription single.
+		MUX.Application.Current.RequestedThemeChanged -= OnRequestedThemeChanged;
+		MUX.Application.Current.RequestedThemeChanged += OnRequestedThemeChanged;
 
 		AttachContentView(activity);
+	}
+
+	private void OnRequestedThemeChanged(object sender, EventArgs args)
+	{
+		if (MUX.Application.Current.InitializationComplete)
+		{
+			ApplySystemOverlaysTheming();
+		}
 	}
 
 	private void AttachContentView(ApplicationActivity activity)
