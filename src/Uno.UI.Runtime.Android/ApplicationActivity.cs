@@ -84,6 +84,21 @@ namespace Uno.UI.Runtime.Android
 		}
 
 		/// <summary>
+		/// Withdraws a window closed before Android started its activity. The activity may still start;
+		/// it then finds nothing to adopt and finishes.
+		/// </summary>
+		internal static void CancelLaunch(NativeWindowWrapper wrapper)
+		{
+			foreach (var entry in _pendingWindows)
+			{
+				if (ReferenceEquals(entry.Value, wrapper))
+				{
+					_pendingWindows.TryRemove(entry.Key, out _);
+				}
+			}
+		}
+
+		/// <summary>
 		/// The native wrapper for the window this activity drives. Created lazily so the early
 		/// lifecycle callbacks (which run before the managed Window exists) can drive it. On
 		/// activity re-creation the wrapper already bound to the window is reused and re-pointed
@@ -123,16 +138,39 @@ namespace Uno.UI.Runtime.Android
 					_adoptedWindowId = windowId;
 					return adopted;
 				}
+
+				// A window this process does not know: it was closed before its activity started, or
+				// Android restored the task after the process died. The latter can host the main window
+				// while nothing else does, but must not take it from a live activity: two activities
+				// would then drive one window.
+				if (GetMainWrapper() is { } main && IsDrivenByAnotherLiveActivity(main))
+				{
+					_isOrphaned = true;
+					return new NativeWindowWrapper();
+				}
 			}
 
 			// The activity that started the app: it drives the main window, whose wrapper it created
 			// before any managed Window existed, and re-adopts across re-creation.
-			return Microsoft.UI.Xaml.Window.CurrentSafe?.NativeWrapper as NativeWindowWrapper
-				?? new NativeWindowWrapper(this);
+			return GetMainWrapper() ?? new NativeWindowWrapper(this);
 		}
+
+		private static NativeWindowWrapper? GetMainWrapper()
+			=> Microsoft.UI.Xaml.Window.CurrentSafe?.NativeWrapper as NativeWindowWrapper;
+
+		private bool IsDrivenByAnotherLiveActivity(NativeWindowWrapper wrapper)
+			=> wrapper.CurrentActivity is { } activity
+				&& !ReferenceEquals(activity, this)
+				&& !activity.IsDestroyed
+				&& !activity.IsFinishing;
+
+		// Hosts no window and finishes as soon as it is created.
+		private bool _isOrphaned;
 
 		private int _adoptedWindowId;
 		private static readonly ConcurrentDictionary<int, NativeWindowWrapper> _adoptedWindows = new();
+
+		private bool IsMainWindowActivity => _wrapper is { IsMainWindow: true };
 
 		/// <summary>
 		/// The root element of the window hosted by this activity, once the window has been created.
@@ -359,6 +397,13 @@ namespace Uno.UI.Runtime.Android
 
 			base.OnCreate(bundle);
 
+			_ = Wrapper;
+			if (_isOrphaned)
+			{
+				FinishAndRemoveTask();
+				return;
+			}
+
 			Wrapper.OnActivityCreated();
 
 			// Track and observe this activity's window system UI visibility on its per-window wrapper.
@@ -440,7 +485,12 @@ namespace Uno.UI.Runtime.Android
 
 			// A secondary window is activated before Android has given it an activity, so its show
 			// was deferred until one existed with a render stack to attach to. That is now.
-			Wrapper.CompleteDeferredShow();
+			if (Wrapper.CompleteDeferredShow()
+				&& Wrapper.XamlRoot is { } shownXamlRoot
+				&& _nativeLayerHost is { } layerHost)
+			{
+				AndroidSkiaNativeElementHostingExtension.AdoptNativeElements(shownXamlRoot, layerHost);
+			}
 
 			// On activity re-creation (deep-link, process restore) the managed Window already
 			// exists with its content loaded, but CreateWindow won't run again for this new
@@ -709,10 +759,10 @@ namespace Uno.UI.Runtime.Android
 			_resumed = false;
 			base.OnPause();
 
-			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
-			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
+			// Only this window's popups: other windows can stay resumed while this one pauses.
+			if (RootElement?.XamlRoot is { } xamlRoot)
 			{
-				VisualTreeHelper.CloseLightDismissPopups(contentRoot.XamlRoot);
+				VisualTreeHelper.CloseLightDismissPopups(xamlRoot);
 			}
 
 			DismissKeyboard();
@@ -743,9 +793,13 @@ namespace Uno.UI.Runtime.Android
 
 			base.OnDestroy();
 
-			LayoutProvider.Stop();
-			LayoutProvider.KeyboardChanged -= OnKeyboardChanged;
-			LayoutProvider.InsetsChanged -= OnInsetsChanged;
+			// Never created for an activity that finished from OnCreate.
+			if (_layoutProvider is { } layoutProvider)
+			{
+				layoutProvider.Stop();
+				layoutProvider.KeyboardChanged -= OnKeyboardChanged;
+				layoutProvider.InsetsChanged -= OnInsetsChanged;
+			}
 
 			// These are subscribed on process-wide singletons, so a missing -= keeps this activity
 			// (and its render stack) alive for the life of the process, once per re-creation.
@@ -768,13 +822,6 @@ namespace Uno.UI.Runtime.Android
 				}
 				else
 				{
-					// A secondary window goes away with its task instead of unloading its tree, so the native
-					// elements it hosted are never detached by their presenters.
-					if (_adoptedWindowId > 0 && RootElement?.XamlRoot is { } xamlRoot)
-					{
-						AndroidSkiaNativeElementHostingExtension.ReleaseNativeElements(xamlRoot);
-					}
-
 					wrapper.OnNativeClosed();
 
 					// The window and its host outlive this activity: the next one adopts them in OnStart.
@@ -814,7 +861,10 @@ namespace Uno.UI.Runtime.Android
 #pragma warning disable CS0672 // deprecated members
 		public override void OnBackPressed()
 		{
-			var handled = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
+			// SystemNavigationManager is process-wide and its handlers belong to the main window, so a
+			// secondary window keeps the system behavior: back closes it.
+			var handled = IsMainWindowActivity
+				&& global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
 			if (!handled)
 			{
 #pragma warning disable CA1422 // Validate platform compatibility
