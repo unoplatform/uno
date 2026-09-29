@@ -35,11 +35,11 @@
 
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Android" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Android" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Android" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Android" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';mauiembedding;'))">

@@ -13,11 +13,11 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.WebAssembly.Browser" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.WebAssembly.Browser" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
 	</ItemGroup>
 
 </Project>

@@ -8,9 +8,9 @@
 	<Import Project="../targetframework-override-noplatform.props" />
 
 	<PropertyGroup>
-		<Description>Support assembly for Uno Platform Skia Win32 Runtime</Description>
+		<Description>Support assembly for the Uno Platform Win32 host</Description>
 
-		<CommonOverridePackageId>uno.winui.runtime.skia.win32</CommonOverridePackageId>
+		<CommonOverridePackageId>uno.winui.runtime.win32</CommonOverridePackageId>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 

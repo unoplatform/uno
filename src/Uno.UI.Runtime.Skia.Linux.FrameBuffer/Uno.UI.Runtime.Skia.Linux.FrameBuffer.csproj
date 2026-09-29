@@ -9,9 +9,11 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<Description>This package provides the platform support for Skia / Linux framebuffer in Uno Platform projects.</Description>
+		<Description>This package provides the Linux framebuffer host for Uno Platform projects.</Description>
 
-		<PackageId>Uno.WinUI.Runtime.Skia.Linux.FrameBuffer</PackageId>
+		<PackageId>Uno.WinUI.Runtime.Linux.FrameBuffer</PackageId>
+		<!-- The assembly name still carries the old Skia segment, so it cannot derive the package id -->
+		<CommonOverridePackageId>$(PackageId)</CommonOverridePackageId>
 
 		<RootNamespace>Uno.WinUI.Runtime.Skia.Linux.FrameBuffer</RootNamespace>
 
