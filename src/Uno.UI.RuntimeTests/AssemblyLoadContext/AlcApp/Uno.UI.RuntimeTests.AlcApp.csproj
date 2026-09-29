@@ -54,8 +54,8 @@
 		-->
 	</ItemGroup>
 	
-	<Import Project="../../../Uno.UI.Runtime.Skia.X11/buildTransitive/*.Skia.X11.props" />
-	<Import Project="../../../Uno.UI.Runtime.Skia.X11/buildTransitive/*.Skia.X11.targets" />
+	<Import Project="../../../Uno.UI.Runtime.Skia.X11/buildTransitive/Uno.WinUI.Runtime.X11.props" />
+	<Import Project="../../../Uno.UI.Runtime.Skia.X11/buildTransitive/Uno.WinUI.Runtime.X11.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../build/nuget/uno.winui.runtime-replace.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../SourceGenerators/sourcegenerators.local.props" />
 
