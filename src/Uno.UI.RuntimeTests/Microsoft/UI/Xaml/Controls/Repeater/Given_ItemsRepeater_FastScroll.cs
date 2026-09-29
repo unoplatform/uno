@@ -289,6 +289,7 @@ public class Given_ItemsRepeater_FastScroll
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23041")]
 	public async Task When_WheelScrollDownThroughVarianceList_Then_OffsetMonotonicallyAdvances()
 	{
 		// Reproduces issue #23041 / studio.live#816: mouse-wheel scrolling down through a

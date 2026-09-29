@@ -20,6 +20,12 @@ public partial class ScrollViewer
 	// whether the Content is scrolled to an edge. It is declared at an edge if it's within 1/10th of a pixel.
 	private const double c_edgeDetectionTolerance = 0.1;
 
+	// Matches WinUI's default (see the public HorizontalAnchorRatio/VerticalAnchorRatio docs:
+	// "A normalized value (0.0 to 1.0). The default is 0.0.") and ScrollPresenter's own
+	// s_defaultAnchorRatio (ScrollPresenter.h.cs). Element-based scroll anchoring toward the
+	// leading edge is therefore active by default, matching WinUI, rather than opt-in.
+	private const double c_defaultAnchorRatio = 0.0;
+
 	private readonly List<UIElement> m_anchorCandidates = new();
 
 	private UIElement? m_anchorElement;
@@ -47,7 +53,7 @@ public partial class ScrollViewer
 		DependencyProperty.Register(
 			nameof(HorizontalAnchorRatio), typeof(double),
 			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(double.NaN));
+			new FrameworkPropertyMetadata(Boxer.Box(c_defaultAnchorRatio)));
 
 	public double HorizontalAnchorRatio
 	{
@@ -59,7 +65,7 @@ public partial class ScrollViewer
 		DependencyProperty.Register(
 			nameof(VerticalAnchorRatio), typeof(double),
 			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(double.NaN));
+			new FrameworkPropertyMetadata(Boxer.Box(c_defaultAnchorRatio)));
 
 	public double VerticalAnchorRatio
 	{
