@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Microsoft.UI.Composition;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -693,12 +692,6 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 		var peer = element.CachedAutomationPeer;
 		return peer is not null ? FindExistingProviderForPeer(peer, resolveEventsSource: true) : null;
-	}
-
-	// Like WinUI, raise no BoundingRectangle change on layout: UIA clients pull it on demand, and raising it
-	// for every moved element made each scroll frame pay a native UIA call per realized element.
-	protected override void OnSizeOrOffsetChanged(Visual visual)
-	{
 	}
 
 	private void CleanupProviders(UIElement element)
