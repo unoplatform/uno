@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 ﻿using System;
 <<<<<<< HEAD
 =======
+=======
+using System;
+>>>>>>> 58c3b931 (chore: Keep the BOM-less encoding master normalized to)
 using System.Reflection;
 using System.Runtime.CompilerServices;
 >>>>>>> 896ed750 (feat!: Move app lifecycle events to CoreApplication)

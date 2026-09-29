@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Uno;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
