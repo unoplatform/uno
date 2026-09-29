@@ -8,62 +8,12 @@ namespace Microsoft.Windows.AppLifecycle
 #endif
 	public partial class AppInstance
 	{
-#if false || false || false || false || false || false
-		internal AppInstance()
-		{
-		}
-#endif
-#if false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCurrent
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppInstance", "IsCurrent");
-			}
-		}
-#endif
-#if false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Key
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppInstance", "Key");
-			}
-		}
-#endif
-#if false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint ProcessId
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppInstance", "ProcessId");
-			}
-		}
-#endif
-#if false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.Windows.AppLifecycle.AppInstance GetCurrent()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppInstance", "GetCurrent()");
-		}
-#endif
-#if false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IList<global::Microsoft.Windows.AppLifecycle.AppInstance> GetInstances()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppInstance", "GetInstances()");
-		}
-#endif
-#if false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.Windows.AppLifecycle.AppInstance FindOrRegisterForKey(string key)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppInstance", "FindOrRegisterForKey(string key)");
-		}
-#endif
+		// Skipping already declared property IsCurrent
+		// Skipping already declared property Key
+		// Skipping already declared property ProcessId
+		// Skipping already declared method Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent()
+		// Skipping already declared method Microsoft.Windows.AppLifecycle.AppInstance.GetInstances()
+		// Skipping already declared method Microsoft.Windows.AppLifecycle.AppInstance.FindOrRegisterForKey(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Core.AppRestartFailureReason Restart(string arguments)
@@ -71,47 +21,14 @@ namespace Microsoft.Windows.AppLifecycle
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppInstance", "Restart(string arguments)");
 		}
 #endif
-#if false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void UnregisterKey()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.AppInstance", "UnregisterKey()");
-		}
-#endif
-#if false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction RedirectActivationToAsync(global::Microsoft.Windows.AppLifecycle.AppActivationArguments args)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppInstance", "RedirectActivationToAsync(AppActivationArguments args)");
-		}
-#endif
-#if false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Windows.AppLifecycle.AppActivationArguments GetActivatedEventArgs()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppInstance", "GetActivatedEventArgs()");
-		}
-#endif
+		// Skipping already declared method Microsoft.Windows.AppLifecycle.AppInstance.UnregisterKey()
+		// Skipping already declared method Microsoft.Windows.AppLifecycle.AppInstance.RedirectActivationToAsync(Microsoft.Windows.AppLifecycle.AppActivationArguments)
+		// Skipping already declared method Microsoft.Windows.AppLifecycle.AppInstance.GetActivatedEventArgs()
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.Activated.add
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.Activated.remove
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.IsCurrent.get
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.Key.get
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.ProcessId.get
-#if false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::System.EventHandler<global::Microsoft.Windows.AppLifecycle.AppActivationArguments> Activated
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.AppInstance", "event Activated");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.AppInstance", "event Activated");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.Windows.AppLifecycle.AppInstance.Activated
 	}
 }
