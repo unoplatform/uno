@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				var text = await data.GetTextAsync();
 
 				items.Add(new ClipData.Item(text));
-				mimeTypes.Add("text/plaintext");
+				mimeTypes.Add(ClipDescription.MimetypeTextPlain);
 			}
 
 			if (data != null)
@@ -103,6 +103,9 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 
+		// Written by earlier Uno versions instead of text/plain.
+		private const string LegacyPlainTextMimeType = "text/plaintext";
+
 		static partial void TryGetContainsText(ref bool? containsText)
 		{
 			// PrimaryClipDescription only describes the clip. Unlike PrimaryClip it does not count as
@@ -112,7 +115,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			{
 				containsText = manager.PrimaryClipDescription is { } description
 					&& (description.HasMimeType(ClipDescription.MimetypeTextPlain)
-						|| description.HasMimeType(ClipDescription.MimetypeTextHtml));
+						|| description.HasMimeType(ClipDescription.MimetypeTextHtml)
+						|| description.HasMimeType(LegacyPlainTextMimeType));
 			}
 		}
 
