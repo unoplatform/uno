@@ -72,9 +72,14 @@ carried, and it is now asserted by a test.
 ### 4.1 The folder is the variant
 
 The `uno-runtime/<tfm>/<folder>` names are the `UnoRuntimeVariant` values lowercased: `generic` and `wasm`,
-renamed in 7.0 from `skia` and `webassembly`. 7.0 breaks binary compatibility with every 6.x library anyway,
-and nothing versioned apart from Uno reads the folders — only our nuspecs, the selector task and the packing
-targets, all of which ship together.
+renamed in 7.0 from `skia` and `webassembly`. Inside Uno, only the nuspecs, the selector task and the packing
+targets read the folders, and they ship together. Outside it, every published cross-runtime package ships the
+old names — `SkiaSharp.Views.Uno.WinUI` among them — so each has to republish for 7.0.
+
+The selector deliberately does not fall back to `skia`/`webassembly`. A package still in that layout was built
+against 6.x, and 7.0 breaks binary compatibility with those (assembly and namespace renames such as
+`Uno.UI.Toolkit`), so resolving its old folders would trade a build error naming the package for a crash at
+startup. Failing with UNOB0023 is the better of the two.
 
 A folder miss is still not an error inside the task: the resolver returns `null`, the handler logs and returns.
 Left alone, **the build would succeed while shipping the reference facade**, which throws
