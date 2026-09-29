@@ -1,4 +1,4 @@
-﻿# ALC Secondary App Support Specification
+# ALC Secondary App Support Specification
 
 ## Overview & Objectives
 
