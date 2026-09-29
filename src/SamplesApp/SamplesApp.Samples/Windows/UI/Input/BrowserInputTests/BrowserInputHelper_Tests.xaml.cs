@@ -19,7 +19,7 @@ namespace UITests.Windows_UI_Input.BrowserInputTests
 	{
 #if __SKIA__
 		private static readonly Type _helperType = Type.GetType(
-			"Uno.UI.Runtime.BrowserInputHelper, Uno.UI.Runtime.WebAssembly.Browser");
+			"Uno.UI.Runtime.BrowserInputHelper, Uno.UI.Runtime.BrowserWasm");
 
 		private static readonly PropertyInfo _zoomProperty = _helperType?.GetProperty(
 			"IsBrowserZoomEnabled", BindingFlags.Public | BindingFlags.Static);

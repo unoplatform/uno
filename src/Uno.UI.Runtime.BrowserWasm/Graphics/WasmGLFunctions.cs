@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.WebAssembly.Browser.Graphics;
+namespace Uno.UI.Runtime.BrowserWasm.Graphics;
 
 // OpenGL ES 3.0 entry points for GLCanvasElement on browser-wasm.
 //

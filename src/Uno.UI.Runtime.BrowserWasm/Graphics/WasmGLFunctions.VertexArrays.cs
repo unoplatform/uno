@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 
-namespace Uno.UI.Runtime.WebAssembly.Browser.Graphics;
+namespace Uno.UI.Runtime.BrowserWasm.Graphics;
 
 // Vertex attribute set/get variants and instancing-related per-attrib ops.
 internal static unsafe partial class WasmGLFunctions

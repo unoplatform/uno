@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using Uno.UI.Runtime.WebAssembly.Browser;
+using Uno.UI.Runtime.BrowserWasm;
 
 namespace Uno.UI.Hosting;
 

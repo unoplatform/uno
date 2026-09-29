@@ -13,14 +13,14 @@ using Uno.Graphics;
 using Uno.Media.Playback;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
-using Uno.UI.Runtime.WebAssembly.Browser.Graphics;
+using Uno.UI.Runtime.BrowserWasm.Graphics;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Graphics.Display;
 using Windows.Media.Playback;
 using Microsoft.UI.Xaml.Media;
 
-namespace Uno.UI.Runtime.WebAssembly.Browser;
+namespace Uno.UI.Runtime.BrowserWasm;
 
 internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHost, IXamlRootHost
 {

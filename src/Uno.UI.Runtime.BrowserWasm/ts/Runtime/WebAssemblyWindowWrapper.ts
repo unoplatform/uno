@@ -42,7 +42,7 @@
 		}
 
 		private async build() {
-			WebAssemblyWindowWrapper.assemblyExports = await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.WebAssembly.Browser");
+			WebAssemblyWindowWrapper.assemblyExports = await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.BrowserWasm");
 			this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnResize;
 			this.onViewportOcclusionChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnViewportOcclusionChanged;
 			this.onWindowFocusChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnWindowFocusChanged;

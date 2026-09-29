@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
-using Uno.UI.Runtime.WebAssembly.Browser.Graphics;
+using Uno.UI.Runtime.BrowserWasm.Graphics;
 
 namespace Uno.UI.Runtime;
 

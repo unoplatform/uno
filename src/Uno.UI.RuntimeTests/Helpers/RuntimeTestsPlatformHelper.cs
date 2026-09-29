@@ -99,7 +99,7 @@ internal static class RuntimeTestsPlatformHelper
 		=> IsSkiaHostAssembly("Uno.UI.Runtime.MacOS");
 
 	private static bool IsSkiaBrowser()
-		=> IsSkiaHostAssembly("Uno.UI.Runtime.WebAssembly.Browser");
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.BrowserWasm");
 
 	private static bool IsSkiaIslands()
 #if __SKIA__

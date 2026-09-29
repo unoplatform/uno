@@ -19,7 +19,7 @@ using Uno.Extensions;
 using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.WebAssembly.Browser;
+using Uno.UI.Runtime.BrowserWasm;
 
 namespace Uno.UI.Runtime;
 

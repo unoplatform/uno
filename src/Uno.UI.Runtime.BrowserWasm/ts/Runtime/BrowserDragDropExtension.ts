@@ -9,7 +9,7 @@
 		private static _idToContent: Map<number, Array<Promise<FileSystemHandle | File | string | null>>> = new Map<number, Array<Promise<FileSystemHandle | File | string | null>>>();
 
 		public static async init() {
-			BrowserDragDropExtension._dispatchDropEventMethod = (await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.WebAssembly.Browser")).Uno.UI.Runtime.BrowserDragDropExtension.OnNativeDropEvent;
+			BrowserDragDropExtension._dispatchDropEventMethod = (await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.BrowserWasm")).Uno.UI.Runtime.BrowserDragDropExtension.OnNativeDropEvent;
 
 			// Events fired on the drop target
 			// Note: dragenter and dragover events will enable drop on the app

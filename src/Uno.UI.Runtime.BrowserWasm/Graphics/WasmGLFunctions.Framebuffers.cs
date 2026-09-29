@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 
-namespace Uno.UI.Runtime.WebAssembly.Browser.Graphics;
+namespace Uno.UI.Runtime.BrowserWasm.Graphics;
 
 // Framebuffer / renderbuffer ops beyond the basic gen/bind/attach already in core.
 // glBlitFramebuffer (10 args) exceeds the 8-arg UCO cap and is listed in the unsupported

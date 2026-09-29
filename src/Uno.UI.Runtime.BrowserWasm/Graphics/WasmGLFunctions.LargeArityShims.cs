@@ -3,7 +3,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Uno.UI.Runtime.WebAssembly.Browser.Graphics;
+namespace Uno.UI.Runtime.BrowserWasm.Graphics;
 
 // The >8-arg gl functions are served from emscripten's native C GL by uno_gl_resolve (see
 // WasmGLFunctions.GetProcAddress and build/native/uno_gl_shim.c). Silk.NET still uses calli to

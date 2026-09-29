@@ -322,7 +322,7 @@
     <Project Path="Uno.UI.Runtime.MacOS/Uno.UI.Runtime.MacOS.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Runtime.WebAssembly.Browser/Uno.UI.Runtime.WebAssembly.Browser.csproj">
+    <Project Path="Uno.UI.Runtime.BrowserWasm/Uno.UI.Runtime.BrowserWasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.Runtime.Win32.Support/Uno.UI.Runtime.Win32.Support.csproj">

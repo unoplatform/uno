@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace Uno.UI.Runtime.WebAssembly.Browser.Graphics;
+namespace Uno.UI.Runtime.BrowserWasm.Graphics;
 
 // Registry of GL functions that have no WebGL2 equivalent. When user code (or Silk.NET probing)
 // asks for one of these, WasmGLFunctions.GetProcAddress logs an explicit "not available on

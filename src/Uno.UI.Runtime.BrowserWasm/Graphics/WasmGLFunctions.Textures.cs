@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 
-namespace Uno.UI.Runtime.WebAssembly.Browser.Graphics;
+namespace Uno.UI.Runtime.BrowserWasm.Graphics;
 
 // Texture ops beyond the basic gen/bind/image2D already in core: parameter set with float,
 // mipmap generation, copies between textures, immutable storage (WebGL2), compressed uploads.

@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 
-namespace Uno.UI.Runtime.WebAssembly.Browser.Graphics;
+namespace Uno.UI.Runtime.BrowserWasm.Graphics;
 
 // Per-fragment / framebuffer state ops: blend, depth, stencil, cull, scissor, polygon offset,
 // color mask, line width, hint, finish/flush, sample coverage, is* queries.

@@ -20,7 +20,7 @@ internal sealed class WasmGLGraphicsContext : ISwapChain, IGLDeviceContext
 
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGL;
 
-	public Func<string, nint> GetProcAddress => global::Uno.UI.Runtime.WebAssembly.Browser.Graphics.WasmGLFunctions.GetProcAddress;
+	public Func<string, nint> GetProcAddress => global::Uno.UI.Runtime.BrowserWasm.Graphics.WasmGLFunctions.GetProcAddress;
 
 	// The renderer draws into the canvas default framebuffer, which is undefined after present — no host retention
 	// yet, so the compositor repaints the whole frame.

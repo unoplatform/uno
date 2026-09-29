@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 
-namespace Uno.UI.Runtime.WebAssembly.Browser.Graphics;
+namespace Uno.UI.Runtime.BrowserWasm.Graphics;
 
 // Buffer-object operations beyond the basic create/bind/data already in core: subdata,
 // copy-between-buffers (WebGL2), indexed binding (WebGL2 UBO/TF), parameter queries.

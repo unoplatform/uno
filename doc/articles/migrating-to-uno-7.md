@@ -177,6 +177,7 @@ or configures a host through its builder callback needs updating.
 | Before | After |
 |---|---|
 | Assemblies and namespaces `Uno.UI.Runtime.Skia`, `Uno.UI.Runtime.Skia.<Platform>` | `Uno.UI.Runtime`, `Uno.UI.Runtime.<Platform>` |
+| Assembly and namespace `Uno.UI.Runtime.Skia.WebAssembly.Browser` | `Uno.UI.Runtime.BrowserWasm`, after the `browserwasm` target framework |
 | Namespaces `Uno.WinUI.Runtime.Skia.<Platform>` (X11, Linux framebuffer, Android, iOS) | `Uno.UI.Runtime.<Platform>` |
 | Assemblies and namespaces `Uno.UI.MediaPlayer.Skia.<Platform>`, `Uno.UI.WebView.Skia.X11` | `Uno.UI.MediaPlayer.<Platform>`, `Uno.UI.WebView.X11` |
 | `SkiaHost` | removed — the hosts derive from `Uno.UI.Hosting.UnoPlatformHost` directly |

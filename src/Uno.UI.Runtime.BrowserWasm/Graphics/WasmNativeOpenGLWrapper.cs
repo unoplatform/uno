@@ -7,7 +7,7 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Graphics;
 
-namespace Uno.UI.Runtime.WebAssembly.Browser.Graphics;
+namespace Uno.UI.Runtime.BrowserWasm.Graphics;
 
 internal partial class WasmNativeOpenGLWrapper : INativeOpenGLWrapper
 {

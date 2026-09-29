@@ -78,8 +78,8 @@ platform/wasm 🌐:
       - src/Uno.Foundation.Runtime.WebAssembly/**/*
       - src/Uno.UI.Runtime.WebAssembly/*
       - src/Uno.UI.Runtime.WebAssembly/**/*
-      - src/Uno.UI.Runtime.WebAssembly.Browser/*
-      - src/Uno.UI.Runtime.WebAssembly.Browser/**/*
+      - src/Uno.UI.Runtime.BrowserWasm/*
+      - src/Uno.UI.Runtime.BrowserWasm/**/*
 
 platform/ios 🍎:
   - changed-files:

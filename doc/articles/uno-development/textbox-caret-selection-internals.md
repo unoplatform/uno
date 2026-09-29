@@ -71,7 +71,7 @@ Where the platform needs a real native text input (for the virtual keyboard, aut
 
 | Platform | Classes |
 |----------|---------|
-| WebAssembly | `BrowserInvisibleTextBoxViewExtension` (`Uno.UI.Runtime.WebAssembly.Browser`) |
+| WebAssembly | `BrowserInvisibleTextBoxViewExtension` (`Uno.UI.Runtime.BrowserWasm`) |
 | iOS | `InvisibleTextBoxViewExtension`, `SinglelineInvisibleTextBoxView` (a `UITextField`), `MultilineInvisibleTextBoxView` (a `UITextView`), their delegates, and `NativeTextSelection` (`Uno.UI.Runtime.AppleUIKit`) |
 | Android, desktop | No overlay proxy. Android talks to the soft keyboard through `TextInputConnection` (`Uno.UI.Runtime.Android`). |
 
