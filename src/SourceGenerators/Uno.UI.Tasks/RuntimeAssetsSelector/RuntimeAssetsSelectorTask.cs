@@ -76,6 +76,17 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		/// </remarks>
 		public string TargetFrameworkVersion { get; set; } = "";
 
+		/// <summary>
+		/// Whether an asset a runtime-enabled package should provide but does not is a UNOB0023 error. False
+		/// during design-time builds, where a partially restored package is expected, and when UNOB0023 is disabled.
+		/// </summary>
+		public bool ReportUnresolvedAssets { get; set; } = true;
+
+		private const string UnresolvedAssetCode = "UNOB0023";
+		private const string UnresolvedAssetHelpLink = "https://aka.platform.uno/UNOB0023";
+
+		private sealed class UnresolvedAssetException(string message) : Exception(message);
+
 		[Output]
 		public Microsoft.Build.Framework.ITaskItem[]? ResolvedCompileFileDefinitionsToRemove { get; set; }
 
@@ -136,7 +147,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 							break;
 
 						default:
-							this.Log.LogError($"The value '{LibraryRuntimeVariant}' is not expected for 'LibraryRuntimeVariant'");
+							LogUnresolved($"UnoRuntimeVariant '{LibraryRuntimeVariant}' is not supported for a cross-runtime library. Use Generic, Wasm or Reference.");
 							return false;
 					}
 				}
@@ -180,6 +191,16 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 				return true;
 			}
+			catch (UnresolvedAssetException e) when (!ReportUnresolvedAssets)
+			{
+				this.Log.LogMessage(MessageImportance.Normal, e.Message);
+				return true;
+			}
+			catch (UnresolvedAssetException e)
+			{
+				LogUnresolved(e.Message);
+				return false;
+			}
 			catch (Exception e)
 			{
 				// Require because the task is running out of process
@@ -187,6 +208,9 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				throw new Exception(e.ToString());
 			}
 		}
+
+		private void LogUnresolved(string message)
+			=> this.Log.LogError(null, UnresolvedAssetCode, null, UnresolvedAssetHelpLink, null, 0, 0, 0, 0, $"{message} See {UnresolvedAssetHelpLink}");
 
 		private string? GetUnoRuntimeDirectory(ITaskItem package)
 		{
@@ -235,7 +259,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			return null;
 		}
 
-		private string GetReferenceDirectory(string runtimeDirectory, Version targetFrameworkVersion)
+		private string GetReferenceDirectory(string packageIdentity, string runtimeDirectory, Version targetFrameworkVersion)
 		{
 			for (int i = LatestSupportedDotnetVersion; i >= EarliestSupportedDotnetVersion; i--)
 			{
@@ -257,7 +281,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				return netstdDirectory;
 			}
 
-			throw new Exception($"Unable to find reference directory from runtime directory '{runtimeDirectory}'");
+			throw new UnresolvedAssetException(
+				$"The runtime-enabled package '{packageIdentity}' has no lib/netX.0 reference folder next to '{Path.GetFullPath(runtimeDirectory)}'.");
 		}
 
 		// Uno.UI.MSAL only depends on the WinRT layer (Uno.UWP), so it must follow the
@@ -265,7 +290,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		private bool IsWinRTAssembly(string fileNameWithoutExtension)
 			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno.winrt" or "uno.ui.dispatching" or "uno.foundation" or "uno.ui.msal";
 
-		private string GetWinRTAssembly(string runtimeDirectory, string assembly, Version targetFrameworkVersion, WinRTSource winRTSource, string platform)
+		private string GetWinRTAssembly(string packageIdentity, string assembly, Version targetFrameworkVersion, WinRTSource winRTSource, string platform)
 		{
 			// Assembly is on the form:
 			// <NuGetPackageRoot>/<PackageName>/<PackageVersion>/uno-runtime/<TargetFramework>/<RuntimeFolder>/<AssemblyName>.dll
@@ -276,7 +301,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				var wasmAsset = Path.GetFullPath(Path.Combine(unoRuntimeTfmDirectory, WasmRuntimeFolder, Path.GetFileName(assembly)));
 				if (!File.Exists(wasmAsset))
 				{
-					throw new Exception($"Cannot get WinRT assembly for '{assembly}', the expected asset '{wasmAsset}' does not exist");
+					throw new UnresolvedAssetException(
+						$"The runtime-enabled package '{packageIdentity}' has no browser implementation of '{Path.GetFileName(assembly)}': '{wasmAsset}' does not exist.");
 				}
 
 				return wasmAsset;
@@ -284,6 +310,11 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 			var packageRoot = Path.GetDirectoryName(Path.GetDirectoryName(unoRuntimeTfmDirectory));
 			var lib = Path.Combine(packageRoot, "lib");
+			if (!Directory.Exists(lib))
+			{
+				throw new UnresolvedAssetException(
+					$"The runtime-enabled package '{packageIdentity}' has no '{platform}' implementation of '{Path.GetFileName(assembly)}': '{lib}' does not exist.");
+			}
 
 			string? bestTfmMatch = null;
 			Version? bestMatchVersion = null;
@@ -305,13 +336,15 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 			if (bestTfmMatch is null)
 			{
-				throw new Exception($"Cannot get WinRT assembly for '{assembly}'");
+				throw new UnresolvedAssetException(
+					$"The runtime-enabled package '{packageIdentity}' has no '{platform}' implementation of '{Path.GetFileName(assembly)}': no lib/netX.0-{platform} folder in '{lib}' matches net{targetFrameworkVersion}.");
 			}
 
 			var winRTAssembly = Path.GetFullPath(Path.Combine(lib, bestTfmMatch, Path.GetFileName(assembly)));
 			if (!File.Exists(winRTAssembly))
 			{
-				throw new Exception($"Cannot get WinRT assembly for '{assembly}', the expected asset '{winRTAssembly}' does not exist");
+				throw new UnresolvedAssetException(
+					$"The runtime-enabled package '{packageIdentity}' has no '{platform}' implementation of '{Path.GetFileName(assembly)}': '{winRTAssembly}' does not exist.");
 			}
 
 			return winRTAssembly;
@@ -361,7 +394,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				var isWinRTAssembly = winRTSource != WinRTSource.SharedFolder && IsWinRTAssembly(assemblyFileNameWithoutExtension);
 				if (isWinRTAssembly)
 				{
-					adjustedAssembly = GetWinRTAssembly(runtimeDirectory, assembly, targetFrameworkVersion, winRTSource, platform);
+					adjustedAssembly = GetWinRTAssembly(packageIdentity, assembly, targetFrameworkVersion, winRTSource, platform);
 					this.Log.LogMessage($"Assembly '{assemblyFileNameWithoutExtension}' follows the WinRT layer: replacing '{assembly}' with '{adjustedAssembly}'");
 				}
 
@@ -391,12 +424,13 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 					var compileTimeAssembly = adjustedAssembly;
 					if (!isWinRTAssembly)
 					{
-						var referenceDirectory = GetReferenceDirectory(runtimeDirectory, targetFrameworkVersion);
+						var referenceDirectory = GetReferenceDirectory(packageIdentity, runtimeDirectory, targetFrameworkVersion);
 						var file = Directory.EnumerateFiles(referenceDirectory, "*.dll")
 							.FirstOrDefault(file => assemblyFileNameWithoutExtension.Equals(Path.GetFileNameWithoutExtension(file), StringComparison.OrdinalIgnoreCase));
 						if (file is null)
 						{
-							throw new Exception($"Cannot find reference assembly for {assembly}");
+							throw new UnresolvedAssetException(
+								$"The runtime-enabled package '{packageIdentity}' has no reference assembly for '{Path.GetFileName(assembly)}' in '{Path.GetFullPath(referenceDirectory)}'.");
 						}
 
 						compileTimeAssembly = file;

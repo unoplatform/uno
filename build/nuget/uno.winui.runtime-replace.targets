@@ -25,6 +25,10 @@
 
 			<!-- Only a no-host library passes its variant: a head derives it from TargetPlatformIdentifier. -->
 			<_UnoTaskLibraryRuntimeVariant Condition=" '$(UnoHasRuntimeHost)' != 'true' ">$(_LibraryUnoRuntimeVariant)</_UnoTaskLibraryRuntimeVariant>
+
+			<!-- Same gate as the UNOB0023 check below: a design-time build may see a partially restored package. -->
+			<_UnoReportUnresolvedRuntimeAssets>true</_UnoReportUnresolvedRuntimeAssets>
+			<_UnoReportUnresolvedRuntimeAssets Condition=" '$(DesignTimeBuild)' == 'true' or '$(UnoDisableUNOB0023Validation)' == 'true' ">false</_UnoReportUnresolvedRuntimeAssets>
 		</PropertyGroup>
 	</Target>
 
@@ -52,7 +56,8 @@
 			LibraryRuntimeVariant="$(_UnoTaskLibraryRuntimeVariant)"
 			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
 			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)"
-			TargetFrameworkVersion="$(TargetFrameworkVersion)">
+			TargetFrameworkVersion="$(TargetFrameworkVersion)"
+			ReportUnresolvedAssets="$(_UnoReportUnresolvedRuntimeAssets)">
 			<Output TaskParameter="RuntimeCopyLocalItemsToAdd" ItemName="RuntimeCopyLocalItemsMerged2" />
 			<Output TaskParameter="RuntimeCopyLocalItemsToRemove" ItemName="_RuntimeCopyLocalItemsToRemove" />
 			<Output TaskParameter="ResolvedCompileFileDefinitionsToAdd" ItemName="_ResolvedCompileFileDefinitionsToAdd" />
