@@ -54,16 +54,16 @@
 		<file src="..\..\src\Uno.Foundation\bin\Uno.Foundation.Wasm\Release\net11.0\Uno.Foundation.pdb" target="uno-runtime\net11.0\wasm" />
 
 		<!-- net11.0 Skia -->
-		<file src="..\..\src\Uno.Foundation\bin\Uno.Foundation.Skia\Release\net11.0\Uno.Foundation.dll" target="uno-runtime\net11.0\generic" />
-		<file src="..\..\src\Uno.Foundation\bin\Uno.Foundation.Skia\Release\net11.0\Uno.Foundation.pdb" target="uno-runtime\net11.0\generic" />
+		<file src="..\..\src\Uno.Foundation\bin\Uno.Foundation.Generic\Release\net11.0\Uno.Foundation.dll" target="uno-runtime\net11.0\generic" />
+		<file src="..\..\src\Uno.Foundation\bin\Uno.Foundation.Generic\Release\net11.0\Uno.Foundation.pdb" target="uno-runtime\net11.0\generic" />
 
 		<!-- net10.0 WebAssembly -->
 		<file src="..\..\src\Uno.Foundation\bin\Uno.Foundation.Wasm\Release\net10.0\Uno.Foundation.dll" target="uno-runtime\net10.0\wasm" />
 		<file src="..\..\src\Uno.Foundation\bin\Uno.Foundation.Wasm\Release\net10.0\Uno.Foundation.pdb" target="uno-runtime\net10.0\wasm" />
 
 		<!-- net10.0 Skia -->
-		<file src="..\..\src\Uno.Foundation\bin\Uno.Foundation.Skia\Release\net10.0\Uno.Foundation.dll" target="uno-runtime\net10.0\generic" />
-		<file src="..\..\src\Uno.Foundation\bin\Uno.Foundation.Skia\Release\net10.0\Uno.Foundation.pdb" target="uno-runtime\net10.0\generic" />
+		<file src="..\..\src\Uno.Foundation\bin\Uno.Foundation.Generic\Release\net10.0\Uno.Foundation.dll" target="uno-runtime\net10.0\generic" />
+		<file src="..\..\src\Uno.Foundation\bin\Uno.Foundation.Generic\Release\net10.0\Uno.Foundation.pdb" target="uno-runtime\net10.0\generic" />
 
 		<file src="Uno.Foundation.props" target="buildTransitive" />
 		

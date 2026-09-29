@@ -24,9 +24,9 @@
 	<Import Project="../targetframework-override.props" />
 	
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Generic.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Generic.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 </Project>
