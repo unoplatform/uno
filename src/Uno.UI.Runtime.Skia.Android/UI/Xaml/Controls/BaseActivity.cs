@@ -60,8 +60,10 @@ namespace Uno.UI
 		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
 		private static BaseActivity? _current;
 		private static long _activationCount;
+		private static int _startedCount;
 
 		private long _lastActivation;
+		private bool _isStarted;
 
 		/// <summary>
 		/// Unique identifier for this instance of an activity.
@@ -246,6 +248,12 @@ namespace Uno.UI
 		{
 			SetAsCurrent();
 
+			if (!_isStarted)
+			{
+				_isStarted = true;
+				_startedCount++;
+			}
+
 			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
 				OnNativeVisibilityChanged(true);
@@ -339,15 +347,25 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			// An outgoing activity reaches OnStop after its replacement has resumed and taken the
-			// window. Hiding and suspending from here would apply to the live replacement.
-			if (!IsDrivingWindow)
+			if (_isStarted)
 			{
-				return;
+				_isStarted = false;
+				_startedCount--;
 			}
 
-			OnNativeVisibilityChanged(false);
-			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
+			// An outgoing activity reaches OnStop after its replacement has resumed and taken the
+			// window. Hiding from here would apply to the live replacement.
+			if (IsDrivingWindow)
+			{
+				OnNativeVisibilityChanged(false);
+			}
+
+			// The app goes to the background with its last visible activity, not with each window.
+			// A configuration-driven re-creation starts its replacement right away.
+			if (_startedCount == 0 && !IsChangingConfigurations)
+			{
+				Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
+			}
 		}
 
 		protected override void OnDestroy()
