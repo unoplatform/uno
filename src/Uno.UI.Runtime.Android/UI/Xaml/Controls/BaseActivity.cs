@@ -152,7 +152,7 @@ namespace Uno.UI
 				ContextHelper.Current = this;
 			}
 
-			// Eagerly create the ApplicationView instance for IBaseActivityEvents
+			// Eagerly create the ApplicationView instance for the activity lifecycle events
 			// to be useable (specifically for the Create event)
 			ApplicationView.GetOrCreateForWindowId(AppWindow.MainWindowId);
 

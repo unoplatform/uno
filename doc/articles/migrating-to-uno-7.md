@@ -1402,8 +1402,13 @@ process-wide statics, so the ambient Android context APIs changed shape:
   on an activity while it is paused or stopped, so background work still resolves one, and moves
   to another live activity (or `null`) when that activity is destroyed. It previously kept the
   last activity ever assigned, including a destroyed one. It is not necessarily the foreground
-  activity: code that needs a specific window's activity should resolve it from that window's
-  `XamlRoot` instead.
+  activity, so avoid it for work that needs a resumed activity.
+- **The `Uno.UI.ContextHelper.Current` setter is now `internal`.** The value is owned by the
+  activity lifecycle (`BaseActivity`), which overwrote any value app code assigned.
+- **`Uno.UI.ViewManagement.ApplicationViewHelper.GetBaseActivityEvents()` and
+  `IBaseActivityEvents` were removed.** No Skia activity implements the interface, so the method
+  always returned `null`. Observe activity lifecycle events with Android's
+  `Application.RegisterActivityLifecycleCallbacks` instead.
 - **`Uno.UI.OnSystemUiVisibilityChangeListener` is now `internal`.** It is constructed by the host
   with the activity that owns the window; app code had no way to supply one.
 

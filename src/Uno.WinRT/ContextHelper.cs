@@ -11,18 +11,16 @@ namespace Uno.UI
 		private static Android.Content.Context? _current;
 
 		/// <summary>
-		/// Gets or sets the context of the most recently active activity that is still alive.
+		/// Gets the context of the most recently active activity that is still alive.
 		/// </summary>
 		/// <remarks>
-		/// The setter is driven by the activity lifecycle: an activity registers itself here when it
-		/// is created, started or resumed, and deliberately stays registered while paused or stopped
-		/// so work running in the background still resolves an activity. On teardown it is handed
-		/// over to another live activity, or cleared when there is none, so a destroyed activity is
-		/// not left as "current". This value is activity-scoped and may be
-		/// <c>null</c> before any activity is created — app-scoped callers that only need a
-		/// process context should use <see cref="ApplicationContext"/>, and callers that need a
-		/// specific window's activity should resolve it from that window's <see cref="XamlRoot"/>
-		/// rather than relying on this ambient value.
+		/// Driven by the activity lifecycle: an activity registers itself here when it is created,
+		/// started or resumed, and deliberately stays registered while paused or stopped so work
+		/// running in the background still resolves an activity. On teardown it is handed over to
+		/// another live activity, or cleared when there is none, so a destroyed activity is not left
+		/// as "current". This value is activity-scoped and may be <c>null</c> before any activity is
+		/// created — app-scoped callers that only need a process context should use
+		/// <see cref="ApplicationContext"/>.
 		/// </remarks>
 		public static Android.Content.Context? Current
 		{
@@ -40,7 +38,7 @@ namespace Uno.UI
 
 				return _current;
 			}
-			set => _current = value;
+			internal set => _current = value;
 		}
 
 		/// <summary>
