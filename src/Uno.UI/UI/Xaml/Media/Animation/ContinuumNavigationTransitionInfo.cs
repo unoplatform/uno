@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference ThemeTransitions.cpp, tag winui3/release/1.7-stable
 
@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation;
 
@@ -85,7 +86,7 @@ public partial class ContinuumNavigationTransitionInfo : NavigationTransitionInf
 		"IsEntranceElement",
 		typeof(bool),
 		typeof(ContinuumNavigationTransitionInfo),
-		new FrameworkPropertyMetadata(false, OnIsEntranceElementChanged));
+		new FrameworkPropertyMetadata(BoolBoxes.False, OnIsEntranceElementChanged));
 
 	private static void OnIsEntranceElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 	{
@@ -139,7 +140,7 @@ public partial class ContinuumNavigationTransitionInfo : NavigationTransitionInf
 		"IsExitElement",
 		typeof(bool),
 		typeof(ContinuumNavigationTransitionInfo),
-		new FrameworkPropertyMetadata(false, OnIsExitElementChanged));
+		new FrameworkPropertyMetadata(BoolBoxes.False, OnIsExitElementChanged));
 
 	private static void OnIsExitElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 	{
@@ -193,7 +194,7 @@ public partial class ContinuumNavigationTransitionInfo : NavigationTransitionInf
 		"ExitElementContainer",
 		typeof(bool),
 		typeof(ContinuumNavigationTransitionInfo),
-		new FrameworkPropertyMetadata(false));
+		new FrameworkPropertyMetadata(BoolBoxes.False));
 
 	#endregion
 
