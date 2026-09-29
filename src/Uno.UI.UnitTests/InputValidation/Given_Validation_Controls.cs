@@ -25,27 +25,23 @@ public partial class Given_Validation_Controls
 	[TestMethod]
 	public void When_Participating_Controls()
 	{
+		// The four controls WinUI's CControl type-index switches cover, each with its [InputProperty].
 		Assert.AreSame(TextBox.TextProperty, Resolve<TextBox>());
 		Assert.AreSame(PasswordBox.PasswordProperty, Resolve<PasswordBox>());
-		Assert.AreSame(NumberBox.ValueProperty, Resolve<NumberBox>());
 		Assert.AreSame(AutoSuggestBox.TextProperty, Resolve<AutoSuggestBox>());
-		Assert.AreSame(ToggleSwitch.IsOnProperty, Resolve<ToggleSwitch>());
-		Assert.AreSame(ToggleButton.IsCheckedProperty, Resolve<ToggleButton>());
+		Assert.AreSame(Microsoft.UI.Xaml.Controls.ComboBox.TextProperty, Resolve<Microsoft.UI.Xaml.Controls.ComboBox>());
 	}
 
 	[TestMethod]
-	public void When_Slider_But_Not_ProgressBar()
+	public void When_Not_A_WinUI_Participant()
 	{
-		// Both derive from RangeBase, which is where Value is registered. A per-dependency-property flag
-		// could not have told them apart, which is why the attribute sits on the type.
-		Assert.AreSame(RangeBase.ValueProperty, Resolve<Slider>());
+		Assert.IsNull(Resolve<NumberBox>());
+		Assert.IsNull(Resolve<Slider>());
 		Assert.IsNull(Resolve<ProgressBar>());
-	}
-
-	[TestMethod]
-	public void When_ComboBox_But_Not_Other_Selectors()
-	{
-		Assert.AreSame(Selector.SelectedItemProperty, Resolve<Microsoft.UI.Xaml.Controls.ComboBox>());
+		Assert.IsNull(Resolve<ToggleSwitch>());
+		Assert.IsNull(Resolve<ToggleButton>());
+		Assert.IsNull(Resolve<CheckBox>());
+		Assert.IsNull(Resolve<RadioButton>());
 		Assert.IsNull(Resolve<FlipView>());
 		Assert.IsNull(Resolve<ListBox>());
 		Assert.IsNull(Resolve<ListView>());
@@ -54,10 +50,7 @@ public partial class Given_Validation_Controls
 	[TestMethod]
 	public void When_Derived_From_A_Participating_Control()
 	{
-		// ToggleButton carries the attribute for all of its subclasses, and a third-party control derived
-		// from a participating one takes part without redeclaring anything.
-		Assert.AreSame(ToggleButton.IsCheckedProperty, Resolve<CheckBox>());
-		Assert.AreSame(ToggleButton.IsCheckedProperty, Resolve<RadioButton>());
+		// A third-party control derived from a participating one takes part without redeclaring anything.
 		Assert.AreSame(TextBox.TextProperty, Resolve<CustomTextBox>());
 	}
 

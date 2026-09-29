@@ -10,7 +10,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
@@ -155,9 +154,9 @@ public class Given_ValidationStates
 	{
 		// The case that makes the template-realization trigger load-bearing rather than defensive.
 		var source = new ErrorSource();
-		var sut = new CheckBox { DataContext = source };
+		var sut = new TextBox { DataContext = source };
 		sut.InputValidationMode = InputValidationMode.Auto;
-		sut.SetBinding(ToggleButton.IsCheckedProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
+		sut.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		source.SetErrors("required");
 		Assert.IsTrue(
@@ -173,15 +172,15 @@ public class Given_ValidationStates
 	[TestMethod]
 	public async Task When_Control_Has_No_Visual_State_Method_Then_Template_Realization_Applies()
 	{
-		// NumberBox participates but has no ChangeVisualState override, so no per-control call site
+		// AutoSuggestBox participates but has no ChangeVisualState override, so no per-control call site
 		// re-applies the states for it. With errors already reported before the template exists, the
 		// InvokeApplyTemplate anchor is the only thing that can put it in one.
 		var source = new ErrorSource();
-		var sut = new NumberBox { DataContext = source };
+		var sut = new AutoSuggestBox { DataContext = source };
 		sut.InputValidationMode = InputValidationMode.Auto;
-		sut.SetBinding(NumberBox.ValueProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Number)) });
+		sut.SetBinding(AutoSuggestBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
-		source.SetErrorsFor(nameof(ErrorSource.Number), "required");
+		source.SetErrors("required");
 		Assert.IsTrue(
 			sut.HasValidationErrors,
 			"the error should reach the control before any template exists");
@@ -199,20 +198,20 @@ public class Given_ValidationStates
 		// a Setter can target it. It could not target a plain property forwarding to an attached value.
 		var style = (Style)XamlReader.Load("""
 			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-				   TargetType="CheckBox">
+				   TargetType="TextBox">
 				<Setter Property="InputValidationMode" Value="Auto" />
 				<Setter Property="InputValidationKind" Value="Inline" />
 			</Style>
 			""");
 
 		var source = new ErrorSource();
-		var sut = new CheckBox
+		var sut = new TextBox
 		{
 			DataContext = source,
 			Style = style,
 			Template = (ControlTemplate)XamlReader.Load(TemplateXaml),
 		};
-		sut.SetBinding(ToggleButton.IsCheckedProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
+		sut.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		await UITestHelper.Load(sut);
 
@@ -230,13 +229,13 @@ public class Given_ValidationStates
 	{
 		// Also only possible against a dependency property.
 		var source = new ErrorSource();
-		var sut = new CheckBox
+		var sut = new TextBox
 		{
 			DataContext = source,
 			Template = (ControlTemplate)XamlReader.Load(TemplateXaml),
 		};
-		sut.SetBinding(CheckBox.InputValidationModeProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.ValidationMode)) });
-		sut.SetBinding(ToggleButton.IsCheckedProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
+		sut.SetBinding(TextBox.InputValidationModeProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.ValidationMode)) });
+		sut.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		source.SetErrors("required");
 		await UITestHelper.Load(sut);
@@ -248,7 +247,7 @@ public class Given_ValidationStates
 	[TestMethod]
 	public async Task When_Control_Does_Not_Participate_Then_Disabled_And_No_Error_State()
 	{
-		var sut = new CheckBox { Template = (ControlTemplate)XamlReader.Load(TemplateXaml) };
+		var sut = new TextBox { Template = (ControlTemplate)XamlReader.Load(TemplateXaml) };
 		await UITestHelper.Load(sut);
 
 		// Template realization applies the disabled branch of EnsureValidationVisuals, which leaves the error
@@ -286,11 +285,11 @@ public class Given_ValidationStates
 			errorEvents);
 	}
 
-	private static async Task<(CheckBox Sut, ErrorSource Source)> Bind(
+	private static async Task<(TextBox Sut, ErrorSource Source)> Bind(
 		InputValidationKind kind = InputValidationKind.Auto)
 	{
 		var source = new ErrorSource();
-		var sut = new CheckBox
+		var sut = new TextBox
 		{
 			DataContext = source,
 			Template = (ControlTemplate)XamlReader.Load(TemplateXaml),
@@ -298,7 +297,7 @@ public class Given_ValidationStates
 
 		sut.InputValidationKind = kind;
 		sut.InputValidationMode = InputValidationMode.Auto;
-		sut.SetBinding(ToggleButton.IsCheckedProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
+		sut.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		await UITestHelper.Load(sut);
 
@@ -323,9 +322,7 @@ public class Given_ValidationStates
 	{
 		private string[] _errors = Array.Empty<string>();
 
-		public bool? Value { get; set; }
-
-		public double Number { get; set; }
+		public string? Value { get; set; }
 
 		public InputValidationMode ValidationMode { get; set; } = InputValidationMode.Auto;
 
@@ -335,12 +332,10 @@ public class Given_ValidationStates
 
 		public IEnumerable GetErrors(string? propertyName) => _errors;
 
-		public void SetErrors(params string[] errors) => SetErrorsFor(nameof(Value), errors);
-
-		public void SetErrorsFor(string propertyName, params string[] errors)
+		public void SetErrors(params string[] errors)
 		{
 			_errors = errors;
-			ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+			ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Value)));
 		}
 	}
 }
