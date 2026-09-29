@@ -42,4 +42,10 @@ void uno_native_set_opacity(NSView<UNONativeElement>* element, double opacity);
 
 void uno_native_dispose(NSView<UNONativeElement> *element);
 
+int32_t uno_password_vault_read(const char* scope, uint8_t* _Nullable * _Nonnull data, int32_t* length);
+
+int32_t uno_password_vault_write(const char* scope, const uint8_t* data, int32_t length);
+
+void uno_password_vault_free(uint8_t* data, int32_t length);
+
 NS_ASSUME_NONNULL_END

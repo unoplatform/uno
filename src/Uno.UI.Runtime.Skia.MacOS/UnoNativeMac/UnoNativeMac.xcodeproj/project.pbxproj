@@ -19,6 +19,7 @@
 		D1B8C7F62F03A00100000001 /* UNOSpeechRecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = D1B8C7F62F03A00100000002 /* UNOSpeechRecognizer.h */; };
 		D1B8C7F62F03A00100000003 /* UNOSpeechRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B8C7F62F03A00100000004 /* UNOSpeechRecognizer.m */; };
 		D13AB8A82B5839B200693F8E /* libSkiaSharp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */; };
+		D15EC0012F20000100000001 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D15EC0022F20000100000002 /* Security.framework */; };
 		D18D4FAC2C2DE804003E4BBF /* UNONative.m in Sources */ = {isa = PBXBuildFile; fileRef = D18D4FAB2C2DE804003E4BBF /* UNONative.m */; };
 		D1A0651E2A7066F700101BE6 /* UNOMetalViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D1A0651D2A7066F700101BE6 /* UNOMetalViewDelegate.m */; };
 		D1A065202A8467B200101BE6 /* UNOApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = D1A0651F2A8467B200101BE6 /* UNOApplication.h */; };
@@ -45,6 +46,7 @@
 		D1B8C7F62F03A00100000002 /* UNOSpeechRecognizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOSpeechRecognizer.h; sourceTree = "<group>"; };
 		D1B8C7F62F03A00100000004 /* UNOSpeechRecognizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOSpeechRecognizer.m; sourceTree = "<group>"; };
 		D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSkiaSharp.dylib; path = UnoNativeMac/libSkiaSharp.dylib; sourceTree = "<group>"; };
+		D15EC0022F20000100000002 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		D13AB8AC2B58566400693F8E /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		D18D4FAA2C2DE76F003E4BBF /* UNONative.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNONative.h; sourceTree = "<group>"; };
 		D18D4FAB2C2DE804003E4BBF /* UNONative.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNONative.m; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D13AB8A82B5839B200693F8E /* libSkiaSharp.dylib in Frameworks */,
+				D15EC0012F20000100000001 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */,
+				D15EC0022F20000100000002 /* Security.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
