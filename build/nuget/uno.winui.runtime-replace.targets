@@ -104,7 +104,8 @@
 			Condition="'@(_UnoRuntimeEnabledPackage_Unresolved)'!='' AND '$(_UnoRuntimeIsReferenceLibrary)'!='true' AND '$(UnoDisableUNOB0023Validation)'!='true' AND '$(DesignTimeBuild)'!='true'" />
 	</Target>
 
-	<Target Name="_UnoValidateRuntimeAssets" BeforeTargets="CoreCompile" DependsOnTargets="_UnoComputeLibraryRuntimeVariant">
+	<!-- Skipped in design-time builds: it opens every copy-local assembly, and the IDE runs those constantly. -->
+	<Target Name="_UnoValidateRuntimeAssets" BeforeTargets="CoreCompile" DependsOnTargets="_UnoComputeLibraryRuntimeVariant" Condition="'$(DesignTimeBuild)' != 'true'">
 		<PropertyGroup>
 			<!-- Normalized so a value other than 'true' cannot fail the task's boolean parameter conversion. -->
 			<_UnoDisableUNOB0020Validation>false</_UnoDisableUNOB0020Validation>
