@@ -125,6 +125,10 @@ exercised the do-nothing path and would have stayed green through a change that 
   described them, so who sets them is unknown, and silently dropping their effect is the outcome to prevent.
   It is gated on `UnoHasRuntimeHost`, not `IsUnoHead` — the latter is set only by the Uno.Sdk, and a
   hand-rolled head is exactly the shape likely to still carry these.
+- **`netX.0-desktop` class libraries get `UnoHasRuntimeHost` too**, from `Uno.Common.Desktop.targets`, so
+  `ReplaceUnoRuntime` runs for them. That is unchanged: the same file set `UnoRuntimeIdentifier=Skia` on every
+  `-desktop` project before, and that alone kept the target running. Their output only ever gains the runtime
+  assemblies a head deploys anyway.
 - **A cross-runtime library keeps runtime replacement.** Such a library sets `UnoRuntimeVariant` (or the
   deprecated `UnoRuntimeIdentifier`) without referencing a runtime host, so `ReplaceUnoRuntime` is gated on
   either signal. Gating on the host alone would
@@ -157,6 +161,11 @@ backend: `Uno.UI` compiles once and resolves its backend at run time, so no buil
 | Set by | the multi-variant and single-variant projects under `src/`, and third-party cross-runtime libraries |
 | Read by | `src/Uno.CrossTargetting.targets` (in-repo symbols and suffixes) and `build/nuget/uno.winui.*.targets` (packing and replacement) |
 | Folder | the value lowercased: `uno-runtime/<tfm>/generic`, `uno-runtime/<tfm>/wasm` |
+
+`Reference` stays a variant because the WinRT layer still needs a `lib/` that no single platform provides: the
+union of every platform's API surface, stubbed with `[NotImplemented]` where a platform lacks it, which is what a
+plain `netX.0` library compiles against and what a mobile head's redirect replaces. The UI layer has no such
+need — it is one Skia build everywhere — so only `Uno.WinRT`, `Uno.Foundation` and `Uno.UI.Dispatching` build it.
 
 `UnoRuntimeIdentifier` stays accepted from a cross-runtime library as a deprecated spelling: `skia` maps to
 `generic`, `webassembly` to `wasm`, and UNOB0024 names the value to use instead. It is not reused for the new
