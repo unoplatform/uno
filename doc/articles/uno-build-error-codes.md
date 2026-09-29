@@ -236,6 +236,8 @@ This application head references packages that ship their implementation under `
 
 The usual cause is a version mismatch: a `Uno.WinUI.Runtime.Skia.*` package older than `Uno.WinUI` does not declare the runtime host. Align every `Uno.*` package version, then restore again.
 
+When such an older runtime host is detected, this is reported as an error. Otherwise it is a warning, since an executable project that is not an application, such as a test project, can legitimately run against the reference assemblies.
+
 To suppress it:
 
 ```xml

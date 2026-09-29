@@ -158,16 +158,27 @@
 
 	<!--
 	The one failure the runtime-host gate makes possible, and the only one ReplaceUnoRuntime cannot report:
-	packages that need replacement, on a head that never picked up a runtime host - a version-skewed
-	Uno.WinUI.Runtime.Skia.* is the usual cause. Left as a warning because OutputType is a weaker "is a head"
-	test than the Uno.Sdk's own.
+	packages that need replacement, on a head that never picked up a runtime host. A warning in general, since
+	an executable test project can legitimately run on the reference assemblies; an error when a pre-7.0
+	runtime host is present, recognisable by the UnoUIRuntimeIdentifier it sets instead of UnoHasRuntimeHost.
 	-->
 	<Target Name="_UnoWarnMissingRuntimeHost" BeforeTargets="BeforeBuild">
+		<PropertyGroup>
+			<_UnoMissingRuntimeHost>false</_UnoMissingRuntimeHost>
+			<_UnoMissingRuntimeHost Condition="'@(UnoRuntimeEnabledPackage)'!='' AND '$(UnoHasRuntimeHost)'!='true' AND '$(UnoRuntimeVariant)'=='' AND '$(UnoRuntimeIdentifier)'=='' AND ('$(OutputType)'=='Exe' OR '$(OutputType)'=='WinExe') AND '$(UnoDisableUNOB0025Validation)'!='true'">true</_UnoMissingRuntimeHost>
+		</PropertyGroup>
+
+		<Error
+			Code="UNOB0025"
+			HelpLink="https://aka.platform.uno/UNOB0025"
+			Text="This project references runtime-enabled package(s) [@(UnoRuntimeEnabledPackage)] and a Uno.WinUI.Runtime.Skia.* package older than Uno.WinUI, which does not declare itself as the runtime host, so the reference assemblies would be deployed and fail at runtime. Update the Uno.WinUI.Runtime.Skia.* package to the Uno.WinUI version. See https://aka.platform.uno/UNOB0025"
+			Condition="'$(_UnoMissingRuntimeHost)'=='true' AND '$(UnoUIRuntimeIdentifier)'!=''" />
+
 		<Warning
 			Code="UNOB0025"
 			HelpLink="https://aka.platform.uno/UNOB0025"
 			Text="This project references runtime-enabled package(s) [@(UnoRuntimeEnabledPackage)] but no Uno Platform runtime host, so the reference assemblies will be deployed and will fail at runtime. Check that the Uno.WinUI.Runtime.Skia.* package version matches Uno.WinUI. See https://aka.platform.uno/UNOB0025"
-			Condition="'@(UnoRuntimeEnabledPackage)'!='' AND '$(UnoHasRuntimeHost)'!='true' AND '$(UnoRuntimeVariant)'=='' AND '$(UnoRuntimeIdentifier)'=='' AND ('$(OutputType)'=='Exe' OR '$(OutputType)'=='WinExe') AND '$(UnoDisableUNOB0025Validation)'!='true'" />
+			Condition="'$(_UnoMissingRuntimeHost)'=='true' AND '$(UnoUIRuntimeIdentifier)'==''" />
 	</Target>
 
 	<!-- Force a rebuild on runtime files changes -->
