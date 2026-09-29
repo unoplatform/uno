@@ -139,7 +139,10 @@
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
 
-			<!-- Android API folder is published per net major version: see build/nuget/Uno.WinRT.nuspec / Uno.Foundation.nuspec. -->
+			<!--
+				The packages ship one Android folder per .NET version (net10.0-android30.0, net11.0-android36.0,
+				see Uno.WinRT.nuspec), so the build TFM needs the matching API suffix to hit the folder NuGet reads.
+			-->
 			<_OverrideAndroidApiLevel Condition="$([MSBuild]::GetTargetFrameworkVersion('$(_OverrideTargetFramework)')) == '10.0'">30.0</_OverrideAndroidApiLevel>
 			<_OverrideAndroidApiLevel Condition="$([MSBuild]::GetTargetFrameworkVersion('$(_OverrideTargetFramework)')) == '11.0'">36.0</_OverrideAndroidApiLevel>
 			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android')) AND '$(_OverrideAndroidApiLevel)' != ''">$(_OverrideTargetFramework)$(_OverrideAndroidApiLevel)</_OverrideTargetFramework>
@@ -207,7 +210,10 @@
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
 
-			<!-- Android API folder is published per net major version: see build/nuget/Uno.WinRT.nuspec / Uno.Foundation.nuspec. -->
+			<!--
+				The packages ship one Android folder per .NET version (net10.0-android30.0, net11.0-android36.0,
+				see Uno.WinRT.nuspec), so the build TFM needs the matching API suffix to hit the folder NuGet reads.
+			-->
 			<_OverrideAndroidApiLevel Condition="$([MSBuild]::GetTargetFrameworkVersion('$(_OverrideTargetFramework)')) == '10.0'">30.0</_OverrideAndroidApiLevel>
 			<_OverrideAndroidApiLevel Condition="$([MSBuild]::GetTargetFrameworkVersion('$(_OverrideTargetFramework)')) == '11.0'">36.0</_OverrideAndroidApiLevel>
 			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android')) AND '$(_OverrideAndroidApiLevel)' != ''">$(_OverrideTargetFramework)$(_OverrideAndroidApiLevel)</_OverrideTargetFramework>
