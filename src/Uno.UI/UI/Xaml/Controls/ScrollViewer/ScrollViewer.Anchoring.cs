@@ -53,7 +53,7 @@ public partial class ScrollViewer
 		DependencyProperty.Register(
 			nameof(HorizontalAnchorRatio), typeof(double),
 			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(c_defaultAnchorRatio));
+			new FrameworkPropertyMetadata(Boxer.Box(c_defaultAnchorRatio)));
 
 	public double HorizontalAnchorRatio
 	{
@@ -65,7 +65,7 @@ public partial class ScrollViewer
 		DependencyProperty.Register(
 			nameof(VerticalAnchorRatio), typeof(double),
 			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(c_defaultAnchorRatio));
+			new FrameworkPropertyMetadata(Boxer.Box(c_defaultAnchorRatio)));
 
 	public double VerticalAnchorRatio
 	{
