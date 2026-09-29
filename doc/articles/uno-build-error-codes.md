@@ -204,7 +204,9 @@ To fix this issue:
 
 Packages such as `Uno.WinRT` and `Uno.Foundation` ship a platform-neutral compile surface under `lib/` and the assemblies that actually run under `uno-runtime/`. This diagnostic reports that one of them contributed no runtime assembly for the target framework being built, which means the reference assemblies would be deployed instead and every call into them would throw `NotImplementedException` at runtime.
 
-The usual causes are a partially restored package, a `PackageBasePath` pointing at a location that does not contain the expected `uno-runtime` folder, or a mismatched set of Uno Platform package versions. Verify that all `Uno.*` package versions match, then clear `obj/` and `bin/` and restore again.
+The most common cause is a package built for Uno Platform 6.x. Uno Platform 7.0 renamed the runtime folders from `uno-runtime/<tfm>/skia` and `uno-runtime/<tfm>/webassembly` to `uno-runtime/<tfm>/generic` and `uno-runtime/<tfm>/wasm`, and a package in the old layout is not binary compatible with 7.0 anyway, so it has to be updated to a version built for 7.0. `SkiaSharp.Views.Uno.WinUI` is one such package; applications drawing with Skia on Uno Platform can use [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) instead.
+
+Other causes are a partially restored package, a `PackageBasePath` pointing at a location that does not contain the expected `uno-runtime` folder, or a mismatched set of Uno Platform package versions. Verify that all `Uno.*` package versions match, then clear `obj/` and `bin/` and restore again.
 
 Before Uno Platform 7.0 this situation was reported only as a build message, so it surfaced as a runtime failure rather than a build failure.
 

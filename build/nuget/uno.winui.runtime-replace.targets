@@ -95,7 +95,7 @@
 		<Error
 			Code="UNOB0023"
 			HelpLink="https://aka.platform.uno/UNOB0023"
-			Text="The runtime-enabled package(s) [@(_UnoRuntimeEnabledPackage_Unresolved)] did not provide any runtime assembly for $(TargetFramework). The application would run against the reference assemblies and fail at runtime. Re-run with -v:n for the paths that were searched. See https://aka.platform.uno/UNOB0023"
+			Text="The runtime-enabled package(s) [@(_UnoRuntimeEnabledPackage_Unresolved)] did not provide any runtime assembly for $(TargetFramework). The application would run against the reference assemblies and fail at runtime. A package built for Uno Platform 6.x ships uno-runtime/&lt;tfm&gt;/skia or webassembly instead of generic or wasm and must be updated to a version built for 7.0. Re-run with -v:n for the paths that were searched. See https://aka.platform.uno/UNOB0023"
 			Condition="'@(_UnoRuntimeEnabledPackage_Unresolved)'!='' AND '$(_UnoRuntimeIsReferenceLibrary)'!='true' AND '$(UnoDisableUNOB0023Validation)'!='true' AND '$(DesignTimeBuild)'!='true'" />
 	</Target>
 
