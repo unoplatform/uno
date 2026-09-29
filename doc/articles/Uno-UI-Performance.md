@@ -160,6 +160,7 @@ You'll find below other known memory leak patterns on iOS Native:
 ## Skia Targets Specifics
 
 - On Desktop targets, it's possible to change the composition refresh rate using `FeatureConfiguration.CompositionTarget.FrameRate`. The default value is 60 (frames per second).
+- On iPhones with ProMotion displays, rendering above 60 Hz requires `CADisableMinimumFrameDurationOnPhone` in `Info.plist`, which the Uno.Sdk adds by default. See [High Refresh Rate on iPhone](xref:Uno.Features.Uno.Sdk#high-refresh-rate-on-iphone).
 - On all targets:
   - It's possible to set `DebugSettings.EnableFrameRateCounter` in `App.OnLaunched` in order to view a top-left indicator. It indicates the current frames per second, as well as the time spent rendering a composition frame, in milliseconds.
   - If the indicator does not change, this means that the UI is not refreshing.
