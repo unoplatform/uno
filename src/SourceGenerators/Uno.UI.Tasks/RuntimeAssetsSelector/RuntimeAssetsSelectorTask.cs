@@ -367,7 +367,10 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			this.Log.LogMessage($"Processing runtime-enabled package: {packageIdentity}");
 			if (GetUnoRuntimeDirectory(package) is not { } runtimeDirectory)
 			{
-				this.Log.LogMessage($"Cannot find uno-runtime in package '{packageIdentity}'.");
+				var packageBasePath = package.GetMetadata("PackageBasePath");
+				this.Log.LogMessage(
+					$"Cannot find uno-runtime in package '{packageIdentity}': neither '{Path.GetFullPath(Path.Combine(packageBasePath, "uno-runtime"))}' " +
+					$"nor '{Path.GetFullPath(Path.Combine(packageBasePath, "..", "uno-runtime"))}' exists.");
 				return;
 			}
 
