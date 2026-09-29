@@ -5,7 +5,7 @@ using Uno.UI.Tasks.RuntimeAssetsSelector;
 namespace Uno.UI.Tasks.Tests;
 
 /// <summary>
-/// Covers the selection Uno.WinRT and Uno.Foundation rely on: the assemblies come from the shared runtime
+/// Covers the selection Uno.WinRT and Uno.Foundation rely on: the assemblies come from the generic runtime
 /// folder while the WinRT ones are redirected to the implementation matching the head's platform. This is what
 /// lets a library built for a plain netX.0 call a WinRT API and still reach the platform implementation.
 /// </summary>
@@ -203,9 +203,9 @@ public class Given_RuntimeEnabledPackage
 	}
 
 	[TestMethod]
-	public void When_HeadlessHead_Then_Everything_Comes_From_The_Shared_Runtime()
+	public void When_HeadlessHead_Then_Everything_Comes_From_The_Generic_Runtime()
 	{
-		using var fixture = new PackageCacheFixture(nameof(When_HeadlessHead_Then_Everything_Comes_From_The_Shared_Runtime));
+		using var fixture = new PackageCacheFixture(nameof(When_HeadlessHead_Then_Everything_Comes_From_The_Generic_Runtime));
 
 		// A headless head is a plain netX.0 project: no target platform, but a runtime host all the same.
 		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "");

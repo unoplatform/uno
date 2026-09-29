@@ -101,7 +101,7 @@ public class Given_RuntimeAssetsSelectorTask
 		using var fixture = new PackageCacheFixture($"{nameof(When_No_Platform_Assets_Exist_Then_Plain_Assets_Are_Untouched)}_{targetPlatformIdentifier}");
 		var platformAsset = fixture.AddPackage("Sample.Lib", "1.0.0", "net10.0-android35.0", NeutralTargetFramework, ["Microsoft.UI.Xaml.UIElement"]);
 
-		// Desktop and headless heads take everything from the shared runtime folder, and still may not touch a
+		// Desktop and headless heads take everything from the generic runtime folder, and still may not touch a
 		// library that is not runtime-enabled.
 		var task = CreateTask(fixture, platformAsset, targetPlatformIdentifier);
 
