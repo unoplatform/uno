@@ -34,6 +34,15 @@
 			<Output TaskParameter="TargetOutputs" ItemName="UnoRuntimeProjectReferenceOutput" />
 		</MSBuild>
 
+		<!-- Only the generic and wasm builds are read from uno-runtime; a Reference build belongs in lib/. -->
+		<ItemGroup>
+			<_UnoRuntimeProjectReferenceOutputSkipped Include="@(UnoRuntimeProjectReferenceOutput)" Condition="'%(UnoRuntimeVariant)' != 'generic' and '%(UnoRuntimeVariant)' != 'wasm'" />
+			<UnoRuntimeProjectReferenceOutput Remove="@(_UnoRuntimeProjectReferenceOutputSkipped)" />
+		</ItemGroup>
+		<Warning
+			Text="'%(_UnoRuntimeProjectReferenceOutputSkipped.MSBuildSourceProjectFile)' is referenced through UnoRuntimeProjectReference but its UnoRuntimeVariant is '%(_UnoRuntimeProjectReferenceOutputSkipped.UnoRuntimeVariant)', so it is not packed. Only Generic and Wasm builds go under uno-runtime."
+			Condition="'@(_UnoRuntimeProjectReferenceOutputSkipped)' != ''" />
+
 		<ItemGroup>
 			<!-- Add the appropriate metadata to include those files -->
 			<UnoRuntimeProjectReferenceOutput Update="@(UnoRuntimeProjectReferenceOutput)">
