@@ -260,6 +260,48 @@ public class Given_RuntimeEnabledPackage
 	}
 
 	[TestMethod]
+	public void When_Platform_Implementation_Is_Missing_Then_UNOB0023_Names_The_Package()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_Platform_Implementation_Is_Missing_Then_UNOB0023_Names_The_Package));
+
+		// The package only ships an Android implementation, so an iOS head has nothing to redirect to.
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "ios", platformTargetFramework: AndroidTargetFramework);
+
+		task.Execute().Should().BeFalse();
+
+		var error = ((RecordingBuildEngine)task.BuildEngine).Errors.Should().ContainSingle().Subject;
+		error.Code.Should().Be("UNOB0023");
+		error.HelpLink.Should().Be("https://aka.platform.uno/UNOB0023");
+		error.Message.Should().Contain("'Uno.WinRT'").And.Contain("netX.0-ios");
+	}
+
+	[TestMethod]
+	public void When_Unresolved_Assets_Are_Not_Reported_Then_The_Selector_Does_Not_Fail()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_Unresolved_Assets_Are_Not_Reported_Then_The_Selector_Does_Not_Fail));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "ios", platformTargetFramework: AndroidTargetFramework);
+
+		// What a design-time build, or UnoDisableUNOB0023Validation, passes.
+		task.ReportUnresolvedAssets = false;
+
+		task.Execute().Should().BeTrue();
+		((RecordingBuildEngine)task.BuildEngine).Errors.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void When_Library_Variant_Is_Unknown_Then_UNOB0023_Names_UnoRuntimeVariant()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_Library_Variant_Is_Unknown_Then_UNOB0023_Names_UnoRuntimeVariant));
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeVariant: "skia");
+
+		task.Execute().Should().BeFalse();
+
+		var error = ((RecordingBuildEngine)task.BuildEngine).Errors.Should().ContainSingle().Subject;
+		error.Code.Should().Be("UNOB0023");
+		error.Message.Should().Contain("UnoRuntimeVariant 'skia'");
+	}
+
+	[TestMethod]
 	public void When_AndroidHead_Then_A_Plain_Library_Asset_Is_Untouched()
 	{
 		using var fixture = new PackageCacheFixture(nameof(When_AndroidHead_Then_A_Plain_Library_Asset_Is_Untouched));
