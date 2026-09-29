@@ -155,8 +155,10 @@ backend: `Uno.UI` compiles once and resolves its backend at run time, so no buil
 `UnoRuntimeIdentifier` stays accepted from a cross-runtime library as a deprecated spelling: `skia` maps to
 `generic`, `webassembly` to `wasm`, and UNOB0024 names the value to use instead. It is not reused for the new
 values, because packages versioned apart from Uno test it for `'Skia'` and `'WebAssembly'` — Uno.Resizetizer
-decides "is this a Skia app" from it, which is also why `Uno.Common.Desktop.targets` still sets
-`UnoRuntimeIdentifier=Skia` on desktop heads until Resizetizer reads `UnoHasRuntimeHost`.
+decides "is this a Skia app" from it, which is also why `Uno.Common.Desktop.targets` and the X11, Win32,
+macOS, FrameBuffer and Headless host props still set `UnoRuntimeIdentifier=Skia` (the hosts cover heads that
+do not use the `-desktop` target framework) until Resizetizer reads `UnoHasRuntimeHost`. The mobile and
+browser hosts never set it, so Resizetizer keeps classifying those heads the way it did in 6.x.
 
 **The cross-runtime model stays.** An Uno.Sdk library can multi-target `net10.0-desktop` and
 `net10.0-browserwasm` instead, but those target platforms are defined by the Uno.Sdk: a library built with

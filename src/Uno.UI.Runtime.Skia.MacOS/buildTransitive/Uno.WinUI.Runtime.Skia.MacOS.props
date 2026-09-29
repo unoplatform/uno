@@ -4,6 +4,9 @@
 		<!-- A concrete Uno runtime host is referenced, so this project runs the runtime implementations
 		     rather than the reference facade in lib/. It does not name a drawing backend. -->
 		<UnoHasRuntimeHost>true</UnoHasRuntimeHost>
+		<!-- Uno.Resizetizer still detects a Skia app from this; see Uno.Common.Desktop.targets. -->
+		<_UnoRuntimeIdentifierResizetizerShim Condition="'$(UnoRuntimeIdentifier)'==''">true</_UnoRuntimeIdentifierResizetizerShim>
+		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)'==''">Skia</UnoRuntimeIdentifier>
 		<SupportsFontManifest>true</SupportsFontManifest>
 	</PropertyGroup>
 
