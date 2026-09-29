@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace WinRT.Interop
 {
-#if false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public static partial class InitializeWithWindow

@@ -394,14 +394,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
-			// WinRT.Interop.WindowNative / InitializeWithWindow: the generated home per the WinRT.Runtime
-			// assembly is Uno.Foundation, but the hand-written implementations depend on
-			// Microsoft.UI.Xaml.Window (Uno.UI). Relocating requires an ApiExtensibility seam.
-			else if (@namespace == "WinRT.Interop"
-				&& type.Name is "WindowNative" or "InitializeWithWindow")
-			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
-			}
 
 			if (type.Name.Contains("AsyncAction", StringComparison.Ordinal) ||
 				type.Name.Contains("AsyncOperation", StringComparison.Ordinal) ||
