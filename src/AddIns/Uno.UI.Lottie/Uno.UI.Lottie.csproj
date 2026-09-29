@@ -12,7 +12,7 @@
 		<AssemblyName>Uno.UI.Lottie</AssemblyName>
 		<RootNamespace>Uno.UI.Lottie</RootNamespace>
 
-		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<Nullable>enable</Nullable>
 

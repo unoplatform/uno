@@ -14,7 +14,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeFlavor>Wasm</UnoRuntimeFlavor>
+		<UnoRuntimeVariant>Wasm</UnoRuntimeVariant>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>

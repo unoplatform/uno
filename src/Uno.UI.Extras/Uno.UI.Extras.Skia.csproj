@@ -13,7 +13,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 
 		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>

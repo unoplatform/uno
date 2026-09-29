@@ -350,13 +350,13 @@ Consequences worth knowing about:
 #### Cross-runtime libraries
 
 A cross-runtime library — one that packs a desktop and a browser build of itself into `uno-runtime/` — now
-declares which build each project is with `UnoRuntimeFlavor`, and the folders are renamed to match:
+declares which build each project is with `UnoRuntimeVariant`, and the folders are renamed to match:
 
 | Before 7.0 | 7.0 | Folder |
 |---|---|---|
-| `<UnoRuntimeIdentifier>skia</UnoRuntimeIdentifier>` | `<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>` | `uno-runtime/<tfm>/generic` (was `skia`) |
-| `<UnoRuntimeIdentifier>webassembly</UnoRuntimeIdentifier>` | `<UnoRuntimeFlavor>Wasm</UnoRuntimeFlavor>` | `uno-runtime/<tfm>/wasm` (was `webassembly`) |
-| `<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>` | `<UnoRuntimeFlavor>Reference</UnoRuntimeFlavor>` | none — `lib/<tfm>` |
+| `<UnoRuntimeIdentifier>skia</UnoRuntimeIdentifier>` | `<UnoRuntimeVariant>Generic</UnoRuntimeVariant>` | `uno-runtime/<tfm>/generic` (was `skia`) |
+| `<UnoRuntimeIdentifier>webassembly</UnoRuntimeIdentifier>` | `<UnoRuntimeVariant>Wasm</UnoRuntimeVariant>` | `uno-runtime/<tfm>/wasm` (was `webassembly`) |
+| `<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>` | `<UnoRuntimeVariant>Reference</UnoRuntimeVariant>` | none — `lib/<tfm>` |
 
 The old property still works and is reported as UNOB0024 with the value to use instead. Such a library has to
 be rebuilt against 7.0 anyway; a package still in the old layout is reported as
@@ -1230,7 +1230,7 @@ be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
 17. If you use `Window.SystemBackdrop`, make your own root `Page`/panel transparent — the
    framework no longer does it for you.
 18. Remove any `UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` or `UnoWinRTRuntimeIdentifier` property from
-   application heads, and replace `UnoRuntimeIdentifier` with `UnoRuntimeFlavor` in cross-runtime libraries —
+   application heads, and replace `UnoRuntimeIdentifier` with `UnoRuntimeVariant` in cross-runtime libraries —
    UNOB0024 points them out.
 19. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.

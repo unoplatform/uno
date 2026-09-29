@@ -14,7 +14,7 @@
 		<PackageId>Uno.WinUI.MediaPlayer.Skia.X11</PackageId>
 		<Description>This package provides support for MediaPlayerElement for Uno Platform Skia+X11 apps</Description>
 
-		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
     </PropertyGroup>

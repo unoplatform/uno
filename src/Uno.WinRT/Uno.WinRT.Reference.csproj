@@ -16,7 +16,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeFlavor>Reference</UnoRuntimeFlavor>
+		<UnoRuntimeVariant>Reference</UnoRuntimeVariant>
 		
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>uno.winrt</CommonOverridePackageId>

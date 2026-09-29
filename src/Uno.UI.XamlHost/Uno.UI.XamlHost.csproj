@@ -19,7 +19,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 
@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<!--
-		UnoRuntimeFlavor is Generic, so _UnoOverrideNuget skips this project; the Reference head
+		UnoRuntimeVariant is Generic, so _UnoOverrideNuget skips this project; the Reference head
 		that used to do the copy is gone. Uno.WinUI.XamlHost ships lib/ only.
 	-->
 	<Target Name="_UnoUIXamlHostOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

@@ -8,7 +8,7 @@
 	<PropertyGroup>
 		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;__UNO__;UNO_REFERENCE_API</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
-		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 	</PropertyGroup>
 
 	<PropertyGroup>

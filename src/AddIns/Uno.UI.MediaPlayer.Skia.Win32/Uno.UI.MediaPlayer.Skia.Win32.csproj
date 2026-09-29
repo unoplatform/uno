@@ -15,7 +15,7 @@
 
 		<DefineConstants>$(DefineConstants);IS_MPE_WIN32</DefineConstants>
 
-		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 	</PropertyGroup>

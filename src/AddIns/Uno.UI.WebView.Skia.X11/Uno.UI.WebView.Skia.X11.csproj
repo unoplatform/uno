@@ -19,7 +19,7 @@
 		  -->
 		<NoWarn>$(NoWarn);NU5104</NoWarn>
 
-		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 

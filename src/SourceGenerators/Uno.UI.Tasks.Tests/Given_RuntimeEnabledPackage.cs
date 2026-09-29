@@ -32,7 +32,7 @@ public class Given_RuntimeEnabledPackage
 		PackageCacheFixture fixture,
 		string targetPlatformIdentifier,
 		string platformTargetFramework = AndroidTargetFramework,
-		string libraryRuntimeFlavor = "")
+		string libraryRuntimeVariant = "")
 	{
 		var packageBasePath = fixture.AddRuntimeEnabledPackage(
 			"Uno.WinRT",
@@ -52,7 +52,7 @@ public class Given_RuntimeEnabledPackage
 			BuildEngine = new RecordingBuildEngine(),
 			UnoRuntimeEnabledPackage = [PackageCacheFixture.Item("Uno.WinRT", ("PackageBasePath", packageBasePath))],
 			TargetPlatformIdentifier = targetPlatformIdentifier,
-			LibraryRuntimeFlavor = libraryRuntimeFlavor,
+			LibraryRuntimeVariant = libraryRuntimeVariant,
 			TargetFrameworkVersion = "v10.0",
 			ResolvedCompileFileDefinitionsInput =
 			[
@@ -141,15 +141,15 @@ public class Given_RuntimeEnabledPackage
 	}
 
 	/// <summary>
-	/// A no-host cross-runtime library (UnoRuntimeFlavor=Wasm, no head) has no
-	/// TargetPlatformIdentifier to derive a flavor from - it is empty for both generic and wasm library
-	/// builds alike. LibraryRuntimeFlavor is what tells the task apart, for every asset, not just WinRT ones.
+	/// A no-host cross-runtime library (UnoRuntimeVariant=Wasm, no head) has no
+	/// TargetPlatformIdentifier to derive a variant from - it is empty for both generic and wasm library
+	/// builds alike. LibraryRuntimeVariant is what tells the task apart, for every asset, not just WinRT ones.
 	/// </summary>
 	[TestMethod]
 	public void When_WasmLibrary_Then_Everything_Comes_From_The_Wasm_Runtime()
 	{
 		using var fixture = new PackageCacheFixture(nameof(When_WasmLibrary_Then_Everything_Comes_From_The_Wasm_Runtime));
-		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeFlavor: "wasm");
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeVariant: "wasm");
 
 		task.Execute().Should().BeTrue();
 
@@ -159,7 +159,7 @@ public class Given_RuntimeEnabledPackage
 		{
 			added.Should().Contain(
 				path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/wasm/{assembly}.dll", StringComparison.Ordinal),
-				$"{assembly} must come from the wasm folder for a wasm-flavored library");
+				$"{assembly} must come from the wasm folder for a wasm-variant library");
 		}
 
 		added.Should().NotContain(path => path.Contains("/generic/", StringComparison.Ordinal));
@@ -169,7 +169,7 @@ public class Given_RuntimeEnabledPackage
 	public void When_GenericLibrary_Then_Everything_Comes_From_The_Generic_Runtime()
 	{
 		using var fixture = new PackageCacheFixture(nameof(When_GenericLibrary_Then_Everything_Comes_From_The_Generic_Runtime));
-		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeFlavor: "generic");
+		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "", libraryRuntimeVariant: "generic");
 
 		task.Execute().Should().BeTrue();
 

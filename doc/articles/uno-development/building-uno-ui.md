@@ -98,7 +98,7 @@ Here are some tips when building the Uno solution and failures happen:
 
 ### Building the reference assemblies for the WinRT layer
 
-`Uno.WinRT`, `Uno.Foundation` and `Uno.UI.Dispatching` use a bait-and-switch technique: the `netX.0` assemblies found in the `lib` folder of their NuGet packages (called reference assemblies) are only used for building applications. At the end of a head build, they are replaced by public API compatible assemblies located in the `uno-runtime\[target-framework]\[flavor]` folder, where the flavor is `generic` for everything a head deploys except the WinRT assemblies of a browser head, which come from `wasm`. The folders are the `UnoRuntimeFlavor` values of the projects that produce them, lowercased — neither names a drawing backend.
+`Uno.WinRT`, `Uno.Foundation` and `Uno.UI.Dispatching` use a bait-and-switch technique: the `netX.0` assemblies found in the `lib` folder of their NuGet packages (called reference assemblies) are only used for building applications. At the end of a head build, they are replaced by public API compatible assemblies located in the `uno-runtime\[target-framework]\[variant]` folder, where the variant is `generic` for everything a head deploys except the WinRT assemblies of a browser head, which come from `wasm`. The folders are the `UnoRuntimeVariant` values of the projects that produce them, lowercased — neither names a drawing backend.
 
 Which of them a head gets is decided by its target framework: a mobile head takes the WinRT assemblies from the package's own `lib\netX.0-[android|ios|tvos]` folder instead, and compiles against them.
 

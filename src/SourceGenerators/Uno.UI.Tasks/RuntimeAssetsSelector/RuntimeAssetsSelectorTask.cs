@@ -40,14 +40,14 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		public string TargetPlatformIdentifier { get; set; } = "";
 
 		/// <summary>
-		/// The <c>UnoRuntimeFlavor</c> of a cross-runtime library build (no runtime host): "generic" or "wasm".
+		/// The <c>UnoRuntimeVariant</c> of a cross-runtime library build (no runtime host): "generic" or "wasm".
 		/// A library has no per-platform head to derive it from, so it names the shared folder directly.
 		/// Empty for an application head, which derives it from <see cref="TargetPlatformIdentifier"/>.
 		/// </summary>
-		public string LibraryRuntimeFlavor { get; set; } = "";
+		public string LibraryRuntimeVariant { get; set; } = "";
 
 		/// <summary>
-		/// The <c>UnoRuntimeFlavor</c> values, lowercased. "generic" holds the build every target framework drawn
+		/// The <c>UnoRuntimeVariant</c> values, lowercased. "generic" holds the build every target framework drawn
 		/// by Uno shares, and "wasm" the browser's WinRT implementation. A folder miss is not an error here, so
 		/// ReplaceUnoRuntime reports it as UNOB0023.
 		/// </summary>
@@ -120,11 +120,11 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				WinRTSource winRTSource;
 				string sharedRuntimeFolder = SharedRuntimeFolder;
 
-				if (!string.IsNullOrEmpty(LibraryRuntimeFlavor))
+				if (!string.IsNullOrEmpty(LibraryRuntimeVariant))
 				{
-					// Library-authoring contract: there's no per-platform head here, so the flavor names
+					// Library-authoring contract: there's no per-platform head here, so the variant names
 					// the shared folder directly instead of being derived from TargetPlatformIdentifier.
-					switch (LibraryRuntimeFlavor.ToLower(CultureInfo.InvariantCulture))
+					switch (LibraryRuntimeVariant.ToLower(CultureInfo.InvariantCulture))
 					{
 						case WasmRuntimeFolder:
 							winRTSource = WinRTSource.WasmFolder;
@@ -136,7 +136,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 							break;
 
 						default:
-							this.Log.LogError($"The value '{LibraryRuntimeFlavor}' is not expected for 'LibraryRuntimeFlavor'");
+							this.Log.LogError($"The value '{LibraryRuntimeVariant}' is not expected for 'LibraryRuntimeVariant'");
 							return false;
 					}
 				}
@@ -356,7 +356,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			var platformDirectory = GetPlatformSpecificDirectoryForRuntimeEnabled(runtimeDirectory, targetFrameworkVersion, sharedRuntimeFolder);
 			if (platformDirectory is null)
 			{
-				// This can happen for "legacy convention" (uno-runtime/<flavor>) which is handled by MSBuild logic in ReplaceUnoRuntime
+				// This can happen for "legacy convention" (uno-runtime/<variant>) which is handled by MSBuild logic in ReplaceUnoRuntime
 				this.Log.LogMessage("Cannot find platform-specific directory for runtime-enabled package");
 				this.Log.LogMessage($"\tThe uno-runtime directory: {runtimeDirectory}");
 				this.Log.LogMessage($"\tThe TFM version: {targetFrameworkVersion}");

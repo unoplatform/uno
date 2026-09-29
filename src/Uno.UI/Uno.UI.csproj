@@ -17,7 +17,7 @@
 		<AssemblyName>Uno.UI</AssemblyName>
 		<IsAotCompatible>true</IsAotCompatible>
 
-		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 
 		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>

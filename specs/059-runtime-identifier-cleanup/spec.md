@@ -69,9 +69,9 @@ carried, and it is now asserted by a test.
 
 ## 4. Two disciplines this depended on
 
-### 4.1 The folder is the flavour
+### 4.1 The folder is the variant
 
-The `uno-runtime/<tfm>/<folder>` names are the `UnoRuntimeFlavor` values lowercased: `generic` and `wasm`,
+The `uno-runtime/<tfm>/<folder>` names are the `UnoRuntimeVariant` values lowercased: `generic` and `wasm`,
 renamed in 7.0 from `skia` and `webassembly`. 7.0 breaks binary compatibility with every 6.x library anyway,
 and nothing versioned apart from Uno reads the folders — only our nuspecs, the selector task and the packing
 targets, all of which ship together.
@@ -114,7 +114,7 @@ exercised the do-nothing path and would have stayed green through a change that 
   described them, so who sets them is unknown, and silently dropping their effect is the outcome to prevent.
   It is gated on `UnoHasRuntimeHost`, not `IsUnoHead` — the latter is set only by the Uno.Sdk, and a
   hand-rolled head is exactly the shape likely to still carry these.
-- **A cross-runtime library keeps runtime replacement.** Such a library sets `UnoRuntimeFlavor` (or the
+- **A cross-runtime library keeps runtime replacement.** Such a library sets `UnoRuntimeVariant` (or the
   deprecated `UnoRuntimeIdentifier`) without referencing a runtime host, so `ReplaceUnoRuntime` is gated on
   either signal. Gating on the host alone would
   have left the library's own output on the reference facades.
@@ -133,17 +133,17 @@ exercised the do-nothing path and would have stayed green through a change that 
   frameworks, and whether `SkiaSharp.Skottie` and `Svg.Skia` are usable on `browserwasm` has to be
   established first. Separate change.
 
-## 6. One name: `UnoRuntimeFlavor`
+## 6. One name: `UnoRuntimeVariant`
 
-`UnoRuntimeFlavor` names **which build of a multi-flavour project this is** — nothing more. It is not a .NET
+`UnoRuntimeVariant` names **which build of a multi-variant project this is** — nothing more. It is not a .NET
 `RuntimeIdentifier` (a browser head sets `RuntimeIdentifier=browser-wasm` right next to it) and not a drawing
 backend: `Uno.UI` compiles once and resolves its backend at run time, so no build-time value can name one.
-`Skia` became `Generic` because that flavour is the build every drawn-by-Uno target framework shares;
+`Skia` became `Generic` because that variant is the build every drawn-by-Uno target framework shares;
 `WebAssembly` became `Wasm`, matching `*.wasm.cs`, `wasm:` and `__WASM__`.
 
 | Values | `Generic`, `Wasm`, `Reference` |
 |---|---|
-| Set by | the multi-flavour and single-flavour projects under `src/`, and third-party cross-runtime libraries |
+| Set by | the multi-variant and single-variant projects under `src/`, and third-party cross-runtime libraries |
 | Read by | `src/Uno.CrossTargetting.targets` (in-repo symbols and suffixes) and `build/nuget/uno.winui.*.targets` (packing and replacement) |
 | Folder | the value lowercased: `uno-runtime/<tfm>/generic`, `uno-runtime/<tfm>/wasm` |
 
@@ -164,7 +164,7 @@ at least one is published (`SkiaSharp.Views.Uno.WinUI`).
 - **The third-party wasm enumeration defect.** On a browser head, a third-party cross-runtime package's
   assembly is taken from the shared folder rather than its browser build. Real, but a behaviour change for
   shipped packages and not what this work is about.
-- **`__SKIA__`, `HAS_UNO_SKIA`, `*.skia.cs`.** Spec 056 owns these. `UnoRuntimeFlavor=Generic` now defines
+- **`__SKIA__`, `HAS_UNO_SKIA`, `*.skia.cs`.** Spec 056 owns these. `UnoRuntimeVariant=Generic` now defines
   `__SKIA__` and selects `*.skia.cs`, so the symbol and the suffix are the last in-repo spellings of `skia` on
   this axis. Renaming them is mechanical but touches thousands of `#if` sites, which is why it is its own
   change rather than a rider on this one.
