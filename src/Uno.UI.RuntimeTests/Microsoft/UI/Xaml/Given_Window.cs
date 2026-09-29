@@ -56,6 +56,11 @@ public class Given_Window
 		{
 			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
 		}
+
+		if (global::System.OperatingSystem.IsAndroid())
+		{
+			Assert.Inconclusive("On Android a secondary window is a task of its own, which moves the test runner to the background.");
+		}
 	}
 
 #if HAS_UNO
@@ -91,7 +96,10 @@ public class Given_Window
 	public void When_Create_Multiple_Windows()
 	{
 		AssertIsFullFledgedApp();
-		AssertSupportsMultipleWindows();
+		if (!SupportsMultipleWindows())
+		{
+			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+		}
 
 		var startingNumberOfWindows = ApplicationHelper.Windows.Count;
 

@@ -743,7 +743,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20842")]
 		// iOS: times out intermittently, https://github.com/unoplatform/uno/issues/25104
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaIOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.SkiaAndroid)]
 		public async Task When_Window_Resized()
 		{
 			if (!Uno.UI.Xaml.Controls.NativeWindowFactory.SupportsMultipleWindows)
