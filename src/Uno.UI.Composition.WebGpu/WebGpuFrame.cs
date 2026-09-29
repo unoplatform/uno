@@ -47,33 +47,90 @@ internal sealed unsafe partial class WebGpuFrame
 	private static int _passDepth;
 	internal static bool EmitStats => _emitStats;
 
-	// One frame: the main list under its root matrix, the overlay (already in device pixels) on top, one submit.
-	internal void Run(List<WebGpuCommand> cmds, in Matrix3x2 m, List<WebGpuCommand> overlay, WColor? clear)
+	/// <summary>One replay a present asked for: the recording, its root matrix, the clear in effect, and the device
+	/// rect it is confined to (null for the whole target).</summary>
+	internal readonly record struct ReplayEntry(List<WebGpuCommand> Commands, Matrix3x2 Root, WColor? Clear, Vector4? Damage);
+
+	// One frame from a single command list under its root matrix.
+	internal void Run(List<WebGpuCommand> cmds, in Matrix3x2 m, WColor? clear)
+		=> Run(new[] { new ReplayEntry(cmds, m, clear, null) });
+
+	/// <summary>
+	/// One frame from everything the present asked for, in order, each entry under its own clip.
+	/// </summary>
+	/// <remarks>
+	/// Each entry gets its own pass AND its own submit. A recording's site block lives in the slab slot the
+	/// RECORDING owns, and the slabs are flushed once per submit -- so two replays sharing a submit would both read
+	/// whichever walk wrote last. One submit each keeps them independent whatever they carry.
+	/// </remarks>
+	internal void Run(IReadOnlyList<ReplayEntry> replays)
 	{
 		long t0 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
-		Begin();
-		// Shapes queued by last frame's walk. Baked here, before the frame's own passes: opening one from inside
-		// the walk recurses through EncodePass.
-		Effects.FlushShapeBakes();
+		long t1 = 0;
 		try
 		{
-			RenderInto(cmds, m, ClipData.None, Target, clear, overlay: overlay, depth: !WebGpuDevice.NoDepthOcclusion);
+			// Partial repaint needs EVERY replay bounded: one unclipped replay repaints the whole target, so the
+			// pass clears through its load op as usual and there is nothing to preserve.
+			var partial = replays.Count > 0;
+			for (var i = 0; i < replays.Count && partial; i++) { partial = replays[i].Damage is not null; }
+
+			for (var i = 0; i < replays.Count; i++)
+			{
+				Begin();
+				try
+				{
+					// Shapes queued by last frame's walk. Baked before the frame's own passes: opening one from
+					// inside the walk recurses through EncodePass.
+					if (i == 0) { Effects.FlushShapeBakes(); }
+
+					var replay = replays[i];
+					// On a partial repaint the load op cannot clear (it would wipe the whole target), so each rect
+					// is cleared by drawing before the pass that redraws it.
+					if (partial && replay.Clear is { } bg) { ClearRect(Target, bg, replay.Damage.Value); }
+					// Only the first pass of a whole repaint may clear through its load op; a later one has to load,
+					// or it would wipe what the earlier replays just drew.
+					RenderInto(replay.Commands, replay.Root, ClipData.None, Target,
+						partial ? null : replay.Clear, load: partial || i > 0,
+						depth: !WebGpuDevice.NoDepthOcclusion, bound: replay.Damage);
+				}
+				finally
+				{
+					if (_emitStats) { t1 = System.Diagnostics.Stopwatch.GetTimestamp(); }
+					End();
+				}
+			}
 		}
 		finally
 		{
-			long t1 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
-			End();
 			// Same cadence as the stats line, so UNO_WEBGPU_STATS_EVERY=1 gives a per-FRAME phase breakdown rather
 			// than a 60-frame average - the only way to see a distribution instead of a mean.
 			if (_emitStats && (_frameStatsCounter++ % _emitStatsEvery) == 0)
 			{
 				long t2 = System.Diagnostics.Stopwatch.GetTimestamp();
 				double toMs = 1000.0 / System.Diagnostics.Stopwatch.Frequency;
-				System.Console.WriteLine($"[webgpu-frame] cmds={cmds.Count} renderInto={(t1 - t0) * toMs:F1}ms finishSubmit={(t2 - t1) * toMs:F1}ms opsBuild={OpsBuildTicks * toMs:F1}ms (walk={WalkTicks * toMs:F1} rebuild={RebuildTicks * toMs:F1} stamp={StampTicks * toMs:F1} bake={BakeTicks * toMs:F1} upload={UploadTicks * toMs:F1}) encode={EncodeTicks * toMs:F1}ms");
+				System.Console.WriteLine($"[webgpu-frame] replays={replays.Count} damage={DescribeDamage(replays)} cmds={TotalCommands(replays)} renderInto={(t1 - t0) * toMs:F1}ms finishSubmit={(t2 - t1) * toMs:F1}ms opsBuild={OpsBuildTicks * toMs:F1}ms (walk={WalkTicks * toMs:F1} rebuild={RebuildTicks * toMs:F1} stamp={StampTicks * toMs:F1} bake={BakeTicks * toMs:F1} upload={UploadTicks * toMs:F1}) encode={EncodeTicks * toMs:F1}ms");
 				OpsBuildTicks = 0; EncodeTicks = 0; RebuildTicks = 0; StampTicks = 0; BakeTicks = 0;
 				WalkTicks = 0; UploadTicks = 0;
 			}
 		}
+	}
+
+	private static int TotalCommands(IReadOnlyList<ReplayEntry> replays)
+	{
+		var total = 0;
+		for (var i = 0; i < replays.Count; i++) { total += replays[i].Commands.Count; }
+		return total;
+	}
+
+	private static string DescribeDamage(IReadOnlyList<ReplayEntry> replays)
+	{
+		var text = "";
+		for (var i = 0; i < replays.Count; i++)
+		{
+			if (replays[i].Damage is not { } d) { return "whole"; }
+			text += (i > 0 ? "+" : "") + $"{d.Z - d.X:F0}x{d.W - d.Y:F0}";
+		}
+		return text;
 	}
 
 	/// <summary>Opens the frame's command encoder; every pass, bake and blur of the frame encodes into it.</summary>
@@ -140,6 +197,40 @@ internal sealed unsafe partial class WebGpuFrame
 		int r = (int)MathF.Min(limW, MathF.Ceiling((clip.Z - _basisOx) / _basisScale)); int b = (int)MathF.Min(limH, MathF.Ceiling((clip.W - _basisOy) / _basisScale));
 		x = (int)MathF.Min(x, limW); y = (int)MathF.Min(y, limH);
 		w = r - x; h = b - y; return w > 0 && h > 0;
+	}
+
+	/// <summary>Clears <paramref name="deviceRect"/>, leaving the rest of the target untouched.</summary>
+	/// <remarks>
+	/// A render pass's load-op clear always covers the whole attachment, which on a partial repaint would wipe the
+	/// pixels the repaint relies on. Clearing by drawing is the only way to bound it: one replace-blended fullscreen
+	/// triangle under a scissor writes the colour and its alpha exactly as the load-op clear would.
+	/// </remarks>
+	private void ClearRect(WebGpuRenderSurface target, WColor color, Vector4 deviceRect)
+	{
+		// The target holds premultiplied colour (every colour pipeline blends into it that way), so the clear does too.
+		var a = color.A / 255f;
+		var rgba = stackalloc float[4] { color.R / 255f * a, color.G / 255f * a, color.B / 255f * a, a };
+		var buf = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
+		wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)rgba, 16);
+		var entry = new WGPUBindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 16 };
+		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ClearRectBgl, EntryCount = 1, Entries = &entry };
+		var bg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
+
+		var x = (int)MathF.Max(0f, MathF.Floor(deviceRect.X));
+		var y = (int)MathF.Max(0f, MathF.Floor(deviceRect.Y));
+		var right = (int)MathF.Min(target.Width, MathF.Ceiling(deviceRect.Z));
+		var bottom = (int)MathF.Min(target.Height, MathF.Ceiling(deviceRect.W));
+		if (right <= x || bottom <= y) { return; }
+
+		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = target.View, LoadOp = WGPULoadOp.Load, StoreOp = WGPUStoreOp.Store };
+		var rpd = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca };
+		var pass = wgpuCommandEncoderBeginRenderPass(Encoder, &rpd);
+		wgpuRenderPassEncoderSetScissorRect(pass, (uint)x, (uint)y, (uint)(right - x), (uint)(bottom - y));
+		wgpuRenderPassEncoderSetPipeline(pass, _d.ClearRectPipe);
+		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
+		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		wgpuRenderPassEncoderEnd(pass);
+		wgpuRenderPassEncoderRelease(pass);
 	}
 
 	// The pass projection bind group (group 0 of every colour draw): the basis the vertex shader projects pixels by.
@@ -1104,7 +1195,7 @@ internal sealed unsafe partial class WebGpuFrame
 		/// <summary>The occlusion prepass' quads: 6 verts of (x, y, depth) per opaque cover.</summary>
 		public float[] Prepass;
 		public int PrepassVerts;
-		public Vector4 Bound;   // device rect every scissor stays within: a sheet slot; the whole target otherwise
+		public Vector4 Bound;   // device rect every scissor stays within: a sheet slot, a damage region, else all of it
 		public nint SolidBuf, RrectBuf, GradBuf, QuadBuf;
 		public nuint SolidBufBytes, RrectBufBytes, GradBufBytes, QuadBufBytes;
 		public IntPtr PassBg;
@@ -1119,9 +1210,10 @@ internal sealed unsafe partial class WebGpuFrame
 	// basisW/basisH default (0) to the target's own size at origin (basisOx,basisOy) — the whole-target mapping the
 	// window and full-size layers use. A size-to-content layer passes its device sub-rect.
 	internal void RenderInto(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, WColor? clear, bool load = false,
-		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f, List<WebGpuCommand> overlay = null, bool depth = false)
+		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f, List<WebGpuCommand> overlay = null, bool depth = false,
+		Vector4? bound = null)
 	{
-		var build = BuildPass(cmds, m, outer, target, basisOx, basisOy, basisW, basisH, _unbounded, overlay);
+		var build = BuildPass(cmds, m, outer, target, basisOx, basisOy, basisW, basisH, bound ?? _unbounded, overlay);
 		_singleBuild[0] = build;
 		EncodePass(target, clear, load, _singleBuild, depth);
 	}
@@ -1246,11 +1338,18 @@ internal sealed unsafe partial class WebGpuFrame
 			{
 				float ps = b.BasisScale <= 0f ? 1f : b.BasisScale;
 				var pv = MakeBuffer(b.Prepass);
-				pst.Enc.Pipe(_d.DepthPrepassPipe);
-				pst.Enc.Bg(0, b.PassBg);
-				pst.Enc.Scissor(0, 0, (int)(b.BasisW / ps), (int)(b.BasisH / ps));
-				pst.Enc.Vb(pv, 0, (nuint)(b.Prepass.Length * sizeof(float)));
-				pst.Enc.Draw((uint)b.PrepassVerts, 0);
+				// The prepass only feeds the occlusion test for this build's own draws, which never leave its bound,
+				// so on a partial repaint it covers the dirty rect rather than the surface.
+				int px = 0, py = 0, pw = (int)(b.BasisW / ps), ph = (int)(b.BasisH / ps);
+				var boundedPrepass = _bound.X > float.MinValue;
+				if (!boundedPrepass || TryScissor(_bound, out px, out py, out pw, out ph))
+				{
+					pst.Enc.Pipe(_d.DepthPrepassPipe);
+					pst.Enc.Bg(0, b.PassBg);
+					pst.Enc.Scissor(px, py, pw, ph);
+					pst.Enc.Vb(pv, 0, (nuint)(b.Prepass.Length * sizeof(float)));
+					pst.Enc.Draw((uint)b.PrepassVerts, 0);
+				}
 			}
 			EncodeOps(0, b.Ops.Count, ref pst);
 			pass = pst.Pass;   // a backdrop segment reopens the pass

@@ -43,8 +43,11 @@ public partial class Visual
 		}
 	}
 
-	internal void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage, bool clipChanged)
+
+	internal void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage, bool clipChanged, Rect clipRect)
 	{
+		try
+		{
 		if (damage is null)
 		{
 			return;
@@ -55,11 +58,10 @@ public partial class Visual
 
 		var shadowSilhouetteChanged = ShadowState is not null && _subtreeChangedThisFrame;
 
-		// The clip in effect for this visual's own content, in root coordinates. Rect-only: damage only ever
-		// consumes clip BOUNDS, and during a scroll every visible visual reaches this point every frame — a
-		// geometry-based total-clip walk (allocations + polygon booleans) per moved visual is pure overhead.
-		// Non-rect clips contribute their bounds (or nothing when unbounded), which only widens damage — safe.
-		var clipRect = GetTotalClipBoundsRect();
+		// The clip in effect for this visual's own content, in root coordinates, threaded down the walk by the
+		// caller. It used to be recomputed here by walking every ancestor, which is O(depth) per visual per frame
+		// — on a deep tree during a scroll that was tens of thousands of transforms a frame for a value the
+		// parent already knew.
 
 		// The accumulated clip can grow or shrink while this visual's own content and transform stay identical
 		// (an ancestor re-clipping to a new size), revealing or hiding part of it, and nothing else would report
@@ -92,33 +94,35 @@ public partial class Visual
 			damage.UnionRect(_lastRenderBounds);
 			_hasLastRenderBounds = false;
 		}
+		}
+		finally
+		{
+		}
 	}
 
 	/// <summary>Root-space rect bounds of the clips in effect for this visual's own content: its own and its
 	/// ancestors' rect-shaped clips intersected (see <see cref="GetLocalCullClipBounds"/>); non-rect clips
 	/// contribute nothing, which only widens the result.</summary>
-	private Rect GetTotalClipBoundsRect()
+	/// <summary>
+	/// Narrows the clip bounds inherited from the parent by this visual's own rect-shaped clip, in root
+	/// coordinates. Threading this down the render walk keeps it O(1) per visual; recomputing it bottom-up
+	/// costs O(depth) per visual per frame for a value the parent already holds.
+	/// </summary>
+	private Rect NarrowClipBounds(Rect inherited)
 	{
-		var rect = InfiniteClipRect;
-		for (var visual = this; visual is not null; visual = visual.Parent as Visual)
+		if (GetLocalCullClipBounds() is not { } localClip)
 		{
-			if (visual.GetLocalCullClipBounds() is { } localClip)
-			{
-				// A clip whose projection is unbounded cannot narrow anything; skipping it only widens the result.
-				if (!localClip.TryTransformBounds(visual.TotalMatrix, out var clipInRoot))
-				{
-					continue;
-				}
-
-				rect = Intersect(rect, clipInRoot);
-				if (IsRectEmpty(rect))
-				{
-					return default;
-				}
-			}
+			return inherited;
 		}
 
-		return rect;
+		// A clip whose projection is unbounded cannot narrow anything; skipping it only widens the result.
+		if (!localClip.TryTransformBounds(TotalMatrix, out var clipInRoot))
+		{
+			return inherited;
+		}
+
+		var narrowed = Intersect(inherited, clipInRoot);
+		return IsRectEmpty(narrowed) ? default : narrowed;
 	}
 
 	private bool TryGetPaintDamageRegion(Rect clipRect, out Rect bounds)

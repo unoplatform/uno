@@ -40,6 +40,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public IntPtr ColorFuncBgl;
 	public IntPtr EffectNoise;          // procedural WhiteNoise generator (no input)
 	public IntPtr EffectNoiseBgl;
+	public IntPtr ClearRectPipe;        // solid fill under a scissor: the damaged rect's clear on a partial repaint
+	public IntPtr ClearRectBgl;
 	public IntPtr DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public IntPtr RampTex, RampView;        // one row per gradient: its colour ramp sampled by t (see RampRow)
 	public IntPtr DummyClipMore;            // one-entry placeholder for the clip overflow binding when a draw has four clips or fewer
@@ -498,6 +500,9 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		ColorFuncBgl = wgpuRenderPipelineGetBindGroupLayout(ColorFunc, 0);
 		EffectNoise = Pipeline(Module(EffectNoiseWgsl), IntPtr.Zero, &replace, ColorFormat);
 		EffectNoiseBgl = wgpuRenderPipelineGetBindGroupLayout(EffectNoise, 0);
+		// Replace, so the fill writes the colour and its alpha exactly as a load-op clear would.
+		ClearRectPipe = Pipeline(Module(ClearRectWgsl), IntPtr.Zero, &replace, ColorFormat);
+		ClearRectBgl = wgpuRenderPipelineGetBindGroupLayout(ClearRectPipe, 0);
 
 		var sd = new WGPUSamplerDescriptor { AddressModeU = WGPUAddressMode.ClampToEdge, AddressModeV = WGPUAddressMode.ClampToEdge, MagFilter = WGPUFilterMode.Linear, MinFilter = WGPUFilterMode.Linear, MipmapFilter = WGPUMipmapFilterMode.Linear, MaxAnisotropy = 1 };
 		Smp = wgpuDeviceCreateSampler(Dev, &sd);

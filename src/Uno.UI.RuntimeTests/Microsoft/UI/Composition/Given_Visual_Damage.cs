@@ -556,12 +556,26 @@ public class Given_Visual_Damage
 		recording.Finish()?.Dispose();
 	}
 
-	// The region accumulates rects; detaching materialises them into the single geometry the frame is
-	// actually clipped to, which is what these assertions inspect.
+	// The region accumulates rects and hands them back as rects (the present clips with ClipRect per rect).
+	// These assertions are written against a geometry, so the rects are materialised into one here — in the
+	// test only; the render path never builds it.
 	private static IGeometry SnapshotDamage(DamageRegion damage, float frameSize = 200)
 	{
 		damage.ClampTo(new Rect(0, 0, frameSize, frameSize));
-		return damage.Detach(1f) ?? GeometryFactory.Current.CreateRectangleGeometry(default);
+		var rects = damage.Detach(1f);
+		if (rects is null || rects.Length == 0)
+		{
+			return GeometryFactory.Current.CreateRectangleGeometry(default);
+		}
+
+		var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
+		builder.FillRule = GeometryFillRule.NonZero;
+		foreach (var r in rects)
+		{
+			builder.AddRectangle(r);
+		}
+
+		return builder.Build();
 	}
 
 	private sealed class DamageRecorder : ICompositionTarget

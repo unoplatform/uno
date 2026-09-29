@@ -177,7 +177,7 @@ internal static class FrameRenderHelper
 		// pays only a single property read per call site. Null-safe against headless/
 		// test/early-init scenarios where Application.Current or DebugSettings may not
 		// yet be available.
-		private static bool IsEnabled => Application.Current?.DebugSettings?.EnableFrameRateCounter ?? false;
+		internal static bool IsEnabled => Application.Current?.DebugSettings?.EnableFrameRateCounter ?? false;
 
 		public FrameDisposable BeginFrame()
 		{
