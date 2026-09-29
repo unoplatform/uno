@@ -42,35 +42,9 @@
 			<_UnoRuntimeEnabledPackage_EmptyPackageBasePath
 				Include="@(UnoRuntimeEnabledPackage)"
 				Condition="'%(UnoRuntimeEnabledPackage.PackageBasePath)'==''" />
-
-			<!-- 
-			Legacy convention: netstandard2.0 (uno-runtime/**)
-			-->
-			<!-- Add the files for the current selected runtime identifier -->
-			<RuntimeCopyLocalItemsMerged
-							Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_LibraryUnoRuntimeVariant)/*.dll"
-							NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
-			<RuntimeCopyLocalItemsMerged
-				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_LibraryUnoRuntimeVariant)/*.dll"
-				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
-
-			<!-- Add metadata so the .deps.json file is generated properly (.NET 5+) -->
-			<RuntimeCopyLocalItemsToUpdate
-				Include="@(RuntimeCopyLocalItemsMerged)"
-				AssetType="runtime"
-				CopyLocal="true"
-				DestinationSubPath="%(FileName)%(Extension)"
-				CopyToPublishDirectory="true"
-				PathInPackage="uno-runtime/$(_LibraryUnoRuntimeVariant)/%(FileName)%(Extension)" />
-
-			<!-- Publish pdb files -->
-			<ReferenceCopyLocalPaths Condition=" '$(Optimize)' != 'true' " Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_LibraryUnoRuntimeVariant)/*.pdb" />
-			<ReferenceCopyLocalPaths Condition=" '$(Optimize)' != 'true' " Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_LibraryUnoRuntimeVariant)/*.pdb" />
 		</ItemGroup>
 
-		<!-- 
-		Uno 4.6 or later convention: net7.0 or later (uno-runtime/[TargetFramework]/**)
-		-->
+		<!-- uno-runtime/<tfm>/<variant>, the only layout 7.0 reads. -->
 		<RuntimeAssetsSelectorTask_v0
 			Condition="'$(_UnoRuntimeIsReferenceLibrary)' != 'true'"
 			UnoRuntimeEnabledPackage="@(UnoRuntimeEnabledPackage)"
@@ -109,11 +83,9 @@
 
 		<!--
 		A runtime-enabled package that contributed nothing means its runtime assets were not found, and the
-		reference facade ships instead - a green build that throws NotImplemented at runtime. Both halves of
-		the replacement (the legacy glob above and the task) feed this check.
+		reference facade ships instead - a green build that throws NotImplemented at runtime.
 		-->
 		<ItemGroup>
-			<_UnoRuntimeResolvedPackageId Include="@(RuntimeCopyLocalItemsMerged->'%(NuGetPackageId)')" />
 			<_UnoRuntimeResolvedPackageId Include="@(RuntimeCopyLocalItemsMerged2->'%(NuGetPackageId)')" />
 
 			<_UnoRuntimeEnabledPackage_Unresolved Include="@(UnoRuntimeEnabledPackage)" />

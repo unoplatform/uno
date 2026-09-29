@@ -232,16 +232,6 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				}
 			}
 
-			var netstdDirectory = Path.Combine(runtimeDirectory, "netstandard2.0", sharedRuntimeFolder);
-			if (Directory.Exists(netstdDirectory))
-			{
-				return netstdDirectory;
-			}
-			else
-			{
-				this.Log.LogMessage($"Directory '{netstdDirectory}' does not exist.");
-			}
-
 			return null;
 		}
 
@@ -356,7 +346,6 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			var platformDirectory = GetPlatformSpecificDirectoryForRuntimeEnabled(runtimeDirectory, targetFrameworkVersion, sharedRuntimeFolder);
 			if (platformDirectory is null)
 			{
-				// This can happen for "legacy convention" (uno-runtime/<variant>) which is handled by MSBuild logic in ReplaceUnoRuntime
 				this.Log.LogMessage("Cannot find platform-specific directory for runtime-enabled package");
 				this.Log.LogMessage($"\tThe uno-runtime directory: {runtimeDirectory}");
 				this.Log.LogMessage($"\tThe TFM version: {targetFrameworkVersion}");
