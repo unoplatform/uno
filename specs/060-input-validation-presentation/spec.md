@@ -51,20 +51,26 @@ leaves the error group where it was.
 
 1. The `InputValidationMode` / `InputValidationKind` / `HasValidationErrors` changed callbacks — protected
    statics on `Control`, which each participating control registers its own dependency properties with.
-   Covers all eight participants with no per-control code, and being protected rather than internal is what
+   Covers all four participants with no per-control code, and being protected rather than internal is what
    lets a control outside Uno.UI register against the same three.
 2. `FrameworkElement.InvokeApplyTemplate`, immediately after `OnApplyTemplate()` — which also answers §2.2's
    open sub-question about re-application after template realization. Measured by mutation, not assumed: with
-   it removed, a `NumberBox` that reported errors before its template existed lands in no state at all. A
-   `CheckBox` masks this, because its own `ChangeVisualState` call site runs after the template applies.
+   it removed, a control without a per-control call site that reported errors before its template existed
+   lands in no state at all. `AutoSuggestBox` is that control, and the runtime test for this trigger uses it.
+   A `TextBox` masks this, because its own `UpdateVisualState` call site runs after the template applies.
 
 **On §2.1's three objections.** Objection 1 (`private protected`) is sidestepped rather than solved: nothing
 overrides `ChangeVisualState`: controls *call* a `protected`, non-virtual helper, which a third-party control
 can also call from wherever it drives its own states. Objection 2 (19 of 31 overrides skip the base call) is
-moot for the same reason — every call site is explicit — but the audit remains load-bearing, because it is
-what says `CheckBox` and `RadioButton` need their own call despite deriving from `ToggleButton`. Objection 3
-holds exactly as written: `TextBox` and `PasswordBox` take the call in their `UpdateVisualState` override
-instead, which is also where WinUI puts it (`CTextBoxBase::UpdateVisualState:3591`).
+moot for the same reason — every call site is explicit. Objection 3 holds exactly as written: `TextBox` and
+`PasswordBox` take the call in their `UpdateVisualState` override instead, which is also where WinUI puts it
+(`CTextBoxBase::UpdateVisualState:3591`). `ComboBox` takes it in `ChangeVisualState`, through the ported
+`EnsureValidationVisuals`; `AutoSuggestBox` has no call site of its own and relies on the two triggers above.
+
+The participants are WinUI's: the four controls in `CControl`'s type-index switches — `TextBox`,
+`PasswordBox`, `AutoSuggestBox` and `ComboBox`. An earlier pass also opted in `NumberBox`, `Slider`,
+`ToggleSwitch` and `ToggleButton` (so `CheckBox` and `RadioButton`); those were removed to match WinUI, and
+059 §10b records it.
 
 `IInputValidationControl.ErrorTemplate` (§5) shipped with this, as a dependency property registered by each
 participating control. Nothing renders it yet — that needs §4.

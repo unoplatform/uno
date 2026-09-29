@@ -696,9 +696,9 @@ than edited into the decisions above, so the reasoning that produced them stays 
   of WinUI's four `switch (GetTypeIndex())` helpers, fallback included: a control that does not implement it
   is never enabled, exactly as an unknown property index means `Disabled` there. The one write — the
   framework setting `HasValidationErrors` — resolves the control's own property by name through
-  `DependencyProperty.GetProperty`, which is already memoized and walks the base-type chain, so `CheckBox`
-  finds what `ToggleButton` registered. Resolving by name rather than by a closed type switch is what keeps
-  third-party controls working.
+  `DependencyProperty.GetProperty`, which is already memoized and walks the base-type chain, so a `TextBox`
+  subclass finds what `TextBox` registered. Resolving by name rather than by a closed type switch is what
+  keeps third-party controls working.
 - **Q1 — resolved.** The element type behind `ValidationErrors` is `InputValidationError`, carrying the source error's
   `ToString()` as `ErrorMessage`, which is what WinUI's `DefaultInputValidationErrorTemplate` binds against.
   The property is now a `ValidationErrorsCollection` **mutated in place** rather than a fresh snapshot per
@@ -730,6 +730,21 @@ than edited into the decisions above, so the reasoning that produced them stays 
   WinUI's private IDL and has never shipped publicly, so if microsoft-ui-xaml#179 ever ships with a different
   shape, the names collide. `HasValidationErrorsChangedEventArgs` is the exception — public `WinUIContract`,
   and it already existed in Uno as a `[Uno.NotImplemented]` generated stub, now hand-written.
+- **Q8 — narrowed to WinUI's four participants.** `TextBox`→`Text`, `PasswordBox`→`Password`,
+  `AutoSuggestBox`→`Text`, `ComboBox`→`Text`: the controls that carry
+  `[Implements(IInputValidationControl)]` in WinUI's `XCPTypesAutoGen` modules and appear in `CControl`'s
+  `GetTargetHasErrorsProperty` / `GetTargetValidationCommandProperty` switches, each validating the property
+  its WinUI `[InputProperty]` names. `NumberBox`, `Slider`, `ToggleSwitch` and `ToggleButton` (with
+  `CheckBox` and `RadioButton`) no longer participate: WinUI has no validation surface for them, and their
+  default templates carry no validation parts to drive. An app can still bring one back the way a third-party
+  control takes part: a subclass that implements `IInputValidationControl` and declares its validation
+  property with `[InputValidationProperty]` or through the public map (§3.4).
+  **`ComboBox` moves from `SelectedItem` to `Text`**, which is what WinUI validates. So an error reported
+  against a property bound to `SelectedItem` no longer reaches the control; only a binding on `Text` does,
+  which in practice means an editable `ComboBox`. With one property per type, this also settles which half of
+  D9's "`Text` **and** `SelectedItem`" case comes first. The `Slider`/`ProgressBar` and `ComboBox`/`FlipView`
+  examples in §3.3 still explain why the attribute sits on a type rather than on a dependency property, but
+  neither `Slider` nor `ComboBox.SelectedItem` is annotated any more.
 
 ## 11. References
 
