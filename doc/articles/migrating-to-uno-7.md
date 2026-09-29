@@ -249,7 +249,7 @@ target framework that runs on all three. `HAS_UNO_SKIA` and `__UNO_SKIA__` are k
 #### Preprocessor symbols no longer depend on the project shape
 
 The `Uno.WinUI` package now defines every "Uno draws the UI" symbol in one place, for every target framework except
-the WinAppSDK one. The `Uno.WinUI.Runtime.Skia.*` packages no longer define any symbol. In 6.x the result
+the WinAppSDK one. The host packages (`Uno.WinUI.Runtime.*`, formerly `Uno.WinUI.Runtime.Skia.*`) no longer define any symbol. In 6.x the result
 depended on which runtime packages a project happened to reference:
 
 | Symbol | 6.x | 7.0 |
