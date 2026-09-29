@@ -392,6 +392,11 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 			this.Log.LogMessage($"Found platform-specific directory for runtime-enabled package: {platformDirectory}");
 
+			// Mobile only, and the same for every assembly of the package, so resolved once.
+			string? referenceDirectory = null;
+			Dictionary<string, string>? referenceAssemblies = null;
+			List<ITaskItem>? packageCompileItems = null;
+
 			foreach (var assembly in Directory.EnumerateFiles(platformDirectory, "*.dll"))
 			{
 				var assemblyFileNameWithoutExtension = Path.GetFileNameWithoutExtension(assembly);
@@ -429,10 +434,9 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 					var compileTimeAssembly = adjustedAssembly;
 					if (!isWinRTAssembly)
 					{
-						var referenceDirectory = GetReferenceDirectory(packageIdentity, runtimeDirectory, targetFrameworkVersion);
-						var file = Directory.EnumerateFiles(referenceDirectory, "*.dll")
-							.FirstOrDefault(file => assemblyFileNameWithoutExtension.Equals(Path.GetFileNameWithoutExtension(file), StringComparison.OrdinalIgnoreCase));
-						if (file is null)
+						referenceDirectory ??= GetReferenceDirectory(packageIdentity, runtimeDirectory, targetFrameworkVersion);
+						referenceAssemblies ??= IndexByName(Directory.EnumerateFiles(referenceDirectory, "*.dll"));
+						if (!referenceAssemblies.TryGetValue(assemblyFileNameWithoutExtension, out var file))
 						{
 							throw new UnresolvedAssetException(
 								$"The runtime-enabled package '{packageIdentity}' has no reference assembly for '{Path.GetFileName(assembly)}' in '{Path.GetFullPath(referenceDirectory)}'.");
@@ -441,7 +445,11 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 						compileTimeAssembly = file;
 					}
 
-					var existing = ResolvedCompileFileDefinitionsInput.First(item => packageIdentity.Equals(item.GetMetadata("NuGetPackageId"), StringComparison.OrdinalIgnoreCase));
+					packageCompileItems ??= ResolvedCompileFileDefinitionsInput
+						.Where(item => packageIdentity.Equals(item.GetMetadata("NuGetPackageId"), StringComparison.OrdinalIgnoreCase))
+						.ToList();
+
+					var existing = packageCompileItems.First();
 					compileFileDefinitionsToAdd.Add(new TaskItem(
 						compileTimeAssembly,
 						new Dictionary<string, string>
@@ -455,10 +463,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 							["NuGetSourceType"] = existing.GetMetadata("NuGetSourceType"),
 						}));
 
-					var toRemove = ResolvedCompileFileDefinitionsInput
-						.FirstOrDefault(
-							item => packageIdentity.Equals(item.GetMetadata("NuGetPackageId"), StringComparison.OrdinalIgnoreCase) &&
-							Path.GetFileNameWithoutExtension(item.GetMetadata("Identity")) == assemblyFileNameWithoutExtension);
+					var toRemove = packageCompileItems
+						.FirstOrDefault(item => Path.GetFileNameWithoutExtension(item.GetMetadata("Identity")) == assemblyFileNameWithoutExtension);
 
 					if (toRemove is not null)
 					{
@@ -466,6 +472,21 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 					}
 				}
 			}
+		}
+
+		private static Dictionary<string, string> IndexByName(IEnumerable<string> files)
+		{
+			var index = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+			foreach (var file in files)
+			{
+				var name = Path.GetFileNameWithoutExtension(file);
+				if (!index.ContainsKey(name))
+				{
+					index[name] = file;
+				}
+			}
+
+			return index;
 		}
 
 		private string GetPathInPackage(string assembly, string runtimeDirectory)
