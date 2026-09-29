@@ -48,7 +48,7 @@ namespace Uno.Helpers
 				if (Uri.TryCreate(protocolUriString, UriKind.Absolute, out uri))
 				{
 					queryValues.Remove(QueryKey);
-					remainingArguments = queryValues.ToString();
+					remainingArguments = queryValues.ToString() ?? string.Empty;
 					return true;
 				}
 				else
