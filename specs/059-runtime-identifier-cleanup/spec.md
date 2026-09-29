@@ -86,7 +86,8 @@ Left alone, **the build would succeed while shipping the reference facade**, whi
 `NotImplementedException` when the application runs. That is why the rename waited on §4.2: UNOB0023 turns
 a package in the old layout, or a version skew between 7.0 previews, into a build error. Five encodings of the
 convention exist (two nuspecs, the task, the MSBuild glob in `uno.winui.runtime-replace.targets`,
-`src/Uno.CrossTargetting.targets`); the task's constants document them.
+`src/Uno.CrossTargetting.targets`). `Given_UnoRuntimeLayout` pins the nuspecs to the variant names, and
+`Given_RuntimeReplaceTargets` runs the glob and the task against both layouts.
 
 The glob reads `uno-runtime/<folder>` with no target framework folder. That is not only a pre-4.6 leftover: it is
 what `UnoRuntimeProjectReference` packs, since NuGet does not add a target framework to a `TfmSpecificPackageFile`
@@ -95,7 +96,7 @@ path, so every library made from the cross-runtime template ships that layout. T
 
 ### 4.2 Every silent path became loud first
 
-Three verified silent failures gated this work, and were fixed before anything moved:
+Four verified silent failures gated this work, and were fixed before anything moved:
 
 1. `RuntimeAssetsSelectorTask.Execute()` returned `true` with no diagnostic when neither mode matched, while
    the single-layer path hard-errored on an unrecognised value one branch above. Asymmetric by accident.
@@ -132,11 +133,11 @@ exercised the do-nothing path and would have stayed green through a change that 
   kept as an alias target. The alias carries `BeforeTargets="CoreCompile"` of its own: MSBuild schedules a
   consumer's `Before/AfterTargets` hook only when the anchor target actually executes, so an alias with only
   `DependsOnTargets` would never fire one.
-- **The `MediaPlayerElement` half of UNO0007 is removed** — a consumer-visible diagnostic, called out rather
-  than slipped in. Both of its branches were unreachable: one compared `UnoRuntimeIdentifier` against a value
-  no shipped package has set since native WebAssembly was removed, the other looked for
-  `Uno.UI.Runtime.Skia.Gtk`. All three packages it recommended no longer ship. The `ProgressRing` half does
-  not read the property and is untouched.
+- **UNO0007 is retired** — a consumer-visible diagnostic, called out rather than slipped in. Both branches of
+  its `MediaPlayerElement` half were unreachable: one compared `UnoRuntimeIdentifier` against a value no
+  shipped package has set since native WebAssembly was removed, the other looked for
+  `Uno.UI.Runtime.Skia.Gtk`, and all three packages it recommended no longer ship. Its `ProgressRing` half
+  asked for the Lottie package, which `ProgressRing` no longer needs.
 - **The Lottie and Svg dependency checks keep firing on exactly the heads they fired on before** (desktop and
   headless), now testing that condition directly. They have never run on mobile or browser heads, so the
   dependency gap there is real — widening them turns a silent gap into a new hard build error on four target
