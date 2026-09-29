@@ -192,7 +192,7 @@ namespace Uno.UI.Xaml.Core
 				return;
 			}
 
-			var contentRoot = ContentRootCoordinator.CreateContentRoot(ContentRootType.CoreWindow, ThemingHelper.GetRootVisualBackground(), null);
+			var contentRoot = ContentRootCoordinator.CreateContentRoot(ContentRootType.CoreWindow, ThemingHelper.FromArgb(Theming.GetRootVisualBackground()), null);
 			_mainVisualTree = contentRoot.VisualTree;
 
 			//TODO Uno: Add input services

@@ -15,7 +15,7 @@ namespace UITests.Microsoft_UI_Windowing;
 		"Demonstrates Window.SystemBackdrop support for Mica and Desktop Acrylic materials. " +
 		"On macOS, uses NSVisualEffectView with the matching vibrancy material. " +
 		"On Windows 11 (22621+), uses DwmSetWindowAttribute with DWMWA_SYSTEMBACKDROP_TYPE. " +
-		"The framework makes the visual tree transparent so the backdrop shows through. " +
+		"Setting a backdrop drops the window's own root background; app content keeps its own, so this page sets Background=\"Transparent\". " +
 		"Use the 'Extend content into title bar' toggle to verify the material also fills the title bar.")]
 public sealed partial class MicaBackdropTests : Page
 {
