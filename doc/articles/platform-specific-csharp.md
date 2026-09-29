@@ -41,14 +41,14 @@ In a class library, a single `net10.0` target framework combined with these runt
 The most basic means of authoring platform-specific code is to use `#if` conditionals:
 
 ```csharp
-#if HAS_UNO
+#if __UNO__
 Console.WriteLine("Uno Platform - Pixel-perfect WinUI apps that run everywhere");
 #else
 Console.WriteLine("Windows - Built with Microsoft's own tooling");
 #endif
 ```
 
-If the supplied condition is not met, e.g. if `HAS_UNO` is not defined, then the enclosed code will be ignored by the compiler.
+If the supplied condition is not met, e.g. if `__UNO__` is not defined, then the enclosed code will be ignored by the compiler.
 
 The following conditional symbols are predefined for each Uno platform. Application heads and class libraries get the same set, whether or not they use the Uno.Sdk:
 
@@ -60,14 +60,14 @@ The following conditional symbols are predefined for each Uno platform. Applicat
 | iOS or tvOS     | `__APPLE_UIKIT__`  | `net10.0-ios` and `net10.0-tvos` |
 | WebAssembly     | `__WASM__`         | `net10.0-browserwasm`. The .NET SDK also defines `BROWSERWASM` for this target framework |
 | Desktop         | `__DESKTOP__`      | `net10.0-desktop`. The .NET SDK also defines `DESKTOP` for this target framework |
-| _Non-Windows_   | `HAS_UNO`          | Every target framework except the WinAppSDK one. This is the C# equivalent of the `not_winappsdk:` XAML prefix and of `*.crossruntime.cs`. To learn about symbols available when `HAS_UNO` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
-| _Non-Windows_   | `__UNO__`          | Identical to `HAS_UNO` |
+| _Non-Windows_   | `__UNO__`          | Every target framework except the WinAppSDK one. This is the C# equivalent of the `not_winappsdk:` XAML prefix and of `*.crossruntime.cs`. To learn about symbols available when `__UNO__` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
+| _Non-Windows_   | `HAS_UNO`          | Identical to `__UNO__` |
 
 Symbols such as `__SKIA__`, `__CROSSRUNTIME__` or `WINAPPSDK` appear in the Uno Platform source code but are never defined in your projects. See [Preprocessor symbols in the Uno Platform repository](xref:Uno.Contributing.PreprocessorSymbols) for what they mean and what to use instead.
 
 ### Legacy symbols
 
-These symbols are defined wherever `HAS_UNO` is, so existing code keeps compiling. Use `HAS_UNO` in new code.
+These symbols are defined wherever `__UNO__` is, so existing code keeps compiling. Use `__UNO__` in new code.
 
 | Symbol              | Remarks |
 | ------------------- | ------- |
@@ -84,7 +84,7 @@ In a class library, `#if` blocks behave the same way. The asset built for `net10
 
 ### Windows-specific code
 
-On `net10.0-windows10.0.xxxxx` target framework, an Uno Platform application isn't using Uno.UI at all. It's compiled using Microsoft's own tooling. For that reason, the `HAS_UNO` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.
+On `net10.0-windows10.0.xxxxx` target framework, an Uno Platform application isn't using Uno.UI at all. It's compiled using Microsoft's own tooling. For that reason, the `__UNO__` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.
 
 Apps targeting Windows use **Windows App SDK**. The following symbols are available there:
 

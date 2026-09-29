@@ -261,7 +261,7 @@ What this means for an upgrade:
 
 - An `#else` branch under `UNO_REFERENCE_API`, `HAS_UNO_SKIA` or `__UNO_SKIA__` no longer compiles in desktop class
   libraries or libraries without the Uno.Sdk: they now take the Uno branch, as their application heads always did.
-- Replace these three symbols with `HAS_UNO`. `HAS_UNO_SKIA` and `__UNO_SKIA__` are deprecated and planned for
+- Replace these three symbols with `__UNO__`. `HAS_UNO_SKIA` and `__UNO_SKIA__` are deprecated and planned for
   removal in Uno Platform 8.0.
 - A project that references `Uno.WinUI.Runtime.Skia.Headless` on a plain `net10.0` target framework, or a project
   that does not use the Uno.Sdk and relied on a runtime package for `__DESKTOP__` or `__WASM__`, must now target
