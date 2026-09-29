@@ -6,7 +6,7 @@ using Uno.UI.Runtime.AppleUIKit;
 
 namespace Uno.UI.Hosting;
 
-internal partial class AppleUIKitHostBuilder : IPlatformHostBuilder, IAppleUIKitSkiaHostBuilder
+internal partial class AppleUIKitHostBuilder : IPlatformHostBuilder, IAppleUIKitHostBuilder
 {
 	private Type? _uiApplicationDelegateOverride;
 
@@ -19,7 +19,7 @@ internal partial class AppleUIKitHostBuilder : IPlatformHostBuilder, IAppleUIKit
 	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType) =>
 		new AppleUIKitHost(appBuilder, _uiApplicationDelegateOverride);
 
-	public IAppleUIKitSkiaHostBuilder UseUIApplicationDelegate<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>()
+	public IAppleUIKitHostBuilder UseUIApplicationDelegate<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>()
 		where T : UnoUIApplicationDelegate
 	{
 		_uiApplicationDelegateOverride = typeof(T);

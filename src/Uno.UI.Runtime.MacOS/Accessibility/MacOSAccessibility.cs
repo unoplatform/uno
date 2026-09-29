@@ -40,7 +40,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 
 	/// <summary>
 	/// Registers the process-wide native callbacks. Must be called once from
-	/// <c>MacSkiaHost</c> static construction before any window is created.
+	/// <c>MacOSHost</c> static construction before any window is created.
 	/// </summary>
 	internal static unsafe void RegisterCallbacks()
 	{

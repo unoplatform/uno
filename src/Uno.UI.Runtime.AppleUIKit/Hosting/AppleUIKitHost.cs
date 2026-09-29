@@ -3,11 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using UIKit;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.AppleUIKit.Extensions;
 
 namespace Uno.UI.Runtime.AppleUIKit;
 
-internal class AppleUIKitHost : SkiaHost, ISkiaApplicationHost
+internal class AppleUIKitHost : UnoPlatformHost, IApplicationHost
 {
 	private readonly Func<Application> _appBuilder;
 	private readonly Type? _uiApplicationDelegateOverride;

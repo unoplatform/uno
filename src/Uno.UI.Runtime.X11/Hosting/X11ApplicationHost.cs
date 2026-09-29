@@ -27,7 +27,7 @@ using Uno.Media.Playback;
 
 namespace Uno.UI.Runtime.X11;
 
-public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
+public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDisposable
 {
 	[ThreadStatic] private static bool _isDispatcherThread;
 	private readonly EventLoop? _eventLoop;

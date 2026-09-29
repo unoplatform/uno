@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Runtime.Linux.FrameBuffer
 {
-	public class FrameBufferHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost, IDisposable
+	public class FrameBufferHost : UnoPlatformHost, IApplicationHost, IXamlRootHost, IDisposable
 	{
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;

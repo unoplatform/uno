@@ -12,7 +12,7 @@ public static class AndroidHostBuilderExtensions
 		return builder;
 	}
 
-	public static IUnoPlatformHostBuilder UseAndroid(this IUnoPlatformHostBuilder builder, Action<IAndroidSkiaHostBuilder> action)
+	public static IUnoPlatformHostBuilder UseAndroid(this IUnoPlatformHostBuilder builder, Action<IAndroidHostBuilder> action)
 	{
 		// Eager: AddHostBuilder defers the callback, so a null would only fault when the host is built.
 		ArgumentNullException.ThrowIfNull(action);

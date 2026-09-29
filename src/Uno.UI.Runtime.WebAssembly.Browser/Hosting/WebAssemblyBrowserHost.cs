@@ -22,7 +22,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Runtime.WebAssembly.Browser;
 
-internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost
+internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHost, IXamlRootHost
 {
 	private readonly CoreApplicationExtension? _coreApplicationExtension;
 

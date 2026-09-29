@@ -36,7 +36,7 @@ internal static class AccessibilityRouter
 	/// <summary>
 	/// Claims the framework's single-slot accessibility registrations and
 	/// points them at this router. Idempotent; subsequent calls are no-ops.
-	/// Called from host startup (Win32Host / MacSkiaHost).
+	/// Called from host startup (Win32Host / MacOSHost).
 	/// </summary>
 	public static void EnsureInitialized()
 	{

@@ -61,7 +61,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		// RegisterForBackgroundColor();
 
 		// Neutral graphics pipeline: the host registers a per-kind context factory and negotiates; the app-registered backend owns the kind order.
-		var host = MacSkiaHost.Current;
+		var host = MacOSHost.Current;
 		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateContext(kind, host.RenderSurfaceType));
 
 		var init = GraphicsRegistry.Initialize();
@@ -133,7 +133,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			this.Log().Info(
 				$"macOS render thread starting for window {_nativeWindow.Handle}: " +
-				$"surface={MacSkiaHost.Current.RenderSurfaceType}, " +
+				$"surface={MacOSHost.Current.RenderSurfaceType}, " +
 				$"screen refresh rate={(screenFps > 0 ? screenFps.ToString("0.##", CultureInfo.InvariantCulture) + "Hz" : "unknown")}, " +
 				$"pacing at {targetFps.ToString("0.##", CultureInfo.InvariantCulture)} fps.");
 		}
