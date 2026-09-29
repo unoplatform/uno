@@ -20,11 +20,11 @@ flavor, selected by `UnoRuntimeIdentifier` or by the target framework.
 
 | Symbol | Defined for | Consumer equivalent |
 | ------ | ----------- | ------------------- |
-| `__SKIA__` | `UnoRuntimeIdentifier=Skia`: `Uno.UI` and everything built on it, and the desktop flavor of the WinRT layer | In `Uno.UI` code it is always true, so it is `HAS_UNO`. In the WinRT layer it names the desktop flavor: `__DESKTOP__` |
+| `__SKIA__` | `UnoRuntimeIdentifier=Skia`: `Uno.UI` and everything built on it, and the desktop flavor of the WinRT layer | In `Uno.UI` code it is always true, so it is `__UNO__`. In the WinRT layer it names the desktop flavor: `__DESKTOP__` |
 | `__WASM__` | The WebAssembly flavor of the WinRT layer | `__WASM__` |
 | `__NETSTD_REFERENCE__` | The Reference flavor of the WinRT layer, packed as the `lib/netX.0` assembly that plain `netX.0` libraries compile against | None |
-| `__CROSSRUNTIME__` | The Skia, WebAssembly and Reference flavors, not the Android, iOS and tvOS variants of the WinRT layer | `HAS_UNO` |
-| `UNO_REFERENCE_API` | Same as `__CROSSRUNTIME__` | `HAS_UNO`. Consumers get `UNO_REFERENCE_API` as a legacy synonym of `HAS_UNO`, which is a different condition |
+| `__CROSSRUNTIME__` | The Skia, WebAssembly and Reference flavors, not the Android, iOS and tvOS variants of the WinRT layer | `__UNO__` |
+| `UNO_REFERENCE_API` | Same as `__CROSSRUNTIME__` | `__UNO__`. Consumers get `UNO_REFERENCE_API` as a legacy synonym of `__UNO__`, which is a different condition |
 | `__ANDROID__`, `__IOS__`, `__TVOS__` | The Android, iOS and tvOS variants of the WinRT layer | Same symbols |
 | `__APPLE_UIKIT__` | The iOS and tvOS variants | `__APPLE_UIKIT__` |
 
@@ -35,9 +35,11 @@ Use `OperatingSystem.IsAndroid()` there.
 
 | Symbol | Defined for | Consumer equivalent |
 | ------ | ----------- | ------------------- |
-| `HAS_UNO`, `HAS_UNO_WINUI` | Every compilation except the `-windows10.0.19041.0` ones | `HAS_UNO` |
-| `WINDOWS_WINUI` | Every target framework ending in `-windows10.0.19041.0` | `!HAS_UNO`, or `WINDOWS` |
-| `WINAPPSDK` | Only the WinAppSDK builds of `SamplesApp`, `Uno.UI.RuntimeTests.Windows` and `Uno.WinUI.Graphics3DGL` | `!HAS_UNO` |
+| `__UNO__`, `HAS_UNO`, `HAS_UNO_WINUI` | Every compilation except the `-windows10.0.19041.0` ones | `__UNO__` |
+| `WINDOWS_WINUI` | Every target framework ending in `-windows10.0.19041.0` | `!__UNO__`, or `WINDOWS` |
+| `WINAPPSDK` | Only the WinAppSDK builds of `SamplesApp`, `Uno.UI.RuntimeTests.Windows` and `Uno.WinUI.Graphics3DGL` | `!__UNO__` |
+
+`__UNO__` and `HAS_UNO` are identical, both here and in consumer projects. Prefer `__UNO__` in new code.
 
 ## Feature flags
 

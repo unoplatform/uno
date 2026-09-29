@@ -20,6 +20,6 @@ Build & run with the **`/runtime-tests`** skill. WinUI parity: `/winui-runtime-t
 - **Link issue-covering tests to their issue**: when a test reproduces or guards a specific GitHub issue, annotate it (method- or class-level) with `[GitHubWorkItem("https://github.com/unoplatform/uno/issues/<n>")]`. It's traceability metadata only — it does **not** skip the test (unlike `[Ignore]`).
 - **Parameterize** with `[DataRow(...)]` (multiple per method) or `[CombinatorialData]` with `bool`/enum params — not hand-rolled loops.
 - **Screenshots**: `var bmp = await UITestHelper.ScreenShot(el);` then `ImageAssert.HasColorAt(bmp, x, y, color, tolerance)` or `await ImageAssert.AreEqualAsync(a, b)`. A raw `RawBitmap` needs `await bmp.Populate()` before `GetPixel`. Use a small `tolerance` (1–5) for hardware rasterization variance. `[RequiresFullWindow]` for tests needing the real window size.
-- Don't reference Uno internals (`DirectUI`, `Uno.UI.Xaml.Input`) unguarded — gate with `#if HAS_UNO`. MSTest usings come from `GlobalUsings.cs`; don't re-import.
+- Don't reference Uno internals (`DirectUI`, `Uno.UI.Xaml.Input`) unguarded — gate with `#if __UNO__`. MSTest usings come from `GlobalUsings.cs`; don't re-import.
 
 Known flaky tests are tracked in GitHub issue #9080.

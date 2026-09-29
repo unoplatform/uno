@@ -369,7 +369,7 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">
-		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_UNO;__UNO__</DefineConstants>
 		<!-- Pin the shrinker. Left unset, R8 9.1.31 crashes with
 		     an NPE in its API-model database while desugaring androidx.core. -->
 		<AndroidLinkTool Condition="'$(DoNotSetAndroidLinkTool)' != 'true'">r8</AndroidLinkTool>
