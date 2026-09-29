@@ -256,7 +256,10 @@ public class Given_RuntimeEnabledPackage
 		var (task, _) = CreateTask(fixture, targetPlatformIdentifier: "maccatalyst");
 
 		task.Execute().Should().BeFalse();
-		((RecordingBuildEngine)task.BuildEngine).Errors.Should().NotBeEmpty();
+
+		var error = ((RecordingBuildEngine)task.BuildEngine).Errors.Should().ContainSingle().Subject;
+		error.Code.Should().Be("UNOB0023");
+		error.Message.Should().Contain("'maccatalyst'").And.Contain("browserwasm");
 	}
 
 	[TestMethod]
