@@ -173,7 +173,9 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 						default:
 							// Without this error an unknown platform would silently leave every runtime-enabled
 							// package on its reference facade, in a green build that only fails once it runs.
-							this.Log.LogError($"The target platform '{TargetPlatformIdentifier}' has no Uno Platform runtime assets");
+							LogUnresolved(
+								$"The target platform '{TargetPlatformIdentifier}' has no Uno Platform runtime assets. " +
+								"A head with a Uno Platform runtime host must target desktop, browserwasm, android, ios, tvos, or a plain netX.0 framework.");
 							return false;
 					}
 				}

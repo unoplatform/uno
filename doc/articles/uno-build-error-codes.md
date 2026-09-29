@@ -208,7 +208,7 @@ The most common cause is a package built for Uno Platform 6.x. Uno Platform 7.0 
 
 Other causes are a partially restored package, a `PackageBasePath` pointing at a location that does not contain the expected `uno-runtime` folder, or a mismatched set of Uno Platform package versions. Verify that all `Uno.*` package versions match, then clear `obj/` and `bin/` and restore again.
 
-The same code reports a package that provides its runtime assemblies but lacks one of the pieces a head needs: the browser build of a WinRT assembly under `uno-runtime/<tfm>/wasm`, the `lib/netX.0-<platform>` implementation for an Android, iOS or tvOS head, or the matching reference assembly. It also reports a cross-runtime library whose `UnoRuntimeVariant` is not `Generic`, `Wasm` or `Reference`. The message names the package and the path that was expected.
+The same code reports a package that provides its runtime assemblies but lacks one of the pieces a head needs: the browser build of a WinRT assembly under `uno-runtime/<tfm>/wasm`, the `lib/netX.0-<platform>` implementation for an Android, iOS or tvOS head, or the matching reference assembly. It also reports a cross-runtime library whose `UnoRuntimeVariant` is not `Generic`, `Wasm` or `Reference`, and a head with a Uno Platform runtime host whose target platform has no runtime assets — only `desktop`, `browserwasm`, `android`, `ios`, `tvos` and plain `netX.0` target frameworks do. The message names the package and the path that was expected.
 
 Before Uno Platform 7.0 this situation was reported only as a build message, so it surfaced as a runtime failure rather than a build failure.
 
