@@ -64,20 +64,27 @@ public class Given_GetOnlyName
 		await test.RunAsync();
 	}
 
-	// Intentional WinUI divergence: WinUI's XAML compiler rejects a plain Name on a TextElement (WMC0050, Name is get-only),
-	// but its docs describe TextElement.Name as settable from XAML and its runtime parser accepts it, so Uno does too.
+	// Intentional WinUI divergence: WinUI's XAML compiler rejects a plain Name where Name is get-only (WMC0050),
+	// but its runtime parser accepts it like x:Name, and so does Uno.
 	[TestMethod]
-	public async Task When_Plain_Name_On_TextElement()
+	public async Task When_Plain_Name_On_GetOnly_Name()
 	{
 		var pageFile = new XamlFile("MainPage.xaml", """
 			<Page
 				x:Class="TestRepro.MainPage"
 				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-				<TextBlock>
-					<Run Name="PlainRun" Text="a" />
-					<Hyperlink Name="PlainLink">link</Hyperlink>
-				</TextBlock>
+				<Grid>
+					<VisualStateManager.VisualStateGroups>
+						<VisualStateGroup Name="PlainGroup">
+							<VisualState Name="PlainState" />
+						</VisualStateGroup>
+					</VisualStateManager.VisualStateGroups>
+					<TextBlock>
+						<Run Name="PlainRun" Text="a" />
+						<Hyperlink Name="PlainLink">link</Hyperlink>
+					</TextBlock>
+				</Grid>
 			</Page>
 			""");
 
