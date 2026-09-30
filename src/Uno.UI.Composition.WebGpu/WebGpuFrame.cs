@@ -1045,7 +1045,38 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	// Owned variant exposing the ClipU slab slot so a later restamp can RewriteClipU it in place.
-	private IntPtr MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
+	private IntPtr MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU, bool share = true)
+	{
+		if (!share) { return MakeClipBgOwnedCore(cd, owned, xform, finv, out buf, out aabbInClipU); }
+
+		// Ops of one bag that share a clip share its slot and bind group: the ClipU is a function of the clip and
+		// transform alone, so a later in-place patch writes the same values for each of them. Without this a text
+		// run pays a slab slot and a bind group per glyph op.
+		var memo = owned.ClipMemo ??= new();
+		var key = ClipMemoKey(cd, xform);
+		if (memo.TryGetValue(key, out var bucket))
+		{
+			foreach (var m in bucket)
+			{
+				if (m.Xform == xform && m.Finv == finv && m.Clip.Aabb == cd.Aabb && ClipDataEquals(m.Clip, cd))
+				{
+					buf = m.Slot;
+					aabbInClipU = m.AabbInClipU;
+					return m.Bg;
+				}
+			}
+		}
+
+		var bg = MakeClipBgOwnedCore(cd, owned, xform, finv, out buf, out aabbInClipU);
+		if (bucket is null) { memo[key] = bucket = new(1); }
+		bucket.Add(new OwnedResources.ClipMemoEntry(cd, xform, finv, bg, buf, aabbInClipU));
+		return bg;
+	}
+
+	private static int ClipMemoKey(in ClipData cd, in Matrix3x2 xform)
+		=> HashCode.Combine(cd.Aabb, cd.Coverage, cd.Entries?.Length ?? 0, cd.Paths?.Length ?? 0, xform.M31, xform.M32);
+
+	private IntPtr MakeClipBgOwnedCore(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
 	{
 		var masks = Coverage.ResolveClipMasks(cd, owned);
 		var more = FillClipU(cd, xform, finv, masks.Entries, out aabbInClipU);

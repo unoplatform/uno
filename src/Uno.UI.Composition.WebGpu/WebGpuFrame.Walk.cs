@@ -648,6 +648,7 @@ internal sealed unsafe partial class WebGpuFrame
 			bool atlasSafe = TryAtlasScale(rm, out var scale);
 			BuildCoalesced(rr.Commands, built, owned, atlasScale: atlasSafe ? scale : null, maskScale: atlasSafe ? scale : MaskScale(rm), place: new Vector2(rm.M31, rm.M32));
 			RealizeOwnedVertices(built, owned);
+			owned.ClipMemo = null;
 			bool hasPathClip = false; foreach (var o in built) { if (o.Clip.Paths is not null) { hasPathClip = true; break; } }
 			entry = new WebGpuGeometryCache
 			{
@@ -802,13 +803,15 @@ internal sealed unsafe partial class WebGpuFrame
 				}
 				else
 				{
-					var clipBg = MakeClipBgOwned(uClip, stampOwned, rm, finv, out var buf, out var folded);
+					// A later move patches each slot from the op's own clip, so only ops whose clip is unfolded may share one.
+					var clipBg = MakeClipBgOwned(uClip, stampOwned, rm, finv, out var buf, out var folded, share: siteCarries);
 					scissorClip.AabbInClipU = folded;
 					scissorClip.ScissorLoadBearing = !folded;
 					bufs.Add(buf);
 					stamped.Add(op.WithClipSite(scissorClip, clipBg, slot.SiteBg, siteCarries ? slot.SiteSlot : 0));
 				}
 			}
+			stampOwned.ClipMemo = null;
 			slot.Owned = stampOwned; slot.Ops = stamped; slot.Bufs = bufs; slot.SiteOps = siteCarries;
 			slot.Xform = rm; slot.Clip = session; slot.Basis = basis; slot.SessionEntries = sessionEntries;
 			if (_emitStats) { StampTicks += System.Diagnostics.Stopwatch.GetTimestamp() - t0; }
