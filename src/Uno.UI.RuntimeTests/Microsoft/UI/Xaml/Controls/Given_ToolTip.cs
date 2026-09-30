@@ -646,6 +646,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24557")]
 		public async Task When_Image_Source_Loads_While_Open()
 		{
 			var owner = new Button { Content = "owner" };
@@ -692,6 +693,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.IsTrue(reopened.Task.IsCompleted, "The image did not open while the reopened tooltip was showing.");
 				Assert.IsTrue(await reopened.Task, "The image failed to load after reopening.");
+			}
+			finally
+			{
+				SUT.IsOpen = false;
+#if HAS_UNO
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24820")]
+		public async Task When_Content_Realizes_On_Load_Then_Measured_On_First_Open()
+		{
+			// An ItemsControl only creates its containers once loaded, so it invalidates its measure
+			// from inside the tooltip that has just opened.
+			var items = new ItemsControl { ItemsSource = new[] { "first error", "second error" } };
+			var owner = new Button { Content = "owner" };
+			var SUT = new ToolTip { Content = items };
+			ToolTipService.SetToolTip(owner, SUT);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = owner;
+				await TestServices.WindowHelper.WaitForLoaded(owner);
+
+				SUT.IsOpen = true;
+
+				await TestServices.WindowHelper.WaitFor(
+					() => items.ActualWidth > 0 && items.ActualHeight > 0,
+					timeoutMS: 3000,
+					message: "The tooltip content was never measured on its first open.");
 			}
 			finally
 			{
