@@ -43,7 +43,8 @@ public class Given_UnoRuntimeLayout
 			.Descendants().Where(e => e.Name.LocalName == "file")
 			.Select(e => (Source: (string?)e.Attribute("src") ?? "", Target: Split((string?)e.Attribute("target") ?? "")))
 			.Where(f => f.Target is not null)
-			.GroupBy(f => (f.Target!.Value.Tfm, f.Target.Value.Variant), f => Path.GetFileName(f.Source.Replace('\\', '/')))
+			.Select(f => (f.Source, Target: f.Target!.Value))
+			.GroupBy(f => (f.Target.Tfm, f.Target.Variant), f => Path.GetFileName(f.Source.Replace('\\', '/')))
 			.ToDictionary(g => g.Key, g => g.OrderBy(n => n, StringComparer.Ordinal).ToArray());
 
 		foreach (var ((tfm, variant), names) in files.Where(f => f.Key.Variant == "wasm"))
