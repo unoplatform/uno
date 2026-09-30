@@ -11,8 +11,10 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Uno.Extensions;
 using Uno.Foundation;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using System.Collections.Generic;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.NativeElementHosting;
 
@@ -51,6 +53,7 @@ public enum BrowserHtmlElementInputPolicy
 public sealed partial class BrowserHtmlElement : IDisposable
 {
 	private GCHandle? _gcHandle;
+	private DomRemovalOnCollect? _domRemovalOnCollect;
 
 	internal nint UnoElementId { get; }
 
@@ -273,6 +276,13 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	public void Dispose()
 		=> DisposeNative();
 
+	/// <summary>
+	/// Removes the element from the DOM once this wrapper is garbage collected. Used for elements the framework creates
+	/// on behalf of a control, which application code cannot dispose (e.g. the WebView2 iframe).
+	/// </summary>
+	internal void RemoveFromDomWhenCollected()
+		=> _domRemovalOnCollect ??= new DomRemovalOnCollect(ElementId);
+
 	partial void OnInputPolicyChanged(BrowserHtmlElementInputPolicy value);
 
 	partial void DisposeNative();
@@ -415,7 +425,31 @@ public sealed partial class BrowserHtmlElement : IDisposable
 
 	partial void DisposeNative()
 	{
+		_domRemovalOnCollect?.Cancel();
 		NativeMethods.DisposeHtmlElement(ElementId);
+	}
+
+	// The finalizer lives on this sentinel rather than on BrowserHtmlElement, so only the elements the framework opts in
+	// are removed on collection: application-created elements keep their explicit Dispose() contract.
+	private sealed class DomRemovalOnCollect(string elementId)
+	{
+		public void Cancel() => GC.SuppressFinalize(this);
+
+		~DomRemovalOnCollect()
+		{
+			// The DOM is only reachable from the UI thread, and finalizers may run on another one.
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				try
+				{
+					NativeMethods.DisposeHtmlElement(elementId);
+				}
+				catch (JSException e)
+				{
+					typeof(BrowserHtmlElement).LogDebug()?.Debug($"Element {elementId} was already removed from the DOM: {e.Message}");
+				}
+			}, NativeDispatcherPriority.Idle);
+		}
 	}
 
 	internal static void Initialize()
