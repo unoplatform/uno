@@ -81,6 +81,9 @@ public class Given_XamlParseContext_AlcResolution
 	/// <summary>A key holding a <see cref="Style"/> in both the host and the owning app, for the template-part tests.</summary>
 	private const string StyleKey = "XamlParseContextAlcResolutionButtonStyle";
 
+	/// <summary>A WinUI Fluent brush key: defined by the framework, not by the owning app.</summary>
+	private const string FrameworkKey = "TextFillColorSecondaryBrush";
+
 	// The ALC standing in for a hosted app: it owns the registered Application, and it holds its own
 	// private copy of the probe assembly whose name the parse context carries.
 	private TestAssemblyLoadContext? _ownerAlc;
@@ -386,6 +389,69 @@ public class Given_XamlParseContext_AlcResolution
 		finally
 		{
 			Application.Current.Resources.Remove(StyleKey);
+		}
+	}
+
+	/// <summary>
+	/// A key the owning app does not define but the framework does (a WinUI Fluent brush), overridden by the host.
+	/// Under an <c>AlcContentHost</c> the provisional lookup finds nothing in scope; it must then resolve the way the
+	/// owning app would — through its own resources and the framework's — instead of taking the host's override.
+	/// Outside any content host the host's override stands.
+	/// </summary>
+	[TestMethod]
+	[DataRow(true, true)]
+	[DataRow(true, false)]
+	[DataRow(false, true)]
+	[DataRow(false, false)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_OwningAppLacksAFrameworkKeyTheHostOverrides_Then_LoadTimeFallbackUsesTheOwningApp(bool isThemeResource, bool underAlcContentHost)
+	{
+		var ownerApp = await SetUpDuplicatedAssemblyAsync();
+		var key = new SpecializedResourceDictionary.ResourceKey(FrameworkKey);
+
+		Assert.IsTrue(ResourceResolver.TrySystemResourceRetrieval(key, out var frameworkValue), $"Sanity: the framework must define {FrameworkKey}.");
+		Assert.IsFalse(ownerApp.Resources.ContainsKey(FrameworkKey, shouldCheckSystem: false), "Sanity: the owning app must not define the key itself.");
+
+		var hostOverride = new SolidColorBrush(HostValue);
+		var hadHostValue = Application.Current.Resources.TryGetValue(FrameworkKey, out var priorHostValue, shouldCheckSystem: false);
+		Application.Current.Resources[FrameworkKey] = hostOverride;
+
+		try
+		{
+			var target = new Border { Width = 50, Height = 50 };
+			ResourceResolver.ApplyResource(
+				target,
+				Border.BackgroundProperty,
+				FrameworkKey,
+				isThemeResourceExtension: isThemeResource,
+				isHotReloadSupported: false,
+				fromXamlParser: true,
+				new XamlParseContext { AssemblyName = _probeAssemblyName });
+
+			await LoadAsync(target, underAlcContentHost ? ownerApp : null);
+
+			if (underAlcContentHost)
+			{
+				Assert.AreSame(
+					frameworkValue,
+					target.Background,
+					$"Under the AlcContentHost the owning app resolves {FrameworkKey} from the framework; the host's override must not reach it.{DescribeLoadedCopies()}");
+			}
+			else
+			{
+				Assert.AreSame(hostOverride, target.Background, $"Outside an AlcContentHost the host's override stands.{DescribeLoadedCopies()}");
+			}
+		}
+		finally
+		{
+			if (hadHostValue)
+			{
+				Application.Current.Resources[FrameworkKey] = priorHostValue;
+			}
+			else
+			{
+				Application.Current.Resources.Remove(FrameworkKey);
+			}
 		}
 	}
 

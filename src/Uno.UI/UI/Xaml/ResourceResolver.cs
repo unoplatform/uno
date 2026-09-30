@@ -824,6 +824,56 @@ namespace Uno.UI
 			return false;
 		}
 
+		/// <summary>
+		/// Resolves a provisional lookup (see <see cref="ShouldDeferStaticResourceToLoading"/>) the way the application
+		/// that owns <paramref name="owner"/>'s position would: its resources, then assembly and framework resources.
+		/// </summary>
+		/// <remarks>
+		/// The owning application is the source of the nearest <c>AlcContentHost</c> ancestor. Without one, or when that
+		/// host projects the current application, there is no one to attribute the lookup to and this returns false, so
+		/// callers keep their top-level lookup. The host's <see cref="Application.Current"/> is never consulted here:
+		/// that is what let a host override reach a secondary app for a key the app does not define itself.
+		/// </remarks>
+		internal static bool TryOwningApplicationRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, DependencyObject owner, out object value, out ResourceDictionary providingDictionary)
+		{
+			value = null;
+			providingDictionary = null;
+
+			if (!ShouldDeferStaticResourceToLoading(context)
+				|| FindContentHostApplication(owner) is not { } owningApp
+				|| owningApp == Application.Current)
+			{
+				return false;
+			}
+
+			if (owningApp.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
+			{
+				return true;
+			}
+
+			providingDictionary = null;
+			return TryAssemblyResourceRetrieval(resourceKey, context, out value)
+				|| TrySystemResourceRetrieval(resourceKey, out value);
+		}
+
+		private static Application FindContentHostApplication(DependencyObject owner)
+		{
+			object candidate = owner;
+			while (candidate is not null)
+			{
+				if (candidate is Uno.UI.Xaml.Controls.AlcContentHost contentHost)
+				{
+					return contentHost.SourceApplication;
+				}
+
+				candidate = candidate is FrameworkElement element
+					? element.Parent ?? VisualTreeHelper.GetParent(element)
+					: (candidate as DependencyObject)?.Parent;
+			}
+
+			return null;
+		}
+
 		// MUX: CResourceDictionary::GetKeyFromThemeDictionariesNoRef / GetKeyOverrideFromApplicationResourcesNoRef
 		// (Resources.cpp:668-682, 907-938) — "Always allow Application.Resources to override values found in the
 		// global ThemeDictionaries." When a {ThemeResource} resolves from (is pinned to) the system/Fluent

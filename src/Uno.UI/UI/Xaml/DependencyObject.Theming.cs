@@ -443,6 +443,21 @@ public partial class DependencyObject
 				}
 			}
 
+			// Uno: a provisional reference (unattributable parse context) is pinned to whatever the top-level lookup found
+			// at parse time — the host's dictionary. Under an AlcContentHost, resolve it for the owning app instead.
+			if (!resolved
+				&& owner is not null
+				&& ResourceResolver.TryOwningApplicationRetrieval(themeRef.ResourceKey, themeRef.ParseContext, owner, out var owningAppValue, out var owningAppDictionary))
+			{
+				if (owningAppDictionary is not null)
+				{
+					themeRef.SetTargetDictionary(owningAppDictionary);
+				}
+
+				themeRef.SetLastResolvedValue(owningAppValue);
+				resolved = true;
+			}
+
 			// Phase B: Pinned dict fallback (WinUI: themeResource->RefreshValue())
 			// MUX: Theming.cpp:338-343 — "Call refresh if we're in a theme walk or the ref has been
 			// updated in the past *and* the value wasn't updated already by the tree lookup above."
@@ -1018,11 +1033,13 @@ public partial class DependencyObject
 				// ObjectAnimationUsingKeyFrames.EnsureKeyFrameThemeResources on every storyboard begin)
 				// otherwise keeps resolving the stock value and shadows the app-level override, leaving a checked
 				// CheckBox blank until a pointer-over repaints it. Restores the #23388 re-pin dropped by #23416.
-				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value, out var providingDict))
+				var resolvedForOwningApp = ResourceResolver.TryOwningApplicationRetrieval(binding.ResourceKey, binding.ParseContext, ActualInstance, out var value, out var providingDict);
+				if (resolvedForOwningApp
+					|| ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out value, out providingDict))
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug) && IsProvisionalBinding(binding))
 					{
-						this.Log().Debug($"Provisional {{StaticResource {binding.ResourceKey.Key}}} on {ActualInstance?.GetType().Name}.{property.Name} found nothing in scope; settling on the top-level value.");
+						this.Log().Debug($"Provisional {{StaticResource {binding.ResourceKey.Key}}} on {ActualInstance?.GetType().Name}.{property.Name} found nothing in scope; settling on the {(resolvedForOwningApp ? "owning application's" : "top-level")} value.");
 					}
 
 					SetResourceBindingValue(property, binding, value);
