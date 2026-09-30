@@ -28,10 +28,13 @@ public sealed partial class InputValidation : Page
 /// </summary>
 public class SignUpViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
 {
+	private const string NoCountry = "(none)";
+
 	private readonly Dictionary<string, List<object>> _errors = new();
 
 	private string _userName = "";
 	private string _password = "";
+	private string _country = NoCountry;
 
 	public string UserName
 	{
@@ -54,6 +57,19 @@ public class SignUpViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
 			Validate(value, nameof(Password));
 		}
 	}
+
+	public string Country
+	{
+		get => _country;
+		set
+		{
+			_country = value;
+			OnPropertyChanged();
+			Validate(value, nameof(Country));
+		}
+	}
+
+	public string[] Countries { get; } = { NoCountry, "Canada", "France", "Japan" };
 
 	public bool HasErrors => _errors.Count != 0;
 
@@ -88,6 +104,13 @@ public class SignUpViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
 				if (value is not string { Length: >= 8 })
 				{
 					errors.Add("At least 8 characters, please.");
+				}
+				break;
+
+			case nameof(Country):
+				if (value is null or NoCountry)
+				{
+					errors.Add("Please choose a country.");
 				}
 				break;
 		}
