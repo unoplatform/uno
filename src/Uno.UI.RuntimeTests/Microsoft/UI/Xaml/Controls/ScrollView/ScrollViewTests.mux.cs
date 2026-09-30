@@ -513,6 +513,61 @@ public class ScrollViewTests : MUXApiTestBase
 	}
 
 	[TestMethod]
+	[TestProperty("Description", "Verifies no crash when ScrollView is destroyed while a hide-indicators timer tick may be pending.")]
+	public async Task ValidateNoCrashWhenScrollViewDestroyedWhilePendingHideIndicatorsTick()
+	{
+		ScrollView scrollView = null;
+		UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollViewUnloadedEvent = new UnoAutoResetEvent(false);
+
+		RunOnUIThread.Execute(() =>
+		{
+			scrollView = new ScrollView();
+		});
+
+		using (ScrollViewTestHooksHelper scrollViewTestHooksHelper = new ScrollViewTestHooksHelper(scrollView, autoHideScrollControllers: true))
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				var rectangleContent = new Rectangle();
+
+				SetupDefaultUI(
+					scrollView: scrollView,
+					rectangleScrollViewContent: rectangleContent,
+					scrollViewLoadedEvent: scrollViewLoadedEvent,
+					scrollViewUnloadedEvent: scrollViewUnloadedEvent);
+			});
+
+			await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+
+			// After loading with auto-hide enabled, the ScrollView's
+			// UpdateScrollControllersVisualState may have started the
+			// hide-indicators timer. Tear down immediately so the timer
+			// (if pending) fires after the ScrollView is gone — exercising
+			// the weak-ref safety net from bug 62255131.
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Removing ScrollView from tree while hide-indicators timer may be pending.");
+				Content = null;
+			});
+
+			await WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Releasing ScrollView reference to allow GC.");
+				scrollView = null;
+			});
+		}
+
+		// Allow time for any pending timer tick to fire on the dispatcher.
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// If we got here without crashing, the test passed.
+		Log.Comment("ScrollView was destroyed without crash — use-after-free fix verified.");
+	}
+
+	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
 	[TestProperty("Description", "Verifies ScrollView forwards ScrollPresenter ScrollStarting args.")]
 	public async Task VerifyScrollStartingForwarding()
