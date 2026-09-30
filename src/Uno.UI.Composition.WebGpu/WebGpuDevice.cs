@@ -395,6 +395,12 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	/// </summary>
 	public WebGpuPathAtlas PathAtlas { get; } = new();
 
+	/// <summary>An entry was refused for want of room with every page open; the next frame evicts idle holders.</summary>
+	internal bool AtlasStarved;
+
+	/// <summary>Evictions run so far, so an entry built while starved can tell whether room has been made since.</summary>
+	internal long AtlasEvictions;
+
 	/// <summary>Opens another atlas page. Pages are added when the existing ones are exhausted.</summary>
 	public void AddPathAtlasPage()
 	{

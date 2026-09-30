@@ -145,7 +145,7 @@ internal sealed unsafe partial class WebGpuCoverage
 					slot = _d.PathAtlas.Allocate(key, w, h, ox, oy);
 				}
 			}
-			if (slot is null) { AtlasNoRoom++; return false; }
+			if (slot is null) { AtlasNoRoom++; _d.AtlasStarved = true; return false; }
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
 			QueueEntryBake(pf, shape, slot, scale, snap);

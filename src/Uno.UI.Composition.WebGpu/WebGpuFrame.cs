@@ -80,6 +80,7 @@ internal sealed unsafe partial class WebGpuFrame
 	internal void Begin()
 	{
 		SweepEntryPool();
+		EvictAtlasHolders();
 		Encoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
 	}
 
