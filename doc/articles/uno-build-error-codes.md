@@ -200,6 +200,78 @@ To fix this issue:
 </ItemGroup>
 ```
 
+### UNOB0023: A runtime-enabled package provided no runtime assembly
+
+Packages such as `Uno.WinRT` and `Uno.Foundation` ship a platform-neutral compile surface under `lib/` and the assemblies that actually run under `uno-runtime/`. This diagnostic reports that one of them contributed no runtime assembly for the target framework being built, which means the reference assemblies would be deployed instead and every call into them would throw `NotImplementedException` at runtime.
+
+The most common cause is a package built for Uno Platform 6.x. Uno Platform 7.0 renamed the runtime folders from `uno-runtime/<tfm>/skia` and `uno-runtime/<tfm>/webassembly` to `uno-runtime/<tfm>/generic` and `uno-runtime/<tfm>/wasm`, and a package in the old layout is not binary compatible with 7.0 anyway, so it has to be updated to a version built for 7.0. `SkiaSharp.Views.Uno.WinUI` is one such package; applications drawing with Skia on Uno Platform can use [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) instead.
+
+Other causes are a partially restored package, a `PackageBasePath` pointing at a location that does not contain the expected `uno-runtime` folder, or a mismatched set of Uno Platform package versions. Verify that all `Uno.*` package versions match, then clear `obj/` and `bin/` and restore again.
+
+The same code reports a package that provides its runtime assemblies but lacks one of the pieces a head needs: the browser build of a WinRT assembly under `uno-runtime/<tfm>/wasm`, the `lib/netX.0-<platform>` implementation for an Android, iOS or tvOS head, or the matching reference assembly. It also reports a cross-runtime library whose `UnoRuntimeVariant` is not `Generic`, `Wasm` or `Reference`, and a head with a Uno Platform runtime host whose target platform has no runtime assets — only `desktop`, `browserwasm`, `android`, `ios`, `tvos` and plain `netX.0` target frameworks do. The message names the package and the path that was expected.
+
+Before Uno Platform 7.0 this situation was reported only as a build message, so it surfaced as a runtime failure rather than a build failure.
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0023Validation>true</UnoDisableUNOB0023Validation>
+</PropertyGroup>
+```
+
+### UNOB0024: A runtime identifier property no longer selects runtime assets
+
+`UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` and `UnoWinRTRuntimeIdentifier` used to tell the build which runtime assets to deploy. As of Uno Platform 7.0 that is decided by the target framework, so setting them on an application head no longer selects anything and they can be removed.
+
+A cross-runtime *library* used `UnoRuntimeIdentifier` to name the `uno-runtime` folder its output is packed into. It now sets `UnoRuntimeVariant` instead — `Generic`, `Wasm` or `Reference` — and the folders are named after it (`generic` and `wasm`, formerly `skia` and `webassembly`). The old property is still honored for a library, mapping `skia` to `Generic` and `webassembly` to `Wasm`.
+
+The warning therefore covers three situations, each with its own message:
+
+| Message | Where | What to do |
+|---|---|---|
+| `UnoUIRuntimeIdentifier and UnoWinRTRuntimeIdentifier no longer have any effect` | any project | remove them |
+| `UnoRuntimeIdentifier no longer selects runtime assets for an application head` | a project with a Uno Platform runtime host | remove it |
+| `UnoRuntimeIdentifier is deprecated for cross-runtime libraries` | a library without a runtime host | set the `UnoRuntimeVariant` value the message names |
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0024Validation>true</UnoDisableUNOB0024Validation>
+</PropertyGroup>
+```
+
+### UNOB0025: Runtime-enabled packages are referenced without a runtime host
+
+This application head references packages that ship their implementation under `uno-runtime/` — such as `Uno.WinRT` and `Uno.Foundation` — but no Uno Platform runtime host package was detected (each `Uno.WinUI.Runtime.Skia.*` package declares itself by setting the `UnoHasRuntimeHost` MSBuild property), so the reference assemblies would be deployed and every call into them would throw `NotImplementedException` at runtime.
+
+The usual cause is a version mismatch: a `Uno.WinUI.Runtime.Skia.*` package older than `Uno.WinUI` does not declare the runtime host. Align every `Uno.*` package version, then restore again.
+
+When such an older runtime host is detected, this is reported as an error. Otherwise it is a warning, since an executable project that is not an application, such as a test project, can legitimately run against the reference assemblies.
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0025Validation>true</UnoDisableUNOB0025Validation>
+</PropertyGroup>
+```
+
+### UNOB0026: A referenced assembly was built for a UI runtime that no longer exists
+
+Uno Platform releases before 7.0 stamped the UI runtime an assembly was built for into its `UnoUIRuntimeIdentifier` assembly metadata. This diagnostic reports a referenced assembly whose stamp names one of the native renderers, which 7.0 removed — such an assembly cannot run against this release.
+
+Update the package to a version built for Uno Platform 7.0. Assemblies built by 7.0 carry no stamp, since there is a single UI runtime, and are always accepted.
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0026Validation>true</UnoDisableUNOB0026Validation>
+</PropertyGroup>
+```
+
 ### UNOB0027: The file suffix is no longer recognized by Uno Platform 7.0
 
 Uno Platform 7.0 removed the `*.Apple.cs`, `*.iOSmacOS.cs`, and `*.reference.cs` file suffixes. The build no longer excludes these files from any target framework, so each of them now compiles for every target framework of the project, the WinAppSDK one included. Rename or remove the file:
@@ -240,13 +312,15 @@ Invocations to `Dispose` can cause the application to crash in `__NSObject_Dispo
 
 The method `InitializeComponent` should always be called in class constructor. A missing call will lead to hard-to-diagnose bugs. This analyzer reports when it's missing to make issues more apparent.
 
-### UNO0007
+### UNO0007: Retired
 
 **An assembly required for a component is missing**
 
-Some components like `MediaPlayerElement` require you to reference a specific NuGet package for them to work correctly.
-
-- For `MediaPlayerElement` on WebAssembly or Gtk, it requires `Uno.WinUI.MediaPlayer.WebAssembly` or `Uno.WinUI.MediaPlayer.Skia.Gtk` NuGet package. For more information, see [MediaPlayerElement](xref:Uno.Controls.MediaPlayerElement).
+> [!NOTE]
+> This diagnostic is retired. It reported a missing NuGet package for `ProgressRing` (Lottie) and, on the
+> native WebAssembly and GTK targets, for `MediaPlayerElement`. `ProgressRing` no longer needs Lottie, and
+> Uno Platform 7.0 removed those targets and the packages it recommended. This heading is kept so existing
+> links to it still resolve.
 
 ### UNO0008
 

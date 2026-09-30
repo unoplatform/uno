@@ -13,7 +13,7 @@
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Description>This package provides support for spellchecking for Uno Platform apps</Description>
 	
-		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 	

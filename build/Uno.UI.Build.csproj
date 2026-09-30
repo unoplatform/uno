@@ -308,7 +308,7 @@
 
 	<!--
 		Uno.WinUI no longer ships an uno-runtime folder: lib/ is the Skia build. Uno.WinRT still
-		ships both the skia and webassembly flavors against a Reference lib/, so that is where the
+		ships its generic and wasm variants against a Reference lib/, so that is where the
 		reference-vs-runtime API comparison still has something to validate.
 	-->
 	<Target Name="ValidatePackageReferenceAPI" AfterTargets="BuildNuGetPackage">
