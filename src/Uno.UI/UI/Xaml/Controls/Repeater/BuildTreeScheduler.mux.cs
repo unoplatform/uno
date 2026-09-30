@@ -37,6 +37,10 @@ partial class BuildTreeScheduler
 
 	private static void OnRendering(object sender, object args)
 	{
+		// UNO: the budget is this tick's, so start it here. Measured from the end of the previous tick (the upstream
+		// behavior), a frame slower than the budget spends it before any work runs, and every tick after that finds
+		// it already spent: below ~25 fps the queue - and every phased element with it - is never processed.
+		m_timer.Restart();
 		bool budgetReached = ShouldYield();
 		if (!budgetReached && m_pendingWork.Count > 0)
 		{
