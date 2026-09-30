@@ -283,6 +283,11 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	/// Removes the element from the DOM once this wrapper is garbage collected. Used for elements the framework creates
 	/// on behalf of a control, which application code cannot dispose (e.g. the WebView2 iframe).
 	/// </summary>
+	/// <remarks>
+	/// The deferred removal finds the element by <see cref="ElementId"/>, so it relies on ids never being reused: the weak
+	/// handle they are built from is never freed. It never happens while <see cref="RegisterHtmlEventHandler"/> handlers
+	/// are registered, because their JS proxy keeps this wrapper alive.
+	/// </remarks>
 	internal void RemoveFromDomWhenCollected()
 		=> _domRemovalOnCollect ??= new DomRemovalOnCollect(ElementId);
 
@@ -442,18 +447,28 @@ public sealed partial class BrowserHtmlElement : IDisposable
 
 		~DomRemovalOnCollect()
 		{
-			// The DOM is only reachable from the UI thread, and finalizers may run on another one.
-			NativeDispatcher.Main.Enqueue(() =>
+			try
 			{
-				try
-				{
-					NativeMethods.DisposeHtmlElement(elementId);
-				}
-				catch (JSException e)
-				{
-					typeof(BrowserHtmlElement).LogDebug()?.Debug($"Element {elementId} was already removed from the DOM: {e.Message}");
-				}
-			}, NativeDispatcherPriority.Idle);
+				// The DOM is only reachable from the UI thread, and finalizers may run on another one.
+				NativeDispatcher.Main.Enqueue(Remove, NativeDispatcherPriority.Idle);
+			}
+			catch (Exception)
+			{
+				// An exception escaping a finalizer ends the process, while a missed removal only leaks the element.
+			}
+		}
+
+		private void Remove()
+		{
+			try
+			{
+				NativeMethods.DisposeHtmlElement(elementId);
+				typeof(BrowserHtmlElement).LogTrace()?.Trace($"Removed the collected element {elementId} from the DOM.");
+			}
+			catch (JSException e)
+			{
+				typeof(BrowserHtmlElement).LogWarn()?.Warn($"Failed to remove the collected element {elementId} from the DOM: {e.Message}");
+			}
 		}
 	}
 
