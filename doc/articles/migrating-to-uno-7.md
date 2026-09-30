@@ -376,6 +376,11 @@ A library built with the Uno.Sdk can instead multi-target `net10.0-desktop`, `ne
 libraries built with plain `Microsoft.NET.Sdk`, which cannot target the Uno.Sdk's `desktop` and `browserwasm`
 platforms.
 
+Most libraries need neither. A library that targets plain `net10.0` or `net11.0` and has no desktop- or
+browser-specific code sets no `UnoRuntimeVariant` and packs no `uno-runtime` folder: it compiles against the
+platform-neutral assemblies in `lib/`, and the application head deploys the runtime implementations matching its
+own target framework, the library's calls included.
+
 ### Public API removed
 
 - **Native base classes / identity:** `BindableView` (and `Bindable*` widget wrappers),
