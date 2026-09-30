@@ -707,6 +707,152 @@ public class ItemsViewTests : MUXApiTestBase
 	}
 
 	[TestMethod]
+	[TestProperty("Description", "Loads an ItemsView, changes its ItemsSource, selects items and removes them one by one.")]
+	public async Task CanChangeItemsSourceAndRemoveSelectedItems()
+	{
+		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ItemsRepeater"))
+		{
+			ItemsView itemsView = null;
+			ItemsRepeater itemsRepeater = null;
+			ObservableCollection<int> itemsSource = null;
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
+
+			RunOnUIThread.Execute(() =>
+			{
+				itemsView = new ItemsView()
+				{
+					Width = 100,
+					Height = 200,
+					SelectionMode = ItemsViewSelectionMode.Single
+				};
+
+				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
+			});
+
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Setting ItemsSource");
+				itemsSource = new ObservableCollection<int>(Enumerable.Range(0, 3));
+				itemsView.ItemsSource = itemsSource;
+				Verify.AreEqual(itemsSource, itemsView.ItemsSource);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Extracting ScrollView");
+				ScrollView scrollView = itemsView.ScrollView;
+				Verify.IsNotNull(scrollView);
+
+				Log.Comment("Extracting ItemsRepeater");
+				itemsRepeater = scrollView.Content as ItemsRepeater;
+				Verify.IsNotNull(itemsRepeater);
+
+				int childrenCount = VisualTreeHelper.GetChildrenCount(itemsRepeater);
+				Log.Comment($"Extracting first ItemContainer, children count: {childrenCount}");
+				Verify.AreEqual(3, childrenCount);
+				ItemContainer itemContainer = itemsRepeater.TryGetElement(0) as ItemContainer;
+				Verify.IsNotNull(itemContainer);
+				Verify.IsFalse(itemContainer.IsSelected);
+
+				Log.Comment("Selecting first ItemContainer");
+				itemContainer.IsSelected = true;
+				Verify.IsTrue(itemContainer.IsSelected);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Replacing ItemsSource");
+				itemsSource = new ObservableCollection<int>(Enumerable.Range(0, 3));
+				itemsView.ItemsSource = itemsSource;
+				Verify.AreEqual(3, itemsSource.Count);
+			});
+
+			// Let the layout system fully process the ItemsSource replacement
+			// before modifying the collection.
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Removing first item");
+				itemsSource.RemoveAt(0);
+				Verify.AreEqual(2, itemsSource.Count);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Re-extracting ItemsRepeater after ItemsSource change");
+				itemsRepeater = itemsView.ScrollView.Content as ItemsRepeater;
+				Verify.IsNotNull(itemsRepeater);
+
+				itemsRepeater.UpdateLayout();
+				int childrenCount = VisualTreeHelper.GetChildrenCount(itemsRepeater);
+				Log.Comment($"Extracting last ItemContainer, children count: {childrenCount}");
+				ItemContainer itemContainer = itemsRepeater.TryGetElement(1) as ItemContainer;
+				Verify.IsNotNull(itemContainer);
+				Verify.IsFalse(itemContainer.IsSelected);
+				Log.Comment("Selecting last ItemContainer");
+				itemContainer.IsSelected = true;
+				Verify.IsTrue(itemContainer.IsSelected);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Removing last item");
+				itemsSource.RemoveAt(1);
+				Verify.AreEqual(1, itemsSource.Count);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				itemsRepeater.UpdateLayout();
+				int childrenCount = VisualTreeHelper.GetChildrenCount(itemsRepeater);
+				Log.Comment($"Extracting remaining ItemContainer, children count: {childrenCount}");
+				ItemContainer itemContainer = itemsRepeater.TryGetElement(0) as ItemContainer;
+				Verify.IsNotNull(itemContainer);
+				Verify.IsFalse(itemContainer.IsSelected);
+				Log.Comment("Selecting remaining ItemContainer");
+				itemContainer.IsSelected = true;
+				Verify.IsTrue(itemContainer.IsSelected);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Removing remaining item");
+				itemsSource.RemoveAt(0);
+				Verify.AreEqual(0, itemsSource.Count);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Resetting window content and ItemsView");
+				Content = null;
+				itemsView = null;
+			});
+
+			await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
+			Log.Comment("Done");
+		}
+	}
+
+	[TestMethod]
 	[TestProperty("Description", "Loads an ItemsView, changes Layout property to various types.")]
 	public async Task CanChangeLayoutProperty()
 	{
@@ -1127,15 +1273,15 @@ public class ItemsViewTests : MUXApiTestBase
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await BringItemIntoView(49, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 			Log.Comment("Scroll to last item.");
+			await BringItemIntoView(49, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
 				Log.Comment("Extracting last ItemContainer.");
 				itemContainer = itemsRepeater.TryGetElement(49) as ItemContainer;
 				Verify.IsNotNull(itemContainer);
-				Log.Comment("ItemContainer is null as it is out of view and not realized.");
+				Log.Comment("ItemContainer is non-null as it is in view and realized.");
 
 				Log.Comment("Selecting last ItemContainer");
 				itemContainer.IsSelected = true;
@@ -1155,8 +1301,8 @@ public class ItemsViewTests : MUXApiTestBase
 				Log.Comment("ItemContainer SelectionContainer returns parent ItemsView.");
 			});
 
-			await BringItemIntoView(0, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 			Log.Comment("Scroll back to first item.");
+			await BringItemIntoView(0, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -2143,7 +2289,7 @@ public class ItemsViewTests : MUXApiTestBase
 			scrollViewBringingIntoViewEvent.Reset();
 			scrollViewScrollCompletedEvent.Reset();
 
-			Log.Comment("Invoking ItemsView.StartBringItemIntoView(250)");
+			Log.Comment("Invoking ItemsView.StartBringItemIntoView(" + index + ")");
 
 			BringIntoViewOptions bringIntoViewOptions = new BringIntoViewOptions()
 			{
