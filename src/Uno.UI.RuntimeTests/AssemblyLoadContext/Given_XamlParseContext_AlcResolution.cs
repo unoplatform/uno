@@ -779,8 +779,8 @@ public class Given_XamlParseContext_AlcResolution
 
 		var searchPaths = new[]
 		{
-			Path.Combine(basePath, "..", "..", "..", "..", "..", "Uno.UI.RuntimeTests", "Tests", "AssemblyLoadContext", "AlcApp"),
-			Path.Combine(basePath, "..", "..", "src", "Uno.UI.RuntimeTests", "Tests", "AssemblyLoadContext", "AlcApp"),
+			Path.Combine(basePath, "..", "..", "..", "..", "..", "Uno.UI.RuntimeTests", "AssemblyLoadContext", "AlcApp"),
+			Path.Combine(basePath, "..", "..", "src", "Uno.UI.RuntimeTests", "AssemblyLoadContext", "AlcApp"),
 			Path.Combine(basePath, "..", "..", ".."), // CI
 		};
 
