@@ -724,8 +724,9 @@ internal sealed unsafe partial class WebGpuFrame
 		bool rect = ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f;
 		u[9] = rect ? 1f : 0f;
 		u[10] = ab.X; u[11] = ab.Y;
-		// rect.x is the site's draw-order depth (see project); rect.y stays spare.
-		u[12] = depth; u[13] = 0f; u[14] = ab.Z; u[15] = ab.W;
+		// rect.x is the site's draw-order depth (see project); rect.y the pass's device pixels per target pixel, which
+		// a shadow layer rendered below its covered size needs to lift a fragment back to the device space.
+		u[12] = depth; u[13] = _basisScale; u[14] = ab.Z; u[15] = ab.W;
 
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
 		if (rect) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
