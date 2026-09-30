@@ -209,6 +209,9 @@ namespace Microsoft.UI.Xaml.Controls
 				// Leaving the parent drops the inherited DataContext, and the owner only pushes its own
 				// again when it changes: keep it, so the closed tooltip's bindings stay resolved.
 				var dataContext = DataContext;
+
+				// As in WinUI's ToolTip::Close, the popup lets go of the tooltip, so Parent is null while closed.
+				_popup.Child = null;
 				this.SetParent(null);
 				this.SetValue(DataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
 			}

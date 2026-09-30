@@ -825,5 +825,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			}
 		}
+
+		[TestMethod]
+		public async Task When_Closed_Then_Parent_Cleared()
+		{
+			var owner = new Button { Content = "owner" };
+			var SUT = new ToolTip { Content = "tooltip" };
+			ToolTipService.SetToolTip(owner, SUT);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = owner;
+				await TestServices.WindowHelper.WaitForLoaded(owner);
+
+				for (var i = 0; i < 2; i++)
+				{
+					SUT.IsOpen = true;
+					await TestServices.WindowHelper.WaitForIdle();
+					Assert.IsInstanceOfType(SUT.Parent, typeof(Popup));
+					Assert.IsNotNull(VisualTreeHelper.GetParent(SUT));
+
+					SUT.IsOpen = false;
+					await TestServices.WindowHelper.WaitForIdle();
+					Assert.IsNull(SUT.Parent);
+					Assert.IsNull(VisualTreeHelper.GetParent(SUT));
+				}
+			}
+			finally
+			{
+				SUT.IsOpen = false;
+#if HAS_UNO
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+			}
+		}
 	}
 }
