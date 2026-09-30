@@ -744,7 +744,44 @@ than edited into the decisions above, so the reasoning that produced them stays 
   which in practice means an editable `ComboBox`. With one property per type, this also settles which half of
   D9's "`Text` **and** `SelectedItem`" case comes first. The `Slider`/`ProgressBar` and `ComboBox`/`FlipView`
   examples in §3.3 still explain why the attribute sits on a type rather than on a dependency property, but
-  neither `Slider` nor `ComboBox.SelectedItem` is annotated any more.
+  neither `Slider` nor `ComboBox.SelectedItem` is annotated any more. *(Reverted for `ComboBox` — see §10c.)*
+
+## 10c. `ComboBox` validates `SelectedItem` again
+
+§10b's move to `Text` broke the common setup: a non-editable `ComboBox` is bound on `SelectedItem`, so its
+errors stopped reaching the control. **`ComboBox` is back on `SelectedItem`**, still one property per type,
+which gives up `Text` on an editable `ComboBox`.
+
+Choosing `Text` was never strictly required for parity. WinUI's validation is generated x:Bind code keyed
+on `InputPropertyAttribute`, and the withdrawn WinUI spec says a control may declare several input
+properties. `ComboBox` is the one participant whose validation property differs from its WinUI
+`[InputProperty]`.
+
+**Validating another property — `SelectedIndex`, `SelectedValue` — works today, by replacement:**
+
+- **App-wide, through the map:**
+  `FeatureConfiguration.InputValidation.ValidationProperties[typeof(ComboBox)] = Selector.SelectedIndexProperty;`
+- **Per type, through a subclass** whose own `[InputValidationProperty(nameof(SelectedIndex))]` shadows the
+  one on `ComboBox`.
+
+Both replace `SelectedItem` rather than add to it, and both apply to every instance of the type. As §3.4
+requires, both must be in place before the binding is set. `Given_Validation_Controls` covers each route
+end to end.
+
+**Two options were considered and not implemented:**
+
+- **Widening `AllowMultiple`**, per D9. It carries four costs:
+  - `GetCustomAttribute` throws `AmbiguousMatchException` on a re-declaring subclass, so resolution must
+    walk `BaseType` with `inherit: false`. Shadowing and the empty-name opt-out then have to apply to the
+    whole set.
+  - The public map's indexer becomes a list.
+  - `UpdateValidationErrors` reconciles against one source. Two live bindings would each delete the
+    other's errors, so their errors must be gathered first and reconciled once.
+  - `ValidationSubscriptionProperty` becomes one subscription per property, and the mode-changed callback
+    stops clearing every subscription at once.
+- **A per-instance override**, such as an attached property naming the property to validate. It reaches a
+  single `ComboBox` without a subclass, but adds public API and another input to the binding-order problem
+  §10 records.
 
 ## 11. References
 
