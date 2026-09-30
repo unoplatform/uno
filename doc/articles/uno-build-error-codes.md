@@ -233,6 +233,7 @@ The warning therefore covers three situations, each with its own message:
 | `UnoUIRuntimeIdentifier and UnoWinRTRuntimeIdentifier no longer have any effect` | any project | remove them |
 | `UnoRuntimeIdentifier no longer selects runtime assets for an application head` | a project with a Uno Platform runtime host | remove it |
 | `UnoRuntimeIdentifier is deprecated for cross-runtime libraries` | a library without a runtime host | set the `UnoRuntimeVariant` value the message names |
+
 To suppress it:
 
 ```xml
