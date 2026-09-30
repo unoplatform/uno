@@ -231,6 +231,110 @@ public class Given_XamlParseContext_AlcResolution
 	}
 
 	/// <summary>
+	/// The correction must survive a resource refresh that runs before the element has a parent. Generated
+	/// template code calls <c>CreationComplete</c> on each element while it is still detached; applying its
+	/// style there refreshes every resource binding through <c>Style.ApplyTo</c>, with nothing in scope. That
+	/// refresh must not settle the provisional lookup, or nothing is left for the load-time walk.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_TemplateCompletesElementBeforeItIsParented_Then_LoadingUnderAlcContentHostStillRestoresOwningAppStyle()
+	{
+		const string StyleKey = "XamlParseContextAlcResolutionButtonStyle";
+
+		var ownerApp = await SetUpDuplicatedAssemblyAsync();
+		var appStyle = new Style(typeof(Button));
+		var hostStyle = new Style(typeof(Button));
+		ownerApp.Resources[StyleKey] = appStyle;
+		Application.Current.Resources[StyleKey] = hostStyle;
+
+		try
+		{
+			var nameOnlyContext = new XamlParseContext { AssemblyName = _probeAssemblyName };
+
+			// What generated template code emits for <Button Style="{StaticResource Key}" />.
+			var button = new Button { IsParsing = true, Content = "Primary" };
+			ResourceResolver.ApplyResource(
+				button,
+				FrameworkElement.StyleProperty,
+				StyleKey,
+				isThemeResourceExtension: false,
+				isHotReloadSupported: false,
+				fromXamlParser: true,
+				nameOnlyContext);
+			button.CreationComplete();
+
+			Assert.IsNull(button.Parent, "Sanity: CreationComplete must run while the element has no parent.");
+			Assert.AreSame(hostStyle, button.Style, "Before loading, the provisional host value stands.");
+
+			var host = new AlcContentHost { SourceApplicationOverride = ownerApp, Content = button };
+
+			_usedWindowContent = true;
+			TestServices.WindowHelper.WindowContent = host;
+			await TestServices.WindowHelper.WaitForLoaded(button);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreSame(
+				appStyle,
+				button.Style,
+				"A refresh while detached must not settle the provisional lookup: the load-time walk under the " +
+				$"AlcContentHost must still replace the host's style with the owning app's.{DescribeLoadedCopies()}");
+		}
+		finally
+		{
+			Application.Current.Resources.Remove(StyleKey);
+		}
+	}
+
+	/// <summary>
+	/// The host side of the previous test: the same detached completion, but the element loads outside any
+	/// <c>AlcContentHost</c>. Nothing in scope defines the key, so the load-time walk falls back to the
+	/// top-level lookup and the host's style stands.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_TemplateCompletesElementBeforeItIsParented_And_LoadsOutsideAlcContentHost_Then_HostStyleStands()
+	{
+		const string StyleKey = "XamlParseContextAlcResolutionButtonStyle";
+
+		var ownerApp = await SetUpDuplicatedAssemblyAsync();
+		var appStyle = new Style(typeof(Button));
+		var hostStyle = new Style(typeof(Button));
+		ownerApp.Resources[StyleKey] = appStyle;
+		Application.Current.Resources[StyleKey] = hostStyle;
+
+		try
+		{
+			var nameOnlyContext = new XamlParseContext { AssemblyName = _probeAssemblyName };
+
+			var button = new Button { IsParsing = true, Content = "Primary" };
+			ResourceResolver.ApplyResource(
+				button,
+				FrameworkElement.StyleProperty,
+				StyleKey,
+				isThemeResourceExtension: false,
+				isHotReloadSupported: false,
+				fromXamlParser: true,
+				nameOnlyContext);
+			button.CreationComplete();
+
+			_usedWindowContent = true;
+			TestServices.WindowHelper.WindowContent = new Border { Child = button };
+			await TestServices.WindowHelper.WaitForLoaded(button);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreSame(
+				hostStyle,
+				button.Style,
+				$"Outside an AlcContentHost the load-time walk must fall back to the host's style.{DescribeLoadedCopies()}");
+		}
+		finally
+		{
+			Application.Current.Resources.Remove(StyleKey);
+		}
+	}
+
+	/// <summary>
 	/// The same correction for XAML materialised through <c>XamlReader.Load</c>, which passes no parse
 	/// context at all. That is how a designer creates and edits elements inside a hosted app; without
 	/// the deferral, every <c>{StaticResource}</c> it writes is a host lookup.

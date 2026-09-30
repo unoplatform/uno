@@ -914,6 +914,17 @@ public partial class DependencyObject
 		}
 	}
 
+	/// <summary>
+	/// Whether <paramref name="binding"/> is a provisional {StaticResource} (see
+	/// <see cref="ResourceResolver.ShouldDeferStaticResourceToLoading"/>) on an element that has not entered the
+	/// live tree yet, such as a template part completed before it is parented. Only the top-level lookup can
+	/// answer there, and settling on its value would consume the binding before the load-time walk runs.
+	/// </summary>
+	private bool IsProvisionalBindingOutsideLiveTree(ResourceBinding binding)
+		=> (binding.UpdateReason & ResourceUpdateReason.StaticResourceLoading) != 0
+			&& ActualInstance is UIElement { IsActiveInVisualTree: false }
+			&& ResourceResolver.ShouldDeferStaticResourceToLoading(binding.ParseContext);
+
 	/// <remarks>
 	/// This method contains or is called by a try/catch containing method and
 	/// can be significantly slower than other methods as a result on WebAssembly.
@@ -977,6 +988,12 @@ public partial class DependencyObject
 
 					break;
 				}
+			}
+
+			if (!wasSet && IsProvisionalBindingOutsideLiveTree(binding))
+			{
+				// Only the load-time walk can attribute this lookup to an owning app; keep the binding for it.
+				return;
 			}
 
 			if (!wasSet)
