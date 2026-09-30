@@ -58,6 +58,21 @@
                     Visibility="{Binding HasValidationErrors, ElementName=PasswordBox, Converter={StaticResource BoolToVisibility}}" />
             </StackPanel>
 
+            <StackPanel Spacing="4">
+                <ComboBox
+                    x:Name="CountryBox"
+                    Header="Country"
+                    InputValidationMode="Auto"
+                    ItemsSource="{Binding Countries}"
+                    SelectedItem="{Binding Country, Mode=TwoWay}" />
+                <TextBlock
+                    x:Name="CountryErrors"
+                    Foreground="Red"
+                    Text="{Binding ValidationErrors, ElementName=CountryBox, Converter={StaticResource ErrorsToString}}"
+                    TextWrapping="Wrap"
+                    Visibility="{Binding HasValidationErrors, ElementName=CountryBox, Converter={StaticResource BoolToVisibility}}" />
+            </StackPanel>
+
         </StackPanel>
     </not_win:ScrollViewer>
 </Page>
