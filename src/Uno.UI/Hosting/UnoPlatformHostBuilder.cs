@@ -177,7 +177,13 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain"
 			&& CreateInstanceOf<Drawing.IGraphicsProvider>(WebGpuGraphicsProviderTypeName) is { } webGpuProvider)
 		{
-			Drawing.GraphicsRegistry.RegisterDefault(new[] { webGpuProvider });
+			// Skia after it, so a WebGPU that cannot initialize on this host (no native wgpu shipped, no usable
+			// adapter) is negotiated past rather than leaving the window with no backend at all. The variable is
+			// inherited by child processes, which need not ship what the parent does.
+			Drawing.GraphicsRegistry.RegisterDefault(
+				InvokeSkiaFactory<Drawing.IGraphicsProvider>("CreateGraphicsProvider") is { } skiaFallback
+					? new[] { webGpuProvider, skiaFallback }
+					: new[] { webGpuProvider });
 			if (!Drawing.GeometryFactory.IsRegistered
 				&& CreateInstanceOf<Drawing.IGeometryFactory>(ManagedGeometryFactoryTypeName) is { } managedGeometry)
 			{
