@@ -45,6 +45,7 @@ public partial class ToolTipService
 
 		toolTip.Placement = GetPlacement(toolTip);
 		toolTip.SetAnchor(GetPlacementTarget(container) ?? container);
+		toolTip.SetContainer(container);
 
 		if (isKeyboardAcceleratorToolTip)
 		{

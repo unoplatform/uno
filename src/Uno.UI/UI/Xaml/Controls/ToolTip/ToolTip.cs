@@ -38,6 +38,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private DependencyObject? _owner;
 
+		// The element the tooltip is set on. _owner is the placement target when there is one, which
+		// only positions the tooltip; the DataContext comes from the container, as in WinUI.
+		private FrameworkElement? _container;
+
 		internal Popup Popup
 		{
 			get
@@ -151,11 +155,11 @@ namespace Microsoft.UI.Xaml.Controls
 				Opened?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Opened", useTransitions: true);
 
-				if (_owner is FrameworkElement fe)
+				if (GetDataContextOwner() is { } dataContextOwner)
 				{
 					// Propagate the DC once, the inheritance
 					// will update the rest on DC changes.
-					this.SetValue(DataContextProperty, fe.DataContext, DependencyPropertyValuePrecedences.Inheritance);
+					this.SetValue(DataContextProperty, dataContextOwner.DataContext, DependencyPropertyValuePrecedences.Inheritance);
 				}
 			}
 			else
@@ -202,11 +206,19 @@ namespace Microsoft.UI.Xaml.Controls
 			// owner's ToolTipService.ToolTip property again, as it was before it opened.
 			if (_popup is not null && ReferenceEquals(this.GetParent(), _popup.PopupPanel))
 			{
+				// Leaving the parent drops the inherited DataContext, and the owner only pushes its own
+				// again when it changes: keep it, so the closed tooltip's bindings stay resolved.
+				var dataContext = DataContext;
 				this.SetParent(null);
+				this.SetValue(DataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
 			}
 		}
 
 		public void SetAnchor(UIElement element) => _owner = element;
+
+		internal void SetContainer(FrameworkElement container) => _container = container;
+
+		private FrameworkElement? GetDataContextOwner() => _container ?? GetOwnerFrameworkElement();
 
 		private void SubscribeOwnerThemeChanged()
 		{
@@ -214,7 +226,11 @@ namespace Microsoft.UI.Xaml.Controls
 			if (ownerFe is not null)
 			{
 				ownerFe.ActualThemeChanged += OnOwnerActualThemeChanged;
-				ownerFe.DataContextChanged += OnOwnerDataContextChanged;
+			}
+
+			if (GetDataContextOwner() is { } dataContextOwner)
+			{
+				dataContextOwner.DataContextChanged += OnOwnerDataContextChanged;
 			}
 		}
 
@@ -224,7 +240,11 @@ namespace Microsoft.UI.Xaml.Controls
 			if (ownerFe is not null)
 			{
 				ownerFe.ActualThemeChanged -= OnOwnerActualThemeChanged;
-				ownerFe.DataContextChanged -= OnOwnerDataContextChanged;
+			}
+
+			if (GetDataContextOwner() is { } dataContextOwner)
+			{
+				dataContextOwner.DataContextChanged -= OnOwnerDataContextChanged;
 			}
 		}
 

@@ -734,5 +734,96 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			}
 		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24557")]
+		public async Task When_Closed_Then_DataContext_Kept()
+		{
+			var owner = new Button { Content = "owner" };
+			var content = new TextBlock();
+			content.SetBinding(TextBlock.TextProperty, new Binding());
+			var SUT = new ToolTip { Content = content };
+			ToolTipService.SetToolTip(owner, SUT);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = owner;
+				await TestServices.WindowHelper.WaitForLoaded(owner);
+				owner.DataContext = "VM1";
+
+				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("VM1", SUT.DataContext);
+				Assert.AreEqual("VM1", content.Text);
+
+				SUT.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("VM1", SUT.DataContext, "The DataContext was lost on close.");
+				Assert.AreEqual("VM1", content.Text);
+
+				owner.DataContext = "VM2";
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("VM2", SUT.DataContext);
+
+				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+				owner.DataContext = "VM3";
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("VM3", SUT.DataContext);
+
+				SUT.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("VM3", SUT.DataContext, "The DataContext was lost on the second close.");
+				Assert.AreEqual("VM3", content.Text);
+			}
+			finally
+			{
+				SUT.IsOpen = false;
+#if HAS_UNO
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24557")]
+		public async Task When_PlacementTarget_Then_DataContext_From_Owner()
+		{
+			var owner = new Button { Content = "owner", DataContext = "Owner" };
+			var target = new Button { Content = "target", DataContext = "Target" };
+			var SUT = new ToolTip { Content = "tooltip" };
+			ToolTipService.SetPlacementTarget(owner, target);
+			ToolTipService.SetToolTip(owner, SUT);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = new StackPanel { Children = { owner, target } };
+				await TestServices.WindowHelper.WaitForLoaded(owner);
+
+				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("Owner", SUT.DataContext);
+
+				owner.DataContext = "Owner2";
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("Owner2", SUT.DataContext);
+
+				// The placement target only positions the tooltip.
+				target.DataContext = "Target2";
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("Owner2", SUT.DataContext);
+
+				SUT.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("Owner2", SUT.DataContext);
+			}
+			finally
+			{
+				SUT.IsOpen = false;
+#if HAS_UNO
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+			}
+		}
 	}
 }
