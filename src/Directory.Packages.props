@@ -177,7 +177,7 @@
 		<PackageVersion Include="Uno.icu-wasm" Version="$(UnoICUVersion)" />
 		<PackageVersion Include="Uno.icu-win" Version="$(UnoICUVersion)" />
 		<PackageVersion Include="Uno.MonoAnalyzers" Version="1.0.0" />
-		<PackageVersion Include="Uno.Resizetizer" Version="1.11.0-dev.17" />
+		<PackageVersion Include="Uno.Resizetizer" Version="2.0.0-dev.14" />
 		<PackageVersion Include="Uno.UI.RuntimeTests.Engine" Version="0.36.0-dev.124" />
 		<PackageVersion Include="Uno.UITest" Version="1.1.0-dev.70" />
 		<PackageVersion Include="Uno.UITest.Helpers" Version="1.1.0-dev.70" />
