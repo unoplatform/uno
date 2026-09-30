@@ -274,6 +274,11 @@
 		<!-- Workaround for https://github.com/dotnet/aspnetcore/issues/63970 -->
 		<WasmFingerprintAssets>false</WasmFingerprintAssets>
 		<!--
+		Bootstrap 10.1 rewrites uno-config.js to the fingerprinted dotnet.<hash>.js on publish. With
+		assets unfingerprinted it matches dotnet.runtime.js instead and the runtime fails to start.
+		-->
+		<WasmShellEnableDotnetJsFingerprinting>false</WasmShellEnableDotnetJsFingerprinting>
+		<!--
 		This wwwroot is mounted at two roots: the runtime tests serve it at localhost:8000/ and PR
 		staging from /pr-<N>/wasm-skia-net9/. Uno.Sdk defaults this to "/" for deep-link routing, which
 		bakes absolute /package_<hash>/ paths into index.html and uno-config.js and 404s under any
