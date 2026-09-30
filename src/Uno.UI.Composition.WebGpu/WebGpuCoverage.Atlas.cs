@@ -103,7 +103,9 @@ internal sealed unsafe partial class WebGpuCoverage
 		// those are the geometry's declared bounds mapped by the matrix, and a geometry whose outline reaches past
 		// them leaves the slot too small. The accumulate pass clamps every edge to the slot's right bound, so the
 		// overflow is not merely cropped - the winding it carries is lost and the fill comes out empty.
-		if (!WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, shape.BbMin + pf.Offset, shape.BbMax + pf.Offset, scale, out var key, out var w, out var h, out ox, out oy, allowBig: big, place: place)) { AtlasNoKey++; return false; }
+		// A big fill is one mask of its own, so it keeps its exact phase; small fills (glyphs above all) share entries
+		// across the fractional positions text puts them at.
+		if (!WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, shape.BbMin + pf.Offset, shape.BbMax + pf.Offset, scale, out var key, out var w, out var h, out ox, out oy, out var snap, allowBig: big, place: place, phases: big ? 0 : WebGpuPathAtlas.FillPhases)) { AtlasNoKey++; return false; }
 
 
 		if (_d.PathAtlas.RegularPages == 0) { _d.AddPathAtlasPage(); }
@@ -146,7 +148,7 @@ internal sealed unsafe partial class WebGpuCoverage
 			if (slot is null) { AtlasNoRoom++; return false; }
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
-			QueueEntryBake(pf, shape, slot, scale);
+			QueueEntryBake(pf, shape, slot, scale, snap);
 			if (big) { FillMasksBaked++; } else { AtlasBaked++; }
 		}
 
