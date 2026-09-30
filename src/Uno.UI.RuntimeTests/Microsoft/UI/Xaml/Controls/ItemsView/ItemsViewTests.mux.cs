@@ -21,6 +21,7 @@ using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.Foundation;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 
@@ -543,7 +544,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Select an item, scroll to recycle selected item, scroll back to ensure selection persisted across recycling")]
-	[Ignore("Uno-specific: ItemsView uses Layout.IndexBasedLayoutOrientation in TryGetItemIndex which is not yet implemented in Uno.")]
+	[Ignore("Uno-specific: ItemsView.StartBringItemIntoView never raises ScrollView.BringingIntoView, so BringItemIntoView times out.")]
 	public async Task VerifySelectionPersistsAfterRecycling()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
@@ -706,6 +707,152 @@ public class ItemsViewTests : MUXApiTestBase
 	}
 
 	[TestMethod]
+	[TestProperty("Description", "Loads an ItemsView, changes its ItemsSource, selects items and removes them one by one.")]
+	public async Task CanChangeItemsSourceAndRemoveSelectedItems()
+	{
+		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ItemsRepeater"))
+		{
+			ItemsView itemsView = null;
+			ItemsRepeater itemsRepeater = null;
+			ObservableCollection<int> itemsSource = null;
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
+
+			RunOnUIThread.Execute(() =>
+			{
+				itemsView = new ItemsView()
+				{
+					Width = 100,
+					Height = 200,
+					SelectionMode = ItemsViewSelectionMode.Single
+				};
+
+				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
+			});
+
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Setting ItemsSource");
+				itemsSource = new ObservableCollection<int>(Enumerable.Range(0, 3));
+				itemsView.ItemsSource = itemsSource;
+				Verify.AreEqual(itemsSource, itemsView.ItemsSource);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Extracting ScrollView");
+				ScrollView scrollView = itemsView.ScrollView;
+				Verify.IsNotNull(scrollView);
+
+				Log.Comment("Extracting ItemsRepeater");
+				itemsRepeater = scrollView.Content as ItemsRepeater;
+				Verify.IsNotNull(itemsRepeater);
+
+				int childrenCount = VisualTreeHelper.GetChildrenCount(itemsRepeater);
+				Log.Comment($"Extracting first ItemContainer, children count: {childrenCount}");
+				Verify.AreEqual(3, childrenCount);
+				ItemContainer itemContainer = itemsRepeater.TryGetElement(0) as ItemContainer;
+				Verify.IsNotNull(itemContainer);
+				Verify.IsFalse(itemContainer.IsSelected);
+
+				Log.Comment("Selecting first ItemContainer");
+				itemContainer.IsSelected = true;
+				Verify.IsTrue(itemContainer.IsSelected);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Replacing ItemsSource");
+				itemsSource = new ObservableCollection<int>(Enumerable.Range(0, 3));
+				itemsView.ItemsSource = itemsSource;
+				Verify.AreEqual(3, itemsSource.Count);
+			});
+
+			// Let the layout system fully process the ItemsSource replacement
+			// before modifying the collection.
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Removing first item");
+				itemsSource.RemoveAt(0);
+				Verify.AreEqual(2, itemsSource.Count);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Re-extracting ItemsRepeater after ItemsSource change");
+				itemsRepeater = itemsView.ScrollView.Content as ItemsRepeater;
+				Verify.IsNotNull(itemsRepeater);
+
+				itemsRepeater.UpdateLayout();
+				int childrenCount = VisualTreeHelper.GetChildrenCount(itemsRepeater);
+				Log.Comment($"Extracting last ItemContainer, children count: {childrenCount}");
+				ItemContainer itemContainer = itemsRepeater.TryGetElement(1) as ItemContainer;
+				Verify.IsNotNull(itemContainer);
+				Verify.IsFalse(itemContainer.IsSelected);
+				Log.Comment("Selecting last ItemContainer");
+				itemContainer.IsSelected = true;
+				Verify.IsTrue(itemContainer.IsSelected);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Removing last item");
+				itemsSource.RemoveAt(1);
+				Verify.AreEqual(1, itemsSource.Count);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				itemsRepeater.UpdateLayout();
+				int childrenCount = VisualTreeHelper.GetChildrenCount(itemsRepeater);
+				Log.Comment($"Extracting remaining ItemContainer, children count: {childrenCount}");
+				ItemContainer itemContainer = itemsRepeater.TryGetElement(0) as ItemContainer;
+				Verify.IsNotNull(itemContainer);
+				Verify.IsFalse(itemContainer.IsSelected);
+				Log.Comment("Selecting remaining ItemContainer");
+				itemContainer.IsSelected = true;
+				Verify.IsTrue(itemContainer.IsSelected);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Removing remaining item");
+				itemsSource.RemoveAt(0);
+				Verify.AreEqual(0, itemsSource.Count);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Resetting window content and ItemsView");
+				Content = null;
+				itemsView = null;
+			});
+
+			await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
+			Log.Comment("Done");
+		}
+	}
+
+	[TestMethod]
 	[TestProperty("Description", "Loads an ItemsView, changes Layout property to various types.")]
 	public async Task CanChangeLayoutProperty()
 	{
@@ -858,7 +1005,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Invokes the ItemsView.StartBringItemIntoView methods.")]
-	[Ignore("Uno-specific: ItemsView uses Layout.IndexBasedLayoutOrientation in TryGetItemIndex which is not yet implemented in Uno.")]
+	[Ignore("Uno-specific: ItemsView.StartBringItemIntoView never raises ScrollView.BringingIntoView, so BringItemIntoView times out.")]
 	public async Task CanBringItemIntoView()
 	{
 		await CanBringItemIntoView(useLinedFlowLayout: false, useUniformGridLayout: false);
@@ -991,7 +1138,7 @@ public class ItemsViewTests : MUXApiTestBase
 	}
 
 	[TestMethod]
-	[Ignore("Uno-specific: ItemsView uses Layout.IndexBasedLayoutOrientation in TryGetItemIndex which is not yet implemented in Uno.")]
+	[Ignore("Uno-specific: ItemsView.StartBringItemIntoView never raises ScrollView.BringingIntoView, so BringItemIntoView times out.")]
 	public async Task VerifyItemsViewUIASelectionProviderBehavior()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
@@ -1126,15 +1273,15 @@ public class ItemsViewTests : MUXApiTestBase
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await BringItemIntoView(49, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 			Log.Comment("Scroll to last item.");
+			await BringItemIntoView(49, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
 				Log.Comment("Extracting last ItemContainer.");
 				itemContainer = itemsRepeater.TryGetElement(49) as ItemContainer;
 				Verify.IsNotNull(itemContainer);
-				Log.Comment("ItemContainer is null as it is out of view and not realized.");
+				Log.Comment("ItemContainer is non-null as it is in view and realized.");
 
 				Log.Comment("Selecting last ItemContainer");
 				itemContainer.IsSelected = true;
@@ -1154,8 +1301,8 @@ public class ItemsViewTests : MUXApiTestBase
 				Log.Comment("ItemContainer SelectionContainer returns parent ItemsView.");
 			});
 
-			await BringItemIntoView(0, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 			Log.Comment("Scroll back to first item.");
+			await BringItemIntoView(0, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1228,12 +1375,69 @@ public class ItemsViewTests : MUXApiTestBase
 	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
 	public async Task TriggerLinedFlowLayoutItemsInfoRequestedEventArgsExceptions()
 	{
-		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexNegative);
-		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexIncreased);
-		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexTooSmall);
-		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthSmallerThanItemsRangeRequestedLength);
-		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthTooSmallForDecreasedItemsRangeStartIndex);
-		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthInconsistent);
+		// Use a single visual tree for all triggers to avoid the DComp E_POINTER crash
+		// that occurs when rapidly creating and tearing down composition trees. The crash
+		// is caused by DComp callbacks arriving for released visuals during teardown.
+		ItemsView itemsView = null;
+		LinedFlowLayout linedFlowLayout = null;
+		List<string> itemsSource = new List<string>(Enumerable.Range(0, 300).Select(k => k + " - " + (new Random()).Next(100)));
+		UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollViewBringingIntoViewEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollViewScrollCompletedEvent = new UnoAutoResetEvent(false);
+
+		RunOnUIThread.Execute(() =>
+		{
+			linedFlowLayout = new LinedFlowLayout()
+			{
+				LineHeight = 50.0
+			};
+
+			itemsView = new ItemsView()
+			{
+				Layout = linedFlowLayout,
+				ItemsSource = itemsSource
+			};
+
+			SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
+		});
+
+		await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		RunOnUIThread.Execute(() =>
+		{
+			itemsView.ScrollView.BringingIntoView += (sender, args) =>
+			{
+				scrollViewBringingIntoViewEvent.Set();
+			};
+
+			itemsView.ScrollView.ScrollCompleted += (sender, args) =>
+			{
+				scrollViewScrollCompletedEvent.Set();
+			};
+		});
+
+		await BringItemIntoView(150, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
+
+		// Run all trigger variants against the same visual tree instance.
+		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(linedFlowLayout, itemsView, LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexNegative);
+		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(linedFlowLayout, itemsView, LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexIncreased);
+		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(linedFlowLayout, itemsView, LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexTooSmall);
+		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(linedFlowLayout, itemsView, LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthSmallerThanItemsRangeRequestedLength);
+		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(linedFlowLayout, itemsView, LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthTooSmallForDecreasedItemsRangeStartIndex);
+		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(linedFlowLayout, itemsView, LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthInconsistent);
+
+		// Single teardown after all triggers have run.
+		RunOnUIThread.Execute(() =>
+		{
+			Log.Comment("Resetting window content and ItemsView");
+			Content = null;
+			itemsView = null;
+		});
+
+		await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
+		await TestServices.WindowHelper.WaitForIdle();
 	}
 
 	[TestMethod]
@@ -1818,133 +2022,101 @@ public class ItemsViewTests : MUXApiTestBase
 	}
 
 	private async Task TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(
+		LinedFlowLayout linedFlowLayout,
+		ItemsView itemsView,
 		LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger trigger)
 	{
 		Log.Comment($"TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException - trigger={trigger}");
 
-		ItemsView itemsView = null;
-		LinedFlowLayout linedFlowLayout = null;
-		List<string> itemsSource = new List<string>(Enumerable.Range(0, 300).Select(k => k + " - " + (new Random()).Next(100)));
-		UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
-		UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
-		UnoAutoResetEvent scrollViewBringingIntoViewEvent = new UnoAutoResetEvent(false);
-		UnoAutoResetEvent scrollViewScrollCompletedEvent = new UnoAutoResetEvent(false);
 		UnoAutoResetEvent linedFlowLayoutItemsInfoRequestedEvent = new UnoAutoResetEvent(false);
 		bool linedFlowLayoutItemsInfoRequestedEventArgsExceptionThrown = false;
 
-		RunOnUIThread.Execute(() =>
+		TypedEventHandler<LinedFlowLayout, LinedFlowLayoutItemsInfoRequestedEventArgs> itemsInfoRequestedHandler = (sender, args) =>
 		{
-			linedFlowLayout = new LinedFlowLayout()
+			Log.Comment($"LinedFlowLayout.ItemsInfoRequested raised - ItemsRangeStartIndex={args.ItemsRangeStartIndex}, ItemsRangeRequestedLength={args.ItemsRangeRequestedLength}");
+
+			Verify.IsGreaterThanOrEqual(args.ItemsRangeStartIndex, 0);
+			Verify.IsGreaterThan(args.ItemsRangeRequestedLength, 0);
+
+			try
 			{
-				LineHeight = 50.0
-			};
-
-			itemsView = new ItemsView()
-			{
-				Layout = linedFlowLayout,
-				ItemsSource = itemsSource
-			};
-
-			SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
-		});
-
-		await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
-		await TestServices.WindowHelper.WaitForIdle();
-
-		RunOnUIThread.Execute(() =>
-		{
-			itemsView.ScrollView.BringingIntoView += (sender, args) =>
-			{
-				Log.Comment($"ScrollView.BringingIntoView raised - CorrelationId={args.CorrelationId}, TargetVerticalOffset={args.TargetVerticalOffset}");
-
-				scrollViewBringingIntoViewEvent.Set();
-			};
-
-			itemsView.ScrollView.ScrollCompleted += (sender, args) =>
-			{
-				Log.Comment($"ScrollView.ScrollCompleted raised - CorrelationId={args.CorrelationId}, VerticalOffset={itemsView.ScrollView.VerticalOffset}");
-
-				scrollViewScrollCompletedEvent.Set();
-			};
-		});
-
-		await BringItemIntoView(150, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
-
-		RunOnUIThread.Execute(() =>
-		{
-			linedFlowLayout.ItemsInfoRequested += (sender, args) =>
-			{
-				Log.Comment($"LinedFlowLayout.ItemsInfoRequested raised - ItemsRangeStartIndex={args.ItemsRangeStartIndex}, ItemsRangeRequestedLength={args.ItemsRangeRequestedLength}");
-
-				Verify.IsGreaterThanOrEqual(args.ItemsRangeStartIndex, 0);
-				Verify.IsGreaterThan(args.ItemsRangeRequestedLength, 0);
-
-				try
+				switch (trigger)
 				{
-					switch (trigger)
-					{
-						case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexNegative:
-							{
-								args.ItemsRangeStartIndex = -1;
-								break;
-							}
-						case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexIncreased:
-							{
-								args.ItemsRangeStartIndex++;
-								break;
-							}
-						case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexTooSmall:
-							{
-								args.SetMinWidths(new double[args.ItemsRangeRequestedLength]);
-								args.ItemsRangeStartIndex--;
-								break;
-							}
-						case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthSmallerThanItemsRangeRequestedLength:
-							{
-								args.SetMinWidths(new double[args.ItemsRangeRequestedLength - 1]);
-								break;
-							}
-						case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthTooSmallForDecreasedItemsRangeStartIndex:
-							{
-								args.ItemsRangeStartIndex--;
-								args.SetMinWidths(new double[args.ItemsRangeRequestedLength]);
-								break;
-							}
-						case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthInconsistent:
-							{
-								args.SetMinWidths(new double[args.ItemsRangeRequestedLength]);
-								args.SetMaxWidths(new double[args.ItemsRangeRequestedLength + 1]);
-								break;
-							}
-					}
+					case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexNegative:
+						{
+							args.ItemsRangeStartIndex = -1;
+							break;
+						}
+					case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexIncreased:
+						{
+							args.ItemsRangeStartIndex++;
+							break;
+						}
+					case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexTooSmall:
+						{
+							args.SetMinWidths(new double[args.ItemsRangeRequestedLength]);
+							args.ItemsRangeStartIndex--;
+							break;
+						}
+					case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthSmallerThanItemsRangeRequestedLength:
+						{
+							args.SetMinWidths(new double[args.ItemsRangeRequestedLength - 1]);
+							break;
+						}
+					case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthTooSmallForDecreasedItemsRangeStartIndex:
+						{
+							args.ItemsRangeStartIndex--;
+							args.SetMinWidths(new double[args.ItemsRangeRequestedLength]);
+							break;
+						}
+					case LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthInconsistent:
+						{
+							args.SetMinWidths(new double[args.ItemsRangeRequestedLength]);
+							args.SetMaxWidths(new double[args.ItemsRangeRequestedLength + 1]);
+							break;
+						}
 				}
-				catch (Exception exception)
-				{
-					Log.Comment($"Exception={exception.ToString()}");
-					linedFlowLayoutItemsInfoRequestedEventArgsExceptionThrown = true;
-				}
+			}
+			catch (Exception exception)
+			{
+				Log.Comment($"Exception={exception.ToString()}");
+				linedFlowLayoutItemsInfoRequestedEventArgsExceptionThrown = true;
 
-				linedFlowLayoutItemsInfoRequestedEvent.Set();
-			};
+				// Discard any partial sizing data that the failed API call may have
+				// committed to LinedFlowLayout (e.g. SetMinWidths succeeded but
+				// SetMaxWidths threw). Without this, the corrupted sizing info gets
+				// committed to DComp, causing an E_POINTER fail-fast in dcompi.dll.
+				linedFlowLayout.InvalidateItemsInfo();
+			}
+
+			linedFlowLayoutItemsInfoRequestedEvent.Set();
+		};
+
+		RunOnUIThread.Execute(() =>
+		{
+			linedFlowLayout.ItemsInfoRequested += itemsInfoRequestedHandler;
 
 			Log.Comment("Triggering the ItemsInfoRequested event");
 			itemsView.ScrollView.ScrollBy(0.0, 1.0, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore));
 		});
 
 		await WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
+
+		// Unhook the exception-throwing handler immediately after the event fires to
+		// prevent further corrupted layout passes during idle processing.
+		RunOnUIThread.Execute(() =>
+		{
+			linedFlowLayout.ItemsInfoRequested -= itemsInfoRequestedHandler;
+		});
+
 		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
 			Log.Comment($"linedFlowLayoutItemsInfoRequestedEventArgsExceptionThrown={linedFlowLayoutItemsInfoRequestedEventArgsExceptionThrown}");
 			Verify.IsTrue(linedFlowLayoutItemsInfoRequestedEventArgsExceptionThrown);
-
-			Log.Comment("Resetting window content and ItemsView");
-			Content = null;
-			itemsView = null;
 		});
 
-		await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
 		Log.Comment("Done");
 	}
 
@@ -2082,7 +2254,7 @@ public class ItemsViewTests : MUXApiTestBase
 			scrollViewBringingIntoViewEvent.Reset();
 			scrollViewScrollCompletedEvent.Reset();
 
-			Log.Comment("Invoking ItemsView.StartBringItemIntoView(250)");
+			Log.Comment("Invoking ItemsView.StartBringItemIntoView(" + index + ")");
 
 			BringIntoViewOptions bringIntoViewOptions = new BringIntoViewOptions()
 			{
