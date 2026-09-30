@@ -13,7 +13,8 @@ namespace Uno.UI.Xaml.Controls;
 /// child-element processing metadata and carries a different meaning.
 /// <para>
 /// Apply it to the type that owns the input, never to a shared base that has non-validating subclasses:
-/// it is inherited, so every subclass of the annotated type validates the same property.
+/// it is inherited, so it belongs on <c>ComboBox</c> rather than <c>Selector</c> (which <c>FlipView</c> and
+/// <c>ListView</c> also derive from).
 /// </para>
 /// </remarks>
 [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
