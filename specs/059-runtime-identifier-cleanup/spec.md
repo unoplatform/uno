@@ -169,11 +169,12 @@ need — it is one Skia build everywhere — so only `Uno.WinRT`, `Uno.Foundatio
 
 `UnoRuntimeIdentifier` stays accepted from a cross-runtime library as a deprecated spelling: `skia` maps to
 `generic`, `webassembly` to `wasm`, and UNOB0024 names the value to use instead. It is not reused for the new
-values, because packages versioned apart from Uno test it for `'Skia'` and `'WebAssembly'` — Uno.Resizetizer
-decides "is this a Skia app" from it, which is also why `Uno.Common.Desktop.targets` and the X11, Win32,
-macOS, FrameBuffer and Headless host props still set `UnoRuntimeIdentifier=Skia` (the hosts cover heads that
-do not use the `-desktop` target framework) until Resizetizer reads `UnoHasRuntimeHost`. The mobile and
-browser hosts never set it, so Resizetizer keeps classifying those heads the way it did in 6.x.
+values, because packages versioned apart from Uno test it for `'Skia'` and `'WebAssembly'`.
+
+Nothing in Uno sets it for a head any more — no compatibility shim either. Uno.Resizetizer decides "is this a
+Skia app" from it *or* from a `desktop`/`browserwasm` target platform, so Uno.Sdk heads are still classified
+correctly; a hand-rolled plain `netX.0` head is not, and that is fixed in Resizetizer itself (classifying by
+target framework and `UnoHasRuntimeHost`) rather than worked around here.
 
 **The cross-runtime model stays.** An Uno.Sdk library can multi-target `net10.0-desktop` and
 `net10.0-browserwasm` instead, but those target platforms are defined by the Uno.Sdk: a library built with
@@ -194,12 +195,9 @@ at least one is published (`SkiaSharp.Views.Uno.WinUI`).
   `GetRuntimeTargetFramework` and matched server-side by the `['', 'desktop', 'skia']` family. It re-occupies
   the name the moment this work frees it, so freeing `skia` is incomplete until it moves. Belongs with the
   drawing-backend work (unoplatform/uno#24153).
-- **Retiring the compatibility surface.** Each piece has its own trigger:
-  - the `UnoRuntimeIdentifier=Skia` shim in `Uno.Common.Desktop.targets` and the desktop-type host props goes in
-    the first 7.x release whose Uno.Sdk pins a Uno.Resizetizer that detects a Skia app from the target platform
-    and `UnoHasRuntimeHost` — not a breaking change;
-  - the deprecated library spelling of `UnoRuntimeIdentifier`, and the `_UnoValidateReferencesUnoRuntimeIdentifier`
-    alias target, go in the next major version, with a migration-guide entry.
+- **Retiring the compatibility surface.** The deprecated library spelling of `UnoRuntimeIdentifier` and the
+  `_UnoValidateReferencesUnoRuntimeIdentifier` alias target go in the next major version, with a
+  migration-guide entry.
 
 ## 8. An invariant worth writing down
 

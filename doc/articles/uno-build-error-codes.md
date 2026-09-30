@@ -233,9 +233,6 @@ The warning therefore covers three situations, each with its own message:
 | `UnoUIRuntimeIdentifier and UnoWinRTRuntimeIdentifier no longer have any effect` | any project | remove them |
 | `UnoRuntimeIdentifier no longer selects runtime assets for an application head` | a project with a Uno Platform runtime host | remove it |
 | `UnoRuntimeIdentifier is deprecated for cross-runtime libraries` | a library without a runtime host | set the `UnoRuntimeVariant` value the message names |
-
-The Uno.Sdk and the desktop runtime packages still set `UnoRuntimeIdentifier=Skia` themselves, for the benefit of `Uno.Resizetizer`; that value is not reported.
-
 To suppress it:
 
 ```xml

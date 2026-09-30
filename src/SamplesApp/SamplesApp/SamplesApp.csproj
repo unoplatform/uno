@@ -616,15 +616,6 @@
 		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
 	</ItemGroup>
 
-	<!--
-	Flattens the Android icon to mipmap-<dpi>\icon.png should Resizetizer's skia targets run on android
-	(aapt2 APT2144 otherwise). Android only: on desktop the relative Link lays the logos out under Assets\.
-	TODO Uno (resizetizer app kind): drop once an android build confirms the icon output without it.
-	-->
-	<ItemGroup Condition="'$(_Platform)' == 'android'">
-		<UnoIcon Update="Assets\Icons\icon.svg" Link="icon.svg" />
-	</ItemGroup>
-
 	<!-- Win32 DPI-awareness manifest (desktop only; windows sets its own ApplicationManifest above) -->
 	<PropertyGroup Condition="'$(_Platform)' == 'desktop'">
 		<ApplicationManifest>app.manifest</ApplicationManifest>
@@ -765,45 +756,6 @@
 	<!-- Must stay the last import: replaces the implicit bottom import an Sdk attribute would have added. -->
 	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.targets" />
 
-	<!--
-	Pins Resizetizer's platform in case a head matches both its mobile and skia branches, which would
-	resolve to 'wpf'. Below the import, since that is where the package sets the property.
-	TODO Uno (resizetizer app kind): drop, with the splash manifest block below, once android and ios
-	builds confirm the icon and splash output without them.
-	-->
-	<PropertyGroup Condition="'$(_Platform)' == 'android'">
-		<UnoResizetizerPlatformType>android</UnoResizetizerPlatformType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
-		<UnoResizetizerPlatformType>ios</UnoResizetizerPlatformType>
-	</PropertyGroup>
-
-	<!--
-	Same double match: the apple and the skia targets files each define a target named
-	ProcessUnoSplashScreens, and the skia one is imported last, so it replaces the apple one. Only
-	the apple version publishes the UnoInfo.plist that GenerateUnoSplashApple writes as a
-	PartialAppManifest, and that partial manifest is what repoints UILaunchStoryboardName at the generated
-	UnoSplash storyboard. Left unpublished, the bundle keeps Info.plist's UILaunchStoryboardName=LaunchScreen
-	— a storyboard nothing ships — and UIKit aborts on launch with "Could not find a storyboard named
-	'LaunchScreen'", before a single runtime test runs. Republish it under a name nothing can overwrite,
-	through CollectAppManifestsDependsOn, which is the extension point Xamarin.Shared.targets documents for
-	adding PartialAppManifest items: it runs ahead of _CompileAppManifestInputs, which snapshots them.
-	-->
-	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
-		<CollectAppManifestsDependsOn>
-			$(CollectAppManifestsDependsOn);
-			_UnoSamplesAppPublishSplashPartialManifest
-		</CollectAppManifestsDependsOn>
-	</PropertyGroup>
-	<Target Name="_UnoSamplesAppPublishSplashPartialManifest"
-			DependsOnTargets="ProcessUnoSplashScreens"
-			Condition="'@(UnoSplashScreen)' != '' AND '$(DesignTimeBuild)' != 'true'">
-		<ItemGroup>
-			<_UnoSamplesAppSplashPartialManifest Include="$(_UnoIntermediateSplashScreen)UnoInfo.plist" Condition="Exists('$(_UnoIntermediateSplashScreen)UnoInfo.plist')" />
-			<PartialAppManifest Include="@(_UnoSamplesAppSplashPartialManifest)" />
-			<FileWrites Include="@(_UnoSamplesAppSplashPartialManifest)" />
-		</ItemGroup>
-	</Target>
 	<!--
 	Microsoft.Identity.Client ships no tvOS asset (only net8.0, net8.0-ios18.0, net8.0-android34.0,
 	net462, net472, netstandard2.0), so a tvos head resolves the desktop lib/net8.0 assembly. That
