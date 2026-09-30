@@ -179,21 +179,6 @@ public class Given_RuntimeReplaceTargets
 	}
 
 	[TestMethod]
-	public void When_UnoRuntimeIdentifier_Is_The_Resizetizer_Shim_Then_UNOB0024_Is_Silent()
-	{
-		using var fixture = CreateFixture();
-
-		var result = CreateProject(fixture)
-			.Property("UnoHasRuntimeHost", "true")
-			.Property("_UnoRuntimeIdentifierResizetizerShim", "true")
-			.Property("UnoRuntimeIdentifier", "Skia")
-			.Run("_UnoWarnObsoleteRuntimeIdentifiers");
-
-		result.Succeeded.Should().BeTrue(result.Log);
-		result.HasWarning("UNOB0024").Should().BeFalse(result.Log);
-	}
-
-	[TestMethod]
 	public void When_Library_Sets_The_Deprecated_UnoRuntimeIdentifier_Then_UNOB0024_Names_The_Variant()
 	{
 		using var fixture = CreateFixture();

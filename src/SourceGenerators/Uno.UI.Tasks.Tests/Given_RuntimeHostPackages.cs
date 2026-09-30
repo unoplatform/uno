@@ -13,8 +13,7 @@ public class Given_RuntimeHostPackages
 	/// <summary>Runtime projects that are libraries shared by the hosts rather than hosts themselves.</summary>
 	private static readonly string[] NotHosts = ["Uno.UI.Runtime.Skia", "Uno.UI.Runtime.Skia.Win32.Support"];
 
-	/// <summary>The hosts whose heads Uno.Resizetizer must still see as Skia apps through UnoRuntimeIdentifier.</summary>
-	private static readonly string[] DesktopTypeHosts = ["Headless", "Linux.FrameBuffer", "MacOS", "Win32", "X11"];
+	private static readonly string[] ExpectedHosts = ["Android", "AppleUIKit", "WebAssembly.Browser", "Headless", "Linux.FrameBuffer", "MacOS", "Win32", "X11"];
 
 	public static IEnumerable<object[]> Hosts =>
 		Directory.EnumerateDirectories(RepositoryPaths.Get("src"), "Uno.UI.Runtime.Skia.*")
@@ -25,7 +24,7 @@ public class Given_RuntimeHostPackages
 	[TestMethod]
 	public void When_Enumerating_Hosts_Then_Every_Platform_Is_Found()
 	{
-		Hosts.Select(row => (string)row[0]).Should().Contain(["Android", "AppleUIKit", "WebAssembly.Browser", .. DesktopTypeHosts]);
+		Hosts.Select(row => (string)row[0]).Should().Contain(ExpectedHosts);
 	}
 
 	[TestMethod]
@@ -37,19 +36,12 @@ public class Given_RuntimeHostPackages
 
 	[TestMethod]
 	[DynamicData(nameof(Hosts))]
-	public void When_Referenced_Then_Only_Desktop_Type_Hosts_Set_The_Resizetizer_Shim(string host)
+	public void When_Referenced_Then_The_Host_Sets_No_Retired_Runtime_Identifier(string host)
 	{
-		var shim = Property(host, "UnoRuntimeIdentifier");
-
-		if (DesktopTypeHosts.Contains(host))
+		// Separately versioned packages (Uno.Resizetizer) still branch on these, so a host setting one reclassifies its heads.
+		foreach (var property in new[] { "UnoRuntimeIdentifier", "UnoUIRuntimeIdentifier", "UnoWinRTRuntimeIdentifier" })
 		{
-			shim.Should().Be("Skia");
-			Property(host, "_UnoRuntimeIdentifierResizetizerShim").Should().Be("true");
-		}
-		else
-		{
-			// A mobile or browser head must keep Resizetizer's platform branch rather than its Skia one.
-			shim.Should().BeNull();
+			Property(host, property).Should().BeNull($"Uno.UI.Runtime.Skia.{host} must not set {property}");
 		}
 	}
 
