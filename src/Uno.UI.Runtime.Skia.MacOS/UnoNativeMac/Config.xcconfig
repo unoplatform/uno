@@ -10,3 +10,7 @@
 
 CONFIGURATION_BUILD_DIR = $(SRCROOT)/build/$CONFIGURATION
 BUILT_PRODUCTS_DIR = $(SRCROOT)/build/$CONFIGURATION
+
+// libUnoNativeMac links libSkiaSharp, which ships next to it in runtimes/osx/native. Without @loader_path on
+// the runpath the dlopen only resolves when something else has already pulled libSkiaSharp into the process.
+LD_RUNPATH_SEARCH_PATHS = @loader_path

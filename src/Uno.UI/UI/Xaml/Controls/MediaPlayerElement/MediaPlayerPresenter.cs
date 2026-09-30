@@ -6,6 +6,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -168,7 +169,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFullWindow),
 				typeof(bool),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+				new FrameworkPropertyMetadata(BoolBoxes.False, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 

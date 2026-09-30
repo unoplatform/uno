@@ -108,25 +108,6 @@ namespace Uno.WinAppSDKSyncGenerator
 		/// </summary>
 		protected bool CurrentTypeEmitsNonSkiaDefines { get; private set; } = true;
 
-		private static readonly string[] _unoUINamespaces = new[]
-		{
-			"Windows.UI.Xaml",
-			"Windows.UI.Composition",
-			"Windows.UI.Dispatching",
-			"Microsoft.UI.Xaml",
-			"Microsoft.Web",
-			"Microsoft.Foundation",
-			"Microsoft.UI.Composition",
-			"Microsoft.UI.Dispatching",
-			"Microsoft.UI.Text",
-			"Microsoft.UI.Content",
-			"Microsoft.UI.Windowing",
-			"Microsoft.UI.Input",
-			"Microsoft.System",
-			"Microsoft.Graphics",
-			"Microsoft.Windows.ApplicationModel.Resources",
-			};
-
 		static Generator()
 		{
 			RegisterAssemblyLoader();
@@ -398,10 +379,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			{
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
-			else if (@namespace == "Microsoft.UI" && type.Name is "Colors" or "ColorHelper" or "FontWeights")
-			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
-			}
 
 			// INTENTIONALLY RETAINED REDIRECTS:
 			// These namespaces' WinUI-correct assembly cannot host their hand-written implementations
@@ -414,13 +391,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			// which Uno.WinRT cannot reference. The stubs therefore stay in Uno.UI for now; the eventual
 			// Uno home is Uno.UI.Composition, which requires a layering seam not yet in place.
 			else if (@namespace.StartsWith("Microsoft.UI.Content", StringComparison.Ordinal))
-			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
-			}
-			// Microsoft.Web.WebView2.Core: sourced from Microsoft.Web.WebView2.Core.Projection (no assembly-switch
-			// case). The hand-written CoreWebView2 implementation is coupled to the Uno.UI visual tree
-			// (VisualTreeHelper/ContentPresenter/IWebView), so the projection is hosted in Uno.UI.
-			else if (@namespace.StartsWith("Microsoft.Web.WebView2", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
@@ -466,6 +436,11 @@ namespace Uno.WinAppSDKSyncGenerator
 					return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 
 				case "Microsoft.WinUI":
+					return @"..\..\..\Uno.UI\Generated\3.0.0.0";
+
+				// WinUI ships WebView2.Core as a separate package, which Uno has no counterpart for.
+				// CoreWebView2 is backed by the WebView2 control's native hosting, so it lives with the control.
+				case "Microsoft.Web.WebView2.Core.Projection":
 					return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 
 				default:
@@ -1063,6 +1038,97 @@ namespace Uno.WinAppSDKSyncGenerator
 			return iface.Name is "IFormattable" or "IEquatable" or "IDynamicInterfaceCastable" or "ICustomQueryInterface" or "IUnmanagedVirtualMethodTableProvider";
 		}
 
+		// IEquatable<T> on a WinRT struct is backed by the memberwise members from BuildStructEquality.
+		private static bool IsSelfEquatableStructInterface(INamedTypeSymbol type, INamedTypeSymbol iface)
+			=> HasProjectedStructEquality(type)
+				&& iface is { Name: "IEquatable", TypeArguments.Length: 1 }
+				&& SymbolEqualityComparer.Default.Equals(iface.TypeArguments[0], type);
+
+		private static bool HasProjectedStructEquality(INamedTypeSymbol type)
+			=> type.TypeKind == TypeKind.Struct && !type.GetMembers(WellKnownMemberNames.EqualityOperatorName).IsEmpty;
+
+		/// <summary>
+		/// Emits the memberwise equality members CsWinRT projects on WinRT structs (see write_struct in
+		/// CsWinRT's code_writers.h), for each platform whose hand-written partial doesn't declare them.
+		/// </summary>
+		protected void BuildStructEquality(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types)
+		{
+			if (!HasProjectedStructEquality(type))
+			{
+				return;
+			}
+
+			var fields = type.GetMembers().OfType<IFieldSymbol>().Where(f => !f.IsStatic && f.DeclaredAccessibility == Accessibility.Public).ToArray();
+			if (fields.Length == 0)
+			{
+				return;
+			}
+
+			// Same semantics as CsWinRT, but each member compares fields itself instead of delegating (Equals => ==):
+			// a hand-written partial may implement == via Equals, and delegating back would recurse forever.
+			var name = type.Name;
+			string FieldsEqual(string x, string y, string indent = "\t")
+				=> string.Join($"\n{indent}&& ", fields.Select(f => $"{x}{f.Name} == {y}{f.Name}"));
+			var fieldsHash = string.Join("\n\t^ ", fields.Select(f => $"{f.Name}.GetHashCode()"));
+
+			foreach (var method in type.GetMembers().OfType<IMethodSymbol>())
+			{
+				var code = method switch
+				{
+					{ Name: WellKnownMemberNames.EqualityOperatorName } => $"public static bool operator ==({name} x, {name} y)\n\t=> {FieldsEqual("x.", "y.")};",
+					{ Name: WellKnownMemberNames.InequalityOperatorName } => $"public static bool operator !=({name} x, {name} y)\n\t=> !({FieldsEqual("x.", "y.", "\t\t")});",
+					{ Name: "Equals", Parameters: [{ Type.SpecialType: SpecialType.System_Object }] } => $"public override bool Equals(object obj)\n\t=> obj is {name} that\n\t&& {FieldsEqual("", "that.")};",
+					{ Name: "Equals", Parameters.Length: 1 } => $"public bool Equals({name} other)\n\t=> {FieldsEqual("", "other.")};",
+					{ Name: "GetHashCode", Parameters.IsEmpty: true } => $"public override int GetHashCode()\n\t=> {fieldsHash};",
+					_ => null,
+				};
+
+				if (code is null)
+				{
+					continue;
+				}
+
+				var declared = new PlatformSymbols<IMethodSymbol>(
+					androidType: FindDeclaredMethod(types.AndroidSymbol, method),
+					iOSType: FindDeclaredMethod(types.IOSSymbol, method),
+					tvOSType: FindDeclaredMethod(types.TvOSSymbol, method),
+					netStdRerefenceType: FindDeclaredMethod(types.NetStdReferenceSymbol, method),
+					wasmType: FindDeclaredMethod(types.WasmSymbol, method),
+					skiaType: FindDeclaredMethod(types.SkiaSymbol, method),
+					uapType: method,
+					emitNonSkiaDefines: CurrentTypeEmitsNonSkiaDefines
+				);
+
+				if (declared.HasUndefined)
+				{
+					declared.AppendIf(b);
+					foreach (var line in code.Split('\n'))
+					{
+						b.AppendLineInvariant("{0}", line);
+					}
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant("#endif");
+					}
+				}
+				else
+				{
+					b.AppendLineInvariant($"// Skipping already declared method {method}");
+				}
+			}
+		}
+
+		// Unlike FindMatchingMethod, ignores inherited members (ValueType.Equals/GetHashCode) and modifier differences.
+		private static IMethodSymbol FindDeclaredMethod(INamedTypeSymbol unoType, IMethodSymbol uapMethod)
+			=> unoType?
+				.GetMembers(uapMethod.Name)
+				.OfType<IMethodSymbol>()
+				.FirstOrDefault(m =>
+					m.Locations.None(l => PlatformSymbols<IMethodSymbol>.IsGeneratedFile(l.SourceTree?.FilePath ?? ""))
+					&& m.Parameters.Length == uapMethod.Parameters.Length
+					&& m.Parameters.Zip(uapMethod.Parameters).All(p =>
+						p.First.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == p.Second.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)));
+
 		protected string BuildInterfaces(INamedTypeSymbol type)
 		{
 			var ifaces = new List<string>();
@@ -1074,7 +1140,7 @@ namespace Uno.WinAppSDKSyncGenerator
 
 			foreach (var iface in type.Interfaces)
 			{
-				if (ShouldSkipInterface(iface))
+				if (ShouldSkipInterface(iface) && !IsSelfEquatableStructInterface(type, iface))
 				{
 					continue;
 				}
@@ -1505,7 +1571,7 @@ namespace Uno.WinAppSDKSyncGenerator
 
 								if (isAttachedPropertyMethod)
 								{
-									var instanceParamName = SanitizeParameter(method.Parameters.First().Name);
+									var instanceParamName = SanitizeParameter(method.Parameters[0].Name);
 
 									if (method.Name.StartsWith("Get", StringComparison.Ordinal))
 									{
@@ -1514,7 +1580,13 @@ namespace Uno.WinAppSDKSyncGenerator
 									}
 									else if (method.Name.StartsWith("Set", StringComparison.Ordinal))
 									{
-										var valueParamName = SanitizeParameter(method.Parameters.ElementAt(1).Name);
+										var valueParameter = method.Parameters[1];
+										var valueParamName = SanitizeParameter(valueParameter.Name);
+										if (valueParameter.Type.SpecialType is SpecialType.System_Int32 or SpecialType.System_Double or SpecialType.System_Boolean)
+										{
+											valueParamName = $"global::Uno.UI.Helpers.Boxes.Boxer.Box({valueParamName})";
+										}
+
 										b.AppendLineInvariant($"{instanceParamName}.SetValue({filteredName}Property, {valueParamName});");
 									}
 								}
@@ -1941,7 +2013,8 @@ namespace Uno.WinAppSDKSyncGenerator
 							if (getLocal != null || getAttached != null)
 							{
 								var attachedModifier = getAttached != null ? "Attached" : "";
-								var propertyDisplayType = MapWinAppSDKTypes((getAttached?.ReturnType ?? getLocal?.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+								var propertyType = getAttached?.ReturnType ?? getLocal?.Type;
+								var propertyDisplayType = MapWinAppSDKTypes(propertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
 								b.AppendLineInvariant($"public {staticQualifier}{SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} =");
 
@@ -1958,7 +2031,17 @@ namespace Uno.WinAppSDKSyncGenerator
 								}
 
 								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}),");
-								b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(default({propertyDisplayType})));");
+
+								// FrameworkPropertyMetadata takes an object, so default(T) would box on every registration.
+								var defaultValue = propertyType.SpecialType switch
+								{
+									SpecialType.System_Int32 => "global::Uno.UI.Helpers.Boxes.IntBoxes.Zero",
+									SpecialType.System_Boolean => "global::Uno.UI.Helpers.Boxes.BoolBoxes.False",
+									SpecialType.System_Double => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero",
+									_ => $"default({propertyDisplayType})",
+								};
+
+								b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata({defaultValue}));");
 							}
 							else
 							{
@@ -1985,7 +2068,11 @@ namespace Uno.WinAppSDKSyncGenerator
 								{
 									using (b.BlockInvariant($"set"))
 									{
-										b.AppendLineInvariant($"this.SetValue({property.Name}Property, value);");
+										var setterValue = property.Type.SpecialType is SpecialType.System_Int32 or SpecialType.System_Double or SpecialType.System_Boolean
+											? "global::Uno.UI.Helpers.Boxes.Boxer.Box(value)"
+											: "value";
+
+										b.AppendLineInvariant($"this.SetValue({property.Name}Property, {setterValue});");
 									}
 								}
 							}

@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Composition.Drawing;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -8,11 +9,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
@@ -53,12 +54,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
 
 	private readonly HWND _hwnd;
-	private readonly IRenderer _renderer;
+
+	// The negotiated backend's drawing factory, so native-element hosting composes clip geometry through the
+	// same factory the renderer uses (rather than the global DrawingFactory.Current).
+	internal IDrawingFactory GraphicsFactory { get; private set; } = null!;
+	private FrameworkElement? _frameThemeSource;
 
 	private Win32Accessibility? _accessibility;
 	private bool _rendererDisposed;
-	private IDisposable? _backgroundDisposable;
-	private SKColor _background;
 	private bool _forcePaintOnNextEraseBkgndOrNcPaint = true;
 
 	private string? _iconPath;
@@ -99,26 +102,25 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		XamlRootMap.Register(xamlRoot, this);
 
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged += OnSystemThemeChanged;
+		window.ContentChanged += OnWindowContentChanged;
 		OnSystemThemeChanged(Win32SystemThemeHelperExtension.Instance, EventArgs.Empty);
 
 		UpdateWindowPropertiesFromPackage();
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
-			? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
-				?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
-					? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
-					: new SoftwareRenderer(_hwnd))
-			: FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
-				? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
-				: new SoftwareRenderer(_hwnd);
+		// Register the per-kind window+context factory and negotiate; the app-registered backend owns the kind order.
+		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind));
 
-		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer.IsSoftware();
+		var init = GraphicsRegistry.Initialize();
+		_context = init.Context;
+		GraphicsFactory = init.DrawingFactory;
+		_renderer = init.Renderer;
+
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
 
 		InitializeRenderThread();
 
-		RegisterForBackgroundColor();
 
 		PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
 
@@ -165,9 +167,44 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 	}
 
-	private unsafe void OnSystemThemeChanged(object? _, EventArgs __)
+	private void OnSystemThemeChanged(object? _, EventArgs __) => UpdateFrameTheme();
+
+	private void OnContentActualThemeChanged(FrameworkElement sender, object args) => UpdateFrameTheme();
+
+	// MUX retargets the backdrop theme source on XamlRoot.Changed (SystemBackdrop_Partial.cpp).
+	private void OnWindowContentChanged(object? sender, EventArgs args) => UpdateFrameTheme();
+
+	/// <summary>
+	/// Applies the theme DWM uses for this window's caption and, on Windows 11, for the tint of a
+	/// system backdrop.
+	/// </summary>
+	/// <remarks>
+	/// MUX drives <c>SystemBackdropConfiguration.Theme</c> from <c>XamlRoot.Content.ActualTheme</c>
+	/// (SystemBackdrop_Partial.cpp), so an app running light on a dark desktop gets a light material.
+	/// DWM exposes a single per-window flag for both the material tint and the caption, so this follows
+	/// the content's theme rather than the desktop's.
+	/// </remarks>
+	private unsafe void UpdateFrameTheme()
 	{
-		BOOL value = Win32SystemThemeHelperExtension.Instance.GetSystemTheme() is SystemTheme.Dark;
+		var content = _window?.Content as FrameworkElement;
+		if (!ReferenceEquals(content, _frameThemeSource))
+		{
+			if (_frameThemeSource is not null)
+			{
+				_frameThemeSource.ActualThemeChanged -= OnContentActualThemeChanged;
+			}
+
+			_frameThemeSource = content;
+			if (content is not null)
+			{
+				content.ActualThemeChanged += OnContentActualThemeChanged;
+			}
+		}
+
+		BOOL value = _frameThemeSource is { } themeSource
+			? themeSource.ActualTheme == ElementTheme.Dark
+			: Application.Current?.RequestedTheme == ApplicationTheme.Dark;
+
 		var hResult = PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, &value, (uint)Marshal.SizeOf(value));
 		if (hResult.Failed)
 		{
@@ -508,6 +545,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
+		if (_window is not null)
+		{
+			_window.ContentChanged -= OnWindowContentChanged;
+		}
 
 		// Dispose the accessibility instance BEFORE unregistering from XamlRootMap
 		// and before releasing the HWND. UIA clients must see a well-formed
@@ -523,17 +564,21 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.UnregisterWindow(_hwnd);
 		// Stop and join the render thread before touching its resources: once Dispose returns, the
-		// thread — the sole user of the renderer/surface — has exited, so freeing them here cannot
+		// thread — the sole user of the graphics context — has exited, so freeing it here cannot
 		// race an in-flight present.
-		_renderThread?.Dispose();
-		_renderThread = null;
-		// Dispose the cached SKSurface before the renderer: on Vulkan it references GPU resources
-		// owned by _renderer (see Win32WindowWrapper.Rendering.Vulkan.cs).
-		_surface?.Dispose();
-		_surface = null;
-		_renderer.Dispose();
+		StopRenderThread();
+		// Before the context it is bound to: the factory owns this window's GRContext and cached GPU surfaces,
+		// and disposing the context first would destroy the device out from under them. Safe even though
+		// DrawingFactory.Current may still point here -- Dispose frees only the GPU contexts, and everything
+		// reached through Current (recordings, textures, offscreens) is CPU-side.
+		(_renderer as IDisposable)?.Dispose();
+		_context.Dispose();
 		_rendererDisposed = true;
-		_backgroundDisposable?.Dispose();
+		if (_frameThemeSource is not null)
+		{
+			_frameThemeSource.ActualThemeChanged -= OnContentActualThemeChanged;
+			_frameThemeSource = null;
+		}
 		DestroyIcons();
 		XamlRootMap.Unregister(XamlRoot!);
 	}
@@ -562,6 +607,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 		// Closing should continue, perform suspension.
 		Application.Current.RaiseSuspending();
+		// DefWindowProc destroys the window from here.
+		StopRenderThread();
 		return false;
 	}
 
@@ -687,9 +734,24 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 	}
 
+	/// <summary>
+	/// Stops the render thread. Called at every point where the window is known to be going away, BEFORE its HWND
+	/// is destroyed: between DestroyWindow and the WM_DESTROY it raises, the render thread would otherwise still be
+	/// presenting to a window that no longer exists. Skia fails those calls quietly, but wgpu answers a surface call
+	/// on a destroyed window by aborting the process from inside the native library, where no error callback can
+	/// intercept it.
+	/// </summary>
+	private void StopRenderThread()
+	{
+		_renderThread?.Dispose();
+		_renderThread = null;
+	}
+
 	protected override void CloseCore()
 	{
 		this.LogInfo()?.Info($"Forcibly closing window {_hwnd.Value.ToString("X", CultureInfo.InvariantCulture)}");
+
+		StopRenderThread();
 
 		var success = PInvoke.DestroyWindow(_hwnd);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.DestroyWindow)} failed: {Win32Helper.GetErrorMessage()}"); }
@@ -763,24 +825,16 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			return;
 		}
 
-		var image = SKImage.FromEncodedData(iconPath);
-		if (image is null)
-		{
-			this.LogError()?.Error($"Couldn't load icon file [{iconPath}].");
-			return;
-		}
-		using var imageDisposable = new DisposableStruct<SKImage>(static image => image.Dispose(), image);
-
 		// Destroy existing icons before creating new ones
 		DestroyIcons();
 
 		// Create small icon (16px base) for titlebar and window list
 		var smallIconSize = GetScaledIconSize(16);
-		_smallIcon = CreateIconFromImage(image, smallIconSize);
+		_smallIcon = CreateIconFromFile(iconPath, smallIconSize);
 
 		// Create big icon (24px on Win10+, 32px on older) for taskbar and Alt+Tab
 		var bigIconSize = GetScaledIconSize(s_taskbarIconSize);
-		_bigIcon = CreateIconFromImage(image, bigIconSize);
+		_bigIcon = CreateIconFromFile(iconPath, bigIconSize);
 
 		if (_smallIcon != HICON.Null)
 		{
@@ -801,48 +855,48 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		return (int)(baseSize * scale);
 	}
 
-	private unsafe HICON CreateIconFromImage(SKImage source, int targetSize)
+	private unsafe HICON CreateIconFromFile(string iconPath, int targetSize)
 	{
-		// Scale the source image to the target size
-		using var scaledBitmap = new SKBitmap(targetSize, targetSize);
-		using var canvas = new SKCanvas(scaledBitmap);
-		canvas.Clear(SKColors.Transparent);
-
-		using var paint = new SKPaint
+		// Decode + resample to the target size via the image-decoder seam; the returned BGRA (premultiplied)
+		// is exactly the icon color-bitmap format.
+		using var fileStream = File.OpenRead(iconPath);
+		if (!ImageEncoderDecoder.Current.TryDecode(fileStream, targetSize, targetSize, out var frames) || frames.Frames.Count == 0)
 		{
-			IsAntialias = true
-		};
+			this.LogError()?.Error($"Couldn't decode icon file [{iconPath}].");
+			return HICON.Null;
+		}
+		using var _framesDisposable = frames;
 
-		var destRect = new SKRect(0, 0, targetSize, targetSize);
-		var sampling = new SKSamplingOptions(SKCubicResampler.Mitchell);
-		canvas.DrawImage(source, destRect, sampling, paint);
+		var image = frames.Frames[0];
+		var w = image.PixelWidth;
+		var h = image.PixelHeight;
+		var bgra = new byte[w * h * 4];
+		image.CopyPixels(bgra);
 
-		var maskLength = targetSize * (targetSize + 7) / 8;
-		var imageSize = targetSize * targetSize * Marshal.SizeOf<uint>();
+		var maskLength = w * (h + 7) / 8;
+		var imageSize = w * h * Marshal.SizeOf<uint>();
 		var iconLength = Marshal.SizeOf<BITMAPINFOHEADER>() + imageSize + maskLength;
 		var presBits = stackalloc byte[iconLength];
 
 		var bmi = (BITMAPINFOHEADER*)presBits;
 		bmi->biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>();
-		bmi->biWidth = targetSize;
-		bmi->biHeight = targetSize * 2; // the multiplication by 2 is unexplainable, it seems to draw only half the image without the multiplication
+		bmi->biWidth = w;
+		bmi->biHeight = h * 2; // color bitmap + AND mask stacked; the icon's biHeight is 2x the image height
 		bmi->biPlanes = 1;
 		bmi->biBitCount = 32;
 		bmi->biCompression = /* BI_RGB */ 0x0000;
 
-		// Write the pixels upside down into the bitmap buffer
-		var info = new SKImageInfo(targetSize, targetSize, SKColorType.Bgra8888);
-		using (var surface = SKSurface.Create(info))
+		// Write the BGRA pixels bottom-up (DIB origin is bottom-left) into the color bitmap.
+		var dst = presBits + Marshal.SizeOf<BITMAPINFOHEADER>();
+		var stride = w * 4;
+		for (int row = 0; row < h; row++)
 		{
-			var surfaceCanvas = surface.Canvas;
-			surfaceCanvas.Translate(0, targetSize);
-			surfaceCanvas.Scale(1, -1);
-			using var scaledImage = SKImage.FromBitmap(scaledBitmap);
-			surfaceCanvas.DrawImage(scaledImage, 0, 0, SKSamplingOptions.Default, null);
-			surface.Snapshot().ReadPixels(info, (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
+			var srcOffset = row * stride;
+			var dstOffset = (h - 1 - row) * stride;
+			Marshal.Copy(bgra, srcOffset, (IntPtr)(dst + dstOffset), stride);
 		}
 
-		// Write the mask
+		// Write the AND mask (fully opaque; alpha in the 32-bit color bitmap carries transparency).
 		new Span<byte>(presBits + iconLength - maskLength, maskLength).Fill(0xFF);
 
 		var hIcon = PInvoke.CreateIconFromResource(presBits, (uint)iconLength, true, 0x00030000);
@@ -899,25 +953,20 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
 
-	private void RegisterForBackgroundColor()
+	Windows.UI.Color? IXamlRootHost.BackgroundColor
 	{
-		UpdateRendererBackground();
-		_backgroundDisposable = _window?.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
-	}
-
-	private void UpdateRendererBackground()
-	{
-		if (_window?.Background is Microsoft.UI.Xaml.Media.SolidColorBrush brush)
+		get
 		{
-			_background = new SKColor(brush.Color.AsUInt32());
-		}
-		else if (_window?.Background is not null)
-		{
-			this.LogError()?.Error("This platform only supports SolidColorBrush for the Window background");
-		}
-		else if (_window is null)
-		{
-			this.LogDebug()?.Debug($"{nameof(UpdateRendererBackground)} is called before {nameof(_window)} is set.");
+			switch (Window?.Background)
+			{
+				case Microsoft.UI.Xaml.Media.SolidColorBrush brush:
+					return brush.Color;
+				case not null:
+					this.LogError()?.Error("This platform only supports SolidColorBrush for the Window background");
+					return null;
+				default:
+					return null;
+			}
 		}
 	}
 
@@ -941,6 +990,20 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 	}
 
+	/// <remarks>
+	/// Mirrors what <see cref="SetSystemBackdrop"/> actually honours: only Mica and Acrylic are mapped
+	/// onto <c>DWMWA_SYSTEMBACKDROP_TYPE</c>, and that attribute needs Windows 11 build 22621.
+	/// </remarks>
+	public override bool IsSystemBackdropSupported(Microsoft.UI.Xaml.Media.SystemBackdrop backdrop)
+		=> backdrop switch
+		{
+			Microsoft.UI.Xaml.Media.MicaBackdrop
+				=> Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported(),
+			Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop
+				=> Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported(),
+			_ => false,
+		};
+
 	public override unsafe void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
 	{
 		if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22621))
@@ -955,9 +1018,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		if (backdrop is not null and not (Microsoft.UI.Xaml.Media.MicaBackdrop or Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop))
 		{
-			// Leave any currently applied backdrop untouched rather than clearing it with DWMSBT_NONE.
-			this.LogWarn()?.Warn($"Only {nameof(Microsoft.UI.Xaml.Media.MicaBackdrop)} and {nameof(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)} are currently supported on Win32. '{backdrop.GetType().Name}' was ignored.");
-			return;
+			// Cleared with DWMSBT_NONE below: the window now paints its fallback, so a previously applied
+			// material must not linger under the frame.
+			this.LogWarn()?.Warn($"Only {nameof(Microsoft.UI.Xaml.Media.MicaBackdrop)} and {nameof(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)} are currently supported on Win32. '{backdrop.GetType().Name}' is not rendered natively.");
 		}
 
 		DWM_SYSTEMBACKDROP_TYPE backdropType = backdrop switch
@@ -990,6 +1053,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// area ("sheet of glass" MARGINS {-1,-1,-1,-1}) so the transparent client pixels reveal the
 		// material instead of black; otherwise it restores the title-bar/border configuration. Keeping
 		// this in the presenter avoids fighting it over the frame margins and corner preference.
+		UpdateFrameTheme();
 		UpdateClientAreaExtension();
 	}
 }

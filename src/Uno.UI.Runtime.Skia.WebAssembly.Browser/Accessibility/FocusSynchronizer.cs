@@ -62,6 +62,18 @@ internal sealed partial class FocusSynchronizer
 	}
 
 	/// <summary>
+	/// Undoes <see cref="Initialize"/> when accessibility is disabled.
+	/// </summary>
+	internal void Uninitialize()
+	{
+		FocusManager.GotFocus -= OnXamlGotFocus;
+		FocusManager.LostFocus -= OnXamlLostFocus;
+		UntrackFocusedElement();
+		_currentFocusedHandle = IntPtr.Zero;
+		_previousFocusedHandle = IntPtr.Zero;
+	}
+
+	/// <summary>
 	/// Syncs the currently-focused XAML element to the semantic DOM on first initialization.
 	/// This handles the case where a control (e.g. TextBox) was focused before accessibility
 	/// was enabled, so the GotFocus subscription above won't fire retroactively.

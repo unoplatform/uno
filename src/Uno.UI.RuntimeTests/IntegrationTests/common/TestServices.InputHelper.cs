@@ -119,6 +119,26 @@ namespace Private.Infrastructure
 				});
 			}
 
+			// Pans a single touch contact from the center of the element by (relX, relY) pixels,
+			// at a speed proportional to velocityFactor (1.0 = 1px/ms, as in WinUI's test infra).
+			public static void PanFromCenter(FrameworkElement element, int relX, int relY, double velocityFactor)
+			{
+				EnsureInputInjectorSupported();
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					using var finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
+					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
+
+					const uint steps = 10;
+					var durationInMilliseconds = Math.Sqrt((double)relX * relX + (double)relY * relY) / velocityFactor;
+
+					finger.Press(center);
+					finger.MoveTo(new Point(center.X + relX, center.Y + relY), steps, (uint)Math.Max(1, durationInMilliseconds / steps));
+					finger.Release();
+				});
+			}
+
 			public static void ScrollMouseWheel(UIElement cv, int i)
 			{
 				throw new System.NotImplementedException();

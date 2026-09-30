@@ -69,7 +69,6 @@ You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props
     Serialization;
     Localization;
     Navigation;
-    SkiaRenderer;
 </UnoFeatures>
 ```
 
@@ -111,8 +110,7 @@ Here are the supported features:
 | `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
 | `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
 | `SimpleTheme`        | Adds support for the [Simple Design Theme](xref:Uno.Themes.Simple.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the Simple Design Toolkit library.                                                    |
-| `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
-| `SkiaRenderer`       | No-op, kept for backwards compatibility. Skia is always used as the graphics rendering engine on Uno Platform targets. The WinAppSDK target is not provided by Uno Platform and always renders natively with WinUI. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia). |
+| `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp) — the default rendering backend on Uno Platform targets. It is implied even when not listed, and the legacy `SkiaRenderer` feature is mapped to it for backwards compatibility. The WinAppSDK target is not provided by Uno Platform and always renders natively with WinUI. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia). |
 | `SpellChecking`      | Adds support for [spell-checking](xref:Uno.Features.SpellChecking) in TextBox controls on all Skia-based targets via [Uno.WinUI.SpellChecking](https://www.nuget.org/packages/Uno.WinUI.SpellChecking).                                    |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
 | `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, and Android. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
@@ -132,15 +130,19 @@ Here are the supported properties:
 
 | Property                         | NuGet Package(s)                                                                                                 | Description                                                                                                                         |
 |----------------------------------|------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `UnoAppMcpVersion`               | [Uno.UI.App.Mcp](https://www.nuget.org/packages/Uno.UI.App.Mcp)                                                  | Overrides the version of the Uno App MCP server add-in used by the DevServer.                                                        |
 | `UnoCoreLoggingSingletonVersion` | [Uno.Core.Extensions.Logging.Singleton](https://www.nuget.org/packages/Uno.Core.Extensions.Logging.Singleton)    | Provides a logging singleton pattern with helpers and extension methods for simplified logging.                                     |
 | `UnoCSharpMarkupVersion`         | [Uno.WinUI.Markup](https://www.nuget.org/packages/Uno.WinUI.Markup) and similar packages                         | Enables [C# Markup](xref:Uno.Extensions.Markup.Overview), the use of C# for building UI markup, similar to XAML but with C# syntax. |
 | `UnoDspTasksVersion`             | [Uno.Dsp.Tasks](https://www.nuget.org/packages/Uno.Dsp.Tasks) and similar packages                               | Includes tasks for Uno DSP (Theme colors import) within Uno Platform projects.                                                      |
 | `UnoExtensionsVersion`           | [Uno.Extensions.Storage.WinUI](https://www.nuget.org/packages/Uno.Extensions.Storage.WinUI) and similar packages | Extends the Uno Platform with additional methods and classes for more versatile application development.                            |
+| `UnoFontsVersion`                | [Uno.Fonts.OpenSans](https://www.nuget.org/packages/Uno.Fonts.OpenSans) and similar packages                     | Overrides the version of the bundled Uno.Fonts packages (OpenSans, Fluent, Roboto).                                                  |
+| `UnoHotDesignVersion`            | [Uno.UI.HotDesign](https://www.nuget.org/packages/Uno.UI.HotDesign)                                              | Overrides the version of the Hot Design add-in used by the DevServer.                                                                |
 | `UnoLoggingVersion`              | [Uno.Extensions.Logging.OSLog](https://www.nuget.org/packages/Uno.Extensions.Logging.OSLog) and similar packages | Implements logging mechanisms to help with monitoring and debugging Uno Platform applications.                                      |
 | `UnoResizetizerVersion`          | [Uno.Resizetizer](https://www.nuget.org/packages/Uno.Resizetizer)                                                | Provides tools for automatically resizing and managing image assets in Uno Platform projects.                                       |
+| `UnoSdkExtrasVersion`            | [Uno.Sdk.Extras](https://www.nuget.org/packages/Uno.Sdk.Extras)                                                  | Overrides the version of additional Uno.Sdk build-time helper targets.                                                               |
+| `UnoSettingsVersion`             | [Uno.Settings.DevServer](https://www.nuget.org/packages/Uno.Settings.DevServer)                                  | Overrides the version of the Settings add-in used by the DevServer.                                                                  |
 | `UnoThemesVersion`               | [Uno.Material.WinUI](https://www.nuget.org/packages/Uno.Material.WinUI) and similar packages                     | Supplies a variety of themes that can be applied to Uno Platform applications to enhance the UI.                                    |
 | `UnoToolkitVersion`              | [Uno.Toolkit.WinUI](https://www.nuget.org/packages/Uno.Toolkit.WinUI) and similar packages                       | Offers a collection of controls, helpers, and tools to complement the standard WinUI components.                                    |
-| `UnoUniversalImageLoaderVersion` | [Uno.UniversalImageLoader](https://www.nuget.org/packages/Uno.UniversalImageLoader)                              | Facilitates the loading and displaying of images across different platforms supported by Uno.                                       |
 | `UnoWasmBootstrapVersion`        | [Uno.Wasm.Bootstrap](https://www.nuget.org/packages/Uno.Wasm.Bootstrap) and similar packages                     | Enables the bootstrapping of Uno Platform applications running on WebAssembly.                                                      |
 
 > [!NOTE]
@@ -164,11 +166,14 @@ Here are the supported properties:
 | `AndroidXWearVersion`               | [Xamarin.AndroidX.Wear](https://www.nuget.org/packages/Xamarin.AndroidX.Wear) and similar packages                   | Provides support for Wear OS watch applications.                                                               |
 | `AndroidXWearTilesVersion`          | [Xamarin.AndroidX.Wear.Tiles](https://www.nuget.org/packages/Xamarin.AndroidX.Wear.Tiles) and similar packages       | Provides Tiles API for Wear OS watch faces and complications.                                                  |
 | `CommunityToolkitMvvmVersion`       | [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm)                                        | Delivers a set of MVVM (Model-View-ViewModel) components for .NET applications.                                |
+| `MauiVersion`                       | [Microsoft.Maui.Controls](https://www.nuget.org/packages/Microsoft.Maui.Controls) and similar packages               | Overrides the version of .NET MAUI used by the `mauiembedding` UnoFeature.                                     |
 | `MicrosoftIdentityClientVersion`    | [Microsoft.Identity.Client](https://www.nuget.org/packages/Microsoft.Identity.Client)                                | Provides an authentication library for Microsoft Identity Platform.                                            |
 | `MicrosoftLoggingVersion`           | [Microsoft.Extensions.Logging.Console](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Console)          | Enables logging to the console with Microsoft's extensions.                                                    |
+| `MicrosoftWebView2Version`          | [Microsoft.Web.WebView2](https://www.nuget.org/packages/Microsoft.Web.WebView2)                                      | Overrides the version of the native WebView2Loader used by the `webview` UnoFeature on desktop.                |
 | `PrismVersion`                      | [Prism.Uno.WinUI](https://www.nuget.org/packages/Prism.Uno.WinUI) and similar packages                               | Integrates the Prism library, which aids in building loosely coupled, maintainable, and testable applications. |
 | `SkiaSharpVersion`                  | [SkiaSharp.Skottie](https://www.nuget.org/packages/SkiaSharp.Skottie) and similar packages                           | Provides a cross-platform 2D graphics API for .NET platforms based on Google's Skia Graphics Library.          |
 | `SvgSkiaVersion`                    | [Svg.Skia](https://www.nuget.org/packages/Svg.Skia)                                                                  | Renders SVG files using the SkiaSharp graphics engine.                                                         |
+| `VlcNativeWindowsAssetsVersion`     | [VideoLAN.LibVLC.Windows](https://www.nuget.org/packages/VideoLAN.LibVLC.Windows)                                    | Overrides the version of the native VLC assets used by `MediaPlayerElement` on Windows desktop.                |
 | `WinAppSdkBuildToolsVersion`        | [Microsoft.Windows.SDK.BuildTools](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools)                  | Contains the tools required to build applications for the Microsoft Windows App SDK.                           |
 | `WinAppSdkBuildToolsWinAppVersion`  | [Microsoft.Windows.SDK.BuildTools.WinApp](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools.WinApp)    | Enables `dotnet run` to launch the packaged WinAppSDK app with package identity. See [Running packaged WinUI apps with `dotnet run`](#running-packaged-winui-apps-with-dotnet-run). |
 | `WinAppSdkVersion`                  | [Microsoft.WindowsAppSDK](https://www.nuget.org/packages/Microsoft.WindowsAppSDK)                                    | Provides project templates and tools for building Windows applications.                                        |
@@ -198,7 +203,6 @@ Those properties can be set from `Directory.Build.props` or may be set in the `c
         Navigation;
         ThemeService;
         Mvvm;
-        SkiaRenderer;
       </UnoFeatures>
       
       <UnoToolkitVersion>6.3.6</UnoToolkitVersion>
@@ -401,22 +405,22 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
 
 ## Visual Studio First-TargetFramework Workarounds
 
-Using a Single Project in Visual Studio requires the Uno Platform tooling to apply workarounds in order to have an acceptable debugging experience.
+Using a Single Project in Visual Studio requires the Uno Platform tooling to apply a workaround in order to have an acceptable debugging experience.
 
-For some of the platforms (Desktop, WinAppSDK, and WebAssembly), the corresponding target frameworks must be placed first in order for debugging and publishing to function properly. To address that problem, the Uno Platform tooling modifies the `csproj` file to reorder the `TargetFrameworks` property so that the list is accepted by Visual Studio.
+When building inside Visual Studio, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents debugging and Hot Reload from working properly for all targets when `browserwasm` is the active launch target but is not first in the `TargetFrameworks` property. To work around this, the Uno Platform tooling swaps the active target framework into the first position of `TargetFrameworks` whenever it is `browserwasm`.
 
-As a result, the csproj file is on disk and will show the file as modified in your source control, yet the automatic change can be reverted safely. If the behavior is impacting your IDE negatively, you can disable it by adding the following in your `.csproj` file:
+This reorder is applied **in-memory during MSBuild evaluation only** — the `.csproj` file on disk is never modified. If the behavior is impacting your IDE negatively, you can disable it by adding the following in your `.csproj` file:
 
 ```xml
 <PropertyGroup>
-  <UnoDisableVSTargetFrameworksRewrite>true</UnoDisableVSTargetFrameworksRewrite>
+  <UnoDisableFirstTargetFrameworkRewrite>true</UnoDisableFirstTargetFrameworkRewrite>
 </PropertyGroup>
 ```
 
 Note that we are currently tracking these Visual Studio issues, make sure to upvote them:
 
-- `net8.0-browserwasm` must be first for WebAssembly debugging to work ([Link](https://developercommunity.visualstudio.com/t/net80-must-be-first-for-WebAssembly-pub/10643720))
-- [WinAppSDK Unpackaged profile cannot be selected properly when a net8.0 mobile target is active](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735)
+- `net10.0-browserwasm` must be first for WebAssembly debugging to work ([Link](https://developercommunity.visualstudio.com/t/net80-must-be-first-for-WebAssembly-pub/10643720))
+- [WinAppSDK Unpackaged profile cannot be selected properly when a net10.0 mobile target is active](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735)
 
 ## Disabling Default Items
 
@@ -502,6 +506,18 @@ In addition to the per-file suffixes described above, the Uno.Sdk recognizes a s
 | `Platforms/Windows/` | `*-windows10.*` | `Package.appxmanifest`, `app.manifest`, splash screens, tile/app-icon PNGs referenced by the manifest |
 
 The location of each folder can be overridden via the matching MSBuild property if your project uses a different layout: `PlatformsProjectFolder`, `AndroidProjectFolder`, `iOSProjectFolder`, `tvOSProjectFolder`, `DesktopProjectFolder`, `WasmProjectFolder`, `WindowsProjectFolder`.
+
+## High Refresh Rate on iPhone
+
+iPhones with ProMotion displays only render above 60 Hz when the app's `Info.plist` sets `CADisableMinimumFrameDurationOnPhone` to `true`. For projects using the Uno.Sdk, this key is added automatically, so animations and scrolling can run at up to 120 Hz on those devices. iPads are not affected: they use their display's full refresh rate without this key.
+
+A value set explicitly in your own `Platforms/iOS/Info.plist` takes precedence. To keep iPhones at 60 Hz, for example to reduce power use, disable it in your project file:
+
+```xml
+<PropertyGroup>
+  <UnoDisableHighRefreshRate>true</UnoDisableHighRefreshRate>
+</PropertyGroup>
+```
 
 ## Apple Privacy Manifest Support
 

@@ -123,7 +123,7 @@ internal static class SymbolMatchingHelpers
 			uapSymbol.IsAbstract == unoSymbol.IsAbstract &&
 			uapSymbol.IsOverride == unoSymbol.IsOverride &&
 			StripGlobal(uapSymbol.Name) == StripGlobal(unoSymbol.Name) &&
-			// Temporary skip named type: Until we match seal-ness and static-ness with UWP.
+			// Temporary skip named type: Until we match seal-ness with WinUI.
 			(uapSymbol.IsSealed == unoSymbol.IsSealed || uapSymbol.Kind == SymbolKind.NamedType) &&
 			(uapSymbol.IsStatic == unoSymbol.IsStatic) &&
 			uapSymbol.IsVirtual == unoSymbol.IsVirtual;
@@ -178,13 +178,7 @@ internal static class SymbolMatchingHelpers
 			return false;
 		}
 
-		if (!AreMatching(uapProperty.Type, unoProperty.Type) &&
-			// object vs UIElement
-			uapProperty.Name != "Content" &&
-			// IEasingFunction vs EasingFunctionBase
-			uapProperty.Name != "EasingFunction" &&
-			// string vs object
-			uapProperty.Name != "ElementName")
+		if (!AreMatching(uapProperty.Type, unoProperty.Type))
 		{
 			return false;
 		}

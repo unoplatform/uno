@@ -6,7 +6,7 @@ namespace Windows.Gaming.Input
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct GamepadReading
+	public partial struct GamepadReading : global::System.IEquatable<global::Windows.Gaming.Input.GamepadReading>
 	{
 		// Forced skipping of method Windows.Gaming.Input.GamepadReading.GamepadReading()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,11 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.GamepadReading.GamepadReading(ulong, Windows.Gaming.Input.GamepadButtons, double, double, double, double, double, double)
+		// Skipping already declared method Windows.Gaming.Input.GamepadReading.operator ==(Windows.Gaming.Input.GamepadReading, Windows.Gaming.Input.GamepadReading)
+		// Skipping already declared method Windows.Gaming.Input.GamepadReading.operator !=(Windows.Gaming.Input.GamepadReading, Windows.Gaming.Input.GamepadReading)
+		// Skipping already declared method Windows.Gaming.Input.GamepadReading.Equals(Windows.Gaming.Input.GamepadReading)
+		// Skipping already declared method Windows.Gaming.Input.GamepadReading.Equals(object)
+		// Skipping already declared method Windows.Gaming.Input.GamepadReading.GetHashCode()
 		// Skipping already declared field Windows.Gaming.Input.GamepadReading.Timestamp
 		// Skipping already declared field Windows.Gaming.Input.GamepadReading.Buttons
 		// Skipping already declared field Windows.Gaming.Input.GamepadReading.LeftTrigger

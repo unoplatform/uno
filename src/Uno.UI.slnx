@@ -157,11 +157,21 @@
     <Project Path="FontFallbackPreprocessor/FontFallbackPreprocessor.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
+    <Project Path="ResourcesExtractor/ResourcesExtractor.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+      <Platform Solution="*|Any CPU" Project="x64" />
+      <Platform Solution="*|ARM" Project="x64" />
+      <Platform Solution="*|iPhone" Project="x64" />
+      <Platform Solution="*|iPhoneSimulator" Project="x64" />
+    </Project>
     <Project Path="Uno.NUnitTransformTool/Uno.NUnitTransformTool.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.ReferenceImplComparer/Uno.ReferenceImplComparer.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
+    <Project Path="Uno.ReferenceImplComparer.Tests/Uno.ReferenceImplComparer.Tests.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="Uno.UI.TestComparer/Uno.UI.TestComparer.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
@@ -200,6 +210,21 @@
   </Folder>
   <Folder Name="/Uno.UI/Composition/">
     <Project Path="Uno.UI.Composition/Uno.UI.Composition.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
+    <Project Path="Uno.UI.Composition.Skia/Uno.UI.Composition.SkiaBackend.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
+    <Project Path="Uno.UI.Composition.Managed/Uno.UI.Composition.Managed.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
+    <Project Path="Uno.UI.Composition.Drawing/Uno.UI.Composition.Drawing.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
+    <Project Path="Uno.UI.Composition.WebGpu.Init/Uno.UI.Composition.WebGpu.Init.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
+    <Project Path="Uno.UI.Composition.WebGpu/Uno.UI.Composition.WebGpu.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>

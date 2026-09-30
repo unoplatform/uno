@@ -54,7 +54,13 @@ public sealed class DependencyPropertyMixinGenerator : IIncrementalGenerator
 					sb.AppendLine($"\t\t{dp.Modifier}public {dp.PropertyType} {dp.Name}");
 					sb.AppendLine("\t\t{");
 					sb.AppendLine($"\t\t\tget {{ return ({dp.PropertyType})this.GetValue({dp.Name}Property); }}");
-					sb.AppendLine($"\t\t\tset {{ this.SetValue({dp.Name}Property, value); }}");
+					// SetValue takes an object, so a value type would be boxed on every set. Uno.UI already
+					// keeps boxes for the common values, and these properties are set often enough for the
+					// allocation to be worth avoiding.
+					var setterValue = dp.PropertyType is "bool" or "int" or "double"
+						? "global::Uno.UI.Helpers.Boxes.Boxer.Box(value)"
+						: "value";
+					sb.AppendLine($"\t\t\tset {{ this.SetValue({dp.Name}Property, {setterValue}); }}");
 					sb.AppendLine("\t\t}");
 					sb.AppendLine();
 
@@ -65,7 +71,7 @@ public sealed class DependencyPropertyMixinGenerator : IIncrementalGenerator
 					sb.AppendLine($"\t\t\t\ttypeof({dp.PropertyType}),");
 					sb.AppendLine($"\t\t\t\ttypeof({cls.Name}),");
 					sb.AppendLine($"\t\t\t\tnew FrameworkPropertyMetadata(");
-					sb.AppendLine($"\t\t\t\t\tdefaultValue: ({dp.PropertyType}){dp.DefaultValue},");
+					sb.AppendLine($"\t\t\t\t\tdefaultValue: {GetBoxedDefaultValue(dp.PropertyType, dp.DefaultValue)},");
 					sb.AppendLine($"\t\t\t\t\toptions: FrameworkPropertyMetadataOptions.{dp.FrameworkPropertyOption},");
 					sb.AppendLine($"\t\t\t\t\tpropertyChangedCallback: (s, e) => (({cls.Name})s)?.On{dp.Name}Changed(({dp.PropertyType})e.OldValue, ({dp.PropertyType})e.NewValue)");
 					sb.AppendLine($"\t\t\t\t)");
@@ -131,17 +137,24 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-#if __APPLE_UIKIT__
-using Color = UIKit.UIColor;
-using View = UIKit.UIView;
-#elif __ANDROID__
-using Color = Android.Resource.Color;
-using View = Android.Views.View;
-#elif IS_UNIT_TESTS || UNO_REFERENCE_API
-using Color = System.Object;
-using View = Microsoft.UI.Xaml.FrameworkElement;
-#endif";
+using Microsoft.UI.Xaml.Controls.Primitives;";
+
+	/// <summary>
+	/// The cached box for a default value literal, or the original cast expression when there is no box for it.
+	/// Keep the recognised values in sync with <c>Boxes.Box</c> and the BoxingDiagnosticAnalyzer.
+	/// </summary>
+	private static string GetBoxedDefaultValue(string propertyType, string defaultValue)
+		=> (propertyType, defaultValue) switch
+		{
+			("bool", "false") => "global::Uno.UI.Helpers.Boxes.BoolBoxes.False",
+			("bool", "true") => "global::Uno.UI.Helpers.Boxes.BoolBoxes.True",
+			("int", "-1") => "global::Uno.UI.Helpers.Boxes.IntBoxes.NegativeOne",
+			("int", "0") => "global::Uno.UI.Helpers.Boxes.IntBoxes.Zero",
+			("int", "1") => "global::Uno.UI.Helpers.Boxes.IntBoxes.One",
+			("double", "0" or "0.0" or "0d" or "0.0d") => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero",
+			("double", "1" or "1.0" or "1d" or "1.0d") => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.One",
+			_ => $"({propertyType}){defaultValue}",
+		};
 
 	#region Data Model
 
@@ -211,17 +224,6 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 					"VerticalAlignment.Center",
 					frameworkPropertyOption: "AffectsArrange"),
 			}),
-			new ClassDefinition("Picker", "__IOS__", "public", new[]
-			{
-				new PropertyDefinition("ItemsSource", "object", "null"),
-				new PropertyDefinition("SelectedItem", "object", "null"),
-				new PropertyDefinition("SelectedIndex", "int", "-1"),
-				new PropertyDefinition("ItemTemplate", "DataTemplate", "null", frameworkPropertyOption: "ValueDoesNotInheritDataContext"),
-				new PropertyDefinition("ItemContainerStyle", "Style", "null", frameworkPropertyOption: "ValueDoesNotInheritDataContext"),
-				new PropertyDefinition("ItemTemplateSelector", "DataTemplateSelector", "null"),
-				new PropertyDefinition("DisplayMemberPath", "string", "string.Empty"), // TODO: Move to ItemsControl
-				new PropertyDefinition("Placeholder", "object", "null"),
-			}),
 			new ClassDefinition("ComboBox", "true", "public", new[]
 			{
 				new PropertyDefinition("PlaceholderText", "string", "string.Empty"),
@@ -250,7 +252,6 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 				new PropertyDefinition("GroupHeaderPlacement", "GroupHeaderPlacement", "GroupHeaderPlacement.Top"),
 				new PropertyDefinition("GroupPadding", "Thickness", "Thickness.Empty"),
 				new PropertyDefinition("Orientation", "Orientation", "Orientation.Vertical"),
-				new PropertyDefinition("CacheLength", "double", "4.0", condition: "__ANDROID__"),
 			}),
 			// https://msdn.microsoft.com/library/windows/apps/windows.ui.xaml.controls.itemswrapgrid.aspx
 			new ClassDefinition("ItemsWrapGrid", "true", "public", new[]
@@ -262,7 +263,6 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 				new PropertyDefinition("ItemWidth", "double", "Double.NaN"),
 				new PropertyDefinition("Orientation", "Orientation", "Orientation.Vertical"),
 				new PropertyDefinition("MaximumRowsOrColumns", "int", "-1"),
-				new PropertyDefinition("CacheLength", "double", "4.0", condition: "__ANDROID__"),
 			}),
 			new ClassDefinition("VirtualizingPanelLayout", "true", "public", new[]
 			{
@@ -270,16 +270,6 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 				new PropertyDefinition("GroupHeaderPlacement", "GroupHeaderPlacement", "GroupHeaderPlacement.Top"),
 				new PropertyDefinition("GroupPadding", "Thickness", "Thickness.Empty"),
 				new PropertyDefinition("CacheLength", "double", "4.0"),
-			}),
-			// ItemsWrapGridLayout only derives from DependencyObject (via VirtualizingPanelLayout) in the native
-			// (!UNO_REFERENCE_API) build. UNO_REFERENCE_API is defined for Skia, WebAssembly and Reference, where
-			// ItemsWrapGridLayout is a baseless type, so the mixin must match that availability to avoid generating
-			// DependencyObject plumbing on a non-DO type.
-			new ClassDefinition("ItemsWrapGridLayout", "!UNO_REFERENCE_API", "internal", new[]
-			{
-				new PropertyDefinition("ItemHeight", "double", "Double.NaN"),
-				new PropertyDefinition("ItemWidth", "double", "Double.NaN"),
-				new PropertyDefinition("MaximumRowsOrColumns", "int", "-1"),
 			}),
 			new ClassDefinition("DatePickerSelector", "true", "public", new[]
 			{
@@ -316,30 +306,6 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 				new PropertyDefinition("IsLightDismissEnabled", "bool", "false"),
 			}),
 		}),
-		new NamespaceDefinition("Uno.UI.Controls.Legacy", new[]
-		{
-			new ClassDefinition("ListViewBase", "__APPLE_UIKIT__", "public", new[]
-			{
-				new PropertyDefinition("DisplayMemberPath", "string", "string.Empty"),
-			}),
-			new ClassDefinition("ListView", "__ANDROID__", "public", new[]
-			{
-				new PropertyDefinition("DisplayMemberPath", "string", "string.Empty"),
-			}),
-			new ClassDefinition("HorizontalListView", "__ANDROID__", "public", new[]
-			{
-				new PropertyDefinition("DisplayMemberPath", "string", "string.Empty"),
-			}),
-			new ClassDefinition("GridView", "__ANDROID__", "public", new[]
-			{
-				new PropertyDefinition("DisplayMemberPath", "string", "string.Empty"),
-			}),
-			new ClassDefinition("HorizontalGridView", "__ANDROID__", "public", new[]
-			{
-				new PropertyDefinition("DisplayMemberPath", "string", "string.Empty"),
-			}),
-		}),
-		// The T4 ends with .Namespace("Microsoft.UI.Xaml.Controls.Primitives") which is empty — a no-op from the builder
 	};
 
 	#endregion

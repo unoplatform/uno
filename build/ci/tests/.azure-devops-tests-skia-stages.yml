@@ -69,8 +69,9 @@ stages:
 
 - stage: runtime_tests_skia_ios
   displayName: Tests - iOS Skia
+  # Builds from source and never consumes native-assets-macos, so it need not wait for that stage.
   dependsOn:
-    - binaries_build_native_macos
+    - Setup
 
   jobs:
   - template: .azure-devops-tests-ios-skia-build.yml
@@ -98,8 +99,9 @@ stages:
 
 - stage: runtime_tests_skia_tvos
   displayName: Tests - tvOS Skia
+  # Builds from source and never consumes native-assets-macos, so it need not wait for that stage.
   dependsOn:
-    - binaries_build_native_macos
+    - Setup
 
   jobs:
   - template: .azure-devops-tests-tvos-skia-build.yml

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Helpers.Boxes;
 using NotImplementedException = System.NotImplementedException;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -24,7 +25,7 @@ public partial class ListViewBase
 			nameof(SingleSelectionFollowsFocus),
 			typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(BoolBoxes.True));
 
 	public bool IsMultiSelectCheckBoxEnabled
 	{
@@ -36,7 +37,7 @@ public partial class ListViewBase
 		DependencyProperty.Register(
 			nameof(IsMultiSelectCheckBoxEnabled), typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(true, (o, args) => ((ListViewBase)o).OnIsMultiSelectCheckBoxEnabledPropertyChanged(args)));
+			new FrameworkPropertyMetadata(BoolBoxes.True, (o, args) => ((ListViewBase)o).OnIsMultiSelectCheckBoxEnabledPropertyChanged(args)));
 
 	private void OnIsMultiSelectCheckBoxEnabledPropertyChanged(DependencyPropertyChangedEventArgs args)
 	{

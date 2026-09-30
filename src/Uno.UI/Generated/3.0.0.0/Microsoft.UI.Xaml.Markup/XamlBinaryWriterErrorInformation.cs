@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Markup
 #if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct XamlBinaryWriterErrorInformation
+	public partial struct XamlBinaryWriterErrorInformation : global::System.IEquatable<global::Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation>
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.XamlBinaryWriterErrorInformation()
 #if __SKIA__
@@ -17,6 +17,37 @@ namespace Microsoft.UI.Xaml.Markup
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.XamlBinaryWriterErrorInformation(uint, uint, uint)
+#if __SKIA__
+		public static bool operator ==(XamlBinaryWriterErrorInformation x, XamlBinaryWriterErrorInformation y)
+			=> x.InputStreamIndex == y.InputStreamIndex
+			&& x.LineNumber == y.LineNumber
+			&& x.LinePosition == y.LinePosition;
+#endif
+#if __SKIA__
+		public static bool operator !=(XamlBinaryWriterErrorInformation x, XamlBinaryWriterErrorInformation y)
+			=> !(x.InputStreamIndex == y.InputStreamIndex
+				&& x.LineNumber == y.LineNumber
+				&& x.LinePosition == y.LinePosition);
+#endif
+#if __SKIA__
+		public bool Equals(XamlBinaryWriterErrorInformation other)
+			=> InputStreamIndex == other.InputStreamIndex
+			&& LineNumber == other.LineNumber
+			&& LinePosition == other.LinePosition;
+#endif
+#if __SKIA__
+		public override bool Equals(object obj)
+			=> obj is XamlBinaryWriterErrorInformation that
+			&& InputStreamIndex == that.InputStreamIndex
+			&& LineNumber == that.LineNumber
+			&& LinePosition == that.LinePosition;
+#endif
+#if __SKIA__
+		public override int GetHashCode()
+			=> InputStreamIndex.GetHashCode()
+			^ LineNumber.GetHashCode()
+			^ LinePosition.GetHashCode();
+#endif
 #if __SKIA__
 		public uint InputStreamIndex;
 #endif

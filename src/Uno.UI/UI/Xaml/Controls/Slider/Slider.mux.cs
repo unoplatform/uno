@@ -7,11 +7,13 @@ using System.Globalization;
 using DirectUI;
 using Uno.Disposables;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -79,7 +81,7 @@ public partial class Slider
 		}
 		else if (property == SmallChangeProperty)
 		{
-			value = SLIDER_DEFAULT_SMALL_CHANGE;
+			value = Boxer.Box(SLIDER_DEFAULT_SMALL_CHANGE);
 		}
 		else
 		{

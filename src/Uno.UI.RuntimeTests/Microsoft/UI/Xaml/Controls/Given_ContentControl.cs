@@ -1,0 +1,362 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
+using Uno.Extensions;
+using Uno.UI.Helpers;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows_UI_Xaml_Controls;
+using static Private.Infrastructure.TestServices;
+#if WINAPPSDK
+using Uno.UI.Extensions;
+#endif
+
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
+{
+	[TestClass]
+	[RunsOnUIThread]
+	public partial class Given_ContentControl
+	{
+		private ResourceDictionary _testsResources;
+
+		public DataTemplate DataContextBindingDataTemplate => _testsResources["DataContextBindingDataTemplate"] as DataTemplate;
+		public DataTemplate ContentControlComboTemplate => _testsResources["ContentControlComboTemplate"] as DataTemplate;
+
+		private DataTemplate SelectableItemTemplateA => _testsResources["SelectableItemTemplateA"] as DataTemplate;
+		private DataTemplate SelectableItemTemplateB => _testsResources["SelectableItemTemplateB"] as DataTemplate;
+		private DataTemplate SelectableItemTemplateC => _testsResources["SelectableItemTemplateC"] as DataTemplate;
+
+		// Commented types don't seem to use ContentTemplateSelector on UWP
+		private static readonly ActivatableType[] _contentControlStyledDerivedTypes =
+		{
+			new(typeof(Button)),
+			//new(typeof(AppBarButton)),
+			//new(typeof(AppBar)),
+			//new(typeof(CommandBar)),
+			//new(typeof(SplitButton)),
+			new(typeof(RepeatButton)),
+			new(typeof(ToggleButton)),
+			//new(typeof(AppBarToggleButton)),
+			new(typeof(CheckBox)),
+			new(typeof(RadioButton)),
+			//new(typeof(SplitButton)),
+			//new(typeof(ToggleSplitButton)),
+			new(typeof(DropDownButton)),
+		};
+
+		public IEnumerable<ContentControl> DerivedStyledControlsInstances => _contentControlStyledDerivedTypes.Select(t => Activator.CreateInstance(t.Type) as ContentControl);
+
+		[TestInitialize]
+		public void Init()
+		{
+			_testsResources = new TestsResources();
+		}
+
+		private const DynamicallyAccessedMemberTypes ActivatorRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(Grid))]
+		[DataRow(typeof(StackPanel))]
+		[DataRow(typeof(Border))]
+		[DataRow(typeof(ContentPresenter))]
+		public async Task When_SelfLoading([DynamicallyAccessedMembers(ActivatorRequirements)] Type type)
+		{
+			// Keep PreserveMetadata() calls in sync with the types in [DataRow] above.
+			PreserveMetadata(typeof(Grid));
+			PreserveMetadata(typeof(StackPanel));
+			PreserveMetadata(typeof(Border));
+			PreserveMetadata(typeof(ContentPresenter));
+
+			var control = (FrameworkElement)Activator.CreateInstance(type);
+
+			control.Width = 200;
+			control.Height = 200;
+
+			await UITestHelper.Load(control);
+
+			static void PreserveMetadata([DynamicallyAccessedMembers(ActivatorRequirements)] Type type)
+			{
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Binding_Within_Control_Template()
+		{
+			var contentControl = new ContentControl
+			{
+				ContentTemplate = DataContextBindingDataTemplate,
+			}.Apply(cc => cc.SetBinding(ContentControl.ContentProperty, new Binding()));
+
+			var grid = new Grid()
+			{
+				DataContext = new ViewModel(),
+			};
+
+			grid.Children.Add(contentControl);
+			TestServices.WindowHelper.WindowContent = grid;
+
+			await TestServices.WindowHelper.WaitForLoaded(grid);
+
+			var tb = grid.FindFirstChild<TextBlock>();
+
+			Assert.IsNotNull(tb);
+
+			await TestServices.WindowHelper.WaitFor(() => tb.Text == "Steve");
+		}
+
+		[TestMethod]
+		public async Task When_ContentTemplateSelector_And_Default_Style()
+		{
+			var items = new[] { "item 1", "item 2", "item 3" };
+			foreach (var control in DerivedStyledControlsInstances)
+			{
+				var templateSelector = new Given_ListViewBase.KeyedTemplateSelector
+				{
+					Templates =
+					{
+						{ items[0], SelectableItemTemplateA },
+						{ items[1], SelectableItemTemplateB },
+						{ items[2], SelectableItemTemplateC },
+					}
+				};
+
+				control.ContentTemplateSelector = templateSelector;
+				control.Content = "Dummy";
+
+				WindowHelper.WindowContent = control;
+				await WindowHelper.WaitForLoaded(control);
+				control.Content = items[0];
+				var text1 = await WindowHelper.WaitForNonNull(() => control.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate"), message: $"Template selector not applied for {control.GetType()}");
+				Assert.AreEqual("Selectable A", text1.Text, $"Template selector not applied for {control.GetType()}");
+
+				control.Content = items[1];
+				var text2 = await WindowHelper.WaitForNonNull(() => control.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate"));
+				Assert.AreEqual("Selectable B", text2.Text);
+
+				control.Content = items[2];
+				var text3 = await WindowHelper.WaitForNonNull(() => control.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate"));
+				Assert.AreEqual("Selectable C", text3.Text);
+			}
+		}
+
+
+		[TestMethod]
+		public async Task When_ContentTemplateSelector_And_Default_Style_And_Uwp()
+		{
+			using var _ = StyleHelper.UseUwpStyles();
+			await When_ContentTemplateSelector_And_Default_Style();
+		}
+
+		[TestMethod]
+		public async Task When_Template_Applied_On_Loading_DataContext_Propagation()
+		{
+			var page = new Template_Loading_DataContext_Page();
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+			var comboBox = page.SpawnedButtonHost.PseudoContent as ComboBox;
+
+			var dataContextChangedCounter = 0;
+			var itemsSourceChangedCounter = 0;
+			comboBox.DataContextChanged += (_, __) => dataContextChangedCounter++;
+			comboBox.RegisterPropertyChangedCallback(ItemsControl.ItemsSourceProperty, (_, __) => itemsSourceChangedCounter++);
+
+			page.SpawnedButtonHost.SpawnButton();
+			Assert.IsNotNull(comboBox);
+
+			await WindowHelper.WaitForLoaded(comboBox);
+			Assert.AreEqual("Froot", comboBox.SelectedItem);
+			Assert.AreEqual(1, dataContextChangedCounter);
+			Assert.AreEqual(1, itemsSourceChangedCounter);
+		}
+
+		[TestMethod]
+		public async Task When_Content_Set_Null_ComboBox()
+		{
+			var contentControl = new ContentControl
+			{
+				ContentTemplate = ContentControlComboTemplate,
+			}.Apply(cc => cc.SetBinding(ContentControl.ContentProperty, new Binding()));
+
+			var grid = new Grid()
+			{
+				DataContext = new ViewModel()
+			};
+
+			grid.Children.Add(contentControl);
+			WindowHelper.WindowContent = grid;
+
+			await WindowHelper.WaitForLoaded(grid);
+
+			var comboBox = grid.FindFirstChild<ComboBox>();
+
+
+			Assert.IsNotNull(comboBox);
+			Assert.HasCount(3, comboBox.Items);
+
+			contentControl.Content = null;
+
+			Assert.HasCount(3, comboBox.Items);
+			Assert.AreEqual(1, comboBox.SelectedIndex);
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_FindName_ContentControl_Without_ContentTemplate()
+		{
+			var sut = new ContentControl
+			{
+				Width = 100,
+				Height = 100,
+				Content = new TextBox()
+			};
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+
+			Assert.IsNotNull(sut.FindName("ContentElement"));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_FindName_ContentControl_With_ContentTemplate()
+		{
+			var sut = new ContentControl
+			{
+				Width = 100,
+				Height = 100,
+				Content = new TextBox(),
+				ContentTemplate = new DataTemplate(null, (_, _) => new TextBlock())
+			};
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+
+			Assert.IsNull(sut.FindName("ContentElement"));
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_Default_ContentAlignment_Is_Center()
+		{
+			// Guards the WinUI-correct Center/Center default after the removal of the
+			// UseLegacyContentAlignment flag, which used to opt into a Left/Top default (BC45).
+			var sut = new ContentControl();
+
+			Assert.AreEqual(HorizontalAlignment.Center, sut.HorizontalContentAlignment);
+			Assert.AreEqual(VerticalAlignment.Center, sut.VerticalContentAlignment);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_No_Template_Then_Content_Is_Hosted_By_ContentPresenter()
+		{
+			// A template-less ContentControl gets its default ControlTemplate, so Content is hosted by a
+			// ContentPresenter rather than parented directly (#2163, removal of the ContentPresenter bypass).
+			var content = new Border { Width = 50, Height = 50 };
+			var sut = new ContentControl { Content = content };
+
+			await UITestHelper.Load(sut);
+
+			var presenter = VisualTreeHelper.GetChild(sut, 0) as ContentPresenter;
+			Assert.IsNotNull(presenter, "ContentControl should host its content through a ContentPresenter.");
+			Assert.AreEqual(content, presenter.Content);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ContentTemplate_Then_ContentTemplateRoot_Is_Reported_By_Presenter()
+		{
+			// ContentTemplateRoot is WinUI API on ContentControl; the ContentPresenter of the applied
+			// template reports the root it materialized (#2163).
+			var sut = new ContentControl
+			{
+				Content = "Asd",
+				ContentTemplate = XamlHelper.LoadXaml<DataTemplate>("""
+					<DataTemplate>
+						<Border x:Name="TemplateRoot" Width="50" Height="50" />
+					</DataTemplate>
+				"""),
+			};
+
+			await UITestHelper.Load(sut);
+
+			var presenter = VisualTreeHelper.GetChild(sut, 0) as ContentPresenter;
+			Assert.IsNotNull(presenter);
+			Assert.AreEqual(VisualTreeHelper.GetChild(presenter, 0), sut.ContentTemplateRoot);
+			Assert.AreEqual("TemplateRoot", (sut.ContentTemplateRoot as FrameworkElement)?.Name);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ContentTemplate_Cleared_Then_ContentTemplateRoot_Is_Cleared()
+		{
+			// The presenter must not leave a stale root behind on its templated parent (#2163).
+			var sut = new ContentControl
+			{
+				Content = "Asd",
+				ContentTemplate = XamlHelper.LoadXaml<DataTemplate>("""
+					<DataTemplate>
+						<Border Width="50" Height="50" />
+					</DataTemplate>
+				"""),
+			};
+
+			await UITestHelper.Load(sut);
+			Assert.IsInstanceOfType(sut.ContentTemplateRoot, typeof(Border));
+
+			sut.ContentTemplate = null;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotInstanceOfType(sut.ContentTemplateRoot, typeof(Border));
+		}
+
+		private class SignInViewModel
+		{
+			public string UserName { get; set; } = "Steve";
+		}
+
+		public sealed class Item
+		{
+			public string DisplayName { get; init; }
+		}
+
+		private class ViewModel
+		{
+			public SignInViewModel SignIn { get; set; } = new SignInViewModel();
+
+			List<Item> _items = new()
+			{
+				new Item { DisplayName = "Test1" },
+				new Item { DisplayName = "Test2" },
+				new Item { DisplayName = "Test3" },
+			};
+
+			public IEnumerable<Item> Items => _items;
+
+			public int SelectedIndex { get; set; } = 1;
+		}
+	}
+
+	struct ActivatableType
+	{
+		private const DynamicallyAccessedMemberTypes ActivatableRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
+
+		[DynamicallyAccessedMembers(ActivatableRequirements)]
+		public Type Type { get; }
+
+		public ActivatableType([DynamicallyAccessedMembers(ActivatableRequirements)] Type type)
+		{
+			this.Type = type;
+		}
+	}
+}

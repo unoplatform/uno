@@ -2,6 +2,8 @@ using Windows.Foundation;
 using System;
 using Microsoft.UI.Composition;
 using System.Numerics;
+using Uno.UI.Composition.Drawing;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -19,7 +21,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Rectangle),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -27,7 +29,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double RadiusY
 		{
 			get => (double)this.GetValue(RadiusYProperty);
-			set => this.SetValue(RadiusYProperty, value);
+			set => this.SetValue(RadiusYProperty, Boxer.Box(value));
 		}
 		#endregion
 
@@ -37,7 +39,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Rectangle),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -45,7 +47,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double RadiusX
 		{
 			get => (double)this.GetValue(RadiusXProperty);
-			set => this.SetValue(RadiusXProperty, value);
+			set => this.SetValue(RadiusXProperty, Boxer.Box(value));
 		}
 
 #nullable enable
@@ -66,7 +68,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			return finalSize;
 		}
 
-		private SkiaGeometrySource2D GetGeometry(Rect finalRect)
+		private IGeometry GetGeometry(Rect finalRect)
 		{
 			var radiusX = RadiusX;
 			var radiusY = RadiusY;
@@ -74,11 +76,9 @@ namespace Microsoft.UI.Xaml.Shapes
 			var offset = new Vector2((float)finalRect.Left, (float)finalRect.Top);
 			var size = new Vector2((float)finalRect.Width, (float)finalRect.Height);
 
-			var geometry = radiusX is 0 || radiusY is 0
+			return radiusX is 0 || radiusY is 0
 				? CompositionGeometry.BuildRectangleGeometry(offset, size)
 				: CompositionGeometry.BuildRoundedRectangleGeometry(offset, size, new Vector2((float)radiusX, (float)radiusY));
-
-			return new SkiaGeometrySource2D(geometry);
 		}
 #nullable disable
 		#endregion

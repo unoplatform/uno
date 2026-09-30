@@ -32,15 +32,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
-		<PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />
-		<PackageReference Include="ModelContextProtocol" Version="1.1.0" />
-		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="1.1.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
-		<PackageReference Include="Spectre.Console" Version="0.49.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+		<PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" />
+		<PackageReference Include="ModelContextProtocol" />
+		<PackageReference Include="ModelContextProtocol.AspNetCore" />
+		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="Serilog.Extensions.Logging.File" />
+		<PackageReference Include="Spectre.Console" />
 	</ItemGroup>
 
 	<ItemGroup>

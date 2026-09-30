@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Helpers;
 using Uno.UI;
-using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel;
 using Windows.Graphics.Display;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
@@ -76,12 +76,12 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		public int DecodePixelWidth
 		{
 			get { return (int)GetValue(DecodePixelWidthProperty); }
-			set { SetValue(DecodePixelWidthProperty, value); }
+			set { SetValue(DecodePixelWidthProperty, Boxer.Box(value)); }
 		}
 
 		// Using a DependencyProperty as the backing store for DecodePixelWidth.  This enables animation, styling, binding, etc...
 		public static DependencyProperty DecodePixelWidthProperty { get; } =
-			DependencyProperty.Register("DecodePixelWidth", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapImage)s)?.OnDecodePixelWidthChanged(e)));
+			DependencyProperty.Register("DecodePixelWidth", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(IntBoxes.Zero, (s, e) => ((BitmapImage)s)?.OnDecodePixelWidthChanged(e)));
 
 
 		private void OnDecodePixelWidthChanged(DependencyPropertyChangedEventArgs e)
@@ -96,12 +96,12 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		public int DecodePixelHeight
 		{
 			get { return (int)GetValue(DecodePixelHeightProperty); }
-			set { SetValue(DecodePixelHeightProperty, value); }
+			set { SetValue(DecodePixelHeightProperty, Boxer.Box(value)); }
 		}
 
 		// Using a DependencyProperty as the backing store for DecodePixelHeight.  This enables animation, styling, binding, etc...
 		public static DependencyProperty DecodePixelHeightProperty { get; } =
-			DependencyProperty.Register("DecodePixelHeight", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapImage)s)?.OnDecodePixelHeightChanged(e)));
+			DependencyProperty.Register("DecodePixelHeight", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(IntBoxes.Zero, (s, e) => ((BitmapImage)s)?.OnDecodePixelHeightChanged(e)));
 
 
 		private void OnDecodePixelHeightChanged(DependencyPropertyChangedEventArgs e)
@@ -192,7 +192,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				var (decodeWidth, decodeHeight) = GetDecodePixelSize();
 				// Reads the property rather than the normalized AbsoluteUri, so a UriSource assigned
 				// directly (ctor, x:Bind, Setter, code-behind) still needs the local-resource mapping.
-				var uri = UriSource is { } uriSource ? XamlFilePathHelper.NormalizeMsResourceFilesUri(uriSource) : null;
+				var uri = UriSource is { } uriSource ? global::Uno.UI.Xaml.XamlFilePathHelper.NormalizeMsResourceFilesUri(uriSource) : null;
 				if (uri is null)
 				{
 					if (_stream is null)
@@ -236,9 +236,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						}
 						else if (imageData.Kind == ImageDataKind.CompositionSurface)
 						{
-							var image = imageData.CompositionSurface.Image;
-							PixelWidth = image.Width;
-							PixelHeight = image.Height;
+							var image = ((global::Microsoft.UI.Composition.CompositionImageSurface)imageData.CompositionSurface!).Image;
+							PixelWidth = image.PixelWidth;
+							PixelHeight = image.PixelHeight;
 							RaiseImageOpened();
 						}
 
@@ -295,9 +295,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					}
 					else if (imageData.Kind == ImageDataKind.CompositionSurface)
 					{
-						var image = imageData.CompositionSurface.Image;
-						PixelWidth = image.Width;
-						PixelHeight = image.Height;
+						var image = ((global::Microsoft.UI.Composition.CompositionImageSurface)imageData.CompositionSurface!).Image;
+						PixelWidth = image.PixelWidth;
+						PixelHeight = image.PixelHeight;
 						RaiseImageOpened();
 					}
 

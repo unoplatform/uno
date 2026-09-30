@@ -8,6 +8,7 @@
 //  ResetAnchorElement, get_CurrentAnchorImpl).
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 
@@ -18,6 +19,12 @@ public partial class ScrollViewer
 	// Used when HorizontalAnchorRatio or VerticalAnchorRatio is 0.0 or 1.0 to determine
 	// whether the Content is scrolled to an edge. It is declared at an edge if it's within 1/10th of a pixel.
 	private const double c_edgeDetectionTolerance = 0.1;
+
+	// Matches WinUI's default (see the public HorizontalAnchorRatio/VerticalAnchorRatio docs:
+	// "A normalized value (0.0 to 1.0). The default is 0.0.") and ScrollPresenter's own
+	// s_defaultAnchorRatio (ScrollPresenter.h.cs). Element-based scroll anchoring toward the
+	// leading edge is therefore active by default, matching WinUI, rather than opt-in.
+	private const double c_defaultAnchorRatio = 0.0;
 
 	private readonly List<UIElement> m_anchorCandidates = new();
 
@@ -46,24 +53,24 @@ public partial class ScrollViewer
 		DependencyProperty.Register(
 			nameof(HorizontalAnchorRatio), typeof(double),
 			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(double.NaN));
+			new FrameworkPropertyMetadata(Boxer.Box(c_defaultAnchorRatio)));
 
 	public double HorizontalAnchorRatio
 	{
 		get => (double)GetValue(HorizontalAnchorRatioProperty);
-		set => SetValue(HorizontalAnchorRatioProperty, value);
+		set => SetValue(HorizontalAnchorRatioProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty VerticalAnchorRatioProperty { get; } =
 		DependencyProperty.Register(
 			nameof(VerticalAnchorRatio), typeof(double),
 			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(double.NaN));
+			new FrameworkPropertyMetadata(Boxer.Box(c_defaultAnchorRatio)));
 
 	public double VerticalAnchorRatio
 	{
 		get => (double)GetValue(VerticalAnchorRatioProperty);
-		set => SetValue(VerticalAnchorRatioProperty, value);
+		set => SetValue(VerticalAnchorRatioProperty, Boxer.Box(value));
 	}
 
 	public event global::Windows.Foundation.TypedEventHandler<ScrollViewer, AnchorRequestedEventArgs>? AnchorRequested;

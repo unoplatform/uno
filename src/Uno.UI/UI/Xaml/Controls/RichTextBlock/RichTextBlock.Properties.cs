@@ -8,11 +8,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Windows.Foundation;
 using Microsoft.UI.Input;
 using Uno;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -159,7 +161,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double FontSize
 		{
 			get => (double)GetValue(FontSizeProperty);
-			set => SetValue(FontSizeProperty, value);
+			set => SetValue(FontSizeProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty FontSizeProperty { get; } =
@@ -181,7 +183,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public int MaxLines
 		{
 			get => (int)GetValue(MaxLinesProperty);
-			set => SetValue(MaxLinesProperty, value);
+			set => SetValue(MaxLinesProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MaxLinesProperty { get; } =
@@ -190,7 +192,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(RichTextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: IntBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((RichTextBlock)s).InvalidateRichTextBlock(),
 					coerceValueCallback: CoerceMaxLines
@@ -279,7 +281,7 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					// CRichTextBlock's ctor sets m_isTextSelectionEnabled = true, so RichTextBlock content
 					// is selectable by default (unlike TextBlock).
-					defaultValue: true,
+					defaultValue: BoolBoxes.True,
 					propertyChangedCallback: (s, _) => ((RichTextBlock)s).OnIsTextSelectionEnabledChanged()
 				)
 			);
@@ -363,7 +365,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double LineHeight
 		{
 			get => (double)GetValue(LineHeightProperty);
-			set => SetValue(LineHeightProperty, value);
+			set => SetValue(LineHeightProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty LineHeightProperty { get; } =
@@ -372,7 +374,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(double),
 				typeof(RichTextBlock),
 				new FrameworkPropertyMetadata(
-					0d,
+					DoubleBoxes.Zero,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((RichTextBlock)s).InvalidateRichTextBlock(),
 					coerceValueCallback: CoerceLineHeight));
@@ -430,7 +432,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public int CharacterSpacing
 		{
 			get => (int)GetValue(CharacterSpacingProperty);
-			set => SetValue(CharacterSpacingProperty, value);
+			set => SetValue(CharacterSpacingProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty CharacterSpacingProperty { get; } =
@@ -439,7 +441,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(RichTextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: IntBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((RichTextBlock)s).InvalidateRichTextBlock()
 				)
@@ -474,7 +476,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double TextIndent
 		{
 			get => (double)GetValue(TextIndentProperty);
-			set => SetValue(TextIndentProperty, value);
+			set => SetValue(TextIndentProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty TextIndentProperty { get; } =
@@ -483,7 +485,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(double),
 				typeof(RichTextBlock),
 				new FrameworkPropertyMetadata(
-					0.0,
+					DoubleBoxes.Zero,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((RichTextBlock)s).InvalidateRichTextBlock()));
 
@@ -510,7 +512,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsTextTrimmed),
 				typeof(bool),
 				typeof(RichTextBlock),
-				new FrameworkPropertyMetadata(false, propertyChangedCallback: (s, e) => ((RichTextBlock)s).OnIsTextTrimmedChanged()));
+				new FrameworkPropertyMetadata(BoolBoxes.False, propertyChangedCallback: (s, e) => ((RichTextBlock)s).OnIsTextTrimmedChanged()));
 
 		public bool IsTextTrimmed
 		{
@@ -532,7 +534,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(HasOverflowContent),
 				typeof(bool),
 				typeof(RichTextBlock),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public bool HasOverflowContent
 		{

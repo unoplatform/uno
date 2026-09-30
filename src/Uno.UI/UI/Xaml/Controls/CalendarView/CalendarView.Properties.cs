@@ -1,5 +1,7 @@
 ﻿using System;
+using Uno.UI.Helpers.Boxes;
 using Windows.Globalization;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
@@ -123,7 +125,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(FirstOfMonthLabelFontSizeProperty, value);
+				this.SetValue(FirstOfMonthLabelFontSizeProperty, Boxer.Box(value));
 			}
 		}
 
@@ -207,7 +209,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(DayItemFontSizeProperty, value);
+				this.SetValue(DayItemFontSizeProperty, Boxer.Box(value));
 			}
 		}
 
@@ -483,7 +485,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(NumberOfWeeksInViewProperty, value);
+				this.SetValue(NumberOfWeeksInViewProperty, Boxer.Box(value));
 			}
 		}
 
@@ -519,7 +521,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(MonthYearItemFontSizeProperty, value);
+				this.SetValue(MonthYearItemFontSizeProperty, Boxer.Box(value));
 			}
 		}
 
@@ -531,7 +533,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(FirstOfYearDecadeLabelFontSizeProperty, value);
+				this.SetValue(FirstOfYearDecadeLabelFontSizeProperty, Boxer.Box(value));
 			}
 		}
 
@@ -857,19 +859,19 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsGroupLabelVisible), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsOutOfScopeEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsOutOfScopeEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(BoolBoxes.True));
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsTodayHighlightedProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsTodayHighlighted), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(BoolBoxes.True));
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty MaxDateProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(

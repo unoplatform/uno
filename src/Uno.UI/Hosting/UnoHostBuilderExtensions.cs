@@ -1,11 +1,79 @@
 ﻿#nullable enable
 
 using System;
+using Uno.UI.Composition.Drawing;
 
 namespace Uno.UI.Hosting;
 
 public static class UnoPlatformHostBuilderExtensions
 {
+	/// <summary>
+	/// Registers the app's graphics backend — one unit owning both its renderer and its drawing factory, minted from
+	/// a context the framework creates for the provider's <see cref="IGraphicsProvider.PreferredContexts"/>. A backend
+	/// needing a geometry engine (e.g. WebGPU) takes it via its own constructor.
+	/// </summary>
+	public static IUnoPlatformHostBuilder GraphicsBackend(this IUnoPlatformHostBuilder builder, IGraphicsProvider renderBackend)
+	{
+		ArgumentNullException.ThrowIfNull(renderBackend);
+		builder.AddDrawingRegistration(() => GraphicsRegistry.Register(new[] { renderBackend }));
+		return builder;
+	}
+
+	/// <summary>
+	/// Registers the font resolver — a render-independent content seam (family/style/bytes/codepoint → glyph
+	/// outlines). Independent of the graphics backend, like <see cref="ImageEncoderDecoder"/>.
+	/// </summary>
+	public static IUnoPlatformHostBuilder FontProvider(this IUnoPlatformHostBuilder builder, IFontProvider provider)
+	{
+		ArgumentNullException.ThrowIfNull(provider);
+		builder.AddDrawingRegistration(() => Uno.UI.Composition.Drawing.FontProvider.Current = provider);
+		return builder;
+	}
+
+	/// <summary>
+	/// Registers the image decoder — a render-independent content seam (encoded bytes → neutral pixels). Independent
+	/// of the graphics backend, like <see cref="FontProvider"/>.
+	/// </summary>
+	public static IUnoPlatformHostBuilder ImageEncoderDecoder(this IUnoPlatformHostBuilder builder, IImageEncoderDecoder decoder)
+	{
+		ArgumentNullException.ThrowIfNull(decoder);
+		builder.AddDrawingRegistration(() => Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current = decoder);
+		return builder;
+	}
+
+	/// <summary>
+	/// Registers the geometry engine — a render-independent seam (the path + primitive builders that mint
+	/// <see cref="IGeometry"/>). The render backend consumes whatever neutral geometry it produces.
+	/// </summary>
+	public static IUnoPlatformHostBuilder GeometryFactory(this IUnoPlatformHostBuilder builder, IGeometryFactory factory)
+	{
+		ArgumentNullException.ThrowIfNull(factory);
+		builder.AddDrawingRegistration(() => Uno.UI.Composition.Drawing.GeometryFactory.Current = factory);
+		return builder;
+	}
+
+	/// <summary>
+	/// Registers the SVG renderer — a render-independent content seam (SVG markup → a retained
+	/// <see cref="Uno.UI.Composition.Drawing.ISvgDocument"/>). Defaults to the managed engine when none is registered.
+	/// </summary>
+	public static IUnoPlatformHostBuilder SvgRenderer(this IUnoPlatformHostBuilder builder, Uno.UI.Composition.Drawing.ISvgRenderer renderer)
+	{
+		ArgumentNullException.ThrowIfNull(renderer);
+		builder.AddDrawingRegistration(() => Uno.UI.Composition.Drawing.SvgRenderer.Current = renderer);
+		return builder;
+	}
+
+	/// <summary>
+	/// Registers the Lottie renderer — a render-independent content seam (Bodymovin JSON → a seekable
+	/// <see cref="Uno.UI.Composition.Drawing.ILottieAnimation"/>). Defaults to the Skottie add-in when referenced.
+	/// </summary>
+	public static IUnoPlatformHostBuilder LottieRenderer(this IUnoPlatformHostBuilder builder, Uno.UI.Composition.Drawing.ILottieRenderer renderer)
+	{
+		ArgumentNullException.ThrowIfNull(renderer);
+		builder.AddDrawingRegistration(() => Uno.UI.Composition.Drawing.LottieRenderer.Current = renderer);
+		return builder;
+	}
+
 	/// <summary>
 	/// Provides an <see cref="Microsoft.UI.Xaml.Application"/> instance to use when starting the app.
 	/// </summary>

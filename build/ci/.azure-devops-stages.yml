@@ -140,11 +140,10 @@ stages:
   displayName: Tests - Screenshots
   # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
   condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.ScreenshotsRequired'], 'true')))
+  # Only the Linux and Windows stages publish screenshot-tests-results. Waiting on the mobile and
+  # WASM stages put this comparison behind iOS, the slowest stage, for no gain.
   dependsOn:
     - Setup
-    - runtime_tests_skia_browser
-    - runtime_tests_skia_android
-    - runtime_tests_skia_ios
     - runtime_tests_skia_linux
     - runtime_tests_skia_windows
 

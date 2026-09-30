@@ -3,7 +3,7 @@
 		<IsBrowserWasm>true</IsBrowserWasm>
 		<UsingUnoCommonWasmTargets>true</UsingUnoCommonWasmTargets>
 
-		<!-- Comes from the WebAssembly runtime package as well; this makes it follow the target framework instead. -->
+		<!-- The only source of __WASM__, so it follows the target framework for libraries and heads alike. -->
 		<DefineConstants Condition="!$(DefineConstants.Contains('__WASM__'))">$(DefineConstants);__WASM__</DefineConstants>
 
 		<EnableDefaultWasmItems Condition="$(EnableDefaultWasmItems) == ''">false</EnableDefaultWasmItems>

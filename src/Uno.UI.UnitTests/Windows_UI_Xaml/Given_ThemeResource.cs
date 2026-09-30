@@ -8,6 +8,7 @@ using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
 using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Windows.Foundation;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

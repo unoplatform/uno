@@ -8,5 +8,34 @@
 		<IsMSALSupported>true</IsMSALSupported>
 	</PropertyGroup>
 
+	<!--
+	iPhones only drive CADisplayLink above 60 Hz when Info.plist sets CADisableMinimumFrameDurationOnPhone,
+	which caps every ProMotion iPhone at 60 Hz otherwise (iPad is not affected). Added as a partial app
+	manifest with Overwrite=false, so a value the app sets in its own Info.plist still wins.
+	-->
+	<PropertyGroup>
+		<UnoDisableHighRefreshRate Condition=" '$(UnoDisableHighRefreshRate)' == '' ">false</UnoDisableHighRefreshRate>
+		<CollectAppManifestsDependsOn>
+			$(CollectAppManifestsDependsOn);
+			_UnoAddHighRefreshRateAppManifest
+		</CollectAppManifestsDependsOn>
+	</PropertyGroup>
+
+	<Target Name="_UnoAddHighRefreshRateAppManifest" Condition=" '$(UnoDisableHighRefreshRate)' != 'true' ">
+		<PropertyGroup>
+			<_UnoHighRefreshRateAppManifest>$(IntermediateOutputPath)UnoHighRefreshRate.plist</_UnoHighRefreshRateAppManifest>
+		</PropertyGroup>
+
+		<WriteLinesToFile File="$(_UnoHighRefreshRateAppManifest)"
+						  Lines="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;;&lt;plist version=&quot;1.0&quot;&gt;&lt;dict&gt;&lt;key&gt;CADisableMinimumFrameDurationOnPhone&lt;/key&gt;&lt;true/&gt;&lt;/dict&gt;&lt;/plist&gt;"
+						  Overwrite="true"
+						  WriteOnlyWhenDifferent="true" />
+
+		<ItemGroup>
+			<PartialAppManifest Include="$(_UnoHighRefreshRateAppManifest)" Overwrite="false" />
+			<FileWrites Include="$(_UnoHighRefreshRateAppManifest)" />
+		</ItemGroup>
+	</Target>
+
 	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOS.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
 </Project>

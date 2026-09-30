@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Documents.RichTextServices;
 
@@ -352,24 +353,21 @@ internal sealed class SkiaTextLine : TextLine
 
 	private static CollapsedLineSymbol ShapeSymbol(TextCollapsingCharacters symbol)
 	{
-		using var buffer = new HarfBuzzSharp.Buffer();
-		buffer.AddUtf16(symbol.CollapsingChar.ToString());
-		buffer.GuessSegmentProperties();
-
 		var font = symbol.FontDetails;
-		font.Font.Shape(buffer);
+		Span<char> text = stackalloc char[1];
+		text[0] = symbol.CollapsingChar;
 
-		var infos = buffer.GetGlyphInfoSpan();
-		var positions = buffer.GetGlyphPositionSpan();
+		// GlyphRun advances are already in pixels at the font's size, so no text scale is applied here.
+		var run = font.FontHandle.Shape(text, TextDirection.LeftToRight);
 
-		var glyphs = new ushort[infos.Length];
-		var advances = new float[infos.Length];
+		var glyphs = new ushort[run.Count];
+		var advances = new float[run.Count];
 		var width = 0f;
 
-		for (var i = 0; i < infos.Length; i++)
+		for (var i = 0; i < run.Count; i++)
 		{
-			glyphs[i] = (ushort)infos[i].Codepoint;
-			advances[i] = positions[i].XAdvance * font.TextScale.textScaleX;
+			glyphs[i] = run.Glyphs[i];
+			advances[i] = run.Advances[i];
 			width += advances[i];
 		}
 

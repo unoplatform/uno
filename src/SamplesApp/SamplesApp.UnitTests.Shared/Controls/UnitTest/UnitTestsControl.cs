@@ -17,8 +17,10 @@ using SampleControl.Presentation;
 using Uno.Disposables;
 using Uno.Testing;
 using Uno.UI.Samples.Helper;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Core;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
@@ -1144,6 +1146,12 @@ namespace Uno.UI.Samples.Tests
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					CloseRemainingPopups();
+
+					if (Uno.UI.RuntimeTests.Helpers.StyleHelper.RestoreFluentStyles())
+					{
+						_log?.Warn("The test left UWP styles applied (StyleHelper.UseUwpStyles was not disposed); restored Fluent styles.");
+					}
+
 					if (config.IsUnloadingTestContent)
 					{
 						TestServices.WindowHelper.WindowContent = null;

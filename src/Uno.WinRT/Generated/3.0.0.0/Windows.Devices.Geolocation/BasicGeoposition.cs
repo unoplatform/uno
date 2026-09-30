@@ -6,7 +6,7 @@ namespace Windows.Devices.Geolocation
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct BasicGeoposition
+	public partial struct BasicGeoposition : global::System.IEquatable<global::Windows.Devices.Geolocation.BasicGeoposition>
 	{
 		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.BasicGeoposition()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,11 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.BasicGeoposition(double, double, double)
+		// Skipping already declared method Windows.Devices.Geolocation.BasicGeoposition.operator ==(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.BasicGeoposition)
+		// Skipping already declared method Windows.Devices.Geolocation.BasicGeoposition.operator !=(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.BasicGeoposition)
+		// Skipping already declared method Windows.Devices.Geolocation.BasicGeoposition.Equals(Windows.Devices.Geolocation.BasicGeoposition)
+		// Skipping already declared method Windows.Devices.Geolocation.BasicGeoposition.Equals(object)
+		// Skipping already declared method Windows.Devices.Geolocation.BasicGeoposition.GetHashCode()
 		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Latitude
 		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Longitude
 		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Altitude

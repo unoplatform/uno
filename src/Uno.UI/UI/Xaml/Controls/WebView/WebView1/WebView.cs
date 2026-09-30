@@ -13,9 +13,6 @@ using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-#if __SKIA__
-[Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-#endif
 public partial class WebView : Control, IWebView
 {
 	private bool _sourceChangeFromCore;

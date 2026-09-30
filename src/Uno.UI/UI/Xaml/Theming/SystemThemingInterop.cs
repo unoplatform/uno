@@ -4,6 +4,7 @@
 
 #nullable enable
 
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Uno.Helpers.Theming;
 using Windows.UI;

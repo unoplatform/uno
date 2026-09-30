@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
@@ -9,9 +9,11 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Microsoft.UI.Composition;
-using SkiaSharp;
 using System.Numerics;
+using Windows.Graphics;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -115,7 +117,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeThickness
 		{
 			get => (double)this.GetValue(StrokeThicknessProperty);
-			set => this.SetValue(StrokeThicknessProperty, value);
+			set => this.SetValue(StrokeThicknessProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty StrokeThicknessProperty { get; } = DependencyProperty.Register(
@@ -123,7 +125,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: 1.0d,
+				defaultValue: DoubleBoxes.One,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeThicknessChanged()
 			) // Perf: WinUI uses AffectsMeasure, we optimize this and only invalidate measure if Stroke is not null
 		);
@@ -232,7 +234,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeMiterLimit
 		{
 			get => (double)this.GetValue(StrokeMiterLimitProperty);
-			set => this.SetValue(StrokeMiterLimitProperty, value);
+			set => this.SetValue(StrokeMiterLimitProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty StrokeMiterLimitProperty { get; } = DependencyProperty.Register(
@@ -268,7 +270,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeDashOffset
 		{
 			get => (double)this.GetValue(StrokeDashOffsetProperty);
-			set => this.SetValue(StrokeDashOffsetProperty, value);
+			set => this.SetValue(StrokeDashOffsetProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty StrokeDashOffsetProperty { get; } = DependencyProperty.Register(
@@ -276,7 +278,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsArrange
 			)
 		);
@@ -311,28 +313,28 @@ namespace Microsoft.UI.Xaml.Shapes
 			((ShapeVisual)visual).Shapes.Add(_shape);
 		}
 
-		private Rect GetPathBoundingBox(SkiaGeometrySource2D path)
-			=> path.TightBounds.ToRect();
+		private Rect GetPathBoundingBox(IGeometry path)
+			=> path.Bounds;
 
 		private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
 
-		private protected virtual void Render(Microsoft.UI.Composition.SkiaGeometrySource2D? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
+		private protected virtual void Render(IGeometry? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
 		{
-			if (path is null)
+			if (path is not IGeometrySource2D source)
 			{
 				_geometry.Path = null;
 				return;
 			}
 
-			_geometry.Path = new CompositionPath(path);
+			_geometry.Path = new CompositionPath(source);
 			// Stretch goes through the geometry-only transform channel so it doesn't scale the
 			// stroke (matching WinUI Path/Rectangle, where StrokeThickness stays constant
 			// regardless of Stretch). The public CompositionShape.Scale stays at identity here
 			// — it's reserved for true Composition-API transforms (used by AnimatedVisualSource
 			// generated code), which DO scale strokes via the canvas.
 			_shape.SetGeometryTransform(scaleX != null && scaleY != null
-				? SKMatrix.CreateScale((float)scaleX.Value, (float)scaleY.Value)
-				: SKMatrix.CreateIdentity());
+				? Matrix3x2.CreateScale((float)scaleX.Value, (float)scaleY.Value)
+				: Matrix3x2.Identity);
 			_shape.Offset = LayoutRound(new Vector2((float)(renderOriginX ?? 0), (float)(renderOriginY ?? 0)));
 
 			UpdateRender();

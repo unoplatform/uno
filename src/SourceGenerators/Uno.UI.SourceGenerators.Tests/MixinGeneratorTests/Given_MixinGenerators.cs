@@ -39,7 +39,17 @@ public class Given_MixinGenerators
 
 		output.Should().Contain("namespace Microsoft.UI.Xaml.Controls");
 		output.Should().Contain("namespace Microsoft.UI.Xaml.Controls.Primitives");
-		output.Should().Contain("namespace Uno.UI.Controls.Legacy");
+	}
+
+	[TestMethod]
+	public void DependencyPropertyMixin_HasNoPlatformConditionals()
+	{
+		var output = DependencyPropertyMixinGenerator.Generate();
+
+		// The mixins are only generated into Uno.UI, which targets Skia alone — a platform
+		// conditional here can never be true. The UNO_MIXIN_GENERATION guard is the only one allowed.
+		output.Should().Contain("#if ", Exactly.Once());
+		output.Should().NotContain("#elif");
 	}
 
 	[TestMethod]

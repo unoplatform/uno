@@ -98,7 +98,9 @@ Here are some tips when building the Uno solution and failures happen:
 
 ### Building the reference assemblies for the WinRT layer
 
-`Uno`, `Uno.Foundation` and `Uno.UI.Dispatching` use a bait-and-switch technique: the `netX.0` assemblies found in the `lib` folder of their NuGet packages (called reference assemblies) are only used for building applications. At the end of a head build, they are replaced by public API compatible assemblies located in the `uno-runtime\[target-framework]` folder.
+`Uno.WinRT`, `Uno.Foundation` and `Uno.UI.Dispatching` use a bait-and-switch technique: the `netX.0` assemblies found in the `lib` folder of their NuGet packages (called reference assemblies) are only used for building applications. At the end of a head build, they are replaced by public API compatible assemblies located in the `uno-runtime\[target-framework]\[variant]` folder, where the variant is `generic` for everything a head deploys except the WinRT assemblies of a browser head, which come from `wasm`. The folders are the `UnoRuntimeVariant` values of the projects that produce them, lowercased — neither names a drawing backend.
+
+Which of them a head gets is decided by its target framework: a mobile head takes the WinRT assemblies from the package's own `lib\netX.0-[android|ios|tvos]` folder instead, and compiles against them.
 
 The UI assemblies — `Uno.UI`, `Uno.UI.Composition` and the packages built on them — do not take part in this. Their `lib` folder carries the Skia build directly, so building the `Uno.UI` project is enough to update what applications compile against.
 
@@ -112,8 +114,7 @@ Refer to the [guidelines for breaking changes](../contributing/guidelines/breaki
 
 ### Updating the Nuget packages used by the Uno.UI solution
 
-The versions used are centralized in the [Directory.Build.targets](https://github.com/unoplatform/uno/blob/master/src/Directory.Build.targets) file, and all the
-locations where `<PackageReference />` are used.
+The solution uses [NuGet Central Package Management](https://learn.microsoft.com/nuget/consume-packages/central-package-management): every package version is declared in the [Directory.Packages.props](https://github.com/unoplatform/uno/blob/master/src/Directory.Packages.props) file, and `<PackageReference />` items in project files carry no `Version`. When a project needs a different version, it sets `VersionOverride` to one of the named version properties defined in that same file.
 
 When updating the versions of NuGet packages, make sure to update all the .nuspec files in the [`build/nuget` folder](https://github.com/unoplatform/uno/tree/master/build/nuget).
 

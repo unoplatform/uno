@@ -8,7 +8,7 @@ stages:
 
   jobs:
   - job: Validate_FontFallback
-    displayName: Validate FontFallbackMaps.cs
+    displayName: Validate FontFallback.Maps.cs
     pool:
       vmImage: ${{ parameters.vmImage }}
 
@@ -19,18 +19,18 @@ stages:
     - bash: |
         set -euo pipefail
         
-        echo "Regenerating FontFallbackMaps.cs..."
-        dotnet run --project src/FontFallbackPreprocessor -c Release -- --summary-only -o src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.cs.new
+        echo "Regenerating FontFallback.Maps.cs..."
+        dotnet run --project src/FontFallbackPreprocessor -c Release -- --summary-only -o src/Uno.UI.Composition.Drawing/FontFallback.Maps.cs.new
         
-        if ! diff -u -a src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.cs src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.cs.new > diff.txt; then
-          echo "Error: FontFallbackMaps.cs is not up to date."
+        if ! diff -u -a src/Uno.UI.Composition.Drawing/FontFallback.Maps.cs src/Uno.UI.Composition.Drawing/FontFallback.Maps.cs.new > diff.txt; then
+          echo "Error: FontFallback.Maps.cs is not up to date."
           cat diff.txt
           echo "Please run the following command locally and commit the changes:"
-          echo "dotnet run --project src/FontFallbackPreprocessor -- --summary-only -o src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.cs"
+          echo "dotnet run --project src/FontFallbackPreprocessor -- --summary-only -o src/Uno.UI.Composition.Drawing/FontFallback.Maps.cs"
           exit 1
         else
-          echo "FontFallbackMaps.cs is up to date."
-          rm src/Uno.UI/UI/Xaml/Documents/FontFallbackMaps.cs.new
+          echo "FontFallback.Maps.cs is up to date."
+          rm src/Uno.UI.Composition.Drawing/FontFallback.Maps.cs.new
           rm -f diff.txt
         fi
-      displayName: Validate FontFallbackMaps.cs
+      displayName: Validate FontFallback.Maps.cs

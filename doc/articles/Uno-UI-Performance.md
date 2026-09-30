@@ -77,6 +77,16 @@ Here's what to look for:
 
       This message indicates that the binding engine will fall back on reflection based code, which is generally slow. To compensate for this, Uno use the `BindableTypeProvidersSourceGenerator`, which generates static non-generic code to avoid reflection operations during binding operations.
       This attribute is inherited and is generally used on ViewModel based classes.
+
+      To turn the message off without adding the attribute, for instance when the type comes from a library you do not control, define the `UNO_DISABLE_KNOWN_MISSING_TYPES` constant in the application project:
+
+      ```xml
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants);UNO_DISABLE_KNOWN_MISSING_TYPES</DefineConstants>
+      </PropertyGroup>
+      ```
+
+      The binding engine still falls back to reflection for these types; only the message is removed.
 - [`x:Phase`](https://learn.microsoft.com/windows/uwp/xaml-platform/x-phase-attribute)
   - For `ListView` instances with large templates, consider the use of x:Phase to reduce the number of bindings processed during item materialization.
   - It is only supported for items inside `ListViewItem` templates, it will be ignored for others.
@@ -160,6 +170,7 @@ You'll find below other known memory leak patterns on iOS Native:
 ## Skia Targets Specifics
 
 - On Desktop targets, it's possible to change the composition refresh rate using `FeatureConfiguration.CompositionTarget.FrameRate`. The default value is 60 (frames per second).
+- On iPhones with ProMotion displays, rendering above 60 Hz requires `CADisableMinimumFrameDurationOnPhone` in `Info.plist`, which the Uno.Sdk adds by default. See [High Refresh Rate on iPhone](xref:Uno.Features.Uno.Sdk#high-refresh-rate-on-iphone).
 - On all targets:
   - It's possible to set `DebugSettings.EnableFrameRateCounter` in `App.OnLaunched` in order to view a top-left indicator. It indicates the current frames per second, as well as the time spent rendering a composition frame, in milliseconds.
   - If the indicator does not change, this means that the UI is not refreshing.

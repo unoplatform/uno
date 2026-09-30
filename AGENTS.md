@@ -14,7 +14,7 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 |-------|---------|---------|
 | Add Sample | `/add-sample` | Creating SamplesApp sample pages with correct registration |
 | Runtime Tests | `/runtime-tests` | Building and running Uno runtime tests (Skia Desktop/WASM) |
-| WinUI Runtime Tests | `/winui-runtime-tests` | Running runtime tests against native WinUI on Windows |
+| WinUI Runtime Tests | `/winui-runtime-tests` | Running runtime tests against native WinUI on Windows (via `winapp run` — no MSIX packaging, signing or elevation) |
 | WinUI Porting | `/winui-port` | Porting WinUI C++ code to Uno Platform C# (full deep reference) |
 | DevServer | `/devserver` | DevServer CLI/Host build, test, MCP proxy, add-in discovery |
 | Docs Build | `/docs-build` | Building, previewing & validating the docs website (DocFX), incl. external-doc commit bumps in `import_external_docs.ps1` |
@@ -222,7 +222,7 @@ Run these after making changes:
 2. **Unit tests**: `dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj --no-build`
 3. **Runtime tests** (UI changes): Use `/runtime-tests` skill (Skia Desktop default, pass test class/method name as argument)
 4. **WinUI parity** (validate against native WinUI): Use `/winui-runtime-tests` skill
-5. **Sample app** (visual changes): `dotnet run --project src/SamplesApp/SamplesApp -f net11.0-desktop`
+5. **Sample app** (visual changes): `dotnet run --project src/SamplesApp/SamplesApp -f net11.0-desktop`. To jump straight to one sample instead of the picker, append `-- sample=<Category>/<SampleName>` (category optional — a bare sample name or its fully-qualified type name also resolves), e.g. `-- sample=Buttons/Button_Events`. Console output confirms a match or reports why none was found.
 6. **XAML formatting** (SamplesApp changes): `dotnet xstyler -d src/SamplesApp -r`
 
 ### SamplesApp: Add XAML files

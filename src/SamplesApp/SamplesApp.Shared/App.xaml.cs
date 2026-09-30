@@ -185,6 +185,11 @@ namespace SamplesApp
 #if WINAPPSDK && DEBUG
 			// this.DebugSettings.EnableFrameRateCounter = true;
 #endif
+			// UNO_SHOW_FPS=1 turns on the on-surface frame counter (benchmarking; on WASM logs live in the browser console).
+			if (Environment.GetEnvironmentVariable("UNO_SHOW_FPS") is "1" or "true")
+			{
+				DebugSettings.EnableFrameRateCounter = true;
+			}
 			AssertInitialWindowSize();
 
 
@@ -436,8 +441,18 @@ namespace SamplesApp
 
 			if (!string.IsNullOrEmpty(args))
 			{
-				var dlg = new MessageDialog(args, "Launch arguments");
-				await dlg.ShowAsync();
+				try
+				{
+					var dlg = new MessageDialog(args, "Launch arguments");
+					await dlg.ShowAsync();
+				}
+				catch (Exception ex)
+				{
+					// ContentDialog.ShowAsync() can fail this early in startup (e.g. before the
+					// window is associated with a visual tree); this dialog is a debug affordance,
+					// not critical path, so don't let it take the app down.
+					_log?.Error($"Could not show the launch-arguments dialog for '{args}' - {ex}");
+				}
 			}
 
 			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
@@ -532,6 +547,9 @@ namespace SamplesApp
 
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
+
+				// Surface the graphics-backend negotiation result (which renderer/context kind won)
+				builder.AddFilter("Uno.UI.Composition.Drawing", LogLevel.Information);
 				builder.AddFilter("Uno.WinUI.Runtime.Skia", LogLevel.Debug);
 				builder.AddFilter("Uno.UI.Skia", LogLevel.Debug);
 
@@ -587,9 +605,6 @@ namespace SamplesApp
 
 		static void ConfigureFeatureFlags()
 		{
-#if __APPLE_UIKIT__
-			WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
-#endif
 #if HAS_UNO
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
 			Uno.UI.FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite = true;

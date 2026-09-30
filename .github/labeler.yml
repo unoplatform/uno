@@ -40,8 +40,6 @@ area/skia ✏️:
       - '**/*.skia.cs'
       - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/*
       - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/**/*
-      - src/Uno.UI.Runtime.Skia.Tizen/*
-      - src/Uno.UI.Runtime.Skia.Tizen/**/*
       - src/Uno.UI.Runtime.Skia.Android/*
       - src/Uno.UI.Runtime.Skia.Android/**/*
       - src/Uno.UI.Runtime.Skia.AppleUIKit/*

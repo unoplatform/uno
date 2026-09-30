@@ -97,18 +97,18 @@ If you need to control individual packages instead of using the `SkiaSharpVersio
 
 ## Rendering Backend Selection
 
-By default, Uno Platform uses OpenGL for hardware-accelerated rendering on desktop, with an automatic fallback to software rendering. You can override this per platform using the host builder:
+By default, Uno Platform tries the GPU backends in a fixed order (Vulkan, then OpenGL, then software) and uses the first available one. You can force a single backend, or disable specific ones, per platform using the host builder:
 
 ```csharp
 var host = UnoPlatformHostBuilder.Create()
     .App(() => new App())
-    .UseX11(b => b.RenderingBackend(X11RenderingBackend.Vulkan))
-    .UseWin32(b => b.RenderingBackend(Win32RenderingBackend.Vulkan))
+    .UseX11(b => b.ForceRenderingBackend(X11RenderingBackend.Vulkan))   // only Vulkan
+    .UseWin32(b => b.DisableRenderingBackends(Win32RenderingBackend.Vulkan)) // everything except Vulkan
     .UseMacOS()
     .Build();
 ```
 
-Each platform exposes its own `RenderingBackend` enum with only the backends it supports. For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
+Each platform exposes its own `RenderingBackend` enum with only the backends it supports. `ForceRenderingBackend` restricts negotiation to that one backend; `DisableRenderingBackends` removes the listed backends and leaves the rest. For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
 Alternatively, you can use `FeatureConfiguration.Rendering` flags for backwards compatibility. The builder API takes precedence when both are used.
 

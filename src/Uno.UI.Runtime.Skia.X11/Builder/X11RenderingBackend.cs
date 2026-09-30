@@ -1,32 +1,31 @@
 namespace Uno.UI.Hosting;
 
 /// <summary>
-/// Specifies the rendering backend for the X11 Skia host.
+/// A rendering backend (GPU API) offered by the X11 Skia host, used with
+/// <see cref="X11HostBuilder.ForceRenderingBackend"/> and <see cref="X11HostBuilder.DisableRenderingBackends"/>.
 /// </summary>
 public enum X11RenderingBackend
 {
-	/// <summary>
-	/// Platform default: try Vulkan, fall back to OpenGL, then software.
-	/// </summary>
-	Default,
+	// 0 is unused: it was the removed Default member, and the values below must keep the meaning an
+	// already-compiled caller passes.
 
 	/// <summary>
-	/// Vulkan hardware acceleration. Falls back to OpenGL or software if unavailable.
+	/// Vulkan hardware acceleration.
 	/// </summary>
-	Vulkan,
+	Vulkan = 1,
 
 	/// <summary>
-	/// OpenGL via GLX. Falls back to software if unavailable.
+	/// OpenGL via GLX.
 	/// </summary>
-	OpenGL,
+	OpenGL = 2,
 
 	/// <summary>
-	/// OpenGL ES via EGL. Falls back to software if unavailable.
+	/// OpenGL ES via EGL.
 	/// </summary>
-	OpenGLES,
+	OpenGLES = 3,
 
 	/// <summary>
 	/// CPU-based software rendering. No GPU acceleration.
 	/// </summary>
-	Software,
+	Software = 4,
 }

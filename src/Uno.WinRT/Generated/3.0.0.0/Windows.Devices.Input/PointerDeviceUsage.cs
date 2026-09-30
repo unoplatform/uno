@@ -6,7 +6,7 @@ namespace Windows.Devices.Input
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct PointerDeviceUsage
+	public partial struct PointerDeviceUsage : global::System.IEquatable<global::Windows.Devices.Input.PointerDeviceUsage>
 	{
 		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.PointerDeviceUsage()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,62 @@ namespace Windows.Devices.Input
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.PointerDeviceUsage(uint, uint, int, int, int, int, uint, float)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(PointerDeviceUsage x, PointerDeviceUsage y)
+			=> x.UsagePage == y.UsagePage
+			&& x.Usage == y.Usage
+			&& x.MinLogical == y.MinLogical
+			&& x.MaxLogical == y.MaxLogical
+			&& x.MinPhysical == y.MinPhysical
+			&& x.MaxPhysical == y.MaxPhysical
+			&& x.Unit == y.Unit
+			&& x.PhysicalMultiplier == y.PhysicalMultiplier;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(PointerDeviceUsage x, PointerDeviceUsage y)
+			=> !(x.UsagePage == y.UsagePage
+				&& x.Usage == y.Usage
+				&& x.MinLogical == y.MinLogical
+				&& x.MaxLogical == y.MaxLogical
+				&& x.MinPhysical == y.MinPhysical
+				&& x.MaxPhysical == y.MaxPhysical
+				&& x.Unit == y.Unit
+				&& x.PhysicalMultiplier == y.PhysicalMultiplier);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(PointerDeviceUsage other)
+			=> UsagePage == other.UsagePage
+			&& Usage == other.Usage
+			&& MinLogical == other.MinLogical
+			&& MaxLogical == other.MaxLogical
+			&& MinPhysical == other.MinPhysical
+			&& MaxPhysical == other.MaxPhysical
+			&& Unit == other.Unit
+			&& PhysicalMultiplier == other.PhysicalMultiplier;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is PointerDeviceUsage that
+			&& UsagePage == that.UsagePage
+			&& Usage == that.Usage
+			&& MinLogical == that.MinLogical
+			&& MaxLogical == that.MaxLogical
+			&& MinPhysical == that.MinPhysical
+			&& MaxPhysical == that.MaxPhysical
+			&& Unit == that.Unit
+			&& PhysicalMultiplier == that.PhysicalMultiplier;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> UsagePage.GetHashCode()
+			^ Usage.GetHashCode()
+			^ MinLogical.GetHashCode()
+			^ MaxLogical.GetHashCode()
+			^ MinPhysical.GetHashCode()
+			^ MaxPhysical.GetHashCode()
+			^ Unit.GetHashCode()
+			^ PhysicalMultiplier.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint UsagePage;
 #endif

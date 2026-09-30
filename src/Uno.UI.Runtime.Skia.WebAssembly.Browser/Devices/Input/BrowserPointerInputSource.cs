@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Windows.Devices.Input;
 using Microsoft.UI.Input;
 using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
@@ -13,6 +13,7 @@ using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // i
 using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
 using System.Runtime.InteropServices;
 using Windows.System;
+using Uno.UI.Core;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml;
 
@@ -95,6 +96,14 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 			var isInRange = GetIsInRange(@event, hasRelatedTarget, pointerType, isInContact);
 			var keyModifiers = GetKeyModifiers(ctrl, shift);
 			var position = new Point(x, y);
+
+			// Pointer events carry the browser's own ctrl/shift on every occurrence, so they can repair a
+			// modifier whose key up was never delivered - an on-screen keyboard raising Shift during
+			// auto-capitalization, for instance - in a session where nothing else would: a touch-only
+			// interaction raises no key event, and no window blur happens either. Alt and Meta are not
+			// reported here and stay on the key event path.
+			KeyboardStateTracker.SyncModifierState(VirtualKey.Control, ctrl);
+			KeyboardStateTracker.SyncModifierState(VirtualKey.Shift, shift);
 
 			var properties = GetProperties(pointerType, isInRange, (HtmlPointerButtonsState)buttons, (HtmlPointerButtonUpdate)buttonUpdate, wheel: (false, -wheelDeltaY), pressure);
 

@@ -9,7 +9,7 @@ using Uno.UI;
 
 namespace Windows.ApplicationModel.Calls
 {
-	public partial class PhoneCallManager
+	public static partial class PhoneCallManager
 	{
 		private static readonly TelephonyManager _telephonyManager;
 

@@ -4,6 +4,8 @@
 		"version": "DefaultUnoVersion",
 		"packages": [
 			"Uno.WinUI",
+			"Uno.WinUI.Composition.Skia",
+			"Uno.WinUI.Composition.WebGpu",
 			"Uno.UI.Adapter.Microsoft.Extensions.Logging",
 			"Uno.WinUI.GooglePlay",
 			"Uno.WinUI.Foldable",
@@ -54,13 +56,6 @@
 		]
 	},
 	{
-		"group": "UniversalImageLoading",
-		"version": "1.9.37",
-		"packages": [
-			"Uno.UniversalImageLoader"
-		]
-	},
-	{
 		"group": "Dsp",
 		"version": "1.4.0",
 		"packages": [
@@ -69,7 +64,7 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.13.0-dev.17",
+		"version": "2.0.0-dev.14",
 		"packages": [
 			"Uno.Resizetizer"
 		]

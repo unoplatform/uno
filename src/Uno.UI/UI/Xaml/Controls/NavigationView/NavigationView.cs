@@ -184,7 +184,6 @@ public partial class NavigationView : ContentControl
 
 		m_shadowCasterEaseOutStoryboardRevoker.Disposable = null;
 
-
 		if (isFromDestructor)
 		{
 			m_selectionChangedRevoker.Disposable = null;
@@ -473,7 +472,6 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-
 				leftNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_leftNavItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
 				leftNavRepeater.ElementClearing += OnRepeaterElementClearing;
@@ -500,7 +498,6 @@ public partial class NavigationView : ContentControl
 					var stackLayoutImpl = stackLayout;
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
-
 
 				topNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_topNavItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -529,7 +526,6 @@ public partial class NavigationView : ContentControl
 					var stackLayoutImpl = stackLayout;
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
-
 
 				topNavListOverflowRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_topNavOverflowItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -580,7 +576,6 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-
 				leftFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_leftNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
 				leftFooterMenuNavRepeater.ElementClearing += OnRepeaterElementClearing;
@@ -608,7 +603,6 @@ public partial class NavigationView : ContentControl
 					var stackLayoutImpl = stackLayout;
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
-
 
 				topFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_topNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);

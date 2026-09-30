@@ -59,7 +59,7 @@ jobs:
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp/bin/Release/$(netCurrentTargetFramework)-tvos/tvossimulator-x64/SamplesApp.app
       Contents: '**'
-      TargetFolder: $(build.artifactstagingdirectory)/bin/SamplesApp.app
+      TargetFolder: $(Build.BinariesDirectory)/SamplesApp.app
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
@@ -77,7 +77,7 @@ jobs:
     displayName: 'Publish tvOS Binaries'
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(build.artifactstagingdirectory)/bin
+      targetPath: $(Build.BinariesDirectory)
       ArtifactName: $(SamplesAppArtifactName)
 
   - task: PublishBuildArtifacts@1

@@ -6,7 +6,7 @@ namespace Windows.UI.Input
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct CrossSlideThresholds
+	public partial struct CrossSlideThresholds : global::System.IEquatable<global::Windows.UI.Input.CrossSlideThresholds>
 	{
 		// Forced skipping of method Windows.UI.Input.CrossSlideThresholds.CrossSlideThresholds()
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -17,6 +17,42 @@ namespace Windows.UI.Input
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.CrossSlideThresholds.CrossSlideThresholds(float, float, float, float)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator ==(CrossSlideThresholds x, CrossSlideThresholds y)
+			=> x.SelectionStart == y.SelectionStart
+			&& x.SpeedBumpStart == y.SpeedBumpStart
+			&& x.SpeedBumpEnd == y.SpeedBumpEnd
+			&& x.RearrangeStart == y.RearrangeStart;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public static bool operator !=(CrossSlideThresholds x, CrossSlideThresholds y)
+			=> !(x.SelectionStart == y.SelectionStart
+				&& x.SpeedBumpStart == y.SpeedBumpStart
+				&& x.SpeedBumpEnd == y.SpeedBumpEnd
+				&& x.RearrangeStart == y.RearrangeStart);
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public bool Equals(CrossSlideThresholds other)
+			=> SelectionStart == other.SelectionStart
+			&& SpeedBumpStart == other.SpeedBumpStart
+			&& SpeedBumpEnd == other.SpeedBumpEnd
+			&& RearrangeStart == other.RearrangeStart;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override bool Equals(object obj)
+			=> obj is CrossSlideThresholds that
+			&& SelectionStart == that.SelectionStart
+			&& SpeedBumpStart == that.SpeedBumpStart
+			&& SpeedBumpEnd == that.SpeedBumpEnd
+			&& RearrangeStart == that.RearrangeStart;
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		public override int GetHashCode()
+			=> SelectionStart.GetHashCode()
+			^ SpeedBumpStart.GetHashCode()
+			^ SpeedBumpEnd.GetHashCode()
+			^ RearrangeStart.GetHashCode();
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public float SelectionStart;
 #endif

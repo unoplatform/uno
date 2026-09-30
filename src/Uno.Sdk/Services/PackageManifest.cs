@@ -136,7 +136,6 @@ internal class PackageManifest
 		public const string VlcNativeWindowsAssets = nameof(VlcNativeWindowsAssets);
 		public const string MicrosoftWebView2 = nameof(MicrosoftWebView2);
 		public const string CoreLogging = nameof(CoreLogging);
-		public const string UniversalImageLoading = nameof(UniversalImageLoading);
 		public const string Dsp = nameof(Dsp);
 		public const string Resizetizer = nameof(Resizetizer);
 		public const string SdkExtras = nameof(SdkExtras);

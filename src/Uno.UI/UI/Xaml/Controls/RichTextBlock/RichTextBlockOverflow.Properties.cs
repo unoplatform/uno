@@ -7,6 +7,7 @@
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -17,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public int MaxLines
 		{
 			get => (int)GetValue(MaxLinesProperty);
-			set => SetValue(MaxLinesProperty, value);
+			set => SetValue(MaxLinesProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MaxLinesProperty { get; } =
@@ -26,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(RichTextBlockOverflow),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: IntBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: OnContentMeasurePropertyChanged));
 
@@ -101,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(HasOverflowContent),
 				typeof(bool),
 				typeof(RichTextBlockOverflow),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public bool HasOverflowContent
 		{
@@ -122,7 +123,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsTextTrimmed),
 				typeof(bool),
 				typeof(RichTextBlockOverflow),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public bool IsTextTrimmed
 		{

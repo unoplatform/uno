@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using SkiaSharp;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls.Text.Core;
@@ -447,18 +446,18 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 
 	internal void Draw(in Visual.PaintingSession session)
 	{
-		var canvas = session.Canvas;
-		canvas.Save();
-		canvas.Translate((float)Padding.Left, (float)Padding.Top);
+		var drawingSession = session.Session;
+		drawingSession.Save();
+		drawingSession.Translate((float)Padding.Left, (float)Padding.Top);
 
 		foreach (var layout in _paragraphLayouts)
 		{
-			canvas.Save();
-			canvas.Translate((float)layout.Margin.Left, layout.YOffset);
+			drawingSession.Save();
+			drawingSession.Translate((float)layout.Margin.Left, layout.YOffset);
 
 			// ParsedText renders the whole paragraph, so clip to the slice this link arranged; otherwise
 			// the lines belonging to the previous or next link in the chain are overdrawn.
-			canvas.ClipRect(new SKRect(0, 0, (float)layout.Size.Width, (float)layout.Size.Height));
+			drawingSession.ClipRect(new Rect(0, 0, layout.Size.Width, layout.Size.Height));
 
 			// TODO Uno (Stage 9 overflow selection): apply selection/text-highlighters to the overflow's
 			// content slice (the master's TextSelectionManager owns selection across the whole chain).
@@ -470,10 +469,10 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 
 			layout.ParsedText.Draw(this, session, null, highlighters, compositionRange: null, layout.FirstLine, layout.LineCount);
 
-			canvas.Restore();
+			drawingSession.Restore();
 		}
 
-		canvas.Restore();
+		drawingSession.Restore();
 	}
 
 	// the entire body of the overflow is considered hit-testable
@@ -496,14 +495,12 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 			_owner = new WeakReference<RichTextBlockOverflow>(owner);
 		}
 
-		internal override SKPath? Paint(in PaintingSession session)
+		internal override void Paint(in PaintingSession session)
 		{
 			if (_owner.TryGetTarget(out var owner))
 			{
 				owner.Draw(in session);
 			}
-
-			return null;
 		}
 
 		internal override bool CanPaint() => true;

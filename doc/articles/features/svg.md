@@ -37,7 +37,6 @@ Now, you can display the SVG image in an `Image` by referencing it from the `Sou
 To use SVG, install the following NuGet packages into the iOS, macOS, Android, and Skia projects:
 
 * `Uno.WinUI.Svg`
-* `SkiaSharp.Views.Uno.WinUI`
 * `Svg.Skia` (required only for the Skia project)
 
 > [!NOTE]

@@ -35,7 +35,7 @@
 
 				nuspec does not expand MSBuild properties, so the SkiaSharp/HarfBuzzSharp versions
 				below are literals that must be updated by hand to match $(SkiaSharpVersion) and
-				$(HarfbuzzSharpVersion) in src/Directory.Build.targets whenever those are bumped.
+				$(HarfbuzzSharpVersion) in src/Directory.Packages.props whenever those are bumped.
 			-->
 
 			<!--
@@ -76,6 +76,8 @@
 				<reference file="Uno.Xaml.dll" />
 				<reference file="Uno.UI.dll" />
 				<reference file="Uno.UI.Composition.dll" />
+				<reference file="Uno.UI.Composition.Drawing.dll" />
+				<reference file="Uno.UI.Composition.Managed.dll" />
 				<reference file="Uno.UI.Extras.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
 			</group>
@@ -85,6 +87,8 @@
 				<reference file="Uno.Xaml.dll" />
 				<reference file="Uno.UI.dll" />
 				<reference file="Uno.UI.Composition.dll" />
+				<reference file="Uno.UI.Composition.Drawing.dll" />
+				<reference file="Uno.UI.Composition.Managed.dll" />
 				<reference file="Uno.UI.Extras.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
 			</group>
@@ -121,11 +125,10 @@
 		<!-- END UWP-excluded -->
 
 		<!--
-			The Skia build is the compile-time reference. The Reference flavor was folded away
-			for the UI layer: with native WASM rendering gone, `skia` was the only possible
-			runtime replacement, so lib/ and uno-runtime/<tfm>/skia were the same assembly in
-			all but name. Uno / Uno.Foundation / Uno.UI.Dispatching still ship both flavors
-			and keep their uno-runtime folders (see Uno.WinRT.nuspec).
+			The Skia build is the compile-time reference: the UI layer has a single runtime, so
+			there is no Reference variant and no uno-runtime folder to replace it with.
+			Uno.WinRT / Uno.Foundation / Uno.UI.Dispatching still ship their generic and wasm
+			variants under uno-runtime (see Uno.WinRT.nuspec).
 		-->
 
 		<!-- net11.0 -->
@@ -134,6 +137,10 @@
 		<file src="..\..\src\Uno.UI\bin\Uno.UI\Release\net11.0\*.xml" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net11.0\Uno.UI.Composition.dll" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net11.0\Uno.UI.Composition.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net11.0\Uno.UI.Composition.Drawing.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net11.0\Uno.UI.Composition.Drawing.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Managed\bin\Uno.UI.Composition.Managed\Release\net11.0\Uno.UI.Composition.Managed.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Managed\bin\Uno.UI.Composition.Managed\Release\net11.0\Uno.UI.Composition.Managed.pdb" target="lib\net11.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net11.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net11.0\Uno.UI.FluentTheme.dll" target="lib\net11.0" />
@@ -147,6 +154,10 @@
 		<file src="..\..\src\Uno.UI\bin\Uno.UI\Release\net10.0\*.xml" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net10.0\Uno.UI.Composition.dll" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net10.0\Uno.UI.Composition.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net10.0\Uno.UI.Composition.Drawing.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net10.0\Uno.UI.Composition.Drawing.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Managed\bin\Uno.UI.Composition.Managed\Release\net10.0\Uno.UI.Composition.Managed.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Managed\bin\Uno.UI.Composition.Managed\Release\net10.0\Uno.UI.Composition.Managed.pdb" target="lib\net10.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net10.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net10.0\Uno.UI.FluentTheme.dll" target="lib\net10.0" />
