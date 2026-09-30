@@ -5,7 +5,7 @@
 		<!-- Desktop and headless heads, the ones this check has always applied to. -->
 		<_UnoSvgCheckApplies>false</_UnoSvgCheckApplies>
 		<_UnoSvgCheckApplies
-			Condition="'$(UnoHasRuntimeHost)'=='true' and ('$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))'=='desktop' or '$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))'=='')">true</_UnoSvgCheckApplies>
+			Condition="'$(UnoHasRuntimeHost)'=='true' and ('$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='desktop' or '$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='')">true</_UnoSvgCheckApplies>
 	</PropertyGroup>
 
 	<Target Name="_ValidateSvgDependencySkia"
