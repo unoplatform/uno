@@ -12,7 +12,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
@@ -72,6 +74,12 @@ public class Given_XamlParseContext_AlcResolution
 
 	/// <summary>The value the HOST defines under the same key — the shadowing value.</summary>
 	private static readonly Windows.UI.Color HostValue = Windows.UI.Color.FromArgb(0xFF, 0xAA, 0xBB, 0xCC);
+
+	/// <summary>A third value, defined only in the dictionary that declares the XAML being parsed.</summary>
+	private static readonly Windows.UI.Color DeclaringDictionaryValue = Windows.UI.Color.FromArgb(0xFF, 0x44, 0x55, 0x66);
+
+	/// <summary>A key holding a <see cref="Style"/> in both the host and the owning app, for the template-part tests.</summary>
+	private const string StyleKey = "XamlParseContextAlcResolutionButtonStyle";
 
 	// The ALC standing in for a hosted app: it owns the registered Application, and it holds its own
 	// private copy of the probe assembly whose name the parse context carries.
@@ -232,53 +240,34 @@ public class Given_XamlParseContext_AlcResolution
 
 	/// <summary>
 	/// The correction must survive a resource refresh that runs before the element has a parent. Generated
-	/// template code calls <c>CreationComplete</c> on each element while it is still detached; applying its
-	/// style there refreshes every resource binding through <c>Style.ApplyTo</c>, with nothing in scope. That
-	/// refresh must not settle the provisional lookup, or nothing is left for the load-time walk.
+	/// template code calls <c>CreationComplete</c> on each part while it is still detached; applying its style
+	/// there refreshes every resource binding with nothing in scope. That refresh must not settle the provisional
+	/// lookup, or nothing is left for the load-time walk. Outside an <c>AlcContentHost</c> the walk finds nothing
+	/// in scope and falls back to the host's style.
 	/// </summary>
 	[TestMethod]
+	[DataRow(true)]
+	[DataRow(false)]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
-	public async Task When_TemplateCompletesElementBeforeItIsParented_Then_LoadingUnderAlcContentHostStillRestoresOwningAppStyle()
+	public async Task When_TemplatePartCompletesBeforeItIsParented_Then_LoadTimeScopeDecidesItsStyle(bool underAlcContentHost)
 	{
-		const string StyleKey = "XamlParseContextAlcResolutionButtonStyle";
-
 		var ownerApp = await SetUpDuplicatedAssemblyAsync();
-		var appStyle = new Style(typeof(Button));
-		var hostStyle = new Style(typeof(Button));
-		ownerApp.Resources[StyleKey] = appStyle;
-		Application.Current.Resources[StyleKey] = hostStyle;
+		var (appStyle, hostStyle) = SeedStyles(ownerApp);
 
 		try
 		{
-			var nameOnlyContext = new XamlParseContext { AssemblyName = _probeAssemblyName };
+			var button = CreateTemplatePartCompletedWhileDetached();
 
-			// What generated template code emits for <Button Style="{StaticResource Key}" />.
-			var button = new Button { IsParsing = true, Content = "Primary" };
-			ResourceResolver.ApplyResource(
-				button,
-				FrameworkElement.StyleProperty,
-				StyleKey,
-				isThemeResourceExtension: false,
-				isHotReloadSupported: false,
-				fromXamlParser: true,
-				nameOnlyContext);
-			button.CreationComplete();
+			Assert.AreSame(hostStyle, button.Style, "State before loading: the provisional host value stands.");
 
-			Assert.IsNull(button.Parent, "Sanity: CreationComplete must run while the element has no parent.");
-			Assert.AreSame(hostStyle, button.Style, "Before loading, the provisional host value stands.");
-
-			var host = new AlcContentHost { SourceApplicationOverride = ownerApp, Content = button };
-
-			_usedWindowContent = true;
-			TestServices.WindowHelper.WindowContent = host;
-			await TestServices.WindowHelper.WaitForLoaded(button);
-			await TestServices.WindowHelper.WaitForIdle();
+			await LoadAsync(button, underAlcContentHost ? ownerApp : null);
 
 			Assert.AreSame(
-				appStyle,
+				underAlcContentHost ? appStyle : hostStyle,
 				button.Style,
-				"A refresh while detached must not settle the provisional lookup: the load-time walk under the " +
-				$"AlcContentHost must still replace the host's style with the owning app's.{DescribeLoadedCopies()}");
+				underAlcContentHost
+					? $"A refresh while detached must not settle the provisional lookup: under the AlcContentHost the owning app's style must win.{DescribeLoadedCopies()}"
+					: $"Outside an AlcContentHost the load-time walk must fall back to the host's style.{DescribeLoadedCopies()}");
 		}
 		finally
 		{
@@ -287,46 +276,112 @@ public class Given_XamlParseContext_AlcResolution
 	}
 
 	/// <summary>
-	/// The host side of the previous test: the same detached completion, but the element loads outside any
-	/// <c>AlcContentHost</c>. Nothing in scope defines the key, so the load-time walk falls back to the
-	/// top-level lookup and the host's style stands.
+	/// The same, one level down: a brush owned by a detached template part is refreshed with its owner, so it
+	/// must also keep its provisional binding until it enters the live tree.
 	/// </summary>
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
-	public async Task When_TemplateCompletesElementBeforeItIsParented_And_LoadsOutsideAlcContentHost_Then_HostStyleStands()
+	public async Task When_TemplatePartBrushCompletesBeforeItIsParented_Then_LoadingUnderAlcContentHostRestoresOwningAppValue()
 	{
-		const string StyleKey = "XamlParseContextAlcResolutionButtonStyle";
-
 		var ownerApp = await SetUpDuplicatedAssemblyAsync();
-		var appStyle = new Style(typeof(Button));
-		var hostStyle = new Style(typeof(Button));
-		ownerApp.Resources[StyleKey] = appStyle;
-		Application.Current.Resources[StyleKey] = hostStyle;
 
+		var brush = new SolidColorBrush();
+		ResourceResolver.ApplyResource(
+			brush,
+			SolidColorBrush.ColorProperty,
+			SharedKey,
+			isThemeResourceExtension: false,
+			isHotReloadSupported: false,
+			fromXamlParser: true,
+			new XamlParseContext { AssemblyName = _probeAssemblyName });
+
+		// What generated template code does to a part: parse it, then complete it while detached, which applies its style.
+		var border = new Border { IsParsing = true, Width = 50, Height = 50, Background = brush, Style = new Style(typeof(Border)) };
+		border.CreationComplete();
+
+		Assert.AreEqual(HostValue, brush.Color, "State before loading: the provisional host value stands.");
+
+		await LoadAsync(border, ownerApp);
+
+		Assert.AreEqual(
+			AppValue,
+			brush.Color,
+			$"A brush refreshed with its detached owner must keep its provisional lookup for the load-time walk.{DescribeLoadedCopies()}");
+	}
+
+	/// <summary>
+	/// Only the top-level lookup is provisional. A key found in the dictionary that declares the XAML is where a
+	/// {StaticResource} resolves by definition, so the load-time walk must not replace it with an ancestor's value.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_DeclaringDictionaryDefinesTheKey_Then_ParseTimeValueIsFinalUnderAlcContentHost()
+	{
+		var ownerApp = await SetUpDuplicatedAssemblyAsync();
+
+		var declaringDictionary = new ResourceDictionary { [SharedKey] = DeclaringDictionaryValue };
+		var target = new Border { Width = 50, Height = 50 };
+
+		ResourceResolver.PushSourceToScope(declaringDictionary);
 		try
 		{
-			var nameOnlyContext = new XamlParseContext { AssemblyName = _probeAssemblyName };
-
-			var button = new Button { IsParsing = true, Content = "Primary" };
 			ResourceResolver.ApplyResource(
-				button,
-				FrameworkElement.StyleProperty,
-				StyleKey,
+				target,
+				FrameworkElement.TagProperty,
+				SharedKey,
 				isThemeResourceExtension: false,
 				isHotReloadSupported: false,
 				fromXamlParser: true,
-				nameOnlyContext);
-			button.CreationComplete();
+				new XamlParseContext { AssemblyName = _probeAssemblyName });
+		}
+		finally
+		{
+			ResourceResolver.PopSourceFromScope();
+		}
 
-			_usedWindowContent = true;
-			TestServices.WindowHelper.WindowContent = new Border { Child = button };
-			await TestServices.WindowHelper.WaitForLoaded(button);
-			await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual(DeclaringDictionaryValue, (Windows.UI.Color)target.Tag, "Parse time: the declaring dictionary answers first.");
 
-			Assert.AreSame(
-				hostStyle,
-				button.Style,
-				$"Outside an AlcContentHost the load-time walk must fall back to the host's style.{DescribeLoadedCopies()}");
+		await LoadAsync(target, ownerApp);
+
+		Assert.AreEqual(
+			DeclaringDictionaryValue,
+			(Windows.UI.Color)target.Tag,
+			$"A value from the declaring dictionary is final: the AlcContentHost's projection must not replace it.{DescribeLoadedCopies()}");
+	}
+
+	/// <summary>
+	/// The template-part correction through a real <c>ControlTemplate</c>. <c>XamlReader.Load</c> passes no parse
+	/// context, so every {StaticResource} in the template is provisional while secondary apps exist.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_XamlReaderTemplateLoadsUnderAlcContentHost_Then_TemplatePartsReadOwningAppValues()
+	{
+		var ownerApp = await SetUpDuplicatedAssemblyAsync();
+		var (appStyle, _) = SeedStyles(ownerApp);
+
+		try
+		{
+			var control = (ContentControl)XamlReader.Load(
+				"<ContentControl xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>" +
+				"<ContentControl.Template><ControlTemplate TargetType='ContentControl'>" +
+				"<Border Width='100' Height='50'><Border.Background>" +
+				$"<SolidColorBrush Color='{{StaticResource {SharedKey}}}' /></Border.Background>" +
+				$"<Button Style='{{StaticResource {StyleKey}}}' Content='Primary' />" +
+				"</Border></ControlTemplate></ContentControl.Template></ContentControl>");
+
+			await LoadAsync(control, ownerApp);
+
+			var border = control.FindFirstChild<Border>();
+			var button = control.FindFirstChild<Button>();
+			Assert.IsNotNull(border, "Sanity: the template must have been applied.");
+			Assert.IsNotNull(button, "Sanity: the template must have been applied.");
+
+			Assert.AreSame(appStyle, button.Style, $"A template part's style must come from the owning app.{DescribeLoadedCopies()}");
+			Assert.AreEqual(
+				AppValue,
+				((SolidColorBrush)border.Background).Color,
+				$"A template part's brush must take the owning app's value.{DescribeLoadedCopies()}");
 		}
 		finally
 		{
@@ -492,6 +547,46 @@ public class Given_XamlParseContext_AlcResolution
 	/// host entry of <see cref="HostValue"/>, plus a private copy — inside that same ALC — of an
 	/// assembly the host already has loaded, whose name <see cref="_probeAssemblyName"/> carries.
 	/// </summary>
+	// Seeds StyleKey with a different Style in the owning app and in the host; the caller removes the host entry.
+	private static (Style App, Style Host) SeedStyles(Application ownerApp)
+	{
+		var appStyle = new Style(typeof(Button));
+		var hostStyle = new Style(typeof(Button));
+		ownerApp.Resources[StyleKey] = appStyle;
+		Application.Current.Resources[StyleKey] = hostStyle;
+		return (appStyle, hostStyle);
+	}
+
+	// What generated template code emits for <Button Style="{StaticResource StyleKey}" />: parse, apply the
+	// resource, then complete the part while it is still detached.
+	private Button CreateTemplatePartCompletedWhileDetached()
+	{
+		var button = new Button { IsParsing = true, Content = "Primary" };
+		ResourceResolver.ApplyResource(
+			button,
+			FrameworkElement.StyleProperty,
+			StyleKey,
+			isThemeResourceExtension: false,
+			isHotReloadSupported: false,
+			fromXamlParser: true,
+			new XamlParseContext { AssemblyName = _probeAssemblyName });
+		button.CreationComplete();
+
+		Assert.IsNull(button.Parent, "Sanity: CreationComplete must run while the element has no parent.");
+		return button;
+	}
+
+	// Loads the element under an AlcContentHost projecting sourceApp, or under a plain Border when sourceApp is null.
+	private async Task LoadAsync(FrameworkElement element, Application? sourceApp)
+	{
+		_usedWindowContent = true;
+		TestServices.WindowHelper.WindowContent = sourceApp is null
+			? new Border { Child = element }
+			: new AlcContentHost { SourceApplicationOverride = sourceApp, Content = element };
+		await TestServices.WindowHelper.WaitForLoaded(element);
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
 	private async Task<Application> SetUpDuplicatedAssemblyAsync(bool seedViaMergedDictionary = false)
 	{
 		var alcAppPath = await BuildAlcAppAsync();

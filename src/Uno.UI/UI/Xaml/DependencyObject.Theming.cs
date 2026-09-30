@@ -915,15 +915,21 @@ public partial class DependencyObject
 	}
 
 	/// <summary>
-	/// Whether <paramref name="binding"/> is a provisional {StaticResource} (see
-	/// <see cref="ResourceResolver.ShouldDeferStaticResourceToLoading"/>) on an element that has not entered the
-	/// live tree yet, such as a template part completed before it is parented. Only the top-level lookup can
-	/// answer there, and settling on its value would consume the binding before the load-time walk runs.
+	/// Whether <paramref name="binding"/> is a {StaticResource} whose parse-time value is provisional (see
+	/// <see cref="ResourceResolver.ShouldDeferStaticResourceToLoading"/>).
+	/// </summary>
+	private static bool IsProvisionalBinding(ResourceBinding binding)
+		=> Application.HasSecondaryApps
+			&& (binding.UpdateReason & ResourceUpdateReason.StaticResourceLoading) != 0
+			&& ResourceResolver.ShouldDeferStaticResourceToLoading(binding.ParseContext);
+
+	/// <summary>
+	/// Whether <paramref name="binding"/> is provisional on an object that has not entered the live tree yet, such as
+	/// a template part completed before it is parented, or a brush it owns. Only the top-level lookup can answer there,
+	/// and settling on its value would consume the binding before the load-time walk runs.
 	/// </summary>
 	private bool IsProvisionalBindingOutsideLiveTree(ResourceBinding binding)
-		=> (binding.UpdateReason & ResourceUpdateReason.StaticResourceLoading) != 0
-			&& ActualInstance is UIElement { IsActiveInVisualTree: false }
-			&& ResourceResolver.ShouldDeferStaticResourceToLoading(binding.ParseContext);
+		=> IsProvisionalBinding(binding) && !IsActive;
 
 	/// <remarks>
 	/// This method contains or is called by a try/catch containing method and
@@ -990,14 +996,18 @@ public partial class DependencyObject
 				}
 			}
 
-			if (!wasSet && IsProvisionalBindingOutsideLiveTree(binding))
-			{
-				// Only the load-time walk can attribute this lookup to an owning app; keep the binding for it.
-				return;
-			}
-
 			if (!wasSet)
 			{
+				if (IsProvisionalBindingOutsideLiveTree(binding))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"Keeping provisional {{StaticResource {binding.ResourceKey.Key}}} on {ActualInstance?.GetType().Name}.{property.Name} until it enters the live tree.");
+					}
+
+					return;
+				}
+
 				// The resource wasn't found in the in-scope (non-app) dictionaries, but an application-level
 				// dictionary may provide it — e.g. an app-merged ThemeDictionaries override of a stock Fluent
 				// control brush (CheckBoxCheckBackgroundFillChecked, ...). Resolve it AND re-pin the providing
@@ -1010,6 +1020,11 @@ public partial class DependencyObject
 				// CheckBox blank until a pointer-over repaints it. Restores the #23388 re-pin dropped by #23416.
 				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value, out var providingDict))
 				{
+					if (this.Log().IsEnabled(LogLevel.Debug) && IsProvisionalBinding(binding))
+					{
+						this.Log().Debug($"Provisional {{StaticResource {binding.ResourceKey.Key}}} on {ActualInstance?.GetType().Name}.{property.Name} found nothing in scope; settling on the top-level value.");
+					}
+
 					SetResourceBindingValue(property, binding, value);
 
 					if (providingDict is not null && _themeResources is not null)

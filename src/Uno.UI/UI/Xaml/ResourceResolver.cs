@@ -391,15 +391,20 @@ namespace Uno.UI
 			}
 
 			// Set the initial value from statically-available top-level resources.
-			if (TryStaticRetrieval(specializedKey, context, out var value))
+			var resolvedInScope = TryScopedRetrieval(specializedKey, out var value);
+			if (resolvedInScope || TryTopLevelStaticRetrieval(specializedKey, context, out value))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
 
 				// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP) —
-				// unless the lookup could not be attributed to an owning application, in which case the parse-time value is provisional.
-				if (!ShouldDeferStaticResourceToLoading(context))
+				// unless the top-level lookup answered for a context it could not attribute to an owning application.
+				if (resolvedInScope || !ShouldDeferStaticResourceToLoading(context))
 				{
 					updateReason &= ~ResourceUpdateReason.StaticResourceLoading;
+				}
+				else if (_log.IsEnabled(LogLevel.Debug))
+				{
+					_log.LogDebug($"Deferring {{StaticResource {specializedKey.Key}}} on {owner.GetType().Name}.{property.Name} to load time: its parse context cannot identify the owning application.");
 				}
 
 				if (updateReason == ResourceUpdateReason.None)
@@ -415,8 +420,9 @@ namespace Uno.UI
 		}
 
 		/// <summary>
-		/// Whether a {StaticResource} that resolved at parse time must still be re-resolved at load time,
-		/// because the parse-time lookup could not tell which application owns it.
+		/// Whether a {StaticResource} that the top-level lookup resolved at parse time must still be re-resolved at load time,
+		/// because the parse-time lookup could not tell which application owns it. A value found in the parse scope (the
+		/// dictionary that declares the XAML) is final regardless.
 		/// </summary>
 		/// <remarks>
 		/// <see cref="TryTopLevelRetrieval(in SpecializedResourceDictionary.ResourceKey, object, out object)"/> keys its
@@ -557,6 +563,12 @@ namespace Uno.UI
 		/// Try to retrieve a resource statically (at parse time). This will check resources in 'xaml scope' first, then top-level resources.
 		/// </summary>
 		internal static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
+			=> TryScopedRetrieval(resourceKey, out value) || TryTopLevelStaticRetrieval(resourceKey, context, out value);
+
+		/// <summary>
+		/// Tries to retrieve a resource from the dictionaries in the current parse scope, such as the dictionary that declares a template.
+		/// </summary>
+		private static bool TryScopedRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, out object value)
 		{
 			foreach (var source in CurrentScope.Sources)
 			{
@@ -571,6 +583,12 @@ namespace Uno.UI
 				}
 			}
 
+			value = null;
+			return false;
+		}
+
+		private static bool TryTopLevelStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
+		{
 			var topLevel = TryTopLevelRetrieval(resourceKey, context, out value);
 			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
 			{
