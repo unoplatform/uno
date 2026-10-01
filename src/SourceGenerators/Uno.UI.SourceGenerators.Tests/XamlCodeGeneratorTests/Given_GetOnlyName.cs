@@ -114,4 +114,47 @@ public class Given_GetOnlyName
 
 		await test.RunAsync();
 	}
+
+	// An attached property named Name must not be mistaken for the element's own Name.
+	[TestMethod]
+	public async Task When_Attached_Name_On_GetOnly_Name()
+	{
+		var pageFile = new XamlFile("MainPage.xaml", """
+			<Page
+				x:Class="TestRepro.MainPage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<TextBlock>
+					<Run AutomationProperties.Name="RunLabel" Text="a" />
+					<Hyperlink x:Name="NamedLink" AutomationProperties.Name="LinkLabel">link</Hyperlink>
+				</TextBlock>
+			</Page>
+			""");
+
+		var test = new Verify.Test(pageFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro;
+
+					public sealed partial class MainPage : Page
+					{
+						public MainPage()
+						{
+							this.InitializeComponent();
+						}
+					}
+					"""
+				}
+			},
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }
