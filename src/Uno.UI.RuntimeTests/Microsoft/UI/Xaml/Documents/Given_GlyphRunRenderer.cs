@@ -40,9 +40,12 @@ public class Given_GlyphRunRenderer
 		using var actual = CreateSurface(info);
 		new SkiaDrawingSession(actual.Canvas, DrawingFactory.Current).DrawGlyphRun(font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
 
+		// Spelled out rather than read from SkiaFontProvider so the Windows-only grayscale edging is covered too.
+		var edging = OperatingSystem.IsWindows() ? SKFontEdging.Antialias : SKFontEdging.SubpixelAntialias;
+
 		using var expected = CreateSurface(info);
 		using (var typeface = SKTypeface.FromData(SKData.CreateCopy(data), 0))
-		using (var skFont = new SKFont(typeface, fontSize) { Edging = SkiaFontProvider.TextEdging, Subpixel = true })
+		using (var skFont = new SKFont(typeface, fontSize) { Edging = edging, Subpixel = true })
 		using (var builder = new SKTextBlobBuilder())
 		using (var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true })
 		{
