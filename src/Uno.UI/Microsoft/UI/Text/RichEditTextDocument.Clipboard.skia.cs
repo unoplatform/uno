@@ -94,7 +94,20 @@ namespace Microsoft.UI.Text
 			Action<int> onPasted,
 			bool requireEditable,
 			int format)
-			=> BeginPasteFromClipboard(Clipboard.GetContent(), operationRange, onPasted, requireEditable, format);
+		{
+			DataPackageView content;
+			try
+			{
+				content = Clipboard.GetContent();
+			}
+			catch (NotImplementedException)
+			{
+				// Hosts without a system clipboard (tvOS) have nothing to paste.
+				return;
+			}
+
+			BeginPasteFromClipboard(content, operationRange, onPasted, requireEditable, format);
+		}
 
 		// async void: the synchronous TOM Paste API has to start the asynchronous clipboard read and return.
 		internal async void BeginPasteFromClipboard(
