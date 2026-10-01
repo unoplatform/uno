@@ -25,6 +25,10 @@ public partial class Given_MediaPlayerElement
 {
 	private static readonly Uri TestVideoUrl = new Uri("https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4");
 
+	// The element is sized, and so loaded, only once the remote video has been fetched and opened: on a contended agent
+	// (e.g. one also software-rasterizing the window) that takes well over the few seconds it does on a workstation.
+	private const int LoadTimeoutMS = 20000;
+
 	[TestCleanup]
 	public void Cleanup() => WindowHelper.WindowContent = null;
 
@@ -42,7 +46,7 @@ public partial class Given_MediaPlayerElement
 			Width = 100,
 		};
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
+		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
 
 		// PlaybackState should transition out of Opening state when the video is ready to play.
 		await WindowHelper.WaitFor(
@@ -65,7 +69,7 @@ public partial class Given_MediaPlayerElement
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
 		};
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
+		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
 
 #if __SKIA__
 		// AutoPlay is not working on Skia for now.
@@ -108,7 +112,7 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
+		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
 
 		sut.MediaPlayer.Play();
 
@@ -135,7 +139,7 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
+		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
 
 		sut.MediaPlayer.Play();
 
@@ -178,7 +182,7 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
+		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
 
 		sut.MediaPlayer.Play();
 		await WindowHelper.WaitFor(
@@ -203,7 +207,7 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
+		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
 
 		// step 1: Test Play
 		sut.MediaPlayer.Play();
@@ -244,7 +248,7 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
+		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
 
 		// step 1: Test Play
 		sut.MediaPlayer.Play();
@@ -283,7 +287,7 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
+		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
 
 		sut.AreTransportControlsEnabled = false;
 
@@ -313,7 +317,7 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
+		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
 
 		// step 1: disalbe ShowAndHideAutomatically
 		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
