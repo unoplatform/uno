@@ -25,10 +25,11 @@ public partial class Given_RichEditBox
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
-	public async Task When_Loaded_Million_Character_Local_Key_Edit_Stays_Range_Based()
+	public async Task When_Loaded_Large_Story_Local_Key_Edit_Stays_Range_Based()
 	{
 		using var imeDisposable = RichEditBox.SetImeExtensionForTesting(new FakeImeTextBoxExtension());
-		const int length = 1_000_000;
+		// Still spans 32 render fragments. A 1M-char single line peaks at several GB (per-glyph draw, #24652) and Android OOMs.
+		const int length = 128 * 1024;
 		var editor = new RichEditBox
 		{
 			Width = 480,
