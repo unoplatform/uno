@@ -4,7 +4,7 @@ using AwesomeAssertions;
 namespace Uno.UI.Tasks.Tests;
 
 /// <summary>
-/// Every Uno.WinUI.Runtime.Skia.* host declares itself with UnoHasRuntimeHost. A host that forgets leaves its heads
+/// Every Uno.WinUI.Runtime.* host declares itself with UnoHasRuntimeHost. A host that forgets leaves its heads
 /// on the reference facades with no more than a UNOB0025 warning, so the declaration is pinned here instead.
 /// </summary>
 [TestClass]
@@ -48,8 +48,9 @@ public class Given_RuntimeHostPackages
 	private static string? Property(string host, string name)
 	{
 		var props = new[] { "build", "buildTransitive" }
-			.Select(folder => RepositoryPaths.Get("src", $"Uno.UI.Runtime.Skia.{host}", folder, $"Uno.WinUI.Runtime.Skia.{host}.props"))
-			.Where(File.Exists)
+			.Select(folder => RepositoryPaths.Get("src", $"Uno.UI.Runtime.Skia.{host}", folder))
+			.Where(Directory.Exists)
+			.SelectMany(folder => Directory.EnumerateFiles(folder, "Uno.WinUI.Runtime.*.props"))
 			.ToList();
 
 		props.Should().ContainSingle($"Uno.UI.Runtime.Skia.{host} ships the props a head imports");
