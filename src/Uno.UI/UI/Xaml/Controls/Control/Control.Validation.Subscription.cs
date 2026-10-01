@@ -6,11 +6,28 @@ using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
 using Microsoft.UI.Xaml.Data;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Control
 {
+	/// <summary>
+	/// The validation state of one control, created on first use so that a control which never validates pays
+	/// only the field. The handlers outlive <see cref="Subscription"/>, which comes and goes with the binding.
+	/// </summary>
+	/// <remarks>
+	/// The subscription is keyed on the control rather than on the binding expression, which is replaced
+	/// without notification whenever the property is rebound.
+	/// </remarks>
+	private sealed class ValidationState
+	{
+		public ValidationSubscription? Subscription;
+		public EventHandler<DataErrorsChangedEventArgs>? ErrorChanged;
+		public TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs>? HasValidationErrorsChanged;
+		public TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs>? ValidationError;
+	}
+
 	/// <summary>
 	/// The live subscription to one binding source, held by the control for as long as that binding stands.
 	/// </summary>
@@ -80,7 +97,7 @@ public partial class Control
 
 		/// <summary>
 		/// Subscribes without letting the source root the control: the event closure holds only a weak
-		/// reference to this subscription, which the control keeps alive through its attached property, and
+		/// reference to this subscription, which the control keeps alive through its validation state, and
 		/// the disposer re-resolves the source rather than capturing it.
 		/// </summary>
 		private static IDisposable Subscribe(INotifyDataErrorInfo source, string propertyName, ValidationSubscription state)

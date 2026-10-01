@@ -244,42 +244,44 @@ public partial class Control
 	/// storage of its own.
 	/// </summary>
 	protected void AddHasValidationErrorsChangedHandler(TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs> handler)
-		=> SetValue(
-			HasValidationErrorsChangedHandlerProperty,
-			Delegate.Combine(GetHasValidationErrorsChangedHandler(), handler));
+		=> EnsureValidationState().HasValidationErrorsChanged += handler;
 
 	/// <inheritdoc cref="AddHasValidationErrorsChangedHandler"/>
 	protected void RemoveHasValidationErrorsChangedHandler(TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs> handler)
-		=> SetValue(
-			HasValidationErrorsChangedHandlerProperty,
-			Delegate.Remove(GetHasValidationErrorsChangedHandler(), handler));
+	{
+		if (_validationState is { } state)
+		{
+			state.HasValidationErrorsChanged -= handler;
+		}
+	}
 
 	/// <summary>
 	/// Backs <see cref="IInputValidationControl.ValidationError"/>.
 	/// </summary>
 	protected void AddValidationErrorHandler(TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs> handler)
-		=> SetValue(
-			ValidationErrorHandlerProperty,
-			Delegate.Combine(GetValidationErrorHandler(), handler));
+		=> EnsureValidationState().ValidationError += handler;
 
 	/// <inheritdoc cref="AddValidationErrorHandler"/>
 	protected void RemoveValidationErrorHandler(TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs> handler)
-		=> SetValue(
-			ValidationErrorHandlerProperty,
-			Delegate.Remove(GetValidationErrorHandler(), handler));
+	{
+		if (_validationState is { } state)
+		{
+			state.ValidationError -= handler;
+		}
+	}
 
 	/// <summary>
-	/// Backs <see cref="IInputValidationControl.ErrorChanged"/>. Kept apart from the subscription state, which
-	/// comes and goes with the binding while handlers must survive a rebind.
+	/// Backs <see cref="IInputValidationControl.ErrorChanged"/>.
 	/// </summary>
 	protected void AddErrorChangedHandler(EventHandler<DataErrorsChangedEventArgs> handler)
-		=> SetValue(
-			ErrorChangedHandlerProperty,
-			Delegate.Combine(GetErrorChangedHandler(), handler));
+		=> EnsureValidationState().ErrorChanged += handler;
 
 	/// <inheritdoc cref="AddErrorChangedHandler"/>
 	protected void RemoveErrorChangedHandler(EventHandler<DataErrorsChangedEventArgs> handler)
-		=> SetValue(
-			ErrorChangedHandlerProperty,
-			Delegate.Remove(GetErrorChangedHandler(), handler));
+	{
+		if (_validationState is { } state)
+		{
+			state.ErrorChanged -= handler;
+		}
+	}
 }

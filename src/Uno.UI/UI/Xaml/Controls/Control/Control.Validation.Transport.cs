@@ -1,13 +1,11 @@
 #nullable enable
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
-using Windows.Foundation;
 using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -24,37 +22,9 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </remarks>
 public partial class Control
 {
-	/// <summary>
-	/// Holds the per-control subscription. Keyed on the control rather than on the binding expression, which
-	/// is replaced without notification whenever the property is rebound.
-	/// </summary>
-	private static DependencyProperty ValidationSubscriptionProperty { get; } =
-		DependencyProperty.RegisterAttached(
-			"ValidationSubscription",
-			typeof(ValidationSubscription),
-			typeof(Control),
-			new FrameworkPropertyMetadata(default(ValidationSubscription)));
+	private ValidationState? _validationState;
 
-	private static DependencyProperty ErrorChangedHandlerProperty { get; } =
-		DependencyProperty.RegisterAttached(
-			"ErrorChangedHandler",
-			typeof(EventHandler<DataErrorsChangedEventArgs>),
-			typeof(Control),
-			new FrameworkPropertyMetadata(default(EventHandler<DataErrorsChangedEventArgs>)));
-
-	private static DependencyProperty HasValidationErrorsChangedHandlerProperty { get; } =
-		DependencyProperty.RegisterAttached(
-			"HasValidationErrorsChangedHandler",
-			typeof(TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs>),
-			typeof(Control),
-			new FrameworkPropertyMetadata(default(TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs>)));
-
-	private static DependencyProperty ValidationErrorHandlerProperty { get; } =
-		DependencyProperty.RegisterAttached(
-			"ValidationErrorHandler",
-			typeof(TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs>),
-			typeof(Control),
-			new FrameworkPropertyMetadata(default(TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs>)));
+	private ValidationState EnsureValidationState() => _validationState ??= new();
 
 	/// <summary>
 	/// Marks an expression that targets the validation property of its owner. Both SetBindingInternal
@@ -129,7 +99,7 @@ public partial class Control
 	{
 		if (this is IInputValidationControl validationControl)
 		{
-			GetHasValidationErrorsChangedHandler()?.Invoke(
+			_validationState?.HasValidationErrorsChanged?.Invoke(
 				validationControl,
 				new HasValidationErrorsChangedEventArgs(newValue));
 		}
@@ -167,15 +137,9 @@ public partial class Control
 			return;
 		}
 
-		var subscription = GetValidationSubscription();
-
-		if (subscription is null)
-		{
-			subscription = new ValidationSubscription(this);
-			SetValue(ValidationSubscriptionProperty, subscription);
-		}
-
-		subscription.Attach(expression, errorSource, propertyName);
+		var state = EnsureValidationState();
+		state.Subscription ??= new ValidationSubscription(this);
+		state.Subscription.Attach(expression, errorSource, propertyName);
 	}
 
 	/// <summary>
@@ -186,17 +150,15 @@ public partial class Control
 	/// </summary>
 	private void ClearValidationIfOwned(BindingExpression? expression)
 	{
-		if (GetValidationSubscription() is { } subscription && (expression is null || subscription.Owns(expression)))
+		if (_validationState is { Subscription: { } subscription } state
+			&& (expression is null || subscription.Owns(expression)))
 		{
 			subscription.Dispose();
-			ClearValue(ValidationSubscriptionProperty);
+			state.Subscription = null;
 
 			UpdateValidationErrors(sourceErrors: null);
 		}
 	}
-
-	private ValidationSubscription? GetValidationSubscription()
-		=> GetValue(ValidationSubscriptionProperty) as ValidationSubscription;
 
 	/// <summary>
 	/// Reconciles the errors of this control with what its source now reports, mutating the collection in
@@ -277,23 +239,14 @@ public partial class Control
 			? GetValue(property) as IObservableVector<InputValidationError>
 			: null;
 
-	private EventHandler<DataErrorsChangedEventArgs>? GetErrorChangedHandler()
-		=> GetValue(ErrorChangedHandlerProperty) as EventHandler<DataErrorsChangedEventArgs>;
-
 	private void RaiseErrorChanged(DataErrorsChangedEventArgs args)
-		=> GetErrorChangedHandler()?.Invoke(this, args);
-
-	private TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs>? GetHasValidationErrorsChangedHandler()
-		=> GetValue(HasValidationErrorsChangedHandlerProperty) as TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs>;
-
-	private TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs>? GetValidationErrorHandler()
-		=> GetValue(ValidationErrorHandlerProperty) as TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs>;
+		=> _validationState?.ErrorChanged?.Invoke(this, args);
 
 	private void RaiseValidationError(InputValidationErrorEventAction action, InputValidationError error)
 	{
 		if (this is IInputValidationControl sender)
 		{
-			GetValidationErrorHandler()?.Invoke(sender, new InputValidationErrorEventArgs(action, error));
+			_validationState?.ValidationError?.Invoke(sender, new InputValidationErrorEventArgs(action, error));
 		}
 	}
 }
