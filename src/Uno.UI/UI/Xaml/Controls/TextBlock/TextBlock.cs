@@ -1,4 +1,4 @@
-#pragma warning disable CS0109
+﻿#pragma warning disable CS0109
 
 using System;
 using System.Collections.Generic;
@@ -1248,7 +1248,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private readonly ObservableCollection<Hyperlink> _hyperlinks = new();
-		private readonly HashSet<Hyperlink> _hyperlinkSet = new();
+		// Lazy: almost no TextBlock contains a hyperlink.
+		private HashSet<Hyperlink> _hyperlinkSet;
 
 		private void HyperlinksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
 
@@ -1275,74 +1276,88 @@ namespace Microsoft.UI.Xaml.Controls
 
 					HyperlinkOver = null;
 					_hyperlinks.Clear();
-					_hyperlinkSet.Clear();
+					_hyperlinkSet?.Clear();
 				}
 
 				return;
 			}
 
 			HyperlinkOver = null;
-			var previousHyperLinks = new HashSet<Hyperlink>(_hyperlinkSet);
+			var previousHyperLinks = _hyperlinkSet is { Count: > 0 } ? new HashSet<Hyperlink>(_hyperlinkSet) : null;
 			_hyperlinks.Clear();
-			_hyperlinkSet.Clear();
-			foreach (var hyperlink in Inlines.TraversedTree.preorderTree.OfType<Hyperlink>())
+			_hyperlinkSet?.Clear();
+			foreach (var inline in Inlines.TraversedTree.preorderTree)
 			{
-				if (_hyperlinkSet.Add(hyperlink))
+				if (inline is not Hyperlink hyperlink)
+				{
+					continue;
+				}
+
+				if ((_hyperlinkSet ??= new()).Add(hyperlink))
 				{
 					_hyperlinks.Add(hyperlink);
 				}
-				previousHyperLinks.Remove(hyperlink);
+				previousHyperLinks?.Remove(hyperlink);
 			}
 
 			// Make sure to clear the pressed state of removed hyperlinks
-			foreach (var removed in previousHyperLinks)
+			if (previousHyperLinks is not null)
 			{
-				removed.AbortAllPointerState();
+				foreach (var removed in previousHyperLinks)
+				{
+					removed.AbortAllPointerState();
+				}
 			}
 		}
 
 		private void UpdateHyperlinks(IReadOnlyList<Inline> removed, IReadOnlyList<Inline> inserted)
 		{
 			HyperlinkOver = null;
-			var changedHyperlinks = new List<Hyperlink>();
+			List<Hyperlink> changedHyperlinks = null;
 			foreach (var inline in removed)
 			{
-				CollectHyperlinks(inline, changedHyperlinks);
+				CollectHyperlinks(inline, ref changedHyperlinks);
 			}
-			foreach (var hyperlink in changedHyperlinks)
+			if (changedHyperlinks is not null && _hyperlinkSet is not null)
 			{
-				if (_hyperlinkSet.Remove(hyperlink))
+				foreach (var hyperlink in changedHyperlinks)
 				{
-					_hyperlinks.Remove(hyperlink);
-					hyperlink.AbortAllPointerState();
+					if (_hyperlinkSet.Remove(hyperlink))
+					{
+						_hyperlinks.Remove(hyperlink);
+						hyperlink.AbortAllPointerState();
+					}
 				}
 			}
 
-			changedHyperlinks.Clear();
+			changedHyperlinks?.Clear();
 			foreach (var inline in inserted)
 			{
-				CollectHyperlinks(inline, changedHyperlinks);
+				CollectHyperlinks(inline, ref changedHyperlinks);
 			}
-			foreach (var hyperlink in changedHyperlinks)
+			if (changedHyperlinks is not null)
 			{
-				if (_hyperlinkSet.Add(hyperlink))
+				foreach (var hyperlink in changedHyperlinks)
 				{
-					_hyperlinks.Add(hyperlink);
+					if ((_hyperlinkSet ??= new()).Add(hyperlink))
+					{
+						_hyperlinks.Add(hyperlink);
+					}
 				}
 			}
 		}
 
-		private static void CollectHyperlinks(Inline inline, List<Hyperlink> hyperlinks)
+		private static void CollectHyperlinks(Inline inline, ref List<Hyperlink> hyperlinks)
 		{
 			if (inline is Hyperlink hyperlink)
 			{
-				hyperlinks.Add(hyperlink);
+				(hyperlinks ??= new()).Add(hyperlink);
 			}
 			if (inline is Span span)
 			{
 				foreach (var child in span.Inlines)
 				{
-					CollectHyperlinks(child, hyperlinks);
+					CollectHyperlinks(child, ref hyperlinks);
 				}
 			}
 		}
