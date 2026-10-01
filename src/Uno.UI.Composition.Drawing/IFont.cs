@@ -26,14 +26,15 @@ public interface IFont
 
 	/// <summary>
 	/// Shapes a run with explicit OpenType <paramref name="options"/> (kerning, small caps, language and script).
-	/// A backend whose shaper can't honor them keeps the default, which ignores everything but ligatures.
+	/// The default implementation only honors <see cref="ShapingOptions.DisableLigatures"/>; a backend with an
+	/// OpenType shaper should override it.
 	/// </summary>
 	GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, in ShapingOptions options)
 		=> Shape(text, direction, !options.DisableLigatures);
 
 	/// <summary>
 	/// Returns a copy of the raw OpenType table <paramref name="tag"/> (e.g. <c>MATH</c>, <c>head</c>), or false
-	/// when the font doesn't have it or the backend can't read tables.
+	/// when the font doesn't have it or the backend can't read tables. Each call copies the table, so callers cache.
 	/// </summary>
 	bool TryGetTable(uint tag, [NotNullWhen(true)] out byte[]? data)
 	{
@@ -134,7 +135,6 @@ public readonly record struct GlyphRun
 	public int Count => Glyphs.Length;
 }
 
-/// <summary>Text run direction handed to <see cref="IFont.Shape"/> by the (bidi-resolved) layout engine.</summary>
 /// <summary>
 /// OpenType shaping options. The default value shapes with the font's default features.
 /// </summary>
@@ -154,6 +154,7 @@ public readonly record struct ShapingOptions
 	public string? Script { get; init; }
 }
 
+/// <summary>Text run direction handed to <see cref="IFont.Shape"/> by the (bidi-resolved) layout engine.</summary>
 public enum TextDirection
 {
 	LeftToRight,
