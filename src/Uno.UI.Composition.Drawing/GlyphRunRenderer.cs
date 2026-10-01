@@ -12,8 +12,8 @@ namespace Uno.UI.Composition.Drawing;
 /// into neutral <see cref="GlyphRunElement"/>s and renders each: a
 /// monochrome outline (filled with the text colour), COLR vector layers (each filled with its own colour), or a
 /// rasterized colour glyph whose neutral BGRA pixels are turned into an image (via the registered image decoder) and
-/// uploaded to a texture. The font never touches the render backend; that upload happens here. Any geometry produced
-/// by the font is disposed once drawing completes. A backend overriding <see cref="IDrawingSession.DrawGlyphRun"/>
+/// uploaded to a texture. On this path the font never touches the render backend; that upload happens here. Any
+/// geometry produced by the font is disposed once drawing completes. A backend overriding <see cref="IDrawingSession.DrawGlyphRun"/>
 /// calls this for fonts it cannot draw natively.
 /// </summary>
 public static class GlyphRunRenderer

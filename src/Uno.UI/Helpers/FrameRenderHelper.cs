@@ -15,7 +15,6 @@ using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Documents;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Xaml.Core;
