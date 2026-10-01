@@ -7,7 +7,6 @@ using System.Text;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Controls

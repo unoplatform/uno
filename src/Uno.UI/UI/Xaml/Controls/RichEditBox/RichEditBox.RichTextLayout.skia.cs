@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -154,8 +154,8 @@ partial class RichEditBox
 				block.FontStretch,
 				block.CharacterSpacing,
 				block.IsTextScaleFactorEnabled,
-				defaultFontDetails.SKFontSize,
-				defaultFontDetails.SKFontScaleX,
+				defaultFontDetails.FontSize,
+				defaultFontDetails.FontScaleX,
 				block.LineHeight,
 				block.LineStackingStrategy,
 				block.TextLineBounds,

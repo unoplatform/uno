@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Windows.Foundation;
 using Windows.UI;
 using Uno.UI.Composition.Drawing;
 
@@ -25,7 +26,8 @@ internal static class GlyphRunRenderer
 	[ThreadStatic]
 	private static List<PathInstance>? _pending;
 
-	public static void Draw(IDrawingSession session, IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color)
+	/// <param name="outlineStrokeWidth">When set, monochrome glyphs are stroked at this width instead of filled.</param>
+	public static void Draw(IDrawingSession session, IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color, float? outlineStrokeWidth = null)
 	{
 		var elements = _elements ??= new List<GlyphRunElement>();
 		elements.Clear();
@@ -38,10 +40,21 @@ internal static class GlyphRunRenderer
 			{
 				switch (element)
 				{
+					case GlyphOutlineRef glyph when outlineStrokeWidth is { } strokeWidth:
+						session.Save();
+						session.Translate(glyph.Offset.X, glyph.Offset.Y);
+						session.StrokePath(glyph.Outline, color, strokeWidth);
+						session.Restore();
+						break;
+
 					case GlyphOutlineRef glyph:
 						// Collected, not drawn here: the run goes to the backend in ONE DrawPaths call below, which
 						// is what lets Skia merge it into a single canvas draw and WebGPU batch its atlas quads.
 						(pending ??= _pending ??= new List<PathInstance>()).Add(new PathInstance(glyph.Outline, glyph.Offset));
+						break;
+
+					case GlyphOutline outline when outlineStrokeWidth is { } strokeWidth:
+						session.StrokePath(outline.Outline, color, strokeWidth);
 						break;
 
 					case GlyphOutline outline:
@@ -93,6 +106,97 @@ internal static class GlyphRunRenderer
 		}
 	}
 
+	/// <summary>Shapes <paramref name="text"/> left-to-right into glyphs positioned from the origin on the baseline.</summary>
+	public static (ushort[] glyphs, Vector2[] positions) Layout(IFont font, string text)
+		=> Layout(font, text, out _);
+
+	public static (ushort[] glyphs, Vector2[] positions) Layout(IFont font, string text, out float advance)
+	{
+		var run = font.Shape(text, TextDirection.LeftToRight);
+		var positions = new Vector2[run.Count];
+		var x = 0f;
+		for (var i = 0; i < run.Count; i++)
+		{
+			positions[i] = new Vector2(x + run.Offsets[i].X, run.Offsets[i].Y);
+			x += run.Advances[i];
+		}
+
+		advance = x;
+		return ((ushort[])run.Glyphs.Clone(), positions);
+	}
+
+	/// <summary>Ink bounds of <paramref name="text"/> laid out from the origin on the baseline (y grows down).</summary>
+	public static Rect MeasureInk(IFont font, string text)
+	{
+		var (glyphs, positions) = Layout(font, text);
+		return MeasureInk(font, glyphs, positions);
+	}
+
+	/// <summary>Union of the glyphs' ink bounds, or an empty rect when no glyph has ink.</summary>
+	public static Rect MeasureInk(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions)
+	{
+		var elements = new List<GlyphRunElement>();
+		font.BuildGlyphRun(GeometryFactory.Current, glyphs, positions, 0, elements);
+		Rect? bounds = null;
+		void Union(Rect rect)
+		{
+			if (rect.Width > 0 || rect.Height > 0)
+			{
+				if (bounds is { } b)
+				{
+					b.Union(rect);
+					bounds = b;
+				}
+				else
+				{
+					bounds = rect;
+				}
+			}
+		}
+
+		foreach (var element in elements)
+		{
+			switch (element)
+			{
+				case GlyphOutlineRef glyph:
+					var outlineBounds = glyph.Outline.Bounds;
+					Union(new Rect(outlineBounds.X + glyph.Offset.X, outlineBounds.Y + glyph.Offset.Y, outlineBounds.Width, outlineBounds.Height));
+					break;
+				case GlyphOutline outline:
+					Union(outline.Outline.Bounds);
+					outline.Outline.Dispose();
+					break;
+				case GlyphColorLayers colorLayers:
+					foreach (var layer in colorLayers.Layers)
+					{
+						Union(layer.Geometry.Bounds);
+						layer.Geometry.Dispose();
+					}
+					break;
+				case GlyphImage image:
+					Union(new Rect(image.X, image.Y, image.PixelWidth, image.PixelHeight));
+					break;
+			}
+		}
+
+		return bounds ?? Rect.Empty;
+	}
+
+	/// <summary>Draws a decoded image stretched into <paramref name="destination"/>.</summary>
+	public static void DrawImage(IDrawingSession session, IImage image, Rect destination, float opacity)
+	{
+		if (image.PixelWidth <= 0 || image.PixelHeight <= 0 || destination.Width <= 0 || destination.Height <= 0)
+		{
+			return;
+		}
+
+		session.Save();
+		session.Translate((float)destination.X, (float)destination.Y);
+		session.Scale((float)destination.Width / image.PixelWidth, (float)destination.Height / image.PixelHeight);
+		session.DrawImage(ImageTextureCache.Get(session.Factory, image), 0, 0, opacity);
+		session.Restore();
+	}
+
 	// Per-render-thread cache of rasterized colour-glyph (emoji) textures, keyed by the font's stable per-glyph pixel
 	// buffer (reference identity). ThreadStatic so no lock is needed and a texture can't be freed mid-draw by another
 	// thread; bounded so GPU memory can't grow without limit; flushed when the drawing backend is re-registered
@@ -139,6 +243,40 @@ internal static class GlyphRunRenderer
 			}
 
 			map.Clear();
+		}
+	}
+
+	// Per-render-thread textures for decoded images (inline objects), keyed by image identity; same lifetime rules as
+	// the glyph cache above.
+	private static class ImageTextureCache
+	{
+		private const int Cap = 64;
+
+		[ThreadStatic]
+		private static Dictionary<IImage, ITexture>? _textures;
+		[ThreadStatic]
+		private static IDrawingFactory? _factory;
+
+		public static ITexture Get(IDrawingFactory factory, IImage image)
+		{
+			var map = _textures ??= new Dictionary<IImage, ITexture>(ReferenceEqualityComparer.Instance);
+			if (!ReferenceEquals(factory, _factory) || map.Count >= Cap)
+			{
+				foreach (var texture in map.Values)
+				{
+					texture.Dispose();
+				}
+
+				map.Clear();
+				_factory = factory;
+			}
+
+			if (!map.TryGetValue(image, out var cached))
+			{
+				map[image] = cached = factory.CreateTexture(image);
+			}
+
+			return cached;
 		}
 	}
 }

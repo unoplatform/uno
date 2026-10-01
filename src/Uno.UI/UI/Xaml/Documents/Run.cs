@@ -126,7 +126,7 @@ namespace Microsoft.UI.Xaml.Documents
 		internal global::Microsoft.UI.Text.UnderlineType? RichEditUnderlineType { get; set; }
 		internal bool IsHidden { get; set; }
 		internal float RichEditBaselineOffset { get; set; }
-		internal float RichEditKerningThreshold { get; set; }
+		internal float? RichEditKerningThreshold { get; set; }
 		internal string? RichEditLanguageTag { get; set; }
 		internal global::Microsoft.UI.Text.TextScript RichEditTextScript { get; set; } = global::Microsoft.UI.Text.TextScript.Default;
 		internal bool RichEditSmallCaps { get; set; }

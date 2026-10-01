@@ -1,12 +1,12 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using HarfBuzzSharp;
+using System.Buffers.Binary;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
+using OpenTypeMathConstant = HarfBuzzSharp.OpenTypeMathConstant;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -14,7 +14,10 @@ internal sealed class MathFontMetrics
 {
 	private const int MaxMathTableBytes = 1024 * 1024;
 	private const int MaxAssemblyParts = 1024;
-	private static readonly ConditionalWeakTable<SKTypeface, RawMathData> _cache = new();
+	private const uint MathTableTag = 0x4D415448; // 'MATH'
+	private const uint HeadTableTag = 0x68656164; // 'head'
+	private const uint MaxpTableTag = 0x6D617870; // 'maxp'
+	private static readonly ConditionalWeakTable<IFont, RawMathData> _cache = new();
 	private readonly RawMathData _rawData;
 	private readonly float _em;
 	private readonly int _unitsPerEm;
@@ -73,6 +76,8 @@ internal sealed class MathFontMetrics
 
 	internal bool UsesOpenTypeMath { get; }
 
+	internal int GlyphCount => _rawData.GlyphCount;
+
 	internal float ScriptScale { get; }
 
 	internal float ScriptScriptScale { get; }
@@ -114,7 +119,7 @@ internal sealed class MathFontMetrics
 	internal float RadicalDegreeRaisePercent { get; }
 
 	internal bool TryGetVerticalGlyph(
-		SKFont font,
+		IFont font,
 		string text,
 		float targetSize,
 		out MathGlyphRun glyphRun,
@@ -126,10 +131,9 @@ internal sealed class MathFontMetrics
 			return false;
 		}
 
-		Span<ushort> glyph = stackalloc ushort[1];
-		font.GetGlyphs(text, glyph);
-		if (glyph[0] == 0
-			|| !_rawData.TryGetVerticalConstruction(glyph[0], out var construction))
+		var glyph = font.GetGlyphIndex(char.ConvertToUtf32(text, 0));
+		if (glyph == 0
+			|| !_rawData.TryGetVerticalConstruction(glyph, out var construction))
 		{
 			return false;
 		}
@@ -159,11 +163,10 @@ internal sealed class MathFontMetrics
 		return TryBuildAssembly(construction, _rawData.MinimumConnectorOverlap, targetUnits, scale, out glyphRun);
 	}
 
-	internal static bool HasOpenTypeMathTable(SKTypeface typeface)
+	internal static bool HasOpenTypeMathTable(IFont font)
 	{
-		ArgumentNullException.ThrowIfNull(typeface);
-		var size = typeface.GetTableSize(new Tag('M', 'A', 'T', 'H'));
-		return size >= 10 && size <= MaxMathTableBytes;
+		ArgumentNullException.ThrowIfNull(font);
+		return font.TryGetTable(MathTableTag, out var table) && table.Length is >= 10 and <= MaxMathTableBytes;
 	}
 
 	internal static bool TryReadVerticalConstructionForTesting(
@@ -215,10 +218,10 @@ internal sealed class MathFontMetrics
 
 	internal static MathFontMetrics Create(FontDetails font)
 	{
-		var em = Math.Max(1, font.SKFontSize);
-		var rawData = _cache.GetValue(font.SKFont.Typeface, ReadMathData);
+		var em = Math.Max(1, font.FontSize);
+		var rawData = _cache.GetValue(font.FontHandle, ReadMathData);
 		var constants = rawData.Constants;
-		var unitsPerEm = Math.Max(1, font.SKFont.Typeface.UnitsPerEm);
+		var unitsPerEm = Math.Max(1, rawData.UnitsPerEm);
 
 		float Unit(OpenTypeMathConstant constant, float fallback)
 		{
@@ -270,29 +273,26 @@ internal sealed class MathFontMetrics
 			degreeRaise);
 	}
 
-	private static RawMathData ReadMathData(SKTypeface typeface)
+	private static RawMathData ReadMathData(IFont font)
 	{
-		var tag = new Tag('M', 'A', 'T', 'H');
-		var size = typeface.GetTableSize(tag);
-		if (size < 10 || size > MaxMathTableBytes)
+		var unitsPerEm = font.TryGetTable(HeadTableTag, out var head) && head.Length >= 20
+			? BinaryPrimitives.ReadUInt16BigEndian(head.AsSpan(18, 2))
+			: 0;
+		var glyphCount = font.TryGetTable(MaxpTableTag, out var maxp) && maxp.Length >= 6
+			? BinaryPrimitives.ReadUInt16BigEndian(maxp.AsSpan(4, 2))
+			: 0;
+		var empty = new RawMathData(RawMathConstants.Empty, null, 0, 0, unitsPerEm, glyphCount);
+		if (!font.TryGetTable(MathTableTag, out var data) || data.Length < 10 || data.Length > MaxMathTableBytes)
 		{
-			return RawMathData.Empty;
+			return empty;
 		}
 
-		var pointer = Marshal.AllocHGlobal(size);
 		try
 		{
-			if (!typeface.TryGetTableData(tag, 0, size, pointer))
-			{
-				return RawMathData.Empty;
-			}
-
-			var data = new byte[size];
-			Marshal.Copy(pointer, data, 0, size);
 			var constantsOffset = ReadUInt16(data, 4);
 			if (constantsOffset <= 0 || constantsOffset + 214 > data.Length)
 			{
-				return RawMathData.Empty;
+				return empty;
 			}
 
 			var values = new int[56];
@@ -313,15 +313,11 @@ internal sealed class MathFontMetrics
 				variantsOffset = 0;
 			}
 			var connectorOverlap = variantsOffset != 0 ? ReadUInt16(data, variantsOffset) : (ushort)0;
-			return new RawMathData(new RawMathConstants(values), data, variantsOffset, connectorOverlap);
+			return new RawMathData(new RawMathConstants(values), data, variantsOffset, connectorOverlap, unitsPerEm, glyphCount);
 		}
 		catch (ArgumentOutOfRangeException)
 		{
-			return RawMathData.Empty;
-		}
-		finally
-		{
-			Marshal.FreeHGlobal(pointer);
+			return empty;
 		}
 	}
 
@@ -589,19 +585,25 @@ internal sealed class MathFontMetrics
 
 	private sealed class RawMathData
 	{
-		internal static RawMathData Empty { get; } = new(RawMathConstants.Empty, null, 0, 0);
-
 		internal RawMathData(
 			RawMathConstants constants,
 			byte[]? table,
 			ushort variantsOffset,
-			ushort minimumConnectorOverlap)
+			ushort minimumConnectorOverlap,
+			int unitsPerEm,
+			int glyphCount)
 		{
 			Constants = constants;
 			Table = table;
 			VariantsOffset = variantsOffset;
 			MinimumConnectorOverlap = minimumConnectorOverlap;
+			UnitsPerEm = unitsPerEm;
+			GlyphCount = glyphCount;
 		}
+
+		internal int UnitsPerEm { get; }
+
+		internal int GlyphCount { get; }
 
 		internal RawMathConstants Constants { get; }
 

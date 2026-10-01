@@ -1,13 +1,13 @@
-#nullable enable
+﻿#nullable enable
 
 using Microsoft.UI.Text;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Xaml.Documents;
 
 internal sealed class InlineObjectInfo
 {
-	internal InlineObjectInfo(SKImage? image, float width, float height, float ascent, VerticalCharacterAlignment verticalAlignment)
+	internal InlineObjectInfo(IImage? image, float width, float height, float ascent, VerticalCharacterAlignment verticalAlignment)
 	{
 		Image = image;
 		Width = width;
@@ -16,7 +16,7 @@ internal sealed class InlineObjectInfo
 		VerticalAlignment = verticalAlignment;
 	}
 
-	internal SKImage? Image { get; }
+	internal IImage? Image { get; }
 
 	internal float Width { get; }
 
