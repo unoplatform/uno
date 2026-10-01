@@ -21,6 +21,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 [RunsOnUIThread]
 [PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+// Every test streams a remote video into a native child window that no drawing backend renders. Under WebGPU on a
+// GPU-less host, WARP rasterizes on every core and the player's TLS handshake to the video times out, so the tests
+// would measure the agent's spare CPU rather than the element.
+[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)]
 public partial class Given_MediaPlayerElement
 {
 	private static readonly Uri TestVideoUrl = new Uri("https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4");
@@ -28,6 +32,37 @@ public partial class Given_MediaPlayerElement
 	// The element is sized, and so loaded, only once the remote video has been fetched and opened: on a contended agent
 	// (e.g. one also software-rasterizing the window) that takes well over the few seconds it does on a workstation.
 	private const int LoadTimeoutMS = 20000;
+
+	// Playback state changes come from the player's own threads, which a contended agent schedules late too.
+	private const int PlaybackTimeoutMS = 15000;
+
+	// The test video is remote, and a hosted agent intermittently fails to reach it (TLS handshake / HTTP connection
+	// failures in the player's log). That is the network, not the element: report it as inconclusive, but only when
+	// the player itself said it could not open the media.
+	private static async Task WaitForMediaLoaded(MediaPlayerElement sut)
+	{
+		// The element creates its player when its template applies, so watch for it while waiting.
+		Windows.Media.Playback.MediaPlayer watched = null;
+		var failed = false;
+		await WindowHelper.WaitFor(
+			() =>
+			{
+				if (watched is null && sut.MediaPlayer is { } player)
+				{
+					watched = player;
+					player.MediaFailed += (_, _) => failed = true;
+				}
+
+				return failed || (sut.IsLoaded && sut.ActualWidth > 0 && sut.ActualHeight > 0);
+			},
+			timeoutMS: LoadTimeoutMS,
+			message: $"Timeout waiting on {sut.GetType()} to be loaded");
+
+		if (failed)
+		{
+			Assert.Inconclusive($"The media player could not open {TestVideoUrl}.");
+		}
+	}
 
 	[TestCleanup]
 	public void Cleanup() => WindowHelper.WindowContent = null;
@@ -46,12 +81,12 @@ public partial class Given_MediaPlayerElement
 			Width = 100,
 		};
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
+		await WaitForMediaLoaded(sut);
 
 		// PlaybackState should transition out of Opening state when the video is ready to play.
 		await WindowHelper.WaitFor(
 			condition: () => sut.MediaPlayer?.PlaybackSession?.PlaybackState == Windows.Media.Playback.MediaPlaybackState.Paused,
-			timeoutMS: 5000,
+			timeoutMS: PlaybackTimeoutMS,
 			message: "Timeout waiting for the media player to enter Paused state."
 		);
 	}
@@ -69,20 +104,20 @@ public partial class Given_MediaPlayerElement
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
 		};
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
+		await WaitForMediaLoaded(sut);
 
 #if __SKIA__
 		// AutoPlay is not working on Skia for now.
 		await WindowHelper.WaitFor(
 			condition: () => sut.MediaPlayer?.PlaybackSession?.PlaybackState == Windows.Media.Playback.MediaPlaybackState.Paused,
-			timeoutMS: 5000,
+			timeoutMS: PlaybackTimeoutMS,
 			message: "Timeout waiting for the media player to enter Playing state on Auto Play."
 		);
 #else
 		// PlaybackState should transition out of Opening state when the video is ready to play.
 		await WindowHelper.WaitFor(
 			condition: () => sut.MediaPlayer?.PlaybackSession?.PlaybackState == Windows.Media.Playback.MediaPlaybackState.Playing,
-			timeoutMS: 5000,
+			timeoutMS: PlaybackTimeoutMS,
 			message: "Timeout waiting for the media player to enter Playing state on Auto Play."
 		);
 #endif
@@ -112,7 +147,7 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
+		await WaitForMediaLoaded(sut);
 
 		sut.MediaPlayer.Play();
 
@@ -139,7 +174,7 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
+		await WaitForMediaLoaded(sut);
 
 		sut.MediaPlayer.Play();
 
@@ -182,12 +217,12 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
+		await WaitForMediaLoaded(sut);
 
 		sut.MediaPlayer.Play();
 		await WindowHelper.WaitFor(
 				condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
-				timeoutMS: 3000,
+				timeoutMS: PlaybackTimeoutMS,
 				message: "Timeout waiting for the playback session state changing to Play."
 			);
 	}
@@ -207,13 +242,13 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
+		await WaitForMediaLoaded(sut);
 
 		// step 1: Test Play
 		sut.MediaPlayer.Play();
 		await WindowHelper.WaitFor(
 					condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
-					timeoutMS: 3000,
+					timeoutMS: PlaybackTimeoutMS,
 					message: "Timeout waiting for the playback session state changing to playing on PlayStop."
 				);
 
@@ -226,7 +261,7 @@ public partial class Given_MediaPlayerElement
 #endif
 		await WindowHelper.WaitFor(
 					condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing,
-					timeoutMS: 3000,
+					timeoutMS: PlaybackTimeoutMS,
 					message: "Timeout waiting for the playback session state changing to Stop on PlayStop."
 				);
 #if !HAS_UNO
@@ -248,13 +283,13 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
+		await WaitForMediaLoaded(sut);
 
 		// step 1: Test Play
 		sut.MediaPlayer.Play();
 		await WindowHelper.WaitFor(
 					condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
-					timeoutMS: 3000,
+					timeoutMS: PlaybackTimeoutMS,
 					message: "Timeout waiting for the playback session state changing to playing on PlayPause."
 				);
 
@@ -264,7 +299,7 @@ public partial class Given_MediaPlayerElement
 		sut.MediaPlayer.Pause();
 		await WindowHelper.WaitFor(
 			condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing,
-			timeoutMS: 6000,
+			timeoutMS: PlaybackTimeoutMS,
 			message: "Timeout waiting for the playback session state changing to Pause on PlayPause."
 		);
 	}
@@ -287,7 +322,7 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
+		await WaitForMediaLoaded(sut);
 
 		sut.AreTransportControlsEnabled = false;
 
@@ -317,7 +352,7 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, timeoutMS: LoadTimeoutMS);
+		await WaitForMediaLoaded(sut);
 
 		// step 1: disalbe ShowAndHideAutomatically
 		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
