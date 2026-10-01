@@ -2,14 +2,19 @@ parameters:
   vmLinuxPool: ''
   XAML_FLAVOR_BUILD: ''
   jobTimeoutInMinutes: 45
+  jobName: 'Android_Tests'
+  displayName: ' ' ## Concatenated with the matrix group name
+  testResultLabel: ''
+  # Intent extras handed to the app, e.g. '-e UNO_WEBGPU 1'.
+  appExtras: ''
 
 jobs:
 ##
 ## Android Skia
 ##
 
-- job: Android_Tests
-  displayName: ' ' ## Name is concatenated with the matrix group name
+- job: ${{ parameters.jobName }}
+  displayName: '${{ parameters.displayName }}'
   timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
   dependsOn: Skia_Android_Tests_Build
@@ -94,7 +99,7 @@ jobs:
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-      artifact: runtime-tests-android-skia-failures
+      artifact: runtime-tests-android-skia${{ parameters.testResultLabel }}-failures
       path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
   - template: ../templates/dotnet-install.yml
@@ -104,11 +109,14 @@ jobs:
       $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
 
     displayName: Run Android Skia Tests
+    env:
+      UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
+      UNO_TEST_APP_EXTRAS: ${{ parameters.appExtras }}
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Android Skia Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testRunTitle: 'Android Skia${{ parameters.testResultLabel }} Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/*TestResult*.xml'
       failTaskOnFailedTests: true
@@ -118,7 +126,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: runtime-tests-android-skia-results
+      ArtifactName: runtime-tests-android-skia${{ parameters.testResultLabel }}-results
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
@@ -127,5 +135,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: runtime-tests-android-skia-failures
+      ArtifactName: runtime-tests-android-skia${{ parameters.testResultLabel }}-failures
       ArtifactType: Container

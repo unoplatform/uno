@@ -36,6 +36,16 @@ stages:
     parameters:
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+  # The same app on the WebGPU backend. The agents have no GPU: Chrome's bundled SwiftShader provides the adapter.
+  - template: .azure-devops-tests-webassembly-skia.yml
+    parameters:
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+      jobName: 'Skia_Browser_WebGpu_Runtime_Tests'
+      displayName: 'WebGPU'
+      testResultLabel: '-webgpu'
+      appEnvironment: 'UNO_WEBGPU=1'
+      chromeFlags: '--enable-unsafe-webgpu --enable-features=Vulkan --use-webgpu-adapter=swiftshader'
 
 - stage: runtime_tests_skia_android
   displayName: Tests - Android Skia
@@ -51,6 +61,16 @@ stages:
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
+  # The same APK on the WebGPU backend, on the emulator's software Vulkan (SwiftShader).
+  - template: .azure-devops-tests-android-skia.yml
+    parameters:
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+      jobName: 'Android_WebGpu_Tests'
+      displayName: 'WebGPU'
+      testResultLabel: '-webgpu'
+      appExtras: '-e UNO_WEBGPU 1 -e UNO_WEBGPU_LOG warn'
 
 - stage: runtime_tests_skia_android_nativeaot
   displayName: Tests - Android+NativeAOT Skia

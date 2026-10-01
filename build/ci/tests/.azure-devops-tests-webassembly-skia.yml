@@ -1,13 +1,19 @@
 parameters:
   vmLinuxImage: ''
   XAML_FLAVOR_BUILD: ''
+  jobName: 'Skia_Browser_Runtime_Tests_Build'
+  displayName: ' ' ## Concatenated with the matrix group name
+  testResultLabel: ''
+  # UNO_* variables handed to the app through the URL's env= parameter, e.g. 'UNO_WEBGPU=1'.
+  appEnvironment: ''
+  chromeFlags: ''
 
 jobs:
 ##
 ## WebAssembly Skia
 ##
-- job: Skia_Browser_Runtime_Tests_Build
-  displayName: ' ' ## Name is concatenated with the matrix group name
+- job: ${{ parameters.jobName }}
+  displayName: '${{ parameters.displayName }}'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
 
@@ -53,7 +59,7 @@ jobs:
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-      artifact: runtime-tests-wasm-skia-failures
+      artifact: runtime-tests-wasm-skia${{ parameters.testResultLabel }}-failures
       path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
   # Marks the test step as not-yet-reached. The publish tasks below key off this so a job killed
@@ -91,13 +97,17 @@ jobs:
 
   - bash: build/test-scripts/wasm-run-skia-runtime-tests.sh
     displayName: Run WebAssembly Skia Runtime Tests
+    env:
+      UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
+      UNO_TEST_APP_ENVIRONMENT: ${{ parameters.appEnvironment }}
+      UNO_TEST_CHROME_FLAGS: ${{ parameters.chromeFlags }}
 
   - task: PublishTestResults@2
     condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))
     inputs:
-      testRunTitle: 'WebAssembly Skia Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testRunTitle: 'WebAssembly Skia${{ parameters.testResultLabel }} Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm${{ parameters.testResultLabel }}-runtime-tests-results.xml'
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
 
@@ -107,5 +117,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: runtime-tests-wasm-skia-failures
+      ArtifactName: runtime-tests-wasm-skia${{ parameters.testResultLabel }}-failures
       ArtifactType: Container
