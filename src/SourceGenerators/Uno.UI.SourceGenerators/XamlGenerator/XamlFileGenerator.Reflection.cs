@@ -149,7 +149,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		// but its runtime parser accepts it like x:Name, and so does Uno.
 		private bool IsXNameMember(XamlMemberDefinition member, XamlType objectType)
 			=> member.Member.Name == "Name"
-				&& (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace || IsXNameProvider(objectType));
+				&& (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
+					|| (IsXNameProvider(objectType) && !IsAttachedProperty(member)));
 
 		private bool IsRun(INamedTypeSymbol? symbol)
 		{
