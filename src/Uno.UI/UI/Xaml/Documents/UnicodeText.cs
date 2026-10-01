@@ -303,10 +303,10 @@ internal readonly partial struct UnicodeText : IParsedText
 			int currentScript = 0;
 			void ProcessNormalRange(int rangeStart, int rangeEnd)
 			{
-				for (var i = rangeStart; i < rangeEnd; i += char.IsSurrogate(inlineText, i) ? 2 : 1)
+				for (int i = rangeStart, codepointLength; i < rangeEnd; i += codepointLength)
 				{
 					FontDetails newFontDetails;
-					var codepoint = char.ConvertToUtf32(inlineText, i);
+					var codepoint = ReadCodepoint(inlineText, i, out codepointLength);
 
 					// ASCII shortcut: the whole ASCII range is Latin letters (USCRIPT_LATIN=25) or Script=Common (0),
 					// so the per-character ICU P/Invoke — a dominant cost of re-laying-out short labels — is skippable.
@@ -365,9 +365,9 @@ internal readonly partial struct UnicodeText : IParsedText
 					var requestsEmojiPresentation = false;
 					var requestsTextPresentation = false;
 					var requiresEmojiFallback = false;
-					for (var i = graphemeStart; i < graphemeEnd; i += char.IsSurrogate(inlineText, i) ? 2 : 1)
+					for (int i = graphemeStart, codepointLength; i < graphemeEnd; i += codepointLength)
 					{
-						var codepoint = char.ConvertToUtf32(inlineText, i);
+						var codepoint = ReadCodepoint(inlineText, i, out codepointLength);
 						requestsEmojiPresentation |= codepoint == 0xFE0F;
 						requestsTextPresentation |= codepoint == 0xFE0E;
 						if (NotoFontFallbackService.IsEmojiCodepoint(codepoint))
@@ -2842,6 +2842,20 @@ internal readonly partial struct UnicodeText : IParsedText
 		return null;
 	}
 
+	// An inline boundary (e.g. a formatting change) can split a surrogate pair, so a lone surrogate is read as
+	// its own code unit instead of throwing.
+	private static int ReadCodepoint(string text, int index, out int length)
+	{
+		if (char.IsHighSurrogate(text[index]) && index + 1 < text.Length && char.IsLowSurrogate(text[index + 1]))
+		{
+			length = 2;
+			return char.ConvertToUtf32(text[index], text[index + 1]);
+		}
+
+		length = 1;
+		return text[index];
+	}
+
 	private static float GetBaselineOffset(Run? run, ref bool hasBaselineOffsets)
 	{
 		var offset = run?.RichEditBaselineOffset ?? 0;
@@ -2850,18 +2864,19 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	// Every emoji range starts at or above U+00A9, so plain ASCII labels skip the range lookups.
-	private const char FirstEmojiCandidate = '©';
+	private const char FirstEmojiCandidate = (char)0xA9;
 
 	private static bool ContainsEmojiCandidate(string text)
 	{
-		for (var i = 0; i < text.Length; i += char.IsSurrogate(text, i) ? 2 : 1)
+		for (int i = 0, codepointLength; i < text.Length; i += codepointLength)
 		{
+			codepointLength = 1;
 			if (text[i] < FirstEmojiCandidate)
 			{
 				continue;
 			}
 
-			if (NotoFontFallbackService.IsEmojiCodepoint(char.ConvertToUtf32(text, i)))
+			if (NotoFontFallbackService.IsEmojiCodepoint(ReadCodepoint(text, i, out codepointLength)))
 			{
 				return true;
 			}
