@@ -777,7 +777,7 @@ end to end.
   - The public map's indexer becomes a list.
   - `UpdateValidationErrors` reconciles against one source. Two live bindings would each delete the
     other's errors, so their errors must be gathered first and reconciled once.
-  - `ValidationSubscriptionProperty` becomes one subscription per property, and the mode-changed callback
+  - The control's single validation subscription becomes one per property, and the mode-changed callback
     stops clearing every subscription at once.
 - **A per-instance override**, such as an attached property naming the property to validate. It reaches a
   single `ComboBox` without a subclass, but adds public API and another input to the binding-order problem
