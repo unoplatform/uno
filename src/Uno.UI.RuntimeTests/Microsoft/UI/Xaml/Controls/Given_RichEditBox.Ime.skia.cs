@@ -341,7 +341,8 @@ public partial class Given_RichEditBox
 			Assert.AreEqual(focusState, fake.LastActivation.FocusState);
 			Assert.AreEqual(suppressKeyboard, fake.LastActivation.IsSoftwareKeyboardSuppressed);
 			Assert.AreSame(editor, ImeSessionCoordinator.ActiveHost);
-			Assert.IsTrue(editor.IsCaretRenderedForTesting);
+			// The mode, not IsCaretRenderedForTesting: an iOS keyboard animation can stretch WaitForIdle into the blink's off phase.
+			Assert.AreEqual(RichEditBox.RichEditCaretDisplayMode.ThumblessCaretShowing, editor.CaretMode);
 		}
 		finally
 		{
