@@ -136,7 +136,8 @@ public static class LoopingSelectorHelper
 
 		// These values were changed to work around Task 24429189: DCPP Test: InputManagerXaml.dll InjectPressAndDrag does not work correctly on 64 bit OS
 		TestServices.InputHelper.PanFromCenter(loopingSelector, 0 /*relX*/, -100 /*relY*/, 10.0 /*velocityFactor*/);
-		await selectionChangedEvent.WaitForDefault();
+		// UNO: the selection lands when the pan's snap animation settles, which takes longer than 5s on a GPU-less agent.
+		await selectionChangedEvent.WaitForDefault(15000);
 	}
 
 

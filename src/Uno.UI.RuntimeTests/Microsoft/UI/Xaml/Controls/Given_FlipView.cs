@@ -727,9 +727,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.WaitForIdle();
 
-			await Task.Delay(2000); //waiting the drag animation to complete
-
-			Assert.AreEqual(1, flipView.SelectedIndex);
+			// Wait for the snap animation rather than a fixed time: it runs on the UI thread, which is slow on a GPU-less agent.
+			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 1, timeoutMS: 10000);
 		}
 #endif
 	}
