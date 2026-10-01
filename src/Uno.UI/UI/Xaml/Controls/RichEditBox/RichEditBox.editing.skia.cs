@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Threading.Tasks;
@@ -36,6 +36,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _caretBlinkVisible;
 		private bool _caretTimerHooked;
 		private readonly DispatcherTimer _caretTimer = new() { Interval = TimeSpan.FromSeconds(0.5) };
+
+		// MUX Reference TextSelectionSettings.cpp: m_rCaretBlinkTimeout = 5.0f. The caret stops blinking (visible)
+		// after this long without input, so an idle editor stops re-rendering.
+		private const int CaretBlinkTimeoutTicks = 10;
+		private int _caretBlinkTicks;
 		private CompositionBrush? _cachedCaretBrush;
 		private Color _cachedCaretColor;
 		private char? _pendingHighSurrogate;
@@ -64,6 +69,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (value == RichEditCaretDisplayMode.ThumblessCaretShowing)
 				{
 					EnsureCaretTimerHooked();
+					_caretBlinkTicks = 0;
 					_caretTimer.Start();
 				}
 				else
@@ -188,7 +194,15 @@ namespace Microsoft.UI.Xaml.Controls
 				&& FocusState != FocusState.Unfocused
 				&& CaretMode == RichEditCaretDisplayMode.ThumblessCaretShowing)
 			{
-				_caretBlinkVisible = !_caretBlinkVisible;
+				if (++_caretBlinkTicks >= CaretBlinkTimeoutTicks)
+				{
+					_caretTimer.Stop();
+					_caretBlinkVisible = true;
+				}
+				else
+				{
+					_caretBlinkVisible = !_caretBlinkVisible;
+				}
 				UpdateDisplaySelection();
 			}
 		}
@@ -1260,6 +1274,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					_caretBlinkVisible = true;
 					EnsureCaretTimerHooked();
+					_caretBlinkTicks = 0;
 					_caretTimer.Start();
 				}
 
