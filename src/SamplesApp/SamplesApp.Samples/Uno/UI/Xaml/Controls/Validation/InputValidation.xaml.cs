@@ -16,6 +16,9 @@ public sealed partial class InputValidation : Page
 {
 	public InputValidation()
 	{
+		// Before InitializeComponent: the switch is read as each binding is registered.
+		Uno.UI.FeatureConfiguration.InputValidation.IsEnabled = true;
+
 		InitializeComponent();
 
 		DataContext = new SignUpViewModel();
