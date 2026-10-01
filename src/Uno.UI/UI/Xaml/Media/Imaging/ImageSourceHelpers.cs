@@ -73,18 +73,15 @@ internal static partial class ImageSourceHelpers
 
 				try
 				{
-					// The browser Canvas API returns RGBA; the neutral image surface takes BGRA — swap R/B.
-					var bgra = new byte[bytes.Length];
+					// The browser Canvas API returns RGBA; the neutral image surface takes BGRA — swap R/B in place,
+					// as the bytes are already a managed copy of the JS buffer.
 					for (var i = 0; i + 3 < bytes.Length; i += 4)
 					{
-						bgra[i] = bytes[i + 2];
-						bgra[i + 1] = bytes[i + 1];
-						bgra[i + 2] = bytes[i];
-						bgra[i + 3] = bytes[i + 3];
+						(bytes[i], bytes[i + 2]) = (bytes[i + 2], bytes[i]);
 					}
 
 					var browserSurface = new CompositionImageSurface();
-					browserSurface.CopyPixels(width, height, bgra);
+					browserSurface.CopyPixels(width, height, bytes);
 					return ImageData.FromCompositionSurface(browserSurface);
 				}
 				catch (Exception e)
