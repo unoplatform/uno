@@ -11,8 +11,10 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Uno.Extensions;
 using Uno.Foundation;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using System.Collections.Generic;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.NativeElementHosting;
 
@@ -51,6 +53,7 @@ public enum BrowserHtmlElementInputPolicy
 public sealed partial class BrowserHtmlElement : IDisposable
 {
 	private GCHandle? _gcHandle;
+	private DomRemovalOnCollect? _domRemovalOnCollect;
 
 	internal nint UnoElementId { get; }
 
@@ -273,6 +276,18 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	public void Dispose()
 		=> DisposeNative();
 
+	/// <summary>
+	/// Removes the element from the DOM once this wrapper is garbage collected. Used for elements the framework creates
+	/// on behalf of a control, which application code cannot dispose (e.g. the WebView2 iframe).
+	/// </summary>
+	/// <remarks>
+	/// The deferred removal finds the element by <see cref="ElementId"/>, so it relies on ids never being reused: the weak
+	/// handle they are built from is never freed. It never happens while <see cref="RegisterHtmlEventHandler"/> handlers
+	/// are registered, because their JS proxy keeps this wrapper alive.
+	/// </remarks>
+	internal void RemoveFromDomWhenCollected()
+		=> _domRemovalOnCollect ??= new DomRemovalOnCollect(ElementId);
+
 	partial void OnInputPolicyChanged(BrowserHtmlElementInputPolicy value);
 
 	partial void DisposeNative();
@@ -415,7 +430,41 @@ public sealed partial class BrowserHtmlElement : IDisposable
 
 	partial void DisposeNative()
 	{
+		_domRemovalOnCollect?.Cancel();
 		NativeMethods.DisposeHtmlElement(ElementId);
+	}
+
+	// The finalizer lives on this sentinel rather than on BrowserHtmlElement, so only the elements the framework opts in
+	// are removed on collection: application-created elements keep their explicit Dispose() contract.
+	private sealed class DomRemovalOnCollect(string elementId)
+	{
+		public void Cancel() => GC.SuppressFinalize(this);
+
+		~DomRemovalOnCollect()
+		{
+			try
+			{
+				// The DOM is only reachable from the UI thread, and finalizers may run on another one.
+				NativeDispatcher.Main.Enqueue(Remove, NativeDispatcherPriority.Idle);
+			}
+			catch (Exception)
+			{
+				// An exception escaping a finalizer ends the process, while a missed removal only leaks the element.
+			}
+		}
+
+		private void Remove()
+		{
+			try
+			{
+				NativeMethods.DisposeHtmlElement(elementId);
+				typeof(BrowserHtmlElement).LogTrace()?.Trace($"Removed the collected element {elementId} from the DOM.");
+			}
+			catch (JSException e)
+			{
+				typeof(BrowserHtmlElement).LogWarn()?.Warn($"Failed to remove the collected element {elementId} from the DOM: {e.Message}");
+			}
+		}
 	}
 
 	internal static void Initialize()

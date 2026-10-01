@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -113,9 +112,10 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	private const string SkottieLottieRendererTypeName = "Uno.UI.Lottie.SkottieLottieRenderer, Uno.UI.Lottie";
 	private const string ManagedLottieRendererTypeName = "Uno.UI.Composition.Drawing.ManagedLottieRenderer, Uno.UI.Composition.Managed";
 
-	private static readonly object _fallbackGate = new();
-	private static Type? _skiaBackendType;
-	private static bool _skiaBackendTypeResolved;
+	// Each factory lookup keeps Type.GetType and GetMethod/GetConstructor, both with literal arguments, in one expression:
+	// that lets the trimmer (and NativeAOT) keep exactly the factory invoked, and nothing else on the type.
+	// NonPublic: the SkiaBackend factories are internal.
+	private const BindingFlags FactoryFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
 	// Downward codec-resolve trigger: Uno.UWP's BitmapEncoder sits below Uno.UI and can't reach the codec registry,
 	// so it invokes this to lazily light up the Skia codec on first encode when Build() was never called.
@@ -175,7 +175,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		// flattens) without any head code: the backend is probed reflectively, so a head that doesn't ship the
 		// WebGPU assemblies — or a probe failure — falls through to the Skia default below.
 		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain"
-			&& CreateInstanceOf<Drawing.IGraphicsProvider>(WebGpuGraphicsProviderTypeName) is { } webGpuProvider)
+			&& InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(WebGpuGraphicsProviderTypeName, throwOnError: false)
+				?.GetConstructor(Type.EmptyTypes)) is { } webGpuProvider)
 		{
 			// Skia after it, so a WebGPU that cannot initialize on this host (no native wgpu shipped, no usable
 			// adapter) is negotiated past rather than leaving the window with no backend at all. The variable is
@@ -185,18 +186,21 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 					? new[] { webGpuProvider, skiaFallback }
 					: new[] { webGpuProvider });
 			if (!Drawing.GeometryFactory.IsRegistered
-				&& CreateInstanceOf<Drawing.IGeometryFactory>(ManagedGeometryFactoryTypeName) is { } managedGeometry)
+				&& InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedGeometryFactoryTypeName, throwOnError: false)
+					?.GetConstructor(Type.EmptyTypes)) is { } managedGeometry)
 			{
 				Drawing.GeometryFactory.RegisterDefault(managedGeometry);
 			}
 			return;
 		}
 
-		if (InvokeSkiaFactory<Drawing.IGraphicsProvider>("CreateGraphicsProvider") is { } provider)
+		if (InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+			?.GetMethod("CreateGraphicsProvider", FactoryFlags, Type.EmptyTypes)) is { } provider)
 		{
 			Drawing.GraphicsRegistry.RegisterDefault(new[] { provider });
 
-			if (InvokeSkiaFactory<Drawing.IDrawingFactory>("CreateDefaultRenderer") is { } renderer)
+			if (InvokeFactory<Drawing.IDrawingFactory>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateDefaultRenderer", FactoryFlags, Type.EmptyTypes)) is { } renderer)
 			{
 				Drawing.DrawingRegistration.RegisterDefaultRenderer(renderer);
 			}
@@ -205,7 +209,9 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	private static void TryLightUpFontProvider()
 	{
-		if (!Drawing.FontProvider.IsRegistered && InvokeSkiaFactory<Drawing.IFontProvider>("CreateFontProvider") is { } fontProvider)
+		if (!Drawing.FontProvider.IsRegistered
+			&& InvokeFactory<Drawing.IFontProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateFontProvider", FactoryFlags, Type.EmptyTypes)) is { } fontProvider)
 		{
 			Drawing.FontProvider.RegisterDefault(fontProvider);
 		}
@@ -213,7 +219,9 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	private static void TryLightUpImageDecoder()
 	{
-		if (!Drawing.ImageEncoderDecoder.IsRegistered && InvokeSkiaFactory<Drawing.IImageEncoderDecoder>("CreateImageDecoder") is { } decoder)
+		if (!Drawing.ImageEncoderDecoder.IsRegistered
+			&& InvokeFactory<Drawing.IImageEncoderDecoder>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateImageDecoder", FactoryFlags, Type.EmptyTypes)) is { } decoder)
 		{
 			Drawing.ImageEncoderDecoder.RegisterDefault(decoder);
 		}
@@ -221,7 +229,9 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	private static void TryLightUpGeometryFactory()
 	{
-		if (!Drawing.GeometryFactory.IsRegistered && InvokeSkiaFactory<Drawing.IGeometryFactory>("CreateGeometryFactory") is { } geometryFactory)
+		if (!Drawing.GeometryFactory.IsRegistered
+			&& InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateGeometryFactory", FactoryFlags, Type.EmptyTypes)) is { } geometryFactory)
 		{
 			Drawing.GeometryFactory.RegisterDefault(geometryFactory);
 		}
@@ -234,8 +244,10 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		var renderer = InvokeStaticFactory<Drawing.ISvgRenderer>(SvgAddInBackendTypeName, "CreateSvgRenderer")
-			?? CreateInstanceOf<Drawing.ISvgRenderer>(ManagedSvgRendererTypeName);
+		var renderer = InvokeFactory<Drawing.ISvgRenderer>(static () => Type.GetType(SvgAddInBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateSvgRenderer", FactoryFlags, Type.EmptyTypes))
+			?? InvokeFactory<Drawing.ISvgRenderer>(static () => Type.GetType(ManagedSvgRendererTypeName, throwOnError: false)
+				?.GetConstructor(Type.EmptyTypes));
 		if (renderer is not null)
 		{
 			Drawing.SvgRenderer.RegisterDefault(renderer);
@@ -250,79 +262,34 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		}
 
 		var forceManaged = Environment.GetEnvironmentVariable("UNO_MANAGED_LOTTIE") is "1" or "true";
-		var renderer = (forceManaged ? null : InvokeStaticFactory<Drawing.ILottieRenderer>(SkottieLottieRendererTypeName, "CreateLottieRenderer"))
-			?? InvokeStaticFactory<Drawing.ILottieRenderer>(ManagedLottieRendererTypeName, "CreateLottieRenderer");
+		var renderer = (forceManaged ? null : InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(SkottieLottieRendererTypeName, throwOnError: false)
+				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes)))
+			?? InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(ManagedLottieRendererTypeName, throwOnError: false)
+				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes));
 		if (renderer is not null)
 		{
 			Drawing.LottieRenderer.RegisterDefault(renderer);
 		}
 	}
 
-	/// <summary>Reflectively calls a parameterless static factory on the Skia backend, cast to the neutral seam
-	/// <typeparamref name="T"/>. Null if the backend assembly isn't present or the call fails.</summary>
-	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers its backend explicitly.")]
-	[UnconditionalSuppressMessage("Trimming", "IL2080", Justification = "Best-effort fallback; a trimmed/AOT app registers its backend explicitly.")]
-	private static T? InvokeSkiaFactory<T>(string methodName) where T : class
+	/// <summary>Invokes a parameterless static factory or constructor, cast to the neutral seam <typeparamref name="T"/>.
+	/// Null if the type/assembly isn't present or the call fails.</summary>
+	private static T? InvokeFactory<T>(Func<MethodBase?> resolveFactory) where T : class
 	{
+		MethodBase? factory = null;
 		try
 		{
-			if (!_skiaBackendTypeResolved)
+			factory = resolveFactory();
+			return factory switch
 			{
-				lock (_fallbackGate)
-				{
-					if (!_skiaBackendTypeResolved)
-					{
-						_skiaBackendType = Type.GetType(SkiaBackendTypeName, throwOnError: false);
-						_skiaBackendTypeResolved = true;
-					}
-				}
-			}
-
-			// NonPublic: the SkiaBackend factories are internal; reflection reaches them without a compile-time dependency.
-			return _skiaBackendType
-				?.GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, Type.EmptyTypes)
-				?.Invoke(null, null) as T;
+				ConstructorInfo constructor => constructor.Invoke(null) as T,
+				MethodInfo method => method.Invoke(null, null) as T,
+				_ => null,
+			};
 		}
 		catch (Exception e)
 		{
-			LogFallbackFailure($"{SkiaBackendTypeName}.{methodName}", e);
-			return null;
-		}
-	}
-
-	/// <summary>Reflectively calls a parameterless static factory on an arbitrary assembly-qualified type (for seams
-	/// served by an add-in rather than the core Skia backend). Null if the type/assembly isn't present or the call fails.</summary>
-	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
-	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
-	private static T? InvokeStaticFactory<T>(string typeName, string methodName) where T : class
-	{
-		try
-		{
-			return Type.GetType(typeName, throwOnError: false)
-				?.GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, Type.EmptyTypes)
-				?.Invoke(null, null) as T;
-		}
-		catch (Exception e)
-		{
-			LogFallbackFailure($"{typeName}.{methodName}", e);
-			return null;
-		}
-	}
-
-	/// <summary>Reflectively constructs an assembly-qualified type via its public parameterless constructor, cast to
-	/// the neutral seam interface <typeparamref name="T"/>. Null if the type/assembly isn't present or the call fails.</summary>
-	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
-	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
-	private static T? CreateInstanceOf<T>(string typeName) where T : class
-	{
-		try
-		{
-			var type = Type.GetType(typeName, throwOnError: false);
-			return type is null ? null : Activator.CreateInstance(type) as T;
-		}
-		catch (Exception e)
-		{
-			LogFallbackFailure(typeName, e);
+			LogFallbackFailure(factory is null ? $"{typeof(T).Name} lookup" : $"{factory.DeclaringType?.AssemblyQualifiedName}.{factory.Name}", e);
 			return null;
 		}
 	}

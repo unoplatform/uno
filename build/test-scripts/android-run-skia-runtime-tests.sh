@@ -217,6 +217,12 @@ while [[ $SECONDS -lt $END_TIME ]]; do
         echo "The app is not running anymore"
         break
     fi
+
+    # A NativeAOT app can outlive its own fatal exception, so the process check above never fires
+    if $ANDROID_HOME/platform-tools/adb logcat -d -b crash | grep "Process: $UNO_UITEST_APP_ID," > /dev/null; then
+        echo "##vso[task.logissue type=error]The app crashed, see the FATAL EXCEPTION in the device log."
+        break
+    fi
 done
 
 if [[ $SECONDS -ge $END_TIME ]]; then
