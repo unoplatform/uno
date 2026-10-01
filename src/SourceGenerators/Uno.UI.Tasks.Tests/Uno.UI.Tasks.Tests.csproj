@@ -10,6 +10,7 @@
 	<ItemGroup>
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="Mono.Cecil" />
+		<PackageReference Include="NuGet.Packaging" />
 
 		<!-- The test host drives the tasks in-process, so it needs the MSBuild runtime assets a task project excludes. -->
 		<PackageReference Include="Microsoft.Build.Framework" />
