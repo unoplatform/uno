@@ -103,8 +103,9 @@ public partial class Given_RichEditBox
 			}
 			Assert.IsGreaterThanOrEqualTo(lastCell.Bottom - firstCell.Y, bracket.Height);
 
+			// The leading quarter, not the exact center: the center is the 0/1 tie and the transform round-trip can tip it.
 			var point = block.TransformToVisual(editor).TransformPoint(
-				new Point(bracket.X + bracket.Width / 2, bracket.Y + bracket.Height / 2));
+				new Point(bracket.X + bracket.Width / 4, bracket.Y + bracket.Height / 2));
 			Assert.AreEqual(0, editor.Document.GetRangeFromPoint(point, PointOptions.ClientCoordinates).StartPosition);
 			Assert.IsTrue(editor.Document.AreRunIndexesValid());
 		}
