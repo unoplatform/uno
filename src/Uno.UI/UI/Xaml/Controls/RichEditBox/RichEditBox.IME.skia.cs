@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -566,6 +566,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (FocusState != FocusState.Unfocused)
 			{
 				EnsureCaretTimerHooked();
+				_caretBlinkTicks = 0;
 				_caretTimer.Start();
 			}
 
