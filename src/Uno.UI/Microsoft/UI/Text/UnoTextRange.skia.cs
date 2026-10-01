@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -692,9 +692,8 @@ namespace Microsoft.UI.Text
 				return;
 			}
 
-			var changed = _document.ChangeCaseText(text, value);
 			var start = _start;
-			var insertedLength = _document.ReplaceRange(start, _end, changed, this);
+			var insertedLength = _document.ChangeCaseRange(start, _end, value, this);
 			_start = start;
 			_end = start + insertedLength;
 			OnRangeChanged();

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -164,6 +164,50 @@ namespace Microsoft.UI.Text
 		internal long RangeEditGeneration => _rangeEditGeneration;
 
 		internal Func<string, global::Microsoft.UI.Text.LetterCase, string>? ChangeCaseMapperForTesting { get; set; }
+
+		/// <summary>
+		/// Changes the case of [start, end) run by run, so every character keeps its own formatting and embedded
+		/// objects stay untouched, as one undoable edit.
+		/// </summary>
+		internal int ChangeCaseRange(int start, int end, global::Microsoft.UI.Text.LetterCase value, UnoTextRange sourceRange)
+		{
+			SyncRunsToLength(_textBuffer.Length);
+			var changed = new StringBuilder(end - start);
+			var runs = new List<FormatRun>();
+			var position = start;
+			while (position < end)
+			{
+				var runIndex = FindRunIndex(position);
+				var segmentEnd = Math.Min(_runs.GetEnd(runIndex), end);
+				// A run boundary may fall inside a surrogate pair; case-map the pair as one rune.
+				if (segmentEnd < end
+					&& char.IsHighSurrogate(_textBuffer[segmentEnd - 1])
+					&& char.IsLowSurrogate(_textBuffer[segmentEnd]))
+				{
+					segmentEnd++;
+				}
+
+				var format = _runs[runIndex].Format;
+				var segment = _textBuffer.Slice(position, segmentEnd - position);
+				var mapped = format.InlineImage is null ? ChangeCaseText(segment, value) : segment;
+				changed.Append(mapped);
+				AppendRun(runs, mapped.Length, format);
+				position = segmentEnd;
+			}
+
+			return ReplaceRange(start, end, changed.ToString(), sourceRange, replacementRuns: runs);
+		}
+
+		private static int GetTotalLength(IReadOnlyList<FormatRun> runs)
+		{
+			var length = 0;
+			foreach (var run in runs)
+			{
+				length += run.Length;
+			}
+
+			return length;
+		}
 
 		internal string ChangeCaseText(string text, global::Microsoft.UI.Text.LetterCase value)
 			=> ChangeCaseMapperForTesting?.Invoke(text, value)
@@ -528,7 +572,8 @@ namespace Microsoft.UI.Text
 			TextHistoryKind historyKind = TextHistoryKind.None,
 			bool forceHistory = false,
 			bool checkTextLimit = true,
-			bool unicodeBidi = false)
+			bool unicodeBidi = false,
+			IReadOnlyList<FormatRun>? replacementRuns = null)
 		{
 			var originalLength = _textBuffer.Length;
 			start = Math.Clamp(start, 0, originalLength);
@@ -652,7 +697,14 @@ namespace Microsoft.UI.Text
 					// text edit so inserted characters inherit the neighbouring formatting.
 					SyncRunsToLength(originalLength);
 					SyncParagraphRunsToLength(originalLength);
-					SpliceRuns(start, end - start, insert.Length, sourceRange?.UsesForwardCharacterFormatting == true, unlink, unhide);
+					if (replacementRuns is not null && GetTotalLength(replacementRuns) == insert.Length)
+					{
+						ReplaceRuns(start, end, replacementRuns);
+					}
+					else
+					{
+						SpliceRuns(start, end - start, insert.Length, sourceRange?.UsesForwardCharacterFormatting == true, unlink, unhide);
+					}
 					SpliceParagraphRuns(_textBuffer, start, end - start, insert.Length);
 					_preservedRtfMetadata = _preservedRtfMetadata.ApplyEdit(start, end - start, insert.Length);
 					_preservedRtfMetadataEditApplied = true;
