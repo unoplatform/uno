@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -449,6 +449,10 @@ namespace Microsoft.UI.Text
 					_undoGroupEntry = null;
 					_lastRecordedEntry = null;
 					_undoGroupOverBudget = true;
+					// The dropped operations still change the document, so older entries would replay at stale
+					// offsets.
+					_undoStack.Clear();
+					_coalescingEntry = null;
 					_redoStack.Clear();
 					return;
 				}
