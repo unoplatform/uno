@@ -73,8 +73,8 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 {
 	public IntPtr Inst, Adapter, Dev, Q;
 	public readonly WGPUTextureFormat ColorFormat;
-	/// <summary>The adapter rasterizes on the CPU (SwiftShader, lavapipe, WARP), so one frame can take seconds.</summary>
-	public bool IsSoftwareAdapter { get; private set; }
+	/// <summary>A Vulkan adapter that rasterizes on the CPU (SwiftShader, lavapipe), so one frame can take seconds.</summary>
+	public bool IsSoftwareVulkan { get; private set; }
 	public IntPtr Smp;                       // present-blit sampler (used by the swapchain/browser contexts)
 	public JSObject JsDeviceObject;          // browser only: the live JS GPUDevice (the honest neutral handle)
 
@@ -178,8 +178,8 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 
 		Q = wgpuDeviceGetQueue(Dev);
 		CreatePresentSampler();
-		System.Console.WriteLine($"[webgpu] init device — {DescribeAdapter(Adapter, out var adapterType)} colorFormat={ColorFormat}");
-		IsSoftwareAdapter = adapterType == WGPUAdapterType.CPU;
+		System.Console.WriteLine($"[webgpu] init device — {DescribeAdapter(Adapter, out var adapterType, out var backend)} colorFormat={ColorFormat}");
+		IsSoftwareVulkan = adapterType == WGPUAdapterType.CPU && backend == WGPUBackendType.Vulkan;
 	}
 
 	private WebGpuInitDevice(WGPUTextureFormat colorFormat, IntPtr inst, IntPtr dev)
@@ -334,16 +334,18 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	private static void OnDeviceLost(IntPtr device, WGPUDeviceLostReason reason, WGPUStringView message, IntPtr u1, IntPtr u2)
 		=> System.Console.Error.WriteLine($"[webgpu] device lost ({reason}): {Text(message)}");
 
-	private static string DescribeAdapter(IntPtr adapter, out WGPUAdapterType type)
+	private static string DescribeAdapter(IntPtr adapter, out WGPUAdapterType type, out WGPUBackendType backend)
 	{
 		WGPUAdapterInfo info = default;
 		if (wgpuAdapterGetInfo(adapter, &info) != WGPUStatus.Success)
 		{
 			type = WGPUAdapterType.Unknown;
+			backend = WGPUBackendType.Undefined;
 			return "adapter=?";
 		}
 
 		type = info.AdapterType;
+		backend = info.BackendType;
 		var description = $"adapter='{Text(info.Device)}' backend={info.BackendType} type={info.AdapterType}";
 		wgpuAdapterInfoFreeMembers(info);
 		return description;

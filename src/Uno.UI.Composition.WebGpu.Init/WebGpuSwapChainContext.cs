@@ -112,7 +112,7 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		// wgpu's Vulkan swapchain gives the acquire a fixed one-second wait and reports running past it as a lost
 		// device (gfx-rs/wgpu#9029). On a CPU rasterizer the frame just submitted can take longer than that (the
 		// Android emulator's SwiftShader, which compiles each shader on first use), so let it finish first.
-		if (_device.IsSoftwareAdapter)
+		if (_device.IsSoftwareVulkan)
 		{
 			_ = wgpuDevicePoll(_device.Dev, 1u, null);
 		}
@@ -124,7 +124,20 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 				&& st.Status != WGPUSurfaceGetCurrentTextureStatus.SuccessSuboptimal)
 			|| st.Texture == IntPtr.Zero)
 		{
-			_configured = false;   // surface lost / out of date — reconfigure next frame
+			// A texture handed back with a failed acquire still references a back buffer, and an unreleased one
+			// makes the next resize (D3D12 ResizeBuffers) fail or block the render thread.
+			if (st.Texture != IntPtr.Zero)
+			{
+				wgpuTextureRelease(st.Texture);
+			}
+
+			// Only a surface that no longer matches its window needs reconfiguring; a timed-out or occluded
+			// acquire just skips this frame. Reconfiguring on those resized the swapchain every frame.
+			if (st.Status is WGPUSurfaceGetCurrentTextureStatus.Outdated or WGPUSurfaceGetCurrentTextureStatus.Lost)
+			{
+				_configured = false;
+			}
+
 			return;
 		}
 
