@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Text;
@@ -58,7 +58,7 @@ public partial class Given_RichEditBox
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Tall_Math_Table_Uses_Available_Math_Font_And_Preserves_Hit_Testing()
 	{
 		var editor = new RichEditBox
@@ -116,7 +116,7 @@ public partial class Given_RichEditBox
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Wasm)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Tall_Math_Table_Uses_Browser_Safe_Vertical_Glyphs()
 	{
 		var editor = new RichEditBox

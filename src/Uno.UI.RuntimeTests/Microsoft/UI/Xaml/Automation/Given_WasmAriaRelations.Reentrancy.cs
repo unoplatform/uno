@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -84,7 +84,7 @@ partial class Given_WasmAriaRelations
 		{
 			TestServices.WindowHelper.WindowContent = null;
 			await UITestHelper.WaitForIdle();
-			ResetAccessibilityThroughDom();
+			DisableAccessibility();
 		}
 #endif
 	}
@@ -126,7 +126,7 @@ partial class Given_WasmAriaRelations
 		{
 			TestServices.WindowHelper.WindowContent = null;
 			await UITestHelper.WaitForIdle();
-			ResetAccessibilityThroughDom();
+			DisableAccessibility();
 		}
 #endif
 	}
