@@ -1,4 +1,4 @@
-// Copyright 2013 The Flutter Authors. All rights reserved.
+﻿// Copyright 2013 The Flutter Authors. All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification,
 // 	are permitted provided that the following conditions are met:
@@ -153,36 +153,36 @@ internal static class NotoFontFallbackService
 		else if (fontFamily == EmojiFontFamily)
 		{
 			using var source = await AppDataUriEvaluator.ToStream(new Uri(EmojiFontUrl), ct);
-			using var bounded = new MemoryStream();
-			var buffer = new byte[81920];
+			// Read into one exactly-bounded buffer: a growing MemoryStream plus ToArray would peak at several
+			// times the font size, which on WASM permanently grows the heap.
+			var bytes = new byte[EmojiFontMaxBytes];
+			var length = 0;
 			while (true)
 			{
-				var read = await source.ReadAsync(buffer, 0, buffer.Length, ct);
+				if (length == bytes.Length)
+				{
+					if (await source.ReadAsync(new byte[1], ct) != 0)
+					{
+						throw new InvalidDataException("The emoji fallback font exceeds its maximum permitted size.");
+					}
+					break;
+				}
+
+				var read = await source.ReadAsync(bytes.AsMemory(length), ct);
 				if (read == 0)
 				{
 					break;
 				}
-				if (bounded.Length + read > EmojiFontMaxBytes)
-				{
-					throw new InvalidDataException("The emoji fallback font exceeds its maximum permitted size.");
-				}
-				await bounded.WriteAsync(buffer, 0, read, ct);
+				length += read;
 			}
 
-			var bytes = bounded.ToArray();
-			using var sha256 = SHA256.Create();
-			var hash = sha256.ComputeHash(bytes);
-			var hashText = new StringBuilder(hash.Length * 2);
-			foreach (var value in hash)
-			{
-				hashText.Append(value.ToString("x2", CultureInfo.InvariantCulture));
-			}
-			if (!string.Equals(hashText.ToString(), EmojiFontSha256, StringComparison.Ordinal))
+			var hash = Convert.ToHexStringLower(SHA256.HashData(bytes.AsSpan(0, length)));
+			if (!string.Equals(hash, EmojiFontSha256, StringComparison.Ordinal))
 			{
 				throw new InvalidDataException("The emoji fallback font failed integrity validation.");
 			}
 
-			return new MemoryStream(bytes, writable: false);
+			return new MemoryStream(bytes, 0, length, writable: false);
 		}
 
 		if (!FallbackFontMaps.FontWeightsToRawUrls.TryGetValue(fontFamily, out var variants))
