@@ -35,7 +35,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		ZoomFactorChangeByZoomFactorChange,
 	}
 
-	private const int c_MaxWaitDuration = 5000;
+	private const int c_MaxWaitDuration = 10000; // UNO: 5000 upstream, too short for a software-rendered emulator
 	private const int c_MaxStockOffsetsChangeDuration = 1000;
 	private const int c_MaxStockZoomFactorChangeDuration = 1000;
 

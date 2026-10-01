@@ -173,14 +173,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var sv = listView.FindFirstChild<ScrollViewer>();
 			Assert.IsNotNull(sv);
 			sv.ChangeView(null, 10, null);
-			await WaitForEqual(10, () => sv.VerticalOffset);
+			// The change is animated; a software-rendered frame can take most of the default second.
+			await WaitForEqual(10, () => sv.VerticalOffset, timeoutMS: 5000);
 
 			AssertItem(0, -10);
 			AssertItem(1, 19);
 
 			sv.ChangeView(null, 40, null);
 
-			await WaitForEqual(40, () => sv.VerticalOffset);
+			await WaitForEqual(40, () => sv.VerticalOffset, timeoutMS: 5000);
 
 			AssertItem(1, -11);
 
