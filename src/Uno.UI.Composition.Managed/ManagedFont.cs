@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Windows.UI;
@@ -185,21 +186,31 @@ internal sealed class ManagedFont : IFont
 			return cached;
 		}
 
+		var run = ShapeCore(text, direction, new ShapingOptions { DisableLigatures = !enableLigatures });
+		_shapeCache.Add(text, direction, enableLigatures, run);
+		return run;
+	}
+
+	public GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, in ShapingOptions options)
+		=> options with { DisableLigatures = false } == default
+			? Shape(text, direction, !options.DisableLigatures)
+			: ShapeCore(text, direction, options);
+
+	public bool TryGetTable(uint tag, [NotNullWhen(true)] out byte[]? data)
+	{
+		data = ReadTable(tag);
+		return data is { Length: > 0 };
+	}
+
+	private GlyphRun ShapeCore(ReadOnlySpan<char> text, TextDirection direction, in ShapingOptions options)
+	{
 		var buffer = _shapeBuffer ??= new HbBuffer();
 		buffer.ClearContents();
 		buffer.AddUtf16(text);
 		buffer.GuessSegmentProperties(); // sets the run's script/language for the shaper; direction is set explicitly below
 		buffer.Direction = direction == TextDirection.RightToLeft ? HarfBuzzSharp.Direction.RightToLeft : HarfBuzzSharp.Direction.LeftToRight;
-
-		if (enableLigatures)
-		{
-			GetHarfBuzzFont().Shape(buffer);
-		}
-		else
-		{
-			// Disable the OpenType 'liga' feature (a run may span multiple chars that must stay separately addressable).
-			GetHarfBuzzFont().Shape(buffer, new HarfBuzzSharp.Feature(new HarfBuzzSharp.Tag('l', 'i', 'g', 'a'), 0));
-		}
+		HarfBuzzShapingOptions.Apply(buffer, options);
+		GetHarfBuzzFont().Shape(buffer, HarfBuzzShapingOptions.GetFeatures(options));
 
 		var infos = buffer.GetGlyphInfoSpan();
 		var pos = buffer.GetGlyphPositionSpan();
@@ -217,9 +228,7 @@ internal sealed class ManagedFont : IFont
 			advances[i] = pos[i].XAdvance * scale;
 		}
 
-		var run = new GlyphRun(glyphs, offsets, advances, clusters);
-		_shapeCache.Add(text, direction, enableLigatures, run);
-		return run;
+		return new GlyphRun(glyphs, offsets, advances, clusters);
 	}
 
 	private HbFont GetHarfBuzzFont()
