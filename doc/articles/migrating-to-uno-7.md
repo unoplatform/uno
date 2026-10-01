@@ -843,6 +843,12 @@ member through a base type that never had it in WinUI.
   they are declared once, on `FrameworkElement`. Every element in the visual tree still has
   `DataContext`, and inheritance down the tree is unchanged.
 
+  `FrameworkElement.DataContext` is now annotated as `object?`, matching its nullable default.
+  With nullable reference types enabled, assigning it to a non-nullable variable or passing it
+  to a non-nullable parameter produces `CS8600` or `CS8604`. Null-check or pattern-match the
+  value, or use `!` only when the surrounding code guarantees that it is not null. Projects that
+  treat nullable warnings as errors must resolve these warnings as part of the migration.
+
   Non-`FrameworkElement` `DependencyObject`s lose the member entirely — `Brush` and its
   subclasses, `Transform`, `GradientStop`, `Setter`, `Style`, `DependencyObjectCollection`,
   `ElementFactory`, `FlyoutBase`, and so on. Reading or setting `.DataContext` on one, or
@@ -1236,7 +1242,8 @@ be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
    declaring type.
 15. Move `.DataContext` reads/writes and `DataContextChanged` subscriptions off
    non-`FrameworkElement` objects (`Brush`, `Transform`, `FlyoutBase`, …) onto the owning
-   element — `{Binding}` on those objects still resolves.
+   element — `{Binding}` on those objects still resolves. Account for the nullable `object?`
+   annotation when reading `FrameworkElement.DataContext`.
 16. Raise `SupportedOSPlatformVersion` to **15.0** (iOS/tvOS) and **24.0** (Android), and
    `TargetPlatformMinVersion` to **10.0.19041.0** (WinAppSDK), in any head that pins them
    explicitly.
