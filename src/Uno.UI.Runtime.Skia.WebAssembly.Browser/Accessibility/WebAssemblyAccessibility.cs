@@ -1091,59 +1091,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	[JSExport]
-	public static void ResetForTesting()
-	{
-		var @this = Instance;
-		if (!@this.IsAccessibilityEnabled)
-		{
-			return;
-		}
-
-		if (@this._focusSearchRoot is { } rootElement)
-		{
-			var focusManager = global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(rootElement);
-			if (focusManager is not null)
-			{
-				focusManager.FocusObserver.FocusController.FocusDeparting -= @this.OnFocusDeparting;
-			}
-		}
-
-		@this._focusSynchronizer?.Uninitialize();
-		@this._focusSynchronizer = null;
-		@this._liveRegionManager?.ClearPending();
-		@this._liveRegionManager = null;
-
-		foreach (var region in @this._virtualizedRegions)
-		{
-			region.Dispose();
-		}
-		@this._virtualizedRegions.Clear();
-
-		lock (@this._updateLock)
-		{
-			@this._debounceTimer?.Dispose();
-			@this._debounceTimer = null;
-			@this._pendingUpdates.Clear();
-		}
-
-		@this._semanticParentMap.Clear();
-		@this._prunedHandles.Clear();
-		@this._pendingLabelledBy.Clear();
-		@this._relationshipPeers.Clear();
-		@this._relationshipRefreshQueued = false;
-		@this._onChildAddedDepth = 0;
-		@this._rootElementHandle = IntPtr.Zero;
-		@this._focusSearchRoot = null;
-		@this.ActiveModalScope = null;
-		@this._isCreatingAOM = false;
-		@this._isAccessibilityEnabled = false;
-
-		Control.OnIsFocusableChangedCallback = null;
-		FocusManager.SuppressNativeFocus = false;
-		NativeMethods.ResetDomForTesting();
-	}
-
-	[JSExport]
 	public static void OnScroll(IntPtr handle, double horizontalOffset, double verticalOffset)
 	{
 		var @this = Instance;
@@ -2942,9 +2889,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.removeSemanticElement")]
 		internal static partial void RemoveSemanticElement(IntPtr parentHandle, IntPtr childHandle);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.resetDomForTesting")]
-		internal static partial void ResetDomForTesting();
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLabel")]
 		internal static partial void UpdateAriaLabel(IntPtr handle, string automationId);
