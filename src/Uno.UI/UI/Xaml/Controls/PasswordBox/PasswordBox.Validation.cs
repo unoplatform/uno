@@ -5,6 +5,7 @@ using System.ComponentModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers.Boxes;
 using UnoValidation = Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -45,7 +46,7 @@ public partial class PasswordBox : IInputValidationControl
 			typeof(bool),
 			typeof(PasswordBox),
 			new FrameworkPropertyMetadata(
-				default(bool),
+				BoolBoxes.False,
 				OnHasValidationErrorsChanged));
 
 	/// <summary>
