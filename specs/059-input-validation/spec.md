@@ -1,6 +1,6 @@
 # Input validation — transport and read model
 
-**Status**: Implemented — see §11 for what the code corrected about this document
+**Status**: Implemented — see §10–§10d for what the code corrected about this document
 **Audience**: Internal engineering (Uno Platform maintainers)
 **Created**: 2026-09-22
 
@@ -37,16 +37,16 @@ satisfy that interface, not a prescription.
 Nothing appears on screen by itself. That is deliberate, and it should not be mistaken for the slice doing
 nothing: after 059, an app binds to a view model that implements `INotifyDataErrorInfo`, sets one attached
 property on the control, and its errors arrive on `Validation.HasErrors` / `Validation.Errors` where its own
-markup can render them:
+markup can render them. As shipped ([§10d](#10d-the-surface-moves-to-unouiextras)):
 
 ```xml
-<!-- xmlns:uno="using:Uno.UI.Xaml.Controls" -->
+<!-- xmlns:input="using:Uno.Extras.Input" -->
 <StackPanel>
-    <TextBox x:Name="UserNameBox" Text="{Binding UserName}" uno:Validation.IsEnabled="True" />
+    <TextBox x:Name="UserNameBox" Text="{Binding UserName}" input:Validation.Mode="Auto" />
     <TextBlock Foreground="Red"
-               Visibility="{Binding (uno:Validation.HasErrors), ElementName=UserNameBox,
+               Visibility="{Binding (input:Validation.HasErrors), ElementName=UserNameBox,
                                     Converter={StaticResource BoolToVisibilityConverter}}"
-               Text="{Binding (uno:Validation.Errors), ElementName=UserNameBox,
+               Text="{Binding (input:Validation.Errors), ElementName=UserNameBox,
                               Converter={StaticResource StringJoinConverter}}" />
 </StackPanel>
 ```
@@ -67,7 +67,8 @@ Two unrelated static classes in this document sit next to each other, and are de
 - **`Uno.UI.FeatureConfiguration.InputValidation`** — the global switch and the public validation-property
   map (§3.4).
 - **`Validation`** — the attached-property owner holding `IsEnabled` / `HasErrors` / `Errors` (§4.1). Which
-  namespace *this* one lands in is [Q3](#9-open-decisions).
+  namespace *this* one lands in is [Q3](#9-open-decisions). As shipped, it is `Uno.Extras.Input.Validation`
+  in Uno.UI.Extras ([§10d](#10d-the-surface-moves-to-unouiextras)).
 
 They are named for the same feature and are otherwise unrelated — the `InputValidation` prefix on the first
 keeps the two from reading as one type in two places.
@@ -456,10 +457,11 @@ The half of the presentation layer that ships in 059. The visuals are spec 060.
 
 ### 4.1 The `Validation` attached-property owner — superseded
 
-> **Superseded, see [§10b](#10b-superseded-by-the-winui-alignment-pass).** This read model never shipped as
-> attached properties: every member of `IInputValidationControl` is a dependency property the participating
-> control registers itself, and the `Validation` class named below no longer exists — its transport folded
-> into `Control`. The section is kept because §10b's decisions are written against it.
+> **Superseded twice.** [§10b](#10b-superseded-by-the-winui-alignment-pass) moved this read model onto
+> per-control dependency properties behind `IInputValidationControl`;
+> [§10d](#10d-the-surface-moves-to-unouiextras) moved it back to attached properties, on
+> `Uno.Extras.Input.Validation` in Uno.UI.Extras, with `IsEnabled` spelled `Mode`. The section is kept because
+> both are written against it.
 
 A static class owning attached dependency properties, scoped to `Control`.
 
@@ -569,12 +571,12 @@ class SignUpViewModel2 : /* ObservableValidator, or any INotifyDataErrorInfo imp
 ### The page
 
 ```xml
-<TextBox Text="{Binding Property1}" uno:Validation.IsEnabled="True" />
+<TextBox Text="{Binding Property1}" input:Validation.Mode="Auto" />
 ```
 
 That is the whole opt-in: one attached property on the control, and a binding whose source implements
-`INotifyDataErrorInfo`. Q3 resolved in favour of the prefixed spelling, over
-`xmlns:uno="using:Uno.UI.Xaml.Controls"`. Rendering the errors is the app's job in this slice — see §1.
+`INotifyDataErrorInfo`, with `xmlns:input="using:Uno.Extras.Input"`
+([§10d](#10d-the-surface-moves-to-unouiextras)). Rendering the errors is the app's job in this slice — see §1.
 
 ## 7. Decisions (locked)
 
@@ -782,6 +784,52 @@ end to end.
 - **A per-instance override**, such as an attached property naming the property to validate. It reaches a
   single `ComboBox` without a subclass, but adds public API and another input to the binding-order problem
   §10 records.
+
+## 10d. The surface moves to Uno.UI.Extras
+
+§10b put the surface on the WinUI types themselves: `IInputValidationControl`, five dependency properties
+and three events on each of the four controls, and twelve protected `Control` members for third parties to
+do the same. None of it is public API in WinAppSDK — it is all `PrivateApiContract` there — so Uno was
+growing WinUI types a surface WinUI does not have. It now lives in **Uno.UI.Extras**, as attached properties
+on a static class:
+
+| `Uno.Extras.Input.Validation` | Type | Default | Accessors |
+|---|---|---|---|
+| `Mode` | `InputValidationMode` | `Disabled` | get / set |
+| `Kind` | `InputValidationKind` | `Auto` | get / set |
+| `ErrorTemplate` | `DataTemplate` | null | get / set |
+| `HasErrors` | `bool` | false | get only — the framework writes it |
+| `Errors` | `IObservableVector<InputValidationError>` | null | get only — created on first read, then stable |
+
+- **`IInputValidationControl` is deleted**, with `InputValidationErrorEventArgs` and
+  `InputValidationErrorEventAction`. The hand-written `HasValidationErrorsChangedEventArgs` is gone too, and
+  its generated stub is back to `[Uno.NotImplemented]`.
+- **The three events are dropped.** Attached properties have no event counterpart. Change notification on
+  `HasErrors`, and `VectorChanged` on `Errors`, cover `HasValidationErrorsChanged` and `ValidationError`.
+  `ErrorChanged`'s `PropertyName` is not exposed any more: a consumer of several controls sharing a source
+  can subscribe to the source's own `ErrorsChanged`.
+- **Setters and Bindings still work.** §10b's argument was against a CLR property *forwarding* to an
+  attached value. A real attached dependency property can be targeted by
+  `<Setter Property="input:Validation.Mode" …/>` and driven by `SetBinding(Validation.ModeProperty, …)`, and
+  both are covered by runtime tests.
+- **The engine stays in Uno.UI**, on `Control`: the binding hooks, the `INotifyDataErrorInfo` subscription,
+  the visual states and the ErrorPresenter. Uno.UI cannot reference Uno.UI.Extras, so `Validation`'s static
+  constructor hands its five dependency properties to an internal slot,
+  `Uno.UI.Xaml.Controls.InputValidationProperties`. Until that class is touched the slot is empty, and no
+  control can be participating, since `Mode` defaults to `Disabled`. The changed handlers reach `Control`
+  through the `InternalsVisibleTo` Uno.UI already grants Uno.UI.Extras.
+- **Participation needs a validation property instead of the interface.** A control participates when its
+  type resolves an entry in `FeatureConfiguration.InputValidation.ValidationProperties`, through
+  `[InputValidationProperty]` or a registration, and its `Mode` is not `Disabled`. The name-based
+  `GetValidationProperty` lookup is gone. A third-party control now declares its input and nothing else. Of
+  the twelve protected `Control` members, only `UpdateValidationStates` remains, for a control's own visual
+  state code. `Uno.UI.Tests.ViewLibrary` still proves this at compile time, without referencing Uno.UI.Extras.
+- **The value types moved to `Uno.Extras.Input`**: `InputValidationMode`, `InputValidationKind` and
+  `InputValidationError`. They stay in Uno.UI, because the engine uses them, and are compile-linked into the
+  WinAppSDK build of Uno.UI.Extras. So the same full names exist on both platforms, and none is declared
+  inside WinAppSDK's own `Microsoft.UI.Xaml.Controls`. This reverses §10b's Q3 / Q11 parity risk.
+- **On WinAppSDK the class compiles, but its handlers are `#if HAS_UNO`'d out**, so markup that sets these
+  properties stays portable and does nothing there.
 
 ## 11. References
 
