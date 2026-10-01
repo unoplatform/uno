@@ -1,15 +1,17 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Text;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Documents;
@@ -45,20 +47,6 @@ internal sealed class MathTextLayoutSource : ICustomTextLayout
 internal sealed class MathParsedText : IParsedText
 {
 	private static readonly IReadOnlyList<TextHighlighter> _noHighlighters = Array.Empty<TextHighlighter>();
-	private static readonly SKPaint _rulePaint = new()
-	{
-		IsAntialias = true,
-		StrokeCap = SKStrokeCap.Butt,
-		Style = SKPaintStyle.Fill,
-	};
-	private static readonly SKPaint _compositionPaint = new()
-	{
-		Color = SKColors.Black,
-		IsAntialias = true,
-		StrokeCap = SKStrokeCap.Butt,
-		Style = SKPaintStyle.Stroke,
-		StrokeWidth = 1,
-	};
 
 	private readonly MathDocument _document;
 	private readonly List<TextPlacement> _textPlacements = new();
@@ -83,13 +71,13 @@ internal sealed class MathParsedText : IParsedText
 		_document = document;
 		var resolver = new InlineStyleResolver(inlines, defaultFontDetails, defaultForeground);
 		Metrics = MathFontMetrics.Create(defaultFontDetails);
-		var builder = new BoxBuilder(document, resolver, fontListener, defaultForeground, Metrics, defaultFontDetails.SKFont);
+		var builder = new BoxBuilder(document, resolver, fontListener, defaultForeground, Metrics, defaultFontDetails.FontHandle);
 		var root = builder.Build(document.Root, 1);
 		VerticalVariantGlyphCount = builder.VerticalVariantGlyphCount;
 		VerticalAssemblyGlyphCount = builder.VerticalAssemblyGlyphCount;
 		VerticalGlyphFallbackCount = builder.VerticalGlyphFallbackCount;
 		_width = Math.Max(0, root.Width);
-		_baseline = Math.Max(root.Ascent, defaultFontDetails.SKFontMetrics.Ascent * -1);
+		_baseline = Math.Max(root.Ascent, -defaultFontDetails.FontHandle.Ascent);
 		_height = Math.Max(defaultFontDetails.LineHeight, _baseline + root.Descent);
 		_xOffset = GetAlignmentOffset(availableSize.Width, _width, textAlignment);
 		_indexLayout = new MathIndexLayout[document.Projection.Length + 1];
@@ -131,15 +119,16 @@ internal sealed class MathParsedText : IParsedText
 	{
 		global::System.Diagnostics.Debug.Assert(firstLine == 0 && lineCount == int.MaxValue, "RichEditBox does not page its content.");
 
+		var drawingSession = session.Session;
 		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
 		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0 ? 1f : session.Opacity;
+		Color compositionColor;
 		if (useHighContrastAdjustment)
 		{
 			var colors = owner.GetHighContrastTextColors();
-			_rulePaint.Color = ToHighContrastColor(colors.background, effectiveOpacity);
-			session.Canvas.DrawRect(
-				new SKRect((float)_xOffset, 0, (float)(_xOffset + _width), (float)_height),
-				_rulePaint);
+			drawingSession.DrawRect(
+				new Rect(_xOffset, 0, _width, _height),
+				ToHighContrastColor(colors.background, effectiveOpacity));
 			DrawContent(owner, session, ToHighContrastColor(colors.foreground, effectiveOpacity));
 
 			var highlightRects = DrawHighlighterBackgrounds(
@@ -149,18 +138,18 @@ internal sealed class MathParsedText : IParsedText
 				collectRects: true);
 			foreach (var rect in highlightRects!)
 			{
-				session.Canvas.Save();
-				session.Canvas.ClipRect(rect);
+				drawingSession.Save();
+				drawingSession.ClipRect(rect);
 				DrawContent(owner, session, ToHighContrastColor(colors.selectionForeground, effectiveOpacity));
-				session.Canvas.Restore();
+				drawingSession.Restore();
 			}
-			_compositionPaint.Color = ToHighContrastColor(colors.foreground, effectiveOpacity);
+			compositionColor = ToHighContrastColor(colors.foreground, effectiveOpacity);
 		}
 		else
 		{
 			DrawHighlighterBackgrounds(session, highlighters);
 			DrawContent(owner, session, null);
-			_compositionPaint.Color = SKColors.Black.WithAlpha((byte)(255 * effectiveOpacity));
+			compositionColor = ToHighContrastColor(Colors.Black, effectiveOpacity);
 		}
 
 		if (compositionRange is { length: > 0 } composition)
@@ -170,12 +159,12 @@ internal sealed class MathParsedText : IParsedText
 			for (var index = start; index < end; index++)
 			{
 				var rect = _indexLayout[index].Rect;
-				session.Canvas.DrawLine(
-					(float)rect.X,
-					(float)Math.Max(rect.Y, rect.Bottom - 1),
-					(float)Math.Max(rect.Right, rect.X + 1),
-					(float)Math.Max(rect.Y, rect.Bottom - 1),
-					_compositionPaint);
+				var underlineY = (float)Math.Max(rect.Y, rect.Bottom - 1);
+				drawingSession.DrawLine(
+					new Vector2((float)rect.X, underlineY),
+					new Vector2((float)Math.Max(rect.Right, rect.X + 1), underlineY),
+					compositionColor,
+					1);
 			}
 		}
 
@@ -183,47 +172,47 @@ internal sealed class MathParsedText : IParsedText
 		{
 			var index = Math.Clamp(caretValue.index, 0, _document.Projection.Length);
 			var rect = _indexLayout[index].Rect;
-			var caretRect = new SKRect(
-				(float)rect.X,
-				(float)rect.Y,
-				(float)rect.X + caretValue.thickness,
-				(float)rect.Bottom);
-			caretValue.brush.Paint(session.Canvas, effectiveOpacity, caretRect);
+			var caretRect = new Rect(rect.X, rect.Y, caretValue.thickness, rect.Height);
+			caretValue.brush.TryPaint(drawingSession, effectiveOpacity, caretRect);
 		}
 	}
 
-	private void DrawContent(UIElement owner, in Visual.PaintingSession session, SKColor? foregroundOverride)
+	private void DrawContent(UIElement owner, in Visual.PaintingSession session, Color? foregroundOverride)
 	{
+		var drawingSession = session.Session;
 		foreach (var placement in _textPlacements)
 		{
-			session.Canvas.Save();
-			session.Canvas.Translate(placement.X, placement.Y);
+			drawingSession.Save();
+			drawingSession.Translate(placement.X, placement.Y);
 			placement.Layout.Draw(
 				owner, session, caret: null, _noHighlighters, compositionRange: null,
 				suppressBackplate: true, foregroundOverride);
-			session.Canvas.Restore();
+			drawingSession.Restore();
 		}
 
-		using (var textBlobBuilder = new SKTextBlobBuilder())
+		foreach (var placement in _glyphPlacements)
 		{
-			foreach (var placement in _glyphPlacements)
+			var positions = new Vector2[placement.Positions.Length];
+			for (var i = 0; i < positions.Length; i++)
 			{
-				textBlobBuilder.AddPositionedRun(placement.Glyphs, placement.Font, placement.Positions);
-				using var textBlob = textBlobBuilder.Build();
-				_rulePaint.Color = foregroundOverride ?? GetColor(placement.Brush, session.Opacity);
-				session.Canvas.DrawText(textBlob, placement.X, placement.Y, _rulePaint);
+				positions[i] = placement.Positions[i] + new Vector2(placement.X, placement.Y);
 			}
+
+			GlyphRunRenderer.Draw(drawingSession, placement.Font, placement.Glyphs, positions, 0, foregroundOverride ?? GetColor(placement.Brush, session.Opacity));
 		}
 
 		foreach (var rule in _rulePlacements)
 		{
-			_rulePaint.Color = foregroundOverride ?? GetColor(rule.Brush, session.Opacity);
-			session.Canvas.DrawRect(rule.Rect, _rulePaint);
+			drawingSession.DrawRect(rule.Rect, foregroundOverride ?? GetColor(rule.Brush, session.Opacity));
 		}
 	}
 
-	private static SKColor ToHighContrastColor(global::Windows.UI.Color color, float opacity)
-		=> new(color.R, color.G, color.B, (byte)(color.A * opacity));
+	private static Color ToHighContrastColor(Color color, float opacity)
+		=> Color.FromArgb((byte)(color.A * opacity), color.R, color.G, color.B);
+
+	// Edges-based rect, matching how the box arithmetic below computes rules.
+	private static Rect Ltrb(float left, float top, float right, float bottom)
+		=> new(new Point(left, top), new Point(Math.Max(left, right), Math.Max(top, bottom)));
 
 	public Rect GetRectForIndex(int adjustedIndex)
 		=> _indexLayout[Math.Clamp(adjustedIndex, 0, _document.Projection.Length)].Rect;
@@ -331,15 +320,15 @@ internal sealed class MathParsedText : IParsedText
 	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)
 		=> (0, _document.Projection.Length, true, true, 0);
 
-	private List<SKRect>? DrawHighlighterBackgrounds(
+	private List<Rect>? DrawHighlighterBackgrounds(
 		in Visual.PaintingSession session,
 		IEnumerable<TextHighlighter> highlighters,
-		SKColor? backgroundOverride = null,
+		Color? backgroundOverride = null,
 		bool collectRects = false)
 	{
-		var canvas = session.Canvas;
+		var drawingSession = session.Session;
 		var opacity = session.Opacity;
-		var rectangles = collectRects ? new List<SKRect>() : null;
+		var rectangles = collectRects ? new List<Rect>() : null;
 		foreach (var highlighter in highlighters)
 		{
 			var brush = highlighter.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor());
@@ -377,17 +366,15 @@ internal sealed class MathParsedText : IParsedText
 				{
 					return;
 				}
-				var highlightRect = new SKRect((float)value.X, (float)value.Y, (float)value.Right, (float)value.Bottom);
 				if (backgroundOverride is { } color)
 				{
-					_rulePaint.Color = color;
-					canvas.DrawRect(highlightRect, _rulePaint);
+					drawingSession.DrawRect(value, color);
 				}
 				else
 				{
-					brush.Paint(canvas, opacity, highlightRect);
+					brush.TryPaint(drawingSession, opacity, value);
 				}
-				rectangles?.Add(highlightRect);
+				rectangles?.Add(value);
 			}
 		}
 		return rectangles;
@@ -462,38 +449,36 @@ internal sealed class MathParsedText : IParsedText
 			? rect
 			: new Rect(rect.X - 1, rect.Y, 2, Math.Max(1, rect.Height));
 
-	private static SKColor GetColor(Brush? brush, float opacity)
+	private static Color GetColor(Brush? brush, float opacity)
 	{
 		if (brush is SolidColorBrush solid)
 		{
 			var color = solid.Color;
-			return new SKColor(color.R, color.G, color.B, (byte)(color.A * solid.Opacity * opacity));
+			return Color.FromArgb((byte)(color.A * solid.Opacity * opacity), color.R, color.G, color.B);
 		}
 		if (brush is GradientBrush gradient)
 		{
-			var color = gradient.FallbackColorWithOpacity;
-			return new SKColor(color.R, color.G, color.B, (byte)(color.A * opacity));
+			return ToHighContrastColor(gradient.FallbackColorWithOpacity, opacity);
 		}
 		if (brush is XamlCompositionBrushBase composition)
 		{
-			var color = composition.FallbackColorWithOpacity;
-			return new SKColor(color.R, color.G, color.B, (byte)(color.A * opacity));
+			return ToHighContrastColor(composition.FallbackColorWithOpacity, opacity);
 		}
 
-		return SKColors.Black.WithAlpha((byte)(byte.MaxValue * opacity));
+		return ToHighContrastColor(Colors.Black, opacity);
 	}
 
 	private sealed record TextPlacement(UnicodeText Layout, float X, float Y);
 
 	private sealed record GlyphPlacement(
-		SKFont Font,
+		IFont Font,
 		ushort[] Glyphs,
-		SKPoint[] Positions,
+		Vector2[] Positions,
 		float X,
 		float Y,
 		Brush? Brush);
 
-	private sealed record RulePlacement(SKRect Rect, Brush? Brush);
+	private sealed record RulePlacement(Rect Rect, Brush? Brush);
 
 	private readonly struct MathIndexLayout
 	{
@@ -547,15 +532,15 @@ internal sealed class MathParsedText : IParsedText
 			=> _textPlacements.Add(new TextPlacement(layout, x, top));
 
 		internal void AddGlyphs(
-			SKFont font,
+			IFont font,
 			ushort[] glyphs,
-			SKPoint[] positions,
+			Vector2[] positions,
 			float x,
 			float top,
 			Brush? brush)
 			=> _glyphPlacements.Add(new GlyphPlacement(font, glyphs, positions, x, top, brush));
 
-		internal void AddRule(SKRect rect, Brush? brush) => _rules.Add(new RulePlacement(rect, brush));
+		internal void AddRule(Rect rect, Brush? brush) => _rules.Add(new RulePlacement(rect, brush));
 
 		internal void SetIndex(int index, Rect rect, double baseline, bool force = false)
 		{
@@ -589,7 +574,7 @@ internal sealed class MathParsedText : IParsedText
 		private readonly UnicodeText.IFontCacheUpdateListener _fontListener;
 		private readonly Brush? _defaultForeground;
 		private readonly float _em;
-		private readonly SKFont _mathFont;
+		private readonly IFont _mathFont;
 
 		internal BoxBuilder(
 			MathDocument document,
@@ -597,7 +582,7 @@ internal sealed class MathParsedText : IParsedText
 			UnicodeText.IFontCacheUpdateListener fontListener,
 			Brush? defaultForeground,
 			MathFontMetrics metrics,
-			SKFont mathFont)
+			IFont mathFont)
 		{
 			_document = document;
 			_resolver = resolver;
@@ -896,18 +881,17 @@ internal sealed class MathParsedText : IParsedText
 			}
 
 			var glyphs = new ushort[run.Parts.Length];
-			var widths = new float[glyphs.Length];
-			var bounds = new SKRect[glyphs.Length];
+			var bounds = new Rect[glyphs.Length];
 			for (var index = 0; index < glyphs.Length; index++)
 			{
 				glyphs[index] = run.Parts[index].Glyph;
-				if (glyphs[index] >= _mathFont.Typeface.GlyphCount)
+				if (glyphs[index] >= Metrics.GlyphCount)
 				{
 					VerticalGlyphFallbackCount++;
 					return null;
 				}
+				bounds[index] = GlyphRunRenderer.MeasureInk(_mathFont, glyphs.AsSpan(index, 1), [Vector2.Zero]);
 			}
-			_mathFont.GetGlyphWidths(glyphs, widths, bounds, null);
 
 			var left = float.MaxValue;
 			var right = float.MinValue;
@@ -916,10 +900,14 @@ internal sealed class MathParsedText : IParsedText
 			var hasInk = false;
 			for (var index = 0; index < glyphs.Length; index++)
 			{
-				left = Math.Min(left, bounds[index].Left);
-				right = Math.Max(right, bounds[index].Right);
-				top = Math.Min(top, run.Parts[index].Offset + bounds[index].Top);
-				bottom = Math.Max(bottom, run.Parts[index].Offset + bounds[index].Bottom);
+				if (bounds[index].IsEmpty)
+				{
+					continue;
+				}
+				left = Math.Min(left, (float)bounds[index].Left);
+				right = Math.Max(right, (float)bounds[index].Right);
+				top = Math.Min(top, run.Parts[index].Offset + (float)bounds[index].Top);
+				bottom = Math.Max(bottom, run.Parts[index].Offset + (float)bounds[index].Bottom);
 				hasInk |= bounds[index].Width > 0 && bounds[index].Height > 0;
 			}
 			if (!hasInk || !float.IsFinite(left) || !float.IsFinite(top))
@@ -930,10 +918,10 @@ internal sealed class MathParsedText : IParsedText
 
 			var height = Math.Max(run.Advance, bottom - top);
 			var width = Math.Max(1, right - left);
-			var positions = new SKPoint[glyphs.Length];
+			var positions = new Vector2[glyphs.Length];
 			for (var index = 0; index < glyphs.Length; index++)
 			{
-				positions[index] = new SKPoint(-left, run.Parts[index].Offset - top);
+				positions[index] = new Vector2(-left, run.Parts[index].Offset - top);
 			}
 			var ascent = Math.Clamp(height / 2 + Metrics.AxisHeight * scale, 0, height);
 			if (run.IsAssembly)
@@ -1101,17 +1089,17 @@ internal sealed class MathParsedText : IParsedText
 	private sealed class VerticalGlyphBox : MathBox
 	{
 		private readonly MathTextSpan _span;
-		private readonly SKFont _font;
+		private readonly IFont _font;
 		private readonly ushort[] _glyphs;
-		private readonly SKPoint[] _positions;
+		private readonly Vector2[] _positions;
 		private readonly Brush? _brush;
 
 		internal VerticalGlyphBox(
 			MathNode node,
 			MathTextSpan span,
-			SKFont font,
+			IFont font,
 			ushort[] glyphs,
-			SKPoint[] positions,
+			Vector2[] positions,
 			float width,
 			float ascent,
 			float descent,
@@ -1178,9 +1166,9 @@ internal sealed class MathParsedText : IParsedText
 			var top = baseline - Ascent;
 			var bottom = baseline + Descent;
 			var verticalX = _isOpen ? x : x + Width - _thickness;
-			context.AddRule(new SKRect(verticalX, top, verticalX + _thickness, bottom), _brush);
-			context.AddRule(new SKRect(x, top, x + Width, top + _thickness), _brush);
-			context.AddRule(new SKRect(x, bottom - _thickness, x + Width, bottom), _brush);
+			context.AddRule(Ltrb(verticalX, top, verticalX + _thickness, bottom), _brush);
+			context.AddRule(Ltrb(x, top, x + Width, top + _thickness), _brush);
+			context.AddRule(Ltrb(x, bottom - _thickness, x + Width, bottom), _brush);
 			context.SetNodeBounds(Node, x, baseline, Width, Ascent, Descent);
 			context.SetIndex(
 				_span.Start,
@@ -1282,7 +1270,7 @@ internal sealed class MathParsedText : IParsedText
 			_denominator.Arrange(context, x + (Width - _denominator.Width) / 2, baseline + _denominatorBaseline);
 			var ruleY = baseline + _ruleOffset - _ruleThickness / 2;
 			context.AddRule(
-				new SKRect(x + _padding, ruleY, x + Width - _padding, ruleY + _ruleThickness),
+				Ltrb(x + _padding, ruleY, x + Width - _padding, ruleY + _ruleThickness),
 				_brush);
 			var numeratorSpan = context.GetSpan(((MathFractionNode)Node).Numerator);
 			context.SetIndex(
@@ -1355,7 +1343,7 @@ internal sealed class MathParsedText : IParsedText
 			_radicand.Arrange(context, x + _radicandX, baseline);
 			var ruleY = baseline + _barY;
 			context.AddRule(
-				new SKRect(
+				Ltrb(
 					x + _radicandX - 1,
 					ruleY,
 					x + _radicandX + _radicand.Width,
@@ -2022,8 +2010,8 @@ internal sealed class MathParsedText : IParsedText
 
 			_fallback = new Run
 			{
-				FontFamily = new FontFamily(defaultFontDetails.SKFont.Typeface.FamilyName),
-				FontSize = defaultFontDetails.SKFontSize,
+				FontFamily = new FontFamily(defaultFontDetails.FontHandle.FamilyName),
+				FontSize = defaultFontDetails.FontSize,
 				Foreground = defaultForeground,
 			};
 		}

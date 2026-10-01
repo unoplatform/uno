@@ -1,10 +1,9 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Xml;
 using Microsoft.UI.Xaml.Documents;
-using SkiaSharp;
 
 namespace Microsoft.UI.Text;
 
@@ -117,10 +116,19 @@ public partial class RichEditTextDocument
 		];
 		foreach (var candidate in candidates)
 		{
-			using var typeface = SKTypeface.FromFamilyName(candidate);
-			if (typeface is not null && MathFontMetrics.HasOpenTypeMathTable(typeface))
+			var (_, loadedTask) = global::Microsoft.UI.Xaml.Documents.TextFormatting.FontDetailsCache.GetFont(
+				candidate,
+				16,
+				global::Microsoft.UI.Text.FontWeights.Normal,
+				global::Windows.UI.Text.FontStretch.Normal,
+				global::Windows.UI.Text.FontStyle.Normal);
+			// Only an installed font answers synchronously; a missing family resolves to the default font, which is rejected by name.
+			if (loadedTask.IsCompletedSuccessfully
+				&& loadedTask.Result.FontHandle is { } font
+				&& string.Equals(font.FamilyName, candidate, StringComparison.OrdinalIgnoreCase)
+				&& MathFontMetrics.HasOpenTypeMathTable(font))
 			{
-				return typeface.FamilyName;
+				return font.FamilyName;
 			}
 		}
 

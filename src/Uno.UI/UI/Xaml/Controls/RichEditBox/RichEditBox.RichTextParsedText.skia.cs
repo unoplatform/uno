@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -192,15 +192,11 @@ partial class RichEditBox
 			var highlighterList = highlighters as IReadOnlyList<TextHighlighter>
 				?? new List<TextHighlighter>(highlighters);
 			var caretParagraph = caret is null ? -1 : FindParagraphForIndex(caret.Value.index);
-			var clip = session.Canvas.LocalClipBounds;
-			var firstVisibleParagraph = FindFirstParagraphEndingAfter(clip.Top);
-			for (var i = firstVisibleParagraph; i < _paragraphs.Length; i++)
+			// Every paragraph is recorded: the recording may be replayed under a different clip (scrolling), so
+			// culling against the clip at record time could leave blank paragraphs.
+			for (var i = 0; i < _paragraphs.Length; i++)
 			{
 				var paragraph = _paragraphs[i];
-				if (paragraph.Top >= clip.Bottom)
-				{
-					break;
-				}
 				(int index, CompositionBrush brush, float thickness)? localCaret = null;
 				if (i == caretParagraph && caret is { } caretValue)
 				{
@@ -218,15 +214,15 @@ partial class RichEditBox
 					paragraph.Start,
 					paragraph.End);
 
-				session.Canvas.Save();
-				session.Canvas.Translate(0, (float)paragraph.Top);
+				session.Session.Save();
+				session.Session.Translate(0, (float)paragraph.Top);
 				paragraph.ParsedText.Draw(
 					owner,
 					session,
 					localCaret,
 					localHighlighters,
 					localComposition);
-				session.Canvas.Restore();
+				session.Session.Restore();
 			}
 		}
 

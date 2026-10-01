@@ -1,9 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Buffers.Binary;
 using System.IO;
-using SkiaSharp;
+using Windows.Graphics.Imaging;
+using Uno.UI.Composition.Drawing;
 using Windows.Storage.Streams;
 
 namespace Microsoft.UI.Text
@@ -27,7 +28,7 @@ namespace Microsoft.UI.Text
 		internal const long MaxDecodedPixels = 4L * 1024 * 1024;
 
 		private byte[] _data = Array.Empty<byte>();
-		private SKImage? _decodedImage;
+		private IImage? _decodedImage;
 		private long _decodedPixelCount = -1;
 		private InlineImageEncoding _encoding;
 
@@ -196,9 +197,7 @@ namespace Microsoft.UI.Text
 				return _decodedPixelCount;
 			}
 
-			using var data = SKData.CreateCopy(_data);
-			using var codec = SKCodec.Create(data);
-			return _decodedPixelCount = codec is null ? long.MaxValue : (long)codec.Info.Width * codec.Info.Height;
+			return _decodedPixelCount = TryInspect(_data, out var width, out var height) ? (long)width * height : long.MaxValue;
 		}
 
 		internal void Validate()
@@ -224,13 +223,21 @@ namespace Microsoft.UI.Text
 			}
 		}
 
-		internal SKImage? GetDecodedImage()
+		internal IImage? GetDecodedImage()
 		{
 			if (_decodedImage is null && _data.Length > 0)
 			{
 				Validate();
-				using var data = SKData.CreateCopy(_data);
-				_decodedImage = SKImage.FromEncodedData(data);
+				using var stream = new MemoryStream(_data, writable: false);
+				if (ImageEncoderDecoder.Current.TryDecode(stream, null, null, out var frames))
+				{
+					// Inline objects are static: keep the first frame and release any animation frames.
+					_decodedImage = frames.Frames[0];
+					for (var i = 1; i < frames.Frames.Count; i++)
+					{
+						frames.Frames[i].Dispose();
+					}
+				}
 			}
 
 			return _decodedImage;
@@ -257,8 +264,11 @@ namespace Microsoft.UI.Text
 			}
 
 			var decoded = GetDecodedImage() ?? throw new ArgumentException("The inline image data is invalid.");
-			using var encoded = decoded.Encode(SKEncodedImageFormat.Png, 100);
-			if (encoded is null || encoded.Size is 0 or > MaxEncodedBytes)
+			var pixels = new byte[(long)decoded.PixelWidth * decoded.PixelHeight * 4];
+			decoded.CopyPixels(pixels);
+			using var encoded = new MemoryStream();
+			ImageEncoderDecoder.Current.Encode(encoded, pixels, decoded.PixelWidth, decoded.PixelHeight, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, BitmapEncoderFormat.Png, 100);
+			if (encoded.Length is 0 or > MaxEncodedBytes)
 			{
 				throw new ArgumentException("The inline image cannot be represented safely in RTF.");
 			}
@@ -267,13 +277,106 @@ namespace Microsoft.UI.Text
 			return encoded.ToArray();
 		}
 
-		private static bool TryInspect(byte[] data, out int width, out int height)
+		// Reads the pixel size from the container header only, so oversized images are rejected before decoding.
+		private static bool TryInspect(ReadOnlySpan<byte> data, out int width, out int height)
 		{
-			using var encoded = SKData.CreateCopy(data);
-			using var codec = SKCodec.Create(encoded);
-			width = codec?.Info.Width ?? 0;
-			height = codec?.Info.Height ?? 0;
-			return codec is not null;
+			width = height = 0;
+			switch (DetectEncoding(data))
+			{
+				case InlineImageEncoding.Png when data.Length >= 24:
+					width = (int)BinaryPrimitives.ReadUInt32BigEndian(data.Slice(16, 4));
+					height = (int)BinaryPrimitives.ReadUInt32BigEndian(data.Slice(20, 4));
+					break;
+				case InlineImageEncoding.Gif when data.Length >= 10:
+					width = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(6, 2));
+					height = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(8, 2));
+					break;
+				case InlineImageEncoding.Bmp when data.Length >= 26:
+					if (BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(14, 4)) == 12)
+					{
+						width = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(18, 2));
+						height = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(20, 2));
+					}
+					else
+					{
+						width = BinaryPrimitives.ReadInt32LittleEndian(data.Slice(18, 4));
+						height = Math.Abs(BinaryPrimitives.ReadInt32LittleEndian(data.Slice(22, 4)));
+					}
+					break;
+				case InlineImageEncoding.Jpeg:
+					TryInspectJpeg(data, out width, out height);
+					break;
+				case InlineImageEncoding.Webp:
+					TryInspectWebp(data, out width, out height);
+					break;
+			}
+
+			return width > 0 && height > 0;
+		}
+
+		private static void TryInspectJpeg(ReadOnlySpan<byte> data, out int width, out int height)
+		{
+			width = height = 0;
+			var offset = 2;
+			while (offset + 4 <= data.Length)
+			{
+				if (data[offset] != 0xff)
+				{
+					return;
+				}
+
+				var marker = data[offset + 1];
+				if (marker == 0xff)
+				{
+					offset++;
+					continue;
+				}
+
+				var length = BinaryPrimitives.ReadUInt16BigEndian(data.Slice(offset + 2, 2));
+				// SOF0-SOF15, except DHT (C4), JPG (C8) and DAC (CC), carry the frame size.
+				if (marker is >= 0xc0 and <= 0xcf and not 0xc4 and not 0xc8 and not 0xcc)
+				{
+					if (offset + 9 <= data.Length)
+					{
+						height = BinaryPrimitives.ReadUInt16BigEndian(data.Slice(offset + 5, 2));
+						width = BinaryPrimitives.ReadUInt16BigEndian(data.Slice(offset + 7, 2));
+					}
+					return;
+				}
+
+				if (length < 2)
+				{
+					return;
+				}
+				offset += 2 + length;
+			}
+		}
+
+		private static void TryInspectWebp(ReadOnlySpan<byte> data, out int width, out int height)
+		{
+			width = height = 0;
+			if (data.Length < 30)
+			{
+				return;
+			}
+
+			var chunk = data.Slice(12, 4);
+			if (chunk.SequenceEqual("VP8X"u8))
+			{
+				width = 1 + (data[24] | data[25] << 8 | data[26] << 16);
+				height = 1 + (data[27] | data[28] << 8 | data[29] << 16);
+			}
+			else if (chunk.SequenceEqual("VP8L"u8) && data[20] == 0x2f)
+			{
+				var bits = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(21, 4));
+				width = (int)(bits & 0x3fff) + 1;
+				height = (int)((bits >> 14) & 0x3fff) + 1;
+			}
+			else if (chunk.SequenceEqual("VP8 "u8))
+			{
+				width = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(26, 2)) & 0x3fff;
+				height = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(28, 2)) & 0x3fff;
+			}
 		}
 
 		private static InlineImageEncoding DetectEncoding(ReadOnlySpan<byte> data)
