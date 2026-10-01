@@ -21,7 +21,7 @@
 | The validation visual state groups (§2) — **shipped**, see §2.0 | Everything in spec 059 — the transport layer, the attached properties, the validation-property attribute |
 | Visual-state contention with `CommonStates` (§3) | |
 | Per-control template changes and the error presenter (§4) | |
-| `IInputValidationControl.ErrorTemplate` (§5) — **shipped**; rendered by §4.1 into any template that has an `ErrorPresenter` | |
+| `ErrorTemplate` (§5) — **shipped** as the `Validation.ErrorTemplate` attached property; rendered by §4.1 into any template that has an `ErrorPresenter` | |
 | The floated `IsRequired` indicator (§6) | |
 
 The group names collide with nothing: before implementation `grep -rn "ValidationStates" src` returned zero
@@ -49,10 +49,9 @@ leaves the error group where it was.
 
 **Q6 is answered.** Two framework triggers, plus per-control call sites:
 
-1. The `InputValidationMode` / `InputValidationKind` / `HasValidationErrors` changed callbacks — protected
-   statics on `Control`, which each participating control registers its own dependency properties with.
-   Covers all four participants with no per-control code, and being protected rather than internal is what
-   lets a control outside Uno.UI register against the same three.
+1. The changed handlers of the `Validation.Mode` / `Validation.Kind` / `Validation.HasErrors` attached
+   properties, which Uno.UI.Extras owns and which call into `Control` (059 §10d). This covers every
+   participant, the four built-in ones and any third-party control, with no per-control code.
 2. `FrameworkElement.InvokeApplyTemplate`, immediately after `OnApplyTemplate()` — which also answers §2.2's
    open sub-question about re-application after template realization. Measured by mutation, not assumed: with
    it removed, a control without a per-control call site that reported errors before its template existed
@@ -72,8 +71,8 @@ The participants are WinUI's: the four controls in `CControl`'s type-index switc
 `ToggleSwitch` and `ToggleButton` (so `CheckBox` and `RadioButton`); those were removed to match WinUI, and
 059 §10b records it.
 
-`IInputValidationControl.ErrorTemplate` (§5) shipped with this, as a dependency property registered by each
-participating control. Nothing renders it yet — that needs §4.
+`ErrorTemplate` (§5) shipped with this, now as the `Validation.ErrorTemplate` attached property (059 §10d).
+§4.1 renders it.
 
 ### 2.1–2.2 The original proposal, as written
 
@@ -245,10 +244,9 @@ template's `ErrorPresenter` (`ContentPresenter`, normally `x:Load="False"`) is r
 `ErrorTemplate`, whose `DataContext` is the control. `Compact` (and `Auto`) wraps it in the tooltip of
 `DefaultCompactErrorIconTemplate`, now in `Style/Generic/SystemResources.xaml` as in WinUI's `generic.xaml`.
 
-Triggers, as in WinUI: the first error (WinUI's `RaiseValidationErrorEvent` check, here the `HasValidationErrors`
-changed callback), `InputValidationMode` changed, and `ErrorTemplate` changed — through a new protected
-`OnErrorTemplateChanged` each participant registers. Changing `InputValidationKind` only refreshes the states,
-as in WinUI, so the content keeps its shape until the next first error.
+Triggers, as in WinUI: the first error (WinUI's `RaiseValidationErrorEvent` check, here the `Validation.HasErrors`
+changed handler), `Validation.Mode` changed, and `Validation.ErrorTemplate` changed. Changing `Validation.Kind`
+only refreshes the states, as in WinUI, so the content keeps its shape until the next first error.
 
 Deviations:
 
@@ -261,6 +259,10 @@ None of the built-in templates has an `ErrorPresenter` yet, so this is inert in 
 template work above lands.
 
 ## 5. `IInputValidationControl.ErrorTemplate`
+
+> **Shipped differently.** There is no `IInputValidationControl` any more: `ErrorTemplate` is an attached
+> property on `Uno.Extras.Input.Validation`, alongside the rest of the surface (059 §10d). The sketch below is
+> the original proposal.
 
 Held back from spec 059 deliberately: with no templated error presenter it would have had no consumer, and
 shipping a public interface with a dead member is worse than adding it here.
