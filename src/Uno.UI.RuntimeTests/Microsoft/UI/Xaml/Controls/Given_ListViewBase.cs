@@ -1719,16 +1719,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForIdle();
 
-			ScrollTo(list, 1000000); // Scroll to end
-
-			await Task.Delay(200);
-			await WindowHelper.WaitForIdle();
+			// The scrolls are animated: wait for each to settle rather than for a fixed time.
+			await ScrollToAndWait(list, 1000000); // Scroll to end
 
 			ScrollTo(list, 50); // scroll back up but not all the way
-			ScrollTo(list, 0);
-
-			await Task.Delay(600);
-			await WindowHelper.WaitForIdle();
+			await ScrollToAndWait(list, 0);
 
 			var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
 
@@ -4346,9 +4341,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				var scrollPosition = NumberOfItemsShownAtATime * ItemHeight;
 
-				ScrollTo(SUT, scrollPosition);
-				await Task.Delay(500);
-				await WindowHelper.WaitForIdle();
+				await ScrollToAndWait(SUT, scrollPosition);
 				var seenNewTextBlock = false;
 				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
 				{
