@@ -145,7 +145,8 @@ namespace Microsoft.UI.Text
 				encoding = InlineImageEncoding.Bmp;
 			}
 
-			var pixelCount = (long)pixelWidth * pixelHeight;
+			// The decoder materializes every frame, so the budget covers all of them, not just the canvas.
+			var pixelCount = (long)pixelWidth * pixelHeight * GetFrameCount(normalized);
 			if (pixelWidth is <= 0 or > MaxDimension
 				|| pixelHeight is <= 0 or > MaxDimension
 				|| pixelCount > MaxDecodedPixels)
@@ -197,7 +198,7 @@ namespace Microsoft.UI.Text
 				return _decodedPixelCount;
 			}
 
-			return _decodedPixelCount = TryInspect(_data, out var width, out var height) ? (long)width * height : long.MaxValue;
+			return _decodedPixelCount = TryInspect(_data, out var width, out var height) ? (long)width * height * GetFrameCount(_data) : long.MaxValue;
 		}
 
 		internal void Validate()
@@ -300,7 +301,8 @@ namespace Microsoft.UI.Text
 					else
 					{
 						width = BinaryPrimitives.ReadInt32LittleEndian(data.Slice(18, 4));
-						height = Math.Abs(BinaryPrimitives.ReadInt32LittleEndian(data.Slice(22, 4)));
+						var signedHeight = BinaryPrimitives.ReadInt32LittleEndian(data.Slice(22, 4));
+						height = signedHeight == int.MinValue ? 0 : Math.Abs(signedHeight);
 					}
 					break;
 				case InlineImageEncoding.Jpeg:
@@ -312,6 +314,112 @@ namespace Microsoft.UI.Text
 			}
 
 			return width > 0 && height > 0;
+		}
+
+		// Frames an animated container declares. Malformed or truncated data counts what it could read (at least 1).
+		private static long GetFrameCount(ReadOnlySpan<byte> data)
+			=> Math.Max(1, DetectEncoding(data) switch
+			{
+				InlineImageEncoding.Gif => CountGifFrames(data),
+				InlineImageEncoding.Png => CountApngFrames(data),
+				InlineImageEncoding.Webp => CountWebpFrames(data),
+				_ => 1,
+			});
+
+		private static long CountGifFrames(ReadOnlySpan<byte> data)
+		{
+			if (data.Length < 13)
+			{
+				return 1;
+			}
+
+			var offset = 13;
+			if ((data[10] & 0x80) != 0)
+			{
+				offset += 3 << ((data[10] & 0x07) + 1);
+			}
+
+			long frames = 0;
+			while (offset < data.Length)
+			{
+				switch (data[offset])
+				{
+					case 0x2C: // image descriptor
+						frames++;
+						if (offset + 10 > data.Length)
+						{
+							return frames;
+						}
+						var packed = data[offset + 9];
+						offset += 10;
+						if ((packed & 0x80) != 0)
+						{
+							offset += 3 << ((packed & 0x07) + 1);
+						}
+						offset++; // LZW minimum code size
+						offset = SkipGifSubBlocks(data, offset);
+						break;
+					case 0x21: // extension
+						offset = SkipGifSubBlocks(data, offset + 2);
+						break;
+					default: // trailer (0x3B) or garbage
+						return frames;
+				}
+			}
+
+			return frames;
+		}
+
+		private static int SkipGifSubBlocks(ReadOnlySpan<byte> data, int offset)
+		{
+			while (offset < data.Length && data[offset] != 0)
+			{
+				offset += data[offset] + 1;
+			}
+
+			return offset + 1;
+		}
+
+		private static long CountApngFrames(ReadOnlySpan<byte> data)
+		{
+			var offset = 8;
+			while (offset + 12 <= data.Length)
+			{
+				var length = BinaryPrimitives.ReadUInt32BigEndian(data.Slice(offset, 4));
+				var type = data.Slice(offset + 4, 4);
+				if (type.SequenceEqual("acTL"u8))
+				{
+					return offset + 12 <= data.Length ? BinaryPrimitives.ReadUInt32BigEndian(data.Slice(offset + 8, 4)) : 1;
+				}
+				if (type.SequenceEqual("IDAT"u8) || length > int.MaxValue - 12)
+				{
+					return 1;
+				}
+				offset += 12 + (int)length;
+			}
+
+			return 1;
+		}
+
+		private static long CountWebpFrames(ReadOnlySpan<byte> data)
+		{
+			long frames = 0;
+			var offset = 12;
+			while (offset + 8 <= data.Length)
+			{
+				if (data.Slice(offset, 4).SequenceEqual("ANMF"u8))
+				{
+					frames++;
+				}
+				var size = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(offset + 4, 4));
+				if (size > int.MaxValue - 9)
+				{
+					break;
+				}
+				offset += 8 + (int)size + (int)(size & 1);
+			}
+
+			return frames;
 		}
 
 		private static void TryInspectJpeg(ReadOnlySpan<byte> data, out int width, out int height)
