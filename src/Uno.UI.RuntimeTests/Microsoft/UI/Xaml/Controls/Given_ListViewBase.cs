@@ -1658,15 +1658,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			for (int i = 0; i < 3; i++)
 			{
-				ScrollTo(list, 1000000); // Scroll to end
+				// The scrolls are animated: wait for each to settle rather than for a fixed time, which a renderer
+				// slower than the one the delays were tuned on outlasts.
+				await ScrollToAndWait(list, 1000000); // Scroll to end
 
-				await Task.Delay(200);
-				await WindowHelper.WaitForIdle();
-
-				ScrollTo(list, 5); // Scroll back up
-
-				await Task.Delay(600);
-				await WindowHelper.WaitForIdle();
+				await ScrollToAndWait(list, 5); // Scroll back up
 
 				var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
 
@@ -3797,15 +3793,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(1000);
 			var initial = GetCurrenState();
 
-			// scroll to bottom
-			ScrollTo(list, 10000);
-			await Task.Delay(500);
+			// scroll to bottom; the next batch arrives over a few frames, so wait for it rather than for a fixed time
+			await ScrollToAndWait(list, 10000);
+			await WindowHelper.WaitFor(() => source.Count >= initial.Count + BatchSize && GetCurrenState().LastMaterialized > initial.LastMaterialized, timeoutMS: 5000);
 			await WindowHelper.WaitForIdle();
 			var first = GetCurrenState();
 
 			// scroll to bottom
-			ScrollTo(list, 10000);
-			await Task.Delay(500);
+			await ScrollToAndWait(list, 10000);
+			await WindowHelper.WaitFor(() => source.Count >= first.Count + BatchSize && GetCurrenState().LastMaterialized > first.LastMaterialized, timeoutMS: 5000);
 			await WindowHelper.WaitForIdle();
 			var second = GetCurrenState();
 
