@@ -182,7 +182,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			// adapter) is negotiated past rather than leaving the window with no backend at all. The variable is
 			// inherited by child processes, which need not ship what the parent does.
 			Drawing.GraphicsRegistry.RegisterDefault(
-				InvokeSkiaFactory<Drawing.IGraphicsProvider>("CreateGraphicsProvider") is { } skiaFallback
+				InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+					?.GetMethod("CreateGraphicsProvider", FactoryFlags, Type.EmptyTypes)) is { } skiaFallback
 					? new[] { webGpuProvider, skiaFallback }
 					: new[] { webGpuProvider });
 			if (!Drawing.GeometryFactory.IsRegistered
