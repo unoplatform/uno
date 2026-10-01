@@ -121,6 +121,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 		private RichRunFormat RichFormat => _richFormat ??= new();
 
+		internal bool HasRichFormat => _richFormat is not null;
+
 		internal InlineObjectInfo? InlineObject
 		{
 			get => _richFormat?.InlineObject;
