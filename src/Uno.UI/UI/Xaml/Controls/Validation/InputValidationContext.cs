@@ -7,9 +7,9 @@
 
 namespace Microsoft.UI.Xaml.Controls;
 
-// Not ported. IInputValidationControl.ValidationContext is commented out alongside it: nothing reads
-// MemberName, and IsInputRequired is the floated IsRequired indicator of specs/060, which needs a
-// template column of its own before it means anything.
+// Not ported, nor is the ValidationContext member that carries it: nothing reads MemberName, and
+// IsInputRequired is the floated IsRequired indicator of specs/060, which needs a template column of its
+// own before it means anything.
 //
 // /// <summary>
 // /// Describes the member a control's input is validated against.

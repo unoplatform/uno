@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.Extras.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
@@ -112,7 +113,7 @@ public class Given_ValidationErrorPresenter
 		await WindowHelper.WaitForIdle();
 		var before = GetErrorPresenter(sut).Content;
 
-		sut.ErrorTemplate = (DataTemplate)_resources["ErrorBorderTemplate"];
+		Validation.SetErrorTemplate(sut, (DataTemplate)_resources["ErrorBorderTemplate"]);
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreNotSame(before, GetErrorPresenter(sut).Content);
@@ -128,7 +129,7 @@ public class Given_ValidationErrorPresenter
 		await WindowHelper.WaitForIdle();
 		Assert.IsInstanceOfType<ElementStub>(FindErrorPresenterPart(sut), "a control that does not participate presents nothing");
 
-		sut.InputValidationMode = InputValidationMode.Auto;
+		Validation.SetMode(sut, InputValidationMode.Auto);
 		await WindowHelper.WaitForIdle();
 
 		Assert.IsInstanceOfType<TextBlock>(GetErrorPresenter(sut).Content);
@@ -140,17 +141,14 @@ public class Given_ValidationErrorPresenter
 		// Uno deviation: WinUI does not call EnsureErrors on template application, so this is what the
 		// InvokeApplyTemplate anchor adds.
 		var source = new ErrorSource();
-		var sut = new TextBox
-		{
-			DataContext = source,
-			InputValidationKind = InputValidationKind.Inline,
-			ErrorTemplate = ErrorTextTemplate,
-		};
-		sut.InputValidationMode = InputValidationMode.Auto;
+		var sut = new TextBox { DataContext = source };
+		Validation.SetKind(sut, InputValidationKind.Inline);
+		Validation.SetErrorTemplate(sut, ErrorTextTemplate);
+		Validation.SetMode(sut, InputValidationMode.Auto);
 		sut.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		source.SetErrors("required");
-		Assert.IsTrue(sut.HasValidationErrors, "the error should reach the control before any template exists");
+		Assert.IsTrue(Validation.GetHasErrors(sut), "the error should reach the control before any template exists");
 
 		sut.Template = PresenterTemplate;
 		await UITestHelper.Load(sut);
@@ -186,7 +184,7 @@ public class Given_ValidationErrorPresenter
 		source.SetErrors("required");
 		await WindowHelper.WaitForIdle();
 
-		Assert.IsTrue(sut.HasValidationErrors);
+		Assert.IsTrue(Validation.GetHasErrors(sut));
 	}
 
 	private static async Task<(TextBox Sut, ErrorSource Source)> Bind(
@@ -200,11 +198,11 @@ public class Given_ValidationErrorPresenter
 		{
 			DataContext = source,
 			Template = template ?? PresenterTemplate,
-			InputValidationKind = kind,
-			ErrorTemplate = hasErrorTemplate ? ErrorTextTemplate : null,
 		};
 
-		sut.InputValidationMode = mode;
+		Validation.SetKind(sut, kind);
+		Validation.SetErrorTemplate(sut, hasErrorTemplate ? ErrorTextTemplate : null);
+		Validation.SetMode(sut, mode);
 		sut.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		await UITestHelper.Load(sut);

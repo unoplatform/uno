@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Extras.Input;
 using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.InputValidation;
@@ -60,49 +61,15 @@ public partial class Given_Validation_Controls
 	{
 		var source = new Model();
 		var textBox = new TextBox { DataContext = source };
-		textBox.InputValidationMode = InputValidationMode.Auto;
+		Validation.SetMode(textBox, InputValidationMode.Auto);
 		textBox.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(Model.Name)) });
 
 		source.SetError(nameof(Model.Name), "required");
 
-		Assert.IsTrue(textBox.HasValidationErrors);
+		Assert.IsTrue(Validation.GetHasErrors(textBox));
 		CollectionAssert.AreEqual(
 			new object[] { "required" },
-			textBox.ValidationErrors.Select(e => e.ErrorMessage).ToArray());
-	}
-
-	[TestMethod]
-	public void When_ErrorChanged_Is_Raised()
-	{
-		var source = new Model();
-		var textBox = new TextBox { DataContext = source };
-		textBox.InputValidationMode = InputValidationMode.Auto;
-		textBox.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(Model.Name)) });
-
-		object? sender = null;
-		string? propertyName = null;
-		var raised = 0;
-
-		void OnErrorChanged(object? s, DataErrorsChangedEventArgs args)
-		{
-			raised++;
-			sender = s;
-			propertyName = args.PropertyName;
-		}
-
-		((IInputValidationControl)textBox).ErrorChanged += OnErrorChanged;
-
-		source.SetError(nameof(Model.Name), "required");
-
-		Assert.AreEqual(1, raised);
-		Assert.AreSame(textBox, sender);
-		Assert.AreEqual(nameof(Model.Name), propertyName);
-
-		((IInputValidationControl)textBox).ErrorChanged -= OnErrorChanged;
-
-		source.SetError(nameof(Model.Name), "still required");
-
-		Assert.AreEqual(1, raised, "the handler was removed");
+			Validation.GetErrors(textBox)!.Select(e => e.ErrorMessage).ToArray());
 	}
 
 	[TestMethod]
@@ -112,10 +79,10 @@ public partial class Given_Validation_Controls
 
 		source.SetError(nameof(Model.Name), "required");
 
-		Assert.IsTrue(comboBox.HasValidationErrors);
+		Assert.IsTrue(Validation.GetHasErrors(comboBox));
 		CollectionAssert.AreEqual(
 			new object[] { "required" },
-			comboBox.ValidationErrors.Select(e => e.ErrorMessage).ToArray());
+			Validation.GetErrors(comboBox)!.Select(e => e.ErrorMessage).ToArray());
 	}
 
 	[TestMethod]
@@ -125,7 +92,7 @@ public partial class Given_Validation_Controls
 
 		source.SetError(nameof(Model.Name), "required");
 
-		Assert.IsFalse(comboBox.HasValidationErrors);
+		Assert.IsFalse(Validation.GetHasErrors(comboBox));
 	}
 
 	[TestMethod]
@@ -140,11 +107,11 @@ public partial class Given_Validation_Controls
 
 			var (byIndex, indexSource) = BindComboBox(new Microsoft.UI.Xaml.Controls.ComboBox(), Selector.SelectedIndexProperty, nameof(Model.Index));
 			indexSource.SetError(nameof(Model.Index), "required");
-			Assert.IsTrue(byIndex.HasValidationErrors);
+			Assert.IsTrue(Validation.GetHasErrors(byIndex));
 
 			var (byItem, itemSource) = BindComboBox(new Microsoft.UI.Xaml.Controls.ComboBox(), Selector.SelectedItemProperty, nameof(Model.Name));
 			itemSource.SetError(nameof(Model.Name), "required");
-			Assert.IsFalse(byItem.HasValidationErrors);
+			Assert.IsFalse(Validation.GetHasErrors(byItem));
 		}
 		finally
 		{
@@ -162,7 +129,7 @@ public partial class Given_Validation_Controls
 
 		source.SetError(nameof(Model.Index), "required");
 
-		Assert.IsTrue(comboBox.HasValidationErrors);
+		Assert.IsTrue(Validation.GetHasErrors(comboBox));
 	}
 
 	private static (T ComboBox, Model Source) BindComboBox<T>(T comboBox, DependencyProperty property, string path)
@@ -172,7 +139,7 @@ public partial class Given_Validation_Controls
 		var source = new Model { Name = "first", Index = 0 };
 		comboBox.ItemsSource = new[] { "first", "second" };
 		comboBox.DataContext = source;
-		comboBox.InputValidationMode = InputValidationMode.Auto;
+		Validation.SetMode(comboBox, InputValidationMode.Auto);
 		comboBox.SetBinding(property, new Binding { Path = new PropertyPath(path), Mode = BindingMode.TwoWay });
 
 		return (comboBox, source);

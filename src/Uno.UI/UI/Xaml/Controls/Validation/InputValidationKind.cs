@@ -5,7 +5,7 @@
 
 #nullable enable
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Uno.Extras.Input;
 
 /// <summary>
 /// How a control presents the validation errors of its input.

@@ -11,10 +11,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Extras.Input;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation.Collections;
-using Windows.Foundation;
 
 namespace Uno.UI.Tests.InputValidation;
 
@@ -35,7 +35,7 @@ public partial class Given_Validation_Transport
 		var (control, source) = Bind();
 		source.SetErrors(nameof(Person.Name), "required");
 
-		Assert.IsFalse(control.HasValidationErrors);
+		Assert.IsFalse(control.HasErrors);
 	}
 
 	[TestMethod]
@@ -44,8 +44,8 @@ public partial class Given_Validation_Transport
 		var (control, source) = Bind(enable: false);
 		source.SetErrors(nameof(Person.Name), "required");
 
-		Assert.IsFalse(control.HasValidationErrors);
-		CollectionAssert.AreEqual(Array.Empty<object>(), control.ValidationErrors.Select(e => e.ErrorMessage).ToArray());
+		Assert.IsFalse(control.HasErrors);
+		CollectionAssert.AreEqual(Array.Empty<object>(), control.Errors.Select(e => e.ErrorMessage).ToArray());
 	}
 
 	[TestMethod]
@@ -55,15 +55,15 @@ public partial class Given_Validation_Transport
 
 		source.SetErrors(nameof(Person.Name), "required", "too short");
 
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 		CollectionAssert.AreEqual(
 			new object[] { "required", "too short" },
-			control.ValidationErrors.Select(e => e.ErrorMessage).ToArray());
+			control.Errors.Select(e => e.ErrorMessage).ToArray());
 
 		source.SetErrors(nameof(Person.Name));
 
-		Assert.IsFalse(control.HasValidationErrors);
-		Assert.AreEqual(0, control.ValidationErrors.Count);
+		Assert.IsFalse(control.HasErrors);
+		Assert.AreEqual(0, control.Errors.Count);
 	}
 
 	[TestMethod]
@@ -75,10 +75,10 @@ public partial class Given_Validation_Transport
 
 		source.SetErrors(nameof(Person.Name), new ValidationResult("The Name field is required."));
 
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 		CollectionAssert.AreEqual(
 			new object[] { "The Name field is required." },
-			control.ValidationErrors.Select(e => e.ErrorMessage).ToArray());
+			control.Errors.Select(e => e.ErrorMessage).ToArray());
 	}
 
 	[TestMethod]
@@ -87,12 +87,12 @@ public partial class Given_Validation_Transport
 		// For {Binding Customer.Name} the INotifyDataErrorInfo is Customer, not the page view model.
 		var root = new Wrapper { Customer = new Person() };
 		var control = new ValidatingControl { DataContext = root };
-		control.InputValidationMode = InputValidationMode.Auto;
+		control.Mode = InputValidationMode.Auto;
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath("Customer.Name") });
 
 		root.Customer.SetErrors(nameof(Person.Name), "required");
 
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 	}
 
 	[TestMethod]
@@ -100,18 +100,18 @@ public partial class Given_Validation_Transport
 	{
 		var root = new Wrapper { Customer = new Person() };
 		var control = new ValidatingControl { DataContext = root };
-		control.InputValidationMode = InputValidationMode.Auto;
+		control.Mode = InputValidationMode.Auto;
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath("Customer.Name") });
 
 		root.Customer.SetErrors(nameof(Person.Name), "required");
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 
 		var replacement = new Person();
 		root.Customer = replacement;
-		Assert.IsFalse(control.HasValidationErrors, "the replacement reports no errors");
+		Assert.IsFalse(control.HasErrors, "the replacement reports no errors");
 
 		replacement.SetErrors(nameof(Person.Name), "still required");
-		Assert.IsTrue(control.HasValidationErrors, "the subscription followed the new leaf");
+		Assert.IsTrue(control.HasErrors, "the subscription followed the new leaf");
 	}
 
 	[TestMethod]
@@ -121,7 +121,7 @@ public partial class Given_Validation_Transport
 
 		source.SetErrors("SomeOtherProperty", "required");
 
-		Assert.IsFalse(control.HasValidationErrors);
+		Assert.IsFalse(control.HasErrors);
 	}
 
 	[TestMethod]
@@ -131,7 +131,7 @@ public partial class Given_Validation_Transport
 
 		source.SetErrorsWithoutName(nameof(Person.Name), "required");
 
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 	}
 
 	[TestMethod]
@@ -142,10 +142,10 @@ public partial class Given_Validation_Transport
 		var (control, source) = Bind();
 
 		source.SetErrors(nameof(Person.Name), "required");
-		var first = control.ValidationErrors;
+		var first = control.Errors;
 
 		source.RaiseErrorsChanged(nameof(Person.Name));
-		var second = control.ValidationErrors;
+		var second = control.Errors;
 
 		Assert.AreSame(first, second);
 	}
@@ -159,11 +159,11 @@ public partial class Given_Validation_Transport
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
 
 		source.SetErrors(nameof(Person.Name), "required");
-		Assert.IsFalse(control.HasValidationErrors, "not opted in yet");
+		Assert.IsFalse(control.HasErrors, "not opted in yet");
 
-		control.InputValidationMode = InputValidationMode.Auto;
+		control.Mode = InputValidationMode.Auto;
 
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 	}
 
 	[TestMethod]
@@ -171,11 +171,11 @@ public partial class Given_Validation_Transport
 	{
 		var (control, source) = Bind();
 		source.SetErrors(nameof(Person.Name), "required");
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 
-		control.InputValidationMode = InputValidationMode.Disabled;
+		control.Mode = InputValidationMode.Disabled;
 
-		Assert.IsFalse(control.HasValidationErrors);
+		Assert.IsFalse(control.HasErrors);
 	}
 
 	[TestMethod]
@@ -188,11 +188,11 @@ public partial class Given_Validation_Transport
 		source.SetErrors(nameof(Person.Name), "required");
 
 		var control = new ValidatingControl { DataContext = source };
-		control.InputValidationMode = InputValidationMode.Auto;
+		control.Mode = InputValidationMode.Auto;
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
 
 		Assert.AreEqual(string.Empty, control.Text);
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 	}
 
 	[TestMethod]
@@ -200,22 +200,22 @@ public partial class Given_Validation_Transport
 	{
 		var (control, source) = Bind();
 		source.SetErrors(nameof(Person.Name), "required");
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 
 		var replacement = new Person();
 		control.DataContext = replacement;
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
 
-		Assert.IsFalse(control.HasValidationErrors, "the replaced expression must not keep reporting");
+		Assert.IsFalse(control.HasErrors, "the replaced expression must not keep reporting");
 
 		replacement.SetErrors(nameof(Person.Name), "required");
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 
 		source.SetErrors(nameof(Person.Name), "stale");
-		Assert.IsTrue(control.HasValidationErrors, "the old source must no longer be observed");
+		Assert.IsTrue(control.HasErrors, "the old source must no longer be observed");
 		CollectionAssert.AreEqual(
 			new object[] { "required" },
-			control.ValidationErrors.Select(e => e.ErrorMessage).ToArray());
+			control.Errors.Select(e => e.ErrorMessage).ToArray());
 	}
 
 	[TestMethod]
@@ -223,14 +223,14 @@ public partial class Given_Validation_Transport
 	{
 		var (control, source) = Bind();
 		source.SetErrors(nameof(Person.Name), "required");
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 
 		control.ClearValue(ValidatingControl.TextProperty);
 
-		Assert.IsFalse(control.HasValidationErrors);
+		Assert.IsFalse(control.HasErrors);
 
 		source.SetErrors(nameof(Person.Name), "ignored");
-		Assert.IsFalse(control.HasValidationErrors, "the subscription is gone");
+		Assert.IsFalse(control.HasErrors, "the subscription is gone");
 	}
 
 	[TestMethod]
@@ -238,12 +238,12 @@ public partial class Given_Validation_Transport
 	{
 		var source = new Person();
 		var control = new NonValidatingControl { DataContext = source };
-		control.InputValidationMode = InputValidationMode.Auto;
+		control.Mode = InputValidationMode.Auto;
 		control.SetBinding(NonValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
 
 		source.SetErrors(nameof(Person.Name), "required");
 
-		Assert.IsFalse(control.HasValidationErrors);
+		Assert.IsFalse(control.HasErrors);
 	}
 
 	[TestMethod]
@@ -259,15 +259,15 @@ public partial class Given_Validation_Transport
 
 			var source = new Person();
 			var control = new NonValidatingControl { DataContext = source };
-			control.InputValidationMode = InputValidationMode.Auto;
+			control.Mode = InputValidationMode.Auto;
 			control.SetBinding(NonValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
 
 			source.SetErrors(nameof(Person.Name), "required");
 
-			Assert.IsTrue(control.HasValidationErrors);
+			Assert.IsTrue(control.HasErrors);
 			CollectionAssert.AreEqual(
 				new object[] { "required" },
-				control.ValidationErrors.Select(e => e.ErrorMessage).ToArray());
+				control.Errors.Select(e => e.ErrorMessage).ToArray());
 		}
 		finally
 		{
@@ -279,10 +279,10 @@ public partial class Given_Validation_Transport
 	public void When_Source_Does_Not_Implement_The_Interface()
 	{
 		var control = new ValidatingControl { DataContext = new PlainSource() };
-		control.InputValidationMode = InputValidationMode.Auto;
+		control.Mode = InputValidationMode.Auto;
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath("Name") });
 
-		Assert.IsFalse(control.HasValidationErrors);
+		Assert.IsFalse(control.HasErrors);
 	}
 
 	[TestMethod]
@@ -293,7 +293,7 @@ public partial class Given_Validation_Transport
 		// microsoft-ui-xaml#4642 in reverse, validating {Binding} but silently never an x:Bind.
 		var page = new Page { ViewModel = new Person() };
 		var control = new ValidatingControl();
-		control.InputValidationMode = InputValidationMode.Auto;
+		control.Mode = InputValidationMode.Auto;
 
 		var binding = new Binding { Mode = BindingMode.OneWay, CompiledSource = page };
 		binding.SetBindingXBindProvider(
@@ -307,10 +307,10 @@ public partial class Given_Validation_Transport
 
 		page.ViewModel.SetErrors(nameof(Person.Name), "required");
 
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 		CollectionAssert.AreEqual(
 			new object[] { "required" },
-			control.ValidationErrors.Select(e => e.ErrorMessage).ToArray());
+			control.Errors.Select(e => e.ErrorMessage).ToArray());
 	}
 
 	[TestMethod]
@@ -334,11 +334,11 @@ public partial class Given_Validation_Transport
 	private static WeakReference BindAndForget(Person source)
 	{
 		var control = new ValidatingControl { DataContext = source };
-		control.InputValidationMode = InputValidationMode.Auto;
+		control.Mode = InputValidationMode.Auto;
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
 
 		source.SetErrors(nameof(Person.Name), "required");
-		Assert.IsTrue(control.HasValidationErrors);
+		Assert.IsTrue(control.HasErrors);
 
 		return new WeakReference(control);
 	}
@@ -350,7 +350,7 @@ public partial class Given_Validation_Transport
 
 		if (enable)
 		{
-			control.InputValidationMode = InputValidationMode.Auto;
+			control.Mode = InputValidationMode.Auto;
 		}
 
 		control.SetBinding(ValidatingControl.TextProperty, new Binding { Path = new PropertyPath(nameof(Person.Name)) });
@@ -359,93 +359,21 @@ public partial class Given_Validation_Transport
 	}
 
 	/// <summary>
-	/// Implements the interface and registers all five dependency properties itself, the way a participating
-	/// control does. It sits in this assembly, which sees Uno.UI's internals, so it is not evidence about the
-	/// third-party contract — <see cref="Given_Validation_ThirdParty"/> is.
+	/// Reads the attached properties through instance members, for brevity. It sits in this assembly, which
+	/// sees Uno.UI's internals, so it is not evidence about the third-party contract —
+	/// <see cref="Given_Validation_ThirdParty"/> is.
 	/// </summary>
-	private partial class ValidationControlBase : Control, IInputValidationControl
+	private partial class ValidationControlBase : Control
 	{
-		public static DependencyProperty InputValidationModeProperty { get; } =
-			DependencyProperty.Register(
-				nameof(InputValidationMode),
-				typeof(InputValidationMode),
-				typeof(ValidationControlBase),
-				new FrameworkPropertyMetadata(
-					InputValidationMode.Disabled,
-					OnInputValidationModeChanged));
-
-		public static DependencyProperty InputValidationKindProperty { get; } =
-			DependencyProperty.Register(
-				nameof(InputValidationKind),
-				typeof(InputValidationKind),
-				typeof(ValidationControlBase),
-				new FrameworkPropertyMetadata(
-					InputValidationKind.Auto,
-					OnInputValidationKindChanged));
-
-		public static DependencyProperty HasValidationErrorsProperty { get; } =
-			DependencyProperty.Register(
-				nameof(HasValidationErrors),
-				typeof(bool),
-				typeof(ValidationControlBase),
-				new FrameworkPropertyMetadata(
-					default(bool),
-					OnHasValidationErrorsChanged));
-
-		public static DependencyProperty ValidationErrorsProperty { get; } =
-			DependencyProperty.Register(
-				nameof(ValidationErrors),
-				typeof(IObservableVector<InputValidationError>),
-				typeof(ValidationControlBase),
-				new FrameworkPropertyMetadata(default(IObservableVector<InputValidationError>)));
-
-		public static DependencyProperty ErrorTemplateProperty { get; } =
-			DependencyProperty.Register(
-				nameof(ErrorTemplate),
-				typeof(DataTemplate),
-				typeof(ValidationControlBase),
-				new FrameworkPropertyMetadata(default(DataTemplate), OnErrorTemplateChanged));
-
-		public InputValidationMode InputValidationMode
+		public InputValidationMode Mode
 		{
-			get => (InputValidationMode)GetValue(InputValidationModeProperty);
-			set => SetValue(InputValidationModeProperty, value);
+			get => Validation.GetMode(this);
+			set => Validation.SetMode(this, value);
 		}
 
-		public InputValidationKind InputValidationKind
-		{
-			get => (InputValidationKind)GetValue(InputValidationKindProperty);
-			set => SetValue(InputValidationKindProperty, value);
-		}
+		public bool HasErrors => Validation.GetHasErrors(this);
 
-		public bool HasValidationErrors => (bool)GetValue(HasValidationErrorsProperty);
-
-		public IObservableVector<InputValidationError> ValidationErrors
-			=> GetOrCreateValidationErrors(ValidationErrorsProperty);
-
-		public DataTemplate? ErrorTemplate
-		{
-			get => (DataTemplate?)GetValue(ErrorTemplateProperty);
-			set => SetValue(ErrorTemplateProperty, value);
-		}
-
-		public event TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs> HasValidationErrorsChanged
-		{
-			add => AddHasValidationErrorsChangedHandler(value);
-			remove => RemoveHasValidationErrorsChangedHandler(value);
-		}
-
-		public event TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs> ValidationError
-		{
-			add => AddValidationErrorHandler(value);
-			remove => RemoveValidationErrorHandler(value);
-		}
-
-		public event EventHandler<DataErrorsChangedEventArgs> ErrorChanged
-		{
-			add => AddErrorChangedHandler(value);
-			remove => RemoveErrorChangedHandler(value);
-		}
+		public IObservableVector<InputValidationError> Errors => Validation.GetErrors(this)!;
 	}
 
 	[InputValidationProperty("Text")]

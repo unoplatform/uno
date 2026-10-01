@@ -15,8 +15,9 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.Extras.Input;
 using Uno.UI.RuntimeTests.Helpers;
-using UnoValidation = Uno.UI.Xaml.Controls;
+using Windows.Foundation.Collections;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Controls.InputValidation;
@@ -139,7 +140,7 @@ public class Given_ValidationStates
 		await WindowHelper.WaitForIdle();
 		Assert.AreEqual("CompactErrors", StateOf(sut, ErrorStates));
 
-		sut.InputValidationMode = InputValidationMode.Disabled;
+		Validation.SetMode(sut, InputValidationMode.Disabled);
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreEqual("ValidationDisabled", StateOf(sut, EnabledStates));
@@ -155,12 +156,12 @@ public class Given_ValidationStates
 		// The case that makes the template-realization trigger load-bearing rather than defensive.
 		var source = new ErrorSource();
 		var sut = new TextBox { DataContext = source };
-		sut.InputValidationMode = InputValidationMode.Auto;
+		Validation.SetMode(sut, InputValidationMode.Auto);
 		sut.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		source.SetErrors("required");
 		Assert.IsTrue(
-			sut.HasValidationErrors,
+			Validation.GetHasErrors(sut),
 			"the error should reach the control before any template exists");
 
 		sut.Template = (ControlTemplate)XamlReader.Load(TemplateXaml);
@@ -177,12 +178,12 @@ public class Given_ValidationStates
 		// InvokeApplyTemplate anchor is the only thing that can put it in one.
 		var source = new ErrorSource();
 		var sut = new AutoSuggestBox { DataContext = source };
-		sut.InputValidationMode = InputValidationMode.Auto;
+		Validation.SetMode(sut, InputValidationMode.Auto);
 		sut.SetBinding(AutoSuggestBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		source.SetErrors("required");
 		Assert.IsTrue(
-			sut.HasValidationErrors,
+			Validation.GetHasErrors(sut),
 			"the error should reach the control before any template exists");
 
 		sut.Template = (ControlTemplate)XamlReader.Load(TemplateXaml);
@@ -194,13 +195,14 @@ public class Given_ValidationStates
 	[TestMethod]
 	public async Task When_Mode_Set_Through_A_Style_Then_Participates()
 	{
-		// The reason InputValidationMode is a dependency property on the control rather than an attached one:
-		// a Setter can target it. It could not target a plain property forwarding to an attached value.
+		// A Setter can target an attached dependency property. It could not target a plain property forwarding
+		// to one, which is why the properties are not mirrored onto the controls.
 		var style = (Style)XamlReader.Load("""
 			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				   xmlns:input="using:Uno.Extras.Input"
 				   TargetType="TextBox">
-				<Setter Property="InputValidationMode" Value="Auto" />
-				<Setter Property="InputValidationKind" Value="Inline" />
+				<Setter Property="input:Validation.Mode" Value="Auto" />
+				<Setter Property="input:Validation.Kind" Value="Inline" />
 			</Style>
 			""");
 
@@ -215,7 +217,7 @@ public class Given_ValidationStates
 
 		await UITestHelper.Load(sut);
 
-		Assert.AreEqual(InputValidationMode.Auto, sut.InputValidationMode);
+		Assert.AreEqual(InputValidationMode.Auto, Validation.GetMode(sut));
 		Assert.AreEqual("InlineValidationEnabled", StateOf(sut, EnabledStates));
 
 		source.SetErrors("required");
@@ -234,13 +236,13 @@ public class Given_ValidationStates
 			DataContext = source,
 			Template = (ControlTemplate)XamlReader.Load(TemplateXaml),
 		};
-		sut.SetBinding(TextBox.InputValidationModeProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.ValidationMode)) });
+		sut.SetBinding(Validation.ModeProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.ValidationMode)) });
 		sut.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		source.SetErrors("required");
 		await UITestHelper.Load(sut);
 
-		Assert.AreEqual(InputValidationMode.Auto, sut.InputValidationMode);
+		Assert.AreEqual(InputValidationMode.Auto, Validation.GetMode(sut));
 		Assert.AreEqual("CompactErrors", StateOf(sut, ErrorStates));
 	}
 
@@ -257,32 +259,33 @@ public class Given_ValidationStates
 	}
 
 	[TestMethod]
-	public async Task When_Errors_Change_Then_Events_Are_Raised()
+	public async Task When_Errors_Change_Then_Observable()
 	{
+		// What replaces the WinUI events: change notification on HasErrors, and VectorChanged on Errors.
 		var (sut, source) = await Bind();
-		var control = (IInputValidationControl)sut;
 
 		var hasErrorsChanges = new List<bool>();
-		var errorEvents = new List<InputValidationErrorEventAction>();
-		control.HasValidationErrorsChanged += (_, args) => hasErrorsChanges.Add(args.NewValue);
-		control.ValidationError += (_, args) => errorEvents.Add(args.Action);
+		var errorChanges = new List<CollectionChange>();
+		var errors = Validation.GetErrors(sut)!;
+		sut.RegisterPropertyChangedCallback(Validation.HasErrorsProperty, (s, _) => hasErrorsChanges.Add(Validation.GetHasErrors((Control)s)));
+		errors.VectorChanged += (_, args) => errorChanges.Add(args.CollectionChange);
 
 		source.SetErrors("required");
 		await WindowHelper.WaitForIdle();
 
 		CollectionAssert.AreEqual(new[] { true }, hasErrorsChanges);
-		CollectionAssert.AreEqual(new[] { InputValidationErrorEventAction.Added }, errorEvents);
+		CollectionAssert.AreEqual(new[] { CollectionChange.ItemInserted }, errorChanges);
 		CollectionAssert.AreEqual(
 			new[] { "required" },
-			control.ValidationErrors.Select(error => error.ErrorMessage).ToArray());
+			errors.Select(error => error.ErrorMessage).ToArray());
 
 		source.SetErrors();
 		await WindowHelper.WaitForIdle();
 
 		CollectionAssert.AreEqual(new[] { true, false }, hasErrorsChanges);
 		CollectionAssert.AreEqual(
-			new[] { InputValidationErrorEventAction.Added, InputValidationErrorEventAction.Removed },
-			errorEvents);
+			new[] { CollectionChange.ItemInserted, CollectionChange.ItemRemoved },
+			errorChanges);
 	}
 
 	private static async Task<(TextBox Sut, ErrorSource Source)> Bind(
@@ -295,8 +298,8 @@ public class Given_ValidationStates
 			Template = (ControlTemplate)XamlReader.Load(TemplateXaml),
 		};
 
-		sut.InputValidationKind = kind;
-		sut.InputValidationMode = InputValidationMode.Auto;
+		Validation.SetKind(sut, kind);
+		Validation.SetMode(sut, InputValidationMode.Auto);
 		sut.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(ErrorSource.Value)) });
 
 		await UITestHelper.Load(sut);
