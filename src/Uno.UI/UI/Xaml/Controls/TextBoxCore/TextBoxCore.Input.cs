@@ -76,6 +76,8 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 	private ScrollViewer _imeScrollViewer;
 	private bool _isImeLayoutTrackingAttached;
+	private bool _imeGeometryTrackingRequested;
+	private (int start, int length, bool backward)? _lastImeSelection;
 
 	private MenuFlyout _proofingMenu;
 
@@ -357,7 +359,13 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		_clipboardChangeSubscription.Disposable = null;
 	}
 
-	partial void OnLoadedPartial() => AttachImeGeometryTracking();
+	partial void OnLoadedPartial()
+	{
+		if (_imeGeometryTrackingRequested)
+		{
+			AttachImeGeometryTracking();
+		}
+	}
 
 	partial void OnIsReadonlyChangedPartial() => UpdateCanPasteClipboardContent();
 
@@ -449,7 +457,11 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 			TextBoxView.SetTextNative(Text);
 		}
-		AttachImeGeometryTracking();
+
+		if (_imeGeometryTrackingRequested)
+		{
+			AttachImeGeometryTracking();
+		}
 	}
 
 	private void AttachImeGeometryTracking()
@@ -678,7 +690,13 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 			}
 		}
 
-		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
+		// Caret blinks re-run this without any change; the IME only needs actual selection moves.
+		var imeSelection = (SelectionStart, SelectionLength, IsBackwardSelection);
+		if (imeSelection != _lastImeSelection)
+		{
+			_lastImeSelection = imeSelection;
+			ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
+		}
 	}
 
 	/// <summary>

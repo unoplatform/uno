@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
@@ -94,6 +94,11 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		}
 
 		ImeSessionCoordinator.StartSession(this);
+
+		// Geometry tracking costs a LayoutUpdated subscription, so only the TextBox with a live session pays it.
+		_imeGeometryTrackingRequested = true;
+		_lastImeSelection = null;
+		AttachImeGeometryTracking();
 	}
 
 	private void EndImeSession()
@@ -106,6 +111,8 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		}
 
 		ImeSessionCoordinator.EndSession(this);
+		_imeGeometryTrackingRequested = false;
+		DetachImeGeometryTracking();
 
 		// Defensively reset composition state in case the extension's CompositionEnded
 		// event didn't fire (e.g., extension's _isComposing already false but TextBox's
