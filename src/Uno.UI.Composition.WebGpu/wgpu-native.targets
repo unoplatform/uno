@@ -164,8 +164,12 @@
 		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so')"
 			SourceFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip"
 			DestinationFolder="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" />
+		<!-- Packed under the DllImport's own name, as on desktop: a Release APK resolves the p/invoke itself
+		     (libwebgpu.so) without consulting the managed DllImportResolver. -->
+		<Copy SourceFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so"
+			DestinationFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\named\libwebgpu.so" SkipUnchangedFiles="true" />
 		<ItemGroup>
-			<AndroidNativeLibrary Include="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so">
+			<AndroidNativeLibrary Include="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\named\libwebgpu.so">
 				<Abi>%(_WgpuAndroidAbi.Abi)</Abi>
 			</AndroidNativeLibrary>
 		</ItemGroup>

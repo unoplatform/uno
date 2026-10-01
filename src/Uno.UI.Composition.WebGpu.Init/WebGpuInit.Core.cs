@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading;
 using System.Threading.Tasks;
 using Uno.WebGpu.Native;
 using static Uno.WebGpu.Native.WGPU;
@@ -72,6 +73,8 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 {
 	public IntPtr Inst, Adapter, Dev, Q;
 	public readonly WGPUTextureFormat ColorFormat;
+	/// <summary>The adapter rasterizes on the CPU (SwiftShader, lavapipe, WARP), so one frame can take seconds.</summary>
+	public bool IsSoftwareAdapter { get; private set; }
 	public IntPtr Smp;                       // present-blit sampler (used by the swapchain/browser contexts)
 	public JSObject JsDeviceObject;          // browser only: the live JS GPUDevice (the honest neutral handle)
 
@@ -175,7 +178,8 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 
 		Q = wgpuDeviceGetQueue(Dev);
 		CreatePresentSampler();
-		System.Console.WriteLine($"[webgpu] init device — {DescribeAdapter(Adapter)} colorFormat={ColorFormat}");
+		System.Console.WriteLine($"[webgpu] init device — {DescribeAdapter(Adapter, out var adapterType)} colorFormat={ColorFormat}");
+		IsSoftwareAdapter = adapterType == WGPUAdapterType.CPU;
 	}
 
 	private WebGpuInitDevice(WGPUTextureFormat colorFormat, IntPtr inst, IntPtr dev)
@@ -246,7 +250,59 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 
 		wgpuSetLogCallback((IntPtr)(delegate* unmanaged[Cdecl]<WGPULogLevel, WGPUStringView, IntPtr, void>)&OnNativeLog, IntPtr.Zero);
 		wgpuSetLogLevel(level);
+
+		if (OperatingSystem.IsAndroid())
+		{
+			ForwardNativeStderr();
+		}
 	}
+
+	private static int _stderrForwarded;
+
+	/// <summary>
+	/// Android drops a process's native stderr, which is where wgpu writes the message of a panic before aborting.
+	/// Points fd 2 at a pipe and copies what arrives to the console, which .NET for Android sends to logcat.
+	/// </summary>
+	private static void ForwardNativeStderr()
+	{
+		if (Interlocked.Exchange(ref _stderrForwarded, 1) != 0)
+		{
+			return;
+		}
+
+		var fds = stackalloc int[2];
+		if (pipe(fds) != 0 || dup2(fds[1], 2) < 0)
+		{
+			return;
+		}
+
+		var readFd = fds[0];
+		new Thread(() =>
+		{
+			var line = new System.Text.StringBuilder();
+			var buffer = new byte[1024];
+			while (true)
+			{
+				nint n;
+				fixed (byte* p = buffer) { n = read(readFd, p, buffer.Length); }
+				if (n <= 0) { return; }
+				foreach (var ch in System.Text.Encoding.UTF8.GetString(buffer, 0, (int)n))
+				{
+					if (ch == '\n') { System.Console.WriteLine($"[stderr] {line}"); line.Clear(); }
+					else { line.Append(ch); }
+				}
+			}
+		}) { IsBackground = true, Name = "UnoWebGpuStderr" }.Start();
+	}
+
+	[DllImport("libc", SetLastError = true)]
+	private static extern int pipe(int* fds);
+
+	[DllImport("libc", SetLastError = true)]
+	private static extern int dup2(int oldFd, int newFd);
+
+	[DllImport("libc", SetLastError = true)]
+	private static extern nint read(int fd, byte* buffer, nint count);
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnNativeLog(WGPULogLevel level, WGPUStringView message, IntPtr userdata)
@@ -256,14 +312,16 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	private static void OnDeviceLost(IntPtr device, WGPUDeviceLostReason reason, WGPUStringView message, IntPtr u1, IntPtr u2)
 		=> System.Console.Error.WriteLine($"[webgpu] device lost ({reason}): {Text(message)}");
 
-	private static string DescribeAdapter(IntPtr adapter)
+	private static string DescribeAdapter(IntPtr adapter, out WGPUAdapterType type)
 	{
 		WGPUAdapterInfo info = default;
 		if (wgpuAdapterGetInfo(adapter, &info) != WGPUStatus.Success)
 		{
+			type = WGPUAdapterType.Unknown;
 			return "adapter=?";
 		}
 
+		type = info.AdapterType;
 		var description = $"adapter='{Text(info.Device)}' backend={info.BackendType} type={info.AdapterType}";
 		wgpuAdapterInfoFreeMembers(info);
 		return description;
