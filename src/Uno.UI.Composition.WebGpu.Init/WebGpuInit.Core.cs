@@ -277,22 +277,44 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		}
 
 		var readFd = fds[0];
-		new Thread(() =>
+		var thread = new Thread(() => ForwardLines(readFd))
 		{
-			var line = new System.Text.StringBuilder();
-			var buffer = new byte[1024];
-			while (true)
+			IsBackground = true,
+			Name = "UnoWebGpuStderr",
+		};
+		thread.Start();
+	}
+
+	private static void ForwardLines(int fd)
+	{
+		var line = new System.Text.StringBuilder();
+		var buffer = new byte[1024];
+		while (true)
+		{
+			nint count;
+			fixed (byte* p = buffer)
 			{
-				nint n;
-				fixed (byte* p = buffer) { n = read(readFd, p, buffer.Length); }
-				if (n <= 0) { return; }
-				foreach (var ch in System.Text.Encoding.UTF8.GetString(buffer, 0, (int)n))
+				count = read(fd, p, buffer.Length);
+			}
+
+			if (count <= 0)
+			{
+				return;
+			}
+
+			foreach (var ch in System.Text.Encoding.UTF8.GetString(buffer, 0, (int)count))
+			{
+				if (ch == '\n')
 				{
-					if (ch == '\n') { System.Console.WriteLine($"[stderr] {line}"); line.Clear(); }
-					else { line.Append(ch); }
+					System.Console.WriteLine($"[stderr] {line}");
+					line.Clear();
+				}
+				else
+				{
+					line.Append(ch);
 				}
 			}
-		}) { IsBackground = true, Name = "UnoWebGpuStderr" }.Start();
+		}
 	}
 
 	[DllImport("libc", SetLastError = true)]
