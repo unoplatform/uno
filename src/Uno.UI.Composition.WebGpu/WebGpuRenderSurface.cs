@@ -95,6 +95,8 @@ internal sealed class OwnedResources
 	// of MB; packing also lets the encoder's merge rule fire, which a buffer per op makes impossible. Split into
 	// chunks because a recording's geometry can exceed the device's maximum buffer size on its own.
 	internal System.Collections.Generic.List<VertBuf> VertexArenas;
+	// Where each packed op's vertices landed (chunk, first vertex); an op's provisional Verts tag indexes this.
+	internal System.Collections.Generic.List<(int Chunk, uint First)> PackedVertexRanges;
 	public System.Collections.Generic.List<nint> BindGroups = new();
 	// Clip-slab slot handles this bag's bind groups reference; freed with the bag (see WebGpuClipSlab).
 	public System.Collections.Generic.List<nint> ClipSlots;

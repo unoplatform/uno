@@ -165,9 +165,25 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	/// on a slow device those pile up with every resource they hold, faster than the GPU retires them.</summary>
 	internal const int MaxFramesInFlight = 3;
 
+	/// <summary>
+	/// Submits a frame's commands. Natively the CPU runs ahead of the GPU by a few frames, no more: pooled-buffer
+	/// reuse is queue-ordered and transient textures are refcount-released, so a frame's resources live until the GPU
+	/// has finished it. The browser has neither submission indices nor a blocking poll, and paces frames itself.
+	/// </summary>
+	internal void SubmitFrame(IntPtr commandBuffer)
+	{
+		if (OperatingSystem.IsBrowser())
+		{
+			wgpuQueueSubmit(Q, 1, (IntPtr)(&commandBuffer));
+			return;
+		}
+
+		ThrottleSubmission(wgpuQueueSubmitForIndex(Q, 1, (IntPtr)(&commandBuffer)));
+	}
+
 	/// <summary>Records a frame's submission and blocks on the oldest one once more than
 	/// <see cref="MaxFramesInFlight"/> are outstanding, then pumps the device without waiting.</summary>
-	internal void ThrottleSubmission(ulong submission)
+	private void ThrottleSubmission(ulong submission)
 	{
 		_inFlight.Enqueue(submission);
 		while (_inFlight.Count > MaxFramesInFlight)

@@ -91,15 +91,12 @@ internal sealed unsafe partial class WebGpuFrame
 		_d.SiteSlab.Flush();
 		_d.FlushFrameSlabs();
 		var cb = wgpuCommandEncoderFinish(Encoder, null);
-		var submission = wgpuQueueSubmitForIndex(_d.Q, 1, (IntPtr)(&cb));
+		_d.SubmitFrame(cb);
 		// wgpu holds its own reference until the submission completes, so both handles are dropped here -
 		// otherwise every frame leaks an encoder and a command buffer into the handle table.
 		wgpuCommandBufferRelease(cb);
 		wgpuCommandEncoderRelease(Encoder);
 		Encoder = IntPtr.Zero;
-		// The CPU runs ahead of the GPU by a few frames, no more: pooled-buffer reuse is queue-ordered and transient
-		// textures are refcount-released, so a frame's resources live until the GPU has finished it.
-		_d.ThrottleSubmission(submission);
 		foreach (var ls in LayerSurfaces) { _d.Pool.Return(ls.View); }
 		LayerSurfaces.Clear();
 		Effects.SweepShapeShadows();
@@ -627,8 +624,9 @@ internal sealed unsafe partial class WebGpuFrame
 	private const int MaxArenaBytes = 64 << 20;
 
 	/// <summary>Appends an op's vertices to its bag's current arena chunk, aligned so the range starts on a vertex
-	/// boundary of its own stride, and returns the chunk and first-vertex index tagged negative:
-	/// <see cref="RealizeOwnedVertices"/> swaps it for that chunk's buffer.</summary>
+	/// boundary of its own stride, and returns a negative tag indexing <see cref="OwnedResources.PackedVertexRanges"/>:
+	/// <see cref="RealizeOwnedVertices"/> swaps it for that chunk's buffer. An index rather than the packed range
+	/// itself, because a pointer is only 32 bits on WebAssembly.</summary>
 	private static IntPtr PackVerts(OwnedResources owned, ReadOnlySpan<float> data, int stride)
 	{
 		var arenas = owned.VertexArenas ??= new List<VertBuf>();
@@ -644,7 +642,9 @@ internal sealed unsafe partial class WebGpuFrame
 		if (misaligned != 0) { arena.Grow(stride - misaligned).Clear(); }
 		var first = arena.Count / stride;
 		data.CopyTo(arena.Grow(data.Length));
-		return (IntPtr)(-(((long)(arenas.Count - 1) << 40) | (uint)first) - 1);
+		var ranges = owned.PackedVertexRanges ??= new List<(int Chunk, uint First)>();
+		ranges.Add((arenas.Count - 1, (uint)first));
+		return (IntPtr)(-ranges.Count);
 	}
 
 	/// <summary>Uploads a finished bag's arena chunks and points every op at the chunk it landed in.</summary>
@@ -663,15 +663,17 @@ internal sealed unsafe partial class WebGpuFrame
 			owned.Buffers.Add((nint)buffers[c]);
 		}
 
+		var ranges = owned.PackedVertexRanges!;
 		owned.VertexArenas = null;
+		owned.PackedVertexRanges = null;
 		for (var i = 0; i < ops.Count; i++)
 		{
 			var tag = (nint)ops[i].Verts;
 			if (tag >= 0) { continue; }
-			var packed = -tag - 1;
+			var (chunk, first) = ranges[(int)(-tag - 1)];
 			var op = ops[i];
-			op.Verts = buffers[(int)(packed >> 40)];
-			op.FirstVertex = (uint)(packed & 0xFFFFFFFF);
+			op.Verts = buffers[chunk];
+			op.FirstVertex = first;
 			ops[i] = op;
 		}
 	}
