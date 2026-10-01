@@ -106,7 +106,16 @@ internal partial class BrowserRenderer
 	[JSExport]
 	internal static void RenderFrame([JSMarshalAs<JSType.Any>] object instance)
 	{
-		((BrowserRenderer)instance).RenderFrame();
+		try
+		{
+			((BrowserRenderer)instance).RenderFrame();
+		}
+		catch (Exception e)
+		{
+			// Crossing back into JS drops the managed stack ("Uncaught Error: <message>"), so log it here.
+			typeof(BrowserRenderer).Log().Error("Rendering a frame failed.", e);
+			throw;
+		}
 	}
 
 	private void RenderFrame()

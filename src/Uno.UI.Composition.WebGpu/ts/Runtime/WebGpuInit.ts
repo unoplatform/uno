@@ -32,6 +32,9 @@ namespace Uno.UI.Runtime.Skia {
 					console.error("WebGpuInit: adapter.requestDevice returned null");
 					return 0;
 				}
+				// A lost device otherwise only shows up later as every async operation aborting, with no reason given.
+				device.lost.then((info: any) => console.error("WebGpuInit: device lost (" + info.reason + "): " + info.message));
+				device.addEventListener("uncapturederror", (e: any) => console.error("WebGpuInit: uncaptured error: " + e.error?.message));
 				const module = (window as any).Module;
 				if (!module || typeof module.unoWebGpuImportDevice !== "function") {
 					console.error("WebGpuInit: Module.unoWebGpuImportDevice is missing (emdawn __postset patch not applied?)");
