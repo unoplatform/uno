@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Threading.Tasks;
@@ -172,11 +172,9 @@ namespace Microsoft.UI.Xaml.Controls
 					cancellationToken: operation.CancellationToken);
 				await PasteFromClipboardAsync(retrieval, operationRange, operation);
 			}
-			catch (UnauthorizedAccessException)
+			catch (Exception error) when (error is UnauthorizedAccessException or OperationCanceledException)
 			{
-			}
-			catch (OperationCanceledException)
-			{
+				global::Microsoft.UI.Text.RichEditTextDocument.LogPasteNotApplied(this, error);
 			}
 			catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is not null)
 			{
