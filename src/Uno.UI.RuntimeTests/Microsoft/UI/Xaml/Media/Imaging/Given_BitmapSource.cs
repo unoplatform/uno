@@ -25,6 +25,10 @@ using System.Net.Http;
 using System.Threading;
 using Windows.Storage.Streams;
 using System.Diagnostics;
+#if __SKIA__
+using SkiaSharp;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {
@@ -503,6 +507,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			Assert.AreEqual(100, bitmapImage.PixelWidth, "PixelWidth should match DecodePixelWidth");
 			Assert.AreEqual(150, bitmapImage.PixelHeight, "PixelHeight should preserve aspect ratio");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Decodes_In_Sequence()
+		{
+			// Consecutive decodes reuse the same browser worker. The worker is called directly because a failed browser
+			// decode falls back to SKCodec, so the image would still open.
+			await AssertBrowserDecode(CreatePng(300, 200, new SKColor(200, 100, 50, 128)), 300, 200, premultipliedFirstPixel: (100, 50, 25, 128));
+			await AssertBrowserDecode(CreatePng(2, 3, SKColors.Blue), 2, 3, premultipliedFirstPixel: (0, 0, 255, 255));
+			Assert.AreEqual("error", await DecodeInBrowser(new byte[] { 1, 2, 3, 4 }));
+			await AssertBrowserDecode(CreatePng(5, 4, SKColors.Red), 5, 4, premultipliedFirstPixel: (255, 0, 0, 255));
+		}
+
+		private static byte[] CreatePng(int width, int height, SKColor color)
+		{
+			using var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+			bitmap.Erase(color);
+			using var data = bitmap.Encode(SKEncodedImageFormat.Png, 100);
+			return data.ToArray();
+		}
+
+		private static async Task AssertBrowserDecode(byte[] encoded, int width, int height, (int R, int G, int B, int A) premultipliedFirstPixel)
+		{
+			var result = await DecodeInBrowser(encoded);
+			Assert.AreNotEqual("error", result, "The browser worker failed to decode the image.");
+			var values = result.Split(',').Select(int.Parse).ToArray();
+
+			Assert.AreEqual(width, values[0], $"Width ({result})");
+			Assert.AreEqual(height, values[1], $"Height ({result})");
+			Assert.AreEqual(width * height * 4, values[2], $"Byte count ({result})");
+			var (r, g, b, a) = premultipliedFirstPixel;
+			Assert.IsTrue(
+				Math.Abs(values[3] - r) <= 2 && Math.Abs(values[4] - g) <= 2 && Math.Abs(values[5] - b) <= 2 && Math.Abs(values[6] - a) <= 2,
+				$"First pixel is RGBA {values[3]},{values[4]},{values[5]},{values[6]}, expected {r},{g},{b},{a}.");
+		}
+
+		// Returns "width,height,byteCount,r,g,b,a" for the decoded image, or "error".
+		private static async Task<string> DecodeInBrowser(byte[] encoded)
+		{
+			WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){globalThis.__unoDecodeResult='';"
+				+ $"var bytes=Uint8Array.from(atob('{Convert.ToBase64String(encoded)}'),function(c){{return c.charCodeAt(0);}});"
+				+ "Uno.UI.Runtime.Skia.ImageLoader.loadFromArray(bytes).then(function(r){globalThis.__unoDecodeResult=r.error?'error'"
+				+ ":[r.width,r.height,r.bytes.length,r.bytes[0],r.bytes[1],r.bytes[2],r.bytes[3]].join(',');});return '';})()");
+
+			var result = "";
+			await WindowHelper.WaitFor(
+				() => (result = WasmSemanticDomHelper.InvokeBrowserJs("globalThis.__unoDecodeResult")) != "",
+				message: "The browser decode did not complete.");
+			return result;
 		}
 #endif
 
