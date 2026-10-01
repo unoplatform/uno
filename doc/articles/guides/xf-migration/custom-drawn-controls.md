@@ -19,7 +19,7 @@ The `SKCanvasView` handles resizing and calls your `OnPaintSurface` method to re
 ## SkiaSharp and Uno Platform
 
 > [!CAUTION]
-> This guide targets Uno Platform versions before 7.0. `SkiaSharp.Views.Uno.WinUI` is not compatible with Uno Platform 7.0 and later: it still references assembly names that 7.0 renamed, so the app throws `FileNotFoundException` at startup. On 7.0 and later, derive your control from [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) instead, which is referenced implicitly. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
+> This guide targets Uno Platform versions before 7.0. `SkiaSharp.Views.Uno.WinUI` is not compatible with Uno Platform 7.0 and later: it still references assembly names that 7.0 renamed, so the app throws `FileNotFoundException` at startup. On 7.0 and later, derive your control from [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) instead, which is referenced implicitly. `SKCanvasElement` is only available on Skia-rendered targets; on the Windows App SDK head, keep using `SKXamlCanvas` from the [`SkiaSharp.Views.WinUI`](https://www.nuget.org/packages/SkiaSharp.Views.WinUI) package. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
 
 The great news is that the SkiaSharp project already has support for Uno Platform through the [**SkiaSharp.Views.Uno**](https://www.nuget.org/packages/SkiaSharp.Views.Uno) NuGet package.
 
@@ -91,7 +91,7 @@ This means that on all platforms, you can access the `Chart` property via XAML o
 ### Step 1: Add SkiaSharp Package
 
 > [!NOTE]
-> On Uno Platform 7.0 and later, skip this step and derive from [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) instead — see the caution in [SkiaSharp and Uno Platform](#skiasharp-and-uno-platform).
+> On Uno Platform 7.0 and later, skip this step and derive from [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) instead on Skia-rendered targets, and reference `SkiaSharp.Views.WinUI` on the Windows App SDK head — see the caution in [SkiaSharp and Uno Platform](#skiasharp-and-uno-platform).
 
 Add the `SkiaSharp.Views.Uno.WinUI` NuGet package to your project:
 
