@@ -14,6 +14,24 @@ public class Given_CompositionTarget
 {
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_WebGpu_Requested_Then_It_Renders()
+	{
+		// A lane that asks for WebGPU must not quietly test the Skia fallback, nor a WebGPU that draws nothing.
+		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is not ("1" or "true" or "neutral" or "swapchain"))
+		{
+			Assert.Inconclusive("WebGPU was not requested (UNO_WEBGPU).");
+		}
+
+		var border = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Colors.Red) };
+		await UITestHelper.Load(border);
+
+		Assert.AreEqual(RuntimeTestBackends.WebGpu, RuntimeTestsBackendHelper.CurrentBackend, "UNO_WEBGPU is set but another backend won negotiation.");
+		var screenshot = await UITestHelper.ScreenShot(border);
+		ImageAssert.HasColorAt(screenshot, 25, 25, Colors.Red, tolerance: 5);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_SkipVisualTreePainting()
 	{
 		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };

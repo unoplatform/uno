@@ -51,12 +51,13 @@ namespace SamplesApp.Droid
 					"UITEST_RUNTIME_TEST_GROUP",
 					"UITEST_RUNTIME_TEST_GROUP_COUNT",
 					"UITEST_RUNTIME_AUTOSTART_RESULT_FILE",
-					"UITEST_RUNTIME_TESTS_FILTER"
+					"UITEST_RUNTIME_TESTS_FILTER",
 				];
 
 				foreach (var key in extras.KeySet())
 				{
-					if (knownVariables.Contains(key))
+					// UNO_* switches (e.g. UNO_WEBGPU) are read when the host is built, once this activity has started.
+					if (knownVariables.Contains(key) || key.StartsWith("UNO_", System.StringComparison.Ordinal))
 					{
 						var value = extras.GetString(key);
 						System.Environment.SetEnvironmentVariable(key, value);
