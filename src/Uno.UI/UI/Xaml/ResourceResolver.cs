@@ -391,12 +391,21 @@ namespace Uno.UI
 			}
 
 			// Set the initial value from statically-available top-level resources.
-			if (TryStaticRetrieval(specializedKey, context, out var value))
+			var resolvedInScope = TryScopedRetrieval(specializedKey, out var value);
+			if (resolvedInScope || TryTopLevelStaticRetrieval(specializedKey, context, out value))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
 
-				// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
-				updateReason &= ~ResourceUpdateReason.StaticResourceLoading;
+				// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP) —
+				// unless the top-level lookup answered for a context it could not attribute to an owning application.
+				if (resolvedInScope || !ShouldDeferStaticResourceToLoading(context))
+				{
+					updateReason &= ~ResourceUpdateReason.StaticResourceLoading;
+				}
+				else if (_log.IsEnabled(LogLevel.Debug))
+				{
+					_log.LogDebug($"Deferring {{StaticResource {specializedKey.Key}}} on {owner.GetType().Name}.{property.Name} to load time: its parse context cannot identify the owning application.");
+				}
 
 				if (updateReason == ResourceUpdateReason.None)
 				{
@@ -409,6 +418,28 @@ namespace Uno.UI
 			// still works (and HotReload re-resolution for parse-time-resolved values).
 			(owner as DependencyObject)?.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 		}
+
+		/// <summary>
+		/// Whether a {StaticResource} that the top-level lookup resolved at parse time must still be re-resolved at load time,
+		/// because the parse-time lookup could not tell which application owns it. A value found in the parse scope (the
+		/// dictionary that declares the XAML) is final regardless.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="TryTopLevelRetrieval(in SpecializedResourceDictionary.ResourceKey, object, out object)"/> keys its
+		/// priority on <see cref="XamlParseContext.AssemblyLoadContext"/>: a context that identifies a secondary ALC queries
+		/// that app first; anything else — no context at all (<c>XamlReader.Load</c>), or a name-only context whose assembly
+		/// is loaded in several ALCs (<see cref="XamlParseContext.IsAssemblyLoadContextAmbiguous"/>) — is treated as the
+		/// host's, so a key the host and a secondary app both define resolves to the host's value. That is the right
+		/// answer for host XAML and the wrong one for the app's, and the name alone cannot tell them apart. Keeping
+		/// <see cref="ResourceUpdateReason.StaticResourceLoading"/> lets the load-time tree walk decide in visual-tree
+		/// scope instead, where <c>AlcContentHost</c> projects the owning app's dictionaries ahead of the host's; the walk
+		/// falls back to the same top-level lookup when nothing in scope matches, so host XAML keeps its value.
+		/// Only ever true while secondary apps are registered, so ordinary apps pay nothing.
+		/// </remarks>
+		internal static bool ShouldDeferStaticResourceToLoading(object context)
+			=> Application.HasSecondaryApps
+				&& (context is null
+					|| (context is XamlParseContext parseContext && parseContext.IsAssemblyLoadContextAmbiguous));
 
 		/// <summary>
 		/// Apply a pre-existing <see cref="ThemeResourceReference"/> from a Setter to a target DependencyObject.
@@ -532,6 +563,12 @@ namespace Uno.UI
 		/// Try to retrieve a resource statically (at parse time). This will check resources in 'xaml scope' first, then top-level resources.
 		/// </summary>
 		internal static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
+			=> TryScopedRetrieval(resourceKey, out value) || TryTopLevelStaticRetrieval(resourceKey, context, out value);
+
+		/// <summary>
+		/// Tries to retrieve a resource from the dictionaries in the current parse scope, such as the dictionary that declares a template.
+		/// </summary>
+		private static bool TryScopedRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, out object value)
 		{
 			foreach (var source in CurrentScope.Sources)
 			{
@@ -546,6 +583,12 @@ namespace Uno.UI
 				}
 			}
 
+			value = null;
+			return false;
+		}
+
+		private static bool TryTopLevelStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
+		{
 			var topLevel = TryTopLevelRetrieval(resourceKey, context, out value);
 			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
 			{
@@ -779,6 +822,56 @@ namespace Uno.UI
 			}
 
 			return false;
+		}
+
+		/// <summary>
+		/// Resolves a provisional lookup (see <see cref="ShouldDeferStaticResourceToLoading"/>) the way the application
+		/// that owns <paramref name="owner"/>'s position would: its resources, then assembly and framework resources.
+		/// </summary>
+		/// <remarks>
+		/// The owning application is the source of the nearest <c>AlcContentHost</c> ancestor. Without one, or when that
+		/// host projects the current application, there is no one to attribute the lookup to and this returns false, so
+		/// callers keep their top-level lookup. The host's <see cref="Application.Current"/> is never consulted here:
+		/// that is what let a host override reach a secondary app for a key the app does not define itself.
+		/// </remarks>
+		internal static bool TryOwningApplicationRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, DependencyObject owner, out object value, out ResourceDictionary providingDictionary)
+		{
+			value = null;
+			providingDictionary = null;
+
+			if (!ShouldDeferStaticResourceToLoading(context)
+				|| FindContentHostApplication(owner) is not { } owningApp
+				|| owningApp == Application.Current)
+			{
+				return false;
+			}
+
+			if (owningApp.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
+			{
+				return true;
+			}
+
+			providingDictionary = null;
+			return TryAssemblyResourceRetrieval(resourceKey, context, out value)
+				|| TrySystemResourceRetrieval(resourceKey, out value);
+		}
+
+		private static Application FindContentHostApplication(DependencyObject owner)
+		{
+			object candidate = owner;
+			while (candidate is not null)
+			{
+				if (candidate is Uno.UI.Xaml.Controls.AlcContentHost contentHost)
+				{
+					return contentHost.SourceApplication;
+				}
+
+				candidate = candidate is FrameworkElement element
+					? element.Parent ?? VisualTreeHelper.GetParent(element)
+					: (candidate as DependencyObject)?.Parent;
+			}
+
+			return null;
 		}
 
 		// MUX: CResourceDictionary::GetKeyFromThemeDictionariesNoRef / GetKeyOverrideFromApplicationResourcesNoRef

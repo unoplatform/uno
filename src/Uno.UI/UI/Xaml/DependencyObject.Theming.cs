@@ -443,6 +443,21 @@ public partial class DependencyObject
 				}
 			}
 
+			// Uno: a provisional reference (unattributable parse context) is pinned to whatever the top-level lookup found
+			// at parse time — the host's dictionary. Under an AlcContentHost, resolve it for the owning app instead.
+			if (!resolved
+				&& owner is not null
+				&& ResourceResolver.TryOwningApplicationRetrieval(themeRef.ResourceKey, themeRef.ParseContext, owner, out var owningAppValue, out var owningAppDictionary))
+			{
+				if (owningAppDictionary is not null)
+				{
+					themeRef.SetTargetDictionary(owningAppDictionary);
+				}
+
+				themeRef.SetLastResolvedValue(owningAppValue);
+				resolved = true;
+			}
+
 			// Phase B: Pinned dict fallback (WinUI: themeResource->RefreshValue())
 			// MUX: Theming.cpp:338-343 — "Call refresh if we're in a theme walk or the ref has been
 			// updated in the past *and* the value wasn't updated already by the tree lookup above."
@@ -914,6 +929,23 @@ public partial class DependencyObject
 		}
 	}
 
+	/// <summary>
+	/// Whether <paramref name="binding"/> is a {StaticResource} whose parse-time value is provisional (see
+	/// <see cref="ResourceResolver.ShouldDeferStaticResourceToLoading"/>).
+	/// </summary>
+	private static bool IsProvisionalBinding(ResourceBinding binding)
+		=> Application.HasSecondaryApps
+			&& (binding.UpdateReason & ResourceUpdateReason.StaticResourceLoading) != 0
+			&& ResourceResolver.ShouldDeferStaticResourceToLoading(binding.ParseContext);
+
+	/// <summary>
+	/// Whether <paramref name="binding"/> is provisional on an object that has not entered the live tree yet, such as
+	/// a template part completed before it is parented, or a brush it owns. Only the top-level lookup can answer there,
+	/// and settling on its value would consume the binding before the load-time walk runs.
+	/// </summary>
+	private bool IsProvisionalBindingOutsideLiveTree(ResourceBinding binding)
+		=> IsProvisionalBinding(binding) && !IsActive;
+
 	/// <remarks>
 	/// This method contains or is called by a try/catch containing method and
 	/// can be significantly slower than other methods as a result on WebAssembly.
@@ -981,6 +1013,16 @@ public partial class DependencyObject
 
 			if (!wasSet)
 			{
+				if (IsProvisionalBindingOutsideLiveTree(binding))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"Keeping provisional {{StaticResource {binding.ResourceKey.Key}}} on {ActualInstance?.GetType().Name}.{property.Name} until it enters the live tree.");
+					}
+
+					return;
+				}
+
 				// The resource wasn't found in the in-scope (non-app) dictionaries, but an application-level
 				// dictionary may provide it — e.g. an app-merged ThemeDictionaries override of a stock Fluent
 				// control brush (CheckBoxCheckBackgroundFillChecked, ...). Resolve it AND re-pin the providing
@@ -991,8 +1033,15 @@ public partial class DependencyObject
 				// ObjectAnimationUsingKeyFrames.EnsureKeyFrameThemeResources on every storyboard begin)
 				// otherwise keeps resolving the stock value and shadows the app-level override, leaving a checked
 				// CheckBox blank until a pointer-over repaints it. Restores the #23388 re-pin dropped by #23416.
-				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value, out var providingDict))
+				var resolvedForOwningApp = ResourceResolver.TryOwningApplicationRetrieval(binding.ResourceKey, binding.ParseContext, ActualInstance, out var value, out var providingDict);
+				if (resolvedForOwningApp
+					|| ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out value, out providingDict))
 				{
+					if (this.Log().IsEnabled(LogLevel.Debug) && IsProvisionalBinding(binding))
+					{
+						this.Log().Debug($"Provisional {{StaticResource {binding.ResourceKey.Key}}} on {ActualInstance?.GetType().Name}.{property.Name} found nothing in scope; settling on the {(resolvedForOwningApp ? "owning application's" : "top-level")} value.");
+					}
+
 					SetResourceBindingValue(property, binding, value);
 
 					if (providingDict is not null && _themeResources is not null)

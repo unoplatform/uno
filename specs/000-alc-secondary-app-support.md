@@ -582,34 +582,22 @@ When step 1 above resolves `parseContext.AssemblyLoadContext` to an `Application
 
 `XamlParseContext.AssemblyLoadContext` is lazily resolved from `AssemblyName` when the XAML codegen did not set it explicitly. The codegen only emits the setter when `UnoEnableAlcAppSupport` is `true`, so without this fallback the property would be `null` for secondary-ALC apps built without the flag, and `ResourceResolver.TryTopLevelRetrieval` would always miss step 1 above and resolve against the host.
 
-```csharp
-public AssemblyLoadContext AssemblyLoadContext
-{
-    get
-    {
-        if (_assemblyLoadContext is not null || _assemblyLoadContextResolved)
-        {
-            return _assemblyLoadContext;
-        }
+The lazy scan collects every loaded assembly with that simple name:
 
-        _assemblyLoadContextResolved = true;
-        if (!string.IsNullOrEmpty(AssemblyName))
-        {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                if (string.Equals(assembly.GetName().Name, AssemblyName, StringComparison.Ordinal))
-                {
-                    _assemblyLoadContext = AssemblyLoadContext.GetLoadContext(assembly);
-                    break;
-                }
-            }
-        }
+- **One load context** holds it: that context is latched, as for an explicit stamp.
+- **Several distinct load contexts** hold it (a library that both the host and a secondary app load, each its own copy): the name cannot say which copy this context belongs to. The context reports `IsAssemblyLoadContextAmbiguous` and resolves to `null` rather than latching the first match, which would be the host's copy. The candidates are held weakly; once unloads leave a single copy, the scan runs again and latches it.
 
-        return _assemblyLoadContext;
-    }
-    set { ... }
-}
-```
+#### Provisional `{StaticResource}` lookups
+
+A `{StaticResource}` resolved through a context that cannot identify its owning application — a `null` context (`XamlReader.Load`) or an ambiguous one — is answered by the host at step 3 of `TryTopLevelRetrieval`. That is correct for host XAML and wrong for a secondary app's, and the parse-time lookup cannot tell them apart. While `Application.HasSecondaryApps` is set, such a value is **provisional** (`ResourceResolver.ShouldDeferStaticResourceToLoading`):
+
+- `ApplyResource` keeps `ResourceUpdateReason.StaticResourceLoading` on the binding instead of clearing it, so the load-time tree walk re-resolves the key in visual-tree scope. Under an `AlcContentHost` the owning app's projected dictionaries sit ahead of the host's; elsewhere the walk finds nothing and falls back to the same top-level lookup, so host XAML keeps its value.
+- Only a **top-level** answer is provisional. A key found in the parse scope — the dictionary that declares the XAML — is where a `{StaticResource}` resolves by definition, and stays final as on UWP.
+- A provisional binding is **not settled while its object is outside the live tree** (`DependencyObject.IsActive` is false). Generated template code calls `CreationComplete` on each part before parenting it, and applying its style refreshes the part's resource bindings — and those of the objects it owns — with nothing in scope. Settling there would take the host's value and clear the one-shot binding before the load-time walk runs. The binding is kept instead, and the parse-time value stands until the object loads.
+- An object that never enters the live tree keeps its binding and its parse-time value. If nothing answered at parse time, the property stays unset until the object loads.
+- Apps without secondary applications are unaffected: every rule above is gated on `Application.HasSecondaryApps`.
+
+Not covered: `XamlReader` values applied outside a dependency-property binding (`Style.BasedOn`, setter values) resolve once and are never revisited, and popup or flyout content under `PopupRoot` is outside the `AlcContentHost` and takes the host's value.
 
 #### Ambient ALC Resolution Context
 
@@ -743,6 +731,11 @@ internal static Type ResolveDescriptor(string descriptor)
 | `When_SecondaryAlcApp_Then_KeyboardInputStillWorks` | Keyboard input unaffected by loading secondary ALC |
 | `When_TopLevelLookupFromHostContext_Then_FallsBackToSecondaryAlcApp` | `ResourceResolver.TryTopLevelRetrieval` with a default-ALC parse context falls back to the secondary app's `Application.Resources` (last-resort scan) |
 | `When_LazyBrushReferencesSecondaryAlcColor_Then_MaterializesWithCorrectColor` | End-to-end: a brush with `Color={StaticResource AlcAppOnlyColor}` materializes with the secondary-ALC color instead of the transparent default |
+| `Given_XamlParseContext_AlcResolution.When_AmbiguousContextResolvesToHostAtParseTime_Then_LoadingUnderAlcContentHostRestoresOwningAppValue` | A provisional `{StaticResource}` takes the owning app's value once loaded under an `AlcContentHost` |
+| `Given_XamlParseContext_AlcResolution.When_TemplatePartCompletesBeforeItIsParented_Then_LoadTimeScopeDecidesItsStyle` | A template part completed while detached keeps its provisional binding: the app's style under an `AlcContentHost`, the host's outside it |
+| `Given_XamlParseContext_AlcResolution.When_TemplatePartBrushCompletesBeforeItIsParented_Then_LoadingUnderAlcContentHostRestoresOwningAppValue` | The same for a brush owned by a detached template part |
+| `Given_XamlParseContext_AlcResolution.When_DeclaringDictionaryDefinesTheKey_Then_ParseTimeValueIsFinalUnderAlcContentHost` | A value found in the declaring dictionary is final and is not replaced by the `AlcContentHost` projection |
+| `Given_XamlParseContext_AlcResolution.When_XamlReaderTemplateLoadsUnderAlcContentHost_Then_TemplatePartsReadOwningAppValues` | End-to-end: a `ControlTemplate` loaded through `XamlReader` gives its parts the owning app's style and brush value |
 
 ---
 
