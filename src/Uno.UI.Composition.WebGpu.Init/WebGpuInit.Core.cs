@@ -131,6 +131,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	public WebGpuInitDevice(WGPUTextureFormat colorFormat)
 	{
 		ColorFormat = colorFormat;
+		EnableNativeLog();
 		Inst = CreateInstance();
 
 		var abox = new IntPtr[1];
@@ -222,6 +223,34 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnDevice(WGPURequestDeviceStatus status, IntPtr device, WGPUStringView message, IntPtr u1, IntPtr u2)
 		=> ((IntPtr[])GCHandle.FromIntPtr(u1).Target!)[0] = device;
+
+	/// <summary>
+	/// <c>UNO_WEBGPU_LOG</c> (error, warn, info, debug, trace) routes wgpu's own log to stderr: the only account of
+	/// what a driver or the validation layer did before a failure that surfaces later, such as a lost device.
+	/// </summary>
+	private static void EnableNativeLog()
+	{
+		var level = Environment.GetEnvironmentVariable("UNO_WEBGPU_LOG")?.ToLowerInvariant() switch
+		{
+			"error" => WGPULogLevel.Error,
+			"warn" => WGPULogLevel.Warn,
+			"info" => WGPULogLevel.Info,
+			"debug" => WGPULogLevel.Debug,
+			"trace" => WGPULogLevel.Trace,
+			_ => WGPULogLevel.Off,
+		};
+		if (level == WGPULogLevel.Off)
+		{
+			return;
+		}
+
+		wgpuSetLogCallback((IntPtr)(delegate* unmanaged[Cdecl]<WGPULogLevel, WGPUStringView, IntPtr, void>)&OnNativeLog, IntPtr.Zero);
+		wgpuSetLogLevel(level);
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnNativeLog(WGPULogLevel level, WGPUStringView message, IntPtr userdata)
+		=> System.Console.Error.WriteLine($"[wgpu {level}] {Text(message)}");
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnDeviceLost(IntPtr device, WGPUDeviceLostReason reason, WGPUStringView message, IntPtr u1, IntPtr u2)
