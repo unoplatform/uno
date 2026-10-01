@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference dxaml/xcp/tools/XCPTypesAutoGen/Modules/Controls/RichEditBox.cs, commit 3c9c168844f06c6ac000a97977f0bb3f4c90fd75
 #nullable enable
@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -87,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(AcceptsReturn),
 				typeof(bool),
 				typeof(RichEditBox),
-				new FrameworkPropertyMetadata(defaultValue: true, OnRichEditBoxPropertyChanged));
+				new FrameworkPropertyMetadata(defaultValue: BoolBoxes.True, OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the control accepts newline characters.
@@ -246,7 +247,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsSpellCheckEnabled),
 				typeof(bool),
 				typeof(RichEditBox),
-				new FrameworkPropertyMetadata(true, OnRichEditBoxPropertyChanged));
+				new FrameworkPropertyMetadata(BoolBoxes.True, OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether spell checking is enabled.
@@ -266,7 +267,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(RichEditBox),
 				new FrameworkPropertyMetadata(
-					true,
+					BoolBoxes.True,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					OnRichEditBoxPropertyChanged));
 
@@ -287,7 +288,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsTextPredictionEnabled),
 				typeof(bool),
 				typeof(RichEditBox),
-				new FrameworkPropertyMetadata(true, OnRichEditBoxPropertyChanged));
+				new FrameworkPropertyMetadata(BoolBoxes.True, OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether text prediction is enabled.
@@ -327,7 +328,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsReadOnly),
 				typeof(bool),
 				typeof(RichEditBox),
-				new FrameworkPropertyMetadata(default(bool), OnRichEditBoxPropertyChanged));
+				new FrameworkPropertyMetadata(BoolBoxes.False, OnRichEditBoxPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the user can change the text.
@@ -346,7 +347,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(PreventKeyboardDisplayOnProgrammaticFocus),
 				typeof(bool),
 				typeof(RichEditBox),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		/// <summary>
 		/// Gets or sets a value that prevents the software keyboard from displaying when focus is set programmatically.
@@ -366,7 +367,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(RichEditBox),
 				new FrameworkPropertyMetadata(
-					default(int),
+					IntBoxes.Zero,
 					OnRichEditBoxPropertyChanged,
 					CoerceMaxLength));
 
@@ -376,7 +377,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public int MaxLength
 		{
 			get => (int)GetValue(MaxLengthProperty);
-			set => SetValue(MaxLengthProperty, value);
+			set => SetValue(MaxLengthProperty, Boxer.Box(value));
 		}
 
 		/// <summary>
