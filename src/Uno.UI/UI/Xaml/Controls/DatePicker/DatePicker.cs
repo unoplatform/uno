@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Uno.Disposables;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Globalization;
@@ -2073,7 +2074,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (m_tpFirstSpacerColumn != null && spColumns != null)
 				{
 					columnIndex = spColumns.IndexOf(m_tpFirstSpacerColumn);
-					m_tpFirstPickerSpacing.SetValue(Grid.ColumnProperty, columnIndex);
+					m_tpFirstPickerSpacing.SetValue(Grid.ColumnProperty, Boxer.Box(columnIndex));
 				}
 			}
 			if (m_tpSecondPickerSpacing != null)
@@ -2085,7 +2086,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (m_tpSecondSpacerColumn != null && spColumns != null)
 				{
 					columnIndex = spColumns.IndexOf(m_tpSecondSpacerColumn);
-					m_tpSecondPickerSpacing.SetValue(Grid.ColumnProperty, columnIndex);
+					m_tpSecondPickerSpacing.SetValue(Grid.ColumnProperty, Boxer.Box(columnIndex));
 				}
 			}
 		}
