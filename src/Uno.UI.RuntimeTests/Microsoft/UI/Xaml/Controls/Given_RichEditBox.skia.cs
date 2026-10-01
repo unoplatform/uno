@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -139,12 +139,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-			Assert.IsTrue(Microsoft.UI.Xaml.Documents.TextFormatting.NotoFontFallbackService.IsEmojiCodepoint(0x1F469)); // woman
-			Assert.IsTrue(Microsoft.UI.Xaml.Documents.TextFormatting.NotoFontFallbackService.IsEmojiCodepoint(0x1F3FD)); // medium skin tone
-			Assert.IsTrue(Microsoft.UI.Xaml.Documents.TextFormatting.NotoFontFallbackService.IsEmojiCodepoint(0x20E3)); // keycap
-			Assert.IsFalse(Microsoft.UI.Xaml.Documents.TextFormatting.NotoFontFallbackService.IsEmojiCodepoint('1'));
-			Assert.IsFalse(Microsoft.UI.Xaml.Documents.TextFormatting.NotoFontFallbackService.IsEmojiCodepoint(0x200D)); // ZWJ
-			Assert.IsFalse(Microsoft.UI.Xaml.Documents.TextFormatting.NotoFontFallbackService.IsEmojiCodepoint(0xFE0F)); // emoji variation selector
+			Assert.IsTrue(Uno.UI.Composition.Drawing.NotoFontFallbackService.IsEmojiCodepoint(0x1F469)); // woman
+			Assert.IsTrue(Uno.UI.Composition.Drawing.NotoFontFallbackService.IsEmojiCodepoint(0x1F3FD)); // medium skin tone
+			Assert.IsTrue(Uno.UI.Composition.Drawing.NotoFontFallbackService.IsEmojiCodepoint(0x20E3)); // keycap
+			Assert.IsFalse(Uno.UI.Composition.Drawing.NotoFontFallbackService.IsEmojiCodepoint('1'));
+			Assert.IsFalse(Uno.UI.Composition.Drawing.NotoFontFallbackService.IsEmojiCodepoint(0x200D)); // ZWJ
+			Assert.IsFalse(Uno.UI.Composition.Drawing.NotoFontFallbackService.IsEmojiCodepoint(0xFE0F)); // emoji variation selector
 		}
 
 		[TestMethod]
@@ -171,15 +171,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.FontStretch,
 				SUT.FontStyle);
 			Assert.IsNotNull(details, "The WASM fallback service should load Noto COLRv1 on first emoji use.");
-			Assert.AreEqual("Noto Color Emoji", details.SKFont.Typeface.FamilyName);
+			Assert.AreEqual("Noto Color Emoji", details.FontHandle.FamilyName);
 
-			using (var buffer = new HarfBuzzSharp.Buffer())
-			{
-				buffer.AddUtf16(emoji);
-				buffer.GuessSegmentProperties();
-				details.Font.Shape(buffer);
-				Assert.AreEqual(1, buffer.Length, "The skin-tone ZWJ sequence should shape as one emoji glyph.");
-			}
+			var glyphRun = details.FontHandle.Shape(emoji, Uno.UI.Composition.Drawing.TextDirection.LeftToRight);
+			Assert.AreEqual(1, glyphRun.Count, "The skin-tone ZWJ sequence should shape as one emoji glyph.");
 
 			// The text was assigned before the asynchronous font resolved. Completion must invalidate the
 			// original fallback layout and redraw the same grapheme with the downloaded color font.
@@ -219,13 +214,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(TextAlignment.DetectFromContent, displayBlock.TextAlignment);
 				Assert.AreEqual(TextReadingOrder.DetectFromContent, displayBlock.TextReadingOrder);
 				Assert.IsTrue(displayBlock.IsColorFontEnabled);
-				Assert.AreEqual(Windows.UI.Colors.Transparent, displayBlock.SelectionHighlightColor.Color);
+				Assert.AreEqual(Microsoft.UI.Colors.Transparent, displayBlock.SelectionHighlightColor.Color);
 
 				SUT.TextWrapping = TextWrapping.NoWrap;
 				SUT.HorizontalTextAlignment = TextAlignment.Right;
 				SUT.TextReadingOrder = TextReadingOrder.UseFlowDirection;
 				SUT.IsColorFontEnabled = false;
-				var selectionBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red);
+				var selectionBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
 				SUT.SelectionHighlightColor = selectionBrush;
 
 				Assert.AreEqual(TextWrapping.NoWrap, displayBlock.TextWrapping);
@@ -233,7 +228,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(TextAlignment.Right, displayBlock.TextAlignment);
 				Assert.AreEqual(TextReadingOrder.UseFlowDirection, displayBlock.TextReadingOrder);
 				Assert.IsFalse(displayBlock.IsColorFontEnabled);
-				Assert.AreEqual(Windows.UI.Colors.Transparent, displayBlock.SelectionHighlightColor.Color);
+				Assert.AreEqual(Microsoft.UI.Colors.Transparent, displayBlock.SelectionHighlightColor.Color);
 
 				SUT.Focus(FocusState.Programmatic);
 				await WindowHelper.WaitForIdle();
@@ -255,8 +250,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var editor = new RichEditBox
 			{
 				Width = 240,
-				Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(global::Windows.UI.Colors.White),
-				Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(global::Windows.UI.Colors.Red),
+				Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White),
+				Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
 			};
 			var other = new Button();
 			var panel = new StackPanel
@@ -943,7 +938,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Pointer_Click_Places_Caret()
 		{
 			var SUT = new RichEditBox { Width = 220 };
@@ -968,7 +963,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Pointer_Drag_Selects_Text()
 		{
 			var SUT = new RichEditBox { Width = 220 };
@@ -995,7 +990,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Shift_Click_Extends_Selection()
 		{
 			var SUT = new RichEditBox { Width = 220 };
@@ -1029,7 +1024,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Copy_Puts_Selection_On_Clipboard()
 		{
 			var SUT = new RichEditBox();
@@ -1050,7 +1045,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Cut_Removes_Selection_And_Copies()
 		{
 			var SUT = new RichEditBox();
@@ -1075,7 +1070,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Paste_Inserts_At_Caret()
 		{
 			var SUT = new RichEditBox();
@@ -1214,7 +1209,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_MaxLength_Clamps_Paste()
 		{
 			var SUT = new RichEditBox();
@@ -1305,7 +1300,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_CharacterCasing_Upper_Uppercases_Paste()
 		{
 			var SUT = new RichEditBox();
@@ -1436,7 +1431,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Ctrl_C_Ctrl_V_RoundTrips()
 		{
 			var SUT = new RichEditBox();
@@ -2027,7 +2022,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Selection_MoveDown_Moves_Caret_To_Next_Line()
 		{
 			var SUT = new RichEditBox();
@@ -2051,7 +2046,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Selection_MoveUp_Moves_Caret_To_Previous_Line()
 		{
 			var SUT = new RichEditBox();
@@ -2075,7 +2070,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Selection_MoveDown_Screen_Moves_By_Viewport()
 		{
 			var SUT = new RichEditBox { Width = 200, Height = 80 };
@@ -2103,7 +2098,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Selection_Move_Window_Uses_Visible_Range()
 		{
 			var SUT = new RichEditBox { Width = 200, Height = 80 };
@@ -2176,7 +2171,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Selection_Vertical_Extend_Tracks_Active_Start()
 		{
 			var SUT = new RichEditBox();
@@ -2257,7 +2252,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Range_Move_Screen_Throws_ENotImpl()
 		{
 			var SUT = new RichEditBox { Width = 200, Height = 80 };
@@ -2283,7 +2278,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Range_Move_Screen_Nondegenerate_Throws_ENotImpl()
 		{
 			var SUT = new RichEditBox { Width = 200, Height = 60 };
@@ -2310,7 +2305,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Range_Window_Operations_Use_Visible_Bounds()
 		{
 			var SUT = new RichEditBox { Width = 200, Height = 80 };
@@ -2802,7 +2797,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Mixed_Paragraph_Alignments_Render_Per_Paragraph()
 		{
 			var SUT = new RichEditBox { Width = 300, TextWrapping = TextWrapping.NoWrap };
@@ -3143,7 +3138,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_GetRect_Returns_Caret_Geometry()
 		{
 			var SUT = new RichEditBox { Width = 400 };
@@ -3163,7 +3158,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_GetRect_Range_Has_Positive_Width()
 		{
 			var SUT = new RichEditBox { Width = 400 };
@@ -3182,7 +3177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_GetRect_ScreenCoordinates_Apply_RasterizationScale()
 		{
 			var SUT = new RichEditBox { Width = 400 };
@@ -3203,7 +3198,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_GetRect_Multiline_Range_Includes_Intermediate_Lines()
 		{
 			var SUT = new RichEditBox { Width = 600 };
@@ -3231,7 +3226,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_GetPoint_Vertical_Alignment_Orders_Points()
 		{
 			var SUT = new RichEditBox { Width = 400 };
@@ -3254,7 +3249,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_GetPoint_GetRangeFromPoint_RoundTrips()
 		{
 			var SUT = new RichEditBox { Width = 400 };
@@ -3272,7 +3267,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_GetPoint_GetRangeFromPoint_ClientCoordinates_RoundTrips()
 		{
 			var SUT = new RichEditBox { Width = 400 };
@@ -3295,7 +3290,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_GetRangeFromPoint_OffClient_Returns_Nearest_Text()
 		{
 			var SUT = new RichEditBox { Width = 300, Height = 80, TextWrapping = TextWrapping.NoWrap };
@@ -3322,7 +3317,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_SetPoint_Moves_Caret()
 		{
 			var SUT = new RichEditBox { Width = 400 };
@@ -3343,7 +3338,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_PointOptions_Start_Selects_Start_Endpoint()
 		{
 			var SUT = new RichEditBox { Width = 400 };
@@ -3960,7 +3955,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Window_Movement_Does_Not_Reverse_Direction_Outside_Viewport()
 		{
 			var SUT = new RichEditBox { Width = 200, Height = 80 };
@@ -4239,7 +4234,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Protected_Cut_And_Paste_Reject_Before_Side_Effects()
 		{
 			var SUT = new RichEditBox();
@@ -4449,7 +4444,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Explicit_Weight_400_Overrides_Bold_Control_Font()
 		{
-			var SUT = new RichEditBox { FontWeight = global::Windows.UI.Text.FontWeights.Bold };
+			var SUT = new RichEditBox { FontWeight = Microsoft.UI.Text.FontWeights.Bold };
 			try
 			{
 				WindowHelper.WindowContent = SUT;
@@ -4469,7 +4464,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Malformed_Rtf_Clipboard_Falls_Back_To_Plain_Text()
 		{
 			var SUT = new RichEditBox();
@@ -5057,7 +5052,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Vertical_Move_Uses_Actual_Target_Line_Height()
 		{
 			var SUT = new RichEditBox { Width = 200 };
@@ -5243,7 +5238,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_CharacterFormat_Spacing_Affects_Layout_And_HitTesting()
 		{
 			var SUT = new RichEditBox { Width = 400, TextWrapping = TextWrapping.NoWrap };
@@ -6161,7 +6156,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Cut_Handler_Moves_Selection_Copies_And_Deletes_Same_Span()
 		{
 			var SUT = new RichEditBox();
@@ -6214,7 +6209,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Async_Range_Paste_Uses_Rebased_Operation_Range()
 		{
 			var SUT = new RichEditBox();
@@ -6277,7 +6272,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		// Android and UIKit clipboard backends do not expose custom RTF formats.
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
 		public async Task When_Control_Rich_Paste_TextChanging_Sees_Final_Formatting()
 		{
 			var SUT = new RichEditBox();
@@ -6355,7 +6350,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_DefaultTabStop_Changes_Tab_Layout()
 		{
 			var SUT = new RichEditBox { Width = 300, TextWrapping = TextWrapping.NoWrap };
@@ -7294,7 +7289,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			source.Document.SetText(TextSetOptions.None, "Héllo link");
 			var formatted = source.Document.GetRange(0, 5).CharacterFormat;
 			formatted.Bold = FormatEffect.On;
-			formatted.ForegroundColor = Windows.UI.Colors.Red;
+			formatted.ForegroundColor = Microsoft.UI.Colors.Red;
 			formatted.Size = 20;
 			source.Document.GetRange(0, 10).ParagraphFormat.Alignment = ParagraphAlignment.Center;
 			source.Document.GetRange(6, 10).Link = "\"https://contoso.example\"";
@@ -7306,7 +7301,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			GetTextWithoutFinalEop(target.Document, out var text);
 			Assert.AreEqual("Héllo link", text);
 			Assert.AreEqual(FormatEffect.On, target.Document.GetRange(0, 5).CharacterFormat.Bold);
-			Assert.AreEqual(Windows.UI.Colors.Red, target.Document.GetRange(0, 5).CharacterFormat.ForegroundColor);
+			Assert.AreEqual(Microsoft.UI.Colors.Red, target.Document.GetRange(0, 5).CharacterFormat.ForegroundColor);
 			Assert.AreEqual(20f, target.Document.GetRange(0, 5).CharacterFormat.Size);
 			Assert.AreEqual(ParagraphAlignment.Center, target.Document.GetRange(0, 10).ParagraphFormat.Alignment);
 			Assert.AreEqual("\"https://contoso.example\"", target.Document.GetRange(7, 8).Link);
@@ -7671,7 +7666,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		// Android and UIKit clipboard backends do not expose custom RTF formats.
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
 		public async Task When_RtfOnly_Clipboard_Paste_Preserves_Formatting_Cross_Process()
 		{
 			var source = new RichEditBox();
@@ -7709,7 +7704,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		// Android and UIKit clipboard backends do not expose custom RTF formats.
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
 		public async Task When_ClipboardCopyFormat_Controls_Rtf_Payload()
 		{
 			var SUT = new RichEditBox();
@@ -7791,7 +7786,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_InsertImage_Renders_With_Requested_Layout_Size()
 		{
 			var SUT = new RichEditBox
@@ -8022,7 +8017,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_CopyingToClipboard_Handled_Suppresses_Copy()
 		{
 			var SUT = new RichEditBox();
@@ -8500,13 +8495,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ContextFlyout_With_Selection_Populates_RichEdit_Commands()
 		{
-			var focusedSelectionBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(global::Windows.UI.Colors.Red);
+			var focusedSelectionBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
 			var SUT = new RichEditBox
 			{
 				Width = 200,
 				SelectionHighlightColor = focusedSelectionBrush,
 				SelectionHighlightColorWhenNotFocused =
-					new Microsoft.UI.Xaml.Media.SolidColorBrush(global::Windows.UI.Colors.Transparent),
+					new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent),
 			};
 			TextCommandBarFlyout flyout = null;
 			try
@@ -9361,7 +9356,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Range_Copy_Puts_Text_On_Clipboard()
 		{
 			var SUT = new RichEditBox();
@@ -9381,7 +9376,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Range_Copy_Empty_Is_NoOp()
 		{
 			var SUT = new RichEditBox();
@@ -9406,7 +9401,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Range_Cut_Removes_And_Copies()
 		{
 			var SUT = new RichEditBox();
@@ -9431,7 +9426,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Range_Paste_Replaces_Range()
 		{
 			var SUT = new RichEditBox();
@@ -9522,7 +9517,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		// Android and UIKit clipboard backends do not expose custom RTF formats.
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
 		public async Task When_Copy_Default_Preserves_Character_Formatting_On_Paste()
 		{
 			// Mirrors RichEditBoxTOMTests.cpp TestClipboardCopyFormats (~380-420): a default copy
@@ -9582,7 +9577,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Copy_PlainText_Drops_Character_Formatting_On_Paste()
 		{
 			// Mirrors RichEditBoxTOMTests.cpp TestClipboardCopyFormats (~437-447): ClipboardCopyFormat
