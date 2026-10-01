@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #if __SKIA__
@@ -25,15 +26,14 @@ public class Given_GlyphRunRenderer
 	// outlines (#24652).
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24652")]
 	[DataRow(11f)]
 	[DataRow(14f)]
 	[DataRow(20f)]
-	public void When_Skia_Draws_GlyphRun_Then_Matches_Skia_Text_Pipeline(float fontSize)
+	public async Task When_Skia_Draws_GlyphRun_Then_Matches_Skia_Text_Pipeline(float fontSize)
 	{
-		if (!TryCreateDefaultFont(fontSize, out var data, out var faceIndex, out var font))
-		{
-			return;
-		}
+		var data = await LoadFontData();
+		var font = CreateSkiaFont(data, fontSize);
 
 		var (run, positions, info, baseline) = Layout(font, fontSize);
 
@@ -41,7 +41,7 @@ public class Given_GlyphRunRenderer
 		new SkiaDrawingSession(actual.Canvas, DrawingFactory.Current).DrawGlyphRun(font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black);
 
 		using var expected = CreateSurface(info);
-		using (var typeface = SKTypeface.FromData(SKData.CreateCopy(data), faceIndex))
+		using (var typeface = SKTypeface.FromData(SKData.CreateCopy(data), 0))
 		using (var skFont = new SKFont(typeface, fontSize) { Edging = SkiaFontProvider.TextEdging, Subpixel = true })
 		using (var builder = new SKTextBlobBuilder())
 		using (var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true })
@@ -64,13 +64,10 @@ public class Given_GlyphRunRenderer
 	// A font the Skia backend can't draw natively falls back to the portable outline renderer.
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	public void When_Skia_Draws_GlyphRun_Of_Foreign_Font_Then_Falls_Back_To_Outlines()
+	public async Task When_Skia_Draws_GlyphRun_Of_Foreign_Font_Then_Falls_Back_To_Outlines()
 	{
 		const float fontSize = 14f;
-		if (!TryCreateDefaultFont(fontSize, out _, out _, out var font))
-		{
-			return;
-		}
+		var font = CreateSkiaFont(await LoadFontData(), fontSize);
 
 		var (run, positions, info, baseline) = Layout(font, fontSize);
 
@@ -85,29 +82,21 @@ public class Given_GlyphRunRenderer
 		Assert.AreEqual(0, mismatches, $"{mismatches} pixels differ from the outline renderer.");
 	}
 
-	private static bool TryCreateDefaultFont(float fontSize, out byte[] data, out int faceIndex, out IFont font)
+	private static async Task<byte[]> LoadFontData()
 	{
-		data = [];
-		font = null!;
+		var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf"));
+		using var stream = await file.OpenStreamForReadAsync();
+		using MemoryStream buffer = new();
+		await stream.CopyToAsync(buffer);
+		return buffer.ToArray();
+	}
 
-		using var stream = SKTypeface.Default.OpenStream(out faceIndex);
-		if (stream is null)
-		{
-			Assert.Inconclusive("The default typeface exposes no font data.");
-			return false;
-		}
-
-		data = new byte[stream.Length];
-		stream.Read(data, data.Length);
-
-		if (FontProvider.Current.CreateFont(data, SKTypeface.Default.FamilyName, new FontWeight(400), FontStretch.Normal, FontStyle.Normal, fontSize) is not SkiaFont skiaFont)
-		{
-			Assert.Inconclusive("The registered font provider is not the Skia one.");
-			return false;
-		}
-
-		font = skiaFont;
-		return true;
+	// Built with the Skia provider directly: the registered one is not Skia's when the app runs another drawing backend.
+	private static IFont CreateSkiaFont(byte[] data, float fontSize)
+	{
+		var font = new SkiaFontProvider().CreateFont(data, null, new FontWeight(400), FontStretch.Normal, FontStyle.Normal, fontSize);
+		Assert.IsInstanceOfType<SkiaFont>(font);
+		return font;
 	}
 
 	private static (GlyphRun Run, Vector2[] Positions, SKImageInfo Info, float Baseline) Layout(IFont font, float fontSize)
