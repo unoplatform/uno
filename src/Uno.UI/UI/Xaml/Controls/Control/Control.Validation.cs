@@ -16,6 +16,10 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Control
 {
+	/// <summary>
+	/// Whether, and how, the control participates. A template uses it to reserve the error presenter's space up
+	/// front — the compact icon column or the inline row — so the layout does not shift as errors come and go.
+	/// </summary>
 	internal static class InputValidationEnabledStates
 	{
 		internal const string ValidationDisabled = nameof(ValidationDisabled);
@@ -23,6 +27,10 @@ public partial class Control
 		internal const string InlineValidationEnabled = nameof(InlineValidationEnabled);
 	}
 
+	/// <summary>
+	/// Whether there are errors to show. A template uses it to reveal the error content inside the space
+	/// <see cref="InputValidationEnabledStates"/> reserved.
+	/// </summary>
 	internal static class InputValidationErrorStates
 	{
 		internal const string CompactErrors = nameof(CompactErrors);
