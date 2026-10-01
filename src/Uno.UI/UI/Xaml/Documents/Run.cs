@@ -116,21 +116,98 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal IReadOnlyList<Segment> Segments => _segments ??= GetSegments();
 
-		internal InlineObjectInfo? InlineObject { get; set; }
+		// RichEditBox-only formatting lives in a side-car so ordinary runs (every TextBlock.Text) carry one null reference.
+		private RichRunFormat? _richFormat;
 
-		internal TextAlignment? ParagraphAlignment { get; set; }
+		private RichRunFormat RichFormat => _richFormat ??= new();
 
-		internal ParagraphLayoutInfo? ParagraphLayout { get; set; }
+		internal InlineObjectInfo? InlineObject
+		{
+			get => _richFormat?.InlineObject;
+			set { if (value is not null || _richFormat is not null) { RichFormat.InlineObject = value; } }
+		}
 
-		internal global::Windows.UI.Color? CharacterBackground { get; set; }
-		internal global::Microsoft.UI.Text.UnderlineType? RichEditUnderlineType { get; set; }
-		internal bool IsHidden { get; set; }
-		internal float RichEditBaselineOffset { get; set; }
-		internal float? RichEditKerningThreshold { get; set; }
-		internal string? RichEditLanguageTag { get; set; }
-		internal global::Microsoft.UI.Text.TextScript RichEditTextScript { get; set; } = global::Microsoft.UI.Text.TextScript.Default;
-		internal bool RichEditSmallCaps { get; set; }
-		internal bool RichEditOutline { get; set; }
+		internal TextAlignment? ParagraphAlignment
+		{
+			get => _richFormat?.ParagraphAlignment;
+			set { if (value is not null || _richFormat is not null) { RichFormat.ParagraphAlignment = value; } }
+		}
+
+		internal ParagraphLayoutInfo? ParagraphLayout
+		{
+			get => _richFormat?.ParagraphLayout;
+			set { if (value is not null || _richFormat is not null) { RichFormat.ParagraphLayout = value; } }
+		}
+
+		internal global::Windows.UI.Color? CharacterBackground
+		{
+			get => _richFormat?.CharacterBackground;
+			set { if (value is not null || _richFormat is not null) { RichFormat.CharacterBackground = value; } }
+		}
+
+		internal global::Microsoft.UI.Text.UnderlineType? RichEditUnderlineType
+		{
+			get => _richFormat?.UnderlineType;
+			set { if (value is not null || _richFormat is not null) { RichFormat.UnderlineType = value; } }
+		}
+
+		internal bool IsHidden
+		{
+			get => _richFormat?.IsHidden ?? false;
+			set { if (value || _richFormat is not null) { RichFormat.IsHidden = value; } }
+		}
+
+		internal float RichEditBaselineOffset
+		{
+			get => _richFormat?.BaselineOffset ?? 0;
+			set { if (value != 0 || _richFormat is not null) { RichFormat.BaselineOffset = value; } }
+		}
+
+		internal float? RichEditKerningThreshold
+		{
+			get => _richFormat?.KerningThreshold;
+			set { if (value is not null || _richFormat is not null) { RichFormat.KerningThreshold = value; } }
+		}
+
+		internal string? RichEditLanguageTag
+		{
+			get => _richFormat?.LanguageTag;
+			set { if (value is not null || _richFormat is not null) { RichFormat.LanguageTag = value; } }
+		}
+
+		internal global::Microsoft.UI.Text.TextScript RichEditTextScript
+		{
+			get => _richFormat?.TextScript ?? global::Microsoft.UI.Text.TextScript.Default;
+			set { if (value != global::Microsoft.UI.Text.TextScript.Default || _richFormat is not null) { RichFormat.TextScript = value; } }
+		}
+
+		internal bool RichEditSmallCaps
+		{
+			get => _richFormat?.SmallCaps ?? false;
+			set { if (value || _richFormat is not null) { RichFormat.SmallCaps = value; } }
+		}
+
+		internal bool RichEditOutline
+		{
+			get => _richFormat?.Outline ?? false;
+			set { if (value || _richFormat is not null) { RichFormat.Outline = value; } }
+		}
+
+		private sealed class RichRunFormat
+		{
+			public InlineObjectInfo? InlineObject;
+			public TextAlignment? ParagraphAlignment;
+			public ParagraphLayoutInfo? ParagraphLayout;
+			public global::Windows.UI.Color? CharacterBackground;
+			public global::Microsoft.UI.Text.UnderlineType? UnderlineType;
+			public bool IsHidden;
+			public float BaselineOffset;
+			public float? KerningThreshold;
+			public string? LanguageTag;
+			public global::Microsoft.UI.Text.TextScript TextScript = global::Microsoft.UI.Text.TextScript.Default;
+			public bool SmallCaps;
+			public bool Outline;
+		}
 
 		public global::Microsoft.UI.Xaml.FlowDirection FlowDirection
 		{
