@@ -407,8 +407,8 @@ internal static class FrameRenderHelper
 			DrawText(session, value, textX, textY, _textColor);
 		}
 
-		// Shape the string through the neutral font handle (glyph index + advance per character) and draw the
-		// glyph outlines through the neutral path verb — the same way a TextBlock renders. The overlay text is
+		// Shape the string through the neutral font handle (glyph index + advance per character) and draw it as a
+		// glyph run, the same way a TextBlock renders (natively where the backend can, outlines otherwise). The overlay text is
 		// ASCII (digits, "ms", labels), so a simple left-to-right advance layout is sufficient (no shaping).
 		private static void DrawText(IDrawingSession session, string text, float x, float baselineY, Color color)
 		{
