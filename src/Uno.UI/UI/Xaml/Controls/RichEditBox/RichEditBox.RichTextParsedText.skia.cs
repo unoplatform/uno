@@ -226,26 +226,6 @@ partial class RichEditBox
 			}
 		}
 
-		private int FindFirstParagraphEndingAfter(double y)
-		{
-			var low = 0;
-			var high = _paragraphs.Length;
-			while (low < high)
-			{
-				var middle = low + ((high - low) / 2);
-				var paragraph = _paragraphs[middle];
-				if (paragraph.Top + paragraph.Size.Height <= y)
-				{
-					low = middle + 1;
-				}
-				else
-				{
-					high = middle;
-				}
-			}
-			return low;
-		}
-
 		public Rect GetRectForIndex(int adjustedIndex)
 		{
 			var paragraph = _paragraphs[FindParagraphForIndex(adjustedIndex)];
