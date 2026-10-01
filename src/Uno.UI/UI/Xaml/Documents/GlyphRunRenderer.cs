@@ -246,37 +246,52 @@ internal static class GlyphRunRenderer
 		}
 	}
 
-	// Per-render-thread textures for decoded images (inline objects), keyed by image identity; same lifetime rules as
-	// the glyph cache above.
+	// Per-render-thread textures for decoded images (inline objects), keyed by image identity and evicted least
+	// recently used, so a page showing more images than the cap re-uploads one texture at a time, not all of them.
 	private static class ImageTextureCache
 	{
 		private const int Cap = 64;
 
 		[ThreadStatic]
-		private static Dictionary<IImage, ITexture>? _textures;
+		private static Dictionary<IImage, LinkedListNode<(IImage image, ITexture texture)>>? _textures;
+		[ThreadStatic]
+		private static LinkedList<(IImage image, ITexture texture)>? _recency;
 		[ThreadStatic]
 		private static IDrawingFactory? _factory;
 
 		public static ITexture Get(IDrawingFactory factory, IImage image)
 		{
-			var map = _textures ??= new Dictionary<IImage, ITexture>(ReferenceEqualityComparer.Instance);
-			if (!ReferenceEquals(factory, _factory) || map.Count >= Cap)
+			var map = _textures ??= new(ReferenceEqualityComparer.Instance);
+			var recency = _recency ??= new();
+			if (!ReferenceEquals(factory, _factory))
 			{
-				foreach (var texture in map.Values)
+				foreach (var (_, texture) in recency)
 				{
 					texture.Dispose();
 				}
 
 				map.Clear();
+				recency.Clear();
 				_factory = factory;
 			}
 
-			if (!map.TryGetValue(image, out var cached))
+			if (map.TryGetValue(image, out var node))
 			{
-				map[image] = cached = factory.CreateTexture(image);
+				recency.Remove(node);
+				recency.AddFirst(node);
+				return node.Value.texture;
 			}
 
-			return cached;
+			if (map.Count >= Cap && recency.Last is { } oldest)
+			{
+				recency.RemoveLast();
+				map.Remove(oldest.Value.image);
+				oldest.Value.texture.Dispose();
+			}
+
+			node = recency.AddFirst((image, factory.CreateTexture(image)));
+			map[image] = node;
+			return node.Value.texture;
 		}
 	}
 }
