@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.IO;
@@ -89,40 +89,14 @@ namespace Microsoft.UI.Text
 		/// control-level Ctrl+V paste). When a matching rich payload is present the character formatting
 		/// is preserved, as one undoable action.
 		/// </summary>
-		internal async void BeginPasteFromClipboard(
+		internal void BeginPasteFromClipboard(
 			UnoTextRange operationRange,
 			Action<int> onPasted,
 			bool requireEditable,
 			int format)
-		{
-			try
-			{
-				await BeginPasteFromClipboardCoreAsync(
-					Clipboard.GetContent(),
-					operationRange,
-					onPasted,
-					requireEditable,
-					format);
-			}
-			catch (UnauthorizedAccessException)
-			{
-			}
-			catch (OperationCanceledException)
-			{
-			}
-			catch (Exception error) when (FindFatalException(error) is not null)
-			{
-				throw;
-			}
-			catch (Exception error)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error("RichEditBox TOM paste failed.", error);
-				}
-			}
-		}
+			=> BeginPasteFromClipboard(Clipboard.GetContent(), operationRange, onPasted, requireEditable, format);
 
+		// async void: the synchronous TOM Paste API has to start the asynchronous clipboard read and return.
 		internal async void BeginPasteFromClipboard(
 			DataPackageView content,
 			UnoTextRange operationRange,
@@ -139,11 +113,9 @@ namespace Microsoft.UI.Text
 					requireEditable,
 					format);
 			}
-			catch (UnauthorizedAccessException)
+			catch (Exception error) when (error is UnauthorizedAccessException or OperationCanceledException)
 			{
-			}
-			catch (OperationCanceledException)
-			{
+				LogPasteNotApplied(this, error);
 			}
 			catch (Exception error) when (FindFatalException(error) is not null)
 			{
@@ -155,6 +127,22 @@ namespace Microsoft.UI.Text
 				{
 					this.Log().Error("RichEditBox TOM paste failed.", error);
 				}
+			}
+		}
+
+		// A newer paste superseding this one is expected; a denied clipboard or a timed-out read is not.
+		internal static void LogPasteNotApplied(object owner, Exception error)
+		{
+			if (error is UnauthorizedAccessException)
+			{
+				if (owner.Log().IsEnabled(LogLevel.Warning))
+				{
+					owner.Log().Warn("RichEditBox paste was denied clipboard access.", error);
+				}
+			}
+			else if (owner.Log().IsEnabled(LogLevel.Debug))
+			{
+				owner.Log().Debug("RichEditBox paste was canceled (superseded or timed out).");
 			}
 		}
 
