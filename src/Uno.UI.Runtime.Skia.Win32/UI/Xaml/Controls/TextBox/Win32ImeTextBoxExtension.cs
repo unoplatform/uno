@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -74,6 +74,8 @@ internal sealed class Win32ImeTextBoxExtension : IImeTextBoxExtension
 				PInvoke.ImmReleaseContext(_hwnd, himc);
 			}
 
+			// ImmNotifyIME(CPS_COMPLETE) dispatches WM_IME_COMPOSITION/WM_IME_ENDCOMPOSITION synchronously, which
+			// may already have ended the composition.
 			if (_isComposing)
 			{
 				CompositionCompleted?.Invoke(
@@ -153,13 +155,13 @@ internal sealed class Win32ImeTextBoxExtension : IImeTextBoxExtension
 				return;
 			}
 
-			if (hasResult && resultText is not null)
+			if (resultText is not null)
 			{
 				_pendingResultText = resultText;
 				return;
 			}
 
-			if (hasComposition && compositionText is not null)
+			if (compositionText is not null)
 			{
 				if (_pendingResultText is { } pendingResult && compositionText.Length > 0)
 				{
