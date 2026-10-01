@@ -273,6 +273,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		Dictionary<int, InlineObjectInfo>? inlineObjects = null;
 		List<(int end, TextAlignment alignment)>? paragraphAlignments = null;
 		List<(int end, ParagraphLayoutInfo layout)>? paragraphLayouts = null;
+		var hasBaselineOffsets = false;
 
 		foreach (var inline in inlines)
 		{
@@ -431,7 +432,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				run?.RichEditLanguageTag,
 				run?.RichEditTextScript ?? global::Microsoft.UI.Text.TextScript.Default,
 				run?.RichEditSmallCaps == true,
-				run?.RichEditBaselineOffset ?? 0,
+				GetBaselineOffset(run, ref hasBaselineOffsets),
 				run?.RichEditOutline == true));
 			fontBreaks.Add((inlineStart + inlineText.Length, currentFontDetails));
 
@@ -900,7 +901,10 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		AdjustLinesForBaselineOffsets(lines);
+		if (hasBaselineOffsets)
+		{
+			AdjustLinesForBaselineOffsets(lines);
+		}
 		if (inlineObjects is not null)
 		{
 			AdjustLinesForInlineObjects(lines);
@@ -1856,9 +1860,12 @@ internal readonly partial struct UnicodeText : IParsedText
 			session,
 			foregroundOverride ?? (useHighContrastAdjustment ? WithOpacity(highContrastForeground, effectiveOpacity) : null));
 
-		foreach (var (image, destination) in inlineObjectImages ?? [])
+		if (inlineObjectImages is not null)
 		{
-			GlyphRunRenderer.DrawImage(drawingSession, image, destination, effectiveOpacity);
+			foreach (var (image, destination) in inlineObjectImages)
+			{
+				GlyphRunRenderer.DrawImage(drawingSession, image, destination, effectiveOpacity);
+			}
 		}
 
 		foreach (var ((_, _, scale), (left, right, midY)) in spellCheckUnderlines)
@@ -2029,7 +2036,12 @@ internal readonly partial struct UnicodeText : IParsedText
 		IDrawingSession session,
 		List<(float x1, float x2, float baseline, Color color, FontDetails font, global::Microsoft.UI.Text.TabLeader leader)>? leaders)
 	{
-		foreach (var (x1, x2, baseline, color, fontDetails, leader) in leaders ?? [])
+		if (leaders is null)
+		{
+			return;
+		}
+
+		foreach (var (x1, x2, baseline, color, fontDetails, leader) in leaders)
 		{
 			if (leader is global::Microsoft.UI.Text.TabLeader.Lines or global::Microsoft.UI.Text.TabLeader.ThickLines)
 			{
@@ -2830,10 +2842,25 @@ internal readonly partial struct UnicodeText : IParsedText
 		return null;
 	}
 
+	private static float GetBaselineOffset(Run? run, ref bool hasBaselineOffsets)
+	{
+		var offset = run?.RichEditBaselineOffset ?? 0;
+		hasBaselineOffsets |= offset != 0;
+		return offset;
+	}
+
+	// Every emoji range starts at or above U+00A9, so plain ASCII labels skip the range lookups.
+	private const char FirstEmojiCandidate = '©';
+
 	private static bool ContainsEmojiCandidate(string text)
 	{
 		for (var i = 0; i < text.Length; i += char.IsSurrogate(text, i) ? 2 : 1)
 		{
+			if (text[i] < FirstEmojiCandidate)
+			{
+				continue;
+			}
+
 			if (NotoFontFallbackService.IsEmojiCodepoint(char.ConvertToUtf32(text, i)))
 			{
 				return true;
