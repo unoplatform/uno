@@ -12,8 +12,10 @@ fi
 
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-macos-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
-export TEST_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-macos-runtime-tests-results.xml
+# A label (e.g. -webgpu) keeps a variant lane's results and retry list apart from the default lane's.
+export UNO_TEST_RESULT_LABEL=${UNO_TEST_RESULT_LABEL:-}
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-macos${UNO_TEST_RESULT_LABEL}-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
+export TEST_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-macos${UNO_TEST_RESULT_LABEL}-runtime-tests-results.xml
 
 ## Create the failed-tests directory up front: every abort path below (a crashed harness,
 ## a killed app, a non-zero transform tool) otherwise skips the mkdir and leaves

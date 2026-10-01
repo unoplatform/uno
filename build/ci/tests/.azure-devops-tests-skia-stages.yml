@@ -166,6 +166,24 @@ stages:
       poolName: '${{ parameters.poolName }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
+  - template: .azure-devops-tests-linux-skia.yml
+    parameters:
+      vmImage: '${{ parameters.vmImage }}'
+      vmMacImage: '${{ parameters.vmMacImage }}'
+      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      xCodeRootTest: '${{ parameters.xCodeRootTest }}'
+      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
+      poolName: '${{ parameters.poolName }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+      runSnapshotTests: false
+      jobPrefix: 'Skia_Linux_WebGpu'
+      runtimeTestsDisplayName: 'Runtime Tests (WebGPU)'
+      testRunTitle: 'Linux Skia WebGPU Runtime Tests'
+      testResultLabel: '-webgpu'
+      webGpu: true
+
 - stage: runtime_tests_skia_linux_framebuffer
   displayName: Tests - Desktop Skia Linux Framebuffer
   dependsOn:
@@ -208,6 +226,22 @@ stages:
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
       poolName: '${{ parameters.poolName }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
+  - template: .azure-devops-tests-macos-skia.yml
+    parameters:
+      vmImage: '${{ parameters.vmImage }}'
+      vmMacImage: '${{ parameters.vmMacImage }}'
+      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      xCodeRootTest: '${{ parameters.xCodeRootTest }}'
+      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
+      poolName: '${{ parameters.poolName }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+      jobName: 'Skia_macos_WebGpu_Runtime_Tests'
+      displayName: 'Runtime Tests (WebGPU)'
+      testResultLabel: '-webgpu'
+      webGpu: true
 
 - stage: runtime_tests_skia_windows
   displayName: Tests - Desktop Skia Windows
