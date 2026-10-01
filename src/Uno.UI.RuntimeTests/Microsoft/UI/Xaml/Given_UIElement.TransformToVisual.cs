@@ -289,14 +289,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			SUT.ChangeView(null, 96, null);
 
-			await TestServices.WindowHelper.WaitForEqual(96, () => SUT.VerticalOffset);
+			// The ChangeView animation alone lasts a second, the default timeout.
+			await TestServices.WindowHelper.WaitForEqual(96, () => SUT.VerticalOffset, timeoutMS: 5000);
 
 			AssertTransformOffset(SUT, 76);
 			AssertTransformOffset(innerBorder, 120);
 
 			SUT.ChangeView(null, 2000, null);
 
-			await TestServices.WindowHelper.WaitForEqual(520, () => SUT.VerticalOffset);
+			await TestServices.WindowHelper.WaitForEqual(520, () => SUT.VerticalOffset, timeoutMS: 5000);
 
 			AssertTransformOffset(SUT, 76);
 			AssertTransformOffset(innerBorder, -304);

@@ -8900,6 +8900,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(
 				() => caretRect.Left >= sv.HorizontalOffset - 1
 					&& caretRect.Right <= sv.HorizontalOffset + sv.ViewportWidth + 1,
+				// The ChangeView animation alone lasts a second, the default timeout.
+				timeoutMS: 5000,
 				message: $"Caret at {caretRect.Left} never came into the viewport (width {sv.ViewportWidth})");
 
 			Assert.IsGreaterThan(0, sv.HorizontalOffset, "The viewport should have followed the previewed caret.");
