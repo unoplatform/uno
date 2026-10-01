@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.UI.Xaml.Data;
+using Uno.Extras.Input;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation.Collections;
@@ -14,7 +15,8 @@ namespace Microsoft.UI.Xaml.Controls;
 /// Routes the validation errors of a binding source to the control that bound to it.
 /// </summary>
 /// <remarks>
-/// Plumbing rather than API: the surface an application uses is <see cref="IInputValidationControl"/>.
+/// Plumbing rather than API: the surface an application uses is the <c>Uno.Extras.Input.Validation</c>
+/// attached properties of Uno.UI.Extras.
 /// Requires <see cref="Uno.UI.FeatureConfiguration.InputValidation.IsEnabled"/> to be set before the first
 /// binding is registered, and the control's type to declare an
 /// <see cref="Uno.UI.Xaml.Controls.InputValidationPropertyAttribute"/> or to be registered in
@@ -22,9 +24,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </remarks>
 public partial class Control
 {
-	private ValidationState? _validationState;
-
-	private ValidationState EnsureValidationState() => _validationState ??= new();
+	private ValidationSubscription? _validationSubscription;
 
 	/// <summary>
 	/// Marks an expression that targets the validation property of its owner. Both SetBindingInternal
@@ -62,7 +62,10 @@ public partial class Control
 		}
 	}
 
-	private void OnValidationModeChanged()
+	/// <summary>
+	/// Backs <c>Validation.Mode</c>'s changed handler.
+	/// </summary>
+	internal void OnValidationModeChanged()
 	{
 		// Generated XAML sets the binding before this property, and at that point the element is still
 		// parentless with a null DataContext, so registration cannot be gated on it. Pull the current
@@ -81,13 +84,16 @@ public partial class Control
 			}
 		}
 
-		if (ValidationParticipant is { HasValidationErrors: true })
+		if (HasValidationErrors)
 		{
-			EnsureErrors();
-		}
-		else if (this is IInputValidationControl { HasValidationErrors: true })
-		{
-			DeferErrors();
+			if (IsValidationParticipant)
+			{
+				EnsureErrors();
+			}
+			else
+			{
+				DeferErrors();
+			}
 		}
 
 		// After the errors have settled, so that enabling a control whose source already has errors does not
@@ -95,15 +101,11 @@ public partial class Control
 		UpdateValidationStatesInternal();
 	}
 
-	private void RaiseHasValidationErrorsChanged(bool newValue)
+	/// <summary>
+	/// Backs <c>Validation.HasErrors</c>'s changed handler.
+	/// </summary>
+	internal void OnHasValidationErrorsChanged(bool newValue)
 	{
-		if (this is IInputValidationControl validationControl)
-		{
-			_validationState?.HasValidationErrorsChanged?.Invoke(
-				validationControl,
-				new HasValidationErrorsChangedEventArgs(newValue));
-		}
-
 		UpdateValidationStates();
 
 		// The equivalent of WinUI's RaiseValidationErrorEvent check, which loads the error template on the first
@@ -112,7 +114,7 @@ public partial class Control
 		{
 			DeferErrors();
 		}
-		else if (ValidationParticipant is not null)
+		else if (IsValidationParticipant)
 		{
 			EnsureErrors();
 		}
@@ -123,7 +125,7 @@ public partial class Control
 
 	private void SynchronizeValidation(BindingExpression expression)
 	{
-		if (ValidationParticipant is null)
+		if (!IsValidationParticipant)
 		{
 			ClearValidationIfOwned(expression);
 			return;
@@ -137,9 +139,8 @@ public partial class Control
 			return;
 		}
 
-		var state = EnsureValidationState();
-		state.Subscription ??= new ValidationSubscription(this);
-		state.Subscription.Attach(expression, errorSource, propertyName);
+		_validationSubscription ??= new ValidationSubscription(this);
+		_validationSubscription.Attach(expression, errorSource, propertyName);
 	}
 
 	/// <summary>
@@ -150,11 +151,11 @@ public partial class Control
 	/// </summary>
 	private void ClearValidationIfOwned(BindingExpression? expression)
 	{
-		if (_validationState is { Subscription: { } subscription } state
+		if (_validationSubscription is { } subscription
 			&& (expression is null || subscription.Owns(expression)))
 		{
 			subscription.Dispose();
-			state.Subscription = null;
+			_validationSubscription = null;
 
 			UpdateValidationErrors(sourceErrors: null);
 		}
@@ -162,9 +163,8 @@ public partial class Control
 
 	/// <summary>
 	/// Reconciles the errors of this control with what its source now reports, mutating the collection in
-	/// place so that its identity — and any binding to it — survives. Raises one ValidationError per element
-	/// added or removed, as WinUI's ValidationErrorsCollection does, then settles HasValidationErrors, whose
-	/// changed callback is what drives the visuals.
+	/// place so that its identity — and any binding to it — survives, then settles HasErrors, whose changed
+	/// handler is what drives the visuals.
 	/// </summary>
 	private void UpdateValidationErrors(IEnumerable? sourceErrors)
 	{
@@ -180,7 +180,7 @@ public partial class Control
 
 		var errors = incoming.Count == 0
 			? TryGetValidationErrors()
-			: (this as IInputValidationControl)?.ValidationErrors;
+			: InputValidationProperties.ErrorsProperty is { } property ? GetOrCreateValidationErrors(property) : null;
 
 		if (errors is not null)
 		{
@@ -190,40 +190,22 @@ public partial class Control
 			{
 				if (!incoming.Remove(errors[i].ErrorMessage))
 				{
-					var removed = errors[i];
 					errors.RemoveAt(i);
-					RaiseValidationError(InputValidationErrorEventAction.Removed, removed);
 				}
 			}
 
 			foreach (var message in incoming)
 			{
-				var added = new InputValidationError(message);
-				errors.Add(added);
-				RaiseValidationError(InputValidationErrorEventAction.Added, added);
+				errors.Add(new InputValidationError(message));
 			}
 		}
 
 		SetHasValidationErrors(errors is { Count: > 0 });
 	}
 
-	/// <summary>
-	/// Resolves one of the validation dependency properties on this control's own type.
-	/// </summary>
-	/// <remarks>
-	/// The stand-in for WinUI's <c>GetTargetHasErrorsProperty</c> / <c>GetTargetErrorsProperty</c>, which
-	/// switch on a type index over a closed set of four controls. Resolving by name instead keeps
-	/// third-party controls working, and costs nothing per call: <see cref="DependencyProperty.GetProperty"/>
-	/// is already memoized, and it walks the base-type chain, so a <c>TextBox</c> subclass finds what
-	/// <c>TextBox</c> registered. No <see cref="Control"/>-owned attached property may therefore be
-	/// named after an <see cref="IInputValidationControl"/> member.
-	/// </remarks>
-	private DependencyProperty? GetValidationProperty(string name)
-		=> DependencyProperty.GetProperty(GetType(), name);
-
 	private void SetHasValidationErrors(bool value)
 	{
-		if (GetValidationProperty(nameof(IInputValidationControl.HasValidationErrors)) is { } property)
+		if (InputValidationProperties.HasErrorsProperty is { } property)
 		{
 			SetValue(property, value);
 		}
@@ -235,18 +217,7 @@ public partial class Control
 	/// <c>CheckOnDemandProperty</c>, which deliberately does not force-create.
 	/// </summary>
 	private IObservableVector<InputValidationError>? TryGetValidationErrors()
-		=> GetValidationProperty(nameof(IInputValidationControl.ValidationErrors)) is { } property
+		=> InputValidationProperties.ErrorsProperty is { } property
 			? GetValue(property) as IObservableVector<InputValidationError>
 			: null;
-
-	private void RaiseErrorChanged(DataErrorsChangedEventArgs args)
-		=> _validationState?.ErrorChanged?.Invoke(this, args);
-
-	private void RaiseValidationError(InputValidationErrorEventAction action, InputValidationError error)
-	{
-		if (this is IInputValidationControl sender)
-		{
-			_validationState?.ValidationError?.Invoke(sender, new InputValidationErrorEventArgs(action, error));
-		}
-	}
 }

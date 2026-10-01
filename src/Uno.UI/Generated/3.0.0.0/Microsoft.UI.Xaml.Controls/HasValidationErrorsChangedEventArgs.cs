@@ -3,12 +3,26 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class HasValidationErrorsChangedEventArgs
 	{
-		// Skipping already declared property NewValue
+#if __SKIA__
+		internal HasValidationErrorsChangedEventArgs()
+		{
+		}
+#endif
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public bool NewValue
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs", "NewValue");
+			}
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs.NewValue.get
 	}
 }

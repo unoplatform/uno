@@ -4,5 +4,6 @@
 	<type fullname="Uno.UI.Xaml.UIElementExtensions"/>
 	<type fullname="Uno.UI.Xaml.Controls.SplitViewExtensions"/>
 	<type fullname="Uno.UI.Markup.FromJsonExtension"/>
+	<type fullname="Uno.Extras.Input.Validation"/>
   </assembly>
 </linker>

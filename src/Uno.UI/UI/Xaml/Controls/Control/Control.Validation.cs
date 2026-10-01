@@ -5,11 +5,9 @@
 
 #nullable enable
 
-using System;
-using System.ComponentModel;
+using Uno.Extras.Input;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
-using Windows.Foundation;
 using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -39,17 +37,35 @@ public partial class Control
 	}
 
 	/// <summary>
-	/// This control as an input validation participant, or null when it does not participate.
+	/// Whether this control participates in input validation.
 	/// </summary>
 	/// <remarks>
 	/// Mirrors <c>CControl::IsValidationEnabled</c>: every mode but <see cref="InputValidationMode.Disabled"/>
-	/// counts as enabled, and a control that does not implement the interface is never enabled — which is
+	/// counts as enabled, and a control whose type has no validation property is never enabled — which is
 	/// what WinUI's type-index switch expresses by returning an unknown property index.
 	/// </remarks>
-	private IInputValidationControl? ValidationParticipant
-		=> this is IInputValidationControl { InputValidationMode: not InputValidationMode.Disabled } participant
-			? participant
+	private bool IsValidationParticipant
+		=> ValidationMode != InputValidationMode.Disabled
+			&& FeatureConfiguration.InputValidation.ValidationProperties[GetType()] is not null;
+
+	private InputValidationMode ValidationMode
+		=> InputValidationProperties.ModeProperty is { } property
+			? (InputValidationMode)GetValue(property)
+			: InputValidationMode.Disabled;
+
+	private InputValidationKind ValidationKind
+		=> InputValidationProperties.KindProperty is { } property
+			? (InputValidationKind)GetValue(property)
+			: InputValidationKind.Auto;
+
+	private DataTemplate? ValidationErrorTemplate
+		=> InputValidationProperties.ErrorTemplateProperty is { } property
+			? GetValue(property) as DataTemplate
 			: null;
+
+	private bool HasValidationErrors
+		=> InputValidationProperties.HasErrorsProperty is { } property
+			&& (bool)GetValue(property);
 
 	/// <summary>
 	/// Applies the <see cref="InputValidationEnabledStates"/> and <see cref="InputValidationErrorStates"/> visual state groups.
@@ -67,14 +83,14 @@ public partial class Control
 	{
 		// Validation is opt-in per control, so for nearly every control this is the whole method — and it
 		// runs on the visual-state path and on every template application.
-		if (!FeatureConfiguration.InputValidation.IsEnabled || ValidationParticipant is not { } participant)
+		if (!FeatureConfiguration.InputValidation.IsEnabled || !IsValidationParticipant)
 		{
 			return;
 		}
 
-		var hasErrors = participant.HasValidationErrors;
+		var hasErrors = HasValidationErrors;
 
-		if (participant.InputValidationKind == InputValidationKind.Inline)
+		if (ValidationKind == InputValidationKind.Inline)
 		{
 			GoToState(false, InputValidationEnabledStates.InlineValidationEnabled);
 			GoToState(false, hasErrors ? InputValidationErrorStates.InlineErrors : InputValidationErrorStates.ErrorsCleared);
@@ -90,7 +106,7 @@ public partial class Control
 
 	/// <summary>
 	/// Applies the validation states from outside this type — from <see cref="FrameworkElement"/>, which as the
-	/// base type cannot see a protected member of this one, and from the mode changed callback, which is the
+	/// base type cannot see a protected member of this one, and from the mode changed handler, which is the
 	/// only caller that has to be able to leave the groups.
 	/// </summary>
 	/// <remarks>
@@ -101,7 +117,7 @@ public partial class Control
 	/// </remarks>
 	internal void UpdateValidationStatesInternal()
 	{
-		if (ValidationParticipant is not null)
+		if (IsValidationParticipant)
 		{
 			UpdateValidationStates();
 		}
@@ -122,7 +138,7 @@ public partial class Control
 	{
 		UpdateValidationStatesInternal();
 
-		if (ValidationParticipant is { HasValidationErrors: true })
+		if (IsValidationParticipant && HasValidationErrors)
 		{
 			EnsureErrors();
 		}
@@ -130,7 +146,7 @@ public partial class Control
 
 	private void EnsureErrors()
 	{
-		if (!FeatureConfiguration.InputValidation.IsEnabled || ValidationParticipant is not { } participant)
+		if (!FeatureConfiguration.InputValidation.IsEnabled || !IsValidationParticipant)
 		{
 			return;
 		}
@@ -140,14 +156,14 @@ public partial class Control
 		if (GetTemplateChild("ErrorPresenter") is ContentPresenter errorPresenter)
 		{
 			EnsureValidationVisuals();
-			if (participant.ErrorTemplate is { } errorTemplate
+			if (ValidationErrorTemplate is { } errorTemplate
 				&& errorTemplate.LoadContent() is FrameworkElement loadedContent)
 			{
 				loadedContent.DataContext = this;
 
 				object content = loadedContent;
 
-				if (participant.InputValidationKind != InputValidationKind.Inline)
+				if (ValidationKind != InputValidationKind.Inline)
 				{
 					// We aren't showing errors inline, get the default compact template and set the errors as the content of the
 					// tooltip. We then use the tree created from the compact template as the content for the presenter
@@ -177,58 +193,26 @@ public partial class Control
 	}
 
 	/// <summary>
-	/// The changed callback a participating control registers its InputValidationMode with.
+	/// Backs <c>Validation.Kind</c>'s changed handler.
 	/// </summary>
-	/// <remarks>
-	/// Protected rather than internal because a control defined outside Uno.UI participates by registering
-	/// these same dependency properties itself. Such a control registers with <see cref="PropertyMetadata"/>:
-	/// the <see cref="FrameworkPropertyMetadata"/> overload taking a value and a callback is internal.
-	/// </remarks>
-	protected static void OnInputValidationModeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-	{
-		if (sender is Control control)
-		{
-			control.OnValidationModeChanged();
-		}
-	}
+	internal void OnValidationKindChanged() => UpdateValidationStates();
 
-	/// <inheritdoc cref="OnInputValidationModeChanged"/>
-	protected static void OnInputValidationKindChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	/// <summary>
+	/// Backs <c>Validation.ErrorTemplate</c>'s changed handler.
+	/// </summary>
+	internal void OnValidationErrorTemplateChanged()
 	{
-		if (sender is Control control)
+		if (IsValidationParticipant && HasValidationErrors)
 		{
-			control.UpdateValidationStates();
-		}
-	}
-
-	/// <inheritdoc cref="OnInputValidationModeChanged"/>
-	protected static void OnErrorTemplateChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-	{
-		if (sender is Control { ValidationParticipant.HasValidationErrors: true } control)
-		{
-			control.EnsureErrors();
-		}
-	}
-
-	/// <inheritdoc cref="OnInputValidationModeChanged"/>
-	/// <remarks>
-	/// Raising HasValidationErrorsChanged from here rather than from where the errors are reconciled is what
-	/// makes it fire once per transition rather than once per synchronization.
-	/// </remarks>
-	protected static void OnHasValidationErrorsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-	{
-		if (sender is Control control)
-		{
-			control.RaiseHasValidationErrorsChanged((bool)args.NewValue);
+			EnsureErrors();
 		}
 	}
 
 	/// <summary>
-	/// Backs <see cref="IInputValidationControl.ValidationErrors"/>: the collection is created on first read,
-	/// and its identity then stays stable for the life of the control.
+	/// Backs <c>Validation.Errors</c>: the collection is created on first read, and its identity then stays
+	/// stable for the life of the control.
 	/// </summary>
-	/// <param name="property">The ValidationErrors dependency property the control registered.</param>
-	protected IObservableVector<InputValidationError> GetOrCreateValidationErrors(DependencyProperty property)
+	internal IObservableVector<InputValidationError> GetOrCreateValidationErrors(DependencyProperty property)
 	{
 		if (GetValue(property) is not ValidationErrorsCollection errors)
 		{
@@ -237,51 +221,5 @@ public partial class Control
 		}
 
 		return errors;
-	}
-
-	/// <summary>
-	/// Backs <see cref="IInputValidationControl.HasValidationErrorsChanged"/>, so that no control needs
-	/// storage of its own.
-	/// </summary>
-	protected void AddHasValidationErrorsChangedHandler(TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs> handler)
-		=> EnsureValidationState().HasValidationErrorsChanged += handler;
-
-	/// <inheritdoc cref="AddHasValidationErrorsChangedHandler"/>
-	protected void RemoveHasValidationErrorsChangedHandler(TypedEventHandler<IInputValidationControl, HasValidationErrorsChangedEventArgs> handler)
-	{
-		if (_validationState is { } state)
-		{
-			state.HasValidationErrorsChanged -= handler;
-		}
-	}
-
-	/// <summary>
-	/// Backs <see cref="IInputValidationControl.ValidationError"/>.
-	/// </summary>
-	protected void AddValidationErrorHandler(TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs> handler)
-		=> EnsureValidationState().ValidationError += handler;
-
-	/// <inheritdoc cref="AddValidationErrorHandler"/>
-	protected void RemoveValidationErrorHandler(TypedEventHandler<IInputValidationControl, InputValidationErrorEventArgs> handler)
-	{
-		if (_validationState is { } state)
-		{
-			state.ValidationError -= handler;
-		}
-	}
-
-	/// <summary>
-	/// Backs <see cref="IInputValidationControl.ErrorChanged"/>.
-	/// </summary>
-	protected void AddErrorChangedHandler(EventHandler<DataErrorsChangedEventArgs> handler)
-		=> EnsureValidationState().ErrorChanged += handler;
-
-	/// <inheritdoc cref="AddErrorChangedHandler"/>
-	protected void RemoveErrorChangedHandler(EventHandler<DataErrorsChangedEventArgs> handler)
-	{
-		if (_validationState is { } state)
-		{
-			state.ErrorChanged -= handler;
-		}
 	}
 }

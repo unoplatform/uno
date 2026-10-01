@@ -591,7 +591,7 @@ namespace Uno.UI
 			/// <remarks>
 			/// Must be set before the first binding is registered, which for XAML-declared bindings means before
 			/// <c>InitializeComponent</c> runs on the first page. Enabling it does not by itself validate
-			/// anything: each control opts in through its own <c>InputValidationMode</c>.
+			/// anything: each control opts in through the <c>Uno.Extras.Input.Validation.Mode</c> attached property.
 			/// </remarks>
 			public static bool IsEnabled { get; set; }
 

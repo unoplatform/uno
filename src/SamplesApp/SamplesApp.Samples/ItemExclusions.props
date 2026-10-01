@@ -52,7 +52,7 @@
 		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView2Tests\**"
 		      Link="Microsoft\UI\Xaml\Controls\WebView2Tests\%(RecursiveDir)%(Filename)%(Extension)" />
 
-		<!-- WinAppSDK has no public input validation surface (InputValidationMode, InputValidationError...) -->
+		<!-- Input validation is Uno-only: the Uno.Extras.Input.Validation attached properties do nothing on WinAppSDK -->
 		<Page Remove="$(MSBuildThisFileDirectory)Uno\UI\Xaml\Controls\Validation\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Uno\UI\Xaml\Controls\Validation\**" />
 		<None Include="$(MSBuildThisFileDirectory)Uno\UI\Xaml\Controls\Validation\**"

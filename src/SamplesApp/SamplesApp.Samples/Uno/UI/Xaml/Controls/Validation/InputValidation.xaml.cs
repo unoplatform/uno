@@ -7,11 +7,12 @@ using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Uno.Extras.Input;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Uno_UI_Xaml_Controls.Validation;
 
-[Sample("Validation", Name = "InputValidation", Description = "INotifyDataErrorInfo errors surfaced on IInputValidationControl.HasValidationErrors / .ValidationErrors")]
+[Sample("Validation", Name = "InputValidation", Description = "INotifyDataErrorInfo errors surfaced on the Uno.Extras.Input.Validation.HasErrors / .Errors attached properties")]
 public sealed partial class InputValidation : Page
 {
 	public InputValidation()
