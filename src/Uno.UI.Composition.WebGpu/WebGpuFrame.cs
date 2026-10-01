@@ -91,16 +91,15 @@ internal sealed unsafe partial class WebGpuFrame
 		_d.SiteSlab.Flush();
 		_d.FlushFrameSlabs();
 		var cb = wgpuCommandEncoderFinish(Encoder, null);
-		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+		var submission = wgpuQueueSubmitForIndex(_d.Q, 1, (IntPtr)(&cb));
 		// wgpu holds its own reference until the submission completes, so both handles are dropped here -
 		// otherwise every frame leaks an encoder and a command buffer into the handle table.
 		wgpuCommandBufferRelease(cb);
 		wgpuCommandEncoderRelease(Encoder);
 		Encoder = IntPtr.Zero;
-		// Pump the device non-blocking so the CPU overlaps the next frame with the GPU: pooled-buffer reuse is
-		// queue-ordered and transient textures are refcount-released, and the swapchain's frames-in-flight cap
-		// provides the backpressure.
-		_ = wgpuDevicePoll(_d.Dev, 0u, null);
+		// The CPU runs ahead of the GPU by a few frames, no more: pooled-buffer reuse is queue-ordered and transient
+		// textures are refcount-released, so a frame's resources live until the GPU has finished it.
+		_d.ThrottleSubmission(submission);
 		foreach (var ls in LayerSurfaces) { _d.Pool.Return(ls.View); }
 		LayerSurfaces.Clear();
 		Effects.SweepShapeShadows();
