@@ -3,20 +3,26 @@ namespace Uno.UI.Runtime.Skia {
 		static workerScriptUrl = URL.createObjectURL(new Blob([`
 const offscreenCanvas = new OffscreenCanvas(0, 0);
 const context = offscreenCanvas.getContext("2d", { willReadFrequently: true });
-onmessage = async (e) => {
-	const [array, seqNo] = e.data;
-	const image = new Blob([array]);
+const readPixels = async (array) => {
+	const imageBitmap = await createImageBitmap(new Blob([array]), { premultiplyAlpha: "premultiply" });
 	try {
-		const imageBitmap = await createImageBitmap(image, { premultiplyAlpha: "premultiply" });
 		offscreenCanvas.width = imageBitmap.width;
 		offscreenCanvas.height = imageBitmap.height;
 		context.drawImage(imageBitmap, 0, 0);
-		const imageData = context.getImageData(
-			0, 0,
-			imageBitmap.width,
-			imageBitmap.height
-		);
-		
+		return context.getImageData(0, 0, imageBitmap.width, imageBitmap.height);
+	} finally {
+		// Workers live as long as the app: without this, each one keeps the last image's pixels in its
+		// canvas (until the next decode resizes it) and in the bitmap (until the worker's own GC).
+		imageBitmap.close();
+		offscreenCanvas.width = 0;
+		offscreenCanvas.height = 0;
+	}
+};
+onmessage = async (e) => {
+	const [array, seqNo] = e.data;
+	try {
+		const imageData = await readPixels(array);
+
 		// Due to a bug in Skia on WASM, we need the pixels to be
 		// alpha-premultiplied because using SKAlphaType.Unpremul is not working
 		// correctly (see also https://github.com/unoplatform/uno/issues/20727),
@@ -34,8 +40,8 @@ onmessage = async (e) => {
 			response: {
 				error: null,
 				bytes: new Uint8Array(imageData.data.buffer), // does not copy
-				width: imageBitmap.width,
-				height: imageBitmap.height
+				width: imageData.width,
+				height: imageData.height
 			}
 		},
 		[imageData.data.buffer]);
