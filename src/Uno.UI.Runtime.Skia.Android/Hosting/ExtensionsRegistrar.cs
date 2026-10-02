@@ -41,6 +41,9 @@ internal static class ExtensionsRegistrar
 		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => new AndroidImeTextBoxExtension());
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new AndroidNativeOpenGLWrapper(xamlRoot));
 
+		ContextHelper.WindowContextResolver = static window
+			=> AndroidSkiaXamlRootHost.GetActivity((window as Window)?.RootElement?.XamlRoot);
+
 		_registered = true;
 	}
 }
