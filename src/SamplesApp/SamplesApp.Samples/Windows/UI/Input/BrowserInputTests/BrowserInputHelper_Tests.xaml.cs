@@ -40,7 +40,7 @@ namespace UITests.Windows_UI_Input.BrowserInputTests
 #if __SKIA__
 			if (_helperType is null)
 			{
-				PlatformStatus.Text = "BrowserInputHelper not available. This sample only works on WASM Skia (Uno.WinUI.Runtime.WebAssembly.Browser).";
+				PlatformStatus.Text = "BrowserInputHelper not available. This sample only works with the WebAssembly host (Uno.WinUI.Runtime.WebAssembly.Browser).";
 			}
 			else
 			{
