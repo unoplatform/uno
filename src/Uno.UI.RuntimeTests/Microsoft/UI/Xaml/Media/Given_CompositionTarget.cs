@@ -291,6 +291,52 @@ public class Given_CompositionTarget
 	}
 
 	/// <summary>
+	/// A driver subscribed once the host is gone would never tick either, so it must not count as motion: a
+	/// component reacting to the close (or a driver replacing itself) would otherwise leave it counted forever.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_Window_Closed_Then_Later_Frame_Driver_Not_Counted()
+	{
+		var (secondary, content) = await OpenSecondaryWindow();
+		var target = (CompositionTarget)content.Visual.CompositionTarget!;
+		var compositor = content.Visual.Compositor;
+
+		var closed = false;
+		secondary.Closed += (_, _) => closed = true;
+		secondary.Close();
+		await TestServices.WindowHelper.WaitFor(() => closed, message: "the secondary window should close");
+		await TestServices.WindowHelper.WaitFor(() => !compositor.IsAnimating, message: "nothing should be animating once the window is closed");
+
+		EventHandler<long> driver = (_, _) => { };
+		target.FrameStarting += driver;
+		try
+		{
+			Assert.IsFalse(compositor.IsAnimating, "a frame driver on a closed window's target must not count as an animation in flight");
+		}
+		finally
+		{
+			target.FrameStarting -= driver;
+		}
+	}
+
+	private static async Task<(Window Window, Border Content)> OpenSecondaryWindow()
+	{
+		var secondary = new Window();
+		var content = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
+		secondary.Content = content;
+
+		var activated = false;
+		secondary.Activated += (_, _) => activated = true;
+		secondary.Activate();
+		await TestServices.WindowHelper.WaitFor(() => activated, message: "the secondary window should activate");
+		await TestServices.WindowHelper.WaitForLoaded(content);
+
+		return (secondary, content);
+	}
+
+	/// <summary>
 	/// A driver starting after a pause must get the current frame's timestamp, not the last one before the pause:
 	/// motion dates its start from its first tick, so a stale one plays the whole pause out in the next frame.
 	/// </summary>
