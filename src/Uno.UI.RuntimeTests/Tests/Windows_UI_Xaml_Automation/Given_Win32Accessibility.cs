@@ -328,6 +328,7 @@ public class Given_Win32Accessibility
 
 	// No BoundingRectangle change is raised on layout (WinUI raises none either), so clients rely on
 	// pulling fresh bounds after an element moves.
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24784")]
 	[TestMethod]
 	public async Task When_Element_Moves_BoundingRectangle_Is_Current()
 	{
