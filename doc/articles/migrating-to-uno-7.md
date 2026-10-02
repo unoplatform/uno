@@ -881,8 +881,8 @@ the member through a type that never had it in WinUI.
 
 - **`Transitions` is on `UIElement`.** Uno declared `Transitions` and `TransitionsProperty` on
   `FrameworkElement`; WinUI declares them on `UIElement`. Code using the property is
-  unaffected, but a reference to `FrameworkElement.TransitionsProperty` must become
-  `UIElement.TransitionsProperty`.
+  unaffected, and `FrameworkElement.TransitionsProperty` still compiles (C# resolves the inherited
+  static member), but a library compiled against 6.x must be recompiled against 7.0.
 
 - **`Grid` attached-property accessors take a `FrameworkElement`.** `Grid.GetRow`/`SetRow`,
   `GetColumn`/`SetColumn`, `GetRowSpan`/`SetRowSpan` and `GetColumnSpan`/`SetColumnSpan`
