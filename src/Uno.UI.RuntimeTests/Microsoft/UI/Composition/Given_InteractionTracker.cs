@@ -343,7 +343,7 @@ public partial class Given_InteractionTracker
 				requestId: 0,
 				naturalRestingPosition: new(0.0f, 32.0f, 0.0f),
 				modifiedRestingPosition: new(0.0f, 32.0f, 0.0f),
-				positionVelocityInPixelsPerSecond: new(0.0f, 32f * 1.5f / 0.257f, 0.0f)),
+				positionVelocityInPixelsPerSecond: new(0.0f, InteractionTrackerPointerWheelInertiaHandler.GetLaunchVelocity(32f), 0.0f)),
 			helper.Current);
 
 		helper.Advance();
