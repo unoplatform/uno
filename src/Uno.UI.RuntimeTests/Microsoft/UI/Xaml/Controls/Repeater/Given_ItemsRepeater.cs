@@ -590,6 +590,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24712")]
 		public async Task When_In_ScrollView_And_ScrollTo_Then_Materialize_Items_In_Viewport()
 		{
 			var repeater = new ItemsRepeater
