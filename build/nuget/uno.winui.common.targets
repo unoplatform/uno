@@ -36,6 +36,9 @@
 		WinAppSDK heads: this file is not imported when $(_UnoIsWinAppSDKDefined) is true, so a plain
 		WinUI app referencing Uno.WinUI as a library keeps building.
 
+		Test projects are skipped: Microsoft.NET.Test.Sdk (and the MSTest, xUnit v3 and TUnit runners)
+		make them Exe, and this file reaches them transitively through any referenced Uno project.
+
 		The check only sees OutputType, so an executable that merely links Uno.WinUI (a console
 		harness, a benchmark runner) trips it too; UnoDisableUNOB0028Validation is the way out.
 	-->
@@ -43,7 +46,7 @@
 		<Error Code="UNOB0028"
 			   HelpLink="https://aka.platform.uno/UNOB0028"
 			   Text="Uno Platform application projects must use the Uno.Sdk. Support for the legacy project format (a Microsoft.NET.Sdk project referencing the Uno.WinUI package, with one head project per platform) was removed in Uno Platform 7.0. See https://aka.platform.uno/UNOB0028 for the migration steps."
-			   Condition="'$(UsingUnoSdk)'!='true' and '$(UnoDisableUNOB0028Validation)'!='true' and ('$(OutputType)'=='Exe' or '$(OutputType)'=='WinExe')" />
+			   Condition="'$(UsingUnoSdk)'!='true' and '$(UnoDisableUNOB0028Validation)'!='true' and '$(IsTestProject)'!='true' and ('$(OutputType)'=='Exe' or '$(OutputType)'=='WinExe')" />
 	</Target>
 
 	<!--

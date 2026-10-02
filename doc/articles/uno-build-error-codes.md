@@ -300,7 +300,7 @@ Starting with Uno Platform 7.0, an application must be built with the [`Uno.Sdk`
 
 To fix this, migrate your application to the Uno.Sdk by following the [Migrating Projects to Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
 
-This diagnostic is only raised for application projects (`Exe` and `WinExe`). Class libraries that reference the `Uno.WinUI` package directly are not affected, and neither are Windows App SDK heads.
+This diagnostic is only raised for application projects (`Exe` and `WinExe`). Class libraries that reference the `Uno.WinUI` package directly are not affected, and neither are Windows App SDK heads or test projects (`IsTestProject` set to `true`, which `Microsoft.NET.Test.Sdk` and the common test runners do for you).
 
 If your project is an executable that merely links `Uno.WinUI` as a library — a console harness or a benchmark runner, for instance — disable the check:
 
