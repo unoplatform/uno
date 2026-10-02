@@ -13,6 +13,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI;
+using Uno.UI.WinRT.Extensions.Interop;
 using Uno.UI.WinRT.Extensions.UI.Popups;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
@@ -25,6 +26,7 @@ using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Popups.Internal;
 using Windows.UI.ViewManagement;
+using WinRT.Interop.Internal;
 using DirectUI;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
@@ -137,7 +139,7 @@ namespace Microsoft.UI.Xaml
 		private static void RegisterExtensions()
 		{
 			ApiExtensibility.Register<MessageDialog>(typeof(IMessageDialogExtension), dialog => new MessageDialogExtension(dialog));
-			ApiExtensibility.Register(typeof(global::WinRT.Interop.IWindowInteropExtension), _ => Uno.UI.WinRT.Extensions.Interop.WindowInteropExtension.Instance);
+			ApiExtensibility.Register(typeof(IWindowInteropExtension), _ => WindowInteropExtension.Instance);
 			// The Skia SKCanvasElement visual factory is registered by the Skia backend (SkiaBackend.Register),
 			// since SKCanvasVisual lives in the backend assembly beside SkiaDrawingSession.
 		}

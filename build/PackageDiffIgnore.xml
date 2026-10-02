@@ -3923,9 +3923,9 @@
 		  <Member fullName="Microsoft.UI.Colors" reason="Relocated Microsoft.UI.Colors from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.InteractiveExperiences.Projection) (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.ColorHelper" reason="Relocated Microsoft.UI.ColorHelper from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.InteractiveExperiences.Projection) (breaking changes for 7.0)" />
 		  <Member fullName="Windows.UI.ColorHelper" reason="Removed Windows.UI.ColorHelper from Uno.WinRT; it is UWP XAML-only (Microsoft.Windows.UI.Xaml projection) and not part of the WinAppSDK contract (breaking changes for 7.0)" />
-		  <!-- WinRT.Interop window interop relocated from Uno.UI to Uno.WinRT, matching WinAppSDK (Microsoft.Windows.SDK.NET); Uno.UI now backs it through ApiExtensibility (#2065, breaking changes for 7.0). -->
-		  <Member fullName="WinRT.Interop.InitializeWithWindow" reason="Relocated WinRT.Interop.InitializeWithWindow from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="WinRT.Interop.WindowNative" reason="Relocated WinRT.Interop.WindowNative from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
+		  <!-- WinRT.Interop window interop relocated from Uno.UI to Uno.WinRT, matching WinAppSDK (Microsoft.Windows.SDK.NET); Uno.UI now backs it through ApiExtensibility (#22927, breaking changes for 7.0). -->
+		  <Member fullName="WinRT.Interop.InitializeWithWindow" reason="Relocated WinRT.Interop.InitializeWithWindow from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#22927, breaking changes for 7.0)" />
+		  <Member fullName="WinRT.Interop.WindowNative" reason="Relocated WinRT.Interop.WindowNative from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#22927, breaking changes for 7.0)" />
 
 		  <!-- Uno-only menu-plumbing interfaces reduced to internal; WinUI has no public counterparts. -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenu" reason="Reduced Uno-only IMenu to internal (breaking changes for 7.0, uno#8339)" />

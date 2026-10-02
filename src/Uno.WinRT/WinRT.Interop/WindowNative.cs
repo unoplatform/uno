@@ -2,6 +2,7 @@
 
 using System;
 using Uno.Foundation.Extensibility;
+using WinRT.Interop.Internal;
 
 namespace WinRT.Interop;
 

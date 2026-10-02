@@ -2,7 +2,7 @@
 
 using System;
 
-namespace WinRT.Interop;
+namespace WinRT.Interop.Internal;
 
 /// <summary>
 /// Provided by the XAML layer, which owns <c>Window</c>, to back <see cref="WindowNative"/> and <see cref="InitializeWithWindow"/>.
