@@ -217,6 +217,8 @@ public partial class Given_DependencyPropertyGenerator
 	[DataRow("int", "null")]
 	[DataRow("int", "1.5")]
 	[DataRow("byte", "300")]
+	[DataRow("float", "double.MaxValue")]
+	[DataRow("float", "-1e39")]
 	[DataRow("string", "1")]
 	[DataRow("global::Microsoft.UI.Xaml.Visibility", "FrameworkPropertyMetadataOptions.Inherits")]
 	public async Task When_DefaultValue_Is_Incompatible(string propertyType, string defaultValue)
