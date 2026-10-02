@@ -9,11 +9,10 @@ internal class AndroidSkiaXamlRootHost : IXamlRootHost
 	private readonly Window _window;
 	private readonly NativeWindowWrapper _wrapper;
 
-	public AndroidSkiaXamlRootHost(Window window, XamlRoot xamlRoot, NativeWindowWrapper wrapper)
+	public AndroidSkiaXamlRootHost(Window window, NativeWindowWrapper wrapper)
 	{
 		_window = window;
 		_wrapper = wrapper;
-		XamlRootMap.Register(xamlRoot, this);
 	}
 
 	// Resolved through the wrapper (not stored) so it follows the activity currently
