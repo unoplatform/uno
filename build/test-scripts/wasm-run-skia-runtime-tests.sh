@@ -73,6 +73,8 @@ if [ -n "$UNO_TEST_APP_ENVIRONMENT" ]; then
     RUNTIME_TESTS_URL="${RUNTIME_TESTS_URL}&env=${UNO_TEST_APP_ENVIRONMENT}"
 fi
 export UNO_TEST_CHROME_FLAGS=${UNO_TEST_CHROME_FLAGS:-}
+# Browser window and virtual screen size, WIDTHxHEIGHT.
+export UNO_TEST_BROWSER_SIZE=${UNO_TEST_BROWSER_SIZE:-1920x1080}
 
 # The software-rendered lanes scale with cores, and Chrome needs a writable profile; record both.
 echo "Agent: $(nproc) cores, user=$(id -un), HOME=${HOME:-unset}, shm: $(df -h /dev/shm 2>/dev/null | tail -1)"
@@ -103,7 +105,7 @@ while [ $TRY_COUNT -lt 5 ]; do
     # --no-first-run/--no-default-browser-check/--disable-search-engine-choice-screen stop the first-run
     # experience from swallowing the command-line URL on the agent's brand-new profile: without them
     # chrome starts but never navigates, so the canary never appears.
-    xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size=1920,1080 $2 "$1"' _ "${RUNTIME_TESTS_URL}" "${UNO_TEST_CHROME_FLAGS}" &
+    xvfb-run --auto-servernum --server-args="-screen 0 ${UNO_TEST_BROWSER_SIZE}x24" sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size=$3 $2 "$1"' _ "${RUNTIME_TESTS_URL}" "${UNO_TEST_CHROME_FLAGS}" "${UNO_TEST_BROWSER_SIZE/x/,}" &
 
     # wait one minute for the canary file to be created, otherwise fail the script.
     # This may happen if xvfb-run of chrome fails to start

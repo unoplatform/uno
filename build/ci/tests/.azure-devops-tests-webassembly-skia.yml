@@ -10,6 +10,10 @@ parameters:
   # UNO_* variables handed to the app through the URL's env= parameter, e.g. 'UNO_WEBGPU=1'.
   appEnvironment: ''
   chromeFlags: ''
+  # One matrix job per group; the suite is split evenly across them.
+  testGroups: [0, 1, 2, 3]
+  # Browser window (and virtual screen) size, as WIDTHxHEIGHT.
+  browserSize: '1920x1080'
 
 jobs:
 ##
@@ -30,21 +34,10 @@ jobs:
 
   strategy:
     matrix:
-      'Runtime Tests 0':
-        UITEST_RUNTIME_TEST_GROUP: 0
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 4
-
-      'Runtime Tests 1':
-        UITEST_RUNTIME_TEST_GROUP: 1
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 4
-
-      'Runtime Tests 2':
-        UITEST_RUNTIME_TEST_GROUP: 2
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 4
-
-      'Runtime Tests 3':
-        UITEST_RUNTIME_TEST_GROUP: 3
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 4
+      ${{ each group in parameters.testGroups }}:
+        'Runtime Tests ${{ group }}':
+          UITEST_RUNTIME_TEST_GROUP: ${{ group }}
+          UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ length(parameters.testGroups) }}
 
   variables:
     SamplesAppArtifactName: $[ dependencies.Skia_Tests_Build_Browser.outputs['set_samples_artifact.SamplesAppArtifactName'] ]
@@ -107,6 +100,7 @@ jobs:
       UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
       UNO_TEST_APP_ENVIRONMENT: ${{ parameters.appEnvironment }}
       UNO_TEST_CHROME_FLAGS: ${{ parameters.chromeFlags }}
+      UNO_TEST_BROWSER_SIZE: ${{ parameters.browserSize }}
 
   - task: PublishTestResults@2
     condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))

@@ -49,6 +49,10 @@ stages:
       appEnvironment: 'UNO_WEBGPU=1'
       # Chrome crashed at startup on the self-hosted agents with its default profile location, so it gets its own.
       chromeFlags: '--enable-unsafe-webgpu --enable-features=Vulkan --use-webgpu-adapter=swiftshader --user-data-dir=/tmp/uno-chrome-webgpu-profile'
+      # Software rendering costs per pixel and per core: more, smaller groups and the Android lane's screen size
+      # keep each group inside the run timeout (one 4-group shard reached ~600 of ~2000 tests in 35 min).
+      testGroups: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      browserSize: '1280x800'
 
 - stage: runtime_tests_skia_android
   displayName: Tests - Android Skia
