@@ -1542,6 +1542,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 		[Ignore("We're only testing managed scrollers.")]
 #endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24643")]
 		public async Task When_Viewport_Resized_During_Touch_Scroll_Then_Offset_Not_Reverted()
 		{
 			Border content;
