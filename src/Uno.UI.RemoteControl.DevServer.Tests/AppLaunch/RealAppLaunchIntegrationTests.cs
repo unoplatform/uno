@@ -16,10 +16,8 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 	[ClassInitialize]
 	public static void ClassInitialize(TestContext context) => GlobalClassInitialize<RealAppLaunchIntegrationTests>(context);
 
-	// Uno.Templates@*-* resolves to 7.0 prereleases, so MyApp is built on 7.0 packages and the
-	// locally built 6.x RemoteControl client never connects (no app-launch/connected event).
 	[TestMethod]
-	[Ignore("Uno.Templates@*-* scaffolds MyApp against 7.0 packages, which this 6.x build cannot connect to.")]
+	[Ignore("Uno.Templates@*-* scaffolds MyApp against 7.0 packages, so the 6.x RemoteControl client never connects (no app-launch/connected event).")]
 	public async Task WhenRealAppBuiltAndRunWithDevServer_RealConnectionEstablished()
 	{
 		// PRE-ARRANGE: Create a real Uno solution file (will contain desktop project)
