@@ -6,7 +6,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $repositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
-$appProject = Join-Path $repositoryRoot "src\SamplesApp\SamplesApp.Skia.Generic\SamplesApp.Skia.Generic.csproj"
+$appProject = Join-Path $repositoryRoot "src\SamplesApp\SamplesApp\SamplesApp.csproj"
 $projectPath = Join-Path $PSScriptRoot "RichEditBoxUiaClient.csproj"
 
 function Get-MSBuildProperty([string] $Project, [string] $Property, [string[]] $AdditionalArguments = @())
@@ -22,7 +22,7 @@ function Get-MSBuildProperty([string] $Project, [string] $Property, [string[]] $
 
 if (-not $NativeInstalled -and [string]::IsNullOrWhiteSpace($AppPath))
 {
-	$appFramework = Get-MSBuildProperty $appProject "NetCurrent"
+	$appFramework = (Get-MSBuildProperty $appProject "NetCurrent") + "-desktop"
 	$AppPath = Get-MSBuildProperty $appProject "TargetPath" @(
 		"-property:Configuration=Release",
 		"-property:TargetFramework=$appFramework"
@@ -31,7 +31,7 @@ if (-not $NativeInstalled -and [string]::IsNullOrWhiteSpace($AppPath))
 
 if (-not $NativeInstalled -and -not (Test-Path $AppPath))
 {
-	throw "SamplesApp was not found at '$AppPath'. Build SamplesApp.Skia.Generic in Release first."
+	throw "SamplesApp was not found at '$AppPath'. Build it first: dotnet build src/SamplesApp/SamplesApp/SamplesApp.csproj -c Release -f $appFramework"
 }
 
 $appProcess = $null

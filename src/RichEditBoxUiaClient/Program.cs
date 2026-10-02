@@ -447,7 +447,7 @@ internal static class Program
 					InvokeByAutomationId(automation, processId, "RichEditBoxUiaUpdateComposition"),
 					"composition update button invoked through UIA");
 				Check(
-					WaitUntil(() => compositionHandler.Events.Count > 0 && conversionHandler.Count >= 1),
+					WaitUntil(() => !compositionHandler.Events.IsEmpty && conversionHandler.Count >= 1),
 					"composition and conversion-target events reached the external client");
 				Check(
 					compositionHandler.Events.TryPeek(out var compositionEvent)
@@ -458,7 +458,7 @@ internal static class Program
 					InvokeByAutomationId(automation, processId, "RichEditBoxUiaCompleteComposition"),
 					"composition completion button invoked through UIA");
 				Check(
-					WaitUntil(() => finalizedHandler.Events.Count > 0 && conversionHandler.Count >= 2),
+					WaitUntil(() => !finalizedHandler.Events.IsEmpty && conversionHandler.Count >= 2),
 					"composition-finalized and conversion-target events reached the external client");
 			}
 			finally
