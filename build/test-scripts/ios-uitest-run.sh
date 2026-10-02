@@ -181,6 +181,7 @@ if [ -z "${UNO_UITEST_SIMULATOR_VERSION-}" ]; then
 	UNO_UITEST_SIMULATOR_VERSION=$(xcrun simctl list runtimes --json | jq -r --arg ver "$IOS_SDK_VERSION" '
 		.runtimes
 		| map(select(.isAvailable == true and (.identifier | test("SimRuntime\\.iOS")) and (.version | startswith($ver))))
+		| sort_by(.version | split(".") | map(tonumber? // 0))
 		| .[-1].identifier // empty')
 
 	if [ -z "$UNO_UITEST_SIMULATOR_VERSION" ]; then
