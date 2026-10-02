@@ -345,11 +345,7 @@ public partial class GestureRecognizer
 				TimeSpan? origin = null;
 				_handler = (_, args) =>
 				{
-					if (args is not RenderingEventArgs { RenderingTime: var frameTime })
-					{
-						onTick(_time.Elapsed);
-						return;
-					}
+					var frameTime = ((RenderingEventArgs)args).RenderingTime;
 
 					// The start falls between frames, so the first step is measured on the real clock and every
 					// later one by the frame times.
