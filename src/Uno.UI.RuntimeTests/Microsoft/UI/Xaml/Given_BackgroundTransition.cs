@@ -113,7 +113,7 @@ public class Given_BackgroundTransition
 		                                Content="{TemplateBinding Content}">
 		
 		                <ContentPresenter.BackgroundTransition>
-		                  <BrushTransition Duration="0:0:2" />
+		                  <BrushTransition Duration="0:0:8" />
 		                </ContentPresenter.BackgroundTransition>
 		              </ContentPresenter>
 		
@@ -144,13 +144,13 @@ public class Given_BackgroundTransition
 
 		VisualStateManager.GoToState(SUT, "PointerOver", true);
 
-		// Instantly Red even though the transition is 2 seconds long
+		// Instantly Red even though the transition is 8 seconds long
 		var bitmap = await UITestHelper.ScreenShot(SUT);
 		ImageAssert.HasColorAt(bitmap, new Point(bitmap.Width / 2, bitmap.Height / 2), Microsoft.UI.Colors.Red);
 
 		VisualStateManager.GoToState(SUT, "Normal", true);
 
-		// Leaving "PointerOver" reactivates the 2s BrushTransition, which now animates the
+		// Leaving "PointerOver" reactivates the 8s BrushTransition, which now animates the
 		// background back from Red to Blue. We deliberately avoid asserting an exact
 		// mid-transition color here: the transition progress is driven by the compositor's
 		// wall-clock (Stopwatch-based, see Compositor.TimestampInTicks / ColorBrushTransitionState)
@@ -163,8 +163,8 @@ public class Given_BackgroundTransition
 		//   1. The transition animates gradually (it does NOT instantly snap to the target), and
 		//   2. It eventually settles on the target Blue color.
 
-		// (1) Sample as soon as the transition has started. The transition is 2s long, so for
-		// the whole (sub-second) duration of taking a screenshot the color is still in transit
+		// (1) Sample as soon as the transition has started. The transition is 8s long (a software-rendered
+		// frame plus a screenshot can take a few seconds), so while the screenshot is taken the color is still in transit
 		// and must NOT have reached the Blue endpoint yet. This is the deterministic counterpart
 		// to the "instantly Red" assertion above: it proves the background animates gradually
 		// instead of snapping straight to the target, on any platform regardless of timing.
@@ -177,11 +177,11 @@ public class Given_BackgroundTransition
 			"It appears to have snapped instead of transitioning gradually.");
 
 		// (2) Poll until the transition completes and assert it has settled on the target Blue.
-		// The wait timeout is generous relative to the 2s duration so it stays robust on slow
+		// The wait timeout is generous relative to the 8s duration so it stays robust on slow
 		// platforms without depending on a precise sample time.
 		Color settled = default;
 		var stopwatch = Stopwatch.StartNew();
-		while (stopwatch.ElapsedMilliseconds < 5000)
+		while (stopwatch.ElapsedMilliseconds < 15000)
 		{
 			bitmap = await UITestHelper.ScreenShot(SUT);
 			settled = bitmap.GetPixel(bitmap.Width / 2, bitmap.Height / 2);
