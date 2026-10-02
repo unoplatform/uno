@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Drawing;
@@ -731,7 +732,21 @@ public partial class CompositionTarget
 		var args = new RenderingEventArgs(TimeSpan.FromTicks(frameTimestamp - _startTimestamp), frameData);
 		try
 		{
-			_rendering?.Invoke(null, args);
+			if (_rendering is { } rendering)
+			{
+				// Raised from the layout tick: a throwing handler must not skip the layout and record behind it.
+				foreach (var handler in Delegate.EnumerateInvocationList(rendering))
+				{
+					try
+					{
+						handler(null, args);
+					}
+					catch (Exception e)
+					{
+						Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, typeof(CompositionTarget));
+					}
+				}
+			}
 		}
 		finally
 		{
