@@ -1199,14 +1199,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 200,
 				Content = innerScrollViewer,
 			};
-			WindowHelper.WindowContent = outerScrollViewer;
-			await WindowHelper.WaitForLoaded(item);
+			try
+			{
+				WindowHelper.WindowContent = outerScrollViewer;
+				await WindowHelper.WaitForLoaded(item);
 
-			item.StartBringIntoView(new BringIntoViewOptions() { AnimationDesired = false });
+				item.StartBringIntoView(new BringIntoViewOptions() { AnimationDesired = false });
 
-			await WindowHelper.WaitFor(
-				() => Math.Abs(outerScrollViewer.VerticalOffset - 300) < 1,
-				message: $"The outer ScrollViewer did not scroll the item into view (offset {outerScrollViewer.VerticalOffset}, expected 300).");
+				await WindowHelper.WaitFor(
+					() => Math.Abs(outerScrollViewer.VerticalOffset - 300) < 1,
+					message: $"The outer ScrollViewer did not scroll the item into view (offset {outerScrollViewer.VerticalOffset}, expected 300).");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 
