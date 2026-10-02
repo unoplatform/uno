@@ -448,6 +448,33 @@ public partial class Given_DependencyPropertyGenerator
 	}
 
 	[TestMethod]
+	public async Task When_Containing_Type_Has_Constraints_And_Modifiers()
+	{
+		// Partial parts may omit constraints and readonly, so the reopening needs neither.
+		var run = await RunAsync(
+			"""
+			using TestHelpers;
+			using Uno.UI.Xaml;
+
+			namespace Mynamespace
+			{
+				public readonly partial struct Outer<TOuter> where TOuter : struct
+				{
+					public sealed partial class Inner<T> : TestDependencyObject where T : class, new()
+					{
+						[GeneratedDependencyProperty]
+						public partial T? MyValue { get; set; }
+					}
+				}
+			}
+			""");
+
+		run.ShouldSucceed().ShouldContain(
+			"Mynamespace.Outer-1.Inner-1.g.cs",
+			"namespace Mynamespace { partial struct Outer<TOuter> { partial class Inner<T> {");
+	}
+
+	[TestMethod]
 	public async Task When_Containing_Type_Is_In_Global_Namespace()
 	{
 		var run = await RunAsync(
