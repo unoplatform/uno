@@ -411,19 +411,19 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	{
 		if (!ReferenceEquals(xamlRoot, _xamlRoot) ||
 			!_controllerRef.TryGetTarget(out var controller) ||
-			controller.SkCanvasView is not { } metalView)
+			controller.RenderView is not IAppleUIKitRenderView renderView)
 		{
 			return 0;
 		}
 
-		return metalView.AutomationElements?.Length ?? 0;
+		return renderView.AutomationElements?.Length ?? 0;
 	}
 
 	private object[]? GetAutomationElementsForRoot(XamlRoot xamlRoot)
 	{
 		if (!ReferenceEquals(xamlRoot, _xamlRoot) ||
 			!_controllerRef.TryGetTarget(out var controller) ||
-			controller.SkCanvasView is not { } metalView)
+			controller.RenderView is not { } metalView)
 		{
 			return null;
 		}
@@ -466,7 +466,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			: null;
 
 	private void SetAccessibilityElements(
-		UnoSKMetalView metalView,
+		UIView metalView,
 		IReadOnlyList<UIAccessibilityElement>? elements)
 	{
 		if (elements is not { Count: > 0 })
@@ -479,7 +479,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			_currentAccessibilityElements = Array.Empty<UIAccessibilityElement>();
 			using var emptyArray = NSArray.FromNSObjects(_currentAccessibilityElements);
 			metalView.SetValueForKey(emptyArray, _accessibilityElementsKey);
-			metalView.AutomationElements = null;
+			((IAppleUIKitRenderView)metalView).AutomationElements = null;
 			return;
 		}
 
@@ -504,7 +504,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		_currentAccessibilityElements = elements.ToArray();
 		using var array = NSArray.FromNSObjects(_currentAccessibilityElements);
 		metalView.SetValueForKey(array, _accessibilityElementsKey);
-		metalView.AutomationElements = _currentAccessibilityElements;
+		((IAppleUIKitRenderView)metalView).AutomationElements = _currentAccessibilityElements;
 	}
 
 	// Initial build hook called from NativeWindowWrapper.ShowCore
@@ -580,7 +580,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		var metalView = controller.SkCanvasView;
+		var metalView = controller.RenderView;
 		if (metalView is null)
 		{
 			return;
@@ -2186,7 +2186,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		_nodeIdsByHandle.Clear();
 
 		if (_controllerRef.TryGetTarget(out var controller) &&
-			controller.SkCanvasView is { } metalView)
+			controller.RenderView is { } metalView)
 		{
 			metalView.InvokeOnMainThread(() => SetAccessibilityElements(metalView, null));
 		}
