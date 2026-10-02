@@ -28,6 +28,11 @@ namespace Uno.UI.Xaml
 			return binding;
 		}
 
+		// WinUI has no string-keyed SetBinding; the XAML generator emits it for x:Bind to plain properties.
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetBinding(DependencyObject target, string propertyName, BindingBase binding)
+			=> target.SetBindingInternal(propertyName, binding);
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static AttachedDependencyObject GetDependencyObjectForXBind(this object instance)
 			=> DependencyObjectExtensions.GetAttachedDependencyObject(instance);

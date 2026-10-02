@@ -35,13 +35,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return Math.Min(
 				//(FrameworkElement)(child).m_pLayoutProperties.m_nGridRow,
-				Grid.GetRow(child),
+				(int)child.GetValue(RowProperty),
 				m_pRows.Count - 1);
 		}
 
 		int GetRowSpanAdjusted(UIElement child)
 		{
-			return Math.Min(GetRowSpan(child), m_pRows.Count - GetRowIndex(child));
+			return Math.Min((int)child.GetValue(RowSpanProperty), m_pRows.Count - GetRowIndex(child));
 		}
 
 		// Get the column index of a child.
@@ -50,13 +50,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return Math.Min(
 				//(FrameworkElement)(child).m_pLayoutProperties.m_nGridColumn,
-				Grid.GetColumn(child),
+				(int)child.GetValue(ColumnProperty),
 				m_pColumns.Count - 1);
 		}
 
 		int GetColumnSpanAdjusted(UIElement child)
 		{
-			return Math.Min(GetColumnSpan(child), m_pColumns.Count - GetColumnIndex(child));
+			return Math.Min((int)child.GetValue(ColumnSpanProperty), m_pColumns.Count - GetColumnIndex(child));
 		}
 
 		//// Get the row span value of a child.

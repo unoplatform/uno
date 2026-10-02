@@ -68,5 +68,13 @@ namespace Microsoft.UI.Xaml
 		public BindingExpression GetBindingExpression(DependencyProperty dp)
 			=> GetBindingExpressionInternal(dp);
 
+		/// <summary>
+		/// Attaches a binding to this element, using the provided binding object.
+		/// </summary>
+		/// <param name="dp">The dependency property identifier of the property that is data bound.</param>
+		/// <param name="binding">The binding to use for the property.</param>
+		public void SetBinding(DependencyProperty dp, BindingBase binding)
+			=> SetBindingInternal(dp, binding);
+
 	}
 }

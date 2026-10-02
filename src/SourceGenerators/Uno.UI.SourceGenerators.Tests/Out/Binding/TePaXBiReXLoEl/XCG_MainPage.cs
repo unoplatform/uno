@@ -83,7 +83,7 @@ namespace TestRepro
 							{
 							__p1.Name = "LoadElement";
 							_LoadElementSubject.ElementInstance = __p1;
-							__p1.SetBinding(
+							global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 								global::Microsoft.UI.Xaml.ElementStub.LoadProperty,
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
@@ -140,7 +140,7 @@ namespace TestRepro
 							__nameScope.RegisterName("button1", __p1);
 							__that.button1 = __p1;
 							// FieldModifier public
-							__p1.SetBinding(
+							global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 								global::Microsoft.UI.Xaml.Controls.Button.TagProperty,
 								new Microsoft.UI.Xaml.Data.Binding()
 								{

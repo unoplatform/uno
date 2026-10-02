@@ -43,32 +43,41 @@ namespace TestRepro
 			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
-				new global::Microsoft.UI.Xaml.Controls.StackPanel
+				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
 					IsParsing = true,
-					// Source MainPage.xaml (Line 6:3)
+					// Source MainPage.xaml (Line 10:3)
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
-							new global::Microsoft.UI.Xaml.Controls.ToggleSwitch
+							new global::Microsoft.UI.Xaml.Controls.Button
 							{
 								IsParsing = true,
-								OnContent = @"Enabled",
-								OffContent = @"Disabled",
-								// Source MainPage.xaml (Line 7:4)
+								Tag = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::TestRepro.Poco
+									{
+										// Source MainPage.xaml (Line 13:6)
+									}
+									.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+									{
+									/* _isTopLevelDictionary:False */
+									__that._component_0 = __p1;
+									global::Uno.UI.Xaml.BindingHelper.SetBinding(__p1.GetDependencyObjectForXBind(),
+										"Text",
+										new Microsoft.UI.Xaml.Data.Binding()
+										{
+											Mode = BindingMode.OneTime,
+										}
+											.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime Title*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null ))
+									);
+									}
+									))
+								)
+								,
+								// Source MainPage.xaml (Line 11:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 							{
-							/* _isTopLevelDictionary:False */
-							__that._component_0 = __p1;
-							global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
-								global::Microsoft.UI.Xaml.Controls.ToggleSwitch.IsOnProperty,
-								new Microsoft.UI.Xaml.Data.Binding()
-								{
-									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
-								}
-									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.SubModel.IsEnabled*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.SubModel.IsEnabled)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) ___tctx.ViewModel.SubModel.IsEnabled = (bool)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(bool), __value); } , new [] {"ViewModel.SubModel.IsEnabled"}))
-							);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 							__p1.CreationComplete();
 							}
@@ -77,7 +86,7 @@ namespace TestRepro
 						,
 					}
 				}
-				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 				{
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 				__p1.CreationComplete();
@@ -87,14 +96,14 @@ namespace TestRepro
 			;
 			
 			this
-			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 			{
 			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 			{
 			// Class TestRepro.MainPage
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
@@ -121,9 +130,9 @@ namespace TestRepro
 		}
 
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.ToggleSwitch _component_0
+		private global::TestRepro.Poco _component_0
 		{
-			get => (global::Microsoft.UI.Xaml.Controls.ToggleSwitch)_component_0_Holder.Instance;
+			get => (global::TestRepro.Poco)_component_0_Holder.Instance;
 			set => _component_0_Holder.Instance = value;
 		}
 		private interface IMainPage_Bindings
@@ -156,18 +165,23 @@ namespace TestRepro
 			void IMainPage_Bindings.Update()
 			{
 				var owner = Owner;
-				owner._component_0.ApplyXBind();
+				owner._component_0.GetDependencyObjectForXBind().ApplyXBind();
 			}
 			void IMainPage_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings();
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
 				var owner = Owner;
-				owner._component_0.SuspendXBind();
+				owner._component_0.GetDependencyObjectForXBind().SuspendXBind();
 			}
+		}
+		private static bool TryGetInstance_xBind_1(global::TestRepro.MainPage ___tctx, out object o)
+		{
+			o = null;
+			o = ___tctx.Title;
+			return true;
 		}
 	}
 }
@@ -175,23 +189,30 @@ namespace MyProject
 {
 	static class MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.ToggleSwitch instance);
+		public delegate void XamlApplyHandler0(global::TestRepro.Poco instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.ToggleSwitch MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.ToggleSwitch instance, XamlApplyHandler0 handler)
+		public static global::TestRepro.Poco MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::TestRepro.Poco instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.StackPanel instance);
+		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.Button instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Button MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Button instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Page instance);
+		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler2 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Grid MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler2 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.Page instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;

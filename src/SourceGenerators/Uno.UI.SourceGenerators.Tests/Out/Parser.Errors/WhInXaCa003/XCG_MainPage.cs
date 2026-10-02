@@ -251,7 +251,7 @@ namespace TestRepro
 															/* _isTopLevelDictionary:False */
 															__that._component_3 = __p1;
 															global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 1);
-															__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																global::Microsoft.UI.Xaml.Controls.ListView.ItemsSourceProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
@@ -361,7 +361,7 @@ namespace TestRepro
 															/* _isTopLevelDictionary:False */
 															__that._component_6 = __p1;
 															global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 1);
-															__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 																global::Microsoft.UI.Xaml.Controls.ListView.ItemsSourceProperty,
 																new Microsoft.UI.Xaml.Data.Binding()
 																{
@@ -552,7 +552,7 @@ namespace TestRepro
 											{
 											global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 											global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 0);
-											__p1.SetBinding(
+											global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 												global::Microsoft.UI.Xaml.Controls.Image.SourceProperty,
 												new Microsoft.UI.Xaml.Data.Binding()
 												{
@@ -585,7 +585,7 @@ namespace TestRepro
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 														/* _isTopLevelDictionary:False */
 														__that._component_0 = __p1;
-														__p1.SetBinding(
+														global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
@@ -612,7 +612,7 @@ namespace TestRepro
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 														/* _isTopLevelDictionary:False */
 														__that._component_1 = __p1;
-														__p1.SetBinding(
+														global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
@@ -850,7 +850,7 @@ namespace TestRepro
 											{
 											global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 											global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 0);
-											__p1.SetBinding(
+											global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 												global::Microsoft.UI.Xaml.Controls.Image.SourceProperty,
 												new Microsoft.UI.Xaml.Data.Binding()
 												{
@@ -884,7 +884,7 @@ namespace TestRepro
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 														/* _isTopLevelDictionary:False */
 														__that._component_0 = __p1;
-														__p1.SetBinding(
+														global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
@@ -911,7 +911,7 @@ namespace TestRepro
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 														/* _isTopLevelDictionary:False */
 														__that._component_1 = __p1;
-														__p1.SetBinding(
+														global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
 															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 															new Microsoft.UI.Xaml.Data.Binding()
 															{
