@@ -330,6 +330,66 @@ public class Given_Binding
 	}
 
 	[TestMethod]
+	public async Task When_XBind_On_Non_DependencyObject_Property()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", """
+	<Page
+		x:Class="TestRepro.MainPage"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:local="using:TestRepro"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d">
+
+		<Grid>
+			<Button>
+				<Button.Tag>
+					<local:Poco Text="{x:Bind Title}" />
+				</Button.Tag>
+			</Button>
+		</Grid>
+	</Page>
+	"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public class Poco
+						{
+							public string Text { get; set; }
+						}
+
+						public sealed partial class MainPage : Page
+						{
+							public string Title { get; set; }
+
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task TestDefaultBindingModeInDataTemplateInsideResourceDictionary()
 	{
 		var xamlFile = new XamlFile("MyResourceDictionary.xaml", """
