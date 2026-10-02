@@ -105,6 +105,8 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		return Disposable.Create(() => presenter.SetNative(null));
 	}
 
+	// NSVisualEffectView materials exist on every macOS version the native library targets (10.15+),
+	// so a material is always drawn for these two backdrops.
 	public override bool IsSystemBackdropSupported(Microsoft.UI.Xaml.Media.SystemBackdrop backdrop)
 		=> backdrop is Microsoft.UI.Xaml.Media.MicaBackdrop or Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop;
 

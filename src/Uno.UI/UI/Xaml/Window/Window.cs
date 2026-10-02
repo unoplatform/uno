@@ -113,6 +113,9 @@ public partial class Window
 		InitializeWindowingFlavor();
 
 		SizeChanged += OnWindowSizeChanged;
+#if __SKIA__
+		Closed += OnClosedReleaseBackdropThemeSource;
+#endif
 
 		// Eagerly initialize if possible.
 		if (Application.Current?.InitializationComplete == true)
@@ -487,6 +490,15 @@ public partial class Window
 		}
 
 		RefreshBackdropFallback();
+	}
+
+	private void OnClosedReleaseBackdropThemeSource(object sender, WindowEventArgs args)
+	{
+		if (_backdropThemeSource is not null)
+		{
+			_backdropThemeSource.ActualThemeChanged -= OnBackdropThemeSourceActualThemeChanged;
+			_backdropThemeSource = null;
+		}
 	}
 
 	private void OnBackdropThemeSourceActualThemeChanged(FrameworkElement sender, object args) => RefreshBackdropFallback();

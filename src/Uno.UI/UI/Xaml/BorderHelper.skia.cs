@@ -47,9 +47,10 @@ internal static class BorderHelper
 				// than the flat black/white the root visual carries. Like MUX's SystemBackdropConfiguration,
 				// it follows the window content's theme rather than the application's.
 				var theme = ThemeResolution.ResolveOwnerTheme(islandRoot.OwnerWindow?.Content);
-				var pageBrush = Uno.UI.Xaml.Core.CoreServices.Instance.LookupThemeResource(
-					theme,
-					"ApplicationPageBackgroundThemeBrush") as Brush;
+				var pageBrush = Uno.UI.Xaml.Core.CoreServices.HasInstance
+					? Uno.UI.Xaml.Core.CoreServices.Instance.LookupThemeResource(theme, "ApplicationPageBackgroundThemeBrush") as Brush
+					: null;
+
 				@this.BorderVisual.BackgroundBrush =
 					(pageBrush ?? @this.Background)?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
 			}
