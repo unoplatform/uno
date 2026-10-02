@@ -53,6 +53,13 @@ internal static class StretchBoxes
 	public static readonly object UniformToFill = Stretch.UniformToFill;
 }
 
+internal static class HitTestabilityBoxes
+{
+	public static readonly object Collapsed = HitTestability.Collapsed;
+	public static readonly object Invisible = HitTestability.Invisible;
+	public static readonly object Visible = HitTestability.Visible;
+}
+
 internal static class RoutedEventFlagBoxes
 {
 	public static readonly object None = RoutedEventFlag.None;

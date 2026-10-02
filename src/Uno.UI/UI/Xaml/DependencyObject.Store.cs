@@ -1136,9 +1136,8 @@ namespace Microsoft.UI.Xaml
 
 			PropagateInheritedProperties(childStore);
 
-			// This weak reference ensure that the disposable will not link
-			// the caller and the callee, in the same way "newValueActionWeak"
-			// does not link the callee to the caller.
+			// A weak reference, so the parent does not keep the child alive, in the same way
+			// "newValueActionWeak" does not link the callee to the caller.
 			return SelfWeakReference;
 		}
 
