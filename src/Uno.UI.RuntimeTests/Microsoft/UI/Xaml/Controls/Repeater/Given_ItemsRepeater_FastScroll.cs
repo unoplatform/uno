@@ -580,6 +580,7 @@ public class Given_ItemsRepeater_FastScroll
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ScrollBarThumbDragged_Then_ViewChangedIsIntermediateUntilRelease()
 	{
+#if HAS_UNO
 		// WinUI puts the whole thumb drag in an "intermediate view changed mode"
 		// (ScrollViewer_Partial.cpp: EnterIntermediateViewChangedMode on ScrollEventType_ThumbTrack)
 		// so each drag tick raises ViewChanged(IsIntermediate=true) and skips arrange/snap; only the
@@ -626,11 +627,16 @@ public class Given_ItemsRepeater_FastScroll
 
 		intermediateFlags.Should().Contain(f => !f,
 			"releasing the thumb (EndScroll) must raise a final, non-intermediate ViewChanged");
+#else
+		Assert.Inconclusive("not applicable for winappsdk: no backdoor available");
+#endif
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_EffectiveViewportShiftIsSubPixel_Then_MeasureIsSkipped()
 	{
+#if HAS_UNO
 		// WinUI tolerates viewport jitter below 0.01px (ViewportManagerWithPlatformFeatures.cpp,
 		// UpdateViewport's roundingTolerance) so a fractional scroll tick doesn't re-measure the
 		// whole repeater. Drives ItemsRepeater.RaiseEffectiveViewportChanged directly so the test
@@ -683,6 +689,9 @@ public class Given_ItemsRepeater_FastScroll
 
 		layout.MeasureCount.Should().BeGreaterThan(countAfterSeed,
 			"a real viewport shift must still invalidate measure");
+#else
+		Assert.Inconclusive("not applicable for winappsdk: no backdoor available");
+#endif
 	}
 
 	// ----- helpers -----
