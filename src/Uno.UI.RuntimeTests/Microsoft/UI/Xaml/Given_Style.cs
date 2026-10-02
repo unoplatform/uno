@@ -138,6 +138,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
+		/// <remarks>
+		/// A live Enter applies the implicit style and lets the Loading pass reuse it. When the element
+		/// leaves before that pass runs, the pass must resolve the style again from the new scope.
+		/// </remarks>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ImplicitStyle_Leave_Before_Loading()
+		{
+			var scopedStyle = new Style(typeof(Border))
+			{
+				Setters = { new Setter(FrameworkElement.TagProperty, "scoped") },
+			};
+
+			var host = new StackPanel() { Width = 100, Height = 100 };
+			host.Resources.Add(typeof(Border), scopedStyle);
+
+			try
+			{
+				await UITestHelper.Load(host);
+
+				var border = new Border();
+				host.Children.Add(border);
+
+				Assert.AreEqual("scoped", border.Tag, "the live Enter should apply the scoped implicit style");
+
+				host.Children.Remove(border);
+				border.Measure(new Windows.Foundation.Size(100, 100));
+
+				Assert.IsNull(border.Tag, "the detached Loading pass should drop the style of the scope it left");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Style_Flows_To_Popup()
