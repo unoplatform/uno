@@ -106,23 +106,41 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 		var scale = XamlRoot!.RasterizationScale;
 
-		// Touch and pen carry a HIMETRIC position, which is ~26x finer than the pointer's logical pixel grid:
-		// truncating to whole logical pixels quantizes a slow drag into steps, and at 150% or 200% throws away
-		// precision the digitizer actually reported. Mouse stays on ptPixelLocation, which is integer anyway.
-		var useHimetric = pointerType is POINTER_INPUT_TYPE.PT_TOUCH or POINTER_INPUT_TYPE.PT_PEN;
+		// Touch and pen carry a HIMETRIC position, which digitizers usually report far finer than the pixel grid:
+		// ptPixelLocation quantizes a slow drag into whole-pixel steps. Mouse stays on ptPixelLocation, which is integer anyway.
+		RECT deviceRect = default, displayRect = default;
+		var useHimetric = pointerType is POINTER_INPUT_TYPE.PT_TOUCH or POINTER_INPUT_TYPE.PT_PEN
+			&& TryGetPointerDeviceRects(pointerInfo.sourceDevice, out deviceRect, out displayRect);
 
-		position = ToClientLogical(pointerInfo.ptPixelLocation, pointerInfo.ptHimetricLocation, useHimetric, scale);
-		rawPosition = ToClientLogical(pointerInfo.ptPixelLocationRaw, pointerInfo.ptHimetricLocationRaw, useHimetric, scale);
+		position = ToClientLogical(pointerInfo.ptPixelLocation, pointerInfo.ptHimetricLocation, useHimetric, deviceRect, displayRect, scale);
+		rawPosition = ToClientLogical(pointerInfo.ptPixelLocationRaw, pointerInfo.ptHimetricLocationRaw, useHimetric, deviceRect, displayRect, scale);
 		return pointerId;
 	}
 
-	private Point ToClientLogical(System.Drawing.Point screenPx, System.Drawing.Point screenHimetric, bool useHimetric, double scale)
+	private static unsafe bool TryGetPointerDeviceRects(HANDLE device, out RECT deviceRect, out RECT displayRect)
+	{
+		RECT d, s;
+		var success = PInvoke.GetPointerDeviceRects(device, &d, &s);
+		(deviceRect, displayRect) = (d, s);
+		return success;
+	}
+
+	private Point ToClientLogical(System.Drawing.Point screenPx, System.Drawing.Point himetric, bool useHimetric, RECT deviceRect, RECT displayRect, double scale)
 	{
 		var clientPx = screenPx;
 		var success = PInvoke.ScreenToClient(_hwnd, ref clientPx);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
 
-		return Win32PointerCoordinateMath.ComputeClientLogical((screenPx.X, screenPx.Y), (clientPx.X, clientPx.Y), (screenHimetric.X, screenHimetric.Y), useHimetric, scale);
+		(double X, double Y)? preciseScreenPx = useHimetric
+			&& Win32PointerCoordinateMath.TryMapHimetricToScreenPx(
+				(himetric.X, himetric.Y),
+				(deviceRect.left, deviceRect.top, deviceRect.right, deviceRect.bottom),
+				(displayRect.left, displayRect.top, displayRect.right, displayRect.bottom),
+				out var mapped)
+			? mapped
+			: null;
+
+		return Win32PointerCoordinateMath.ComputeClientLogical((screenPx.X, screenPx.Y), (clientPx.X, clientPx.Y), preciseScreenPx, scale);
 	}
 
 	private void OnPointerCaptureChanged(WPARAM wParam)
