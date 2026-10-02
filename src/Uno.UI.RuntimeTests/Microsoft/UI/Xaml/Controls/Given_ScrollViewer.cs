@@ -191,16 +191,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			// Horizontal and vertical scrolling amounts should be independent, and each depend on the corresponding ActualSize dimension
-			Assert.AreEqual(verticalDelta * 2, SUT.VerticalOffset);
-			Assert.AreEqual(horizontalDelta * 2, SUT.HorizontalOffset);
+			await WaitForOffsets(SUT, horizontalDelta * 2, verticalDelta * 2);
 
 			await KeyboardHelper.Up();
 			await WindowHelper.WaitForIdle();
 			await KeyboardHelper.Left();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(verticalDelta, SUT.VerticalOffset);
-			Assert.AreEqual(horizontalDelta, SUT.HorizontalOffset);
+			await WaitForOffsets(SUT, horizontalDelta, verticalDelta);
+		}
+
+		// Keyboard scrolling is animated, like DirectManipulation does on WinUI.
+		private static async Task WaitForOffsets(ScrollViewer sut, double horizontalOffset, double verticalOffset)
+		{
+			await UITestHelper.WaitFor(
+				() => Math.Abs(sut.VerticalOffset - verticalOffset) <= 1 && Math.Abs(sut.HorizontalOffset - horizontalOffset) <= 1,
+				timeoutMS: 3000,
+				message: $"Expected offsets ({horizontalOffset}, {verticalOffset}).");
 		}
 
 		[TestMethod]
@@ -423,28 +430,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await KeyboardHelper.PageDown();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(175, SUT.VerticalOffset);
-			Assert.AreEqual(0, SUT.HorizontalOffset);
+			await WaitForOffsets(SUT, 0, 175);
 
 			await KeyboardHelper.PageDown();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(350, SUT.VerticalOffset);
-			Assert.AreEqual(0, SUT.HorizontalOffset);
+			await WaitForOffsets(SUT, 0, 350);
 
 			await KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(175, SUT.VerticalOffset);
-			Assert.AreEqual(0, SUT.HorizontalOffset);
+			await WaitForOffsets(SUT, 0, 175);
 
 			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(0, SUT.VerticalOffset);
-			Assert.AreEqual(0, SUT.HorizontalOffset);
+			await WaitForOffsets(SUT, 0, 0);
 
 			await KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(1825, SUT.VerticalOffset);
-			Assert.AreEqual(0, SUT.HorizontalOffset);
+			await WaitForOffsets(SUT, 0, 1825);
 		}
 
 		[TestMethod]
@@ -1285,6 +1287,156 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Offsets are clamped to the scrollable range.
 			await ScrollAndAssert(ScrollAmount.LargeDecrement, ScrollAmount.SmallDecrement, 0, 0);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Windows.System.VirtualKey.PageDown, 175)]
+		[DataRow(Windows.System.VirtualKey.Down, 26)]
+		[DataRow(Windows.System.VirtualKey.End, 1825)]
+		public async Task When_ScrollInDirection_Animated(Windows.System.VirtualKey key, double expectedOffset)
+		{
+			var (sut, viewChanges) = await LoadKeyboardScrollViewer();
+
+			sut.ScrollInDirection(key, animate: true);
+
+			await AssertAnimatedScroll(sut, viewChanges, expectedOffset);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Windows.System.VirtualKey.PageDown, 0, 175)]
+		[DataRow(Windows.System.VirtualKey.Down, 0, 16)]
+		[DataRow(Windows.System.VirtualKey.End, 1825, 0)] // PageEnd scrolls horizontally
+		public async Task When_ScrollInDirection_Not_Animated(Windows.System.VirtualKey key, double expectedHorizontalOffset, double expectedVerticalOffset)
+		{
+			var (sut, viewChanges) = await LoadKeyboardScrollViewer();
+
+			sut.ScrollInDirection(key, animate: false);
+
+			await AssertInstantScroll(sut, viewChanges, expectedVerticalOffset);
+			sut.HorizontalOffset.Should().BeApproximately(expectedHorizontalOffset, 1);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ScrollInDirection_Animated_And_Animations_Disabled()
+		{
+			var (sut, viewChanges) = await LoadKeyboardScrollViewer();
+
+			ScrollViewer.IsAnimationEnabledOverride = false;
+			try
+			{
+				sut.ScrollInDirection(Windows.System.VirtualKey.PageDown, animate: true);
+
+				await AssertInstantScroll(sut, viewChanges, 175);
+			}
+			finally
+			{
+				ScrollViewer.IsAnimationEnabledOverride = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_ScrollInDirection_RightToLeft(bool animate)
+		{
+			var (sut, _) = await LoadKeyboardScrollViewer();
+			sut.FlowDirection = FlowDirection.RightToLeft;
+			await WindowHelper.WaitForIdle();
+
+			// Left moves towards the visual left, which is the far end of a mirrored ScrollViewer.
+			sut.ScrollInDirection(Windows.System.VirtualKey.Left, animate);
+
+			await UITestHelper.WaitFor(() => sut.HorizontalOffset > 0, timeoutMS: 3000);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow("$d$_pagedown#$u$_pagedown", 175)]
+		[DataRow("$d$_down#$u$_down", 26)]
+		[DataRow("$d$_end#$u$_end", 1825)]
+		// WinAppSDK: KeyboardHelper is a no-op there.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Keyboard_Scroll_Animated(string keySequence, double expectedOffset)
+		{
+			var (sut, viewChanges) = await LoadKeyboardScrollViewer();
+			sut.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await KeyboardHelper.PressKeySequence(keySequence);
+
+			await AssertAnimatedScroll(sut, viewChanges, expectedOffset);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		// WinAppSDK: KeyboardHelper is a no-op there.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Keyboard_Scroll_And_Animations_Disabled()
+		{
+			var (sut, viewChanges) = await LoadKeyboardScrollViewer();
+			sut.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			ScrollViewer.IsAnimationEnabledOverride = false;
+			try
+			{
+				await KeyboardHelper.PageDown();
+
+				await AssertInstantScroll(sut, viewChanges, 175);
+			}
+			finally
+			{
+				ScrollViewer.IsAnimationEnabledOverride = null;
+			}
+		}
+
+		private static async Task<(ScrollViewer, List<(double Offset, bool IsIntermediate)>)> LoadKeyboardScrollViewer()
+		{
+			var sut = new ScrollViewer
+			{
+				Width = 175,
+				Height = 175,
+				VerticalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+				Content = new Border
+				{
+					Width = 2000,
+					Height = 2000,
+					Child = new ItemsControl() // any focusable element
+				}
+			};
+
+			await UITestHelper.Load(sut);
+
+			var viewChanges = new List<(double Offset, bool IsIntermediate)>();
+			sut.ViewChanged += (_, e) => viewChanges.Add((sut.VerticalOffset, e.IsIntermediate));
+
+			return (sut, viewChanges);
+		}
+
+		private static async Task AssertAnimatedScroll(ScrollViewer sut, List<(double Offset, bool IsIntermediate)> viewChanges, double expectedOffset)
+		{
+			await UITestHelper.WaitFor(() => viewChanges is [.., (_, false)], timeoutMS: 3000);
+
+			sut.VerticalOffset.Should().BeApproximately(expectedOffset, 1);
+			viewChanges.Should().Contain(
+				c => c.IsIntermediate && c.Offset > 0 && c.Offset < expectedOffset,
+				"the offset should reach its target over multiple frames");
+		}
+
+		private static async Task AssertInstantScroll(ScrollViewer sut, List<(double Offset, bool IsIntermediate)> viewChanges, double expectedOffset)
+		{
+			await WindowHelper.WaitForIdle();
+
+			sut.VerticalOffset.Should().BeApproximately(expectedOffset, 1);
+			viewChanges.Should().NotContain(c => c.IsIntermediate);
+		}
+#endif
 
 
 		[TestMethod]
