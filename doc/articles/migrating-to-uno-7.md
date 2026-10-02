@@ -992,6 +992,25 @@ recompile against 7.0 rather than swapping assemblies in place.
   + ((IObservableVector<SwipeItem>)items).VectorChanged += OnItemsChanged;
   ```
 
+### Constructor accessibility (WinUI parity)
+
+Constructors now have the accessibility WinUI gives them. Code that only constructs the concrete
+WinUI types is unaffected.
+
+- **Base classes are no longer directly constructible.** `Control`, `Panel`, `ButtonBase`,
+  `SelectorItem`, `Shape` and `PickerFlyoutBase` have `protected` constructors, as in WinUI.
+  Derive from them instead (a bare `class MyControl : Control { }` behaves like the old
+  `new Control()`).
+- **Types WinUI never lets you construct lose their implicit public constructor.** This covers
+  template settings (`ProgressBarTemplateSettings`, `ComboBoxTemplateSettings`, …), event
+  arguments the framework raises (`ContentDialogOpenedEventArgs`, `HyperlinkClickEventArgs`,
+  …), automation pattern identifiers, and static-like helpers (`VisualTreeHelper`,
+  `XamlReader`, `BindingOperations`, `ToolTipService`, `FontWeights`, …). Use their static
+  members, or get the instance from the framework.
+- **`ObjectKeyFrameCollection` has a public constructor**, as in WinUI.
+- **`XamlLight.CompositionLight` is `protected`**, as in WinUI. Set it from your `XamlLight`
+  subclass.
+
 ### Custom `IAnimatedVisualSource` implementations
 
 `Microsoft.UI.Xaml.Controls.IAnimatedVisualSource` was a nine-method Uno-only contract. WinUI's
