@@ -16,6 +16,7 @@
 
 		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+		<CommonOverridePackageId>$(PackageId)</CommonOverridePackageId>
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
     </PropertyGroup>
 
