@@ -15,29 +15,35 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel
-            Margin="8"
-            Orientation="Horizontal"
-            Spacing="8">
-            <ToggleButton
-                x:Name="ShowIndexToggle"
-                Click="ShowIndexToggle_Click"
-                Content="Show index labels" />
-            <ComboBox x:Name="ScenarioPicker" MinWidth="140" />
-            <Button
-                x:Name="RunScenarioButton"
-                Click="RunScenario_Click"
-                Content="Run" />
-            <Button
-                x:Name="RunAllButton"
-                Click="RunAll_Click"
-                Content="Run all" />
-            <ToggleButton
-                x:Name="RecordToggle"
-                Click="RecordToggle_Click"
-                Content="Record manual scroll" />
-            <Button Click="CopyResults_Click" Content="Copy JSON" />
-        </StackPanel>
+        <ScrollViewer
+            HorizontalScrollBarVisibility="Auto"
+            HorizontalScrollMode="Auto"
+            VerticalScrollBarVisibility="Disabled"
+            VerticalScrollMode="Disabled">
+            <StackPanel
+                Margin="8"
+                Orientation="Horizontal"
+                Spacing="8">
+                <ToggleButton
+                    x:Name="ShowIndexToggle"
+                    Click="ShowIndexToggle_Click"
+                    Content="Show index labels" />
+                <ComboBox x:Name="ScenarioPicker" MinWidth="140" />
+                <Button
+                    x:Name="RunScenarioButton"
+                    Click="RunScenario_Click"
+                    Content="Run" />
+                <Button
+                    x:Name="RunAllButton"
+                    Click="RunAll_Click"
+                    Content="Run all" />
+                <ToggleButton
+                    x:Name="RecordToggle"
+                    Click="RecordToggle_Click"
+                    Content="Record manual scroll" />
+                <Button Click="CopyResults_Click" Content="Copy JSON" />
+            </StackPanel>
+        </ScrollViewer>
         <TextBox
             x:Name="ResultsText"
             Grid.Row="1"
