@@ -11,6 +11,7 @@ public class Given_DataContext_Nullability
 {
 	// WinUI ships no nullable annotations, so DataContext must stay oblivious.
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24875")]
 	public void When_DataContext_Is_Nullable_Oblivious()
 	{
 		PropertyInfo property = typeof(FrameworkElement).GetProperty(nameof(FrameworkElement.DataContext))!;
