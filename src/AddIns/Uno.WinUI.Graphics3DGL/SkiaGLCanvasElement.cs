@@ -13,7 +13,8 @@ namespace Uno.WinUI.Graphics3DGL;
 /// </summary>
 /// <remarks>
 /// Lives here rather than in Graphics2DSK so that Graphics2DSK has no reference to this optional add-in.
-/// Graphics2DSK creates it by name; keep the type name and constructor in sync with <c>SKCanvasElement</c>.
+/// Graphics2DSK creates it by name and binds the public parameterless <c>Invalidate</c> by reflection; keep the
+/// type name, constructor and <c>Invalidate</c> in sync with <c>SKCanvasElement</c>.
 /// </remarks>
 internal sealed class SkiaGLCanvasElement : GLCanvasElement
 {
