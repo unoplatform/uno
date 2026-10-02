@@ -62,6 +62,8 @@ namespace Uno.UI
 		private static long _activationCount;
 		private static int _startedCount;
 
+		private static void AdjustStartedCount(int delta) => Interlocked.Add(ref _startedCount, delta);
+
 		private long _lastActivation;
 		private bool _isStarted;
 
@@ -251,7 +253,7 @@ namespace Uno.UI
 			if (!_isStarted)
 			{
 				_isStarted = true;
-				_startedCount++;
+				AdjustStartedCount(1);
 			}
 
 			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
@@ -350,7 +352,7 @@ namespace Uno.UI
 			if (_isStarted)
 			{
 				_isStarted = false;
-				_startedCount--;
+				AdjustStartedCount(-1);
 			}
 
 			// An outgoing activity reaches OnStop after its replacement has resumed and taken the
@@ -362,7 +364,7 @@ namespace Uno.UI
 
 			// The app goes to the background with its last visible activity, not with each window.
 			// A configuration-driven re-creation starts its replacement right away.
-			if (_startedCount == 0 && !IsChangingConfigurations)
+			if (Volatile.Read(ref _startedCount) == 0 && !IsChangingConfigurations)
 			{
 				Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
 			}

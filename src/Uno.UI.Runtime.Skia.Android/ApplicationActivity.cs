@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 using Android.App;
 using Android.Content;
@@ -84,12 +85,9 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal static void CancelLaunch(NativeWindowWrapper wrapper)
 		{
-			foreach (var entry in _pendingWindows)
+			foreach (var entry in _pendingWindows.Where(e => ReferenceEquals(e.Value, wrapper)))
 			{
-				if (ReferenceEquals(entry.Value, wrapper))
-				{
-					_pendingWindows.TryRemove(entry.Key, out _);
-				}
+				_pendingWindows.TryRemove(entry.Key, out _);
 			}
 		}
 
