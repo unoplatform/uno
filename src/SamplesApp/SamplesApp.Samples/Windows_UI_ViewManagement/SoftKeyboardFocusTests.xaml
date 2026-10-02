@@ -23,7 +23,7 @@
                 1) Tap the field below several times — the keyboard must stay open.
                 2) Dismiss it — LostFocus must fire (counter increments).
                 3) Scroll down and focus the bottom field — it must move above the keyboard.
-                4) In the side panel, tap Title then AutoNumber — the keyboard must stay open and the page must not shift.
+                4) In the side panel, tap Title then AutoNumber — the keyboard must stay open and each field must end fully above it.
                 5) Drag inside the side panel — only the panel scrolls.
             </TextBlock>
             <TextBox
@@ -43,8 +43,8 @@
 
         <!--
             Row 1: content beside a narrow side panel, the layout of the customer report: the panel's
-            ScrollViewer is constrained, its fields sit near the keyboard's top edge once it opens, and
-            the content beside it must stay put while the panel scrolls.
+            ScrollViewer is constrained and its fields sit near the keyboard's top edge once it opens, so
+            the whole content moves up when the panel cannot scroll a field above the keyboard by itself.
         -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -80,7 +80,7 @@
                     <TextBlock
                         Padding="12,8"
                         FontWeight="SemiBold"
-                        Text="Side panel — 4) tap Title, then tap AutoNumber: the keyboard must stay open and only the panel may move. 5) Drag inside the panel: it must scroll, not the page."
+                        Text="Side panel — 4) tap Title, then tap AutoNumber: the keyboard must stay open and each field must end fully above it. 5) Drag inside the panel: it must scroll, not the page."
                         TextWrapping="Wrap" />
                     <ScrollViewer x:Name="SidePanelScrollViewer" Grid.Row="1">
                         <StackPanel Padding="12" Spacing="6">
