@@ -296,6 +296,43 @@ public class Given_CompositionTarget
 		}
 	}
 
+	/// <summary>
+	/// The layout tick can record ahead of the next vsync. After an idle gap, an animation started then must not
+	/// date its start from the last frame before the gap, or its next frame plays the whole gap out at once.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Animation_Starts_After_Idle_Then_It_Starts_From_Now()
+	{
+		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
+		await UITestHelper.Load(border);
+		await UITestHelper.WaitForIdle();
+		await Task.Delay(1000);
+
+		var visual = border.Visual;
+		var compositor = visual.Compositor;
+		var animation = compositor.CreateScalarKeyFrameAnimation();
+		animation.InsertKeyFrame(0f, 0f, compositor.CreateLinearEasingFunction());
+		animation.InsertKeyFrame(1f, 1000f, compositor.CreateLinearEasingFunction());
+		animation.Duration = TimeSpan.FromSeconds(1000);
+
+		visual.StartAnimation(nameof(Microsoft.UI.Composition.Visual.RotationAngleInDegrees), animation);
+		try
+		{
+			// What the layout tick does when it runs ahead of the next vsync.
+			((CompositionTarget)visual.CompositionTarget!).OnRenderFrameOpportunity();
+			await Task.Delay(100);
+
+			Assert.IsTrue(
+				visual.RotationAngleInDegrees < 0.5f,
+				$"the animation should have run for about 0.1s, but shows {visual.RotationAngleInDegrees:F2}s of progress");
+		}
+		finally
+		{
+			visual.StopAnimation(nameof(Microsoft.UI.Composition.Visual.RotationAngleInDegrees));
+		}
+	}
+
 	private static async Task<(Window Window, Border Content)> OpenSecondaryWindow()
 	{
 		var secondary = new Window();
