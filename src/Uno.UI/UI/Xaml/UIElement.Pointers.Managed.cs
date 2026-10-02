@@ -14,6 +14,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers.Boxes;
 using Windows.UI.Core;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
@@ -58,7 +59,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (this is RootVisual or XamlIslandRoot)
 			{
-				return HitTestability.Visible;
+				return HitTestabilityBoxes.Visible;
 			}
 
 			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
@@ -69,7 +70,7 @@ namespace Microsoft.UI.Xaml
 			// If the parent is collapsed, we should be collapsed as well. This takes priority over everything else, even if we would be visible otherwise.
 			if (parentValue == HitTestability.Collapsed)
 			{
-				return HitTestability.Collapsed;
+				return HitTestabilityBoxes.Collapsed;
 			}
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
@@ -77,17 +78,17 @@ namespace Microsoft.UI.Xaml
 				!IsLoaded ||
 				!IsHitTestVisible || Visibility != Visibility.Visible || !IsEnabledOverride())
 			{
-				return HitTestability.Collapsed;
+				return HitTestabilityBoxes.Collapsed;
 			}
 
 			// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
 			if (!IsViewHit())
 			{
-				return HitTestability.Invisible;
+				return HitTestabilityBoxes.Invisible;
 			}
 
 			// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.
-			return HitTestability.Visible;
+			return HitTestabilityBoxes.Visible;
 		}
 	}
 }
