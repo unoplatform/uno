@@ -36,11 +36,13 @@ stages:
     parameters:
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-  # The same app on the WebGPU backend. The agents have no GPU: Chrome's bundled SwiftShader provides the adapter.
+  # The same app on the WebGPU backend. The agents have no GPU: Chrome's bundled SwiftShader provides the adapter,
+  # on the self-hosted pool because it renders on the CPU.
   - template: .azure-devops-tests-webassembly-skia.yml
     parameters:
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       jobName: 'Skia_Browser_WebGpu_Runtime_Tests'
       displayName: 'WebGPU'
       testResultLabel: '-webgpu'

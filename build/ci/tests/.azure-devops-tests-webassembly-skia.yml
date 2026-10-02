@@ -1,5 +1,8 @@
 parameters:
   vmLinuxImage: ''
+  # A self-hosted pool to run on instead of the hosted image. The WebGPU job needs one: Chrome's SwiftShader
+  # renders on the CPU and scales with cores, and the hosted agents are too small to finish a group in time.
+  vmLinuxPool: ''
   XAML_FLAVOR_BUILD: ''
   jobName: 'Skia_Browser_Runtime_Tests_Build'
   displayName: ' ' ## Concatenated with the matrix group name
@@ -17,8 +20,11 @@ jobs:
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
 
-  pool:
-    vmImage: ${{ parameters.vmLinuxImage }}
+  ${{ if ne(parameters.vmLinuxPool, '') }}:
+    pool: ${{ parameters.vmLinuxPool }}
+  ${{ else }}:
+    pool:
+      vmImage: ${{ parameters.vmLinuxImage }}
 
   dependsOn: Skia_Tests_Build_Browser
 
