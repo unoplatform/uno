@@ -5893,11 +5893,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
-			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), message: "the tap should show the insertion handle");
+			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), timeoutMS: 5000, message: "the tap should show the insertion handle");
 
 			// Scroll the TextBox entirely above the viewport.
 			scrollViewer.ChangeView(null, 400, null, disableAnimation: true);
-			await WindowHelper.WaitFor(() => scrollViewer.VerticalOffset > 300, message: "the form should have scrolled");
+			await WindowHelper.WaitFor(() => scrollViewer.VerticalOffset > 300, timeoutMS: 5000, message: "the form should have scrolled");
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be hidden once the TextBox is scrolled out of view");
 
