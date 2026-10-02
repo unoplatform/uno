@@ -13,13 +13,9 @@ namespace Uno.UI.RuntimeTests.Tests.WinRT_Interop;
 public class Given_WindowNative
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands)]
 	public void When_GetWindowHandle_Then_Matches_AppWindow_Id()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			Assert.Inconclusive("Window handles are not available in Uno Islands.");
-		}
-
 		var window = TestServices.WindowHelper.CurrentTestWindow;
 
 		var handle = WindowNative.GetWindowHandle(window);
@@ -32,13 +28,9 @@ public class Given_WindowNative
 		=> Assert.ThrowsExactly<InvalidOperationException>(() => WindowNative.GetWindowHandle(new object()));
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands)]
 	public void When_InitializeWithWindow_Then_MessageDialog_Associated()
 	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			Assert.Inconclusive("MessageDialog is not supported in Uno Islands.");
-		}
-
 		var window = TestServices.WindowHelper.CurrentTestWindow;
 		var dialog = new MessageDialog("Content");
 
