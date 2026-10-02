@@ -55,6 +55,7 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 	private bool _isRunning;
 	private bool _holdResults;
 	private CancellationTokenSource? _runCts;
+	private CancellationTokenSource? _unattendedCts;
 #endif
 
 	public ScrollViewer_SmoothnessTester()
@@ -78,7 +79,7 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 		ScenarioPicker.ItemsSource = ScrollSmoothnessDrivers.Scenarios;
 		ScenarioPicker.SelectedIndex = 0;
 		Loaded += OnLoaded;
-		Unloaded += (_, _) => _runCts?.Cancel();
+		Unloaded += OnUnloaded;
 #else
 		ScenarioPicker.IsEnabled = RunScenarioButton.IsEnabled = RunAllButton.IsEnabled = RecordToggle.IsEnabled = false;
 		ResultsText.Text = "The frame probe needs Uno Platform internals; it is not available on this head.";
@@ -150,6 +151,8 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 			return;
 		}
 
+		_unattendedCts?.Cancel();
+		var lifetime = (_unattendedCts = new CancellationTokenSource()).Token;
 		try
 		{
 			var names = scenarios is "" or "all" ? ScrollSmoothnessDrivers.Scenarios : scenarios.Split(',');
@@ -163,14 +166,17 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 				: new[] { 0 };
 
 			// Let the first frames and any startup work settle before measuring.
-			await Task.Delay(1500);
+			await Task.Delay(1500, lifetime);
 
 			_holdResults = true;
 			foreach (var tab in tabs)
 			{
 				Tabs.SelectedIndex = tab;
-				await Task.Delay(500);
+				await Task.Delay(500, lifetime);
 				await RunScenariosAsync(names);
+
+				// RunScenariosAsync swallows the cancellation of its own run.
+				lifetime.ThrowIfCancellationRequested();
 			}
 
 			_holdResults = false;
@@ -182,6 +188,19 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 			_holdResults = false;
 			FlushResults();
 			Console.WriteLine($"[scroll-probe] error {ex}");
+		}
+	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		_unattendedCts?.Cancel();
+		_runCts?.Cancel();
+
+		if (_manualProbe is { } probe)
+		{
+			_manualProbe = null;
+			probe.Stop();
+			RecordToggle.IsChecked = false;
 		}
 	}
 
