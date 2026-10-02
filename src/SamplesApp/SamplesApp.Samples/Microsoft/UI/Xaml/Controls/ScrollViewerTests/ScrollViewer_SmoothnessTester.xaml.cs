@@ -150,30 +150,39 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 			return;
 		}
 
-		var names = scenarios is "" or "all" ? ScrollSmoothnessDrivers.Scenarios : scenarios.Split(',');
-		_consoleTrace = query.TryGetValue("scrolltrace", out var trace) && trace == "1";
-		if (query.TryGetValue("scrollexternalms", out var externalMs) && int.TryParse(externalMs, out var ms))
+		try
 		{
-			ScrollSmoothnessDrivers.ExternalDurationMs = ms;
+			var names = scenarios is "" or "all" ? ScrollSmoothnessDrivers.Scenarios : scenarios.Split(',');
+			_consoleTrace = query.TryGetValue("scrolltrace", out var trace) && trace == "1";
+			if (query.TryGetValue("scrollexternalms", out var externalMs) && int.TryParse(externalMs, out var ms))
+			{
+				ScrollSmoothnessDrivers.ExternalDurationMs = ms;
+			}
+			var tabs = query.TryGetValue("scrolltabs", out var tabList)
+				? tabList.Split(',').Select(int.Parse).ToArray()
+				: new[] { 0 };
+
+			// Let the first frames and any startup work settle before measuring.
+			await Task.Delay(1500);
+
+			_holdResults = true;
+			foreach (var tab in tabs)
+			{
+				Tabs.SelectedIndex = tab;
+				await Task.Delay(500);
+				await RunScenariosAsync(names);
+			}
+
+			_holdResults = false;
+			FlushResults();
+			Console.WriteLine("[scroll-probe] done");
 		}
-		var tabs = query.TryGetValue("scrolltabs", out var tabList)
-			? tabList.Split(',').Select(int.Parse).ToArray()
-			: new[] { 0 };
-
-		// Let the first frames and any startup work settle before measuring.
-		await Task.Delay(1500);
-
-		_holdResults = true;
-		foreach (var tab in tabs)
+		catch (Exception ex)
 		{
-			Tabs.SelectedIndex = tab;
-			await Task.Delay(500);
-			await RunScenariosAsync(names);
+			_holdResults = false;
+			FlushResults();
+			Console.WriteLine($"[scroll-probe] error {ex}");
 		}
-
-		_holdResults = false;
-		FlushResults();
-		Console.WriteLine("[scroll-probe] done");
 	}
 
 	private async void RunScenario_Click(object sender, RoutedEventArgs e)
@@ -234,12 +243,18 @@ public sealed partial class ScrollViewer_SmoothnessTester : Page, INotifyPropert
 		}
 		finally
 		{
-			_isRunning = false;
-			if (!_holdResults)
+			// A newer run may have taken over; only the current owner resets the shared state.
+			if (ReferenceEquals(_runCts, cts))
 			{
-				FlushResults();
+				_runCts = null;
+				_isRunning = false;
+				if (!_holdResults)
+				{
+					FlushResults();
+				}
+				RunScenarioButton.IsEnabled = RunAllButton.IsEnabled = true;
 			}
-			RunScenarioButton.IsEnabled = RunAllButton.IsEnabled = true;
+			cts.Dispose();
 		}
 	}
 
