@@ -4,7 +4,7 @@ Determines which optional CI test scopes must run for a pull request based on th
 
 .DESCRIPTION
 This script inspects the diff between the PR head and its target branch to figure out which
-optional test stages (template tests and the screenshot comparison) should execute. It sets
+optional test stages (template tests, the screenshot comparison and tvOS) should execute. It sets
 Azure DevOps variables (both standard and task output) for each scope so subsequent stages can
 conditionally run.
 
@@ -24,6 +24,7 @@ $ErrorActionPreference = 'Stop'
 $scopeVariables = [ordered]@{
     TemplateTestsRequired = $false
     ScreenshotsRequired   = $false
+    TvOSTestsRequired     = $false
 }
 
 # Heuristics:
@@ -31,9 +32,12 @@ $scopeVariables = [ordered]@{
 #                           generated app templates.
 #   ScreenshotsRequired   - any .cs change in Uno.UI and above (the UI layer: src/Uno.UI* + src/AddIns)
 #                           that could affect rendered output.
+#   TvOSTestsRequired     - Apple-specific code or tvOS CI plumbing. tvOS shares the Skia layer with
+#                           iOS, which runs on every PR, so other changes are covered there.
 $patterns = @{
     TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/sourcegenerators/uno\.ui\.tasks/|^src/.*devserver.*|^src/.*remotecontrol.*)'
     ScreenshotsRequired   = [regex]'(?i)^src/(uno\.ui|addins).*\.cs$'
+    TvOSTestsRequired     = [regex]'(?i)(?:^|[/._-])(?:tvos|ios|uikit|appleuikit|apple)(?:[/._-]|$)'
 }
 
 function Set-TestScopeVariable {
