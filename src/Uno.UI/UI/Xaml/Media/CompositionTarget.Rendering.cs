@@ -280,7 +280,11 @@ public partial class CompositionTarget
 		}
 		var recording = Renderer.CreateRecording();
 		var compositor = Compositor.GetSharedCompositor();
-		compositor.FrameTimestampInTicks = _frameTimestamp != 0 ? _frameTimestamp : null;
+		// A record between vsyncs (from the layout tick) reuses the last frame's timestamp, which after an idle
+		// gap is as old as the gap: an animation starting there would play the whole gap out on the next frame.
+		compositor.FrameTimestampInTicks = _frameTimestamp != 0
+			? Math.Max(_frameTimestamp, compositor.TimestampInTicks - FrameIntervalInTicks)
+			: null;
 		IGeometry path;
 		List<Visual> nativeVisualsInZOrder;
 		try
