@@ -13,6 +13,7 @@ public class Given_Win32PointerCoordinateMath
 	private const double Tolerance = 0.0001;
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24716")]
 	public void When_Mouse_Then_ClientPixelsAreDividedByScale()
 	{
 		// Mouse never uses HIMETRIC: screenPx/screenHimetric are irrelevant, only clientPx and scale matter.
@@ -28,6 +29,7 @@ public class Given_Win32PointerCoordinateMath
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24716")]
 	public void When_Touch_AtWindowOrigin_Then_HimetricConvertsAtOneInchPerNinetySixPx()
 	{
 		// Window at (0,0): screenPx == clientPx, so the origin-offset correction is zero and the result
@@ -44,6 +46,7 @@ public class Given_Win32PointerCoordinateMath
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24716")]
 	public void When_Touch_WithWindowOffsetAndScale_Then_OriginIsSubtractedInLogicalSpace()
 	{
 		// Window top-left sits at screen px (400, 100) i.e. clientPx = screenPx - (400, 100), and the
