@@ -814,7 +814,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var targetH = horizontalOffset is { } h ? Math.Clamp(h, 0, maxH) : TargetHorizontalOffset;
 			var targetV = verticalOffset is { } v ? Math.Clamp(v, 0, maxV) : TargetVerticalOffset;
 
-			if (targetH == TargetHorizontalOffset && targetV == TargetVerticalOffset)
+			if (NumericExtensions.AreClose(targetH, TargetHorizontalOffset) && NumericExtensions.AreClose(targetV, TargetVerticalOffset))
 			{
 				return;
 			}
