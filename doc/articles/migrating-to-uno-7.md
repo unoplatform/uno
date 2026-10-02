@@ -1001,7 +1001,7 @@ not on a WinAppSDK head, and the string conversions only failed at runtime. They
 | Removed | Replacement |
 | --- | --- |
 | `Brush brush = Colors.Red;` | `new SolidColorBrush(Colors.Red)` |
-| `Brush brush = "#FF0000";` | `new SolidColorBrush((Color)XamlBindingHelper.ConvertValue(typeof(Color), "#FF0000"))` |
+| `Brush brush = "#FF0000";` | `new SolidColorBrush(Microsoft.UI.Colors.Parse("#FF0000"))` |
 | `GridLength width = 42;` / `= "Auto";` | `new GridLength(42)` / `GridLength.Auto` / `new GridLength(1, GridUnitType.Star)` |
 | `RowDefinition row = "Auto";` (same for `ColumnDefinition`) | `new RowDefinition { Height = GridLength.Auto }` |
 | `IconElement icon = "Add";` | `new SymbolIcon(Symbol.Add)` |
@@ -1009,7 +1009,7 @@ not on a WinAppSDK head, and the string conversions only failed at runtime. They
 | `CornerRadius.None` | `default(CornerRadius)` or `new CornerRadius(0)` |
 | `Thickness.Empty` | `default(Thickness)` or `new Thickness(0)` |
 | `Binding binding = "Path";` | `new Binding { Path = new PropertyPath("Path") }` |
-| `string path = binding.Path;` | `binding.Path.Path` |
+| `string path = binding.Path;` | `binding.Path?.Path ?? ""` |
 
 XAML is unaffected: `Background="Red"`, `Width="Auto"`, `Icon="Add"` and `{Binding}` markup
 keep working. Implicit conversions that WinUI's own C# projection also has (`Duration` and
