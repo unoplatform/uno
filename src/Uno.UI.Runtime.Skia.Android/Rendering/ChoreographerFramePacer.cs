@@ -39,4 +39,14 @@ internal sealed class ChoreographerFramePacer : Java.Lang.Object, Choreographer.
 		Volatile.Write(ref _callbackPosted, 0);
 		_onVsync(frameTimeNanos);
 	}
+
+	protected override void Dispose(bool disposing)
+	{
+		if (disposing)
+		{
+			_choreographer.RemoveFrameCallback(this);
+		}
+
+		base.Dispose(disposing);
+	}
 }

@@ -374,8 +374,8 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 				ANativeWindow_release(_nativeWindow);
 				_nativeWindow = IntPtr.Zero;
 			}
-			_renderEvent.Dispose();
 			_framePacer.Dispose();
+			_renderEvent.Dispose();
 		}
 		base.Dispose(disposing);
 	}
