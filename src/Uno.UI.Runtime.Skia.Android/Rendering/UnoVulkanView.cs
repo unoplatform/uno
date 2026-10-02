@@ -43,6 +43,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 	private IntPtr _nativeWindow; // Must stay alive while the Vulkan surface references it
 	private readonly VulkanContext _vulkanContext = new();
 	private readonly AndroidVulkanSurfaceFactory _surfaceFactory = new();
+	private readonly ChoreographerFramePacer _framePacer;
 
 	public UnoVulkanView(Context context) : base(context)
 	{
@@ -50,6 +51,14 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		// driver is unusable, letting the caller fall back to the OpenGL ES view. The window-scoped part
 		// (swapchain) is completed on the render thread once a surface exists.
 		_vulkanContext.InitializeDevice(_surfaceFactory);
+
+		// The MAILBOX swapchain never blocks on present, so frames are released on vsync instead. The request flag
+		// is raised here, not in InvalidateRender, so the render loop's timed wait cannot present off-vsync.
+		_framePacer = new ChoreographerFramePacer(_ =>
+		{
+			_renderRequested = true;
+			_renderEvent.Set();
+		});
 
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
@@ -68,8 +77,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 	public void InvalidateRender()
 	{
 		ExploreByTouchHelper.InvalidateRoot();
-		_renderRequested = true;
-		_renderEvent.Set();
+		_framePacer.RequestFrame();
 	}
 
 	public void ResetRendererContext()
@@ -370,6 +378,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 				ANativeWindow_release(_nativeWindow);
 				_nativeWindow = IntPtr.Zero;
 			}
+			_framePacer.Dispose();
 			_renderEvent.Dispose();
 		}
 		base.Dispose(disposing);
