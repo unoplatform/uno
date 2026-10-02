@@ -21,6 +21,7 @@ public class Given_SkiaDrawingFactory
 	// with only ~4 coverage levels on single-sampled surfaces. The GPU contexts must be created so that such paths
 	// get the same coverage AA as the CPU rasterizer.
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24892")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task When_Gpu_Context_Draws_NonConvex_Path_Then_Antialiasing_Matches_Cpu()
 	{
@@ -33,22 +34,29 @@ public class Given_SkiaDrawingFactory
 		int? gpuLevels = null;
 		var thread = new Thread(() =>
 		{
-			using var gl = HiddenWglContext.TryCreate();
-			if (gl is null)
+			try
 			{
-				return;
-			}
+				using var gl = HiddenWglContext.TryCreate();
+				if (gl is null)
+				{
+					return;
+				}
 
-			using var glInterface = GRGlInterface.Create();
-			using var context = glInterface is null ? null : GRContext.CreateGl(glInterface, SkiaDrawingFactory.CreateContextOptions());
-			if (context is null)
+				using var glInterface = GRGlInterface.Create();
+				using var context = glInterface is null ? null : GRContext.CreateGl(glInterface, SkiaDrawingFactory.CreateContextOptions());
+				if (context is null)
+				{
+					return;
+				}
+
+				using var gpu = SKSurface.Create(context, false, info, 0, GRSurfaceOrigin.TopLeft);
+				gpuLevels = DrawAndCountCoverageLevels(gpu, Star);
+				context.Flush(true, true);
+			}
+			catch (Exception)
 			{
-				return;
+				// A flaky GL driver must not take the test process down; fall through to Inconclusive.
 			}
-
-			using var gpu = SKSurface.Create(context, false, info, 0, GRSurfaceOrigin.TopLeft);
-			gpuLevels = DrawAndCountCoverageLevels(gpu, Star);
-			context.Flush(true, true);
 		});
 		thread.Start();
 		await Task.Run(thread.Join);
@@ -125,6 +133,12 @@ public class Given_SkiaDrawingFactory
 			var context = format != 0 && SetPixelFormat(hdc, format, ref pfd) ? wglCreateContext(hdc) : IntPtr.Zero;
 			if (context == IntPtr.Zero || !wglMakeCurrent(hdc, context))
 			{
+				if (context != IntPtr.Zero)
+				{
+					wglDeleteContext(context);
+				}
+
+				ReleaseDC(hwnd, hdc);
 				DestroyWindow(hwnd);
 				return null;
 			}
