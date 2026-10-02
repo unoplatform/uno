@@ -1505,8 +1505,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return true; // nothing to do
 			}
 
-			var verticalOffsetChanged = verticalOffset != null && verticalOffset != VerticalOffset;
-			var horizontalOffsetChanged = horizontalOffset != null && horizontalOffset != HorizontalOffset;
+			// While an animated view change is in flight, the requested offset is also compared to its target,
+			// like WinUI does, so a request back to the current offset reverses the animation instead of being ignored.
+			var verticalOffsetChanged = verticalOffset != null && (verticalOffset != VerticalOffset || (Presenter is { } vp && verticalOffset != vp.TargetVerticalOffset));
+			var horizontalOffsetChanged = horizontalOffset != null && (horizontalOffset != HorizontalOffset || (Presenter is { } hp && horizontalOffset != hp.TargetHorizontalOffset));
 			var zoomFactorChanged = zoomFactor != null && zoomFactor != ZoomFactor;
 
 			if (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged)
