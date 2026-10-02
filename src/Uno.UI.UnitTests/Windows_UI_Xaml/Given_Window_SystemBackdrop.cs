@@ -63,11 +63,13 @@ public class Given_Window_SystemBackdrop
 		var app = (UnitTestsApp.App)Application.Current;
 		var window = app.MainWindow;
 		var previousBackdrop = window.SystemBackdrop;
-		var content = app.HostView;
-		var contentTheme = OppositeOf(content.ActualTheme);
+		var previousContent = window.Content;
+		var content = new Grid();
+		var contentTheme = OppositeOf(app.HostView.ActualTheme);
 
 		try
 		{
+			window.Content = content;
 			window.SystemBackdrop = new MicaBackdrop();
 			var root = GetRoot(window);
 
@@ -81,7 +83,7 @@ public class Given_Window_SystemBackdrop
 		}
 		finally
 		{
-			SetRequestedTheme(content, ElementTheme.Default);
+			window.Content = previousContent;
 			window.SystemBackdrop = previousBackdrop;
 		}
 	}
