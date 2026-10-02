@@ -318,7 +318,6 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 				var expectedNames = new HashSet<string>();
 				foreach (var tree in compilation.SyntaxTrees.Skip(project.DocumentIds.Count))
 				{
-					// Output of a generator a test adds on top is asserted on by that test instead.
 					if (GetSnapshotName(tree) is not { } name)
 					{
 						continue;
@@ -434,8 +433,19 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 					}
 				}
 
-				return null;
+				// Output of a generator a test adds on top is asserted on by that test instead.
+				if (GetSnapshotExemptGenerators().Any(type => type.FullName!.Substring(type.FullName.LastIndexOf('.') + 1) == generatorName))
+				{
+					return null;
+				}
+
+				throw new InvalidOperationException($"Unexpected generator name '{generatorName}'");
 			}
+
+			/// <summary>
+			/// Generators whose output is left out of the snapshot set, because the test asserts on it directly.
+			/// </summary>
+			protected virtual IEnumerable<Type> GetSnapshotExemptGenerators() => [];
 
 			/// <summary>
 			/// Drops the hash a XAML file's generated source carries, so that the snapshot is named after the
