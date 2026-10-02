@@ -89,12 +89,9 @@ namespace Uno.UI.Runtime.Android
 		/// </summary>
 		internal static void CancelLaunch(NativeWindowWrapper wrapper)
 		{
-			foreach (var entry in _pendingWindows)
+			foreach (var entry in _pendingWindows.Where(e => ReferenceEquals(e.Value, wrapper)))
 			{
-				if (ReferenceEquals(entry.Value, wrapper))
-				{
-					_pendingWindows.TryRemove(entry.Key, out _);
-				}
+				_pendingWindows.TryRemove(entry.Key, out _);
 			}
 		}
 
