@@ -23,6 +23,9 @@ internal sealed partial class UnoWebGpuMetalView : UIView, IAppleUIKitRenderView
 	private readonly float _scale;
 	private Thread? _renderThread;
 
+	[Export("automationElements")]
+	public NSObject[]? AutomationElements { get; set; }
+
 	[Export("layerClass")]
 	public static Class LayerClass() => new Class(typeof(CAMetalLayer));
 

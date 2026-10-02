@@ -59,8 +59,8 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	/// </summary>
 	internal void TriggerInitialBuild() => _accessibility?.TriggerInitialBuild();
 
-	/// <summary>Exposes the Metal canvas view for the accessibility adapter.</summary>
-	internal UnoSKMetalView? SkCanvasView => _skCanvasView;
+	/// <summary>Exposes the render view, which hosts the accessibility elements.</summary>
+	internal UIView? RenderView => _renderView as UIView;
 
 	public RootViewController()
 	{
