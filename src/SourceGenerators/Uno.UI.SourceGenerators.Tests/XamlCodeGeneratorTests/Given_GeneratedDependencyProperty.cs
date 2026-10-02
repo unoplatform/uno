@@ -73,6 +73,7 @@ public class Given_GeneratedDependencyProperty
 							[GeneratedDependencyProperty]
 							public partial double MyValue { get; set; }
 
+							// The stand-in generator only emits MyValueProperty, so the implementing part is written here.
 							public partial double MyValue
 							{
 								get => (double)GetValue(MyValueProperty);
@@ -144,6 +145,7 @@ public class Given_GeneratedDependencyProperty
 
 							public static partial void SetOffset(DependencyObject element, double value);
 
+							// The stand-in generator only emits OffsetProperty, so the implementing parts are written here.
 							public static partial double GetOffset(DependencyObject element) => (double)element.GetValue(OffsetProperty);
 
 							public static partial void SetOffset(DependencyObject element, double value) => element.SetValue(OffsetProperty, value);
@@ -280,6 +282,8 @@ public class Given_GeneratedDependencyProperty
 
 			yield return typeof(DependencyPropertyIdentifierGenerator);
 		}
+
+		protected override IEnumerable<Type> GetSnapshotExemptGenerators() => [typeof(DependencyPropertyIdentifierGenerator)];
 
 		protected override async Task<(Compilation compilation, ImmutableArray<Diagnostic> generatorDiagnostics)> GetProjectCompilationAsync(Project project, IVerifier verifier, CancellationToken cancellationToken)
 		{
