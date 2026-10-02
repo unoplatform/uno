@@ -11,5 +11,17 @@
       <arg direction="in"  type="s" name="name" />
       <arg direction="out" type="b" name="has_owner" />
     </method>
+    <method name="GetNameOwner">
+      <arg direction="in" type="s" name="name" />
+      <arg direction="out" type="s" name="owner" />
+    </method>
+    <method name="ListActivatableNames">
+      <arg direction="out" type="as" name="names" />
+    </method>
+    <method name="StartServiceByName">
+      <arg direction="in" type="s" name="name" />
+      <arg direction="in" type="u" name="flags" />
+      <arg direction="out" type="u" name="result" />
+    </method>
   </interface>
 </node>

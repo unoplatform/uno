@@ -51,6 +51,12 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView2Tests\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView2Tests\**"
 		      Link="Microsoft\UI\Xaml\Controls\WebView2Tests\%(RecursiveDir)%(Filename)%(Extension)" />
+
+		<!-- AppTaskInfo is experimental and is not projected by Microsoft.Windows.SDK.NET.Ref. -->
+		<Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Shell\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Shell\**" />
+		<None Include="$(MSBuildThisFileDirectory)Windows\UI\Shell\**"
+		      Link="Windows\UI\Shell\%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 	<!-- SkiaSharp-free build: SKCanvasElement exposes raw SKCanvas (Uno.WinUI.Graphics2DSK) and cannot be neutral. -->
 	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'=='false'">

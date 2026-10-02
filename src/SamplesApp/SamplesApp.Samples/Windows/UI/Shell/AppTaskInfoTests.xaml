@@ -1,0 +1,74 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Shell.AppTaskInfoTests"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="12">
+            <TextBlock
+                FontSize="20"
+                FontWeight="SemiBold"
+                Text="Windows.UI.Shell.Tasks AppTaskInfo" />
+            <TextBlock Text="Create and update persistent app tasks, then inspect the platform shell surface. Win32 uses taskbar progress, macOS and Apple platforms use app badges, Android uses notifications, WebAssembly uses the Badging API, and Linux uses desktop notifications." TextWrapping="Wrap" />
+            <TextBlock Text="Tasks remain available after navigating away from this page or restarting the app. Use Clear all tasks when the task representations are no longer needed." TextWrapping="Wrap" />
+            <TextBlock
+                x:Name="SupportTextBlock"
+                AutomationProperties.AutomationId="AppTaskInfoSupport"
+                FontWeight="SemiBold"
+                TextWrapping="Wrap" />
+            <Button
+                HorizontalAlignment="Left"
+                Click="RefreshTasks_Click"
+                Content="Reload persisted tasks" />
+
+            <StackPanel x:Name="ControlsPanel" Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Click="CreatePrimaryTask_Click" Content="Create primary task" />
+                    <Button Click="AdvancePrimaryTask_Click" Content="Advance step" />
+                    <Button Click="AddSecondaryTask_Click" Content="Add extra task" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Click="PausePrimaryTask_Click" Content="Pause" />
+                    <Button Click="NeedsAttentionPrimaryTask_Click" Content="Needs attention" />
+                    <Button Click="ResumePrimaryTask_Click" Content="Resume" />
+                    <Button Click="FailPrimaryTask_Click" Content="Error" />
+                    <Button Click="RemovePrimaryTask_Click" Content="Remove primary task" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Click="ShowPreviewContent_Click" Content="Preview content" />
+                    <Button Click="ShowGeneratedAssets_Click" Content="Generated assets" />
+                    <Button Click="UpdateDeepLinkPrimaryTask_Click" Content="Update deep link" />
+                    <Button Click="CompletePrimaryTask_Click" Content="Complete task" />
+                    <Button Click="ClearAllTasks_Click" Content="Clear all tasks" />
+                </StackPanel>
+            </StackPanel>
+
+            <TextBlock
+                x:Name="PrimaryTaskTextBlock"
+                AutomationProperties.AutomationId="AppTaskInfoPrimaryTask"
+                TextWrapping="Wrap" />
+            <TextBlock
+                x:Name="TasksSummaryTextBlock"
+                AutomationProperties.AutomationId="AppTaskInfoTaskCount"
+                FontWeight="SemiBold" />
+            <ListView
+                x:Name="TasksListView"
+                MinHeight="120"
+                MaxHeight="220"
+                SelectionMode="None" />
+
+            <TextBlock FontWeight="SemiBold" Text="Action log" />
+            <ListView
+                x:Name="LogListView"
+                MinHeight="120"
+                MaxHeight="220"
+                SelectionMode="None" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
