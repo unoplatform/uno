@@ -268,6 +268,7 @@
 			<_diffPackage Include="Uno.WinUI.MSAL" Other="Uno.WinUI.MSAL.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Svg" Other="Uno.WinUI.Svg.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Linux.FrameBuffer.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.WinUI.Runtime.Skia.MacOS" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.MacOS.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Runtime.Skia" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.XamlHost" Other="Uno.WinUI.XamlHost.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.Foundation.Logging" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.Logging.$(NBGV_SemVer2).nupkg" />
