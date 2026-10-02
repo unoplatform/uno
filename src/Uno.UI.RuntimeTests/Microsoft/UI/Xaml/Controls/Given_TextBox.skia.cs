@@ -3601,15 +3601,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var screenshot1 = await UITestHelper.ScreenShot(SUT);
 
+			// Thin glyph strokes (e.g. Arabic) may never reach full antialiasing coverage.
+			const byte tolerance = 10;
+
 			if (textShouldEndUpOnTheLeft)
 			{
-				ImageAssert.HasColorInRectangle(screenshot1, left, Colors.Red);
-				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, right, Colors.Red);
+				ImageAssert.HasColorInRectangle(screenshot1, left, Colors.Red, tolerance);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, right, Colors.Red, tolerance);
 			}
 			else
 			{
-				ImageAssert.HasColorInRectangle(screenshot1, right, Colors.Red);
-				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, left, Colors.Red);
+				ImageAssert.HasColorInRectangle(screenshot1, right, Colors.Red, tolerance);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, left, Colors.Red, tolerance);
 			}
 		}
 

@@ -24,6 +24,10 @@ internal sealed class SkiaFontProvider : IFontProvider
 	// (or a backend that doesn't return null past the last face) causing an unbounded loop.
 	private const int MaxFontCollectionFaces = 256;
 
+	// Surfaces carry no pixel geometry, so subpixel edging never produced LCD text; on DirectWrite it only made the
+	// grayscale masks lighter and softer than WinUI's. Other scalers keep their edging until measured.
+	internal static readonly SKFontEdging TextEdging = OperatingSystem.IsWindows() ? SKFontEdging.Antialias : SKFontEdging.SubpixelAntialias;
+
 	// Caches codepoint fallback resolution: the SKFontManager.MatchCharacter lookup is comparatively expensive,
 	// and a stable IFont instance lets the FontDetails cache dedupe. Keyed by codepoint + requested style + size.
 	private readonly Dictionary<(int Codepoint, int Weight, FontStretch Stretch, FontStyle Style, float Size), IFont?> _matchCharacterCache = new();
@@ -139,7 +143,7 @@ internal sealed class SkiaFontProvider : IFontProvider
 		// SkiaSharp, and a styled face can drop blocks the matched one had -- returning it then renders .notdef.
 		var skFont = new SKFont(styled, fontSize)
 		{
-			Edging = SKFontEdging.SubpixelAntialias,
+			Edging = TextEdging,
 			Subpixel = true,
 		};
 
@@ -162,7 +166,7 @@ internal sealed class SkiaFontProvider : IFontProvider
 	{
 		var skFont = new SKFont(typeface, fontSize)
 		{
-			Edging = SKFontEdging.SubpixelAntialias,
+			Edging = TextEdging,
 			Subpixel = true,
 		};
 		return new SkiaFont(skFont);

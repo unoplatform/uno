@@ -1244,7 +1244,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				var glyphSpan = CollectionsMarshal.AsSpan(glyphs);
 				var positionSpan = CollectionsMarshal.AsSpan(positions);
 
-				GlyphRunRenderer.Draw(drawingSession, font, glyphSpan, positionSpan, 0, paintColor);
+				drawingSession.DrawGlyphRun(font, glyphSpan, positionSpan, 0, paintColor);
 			}
 		}
 
