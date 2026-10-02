@@ -1,0 +1,51 @@
+name: Update Font Fallback Maps
+
+# FontFallback.Maps.cs is generated from the notofonts repositories, which change on their own schedule.
+# Regenerate it periodically and open a PR when the upstream coverage changed.
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+jobs:
+  font-fallback-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: master
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5.3.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Regenerate FontFallback.Maps.cs
+        shell: bash
+        run: dotnet run --project src/FontFallbackPreprocessor -c Release -- --summary-only -o src/Uno.UI.Composition.Drawing/FontFallback.Maps.cs
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: master
+          branch: chore/font-fallback-update
+          add-paths: src/Uno.UI.Composition.Drawing/FontFallback.Maps.cs
+          commit-message: 'chore(fonts): Regenerate font fallback maps'
+          title: 'chore(fonts): Regenerate font fallback maps'
+          body: |
+            The notofonts repositories changed, so `FontFallback.Maps.cs` was regenerated with:
+
+            ```
+            dotnet run --project src/FontFallbackPreprocessor -- --summary-only -o src/Uno.UI.Composition.Drawing/FontFallback.Maps.cs
+            ```
+
+            Review the coverage diff before merging. This is an automated update created by the font fallback updater workflow.
+          labels: dependencies
+          draft: false
