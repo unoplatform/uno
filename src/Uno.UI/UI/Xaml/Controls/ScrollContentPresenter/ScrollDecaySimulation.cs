@@ -30,12 +30,15 @@ internal struct ScrollDecaySimulation
 	/// <summary>Below this the remaining travel (v/λ) is under half a pixel, so it snaps to its end and stops.</summary>
 	private const double MinVelocity = 4.0;
 
+	/// <summary>Velocity is zeroed explicitly when motion ends; this only guards against floating-point residue.</summary>
+	private const double VelocityEpsilon = 1e-9;
+
 	private double _velocity;
 	private double _position;
 	private long _lastTimestampInTicks;
 	private long _frameIntervalInTicks;
 
-	public readonly bool IsRunning => _velocity != 0;
+	public readonly bool IsRunning => Math.Abs(_velocity) > VelocityEpsilon;
 
 	public readonly double Position => _position;
 
@@ -98,7 +101,7 @@ internal struct ScrollDecaySimulation
 			_velocity = 0;
 		}
 
-		return _velocity != 0;
+		return IsRunning;
 	}
 
 	public void Stop() => _velocity = 0;
