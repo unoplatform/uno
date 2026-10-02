@@ -1256,8 +1256,8 @@ be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
    non-`FrameworkElement` objects (`Brush`, `Transform`, `FlyoutBase`, …) onto the owning
    element — `{Binding}` on those objects still resolves.
 16. Replace `SetBinding` calls on non-`FrameworkElement` objects with
-   `BindingOperations.SetBinding`, re-point `FrameworkElement.TransitionsProperty` at
-   `UIElement`, and pass `FrameworkElement`-typed references to the `Grid` row/column accessors.
+   `BindingOperations.SetBinding`, and pass `FrameworkElement`-typed references to the `Grid`
+   row/column accessors.
 17. Raise `SupportedOSPlatformVersion` to **15.0** (iOS/tvOS) and **24.0** (Android), and
    `TargetPlatformMinVersion` to **10.0.19041.0** (WinAppSDK), in any head that pins them
    explicitly.
