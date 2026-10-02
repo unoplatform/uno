@@ -43,20 +43,31 @@ public class Given_BrowserPointerInputSource
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24703")]
 	public void When_WheelDeltaIsFractional_Then_AccumulatesAcrossEvents()
 	{
 		// Four consecutive trackpad ticks of 0.4 CSS px each (deltaMode=PIXEL). Each event reports the
 		// raw fractional delta as-is (unlike Win32/X11, where the OS already accumulates fractional
 		// notches into an int before delivering the message), so the source must carry the remainder
 		// across events instead of truncating every event to 0.
-		var deltas = RaiseWheelEvents(wheelDeltaY: -0.4, count: 4);
+		var deltas = RaiseWheelEvents(wheelDeltaX: 0, wheelDeltaY: -0.4, count: 4);
 
 		// 0.4+0.4+0.4+0.4 = 1.6px total: the third tick is the first to cross a whole unit (1), and the
 		// leftover 0.6 remainder isn't enough to cross another one, so only one event carries a delta.
 		CollectionAssert.AreEqual(new[] { 1 }, deltas);
 	}
 
-	private static List<int> RaiseWheelEvents(double wheelDeltaY, int count)
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24703")]
+	public void When_HorizontalWheelDeltaIsFractional_Then_AccumulatesAcrossEvents()
+	{
+		var deltas = RaiseWheelEvents(wheelDeltaX: 0.4, wheelDeltaY: 0, count: 4);
+
+		CollectionAssert.AreEqual(new[] { 1 }, deltas);
+	}
+
+	private static List<int> RaiseWheelEvents(double wheelDeltaX, double wheelDeltaY, int count)
 	{
 		var type = ResolveBrowserPointerInputSourceType();
 		var source = CreateUninitializedSource(type);
