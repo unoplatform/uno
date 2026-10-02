@@ -42,6 +42,29 @@ public class Given_RuntimeTestsRerun
 	}
 
 	[TestMethod]
+	public void When_UnrelatedSuiteFailedInTeardown_Then_ItStaysFailed()
+	{
+		var original = new XmlDocument();
+		original.LoadXml($"""
+			<test-run result="Failed" passed="1" failed="1">
+				<test-suite type="TestFixture" name="A" result="Failed" passed="1" failed="1">
+					{Case("NS.Given_A.When_Flaky()", "Failed", "first failure")}
+				</test-suite>
+				<test-suite type="TestFixture" name="B" result="Failed" passed="1" failed="0">
+					{Case("NS.Given_B.When_Fine()", "Passed")}
+				</test-suite>
+			</test-run>
+			""");
+		var rerun = Results(Case("NS.Given_A.When_Flaky()", "Passed"));
+
+		RuntimeTestsRerun.Merge(original, rerun);
+
+		var fixtures = original.SelectNodes("//test-suite[@type='TestFixture']")!.OfType<XmlElement>().ToList();
+		fixtures[0].GetAttribute("result").Should().Be("Passed");
+		fixtures[1].GetAttribute("result").Should().Be("Failed");
+	}
+
+	[TestMethod]
 	public void When_SomeFailuresRemain_Then_SuitesStayFailed()
 	{
 		var original = Results(
