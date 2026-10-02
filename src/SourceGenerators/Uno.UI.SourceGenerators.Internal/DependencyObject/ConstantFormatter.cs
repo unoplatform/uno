@@ -27,7 +27,8 @@ internal static class ConstantFormatter
 			var floating = Convert.ToDouble(value, CultureInfo.InvariantCulture);
 			switch (target)
 			{
-				case SpecialType.System_Single:
+				// A finite value past float's range would silently become an infinity.
+				case SpecialType.System_Single when double.IsNaN(floating) || double.IsInfinity(floating) || Math.Abs(floating) <= float.MaxValue:
 					converted = (float)floating;
 					return true;
 				case SpecialType.System_Double:
