@@ -45,7 +45,7 @@ fi
 
 source $BUILD_SOURCESDIRECTORY/build/test-scripts/runtime-tests-rerun.sh
 
-if uno_rerun_prepare "$TEST_RESULTS_FILE" 0; then
+if uno_rerun_prepare "$TEST_RESULTS_FILE" 120; then
 	RERUN_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-linux${UNO_TEST_RESULT_LABEL}-runtime-tests-rerun.xml
 	export UITEST_RUNTIME_TESTS_FILTER=$UNO_RERUN_FILTER
 

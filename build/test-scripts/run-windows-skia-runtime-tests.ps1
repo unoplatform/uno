@@ -48,12 +48,22 @@ if ($isFirstPass) {
     dotnet run rerun-filter $TEST_RESULTS_FILE 30 $RERUN_FILTER_FILE
     Assert-ExitCodeIsZero
 
-    if (Test-Path $RERUN_FILTER_FILE) {
+    # Keep 120s before the job timeout for publishing: a cancelled job skips its always() steps
+    $rerunSeconds = 600
+    if ($env:UNO_JOB_DEADLINE_EPOCH) {
+        $left = [int]$env:UNO_JOB_DEADLINE_EPOCH - [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() - 120
+        $rerunSeconds = [Math]::Min($rerunSeconds, [Math]::Max($left, 0))
+    }
+
+    if ((Test-Path $RERUN_FILTER_FILE) -and ($rerunSeconds -lt 120)) {
+        echo "##vso[task.logissue type=warning]Not re-running the failed tests: only ${rerunSeconds}s are left before the job timeout."
+    }
+    elseif (Test-Path $RERUN_FILTER_FILE) {
         $env:UITEST_RUNTIME_TESTS_FILTER = Get-Content $RERUN_FILTER_FILE -Raw
 
         $app = Start-Process dotnet -ArgumentList "SamplesApp.dll", "--runtime-tests=$RERUN_RESULTS_FILE" -WorkingDirectory $env:SamplesAppArtifactPath -NoNewWindow -PassThru
-        if (-not $app.WaitForExit(600 * 1000)) {
-            echo "##vso[task.logissue type=warning]The failed tests re-run did not finish within 600s."
+        if (-not $app.WaitForExit($rerunSeconds * 1000)) {
+            echo "##vso[task.logissue type=warning]The failed tests re-run did not finish within ${rerunSeconds}s."
             $app.Kill($true)
         }
 

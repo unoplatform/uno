@@ -56,6 +56,7 @@ public static partial class RuntimeTestsRerun
 
 		var recovered = new List<string>();
 		var stillFailing = new List<string>();
+		var touchedSuites = new HashSet<XmlElement>();
 
 		// Materialized first, the loop replaces nodes of the document it walks.
 		foreach (var failedCase in GetFailedCases(original).ToList())
@@ -79,22 +80,18 @@ public static partial class RuntimeTestsRerun
 			{
 				AddToCounter(ancestor, "failed", -1);
 				AddToCounter(ancestor, "passed", 1);
+				touchedSuites.Add(ancestor);
 			}
 
 			recovered.Add(fullName);
 		}
 
-		if (recovered.Count > 0)
+		// Only suites that lost a failure: a fixture failing in its teardown has failed="0" too.
+		foreach (var suite in touchedSuites.Where(suite => suite.GetAttribute("result") == "Failed"
+			&& int.TryParse(suite.GetAttribute("failed"), out var failed)
+			&& failed == 0))
 		{
-			foreach (var suite in original.SelectNodes("//test-suite | //test-run")!.OfType<XmlElement>())
-			{
-				if (suite.GetAttribute("result") == "Failed"
-					&& int.TryParse(suite.GetAttribute("failed"), out var failed)
-					&& failed == 0)
-				{
-					suite.SetAttribute("result", "Passed");
-				}
-			}
+			suite.SetAttribute("result", "Passed");
 		}
 
 		return new(recovered, stillFailing);

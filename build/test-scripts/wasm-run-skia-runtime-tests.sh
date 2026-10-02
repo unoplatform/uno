@@ -150,7 +150,7 @@ fi
 
 source $BUILD_SOURCESDIRECTORY/build/test-scripts/runtime-tests-rerun.sh
 
-if uno_rerun_prepare "$RESULTS_FILE" 0; then
+if uno_rerun_prepare "$RESULTS_FILE" 120; then
 	RERUN_RESULTS_FILE="$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-rerun.xml"
 
 	run_runtime_tests "$RERUN_RESULTS_FILE" "$UNO_RERUN_FILTER" $UNO_RERUN_TIMEOUT || true
