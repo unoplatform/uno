@@ -599,8 +599,8 @@
 			<!-- Read off the manifest instead of hardcoding, so a future major/minor bump there doesn't silently diverge. -->
 			<_UnoAppxManifestMajorMinor>$(_UnoAppxManifestVersionValue.Split('.')[0]).$(_UnoAppxManifestVersionValue.Split('.')[1])</_UnoAppxManifestMajorMinor>
 			<_UnoDevAppxManifest>$(IntermediateOutputPath)Package.dev.appxmanifest</_UnoDevAppxManifest>
-			<!-- Monotonic: days since 2020 as build, milliseconds of the day mod 65536 as revision (both fit the
-			     0-65535 limit). The (year, month, day) DateTime constructor is always Gregorian, unlike
+			<!-- Monotonic: days since 2020 as build, Unix-epoch milliseconds mod 65536 as revision (both fit the
+			     0-65535 limit; the revision wraps every ~65.5s). The (year, month, day) DateTime constructor is always Gregorian, unlike
 			     DateTime.Parse (which reads the current culture's calendar) - avoids a wrong-by-centuries offset
 			     on a machine configured with a non-Gregorian calendar. Sub-second precision keeps a fast
 			     rebuild-deploy loop from stamping the same version twice. -->
