@@ -157,8 +157,8 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 				_ => PointerDeviceType.Mouse
 			}),
 			pointerId: pointerId,
-			rawPosition: new Point(rawPosition.X, rawPosition.Y),
-			position: new Point(position.X, position.Y),
+			rawPosition: rawPosition,
+			position: position,
 			isInContact: false,
 			properties: null);
 		PointerCaptureLost?.Invoke(this, new PointerEventArgs(point, Win32Helper.GetKeyModifiers()));
@@ -260,8 +260,8 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 				_ => PointerDeviceType.Mouse
 			}),
 			pointerId: pointerId,
-			rawPosition: new Point(rawPosition.X, rawPosition.Y),
-			position: new Point(position.X, position.Y),
+			rawPosition: rawPosition,
+			position: position,
 			isInContact: msg is not (PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL) && Win32Helper.IS_POINTER_INCONTACT_WPARAM(wParam),
 			properties: properties
 		);
