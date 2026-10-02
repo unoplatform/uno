@@ -164,6 +164,9 @@
       <Platform Solution="*|iPhone" Project="x64" />
       <Platform Solution="*|iPhoneSimulator" Project="x64" />
     </Project>
+    <Project Path="RichEditBoxUiaClient/RichEditBoxUiaClient.csproj">
+      <Build Project="false" />
+    </Project>
     <Project Path="Uno.NUnitTransformTool/Uno.NUnitTransformTool.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
