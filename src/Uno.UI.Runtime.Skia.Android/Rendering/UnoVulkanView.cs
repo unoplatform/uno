@@ -52,8 +52,13 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		// (swapchain) is completed on the render thread once a surface exists.
 		_vulkanContext.InitializeDevice(_surfaceFactory);
 
-		// The MAILBOX swapchain never blocks on present, so frames are released on vsync instead.
-		_framePacer = new ChoreographerFramePacer(_ => _renderEvent.Set());
+		// The MAILBOX swapchain never blocks on present, so frames are released on vsync instead. The request flag
+		// is raised here, not in InvalidateRender, so the render loop's timed wait cannot present off-vsync.
+		_framePacer = new ChoreographerFramePacer(_ =>
+		{
+			_renderRequested = true;
+			_renderEvent.Set();
+		});
 
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
@@ -72,7 +77,6 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 	public void InvalidateRender()
 	{
 		ExploreByTouchHelper.InvalidateRoot();
-		_renderRequested = true;
 		_framePacer.RequestFrame();
 	}
 
