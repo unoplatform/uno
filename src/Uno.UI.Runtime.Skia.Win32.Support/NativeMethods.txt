@@ -211,6 +211,7 @@ GetObject
 GetMessage
 GetMessageTime
 GetMonitorInfo
+GetPointerDeviceRects
 GetPointerInfo
 GetPointerPenInfo
 GetPointerTouchInfo
