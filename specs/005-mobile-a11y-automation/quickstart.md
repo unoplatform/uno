@@ -129,7 +129,7 @@ the CI shell runner replaces that variable with its shard/retry filter.
 Add shared and platform tests under:
 
 ```text
-src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/
+src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Automation/
 ```
 
 ### Android native-node assertion

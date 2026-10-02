@@ -123,9 +123,10 @@ src/Uno.UI.Runtime.Skia.Android/
 │   └── AndroidSkiaXamlRootHost.cs
 │       # IAccessibilityOwner, adapter lifecycle/activation (MODIFY)
 ├── Rendering/
-│   ├── IUnoSkiaRenderView.cs
-│   ├── UnoSKCanvasView.cs
-│   └── UnoSKVulkanView.cs
+│   ├── IUnoRenderView.cs
+│   ├── UnoCanvasView.cs
+│   ├── UnoVulkanView.cs
+│   └── UnoWebGpuView.cs
 │       # Keep view-created helper; remove per-frame root invalidation and preserve
 │       # explicit surface/orientation invalidation after relayout (MODIFY)
 └── ApplicationActivity.cs
@@ -142,11 +143,11 @@ src/Uno.UI.Runtime.Skia.AppleUIKit/
 │       # Initialize AccessibilityRouter (MODIFY)
 └── UI/Xaml/Window/
     ├── RootViewController.cs
-    │   # IAccessibilityOwner and Metal-view accessibility container (MODIFY)
+    │   # IAccessibilityOwner and render-view accessibility container (MODIFY)
     └── AppleUIKitWindowWrapper.cs
         # NativeWindowWrapper adapter build/activate/show/dispose lifecycle (MODIFY)
 
-src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/
+src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Automation/
 ├── Given_MobileAccessibilityTree.skia.cs
 ├── Given_MobileAccessibilityActions.skia.cs
 ├── Given_MobileAccessibilityEvents.skia.cs
@@ -155,7 +156,7 @@ src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/
 └── Given_SkiaIOSAccessibilityElement.skia.cs
     # New native-observable runtime coverage; existing Given_Accessible* files also extended
 
-src/SamplesApp/SamplesApp.Samples/Windows_UI.Xaml_Automation/
+src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Automation/
 ├── AccessibilityScreenReaderPage.xaml
 └── AutomationProperties_*.xaml
     # Reuse/extend existing parity fixture; no separate sample app (MODIFY as needed)
@@ -194,7 +195,7 @@ The helper must not cache property values or retain peers.
 `SkiaAccessibilityBase`. The render view continues to create and install its existing
 `UnoExploreByTouchHelper`; after XamlRoot creation, the adapter configures/wraps that helper
 with the window owner, root resolver, node registry, and event/action routing. The
-`IUnoSkiaRenderView.ExploreByTouchHelper` property remains the handoff surface.
+`IUnoRenderView.ExploreByTouchHelper` property remains the handoff surface.
 
 Core changes:
 
