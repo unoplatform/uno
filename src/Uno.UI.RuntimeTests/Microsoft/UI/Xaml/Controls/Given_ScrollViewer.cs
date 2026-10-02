@@ -449,8 +449,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.HorizontalOffset);
 		}
 
-#if __SKIA__
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Keys_Pressed_In_A_Row_Then_Glides_Continuously()
 		{
 			// Like WinUI (DManip), a key glides rather than jumps, and a held key's repeats add to the glide in flight
@@ -502,7 +502,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsTrue(positions[i] >= positions[i - 1] - 0.01, $"the glide stepped back at frame {i}: {positions[i - 1]} -> {positions[i]}");
 			}
 		}
-#endif
 
 		[TestMethod]
 		// WinAppSDK: KeyboardHelper is a no-op there.
