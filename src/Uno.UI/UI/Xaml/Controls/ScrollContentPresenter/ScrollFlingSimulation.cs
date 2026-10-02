@@ -38,6 +38,8 @@ internal readonly struct ScrollFlingSimulation
 	// burst and reports a launch velocity orders of magnitude too high — which flings to the extent end.
 	private const double MaxLaunchVelocityPerSecond = 5000;
 
+	private const double VelocityEpsilon = 1e-9;
+
 	private readonly double _start;
 	private readonly double _velocity;
 	private readonly bool _isApple;
@@ -90,13 +92,13 @@ internal readonly struct ScrollFlingSimulation
 
 	/// <summary>Total time the motion takes, in seconds.</summary>
 	public double Duration => _isApple
-		? (_velocity == 0 ? 0 : Math.Log(1.0 / (Math.Abs(_velocity) + 1)) / Math.Log(AppleDrag))
+		? (Math.Abs(_velocity) <= VelocityEpsilon ? 0 : Math.Log(1.0 / (Math.Abs(_velocity) + 1)) / Math.Log(AppleDrag))
 		: _duration;
 
 	/// <summary>Position at <paramref name="t"/> seconds after the fling started.</summary>
 	public double GetPosition(double t)
 	{
-		if (_velocity == 0)
+		if (Math.Abs(_velocity) <= VelocityEpsilon)
 		{
 			return _start;
 		}
@@ -114,7 +116,7 @@ internal readonly struct ScrollFlingSimulation
 	/// <summary>Velocity at <paramref name="t"/> seconds, in logical pixels per second.</summary>
 	public double GetVelocity(double t)
 	{
-		if (_velocity == 0)
+		if (Math.Abs(_velocity) <= VelocityEpsilon)
 		{
 			return 0;
 		}
