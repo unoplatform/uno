@@ -115,6 +115,28 @@ namespace Uno.UI.Xaml.Core
 			// invalidation, and the layout it dirties is cleaned by this same tick instead of the next one.
 			CompositionTarget.RaiseFrameTick();
 
+			UpdateLayoutAndRaiseLoaded();
+
+			// As in WinUI, Rendering sees this tick's layout, and what its handlers change is laid out again
+			// before the record.
+			if (CompositionTarget.RaiseRendering())
+			{
+				UpdateLayoutAndRaiseLoaded();
+			}
+
+#if __SKIA__
+			foreach (var window in ApplicationHelper.WindowsInternal)
+			{
+				if (window.RootElement is { } root)
+				{
+					(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+				}
+			}
+#endif
+		}
+
+		private static void UpdateLayoutAndRaiseLoaded()
+		{
 			// This happens for Islands.
 			if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland })
 			{
@@ -141,10 +163,6 @@ namespace Uno.UI.Xaml.Core
 					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					root.UpdateLayout();
 				}
-
-#if __SKIA__
-				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
-#endif
 			}
 		}
 

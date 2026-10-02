@@ -706,7 +706,7 @@ public partial class CompositionTarget
 	}
 
 	/// <summary>
-	/// Raises <see cref="Rendering"/> from the frame tick, before layout and before the record, so what a handler
+	/// Raises <see cref="Rendering"/> from the frame tick, after layout and before the record, so what a handler
 	/// writes lands in the frame recorded by the same tick.
 	/// </summary>
 	private static void InvokeRendering(long frameTimestamp)
@@ -734,7 +734,7 @@ public partial class CompositionTarget
 		{
 			if (_rendering is { } rendering)
 			{
-				// Raised from the layout tick: a throwing handler must not skip the layout and record behind it.
+				// Raised from the layout tick: a throwing handler must not skip the layout and record after it.
 				foreach (var handler in Delegate.EnumerateInvocationList(rendering))
 				{
 					try

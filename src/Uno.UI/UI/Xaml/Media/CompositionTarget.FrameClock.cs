@@ -21,6 +21,7 @@ public partial class CompositionTarget
 	private bool _isFrameTimestampFresh;
 
 	private static long _lastRenderingTimestamp;
+	private static long? _pendingRenderingTimestamp;
 	private static bool _isAnyFrameTickArmed;
 
 	/// <summary>
@@ -114,8 +115,8 @@ public partial class CompositionTarget
 	}
 
 	/// <summary>
-	/// Raises the per-frame work of every armed target: its frame drivers, then <see cref="Rendering"/> once for
-	/// all of them. Called from the tick, before layout and before the record.
+	/// Raises the frame drivers of every armed target. Called from the tick, before layout and before the record;
+	/// <see cref="RaiseRendering"/> follows once the tick has laid out.
 	/// </summary>
 	internal static void RaiseFrameTick()
 	{
@@ -127,22 +128,37 @@ public partial class CompositionTarget
 
 		_isAnyFrameTickArmed = false;
 
-		long? renderingTimestamp = null;
-
 		foreach (var (target, _) in _targets)
 		{
 			if (target._frameTickArmed && target.RaiseFrameStarting() is { } timestamp)
 			{
-				renderingTimestamp ??= timestamp;
+				_pendingRenderingTimestamp ??= timestamp;
 			}
 		}
+	}
 
-		if (renderingTimestamp is { } frameTimestamp && _isRenderingActive)
+	/// <summary>
+	/// Raises <see cref="Rendering"/> once for every target the tick's <see cref="RaiseFrameTick"/> ticked.
+	/// </summary>
+	/// <returns>Whether it was raised, so the tick lays out again what the handlers changed.</returns>
+	internal static bool RaiseRendering()
+	{
+		if (_pendingRenderingTimestamp is not { } frameTimestamp)
 		{
-			// Several windows can arm the same tick, and their clocks are not in phase.
-			_lastRenderingTimestamp = Math.Max(_lastRenderingTimestamp, frameTimestamp);
-			InvokeRendering(_lastRenderingTimestamp);
+			return false;
 		}
+
+		_pendingRenderingTimestamp = null;
+
+		if (!_isRenderingActive)
+		{
+			return false;
+		}
+
+		// Several windows can arm the same tick, and their clocks are not in phase.
+		_lastRenderingTimestamp = Math.Max(_lastRenderingTimestamp, frameTimestamp);
+		InvokeRendering(_lastRenderingTimestamp);
+		return true;
 	}
 
 	private long? RaiseFrameStarting()
