@@ -52,8 +52,12 @@ jobs:
           docker-images: true
           swap-storage: false
 
-      - name: Select JDK 17
-        run: echo "JAVA_HOME=$JAVA_HOME_17_X64" >> "$GITHUB_ENV"
+      # uno-check only accepts the Microsoft build of OpenJDK, as the ADO template installs.
+      - name: Setup JDK 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: microsoft
+          java-version: '17'
 
       - uses: ./.github/actions/mobile-dotnet-setup
         with:
