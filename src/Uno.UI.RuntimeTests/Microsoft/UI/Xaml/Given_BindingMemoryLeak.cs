@@ -284,6 +284,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				+ "subscriptions are not being dropped.");
 		}
 
+		[TestMethod]
+		public async Task When_Rebound_During_PropertyChanged_Then_Stale_Handler_Does_Not_Throw()
+		{
+			var oldSource = new CountingSource { Value = "old" };
+			var newSource = new CountingSource { Value = "new" };
+			var child = new TextBlock();
+
+			// Subscribed ahead of the binding, so the in-flight raise still invokes the binding's handler
+			// after this one has rebound the target. Collecting lets that handler find its value handler gone.
+			oldSource.PropertyChanged += (_, _) =>
+			{
+				child.DataContext = newSource;
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+				GC.Collect(2);
+			};
+
+			child.DataContext = oldSource;
+			child.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath(nameof(CountingSource.Value)) });
+			TestServices.WindowHelper.WindowContent = child;
+			await TestServices.WindowHelper.WaitForLoaded(child, c => c.IsLoaded);
+
+			Assert.AreEqual("old", child.Text);
+
+			oldSource.Value = "changed";
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("new", child.Text);
+		}
+
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		private static WeakReference AddAndRemoveBoundChild(ContentControl root, CountingSource source)
 		{
