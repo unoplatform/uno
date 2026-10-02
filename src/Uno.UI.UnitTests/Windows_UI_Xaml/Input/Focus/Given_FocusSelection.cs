@@ -85,10 +85,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 		[TestMethod]
 		public void ValidateTryDirectionalFocus()
 		{
-			var element = new Control();
+			var element = new PlainControl();
 			element.XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Enabled;
 
-			var candidate = new Control();
+			var candidate = new PlainControl();
 			candidate.XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Disabled;
 
 			var focusManagerMock = new MockFocusManager();
@@ -119,7 +119,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 		[TestMethod]
 		public void ValidateTryDirectionalFocusMarksUnhandled()
 		{
-			Control element = new Control();
+			Control element = new PlainControl();
 			element.XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Enabled;
 			var focusManagerMock = new MockFocusManager();
 
@@ -132,7 +132,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 		[TestMethod]
 		public void ValidateThatNotHandledWhenModeInherited()
 		{
-			Control element = new Control();
+			Control element = new PlainControl();
 			element.XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Auto;
 			var focusManagerMock = new MockFocusManager();
 
@@ -143,7 +143,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 		[TestMethod]
 		public void ValidateShouldNotBubbleWhenModeNone()
 		{
-			Control element = new Control();
+			Control element = new PlainControl();
 			element.XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Disabled;
 			var focusManagerMock = new MockFocusManager();
 
@@ -155,12 +155,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 		[TestMethod]
 		public void ValidateNotHandledWhenNotUIElement()
 		{
-			Control element = new Control();
+			Control element = new PlainControl();
 			element.XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Enabled;
 			var focusManagerMock = new MockFocusManager();
 
 			var info = FocusSelection.TryDirectionalFocus(focusManagerMock, FocusNavigationDirection.Right, element);
 			Assert.IsFalse(info.Handled);
+		}
+
+		private sealed partial class PlainControl : Control
+		{
 		}
 	}
 }
