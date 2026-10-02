@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using DirectUI;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -199,6 +200,33 @@ internal interface IUiaTextRangeProvider
 	void ScrollIntoView([MarshalAs(UnmanagedType.Bool)] bool alignToTop);
 	[return: MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_UNKNOWN)]
 	object[]? GetChildren();
+}
+
+[ComImport, Guid("9bbce42c-1921-4f18-89ca-dba1910a0386"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+internal interface IUiaTextRangeProvider2
+{
+	IUiaTextRangeProvider Clone();
+	[return: MarshalAs(UnmanagedType.Bool)]
+	bool Compare(IUiaTextRangeProvider range);
+	int CompareEndpoints(TextPatternRangeEndpoint endpoint, IUiaTextRangeProvider targetRange, TextPatternRangeEndpoint targetEndpoint);
+	void ExpandToEnclosingUnit(TextUnit unit);
+	IUiaTextRangeProvider? FindAttribute(int attributeId, object value, [MarshalAs(UnmanagedType.Bool)] bool backward);
+	IUiaTextRangeProvider? FindText([MarshalAs(UnmanagedType.BStr)] string text, [MarshalAs(UnmanagedType.Bool)] bool backward, [MarshalAs(UnmanagedType.Bool)] bool ignoreCase);
+	object? GetAttributeValue(int attributeId);
+	[return: MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_R8)]
+	double[] GetBoundingRectangles();
+	IRawElementProviderSimple? GetEnclosingElement();
+	string GetText(int maxLength);
+	int Move(TextUnit unit, int count);
+	int MoveEndpointByUnit(TextPatternRangeEndpoint endpoint, TextUnit unit, int count);
+	void MoveEndpointByRange(TextPatternRangeEndpoint endpoint, IUiaTextRangeProvider targetRange, TextPatternRangeEndpoint targetEndpoint);
+	void Select();
+	void AddToSelection();
+	void RemoveFromSelection();
+	void ScrollIntoView([MarshalAs(UnmanagedType.Bool)] bool alignToTop);
+	[return: MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_UNKNOWN)]
+	object[]? GetChildren();
+	void ShowContextMenu();
 }
 
 [StructLayout(LayoutKind.Sequential)]
@@ -606,13 +634,13 @@ internal sealed class UiaTextProviderWrapper : IUiaTextProvider
 
 	public IUiaTextRangeProvider? RangeFromChild(IRawElementProviderSimple childElement)
 	{
-		// childElement arrives as a COM provider. Map it to its managed peer-backed
-		// counterpart so the managed ITextProvider can interpret it; if the inner
-		// can't make sense of it, fall back to DocumentRange.
 		var managedChild = ToManagedProvider(childElement);
-		var range = managedChild is not null
-			? _inner.RangeFromChild(managedChild)
-			: _inner.DocumentRange;
+		if (managedChild is null)
+		{
+			return null;
+		}
+
+		var range = _inner.RangeFromChild(managedChild);
 		return range is not null ? new UiaTextRangeProviderWrapper(range, _accessibility) : null;
 	}
 
@@ -661,7 +689,7 @@ internal sealed class UiaTextProviderWrapper : IUiaTextProvider
 }
 
 [ComVisible(true)]
-internal sealed class UiaTextRangeProviderWrapper : IUiaTextRangeProvider
+internal sealed class UiaTextRangeProviderWrapper : IUiaTextRangeProvider, IUiaTextRangeProvider2
 {
 	private readonly ITextRangeProvider _inner;
 	private readonly Win32Accessibility _accessibility;
@@ -699,11 +727,22 @@ internal sealed class UiaTextRangeProviderWrapper : IUiaTextRangeProvider
 	}
 
 	public object? GetAttributeValue(int attributeId)
-		=> _inner.GetAttributeValue(attributeId)
+		=> _inner.GetAttributeValue(attributeId) switch
+		{
 			// UIA requires the reserved "not supported" sentinel — not VT_EMPTY — for attributes a
 			// range does not implement, matching CUIATextRangeProviderWrapper::GetAttributeValue,
 			// which maps E_NOT_SUPPORTED onto m_punkNotSupportedValue.
-			?? Win32UIAutomationInterop.GetReservedNotSupportedValue();
+			null => Win32UIAutomationInterop.GetReservedNotSupportedValue(),
+			TextAttributeValueSentinel.Mixed => Win32UIAutomationInterop.ReservedMixedAttributeValue,
+			TextAttributeValueSentinel.NotSupported => Win32UIAutomationInterop.ReservedNotSupportedValue,
+			Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] { Length: 0 }
+				=> Win32UIAutomationInterop.ReservedNotSupportedValue,
+			Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] providers
+				=> ResolveProviderArray(providers),
+			AnnotationType[] annotationTypes => Array.ConvertAll(annotationTypes, static type => (int)type),
+			float value => (double)value,
+			var value => value,
+		};
 
 	public double[] GetBoundingRectangles()
 	{
@@ -755,17 +794,53 @@ internal sealed class UiaTextRangeProviderWrapper : IUiaTextRangeProvider
 		// child is resolved through the same provider cache the rest of the tree uses — WinUI does
 		// the equivalent CreateProviderForAP + QueryInterface(IUnknown) in
 		// CUIATextRangeProviderWrapper::GetChildren.
-		var result = new List<object>(children.Length);
-		for (var i = 0; i < children.Length; i++)
+		var providers = ResolveProviderArray(children);
+		if (providers.Length == 0)
 		{
-			if (children[i]?.AutomationPeer is { } peer
-				&& _accessibility.GetProviderForPeer(peer) is { } provider)
+			return null;
+		}
+
+		var result = new object[providers.Length];
+		for (var i = 0; i < providers.Length; i++)
+		{
+			result[i] = providers[i];
+		}
+		return result;
+	}
+
+	public void ShowContextMenu()
+	{
+		if (_inner is ITextRangeProvider2 range2)
+		{
+			range2.ShowContextMenu();
+		}
+	}
+
+	private IRawElementProviderSimple[] ResolveProviderArray(
+		Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] providers)
+	{
+		if (providers.Length == 0)
+		{
+			return Array.Empty<IRawElementProviderSimple>();
+		}
+
+		var result = new IRawElementProviderSimple[providers.Length];
+		var count = 0;
+		foreach (var provider in providers)
+		{
+			if (provider?.AutomationPeer is { } peer
+				&& _accessibility.GetProviderForPeer(peer) is { } platformProvider)
 			{
-				result.Add(provider);
+				result[count++] = platformProvider;
 			}
 		}
 
-		return result.Count == 0 ? null : result.ToArray();
+		if (count < result.Length)
+		{
+			Array.Resize(ref result, count);
+		}
+
+		return result;
 	}
 }
 
@@ -841,7 +916,10 @@ internal sealed class UiaTextProvider2Wrapper : IUiaTextProvider2
 	public object[]? GetVisibleRanges() => WrapRanges(_inner.GetVisibleRanges(), _accessibility);
 
 	public IUiaTextRangeProvider? RangeFromChild(IRawElementProviderSimple childElement)
-		=> Wrap(_inner.RangeFromChild(ToManagedProvider(childElement) ?? new Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple()), _accessibility);
+	{
+		var managedChild = ToManagedProvider(childElement);
+		return managedChild is null ? null : Wrap(_inner.RangeFromChild(managedChild), _accessibility);
+	}
 
 	public IUiaTextRangeProvider? RangeFromPoint(UiaPoint point)
 		=> Wrap(_inner.RangeFromPoint(new Windows.Foundation.Point(point.X, point.Y)), _accessibility);
@@ -850,7 +928,10 @@ internal sealed class UiaTextProvider2Wrapper : IUiaTextProvider2
 	public SupportedTextSelection SupportedTextSelection => _inner.SupportedTextSelection;
 
 	public IUiaTextRangeProvider? RangeFromAnnotation(IRawElementProviderSimple annotationElement)
-		=> Wrap(_inner.RangeFromAnnotation(ToManagedProvider(annotationElement) ?? new Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple()), _accessibility);
+	{
+		var managedAnnotation = ToManagedProvider(annotationElement);
+		return managedAnnotation is null ? null : Wrap(_inner.RangeFromAnnotation(managedAnnotation), _accessibility);
+	}
 
 	public IUiaTextRangeProvider? GetCaretRange(out bool isActive)
 		=> Wrap(_inner.GetCaretRange(out isActive), _accessibility);
@@ -895,7 +976,12 @@ internal sealed class UiaTextEditProviderWrapper : IUiaTextEditProvider
 	public object[]? GetVisibleRanges() => UiaTextProvider2Wrapper.WrapRanges(_inner.GetVisibleRanges(), _accessibility);
 
 	public IUiaTextRangeProvider? RangeFromChild(IRawElementProviderSimple childElement)
-		=> UiaTextProvider2Wrapper.Wrap(_inner.RangeFromChild(UiaTextProvider2Wrapper.ToManagedProvider(childElement) ?? new Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple()), _accessibility);
+	{
+		var managedChild = UiaTextProvider2Wrapper.ToManagedProvider(childElement);
+		return managedChild is null
+			? null
+			: UiaTextProvider2Wrapper.Wrap(_inner.RangeFromChild(managedChild), _accessibility);
+	}
 
 	public IUiaTextRangeProvider? RangeFromPoint(UiaPoint point)
 		=> UiaTextProvider2Wrapper.Wrap(_inner.RangeFromPoint(new Windows.Foundation.Point(point.X, point.Y)), _accessibility);

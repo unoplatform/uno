@@ -6,6 +6,10 @@
 		public const string SR_DragViewLinkCaption = "DragViewLinkCaption";
 		public const string SR_DragViewCopyCaption = "DragViewCopyCaption";
 		public const string SR_DragViewMoveCaption = "DragViewMoveCaption";
+		public const string SR_RichEditBoxOpenLinkTitle = "RichEditBoxOpenLinkTitle";
+		public const string SR_RichEditBoxOpenLinkWarning = "RichEditBoxOpenLinkWarning";
+		public const string SR_RichEditBoxOpenLinkButton = "RichEditBoxOpenLinkButton";
+		public const string SR_RichEditBoxCancelLinkButton = "RichEditBoxCancelLinkButton";
 
 	}
 }

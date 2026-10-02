@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Windows.UI;
 
@@ -22,6 +23,24 @@ public interface IFont
 	/// Glyphs are returned in the shaper's output order (not reversed for RTL).
 	/// </summary>
 	GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures = true);
+
+	/// <summary>
+	/// Shapes a run with explicit OpenType <paramref name="options"/> (kerning, small caps, language and script).
+	/// The default implementation only honors <see cref="ShapingOptions.DisableLigatures"/>; a backend with an
+	/// OpenType shaper should override it.
+	/// </summary>
+	GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, in ShapingOptions options)
+		=> Shape(text, direction, !options.DisableLigatures);
+
+	/// <summary>
+	/// Returns a copy of the raw OpenType table <paramref name="tag"/> (e.g. <c>MATH</c>, <c>head</c>), or false
+	/// when the font doesn't have it or the backend can't read tables. Each call copies the table, so callers cache.
+	/// </summary>
+	bool TryGetTable(uint tag, [NotNullWhen(true)] out byte[]? data)
+	{
+		data = null;
+		return false;
+	}
 
 	/// <summary>
 	/// Shapes a run, letting the shaper guess the run's direction from its script (for the legacy segment itemizer
@@ -114,6 +133,25 @@ public readonly record struct GlyphRun
 
 	/// <summary>Number of glyphs in the run.</summary>
 	public int Count => Glyphs.Length;
+}
+
+/// <summary>
+/// OpenType shaping options. The default value shapes with the font's default features.
+/// </summary>
+public readonly record struct ShapingOptions
+{
+	public bool DisableLigatures { get; init; }
+
+	public bool DisableKerning { get; init; }
+
+	/// <summary>Enables the OpenType <c>smcp</c> feature; fonts without it render their ordinary glyphs.</summary>
+	public bool SmallCaps { get; init; }
+
+	/// <summary>BCP 47 language tag, or null to let the shaper guess.</summary>
+	public string? Language { get; init; }
+
+	/// <summary>ISO 15924 script tag (e.g. <c>Latn</c>), or null to let the shaper guess.</summary>
+	public string? Script { get; init; }
 }
 
 /// <summary>Text run direction handed to <see cref="IFont.Shape"/> by the (bidi-resolved) layout engine.</summary>

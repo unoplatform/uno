@@ -1,4 +1,4 @@
-namespace Uno.UI.Runtime.Skia {
+﻿namespace Uno.UI.Runtime.Skia {
 
 	export class Accessibility {
 		private static politeElement: HTMLDivElement;
@@ -20,6 +20,7 @@ namespace Uno.UI.Runtime.Skia {
 		private static managedOnToggle: any;
 		private static managedOnRangeValueChange: any;
 		private static managedOnTextInput: any;
+		private static managedOnTextSelectionChanged: any;
 		private static managedOnExpandCollapse: any;
 		private static managedOnSelection: any;
 		private static managedOnFocus: any;
@@ -73,6 +74,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.managedOnToggle = accessibilityExports.OnToggle;
 			this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChange;
 			this.managedOnTextInput = accessibilityExports.OnTextInput;
+			this.managedOnTextSelectionChanged = accessibilityExports.OnTextSelectionChanged;
 			this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapse;
 			this.managedOnSelection = accessibilityExports.OnSelection;
 			this.managedOnFocus = accessibilityExports.OnFocus;
@@ -170,6 +172,7 @@ namespace Uno.UI.Runtime.Skia {
 				onToggle: this.managedOnToggle,
 				onRangeValueChange: this.managedOnRangeValueChange,
 				onTextInput: this.managedOnTextInput,
+				onTextSelectionChanged: this.managedOnTextSelectionChanged,
 				onExpandCollapse: this.managedOnExpandCollapse,
 				onSelection: this.managedOnSelection,
 				onFocus: this.managedOnFocus,
