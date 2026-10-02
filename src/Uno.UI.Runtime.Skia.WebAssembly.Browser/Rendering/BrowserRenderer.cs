@@ -150,6 +150,14 @@ internal partial class BrowserRenderer
 			return;
 		}
 
+		if (!_context.IsReadyForFrame)
+		{
+			// The GPU is still behind on earlier frames: keep the request and try again on the next frame callback.
+			_pendingInvalidate = true;
+			NativeMethods.Invalidate(_nativeInstance!);
+			return;
+		}
+
 		// The context owns the surface/present; the backend (whichever won negotiation) wraps the acquired target.
 		// The renderer is per-window (bound to this window's context), installed on its CompositionTarget each frame.
 		compositionTarget.Renderer = _renderer!;

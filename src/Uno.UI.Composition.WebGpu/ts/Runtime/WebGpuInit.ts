@@ -4,6 +4,24 @@ namespace Uno.UI.Runtime.Skia {
 	// handle table via Module.unoWebGpuImportDevice (installed by the emdawn __postset patch). This avoids the
 	// in-WASM wgpuInstanceProcessEvents pump, which hangs when driven from a managed call stack on the browser.
 	export class WebGpuInit {
+		private static framesInFlight = 0;
+
+		// Counts a presented frame until the queue has finished everything submitted so far (the queue is FIFO, so
+		// that covers the frame's own work).
+		public static trackPresentedFrame(queuePtr: number): void {
+			const queue = WebGpuInit.getJsObject(queuePtr);
+			if (!queue || typeof queue.onSubmittedWorkDone !== "function") {
+				return;
+			}
+			WebGpuInit.framesInFlight++;
+			const done = () => { WebGpuInit.framesInFlight--; };
+			queue.onSubmittedWorkDone().then(done, done);
+		}
+
+		public static presentedFramesInFlight(): number {
+			return WebGpuInit.framesInFlight;
+		}
+
 		// Returns the imported WGPUDevice pointer (as an unsigned int), or 0 on failure. instancePtr is a real
 		// wgpuCreateInstance handle created on the managed side; it becomes the imported device's EventSource parent.
 		public static async createImportedDevice(instancePtr: number): Promise<number> {
