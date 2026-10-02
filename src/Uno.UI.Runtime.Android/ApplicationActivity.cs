@@ -58,7 +58,7 @@ namespace Uno.UI.Runtime.Android
 			{
 				if (_wrapper is null)
 				{
-					// TODO #13827: adopting the wrapper through the ambient current window makes this
+					// TODO #8341: adopting the wrapper through the ambient current window makes this
 					// binding per-activity rather than per-window. Replacing it needs an explicit
 					// activity<->window binding, which lands with the live second-activity work.
 					// SupportsMultipleWindows is false, so there is a single window: on re-creation
@@ -538,7 +538,7 @@ namespace Uno.UI.Runtime.Android
 		{
 			base.OnPause();
 
-			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13827.
+			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
 			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 			{
 				VisualTreeHelper.CloseLightDismissPopups(contentRoot.XamlRoot);

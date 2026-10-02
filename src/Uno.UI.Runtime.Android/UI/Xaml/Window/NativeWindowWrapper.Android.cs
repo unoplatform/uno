@@ -119,7 +119,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		{
 			_previousTrueVisibleBounds = visibleBounds;
 
-			// TODO: Adjust when multiple windows are supported on Android #13827
+			// TODO: Adjust when multiple windows are supported on Android #8341
 			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(visibleBounds);
 		}
 	}
