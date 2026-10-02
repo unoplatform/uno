@@ -2234,8 +2234,10 @@ namespace Uno.WinAppSDKSyncGenerator
 				yield return memberSymbol;
 			}
 
+			// Constructors are not inherited: a base type's ctor must not satisfy a derived type's.
 			if (
-				symbol?.BaseType != null
+				name != WellKnownMemberNames.InstanceConstructorName
+				&& symbol?.BaseType != null
 				&& !SymbolEqualityComparer.Default.Equals(symbol.BaseType, _iOSBaseSymbol)
 				&& !SymbolEqualityComparer.Default.Equals(symbol.BaseType, _tvOSBaseSymbol)
 				&& !SymbolEqualityComparer.Default.Equals(symbol.BaseType, _androidBaseSymbol)

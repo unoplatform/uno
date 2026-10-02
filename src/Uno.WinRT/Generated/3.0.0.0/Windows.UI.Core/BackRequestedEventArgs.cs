@@ -8,6 +8,11 @@ namespace Windows.UI.Core
 #endif
 	public partial class BackRequestedEventArgs
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal BackRequestedEventArgs()
+		{
+		}
+#endif
 		// Skipping already declared property Handled
 		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.Handled.set

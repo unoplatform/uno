@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class RectHelper
 	{
+#if __SKIA__
+		internal RectHelper()
+		{
+		}
+#endif
 		// Skipping already declared property Empty
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.FromCoordinatesAndDimensions(float, float, float, float)
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.FromPoints(Windows.Foundation.Point, Windows.Foundation.Point)

@@ -8,5 +8,10 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ContentDialogOpenedEventArgs
 	{
+#if __SKIA__
+		internal ContentDialogOpenedEventArgs()
+		{
+		}
+#endif
 	}
 }

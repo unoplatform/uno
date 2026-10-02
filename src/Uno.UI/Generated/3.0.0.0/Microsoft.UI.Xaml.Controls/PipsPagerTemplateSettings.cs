@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class PipsPagerTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
+#if __SKIA__
+		internal PipsPagerTemplateSettings()
+		{
+		}
+#endif
 		// Skipping already declared property PipsPagerItems
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.PipsPagerItems.get
 	}
