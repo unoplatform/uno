@@ -1,0 +1,263 @@
+name: Runtime Tests - Android NativeAOT & tvOS
+
+# Mirrors the ADO stages runtime_tests_skia_android_nativeaot and runtime_tests_skia_tvos
+# (build/ci/tests/.azure-devops-tests-{android-nativeaot,tvos}-skia*.yml). On ADO the NativeAOT
+# tests only run after merge; here they run on every PR.
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - 'doc/**'
+      - '**/*.md'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  NUGET_CERT_REVOCATION_MODE: offline
+  CI_Build: true
+  BUILD_SOURCESDIRECTORY: ${{ github.workspace }}
+  BUILD_ARTIFACTSTAGINGDIRECTORY: ${{ github.workspace }}/artifacts-staging
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  android-nativeaot-build:
+    name: Android NativeAOT - Build
+    if: github.repository == 'unoplatform/uno'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@ceedf095f4ec1a097402bc6bd80831f2e1a6fde6 #v2.0.0
+        with:
+          tool-cache: false
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: false
+
+      - name: Select JDK 17
+        run: echo "JAVA_HOME=$JAVA_HOME_17_X64" >> "$GITHUB_ENV"
+
+      - uses: ./.github/actions/mobile-dotnet-setup
+        with:
+          uno-check-tfm: android
+
+      - name: Build Android+NativeAOT Skia head
+        run: >
+          dotnet publish src/SamplesApp/SamplesApp/SamplesApp.csproj
+          -c Release -r android-x64 -f $NET_TFM-android
+          -p:UnoTargetFrameworkOverride=$NET_TFM-android
+          -p:ApplicationId=uno.platform.samplesapp.skia.nativeaot
+          -p:SkiaPublishAot=true
+          -p:SkiaSharpVersion=4.151.1
+          /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/logs/build-skia-android-nativeaot.binlog
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: samplesapp-android-skia-nativeaot
+          path: src/SamplesApp/SamplesApp/bin/Release/${{ env.NET_TFM }}-android/android-x64/publish/uno.platform.samplesapp.skia.nativeaot-Signed.apk
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: samplesapp-android-skia-nativeaot-logs
+          path: ${{ env.BUILD_ARTIFACTSTAGINGDIRECTORY }}/logs
+          retention-days: 7
+
+  android-nativeaot-tests:
+    name: Android NativeAOT - Runtime Tests ${{ matrix.group }}
+    needs: android-nativeaot-build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [0, 1, 2, 3, 4]
+    env:
+      SAMPLEAPP_ARTIFACT_NAME: samplesapp-android-skia-nativeaot
+      UNO_UITEST_APP_ID: uno.platform.samplesapp.skia.nativeaot
+      ANDROID_SIMULATOR_APILEVEL: 34
+      UITEST_TEST_MODE_NAME: RuntimeTests
+      UNO_UITEST_BUCKET_ID: RuntimeTests
+      UITEST_RUNTIME_TEST_GROUP: ${{ matrix.group }}
+      UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+      TARGETPLATFORM_NAME: net10
+      UITEST_TEST_TIMEOUT: '2600s'
+    steps:
+      # Consumed by build/test-scripts/ci-job-budget.sh; keep in sync with timeout-minutes.
+      - name: Record the job deadline
+        run: echo "UNO_JOB_DEADLINE_EPOCH=$(( $(date +%s) + 45 * 60 ))" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v7
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Download APK
+        uses: actions/download-artifact@v8
+        with:
+          name: samplesapp-android-skia-nativeaot
+          path: build/samplesapp-android-skia-nativeaot/android
+
+      - uses: ./.github/actions/mobile-dotnet-setup
+
+      - name: Run Android+NativeAOT Skia tests
+        run: |
+          chmod +x build/test-scripts/android-run-skia-runtime-tests.sh
+          build/test-scripts/android-run-skia-runtime-tests.sh
+
+      - name: Check test results
+        if: always()
+        run: python3 .github/scripts/check-nunit-results.py "Android NativeAOT - group ${{ matrix.group }}" 'build/TestResult-2*.xml'
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: runtime-tests-android-skia-nativeaot-results-${{ matrix.group }}
+          path: |
+            build/TestResult-*.xml
+            ${{ env.BUILD_ARTIFACTSTAGINGDIRECTORY }}
+            build/uitests-failure-results
+          retention-days: 7
+
+  tvos-build:
+    name: tvOS - Build
+    if: github.repository == 'unoplatform/uno'
+    runs-on: macos-26
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Select JDK 17
+        run: echo "JAVA_HOME=$JAVA_HOME_17_arm64" >> "$GITHUB_ENV"
+
+      - uses: ./.github/actions/mobile-dotnet-setup
+        with:
+          uno-check-tfm: tvos
+
+      - name: Select Xcode
+        run: .github/scripts/select-xcode.sh tvOS appletvsimulator
+
+      - name: Build tvOS Skia head
+        env:
+          UNO_DISABLE_ANALYZERS_IN_SAMPLES: "true"
+        run: |
+          mkdir -p "$BUILD_ARTIFACTSTAGINGDIRECTORY"
+          chmod +x build/test-scripts/skia-tvos-uitest-build.sh
+          TFM="$NET_TFM-tvos" build/test-scripts/skia-tvos-uitest-build.sh
+
+      # The RID follows the host architecture, so locate the bundle instead of hardcoding it.
+      # tar keeps the bundle's symlinks and permissions, which upload-artifact would drop.
+      - name: Package app bundle
+        run: |
+          APP=$(find "src/SamplesApp/SamplesApp/bin/Release/$NET_TFM-tvos" -maxdepth 2 -name SamplesApp.app -type d | head -n 1)
+          if [ -z "$APP" ]; then
+            echo "::error::SamplesApp.app was not found"
+            exit 1
+          fi
+          echo "Packaging $APP"
+          tar -czf samplesapp-tvos.tgz -C "$(dirname "$APP")" SamplesApp.app
+
+      - name: Upload app bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: samplesapp-tvos-skia
+          path: samplesapp-tvos.tgz
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: samplesapp-tvos-skia-logs
+          path: ${{ env.BUILD_ARTIFACTSTAGINGDIRECTORY }}
+          retention-days: 7
+
+  # The org shares 5 concurrent macOS jobs across all repositories, so this uses fewer, longer
+  # shards than ADO's 4 and caps them with max-parallel.
+  tvos-tests:
+    name: tvOS - Runtime Tests ${{ matrix.group }}
+    needs: tvos-build
+    runs-on: macos-26
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        group: [0, 1]
+    env:
+      UITEST_RUNTIME_TEST_GROUP: ${{ matrix.group }}
+      UITEST_RUNTIME_TEST_GROUP_COUNT: 2
+      UITEST_TEST_TIMEOUT: '90m'
+      UITEST_VARIANT: skia
+      SAMPLESAPP_BUNDLE_ID: uno.platform.samplesapp.skia
+      UNO_UITEST_TVOSBUNDLE_PATH: ${{ github.workspace }}/build/samplesapp-tvos-skia/SamplesApp.app
+    steps:
+      # Consumed by build/test-scripts/ci-job-budget.sh; keep in sync with timeout-minutes.
+      - name: Record the job deadline
+        run: echo "UNO_JOB_DEADLINE_EPOCH=$(( $(date +%s) + 90 * 60 ))" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v7
+
+      - name: Download app bundle
+        uses: actions/download-artifact@v8
+        with:
+          name: samplesapp-tvos-skia
+          path: build/samplesapp-tvos-skia
+
+      - name: Extract app bundle
+        run: tar -xzf build/samplesapp-tvos-skia/samplesapp-tvos.tgz -C build/samplesapp-tvos-skia
+
+      - uses: ./.github/actions/mobile-dotnet-setup
+
+      - name: Select Xcode
+        run: .github/scripts/select-xcode.sh tvOS appletvsimulator
+
+      - name: Run tvOS Simulator tests
+        run: |
+          rm -f "$HOME/Library/Preferences/Xamarin/Settings.plist"
+          mkdir -p "$BUILD_ARTIFACTSTAGINGDIRECTORY"
+          chmod +x build/test-scripts/tvos-uitest-run.sh
+          TFM="$NET_TFM-tvos" build/test-scripts/tvos-uitest-run.sh
+
+      - name: Check test results
+        if: always()
+        run: python3 .github/scripts/check-nunit-results.py "tvOS - group ${{ matrix.group }}" build/TestResult-original.xml
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: runtime-tests-tvos-skia-results-${{ matrix.group }}
+          path: |
+            build/TestResult-original.xml
+            ${{ env.BUILD_ARTIFACTSTAGINGDIRECTORY }}
+            tvos-ui-tests-logs
+            build/uitests-failure-results
+          retention-days: 7
