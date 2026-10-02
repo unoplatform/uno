@@ -87,7 +87,7 @@ partial class Selector
 			return;
 		}
 
-		// TODO Uno: Animated moves (modern panels only in WinUI) and ScrollViewer.ScrollInDirection are not supported.
+		// TODO Uno: Animated moves (modern panels only in WinUI) are not supported.
 		var (physicalOrientation, _ /*pLogicalOrientation*/) = GetItemsHostOrientations();
 		var isVertical = physicalOrientation == Orientation.Vertical;
 		var invert = FlowDirection == FlowDirection.RightToLeft;
@@ -147,6 +147,9 @@ partial class Selector
 				{
 					m_tpScrollViewer.HandleHorizontalScroll(ScrollEventType.Last);
 				}
+				break;
+			default:
+				m_tpScrollViewer.ScrollInDirection(key);
 				break;
 		}
 	}

@@ -1394,13 +1394,67 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Scroll content to the beginning.
 		/// </summary>
 		internal void PageHome()
-			=> HandleVerticalScroll(ScrollEventType.First);
+			=> HandleHorizontalScroll(ScrollEventType.First);
 
 		/// <summary>
 		/// Scroll content to the end.
 		/// </summary>
 		internal void PageEnd()
-			=> HandleVerticalScroll(ScrollEventType.Last);
+			=> HandleHorizontalScroll(ScrollEventType.Last);
+
+		/// <summary>
+		/// Scrolls the view in the specified direction.
+		/// </summary>
+		internal void ScrollInDirection(VirtualKey key)
+		{
+			// TODO Uno: The animated (DManip) variant is not supported.
+			var invert = FlowDirection == FlowDirection.RightToLeft;
+
+			switch (key)
+			{
+				case VirtualKey.Up:
+					LineUp();
+					break;
+				case VirtualKey.Down:
+					LineDown();
+					break;
+				case VirtualKey.Left:
+					if (invert)
+					{
+						LineRight();
+					}
+					else
+					{
+						LineLeft();
+					}
+					break;
+				case VirtualKey.Right:
+					if (invert)
+					{
+						LineLeft();
+					}
+					else
+					{
+						LineRight();
+					}
+					break;
+				case VirtualKey.PageUp:
+					PageUp();
+					break;
+				case VirtualKey.PageDown:
+					PageDown();
+					break;
+				case VirtualKey.Home:
+					PageHome();
+					break;
+				case VirtualKey.End:
+					PageEnd();
+					break;
+				default:
+					// Do nothing
+					break;
+			}
+		}
 
 		/// <summary>
 		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
