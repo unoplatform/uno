@@ -132,7 +132,7 @@ No user intervention is required. A diagnostic log message is emitted indicating
 Enable debug logging to see which rendering backend was selected:
 
 ```csharp
-builder.AddFilter("Uno.UI.Runtime", LogLevel.Information);
+builder.AddFilter("Uno.UI.Runtime.", LogLevel.Information);
 ```
 
 When Vulkan is successfully initialized:
