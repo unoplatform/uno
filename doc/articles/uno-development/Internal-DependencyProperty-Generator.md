@@ -94,7 +94,7 @@ XML docs aren't a reason to declare the identifier: they belong on the CLR prope
 
 The default value comes from, in order of use:
 
-1. `DefaultValue`. The constant is converted to the property type the way the compiler would convert it, so `DefaultValue = 0` on a `double` property is `0d`. Strings, characters, Booleans, numbers (including `NaN` and infinities), enum values, `null` and `typeof(...)` are supported. A value that doesn't fit the property type is an error.
+1. `GeneratedDependencyProperty.DefaultValue`. The constant is converted to the property type the way the compiler would convert it, so `DefaultValue = 0` on a `double` property is `0d`. Strings, characters, Booleans, numbers (including `NaN` and infinities), enum values, `null` and `typeof(...)` are supported. A value that doesn't fit the property type is an error.
 1. A static parameterless `Get{Name}DefaultValue()` method on the containing type, for values that aren't constants:
 
     ```csharp
