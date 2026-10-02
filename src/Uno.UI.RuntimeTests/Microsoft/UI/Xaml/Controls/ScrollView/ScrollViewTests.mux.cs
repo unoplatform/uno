@@ -558,6 +558,11 @@ public class ScrollViewTests : MUXApiTestBase
 				Log.Comment("Releasing ScrollView reference to allow GC.");
 				scrollView = null;
 			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			GC.Collect();
 		}
 
 		// Allow time for any pending timer tick to fire on the dispatcher.
