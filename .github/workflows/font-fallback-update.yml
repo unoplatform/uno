@@ -9,6 +9,8 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  # Labels are an Issues API operation.
+  issues: write
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: true
@@ -40,6 +42,8 @@ jobs:
           commit-message: 'chore(fonts): Regenerate font fallback maps'
           title: 'chore(fonts): Regenerate font fallback maps'
           body: |
+            **GitHub Issue:** related to #24940
+
             The notofonts repositories changed, so `FontFallback.Maps.cs` was regenerated with:
 
             ```
