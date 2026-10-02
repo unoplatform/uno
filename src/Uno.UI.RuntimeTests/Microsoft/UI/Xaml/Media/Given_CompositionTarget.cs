@@ -358,6 +358,53 @@ public class Given_CompositionTarget
 		}
 	}
 
+	/// <summary>
+	/// As in WinUI, Rendering is raised after the tick's layout pass: a handler sees the layout of what changed
+	/// earlier in the same tick, not the previous frame's.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Rendering_Then_Layout_Of_The_Tick_Is_Current()
+	{
+		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
+		var host = new StackPanel { Children = { border } };
+		await UITestHelper.Load(host);
+		var target = (CompositionTarget)border.Visual.CompositionTarget!;
+
+		var frames = 0;
+		var stale = 0;
+		double? written = null;
+		EventHandler<long> driver = (_, _) => written = border.Width = border.Width > 100 ? 100 : 120;
+		EventHandler<object> onRendering = (_, _) =>
+		{
+			if (written is { } width)
+			{
+				frames++;
+				if (border.ActualWidth != width)
+				{
+					stale++;
+				}
+
+				written = null;
+			}
+		};
+
+		target.FrameStarting += driver;
+		CompositionTarget.Rendering += onRendering;
+		try
+		{
+			await Task.Delay(1000);
+		}
+		finally
+		{
+			CompositionTarget.Rendering -= onRendering;
+			target.FrameStarting -= driver;
+		}
+
+		Assert.IsTrue(frames >= 5, $"expected the driver and Rendering to be raised together, got {frames} frames");
+		Assert.AreEqual(0, stale, $"Rendering saw the previous layout in {stale} of {frames} frames");
+	}
+
 	private static async Task<(Window Window, Border Content)> OpenSecondaryWindow()
 	{
 		var secondary = new Window();
