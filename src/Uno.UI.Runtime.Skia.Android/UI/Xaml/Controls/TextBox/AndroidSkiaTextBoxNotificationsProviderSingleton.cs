@@ -20,7 +20,7 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	}
 
 	// Resolves the text input plugin of the render view owning the given XamlRoot's window.
-	// TODO #13827: the foreground-activity fallback is ambiguous once multiple windows exist.
+	// TODO #8341: the foreground-activity fallback is ambiguous once multiple windows exist.
 	private static TextInputPlugin? GetTextInputPlugin(XamlRoot? xamlRoot = null)
 	{
 		var activity = AndroidSkiaXamlRootHost.GetActivity(xamlRoot)
