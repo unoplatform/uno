@@ -48,7 +48,7 @@ public partial class ShapeVisual
 
 		base.Paint(in session);
 
-		return BuildOwnContentPath();
+		return null;
 	}
 
 	internal override bool RequiresRepaintOnEveryFrame => _shapes
@@ -120,49 +120,6 @@ public partial class ShapeVisual
 
 		localBounds = acc;
 		return true;
-	}
-
-	// Reused across repaints (one per visual): the damage consumer copies it, so rebuilding in place is safe
-	// and avoids allocating a native path on every repaint.
-	private SKPath? _ownContentPathBuffer;
-
-	private SKPath? BuildOwnContentPath()
-	{
-		if (_shapes is not { Count: > 0 } shapes)
-		{
-			return null;
-		}
-
-		var dst = _ownContentPathBuffer ??= new SKPath();
-		dst.Rewind();
-
-		var any = false;
-		for (var i = 0; i < shapes.Count; i++)
-		{
-			if (shapes[i] is CompositionSpriteShape sprite)
-			{
-				any |= sprite.GetRenderPath(dst);
-			}
-			else
-			{
-				return null;
-			}
-		}
-
-		if (!any)
-		{
-			return null;
-		}
-
-		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
-		{
-			var sx = Size.X / viewBox.Size.X;
-			var sy = Size.Y / viewBox.Size.Y;
-			var m = SKMatrix.Concat(SKMatrix.CreateScale(sx, sy), SKMatrix.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y));
-			dst.Transform(m);
-		}
-
-		return dst;
 	}
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>

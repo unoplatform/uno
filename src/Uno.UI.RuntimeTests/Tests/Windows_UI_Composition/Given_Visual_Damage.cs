@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.UI.Composition;
+using SamplesApp.UITests;
 using Uno.UI;
 using Windows.UI;
 
@@ -130,6 +131,47 @@ public class Given_Visual_Damage
 			FeatureConfiguration.Rendering.VisualSubtreeSkippingOptimizationCleanFramesThreshold = frameThreshold;
 			FeatureConfiguration.Rendering.VisualSubtreeSkippingOptimizationVisualCountThreshold = countThreshold;
 		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	// Damage is accumulated as rects, including under a non-rect ancestor clip (a rounded Button). A visual
+	// that moves there must still damage both the area it left and the area it now covers.
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23984")]
+#if !__SKIA__
+	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
+#endif
+	public async Task When_Visual_Moves_Under_Rounded_Clip_Then_Old_And_New_Areas_Are_Damaged()
+	{
+#if __SKIA__
+		var compositor = Compositor.GetSharedCompositor();
+
+		var root = compositor.CreateContainerVisual();
+		root.Size = new Vector2(200, 200);
+		var radius = new Vector2(20, 20);
+		root.Clip = compositor.CreateRectangleClip(0, 0, 200, 200, radius, radius, radius, radius);
+
+		var child = compositor.CreateSpriteVisual();
+		child.Brush = compositor.CreateColorBrush(Colors.Magenta);
+		child.Size = new Vector2(40, 40);
+		child.Offset = new Vector3(20, 20, 0);
+		root.Children.InsertAtTop(child);
+
+		using var damage = new DamageRegion();
+		RenderFrame(root, damage);
+		damage.Reset();
+
+		child.Offset = new Vector3(120, 120, 0);
+		RenderFrame(root, damage);
+
+		using var reported = SnapshotDamage(damage);
+
+		Assert.IsTrue(reported.Contains(40, 40), $"The vacated area is not damaged (damage bounds: {reported.Bounds}).");
+		Assert.IsTrue(reported.Contains(140, 140), $"The newly covered area is not damaged (damage bounds: {reported.Bounds}).");
+		Assert.IsFalse(reported.Contains(140, 40), $"Damage covers an area the visual never touched (damage bounds: {reported.Bounds}).");
 #else
 		await Task.CompletedTask;
 #endif
