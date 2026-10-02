@@ -2080,6 +2080,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24714")]
 		public async Task When_Page_Keys_Not_From_Item_ListView_Scrolls()
 		{
 			var SUT = new ListView
@@ -2096,26 +2097,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var viewport = sv.ViewportHeight;
 			Assert.IsTrue(sv.ScrollableHeight > viewport * 2);
 
-			async Task Press(string key)
-			{
-				// Raised on the ListView itself, like a key pressed while the list (not an item) has focus.
-				await KeyboardHelper.PressKeySequence($"$d$_{key}#$u$_{key}", SUT);
-				await WindowHelper.WaitForIdle();
-			}
-
-			await Press("pagedown");
+			// Keys are raised on the ListView itself, like a key pressed while the list (not an item) has focus.
+			await KeyboardHelper.PageDown(SUT);
+			await WindowHelper.WaitForIdle();
 			sv.VerticalOffset.Should().BeApproximately(viewport, 1);
 
-			await Press("pagedown");
+			await KeyboardHelper.PageDown(SUT);
+			await WindowHelper.WaitForIdle();
 			sv.VerticalOffset.Should().BeApproximately(viewport * 2, 1);
 
-			await Press("pageup");
+			await KeyboardHelper.PageUp(SUT);
+			await WindowHelper.WaitForIdle();
 			sv.VerticalOffset.Should().BeApproximately(viewport, 1);
 
-			await Press("end");
+			await KeyboardHelper.End(SUT);
+			await WindowHelper.WaitForIdle();
 			sv.VerticalOffset.Should().BeApproximately(sv.ScrollableHeight, 1);
 
-			await Press("home");
+			await KeyboardHelper.Home(SUT);
+			await WindowHelper.WaitForIdle();
 			sv.VerticalOffset.Should().BeApproximately(0, 1);
 		}
 
