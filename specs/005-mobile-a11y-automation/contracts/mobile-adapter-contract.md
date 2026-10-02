@@ -173,7 +173,7 @@ Required platform behavior:
 - `AndroidHost` initializes `AccessibilityRouter`.
 - `AndroidSkiaXamlRootHost` implements `IAccessibilityOwner`.
 - After XamlRoot creation, the host passes the existing read-only
-  `IUnoSkiaRenderView.ExploreByTouchHelper` to the adapter for configuration; the adapter
+  `IUnoRenderView.ExploreByTouchHelper` to the adapter for configuration; the adapter
   detaches its window/root/event state on disposal.
 - Activity/window activation calls `AccessibilityRouter.SetActive`.
 - Activity/window destruction disposes the adapter and notifies the router.
