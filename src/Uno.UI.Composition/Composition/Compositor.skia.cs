@@ -219,9 +219,16 @@ public partial class Compositor
 			throw new ArgumentNullException(nameof(rootVisual));
 		}
 
+		var target = rootVisual.CompositionTarget;
 		var recPhaseT0 = _logRecordPhases ? Stopwatch.GetTimestamp() : 0;
-		foreach (var animation in _runningAnimations.Keys.ToArray())
+		foreach (var (animation, animationTarget) in _runningAnimations.ToArray())
 		{
+			// The frame timestamp is this target's: another window's animations evaluate on their own record.
+			if (animationTarget != target)
+			{
+				continue;
+			}
+
 			try
 			{
 				animation.RaiseAnimationFrame();
@@ -279,9 +286,9 @@ public partial class Compositor
 			}
 		}
 
-		if (_runningAnimations.Count > 0 || transitionsCount > 0)
+		if ((target is not null && _runningTargets.ContainsKey(target)) || transitionsCount > 0)
 		{
-			rootVisual.CompositionTarget?.RequestNewFrame();
+			target?.RequestNewFrame();
 		}
 	}
 
