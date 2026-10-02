@@ -129,7 +129,8 @@ public class Given_SKCanvasElement
 			(Action<SKCanvas, Size>)((canvas, area) =>
 			{
 				rendered = true;
-				canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), new SKPaint { Color = SKColors.Blue });
+				using var paint = new SKPaint { Color = SKColors.Blue };
+				canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), paint);
 			}),
 			(Action)(() => unavailable = true))!;
 		island.Width = 100;
@@ -150,7 +151,8 @@ public class Given_SKCanvasElement
 	{
 		protected override void RenderOverride(SKCanvas canvas, Size area)
 		{
-			canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), new SKPaint { Color = SKColors.Blue });
+			using var paint = new SKPaint { Color = SKColors.Blue };
+			canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), paint);
 		}
 	}
 
