@@ -1312,7 +1312,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal static Action<Control, bool> OnIsFocusableChangedCallback { get; set; }
 
-		public Control()
+		protected Control()
 		{
 			InitializeControl();
 		}
