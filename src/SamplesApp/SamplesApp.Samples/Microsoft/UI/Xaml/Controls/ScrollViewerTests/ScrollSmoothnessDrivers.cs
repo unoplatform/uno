@@ -300,6 +300,12 @@ internal static class ScrollSmoothnessDrivers
 
 		void RunDue()
 		{
+			if (ct.IsCancellationRequested)
+			{
+				pending.Clear();
+				return;
+			}
+
 			var nowMs = Stopwatch.GetElapsedTime(start).TotalMilliseconds;
 			while (pending.Count > 0 && pending.Peek().AtMs <= nowMs)
 			{
@@ -341,6 +347,11 @@ internal static class ScrollSmoothnessDrivers
 				while (Stopwatch.GetElapsedTime(start).TotalMilliseconds < at && !ct.IsCancellationRequested)
 				{
 					Thread.SpinWait(50);
+				}
+
+				if (ct.IsCancellationRequested)
+				{
+					return;
 				}
 
 				dispatcher.TryEnqueue(DispatcherQueuePriority.High, RunDue);

@@ -123,7 +123,7 @@ namespace SamplesApp.Droid
 				using var get = systemProperties.GetMethod("get", Java.Lang.Class.FromType(typeof(Java.Lang.String)));
 				return get?.Invoke(null, new Java.Lang.String(name))?.ToString() is { Length: > 0 } value ? value : null;
 			}
-			catch (Exception)
+			catch (Java.Lang.Throwable)
 			{
 				return null;
 			}

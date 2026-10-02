@@ -295,7 +295,7 @@ internal sealed class ScrollSmoothnessProbe
 		// remains is uneven motion as the eye sees it: offsets sampled at the wrong time, dropped or doubled steps.
 		for (var i = 2; i + 2 < window.Count; i++)
 		{
-			if (counted[i - 1] && counted[i] && counted[i + 1] && counted[i + 2])
+			if (counted[i - 2] && counted[i - 1] && counted[i] && counted[i + 1] && counted[i + 2])
 			{
 				residuals.Add(QuadraticResidual(window, i, Axis));
 			}
