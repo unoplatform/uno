@@ -380,6 +380,45 @@ public class Given_CompositionTarget
 		Assert.AreEqual(0, stale, $"Rendering saw the previous layout in {stale} of {frames} frames");
 	}
 
+	/// <summary>
+	/// The frame tick belongs to every window that presents, not only the first one: with the main window
+	/// minimized, another window's Rendering handlers and frame drivers must keep ticking.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Main_Window_Minimized_Then_Other_Window_Still_Ticks()
+	{
+		var mainPresenter = (Microsoft.UI.Windowing.OverlappedPresenter)TestServices.WindowHelper.CurrentTestWindow.AppWindow.Presenter;
+		var (secondary, content) = await OpenSecondaryWindow();
+		var target = (CompositionTarget)content.Visual.CompositionTarget!;
+
+		var ticks = 0;
+		var raises = 0;
+		EventHandler<long> driver = (_, _) => ticks++;
+		EventHandler<object> onRendering = (_, _) => raises++;
+
+		mainPresenter.Minimize();
+		try
+		{
+			await Task.Delay(500);
+
+			target.FrameStarting += driver;
+			CompositionTarget.Rendering += onRendering;
+			await Task.Delay(1000);
+		}
+		finally
+		{
+			CompositionTarget.Rendering -= onRendering;
+			target.FrameStarting -= driver;
+			mainPresenter.Restore();
+			secondary.Close();
+		}
+
+		Assert.IsTrue(ticks >= 5, $"the driver of the visible window should keep ticking, got {ticks} ticks");
+		Assert.IsTrue(raises >= 5, $"Rendering should keep being raised for the visible window, got {raises} raises");
+	}
+
 	private static async Task<(Window Window, Border Content)> OpenSecondaryWindow()
 	{
 		var secondary = new Window();
