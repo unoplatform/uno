@@ -132,9 +132,9 @@ if ! test -f "$RESULTS_CANARY_FILE"; then
 fi
 
 # Bound the wait: if the browser started (the canary exists) but the run never produces a
-# results file, this loop otherwise spins until the 60-minute job timeout kills the job, which
+# results file, this loop otherwise spins until the job timeout kills the job, which
 # reports as an opaque agent timeout rather than as a stalled test run.
-RESULTS_WAIT_SECONDS=2100
+RESULTS_WAIT_SECONDS=$(( ${UNO_TEST_RESULTS_TIMEOUT_MINUTES:-35} * 60 ))
 WAITED=0
 while ! test -f "$RESULTS_FILE"; do
     if [ $WAITED -ge $RESULTS_WAIT_SECONDS ]; then

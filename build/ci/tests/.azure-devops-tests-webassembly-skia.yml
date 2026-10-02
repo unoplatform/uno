@@ -14,6 +14,9 @@ parameters:
   testGroups: [0, 1, 2, 3]
   # Browser window (and virtual screen) size, as WIDTHxHEIGHT.
   browserSize: '1920x1080'
+  # How long a group may run before it is reported as stalled; the job timeout leaves room for the setup steps.
+  resultsTimeoutMinutes: 35
+  jobTimeoutInMinutes: 60
 
 jobs:
 ##
@@ -21,7 +24,7 @@ jobs:
 ##
 - job: ${{ parameters.jobName }}
   displayName: '${{ parameters.displayName }}'
-  timeoutInMinutes: 60
+  timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
 
   ${{ if ne(parameters.vmLinuxPool, '') }}:
@@ -101,6 +104,7 @@ jobs:
       UNO_TEST_APP_ENVIRONMENT: ${{ parameters.appEnvironment }}
       UNO_TEST_CHROME_FLAGS: ${{ parameters.chromeFlags }}
       UNO_TEST_BROWSER_SIZE: ${{ parameters.browserSize }}
+      UNO_TEST_RESULTS_TIMEOUT_MINUTES: ${{ parameters.resultsTimeoutMinutes }}
 
   - task: PublishTestResults@2
     condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))
