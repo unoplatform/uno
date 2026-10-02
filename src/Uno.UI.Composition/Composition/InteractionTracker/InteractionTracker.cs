@@ -212,7 +212,7 @@ public partial class InteractionTracker : CompositionObject
 		}
 		else if (propertyName.Equals(nameof(MaxPosition), StringComparison.OrdinalIgnoreCase))
 		{
-			return GetVector3(subPropertyName, MinPosition);
+			return GetVector3(subPropertyName, MaxPosition);
 		}
 		else if (propertyName.Equals(nameof(Scale), StringComparison.OrdinalIgnoreCase))
 		{

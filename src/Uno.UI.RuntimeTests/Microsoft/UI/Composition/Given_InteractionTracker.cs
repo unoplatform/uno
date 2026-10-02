@@ -267,6 +267,38 @@ public partial class Given_InteractionTracker
 		Assert.IsTrue(helper.IsDone);
 	}
 
+	[TestMethod]
+	public async Task When_Expression_Reads_MaxPosition()
+	{
+		var border = new Border { Width = 50, Height = 50 };
+		await UITestHelper.Load(border);
+
+		var visual = ElementCompositionPreview.GetElementVisual(border);
+		var tracker = InteractionTracker.Create(visual.Compositor);
+		tracker.MinPosition = new Vector3(-10, -20, 0);
+		tracker.MaxPosition = new Vector3(100, 200, 0);
+
+		Assert.AreEqual(new Vector3(100, 200, 0), tracker.MaxPosition);
+
+		var expression = visual.Compositor.CreateExpressionAnimation("tracker.MaxPosition");
+		expression.SetReferenceParameter("tracker", tracker);
+		visual.StartAnimation("Offset", expression);
+		try
+		{
+			Assert.AreEqual(new Vector3(100, 200, 0), visual.Offset);
+
+			// Symmetry: the MinPosition branch must keep reading the min bound.
+			var minExpression = visual.Compositor.CreateExpressionAnimation("tracker.MinPosition");
+			minExpression.SetReferenceParameter("tracker", tracker);
+			visual.StartAnimation("Offset", minExpression);
+			Assert.AreEqual(new Vector3(-10, -20, 0), visual.Offset);
+		}
+		finally
+		{
+			visual.StopAnimation("Offset");
+		}
+	}
+
 #if HAS_UNO
 	[TestMethod]
 	[RequiresFullWindow]
