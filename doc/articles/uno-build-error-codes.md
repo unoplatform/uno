@@ -281,6 +281,7 @@ To suppress it:
 <PropertyGroup>
   <UnoDisableUNOB0026Validation>true</UnoDisableUNOB0026Validation>
 </PropertyGroup>
+```
 
 ### UNOB0027: The file suffix is no longer recognized by Uno Platform 7.0
 
