@@ -70,7 +70,8 @@ public class Given_NuspecWindowsSelection
 
 	private static IEnumerable<NuGetFramework> DependencyGroups(string nuspec)
 		=> XDocument.Load(nuspec)
-			.Descendants().Where(e => e.Name.LocalName == "group")
+			.Descendants().Where(e => e.Name.LocalName == "dependencies")
+			.SelectMany(e => e.Elements().Where(g => g.Name.LocalName == "group"))
 			.Select(e => (string?)e.Attribute("targetFramework"))
 			.Where(tfm => !string.IsNullOrEmpty(tfm))
 			.Select(tfm => NuGetFramework.Parse(tfm!))
