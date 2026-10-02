@@ -36,11 +36,11 @@ public partial class Compositor
 
 	// Frame drivers are motion too, so "wait until animations settle" must cover them. They live on the
 	// CompositionTarget, which this assembly cannot name, so they are counted.
-	private static int _frameDriverCount;
+	private int _frameDriverCount;
 
-	internal static void AddFrameDriver() => Interlocked.Increment(ref _frameDriverCount);
+	internal void AddFrameDriver() => Interlocked.Increment(ref _frameDriverCount);
 
-	internal static void RemoveFrameDriver() => Interlocked.Decrement(ref _frameDriverCount);
+	internal void RemoveFrameDriver() => Interlocked.Decrement(ref _frameDriverCount);
 
 	internal bool IsAnimating => _runningAnimations.Count > 0 || Volatile.Read(ref _frameDriverCount) > 0;
 

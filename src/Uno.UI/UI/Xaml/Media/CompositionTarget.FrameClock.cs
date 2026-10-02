@@ -44,7 +44,7 @@ public partial class CompositionTarget
 			_frameStarting += value;
 			if (wasEmpty)
 			{
-				Compositor.AddFrameDriver();
+				Compositor.GetSharedCompositor().AddFrameDriver();
 
 				// The next frame arms its tick. Arming one right away would tick every driver a second time within
 				// the frame whenever one is swapped for another, as the InteractionTracker does on every wheel notch.
@@ -62,7 +62,7 @@ public partial class CompositionTarget
 			_frameStarting -= value;
 			if (wasPresent && _frameStarting is null)
 			{
-				Compositor.RemoveFrameDriver();
+				Compositor.GetSharedCompositor().RemoveFrameDriver();
 			}
 		}
 	}
@@ -107,7 +107,7 @@ public partial class CompositionTarget
 		}
 
 		_frameStarting = null;
-		Compositor.RemoveFrameDriver();
+		Compositor.GetSharedCompositor().RemoveFrameDriver();
 		_frameClock.Reset();
 	}
 

@@ -155,7 +155,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 	public void Seek(float progress)
 	{
 		_playhead = ClampPlayhead(progress);
-		_lastTimestamp = _compositor.TimestampInTicks;
+		_lastTimestamp = _compositor.AnimationTimestampInTicks;
 	}
 
 	public float PlaybackRate
