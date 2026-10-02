@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.UI.Composition;
+using SamplesApp.UITests;
 using Uno.UI;
 using Windows.UI;
 
@@ -139,6 +140,7 @@ public class Given_Visual_Damage
 	// that moves there must still damage both the area it left and the area it now covers.
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23984")]
 #if !__SKIA__
 	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
 #endif
