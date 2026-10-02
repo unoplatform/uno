@@ -45,7 +45,8 @@ internal static class ScrollSmoothnessDrivers
 
 	public static int ExternalDurationMs { get; set; } = 5000;
 
-	private readonly record struct Step(double AtMs, Action<InputInjector> Inject, string Kind);
+	// A null Kind is setup (e.g. positioning the mouse), not input that latency is measured from.
+	private readonly record struct Step(double AtMs, Action<InputInjector> Inject, string? Kind);
 
 	public static async Task RunAsync(string scenario, Control sv, ScrollSmoothnessProbe probe, CancellationToken ct)
 	{
@@ -141,7 +142,7 @@ internal static class ScrollSmoothnessDrivers
 
 	private static IEnumerable<Step> WheelSteps(Point center, bool vertical, int count, double spacingMs, int delta)
 	{
-		yield return new(0, i => MoveMouseTo(i, center), "move");
+		yield return new(0, i => MoveMouseTo(i, center), null);
 		for (var n = 0; n < count; n++)
 		{
 			yield return new(10 + n * spacingMs, i => i.InjectMouseInput(new[]
@@ -159,7 +160,7 @@ internal static class ScrollSmoothnessDrivers
 
 	private static IEnumerable<Step> TouchpadSteps(Point center, bool vertical)
 	{
-		yield return new(0, i => MoveMouseTo(i, center), "move");
+		yield return new(0, i => MoveMouseTo(i, center), null);
 		const int sampleMs = 8;
 		var t = 10.0;
 		for (var n = 0; n < 60; n++)
