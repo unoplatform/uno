@@ -1,9 +1,12 @@
 // These tests drive the InputPane.OccludedRect setter, which is Uno-internal:
 // on native WinUI the property is read-only (the OS owns the input pane).
 #if HAS_UNO
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.DevTools.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
@@ -257,7 +260,7 @@ public class Given_InputPane
 			Assert.IsTrue(GetTop(button) < buttonTopBefore - 1, "Test setup: the content must have moved up.");
 
 			var buttonTopLeft = button.TransformToVisual(null).TransformPoint(default);
-			var finger = InputInjector.TryCreate()?.GetFinger() ?? throw new System.InvalidOperationException("Failed to create finger");
+			using var finger = InputInjector.TryCreate()?.GetFinger() ?? throw new System.InvalidOperationException("Failed to create finger");
 			finger.Tap(new Point(buttonTopLeft.X + button.ActualWidth / 2, buttonTopLeft.Y + button.ActualHeight / 2));
 			await WindowHelper.WaitForIdle();
 
@@ -265,6 +268,63 @@ public class Given_InputPane
 		}
 		finally
 		{
+			await ClearOcclusion(inputPane);
+		}
+	}
+
+	// The content stays moved while a field higher up takes focus, so the suggestion list has to be placed in window
+	// coordinates: in content coordinates it sees room above that is actually off screen, and opens over the field.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_AutoSuggestBox_In_Moved_Content_Then_Suggestions_Fit_Visible_Area()
+	{
+		var autoSuggestBox = new AutoSuggestBox { MaxSuggestionListHeight = 2000 };
+		var bottomField = new TextBox { Height = 40, PlaceholderText = "bottom" };
+		var root = new Grid
+		{
+			Children =
+			{
+				new StackPanel
+				{
+					VerticalAlignment = VerticalAlignment.Bottom,
+					Children = { autoSuggestBox, new Border { Height = 260 }, bottomField },
+				},
+			},
+		};
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(root);
+			Assert.IsTrue(bottomField.Focus(FocusState.Programmatic), "Bottom TextBox failed to take focus.");
+			await WindowHelper.WaitForIdle();
+
+			var occludedTop = OccludeBelow(inputPane, WindowHeight * 0.6);
+			await WaitForAboveOcclusion(bottomField, occludedTop);
+
+			var textBox = (TextBox)autoSuggestBox.GetTemplateChild("TextBox");
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic), "AutoSuggestBox failed to take focus.");
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(GetTop(textBox) > 0 && GetBottom(textBox) < occludedTop, "Test setup: the AutoSuggestBox must be visible above the keyboard.");
+
+			// Setting the items once the template is applied refreshes and places the list, as typing would.
+			autoSuggestBox.ItemsSource = Enumerable.Range(0, 30).Select(i => $"Suggestion {i}").ToList();
+			autoSuggestBox.IsSuggestionListOpen = true;
+			var popup = (Popup)autoSuggestBox.GetTemplateChild("SuggestionsPopup");
+			await WindowHelper.WaitFor(() => popup.IsOpen && popup.Child is FrameworkElement { ActualHeight: > 100 }, message: "The suggestion list did not open with its items.");
+			await WindowHelper.WaitForIdle();
+
+			var list = (FrameworkElement)popup.Child;
+			var coversField = GetBottom(list) > GetTop(textBox) + 0.5 && GetTop(list) < GetBottom(textBox) - 0.5;
+			Assert.IsFalse(coversField, $"The suggestion list ({GetTop(list):F1}-{GetBottom(list):F1}) covers the field being typed in ({GetTop(textBox):F1}-{GetBottom(textBox):F1}).");
+			Assert.IsTrue(GetTop(list) >= -0.5, $"The suggestion list (top {GetTop(list):F1}) was placed above the top of the window.");
+			Assert.IsTrue(GetBottom(list) <= occludedTop + 0.5, $"The suggestion list (bottom {GetBottom(list):F1}) was placed behind the keyboard ({occludedTop:F1}).");
+		}
+		finally
+		{
+			VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ToList().ForEach(p => p.IsOpen = false);
 			await ClearOcclusion(inputPane);
 		}
 	}
