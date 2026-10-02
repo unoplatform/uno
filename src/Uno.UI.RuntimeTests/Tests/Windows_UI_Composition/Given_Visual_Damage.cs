@@ -210,7 +210,7 @@ public class Given_Visual_Damage
 
 		Assert.IsTrue(reported.Contains(40, 40), $"The repainted canvas is not damaged (damage bounds: {reported.Bounds}).");
 		Assert.IsTrue(
-			reported.Bounds.Right <= 70 && reported.Bounds.Bottom <= 70,
+			reported.Bounds.Left >= 10 && reported.Bounds.Top >= 10 && reported.Bounds.Right <= 70 && reported.Bounds.Bottom <= 70,
 			$"Damage spills far outside the 40x40 canvas at (20, 20) (damage bounds: {reported.Bounds}).");
 #else
 		await Task.CompletedTask;
