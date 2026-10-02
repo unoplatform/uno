@@ -2508,8 +2508,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(stopwatch.ElapsedMilliseconds < 500, $"A 20px animated scroll took {stopwatch.ElapsedMilliseconds}ms.");
 		}
 
-#if __SKIA__
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ChangeView_Animated_Then_Eases_Like_ScrollPresenter()
 		{
 			// WinUI's ScrollPresenter animates offset changes with the composition default easing, a gentle
@@ -2541,6 +2541,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ChangeView_Animated_Then_Final_Offset_Is_The_Target()
 		{
 			// The last frame of an animated scroll can move by several pixels; the final ViewChanged must report where
@@ -2569,7 +2570,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1500, final);
 			Assert.AreEqual(1500, SUT.VerticalOffset);
 		}
-#endif
 
 		// A flick fast enough to launch a fling: the velocity tracker fits the recent gesture, so it needs
 		// several moves spread over real time rather than one long jump.
