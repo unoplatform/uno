@@ -4429,6 +4429,7 @@
 		  <!-- Transitions moved from FrameworkElement to UIElement, as in WinUI (accessors paired in <Methods> below). -->
 		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement::Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Composition.CompositionLight Microsoft.UI.Xaml.Media.XamlLight::CompositionLight()" reason="XamlLight.CompositionLight is protected, as in WinUI; accessors paired in &lt;Methods&gt; (breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -5266,6 +5267,63 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.set_ComputedHorizontalScrollMode(Microsoft.UI.Xaml.Controls.ScrollingScrollMode value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.set_ComputedVerticalScrollMode(Microsoft.UI.Xaml.Controls.ScrollingScrollMode value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Thumb.set_IsDragging(System.Boolean value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <!-- WinUI constructor and property accessibility parity, found once the sync generator stopped matching constructors against base types (breaking changes for 7.0). -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control..ctor()" reason="Constructor is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Panel..ctor()" reason="Constructor is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ButtonBase..ctor()" reason="Constructor is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.PickerFlyoutBase..ctor()" reason="Constructor is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.SelectorItem..ctor()" reason="Constructor is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Input.InputKeyboardSource..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Input.InputLightDismissEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Input.InputPointerSource..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Text.FontWeights..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.ApplicationInitializationCallbackParams..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.AutomationProperties..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.AutomationProperty..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.SelectionItemPatternIdentifiers..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.BindingFailedEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ColorChangedEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ContentDialogOpenedEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemCollection..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarButtonTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ToolTipService..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.BindingOperations..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DebugSettings..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.BlockCollection..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.ElementSoundPlayer..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Hosting.ElementCompositionPreview..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Markup.XamlBindingHelper..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Markup.XamlReader..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.VisualTreeHelper..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.RectHelper..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerCollection..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Composition.CompositionLight Microsoft.UI.Xaml.Media.XamlLight.get_CompositionLight()" reason="XamlLight.CompositionLight is protected, as in WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.XamlLight.set_CompositionLight(Microsoft.UI.Composition.CompositionLight value)" reason="XamlLight.CompositionLight is protected, as in WinUI (breaking changes for 7.0)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
