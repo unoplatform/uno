@@ -8,6 +8,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 #endif
 	public partial class CoreDropOperationTargetRequestedEventArgs
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal CoreDropOperationTargetRequestedEventArgs()
+		{
+		}
+#endif
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDropOperationTargetRequestedEventArgs.SetTarget(Windows.ApplicationModel.DataTransfer.DragDrop.Core.ICoreDropOperationTarget)
 	}
 }

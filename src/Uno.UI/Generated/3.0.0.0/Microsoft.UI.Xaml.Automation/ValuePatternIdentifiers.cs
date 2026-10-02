@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 	public partial class ValuePatternIdentifiers
 	{
+#if __SKIA__
+		internal ValuePatternIdentifiers()
+		{
+		}
+#endif
 		// Skipping already declared property IsReadOnlyProperty
 		// Skipping already declared property ValueProperty
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.IsReadOnlyProperty.get

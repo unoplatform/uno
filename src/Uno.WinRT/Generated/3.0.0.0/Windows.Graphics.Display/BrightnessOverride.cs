@@ -8,6 +8,11 @@ namespace Windows.Graphics.Display
 #endif
 	public partial class BrightnessOverride
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal BrightnessOverride()
+		{
+		}
+#endif
 		// Skipping already declared property BrightnessLevel
 		// Skipping already declared property IsOverrideActive
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

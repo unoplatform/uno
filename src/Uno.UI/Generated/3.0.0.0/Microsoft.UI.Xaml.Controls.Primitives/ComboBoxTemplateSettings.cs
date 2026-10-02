@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class ComboBoxTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
+#if __SKIA__
+		internal ComboBoxTemplateSettings()
+		{
+		}
+#endif
 		// Skipping already declared property DropDownClosedHeight
 		// Skipping already declared property DropDownContentMinWidth
 		// Skipping already declared property DropDownOffset

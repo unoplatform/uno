@@ -8,6 +8,11 @@ namespace Windows.Media.SpeechRecognition
 #endif
 	public partial class SpeechRecognizerUIOptions
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal SpeechRecognizerUIOptions()
+		{
+		}
+#endif
 		// Skipping already declared property AudiblePrompt
 		// Skipping already declared property ExampleText
 		// Skipping already declared property IsReadBackEnabled

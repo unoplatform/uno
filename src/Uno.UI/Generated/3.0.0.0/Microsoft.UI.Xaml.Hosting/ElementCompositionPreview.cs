@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Hosting
 #endif
 	public partial class ElementCompositionPreview
 	{
+#if __SKIA__
+		internal ElementCompositionPreview()
+		{
+		}
+#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(Microsoft.UI.Xaml.UIElement)
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]

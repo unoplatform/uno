@@ -8,5 +8,10 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class ApplicationInitializationCallbackParams
 	{
+#if __SKIA__
+		internal ApplicationInitializationCallbackParams()
+		{
+		}
+#endif
 	}
 }

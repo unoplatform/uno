@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class FlyoutBaseClosingEventArgs
 	{
+#if __SKIA__
+		internal FlyoutBaseClosingEventArgs()
+		{
+		}
+#endif
 		// Skipping already declared property Cancel
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.Cancel.set

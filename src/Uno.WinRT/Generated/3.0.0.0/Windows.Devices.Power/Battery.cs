@@ -8,7 +8,7 @@ namespace Windows.Devices.Power
 #endif
 	public partial class Battery
 	{
-#if false || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal Battery()
 		{
 		}

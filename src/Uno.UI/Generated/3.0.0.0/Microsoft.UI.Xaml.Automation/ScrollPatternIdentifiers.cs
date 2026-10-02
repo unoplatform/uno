@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 	public partial class ScrollPatternIdentifiers
 	{
+#if __SKIA__
+		internal ScrollPatternIdentifiers()
+		{
+		}
+#endif
 		// Skipping already declared property HorizontalScrollPercentProperty
 		// Skipping already declared property HorizontalViewSizeProperty
 		// Skipping already declared property HorizontallyScrollableProperty

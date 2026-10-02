@@ -8,6 +8,11 @@ namespace Windows.UI.Core
 #endif
 	public partial class CoreWindowEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal CoreWindowEventArgs()
+		{
+		}
+#endif
 		// Skipping already declared property Handled
 		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.Handled.set

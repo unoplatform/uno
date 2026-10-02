@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ProgressBarTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
+#if __SKIA__
+		internal ProgressBarTemplateSettings()
+		{
+		}
+#endif
 		// Skipping already declared property ClipRect
 		// Skipping already declared property Container2AnimationEndPosition
 		// Skipping already declared property Container2AnimationStartPosition

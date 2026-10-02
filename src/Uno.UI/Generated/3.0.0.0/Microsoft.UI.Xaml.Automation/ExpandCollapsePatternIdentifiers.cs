@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 	public partial class ExpandCollapsePatternIdentifiers
 	{
+#if __SKIA__
+		internal ExpandCollapsePatternIdentifiers()
+		{
+		}
+#endif
 		// Skipping already declared property ExpandCollapseStateProperty
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty.get
 	}

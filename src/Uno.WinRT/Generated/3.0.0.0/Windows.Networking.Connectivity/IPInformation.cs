@@ -8,7 +8,7 @@ namespace Windows.Networking.Connectivity
 #endif
 	public partial class IPInformation
 	{
-#if false || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal IPInformation()
 		{
 		}

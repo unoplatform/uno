@@ -8,6 +8,11 @@ namespace Windows.Media.Capture
 #endif
 	public partial class CameraCaptureUIPhotoCaptureSettings
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal CameraCaptureUIPhotoCaptureSettings()
+		{
+		}
+#endif
 		// Skipping already declared property AllowCropping
 		// Skipping already declared property CroppedAspectRatio
 		// Skipping already declared property CroppedSizeInPixels
