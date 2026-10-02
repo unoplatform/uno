@@ -42,9 +42,10 @@ internal class AppleUIKitHost : SkiaHost, ISkiaApplicationHost
 			};
 
 			// The .NET iOS runtime does not forward argv to Environment.GetCommandLineArgs().
+			// Elements are pre-split, so quote the ones with spaces to match a raw desktop command line.
 			if (NSProcessInfo.ProcessInfo.Arguments is { Length: > 1 } processArgs)
 			{
-				Application.SetArguments(string.Join(" ", processArgs.Skip(1)));
+				Application.SetArguments(string.Join(" ", processArgs.Skip(1).Select(a => a.Contains(' ') ? $"\"{a}\"" : a)));
 			}
 
 			var delegateType = _uiApplicationDelegateOverride ?? typeof(UnoUIApplicationDelegate);
