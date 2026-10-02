@@ -297,12 +297,13 @@ internal static class ScrollSmoothnessDrivers
 		var dispatcher = DispatcherQueue.GetForCurrentThread();
 		var start = Stopwatch.GetTimestamp();
 		var pending = new Queue<Step>(steps);
+		var touchDown = false;
 
 		void RunDue()
 		{
 			if (ct.IsCancellationRequested)
 			{
-				pending.Clear();
+				Abort();
 				return;
 			}
 
@@ -310,66 +311,93 @@ internal static class ScrollSmoothnessDrivers
 			while (pending.Count > 0 && pending.Peek().AtMs <= nowMs)
 			{
 				var step = pending.Dequeue();
-				probe.MarkInput(step.Kind);
+				if (step.Kind is { } kind)
+				{
+					probe.MarkInput(kind);
+				}
+
 				step.Inject(injector);
+				touchDown = step.Kind switch
+				{
+					"touch-down" => true,
+					"touch-up" => false,
+					_ => touchDown,
+				};
 			}
 		}
 
-		if (OperatingSystem.IsBrowser())
+		// Lifts a pressed finger, so a canceled gesture does not leave a captured pointer behind.
+		void Abort()
 		{
-			while (pending.Count > 0)
+			if (touchDown && pending.LastOrDefault(s => s.Kind == "touch-up") is { Inject: { } release })
 			{
-				ct.ThrowIfCancellationRequested();
-				RunDue();
-				await Task.Delay(1, ct);
+				release(injector);
 			}
 
-			return;
+			touchDown = false;
+			pending.Clear();
 		}
 
-		var done = new TaskCompletionSource();
-		var thread = new Thread(() =>
+		try
 		{
-			var times = new List<double>();
-			foreach (var s in pending)
+			if (OperatingSystem.IsBrowser())
 			{
-				times.Add(s.AtMs);
+				while (pending.Count > 0)
+				{
+					ct.ThrowIfCancellationRequested();
+					RunDue();
+					await Task.Delay(1, ct);
+				}
+
+				return;
 			}
 
-			foreach (var at in times)
+			// Snapshotted here: the UI thread dequeues from pending while the timing thread runs.
+			var times = pending.Select(s => s.AtMs).ToArray();
+			var done = new TaskCompletionSource();
+			var thread = new Thread(() =>
 			{
-				// Sleep coarsely, then spin the last stretch: Thread.Sleep alone is ~15 ms granular on Windows.
-				while (Stopwatch.GetElapsedTime(start).TotalMilliseconds < at - 2 && !ct.IsCancellationRequested)
+				foreach (var at in times)
 				{
-					Thread.Sleep(1);
+					// Sleep coarsely, then spin the last stretch: Thread.Sleep alone is ~15 ms granular on Windows.
+					while (Stopwatch.GetElapsedTime(start).TotalMilliseconds < at - 2 && !ct.IsCancellationRequested)
+					{
+						Thread.Sleep(1);
+					}
+
+					while (Stopwatch.GetElapsedTime(start).TotalMilliseconds < at && !ct.IsCancellationRequested)
+					{
+						Thread.SpinWait(50);
+					}
+
+					if (ct.IsCancellationRequested)
+					{
+						return;
+					}
+
+					dispatcher.TryEnqueue(DispatcherQueuePriority.High, RunDue);
 				}
 
-				while (Stopwatch.GetElapsedTime(start).TotalMilliseconds < at && !ct.IsCancellationRequested)
+				dispatcher.TryEnqueue(DispatcherQueuePriority.High, () =>
 				{
-					Thread.SpinWait(50);
-				}
-
-				if (ct.IsCancellationRequested)
-				{
-					return;
-				}
-
-				dispatcher.TryEnqueue(DispatcherQueuePriority.High, RunDue);
-			}
-
-			dispatcher.TryEnqueue(DispatcherQueuePriority.High, () =>
+					RunDue();
+					done.TrySetResult();
+				});
+			})
 			{
-				RunDue();
-				done.TrySetResult();
-			});
-		})
+				IsBackground = true,
+				Name = "ScrollSmoothness input timing",
+			};
+			thread.Start();
+
+			await done.Task.WaitAsync(ct);
+		}
+		catch (OperationCanceledException)
 		{
-			IsBackground = true,
-			Name = "ScrollSmoothness input timing",
-		};
-		thread.Start();
-
-		await done.Task.WaitAsync(ct);
+			// The awaits resume on the UI thread, which owns the injector state.
+			Abort();
+			throw;
+		}
 	}
 }
 #endif
