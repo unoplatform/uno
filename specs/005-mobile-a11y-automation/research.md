@@ -28,7 +28,7 @@ Key source locations:
 - `src/Uno.UI.Runtime.Skia.Android/Hosting/AndroidSkiaXamlRootHost.cs`
 - `src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Window/RootViewController.cs`
 - `src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Window/AppleUIKitWindowWrapper.cs`
-- `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/`
+- `src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Automation/`
 
 ## 2. Scope
 
@@ -324,7 +324,7 @@ virtual node. Both are direct mobile performance and memory risks.
 Test layers:
 
 1. Shared peer/tree/action contract tests in
-   `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/`.
+   `src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Automation/`.
 2. Skia Android tests query the real `AccessibilityNodeInfoCompat` returned by the existing
    node provider using a small internal test accessor for stable virtual IDs.
 3. Skia iOS tests query the real managed `UIAccessibilityElement` objects owned by the
