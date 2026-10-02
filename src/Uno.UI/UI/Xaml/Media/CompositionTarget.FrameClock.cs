@@ -14,6 +14,7 @@ public partial class CompositionTarget
 
 	private EventHandler<long>? _frameStarting;
 	private bool _frameTickArmed;
+	private bool _isHostGone;
 
 	// Sampled once per native frame; everything that frame evaluates (drivers, Rendering, the record) uses it.
 	private long _frameTimestamp;
@@ -35,7 +36,8 @@ public partial class CompositionTarget
 	{
 		add
 		{
-			if (value is null)
+			// No frame will ever tick a driver on a target whose host is gone.
+			if (value is null || _isHostGone)
 			{
 				return;
 			}
@@ -53,14 +55,13 @@ public partial class CompositionTarget
 		}
 		remove
 		{
-			if (value is null)
+			if (value is null || _frameStarting is not { } frameStarting)
 			{
 				return;
 			}
 
-			var wasPresent = _frameStarting is not null;
-			_frameStarting -= value;
-			if (wasPresent && _frameStarting is null)
+			_frameStarting = frameStarting - value;
+			if (_frameStarting is null)
 			{
 				Compositor.GetSharedCompositor().RemoveFrameDriver();
 			}
@@ -99,6 +100,7 @@ public partial class CompositionTarget
 	/// </summary>
 	internal void ClearFrameDrivers()
 	{
+		_isHostGone = true;
 		_frameTickArmed = false;
 
 		if (_frameStarting is null)
