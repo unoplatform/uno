@@ -34,6 +34,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
+		// Default physical amount to scroll with Up/Down/Left/Right key
+		private const double ScrollViewerLineDelta = 16.0;
+
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 		private bool m_isInConstantVelocityPan;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -1130,8 +1133,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ScrollEventType.LargeIncrement => (false, VerticalOffset + ActualHeight),
 				ScrollEventType.LargeDecrement => (false, VerticalOffset - ActualHeight),
-				ScrollEventType.SmallIncrement => (false, VerticalOffset + 16),
-				ScrollEventType.SmallDecrement => (false, VerticalOffset - 16),
+				ScrollEventType.SmallIncrement => (false, VerticalOffset + ScrollViewerLineDelta),
+				ScrollEventType.SmallDecrement => (false, VerticalOffset - ScrollViewerLineDelta),
 				_ => (true, e.NewValue)
 			};
 
@@ -1159,8 +1162,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ScrollEventType.LargeIncrement => (false, HorizontalOffset + ActualWidth),
 				ScrollEventType.LargeDecrement => (false, HorizontalOffset - ActualWidth),
-				ScrollEventType.SmallIncrement => (false, HorizontalOffset + 16),
-				ScrollEventType.SmallDecrement => (false, HorizontalOffset - 16),
+				ScrollEventType.SmallIncrement => (false, HorizontalOffset + ScrollViewerLineDelta),
+				ScrollEventType.SmallDecrement => (false, HorizontalOffset - ScrollViewerLineDelta),
 				_ => (true, e.NewValue)
 			};
 
@@ -1893,15 +1896,15 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Uno specific: WinUI delegates the line and page steps to IScrollInfo (ScrollContentPresenter),
-		// which moves by ScrollViewerLineDelta (16) and by one viewport respectively.
+		// which moves by ScrollViewerLineDelta and by one viewport respectively.
 		private static double GetScrollTargetOffset(ScrollEventType scrollEventType, double oldOffset, double offset, double viewport)
 			=> scrollEventType switch
 			{
 				ScrollEventType.ThumbPosition or ScrollEventType.ThumbTrack => offset,
 				ScrollEventType.LargeDecrement => oldOffset - viewport,
 				ScrollEventType.LargeIncrement => oldOffset + viewport,
-				ScrollEventType.SmallDecrement => oldOffset - 16,
-				ScrollEventType.SmallIncrement => oldOffset + 16,
+				ScrollEventType.SmallDecrement => oldOffset - ScrollViewerLineDelta,
+				ScrollEventType.SmallIncrement => oldOffset + ScrollViewerLineDelta,
 				ScrollEventType.First => double.MinValue,
 				ScrollEventType.Last => double.MaxValue,
 				_ => oldOffset,
