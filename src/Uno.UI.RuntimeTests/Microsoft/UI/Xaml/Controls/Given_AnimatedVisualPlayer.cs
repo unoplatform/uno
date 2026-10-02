@@ -196,7 +196,7 @@ public class Given_AnimatedVisualPlayer
 
 		// The rate change freezes the playhead at the compositor's current time, which the property set only
 		// reflects after the next tick; sampling right away can trail it by a frame on slow devices.
-		await Task.Delay(TimeSpan.FromMilliseconds(100));
+		await UITestHelper.WaitForRender(frameCount: 2, timeoutMS: 2000);
 		await TestServices.WindowHelper.WaitForIdle();
 		var frozenProgress = GetPlayerProgress(player);
 
