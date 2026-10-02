@@ -1,6 +1,7 @@
 #if __SKIA__
 using System;
 using Microsoft.UI.Composition;
+using Uno.UI.Composition;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
@@ -165,6 +166,48 @@ public class Given_Compositor
 		}
 	}
 
+	/// <summary>
+	/// Each window records against its own frame time: another window's record must not evaluate this window's
+	/// animations, or it would start them early and advance them on a clock out of phase with this one.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Other_Target_Records_Then_Animation_Not_Evaluated()
+	{
+		var compositor = Compositor.GetSharedCompositor();
+		var rootA = compositor.CreateContainerVisual();
+		rootA.CompositionTarget = new StubCompositionTarget();
+		var rootB = compositor.CreateContainerVisual();
+		rootB.CompositionTarget = new StubCompositionTarget();
+
+		var animation = compositor.CreateScalarKeyFrameAnimation();
+		animation.InsertKeyFrame(0f, 0f, compositor.CreateLinearEasingFunction());
+		animation.InsertKeyFrame(1f, 1000f, compositor.CreateLinearEasingFunction());
+		animation.Duration = TimeSpan.FromSeconds(1000);
+
+		var start = compositor.TimestampInTicks;
+		rootB.StartAnimation(nameof(Visual.RotationAngleInDegrees), animation);
+
+		var skipPainting = Compositor.SkipVisualTreePainting;
+		Compositor.SkipVisualTreePainting = true;
+		try
+		{
+			compositor.FrameTimestampInTicks = start + 30 * TimeSpan.TicksPerMillisecond;
+			compositor.RenderRootVisual(null!, rootA);
+
+			compositor.FrameTimestampInTicks = start + 10 * TimeSpan.TicksPerSecond;
+			compositor.RenderRootVisual(null!, rootB);
+
+			Assert.AreEqual(0f, rootB.RotationAngleInDegrees, 0.0001f, "the animation should start at its own target's first frame");
+		}
+		finally
+		{
+			Compositor.SkipVisualTreePainting = skipPainting;
+			compositor.FrameTimestampInTicks = null;
+			rootB.StopAnimation(nameof(Visual.RotationAngleInDegrees));
+		}
+	}
+
 	// Linear over 1000s, so the value reads as the number of seconds elapsed.
 	private static (ScalarKeyFrameAnimation Animation, long Start) StartSecondsAnimation(Compositor compositor)
 	{
@@ -183,5 +226,22 @@ public class Given_Compositor
 	}
 
 	private static double Ms(long ticks) => ticks / (double)TimeSpan.TicksPerMillisecond;
+
+	private sealed class StubCompositionTarget : ICompositionTarget
+	{
+		public double RasterizationScale => 1;
+
+		public Uno.UI.Composition.Drawing.IDrawingFactory Renderer => null;
+
+		public event EventHandler RasterizationScaleChanged { add { } remove { } }
+
+		public void TryRedirectForManipulation(Microsoft.UI.Input.PointerPoint pointerPoint, Microsoft.UI.Composition.Interactions.InteractionTracker tracker) { }
+
+		public void RequestNewFrame() { }
+
+		public void AddDamage(Windows.Foundation.Rect bounds) { }
+
+		public void AddDamage(Uno.UI.Composition.Drawing.IGeometry region) { }
+	}
 }
 #endif
