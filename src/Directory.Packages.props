@@ -184,7 +184,7 @@
 		<PackageVersion Include="Uno.UITest.Selenium" Version="1.1.0-dev.70" />
 		<PackageVersion Include="Uno.UITest.Xamarin" Version="1.1.0-dev.70" />
 		<PackageVersion Include="Uno.UniversalImageLoader" Version="1.9.36" />
-		<PackageVersion Include="Uno.Wasm.Bootstrap" Version="10.0.0-dev.24" />
+		<PackageVersion Include="Uno.Wasm.Bootstrap" Version="10.1.0-dev.217" />
 		<PackageVersion Include="Uno.XamlMerge.Task" Version="$(UnoXamlMergeTaskVersion)" />
 		<PackageVersion Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1" />
 		<PackageVersion Include="WebkitGtkSharp" Version="3.24.24.117-develop" />
