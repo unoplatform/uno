@@ -47,7 +47,8 @@ stages:
       displayName: 'WebGPU'
       testResultLabel: '-webgpu'
       appEnvironment: 'UNO_WEBGPU=1'
-      chromeFlags: '--enable-unsafe-webgpu --enable-features=Vulkan --use-webgpu-adapter=swiftshader'
+      # Chrome crashed at startup on the self-hosted agents with its default profile location, so it gets its own.
+      chromeFlags: '--enable-unsafe-webgpu --enable-features=Vulkan --use-webgpu-adapter=swiftshader --user-data-dir=/tmp/uno-chrome-webgpu-profile'
 
 - stage: runtime_tests_skia_android
   displayName: Tests - Android Skia

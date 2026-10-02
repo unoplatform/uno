@@ -74,6 +74,9 @@ if [ -n "$UNO_TEST_APP_ENVIRONMENT" ]; then
 fi
 export UNO_TEST_CHROME_FLAGS=${UNO_TEST_CHROME_FLAGS:-}
 
+# The software-rendered lanes scale with cores, and Chrome needs a writable profile; record both.
+echo "Agent: $(nproc) cores, user=$(id -un), HOME=${HOME:-unset}, shm: $(df -h /dev/shm 2>/dev/null | tail -1)"
+
 TRY_COUNT=0
 
 while [ $TRY_COUNT -lt 5 ]; do
