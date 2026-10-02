@@ -153,8 +153,12 @@ internal sealed class SkiaDrawingFactory :
 	// GRContext so the render lands in the texture before the host commits the drawable. Recreated each frame.
 	private IPresentSession PresentForMetal(IMetalRenderTarget metal)
 	{
-		_metalContext ??= GRContext.CreateMetal(new GRMtlBackendContext { DeviceHandle = _metalDevice!.Device, QueueHandle = _metalDevice!.Queue }, CreateContextOptions())
-			?? throw new System.NotSupportedException("Failed to create a Metal GRContext.");
+		if (_metalContext is null)
+		{
+			using var backend = new GRMtlBackendContext { DeviceHandle = _metalDevice!.Device, QueueHandle = _metalDevice!.Queue };
+			_metalContext = GRContext.CreateMetal(backend, CreateContextOptions())
+				?? throw new System.NotSupportedException("Failed to create a Metal GRContext.");
+		}
 
 		var colorType = ToColorType(metal.ColorFormat);
 		// The render target descriptor is consumed by SKSurface.Create; the surface is disposed on present.
