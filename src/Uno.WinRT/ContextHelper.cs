@@ -48,6 +48,12 @@ namespace Uno.UI
 		public static Android.Content.Context ApplicationContext => Android.App.Application.Context;
 
 		/// <summary>
+		/// Resolves the activity currently hosting a <c>Microsoft.UI.Xaml.Window</c>; provided by the runtime,
+		/// which owns windows.
+		/// </summary>
+		internal static Func<object, Android.Content.Context?>? WindowContextResolver { get; set; }
+
+		/// <summary>
 		/// Tries getting the context of the most recently active live activity (see <see cref="Current"/>).
 		/// </summary>
 		/// <param name="context">The activity context if available.</param>
