@@ -125,7 +125,19 @@ public partial class CompositionTarget
 
 	static CompositionTarget()
 	{
-		XamlRootMap.Unregistered += static (_, xamlRoot) => xamlRoot.VisualTree.ContentRoot.CompositionTarget.ClearFrameDrivers();
+		// Some hosts unregister from a background thread (X11 does from a task continuation).
+		XamlRootMap.Unregistered += static (_, xamlRoot) =>
+		{
+			var target = xamlRoot.VisualTree.ContentRoot.CompositionTarget;
+			if (NativeDispatcher.Main.HasThreadAccess)
+			{
+				target.ClearFrameDrivers();
+			}
+			else
+			{
+				NativeDispatcher.Main.Enqueue(target.ClearFrameDrivers, NativeDispatcherPriority.High);
+			}
+		};
 	}
 
 	private readonly FrameRenderHelper.FpsHelper _fpsHelper = new();
