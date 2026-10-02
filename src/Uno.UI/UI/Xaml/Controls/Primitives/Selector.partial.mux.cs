@@ -87,70 +87,87 @@ partial class Selector
 			return;
 		}
 
-		// TODO Uno: Animated moves (modern panels only in WinUI) are not supported.
-		var (physicalOrientation, _ /*pLogicalOrientation*/) = GetItemsHostOrientations();
-		var isVertical = physicalOrientation == Orientation.Vertical;
-		var invert = FlowDirection == FlowDirection.RightToLeft;
-
-		switch (key)
+		if (animate)
 		{
-			case VirtualKey.PageUp:
-				if (isVertical)
-				{
-					m_tpScrollViewer.PageUp();
-				}
-				else
-				{
-					if (invert)
+			// This is a move request within a header or footer. Only perform an animated move when the hosting panel is a modern panel. Moves from item to item
+			// are only animated for modern panels. So for consistency, moves within headers are only animated for modern panels as well.
+
+			// TODO Uno: ItemsWrapGrid is not implemented, ItemsStackPanel is the only modern panel.
+			var spPanel = ItemsPanelRoot;
+
+			animate = spPanel is ItemsStackPanel;
+		}
+
+		if (animate)
+		{
+			m_tpScrollViewer.ScrollInDirection(key, true /*animate*/);
+		}
+		else
+		{
+			var (physicalOrientation, _ /*pLogicalOrientation*/) = GetItemsHostOrientations();
+			var isVertical = physicalOrientation == Orientation.Vertical;
+			var invert = FlowDirection == FlowDirection.RightToLeft;
+
+			switch (key)
+			{
+				case VirtualKey.PageUp:
+					if (isVertical)
 					{
-						m_tpScrollViewer.PageRight();
+						m_tpScrollViewer.PageUp();
 					}
 					else
 					{
-						m_tpScrollViewer.PageLeft();
+						if (invert)
+						{
+							m_tpScrollViewer.PageRight();
+						}
+						else
+						{
+							m_tpScrollViewer.PageLeft();
+						}
 					}
-				}
-				break;
-			case VirtualKey.PageDown:
-				if (isVertical)
-				{
-					m_tpScrollViewer.PageDown();
-				}
-				else
-				{
-					if (invert)
+					break;
+				case VirtualKey.PageDown:
+					if (isVertical)
 					{
-						m_tpScrollViewer.PageLeft();
+						m_tpScrollViewer.PageDown();
 					}
 					else
 					{
-						m_tpScrollViewer.PageRight();
+						if (invert)
+						{
+							m_tpScrollViewer.PageLeft();
+						}
+						else
+						{
+							m_tpScrollViewer.PageRight();
+						}
 					}
-				}
-				break;
-			case VirtualKey.Home:
-				if (isVertical)
-				{
-					m_tpScrollViewer.HandleVerticalScroll(ScrollEventType.First);
-				}
-				else
-				{
-					m_tpScrollViewer.HandleHorizontalScroll(ScrollEventType.First);
-				}
-				break;
-			case VirtualKey.End:
-				if (isVertical)
-				{
-					m_tpScrollViewer.HandleVerticalScroll(ScrollEventType.Last);
-				}
-				else
-				{
-					m_tpScrollViewer.HandleHorizontalScroll(ScrollEventType.Last);
-				}
-				break;
-			default:
-				m_tpScrollViewer.ScrollInDirection(key);
-				break;
+					break;
+				case VirtualKey.Home:
+					if (isVertical)
+					{
+						m_tpScrollViewer.HandleVerticalScroll(ScrollEventType.First);
+					}
+					else
+					{
+						m_tpScrollViewer.HandleHorizontalScroll(ScrollEventType.First);
+					}
+					break;
+				case VirtualKey.End:
+					if (isVertical)
+					{
+						m_tpScrollViewer.HandleVerticalScroll(ScrollEventType.Last);
+					}
+					else
+					{
+						m_tpScrollViewer.HandleHorizontalScroll(ScrollEventType.Last);
+					}
+					break;
+				default:
+					m_tpScrollViewer.ScrollInDirection(key, false /*animate*/);
+					break;
+			}
 		}
 	}
 

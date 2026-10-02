@@ -85,7 +85,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private static bool IsAnimationEnabled => Uno.UI.Helpers.WinUI.SharedHelpers.IsAnimationsEnabled();
+		// Stands in for WinUI's RuntimeEnabledFeature::DisableGlobalAnimations test override.
+		internal static bool? IsAnimationEnabledOverride { get; set; }
+
+		private static bool IsAnimationEnabled => IsAnimationEnabledOverride ?? Uno.UI.Helpers.WinUI.SharedHelpers.IsAnimationsEnabled();
 
 		/// <summary>
 		/// Occurs when manipulations such as scrolling and zooming have caused the view to change.
@@ -1405,54 +1408,71 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Scrolls the view in the specified direction.
 		/// </summary>
-		internal void ScrollInDirection(VirtualKey key)
+		internal void ScrollInDirection(VirtualKey key, bool animate)
 		{
-			// TODO Uno: The animated (DManip) variant is not supported.
-			var invert = FlowDirection == FlowDirection.RightToLeft;
-
-			switch (key)
+			if (animate)
 			{
-				case VirtualKey.Up:
-					LineUp();
-					break;
-				case VirtualKey.Down:
-					LineDown();
-					break;
-				case VirtualKey.Left:
-					if (invert)
-					{
-						LineRight();
-					}
-					else
-					{
-						LineLeft();
-					}
-					break;
-				case VirtualKey.Right:
-					if (invert)
-					{
-						LineLeft();
-					}
-					else
-					{
-						LineRight();
-					}
-					break;
-				case VirtualKey.PageUp:
-					PageUp();
-					break;
-				case VirtualKey.PageDown:
-					PageDown();
-					break;
-				case VirtualKey.Home:
-					PageHome();
-					break;
-				case VirtualKey.End:
-					PageEnd();
-					break;
-				default:
-					// Do nothing
-					break;
+				// Let DManip animate the scroll within a ListViewBase header or footer.
+
+				// No special processing is required here for right-to-left scenarios,
+				// CInputServices::ProcessInputMessageWithDirectManipulation does it instead.
+				// For PageUp/Down, Home and End keys though, that method must ignore the RightToLeft
+				// flow direction, otherwise a move to the opposite direction is performed.
+				ProcessInputMessage(
+					key,
+					key == VirtualKey.PageUp ||
+					key == VirtualKey.PageDown ||
+					key == VirtualKey.Home ||
+					key == VirtualKey.End /*ignoreFlowDirection*/);
+			}
+			else
+			{
+				var invert = FlowDirection == FlowDirection.RightToLeft;
+
+				switch (key)
+				{
+					case VirtualKey.Up:
+						LineUp();
+						break;
+					case VirtualKey.Down:
+						LineDown();
+						break;
+					case VirtualKey.Left:
+						if (invert)
+						{
+							LineRight();
+						}
+						else
+						{
+							LineLeft();
+						}
+						break;
+					case VirtualKey.Right:
+						if (invert)
+						{
+							LineLeft();
+						}
+						else
+						{
+							LineRight();
+						}
+						break;
+					case VirtualKey.PageUp:
+						PageUp();
+						break;
+					case VirtualKey.PageDown:
+						PageDown();
+						break;
+					case VirtualKey.Home:
+						PageHome();
+						break;
+					case VirtualKey.End:
+						PageEnd();
+						break;
+					default:
+						// Do nothing
+						break;
+				}
 			}
 		}
 
@@ -1804,9 +1824,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			var oldHorizontalOffset = Presenter.TargetHorizontalOffset;
-			var oldVerticalOffset = Presenter.TargetVerticalOffset;
-
 			// Check whether scrolling is allowed and focus can be moved.
 			var (shouldScroll, shouldMoveFocus) = HandleKeyDownForXYNavigation(args);
 
@@ -1814,6 +1831,42 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
+
+			// Let the InputManager forward this keystroke to DirectManipulation for potential processing.
+			if (ProcessInputMessage(key, false /*ignoreFlowDirection*/))
+			{
+				args.Handled = true;
+			}
+
+			if (args.Handled && shouldMoveFocus)
+			{
+				// Continue bubbling the event so that the focus can be moved.
+				args.Handled = false;
+			}
+		}
+
+		// Uno specific: WinUI forwards the current input message to DirectManipulation, which performs
+		// the keyboard scroll as an animation. Uno takes the key explicitly and runs an animated ChangeView.
+		private bool ProcessInputMessage(VirtualKey key, bool ignoreFlowDirection)
+		{
+			if (Presenter is null || Content is not UIElement)
+			{
+				return false;
+			}
+
+			// DManip mirrors the horizontal moves of a right-to-left viewport (fInvertForRightToLeft).
+			if (!ignoreFlowDirection && FlowDirection == FlowDirection.RightToLeft)
+			{
+				key = key switch
+				{
+					VirtualKey.Left => VirtualKey.Right,
+					VirtualKey.Right => VirtualKey.Left,
+					_ => key
+				};
+			}
+
+			var oldHorizontalOffset = Presenter.TargetHorizontalOffset;
+			var oldVerticalOffset = Presenter.TargetVerticalOffset;
 
 			var newOffset = key switch
 			{
@@ -1830,33 +1883,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (newOffset == double.E)
 			{
-				return;
+				return false;
 			}
 
-			if (Content is UIElement)
+			// When animations are turned off in the OS Settings, DManip jumps instead of animating.
+			var disableAnimation = !IsAnimationEnabled;
+			var handled = false;
+
+			if (Presenter.CanHorizontallyScroll && key is VirtualKey.Left or VirtualKey.Right)
 			{
-				var canScrollHorizontally = Presenter.CanHorizontallyScroll;
-				var canScrollVertically = Presenter.CanVerticallyScroll;
-
-				if (canScrollHorizontally && key is VirtualKey.Left or VirtualKey.Right)
-				{
-					ScrollToHorizontalOffset(newOffset);
-					args.Handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
-				}
-				else if (canScrollVertically && key is not (VirtualKey.Left or VirtualKey.Right))
-				{
-					ScrollToVerticalOffset(newOffset);
-					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
-				}
-
-				args.Handled |= key is VirtualKey.PageUp or VirtualKey.PageDown;
+				ChangeView(newOffset, null, null, disableAnimation);
+				handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
 			}
-
-			if (args.Handled && shouldMoveFocus)
+			else if (Presenter.CanVerticallyScroll && key is not (VirtualKey.Left or VirtualKey.Right))
 			{
-				// Continue bubbling the event so that the focus can be moved.
-				args.Handled = false;
+				ChangeView(null, newOffset, null, disableAnimation);
+				handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
 			}
+
+			handled |= key is VirtualKey.PageUp or VirtualKey.PageDown;
+
+			return handled;
 
 			// This gets the delta that should be applied when arrow keys are pressed as a function of the
 			// ScrollViewer length in the scrolling direction. WinUI's logic is not quite clear, I just
