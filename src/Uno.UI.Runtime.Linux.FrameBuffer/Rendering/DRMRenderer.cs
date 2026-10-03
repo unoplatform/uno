@@ -43,6 +43,7 @@ namespace Uno.UI.Runtime
 		private const int FlipInFlight = 1;
 		private const int FlipInFlightWithPending = 2;
 		private int _flipState;
+		private bool? _isPageFlipTimeMonotonic;
 		private readonly GCHandle _selfHandle;
 
 		private LibDrm.drmModeCrtc _savedCrtc;
@@ -314,9 +315,10 @@ namespace Uno.UI.Runtime
 
 		// Draws the current content, then flips to it. Drawing ahead of the request instead (in the flip handler)
 		// presents a buffer drawn before the content it is answering existed, which leaves the screen a frame behind.
-		private unsafe void DrawAndFlip()
+		/// <param name="vsyncTimestamp">The vblank the previous flip completed on, when this draw answers that flip.</param>
+		private unsafe void DrawAndFlip(long? vsyncTimestamp = null)
 		{
-			Render();
+			Render(vsyncTimestamp);
 
 			using (MakeCurrent())
 			{
@@ -405,18 +407,35 @@ namespace Uno.UI.Runtime
 			{
 				return;
 			}
-			@this.OnPageFlipCore();
+			@this.OnPageFlipCore(tv_sec, tv_usec);
+		}
+
+		/// <summary>The <see cref="Stopwatch.GetTimestamp"/> time of the vblank a page flip completed on.</summary>
+		/// <remarks>
+		/// Converted through its age on CLOCK_MONOTONIC, the clock DRM stamps events with when the driver supports
+		/// it, so nothing assumes how that relates to Stopwatch's clock.
+		/// </remarks>
+		private long? GetVsyncTimestamp(uint seconds, uint microseconds)
+		{
+			_isPageFlipTimeMonotonic ??= LibDrm.drmGetCap(_card, LibDrm.DRM_CAP_TIMESTAMP_MONOTONIC, out var isMonotonic) == 0 && isMonotonic != 0;
+			if (_isPageFlipTimeMonotonic is not true || Libc.clock_gettime(Libc.CLOCK_MONOTONIC, out var now) != 0)
+			{
+				return null;
+			}
+
+			var ageInNanoseconds = ((long)now.tv_sec - seconds) * 1_000_000_000L + ((long)now.tv_nsec - microseconds * 1_000L);
+			return Stopwatch.GetTimestamp() - (long)(Math.Max(0, ageInNanoseconds) * (Stopwatch.Frequency / 1e9));
 		}
 
 		// Nothing may throw out of OnPageFlip: it is called from libdrm's frame, where a managed exception terminates
 		// the process, and a flip gate left closed stalls the loop for good.
-		private void OnPageFlipCore()
+		private void OnPageFlipCore(uint seconds, uint microseconds)
 		{
 			try
 			{
 				if (Interlocked.CompareExchange(ref _flipState, FlipInFlight, FlipInFlightWithPending) == FlipInFlightWithPending)
 				{
-					DrawAndFlip();
+					DrawAndFlip(GetVsyncTimestamp(seconds, microseconds));
 				}
 				else
 				{
