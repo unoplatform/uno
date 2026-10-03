@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System.Runtime.CompilerServices;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 
@@ -8,6 +9,8 @@ namespace Microsoft.UI.Xaml;
 
 public sealed partial class XamlRoot
 {
+	private ApplicationBarService? m_applicationBarService;
+
 	internal VisualTree VisualTree { get; set; }
 
 	/// <summary>
@@ -43,4 +46,20 @@ public sealed partial class XamlRoot
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	internal static XamlRoot? GetImplementationForElement(DependencyObject element, bool createIfNotExist = true) =>
 		GetForElement(element, createIfNotExist);
+
+	internal ApplicationBarService GetApplicationBarService()
+	{
+		if (m_applicationBarService is null)
+		{
+			m_applicationBarService = new ApplicationBarService();
+			m_applicationBarService.SetXamlRoot(this);
+		}
+
+		return m_applicationBarService;
+	}
+
+	internal ApplicationBarService? TryGetApplicationBarService()
+	{
+		return m_applicationBarService;
+	}
 }
