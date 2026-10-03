@@ -159,6 +159,28 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// depth comparison wrong can be told apart from a bug in the geometry without a rebuild.
 	internal static readonly bool NoDepthOcclusion = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_DEPTH_OCCLUSION") == "1";
 
+	// Submissions the GPU may not have finished yet, oldest first.
+	private readonly Queue<ulong> _inFlight = new();
+
+	/// <summary>How many frames the CPU may submit ahead of the GPU. A swapchain caps this for presented frames,
+	/// but nothing does for frames that are never presented (offscreen renders, a window whose present is skipped):
+	/// on a slow device those pile up with every resource they hold, faster than the GPU retires them.</summary>
+	internal const int MaxFramesInFlight = 3;
+
+	/// <summary>Records a frame's submission and blocks on the oldest one once more than
+	/// <see cref="MaxFramesInFlight"/> are outstanding, then pumps the device without waiting.</summary>
+	internal void ThrottleSubmission(ulong submission)
+	{
+		_inFlight.Enqueue(submission);
+		while (_inFlight.Count > MaxFramesInFlight)
+		{
+			var oldest = _inFlight.Dequeue();
+			_ = wgpuDevicePoll(Dev, 1u, &oldest);
+		}
+
+		_ = wgpuDevicePoll(Dev, 0u, null);
+	}
+
 	public void BeginFrameResources()
 	{
 		// Read LAST frame's timestamps here: the resolve/copy are recorded into the frame encoder, so mapping
@@ -396,6 +418,12 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	/// rasterized into a scratch surface and copied in, TextureBinding because the draw samples it.
 	/// </summary>
 	public WebGpuPathAtlas PathAtlas { get; } = new();
+
+	/// <summary>An entry was refused for want of room with every page open; the next frame evicts idle holders.</summary>
+	internal bool AtlasStarved;
+
+	/// <summary>Evictions run so far, so an entry built while starved can tell whether room has been made since.</summary>
+	internal long AtlasEvictions;
 
 	/// <summary>Opens another atlas page. Pages are added when the existing ones are exhausted.</summary>
 	public void AddPathAtlasPage()

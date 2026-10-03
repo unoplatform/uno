@@ -65,13 +65,14 @@ struct PassU { basis: vec4<f32> };
 // space rather than folded into each op: that is what lets a move rewrite this one block instead of every op's.
 // xoff.zw = the pass basis: those clips are ABSOLUTE device pixels, while the fragment position they are tested at
 // is relative to the target - a layer sheet slot does not share the window's origin (ClipU folds the same shift
-// into finv).
+// into finv). rect.y = device pixels per target pixel, above 1 for a shadow layer rendered smaller than it covers
+// (0 reads as 1).
 struct SiteU { xform: vec4<f32>, xoff: vec4<f32>, ctrl: vec4<f32>, rect: vec4<f32>, inner: vec4<f32>, entries: array<ClipEntry, 4> };
 @group(3) @binding(0) var<uniform> site: SiteU;
 // The site's clips at fp, the fragment's position in the target, lifted to the device space they were recorded in.
 fn siteCov(fp: vec2<f32>) -> f32 {
   if (site.ctrl.x < 0.5 && site.ctrl.y < 0.5) { return 1.0; }
-  let dp = fp + site.xoff.zw;
+  let dp = fp * max(site.rect.y, 1.0) + site.xoff.zw;
   if (all(dp >= site.inner.xy) && all(dp <= site.inner.zw)) { return 1.0; }
   var cov = 1.0;
   if (site.ctrl.y > 0.5) {

@@ -137,6 +137,7 @@ internal sealed unsafe partial class WebGpuFrame
 	internal void Begin()
 	{
 		SweepEntryPool();
+		EvictAtlasHolders();
 		Encoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
 	}
 
@@ -147,16 +148,15 @@ internal sealed unsafe partial class WebGpuFrame
 		_d.SiteSlab.Flush();
 		_d.FlushFrameSlabs();
 		var cb = wgpuCommandEncoderFinish(Encoder, null);
-		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+		var submission = wgpuQueueSubmitForIndex(_d.Q, 1, (IntPtr)(&cb));
 		// wgpu holds its own reference until the submission completes, so both handles are dropped here -
 		// otherwise every frame leaks an encoder and a command buffer into the handle table.
 		wgpuCommandBufferRelease(cb);
 		wgpuCommandEncoderRelease(Encoder);
 		Encoder = IntPtr.Zero;
-		// Pump the device non-blocking so the CPU overlaps the next frame with the GPU: pooled-buffer reuse is
-		// queue-ordered and transient textures are refcount-released, and the swapchain's frames-in-flight cap
-		// provides the backpressure.
-		_ = wgpuDevicePoll(_d.Dev, 0u, null);
+		// The CPU runs ahead of the GPU by a few frames, no more: pooled-buffer reuse is queue-ordered and transient
+		// textures are refcount-released, so a frame's resources live until the GPU has finished it.
+		_d.ThrottleSubmission(submission);
 		foreach (var ls in LayerSurfaces) { _d.Pool.Return(ls.View); }
 		LayerSurfaces.Clear();
 		Effects.SweepShapeShadows();
@@ -814,8 +814,9 @@ internal sealed unsafe partial class WebGpuFrame
 		bool rect = ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f;
 		u[9] = rect ? 1f : 0f;
 		u[10] = ab.X; u[11] = ab.Y;
-		// rect.x is the site's draw-order depth (see project); rect.y stays spare.
-		u[12] = depth; u[13] = 0f; u[14] = ab.Z; u[15] = ab.W;
+		// rect.x is the site's draw-order depth (see project); rect.y the pass's device pixels per target pixel, which
+		// a shadow layer rendered below its covered size needs to lift a fragment back to the device space.
+		u[12] = depth; u[13] = _basisScale; u[14] = ab.Z; u[15] = ab.W;
 
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
 		if (rect) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
@@ -1134,7 +1135,38 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	// Owned variant exposing the ClipU slab slot so a later restamp can RewriteClipU it in place.
-	private IntPtr MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
+	private IntPtr MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU, bool share = true)
+	{
+		if (!share) { return MakeClipBgOwnedCore(cd, owned, xform, finv, out buf, out aabbInClipU); }
+
+		// Ops of one bag that share a clip share its slot and bind group: the ClipU is a function of the clip and
+		// transform alone, so a later in-place patch writes the same values for each of them. Without this a text
+		// run pays a slab slot and a bind group per glyph op.
+		var memo = owned.ClipMemo ??= new();
+		var key = ClipMemoKey(cd, xform);
+		if (memo.TryGetValue(key, out var bucket))
+		{
+			foreach (var m in bucket)
+			{
+				if (m.Xform == xform && m.Finv == finv && m.Clip.Aabb == cd.Aabb && ClipDataEquals(m.Clip, cd))
+				{
+					buf = m.Slot;
+					aabbInClipU = m.AabbInClipU;
+					return m.Bg;
+				}
+			}
+		}
+
+		var bg = MakeClipBgOwnedCore(cd, owned, xform, finv, out buf, out aabbInClipU);
+		if (bucket is null) { memo[key] = bucket = new(1); }
+		bucket.Add(new OwnedResources.ClipMemoEntry(cd, xform, finv, bg, buf, aabbInClipU));
+		return bg;
+	}
+
+	private static int ClipMemoKey(in ClipData cd, in Matrix3x2 xform)
+		=> HashCode.Combine(cd.Aabb, cd.Coverage, cd.Entries?.Length ?? 0, cd.Paths?.Length ?? 0, xform.M31, xform.M32);
+
+	private IntPtr MakeClipBgOwnedCore(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
 	{
 		var masks = Coverage.ResolveClipMasks(cd, owned);
 		var more = FillClipU(cd, xform, finv, masks.Entries, out aabbInClipU);

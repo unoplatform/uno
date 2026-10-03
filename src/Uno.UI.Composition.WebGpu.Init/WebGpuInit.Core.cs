@@ -131,6 +131,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	public WebGpuInitDevice(WGPUTextureFormat colorFormat)
 	{
 		ColorFormat = colorFormat;
+		EnableNativeLog();
 		Inst = CreateInstance();
 
 		var abox = new IntPtr[1];
@@ -155,6 +156,12 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		{
 			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<IntPtr, WGPUErrorType, WGPUStringView, IntPtr, IntPtr, void>)&OnUncapturedError,
 		};
+		// A lost device otherwise surfaces only as the next call's panic, with no word on why it was lost.
+		ddesc.DeviceLostCallbackInfo = new WGPUDeviceLostCallbackInfo
+		{
+			Mode = WGPUCallbackMode.AllowSpontaneous,
+			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<IntPtr, WGPUDeviceLostReason, WGPUStringView, IntPtr, IntPtr, void>)&OnDeviceLost,
+		};
 		wgpuAdapterRequestDevice(Adapter, &ddesc, new WGPURequestDeviceCallbackInfo
 		{
 			Mode = WGPUCallbackMode.AllowProcessEvents,
@@ -168,7 +175,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 
 		Q = wgpuDeviceGetQueue(Dev);
 		CreatePresentSampler();
-		System.Console.WriteLine($"[webgpu] init device — colorFormat={ColorFormat}");
+		System.Console.WriteLine($"[webgpu] init device — {DescribeAdapter(Adapter)} colorFormat={ColorFormat}");
 	}
 
 	private WebGpuInitDevice(WGPUTextureFormat colorFormat, IntPtr inst, IntPtr dev)
@@ -216,6 +223,64 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnDevice(WGPURequestDeviceStatus status, IntPtr device, WGPUStringView message, IntPtr u1, IntPtr u2)
 		=> ((IntPtr[])GCHandle.FromIntPtr(u1).Target!)[0] = device;
+
+	/// <summary>
+	/// <c>UNO_WEBGPU_LOG</c> (error, warn, info, debug, trace) routes wgpu's own log to stderr: the only account of
+	/// what a driver or the validation layer did before a failure that surfaces later, such as a lost device.
+	/// </summary>
+	private static void EnableNativeLog()
+	{
+		var level = Environment.GetEnvironmentVariable("UNO_WEBGPU_LOG")?.ToLowerInvariant() switch
+		{
+			"error" => WGPULogLevel.Error,
+			"warn" => WGPULogLevel.Warn,
+			"info" => WGPULogLevel.Info,
+			"debug" => WGPULogLevel.Debug,
+			"trace" => WGPULogLevel.Trace,
+			_ => WGPULogLevel.Off,
+		};
+		if (level == WGPULogLevel.Off)
+		{
+			return;
+		}
+
+		wgpuSetLogCallback((IntPtr)(delegate* unmanaged[Cdecl]<WGPULogLevel, WGPUStringView, IntPtr, void>)&OnNativeLog, IntPtr.Zero);
+		wgpuSetLogLevel(level);
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnNativeLog(WGPULogLevel level, WGPUStringView message, IntPtr userdata)
+		=> System.Console.Error.WriteLine($"[wgpu {level}] {Text(message)}");
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnDeviceLost(IntPtr device, WGPUDeviceLostReason reason, WGPUStringView message, IntPtr u1, IntPtr u2)
+		=> System.Console.Error.WriteLine($"[webgpu] device lost ({reason}): {Text(message)}");
+
+	private static string DescribeAdapter(IntPtr adapter)
+	{
+		WGPUAdapterInfo info = default;
+		if (wgpuAdapterGetInfo(adapter, &info) != WGPUStatus.Success)
+		{
+			return "adapter=?";
+		}
+
+		var description = $"adapter='{Text(info.Device)}' backend={info.BackendType} type={info.AdapterType}";
+		wgpuAdapterInfoFreeMembers(info);
+		return description;
+	}
+
+	// A length of SIZE_MAX means null-terminated.
+	private static string Text(WGPUStringView view)
+	{
+		if (view.Data == IntPtr.Zero)
+		{
+			return "";
+		}
+
+		return view.Length == nuint.MaxValue
+			? System.Runtime.InteropServices.Marshal.PtrToStringUTF8(view.Data) ?? ""
+			: System.Runtime.InteropServices.Marshal.PtrToStringUTF8(view.Data, (int)view.Length);
+	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnUncapturedError(IntPtr device, WGPUErrorType type, WGPUStringView message, IntPtr u1, IntPtr u2)

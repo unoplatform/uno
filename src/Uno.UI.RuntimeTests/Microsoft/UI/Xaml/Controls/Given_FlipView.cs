@@ -683,6 +683,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// The same velocity-based snap is flaky on Skia macOS in CI, so it is excluded there too.
 		// See https://github.com/unoplatform/uno/issues/9080.
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaMacOS)]
+		// The same flakiness shows on the GPU-less WebGPU CI agents.
+		[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)]
 		public async Task When_TouchFlick_Then_FlipOneItem()
 		{
 			var flipView = new FlipView()
@@ -727,9 +729,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.WaitForIdle();
 
-			await Task.Delay(2000); //waiting the drag animation to complete
-
-			Assert.AreEqual(1, flipView.SelectedIndex);
+			// Wait for the snap animation rather than a fixed time: it runs on the UI thread, which is slow on a GPU-less agent.
+			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 1, timeoutMS: 10000);
 		}
 #endif
 	}

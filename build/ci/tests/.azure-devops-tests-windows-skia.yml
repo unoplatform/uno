@@ -119,3 +119,87 @@ jobs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: runtime-tests-desktop-skia-windows-failures
       ArtifactType: Container
+
+# The same artifact and script as the Skia lane, rendering through the WebGPU backend. Hosted agents have no GPU,
+# so wgpu runs on D3D12 WARP. Split into groups so a retry reruns a quarter of the suite, not all of it.
+- job: Skia_Windows_WebGpu_Runtime_Tests
+  displayName: 'Runtime Tests (WebGPU)'
+  timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 0
+
+  strategy:
+    matrix:
+      'Group 0':
+        UITEST_RUNTIME_TEST_GROUP: 0
+      'Group 1':
+        UITEST_RUNTIME_TEST_GROUP: 1
+      'Group 2':
+        UITEST_RUNTIME_TEST_GROUP: 2
+      'Group 3':
+        UITEST_RUNTIME_TEST_GROUP: 3
+
+  pool:
+    # The D3D12 WARP that ships with Server 2022 removes the device on wgpu's first present; 2025's does not.
+    vmImage: 'windows-2025'
+
+  variables:
+    SamplesAppArtifactName: samplesapp-desktop-skia
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    UnoEnableHRuntimeTests: true
+    UNO_WEBGPU: 1
+    # wgpu's own warnings and errors: the only account of why a device was lost.
+    UNO_WEBGPU_LOG: warn
+    UNO_TEST_RESULT_LABEL: -webgpu
+    UITEST_RUNTIME_TEST_GROUP_COUNT: 4
+
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
+    inputs:
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+  - task: DownloadPipelineArtifact@2
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+      artifact: runtime-tests-desktop-webgpu-windows-failures-$(UITEST_RUNTIME_TEST_GROUP)
+      path: '$(build.sourcesdirectory)/build/uitests-failure-results'
+
+  - template: ../templates/dotnet-install.yml
+
+  - script: |
+      # Build source generators for hot reload runtime tests
+      # Used to build the hot reload and ALC test secondary app during runtime tests
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.Tasks
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
+      dotnet build -c Debug
+    displayName: Build HR dependencies
+
+  - pwsh: build/test-scripts/run-windows-skia-runtime-tests.ps1
+    displayName: Run Runtime Tests
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Windows WebGPU Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-windows-webgpu-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    displayName: Publish Failed Tests Results
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: runtime-tests-desktop-webgpu-windows-failures-$(UITEST_RUNTIME_TEST_GROUP)
+      ArtifactType: Container

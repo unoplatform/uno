@@ -109,6 +109,12 @@ internal sealed class OwnedResources
 	// Dispose in that window re-defers the old bag. Double-releasing recycles wgpu ids under in-flight uses
 	// ("BindGroup[Id] does not exist" panic); the claim makes the second hand-off a no-op.
 	public int Released;
+
+	internal readonly record struct ClipMemoEntry(ClipData Clip, System.Numerics.Matrix3x2 Xform, System.Numerics.Matrix3x2 Finv, nint Bg, nint Slot, bool AabbInClipU);
+	// The clip bind groups this bag has already made, for sharing between its ops while it is being built; dropped
+	// when the build ends, since nothing adds to a finished bag.
+	internal System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<ClipMemoEntry>> ClipMemo;
+
 }
 
 
