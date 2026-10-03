@@ -58,8 +58,8 @@ variables:
   windowsScaledPool: 'Windows2025-20260406-1'
   linuxVMImage: 'ubuntu-24.04'
   linuxScaledPool: 'Ubuntu2404-20251016'
-  macOSVMImage: 'macOS-15'
-  xCodeRoot: '/Applications/Xcode_26.1.1.app'
+  macOSVMImage: 'macOS-26'
+  xCodeRoot: '/Applications/Xcode_26.6.app'
 
   # Offline validation to improve build performance
   NUGET_CERT_REVOCATION_MODE: offline
