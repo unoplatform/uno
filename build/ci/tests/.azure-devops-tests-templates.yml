@@ -94,7 +94,7 @@ jobs:
     inputs:
       artifactName: 'nuget-packages'
 
-  # Install android 35 as we're running on macos-15
+  # Install android 35, which the image does not preinstall
   - bash: |
       echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install 'platforms;android-35' | tr '\r' '\n' | uniq
     displayName: Install Android 35
@@ -104,6 +104,7 @@ jobs:
   - template: ../templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
+      requireSimulatorRuntime: false
 
   - template: ../templates/dotnet-mobile-install-mac.yml
   - template: ../templates/dotnet-install-previous-wasmtools.yml
@@ -220,7 +221,7 @@ jobs:
       sudo apt install ninja-build
     displayName: Setup Ninja
 
-  # Install android 35 as we're running on macos-15
+  # Install android 35, which the image does not preinstall
   - bash: |
       echo "y" | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "--sdk_root=$ANDROID_HOME" --install 'platforms;android-35' | tr '\r' '\n' | uniq
     displayName: Install Android 35
@@ -259,7 +260,7 @@ jobs:
         poolName: '${{ parameters.poolName }}'
         vmImage:
       macOS:
-        vmImage: 'macOS-15' # explicit because of parsing issues with matrix and parameters
+        vmImage: 'macOS-26' # explicit because of parsing issues with matrix and parameters
         poolName:
 
   variables:
@@ -338,7 +339,7 @@ jobs:
         poolName: '${{ parameters.poolName }}'
         vmImage:
       macOS:
-        vmImage: 'macOS-15'
+        vmImage: 'macOS-26'
         poolName:
 
   variables:
