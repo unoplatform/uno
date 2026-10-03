@@ -33,7 +33,7 @@ jobs:
       JobDisplayName: 'Runtime Tests ${{ RuntimeTestGroup.key }}'
       TestRunName: 'tvOS Skia Runtime Tests ${{ RuntimeTestGroup.key }}'
       JobTimeoutInMinutes: 90
-      vmImage: ${{ parameters.vmMacImageTest }}
+      vmImage: ${{ parameters.vmMacImage }}
       UITEST_TEST_TIMEOUT: '90m'
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.TVOS_RUNTIME_TEST_GROUP_COUNT }}
@@ -41,7 +41,7 @@ jobs:
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesapp.skia'
       UITEST_VARIANT: 'skia'
       TEST_KIND: runtime
-      xCodeRoot: ${{ parameters.xCodeRootTest }}
+      xCodeRoot: ${{ parameters.xCodeRootBuild }}
       dependsOn:
         - Skia_Tests_Build_tvOS
       BuildJobName: 'Skia_Tests_Build_tvOS'
