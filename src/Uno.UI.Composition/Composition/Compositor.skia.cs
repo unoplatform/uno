@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
 using Uno.UI.Dispatching;
@@ -33,7 +34,25 @@ public partial class Compositor
 
 	internal static bool SkipVisualTreePainting { get; set; }
 
-	internal bool IsAnimating => _runningAnimations.Count > 0;
+	// Frame drivers are motion too, so "wait until animations settle" must cover them. They live on the
+	// CompositionTarget, which this assembly cannot name, so they are counted.
+	private int _frameDriverCount;
+
+	internal void AddFrameDriver() => Interlocked.Increment(ref _frameDriverCount);
+
+	internal void RemoveFrameDriver()
+	{
+		var count = Interlocked.Decrement(ref _frameDriverCount);
+		Debug.Assert(count >= 0, "A frame driver was removed more times than it was added.");
+	}
+
+	internal bool IsAnimating => _runningAnimations.Count > 0 || Volatile.Read(ref _frameDriverCount) > 0;
+
+	/// <summary>The timestamp of the frame being recorded, or null outside of a record.</summary>
+	internal long? FrameTimestampInTicks { get; set; }
+
+	/// <summary>The time animations evaluate against: the frame's while recording, the real clock otherwise.</summary>
+	internal long AnimationTimestampInTicks => FrameTimestampInTicks ?? TimestampInTicks;
 
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
 	{
@@ -121,6 +140,26 @@ public partial class Compositor
 		}
 	}
 
+	/// <summary>
+	/// Stops the animations of a target whose host is gone. They only evaluate on that target's record, which
+	/// never comes again, so they would never complete and <see cref="IsAnimating"/> would report them forever.
+	/// </summary>
+	internal void StopAnimations(ICompositionTarget target)
+	{
+		if (!_runningTargets.ContainsKey(target))
+		{
+			return;
+		}
+
+		foreach (var (animation, animationTarget) in _runningAnimations.ToArray())
+		{
+			if (animationTarget == target)
+			{
+				animation.Stop();
+			}
+		}
+	}
+
 	internal void DeactivateBackgroundTransition(BorderVisual visual)
 	{
 		for (var current = _backgroundTransitions.First; current != null; current = current.Next)
@@ -204,9 +243,16 @@ public partial class Compositor
 			throw new ArgumentNullException(nameof(rootVisual));
 		}
 
+		var target = rootVisual.CompositionTarget;
 		var recPhaseT0 = _logRecordPhases ? Stopwatch.GetTimestamp() : 0;
-		foreach (var animation in _runningAnimations.Keys.ToArray())
+		foreach (var (animation, animationTarget) in _runningAnimations.ToArray())
 		{
+			// The frame timestamp is this target's: another window's animations evaluate on their own record.
+			if (animationTarget != target)
+			{
+				continue;
+			}
+
 			try
 			{
 				animation.RaiseAnimationFrame();
@@ -264,9 +310,9 @@ public partial class Compositor
 			}
 		}
 
-		if (_runningAnimations.Count > 0 || transitionsCount > 0)
+		if ((target is not null && _runningTargets.ContainsKey(target)) || transitionsCount > 0)
 		{
-			rootVisual.CompositionTarget?.RequestNewFrame();
+			target?.RequestNewFrame();
 		}
 	}
 
