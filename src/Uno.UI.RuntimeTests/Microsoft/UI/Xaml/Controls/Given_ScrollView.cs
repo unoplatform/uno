@@ -144,6 +144,47 @@ public class Given_ScrollView
 		Assert.IsTrue(samples[start + 1].Position < 4, $"the first frame jumped {samples[start + 1].Position:F1} DIP");
 	}
 
+	/// <summary>A notch arriving mid-motion restarts the curve over what is left plus the notch, so a spin only speeds up.</summary>
+	[TestMethod]
+	public async Task When_Wheel_Spins_Then_Velocity_Never_Drops_At_A_Notch()
+	{
+		var (sut, bounds) = await LoadTallScrollView();
+		var tracker = GetTracker(sut.ScrollPresenter!);
+
+		var positions = new List<float>();
+		EventHandler<object> onRendering = (_, _) => positions.Add(tracker.Position.Y);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+		mouse.MoveTo(Center(bounds));
+
+		CompositionTarget.Rendering += onRendering;
+		int spinEnd;
+		try
+		{
+			for (var i = 0; i < 5; i++)
+			{
+				mouse.WheelDown();
+				await Task.Delay(40);
+			}
+
+			spinEnd = positions.Count;
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+		}
+		finally
+		{
+			CompositionTarget.Rendering -= onRendering;
+		}
+
+		Assert.AreEqual(5 * 32, sut.VerticalOffset, 0.01);
+
+		var steps = positions.Zip(positions.Skip(1), (a, b) => b - a).Take(spinEnd - 1).SkipWhile(step => step == 0).ToArray();
+		for (var i = 1; i < steps.Length; i++)
+		{
+			Assert.IsTrue(steps[i] >= steps[i - 1] * 0.9f, $"the spin slowed from {steps[i - 1]:F2} to {steps[i]:F2} DIP/frame at frame {i}");
+		}
+	}
+
 	/// <summary>A finger pressed and held on coasting content stops it, without having to move first.</summary>
 	[TestMethod]
 	public async Task When_Finger_Held_On_Coasting_Content_Then_Stops()
