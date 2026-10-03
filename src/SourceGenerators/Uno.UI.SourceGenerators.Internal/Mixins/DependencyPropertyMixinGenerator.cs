@@ -216,7 +216,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;";
 		{
 			new ClassDefinition("Control", "true", "public", new[]
 			{
-				new PropertyDefinition("BackgroundSizing", "BackgroundSizing", "default"),
 				new PropertyDefinition("HorizontalContentAlignment", "HorizontalAlignment",
 					"HorizontalAlignment.Center",
 					frameworkPropertyOption: "AffectsArrange"),
