@@ -127,6 +127,24 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Secondary_Window_Closed_Before_Shown_Then_Initial_Window_Visible()
+	{
+		AssertSupportsMultipleWindows();
+
+		var initialWindow = TestServices.WindowHelper.CurrentTestWindow;
+		var sut = new Window();
+
+		sut.Activate();
+		sut.Close();
+
+		// On iOS the scene requested by Activate still connects after the close and gets discarded,
+		// which must not take the app's foreground scene with it.
+		await Task.Delay(TimeSpan.FromSeconds(2));
+		await TestServices.WindowHelper.WaitFor(() => initialWindow.Visible);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	[RequiresFullWindow]
 	public async Task When_Secondary_Window_No_Background_Light_Dark()
 	{
