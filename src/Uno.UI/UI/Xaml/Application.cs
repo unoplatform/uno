@@ -781,7 +781,7 @@ namespace Microsoft.UI.Xaml
 			_dispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;
 		}
 
-		internal ISkiaApplicationHost? Host { get; set; }
+		internal IApplicationHost? Host { get; set; }
 
 		private void SetCurrentLanguage()
 		{

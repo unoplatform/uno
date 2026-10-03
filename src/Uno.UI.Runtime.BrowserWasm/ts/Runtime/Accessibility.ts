@@ -1,0 +1,1023 @@
+namespace Uno.UI.Runtime {
+
+	export class Accessibility {
+		private static politeElement: HTMLDivElement;
+		private static assertiveElement: HTMLDivElement;
+		private static enableAccessibilityButton: HTMLDivElement;
+		private static semanticsRoot: HTMLDivElement;
+		private static containerElement: HTMLElement;
+		private static debugModeEnabled: boolean = false;
+
+		private static focusSentinelStart: HTMLDivElement | null = null;
+		private static focusSentinelEnd: HTMLDivElement | null = null;
+		private static isDepartingFocus: boolean = false;
+
+		// Managed callbacks from C#
+		private static managedEnableAccessibility: any;
+		private static managedDisableAccessibility: any;
+		private static managedOnScroll: any;
+		private static managedOnInvoke: any;
+		private static managedOnToggle: any;
+		private static managedOnRangeValueChange: any;
+		private static managedOnTextInput: any;
+		private static managedOnExpandCollapse: any;
+		private static managedOnSelection: any;
+		private static managedOnFocus: any;
+		private static managedOnBlur: any;
+		private static managedOnSentinelFocus: any;
+
+		private static managedIsAutoEnableAccessibility: () => boolean;
+
+		private static createLiveElement(kind: string) {
+			const element = document.createElement("div");
+			element.classList.add("uno-aria-live");
+			element.setAttribute("aria-live", kind);
+			return element;
+		}
+
+		/**
+		 * Emits a diagnostic message to the console, but only when accessibility
+		 * debug mode is enabled (see AccessibilityDebugger / enableDebugMode).
+		 * Normal runs keep the browser console clean — these traces are only
+		 * useful while developing the a11y layer and would otherwise be emitted
+		 * on every focus change / DOM mutation, even when accessibility is off.
+		 */
+		public static debugLog(message: string) {
+			if (Accessibility.debugModeEnabled) {
+				console.debug(message);
+			}
+		}
+
+		/**
+		 * Same as debugLog, but uses console.warn for fallback/recovery paths
+		 * (e.g. an element not yet flushed to the DOM). Gated behind debug mode
+		 * so it does not spam the console during normal operation.
+		 */
+		public static debugWarn(message: string) {
+			if (Accessibility.debugModeEnabled) {
+				console.warn(message);
+			}
+		}
+
+		public static setup() {
+			Accessibility.debugLog('[A11y] Accessibility.setup() — initializing accessibility subsystem');
+			const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
+
+			// Wire up managed callbacks from WebAssemblyAccessibility.cs
+			const accessibilityExports = browserExports.Uno.UI.Runtime.WebAssemblyAccessibility;
+			this.managedEnableAccessibility = accessibilityExports.EnableAccessibility;
+			this.managedDisableAccessibility = accessibilityExports.DisableAccessibility;
+			this.managedIsAutoEnableAccessibility = accessibilityExports.IsAutoEnableAccessibility;
+			this.managedOnScroll = accessibilityExports.OnScroll;
+			this.managedOnInvoke = accessibilityExports.OnInvoke;
+			this.managedOnToggle = accessibilityExports.OnToggle;
+			this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChange;
+			this.managedOnTextInput = accessibilityExports.OnTextInput;
+			this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapse;
+			this.managedOnSelection = accessibilityExports.OnSelection;
+			this.managedOnFocus = accessibilityExports.OnFocus;
+			this.managedOnBlur = accessibilityExports.OnBlur;
+			this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinel;
+
+			this.containerElement = document.getElementById("uno-body");
+
+			// Create live regions for screen reader announcements
+			this.politeElement = Accessibility.createLiveElement("polite");
+			this.assertiveElement = Accessibility.createLiveElement("assertive");
+			this.containerElement.appendChild(this.politeElement);
+			this.containerElement.appendChild(this.assertiveElement);
+
+			const autoEnable = this.managedIsAutoEnableAccessibility();
+
+			if (!autoEnable) {
+				Accessibility.addEnableAccessibilityButton();
+			}
+
+			// Create semantic DOM root container (hidden but accessible).
+			// Uses position:fixed to match the canvas coordinate system (which is also
+			// position:fixed). Width/height:100% ensures the container covers the full
+			// viewport so overflow:hidden doesn't clip semantic elements at 0×0.
+			this.semanticsRoot = document.createElement("div");
+			this.semanticsRoot.id = "uno-semantics-root";
+			this.semanticsRoot.style.position = "fixed";
+			this.semanticsRoot.style.top = "0";
+			this.semanticsRoot.style.left = "0";
+			this.semanticsRoot.style.width = "100%";
+			this.semanticsRoot.style.height = "100%";
+			this.semanticsRoot.style.overflow = "hidden";
+			this.semanticsRoot.style.opacity = "0";
+			this.semanticsRoot.style.pointerEvents = "none";
+			this.semanticsRoot.setAttribute("aria-label", "Application content");
+			this.containerElement.appendChild(this.semanticsRoot);
+
+			if (autoEnable) {
+				// Auto-enable accessibility without requiring user interaction.
+				// The C# EnableAccessibility() has retry logic for when
+				// Window/RootElement aren't ready yet.
+				Accessibility.debugLog('[A11y] Auto-enabling accessibility (FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true)');
+				this.managedEnableAccessibility();
+				LiveRegion.initialize();
+			}
+		}
+
+		/// <summary>
+		/// Enables or disables debug mode for the accessibility layer.
+		/// When enabled, semantic elements are visible with outlines.
+		/// </summary>
+		public static enableDebugMode(enabled: boolean) {
+			this.debugModeEnabled = enabled;
+
+			if (this.semanticsRoot) {
+				if (enabled) {
+					// Make semantic elements visible for debugging
+					this.semanticsRoot.style.opacity = "1";
+					this.semanticsRoot.style.pointerEvents = "none"; // Don't interfere with canvas clicks
+					this.semanticsRoot.classList.add("uno-a11y-debug");
+
+					// Apply debug styles to all semantic elements
+					const elements = this.semanticsRoot.querySelectorAll("[id^='uno-semantics-']");
+					elements.forEach((el: HTMLElement) => {
+						el.style.outline = "2px solid rgba(0, 255, 0, 0.7)";
+						el.style.backgroundColor = "rgba(0, 255, 0, 0.1)";
+					});
+				} else {
+					// Hide semantic elements again
+					this.semanticsRoot.style.opacity = "0";
+					this.semanticsRoot.style.pointerEvents = "";
+					this.semanticsRoot.classList.remove("uno-a11y-debug");
+
+					// Remove debug styles
+					const elements = this.semanticsRoot.querySelectorAll("[id^='uno-semantics-']");
+					elements.forEach((el: HTMLElement) => {
+						el.style.outline = "";
+						el.style.backgroundColor = "";
+					});
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets whether debug mode is currently enabled.
+		/// </summary>
+		public static isDebugModeEnabled(): boolean {
+			return this.debugModeEnabled;
+		}
+
+		// Callback accessors for SemanticElements.ts
+		public static getCallbacks() {
+			return {
+				onInvoke: this.managedOnInvoke,
+				onToggle: this.managedOnToggle,
+				onRangeValueChange: this.managedOnRangeValueChange,
+				onTextInput: this.managedOnTextInput,
+				onExpandCollapse: this.managedOnExpandCollapse,
+				onSelection: this.managedOnSelection,
+				onFocus: this.managedOnFocus,
+				onBlur: this.managedOnBlur
+			};
+		}
+
+		private static createSemanticElement(x: number, y: number, width: number, height: number, handle: number, isFocusable: boolean) {
+			let element = document.createElement("div");
+			element.style.position = "absolute";
+
+			element.addEventListener('wheel', (e) => {
+				// When scrolling with wheel, we want to prevent scroll events.
+				e.preventDefault();
+			}, {passive:false});
+
+			element.addEventListener('scroll', (e) => {
+				let element = e.target as HTMLElement;
+				this.managedOnScroll(handle, element.scrollLeft, element.scrollTop);
+			});
+
+			Accessibility.updateElementFocusability(element, isFocusable);
+
+			element.style.left = `${x}px`;
+			element.style.top = `${y}px`;
+			element.style.width = `${width}px`;
+			element.style.height = `${height}px`;
+			//element.style.boxShadow = "inset 0px 0px 5px 0px red"; // FOR DEBUGGING ONLY.
+			element.id = `uno-semantics-${handle}`;
+			return element;
+		}
+
+		public static updateElementFocusability(element: HTMLElement, isFocusable: boolean) {
+			// Focusable controls participate in the natural tab order (tabindex="0").
+			// Non-focusable controls must NOT participate, but they may still need to be
+			// programmatically focusable (for screen-reader navigation / focus recovery),
+			// so they get tabindex="-1" rather than having the attribute removed —
+			// native <button>/<input>/<a> default to tabbable when no tabindex is set.
+			if (isFocusable) {
+				element.tabIndex = 0;
+			} else {
+				element.tabIndex = -1;
+			}
+			// Semantic elements must NEVER have pointer-events: all.
+			// Mouse events must pass through to the canvas below.
+			// Keyboard focus (Tab) and screen reader navigation work
+			// independently of pointer-events.
+			element.style.pointerEvents = "none";
+			element.style.touchAction = "none";
+		}
+
+		public static getSemanticElementByHandle(handle: number): HTMLElement {
+			return document.getElementById(`uno-semantics-${handle}`)
+		}
+
+		public static announcePolite(text: string) {
+			Accessibility.announce(Accessibility.politeElement, text);
+		}
+
+		public static announceAssertive(text: string) {
+			Accessibility.announce(Accessibility.assertiveElement, text);
+		}
+
+		private static announce(ariaLiveElement: HTMLDivElement, text: string) {
+			let child = document.createElement("div");
+			child.innerText = text;
+			ariaLiveElement.appendChild(child);
+			setTimeout(() => {
+				if (child.parentNode === ariaLiveElement) {
+					ariaLiveElement.removeChild(child);
+				}
+			}, 300);
+		}
+
+		private static addEnableAccessibilityButton() {
+			// Create enable accessibility button (for screen reader activation)
+			this.enableAccessibilityButton = document.createElement("div");
+			this.enableAccessibilityButton.id = "uno-enable-accessibility";
+			this.enableAccessibilityButton.setAttribute("aria-live", "polite");
+			this.enableAccessibilityButton.setAttribute("role", "button");
+			this.enableAccessibilityButton.setAttribute("tabindex", "0");
+			this.enableAccessibilityButton.setAttribute("aria-label", "Enable accessibility");
+			this.enableAccessibilityButton.addEventListener("click", this.onEnableAccessibilityButtonClicked.bind(this));
+
+			// Also add a keydown listener so keyboard users can activate it via Enter/Space
+			this.enableAccessibilityButton.addEventListener("keydown", (e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					e.preventDefault();
+					this.onEnableAccessibilityButtonClicked(e as any);
+				}
+			});
+
+			// Prepend so the button is the first focusable element in the DOM,
+			// reachable by the very first Tab press (inspired by Flutter's
+			// DesktopSemanticsEnabler which prepends its placeholder to <body>).
+			this.containerElement.prepend(this.enableAccessibilityButton);
+		}
+
+		/**
+		 * Tears the semantic DOM down again (see WebAssemblyAccessibility.DisableAccessibility).
+		 * Used by runtime tests so accessibility does not stay on for every test that follows.
+		 */
+		public static disableAccessibility() {
+			this.managedDisableAccessibility();
+		}
+
+		/**
+		 * Called by the managed side once it has unhooked itself: removes every semantic element,
+		 * the focus sentinels and the live regions, and brings the enable button back.
+		 */
+		public static resetSemanticsRoot() {
+			SemanticElements.resetVirtualizedMutations();
+			while (this.semanticsRoot?.firstChild) {
+				this.semanticsRoot.removeChild(this.semanticsRoot.firstChild);
+			}
+			this.focusSentinelStart?.remove();
+			this.focusSentinelEnd?.remove();
+			this.focusSentinelStart = null;
+			this.focusSentinelEnd = null;
+			this.isDepartingFocus = false;
+			LiveRegion.teardown();
+
+			if (!this.managedIsAutoEnableAccessibility() && !Accessibility.isEnableAccessibilityButtonActive()) {
+				Accessibility.addEnableAccessibilityButton();
+			}
+		}
+
+		/**
+		 * Returns true if the "Enable Accessibility" button is still in the DOM
+		 * (i.e. accessibility has not yet been activated by the user).
+		 */
+		public static isEnableAccessibilityButtonActive(): boolean {
+			return document.getElementById("uno-enable-accessibility") !== null;
+		}
+
+		private static onEnableAccessibilityButtonClicked(evt: MouseEvent) {
+			this.containerElement.removeChild(this.enableAccessibilityButton);
+			this.managedEnableAccessibility();
+
+			// Initialize subsystem TypeScript modules
+			LiveRegion.initialize();
+
+			this.announceAssertive("Accessibility enabled successfully.");
+		}
+
+		/**
+		 * Focuses a semantic element by handle.
+		 * If the element isn't in the DOM yet (timing issue from batched mutations),
+		 * retries once after a requestAnimationFrame. This handles the case where
+		 * C# fires focus synchronously but the JS DOM mutation hasn't been flushed yet.
+		 */
+		public static focusSemanticElement(handle: number) {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.focus();
+			} else {
+				// Element might not be in DOM yet due to batched/deferred mutations.
+				// Retry once after the next animation frame.
+				requestAnimationFrame(() => {
+					const retryElement = Accessibility.getSemanticElementByHandle(handle);
+					if (retryElement) {
+						retryElement.focus();
+					} else {
+						Accessibility.debugWarn(`[A11y] TS focusSemanticElement: element NOT FOUND handle=${handle} (after retry)`);
+					}
+				});
+			}
+		}
+
+		/**
+		 * Blurs a semantic element.
+		 */
+		public static blurSemanticElement(handle: number) {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.blur();
+			}
+		}
+
+		public static installFocusSentinels() {
+			if (!this.focusSentinelStart) {
+				this.focusSentinelStart = Accessibility.createFocusSentinel("uno-focus-sentinel-start", true);
+			}
+			if (!this.focusSentinelEnd) {
+				this.focusSentinelEnd = Accessibility.createFocusSentinel("uno-focus-sentinel-end", false);
+			}
+
+			document.body.insertBefore(this.focusSentinelStart, document.body.firstChild);
+			document.body.appendChild(this.focusSentinelEnd);
+		}
+
+		private static createFocusSentinel(id: string, isStart: boolean): HTMLDivElement {
+			const sentinel = document.createElement("div");
+			sentinel.id = id;
+			sentinel.tabIndex = 0;
+			sentinel.setAttribute("aria-hidden", "true");
+			sentinel.style.position = "fixed";
+			sentinel.style.width = "1px";
+			sentinel.style.height = "1px";
+			sentinel.style.padding = "0";
+			sentinel.style.margin = "-1px";
+			sentinel.style.overflow = "hidden";
+			sentinel.style.opacity = "0";
+			sentinel.style.pointerEvents = "none";
+			sentinel.style.top = "0";
+			sentinel.style.left = "0";
+
+			sentinel.addEventListener("focus", () => {
+				if (this.isDepartingFocus) {
+					return;
+				}
+				// Defer: browsers revert focus changes made synchronously inside a focus handler.
+				setTimeout(() => {
+					if (this.managedOnSentinelFocus) {
+						this.managedOnSentinelFocus(isStart);
+					}
+				}, 0);
+			});
+
+			return sentinel;
+		}
+
+		public static focusDepartureSentinel(isForward: boolean) {
+			const sentinel = isForward ? this.focusSentinelEnd : this.focusSentinelStart;
+			if (!sentinel) {
+				return;
+			}
+
+			this.isDepartingFocus = true;
+			sentinel.focus();
+			setTimeout(() => { this.isDepartingFocus = false; }, 0);
+		}
+
+		public static removeFocusSentinels() {
+			this.focusSentinelStart?.remove();
+			this.focusSentinelEnd?.remove();
+			this.focusSentinelStart = null;
+			this.focusSentinelEnd = null;
+		}
+
+		/**
+		 * Updates roving tabindex within an ARIA widget group.
+		 * Sets tabindex="0" on the active element and tabindex="-1" on
+		 * other members of the same group. Only affects elements that
+		 * belong to the same ARIA group (e.g., radio buttons sharing the
+		 * same 'name' attribute), NOT all siblings.
+		 *
+		 * If groupHandle is 0, infers the group from the active element's
+		 * 'name' attribute (radio buttons) or 'role' (tablist children).
+		 * If no group can be inferred, does nothing — general focus
+		 * management should not strip tabindex from unrelated elements.
+		 */
+		public static updateRovingTabindex(groupHandle: number, activeHandle: number) {
+			const activeElement = Accessibility.getSemanticElementByHandle(activeHandle);
+			if (!activeElement) {
+				return;
+			}
+
+			// Promote the active element to the single tab stop (tabindex="0").
+			// Sibling group members are demoted to tabindex="-1" below.
+			activeElement.tabIndex = 0;
+
+			// Determine the group scope. Only radio buttons (sharing the
+			// same 'name') and tab-role children of a tablist are grouped.
+			const parent = activeElement.parentElement;
+			if (!parent) {
+				return;
+			}
+
+			let groupSelector: string | null = null;
+
+			if (activeElement instanceof HTMLInputElement &&
+				activeElement.type === 'radio' &&
+				activeElement.name) {
+				// Radio group: only affect radios with the same name
+				groupSelector = `input[type="radio"][name="${activeElement.name}"]`;
+			} else if (activeElement.getAttribute('role') === 'tab' &&
+				parent.getAttribute('role') === 'tablist') {
+				// Tablist group: only affect tab-role children
+				groupSelector = '[role="tab"]';
+			} else if (activeElement.getAttribute('role') === 'option' &&
+				parent.getAttribute('role') === 'listbox') {
+				// Listbox group: only affect option-role children
+				groupSelector = '[role="option"]';
+			} else if (activeElement.getAttribute('role') === 'menuitem' &&
+				parent.getAttribute('role') === 'menu') {
+				// Menu group: only affect menuitem-role children
+				groupSelector = '[role="menuitem"]';
+			} else if (activeElement.getAttribute('role') === 'treeitem') {
+				// Tree group: affect treeitem-role siblings at same level
+				groupSelector = '[role="treeitem"]';
+			}
+
+			if (!groupSelector) {
+				// No recognized ARIA group — do not touch sibling tabindexes.
+				// General focus management relies on natural tab order.
+				return;
+			}
+
+			// Only modify tabindex on elements within the same group
+			const groupMembers = parent.querySelectorAll(groupSelector);
+			groupMembers.forEach((member: HTMLElement) => {
+				if (member !== activeElement && member.tabIndex === 0) {
+					member.tabIndex = -1;
+				}
+			});
+		}
+
+		public static addRootElementToSemanticsRoot(rootHandle: number, width: number, height: number, x: number, y: number, isFocusable: boolean): void {
+			Accessibility.debugLog(`[A11y] addRootElementToSemanticsRoot: handle=${rootHandle} size=${width}x${height} pos=(${x},${y}) focusable=${isFocusable}`);
+			let element = Accessibility.createSemanticElement(x, y, width, height, rootHandle, isFocusable);
+			this.semanticsRoot.appendChild(element);
+		}
+
+		public static addSemanticElement(
+			parentHandle: number,
+			handle: number,
+			index: number,
+			width: number,
+			height: number,
+			x: number,
+			y: number,
+			role: string,
+			ariaLabel: string,
+			isFocusable: boolean,
+			ariaChecked: string,
+			isVisible: boolean,
+			horizontallyScrollable: boolean,
+			verticallyScrollable: boolean,
+			temporary: string,
+			xamlAutomationId: string): boolean {
+
+			// Remove any pre-existing element with this handle to prevent duplicates
+			const existing = document.getElementById(`uno-semantics-${handle}`);
+			if (existing) {
+				existing.remove();
+			}
+
+			let parent: HTMLElement | null = Accessibility.getSemanticElementByHandle(parentHandle);
+			if (!parent) {
+				// Fall back to the semantics root instead of failing.
+				// This matches the behavior of the SemanticElements factory path
+				// and ensures elements still appear in the accessibility tree
+				// even when their semantic parent was pruned.
+				Accessibility.debugWarn(`[A11y] addSemanticElement: PARENT NOT FOUND — handle=${handle} parentHandle=${parentHandle} controlType='${temporary}' role='${role}' label='${ariaLabel}'. Falling back to semanticsRoot.`);
+				parent = this.semanticsRoot;
+				if (!parent) {
+					Accessibility.debugWarn(`[A11y] addSemanticElement: semanticsRoot also null. Element will NOT appear in semantic tree.`);
+					return false;
+				}
+			}
+
+			Accessibility.debugLog(`[A11y] addSemanticElement: handle=${handle} parentHandle=${parentHandle} controlType='${temporary}' role='${role}' label='${ariaLabel}' size=${width}x${height} pos=(${x},${y}) focusable=${isFocusable} visible=${isVisible}`);
+
+			let element = Accessibility.createSemanticElement(x, y, width, height, handle, isFocusable);
+			element.setAttribute('ElementType', temporary);
+			if (!isVisible) {
+				element.hidden = true;
+			}
+
+			if (role) {
+				element.setAttribute("role", role);
+			}
+
+			if (ariaChecked) {
+				element.setAttribute("aria-checked", ariaChecked);
+			}
+
+			// ariaLabel is the *aria-label* source (peer-resolved Name / AutomationProperties.Name)
+			// and is intentionally NOT the AutomationId — keeping the parameter named for what it
+			// becomes guards against a future regression where AutomationId leaks back into the
+			// accessible name. xamlAutomationId below is the test/dev identifier and never an AT name.
+			if (ariaLabel && ariaLabel.trim().length > 0) {
+				element.setAttribute("aria-label", ariaLabel.trim());
+			}
+
+			if (xamlAutomationId && xamlAutomationId.trim().length > 0) {
+				element.setAttribute("xamlautomationid", xamlAutomationId);
+			}
+
+			if (horizontallyScrollable) {
+				element.style.overflowX = "scroll";
+			}
+
+			if (verticallyScrollable) {
+				element.style.overflowY = "scroll";
+			}
+
+			if (index != null && index < parent.childElementCount) {
+				parent.insertBefore(element, parent.children[index]);
+			} else {
+				parent.appendChild(element);
+			}
+
+			return true;
+		}
+
+		public static removeSemanticElement(parentHandle: number, childHandle: number): void {
+			const child = Accessibility.getSemanticElementByHandle(childHandle);
+			if (!child) {
+				Accessibility.debugWarn(`[A11y] removeSemanticElement: child handle=${childHandle} not found in DOM (parent=${parentHandle})`);
+				return;
+			}
+			Accessibility.debugLog(`[A11y] removeSemanticElement: parent=${parentHandle} child=${childHandle}`);
+			// Use child.remove() instead of parent.removeChild(child) to handle
+			// cases where the child's actual DOM parent differs from the semantic parent
+			// (e.g., after re-parenting or when duplicate IDs existed previously).
+			child.remove();
+		}
+
+		public static updateIsFocusable(handle: number, isFocusable: boolean): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				Accessibility.debugLog(`[A11y] TS updateIsFocusable: handle=${handle} focusable=${isFocusable}`);
+				Accessibility.updateElementFocusability(element, isFocusable);
+			}
+			// Silently skip if element doesn't exist in the semantic DOM.
+			// Many controls get IsFocusable updates but aren't in the semantic
+			// tree (pruned as non-semantic). This is expected.
+		}
+
+		public static setXamlAutomationId(handle: number, automationId: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				// Mirror updateAriaLabel/setAriaStringAttribute: normalize on write by setting the
+				// trimmed value (and removing the attribute when empty) so live-sync matches the
+				// creation-time path and we never persist leading/trailing whitespace.
+				const trimmed = automationId ? automationId.trim() : "";
+				if (trimmed.length > 0) {
+					element.setAttribute("xamlautomationid", trimmed);
+				} else {
+					element.removeAttribute("xamlautomationid");
+				}
+			}
+		}
+
+		public static updateAriaLabel(handle: number, automationId: string): void {
+			Accessibility.debugLog(`[A11y] TS updateAriaLabel: handle=${handle} label='${automationId}'`);
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				// Omit an empty/whitespace aria-label rather than emitting aria-label="" (which screen
+				// readers announce as "blank"); a nameless control must carry no aria-label attribute.
+				// Write the TRIMMED value so live-sync matches the creation-time path
+				// (setAriaStringAttribute) and never persists leading/trailing whitespace.
+				const trimmed = automationId ? automationId.trim() : "";
+				// WA-04: aria-labelledby takes ARIA precedence over aria-label. Never set a competing
+				// aria-label when the element is already named by aria-labelledby (order-independent
+				// with the aria-label removal in updateAriaLabelledBy) — this covers the case where a
+				// late live-update re-applies the name after the labelledby drain.
+				if (trimmed.length > 0 && !element.hasAttribute("aria-labelledby")) {
+					element.setAttribute("aria-label", trimmed);
+				} else {
+					element.removeAttribute("aria-label");
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-description on a semantic element.
+		 * VoiceOver reads this as secondary context after the name.
+		 * Falls back to title attribute for broader browser compatibility.
+		 */
+		public static updateAriaDescription(handle: number, description: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				// Use aria-description (modern) with title fallback (wider support)
+				element.setAttribute("aria-description", description);
+				element.title = description;
+			}
+		}
+
+		/**
+		 * Updates the ARIA landmark role on a semantic element.
+		 * VoiceOver rotor uses landmarks (main, navigation, search, etc.) for quick navigation.
+		 */
+		public static updateLandmarkRole(handle: number, role: string | null): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (role) {
+					element.setAttribute("role", role);
+				} else {
+					element.removeAttribute("role");
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-roledescription on a semantic element.
+		 * Provides a human-readable description of the role for VoiceOver.
+		 */
+		public static updateAriaRoleDescription(handle: number, roleDescription: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (roleDescription) {
+					element.setAttribute("aria-roledescription", roleDescription);
+				} else {
+					element.removeAttribute("aria-roledescription");
+				}
+			}
+		}
+
+		public static updateAriaLevel(handle: number, level: number): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (level > 0) {
+					element.setAttribute("aria-level", String(level));
+				} else {
+					element.removeAttribute("aria-level");
+				}
+			}
+		}
+
+		public static updatePositionInSet(handle: number, positionInSet: number, sizeOfSet: number): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.setAttribute("aria-posinset", String(positionInSet));
+				element.setAttribute("aria-setsize", String(sizeOfSet));
+			}
+		}
+
+		/**
+		 * Updates aria-required on a semantic element.
+		 * Screen readers announce the field as "required".
+		 */
+		public static updateAriaRequired(handle: number, required: boolean): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (required) {
+					element.setAttribute("aria-required", "true");
+					// Also set the native required attribute for input elements
+					if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+						element.required = true;
+					}
+				} else {
+					element.removeAttribute("aria-required");
+					if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+						element.required = false;
+					}
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-invalid on a semantic element.
+		 * Screen readers announce the field as "invalid" when its value fails form validation.
+		 */
+		public static updateAriaInvalid(handle: number, invalid: boolean): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (invalid) {
+					element.setAttribute("aria-invalid", "true");
+				} else {
+					element.removeAttribute("aria-invalid");
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-pressed on a toggle button semantic element.
+		 */
+		public static updateAriaPressed(handle: number, pressed: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.setAttribute("aria-pressed", pressed);
+			}
+		}
+
+		/**
+		 * Updates aria-keyshortcuts on a semantic element.
+		 * Screen readers announce the formatted shortcut (e.g. "Ctrl+S") alongside the name.
+		 */
+		public static updateAriaKeyShortcuts(handle: number, keyShortcuts: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (keyShortcuts) {
+					element.setAttribute("aria-keyshortcuts", keyShortcuts);
+				} else {
+					element.removeAttribute("aria-keyshortcuts");
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-haspopup on a semantic element from the C# value (FR-028).
+		 * The popup kind ("listbox", "menu", "dialog", …) is decided in C# from the control's
+		 * ExpandCollapse pattern / control type, never hardcoded in TS.
+		 */
+		public static updateAriaHasPopup(handle: number, hasPopup: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				// Mirror the omit-when-empty contract: aria-haspopup=" " is a malformed token
+				// that AT either rejects or treats as "true"; both are wrong. Trim and omit.
+				const trimmed = hasPopup ? hasPopup.trim() : "";
+				if (trimmed.length > 0) {
+					element.setAttribute("aria-haspopup", trimmed);
+				} else {
+					element.removeAttribute("aria-haspopup");
+				}
+			}
+		}
+
+		/**
+		 * Updates the HTML accesskey attribute on a semantic element (FR-028).
+		 * Sourced from AutomationProperties.AccessKey (a mnemonic, e.g. "F"). This is distinct
+		 * from aria-keyshortcuts (the AcceleratorKey activation shortcut).
+		 */
+		public static setAccessKey(handle: number, accessKey: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				// Mirror the omit-when-empty contract used by updateAriaLabel / setXamlAutomationId:
+				// whitespace-only values would emit accesskey=" ", which is meaningless to AT and
+				// can interfere with browser shortcut handling.
+				const trimmed = accessKey ? accessKey.trim() : "";
+				if (trimmed.length > 0) {
+					element.setAttribute("accesskey", trimmed);
+				} else {
+					element.removeAttribute("accesskey");
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-modal on a semantic element.
+		 * Used for dialogs that should scope screen reader announcements.
+		 */
+		public static updateAriaModal(handle: number, modal: boolean): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (modal) {
+					element.setAttribute("aria-modal", "true");
+				} else {
+					element.removeAttribute("aria-modal");
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-busy on a semantic element.
+		 * Mapped from AutomationProperties.ItemStatus when the status indicates the
+		 * element is busy/loading, so screen readers suppress reading transient content.
+		 */
+		public static updateAriaBusy(handle: number, busy: boolean): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (busy) {
+					element.setAttribute("aria-busy", "true");
+				} else {
+					element.removeAttribute("aria-busy");
+				}
+			}
+		}
+
+		/**
+		 * Updates the lang attribute on a semantic element.
+		 * Mapped from AutomationProperties.Culture so screen readers pronounce the
+		 * content using the correct locale.
+		 */
+		public static updateLang(handle: number, lang: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				// Mirror the omit-when-empty contract: lang=" " is invalid per the HTML/BCP-47
+				// language-tag grammar and would make AT fall back unpredictably. Trim and omit.
+				const trimmed = lang ? lang.trim() : "";
+				if (trimmed.length > 0) {
+					element.setAttribute("lang", trimmed);
+				} else {
+					element.removeAttribute("lang");
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-live on a semantic element for live region announcements.
+		 * Screen readers monitor elements with aria-live for content changes.
+		 */
+		public static updateAriaLive(handle: number, ariaLive: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				// aria-atomic is intentionally NOT forced here (FR-028). Defaulting every live
+				// region to aria-atomic="true" makes screen readers re-announce the entire region
+				// on any change; the browser default (false — announce only changed nodes) is
+				// correct for the common status/log case. A region whose WinUI semantics require
+				// atomic announcement must opt in explicitly elsewhere.
+				element.setAttribute("aria-live", ariaLive);
+			}
+		}
+
+		/**
+		 * Updates aria-describedby on a semantic element.
+		 * References other semantic elements by their IDs (space-separated).
+		 */
+		/**
+		 * Updates aria-labelledby on a semantic element.
+		 * References the labeling element by its DOM ID.
+		 */
+		public static updateAriaLabelledBy(handle: number, idList: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (idList) {
+					element.setAttribute("aria-labelledby", idList);
+					// WA-04: aria-labelledby takes ARIA precedence over aria-label. Remove any competing
+					// aria-label so the element is not named twice — this also handles the two-phase
+					// build where aria-label was applied before the labeller's semantic node existed.
+					element.removeAttribute("aria-label");
+				} else {
+					element.removeAttribute("aria-labelledby");
+				}
+			}
+		}
+
+		public static updateAriaDescribedBy(handle: number, idList: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (idList) {
+					element.setAttribute("aria-describedby", idList);
+				} else {
+					element.removeAttribute("aria-describedby");
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-controls on a semantic element.
+		 * References other semantic elements by their IDs (space-separated).
+		 */
+		public static updateAriaControls(handle: number, idList: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (idList) {
+					element.setAttribute("aria-controls", idList);
+				} else {
+					element.removeAttribute("aria-controls");
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-flowto on a semantic element.
+		 * Defines the next element(s) in an alternative reading order.
+		 */
+		public static updateAriaFlowTo(handle: number, idList: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (idList) {
+					element.setAttribute("aria-flowto", idList);
+				} else {
+					element.removeAttribute("aria-flowto");
+				}
+			}
+		}
+
+		public static updateAriaChecked(handle: number, ariaChecked: string): void {
+			Accessibility.debugLog(`[A11y] TS updateAriaChecked: handle=${handle} checked=${ariaChecked}`);
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.setAttribute("aria-checked", ariaChecked);
+
+				// Also update native checkbox/radio checked property if applicable
+				if (element instanceof HTMLInputElement &&
+					(element.type === 'checkbox' || element.type === 'radio')) {
+					if (ariaChecked === 'true') {
+						element.checked = true;
+						element.indeterminate = false;
+					} else if (ariaChecked === 'mixed') {
+						element.indeterminate = true;
+					} else {
+						element.checked = false;
+						element.indeterminate = false;
+					}
+				}
+			}
+		}
+
+		public static updateNativeScrollOffsets(handle: number, horizontalOffset: number, verticalOffset: number): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.scrollLeft = horizontalOffset;
+				element.scrollTop = verticalOffset;
+			}
+		}
+
+		public static hideSemanticElement(handle: number) {
+			Accessibility.debugLog(`[A11y] TS hideSemanticElement: handle=${handle}`);
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.hidden = true;
+			}
+		}
+
+		public static updateSemanticElementPositioning(handle: number, width: number, height: number, x: number, y: number) {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.hidden = false;
+				element.style.left = `${x}px`;
+				element.style.top = `${y}px`;
+				element.style.width = `${width}px`;
+				element.style.height = `${height}px`;
+			}
+		}
+
+		private static debugOverlayElement: HTMLDivElement | null = null;
+
+		/**
+		 * Updates the debug overlay panel with performance metrics and subsystem state.
+		 * Called from C# AccessibilityDebugger when debug mode is enabled.
+		 */
+		public static updateDebugOverlay(avgFrameOverheadMs: number, totalFrames: number, modalState: string) {
+			if (!this.debugModeEnabled) {
+				if (this.debugOverlayElement) {
+					this.debugOverlayElement.remove();
+					this.debugOverlayElement = null;
+				}
+				return;
+			}
+
+			if (!this.debugOverlayElement) {
+				this.debugOverlayElement = document.createElement("div");
+				this.debugOverlayElement.id = "uno-a11y-debug-overlay";
+				this.debugOverlayElement.style.cssText =
+					"position:fixed;top:10px;right:10px;background:rgba(0,0,0,0.85);color:#0f0;" +
+					"font:12px monospace;padding:10px;border-radius:4px;z-index:99999;" +
+					"pointer-events:none;max-width:350px;";
+				document.body.appendChild(this.debugOverlayElement);
+			}
+
+			// Count semantic elements
+			const semanticCount = this.semanticsRoot
+				? this.semanticsRoot.querySelectorAll("[id^='uno-semantics-']").length
+				: 0;
+
+			// Count virtualized containers
+			const virtualizedContainers = this.semanticsRoot
+				? this.semanticsRoot.querySelectorAll("[role='listbox'], [role='grid']").length
+				: 0;
+
+			// Get active element info
+			const activeEl = document.activeElement as HTMLElement;
+			const focusInfo = activeEl && activeEl.id?.startsWith("uno-semantics-")
+				? activeEl.id.replace("uno-semantics-", "")
+				: "none";
+
+			this.debugOverlayElement.innerHTML =
+				`<b>A11y Debug</b><br>` +
+				`Elements: ${semanticCount}<br>` +
+				`Avg frame: ${avgFrameOverheadMs.toFixed(2)}ms (${totalFrames} frames)<br>` +
+				`Virtualized containers: ${virtualizedContainers}<br>` +
+				`Focus: ${focusInfo}<br>` +
+				`Modal: ${modalState}`;
+		}
+	}
+}

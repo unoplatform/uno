@@ -16,13 +16,13 @@ public class Given_ApplicationActivity
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24598")]
-	[DynamicDependency("get_Instance", "Microsoft.UI.Xaml.ApplicationActivity", "Uno.UI.Runtime.Skia.Android")]
+	[DynamicDependency("get_Instance", "Microsoft.UI.Xaml.ApplicationActivity", "Uno.UI.Runtime.Android")]
 	[DynamicDependency("Recreate", "Android.App.Activity", "Mono.Android")]
 	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
 	public async Task When_Recreated_Dispatcher_Stays_Responsive()
 	{
 		// The runtime tests don't reference Mono.Android, hence the reflection.
-		var instanceProperty = Type.GetType("Microsoft.UI.Xaml.ApplicationActivity, Uno.UI.Runtime.Skia.Android")
+		var instanceProperty = Type.GetType("Microsoft.UI.Xaml.ApplicationActivity, Uno.UI.Runtime.Android")
 			?.GetProperty("Instance", BindingFlags.NonPublic | BindingFlags.Static);
 		Assert.IsNotNull(instanceProperty);
 
@@ -55,7 +55,7 @@ public class Given_ApplicationActivity
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24598")]
-	[DynamicDependency("get_Instance", "Microsoft.UI.Xaml.ApplicationActivity", "Uno.UI.Runtime.Skia.Android")]
+	[DynamicDependency("get_Instance", "Microsoft.UI.Xaml.ApplicationActivity", "Uno.UI.Runtime.Android")]
 	[DynamicDependency("Recreate", "Android.App.Activity", "Mono.Android")]
 	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
 	public async Task When_Recreated_Window_Stays_Open()
@@ -69,7 +69,7 @@ public class Given_ApplicationActivity
 
 		try
 		{
-			var instanceProperty = Type.GetType("Microsoft.UI.Xaml.ApplicationActivity, Uno.UI.Runtime.Skia.Android")
+			var instanceProperty = Type.GetType("Microsoft.UI.Xaml.ApplicationActivity, Uno.UI.Runtime.Android")
 				?.GetProperty("Instance", BindingFlags.NonPublic | BindingFlags.Static);
 			Assert.IsNotNull(instanceProperty);
 

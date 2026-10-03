@@ -10,17 +10,17 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition.Drawing")]
 
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Headless")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.WebAssembly.Browser")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.MacOS")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.X11")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Win32")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Linux.FrameBuffer")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Headless")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.BrowserWasm")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.MacOS")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.X11")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Android")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.AppleUIKit")]
 
-[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.X11")]
-[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Win32")]
+[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.X11")]
+[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Win32")]
 
 [assembly: InternalsVisibleTo("SamplesApp")]
 

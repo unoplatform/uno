@@ -1,5 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.WinUI.Runtime.Skia.X11;
+using Uno.UI.Runtime.X11;
 
 namespace Uno.UI.Tests.Windows_UI_Input;
 

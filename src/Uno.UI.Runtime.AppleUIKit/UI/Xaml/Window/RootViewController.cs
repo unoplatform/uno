@@ -1,0 +1,377 @@
+﻿using Uno.UI.Composition.Drawing;
+using System;
+using System.Globalization;
+using CoreAnimation;
+using CoreGraphics;
+using Foundation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using ObjCRuntime;
+using UIKit;
+using Uno.Helpers.Theming;
+using Uno.UI.Helpers;
+using Uno.UI.Runtime.AppleUIKit.Hosting;
+using Windows.Devices.Sensors;
+using Windows.Graphics.Display;
+using Uno.UI.Runtime.AppleUIKit.UI.Xaml;
+using Uno.UI.Dispatching;
+using System.Threading;
+using Uno.UI.Xaml.Core;
+
+namespace Uno.UI.Runtime.AppleUIKit;
+
+internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
+{
+	private IAppleUIKitRenderView? _renderView;
+	// The negotiated graphics context (Skia-on-Metal or WebGPU-on-CAMetalLayer). The host names no backend.
+	private ISwapChain? _context;
+	private IDrawingFactory? _renderer;
+	private XamlRoot? _xamlRoot;
+	private UIView? _textInputLayer;
+	private TopViewLayer? _topViewLayer;
+	private UIView? _nativeOverlayLayer;
+	private string? _lastSvgClipPath;
+	private readonly UnoKeyboardInputSource _keyboardInputSource = new();
+
+	public RootViewController()
+	{
+		Initialize();
+	}
+
+	public RootViewController(UIViewController rootViewController)
+		: base(rootViewController)
+	{
+		Initialize();
+	}
+
+	public RootViewController(NSObjectFlag t)
+		: base(t)
+	{
+		Initialize();
+	}
+
+	public RootViewController(NSCoder coder)
+		: base(coder)
+	{
+		Initialize();
+	}
+
+	public RootViewController(NativeHandle handle)
+		: base(handle)
+	{
+		Initialize();
+	}
+
+	public void Initialize()
+	{
+		var view = View!;
+
+		_textInputLayer = new UIView();
+		_textInputLayer.UserInteractionEnabled = false;
+		view.AddSubview(_textInputLayer);
+
+		// Neutral graphics pipeline: register a per-kind view+context factory and let the app-registered backend negotiate the kind.
+		GraphicsRegistry.ContextFactory = kind => System.Threading.Tasks.Task.FromResult(CreateRenderViewAndContext(kind));
+		var init = GraphicsRegistry.Initialize();
+		_context = init.Context;
+		_renderer = init.Renderer;
+		// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
+
+		var renderView = (UIView)_renderView!;
+		renderView.Frame = view.Bounds;
+		renderView.AutoresizingMask = UIViewAutoresizing.All;
+		view.AddSubview(renderView);
+
+		_topViewLayer = new TopViewLayer();
+		_topViewLayer.Frame = view.Bounds;
+		_topViewLayer.AutoresizingMask = UIViewAutoresizing.All;
+		var nativeOverlayLayer = new NativeOverlayLayer();
+		nativeOverlayLayer.Frame = view.Bounds;
+		nativeOverlayLayer.AutoresizingMask = UIViewAutoresizing.All;
+		nativeOverlayLayer.SubviewsChanged += NativeOverlayLayer_SubviewsChanged;
+		_nativeOverlayLayer = nativeOverlayLayer;
+		_topViewLayer.AddSubview(_nativeOverlayLayer);
+		view.AddSubview(_topViewLayer);
+
+		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
+
+#if !__TVOS__
+		// Dismiss on device rotation: this reproduces the windows behavior
+		UIApplication.Notifications
+			.ObserveDidChangeStatusBarOrientation(DismissPopups);
+#endif
+
+		// Dismiss when the app is entering background
+		UIApplication.Notifications
+			.ObserveWillResignActive(DismissPopups);
+	}
+
+	private void DismissPopups(object? sender, object? args)
+	{
+		if (_xamlRoot is not null)
+		{
+			VisualTreeHelper.CloseLightDismissPopups(_xamlRoot);
+		}
+	}
+
+	private void NativeOverlayLayer_SubviewsChanged(object? sender, EventArgs e) => _lastSvgClipPath = null; // Ensure the clip path is invalidated for next render.
+
+	internal event Action? VisibleBoundsChanged;
+
+	public void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
+
+	// Neutral per-frame loop: acquire the negotiated context's target, render, and present.
+	internal void OnFrameRequested()
+	{
+		if (_context is null)
+		{
+			return;
+		}
+
+		var ct = RootElement?.Visual.CompositionTarget as CompositionTarget;
+		if (ct is not null)
+		{
+			ct.Renderer = _renderer!;
+		}
+		var clipGeometry = ct?.OnNativePlatformFrameRequested(_context);
+
+		if (clipGeometry is not null)
+		{
+			UpdateNativeClipping(clipGeometry);
+		}
+	}
+
+	private ISwapChain? CreateRenderViewAndContext(GraphicsContextKind kind)
+	{
+		switch (kind)
+		{
+			case GraphicsContextKind.Metal:
+				var metalView = new UnoMetalView();
+				metalView.SetOwner(this);
+				_renderView = metalView;
+				return metalView.CreateGraphicsContext();
+			case GraphicsContextKind.WebGpu:
+				var webgpuView = new UnoWebGpuMetalView();
+				webgpuView.SetOwner(this);
+				_renderView = webgpuView;
+				return webgpuView.CreateGraphicsContext();
+			default:
+				return null;
+		}
+	}
+
+	private void UpdateNativeClipping(IGeometry geometry)
+	{
+		string? svgPath = null;
+		if (!geometry.IsEmpty)
+		{
+			svgPath = geometry.ToSvgPathData();
+		}
+
+		if (svgPath != _lastSvgClipPath)
+		{
+			_lastSvgClipPath = svgPath;
+
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				if (svgPath is not null)
+				{
+					ClipBySvgPath(svgPath);
+				}
+				else
+				{
+					ClearNativeClipping();
+				}
+			});
+		}
+	}
+
+	private void ClearNativeClipping()
+	{
+		if (_nativeOverlayLayer is { } view)
+		{
+			// If the path is empty, we need to clear the mask of the native overlay layer
+			// to avoid showing the previous clip.
+			var mask = view.Layer.Mask as CAShapeLayer;
+			if (mask != null)
+			{
+				mask.Path = null;
+				mask.FillColor = UIColor.Clear.CGColor;
+			}
+		}
+	}
+
+	private void ClipBySvgPath(string svg)
+	{
+		if (svg != null && _nativeOverlayLayer is { } view)
+		{
+			var cgPath = new CGPath();
+			var length = svg.Length;
+
+			var scale = UIScreen.MainScreen.Scale;
+
+			var vx = view.Frame.X;
+			var vy = view.Frame.Y;
+
+			for (int index = 0; index < length;)
+			{
+				nfloat x, y, x2, y2;
+				char op = svg[index];
+				switch (op)
+				{
+					case 'M':
+						index++; // skip M
+						x = ReadNextSvgCoord(svg, ref index, length);
+						index++; // skip separator
+						y = ReadNextSvgCoord(svg, ref index, length);
+
+						x = (x / scale - vx);
+						y = (y / scale - vy);
+						cgPath.MoveToPoint(x, y);
+						break;
+
+					case 'Q':
+						index++; // skip Z
+						x = ReadNextSvgCoord(svg, ref index, length);
+						index++; // skip separator
+						y = ReadNextSvgCoord(svg, ref index, length);
+						index++; // skip separator
+						x2 = ReadNextSvgCoord(svg, ref index, length);
+						index++; // skip separator
+						y2 = ReadNextSvgCoord(svg, ref index, length);
+						// there might not be a separator (not required before the next op)
+						x = (x / scale - vx);
+						y = (y / scale - vy);
+						x2 = (x2 / scale - vx);
+						y2 = (y2 / scale - vy);
+						cgPath.AddQuadCurveToPoint(x, y, x2, y2);
+						break;
+
+					case 'L':
+						index++; // skip L
+						x = ReadNextSvgCoord(svg, ref index, length);
+						index++; // skip separator
+						y = ReadNextSvgCoord(svg, ref index, length);
+
+						x = (x / scale - vx);
+						y = (y / scale - vy);
+						cgPath.AddLineToPoint(x, y);
+						break;
+
+					case 'Z':
+						index++; // skip Z
+						cgPath.CloseSubpath();
+						break;
+
+					default:
+						index++; // skip unknown op
+						break;
+				}
+			}
+
+			var mask = view.Layer.Mask as CAShapeLayer;
+			if (mask == null)
+			{
+				mask = new CAShapeLayer();
+				view.Layer.Mask = mask;
+			}
+
+			mask.FillColor = UIColor.Blue.CGColor; // anything but clear color
+			mask.Path = cgPath;
+			mask.FillRule = CAShapeLayer.FillRuleEvenOdd;
+		}
+	}
+
+	private float ReadNextSvgCoord(string svg, ref int position, long length)
+	{
+		float result = float.NaN;
+		if (position >= length)
+		{
+			return result;
+		}
+
+		if (svg[position] == ' ')
+		{
+			position++;
+		}
+
+		var endPos = position;
+		while (endPos < svg.Length && (char.IsDigit(svg[endPos]) || svg[endPos] == '.' || svg[endPos] == '-'))
+		{
+			endPos++;
+		}
+		var reading = svg.Substring(position, endPos - position).Trim();
+
+		var coord = float.Parse(reading, CultureInfo.InvariantCulture);
+
+		position = endPos;
+		return coord;
+	}
+
+	public void InvalidateRender()
+	{
+		_renderView?.QueueRender();
+	}
+
+	/// <summary>
+	/// Stops this window's render loop. Its display link lives on a thread of its own and would otherwise keep
+	/// calling back for the lifetime of the process, driving frames into a context that is being torn down.
+	/// </summary>
+	internal void StopRendering() => _renderView?.StopRender();
+
+	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;
+
+	public UIView TextInputLayer => _textInputLayer!;
+
+	/// <summary>
+	/// This window's own pointer input source, backed by its <see cref="TopViewLayer"/>.
+	/// </summary>
+	internal AppleUIKitCorePointerInputSource PointerInputSource => _topViewLayer!.PointerInputSource;
+
+	/// <summary>
+	/// This window's own keyboard input source.
+	/// </summary>
+	internal UnoKeyboardInputSource KeyboardInputSource => _keyboardInputSource;
+
+	// This will handle when the status bar is showed / hidden by the system on iPhones
+	public override void ViewSafeAreaInsetsDidChange()
+	{
+		base.ViewSafeAreaInsetsDidChange();
+		VisibleBoundsChanged?.Invoke();
+	}
+
+#if !__TVOS__
+	public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations()
+	{
+		return DisplayInformation.AutoRotationPreferences.ToUIInterfaceOrientationMask();
+	}
+#endif
+
+	public override void MotionEnded(UIEventSubtype motion, UIEvent? evt)
+	{
+#if !__TVOS__
+		if (motion == UIEventSubtype.MotionShake)
+		{
+			Accelerometer.HandleShake();
+		}
+#endif
+		base.MotionEnded(motion, evt);
+	}
+
+	public bool CanAutorotate { get; set; } = true;
+
+	public UIView? NativeOverlayLayer => _nativeOverlayLayer;
+
+#pragma warning disable CA1422 // Validate platform compatibility
+#if !__TVOS__
+	public override bool ShouldAutorotate() => CanAutorotate && base.ShouldAutorotate();
+#endif
+
+	public override void TraitCollectionDidChange(UITraitCollection? previousTraitCollection)
+	{
+		base.TraitCollectionDidChange(previousTraitCollection);
+		SystemThemeHelper.RefreshSystemTheme();
+	}
+#pragma warning restore CA1422 // Validate platform compatibility
+}

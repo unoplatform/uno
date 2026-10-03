@@ -19,7 +19,7 @@
 			"Uno.WinUI.Runtime.X11",
 			"Uno.WinUI.Runtime.Android",
 			"Uno.WinUI.Runtime.AppleUIKit",
-			"Uno.WinUI.Runtime.WebAssembly.Browser",
+			"Uno.WinUI.Runtime.BrowserWasm",
 			"Uno.WinUI.MediaPlayer.X11",
 			"Uno.WinUI.MediaPlayer.Win32",
 			"Uno.WinUI.WebView.X11",

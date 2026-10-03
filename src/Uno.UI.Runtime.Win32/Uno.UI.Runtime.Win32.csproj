@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override-noplatform.props" />
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<Description>This package provides the Win32 host for Uno Platform projects.</Description>
+
+		<PackageId>Uno.WinUI.Runtime.Win32</PackageId>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+
+		<!-- Ignore NU5104 for net7.0 System.Drawing.Common -->
+		<NoWarn>$(NoWarn);NU5104</NoWarn>
+
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="HarfBuzzSharp" />
+		<PackageReference Include="Uno.icu-win" />
+		<PackageReference Include="WebView2Aot" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="All" />
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Generic.csproj" />
+		<ProjectReference Include="..\Uno.UI.Runtime.Win32.Support\Uno.UI.Runtime.Win32.Support.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI.Runtime\Uno.UI.Runtime.csproj" />
+		<!-- WebGPU "init half": the host calls WebGpuContext.CreateWin32 to build a WebGpu window+context for the
+		     GraphicsContextKind.WebGpu kind. The host uses only the renderer-agnostic init API, not the renderer. -->
+		<ProjectReference Include="..\Uno.UI.Composition.WebGpu.Init\Uno.UI.Composition.WebGpu.Init.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Generic.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="buildTransitive/*.*">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</Content>
+	</ItemGroup>
+
+	<Target Name="_UnoUpdateAdditionalAssemblies" AfterTargets="DispatchToInnerBuilds">
+		<ItemGroup>
+			<Content Include="../Uno.UI.Runtime.Win32.Support/bin/$(Configuration)/$(NetPrevious)/*.dll">
+				<Pack>true</Pack>
+				<PackagePath>lib/$(NetPrevious)</PackagePath>
+			</Content>
+			<Content Include="../Uno.UI.Runtime.Win32.Support/bin/$(Configuration)/$(NetPrevious)/*.pdb">
+				<Pack>true</Pack>
+				<PackagePath>lib/$(NetPrevious)</PackagePath>
+			</Content>
+			<Content Include="../Uno.UI.Runtime.Win32.Support/bin/$(Configuration)/$(NetCurrent)/*.dll">
+				<Pack>true</Pack>
+				<PackagePath>lib/$(NetCurrent)</PackagePath>
+			</Content>
+			<Content Include="../Uno.UI.Runtime.Win32.Support/bin/$(Configuration)/$(NetCurrent)/*.pdb">
+				<Pack>true</Pack>
+				<PackagePath>lib/$(NetCurrent)</PackagePath>
+			</Content>
+		</ItemGroup>
+	</Target>
+
+</Project>

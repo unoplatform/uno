@@ -93,7 +93,7 @@ public sealed partial class ClickablePoint_Visualizer : UserControl
 	{
 		try
 		{
-			var accessibilityRouter = FindType("Uno.UI.Runtime.Skia.AccessibilityRouter");
+			var accessibilityRouter = FindType("Uno.UI.Runtime.AccessibilityRouter");
 			var resolve = accessibilityRouter?.GetMethod(
 				"Resolve",
 				BindingFlags.Static | BindingFlags.Public,

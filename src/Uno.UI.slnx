@@ -21,10 +21,10 @@
     <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="AddIns/Uno.UI.MediaPlayer.Skia.Win32/Uno.UI.MediaPlayer.Skia.Win32.csproj">
+    <Project Path="AddIns/Uno.UI.MediaPlayer.Win32/Uno.UI.MediaPlayer.Win32.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
-    <Project Path="AddIns/Uno.UI.MediaPlayer.Skia.X11/Uno.UI.MediaPlayer.Skia.X11.csproj">
+    <Project Path="AddIns/Uno.UI.MediaPlayer.X11/Uno.UI.MediaPlayer.X11.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.netcoremobile.csproj">
@@ -39,7 +39,7 @@
     <Project Path="AddIns/Uno.UI.Svg/Uno.UI.Svg.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="AddIns/Uno.UI.WebView.Skia.X11/Uno.UI.WebView.Skia.X11.csproj">
+    <Project Path="AddIns/Uno.UI.WebView.X11/Uno.UI.WebView.X11.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="AddIns/Uno.WinUI.Graphics2DSK/Uno.WinUI.Graphics2DSK.Crossruntime.csproj">
@@ -307,34 +307,34 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Runtime/">
-    <Project Path="Uno.UI.Runtime.Skia.Android/Uno.UI.Runtime.Skia.Android.csproj">
+    <Project Path="Uno.UI.Runtime.Android/Uno.UI.Runtime.Android.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
-    <Project Path="Uno.UI.Runtime.Skia.AppleUIKit/Uno.UI.Runtime.Skia.AppleUIKit.csproj">
+    <Project Path="Uno.UI.Runtime.AppleUIKit/Uno.UI.Runtime.AppleUIKit.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Runtime.Skia.Linux.FrameBuffer/Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj">
+    <Project Path="Uno.UI.Runtime.Linux.FrameBuffer/Uno.UI.Runtime.Linux.FrameBuffer.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Runtime.Skia.Headless/Uno.UI.Runtime.Skia.Headless.csproj">
+    <Project Path="Uno.UI.Runtime.Headless/Uno.UI.Runtime.Headless.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Runtime.Skia.MacOS/Uno.UI.Runtime.Skia.MacOS.csproj">
+    <Project Path="Uno.UI.Runtime.MacOS/Uno.UI.Runtime.MacOS.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Runtime.Skia.WebAssembly.Browser/Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj">
+    <Project Path="Uno.UI.Runtime.BrowserWasm/Uno.UI.Runtime.BrowserWasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Runtime.Skia.Win32.Support/Uno.UI.Runtime.Skia.Win32.Support.csproj">
+    <Project Path="Uno.UI.Runtime.Win32.Support/Uno.UI.Runtime.Win32.Support.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Runtime.Skia.Win32/Uno.UI.Runtime.Skia.Win32.csproj">
+    <Project Path="Uno.UI.Runtime.Win32/Uno.UI.Runtime.Win32.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
-    <Project Path="Uno.UI.Runtime.Skia.X11/Uno.UI.Runtime.Skia.X11.csproj">
+    <Project Path="Uno.UI.Runtime.X11/Uno.UI.Runtime.X11.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
-    <Project Path="Uno.UI.Runtime.Skia/Uno.UI.Runtime.Skia.csproj">
+    <Project Path="Uno.UI.Runtime/Uno.UI.Runtime.csproj">
       <BuildDependency Project="Uno.UI/Uno.UI.csproj" />
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>

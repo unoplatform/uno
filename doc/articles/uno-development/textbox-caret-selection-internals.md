@@ -71,9 +71,9 @@ Where the platform needs a real native text input (for the virtual keyboard, aut
 
 | Platform | Classes |
 |----------|---------|
-| WebAssembly | `BrowserInvisibleTextBoxViewExtension` (`Uno.UI.Runtime.Skia.WebAssembly.Browser`) |
-| iOS | `InvisibleTextBoxViewExtension`, `SinglelineInvisibleTextBoxView` (a `UITextField`), `MultilineInvisibleTextBoxView` (a `UITextView`), their delegates, and `NativeTextSelection` (`Uno.UI.Runtime.Skia.AppleUIKit`) |
-| Android, desktop | No overlay proxy. Android talks to the soft keyboard through `TextInputConnection` (`Uno.UI.Runtime.Skia.Android`). |
+| WebAssembly | `BrowserInvisibleTextBoxViewExtension` (`Uno.UI.Runtime.BrowserWasm`) |
+| iOS | `InvisibleTextBoxViewExtension`, `SinglelineInvisibleTextBoxView` (a `UITextField`), `MultilineInvisibleTextBoxView` (a `UITextView`), their delegates, and `NativeTextSelection` (`Uno.UI.Runtime.AppleUIKit`) |
+| Android, desktop | No overlay proxy. Android talks to the soft keyboard through `TextInputConnection` (`Uno.UI.Runtime.Android`). |
 
 IME composition is a separate channel: each runtime provides an `IImeTextBoxExtension` (`AndroidImeTextBoxExtension`, `AppleUIKitImeTextBoxExtension`, `MacOSImeTextBoxExtension`, `WasmImeTextBoxExtension`, `Win32ImeTextBoxExtension`, `X11ImeTextBoxExtension`). While `IsComposing` is true, the native marked text owns the selection, so the core avoids pushing its own selection to the proxy.
 

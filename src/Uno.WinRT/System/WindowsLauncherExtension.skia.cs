@@ -8,7 +8,7 @@ using Windows.System;
 using Uno.Extensions.System;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia.Extensions.System
+namespace Uno.UI.Runtime.Extensions.System
 {
 	internal class WindowsLauncherExtension : ILauncherExtension
 	{

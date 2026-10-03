@@ -193,7 +193,7 @@
 
 	<Target Name="BuildNuGetPackage" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(Configuration)'=='Release'">
 		<PropertyGroup>
-			<!-- NU5123: Long paths - disabled as tragets in Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive have too long paths -->
+			<!-- NU5123: Long paths - disabled as targets in Uno.UI.Runtime.BrowserWasm\buildTransitive have too long paths -->
 			<NuSpecProperties>NoWarn=NU5100,NU5105,NU5131;NU5123;branch=$(NBGV_BuildingRef);commitid=$(NBGV_GitCommitId)</NuSpecProperties>
 			<NuSpecProperties>$(NuSpecProperties);winuisourcepath=$(NetUWPOrWinUI);winuitargetpath=$(NetUWPOrWinUI)</NuSpecProperties>
 		</PropertyGroup>
@@ -235,9 +235,9 @@
 			<_ProducedPackage Include="$(MSBuildThisFileDirectory)*$(NBGV_SemVer2).nupkg" />
 			<_ProducedPackage Include="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\*$(NBGV_SemVer2).nupkg" Condition="'$(BUILD_ARTIFACTSTAGINGDIRECTORY)'!=''" />
 
-			<!-- Anchored so Uno.Foundation.Runtime.WebAssembly does not match, and excluding the Uno.WinUI.Runtime.WebAssembly.Browser host. -->
+			<!-- Anchored so Uno.WinUI.Runtime.BrowserWasm and Uno.Foundation.Runtime.WebAssembly do not match. -->
 			<_ForbiddenNativeHeadPackage Include="@(_ProducedPackage)"
-				Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '^Uno\.WinUI(\.Runtime)?\.(WebAssembly|Wasm)\.(?!Browser\.)'))" />
+				Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '^Uno\.WinUI(\.Runtime)?\.(WebAssembly|Wasm)\.'))" />
 		</ItemGroup>
 		<Error Condition="'@(_ForbiddenNativeHeadPackage)'!=''"
 			   Text="Native UI head package(s) produced but must not ship in 7.0 (Skia is the only renderer): @(_ForbiddenNativeHeadPackage->'%(Filename)', ', '). Remove them from the pack pipeline." />
@@ -276,7 +276,7 @@
 			<_diffPackage Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.UI.Adapter.Microsoft.Extensions.Logging.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.Foundation" Other="Uno.Foundation.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinRT" Other="Uno.WinRT.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.WebAssembly.Browser.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.BrowserWasm.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Runtime.Skia.Win32" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Win32.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Runtime.Skia.X11" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.X11.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Runtime.Skia.Android" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Android.$(NBGV_SemVer2).nupkg" />

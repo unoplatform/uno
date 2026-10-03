@@ -153,7 +153,7 @@ The `nativeWindow` is an `object`, so you need to cast it to the specific type o
 
 |                                |   Skia+GTK   |               Skia+X11                |        Skia+WPF         |       iOS        |        Android        |       macOS       | WebAssembly |
 | ------------------------------ | :----------: | :-----------------------------------: | :---------------------: | :--------------: | :-------------------: | :---------------: | :---------: |
-| `WindowHelper.GetNativeWindow` | `Gtk.Window` | `Uno.UI.Runtime.Skia.X11NativeWindow` | `System.Windows.Window` | `UIKit.UIWindow` | `Android.View.Window` | `AppKit.NSWindow` |   `null`    |
+| `WindowHelper.GetNativeWindow` | `Gtk.Window` | `Uno.UI.Runtime.X11NativeWindow` | `System.Windows.Window` | `UIKit.UIWindow` | `Android.View.Window` | `AppKit.NSWindow` |   `null`    |
 
 ## Avoiding `Window.Current`
 
