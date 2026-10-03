@@ -266,6 +266,53 @@ public class Given_CompositionTarget
 	}
 
 	/// <summary>
+	/// Animations only evaluate on their own target's record, which a closed window never makes again. One running
+	/// deep in its tree (not on the detached root) must still stop, or it never completes and counts forever.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_Window_Closed_Then_Its_Animations_Stop()
+	{
+		var secondary = new Window();
+		var inner = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Colors.Blue) };
+		secondary.Content = new Border { Width = 100, Height = 100, Child = inner };
+
+		var activated = false;
+		secondary.Activated += (_, _) => activated = true;
+		secondary.Activate();
+		await TestServices.WindowHelper.WaitFor(() => activated, message: "the secondary window should activate");
+		await TestServices.WindowHelper.WaitForLoaded(inner);
+
+		var compositor = inner.Visual.Compositor;
+		var animation = compositor.CreateScalarKeyFrameAnimation();
+		animation.InsertKeyFrame(0f, 0f);
+		animation.InsertKeyFrame(1f, 1f);
+		animation.Duration = TimeSpan.FromHours(1);
+
+		var batch = compositor.CreateScopedBatch(Microsoft.UI.Composition.CompositionBatchTypes.Animation);
+		inner.Visual.StartAnimation(nameof(Microsoft.UI.Composition.Visual.Opacity), animation);
+		batch.End();
+
+		var completed = false;
+		batch.Completed += (_, _) => completed = true;
+
+		try
+		{
+			Assert.IsTrue(compositor.IsAnimating, "the animation should be running");
+
+			secondary.Close();
+
+			await TestServices.WindowHelper.WaitFor(() => completed, message: "closing a window must stop the animations in its tree");
+			Assert.IsFalse(compositor.IsAnimating, "a closed window's animations must not count as in flight");
+		}
+		finally
+		{
+			inner.Visual.StopAnimation(nameof(Microsoft.UI.Composition.Visual.Opacity));
+		}
+	}
+
+	/// <summary>
 	/// A driver subscribed once the host is gone would never tick either, so it must not count as motion: a
 	/// component reacting to the close (or a driver replacing itself) would otherwise leave it counted forever.
 	/// </summary>
