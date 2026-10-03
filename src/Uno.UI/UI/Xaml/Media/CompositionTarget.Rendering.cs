@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -138,6 +138,7 @@ public partial class CompositionTarget
 	private static IGeometry? _lastNativeClipPath;
 	private float _lastRasterizationScale = 1;
 	private static IGeometry? _lastScaledNativeClipPath;
+	private ISwapChain? _lastSwapChain;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	// UNO_FORCE_FULL_REPAINT=1 disables damage-clipped partial repaints (benchmarking: measures true full-frame cost).
@@ -441,7 +442,9 @@ public partial class CompositionTarget
 			var target = swapChain.AcquireRenderTarget(
 				(int)Math.Round(xamlRootBounds.Width * rasterizationScale),
 				(int)Math.Round(xamlRootBounds.Height * rasterizationScale));
-			var resized = _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
+			var swapChainRecreated = _lastSwapChain != swapChain;
+			_lastSwapChain = swapChain;
+			var resized = swapChainRecreated || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
 			if (resized)
 			{
 				_lastCanvasSize = xamlRootBounds;
