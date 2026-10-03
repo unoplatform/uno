@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -89,11 +90,69 @@ public class Given_SKCanvasElement
 		Assert.IsFalse(SUT.RenderOverrideCalledNestedly);
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24699")]
+	public void When_Graphics3DGL_Not_Referenced_By_Graphics2DSK()
+	{
+		// AOT and eager linkers (Android AOT, .NET 11 iOS CoreTypeMap) fail on a reference the package doesn't carry.
+		var references = typeof(SKCanvasElement).Assembly.GetReferencedAssemblies();
+
+		Assert.IsFalse(
+			references.Any(r => r.Name is "Uno.WinUI.Graphics3DGL" or "Silk.NET.OpenGL"),
+			$"Graphics2DSK must not reference Graphics3DGL or Silk; found: {string.Join(", ", references.Select(r => r.Name))}");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24699")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	public void When_GL_Island_Resolvable_From_Graphics3DGL()
+	{
+		// SKCanvasElement looks the island up by name; keep that name and constructor in sync.
+		var islandType = Type.GetType("Uno.WinUI.Graphics3DGL.SkiaGLCanvasElement, Uno.WinUI.Graphics3DGL");
+
+		Assert.IsNotNull(islandType);
+		Assert.IsTrue(typeof(FrameworkElement).IsAssignableFrom(islandType));
+		Assert.IsNotNull(islandType.GetConstructor([typeof(Action<SKCanvas, Size>), typeof(Action)]));
+		Assert.IsNotNull(islandType.GetMethod(nameof(SKCanvasElement.Invalidate), Type.EmptyTypes));
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24699")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	public async Task When_GL_Island_Renders_Or_Reports_Unavailable()
+	{
+		var islandType = Type.GetType("Uno.WinUI.Graphics3DGL.SkiaGLCanvasElement, Uno.WinUI.Graphics3DGL")!;
+		var rendered = false;
+		var unavailable = false;
+		var island = (FrameworkElement)Activator.CreateInstance(
+			islandType,
+			(Action<SKCanvas, Size>)((canvas, area) =>
+			{
+				rendered = true;
+				using var paint = new SKPaint { Color = SKColors.Blue };
+				canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), paint);
+			}),
+			(Action)(() => unavailable = true))!;
+		island.Width = 100;
+		island.Height = 100;
+
+		await UITestHelper.Load(island);
+		await UITestHelper.WaitFor(() => rendered || unavailable, timeoutMS: 5000);
+
+		if (rendered)
+		{
+			await UITestHelper.WaitForIdle();
+			var bitmap = await UITestHelper.ScreenShot(island);
+			ImageAssert.HasColorAt(bitmap, 50, 50, Microsoft.UI.Colors.Blue);
+		}
+	}
+
 	private class BlueFillSKCanvasElement : SKCanvasElement
 	{
 		protected override void RenderOverride(SKCanvas canvas, Size area)
 		{
-			canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), new SKPaint { Color = SKColors.Blue });
+			using var paint = new SKPaint { Color = SKColors.Blue };
+			canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), paint);
 		}
 	}
 
