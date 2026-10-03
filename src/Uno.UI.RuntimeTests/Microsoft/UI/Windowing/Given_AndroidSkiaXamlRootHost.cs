@@ -33,6 +33,10 @@ public class Given_AndroidSkiaXamlRootHost
 	}
 
 	[TestMethod]
+#if RUNTIME_NATIVE_AOT
+	// Reads internal host members through reflection, which NativeAOT trims away.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
+#endif
 	public void When_Host_Then_Activity_Is_The_Foreground_Activity()
 	{
 		var host = GetHostForCurrentWindow();
@@ -52,6 +56,10 @@ public class Given_AndroidSkiaXamlRootHost
 	}
 
 	[TestMethod]
+#if RUNTIME_NATIVE_AOT
+	// Reads internal host members through reflection, which NativeAOT trims away.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
+#endif
 	public void When_Host_Then_Input_Sources_Are_Stable_Per_Window()
 	{
 		var host = GetHostForCurrentWindow();
