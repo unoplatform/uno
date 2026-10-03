@@ -40,7 +40,11 @@ public partial class Compositor
 
 	internal void AddFrameDriver() => Interlocked.Increment(ref _frameDriverCount);
 
-	internal void RemoveFrameDriver() => Interlocked.Decrement(ref _frameDriverCount);
+	internal void RemoveFrameDriver()
+	{
+		var count = Interlocked.Decrement(ref _frameDriverCount);
+		Debug.Assert(count >= 0, "A frame driver was removed more times than it was added.");
+	}
 
 	internal bool IsAnimating => _runningAnimations.Count > 0 || Volatile.Read(ref _frameDriverCount) > 0;
 
@@ -132,6 +136,26 @@ public partial class Compositor
 				{
 					this.Log().Debug($"Cannot unregister unknown animation");
 				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Stops the animations of a target whose host is gone. They only evaluate on that target's record, which
+	/// never comes again, so they would never complete and <see cref="IsAnimating"/> would report them forever.
+	/// </summary>
+	internal void StopAnimations(ICompositionTarget target)
+	{
+		if (!_runningTargets.ContainsKey(target))
+		{
+			return;
+		}
+
+		foreach (var (animation, animationTarget) in _runningAnimations.ToArray())
+		{
+			if (animationTarget == target)
+			{
+				animation.Stop();
 			}
 		}
 	}

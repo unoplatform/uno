@@ -129,14 +129,13 @@ public partial class CompositionTarget
 		// Some hosts unregister from a background thread (X11 does from a task continuation).
 		XamlRootMap.Unregistered += static (_, xamlRoot) =>
 		{
-			var target = xamlRoot.VisualTree.ContentRoot.CompositionTarget;
 			if (NativeDispatcher.Main.HasThreadAccess)
 			{
-				target.ClearFrameDrivers();
+				xamlRoot.VisualTree.ContentRoot.CompositionTarget.OnHostGone();
 			}
 			else
 			{
-				NativeDispatcher.Main.Enqueue(target.ClearFrameDrivers, NativeDispatcherPriority.High);
+				NativeDispatcher.Main.Enqueue(() => xamlRoot.VisualTree.ContentRoot.CompositionTarget.OnHostGone(), NativeDispatcherPriority.High);
 			}
 		};
 	}
