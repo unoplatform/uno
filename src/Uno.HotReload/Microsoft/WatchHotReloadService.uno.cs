@@ -3,14 +3,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.HotReload.Microsoft;
+using Uno.HotReload.Tracking;
 
 namespace Uno.HotReload.Microsoft;
 
 partial class WatchHotReloadService : IWatchHotReloadService
 {
-	public static async ValueTask<WatchHotReloadService> CreateAsync(Solution currentSolution, string[] metadataUpdateCapabilities, CancellationToken ct)
+	public static async ValueTask<WatchHotReloadService> CreateAsync(Solution currentSolution, string[] metadataUpdateCapabilities, IReporter reporter, CancellationToken ct)
 	{
-		var hotReloadService = new WatchHotReloadService(currentSolution.Workspace.Services, metadataUpdateCapabilities);
+		var hotReloadService = new WatchHotReloadService(currentSolution.Workspace.Services, metadataUpdateCapabilities, reporter);
 		await hotReloadService.StartSessionAsync(currentSolution, ct).ConfigureAwait(false);
 
 		// Read the documents to memory

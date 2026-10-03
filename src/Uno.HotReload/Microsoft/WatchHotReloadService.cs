@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Host;
+using Uno.HotReload.Tracking;
 
 namespace Uno.HotReload.Microsoft;
 
@@ -28,11 +29,11 @@ namespace Uno.HotReload.Microsoft;
 internal partial class WatchHotReloadService
 {
 	private readonly Func<Solution, CancellationToken, Task>? _startSessionAsync;
-	private readonly Func<Solution, CancellationToken, Task<ITuple>>? _emitSolutionUpdateAsync;
+	private readonly EnCEngine? _engine;
 	private readonly Action? _endSession;
 	private readonly object? _targetInstance;
 
-	public WatchHotReloadService(HostWorkspaceServices services, string[] metadataUpdateCapabilities)
+	public WatchHotReloadService(HostWorkspaceServices services, string[] metadataUpdateCapabilities, IReporter reporter)
 	{
 		if (Assembly.Load("Microsoft.CodeAnalysis.Features") is { } featuresAssembly)
 		{
@@ -58,40 +59,19 @@ internal partial class WatchHotReloadService
 					throw new InvalidOperationException($"Cannot find {nameof(StartSessionAsync)}");
 				}
 
-				if (hotReloadServiceType.GetMethod(nameof(EmitSolutionUpdateAsync), [typeof(Solution), typeof(bool), typeof(CancellationToken)]) is { } emitSolutionUpdateAsyncMethod)
+				// NOT hotReloadServiceType.EmitSolutionUpdateAsync: that wrapper decides on its own
+				// whether the emit becomes the next baseline, and on the 5.x line it decides wrong
+				// for a rude edit. The engine is driven directly instead — see EnCEngine.
+				_engine = EnCEngine.Create(_targetInstance
+					?? throw new InvalidOperationException($"Failed to create {hotReloadServiceType.Name}."));
+
+				// A member of the engine that is present but no longer readable means part of the
+				// hot-reload information will be empty for the whole session; the only moment that is
+				// diagnosable is here, before anything depends on it. Absences that are simply the
+				// older Roslyn line not reporting something are not warned about — see EnCEngine.
+				foreach (var warning in _engine.ShapeWarnings)
 				{
-					// Same fail-fast binding as StartSessionAsync (the method's Task<T> relaxes to
-					// Task under delegate variance); only the Result/ITuple decomposition below
-					// stays reflective — the tuple's type arguments are internal to Roslyn.
-					var emitSolutionUpdateAsync = emitSolutionUpdateAsyncMethod
-						.CreateDelegate<Func<Solution, bool, CancellationToken, Task>>(_targetInstance);
-
-					_emitSolutionUpdateAsync = async (s, ct) =>
-					{
-						// commitUpdates: true == the historical Watch behavior (the EnC service
-						// commits the emitted solution update when its status is Ready, making it
-						// the baseline of the next emit).
-						var task = emitSolutionUpdateAsync(s, true, ct);
-
-						await task.ConfigureAwait(false);
-
-						var resultPropertyInfo = task.GetType().GetProperty("Result")
-							?? throw new InvalidOperationException($"Unable to find Result property on [{task}]");
-
-						var value = resultPropertyInfo.GetValue(task, null);
-
-						if (value is ITuple tuple)
-						{
-							return tuple;
-						}
-
-						throw new InvalidOperationException(
-							$"Expected {nameof(EmitSolutionUpdateAsync)} result to be ITuple but got [{value?.GetType().FullName ?? "null"}].");
-					};
-				}
-				else
-				{
-					throw new InvalidOperationException($"Cannot find {nameof(EmitSolutionUpdateAsync)}");
+					reporter.Warn($"Hot reload cannot read part of Roslyn's Edit-and-Continue results: {warning}");
 				}
 
 				if (hotReloadServiceType.GetMethod(nameof(EndSession), Type.EmptyTypes) is { } endSessionMethod)
@@ -176,47 +156,19 @@ internal partial class WatchHotReloadService
 		return _startSessionAsync(currentSolution, cancellationToken);
 	}
 
-	public async Task<(ImmutableArray<Update> updates, ImmutableArray<Diagnostic> diagnostics)> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken)
+	/// <summary>
+	/// Emits the deltas between <paramref name="solution"/> and the session baseline, and advances
+	/// that baseline only when deltas are actually produced.
+	/// </summary>
+	/// <returns>Everything the engine reports about the emit — see <see cref="HotReloadEmitResult"/>.</returns>
+	public Task<HotReloadEmitResult> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken)
 	{
-		if (_emitSolutionUpdateAsync is null)
+		if (_engine is null)
 		{
-			throw new InvalidOperationException($"_emitSolutionUpdateAsync cannot be null");
+			throw new InvalidOperationException($"{nameof(_engine)} cannot be null");
 		}
 
-		var ret = await _emitSolutionUpdateAsync(solution, cancellationToken).ConfigureAwait(false);
-
-		var updatesSource = (IEnumerable)ret[0]!;
-		var diagnostics = (ImmutableArray<Diagnostic>)ret[1]!;
-
-		var builder = ImmutableArray<Update>.Empty.ToBuilder();
-		foreach (var updateSource in updatesSource)
-		{
-			var updateType = updateSource.GetType();
-
-			var update = new Update(
-				(Guid)GetField(updateType, nameof(Update.ModuleId)).GetValue(updateSource)!
-				, (ImmutableArray<byte>)GetField(updateType, nameof(Update.ILDelta)).GetValue(updateSource)!
-				, (ImmutableArray<byte>)GetField(updateType, nameof(Update.MetadataDelta)).GetValue(updateSource)!
-				, (ImmutableArray<byte>)GetField(updateType, nameof(Update.PdbDelta)).GetValue(updateSource)!
-				, (ImmutableArray<int>)GetField(updateType, nameof(Update.UpdatedTypes)).GetValue(updateSource)!
-			);
-
-			builder.Add(update);
-		}
-
-		return (builder.ToImmutable(), diagnostics);
-
-		FieldInfo GetField(Type type, string name)
-		{
-			if (type.GetField(name) is { } moduleIdField)
-			{
-				return moduleIdField;
-			}
-			else
-			{
-				throw new InvalidOperationException($"Failed to find {name}");
-			}
-		}
+		return _engine.EmitAsync(solution, cancellationToken);
 	}
 
 	public void EndSession()
