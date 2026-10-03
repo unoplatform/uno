@@ -57,7 +57,10 @@ variables:
   linuxVMImage: 'ubuntu-24.04'
   linuxScaledPool: 'Ubuntu2404-20251016'
   macOSVMImage: 'macOS-26'
-  xCodeRoot: '/Applications/Xcode_26.6.app'
+  # .NET for iOS 26.1 requires exactly Xcode 26.1.
+  xCodeRoot: '/Applications/Xcode_26.1.1.app'
+  # macOS-26 has no iOS 26.1 simulator runtime, so the simulator tests use a newer Xcode.
+  xCodeRootSimulator: '/Applications/Xcode_26.6.app'
 
   # Offline validation to improve build performance
   NUGET_CERT_REVOCATION_MODE: offline
