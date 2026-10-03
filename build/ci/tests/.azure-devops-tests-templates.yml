@@ -104,7 +104,6 @@ jobs:
   - template: ../templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
-      requireSimulatorRuntime: false
 
   - template: ../templates/dotnet-mobile-install-mac.yml
   - template: ../templates/dotnet-install-previous-wasmtools.yml
