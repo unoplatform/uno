@@ -34,7 +34,6 @@ namespace Windows.Devices.Enumeration
 		public DeviceInformation this[int index]
 		{
 			get => _devices[index];
-			set => throw new NotSupportedException();
 		}
 
 		/// <inheritdoc />
@@ -49,10 +48,6 @@ namespace Windows.Devices.Enumeration
 		public int Count
 		{
 			get => _devices.Count;
-			set
-			{
-				throw new NotSupportedException();
-			}
 		}
 	}
 }

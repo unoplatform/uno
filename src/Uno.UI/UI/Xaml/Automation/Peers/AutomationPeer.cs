@@ -19,6 +19,10 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class AutomationPeer : DependencyObject
 {
+	protected internal AutomationPeer()
+	{
+	}
+
 	private AutomationPeer? _parent;
 
 	/// <summary>

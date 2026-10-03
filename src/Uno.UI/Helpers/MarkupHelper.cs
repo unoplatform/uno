@@ -40,6 +40,18 @@ namespace Uno.UI.Helpers
 		}
 
 		/// <summary>
+		/// Sets the x:Name of an element implementing <see cref="IXNameProvider"/>, whose Name property is get-only.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void SetXName(object target, string name)
+		{
+			if (target is IXNameProvider provider)
+			{
+				provider.SetXName(name);
+			}
+		}
+
+		/// <summary>
 		/// Gets the Uid defined via <see cref="SetXUid(object, string)"/>
 		/// </summary>
 		/// <param name="target">The target object</param>

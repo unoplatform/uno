@@ -141,6 +141,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return type.GetPropertyWithName(propertyName) is not null;
 		}
 
+		// Implementers have a get-only Name, which x:Name sets through MarkupHelper.SetXName.
+		private bool IsXNameProvider(XamlType xamlType)
+			=> Generation.XNameProviderSymbol.Value is { } provider && IsImplementingInterface(FindType(xamlType), provider);
+
+		// Intentional WinUI divergence: WinUI's XAML compiler rejects a plain Name where Name is get-only (WMC0050),
+		// but its runtime parser accepts it like x:Name, and so does Uno.
+		private bool IsXNameMember(XamlMemberDefinition member, XamlType objectType)
+			=> member.Member.Name == "Name"
+				&& (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
+					|| (IsXNameProvider(objectType) && !IsAttachedProperty(member)));
+
 		private bool IsRun(INamedTypeSymbol? symbol)
 		{
 			return IsType(symbol, Generation.RunSymbol.Value);

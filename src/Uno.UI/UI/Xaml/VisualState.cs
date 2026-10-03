@@ -14,7 +14,7 @@ using Uno.UI.Xaml;
 namespace Microsoft.UI.Xaml
 {
 	[ContentProperty(Name = nameof(Storyboard))]
-	public sealed partial class VisualState : DependencyObject
+	public sealed partial class VisualState : DependencyObject, IXNameProvider
 	{
 		/// <summary>
 		/// Lazy builder provided by the source generator. Invoking this will
@@ -28,7 +28,9 @@ namespace Microsoft.UI.Xaml
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		public string Name { get; set; }
+		public string Name { get; internal set; }
+
+		void IXNameProvider.SetXName(string name) => Name = name;
 
 		#region StoryBoard DependencyProperty
 

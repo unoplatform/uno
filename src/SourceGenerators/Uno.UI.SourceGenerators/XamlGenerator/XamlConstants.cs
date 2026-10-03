@@ -98,6 +98,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string DependencyObject = BaseXamlNamespace + ".DependencyObject";
 			public const string DependencyObjectExtensions = BaseXamlNamespace + ".DependencyObjectExtensions";
 			public const string DependencyProperty = BaseXamlNamespace + ".DependencyProperty";
+			public const string IXNameProvider = BaseXamlNamespace + ".IXNameProvider";
 			public const string IFrameworkElement = UnoXamlNamespace + ".IFrameworkElement";
 			public const string FrameworkElement = UnoXamlNamespace + ".FrameworkElement";
 			public const string UIElement = UnoXamlNamespace + ".UIElement";

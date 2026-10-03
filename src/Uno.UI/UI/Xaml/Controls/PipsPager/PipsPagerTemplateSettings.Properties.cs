@@ -19,7 +19,7 @@ public sealed partial class PipsPagerTemplateSettings : DependencyObject
 	public IList<int> PipsPagerItems
 	{
 		get => (IList<int>)GetValue(PipsPagerItemsProperty);
-		set => SetValue(PipsPagerItemsProperty, value);
+		internal set => SetValue(PipsPagerItemsProperty, value);
 	}
 
 	internal static DependencyProperty PipsPagerItemsProperty { get; } =
