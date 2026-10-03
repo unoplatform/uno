@@ -188,6 +188,10 @@ namespace Uno.UI.Runtime.Skia {
 
 			element.addEventListener('scroll', (e) => {
 				let element = e.target as HTMLElement;
+				if (Accessibility.isScrollEcho(element)) {
+					return;
+				}
+
 				this.managedOnScroll(handle, element.scrollLeft, element.scrollTop);
 			});
 
@@ -948,7 +952,49 @@ namespace Uno.UI.Runtime.Skia {
 			if (element) {
 				element.scrollLeft = horizontalOffset;
 				element.scrollTop = verticalOffset;
+
+				// Read back what the browser kept: it rounds the offsets and clamps them to the semantic
+				// children's extent, which rarely matches the XAML extent.
+				Accessibility.syncedScrollOffsets.set(element, { left: element.scrollLeft, top: element.scrollTop });
 			}
+		}
+
+		// Last scroll offsets of each semantic scroller that are known to mirror the managed ScrollViewer.
+		private static syncedScrollOffsets = new WeakMap<HTMLElement, { left: number, top: number }>();
+
+		/**
+		 * True when a semantic scroller's scroll event was not caused by the user or an AT, but by the
+		 * browser reacting to our own updates: echoing updateNativeScrollOffsets, clamping the offset
+		 * after the semantic children moved or shrank, or resetting it when the element is hidden.
+		 * Forwarding those would drag the managed ScrollViewer back to a stale offset.
+		 */
+		private static isScrollEcho(element: HTMLElement): boolean {
+			if (!element.isConnected || (element.clientWidth === 0 && element.clientHeight === 0)) {
+				return true;
+			}
+
+			const synced = Accessibility.syncedScrollOffsets.get(element);
+			if (!synced) {
+				return false;
+			}
+
+			const left = element.scrollLeft;
+			const top = element.scrollTop;
+			const maxLeft = element.scrollWidth - element.clientWidth;
+			const maxTop = element.scrollHeight - element.clientHeight;
+
+			// A user scroll can only reach the end of the range, never be pushed back to it from beyond.
+			const isEcho = (value: number, syncedValue: number, max: number) =>
+				Math.abs(value - syncedValue) < 1 || (Math.abs(value - max) < 1 && syncedValue > max);
+
+			if (isEcho(left, synced.left, maxLeft) && isEcho(top, synced.top, maxTop)) {
+				synced.left = left;
+				synced.top = top;
+				return true;
+			}
+
+			Accessibility.syncedScrollOffsets.set(element, { left, top });
+			return false;
 		}
 
 		public static hideSemanticElement(handle: number) {
