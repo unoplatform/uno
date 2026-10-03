@@ -43,7 +43,7 @@ public class Given_ScrollView
 		await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 0, message: "a sub-detent wheel delta should scroll");
 		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
-		Assert.AreEqual(12, sut.VerticalOffset, 0.5, "a quarter detent should scroll a quarter of the 48px a detent scrolls");
+		Assert.AreEqual(8, sut.VerticalOffset, 0.5, "a quarter detent should scroll a quarter of the 32 DIP a detent scrolls");
 	}
 
 	/// <summary>
@@ -97,6 +97,51 @@ public class Given_ScrollView
 
 		Assert.IsTrue(frames >= 5, $"expected the wheel inertia to span several frames, got {frames}");
 		Assert.AreEqual(0, mismatches, $"{mismatches} of {frames} recorded frames showed a position the tracker had already left");
+	}
+
+	/// <summary>
+	/// Measured on WinUI 3: a notch moves a ScrollView 32 DIP along v0·(1 − (t/T)²) over 257ms, so half-way at
+	/// 89ms and 90% at 189ms after the motion starts (WinUI adds ~20ms of compositor latency before that start).
+	/// </summary>
+	[TestMethod]
+	public async Task When_Wheel_Notch_Then_Follows_The_WinUI_Curve()
+	{
+		var (sut, bounds) = await LoadTallScrollView();
+		var tracker = GetTracker(sut.ScrollPresenter!);
+
+		var stopwatch = new System.Diagnostics.Stopwatch();
+		var samples = new List<(double Ms, float Position)>();
+		EventHandler<object> onRendering = (_, _) => samples.Add((stopwatch.Elapsed.TotalMilliseconds, tracker.Position.Y));
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+		mouse.MoveTo(Center(bounds));
+
+		CompositionTarget.Rendering += onRendering;
+		try
+		{
+			stopwatch.Start();
+			mouse.WheelDown();
+			await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 0, message: "the wheel should scroll");
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+		}
+		finally
+		{
+			CompositionTarget.Rendering -= onRendering;
+		}
+
+		Assert.AreEqual(32, sut.VerticalOffset, 0.01, "a notch should scroll 32 DIP");
+
+		// Timed from the last frame at rest: the first moving frame is a whole frame into the curve.
+		var start = samples.FindLastIndex(sample => sample.Position == 0);
+		var t0 = samples[start].Ms;
+		var t50 = samples.First(sample => sample.Position >= 16).Ms - t0;
+		var t90 = samples.First(sample => sample.Position >= 32 * 0.9).Ms - t0;
+		var tolerance = 50.0; // wall-clock samples: absorb CI jitter, still far from a linear (128ms/231ms) curve
+
+		Assert.AreEqual(89, t50, tolerance, $"half the notch took {t50:F0}ms");
+		Assert.AreEqual(189, t90, tolerance, $"90% of the notch took {t90:F0}ms");
+		Assert.IsTrue(samples[start + 1].Position < 4, $"the first frame jumped {samples[start + 1].Position:F1} DIP");
 	}
 
 	/// <summary>A finger pressed and held on coasting content stops it, without having to move first.</summary>
