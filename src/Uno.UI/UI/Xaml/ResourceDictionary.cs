@@ -253,7 +253,7 @@ namespace Microsoft.UI.Xaml
 				_values.Remove(keyToRemove);
 				if (value is FrameworkElement fe)
 				{
-					fe.LeaveImpl(new LeaveParams());
+					fe.LeaveImpl(null, new LeaveParams());
 				}
 
 				ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
@@ -1067,6 +1067,8 @@ namespace Microsoft.UI.Xaml
 				_isParsing = value;
 				if (_isParsing)
 				{
+					// Generated InitializeComponent is the parser: while it runs, it owns our parent relationship.
+					SetParserParentLock();
 					ResourceResolver.PushSourceToScope(this);
 				}
 			}
@@ -1129,6 +1131,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_isParsing = false;
+			ResetParserParentLock();
 			ResourceResolver.PopSourceFromScope();
 		}
 
