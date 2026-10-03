@@ -76,6 +76,10 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Themes.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';fluenttheme;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.Fluent.WinUI" ProjectSystem="true" />
+	</ItemGroup>
+
 	<ItemGroup Condition="$(UnoFeatures.Contains(';prism;'))">
 		<_UnoProjectSystemPackageReference Include="Prism.Uno.WinUI" ProjectSystem="true" Condition="!$(_IsExecutable)" />
 		<_UnoProjectSystemPackageReference Include="Prism.DryIoc.Uno.WinUI" ProjectSystem="true" Condition="$(_IsExecutable)" />
