@@ -8,6 +8,11 @@ namespace Windows.ApplicationModel.Core
 #endif
 	public partial class CoreApplicationViewTitleBar
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal CoreApplicationViewTitleBar()
+		{
+		}
+#endif
 		// Skipping already declared property ExtendViewIntoTitleBar
 		// Skipping already declared property Height
 		// Skipping already declared property IsVisible

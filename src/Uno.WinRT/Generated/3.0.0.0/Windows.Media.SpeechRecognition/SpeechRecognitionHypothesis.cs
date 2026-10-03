@@ -8,6 +8,11 @@ namespace Windows.Media.SpeechRecognition
 #endif
 	public partial class SpeechRecognitionHypothesis
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal SpeechRecognitionHypothesis()
+		{
+		}
+#endif
 		// Skipping already declared property Text
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.Text.get
 	}

@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 	public partial class AutomationProperties
 	{
+#if __SKIA__
+		internal AutomationProperties()
+		{
+		}
+#endif
 		// Skipping already declared property AcceleratorKeyProperty
 		// Skipping already declared property AccessKeyProperty
 		// Skipping already declared property AccessibilityViewProperty

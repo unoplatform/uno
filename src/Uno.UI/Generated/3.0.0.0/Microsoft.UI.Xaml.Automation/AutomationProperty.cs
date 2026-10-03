@@ -8,5 +8,10 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 	public partial class AutomationProperty
 	{
+#if __SKIA__
+		internal AutomationProperty()
+		{
+		}
+#endif
 	}
 }

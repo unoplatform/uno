@@ -1749,6 +1749,9 @@ namespace Uno.WinAppSDKSyncGenerator
 			return false;
 		}
 
+		private static string GetAccessModifier(IPropertySymbol property)
+			=> property.DeclaredAccessibility is Accessibility.Protected or Accessibility.ProtectedOrInternal ? "protected " : "public ";
+
 		private static string GetParameterRefKind(IParameterSymbol p)
 			=> p.RefKind != RefKind.None ? $"{p.RefKind.ToString().ToLowerInvariant()} " : "";
 
@@ -1963,7 +1966,7 @@ namespace Uno.WinAppSDKSyncGenerator
 								var propertyType = getAttached?.ReturnType ?? getLocal?.Type;
 								var propertyDisplayType = MapWinAppSDKTypes(propertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
-								b.AppendLineInvariant($"public {staticQualifier}{SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} =");
+								b.AppendLineInvariant($"{GetAccessModifier(property)}{staticQualifier}{SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} =");
 
 								b.AppendLineInvariant($"{BaseXamlNamespace}.DependencyProperty.Register{attachedModifier}(");
 
@@ -2001,7 +2004,7 @@ namespace Uno.WinAppSDKSyncGenerator
 							&& property.ContainingType.GetMembers(property.Name + "Property").Any()
 						)
 						{
-							using (b.BlockInvariant($"public {staticQualifier}{MapWinAppSDKTypes(SanitizeType(property.Type))} {property.Name}"))
+							using (b.BlockInvariant($"{GetAccessModifier(property)}{staticQualifier}{MapWinAppSDKTypes(SanitizeType(property.Type))} {property.Name}"))
 							{
 								if (property.GetMethod != null)
 								{
@@ -2026,7 +2029,7 @@ namespace Uno.WinAppSDKSyncGenerator
 						}
 						else
 						{
-							string accessModifier = property.ExplicitInterfaceImplementations.IsEmpty ? "public " : string.Empty;
+							string accessModifier = property.ExplicitInterfaceImplementations.IsEmpty ? GetAccessModifier(property) : string.Empty;
 							string propertyName;
 
 							if (property.IsIndexer)
@@ -2243,8 +2246,10 @@ namespace Uno.WinAppSDKSyncGenerator
 				yield return memberSymbol;
 			}
 
+			// Constructors are not inherited: a base type's ctor must not satisfy a derived type's.
 			if (
-				symbol?.BaseType != null
+				name != WellKnownMemberNames.InstanceConstructorName
+				&& symbol?.BaseType != null
 				&& !SymbolEqualityComparer.Default.Equals(symbol.BaseType, _iOSBaseSymbol)
 				&& !SymbolEqualityComparer.Default.Equals(symbol.BaseType, _tvOSBaseSymbol)
 				&& !SymbolEqualityComparer.Default.Equals(symbol.BaseType, _androidBaseSymbol)

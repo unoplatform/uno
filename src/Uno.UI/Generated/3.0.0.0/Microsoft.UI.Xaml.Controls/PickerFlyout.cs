@@ -52,7 +52,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.PickerFlyout.PickerFlyout()
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public PickerFlyout() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.PickerFlyout", "PickerFlyout()");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.PickerFlyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ConfirmationButtonsVisibleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ContentProperty.get

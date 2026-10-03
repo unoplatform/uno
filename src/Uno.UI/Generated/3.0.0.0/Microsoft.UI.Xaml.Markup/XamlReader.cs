@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Markup
 #endif
 	public partial class XamlReader
 	{
+#if __SKIA__
+		internal XamlReader()
+		{
+		}
+#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlReader.Load(string)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlReader.LoadWithInitialTemplateValidation(string)
 	}

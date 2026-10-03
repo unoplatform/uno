@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 	public partial class SelectionItemPatternIdentifiers
 	{
+#if __SKIA__
+		internal SelectionItemPatternIdentifiers()
+		{
+		}
+#endif
 		// Skipping already declared property IsSelectedProperty
 		// Skipping already declared property SelectionContainerProperty
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionItemPatternIdentifiers.IsSelectedProperty.get

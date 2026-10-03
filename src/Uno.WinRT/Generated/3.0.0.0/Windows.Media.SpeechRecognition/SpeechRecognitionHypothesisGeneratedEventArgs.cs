@@ -8,6 +8,11 @@ namespace Windows.Media.SpeechRecognition
 #endif
 	public partial class SpeechRecognitionHypothesisGeneratedEventArgs
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal SpeechRecognitionHypothesisGeneratedEventArgs()
+		{
+		}
+#endif
 		// Skipping already declared property Hypothesis
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesisGeneratedEventArgs.Hypothesis.get
 	}

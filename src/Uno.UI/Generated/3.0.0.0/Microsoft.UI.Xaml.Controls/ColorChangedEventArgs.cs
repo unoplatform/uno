@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ColorChangedEventArgs
 	{
+#if __SKIA__
+		internal ColorChangedEventArgs()
+		{
+		}
+#endif
 		// Skipping already declared property NewColor
 		// Skipping already declared property OldColor
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorChangedEventArgs.NewColor.get

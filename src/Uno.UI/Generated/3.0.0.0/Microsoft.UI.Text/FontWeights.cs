@@ -8,6 +8,11 @@ namespace Microsoft.UI.Text
 #endif
 	public partial class FontWeights
 	{
+#if __SKIA__
+		internal FontWeights()
+		{
+		}
+#endif
 		// Skipping already declared property Black
 		// Skipping already declared property Bold
 		// Skipping already declared property ExtraBlack

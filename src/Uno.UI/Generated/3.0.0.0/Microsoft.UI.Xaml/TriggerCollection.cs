@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class TriggerCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.TriggerBase>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.TriggerBase>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.TriggerBase>, global::System.Collections.IEnumerable
 	{
+#if __SKIA__
+		internal TriggerCollection()
+		{
+		}
+#endif
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]

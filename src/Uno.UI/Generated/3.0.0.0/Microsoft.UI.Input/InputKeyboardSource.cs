@@ -8,6 +8,11 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputKeyboardSource : global::Microsoft.UI.Input.InputObject
 	{
+#if __SKIA__
+		internal InputKeyboardSource()
+		{
+		}
+#endif
 		// Skipping already declared method Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(Windows.System.VirtualKey)
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]

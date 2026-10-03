@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 	public partial class TogglePatternIdentifiers
 	{
+#if __SKIA__
+		internal TogglePatternIdentifiers()
+		{
+		}
+#endif
 		// Skipping already declared property ToggleStateProperty
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers.ToggleStateProperty.get
 	}

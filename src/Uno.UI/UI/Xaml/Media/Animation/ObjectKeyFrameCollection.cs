@@ -6,6 +6,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public sealed partial class ObjectKeyFrameCollection : DependencyObjectCollection<ObjectKeyFrame>, IList<ObjectKeyFrame>, IEnumerable<ObjectKeyFrame>
 	{
+		public ObjectKeyFrameCollection()
+		{
+		}
+
 		internal ObjectKeyFrameCollection(DependencyObject owner, bool isAutoPropertyInheritanceEnabled)
 			: base(parent: owner, isAutoPropertyInheritanceEnabled: isAutoPropertyInheritanceEnabled)
 		{

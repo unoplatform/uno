@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public
 			event RoutedEventHandler Click;
 
-		public ButtonBase()
+		protected ButtonBase()
 		{
 			Initialize();
 

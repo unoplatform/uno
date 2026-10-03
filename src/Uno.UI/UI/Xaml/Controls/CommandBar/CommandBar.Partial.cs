@@ -1876,11 +1876,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (element is AppBarButton elementAsAppBarButton)
 					{
-						AppBarButtonHelpers<AppBarButton>.UpdateTemplateSettings<AppBarButtonTemplateSettings>(elementAsAppBarButton, maxAppBarKeyboardAcceleratorTextWidth);
+						AppBarButtonHelpers<AppBarButton>.UpdateTemplateSettings<AppBarButtonTemplateSettings>(elementAsAppBarButton, maxAppBarKeyboardAcceleratorTextWidth, static () => new AppBarButtonTemplateSettings());
 					}
 					else if (element is AppBarToggleButton elementAsAppBarToggleButton)
 					{
-						AppBarButtonHelpers<AppBarToggleButton>.UpdateTemplateSettings<AppBarToggleButtonTemplateSettings>(elementAsAppBarToggleButton, maxAppBarKeyboardAcceleratorTextWidth);
+						AppBarButtonHelpers<AppBarToggleButton>.UpdateTemplateSettings<AppBarToggleButtonTemplateSettings>(elementAsAppBarToggleButton, maxAppBarKeyboardAcceleratorTextWidth, static () => new AppBarToggleButtonTemplateSettings());
 					}
 				}
 			}

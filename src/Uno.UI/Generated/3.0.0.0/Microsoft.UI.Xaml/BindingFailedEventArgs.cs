@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class BindingFailedEventArgs
 	{
+#if __SKIA__
+		internal BindingFailedEventArgs()
+		{
+		}
+#endif
 		// Skipping already declared property Message
 		// Forced skipping of method Microsoft.UI.Xaml.BindingFailedEventArgs.Message.get
 	}
