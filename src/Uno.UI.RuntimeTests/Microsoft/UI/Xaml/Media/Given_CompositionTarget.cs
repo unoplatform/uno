@@ -240,6 +240,41 @@ public class Given_CompositionTarget
 	}
 
 	/// <summary>
+	/// Hosts that get a vsync time with each frame (requestAnimationFrame, CADisplayLink) hand it over, and the
+	/// frame clock uses it rather than sampling its own clock after the frame has crossed the dispatcher.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
+	public async Task When_Host_Reports_Vsync_Then_Frame_Time_Is_The_Vsync()
+	{
+		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
+		await UITestHelper.Load(border);
+		var target = (CompositionTarget)border.Visual.CompositionTarget!;
+		var compositor = border.Visual.Compositor;
+
+		var ticks = 0;
+		var aheadOfClock = 0L;
+		EventHandler<long> driver = (_, timestamp) =>
+		{
+			ticks++;
+			aheadOfClock = Math.Max(aheadOfClock, timestamp - compositor.TimestampInTicks);
+		};
+		target.FrameStarting += driver;
+		try
+		{
+			await TestServices.WindowHelper.WaitFor(() => ticks >= 10, message: "the driver should keep ticking");
+		}
+		finally
+		{
+			target.FrameStarting -= driver;
+		}
+
+		Assert.IsTrue(target.IsFrameTimestampFromVsync, "the frame time should come from the host's vsync");
+		Assert.IsTrue(aheadOfClock <= 0, $"a vsync that already happened can't be {aheadOfClock / (double)TimeSpan.TicksPerMillisecond:F2}ms ahead of the clock");
+	}
+
+	/// <summary>
 	/// The tick that evaluates drivers is kept alive by the frame chain itself, not by the drivers writing
 	/// something: a driver that skips a frame (or is about to stop) must still get its next tick.
 	/// </summary>
