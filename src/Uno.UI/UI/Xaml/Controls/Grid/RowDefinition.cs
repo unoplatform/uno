@@ -28,13 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private static GridLength GetHeightDefaultValue() => GridLengthHelper.OneStar;
 
 		[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-		public static DependencyProperty HeightProperty { get; } = CreateHeightProperty();
-
-		public GridLength Height
-		{
-			get => GetHeightValue();
-			set => SetHeightValue(value);
-		}
+		public partial GridLength Height { get; set; }
 
 		#endregion
 
@@ -44,21 +38,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = 0d, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-		public static DependencyProperty MinHeightProperty { get; } = CreateMinHeightProperty();
-
-		public double MinHeight
-		{
-			get => GetMinHeightValue();
-			set => SetMinHeightValue(value);
-		}
+		public partial double MinHeight { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-		public static DependencyProperty MaxHeightProperty { get; } = CreateMaxHeightProperty();
-		public double MaxHeight
-		{
-			get => GetMaxHeightValue();
-			set => SetMaxHeightValue(value);
-		}
+		public partial double MaxHeight { get; set; }
 
 		public double ActualHeight
 		{

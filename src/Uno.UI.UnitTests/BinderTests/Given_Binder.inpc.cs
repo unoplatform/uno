@@ -104,28 +104,16 @@ namespace Uno.UI.Tests.BinderTests
 	{
 		public string MyValuePropertyValueDuringChange { get; private set; }
 
-		public string MyValue
-		{
-			get => GetMyValueValue();
-			set => SetMyValueValue(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = "")]
-		public static DependencyProperty MyValueProperty { get; } = CreateMyValueProperty();
+		public partial string MyValue { get; set; }
 
 		private void OnMyValueChanged(string oldValue, string newValue)
 		{
 			MyValuePropertyValueDuringChange = MyValue;
 		}
 
-		public string MyValue2
-		{
-			get => GetMyValue2Value();
-			set => SetMyValue2Value(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = "")]
-		public static DependencyProperty MyValue2Property { get; } = CreateMyValue2Property();
+		public partial string MyValue2 { get; set; }
 	}
 
 	public class Binder_INPC_Base_Class : Binder_INPC_BaseViewModel

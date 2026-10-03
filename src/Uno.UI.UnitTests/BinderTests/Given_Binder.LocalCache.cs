@@ -112,14 +112,8 @@ namespace Uno.UI.Tests.BinderTests
 	{
 		public int MyValuePropertyValueDuringChange { get; private set; }
 
-		public int MyValue
-		{
-			get => GetMyValueValue();
-			set => SetMyValueValue(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty MyValueProperty { get; } = CreateMyValueProperty();
+		public partial int MyValue { get; set; }
 
 		private void OnMyValueChanged(int oldValue, int newValue)
 		{
@@ -131,13 +125,8 @@ namespace Uno.UI.Tests.BinderTests
 	{
 		private bool _suppressIsEnabled;
 
-		public bool IsEnabled
-		{
-			get => GetIsEnabledValue();
-			set => SetIsEnabledValue(value);
-		}
 		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
+		public partial bool IsEnabled { get; set; }
 		private void OnIsEnabledChanged(bool oldValue, bool newValue) { }
 		private object CoerceIsEnabled(object baseValue) => _suppressIsEnabled ? false : baseValue;
 

@@ -19,10 +19,10 @@ one diff. No specific file paths from the change that triggered it.
 
 ---
 
-## 2026-06-24 — Generated DependencyProperty fields are expected public surface
+## 2026-06-24 — Generated DependencyProperty identifiers are expected public surface
 - **Lens:** contract
-- **Lesson:** `[GeneratedDependencyProperty]` emits `public static DependencyProperty …Property` fields and public CLR accessors by design; they mirror WinUI and are required by the property system.
-- **Apply:** Don't flag generated `…Property` fields or their accessors as gratuitous public surface or a contract-minimality issue. See `.claude/rules/dependency-properties.md`.
+- **Lesson:** `[GeneratedDependencyProperty]` emits the `static DependencyProperty …Property` identifiers (get-only properties, with the accessibility of the partial CLR property or `Get…` method) and implements the partial CLR accessors by design; they mirror WinUI and are required by the property system.
+- **Apply:** Don't flag generated `…Property` identifiers or their accessors as gratuitous public surface or a contract-minimality issue. See `.claude/rules/dependency-properties.md`.
 
 ## 2026-06-24 — A guard-only change is not a root-cause fix
 - **Lens:** skeptic

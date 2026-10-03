@@ -426,17 +426,8 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// This is a Transformation for a UIElement.  It binds the Render Transform to the View
 		/// </summary>
-		public Transform RenderTransform
-		{
-			get => GetRenderTransformValue();
-			set => SetRenderTransformValue(value);
-		}
-
-		/// <summary>
-		/// Backing dependency property for <see cref="RenderTransform"/>
-		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static DependencyProperty RenderTransformProperty { get; } = CreateRenderTransformProperty();
+		public partial Transform RenderTransform { get; set; }
 
 		private void OnRenderTransformChanged(Transform _, Transform transform)
 		{
@@ -466,14 +457,9 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// This is a Transformation for a UIElement.  It binds the Render Transform to the View
 		/// </summary>
-		public Point RenderTransformOrigin
-		{
-			get => GetRenderTransformOriginValue();
-			set => SetRenderTransformOriginValue(value);
-		}
-
 		[GeneratedDependencyProperty(ChangedCallback = true)]
-		public static DependencyProperty RenderTransformOriginProperty { get; } = CreateRenderTransformOriginProperty();
+		public partial Point RenderTransformOrigin { get; set; }
+
 		private static object GetRenderTransformOriginDefaultValue() => default(Point);
 
 		private void OnRenderTransformOriginChanged(Point _, Point origin)
@@ -488,17 +474,8 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets or sets the perspective projection (3-D effect) to apply when rendering this element.
 		/// </summary>
-		public Media.Projection Projection
-		{
-			get => GetProjectionValue();
-			set => SetProjectionValue(value);
-		}
-
-		/// <summary>
-		/// Backing dependency property for <see cref="Projection"/>
-		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static DependencyProperty ProjectionProperty { get; } = CreateProjectionProperty();
+		public partial Media.Projection Projection { get; set; }
 
 		private void OnProjectionChanged(Media.Projection oldValue, Media.Projection newValue)
 		{
@@ -1419,59 +1396,23 @@ namespace Microsoft.UI.Xaml
 		// the plateau scale gets combined with the owning ScrollViewer's ZoomFactor if headers are present.
 		internal double GetScaleFactorForLayoutRounding() => RootScale.GetRasterizationScaleForElement(this);
 
-		public XYFocusKeyboardNavigationMode XYFocusKeyboardNavigation
-		{
-			get => GetXYFocusKeyboardNavigationValue();
-			set => SetXYFocusKeyboardNavigationValue(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = default(XYFocusKeyboardNavigationMode))]
-		public static DependencyProperty XYFocusKeyboardNavigationProperty { get; } = CreateXYFocusKeyboardNavigationProperty();
-
-		public XYFocusNavigationStrategy XYFocusDownNavigationStrategy
-		{
-			get => GetXYFocusDownNavigationStrategyValue();
-			set => SetXYFocusDownNavigationStrategyValue(value);
-		}
+		public partial XYFocusKeyboardNavigationMode XYFocusKeyboardNavigation { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
-		public static DependencyProperty XYFocusDownNavigationStrategyProperty { get; } = CreateXYFocusDownNavigationStrategyProperty();
-
-		public XYFocusNavigationStrategy XYFocusLeftNavigationStrategy
-		{
-			get => GetXYFocusLeftNavigationStrategyValue();
-			set => SetXYFocusLeftNavigationStrategyValue(value);
-		}
+		public partial XYFocusNavigationStrategy XYFocusDownNavigationStrategy { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
-		public static DependencyProperty XYFocusLeftNavigationStrategyProperty { get; } = CreateXYFocusLeftNavigationStrategyProperty();
-
-		public XYFocusNavigationStrategy XYFocusRightNavigationStrategy
-		{
-			get => GetXYFocusRightNavigationStrategyValue();
-			set => SetXYFocusRightNavigationStrategyValue(value);
-		}
+		public partial XYFocusNavigationStrategy XYFocusLeftNavigationStrategy { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
-		public static DependencyProperty XYFocusRightNavigationStrategyProperty { get; } = CreateXYFocusRightNavigationStrategyProperty();
-
-		public XYFocusNavigationStrategy XYFocusUpNavigationStrategy
-		{
-			get => GetXYFocusUpNavigationStrategyValue();
-			set => SetXYFocusUpNavigationStrategyValue(value);
-		}
+		public partial XYFocusNavigationStrategy XYFocusRightNavigationStrategy { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
-		public static DependencyProperty XYFocusUpNavigationStrategyProperty { get; } = CreateXYFocusUpNavigationStrategyProperty();
-
-		public KeyboardNavigationMode TabFocusNavigation
-		{
-			get => GetTabFocusNavigationValue();
-			set => SetTabFocusNavigationValue(value);
-		}
+		public partial XYFocusNavigationStrategy XYFocusUpNavigationStrategy { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(KeyboardNavigationMode))]
-		public static DependencyProperty TabFocusNavigationProperty { get; } = CreateTabFocusNavigationProperty();
+		public partial KeyboardNavigationMode TabFocusNavigation { get; set; }
 
 		// This depends on the implementation of ICorePointerInputSource.PointerCursor.
 		/// <summary>
@@ -1558,14 +1499,8 @@ namespace Microsoft.UI.Xaml
 			UpdateHitTest();
 		}
 
-		public bool UseLayoutRounding
-		{
-			get => GetUseLayoutRoundingValue();
-			set => SetUseLayoutRoundingValue(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallbackName = nameof(OnUseLayoutRoundingChanged))]
-		public static DependencyProperty UseLayoutRoundingProperty { get; } = CreateUseLayoutRoundingProperty();
+		public partial bool UseLayoutRounding { get; set; }
 
 		private void OnUseLayoutRoundingChanged(DependencyPropertyChangedEventArgs args) => (this as IBorderInfoProvider)?.UpdateBorderThickness();
 
