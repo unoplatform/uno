@@ -115,9 +115,19 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		// once it is no longer the current render thread, so it cannot resume on the next surface.
 		Volatile.Write(ref _renderThread, null);
 
-		if (!stopped && this.Log().IsEnabled(LogLevel.Warning))
+		if (!stopped)
 		{
-			this.Log().Warn("UnoWebGpuView: the render thread did not stop within the timeout.");
+			// The straggler is still inside a frame using these objects, so abandon them rather than
+			// free them under it, as TeardownRenderer does. The next surface negotiates fresh ones.
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("UnoWebGpuView: the render thread did not stop within the timeout; its resources are left to the process teardown.");
+			}
+
+			_renderer = null;
+			_context = null;
+			_nativeWindow = IntPtr.Zero;
+			return;
 		}
 
 		// Before the swapchain: the backend built its own device objects on it, and tearing the swapchain down
