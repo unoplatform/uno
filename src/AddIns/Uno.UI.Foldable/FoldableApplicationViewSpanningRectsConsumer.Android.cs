@@ -22,7 +22,7 @@ namespace Uno.UI.Foldable
 	/// </summary>
 	/// <remarks>
 	/// See the _other partial class_ file for wiring up Jetpack Window Manager (Xamarin.AndroidX.Window.WindowJava)
-	/// via the ApplicationViewHelper.GetBaseActivityEvents() helper and ContextHelper.Current
+	/// via the activity lifecycle events of ContextHelper.Current
 	/// </remarks>
 	public partial class FoldableApplicationViewSpanningRects : Java.Lang.Object, AndroidX.Core.Util.IConsumer
 	{

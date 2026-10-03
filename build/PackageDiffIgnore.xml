@@ -2421,6 +2421,10 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/Frame" reason="Removed empty FeatureConfiguration.Frame holder after deleting UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Page" reason="Removed empty FeatureConfiguration.Page holder after deleting IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.PagePool" reason="Removed the Page instance pool; only the legacy Frame navigation mode used it (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Skia-Android de-singletoning: this Java listener is constructed by the host with its owning activity and was never usable by app code, which had no way to supply one. -->
+		  <Member fullName="Uno.UI.OnSystemUiVisibilityChangeListener" reason="OnSystemUiVisibilityChangeListener reduced to internal; it is bound to the activity that owns the window (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.ViewManagement.IBaseActivityEvents" reason="Removed IBaseActivityEvents: no Skia activity implements it, so ApplicationViewHelper.GetBaseActivityEvents() always returned null (breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -3613,6 +3617,10 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.OnContentChanged(System.Object oldValue, System.Object newValue)" reason="Removed Frame override that synced the legacy navigation entry; ContentControl.OnContentChanged still applies (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.GetInstance(Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.EnsurePageInitialized(Microsoft.UI.Xaml.Controls.Frame frame, Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Skia-Android multi-window readiness: the ambient activity is owned by the activity lifecycle, and the activity events accessor only ever returned null on Skia. -->
+		  <Member fullName="System.Void Uno.UI.ContextHelper.set_Current(Android.Content.Context value)" reason="ContextHelper.Current setter reduced to internal; the value is driven by the activity lifecycle (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.ViewManagement.IBaseActivityEvents Uno.UI.ViewManagement.ApplicationViewHelper.GetBaseActivityEvents()" reason="Removed ApplicationViewHelper.GetBaseActivityEvents; it always returned null on Skia (breaking changes for 7.0)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
@@ -3988,6 +3996,9 @@
 		  <Member fullName="Microsoft.UI.Xaml.Controls.FlowLayoutAlgorithm" reason="Reduced Uno-only public FlowLayoutAlgorithm to internal; unprojected C++ helper in WinUI (ItemsRepeater WinUI port, uno#23406)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IFlowLayoutAlgorithmDelegates" reason="Reduced Uno-only public IFlowLayoutAlgorithmDelegates to internal; unprojected C++ interface in WinUI (ItemsRepeater WinUI port, uno#23406)" />
 
+		  <!-- Skia-Android de-singletoning: this Java listener is constructed by the host with its owning activity and was never usable by app code, which had no way to supply one. -->
+		  <Member fullName="Uno.UI.OnSystemUiVisibilityChangeListener" reason="OnSystemUiVisibilityChangeListener reduced to internal; it is bound to the activity that owns the window (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.ViewManagement.IBaseActivityEvents" reason="Removed IBaseActivityEvents: no Skia activity implements it, so ApplicationViewHelper.GetBaseActivityEvents() always returned null (breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -5209,6 +5220,10 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsRepeater.ClearElementImpl(Microsoft.UI.Xaml.UIElement element)" reason="Reduced Uno-only public ItemsRepeater.ClearElementImpl to internal; not on ItemsRepeater.idl (ItemsRepeater WinUI port, uno#23406)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.StackLayout.Algorithm_OnLineArranged(System.Int32 startIndex, System.Int32 countInLine, System.Double lineSize, Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext context)" reason="Made StackLayout.Algorithm_OnLineArranged an explicit IFlowLayoutAlgorithmDelegates implementation, matching its siblings (ItemsRepeater WinUI port, uno#23406)" />
 
+
+		  <!-- Skia-Android multi-window readiness: the ambient activity is owned by the activity lifecycle, and the activity events accessor only ever returned null on Skia. -->
+		  <Member fullName="System.Void Uno.UI.ContextHelper.set_Current(Android.Content.Context value)" reason="ContextHelper.Current setter reduced to internal; the value is driven by the activity lifecycle (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.ViewManagement.IBaseActivityEvents Uno.UI.ViewManagement.ApplicationViewHelper.GetBaseActivityEvents()" reason="Removed ApplicationViewHelper.GetBaseActivityEvents; it always returned null on Skia (breaking changes for 7.0)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->

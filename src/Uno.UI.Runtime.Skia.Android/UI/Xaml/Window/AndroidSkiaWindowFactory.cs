@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml;
+using System;
+using Microsoft.UI.Xaml;
+using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Android;
@@ -11,10 +13,17 @@ internal sealed class AndroidSkiaWindowFactory : INativeWindowFactoryExtension
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
-		// While we are currently not having something very useful in the root host, instantiating it has side effects that we need.
-		// So this line isn't unnecessary ;)
-		_ = new AndroidSkiaXamlRootHost(xamlRoot);
-		NativeWindowWrapper.Instance.SetWindow(window, xamlRoot);
-		return NativeWindowWrapper.Instance;
+		// TODO #8341: with multiple windows this must resolve the activity that owns the window
+		// being created rather than the current foreground one.
+		var activity = BaseActivity.Current as ApplicationActivity
+			?? throw new InvalidOperationException("No foreground ApplicationActivity is available to host the window.");
+
+		var wrapper = activity.Wrapper;
+		wrapper.SetWindow(window, xamlRoot);
+
+		// The XamlRootMap is how consumers resolve the owning activity from a XamlRoot.
+		XamlRootMap.Register(xamlRoot, new AndroidSkiaXamlRootHost(window, wrapper));
+
+		return wrapper;
 	}
 }
