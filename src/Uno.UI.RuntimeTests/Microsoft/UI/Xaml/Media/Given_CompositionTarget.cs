@@ -468,10 +468,12 @@ public class Given_CompositionTarget
 			target.FrameStarting -= driver;
 		}
 
+		// An absolute bound, well short of the pause: hosts that are not vsync-paced (the framebuffer) measure
+		// intervals far below a display's, so a bound in frame intervals would fail on any ordinary frame there.
 		var firstStep = timestamps[1] - timestamps[0];
 		Assert.IsTrue(
-			firstStep < 3 * target.FrameIntervalInTicks,
-			$"the first step spanned {firstStep / (double)TimeSpan.TicksPerMillisecond:F1}ms, longer than a few frames");
+			firstStep < 100 * TimeSpan.TicksPerMillisecond,
+			$"the first step spanned {firstStep / (double)TimeSpan.TicksPerMillisecond:F1}ms, so it played out the pause");
 	}
 
 	/// <summary>
