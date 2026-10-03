@@ -13,7 +13,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Uno.UI.RemoteControl.VS;
 
-internal sealed class UnoMenuCommand : IDisposable
+internal sealed class UnoMenuCommand : IAsyncDisposable
 {
 	private readonly AsyncPackage _package;
 	private OleMenuCommandService CommandService { get; set; }
@@ -143,8 +143,11 @@ internal sealed class UnoMenuCommand : IDisposable
 	private bool TryGetCommandRequestIdeMessage(DynamicItemMenuCommand matchedCommand, [NotNullWhen(true)] out AddMenuItemRequestIdeMessage result)
 		=> (result = CommandList.Skip(GetCurrentPosition(matchedCommand)).FirstOrDefault()) != null;
 
-	public void Dispose()
+	public async ValueTask DisposeAsync()
 	{
+		// OleMenuCommandService is UI-thread-affine; the package's DisposalToken bounds the hop at VS shutdown.
+		await _package.JoinableTaskFactory.SwitchToMainThreadAsync(_package.DisposalToken);
+
 		if (_dynamicMenuCommand is not null)
 		{
 			CommandService.RemoveCommand(_dynamicMenuCommand);
