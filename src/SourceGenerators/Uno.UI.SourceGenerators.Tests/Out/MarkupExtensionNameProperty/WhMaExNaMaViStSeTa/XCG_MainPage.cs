@@ -96,7 +96,7 @@ namespace TestRepro
 												new global::Microsoft.UI.Xaml.Setter
 												{
 													Target = /* target element not found MemoryHoverButtons */ null,
-													Value = @"1",
+													Value = "1",
 													// Source MainPage.xaml (Line 15:8)
 												}
 											)
