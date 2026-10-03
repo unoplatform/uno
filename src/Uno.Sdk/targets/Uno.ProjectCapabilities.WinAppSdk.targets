@@ -4,9 +4,10 @@
 		Tools extension to be activated for this project even if the Windows App SDK Nuget
 		package has not yet been restored.
 
-		Note: This will not be needed here for SingleProject
+		Note: Uno.ProjectCapabilities.SingleProject.targets only covers the ios/android target
+		frameworks, so single projects still get the capability from here on the windows one.
 	-->
-	<ItemGroup Condition="$(SingleProject)!='true' and $(OutputType)=='WinExe' and '$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+	<ItemGroup Condition="$(OutputType)=='WinExe' and '$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
 		<ProjectCapability Include="Msix"/>
 	</ItemGroup>
 
@@ -16,12 +17,12 @@
 		the Windows App SDK Nuget package has not yet been restored.
 	-->
 	<Choose>
-		<When Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' ">
+		<When Condition=" $(_IsUnoSingleProject) == 'true' ">
 			<PropertyGroup>
 				<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
 			</PropertyGroup>
 		</When>
-		<When Condition=" $(_IsUnoSingleProjectAndLegacy) != 'true' and $(OutputType)=='WinExe' and '$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+		<When Condition=" $(_IsUnoSingleProject) != 'true' and $(OutputType)=='WinExe' and '$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
 			<PropertyGroup>
 				<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
 			</PropertyGroup>
