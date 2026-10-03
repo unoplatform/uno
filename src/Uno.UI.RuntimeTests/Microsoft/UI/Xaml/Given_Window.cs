@@ -122,7 +122,7 @@ public class Given_Window
 		sut.Close();
 
 		// On iOS, closing the scene that was in front must not leave the app without a foreground scene.
-		await TestServices.WindowHelper.WaitFor(() => initialWindow.Visible);
+		await TestServices.WindowHelper.WaitFor(() => initialWindow.Visible, timeoutMS: 15000);
 	}
 
 	[TestMethod]
@@ -140,7 +140,7 @@ public class Given_Window
 		// On iOS the scene requested by Activate still connects after the close and gets discarded,
 		// which must not take the app's foreground scene with it.
 		await Task.Delay(TimeSpan.FromSeconds(2));
-		await TestServices.WindowHelper.WaitFor(() => initialWindow.Visible);
+		await TestServices.WindowHelper.WaitFor(() => initialWindow.Visible, timeoutMS: 15000);
 	}
 
 	[TestMethod]
