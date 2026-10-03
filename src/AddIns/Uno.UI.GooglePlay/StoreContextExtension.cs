@@ -48,8 +48,8 @@ public class StoreContextExtension : IStoreContextExtension
 
 	private class InAppReviewListener : Java.Lang.Object, IOnCompleteListener
 	{
-		private StoreContext _storeContext;
-		private IReviewManager _reviewManager;
+		private readonly StoreContext _storeContext;
+		private readonly IReviewManager _reviewManager;
 		private TaskCompletionSource<StoreRateAndReviewResult>? _inAppRateTcs;
 		private Xamarin.Google.Android.Play.Core.Tasks.Task? _launchTask;
 		private bool _forceReturn;
