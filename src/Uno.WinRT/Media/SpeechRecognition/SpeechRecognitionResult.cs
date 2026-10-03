@@ -14,6 +14,12 @@ namespace Windows.Media.SpeechRecognition
 		public double RawConfidence { get; internal set; }
 		public string Text { get; internal set; }
 
+#if __WASM__
+		// Implemented for WebAssembly; the generated partial still provides the NotImplemented stub for
+		// the other targets (its #if guard excludes __WASM__).
+		public SpeechRecognitionResultStatus Status { get; internal set; }
+#endif
+
 		internal IReadOnlyList<SpeechRecognitionResult> Alternates { get; set; }
 
 		public IReadOnlyList<SpeechRecognitionResult> GetAlternates(uint maxAlternates) => Alternates?.Take((int)maxAlternates).ToList();
