@@ -82,8 +82,13 @@ internal class McpUpstreamClient
 						{
 							log.LogTrace("Upstream MCP notified tool list changed");
 
-							// ToolListChanged has no meaningful params — no deserialization needed
-							if (_toolListChanged is { } callback && notificationGuard.TryStart())
+							// ToolListChanged has no meaningful params — no deserialization needed.
+							// The guard only dedupes the *initial* notification against the
+							// post-connect ListTools path below. Later notifications (e.g. the
+							// add-in publishing licensed tools after sign-in) must always be
+							// forwarded, otherwise the downstream tool list and toolCount stay stale.
+							notificationGuard.TryStart();
+							if (_toolListChanged is { } callback)
 							{
 								try
 								{
