@@ -90,6 +90,11 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 	uint IWebGpuDeviceContext.ColorFormat => (uint)_device.ColorFormat;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
 
+	// The scene renders into _presentTex, one offscreen recreated only on resize, and Present() blits all of it into
+	// the acquired swapchain image. Last frame's pixels are therefore still in the target when the next frame starts,
+	// so the compositor can repaint only the damaged region.
+	public bool PreservesContents => true;
+
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
 		if (_disposed) { return _target!; }

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using Microsoft.UI.Composition;
 using SkiaSharp;
 
 namespace Uno.UI.Composition.Drawing;
@@ -44,6 +45,30 @@ internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 	/// GRContext but does NOT dispose the surface (the renderer reuses it until the image/size changes).</summary>
 	public static SkiaPresentSession ForCachedGpuSurface(SKSurface cachedSurface, GRContext flushContext, IDrawingFactory factory)
 		=> new SkiaPresentSession(cachedSurface, flushContext, ownsSurface: false, factory);
+
+	/// <summary>Confines the session to the damaged regions.</summary>
+	internal void ClipToDamage(global::System.ReadOnlySpan<global::Windows.Foundation.Rect> damage)
+	{
+		if (damage.Length == 0)
+		{
+			return;
+		}
+
+		if (damage.Length == 1)
+		{
+			Canvas.ClipRect(damage[0].ToSKRect(), SKClipOperation.Intersect, antialias: true);
+			return;
+		}
+
+		using var builder = new SKPathBuilder();
+		foreach (var region in damage)
+		{
+			builder.AddRect(region.ToSKRect());
+		}
+
+		using var regions = builder.Detach();
+		Canvas.ClipPath(regions, SKClipOperation.Intersect, antialias: true);
+	}
 
 	// Restore any state the composition (frame replay + overlay) left behind, flush the composition surface, then
 	// submit the GPU.

@@ -485,7 +485,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// omitted.
 			drawingSession.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
 			// Live (non-recorded) walk: leaf culling is armed and narrows at each rect-shaped clip below.
-			Render(session, applyChildOptimization: true, cullRect: InfiniteClipRect);
+			Render(session, applyChildOptimization: true, cullRect: InfiniteClipRect, inheritedClipBounds: InfiniteClipRect);
 		}
 	}
 
@@ -496,7 +496,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <param name="cullRect">Root-space AABB of the ancestors' rect-shaped clips; a leaf provably outside it is
 	/// skipped. <c>default</c> (empty) disables culling — recordings must contain the full subtree, since they are
 	/// replayed under other transforms later (e.g. after a scroll).</param>
-	private void Render(in PaintingSession parentSession, bool applyChildOptimization = true, Rect cullRect = default, bool ancestorClipChanged = false)
+	private void Render(in PaintingSession parentSession, bool applyChildOptimization = true, Rect cullRect = default, bool ancestorClipChanged = false, Rect inheritedClipBounds = default)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -516,6 +516,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			return;
 		}
+
+		// The clip in effect for this visual's own content, in root coordinates: the parent's, narrowed by this
+		// visual's own rect-shaped clip. Computed once here and threaded to the children, so each visual pays
+		// O(1) instead of walking its whole ancestor chain.
+		var clipBounds = NarrowClipBounds(inheritedClipBounds);
 
 		// Leaf culling: a childless, size-bounded visual entirely outside the ancestors' clips renders nothing —
 		// skip its session/damage/replay work (dominant in long flat lists where most items sit outside the
@@ -566,9 +571,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					_shadowFallbackContent.Dispose();
 					_shadowFallbackContent = null;
 				}
-				PaintStep(this, session, clipChanged);
+				PaintStep(this, session, clipChanged, clipBounds);
 				PostPaintingClipStep(this, in session);
-				RenderChildrenStep(this, session, applyChildOptimization, cullRect, clipChanged);
+				RenderChildrenStep(this, session, applyChildOptimization, cullRect, clipChanged, clipBounds);
 			}
 			else
 			{
@@ -588,10 +593,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
 					using (childSession)
 					{
-						PaintStep(this, childSession, clipChanged);
+						PaintStep(this, childSession, clipChanged, clipBounds);
 						PostPaintingClipStep(this, in childSession);
 						// No culling inside the recording — it survives ancestor moves, so it must be complete.
-						RenderChildrenStep(this, childSession, applyChildOptimization, cullRect: default, clipChanged);
+						RenderChildrenStep(this, childSession, applyChildOptimization, cullRect: default, clipChanged, clipBounds);
 						renderData = recording.Finish();
 					}
 
@@ -643,7 +648,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 		}
 
-		static void PaintStep(Visual visual, in PaintingSession session, bool clipChanged)
+		static void PaintStep(Visual visual, in PaintingSession session, bool clipChanged, Rect clipBounds)
 		{
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
 			// be specific to that visual and should not affect the rendering of any other visual.
@@ -654,7 +659,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				visual.InvalidateParentChildrenPicture(includeSelf: false);
 				// Repaint-every-frame content (e.g. an effect brush over already-drawn area): paint directly, uncached.
-				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage, clipChanged);
+				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage, clipChanged, clipBounds);
 				visual.Paint(session);
 			}
 			else
@@ -675,7 +680,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 				// Contribute damage whether or not the content was re-recorded: a moved-but-unchanged visual keeps its
 				// cached content and own-content path, but its new position still needs to be repainted (and its old one).
-				visual.ContributeDamageOnPaint(contentChanged, session.Damage, clipChanged);
+				visual.ContributeDamageOnPaint(contentChanged, session.Damage, clipChanged, clipBounds);
 
 				if (visual._content is { } content)
 				{
@@ -690,7 +695,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		static void PostPaintingClipStep(Visual visual, in PaintingSession session)
 			=> visual.ApplyPostPaintingClipping(session.Session);
 
-		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization, Rect cullRect, bool clipChanged)
+		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization, Rect cullRect, bool clipChanged, Rect clipBounds)
 		{
 			if (visual._childrenContent is { } childrenContent)
 			{
@@ -727,7 +732,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				var childCullRect = visual.NarrowCullRect(cullRect);
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
-					child.Render(in session, applyChildOptimization, childCullRect, clipChanged);
+					child.Render(in session, applyChildOptimization, childCullRect, clipChanged, clipBounds);
 				}
 			}
 			else
@@ -741,7 +746,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					foreach (var child in visual.GetChildrenInRenderOrder())
 					{
 						// No culling inside the recording — it survives ancestor moves, so it must be complete.
-						child.Render(in childSession, applyChildOptimization: false, ancestorClipChanged: clipChanged);
+						child.Render(in childSession, applyChildOptimization: false, ancestorClipChanged: clipChanged, inheritedClipBounds: clipBounds);
 					}
 				}
 

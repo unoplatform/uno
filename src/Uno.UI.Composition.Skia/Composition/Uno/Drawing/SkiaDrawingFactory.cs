@@ -62,13 +62,19 @@ internal sealed class SkiaDrawingFactory :
 
 
 	// Typed present per kind: the target arrives already narrowed, so there is no cast/switch here.
-	public IPresentSession BeginPresent(IGLRenderTarget target) => PresentForGL(target);
+	public IPresentSession BeginPresent(IGLRenderTarget target, ReadOnlySpan<Rect> damage) => Damaged(PresentForGL(target), damage);
 
-	public IPresentSession BeginPresent(ISoftwareRenderTarget target) => SkiaPresentSession.ForSoftware(target, this);
+	public IPresentSession BeginPresent(ISoftwareRenderTarget target, ReadOnlySpan<Rect> damage) => Damaged(SkiaPresentSession.ForSoftware(target, this), damage);
 
-	public IPresentSession BeginPresent(IMetalRenderTarget target) => PresentForMetal(target);
+	public IPresentSession BeginPresent(IMetalRenderTarget target, ReadOnlySpan<Rect> damage) => Damaged(PresentForMetal(target), damage);
 
-	public IPresentSession BeginPresent(IVulkanRenderTarget target) => PresentForVulkan(target);
+	public IPresentSession BeginPresent(IVulkanRenderTarget target, ReadOnlySpan<Rect> damage) => Damaged(PresentForVulkan(target), damage);
+
+	private static IPresentSession Damaged(IPresentSession session, ReadOnlySpan<Rect> damage)
+	{
+		if (session is SkiaPresentSession skia) { skia.ClipToDamage(damage); }
+		return session;
+	}
 
 	// Build/reuse a GRContext-Vulkan from the host's device context and wrap the per-frame render VkImage as an
 	// SKSurface (cached, rebuilt on image/size change). ResetContext each frame because the host's external

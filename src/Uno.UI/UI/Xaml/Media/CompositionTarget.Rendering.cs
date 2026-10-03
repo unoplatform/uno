@@ -65,14 +65,14 @@ public partial class CompositionTarget
 
 	// Neutral→typed narrowing for phase-2 present: downcast the target to its bound kind and dispatch to the
 	// backend's typed IDrawingFactory<TTarget>.BeginPresent, keeping the single cast Uno-side.
-	private static IPresentSession BeginPresent(IDrawingFactory backend, IRenderTarget target)
+	private static IPresentSession BeginPresent(IDrawingFactory backend, IRenderTarget target, ReadOnlySpan<Rect> damage)
 		=> target switch
 		{
-			IGLRenderTarget gl when backend is IDrawingFactory<IGLRenderTarget> b => b.BeginPresent(gl),
-			ISoftwareRenderTarget sw when backend is IDrawingFactory<ISoftwareRenderTarget> b => b.BeginPresent(sw),
-			IMetalRenderTarget m when backend is IDrawingFactory<IMetalRenderTarget> b => b.BeginPresent(m),
-			IVulkanRenderTarget vk when backend is IDrawingFactory<IVulkanRenderTarget> b => b.BeginPresent(vk),
-			IWebGpuRenderTarget w when backend is IDrawingFactory<IWebGpuRenderTarget> b => b.BeginPresent(w),
+			IGLRenderTarget gl when backend is IDrawingFactory<IGLRenderTarget> b => b.BeginPresent(gl, damage),
+			ISoftwareRenderTarget sw when backend is IDrawingFactory<ISoftwareRenderTarget> b => b.BeginPresent(sw, damage),
+			IMetalRenderTarget m when backend is IDrawingFactory<IMetalRenderTarget> b => b.BeginPresent(m, damage),
+			IVulkanRenderTarget vk when backend is IDrawingFactory<IVulkanRenderTarget> b => b.BeginPresent(vk, damage),
+			IWebGpuRenderTarget w when backend is IDrawingFactory<IWebGpuRenderTarget> b => b.BeginPresent(w, damage),
 			_ => throw new global::System.NotSupportedException(
 				$"The active backend cannot present onto a render target of type {target.GetType().Name}."),
 		};
@@ -83,7 +83,7 @@ public partial class CompositionTarget
 		{
 			var target = kvp.Key;
 
-			(FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage)? staleFrame;
+			(FrameHold frame, IGeometry nativeElementClipPath, Rect[]? damage)? staleFrame;
 			lock (target._frameGate)
 			{
 				staleFrame = target._lastRenderedFrame;
@@ -92,7 +92,6 @@ public partial class CompositionTarget
 			if (staleFrame is { } sf)
 			{
 				sf.frame.OnPipelineReleased();
-				sf.damage?.Dispose();
 			}
 
 			// The hosts assign Renderer from their rendering thread, and walking the tree from there races the UI
@@ -170,7 +169,7 @@ public partial class CompositionTarget
 		_phaseLayoutRuns++;
 	}
 
-	private (FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage)? _lastRenderedFrame;
+	private (FrameHold frame, IGeometry nativeElementClipPath, Rect[]? damage)? _lastRenderedFrame;
 
 	// The frame handed to Rendering subscribers as FrameData, kept only while one is subscribed. A target that
 	// does not re-record still resends its last frame, so this outlives the pipeline's own reference.
@@ -299,7 +298,7 @@ public partial class CompositionTarget
 		{
 			damageScale = _xamlRootRasterizationScale;
 		}
-		var previousFrame = default((FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage)?);
+		var previousFrame = default((FrameHold frame, IGeometry nativeElementClipPath, Rect[]? damage)?);
 		lock (_frameGate)
 		{
 			previousFrame = _lastRenderedFrame;
@@ -309,10 +308,14 @@ public partial class CompositionTarget
 			// Presented frames carry no damage (see Draw).
 			if (previousFrame is { damage: { } carried })
 			{
-				frameDamage.Union(carried);
+				foreach (var r in carried)
+				{
+					frameDamage.UnionRect(r);
+				}
 			}
 
 			frameDamage.ClampTo(frameRect);
+
 			_lastRenderedFrame = (new FrameHold(frame), path, frameDamage.Detach(damageScale));
 		}
 
@@ -327,7 +330,6 @@ public partial class CompositionTarget
 		}
 
 		previousFrame?.frame.OnPipelineReleased();
-		previousFrame?.damage?.Dispose();
 
 		if (_isRenderingActive || _forceContinuousRender)
 		{
@@ -402,7 +404,7 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 		var phaseDrawT0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
 
-		(FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage)? lastRenderedFrameNullable;
+		(FrameHold frame, IGeometry nativeElementClipPath, Rect[]? damage)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
@@ -449,18 +451,25 @@ public partial class CompositionTarget
 
 			var host = ContentRoot.XamlRoot is { } xamlRootForHost ? XamlRootMap.GetHostForRoot(xamlRootForHost) : null;
 
+			// Partial repaint: when unresized and the host preserves the target's pixels, the present is told which
+			// regions changed and may repaint only those. Settled before the session opens, because a backend may
+			// confine the whole session to them -- so anything drawn outside the region rules it out.
+			var hasDamage = !resized && lastRenderedFrame.damage is { Length: > 0 };
+			var preservesContents = swapChain.PreservesContents;
+			var damageEligible = hasDamage && preservesContents;
+			// Debug overlay paints the would-be damage region on a full repaint; deliberately not gated on
+			// PreservesContents so the viz works on full-repaint targets too.
+			var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
+			// The frame counter and a host overlay (e.g. the framebuffer cursor) draw wherever they like, which no
+			// damage region accounts for; both are diagnostics or rare, so they simply repaint the frame whole.
+			var drawsOutsideDamage = FrameRenderHelper.FpsHelper.IsEnabled || overlay is not null;
+			// A host orientation transform would move the regions somewhere the session has not been told about,
+			// and it is applied after the present opens, so damage is skipped while one is set.
+			var useDamage = damageEligible && !overlayEnabled && !_forceFullRepaint && !drawsOutsideDamage && rootTransform is null;
+
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			using (var present = BeginPresent(Renderer, target))
+			using (var present = BeginPresent(Renderer, target, useDamage ? ToDevicePixels(lastRenderedFrame.damage!, rasterizationScale) : default))
 			{
-				// Partial repaint: when unresized and the host preserves the swapchain's pixels, clip the clear+replay
-				// to the damage region so only the changed area is repainted; otherwise repaint the whole frame.
-				var hasDamage = !resized && lastRenderedFrame.damage is { } dmg && !dmg.IsEmpty;
-				var preservesContents = swapChain.PreservesContents;
-				var damageEligible = hasDamage && preservesContents;
-				// Debug overlay paints the would-be damage region on a full repaint; deliberately not gated on
-				// PreservesContents so the viz works on full-repaint targets too.
-				var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
-				var useDamage = damageEligible && !overlayEnabled && !_forceFullRepaint;
 				// Detach returns null both for "nothing was damaged" and for "no damage information", but a frame
 				// is only ever recorded with tracking on, so on an unresized frame null means nothing changed. The
 				// target still holds the previous frame, so the clear+replay is skipped rather than repainted whole.
@@ -487,13 +496,6 @@ public partial class CompositionTarget
 				present.Save();
 				if (!nothingChanged)
 				{
-					if (useDamage)
-					{
-						// Clipped as-is: contributions are already outset for the antialiased fringe
-						// (Visual.OutsetForAntialiasing), so no widening is needed here.
-						present.ClipPath(lastRenderedFrame.damage!, ClipOperation.Intersect);
-					}
-
 					// The window's own background, when it has one: content smaller than the window (or with no
 					// background of its own) shows it, and a transparent clear would show through to nothing.
 					present.Clear(host?.BackgroundColor ?? global::Microsoft.UI.Colors.Transparent);
@@ -513,7 +515,6 @@ public partial class CompositionTarget
 			}
 
 			// This frame's damage is now presented; drop it so Render's carry-forward doesn't re-damage it next frame.
-			lastRenderedFrame.damage?.Dispose();
 			lastRenderedFrame.damage = null;
 			ReturnFrame(lastRenderedFrame);
 
@@ -544,10 +545,9 @@ public partial class CompositionTarget
 	}
 
 
-	private void ReturnFrame((FrameHold frame, IGeometry nativeElementClipPath, IGeometry? damage) frame)
+	private void ReturnFrame((FrameHold frame, IGeometry nativeElementClipPath, Rect[]? damage) frame)
 	{
 		FrameHold? frameToDelete = null;
-		IGeometry? damageToDelete = null;
 
 		lock (_frameGate)
 		{
@@ -558,13 +558,12 @@ public partial class CompositionTarget
 			}
 			else
 			{
+				// The damage is a plain rect array now; only the frame holds unmanaged state.
 				frameToDelete = frame.frame;
-				damageToDelete = frame.damage;
 			}
 		}
 
 		frameToDelete?.OnPipelineReleased();
-		damageToDelete?.Dispose();
 	}
 
 	void ICompositionTarget.AddDamage(Rect bounds)
@@ -585,13 +584,35 @@ public partial class CompositionTarget
 		}
 	}
 
+	// The damage is tracked in logical coordinates, but reaches the present before it has a transform, so it is
+	// handed over in device pixels. The recorded rects are left alone -- the debug overlay still draws them scaled.
+	private static Rect[] ToDevicePixels(Rect[] regions, float scale)
+	{
+		if (scale == 1f)
+		{
+			return regions;
+		}
+
+		var scaled = new Rect[regions.Length];
+		for (var i = 0; i < regions.Length; i++)
+		{
+			var r = regions[i];
+			scaled[i] = new Rect(r.X * scale, r.Y * scale, r.Width * scale, r.Height * scale);
+		}
+
+		return scaled;
+	}
+
 	// Debug viz (FeatureConfiguration.Rendering.DamageRegionOverlay): paints the damage region as a translucent
 	// red fill + outline over the fully-repainted frame.
-	private static void DrawDamageRegionOverlay(IPresentSession present, IGeometry damage)
+	private static void DrawDamageRegionOverlay(IPresentSession present, Rect[] damage)
 	{
-		present.DrawPath(damage, global::Windows.UI.Color.FromArgb(0x30, 0xFF, 0x00, 0x00));
-		using var outline = damage.GetStrokeFillGeometry(new StrokeStyle { Thickness = 1f });
-		present.DrawPath(outline, global::Windows.UI.Color.FromArgb(0xB0, 0xFF, 0x00, 0x00));
+		// Debug-only: one translucent fill per damaged rect, so the overlay shows the real region rather than
+		// its bounds. No geometry is built for the normal present path.
+		foreach (var r in damage)
+		{
+			present.DrawRect(r, global::Windows.UI.Color.FromArgb(0x30, 0xFF, 0x00, 0x00));
+		}
 	}
 
 	/// <summary>

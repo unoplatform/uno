@@ -459,7 +459,7 @@ public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRender
 		}
 	}
 
-	public IPresentSession BeginPresent(IWebGpuRenderTarget target)
+	public IPresentSession BeginPresent(IWebGpuRenderTarget target, ReadOnlySpan<Rect> damage)
 	{
 		// A minimized window can report an empty client area; the surface's textures must still be at least 1x1.
 		var width = Math.Max(1, target.Width);
@@ -497,7 +497,7 @@ public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRender
 
 		// Point the backend surface at the host's colour view (host owns its lifetime; the render pass only needs the view).
 		main.Surface.View = main.ColorView;
-		return new WebGpuPresentSession(_device, main.Surface, this);
+		return new WebGpuPresentSession(_device, main.Surface, this, damage);
 	}
 
 	public ITexture CreateTexture(IImage image) => new WebGpuTexture(_device, image);
