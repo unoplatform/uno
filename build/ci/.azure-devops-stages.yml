@@ -114,12 +114,10 @@ stages:
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
     vmMacImage: '$(macOSVMImage)'
-    vmMacImageTest: '$(macOSVMImage_UITests)'
     vmLinuxImage: '$(linuxVMImage)'
     vmLinuxPool: '$(linuxScaledPool)'
     poolName: '$(windowsScaledPool)'
     xCodeRootBuild: '$(xCodeRoot)'
-    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
     XAML_FLAVOR_BUILD: WinUI
 
 - stage: wasdk_tests
@@ -157,9 +155,7 @@ stages:
   - template: publish/.azure-devops-publish-ios-testflight.yml
     parameters:
       vmImage: '$(macOSVMImage)'
-      vmImageTest: '$(macOSVMImage_UITests)'
       xCodeRootBuild: '$(xCodeRoot)'
-      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
       
 ##
 ## Publishing

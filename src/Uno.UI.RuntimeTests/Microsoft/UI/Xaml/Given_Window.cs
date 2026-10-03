@@ -107,6 +107,26 @@ public class Given_Window
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Secondary_Window_Closed_Then_Initial_Window_Visible()
+	{
+		AssertSupportsMultipleWindows();
+
+		var initialWindow = TestServices.WindowHelper.CurrentTestWindow;
+		var sut = new Window();
+
+		var activated = false;
+		sut.Activated += (s, e) => activated = true;
+		sut.Activate();
+		await TestServices.WindowHelper.WaitFor(() => activated);
+
+		sut.Close();
+
+		// On iOS, closing the scene that was in front must not leave the app without a foreground scene.
+		await TestServices.WindowHelper.WaitFor(() => initialWindow.Visible);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	[RequiresFullWindow]
 	public async Task When_Secondary_Window_No_Background_Light_Dark()
 	{
