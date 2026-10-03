@@ -49,6 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[RequiresScaling(1.0f)]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScrollViewer_Resized()
 		{
@@ -108,6 +109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1.0f)]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Presenter_Doesnt_Take_Up_All_Space()
 		{
@@ -390,6 +392,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		// WinAppSDK: KeyboardHelper is a no-op there.
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresScaling(1.0f)]
 		public async Task When_Home_End_PageDown_PageUp()
 		{
 			var border = new Border
@@ -1167,6 +1170,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1.0f)]
 		public async Task When_NonRound_Content_Height()
 		{
 			var outerScrollViewer = new ScrollViewer()
@@ -1488,6 +1492,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(new Point(0, 0), rect.TransformToVisual(SUT).TransformPoint(new Point(0, 0)));
 		}
+
+#if HAS_UNO // uses internal ScrollContentPresenter.Set
+		[TestMethod]
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("We're only testing managed scrollers.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24643")]
+		public async Task When_Viewport_Resized_During_Touch_Scroll_Then_Offset_Not_Reverted()
+		{
+			Border content;
+			var SUT = new ScrollViewer
+			{
+				Height = 300,
+				Width = 100,
+				Content = content = new Border { Height = 1000, Width = 100 }
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.ChangeView(null, 700, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+
+			var scp = SUT.FindVisualChildByType<ScrollContentPresenter>();
+
+			// A touch press drops the offset intent armed by the ChangeView above.
+			SUT.ClearOffsetIntents();
+
+			// Touch / inertia moves report intermediate offsets, which are pushed to the SV's VerticalOffset only asynchronously.
+			scp.Set(verticalOffset: 100, isIntermediate: true, isTouch: true);
+
+			// A layout pass (e.g. a collapsing header) happens before the deferred update: the content shrinks a bit and the viewport changes.
+			SUT.Height = 299;
+			content.Height = 998;
+			SUT.UpdateLayout();
+
+			Assert.AreEqual(100, scp.VerticalOffset, 0.5);
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(100, SUT.VerticalOffset, 0.5);
+		}
+#endif
 
 #if HAS_UNO // uses internal ToMatrix
 		[TestMethod]
