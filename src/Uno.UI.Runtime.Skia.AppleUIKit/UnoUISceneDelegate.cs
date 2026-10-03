@@ -77,7 +77,7 @@ public class UnoUISceneDelegate : UISceneDelegate
 						$"discarding the session. This happens when the OS restores more scenes than the app created windows for.");
 				}
 
-				UIApplication.SharedApplication.RequestSceneSessionDestruction(session, null, null);
+				DestroyScene(scene);
 				return;
 			}
 
@@ -98,6 +98,41 @@ public class UnoUISceneDelegate : UISceneDelegate
 		{
 			// A managed exception must never escape into a UIKit callback.
 			Application.Current?.RaiseRecoverableUnhandledException(ex);
+		}
+	}
+
+	/// <summary>
+	/// Destroys a scene's session, first bringing another of the app's scenes forward when this one may be in front.
+	/// </summary>
+	internal static void DestroyScene(UIScene scene)
+	{
+		// Full-screen iPadOS shows one scene at a time, and a scene that is still connecting is already
+		// on its way to the front: destroying it without bringing another forward leaves the app with no
+		// foreground scene, and it gets suspended.
+		if (scene.ActivationState != UISceneActivationState.Background)
+		{
+			ActivateOtherScene(scene);
+		}
+
+		UIApplication.SharedApplication.RequestSceneSessionDestruction(scene.Session, null, null);
+	}
+
+	private static void ActivateOtherScene(UIScene scene)
+	{
+		foreach (var connectedScene in UIApplication.SharedApplication.ConnectedScenes)
+		{
+			if (connectedScene is UIWindowScene { Session: { } otherSession } other && other != scene)
+			{
+				UIApplication.SharedApplication.RequestSceneSessionActivation(otherSession, null, null, error =>
+				{
+					if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Warning))
+					{
+						typeof(UnoUISceneDelegate).Log().Warn($"Failed to bring a remaining scene forward: {error.LocalizedDescription}");
+					}
+				});
+
+				return;
+			}
 		}
 	}
 
