@@ -3,6 +3,7 @@
 using System;
 using System.Numerics;
 using System.Threading;
+using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 using Windows.Foundation;
 
@@ -57,6 +58,24 @@ public partial class InteractionTracker : CompositionObject
 	{
 		_state.Dispose();
 		_state = newState;
+		newState.OnActivated();
+	}
+
+	/// <summary>The target whose frames advance this tracker's motion.</summary>
+	internal ICompositionTarget? FrameTarget
+	{
+		get
+		{
+			foreach (var source in InteractionSources)
+			{
+				if (source is VisualInteractionSource { Source.CompositionTarget: { } target })
+				{
+					return target;
+				}
+			}
+
+			return Compositor.FrameDriverTargetResolver?.Invoke();
+		}
 	}
 
 	internal void SetPosition(Vector3 newPosition, int requestId)
@@ -64,14 +83,18 @@ public partial class InteractionTracker : CompositionObject
 		if (_position != newPosition)
 		{
 			_position = newPosition;
+
+			// Synchronous, so what this writes (e.g. a Translation expression) is in the frame recorded by the same tick.
+			OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
+
 			var scale = _scale;
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, scale, requestId));
-				OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
-			});
+			NativeDispatcher.Main.Enqueue(() => Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, scale, requestId)));
 		}
 	}
+
+	/// <summary>A pointer pressed on coasting content: it stops under the finger, as the manipulation now owns it.</summary>
+	internal void InterruptInertia()
+		=> _state.InterruptInertia();
 
 	internal void SetScale(float newScale, Vector3 centerPoint, int requestId)
 	{
@@ -134,7 +157,8 @@ public partial class InteractionTracker : CompositionObject
 		_state.ReceiveInertiaStarting(-linearVelocity);
 	}
 
-	internal void ReceivePointerWheel(int mouseWheelTicks, bool isHorizontal)
+	/// <param name="mouseWheelTicks">Detents scrolled, fractional for touchpads that report deltas finer than one detent.</param>
+	internal void ReceivePointerWheel(double mouseWheelTicks, bool isHorizontal)
 	{
 		// On WinUI, this depends on mouse setting "how many lines to scroll each time"
 		// The default Windows setting is 3 lines, and each line is 16px.

@@ -8,8 +8,12 @@ namespace Microsoft.UI.Composition.Interactions;
 
 internal sealed class InteractionTrackerInteractingState : InteractionTrackerState
 {
-	public InteractionTrackerInteractingState(InteractionTracker interactionTracker) : base(interactionTracker)
+	// Entered on the press rather than once the manipulation started, so the start that follows is expected.
+	private bool _isAwaitingManipulationStart;
+
+	public InteractionTrackerInteractingState(InteractionTracker interactionTracker, bool isInterruptingInertia = false) : base(interactionTracker)
 	{
+		_isAwaitingManipulationStart = isInterruptingInertia;
 	}
 
 	protected override void EnterState(IInteractionTrackerOwner? owner)
@@ -19,6 +23,12 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 
 	internal override void StartUserManipulation()
 	{
+		if (_isAwaitingManipulationStart)
+		{
+			_isAwaitingManipulationStart = false;
+			return;
+		}
+
 		// This probably shouldn't happen.
 		// We ignore.
 		if (this.Log().IsEnabled(LogLevel.Error))
@@ -42,7 +52,7 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, new Vector3((float)linearVelocity.X, (float)linearVelocity.Y, 0), requestId: 0, isFromPointerWheel: false));
 	}
 
-	internal override void ReceivePointerWheel(int delta, bool isHorizontal)
+	internal override void ReceivePointerWheel(double delta, bool isHorizontal)
 	{
 	}
 

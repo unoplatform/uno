@@ -50,9 +50,13 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 		//var position = _interactionTracker.Position;
 		//_interactionTracker.MinPosition = Vector3.Min(_interactionTracker.MinPosition, position);
 		//_interactionTracker.MaxPosition = Vector3.Max(_interactionTracker.MaxPosition, position);
-
-		_handler.Start();
 	}
+
+	// Not from the enqueued EnterState: that would start every inertia a dispatcher hop late.
+	internal override void OnActivated() => _handler.Start();
+
+	internal override void InterruptInertia()
+		=> _interactionTracker.ChangeState(new InteractionTrackerInteractingState(_interactionTracker, isInterruptingInertia: true));
 
 	internal override void StartUserManipulation()
 	{
@@ -71,9 +75,9 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 	{
 	}
 
-	internal override void ReceivePointerWheel(int delta, bool isHorizontal)
+	internal override void ReceivePointerWheel(double delta, bool isHorizontal)
 	{
-		var newDelta = isHorizontal ? new Vector3(delta, 0, 0) : new Vector3(0, delta, 0);
+		var newDelta = isHorizontal ? new Vector3((float)delta, 0, 0) : new Vector3(0, (float)delta, 0);
 		var totalDelta = (_handler.FinalModifiedPosition - _interactionTracker.Position) + newDelta;
 		// Constant velocity for 250ms
 		var velocity = totalDelta / 0.25f;

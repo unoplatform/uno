@@ -38,6 +38,10 @@ public partial class Compositor
 	// CompositionTarget, which this assembly cannot name, so they are counted.
 	private int _frameDriverCount;
 
+	/// <summary>Resolves the target that ticks frame drivers with no visual of their own to name one.</summary>
+	/// <remarks>TODO Uno: resolves the first window's target, which is wrong for a driver in another window.</remarks>
+	internal static Func<ICompositionTarget?>? FrameDriverTargetResolver { get; set; }
+
 	internal void AddFrameDriver() => Interlocked.Increment(ref _frameDriverCount);
 
 	internal void RemoveFrameDriver()
