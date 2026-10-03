@@ -4,22 +4,23 @@
 #if __ANDROID__
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using Android.App;
-using Java.Interop;
-using Windows.ApplicationModel.Activation;
-using Windows.UI.StartScreen;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
+using Java.Interop;
+using Microsoft.Windows.AppLifecycle;
 using Uno.Extensions;
-using Windows.Foundation.Metadata;
-using System.ComponentModel;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Windows.ApplicationModel.Activation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Core;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Windows.UI.StartScreen;
 using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Microsoft.UI.Xaml
 {
@@ -80,11 +81,10 @@ namespace Microsoft.UI.Xaml
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogDebug($"Application activity started with intent {activity.Intent}");
+					this.Log().LogDebug($"Application activity started with intent action {activity.Intent?.Action ?? "(none)"}");
 				}
 
-				// We need to call TryHandleIntent first so the application arguments are set correctly.
-				// Then, when the Application is created, it will use those arguments.
+				// Reported before the host starts, so the activation is stored rather than raised.
 				_ = TryHandleIntent(activity.Intent);
 				if (!_isRunning)
 				{
@@ -115,7 +115,8 @@ namespace Microsoft.UI.Xaml
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"Trying to handle intent with data: {intent?.Data?.ToString() ?? "(null)"}");
+				// Scheme only: a deep link's query routinely carries an OAuth code or token.
+				this.Log().LogDebug($"Trying to handle intent with data scheme: {intent?.Data?.Scheme ?? "(none)"}");
 			}
 
 			var handled = false;
@@ -126,32 +127,28 @@ namespace Microsoft.UI.Xaml
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
+						this.Log().LogDebug("Intent contained JumpList extra arguments, reporting a Launch activation.");
 					}
 
-					Application.SetArguments(intent.GetStringExtra(JumpListItem.ArgumentsExtraKey));
+					var arguments = intent.GetStringExtra(JumpListItem.ArgumentsExtraKey);
+
+					ReportActivation(AppActivationArguments.CreateLaunch(
+						new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, arguments)));
 					handled = true;
 				}
-				else if (intent.Data != null)
+				else if (intent?.Data != null)
 				{
 					if (Uri.TryCreate(intent.Data.ToString(), UriKind.Absolute, out var uri))
 					{
 						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
-							this.Log().LogDebug("Intent data parsed successfully as Uri, calling OnActivated.");
+							this.Log().LogDebug("Intent data parsed successfully as Uri, reporting a Protocol activation.");
 						}
 
-						if (_isRunning)
-						{
-							// Application.Current rather than a cached instance: the app is created by the
-							// host built in CreateHost(), which this type never sees.
-							Application.Current?.OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
-						}
-						else
-						{
-							Application.SetActivationUri(uri);
-						}
-
+						ReportActivation(AppActivationArguments.CreateProtocol(
+							new ProtocolActivatedEventArgs(
+								uri,
+								_isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning)));
 						handled = true;
 					}
 					else
@@ -166,6 +163,26 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return handled;
+		}
+
+		/// <summary>
+		/// Hands an activation to <see cref="AppInstance"/>, which stores it for a cold start or raises
+		/// <see cref="AppInstance.Activated"/> when the app is already up. Android delivers both through
+		/// the same intent callbacks, and <see cref="AppInstance"/> — not this type — knows which case it is.
+		/// </summary>
+		private void ReportActivation(AppActivationArguments args)
+		{
+			try
+			{
+				AppInstance.GetCurrent().SetOrRaiseActivation(args);
+			}
+			catch (Exception ex)
+			{
+				// Raising Activated runs app code; a managed exception unwinding into the Android
+				// lifecycle callback would abort the process.
+				this.Log().Error("An activation handler threw.", ex);
+				Application.Current?.RaiseRecoverableUnhandledException(ex);
+			}
 		}
 
 		/// <summary>
