@@ -33,6 +33,11 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 	/// </summary>
 	private int? _adoptedServerPid;
 	private WorkspaceResolution? _workspaceResolution;
+	/// <summary>
+	/// When set, the next launch ignores AmbientRegistry reuse so a forced restart really
+	/// recycles the host (and its add-in state) instead of re-adopting the same process.
+	/// </summary>
+	private bool _skipAmbientReuseOnce;
 
 	public event Action<string>? ServerStarted;
 	public event Action? ServerFailed;
@@ -83,8 +88,17 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 	/// </summary>
 	public bool HostRespondedNoMcp { get; private set; }
 
+	/// <summary>
+	/// True while the monitor loop is alive. The loop exits on its own (without
+	/// <see cref="StopMonitoringAsync"/>) after <see cref="MaxNoHostRetries"/> discovery
+	/// failures (e.g. SdkNotInCache / DevServerPackageNotCached on a freshly scaffolded,
+	/// not-yet-restored solution) or after repeated start failures. Callers must not treat
+	/// "monitor was started" as "monitor is running".
+	/// </summary>
+	public bool IsMonitoring => _monitor is { IsCompleted: false };
+
 	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs,
-		WorkspaceResolution? workspaceResolution = null)
+		WorkspaceResolution? workspaceResolution = null, bool skipAmbientReuse = false)
 	{
 		if (_monitor is not null)
 		{
@@ -95,6 +109,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		_forwardedArgs = forwardedArgs;
 		_currentDirectory = currentDirectory;
 		_workspaceResolution = workspaceResolution;
+		_skipAmbientReuseOnce = skipAmbientReuse;
 		_noHostDiscoveryCount = 0;
 		NotAnUnoWorkspace = false;
 
@@ -606,7 +621,10 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		// conflict on the IDEChannel, Hot Reload notifications, and launch tracking.
 		var ambient = new AmbientRegistry(_logger);
 
-		if (!string.IsNullOrWhiteSpace(solution))
+		var skipAmbientReuse = _skipAmbientReuseOnce;
+		_skipAmbientReuseOnce = false;
+
+		if (!skipAmbientReuse && !string.IsNullOrWhiteSpace(solution))
 		{
 			var existing = ambient.GetActiveDevServerForPath(solution);
 			if (existing is not null)
@@ -763,6 +781,9 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 			if (_serverProcess is { HasExited: false } proc)
 			{
 				proc.Kill(entireProcessTree: true);
+				// Kill is asynchronous: wait briefly so the next launch's AmbientRegistry
+				// lookup does not see (and re-adopt) the dying host.
+				proc.WaitForExit(5000);
 				_logger.LogDebug("Terminated server process (PID {Pid})", proc.Id);
 			}
 		}
