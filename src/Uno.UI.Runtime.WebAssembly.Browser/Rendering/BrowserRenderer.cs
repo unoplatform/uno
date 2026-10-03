@@ -104,11 +104,12 @@ internal partial class BrowserRenderer
 	}
 
 	[JSExport]
-	internal static void RenderFrame([JSMarshalAs<JSType.Any>] object instance)
+	internal static void RenderFrame([JSMarshalAs<JSType.Any>] object instance, double frameAgeInMilliseconds)
 	{
+		var vsyncTimestamp = Stopwatch.GetTimestamp() - (long)(Math.Max(0, frameAgeInMilliseconds) * Stopwatch.Frequency / 1000);
 		try
 		{
-			((BrowserRenderer)instance).RenderFrame();
+			((BrowserRenderer)instance).RenderFrame(vsyncTimestamp);
 		}
 		catch (Exception e)
 		{
@@ -118,7 +119,7 @@ internal partial class BrowserRenderer
 		}
 	}
 
-	private void RenderFrame()
+	private void RenderFrame(long vsyncTimestamp)
 	{
 		// The RootElement may not be set yet during startup because the JavaScript
 		// requestAnimationFrame can fire before app initialization completes. When that
@@ -161,7 +162,7 @@ internal partial class BrowserRenderer
 		// The context owns the surface/present; the backend (whichever won negotiation) wraps the acquired target.
 		// The renderer is per-window (bound to this window's context), installed on its CompositionTarget each frame.
 		compositionTarget.Renderer = _renderer!;
-		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_context);
+		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_context, vsyncTimestamp: vsyncTimestamp);
 		ApplyNativeElementClip(currentClipPath);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
