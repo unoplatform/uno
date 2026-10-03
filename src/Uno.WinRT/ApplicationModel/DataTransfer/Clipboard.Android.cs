@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				var text = await data.GetTextAsync();
 
 				items.Add(new ClipData.Item(text));
-				mimeTypes.Add("text/plaintext");
+				mimeTypes.Add(ClipDescription.MimetypeTextPlain);
 			}
 
 			if (data != null)
@@ -100,6 +100,23 @@ namespace Windows.ApplicationModel.DataTransfer
 			{
 				// Clear clipboard
 				Clear();
+			}
+		}
+
+		// Written by earlier Uno versions instead of text/plain.
+		private const string LegacyPlainTextMimeType = "text/plaintext";
+
+		static partial void TryGetContainsText(ref bool? containsText)
+		{
+			// PrimaryClipDescription only describes the clip. Unlike PrimaryClip it does not count as
+			// reading the clipboard, so it does not raise the system "pasted from your clipboard"
+			// notice -- whose overlay also swallows the next tap aimed at the app.
+			if (ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
+			{
+				containsText = manager.PrimaryClipDescription is { } description
+					&& (description.HasMimeType(ClipDescription.MimetypeTextPlain)
+						|| description.HasMimeType(ClipDescription.MimetypeTextHtml)
+						|| description.HasMimeType(LegacyPlainTextMimeType));
 			}
 		}
 

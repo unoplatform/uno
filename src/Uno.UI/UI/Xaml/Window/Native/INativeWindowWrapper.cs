@@ -30,6 +30,12 @@ internal interface INativeWindowWrapper : INativeAppWindow
 	/// </summary>
 	bool IsClosingCancellable { get; }
 
+	/// <summary>
+	/// Gets whether closing this window is final. A window that does not close permanently is only
+	/// hidden, keeps its content and can be shown again, as on single-window platforms.
+	/// </summary>
+	bool ClosesPermanently { get; }
+
 	event EventHandler<Size>? SizeChanged;
 
 	event EventHandler<Rect>? VisibleBoundsChanged;

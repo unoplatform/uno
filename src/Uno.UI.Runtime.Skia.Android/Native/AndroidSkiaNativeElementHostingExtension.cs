@@ -1,4 +1,6 @@
-﻿using Android.Views;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Android.Views;
 using Android.Widget;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -33,20 +35,27 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 		}
 	}
 
+	// Attached views and their presenter, so an activity taking over a window can adopt them.
+	private static readonly Dictionary<View, ContentPresenter> _attachedViews = new(ReferenceEqualityComparer.Instance);
+
+	private ApplicationActivity.ClippedRelativeLayout? NativeLayerHost
+		=> AndroidSkiaXamlRootHost.GetActivity(_owner.XamlRoot)?.NativeLayerHost;
+
 	public void AttachNativeElement(object content)
 	{
 		if (content is View view)
 		{
-			if (ApplicationActivity.NativeLayerHost is { } host)
+			// A secondary window loads its tree before Android gives it an activity; the view is then
+			// kept here and placed by AdoptNativeElements once the activity has its layer.
+			_attachedViews[view] = _owner;
+
+			if (NativeLayerHost is { } host)
 			{
 				host.AddView(view);
 			}
-			else
+			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Cannot attach native element because {nameof(ApplicationActivity.Instance.NativeLayerHost)} is null.");
-				}
+				this.Log().Debug($"Deferring native element attach until the window's {nameof(ApplicationActivity.NativeLayerHost)} exists.");
 			}
 		}
 	}
@@ -55,17 +64,53 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 	{
 		if (content is View view)
 		{
-			if (ApplicationActivity.NativeLayerHost is { } host)
+			_attachedViews.Remove(view);
+
+			// The view's parent, not the current activity's layer: after a re-creation they can differ.
+			if (view.Parent is ViewGroup parent)
 			{
-				host.RemoveView(view);
+				parent.RemoveView(view);
 			}
-			else
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Cannot detach native element because {nameof(ApplicationActivity.Instance.NativeLayerHost)} is null.");
-				}
-			}
+		}
+	}
+
+	/// <summary>
+	/// Moves the native views of <paramref name="xamlRoot"/> into <paramref name="host"/>, keeping their
+	/// z-order. An activity taking over a window whose tree is already loaded (re-creation, or a
+	/// secondary window's first activity) sees no presenter attach again, so the views would otherwise
+	/// stay in the previous activity's layer, or in none.
+	/// </summary>
+	internal static void AdoptNativeElements(XamlRoot xamlRoot, ViewGroup host)
+	{
+		var views = _attachedViews
+			.Where(entry => entry.Value.XamlRoot == xamlRoot && entry.Key.Parent != host)
+			.Select(entry => entry.Key)
+			.OrderBy(view => view.Parent is ViewGroup parent ? parent.IndexOfChild(view) : int.MaxValue)
+			.ToList();
+
+		foreach (var view in views)
+		{
+			(view.Parent as ViewGroup)?.RemoveView(view);
+			host.AddView(view);
+		}
+	}
+
+	/// <summary>
+	/// Drops the native views of <paramref name="xamlRoot"/>. Closing a window finishes the task
+	/// hosting it rather than unloading its tree, so no presenter detaches them and their entries
+	/// would pin the views — and through them the finished activity — for the life of the process.
+	/// </summary>
+	internal static void ReleaseNativeElements(XamlRoot xamlRoot)
+	{
+		var views = _attachedViews
+			.Where(entry => entry.Value.XamlRoot == xamlRoot)
+			.Select(entry => entry.Key)
+			.ToList();
+
+		foreach (var view in views)
+		{
+			_attachedViews.Remove(view);
+			(view.Parent as ViewGroup)?.RemoveView(view);
 		}
 	}
 
@@ -79,7 +124,7 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 
 	public object? CreateSampleComponent(string text)
 	{
-		if (ApplicationActivity.NativeLayerHost is not { } host)
+		if (NativeLayerHost is not { } host)
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
