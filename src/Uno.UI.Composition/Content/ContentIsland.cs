@@ -2,9 +2,6 @@
 using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Uno;
-using Uno.UI.Content;
-using Uno.UI.Hosting;
-using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Content;
