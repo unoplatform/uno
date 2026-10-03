@@ -43,6 +43,7 @@
 				PackageReferences="@(PackageReference)"
 				PackageVersions="@(PackageVersion)"
 				MauiVersion="$(MauiVersion)"
+				UnoVersion="$(UnoVersion)"
 				UnoExtensionsVersion="$(UnoExtensionsVersion)"
 				UnoToolkitVersion="$(UnoToolkitVersion)"
 				UnoThemesVersion="$(UnoThemesVersion)"
