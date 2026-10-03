@@ -191,8 +191,15 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		if (!_isSceneDisconnected &&
 			Window != Microsoft.UI.Xaml.Window.InitialWindow &&
-			_nativeWindow?.WindowScene?.Session is { } session)
+			_nativeWindow?.WindowScene is { Session: { } session } scene)
 		{
+			if (scene.ActivationState is UISceneActivationState.ForegroundActive or UISceneActivationState.ForegroundInactive)
+			{
+				// Full-screen iPadOS shows one scene at a time: destroying the visible one without
+				// bringing another forward leaves the app with no foreground scene, and it gets suspended.
+				ActivateOtherScene(scene);
+			}
+
 			// A secondary window must also tear down its scene, otherwise the OS keeps showing it
 			// in the app switcher after the XAML window is gone.
 			UIApplication.SharedApplication.RequestSceneSessionDestruction(session, null, null);
@@ -202,6 +209,25 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_subscriptions.Dispose();
 
 		base.CloseCore();
+	}
+
+	private void ActivateOtherScene(UIWindowScene closingScene)
+	{
+		foreach (var connectedScene in UIApplication.SharedApplication.ConnectedScenes)
+		{
+			if (connectedScene is UIWindowScene { Session: { } otherSession } other && other != closingScene)
+			{
+				UIApplication.SharedApplication.RequestSceneSessionActivation(otherSession, null, null, error =>
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"Failed to bring a remaining scene forward while closing a window: {error.LocalizedDescription}");
+					}
+				});
+
+				return;
+			}
+		}
 	}
 
 	internal void OnSceneEnteredForeground()
