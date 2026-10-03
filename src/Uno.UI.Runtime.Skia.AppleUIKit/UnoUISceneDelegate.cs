@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using Foundation;
 using Microsoft.UI.Xaml;
 using UIKit;
@@ -34,6 +35,11 @@ public class UnoUISceneDelegate : UISceneDelegate
 
 	private static readonly bool _hasSceneManifest =
 		NSBundle.MainBundle.InfoDictionary?.ContainsKey(new NSString(UIApplicationSceneManifestKey)) == true;
+
+	// Sessions the app asked UIKit to destroy, and the subset that was not in the background at the time and
+	// so must hand the foreground over. UIKit callbacks all run on the main thread.
+	private static readonly HashSet<string> _destroyedSessions = new();
+	private static readonly HashSet<string> _foregroundHandoffs = new();
 
 	private NativeWindowWrapper? _wrapper;
 
@@ -106,24 +112,28 @@ public class UnoUISceneDelegate : UISceneDelegate
 	/// </summary>
 	internal static void DestroyScene(UIScene scene)
 	{
+		var sessionId = scene.Session.PersistentIdentifier;
+		_destroyedSessions.Add(sessionId);
+
 		// Full-screen iPadOS shows one scene at a time, and a scene that is still connecting is already
 		// on its way to the front: destroying it without bringing another forward leaves the app with no
 		// foreground scene, and it gets suspended.
 		if (scene.ActivationState != UISceneActivationState.Background)
 		{
-			ActivateOtherScene(scene);
+			_foregroundHandoffs.Add(sessionId);
+			ActivateRemainingScene();
 		}
 
 		UIApplication.SharedApplication.RequestSceneSessionDestruction(scene.Session, null, null);
 	}
 
-	private static void ActivateOtherScene(UIScene scene)
+	private static void ActivateRemainingScene()
 	{
 		foreach (var connectedScene in UIApplication.SharedApplication.ConnectedScenes)
 		{
-			if (connectedScene is UIWindowScene { Session: { } otherSession } other && other != scene)
+			if (connectedScene is UIWindowScene { Session: { } session } && !_destroyedSessions.Contains(session.PersistentIdentifier))
 			{
-				UIApplication.SharedApplication.RequestSceneSessionActivation(otherSession, null, null, error =>
+				UIApplication.SharedApplication.RequestSceneSessionActivation(session, null, null, error =>
 				{
 					if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Warning))
 					{
@@ -136,12 +146,36 @@ public class UnoUISceneDelegate : UISceneDelegate
 		}
 	}
 
+	private static bool HasForegroundScene()
+	{
+		foreach (var connectedScene in UIApplication.SharedApplication.ConnectedScenes)
+		{
+			if (connectedScene.ActivationState is UISceneActivationState.ForegroundActive or UISceneActivationState.ForegroundInactive &&
+				!_destroyedSessions.Contains(connectedScene.Session.PersistentIdentifier))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public sealed override void DidDisconnect(UIScene scene) =>
 		Forward(() =>
 		{
 			_wrapper?.OnSceneDisconnected();
 			_wrapper = null;
 			Window = null;
+
+			// Activating a scene while another transition is in flight can be overridden by it, so check
+			// again once a scene the app destroyed is actually gone.
+			var sessionId = scene.Session.PersistentIdentifier;
+			_destroyedSessions.Remove(sessionId);
+
+			if (_foregroundHandoffs.Remove(sessionId) && !HasForegroundScene())
+			{
+				ActivateRemainingScene();
+			}
 
 			OnSceneDisconnected(scene);
 		});
