@@ -268,6 +268,95 @@ public class Given_Compositor
 	}
 
 	/// <summary>
+	/// A host's vsync time is already on the display's cadence, whatever rate the display runs at. It must come
+	/// through as is: snapping it to an interval learned at the previous rate is what makes motion uneven for the
+	/// first frames after a ProMotion or variable-refresh rate change.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Host_Reports_Vsync_Then_Frame_Clock_Keeps_It_Across_Rate_Changes()
+	{
+		var clock = new Uno.UI.Composition.FrameClock();
+
+		var vsync = TimeSpan.TicksPerSecond;
+		for (var i = 0; i < 120; i++)
+		{
+			// 120Hz, then 80Hz: a rate the 120Hz grid can only reach by alternating one and two of its steps.
+			vsync += i < 60 ? Period : TimeSpan.TicksPerSecond / 80;
+			Assert.AreEqual(vsync, clock.NextVsyncTimestamp(vsync), $"frame {i} was moved off the host's vsync");
+		}
+	}
+
+	/// <summary>The interval still comes from the vsyncs, and follows the display when its rate changes.</summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Host_Reports_Vsync_Then_Frame_Interval_Follows_The_Display()
+	{
+		var clock = new Uno.UI.Composition.FrameClock();
+
+		var vsync = TimeSpan.TicksPerSecond;
+		for (var i = 0; i < 40; i++)
+		{
+			vsync += Period;
+			clock.NextVsyncTimestamp(vsync);
+		}
+
+		Assert.AreEqual(Period, clock.IntervalInTicks);
+
+		for (var i = 0; i < 40; i++)
+		{
+			vsync += 2 * Period;
+			clock.NextVsyncTimestamp(vsync);
+		}
+
+		Assert.AreEqual(2 * Period, clock.IntervalInTicks, "the interval should follow the display to 60Hz");
+	}
+
+	/// <summary>
+	/// A vsync seen twice (two ticks between the same pair of vsyncs) is not a zero-length interval: sampled, it
+	/// drags the median down, and motion back-dates its first frame by that median.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Same_Vsync_Seen_Twice_Then_Frame_Interval_Is_Not_Skewed()
+	{
+		var clock = new Uno.UI.Composition.FrameClock();
+
+		var vsync = TimeSpan.TicksPerSecond;
+		for (var i = 0; i < 40; i++)
+		{
+			vsync += Period;
+			clock.NextVsyncTimestamp(vsync);
+			clock.NextVsyncTimestamp(vsync);
+		}
+
+		Assert.AreEqual(Period, clock.IntervalInTicks, $"repeated vsyncs skewed the interval to {Ms(clock.IntervalInTicks)}ms");
+	}
+
+	/// <summary>
+	/// A tick that no vsync armed (a driver starting between frames) still has to land on the host's cadence: the
+	/// latest vsync before it, so its first step matches the frames that follow.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Ticked_Between_Vsyncs_Then_Frame_Clock_Takes_The_Last_Vsync()
+	{
+		var clock = new Uno.UI.Composition.FrameClock();
+
+		var vsync = TimeSpan.TicksPerSecond;
+		for (var i = 0; i < 40; i++)
+		{
+			vsync += Period;
+			clock.NextVsyncTimestamp(vsync);
+		}
+
+		// Three and a half intervals on, with no vsync reported in between.
+		var stamp = clock.CurrentVsyncTimestamp(vsync + 3 * Period + Period / 2);
+
+		Assert.AreEqual(vsync + 3 * Period, stamp, "expected the latest vsync on the host's cadence");
+	}
+
+	/// <summary>
 	/// A record evaluates its animations against the frame's timestamp, not the instant the record happened to
 	/// run at, so every animation in the frame moves on the same even grid as the frame drivers.
 	/// </summary>

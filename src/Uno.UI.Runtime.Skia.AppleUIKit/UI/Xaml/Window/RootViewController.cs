@@ -122,7 +122,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	public void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
 	// Neutral per-frame loop: acquire the negotiated context's target, render, and present.
-	internal void OnFrameRequested()
+	internal void OnFrameRequested(long? vsyncTimestamp)
 	{
 		if (_context is null)
 		{
@@ -134,7 +134,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		{
 			ct.Renderer = _renderer!;
 		}
-		var clipGeometry = ct?.OnNativePlatformFrameRequested(_context);
+		var clipGeometry = ct?.OnNativePlatformFrameRequested(_context, vsyncTimestamp: vsyncTimestamp);
 
 		if (clipGeometry is not null)
 		{

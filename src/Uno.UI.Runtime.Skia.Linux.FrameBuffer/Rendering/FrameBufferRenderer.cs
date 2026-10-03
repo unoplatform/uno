@@ -49,7 +49,8 @@ internal abstract class FrameBufferRenderer
 	/// <summary>Wires the per-window backend factory installed on the CompositionTarget each frame.</summary>
 	internal void SetRenderer(IDrawingFactory renderer) => _rendererFactory = renderer;
 
-	protected void Render()
+	/// <param name="vsyncTimestamp">The <see cref="System.Diagnostics.Stopwatch"/> time of the vsync that started this frame, if the renderer knows it.</param>
+	protected void Render(long? vsyncTimestamp = null)
 	{
 		if (_host.RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
 		{
@@ -87,7 +88,7 @@ internal abstract class FrameBufferRenderer
 		});
 
 		ct.Renderer = _rendererFactory!;
-		ct.OnNativePlatformFrameRequested(context, rootTransform, overlay);
+		ct.OnNativePlatformFrameRequested(context, rootTransform, overlay, vsyncTimestamp);
 	}
 
 	private void DrawCursor(IDrawingSession session)
