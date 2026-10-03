@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollView.cpp, commit b8cfb8490
+// MUX Reference ScrollView.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 
 using System;
 using System.Collections.Generic;
@@ -56,7 +56,7 @@ public partial class ScrollView : Control, IScrollView
 		UnhookCompositionTargetRendering();
 		UnhookScrollPresenterEvents(true /*isForDestructor*/);
 		UnhookScrollViewEvents();
-		ResetHideIndicatorsTimer(true /*isForDestructor*/);
+		ResetHideIndicatorsTimer();
 	}
 
 	#region IScrollView
@@ -1070,15 +1070,18 @@ public partial class ScrollView : Control, IScrollView
 
 		if (m_bringIntoViewOperations.Count > 0)
 		{
-			foreach (var bringIntoViewOperation in m_bringIntoViewOperations)
+			// Uno: iterate backwards so expired operations can be removed during the iteration.
+			for (int i = m_bringIntoViewOperations.Count - 1; i >= 0; i--)
 			{
+				var bringIntoViewOperation = m_bringIntoViewOperations[i];
+
 				//SCROLLVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH_PTR_INT, METH_NAME, this, bringIntoViewOperation->TargetElement(), bringIntoViewOperation->TicksCount());
 
 				if (bringIntoViewOperation.HasMaxTicksCount)
 				{
 					// This ScrollView is no longer expected to receive BringingIntoView notifications from its ScrollPresenter,
 					// resulting from a FocusManager::TryFocusAsync call in ScrollView::HandleKeyDownForXYNavigation.
-					m_bringIntoViewOperations.Remove(bringIntoViewOperation);
+					m_bringIntoViewOperations.RemoveAt(i);
 				}
 				else
 				{
@@ -1110,10 +1113,9 @@ public partial class ScrollView : Control, IScrollView
 		}
 	}
 
-	private void ResetHideIndicatorsTimer(bool isForDestructor = false, bool restart = false)
+	private void ResetHideIndicatorsTimer(bool restart = false)
 	{
-		// UNO TODO
-		var hideIndicatorsTimer = m_hideIndicatorsTimer; //.safe_get(isForDestructor /*useSafeGet*/);
+		var hideIndicatorsTimer = m_hideIndicatorsTimer;
 
 		if (hideIndicatorsTimer is not null && hideIndicatorsTimer.IsEnabled)
 		{
@@ -1795,7 +1797,20 @@ public partial class ScrollView : Control, IScrollView
 			{
 				hideIndicatorsTimer = new DispatcherTimer();
 				hideIndicatorsTimer.Interval = new TimeSpan(ticks: s_noIndicatorCountdown);
-				hideIndicatorsTimer.Tick += OnHideIndicatorsTimerTick;
+				// The DispatcherTimer keeps a reference to its Tick handler. Capture a weak reference instead
+				// so a pending tick doesn't keep this ScrollView alive after it's gone.
+				WeakReference<ScrollView> weakThis = new(this);
+				hideIndicatorsTimer.Tick += (sender, args) =>
+				{
+					if (weakThis.TryGetTarget(out var strongThis))
+					{
+						strongThis.OnHideIndicatorsTimerTick(sender, args);
+					}
+					else
+					{
+						((DispatcherTimer)sender).Stop();
+					}
+				};
 				m_hideIndicatorsTimer = hideIndicatorsTimer;
 			}
 
@@ -1871,7 +1886,7 @@ public partial class ScrollView : Control, IScrollView
 				return;
 			}
 
-			ResetHideIndicatorsTimer(false /*isForDestructor*/, true /*restart*/);
+			ResetHideIndicatorsTimer(true /*restart*/);
 
 			// Mouse indicators dominate if they are already showing or if we have set the flag to prefer them.
 			if (m_preferMouseIndicators || m_showingMouseIndicators || !areScrollControllersAutoHiding)
