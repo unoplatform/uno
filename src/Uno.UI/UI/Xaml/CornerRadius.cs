@@ -89,16 +89,6 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 #pragma warning restore UnoInternal0002
 
 	/// <summary>
-	/// Provides a Zero-valued corner radius.
-	/// </summary>
-	public static readonly CornerRadius None = new CornerRadius(0);
-
-	/// <summary>
-	/// Builds a uniform radius from a double;
-	/// </summary>
-	public static implicit operator CornerRadius(double uniformRadius) => new CornerRadius(uniformRadius);
-
-	/// <summary>
 	/// Determines if two CornerRadius instances are equal.
 	/// </summary>
 	public static bool operator ==(CornerRadius cr1, CornerRadius cr2) => Equals(cr1, cr2);
@@ -116,7 +106,7 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 	/// <returns>Full corner radius.</returns>
 	internal FullCornerRadius GetRadii(Size elementSize, Thickness borderThickness)
 	{
-		if (this == None)
+		if (this == default)
 		{
 			return FullCornerRadius.None;
 		}

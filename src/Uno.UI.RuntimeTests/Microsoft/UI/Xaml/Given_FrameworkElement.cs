@@ -594,9 +594,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				MinHeight = 100,
 				RowDefinitions =
 				{
-					new RowDefinition{Height = 75},
+					new RowDefinition{Height = new GridLength(75)},
 					new RowDefinition(),
-					//new RowDefinition{Height = 75}, // Not working on iOS when the line below is commented
+					//new RowDefinition{Height = new GridLength(75)}, // Not working on iOS when the line below is commented
 				},
 				Children =
 				{

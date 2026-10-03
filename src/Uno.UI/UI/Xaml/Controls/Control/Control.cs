@@ -690,7 +690,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -713,7 +713,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)

@@ -57,7 +57,7 @@ public partial class RelativePanel
 		set => SetBorderThicknessValue(value);
 	}
 
-	private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
+	private static Thickness GetBorderThicknessDefaultValue() => default(Thickness);
 
 	/// <summary>
 	/// Identifies the BorderThickness dependency property.
@@ -80,7 +80,7 @@ public partial class RelativePanel
 		set => SetPaddingValue(value);
 	}
 
-	private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
+	private static Thickness GetPaddingDefaultValue() => default(Thickness);
 
 	/// <summary>
 	/// Identifies the Padding dependency property.
@@ -103,7 +103,7 @@ public partial class RelativePanel
 		set => SetCornerRadiusValue(value);
 	}
 
-	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+	private static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
 	/// <summary>
 	/// Identifies the CornerRadius dependency property.

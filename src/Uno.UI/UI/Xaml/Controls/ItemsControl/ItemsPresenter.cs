@@ -176,7 +176,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(ItemsPresenter),
 				new FrameworkPropertyMetadata(
-					(Thickness)Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ItemsPresenter)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
@@ -211,7 +211,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private Thickness AppliedPadding =>
 			IsWithinScrollableArea ?
 				Padding :
-				Thickness.Empty;
+				default(Thickness);
 
 		protected override bool IsSimpleLayout => true;
 

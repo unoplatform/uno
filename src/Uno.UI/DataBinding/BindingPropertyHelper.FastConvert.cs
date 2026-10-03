@@ -363,7 +363,7 @@ namespace Uno.UI.DataBinding
 			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_IconElement_Available
 				&& outputType == typeof(Microsoft.UI.Xaml.Controls.IconElement))
 			{
-				output = (Microsoft.UI.Xaml.Controls.IconElement)input;
+				output = new Microsoft.UI.Xaml.Controls.SymbolIcon { Symbol = Enum.Parse<Microsoft.UI.Xaml.Controls.Symbol>(input, true) };
 				return true;
 			}
 

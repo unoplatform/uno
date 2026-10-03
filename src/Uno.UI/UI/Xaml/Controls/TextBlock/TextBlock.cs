@@ -805,7 +805,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Thickness),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					(Thickness)Thickness.Empty,
+					default(Thickness),
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnPaddingChanged()));
 
