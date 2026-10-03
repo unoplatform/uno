@@ -582,11 +582,9 @@ public class Given_ItemsRepeater_FastScroll
 	{
 #if HAS_UNO
 		// WinUI puts the whole thumb drag in an "intermediate view changed mode"
-		// (ScrollViewer_Partial.cpp: EnterIntermediateViewChangedMode on ScrollEventType_ThumbTrack)
-		// so each drag tick raises ViewChanged(IsIntermediate=true) and skips arrange/snap; only the
-		// release (EndScroll) raises the final, non-intermediate ViewChanged. Guards
-		// ScrollViewer.OnVerticalScrollBarScrolled routing ThumbTrack through ChangeViewCore's
-		// isIntermediate flag.
+		// (ScrollViewer_Partial.cpp: EnterIntermediateViewChangedMode on ScrollEventType_ThumbTrack),
+		// so each drag tick raises ViewChanged(IsIntermediate=true). EndScroll leaves that mode and
+		// raises the final, non-intermediate ViewChanged even though the offset doesn't move.
 		var sut = CreateMixedTemplateSut(itemCount: 150, viewport: new Size(360, 600));
 		await LoadAsync(sut);
 
@@ -617,16 +615,15 @@ public class Given_ItemsRepeater_FastScroll
 			verticalScrollBar,
 			new Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs
 			{
-				// Must differ from the last ThumbTrack value (100.0): Set() only raises ViewChanged
-				// when the offset actually moves, so an EndScroll at the same value as the last tick
-				// would raise nothing and tell us nothing about the intermediate flag.
+				// ScrollBar raises EndScroll with its current Value, i.e. the last ThumbTrack value.
 				ScrollEventType = Microsoft.UI.Xaml.Controls.Primitives.ScrollEventType.EndScroll,
-				NewValue = 120.0,
+				NewValue = 100.0,
 			});
 		await TestServices.WindowHelper.WaitForIdle();
 
-		intermediateFlags.Should().Contain(f => !f,
-			"releasing the thumb (EndScroll) must raise a final, non-intermediate ViewChanged");
+		intermediateFlags.Should().Equal(new[] { false },
+			"releasing the thumb (EndScroll) must raise exactly one final, non-intermediate ViewChanged");
+		sut.Scroller.VerticalOffset.Should().BeApproximately(100.0, 0.5, "EndScroll must not move the offset");
 #else
 		Assert.Inconclusive("not applicable for winappsdk: no backdoor available");
 #endif
@@ -637,7 +634,7 @@ public class Given_ItemsRepeater_FastScroll
 	public async Task When_EffectiveViewportShiftIsSubPixel_Then_MeasureIsSkipped()
 	{
 #if HAS_UNO
-		// WinUI tolerates viewport jitter below 0.01px (ViewportManagerWithPlatformFeatures.cpp,
+		// WinUI tolerates viewport jitter below 0.01px (ViewportManager.cpp,
 		// UpdateViewport's roundingTolerance) so a fractional scroll tick doesn't re-measure the
 		// whole repeater. Drives ItemsRepeater.RaiseEffectiveViewportChanged directly so the test
 		// doesn't depend on the compositor producing an exact sub-pixel viewport.
