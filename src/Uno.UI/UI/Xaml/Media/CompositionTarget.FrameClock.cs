@@ -96,13 +96,15 @@ public partial class CompositionTarget
 	}
 
 	/// <summary>
-	/// Drops the frame drivers of a target whose host is gone. It never presents again, so its drivers would
-	/// never tick again either, and <see cref="Compositor.IsAnimating"/> would report them forever.
+	/// Drops the frame drivers and animations of a target whose host is gone. It never records again, so they
+	/// would never tick again either, and <see cref="Compositor.IsAnimating"/> would report them forever.
 	/// </summary>
-	internal void ClearFrameDrivers()
+	internal void OnHostGone()
 	{
 		_isHostGone = true;
 		_frameTickArmed = false;
+
+		Compositor.GetSharedCompositor().StopAnimations(this);
 
 		if (_frameStarting is null)
 		{
@@ -132,13 +134,15 @@ public partial class CompositionTarget
 		{
 			if (target._frameTickArmed && target.RaiseFrameStarting() is { } timestamp)
 			{
-				_pendingRenderingTimestamp ??= timestamp;
+				// Several windows can arm the same tick, and their clocks are not in phase: Rendering takes the latest.
+				_pendingRenderingTimestamp = Math.Max(_pendingRenderingTimestamp ?? timestamp, timestamp);
 			}
 		}
 	}
 
 	/// <summary>
-	/// Raises <see cref="Rendering"/> once for every target the tick's <see cref="RaiseFrameTick"/> ticked.
+	/// Raises <see cref="Rendering"/> once per tick when the tick's <see cref="RaiseFrameTick"/> ticked any target,
+	/// at the latest of their frame timestamps.
 	/// </summary>
 	/// <returns>Whether it was raised, so the tick lays out again what the handlers changed.</returns>
 	internal static bool RaiseRendering()
@@ -155,7 +159,7 @@ public partial class CompositionTarget
 			return false;
 		}
 
-		// Several windows can arm the same tick, and their clocks are not in phase.
+		// A tick armed by another window's clock can still be behind the last raise.
 		_lastRenderingTimestamp = Math.Max(_lastRenderingTimestamp, frameTimestamp);
 		InvokeRendering(_lastRenderingTimestamp);
 		return true;
