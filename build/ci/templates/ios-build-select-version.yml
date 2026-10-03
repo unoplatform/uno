@@ -1,8 +1,5 @@
 parameters:
   xCodeRoot: ''
-  # Build-only jobs compile against the SDK inside Xcode and never boot a simulator, so they skip
-  # the runtime download (macOS-26 does not preinstall the iOS 26.1 runtime Xcode 26.1.1 pairs with).
-  requireSimulatorRuntime: true
 
 steps:
   - bash: |
@@ -11,10 +8,6 @@ steps:
       echo '##vso[task.setvariable variable=MD_APPLE_SDK_ROOT;]'${{parameters.xCodeRoot}}
       sudo xcode-select --switch ${{parameters.xCodeRoot}}/Contents/Developer
       sudo xcodebuild -runFirstLaunch
-      if [ "${{ lower(parameters.requireSimulatorRuntime) }}" != "true" ]; then
-        echo "No simulator runtime required for this job."
-        exit 0
-      fi
       # Verify expected iOS simulator runtime; download only if missing.
       SDK_BUILD_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-build-version 2>/dev/null || true)
       SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version 2>/dev/null || true)

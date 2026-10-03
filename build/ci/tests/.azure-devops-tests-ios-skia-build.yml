@@ -40,7 +40,6 @@ jobs:
   - template: ../templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
-      requireSimulatorRuntime: false
 
   - bash: |
       chmod +x $(build.sourcesdirectory)/build/test-scripts/skia-ios-uitest-build.sh

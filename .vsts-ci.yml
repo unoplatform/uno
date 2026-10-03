@@ -59,7 +59,8 @@ variables:
   macOSVMImage: 'macOS-26'
   # .NET for iOS 26.1 requires exactly Xcode 26.1.
   xCodeRoot: '/Applications/Xcode_26.1.1.app'
-  # macOS-26 has no iOS 26.1 simulator runtime, so the simulator tests use a newer Xcode.
+  # macOS-26 has no iOS 26.1 simulator runtime: Select Xcode downloads it for the build jobs (actool
+  # needs it), while the simulator tests use this Xcode, whose runtime is preinstalled.
   xCodeRootSimulator: '/Applications/Xcode_26.6.app'
 
   # Offline validation to improve build performance
