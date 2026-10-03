@@ -41,7 +41,8 @@ jobs:
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesapp.skia'
       UITEST_VARIANT: 'skia'
       TEST_KIND: runtime
-      xCodeRoot: ${{ parameters.xCodeRootBuild }}
+      # The shards only drive a simulator; this Xcode's runtime ships preinstalled on the image.
+      xCodeRoot: $(xCodeRootSimulator)
       dependsOn:
         - Skia_Tests_Build_iOS
       BuildJobName: 'Skia_Tests_Build_iOS'

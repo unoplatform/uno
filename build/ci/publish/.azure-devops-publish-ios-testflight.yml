@@ -68,6 +68,7 @@ jobs:
   - template: ../templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
+      requireSimulatorRuntime: false
 
   - template: ../templates/gitversion.yml
 
