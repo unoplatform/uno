@@ -21,6 +21,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 		private RootViewController? _owner;
 		private CADisplayLink _link;
+		private long _vsyncTimestamp;
 		private Thread? _renderThread;
 		private int _renderRequested;
 		private int _stopped;
@@ -32,7 +33,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		public UnoMetalView()
 			: base(CGRect.Empty, null)
 		{
-			_link = CADisplayLink.Create(() => this.Draw());
+			_link = CADisplayLink.Create(OnDisplayLink);
 			var device = MTLDevice.SystemDefault;
 
 			if (device == null)
@@ -152,6 +153,12 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		/// the constructor found no Metal device — negotiation then reports a decline and tries the next kind,
 		/// instead of the NullReferenceException a dereference here would surface as.
 		/// </summary>
+		private void OnDisplayLink()
+		{
+			_vsyncTimestamp = DisplayLinkVsync.GetTimestamp(_link);
+			Draw();
+		}
+
 		internal Uno.UI.Composition.Drawing.ISwapChain? CreateGraphicsContext()
 			=> Device is { } device && _queue is { } queue
 				? new AppleMetalGraphicsContext(device, queue, () => CurrentDrawable)
@@ -209,7 +216,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				// The drawable is acquired by the context at present time, not here: holding one across the frame's
 				// CPU work drains CAMetalLayer's small pool and stalls every frame.
 				// See : https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/Drawables.html
-				_owner?.OnFrameRequested();
+				_owner?.OnFrameRequested(_vsyncTimestamp);
 			}
 			finally
 			{
