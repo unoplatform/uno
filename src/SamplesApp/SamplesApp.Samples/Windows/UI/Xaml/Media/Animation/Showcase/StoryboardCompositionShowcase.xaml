@@ -1,0 +1,193 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Media_Animation.Showcase.StoryboardCompositionShowcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="ShowcaseSectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,16,0,4" />
+        </Style>
+        <Style x:Key="ShowcaseDescription" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Opacity" Value="0.75" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+
+        <!--  Sequenced choreography via BeginTime  -->
+        <Storyboard x:Name="ChoreographyStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetName="ChoreoStep1Transform"
+                Storyboard.TargetProperty="X"
+                From="0"
+                To="200"
+                Duration="0:0:0.6">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                BeginTime="0:0:0.6"
+                Storyboard.TargetName="ChoreoStep2Transform"
+                Storyboard.TargetProperty="X"
+                From="0"
+                To="200"
+                Duration="0:0:0.6">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                BeginTime="0:0:1.2"
+                Storyboard.TargetName="ChoreoStep3Transform"
+                Storyboard.TargetProperty="X"
+                From="0"
+                To="200"
+                Duration="0:0:0.6">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <!--  Parallel + offset choreography  -->
+        <Storyboard x:Name="OrchestratedStoryboard">
+            <!--  Step A: slide  -->
+            <DoubleAnimation
+                Storyboard.TargetName="OrchestratedTransform"
+                Storyboard.TargetProperty="TranslateX"
+                From="0"
+                To="160"
+                Duration="0:0:0.6">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <!--  Step B: while sliding, color shifts  -->
+            <ColorAnimation
+                BeginTime="0:0:0.2"
+                Storyboard.TargetName="OrchestratedBrush"
+                Storyboard.TargetProperty="Color"
+                From="DodgerBlue"
+                To="OrangeRed"
+                Duration="0:0:0.5" />
+            <!--  Step C: after slide, scale up  -->
+            <DoubleAnimation
+                BeginTime="0:0:0.6"
+                Storyboard.TargetName="OrchestratedTransform"
+                Storyboard.TargetProperty="ScaleX"
+                To="1.5"
+                Duration="0:0:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                BeginTime="0:0:0.6"
+                Storyboard.TargetName="OrchestratedTransform"
+                Storyboard.TargetProperty="ScaleY"
+                To="1.5"
+                Duration="0:0:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <!--  Step D: rotate while scaling  -->
+            <DoubleAnimation
+                BeginTime="0:0:0.8"
+                Storyboard.TargetName="OrchestratedTransform"
+                Storyboard.TargetProperty="Rotation"
+                From="0"
+                To="180"
+                Duration="0:0:0.6">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="12">
+            <TextBlock
+                FontSize="28"
+                FontWeight="Bold"
+                Text="Storyboard Composition Showcase" />
+            <TextBlock
+                MaxWidth="700"
+                HorizontalAlignment="Left"
+                Style="{StaticResource ShowcaseDescription}"
+                Text="A single Storyboard can orchestrate parallel and sequential animations using BeginTime offsets. The two demos below run from one Storyboard each." />
+
+            <!--  Sequential  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="Sequential cascade (BeginTime offsets)" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Three animations on three Borders, each with a BeginTime that staggers their start." />
+            <StackPanel Spacing="6">
+                <Border
+                    Width="40"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    Background="DodgerBlue"
+                    CornerRadius="4">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="ChoreoStep1Transform" />
+                    </Border.RenderTransform>
+                </Border>
+                <Border
+                    Width="40"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    Background="MediumSeaGreen"
+                    CornerRadius="4">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="ChoreoStep2Transform" />
+                    </Border.RenderTransform>
+                </Border>
+                <Border
+                    Width="40"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    Background="OrangeRed"
+                    CornerRadius="4">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="ChoreoStep3Transform" />
+                    </Border.RenderTransform>
+                </Border>
+            </StackPanel>
+            <Button Click="RunChoreography" Content="Run cascade" />
+
+            <!--  Orchestrated  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="Multi-property orchestration" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Six animations on a single CompositeTransform + brush, with overlapping BeginTime offsets to produce a layered choreography (slide → color → pop → spin)." />
+            <Grid Height="160">
+                <Border
+                    Width="80"
+                    Height="80"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    CornerRadius="6"
+                    RenderTransformOrigin="0.5,0.5">
+                    <Border.Background>
+                        <SolidColorBrush x:Name="OrchestratedBrush" Color="DodgerBlue" />
+                    </Border.Background>
+                    <Border.RenderTransform>
+                        <CompositeTransform x:Name="OrchestratedTransform" />
+                    </Border.RenderTransform>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="*" />
+                </Border>
+            </Grid>
+            <Button Click="RunOrchestrated" Content="Run choreography" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
