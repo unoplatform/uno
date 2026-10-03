@@ -256,11 +256,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 			// Start an animation. Its animating value will serve as
 			// the inferred starting value for the next animation.
+			// Both run long enough that a multi-second frame (software rendering) between the samples cannot finish them.
 			var animation0 = new DoubleAnimation
 			{
 				From = 100,
 				To = 105,
-				Duration = new Duration(TimeSpan.FromSeconds(5)),
+				Duration = new Duration(TimeSpan.FromSeconds(30)),
 			}.BindTo(translate, nameof(translate.Y));
 			animation0.ToStoryboard().Begin();
 			await Task.Delay(125);
@@ -270,7 +271,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			{
 				// From = should be around 100~105 from animation #0
 				To = 50,
-				Duration = new Duration(TimeSpan.FromSeconds(5)),
+				Duration = new Duration(TimeSpan.FromSeconds(30)),
 			}.BindTo(translate, nameof(translate.Y));
 			animation1.ToStoryboard().Begin();
 			await Task.Delay(125);

@@ -50,4 +50,13 @@ public static partial class WebGpuJsInterop
 	/// WebGpuDrawingFactory.SnapshotAsync (RenderTargetBitmap) on WASM.</summary>
 	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.mapReadBase64")]
 	public static partial Task<string> MapReadBase64Async(int bufferPtr, int byteLen);
+
+	/// <summary>Counts a presented frame as in flight until the queue (by its wgpu handle ptr) has finished all work
+	/// submitted so far.</summary>
+	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.trackPresentedFrame")]
+	internal static partial void TrackPresentedFrame(int queuePtr);
+
+	/// <summary>Presented frames the GPU has not finished yet.</summary>
+	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.presentedFramesInFlight")]
+	internal static partial int PresentedFramesInFlight();
 }

@@ -1,0 +1,13 @@
+<Page
+	x:Class="Uno.UI.RuntimeTests.When_AddInLib_5aacc34b5a214a739dd0ab2f30a74c9f"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid>
+		<TextBlock Text="This is a live test page DynamicType { Namespace = Uno.UI.RuntimeTests, Name = When_AddInLib_5aacc34b5a214a739dd0ab2f30a74c9f, Assembly = Uno.UI.RuntimeTests.HRUnoLib, Directory = E:\uno-wgci\src\Uno.UI.RuntimeTests\HotReload\Frame\HRUnoLib, FilePath = E:\uno-wgci\src\Uno.UI.RuntimeTests\HotReload\Frame\HRUnoLib\When_AddInLib_5aacc34b5a214a739dd0ab2f30a74c9f }" />
+	</Grid>
+</Page>

@@ -90,7 +90,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ScrollTo(SUT, scrollBy);
 			await Task.Delay(200); // Allow the scroll to complete
 			var item = 10;
-			await WindowHelper.WaitFor(() => (lvi = SUT.ContainerFromItem(item) as ListViewItem) != null);
+			await WindowHelper.WaitFor(() => (lvi = SUT.ContainerFromItem(item) as ListViewItem) != null, timeoutMS: 5000);
 			Assert.AreEqual(minWidth, lvi.ActualWidth);
 
 

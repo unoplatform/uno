@@ -13,6 +13,9 @@ parameters:
   jobPrefix: 'Skia_Linux'
   testRunTitle: 'Linux Skia Runtime Tests'
   testResultLabel: ''
+  runtimeTestsDisplayName: 'Runtime Tests'
+  # Runs the app on the WebGPU backend; the agents have no GPU, so wgpu uses Mesa's lavapipe software Vulkan.
+  webGpu: false
 
 jobs:
 
@@ -62,7 +65,7 @@ jobs:
         ArtifactType: Container
 
 - job: ${{ parameters.jobPrefix }}_Runtime_Tests_Build
-  displayName: 'Runtime Tests'
+  displayName: '${{ parameters.runtimeTestsDisplayName }}'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
 
@@ -99,6 +102,9 @@ jobs:
 
   - template: ../templates/dotnet-install.yml
   - template: ../templates/linux-install-deps.yml
+    ${{ if eq(parameters.webGpu, true) }}:
+      parameters:
+        packages: 'xvfb fluxbox vlc libvlc-dev libgtk-3-dev libwebkit2gtk-4.1-dev mesa-vulkan-drivers'
 
   - script: |
       # Build source generators for hot reload runtime tests
@@ -119,6 +125,9 @@ jobs:
       SamplesAppArtifactPath: $(SamplesAppArtifactPath)
       SamplesAppArtifactName: $(SamplesAppArtifactName)
       UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
+      ${{ if eq(parameters.webGpu, true) }}:
+        UNO_WEBGPU: 1
+        UNO_WEBGPU_LOG: warn
 
   - task: PublishTestResults@2
     condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))

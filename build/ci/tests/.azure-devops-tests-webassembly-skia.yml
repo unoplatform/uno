@@ -1,38 +1,46 @@
 parameters:
   vmLinuxImage: ''
+  # A self-hosted pool to run on instead of the hosted image. The WebGPU job needs one: Chrome's SwiftShader
+  # renders on the CPU and scales with cores, and the hosted agents are too small to finish a group in time.
+  vmLinuxPool: ''
   XAML_FLAVOR_BUILD: ''
+  jobName: 'Skia_Browser_Runtime_Tests_Build'
+  displayName: ' ' ## Concatenated with the matrix group name
+  testResultLabel: ''
+  # UNO_* variables handed to the app through the URL's env= parameter, e.g. 'UNO_WEBGPU=1'.
+  appEnvironment: ''
+  chromeFlags: ''
+  # One matrix job per group; the suite is split evenly across them.
+  testGroups: [0, 1, 2, 3]
+  # Browser window (and virtual screen) size, as WIDTHxHEIGHT.
+  browserSize: '1920x1080'
+  # How long a group may run before it is reported as stalled; the job timeout leaves room for the setup steps.
+  resultsTimeoutMinutes: 35
+  jobTimeoutInMinutes: 60
 
 jobs:
 ##
 ## WebAssembly Skia
 ##
-- job: Skia_Browser_Runtime_Tests_Build
-  displayName: ' ' ## Name is concatenated with the matrix group name
-  timeoutInMinutes: 60
+- job: ${{ parameters.jobName }}
+  displayName: '${{ parameters.displayName }}'
+  timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
 
-  pool:
-    vmImage: ${{ parameters.vmLinuxImage }}
+  ${{ if ne(parameters.vmLinuxPool, '') }}:
+    pool: ${{ parameters.vmLinuxPool }}
+  ${{ else }}:
+    pool:
+      vmImage: ${{ parameters.vmLinuxImage }}
 
   dependsOn: Skia_Tests_Build_Browser
 
   strategy:
     matrix:
-      'Runtime Tests 0':
-        UITEST_RUNTIME_TEST_GROUP: 0
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 4
-
-      'Runtime Tests 1':
-        UITEST_RUNTIME_TEST_GROUP: 1
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 4
-
-      'Runtime Tests 2':
-        UITEST_RUNTIME_TEST_GROUP: 2
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 4
-
-      'Runtime Tests 3':
-        UITEST_RUNTIME_TEST_GROUP: 3
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 4
+      ${{ each group in parameters.testGroups }}:
+        'Runtime Tests ${{ group }}':
+          UITEST_RUNTIME_TEST_GROUP: ${{ group }}
+          UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ length(parameters.testGroups) }}
 
   variables:
     SamplesAppArtifactName: $[ dependencies.Skia_Tests_Build_Browser.outputs['set_samples_artifact.SamplesAppArtifactName'] ]
@@ -53,7 +61,7 @@ jobs:
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-      artifact: runtime-tests-wasm-skia-failures
+      artifact: runtime-tests-wasm-skia${{ parameters.testResultLabel }}-failures
       path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
   # Marks the test step as not-yet-reached. The publish tasks below key off this so a job killed
@@ -91,13 +99,19 @@ jobs:
 
   - bash: build/test-scripts/wasm-run-skia-runtime-tests.sh
     displayName: Run WebAssembly Skia Runtime Tests
+    env:
+      UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
+      UNO_TEST_APP_ENVIRONMENT: ${{ parameters.appEnvironment }}
+      UNO_TEST_CHROME_FLAGS: ${{ parameters.chromeFlags }}
+      UNO_TEST_BROWSER_SIZE: ${{ parameters.browserSize }}
+      UNO_TEST_RESULTS_TIMEOUT_MINUTES: ${{ parameters.resultsTimeoutMinutes }}
 
   - task: PublishTestResults@2
     condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))
     inputs:
-      testRunTitle: 'WebAssembly Skia Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testRunTitle: 'WebAssembly Skia${{ parameters.testResultLabel }} Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm${{ parameters.testResultLabel }}-runtime-tests-results.xml'
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
 
@@ -107,5 +121,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: runtime-tests-wasm-skia-failures
+      ArtifactName: runtime-tests-wasm-skia${{ parameters.testResultLabel }}-failures
       ArtifactType: Container

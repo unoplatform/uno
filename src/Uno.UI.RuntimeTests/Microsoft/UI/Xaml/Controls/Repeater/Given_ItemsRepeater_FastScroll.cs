@@ -391,6 +391,10 @@ public class Given_ItemsRepeater_FastScroll
 		{
 			var before = sut.Scroller.VerticalOffset;
 			mouse.WheelDown();
+			// On a software-rendered device the tick can still be pending when the UI first goes idle; wait for it to
+			// start moving, then let it settle. A snap-back still fails below, since the settled offset is compared.
+			await TestServices.WindowHelper.WaitFor(() => sut.Scroller.VerticalOffset > before + 0.5, timeoutMS: 5000,
+				message: $"Single wheel-down tick #{i + 1} on multi-template content never moved the offset from {before:F2}.");
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var after = sut.Scroller.VerticalOffset;
 			offsetsAfterEachTick.Add(after);

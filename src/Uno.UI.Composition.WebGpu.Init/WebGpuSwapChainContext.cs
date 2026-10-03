@@ -114,6 +114,14 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		}
 		_frameAcquired = false;
 
+		// wgpu's Vulkan swapchain gives the acquire a fixed one-second wait and reports running past it as a lost
+		// device (gfx-rs/wgpu#9029). On a CPU rasterizer the frame just submitted can take longer than that (the
+		// Android emulator's SwiftShader, which compiles each shader on first use), so let it finish first.
+		if (_device.IsSoftwareVulkan)
+		{
+			_ = wgpuDevicePoll(_device.Dev, 1u, null);
+		}
+
 		// Acquire the swapchain image at present time (after the scene render) and blit the offscreen frame into it.
 		WGPUSurfaceTexture st = default;
 		wgpuSurfaceGetCurrentTexture(_surface, &st);
@@ -121,7 +129,20 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 				&& st.Status != WGPUSurfaceGetCurrentTextureStatus.SuccessSuboptimal)
 			|| st.Texture == IntPtr.Zero)
 		{
-			_configured = false;   // surface lost / out of date — reconfigure next frame
+			// A texture handed back with a failed acquire still references a back buffer, and an unreleased one
+			// makes the next resize (D3D12 ResizeBuffers) fail or block the render thread.
+			if (st.Texture != IntPtr.Zero)
+			{
+				wgpuTextureRelease(st.Texture);
+			}
+
+			// Only a surface that no longer matches its window needs reconfiguring; a timed-out or occluded
+			// acquire just skips this frame. Reconfiguring on those resized the swapchain every frame.
+			if (st.Status is WGPUSurfaceGetCurrentTextureStatus.Outdated or WGPUSurfaceGetCurrentTextureStatus.Lost)
+			{
+				_configured = false;
+			}
+
 			return;
 		}
 
@@ -213,10 +234,12 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 
 		WGPUSurfaceCapabilities caps = default;
 		wgpuSurfaceGetCapabilities(_surface, _device.Adapter, &caps);
-		_surfaceFormat = _device.ColorFormat;
-		bool supported = false;
-		for (nuint i = 0; i < caps.FormatCount; i++) { if (caps.Formats[i] == _surfaceFormat) { supported = true; break; } }
-		if (!supported && caps.FormatCount > 0) { _surfaceFormat = caps.Formats[0]; }
+		// The device's own format, else its channel-swapped UNORM twin (Android's SwiftShader offers RGBA8 but not
+		// BGRA8), and only then whatever the surface lists first - which can be an sRGB format the blit must convert to.
+		var twin = _device.ColorFormat == WGPUTextureFormat.BGRA8Unorm ? WGPUTextureFormat.RGBA8Unorm : WGPUTextureFormat.BGRA8Unorm;
+		_surfaceFormat = IsOffered(caps, _device.ColorFormat) ? _device.ColorFormat
+			: IsOffered(caps, twin) ? twin
+			: caps.FormatCount > 0 ? caps.Formats[0] : _device.ColorFormat;
 		var alphaMode = caps.AlphaModeCount > 0 ? caps.AlphaModes[0] : WGPUCompositeAlphaMode.Auto;
 
 		// UNO_WEBGPU_PRESENT picks the present mode (fifo default; immediate/mailbox/fiforelaxed for
@@ -271,8 +294,16 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		var blitBgd = new WGPUBindGroupDescriptor { Layout = _blitBgl, EntryCount = 2, Entries = blitEntries };
 		_blitBg = wgpuDeviceCreateBindGroup(_device.Dev, &blitBgd);
 
-		System.Console.WriteLine($"[webgpu] surface {width}x{height} format={_surfaceFormat} present={presentMode}");
+		var offeredFormats = new System.Text.StringBuilder();
+		for (nuint i = 0; i < caps.FormatCount; i++) { offeredFormats.Append(i == 0 ? "" : ",").Append(caps.Formats[i]); }
+		System.Console.WriteLine($"[webgpu] surface {width}x{height} format={_surfaceFormat} (offered {offeredFormats}) present={presentMode}");
 		_configured = true;
+	}
+
+	private static bool IsOffered(in WGPUSurfaceCapabilities caps, WGPUTextureFormat format)
+	{
+		for (nuint i = 0; i < caps.FormatCount; i++) { if (caps.Formats[i] == format) { return true; } }
+		return false;
 	}
 
 	private static WGPUStringView Utf8(string s)

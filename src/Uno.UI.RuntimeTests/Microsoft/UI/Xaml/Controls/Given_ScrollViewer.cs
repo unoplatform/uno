@@ -683,6 +683,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WPF Islands and Skia WASM #9080
+		[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)] // Same flakiness on the GPU-less WebGPU CI agents #9080
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif

@@ -31,6 +31,10 @@ internal sealed unsafe class WebGpuBrowserGraphicsContext : ISwapChain, IWebGpuD
 	private int _w, _h;
 	private bool _configured;
 
+	// The browser's frame callback is not held back by the GPU, so without a cap a GPU slower than the callback rate
+	// (a software adapter) queues frames without bound: a readback then waits behind a minute of queued work.
+	private const int MaxFramesInFlight = 2;
+
 	// A 1-sample fullscreen-blit pipeline that samples _presentView into the canvas texture. SwiftShader only
 	// composites the canvas from a render pass targeting it directly (not a resolve or a copy), so present blits.
 	private IntPtr _blitModule;
@@ -80,6 +84,7 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	uint IWebGpuDeviceContext.ColorFormat => (uint)_device.ColorFormat;
 	System.Runtime.InteropServices.JavaScript.JSObject IWebGpuDeviceContext.JsDevice => _device.JsDeviceObject;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
+	public bool IsReadyForFrame => WebGpuJsInterop.PresentedFramesInFlight() < MaxFramesInFlight;
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
 		width = Math.Max(1, width);
@@ -124,6 +129,7 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		wgpuRenderPassEncoderRelease(pass);
 		var cb = wgpuCommandEncoderFinish(enc, null);
 		wgpuQueueSubmit(_device.Q, 1, (IntPtr)(&cb));
+		WebGpuJsInterop.TrackPresentedFrame((int)_device.Q);
 
 		wgpuCommandBufferRelease(cb);
 		wgpuCommandEncoderRelease(enc);

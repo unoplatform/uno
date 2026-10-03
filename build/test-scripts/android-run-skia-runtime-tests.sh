@@ -9,7 +9,11 @@ export UNO_UITEST_APP_ID="${UNO_UITEST_APP_ID=uno.platform.samplesapp.skia}"
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/$UNO_UITEST_APP_ID-Signed.apk
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-android-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
+# A label (e.g. -webgpu) keeps a variant lane's retry list apart from the default lane's.
+export UNO_TEST_RESULT_LABEL=${UNO_TEST_RESULT_LABEL:-}
+# Extra intent extras for the app, e.g. "-e UNO_WEBGPU 1" to select the WebGPU backend.
+export UNO_TEST_APP_EXTRAS=${UNO_TEST_APP_EXTRAS:-}
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-android${UNO_TEST_RESULT_LABEL}-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
 
 ## Create the failed-tests directory up front: every abort path below (a crashed harness,
 ## a killed app, a non-zero transform tool) otherwise skips the mkdir and leaves
@@ -176,6 +180,7 @@ $ANDROID_HOME/platform-tools/adb shell am start \
   -e UITEST_RUNTIME_TEST_GROUP_COUNT "$UITEST_RUNTIME_TEST_GROUP_COUNT" \
   -e UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH" \
   -e UITEST_RUNTIME_TESTS_FILTER "$UITEST_RUNTIME_TESTS_FILTER" \
+  $UNO_TEST_APP_EXTRAS
 
 TIMEOUT=0
 if [ "${UITEST_TEST_TIMEOUT:${#UITEST_TEST_TIMEOUT}-1:1}" = "s" ]; then

@@ -518,7 +518,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 			await UITestHelper.WaitFor(
 				() => sut.MaterializedItems.Contains(lastItem),
-				timeoutMS: 5000,
+				// The scroll crosses 300 items; a software-rendered emulator realizes them slowly.
+				timeoutMS: 15000,
 				message: "ChangeView should have scrolled to the last item");
 			sut.MaterializedItems.Should().Contain(lastItem);
 		}

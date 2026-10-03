@@ -1,0 +1,13 @@
+<Page
+	x:Class="Uno.UI.RuntimeTests.When_AddMultiplePagesInApp_ae80940a542d487886780e74636c6f05"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid>
+		<TextBlock Text="This is a live test page DynamicType { Namespace = Uno.UI.RuntimeTests, Name = When_AddMultiplePagesInApp_ae80940a542d487886780e74636c6f05, Assembly = Uno.UI.RuntimeTests.HRApp.Skia, Directory = E:\uno-wgci\src\Uno.UI.RuntimeTests\HotReload\Frame\HRApp\Tests\Pages, FilePath = E:\uno-wgci\src\Uno.UI.RuntimeTests\HotReload\Frame\HRApp\Tests\Pages\When_AddMultiplePagesInApp_ae80940a542d487886780e74636c6f05 }" />
+	</Grid>
+</Page>

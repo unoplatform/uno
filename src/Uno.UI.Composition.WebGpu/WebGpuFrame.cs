@@ -137,6 +137,7 @@ internal sealed unsafe partial class WebGpuFrame
 	internal void Begin()
 	{
 		SweepEntryPool();
+		EvictAtlasHolders();
 		Encoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
 	}
 
@@ -147,16 +148,12 @@ internal sealed unsafe partial class WebGpuFrame
 		_d.SiteSlab.Flush();
 		_d.FlushFrameSlabs();
 		var cb = wgpuCommandEncoderFinish(Encoder, null);
-		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+		_d.SubmitFrame(cb);
 		// wgpu holds its own reference until the submission completes, so both handles are dropped here -
 		// otherwise every frame leaks an encoder and a command buffer into the handle table.
 		wgpuCommandBufferRelease(cb);
 		wgpuCommandEncoderRelease(Encoder);
 		Encoder = IntPtr.Zero;
-		// Pump the device non-blocking so the CPU overlaps the next frame with the GPU: pooled-buffer reuse is
-		// queue-ordered and transient textures are refcount-released, and the swapchain's frames-in-flight cap
-		// provides the backpressure.
-		_ = wgpuDevicePoll(_d.Dev, 0u, null);
 		foreach (var ls in LayerSurfaces) { _d.Pool.Return(ls.View); }
 		LayerSurfaces.Clear();
 		Effects.SweepShapeShadows();
@@ -718,8 +715,9 @@ internal sealed unsafe partial class WebGpuFrame
 	private const int MaxArenaBytes = 64 << 20;
 
 	/// <summary>Appends an op's vertices to its bag's current arena chunk, aligned so the range starts on a vertex
-	/// boundary of its own stride, and returns the chunk and first-vertex index tagged negative:
-	/// <see cref="RealizeOwnedVertices"/> swaps it for that chunk's buffer.</summary>
+	/// boundary of its own stride, and returns a negative tag indexing <see cref="OwnedResources.PackedVertexRanges"/>:
+	/// <see cref="RealizeOwnedVertices"/> swaps it for that chunk's buffer. An index rather than the packed range
+	/// itself, because a pointer is only 32 bits on WebAssembly.</summary>
 	private static IntPtr PackVerts(OwnedResources owned, ReadOnlySpan<float> data, int stride)
 	{
 		var arenas = owned.VertexArenas ??= new List<VertBuf>();
@@ -735,7 +733,9 @@ internal sealed unsafe partial class WebGpuFrame
 		if (misaligned != 0) { arena.Grow(stride - misaligned).Clear(); }
 		var first = arena.Count / stride;
 		data.CopyTo(arena.Grow(data.Length));
-		return (IntPtr)(-(((long)(arenas.Count - 1) << 40) | (uint)first) - 1);
+		var ranges = owned.PackedVertexRanges ??= new List<(int Chunk, uint First)>();
+		ranges.Add((arenas.Count - 1, (uint)first));
+		return (IntPtr)(-ranges.Count);
 	}
 
 	/// <summary>Uploads a finished bag's arena chunks and points every op at the chunk it landed in.</summary>
@@ -754,15 +754,17 @@ internal sealed unsafe partial class WebGpuFrame
 			owned.Buffers.Add((nint)buffers[c]);
 		}
 
+		var ranges = owned.PackedVertexRanges!;
 		owned.VertexArenas = null;
+		owned.PackedVertexRanges = null;
 		for (var i = 0; i < ops.Count; i++)
 		{
 			var tag = (nint)ops[i].Verts;
 			if (tag >= 0) { continue; }
-			var packed = -tag - 1;
+			var (chunk, first) = ranges[(int)(-tag - 1)];
 			var op = ops[i];
-			op.Verts = buffers[(int)(packed >> 40)];
-			op.FirstVertex = (uint)(packed & 0xFFFFFFFF);
+			op.Verts = buffers[chunk];
+			op.FirstVertex = first;
 			ops[i] = op;
 		}
 	}
@@ -814,8 +816,9 @@ internal sealed unsafe partial class WebGpuFrame
 		bool rect = ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f;
 		u[9] = rect ? 1f : 0f;
 		u[10] = ab.X; u[11] = ab.Y;
-		// rect.x is the site's draw-order depth (see project); rect.y stays spare.
-		u[12] = depth; u[13] = 0f; u[14] = ab.Z; u[15] = ab.W;
+		// rect.x is the site's draw-order depth (see project); rect.y the pass's device pixels per target pixel, which
+		// a shadow layer rendered below its covered size needs to lift a fragment back to the device space.
+		u[12] = depth; u[13] = _basisScale; u[14] = ab.Z; u[15] = ab.W;
 
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
 		if (rect) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
@@ -1134,7 +1137,38 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	// Owned variant exposing the ClipU slab slot so a later restamp can RewriteClipU it in place.
-	private IntPtr MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
+	private IntPtr MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU, bool share = true)
+	{
+		if (!share) { return MakeClipBgOwnedCore(cd, owned, xform, finv, out buf, out aabbInClipU); }
+
+		// Ops of one bag that share a clip share its slot and bind group: the ClipU is a function of the clip and
+		// transform alone, so a later in-place patch writes the same values for each of them. Without this a text
+		// run pays a slab slot and a bind group per glyph op.
+		var memo = owned.ClipMemo ??= new();
+		var key = ClipMemoKey(cd, xform);
+		if (memo.TryGetValue(key, out var bucket))
+		{
+			foreach (var m in bucket)
+			{
+				if (m.Xform == xform && m.Finv == finv && m.Clip.Aabb == cd.Aabb && ClipDataEquals(m.Clip, cd))
+				{
+					buf = m.Slot;
+					aabbInClipU = m.AabbInClipU;
+					return m.Bg;
+				}
+			}
+		}
+
+		var bg = MakeClipBgOwnedCore(cd, owned, xform, finv, out buf, out aabbInClipU);
+		if (bucket is null) { memo[key] = bucket = new(1); }
+		bucket.Add(new OwnedResources.ClipMemoEntry(cd, xform, finv, bg, buf, aabbInClipU));
+		return bg;
+	}
+
+	private static int ClipMemoKey(in ClipData cd, in Matrix3x2 xform)
+		=> HashCode.Combine(cd.Aabb, cd.Coverage, cd.Entries?.Length ?? 0, cd.Paths?.Length ?? 0, xform.M31, xform.M32);
+
+	private IntPtr MakeClipBgOwnedCore(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
 	{
 		var masks = Coverage.ResolveClipMasks(cd, owned);
 		var more = FillClipU(cd, xform, finv, masks.Entries, out aabbInClipU);
