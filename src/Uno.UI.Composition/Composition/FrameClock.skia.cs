@@ -24,8 +24,11 @@ internal sealed class FrameClock
 	private long _lastRaw;
 	private long _clock;
 
+	// The median of the window, refreshed only when a sample lands: it is read several times per frame.
+	private long _median;
+
 	/// <summary>Estimated interval between presented frames, for motion that needs a nominal step.</summary>
-	public long IntervalInTicks => _count >= MinSamples ? Median() : TimeSpan.TicksPerSecond / 60;
+	public long IntervalInTicks => _count >= MinSamples ? _median : TimeSpan.TicksPerSecond / 60;
 
 	/// <summary>
 	/// Forgets the last frame, so the gap to the next one is not sampled as an interval. The sample window
@@ -49,7 +52,7 @@ internal sealed class FrameClock
 
 	private void Sample(long delta)
 	{
-		var period = _count >= MinSamples ? Median() : 0;
+		var period = _count >= MinSamples ? _median : 0;
 
 		// Admitting an idle gap would skew the median, which motion also back-dates its launch by. The absolute
 		// bound matters while frames are sparse: gaps are all there is to sample, and the median would become one.
@@ -63,6 +66,11 @@ internal sealed class FrameClock
 		if (_count < Window)
 		{
 			_count++;
+		}
+
+		if (_count >= MinSamples)
+		{
+			_median = Median();
 		}
 	}
 
