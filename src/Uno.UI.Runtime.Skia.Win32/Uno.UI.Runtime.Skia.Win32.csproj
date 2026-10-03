@@ -8,9 +8,11 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
+		<Description>This package provides the Win32 host for Uno Platform projects.</Description>
 
-		<PackageId>Uno.WinUI.Runtime.Skia.Win32</PackageId>
+		<PackageId>Uno.WinUI.Runtime.Win32</PackageId>
+		<!-- The assembly name still carries the old Skia segment, so it cannot derive the package id -->
+		<CommonOverridePackageId>$(PackageId)</CommonOverridePackageId>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 

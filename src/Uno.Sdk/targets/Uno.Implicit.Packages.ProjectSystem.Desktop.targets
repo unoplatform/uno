@@ -11,8 +11,8 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';mediaplayerelement;')) OR $(UnoFeatures.Contains(';mediaelement;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.Skia.Win32" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.Skia.X11" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.Win32" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.X11" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="VideoLAN.LibVLC.Windows" ProjectSystem="true" />
 	</ItemGroup>
 
@@ -21,15 +21,15 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';webview;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.WebView.Skia.X11" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.WebView.X11" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Microsoft.Web.WebView2" ProjectSystem="true" Aliases="$(UnoWebView2Aliases)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(_IsExecutable) == 'true'">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.MacOS" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Win32" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.X11" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Linux.FrameBuffer" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.MacOS" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Win32" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.X11" ProjectSystem="true" />
 
 		<!--
 			The managed SkiaSharp package auto-references its Win32/macOS native assets but not the Linux one,

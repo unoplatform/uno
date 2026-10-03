@@ -11,11 +11,12 @@
 
 
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<PackageId>Uno.WinUI.MediaPlayer.Skia.X11</PackageId>
-		<Description>This package provides support for MediaPlayerElement for Uno Platform Skia+X11 apps</Description>
+		<PackageId>Uno.WinUI.MediaPlayer.X11</PackageId>
+		<Description>This package provides support for MediaPlayerElement for Uno Platform X11 apps</Description>
 
 		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+		<CommonOverridePackageId>$(PackageId)</CommonOverridePackageId>
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
     </PropertyGroup>
 

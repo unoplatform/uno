@@ -244,9 +244,9 @@ To suppress it:
 
 ### UNOB0025: Runtime-enabled packages are referenced without a runtime host
 
-This application head references packages that ship their implementation under `uno-runtime/` — such as `Uno.WinRT` and `Uno.Foundation` — but no Uno Platform runtime host package was detected (each `Uno.WinUI.Runtime.Skia.*` package declares itself by setting the `UnoHasRuntimeHost` MSBuild property), so the reference assemblies would be deployed and every call into them would throw `NotImplementedException` at runtime.
+This application head references packages that ship their implementation under `uno-runtime/` — such as `Uno.WinRT` and `Uno.Foundation` — but no Uno Platform runtime host package was detected (each `Uno.WinUI.Runtime.*` package declares itself by setting the `UnoHasRuntimeHost` MSBuild property), so the reference assemblies would be deployed and every call into them would throw `NotImplementedException` at runtime.
 
-The usual cause is a version mismatch: a `Uno.WinUI.Runtime.Skia.*` package older than `Uno.WinUI` does not declare the runtime host. Align every `Uno.*` package version, then restore again.
+The usual cause is an explicit reference to a `Uno.WinUI.Runtime.Skia.*` host package, which predates the 7.0 rename and does not declare the runtime host. Those ids receive no 7.0 builds, so replace each one with its renamed `Uno.WinUI.Runtime.*` id (`Uno.WinUI.Runtime.Skia.Headless` becomes `Uno.WinUI.Runtime.Headless`; see the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for the full mapping), then align every `Uno.*` package version and restore again.
 
 When such an older runtime host is detected, this is reported as an error. Otherwise it is a warning, since an executable project that is not an application, such as a test project, can legitimately run against the reference assemblies.
 

@@ -4,7 +4,7 @@ using AwesomeAssertions;
 namespace Uno.UI.Tasks.Tests;
 
 /// <summary>
-/// Every Uno.WinUI.Runtime.Skia.* host declares itself with UnoHasRuntimeHost. A host that forgets leaves its heads
+/// Every Uno.WinUI.Runtime.* host declares itself with UnoHasRuntimeHost. A host that forgets leaves its heads
 /// on the reference facades with no more than a UNOB0025 warning, so the declaration is pinned here instead.
 /// </summary>
 [TestClass]
@@ -47,12 +47,16 @@ public class Given_RuntimeHostPackages
 
 	private static string? Property(string host, string name)
 	{
+		var project = RepositoryPaths.Get("src", $"Uno.UI.Runtime.Skia.{host}", $"Uno.UI.Runtime.Skia.{host}.csproj");
+		var packageId = XDocument.Load(project).Descendants().First(e => e.Name.LocalName == "PackageId").Value;
+
+		// NuGet only auto-imports <PackageId>.props, so the file name must match exactly.
 		var props = new[] { "build", "buildTransitive" }
-			.Select(folder => RepositoryPaths.Get("src", $"Uno.UI.Runtime.Skia.{host}", folder, $"Uno.WinUI.Runtime.Skia.{host}.props"))
+			.Select(folder => RepositoryPaths.Get("src", $"Uno.UI.Runtime.Skia.{host}", folder, $"{packageId}.props"))
 			.Where(File.Exists)
 			.ToList();
 
-		props.Should().ContainSingle($"Uno.UI.Runtime.Skia.{host} ships the props a head imports");
+		props.Should().ContainSingle($"Uno.UI.Runtime.Skia.{host} ships {packageId}.props, which a head imports");
 
 		return XDocument.Load(props[0]).Descendants().FirstOrDefault(e => e.Name.LocalName == name)?.Value;
 	}
