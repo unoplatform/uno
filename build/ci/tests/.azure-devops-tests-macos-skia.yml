@@ -11,7 +11,8 @@ jobs:
 
 - job: Skia_macos_Runtime_Tests_Build
   displayName: 'Runtime Tests'
-  timeoutInMinutes: 60
+  # The 6.x suite already needed up to 55 min on macOS-15, and macOS-26 agents are slower.
+  timeoutInMinutes: 120
   cancelTimeoutInMinutes: 0
 
   pool:
