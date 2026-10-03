@@ -685,15 +685,18 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
   native-asset alike — to the same 4.x version, since a managed/native mismatch fails at
   runtime rather than at build time.
 - **Vulkan is the default rendering backend** on Android, Linux (X11) and Windows (Win32).
-  `UseVulkanOnSkiaAndroid`, `UseVulkanOnX11` and `UseVulkanOnWin32` all default to `true`;
-  before 7.0 Vulkan was opt-in and these defaulted to `false`. Devices without a usable Vulkan
-  driver fall back to OpenGL and then to software rendering on their own, so no configuration
-  is needed — but the GPU path most apps actually run on has changed, so re-test rendering on
-  your target devices, especially custom `SKCanvas` drawing and native-element interop. To
-  keep the pre-7.0 behavior, select the OpenGL backend on the host builder
-  (`.UseX11(b => b.RenderingBackend(X11RenderingBackend.OpenGL))`) or set the matching
-  `FeatureConfiguration.Rendering.UseVulkanOn*` flag to `false` before building the host. See
-  [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
+  Before 7.0 Vulkan was opt-in. Devices without a usable Vulkan driver fall back to other
+  available backends, so no configuration is needed - but the GPU path most apps actually
+  run on has changed, so re-test rendering on your target devices, especially custom
+  `SKCanvas` drawing and native-element interop. To disable Vulkan on desktop while keeping
+  fallback, use `.UseX11(b => b.DisableRenderingBackends(X11RenderingBackend.Vulkan))` or
+  `.UseWin32(b => b.DisableRenderingBackends(Win32RenderingBackend.Vulkan))`. To select only
+  OpenGL, use `ForceRenderingBackend` with the matching `OpenGL` enum value; a forced backend
+  does not fall back if it cannot be created. The desktop `UseVulkanOnX11` and
+  `UseVulkanOnWin32` feature flags are no longer available. On Android, use
+  `.UseAndroid(b => b.UseVulkan(false))` or set
+  `FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = false` before building the host.
+  See [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
 Independently of rendering, `Uno.WinUI.MSAL`'s `WithUnoHelpers()` changed on WebAssembly:
 

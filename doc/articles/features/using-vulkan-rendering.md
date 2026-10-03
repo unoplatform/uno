@@ -97,29 +97,45 @@ To force software rendering on both paths, disable each one:
 
 ## Disabling Vulkan
 
-Vulkan is the default on Android, Linux (X11) and Windows (Win32) since Uno Platform 7.0. To go
-back to the pre-7.0 behavior of rendering with OpenGL, select the OpenGL backend explicitly:
+Vulkan is the default on Android, Linux (X11) and Windows (Win32) since Uno Platform 7.0.
+To disable Vulkan on desktop while keeping fallback to the other available backends, use
+`DisableRenderingBackends` on the host builder:
 
 ```csharp
 var host = UnoPlatformHostBuilder.Create()
     .App(() => new App())
-    .UseX11(b => b.RenderingBackend(X11RenderingBackend.OpenGL))
-    .UseWin32(b => b.RenderingBackend(Win32RenderingBackend.OpenGL))
+    .UseX11(b => b.DisableRenderingBackends(X11RenderingBackend.Vulkan))
+    .UseWin32(b => b.DisableRenderingBackends(Win32RenderingBackend.Vulkan))
     .Build();
 ```
 
-Or clear the feature flag before the host is built — the only option on Android, which has no
-host-builder backend enum:
+To select only OpenGL instead, use `ForceRenderingBackend`:
+
+```csharp
+.UseX11(b => b.ForceRenderingBackend(X11RenderingBackend.OpenGL))
+.UseWin32(b => b.ForceRenderingBackend(Win32RenderingBackend.OpenGL))
+```
+
+A forced backend does not fall back to another backend if it cannot be created. Use
+`DisableRenderingBackends` when you want to retain fallback. The desktop feature flags
+`UseVulkanOnX11` and `UseVulkanOnWin32` are no longer available.
+
+On Android, disable Vulkan on the host builder:
+
+```csharp
+.UseAndroid(b => b.UseVulkan(false))
+```
+
+Alternatively, set the Android feature flag before the host is built:
 
 ```csharp
 FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = false;
-FeatureConfiguration.Rendering.UseVulkanOnX11 = false;
-FeatureConfiguration.Rendering.UseVulkanOnWin32 = false;
 ```
 
 ## Fallback Behavior
 
-When Vulkan is unavailable or has been disabled, the application automatically falls back to the next available backend:
+Unless a single desktop backend has been forced with `ForceRenderingBackend`, the application
+automatically falls back to the next available backend when Vulkan is unavailable or has been disabled:
 
 1. **Vulkan** (the default on Android, Linux (X11) and Windows (Win32))
 2. **OpenGL / OpenGL ES**
