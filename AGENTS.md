@@ -174,7 +174,7 @@ Before 7.0 it was an *interface*, because the native Android/iOS renderers force
 
 ### Project Organization
 
-The WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) keeps per-platform variants: Reference, Skia, WebAssembly, NetCoreMobile. From `Uno.UI` upwards the UI layer ships a single Skia build, which also serves as the compile reference — there is no `.Reference` variant of those projects.
+The WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) keeps per-platform variants: Reference, Generic (the `*.Generic.csproj` projects), WebAssembly, NetCoreMobile. From `Uno.UI` upwards the UI layer ships a single Skia build, which also serves as the compile reference — there is no `.Reference` variant of those projects.
 
 ### Runtime Target Selection
 

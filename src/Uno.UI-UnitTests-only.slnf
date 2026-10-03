@@ -13,12 +13,12 @@
       "Uno.Analyzers.Tests\\Uno.Analyzers.Tests.csproj",
       "Uno.Analyzers\\Uno.Analyzers.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
-      "Uno.Foundation\\Uno.Foundation.Skia.csproj",
+      "Uno.Foundation\\Uno.Foundation.Generic.csproj",
       "Uno.HotReload\\Uno.HotReload.csproj",
       "Uno.HotReload.Tests\\Uno.HotReload.Tests.csproj",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.csproj",
-      "Uno.UI.Dispatching\\Uno.UI.Dispatching.Skia.csproj",
+      "Uno.UI.Dispatching\\Uno.UI.Dispatching.Generic.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",
       "Uno.UI.DevServer.Cli.Tests\\Uno.UI.DevServer.Cli.Tests.csproj",
       "Uno.UI.RemoteControl.DevServer.Tests\\Uno.UI.RemoteControl.DevServer.Tests.csproj",
@@ -33,7 +33,7 @@
       "Uno.UI.Tests.ViewLibraryProps\\Uno.UI.Tests.ViewLibraryProps.csproj",
       "Uno.UI.Tests.ViewLibrary\\Uno.UI.Tests.ViewLibrary.csproj",
       "Uno.UI.UnitTests\\Uno.UI.UnitTests.csproj",
-      "Uno.UI.Extras\\Uno.UI.Extras.Skia.csproj",
+      "Uno.UI.Extras\\Uno.UI.Extras.Generic.csproj",
       "Uno.UI\\Uno.UI.csproj",
       "Uno.WinRT\\Uno.WinRT.Reference.csproj"
     ]

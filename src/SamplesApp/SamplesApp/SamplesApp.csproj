@@ -137,7 +137,7 @@
 		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
 		<!-- Lottie, Svg and Graphics2DSK are SkiaSharp-backed: a Skia-free build drops them. -->
@@ -161,9 +161,9 @@
 
 	<!-- Desktop framework variants + runtimes + AddIns (Win32/X11/FrameBuffer/macOS) -->
 	<ItemGroup Condition="'$(_Platform)' == 'desktop'">
-		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Generic.csproj" />
+		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Generic.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32\Uno.UI.Runtime.Skia.Win32.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32.Support\Uno.UI.Runtime.Skia.Win32.Support.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
@@ -172,7 +172,7 @@
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.Win32\Uno.UI.MediaPlayer.Skia.Win32.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.X11\Uno.UI.MediaPlayer.Skia.X11.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.WebView.Skia.X11\Uno.UI.WebView.Skia.X11.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Generic.csproj" />
 	</ItemGroup>
 
 	<!-- browserwasm framework variants + runtime -->
@@ -181,7 +181,7 @@
 		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Generic.csproj" />
 	</ItemGroup>
 
 	<!-- Windows / WinAppSDK: NATIVE WinUI (no Uno.UI / SkiaSharp). Only the .Windows helper variants. -->

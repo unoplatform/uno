@@ -25,7 +25,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Generic.csproj" />
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
 

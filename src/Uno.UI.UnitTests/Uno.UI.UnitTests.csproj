@@ -135,9 +135,9 @@
 			deploy time), but the unit-test runner is its own .exe and needs the real
 			Skia partials so HasThreadAccessOverride and DispatchOverride exist.
 		-->
-		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Skia.csproj" />
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Generic.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Generic.csproj" />
+		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Generic.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
 
@@ -148,7 +148,7 @@
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibraryProps\Uno.UI.Tests.ViewLibraryProps.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -30,7 +30,7 @@
     <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.Skia.csproj">
+    <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.Generic.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.Windows.csproj">
@@ -194,7 +194,7 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/">
-    <Project Path="Uno.UI.Extras/Uno.UI.Extras.Skia.csproj">
+    <Project Path="Uno.UI.Extras/Uno.UI.Extras.Generic.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
@@ -240,7 +240,7 @@
     <Project Path="Uno.UI.Dispatching/Uno.UI.Dispatching.Reference.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Dispatching/Uno.UI.Dispatching.Skia.csproj">
+    <Project Path="Uno.UI.Dispatching/Uno.UI.Dispatching.Generic.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.Dispatching/Uno.UI.Dispatching.Wasm.csproj">
@@ -265,7 +265,7 @@
     <Project Path="Uno.Foundation/Uno.Foundation.Reference.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.Foundation/Uno.Foundation.Skia.csproj">
+    <Project Path="Uno.Foundation/Uno.Foundation.Generic.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.Foundation/Uno.Foundation.Wasm.csproj">
@@ -388,7 +388,7 @@
     <Project Path="Uno.WinRT/Uno.WinRT.Reference.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.WinRT/Uno.WinRT.Skia.csproj">
+    <Project Path="Uno.WinRT/Uno.WinRT.Generic.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.WinRT/Uno.WinRT.Wasm.csproj">

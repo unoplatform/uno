@@ -17,7 +17,7 @@ Preprocessor symbols and file-suffix exclusion are injected by `src/Uno.CrossTar
 
 | `UnoRuntimeVariant` | Which projects | Selects | Ships in |
 |---|---|---|---|
-| `Generic` | `*.Skia.csproj` and every single-variant project | `*.skia.cs`, `__SKIA__` | `uno-runtime/<tfm>/generic` |
+| `Generic` | `*.Generic.csproj` and every single-variant project | `*.skia.cs`, `__SKIA__` | `uno-runtime/<tfm>/generic` |
 | `Wasm` | `*.Wasm.csproj` | `*.wasm.cs`, `__WASM__` | `uno-runtime/<tfm>/wasm` |
 | `Reference` | `*.Reference.csproj` | `*.reference.cs`, `__NETSTD_REFERENCE__` | `lib/<tfm>` |
 | *(empty)* | `*.netcoremobile.csproj` on an android/ios/tvos TFM, and the WinAppSDK builds | nothing — `TargetPlatformIdentifier` and the `.Android.cs` / `.UIKit.cs` suffixes take over | `lib/<tfm>-<platform>` |
