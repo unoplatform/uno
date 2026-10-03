@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using Windows.Devices.Input;
+using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
@@ -45,6 +46,8 @@ partial class InputManager
 
 	void IInputInjectorTarget.InjectPointerRemoved(PointerEventArgs args) => InjectPointerRemoved(args);
 	partial void InjectPointerRemoved(PointerEventArgs args);
+
+	Size IInputInjectorTarget.GetInjectionBounds() => ContentRoot.XamlRoot?.Size ?? default;
 
 	#endregion
 
