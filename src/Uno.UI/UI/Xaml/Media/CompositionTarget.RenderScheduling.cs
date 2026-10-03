@@ -77,6 +77,11 @@ public partial class CompositionTarget
 	// it, so the app goes quiet with nothing in the log to say why. Written from the rendering thread, read from
 	// the UI thread.
 	private long _lastNativeFrameTimestamp = Stopwatch.GetTimestamp();
+
+	// The latest native frame's time, written on the host's render thread and read by the frame tick.
+	private readonly object _nativeFrameTimestampGate = new();
+	private long _nativeFrameTimestamp;
+	private bool _isNativeFrameTimestampVsync;
 	private long _lastStalledRenderLogTimestamp;
 	private int _stalledRenderReports;
 
@@ -229,12 +234,25 @@ public partial class CompositionTarget
 	/// be called once per <see cref="IXamlRootHost.InvalidateRender"/> call, but the contract allows any number
 	/// of repeated calls, even if no new invalidations are requested.
 	/// </summary>
-	internal IGeometry OnNativePlatformFrameRequested(ISwapChain swapChain, global::System.Numerics.Matrix4x4? rootTransform = null, Action<IDrawingSession>? overlay = null)
+	/// <param name="vsyncTimestamp">
+	/// When the host knows it, the <see cref="Stopwatch.GetTimestamp"/> time of the vsync that started this frame
+	/// (requestAnimationFrame's time, CADisplayLink's timestamp, a DRM page flip). It is never in the future.
+	/// </param>
+	internal IGeometry OnNativePlatformFrameRequested(ISwapChain swapChain, global::System.Numerics.Matrix4x4? rootTransform = null, Action<IDrawingSession>? overlay = null, long? vsyncTimestamp = null)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
 
-		Interlocked.Exchange(ref _lastNativeFrameTimestamp, Stopwatch.GetTimestamp());
+		var now = Stopwatch.GetTimestamp();
+		Interlocked.Exchange(ref _lastNativeFrameTimestamp, now);
 		_stalledRenderReports = 0;
+
+		// Without a vsync time, this instant on the host's frame callback is still closer to the vsync than one
+		// sampled after the dispatcher hop.
+		lock (_nativeFrameTimestampGate)
+		{
+			_nativeFrameTimestamp = Math.Min(vsyncTimestamp ?? now, now);
+			_isNativeFrameTimestampVsync = vsyncTimestamp is not null;
+		}
 
 		if (Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, false))
 		{

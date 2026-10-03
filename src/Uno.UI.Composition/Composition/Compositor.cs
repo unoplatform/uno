@@ -35,7 +35,10 @@ namespace Microsoft.UI.Composition
 		// Callsites usually use this with TimeSpan ticks. We need to multiply by s_tickFrequency to get it right.
 		// NOTE: s_tickFrequency is likely 1 on Windows, but not on Linux.
 		// See https://github.com/dotnet/runtime/blob/c52fd37cc835a13bcfa9a64fdfe7520809a75345/src/libraries/System.Private.CoreLib/src/System/Diagnostics/Stopwatch.cs#L157
-		public long TimestampInTicks => unchecked((long)(Stopwatch.GetTimestamp() * s_tickFrequency));
+		public long TimestampInTicks => ToTimestampInTicks(Stopwatch.GetTimestamp());
+
+		/// <summary>Converts a <see cref="Stopwatch.GetTimestamp"/> value to the units of <see cref="TimestampInTicks"/>.</summary>
+		internal static long ToTimestampInTicks(long stopwatchTimestamp) => unchecked((long)(stopwatchTimestamp * s_tickFrequency));
 
 		internal static Compositor GetSharedCompositor() => _sharedCompositorLazy.Value;
 
