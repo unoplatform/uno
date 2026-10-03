@@ -57,6 +57,40 @@ public class Given_HealthService
 		report.Discovery.SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
 	}
 
+	[TestMethod]
+	[Description("A connected upstream that lists no app tools (signed out / unlicensed) is not reported as Healthy (#144)")]
+	public void WhenUpstreamConnectedWithNoAppTools_NoToolsRegisteredIsReported()
+	{
+		var report = HealthReportFactory.Create(
+			discovery: null,
+			devServerStarted: true,
+			upstreamConnected: true,
+			toolCount: 0,
+			connectionState: ConnectionState.Connected,
+			discoveredSolutions: null,
+			upstreamHasNoAppTools: true);
+
+		report.Status.Should().Be(HealthStatus.Degraded);
+		report.Issues.Should().ContainSingle(i => i.Code == IssueCode.NoToolsRegistered);
+		report.Issues.Single(i => i.Code == IssueCode.NoToolsRegistered).Remediation.Should().Contain("login");
+	}
+
+	[TestMethod]
+	[Description("A connected upstream with app tools stays Healthy")]
+	public void WhenUpstreamConnectedWithAppTools_NoToolsRegisteredIsNotReported()
+	{
+		var report = HealthReportFactory.Create(
+			discovery: null,
+			devServerStarted: true,
+			upstreamConnected: true,
+			toolCount: 16,
+			connectionState: ConnectionState.Connected,
+			discoveredSolutions: null,
+			upstreamHasNoAppTools: false);
+
+		report.Issues.Should().NotContain(i => i.Code == IssueCode.NoToolsRegistered);
+	}
+
 	private static (ProxyLifecycleManager Subject, HealthService HealthService, DevServerMonitor Monitor) CreateSubject()
 	{
 		var services = new ServiceCollection()

@@ -18,7 +18,8 @@ internal static class HealthReportFactory
 		string? upstreamError = null,
 		bool forceRootsFallback = false,
 		bool rootsProvided = false,
-		bool hostRespondedNoMcp = false)
+		bool hostRespondedNoMcp = false,
+		bool upstreamHasNoAppTools = false)
 	{
 		var issues = new List<ValidationIssue>();
 
@@ -82,6 +83,21 @@ internal static class HealthReportFactory
 				Severity = ValidationSeverity.Warning,
 				Message = "The DevServer host process is started but the upstream MCP connection is not yet established.",
 				Remediation = "The host may still be initializing. Wait a few seconds and retry.",
+			});
+		}
+
+		if (upstreamConnected && upstreamHasNoAppTools)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.NoToolsRegistered,
+				Severity = ValidationSeverity.Warning,
+				Message = "The DevServer host is connected but exposes no Uno app tools. " +
+					"This usually means you are not signed in to Uno Platform, your license does not include the App MCP tools, " +
+					"or the Uno Platform add-ins are still loading.",
+				Remediation = "Sign in with 'dotnet dnx uno.devserver login' (or from Uno Platform Studio in your IDE), then call " +
+					"uno_app_select_solution with forceRestart=true and the current solution path. If you are already signed in, " +
+					"wait a few seconds and call uno_health again; check the 'discovery.addIns' section for add-in load failures.",
 			});
 		}
 

@@ -79,14 +79,16 @@ internal static class DiscoveryIssueMapper
 			return issues;
 		}
 
+		var retryStartup = BuildRetryStartupInstruction(discovery.SelectedSolutionPath);
+
 		if (discovery.UnoSdkPath is null)
 		{
 			issues.Add(new ValidationIssue
 			{
 				Code = IssueCode.SdkNotInCache,
 				Severity = ValidationSeverity.Fatal,
-				Message = $"Uno SDK package {discovery.UnoSdkPackage} {discovery.UnoSdkVersion} not found in NuGet cache.",
-				Remediation = "Run 'dotnet restore' to download the Uno SDK package, then call 'uno_app_select_solution' again with the intended solution path to retry startup.",
+				Message = $"Uno SDK package {discovery.UnoSdkPackage} {discovery.UnoSdkVersion} not found in NuGet cache. The DevServer cannot start until it is restored.",
+				Remediation = $"Run 'dotnet restore' (or build) on the solution to download {discovery.UnoSdkPackage} {discovery.UnoSdkVersion}, then {retryStartup}",
 			});
 			return issues;
 		}
@@ -120,7 +122,7 @@ internal static class DiscoveryIssueMapper
 				Code = IssueCode.DevServerPackageNotCached,
 				Severity = ValidationSeverity.Fatal,
 				Message = $"Uno.WinUI.DevServer {discovery.DevServerPackageVersion} not found in NuGet cache.",
-				Remediation = "Run 'dotnet restore' to download the DevServer package, then call 'uno_app_select_solution' again with the intended solution path to retry startup.",
+				Remediation = $"Run 'dotnet restore' (or build) on the solution to download the DevServer package, then {retryStartup}",
 			});
 		}
 
@@ -143,7 +145,7 @@ internal static class DiscoveryIssueMapper
 				Code = IssueCode.AddInPackageNotCached,
 				Severity = ValidationSeverity.Warning,
 				Message = $"Add-in package uno.settings.devserver {discovery.SettingsPackageVersion} not found in NuGet cache.",
-				Remediation = "Run 'dotnet restore' to download the package, then call 'uno_app_select_solution' again with the intended solution path to retry startup.",
+				Remediation = $"Run 'dotnet restore' (or build) on the solution to download the package, then {retryStartup}",
 			});
 		}
 
@@ -159,5 +161,19 @@ internal static class DiscoveryIssueMapper
 		}
 
 		return issues;
+	}
+
+	/// <summary>
+	/// One-call recovery: selecting the already-selected solution without forceRestart is a
+	/// no-op ("already_selected"), so the instruction must include forceRestart=true.
+	/// </summary>
+	internal static string BuildRetryStartupInstruction(string? solutionPath)
+	{
+		var pathArgument = string.IsNullOrWhiteSpace(solutionPath)
+			? "\"<absolute path to the .sln/.slnx>\""
+			: System.Text.Json.JsonSerializer.Serialize(solutionPath);
+
+		return $"call uno_app_select_solution with {{\"solutionPath\": {pathArgument}, \"forceRestart\": true}} to restart the DevServer. " +
+			"Calling it without forceRestart=true on the already-selected solution does not retry startup.";
 	}
 }
