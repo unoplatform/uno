@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AwesomeAssertions.Execution;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
@@ -1245,6 +1246,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				WindowHelper.WindowContent = null;
 			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_AutomationPeer_Scroll()
+		{
+			var sv = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+				Content = new Border { Width = 1000, Height = 1000 },
+			};
+
+			await UITestHelper.Load(sv);
+
+			var provider = (Microsoft.UI.Xaml.Automation.Provider.IScrollProvider)Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.CreatePeerForElement(sv);
+			var viewportWidth = sv.ViewportWidth;
+			var viewportHeight = sv.ViewportHeight;
+
+			async Task ScrollAndAssert(ScrollAmount horizontal, ScrollAmount vertical, double expectedHorizontal, double expectedVertical)
+			{
+				provider.Scroll(horizontal, vertical);
+				await WindowHelper.WaitForIdle();
+				sv.HorizontalOffset.Should().BeApproximately(expectedHorizontal, 1);
+				sv.VerticalOffset.Should().BeApproximately(expectedVertical, 1);
+			}
+
+			// A line is 16px, a page is one viewport.
+			await ScrollAndAssert(ScrollAmount.SmallIncrement, ScrollAmount.NoAmount, 16, 0);
+			await ScrollAndAssert(ScrollAmount.NoAmount, ScrollAmount.SmallIncrement, 16, 16);
+			await ScrollAndAssert(ScrollAmount.LargeIncrement, ScrollAmount.LargeIncrement, 16 + viewportWidth, 16 + viewportHeight);
+			await ScrollAndAssert(ScrollAmount.SmallDecrement, ScrollAmount.SmallDecrement, viewportWidth, viewportHeight);
+			await ScrollAndAssert(ScrollAmount.LargeDecrement, ScrollAmount.LargeDecrement, 0, 0);
+
+			// Offsets are clamped to the scrollable range.
+			await ScrollAndAssert(ScrollAmount.LargeDecrement, ScrollAmount.SmallDecrement, 0, 0);
 		}
 
 
