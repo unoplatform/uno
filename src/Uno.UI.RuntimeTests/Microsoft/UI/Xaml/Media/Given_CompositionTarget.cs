@@ -277,11 +277,16 @@ public class Given_CompositionTarget
 		var (secondary, content) = await OpenSecondaryWindow();
 		var target = (CompositionTarget)content.Visual.CompositionTarget!;
 		var compositor = content.Visual.Compositor;
+		var xamlRoot = content.XamlRoot!;
 
 		var closed = false;
 		secondary.Closed += (_, _) => closed = true;
 		secondary.Close();
 		await TestServices.WindowHelper.WaitFor(() => closed, message: "the secondary window should close");
+
+		// X11 unregisters after Closed, from a task continuation, and the drivers are then dropped on the UI thread.
+		await TestServices.WindowHelper.WaitFor(() => Uno.UI.Hosting.XamlRootMap.GetHostForRoot(xamlRoot) is null, message: "the closed window should unregister");
+		await TestServices.WindowHelper.WaitForIdle();
 		await TestServices.WindowHelper.WaitFor(() => !compositor.IsAnimating, message: "nothing should be animating once the window is closed");
 
 		EventHandler<long> driver = (_, _) => { };
