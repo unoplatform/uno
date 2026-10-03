@@ -347,8 +347,8 @@ public partial class GestureRecognizer
 				{
 					var frameTime = ((RenderingEventArgs)args).RenderingTime;
 
-					// The start falls between frames, so the first step is measured on the real clock and every
-					// later one by the frame times.
+					// The start is not on the frame grid, so the first step is measured on the real clock and every
+					// later one moves by exactly the frame interval.
 					origin ??= frameTime - _time.Elapsed;
 					onTick(frameTime - origin.Value);
 				};
