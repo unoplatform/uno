@@ -160,6 +160,11 @@ namespace Uno.UI.Runtime
 
 		}
 
+		public const ulong DRM_CAP_TIMESTAMP_MONOTONIC = 0x6;
+
+		[DllImport(libdrm, SetLastError = true)]
+		public static extern int drmGetCap(int fd, ulong capability, out ulong value);
+
 		[DllImport(libdrm, SetLastError = true)]
 		public static extern drmModeRes* drmModeGetResources(int fd);
 		[DllImport(libdrm, SetLastError = true)]
