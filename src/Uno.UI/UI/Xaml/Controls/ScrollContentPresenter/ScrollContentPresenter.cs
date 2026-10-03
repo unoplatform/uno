@@ -216,11 +216,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var desiredSize = child.DesiredSize;
 
 				childRect.Width = Math.Max(finalSize.Width, desiredSize.Width);
-				// The keyboard-occlusion pad shrinks the viewport so the BringIntoView that follows lands the
-				// focused element right above the input pane. It must not re-arrange content that sizes itself
-				// to the viewport: arranging against the un-occluded height turns the pad into scrollable
-				// extent instead, so a centered or stretched layout stays where it was.
-				childRect.Height = Math.Max(finalSize.Height + _occludedRectPadding.Bottom, desiredSize.Height);
+				childRect.Height = Math.Max(finalSize.Height, desiredSize.Height);
 
 				child.Arrange(childRect);
 

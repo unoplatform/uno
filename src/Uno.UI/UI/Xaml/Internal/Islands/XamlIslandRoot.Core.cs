@@ -148,6 +148,13 @@ internal partial class XamlIslandRoot
 				0,
 				Math.Max(finalSize.Width, childDesiredSize.Width),
 				Math.Max(finalSize.Height, childDesiredSize.Height));
+
+			// Uno specific: the app content scrolls above the input pane (see UnoRootElementLogic).
+			if (child == _contentRoot.VisualTree.PublicRootVisual)
+			{
+				childRect.Y = -_rootElementLogic.InputPaneVerticalOffset;
+			}
+
 			child.Arrange(childRect);
 		}
 
