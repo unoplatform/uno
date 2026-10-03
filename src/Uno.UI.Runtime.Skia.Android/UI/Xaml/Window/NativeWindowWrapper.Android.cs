@@ -28,6 +28,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	private readonly ActivationPreDrawListener _preDrawListener;
 	private readonly DisplayInformation _displayInformation;
 	private bool _contentViewAttachedToWindow;
+	private bool _observesContentViewAttach;
 
 	// Armed on every ApplicationActivity creation so its window's draws wait for a Skia frame; released by the render
 	// view once that frame is presented. The render view outlives a recreated Activity, so it must not keep its own
@@ -63,7 +64,17 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 				return;
 			}
 
+			var previous = _activity;
 			_activity = value;
+
+			// The attach state belongs to the activity's own content view, so a re-created activity starts over.
+			if (_observesContentViewAttach)
+			{
+				previous.ContentViewAttachedToWindow -= Instance_ContentViewAttachedToWindow;
+				value.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
+				_contentViewAttachedToWindow = value.IsContentViewAttachedToWindow;
+			}
+
 			CurrentActivityChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
@@ -146,6 +157,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		};
 
 		_activity.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
+		_observesContentViewAttach = true;
 		_activity.EnsureContentView();
 
 		// The activity attaches its own surface in OnStart when it adopts an existing window, so the
