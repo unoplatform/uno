@@ -167,6 +167,11 @@ public class UnoUISceneDelegate : UISceneDelegate
 		{
 			ActivateSession(candidate);
 		}
+		else if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(UnoUISceneDelegate).Log().Warn(
+				$"No remaining {role} scene to bring forward ({UIApplication.SharedApplication.ConnectedScenes.Count} connected), the app may be suspended.");
+		}
 	}
 
 	private static void ActivateSession(UISceneSession session)
@@ -193,12 +198,14 @@ public class UnoUISceneDelegate : UISceneDelegate
 		}
 	}
 
-	private static bool HasForegroundScene()
+	private static bool HasForegroundScene(UIWindowSceneSessionRole role)
 	{
 		foreach (var connectedScene in UIApplication.SharedApplication.ConnectedScenes)
 		{
 			if (connectedScene.ActivationState is UISceneActivationState.ForegroundActive or UISceneActivationState.ForegroundInactive &&
-				!_destroyedSessions.Contains(connectedScene.Session.PersistentIdentifier))
+				connectedScene.Session is { } session &&
+				session.Role == role &&
+				!_destroyedSessions.Contains(session.PersistentIdentifier))
 			{
 				return true;
 			}
@@ -218,7 +225,7 @@ public class UnoUISceneDelegate : UISceneDelegate
 				var sessionId = session.PersistentIdentifier;
 				_destroyedSessions.Remove(sessionId);
 
-				if (_foregroundHandoffs.Remove(sessionId) && !HasForegroundScene())
+				if (_foregroundHandoffs.Remove(sessionId) && !HasForegroundScene(session.Role))
 				{
 					ActivateRemainingScene(session.Role);
 				}
