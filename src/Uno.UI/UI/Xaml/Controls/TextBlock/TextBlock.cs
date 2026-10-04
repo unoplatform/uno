@@ -1609,8 +1609,11 @@ namespace Microsoft.UI.Xaml.Controls
 			// Note that MeasureOverride doesn't have these checks. If something in the text block has changed that would
 			// require a re-parse, the ParseText call during the measure pass will catch it. There are no changes that
 			// would require a re-parse that would invalidate arrange but not measure, except TextAlignment, which we explicitly check.
+			// A size change only counts in a dimension the layout used: a single left-aligned line is arranged at any height.
 			var arrangedSize = _lastParsedTextCreationValues.outSize;
-			if (_lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
+			var sizeChanged = _lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding
+				&& !(ParsedText is UnicodeText parsed && parsed.IsLayoutValidFor(availableSizeWithoutPadding));
+			if (sizeChanged || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
 			{
 				ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
 			}

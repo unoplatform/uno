@@ -783,6 +783,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreNotSame(recorded, visual.RecordedContentForTesting, "New text must be re-recorded.");
 		}
+
+		[TestMethod]
+		[DataRow("ABC", TextAlignment.Left, TextWrapping.NoWrap, 300, 50, false, DisplayName = "Single line, height differs")]
+		[DataRow("ABC", TextAlignment.Left, TextWrapping.NoWrap, 200, 300, false, DisplayName = "Single left-aligned line, width differs")]
+		[DataRow("ABC", TextAlignment.Center, TextWrapping.NoWrap, 200, 300, true, DisplayName = "Centred, width differs")]
+		[DataRow("ABC", TextAlignment.Left, TextWrapping.Wrap, 200, 300, true, DisplayName = "Wrapping, width differs")]
+		[DataRow("A\nB", TextAlignment.Left, TextWrapping.NoWrap, 300, 100, true, DisplayName = "Two lines, height differs")]
+		public void When_Arranged_At_Other_Size_Then_Reparses_Only_If_Layout_Depends_On_It(string text, TextAlignment alignment, TextWrapping wrapping, double arrangeWidth, double arrangeHeight, bool expectReparse)
+		{
+			var SUT = new TextBlock { Text = text, TextAlignment = alignment, TextWrapping = wrapping };
+
+			SUT.Measure(new Size(300, 300));
+			var measured = SUT.ParsedText;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, arrangeWidth, arrangeHeight));
+
+			if (expectReparse)
+			{
+				Assert.AreNotSame(measured, SUT.ParsedText);
+			}
+			else
+			{
+				Assert.AreSame(measured, SUT.ParsedText);
+			}
+		}
 #endif
 
 		[TestMethod]
