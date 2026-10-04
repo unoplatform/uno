@@ -134,7 +134,19 @@ public class UnoUISceneDelegate : UISceneDelegate
 			ActivateRemainingScene(session.Role);
 		}
 
-		UIApplication.SharedApplication.RequestSceneSessionDestruction(session, null, null);
+		UIApplication.SharedApplication.RequestSceneSessionDestruction(session, null, OnError);
+
+		void OnError(NSError error)
+		{
+			// DidDisconnect never arrives for a session that was not destroyed, so it must not stay skipped.
+			_destroyedSessions.Remove(sessionId);
+			_foregroundHandoffs.Remove(sessionId);
+
+			if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(UnoUISceneDelegate).Log().Warn($"Failed to destroy a scene session: {error.LocalizedDescription}");
+			}
+		}
 	}
 
 	private static void ActivateRemainingScene(UIWindowSceneSessionRole role)
