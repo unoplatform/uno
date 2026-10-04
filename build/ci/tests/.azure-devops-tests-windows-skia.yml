@@ -120,26 +120,15 @@ jobs:
       ArtifactName: runtime-tests-desktop-skia-windows-failures
       ArtifactType: Container
 
-# The same artifact and script as the Skia lane, rendering through the WebGPU backend. Hosted agents have no GPU,
-# so wgpu runs on D3D12 WARP. Split into groups so a retry reruns a quarter of the suite, not all of it.
+# The same artifact and script as the Skia lane, rendering through the WebGPU backend. Hosted agents have no GPU, so
+# wgpu runs on Mesa's lavapipe (llvmpipe behind Vulkan) rather than D3D12 WARP: measured 2.75x faster, which lets the
+# whole suite run in one job (on WARP it took four, about an hour of agent time).
 - job: Skia_Windows_WebGpu_Runtime_Tests
   displayName: 'Runtime Tests (WebGPU)'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
 
-  strategy:
-    matrix:
-      'Group 0':
-        UITEST_RUNTIME_TEST_GROUP: 0
-      'Group 1':
-        UITEST_RUNTIME_TEST_GROUP: 1
-      'Group 2':
-        UITEST_RUNTIME_TEST_GROUP: 2
-      'Group 3':
-        UITEST_RUNTIME_TEST_GROUP: 3
-
   pool:
-    # The D3D12 WARP that ships with Server 2022 removes the device on wgpu's first present; 2025's does not.
     vmImage: 'windows-2025'
 
   variables:
@@ -150,7 +139,10 @@ jobs:
     # wgpu's own warnings and errors: the only account of why a device was lost.
     UNO_WEBGPU_LOG: warn
     UNO_TEST_RESULT_LABEL: -webgpu
-    UITEST_RUNTIME_TEST_GROUP_COUNT: 4
+    # Vulkan only, so a missing lavapipe fails the run instead of quietly falling back to WARP.
+    UNO_WEBGPU_BACKENDS: vulkan
+    LavapipeMesaVersion: '26.2.4'
+    VulkanRuntimeVersion: '1.4.363.0'
 
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
@@ -167,7 +159,7 @@ jobs:
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-      artifact: runtime-tests-desktop-webgpu-windows-failures-$(UITEST_RUNTIME_TEST_GROUP)
+      artifact: runtime-tests-desktop-webgpu-windows-failures
       path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
   - template: ../templates/dotnet-install.yml
@@ -183,13 +175,35 @@ jobs:
       dotnet build -c Debug
     displayName: Build HR dependencies
 
+  - pwsh: |
+      $ErrorActionPreference = 'Stop'
+      $dir = "$(Agent.TempDirectory)\lavapipe"
+      New-Item -ItemType Directory -Force $dir | Out-Null
+      Invoke-WebRequest -Uri "https://github.com/pal1000/mesa-dist-win/releases/download/$(LavapipeMesaVersion)/mesa3d-$(LavapipeMesaVersion)-release-msvc.7z" -OutFile "$dir\mesa.7z"
+      & "$env:ProgramFiles\7-Zip\7z.exe" x -y "-o$dir" "$dir\mesa.7z" "x64\vulkan_lvp.dll" "x64\lvp_icd.x86_64.json" | Out-Null
+      Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/$(VulkanRuntimeVersion)/windows/vulkan-runtime-components.zip?u=" -OutFile "$dir\vkrt.zip"
+      Expand-Archive "$dir\vkrt.zip" -DestinationPath "$dir\vkrt" -Force
+      $rt = (Get-ChildItem "$dir\vkrt" -Directory | Select-Object -First 1).FullName
+
+      # A GPU-less image need not have a Vulkan loader: put this one on the PATH, where wgpu's load of vulkan-1.dll finds it.
+      Write-Host "##vso[task.prependpath]$rt\x64"
+
+      $icd = "$dir\x64\lvp_icd.x86_64.json"
+      $env:VK_DRIVER_FILES = $icd
+      $summary = & "$rt\x64\vulkaninfo.exe" --summary 2>&1 | Out-String
+      Write-Host $summary
+      if ($summary -notmatch 'llvmpipe') { throw "lavapipe did not register as a Vulkan device." }
+      Write-Host "##vso[task.setvariable variable=VK_DRIVER_FILES]$icd"
+      Write-Host "##vso[task.setvariable variable=VK_ICD_FILENAMES]$icd"
+    displayName: Install Mesa lavapipe
+
   - pwsh: build/test-scripts/run-windows-skia-runtime-tests.ps1
     displayName: Run Runtime Tests
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Windows WebGPU Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testRunTitle: 'Windows WebGPU Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-windows-webgpu-runtime-tests-results.xml'
       failTaskOnFailedTests: true
@@ -201,5 +215,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: runtime-tests-desktop-webgpu-windows-failures-$(UITEST_RUNTIME_TEST_GROUP)
+      ArtifactName: runtime-tests-desktop-webgpu-windows-failures
       ArtifactType: Container
