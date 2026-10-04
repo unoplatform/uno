@@ -1,1 +1,0 @@
-Microsoft.UI.Tests.Controls.DatePickerTests.DatePickerIntegrationTests.SelectingDateSetsSelectedDate | Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Given_ContentDialog.When_DefaultButton_Not_Set | Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Given_TextBlock.When_Inlines_Transitively_Change | invalid-test-for-retry

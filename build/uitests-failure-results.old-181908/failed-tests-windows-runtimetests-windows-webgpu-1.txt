@@ -1,1 +1,0 @@
-Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests.CalendarDatePickerIntegrationTests.CanCloseFlyoutBySelectingADate | Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Given_ListViewBase.When_ThemeChange | invalid-test-for-retry
