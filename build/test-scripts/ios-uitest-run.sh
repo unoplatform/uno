@@ -210,7 +210,7 @@ if [ -z "$UITEST_IOSDEVICE_ID" ]; then
 		| .[0].identifier // empty')
 
 	if [ -z "$IOS_DEVICETYPE_ID" ]; then
-		echo "##vso[task.logissue type=error]UNOBLD008: No '$UNO_UITEST_SIMULATOR_NAME' simulator device type is available on this agent."
+		echo "##vso[task.logissue type=error]UNOBLD009: No '$UNO_UITEST_SIMULATOR_NAME' simulator device type is available on this agent."
 		xcrun simctl list devicetypes || true
 		exit 1
 	fi
@@ -272,6 +272,9 @@ if ! wait_for_boot "$UITEST_IOSDEVICE_ID" 480; then
 fi
 echo "Simulator boot wait finished ($(date))"
 
+# Imported app bundle from artifacts is not executable, and simctl validates it while installing.
+sudo chmod -R +x $UNO_UITEST_IOSBUNDLE_PATH
+
 echo "Installing the app on the simulator: $UITEST_IOSDEVICE_ID"
 if ! xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"; then
 	echo "##vso[task.logissue type=warning]UNOBLD007: xcrun simctl install failed; retrying once"
@@ -290,9 +293,6 @@ cat "$TRANSFORM_TOOL_BUILD_LOG"
 cd $BUILD_SOURCESDIRECTORY/build
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
-
-# Imported app bundle from artifacts is not executable
-sudo chmod -R +x $UNO_UITEST_IOSBUNDLE_PATH
 
 # Move to the screenshot directory so that the output path is the proper one, as
 # required by Xamarin.UITest
