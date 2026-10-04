@@ -107,6 +107,7 @@ public class Given_Window
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24679")]
 	public async Task When_Secondary_Window_Closed_Then_Initial_Window_Visible()
 	{
 		AssertSupportsMultipleWindows();
@@ -127,6 +128,7 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24679")]
 	public async Task When_Secondary_Window_Closed_Before_Shown_Then_Initial_Window_Visible()
 	{
 		AssertSupportsMultipleWindows();
