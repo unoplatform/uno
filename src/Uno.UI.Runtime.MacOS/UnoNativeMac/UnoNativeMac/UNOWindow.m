@@ -1662,6 +1662,9 @@ NSOperatingSystemVersion _osVersion;
     [center removeObserver:windowDidChangeScreen name:NSWindowDidChangeScreenNotification object:self];
     [center removeObserver:windowDidChangeScreen name:NSApplicationDidChangeScreenParametersNotification object:self];
 
+    // The display link holds its target, the delegate, until it is invalidated.
+    [self.metalViewDelegate invalidateVsync];
+
     uno_get_window_close_callback()(self);
 }
 
