@@ -148,17 +148,17 @@ namespace Uno.UI.Runtime.AppleUIKit
 
 		void IAppleUIKitRenderView.SetOwner(RootViewController owner) => SetOwner(owner);
 
-		/// <summary>
-		/// Creates the neutral native-texture Metal context bound to this view's device/queue, or <c>null</c> when
-		/// the constructor found no Metal device — negotiation then reports a decline and tries the next kind,
-		/// instead of the NullReferenceException a dereference here would surface as.
-		/// </summary>
 		private void OnDisplayLink()
 		{
 			_vsyncTimestamp = DisplayLinkVsync.GetTimestamp(_link);
 			Draw();
 		}
 
+		/// <summary>
+		/// Creates the neutral native-texture Metal context bound to this view's device/queue, or <c>null</c> when
+		/// the constructor found no Metal device — negotiation then reports a decline and tries the next kind,
+		/// instead of the NullReferenceException a dereference here would surface as.
+		/// </summary>
 		internal Uno.UI.Composition.Drawing.ISwapChain? CreateGraphicsContext()
 			=> Device is { } device && _queue is { } queue
 				? new AppleMetalGraphicsContext(device, queue, () => CurrentDrawable)
