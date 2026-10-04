@@ -193,7 +193,7 @@ namespace Microsoft.UI.Composition
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
-			Compositor.InvalidateRender(this);
+			Compositor.InvalidateRender(this, translationOnly: propertyName is nameof(Offset) or nameof(ArrangeOffset) or nameof(AnchorPoint));
 #if __SKIA__
 			if (propertyName == nameof(Opacity))
 			{
@@ -333,7 +333,7 @@ namespace Microsoft.UI.Composition
 			{
 				_ = Properties.TryGetVector3("Translation", out var translation);
 				Properties.InsertVector3("Translation", UpdateVector3(subPropertyName, translation, propertyValue));
-				Compositor.InvalidateRender(this);
+				Compositor.InvalidateRender(this, translationOnly: true);
 			}
 			else
 			{
