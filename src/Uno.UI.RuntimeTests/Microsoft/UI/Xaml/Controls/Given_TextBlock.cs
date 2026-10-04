@@ -785,6 +785,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Text_Set_While_Collapsed_Then_Laid_Out_And_Drawn_Once_Visible()
+		{
+			var SUT = new TextBlock { Text = "ABC" };
+			await UITestHelper.Load(SUT);
+			await UITestHelper.WaitForRender();
+
+			var visual = SUT.Visual;
+			var parsed = SUT.ParsedText;
+			var recorded = visual.RecordedContentForTesting;
+
+			SUT.Visibility = Visibility.Collapsed;
+			await UITestHelper.WaitForIdle();
+			SUT.Text = "ABCDEFGHIJKL";
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreSame(parsed, SUT.ParsedText, "A collapsed block is not laid out.");
+
+			SUT.Visibility = Visibility.Visible;
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			Assert.AreNotSame(parsed, SUT.ParsedText);
+			Assert.AreNotSame(recorded, visual.RecordedContentForTesting);
+			Assert.IsTrue(SUT.ActualWidth > SUT.Text.Length * 3, $"Laid out with the new text (width {SUT.ActualWidth}).");
+		}
+
+		[TestMethod]
 		[DataRow("ABC", TextAlignment.Left, TextWrapping.NoWrap, 300, 50, false, DisplayName = "Single line, height differs")]
 		[DataRow("ABC", TextAlignment.Left, TextWrapping.NoWrap, 200, 300, false, DisplayName = "Single left-aligned line, width differs")]
 		[DataRow("ABC", TextAlignment.Center, TextWrapping.NoWrap, 200, 300, true, DisplayName = "Centred, width differs")]

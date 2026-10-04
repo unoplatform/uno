@@ -1716,9 +1716,10 @@ namespace Microsoft.UI.Xaml.Controls
 			Visual.Compositor.InvalidateRender(Visual);
 		}
 
-		partial void InvalidateTextBlockPartial() => InvalidateInlineAndRequireRepaint();
+		// InvalidateTextBlock and an inlines change invalidate measure, and the parse that follows repaints (see ParsedText),
+		// so they do not invalidate the render themselves: a block that is collapsed or not in the tree is not measured
+		// and stays off the compositor.
 		partial void OnForegroundChangedPartial() => InvalidateInlineAndRequireRepaint();
-		partial void OnInlinesChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnMaxLinesChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnTextWrappingChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnLineHeightChangedPartial() => InvalidateInlineAndRequireRepaint();
