@@ -1403,7 +1403,22 @@ namespace Microsoft.UI.Xaml.Controls
 		private Microsoft.UI.Input.PointerPoint? _lastPointerDownPoint;
 
 		private (Size availableSize, Size outSize, TextAlignment? alignment) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left);
-		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
+		private IParsedText _parsedText = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
+
+		// Draw replays the parsed text, so a new parse (in measure or arrange) is what calls for a repaint; an arrange
+		// that only moves the block keeps its recording.
+		internal IParsedText ParsedText
+		{
+			get => _parsedText;
+			private set
+			{
+				if (!ReferenceEquals(_parsedText, value))
+				{
+					_parsedText = value;
+					Visual.Compositor.InvalidateRender(Visual);
+				}
+			}
+		}
 
 		internal event EventHandler? DrawingFinished;
 
@@ -1587,7 +1602,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			Visual.Compositor.InvalidateRender(Visual);
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
 

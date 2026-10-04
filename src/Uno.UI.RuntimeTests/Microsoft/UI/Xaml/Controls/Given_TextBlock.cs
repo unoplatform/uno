@@ -753,6 +753,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if __SKIA__
+		[TestMethod]
+		public async Task When_Moved_Then_Recording_Is_Kept_And_Text_Change_Re_Records()
+		{
+			var SUT = new TextBlock { Text = "ABC", FontSize = 30, Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black) };
+			var canvas = new Canvas { Width = 300, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Children = { SUT } };
+
+			await UITestHelper.Load(canvas);
+			await UITestHelper.WaitForRender();
+
+			var visual = SUT.Visual;
+			var recorded = visual.RecordedContentForTesting;
+			Assert.IsNotNull(recorded);
+
+			Canvas.SetLeft(SUT, 150);
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			Assert.AreSame(recorded, visual.RecordedContentForTesting, "A move must replay the recording, not re-record it.");
+
+			var bitmap = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(0, 0, 140, 100), Microsoft.UI.Colors.Black, tolerance: 60);
+			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(150, 0, 150, 100), Microsoft.UI.Colors.Black, tolerance: 60);
+
+			SUT.Text = "ABCD";
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			Assert.AreNotSame(recorded, visual.RecordedContentForTesting, "New text must be re-recorded.");
+		}
+#endif
+
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		[DataRow("ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf")]
