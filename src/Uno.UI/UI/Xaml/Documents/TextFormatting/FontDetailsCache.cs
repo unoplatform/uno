@@ -97,6 +97,13 @@ internal static class FontDetailsCache
 		try
 		{
 			using var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
+			if (stream.CanSeek)
+			{
+				var bytes = new byte[stream.Length - stream.Position];
+				await stream.ReadExactlyAsync(bytes, CancellationToken.None);
+				return bytes;
+			}
+
 			using var buffer = new MemoryStream();
 			await stream.CopyToAsync(buffer, CancellationToken.None);
 			return buffer.ToArray();
