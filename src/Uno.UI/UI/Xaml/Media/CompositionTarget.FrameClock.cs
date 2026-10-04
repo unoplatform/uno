@@ -192,7 +192,7 @@ public partial class CompositionTarget
 				{
 					handler(this, timestamp);
 				}
-				catch (Exception e)
+				catch (Exception e) when (!IsFatalException(e))
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
@@ -210,4 +210,8 @@ public partial class CompositionTarget
 
 		return timestamp;
 	}
+
+	// Not isolated per handler: past these, pumping more frames means nothing.
+	private static bool IsFatalException(Exception exception)
+		=> exception is OutOfMemoryException or StackOverflowException or AccessViolationException;
 }

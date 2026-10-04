@@ -740,7 +740,7 @@ public partial class CompositionTarget
 					{
 						handler(null, args);
 					}
-					catch (Exception e)
+					catch (Exception e) when (!IsFatalException(e))
 					{
 						Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, typeof(CompositionTarget));
 					}
