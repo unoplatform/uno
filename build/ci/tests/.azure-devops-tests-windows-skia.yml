@@ -188,13 +188,16 @@ jobs:
       # A GPU-less image need not have a Vulkan loader: put this one on the PATH, where wgpu's load of vulkan-1.dll finds it.
       Write-Host "##vso[task.prependpath]$rt\x64"
 
+      # Registered, not pointed at through VK_DRIVER_FILES: the agent runs elevated, and the loader ignores its
+      # environment overrides in an elevated process.
       $icd = "$dir\x64\lvp_icd.x86_64.json"
-      $env:VK_DRIVER_FILES = $icd
+      $drivers = "HKLM:\SOFTWARE\Khronos\Vulkan\Drivers"
+      New-Item -Path $drivers -Force | Out-Null
+      New-ItemProperty -Path $drivers -Name $icd -PropertyType DWord -Value 0 -Force | Out-Null
+
       $summary = & "$rt\x64\vulkaninfo.exe" --summary 2>&1 | Out-String
       Write-Host $summary
       if ($summary -notmatch 'llvmpipe') { throw "lavapipe did not register as a Vulkan device." }
-      Write-Host "##vso[task.setvariable variable=VK_DRIVER_FILES]$icd"
-      Write-Host "##vso[task.setvariable variable=VK_ICD_FILENAMES]$icd"
     displayName: Install Mesa lavapipe
 
   - pwsh: build/test-scripts/run-windows-skia-runtime-tests.ps1
