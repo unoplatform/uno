@@ -170,6 +170,7 @@ namespace Microsoft.UI.Composition
 					}
 
 					this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate());
+					animation.OnEvaluatedValueApplied();
 				}
 			}
 			finally
