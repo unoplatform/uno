@@ -60,6 +60,11 @@ public class UnoUISceneDelegate : UISceneDelegate
 	{
 		try
 		{
+			// Persistent identifiers survive a reconnect, so a session that is connecting again must not stay
+			// marked as destroyed if its earlier disconnect never arrived.
+			_destroyedSessions.Remove(session.PersistentIdentifier);
+			_foregroundHandoffs.Remove(session.PersistentIdentifier);
+
 			if (scene is not UIWindowScene windowScene)
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
@@ -112,7 +117,12 @@ public class UnoUISceneDelegate : UISceneDelegate
 	/// </summary>
 	internal static void DestroyScene(UIScene scene)
 	{
-		var sessionId = scene.Session.PersistentIdentifier;
+		if (scene.Session is not { } session)
+		{
+			return;
+		}
+
+		var sessionId = session.PersistentIdentifier;
 		_destroyedSessions.Add(sessionId);
 
 		// Full-screen iPadOS shows one scene at a time, and a scene that is still connecting is already
@@ -121,28 +131,65 @@ public class UnoUISceneDelegate : UISceneDelegate
 		if (scene.ActivationState != UISceneActivationState.Background)
 		{
 			_foregroundHandoffs.Add(sessionId);
-			ActivateRemainingScene();
+			ActivateRemainingScene(session.Role);
 		}
 
-		UIApplication.SharedApplication.RequestSceneSessionDestruction(scene.Session, null, null);
+		UIApplication.SharedApplication.RequestSceneSessionDestruction(session, null, null);
 	}
 
-	private static void ActivateRemainingScene()
+	private static void ActivateRemainingScene(UIWindowSceneSessionRole role)
 	{
+		UISceneSession? candidate = null;
+
 		foreach (var connectedScene in UIApplication.SharedApplication.ConnectedScenes)
 		{
-			if (connectedScene is UIWindowScene { Session: { } session } && !_destroyedSessions.Contains(session.PersistentIdentifier))
+			// Only a scene of the same role (not, say, an external display) keeps the app in the foreground.
+			if (connectedScene is not UIWindowScene { Session: { } session } ||
+				session.Role != role ||
+				_destroyedSessions.Contains(session.PersistentIdentifier))
 			{
-				UIApplication.SharedApplication.RequestSceneSessionActivation(session, null, null, error =>
-				{
-					if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Warning))
-					{
-						typeof(UnoUISceneDelegate).Log().Warn($"Failed to bring a remaining scene forward: {error.LocalizedDescription}");
-					}
-				});
-
-				return;
+				continue;
 			}
+
+			// Prefer the initial window, so focus returns to the main window rather than to whichever
+			// secondary window happens to enumerate first.
+			if (connectedScene.Delegate is UnoUISceneDelegate { _wrapper.Window: { } window } &&
+				window == Microsoft.UI.Xaml.Window.InitialWindow)
+			{
+				candidate = session;
+				break;
+			}
+
+			candidate ??= session;
+		}
+
+		if (candidate is not null)
+		{
+			ActivateSession(candidate);
+		}
+	}
+
+	private static void ActivateSession(UISceneSession session)
+	{
+		static void OnError(NSError error)
+		{
+			if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(UnoUISceneDelegate).Log().Warn($"Failed to bring a remaining scene forward: {error.LocalizedDescription}");
+			}
+		}
+
+		if (OperatingSystem.IsIOSVersionAtLeast(17, 0) ||
+			OperatingSystem.IsTvOSVersionAtLeast(17, 0))
+		{
+			UIApplication.SharedApplication.ActivateSceneSession(UISceneSessionActivationRequest.Create(session), OnError);
+		}
+		else
+		{
+			// UISceneSessionActivationRequest is 17.0+; earlier versions use the direct request.
+#pragma warning disable CA1422 // Validate platform compatibility
+			UIApplication.SharedApplication.RequestSceneSessionActivation(session, null, null, OnError);
+#pragma warning restore CA1422 // Validate platform compatibility
 		}
 	}
 
@@ -163,19 +210,23 @@ public class UnoUISceneDelegate : UISceneDelegate
 	public sealed override void DidDisconnect(UIScene scene) =>
 		Forward(() =>
 		{
+			// Done before any app callback runs, so a throwing Closing handler cannot leave the session marked
+			// as destroyed. Activating a scene while another transition is in flight can be overridden by it,
+			// so check again once a scene the app destroyed is actually gone.
+			if (scene.Session is { } session)
+			{
+				var sessionId = session.PersistentIdentifier;
+				_destroyedSessions.Remove(sessionId);
+
+				if (_foregroundHandoffs.Remove(sessionId) && !HasForegroundScene())
+				{
+					ActivateRemainingScene(session.Role);
+				}
+			}
+
 			_wrapper?.OnSceneDisconnected();
 			_wrapper = null;
 			Window = null;
-
-			// Activating a scene while another transition is in flight can be overridden by it, so check
-			// again once a scene the app destroyed is actually gone.
-			var sessionId = scene.Session.PersistentIdentifier;
-			_destroyedSessions.Remove(sessionId);
-
-			if (_foregroundHandoffs.Remove(sessionId) && !HasForegroundScene())
-			{
-				ActivateRemainingScene();
-			}
 
 			OnSceneDisconnected(scene);
 		});
