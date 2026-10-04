@@ -21,6 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 // the context's own swapchain. See uno_window_set_external_present / uno_window_get_metal_layer.
 @property (assign) BOOL externalPresent;
 
+/// Stops tracking vsyncs for good. Called when the window closes.
+- (void)invalidateVsync;
+
 @end
 
 typedef void (*metal_draw_fn_ptr)(void* /* window */, double /* width */, double /* height */, void* _Nullable /* texture */);
@@ -41,5 +44,10 @@ void uno_window_release_texture(void* _Nullable texture);
 /// Acquires the layer's next drawable, blits the already-composed texture onto it, presents and releases it.
 /// Returns false when the layer vended no drawable. Called from the managed render thread.
 bool uno_window_present_texture(NSWindow* window, void* texture);
+
+/// Seconds since the latest vsync of the window's display, or a negative value when unknown (before macOS 14, or
+/// right after an idle period). Keeps vsync tracking running while it is being asked. Called from the managed
+/// render thread.
+double uno_window_get_vsync_age(NSWindow* window);
 
 NS_ASSUME_NONNULL_END

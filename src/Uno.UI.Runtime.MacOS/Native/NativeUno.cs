@@ -396,6 +396,9 @@ internal static partial class NativeUno
 	internal static partial bool uno_window_present_texture(nint window, nint texture);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial double uno_window_get_vsync_age(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_move(nint window, double x, double y);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
