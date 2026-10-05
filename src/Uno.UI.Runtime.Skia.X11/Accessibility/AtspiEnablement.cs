@@ -38,12 +38,6 @@ internal static class AtspiEnablement
 
 	private static async Task InitializeAsync()
 	{
-		// GTK's opt-out; honoured so the bridge can be disabled without touching the desktop setting.
-		if (Environment.GetEnvironmentVariable("NO_AT_BRIDGE") == "1")
-		{
-			return;
-		}
-
 		if (DBusAddress.Session is not { } sessionBusAddress)
 		{
 			return;
