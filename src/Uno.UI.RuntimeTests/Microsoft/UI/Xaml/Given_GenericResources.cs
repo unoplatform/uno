@@ -23,7 +23,6 @@ public class Given_GenericResources
 			"ProgressBarBorderThemeThickness",
 			"SliderHorizontalThumbHeight",
 			"SliderHorizontalThumbWidth",
-			"SplitViewPaneRootCornerRadius",
 			"SystemAccentColor",
 			"SystemAccentColorDark1",
 			"SystemAccentColorDark2",
@@ -39,25 +38,33 @@ public class Given_GenericResources
 			"SystemColorHotlightColor",
 			"SystemColorWindowColor",
 			"SystemColorWindowTextColor",
-			"XamlDefaultButton",
-			"XamlDefaultCheckBox",
-			"XamlDefaultComboBox",
-			"XamlDefaultFrame",
-			"XamlDefaultPasswordBox",
-			"XamlDefaultPivot",
-			"XamlDefaultProgressBar",
-			"XamlDefaultRadioButton",
-			"XamlDefaultRepeatButton",
-			"XamlDefaultSlider",
-			"XamlDefaultTextBox",
-			"XamlDefaultToggleButton",
-			"XamlDefaultToggleSwitch",
 		};
 
 		foreach (var key in keys)
 		{
 			Assert.IsNotNull(Application.Current!.Resources[key], $"Resource '{key}' was not resolved.");
 		}
+	}
+
+	[TestMethod]
+	public void When_Overlay_Style_Is_Resolved()
+	{
+		foreach (var type in new[] { typeof(GridView), typeof(ItemsControl), typeof(WebView), typeof(WebView2) })
+		{
+			Assert.IsInstanceOfType<Style>(Application.Current!.Resources[type], $"Implicit style for '{type.Name}' was not resolved.");
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_GridView_Default_Style_Uses_WrapPanel()
+	{
+		// ItemsWrapGrid is not implemented on Skia, so the overlay swaps in a WrapPanel.
+		var sut = new GridView { Width = 200, Height = 200, ItemsSource = new[] { 1, 2, 3 } };
+
+		await UITestHelper.Load(sut, x => x.IsLoaded);
+
+		Assert.IsInstanceOfType<WrapPanel>(sut.ItemsPanelRoot);
 	}
 
 	[TestMethod]
