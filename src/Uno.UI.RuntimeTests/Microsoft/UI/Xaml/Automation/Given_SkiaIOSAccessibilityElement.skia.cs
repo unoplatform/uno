@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 
@@ -169,6 +170,54 @@ public partial class Given_SkiaIOSAccessibilityElement
 		// VoiceOver calls this block in preference to the property, so exporting one it can't run aborts the app.
 		Assert.IsFalse(respondsToSelector(button, "accessibilityCustomContentBlock"));
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_A_List_Row_Is_Touched_Then_Hit_Test_Returns_The_Row()
+	{
+		var listView = new ListView
+		{
+			ItemsSource = new[] { "First row", "Second row", "Third row" },
+			Width = 300,
+			Height = 300,
+		};
+		AutomationProperties.SetName(listView, "Rows");
+		await UITestHelper.Load(listView);
+
+		var row = (FrameworkElement)listView.ContainerFromIndex(1);
+		var bounds = GetWindowBounds(row);
+
+		// Near the right edge, clear of the row text, so only the row and the list cover the point.
+		var snapshot = HitTest(row.XamlRoot!, bounds.Right - 4, bounds.Y + bounds.Height / 2);
+
+		Assert.IsNotNull(snapshot, "Touch exploration found no element on the row.");
+		Assert.AreEqual("Second row", snapshot.Name);
+		Assert.AreEqual(bounds.Y, snapshot.Bounds.Y, 1);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Content_Is_Covered_Then_Hit_Test_Returns_The_Topmost_Element()
+	{
+		var behind = new Button { Content = "Behind", Width = 200, Height = 100 };
+		var front = new Button { Content = "In front", Width = 200, Height = 100 };
+		var grid = new Grid { Children = { behind, front } };
+		await UITestHelper.Load(grid);
+
+		var bounds = GetWindowBounds(front);
+		var snapshot = HitTest(grid.XamlRoot!, bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2);
+
+		Assert.AreEqual("In front", snapshot?.Name);
+	}
+
+	private static AccessibilityNativeNodeSnapshot? HitTest(XamlRoot xamlRoot, double x, double y)
+	{
+		Assert.IsNotNull(AccessibilityPeerHelper.IOSAccessibilityHitTestAccessor, "The iOS hit-test hook must be registered.");
+		return AccessibilityPeerHelper.IOSAccessibilityHitTestAccessor(xamlRoot, x, y);
+	}
+
+	private static Rect GetWindowBounds(FrameworkElement element)
+		=> element.TransformToVisual(null).TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
 
 	[TestMethod]
 	[RunsOnUIThread]
