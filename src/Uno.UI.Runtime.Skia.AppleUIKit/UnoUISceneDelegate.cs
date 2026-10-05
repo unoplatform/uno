@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using Foundation;
 using Microsoft.UI.Xaml;
 using UIKit;
@@ -35,6 +36,11 @@ public class UnoUISceneDelegate : UISceneDelegate
 	private static readonly bool _hasSceneManifest =
 		NSBundle.MainBundle.InfoDictionary?.ContainsKey(new NSString(UIApplicationSceneManifestKey)) == true;
 
+	// Sessions the app asked UIKit to destroy, and the subset that was not in the background at the time and
+	// so must hand the foreground over. UIKit callbacks all run on the main thread.
+	private static readonly HashSet<string> _destroyedSessions = new();
+	private static readonly HashSet<string> _foregroundHandoffs = new();
+
 	private NativeWindowWrapper? _wrapper;
 
 	/// <summary>
@@ -54,6 +60,11 @@ public class UnoUISceneDelegate : UISceneDelegate
 	{
 		try
 		{
+			// Persistent identifiers survive a reconnect, so a session that is connecting again must not stay
+			// marked as destroyed if its earlier disconnect never arrived.
+			_destroyedSessions.Remove(session.PersistentIdentifier);
+			_foregroundHandoffs.Remove(session.PersistentIdentifier);
+
 			if (scene is not UIWindowScene windowScene)
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
@@ -77,7 +88,7 @@ public class UnoUISceneDelegate : UISceneDelegate
 						$"discarding the session. This happens when the OS restores more scenes than the app created windows for.");
 				}
 
-				UIApplication.SharedApplication.RequestSceneSessionDestruction(session, null, null);
+				DestroyScene(scene);
 				return;
 			}
 
@@ -101,9 +112,137 @@ public class UnoUISceneDelegate : UISceneDelegate
 		}
 	}
 
+	/// <summary>
+	/// Destroys a scene's session, first bringing another of the app's scenes forward when this one may be in front.
+	/// </summary>
+	internal static void DestroyScene(UIScene scene)
+	{
+		if (scene.Session is not { } session)
+		{
+			return;
+		}
+
+		var sessionId = session.PersistentIdentifier;
+		_destroyedSessions.Add(sessionId);
+
+		// Full-screen iPadOS shows one scene at a time, and a scene that is still connecting is already
+		// on its way to the front: destroying it without bringing another forward leaves the app with no
+		// foreground scene, and it gets suspended.
+		if (scene.ActivationState != UISceneActivationState.Background)
+		{
+			_foregroundHandoffs.Add(sessionId);
+			ActivateRemainingScene(session.Role);
+		}
+
+		UIApplication.SharedApplication.RequestSceneSessionDestruction(session, null, OnError);
+
+		void OnError(NSError error)
+		{
+			// DidDisconnect never arrives for a session that was not destroyed, so it must not stay skipped.
+			_destroyedSessions.Remove(sessionId);
+			_foregroundHandoffs.Remove(sessionId);
+
+			if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(UnoUISceneDelegate).Log().Warn($"Failed to destroy a scene session: {error.LocalizedDescription}");
+			}
+		}
+	}
+
+	private static void ActivateRemainingScene(UIWindowSceneSessionRole role)
+	{
+		UISceneSession? candidate = null;
+
+		foreach (var connectedScene in UIApplication.SharedApplication.ConnectedScenes)
+		{
+			// Only a scene of the same role (not, say, an external display) keeps the app in the foreground.
+			if (connectedScene is not UIWindowScene { Session: { } session } ||
+				session.Role != role ||
+				_destroyedSessions.Contains(session.PersistentIdentifier))
+			{
+				continue;
+			}
+
+			// Prefer the initial window, so focus returns to the main window rather than to whichever
+			// secondary window happens to enumerate first.
+			if (connectedScene.Delegate is UnoUISceneDelegate { _wrapper.Window: { } window } &&
+				window == Microsoft.UI.Xaml.Window.InitialWindow)
+			{
+				candidate = session;
+				break;
+			}
+
+			candidate ??= session;
+		}
+
+		if (candidate is not null)
+		{
+			ActivateSession(candidate);
+		}
+		else if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(UnoUISceneDelegate).Log().Warn(
+				$"No remaining {role} scene to bring forward ({UIApplication.SharedApplication.ConnectedScenes.Count} connected), the app may be suspended.");
+		}
+	}
+
+	private static void ActivateSession(UISceneSession session)
+	{
+		static void OnError(NSError error)
+		{
+			if (typeof(UnoUISceneDelegate).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(UnoUISceneDelegate).Log().Warn($"Failed to bring a remaining scene forward: {error.LocalizedDescription}");
+			}
+		}
+
+		if (OperatingSystem.IsIOSVersionAtLeast(17, 0) ||
+			OperatingSystem.IsTvOSVersionAtLeast(17, 0))
+		{
+			UIApplication.SharedApplication.ActivateSceneSession(UISceneSessionActivationRequest.Create(session), OnError);
+		}
+		else
+		{
+			// UISceneSessionActivationRequest is 17.0+; earlier versions use the direct request.
+#pragma warning disable CA1422 // Validate platform compatibility
+			UIApplication.SharedApplication.RequestSceneSessionActivation(session, null, null, OnError);
+#pragma warning restore CA1422 // Validate platform compatibility
+		}
+	}
+
+	private static bool HasForegroundScene(UIWindowSceneSessionRole role)
+	{
+		foreach (var connectedScene in UIApplication.SharedApplication.ConnectedScenes)
+		{
+			if (connectedScene.ActivationState is UISceneActivationState.ForegroundActive or UISceneActivationState.ForegroundInactive &&
+				connectedScene.Session is { } session &&
+				session.Role == role &&
+				!_destroyedSessions.Contains(session.PersistentIdentifier))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public sealed override void DidDisconnect(UIScene scene) =>
 		Forward(() =>
 		{
+			// Done before any app callback runs, so a throwing Closing handler cannot leave the session marked
+			// as destroyed. Activating a scene while another transition is in flight can be overridden by it,
+			// so check again once a scene the app destroyed is actually gone.
+			if (scene.Session is { } session)
+			{
+				var sessionId = session.PersistentIdentifier;
+				_destroyedSessions.Remove(sessionId);
+
+				if (_foregroundHandoffs.Remove(sessionId) && !HasForegroundScene(session.Role))
+				{
+					ActivateRemainingScene(session.Role);
+				}
+			}
+
 			_wrapper?.OnSceneDisconnected();
 			_wrapper = null;
 			Window = null;

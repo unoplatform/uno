@@ -191,11 +191,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		if (!_isSceneDisconnected &&
 			Window != Microsoft.UI.Xaml.Window.InitialWindow &&
-			_nativeWindow?.WindowScene?.Session is { } session)
+			_nativeWindow?.WindowScene is { } scene)
 		{
 			// A secondary window must also tear down its scene, otherwise the OS keeps showing it
 			// in the app switcher after the XAML window is gone.
-			UIApplication.SharedApplication.RequestSceneSessionDestruction(session, null, null);
+			UnoUISceneDelegate.DestroyScene(scene);
 		}
 
 		SceneWindowRegistry.Remove(this);

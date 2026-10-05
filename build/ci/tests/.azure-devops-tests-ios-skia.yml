@@ -1,10 +1,8 @@
 parameters:
   vmImage: ''
   vmMacImage: ''
-  vmMacImageTest: ''
   vmLinuxImage: ''
   vmLinuxPool: ''
-  xCodeRootTest: ''
   xCodeRootBuild: ''
   poolName: ''
   XAML_FLAVOR_BUILD: ''
@@ -33,7 +31,7 @@ jobs:
       JobDisplayName: 'Runtime Tests ${{ RuntimeTestGroup.key }}'
       TestRunName: 'iOS Skia Runtime Tests ${{ RuntimeTestGroup.key }}'
       JobTimeoutInMinutes: 90
-      vmImage: ${{ parameters.vmMacImageTest }}
+      vmImage: ${{ parameters.vmMacImage }}
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_TEST_TIMEOUT: '90m'
       UITEST_AUTOMATED_GROUP: RuntimeTests
@@ -43,7 +41,7 @@ jobs:
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesapp.skia'
       UITEST_VARIANT: 'skia'
       TEST_KIND: runtime
-      xCodeRoot: ${{ parameters.xCodeRootTest }}
+      xCodeRoot: ${{ parameters.xCodeRootBuild }}
       dependsOn:
         - Skia_Tests_Build_iOS
       BuildJobName: 'Skia_Tests_Build_iOS'

@@ -107,6 +107,46 @@ public class Given_Window
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24679")]
+	public async Task When_Secondary_Window_Closed_Then_Initial_Window_Visible()
+	{
+		AssertSupportsMultipleWindows();
+
+		var initialWindow = TestServices.WindowHelper.CurrentTestWindow;
+		var sut = new Window();
+
+		var activated = false;
+		sut.Activated += (s, e) => activated = true;
+		sut.Activate();
+		await TestServices.WindowHelper.WaitFor(() => activated);
+
+		sut.Close();
+
+		// On iOS, closing the scene that was in front must not leave the app without a foreground scene.
+		await TestServices.WindowHelper.WaitFor(() => initialWindow.Visible, timeoutMS: 15000);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24679")]
+	public async Task When_Secondary_Window_Closed_Before_Shown_Then_Initial_Window_Visible()
+	{
+		AssertSupportsMultipleWindows();
+
+		var initialWindow = TestServices.WindowHelper.CurrentTestWindow;
+		var sut = new Window();
+
+		sut.Activate();
+		sut.Close();
+
+		// On iOS the scene requested by Activate still connects after the close and gets discarded,
+		// which must not take the app's foreground scene with it.
+		await Task.Delay(TimeSpan.FromSeconds(2));
+		await TestServices.WindowHelper.WaitFor(() => initialWindow.Visible, timeoutMS: 15000);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	[RequiresFullWindow]
 	public async Task When_Secondary_Window_No_Background_Light_Dark()
 	{
