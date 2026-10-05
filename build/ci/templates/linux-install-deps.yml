@@ -1,7 +1,8 @@
 parameters:
   # Default is the Skia desktop set. These are load-bearing: the X11 host dlopens unversioned
-  # sonames (libvlc.so, libwebkit2gtk-4.1.so, libgdk-3.so) that only the -dev packages symlink.
-  packages: 'xvfb fluxbox vlc libvlc-dev libgtk-3-dev libwebkit2gtk-4.1-dev'
+  # sonames (libvlc.so, libwebkit2gtk-4.1.so, libgdk-3.so) that only the -dev packages symlink. Without
+  # libxcb-present0 the X11 host paces frames by a timer instead of vsync.
+  packages: 'xvfb fluxbox vlc libvlc-dev libgtk-3-dev libwebkit2gtk-4.1-dev libxcb-present0'
 
 steps:
 
