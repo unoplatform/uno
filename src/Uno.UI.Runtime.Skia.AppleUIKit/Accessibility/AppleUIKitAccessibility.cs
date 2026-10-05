@@ -1208,6 +1208,75 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			&& double.IsFinite(bounds.Width)
 			&& double.IsFinite(bounds.Height);
 
+	/// <summary>
+	/// Resolves VoiceOver touch exploration from the visual tree, as Android's GetVirtualViewAt does. UIKit's default
+	/// returns the first element whose frame contains the point, i.e. a list rather than its row, or content under an overlay.
+	/// </summary>
+	internal NSObject? HitTest(CGPoint point)
+	{
+		if (IsDisposed)
+		{
+			return null;
+		}
+
+		if (_rebuildPending && !_isRebuildingTree)
+		{
+			RebuildTree();
+		}
+
+		var exposedIds = new HashSet<nint>();
+		foreach (var element in _currentAccessibilityElements)
+		{
+			if (element is UnoUIAccessibilityElement { NodeId: var nodeId })
+			{
+				exposedIds.Add(nodeId);
+			}
+		}
+
+		var (hitElement, _) = Microsoft.UI.Xaml.Media.VisualTreeHelper.HitTest(
+			new Windows.Foundation.Point(point.X, point.Y),
+			_xamlRoot.VisualTree.RootElement);
+		for (var current = hitElement; current is not null; current = current.GetUIElementAdjustedParentInternal())
+		{
+			var handle = current.Visual.Handle;
+			if (_nodeIdByHandle.TryGetValue(handle, out var primaryId) && exposedIds.Contains(primaryId))
+			{
+				return _nodeElements[primaryId];
+			}
+
+			if (!_nodeIdsByHandle.TryGetValue(handle, out var ids))
+			{
+				continue;
+			}
+
+			for (var i = ids.Count - 1; i >= 0; i--)
+			{
+				if (exposedIds.Contains(ids[i]) && FrameContains(ids[i], point))
+				{
+					return _nodeElements[ids[i]];
+				}
+			}
+		}
+
+		// Peer-only and secondary nodes have no element of their own for the visual hit-test to reach.
+		for (var i = _currentAccessibilityElements.Length - 1; i >= 0; i--)
+		{
+			if (_currentAccessibilityElements[i] is UnoUIAccessibilityElement element &&
+				(GetOwner(element.NodeId) is not { } owner ||
+					!_nodeIdByHandle.TryGetValue(owner.Visual.Handle, out var ownerPrimaryId) ||
+					ownerPrimaryId != element.NodeId) &&
+				FrameContains(element.NodeId, point))
+			{
+				return element;
+			}
+		}
+
+		return null;
+	}
+
+	private bool FrameContains(nint nodeId, CGPoint point)
+		=> GetFrameInContainerSpace(nodeId) is { IsEmpty: false } frame && frame.Contains(point);
+
 	internal bool Activate(nint handle)
 	{
 		var peer = ResolvePeer(handle);

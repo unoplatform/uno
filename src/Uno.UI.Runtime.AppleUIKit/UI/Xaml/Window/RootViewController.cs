@@ -62,6 +62,9 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	/// <summary>Exposes the render view, which hosts the accessibility elements.</summary>
 	internal UIView? RenderView => _renderView as UIView;
 
+	/// <summary>Resolves the accessibility element at a point of the render view, for VoiceOver touch exploration.</summary>
+	internal NSObject? AccessibilityHitTest(CGPoint point) => _accessibility?.HitTest(point);
+
 	public RootViewController()
 	{
 		Initialize();
