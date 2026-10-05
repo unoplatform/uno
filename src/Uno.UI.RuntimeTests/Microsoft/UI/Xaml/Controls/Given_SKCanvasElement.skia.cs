@@ -5,7 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
 using SkiaSharp;
+using Uno.Foundation.Extensibility;
+using Uno.Graphics;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.WinUI.Graphics2DSK;
 using Size = Windows.Foundation.Size;
@@ -110,15 +113,10 @@ public class Given_SKCanvasElement
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24699")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
-	public void When_GL_Island_Resolvable_From_Graphics3DGL()
+	public void When_GL_Island_Registered_By_Graphics3DGL()
 	{
-		// SKCanvasElement looks the island up by name; keep that name and constructor in sync.
-		var islandType = Type.GetType("Uno.WinUI.Graphics3DGL.SkiaGLCanvasElement, Uno.WinUI.Graphics3DGL");
-
-		Assert.IsNotNull(islandType);
-		Assert.IsTrue(typeof(FrameworkElement).IsAssignableFrom(islandType));
-		Assert.IsNotNull(islandType.GetConstructor([typeof(Action<SKCanvas, Size>), typeof(Action)]));
-		Assert.IsNotNull(islandType.GetMethod(nameof(SKCanvasElement.Invalidate), Type.EmptyTypes));
+		// SKCanvasElement falls back to the GL island only through this registration.
+		Assert.IsTrue(ApiExtensibility.IsRegistered<IGLIsland>());
 	}
 
 	[TestMethod]
@@ -126,30 +124,49 @@ public class Given_SKCanvasElement
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	public async Task When_GL_Island_Renders_Or_Reports_Unavailable()
 	{
-		var islandType = Type.GetType("Uno.WinUI.Graphics3DGL.SkiaGLCanvasElement, Uno.WinUI.Graphics3DGL")!;
-		var rendered = false;
-		var unavailable = false;
-		var island = (FrameworkElement)Activator.CreateInstance(
-			islandType,
-			(Action<SKCanvas, Size>)((canvas, area) =>
-			{
-				rendered = true;
-				using var paint = new SKPaint { Color = SKColors.Blue };
-				canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), paint);
-			}),
-			(Action)(() => unavailable = true))!;
-		island.Width = 100;
-		island.Height = 100;
+		var renderer = new RecordingGLIslandRenderer();
+		Assert.IsTrue(ApiExtensibility.CreateInstance<IGLIsland>(renderer, out var island));
+		island.Element.Width = 100;
+		island.Element.Height = 100;
 
-		await UITestHelper.Load(island);
-		await UITestHelper.WaitFor(() => rendered || unavailable, timeoutMS: 5000);
-
-		if (rendered)
+		try
 		{
-			await UITestHelper.WaitForIdle();
-			var bitmap = await UITestHelper.ScreenShot(island);
-			ImageAssert.HasColorAt(bitmap, 50, 50, Microsoft.UI.Colors.Blue);
+			await UITestHelper.Load(island.Element);
+			await UITestHelper.WaitFor(() => renderer.Rendered || renderer.Unavailable, timeoutMS: 5000);
+
+			if (renderer.Rendered)
+			{
+				Assert.IsTrue(renderer.Initialized);
+				Assert.AreNotEqual(0u, renderer.Framebuffer);
+				Assert.AreEqual((100, 100), renderer.Size);
+			}
 		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	private class RecordingGLIslandRenderer : IGLIslandRenderer
+	{
+		public bool Initialized { get; private set; }
+		public bool Rendered { get; private set; }
+		public bool Unavailable { get; private set; }
+		public uint Framebuffer { get; private set; }
+		public (int Width, int Height) Size { get; private set; }
+
+		public void Init() => Initialized = true;
+
+		public void Render(uint framebuffer, int width, int height)
+		{
+			Rendered = true;
+			Framebuffer = framebuffer;
+			Size = (width, height);
+		}
+
+		public void Destroy() { }
+
+		public void OnUnavailable() => Unavailable = true;
 	}
 
 	private class BlueFillSKCanvasElement : SKCanvasElement
