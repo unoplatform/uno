@@ -200,6 +200,9 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			AccessibilityPeerHelper.IOSAccessibilityCustomContentValuesAccessor =
 				element => FindAdapterForElement(element)?.GetCustomContentValuesForOwner(element);
 
+			AccessibilityPeerHelper.IOSAccessibilityHitTestAccessor =
+				(root, x, y) => FindAdapterForRoot(root)?.HitTestSnapshotForRoot(root, x, y);
+
 			AccessibilityPeerHelper.IOSAccessibilityElementRespondsToSelectorAccessor =
 				(element, selector) =>
 					FindAdapterForElement(element)?.GetElementForOwner(element) is NSObject native &&
@@ -1276,6 +1279,15 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 	private bool FrameContains(nint nodeId, CGPoint point)
 		=> GetFrameInContainerSpace(nodeId) is { IsEmpty: false } frame && frame.Contains(point);
+
+	// Goes through Objective-C, as VoiceOver does, so it also covers the render view's accessibilityHitTest export.
+	private AccessibilityNativeNodeSnapshot? HitTestSnapshotForRoot(XamlRoot xamlRoot, double x, double y)
+		=> ReferenceEquals(xamlRoot, _xamlRoot) &&
+			_controllerRef.TryGetTarget(out var controller) &&
+			controller.RenderView is { } renderView &&
+			renderView.AccessibilityHitTest(new CGPoint(x, y), null) is UnoUIAccessibilityElement element
+				? CreateSnapshot(element)
+				: null;
 
 	internal bool Activate(nint handle)
 	{
