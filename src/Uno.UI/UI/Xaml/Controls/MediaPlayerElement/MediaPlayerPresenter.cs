@@ -175,6 +175,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public MediaPlayerPresenter() : base()
 		{
+			// Hidden until the player has a source / video dimensions.
+			Visibility = Visibility.Collapsed;
 			InitializePartial();
 		}
 
