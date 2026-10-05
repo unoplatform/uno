@@ -12,10 +12,10 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Hosting;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Graphics;
@@ -125,6 +125,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	{
 		var screenFps = NativeUno.uno_window_get_refresh_rate(_nativeWindow.Handle);
 		var targetFps = ResolveTargetFps(screenFps);
+		var followVsync = FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate;
 
 		// Information rather than Trace on purpose: on a CI agent this is the only record of what the
 		// render clock is actually running at, and a screen reporting an unexpected rate (or none)
@@ -135,19 +136,14 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				$"macOS render thread starting for window {_nativeWindow.Handle}: " +
 				$"surface={MacOSHost.Current.RenderSurfaceType}, " +
 				$"screen refresh rate={(screenFps > 0 ? screenFps.ToString("0.##", CultureInfo.InvariantCulture) + "Hz" : "unknown")}, " +
-				$"pacing at {targetFps.ToString("0.##", CultureInfo.InvariantCulture)} fps.");
+				$"pacing {(followVsync ? "on the display's vsync, or else " : "")}at {targetFps.ToString("0.##", CultureInfo.InvariantCulture)} fps.");
 		}
 
-		_metalRenderThread = new MacOSRenderThread(_nativeWindow.Handle, RenderThreadMetalDraw, targetFps);
-	}
-
-	/// <summary>
-	/// The <see cref="Stopwatch.GetTimestamp"/> time of the display's latest vsync, or <c>null</c> when it isn't known.
-	/// </summary>
-	private long? GetVsyncTimestamp()
-	{
-		var age = NativeUno.uno_window_get_vsync_age(_nativeWindow.Handle);
-		return age < 0 ? null : Stopwatch.GetTimestamp() - (long)(age * Stopwatch.Frequency);
+		_metalRenderThread = new MacOSRenderThread(
+			_nativeWindow.Handle,
+			RenderThreadMetalDraw,
+			targetFps,
+			followVsync);
 	}
 
 	/// <summary>
@@ -162,9 +158,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	/// <summary>
 	/// Called on the render thread. Composes the frame into the context's own texture and presents it,
-	/// and reports whether the frame reached the screen.
+	/// and reports how the frame reached the screen, if it did.
 	/// </summary>
-	private bool RenderThreadMetalDraw(double nativeWidth, double nativeHeight)
+	private RenderThreadFrame RenderThreadMetalDraw(double nativeWidth, double nativeHeight, long? vsyncTimestamp)
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -173,7 +169,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		if (RootElement?.Visual.CompositionTarget is not CompositionTarget ct || _context is not MacOSMetalGraphicsContext metal)
 		{
-			return false;
+			return RenderThreadFrame.NotPresented;
 		}
 
 		// FIXME: we get the first (native) updates for window sizes before we have completed the (managed)
@@ -197,12 +193,12 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				_metalRenderThread?.RequestFrame();
 			}, NativeDispatcherPriority.Normal);
 
-			return false;
+			return RenderThreadFrame.NotPresented;
 		}
 
 		ct.Renderer = _renderer;
 		// Present (drawable acquire + blit) happens inside this call, through the context.
-		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context, vsyncTimestamp: GetVsyncTimestamp());
+		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(_context, vsyncTimestamp: vsyncTimestamp);
 
 		// uno_window_clip_svg mutates AppKit view layers, which must be touched only on the
 		// main thread; this method runs on the render thread, so marshal the update there.
@@ -226,7 +222,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}, NativeDispatcherPriority.Normal);
 		}
 
-		return metal.LastPresentSucceeded;
+		return metal.LastPresentSkipped ? RenderThreadFrame.Unchanged
+			: metal.LastPresentSucceeded ? RenderThreadFrame.Presented
+			: RenderThreadFrame.NotPresented;
 	}
 
 	private void MetalDraw(double nativeWidth, double nativeHeight, nint texture)
@@ -976,6 +974,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	// --- Render thread ---
 
+	private enum RenderThreadFrame
+	{
+		/// <summary>The layer vended no drawable, or there was nothing to draw yet.</summary>
+		NotPresented,
+		Presented,
+		/// <summary>The window already showed the frame, so it needed no drawable.</summary>
+		Unchanged,
+	}
+
 	/// <summary>
 	/// Dedicated render thread for macOS Metal: draws the recorded SKPicture into the context's
 	/// texture, then presents it onto a freshly acquired drawable — all off the UI thread so a slow
@@ -983,13 +990,13 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	/// CADisplayLink render thread.
 	/// </summary>
 	/// <remarks>
-	/// Frame requests are paced by a <see cref="FramePacer"/>, exactly as X11 paces its render
-	/// thread. This is not an optimization: <c>nextDrawable</c> blocks for ~1s and then returns nil
-	/// once the layer's pool is exhausted, so an unpaced loop that acquires as fast as it is
-	/// signalled outruns the compositor and turns every frame into a one-second stall. Pacing keeps
-	/// acquisitions at most one per refresh interval, which is the rate the compositor recycles at.
-	/// A timer drives the pace rather than the display, so the render clock keeps ticking even when
-	/// the display does not (occluded window, headless CI agent).
+	/// Frames are paced to at most one per refresh interval. This is not an optimization:
+	/// <c>nextDrawable</c> blocks for ~1s and then returns nil once the layer's pool is exhausted, so an
+	/// unpaced loop that acquires as fast as it is signalled outruns the compositor and turns every frame
+	/// into a one-second stall. A <see cref="VsyncFrameScheduler"/> starts frames on the display's vsync
+	/// grid, learned from the window's display link, or right away when the current interval has none yet.
+	/// The thread only ever waits on its own clock, so rendering goes on even when the display link stops
+	/// ticking (occluded window, headless CI agent): the grid then goes stale and an interval paces instead.
 	/// </remarks>
 	private sealed class MacOSRenderThread : IDisposable
 	{
@@ -1013,11 +1020,13 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		private readonly AutoResetEvent _frameSignal = new(false);
 		private readonly ManualResetEventSlim _presentedEvent = new(false);
 		private readonly ManualResetEventSlim _shutdown = new(false);
-		private readonly FramePacer _framePacer;
+		private readonly VsyncFrameScheduler _scheduler;
+		private readonly bool _followVsync;
 		private readonly nint _windowHandle;
-		/// <summary>Draws and presents one frame at the given pixel size; false when it could not be presented.</summary>
-		private readonly Func<double, double, bool> _drawFrame;
+		/// <summary>Draws and presents one frame at the given pixel size and vsync.</summary>
+		private readonly Func<double, double, long?, RenderThreadFrame> _drawFrame;
 		private volatile bool _disposed;
+		private int _frameRequested;
 
 		// Render-thread only.
 		private int _consecutiveFailures;
@@ -1025,27 +1034,31 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		private long _lastFailureLogTimestamp;
 		private long _lastFrameLogTimestamp;
 
-		internal MacOSRenderThread(nint windowHandle, Func<double, double, bool> drawFrame, double targetFps)
+		/// <param name="followVsync">Whether frames follow the display's vsyncs rather than <paramref name="targetFps"/>.</param>
+		internal MacOSRenderThread(nint windowHandle, Func<double, double, long?, RenderThreadFrame> drawFrame, double targetFps, bool followVsync)
 		{
 			_windowHandle = windowHandle;
 			_drawFrame = drawFrame;
-			_framePacer = new FramePacer(targetFps, SignalFrameDue);
+			_scheduler = new VsyncFrameScheduler(targetFps);
+			_followVsync = followVsync;
 			_thread = new Thread(RenderLoop) { Name = "Uno macOS Render Thread", IsBackground = true };
 			_thread.Start();
 		}
 
 		/// <summary>
-		/// Pacer callback: the frame deadline has arrived, so let the render loop run.
+		/// Asks for a frame. Requests made before the frame starts coalesce into it. Resets the
+		/// present-completion event first so a <see cref="WaitForNextPresent"/> caller can never
+		/// observe a previous present.
 		/// </summary>
 		/// <remarks>
-		/// <see cref="Dispose"/> stops the pacer before disposing the events, but a timer callback
-		/// already in flight can still land afterwards — swallow that rather than let it surface as
-		/// an unhandled exception on a timer thread during window teardown.
+		/// May race <see cref="Dispose"/> during window teardown; a request that lands after it is moot.
 		/// </remarks>
-		private void SignalFrameDue()
+		internal void RequestFrame()
 		{
 			try
 			{
+				_presentedEvent.Reset();
+				Volatile.Write(ref _frameRequested, 1);
 				_frameSignal.Set();
 			}
 			catch (ObjectDisposedException)
@@ -1054,26 +1067,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		/// <summary>
-		/// Asks for a frame. Requests made within the same frame interval coalesce into one
-		/// wake-up. Resets the present-completion event first so a <see cref="WaitForNextPresent"/>
-		/// caller can never observe a previous present.
-		/// </summary>
-		internal void RequestFrame()
-		{
-			_presentedEvent.Reset();
-			_framePacer.RequestFrame();
-		}
-
-		/// <summary>
 		/// Retargets the pace, e.g. when the window moves to a screen with a different refresh rate.
 		/// </summary>
-		internal void UpdateTargetFps(double fps)
-		{
-			if (fps > 0)
-			{
-				_framePacer.UpdateTargetFps(fps);
-			}
-		}
+		internal void UpdateTargetFps(double fps) => _scheduler.SetFrameRate(fps);
 
 		/// <summary>
 		/// Blocks until the render thread finishes presenting the current frame, and returns
@@ -1095,8 +1091,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					break;
 				}
 
-				_framePacer.OnFrameStart();
+				if (Volatile.Read(ref _frameRequested) == 0 || !TryWaitForFrameStart(out var frameStart, out var vsync))
+				{
+					continue;
+				}
 
+				// Cleared only now, so the requests made while waiting are served by this frame.
+				Volatile.Write(ref _frameRequested, 0);
+
+				var frame = RenderThreadFrame.NotPresented;
 				var framePresented = false;
 				try
 				{
@@ -1105,9 +1108,16 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 						// Timed: the draw ends in a nextDrawable wait, and whether that blocks (and for how
 						// long) on a given machine is the single fact that separates "the render thread is
 						// stuck" from "the render thread is idle and something else is slow".
-						var frameStart = Stopwatch.GetTimestamp();
-						framePresented = _drawFrame(width, height);
-						ReportFrame(framePresented, ElapsedMsSince(frameStart));
+						frame = _drawFrame(width, height, vsync);
+						framePresented = frame != RenderThreadFrame.NotPresented;
+
+						var frameDuration = Stopwatch.GetTimestamp() - frameStart;
+						if (frame == RenderThreadFrame.Presented)
+						{
+							_scheduler.OnFrameDrawn(frameDuration);
+						}
+
+						ReportFrame(framePresented, frameDuration * 1000 / Stopwatch.Frequency);
 					}
 
 					if (framePresented)
@@ -1126,6 +1136,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					}
 				}
 
+				_scheduler.OnFrame(frameStart, vsync, unchanged: frame == RenderThreadFrame.Unchanged);
+
 				if (framePresented)
 				{
 					OnFramePresented();
@@ -1135,6 +1147,52 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					RetryFrame();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Waits until the next frame is due, and gets when it started and the vsync it belongs to. False when
+		/// disposed meanwhile.
+		/// </summary>
+		private bool TryWaitForFrameStart(out long now, out long? vsync)
+		{
+			now = Stopwatch.GetTimestamp();
+			var hasGrid = TryGetVsyncGrid(now, out var latestVsync, out var period);
+			(var start, vsync) = _scheduler.GetNextFrame(now, _followVsync && hasGrid ? latestVsync : null, period);
+
+			// Rounded up, so a frame never starts before the vsync it is stamped with.
+			while ((now = Stopwatch.GetTimestamp()) < start)
+			{
+				var waitMs = (int)Math.Ceiling((start - now) * 1000.0 / Stopwatch.Frequency);
+				if (_shutdown.Wait(waitMs))
+				{
+					return false;
+				}
+			}
+
+			if (vsync is null && TryGetVsyncGrid(now, out latestVsync, out _))
+			{
+				vsync = latestVsync;
+			}
+
+			return !_disposed;
+		}
+
+		/// <summary>
+		/// Gets the display's latest vsync at or before <paramref name="now"/> and the vsync period, when the
+		/// window's display link knows them.
+		/// </summary>
+		private bool TryGetVsyncGrid(long now, out long latestVsync, out long period)
+		{
+			if (NativeUno.uno_window_get_vsync(_windowHandle, out var ageSeconds, out var periodSeconds))
+			{
+				latestVsync = now - (long)(ageSeconds * Stopwatch.Frequency);
+				period = (long)(periodSeconds * Stopwatch.Frequency);
+				return period > 0;
+			}
+
+			latestVsync = 0;
+			period = 0;
+			return false;
 		}
 
 		private void OnFramePresented()
@@ -1180,7 +1238,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				return;
 			}
 
-			_framePacer.RequestFrame();
+			RequestFrame();
 		}
 
 		/// <summary>
@@ -1270,7 +1328,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_frameSignal.Set();
 			_thread.Join();
 
-			_framePacer.Dispose();
 			_frameSignal.Dispose();
 			_presentedEvent.Dispose();
 			_shutdown.Dispose();
