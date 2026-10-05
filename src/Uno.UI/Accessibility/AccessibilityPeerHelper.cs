@@ -599,6 +599,11 @@ internal static class AccessibilityPeerHelper
 	/// </summary>
 	internal static Func<XamlRoot, double, double, AccessibilityNativeNodeSnapshot?>? IOSAccessibilityHitTestAccessor { get; set; }
 
+	/// <summary>
+	/// Runs the native element's accessibilityElementDidBecomeFocused callback, which VoiceOver calls when its cursor lands on it.
+	/// </summary>
+	internal static Action<UIElement>? IOSAccessibilityElementDidBecomeFocusedAction { get; set; }
+
 	internal static Func<UIElement, AccessibilityNativeNodeSnapshot?>? AndroidAccessibilityNodeSnapshotAccessor { get; set; }
 
 	internal static Func<XamlRoot, AccessibilityNativeNodeSnapshot[]?>? AndroidAllNodeSnapshotsForRootAccessor { get; set; }
