@@ -25,8 +25,6 @@
 
 	<ItemGroup Condition="!$(TargetFramework.Contains('windows10'))">
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" PrivateAssets="all" />
-		<!-- For SkiaGLCanvasElement, Graphics2DSK's GL-island fallback -->
-		<PackageReference Include="SkiaSharp" />
 	</ItemGroup>
 
 	<!-- Windows-only sources (used only by the WinAppSDK target). -->
