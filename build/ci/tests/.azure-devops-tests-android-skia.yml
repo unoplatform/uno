@@ -7,6 +7,8 @@ parameters:
   testResultLabel: ''
   # Intent extras handed to the app, e.g. '-e UNO_WEBGPU 1'.
   appExtras: ''
+  # Overrides the job's run condition, e.g. to skip a lane on pull requests that don't need it.
+  condition: ''
 
 jobs:
 ##
@@ -18,6 +20,8 @@ jobs:
   timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
   dependsOn: Skia_Android_Tests_Build
+  ${{ if ne(parameters.condition, '') }}:
+    condition: ${{ parameters.condition }}
   pool: ${{ parameters.vmLinuxPool }}
 
   variables:

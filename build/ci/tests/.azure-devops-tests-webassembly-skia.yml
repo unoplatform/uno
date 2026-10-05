@@ -17,6 +17,8 @@ parameters:
   # How long a group may run before it is reported as stalled; the job timeout leaves room for the setup steps.
   resultsTimeoutMinutes: 35
   jobTimeoutInMinutes: 60
+  # Overrides the job's run condition, e.g. to skip a lane on pull requests that don't need it.
+  condition: ''
 
 jobs:
 ##
@@ -34,6 +36,8 @@ jobs:
       vmImage: ${{ parameters.vmLinuxImage }}
 
   dependsOn: Skia_Tests_Build_Browser
+  ${{ if ne(parameters.condition, '') }}:
+    condition: ${{ parameters.condition }}
 
   strategy:
     matrix:

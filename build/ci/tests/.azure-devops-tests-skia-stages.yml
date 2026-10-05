@@ -56,6 +56,8 @@ stages:
       # Groups split by test method, so the leak tests' When_Add_Remove (~21 min of data rows) always lands whole in one.
       resultsTimeoutMinutes: 55
       jobTimeoutInMinutes: 75
+      # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1).
+      condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))"
 
 - stage: runtime_tests_skia_android
   displayName: Tests - Android Skia
@@ -81,6 +83,8 @@ stages:
       displayName: 'WebGPU'
       testResultLabel: '-webgpu'
       appExtras: '-e UNO_WEBGPU 1 -e UNO_WEBGPU_LOG warn'
+      # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1).
+      condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))"
 
 - stage: runtime_tests_skia_android_nativeaot
   displayName: Tests - Android+NativeAOT Skia

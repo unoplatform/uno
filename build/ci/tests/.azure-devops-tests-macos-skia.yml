@@ -20,6 +20,9 @@ jobs:
   displayName: '${{ parameters.displayName }}'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
+  ${{ if eq(parameters.webGpu, true) }}:
+    # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1); master runs it always.
+    condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))
 
   pool:
     vmImage: ${{ parameters.vmMacImageTest }}
