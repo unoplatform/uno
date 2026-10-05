@@ -64,9 +64,9 @@ _Danger 1. The safe vanguard: deletions scoped to native targets being dropped, 
 
 _Danger 2. Native-scoped, but delete public members a Skia user still sees in IntelliSense / compiles against. Native rendering is gone so the symbols are meaningless; hard-remove._
 
-- [ ] **BC23** — Remove `AdaptNative` native-hosting path  `d2·S`
-  - Hard-remove the public `AdaptNative`/`TryAdaptNative` surface (native hosting gone).
-  - Files: `src/Uno.UI/UI/Xaml/Media/VisualTreeHelper.cs`, `src/Uno.UI/UI/Xaml/UIElementCollectionExtensions.Xamarin.cs`, `src/Uno.UI/UI/Xaml/Controls/Border/Border.cs`
+- [x] **BC23** — Remove `AdaptNative` native-hosting path  `d2·S`
+  - Hard-remove the public `AdaptNative`/`TryAdaptNative` surface. Native views are hosted as `ContentControl`/`ContentPresenter` content, which does not go through it.
+  - Files: `src/Uno.UI/UI/Xaml/Media/VisualTreeHelper.cs`
 - [ ] **BC66** — Remove Android `Window.IsStatusBarTranslucent()`  `d2·S`
   - Hard-remove the public Android `Window.IsStatusBarTranslucent()`; repoint the internal consumer to `NativeWindowWrapper`.
   - Files: `src/Uno.UI/UI/Xaml/Window/Window.Android.cs`, `src/Uno.UI/UI/Xaml/Window/Native/NativeWindowWrapper.Android.cs`, `src/Uno.UI/UI/Xaml/Controls/ComboBox/ComboBox.custom.cs`

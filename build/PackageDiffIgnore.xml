@@ -3613,6 +3613,8 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.OnContentChanged(System.Object oldValue, System.Object newValue)" reason="Removed Frame override that synced the legacy navigation entry; ContentControl.OnContentChanged still applies (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.GetInstance(Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.EnsurePageInitialized(Microsoft.UI.Xaml.Controls.Frame frame, Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
+		  <!-- Legacy native-view adapter removed; native views are hosted as ContentControl/ContentPresenter content. The parameter type differed per target (Android.Views.View, UIKit.UIView, UIElement). -->
+		  <Member fullName="Microsoft\.UI\.Xaml\.FrameworkElement Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)(Try)?AdaptNative\(.+\)" reason="Removed the legacy VisualTreeHelper.AdaptNative/TryAdaptNative native-view adapter; host native views as ContentControl/ContentPresenter content (BC23, breaking changes for 7.0, uno#8339)" isRegex="true" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
@@ -5295,6 +5297,8 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.set_ComputedHorizontalScrollMode(Microsoft.UI.Xaml.Controls.ScrollingScrollMode value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.set_ComputedVerticalScrollMode(Microsoft.UI.Xaml.Controls.ScrollingScrollMode value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Thumb.set_IsDragging(System.Boolean value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
+		  <!-- Legacy native-view adapter removed; native views are hosted as ContentControl/ContentPresenter content. The parameter type differed per target (Android.Views.View, UIKit.UIView, UIElement). -->
+		  <Member fullName="Microsoft\.UI\.Xaml\.FrameworkElement Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)(Try)?AdaptNative\(.+\)" reason="Removed the legacy VisualTreeHelper.AdaptNative/TryAdaptNative native-view adapter; host native views as ContentControl/ContentPresenter content (BC23, breaking changes for 7.0, uno#8339)" isRegex="true" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
