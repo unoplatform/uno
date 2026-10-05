@@ -619,6 +619,7 @@ public partial class Given_MediaPlayerElement
 				);
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	// Uno-specific: WinUI's MediaPlayerPresenter has no visibility logic; Uno collapses the templated presenter until a source shows up.
 	// The macOS AVPlayer extension reports a source change while initializing, which shows the presenter right away.
@@ -638,6 +639,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
+	// Uno-specific: WinUI's template leaves the presenter's IsFullWindow unbound.
 	public async Task When_MediaPlayerElement_IsFullWindow_Set_Before_Template_Presenter_Synced()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -650,6 +652,7 @@ public partial class Given_MediaPlayerElement
 		Assert.IsNotNull(presenter);
 		Assert.IsTrue(presenter.IsFullWindow);
 	}
+#endif
 
 	private void CheckMediaPlayerExtensionAvailability()
 	{
