@@ -78,6 +78,10 @@ public class Given_AndroidSkiaXamlRootHost
 	}
 
 	[TestMethod]
+#if RUNTIME_NATIVE_AOT
+	// Reads internal host members through reflection, which NativeAOT trims away.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
+#endif
 	public void When_Window_Is_Shown_Then_First_Frame_Gate_Is_Open()
 	{
 		var host = GetHostForCurrentWindow();
