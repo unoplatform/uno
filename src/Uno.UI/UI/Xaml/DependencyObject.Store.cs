@@ -2175,8 +2175,8 @@ namespace Microsoft.UI.Xaml
 		/// <returns>True if different, otherwise false</returns>
 		/// <remarks>
 		/// This comparison uses value for value types, references for reference types. Callers depend on
-		/// that: coercions that return a shared box per constant (see UIElement.CoerceHitTestVisibility)
-		/// stay value-equal here, so a ReferenceEquals fast path would change change-detection for them.
+		/// that: coercions that return a shared box per constant stay value-equal here, so a ReferenceEquals
+		/// fast path would change change-detection for them.
 		/// </remarks>
 		internal static bool AreDifferent(object? previousValue, object? newValue)
 		{
