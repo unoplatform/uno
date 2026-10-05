@@ -206,6 +206,10 @@ internal partial class X11XamlRootHost
 							QueueAction(this, () => _focusCallback(false));
 							break;
 						case XEventName.VisibilityNotify:
+							if (x11Window.Window == RootX11Window.Window)
+							{
+								_isFullyObscured = @event.VisibilityEvent.state == /* VisibilityFullyObscured */ 2;
+							}
 							QueueAction(this, () => _visibilityCallback(@event.VisibilityEvent.state != /* VisibilityFullyObscured */ 2));
 							break;
 						case XEventName.Expose:
@@ -265,12 +269,20 @@ internal partial class X11XamlRootHost
 							// We handle the WM_DELETE_WINDOW message above, so ignore this.
 							break;
 						case XEventName.MapNotify:
+							if (x11Window.Window == RootX11Window.Window)
+							{
+								_isUnmapped = false;
+							}
 							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
 								this.Log().Debug($"Window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is mapped.");
 							}
 							break;
 						case XEventName.UnmapNotify:
+							if (x11Window.Window == RootX11Window.Window)
+							{
+								_isUnmapped = true;
+							}
 							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
 								this.Log().Debug($"Window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is unmapped.");
