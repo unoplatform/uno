@@ -200,6 +200,11 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			AccessibilityPeerHelper.IOSAccessibilityCustomContentValuesAccessor =
 				element => FindAdapterForElement(element)?.GetCustomContentValuesForOwner(element);
 
+			AccessibilityPeerHelper.IOSAccessibilityElementRespondsToSelectorAccessor =
+				(element, selector) =>
+					FindAdapterForElement(element)?.GetElementForOwner(element) is NSObject native &&
+					native.RespondsToSelector(new ObjCRuntime.Selector(selector));
+
 			AccessibilityPeerHelper.IOSAccessibilityActionAccessor =
 				(element, request) =>
 					FindAdapterForElement(element)?.ExecuteAction(element, request) ?? false;
