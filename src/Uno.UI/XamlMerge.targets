@@ -11,7 +11,9 @@
   <ItemGroup>
 	  <!--
 		Keep the imported WinUI Generic.xaml as the base dictionary so the merged
-		Uno and MUX control dictionaries can override its resources. SystemResources.xaml
+		Uno and MUX control dictionaries can override its resources. Generic.xaml is a
+		byte-identical WinUI copy, so Uno's own additions live in UnoGenericOverlay.xaml,
+		which is merged like any other dictionary. SystemResources.xaml
 		provides Uno system values that WinUI resolves natively, and stays out of the merge
 		so its resources remain overridable (see the When_Theme_Changed_Animated_Value test).
 
