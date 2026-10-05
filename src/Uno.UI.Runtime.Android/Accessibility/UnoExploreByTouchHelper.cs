@@ -1844,10 +1844,12 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return false;
 		}
 
-		// Click / default activation: toggle > select > invoke (in priority order).
+		// Click / default activation: toggle > invoke > select (in priority order).
+		// Invoke precedes selection so ItemClick list items raise ItemClick instead of only being selected.
 		if (action == s_actionClickId)
 		{
 			return AccessibilityPeerHelper.TryToggle(peer)
+				|| AccessibilityPeerHelper.TryInvoke(peer)
 				|| AccessibilityPeerHelper.TryToggleSelection(peer)
 				|| AccessibilityPeerHelper.TryInvokeDefaultAction(peer)
 				|| TryToggleExpandCollapse(peer);
