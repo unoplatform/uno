@@ -1022,9 +1022,13 @@ internal readonly partial struct UnicodeText : IParsedText
 				runBreakIndex++;
 			}
 
-			while (WordBoundaries[wordBoundariesIndex] <= cluster.Value.start)
+			// Word boundaries only place spell-check squiggles; computing them runs ICU word breaking on the first draw.
+			if (_corrections is not null)
 			{
-				wordBoundariesIndex++;
+				while (WordBoundaries[wordBoundariesIndex] <= cluster.Value.start)
+				{
+					wordBoundariesIndex++;
+				}
 			}
 
 			var lineIndex = cluster.Value.lineIndex;
