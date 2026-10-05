@@ -382,12 +382,8 @@
             href: uno-development/uno-internals-overview.md
           - name: Android
             href: uno-development/uno-internals-android.md
-          - name: Layouting in Android
-            href: uno-development/Uno-UI-Layouting-Android.md
           - name: iOS
             href: uno-development/uno-internals-ios.md
-          - name: Layouting in iOS
-            href: uno-development/Uno-UI-Layouting-iOS.md
           - name: WASM
             href: uno-development/uno-internals-wasm.md
           - name: macOS
