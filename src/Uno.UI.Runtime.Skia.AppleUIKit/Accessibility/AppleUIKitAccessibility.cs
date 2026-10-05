@@ -1297,9 +1297,11 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			return false;
 		}
 
-		return peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider
-			? AccessibilityPeerHelper.TryToggleSelection(peer)
-			: AccessibilityPeerHelper.TryInvokeDefaultAction(peer);
+		// Invoke wins, as in InvokeAutomationPeer: ItemClick list items support selection too.
+		return AccessibilityPeerHelper.TryInvoke(peer)
+			|| (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider
+				? AccessibilityPeerHelper.TryToggleSelection(peer)
+				: AccessibilityPeerHelper.TryInvokeDefaultAction(peer));
 	}
 
 	internal bool Increment(nint handle)

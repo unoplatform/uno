@@ -696,6 +696,9 @@ internal static class AccessibilityPeerHelper
 			&& TryPerform(() => providerPeer.InvokeAutomationPeer());
 	}
 
+	internal static bool TryInvoke(AutomationPeer peer)
+		=> TryPerformProvider<IInvokeProvider>(peer, PatternInterface.Invoke, static provider => provider.Invoke());
+
 	internal static bool TryToggle(AutomationPeer peer)
 		=> TryPerformProvider<IToggleProvider>(peer, PatternInterface.Toggle, static provider => provider.Toggle());
 
