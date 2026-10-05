@@ -210,6 +210,21 @@ public partial class Given_SkiaIOSAccessibilityElement
 		Assert.AreEqual("In front", snapshot?.Name);
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_VoiceOver_Focuses_A_Control_Then_No_Keyboard_Focus_Visual_Is_Requested()
+	{
+		var button = new Button { Content = "VoiceOver focus probe" };
+		await UITestHelper.Load(button);
+
+		Assert.IsNotNull(AccessibilityPeerHelper.IOSAccessibilityElementDidBecomeFocusedAction);
+		AccessibilityPeerHelper.IOSAccessibilityElementDidBecomeFocusedAction(button);
+
+		// XAML focus follows the VoiceOver cursor, as it follows Android's accessibility focus, without keyboard visuals
+		// that would stay on the control once the cursor moves to non-focusable text.
+		Assert.AreEqual(FocusState.Pointer, button.FocusState);
+	}
+
 	private static AccessibilityNativeNodeSnapshot? HitTest(XamlRoot xamlRoot, double x, double y)
 	{
 		Assert.IsNotNull(AccessibilityPeerHelper.IOSAccessibilityHitTestAccessor, "The iOS hit-test hook must be registered.");
