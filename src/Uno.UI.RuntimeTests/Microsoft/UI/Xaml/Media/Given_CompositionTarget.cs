@@ -245,7 +245,7 @@ public class Given_CompositionTarget
 	/// </summary>
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaWin32)]
 	public async Task When_Host_Reports_Vsync_Then_Frame_Time_Is_The_Vsync()
 	{
 		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
@@ -272,6 +272,49 @@ public class Given_CompositionTarget
 
 		Assert.IsTrue(target.IsFrameTimestampFromVsync, "the frame time should come from the host's vsync");
 		Assert.IsTrue(aheadOfClock <= 0, $"a vsync that already happened can't be {aheadOfClock / (double)TimeSpan.TicksPerMillisecond:F2}ms ahead of the clock");
+	}
+
+	/// <summary>
+	/// Vsync times are on the display's cadence: frames are a whole number of refresh periods apart, never a fraction
+	/// of one, which is what a clock read some time after the vsync gives.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Host_Reports_Vsync_Then_Frames_Are_Whole_Periods_Apart()
+	{
+		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
+		await UITestHelper.Load(border);
+		var target = (CompositionTarget)border.Visual.CompositionTarget!;
+
+		var timestamps = new System.Collections.Generic.List<long>();
+		EventHandler<long> driver = (_, timestamp) =>
+		{
+			if (target.IsFrameTimestampFromVsync)
+			{
+				timestamps.Add(timestamp);
+			}
+		};
+		target.FrameStarting += driver;
+		try
+		{
+			await TestServices.WindowHelper.WaitFor(() => timestamps.Count >= 30, message: "the host should report vsyncs");
+		}
+		finally
+		{
+			target.FrameStarting -= driver;
+		}
+
+		var intervals = timestamps.Zip(timestamps.Skip(1), (previous, next) => next - previous).Where(interval => interval > 0).ToArray();
+		var period = intervals.Min();
+		var tolerance = TimeSpan.TicksPerMillisecond / 10;
+		foreach (var interval in intervals)
+		{
+			var offGrid = interval - Math.Round(interval / (double)period) * period;
+			Assert.IsTrue(Math.Abs(offGrid) <= tolerance, $"{Ms(interval)}ms isn't a whole number of {Ms(period)}ms periods");
+		}
+
+		static string Ms(double ticks) => (ticks / TimeSpan.TicksPerMillisecond).ToString("F3", System.Globalization.CultureInfo.InvariantCulture);
 	}
 
 	/// <summary>
