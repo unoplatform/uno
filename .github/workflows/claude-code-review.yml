@@ -50,7 +50,9 @@ jobs:
     # Only run for repo users (owners/members/collaborators), never for
     # forks or outside/first-time contributors — keeps the review key off
     # untrusted code and stops the "anyone who can open a PR" delivery vector.
+    # Drafts are skipped; `ready_for_review` triggers the first review.
     if: >
+      !github.event.pull_request.draft &&
       github.event.pull_request.head.repo.full_name == github.repository &&
       contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)
     runs-on: ubuntu-latest
