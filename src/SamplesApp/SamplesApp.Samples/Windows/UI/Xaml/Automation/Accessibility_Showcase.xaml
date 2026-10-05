@@ -1,0 +1,248 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml_Automation.Accessibility_Showcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="SectionHeading" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,16,0,0" />
+        </Style>
+        <Style x:Key="Expectation" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="FontStyle" Value="Italic" />
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel
+            MaxWidth="720"
+            Padding="20"
+            HorizontalAlignment="Left"
+            Spacing="10">
+
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level1"
+                FontSize="28"
+                FontWeight="Bold"
+                Text="Accessibility showcase" />
+            <TextBlock Style="{StaticResource Expectation}" Text="Each section is a heading followed by what a screen reader should announce. Tab through the controls; read the rest with the screen reader's review commands." />
+
+            <!--  1. Labels and descriptions  -->
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource SectionHeading}"
+                Text="Labels and descriptions" />
+            <TextBlock Style="{StaticResource Expectation}" Text="Expected: 'Full name, entry', 'City, entry' with hint 'e.g. Montreal', 'Search photos, entry' (labelled by the text before it), 'Delete item, button', and 'Export, button' followed by its description." />
+            <TextBox
+                Width="300"
+                HorizontalAlignment="Left"
+                Header="Full name" />
+            <TextBox
+                Width="300"
+                HorizontalAlignment="Left"
+                Header="City"
+                PlaceholderText="e.g. Montreal" />
+            <TextBlock x:Name="SearchLabel" Text="Search photos" />
+            <TextBox
+                Width="300"
+                HorizontalAlignment="Left"
+                AutomationProperties.LabeledBy="{Binding ElementName=SearchLabel}" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button AutomationProperties.Name="Delete item" ToolTipService.ToolTip="Delete item">
+                    <SymbolIcon Symbol="Delete" />
+                </Button>
+                <Button
+                    AutomationProperties.FullDescription="Saves the current report as a PDF in your Documents folder."
+                    AutomationProperties.HelpText="Exports the report"
+                    Content="Export" />
+            </StackPanel>
+
+            <!--  2. Buttons and toggles  -->
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource SectionHeading}"
+                Text="Buttons and toggles" />
+            <TextBlock Style="{StaticResource Expectation}" Text="Expected: pressing 'Count clicks' announces the new count; toggle button, check boxes (one three-state), switch and radio group report their state as it changes." />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="OnCountClicked" Content="Count clicks" />
+                <ToggleButton Content="Bold" />
+                <HyperlinkButton Content="Privacy policy" NavigateUri="https://platform.uno" />
+            </StackPanel>
+            <CheckBox Content="Subscribe to newsletter" />
+            <CheckBox
+                Content="Select all files"
+                IsChecked="{x:Null}"
+                IsThreeState="True" />
+            <ToggleSwitch Header="Wi-Fi" IsOn="True" />
+            <RadioButtons Header="Delivery speed" SelectedIndex="0">
+                <x:String>Standard</x:String>
+                <x:String>Express</x:String>
+                <x:String>Overnight</x:String>
+            </RadioButtons>
+
+            <!--  3. Values and ranges  -->
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource SectionHeading}"
+                Text="Values and ranges" />
+            <TextBlock Style="{StaticResource Expectation}" Text="Expected: slider and number box announce their value as arrows change it; the combo box reads its selection and opens with Alt+Down." />
+            <Slider
+                Width="300"
+                HorizontalAlignment="Left"
+                Header="Volume"
+                Maximum="100"
+                Value="30" />
+            <NumberBox
+                Width="200"
+                HorizontalAlignment="Left"
+                Header="Quantity"
+                Maximum="10"
+                Minimum="1"
+                SpinButtonPlacementMode="Inline"
+                Value="1" />
+            <ComboBox
+                Width="200"
+                Header="Country"
+                PlaceholderText="Pick a country">
+                <x:String>Canada</x:String>
+                <x:String>Egypt</x:String>
+                <x:String>France</x:String>
+                <x:String>Japan</x:String>
+            </ComboBox>
+            <ProgressBar
+                Width="300"
+                HorizontalAlignment="Left"
+                AutomationProperties.Name="Upload progress"
+                Value="40" />
+            <ProgressBar
+                Width="300"
+                HorizontalAlignment="Left"
+                AutomationProperties.Name="Loading"
+                IsIndeterminate="True" />
+
+            <!--  4. Lists and selection  -->
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource SectionHeading}"
+                Text="Lists and selection" />
+            <TextBlock Style="{StaticResource Expectation}" Text="Expected: 'Fruits, list' then each item with its position ('2 of 4') and selected state; 'Pizza toppings' allows several selected items." />
+            <ListView
+                Width="300"
+                HorizontalAlignment="Left"
+                AutomationProperties.Name="Fruits"
+                SelectionMode="Single">
+                <x:String>Apple</x:String>
+                <x:String>Banana</x:String>
+                <x:String>Cherry</x:String>
+                <x:String>Date</x:String>
+            </ListView>
+            <ListView
+                Width="300"
+                HorizontalAlignment="Left"
+                AutomationProperties.Name="Pizza toppings"
+                SelectionMode="Multiple">
+                <x:String>Cheese</x:String>
+                <x:String>Mushrooms</x:String>
+                <x:String>Olives</x:String>
+            </ListView>
+
+            <!--  5. Expand and collapse  -->
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource SectionHeading}"
+                Text="Expand and collapse" />
+            <TextBlock Style="{StaticResource Expectation}" Text="Expected: 'Advanced options' reports collapsed or expanded; its content is only reachable once expanded." />
+            <Expander Width="300" Header="Advanced options">
+                <CheckBox Content="Enable logging" />
+            </Expander>
+
+            <!--  6. Forms and validation  -->
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource SectionHeading}"
+                Text="Forms and validation" />
+            <TextBlock Style="{StaticResource Expectation}" Text="Expected: 'Email, entry, required'. Submitting an invalid form announces the error immediately (assertive); a valid one announces success." />
+            <TextBox
+                x:Name="EmailBox"
+                Width="300"
+                HorizontalAlignment="Left"
+                AutomationProperties.IsRequiredForForm="True"
+                Header="Email" />
+            <PasswordBox
+                x:Name="PasswordBox"
+                Width="300"
+                HorizontalAlignment="Left"
+                AutomationProperties.IsRequiredForForm="True"
+                Header="Password" />
+            <Button Click="OnSubmitClicked" Content="Submit" />
+            <TextBlock
+                x:Name="FormError"
+                AutomationProperties.LiveSetting="Assertive"
+                Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                TextWrapping="Wrap" />
+
+            <!--  7. Live regions and notifications  -->
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource SectionHeading}"
+                Text="Live regions and notifications" />
+            <TextBlock Style="{StaticResource Expectation}" Text="Expected: the download reports its progress without moving focus (polite); 'Raise notification' announces 'Report saved'; 'Simulate disconnect' interrupts with 'Connection lost' (assertive)." />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="OnStartDownloadClicked" Content="Start download" />
+                <Button
+                    x:Name="NotifyButton"
+                    Click="OnNotifyClicked"
+                    Content="Raise notification" />
+                <Button Click="OnDisconnectClicked" Content="Simulate disconnect" />
+            </StackPanel>
+            <TextBlock
+                x:Name="DownloadStatus"
+                AutomationProperties.LiveSetting="Polite"
+                Text="No download in progress" />
+            <TextBlock x:Name="ConnectionStatus" AutomationProperties.LiveSetting="Assertive" />
+
+            <!--  8. Dialogs  -->
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource SectionHeading}"
+                Text="Dialogs" />
+            <TextBlock Style="{StaticResource Expectation}" Text="Expected: opening the dialog moves focus into it and reads its title and message; closing it returns focus here and announces the choice." />
+            <Button Click="OnOpenDialogClicked" Content="Delete file…" />
+            <TextBlock x:Name="DialogResult" AutomationProperties.LiveSetting="Polite" />
+
+            <!--  9. Landmarks  -->
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource SectionHeading}"
+                Text="Landmarks" />
+            <TextBlock Style="{StaticResource Expectation}" Text="Expected: the search box sits in a 'Search' landmark; screen readers that support landmark navigation can jump to it." />
+            <StackPanel
+                AutomationProperties.LandmarkType="Search"
+                AutomationProperties.Name="Showcase search"
+                Orientation="Horizontal"
+                Spacing="8">
+                <TextBox Width="220" AutomationProperties.Name="Search the showcase" />
+                <Button Content="Go" />
+            </StackPanel>
+
+            <!--  10. Hidden from accessibility  -->
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource SectionHeading}"
+                Text="Hidden from accessibility" />
+            <TextBlock Style="{StaticResource Expectation}" Text="Expected: the decorative star and the collapsed text are never read; only 'Rated 4 out of 5' is." />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock AutomationProperties.AccessibilityView="Raw" Text="★" />
+                <TextBlock Text="Rated 4 out of 5" />
+            </StackPanel>
+            <TextBlock Text="This collapsed text must never be announced" Visibility="Collapsed" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
