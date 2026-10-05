@@ -3,3 +3,6 @@
 ###############################################################################
 * text=auto
 *.sh text eol=lf
+
+# Byte-identical copy of the WinUI generic.xaml (hash-guarded, see Generic.xaml.provenance.json)
+src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml -text
