@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>$(NetCurrent)</TargetFramework>
+		<!-- Lowest supported SDK: the tool must run on any .NET 10+ machine; RollForward covers newer runtimes -->
+		<TargetFramework>$(NetPrevious)</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
