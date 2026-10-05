@@ -594,6 +594,11 @@ internal static class AccessibilityPeerHelper
 	/// </summary>
 	internal static Func<UIElement, string, bool>? IOSAccessibilityElementRespondsToSelectorAccessor { get; set; }
 
+	/// <summary>
+	/// The element VoiceOver touch exploration resolves at a logical point of the root, through Objective-C.
+	/// </summary>
+	internal static Func<XamlRoot, double, double, AccessibilityNativeNodeSnapshot?>? IOSAccessibilityHitTestAccessor { get; set; }
+
 	internal static Func<UIElement, AccessibilityNativeNodeSnapshot?>? AndroidAccessibilityNodeSnapshotAccessor { get; set; }
 
 	internal static Func<XamlRoot, AccessibilityNativeNodeSnapshot[]?>? AndroidAllNodeSnapshotsForRootAccessor { get; set; }
