@@ -36,10 +36,18 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 	private int _width, _height;
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private readonly ApplicationActivity _activity;
+	private readonly ChoreographerFramePacer _framePacer;
 
 	public UnoWebGpuView(ApplicationActivity activity) : base(activity)
 	{
 		_activity = activity;
+
+		// Frames start on vsync, and the vsync time travels with the request to the render thread.
+		_framePacer = new ChoreographerFramePacer(() =>
+		{
+			_renderRequested = true;
+			_renderEvent.Set();
+		});
 
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
@@ -58,8 +66,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 	public void InvalidateRender()
 	{
 		ExploreByTouchHelper.InvalidateRoot();
-		_renderRequested = true;
-		_renderEvent.Set();
+		_framePacer.RequestFrame();
 	}
 
 	#region SurfaceHolder.Callback
@@ -220,7 +227,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		try
 		{
 			compositionTarget.Renderer = session.Renderer!;
-			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
+			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context, vsyncTimestamp: _framePacer.TakeVsyncTimestamp());
 
 			if (_activity.NativeLayerHost is { } nativeLayerHost)
 			{
@@ -339,6 +346,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 			return;
 		}
 
+		_framePacer.Dispose();
 		_renderEvent.Dispose();
 	}
 
