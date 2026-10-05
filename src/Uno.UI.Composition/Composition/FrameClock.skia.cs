@@ -24,6 +24,9 @@ internal sealed class FrameClock
 	// No display refreshes slower than this.
 	private const long MaxFrameIntervalInTicks = TimeSpan.TicksPerSecond / 20;
 
+	// Under half the period of any display's refresh rate.
+	private const long SameVsyncToleranceInTicks = TimeSpan.TicksPerMillisecond;
+
 	private readonly long[] _deltas = new long[Window];
 	private int _index;
 	private int _count;
@@ -92,7 +95,8 @@ internal sealed class FrameClock
 		// The grid re-anchors if the host ever stops reporting vsyncs.
 		_lastRaw = 0;
 
-		if (vsync == _lastVsync)
+		// Hosts may stamp one vsync a hair apart in two frames; that is not an interval.
+		if (Math.Abs(vsync - _lastVsync) < SameVsyncToleranceInTicks)
 		{
 			return _clock;
 		}
