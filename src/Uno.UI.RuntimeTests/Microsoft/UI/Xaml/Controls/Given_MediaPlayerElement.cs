@@ -11,6 +11,7 @@ using System.Threading;
 
 #if HAS_UNO
 using Uno.Foundation.Extensibility;
+using Uno.UI.Extensions;
 using Uno.Media.Playback;
 #endif
 
@@ -616,6 +617,36 @@ public partial class Given_MediaPlayerElement
 					timeoutMS: 3000,
 					message: "Timeout waiting for TransportControls IsSeekBarVisible Visibility Collapsed when Auto Hide."
 				);
+	}
+
+	[TestMethod]
+	// Uno-specific: WinUI's MediaPlayerPresenter has no visibility logic; Uno moved the old template's source-driven collapse into it.
+	public async Task When_MediaPlayerElement_Loaded_Without_Source_Presenter_Collapsed()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement();
+		WindowHelper.WindowContent = sut;
+		// Without a source the element can measure to zero, so only wait for Loaded.
+		await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
+		await WindowHelper.WaitForIdle();
+
+		var presenter = sut.FindFirstChild<MediaPlayerPresenter>();
+		Assert.IsNotNull(presenter);
+		Assert.AreEqual(Visibility.Collapsed, presenter.Visibility);
+	}
+
+	[TestMethod]
+	public async Task When_MediaPlayerElement_IsFullWindow_Set_Before_Template_Presenter_Synced()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement() { IsFullWindow = true };
+		WindowHelper.WindowContent = sut;
+		await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
+		await WindowHelper.WaitForIdle();
+
+		var presenter = sut.FindFirstChild<MediaPlayerPresenter>();
+		Assert.IsNotNull(presenter);
+		Assert.IsTrue(presenter.IsFullWindow);
 	}
 
 	private void CheckMediaPlayerExtensionAvailability()
