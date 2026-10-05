@@ -472,9 +472,15 @@ public partial class Given_Parser
 		await test.RunAsync();
 
 		var generated = string.Join("\n", test.GeneratedSources);
-		StringAssert.Matches(generated, new Regex(@"\bValue = 0d\b"), generated);
-		StringAssert.Matches(generated, new Regex(@"\bOpacity = 0d\b"), generated);
+		StringAssert.Matches(generated, ZeroValueRegex(), generated);
+		StringAssert.Matches(generated, ZeroOpacityRegex(), generated);
 	}
+
+	[GeneratedRegex(@"\bValue = 0d\b")]
+	private static partial Regex ZeroValueRegex();
+
+	[GeneratedRegex(@"\bOpacity = 0d\b")]
+	private static partial Regex ZeroOpacityRegex();
 
 	private sealed class GeneratedSourceCapturingTest(XamlFile[] xamlFiles, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
 		: Verify.Test(xamlFiles, testFilePath, testMethodName)
