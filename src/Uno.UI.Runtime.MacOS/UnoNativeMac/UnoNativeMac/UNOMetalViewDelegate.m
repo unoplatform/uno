@@ -15,7 +15,7 @@ static const CFTimeInterval MaxVsyncAge = 0.5;
 
 @interface UNOMetalViewDelegate ()
 
-// A CADisplayLink on macOS 14+. It only records when vsyncs happen; frames are still paced by the render thread.
+// A CADisplayLink on macOS 14+. It only records when vsyncs happen; the render thread schedules frames from them.
 @property (atomic, strong, nullable) id vsyncLink;
 
 @end
@@ -26,6 +26,7 @@ static const CFTimeInterval MaxVsyncAge = 0.5;
     _Atomic(CFTimeInterval) _lastVsync;
     _Atomic(CFTimeInterval) _vsyncPeriod;
     atomic_int _idleVsyncs;
+    atomic_bool _vsyncLinkPaused;
 }
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
@@ -47,6 +48,7 @@ static const CFTimeInterval MaxVsyncAge = 0.5;
             // From the view, so it follows the window to whichever display it is on.
             CADisplayLink* link = [mtkView displayLinkWithTarget:self selector:@selector(onVsync:)];
             link.paused = YES;
+            atomic_store(&_vsyncLinkPaused, true);
             [link addToRunLoop:NSRunLoop.mainRunLoop forMode:NSRunLoopCommonModes];
             self.vsyncLink = link;
         }
@@ -66,32 +68,38 @@ static const CFTimeInterval MaxVsyncAge = 0.5;
     if (atomic_fetch_add(&_idleVsyncs, 1) >= IdleVsyncs)
     {
         link.paused = YES;
+        atomic_store(&_vsyncLinkPaused, true);
     }
 }
 
-- (double)vsyncAge
+- (bool)getVsyncAge:(double*)age period:(double*)period
 {
     if (@available(macOS 14.0, *))
     {
         CADisplayLink* link = self.vsyncLink;
-        if (link == nil) return -1;
+        if (link == nil) return false;
 
         atomic_store(&_idleVsyncs, 0);
-        if (link.paused)
+        if (atomic_exchange(&_vsyncLinkPaused, false))
         {
-            link.paused = NO;
+            // The link is only touched on the main thread, which also runs its callbacks.
+            dispatch_async(dispatch_get_main_queue(), ^{
+                link.paused = NO;
+            });
         }
 
         CFTimeInterval lastVsync = atomic_load(&_lastVsync);
-        CFTimeInterval period = atomic_load(&_vsyncPeriod);
-        CFTimeInterval age = CACurrentMediaTime() - lastVsync;
-        if (lastVsync <= 0 || period <= 0 || age < 0 || age > MaxVsyncAge) return -1;
+        CFTimeInterval vsyncPeriod = atomic_load(&_vsyncPeriod);
+        CFTimeInterval vsyncAge = CACurrentMediaTime() - lastVsync;
+        if (lastVsync <= 0 || vsyncPeriod <= 0 || vsyncAge < 0 || vsyncAge > MaxVsyncAge) return false;
 
         // The main thread may not have handled the latest vsyncs yet.
-        return fmod(age, period);
+        *age = fmod(vsyncAge, vsyncPeriod);
+        *period = vsyncPeriod;
+        return true;
     }
 
-    return -1;
+    return false;
 }
 
 - (void)invalidateVsync
@@ -312,8 +320,8 @@ bool uno_window_present_texture(NSWindow* window, void* texture)
     }
 }
 
-double uno_window_get_vsync_age(NSWindow* window)
+bool uno_window_get_vsync(NSWindow* window, double* age, double* period)
 {
     UNOMetalViewDelegate* delegate = ((UNOWindow*)window).metalViewDelegate;
-    return delegate == nil ? -1 : [delegate vsyncAge];
+    return delegate != nil && [delegate getVsyncAge:age period:period];
 }
