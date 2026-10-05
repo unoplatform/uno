@@ -766,8 +766,8 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   it used to expose — `Child`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`,
   `Padding`, `BackgroundSizing`, `ChildTransitions` — is gone, and `is Border` is no longer
   `true` for a presenter. The video surface is hosted internally, so playback and `Stretch` are
-  unchanged. `MediaPlayerElement` sets its own `Background` (black) on the template root, so
-  letterbox bars stay black.
+  unchanged. `MediaPlayerElement` no longer paints a black backdrop (WinUI doesn't), so letterbox
+  bars are transparent; set a `Background` on a parent, or retemplate, if you relied on black bars.
 - **`ImageBrush`** now derives from a real **`TileBrush`** (`Brush → TileBrush →
   ImageBrush`, matching WinUI) instead of directly from `Brush`. `AlignmentX`,
   `AlignmentY`, and `Stretch` behave the same for callers but are now **declared on
@@ -1114,6 +1114,37 @@ To port a custom source, move the work as follows:
 
   The `_v2` suffix was an Uno-only artifact of the Fluent V1/V2 split; with V1 removed there is one
   theme-resources dictionary, under the name WinUI itself uses.
+
+- **`ContentDialog`'s light-dismiss overlay** now uses `SystemControlPageBackgroundMediumAltMediumBrush`,
+  matching WinUI, so overriding `ContentDialogLightDismissOverlayBackground` no longer changes it.
+
+- **The `XamlDefault*` styles are removed.** They were Uno-only keys that never existed in WinUI,
+  so `{StaticResource XamlDefaultButton}` and friends no longer resolve. Removed keys:
+  `XamlDefaultButton`, `XamlDefaultRepeatButton`, `XamlDefaultToggleButton`, `XamlDefaultRadioButton`,
+  `XamlDefaultCheckBox`, `XamlDefaultComboBox`, `XamlDefaultSlider`, `XamlDefaultToggleSwitch`,
+  `XamlDefaultFrame`, `XamlDefaultPivot`, `XamlDefaultPasswordBox`, `XamlDefaultTextBox`,
+  `XamlDefaultProgressBar`, `XamlDefaultScrollBar`, `XamlDefaultCommandBar`, `XamlDefaultMenuBar`,
+  `XamlDefaultAppBarButton`, `XamlDefaultAppBarToggleButton`, `XamlDefaultAppBarSeparator` and
+  `XamlDefaultAppBarElementContainer`, along with the related Uno-only keys `XamlAppBarButton`,
+  `XamlAppBarToggleButton`, `XamlAppBarSeparator`, `XamlCommandBar`, `XamlDefaultCommandBar_EllipsisButton`,
+  `XamlNoAnimationScrollBar`, the `XamlDefaultScrollBar_*` templates and `DefaultFlyoutPresenter`. Also gone
+  are the unused `NativeScrollViewerStyle`, `ListViewBaseScrollViewerStyle` and `DefaultSplitViewTemplate`
+  resources and the Uno-only `ContentLinkBackgroundColor` and `ContentLinkForegroundColor` colors.
+
+  As on WinUI, `DefaultSplitViewStyle`, `SplitViewPaneRootCornerRadius`,
+  `ContentDialogLightDismissOverlayBackground` and the `ProgressBar*ThemeBrush`,
+  `ProgressBarIndicatorPauseOpacity` and `ProgressBarThemeMinHeight` resources now come only from
+  `XamlControlsResources`.
+
+  If you only used one to get the default look of a control, remove the `Style` attribute and the
+  implicit style applies. If you derive from it (`BasedOn`) and merge `XamlControlsResources`, use the
+  WinUI equivalent instead, for example `DefaultButtonStyle`. `Frame` and `AppBarElementContainer` have no
+  keyed WinUI equivalent: drop the `BasedOn`, or copy the style.
+
+  ```diff
+  - <Style x:Key="MyButton" TargetType="Button" BasedOn="{StaticResource XamlDefaultButton}">
+  + <Style x:Key="MyButton" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+  ```
 
 ### Android head uses the host builder
 
