@@ -5203,7 +5203,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return GetMemberValue();
 					case SpecialType.System_Single:
 					case SpecialType.System_Double:
-						return GetFloatingPointLiteral(GetMemberValue(), propertyType, owner, owner);
+						// WinUI (CDouble::CreateCValue) parses an empty or whitespace-only value as 0.
+						return string.IsNullOrWhiteSpace(memberValue)
+							? GetFloatingPointLiteral("0", propertyType, owner, owner)
+							: GetFloatingPointLiteral(memberValue!, propertyType, owner, owner);
 					case SpecialType.System_String:
 						return "\"" + DoubleEscape(memberValue) + "\"";
 					case SpecialType.System_Boolean:
