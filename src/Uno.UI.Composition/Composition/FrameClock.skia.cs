@@ -117,8 +117,36 @@ internal sealed class FrameClock
 			return _clock = Math.Max(now, _clock);
 		}
 
-		var period = IntervalInTicks;
-		return _clock = Math.Max(_lastVsync + (now - _lastVsync) / period * period, _clock);
+		return _clock = Math.Max(LatestVsyncAtOrBefore(_lastVsync, IntervalInTicks, now), _clock);
+	}
+
+	/// <summary>
+	/// The latest vsync at or before <paramref name="now"/> on the cadence of <paramref name="anchor"/>, a vsync that
+	/// may be on either side of now. Unit-agnostic.
+	/// </summary>
+	public static long LatestVsyncAtOrBefore(long anchor, long period, long now)
+	{
+		var periods = Math.DivRem(now - anchor, period, out var remainder);
+		return anchor + (remainder < 0 ? periods - 1 : periods) * period;
+	}
+
+	/// <summary>
+	/// How many vsyncs each frame spans when frames are <paramref name="frameInterval"/> apart, or 0 when that isn't
+	/// a whole number of refresh periods. Unit-agnostic.
+	/// </summary>
+	public static int GetVsyncDivisor(long frameInterval, long period)
+	{
+		// A rate this close to a divisor is that divisor: 60fps frames on a 119.88Hz display.
+		const double Tolerance = 0.02;
+
+		if (frameInterval <= 0 || period <= 0)
+		{
+			return 0;
+		}
+
+		var vsyncsPerFrame = frameInterval / (double)period;
+		var divisor = Math.Round(vsyncsPerFrame);
+		return divisor >= 1 && Math.Abs(vsyncsPerFrame - divisor) <= divisor * Tolerance ? (int)divisor : 0;
 	}
 
 	/// <returns>Whether the interval was admitted.</returns>
