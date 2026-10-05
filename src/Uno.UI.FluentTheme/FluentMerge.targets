@@ -23,14 +23,9 @@
   <ItemGroup>
 	<!--
 	  Templates intentionally dropped from the Fluent theme: either broken under Uno or superseded by an
-	  Uno-specific implementation (ProgressRing, ScrollViewer, SplitView, RadioMenuFlyoutItem).
+	  Uno-specific implementation (ProgressRing).
 	-->
-	<_ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
 	<_ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ProgressRing.xaml" />
-	<_ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ScrollViewer.xaml" />
-	<_ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\ScrollViewer_themeresources.xaml" />
-	<!-- UNO TODO Fails to display correctly for multiple reasons, including https://github.com/unoplatform/uno/issues/325 but also undiagnosed issues -->
-	<_ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\SplitView_themeresources.xaml" />
 
 	<!--
 	  Explicit merge inputs (not @(Page)) so every variant merges the same content into the shared
