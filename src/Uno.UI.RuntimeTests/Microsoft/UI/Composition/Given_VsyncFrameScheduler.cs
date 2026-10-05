@@ -112,6 +112,113 @@ public class Given_VsyncFrameScheduler
 		Assert.AreEqual(vsync, start);
 	}
 
+	/// <summary>The display link pauses when idle, so input after a long idle period has no grid to go by.</summary>
+	[TestMethod]
+	public void When_No_Vsync_And_Idle_Frame_Shows_Nothing_New_Then_The_Next_One_Still_Starts_Now()
+	{
+		var scheduler = new VsyncFrameScheduler(60);
+		var now = Origin;
+		var (start, vsync) = scheduler.GetNextFrame(now, null, 0);
+		scheduler.OnFrame(start, vsync, unchanged: true);
+
+		now += Ms;
+		(start, _) = scheduler.GetNextFrame(now, null, 0);
+
+		Assert.AreEqual(now, start, "the frame with the recorded change must not wait for the next interval");
+	}
+
+	[TestMethod]
+	public void When_No_Vsync_And_Frames_Keep_Showing_Nothing_New_Then_They_Are_Still_Paced()
+	{
+		var scheduler = new VsyncFrameScheduler(60);
+		var now = Origin;
+
+		for (var i = 0; i < 2; i++)
+		{
+			var (frameStart, frameVsync) = scheduler.GetNextFrame(now, null, 0);
+			scheduler.OnFrame(frameStart, frameVsync, unchanged: true);
+			now += Ms;
+		}
+
+		var (start, _) = scheduler.GetNextFrame(now, null, 0);
+
+		Assert.AreEqual(Origin + Ms + Stopwatch.Frequency / 60, start, "frames that draw nothing must not spin");
+	}
+
+	[TestMethod]
+	public void When_Draws_Are_Slow_Then_The_Deadline_Comes_Earlier()
+	{
+		var vsync = Origin + 100 * Period;
+
+		var slow = new VsyncFrameScheduler(60);
+		slow.OnFrameDrawn(5 * Ms);
+		var (start, _) = slow.GetNextFrame(vsync + Period - 6 * Ms, vsync, Period);
+		Assert.AreEqual(vsync + Period, start, "a 5ms draw started 6ms before the vsync misses the compositor");
+
+		slow = new VsyncFrameScheduler(60);
+		slow.OnFrameDrawn(5 * Ms);
+		var now = vsync + Period - 8 * Ms;
+		(start, _) = slow.GetNextFrame(now, vsync, Period);
+		Assert.AreEqual(now, start, "a 5ms draw started 8ms before the vsync still makes it");
+
+		var fast = new VsyncFrameScheduler(60);
+		now = vsync + Period - VsyncFrameScheduler.CompositorLatch - Ms / 2;
+		(start, _) = fast.GetNextFrame(now, vsync, Period);
+		Assert.AreEqual(now, start, "with no draw time known, only the compositor's latch counts");
+	}
+
+	[TestMethod]
+	public void When_A_Present_Blocks_Then_The_Deadline_Is_Not_Thrown_Off()
+	{
+		var scheduler = new VsyncFrameScheduler(60);
+		scheduler.OnFrameDrawn(Ms);
+		scheduler.OnFrameDrawn(20 * Ms);
+
+		var vsync = Origin + 100 * Period;
+		var now = vsync + Period - 6 * Ms;
+		var (start, _) = scheduler.GetNextFrame(now, vsync, Period);
+
+		Assert.AreEqual(now, start, "one present waiting for a drawable must not make every frame look slow");
+	}
+
+	/// <summary>
+	/// A frame paced without the grid starts off it. When the grid comes back, that frame counts for the interval it
+	/// started in, not for an interval that starts where it did.
+	/// </summary>
+	[TestMethod]
+	public void When_Grid_Returns_After_A_Timer_Frame_Then_The_Next_Frame_Takes_The_Next_Vsync()
+	{
+		var scheduler = new VsyncFrameScheduler(60);
+		var vsync = Origin + 100 * Period;
+		var timerStart = vsync + Period * 6 / 10;
+		scheduler.GetNextFrame(timerStart, null, 0);
+		scheduler.OnFrame(timerStart, null, unchanged: false);
+
+		var (start, next) = scheduler.GetNextFrame(vsync + Period * 7 / 10, vsync, Period);
+
+		Assert.AreEqual(vsync + Period, next);
+		Assert.AreEqual(vsync + Period, start);
+	}
+
+	[TestMethod]
+	public void When_Vsync_Jitters_Then_Its_Interval_Is_Still_Taken_Once()
+	{
+		var scheduler = new VsyncFrameScheduler(60);
+		var vsync = Origin + 100 * Period;
+		var (start, frameVsync) = scheduler.GetNextFrame(vsync + Ms, vsync, Period);
+		scheduler.OnFrame(start, frameVsync, unchanged: false);
+
+		// The same vsync, stamped a little later.
+		var (_, next) = scheduler.GetNextFrame(vsync + 2 * Ms, vsync + 100, Period);
+		Assert.AreEqual(vsync + 100 + Period, next, "the interval already has its frame");
+
+		// The next vsync, stamped a little early.
+		var now = vsync + Period + Ms;
+		(start, next) = scheduler.GetNextFrame(now, vsync + Period - 100, Period);
+		Assert.AreEqual(vsync + Period - 100, next);
+		Assert.AreEqual(now, start, "a new interval starts its frame right away");
+	}
+
 	[TestMethod]
 	public void When_No_Vsync_Then_Paced_By_The_Frame_Rate()
 	{
