@@ -24,6 +24,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+		// Hangs WaitForIdle on Skia Android - https://github.com/unoplatform/uno/issues/9080
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)]
 		public async Task When_ProgressRing_Visible()
 		{
