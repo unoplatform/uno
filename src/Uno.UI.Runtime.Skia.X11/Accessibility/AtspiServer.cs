@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -27,6 +28,8 @@ internal sealed class AtspiServer
 		bool SetRangeValue(AtspiNode node, double value);
 		bool SetText(AtspiNode node, string text);
 		bool SelectChild(AtspiNode node, int index);
+		// start and end are UTF-16 indices; start == end places the caret.
+		bool SetTextSelection(AtspiNode node, int start, int end);
 	}
 
 	private readonly DBusConnection _connection;
@@ -140,134 +143,85 @@ internal sealed class AtspiServer
 	}
 
 	// ──────────────────────────────────────────────────────────────
-	//  Live event emission — org.a11y.atspi.Event.Object signals.
-	//  MessageWriter is a ref struct in Tmds.DBus.Protocol 0.92; the
-	//  (so) sender reference is always written inline here, never via a
-	//  helper that would receive the writer by value (struct copy ⇒ empty body).
+	//  Live event emission — org.a11y.atspi.Event.* signals.
+	//  MessageWriter is a ref struct in Tmds.DBus.Protocol 0.92; it is
+	//  always written inline here, never via a helper that would receive
+	//  the writer by value (struct copy ⇒ empty body).
 	// ──────────────────────────────────────────────────────────────
 
 	public void EmitStateChanged(AtspiNode node, string detail, int value)
-	{
-		try
-		{
-			var writer = _connection.GetMessageWriter();
-			writer.WriteSignalHeader(null, node.Path, AtspiDbus.EventObjectInterface, AtspiDbus.StateChangedMember, AtspiDbus.StateChangedSignature);
-			writer.WriteString(detail);
-			writer.WriteInt32(value);
-			writer.WriteInt32(0);
-			writer.WriteVariantInt32(0);
-			writer.WriteStructureStart();
-			writer.WriteString(_uniqueName);
-			writer.WriteObjectPath(AtspiDbus.RootPath);
-			_connection.TrySendMessage(writer.CreateMessage());
-		}
-		catch (Exception ex)
-		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"AT-SPI StateChanged emit failed on '{node.Path}': {ex}");
-			}
-		}
-	}
+		=> Emit(AtspiDbus.EventObjectInterface, node, AtspiDbus.StateChangedMember, detail, value, 0, 0);
 
 	public void EmitPropertyChange(AtspiNode node, string prop, double value)
-	{
-		try
-		{
-			var writer = _connection.GetMessageWriter();
-			writer.WriteSignalHeader(null, node.Path, AtspiDbus.EventObjectInterface, AtspiDbus.PropertyChangeMember, AtspiDbus.StateChangedSignature);
-			writer.WriteString(prop);
-			writer.WriteInt32(0);
-			writer.WriteInt32(0);
-			writer.WriteVariantDouble(value);
-			writer.WriteStructureStart();
-			writer.WriteString(_uniqueName);
-			writer.WriteObjectPath(AtspiDbus.RootPath);
-			_connection.TrySendMessage(writer.CreateMessage());
-		}
-		catch (Exception ex)
-		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"AT-SPI PropertyChange emit failed on '{node.Path}': {ex}");
-			}
-		}
-	}
+		=> Emit(AtspiDbus.EventObjectInterface, node, AtspiDbus.PropertyChangeMember, prop, 0, 0, value);
 
 	public void EmitPropertyChange(AtspiNode node, string prop, string value)
-	{
-		try
-		{
-			var writer = _connection.GetMessageWriter();
-			writer.WriteSignalHeader(null, node.Path, AtspiDbus.EventObjectInterface, AtspiDbus.PropertyChangeMember, AtspiDbus.StateChangedSignature);
-			writer.WriteString(prop);
-			writer.WriteInt32(0);
-			writer.WriteInt32(0);
-			writer.WriteVariantString(value);
-			writer.WriteStructureStart();
-			writer.WriteString(_uniqueName);
-			writer.WriteObjectPath(AtspiDbus.RootPath);
-			_connection.TrySendMessage(writer.CreateMessage());
-		}
-		catch (Exception ex)
-		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"AT-SPI PropertyChange emit failed on '{node.Path}': {ex}");
-			}
-		}
-	}
+		=> Emit(AtspiDbus.EventObjectInterface, node, AtspiDbus.PropertyChangeMember, prop, 0, 0, value);
 
 	public void EmitSelectionChanged(AtspiNode node)
-	{
-		try
-		{
-			var writer = _connection.GetMessageWriter();
-			writer.WriteSignalHeader(null, node.Path, AtspiDbus.EventObjectInterface, AtspiDbus.SelectionChangedMember, AtspiDbus.StateChangedSignature);
-			writer.WriteString("");
-			writer.WriteInt32(0);
-			writer.WriteInt32(0);
-			writer.WriteVariantInt32(0);
-			writer.WriteStructureStart();
-			writer.WriteString(_uniqueName);
-			writer.WriteObjectPath(AtspiDbus.RootPath);
-			_connection.TrySendMessage(writer.CreateMessage());
-		}
-		catch (Exception ex)
-		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"AT-SPI SelectionChanged emit failed on '{node.Path}': {ex}");
-			}
-		}
-	}
+		=> Emit(AtspiDbus.EventObjectInterface, node, AtspiDbus.SelectionChangedMember, "", 0, 0, 0);
 
-	public void EmitChildrenChanged(AtspiNode parent, bool added, int index, AtspiNode? child)
+	public void EmitChildrenChanged(AtspiNode parent, bool added, int index, AtspiNode child)
+		=> Emit(AtspiDbus.EventObjectInterface, parent, AtspiDbus.ChildrenChangedMember, added ? "add" : "remove", index, 0, GetReference(child));
+
+	// Offsets and lengths are in characters (code points), as AT-SPI Text counts them.
+	public void EmitTextChanged(AtspiNode node, bool inserted, int offset, int length, string text)
+		=> Emit(AtspiDbus.EventObjectInterface, node, AtspiDbus.TextChangedMember, inserted ? "insert" : "delete", offset, length, text);
+
+	public void EmitTextCaretMoved(AtspiNode node, int offset)
+		=> Emit(AtspiDbus.EventObjectInterface, node, AtspiDbus.TextCaretMovedMember, "", offset, 0, 0);
+
+	public void EmitTextSelectionChanged(AtspiNode node)
+		=> Emit(AtspiDbus.EventObjectInterface, node, AtspiDbus.TextSelectionChangedMember, "", 0, 0, 0);
+
+	// object:announcement — speech without moving focus; detail1 carries the politeness
+	// (ATSPI_LIVE_POLITE = 1, ATSPI_LIVE_ASSERTIVE = 2) and the value the text to present.
+	public void EmitAnnouncement(AtspiNode node, string text, bool assertive)
+		=> Emit(AtspiDbus.EventObjectInterface, node, AtspiDbus.AnnouncementMember, "", assertive ? 2 : 1, 0, text);
+
+	// window:activate / window:deactivate — screen readers use these to find the active window.
+	public void EmitWindowActivation(AtspiNode frame, bool active)
+		=> Emit(AtspiDbus.EventWindowInterface, frame, active ? AtspiDbus.ActivateMember : AtspiDbus.DeactivateMember, "", 0, 0, frame.Name);
+
+	private void Emit(string eventInterface, AtspiNode node, string member, string detail, int detail1, int detail2, object value)
 	{
 		try
 		{
-			var childReference = GetReference(child);
 			var writer = _connection.GetMessageWriter();
-			writer.WriteSignalHeader(null, parent.Path, AtspiDbus.EventObjectInterface, AtspiDbus.ChildrenChangedMember, AtspiDbus.StateChangedSignature);
-			writer.WriteString(added ? "add" : "remove");
-			writer.WriteInt32(index);
-			writer.WriteInt32(0);
-			// The child rides as a variant of (so), written as an explicit signature plus
-			// struct — the same shape the Parent property reply uses.
-			writer.WriteSignature(AtspiDbus.ReferenceSignature);
-			writer.WriteStructureStart();
-			writer.WriteString(childReference.Service);
-			writer.WriteObjectPath(childReference.Path);
-			writer.WriteStructureStart();
-			writer.WriteString(_uniqueName);
-			writer.WriteObjectPath(AtspiDbus.RootPath);
+			writer.WriteSignalHeader(null, node.Path, eventInterface, member, AtspiDbus.EventSignature);
+			writer.WriteString(detail);
+			writer.WriteInt32(detail1);
+			writer.WriteInt32(detail2);
+			switch (value)
+			{
+				case int i:
+					writer.WriteVariantInt32(i);
+					break;
+				case double d:
+					writer.WriteVariantDouble(d);
+					break;
+				case string s:
+					writer.WriteVariantString(s);
+					break;
+				case AtspiReference reference:
+					writer.WriteSignature(AtspiDbus.ReferenceSignature);
+					writer.WriteStructureStart();
+					writer.WriteString(reference.Service);
+					writer.WriteObjectPath(reference.Path);
+					break;
+				default:
+					throw new ArgumentException($"Unsupported AT-SPI event value {value.GetType()}.", nameof(value));
+			}
+			// Trailing a{sv} of cached properties (Event.xml); none are pushed, clients query on demand.
+			var properties = writer.WriteDictionaryStart();
+			writer.WriteDictionaryEnd(properties);
 			_connection.TrySendMessage(writer.CreateMessage());
 		}
 		catch (Exception ex)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"AT-SPI ChildrenChanged emit failed on '{parent.Path}': {ex}");
+				this.Log().Debug($"AT-SPI {member} emit failed on '{node.Path}': {ex}");
 			}
 		}
 	}
@@ -572,11 +526,11 @@ internal sealed class AtspiServer
 					ReplyActions(context, node);
 					break;
 				case AtspiDbus.DoActionMethod:
-				{
-					_ = context.Request.GetBodyReader().ReadInt32();
-					ReplyBool(context, _server._writeTarget.Invoke(node));
-					break;
-				}
+					{
+						_ = context.Request.GetBodyReader().ReadInt32();
+						ReplyBool(context, _server._writeTarget.Invoke(node));
+						break;
+					}
 				default:
 					context.ReplyUnknownMethodError();
 					break;
@@ -585,23 +539,146 @@ internal sealed class AtspiServer
 
 		private void Text(MethodContext context, AtspiNode node, string member)
 		{
+			var text = node.Text;
+			var reader = context.Request.GetBodyReader();
 			switch (member)
 			{
 				case AtspiDbus.GetTextMethod:
-				{
-					var reader = context.Request.GetBodyReader();
-					var start = reader.ReadInt32();
-					var end = reader.ReadInt32();
-					var text = node.Text;
-					var start16 = Utf16Index(text, Math.Max(0, start));
-					var end16 = end < 0 ? text.Length : Math.Max(start16, Utf16Index(text, end));
-					ReplyString(context, AtspiDbus.StringSignature, text.Substring(start16, end16 - start16));
+					{
+						var start = reader.ReadInt32();
+						var end = reader.ReadInt32();
+						var start16 = Utf16Index(text, Math.Max(0, start));
+						var end16 = end < 0 ? text.Length : Math.Max(start16, Utf16Index(text, end));
+						ReplyString(context, AtspiDbus.StringSignature, text.Substring(start16, end16 - start16));
+						break;
+					}
+				case AtspiDbus.GetCharacterAtOffsetMethod:
+					{
+						var offset16 = Utf16Index(text, Math.Max(0, reader.ReadInt32()));
+						ReplyInt32(context, offset16 < text.Length ? char.ConvertToUtf32(text, offset16) : 0);
+						break;
+					}
+				case AtspiDbus.GetStringAtOffsetMethod:
+					{
+						var offset = reader.ReadInt32();
+						var (start, end) = AtspiTextSegmentation.GetStringAtOffset(text, offset, reader.ReadUInt32());
+						ReplyTextRange(context, text, start, end);
+						break;
+					}
+				case AtspiDbus.GetTextAtOffsetMethod:
+				case AtspiDbus.GetTextBeforeOffsetMethod:
+				case AtspiDbus.GetTextAfterOffsetMethod:
+					{
+						var offset = reader.ReadInt32();
+						var boundary = reader.ReadUInt32();
+						var (start, end) = member switch
+						{
+							AtspiDbus.GetTextBeforeOffsetMethod => AtspiTextSegmentation.GetTextBeforeOffset(text, offset, boundary),
+							AtspiDbus.GetTextAfterOffsetMethod => AtspiTextSegmentation.GetTextAfterOffset(text, offset, boundary),
+							_ => AtspiTextSegmentation.GetTextAtOffset(text, offset, boundary),
+						};
+						ReplyTextRange(context, text, start, end);
+						break;
+					}
+				case AtspiDbus.SetCaretOffsetMethod:
+					{
+						var offset16 = Utf16Index(text, Math.Max(0, reader.ReadInt32()));
+						ReplyBool(context, node.SelectionStart >= 0 && _server._writeTarget.SetTextSelection(node, offset16, offset16));
+						break;
+					}
+				case AtspiDbus.GetNSelectionsMethod:
+					ReplyInt32(context, HasTextSelection(node) ? 1 : 0);
 					break;
-				}
+				case AtspiDbus.GetSelectionMethod:
+					{
+						var index = reader.ReadInt32();
+						using var writer = context.CreateReplyWriter(AtspiDbus.Int32PairSignature);
+						var selected = index == 0 && HasTextSelection(node);
+						writer.WriteInt32(selected ? CharacterCount(text, node.SelectionStart) : 0);
+						writer.WriteInt32(selected ? CharacterCount(text, node.SelectionEnd) : 0);
+						context.Reply(writer.CreateMessage());
+						break;
+					}
+				case AtspiDbus.AddSelectionMethod:
+					{
+						var start16 = Utf16Index(text, Math.Max(0, reader.ReadInt32()));
+						var end16 = Utf16Index(text, Math.Max(0, reader.ReadInt32()));
+						ReplyBool(context, node.SelectionStart >= 0 && !HasTextSelection(node) && _server._writeTarget.SetTextSelection(node, start16, end16));
+						break;
+					}
+				case AtspiDbus.SetSelectionMethod:
+					{
+						var index = reader.ReadInt32();
+						var start16 = Utf16Index(text, Math.Max(0, reader.ReadInt32()));
+						var end16 = Utf16Index(text, Math.Max(0, reader.ReadInt32()));
+						ReplyBool(context, index == 0 && node.SelectionStart >= 0 && _server._writeTarget.SetTextSelection(node, start16, end16));
+						break;
+					}
+				case AtspiDbus.RemoveSelectionMethod:
+					{
+						var index = reader.ReadInt32();
+						ReplyBool(context, index == 0 && HasTextSelection(node) && _server._writeTarget.SetTextSelection(node, node.SelectionEnd, node.SelectionEnd));
+						break;
+					}
+				case AtspiDbus.GetCharacterExtentsMethod:
+				case AtspiDbus.GetRangeExtentsMethod:
+					{
+						// No per-glyph layout is exposed; report the whole text box so magnifiers
+						// and mouse review still land on the right control.
+						using var writer = context.CreateReplyWriter(AtspiDbus.Int32QuadSignature);
+						writer.WriteInt32(ToInt32(node.X));
+						writer.WriteInt32(ToInt32(node.Y));
+						writer.WriteInt32(ToInt32(node.W));
+						writer.WriteInt32(ToInt32(node.H));
+						context.Reply(writer.CreateMessage());
+						break;
+					}
+				case AtspiDbus.GetOffsetAtPointMethod:
+					ReplyInt32(context, -1);
+					break;
+				case AtspiDbus.GetAttributesMethod:
+				case AtspiDbus.GetAttributeRunMethod:
+					{
+						// No text attributes are exposed: one empty run spanning the whole text.
+						using var writer = context.CreateReplyWriter(AtspiDbus.TextAttributeRunSignature);
+						var dictionary = writer.WriteDictionaryStart();
+						writer.WriteDictionaryEnd(dictionary);
+						writer.WriteInt32(0);
+						writer.WriteInt32(CharacterCount(text));
+						context.Reply(writer.CreateMessage());
+						break;
+					}
+				case AtspiDbus.GetDefaultAttributesMethod:
+				case AtspiDbus.GetDefaultAttributeSetMethod:
+					{
+						using var writer = context.CreateReplyWriter(AtspiDbus.StringDictionarySignature);
+						var dictionary = writer.WriteDictionaryStart();
+						writer.WriteDictionaryEnd(dictionary);
+						context.Reply(writer.CreateMessage());
+						break;
+					}
+				case AtspiDbus.GetAttributeValueMethod:
+					ReplyString(context, AtspiDbus.StringSignature, AtspiDbus.EmptyString);
+					break;
 				default:
 					context.ReplyUnknownMethodError();
 					break;
 			}
+		}
+
+		private static bool HasTextSelection(AtspiNode node)
+			=> node.SelectionStart >= 0 && node.SelectionEnd > node.SelectionStart;
+
+		// Replies (s text, i startOffset, i endOffset) for a character range.
+		private static void ReplyTextRange(MethodContext context, string text, int start, int end)
+		{
+			using var writer = context.CreateReplyWriter(AtspiDbus.TextRangeSignature);
+			var start16 = Utf16Index(text, start);
+			var end16 = Utf16Index(text, end);
+			writer.WriteString(text.Substring(start16, end16 - start16));
+			writer.WriteInt32(start);
+			writer.WriteInt32(end);
+			context.Reply(writer.CreateMessage());
 		}
 
 		private void EditableText(MethodContext context, AtspiNode node, string member)
@@ -619,31 +696,31 @@ internal sealed class AtspiServer
 					ReplyBool(context, _server._writeTarget.SetText(node, reader.ReadString()));
 					break;
 				case AtspiDbus.InsertTextMethod:
-				{
-					var pos = reader.ReadInt32();
-					var s = reader.ReadString();
-					var len = reader.ReadInt32();
-					var current = node.Text;
-					var pos16 = Utf16Index(current, Math.Max(0, pos));
-					var insert = len >= 0 && len < CharacterCount(s) ? s.Substring(0, Utf16Index(s, len)) : s;
-					ReplyBool(context, _server._writeTarget.SetText(node, current.Insert(pos16, insert)));
-					break;
-				}
-				case AtspiDbus.DeleteTextMethod:
-				{
-					var start = reader.ReadInt32();
-					var end = reader.ReadInt32();
-					var current = node.Text;
-					var start16 = Utf16Index(current, Math.Max(0, start));
-					var end16 = Math.Max(start16, Utf16Index(current, Math.Max(0, end)));
-					if (start16 >= end16)
 					{
-						ReplyBool(context, false);
+						var pos = reader.ReadInt32();
+						var s = reader.ReadString();
+						var len = reader.ReadInt32();
+						var current = node.Text;
+						var pos16 = Utf16Index(current, Math.Max(0, pos));
+						var insert = len >= 0 && len < CharacterCount(s) ? s.Substring(0, Utf16Index(s, len)) : s;
+						ReplyBool(context, _server._writeTarget.SetText(node, current.Insert(pos16, insert)));
 						break;
 					}
-					ReplyBool(context, _server._writeTarget.SetText(node, current.Remove(start16, end16 - start16)));
-					break;
-				}
+				case AtspiDbus.DeleteTextMethod:
+					{
+						var start = reader.ReadInt32();
+						var end = reader.ReadInt32();
+						var current = node.Text;
+						var start16 = Utf16Index(current, Math.Max(0, start));
+						var end16 = Math.Max(start16, Utf16Index(current, Math.Max(0, end)));
+						if (start16 >= end16)
+						{
+							ReplyBool(context, false);
+							break;
+						}
+						ReplyBool(context, _server._writeTarget.SetText(node, current.Remove(start16, end16 - start16)));
+						break;
+					}
 				case AtspiDbus.CopyTextMethod:
 					ReplyVoid(context);
 					break;
@@ -662,24 +739,24 @@ internal sealed class AtspiServer
 			switch (member)
 			{
 				case AtspiDbus.GetSelectedChildMethod:
-				{
-					var index = context.Request.GetBodyReader().ReadInt32();
-					var selected = index >= 0 ? node.Children.FindAll(c => c.Selected) : null;
-					ReplyReference(context, _server.GetReference(selected is not null && index < selected.Count ? selected[index] : null));
-					break;
-				}
+					{
+						var index = context.Request.GetBodyReader().ReadInt32();
+						var selected = index >= 0 ? node.Children.FindAll(c => c.Selected) : null;
+						ReplyReference(context, _server.GetReference(selected is not null && index < selected.Count ? selected[index] : null));
+						break;
+					}
 				case AtspiDbus.SelectChildMethod:
-				{
-					var index = context.Request.GetBodyReader().ReadInt32();
-					ReplyBool(context, _server._writeTarget.SelectChild(node, index));
-					break;
-				}
+					{
+						var index = context.Request.GetBodyReader().ReadInt32();
+						ReplyBool(context, _server._writeTarget.SelectChild(node, index));
+						break;
+					}
 				case AtspiDbus.IsChildSelectedMethod:
-				{
-					var index = context.Request.GetBodyReader().ReadInt32();
-					ReplyBool(context, index >= 0 && index < node.Children.Count && node.Children[index].Selected);
-					break;
-				}
+					{
+						var index = context.Request.GetBodyReader().ReadInt32();
+						ReplyBool(context, index >= 0 && index < node.Children.Count && node.Children[index].Selected);
+						break;
+					}
 				case AtspiDbus.GetNSelectedChildrenMethod:
 					ReplyInt32(context, node.Children.Count(c => c.Selected));
 					break;
@@ -744,33 +821,41 @@ internal sealed class AtspiServer
 			switch (member)
 			{
 				case AtspiDbus.GetPropertyMethod:
-				{
-					var reader = context.Request.GetBodyReader();
-					var propertyInterface = reader.ReadString();
-					var property = reader.ReadString();
-					ReplyVariant(context, node, propertyInterface, property);
-					break;
-				}
-				case AtspiDbus.SetPropertyMethod:
-				{
-					var reader = context.Request.GetBodyReader();
-					var propertyInterface = reader.ReadString();
-					var property = reader.ReadString();
-					if (propertyInterface == AtspiDbus.ValueInterface &&
-						property == AtspiDbus.CurrentValueProperty &&
-						node.HasRange)
 					{
-						_server._writeTarget.SetRangeValue(node, reader.ReadVariantValue().GetDouble());
+						var reader = context.Request.GetBodyReader();
+						var propertyInterface = reader.ReadString();
+						var property = reader.ReadString();
+						ReplyVariant(context, node, propertyInterface, property);
+						break;
 					}
-					ReplyVoid(context);
-					break;
-				}
+				case AtspiDbus.SetPropertyMethod:
+					{
+						var reader = context.Request.GetBodyReader();
+						var propertyInterface = reader.ReadString();
+						var property = reader.ReadString();
+						if (propertyInterface == AtspiDbus.ValueInterface &&
+							property == AtspiDbus.CurrentValueProperty &&
+							node.HasRange)
+						{
+							_server._writeTarget.SetRangeValue(node, reader.ReadVariantValue().GetDouble());
+							ReplyVoid(context);
+						}
+						else if (Array.IndexOf(PropertiesOf(node, propertyInterface), property) >= 0)
+						{
+							context.ReplyError(AtspiDbus.PropertyReadOnlyError, $"Property '{propertyInterface}.{property}' is read-only.");
+						}
+						else
+						{
+							context.ReplyError(AtspiDbus.UnknownPropertyError, $"Unknown property '{propertyInterface}.{property}'.");
+						}
+						break;
+					}
 				case AtspiDbus.GetAllPropertiesMethod:
-				{
-					var propertyInterface = context.Request.GetBodyReader().ReadString();
-					ReplyAllProperties(context, node, propertyInterface);
-					break;
-				}
+					{
+						var propertyInterface = context.Request.GetBodyReader().ReadString();
+						ReplyAllProperties(context, node, propertyInterface);
+						break;
+					}
 				default:
 					context.ReplyUnknownMethodError();
 					break;
@@ -779,6 +864,13 @@ internal sealed class AtspiServer
 
 		private void ReplyVariant(MethodContext context, AtspiNode node, string propertyInterface, string property)
 		{
+			// A wrongly-typed placeholder makes libatspi fail the read ("expected i, got s").
+			if (Array.IndexOf(PropertiesOf(node, propertyInterface), property) < 0)
+			{
+				context.ReplyError(AtspiDbus.UnknownPropertyError, $"Unknown property '{propertyInterface}.{property}'.");
+				return;
+			}
+
 			var writer = context.CreateReplyWriter(AtspiDbus.VariantSignature);
 			try
 			{
@@ -792,23 +884,29 @@ internal sealed class AtspiServer
 		}
 
 		private static readonly string[] _accessibleProperties =
-			[AtspiDbus.NameProperty, AtspiDbus.DescriptionProperty, AtspiDbus.AccessibleIdProperty, AtspiDbus.ChildCountProperty, AtspiDbus.ParentProperty];
+			[AtspiDbus.NameProperty, AtspiDbus.DescriptionProperty, AtspiDbus.AccessibleIdProperty, AtspiDbus.ChildCountProperty, AtspiDbus.ParentProperty, AtspiDbus.LocaleProperty, AtspiDbus.HelpTextProperty];
 		private static readonly string[] _applicationProperties =
-			[AtspiDbus.LocaleProperty, AtspiDbus.ToolkitNameProperty, AtspiDbus.VersionProperty, AtspiDbus.AtspiVersionProperty];
+			[AtspiDbus.ToolkitNameProperty, AtspiDbus.VersionProperty, AtspiDbus.ToolkitVersionProperty, AtspiDbus.AtspiVersionProperty];
 		private static readonly string[] _valueProperties =
 			[AtspiDbus.CurrentValueProperty, AtspiDbus.MinimumValueProperty, AtspiDbus.MaximumValueProperty, AtspiDbus.MinimumIncrementProperty];
+		private static readonly string[] _textProperties =
+			[AtspiDbus.CharacterCountProperty, AtspiDbus.CaretOffsetProperty];
+		private static readonly string[] _actionProperties = [AtspiDbus.NActionsProperty];
+
+		// The properties each interface serves for this node; drives Get, Set and GetAll alike.
+		private static string[] PropertiesOf(AtspiNode node, string propertyInterface) => propertyInterface switch
+		{
+			AtspiDbus.AccessibleInterface => _accessibleProperties,
+			AtspiDbus.ApplicationInterface when node.Parent is null => _applicationProperties,
+			AtspiDbus.ValueInterface when node.HasRange => _valueProperties,
+			AtspiDbus.TextInterface when node.HasText => _textProperties,
+			AtspiDbus.ActionInterface when Actionable(node) => _actionProperties,
+			_ => Array.Empty<string>(),
+		};
 
 		private void ReplyAllProperties(MethodContext context, AtspiNode node, string propertyInterface)
 		{
-			var properties = propertyInterface switch
-			{
-				AtspiDbus.AccessibleInterface => _accessibleProperties,
-				AtspiDbus.ApplicationInterface when node.Parent is null => _applicationProperties,
-				AtspiDbus.ValueInterface when node.HasRange => _valueProperties,
-				AtspiDbus.TextInterface when node.HasText => [AtspiDbus.CharacterCountProperty],
-				AtspiDbus.ActionInterface when Actionable(node) => [AtspiDbus.NActionsProperty],
-				_ => Array.Empty<string>(),
-			};
+			var properties = PropertiesOf(node, propertyInterface);
 
 			var writer = context.CreateReplyWriter(AtspiDbus.VariantDictionarySignature);
 			try
@@ -852,13 +950,17 @@ internal sealed class AtspiServer
 					writer.WriteString(parentRef.Service);
 					writer.WriteObjectPath(parentRef.Path);
 					break;
-				case (AtspiDbus.ApplicationInterface, AtspiDbus.LocaleProperty):
+				case (AtspiDbus.AccessibleInterface, AtspiDbus.LocaleProperty):
 					writer.WriteVariantString(AtspiDbus.DefaultLocale);
+					break;
+				case (AtspiDbus.AccessibleInterface, AtspiDbus.HelpTextProperty):
+					writer.WriteVariantString(AtspiDbus.EmptyString);
 					break;
 				case (AtspiDbus.ApplicationInterface, AtspiDbus.ToolkitNameProperty):
 					writer.WriteVariantString(AtspiDbus.ToolkitName);
 					break;
 				case (AtspiDbus.ApplicationInterface, AtspiDbus.VersionProperty):
+				case (AtspiDbus.ApplicationInterface, AtspiDbus.ToolkitVersionProperty):
 					writer.WriteVariantString(AtspiDbus.ToolkitVersion);
 					break;
 				case (AtspiDbus.ApplicationInterface, AtspiDbus.AtspiVersionProperty):
@@ -878,6 +980,10 @@ internal sealed class AtspiServer
 					break;
 				case (AtspiDbus.TextInterface, AtspiDbus.CharacterCountProperty) when node.HasText:
 					writer.WriteVariantInt32(CharacterCount(node.Text));
+					break;
+				case (AtspiDbus.TextInterface, AtspiDbus.CaretOffsetProperty) when node.HasText:
+					// AT-SPI reports -1 for text without a caret (e.g. a read-only label).
+					writer.WriteVariantInt32(node.SelectionEnd >= 0 ? CharacterCount(node.Text, node.SelectionEnd) : -1);
 					break;
 				case (AtspiDbus.ActionInterface, AtspiDbus.NActionsProperty):
 					// libatspi reads NActions as a property (int), not only via GetNActions.
@@ -922,28 +1028,11 @@ internal sealed class AtspiServer
 			context.Reply(writer.CreateMessage());
 		}
 
-		// AT-SPI Text offsets count Unicode characters (code points); C# strings index
-		// UTF-16 code units. Map without ever splitting a surrogate pair; offsets past
-		// the end clamp to the end.
-		private static int Utf16Index(string s, int characterOffset)
-		{
-			var i = 0;
-			for (; characterOffset > 0 && i < s.Length; characterOffset--)
-			{
-				i += char.IsSurrogatePair(s, i) ? 2 : 1;
-			}
-			return i;
-		}
+		private static int Utf16Index(string s, int characterOffset) => AtspiTextSegmentation.Utf16Index(s, characterOffset);
 
-		private static int CharacterCount(string s)
-		{
-			var count = 0;
-			for (var i = 0; i < s.Length; i += char.IsSurrogatePair(s, i) ? 2 : 1)
-			{
-				count++;
-			}
-			return count;
-		}
+		private static int CharacterCount(string s) => AtspiTextSegmentation.CharacterCount(s, s.Length);
+
+		private static int CharacterCount(string s, int utf16Length) => AtspiTextSegmentation.CharacterCount(s, utf16Length);
 
 		private static void ReplyPosition(MethodContext context, AtspiNode node)
 		{
@@ -1059,6 +1148,21 @@ internal sealed class AtspiServer
 				SetState(AtspiDbus.FocusedState);
 			}
 
+			if (node.Active)
+			{
+				SetState(AtspiDbus.ActiveState);
+			}
+
+			if (node.Modal)
+			{
+				SetState(AtspiDbus.ModalState);
+			}
+
+			if (node.SelectionStart >= 0)
+			{
+				SetState(node.MultiLine ? AtspiDbus.MultiLineState : AtspiDbus.SingleLineState);
+			}
+
 			// The AT-SPI state set is two 32-bit words; states with index >= 32 live in
 			// the second word.
 			uint state1 = 0;
@@ -1072,6 +1176,21 @@ internal sealed class AtspiServer
 			if (node.ReadOnly)
 			{
 				SetState1(AtspiDbus.ReadOnlyState);
+			}
+
+			if (node.SelectionStart >= 0)
+			{
+				SetState1(AtspiDbus.SelectableTextState);
+			}
+
+			if (node.HasToggle)
+			{
+				SetState1(AtspiDbus.CheckableState);
+			}
+
+			if (node.Indeterminate)
+			{
+				SetState1(AtspiDbus.IndeterminateState);
 			}
 
 			using var writer = context.CreateReplyWriter(AtspiDbus.UInt32ArraySignature);
@@ -1187,16 +1306,20 @@ internal sealed class AtspiServer
 			var attributes = new List<(string Key, string Value)>();
 			if (node.PositionInSet > 0)
 			{
-				attributes.Add(("posinset", node.PositionInSet.ToString()));
-				attributes.Add(("setsize", node.SizeOfSet.ToString()));
+				attributes.Add(("posinset", node.PositionInSet.ToString(CultureInfo.InvariantCulture)));
+				attributes.Add(("setsize", node.SizeOfSet.ToString(CultureInfo.InvariantCulture)));
 			}
 			if (node.HeadingLevel > 0)
 			{
-				attributes.Add(("level", node.HeadingLevel.ToString()));
+				attributes.Add(("level", node.HeadingLevel.ToString(CultureInfo.InvariantCulture)));
 			}
 			if (!string.IsNullOrEmpty(node.Landmark))
 			{
 				attributes.Add(("xml-roles", node.Landmark));
+			}
+			if (!string.IsNullOrEmpty(node.Placeholder))
+			{
+				attributes.Add(("placeholder-text", node.Placeholder));
 			}
 
 			using var writer = context.CreateReplyWriter(AtspiDbus.StringDictionarySignature);
@@ -1276,6 +1399,24 @@ internal sealed class AtspiServer
 		public const string GetActionsMethod = "GetActions";
 		public const string DoActionMethod = "DoAction";
 		public const string GetTextMethod = "GetText";
+		public const string GetCharacterAtOffsetMethod = "GetCharacterAtOffset";
+		public const string GetStringAtOffsetMethod = "GetStringAtOffset";
+		public const string GetTextAtOffsetMethod = "GetTextAtOffset";
+		public const string GetTextBeforeOffsetMethod = "GetTextBeforeOffset";
+		public const string GetTextAfterOffsetMethod = "GetTextAfterOffset";
+		public const string SetCaretOffsetMethod = "SetCaretOffset";
+		public const string GetNSelectionsMethod = "GetNSelections";
+		public const string GetSelectionMethod = "GetSelection";
+		public const string AddSelectionMethod = "AddSelection";
+		public const string RemoveSelectionMethod = "RemoveSelection";
+		public const string SetSelectionMethod = "SetSelection";
+		public const string GetCharacterExtentsMethod = "GetCharacterExtents";
+		public const string GetRangeExtentsMethod = "GetRangeExtents";
+		public const string GetOffsetAtPointMethod = "GetOffsetAtPoint";
+		public const string GetAttributeRunMethod = "GetAttributeRun";
+		public const string GetDefaultAttributesMethod = "GetDefaultAttributes";
+		public const string GetDefaultAttributeSetMethod = "GetDefaultAttributeSet";
+		public const string GetAttributeValueMethod = "GetAttributeValue";
 		public const string SetTextContentsMethod = "SetTextContents";
 		public const string InsertTextMethod = "InsertText";
 		public const string DeleteTextMethod = "DeleteText";
@@ -1309,6 +1450,11 @@ internal sealed class AtspiServer
 		public const string MaximumValueProperty = "MaximumValue";
 		public const string MinimumIncrementProperty = "MinimumIncrement";
 		public const string CharacterCountProperty = "CharacterCount";
+		public const string CaretOffsetProperty = "CaretOffset";
+		public const string HelpTextProperty = "HelpText";
+		public const string ToolkitVersionProperty = "ToolkitVersion";
+		public const string UnknownPropertyError = "org.freedesktop.DBus.Error.UnknownProperty";
+		public const string PropertyReadOnlyError = "org.freedesktop.DBus.Error.PropertyReadOnly";
 		public const string NActionsProperty = "NActions";
 		public const string DefaultLocale = "C";
 		public const string ToolkitName = "Uno";
@@ -1331,11 +1477,21 @@ internal sealed class AtspiServer
 		public const string VariantDictionarySignature = "a{sv}";
 		public const string RelationSetSignature = "a(ua(so))";
 		public const string ActionsSignature = "a(sss)";
-		public const string StateChangedSignature = "siiv(so)";
+		public const string Int32QuadSignature = "iiii";
+		public const string TextRangeSignature = "sii";
+		public const string TextAttributeRunSignature = "a{ss}ii";
+		public const string EventSignature = "siiva{sv}";
+		public const string EventWindowInterface = "org.a11y.atspi.Event.Window";
 		public const string StateChangedMember = "StateChanged";
 		public const string PropertyChangeMember = "PropertyChange";
 		public const string SelectionChangedMember = "SelectionChanged";
 		public const string ChildrenChangedMember = "ChildrenChanged";
+		public const string TextChangedMember = "TextChanged";
+		public const string TextCaretMovedMember = "TextCaretMoved";
+		public const string TextSelectionChangedMember = "TextSelectionChanged";
+		public const string AnnouncementMember = "Announcement";
+		public const string ActivateMember = "Activate";
+		public const string DeactivateMember = "Deactivate";
 		public const string ApplicationRoleName = "application";
 		public const uint WidgetLayer = 3; // ATSPI_LAYER_WIDGET
 		public const uint ApplicationRole = 75;
@@ -1351,7 +1507,14 @@ internal sealed class AtspiServer
 		public const int FocusedState = 12;
 		public const int SelectableState = 22;
 		public const int SelectedState = 23;
+		public const int ActiveState = 1;
+		public const int ModalState = 16;
+		public const int MultiLineState = 17;
+		public const int SingleLineState = 26;
+		public const int IndeterminateState = 32;
 		public const int RequiredState = 33;
+		public const int SelectableTextState = 38;
+		public const int CheckableState = 41;
 		public const int ReadOnlyState = 43;
 	}
 }

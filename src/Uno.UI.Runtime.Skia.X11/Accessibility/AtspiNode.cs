@@ -23,11 +23,19 @@ internal sealed class AtspiNode
 	public bool Enabled { get; set; } = true;
 	public bool Focusable { get; set; }
 	public bool Checked { get; set; }
+	public bool Indeterminate { get; set; }
+	public bool Modal { get; set; }
 	public bool HasToggle { get; set; }
 	public bool Editable { get; set; }
 	public bool HasText { get; set; }
+	// Static text (TextBlock): Text mirrors Name.
+	public bool IsStaticText { get; set; }
 	public string Text { get; set; } = "";
 	public bool ReadOnly { get; set; }
+	public bool MultiLine { get; set; }
+	// UTF-16 indices into Text; both -1 when the node has no caret.
+	public int SelectionStart { get; set; } = -1;
+	public int SelectionEnd { get; set; } = -1;
 	public bool Expandable { get; set; }
 	public bool Expanded { get; set; }
 	public bool Selectable { get; set; }
@@ -38,10 +46,12 @@ internal sealed class AtspiNode
 	public double Val { get; set; }
 	public int ItemIndex { get; set; } = -1;
 	public string? Description { get; set; }
+	public string? Placeholder { get; set; }
 	public int HeadingLevel { get; set; }
 	public string? Landmark { get; set; }
 	public bool Required { get; set; }
 	public bool Offscreen { get; set; }
+	public bool Active { get; set; }
 	public int PositionInSet { get; set; }
 	public int SizeOfSet { get; set; }
 }

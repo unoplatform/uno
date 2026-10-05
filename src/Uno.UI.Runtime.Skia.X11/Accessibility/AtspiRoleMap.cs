@@ -15,6 +15,17 @@ internal static class AtspiRoleMap
 {
 	internal const uint ApplicationRoleId = 75; // ATSPI_ROLE_APPLICATION
 	internal const string ApplicationRoleName = "application";
+	internal const uint FrameRoleId = 23; // ATSPI_ROLE_FRAME
+	internal const string FrameRoleName = "frame";
+	internal const uint HeadingRoleId = 83; // ATSPI_ROLE_HEADING
+	internal const string HeadingRoleName = "heading";
+	internal const uint LandmarkRoleId = 110; // ATSPI_ROLE_LANDMARK
+	internal const string LandmarkRoleName = "landmark";
+	internal const uint PushButtonRoleId = 43; // ATSPI_ROLE_PUSH_BUTTON
+	internal const uint ToggleButtonRoleId = 62; // ATSPI_ROLE_TOGGLE_BUTTON
+	internal const string ToggleButtonRoleName = "toggle button";
+	internal const uint DialogRoleId = 16; // ATSPI_ROLE_DIALOG
+	internal const string DialogRoleName = "dialog";
 
 	/// <summary>
 	/// Resolves the AT-SPI role id and name for a WinUI automation control type.
