@@ -273,7 +273,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 #nullable enable
-		public static IEnumerable<T> GetChildren<T>(DependencyObject view)
+		internal static IEnumerable<T> GetChildren<T>(DependencyObject view)
 			=> (view as _ViewGroup)
 				?.GetChildren()
 				.OfType<T>()
@@ -286,7 +286,7 @@ namespace Microsoft.UI.Xaml.Media
 			=> element._children;
 #endif
 
-		public static IEnumerable<DependencyObject> GetChildren(DependencyObject view)
+		internal static IEnumerable<DependencyObject> GetChildren(DependencyObject view)
 			=> GetChildren<DependencyObject>(view);
 
 		internal static void AddChild(UIElement view, UIElement child)
