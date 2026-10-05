@@ -1458,7 +1458,8 @@ internal static class AccessibilityPeerHelper
 
 		foreach (var child in element.GetChildren())
 		{
-			if (child is UIElement uiElement)
+			// Same filter as the peer path, so a collapsed peerless ancestor (e.g. a closed SplitView pane) hides its subtree.
+			if (child is UIElement uiElement && FrameworkElementAutomationPeer.IsAcceptableAutomationChild(uiElement))
 			{
 				AppendElement(uiElement, parentIndex, depth + 1, nodes, activePeerPath, visitedElements);
 			}
