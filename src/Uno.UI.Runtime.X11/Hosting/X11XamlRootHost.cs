@@ -129,6 +129,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// creates the DisplayInformation extension, whose UpdateDetails reports the screen
 		// refresh rate through UpdateRenderTimerFps.
 		_framePacer = CreateFramePacer();
+		_vsync = X11PresentVsync.TryCreate(displayName: null, TopX11Window.Window);
 
 		UpdateWindowPropertiesFromPackage();
 
@@ -147,6 +148,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				_framePacer.Dispose();
 				_renderRequested.Dispose();
 				_renderer?.Dispose();
+				_vsync?.Dispose();
 			}
 		});
 	}
