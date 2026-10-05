@@ -160,6 +160,8 @@ namespace UITests.Windows_UI_Xaml.Performance
 			await Task.Delay(200);
 
 			var times = new List<double>(iterations);
+			var measures = new List<int>(iterations);
+			var arranges = new List<int>(iterations);
 			long allocated = 0;
 			var cold = 0.0;
 			var errors = 0;
@@ -174,6 +176,8 @@ namespace UITests.Windows_UI_Xaml.Performance
 				var x = 0d;
 				var y = 0d;
 				var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+				var measuresBefore = UIElement.LayoutMeasureCoreCount;
+				var arrangesBefore = UIElement.LayoutArrangeCoreCount;
 				var started = Stopwatch.GetTimestamp();
 
 				switch (operation)
@@ -211,6 +215,8 @@ namespace UITests.Windows_UI_Xaml.Performance
 				_host.UpdateLayout();
 				var elapsed = Stopwatch.GetElapsedTime(started).TotalMilliseconds;
 				var allocatedDelta = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
+				var measured = UIElement.LayoutMeasureCoreCount - measuresBefore;
+				var arranged = UIElement.LayoutArrangeCoreCount - arrangesBefore;
 
 				if (Verify(x, y) is { } error)
 				{
@@ -225,6 +231,8 @@ namespace UITests.Windows_UI_Xaml.Performance
 				else if (iteration >= 0)
 				{
 					times.Add(elapsed);
+					measures.Add(measured);
+					arranges.Add(arranged);
 					allocated += allocatedDelta;
 				}
 			}
@@ -232,8 +240,14 @@ namespace UITests.Windows_UI_Xaml.Performance
 			times.Sort();
 			var median = times[times.Count / 2];
 			var p90 = times[(int)(times.Count * 0.9)];
-			Log($"PARITY op={operation} median={median:F3}ms p90={p90:F3}ms min={times[0]:F3}ms cold={cold:F3}ms alloc={allocated / 1024.0 / times.Count:F1}KB/op rows={_rows.RealizedRowCount} cells={_rows.RealizedCellCount}"
+			Log($"PARITY op={operation} median={median:F3}ms p90={p90:F3}ms min={times[0]:F3}ms cold={cold:F3}ms alloc={allocated / 1024.0 / times.Count:F1}KB/op measures={Median(measures)} arranges={Median(arranges)} rows={_rows.RealizedRowCount} cells={_rows.RealizedCellCount}"
 				+ (errors > 0 ? $" ERRORS={errors} first={firstError}" : ""));
+		}
+
+		private static int Median(List<int> values)
+		{
+			values.Sort();
+			return values[values.Count / 2];
 		}
 
 		private void Scroll(double x, double y)
