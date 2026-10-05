@@ -198,7 +198,7 @@
             <TextBlock Text="TextBox" />
             <CommandBar Background="Purple">
                 <CommandBar.Content>
-                    <TextBox PlaceholderText="TextBox" Style="{StaticResource XamlDefaultTextBox}" />
+                    <TextBox PlaceholderText="TextBox" />
                 </CommandBar.Content>
                 <uuxc:CommandBarExtensions.NavigationCommand>
                     <AppBarButton Command="{Binding Command}" Label="Label">

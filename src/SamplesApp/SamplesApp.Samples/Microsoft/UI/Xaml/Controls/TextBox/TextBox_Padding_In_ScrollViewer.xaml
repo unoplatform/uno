@@ -7,18 +7,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ios="http://uno.ui/ios"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:not_win="http://uno.ui/not_win"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:DesignHeight="2000"
     d:DesignWidth="400"
-    mc:Ignorable="d ios android not_win">
+    mc:Ignorable="d ios android">
 
     <controls:SampleControl SampleDescription="When the TextBox inside the ScrollViewer is focussed, it should be scrolled into view above the keyboard including its Padding on both iOS and Android (because SoftInput.AdjustNothing is set).">
         <controls:SampleControl.SampleContent>
             <DataTemplate>
                 <StackPanel>
                     <Button Content="IsButton" />
-                    <TextBox not_win:Style="{StaticResource XamlDefaultTextBox}" PlaceholderText="GoatBox..." />
+                    <TextBox PlaceholderText="GoatBox..." />
                     <ScrollViewer Width="350" Height="400">
                         <StackPanel Background="Beige">
                             <Rectangle
@@ -27,7 +26,6 @@
                                 Fill="Red" />
                             <TextBox
                                 Padding="60"
-                                not_win:Style="{StaticResource XamlDefaultTextBox}"
                                 Background="Green"
                                 Header="TBHeader"
                                 PlaceholderText="TextBox..." />
@@ -36,7 +34,6 @@
                                 Height="600"
                                 Fill="Blue" />
                             <TextBox
-                                not_win:Style="{StaticResource XamlDefaultTextBox}"
                                 Background="Green"
                                 Header="UnderHeader"
                                 PlaceholderText="TextBox...">
