@@ -564,6 +564,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void ApplyMultiSelectStateToCachedItems();
 
+		// MUX Reference ListViewBase_Partial_Interaction.cpp, commit 58b6a55
+		// The primary scenario is touch narrator mocking a tap, so this takes the non-keyboard interaction path.
+		internal void AutomationItemClick(SelectorItem item) => OnItemClicked(item, VirtualKeyModifiers.None);
+
 		internal override void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
 			// Note: don't call base.OnItemClicked(), because we override the default single-selection-only handling
