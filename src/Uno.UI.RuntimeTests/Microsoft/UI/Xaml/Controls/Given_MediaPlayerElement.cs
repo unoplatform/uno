@@ -620,7 +620,9 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	// Uno-specific: WinUI's MediaPlayerPresenter has no visibility logic; Uno moved the old template's source-driven collapse into it.
+	// Uno-specific: WinUI's MediaPlayerPresenter has no visibility logic; Uno collapses the templated presenter until a source shows up.
+	// The macOS AVPlayer extension reports a source change while initializing, which shows the presenter right away.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_MediaPlayerElement_Loaded_Without_Source_Presenter_Collapsed()
 	{
 		CheckMediaPlayerExtensionAvailability();
