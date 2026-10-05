@@ -22,6 +22,10 @@ namespace Uno.UI.Runtime.AppleUIKit
 		[Export("automationElements")]
 		public NSObject[]? AutomationElements { get; set; }
 
+		[Export("accessibilityHitTest:withEvent:")]
+		public NSObject? AccessibilityHitTest(CGPoint point, UIEvent? uievent)
+			=> _owner?.AccessibilityHitTest(point);
+
 		private RootViewController? _owner;
 		private CADisplayLink _link;
 		private Thread? _renderThread;
