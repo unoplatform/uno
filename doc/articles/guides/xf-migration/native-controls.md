@@ -77,7 +77,7 @@ See the [Effects Migration Guide](xref:Uno.XamarinFormsMigration.Effects) for mo
 
 ### 2. Platform-Specific Code with Conditional Compilation
 
-For accessing platform-specific APIs, use conditional compilation.
+For platform-specific behavior, use conditional compilation. Uno Platform draws its controls itself on every platform, so a `TextBox` has no `UITextField` behind it to reach into: express the customization with the control's own properties, and keep native APIs for non-UI platform features.
 
 **Xamarin.Forms Renderer:**
 
@@ -97,27 +97,13 @@ protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
 **Uno Platform Equivalent:**
 
 ```csharp
-#if __IOS__
-using UIKit;
-#endif
-
 public partial class CustomTextBox : TextBox
 {
     public CustomTextBox()
     {
-        InitializeComponent();
-        Loaded += OnLoaded;
-    }
-
-    private void OnLoaded(object sender, RoutedEventArgs e)
-    {
 #if __IOS__
-        if (this.GetTemplateChild("ContentElement") is ContentControl contentElement 
-            && contentElement.Content is UITextField textField)
-        {
-            textField.BorderStyle = UITextBorderStyle.RoundedRect;
-            textField.Layer.CornerRadius = 10;
-        }
+        BorderThickness = new Thickness(1);
+        CornerRadius = new CornerRadius(10);
 #endif
     }
 }
@@ -179,65 +165,34 @@ Usage:
 
 ## Accessing Native Controls
 
-Uno Platform allows direct access to native controls on iOS, Android, and macOS.
-
-### Getting the Native Control
-
-```csharp
-public static class NativeControlHelper
-{
-    public static void CustomizeNativeControl(UIElement element)
-    {
-#if __ANDROID__
-        if (element.GetTemplateChild("ContentElement") is ContentControl contentElement)
-        {
-            var nativeView = contentElement.Content as Android.Views.View;
-            // Customize Android native view
-        }
-#elif __IOS__
-        if (element.GetTemplateChild("ContentElement") is ContentControl contentElement)
-        {
-            var nativeView = contentElement.Content as UIKit.UIView;
-            // Customize iOS native view
-        }
-#endif
-    }
-}
-```
+Uno Platform renders its controls with Skia on every platform, including Android and iOS. A `TextBox`, a `Button` or any other built-in control is not backed by a native view, so there is no `EditText` or `UITextField` to retrieve from its template. A renderer that customized the native control of a built-in control becomes a property, style or template change.
 
 ### Platform-Specific Properties
 
-Use platform-specific code to set properties that don't exist in WinUI:
+Most native-only settings that renderers used to apply have a WinUI or Uno Platform equivalent. For example, the hint color and the keyboard's return key of an Android `EditText`:
 
 ```csharp
 public partial class CustomEntry : TextBox
 {
     public CustomEntry()
     {
-        InitializeComponent();
-        ApplyPlatformCustomizations();
+        PlaceholderForeground = new SolidColorBrush(Microsoft.UI.Colors.Gray);
+        Uno.UI.Xaml.Controls.TextBoxExtensions.SetInputReturnType(this, Uno.UI.Xaml.Controls.InputReturnType.Done);
     }
-
-    partial void ApplyPlatformCustomizations();
 }
+```
 
-// In a platform-specific file (e.g., CustomEntry.Android.cs)
+### Getting the Native Control
+
+When you need a real native widget, create it yourself and host it (see [Wrapping Native Controls](#wrapping-native-controls)). Keep a reference to the instance you created to customize it; Uno Platform doesn't wrap or replace it:
+
+```csharp
 #if __ANDROID__
-partial class CustomEntry
-{
-    partial void ApplyPlatformCustomizations()
-    {
-        Loaded += (s, e) =>
-        {
-            if (GetTemplateChild("ContentElement") is ContentControl content
-                && content.Content is Android.Widget.EditText editText)
-            {
-                editText.SetHintTextColor(Android.Graphics.Color.Gray);
-                editText.ImeOptions = Android.Views.InputMethods.ImeAction.Done;
-            }
-        };
-    }
-}
+var editText = new Android.Widget.EditText(Uno.UI.ContextHelper.Current);
+editText.SetHintTextColor(Android.Graphics.Color.Gray);
+editText.ImeOptions = Android.Views.InputMethods.ImeAction.Done;
+
+nativeHost.Content = editText; // nativeHost is a ContentControl
 #endif
 ```
 
@@ -285,42 +240,9 @@ interface CustomSDK
 
 Similar to Android, iOS bindings can be referenced in your iOS head project. Create the binding using the standard Xamarin.iOS binding process.
 
-### Using Native Controls in XAML
-
-You can include native controls directly in your Uno Platform XAML:
-
-**Android:**
-
-```xml
-<Page xmlns:android="http://uno.ui/android"
-      xmlns:androidwidget="using:Android.Widget"
-      mc:Ignorable="android">
-    
-    <StackPanel>
-        <android:Grid>
-            <androidwidget:RatingBar android:layout_width="wrap_content"
-                                     android:layout_height="wrap_content" />
-        </android:Grid>
-    </StackPanel>
-</Page>
-```
-
-**iOS:**
-
-```xml
-<Page xmlns:ios="http://uno.ui/ios"
-      xmlns:uikit="using:UIKit"
-      mc:Ignorable="ios">
-    
-    <StackPanel>
-        <ios:Grid>
-            <uikit:UISwitch />
-        </ios:Grid>
-    </StackPanel>
-</Page>
-```
-
 ### Wrapping Native Controls
+
+To host a native control, set it as the `Content` of a `ContentControl` (or `ContentPresenter`). Uno Platform overlays the native view on the Skia-rendered UI and keeps it in sync with the control's layout, clipping, z-order and opacity. A native view can only be hosted as content: it can't be a `Panel` child.
 
 To create a cross-platform control that wraps native implementations:
 
@@ -329,7 +251,8 @@ public partial class CustomRatingControl : ContentControl
 {
     public CustomRatingControl()
     {
-        InitializeComponent();
+        HorizontalContentAlignment = HorizontalAlignment.Stretch;
+        VerticalContentAlignment = VerticalAlignment.Stretch;
         CreateNativeControl();
     }
 
@@ -342,10 +265,10 @@ partial class CustomRatingControl
 {
     partial void CreateNativeControl()
     {
-        var ratingBar = new Android.Widget.RatingBar(Android.App.Application.Context);
+        var ratingBar = new Android.Widget.RatingBar(Uno.UI.ContextHelper.Current);
         ratingBar.NumStars = 5;
-        
-        Content = VisualTreeHelper.AdaptNative(ratingBar);
+
+        Content = ratingBar;
     }
 }
 #endif
@@ -357,11 +280,33 @@ partial class CustomRatingControl
     partial void CreateNativeControl()
     {
         var ratingView = new CustomRatingView();
-        
-        Content = VisualTreeHelper.AdaptNative(ratingView);
+
+        Content = ratingView;
     }
 }
 #endif
+```
+
+Don't set a `ContentTemplate` or `ContentTemplateSelector` on a control that hosts a native view. For the details of native hosting on each platform, including measuring and the alignment defaults, see [Embedding Native Elements in Skia Apps](xref:Uno.Skia.Embedding.Native).
+
+### Using Native Controls in XAML
+
+A native control can also be declared in XAML, as the content of a `ContentControl`. Use a [platform-specific XAML prefix](xref:Uno.Development.PlatformSpecificXaml) that maps the native CLR namespace, so the markup is only compiled for that platform:
+
+```xml
+<Page xmlns:android="http://uno.ui/android#using:Android.Widget"
+      xmlns:ios="http://uno.ui/ios#using:UIKit"
+      mc:Ignorable="d android ios">
+
+    <StackPanel>
+        <android:ContentControl>
+            <android:RatingBar />
+        </android:ContentControl>
+        <ios:ContentControl>
+            <ios:UISwitch />
+        </ios:ContentControl>
+    </StackPanel>
+</Page>
 ```
 
 ## Migrating Common Renderer Scenarios
@@ -380,7 +325,7 @@ Control.BorderStyle = UITextBorderStyle.None;
 
 **Uno Platform:**
 
-Use a custom control template that doesn't include those elements, or set them via platform-specific code as shown above.
+Use a custom control template that doesn't include those elements, or set the control's own properties (for example `BorderThickness` or `Background`), conditionally per platform if needed.
 
 ### Scenario 2: Customizing Touch/Click Behavior
 
@@ -396,12 +341,9 @@ Control.Touch += OnTouch;
 element.PointerPressed += OnPointerPressed;
 element.PointerReleased += OnPointerReleased;
 element.PointerMoved += OnPointerMoved;
-
-// Or platform-specific
-#if __ANDROID__
-nativeView.Touch += OnTouch;
-#endif
 ```
+
+A native view that you host yourself (see [Wrapping Native Controls](#wrapping-native-controls)) keeps receiving its native touch events, so a `Touch` handler on it continues to work.
 
 ### Scenario 3: Custom Drawing
 
@@ -571,7 +513,7 @@ Migrating custom renderers to Uno Platform:
 - **Visual changes**: Use control templates
 - **Behavioral changes**: Use attached properties or custom controls
 - **Native API access**: Use conditional compilation with platform-specific code
-- **Native controls**: Can be embedded directly in XAML or wrapped in custom controls
+- **Native controls**: Hosted as the content of a `ContentControl`, from code or XAML, optionally wrapped in a custom control
 - **Dependency injection**: Replace `DependencyService` with proper DI container
 
 ## Next Steps
