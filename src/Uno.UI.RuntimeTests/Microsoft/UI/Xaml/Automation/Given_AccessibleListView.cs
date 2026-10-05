@@ -322,5 +322,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 #endif
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ItemClick_Is_Enabled_Then_Item_Invoke_Raises_ItemClick()
+		{
+			var listView = new ListView
+			{
+				ItemsSource = new List<string> { "One", "Two", "Three" },
+				IsItemClickEnabled = true,
+			};
+			object clickedItem = null;
+			listView.ItemClick += (_, e) => clickedItem = e.ClickedItem;
+
+			await UITestHelper.Load(listView);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var containerPeer = FrameworkElementAutomationPeer.CreatePeerForElement((ListViewItem)listView.ContainerFromIndex(1));
+			var invokeProvider = containerPeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+			Assert.IsNotNull(invokeProvider, "WinUI exposes Invoke on the items of a list with ItemClick enabled.");
+			invokeProvider.Invoke();
+			Assert.AreEqual("Two", clickedItem);
+
+			clickedItem = null;
+			var itemPeer = FrameworkElementAutomationPeer.CreatePeerForElement(listView).GetChildren()[2];
+			var itemInvokeProvider = itemPeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+			Assert.IsNotNull(itemInvokeProvider, "The data item peer forwards Invoke to its container.");
+			itemInvokeProvider.Invoke();
+			Assert.AreEqual("Three", clickedItem);
+
+			listView.IsItemClickEnabled = false;
+			Assert.IsNull(containerPeer.GetPattern(PatternInterface.Invoke));
+		}
 	}
 }
