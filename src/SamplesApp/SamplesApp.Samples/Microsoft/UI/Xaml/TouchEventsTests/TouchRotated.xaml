@@ -8,12 +8,11 @@
     xmlns:ios="http://uno.ui/ios"
     xmlns:local="Uno.UI.Samples.Content.UITests.TouchEventsTests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:not_win="http://uno.ui/not_win"
     xmlns:u="using:Uno.UI.Samples.Controls"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:DesignHeight="2000"
     d:DesignWidth="400"
-    mc:Ignorable="d ios android not_win">
+    mc:Ignorable="d ios android">
 
     <StackPanel>
         <TextBlock x:Name="ClickTextBlock" Text="Button clicked 0 times" />
@@ -29,7 +28,6 @@
             <Button
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
-                not_win:Style="{StaticResource XamlDefaultButton}"
                 Click="OnButtonClicked">
                 <Border
                     Width="40"

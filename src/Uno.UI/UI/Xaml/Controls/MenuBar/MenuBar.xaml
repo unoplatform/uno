@@ -6,8 +6,7 @@
                     xmlns:local="using:Microsoft.UI.Xaml.Controls"
 					mc:Ignorable="d">
 
-	<Style x:Key="XamlDefaultMenuBar"
-		   TargetType="local:MenuBar">
+	<Style TargetType="local:MenuBar">
 		<Setter Property="Background"
 				Value="{ThemeResource MenuBarBackground}" />
 		<Setter Property="IsTabStop"
@@ -35,8 +34,5 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-
-    <Style TargetType="local:MenuBar"
-		   BasedOn="{StaticResource XamlDefaultMenuBar}" />
 
 </ResourceDictionary>

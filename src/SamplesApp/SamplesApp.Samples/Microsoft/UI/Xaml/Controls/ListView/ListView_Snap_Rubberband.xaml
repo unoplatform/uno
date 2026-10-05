@@ -44,7 +44,6 @@
                     <ControlTemplate TargetType="ListView">
                         <ScrollViewer
                             x:Name="ScrollViewer"
-                            not_win:Style="{StaticResource ListViewBaseScrollViewerStyle}"
                             AutomationProperties.AccessibilityView="Raw"
                             BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
                             HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"

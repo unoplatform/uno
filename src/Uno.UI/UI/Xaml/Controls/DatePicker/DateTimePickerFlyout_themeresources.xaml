@@ -2,38 +2,6 @@
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <ResourceDictionary.ThemeDictionaries>
-        <ResourceDictionary x:Key="Default">
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBackground" ResourceKey="SystemControlTransparentBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBorderBrush" ResourceKey="SystemControlForegroundTransparentBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightTransparentBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-        </ResourceDictionary>
-        <ResourceDictionary x:Key="HighContrast">
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBackground" ResourceKey="SystemControlTransparentBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBorderBrush" ResourceKey="SystemControlForegroundTransparentBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightTransparentBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-        </ResourceDictionary>
-        <ResourceDictionary x:Key="Light">
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBackground" ResourceKey="SystemControlTransparentBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBorderBrush" ResourceKey="SystemControlForegroundTransparentBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightTransparentBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-            <StaticResource x:Key="DateTimePickerFlyoutButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-        </ResourceDictionary>
-    </ResourceDictionary.ThemeDictionaries>
 
     <Style x:Key="DateTimePickerFlyoutButtonStyle" TargetType="ButtonBase">
         <Setter Property="Background" Value="{ThemeResource DateTimePickerFlyoutButtonBackground}" />

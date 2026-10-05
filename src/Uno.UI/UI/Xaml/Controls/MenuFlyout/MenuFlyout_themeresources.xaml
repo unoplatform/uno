@@ -40,67 +40,35 @@
       <StaticResource x:Key="SplitMenuFlyoutItemButtonDividerBrush" ResourceKey="DividerStrokeColorDefaultBrush" />
       <StaticResource x:Key="MenuFlyoutPresenterBackground" ResourceKey="DesktopAcrylicTransparentBrush" />
       <StaticResource x:Key="MenuFlyoutPresenterBorderBrush" ResourceKey="SurfaceStrokeColorFlyoutBrush" />
-      <Thickness x:Key="MenuFlyoutPresenterBorderThemeThickness">1</Thickness>
       <TextTrimming x:Key="MenuFlyoutItemTextTrimming">Clip</TextTrimming>
       <Thickness x:Key="MenuFlyoutItemBorderThickness">0</Thickness>
       <Thickness x:Key="MenuFlyoutSubItemBorderThickness">0</Thickness>
-      <Thickness x:Key="MenuFlyoutItemPlaceholderThemeThickness">28,0,0,0</Thickness>
-      <Thickness x:Key="MenuFlyoutItemDoublePlaceholderThemeThickness">56,0,0,0</Thickness>
       <Thickness x:Key="MenuFlyoutItemRevealBorderThickness">1</Thickness>
       <Thickness x:Key="ToggleMenuFlyoutItemRevealBorderThickness">1</Thickness>
       <Thickness x:Key="MenuFlyoutSubItemRevealBorderThickness">1</Thickness>
-      <SolidColorBrush x:Key="MenuFlyoutItemFocusedBackgroundThemeBrush" Color="#FF212121" />
-      <SolidColorBrush x:Key="MenuFlyoutItemFocusedForegroundThemeBrush" Color="#FFFFFFFF" />
-      <SolidColorBrush x:Key="MenuFlyoutItemDisabledForegroundThemeBrush" Color="#66FFFFFF" />
-      <SolidColorBrush x:Key="MenuFlyoutItemPointerOverBackgroundThemeBrush" Color="#FF212121" />
-      <SolidColorBrush x:Key="MenuFlyoutItemPointerOverForegroundThemeBrush" Color="#FFFFFFFF" />
-      <SolidColorBrush x:Key="MenuFlyoutItemPressedBackgroundThemeBrush" Color="#FFFFFFFF" />
-      <SolidColorBrush x:Key="MenuFlyoutItemPressedForegroundThemeBrush" Color="#FF000000" />
-      <SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="#FF7A7A7A" />
-      <StaticResource x:Key="MenuFlyoutLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealBackgroundBrush" />
       <StaticResource x:Key="MenuFlyoutItemRevealBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="MenuFlyoutItemRevealBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
       <StaticResource x:Key="MenuFlyoutItemRevealBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealBackgroundBrush" />
       <StaticResource x:Key="ToggleMenuFlyoutItemRevealBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="ToggleMenuFlyoutItemRevealBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
       <StaticResource x:Key="ToggleMenuFlyoutItemRevealBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightAccentRevealBackgroundBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBackgroundSubMenuOpened" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushSubMenuOpened" ResourceKey="SystemControlTransparentRevealBorderBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
     </ResourceDictionary>
     <ResourceDictionary x:Key="HighContrast">
       <StaticResource x:Key="MenuFlyoutSeparatorBackground" ResourceKey="SystemColorWindowTextColorBrush" />
-      <StaticResource x:Key="MenuFlyoutItemBackground" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="MenuFlyoutItemBackgroundPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
       <StaticResource x:Key="MenuFlyoutItemBackgroundPressed" ResourceKey="SystemColorHighlightColorBrush" />
-      <StaticResource x:Key="MenuFlyoutItemBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="MenuFlyoutItemBackgroundBrush" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="MenuFlyoutItemForeground" ResourceKey="SystemColorButtonTextColorBrush" />
       <StaticResource x:Key="MenuFlyoutItemForegroundPointerOver" ResourceKey="SystemColorHighlightTextColorBrush" />
       <StaticResource x:Key="MenuFlyoutItemForegroundPressed" ResourceKey="SystemColorHighlightTextColorBrush" />
       <StaticResource x:Key="MenuFlyoutItemForegroundDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemBackground" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemBackgroundPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemBackgroundPressed" ResourceKey="SystemColorHighlightColorBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemBackgroundSubMenuOpened" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemBackgroundBrush" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemForeground" ResourceKey="SystemColorButtonTextColorBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemForegroundPointerOver" ResourceKey="SystemColorHighlightTextColorBrush" />
@@ -127,46 +95,10 @@
       <TextTrimming x:Key="MenuFlyoutItemTextTrimming">Clip</TextTrimming>
       <Thickness x:Key="MenuFlyoutItemBorderThickness">0</Thickness>
       <Thickness x:Key="MenuFlyoutSubItemBorderThickness">0</Thickness>
-      <Thickness x:Key="MenuFlyoutItemPlaceholderThemeThickness">28,0,0,0</Thickness>
-      <Thickness x:Key="MenuFlyoutItemDoublePlaceholderThemeThickness">56,0,0,0</Thickness>
       <Thickness x:Key="MenuFlyoutItemRevealBorderThickness">1</Thickness>
       <Thickness x:Key="ToggleMenuFlyoutItemRevealBorderThickness">1</Thickness>
       <Thickness x:Key="MenuFlyoutSubItemRevealBorderThickness">1</Thickness>
-      <SolidColorBrush x:Key="MenuFlyoutItemFocusedBackgroundThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
-      <SolidColorBrush x:Key="MenuFlyoutItemFocusedForegroundThemeBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
-      <SolidColorBrush x:Key="MenuFlyoutItemDisabledForegroundThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
-      <SolidColorBrush x:Key="MenuFlyoutItemPointerOverBackgroundThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
-      <SolidColorBrush x:Key="MenuFlyoutItemPointerOverForegroundThemeBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
-      <SolidColorBrush x:Key="MenuFlyoutItemPressedBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
-      <SolidColorBrush x:Key="MenuFlyoutItemPressedForegroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
-      <SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
-      <StaticResource x:Key="MenuFlyoutLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBorderBrush" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealBackgroundBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBorderBrush" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightAccentRevealBackgroundBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBackgroundSubMenuOpened" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrush" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushSubMenuOpened" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
     </ResourceDictionary>
     <ResourceDictionary x:Key="Light">
       <StaticResource x:Key="MenuFlyoutSeparatorBackground" ResourceKey="DividerStrokeColorDefaultBrush" />
@@ -206,49 +138,21 @@
       <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForegroundPointerOver" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
-      <Thickness x:Key="MenuFlyoutPresenterBorderThemeThickness">1</Thickness>
       <TextTrimming x:Key="MenuFlyoutItemTextTrimming">Clip</TextTrimming>
       <Thickness x:Key="MenuFlyoutItemBorderThickness">0</Thickness>
       <Thickness x:Key="MenuFlyoutSubItemBorderThickness">0</Thickness>
-      <Thickness x:Key="MenuFlyoutItemPlaceholderThemeThickness">28,0,0,0</Thickness>
-      <Thickness x:Key="MenuFlyoutItemDoublePlaceholderThemeThickness">56,0,0,0</Thickness>
       <Thickness x:Key="MenuFlyoutItemRevealBorderThickness">1</Thickness>
       <Thickness x:Key="ToggleMenuFlyoutItemRevealBorderThickness">1</Thickness>
       <Thickness x:Key="MenuFlyoutSubItemRevealBorderThickness">1</Thickness>
-      <SolidColorBrush x:Key="MenuFlyoutItemFocusedBackgroundThemeBrush" Color="#FFE5E5E5" />
-      <SolidColorBrush x:Key="MenuFlyoutItemFocusedForegroundThemeBrush" Color="#FF000000" />
-      <SolidColorBrush x:Key="MenuFlyoutItemDisabledForegroundThemeBrush" Color="#66000000" />
-      <SolidColorBrush x:Key="MenuFlyoutItemPointerOverBackgroundThemeBrush" Color="#FFE5E5E5" />
-      <SolidColorBrush x:Key="MenuFlyoutItemPointerOverForegroundThemeBrush" Color="#FF000000" />
-      <SolidColorBrush x:Key="MenuFlyoutItemPressedBackgroundThemeBrush" Color="#FF000000" />
-      <SolidColorBrush x:Key="MenuFlyoutItemPressedForegroundThemeBrush" Color="#FFFFFFFF" />
-      <SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="#FF7A7A7A" />
-      <StaticResource x:Key="MenuFlyoutLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealBackgroundBrush" />
       <StaticResource x:Key="MenuFlyoutItemRevealBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="MenuFlyoutItemRevealBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="MenuFlyoutItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
       <StaticResource x:Key="MenuFlyoutItemRevealBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealBackgroundBrush" />
       <StaticResource x:Key="ToggleMenuFlyoutItemRevealBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="ToggleMenuFlyoutItemRevealBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="ToggleMenuFlyoutItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
       <StaticResource x:Key="ToggleMenuFlyoutItemRevealBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightAccentRevealBackgroundBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBackgroundSubMenuOpened" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-      <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushSubMenuOpened" ResourceKey="SystemControlTransparentRevealBorderBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
     </ResourceDictionary>
   </ResourceDictionary.ThemeDictionaries>
