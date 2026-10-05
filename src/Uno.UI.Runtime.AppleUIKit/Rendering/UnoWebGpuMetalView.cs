@@ -26,6 +26,10 @@ internal sealed partial class UnoWebGpuMetalView : UIView, IAppleUIKitRenderView
 	[Export("automationElements")]
 	public NSObject[]? AutomationElements { get; set; }
 
+	[Export("accessibilityHitTest:withEvent:")]
+	public NSObject? AccessibilityHitTest(CGPoint point, UIEvent? uievent)
+		=> _owner?.AccessibilityHitTest(point);
+
 	[Export("layerClass")]
 	public static Class LayerClass() => new Class(typeof(CAMetalLayer));
 
