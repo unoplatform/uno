@@ -2586,9 +2586,19 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		}
 
 		TryGetPeerOwner(providerPeer, peer, out var owner);
-		if (binding.Owner is { } ownerReference
-			? !ownerReference.TryGetTarget(out var boundOwner) || !ReferenceEquals(boundOwner, owner)
-			: owner is not null)
+		if (binding.Owner is { } ownerReference)
+		{
+			// Duplicated items share one item peer, whose own container is only the last realized occurrence.
+			if (!ownerReference.TryGetTarget(out var boundOwner) ||
+				!(ReferenceEquals(boundOwner, owner) || IsItemOccurrenceContainer(peer, boundOwner)))
+			{
+				ScheduleRebuild();
+				return null;
+			}
+
+			owner = boundOwner;
+		}
+		else if (owner is not null)
 		{
 			ScheduleRebuild();
 			return null;
@@ -2598,6 +2608,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			? providerPeer
 			: null;
 	}
+
+	private static bool IsItemOccurrenceContainer(AutomationPeer peer, UIElement container)
+		=> peer is ItemAutomationPeer { ItemsControlAutomationPeer.Owner: ItemsControl itemsControl } itemPeer &&
+			ReferenceEquals(itemsControl.ItemFromContainer(container), itemPeer.Item);
 
 	private AccessibilityNativeNodeSnapshot CreateSnapshot(UnoUIAccessibilityElement element)
 	{
