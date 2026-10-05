@@ -8,7 +8,7 @@ The `CommandBar` in **Uno** is designed to be used the same way you would use th
 
 This document exists to highlight some of the differences you might encounter when working with `CommandBar` on **iOS** or **Android**.
 
-The `CommandBar` replicates **WinUI**'s `CommandBar`. It is templatable and supports a template that's almost identical to **WinUI**'s default `CommandBar`, based on the `XamlDefaultCommandBar` style.
+The `CommandBar` replicates **WinUI**'s `CommandBar`. It is templatable and supports a template that's almost identical to **WinUI**'s default `CommandBar`, based on the default `CommandBar` style.
 
 > [!NOTE]
 > Uno Platform 7.0 removed the native `CommandBar` backends — the iOS `UINavigationBar`
@@ -24,8 +24,10 @@ The `CommandBar` replicates **WinUI**'s `CommandBar`. It is templatable and supp
 
 ## Usage Example
 
-```csharp
-<Style TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
+`DefaultCommandBarStyle` is available when `XamlControlsResources` is merged:
+
+```xml
+<Style TargetType="CommandBar" BasedOn="{StaticResource DefaultCommandBarStyle}" />
 ```
 
 ## Padding
