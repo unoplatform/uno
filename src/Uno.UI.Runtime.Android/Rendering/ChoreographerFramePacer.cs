@@ -8,9 +8,8 @@ using Android.Views;
 namespace Uno.UI.Runtime.Android;
 
 /// <summary>
-/// Releases at most one frame per display vsync, from the main looper's <see cref="Choreographer"/>. For render
-/// loops whose present never blocks (a Vulkan MAILBOX swapchain), which would otherwise present as fast as frames
-/// can be recorded, far above the refresh rate.
+/// Starts at most one frame per display vsync, from the main looper's <see cref="Choreographer"/>, and hands the
+/// render thread the time of the vsync that started it. Idle costs nothing: a callback is only posted on request.
 /// </summary>
 internal sealed class ChoreographerFramePacer : Java.Lang.Object, Choreographer.IFrameCallback
 {
@@ -18,6 +17,12 @@ internal sealed class ChoreographerFramePacer : Java.Lang.Object, Choreographer.
 	private readonly Action _onVsync;
 	private int _callbackPosted;
 	private long _vsyncTimestamp;
+	private long _lastFrameTimeNanos;
+	private long _lastConvertedTimestamp;
+
+	// A frame that starts later than this after its vsync (e.g. a request latched while the surface was gone) is
+	// not that vsync's frame, and back-dating it would make the frame clock jump the whole gap.
+	private static readonly long MaxVsyncAge = Stopwatch.Frequency / 10;
 
 	/// <param name="onVsync">Invoked on the main thread once the frame's vsync time is available from <see cref="TakeVsyncTimestamp"/>.</param>
 	/// <remarks>Must be created on the main thread: <see cref="Choreographer.Instance"/> is per looper.</remarks>
@@ -38,20 +43,26 @@ internal sealed class ChoreographerFramePacer : Java.Lang.Object, Choreographer.
 
 	/// <summary>
 	/// The <see cref="Stopwatch.GetTimestamp"/> time of the latest vsync, or null if none arrived since the last call
-	/// (a frame the host drew on its own, e.g. after a surface change, has no vsync of its own).
+	/// or it is too old to be this frame's (a frame the host drew on its own has no vsync of its own).
 	/// </summary>
 	public long? TakeVsyncTimestamp()
 	{
 		var timestamp = Interlocked.Exchange(ref _vsyncTimestamp, 0);
-		return timestamp == 0 ? null : timestamp;
+		return timestamp == 0 || Stopwatch.GetTimestamp() - timestamp > MaxVsyncAge ? null : timestamp;
 	}
 
 	public void DoFrame(long frameTimeNanos)
 	{
-		// Converted through its age, so nothing assumes the Choreographer clock matches Stopwatch's.
-		var ageInNanos = Math.Max(0, Java.Lang.JavaSystem.NanoTime() - frameTimeNanos);
-		var timestamp = Stopwatch.GetTimestamp() - (long)(ageInNanos * (Stopwatch.Frequency / 1_000_000_000d));
-		Interlocked.Exchange(ref _vsyncTimestamp, Math.Max(1, timestamp));
+		if (frameTimeNanos != _lastFrameTimeNanos)
+		{
+			// Converted through its age, so nothing assumes the Choreographer clock matches Stopwatch's.
+			var ageInNanos = Math.Max(0, Java.Lang.JavaSystem.NanoTime() - frameTimeNanos);
+			var timestamp = Stopwatch.GetTimestamp() - (long)(ageInNanos * (Stopwatch.Frequency / 1_000_000_000d));
+			_lastConvertedTimestamp = Math.Max(1, timestamp);
+			_lastFrameTimeNanos = frameTimeNanos;
+		}
+
+		Interlocked.Exchange(ref _vsyncTimestamp, _lastConvertedTimestamp);
 
 		Volatile.Write(ref _callbackPosted, 0);
 		_onVsync();
