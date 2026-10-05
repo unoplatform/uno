@@ -157,7 +157,10 @@ export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/R
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 mkdir -p $(dirname ${UNO_TESTS_RUNTIMETESTS_FAILED_LIST})
 
-export UNO_UITEST_SIMULATOR_NAME="${UNO_UITEST_SIMULATOR_NAME:=iPad Pro (12.9-inch) (6th generation)}"
+# A device the image pre-creates: one created here spends 5-8 minutes in its first-boot data
+# migration, sometimes past the boot watchdog. The 13-inch iPad Pro is the closest pre-created match to
+# the 12.9-inch screen the tests were written against.
+export UNO_UITEST_SIMULATOR_NAME="${UNO_UITEST_SIMULATOR_NAME:=iPad Pro 13-inch (M5)}"
 
 _TFM="${TFM:=net10.0-ios26.0}"
 export UnoTargetFrameworkOverride="$_TFM"
@@ -209,8 +212,7 @@ find_ios_device() {
 
 UITEST_IOSDEVICE_ID=$(find_ios_device)
 
-# The images only pre-create current device models, and the screen size the tests were written
-# against is the 12.9-inch iPad Pro, so create that device when it is missing.
+# Create the device when the image does not ship it (an override, or an image without it).
 if [ -z "$UITEST_IOSDEVICE_ID" ]; then
 	for attempt in 1 2 3 4 5 6; do
 		IOS_DEVICETYPE_ID=$(xcrun simctl list devicetypes --json | jq -r --arg name "$UNO_UITEST_SIMULATOR_NAME" '
