@@ -203,6 +203,15 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			AccessibilityPeerHelper.IOSAccessibilityHitTestAccessor =
 				(root, x, y) => FindAdapterForRoot(root)?.HitTestSnapshotForRoot(root, x, y);
 
+			AccessibilityPeerHelper.IOSAccessibilityElementDidBecomeFocusedAction =
+				element =>
+				{
+					if (FindAdapterForElement(element)?.GetElementForOwner(element) is UnoUIAccessibilityElement native)
+					{
+						native.AccessibilityElementDidBecomeFocused();
+					}
+				};
+
 			AccessibilityPeerHelper.IOSAccessibilityElementRespondsToSelectorAccessor =
 				(element, selector) =>
 					FindAdapterForElement(element)?.GetElementForOwner(element) is NSObject native &&
