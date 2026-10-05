@@ -357,6 +357,42 @@ public class Given_Compositor
 	}
 
 	/// <summary>
+	/// A host may only know one vsync on the display's cadence, and not on which side of now it is: DWM reports the
+	/// next vblank after DwmFlush and the last one after the compositor clock wakes. Either way the frame gets the
+	/// latest vsync that already happened.
+	/// </summary>
+	[TestMethod]
+	[DataRow(100L, 93L, 92L)]
+	[DataRow(100L, 70L, 68L)]
+	[DataRow(100L, 100L, 100L)]
+	[DataRow(100L, 101L, 100L)]
+	[DataRow(100L, 130L, 124L)]
+	public void When_Vsync_Anchor_Is_Either_Side_Of_Now_Then_Latest_Vsync_Is_Taken(long anchor, long now, long expected)
+	{
+		Assert.AreEqual(expected, FrameClock.LatestVsyncAtOrBefore(anchor, period: 8, now));
+	}
+
+	/// <summary>
+	/// A frame rate below the refresh rate can stay on vsync only when the refresh rate is a multiple of it: every
+	/// n-th vsync. Rates that aren't (or are above the refresh rate) get none and fall back to a timer.
+	/// </summary>
+	[TestMethod]
+	[DataRow(120.0, 120.0, 1)]
+	[DataRow(120.0, 60.0, 2)]
+	[DataRow(119.88, 60.0, 2)]
+	[DataRow(60.0, 30.0, 2)]
+	[DataRow(144.0, 48.0, 3)]
+	[DataRow(120.0, 50.0, 0)]
+	[DataRow(60.0, 144.0, 0)]
+	public void When_Frame_Rate_Divides_Refresh_Rate_Then_Frames_Take_Every_Nth_Vsync(double refreshRate, double frameRate, int expected)
+	{
+		var period = (long)(TimeSpan.TicksPerSecond / refreshRate);
+		var frameInterval = (long)(TimeSpan.TicksPerSecond / frameRate);
+
+		Assert.AreEqual(expected, FrameClock.GetVsyncDivisor(frameInterval, period));
+	}
+
+	/// <summary>
 	/// A record evaluates its animations against the frame's timestamp, not the instant the record happened to
 	/// run at, so every animation in the frame moves on the same even grid as the frame drivers.
 	/// </summary>
