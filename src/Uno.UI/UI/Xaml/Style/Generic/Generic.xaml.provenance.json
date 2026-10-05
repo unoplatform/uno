@@ -1,0 +1,9 @@
+{
+  "repo": "https://github.com/microsoft/microsoft-ui-xaml",
+  "tag": "winui3/release/2.5.1",
+  "commit": "ba3a8d59e6de4e2b86ca4f61c78bc26ccf129afd",
+  "path": "src/dxaml/xcp/dxaml/themes/generic.xaml",
+  "blobSha": "def26a6152487e366589660cd220509db6d4cf09",
+  "sha256": "4c4085838721c0afcb1a9ee17591c0655cdddadb26d330788e08bcd7f1af8285",
+  "importedOn": "2026-10-05"
+}
