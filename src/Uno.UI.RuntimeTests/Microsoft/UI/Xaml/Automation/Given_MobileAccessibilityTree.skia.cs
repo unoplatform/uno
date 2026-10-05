@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
@@ -127,6 +128,65 @@ public partial class Given_MobileAccessibilityTree
 
 		Assert.IsTrue(nodes.Any(node => ReferenceEquals(node.Owner, button)));
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Ancestor_Is_Collapsed_Then_Descendant_Leaves_The_Tree()
+	{
+		var button = new Button { Content = "Collapsed descendant" };
+		var container = new Border { Child = new StackPanel { Children = { button } } };
+		var root = new StackPanel { Children = { container, new Button { Content = "Sibling" } } };
+		await UITestHelper.Load(root);
+
+		Assert.IsTrue(ContainsOwner(MobileAccessibilityTestHelper.GetPeerTree(root), button));
+		Assert.AreNotEqual(false, NativeTreeContains(root.XamlRoot!, "Collapsed descendant"));
+
+		container.Visibility = Visibility.Collapsed;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(ContainsOwner(MobileAccessibilityTestHelper.GetPeerTree(root), button));
+		Assert.AreNotEqual(true, NativeTreeContains(root.XamlRoot!, "Collapsed descendant"));
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Overlay_SplitView_Pane_Closes_Then_Pane_Content_Leaves_The_Tree()
+	{
+		var paneButton = new Button { Content = "Pane button" };
+		var splitView = new SplitView
+		{
+			DisplayMode = SplitViewDisplayMode.Overlay,
+			IsPaneOpen = true,
+			OpenPaneLength = 200,
+			Pane = new StackPanel { Children = { paneButton } },
+			Content = new Button { Content = "Content button" },
+			Width = 400,
+			Height = 300,
+		};
+		await UITestHelper.Load(splitView);
+
+		Assert.IsTrue(ContainsOwner(MobileAccessibilityTestHelper.GetPeerTree(splitView), paneButton));
+		Assert.AreNotEqual(false, NativeTreeContains(splitView.XamlRoot!, "Pane button"));
+
+		var paneRoot = splitView.FindFirstDescendant<FrameworkElement>("PaneRoot")
+			?? throw new InvalidOperationException("SplitView PaneRoot not found.");
+		splitView.IsPaneOpen = false;
+		await TestServices.WindowHelper.WaitFor(() => paneRoot.Visibility == Visibility.Collapsed);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(ContainsOwner(MobileAccessibilityTestHelper.GetPeerTree(splitView), paneButton));
+		Assert.AreNotEqual(true, NativeTreeContains(splitView.XamlRoot!, "Pane button"));
+	}
+
+	private static bool ContainsOwner(IReadOnlyList<AccessibilityPeerNode> nodes, UIElement owner)
+		=> nodes.Any(node => ReferenceEquals(node.Owner, owner));
+
+	// Null where no native adapter is registered (desktop Skia).
+	private static bool? NativeTreeContains(XamlRoot xamlRoot, string name)
+		=> (AccessibilityPeerHelper.AndroidAllNodeSnapshotsForRootAccessor
+			?? AccessibilityPeerHelper.IOSAllNodeSnapshotsForRootAccessor)
+			?.Invoke(xamlRoot)
+			?.Any(snapshot => snapshot.Name == name);
 
 	[TestMethod]
 	[RunsOnUIThread]
