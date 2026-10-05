@@ -397,7 +397,7 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
-	internal static partial bool uno_window_get_vsync(nint window, out double age, out double period);
+	internal static partial bool uno_window_get_vsync(nint window, out double lastVsync, out double period);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_move(nint window, double x, double y);

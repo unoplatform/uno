@@ -10,8 +10,11 @@
 // Vsyncs without a frame asking for one before the link pauses itself.
 static const int IdleVsyncs = 30;
 
-// Past this, an extrapolated vsync could have drifted off the display's real one.
+// Past this, an extrapolated vsync could be off the display's real one: the link's timestamps can shift phase across
+// a pause, and stop coming at all for an occluded window.
 static const CFTimeInterval MaxVsyncAge = 0.5;
+
+enum { VsyncLinkRunning, VsyncLinkPaused };
 
 @interface UNOMetalViewDelegate ()
 
@@ -26,7 +29,7 @@ static const CFTimeInterval MaxVsyncAge = 0.5;
     _Atomic(CFTimeInterval) _lastVsync;
     _Atomic(CFTimeInterval) _vsyncPeriod;
     atomic_int _idleVsyncs;
-    atomic_bool _vsyncLinkPaused;
+    atomic_int _vsyncLinkState;
 }
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
@@ -48,7 +51,7 @@ static const CFTimeInterval MaxVsyncAge = 0.5;
             // From the view, so it follows the window to whichever display it is on.
             CADisplayLink* link = [mtkView displayLinkWithTarget:self selector:@selector(onVsync:)];
             link.paused = YES;
-            atomic_store(&_vsyncLinkPaused, true);
+            atomic_store(&_vsyncLinkState, VsyncLinkPaused);
             [link addToRunLoop:NSRunLoop.mainRunLoop forMode:NSRunLoopCommonModes];
             self.vsyncLink = link;
         }
@@ -68,11 +71,18 @@ static const CFTimeInterval MaxVsyncAge = 0.5;
     if (atomic_fetch_add(&_idleVsyncs, 1) >= IdleVsyncs)
     {
         link.paused = YES;
-        atomic_store(&_vsyncLinkPaused, true);
+        atomic_store(&_vsyncLinkState, VsyncLinkPaused);
+
+        // A request that came in meanwhile saw the link running and left it alone.
+        int paused = VsyncLinkPaused;
+        if (atomic_load(&_idleVsyncs) < IdleVsyncs && atomic_compare_exchange_strong(&_vsyncLinkState, &paused, VsyncLinkRunning))
+        {
+            link.paused = NO;
+        }
     }
 }
 
-- (bool)getVsyncAge:(double*)age period:(double*)period
+- (bool)getLastVsync:(double*)lastVsync period:(double*)period
 {
     if (@available(macOS 14.0, *))
     {
@@ -80,7 +90,7 @@ static const CFTimeInterval MaxVsyncAge = 0.5;
         if (link == nil) return false;
 
         atomic_store(&_idleVsyncs, 0);
-        if (atomic_exchange(&_vsyncLinkPaused, false))
+        if (atomic_exchange(&_vsyncLinkState, VsyncLinkRunning) == VsyncLinkPaused)
         {
             // The link is only touched on the main thread, which also runs its callbacks.
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -88,13 +98,11 @@ static const CFTimeInterval MaxVsyncAge = 0.5;
             });
         }
 
-        CFTimeInterval lastVsync = atomic_load(&_lastVsync);
+        CFTimeInterval last = atomic_load(&_lastVsync);
         CFTimeInterval vsyncPeriod = atomic_load(&_vsyncPeriod);
-        CFTimeInterval vsyncAge = CACurrentMediaTime() - lastVsync;
-        if (lastVsync <= 0 || vsyncPeriod <= 0 || vsyncAge < 0 || vsyncAge > MaxVsyncAge) return false;
+        if (last <= 0 || vsyncPeriod <= 0 || CACurrentMediaTime() - last > MaxVsyncAge) return false;
 
-        // The main thread may not have handled the latest vsyncs yet.
-        *age = fmod(vsyncAge, vsyncPeriod);
+        *lastVsync = last;
         *period = vsyncPeriod;
         return true;
     }
@@ -320,8 +328,8 @@ bool uno_window_present_texture(NSWindow* window, void* texture)
     }
 }
 
-bool uno_window_get_vsync(NSWindow* window, double* age, double* period)
+bool uno_window_get_vsync(NSWindow* window, double* lastVsync, double* period)
 {
     UNOMetalViewDelegate* delegate = ((UNOWindow*)window).metalViewDelegate;
-    return delegate != nil && [delegate getVsyncAge:age period:period];
+    return delegate != nil && [delegate getLastVsync:lastVsync period:period];
 }
