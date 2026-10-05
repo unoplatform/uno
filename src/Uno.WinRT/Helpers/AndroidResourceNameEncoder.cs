@@ -114,7 +114,9 @@ internal static partial class AndroidResourceNameEncoder
 		=> fileName.EndsWith(NinePatchExtension, StringComparison.OrdinalIgnoreCase);
 
 	private static string AlignPath(string path)
-		=> path.Replace('/', global::System.IO.Path.DirectorySeparatorChar);
+		=> path
+			.Replace('/', global::System.IO.Path.DirectorySeparatorChar)
+			.Replace('\\', global::System.IO.Path.DirectorySeparatorChar);
 
 	private static string EncodePath(string path, char separator)
 	{
