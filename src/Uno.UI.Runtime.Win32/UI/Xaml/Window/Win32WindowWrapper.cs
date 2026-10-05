@@ -573,6 +573,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// reached through Current (recordings, textures, offscreens) is CPU-side.
 		(_renderer as IDisposable)?.Dispose();
 		_context.Dispose();
+		_pacer.Dispose();
 		_rendererDisposed = true;
 		if (_frameThemeSource is not null)
 		{

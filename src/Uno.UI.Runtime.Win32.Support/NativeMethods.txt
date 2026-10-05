@@ -178,6 +178,7 @@ DwmSetWindowAttribute
 DwmDefWindowProc
 DWM_SYSTEMBACKDROP_TYPE
 DwmFlush
+DwmGetCompositionTimingInfo
 EmptyClipboard
 EnableMouseInPointer
 EndPaint

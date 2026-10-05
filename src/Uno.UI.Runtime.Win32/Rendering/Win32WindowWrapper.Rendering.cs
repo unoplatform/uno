@@ -17,6 +17,10 @@ internal partial class Win32WindowWrapper
 	private ISwapChain _context = null!;
 	// The per-window backend factory installed on this window's CompositionTarget each frame.
 	private IDrawingFactory _renderer = null!;
+	// Outlives the contexts negotiation creates and declines; disposed with the window.
+	private readonly Win32RenderPacer _pacer = new(
+		FeatureConfiguration.CompositionTarget.FrameRate,
+		FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate);
 
 	public event EventHandler<IGeometry>? RenderingNegativePathReevaluated; // not necessarily changed
 
@@ -36,9 +40,9 @@ internal partial class Win32WindowWrapper
 		var scale = (float)(RasterizationScale == 0 ? 1 : RasterizationScale);
 		return kind switch
 		{
-			GraphicsContextKind.OpenGL => Win32OpenGLGraphicsContext.TryCreate(_hwnd),
+			GraphicsContextKind.OpenGL => Win32OpenGLGraphicsContext.TryCreate(_hwnd, _pacer),
 			GraphicsContextKind.Vulkan => TryCreateVulkan(),
-			GraphicsContextKind.Software => new Win32SoftwareGraphicsContext(_hwnd),
+			GraphicsContextKind.Software => new Win32SoftwareGraphicsContext(_hwnd, _pacer),
 			GraphicsContextKind.WebGpu => global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateWin32(_hwnd, Win32Helper.GetModuleHInstance(), scale),
 			_ => null,
 		};
@@ -51,7 +55,7 @@ internal partial class Win32WindowWrapper
 	{
 		try
 		{
-			return new Win32VulkanGraphicsContext(_hwnd);
+			return new Win32VulkanGraphicsContext(_hwnd, _pacer);
 		}
 		catch (Exception e)
 		{
@@ -91,7 +95,7 @@ internal partial class Win32WindowWrapper
 		}
 
 		ct.Renderer = _renderer;
-		var clipPath = ct.OnNativePlatformFrameRequested(_context);
+		var clipPath = ct.OnNativePlatformFrameRequested(_context, vsyncTimestamp: _pacer.BeginFrame());
 
 		// The context skips its present when no frame was acquired (nothing recorded yet, empty bounds) or drops
 		// one (a just-resized swapchain); reporting a present the synchronous show/resize path never got would let
