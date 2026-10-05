@@ -921,10 +921,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	// Modal helpers
 
 	/// <summary>
-	/// Finds the first peer in the node list that acts as an active modal container.
-	/// Detection uses both the exposed Window pattern and direct IWindowProvider cast so
-	/// that ContentDialog popups (IsLightDismissEnabled=false, no pattern exposed) are
-	/// also matched.
+	/// Finds the active modal container: the last node in tree order that is a dialog or exposes a modal
+	/// Window pattern. Plain non-dismiss popups (e.g. caret grippers) expose no Window pattern, so they stay non-modal.
 	/// </summary>
 	private UIElement? FindActiveModalOwner(
 		IReadOnlyList<AccessibilityPeerNode> nodes,
