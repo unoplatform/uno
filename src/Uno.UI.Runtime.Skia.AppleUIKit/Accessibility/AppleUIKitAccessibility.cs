@@ -2179,7 +2179,9 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		_settingXamlFocus = true;
 		try
 		{
-			control.Focus(FocusState.Keyboard);
+			// Pointer, as for Android's accessibility focus: a VoiceOver cursor move isn't keyboard input, so it must not
+			// draw keyboard focus visuals, which would stay behind when the cursor moves on to non-focusable text.
+			control.Focus(FocusState.Pointer);
 		}
 		finally
 		{
