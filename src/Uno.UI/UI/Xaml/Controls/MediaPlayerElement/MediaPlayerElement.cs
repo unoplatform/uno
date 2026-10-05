@@ -381,6 +381,8 @@ namespace Microsoft.UI.Xaml.Controls
 			_mediaPlayerPresenter?.SetOwner(this);
 			if (_mediaPlayerPresenter is not null)
 			{
+				// Hidden until the player reports a source or video dimensions.
+				_mediaPlayerPresenter.Visibility = Visibility.Collapsed;
 				_mediaPlayerPresenter.IsFullWindow = IsFullWindow;
 			}
 
