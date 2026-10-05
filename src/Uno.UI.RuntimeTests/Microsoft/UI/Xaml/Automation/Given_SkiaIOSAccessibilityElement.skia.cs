@@ -158,6 +158,20 @@ public partial class Given_SkiaIOSAccessibilityElement
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Element_Is_Exposed_Then_Custom_Content_Block_Is_Not_Exported()
+	{
+		var button = new Button { Content = "Custom content probe" };
+		await UITestHelper.Load(button);
+
+		var respondsToSelector = AccessibilityPeerHelper.IOSAccessibilityElementRespondsToSelectorAccessor;
+		Assert.IsNotNull(respondsToSelector);
+		Assert.IsTrue(respondsToSelector(button, "accessibilityCustomContent"));
+		// VoiceOver calls this block in preference to the property, so exporting one it can't run aborts the app.
+		Assert.IsFalse(respondsToSelector(button, "accessibilityCustomContentBlock"));
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Raw_AccessibilityView_Then_Element_Is_Absent()
 	{
 		var panel = new StackPanel();
