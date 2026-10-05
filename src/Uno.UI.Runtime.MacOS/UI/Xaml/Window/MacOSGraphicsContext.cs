@@ -40,8 +40,11 @@ internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMetalDeviceContex
 	public nint Device => _device;
 	public nint Queue => _queue;
 
-	/// <summary>Whether the last <see cref="Present"/> reached the screen; false when the layer vended no drawable.</summary>
+	/// <summary>Whether the last frame reached the screen; false when the layer vended no drawable.</summary>
 	internal bool LastPresentSucceeded { get; private set; }
+
+	/// <summary>Whether the last frame needed no drawable, the window already showing it.</summary>
+	internal bool LastPresentSkipped { get; private set; }
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -62,7 +65,23 @@ internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMetalDeviceContex
 	}
 
 	public void Present()
-		=> LastPresentSucceeded = _texture != 0 && NativeUno.uno_window_present_texture(_window, _texture);
+	{
+		LastPresentSkipped = false;
+		LastPresentSucceeded = _texture != 0 && NativeUno.uno_window_present_texture(_window, _texture);
+	}
+
+	/// <summary>The layer keeps showing its last drawable, so only a frame that never reached the screen is presented.</summary>
+	public void PresentUnchanged()
+	{
+		if (LastPresentSucceeded)
+		{
+			LastPresentSkipped = true;
+		}
+		else
+		{
+			Present();
+		}
+	}
 
 	public void Dispose() => ReleaseTexture();
 

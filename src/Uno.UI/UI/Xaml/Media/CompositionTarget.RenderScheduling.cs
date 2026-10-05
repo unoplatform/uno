@@ -267,7 +267,14 @@ public partial class CompositionTarget
 		}
 		finally
 		{
-			swapChain.Present();
+			if (_lastDrawLeftTargetUnchanged)
+			{
+				swapChain.PresentUnchanged();
+			}
+			else
+			{
+				swapChain.Present();
+			}
 			RaiseFramePresented();
 		}
 	}

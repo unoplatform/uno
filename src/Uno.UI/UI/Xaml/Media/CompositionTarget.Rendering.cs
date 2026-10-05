@@ -149,6 +149,7 @@ public partial class CompositionTarget
 	private static IGeometry? _lastNativeClipPath;
 	private float _lastRasterizationScale = 1;
 	private static IGeometry? _lastScaledNativeClipPath;
+	private bool _lastDrawLeftTargetUnchanged;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	// UNO_FORCE_FULL_REPAINT=1 disables damage-clipped partial repaints (benchmarking: measures true full-frame cost).
@@ -464,6 +465,8 @@ public partial class CompositionTarget
 			_fpsHelper.OnFramePresentRequested();
 		}
 
+		_lastDrawLeftTargetUnchanged = true;
+
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
 			return FrameRenderHelper.EmptyClipPath;
@@ -529,6 +532,7 @@ public partial class CompositionTarget
 					&& !overlayEnabled
 					&& !_forceFullRepaint;
 				presentedUnchanged = nothingChanged;
+				_lastDrawLeftTargetUnchanged = nothingChanged && !drawsOutsideDamage;
 
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();
