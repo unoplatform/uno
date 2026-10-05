@@ -54,6 +54,23 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		public void When_String_To_IconElement()
+		{
+			var actual = BindingPropertyHelper.Convert(() => typeof(IconElement), "add");
+
+			Assert.IsInstanceOfType<SymbolIcon>(actual);
+			Assert.AreEqual(Symbol.Add, ((SymbolIcon)actual).Symbol);
+		}
+
+		[TestMethod]
+		public void When_Unknown_String_To_IconElement()
+		{
+			// The fast path declines an unknown symbol instead of throwing from Enum.Parse;
+			// the general converter then reports it like any other unconvertible value.
+			Assert.ThrowsExactly<NotSupportedException>(() => BindingPropertyHelper.Convert(() => typeof(IconElement), "NotASymbol"));
+		}
+
+		[TestMethod]
 		public void When_Double_To_GridLength()
 		{
 
