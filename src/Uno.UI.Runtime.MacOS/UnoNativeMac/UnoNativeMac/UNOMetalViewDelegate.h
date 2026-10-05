@@ -45,9 +45,10 @@ void uno_window_release_texture(void* _Nullable texture);
 /// Returns false when the layer vended no drawable. Called from the managed render thread.
 bool uno_window_present_texture(NSWindow* window, void* texture);
 
-/// Gets the seconds since the latest vsync of the window's display and the vsync period. False when unknown (before
-/// macOS 14, or right after an idle period). Keeps vsync tracking running while it is being asked. Called from the
-/// managed render thread.
-bool uno_window_get_vsync(NSWindow* window, double* age, double* period);
+/// Gets the time of the latest vsync of the window's display that was seen (CACurrentMediaTime seconds, so the same
+/// vsync always gives the same value) and the vsync period. False when unknown: before macOS 14, before the first
+/// vsync, or when the display stopped delivering them. Keeps vsync tracking running while it is being asked. Called
+/// from the managed render thread.
+bool uno_window_get_vsync(NSWindow* window, double* lastVsync, double* period);
 
 NS_ASSUME_NONNULL_END

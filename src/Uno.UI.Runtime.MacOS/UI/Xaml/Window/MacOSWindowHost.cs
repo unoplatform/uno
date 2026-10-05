@@ -1169,7 +1169,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				}
 			}
 
-			if (vsync is null && TryGetVsyncGrid(now, out latestVsync, out _))
+			// A display link that came back while waiting still gives this frame its vsync.
+			if (vsync is null && _followVsync && TryGetVsyncGrid(now, out latestVsync, out _))
 			{
 				vsync = latestVsync;
 			}
@@ -1179,15 +1180,17 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		/// <summary>
 		/// Gets the display's latest vsync at or before <paramref name="now"/> and the vsync period, when the
-		/// window's display link knows them.
+		/// window's display link knows them. The same vsync always comes out as the same value.
 		/// </summary>
 		private bool TryGetVsyncGrid(long now, out long latestVsync, out long period)
 		{
-			if (NativeUno.uno_window_get_vsync(_windowHandle, out var ageSeconds, out var periodSeconds))
+			// CACurrentMediaTime and Stopwatch both count mach absolute time on macOS.
+			if (NativeUno.uno_window_get_vsync(_windowHandle, out var lastSeconds, out var periodSeconds)
+				&& (period = (long)(periodSeconds * Stopwatch.Frequency)) > 0)
 			{
-				latestVsync = now - (long)(ageSeconds * Stopwatch.Frequency);
-				period = (long)(periodSeconds * Stopwatch.Frequency);
-				return period > 0;
+				var last = (long)(lastSeconds * Stopwatch.Frequency);
+				latestVsync = last + (long)Math.Floor((now - last) / (double)period) * period;
+				return true;
 			}
 
 			latestVsync = 0;
