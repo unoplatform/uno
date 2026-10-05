@@ -225,7 +225,7 @@
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.XamlHost.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 	</Target>
 
-	<!-- 7.0 is Skia-only: fail the pack if a native UI rendering head package is produced. -->
+	<!-- The native UI rendering heads were retired in 7.0: fail the pack if one of their packages is produced. -->
 	<Target Name="ValidateNoNativeUIHeadPackages" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(Configuration)'=='Release'">
 		<ItemGroup>
 			<!--
@@ -240,7 +240,7 @@
 				Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '^Uno\.WinUI(\.Runtime)?\.(WebAssembly|Wasm)\.(?!Browser\.)'))" />
 		</ItemGroup>
 		<Error Condition="'@(_ForbiddenNativeHeadPackage)'!=''"
-			   Text="Native UI head package(s) produced but must not ship in 7.0 (Skia is the only renderer): @(_ForbiddenNativeHeadPackage->'%(Filename)', ', '). Remove them from the pack pipeline." />
+			   Text="Retired native UI head package(s) produced but must not ship in 7.0: @(_ForbiddenNativeHeadPackage->'%(Filename)', ', '). Remove them from the pack pipeline." />
 	</Target>
 
 	<!--
