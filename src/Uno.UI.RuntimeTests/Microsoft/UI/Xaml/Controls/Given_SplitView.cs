@@ -18,7 +18,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 public class Given_SplitView
 {
-	private const double SplitViewWidth = 400;
+	// Kept narrow: the WinUI runtime test host clipped the right edge of a 400px-wide SplitView.
+	private const double SplitViewWidth = 300;
 	private const double SplitViewHeight = 200;
 	private const double TestOpenPaneLength = 150;
 	private const double TestCompactPaneLength = 50;
