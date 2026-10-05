@@ -77,7 +77,7 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 			//set up back button support if necessary
 			if (DXamlCore.Current.BackButtonSupported && ShouldDismiss(DismissalTriggerFlags.BackPress))
 			{
-				BackButtonIntegration.RegisterListener(this);
+				DirectUI.BackButtonIntegration.RegisterListener(this);
 			}
 
 			var xamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot?.XamlRoot;
@@ -122,7 +122,7 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 		{
 			_openPopupRegistration?.Dispose();
 
-			BackButtonIntegration.UnregisterListener(this);
+			DirectUI.BackButtonIntegration.UnregisterListener(this);
 
 			if (IsLightDismissEnabled)
 			{
@@ -229,7 +229,7 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 
 	partial void OnIsLightDismissEnabledChangedPartial(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
 	{
-		BackButtonIntegration.UnregisterListener(this);
+		DirectUI.BackButtonIntegration.UnregisterListener(this);
 
 		if (!IsOpen || !DXamlCore.Current.BackButtonSupported)
 		{
@@ -238,7 +238,7 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 
 		if (ShouldDismiss(DismissalTriggerFlags.BackPress))
 		{
-			BackButtonIntegration.RegisterListener(this);
+			DirectUI.BackButtonIntegration.RegisterListener(this);
 		}
 	}
 

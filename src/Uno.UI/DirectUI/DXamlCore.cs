@@ -109,6 +109,31 @@ namespace DirectUI
 
 		internal static bool IsWinRTDndOperationInProgress() => false; // TODO Uno: Not implemented for now
 
+		internal Rect GetContentBoundsForElement(Microsoft.UI.Xaml.UIElement element)
+		{
+			// Returns the window/content bounds in which the element resides.
+			// The UIElement.XamlRoot getter would create a XamlRoot for a detached element;
+			// a detached element has no content bounds to report, so ask for the existing one only.
+			var xamlRoot = element is null
+				? null
+				: Microsoft.UI.Xaml.XamlRoot.GetForElement(element, createIfNotExist: false);
+			if (xamlRoot is not null)
+			{
+				return new Rect(0, 0, xamlRoot.Size.Width, xamlRoot.Size.Height);
+			}
+
+			return Rect.Empty;
+		}
+
+		internal Rect GetContentLayoutBoundsForElement(Microsoft.UI.Xaml.UIElement element)
+		{
+			// TODO Uno: WinUI returns the layout bounds here (window bounds shrunk by the input
+			// host / status bar via GetLayoutBounds), which is what makes AppBar decide to open up
+			// instead of down when the IME or a status bar covers the bottom edge. Uno has no
+			// equivalent visible-bounds source yet, so this reports the full content bounds.
+			return GetContentBoundsForElement(element);
+		}
+
 		internal bool IsKeyboardPresent
 		{
 			get
