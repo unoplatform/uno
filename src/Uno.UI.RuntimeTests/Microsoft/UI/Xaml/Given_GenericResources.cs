@@ -80,7 +80,8 @@ public class Given_GenericResources
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	// Same hosts as Given_WebView2: these have no native web view to attach.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.SkiaFrameBuffer)]
 	public async Task When_WebView2_Default_Template_Hosts_Native_View()
 	{
 		// CoreWebView2.GetNativeWebViewFromTemplate only attaches a native view when the first
