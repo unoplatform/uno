@@ -322,6 +322,31 @@ public partial class Given_MobileAccessibilityActions
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+	public async Task When_ItemClick_Row_Is_Activated_Then_ItemClick_Is_Raised()
+	{
+		var listView = new ListView
+		{
+			ItemsSource = new List<string> { "One", "Two", "Three" },
+			IsItemClickEnabled = true,
+		};
+		object? clickedItem = null;
+		listView.ItemClick += (_, e) => clickedItem = e.ClickedItem;
+		await UITestHelper.Load(listView);
+
+		var execute =
+			AccessibilityPeerHelper.AndroidAccessibilityActionAccessor
+			?? AccessibilityPeerHelper.IOSAccessibilityActionAccessor;
+		Assert.IsNotNull(execute, "The native action hook must be registered.");
+
+		Assert.IsTrue(execute(
+			(UIElement)listView.ContainerFromIndex(1),
+			new AccessibilityNativeActionRequest(AccessibilityNativeAction.Activate)));
+		Assert.AreEqual("Two", clickedItem, "Activating a row of an ItemClick list must click it, not only select it.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
 	public async Task When_Advanced_Actions_Are_Advertised_Then_Native_Hook_Executes_Providers()
 	{
 		var control = new AdvancedActionControl { Width = 100, Height = 100 };
