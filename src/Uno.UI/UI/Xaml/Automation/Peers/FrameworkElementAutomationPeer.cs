@@ -554,6 +554,12 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	/// </param>
 	/// <returns>True if the child element is acceptable.</returns>
 	private protected virtual bool ChildIsAcceptable(UIElement element)
+		=> IsAcceptableAutomationChild(element);
+
+	/// <summary>
+	/// The base <see cref="ChildIsAcceptable"/> rule, shared with tree walks that cross elements without a peer.
+	/// </summary>
+	internal static bool IsAcceptableAutomationChild(UIElement element)
 	{
 		var childIsAcceptable = element != null;
 
