@@ -23,32 +23,32 @@ namespace Microsoft.UI.Xaml.Controls;
 public partial class SplitView : Control
 {
 	// Index table as follows: [DisplayMode][Placement][IsOpen]
-	private static readonly string[,,] s_visualStateTable =
-	{
+	private static readonly string[][][] s_visualStateTable =
+	[
 		// Overlay
-		{
-			{ "Closed", "OpenOverlayLeft" },
-			{ "Closed", "OpenOverlayRight" }
-		},
+		[
+			["Closed", "OpenOverlayLeft"],
+			["Closed", "OpenOverlayRight"]
+		],
 
 		// Inline
-		{
-			{ "Closed", "OpenInlineLeft" },
-			{ "Closed", "OpenInlineRight" }
-		},
+		[
+			["Closed", "OpenInlineLeft"],
+			["Closed", "OpenInlineRight"]
+		],
 
 		// CompactOverlay
-		{
-			{ "ClosedCompactLeft", "OpenCompactOverlayLeft" },
-			{ "ClosedCompactRight", "OpenCompactOverlayRight" }
-		},
+		[
+			["ClosedCompactLeft", "OpenCompactOverlayLeft"],
+			["ClosedCompactRight", "OpenCompactOverlayRight"]
+		],
 
 		// CompactInline
-		{
-			{ "ClosedCompactLeft", "OpenInlineLeft" },
-			{ "ClosedCompactRight", "OpenInlineRight" }
-		}
-	};
+		[
+			["ClosedCompactLeft", "OpenInlineLeft"],
+			["ClosedCompactRight", "OpenInlineRight"]
+		]
+	];
 
 	public event TypedEventHandler<SplitView, object>? PaneClosed;
 	public event TypedEventHandler<SplitView, SplitViewPaneClosingEventArgs>? PaneClosing;
@@ -368,7 +368,7 @@ public partial class SplitView : Control
 			var isPaneOpen = IsPaneOpen;
 
 			// Look up the visual state based on display mode, placement and, ispaneopen state.
-			var visualStateName = s_visualStateTable[(int)displayMode, (int)placement, isPaneOpen ? 1 : 0];
+			var visualStateName = s_visualStateTable[(int)displayMode][(int)placement][isPaneOpen ? 1 : 0];
 			GoToState(useTransitions, visualStateName);
 		}
 
