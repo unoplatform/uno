@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference LinedFlowLayout.cpp, commit b8cfb8490
+// MUX Reference LinedFlowLayout.cpp, winui3/release/2.5.1
 
 #nullable enable
 
@@ -340,7 +340,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 					// Do not even attempt to perform the fast path when there is no listener for the ItemsInfoRequested event.
 					// Instead, fall back to the regular path right away.
-					if (m_isFastPathSupportedDbg && ItemsInfoRequested is not null)
+					if (IsFastPathSupportedDbg() && ItemsInfoRequested is not null)
 					{
 						if (actualLineHeightChanged && !m_forceRelayout)
 						{
@@ -2772,11 +2772,13 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						if (!m_elementDesiredWidths!.ContainsKey(element))
 						{
-							var elementAvailableSize = new Size(float.PositiveInfinity, actualLineHeight);
+							var elementAvailableSize = new Size(float.PositiveInfinity, (float)actualLineHeight);
 
 							element.Measure(elementAvailableSize);
 
 							var desiredSize = element.DesiredSize;
+							float desiredWidth = (float)desiredSize.Width;
+							float desiredHeight = (float)desiredSize.Height;
 
 							bool desiredWidthGreaterThanMinWidth = false;
 
@@ -2784,7 +2786,7 @@ namespace Microsoft.UI.Xaml.Controls
 							{
 								float minWidth = (float)frameworkElement.MinWidth;
 
-								if (desiredSize.Width > minWidth)
+								if (desiredWidth > minWidth)
 								{
 									// Items for which the desired width is greater than the min width are immediately
 									// assigned the c_maxAspectRatioWeight weight. For the other items, the weight is
@@ -2794,12 +2796,12 @@ namespace Microsoft.UI.Xaml.Controls
 								}
 							}
 
-							m_elementDesiredWidths![element] = (float)desiredSize.Width;
+							m_elementDesiredWidths![element] = desiredWidth;
 
-							if (desiredSize.Height != 0.0 && m_aspectRatios != null)
+							if (desiredHeight != 0.0f && m_aspectRatios != null)
 							{
 								var itemAspectRatio = m_aspectRatios.GetAt(realizedItemIndex);
-								float aspectRatio = (float)(desiredSize.Width / desiredSize.Height);
+								float aspectRatio = desiredWidth / desiredHeight;
 
 								// The Uno LinedFlowLayoutItemAspectRatios.ItemAspectRatio is a readonly struct, so WinUI's
 								// in-place mutation of the copied value is reproduced by tracking the new aspect ratio/weight
@@ -3408,7 +3410,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return defaultAspectRatio;
 			}
 
-			int firstRealizedItemIndex = m_isVirtualizingContext ? m_elementManager.GetDataIndexFromRealizedRangeIndex(0) : 0;
+			int firstRealizedItemIndex = m_isVirtualizingContext ? m_elementManager.GetFirstRealizedDataIndex : 0;
 			int lastRealizedItemIndex = firstRealizedItemIndex + m_elementManager.GetRealizedElementCount - 1;
 			// Items outside the current realized range must have a weight equal to c_maxAspectRatioWeight to be taken into account.
 			// Smaller weights may not reflect the real aspect ratio and negatively influence the average.
@@ -3905,7 +3907,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				double linesSpacing = lineCount == 0 ? 0.0 : ((double)lineCount - 1) * lineSpacing;
 				double linesHeight = lineCount * actualLineHeight + linesSpacing;
-				double scrollViewport = context.VisibleRect.Height;
+				double scrollViewport = (float)context.VisibleRect.Height;
 				double scrollableSize = Math.Max(0.0, linesHeight - scrollViewport);
 
 				// LINEDFLOWLAYOUT_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR_DBL, METH_NAME, this, L"linesHeight", linesHeight);
@@ -3997,7 +3999,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// the default wrapping behavior is reversed.
 			const double c_itemWidthMultiplierThreshold = 2.0;
 
-			double forcedWrapMultiplierDbg = m_forcedWrapMultiplierDbg;
+			double forcedWrapMultiplierDbg = ForcedWrapMultiplierDbg();
 
 			return forcedWrapMultiplierDbg != 0.0 ? forcedWrapMultiplierDbg : c_itemWidthMultiplierThreshold;
 		}
@@ -4797,7 +4799,6 @@ namespace Microsoft.UI.Xaml.Controls
 			MUX_ASSERT(itemIndex < m_itemCount);
 			MUX_ASSERT(m_itemsInfoMaxWidth >= 0.0 || m_itemsInfoMaxWidth == -1.0);
 
-			// Preserve WinUI's sentinel behavior: an unset global max (-1) disables per-item max caps.
 			if (UsesFastPathLayout())
 			{
 				// Fast path layout
@@ -5296,7 +5297,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (context != null)
 			{
 				var rect = context.RealizationRect;
-				bool hasInfiniteSize = double.IsInfinity(rect.Height) || double.IsInfinity(rect.Width);
+				bool hasInfiniteSize = rect.Height == double.PositiveInfinity || rect.Width == double.PositiveInfinity;
 				return !hasInfiniteSize;
 			}
 			return false;
@@ -5377,7 +5378,7 @@ namespace Microsoft.UI.Xaml.Controls
 							float newDesiredWidth = m_elementDesiredWidths![element];
 							bool desiredWidthChanged = false;
 
-							MUX_ASSERT(element.DesiredSize.Width == newDesiredWidth);
+							MUX_ASSERT((float)element.DesiredSize.Width == newDesiredWidth);
 
 							if (hasOldDesiredWidth)
 							{
@@ -5911,7 +5912,7 @@ namespace Microsoft.UI.Xaml.Controls
 			MUX_ASSERT(actualLineHeight > 0.0);
 
 			int newRecommendedAnchorIndex = context.RecommendedAnchorIndex;
-			double scrollViewport = context.VisibleRect.Height;
+			double scrollViewport = (float)context.VisibleRect.Height;
 
 			MUX_ASSERT(m_isVirtualizingContext == (scrollViewport != double.PositiveInfinity));
 
@@ -5995,7 +5996,7 @@ namespace Microsoft.UI.Xaml.Controls
 						nearRealizationRect = inflatedNearRealizationRect;
 						farRealizationRect = inflatedFarRealizationRect;
 						realizationRectHeight = farRealizationRect - nearRealizationRect;
-						scrollOffset = context.VisibleRect.Y;
+						scrollOffset = (float)context.VisibleRect.Y;
 					}
 
 					clampedNearRealizationRect = Math.Max(0.0, (double)nearRealizationRect);
@@ -6800,7 +6801,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// The element has no recorded available width because it is not scaled down or up, so only its desired width is recorded.
 						float minWidth = (float)frameworkElement.MinWidth;
 
-						if (element.DesiredSize.Width == minWidth)
+						if ((float)element.DesiredSize.Width == minWidth)
 						{
 							// Making sure the item is measured and stretched according to the MinWidth value (otherwise background-colored bands appear on the items' left/right edges).
 							elementAvailableWidth = minWidth;
@@ -6946,8 +6947,8 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					m_itemsRangeStartIndex = itemsInfoRequestedEventArgs.ItemsRangeStartIndex,
 					m_itemsRangeLength = itemsInfoRequestedEventArgs.ItemsRangeLength,
-					m_minWidth = itemsInfoRequestedEventArgs.MinWidth,
-					m_maxWidth = itemsInfoRequestedEventArgs.MaxWidth,
+					m_minWidth = (float)itemsInfoRequestedEventArgs.MinWidth,
+					m_maxWidth = (float)itemsInfoRequestedEventArgs.MaxWidth,
 				};
 			}
 
@@ -7376,7 +7377,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 						if (desiredSize.Height != -1.0)
 						{
-							newActualLineHeight = desiredSize.Height;
+							newActualLineHeight = (float)desiredSize.Height;
 						}
 						// Else use context.GetOrCreateElementAt instead.
 					}
@@ -7389,7 +7390,7 @@ namespace Microsoft.UI.Xaml.Controls
 						if ((element = context.GetOrCreateElementAt(0 /*dataIndex*/, ElementRealizationOptions.ForceCreate)) != null)
 						{
 							element.Measure(availableSize);
-							newActualLineHeight = element.DesiredSize.Height;
+							newActualLineHeight = (float)element.DesiredSize.Height;
 							//TODO: Bug 41896454.
 							//      Why is this RecycleElement call triggering endless measure passes?
 							//      This element needs to be discarded or else bring-into-view operations to index 0 will be animated (because index 0 is considered realized).
@@ -7657,7 +7658,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// property returning null instead of throwing, so a null check provides the equivalent fallback.
 			if (xamlRootReference.XamlRoot is { } xamlRoot)
 			{
-				m_roundingScaleFactor = xamlRoot.RasterizationScale;
+				m_roundingScaleFactor = (float)xamlRoot.RasterizationScale;
 			}
 			else
 			{
