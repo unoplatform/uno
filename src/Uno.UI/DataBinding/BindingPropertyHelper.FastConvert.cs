@@ -361,9 +361,10 @@ namespace Uno.UI.DataBinding
 		private static bool FastStringToIconElement(Type outputType, string input, ref object output)
 		{
 			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_IconElement_Available
-				&& outputType == typeof(Microsoft.UI.Xaml.Controls.IconElement))
+				&& outputType == typeof(Microsoft.UI.Xaml.Controls.IconElement)
+				&& Enum.TryParse<Microsoft.UI.Xaml.Controls.Symbol>(input, ignoreCase: true, out var symbol))
 			{
-				output = new Microsoft.UI.Xaml.Controls.SymbolIcon { Symbol = Enum.Parse<Microsoft.UI.Xaml.Controls.Symbol>(input, true) };
+				output = new Microsoft.UI.Xaml.Controls.SymbolIcon { Symbol = symbol };
 				return true;
 			}
 
