@@ -1,97 +1,153 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using Uno.Foundation.Logging;
+using Uno.UI.Composition;
 using Uno.UI.Runtime.Hosting;
-using Windows.Win32;
-using Windows.Win32.Foundation;
 
 namespace Uno.UI.Runtime.Win32;
 
 /// <summary>
-/// Paces a render thread, either to the DWM compositor's vsync via <see cref="PInvoke.DwmFlush"/>
-/// or to a fixed frame rate via a timer-driven <see cref="FramePacer"/>. Used by renderers whose
-/// present returns without blocking (software BitBlt, Vulkan MAILBOX) so the dedicated render thread
-/// doesn't spin and render frames the compositor just discards.
+/// Starts a window's frames on the DWM compositor's vsync (<see cref="Win32Vsync"/>) and tells each frame the time
+/// of the vsync it started on. Contexts whose present returns without blocking (software BitBlt, Vulkan MAILBOX,
+/// GL under a fixed FrameRate) wait here after presenting, so the render thread neither spins nor starts two frames
+/// on one vsync; contexts whose present blocks on the display only take the vsync time from it.
 /// <para>
-/// When following the refresh rate it blocks on <see cref="PInvoke.DwmFlush"/>; after repeated
-/// failures (DWM paused, RDP reconnect, fast user switch, GPU TDR) it degrades permanently to the
-/// timer — losing vsync alignment beats a hung render thread. Otherwise it always paces with the
-/// timer, honoring a custom FeatureConfiguration.CompositionTarget.FrameRate
-/// (SetFrameRateAsScreenRefreshRate = false).
+/// A frame that starts after the render thread was idle starts at once rather than on the next vsync, so input
+/// isn't held back by up to a refresh period. It still gets the vsync it started after.
+/// </para>
+/// <para>
+/// A FrameRate that isn't the refresh rate (SetFrameRateAsScreenRefreshRate = false) stays on vsync when the refresh
+/// rate is a multiple of it, waiting that many vsyncs per frame. Otherwise frames are paced by a timer and get no
+/// vsync time, so the frame clock falls back to its grid.
+/// </para>
+/// <para>
+/// When the vsync wait fails or returns without a vsync (display off, DWM restarting, a GPU reset), frames fall back
+/// to the timer, and the vsync is retried a second later.
 /// </para>
 /// </summary>
 internal sealed class Win32RenderPacer : IDisposable
 {
-	// After this many consecutive DwmFlush failures we stop calling DwmFlush and pace via the timer.
-	private const int DwmFlushFailureThreshold = 3;
+	private const int VsyncFailureThreshold = 3;
 
 	private readonly bool _followRefreshRate;
+	private readonly double _frameRate;
 	private readonly FramePacer _framePacer;
 	private readonly AutoResetEvent _frameDeadlineReached = new(false);
 
-	private int _consecutiveDwmFlushFailures;
-	private bool _dwmFlushDegraded;
+	// The vsync the current frame started on, 0 when it isn't on vsync, and DWM's refresh period, in QPC ticks.
+	private long _frameVsync;
+	private long _period;
+	// Vsyncs per frame.
+	private int _divisor;
 
-	/// <param name="fps">Timer target — the degraded fallback, or the active pacer when not following the refresh rate.</param>
-	/// <param name="followRefreshRate">True: pace to the display refresh via DwmFlush. False: pace to <paramref name="fps"/> via the timer.</param>
-	public Win32RenderPacer(double fps, bool followRefreshRate)
+	private int _consecutiveVsyncFailures;
+	private long _vsyncRetryTimestamp;
+	private bool _vsyncSuspendedLogged;
+
+	/// <param name="frameRate">The configured FrameRate, or the screen refresh rate when following it; also the timer's fallback rate.</param>
+	/// <param name="followRefreshRate">True: one frame per vsync. False: <paramref name="frameRate"/>, on vsync when the refresh rate is a multiple of it.</param>
+	public Win32RenderPacer(double frameRate, bool followRefreshRate)
 	{
 		_followRefreshRate = followRefreshRate;
-		_framePacer = new FramePacer(fps, () => _frameDeadlineReached.Set());
+		_frameRate = frameRate;
+		_framePacer = new FramePacer(frameRate, () => _frameDeadlineReached.Set());
 	}
 
 	/// <summary>
-	/// Anchors the absolute target tick at the start of every frame so a subsequent degraded
-	/// <see cref="FramePacer"/> wait schedules at the next deadline (no drift). Call before presenting.
+	/// Call on the render thread as a frame starts, before it is drawn.
 	/// </summary>
-	public void OnFrameStart() => _framePacer.OnFrameStart();
+	/// <returns>The <see cref="Stopwatch"/> time of the vsync the frame starts on, or null when frames aren't on vsync.</returns>
+	public long? BeginFrame()
+	{
+		_framePacer.OnFrameStart();
+
+		var now = Stopwatch.GetTimestamp();
+		if (now < _vsyncRetryTimestamp || !Win32Vsync.TryGetLatestVsync(now, out var vsync, out var period))
+		{
+			_frameVsync = 0;
+			return null;
+		}
+
+		_period = period;
+		_divisor = _followRefreshRate ? 1 : FrameClock.GetVsyncDivisor((long)(Stopwatch.Frequency / _frameRate), period);
+		_frameVsync = _divisor > 0 ? vsync : 0;
+
+		return _frameVsync != 0 ? _frameVsync : null;
+	}
 
 	/// <summary>
-	/// Blocks until it's time for the next frame — the compositor's next vsync when following the
-	/// refresh rate, otherwise the timer deadline. Call after presenting the frame.
+	/// Blocks until the next frame is due: the vsync after the one this frame started on (or the matching later one
+	/// under a fixed FrameRate), or the timer deadline. Call after presenting.
 	/// </summary>
 	public void WaitForNextFrame()
 	{
-		// When not following the display refresh, pace via the timer at the configured FrameRate;
-		// DwmFlush would instead lock the loop to the refresh rate.
-		var paceViaFramePacer = !_followRefreshRate || _dwmFlushDegraded;
-
-		if (_followRefreshRate && !_dwmFlushDegraded)
+		if (_frameVsync == 0)
 		{
-			var dwmFlushResult = PInvoke.DwmFlush();
-			if (dwmFlushResult.Failed)
-			{
-				_consecutiveDwmFlushFailures++;
-				this.LogError()?.Error($"{nameof(PInvoke.DwmFlush)} failed: {dwmFlushResult} (failure {_consecutiveDwmFlushFailures}/{DwmFlushFailureThreshold})");
+			WaitForTimer();
+			return;
+		}
 
-				if (_consecutiveDwmFlushFailures >= DwmFlushFailureThreshold)
-				{
-					_dwmFlushDegraded = true;
-					this.LogWarn()?.Warn(
-						$"{nameof(PInvoke.DwmFlush)} failed {DwmFlushFailureThreshold} times consecutively; " +
-						$"falling back to FramePacer-driven pacing at {_framePacer.TargetIntervalMs:F1} ms. " +
-						"Frame timing will not be vsync-aligned for the rest of this window's lifetime.");
-				}
+		// A frame that took longer than its interval needs no wait: its successor is already late.
+		var elapsed = (Stopwatch.GetTimestamp() - _frameVsync) / _period;
+		for (var vsync = elapsed + 1; vsync <= _divisor; vsync++)
+		{
+			var due = _frameVsync + vsync * _period;
+			var succeeded = Win32Vsync.WaitForVsync(out var status);
 
-				paceViaFramePacer = true;
-			}
-			else
+			// A wait that comes back well before the vsync was due didn't wait for one: the compositor clock does
+			// that when the display is off, and spinning on it would burn a core.
+			if (!succeeded || Stopwatch.GetTimestamp() < due - _period / 4)
 			{
-				_consecutiveDwmFlushFailures = 0;
+				OnVsyncFailed(succeeded ? "returned early" : $"failed with 0x{status:X8}");
+				WaitForTimer();
+				return;
 			}
 		}
 
-		if (paceViaFramePacer)
-		{
-			_framePacer.RequestFrame();
-			_frameDeadlineReached.WaitOne();
-		}
+		OnVsyncSucceeded();
 	}
 
-	/// <summary>
-	/// Retargets the degraded <see cref="FramePacer"/> (e.g. when the screen refresh rate changes).
-	/// </summary>
+	/// <summary>Retargets the timer (the fallback, or the pacer for a FrameRate the refresh rate isn't a multiple of).</summary>
 	public void UpdateTargetFps(double fps) => _framePacer.UpdateTargetFps(fps);
+
+	private void WaitForTimer()
+	{
+		_framePacer.RequestFrame();
+		_frameDeadlineReached.WaitOne();
+	}
+
+	private void OnVsyncSucceeded()
+	{
+		if (_vsyncSuspendedLogged)
+		{
+			_vsyncSuspendedLogged = false;
+			this.LogInfo()?.Info("The compositor's vsync is back; frames are on vsync again.");
+		}
+
+		_consecutiveVsyncFailures = 0;
+	}
+
+	private void OnVsyncFailed(string reason)
+	{
+		this.LogDebug()?.Debug($"Waiting for the compositor's vsync {reason}.");
+
+		if (++_consecutiveVsyncFailures < VsyncFailureThreshold)
+		{
+			return;
+		}
+
+		_consecutiveVsyncFailures = 0;
+		_vsyncRetryTimestamp = Stopwatch.GetTimestamp() + Stopwatch.Frequency;
+
+		if (!_vsyncSuspendedLogged)
+		{
+			_vsyncSuspendedLogged = true;
+			this.LogWarn()?.Warn(
+				$"Waiting for the compositor's vsync {reason} {VsyncFailureThreshold} times in a row; " +
+				$"pacing frames with a {_framePacer.TargetIntervalMs:F1} ms timer until it recovers.");
+		}
+	}
 
 	public void Dispose()
 	{
