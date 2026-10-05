@@ -22,13 +22,14 @@ internal sealed class VsyncFrameScheduler
 	private const int DrawEstimateWeight = 8;
 
 	// How long before a vsync the compositor takes the frames it shows on the vsync after (~2ms measured on macOS).
-	private static readonly long CompositorLatch = Stopwatch.Frequency / 500;
+	internal static readonly long CompositorLatch = Stopwatch.Frequency / 500;
 
 	private long _intervalTicks;
 	private long _nextTimerStart;
-	private long _lastFrameVsync;
-	private long _immediateVsync;
-	private long _unchangedVsync;
+	private long _lastFrameStart;
+	private long? _lastFrameVsync;
+	private bool _nextFrameIsImmediate;
+	private bool _lastFrameWasExempt;
 	private long _drawEstimate;
 
 	public VsyncFrameScheduler(double fps) => SetFrameRate(fps);
@@ -48,12 +49,12 @@ internal sealed class VsyncFrameScheduler
 	/// </summary>
 	public (long Start, long? Vsync) GetNextFrame(long now, long? latestVsync, long vsyncPeriod)
 	{
-		_immediateVsync = 0;
-
 		if (latestVsync is not { } vsync || vsyncPeriod <= 0)
 		{
 			var interval = Interlocked.Read(ref _intervalTicks);
-			return (Math.Clamp(_nextTimerStart, now, now + interval), null);
+			var start = Math.Clamp(_nextTimerStart, now, now + interval);
+			_nextFrameIsImmediate = start == now;
+			return (start, null);
 		}
 
 		// Past this, a frame started now misses the same vsync one started on the next vsync does, and queues ahead of it.
@@ -63,17 +64,17 @@ internal sealed class VsyncFrameScheduler
 			vsync += vsyncPeriod;
 		}
 
+		// A frame paced without the grid belongs to the interval it started in.
+		var lastFrameVsync = _lastFrameVsync
+			?? vsync + (long)Math.Floor((_lastFrameStart - vsync) / (double)vsyncPeriod) * vsyncPeriod;
+
 		// One frame per vsync interval. Half a period of slack absorbs vsync times that jitter around the grid.
-		while (vsync - _lastFrameVsync <= vsyncPeriod / 2)
+		while (vsync - lastFrameVsync <= vsyncPeriod / 2)
 		{
 			vsync += vsyncPeriod;
 		}
 
-		if (vsync <= now)
-		{
-			_immediateVsync = vsync;
-		}
-
+		_nextFrameIsImmediate = vsync <= now;
 		return (Math.Max(vsync, now), vsync);
 	}
 
@@ -84,14 +85,16 @@ internal sealed class VsyncFrameScheduler
 	public void OnFrame(long start, long? vsync, bool unchanged)
 	{
 		// Input after an idle period asks for a frame before the UI thread has recorded the change. That frame shows
-		// nothing new, so once per interval it leaves room for the one that does.
-		if (unchanged && vsync is { } v && v == _immediateVsync && v != _unchangedVsync)
+		// nothing new, so once it leaves its interval to the one that does.
+		if (unchanged && _nextFrameIsImmediate && !_lastFrameWasExempt)
 		{
-			_unchangedVsync = v;
+			_lastFrameWasExempt = true;
 			return;
 		}
 
-		_lastFrameVsync = vsync ?? start;
+		_lastFrameWasExempt = false;
+		_lastFrameStart = start;
+		_lastFrameVsync = vsync;
 
 		var interval = Interlocked.Read(ref _intervalTicks);
 		_nextTimerStart = _nextTimerStart + interval > start ? _nextTimerStart + interval : start + interval;
