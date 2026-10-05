@@ -103,7 +103,8 @@ public class Given_MobileMultiWindowAccessibility
 		var primaryButton = new Button { Content = "Primary" };
 		await UITestHelper.Load(primaryButton);
 
-		if (RuntimeTestsPlatformHelper.CurrentPlatform == RuntimeTestPlatforms.SkiaAndroid)
+		// iOS supports secondary windows only where the device supports multiple scenes (iPad, not iPhone).
+		if (!Uno.UI.Xaml.Controls.NativeWindowFactory.SupportsMultipleWindows)
 		{
 			var exception = Assert.ThrowsExactly<InvalidOperationException>(
 				() => new Window(WindowType.DesktopXamlSource));
