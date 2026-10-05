@@ -334,6 +334,28 @@ public class Given_Compositor
 	}
 
 	/// <summary>
+	/// A host can stamp one vsync a hair apart in two frames (extrapolated once, then from the display link). Sampled,
+	/// those few-tick intervals collapse the median, and every real interval is then rejected as an idle gap.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Same_Vsync_Stamped_Slightly_Apart_Then_Frame_Interval_Is_Not_Skewed()
+	{
+		var clock = new Uno.UI.Composition.FrameClock();
+
+		var vsync = TimeSpan.TicksPerSecond;
+		for (var i = 0; i < 40; i++)
+		{
+			vsync += Period;
+			var first = clock.NextVsyncTimestamp(vsync);
+			var jitter = (i % 50 + 1) * (i % 2 == 0 ? 1 : -1);
+			Assert.AreEqual(first, clock.NextVsyncTimestamp(vsync + jitter), $"frame {i}: the same vsync {jitter} ticks off moved the clock");
+		}
+
+		Assert.AreEqual(Period, clock.IntervalInTicks, $"near-equal vsyncs skewed the interval to {Ms(clock.IntervalInTicks)}ms");
+	}
+
+	/// <summary>
 	/// A tick that no vsync armed (a driver starting between frames) still has to land on the host's cadence: the
 	/// latest vsync before it, so its first step matches the frames that follow.
 	/// </summary>
