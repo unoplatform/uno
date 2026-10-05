@@ -76,7 +76,7 @@ partial class FlowLayout
 	public double MinColumnSpacing
 	{
 		get => (double)GetValue(MinColumnSpacingProperty);
-		set => SetValue(MinColumnSpacingProperty, value);
+		set => SetValue(MinColumnSpacingProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -86,7 +86,7 @@ partial class FlowLayout
 		nameof(MinColumnSpacing),
 		typeof(double),
 		typeof(FlowLayout),
-		new FrameworkPropertyMetadata(0.0, OnPropertyChanged));
+		new FrameworkPropertyMetadata(DoubleBoxes.Zero, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the minimum space between items in adjacent rows.
@@ -95,7 +95,7 @@ partial class FlowLayout
 	public double MinRowSpacing
 	{
 		get => (double)GetValue(MinRowSpacingProperty);
-		set => SetValue(MinRowSpacingProperty, value);
+		set => SetValue(MinRowSpacingProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -105,7 +105,7 @@ partial class FlowLayout
 		nameof(MinRowSpacing),
 		typeof(double),
 		typeof(FlowLayout),
-		new FrameworkPropertyMetadata(0.0, OnPropertyChanged));
+		new FrameworkPropertyMetadata(DoubleBoxes.Zero, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the axis along which items are laid out.

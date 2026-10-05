@@ -6,6 +6,7 @@
 
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -16,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public static DependencyProperty ActualLineHeightProperty { get; } = DependencyProperty.Register(
 			nameof(ActualLineHeight), typeof(double), typeof(LinedFlowLayout),
-			new FrameworkPropertyMetadata(s_defaultActualLineHeight, propertyChangedCallback: (sender, args) => ((LinedFlowLayout)sender).OnPropertyChanged(args)));
+			new FrameworkPropertyMetadata(Boxer.Box(s_defaultActualLineHeight), propertyChangedCallback: (sender, args) => ((LinedFlowLayout)sender).OnPropertyChanged(args)));
 
 		/// <summary>
 		/// Gets the actual height used to arrange each line.
@@ -24,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double ActualLineHeight
 		{
 			get => (double)GetValue(ActualLineHeightProperty);
-			internal set => SetValue(ActualLineHeightProperty, value);
+			internal set => SetValue(ActualLineHeightProperty, Boxer.Box(value));
 		}
 
 		/// <summary>
@@ -64,7 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public static DependencyProperty LineHeightProperty { get; } = DependencyProperty.Register(
 			nameof(LineHeight), typeof(double), typeof(LinedFlowLayout),
-			new FrameworkPropertyMetadata(s_defaultLineHeight, propertyChangedCallback: (sender, args) => ((LinedFlowLayout)sender).OnPropertyChanged(args)));
+			new FrameworkPropertyMetadata(Boxer.Box(s_defaultLineHeight), propertyChangedCallback: (sender, args) => ((LinedFlowLayout)sender).OnPropertyChanged(args)));
 
 		/// <summary>
 		/// Gets or sets the requested height of each line.
@@ -72,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double LineHeight
 		{
 			get => (double)GetValue(LineHeightProperty);
-			set => SetValue(LineHeightProperty, value);
+			set => SetValue(LineHeightProperty, Boxer.Box(value));
 		}
 
 		/// <summary>
@@ -80,7 +81,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public static DependencyProperty LineSpacingProperty { get; } = DependencyProperty.Register(
 			nameof(LineSpacing), typeof(double), typeof(LinedFlowLayout),
-			new FrameworkPropertyMetadata(s_defaultLineSpacing, propertyChangedCallback: (sender, args) => ((LinedFlowLayout)sender).OnPropertyChanged(args)));
+			new FrameworkPropertyMetadata(Boxer.Box(s_defaultLineSpacing), propertyChangedCallback: (sender, args) => ((LinedFlowLayout)sender).OnPropertyChanged(args)));
 
 		/// <summary>
 		/// Gets or sets the spacing between lines.
@@ -88,7 +89,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double LineSpacing
 		{
 			get => (double)GetValue(LineSpacingProperty);
-			set => SetValue(LineSpacingProperty, value);
+			set => SetValue(LineSpacingProperty, Boxer.Box(value));
 		}
 
 		/// <summary>
@@ -96,7 +97,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public static DependencyProperty MinItemSpacingProperty { get; } = DependencyProperty.Register(
 			nameof(MinItemSpacing), typeof(double), typeof(LinedFlowLayout),
-			new FrameworkPropertyMetadata(s_defaultMinItemSpacing, propertyChangedCallback: (sender, args) => ((LinedFlowLayout)sender).OnPropertyChanged(args)));
+			new FrameworkPropertyMetadata(Boxer.Box(s_defaultMinItemSpacing), propertyChangedCallback: (sender, args) => ((LinedFlowLayout)sender).OnPropertyChanged(args)));
 
 		/// <summary>
 		/// Gets or sets the minimum spacing between items in a line.
@@ -104,7 +105,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double MinItemSpacing
 		{
 			get => (double)GetValue(MinItemSpacingProperty);
-			set => SetValue(MinItemSpacingProperty, value);
+			set => SetValue(MinItemSpacingProperty, Boxer.Box(value));
 		}
 
 		/// <summary>
