@@ -16,7 +16,7 @@ using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
 namespace Microsoft.UI.Xaml
 {
 	[ContentProperty(Name = "States")]
-	public sealed partial class VisualStateGroup : DependencyObject
+	public sealed partial class VisualStateGroup : DependencyObject, IXNameProvider
 	{
 		/// <summary>
 		/// The xaml scope in force at the time the VisualStateGroup was created.
@@ -42,7 +42,9 @@ namespace Microsoft.UI.Xaml
 
 		public VisualState CurrentState => _current.state;
 
-		public string Name { get; set; }
+		public string Name { get; internal set; }
+
+		void IXNameProvider.SetXName(string name) => Name = name;
 
 		#region States Dependency Property
 

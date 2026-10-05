@@ -67,6 +67,7 @@ namespace TestRepro
 						)
 						,
 					}
+					,
 				}
 				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
@@ -76,23 +77,21 @@ namespace TestRepro
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
 						new global::Microsoft.UI.Xaml.VisualStateGroup
 						{
-							Name = "States",
 							// Source MainPage.xaml (Line 12:5)
 							States = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.VisualState
 									{
-										Name = "Visible",
 										// Source MainPage.xaml (Line 13:6)
 									}
 									.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 									{
 									__nameScope.RegisterName("Visible", __p1);
 									__that.Visible = __p1;
+									global::Uno.UI.Helpers.MarkupHelper.SetXName(__p1, "Visible");
 									global::Uno.UI.Helpers.MarkupHelper.SetVisualStateLazy(__p1, () => 
 									{
-										__p1.Name = "Visible";
 										__p1.Setters.Add(
 											global::MyProject.GlobalStaticResources.__PreserveProperties(
 												new global::Microsoft.UI.Xaml.Setter
@@ -111,11 +110,13 @@ namespace TestRepro
 								)
 								,
 							}
+							,
 						}
 						.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
 						{
 						__nameScope.RegisterName("States", __p1);
 						__that.States = __p1;
+						global::Uno.UI.Helpers.MarkupHelper.SetXName(__p1, "States");
 						}
 						))
 					)

@@ -2589,6 +2589,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 													writer.AppendLineIndented(",");
 												}
 											}
+
+											// Other initializer members (e.g. from x:Uid) can follow the collection.
+											writer.AppendLineIndented(",");
 										}
 										else
 										{
@@ -3529,8 +3532,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							var value = member.Value?.ToString();
 
 							if (
-								member.Member.Name == "Name"
-								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
+								IsXNameMember(member, objectDefinition.Type)
 								&& !isMemberInsideResourceDictionary.isInside
 							)
 							{
@@ -3555,13 +3557,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 
 								writer.AppendLineInvariantIndented("__that.{0} = {1};", value, writer.AppliedParameterName);
+
+								if (IsXNameMember(member, objectDefinition.Type) && IsXNameProvider(objectDefinition.Type))
+								{
+									BuildSetXName(writer, value);
+								}
+
 								// value is validated as non-null in ValidateName call above.
 								RegisterBackingField(type, value!, FindObjectFieldAccessibility(objectDefinition));
 							}
-							else if (member.Member.Name == "Name"
-								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+							else if (IsXNameMember(member, objectDefinition.Type))
 							{
 								writer.AppendLineInvariantIndented("// x:Name {0}", member.Value, member.Value);
+
+								if (IsXNameProvider(objectDefinition.Type))
+								{
+									BuildSetXName(writer, value);
+								}
 							}
 							else if (member.Member.Name == "Key")
 							{
@@ -6080,6 +6092,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					&& !IsAttachedProperty(type, member.Member.Name)
 					&& !IsLazyVisualStateManagerProperty(member)
 					&& _metadataHelper.FindEventType(type, member.Member.Name) == null
+					&& !IsXNameMember(member, objectDefinition.Type)
 					&& member.Member.Name != "_UnknownContent"; // We are defining the elements of a collection explicitly declared in XAML
 			}
 
@@ -6264,7 +6277,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// but is considered of an unknown type. This can happen when providing the
 						// name of a control using x:Name instead of Name.
 						var hasNameProperty = HasProperty(objectDefinition.Type, "Name");
-						if (hasNameProperty)
+						if (hasNameProperty && !IsXNameProvider(objectDefinition.Type))
 						{
 							writer.AppendLineInvariantIndented("{0} = \"{1}\"{2}", fullValueSetter, member.Value, closingPunctuation);
 						}
@@ -6272,6 +6285,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
+
+		// WinUI sets x:Name on types like VisualState whose Name is get-only.
+		private static void BuildSetXName(XamlLazyApplyBlockIIndentedStringBuilder writer, string? name)
+			=> writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.Helpers.MarkupHelper.SetXName({writer.AppliedParameterName}, \"{name}\");");
 
 		private bool IsLazyVisualStateManagerProperty(XamlMemberDefinition member)
 			=> member.Owner != null

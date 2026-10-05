@@ -86,6 +86,7 @@ namespace TestRepro
 						)
 						,
 					}
+					,
 				}
 				.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPan)
 			)
