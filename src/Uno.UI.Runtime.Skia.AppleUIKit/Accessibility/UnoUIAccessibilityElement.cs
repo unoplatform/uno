@@ -68,11 +68,6 @@ internal sealed class UnoUIAccessibilityElement : UIAccessibilityElement, IAXCus
 	{
 		get
 		{
-			if (AccessibilityCustomContentHandler is { } handler)
-			{
-				return handler();
-			}
-
 			if (_hasCustomContentOverride)
 			{
 				return _customContent;
@@ -89,7 +84,8 @@ internal sealed class UnoUIAccessibilityElement : UIAccessibilityElement, IAXCus
 		}
 	}
 
-	public Func<AXCustomContent[]>? AccessibilityCustomContentHandler { get; set; }
+	// No AccessibilityCustomContentHandler: the registrar would export it as accessibilityCustomContentBlock,
+	// which VoiceOver invokes instead of reading AccessibilityCustomContent.
 
 	public override CGRect AccessibilityFrameInContainerSpace
 		=> _adapterRef.TryGetTarget(out var a) ? a.GetFrameInContainerSpace(_nodeId) : CGRect.Empty;
