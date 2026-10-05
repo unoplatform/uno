@@ -80,7 +80,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				// StackLayout does not override CreateDefaultItemTransitionProvider,
 				// so it inherits the base Layout implementation which returns null.
-				// This will be overridden by LinedFlowLayout in a later PR.
 				var stackLayout = new StackLayout();
 				Verify.IsNotNull(stackLayout);
 				Verify.AreEqual(IndexBasedLayoutOrientation.TopToBottom, stackLayout.IndexBasedLayoutOrientation);
