@@ -1063,7 +1063,7 @@ not on a WinAppSDK head, and the string conversions only failed at runtime. They
 | `CornerRadius.None` | `default(CornerRadius)` or `new CornerRadius(0)` |
 | `Thickness.Empty` | `default(Thickness)` or `new Thickness(0)` |
 | `Binding binding = "Path";` | `new Binding { Path = new PropertyPath("Path") }` |
-| `BindingBase binding = "Path";` / `element.SetBinding(property, "Path")` | `element.SetBinding(property, new Binding { Path = new PropertyPath("Path") })` |
+| `BindingBase binding = "Path";` / `element.SetBinding(property, "Path")` | `BindingBase binding = new Binding { Path = new PropertyPath("Path") };` / `element.SetBinding(property, new Binding { Path = new PropertyPath("Path") })` |
 | `string path = binding.Path;` | `binding.Path?.Path ?? ""` |
 
 XAML is unaffected: `Background="Red"`, `Width="Auto"`, `Icon="Add"` and `{Binding}` markup
