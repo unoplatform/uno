@@ -138,6 +138,12 @@ namespace Microsoft.UI.Xaml.Controls
 				if (m_tpMediaPositionSlider.TemplatedRoot is { } || m_tpMediaPositionSlider.ApplyTemplate())
 				{
 					m_tpDownloadProgressIndicator = m_tpMediaPositionSlider.GetTemplateChild<ProgressBar>(TemplateParts.DownloadProgressIndicator);
+
+					// TODO Uno: port thumbnail preview. Until then the tooltip would show an empty frame.
+					if (m_tpMediaPositionSlider.GetTemplateChild<Thumb>(TemplateParts.HorizontalThumb) is { } thumb)
+					{
+						ToolTipService.SetToolTip(thumb, null);
+					}
 				}
 			}
 			InitializeTemplateChild(TemplateParts.PlayPauseButton, UIAKeys.UIA_MEDIA_PLAY, out m_tpPlayPauseButton);

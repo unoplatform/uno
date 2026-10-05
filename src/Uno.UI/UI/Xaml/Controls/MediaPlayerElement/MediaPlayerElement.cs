@@ -149,26 +149,31 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			sender.Maybe<MediaPlayerElement>(mpe =>
 			{
+				if (mpe._mediaPlayerPresenter is not null)
+				{
+					mpe._mediaPlayerPresenter.IsFullWindow = (bool)args.NewValue;
+				}
+
 				mpe.ToggleFullScreen((bool)args.NewValue);
 			});
 		}
 
 		private void ToggleFullScreen(bool showFullscreen)
 		{
-			try
+			if (XamlRoot?.HostWindow is null || _mediaPlayerPresenter is null)
 			{
-				if (XamlRoot?.HostWindow is null)
+				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().LogWarning(
-							$"Cannot toggle Full Screen as the media player was not yet " +
-							$"loaded in the visual tree.");
-					}
-
-					return;
+					this.Log().LogWarning(
+						$"Cannot toggle Full Screen as the media player was not yet " +
+						$"loaded in the visual tree.");
 				}
 
+				return;
+			}
+
+			try
+			{
 				_mediaPlayerPresenter.IsTogglingFullscreen = true;
 
 				if (showFullscreen)
@@ -374,6 +379,10 @@ namespace Microsoft.UI.Xaml.Controls
 			_posterImage = this.GetTemplateChild(PosterImageName) as Image;
 			_mediaPlayerPresenter = this.GetTemplateChild(MediaPlayerPresenterName) as MediaPlayerPresenter;
 			_mediaPlayerPresenter?.SetOwner(this);
+			if (_mediaPlayerPresenter is not null)
+			{
+				_mediaPlayerPresenter.IsFullWindow = IsFullWindow;
+			}
 
 			_transportControlsPresenter = this.GetTemplateChild(TransportControlsPresenterName) as ContentPresenter;
 			_transportControlsPresenter.Content = TransportControls;
