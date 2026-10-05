@@ -699,6 +699,10 @@ internal static partial class NativeUno
 	internal static unsafe partial void uno_accessibility_set_value_callback(
 		delegate* unmanaged[Cdecl]<nint, nint, void> setValueCallback);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_accessibility_set_tree_requested_callback(
+		delegate* unmanaged[Cdecl]<nint, void> treeRequestedCallback);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_accessibility_add_element(
 		nint window,

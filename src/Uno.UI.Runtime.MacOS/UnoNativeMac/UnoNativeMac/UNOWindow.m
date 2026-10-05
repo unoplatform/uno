@@ -1642,6 +1642,7 @@ NSOperatingSystemVersion _osVersion;
 #pragma mark - NSAccessibility
 
 - (NSArray *)accessibilityChildren {
+    uno_accessibility_ensure_tree(self);
     // Merge the native view children with our custom accessibility tree elements
     NSMutableArray *children = [NSMutableArray arrayWithArray:[super accessibilityChildren]];
     NSArray *a11yChildren = uno_accessibility_get_root_children(self);
@@ -1652,6 +1653,7 @@ NSOperatingSystemVersion _osVersion;
 }
 
 - (id)accessibilityFocusedUIElement {
+    uno_accessibility_ensure_tree(self);
     // Return the currently focused accessibility element for VoiceOver
     id focusedElement = uno_accessibility_get_focused_element(self);
     if (focusedElement) {
@@ -1662,6 +1664,7 @@ NSOperatingSystemVersion _osVersion;
 }
 
 - (id)accessibilityHitTest:(NSPoint)point {
+    uno_accessibility_ensure_tree(self);
     // First check if the point hits any of our custom accessibility elements
     NSArray *a11yChildren = uno_accessibility_get_root_children(self);
     if (a11yChildren) {

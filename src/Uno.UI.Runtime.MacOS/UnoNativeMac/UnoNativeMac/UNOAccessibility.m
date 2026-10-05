@@ -49,6 +49,7 @@ static accessibility_increment_fn_ptr g_incrementCallback = NULL;
 static accessibility_decrement_fn_ptr g_decrementCallback = NULL;
 static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
+static accessibility_tree_requested_fn_ptr g_treeRequestedCallback = NULL;
 
 #pragma mark - UNOAccessibilityContext
 
@@ -976,6 +977,19 @@ void uno_accessibility_destroy_context(NSWindow* window) {
 void uno_accessibility_set_callbacks(accessibility_invoke_fn_ptr invoke, accessibility_focus_fn_ptr focus) {
 	g_invokeCallback = invoke;
 	g_focusCallback = focus;
+}
+
+void uno_accessibility_set_tree_requested_callback(accessibility_tree_requested_fn_ptr treeRequested) {
+	g_treeRequestedCallback = treeRequested;
+}
+
+void uno_accessibility_ensure_tree(NSWindow* window) {
+	UNOAccessibilityContext *context = uno_a11y_context_for_window(window);
+	if (!context || context.treeRequested || !g_treeRequestedCallback) {
+		return;
+	}
+	context.treeRequested = YES;
+	g_treeRequestedCallback(window);
 }
 
 void uno_accessibility_set_range_callbacks(accessibility_increment_fn_ptr increment, accessibility_decrement_fn_ptr decrement) {
