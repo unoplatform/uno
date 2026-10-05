@@ -14,10 +14,12 @@
 		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
-		<Description>This package provides the platform support for Skia Android in Uno Platform projects.</Description>
+		<Description>This package provides the Android host for Uno Platform projects.</Description>
 		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 
-		<PackageId>Uno.WinUI.Runtime.Skia.Android</PackageId>
+		<PackageId>Uno.WinUI.Runtime.Android</PackageId>
+		<!-- The assembly name still carries the old Skia segment, so it cannot derive the package id -->
+		<CommonOverridePackageId>$(PackageId)</CommonOverridePackageId>
 
 		<RootNamespace>Uno.WinUI.Runtime.Skia.Android</RootNamespace>
 

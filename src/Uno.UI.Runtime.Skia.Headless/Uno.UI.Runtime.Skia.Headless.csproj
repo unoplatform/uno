@@ -9,9 +9,11 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<Description>This package provides the platform support for a headless (offscreen) Skia host in Uno Platform projects.</Description>
+		<Description>This package provides a headless (offscreen) host for Uno Platform projects.</Description>
 
-		<PackageId>Uno.WinUI.Runtime.Skia.Headless</PackageId>
+		<PackageId>Uno.WinUI.Runtime.Headless</PackageId>
+		<!-- The assembly name still carries the old Skia segment, so it cannot derive the package id -->
+		<CommonOverridePackageId>$(PackageId)</CommonOverridePackageId>
 
 		<RootNamespace>Uno.WinUI.Runtime.Skia.Headless</RootNamespace>
 
