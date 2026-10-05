@@ -503,6 +503,7 @@ public class Given_MobileAccessibilityLifecycle_IOS
 			IsLightDismissEnabled = false,
 			Child = new Border { Child = modalButton },
 		};
+		AutomationProperties.SetIsDialog(popup, true);
 
 		var grid = new Grid();
 		grid.Children.Add(backgroundButton);

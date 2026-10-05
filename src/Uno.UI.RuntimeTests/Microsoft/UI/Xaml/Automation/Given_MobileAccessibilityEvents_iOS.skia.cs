@@ -431,6 +431,7 @@ public class Given_MobileAccessibilityEvents_iOS
 			IsLightDismissEnabled = false,
 			Child = new Border { Child = modalContent },
 		};
+		AutomationProperties.SetIsDialog(popup, true);
 		var root = new Grid { Children = { background, popup } };
 		await UITestHelper.Load(root);
 
