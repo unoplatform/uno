@@ -40,7 +40,7 @@ public class StoreContextExtension : IStoreContextExtension
 
 		using var request = reviewManager.RequestReviewFlow();
 
-		using var listener = new InAppReviewListener(reviewManager, inAppRateTcs);
+		using var listener = new InAppReviewListener(_storeContext, reviewManager, inAppRateTcs);
 		request.AddOnCompleteListener(listener);
 
 		return await inAppRateTcs.Task;
@@ -48,26 +48,43 @@ public class StoreContextExtension : IStoreContextExtension
 
 	private class InAppReviewListener : Java.Lang.Object, IOnCompleteListener
 	{
+		private StoreContext _storeContext;
 		private IReviewManager _reviewManager;
 		private TaskCompletionSource<StoreRateAndReviewResult>? _inAppRateTcs;
 		private Xamarin.Google.Android.Play.Core.Tasks.Task? _launchTask;
 		private bool _forceReturn;
 
-		public InAppReviewListener(IReviewManager reviewManager, TaskCompletionSource<StoreRateAndReviewResult>? inAppRateTcs)
+		public InAppReviewListener(StoreContext storeContext, IReviewManager reviewManager, TaskCompletionSource<StoreRateAndReviewResult>? inAppRateTcs)
 		{
+			_storeContext = storeContext;
 			_reviewManager = reviewManager;
 			_inAppRateTcs = inAppRateTcs;
 		}
 
 		public void OnComplete(Xamarin.Google.Android.Play.Core.Tasks.Task task)
 		{
-			var context = ContextHelper.Current;
-			var activity = (Activity)context;
-
 			if (!task.IsSuccessful || _forceReturn)
 			{
 				_inAppRateTcs?.TrySetResult(new(_forceReturn ? StoreRateAndReviewStatus.Succeeded : StoreRateAndReviewStatus.Error));
 				_launchTask?.Dispose();
+
+				return;
+			}
+
+			// Resolved only now so it follows the window across activity re-creation. Without
+			// InitializeWithWindow, fall back to the most recently active activity.
+			var hostContext = _storeContext.AssociatedWindow is { } window
+				? ContextHelper.WindowContextResolver?.Invoke(window)
+				: ContextHelper.Current;
+
+			if (hostContext is not Activity activity)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError("Cannot launch the in-app review flow, no activity is available to host it.");
+				}
+
+				_inAppRateTcs?.TrySetResult(new(StoreRateAndReviewStatus.Error));
 
 				return;
 			}

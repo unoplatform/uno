@@ -308,7 +308,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 			// Window.PrepareToClose();
 
-			if (NativeWindowFactory.SupportsMultipleWindows)
+			if (ClosesPermanently)
 			{
 				// set these to null before marking window as closed as they fail if called after m_bIsClosed is set
 				// because they check if window is closed already
@@ -340,9 +340,11 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		return false;
 	}
 
+	private bool ClosesPermanently => NativeWindowWrapper?.ClosesPermanently ?? NativeWindowFactory.SupportsMultipleWindows;
+
 	private void Shutdown()
 	{
-		if (NativeWindowFactory.SupportsMultipleWindows)
+		if (ClosesPermanently)
 		{
 			ApplicationHelper.RemoveWindow(Window);
 		}
@@ -355,7 +357,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		NativeWindowWrapper.Hide();
 
 		// Allow the window to be re-shown on single-window targets.
-		if (!NativeWindowFactory.SupportsMultipleWindows)
+		if (!ClosesPermanently)
 		{
 			NativeWindowWrapper.WasShown = false;
 		}

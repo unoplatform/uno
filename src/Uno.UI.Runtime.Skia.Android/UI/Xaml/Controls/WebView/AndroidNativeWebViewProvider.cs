@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using System;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
 
@@ -18,7 +19,12 @@ internal sealed class AndroidNativeWebViewProvider : INativeWebViewProvider
 		var content = contentPresenter.Content as global::Android.Webkit.WebView;
 		if (content is null)
 		{
-			content = new global::Android.Webkit.WebView(ContextHelper.Current);
+			// Prefer the owning window's activity over the ambient foreground one.
+			var context = (global::Android.Content.Context?)AndroidSkiaXamlRootHost.GetActivity(contentPresenter.XamlRoot)
+				?? ContextHelper.Current
+				?? throw new InvalidOperationException("No Android context is available to create the native WebView.");
+
+			content = new global::Android.Webkit.WebView(context);
 			contentPresenter.Content = content;
 		}
 

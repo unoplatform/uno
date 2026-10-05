@@ -16,21 +16,16 @@ public class Given_ApplicationActivity
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24598")]
-	[DynamicDependency("get_Instance", "Microsoft.UI.Xaml.ApplicationActivity", "Uno.UI.Runtime.Skia.Android")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Skia.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Skia.Android")]
 	[DynamicDependency("Recreate", "Android.App.Activity", "Mono.Android")]
 	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
 	public async Task When_Recreated_Dispatcher_Stays_Responsive()
 	{
-		// The runtime tests don't reference Mono.Android, hence the reflection.
-		var instanceProperty = Type.GetType("Microsoft.UI.Xaml.ApplicationActivity, Uno.UI.Runtime.Skia.Android")
-			?.GetProperty("Instance", BindingFlags.NonPublic | BindingFlags.Static);
-		Assert.IsNotNull(instanceProperty);
-
-		var original = instanceProperty.GetValue(null);
+		var original = GetWindowActivity();
 		Assert.IsNotNull(original);
 		original.GetType().GetMethod("Recreate", Type.EmptyTypes)!.Invoke(original, null);
 
-		await TestServices.WindowHelper.WaitFor(() => !ReferenceEquals(instanceProperty.GetValue(null), original), timeoutMS: 10000);
+		await TestServices.WindowHelper.WaitFor(() => GetWindowActivity() is { } current && !ReferenceEquals(current, original), timeoutMS: 10000);
 		await Task.Delay(1000);
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -55,7 +50,7 @@ public class Given_ApplicationActivity
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24598")]
-	[DynamicDependency("get_Instance", "Microsoft.UI.Xaml.ApplicationActivity", "Uno.UI.Runtime.Skia.Android")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Skia.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Skia.Android")]
 	[DynamicDependency("Recreate", "Android.App.Activity", "Mono.Android")]
 	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
 	public async Task When_Recreated_Window_Stays_Open()
@@ -69,15 +64,11 @@ public class Given_ApplicationActivity
 
 		try
 		{
-			var instanceProperty = Type.GetType("Microsoft.UI.Xaml.ApplicationActivity, Uno.UI.Runtime.Skia.Android")
-				?.GetProperty("Instance", BindingFlags.NonPublic | BindingFlags.Static);
-			Assert.IsNotNull(instanceProperty);
-
-			var original = instanceProperty.GetValue(null);
+			var original = GetWindowActivity();
 			Assert.IsNotNull(original);
 			original.GetType().GetMethod("Recreate", Type.EmptyTypes)!.Invoke(original, null);
 
-			await TestServices.WindowHelper.WaitFor(() => !ReferenceEquals(instanceProperty.GetValue(null), original), timeoutMS: 10000);
+			await TestServices.WindowHelper.WaitFor(() => GetWindowActivity() is { } current && !ReferenceEquals(current, original), timeoutMS: 10000);
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(closed, "The window was closed by a configuration-driven Activity recreation.");
@@ -86,6 +77,24 @@ public class Given_ApplicationActivity
 		{
 			window.Closed -= OnClosed;
 		}
+	}
+
+	// The activity driving the test window, resolved through its host so it follows re-creation.
+	// The runtime tests don't reference Mono.Android or the Android host, hence the reflection.
+	private static object GetWindowActivity()
+	{
+		if (TestServices.WindowHelper.XamlRoot is not { } xamlRoot)
+		{
+			return null;
+		}
+
+		var host = typeof(Microsoft.UI.Xaml.XamlRoot).Assembly.GetType("Uno.UI.Hosting.XamlRootMap")
+			?.GetMethod("GetHostForRoot", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public)
+			?.Invoke(null, new object[] { xamlRoot });
+
+		return host?.GetType()
+			.GetProperty("Activity", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+			?.GetValue(host);
 	}
 }
 #endif

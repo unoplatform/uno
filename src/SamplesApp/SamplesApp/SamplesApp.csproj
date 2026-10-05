@@ -376,9 +376,10 @@
 
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">
 		<DefineConstants>$(DefineConstants);HAS_UNO;__UNO__</DefineConstants>
-		<!-- Pin the shrinker. Left unset, R8 9.1.31 crashes with
-		     an NPE in its API-model database while desugaring androidx.core. -->
-		<AndroidLinkTool Condition="'$(DoNotSetAndroidLinkTool)' != 'true'">r8</AndroidLinkTool>
+		<!-- Release only: unshrunk R8 9.1.31 in release mode crashes with an NPE in its API-model
+		     database while desugaring androidx.core; shrinking avoids it. In Debug the pin would shrink
+		     with no JNI keep rules (AndroidLinkMode=None generates none) and strip AndroidX. -->
+		<AndroidLinkTool Condition="'$(DoNotSetAndroidLinkTool)' != 'true' and '$(Configuration)' == 'Release'">r8</AndroidLinkTool>
 		<!-- apk (not aab) so the runtime-test harness can deploy to emulators -->
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>

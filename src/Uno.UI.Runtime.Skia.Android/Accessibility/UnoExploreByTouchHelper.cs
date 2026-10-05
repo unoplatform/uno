@@ -27,7 +27,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private int _currentId;
 	private readonly HashSet<DependencyObject> _rememberAllVisited = [];
 
-	internal UIElement? RootElement => _rootElement ??= Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement;
+	// The window of the activity hosting this render view, not the main window.
+	internal UIElement? RootElement => _rootElement ??= (_host.Context as ApplicationActivity)?.RootElement;
 
 	public UnoExploreByTouchHelper(View host) : base(host)
 	{
@@ -99,11 +100,11 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	protected override void GetVisibleVirtualViews(IList<Integer>? virtualViewIds)
 	{
-		if (Microsoft.UI.Xaml.Window.CurrentSafe is null)
+		if (RootElement is null)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogWarning("No current window could be found.");
+				this.Log().LogWarning("No window could be found for the accessibility host.");
 			}
 
 			return;

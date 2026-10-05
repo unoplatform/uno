@@ -22,7 +22,7 @@ partial class ApplicationActivity
 		// On Android 16+ (API 36+), use OnBackPressedCallback for predictive back gesture support.
 		// The callback is enabled/disabled based on combined back handler state
 		// (both public BackRequested subscribers and internal BackButtonIntegration listeners).
-		if ((int)Build.VERSION.SdkInt >= 36)
+		if ((int)Build.VERSION.SdkInt >= 36 && IsMainWindowActivity)
 		{
 			var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
 			SystemNavigationManager.BackHandlerStateChanged += OnBackHandlerStateChanged;

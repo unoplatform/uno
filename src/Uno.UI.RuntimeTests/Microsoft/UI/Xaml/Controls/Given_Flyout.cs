@@ -2057,6 +2057,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)] // A second window backgrounds the test runner.
 		public async Task When_Shared_ContextFlyout_Opened_In_Second_Window()
 		{
 			if (!Uno.UI.Xaml.Controls.NativeWindowFactory.SupportsMultipleWindows)

@@ -10,7 +10,7 @@ jobs:
 
 - job: Android_NativeAOT_Tests
   displayName: ' ' ## Name is concatenated with the matrix group name
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: succeeded() # TEMP: run on this PR; restore ne(variables['Build.Reason'], 'PullRequest') before merge
   timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
   dependsOn: Skia_Android_NativeAOT_Tests_Build
