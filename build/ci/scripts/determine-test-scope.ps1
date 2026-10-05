@@ -24,6 +24,7 @@ $ErrorActionPreference = 'Stop'
 $scopeVariables = [ordered]@{
     TemplateTestsRequired = $false
     ScreenshotsRequired   = $false
+    WebGpuTestsRequired   = $false
 }
 
 # Heuristics:
@@ -31,9 +32,12 @@ $scopeVariables = [ordered]@{
 #                           generated app templates.
 #   ScreenshotsRequired   - any .cs change in Uno.UI and above (the UI layer: src/Uno.UI* + src/AddIns)
 #                           that could affect rendered output.
+#   WebGpuTestsRequired   - the WebGPU backend, its native packaging and loaders, or the runtime-test
+#                           infrastructure. Gates every WebGPU lane but Linux's, which always runs.
 $patterns = @{
     TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/sourcegenerators/uno\.ui\.tasks/|^src/.*devserver.*|^src/.*remotecontrol.*)'
     ScreenshotsRequired   = [regex]'(?i)^src/(uno\.ui|addins).*\.cs$'
+    WebGpuTestsRequired   = [regex]'(?i)(?:webgpu|wgpu|^build/ci/tests/|^build/test-scripts/)'
 }
 
 function Set-TestScopeVariable {

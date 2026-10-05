@@ -532,16 +532,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 			}
 
-			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
-
-			Assert.AreNotEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
+			// The offset follows the caret over a few frames, which a software renderer can make slow.
+			await UITestHelper.WaitFor(() => ((ScrollViewer)SUT.ContentElement).HorizontalOffset != 0, timeoutMS: 5000);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.Shift));
 			await WindowHelper.WaitForIdle();
 
-			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
-
-			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
+			await UITestHelper.WaitFor(() => ((ScrollViewer)SUT.ContentElement).HorizontalOffset == 0, timeoutMS: 5000);
 
 			for (int i = 0; i < 5; i++)
 			{
@@ -582,9 +579,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, mod));
 			await WindowHelper.WaitForIdle();
 
-			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
-
-			((ScrollViewer)SUT.ContentElement).VerticalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableHeight, 1.0);
+			var sv = (ScrollViewer)SUT.ContentElement;
+			await UITestHelper.WaitFor(() => Math.Abs(sv.VerticalOffset - sv.ScrollableHeight) <= 1.0, timeoutMS: 5000);
+			sv.VerticalOffset.Should().BeApproximately(sv.ScrollableHeight, 1.0);
 		}
 
 		[TestMethod]
@@ -1082,10 +1079,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var sv = SUT.FindVisualChildByType<ScrollViewer>();
 
-			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
+			var isiOS = OperatingSystem.IsIOS();
+			// The offset follows the caret over a few frames, which a software renderer can make slow.
+			await UITestHelper.WaitFor(() => isiOS ? sv.HorizontalOffset > 0 : sv.HorizontalOffset == sv.ScrollableWidth, timeoutMS: 5000);
 			sv.HorizontalOffset.Should().BeGreaterThan(0);
 
-			var isiOS = OperatingSystem.IsIOS();
 			if (!isiOS)
 			{
 				//TODO: this is flaky on iOS. Fails on CI but passes locally.
@@ -1093,7 +1091,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
-			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
+			await UITestHelper.WaitFor(() => sv.HorizontalOffset == 0, timeoutMS: 5000);
 			sv.ScrollableWidth.Should().BeGreaterThan(0);
 			Assert.AreEqual(0, sv.HorizontalOffset, "HorizontalOffset should be 0 after Home key press");
 		}
@@ -1357,7 +1355,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			SUT.Select(SUT.Text.Length, 0);
-			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
+			// The offset follows the caret over a few frames, which a software renderer can make slow.
+			await UITestHelper.WaitFor(() => sv.HorizontalOffset == sv.ScrollableWidth, timeoutMS: 5000);
 			Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset, "sv.ScrollableWidth is not equal to sv.HorizontalOffset");
 
 			for (var i = 0; i < 6; i++)
@@ -1372,7 +1371,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sv.HorizontalOffset.Should().BeLessThan(sv.ScrollableWidth);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
-			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
+			await UITestHelper.WaitFor(() => sv.HorizontalOffset == 0, timeoutMS: 5000);
 			Assert.AreEqual(0, sv.HorizontalOffset);
 
 			for (var i = 0; i < 6; i++)
@@ -5897,11 +5896,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
-			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), message: "the tap should show the insertion handle");
+			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), timeoutMS: 5000, message: "the tap should show the insertion handle");
 
 			// Scroll the TextBox entirely above the viewport.
 			scrollViewer.ChangeView(null, 400, null, disableAnimation: true);
-			await WindowHelper.WaitFor(() => scrollViewer.VerticalOffset > 300, message: "the form should have scrolled");
+			await WindowHelper.WaitFor(() => scrollViewer.VerticalOffset > 300, timeoutMS: 5000, message: "the form should have scrolled");
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be hidden once the TextBox is scrolled out of view");
 
@@ -8904,6 +8903,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(
 				() => caretRect.Left >= sv.HorizontalOffset - 1
 					&& caretRect.Right <= sv.HorizontalOffset + sv.ViewportWidth + 1,
+				// The ChangeView animation alone lasts a second, the default timeout.
+				timeoutMS: 5000,
 				message: $"Caret at {caretRect.Left} never came into the viewport (width {sv.ViewportWidth})");
 
 			Assert.IsGreaterThan(0, sv.HorizontalOffset, "The viewport should have followed the previewed caret.");

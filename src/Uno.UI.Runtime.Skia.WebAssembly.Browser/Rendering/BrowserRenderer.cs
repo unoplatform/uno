@@ -106,7 +106,16 @@ internal partial class BrowserRenderer
 	[JSExport]
 	internal static void RenderFrame([JSMarshalAs<JSType.Any>] object instance)
 	{
-		((BrowserRenderer)instance).RenderFrame();
+		try
+		{
+			((BrowserRenderer)instance).RenderFrame();
+		}
+		catch (Exception e)
+		{
+			// Crossing back into JS drops the managed stack ("Uncaught Error: <message>"), so log it here.
+			typeof(BrowserRenderer).Log().Error("Rendering a frame failed.", e);
+			throw;
+		}
 	}
 
 	private void RenderFrame()
@@ -138,6 +147,14 @@ internal partial class BrowserRenderer
 		{
 			// Async context init not finished yet — re-arm so we render as soon as it's ready (unless it failed).
 			if (!_initFailed && _nativeInstance is not null) { NativeMethods.Invalidate(_nativeInstance); }
+			return;
+		}
+
+		if (!_context.IsReadyForFrame)
+		{
+			// The GPU is still behind on earlier frames: keep the request and try again on the next frame callback.
+			_pendingInvalidate = true;
+			NativeMethods.Invalidate(_nativeInstance!);
 			return;
 		}
 

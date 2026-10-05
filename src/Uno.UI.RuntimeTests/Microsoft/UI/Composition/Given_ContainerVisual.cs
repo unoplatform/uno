@@ -110,7 +110,8 @@ public class Given_ContainerVisual
 			popup.IsOpen = !popup.IsOpen;
 			await UITestHelper.WaitForIdle();
 			var count = skce.FrameCounter;
-			await UITestHelper.WaitFor(() => skce.FrameCounter > count);
+			// A frame per toggle, which on a software-rasterizing agent can take longer than the default second.
+			await UITestHelper.WaitFor(() => skce.FrameCounter > count, timeoutMS: 5000);
 		}
 
 		popup.IsOpen = true;

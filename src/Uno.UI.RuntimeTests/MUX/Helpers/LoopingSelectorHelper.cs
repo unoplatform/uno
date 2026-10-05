@@ -136,7 +136,8 @@ public static class LoopingSelectorHelper
 
 		// These values were changed to work around Task 24429189: DCPP Test: InputManagerXaml.dll InjectPressAndDrag does not work correctly on 64 bit OS
 		TestServices.InputHelper.PanFromCenter(loopingSelector, 0 /*relX*/, -100 /*relY*/, 10.0 /*velocityFactor*/);
-		await selectionChangedEvent.WaitForDefault();
+		// UNO: the selection lands when the pan's snap animation settles, which takes longer than 5s on a GPU-less agent.
+		await selectionChangedEvent.WaitForDefault(15000);
 	}
 
 
@@ -180,7 +181,7 @@ public static class LoopingSelectorHelper
 			{
 				await TestServices.WindowHelper.WaitForIdle();
 				TestServices.InputHelper.LeftMouseClick(buttonToTap);
-				await WindowHelper.WaitFor(() => selectionChangedEvent);
+				await WindowHelper.WaitFor(() => selectionChangedEvent, timeoutMS: 10000); // UNO: the selection lands after a scroll animation
 				selectionChangedEvent = false;
 			}
 		}
@@ -198,7 +199,7 @@ public static class LoopingSelectorHelper
 			{
 				await TestServices.WindowHelper.WaitForIdle();
 				await TestServices.KeyboardHelper.PressKeySequence(keySequenceToUse);
-				await TestServices.WindowHelper.WaitFor(() => selectionChangedEvent, timeoutMS: 3000);
+				await TestServices.WindowHelper.WaitFor(() => selectionChangedEvent, timeoutMS: 10000); // UNO: 3000, too short for software-rendered frames
 				selectionChangedEvent = false;
 			}
 		}

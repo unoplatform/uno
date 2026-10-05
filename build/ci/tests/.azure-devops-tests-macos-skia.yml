@@ -6,13 +6,21 @@ parameters:
   xCodeRootBuild: ''
   poolName: ''
   XAML_FLAVOR_BUILD: ''
+  jobName: 'Skia_macos_Runtime_Tests_Build'
+  displayName: 'Runtime Tests'
+  testResultLabel: ''
+  # Runs the app on the WebGPU backend (Metal).
+  webGpu: false
 
 jobs:
 
-- job: Skia_macos_Runtime_Tests_Build
-  displayName: 'Runtime Tests'
+- job: ${{ parameters.jobName }}
+  displayName: '${{ parameters.displayName }}'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
+  ${{ if eq(parameters.webGpu, true) }}:
+    # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1); master runs it always.
+    condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))
 
   pool:
     vmImage: ${{ parameters.vmMacImage }}
@@ -36,7 +44,7 @@ jobs:
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-      artifact: runtime-tests-desktop-skia-macos-failures
+      artifact: runtime-tests-desktop-skia-macos${{ parameters.testResultLabel }}-failures
       path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
   - template: ../templates/dotnet-install.yml
@@ -59,13 +67,17 @@ jobs:
     env:
       SamplesAppArtifactPath: $(SamplesAppArtifactPath)
       SamplesAppArtifactName: $(SamplesAppArtifactName)
+      UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
+      ${{ if eq(parameters.webGpu, true) }}:
+        UNO_WEBGPU: 1
+        UNO_WEBGPU_LOG: warn
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'macOS Skia Runtime Tests'
+      testRunTitle: 'macOS Skia${{ parameters.testResultLabel }} Runtime Tests'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/skia-macos-runtime-tests-results.xml'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-macos${{ parameters.testResultLabel }}-runtime-tests-results.xml'
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
 
@@ -75,5 +87,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: runtime-tests-desktop-skia-macos-failures
+      ArtifactName: runtime-tests-desktop-skia-macos${{ parameters.testResultLabel }}-failures
       ArtifactType: Container

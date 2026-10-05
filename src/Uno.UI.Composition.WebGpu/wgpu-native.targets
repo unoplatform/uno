@@ -131,6 +131,41 @@
 			SourceFiles="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" DestinationFiles="$(OutDir)$(_WgpuOutputFile)" SkipUnchangedFiles="true" />
 	</Target>
 
+	<!-- A desktop head built on one OS runs on the others (CI builds the desktop SamplesApp once, on Windows, for
+	     every desktop lane), so it also carries each desktop platform's native under runtimes/<rid>/native, where
+	     WebGpuLoader looks for the current platform's. The names collide across architectures (both macOS slices
+	     are libwebgpu.dylib), hence a folder per RID rather than next to the app. -->
+	<Target Name="_ProvisionWgpuNativeDesktopRids" AfterTargets="Build"
+			Condition="'$(OutputType)' != 'Library' And '$(OutDir)' != '' And ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop')">
+		<ItemGroup>
+			<_WgpuDesktopRid Include="win-x64"><Asset>wgpu-windows-x86_64-msvc-release.zip</Asset><Native>wgpu_native.dll</Native><Name>webgpu.dll</Name></_WgpuDesktopRid>
+			<_WgpuDesktopRid Include="linux-x64"><Asset>wgpu-linux-x86_64-release.zip</Asset><Native>libwgpu_native.so</Native><Name>libwebgpu.so</Name></_WgpuDesktopRid>
+			<_WgpuDesktopRid Include="osx-x64"><Asset>wgpu-macos-x86_64-release.zip</Asset><Native>libwgpu_native.dylib</Native><Name>libwebgpu.dylib</Name></_WgpuDesktopRid>
+			<_WgpuDesktopRid Include="osx-arm64"><Asset>wgpu-macos-aarch64-release.zip</Asset><Native>libwgpu_native.dylib</Native><Name>libwebgpu.dylib</Name></_WgpuDesktopRid>
+		</ItemGroup>
+		<MakeDir Directories="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\" />
+		<DownloadFile Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\%(_WgpuDesktopRid.Asset)')"
+			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/%(_WgpuDesktopRid.Asset)"
+			DestinationFolder="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\" Retries="3" />
+		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\lib\%(_WgpuDesktopRid.Native)')"
+			SourceFiles="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\%(_WgpuDesktopRid.Asset)"
+			DestinationFolder="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\" />
+		<Copy SourceFiles="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\lib\%(_WgpuDesktopRid.Native)"
+			DestinationFiles="$(OutDir)runtimes\%(_WgpuDesktopRid.Identity)\native\%(_WgpuDesktopRid.Name)" SkipUnchangedFiles="true" />
+		<ItemGroup>
+			<_WgpuDesktopRidPublish Include="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\lib\%(_WgpuDesktopRid.Native)">
+				<RelativePath>runtimes\%(_WgpuDesktopRid.Identity)\native\%(_WgpuDesktopRid.Name)</RelativePath>
+			</_WgpuDesktopRidPublish>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_AddWgpuNativeDesktopRidsToPublish" AfterTargets="ComputeFilesToPublish" DependsOnTargets="_ProvisionWgpuNativeDesktopRids"
+			Condition="'$(OutputType)' != 'Library' And ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop')">
+		<ItemGroup>
+			<ResolvedFileToPublish Include="@(_WgpuDesktopRidPublish)" CopyToPublishDirectory="PreserveNewest" />
+		</ItemGroup>
+	</Target>
+
 	<!-- Publish: register the native as a real publish item so `dotnet publish` (incl. `-o <dir>` and self-contained)
 	     copies it to the publish root. A loose file in OutDir is NOT a tracked publish item, so it would otherwise be
 	     dropped from the published output (the DllNotFound the WebGPU head hit on Windows). AfterTargets so it appends
@@ -164,8 +199,12 @@
 		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so')"
 			SourceFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip"
 			DestinationFolder="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" />
+		<!-- Packed under the DllImport's own name, as on desktop: a Release APK resolves the p/invoke itself
+		     (libwebgpu.so) without consulting the managed DllImportResolver. -->
+		<Copy SourceFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so"
+			DestinationFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\named\libwebgpu.so" SkipUnchangedFiles="true" />
 		<ItemGroup>
-			<AndroidNativeLibrary Include="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so">
+			<AndroidNativeLibrary Include="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\named\libwebgpu.so">
 				<Abi>%(_WgpuAndroidAbi.Abi)</Abi>
 			</AndroidNativeLibrary>
 		</ItemGroup>

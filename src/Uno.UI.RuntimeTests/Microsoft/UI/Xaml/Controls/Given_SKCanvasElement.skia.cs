@@ -38,6 +38,11 @@ public class Given_SKCanvasElement
 
 		await UITestHelper.Load(border);
 
+		// A backend without a native SKCanvas (WebGPU) draws through a GL island that comes up a few frames after load;
+		// its output composites on the frame after its first render.
+		await UITestHelper.WaitFor(() => SUT.Rendered, timeoutMS: 5000);
+		await UITestHelper.WaitForRender(2);
+
 		var bitmap = await UITestHelper.ScreenShot(border);
 
 		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, 400, 300), Microsoft.UI.Colors.Blue);
@@ -91,8 +96,11 @@ public class Given_SKCanvasElement
 
 	private class BlueFillSKCanvasElement : SKCanvasElement
 	{
+		public bool Rendered { get; private set; }
+
 		protected override void RenderOverride(SKCanvas canvas, Size area)
 		{
+			Rendered = true;
 			canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), new SKPaint { Color = SKColors.Blue });
 		}
 	}

@@ -291,4 +291,45 @@ public partial class Given_KeyFrameAnimation
 			TestServices.WindowHelper.WindowContent = null;
 		}
 	}
+
+#if __SKIA__
+	// An animation that runs out between two frames (a slow renderer) ends on its first evaluation. ScrollContentPresenter
+	// reads the animated AnchorPoint in Stopped to report the final scroll offset, so it must already hold the final value.
+	[TestMethod]
+	public async Task When_KeyFrameAnimation_Ends_On_First_Frame_Then_Stopped_Sees_Final_Value()
+	{
+		var border = new Border()
+		{
+			Width = 100,
+			Height = 100,
+		};
+
+		await UITestHelper.Load(border);
+
+		var compositor = ElementCompositionPreview.GetElementVisual(border).Compositor;
+		var sprite = compositor.CreateSpriteVisual();
+		ElementCompositionPreview.SetElementChildVisual(border, sprite);
+
+		var target = new Vector2(10, 20);
+		var animation = compositor.CreateVector2KeyFrameAnimation();
+		animation.InsertKeyFrame(1.0f, target);
+		animation.Duration = TimeSpan.FromTicks(1);
+
+		Vector2? valueWhenStopped = null;
+		animation.Stopped += (_, _) => valueWhenStopped = sprite.AnchorPoint;
+
+		try
+		{
+			sprite.StartAnimation(nameof(Visual.AnchorPoint), animation);
+
+			await TestServices.WindowHelper.WaitFor(() => valueWhenStopped is not null, message: "the animation should stop on its first frame");
+			Assert.AreEqual(target, valueWhenStopped);
+		}
+		finally
+		{
+			sprite.StopAnimation(nameof(Visual.AnchorPoint));
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+#endif
 }

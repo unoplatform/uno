@@ -117,3 +117,106 @@ jobs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: runtime-tests-desktop-skia-windows-failures
       ArtifactType: Container
+
+# The same artifact and script as the Skia lane, rendering through the WebGPU backend. Hosted agents have no GPU, so
+# wgpu runs on Mesa's lavapipe (llvmpipe behind Vulkan) rather than D3D12 WARP: measured 2.75x faster, which lets the
+# whole suite run in one job (on WARP it took four, about an hour of agent time).
+- job: Skia_Windows_WebGpu_Runtime_Tests
+  displayName: 'Runtime Tests (WebGPU)'
+  timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 0
+  # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1); master runs it always.
+  condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))
+
+  pool:
+    vmImage: 'windows-2025'
+
+  variables:
+    SamplesAppArtifactName: samplesapp-desktop-skia
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    UnoEnableHRuntimeTests: true
+    UNO_WEBGPU: 1
+    # wgpu's own warnings and errors: the only account of why a device was lost.
+    UNO_WEBGPU_LOG: warn
+    UNO_TEST_RESULT_LABEL: -webgpu
+    # Vulkan only, so a missing lavapipe fails the run instead of quietly falling back to WARP.
+    UNO_WEBGPU_BACKENDS: vulkan
+    LavapipeMesaVersion: '26.2.4'
+    VulkanRuntimeVersion: '1.4.363.0'
+
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
+    inputs:
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+  - task: DownloadPipelineArtifact@2
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+      artifact: runtime-tests-desktop-webgpu-windows-failures
+      path: '$(build.sourcesdirectory)/build/uitests-failure-results'
+
+  - template: ../templates/dotnet-install.yml
+
+  - script: |
+      # Build source generators for hot reload runtime tests
+      # Used to build the hot reload and ALC test secondary app during runtime tests
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.Tasks
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
+      dotnet build -c Debug
+    displayName: Build HR dependencies
+
+  - pwsh: |
+      $ErrorActionPreference = 'Stop'
+      $dir = "$(Agent.TempDirectory)\lavapipe"
+      New-Item -ItemType Directory -Force $dir | Out-Null
+      Invoke-WebRequest -Uri "https://github.com/pal1000/mesa-dist-win/releases/download/$(LavapipeMesaVersion)/mesa3d-$(LavapipeMesaVersion)-release-msvc.7z" -OutFile "$dir\mesa.7z"
+      & "$env:ProgramFiles\7-Zip\7z.exe" x -y "-o$dir" "$dir\mesa.7z" "x64\vulkan_lvp.dll" "x64\lvp_icd.x86_64.json" | Out-Null
+      Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/$(VulkanRuntimeVersion)/windows/vulkan-runtime-components.zip?u=" -OutFile "$dir\vkrt.zip"
+      Expand-Archive "$dir\vkrt.zip" -DestinationPath "$dir\vkrt" -Force
+      $rt = (Get-ChildItem "$dir\vkrt" -Directory | Select-Object -First 1).FullName
+
+      # A GPU-less image need not have a Vulkan loader: put this one on the PATH, where wgpu's load of vulkan-1.dll finds it.
+      Write-Host "##vso[task.prependpath]$rt\x64"
+
+      # Registered, not pointed at through VK_DRIVER_FILES: the agent runs elevated, and the loader ignores its
+      # environment overrides in an elevated process.
+      $icd = "$dir\x64\lvp_icd.x86_64.json"
+      $drivers = "HKLM:\SOFTWARE\Khronos\Vulkan\Drivers"
+      New-Item -Path $drivers -Force | Out-Null
+      New-ItemProperty -Path $drivers -Name $icd -PropertyType DWord -Value 0 -Force | Out-Null
+
+      $summary = & "$rt\x64\vulkaninfo.exe" --summary 2>&1 | Out-String
+      Write-Host $summary
+      if ($summary -notmatch 'llvmpipe') { throw "lavapipe did not register as a Vulkan device." }
+    displayName: Install Mesa lavapipe
+
+  - pwsh: build/test-scripts/run-windows-skia-runtime-tests.ps1
+    displayName: Run Runtime Tests
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Windows WebGPU Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-windows-webgpu-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    displayName: Publish Failed Tests Results
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: runtime-tests-desktop-webgpu-windows-failures
+      ArtifactType: Container

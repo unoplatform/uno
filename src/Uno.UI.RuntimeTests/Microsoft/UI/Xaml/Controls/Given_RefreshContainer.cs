@@ -114,8 +114,16 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Deferral deferral = null;
 			refreshContainer.RequestRefresh();
 
-			await Task.Delay(200); // Artificial delay to allow the indicator to animate in
-			var screenshotAfter = await TakeScreenshot(grid);
+			// The indicator animates in over a few frames: wait for it to show rather than for a fixed time, which a
+			// slower renderer spreads over more than the 200 ms this used to allow.
+			var animateIn = global::System.Diagnostics.Stopwatch.StartNew();
+			RawBitmap screenshotAfter;
+			do
+			{
+				await Task.Delay(100);
+				screenshotAfter = await TakeScreenshot(grid);
+			}
+			while (animateIn.ElapsedMilliseconds < 5000 && await AreSame(screenshotBefore, screenshotAfter));
 			await ImageAssert.AreNotEqualAsync(screenshotBefore, screenshotAfter);
 			deferral.Complete();
 
@@ -466,6 +474,19 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual(RefreshVisualizerState.Idle, rv.State, "RefreshVisualizer should be back to Idle state after refresh completion");
 		}
 #endif
+
+		private static async Task<bool> AreSame(RawBitmap expected, RawBitmap actual)
+		{
+			try
+			{
+				await ImageAssert.AreEqualAsync(actual, expected);
+				return true;
+			}
+			catch (AssertFailedException)
+			{
+				return false;
+			}
+		}
 
 		private Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 			=> UITestHelper.ScreenShot(SUT);
