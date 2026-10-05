@@ -198,7 +198,7 @@ internal sealed class MathParsedText : IParsedText
 				positions[i] = placement.Positions[i] + new Vector2(placement.X, placement.Y);
 			}
 
-			GlyphRunRenderer.Draw(drawingSession, placement.Font, placement.Glyphs, positions, 0, foregroundOverride ?? GetColor(placement.Brush, session.Opacity));
+			drawingSession.DrawGlyphRun(placement.Font, placement.Glyphs, positions, 0, foregroundOverride ?? GetColor(placement.Brush, session.Opacity));
 		}
 
 		foreach (var rule in _rulePlacements)

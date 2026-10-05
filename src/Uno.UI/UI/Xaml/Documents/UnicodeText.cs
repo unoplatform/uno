@@ -1912,7 +1912,14 @@ internal readonly partial struct UnicodeText : IParsedText
 				var glyphSpan = CollectionsMarshal.AsSpan(glyphs);
 				var positionSpan = CollectionsMarshal.AsSpan(positions);
 
-				GlyphRunRenderer.Draw(drawingSession, font, glyphSpan, positionSpan, 0, paintColor, outline ? GetOutlineStrokeWidth(font) : null);
+				if (outline)
+				{
+					GlyphRunRenderer.Draw(drawingSession, font, glyphSpan, positionSpan, 0, paintColor, GetOutlineStrokeWidth(font));
+				}
+				else
+				{
+					drawingSession.DrawGlyphRun(font, glyphSpan, positionSpan, 0, paintColor);
+				}
 			}
 		}
 
@@ -2035,7 +2042,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			positions[i] += origin;
 		}
 
-		GlyphRunRenderer.Draw(session.Session, font, glyphs, positions, 0, foregroundOverride ?? BrushToColor(foreground, session.Opacity));
+		session.Session.DrawGlyphRun(font, glyphs, positions, 0, foregroundOverride ?? BrushToColor(foreground, session.Opacity));
 	}
 
 	private static void DrawTextDecorations(IDrawingSession session, List<TextDecorationDrawInfo> decorations)
