@@ -59,9 +59,11 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Software;
 
+	private bool _firstFramePresented;
+
 	// Reuses one persistent CPU buffer across frames (reallocated only on resize), so the compositor can repaint
-	// only the damaged region.
-	public bool PreservesContents => true;
+	// only the damaged region once the first frame has been presented on this swapchain.
+	public bool PreservesContents => _firstFramePresented;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -111,6 +113,7 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 
 		GLES20.GlDisableVertexAttribArray(_posLocation);
 		GLES20.GlDisableVertexAttribArray(_texLocation);
+		_firstFramePresented = true;
 	}
 
 	private static void DrainPendingDisposal()
@@ -212,6 +215,7 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 		_program = 0;
 		_texture = 0;
 		_glInitialized = false;
+		_firstFramePresented = false;
 
 		_quadBuffer?.Dispose();
 		_quadBuffer = null;
