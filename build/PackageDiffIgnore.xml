@@ -2423,6 +2423,7 @@
 		  <Member fullName="Microsoft.UI.Xaml.PagePool" reason="Removed the Page instance pool; only the legacy Frame navigation mode used it (breaking changes for 7.0, uno#8339)" />
 		  <!-- Uno-only interface moved out of the WinUI namespace; WinUI has no counterpart. -->
 		  <Member fullName="Microsoft.Web.WebView2.Core.INativeWebViewProvider" reason="Moved Uno-only INativeWebViewProvider to Uno.Web.WebView2.Core (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.ILayoutConstraints" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -2883,6 +2884,9 @@
 		  <!-- Transitions moved from FrameworkElement to UIElement, as in WinUI (accessors paired in <Methods> below). -->
 		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement::Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.FrameworkElement::UseConstraintOptimizations()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Nullable`1&lt;System.Boolean&gt; Microsoft.UI.Xaml.FrameworkElement::AreDimensionsConstrained()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.(Border|ContentPresenter|Control|ItemsPresenter))::IsSimpleLayout\(\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -3674,6 +3678,14 @@
 		  <Member fullName="Microsoft\.UI\.Xaml\.FrameworkElement Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)(Try)?AdaptNative\(.+\)" reason="Removed the legacy VisualTreeHelper.AdaptNative/TryAdaptNative native-view adapter; host native views as ContentControl/ContentPresenter content (BC23, breaking changes for 7.0, uno#8339)" isRegex="true" />
 		  <!-- Uno-only VisualTreeHelper.GetChildren helpers reduced to internal; WinUI has no counterpart. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)GetChildren.*\(Microsoft\.UI\.Xaml\.DependencyObject view\)" reason="Reduced Uno-only VisualTreeHelper.GetChildren to internal (breaking changes for 7.0)" isRegex="true" />
+		  <!-- BC80: layout-constraint optimization removed. Only the native Android layouter consulted it; the requester parameter type differed per target (Android.Views.View, UIKit.UIView, UIElement). -->
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.FrameworkElement.get_UseConstraintOptimizations()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_UseConstraintOptimizations(System.Boolean value)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Nullable`1&lt;System.Boolean&gt; Microsoft.UI.Xaml.FrameworkElement.get_AreDimensionsConstrained()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_AreDimensionsConstrained(System.Nullable`1&lt;System.Boolean&gt; value)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.(Border|ContentPresenter|Control|ItemsPresenter))\.get_IsSimpleLayout\(\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <Member fullName="System\.Nullable`1&lt;System\.Boolean&gt; Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.StackPanel)\.Is(Width|Height)ConstrainedInner\(.+ requester\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.ILayoutConstraints\.Is(Width|Height)Constrained\(.+ requester\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
@@ -4096,6 +4108,7 @@
 
 		  <!-- Uno-only interface moved out of the WinUI namespace; WinUI has no counterpart. -->
 		  <Member fullName="Microsoft.Web.WebView2.Core.INativeWebViewProvider" reason="Moved Uno-only INativeWebViewProvider to Uno.Web.WebView2.Core (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.ILayoutConstraints" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -4572,6 +4585,9 @@
 		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement::Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Composition.CompositionLight Microsoft.UI.Xaml.Media.XamlLight::CompositionLight()" reason="XamlLight.CompositionLight is protected, as in WinUI; accessors paired in &lt;Methods&gt; (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.FrameworkElement::UseConstraintOptimizations()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Nullable`1&lt;System.Boolean&gt; Microsoft.UI.Xaml.FrameworkElement::AreDimensionsConstrained()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.(Border|ContentPresenter|Control|ItemsPresenter))::IsSimpleLayout\(\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -5509,6 +5525,14 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerCollection..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Composition.CompositionLight Microsoft.UI.Xaml.Media.XamlLight.get_CompositionLight()" reason="XamlLight.CompositionLight is protected, as in WinUI (breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.XamlLight.set_CompositionLight(Microsoft.UI.Composition.CompositionLight value)" reason="XamlLight.CompositionLight is protected, as in WinUI (breaking changes for 7.0)" />
+		  <!-- BC80: layout-constraint optimization removed. Only the native Android layouter consulted it; the requester parameter type differed per target (Android.Views.View, UIKit.UIView, UIElement). -->
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.FrameworkElement.get_UseConstraintOptimizations()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_UseConstraintOptimizations(System.Boolean value)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Nullable`1&lt;System.Boolean&gt; Microsoft.UI.Xaml.FrameworkElement.get_AreDimensionsConstrained()" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.FrameworkElement.set_AreDimensionsConstrained(System.Nullable`1&lt;System.Boolean&gt; value)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.(Border|ContentPresenter|Control|ItemsPresenter))\.get_IsSimpleLayout\(\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <Member fullName="System\.Nullable`1&lt;System\.Boolean&gt; Microsoft\.UI\.Xaml\.(FrameworkElement|Controls\.StackPanel)\.Is(Width|Height)ConstrainedInner\(.+ requester\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <Member fullName="System\.Boolean Microsoft\.UI\.Xaml\.ILayoutConstraints\.Is(Width|Height)Constrained\(.+ requester\)" reason="Removed the native-Android layout-constraint optimization, which Skia layout never consulted (BC80, breaking changes for 7.0, uno#8339)" isRegex="true" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->

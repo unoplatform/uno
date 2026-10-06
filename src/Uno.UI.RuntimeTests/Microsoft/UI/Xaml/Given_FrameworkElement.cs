@@ -866,31 +866,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_AreDimensionsConstrained_And_Margin()
-		{
-			const double setHeight = 45d;
-			var outerPanel = new Grid { Width = 72, Height = setHeight, Margin = new Thickness(8) };
-#if !WINAPPSDK
-			outerPanel.AreDimensionsConstrained = true;
-#endif
-			var innerView = new AspectRatioView { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
-			outerPanel.Children.Add(innerView);
-
-			TestServices.WindowHelper.WindowContent = outerPanel;
-			await TestServices.WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(setHeight, Math.Round(innerView.ActualHeight));
-
-			outerPanel.InvalidateMeasure(); // On Android, AreDimensionsConstrained=true causes view to be measured+arranged through alternate code path
-
-			await TestServices.WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(setHeight, Math.Round(innerView.ActualHeight));
-		}
-
-		[TestMethod]
-		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Negative_Margin_NonZero_Size()
 		{
 			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, -16, 0, 0), Height = 120 };
@@ -1287,18 +1262,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			MeasureOverrides.Add(availableSize);
 			return base.MeasureOverride(BaseAvailableSize ?? availableSize);
-		}
-	}
-
-	public partial class AspectRatioView : FrameworkElement
-	{
-		public double AspectRatio { get; set; } = 1.5;
-
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			var height = double.IsPositiveInfinity(availableSize.Height) ? 0 : availableSize.Height;
-			var width = height * AspectRatio;
-			return new Size(width, height);
 		}
 	}
 

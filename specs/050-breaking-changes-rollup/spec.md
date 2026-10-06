@@ -70,6 +70,9 @@ _Danger 2. Native-scoped, but delete public members a Skia user still sees in In
 - [ ] **BC66** — Remove Android `Window.IsStatusBarTranslucent()`  `d2·S`
   - Hard-remove the public Android `Window.IsStatusBarTranslucent()`; repoint the internal consumer to `NativeWindowWrapper`.
   - Files: `src/Uno.UI/UI/Xaml/Window/Window.Android.cs`, `src/Uno.UI/UI/Xaml/Window/Native/NativeWindowWrapper.Android.cs`, `src/Uno.UI/UI/Xaml/Controls/ComboBox/ComboBox.custom.cs`
+- [x] **BC80** — Remove the layout-constraint optimization  `d2·S`
+  - Hard-remove `FrameworkElement.AreDimensionsConstrained`/`UseConstraintOptimizations`, the `ILayoutConstraints` interface and the protected `IsSimpleLayout`/`IsWidthConstrainedInner`/`IsHeightConstrainedInner` overrides. Only the native Android layouter consulted them; Skia layout never did.
+  - Files: `src/Uno.UI/UI/Xaml/FrameworkElement.cs`, `src/Uno.UI/UI/Xaml/ILayoutConstraints.cs`, `src/Uno.UI/UI/Xaml/IFrameworkElement.cs`, `src/Uno.UI/UI/Xaml/Controls/StackPanel/StackPanel.uno.cs`, `src/Uno.UI/UI/Xaml/Controls/ScrollContentPresenter/ScrollContentPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/Border/Border.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/Control/Control.cs`, `src/Uno.UI/UI/Xaml/Controls/ItemsControl/ItemsPresenter.cs`
 
 ---
 

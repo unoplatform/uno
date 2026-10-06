@@ -35,7 +35,7 @@ using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints, IDependencyObjectParse
+	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, IDependencyObjectParse
 #if !UNO_REFERENCE_API
 		, ILayouterElement
 #endif
@@ -81,24 +81,6 @@ namespace Microsoft.UI.Xaml
 		/// Cache for the current type key for faster implicit style lookup
 		/// </summary>
 		private SpecializedResourceDictionary.ResourceKey _thisTypeResourceKey;
-
-		/// <summary>
-		/// Sets whether constraint-based optimizations are used to limit redrawing of the entire visual tree on Android. This can be
-		/// globally set to false if it is causing visual errors (eg views not updating properly). Note: this can still be overridden by
-		/// the <see cref="AreDimensionsConstrained"/> flag set on individual elements.
-		/// </summary>
-		public static bool UseConstraintOptimizations { get; set; }
-
-		/// <summary>
-		/// If manually set, this flag overrides the constraint-based reasoning for optimizing layout calls. This may be useful for
-		/// example if there are custom views in the visual hierarchy that do not implement <see cref="ILayoutConstraints"/>.
-		/// </summary>
-		public bool? AreDimensionsConstrained { get; set; }
-
-		/// <summary>
-		/// Indicates that this view can participate in layout optimizations using the simplest logic.
-		/// </summary>
-		protected virtual bool IsSimpleLayout => false;
 
 		/// <summary>
 		/// Flag for whether this FrameworkElement has a Style set by an ItemsControl. This typically happens when the user provides an explicit container
@@ -677,41 +659,6 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 
-		bool ILayoutConstraints.IsWidthConstrained(View requester) => IsWidthConstrained(requester);
-		private bool IsWidthConstrained(View requester)
-		{
-			return IsWidthConstrainedInner(requester) ??
-				(Parent as ILayoutConstraints)?.IsWidthConstrained(this) ??
-				//If the top level view itself is making the request, propagate it
-				(requester != null && IsTopLevelXamlView());
-		}
-
-		protected virtual bool? IsWidthConstrainedInner(View requester)
-		{
-			if (!IsSimpleLayout)
-			{
-				//In the base case (eg for non-framework custom panels) assume that we have to relayout
-				return false;
-			}
-			return this.IsWidthConstrainedSimple();
-		}
-
-		bool ILayoutConstraints.IsHeightConstrained(View requester) => IsHeightConstrained(requester);
-		private bool IsHeightConstrained(View requester)
-		{
-			return IsHeightConstrainedInner(requester) ?? (Parent as ILayoutConstraints)?.IsHeightConstrained(this) ?? IsTopLevelXamlView();
-		}
-
-		protected virtual bool? IsHeightConstrainedInner(View requester)
-		{
-			if (!IsSimpleLayout)
-			{
-				//In the base case (eg for non-framework custom panels) assume that we have to relayout
-				return false;
-			}
-			return this.IsHeightConstrainedSimple();
-		}
-
 		internal override bool IsViewHit() => false;
 
 		/// <summary>
@@ -904,8 +851,6 @@ namespace Microsoft.UI.Xaml
 		bool IFrameworkElementInternal.HasLayouter => true;
 
 		partial void Initialize();
-
-		private bool IsTopLevelXamlView() => false;
 
 		internal void SuspendRendering() => throw new NotSupportedException();
 
