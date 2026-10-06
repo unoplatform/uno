@@ -176,8 +176,8 @@ namespace UITests.Windows_UI_Xaml.Performance
 				var x = 0d;
 				var y = 0d;
 				var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
-				var measuresBefore = UIElement.LayoutMeasureCoreCount;
-				var arrangesBefore = UIElement.LayoutArrangeCoreCount;
+				var measuresBefore = LayoutMeasureCount;
+				var arrangesBefore = LayoutArrangeCount;
 				var started = Stopwatch.GetTimestamp();
 
 				switch (operation)
@@ -215,8 +215,8 @@ namespace UITests.Windows_UI_Xaml.Performance
 				_host.UpdateLayout();
 				var elapsed = Stopwatch.GetElapsedTime(started).TotalMilliseconds;
 				var allocatedDelta = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
-				var measured = UIElement.LayoutMeasureCoreCount - measuresBefore;
-				var arranged = UIElement.LayoutArrangeCoreCount - arrangesBefore;
+				var measured = LayoutMeasureCount - measuresBefore;
+				var arranged = LayoutArrangeCount - arrangesBefore;
 
 				if (Verify(x, y) is { } error)
 				{
@@ -296,6 +296,17 @@ namespace UITests.Windows_UI_Xaml.Performance
 
 		private static int ReadCount(string name, int fallback, int minimum, int maximum)
 			=> int.TryParse(Environment.GetEnvironmentVariable(name), out var value) && value >= minimum && value <= maximum ? value : fallback;
+
+		// Uno counts layout passes; native WinUI exposes no such counter, so it reports none.
+#if HAS_UNO
+		private static int LayoutMeasureCount => UIElement.LayoutMeasureCoreCount;
+
+		private static int LayoutArrangeCount => UIElement.LayoutArrangeCoreCount;
+#else
+		private static int LayoutMeasureCount => 0;
+
+		private static int LayoutArrangeCount => 0;
+#endif
 
 		private sealed class GridModel
 		{
@@ -419,7 +430,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 				{
 					if (collapse)
 					{
-						row.Visibility = Visibility.Collapsed;
+						row.Root.Visibility = Visibility.Collapsed;
 					}
 
 					_pool.Push(row);
@@ -456,7 +467,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 					if (!_realized.ContainsKey(index))
 					{
 						var row = _pool.Count > 0 ? _pool.Pop() : CreateRow();
-						row.Visibility = Visibility.Visible;
+						row.Root.Visibility = Visibility.Visible;
 						row.Cells.Rebind(index);
 						_realized[index] = row;
 					}
@@ -464,13 +475,13 @@ namespace UITests.Windows_UI_Xaml.Performance
 
 				foreach (var row in _pool)
 				{
-					row.Visibility = Visibility.Collapsed;
+					row.Root.Visibility = Visibility.Collapsed;
 				}
 
 				var rowSize = new Size(_model.ExtentWidth, RowHeight);
 				foreach (var row in _realized.Values)
 				{
-					row.Measure(rowSize);
+					row.Root.Measure(rowSize);
 				}
 
 				return new Size(_model.ExtentWidth, RowCount * (double)RowHeight);
@@ -480,7 +491,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 			{
 				foreach (var (index, row) in _realized)
 				{
-					row.Arrange(new Rect(0, index * (double)RowHeight, _model.ExtentWidth, RowHeight));
+					row.Root.Arrange(new Rect(0, index * (double)RowHeight, _model.ExtentWidth, RowHeight));
 				}
 
 				return finalSize;
@@ -489,23 +500,27 @@ namespace UITests.Windows_UI_Xaml.Performance
 			private GridRow CreateRow()
 			{
 				var row = new GridRow(_model);
-				Children.Add(row);
+				Children.Add(row.Root);
 				return row;
 			}
 		}
 
-		/// <summary>TreeDataGridRow's template: a border over a grid holding the selection background and the cells presenter.</summary>
-		private sealed class GridRow : Border
+		/// <summary>
+		/// TreeDataGridRow's template: a border over a grid holding the selection background and the cells presenter.
+		/// Wraps the border rather than deriving from it, since Border is sealed in WinUI.
+		/// </summary>
+		private sealed class GridRow
 		{
 			public GridRow(GridModel model)
 			{
-				Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
 				Cells = new CellsPresenter(model);
 				var grid = new Grid();
 				grid.Children.Add(new Border { Opacity = 0, Background = new SolidColorBrush(Microsoft.UI.Colors.SteelBlue) });
 				grid.Children.Add(Cells);
-				Child = grid;
+				Root = new Border { Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent), Child = grid };
 			}
+
+			public Border Root { get; }
 
 			public CellsPresenter Cells { get; }
 		}
@@ -577,7 +592,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 					if (IsVisible(column, left, right) && !_realized.ContainsKey(column))
 					{
 						var cell = _pool.Count > 0 ? _pool.Pop() : CreateCell();
-						cell.Visibility = Visibility.Visible;
+						cell.Root.Visibility = Visibility.Visible;
 						cell.SetText(label);
 						_realized[column] = cell;
 					}
@@ -585,12 +600,12 @@ namespace UITests.Windows_UI_Xaml.Performance
 
 				foreach (var cell in _pool)
 				{
-					cell.Visibility = Visibility.Collapsed;
+					cell.Root.Visibility = Visibility.Collapsed;
 				}
 
 				foreach (var (column, cell) in _realized)
 				{
-					cell.Measure(new Size(_model.Widths[column], RowHeight));
+					cell.Root.Measure(new Size(_model.Widths[column], RowHeight));
 				}
 
 				return new Size(_model.ExtentWidth, RowHeight);
@@ -600,7 +615,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 			{
 				foreach (var (column, cell) in _realized)
 				{
-					cell.Arrange(new Rect(_model.Xs[column], 0, _model.Widths[column], RowHeight));
+					cell.Root.Arrange(new Rect(_model.Xs[column], 0, _model.Widths[column], RowHeight));
 				}
 
 				return finalSize;
@@ -612,7 +627,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 			private GridCell CreateCell()
 			{
 				var cell = new GridCell(_model.HiddenText);
-				Children.Add(cell);
+				Children.Add(cell.Root);
 				return cell;
 			}
 		}
@@ -621,7 +636,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 		/// TreeDataGridTextCell's template: a border over a content panel holding the selection background, the
 		/// vertically centred, trimmed text, the collapsed editor hosts and the current/validation borders.
 		/// </summary>
-		private sealed class GridCell : Border
+		private sealed class GridCell
 		{
 			private readonly TextBlock _text;
 			private readonly TextBlock? _hidden;
@@ -650,8 +665,11 @@ namespace UITests.Windows_UI_Xaml.Performance
 					content.Children.Add(_hidden);
 				}
 
-				Child = content;
+				Root = new Border { Child = content };
 			}
+
+			// A wrapper rather than a subclass: Border is sealed in WinUI.
+			public Border Root { get; }
 
 			public string Text => _text.Text;
 
