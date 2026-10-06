@@ -26,11 +26,6 @@ namespace Microsoft.UI.Composition
 			Compositor = new Compositor();
 		}
 
-		~CompositionObject()
-		{
-			Dispose();
-		}
-
 		internal CompositionObject(Compositor compositor)
 		{
 			Compositor = compositor;
