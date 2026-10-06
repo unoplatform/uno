@@ -400,11 +400,12 @@ internal readonly partial struct UnicodeText
 				var errorString = Marshal.PtrToStringUTF8(GetMethod<u_errorName>()(status));
 				throw new InvalidOperationException($"{typeof(T).Name} failed with error code {errorString}");
 			}
-			else if (status < 0)
+			else if (status < 0 && typeof(ICU).LogTrace() is { } log)
 			{
-				// ICU has a very low bar for what it considers a "warning", so this can be very spammy.
+				// ICU has a very low bar for what it considers a "warning" (ubrk_open warns on every call), so only
+				// marshal the name once something is listening.
 				var errorString = Marshal.PtrToStringUTF8(GetMethod<u_errorName>()(status));
-				typeof(ICU).LogTrace()?.Trace($"{typeof(T).Name} raised a warning code: {errorString}");
+				log.Trace($"{typeof(T).Name} raised a warning code: {errorString}");
 			}
 		}
 
