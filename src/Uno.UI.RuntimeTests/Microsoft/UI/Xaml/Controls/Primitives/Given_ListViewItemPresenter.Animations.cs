@@ -694,7 +694,7 @@ public partial class Given_ListViewItemPresenter
 	private static ListViewBaseItemAnimationCommand_DragDrop DragDrop(ListViewBaseItemPresenter presenter, FrameworkElement fadeOutTarget, DragDropState state, bool isStarting, bool steadyStateOnly = false)
 		=> new(state, new WeakReference<ListViewBaseItemPresenter>(presenter), new WeakReference<FrameworkElement>(fadeOutTarget), isStarting, steadyStateOnly);
 
-	// EnqueueAnimationCommand and ProcessAnimationCommands are private (C++ private/protected); GoToChromedState is not ported yet.
+	// EnqueueAnimationCommand and ProcessAnimationCommands are private (C++ private/protected).
 	private static void Process(ListViewBaseItemPresenter presenter, ListViewBaseItemAnimationCommand command)
 	{
 		typeof(ListViewBaseItemPresenter).GetMethod("EnqueueAnimationCommand", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(presenter, [command]);
