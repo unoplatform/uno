@@ -192,7 +192,9 @@ internal static class PanelsHelper
 		});
 	}
 
-	private static int Round(double value) => (int)Math.Round(value);
+	// Layout rounds midpoints half up (WinUI's XcpRound is floor(x + 0.5)); Math.Round's banker's
+	// rounding would expect 112 for a child centred at 112.5 that layout places at 113.
+	private static int Round(double value) => (int)Math.Floor(value + 0.5);
 
 	//template<class TItemsControl>
 	//       static void ApplyContainerStyle(TItemsControl^ itemsControl);
