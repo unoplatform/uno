@@ -719,11 +719,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 			host.Resources.Add(typeof(TextBox), style);
 
-			await UITestHelper.Load(host);
+			try
+			{
+				await UITestHelper.Load(host);
 
-			Assert.AreEqual(new Thickness(8), textBox.Margin);
-			Assert.IsNotNull(textBox.Template);
-			Assert.IsTrue(VisualTreeHelper.GetChildrenCount(textBox) > 0);
+				Assert.AreEqual(new Thickness(8), textBox.Margin);
+				Assert.IsNotNull(textBox.Template);
+				Assert.IsTrue(VisualTreeHelper.GetChildrenCount(textBox) > 0);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]

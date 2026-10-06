@@ -7,6 +7,7 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
@@ -23,6 +24,12 @@ public class Given_SplitView
 	private const double SplitViewHeight = 200;
 	private const double TestOpenPaneLength = 150;
 	private const double TestCompactPaneLength = 50;
+
+	[TestCleanup]
+	public void Cleanup()
+	{
+		TestServices.WindowHelper.WindowContent = null;
+	}
 
 	private sealed class TestSplitView : SplitView
 	{
