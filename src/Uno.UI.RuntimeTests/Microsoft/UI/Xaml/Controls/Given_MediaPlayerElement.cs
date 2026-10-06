@@ -639,18 +639,59 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	// Uno-specific: WinUI's template leaves the presenter's IsFullWindow unbound.
-	public async Task When_MediaPlayerElement_IsFullWindow_Set_Before_Template_Presenter_Synced()
+	// Uno-specific: WinUI's template leaves the presenter's IsFullWindow unbound, and WinUI 3 disables full window.
+	public async Task When_MediaPlayerElement_IsFullWindow_Set_Before_Template_Enters_Full_Window()
 	{
 		CheckMediaPlayerExtensionAvailability();
 		var sut = new MediaPlayerElement() { IsFullWindow = true };
-		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
-		await WindowHelper.WaitForIdle();
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
+			await WindowHelper.WaitForIdle();
 
-		var presenter = sut.FindFirstChild<MediaPlayerPresenter>();
-		Assert.IsNotNull(presenter);
-		Assert.IsTrue(presenter.IsFullWindow);
+			var fullWindowContent = sut.XamlRoot!.VisualTree.FullWindowMediaRoot.Child;
+			Assert.IsNotNull(fullWindowContent);
+
+			var presenter = fullWindowContent.FindFirstChild<MediaPlayerPresenter>();
+			Assert.IsNotNull(presenter);
+			Assert.IsTrue(presenter.IsFullWindow);
+		}
+		finally
+		{
+			sut.IsFullWindow = false;
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	// Uno-specific: WinUI's MediaPlayerPresenter has no visibility logic.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_MediaPlayerElement_Retemplated_With_Source_Presenter_Stays_Visible()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement() { Source = MediaSource.CreateFromUri(TestVideoUrl) };
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
+			await WindowHelper.WaitFor(() => sut.FindFirstChild<MediaPlayerPresenter>()?.Visibility == Visibility.Visible);
+
+			var template = sut.Template;
+			sut.Template = null;
+			sut.Template = template;
+			sut.ApplyTemplate();
+			await WindowHelper.WaitForIdle();
+
+			var presenter = sut.FindFirstChild<MediaPlayerPresenter>();
+			Assert.IsNotNull(presenter);
+			Assert.AreEqual(Visibility.Visible, presenter.Visibility);
+		}
+		finally
+		{
+			sut.MediaPlayer?.Pause();
+			WindowHelper.WindowContent = null;
+		}
 	}
 #endif
 
