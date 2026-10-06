@@ -128,8 +128,34 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		var getProcAddr = factory.GetVkGetInstanceProcAddr();
 		_instance = VulkanInstance.Create(getProcAddr, factory.RequiredInstanceExtensions);
 		_instanceApi = new VulkanInstanceApi(_instance);
-		_device = VulkanDevice.Create((VulkanInstance)_instance, _instanceApi);
+		var instance = (VulkanInstance)_instance;
+		_device = VulkanDevice.Create(instance, _instanceApi,
+			supportsPresentation: (physicalDevice, queueFamily) => factory.SupportsPresentation(instance, physicalDevice, queueFamily));
 		_deviceApi = new VulkanDeviceApi(_device);
+	}
+
+	/// <summary>
+	/// Whether the device picked by <see cref="InitializeDevice"/> can present to this window. The swapchain waits
+	/// until its surface can present, so a device that never can must be rejected before <see cref="InitializeSurface"/>.
+	/// </summary>
+	public bool CanPresentTo(IntPtr nativeWindowHandle)
+	{
+		if (_device == null || _factory == null)
+		{
+			throw new InvalidOperationException("Vulkan device not initialized");
+		}
+
+		var surface = new VkSurfaceKHR { Handle = _factory.CreateSurface((VulkanInstance)_instance!, nativeWindowHandle) };
+		try
+		{
+			_instanceApi!.GetPhysicalDeviceSurfaceSupportKHR(PhysicalDeviceHandle, GraphicsQueueFamilyIndex, surface, out var supported)
+				.ThrowOnError("vkGetPhysicalDeviceSurfaceSupportKHR");
+			return supported != 0;
+		}
+		finally
+		{
+			_instanceApi!.DestroySurfaceKHR(InstanceHandle, surface, IntPtr.Zero);
+		}
 	}
 
 	/// <summary>

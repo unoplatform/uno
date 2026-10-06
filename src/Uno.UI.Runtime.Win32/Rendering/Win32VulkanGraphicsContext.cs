@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Threading;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Runtime.Vulkan;
 using Uno.UI.Runtime.Win32.Vulkan;
@@ -17,6 +18,10 @@ namespace Uno.UI.Runtime.Win32;
 /// </summary>
 internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext, IWin32PacedContext, IWin32PresentReporting
 {
+	// Instance + device creation is ~90% of the Vulkan init cost and needs no window, so the first window's device
+	// is created on a background thread while the app starts up.
+	private static BackgroundPrewarm<VulkanContext>? _devicePrewarm;
+
 	private readonly VulkanContext _vk;
 	// MAILBOX present returns without blocking, so the render thread is paced here; otherwise it spins at
 	// thousands of fps rendering frames the presentation engine discards, and FrameRate is ignored.
@@ -45,14 +50,66 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 			_width = _height = 1;
 		}
 
-		var factory = new Win32VulkanSurfaceFactory();
-		_vk = new VulkanContext();
-		_vk.Initialize(factory, hwnd.Value, _width, _height);
+		var width = _width;
+		var height = _height;
+		_vk = Interlocked.Exchange(ref _devicePrewarm, null) is { } prewarm
+			? prewarm.Claim(
+				vk => TryCompleteForWindow(vk, hwnd, width, height),
+				() => CreateForWindow(hwnd, width, height))
+			: CreateForWindow(hwnd, width, height);
 
 		// Created last so a declined negotiation (the throw above) doesn't leave a timer behind.
 		_pacer = new Win32RenderPacer(
 			FeatureConfiguration.CompositionTarget.FrameRate,
 			FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate);
+	}
+
+	/// <summary>
+	/// Starts creating the Vulkan instance and device for the first window. Call only when Vulkan is the kind the
+	/// first window will negotiate first, as an unclaimed device costs tens of MB until <see cref="DiscardDevicePrewarm"/>.
+	/// </summary>
+	internal static void StartDevicePrewarm()
+	{
+		if (_devicePrewarm is not null)
+		{
+			return;
+		}
+
+		_devicePrewarm = new BackgroundPrewarm<VulkanContext>(static () =>
+		{
+			var vk = new VulkanContext();
+			try
+			{
+				vk.InitializeDevice(new Win32VulkanSurfaceFactory());
+				return vk;
+			}
+			catch
+			{
+				vk.Dispose();
+				throw;
+			}
+		});
+	}
+
+	/// <summary>Releases a prewarmed device no window claimed (the negotiation picked another kind).</summary>
+	internal static void DiscardDevicePrewarm() => Interlocked.Exchange(ref _devicePrewarm, null)?.Discard();
+
+	private static bool TryCompleteForWindow(VulkanContext vk, HWND hwnd, int width, int height)
+	{
+		if (!vk.CanPresentTo(hwnd.Value))
+		{
+			return false;
+		}
+
+		vk.InitializeSurface(hwnd.Value, width, height);
+		return true;
+	}
+
+	private static VulkanContext CreateForWindow(HWND hwnd, int width, int height)
+	{
+		var vk = new VulkanContext();
+		vk.Initialize(new Win32VulkanSurfaceFactory(), hwnd.Value, width, height);
+		return vk;
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;

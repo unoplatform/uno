@@ -113,6 +113,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind));
 
 		var init = GraphicsRegistry.Initialize();
+		Win32VulkanGraphicsContext.DiscardDevicePrewarm();
 		_context = init.Context;
 		GraphicsFactory = init.DrawingFactory;
 		_renderer = init.Renderer;

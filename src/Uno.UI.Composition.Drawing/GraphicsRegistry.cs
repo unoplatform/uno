@@ -134,6 +134,36 @@ internal static class GraphicsRegistry
 	}
 
 	/// <summary>
+	/// The kind <see cref="InitializeAsync"/> will ask the host for first, so a host can start preparing it before the
+	/// first window exists; null when every kind is excluded.
+	/// </summary>
+	public static GraphicsContextKind? FirstCandidateKind
+	{
+		get
+		{
+			IReadOnlyList<IGraphicsProvider> backends;
+			lock (_gate)
+			{
+				backends = _backends;
+			}
+
+			var disabledKinds = DisabledContextKinds;
+			foreach (var backend in backends)
+			{
+				foreach (var kind in backend.PreferredContexts)
+				{
+					if (!disabledKinds.Contains(kind))
+					{
+						return kind;
+					}
+				}
+			}
+
+			return null;
+		}
+	}
+
+	/// <summary>
 	/// Synchronous entry for hosts whose context creation completes synchronously (every kind except WASM/WebGpu):
 	/// the async core finishes inline on already-completed tasks, so this neither blocks nor deadlocks. A host that
 	/// creates the WASM/WebGpu context must use <see cref="InitializeAsync"/> instead.

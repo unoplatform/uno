@@ -71,6 +71,13 @@ public class Win32HostBuilder : IPlatformHostBuilder
 	{
 		// The negotiation reads the excluded kinds; nothing host-side stores render policy any more.
 		GraphicsRegistry.DisabledContextKinds = _disabledKinds;
+
+		// Backends are registered by now, so the first window's kind is known before the app is even constructed.
+		if (GraphicsRegistry.FirstCandidateKind == GraphicsContextKind.Vulkan)
+		{
+			Win32VulkanGraphicsContext.StartDevicePrewarm();
+		}
+
 		return new Win32Host(appBuilder, _preloadMediaPlayer);
 	}
 }
