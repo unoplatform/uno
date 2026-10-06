@@ -1,10 +1,13 @@
 #if HAS_UNO
 #nullable enable
 
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -105,7 +108,7 @@ public class Given_ListViewItemPresenter_Properties
 	}
 
 	[TestMethod]
-	public void When_Deny_Only_Cancels_Force_For_Defaults()
+	public void When_Deny_Skips_Resource_For_Defaults()
 	{
 		using (ListViewChromeHelper.UseRoundedChromeResource(true))
 		using (ListViewBaseItemChromeRuntimeFeatures.Override(denyRounded: true))
@@ -119,6 +122,20 @@ public class Given_ListViewItemPresenter_Properties
 
 			// ...but not in the item reader, which still sees the resource.
 			Assert.IsTrue(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeEnabledStatic());
+		}
+	}
+
+	[TestMethod]
+	public void When_Deny_And_Force_Defaults_Are_Non_Rounded()
+	{
+		using (ListViewChromeHelper.UseRoundedChromeResource(true))
+		using (ListViewBaseItemChromeRuntimeFeatures.Override(denyRounded: true, forceRounded: true))
+		{
+			var presenter = new ListViewItemPresenter();
+
+			Assert.AreEqual(0.55, presenter.DisabledOpacity, Tolerance);
+			Assert.AreEqual(new Thickness(0), presenter.SelectedBorderThickness);
+			Assert.IsFalse(presenter.SelectionIndicatorVisualEnabled);
 		}
 	}
 
@@ -165,6 +182,49 @@ public class Given_ListViewItemPresenter_Properties
 
 		PaddingSource source = new() { Value = new Thickness(7) };
 		presenter.SetBinding(ContentPresenter.PaddingProperty, new Binding { Source = source, Path = new PropertyPath(nameof(PaddingSource.Value)) });
+		Assert.AreEqual(new Thickness(7), presenter.Padding);
+
+		presenter.Style = null;
+
+		Assert.AreEqual(new Thickness(7), presenter.Padding);
+	}
+
+	[TestMethod]
+	public void When_Alias_Style_Setter_Does_Not_Override_Local_Target()
+	{
+		var presenter = new ListViewItemPresenter();
+		presenter.Padding = new Thickness(5);
+
+		Style style = new(typeof(ListViewItemPresenter));
+		style.Setters.Add(new Setter(ListViewItemPresenter.ListViewItemPresenterPaddingProperty, new Thickness(3)));
+		presenter.Style = style;
+
+		Assert.AreEqual(new Thickness(5), presenter.Padding);
+	}
+
+	[TestMethod]
+	public async Task When_Alias_Style_Setter_Removed_TemplateBinding_Is_Not_Clobbered()
+	{
+		var control = (ContentControl)XamlReader.Load(
+			"""
+			<ContentControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Padding="7">
+				<ContentControl.Template>
+					<ControlTemplate TargetType="ContentControl">
+						<ListViewItemPresenter Padding="{TemplateBinding Padding}">
+							<ListViewItemPresenter.Style>
+								<Style TargetType="ListViewItemPresenter">
+									<Setter Property="ListViewItemPresenterPadding" Value="3" />
+								</Style>
+							</ListViewItemPresenter.Style>
+						</ListViewItemPresenter>
+					</ControlTemplate>
+				</ContentControl.Template>
+			</ContentControl>
+			""");
+
+		await UITestHelper.Load(control);
+
+		var presenter = (ListViewItemPresenter)VisualTreeHelper.GetChild(control, 0);
 		Assert.AreEqual(new Thickness(7), presenter.Padding);
 
 		presenter.Style = null;
