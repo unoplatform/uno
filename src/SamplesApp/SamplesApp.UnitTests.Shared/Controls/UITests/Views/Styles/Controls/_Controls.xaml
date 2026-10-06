@@ -5,7 +5,6 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/Button.xaml" />
         <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/ListView.xaml" />
-        <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/ListViewItem.xaml" />
         <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/Path.xaml" />
         <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/RadioButton.xaml" />
         <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/TextBlock.xaml" />

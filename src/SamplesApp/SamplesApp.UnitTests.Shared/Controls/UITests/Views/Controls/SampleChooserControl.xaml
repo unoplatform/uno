@@ -58,56 +58,53 @@
                 <Setter Property="MinHeight" Value="{StaticResource TitleContainerHeight}" />
             </Style>
 
-            <Style x:Key="TemplateContainerStyle" TargetType="Border">
-                <Setter Property="Margin" Value="4,0,4,0" />
-                <Setter Property="Padding" Value="8" />
-                <Setter Property="MinHeight" Value="40" />
+            <Style
+                x:Key="SampleChooserListViewItemStyle"
+                BasedOn="{StaticResource DefaultListViewItemStyle}"
+                TargetType="ListViewItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             </Style>
 
             <!--  Data Templates  -->
             <DataTemplate x:Key="CategoriesTemplate">
-                <Border Style="{StaticResource TemplateContainerStyle}">
-                    <u:StarStackPanel Orientation="Horizontal" Sizes="*,Auto,Auto">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            Style="{StaticResource Typo03}"
-                            TextTrimming="CharacterEllipsis"
-                            TextWrapping="NoWrap">
-                            <Run Text="{Binding Category}" />
-                        </TextBlock>
-                        <TextBlock
-                            Margin="8,0"
-                            VerticalAlignment="Center"
-                            FontSize="11"
-                            Opacity="0.8"
-                            Text="{Binding Count}" />
-                        <FontIcon
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            FontSize="11"
-                            Glyph="&#xE76C;"
-                            Opacity="0.8" />
-                    </u:StarStackPanel>
-                </Border>
+                <u:StarStackPanel Orientation="Horizontal" Sizes="*,Auto,Auto">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Style="{StaticResource Typo03}"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap">
+                        <Run Text="{Binding Category}" />
+                    </TextBlock>
+                    <TextBlock
+                        Margin="8,0"
+                        VerticalAlignment="Center"
+                        FontSize="11"
+                        Opacity="0.8"
+                        Text="{Binding Count}" />
+                    <FontIcon
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        FontSize="11"
+                        Glyph="&#xE76C;"
+                        Opacity="0.8" />
+                </u:StarStackPanel>
             </DataTemplate>
 
             <DataTemplate x:Key="SampleTemplate">
-                <Border Style="{StaticResource TemplateContainerStyle}">
-                    <u:StarStackPanel Orientation="Horizontal" Sizes="*,Auto,Auto">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            Style="{StaticResource Typo03}"
-                            Text="{Binding ControlName}"
-                            TextTrimming="CharacterEllipsis"
-                            TextWrapping="NoWrap" />
+                <u:StarStackPanel Orientation="Horizontal" Sizes="*,Auto,Auto">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Style="{StaticResource Typo03}"
+                        Text="{Binding ControlName}"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap" />
 
-                        <u:PathControl
-                            HorizontalContentAlignment="Right"
-                            VerticalContentAlignment="Center"
-                            Style="{StaticResource Icon_Favorite_Full}"
-                            Visibility="{Binding IsFavorite, Converter={StaticResource TrueToVisible}}" />
-                    </u:StarStackPanel>
-                </Border>
+                    <u:PathControl
+                        HorizontalContentAlignment="Right"
+                        VerticalContentAlignment="Center"
+                        Style="{StaticResource Icon_Favorite_Full}"
+                        Visibility="{Binding IsFavorite, Converter={StaticResource TrueToVisible}}" />
+                </u:StarStackPanel>
             </DataTemplate>
 
             <DataTemplate x:Key="CategoriesList">
