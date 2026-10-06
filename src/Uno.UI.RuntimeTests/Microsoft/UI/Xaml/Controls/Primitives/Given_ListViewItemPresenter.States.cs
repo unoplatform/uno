@@ -320,11 +320,13 @@ public partial class Given_ListViewItemPresenter
 		Assert.IsTrue(reusedIndex > 0, "the selected container was not reused");
 		Assert.IsFalse(container.IsSelected);
 
+		// Re-preparing flips IsSelected with transitions (SelectorItem::OnIsSelectedChanged), so the hide animation may still be running.
+		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
+
 		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_selectionIndicatorRectangle"), "stale selection indicator");
 		Assert.IsNull(ChromeTestHelper.GetField<Border?>(presenter, "m_multiSelectCheckBoxRectangle"), "stale check box");
 		Assert.AreSame(container.Background, ChromeTestHelper.GetField<Border>(presenter, "m_backplateRectangle").Background, "Normal backplate");
 		Assert.AreEqual(ListViewBaseItemPresenter.CommonStates2.Normal, ChromeTestHelper.GetField<ListViewBaseItemPresenter.VisualStates>(presenter, "m_visualStates").commonState2);
-		ChromeTestHelper.AssertNoRunningAnimation(presenter);
 
 		scrollViewer.ChangeView(null, 0, null, disableAnimation: true);
 		await WindowHelper.WaitForIdle();
@@ -332,10 +334,11 @@ public partial class Given_ListViewItemPresenter
 		var container0 = (ListViewItem)list.ContainerFromIndex(0);
 		var presenter0 = (ListViewItemPresenter)VisualTreeHelper.GetChild(container0, 0);
 		Assert.IsTrue(container0.IsSelected);
+		await ChromeTestHelper.WaitForNoRunningAnimation(presenter0);
 		var indicator = ChromeTestHelper.GetField<Border?>(presenter0, "m_selectionIndicatorRectangle");
 		Assert.IsNotNull(indicator, "indicator missing after scrolling back");
 		Assert.AreSame(presenter0, indicator.GetParent());
-		ChromeTestHelper.AssertNoRunningAnimation(presenter0);
+		Assert.AreEqual(1.0, indicator.Opacity);
 	}
 
 	[TestMethod]
@@ -409,21 +412,27 @@ internal static class ChromeTestHelper
 		=> GetField<ContentControl?>(presenter, "m_pParentListViewBaseItemNoRef");
 
 	public static Storyboard? GetRunningStoryboard(ListViewBaseItemPresenter presenter)
+		=> GetRunningAnimation(presenter).storyboard;
+
+	private static (string? name, Storyboard? storyboard) GetRunningAnimation(ListViewBaseItemPresenter presenter)
 	{
 		foreach (var name in AnimationStates)
 		{
 			var state = GetField<object>(presenter, name);
 			if (state.GetType().GetField("tpStoryboard", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(state) is Storyboard storyboard)
 			{
-				return storyboard;
+				return (name, storyboard);
 			}
 		}
 
-		return null;
+		return (null, null);
 	}
 
 	public static void AssertNoRunningAnimation(ListViewBaseItemPresenter presenter)
-		=> Assert.IsNull(GetRunningStoryboard(presenter), "a chrome storyboard is still running");
+	{
+		var (name, storyboard) = GetRunningAnimation(presenter);
+		Assert.IsNull(storyboard, $"a chrome storyboard is still running ({name})");
+	}
 
 	public static async Task WaitForNoRunningAnimation(ListViewBaseItemPresenter presenter)
 	{
