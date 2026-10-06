@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-public partial class ListViewItemPresenter : ContentPresenter
+public partial class ListViewItemPresenter : ListViewBaseItemPresenter
 {
 	protected override bool GoToElementStateCore(string stateName, bool useTransitions)
 	{
