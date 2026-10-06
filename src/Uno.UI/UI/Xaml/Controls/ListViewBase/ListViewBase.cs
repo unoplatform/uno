@@ -554,7 +554,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			SelectedItems.Clear();
 
-			// ListViewBase_Partial.cpp, line 161: UpdateVisibleAndCachedItemsSelectionAndVisualState(false /* updateIsSelected */)
+			// MUX Reference ListViewBase_Partial.cpp, line 161: UpdateVisibleAndCachedItemsSelectionAndVisualState(false /* updateIsSelected */)
 			UpdateItemsMultiSelectVisualState();
 
 			ApplyMultiSelectStateToCachedItems();
@@ -1147,6 +1147,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
+				// Uno-specific: WinUI does nothing for non-ListViewBaseItem containers.
 				base.PrepareContainerForItemOverride(element, item);
 
 				if (element is SelectorItem selectorItem)

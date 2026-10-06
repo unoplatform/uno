@@ -132,6 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 				draggedItemContainer.OnDragGestureStarting();
 			}
 
+			// TODO Uno: WinUI's StartDrag gates only DragItemsStarting on CanDragItems; a CanReorderItems-only list never gets here.
 			if (ItemsControlFromItemContainer(sender) is ListViewBase that && that.CanDragItems)
 			{
 				// only raise DragItemsCompleted if DragItemsStarting was raised
@@ -189,6 +190,12 @@ namespace Microsoft.UI.Xaml.Controls
 					that.m_isHolding = false;
 					that.ChangeSelectorItemsVisualState(true);
 				}
+				else
+				{
+					// MUX Reference ListViewBase_Partial_Reorder.cpp, lines 270-273
+					// make sure the holding variable is cleared
+					that.SetIsHolding(false);
+				}
 			}
 
 		}
@@ -215,6 +222,9 @@ namespace Microsoft.UI.Xaml.Controls
 				// Normally this will have been done by OnReorderCompleted, but sometimes OnReorderCompleted may not be called
 				// (eg if drag was released outside bounds of list)
 				that.CleanupReordering();
+
+				// TODO Uno: a canceled drag, or one leaving the window, never raises DragLeave on the dragged-over item, so reset it here.
+				that.m_tpDragOverItem?.LeaveDragOver(that, null);
 
 				that.ClearPrimaryDragContainer();
 
@@ -422,6 +432,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void CleanupReordering()
 			=> VirtualizingPanel?.GetLayouter().CleanupReordering();
+
+		/// <summary>
+		/// Whether the container is the primary dragged container of a live reorder of this list,
+		/// which Uno lays out under the pointer (WinUI leaves an empty gap there).
+		/// </summary>
+		internal bool IsLiveReorderPrimaryContainer(UIElement container, _DragEventArgs args)
+			=> !IsCustomReorder
+				&& args.DataView.FindRawData(ReorderOwnerFormatId) == this
+				&& IsContainerDragDropOwner(container);
 
 		#region Helpers
 		private static bool IsObservableCollection(object src)
