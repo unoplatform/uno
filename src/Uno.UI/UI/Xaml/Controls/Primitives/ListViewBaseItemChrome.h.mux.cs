@@ -266,15 +266,13 @@ partial class ListViewBaseItemPresenter
 		}
 	}
 
-	internal static float GetDefaultSelectionIndicatorCornerRadius()
-		// Default corner radius of the selection indicator visual.
-		// Used when the SelectionIndicatorCornerRadius property returns 0 and IsRoundedListViewBaseItemChromeForced() returns True.
-		=> 1.5f;
+	// Default corner radius of the selection indicator visual.
+	// Used when the SelectionIndicatorCornerRadius property returns 0 and IsRoundedListViewBaseItemChromeForced() returns True.
+	internal static float GetDefaultSelectionIndicatorCornerRadius() => 1.5f;
 
-	internal static float GetDefaultCheckBoxCornerRadius()
-		// Default corner radius of the checkbox visual.
-		// Used when the CheckBoxCornerRadius property returns 0 and IsRoundedListViewBaseItemChromeForced() returns True.
-		=> 3.0f;
+	// Default corner radius of the checkbox visual.
+	// Used when the CheckBoxCornerRadius property returns 0 and IsRoundedListViewBaseItemChromeForced() returns True.
+	internal static float GetDefaultCheckBoxCornerRadius() => 3.0f;
 
 	internal static float GetDefaultDisabledOpacity(bool forRoundedListViewBaseItemChrome)
 		=> forRoundedListViewBaseItemChrome ? 0.3f : 0.55f;
