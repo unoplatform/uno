@@ -6,7 +6,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.Xaml.Core.Scaling;
 using Windows.Foundation;
 
@@ -378,6 +382,49 @@ partial class ListViewBaseItemPresenter
 
 	// Dead WinUI code: DrawBaseLayer, DrawUnderContentLayer, DrawOverContentLayer and DrawDragOverlayLayer (C:995-1341).
 
+	// Reparents the inner selection border if needed and updates its affected properties.
+	// According to the visual design, the inner and outer borders are meant to be overlapping each other. In order to avoid bleed through at the borders' edges though,
+	// we can afford to host a bloated inner border inside the outer border when the latter is opaque. That trick is not applicable when the outer border is semi-transparent,
+	// and that is OK since the bleed through is not obvious in those cases.
+	internal void UpdateBordersParenting()
+	{
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+		global::System.Diagnostics.Debug.Assert(m_outerBorder is not null);
+
+		if (m_innerSelectionBorder is null)
+		{
+			return;
+		}
+
+		var isOuterBorderBrushOpaque = IsOuterBorderBrushOpaque();
+		var areBordersNested = m_outerBorder == m_innerSelectionBorder.GetParent();
+
+		if (isOuterBorderBrushOpaque != areBordersNested)
+		{
+			if (areBordersNested)
+			{
+				m_outerBorder!.Child = null;
+			}
+			else
+			{
+				RemoveChild(m_innerSelectionBorder);
+			}
+
+			if (isOuterBorderBrushOpaque)
+			{
+				m_outerBorder!.Child = m_innerSelectionBorder;
+			}
+			else
+			{
+				AddChild(m_innerSelectionBorder);
+			}
+
+			SetInnerSelectionBorderProperties();
+		}
+	}
+
+	// TODO Uno: EnsureTransitionTargets (C:1520-1567) comes with the animation command queue.
+
 	// The "ListViewBaseItemRoundedChromeEnabled" theme resource value is used to turn on/off the rendering with rounded corners.
 	// For performance reasons, the resource is only evaluated once. TAEF tests can invalidate the cache by calling TestServices::Utilities::DeleteResourceDictionaryCaches().
 	internal bool IsRoundedListViewBaseItemChromeEnabled()
@@ -442,6 +489,17 @@ partial class ListViewBaseItemPresenter
 		var outerBorderBrush = m_outerBorder.BorderBrush;
 
 		return outerBorderBrush is not null && IsOpaqueBrush(outerBorderBrush);
+	}
+
+	// Sets the border CornerRadius based on value returned by GetGeneralCornerRadius.
+	private void SetGeneralCornerRadius(Border border)
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(border is not null);
+
+		var cornerRadius = GetGeneralCornerRadius();
+
+		border!.CornerRadius = cornerRadius;
 	}
 
 	// Returns this ListViewBaseItemPresenter's CornerRadius when set,
@@ -597,6 +655,120 @@ partial class ListViewBaseItemPresenter
 
 	// Dead WinUI code: PrepareCheckPath, AddLineSegmentToSegmentCollection and GetCheckMarkBounds (C:1919-2007).
 
+	// Sets whether or not the drag overlay text block is shown.
+	internal void SetDragOverlayTextBlockVisible(bool isVisible)
+	{
+		if (isVisible)
+		{
+			EnsureDragOverlayTextBlock();
+
+			EnsureMultiSelectCheckBox();
+
+			// For RS1, drag items count text will show inside a border, and a background is also applied to the text.
+			// So, we re-use the multi-select checkbox to have the drag count textblock as its child. This will produce the effect of a border around the text.
+			// WinUI quirk: the check box Clip and child are never restored when the overlay is hidden again.
+			m_multiSelectCheckBoxRectangle!.Clip = null;
+			m_multiSelectCheckBoxRectangle.Child = m_pDragItemsCountTextBlock;
+
+			const string c_borderBrush = "SystemControlBackgroundChromeWhiteBrush";
+			var borderBrush = Uno.UI.Xaml.Core.CoreServices.Instance.LookupThemeResource(c_borderBrush);
+			if (borderBrush != null)
+			{
+				m_multiSelectCheckBoxRectangle.BorderBrush = borderBrush as Brush;
+			}
+
+			const string c_background = "SystemControlBackgroundAccentBrush";
+			var backgroundBrush = Uno.UI.Xaml.Core.CoreServices.Instance.LookupThemeResource(c_background);
+			if (backgroundBrush != null)
+			{
+				m_multiSelectCheckBoxRectangle.Background = backgroundBrush as Brush;
+			}
+
+			m_multiSelectCheckBoxRectangle.Visibility = Visibility.Visible;
+
+			if (m_checkMode == ListViewItemPresenterCheckMode.Overlay)
+			{
+				// For GridView, the item count should show in the center just like in File Explorer
+				m_multiSelectCheckBoxRectangle.BorderThickness = new Thickness(2.0, 2.0, 2.0, 2.0);
+
+				m_multiSelectCheckBoxRectangle.VerticalAlignment = VerticalAlignment.Center;
+
+				m_multiSelectCheckBoxRectangle.HorizontalAlignment = HorizontalAlignment.Center;
+			}
+
+			InvalidateMeasure();
+		}
+
+		if (m_pDragItemsCountTextBlock is not null)
+		{
+			m_pDragItemsCountTextBlock.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+		}
+	}
+
+	// Sets the drag count display.
+	internal void SetDragItemsCount(uint dragItemsCount)
+	{
+		EnsureDragOverlayTextBlock();
+
+		m_pDragItemsCountTextBlock!.Text = dragItemsCount.ToString(CultureInfo.InvariantCulture);
+	}
+
+	internal void SetSwipeHintCheckOpacity(float opacity)
+	{
+		if (m_swipeHintCheckOpacity != opacity)
+		{
+			m_swipeHintCheckOpacity = opacity;
+
+			// TODO Uno: CContentControl::NWSetContentDirty(m_pParentListViewBaseItemNoRef, DirtyFlags::Bounds) has no Uno dirty-flag render model.
+		}
+	}
+
+	// Sets up and adds the drag overlay text block to the tree.
+	private void EnsureDragOverlayTextBlock()
+	{
+		if (m_pDragItemsCountTextBlock is null)
+		{
+			m_pDragItemsCountTextBlock = new TextBlock();
+			SetDragOverlayTextBlockProperties();
+		}
+	}
+
+	private void SetDragOverlayTextBlockProperties()
+	{
+		if (m_pDragItemsCountTextBlock is not null)
+		{
+			m_pDragItemsCountTextBlock.IsHitTestVisible = false;
+
+			AutomationProperties.SetAccessibilityView(m_pDragItemsCountTextBlock, AccessibilityView.Raw);
+
+			// Keep the drag items count textblock collapsed by default. It is made visible on demand when we change visual states.
+			m_pDragItemsCountTextBlock.Visibility = Visibility.Collapsed;
+
+			const string c_style = "CaptionTextBlockStyle";
+			var style = Uno.UI.Xaml.Core.CoreServices.Instance.LookupThemeResource(c_style);
+			if (style != null)
+			{
+				m_pDragItemsCountTextBlock.Style = style as Style;
+			}
+
+			m_pDragItemsCountTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+
+			m_pDragItemsCountTextBlock.VerticalAlignment = VerticalAlignment.Center;
+		}
+	}
+
+	// Sets up the secondary chrome and adds it to the tree.
+	internal void AddSecondaryChrome()
+	{
+		if (m_pSecondaryChrome is null)
+		{
+			m_pSecondaryChrome = new ListViewBaseItemSecondaryChrome();
+
+			m_pSecondaryChrome.m_pPrimaryChromeNoRef = this;
+			AddChild(m_pSecondaryChrome);
+		}
+	}
+
 	// Lets us know we have a parent ListViewBaseItem. We don't take a ref.
 	internal void SetChromedListViewBaseItem(UIElement? parent)
 	{
@@ -613,6 +785,1052 @@ partial class ListViewBaseItemPresenter
 	internal void InvalidateRender()
 	{
 		// TODO Uno: NWSetContentDirty on this, the parent item and the secondary chrome; the chrome rendering is not ported yet.
+	}
+
+	// Uno-specific: CListViewBaseItemChrome::OnPropertyChanged (C:2377-2383) calls the base then OnPropertyChangedNewStyle;
+	// Uno routes the presenter DPs through OnChromePropertyChanged and ContentPresenter.CornerRadius through OnCornerRadiusChanged.
+
+	// Removes the multi-select checkbox from the tree.
+	internal void RemoveMultiSelectCheckBox()
+	{
+		global::System.Diagnostics.Debug.Assert(m_multiSelectCheckBoxRectangle is not null);
+
+		RemoveChild(m_multiSelectCheckBoxRectangle!);
+
+		m_multiSelectCheckGlyph = null;
+		m_multiSelectCheckBoxRectangle = null;
+		m_multiSelectCheckBoxClip = null;
+	}
+
+	// Removes the selection indicator from the tree.
+	internal void RemoveSelectionIndicator()
+	{
+		global::System.Diagnostics.Debug.Assert(m_selectionIndicatorRectangle is not null);
+
+		RemoveChild(m_selectionIndicatorRectangle!);
+
+		m_selectionIndicatorRectangle = null;
+	}
+
+	// Removes the inner selection border from the tree.
+	internal void RemoveInnerSelectionBorder()
+	{
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+		global::System.Diagnostics.Debug.Assert(m_innerSelectionBorder is not null);
+
+		// WinUI quirk: the DisabledStates branch calls RemoveOuterBorder first, so a nested inner border is then
+		// "removed" from this presenter (a no-op) and stays inside the detached outer border.
+		var areBordersNested = m_outerBorder == m_innerSelectionBorder!.GetParent();
+
+		if (areBordersNested)
+		{
+			m_outerBorder!.Child = null;
+		}
+		else
+		{
+			RemoveChild(m_innerSelectionBorder);
+		}
+
+		m_innerSelectionBorder = null;
+	}
+
+	// Removes the outer border from the tree.
+	internal void RemoveOuterBorder()
+	{
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+		global::System.Diagnostics.Debug.Assert(m_outerBorder is not null);
+
+		RemoveChild(m_outerBorder!);
+
+		m_outerBorder = null;
+
+		if (m_backplateRectangle is not null)
+		{
+			SetBackplateMargin();
+		}
+	}
+
+	// Sets up and adds the multi-select checkbox to the tree.
+	internal void EnsureMultiSelectCheckBox()
+	{
+		var selected =
+			m_visualStates.HasState(CommonStates2.Selected) ||
+			m_visualStates.HasState(CommonStates2.PointerOverSelected) ||
+			m_visualStates.HasState(CommonStates2.PressedSelected);
+
+		if (m_multiSelectCheckBoxRectangle is null)
+		{
+			var multiSelectSquareSize = s_multiSelectSquareSize;
+
+			if (ShouldUseLayoutRounding())
+			{
+				LayoutRoundHelper(ref multiSelectSquareSize);
+			}
+
+			m_multiSelectCheckBoxRectangle = new Border();
+
+			m_multiSelectCheckBoxRectangle.IsHitTestVisible = false;
+
+			m_multiSelectCheckBoxRectangle.MinWidth = multiSelectSquareSize.Width;
+
+			m_multiSelectCheckBoxRectangle.Height = multiSelectSquareSize.Height;
+
+			m_multiSelectCheckBoxRectangle.TransitionTarget = new TransitionTarget();
+
+			AddChild(m_multiSelectCheckBoxRectangle);
+		}
+
+		// create checkmark glyph
+		if (m_multiSelectCheckGlyph is null)
+		{
+			var strCheckMarkGlyph = c_strCheckMarkGlyphStorage;
+
+			m_multiSelectCheckGlyph = new FontIcon();
+
+			m_multiSelectCheckGlyph.IsHitTestVisible = false;
+
+			m_multiSelectCheckGlyph.Opacity = selected ? 1.0 : 0.0;
+
+			m_multiSelectCheckGlyph.FontSize = s_checkMarkGlyphFontSize;
+
+			// Setting the glyph for the check mark
+			m_multiSelectCheckGlyph.Glyph = strCheckMarkGlyph;
+		}
+
+		// add the glyph to the check box children
+		m_multiSelectCheckBoxRectangle.Child = m_multiSelectCheckGlyph;
+
+		SetMultiSelectCheckBoxProperties();
+	}
+
+	// Sets up and adds the selection indicator to the tree.
+	internal void EnsureSelectionIndicator()
+	{
+		global::System.Diagnostics.Debug.Assert(IsInSelectionIndicatorMode());
+
+		if (m_selectionIndicatorRectangle is null)
+		{
+			var selectionIndicatorSize = s_selectionIndicatorSize;
+			var zeroThickness = default(Thickness);
+			var selectionIndicatorMargin = new Thickness(s_selectionIndicatorMargin.Left, 0.0, s_selectionIndicatorMargin.Right, 0.0);
+
+			if (ShouldUseLayoutRounding())
+			{
+				LayoutRoundHelper(ref selectionIndicatorSize);
+				LayoutRoundHelper(ref selectionIndicatorMargin);
+			}
+
+			m_selectionIndicatorRectangle = new Border();
+
+			m_selectionIndicatorRectangle.IsHitTestVisible = false;
+
+			m_selectionIndicatorRectangle.Margin = selectionIndicatorMargin;
+
+			m_selectionIndicatorRectangle.Width = selectionIndicatorSize.Width;
+
+			m_selectionIndicatorRectangle.TransitionTarget = new TransitionTarget();
+
+			m_selectionIndicatorRectangle.BorderBrush = null;
+
+			m_selectionIndicatorRectangle.BorderThickness = zeroThickness;
+
+			m_selectionIndicatorRectangle.VerticalAlignment = VerticalAlignment.Stretch;
+
+			m_selectionIndicatorRectangle.HorizontalAlignment = HorizontalAlignment.Left;
+
+			AddChild(m_selectionIndicatorRectangle);
+		}
+
+		SetSelectionIndicatorBackground();
+		SetSelectionIndicatorCornerRadius();
+	}
+
+	// Sets up and adds the backplate to the tree.
+	internal void EnsureBackplate()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+
+		if (m_backplateRectangle is null)
+		{
+			var zeroThickness = default(Thickness);
+
+			m_backplateRectangle = new Border();
+
+			m_backplateRectangle.IsHitTestVisible = false;
+
+			m_backplateRectangle.BorderBrush = null;
+
+			if (IsChromeForListViewItem())
+			{
+				var backplateMargin = s_backplateMargin;
+
+				if (ShouldUseLayoutRounding())
+				{
+					LayoutRoundHelper(ref backplateMargin);
+				}
+
+				m_backplateRectangle.Margin = backplateMargin;
+			}
+
+			m_backplateRectangle.BorderThickness = zeroThickness;
+
+			m_backplateRectangle.VerticalAlignment = VerticalAlignment.Stretch;
+
+			m_backplateRectangle.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+			// Inserting the backplate into first position so it is rendered underneath the content
+			AddChild(m_backplateRectangle, 0);
+		}
+
+		SetBackplateCornerRadius();
+		SetBackplateBackground();
+
+		if (IsChromeForGridViewItem())
+		{
+			SetBackplateMargin();
+		}
+	}
+
+	// Sets up and adds the inner selection border to the tree.
+	internal void EnsureInnerSelectionBorder()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+
+		if (m_innerSelectionBorder is null)
+		{
+			m_innerSelectionBorder = new Border();
+
+			m_innerSelectionBorder.IsHitTestVisible = false;
+
+			m_innerSelectionBorder.Background = null;
+
+			m_innerSelectionBorder.VerticalAlignment = VerticalAlignment.Stretch;
+
+			m_innerSelectionBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+			if (IsOuterBorderBrushOpaque())
+			{
+				// When the outer border is opaque, it hosts the inner border to avoid any bleed through at the edges.
+				m_outerBorder!.Child = m_innerSelectionBorder;
+			}
+			else
+			{
+				// Appending the border into last position so it is rendered over the content
+				AddChild(m_innerSelectionBorder);
+			}
+		}
+
+		SetInnerSelectionBorderProperties();
+	}
+
+	// Sets up and adds the outer border to the tree.
+	internal void EnsureOuterBorder()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+
+		if (m_outerBorder is null)
+		{
+			m_outerBorder = new Border();
+
+			m_outerBorder.IsHitTestVisible = false;
+			m_outerBorder.Background = null;
+
+			m_outerBorder.VerticalAlignment = VerticalAlignment.Stretch;
+
+			m_outerBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+			// Appending the border into last position so it is rendered over the content
+			AddChild(m_outerBorder);
+		}
+
+		SetOuterBorderProperties();
+	}
+
+	// Sets up the multi-select checkbox to the tree. (colors, alignment, clip)
+	internal void SetMultiSelectCheckBoxProperties()
+	{
+		var isRoundedListViewBaseItemChromeEnabled = IsRoundedListViewBaseItemChromeEnabled();
+
+		var multiSelectSquareMargin = default(Thickness);
+
+		if (m_checkMode == ListViewItemPresenterCheckMode.Inline)
+		{
+			// ListViewItemBase case
+			if (m_multiSelectCheckBoxClip is null)
+			{
+				var multiSelectSquareBounds = new Rect(0.0, 0.0, s_multiSelectSquareSize.Width, s_multiSelectSquareSize.Height);
+
+				m_multiSelectCheckBoxClip = new RectangleGeometry();
+
+				m_multiSelectCheckBoxClip.Rect = multiSelectSquareBounds;
+			}
+
+			multiSelectSquareMargin = isRoundedListViewBaseItemChromeEnabled ? s_multiSelectRoundedSquareInlineMargin : s_multiSelectSquareInlineMargin;
+
+			m_multiSelectCheckBoxRectangle!.VerticalAlignment = VerticalAlignment.Center;
+
+			m_multiSelectCheckBoxRectangle.HorizontalAlignment = HorizontalAlignment.Left;
+
+			m_multiSelectCheckBoxRectangle.Clip = m_multiSelectCheckBoxClip;
+		}
+		else
+		{
+			global::System.Diagnostics.Debug.Assert(m_checkMode == ListViewItemPresenterCheckMode.Overlay);
+
+			// GridViewItemBase case
+			if (isRoundedListViewBaseItemChromeEnabled)
+			{
+				var selectedBorderThickness = GetSelectedBorderThickness();
+
+				multiSelectSquareMargin.Top = s_innerSelectionBorderThickness.Top + selectedBorderThickness.Top + 1.0;
+				multiSelectSquareMargin.Right = s_innerSelectionBorderThickness.Right + selectedBorderThickness.Right + 1.0;
+			}
+			else
+			{
+				multiSelectSquareMargin = s_multiSelectSquareOverlayMargin;
+			}
+
+			m_multiSelectCheckBoxRectangle!.VerticalAlignment = VerticalAlignment.Top;
+
+			m_multiSelectCheckBoxRectangle.HorizontalAlignment = HorizontalAlignment.Right;
+		}
+
+		if (isRoundedListViewBaseItemChromeEnabled)
+		{
+			var cornerRadius = GetCheckBoxCornerRadius();
+
+			m_multiSelectCheckBoxRectangle.CornerRadius = cornerRadius;
+		}
+
+		if (ShouldUseLayoutRounding())
+		{
+			LayoutRoundHelper(ref multiSelectSquareMargin);
+		}
+		m_multiSelectCheckBoxRectangle.Margin = multiSelectSquareMargin;
+
+		// set the check box background brush
+		SetMultiSelectCheckBoxBackground();
+
+		// set the check box border brush and thickness
+		SetMultiSelectCheckBoxBorder();
+
+		// set the glyph's foreground brush
+		SetMultiSelectCheckBoxForeground();
+
+		if (!isRoundedListViewBaseItemChromeEnabled)
+		{
+			SetForegroundBrush();
+		}
+	}
+
+	// Sets up the inner selection border visual variable properties.
+	internal void SetInnerSelectionBorderProperties()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+		global::System.Diagnostics.Debug.Assert(m_innerSelectionBorder is not null);
+
+		SetInnerSelectionBorderBrush();
+		SetInnerSelectionBorderCornerRadius();
+		SetInnerSelectionBorderThickness();
+	}
+
+	// Sets up the outer border visual variable properties.
+	internal void SetOuterBorderProperties()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+		global::System.Diagnostics.Debug.Assert(m_outerBorder is not null);
+
+		SetOuterBorderBrush();
+		SetOuterBorderCornerRadius();
+		SetOuterBorderThickness();
+	}
+
+	// Sets the backplate Background brush based on current visual state.
+	internal void SetBackplateBackground()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(m_backplateRectangle is not null);
+
+		var selected =
+			m_visualStates.HasState(CommonStates2.Selected) ||
+			m_visualStates.HasState(CommonStates2.PointerOverSelected) ||
+			m_visualStates.HasState(CommonStates2.PressedSelected);
+		var pointerOver =
+			m_visualStates.HasState(CommonStates2.PointerOver) ||
+			m_visualStates.HasState(CommonStates2.PointerOverSelected);
+		var pressed =
+			m_visualStates.HasState(CommonStates2.Pressed) ||
+			m_visualStates.HasState(CommonStates2.PressedSelected);
+
+		Brush? backplateRectangleBackground = null;
+
+		if (m_visualStates.HasState(DisabledStates.Disabled))
+		{
+			if (selected)
+			{
+				backplateRectangleBackground = m_pSelectedDisabledBackground;
+			}
+		}
+		else if (pressed)
+		{
+			if (selected)
+			{
+				backplateRectangleBackground = m_pSelectedPressedBackground;
+			}
+			else
+			{
+				backplateRectangleBackground = m_pPressedBackground;
+			}
+		}
+		else if (pointerOver)
+		{
+			if (selected)
+			{
+				backplateRectangleBackground = m_pSelectedPointerOverBackground;
+			}
+			else
+			{
+				backplateRectangleBackground = m_pPointerOverBackground;
+			}
+		}
+		else if (selected)
+		{
+			backplateRectangleBackground = m_pSelectedBackground;
+		}
+		else
+		{
+			var parentListViewBaseItemNoRef = GetParentListViewBaseItemNoRef();
+
+			if (parentListViewBaseItemNoRef is not null)
+			{
+				// WinUI quirk: item Background changes only invalidate render (LBI:1984-2010), so this stays stale until the next state change.
+				backplateRectangleBackground = parentListViewBaseItemNoRef.Background;
+			}
+		}
+
+		m_backplateRectangle!.Background = backplateRectangleBackground;
+	}
+
+	// Sets up the backplate CornerRadius.
+	internal void SetBackplateCornerRadius()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(m_backplateRectangle is not null);
+
+		SetGeneralCornerRadius(m_backplateRectangle!);
+	}
+
+	// Sets up the backplate Margin for GridViewItem.
+	internal void SetBackplateMargin()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+		global::System.Diagnostics.Debug.Assert(m_backplateRectangle is not null);
+
+		// When the outer border is present and opaque, the backplate gets a 1px margin to avoid any bleed through at the edges.
+		var zeroThickness = default(Thickness);
+		var oneThickness = new Thickness(1.0, 1.0, 1.0, 1.0);
+		var backplateMargin = IsOuterBorderBrushOpaque() ? oneThickness : zeroThickness;
+
+		if (ShouldUseLayoutRounding())
+		{
+			LayoutRoundHelper(ref backplateMargin);
+		}
+
+		m_backplateRectangle!.Margin = backplateMargin;
+	}
+
+	// Sets the inner selection border's BorderBrush based on current SelectionBorderBrush property.
+	internal void SetInnerSelectionBorderBrush()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+		global::System.Diagnostics.Debug.Assert(m_innerSelectionBorder is not null);
+
+#if DEBUG
+		var selected =
+			m_visualStates.HasState(CommonStates2.Selected) ||
+			m_visualStates.HasState(CommonStates2.PointerOverSelected) ||
+			m_visualStates.HasState(CommonStates2.PressedSelected);
+		global::System.Diagnostics.Debug.Assert(selected);
+#endif
+
+		m_innerSelectionBorder!.BorderBrush = m_pSelectedInnerBorderBrush;
+	}
+
+	// Sets the inner selection border's CornerRadius.
+	internal void SetInnerSelectionBorderCornerRadius()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+		global::System.Diagnostics.Debug.Assert(m_innerSelectionBorder is not null);
+
+		var cornerRadius = GetGeneralCornerRadius();
+		var areBordersNested = m_outerBorder == m_innerSelectionBorder!.GetParent();
+
+		if (areBordersNested)
+		{
+			var selectedBorderThickness = GetSelectedBorderThickness();
+
+			// Decrease inner border corner radius to account for outer border thickness.
+			cornerRadius.BottomLeft = Math.Max(s_innerBorderCornerRadius, cornerRadius.BottomLeft - selectedBorderThickness.Left);
+			cornerRadius.BottomRight = Math.Max(s_innerBorderCornerRadius, cornerRadius.BottomRight - selectedBorderThickness.Right);
+			cornerRadius.TopLeft = Math.Max(s_innerBorderCornerRadius, cornerRadius.TopLeft - selectedBorderThickness.Left);
+			cornerRadius.TopRight = Math.Max(s_innerBorderCornerRadius, cornerRadius.TopRight - selectedBorderThickness.Right);
+		}
+
+		m_innerSelectionBorder.CornerRadius = cornerRadius;
+	}
+
+	// Sets the outer selection border's BorderBrush based on current visual state.
+	internal void SetOuterBorderBrush()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+		global::System.Diagnostics.Debug.Assert(m_outerBorder is not null);
+
+		var selected =
+			m_visualStates.HasState(CommonStates2.Selected) ||
+			m_visualStates.HasState(CommonStates2.PointerOverSelected) ||
+			m_visualStates.HasState(CommonStates2.PressedSelected);
+
+		global::System.Diagnostics.Debug.Assert(selected || (!m_visualStates.HasState(DisabledStates.Disabled) && m_visualStates.HasState(CommonStates2.PointerOver)));
+
+		Brush? borderBrush = null;
+
+		if (selected)
+		{
+			if (m_visualStates.HasState(DisabledStates.Disabled))
+			{
+				borderBrush = m_pSelectedDisabledBorderBrush;
+			}
+			else if (m_visualStates.HasState(CommonStates2.PressedSelected))
+			{
+				borderBrush = m_pSelectedPressedBorderBrush;
+			}
+			else if (m_visualStates.HasState(CommonStates2.PointerOverSelected))
+			{
+				borderBrush = m_pSelectedPointerOverBorderBrush;
+			}
+			else
+			{
+				borderBrush = m_pSelectedBorderBrush;
+			}
+		}
+		else
+		{
+			borderBrush = m_pPointerOverBorderBrush;
+		}
+
+		m_outerBorder!.BorderBrush = borderBrush;
+
+		UpdateBordersParenting();
+
+		if (m_backplateRectangle is not null)
+		{
+			SetBackplateMargin();
+		}
+	}
+
+	// Sets the outer border's CornerRadius.
+	internal void SetOuterBorderCornerRadius()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(m_outerBorder is not null);
+
+		SetGeneralCornerRadius(m_outerBorder!);
+	}
+
+	// Sets the inner selection border's BorderThickness based on current SelectedBorderThickness property.
+	internal void SetInnerSelectionBorderThickness()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+		global::System.Diagnostics.Debug.Assert(m_innerSelectionBorder is not null);
+
+#if DEBUG
+		var selected =
+			m_visualStates.HasState(CommonStates2.Selected) ||
+			m_visualStates.HasState(CommonStates2.PointerOverSelected) ||
+			m_visualStates.HasState(CommonStates2.PressedSelected);
+		global::System.Diagnostics.Debug.Assert(selected);
+#endif
+
+		var areBordersNested = m_outerBorder == m_innerSelectionBorder!.GetParent();
+		var innerSelectionBorderThickness = s_innerSelectionBorderThickness;
+
+		if (areBordersNested)
+		{
+			// When the outer border is opaque, it hosts the inner border which is expanded all around by a pixel
+			// to avoid any bleed through at the edges and in-between the borders.
+			innerSelectionBorderThickness.Left += 1.0;
+			innerSelectionBorderThickness.Top += 1.0;
+			innerSelectionBorderThickness.Right += 1.0;
+			innerSelectionBorderThickness.Bottom += 1.0;
+
+			var innerSelectionBorderMargin = new Thickness(-1.0, -1.0, -1.0, -1.0);
+
+			if (ShouldUseLayoutRounding())
+			{
+				LayoutRoundHelper(ref innerSelectionBorderMargin);
+			}
+
+			m_innerSelectionBorder.Margin = innerSelectionBorderMargin;
+		}
+		else
+		{
+			var selectedBorderThickness = GetSelectedBorderThickness();
+
+			innerSelectionBorderThickness.Left += selectedBorderThickness.Left;
+			innerSelectionBorderThickness.Top += selectedBorderThickness.Top;
+			innerSelectionBorderThickness.Right += selectedBorderThickness.Right;
+			innerSelectionBorderThickness.Bottom += selectedBorderThickness.Bottom;
+		}
+
+		if (ShouldUseLayoutRounding())
+		{
+			LayoutRoundHelper(ref innerSelectionBorderThickness);
+		}
+
+		m_innerSelectionBorder.BorderThickness = innerSelectionBorderThickness;
+	}
+
+	// Sets the outer selection border's BorderThickness based on current visual state.
+	internal void SetOuterBorderThickness()
+	{
+		global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+		global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+		global::System.Diagnostics.Debug.Assert(m_outerBorder is not null);
+
+		var selected =
+			m_visualStates.HasState(CommonStates2.Selected) ||
+			m_visualStates.HasState(CommonStates2.PointerOverSelected) ||
+			m_visualStates.HasState(CommonStates2.PressedSelected);
+
+		global::System.Diagnostics.Debug.Assert(selected || (!m_visualStates.HasState(DisabledStates.Disabled) && m_visualStates.HasState(CommonStates2.PointerOver)));
+
+		var outerBorderThickness = selected ? GetSelectedBorderThickness() : s_borderThickness;
+
+		if (ShouldUseLayoutRounding())
+		{
+			LayoutRoundHelper(ref outerBorderThickness);
+		}
+
+		m_outerBorder!.BorderThickness = outerBorderThickness;
+	}
+
+	// Sets the multi-select checkbox background brush.
+	internal void SetMultiSelectCheckBoxBackground()
+	{
+		global::System.Diagnostics.Debug.Assert(m_multiSelectCheckBoxRectangle is not null);
+		global::System.Diagnostics.Debug.Assert(m_checkMode == ListViewItemPresenterCheckMode.Inline || m_checkMode == ListViewItemPresenterCheckMode.Overlay);
+
+		var selected =
+			m_visualStates.HasState(CommonStates2.Selected) ||
+			m_visualStates.HasState(CommonStates2.PointerOverSelected) ||
+			m_visualStates.HasState(CommonStates2.PressedSelected);
+
+		Brush? checkBoxBrush = null;
+
+		if (IsRoundedListViewBaseItemChromeEnabled())
+		{
+			if (m_visualStates.HasState(DisabledStates.Disabled))
+			{
+				checkBoxBrush = selected ? m_pCheckBoxSelectedDisabledBrush : m_pCheckBoxDisabledBrush;
+			}
+			else if (m_visualStates.HasState(CommonStates2.PressedSelected))
+			{
+				checkBoxBrush = m_pCheckBoxSelectedPressedBrush;
+			}
+			else if (m_visualStates.HasState(CommonStates2.Pressed))
+			{
+				checkBoxBrush = m_pCheckBoxPressedBrush;
+			}
+			else if (m_visualStates.HasState(CommonStates2.PointerOverSelected))
+			{
+				checkBoxBrush = m_pCheckBoxSelectedPointerOverBrush;
+			}
+			else if (m_visualStates.HasState(CommonStates2.PointerOver))
+			{
+				checkBoxBrush = m_pCheckBoxPointerOverBrush;
+			}
+			else if (m_visualStates.HasState(CommonStates2.Selected))
+			{
+				checkBoxBrush = m_pCheckBoxSelectedBrush;
+			}
+			else
+			{
+				checkBoxBrush = m_pCheckBoxBrush;
+			}
+		}
+		else if (m_checkMode == ListViewItemPresenterCheckMode.Overlay)
+		{
+			checkBoxBrush = selected ? m_pSelectedBackground : m_pCheckBoxBrush;
+		}
+
+		m_multiSelectCheckBoxRectangle!.Background = checkBoxBrush;
+	}
+
+	// Sets the multi-select checkbox border brush and thickness.
+	internal void SetMultiSelectCheckBoxBorder()
+	{
+		global::System.Diagnostics.Debug.Assert(m_multiSelectCheckBoxRectangle is not null);
+		global::System.Diagnostics.Debug.Assert(m_checkMode == ListViewItemPresenterCheckMode.Inline || m_checkMode == ListViewItemPresenterCheckMode.Overlay);
+
+		var isRoundedListViewBaseItemChromeEnabled = IsRoundedListViewBaseItemChromeEnabled();
+		var zeroThickness = default(Thickness);
+		var multiSelectSquareThickness = s_multiSelectRoundedSquareThickness;
+		Thickness value;
+		Brush? checkBoxBorderBrush = null;
+
+		if (isRoundedListViewBaseItemChromeEnabled)
+		{
+			var selected =
+				m_visualStates.HasState(CommonStates2.Selected) ||
+				m_visualStates.HasState(CommonStates2.PointerOverSelected) ||
+				m_visualStates.HasState(CommonStates2.PressedSelected);
+
+			if (selected)
+			{
+				value = zeroThickness;
+			}
+			else
+			{
+				if (ShouldUseLayoutRounding())
+				{
+					LayoutRoundHelper(ref multiSelectSquareThickness);
+				}
+
+				value = multiSelectSquareThickness;
+
+				if (m_visualStates.HasState(DisabledStates.Disabled))
+				{
+					checkBoxBorderBrush = m_pCheckBoxDisabledBorderBrush;
+				}
+				else if (m_visualStates.HasState(CommonStates2.Pressed))
+				{
+					checkBoxBorderBrush = m_pCheckBoxPressedBorderBrush;
+				}
+				else if (m_visualStates.HasState(CommonStates2.PointerOver))
+				{
+					checkBoxBorderBrush = m_pCheckBoxPointerOverBorderBrush;
+				}
+				else
+				{
+					checkBoxBorderBrush = m_pCheckBoxBorderBrush;
+				}
+			}
+		}
+		else
+		{
+			if (m_checkMode == ListViewItemPresenterCheckMode.Inline)
+			{
+				// ListViewItemBase case
+				value = s_multiSelectSquareThickness;
+
+				checkBoxBorderBrush = m_pCheckBoxBrush;
+			}
+			else
+			{
+				// GridViewItemBase case, m_checkMode == ListViewItemPresenterCheckMode.Overlay
+				value = zeroThickness;
+			}
+		}
+
+		m_multiSelectCheckBoxRectangle!.BorderThickness = value;
+		m_multiSelectCheckBoxRectangle.BorderBrush = checkBoxBorderBrush;
+	}
+
+	// Sets the multi-select checkbox glyph's foreground brush.
+	internal void SetMultiSelectCheckBoxForeground()
+	{
+		global::System.Diagnostics.Debug.Assert(m_multiSelectCheckGlyph is not null);
+
+		// set the Glyph's brush to m_pCheckBrush, m_pCheckPressedBrush or m_pCheckDisabledBrush
+		var checkBrush = m_pCheckBrush;
+
+		if (IsRoundedListViewBaseItemChromeEnabled())
+		{
+			if (m_visualStates.HasState(DisabledStates.Disabled))
+			{
+				checkBrush = m_pCheckDisabledBrush;
+			}
+			else if (m_visualStates.HasState(CommonStates2.PressedSelected))
+			{
+				checkBrush = m_pCheckPressedBrush;
+			}
+		}
+
+		m_multiSelectCheckGlyph!.Foreground = checkBrush!;
+	}
+
+	// Sets the selection indicator background brush.
+	internal void SetSelectionIndicatorBackground()
+	{
+		global::System.Diagnostics.Debug.Assert(IsSelectionIndicatorVisualEnabled());
+		global::System.Diagnostics.Debug.Assert(m_selectionIndicatorRectangle is not null);
+
+		var disabled = m_visualStates.HasState(DisabledStates.Disabled);
+		var pressed = m_visualStates.HasState(CommonStates2.PressedSelected);
+		var pointerOver = m_visualStates.HasState(CommonStates2.PointerOverSelected);
+
+		global::System.Diagnostics.Debug.Assert(m_visualStates.HasState(CommonStates2.Selected) || pointerOver || pressed);
+
+		Brush? selectionIndicatorRectangleBackground = null;
+
+		if (disabled)
+		{
+			selectionIndicatorRectangleBackground = m_pSelectionIndicatorDisabledBrush;
+		}
+		else if (pressed)
+		{
+			selectionIndicatorRectangleBackground = m_pSelectionIndicatorPressedBrush;
+		}
+		else if (pointerOver)
+		{
+			selectionIndicatorRectangleBackground = m_pSelectionIndicatorPointerOverBrush;
+		}
+		else
+		{
+			selectionIndicatorRectangleBackground = m_pSelectionIndicatorBrush;
+		}
+
+		m_selectionIndicatorRectangle!.Background = selectionIndicatorRectangleBackground;
+	}
+
+	// Sets the selection indicator corner radius.
+	internal void SetSelectionIndicatorCornerRadius()
+	{
+		global::System.Diagnostics.Debug.Assert(IsSelectionIndicatorVisualEnabled());
+		global::System.Diagnostics.Debug.Assert(m_selectionIndicatorRectangle is not null);
+
+		var cornerRadius = GetSelectionIndicatorCornerRadius();
+
+		m_selectionIndicatorRectangle!.CornerRadius = cornerRadius;
+	}
+
+	// Sets / clears content's foreground brush in Common visual states.
+	// This function is only called for new styles
+	internal void SetForegroundBrush()
+	{
+		// Uno-specific: stands in for the CValue's IsUnset() state.
+		var isForegroundValueSet = false;
+		Brush? foregroundValue = null;
+
+		if (m_visualStates.HasState(CommonStates2.Selected) ||
+			m_visualStates.HasState(CommonStates2.PressedSelected) ||
+			m_visualStates.HasState(CommonStates2.PointerOverSelected))
+		{
+			if (m_pSelectedForeground is not null)
+			{
+				foregroundValue = m_pSelectedForeground;
+				isForegroundValueSet = true;
+			}
+		}
+		else if (m_visualStates.HasState(CommonStates2.PointerOver) ||
+			m_visualStates.HasState(CommonStates2.Pressed))
+		{
+			// PointerOverForeground is a Threshold property added to ListViewItemPresenter
+			// GridViewItemPresenter does not have the PointerOverForeground property
+			// Calling IsPropertyDefault on a property that does not exist will cause a crash
+			if (this is not GridViewItemPresenter)
+			{
+				// We want to explicitly set the brush in 1 of 2 cases
+				// 1- Brush not NULL meaning it is set to some color
+				// 2- Developer explicitly sets it to NULL (By default, if the developer does not set the property, it is NULL)
+				if (m_pPointerOverForeground is not null || GetCurrentHighestValuePrecedence(ListViewItemPresenter.PointerOverForegroundProperty) != DependencyPropertyValuePrecedences.DefaultValue)
+				{
+					foregroundValue = m_pPointerOverForeground;
+					isForegroundValueSet = true;
+				}
+			}
+		}
+
+		// if the value is not set, we clear the Brush value
+		if (!isForegroundValueSet)
+		{
+			ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+
+			if (!IsRoundedListViewBaseItemChromeEnabled() &&
+				m_checkMode == ListViewItemPresenterCheckMode.Inline &&
+				m_multiSelectCheckBoxRectangle is not null)
+			{
+				// set the CheckBox's brush
+				m_multiSelectCheckBoxRectangle.BorderBrush = m_pCheckBoxBrush;
+
+				// set the CheckMark Glyph's brush
+				m_multiSelectCheckGlyph!.Foreground = m_pCheckBrush!;
+			}
+		}
+		else
+		{
+			SetValue(ForegroundProperty, foregroundValue, DependencyPropertyValuePrecedences.Animations);
+
+			// in the case of Selection or PointerOver, we want the CheckBox and the glyph to have the same color as the item's Foreground
+			if (!IsRoundedListViewBaseItemChromeEnabled() &&
+				m_checkMode == ListViewItemPresenterCheckMode.Inline &&
+				m_multiSelectCheckBoxRectangle is not null)
+			{
+				// set the CheckBox's brush
+				m_multiSelectCheckBoxRectangle.BorderBrush = foregroundValue;
+
+				// set the CheckMark Glyph's brush
+				m_multiSelectCheckGlyph!.Foreground = foregroundValue!;
+			}
+		}
+	}
+
+	// Uno-specific: GetValue / SetValue (C:4918-4996) forward the deprecated alias DPs, see ListViewBaseItemPresenter.ForwardAlias.
+
+	// Handles the property changed for the new ListViewBaseItem style for Threshold
+	// WinUI quirk: the cases are mostly LVIP ids, so most GVIP brush changes don't refresh the chrome children.
+	private protected void OnPropertyChangedNewStyle(DependencyPropertyChangedEventArgs args)
+	{
+		var property = args.Property;
+
+		// Brushes used for both Threshold and Blue
+		if (property == ListViewItemPresenter.SelectedForegroundProperty ||
+			property == GridViewItemPresenter.SelectedForegroundProperty ||
+			property == ListViewItemPresenter.PointerOverForegroundProperty)
+		{
+			SetForegroundBrush();
+		}
+		else if (property == ListViewItemPresenter.SelectionIndicatorVisualEnabledProperty ||
+			property == ListViewItemPresenter.SelectionCheckMarkVisualEnabledProperty ||
+			property == GridViewItemPresenter.SelectionCheckMarkVisualEnabledProperty ||
+			property == ListViewItemPresenter.CheckHintBrushProperty ||
+			property == GridViewItemPresenter.CheckHintBrushProperty ||
+			property == ListViewItemPresenter.CheckSelectingBrushProperty ||
+			property == GridViewItemPresenter.CheckSelectingBrushProperty ||
+			property == ListViewItemPresenter.SelectionIndicatorModeProperty)
+		{
+			InvalidateRender();
+		}
+		else if (property == ListViewItemPresenter.CheckModeProperty ||
+			property == ListViewItemPresenter.CheckBrushProperty ||
+			property == ListViewItemPresenter.CheckPressedBrushProperty ||
+			property == ListViewItemPresenter.CheckDisabledBrushProperty ||
+			property == ListViewItemPresenter.CheckBoxBrushProperty ||
+			property == ListViewItemPresenter.CheckBoxBorderBrushProperty ||
+			property == ListViewItemPresenter.CheckBoxPressedBorderBrushProperty ||
+			property == ListViewItemPresenter.CheckBoxDisabledBorderBrushProperty ||
+			property == ListViewItemPresenter.CheckBoxCornerRadiusProperty ||
+			property == ListViewItemPresenter.SelectedBackgroundProperty ||
+			property == ListViewItemPresenter.SelectedPointerOverBackgroundProperty ||
+			property == ListViewItemPresenter.SelectedPressedBackgroundProperty ||
+			property == ListViewItemPresenter.SelectedDisabledBackgroundProperty)
+		{
+			// WinUI quirk: CheckBoxPointerOverBorderBrush has no case, so changing it does not refresh the check box.
+			// only update changes if the checkbox already exists
+			if (m_multiSelectCheckBoxRectangle is not null)
+			{
+				SetMultiSelectCheckBoxProperties();
+				InvalidateRender();
+			}
+
+			if (m_backplateRectangle is not null &&
+				(property == ListViewItemPresenter.SelectedBackgroundProperty ||
+				 property == ListViewItemPresenter.SelectedPointerOverBackgroundProperty ||
+				 property == ListViewItemPresenter.SelectedPressedBackgroundProperty ||
+				 property == ListViewItemPresenter.SelectedDisabledBackgroundProperty))
+			{
+				SetBackplateBackground();
+				InvalidateRender();
+			}
+		}
+		else if (property == ListViewItemPresenter.SelectedInnerBorderBrushProperty)
+		{
+			if (m_innerSelectionBorder is not null)
+			{
+				SetInnerSelectionBorderBrush();
+				InvalidateRender();
+			}
+		}
+		else if (property == ListViewItemPresenter.CheckBoxPointerOverBrushProperty ||
+			property == ListViewItemPresenter.CheckBoxPressedBrushProperty ||
+			property == ListViewItemPresenter.CheckBoxDisabledBrushProperty ||
+			property == ListViewItemPresenter.CheckBoxSelectedBrushProperty ||
+			property == ListViewItemPresenter.CheckBoxSelectedPointerOverBrushProperty ||
+			property == ListViewItemPresenter.CheckBoxSelectedPressedBrushProperty ||
+			property == ListViewItemPresenter.CheckBoxSelectedDisabledBrushProperty)
+		{
+			if (m_multiSelectCheckBoxRectangle is not null)
+			{
+				SetMultiSelectCheckBoxBackground();
+				InvalidateRender();
+			}
+		}
+		else if (property == ListViewItemPresenter.PointerOverBorderBrushProperty ||
+			property == ListViewItemPresenter.SelectedBorderBrushProperty ||
+			property == ListViewItemPresenter.SelectedPointerOverBorderBrushProperty ||
+			property == ListViewItemPresenter.SelectedPressedBorderBrushProperty ||
+			property == ListViewItemPresenter.SelectedDisabledBorderBrushProperty)
+		{
+			if (m_outerBorder is not null)
+			{
+				SetOuterBorderBrush();
+				InvalidateRender();
+			}
+		}
+		else if (property == ListViewItemPresenter.SelectedBorderThicknessProperty)
+		{
+			if (m_outerBorder is not null)
+			{
+				SetOuterBorderThickness();
+				InvalidateRender();
+			}
+			if (m_innerSelectionBorder is not null)
+			{
+				SetInnerSelectionBorderThickness();
+				InvalidateRender();
+			}
+		}
+		else if (property == ListViewItemPresenter.SelectionIndicatorBrushProperty ||
+			property == ListViewItemPresenter.SelectionIndicatorPointerOverBrushProperty ||
+			property == ListViewItemPresenter.SelectionIndicatorPressedBrushProperty)
+		{
+			// WinUI quirk: SelectionIndicatorDisabledBrush has no case, so changing it does not refresh the indicator.
+			if (m_selectionIndicatorRectangle is not null)
+			{
+				SetSelectionIndicatorBackground();
+				InvalidateRender();
+			}
+		}
+		else if (property == ListViewItemPresenter.SelectionIndicatorCornerRadiusProperty)
+		{
+			if (m_selectionIndicatorRectangle is not null)
+			{
+				SetSelectionIndicatorCornerRadius();
+				InvalidateRender();
+			}
+		}
+		else if (property == CornerRadiusProperty)
+		{
+			if (IsRoundedListViewBaseItemChromeEnabled())
+			{
+				if (m_backplateRectangle is not null)
+				{
+					SetBackplateCornerRadius();
+					InvalidateRender();
+				}
+
+				if (m_outerBorder is not null)
+				{
+					SetOuterBorderCornerRadius();
+					InvalidateRender();
+				}
+
+				if (m_innerSelectionBorder is not null)
+				{
+					SetInnerSelectionBorderCornerRadius();
+					InvalidateRender();
+				}
+			}
+		}
 	}
 
 	// all XCBBs are backed by a comp brush

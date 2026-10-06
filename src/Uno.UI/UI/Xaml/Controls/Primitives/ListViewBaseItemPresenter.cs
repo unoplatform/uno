@@ -83,9 +83,4 @@ public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 			NewValueInternal = newValue,
 		});
 	}
-
-	// TODO Uno: CListViewBaseItemChrome::OnPropertyChangedNewStyle (C:5132-5157) arrives with the chrome port.
-	private protected virtual void OnPropertyChangedNewStyle(DependencyPropertyChangedEventArgs args)
-	{
-	}
 }
