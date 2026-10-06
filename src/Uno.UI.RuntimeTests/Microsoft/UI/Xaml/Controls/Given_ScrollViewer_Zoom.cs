@@ -48,9 +48,10 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
-	// WinUI (CI WinAppSDK leg): flaky, ZoomFactor sometimes reaches the requested 2.0.
+	// WinUI (CI WinAppSDK leg): flaky, ZoomFactor is not always updated yet after WaitForIdle.
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-	public async Task When_ZoomMode_Disabled_ZoomFactor_Stays_1()
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24988")]
+	public async Task When_ZoomMode_Disabled_ChangeView_Still_Zooms()
 	{
 		var content = new Border
 		{
@@ -71,12 +72,11 @@ public class Given_ScrollViewer_Zoom
 		await TestServices.WindowHelper.WaitForLoaded(sut);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		// Try to change zoom when disabled
+		// ZoomMode only blocks user zoom; programmatic ChangeView still applies the zoom factor
 		sut.ChangeView(null, null, 2.0f, disableAnimation: true);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		// Zoom should remain at 1.0 when ZoomMode is Disabled
-		Assert.AreEqual(1.0f, sut.ZoomFactor, 0.01f, "Zoom factor should stay 1.0 when ZoomMode is Disabled");
+		Assert.AreEqual(2.0f, sut.ZoomFactor, 0.01f, "ChangeView should zoom even when ZoomMode is Disabled");
 	}
 
 	[TestMethod]
@@ -187,8 +187,7 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
-	// WinUI keeps the current ZoomFactor when ZoomMode becomes Disabled; Uno resets it to 1.
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24988")]
 	public async Task When_ZoomMode_Changed_At_Runtime()
 	{
 		var content = new Border
@@ -217,13 +216,11 @@ public class Given_ScrollViewer_Zoom
 		await TestServices.WindowHelper.WaitForIdle();
 		Assert.AreEqual(2.0f, sut.ZoomFactor, 0.01f, "Zoom should be 2.0 when enabled");
 
-		// Disable zoom mode - current zoom should reset to 1
+		// Disabling ZoomMode only blocks user zoom; the current zoom is kept
 		sut.ZoomMode = ZoomMode.Disabled;
 		await TestServices.WindowHelper.WaitForIdle();
 
-		// When ZoomMode is Disabled, min and max are both set to 1,
-		// which should clamp the current zoom to 1
-		Assert.AreEqual(1.0f, sut.ZoomFactor, 0.01f, "Zoom should reset to 1.0 when ZoomMode is Disabled");
+		Assert.AreEqual(2.0f, sut.ZoomFactor, 0.01f, "Zoom should stay 2.0 when ZoomMode becomes Disabled");
 	}
 
 	[TestMethod]
