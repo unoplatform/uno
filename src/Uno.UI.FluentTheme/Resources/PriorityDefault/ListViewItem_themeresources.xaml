@@ -230,8 +230,7 @@
       <StaticResource x:Key="ListViewItemSelectionIndicatorDisabledBrush" ResourceKey="AccentFillColorDisabledBrush" />
     </ResourceDictionary>
   </ResourceDictionary.ThemeDictionaries>
-  <!-- TODO Uno: implicit style moves to DefaultListViewItemStyle once the presenter is wired (step ST1b) -->
-  <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemExpanded}" />
+  <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}" />
   <Style x:Key="DefaultListViewItemStyle" TargetType="ListViewItem">
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
