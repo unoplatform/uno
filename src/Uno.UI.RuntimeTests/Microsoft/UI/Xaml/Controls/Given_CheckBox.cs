@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
@@ -26,14 +28,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		/// <summary>
-		/// A checked+disabled CheckBox inside a disabled ListView must render with the same color as a
-		/// standalone checked+disabled CheckBox. WinUI does not dim disabled item content; Uno used to
-		/// additionally dim it by ListViewItemDisabledThemeOpacity (0.55) when IsEnabled was coerced false
-		/// on the container by the disabled parent ListView, which double-dimmed the already-disabled glyph.
+		/// A checked+disabled CheckBox inside a disabled ListView renders like a standalone one. The rounded
+		/// chrome dims the item content (DisabledOpacity) only on a Disabled state change once the content
+		/// exists, and an item that starts disabled enters that state before its content is created.
 		/// </summary>
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Disabled_In_Disabled_ListView_Matches_Standalone()
 		{
 			var standalone = new CheckBox { Content = "Standalone", IsChecked = true, IsEnabled = false };
@@ -63,17 +63,16 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			// Guard: make sure we actually sampled the rendered disabled fill, not the (black) background.
 			ImageAssert.DoesNotHaveColorAt(bmp, (float)standalonePoint.X, (float)standalonePoint.Y, Colors.Black, tolerance: 12);
 
-			// The in-list checkbox must match the standalone one (no extra 0.55 dim from the disabled ListView).
+			// The in-list checkbox must match the standalone one (no dim from the disabled ListView).
 			ImageAssert.HasColorAt(bmp, (float)inListPoint.X, (float)inListPoint.Y, standaloneColor, tolerance: 8);
 		}
 
 		/// <summary>
-		/// An individually disabled ListViewItem (inside an enabled ListView) must render its content with
-		/// the same color as an enabled item: matching WinUI, which does not dim disabled item content.
+		/// A ListViewItem disabled before it loads (inside an enabled ListView) renders its content like an
+		/// enabled item, for the same reason as above.
 		/// </summary>
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ListViewItem_Locally_Disabled_Matches_Enabled()
 		{
 			var checkBoxInEnabledItem = new CheckBox { Content = "Enabled item", IsChecked = true, IsEnabled = false };
@@ -106,6 +105,45 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			// The locally-disabled item's content must match the enabled item's content (no opacity dim).
 			ImageAssert.HasColorAt(bmp, (float)disabledPoint.X, (float)disabledPoint.Y, enabledColor, tolerance: 8);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_ListViewItem_Disabled_After_Load_Content_Dimmed()
+		{
+			var checkBox = new CheckBox { Content = "Item", IsChecked = true, IsEnabled = false };
+			var item = new ListViewItem { Content = checkBox };
+			var listView = new ListView { Items = { item } };
+
+			var root = new StackPanel
+			{
+				RequestedTheme = ElementTheme.Dark,
+				Background = new SolidColorBrush(Colors.Black),
+				Children = { listView },
+			};
+
+			await UITestHelper.Load(root);
+			await WindowHelper.WaitForLoaded(checkBox);
+			await WindowHelper.WaitForIdle();
+
+			var point = GetCheckFillPoint(checkBox, root);
+			var enabled = await UITestHelper.ScreenShot(root);
+			var enabledColor = enabled.GetPixel((int)point.X, (int)point.Y);
+			ImageAssert.DoesNotHaveColorAt(enabled, (float)point.X, (float)point.Y, Colors.Black, tolerance: 12);
+
+			item.IsEnabled = false;
+			await WindowHelper.WaitForIdle();
+
+			// Over black, the content Opacity of DisabledOpacity scales each channel.
+			var opacity = ((ListViewItemPresenter)VisualTreeHelper.GetChild(item, 0)).DisabledOpacity;
+			byte Dim(byte channel) => (byte)Math.Round(channel * opacity);
+			var dimmed = Color.FromArgb(255, Dim(enabledColor.R), Dim(enabledColor.G), Dim(enabledColor.B));
+			ImageAssert.HasColorAt(await UITestHelper.ScreenShot(root), (float)point.X, (float)point.Y, dimmed, tolerance: 8);
+
+			item.IsEnabled = true;
+			await WindowHelper.WaitForIdle();
+
+			ImageAssert.HasColorAt(await UITestHelper.ScreenShot(root), (float)point.X, (float)point.Y, enabledColor, tolerance: 8);
 		}
 	}
 }
