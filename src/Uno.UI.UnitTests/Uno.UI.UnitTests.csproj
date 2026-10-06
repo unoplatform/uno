@@ -124,6 +124,7 @@
 		     HWND/X11 display (neither runtime host project has its own unit test harness). -->
 		<Compile Include="..\Uno.UI.Runtime.Win32\Devices\Input\Win32PointerCoordinateMath.cs" Link="Windows_UI_Input\Win32PointerCoordinateMath.cs" />
 		<Compile Include="..\Uno.UI.Runtime.X11\Devices\Input\X11PointerCoordinateMath.cs" Link="Windows_UI_Input\X11PointerCoordinateMath.cs" />
+		<Compile Include="..\Uno.UI.Runtime.Win32\Rendering\BackgroundPrewarm.cs" Link="Hosting\BackgroundPrewarm.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<!--
