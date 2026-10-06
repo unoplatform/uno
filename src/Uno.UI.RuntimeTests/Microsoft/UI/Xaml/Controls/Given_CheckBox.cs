@@ -39,11 +39,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var standalone = new CheckBox { Content = "Standalone", IsChecked = true, IsEnabled = false };
 
 			var inListCheckBox = new CheckBox { Content = "InList", IsChecked = true, IsEnabled = false };
-			var listView = new ListView { IsEnabled = false };
+			var listView = new ListView { IsEnabled = false, ItemContainerTransitions = new() }; // WinUI's item entrance transition hides content right after load
 			listView.Items.Add(new ListViewItem { Content = inListCheckBox });
 
 			var root = new StackPanel
 			{
+				Width = 300, // RenderTargetBitmap on WinUI downscales captures wider than 4096 px
 				RequestedTheme = ElementTheme.Dark,
 				Background = new SolidColorBrush(Colors.Black),
 				Children = { standalone, listView },
@@ -78,12 +79,13 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var checkBoxInEnabledItem = new CheckBox { Content = "Enabled item", IsChecked = true, IsEnabled = false };
 			var checkBoxInDisabledItem = new CheckBox { Content = "Disabled item", IsChecked = true, IsEnabled = false };
 
-			var listView = new ListView();
+			var listView = new ListView { ItemContainerTransitions = new() }; // WinUI's item entrance transition hides content right after load
 			listView.Items.Add(new ListViewItem { Content = checkBoxInEnabledItem });
 			listView.Items.Add(new ListViewItem { Content = checkBoxInDisabledItem, IsEnabled = false });
 
 			var root = new StackPanel
 			{
+				Width = 300, // RenderTargetBitmap on WinUI downscales captures wider than 4096 px
 				RequestedTheme = ElementTheme.Dark,
 				Background = new SolidColorBrush(Colors.Black),
 				Children = { listView },
@@ -113,10 +115,11 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		{
 			var checkBox = new CheckBox { Content = "Item", IsChecked = true, IsEnabled = false };
 			var item = new ListViewItem { Content = checkBox };
-			var listView = new ListView { Items = { item } };
+			var listView = new ListView { Items = { item }, ItemContainerTransitions = new() }; // WinUI's item entrance transition hides content right after load
 
 			var root = new StackPanel
 			{
+				Width = 300, // RenderTargetBitmap on WinUI downscales captures wider than 4096 px
 				RequestedTheme = ElementTheme.Dark,
 				Background = new SolidColorBrush(Colors.Black),
 				Children = { listView },
