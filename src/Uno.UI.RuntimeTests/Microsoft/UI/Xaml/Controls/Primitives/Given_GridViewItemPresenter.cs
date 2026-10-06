@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -214,6 +215,62 @@ public class Given_GridViewItemPresenter
 	}
 
 	[TestMethod]
+	public async Task When_GridViewItemPresenter_Root_SelectionMode_Changes_With_Rounded_Chrome()
+	{
+		var style = (Style)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+			"""
+			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" TargetType="GridViewItem">
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="GridViewItem">
+							<GridViewItemPresenter
+								ContentMargin="{TemplateBinding Padding}"
+								SelectedBackground="Red"
+								PointerOverBackground="Green" />
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			""");
+
+		var (grid, _, presenter) = await CreateGridView(style, itemTemplate: true);
+		Assert.IsTrue(presenter.IsRoundedListViewBaseItemChromeEnabled(), "The default Fluent resources enable rounded chrome");
+
+		grid.SelectedIndex = 1;
+		await WindowHelper.WaitForIdle();
+
+		foreach (var mode in new[] { ListViewSelectionMode.Multiple, ListViewSelectionMode.Extended, ListViewSelectionMode.Single })
+		{
+			grid.SelectionMode = mode;
+			await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
+			await WindowHelper.WaitForIdle();
+
+			grid.SelectedIndex = 0;
+			await WindowHelper.WaitForIdle();
+
+			for (var i = 0; i < 3; i++)
+			{
+				var item = (GridViewItem)grid.ContainerFromIndex(i);
+				var itemPresenter = (GridViewItemPresenter)VisualTreeHelper.GetChild(item, 0);
+				var text = itemPresenter.FindFirstDescendant<TextBlock>();
+
+				Assert.IsTrue(item.ActualWidth > 0 && item.ActualHeight > 0, $"Item {i} has a size in {mode}");
+				Assert.IsNotNull(text, $"Item {i} content is materialized in {mode}");
+				Assert.AreEqual($"Item {i}", text.Text);
+				Assert.IsTrue(text.ActualWidth > 0, $"Item {i} content is laid out in {mode}");
+				Assert.AreEqual(1.0, itemPresenter.GetTemplateChildIfExists()!.Opacity, 1e-6, $"Item {i} content is visible in {mode}");
+			}
+		}
+	}
+
+	[TestMethod]
+	public void When_GridViewItemPresenter_Reads_SelectionIndicatorMode()
+	{
+		// WinUI reads the sparse ListViewItemPresenter DP regardless of type and gets its default.
+		Assert.AreEqual(ListViewItemPresenterSelectionIndicatorMode.Overlay, new GridViewItemPresenter().GetSelectionIndicatorMode());
+	}
+
+	[TestMethod]
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
@@ -295,7 +352,7 @@ public class Given_GridViewItemPresenter
 #endif
 	}
 
-	private static async Task<(GridView grid, GridViewItem item, ListViewBaseItemPresenter presenter)> CreateGridView(Style? itemContainerStyle = null)
+	private static async Task<(GridView grid, GridViewItem item, ListViewBaseItemPresenter presenter)> CreateGridView(Style? itemContainerStyle = null, bool itemTemplate = false)
 	{
 		var grid = new GridView
 		{
@@ -304,6 +361,15 @@ public class Given_GridViewItemPresenter
 			SelectionMode = ListViewSelectionMode.Single,
 			ItemsSource = new[] { "Item 0", "Item 1", "Item 2" },
 		};
+		if (itemTemplate)
+		{
+			grid.ItemTemplate = (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<Border Width="100" Height="100"><TextBlock Text="{Binding}" /></Border>
+				</DataTemplate>
+				""");
+		}
 		if (itemContainerStyle is not null)
 		{
 			grid.ItemContainerStyle = itemContainerStyle;
