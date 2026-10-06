@@ -498,7 +498,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	// CompositionPath just holds the reference it is handed, so the geometry behind the outgoing path is this
 	// visual's to release — every rebuild would otherwise abandon one per shape.
-	private static void SetPath(CompositionPathGeometry target, IGeometry? geometry)
+	internal static void SetPath(CompositionPathGeometry target, IGeometry? geometry)
 	{
 		if (target.Path is { GeometrySource: IGeometry previous })
 		{
@@ -508,7 +508,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		target.Path = geometry is null ? null : new CompositionPath((IGeometrySource2D)geometry);
 	}
 
-	private static IGeometry BuildRoundRectPath(Rect rect, NonUniformCornerRadius radii)
+	internal static IGeometry BuildRoundRectPath(Rect rect, NonUniformCornerRadius radii)
 	{
 		var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
 		if (radii.IsEmpty)
@@ -522,7 +522,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		return builder.Build();
 	}
 
-	private static IGeometry BuildRoundRectRingPath(
+	internal static IGeometry BuildRoundRectRingPath(
 		Rect outerRect,
 		NonUniformCornerRadius outerRadii,
 		Rect innerRect,
