@@ -521,6 +521,7 @@ public partial class Given_ContentPresenter
 		Assert.IsFalse(reference.IsAlive);
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	public async Task When_Sentinel_Child_At_Index_0_Template_Root_Used_For_Layout()
 	{
@@ -552,6 +553,26 @@ public partial class Given_ContentPresenter
 		Assert.AreEqual(new CornerRadius(7), SUT.LastNewCornerRadius);
 	}
 
+	[TestMethod]
+	public async Task When_Sentinel_Child_And_Content_Replaced()
+	{
+		var oldRoot = new Border() { Width = 80, Height = 30 };
+		var SUT = new SentinelContentPresenter() { Content = oldRoot };
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+		var newRoot = new Border() { Width = 40, Height = 20 };
+		SUT.Content = newRoot;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(2, VisualTreeHelper.GetChildrenCount(SUT));
+		Assert.AreSame(SUT.Sentinel, VisualTreeHelper.GetChild(SUT, 0));
+		Assert.AreSame(newRoot, VisualTreeHelper.GetChild(SUT, 1));
+		Assert.IsNull(VisualTreeHelper.GetParent(oldRoot));
+		Assert.AreEqual(new Size(40, 20), SUT.DesiredSize);
+	}
+
 	private class SentinelContentPresenter : ContentPresenter
 	{
 		public Border Sentinel { get; } = new Border() { Width = 500, Height = 500 };
@@ -569,6 +590,7 @@ public partial class Given_ContentPresenter
 			base.OnCornerRadiusChanged(oldValue, newValue);
 		}
 	}
+#endif
 
 	public class AlignmentTestConfiguration
 	{
