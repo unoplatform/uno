@@ -399,7 +399,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected virtual void OnToggled()
+		protected void OnToggled()
 		{
 			var args = new RoutedEventArgs();
 			args.OriginalSource = this;
@@ -416,15 +416,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected virtual void OnHeaderChanged(object oldContent, object newContent)
+		protected void OnHeaderChanged(object oldContent, object newContent)
 		{
 		}
 
-		protected virtual void OnOffContentChanged(object oldContent, object newContent)
+		protected void OnOffContentChanged(object oldContent, object newContent)
 		{
 		}
 
-		protected virtual void OnOnContentChanged(object oldContent, object newContent)
+		protected void OnOnContentChanged(object oldContent, object newContent)
 		{
 		}
 

@@ -9,8 +9,12 @@ using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Documents
 {
-	public abstract partial class Inline : TextElement
+	public partial class Inline : TextElement
 	{
+		protected Inline()
+		{
+		}
+
 		internal void InvalidateInlines(bool updateText) => InvalidateInlines(updateText, inherited: false);
 
 		internal void InvalidateInlines(bool updateText, bool inherited)
