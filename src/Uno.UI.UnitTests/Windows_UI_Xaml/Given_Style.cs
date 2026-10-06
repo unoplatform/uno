@@ -115,7 +115,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsTrue(SUT2.Setters[0].IsSealed);
 		}
 
-		private sealed partial class PlainControl : Control
+		private sealed class PlainControl : Control
 		{
 		}
 	}

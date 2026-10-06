@@ -163,7 +163,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			Assert.IsFalse(info.Handled);
 		}
 
-		private sealed partial class PlainControl : Control
+		private sealed class PlainControl : Control
 		{
 		}
 	}

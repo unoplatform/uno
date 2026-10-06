@@ -286,7 +286,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.IsFalse(source[2].IsSelected);
 		}
 
-		private sealed partial class PlainSelectorItem : SelectorItem
+		private sealed class PlainSelectorItem : SelectorItem
 		{
 		}
 	}
