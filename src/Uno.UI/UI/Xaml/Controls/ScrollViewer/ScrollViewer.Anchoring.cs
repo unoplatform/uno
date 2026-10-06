@@ -8,6 +8,7 @@
 //  ResetAnchorElement, get_CurrentAnchorImpl).
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Media;
+using Uno.Extensions;
 using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
@@ -409,7 +410,7 @@ public partial class ScrollViewer
 			(element == content || SharedHelpers.IsAncestor(element, content));
 	}
 
-	private Rect GetDescendantBounds(UIElement content, UIElement descendant)
+	internal static Rect GetDescendantBounds(UIElement content, UIElement descendant)
 	{
 		var descendantAsFE = descendant as FrameworkElement;
 		var descendantRect = new Rect(
@@ -421,8 +422,7 @@ public partial class ScrollViewer
 		var contentAsFE = content as FrameworkElement;
 		Thickness contentMargin = contentAsFE?.Margin ?? default;
 
-		var transform = descendant.TransformToVisual(content);
-		return transform.TransformBounds(new Rect(
+		return UIElement.GetTransform(descendant, content).Transform(new Rect(
 			contentMargin.Left + descendantRect.X,
 			contentMargin.Top + descendantRect.Y,
 			descendantRect.Width,
