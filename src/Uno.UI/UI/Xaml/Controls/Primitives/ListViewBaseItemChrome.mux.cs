@@ -558,8 +558,20 @@ partial class ListViewBaseItemPresenter
 			parent = parent.GetParent() as DependencyObject;
 		}
 
+		// Uno-specific: recycled containers are detached while they are prepared, so fall back to the owning ItemsControl.
+		if (parent is null && listViewBaseItem is not null)
+		{
+			return ItemsControl.ItemsControlFromItemContainer(listViewBaseItem) as ListViewBase;
+		}
+
 		return parent as ListViewBase;
 	}
+
+	private protected void GoToChromedState(
+		string pStateName,
+		bool useTransitions,
+		out bool pWentToState)
+		=> GoToChromedStateNewStyle(pStateName, useTransitions, out pWentToState);
 
 	// Dead WinUI code: DrawBaseLayer, DrawUnderContentLayer, DrawOverContentLayer and DrawDragOverlayLayer (C:995-1341).
 
@@ -1406,6 +1418,638 @@ partial class ListViewBaseItemPresenter
 			pTemplateChild.Arrange(contentArrangedBounds);
 		}
 	}
+
+	private void GoToChromedStateNewStyle(
+		string pStateName,
+		bool useTransitions,
+		out bool pWentToState)
+	{
+		var dirty = false;
+		var needsMeasure = false;
+		var needsArrange = false;
+		var disabledChanged = false;
+		var templateChild = GetTemplateChildIfExists();
+
+		var isRoundedListViewBaseItemChromeEnabled = IsRoundedListViewBaseItemChromeEnabled();
+		var oldCommonState2 = m_visualStates.commonState2;
+		var listViewItemSelectionIndicatorContentOffset = s_selectionIndicatorMargin.Left + s_selectionIndicatorSize.Width + s_selectionIndicatorMargin.Right;
+
+		if (UpdateVisualStateGroup(pStateName, ref m_visualStates.commonState2, out pWentToState))
+		{
+			ListViewBaseItemAnimationCommand animationCommand;
+
+			var selected =
+				m_visualStates.HasState(CommonStates2.Selected) ||
+				m_visualStates.HasState(CommonStates2.PressedSelected) ||
+				m_visualStates.HasState(CommonStates2.PointerOverSelected);
+
+			var roundedGridViewItem =
+				isRoundedListViewBaseItemChromeEnabled && IsChromeForGridViewItem();
+
+			if (selected)
+			{
+				if (m_multiSelectCheckGlyph is not null)
+				{
+					m_multiSelectCheckGlyph.Opacity = 1.0;
+				}
+
+				if (roundedGridViewItem)
+				{
+					if (m_outerBorder is null)
+					{
+						EnsureOuterBorder();
+					}
+					else
+					{
+						SetOuterBorderBrush();
+						SetOuterBorderThickness();
+					}
+
+					if (m_innerSelectionBorder is null)
+					{
+						EnsureInnerSelectionBorder();
+					}
+					else
+					{
+						SetInnerSelectionBorderBrush();
+					}
+				}
+			}
+			else
+			{
+				if (m_multiSelectCheckGlyph is not null)
+				{
+					m_multiSelectCheckGlyph.Opacity = 0.0;
+				}
+
+				if (roundedGridViewItem)
+				{
+					if (m_innerSelectionBorder is not null)
+					{
+						RemoveInnerSelectionBorder();
+					}
+
+					var renderOuterBorder = !m_visualStates.HasState(DisabledStates.Disabled) && m_visualStates.HasState(CommonStates2.PointerOver);
+
+					if (m_outerBorder is null)
+					{
+						if (renderOuterBorder)
+						{
+							EnsureOuterBorder();
+						}
+					}
+					else
+					{
+						if (!renderOuterBorder)
+						{
+							RemoveOuterBorder();
+						}
+						else
+						{
+							SetOuterBorderBrush();
+							SetOuterBorderThickness();
+						}
+					}
+				}
+			}
+
+			if (m_multiSelectCheckBoxRectangle is not null)
+			{
+				SetMultiSelectCheckBoxBackground();
+				if (isRoundedListViewBaseItemChromeEnabled)
+				{
+					SetMultiSelectCheckBoxBorder();
+				}
+			}
+
+			var isInSelectionIndicatorMode = IsInSelectionIndicatorMode();
+
+			if (isInSelectionIndicatorMode || m_selectionIndicatorRectangle is not null)
+			{
+				var oldPressed =
+					oldCommonState2 == CommonStates2.Pressed ||
+					oldCommonState2 == CommonStates2.PressedSelected;
+				var pressed =
+					m_visualStates.HasState(CommonStates2.Pressed) ||
+					m_visualStates.HasState(CommonStates2.PressedSelected);
+
+				var updateSelectionIndicatorVisibility = true;
+				var showSelectionIndicator = true;
+				var fromScale = 0.0f;
+
+				if (isInSelectionIndicatorMode)
+				{
+					var oldSelected = oldCommonState2 == CommonStates2.Selected || oldCommonState2 == CommonStates2.PressedSelected || oldCommonState2 == CommonStates2.PointerOverSelected;
+
+					updateSelectionIndicatorVisibility = oldSelected != selected;
+					showSelectionIndicator = selected;
+				}
+				else
+				{
+					showSelectionIndicator = false;
+				}
+
+				if (updateSelectionIndicatorVisibility)
+				{
+					if (showSelectionIndicator)
+					{
+						EnsureSelectionIndicator();
+					}
+
+					// Trigger animation to show/hide the selection indicator.
+					animationCommand = new ListViewBaseItemAnimationCommand_SelectionIndicatorVisibility(
+						showSelectionIndicator /*selected*/,
+						0.0 /*fromScale*/,
+						GetWeakRef<UIElement>(m_selectionIndicatorRectangle),
+						true /*isStarting*/,
+						!useTransitions /*steadyStateOnly*/);
+					EnqueueAnimationCommand(animationCommand);
+				}
+				else if (m_selectionIndicatorRectangle is not null && showSelectionIndicator && oldPressed != pressed)
+				{
+					var currentHeight = (float)m_selectionIndicatorRectangle.ActualHeight;
+
+					if (pressed && currentHeight <= s_selectionIndicatorHeightShrinkage)
+					{
+						// s_selectionIndicatorHeightShrinkage equals 6.  currentHeight may be the rounded down value of s_selectionIndicatorHeightShrinkage + 1,
+						// but it is not expected to be smaller than or equal to s_selectionIndicatorHeightShrinkage.
+						global::System.Diagnostics.Debug.Assert(false);
+						fromScale = 1.0f;
+					}
+					else
+					{
+						fromScale = pressed ? currentHeight / (currentHeight - s_selectionIndicatorHeightShrinkage)
+											: currentHeight / (currentHeight + s_selectionIndicatorHeightShrinkage);
+					}
+
+					// Trigger animation to shrink/expand the selection indicator.
+					animationCommand = new ListViewBaseItemAnimationCommand_SelectionIndicatorVisibility(
+						true /*selected*/,
+						fromScale,
+						GetWeakRef<UIElement>(m_selectionIndicatorRectangle),
+						true /*isStarting*/,
+						!useTransitions /*steadyStateOnly*/);
+					EnqueueAnimationCommand(animationCommand);
+				}
+
+				if (showSelectionIndicator)
+				{
+					var pointerOver = m_visualStates.HasState(CommonStates2.PointerOverSelected);
+					var updateSelectionIndicatorBackground = updateSelectionIndicatorVisibility;
+
+					if (!updateSelectionIndicatorVisibility)
+					{
+						updateSelectionIndicatorBackground = ((oldCommonState2 == CommonStates2.PointerOverSelected) != pointerOver) || ((oldCommonState2 == CommonStates2.PressedSelected) != pressed);
+					}
+
+					if (updateSelectionIndicatorBackground)
+					{
+						SetSelectionIndicatorBackground();
+					}
+				}
+
+				if (oldPressed != pressed)
+				{
+					needsArrange = true;
+				}
+			}
+
+			SetForegroundBrush();
+
+			if (!isRoundedListViewBaseItemChromeEnabled)
+			{
+				if (m_visualStates.HasState(CommonStates2.Pressed) ||
+					m_visualStates.HasState(CommonStates2.PressedSelected))
+				{
+					animationCommand = new ListViewBaseItemAnimationCommand_Pressed(
+						true /* pressed */,
+						GetWeakRef(templateChild),
+						true /*isStarting*/,
+						!useTransitions);
+					EnqueueAnimationCommand(animationCommand);
+				}
+				else if (m_visualStates.HasState(CommonStates2.Normal) ||
+					m_visualStates.HasState(CommonStates2.PointerOver) ||
+					m_visualStates.HasState(CommonStates2.Selected) ||
+					m_visualStates.HasState(CommonStates2.PointerOverSelected))
+				{
+					if (oldCommonState2 == CommonStates2.Pressed ||
+						oldCommonState2 == CommonStates2.PressedSelected)
+					{
+						animationCommand = new ListViewBaseItemAnimationCommand_Pressed(
+							false /* pressed */,
+							GetWeakRef(templateChild),
+							true /*isStarting*/,
+							!useTransitions);
+						EnqueueAnimationCommand(animationCommand);
+					}
+				}
+				else
+				{
+					animationCommand = new ListViewBaseItemAnimationCommand_Pressed(
+						false /* pressed */,
+						GetWeakRef(templateChild),
+						false /*isStarting*/,
+						!useTransitions);
+					EnqueueAnimationCommand(animationCommand);
+				}
+			}
+
+			if (m_backplateRectangle is not null)
+			{
+				global::System.Diagnostics.Debug.Assert(isRoundedListViewBaseItemChromeEnabled);
+				SetBackplateBackground();
+			}
+
+			dirty = true;
+		}
+
+		if (!pWentToState &&
+			UpdateVisualStateGroup(pStateName, ref m_visualStates.disabledState, out pWentToState))
+		{
+			var roundedGridViewItem = isRoundedListViewBaseItemChromeEnabled && IsChromeForGridViewItem();
+
+			if (roundedGridViewItem)
+			{
+				var disabled =
+					m_visualStates.HasState(DisabledStates.Disabled);
+				var pointerOver =
+					m_visualStates.HasState(CommonStates2.PointerOver);
+				var selected =
+					m_visualStates.HasState(CommonStates2.Selected) ||
+					m_visualStates.HasState(CommonStates2.PressedSelected) ||
+					m_visualStates.HasState(CommonStates2.PointerOverSelected);
+
+				if (m_outerBorder is null)
+				{
+					if (selected || (!disabled && pointerOver))
+					{
+						EnsureOuterBorder();
+					}
+				}
+				else
+				{
+					if (selected || (!disabled && pointerOver))
+					{
+						SetOuterBorderBrush();
+					}
+					else
+					{
+						RemoveOuterBorder();
+					}
+				}
+
+				if (m_innerSelectionBorder is null)
+				{
+					if (selected)
+					{
+						EnsureInnerSelectionBorder();
+					}
+				}
+				else
+				{
+					if (selected)
+					{
+						SetInnerSelectionBorderBrush();
+					}
+					else
+					{
+						RemoveInnerSelectionBorder();
+					}
+				}
+			}
+
+			if (isRoundedListViewBaseItemChromeEnabled)
+			{
+				if (m_backplateRectangle is not null)
+				{
+					SetBackplateBackground();
+				}
+
+				if (m_multiSelectCheckGlyph is not null)
+				{
+					SetMultiSelectCheckBoxForeground();
+				}
+
+				if (m_multiSelectCheckBoxRectangle is not null)
+				{
+					SetMultiSelectCheckBoxBackground();
+					SetMultiSelectCheckBoxBorder();
+				}
+
+				if (m_selectionIndicatorRectangle is not null)
+				{
+					SetSelectionIndicatorBackground();
+				}
+			}
+
+			disabledChanged = true;
+			dirty = true;
+		}
+
+		if (!pWentToState &&
+			UpdateVisualStateGroup(pStateName, ref m_visualStates.focusState, out pWentToState))
+		{
+			dirty = true;
+		}
+
+		if (!pWentToState &&
+			UpdateVisualStateGroup(pStateName, ref m_visualStates.multiSelectState, out pWentToState))
+		{
+			var entering = m_visualStates.HasState(MultiSelectStates.MultiSelectEnabled);
+			double contentTranslationX = isRoundedListViewBaseItemChromeEnabled ? s_multiSelectRoundedContentOffset : s_listViewItemMultiSelectContentOffset;
+			ListViewBaseItemAnimationCommand animationCommand;
+
+			if (entering)
+			{
+				if (m_isInIndicatorSelect)
+				{
+					contentTranslationX -= listViewItemSelectionIndicatorContentOffset;
+				}
+				m_isInIndicatorSelect = false;
+				m_isInMultiSelect = true;
+				EnsureMultiSelectCheckBox();
+			}
+			else if (IsInSelectionIndicatorMode())
+			{
+				contentTranslationX -= listViewItemSelectionIndicatorContentOffset;
+			}
+
+			animationCommand = new ListViewBaseItemAnimationCommand_MultiSelect(
+				isRoundedListViewBaseItemChromeEnabled,
+				entering,
+				s_multiSelectSquareSize.Width /*checkBoxTranslationX*/,
+				contentTranslationX,
+				m_checkMode,
+				GetWeakRef<UIElement>(m_multiSelectCheckBoxRectangle),
+				GetWeakRef(templateChild),
+				true /*isStarting*/,
+				!useTransitions);
+			EnqueueAnimationCommand(animationCommand);
+
+			needsMeasure = true;
+			needsArrange = true;
+			dirty = true;
+		}
+
+		if (!pWentToState &&
+			UpdateVisualStateGroup(pStateName, ref m_visualStates.selectionIndicatorState, out pWentToState))
+		{
+			var entering = m_visualStates.HasState(SelectionIndicatorStates.SelectionIndicatorEnabled);
+			var enqueueAnimationCommand = !m_isInMultiSelect;
+
+			if (entering)
+			{
+				m_isInIndicatorSelect = true;
+				m_isInMultiSelect = false;
+			}
+			else if (m_visualStates.HasState(MultiSelectStates.MultiSelectDisabled))
+			{
+				m_isInIndicatorSelect = false;
+				m_isInMultiSelect = false;
+			}
+
+			if (enqueueAnimationCommand)
+			{
+				ListViewBaseItemAnimationCommand animationCommand;
+
+				animationCommand = new ListViewBaseItemAnimationCommand_IndicatorSelect(
+					entering,
+					listViewItemSelectionIndicatorContentOffset,
+					GetSelectionIndicatorMode(),
+					GetWeakRef<UIElement>(m_selectionIndicatorRectangle),
+					GetWeakRef(templateChild),
+					true /*isStarting*/,
+					!useTransitions);
+				EnqueueAnimationCommand(animationCommand);
+			}
+
+			needsMeasure = true;
+			needsArrange = true;
+			dirty = true;
+		}
+
+		var oldReorderHintState = m_visualStates.reorderHintState;
+
+		if (!pWentToState &&
+			UpdateVisualStateGroup(pStateName, ref m_visualStates.reorderHintState, out pWentToState))
+		{
+			ListViewBaseItemAnimationCommand animationCommand;
+
+			if (m_visualStates.HasState(ReorderHintStates.NoReorderHint))
+			{
+				var offset = ComputeReorderHintOffset(oldReorderHintState);
+				animationCommand = new ListViewBaseItemAnimationCommand_ReorderHint(
+					(float)offset.X,
+					(float)offset.Y,
+					GetWeakRef<ListViewBaseItemPresenter>(this),
+					false /*isStarting*/,
+					!useTransitions);
+				EnqueueAnimationCommand(animationCommand);
+			}
+			else
+			{
+				Point offset = default;
+
+				if (oldReorderHintState != ReorderHintStates.NoReorderHint)
+				{
+					// Gotta clear out the old hint first.
+					offset = ComputeReorderHintOffset(oldReorderHintState);
+					animationCommand = new ListViewBaseItemAnimationCommand_ReorderHint(
+						(float)offset.X,
+						(float)offset.Y,
+						GetWeakRef<ListViewBaseItemPresenter>(this),
+						false /*isStarting*/,
+						true /*steadyStateOnly*/);
+					EnqueueAnimationCommand(animationCommand);
+				}
+
+				offset = ComputeReorderHintOffset(m_visualStates.reorderHintState);
+				animationCommand = new ListViewBaseItemAnimationCommand_ReorderHint(
+					(float)offset.X,
+					(float)offset.Y,
+					GetWeakRef<ListViewBaseItemPresenter>(this),
+					true /*isStarting*/,
+					!useTransitions);
+				EnqueueAnimationCommand(animationCommand);
+			}
+			dirty = true;
+		}
+
+		var oldDragDropState = m_visualStates.dragState;
+
+		if (!pWentToState &&
+			UpdateVisualStateGroup(pStateName, ref m_visualStates.dragState, out pWentToState))
+		{
+			ListViewBaseItemAnimationCommand animationCommand;
+
+			var dragCountTextBlockVisible = false;
+			if (m_visualStates.HasState(DragStates.NotDragging))
+			{
+				animationCommand = new ListViewBaseItemAnimationCommand_DragDrop(
+					ListViewBaseItemAnimationCommand_DragDrop.DragDropState.Target,
+					GetWeakRef<ListViewBaseItemPresenter>(this),
+					GetWeakRef<FrameworkElement>(m_pSecondaryChrome),
+					false /*isStarting*/,
+					!useTransitions);
+				EnqueueAnimationCommand(animationCommand);
+			}
+			else
+			{
+				// Uno-specific: C++ leaves state uninitialized; every non-NotDragging state assigns it below.
+				ListViewBaseItemAnimationCommand_DragDrop.DragDropState state = default;
+				var pBaseAnimationTarget = GetWeakRef<ListViewBaseItemPresenter>(this);
+				WeakReference<FrameworkElement> pFadeOutAnimationTarget;
+
+				// We need to have the secondary chrome _now_, since we need it as a target!
+				AddSecondaryChrome();
+				pFadeOutAnimationTarget = GetWeakRef<FrameworkElement>(m_pSecondaryChrome);
+
+				if (m_visualStates.HasState(DragStates.Dragging))
+				{
+					state = ListViewBaseItemAnimationCommand_DragDrop.DragDropState.SinglePrimary;
+				}
+				else if (m_visualStates.HasState(DragStates.MultipleDraggingPrimary))
+				{
+					dragCountTextBlockVisible = true;
+					state = ListViewBaseItemAnimationCommand_DragDrop.DragDropState.MultiPrimary;
+				}
+				else if (m_visualStates.HasState(DragStates.MultipleDraggingSecondary))
+				{
+					state = ListViewBaseItemAnimationCommand_DragDrop.DragDropState.MultiSecondary;
+					pFadeOutAnimationTarget = GetWeakRef<FrameworkElement>(this);
+				}
+				else if (m_visualStates.HasState(DragStates.DraggingTarget))
+				{
+					state = ListViewBaseItemAnimationCommand_DragDrop.DragDropState.Target;
+				}
+				else if (m_visualStates.HasState(DragStates.DraggedPlaceholder))
+				{
+					state = ListViewBaseItemAnimationCommand_DragDrop.DragDropState.DraggedPlaceholder;
+					pFadeOutAnimationTarget = GetWeakRef<FrameworkElement>(this);
+
+					if (m_visualStates.HasState(MultiSelectStates.MultiSelectEnabled))
+					{
+						EnsureMultiSelectCheckBox();
+					}
+					else if (m_multiSelectCheckBoxRectangle is not null)
+					{
+						// Extended selection mode, we suppress item count border for the placeholder
+						RemoveMultiSelectCheckBox();
+					}
+				}
+				else if (m_visualStates.HasState(DragStates.Reordering))
+				{
+					state = ListViewBaseItemAnimationCommand_DragDrop.DragDropState.ReorderingSinglePrimary;
+				}
+				else if (m_visualStates.HasState(DragStates.MultipleReorderingPrimary))
+				{
+					dragCountTextBlockVisible = true;
+					state = ListViewBaseItemAnimationCommand_DragDrop.DragDropState.ReorderingMultiPrimary;
+				}
+				else if (m_visualStates.HasState(DragStates.ReorderingTarget))
+				{
+					state = ListViewBaseItemAnimationCommand_DragDrop.DragDropState.ReorderingTarget;
+				}
+				else if (m_visualStates.HasState(DragStates.ReorderedPlaceholder))
+				{
+					state = ListViewBaseItemAnimationCommand_DragDrop.DragDropState.ReorderedPlaceholder;
+					pFadeOutAnimationTarget = GetWeakRef<FrameworkElement>(this);
+
+					if (m_visualStates.HasState(MultiSelectStates.MultiSelectEnabled))
+					{
+						EnsureMultiSelectCheckBox();
+					}
+					else if (m_multiSelectCheckBoxRectangle is not null)
+					{
+						// Extended selection mode, we suppress item count border for the placeholder
+						RemoveMultiSelectCheckBox();
+					}
+				}
+				else if (m_visualStates.HasState(DragStates.DragOver))
+				{
+					state = ListViewBaseItemAnimationCommand_DragDrop.DragDropState.DragOver;
+				}
+
+				if (oldDragDropState != DragStates.NotDragging)
+				{
+					// Gotta clear out the old state first.
+					// WinUI quirk: the stop command carries the NEW state.
+					animationCommand = new ListViewBaseItemAnimationCommand_DragDrop(
+						state,
+						pBaseAnimationTarget,
+						pFadeOutAnimationTarget,
+						false /*isStarting*/,
+						true /*steadyStateOnly*/);
+					EnqueueAnimationCommand(animationCommand);
+				}
+
+				animationCommand = new ListViewBaseItemAnimationCommand_DragDrop(
+					state,
+					pBaseAnimationTarget,
+					pFadeOutAnimationTarget,
+					true /*isStarting*/,
+					!useTransitions);
+
+				EnqueueAnimationCommand(animationCommand);
+			}
+
+			SetDragOverlayTextBlockVisible(dragCountTextBlockVisible);
+			dirty = true;
+		}
+
+		if (!pWentToState &&
+			UpdateVisualStateGroup(pStateName, ref m_visualStates.dataVirtualizationState, out pWentToState))
+		{
+			dirty = true;
+		}
+
+		if (disabledChanged)
+		{
+			float opacityValue;
+
+			if (m_visualStates.HasState(DisabledStates.Disabled))
+			{
+				opacityValue = GetDisabledOpacity();
+			}
+			else
+			{
+				global::System.Diagnostics.Debug.Assert(m_visualStates.HasState(DisabledStates.Enabled));
+				opacityValue = 1.0f;
+			}
+
+			if (isRoundedListViewBaseItemChromeEnabled)
+			{
+				if (templateChild is not null)
+				{
+					templateChild.Opacity = opacityValue;
+				}
+			}
+			else
+			{
+				var parentListViewBaseItemNoRef = GetParentListViewBaseItemNoRef();
+				parentListViewBaseItemNoRef.Opacity = opacityValue;
+			}
+		}
+
+		if (needsMeasure)
+		{
+			InvalidateMeasure();
+		}
+
+		if (needsArrange)
+		{
+			InvalidateArrange();
+		}
+
+		if (dirty)
+		{
+			InvalidateRender();
+		}
+	}
+
+	// Uno-specific: xref::get_weakref, which also accepts a null target.
+	private static WeakReference<T> GetWeakRef<T>(T? target) where T : class => new(target!);
 
 	// Removes the multi-select checkbox from the tree.
 	internal void RemoveMultiSelectCheckBox()
