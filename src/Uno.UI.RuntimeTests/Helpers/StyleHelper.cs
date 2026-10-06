@@ -57,7 +57,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 			ForceReload();
 #if HAS_UNO
 			// TODO Uno: WinUI has no resource swapping
-			Microsoft.UI.Xaml.Controls.Primitives.ListViewBaseItemChrome.ClearIsRoundedListViewBaseItemChromeEnabledCache();
+			Microsoft.UI.Xaml.Controls.Primitives.ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
 #endif
 
 			IDisposable restore = null;
@@ -68,7 +68,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 				ForceReload();
 #if HAS_UNO
 				// TODO Uno: WinUI has no resource swapping
-				Microsoft.UI.Xaml.Controls.Primitives.ListViewBaseItemChrome.ClearIsRoundedListViewBaseItemChromeEnabledCache();
+				Microsoft.UI.Xaml.Controls.Primitives.ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
 #endif
 			});
 			_pendingUwpStylesRestores.Add(restore);
