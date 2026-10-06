@@ -65,8 +65,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		internal override TimeSpan GetCalculatedDuration()
 		{
+			// MUX: CAnimation::GetNaturalDuration — an explicit TimeSpan Duration wins, but a
+			// keyframe animation otherwise resolves its duration from its key frames *ahead of*
+			// Duration="Forever" (WinUI compat quirk), defaulting to 1s when there are none
+			// (NULL_DURATION_DEFAULT).
 			var duration = Duration;
-			if (duration != Duration.Automatic)
+			if (duration.Type == DurationType.TimeSpan)
 			{
 				return base.GetCalculatedDuration();
 			}
@@ -77,7 +81,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return lastKeyTime.TimeSpan;
 			}
 
-			return base.GetCalculatedDuration();
+			return TimeSpan.FromSeconds(1.0);
 		}
 
 		void ITimeline.Begin()
@@ -95,6 +99,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			State = TimelineState.Active;
 
+			PlayDeferred();
+		}
+
+		private void PlayImmediate()
+		{
 			// MUX Reference: CAnimation::GetAnimationBaseValue / ReadBaseValuesFromTargetOrHandoff
 			// Ensure keyframe theme resources are resolved with the target element's
 			// effective theme before playback begins. This is needed because keyframe
@@ -124,6 +133,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				);
 			}
 
+			CancelDeferredPlay();
+			StopTimeManagerDriven();
 			// We explicitly call the Stop of the _frameScheduler before the Reset dispose it,
 			// so the EndReason will be Stopped instead of Aborted.
 			_frameScheduler?.Stop();
@@ -136,6 +147,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			if (State != TimelineState.Paused)
 			{
+				return;
+			}
+
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Active;
 				return;
 			}
 
@@ -156,6 +173,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			if (State != TimelineState.Active)
 			{
+				return;
+			}
+
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Paused;
 				return;
 			}
 
@@ -185,10 +208,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.SkipToFill()
 		{
+			CancelDeferredPlay();
+			StopTimeManagerDriven();
 			// Set value to last keytime and set state to filling
 			_frameScheduler?.Dispose();
 			_frameScheduler = null;
 
+			// Read the final value directly from the last keyframe (not cached).
+			// This matches WinUI's tick-based value reading and supports the
+			// Begin(); SkipToFill(); pattern used by AppBar.UpdateTemplateSettings().
 			var fillFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).Last();
 
 			SetValue(fillFrame.Value);
@@ -197,6 +225,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.Deactivate()
 		{
+			CancelDeferredPlay();
+			StopTimeManagerDriven();
 			Reset();
 		}
 

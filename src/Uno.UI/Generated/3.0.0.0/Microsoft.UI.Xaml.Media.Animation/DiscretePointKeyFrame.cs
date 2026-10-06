@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class DiscretePointKeyFrame : global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame
 	{
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public DiscretePointKeyFrame() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame", "DiscretePointKeyFrame()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.DiscretePointKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.DiscretePointKeyFrame()
 	}
 }

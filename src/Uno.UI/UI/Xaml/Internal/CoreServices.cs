@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Windows.UI.ViewManagement;
@@ -59,8 +60,21 @@ namespace Uno.UI.Xaml.Core
 			return null;
 		}
 
+		// When true, OnTick is currently executing. RequestAdditionalFrame is suppressed
+		// because layout will run within the same OnTick. This prevents animated property
+		// changes (which invalidate layout) from re-enqueuing OnTick to the Normal queue,
+		// which would starve the Idle queue and block WaitForIdle/RunIdleAsync.
+		// In WinUI, SetAnimatedValue is within the frame pipeline and never touches the dispatcher.
+		private static bool _isInTick;
+
 		internal static void RequestAdditionalFrame()
 		{
+			if (_isInTick)
+			{
+				// We're already inside OnTick — layout will run shortly. No need to enqueue.
+				return;
+			}
+
 			if (GetXamlRoot() is { Bounds: { Width: not 0, Height: not 0 } } &&
 				Interlocked.CompareExchange(ref _isAdditionalFrameRequested, 1, 0) == 0)
 			{
@@ -72,26 +86,35 @@ namespace Uno.UI.Xaml.Core
 		private static void OnTick()
 		{
 			_isAdditionalFrameRequested = 0;
-
-#if __SKIA__
-			// Feeds the layout slice of the UNO_LOG_FRAME_PHASES itemization (see CompositionTarget.Rendering.skia.cs).
-			var phaseTicksT0 = Microsoft.UI.Xaml.Media.CompositionTarget.IsFramePhaseLoggingEnabled
-				? global::System.Diagnostics.Stopwatch.GetTimestamp()
-				: 0L;
+			_isInTick = true;
 			try
 			{
-				UpdateLayoutForAllRoots();
+				// MUX Reference: CCoreServices::Tick() (xcpcore.cpp line 4106)
+				// Tick all active animations BEFORE layout so animated property values
+				// are applied before Measure/Arrange. This matches WinUI's frame cycle:
+				// TimeManager.Tick() → Layout → Render.
+				TimeManager.Instance.Tick(newTimelinesOnly: false);
+
+				// Feeds the layout slice of the UNO_LOG_FRAME_PHASES itemization (see CompositionTarget.Rendering.skia.cs).
+				var phaseTicksT0 = Microsoft.UI.Xaml.Media.CompositionTarget.IsFramePhaseLoggingEnabled
+					? global::System.Diagnostics.Stopwatch.GetTimestamp()
+					: 0L;
+				try
+				{
+					UpdateLayoutForAllRoots();
+				}
+				finally
+				{
+					if (phaseTicksT0 != 0)
+					{
+						Microsoft.UI.Xaml.Media.CompositionTarget.PhaseAddLayout(global::System.Diagnostics.Stopwatch.GetTimestamp() - phaseTicksT0);
+					}
+				}
 			}
 			finally
 			{
-				if (phaseTicksT0 != 0)
-				{
-					Microsoft.UI.Xaml.Media.CompositionTarget.PhaseAddLayout(global::System.Diagnostics.Stopwatch.GetTimestamp() - phaseTicksT0);
-				}
+				_isInTick = false;
 			}
-#else
-			UpdateLayoutForAllRoots();
-#endif
 		}
 
 		private static void UpdateLayoutForAllRoots()
@@ -138,9 +161,16 @@ namespace Uno.UI.Xaml.Core
 					root.UpdateLayout();
 				}
 
-#if __SKIA__
 				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
-#endif
+			}
+
+			// MUX Reference: Second tick pass in CCoreServices::Tick()
+			// Tick only timelines added during layout (e.g., animations started by
+			// Loaded event handlers or layout-triggered VisualState transitions).
+			// These are at the head of the list, before the snapped previous-head marker.
+			if (TimeManager.Instance.HasActiveTimelines)
+			{
+				TimeManager.Instance.Tick(newTimelinesOnly: true);
 			}
 		}
 

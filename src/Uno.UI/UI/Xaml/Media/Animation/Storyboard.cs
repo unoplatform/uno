@@ -127,6 +127,36 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_replayCount = 1;
 			_activeDuration.Restart();
 
+			// MUX: CStoryboard::BeginPrivate — register with TimeManager and set timing flags.
+			// The TimeManager will call ComputeState() on the next tick (before layout).
+			// Only register if there are children — empty storyboards complete via dispatcher callback.
+			if (Children is { Count: > 0 } && Uno.UI.FeatureConfiguration.Timeline.UseTimeManager)
+			{
+				_isStopped = false;
+				_isBeginning = true;
+				_lastParentTime = double.MaxValue;
+				_isPausedForTimeManager = false;
+				_isResuming = false;
+				_isSeeking = false;
+				_completedEventFiredByTimeManager = false;
+				_computedClockState = InternalClockState.NotStarted;
+
+				if (!_isRegisteredWithTimeManager)
+				{
+					TimeManager.Instance.AddTimeline(this);
+				}
+
+				// Keep the VSync loop alive from Begin, not just from the first Active tick.
+				// A storyboard delayed by BeginTime stays NotStarted until its begin time, and
+				// ComputeState returns before the Active branch that would call EnsureTicking.
+				// Without this, an otherwise-idle app never ticks the storyboard into its active
+				// period (RequestAdditionalFrame is suppressed while OnTick is running).
+				TimeManager.Instance.EnsureTicking();
+
+				// Request an immediate tick so the first ComputeState happens before the next layout.
+				Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
+			}
+
 			Play();
 		}
 
@@ -178,6 +208,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				);
 			}
 
+			_isStopped = true;
+			_isPausedForTimeManager = false;
+			_isResuming = false;
+			_isBeginning = false;
+			_isSeeking = false;
+
+			if (_isRegisteredWithTimeManager)
+			{
+				TimeManager.Instance.RemoveTimeline(this);
+			}
+
 			State = TimelineState.Stopped;
 			_hasFillingChildren = false;
 
@@ -211,6 +252,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
+			// MUX: CStoryboard::Resume — set resuming flag for next ComputeState tick.
+			_isPausedForTimeManager = false;
+			_isResuming = true;
+			// Re-arm the VSync loop that Pause allowed to stop.
+			TimeManager.Instance.EnsureTicking();
+			Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
+
 			if (Children != null && Children.Count > 0)
 			{
 				State = TimelineState.Active;
@@ -241,6 +289,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
+			// MUX: CStoryboard::Pause — set paused flag for ComputeState.
+			// m_lastParentTime is already snapped and will serve as the pause start time.
+			_isPausedForTimeManager = true;
+
 			State = TimelineState.Paused;
 
 			if (Children != null)
@@ -256,6 +308,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		public void Seek(TimeSpan offset)
 		{
+			if (_isRegisteredWithTimeManager)
+			{
+				// MUX: CStoryboard::SeekInternal — queue asynchronous seek (takes effect on next tick).
+				_pendingSeekTime = offset.TotalSeconds;
+				_isSeeking = true;
+				Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
+				return;
+			}
 			if (Children != null)
 			{
 				for (int i = 0; i < Children.Count; i++)
@@ -269,6 +329,35 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		public void SeekAlignedToLastTick(TimeSpan offset)
 		{
+			if (_isRegisteredWithTimeManager)
+			{
+				// MUX: CStoryboard::SeekAlignedToLastTick (storyboard.cpp lines 625-697)
+				// Synchronously applies animation values at the seeked time.
+				// Uses m_lastParentTime (snapped) instead of current global time.
+
+				// Set the pending seek.
+				_pendingSeekTime = offset.TotalSeconds;
+				_isSeeking = true;
+
+				// Synchronously compute state at the last known parent time.
+				// This immediately updates animation values so they're readable
+				// right after this call returns (required by VSM SkipToFill pattern).
+				var syncParams = new ComputeStateParams()
+				{
+					HasTime = true,
+					Time = _lastParentTime != double.MaxValue ? _lastParentTime : 0.0,
+					IsPaused = _isPausedForTimeManager,
+				};
+				ComputeState(syncParams);
+
+				// Queue another seek for the next real tick to correct the time delta
+				// with the actual global clock.
+				// MUX: storyboard.cpp line 691
+				_pendingSeekTime = offset.TotalSeconds;
+				_isSeeking = true;
+
+				return;
+			}
 			if (Children != null)
 			{
 				for (int i = 0; i < Children.Count; i++)
@@ -281,6 +370,28 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 		public void SkipToFill()
 		{
+			if (_isRegisteredWithTimeManager)
+			{
+				// MUX: CStoryboard::SkipToFill -> CompleteInternal(stopInfiniteTimelines:false,
+				// isSynchronous:true). Seeks past the true expiration (accounting for the
+				// storyboard's own RepeatBehavior/AutoReverse/BeginTime) so the fill values are
+				// applied synchronously; no-ops for storyboards with an infinite expiration.
+				var naturalDuration = GetNaturalDurationFromChildren();
+				if (naturalDuration == TimeSpan.MaxValue)
+				{
+					return;
+				}
+
+				var effectiveSeconds = ComputeStoryboardEffectiveDuration(naturalDuration.TotalSeconds);
+				if (double.IsInfinity(effectiveSeconds) || effectiveSeconds >= double.MaxValue)
+				{
+					return;
+				}
+
+				var beginTimeSeconds = BeginTime?.TotalSeconds ?? 0.0;
+				SeekAlignedToLastTick(TimeSpan.FromSeconds(beginTimeSeconds + effectiveSeconds + 1.0));
+				return;
+			}
 			if (Children != null)
 			{
 				for (int i = 0; i < Children.Count; i++)
@@ -294,6 +405,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		internal void Deactivate()
 		{
+			_isStopped = true;
+			_isPausedForTimeManager = false;
+			_isResuming = false;
+			_isBeginning = false;
+			_isSeeking = false;
+
+			if (_isRegisteredWithTimeManager)
+			{
+				TimeManager.Instance.RemoveTimeline(this);
+			}
+
 			State = TimelineState.Stopped;
 			_hasFillingChildren = false;
 
@@ -331,6 +453,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				}
 			}
 
+			// Remove from TimeManager — this storyboard is being replaced by another.
+			_isStopped = true;
+			if (_isRegisteredWithTimeManager)
+			{
+				TimeManager.Instance.RemoveTimeline(this);
+			}
+
 			State = TimelineState.Stopped;
 		}
 
@@ -351,7 +480,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		public TimeSpan GetCurrentTime()
 		{
-			throw new NotImplementedException();
+			if (_isRegisteredWithTimeManager)
+			{
+				return TimeSpan.FromSeconds(_computedCurrentTime);
+			}
+			// MUX: GetCurrentTime returns 0 for a storyboard that is not running
+			// (before Begin or after Stop) rather than throwing.
+			return TimeSpan.Zero;
 		}
 
 		void ITimelineListener.ChildFailed(Timeline child)
@@ -383,6 +518,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					State = _hasFillingChildren ? TimelineState.Filling : TimelineState.Stopped;
 				}
 
+				// Prevent the TimeManager path from firing Completed again for the same run.
+				_completedEventFiredByTimeManager = true;
 				OnCompleted();
 			}
 		}

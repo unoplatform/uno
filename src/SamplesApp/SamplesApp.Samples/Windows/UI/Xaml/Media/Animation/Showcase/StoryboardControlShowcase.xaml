@@ -1,0 +1,111 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Media_Animation.Showcase.StoryboardControlShowcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="ShowcaseSectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,16,0,4" />
+        </Style>
+        <Style x:Key="ShowcaseDescription" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Opacity" Value="0.75" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+
+        <Storyboard x:Name="ControllableStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetName="ControllableTransform"
+                Storyboard.TargetProperty="X"
+                From="0"
+                To="500"
+                Duration="0:0:6" />
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ControllableBox" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <LinearDoubleKeyFrame KeyTime="0:0:0" Value="0.4" />
+                <LinearDoubleKeyFrame KeyTime="0:0:3" Value="1.0" />
+                <LinearDoubleKeyFrame KeyTime="0:0:6" Value="0.4" />
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="12">
+            <TextBlock
+                FontSize="28"
+                FontWeight="Bold"
+                Text="Storyboard Control Showcase" />
+            <TextBlock
+                MaxWidth="700"
+                HorizontalAlignment="Left"
+                Style="{StaticResource ShowcaseDescription}"
+                Text="Drives a single 6-second Storyboard via Begin / Pause / Resume / Stop / Seek / SkipToFill, and reads progress with GetCurrentTime. Two parallel animations run on the same Storyboard: TranslateTransform.X and Opacity." />
+
+            <Grid Height="120">
+                <Border
+                    x:Name="ControllableBox"
+                    Width="60"
+                    Height="60"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="{ThemeResource SystemAccentColor}"
+                    CornerRadius="6"
+                    Opacity="0.4">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="ControllableTransform" />
+                    </Border.RenderTransform>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="Move" />
+                </Border>
+            </Grid>
+
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="Lifecycle controls" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="DoBegin" Content="Begin" />
+                <Button Click="DoPause" Content="Pause" />
+                <Button Click="DoResume" Content="Resume" />
+                <Button Click="DoStop" Content="Stop" />
+                <Button Click="DoSkipToFill" Content="SkipToFill" />
+            </StackPanel>
+
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="Seek (TimeSpan)" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="SeekTo0" Content="Seek 0s" />
+                <Button Click="SeekTo1" Content="Seek 1s" />
+                <Button Click="SeekTo3" Content="Seek 3s" />
+                <Button Click="SeekTo5" Content="Seek 5s" />
+                <Button Click="SeekToEnd" Content="Seek 6s (end)" />
+            </StackPanel>
+
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="GetCurrentTime" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Live progress sampled every 100ms while the storyboard is active." />
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <TextBlock VerticalAlignment="Center" Text="Current time:" />
+                <TextBlock
+                    x:Name="CurrentTimeText"
+                    VerticalAlignment="Center"
+                    FontFamily="Consolas"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="00:00.000" />
+            </StackPanel>
+
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="Status" />
+            <TextBlock
+                x:Name="StatusText"
+                FontFamily="Consolas"
+                FontSize="13"
+                Text="Ready." />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
