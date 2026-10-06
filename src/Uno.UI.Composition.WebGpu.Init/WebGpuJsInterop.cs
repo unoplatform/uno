@@ -53,10 +53,10 @@ public static partial class WebGpuJsInterop
 
 	/// <summary>Counts a presented frame as in flight until the queue (by its wgpu handle ptr) has finished all work
 	/// submitted so far.</summary>
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.trackPresentedFrame")]
+	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.trackPresentedFrame")]
 	internal static partial void TrackPresentedFrame(int queuePtr);
 
 	/// <summary>Presented frames the GPU has not finished yet.</summary>
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.presentedFramesInFlight")]
+	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.presentedFramesInFlight")]
 	internal static partial int PresentedFramesInFlight();
 }
