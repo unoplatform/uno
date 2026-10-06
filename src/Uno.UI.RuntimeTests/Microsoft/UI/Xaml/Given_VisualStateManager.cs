@@ -102,7 +102,7 @@ public partial class Given_VisualStateManager
 		var items = Enumerable.Range(0, 3).ToArray();
 		var setup = new GridView
 		{
-			ItemContainerStyle = (Style)Application.Current.Resources["GridViewItemExpanded"],
+			ItemContainerStyle = VisualStateGridViewItemStyle,
 			ItemsSource = items,
 			SelectedItem = items.Last(),
 		};
@@ -117,18 +117,50 @@ public partial class Given_VisualStateManager
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-	public Task SelectorItem_MultiSelectState_GV() => SelectorItem_MultiSelectState_Impl<GridView>("GridViewItemExpanded");
+	public Task SelectorItem_MultiSelectState_GV() => SelectorItem_MultiSelectState_Impl<GridView>(VisualStateGridViewItemStyle);
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-	public Task SelectorItem_MultiSelectState_LV() => SelectorItem_MultiSelectState_Impl<ListView>("ListViewItemExpanded");
+	public Task SelectorItem_MultiSelectState_LV() => SelectorItem_MultiSelectState_Impl<ListView>((Style)Application.Current.Resources["ListViewItemExpanded"]);
 
-	public async Task SelectorItem_MultiSelectState_Impl<T>(string itemStyleKey) where T : ListViewBase, new()
+	// The default GridViewItem style roots on ListViewItemPresenter, which has no template visual states to inspect.
+	private static Style VisualStateGridViewItemStyle => (Style)XamlReader.Load(
+		"""
+		<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			TargetType="GridViewItem">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="GridViewItem">
+						<Grid>
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="CommonStates">
+									<VisualState x:Name="Normal" />
+									<VisualState x:Name="PointerOver" />
+									<VisualState x:Name="Pressed" />
+									<VisualState x:Name="Selected" />
+									<VisualState x:Name="PointerOverSelected" />
+									<VisualState x:Name="PressedSelected" />
+								</VisualStateGroup>
+								<VisualStateGroup x:Name="MultiSelectStates">
+									<VisualState x:Name="MultiSelectDisabled" />
+									<VisualState x:Name="MultiSelectEnabled" />
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+							<ContentPresenter />
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		""");
+
+	public async Task SelectorItem_MultiSelectState_Impl<T>(Style itemStyle) where T : ListViewBase, new()
 	{
 		var items = Enumerable.Range(0, 3).ToArray();
 		var setup = new T
 		{
-			ItemContainerStyle = (Style)Application.Current.Resources[itemStyleKey],
+			ItemContainerStyle = itemStyle,
 			ItemsSource = items,
 			SelectionMode = ListViewSelectionMode.Multiple,
 		};
