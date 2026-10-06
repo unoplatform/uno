@@ -598,6 +598,20 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	#endregion
 
+	// MUX Reference ContentPresenter.cpp (CContentPresenter::ApplyTemplate), tag winui3/release/2.5.1
+	// The implicit Content/ContentTemplate bindings are set up from the measure pass, so the first layout already
+	// presents the templated parent's content. Uno-specific: they live in OnApplyTemplate, also run on Loaded.
+	private protected override void ApplyTemplate(out bool addedVisuals)
+	{
+		base.ApplyTemplate(out addedVisuals);
+
+		if (!_appliedTemplate)
+		{
+			_appliedTemplate = true;
+			OnApplyTemplate();
+		}
+	}
+
 	protected override void OnApplyTemplate()
 	{
 		base.OnApplyTemplate();
