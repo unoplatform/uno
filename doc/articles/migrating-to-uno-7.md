@@ -391,16 +391,27 @@ own target framework, the library's calls included.
   use `UIElement.Visual` (Composition) and reach platform APIs via the
   `Uno.UI.Runtime.Skia.*` hosts and `Uno.Foundation`.
 - **Native element hosting:** `Uno.UI.Runtime.WebAssembly.HtmlElementAttribute`,
-  `Uno.Extensions.HtmlCustomEventArgs`, and `ContentPresenter` hosting of a native
-  `View`/`UIView`/DOM element as `Content`. The DOM-interop surface that went with the
-  WebAssembly DOM renderer — `UIElement.HtmlId`, `RegisterHtmlEventHandler`, `SetHtmlAttribute`
-  and friends — is gone with it.
+  `Uno.Extensions.HtmlCustomEventArgs`, and `VisualTreeHelper.AdaptNative` /
+  `TryAdaptNative`. The DOM-interop surface that went with the WebAssembly DOM renderer —
+  `UIElement.HtmlId`, `RegisterHtmlEventHandler`, `SetHtmlAttribute` and friends — is gone
+  with it.
 
-  **To host HTML on WebAssembly, use `Uno.UI.NativeElementHosting.BrowserHtmlElement`**, which
-  is kept and is the supported replacement: it creates a DOM element you place in the visual
-  tree through `ContentPresenter`. Use `WebView2` for full documents, or redesign with Uno
-  controls. On iOS, opt-in native embedding remains via `UIKitNativeElementHostingExtension`
-  (overlay-composited, reduced performance).
+  Native views are still supported: set the native element as the `Content` of a
+  `ContentControl` (or `ContentPresenter`) and the Skia host overlays it on the rendered UI,
+  following its layout, clipping, z-order and opacity. No wrapper is needed, so drop the
+  `AdaptNative` call:
+
+  ```diff
+  - Content = VisualTreeHelper.AdaptNative(nativeView);
+  + Content = nativeView;
+  ```
+
+  The native element is an `Android.Views.View` on Android, a `UIKit.UIView` on iOS/tvOS, and
+  a `Uno.UI.NativeElementHosting.BrowserHtmlElement` on WebAssembly — the supported replacement
+  for the removed HTML interop. On desktop it is a `Win32NativeWindow` or `X11NativeWindow`. A
+  native view cannot be a `Panel` child, only content. See
+  [Embedding Native Elements in Skia Apps](xref:Uno.Skia.Embedding.Native). Use `WebView2`
+  for full HTML documents.
 - **Native control / host types:** `NativeListViewBase`, `NativePagedView`,
   `NativeScrollContentPresenter`, `NativeFramePresenter`, `NativePopup`,
   `RootViewController`, `Window : UIWindow` identity, `NativeRenderTransformAdapter`,
