@@ -14,36 +14,17 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Spacing="8">
-            <ComboBox
-                x:Name="SelectionModeBox"
-                Header="SelectionMode"
-                SelectionChanged="OnModeChanged" />
-            <ComboBox
-                x:Name="CheckModeBox"
-                Header="CheckMode"
-                SelectionChanged="OnPresenterChanged" />
-            <ComboBox
-                x:Name="IndicatorModeBox"
-                Header="SelectionIndicatorMode"
-                SelectionChanged="OnPresenterChanged" />
+            <ComboBox x:Name="SelectionModeBox" Header="SelectionMode" />
+            <ComboBox x:Name="CheckModeBox" Header="CheckMode" />
+            <ComboBox x:Name="IndicatorModeBox" Header="SelectionIndicatorMode" />
             <CheckBox
                 x:Name="RoundedBox"
-                Checked="OnRoundedChanged"
                 Content="Rounded chrome"
-                IsChecked="True"
-                Unchecked="OnRoundedChanged" />
-            <CheckBox
-                x:Name="DisabledBox"
-                Checked="OnPresenterChanged"
-                Content="Disable every 3rd item"
-                Unchecked="OnPresenterChanged" />
-            <CheckBox
-                x:Name="BrushesBox"
-                Checked="OnPresenterChanged"
-                Content="Custom brushes"
-                Unchecked="OnPresenterChanged" />
+                IsChecked="True" />
+            <CheckBox x:Name="DisabledBox" Content="Disable every 3rd item" />
+            <CheckBox x:Name="BrushesBox" Content="Custom brushes" />
         </StackPanel>
 
-        <ListView x:Name="Items" Grid.Column="1" />
+        <Border x:Name="ListHost" Grid.Column="1" />
     </Grid>
 </Page>
