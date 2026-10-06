@@ -1,9 +1,10 @@
 #nullable enable
 
 using System;
-using System.Numerics;
+using System.Linq;
 using System.Reflection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests;
@@ -13,9 +14,8 @@ public partial class Given_DependencyPropertyDetailsCollection
 {
 	private const int PaddedPropertyCount = 256;
 
-	// DependencyProperty.UniqueId comes from a process-wide counter, so the bucket index of any given
-	// property depends on what the rest of the run registered first. Pad it well past the array pool's
-	// 16-element minimum bucket, otherwise the sizing assertion below holds no matter what is rented.
+	// DependencyProperty.UniqueId comes from a process-wide counter, so pad well past it to get a property
+	// whose id is large regardless of what the rest of the run registered first.
 	private static readonly DependencyProperty _highIdProperty = RegisterPaddedProperties();
 
 	private static DependencyProperty RegisterPaddedProperties()
@@ -31,34 +31,97 @@ public partial class Given_DependencyPropertyDetailsCollection
 	}
 
 	[TestMethod]
-	public void When_Property_Has_High_UniqueId_Then_Offsets_Are_Not_Over_Rented()
+	public void When_Property_Has_High_UniqueId_Then_Storage_Stays_Small()
 	{
 		PaddedObject SUT = new();
 		SUT.SetValue(_highIdProperty, 42);
 
-		var offsets = GetEntryOffsets(SUT);
+		// Storage must scale with the number of properties set, not with the property's global id.
+		var entries = GetEntries(SUT);
 
-		// The offsets array is indexed by the bucket index alone, so it only ever needs bucketIndex + 1 slots.
-		var bucketIndex = _highIdProperty.UniqueId >> 4;
-		var needed = bucketIndex + 1;
-
-		// ArrayPool rounds a request up to a power-of-two bucket (16 minimum) and may satisfy it from one
-		// bucket above that, hence the doubling.
-		var tolerated = Math.Max(16, (int)BitOperations.RoundUpToPowerOf2((uint)needed)) * 2;
-
-		Assert.IsTrue(
-			offsets.Length <= tolerated,
-			$"Offsets array is over-rented: {offsets.Length} slots for bucket index {bucketIndex} "
-			+ $"(needs {needed}, tolerated {tolerated}) = {offsets.Length * sizeof(short)} bytes per DependencyObject.");
+		Assert.IsTrue(entries.Length <= 4, $"{entries.Length} slots allocated to hold a single property.");
 	}
 
 	[TestMethod]
-	public void When_Offsets_Grow_Then_Every_Covered_Bucket_Stays_Addressable()
+	public void When_Border_Is_Created_Then_Storage_Fits_Its_Properties()
+	{
+		// A fresh Border sets two properties (hit-test visibility and DataContext) in its ctor.
+		Border SUT = new();
+		var entries = GetEntries(SUT);
+
+		Assert.AreEqual(2, entries.Count(e => e is not null));
+		Assert.IsTrue(entries.Length <= 4, $"{entries.Length} slots allocated to hold 2 properties.");
+	}
+
+	[TestMethod]
+	public void When_Borders_Are_Created_Then_Allocation_Stays_Bounded()
+	{
+		const int Count = 1000;
+
+		for (var i = 0; i < 100; i++)
+		{
+			_ = new Border();
+		}
+
+		var before = GC.GetAllocatedBytesForCurrentThread();
+
+		for (var i = 0; i < Count; i++)
+		{
+			_ = new Border();
+		}
+
+		var perBorder = (GC.GetAllocatedBytesForCurrentThread() - before) / Count;
+
+		// Generous ceiling, the point is catching property storage that is reallocated oversized on every element.
+		Assert.IsTrue(perBorder < 3200, $"new Border() allocates {perBorder} bytes.");
+	}
+
+	[TestMethod]
+	public void When_Unset_Property_Shares_A_Slot_Then_Default_Is_Returned()
 	{
 		PaddedObject SUT = new();
 
-		// Grow from the highest bucket downwards, so the array is sized once from the top and then written
-		// at every lower index it claims to cover.
+		// Every 16th property lands on the same slot of any table of up to 16 slots.
+		for (var i = 0; i < PaddedPropertyCount; i += 32)
+		{
+			SUT.SetValue(GetPaddedProperty(i), i + 1);
+		}
+
+		for (var i = 16; i < PaddedPropertyCount; i += 32)
+		{
+			Assert.AreEqual(0, SUT.GetValue(GetPaddedProperty(i)));
+		}
+
+		for (var i = 0; i < PaddedPropertyCount; i += 32)
+		{
+			Assert.AreEqual(i + 1, SUT.GetValue(GetPaddedProperty(i)));
+		}
+	}
+
+	[TestMethod]
+	public void When_Every_Property_Is_Set_Then_All_Stay_Addressable()
+	{
+		PaddedObject SUT = new();
+
+		for (var i = 0; i < PaddedPropertyCount; i++)
+		{
+			SUT.SetValue(GetPaddedProperty(i), i + 1);
+		}
+
+		for (var i = 0; i < PaddedPropertyCount; i++)
+		{
+			Assert.AreEqual(i + 1, SUT.GetValue(GetPaddedProperty(i)));
+		}
+
+		Assert.AreEqual(PaddedPropertyCount, GetEntries(SUT).Count(e => e is not null));
+	}
+
+	[TestMethod]
+	public void When_Storage_Grows_Downwards_Then_Every_Property_Stays_Addressable()
+	{
+		PaddedObject SUT = new();
+
+		// Ids 16 apart, so they collide in small tables and are rehashed on every growth.
 		for (var i = PaddedPropertyCount - 1; i >= 0; i -= 16)
 		{
 			SUT.SetValue(GetPaddedProperty(i), i);
@@ -71,11 +134,11 @@ public partial class Given_DependencyPropertyDetailsCollection
 	}
 
 	[TestMethod]
-	public void When_Offsets_Grow_Upwards_Then_Earlier_Buckets_Survive()
+	public void When_Storage_Grows_Upwards_Then_Earlier_Properties_Survive()
 	{
 		PaddedObject SUT = new();
 
-		// The opposite order: each step resizes and copies the previous offsets forward.
+		// The opposite order, so earlier properties are carried over by each growth.
 		for (var i = 0; i < PaddedPropertyCount; i += 16)
 		{
 			SUT.SetValue(GetPaddedProperty(i), i);
@@ -95,14 +158,14 @@ public partial class Given_DependencyPropertyDetailsCollection
 		return DependencyProperty.GetProperty(typeof(PaddedObject), $"Pad{index}")!;
 	}
 
-	private static short[] GetEntryOffsets(DependencyObject o)
+	private static object?[] GetEntries(DependencyObject o)
 	{
 		var properties = typeof(DependencyObject)
 			.GetField("_properties", BindingFlags.Instance | BindingFlags.NonPublic)!
 			.GetValue(o)!;
 
-		return (short[])properties.GetType()
-			.GetField("_entryOffsets", BindingFlags.Instance | BindingFlags.NonPublic)!
+		return (object?[])properties.GetType()
+			.GetField("_entries", BindingFlags.Instance | BindingFlags.NonPublic)!
 			.GetValue(properties)!;
 	}
 }
