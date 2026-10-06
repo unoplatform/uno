@@ -42,7 +42,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// If there is a drag and drop in progress, this is the number of
 		// items being dragged. Outside of a drag, the value is undefined.
-#pragma warning disable CS0649 // Field is never assigned to
 		int m_dragItemsCount;
 
 		// A reference to the item the user is physically dragging (as
@@ -53,8 +52,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 
 		// The item that should be in a DragOver state
-		SelectorItem m_tpDragOverItem;
-#pragma warning restore CS0649 // Field is never assigned to
+		ListViewBaseItem? m_tpDragOverItem;
+
+		// The current item being interacted with through pointer events. We need to know this so we
+		// can forward ManipulationStarted notifications to the item, so it can update its state.
+		ListViewBaseItem? m_tpHoldingItem;
+
+		// TRUE if any item in the ListView is in press and hold state
+		bool m_isHolding;
 
 
 		// Edge scrolling begins after a delay. This is the velocity we will take after
@@ -71,17 +76,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 
 		// Gets the value of m_isHolding
-		internal bool GetIsHolding()
-		{
-			//return m_isHolding;
-			// Uno TODO
-			return false;
-		}
+		internal bool GetIsHolding() => m_isHolding;
 
-		//	// Sets the value of m_isHolding
-		//	void SetIsHolding( bool isHolding)
-		//	{
-		//		m_isHolding = isHolding;
-		//	}
+		// Sets the value of m_isHolding
+		internal void SetIsHolding(bool isHolding) => m_isHolding = isHolding;
 	}
 }

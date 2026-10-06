@@ -39,11 +39,7 @@ public partial class ListViewBase
 			typeof(ListViewBase),
 			new FrameworkPropertyMetadata(BoolBoxes.True, (o, args) => ((ListViewBase)o).OnIsMultiSelectCheckBoxEnabledPropertyChanged(args)));
 
-	private void OnIsMultiSelectCheckBoxEnabledPropertyChanged(DependencyPropertyChangedEventArgs args)
-	{
-		foreach (var item in GetItemsPanelChildren().OfType<SelectorItem>())
-		{
-			item.UpdateMultiSelectStates(useTransitions: item.IsLoaded);
-		}
-	}
+	// ListViewBase_Partial.cpp, lines 213-219
+	private void OnIsMultiSelectCheckBoxEnabledPropertyChanged(DependencyPropertyChangedEventArgs args) =>
+		UpdateItemsMultiSelectVisualState();
 }

@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI;
 using Uno.UI.Xaml;
+using Windows.Foundation;
 using Windows.System;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -28,7 +29,16 @@ partial class ListViewBaseItem
 
 	// MUX Reference ListViewBaseItem_Partial.cpp, lines 146-171 (Initialize): WinUI subscribes to Loaded; Uno overrides OnLoaded.
 
-	// TODO Uno: OnTouchDragStarted / StartDragIfEnabled (LBI:173-234) - AutomaticDragHelper and DragDropVisual not ported.
+	// MUX Reference ListViewBaseItem_Partial.cpp, lines 173-180
+	// Uno-specific: called by ListViewBase.OnItemContainerDragStarting when Uno's touch drag starts the item drag.
+	internal void OnTouchDragStarted()
+	{
+		// On a touch drag, we don't get Holding Completed event. So, clearing the m_isHolding flag & destroying holding visual here.
+		m_isHolding = false;
+		DestroyHoldingVisual();
+
+		// TODO Uno: the rest of OnTouchDragStarted / StartDragIfEnabled (LBI:182-234) - AutomaticDragHelper and DragDropVisual not ported.
+	}
 
 	// Called when the element leaves the tree.
 	internal override void LeaveImpl(LeaveParams @params)
@@ -212,7 +222,72 @@ partial class ListViewBaseItem
 		}
 	}
 
-	// TODO Uno: OnHolding (LBI:628-708) - holding visual and ListViewBase holding state not ported yet.
+	// Called when the user holds a pointer down over the
+	// ListViewBaseItem (Holding gesture).
+	protected override void OnHolding(HoldingRoutedEventArgs pArgs)
+	{
+		bool wasHolding = m_isHolding;
+
+		try
+		{
+			m_isHolding = false;
+
+			base.OnHolding(pArgs);
+
+			var pointerDeviceType = pArgs.PointerDeviceType;
+
+			if (pointerDeviceType == PointerDeviceType.Touch)
+			{
+				var holdingState = pArgs.HoldingState;
+				m_isHolding = (holdingState == HoldingState.Started);
+
+				// TODO Uno: AutomaticDragHelper.HandleHoldingEventArgs - no AutomaticDragHelper.
+
+				// Holding gesture will show drag visual
+				{
+					var spListView = GetParentListView();
+
+					if (spListView is not null)
+					{
+						var canDragItems = spListView.CanDragItems;
+						var canReorderItems = spListView.CanReorderItems;
+
+						if (canDragItems || canReorderItems)
+						{
+							if (m_isHolding)
+							{
+								spListView.SetIsHolding(true);
+								spListView.SetHoldingItem(this);
+
+								// Show the drag visual LTE for item on which press and hold detected.
+								// We don't need the LTE to escape clip for reordering, since scaling up is only needed for dragging.
+								if (!canReorderItems)
+								{
+									CreateHoldingVisual();
+									TransformHoldingVisual(pArgs);
+								}
+							}
+							else
+							{
+								spListView.SetIsHolding(false);
+								spListView.ClearHoldingItem(this);
+								DestroyHoldingVisual();
+							}
+
+							spListView.ChangeSelectorItemsVisualState(true);
+						}
+					}
+				}
+			}
+		}
+		finally
+		{
+			if (wasHolding != m_isHolding)
+			{
+				ChangeVisualState(true);
+			}
+		}
+	}
 
 	// Called when the user releases a pointer over the ListViewBaseItem.
 	protected override void OnPointerReleased(PointerRoutedEventArgs pArgs)
@@ -221,7 +296,7 @@ partial class ListViewBaseItem
 
 		// Clearing the holding visual on pointer released.
 		m_isHolding = false;
-		// TODO Uno: DestroyHoldingVisual - holding LTE not ported.
+		DestroyHoldingVisual();
 
 		base.OnPointerReleased(pArgs);
 
@@ -569,8 +644,32 @@ partial class ListViewBaseItem
 		ChangeVisualState(true);
 	}
 
-	// TODO Uno: EnsureDragDropVisual / CreateHoldingVisual / ClearHoldingState / DestroyHoldingVisual /
-	// TransformHoldingVisual (LBI:1358-1479) - DragDropVisual and holding LTE not ported.
+	// TODO Uno: EnsureDragDropVisual (LBI:1358-1379) - DragDropVisual not ported.
+
+	// Create a holding visual LTE that will make the ListViewItem bigger
+	private void CreateHoldingVisual()
+	{
+		// TODO Uno: holding LTE (LayoutTransitionElement_Create over GetDragVisual) not ported.
+	}
+
+	internal void ClearHoldingState()
+	{
+		DestroyHoldingVisual();
+		m_isHolding = false;
+		ChangeVisualState(true);
+	}
+
+	// Destroy the holding visual LTE
+	private void DestroyHoldingVisual()
+	{
+		// TODO Uno: holding LTE (LayoutTransitionElement_Destroy) not ported.
+	}
+
+	// Holding visual will be transformed to size of 1.05, opacity 0.8, and positioned at the same place as the original ListViewItem
+	private void TransformHoldingVisual(HoldingRoutedEventArgs pArgs)
+	{
+		// TODO Uno: holding LTE transform (scale s_holdingVisualScale, opacity s_holdingVisualOpacity) not ported.
+	}
 
 	// Sets the value to display as the dragged items count.
 	internal virtual void SetDragItemsCountDisplay(
@@ -986,5 +1085,120 @@ partial class ListViewBaseItem
 		ChangeVisualState(true);
 	}
 
-	// TODO Uno: IsDragOver / OnDragOver / OnDragLeave / LeaveDragOver / SetIsDragOver (LBI:2615-2745) - wired with ListViewBase drag-over state later.
+	// Returns TRUE if the item should play the DragOver visual state
+	// this is true if AllowDrop is true
+	// and if the dragPoint is in the center area of the item
+	// 20/60/20 for LVI
+	// 30/40/30 for GVI
+	private bool IsDragOver(
+		Point dragPoint,
+		Orientation panelOrientation)
+	{
+		// Represents the outside margin percentage
+		// In case of ListViewItem, margins are 20/60/20
+		// In case of GridViewItem, margins are 30/40/30
+		double startMargin = this is GridViewItem ? GRIDVIEWITEM_DRAGOVER_OUTSIDE_MARGIN : LISTVIEWITEM_DRAGOVER_OUTSIDE_MARGIN;
+		// Represents the outside margin percentage added to the inside percentage
+		// In case of ListViewItem, this will be 0.2 + 0.6 = 0.8 or (1 - 0.2)
+		// In case of GridViewItem, this will be 0.3 + 0.4 = 0.7 or (1 - 0.3)
+		double endMargin = 1.0 - startMargin;
+		double size = 0;
+		double location = 0;
+
+		var pResult = false;
+
+		// depending on the orientation of the panel, we look at either the height or width
+		if (panelOrientation == Orientation.Vertical)
+		{
+			location = dragPoint.Y;
+			size = ActualHeight;
+		}
+		else
+		{
+			location = dragPoint.X;
+			size = ActualWidth;
+		}
+
+		if (location > startMargin * size && location < endMargin * size)
+		{
+			pResult = true;
+		}
+
+		return pResult;
+	}
+
+	// Called when the user drags over this ListViewBaseItem
+	protected override void OnDragOver(DragEventArgs args)
+	{
+		var spListView = GetParentListView();
+
+		if (spListView is not null)
+		{
+			bool isDragOver = false;
+			Point dragPointRelativeToLVBI = default;
+			Orientation panelOrientation = Orientation.Vertical;
+
+			dragPointRelativeToLVBI = args.GetPosition(this);
+			panelOrientation = spListView.GetPanelOrientation();
+
+			isDragOver = IsDragOver(dragPointRelativeToLVBI, panelOrientation);
+
+			if (isDragOver)
+			{
+				spListView.SetDragOverItem(this);
+				args.Handled = true;
+			}
+			else
+			{
+				spListView.SetDragOverItem(null);
+			}
+
+			SetIsDragOver(isDragOver);
+		}
+	}
+
+	// Called when the user drags out of this ListViewBaseItem
+	protected override void OnDragLeave(DragEventArgs args) => LeaveDragOver(GetParentListView(), null);
+
+	// Declares this item as no longer being dragged over and instead uses the
+	// pointer-over visual state if the args' pointer is within its boundaries.
+	internal void LeaveDragOver(
+		ListViewBase? listViewBase,
+		DragEventArgs? args)
+	{
+		if (listViewBase is not null)
+		{
+			listViewBase.SetDragOverItem(null);
+		}
+
+		SetIsDragOver(false /*isDragOver*/);
+
+		if (args is not null)
+		{
+			var dragPointRelativeToLVBI = args.GetPosition(this);
+			var width = ActualWidth;
+			var height = ActualHeight;
+
+			if (dragPointRelativeToLVBI.X >= 0.0 && dragPointRelativeToLVBI.X <= width &&
+				dragPointRelativeToLVBI.Y >= 0.0 && dragPointRelativeToLVBI.Y <= height)
+			{
+				// Pointer is within item's boundaries. Use the PointerOver visual state.
+				m_shouldEnterPointerOver = true;
+				// No need to call ChangeVisualState as SetIsDragOver above already did so.
+			}
+		}
+	}
+
+	// Sets the state of the isDragOver boolean
+	private void SetIsDragOver(
+		bool isDragOver)
+	{
+		if (m_isDragOver != isDragOver)
+		{
+			m_isDragOver = isDragOver;
+			ChangeVisualState(true);
+		}
+	}
+
+	// TODO Uno: IsInBottomHalfForExternalReorder (LBI:2746-2783) - external reorder not ported.
 }

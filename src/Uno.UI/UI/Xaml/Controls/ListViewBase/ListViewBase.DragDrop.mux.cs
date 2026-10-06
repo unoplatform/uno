@@ -312,5 +312,79 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return (pItem == m_tpDragOverItem);
 		}
+
+		// MUX Reference ListViewBase_Partial_Reorder.cpp, lines 595-608
+		private void ClearPrimaryDragContainer()
+		{
+			if (m_tpPrimaryDraggedContainer is ListViewBaseItem primaryDraggedContainer)
+			{
+				// Update our item's TemplateSettings with a zero DragItemsCount.
+				primaryDraggedContainer.SetDragItemsCountDisplay(0);
+				primaryDraggedContainer.ClearLastTouchPressedArgs();
+			}
+
+			m_tpPrimaryDraggedContainer = null;
+
+			m_dragItemsCount = 0;
+		}
+
+		// MUX Reference ListViewBase_Partial_Reorder.cpp, lines 1153-1197 (OnDrop)
+		protected override void OnDrop(_DragEventArgs args)
+		{
+			// TODO Uno: the reorder drop (OnReorderDrop + CompleteDrop) runs in OnReorderCompleted and OnItemContainerDragCompleted.
+			base.OnDrop(args);
+
+			if (m_tpDragOverItem is not null)
+			{
+				// Reset the dragged-over item and potentially switch to the pointer-over visual state.
+				m_tpDragOverItem.LeaveDragOver(this, args);
+			}
+		}
+
+		// MUX Reference ListViewBase_Partial_Reorder.cpp, lines 2328-2342
+		internal Orientation GetPanelOrientation()
+		{
+			// Get the panel's logical orientation
+			// We need this to know the orientation of the folder's regions
+			return ItemsPanelRoot switch
+			{
+				// Uno-specific: ItemsStackPanel and ItemsWrapGrid don't implement IOrientedPanel; their logical orientation is Orientation.
+				ItemsStackPanel itemsStackPanel => itemsStackPanel.Orientation,
+				ItemsWrapGrid itemsWrapGrid => itemsWrapGrid.Orientation,
+				_ => GetItemsHostOrientations().LogicalOrientation,
+			};
+		}
+
+		// MUX Reference ListViewBase_Partial_Reorder.cpp, lines 2344-2357
+		internal void SetDragOverItem(ListViewBaseItem? dragOverItem) => m_tpDragOverItem = dragOverItem;
+
+		// MUX Reference ListViewBase_Partial_Interaction.cpp, lines 3172-3208
+		internal void SetHoldingItem(ListViewBaseItem pItem)
+		{
+			if (m_tpHoldingItem != pItem)
+			{
+				ClearHoldingState();
+				m_tpHoldingItem = pItem;
+			}
+		}
+
+		internal void ClearHoldingItem(ListViewBaseItem pItem)
+		{
+			if (m_tpHoldingItem == pItem)
+			{
+				m_tpHoldingItem = null;
+			}
+		}
+
+		// TODO Uno: WinUI also calls this when a DirectManipulation starts (ListViewBase_Partial.cpp:988); Uno relies on the Holding Canceled gesture.
+		internal void ClearHoldingState()
+		{
+			if (m_tpHoldingItem is { } holdingItem)
+			{
+				holdingItem.ClearHoldingState();
+				ClearHoldingItem(holdingItem);
+				SetIsHolding(false);
+			}
+		}
 	}
 }
