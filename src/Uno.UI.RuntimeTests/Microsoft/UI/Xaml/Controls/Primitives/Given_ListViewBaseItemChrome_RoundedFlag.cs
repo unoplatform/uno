@@ -13,10 +13,10 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 	private const string Key = "ListViewBaseItemRoundedChromeEnabled";
 
 	[TestInitialize]
-	public void Init() => ListViewBaseItemChrome.ClearIsRoundedListViewBaseItemChromeEnabledCache();
+	public void Init() => ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
 
 	[TestCleanup]
-	public void Cleanup() => ListViewBaseItemChrome.ClearIsRoundedListViewBaseItemChromeEnabledCache();
+	public void Cleanup() => ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
 
 	[TestMethod]
 	public void When_Key_Absent()
@@ -30,7 +30,7 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 		// TODO Uno: the Fluent theme only ships the True value from the style-tables chunk; set it explicitly until then.
 		using (ListViewChromeHelper.UseRoundedChromeResource(true))
 		{
-			Assert.IsTrue(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeEnabledStatic());
+			Assert.IsTrue(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
 		}
 	}
 
@@ -39,8 +39,8 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 	{
 		using (StyleHelper.UseUwpStyles())
 		{
-			ListViewBaseItemChrome.ClearIsRoundedListViewBaseItemChromeEnabledCache();
-			Assert.IsFalse(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeEnabledStatic());
+			ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
+			Assert.IsFalse(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
 		}
 	}
 
@@ -52,14 +52,14 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 			var listView = new ListView();
 			listView.Resources[Key] = true;
 
-			Assert.IsFalse(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeEnabledStatic());
+			Assert.IsFalse(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
 		}
 	}
 
 	[TestMethod]
 	public void When_Result_Is_Cached_Until_Cleared()
 	{
-		var chrome = new ListViewBaseItemChrome();
+		var chrome = new ListViewItemPresenter();
 
 		using (ListViewChromeHelper.UseRoundedChromeResource(false))
 		{
@@ -68,7 +68,7 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 			Application.Current.Resources[Key] = true;
 			Assert.IsFalse(chrome.IsRoundedListViewBaseItemChromeEnabled(), "cached");
 
-			ListViewBaseItemChrome.ClearIsRoundedListViewBaseItemChromeEnabledCache();
+			ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
 			Assert.IsTrue(chrome.IsRoundedListViewBaseItemChromeEnabled());
 		}
 	}
@@ -79,11 +79,11 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 		using (ListViewChromeHelper.UseNonRoundedChrome())
 		using (ListViewBaseItemChromeRuntimeFeatures.Override(forceRounded: true))
 		{
-			Assert.IsTrue(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeForced());
-			Assert.IsTrue(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeEnabledStatic());
+			Assert.IsTrue(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeForced());
+			Assert.IsTrue(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
 		}
 
-		Assert.IsFalse(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeForced());
+		Assert.IsFalse(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeForced());
 	}
 
 	[TestMethod]
@@ -92,9 +92,9 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 		using (ListViewChromeHelper.UseRoundedChromeResource(true))
 		using (ListViewBaseItemChromeRuntimeFeatures.Override(forceRounded: true, denyRounded: true))
 		{
-			Assert.IsFalse(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeForced());
+			Assert.IsFalse(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeForced());
 			// Deny does not touch the resource path.
-			Assert.IsTrue(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeEnabledStatic());
+			Assert.IsTrue(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
 		}
 	}
 
@@ -104,7 +104,7 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 		using (StyleHelper.UseUwpStyles())
 		{
 			// Fills the static cache with the Generic.xaml value.
-			Assert.IsFalse(new ListViewBaseItemChrome().IsRoundedListViewBaseItemChromeEnabled());
+			Assert.IsFalse(new ListViewItemPresenter().IsRoundedListViewBaseItemChromeEnabled());
 		}
 
 		// TODO Uno: drop the manual True once the Fluent theme ships it; set without clearing the cache,
@@ -115,7 +115,7 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 		resources[Key] = true;
 		try
 		{
-			Assert.IsTrue(new ListViewBaseItemChrome().IsRoundedListViewBaseItemChromeEnabled());
+			Assert.IsTrue(new ListViewItemPresenter().IsRoundedListViewBaseItemChromeEnabled());
 		}
 		finally
 		{
