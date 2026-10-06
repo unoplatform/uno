@@ -647,6 +647,11 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
+		// MUX Reference DependencyProperty.cpp, tag winui3/release/2.5.1
+		// Global lookup (like core->LookupThemeResource): element-tree Resources are never searched.
+		internal static bool GetBooleanThemeResourceValue(string resourceKey)
+			=> Uno.UI.Xaml.Core.CoreServices.Instance.LookupThemeResource(resourceKey) is bool value && value;
+
 		public override int GetHashCode() => CachedHashCode;
 
 #if __SKIA__
