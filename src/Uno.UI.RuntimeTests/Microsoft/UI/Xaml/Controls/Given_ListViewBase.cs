@@ -5477,8 +5477,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #endif
 
+		// Uno-only stopgap: WinUI applies the full list. The ListViewBaseItem port will invert this test.
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Focused_Only_Focus_And_Drag_States_Are_Emitted()
 		{
 			var style = (Style)XamlReader.Load(
