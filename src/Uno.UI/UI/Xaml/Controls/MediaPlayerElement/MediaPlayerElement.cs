@@ -381,8 +381,8 @@ namespace Microsoft.UI.Xaml.Controls
 			_mediaPlayerPresenter?.SetOwner(this);
 			if (_mediaPlayerPresenter is not null)
 			{
-				// Hidden until the player reports a source or video dimensions.
-				_mediaPlayerPresenter.Visibility = Visibility.Collapsed;
+				// Hidden until the player reports a source; a re-applied template must not hide one already playing.
+				_mediaPlayerPresenter.Visibility = MediaPlayer?.Source is null ? Visibility.Collapsed : Visibility.Visible;
 				_mediaPlayerPresenter.IsFullWindow = IsFullWindow;
 			}
 
@@ -403,6 +403,12 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				TransportControls?.SetMediaPlayer(MediaPlayer);
 				_isTransportControlsBound = true;
+			}
+
+			// MediaPlayerElement::UpdateIsFullWindow: honor a request made before the template was applied.
+			if (IsFullWindow)
+			{
+				ToggleFullScreen(true);
 			}
 		}
 
