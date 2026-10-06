@@ -1179,7 +1179,9 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		try
 		{
 			var owner = GetOwner(handle);
-			if (AccessibilityPeerHelper.GetBoundingRectangle(peer, owner) is { } peerBounds &&
+			// The peer's rectangle is clipped to what's visible, as in WinUI. Content scrolled out of view keeps its real
+			// frame (below) instead of an empty one that VoiceOver would skip, so swiping can move onto it.
+			if (AccessibilityPeerHelper.GetBoundingRectangle(peer, owner) is { Width: > 0, Height: > 0 } peerBounds &&
 				HasFiniteBounds(peerBounds))
 			{
 				return new CGRect(
@@ -2216,6 +2218,9 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		}
 
 		_pendingNativeFocusHandle = 0;
+
+		// As native scroll views do, keep the element VoiceOver moved onto in view, e.g. a row scrolled out of view.
+		GetOwner(nodeId)?.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false });
 
 		// Native -> XAML direction: set XAML keyboard focus if the peer supports it.
 		// Only Control subclasses accept programmatic focus in Uno.
