@@ -450,8 +450,6 @@
             href: uno-development/api-extensions.md
           - name: The WeakEventHelper class
             href: uno-development/Internal-WeakEventHelper.md
-          - name: Debugging Uno.UI Java code with Android studio
-            href: uno-development/Uno-UI-Debugging-Android-Studio.md
           - name: Troubleshooting Memory Issues
             href: uno-development/troubleshooting-memory-issues.md
           - name: Troubleshooting Source Generation
