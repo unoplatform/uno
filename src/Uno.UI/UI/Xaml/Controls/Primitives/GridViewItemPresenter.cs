@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-public partial class GridViewItemPresenter : ContentPresenter
+public partial class GridViewItemPresenter : ListViewBaseItemPresenter
 {
 	protected override bool GoToElementStateCore(string stateName, bool useTransitions)
 	{
