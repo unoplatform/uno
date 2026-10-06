@@ -368,6 +368,24 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 		}
 
+		/// <summary>
+		/// WinUI also accepts an attached property in a setter target without parentheses
+		/// (e.g. <c>ContentRoot.Grid.Column</c>), which the property path syntax would read as a sub-property.
+		/// </summary>
+		private string ParenthesizeBareAttachedProperty(string propertyName)
+		{
+			if (propertyName.Contains('('))
+			{
+				return propertyName;
+			}
+
+			var parts = propertyName.Split('.');
+
+			return parts.Length == 2 && TypeResolver.FindType(parts[0]) is { } ownerType && TypeResolver.IsAttachedProperty(ownerType, parts[1])
+				? "(" + propertyName + ")"
+				: propertyName;
+		}
+
 		private string RewriteAttachedPropertyPath(string? value)
 		{
 			value ??= "";
@@ -662,7 +680,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// This builds property setters for specified member setter.
 				var separatorIndex = targetPath.IndexOf('.');
 				var elementName = targetPath.Substring(0, separatorIndex);
-				var propertyName = targetPath.Substring(separatorIndex + 1);
+				var propertyName = ParenthesizeBareAttachedProperty(targetPath.Substring(separatorIndex + 1));
 
 				if (instance is Setter setter)
 				{

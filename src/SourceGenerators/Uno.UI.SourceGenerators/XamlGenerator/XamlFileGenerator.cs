@@ -5558,7 +5558,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var targetElement = FindSubElementByName(ownerControl, elementName);
 				if (targetElement != null)
 				{
-					var propertyName = target.Substring(separatorIndex + 1);
+					var propertyName = ParenthesizeBareAttachedProperty(target.Substring(separatorIndex + 1));
 					// Attached properties need to be expanded using the namespace, otherwise the resolution will be
 					// performed at runtime at a higher cost.
 					propertyName = RewriteAttachedPropertyPath(propertyName);
@@ -6041,6 +6041,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				return value;
 			}
+		}
+
+		/// <summary>
+		/// WinUI also accepts an attached property in a setter target without parentheses
+		/// (e.g. <c>ContentRoot.Grid.Column</c>), which the property path syntax would read as a sub-property.
+		/// </summary>
+		private string ParenthesizeBareAttachedProperty(string propertyName)
+		{
+			if (propertyName.IndexOf('(') >= 0)
+			{
+				return propertyName;
+			}
+
+			var parts = propertyName.Split(_dotArray);
+
+			return parts.Length == 2 && FindType(parts[0]) is { } ownerType && IsAttachedProperty(ownerType, parts[1])
+				? "(" + propertyName + ")"
+				: propertyName;
 		}
 
 		private string RewriteAttachedPropertyPath(string value)
