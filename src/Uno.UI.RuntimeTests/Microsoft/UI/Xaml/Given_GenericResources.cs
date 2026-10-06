@@ -10,12 +10,19 @@ using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
-#if !WINAPPSDK
+#if HAS_UNO
 [TestClass]
 [RunsOnUIThread]
 public class Given_GenericResources
 {
+	[TestCleanup]
+	public void Cleanup()
+	{
+		TestServices.WindowHelper.WindowContent = null;
+	}
+
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12839")]
 	public void When_Compatibility_Resources_Are_Resolved()
 	{
 		var keys = new[]
@@ -47,6 +54,7 @@ public class Given_GenericResources
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12839")]
 	public void When_Overlay_Style_Is_Resolved()
 	{
 		foreach (var type in new[] { typeof(GridView), typeof(ItemsControl), typeof(WebView), typeof(WebView2) })
@@ -56,6 +64,7 @@ public class Given_GenericResources
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12839")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_GridView_Default_Style_Uses_WrapPanel()
 	{
@@ -68,6 +77,7 @@ public class Given_GenericResources
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12839")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public void When_ScrollViewer_Compatibility_Style_Is_Applied()
 	{
@@ -80,6 +90,7 @@ public class Given_GenericResources
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12839")]
 	// Same hosts as Given_WebView2: these have no native web view to attach.
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.SkiaFrameBuffer)]
 	public async Task When_WebView2_Default_Template_Hosts_Native_View()
