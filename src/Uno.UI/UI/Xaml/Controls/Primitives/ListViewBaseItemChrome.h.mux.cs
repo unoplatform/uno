@@ -20,6 +20,7 @@ internal static class ListViewBaseItemChromeRuntimeFeatures
 
 	internal static bool DenyRoundedListViewBaseItemChrome { get; private set; }
 
+	// Scopes must be disposed in reverse order of creation.
 	internal static IDisposable Override(bool? forceRounded = null, bool? denyRounded = null)
 	{
 		var previousForce = ForceRoundedListViewBaseItemChrome;
