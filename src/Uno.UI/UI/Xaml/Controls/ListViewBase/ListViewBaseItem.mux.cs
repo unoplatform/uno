@@ -75,6 +75,7 @@ partial class ListViewBaseItem
 		{
 			var pChrome = GetItemChrome();
 
+			// WinUI quirk: linking runs before SetGridViewItemChrome, which unlinks the old chrome even when it is the same presenter.
 			pChrome?.SetChromedListViewBaseItem(this);
 
 			// Update the child (refs get taken care of).
