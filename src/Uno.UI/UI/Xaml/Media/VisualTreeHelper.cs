@@ -110,6 +110,11 @@ namespace Microsoft.UI.Xaml.Media
 			}
 
 			var children = element.GetChildren();
+			if (element._elementStubChildrenCount == 0)
+			{
+				return childIndex < children.Count ? children[childIndex] : null;
+			}
+
 			for (var i = 0; i < children.Count; i++)
 			{
 				var child = children[i];
@@ -137,6 +142,11 @@ namespace Microsoft.UI.Xaml.Media
 			}
 
 			var children = element.GetChildren();
+			if (element._elementStubChildrenCount == 0)
+			{
+				return children.Count;
+			}
+
 			var count = 0;
 			for (var i = 0; i < children.Count; i++)
 			{

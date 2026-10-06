@@ -1663,11 +1663,13 @@ namespace Microsoft.UI.Xaml
 			{
 				var currentVisual = _children[actualIndex];
 				_children.Insert(actualIndex, child);
+				TrackStubChild(child, 1);
 				Visual.Children.InsertAbove(child.Visual, currentVisual.Visual);
 			}
 			else
 			{
 				_children.Add(child);
+				TrackStubChild(child, 1);
 				Visual.Children.InsertAtTop(child.Visual);
 			}
 
@@ -1733,6 +1735,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_children.Remove(child))
 			{
+				TrackStubChild(child, -1);
 				UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(this, child);
 				InnerRemoveChild(child);
 
@@ -1772,7 +1775,16 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_children.Clear();
+			_elementStubChildrenCount = 0;
 			InvalidateMeasure();
+		}
+
+		private void TrackStubChild(UIElement child, int delta)
+		{
+			if (child is ElementStub)
+			{
+				_elementStubChildrenCount += delta;
+			}
 		}
 
 		private void InnerRemoveChild(UIElement child)
