@@ -18,7 +18,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_ListViewItemPresenter
+public partial class Given_ListViewItemPresenter
 {
 	private const double Tolerance = 1e-6;
 
@@ -634,10 +634,12 @@ public class Given_ListViewItemPresenter
 		WindowHelper.WindowContent = presenter;
 		await WindowHelper.WaitForLoaded(presenter, p => p.IsLoaded);
 
-		AssertChildren(presenter, content);
+		// The rounded chrome creates the backplate on its first measure.
+		var backplate = GetChromeField<Border>(presenter, "m_backplateRectangle");
+		AssertChildren(presenter, backplate, content);
 
 		presenter.EnsureBackplate();
-		var backplate = GetChromeField<Border>(presenter, "m_backplateRectangle");
+		Assert.AreSame(backplate, GetChromeField<Border>(presenter, "m_backplateRectangle"));
 		AssertChildren(presenter, backplate, content);
 		Assert.AreSame(content, presenter.GetTemplateChildIfExists());
 
