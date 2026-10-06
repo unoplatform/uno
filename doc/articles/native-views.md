@@ -11,9 +11,9 @@ iOS, WebAssembly and on the Win32 and X11 desktop hosts.
 
 > [!NOTE]
 > Uno Platform 7.0 renders the UI exclusively with Skia. Native views are no longer part
-> of the visual tree by inheritance; they are **embedded** as host-composited overlays
-> through the Skia hosts. The legacy native-renderer mechanisms (`VisualTreeHelper.AdaptNative`,
-> native XAML namespaces backing a native view tree) have been removed — see
+> of the visual tree by inheritance; they are **embedded** as the content of a
+> `ContentControl` and composited by the Skia host. If you are upgrading an app that placed
+> native views directly in panels, see
 > [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
 
 ## Adding JavaScript views in WebAssembly
