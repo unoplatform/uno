@@ -11,6 +11,29 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 internal partial class ListViewBaseItemChrome
 {
 	private static bool? s_isRoundedListViewBaseItemChromeEnabled;
+
+	// Used by DependencyProperty::GetDefaultValue
+	internal static readonly CornerRadius s_defaultSelectionIndicatorCornerRadius = new(1.5);
+	internal static readonly CornerRadius s_defaultCheckBoxCornerRadius = new(3.0);
+	internal static readonly Thickness s_selectedBorderThicknessRounded = new(2.0);
+	internal static readonly Thickness s_selectedBorderThickness = new(0.0);
+
+	internal static float GetDefaultDisabledOpacity(bool forRoundedListViewBaseItemChrome)
+		=> forRoundedListViewBaseItemChrome ? 0.3f : 0.55f;
+
+	internal static float GetDefaultDragOpacity() => 0.8f;
+
+	internal static float GetDefaultListViewItemReorderHintOffset() => 10.0f;
+
+	internal static float GetDefaultGridViewItemReorderHintOffset() => 16.0f;
+
+	internal static float GetSelectedBorderThickness(bool forRoundedListViewBaseItemChrome)
+		=> forRoundedListViewBaseItemChrome ? 2.0f : 0.0f;
+
+	internal static bool GetDefaultSelectionCheckMarkVisualEnabled() => true;
+
+	internal static Thickness GetSelectedBorderXThickness(bool forRoundedListViewBaseItemChrome)
+		=> forRoundedListViewBaseItemChrome ? s_selectedBorderThicknessRounded : s_selectedBorderThickness;
 }
 
 // TODO Uno: RuntimeEnabledFeatureDetector

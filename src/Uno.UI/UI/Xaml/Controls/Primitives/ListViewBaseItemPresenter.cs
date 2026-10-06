@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference XamlOM/Model/Microsoft.UI.Xaml.Controls.Primitives.cs, tag winui3/release/2.5.1
+// MUX Reference DependencyProperty.cpp, tag winui3/release/2.5.1
+
+#nullable enable
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -9,6 +12,80 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 {
 	internal ListViewBaseItemPresenter()
+	{
+	}
+
+	// Ports CDependencyProperty::GetDefaultValue for the presenter DPs (DependencyProperty.cpp:159-193).
+	internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
+	{
+		if (property == ListViewItemPresenter.DisabledOpacityProperty
+			|| property == ListViewItemPresenter.SelectedBorderThicknessProperty
+			|| property == ListViewItemPresenter.SelectionIndicatorVisualEnabledProperty)
+		{
+			// WinUI quirk: Deny only cancels Force here; it does not stop the resource lookup of a non-forced app.
+			var denyRoundedListViewBaseItemChrome = ListViewBaseItemChromeRuntimeFeatures.DenyRoundedListViewBaseItemChrome;
+			var forceRoundedListViewBaseItemChrome = ListViewBaseItemChromeRuntimeFeatures.ForceRoundedListViewBaseItemChrome;
+
+			var forRoundedListViewBaseItemChrome = false;
+
+			if (!denyRoundedListViewBaseItemChrome && !forceRoundedListViewBaseItemChrome)
+			{
+				forRoundedListViewBaseItemChrome = DependencyProperty.GetBooleanThemeResourceValue("ListViewBaseItemRoundedChromeEnabled");
+			}
+			else if (!denyRoundedListViewBaseItemChrome)
+			{
+				forRoundedListViewBaseItemChrome = true;
+			}
+
+			if (property == ListViewItemPresenter.SelectionIndicatorVisualEnabledProperty)
+			{
+				defaultValue = forRoundedListViewBaseItemChrome;
+			}
+			else if (property == ListViewItemPresenter.DisabledOpacityProperty)
+			{
+				defaultValue = (double)ListViewBaseItemChrome.GetDefaultDisabledOpacity(forRoundedListViewBaseItemChrome);
+			}
+			else
+			{
+				defaultValue = ListViewBaseItemChrome.GetSelectedBorderXThickness(forRoundedListViewBaseItemChrome);
+			}
+
+			return true;
+		}
+
+		return base.GetDefaultValue2(property, out defaultValue);
+	}
+
+	// Backs the deprecated alias DPs, which have no storage: they read and write the ContentPresenter property.
+	private protected static object? ForwardAlias(DependencyObject instance, bool isGet, object? valueToSet, DependencyProperty alias, DependencyProperty target)
+	{
+		if (isGet)
+		{
+			return instance.GetValue(target);
+		}
+
+		// The store replays the alias default when the alias value is cleared; forwarding it would clobber a TemplateBinding on the target.
+		if (instance.GetCurrentHighestValuePrecedence(alias) != DependencyPropertyValuePrecedences.DefaultValue)
+		{
+			instance.SetValue(target, valueToSet);
+		}
+
+		return null;
+	}
+
+	private protected override void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
+	{
+		base.OnCornerRadiusChanged(oldValue, newValue);
+		OnPropertyChangedNewStyle(new DependencyPropertyChangedEventArgs
+		{
+			PropertyInternal = CornerRadiusProperty,
+			OldValueInternal = oldValue,
+			NewValueInternal = newValue,
+		});
+	}
+
+	// TODO Uno: CListViewBaseItemChrome::OnPropertyChangedNewStyle (C:5132-5157) arrives with the chrome port.
+	private protected virtual void OnPropertyChangedNewStyle(DependencyPropertyChangedEventArgs args)
 	{
 	}
 }
