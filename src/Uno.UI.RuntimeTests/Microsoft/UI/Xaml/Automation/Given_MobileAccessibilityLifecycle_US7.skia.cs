@@ -231,7 +231,10 @@ public class Given_MobileAccessibilityLifecycle_US7_Android
 
 		Assert.IsTrue(
 			AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(firstId.Value, 0x10));
-		Assert.AreEqual(1, listView.SelectedIndex);
+		Assert.AreEqual(
+			0,
+			listView.SelectedIndex,
+			"The shared peer's ID resolves to its first occurrence, and activating it must select that occurrence.");
 	}
 
 	[TestMethod]
