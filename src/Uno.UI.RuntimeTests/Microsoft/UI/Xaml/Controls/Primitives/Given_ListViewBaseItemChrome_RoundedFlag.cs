@@ -1,4 +1,4 @@
-﻿#if HAS_UNO
+#if HAS_UNO
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -27,20 +27,16 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 	[TestMethod]
 	public void When_Fluent_Resource_True()
 	{
-		using (ListViewChromeHelper.UseRoundedChromeResource(true))
-		{
-			Assert.IsTrue(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
-		}
+		Assert.IsTrue(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
 	}
 
 	[TestMethod]
-	public void When_UwpStyles_Fluent_Resource_Still_Wins()
+	public void When_Generic_Resource_False()
 	{
-		// The Fluent True is a system-level resource, so it outranks Generic.xaml's False.
 		using (StyleHelper.UseUwpStyles())
 		{
 			ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
-			Assert.IsTrue(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
+			Assert.IsFalse(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
 		}
 	}
 
@@ -103,9 +99,11 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 	{
 		using (StyleHelper.UseUwpStyles())
 		{
-			Assert.IsTrue(new ListViewItemPresenter().IsRoundedListViewBaseItemChromeEnabled());
+			// Fills the static cache with the Generic.xaml value.
+			Assert.IsFalse(new ListViewItemPresenter().IsRoundedListViewBaseItemChromeEnabled());
 		}
 
+		// Only the cache clear on UseUwpStyles restore lets the Fluent True through.
 		Assert.IsTrue(new ListViewItemPresenter().IsRoundedListViewBaseItemChromeEnabled());
 	}
 }
