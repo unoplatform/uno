@@ -14,6 +14,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_BreadcrumbBar
 {
+	[TestCleanup]
+	public void Cleanup()
+	{
+		TestServices.WindowHelper.WindowContent = null;
+	}
+
 	[TestMethod]
 	public async Task When_Ellipsis_Flyout_Opened_Then_Background_Is_Acrylic()
 	{

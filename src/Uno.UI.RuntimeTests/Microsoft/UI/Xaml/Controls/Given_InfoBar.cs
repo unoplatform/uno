@@ -10,6 +10,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_InfoBar
 {
+	[TestCleanup]
+	public void Cleanup()
+	{
+		TestServices.WindowHelper.WindowContent = null;
+	}
+
 	[TestMethod]
 	public async Task When_Default_Style_Then_FluentTheme_Template_Applies()
 	{
