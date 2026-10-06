@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Web.WebView2.Core;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

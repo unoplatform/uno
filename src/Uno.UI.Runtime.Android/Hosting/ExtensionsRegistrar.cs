@@ -7,6 +7,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Graphics;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
+using Uno.Web.WebView2.Core;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 

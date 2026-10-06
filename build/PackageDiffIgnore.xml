@@ -2421,6 +2421,8 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/Frame" reason="Removed empty FeatureConfiguration.Frame holder after deleting UseWinUIBehavior (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Page" reason="Removed empty FeatureConfiguration.Page holder after deleting IsPoolingEnabled (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.PagePool" reason="Removed the Page instance pool; only the legacy Frame navigation mode used it (breaking changes for 7.0, uno#8339)" />
+		  <!-- Uno-only interface moved out of the WinUI namespace; WinUI has no counterpart. -->
+		  <Member fullName="Microsoft.Web.WebView2.Core.INativeWebViewProvider" reason="Moved Uno-only INativeWebViewProvider to Uno.Web.WebView2.Core (breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -3615,6 +3617,8 @@
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Page Uno.UI.Helpers.FrameNavigationHelper.EnsurePageInitialized(Microsoft.UI.Xaml.Controls.Frame frame, Microsoft.UI.Xaml.Navigation.PageStackEntry entry)" reason="Removed; only the legacy Frame navigation mode tracked a page instance per entry (breaking changes for 7.0, uno#8339)" />
 		  <!-- Legacy native-view adapter removed; native views are hosted as ContentControl/ContentPresenter content. The parameter type differed per target (Android.Views.View, UIKit.UIView, UIElement). -->
 		  <Member fullName="Microsoft\.UI\.Xaml\.FrameworkElement Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)(Try)?AdaptNative\(.+\)" reason="Removed the legacy VisualTreeHelper.AdaptNative/TryAdaptNative native-view adapter; host native views as ContentControl/ContentPresenter content (BC23, breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <!-- Uno-only VisualTreeHelper.GetChildren helpers reduced to internal; WinUI has no counterpart. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)GetChildren.*\(Microsoft\.UI\.Xaml\.DependencyObject view\)" reason="Reduced Uno-only VisualTreeHelper.GetChildren to internal (breaking changes for 7.0)" isRegex="true" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
@@ -4035,6 +4039,8 @@
 		  <Member fullName="Microsoft.UI.Xaml.Controls.FlowLayoutAlgorithm" reason="Reduced Uno-only public FlowLayoutAlgorithm to internal; unprojected C++ helper in WinUI (ItemsRepeater WinUI port, uno#23406)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IFlowLayoutAlgorithmDelegates" reason="Reduced Uno-only public IFlowLayoutAlgorithmDelegates to internal; unprojected C++ interface in WinUI (ItemsRepeater WinUI port, uno#23406)" />
 
+		  <!-- Uno-only interface moved out of the WinUI namespace; WinUI has no counterpart. -->
+		  <Member fullName="Microsoft.Web.WebView2.Core.INativeWebViewProvider" reason="Moved Uno-only INativeWebViewProvider to Uno.Web.WebView2.Core (breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -5315,6 +5321,8 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Thumb.set_IsDragging(System.Boolean value)" reason="Setter removed or made internal, matching the get-only WinUI property (breaking changes for 7.0)" />
 		  <!-- Legacy native-view adapter removed; native views are hosted as ContentControl/ContentPresenter content. The parameter type differed per target (Android.Views.View, UIKit.UIView, UIElement). -->
 		  <Member fullName="Microsoft\.UI\.Xaml\.FrameworkElement Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)(Try)?AdaptNative\(.+\)" reason="Removed the legacy VisualTreeHelper.AdaptNative/TryAdaptNative native-view adapter; host native views as ContentControl/ContentPresenter content (BC23, breaking changes for 7.0, uno#8339)" isRegex="true" />
+		  <!-- Uno-only VisualTreeHelper.GetChildren helpers reduced to internal; WinUI has no counterpart. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)GetChildren.*\(Microsoft\.UI\.Xaml\.DependencyObject view\)" reason="Reduced Uno-only VisualTreeHelper.GetChildren to internal (breaking changes for 7.0)" isRegex="true" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->

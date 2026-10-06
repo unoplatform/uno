@@ -38,7 +38,7 @@ internal static class Program
 			{
 				if (host is X11ApplicationHost)
 				{
-					global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Microsoft.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.X11.X11NativeWebViewProvider(o));
+					global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Uno.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.X11.X11NativeWebViewProvider(o));
 				}
 			})
 			.UseX11(hostBuilder =>

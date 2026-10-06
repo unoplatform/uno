@@ -8,6 +8,7 @@ using Uno.Foundation.Extensibility;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Controls;
+using Uno.Web.WebView2.Core;
 using Windows.UI.Core;
 using Uno.UI.Runtime.AppleUIKit.Controls;
 using Uno.UI.Runtime.AppleUIKit.UI.Xaml;

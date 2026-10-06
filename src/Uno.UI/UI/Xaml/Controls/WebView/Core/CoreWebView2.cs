@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
+using Uno.Web.WebView2.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;

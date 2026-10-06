@@ -3,6 +3,7 @@ using Microsoft.Web.WebView2.Core;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime;
 using Uno.UI.Xaml.Controls;
+using Uno.Web.WebView2.Core;
 
 namespace Microsoft.UI.Xaml.Controls;
 
