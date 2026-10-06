@@ -38,8 +38,12 @@ namespace Uno.UI.Runtime.Skia
 		private IntPtr _currentBo;
 		private readonly uint _crtc;
 		private readonly uint _encoder;
-		private bool _waitingForPageFlip;
-		private bool _invalidateRenderCalledWhileWaitingForPageFlip;
+		// One word, so a request made while a flip is in flight can never slip between the flip handler's
+		// "nothing pending" check and its return to idle.
+		private const int FlipIdle = 0;
+		private const int FlipInFlight = 1;
+		private const int FlipInFlightWithPending = 2;
+		private int _flipState;
 		private readonly GCHandle _selfHandle;
 
 		private LibDrm.drmModeCrtc _savedCrtc;
@@ -283,18 +287,50 @@ namespace Uno.UI.Runtime.Skia
 			return res / 1000;
 		}
 
-		public override unsafe void InvalidateRender()
+		public override void InvalidateRender()
 		{
 			if (_disposed)
 			{
 				return;
 			}
 
-			Volatile.Write(ref _invalidateRenderCalledWhileWaitingForPageFlip, true);
-			if (Interlocked.Exchange(ref _waitingForPageFlip, true))
+			while (true)
 			{
-				return;
+				switch (Volatile.Read(ref _flipState))
+				{
+					case FlipIdle:
+						if (Interlocked.CompareExchange(ref _flipState, FlipInFlight, FlipIdle) == FlipIdle)
+						{
+							try
+							{
+								DrawAndFlip();
+							}
+							catch
+							{
+								Volatile.Write(ref _flipState, FlipIdle);
+								throw;
+							}
+							return;
+						}
+						break;
+					case FlipInFlight:
+						// Only one flip can be queued; the flip handler draws and flips the newest content once it lands.
+						if (Interlocked.CompareExchange(ref _flipState, FlipInFlightWithPending, FlipInFlight) == FlipInFlight)
+						{
+							return;
+						}
+						break;
+					default:
+						return;
+				}
 			}
+		}
+
+		// Draws the current content, then flips to it. Drawing ahead of the request instead (in the flip handler)
+		// presents a buffer drawn before the content it is answering existed, which leaves the screen a frame behind.
+		private unsafe void DrawAndFlip()
+		{
+			Render();
 
 			using (MakeCurrent())
 			{
@@ -383,12 +419,13 @@ namespace Uno.UI.Runtime.Skia
 			{
 				return;
 			}
-			Volatile.Write(ref @this._invalidateRenderCalledWhileWaitingForPageFlip, false);
-			@this.Render();
-			Volatile.Write(ref @this._waitingForPageFlip, false);
-			if (Volatile.Read(ref @this._invalidateRenderCalledWhileWaitingForPageFlip))
+			if (Interlocked.CompareExchange(ref @this._flipState, FlipInFlight, FlipInFlightWithPending) == FlipInFlightWithPending)
 			{
-				@this.InvalidateRender();
+				@this.DrawAndFlip();
+			}
+			else
+			{
+				Volatile.Write(ref @this._flipState, FlipIdle);
 			}
 		}
 
