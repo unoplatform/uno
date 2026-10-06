@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -23,7 +24,31 @@ internal enum ListViewBaseItemChromeLayerPosition
 	Base_Post,
 }
 
-// TODO Uno: ListViewBaseItemAnimationCommandVisitor and the ListViewBaseItemAnimationCommand* classes (H:28-66, H:834-985) are not ported yet.
+// Animation command visitor pattern. Each command knows how to tell a visitor
+// how to process it. Each concrete command class represents one particular animation
+// (not necessarily specific to one VisualStateGroup).
+
+internal interface IListViewBaseItemAnimationCommandVisitor
+{
+	void VisitAnimationCommand(ListViewBaseItemAnimationCommand_Pressed command);
+	void VisitAnimationCommand(ListViewBaseItemAnimationCommand_ReorderHint command);
+	void VisitAnimationCommand(ListViewBaseItemAnimationCommand_DragDrop command);
+	void VisitAnimationCommand(ListViewBaseItemAnimationCommand_MultiSelect command);
+	void VisitAnimationCommand(ListViewBaseItemAnimationCommand_IndicatorSelect command);
+	void VisitAnimationCommand(ListViewBaseItemAnimationCommand_SelectionIndicatorVisibility command);
+}
+
+internal abstract partial class ListViewBaseItemAnimationCommand
+{
+	internal abstract void Accept(IListViewBaseItemAnimationCommandVisitor visitor);
+
+	internal abstract ListViewBaseItemAnimationCommand Clone();
+
+	internal abstract int GetPriority();
+
+	internal bool m_isStarting;
+	internal bool m_steadyStateOnly;
+}
 
 // Uno-specific: CListViewBaseItemChrome is merged into ListViewBaseItemPresenter (as CalendarViewBaseItemChrome is into CalendarViewBaseItem).
 partial class ListViewBaseItemPresenter
@@ -175,10 +200,20 @@ partial class ListViewBaseItemPresenter
 
 	// Dead WinUI code: m_currentCheckBrush is only used by the removed old-style draw path.
 
-	// TODO Uno: m_animationCommands, m_pCurrentHighestPriorityCommand and m_currentHighestCommandPriority come with the animation command queue.
+	// The list of our animation commands, waiting for processing in dxaml.
+	private readonly List<ListViewBaseItemAnimationCommand> m_animationCommands = new();
+
+	private ListViewBaseItemAnimationCommand? m_pCurrentHighestPriorityCommand;
 
 	// Opacity of our swipe hint check mark.
 	private float m_swipeHintCheckOpacity = s_cOpacityUnset;
+
+	// Tracking for the highest priority command. Only animations with >= priority
+	// will be processed (note that this does not mean low-pri visual states aren't
+	// processed or displayed - it just means they won't be animated).
+	// We don't own m_pCurrentHighestPriorityCommand but we get notified when the
+	// reference is no longer valid.
+	private int m_currentHighestCommandPriority = int.MaxValue;
 
 	// Used for brush transitions. Saves the last brush that we used to render the background. If this brush changes, then
 	// we kick off a brush transition (if the API enabled it).
@@ -289,6 +324,67 @@ partial class ListViewBaseItemPresenter
 
 	internal static Thickness GetSelectedBorderXThickness(bool forRoundedListViewBaseItemChrome)
 		=> forRoundedListViewBaseItemChrome ? s_selectedBorderThicknessRounded : s_selectedBorderThickness;
+}
+
+internal sealed partial class ListViewBaseItemAnimationCommand_Pressed : ListViewBaseItemAnimationCommand
+{
+	internal bool m_pressed;
+	internal WeakReference<UIElement> m_pAnimationTarget;
+}
+
+internal sealed partial class ListViewBaseItemAnimationCommand_ReorderHint : ListViewBaseItemAnimationCommand
+{
+	internal float m_offsetX;
+	internal float m_offsetY;
+	internal WeakReference<ListViewBaseItemPresenter> m_pAnimationTarget;
+}
+
+internal sealed partial class ListViewBaseItemAnimationCommand_DragDrop : ListViewBaseItemAnimationCommand
+{
+	internal enum DragDropState
+	{
+		SinglePrimary,
+		MultiPrimary,
+		MultiSecondary,
+		DraggedPlaceholder,
+		Target,
+		ReorderingSinglePrimary,
+		ReorderingMultiPrimary,
+		ReorderedPlaceholder,
+		ReorderingTarget,
+		DragOver
+	}
+
+	internal DragDropState m_state;
+	internal WeakReference<ListViewBaseItemPresenter> m_pBaseAnimationTarget;
+	internal WeakReference<FrameworkElement> m_pFadeOutAnimationTarget;
+}
+
+internal sealed partial class ListViewBaseItemAnimationCommand_MultiSelect : ListViewBaseItemAnimationCommand
+{
+	internal bool m_isRoundedListViewBaseItemChromeEnabled;
+	internal bool m_entering;
+	internal double m_checkBoxTranslationX;
+	internal double m_contentTranslationX;
+	internal ListViewItemPresenterCheckMode m_checkMode;
+	internal WeakReference<UIElement> m_multiSelectCheckBox;
+	internal WeakReference<UIElement> m_contentPresenter;
+}
+
+internal sealed partial class ListViewBaseItemAnimationCommand_IndicatorSelect : ListViewBaseItemAnimationCommand
+{
+	internal bool m_entering;
+	internal double m_translationX;
+	internal ListViewItemPresenterSelectionIndicatorMode m_selectionIndicatorMode;
+	internal WeakReference<UIElement> m_selectionIndicator;
+	internal WeakReference<UIElement> m_contentPresenter;
+}
+
+internal sealed partial class ListViewBaseItemAnimationCommand_SelectionIndicatorVisibility : ListViewBaseItemAnimationCommand
+{
+	internal bool m_selected;
+	internal double m_fromScale;
+	internal WeakReference<UIElement> m_selectionIndicator;
 }
 
 // TODO Uno: RuntimeEnabledFeatureDetector
