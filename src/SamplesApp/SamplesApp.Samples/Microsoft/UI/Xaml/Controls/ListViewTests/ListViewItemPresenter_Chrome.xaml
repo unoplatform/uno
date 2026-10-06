@@ -1,0 +1,49 @@
+﻿<Page
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewItemPresenter_Chrome"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="16" ColumnSpacing="16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Spacing="8">
+            <ComboBox
+                x:Name="SelectionModeBox"
+                Header="SelectionMode"
+                SelectionChanged="OnModeChanged" />
+            <ComboBox
+                x:Name="CheckModeBox"
+                Header="CheckMode"
+                SelectionChanged="OnPresenterChanged" />
+            <ComboBox
+                x:Name="IndicatorModeBox"
+                Header="SelectionIndicatorMode"
+                SelectionChanged="OnPresenterChanged" />
+            <CheckBox
+                x:Name="RoundedBox"
+                Checked="OnRoundedChanged"
+                Content="Rounded chrome"
+                IsChecked="True"
+                Unchecked="OnRoundedChanged" />
+            <CheckBox
+                x:Name="DisabledBox"
+                Checked="OnPresenterChanged"
+                Content="Disable every 3rd item"
+                Unchecked="OnPresenterChanged" />
+            <CheckBox
+                x:Name="BrushesBox"
+                Checked="OnPresenterChanged"
+                Content="Custom brushes"
+                Unchecked="OnPresenterChanged" />
+        </StackPanel>
+
+        <ListView x:Name="Items" Grid.Column="1" />
+    </Grid>
+</Page>
