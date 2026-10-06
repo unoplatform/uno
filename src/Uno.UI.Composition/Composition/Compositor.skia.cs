@@ -270,10 +270,19 @@ public partial class Compositor
 		}
 	}
 
-	partial void InvalidateRenderPartial(Visual visual)
+	partial void InvalidateRenderPartial(Visual visual, bool translationOnly)
 	{
 		visual.SetMatrixDirty(); // TODO: only invalidate matrix when specific properties are changed
-		visual.InvalidatePaint(); // TODO: only repaint when "dependent" properties are changed
+
+		// A translation keeps the recording valid: it is made in the visual's own space and replayed under the new
+		// matrix, and the paint walk damages both placements of a moved visual. SetMatrixDirty above already dropped
+		// the ancestor caches holding the old placement. Scale and rotation do not qualify: brushes and geometry are
+		// rasterized at the scale they are drawn under.
+		if (!translationOnly)
+		{
+			visual.InvalidatePaint(); // TODO: only repaint when "dependent" properties are changed
+		}
+
 		visual.CompositionTarget?.RequestNewFrame();
 	}
 }

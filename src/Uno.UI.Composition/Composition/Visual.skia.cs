@@ -58,6 +58,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// Opaque per-visual retained state owned by the rendering backend (Skia: an SKPicture). _content is
 	// this visual's own painted content; _childrenContent is a collapsed subtree cache.
 	private IRenderRecord? _content;
+
+	/// <summary>This visual's own recorded content, so tests can tell a re-record from a replay.</summary>
+	internal IRenderRecord? RecordedContentForTesting => _content;
 	private IRenderRecord? _childrenContent;
 	// Placement bookkeeping for _childrenContent: the recording is local-space and survives ancestor moves,
 	// but a replay under a changed matrix must still damage the screen area the subtree left and now covers

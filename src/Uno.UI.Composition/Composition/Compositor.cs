@@ -286,7 +286,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		internal void InvalidateRender(Visual visual) => InvalidateRenderPartial(visual);
+		/// <param name="translationOnly">The change only translates the visual, so the content it recorded in its own
+		/// space stays valid.</param>
+		internal void InvalidateRender(Visual visual, bool translationOnly = false) => InvalidateRenderPartial(visual, translationOnly);
 		public CompositionBackdropBrush CreateBackdropBrush()
 			=> new CompositionBackdropBrush(this);
 
@@ -308,6 +310,6 @@ namespace Microsoft.UI.Composition
 		public StepEasingFunction CreateStepEasingFunction(int stepCount)
 			=> new(this, stepCount);
 
-		partial void InvalidateRenderPartial(Visual visual);
+		partial void InvalidateRenderPartial(Visual visual, bool translationOnly);
 	}
 }

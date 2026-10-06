@@ -1403,7 +1403,22 @@ namespace Microsoft.UI.Xaml.Controls
 		private Microsoft.UI.Input.PointerPoint? _lastPointerDownPoint;
 
 		private (Size availableSize, Size outSize, TextAlignment? alignment) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left);
-		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
+		private IParsedText _parsedText = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
+
+		// Draw replays the parsed text, so a new parse (in measure or arrange) is what calls for a repaint; an arrange
+		// that only moves the block keeps its recording.
+		internal IParsedText ParsedText
+		{
+			get => _parsedText;
+			private set
+			{
+				if (!ReferenceEquals(_parsedText, value))
+				{
+					_parsedText = value;
+					Visual.Compositor.InvalidateRender(Visual);
+				}
+			}
+		}
 
 		internal event EventHandler? DrawingFinished;
 
@@ -1587,7 +1602,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			Visual.Compositor.InvalidateRender(Visual);
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
 
@@ -1595,8 +1609,11 @@ namespace Microsoft.UI.Xaml.Controls
 			// Note that MeasureOverride doesn't have these checks. If something in the text block has changed that would
 			// require a re-parse, the ParseText call during the measure pass will catch it. There are no changes that
 			// would require a re-parse that would invalidate arrange but not measure, except TextAlignment, which we explicitly check.
+			// A size change only counts in a dimension the layout used: a single left-aligned line is arranged at any height.
 			var arrangedSize = _lastParsedTextCreationValues.outSize;
-			if (_lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
+			var sizeChanged = _lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding
+				&& !(ParsedText is UnicodeText parsed && parsed.IsLayoutValidFor(availableSizeWithoutPadding));
+			if (sizeChanged || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
 			{
 				ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
 			}
@@ -1699,9 +1716,10 @@ namespace Microsoft.UI.Xaml.Controls
 			Visual.Compositor.InvalidateRender(Visual);
 		}
 
-		partial void InvalidateTextBlockPartial() => InvalidateInlineAndRequireRepaint();
+		// InvalidateTextBlock and an inlines change invalidate measure, and the parse that follows repaints (see ParsedText),
+		// so they do not invalidate the render themselves: a block that is collapsed or not in the tree is not measured
+		// and stays off the compositor.
 		partial void OnForegroundChangedPartial() => InvalidateInlineAndRequireRepaint();
-		partial void OnInlinesChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnMaxLinesChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnTextWrappingChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnLineHeightChangedPartial() => InvalidateInlineAndRequireRepaint();

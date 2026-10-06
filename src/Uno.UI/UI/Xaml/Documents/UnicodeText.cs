@@ -137,6 +137,8 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly List<(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations)> _runBreaks;
 	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 	private readonly Size _availableSize;
+	private readonly bool _layoutUsesAvailableWidth;
+	private readonly bool _layoutUsesAvailableHeight;
 
 	internal unsafe UnicodeText(
 		Size availableSize,
@@ -266,6 +268,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			calculatedSize = new Size(0, emptyHeight);
 			_firstLineBaseline = emptyBaseline;
 			_availableSize = availableSize;
+			_layoutUsesAvailableWidth = _rtl || _textAlignment is TextAlignment.Center or TextAlignment.Right; // caret placement
 			_xyTable = [];
 			_indexToCluster = [];
 			_clustersInLogicalOrder = [];
@@ -559,6 +562,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		var textEndsInLineBreak = IsLineBreak(_text, _text.Length);
+		// Lines that do not fit the available height are dropped below, so the height only matters past one line.
+		_layoutUsesAvailableHeight = lines.Count + (textEndsInLineBreak ? 1 : 0) > 1;
 		float totalHeight = 0;
 		int nextTrimPointLookupStart = 0;
 		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
@@ -800,7 +805,19 @@ internal readonly partial struct UnicodeText : IParsedText
 		_corrections = isSpellCheckEnabled ? _spellCheckingService.Value?.SpellCheck(WordBoundaries, _text) : null;
 		calculatedSize = new Size(maxLineWidth, totalHeight);
 		_availableSize = availableSize;
+		_layoutUsesAvailableWidth = textWrapping != TextWrapping.NoWrap
+			|| textTrimming != TextTrimming.None
+			|| _rtl
+			|| _textAlignment is TextAlignment.Center or TextAlignment.Right; // see GetAlignmentOffsetForLine
 	}
+
+	/// <summary>
+	/// Whether laying the same text out in <paramref name="availableSize"/> would give this exact result, because the
+	/// dimensions that differ from the size this was parsed with are not ones the layout depends on.
+	/// </summary>
+	internal bool IsLayoutValidFor(Size availableSize)
+		=> (!_layoutUsesAvailableWidth || availableSize.Width == _availableSize.Width)
+		&& (!_layoutUsesAvailableHeight || availableSize.Height == _availableSize.Height);
 
 	// Printable ASCII (plus tab) has no mandatory line breaks and needs no ICU break analysis for NoWrap text.
 	private static bool IsAsciiWithoutLineBreaks(string text)
@@ -1005,9 +1022,13 @@ internal readonly partial struct UnicodeText : IParsedText
 				runBreakIndex++;
 			}
 
-			while (WordBoundaries[wordBoundariesIndex] <= cluster.Value.start)
+			// Word boundaries only place spell-check squiggles; computing them runs ICU word breaking on the first draw.
+			if (_corrections is not null)
 			{
-				wordBoundariesIndex++;
+				while (WordBoundaries[wordBoundariesIndex] <= cluster.Value.start)
+				{
+					wordBoundariesIndex++;
+				}
 			}
 
 			var lineIndex = cluster.Value.lineIndex;
