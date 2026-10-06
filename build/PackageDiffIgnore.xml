@@ -3571,6 +3571,8 @@
 		  <!-- note.                                                                  -->
 		  <!-- ====================================================================== -->
 		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult..ctor()" reason="SpeechRecognitionResult constructor made internal; results are produced by the recognizer (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings..ctor()" reason="WinUI alignment: ListViewItemTemplateSettings is not activatable, its constructor is internal" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings..ctor()" reason="WinUI alignment: GridViewItemTemplateSettings is not activatable, its constructor is internal" />
 		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult.set_Text(System.String value)" reason="SpeechRecognitionResult.Text setter made internal (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult.set_RawConfidence(System.Double value)" reason="SpeechRecognitionResult.RawConfidence setter made internal (breaking changes for 7.0, uno#8339)" />
 
@@ -5177,6 +5179,8 @@
 		  <!-- note.                                                                  -->
 		  <!-- ====================================================================== -->
 		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult..ctor()" reason="SpeechRecognitionResult constructor made internal; results are produced by the recognizer (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings..ctor()" reason="WinUI alignment: ListViewItemTemplateSettings is not activatable, its constructor is internal" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings..ctor()" reason="WinUI alignment: GridViewItemTemplateSettings is not activatable, its constructor is internal" />
 		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult.set_Text(System.String value)" reason="SpeechRecognitionResult.Text setter made internal (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult.set_RawConfidence(System.Double value)" reason="SpeechRecognitionResult.RawConfidence setter made internal (breaking changes for 7.0, uno#8339)" />
 

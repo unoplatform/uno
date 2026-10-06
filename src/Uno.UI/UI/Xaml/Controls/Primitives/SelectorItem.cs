@@ -63,8 +63,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// </summary>
 		internal bool ShouldHandlePressed { get; set; } = true;
 
-		// Workaround for the fact that ListViewBaseItem exists internally on WinUI, but isn't included in the public API
-		private bool IsListViewBaseItem => this is ListViewItem || this is GridViewItem;
+		private bool IsListViewBaseItem => this is ListViewBaseItem;
 
 		/// <remarks>
 		/// Ensure that the ContentControl will create its children even
