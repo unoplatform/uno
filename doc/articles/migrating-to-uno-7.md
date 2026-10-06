@@ -585,10 +585,9 @@ own target framework, the library's calls included.
   (they remain public in the Skia `Uno.UI` build). There is no known WinAppSDK consumer; if
   you called these from a WinAppSDK head, copy the extension methods into your own project.
 
-- **`VisualTreeHelper.GetChildren` and `INativeWebViewProvider` are no longer public.** Neither
-  exists in WinUI. `VisualTreeHelper.GetChildren(DependencyObject)` and
-  `GetChildren<T>(DependencyObject)` are now internal; enumerate children with the WinUI API
-  instead:
+- **`VisualTreeHelper.GetChildren` is no longer public.** It does not exist in WinUI.
+  `VisualTreeHelper.GetChildren(DependencyObject)` and `GetChildren<T>(DependencyObject)` are
+  now internal; enumerate children with the WinUI API instead:
 
   ```csharp
   var count = VisualTreeHelper.GetChildrenCount(parent);
@@ -597,9 +596,6 @@ own target framework, the library's calls included.
       var child = VisualTreeHelper.GetChild(parent, i);
   }
   ```
-
-  `Microsoft.Web.WebView2.Core.INativeWebViewProvider` is now internal too. Its only member
-  was already internal, so it could not be implemented outside Uno Platform anyway.
 
 ### `FeatureConfiguration` flags removed
 

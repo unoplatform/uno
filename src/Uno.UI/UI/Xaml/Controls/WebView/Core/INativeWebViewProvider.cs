@@ -3,7 +3,8 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.Web.WebView2.Core;
 
-internal interface INativeWebViewProvider
+// Public: the XAML generator emits typeof(INativeWebViewProvider) into app code for add-in [ApiExtension] registrations.
+public interface INativeWebViewProvider
 {
-	INativeWebView CreateNativeWebView(ContentPresenter contentPresenter);
+	internal INativeWebView CreateNativeWebView(ContentPresenter contentPresenter);
 }
