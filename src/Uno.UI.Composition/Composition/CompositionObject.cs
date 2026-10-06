@@ -326,6 +326,12 @@ namespace Microsoft.UI.Composition
 
 		private protected virtual void DisposeInternal()
 		{
+			if (_animations is not { Count: > 0 })
+			{
+				// Nothing to stop, so don't hand the UI thread a no-op that keeps this object alive until it runs.
+				return;
+			}
+
 			if (Dispatching.DispatcherQueue.Main.HasThreadAccess)
 			{
 				StopAllAnimations();
