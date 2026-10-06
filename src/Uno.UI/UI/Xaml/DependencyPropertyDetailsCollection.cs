@@ -1,9 +1,7 @@
 ﻿#nullable enable
 
 using System;
-using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Data;
-using Uno.Buffers;
 using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml
@@ -11,7 +9,7 @@ namespace Microsoft.UI.Xaml
 	/// <summary>
 	/// A <see cref="DependencyPropertyDetails"/> collection
 	/// </summary>
-	partial class DependencyPropertyDetailsCollection : IDisposable
+	partial class DependencyPropertyDetailsCollection
 	{
 		// The owning DependencyObject is held strongly, which is safe only because this collection never
 		// escapes it: the DO <-> collection cycle is then unreachable as a unit and the tracing GC
@@ -24,15 +22,17 @@ namespace Microsoft.UI.Xaml
 		private readonly DependencyProperty? _dataContextProperty;
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
 
-		private readonly static ArrayPool<short> _offsetsPool = ArrayPool<short>.Shared;
-		private readonly static LinearArrayPool<DependencyPropertyDetails?> _pool = LinearArrayPool<DependencyPropertyDetails?>.CreateAutomaticallyManaged(BucketSize, 16);
+		// Open-addressed by DependencyProperty.UniqueId with linear probing, kept at most half full so
+		// probe chains stay short. Arrays are allocated, never pooled: there is no disposal path to return
+		// them, and an array that is replaced while GetAllDetails is being enumerated must stay intact.
+		private DependencyPropertyDetails?[] _entries = _noEntries;
+		private int _count;
 
-		private static readonly DependencyPropertyDetails?[] _empty = Array.Empty<DependencyPropertyDetails?>();
+		// A shared single empty slot rather than an empty array, so a lookup needs no length check. It is never
+		// written to: the first Add always grows.
+		private static readonly DependencyPropertyDetails?[] _noEntries = new DependencyPropertyDetails?[1];
 
-		private DependencyPropertyDetails?[] _entries;
-		private short[]? _entryOffsets;
-
-		private const int BucketSize = 16;
+		private const int MinimumCapacity = 4;
 
 		private DependencyObject Owner => _owner;
 
@@ -44,8 +44,6 @@ namespace Microsoft.UI.Xaml
 			_owner = owner;
 
 			_dataContextProperty = dataContextProperty;
-
-			_entries = _empty;
 		}
 
 		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObject store, DependencyObject otherStore)
@@ -94,22 +92,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		public void Dispose()
-		{
-			var entries = _entries;
-
-			var entriesLength = entries.Length;
-
-			for (var i = 0; i < entriesLength; i++)
-			{
-				entries[i]?.Dispose();
-			}
-
-			ReturnEntriesAndOffsetsToPools();
-
-			_entries = null!;
-		}
-
 		public DependencyPropertyDetails? DataContextPropertyDetails
 			=> _dataContextProperty is { } dataContextProperty
 				? _dataContextPropertyDetails ??= GetPropertyDetails(dataContextProperty)
@@ -133,110 +115,71 @@ namespace Microsoft.UI.Xaml
 
 		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
-			if (_entries is null)
+			var entries = _entries;
+
+			// The capacity is a power of two, so masking is the modulo.
+			var mask = entries.Length - 1;
+			var index = property.UniqueId & mask;
+
+			while (entries[index] is { } entry)
 			{
-				return null;
+				if (ReferenceEquals(entry.Property, property))
+				{
+					return entry;
+				}
+
+				index = (index + 1) & mask;
 			}
 
-			if (forceCreate)
-			{
-				// Since BucketSize is a power of 2 we can shift and mask to divide and modulo respectively
-				// Both operations(div/mod) are still expensive on modern hardware (~20+ cycles)
-				// This is not a concern for RyuJIT or LLVM backends as they will emit optimized code for it.
-				// The main concern is the Mono interpreter which may or may not do so.
-				// See: libdivide and fastmod projects
-				var bucketIndex = property.UniqueId >> 4;
-				var bucketRemainder = property.UniqueId & 15;
-
-				var entryOffsets = _entryOffsets;
-
-				// Offsets have not been initialized or need to be resized
-				if (entryOffsets == null || bucketIndex >= entryOffsets.Length)
-				{
-					// Indexed by bucketIndex alone, so bucketIndex + 1 slots are enough. The pool rounds the
-					// request up to a power-of-two bucket, which already provides amortized growth.
-					var newOffsets = _offsetsPool.Rent(bucketIndex + 1);
-
-					// Since newOffsets is an Int16 array we can memset it with 0xFFs, 0xFFFF is -1, regardless of endianness
-					// This avoids the slow path in Span<T>.Fill()
-					Unsafe.InitBlockUnaligned(ref Unsafe.As<short, byte>(ref newOffsets[0]), 0xFF, (uint)newOffsets.Length * 2);
-
-					if (entryOffsets != null)
-					{
-						entryOffsets.AsSpan().CopyTo(newOffsets);
-
-						_offsetsPool.Return(entryOffsets);
-					}
-
-					_entryOffsets = entryOffsets = newOffsets;
-				}
-
-				var entries = _entries;
-
-				var offset = entryOffsets[bucketIndex];
-
-				// Offset -1 represents an unallocated bucket, -1 was chosen because 0 is a valid offset
-				// We need to resize the entries array to fit a new bucket
-				if (offset == -1)
-				{
-					entryOffsets[bucketIndex] = offset = (short)entries.Length;
-
-					var newEntries = _pool.Rent(entries.Length + BucketSize);
-
-					if (entries != _empty)
-					{
-						entries.AsSpan().CopyTo(newEntries);
-
-						_pool.Return(entries, clearArray: true);
-					}
-
-					_entries = entries = newEntries;
-				}
-
-				ref var propertyEntry = ref entries[offset + bucketRemainder];
-
-				if (propertyEntry == null)
-				{
-					propertyEntry = new DependencyPropertyDetails(property, property == _dataContextProperty);
-				}
-
-				return propertyEntry;
-			}
-			else
-			{
-				if (_entries != _empty)
-				{
-					// See above
-					var bucketIndex = property.UniqueId >> 4;
-
-					if (bucketIndex < _entryOffsets!.Length)
-					{
-						var offset = _entryOffsets[bucketIndex];
-
-						return offset != -1 ? _entries[offset + (property.UniqueId & 15)] : null;
-					}
-				}
-
-				return null;
-			}
+			return forceCreate ? Add(property) : null;
 		}
 
-		private void ReturnEntriesAndOffsetsToPools()
+		private DependencyPropertyDetails Add(DependencyProperty property)
 		{
-			if (_entries != _empty)
+			if ((_count + 1) * 2 > _entries.Length)
 			{
-				_pool.Return(_entries, clearArray: true);
+				Grow();
 			}
 
-			if (_entryOffsets != null)
+			var entries = _entries;
+			var mask = entries.Length - 1;
+			var index = property.UniqueId & mask;
+
+			while (entries[index] is not null)
 			{
-				_offsetsPool.Return(_entryOffsets);
+				index = (index + 1) & mask;
 			}
+
+			_count++;
+
+			return entries[index] = new DependencyPropertyDetails(property, property == _dataContextProperty);
 		}
 
-		internal DependencyPropertyDetails?[] GetAllDetails()
-			// If _entries is null, it means we were already disposed. Gracefully return empty so that the caller doesn't have anything to do.
-			=> _entries ?? _empty;
+		private void Grow()
+		{
+			var oldEntries = _entries;
+			var newEntries = new DependencyPropertyDetails?[Math.Max(MinimumCapacity, oldEntries.Length * 2)];
+			var mask = newEntries.Length - 1;
+
+			foreach (var entry in oldEntries)
+			{
+				if (entry is not null)
+				{
+					var index = entry.Property.UniqueId & mask;
+
+					while (newEntries[index] is not null)
+					{
+						index = (index + 1) & mask;
+					}
+
+					newEntries[index] = entry;
+				}
+			}
+
+			_entries = newEntries;
+		}
+
+		internal DependencyPropertyDetails?[] GetAllDetails() => _entries;
 
 	}
 }
