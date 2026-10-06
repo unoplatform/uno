@@ -11,17 +11,4 @@ public abstract partial class ListViewBaseItemTemplateSettings : DependencyObjec
 	internal ListViewBaseItemTemplateSettings()
 	{
 	}
-
-	public int DragItemsCount
-	{
-		get => (int)GetValue(DragItemsCountProperty);
-		internal set => SetValue(DragItemsCountProperty, value);
-	}
-
-	private static DependencyProperty DragItemsCountProperty { get; } =
-		DependencyProperty.Register(
-			nameof(DragItemsCount),
-			typeof(int),
-			typeof(ListViewBaseItemTemplateSettings),
-			new FrameworkPropertyMetadata(0));
 }
