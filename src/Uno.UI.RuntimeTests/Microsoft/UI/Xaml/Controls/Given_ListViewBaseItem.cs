@@ -12,6 +12,7 @@ using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.DevTools.Input;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -54,7 +55,8 @@ public class Given_ListViewBaseItem
 
 	private static async Task<(ListView List, ListViewItem Item, ListViewBaseItem_StateRecorder Recorder)> Setup(
 		ListViewSelectionMode selectionMode = ListViewSelectionMode.Single,
-		bool isItemClickEnabled = false)
+		bool isItemClickEnabled = false,
+		object[] itemsSource = null)
 	{
 		var list = new ListView
 		{
@@ -63,7 +65,7 @@ public class Given_ListViewBaseItem
 			SelectionMode = selectionMode,
 			IsItemClickEnabled = isItemClickEnabled,
 			ItemContainerStyle = (Style)XamlReader.Load(RecordingStyle),
-			ItemsSource = new[] { "A", "B", "C" },
+			ItemsSource = itemsSource ?? new[] { "A", "B", "C" },
 		};
 
 		WindowHelper.WindowContent = list;
@@ -452,7 +454,7 @@ public class Given_ListViewBaseItem
 		var (list, target, targetRecorder) = await Setup();
 		list.AllowDrop = true;
 		list.CanDragItems = true;
-		// Uno's live reorder opens a gap under the pointer, so items are only dragged over during a plain item drag.
+		// A plain item drag: during an Uno live reorder the dragged container sits under the pointer and skips the DragOver zones.
 		target.AllowDrop = true;
 		var dragged = (ListViewItem)list.ContainerFromIndex(2);
 		await WindowHelper.WaitForIdle();
@@ -528,6 +530,111 @@ public class Given_ListViewBaseItem
 
 		await UITestHelper.WaitFor(() => !list.GetIsHolding(), timeoutMS: 2000, message: "Releasing completes the holding gesture.");
 		Assert.AreEqual("NotDragging", LastState(recorder, DragStates), string.Join(", ", recorder.States));
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Reordering_Over_Dragged_Item_Center_AutoPans()
+	{
+#if HAS_UNO
+		var (list, item, _) = await Setup(itemsSource: Enumerable.Range(0, 20).Select(i => (object)$"Item {i}").ToArray());
+		list.AllowDrop = true;
+		list.CanDragItems = true;
+		list.CanReorderItems = true;
+		// Uno raises drag events only on elements that set AllowDrop themselves.
+		item.AllowDrop = true;
+		await WindowHelper.WaitForIdle();
+		var itemDragOvers = 0;
+		var swallowedByItem = 0;
+		item.AddHandler(UIElement.DragOverEvent, new DragEventHandler((_, e) =>
+		{
+			itemDragOvers++;
+			if (e.Handled || list.IsDragOverItem(item))
+			{
+				swallowedByItem++;
+			}
+		}), true);
+
+		var scroller = list.FindFirstDescendant<ScrollViewer>() ?? throw new InvalidOperationException("No ScrollViewer");
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available");
+		using var mouse = injector.GetMouse();
+
+		// 30 px above the bottom edge: inside the edge-scroll band, and the middle of the line the dragged item is laid out on.
+		var listTop = list.TransformToVisual(null).TransformPoint(default);
+		var target = new Point(Center(item).X, listTop.Y + list.ActualHeight - 30);
+
+		mouse.Press(Center(item));
+		await WindowHelper.WaitForIdle();
+		try
+		{
+			mouse.MoveTo(target, 16);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(100);
+			for (var i = 1; i <= 3; i++)
+			{
+				mouse.MoveTo(new Point(target.X, target.Y + i), 1);
+				await WindowHelper.WaitForIdle();
+			}
+
+			var itemBounds = item.TransformToVisual(null).TransformBounds(new Rect(0, 0, item.ActualWidth, item.ActualHeight));
+			Assert.IsTrue(itemBounds.Contains(new Point(target.X, target.Y + 3)), $"The dragged container is laid out under the pointer ({itemBounds}).");
+			Assert.IsTrue(itemDragOvers > 0, "The dragged container must receive DragOver for the test to be meaningful.");
+			Assert.AreEqual(0, swallowedByItem, "The dragged container must not handle the reorder DragOver.");
+
+			await UITestHelper.WaitFor(() => scroller.VerticalOffset > 0, timeoutMS: 3000, message: "Edge auto-pan must start while the pointer is over the dragged item.");
+		}
+		finally
+		{
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Touch_Holding_Then_Drag_Canceled_Clears_Holding()
+	{
+#if HAS_UNO
+		var (list, item, _) = await Setup();
+		list.AllowDrop = true;
+		list.CanDragItems = true;
+		list.CanReorderItems = true;
+		var dragStarting = false;
+		list.DragItemsStarting += (_, e) =>
+		{
+			dragStarting = true;
+			e.Cancel = true;
+		};
+		await WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available");
+		using var finger = injector.GetFinger();
+
+		var from = Center(item);
+		finger.Press(from);
+		try
+		{
+			await UITestHelper.WaitFor(() => list.GetIsHolding(), timeoutMS: 3000, message: "Touch holding must set the ListViewBase holding state.");
+
+			// Injected timestamps don't follow wall time: step past the touch drag hold delay explicitly.
+			finger.MoveTo(new Point(from.X + 1, from.Y), 1, 400);
+			finger.MoveTo(new Point(from.X + 60, from.Y), 8);
+			await UITestHelper.WaitFor(() => dragStarting, timeoutMS: 3000, message: "The touch drag must raise DragItemsStarting.");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(list.GetIsHolding(), "A canceled drag clears the ListViewBase holding state.");
+		}
+		finally
+		{
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+		}
 #else
 		await Task.CompletedTask;
 #endif
