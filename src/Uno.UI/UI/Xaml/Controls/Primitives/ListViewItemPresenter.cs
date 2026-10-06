@@ -8,12 +8,4 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 public partial class ListViewItemPresenter : ListViewBaseItemPresenter
 {
 	private void OnChromePropertyChanged(DependencyPropertyChangedEventArgs args) => OnPropertyChangedNewStyle(args);
-
-	protected override bool GoToElementStateCore(string stateName, bool useTransitions)
-	{
-		// Return false to indicate we didn't handle the state change.
-		// This allows VisualStateManager to fall through and apply visual states
-		// from the control template's visual state groups.
-		return false;
-	}
 }

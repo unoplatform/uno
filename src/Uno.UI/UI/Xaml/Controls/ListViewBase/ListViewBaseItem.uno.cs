@@ -15,8 +15,5 @@ partial class ListViewBaseItem
 	}
 
 	// Stops every running chrome storyboard and runs its completion action synchronously.
-	private void FlushChromeAnimations()
-	{
-		// TODO Uno: forward to ListViewBaseItemPresenter.FlushChromeAnimations once the chrome is linked (C5).
-	}
+	private void FlushChromeAnimations() => GetItemChrome()?.FlushChromeAnimations();
 }
