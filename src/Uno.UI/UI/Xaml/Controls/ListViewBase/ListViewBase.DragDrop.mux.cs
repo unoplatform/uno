@@ -109,6 +109,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return m_tpPrimaryDraggedContainer != null;
 		}
 
+		// MUX Reference ListViewBase_Partial_Interaction.cpp, lines 3212-3215
+		internal bool IsInExclusiveInteraction() => IsInDragDrop();
+
 		// If a drag and drop operation is in progress, returns the number of items being dragged.
 		// Otherwise, returns 0.
 		internal int DragItemsCount()

@@ -120,6 +120,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnItemContainerDragStarting(UIElement sender, DragStartingEventArgs innerArgs)
 		{
+			// Uno-specific: Uno starts the item drag here, where WinUI's ListViewBaseItem.OnPointerMoved starts it.
+			(sender as ListViewBaseItem)?.OnDragGestureStarting();
+
 			if (ItemsControlFromItemContainer(sender) is ListViewBase that && that.CanDragItems)
 			{
 				// only raise DragItemsCompleted if DragItemsStarting was raised
