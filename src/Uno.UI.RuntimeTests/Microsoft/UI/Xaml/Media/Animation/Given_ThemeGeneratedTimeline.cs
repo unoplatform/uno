@@ -91,6 +91,79 @@ public class Given_ThemeGeneratedTimeline
 	}
 
 	[TestMethod]
+	[DataRow(FillBehavior.HoldEnd, 0.2)]
+	[DataRow(FillBehavior.Stop, 1.0)]
+	public async Task When_Zero_Duration_Ends_With_Final_State(FillBehavior fillBehavior, double expected)
+	{
+		var (root, target) = CreateSetup();
+		await UITestHelper.Load(root);
+
+		var sb = CreateStoryboard(target, isThemeGenerated: true, (TimeSpan.Zero, 0.4), (TimeSpan.FromSeconds(1), 0.2));
+		var animation = (DoubleAnimationUsingKeyFrames)sb.Children[0];
+		animation.Duration = TimeSpan.Zero;
+		animation.FillBehavior = fillBehavior;
+
+		sb.Begin();
+
+		Assert.AreEqual(expected, target.Opacity, 0.001);
+
+		sb.Stop();
+	}
+
+	[TestMethod]
+	public async Task When_Superseded_While_Running_Old_Stops_Writing()
+	{
+		var (root, target) = CreateSetup();
+		await UITestHelper.Load(root);
+
+		var a = CreateStoryboard(target, isThemeGenerated: true, (TimeSpan.FromSeconds(2), 0.2));
+		a.Begin();
+		await Task.Delay(200);
+
+		var b = CreateObjectStoryboard(target, 0.5);
+		b.Begin();
+		Assert.AreEqual(0.5, target.Opacity);
+
+		await Task.Delay(400);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(0.5, target.Opacity, "A still ticks but no longer owns Opacity");
+
+		a.Stop();
+		b.Stop();
+		Assert.AreEqual(1.0, target.Opacity);
+	}
+
+	[TestMethod]
+	public async Task When_Retargeted_Old_Registration_Is_Removed()
+	{
+		var (root, x) = CreateSetup();
+		var y = new Border { Width = 10, Height = 10 };
+		root.Children.Add(y);
+		await UITestHelper.Load(root);
+
+		var t = CreateObjectStoryboard(x, 0.5);
+		var tAnimation = t.Children[0];
+		t.Begin();
+		Assert.AreEqual(0.5, x.Opacity);
+
+		// HoldEnd keeps T registered on X; retargeting must drop that registration.
+		Storyboard.SetTarget(tAnimation, y);
+		t.Begin();
+		Assert.AreEqual(0.5, y.Opacity);
+
+		var u = CreateObjectStoryboard(x, 0.3);
+		u.Begin();
+		Assert.AreEqual(0.3, x.Opacity);
+
+		t.Stop();
+		Assert.AreEqual(1.0, y.Opacity, "T still owns Y and must clear it");
+
+		u.Stop();
+		Assert.AreEqual(1.0, x.Opacity);
+	}
+
+	[TestMethod]
 	public async Task When_Not_Theme_Generated_Begin_Is_Dispatched()
 	{
 		var (root, target) = CreateSetup();
