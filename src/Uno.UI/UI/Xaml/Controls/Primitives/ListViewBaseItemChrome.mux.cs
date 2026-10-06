@@ -936,14 +936,18 @@ partial class ListViewBaseItemPresenter
 	// overwrites to determine whether the selection indicator must rendered inline or overlayed.
 	internal ListViewItemPresenterSelectionIndicatorMode GetSelectionIndicatorMode()
 	{
-		global::System.Diagnostics.Debug.Assert(this is ListViewItemPresenter);
-
 		if (ListViewBaseItemChromeRuntimeFeatures.ForceSelectionIndicatorModeInline)
 		{
 			return ListViewItemPresenterSelectionIndicatorMode.Inline;
 		}
 
 		if (ListViewBaseItemChromeRuntimeFeatures.ForceSelectionIndicatorModeOverlay)
+		{
+			return ListViewItemPresenterSelectionIndicatorMode.Overlay;
+		}
+
+		// WinUI reads the sparse ListViewItemPresenter DP regardless of type, so a GridViewItemPresenter gets its default.
+		if (this is not ListViewItemPresenter)
 		{
 			return ListViewItemPresenterSelectionIndicatorMode.Overlay;
 		}
