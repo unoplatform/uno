@@ -1132,7 +1132,8 @@ partial class ListViewBaseItem
 	{
 		var spListView = GetParentListView();
 
-		if (spListView is not null)
+		// TODO Uno: Uno's live reorder lays the dragged container out under the pointer, where WinUI has an empty gap; don't swallow the reorder DragOver.
+		if (spListView is not null && !spListView.IsLiveReorderPrimaryContainer(this, args))
 		{
 			bool isDragOver = false;
 			Point dragPointRelativeToLVBI = default;
