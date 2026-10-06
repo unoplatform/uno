@@ -5922,5 +5922,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(panel.ActualWidth, container.ActualWidth, 2d,
 				$"Expected ListViewItem to be stretched to the panel width ({panel.ActualWidth}px), but got {container.ActualWidth}.");
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Focused_Only_Focus_And_Drag_States_Are_Emitted()
+		{
+			var style = (Style)XamlReader.Load(
+				"""
+				<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" TargetType="ListViewItem">
+					<Setter Property="IsTabStop" Value="True" />
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="ListViewItem">
+								<Grid x:Name="Root" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+									<VisualStateManager.VisualStateGroups>
+										<VisualStateGroup x:Name="FocusStates">
+											<VisualState x:Name="Focused" />
+											<VisualState x:Name="Unfocused" />
+											<VisualState x:Name="PointerFocused" />
+										</VisualStateGroup>
+										<VisualStateGroup x:Name="ReorderHintStates">
+											<VisualState x:Name="NoReorderHint" />
+										</VisualStateGroup>
+										<VisualStateGroup x:Name="SelectionIndicatorStates">
+											<VisualState x:Name="SelectionIndicatorEnabled" />
+											<VisualState x:Name="SelectionIndicatorDisabled" />
+										</VisualStateGroup>
+										<VisualStateGroup x:Name="DragStates">
+											<VisualState x:Name="NotDragging" />
+										</VisualStateGroup>
+									</VisualStateManager.VisualStateGroups>
+									<ContentPresenter />
+								</Grid>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+				""");
+
+			var sut = new ListView
+			{
+				ItemContainerStyle = style,
+				ItemsSource = new[] { "A", "B" },
+			};
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			await UITestHelper.WaitFor(() => sut.ContainerFromIndex(0) is ListViewItem, timeoutMS: 3000);
+			var item = (ListViewItem)sut.ContainerFromIndex(0);
+			await WindowHelper.WaitForLoaded(item);
+
+			var root = (FrameworkElement)VisualTreeHelper.GetChild(item, 0);
+			var groups = VisualStateManager.GetVisualStateGroups(root);
+			VisualStateGroup Group(string name) => groups.Single(g => g.Name == name);
+
+			item.Focus(FocusState.Keyboard);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Focused", Group("FocusStates").CurrentState?.Name);
+			Assert.AreEqual("NotDragging", Group("DragStates").CurrentState?.Name);
+			Assert.IsNull(Group("ReorderHintStates").CurrentState, "NoReorderHint must not be emitted by the legacy caller.");
+			Assert.IsNull(Group("SelectionIndicatorStates").CurrentState, "Indicator states must not be emitted by the legacy caller.");
+		}
 	}
 }
