@@ -80,7 +80,7 @@ partial class ListViewBaseItemPresenter
 	// FontSize of the CheckMark glyph
 	private const float s_checkMarkGlyphFontSize = 16.0f;
 
-	private const string c_strCheckMarkGlyphStorage = "";
+	private const string c_strCheckMarkGlyphStorage = "\uE73E";
 
 	// Template specializations for string to enum mappings.
 	// Dead WinUI code: the CommonStates, SelectionHintStates and SelectionStates tables.
@@ -215,7 +215,9 @@ partial class ListViewBaseItemPresenter
 		return (scale != 1.0f) && GetUseLayoutRounding();
 	}
 
-	// Dead WinUI code: AddRectangle, AddBorder and AddChromeAssociatedPath (C:262-376) are ported with the rendering layers.
+	// TODO Uno: AddRectangle and AddBorder (C:262-329) come with the chrome rendering layers (C6).
+
+	// Dead WinUI code: AddChromeAssociatedPath (C:331-376).
 
 	// CListViewBaseItemChrome
 
@@ -620,7 +622,8 @@ partial class ListViewBaseItemPresenter
 	{
 		var nullCompositionBrush = false;
 		// Uno-specific: WinUI matches the core XamlCompositionBrushBase type, which every app-defined subclass shares.
-		if (brush is XamlCompositionBrushBase xamlCompositionBrush)
+		// RadialGradientBrush renders without setting CompositionBrush, unlike WinUI's which sets it in OnConnected.
+		if (brush is XamlCompositionBrushBase xamlCompositionBrush && brush is not RadialGradientBrush)
 		{
 			nullCompositionBrush = xamlCompositionBrush.GetValue(XamlCompositionBrushBase.CompositionBrushProperty) is null;
 		}
