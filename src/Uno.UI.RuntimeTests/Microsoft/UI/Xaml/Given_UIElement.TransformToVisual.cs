@@ -79,6 +79,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			var listView = new ListView
 			{
+				// No inline selection indicator, so the content is not offset.
+				SelectionMode = ListViewSelectionMode.None,
 				ItemContainerStyle = new Style(typeof(ListViewItem))
 				{
 					Setters = { new Setter(ListViewItem.PaddingProperty, new Thickness(0)) }
@@ -116,7 +118,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				var container = listView.ContainerFromIndex(index) as ContentControl
 					?? throw new NullReferenceException($"Cannot find the container of item {index}");
-				var border = DependencyObjectExtensions.FindFirstChild<Border>(container)
+				var border = container.FindFirstDescendant<Border>((Border b) => b.Background is SolidColorBrush { Color: var color } && color == Colors.Red)
 					?? throw new NullReferenceException($"Cannot find the materialized border of item {index}");
 
 				var containerToListView = container.TransformToVisual(listView).TransformBounds(new Rect(0, 0, 42, 42));

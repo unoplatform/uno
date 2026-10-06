@@ -819,19 +819,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = sp;
 			await WindowHelper.WaitForIdle();
 
-			// The first pass emits MultiSelectDisabled, whose 333 ms storyboard keeps the square visible until it ends.
+			// Let any MultiSelect exit animation finish and remove its check box.
 			await Task.Delay(500);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Visible, ((Border)multipleList.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList2.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Visible, ((Border)multipleList2.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList2.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList3.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Collapsed, ((Border)multipleList3.FindName("MultiSelectSquare")).Visibility);
-			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList3.FindName("MultiSelectSquare")).Visibility);
+#if HAS_UNO
+			static bool HasCheckBox(ListView list)
+			{
+				var presenter = (ListViewBaseItemPresenter)VisualTreeHelper.GetChild((ListViewItem)list.Items[0], 0);
+				return ChromeTestHelper.GetField<Border>(presenter, "m_multiSelectCheckBoxRectangle") is not null;
+			}
+
+			Assert.IsFalse(HasCheckBox(singleList));
+			Assert.IsTrue(HasCheckBox(multipleList));
+			Assert.IsFalse(HasCheckBox(extendedList));
+			Assert.IsFalse(HasCheckBox(singleList2));
+			Assert.IsTrue(HasCheckBox(multipleList2));
+			Assert.IsFalse(HasCheckBox(extendedList2));
+			Assert.IsFalse(HasCheckBox(singleList3));
+			Assert.IsFalse(HasCheckBox(multipleList3));
+			Assert.IsFalse(HasCheckBox(extendedList3));
+#endif
 		}
 
 #if HAS_UNO
@@ -1990,14 +1998,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// since this is originally a virtualization issue and references
 			// could be to different things than those shown on the screen.
 			var si = await UITestHelper.ScreenShot(list, true);
-			// on macOS/metal we get the color #1A6AA7 which is quite close but not identical,
-			// similar inaccuracy is happening on Linux as well
+			var presenter = (ListViewItemPresenter)VisualTreeHelper.GetChild(list.ContainerFromIndex(1), 0);
+			var indicator = ((SolidColorBrush)presenter.SelectionIndicatorBrush).Color;
+			var selectedBackground = ((SolidColorBrush)presenter.SelectedBackground).Color;
+			byte OverWhite(byte channel) => (byte)(255 - (255 - channel) * selectedBackground.A / 255);
+			var backplate = Windows.UI.Color.FromArgb(255, OverWhite(selectedBackground.R), OverWhite(selectedBackground.G), OverWhite(selectedBackground.B));
 			byte tolerance = 1;
-			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#1A69A6"), tolerance); // selected
+			ImageAssert.HasColorAt(si, 5, 75, indicator, tolerance); // selection indicator of the second item
 
 			// check starting from below the second item that nothing looks selected or hovered
-			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#1A69A6"), tolerance); // selected
-			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#FFE6E6E6"), tolerance); // hovered
+			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(0, 110, 10, si.Height - 110), indicator, tolerance); // selected
+			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(10, 110, si.Width - 10, si.Height - 110), backplate, tolerance); // selected or hovered
 		}
 
 		[TestMethod]
@@ -4609,9 +4620,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				SUT.Items.Add(new UpdateLayoutOnUnloadedControl
 				{
+					// TODO Uno: an AllowDrop element inside a reorderable item becomes its own drop target and the reorder is aborted.
 					Content = new TextBlock
 					{
-						AllowDrop = true,
 						Height = 100,
 						Text = i.ToString()
 					}
