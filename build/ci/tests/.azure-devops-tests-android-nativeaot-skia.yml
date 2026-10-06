@@ -9,7 +9,7 @@ jobs:
 ##
 
 - job: Android_NativeAOT_Tests
-  displayName: ' ' ## Name is concatenated with the matrix group name
+  displayName: 'Skia' ## Name is concatenated with the matrix group name
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
@@ -105,7 +105,7 @@ jobs:
       UNO_UITEST_APP_ID=uno.platform.samplesapp.skia.nativeaot \
         $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
 
-    displayName: Run Android+NativeAOT Skia Tests
+    displayName: Run Android+NativeAOT Skia Runtime Tests
 
   - task: PublishTestResults@2
     condition: always()

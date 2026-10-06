@@ -11,9 +11,8 @@ parameters:
   jobPrefix: 'Skia_Linux'
   testRunTitle: 'Linux Skia Runtime Tests'
   testResultLabel: ''
-  runtimeTestsDisplayName: 'Runtime Tests'
-  # Runs the app on the WebGPU backend; the agents have no GPU, so wgpu uses Mesa's lavapipe software Vulkan.
-  webGpu: false
+  # 'WebGPU' runs the app on the WebGPU backend; the agents have no GPU, so wgpu uses Mesa's lavapipe software Vulkan.
+  renderer: 'Skia'
 
 jobs:
 
@@ -63,7 +62,7 @@ jobs:
         ArtifactType: Container
 
 - job: ${{ parameters.jobPrefix }}_Runtime_Tests_Build
-  displayName: '${{ parameters.runtimeTestsDisplayName }}'
+  displayName: '${{ parameters.renderer }} Runtime Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
 
@@ -100,7 +99,7 @@ jobs:
 
   - template: ../templates/dotnet-install.yml
   - template: ../templates/linux-install-deps.yml
-    ${{ if eq(parameters.webGpu, true) }}:
+    ${{ if eq(parameters.renderer, 'WebGPU') }}:
       parameters:
         packages: 'xvfb fluxbox vlc libvlc-dev libgtk-3-dev libwebkit2gtk-4.1-dev mesa-vulkan-drivers'
 
@@ -118,12 +117,12 @@ jobs:
   - script: |
       chmod +x build/test-scripts/linux-skia-runtime-tests.sh
       build/test-scripts/linux-skia-runtime-tests.sh ${{ parameters.useXvfb }}
-    displayName: Run Runtime Tests
+    displayName: Run ${{ parameters.renderer }} Runtime Tests
     env:
       SamplesAppArtifactPath: $(SamplesAppArtifactPath)
       SamplesAppArtifactName: $(SamplesAppArtifactName)
       UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
-      ${{ if eq(parameters.webGpu, true) }}:
+      ${{ if eq(parameters.renderer, 'WebGPU') }}:
         UNO_WEBGPU: 1
         UNO_WEBGPU_LOG: warn
 

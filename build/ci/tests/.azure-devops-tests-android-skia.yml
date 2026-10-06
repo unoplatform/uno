@@ -3,7 +3,8 @@ parameters:
   XAML_FLAVOR_BUILD: ''
   jobTimeoutInMinutes: 45
   jobName: 'Android_Tests'
-  displayName: ' ' ## Concatenated with the matrix group name
+  # Names the job and its test run; the job name is concatenated with the matrix group name.
+  renderer: 'Skia'
   testResultLabel: ''
   # Intent extras handed to the app, e.g. '-e UNO_WEBGPU 1'.
   appExtras: ''
@@ -16,7 +17,7 @@ jobs:
 ##
 
 - job: ${{ parameters.jobName }}
-  displayName: '${{ parameters.displayName }}'
+  displayName: '${{ parameters.renderer }}'
   timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
   dependsOn: Skia_Android_Tests_Build
@@ -112,7 +113,7 @@ jobs:
       chmod +x $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
       $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
 
-    displayName: Run Android Skia Tests
+    displayName: Run Android ${{ parameters.renderer }} Runtime Tests
     env:
       UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
       UNO_TEST_APP_EXTRAS: ${{ parameters.appExtras }}
@@ -120,7 +121,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Android Skia${{ parameters.testResultLabel }} Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testRunTitle: 'Android ${{ parameters.renderer }} Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/*TestResult*.xml'
       failTaskOnFailedTests: true
