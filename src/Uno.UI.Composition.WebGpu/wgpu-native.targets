@@ -139,10 +139,11 @@
 	     app straight out of bin/. Guard on OutDir (AfterTargets=Build also fires in the outer multi-TFM pass where
 	     OutDir is empty → an unguarded Copy throws MSB3023). Only for app heads (OutputType != Library): a referenced
 	     library would otherwise leave a loose desktop .so next to its dll, which .NET-Android harvests transitively and
-	     packs into every APK lib/<abi>/, shadowing the real per-ABI bionic binaries (dlopen then fails on libdl.so.2). -->
-	<Target Name="ProvisionWgpuNative" AfterTargets="Build" DependsOnTargets="_FetchWgpuNative">
+	     packs into every APK lib/<abi>/, shadowing the real per-ABI bionic binaries (dlopen then fails on libdl.so.2).
+	     The Library check sits on the target so a library never fetches a native it would not copy. -->
+	<Target Name="ProvisionWgpuNative" AfterTargets="Build" DependsOnTargets="_FetchWgpuNative" Condition="'$(OutputType)' != 'Library'">
 		<Message Importance="high" Text="ProvisionWgpuNative: asset=$(_WgpuAsset) outputType=$(OutputType) -> $(OutDir)$(_WgpuOutputFile)" />
-		<Copy Condition="'$(_WgpuAsset)' != '' And '$(OutDir)' != '' And '$(OutputType)' != 'Library' And '$(_UnoWebGpuNativeUnused)' != 'true'"
+		<Copy Condition="'$(_WgpuAsset)' != '' And '$(OutDir)' != '' And '$(_UnoWebGpuNativeUnused)' != 'true'"
 			SourceFiles="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" DestinationFiles="$(OutDir)$(_WgpuOutputFile)" SkipUnchangedFiles="true" />
 	</Target>
 
