@@ -7,6 +7,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	public sealed partial class ObjectKeyFrameCollection : DependencyObjectCollection<ObjectKeyFrame>, IList<ObjectKeyFrame>, IEnumerable<ObjectKeyFrame>
 	{
 		public ObjectKeyFrameCollection()
+			: base(null, false)
 		{
 		}
 
