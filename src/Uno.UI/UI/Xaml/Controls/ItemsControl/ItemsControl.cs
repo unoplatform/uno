@@ -1669,7 +1669,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private protected virtual void Refresh() { }
 
-		private protected void ChangeSelectorItemsVisualState(bool useTransitions)
+		internal void ChangeSelectorItemsVisualState(bool useTransitions)
 		{
 			foreach (var child in GetItemsPanelChildren())
 			{
