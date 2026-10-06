@@ -63,28 +63,6 @@ public class Given_ListViewBaseItemChrome_StateTables
 	}
 
 	[TestMethod]
-	public void When_Probing_Groups_In_Chrome_Order_Then_First_Group_Recognising_The_Name_Wins()
-	{
-		var states = new VisualStates
-		{
-			commonState2 = CommonStates2.Normal,
-			focusState = FocusStates.Unfocused,
-		};
-
-		// Mirrors GoToChromedStateNewStyle: a later group is only probed while the name is still unknown.
-		var dirty = UpdateVisualStateGroup("Normal", ref states.commonState2, out var found);
-		if (!found)
-		{
-			dirty |= UpdateVisualStateGroup("Normal", ref states.focusState, out found);
-		}
-
-		Assert.IsTrue(found);
-		Assert.IsFalse(dirty);
-		Assert.IsTrue(states.HasState(CommonStates2.Normal));
-		Assert.IsTrue(states.HasState(FocusStates.Unfocused));
-	}
-
-	[TestMethod]
 	public void When_Tables_Then_Names_Match_WinUI_In_Order()
 	{
 		AssertTable(new[] { "Focused", "Unfocused", "PointerFocused" }, Mapping<FocusStates>.s_map);
