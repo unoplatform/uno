@@ -25,6 +25,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	// State set and used inside the class
 	private bool _borderPathValid;
 	private bool _backgroundPathValid;
+	private bool _isRebuildingPaths;
 	private CompositionSpriteShape? _backgroundShape; // Never null after _backgroundBrush is set
 	private CompositionSpriteShape? _borderShape; // Never null after _borderBrush is set
 	private CompositionClip? _backgroundClip;
@@ -74,6 +75,13 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 	{
+		// The paths are rebuilt lazily, often mid-render, from inputs whose change already invalidated this visual.
+		// Raising it again would drop the ancestors' cached children pictures and request a frame for nothing.
+		if (_isRebuildingPaths)
+		{
+			return;
+		}
+
 		// Call base implementation - Visual calls Compositor.InvalidateRender().
 		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
 
@@ -207,6 +215,19 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 			return;
 		}
 
+		_isRebuildingPaths = true;
+		try
+		{
+			RebuildPathsAndCornerClip();
+		}
+		finally
+		{
+			_isRebuildingPaths = false;
+		}
+	}
+
+	private void RebuildPathsAndCornerClip()
+	{
 		// clear old state
 		_childClipCausedByCornerRadius = null;
 		_backgroundClip = null;
