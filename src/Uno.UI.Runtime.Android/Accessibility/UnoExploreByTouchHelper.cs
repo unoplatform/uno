@@ -1828,7 +1828,16 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return HostId;
 	}
 
+	// A repeated item's occurrences share one item peer, so act on the occurrence this virtual view represents.
 	protected override bool OnPerformActionForVirtualView(int virtualViewId, int action, Bundle? arguments)
+		=> TryGetVisiblePeer(virtualViewId, out var peer) &&
+			peer is ItemAutomationPeer itemPeer &&
+			TryGetElement(virtualViewId, out var element) &&
+			element is UIElement occurrence
+				? itemPeer.WithOccurrenceContainer(occurrence, () => PerformActionForVirtualView(virtualViewId, action, arguments))
+				: PerformActionForVirtualView(virtualViewId, action, arguments);
+
+	private bool PerformActionForVirtualView(int virtualViewId, int action, Bundle? arguments)
 	{
 		if (!TryGetVisiblePeer(virtualViewId, out var peer))
 		{
