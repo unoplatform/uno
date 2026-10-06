@@ -13,7 +13,7 @@ public class Given_RuntimeHostPackages
 	/// <summary>Runtime projects that are libraries shared by the hosts rather than hosts themselves.</summary>
 	private static readonly string[] NotHosts = ["Uno.UI.Runtime", "Uno.UI.Runtime.Win32.Support"];
 
-	private static readonly string[] ExpectedHosts = ["Android", "AppleUIKit", "BrowserWasm", "Headless", "Linux.FrameBuffer", "MacOS", "Win32", "X11"];
+	private static readonly string[] ExpectedHosts = ["Android", "AppleUIKit", "Headless", "Linux.FrameBuffer", "MacOS", "WebAssembly.Browser", "Win32", "X11"];
 
 	public static IEnumerable<object[]> Hosts =>
 		Directory.EnumerateDirectories(RepositoryPaths.Get("src"), "Uno.UI.Runtime.*")
