@@ -363,8 +363,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			if (IsListViewBaseItem)
 			{
-				// TODO Uno: the ListViewBase callers move to ChangeSelectorItemsVisualState / ClearInteractionState.
-				UpdateVisualState(useTransitions);
+				// ListViewBaseItem drives its states through ChangeVisualState.
 				return;
 			}
 
