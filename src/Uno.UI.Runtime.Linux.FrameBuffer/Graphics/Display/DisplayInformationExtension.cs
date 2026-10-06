@@ -71,7 +71,9 @@ namespace Uno.UI.Runtime
 		}
 
 		public DisplayOrientations CurrentOrientation
-			=> DisplayOrientations.Landscape;
+			=> FrameBufferWindowWrapper.Instance.Orientation is DisplayOrientations.None
+				? DisplayOrientations.Landscape
+				: FrameBufferWindowWrapper.Instance.Orientation;
 
 		public uint ScreenHeightInRawPixels
 			=> _details.ScreenHeightInRawPixels;
