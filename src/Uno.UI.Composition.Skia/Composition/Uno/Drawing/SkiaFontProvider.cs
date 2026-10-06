@@ -1,7 +1,9 @@
 ﻿#nullable enable
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using SkiaSharp;
 using Windows.UI.Text;
@@ -40,6 +42,55 @@ internal sealed class SkiaFontProvider : IFontProvider
 	public IFont? CreateFont(byte[] data, string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
 		using var skData = SKData.CreateCopy(data);
+		return CreateFont(skData, familyNameHint, weight, stretch, style, fontSize);
+	}
+
+	public IFontFile LoadFontFile(Stream stream) => new SkiaFontFile(ReadToNativeData(stream));
+
+	private static SKData ReadToNativeData(Stream stream)
+	{
+		// Straight into native memory: a managed staging copy would be a large-object-heap array per font file,
+		// charged against the gen2 budget on the startup preload path.
+		if (stream.CanSeek)
+		{
+			var length = checked((int)(stream.Length - stream.Position));
+			var data = SKData.Create(length);
+			try
+			{
+				unsafe
+				{
+					stream.ReadExactly(new Span<byte>((void*)data.Data, length));
+				}
+
+				return data;
+			}
+			catch
+			{
+				data.Dispose();
+				throw;
+			}
+		}
+
+		using var native = new SKDynamicMemoryWStream();
+		var buffer = ArrayPool<byte>.Shared.Rent(81920);
+		try
+		{
+			int read;
+			while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+			{
+				native.Write(buffer, read);
+			}
+		}
+		finally
+		{
+			ArrayPool<byte>.Shared.Return(buffer);
+		}
+
+		return native.DetachAsData();
+	}
+
+	private static IFont? CreateFont(SKData skData, string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+	{
 		var typeface = string.IsNullOrEmpty(familyNameHint)
 			? SKTypeface.FromData(skData, 0)
 			: SelectFaceByFamily(skData, familyNameHint);
@@ -281,6 +332,19 @@ internal sealed class SkiaFontProvider : IFontProvider
 		{
 			return typeface;
 		}
+	}
+
+	/// <summary>A font file held in one native buffer; every typeface built from it references that buffer rather than copying it.</summary>
+	private sealed class SkiaFontFile : IFontFile
+	{
+		private readonly SKData _data;
+
+		public SkiaFontFile(SKData data) => _data = data;
+
+		public IFont? CreateFont(string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+			=> SkiaFontProvider.CreateFont(_data, familyNameHint, weight, stretch, style, fontSize);
+
+		public void Dispose() => _data.Dispose();
 	}
 }
 
