@@ -503,6 +503,60 @@ namespace Microsoft.UI.Xaml
 		private static bool IsLessThanAndNotCloseTo(double a, double b) => a < (b - SIZE_EPSILON);
 		private static bool IsCloseTo(double a, double b) => Math.Abs(a - b) < SIZE_EPSILON;
 
+		// MUX Reference framework.cpp, tag winui3/release/2.5.1, lines 2113-2171
+
+		// Returns true when an explicit horizontal Stretch alignment needs to actually be treated like a Left alignment by either our layout engine or DManip.
+		internal static bool IsStretchHorizontalAlignmentTreatedAsLeft(HorizontalAlignment ha, Size clientSize, Size inkSize)
+			=> ha == HorizontalAlignment.Stretch && inkSize.Width > clientSize.Width;
+
+		// Returns true when an explicit vertical Stretch alignment needs to actually be treated like a Top alignment by either our layout engine or DManip.
+		internal static bool IsStretchVerticalAlignmentTreatedAsTop(VerticalAlignment va, Size clientSize, Size inkSize)
+			=> va == VerticalAlignment.Stretch && inkSize.Height > clientSize.Height;
+
+		internal static void ComputeAlignmentOffset(HorizontalAlignment ha, VerticalAlignment va, Size clientSize, Size inkSize, out double offsetX, out double offsetY)
+		{
+			//this is to degenerate Stretch to Top-Left in case when clipping is about to occur
+			//if we need it to be Center instead, simply remove these 2 ifs
+			if (IsStretchHorizontalAlignmentTreatedAsLeft(ha, clientSize, inkSize))
+			{
+				ha = HorizontalAlignment.Left;
+			}
+
+			if (IsStretchVerticalAlignmentTreatedAsTop(va, clientSize, inkSize))
+			{
+				va = VerticalAlignment.Top;
+			}
+			//end of degeneration of Stretch to Top-Left
+
+			if (ha == HorizontalAlignment.Center
+				|| ha == HorizontalAlignment.Stretch)
+			{
+				offsetX = (clientSize.Width - inkSize.Width) / 2;
+			}
+			else if (ha == HorizontalAlignment.Right)
+			{
+				offsetX = clientSize.Width - inkSize.Width;
+			}
+			else
+			{
+				offsetX = 0;
+			}
+
+			if (va == VerticalAlignment.Center
+				|| va == VerticalAlignment.Stretch)
+			{
+				offsetY = (clientSize.Height - inkSize.Height) / 2;
+			}
+			else if (va == VerticalAlignment.Bottom)
+			{
+				offsetY = clientSize.Height - inkSize.Height;
+			}
+			else
+			{
+				offsetY = 0;
+			}
+		}
+
 		private void InnerArrangeCore(Rect finalRect)
 		{
 			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: InnerArrangeCore({finalRect})");
