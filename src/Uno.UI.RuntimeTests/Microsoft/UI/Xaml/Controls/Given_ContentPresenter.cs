@@ -521,6 +521,55 @@ public partial class Given_ContentPresenter
 		Assert.IsFalse(reference.IsAlive);
 	}
 
+	[TestMethod]
+	public async Task When_Sentinel_Child_At_Index_0_Template_Root_Used_For_Layout()
+	{
+		var root = new Border() { Width = 80, Height = 30 };
+		var SUT = new SentinelContentPresenter() { Content = root };
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreSame(SUT.Sentinel, VisualTreeHelper.GetChild(SUT, 0));
+		Assert.AreSame(root, VisualTreeHelper.GetChild(SUT, 1));
+		Assert.AreEqual(new Size(80, 30), SUT.DesiredSize);
+		Assert.AreEqual(80, root.ActualWidth);
+		Assert.AreEqual(30, root.ActualHeight);
+		Assert.AreEqual(0, SUT.Sentinel.ActualWidth);
+	}
+
+	[TestMethod]
+	public async Task When_CornerRadius_Changed_Hook_Fires()
+	{
+		var SUT = new SentinelContentPresenter();
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+		SUT.CornerRadius = new CornerRadius(7);
+
+		Assert.AreEqual(1, SUT.CornerRadiusChangedCount);
+		Assert.AreEqual(new CornerRadius(7), SUT.LastNewCornerRadius);
+	}
+
+	private class SentinelContentPresenter : ContentPresenter
+	{
+		public Border Sentinel { get; } = new Border() { Width = 500, Height = 500 };
+
+		public int CornerRadiusChangedCount { get; private set; }
+
+		public CornerRadius LastNewCornerRadius { get; private set; }
+
+		public SentinelContentPresenter() => AddChild(Sentinel);
+
+		private protected override void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
+		{
+			CornerRadiusChangedCount++;
+			LastNewCornerRadius = newValue;
+			base.OnCornerRadiusChanged(oldValue, newValue);
+		}
+	}
+
 	public class AlignmentTestConfiguration
 	{
 		public AlignmentTestConfiguration(HorizontalAlignment outerHorizontal, VerticalAlignment outerVertical, HorizontalAlignment innerHorizontal, VerticalAlignment innerVertical, Point expectedPosition, Size expectedSize)
