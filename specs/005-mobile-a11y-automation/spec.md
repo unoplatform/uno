@@ -425,3 +425,18 @@ action suites against the same control matrix; complete the manual AT smoke matr
   introducing a parallel public accessibility object model.
 - Manual TalkBack and VoiceOver validation remains necessary for announcement quality even
   after native tree and event behavior is automated.
+
+## Known Limitations
+
+- **KL-001 - iOS exposes a composite item and its text as separate VoiceOver stops.** The iOS
+  adapter publishes the promoted peer tree as one flat `accessibilityElements` list on the
+  render view, so an element VoiceOver should treat as a single item (such as a list item) and
+  the text peers inside it become sibling elements. Swiping visits the item and then each of
+  its text descendants, and collection containers such as a `ListView` are stops of their own.
+  Native iOS presents a table cell as one element whose label combines its texts, and Android
+  keeps the hierarchy, so TalkBack folds plain text into the actionable parent. The shared tree
+  intentionally keeps WinUI's text children of default item content, so this behavior is
+  retained for now. The deferred iOS change is to hide the descendants of such items when
+  flattening, fold descendant text the item's label does not already contain into that label,
+  and stop exposing pure containers as elements, with fails-before/passes-after coverage per
+  FR-040.
