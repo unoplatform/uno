@@ -24,7 +24,9 @@ partial class ListViewItemPresenter
 		set => SetSelectionCheckMarkVisualEnabledValue(value);
 	}
 
-	[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	private static bool GetSelectionCheckMarkVisualEnabledDefaultValue() => ListViewBaseItemChrome.GetDefaultSelectionCheckMarkVisualEnabled();
+
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty SelectionCheckMarkVisualEnabledProperty { get; } = CreateSelectionCheckMarkVisualEnabledProperty();
 
 	#endregion
@@ -232,6 +234,7 @@ partial class ListViewItemPresenter
 		set => SetSelectedBorderThicknessValue(value);
 	}
 
+	// Instances get the rounded/non-rounded default from ListViewBaseItemPresenter.GetDefaultValue2.
 	private static Thickness GetSelectedBorderThicknessDefaultValue() => new(0);
 
 	[GeneratedDependencyProperty(LocalCache = false, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
@@ -266,7 +269,9 @@ partial class ListViewItemPresenter
 		set => SetDragOpacityValue(value);
 	}
 
-	[GeneratedDependencyProperty(DefaultValue = 0.8f, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	private static double GetDragOpacityDefaultValue() => ListViewBaseItemChrome.GetDefaultDragOpacity();
+
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty DragOpacityProperty { get; } = CreateDragOpacityProperty();
 
 	#endregion
@@ -282,7 +287,9 @@ partial class ListViewItemPresenter
 		set => SetReorderHintOffsetValue(value);
 	}
 
-	[GeneratedDependencyProperty(DefaultValue = 10.0, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	private static double GetReorderHintOffsetDefaultValue() => ListViewBaseItemChrome.GetDefaultListViewItemReorderHintOffset();
+
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty ReorderHintOffsetProperty { get; } = CreateReorderHintOffsetProperty();
 
 	#endregion
