@@ -3683,6 +3683,7 @@
 		  <Member fullName="Uno.UI.Runtime.Skia.Android" reason="Assembly renamed Uno.UI.Runtime.Skia.Android -> Uno.UI.Runtime.Android (breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Runtime.Skia.AppleUIKit" reason="Assembly renamed Uno.UI.Runtime.Skia.AppleUIKit -> Uno.UI.Runtime.AppleUIKit (breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Runtime.Skia.Linux.FrameBuffer" reason="Assembly renamed Uno.UI.Runtime.Skia.Linux.FrameBuffer -> Uno.UI.Runtime.Linux.FrameBuffer (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.MacOS" reason="Assembly renamed Uno.UI.Runtime.Skia.MacOS -> Uno.UI.Runtime.MacOS (breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Runtime.Skia.WebAssembly.Browser" reason="Assembly renamed Uno.UI.Runtime.Skia.WebAssembly.Browser -> Uno.UI.Runtime.WebAssembly.Browser (breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Runtime.Skia.Win32" reason="Assembly renamed Uno.UI.Runtime.Skia.Win32 -> Uno.UI.Runtime.Win32 (breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Runtime.Skia.Win32.Support" reason="Assembly renamed Uno.UI.Runtime.Skia.Win32.Support -> Uno.UI.Runtime.Win32.Support (breaking changes for 7.0)" />
