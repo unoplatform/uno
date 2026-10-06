@@ -597,6 +597,11 @@ own target framework, the library's calls included.
   }
   ```
 
+- **`INativeWebViewProvider` moved to `Uno.Web.WebView2.Core`.** It is Uno-only, so it no longer
+  sits in the WinUI `Microsoft.Web.WebView2.Core` namespace. Code that refers to it by name, such
+  as `typeof(INativeWebViewProvider)` in an `ApiExtensibility` registration, needs
+  `using Uno.Web.WebView2.Core;`.
+
 ### `FeatureConfiguration` flags removed
 
 The native-only flags below no longer exist; delete the calls — behavior is the unified

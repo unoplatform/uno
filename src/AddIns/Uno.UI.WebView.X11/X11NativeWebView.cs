@@ -7,6 +7,7 @@ using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Web.WebView2.Core;
 using Windows.ApplicationModel;
 using GLib;
 using Microsoft.Extensions.Logging;

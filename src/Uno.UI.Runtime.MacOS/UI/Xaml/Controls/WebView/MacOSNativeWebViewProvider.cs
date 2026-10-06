@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls;
+using Uno.Web.WebView2.Core;
 
 namespace Uno.UI.Runtime.MacOS;
 

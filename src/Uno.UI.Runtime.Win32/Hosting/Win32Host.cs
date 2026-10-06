@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Web.WebView2.Core;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Graphics.Display;
 using Windows.Media.Playback;

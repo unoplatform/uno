@@ -15,6 +15,7 @@ using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Controls;
+using Uno.Web.WebView2.Core;
 using Windows.Storage;
 using Windows.Win32;
 
