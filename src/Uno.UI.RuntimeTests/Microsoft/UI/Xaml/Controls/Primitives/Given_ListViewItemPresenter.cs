@@ -2,6 +2,7 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -199,27 +200,68 @@ public class Given_ListViewItemPresenter
 		SetBackplate(presenter, backplate);
 		presenter.AddChild(backplate, 0);
 
+		var outerBorder = new Border();
+		SetOuterBorder(presenter, outerBorder);
+		presenter.AddChild(outerBorder);
+
 		var first = new Grid { Width = 10, Height = 10 };
 		presenter.Content = first;
 
 		WindowHelper.WindowContent = presenter;
-		await WindowHelper.WaitForLoaded(presenter);
+		await WindowHelper.WaitForLoaded(presenter, p => p.IsLoaded);
 
-		var children = presenter.GetChildren();
-		Assert.AreEqual(2, children.Count);
-		Assert.AreSame(backplate, children[0]);
-		Assert.AreSame(first, children[1]);
+		AssertChildren(presenter, backplate, first, outerBorder);
 		Assert.AreSame(first, presenter.GetTemplateChildIfExists());
 
 		var second = new Grid { Width = 20, Height = 20 };
 		presenter.Content = second;
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(2, children.Count);
-		Assert.AreSame(backplate, children[0]);
-		Assert.AreSame(second, children[1]);
+		AssertChildren(presenter, backplate, second, outerBorder);
 		Assert.IsNull(first.Parent);
 		Assert.AreSame(second, presenter.GetTemplateChildIfExists());
+	}
+
+	[TestMethod]
+	public async Task When_Template_Child_Added_Without_Backplate_Then_Inserted_First()
+	{
+		var presenter = new ListViewItemPresenter();
+		presenter.SetChromedListViewBaseItem(new ListViewItem());
+
+		var outerBorder = new Border();
+		SetOuterBorder(presenter, outerBorder);
+		presenter.AddChild(outerBorder);
+
+		var first = new Grid { Width = 10, Height = 10 };
+		presenter.Content = first;
+
+		WindowHelper.WindowContent = presenter;
+		await WindowHelper.WaitForLoaded(presenter, p => p.IsLoaded);
+
+		AssertChildren(presenter, first, outerBorder);
+		Assert.AreSame(first, presenter.GetTemplateChildIfExists());
+
+		var second = new Grid { Width = 20, Height = 20 };
+		presenter.Content = second;
+		await WindowHelper.WaitForIdle();
+
+		AssertChildren(presenter, second, outerBorder);
+		Assert.IsNull(first.Parent);
+		Assert.AreSame(second, presenter.GetTemplateChildIfExists());
+	}
+
+	[TestMethod]
+	public void When_RadialGradientBrush_Then_Not_Null_Composition_Brush()
+	{
+		var radialGradientBrush = new RadialGradientBrush
+		{
+			GradientStops = { new GradientStop { Color = Microsoft.UI.Colors.Red, Offset = 0 } },
+		};
+
+		Assert.IsFalse(ListViewBaseItemPresenter.IsNullCompositionBrush(radialGradientBrush));
+		Assert.IsTrue(ListViewBaseItemPresenter.IsNullCompositionBrush(new TestCompositionBrush()));
+		Assert.IsFalse(ListViewBaseItemPresenter.IsNullCompositionBrush(new SolidColorBrush(Microsoft.UI.Colors.Red)));
+		Assert.IsFalse(ListViewBaseItemPresenter.IsNullCompositionBrush(null));
 	}
 
 	[TestMethod]
@@ -298,10 +340,27 @@ public class Given_ListViewItemPresenter
 			</ControlTemplate>
 			""");
 
-	// The backplate is created by the rounded chrome; set it directly to pin the template child index rule.
+	// The backplate and outer border are created by the chrome rendering; set them directly to pin the template child index rule.
 	private static void SetBackplate(ListViewBaseItemPresenter presenter, Border backplate)
+		=> SetChromeField(presenter, "m_backplateRectangle", backplate);
+
+	private static void SetOuterBorder(ListViewBaseItemPresenter presenter, Border outerBorder)
+		=> SetChromeField(presenter, "m_outerBorder", outerBorder);
+
+	private static void SetChromeField(ListViewBaseItemPresenter presenter, string name, Border value)
 		=> typeof(ListViewBaseItemPresenter)
-			.GetField("m_backplateRectangle", BindingFlags.NonPublic | BindingFlags.Instance)!
-			.SetValue(presenter, backplate);
+			.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)!
+			.SetValue(presenter, value);
+
+	private static void AssertChildren(ListViewBaseItemPresenter presenter, params UIElement[] expected)
+	{
+		CollectionAssert.AreEqual(expected, presenter.GetChildren().ToArray());
+		CollectionAssert.AreEqual(expected.Select(e => e.Visual).ToArray(), presenter.Visual.Children.ToArray());
+	}
+
+	// Unconnected app-defined XamlCompositionBrushBase: no CompositionBrush yet.
+	private sealed class TestCompositionBrush : XamlCompositionBrushBase
+	{
+	}
 }
 #endif
