@@ -589,7 +589,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		set => SetCornerRadiusValue(value);
 	}
 
-	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
+	private protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
 		this.UpdateCornerRadius();
 	}
@@ -1098,7 +1098,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		var child = this.FindFirstChild();
+		var child = GetTemplateChildNoRef();
 
 		if (child != null)
 		{
@@ -1196,7 +1196,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		var padding = Padding;
 		var borderThickness = BorderThickness;
 
-		var child = this.FindFirstChild();
+		var child = GetTemplateChildNoRef();
 		Size measuredSize = default;
 		if (child is not null)
 		{
