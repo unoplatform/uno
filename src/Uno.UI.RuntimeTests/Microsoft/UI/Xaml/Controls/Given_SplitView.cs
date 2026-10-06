@@ -179,6 +179,27 @@ public class Given_SplitView
 	[RunsOnUIThread]
 	[DataRow(false)]
 	[DataRow(true)]
+	public async Task When_Open_Overlay_Switches_To_Inline_Content_Moves_Beside_Pane(bool useControlsResourcesStyle)
+	{
+		// Mirrors the SamplesApp shell: an open Overlay pane that an AdaptiveTrigger later turns Inline.
+		var sut = CreateColoredSplitView(SplitViewDisplayMode.Overlay, SplitViewPanePlacement.Left, useControlsResourcesStyle);
+		sut.IsPaneOpen = true;
+
+		await UITestHelper.Load(sut);
+
+		sut.DisplayMode = SplitViewDisplayMode.Inline;
+		await WaitForPaneAnimationsToSettle(sut);
+
+		var content = (FrameworkElement)sut.Content;
+		var contentLeft = content.TransformToVisual(sut).TransformPoint(default).X;
+		Assert.AreEqual(TestOpenPaneLength, contentLeft, 0.5);
+		Assert.AreEqual(SplitViewWidth - TestOpenPaneLength, content.ActualWidth, 0.5);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(false)]
+	[DataRow(true)]
 	public async Task When_LightDismissOverlayMode_Changes_OverlayVisibilityStates(bool useControlsResourcesStyle)
 	{
 		var sut = CreateColoredSplitView(SplitViewDisplayMode.Overlay, SplitViewPanePlacement.Left, useControlsResourcesStyle);
