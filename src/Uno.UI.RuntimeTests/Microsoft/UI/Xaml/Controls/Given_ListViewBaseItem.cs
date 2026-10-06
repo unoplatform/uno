@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -34,25 +33,6 @@ public class Given_ListViewBaseItem
 {
 	private static readonly string[] CommonStates = { "Normal", "PointerOver", "Pressed", "Selected", "PointerOverSelected", "PressedSelected" };
 
-	private const string RecordingStyle =
-		"""
-		<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			   xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls"
-			   TargetType="ListViewItem">
-			<Setter Property="IsTabStop" Value="True" />
-			<Setter Property="Height" Value="60" />
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="ListViewItem">
-						<local:ListViewBaseItem_StateRecorder Background="Transparent">
-							<ContentPresenter />
-						</local:ListViewBaseItem_StateRecorder>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-		""";
-
 	private static async Task<(ListView List, ListViewItem Item, ListViewBaseItem_StateRecorder Recorder)> Setup(
 		ListViewSelectionMode selectionMode = ListViewSelectionMode.Single,
 		bool isItemClickEnabled = false,
@@ -64,7 +44,7 @@ public class Given_ListViewBaseItem
 			Height = 300,
 			SelectionMode = selectionMode,
 			IsItemClickEnabled = isItemClickEnabled,
-			ItemContainerStyle = (Style)XamlReader.Load(RecordingStyle),
+			ItemContainerStyle = (Style)new TestsResources()["ListViewBaseItemStateRecorderStyle"],
 			ItemsSource = itemsSource ?? new[] { "A", "B", "C" },
 		};
 
@@ -132,6 +112,9 @@ public class Given_ListViewBaseItem
 	}
 
 	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	public async Task When_Mouse_Hover_PointerOver()
 	{
 		var (_, item, recorder) = await Setup();
@@ -148,6 +131,9 @@ public class Given_ListViewBaseItem
 	}
 
 	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	public async Task When_Touch_Press_Pressed_After_Delay()
 	{
 		var (_, item, recorder) = await Setup(ListViewSelectionMode.None, isItemClickEnabled: true);
@@ -169,6 +155,9 @@ public class Given_ListViewBaseItem
 	}
 
 	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	public async Task When_Touch_Tap_Holds_Pressed()
 	{
 		var (_, item, recorder) = await Setup(ListViewSelectionMode.None, isItemClickEnabled: true);
@@ -185,6 +174,9 @@ public class Given_ListViewBaseItem
 	}
 
 	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	public async Task When_Right_Button_Pressed()
 	{
 		var (_, item, recorder) = await Setup();
@@ -204,6 +196,7 @@ public class Given_ListViewBaseItem
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // KeyboardHelper does not inject keys on WinAppSDK
 	public async Task When_GamepadA_Pressed_But_Not_Enter()
 	{
 		var (_, item, recorder) = await Setup(ListViewSelectionMode.None, isItemClickEnabled: true);
@@ -237,6 +230,9 @@ public class Given_ListViewBaseItem
 	}
 
 	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	public async Task When_ReadOnly_Masks_PointerOver()
 	{
 		var (list, item, recorder) = await Setup(ListViewSelectionMode.None, isItemClickEnabled: false);
@@ -266,6 +262,7 @@ public class Given_ListViewBaseItem
 
 		finger.Press(Center(item));
 		item.IsEnabled = false;
+		await WindowHelper.WaitForIdle();
 		Assert.IsTrue(recorder.States.Contains("Disabled"), string.Join(", ", recorder.States));
 
 		item.IsEnabled = true;
