@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Runtime;
 
 /// <summary>
 /// Maps automation peers to ARIA attributes and semantic element types.

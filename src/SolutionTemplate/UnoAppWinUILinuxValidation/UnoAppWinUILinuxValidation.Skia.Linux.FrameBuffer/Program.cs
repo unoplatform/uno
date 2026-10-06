@@ -1,6 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using System;
-using Uno.UI.Runtime.Skia.Linux.FrameBuffer;
+using Uno.UI.Runtime.Linux.FrameBuffer;
 using Windows.UI.Core;
 
 namespace UnoAppWinUILinuxValidation

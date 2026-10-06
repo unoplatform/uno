@@ -5,7 +5,7 @@ using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
-using Uno.WinUI.Runtime.Skia.X11;
+using Uno.UI.Runtime.X11;
 using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload;

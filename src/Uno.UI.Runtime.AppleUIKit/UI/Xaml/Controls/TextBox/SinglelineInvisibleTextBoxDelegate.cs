@@ -1,0 +1,141 @@
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Foundation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using UIKit;
+using Uno.Extensions;
+using Uno.UI.Runtime.AppleUIKit.Extensions;
+using Windows.System;
+using Windows.UI.Core;
+
+namespace Uno.UI.Runtime.AppleUIKit.Controls;
+
+internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
+{
+	private readonly WeakReference<InvisibleTextBoxViewExtension> _textBoxViewExtension;
+
+	public SinglelineInvisibleTextBoxDelegate(WeakReference<InvisibleTextBoxViewExtension> textBoxViewExtension)
+	{
+		_textBoxViewExtension = textBoxViewExtension ?? throw new ArgumentNullException(nameof(textBoxViewExtension));
+	}
+
+	public bool IsKeyboardHiddenOnEnter
+	{
+		get;
+		set;
+	}
+
+	public override bool ShouldChangeCharacters(UITextField textField, NSRange range, string replacementString)
+	{
+		if (textField is SinglelineInvisibleTextBoxView textBoxView)
+		{
+			if (_textBoxViewExtension.GetTarget()?.Owner.Core is not { } core)
+			{
+				return false;
+			}
+
+			// Both IsReadOnly = true and IsTabStop = false can prevent editing
+			if (core.IsReadOnly || !core.Owner.IsTabStop)
+			{
+				return false;
+			}
+
+			// During IME composition, allow text changes through without
+			// MaxLength interference — the composition system manages length.
+			if (textBoxView.IsComposing)
+			{
+				return true;
+			}
+
+			// Suppress the iOS autocorrect autospace fired when the caret leaves a word (see IsNoOpAutocorrectReplacement).
+			if (InvisibleTextBoxAutocorrect.IsNoOpAutocorrectReplacement(textField.Text, range, replacementString))
+			{
+				return false;
+			}
+
+			// TODO:MZ:
+			//if (textBox.OnKey(replacementString.FirstOrDefault()))
+			//{
+			//	return false;
+			//}
+
+			if (core.MaxLength > 0)
+			{
+				// When replacing text from pasting (multiple characters at once)
+				// we should only allow it (return true) when the new text length
+				// is lower or equal to the allowed length (MaxLength)
+				var newLength = (textBoxView.Text?.Length ?? 0) + replacementString.Length - range.Length;
+				return newLength <= core.MaxLength;
+			}
+		}
+
+		return true;
+	}
+
+	public override bool ShouldReturn(UITextField textField)
+	{
+		if (IsKeyboardHiddenOnEnter)
+		{
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal,
+				async () =>
+				{
+					// Delay losing focus to avoid concurrent interactions when transferring focus to another control. See 101152
+					await Task.Delay(TimeSpan.FromMilliseconds(50));
+					textField.ResignFirstResponder();
+				});
+		}
+
+		if (OnKey('\n'))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/// <summary>
+	/// Corresponds to a gain of focus
+	/// </summary>
+	public override void EditingStarted(UITextField textField)
+	{
+		if (_textBoxViewExtension.GetTarget()?.Owner.Core is { Owner.FocusState: FocusState.Unfocused } core)
+		{
+			core.Owner.Focus(FocusState.Pointer);
+		}
+	}
+
+	/// <summary>
+	/// Corresponds to a loss of focus
+	/// </summary>
+	public override void EditingEnded(UITextField textField)
+	{
+		if (_textBoxViewExtension.GetTarget()?.Owner.Core is { Owner.FocusState: not FocusState.Unfocused } core)
+		{
+			core.Owner.Unfocus();
+		}
+	}
+
+	private bool OnKey(char key)
+	{
+		if (_textBoxViewExtension.GetTarget()?.Owner.Core is not { } core)
+		{
+			return false;
+		}
+
+		var virtualKey = CharacterExtensions.ToVirtualKey(key);
+		var keyRoutedEventArgs = new KeyRoutedEventArgs(this, virtualKey, VirtualKeyModifiers.None)
+		{
+			CanBubbleNatively = false
+		};
+
+		var downHandled = core.Owner.RaiseEvent(UIElement.KeyDownEvent, keyRoutedEventArgs);
+
+		keyRoutedEventArgs.Handled = false; // reset to unhandled for Up
+		var upHandled = core.Owner.RaiseEvent(UIElement.KeyUpEvent, keyRoutedEventArgs);
+
+		return downHandled || upHandled;
+	}
+}

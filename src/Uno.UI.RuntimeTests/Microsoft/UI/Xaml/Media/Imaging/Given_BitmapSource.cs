@@ -570,7 +570,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 				"(function(){"
 				+ $"var images=[{encoded}].map(function(s){{return Uint8Array.from(atob(s),function(c){{return c.charCodeAt(0);}});}});"
 				+ "var clean=function(e){return String(e).replace(/\\s+/g,' ');};"
-				+ "Promise.all(images.map(function(bytes){return Uno.UI.Runtime.Skia.ImageLoader.loadFromArray(bytes).then(function(r){"
+				+ "Promise.all(images.map(function(bytes){return Uno.UI.Runtime.ImageLoader.loadFromArray(bytes).then(function(r){"
 				+ "return r.error?'error: '+clean(r.error):[r.width,r.height,r.bytes.length,r.bytes[0],r.bytes[1],r.bytes[2],r.bytes[3]].join(',');"
 				+ "},function(e){return 'exception: '+clean(e);});}))"
 				+ $".then(function(all){{globalThis['{key}']=all.join('\\n');}});return '';}})()");

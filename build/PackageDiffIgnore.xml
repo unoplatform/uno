@@ -3678,8 +3678,24 @@
 		  <Member fullName="Uno.UI.FluentTheme.v1" reason="Removed the Uno.UI.FluentTheme.v1 assembly along with the Fluent V1 scaffolding (BC71, breaking changes for 7.0)" />
 		  <!-- With V1 gone the "v2" suffix had no meaning, so the assembly was merged into Uno.UI.FluentTheme (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Uno.UI.FluentTheme.v2" reason="Merged the Uno.UI.FluentTheme.v2 assembly into Uno.UI.FluentTheme; the v2 suffix was an artifact of the removed Fluent V1/V2 split (BC71, breaking changes for 7.0)" />
+		  <!-- The runtime hosts no longer depend on SkiaSharp, so "Skia" is dropped from their assembly names (breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.Runtime.Skia" reason="Assembly renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.Android" reason="Assembly renamed Uno.UI.Runtime.Skia.Android -> Uno.UI.Runtime.Android (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.AppleUIKit" reason="Assembly renamed Uno.UI.Runtime.Skia.AppleUIKit -> Uno.UI.Runtime.AppleUIKit (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.Linux.FrameBuffer" reason="Assembly renamed Uno.UI.Runtime.Skia.Linux.FrameBuffer -> Uno.UI.Runtime.Linux.FrameBuffer (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.MacOS" reason="Assembly renamed Uno.UI.Runtime.Skia.MacOS -> Uno.UI.Runtime.MacOS (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.WebAssembly.Browser" reason="Assembly renamed Uno.UI.Runtime.Skia.WebAssembly.Browser -> Uno.UI.Runtime.WebAssembly.Browser (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.Win32" reason="Assembly renamed Uno.UI.Runtime.Skia.Win32 -> Uno.UI.Runtime.Win32 (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.Win32.Support" reason="Assembly renamed Uno.UI.Runtime.Skia.Win32.Support -> Uno.UI.Runtime.Win32.Support (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.X11" reason="Assembly renamed Uno.UI.Runtime.Skia.X11 -> Uno.UI.Runtime.X11 (breaking changes for 7.0)" />
 	  </Assemblies>
 	  <Types>
+		  <!-- Uno.UI types that carried the host namespace move with it (breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.Runtime.Skia.AriaMapper" reason="Namespace renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.AriaAttributes" reason="Namespace renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.PatternCapabilities" reason="Namespace renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.SemanticElementType" reason="Namespace renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Runtime.Skia.WebAssemblyAccessibility" reason="Namespace renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
 		  <!-- Uno.UI.Lottie shipped a vendored copy of the corefx System.Json parser as public types; it was replaced by the in-box System.Text.Json. -->
 		  <Member fullName="System.Json.JsonValue" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
 		  <Member fullName="System.Json.JsonObject" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />

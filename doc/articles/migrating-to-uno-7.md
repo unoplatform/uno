@@ -101,7 +101,7 @@ longer tested by Uno Platform.
 
 | Removed / changed | Migration |
 |---|---|
-| `Uno.WinUI.Runtime.Skia.*` host packages renamed to `Uno.WinUI.Runtime.*` | The hosts are no longer tied to SkiaSharp: the drawing backend is chosen at run time, so the `Skia` segment is dropped. `Uno.WinUI.Runtime.Skia.Win32` becomes `Uno.WinUI.Runtime.Win32`, and likewise for `X11`, `MacOS`, `Linux.FrameBuffer`, `Headless`, `Android`, `AppleUIKit` and `WebAssembly.Browser`; the shared `Uno.WinUI.Runtime.Skia` becomes `Uno.WinUI.Runtime`. The desktop add-ins follow: `Uno.WinUI.MediaPlayer.Skia.Win32` / `.X11` become `Uno.WinUI.MediaPlayer.Win32` / `.X11`, and `Uno.WinUI.WebView.Skia.X11` becomes `Uno.WinUI.WebView.X11`. With the `Uno.SDK` these are referenced implicitly, so there is nothing to change. Replace any explicit `PackageReference` to an old id (typically `Uno.WinUI.Runtime.Skia.Headless`) with the new one; the old ids receive no 7.0 builds. Assembly and namespace names are unchanged. |
+| `Uno.WinUI.Runtime.Skia.*` host packages renamed to `Uno.WinUI.Runtime.*` | The hosts are no longer tied to SkiaSharp: the drawing backend is chosen at run time, so the `Skia` segment is dropped. `Uno.WinUI.Runtime.Skia.Win32` becomes `Uno.WinUI.Runtime.Win32`, and likewise for `X11`, `MacOS`, `Linux.FrameBuffer`, `Headless`, `Android`, `AppleUIKit` and `WebAssembly.Browser`; the shared `Uno.WinUI.Runtime.Skia` becomes `Uno.WinUI.Runtime`. The desktop add-ins follow: `Uno.WinUI.MediaPlayer.Skia.Win32` / `.X11` become `Uno.WinUI.MediaPlayer.Win32` / `.X11`, and `Uno.WinUI.WebView.Skia.X11` becomes `Uno.WinUI.WebView.X11`. With the `Uno.SDK` these are referenced implicitly, so there is nothing to change. Replace any explicit `PackageReference` to an old id (typically `Uno.WinUI.Runtime.Skia.Headless`) with the new one; the old ids receive no 7.0 builds. The assemblies, namespaces and a few public types are renamed the same way — see [Runtime host renames](#runtime-host-renames). |
 | `Uno.WinUI.WebAssembly` package removed (and the older `Uno.WinUI.Runtime.WebAssembly`) | Use `Uno.WinUI.Runtime.WebAssembly.Browser`. The UI renders to a canvas; there is no DOM tree. With the `Uno.SDK`, the browser head is referenced implicitly — there is nothing to add. |
 | `Uno.WinUI.Skia.X11`, `Uno.WinUI.Skia.MacOS`, and `Uno.WinUI.Skia.Linux.FrameBuffer` bootstrapper packages removed | These were empty meta-packages that only redirected to the real head. With the `Uno.SDK`, remove the reference — the matching `Uno.WinUI.Runtime.*` head is referenced implicitly for executable heads. For a hand-rolled (non-`Uno.SDK`) head, replace it with the corresponding `Uno.WinUI.Runtime.<variant>` package. |
 | `Uno.UI.BindingHelper.Android` assembly removed | Remove the reference; Skia-on-Android needs no Java/JNI binding. |
@@ -163,6 +163,30 @@ XAML declarations follow the same mapping, for example
 The other namespaces carried by that assembly keep their names, so code using
 `DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or
 `ColorExtensions` / `ImageHelper` (`Uno.Helpers`) needs no change.
+
+### Runtime host renames
+
+The platform hosts no longer depend on SkiaSharp, so "Skia" is dropped from their assembly, namespace
+and public type names as well as from their packages. The remaining "Skia" names (`Uno.WinUI.Composition.Skia`,
+`SKCanvasElement`, the `skia` feature) refer to the SkiaSharp drawing backend. There is **no** forwarding
+shim: the old names stop resolving.
+
+Apps using the `Uno.SDK` and the `UnoPlatformHostBuilder` chain (`UseWin32()`, `UseX11()`, `UseAndroid()`, …)
+compile unchanged, because those entry points live in `Uno.UI.Hosting`. Only code that names a host type
+or configures a host through its builder callback needs updating.
+
+| Before | After |
+|---|---|
+| Assemblies and namespaces `Uno.UI.Runtime.Skia`, `Uno.UI.Runtime.Skia.<Platform>` | `Uno.UI.Runtime`, `Uno.UI.Runtime.<Platform>` |
+| Namespaces `Uno.WinUI.Runtime.Skia.<Platform>` (X11, Linux framebuffer, Android, iOS) | `Uno.UI.Runtime.<Platform>` |
+| Assemblies and namespaces `Uno.UI.MediaPlayer.Skia.<Platform>`, `Uno.UI.WebView.Skia.X11` | `Uno.UI.MediaPlayer.<Platform>`, `Uno.UI.WebView.X11` |
+| `SkiaHost` | removed — the hosts derive from `Uno.UI.Hosting.UnoPlatformHost` directly |
+| `MacSkiaHost` | `MacOSHost` |
+| `IAndroidSkiaHostBuilder` | `IAndroidHostBuilder` |
+| `IAppleUIKitSkiaHostBuilder` | `IAppleUIKitHostBuilder` |
+
+For example, `using Uno.UI.Runtime.Skia.Win32;` becomes `using Uno.UI.Runtime.Win32;`, and
+`UseAndroid(b => …)` now takes an `Action<IAndroidHostBuilder>`.
 
 ### Platform targeting in multi-targeted libraries
 
@@ -389,7 +413,7 @@ own target framework, the library's calls included.
   `BindableUIView` (and `BindableUI*`). `UIElement` no longer inherits a native
   `View`/`UIView`/DOM element. Remove casts to `Android.Views.View` / `UIKit.UIView`;
   use `UIElement.Visual` (Composition) and reach platform APIs via the
-  `Uno.UI.Runtime.Skia.*` hosts and `Uno.Foundation`.
+  `Uno.UI.Runtime.*` hosts and `Uno.Foundation`.
 - **Native element hosting:** `Uno.UI.Runtime.WebAssembly.HtmlElementAttribute`,
   `Uno.Extensions.HtmlCustomEventArgs`, and `VisualTreeHelper.AdaptNative` /
   `TryAdaptNative`. The DOM-interop surface that went with the WebAssembly DOM renderer —
@@ -1259,6 +1283,8 @@ be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
 10. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
 11. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to their new `Uno.UI.*` namespaces.
+    Likewise drop `Skia` from `Uno.UI.Runtime.Skia.*` / `Uno.WinUI.Runtime.Skia.*` usings and host
+    package references — see [Runtime host renames](#runtime-host-renames).
 12. Update assembly-qualified type names that reach MRT Core (`Microsoft.Windows.ApplicationModel.Resources.*`) — the assembly is now `Uno.WinRT`, not `Uno.UI`.
 13. Retype `Window.VisibilityChanged` handlers to `WindowVisibilityChangedEventArgs`, and drop
    any explicit `Window*EventHandler` delegate construction.

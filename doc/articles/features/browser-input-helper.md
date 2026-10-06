@@ -20,7 +20,7 @@ For most in-app shortcuts, no additional configuration is required beyond handli
 
 ## Prerequisites
 
-The `BrowserInputHelper` class is WebAssembly-specific. It resides in the `Uno.UI.Runtime.Skia` namespace and is only available in the `Uno.WinUI.Runtime.WebAssembly.Browser` package.
+The `BrowserInputHelper` class is WebAssembly-specific. It resides in the `Uno.UI.Runtime` namespace and is only available in the `Uno.WinUI.Runtime.WebAssembly.Browser` package.
 
 The Uno.Sdk references that package from the WebAssembly app project only. Class libraries don't get its API, so call `BrowserInputHelper` from the app project.
 
@@ -28,7 +28,7 @@ When using this API, guard your code with platform checks:
 
 ```csharp
 #if __WASM__
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime;
 #endif
 ```
 

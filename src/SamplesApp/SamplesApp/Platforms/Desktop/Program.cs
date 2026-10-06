@@ -4,9 +4,9 @@ using System;
 using System.IO;
 using System.Runtime.Loader;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia;
-using Uno.UI.Runtime.Skia.Win32;
-using Uno.WinUI.Runtime.Skia.X11;
+using Uno.UI.Runtime;
+using Uno.UI.Runtime.Win32;
+using Uno.UI.Runtime.X11;
 
 namespace SamplesApp;
 
@@ -38,7 +38,7 @@ internal static class Program
 			{
 				if (host is X11ApplicationHost)
 				{
-					global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Microsoft.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider(o));
+					global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Microsoft.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.X11.X11NativeWebViewProvider(o));
 				}
 			})
 			.UseX11(hostBuilder =>
