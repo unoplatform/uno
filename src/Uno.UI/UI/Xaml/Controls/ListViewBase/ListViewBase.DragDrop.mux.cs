@@ -351,6 +351,8 @@ namespace Microsoft.UI.Xaml.Controls
 				// Uno-specific: ItemsStackPanel and ItemsWrapGrid don't implement IOrientedPanel; their logical orientation is Orientation.
 				ItemsStackPanel itemsStackPanel => itemsStackPanel.Orientation,
 				ItemsWrapGrid itemsWrapGrid => itemsWrapGrid.Orientation,
+				// Uno-specific: the built-in GridView style uses a WrapPanel in place of ItemsWrapGrid.
+				WrapPanel wrapPanel => wrapPanel.Orientation,
 				_ => GetItemsHostOrientations().LogicalOrientation,
 			};
 		}
