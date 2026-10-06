@@ -225,6 +225,35 @@ public partial class Given_SkiaIOSAccessibilityElement
 		Assert.AreEqual(FocusState.Pointer, button.FocusState);
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_VoiceOver_Moves_Onto_A_Row_Scrolled_Out_Of_View_Then_It_Is_Brought_Into_View()
+	{
+		var items = Enumerable.Range(0, 40).Select(i => $"Row {i:00}").ToArray();
+		var listView = new ListView { ItemsSource = items, Height = 200 };
+		await UITestHelper.Load(listView);
+
+		var viewport = GetWindowBounds(listView);
+		var hiddenRow = Enumerable.Range(0, items.Length)
+			.Select(listView.ContainerFromIndex)
+			.OfType<ListViewItem>()
+			.FirstOrDefault(row => GetWindowBounds(row).Top >= viewport.Bottom);
+		Assert.IsNotNull(hiddenRow, "Virtualization keeps realized rows past the viewport.");
+
+		var snapshot = AccessibilityPeerHelper.IOSAccessibilityNodeSnapshotAccessor?.Invoke(hiddenRow);
+		Assert.IsNotNull(snapshot);
+		Assert.IsTrue(snapshot.Bounds.Height > 0, "A row scrolled out of view keeps its frame, so VoiceOver can move onto it.");
+
+		Assert.IsNotNull(AccessibilityPeerHelper.IOSAccessibilityElementDidBecomeFocusedAction);
+		AccessibilityPeerHelper.IOSAccessibilityElementDidBecomeFocusedAction(hiddenRow);
+		await UITestHelper.WaitForIdle();
+
+		var rowBounds = GetWindowBounds(hiddenRow);
+		Assert.IsTrue(
+			rowBounds.Top >= viewport.Top - 1 && rowBounds.Bottom <= viewport.Bottom + 1,
+			$"The row VoiceOver moved onto must be scrolled into view, but is at {rowBounds} for a viewport of {viewport}.");
+	}
+
 	private static AccessibilityNativeNodeSnapshot? HitTest(XamlRoot xamlRoot, double x, double y)
 	{
 		Assert.IsNotNull(AccessibilityPeerHelper.IOSAccessibilityHitTestAccessor, "The iOS hit-test hook must be registered.");
