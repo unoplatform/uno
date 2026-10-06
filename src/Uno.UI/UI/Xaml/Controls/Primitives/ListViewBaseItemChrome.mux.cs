@@ -223,9 +223,192 @@ partial class ListViewBaseItemPresenter
 	// TODO Uno: AddRectangle and AddBorder (C:262-329) come with the chrome rendering layers (C6).
 
 	// Dead WinUI code: AddChromeAssociatedPath (C:331-376).
+}
 
-	// CListViewBaseItemChrome
+// Commands
 
+partial class ListViewBaseItemAnimationCommand
+{
+	private protected ListViewBaseItemAnimationCommand(bool isStarting, bool steadyStateOnly)
+	{
+		m_isStarting = isStarting;
+		m_steadyStateOnly = steadyStateOnly;
+	}
+}
+
+partial class ListViewBaseItemAnimationCommand_Pressed
+{
+	internal ListViewBaseItemAnimationCommand_Pressed(
+		bool pressed,
+		WeakReference<UIElement> pAnimationTarget,
+		bool isStarting,
+		bool steadyStateOnly)
+		: base(isStarting, steadyStateOnly)
+	{
+		m_pressed = pressed;
+		m_pAnimationTarget = pAnimationTarget;
+	}
+
+	internal override void Accept(IListViewBaseItemAnimationCommandVisitor visitor) => visitor.VisitAnimationCommand(this);
+
+	internal override ListViewBaseItemAnimationCommand Clone()
+		=> new ListViewBaseItemAnimationCommand_Pressed(m_pressed, m_pAnimationTarget, m_isStarting, m_steadyStateOnly);
+
+	internal override int GetPriority() => 3;
+}
+
+partial class ListViewBaseItemAnimationCommand_ReorderHint
+{
+	internal ListViewBaseItemAnimationCommand_ReorderHint(
+		float offsetX,
+		float offsetY,
+		WeakReference<ListViewBaseItemPresenter> pAnimationTarget,
+		bool isStarting,
+		bool steadyStateOnly)
+		: base(isStarting, steadyStateOnly)
+	{
+		m_pAnimationTarget = pAnimationTarget;
+		m_offsetX = offsetX;
+		m_offsetY = offsetY;
+	}
+
+	internal override void Accept(IListViewBaseItemAnimationCommandVisitor visitor) => visitor.VisitAnimationCommand(this);
+
+	internal override ListViewBaseItemAnimationCommand Clone()
+		=> new ListViewBaseItemAnimationCommand_ReorderHint(m_offsetX, m_offsetY, m_pAnimationTarget, m_isStarting, m_steadyStateOnly);
+
+	internal override int GetPriority() => 1;
+}
+
+partial class ListViewBaseItemAnimationCommand_DragDrop
+{
+	internal ListViewBaseItemAnimationCommand_DragDrop(
+		DragDropState state,
+		WeakReference<ListViewBaseItemPresenter> pBaseAnimationTarget,
+		WeakReference<FrameworkElement> pFadeOutAnimationTarget,
+		bool isStarting,
+		bool steadyStateOnly)
+		: base(isStarting, steadyStateOnly)
+	{
+		m_pBaseAnimationTarget = pBaseAnimationTarget;
+		m_pFadeOutAnimationTarget = pFadeOutAnimationTarget;
+		m_state = state;
+	}
+
+	internal override void Accept(IListViewBaseItemAnimationCommandVisitor visitor) => visitor.VisitAnimationCommand(this);
+
+	internal override ListViewBaseItemAnimationCommand Clone()
+		=> new ListViewBaseItemAnimationCommand_DragDrop(m_state, m_pBaseAnimationTarget, m_pFadeOutAnimationTarget, m_isStarting, m_steadyStateOnly);
+
+	internal override int GetPriority() => (m_state == DragDropState.Target) ? 1 : 0;
+}
+
+partial class ListViewBaseItemAnimationCommand_MultiSelect
+{
+	internal ListViewBaseItemAnimationCommand_MultiSelect(
+		bool isRoundedListViewBaseItemChromeEnabled,
+		bool entering,
+		double checkBoxTranslationX,
+		double contentTranslationX,
+		ListViewItemPresenterCheckMode checkMode,
+		WeakReference<UIElement> multiSelectCheckBox,
+		WeakReference<UIElement> contentPresenter,
+		bool isStarting,
+		bool steadyStateOnly)
+		: base(isStarting, steadyStateOnly)
+	{
+		m_isRoundedListViewBaseItemChromeEnabled = isRoundedListViewBaseItemChromeEnabled;
+		m_entering = entering;
+		m_checkBoxTranslationX = checkBoxTranslationX;
+		m_contentTranslationX = contentTranslationX;
+		m_checkMode = checkMode;
+		m_multiSelectCheckBox = multiSelectCheckBox;
+		m_contentPresenter = contentPresenter;
+	}
+
+	internal override void Accept(IListViewBaseItemAnimationCommandVisitor visitor) => visitor.VisitAnimationCommand(this);
+
+	internal override ListViewBaseItemAnimationCommand Clone()
+		=> new ListViewBaseItemAnimationCommand_MultiSelect(
+			m_isRoundedListViewBaseItemChromeEnabled,
+			m_entering,
+			m_checkBoxTranslationX,
+			m_contentTranslationX,
+			m_checkMode,
+			m_multiSelectCheckBox,
+			m_contentPresenter,
+			m_isStarting,
+			m_steadyStateOnly);
+
+	internal override int GetPriority() => 3;
+}
+
+partial class ListViewBaseItemAnimationCommand_IndicatorSelect
+{
+	internal ListViewBaseItemAnimationCommand_IndicatorSelect(
+		bool entering,
+		double translationX,
+		ListViewItemPresenterSelectionIndicatorMode selectionIndicatorMode,
+		WeakReference<UIElement> selectionIndicator,
+		WeakReference<UIElement> contentPresenter,
+		bool isStarting,
+		bool steadyStateOnly)
+		: base(isStarting, steadyStateOnly)
+	{
+		m_entering = entering;
+		m_translationX = translationX;
+		m_selectionIndicatorMode = selectionIndicatorMode;
+		m_selectionIndicator = selectionIndicator;
+		m_contentPresenter = contentPresenter;
+	}
+
+	internal override void Accept(IListViewBaseItemAnimationCommandVisitor visitor) => visitor.VisitAnimationCommand(this);
+
+	internal override ListViewBaseItemAnimationCommand Clone()
+		=> new ListViewBaseItemAnimationCommand_IndicatorSelect(
+			m_entering,
+			m_translationX,
+			m_selectionIndicatorMode,
+			m_selectionIndicator,
+			m_contentPresenter,
+			m_isStarting,
+			m_steadyStateOnly);
+
+	internal override int GetPriority() => 3;
+}
+
+partial class ListViewBaseItemAnimationCommand_SelectionIndicatorVisibility
+{
+	internal ListViewBaseItemAnimationCommand_SelectionIndicatorVisibility(
+		bool selected,
+		double fromScale,
+		WeakReference<UIElement> selectionIndicator,
+		bool isStarting,
+		bool steadyStateOnly)
+		: base(isStarting, steadyStateOnly)
+	{
+		m_selected = selected;
+		m_fromScale = fromScale;
+		m_selectionIndicator = selectionIndicator;
+	}
+
+	internal override void Accept(IListViewBaseItemAnimationCommandVisitor visitor) => visitor.VisitAnimationCommand(this);
+
+	internal override ListViewBaseItemAnimationCommand Clone()
+		=> new ListViewBaseItemAnimationCommand_SelectionIndicatorVisibility(
+			m_selected,
+			m_fromScale,
+			m_selectionIndicator,
+			m_isStarting,
+			m_steadyStateOnly);
+
+	internal override int GetPriority() => 3;
+}
+
+// CListViewBaseItemChrome
+
+partial class ListViewBaseItemPresenter
+{
 	internal ListViewBaseItemPresenter()
 	{
 		m_isFocusVisualDrawnByFocusManager = false;
@@ -244,7 +427,7 @@ partial class ListViewBaseItemPresenter
 		m_visualStates.selectionIndicatorState = SelectionIndicatorStates.SelectionIndicatorDisabled;
 	}
 
-	// TODO Uno: Original C++ destructor cleanup (disposes queued animation commands). Uno does not support cleanup via finalizers.
+	// Uno-specific: the C++ destructor only deletes the queued animation commands and releases brushes; the GC owns both here.
 
 	// Given a string state name and a pointer to a visual state:
 	// - tries to parse the string as the appropriate VisualState type.
@@ -380,6 +563,55 @@ partial class ListViewBaseItemPresenter
 
 	// Dead WinUI code: DrawBaseLayer, DrawUnderContentLayer, DrawOverContentLayer and DrawDragOverlayLayer (C:995-1341).
 
+	// Obtains the next animation command to execute, or NULL if none exists. Note that the ref
+	// to the returned item is still controlled by the chrome - see UnlockLayersForAnimationAndDisposeCommand.
+	internal ListViewBaseItemAnimationCommand? GetNextPendingAnimation() => DequeueAnimationCommand();
+
+	// Tells us to assign the layer positions of the various chrome visuals to match the requirements of the given
+	// command. Returns TRUE if the layers could be rearranged (meaning the animation can proceed), FALSE otherwise.
+	internal bool LockLayersForAnimation(ListViewBaseItemAnimationCommand pCommand)
+	{
+		var commandPriority = pCommand.GetPriority();
+		bool shouldProceed;
+
+		if (m_currentHighestCommandPriority >= commandPriority)
+		{
+			shouldProceed = true;
+
+			// Generate a stop command for the current animation if we're supplanting it.
+			if (m_pCurrentHighestPriorityCommand is not null &&
+				m_currentHighestCommandPriority != commandPriority)
+			{
+				var animationCommand = m_pCurrentHighestPriorityCommand.Clone();
+
+				animationCommand.m_isStarting = false;
+
+				EnqueueAnimationCommand(animationCommand);
+			}
+
+			m_pCurrentHighestPriorityCommand = pCommand;
+			m_currentHighestCommandPriority = commandPriority;
+		}
+		else
+		{
+			shouldProceed = false;
+		}
+
+		return shouldProceed;
+	}
+
+	// Unlocks the layers for the given command, and releases the command.
+	internal void UnlockLayersForAnimationAndDisposeCommand(ListViewBaseItemAnimationCommand? command)
+	{
+		if (m_pCurrentHighestPriorityCommand == command)
+		{
+			m_pCurrentHighestPriorityCommand = null; // Will delete below.
+			m_currentHighestCommandPriority = int.MaxValue;
+		}
+
+		// Uno-specific: no delete, the GC collects the command.
+	}
+
 	// Reparents the inner selection border if needed and updates its affected properties.
 	// According to the visual design, the inner and outer borders are meant to be overlapping each other. In order to avoid bleed through at the borders' edges though,
 	// we can afford to host a bloated inner border inside the outer border when the latter is opaque. That trick is not applicable when the outer border is semi-transparent,
@@ -421,7 +653,34 @@ partial class ListViewBaseItemPresenter
 		}
 	}
 
-	// TODO Uno: EnsureTransitionTargets (C:1520-1567) comes with the animation command queue.
+	// If necessary, creates all the TransitionTargets necessary for our animation targets.
+	private void EnsureTransitionTarget()
+	{
+		var pTemplateChild = GetTemplateChildIfExists();
+
+		if (!HasTransitionTarget())
+		{
+			TransitionTarget = new TransitionTarget();
+		}
+
+		if (m_pSecondaryChrome is not null &&
+			!m_pSecondaryChrome.HasTransitionTarget())
+		{
+			m_pSecondaryChrome.TransitionTarget = new TransitionTarget();
+		}
+
+		if (m_pParentListViewBaseItemNoRef is not null &&
+			!m_pParentListViewBaseItemNoRef.HasTransitionTarget())
+		{
+			m_pParentListViewBaseItemNoRef.TransitionTarget = new TransitionTarget();
+		}
+
+		if (pTemplateChild is not null &&
+			!pTemplateChild.HasTransitionTarget())
+		{
+			pTemplateChild.TransitionTarget = new TransitionTarget();
+		}
+	}
 
 	// The "ListViewBaseItemRoundedChromeEnabled" theme resource value is used to turn on/off the rendering with rounded corners.
 	// For performance reasons, the resource is only evaluated once. TAEF tests can invalidate the cache by calling TestServices::Utilities::DeleteResourceDictionaryCaches().
@@ -777,6 +1036,65 @@ partial class ListViewBaseItemPresenter
 			m_pParentListViewBaseItemNoRef = parent as ContentControl ?? throw new InvalidOperationException("The chromed item must be a ContentControl.");
 		}
 	}
+
+	// Enqueue the given command. It will be presented in FIFO order by DequeueAnimationCommand.
+	// This function takes control of the command's lifetime. To enforce this, it will clear the
+	// given pointer when called (no exceptions).
+	private void EnqueueAnimationCommand(ListViewBaseItemAnimationCommand command)
+	{
+		EnsureTransitionTarget();
+
+		m_animationCommands.Add(command);
+	}
+
+	// Dequeues an animation command. You now own the ref (note that GetNextPendingAnimation, a caller
+	// to this function, takes logical ownership itself).
+	private ListViewBaseItemAnimationCommand? DequeueAnimationCommand()
+	{
+		ListViewBaseItemAnimationCommand? command;
+
+		if (m_animationCommands.Count != 0)
+		{
+			command = m_animationCommands[0];
+			m_animationCommands.RemoveAt(0);
+		}
+		else
+		{
+			command = null;
+		}
+
+		return command;
+	}
+
+	// Given a reorder hint state, figure out where the hint animation should animate to.
+	private Point ComputeReorderHintOffset(ReorderHintStates state)
+	{
+		var reorderHintOffset = GetReorderHintOffset();
+		Point offset = default;
+
+		switch (state)
+		{
+			case ReorderHintStates.BottomReorderHint:
+				offset.Y = reorderHintOffset;
+				break;
+
+			case ReorderHintStates.TopReorderHint:
+				offset.Y = -reorderHintOffset;
+				break;
+
+			case ReorderHintStates.LeftReorderHint:
+				offset.X = -reorderHintOffset;
+				break;
+
+			case ReorderHintStates.RightReorderHint:
+				offset.X = reorderHintOffset;
+				break;
+		}
+
+		return offset;
+	}
+
+	// Dead WinUI code: ComputeSwipeHintOffset (C:2252-2271) is only used by the removed old-style chrome.
 
 	// TODO Uno: GenerateContentBounds (C:2273-2286) has no Uno equivalent; the chrome draws within {0,0,ActualWidth,ActualHeight}.
 
