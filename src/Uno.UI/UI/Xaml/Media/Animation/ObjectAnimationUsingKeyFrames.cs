@@ -264,6 +264,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				Reset();
 				ClearValue();
+				ReleaseControlOfTarget();
 			}
 
 			OnCompleted();

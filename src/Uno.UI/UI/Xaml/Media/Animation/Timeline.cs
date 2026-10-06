@@ -27,6 +27,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private static readonly ConditionalWeakTable<object, Dictionary<string, WeakReference<Timeline>>> _animationsOnProperty = new();
 
 		private bool _hasControlOfTarget;
+		private WeakReference<object> _registeredTarget;
+		private string _registeredPropertyName;
 
 		public event EventHandler<object> Completed
 		{
@@ -338,23 +340,34 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			PropertyInfo.ClearValue();
 		}
 
-		// MUX Reference: CAnimation::OnBegin (animation.cpp:592-599) + TakeControlOfTarget (animation.cpp:797-808)
+		// MUX Reference: CAnimation::OnBegin (animation.cpp:475-494, 592-599) + TakeControlOfTarget (animation.cpp:797-808)
 		private protected void TakeControlOfTarget()
 		{
-			if (!IsThemeGenerated || PropertyInfo is not { DataItem: { } target, LeafPropertyName: { } propertyName })
+			if (!IsThemeGenerated)
 			{
 				return;
 			}
 
-			var animations = _animationsOnProperty.GetOrCreateValue(target);
-			if (animations.TryGetValue(propertyName, out var previousRef)
-				&& previousRef.TryGetTarget(out var previous)
-				&& previous != this)
+			// Before we go on to a new target, remove our old one
+			ClearAnimationOnRegisteredTarget();
+
+			// TODO Uno: ResolveLocalTarget errors out on an unresolved target; we just own nothing.
+			if (PropertyInfo is { DataItem: { } target, LeafPropertyName: { } propertyName })
 			{
-				previous._hasControlOfTarget = false;
+				var animations = _animationsOnProperty.GetOrCreateValue(target);
+				if (animations.TryGetValue(propertyName, out var previousRef)
+					&& previousRef.TryGetTarget(out var previous)
+					&& previous != this)
+				{
+					// TODO Uno: animation composition in the same timing tree is not reported (animation.cpp:517-541)
+					previous._hasControlOfTarget = false;
+				}
+
+				animations[propertyName] = new WeakReference<Timeline>(this);
+				_registeredTarget = new WeakReference<object>(target);
+				_registeredPropertyName = propertyName;
 			}
 
-			animations[propertyName] = new WeakReference<Timeline>(this);
 			_hasControlOfTarget = true;
 		}
 
@@ -366,17 +379,26 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
-			if (_hasControlOfTarget
-				&& PropertyInfo is { DataItem: { } target, LeafPropertyName: { } propertyName }
+			ClearAnimationOnRegisteredTarget();
+
+			_hasControlOfTarget = false;
+		}
+
+		private void ClearAnimationOnRegisteredTarget()
+		{
+			if (_registeredTarget is not null
+				&& _registeredPropertyName is not null
+				&& _registeredTarget.TryGetTarget(out var target)
 				&& _animationsOnProperty.TryGetValue(target, out var animations)
-				&& animations.TryGetValue(propertyName, out var ownerRef)
+				&& animations.TryGetValue(_registeredPropertyName, out var ownerRef)
 				&& ownerRef.TryGetTarget(out var owner)
 				&& owner == this)
 			{
-				animations.Remove(propertyName);
+				animations.Remove(_registeredPropertyName);
 			}
 
-			_hasControlOfTarget = false;
+			_registeredTarget = null;
+			_registeredPropertyName = null;
 		}
 
 		void ITimeline.Begin()

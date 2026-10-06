@@ -73,12 +73,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				// Theme-generated keyframes carry no bindings, so start right away and read the
 				// current (possibly animated) value like WinUI's CAnimation::OnBegin does.
+				// WinUI registers and takes control even without keyframes (animation.cpp:592-599).
+				TakeControlOfTarget();
+
 				if (KeyFrames.Count < 1)
 				{
 					return;
 				}
-
-				TakeControlOfTarget();
 
 				_activeDuration.Restart();
 				_replayCount = 1;
@@ -238,14 +239,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				_currentAnimator.StartDelay = (long)BeginTime.Value.TotalMilliseconds;
 			}
 
-			_currentAnimator.Start();
-			State = TimelineState.Active;
-
 			if (IsThemeGenerated && (BeginTime ?? TimeSpan.Zero) <= TimeSpan.Zero)
 			{
 				// Write the t=0 value now: the animator only writes on its first tick, after the next render.
+				// Must precede Start, as a zero-duration animator completes synchronously inside it.
 				SetValue(_initialValue);
 			}
+
+			_currentAnimator.Start();
+			State = TimelineState.Active;
 		}
 
 		/// <summary>
@@ -368,6 +370,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				State = TimelineState.Stopped;
 				ClearValue();
+				ReleaseControlOfTarget();
 			}
 
 			OnCompleted();
