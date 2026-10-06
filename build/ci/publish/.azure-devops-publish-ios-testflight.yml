@@ -106,7 +106,8 @@ jobs:
 - deployment: 'iOS_Publish_Skia'
   displayName: 'Publish iOS Testflight Skia'
   environment: 'Uno UI TestFlight'
-  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+  # A custom condition drops the implicit succeeded(); without it a failed build still publishes and misreports a missing artifact.
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/master'))
   cancelTimeoutInMinutes: 0
   dependsOn: iOS_TestFlight
   pool:
