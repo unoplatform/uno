@@ -190,12 +190,8 @@
           href: concepts/overview/philosophy-of-uno.md
         - name: How Uno Works
           href: how-uno-works.md
-        - name: UI Renderers
-          items: 
-          - name: Skia Renderer
-            href: xref:uno.features.renderer.skia
-          - name: Native Renderer
-            href: xref:uno.features.renderer.native
+        - name: Skia Renderer
+          href: xref:uno.features.renderer.skia
         - name: Best Practices
           href: best-practices-uno.md
 
