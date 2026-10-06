@@ -221,7 +221,7 @@ partial class ListViewBaseItemPresenter
 
 	private VisualStates m_visualStates;
 
-	private bool m_isFocusVisualDrawnByFocusManager;
+	// Uno-specific: m_isFocusVisualDrawnByFocusManager is IsFocusVisualDrawnByFocusManager() (ListViewBaseItemChrome.uno.cs).
 
 	// Path rendering fields.
 	// TODO Uno: m_fFillBrushDirty (set by NWSetContentDirty) has no Uno dirty-flag render model.

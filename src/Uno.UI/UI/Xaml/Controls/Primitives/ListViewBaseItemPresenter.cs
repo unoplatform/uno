@@ -5,6 +5,8 @@
 
 #nullable enable
 
+using Windows.Foundation;
+
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 // UNO ONLY: public because subclasses are public; WinUI hides it from IDL.
@@ -73,6 +75,57 @@ public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 		return null;
 	}
 
+	// The chrome renders the background layers; ContentPresenter.Background is never drawn, so no BrushTransition is set up for it.
+	private protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	{
+	}
+
+	// MUX Reference ListViewBaseItemChrome.cpp, lines 2288-2338 (HitTestLocalInternal): all hits within the bounds count.
+	internal override bool IsViewHit() => true;
+
+	internal override bool HitTest(Point point)
+	{
+		var bounds = new Rect(0, 0, ActualWidth, ActualHeight);
+		if (!bounds.Contains(point))
+		{
+			return false;
+		}
+
+		// MUX Reference uielement.cpp, lines 13345-13350: rounded corners clip the content and the children.
+		if (RequiresCompNodeForRoundedCorners())
+		{
+			return IsInsideRoundedCorners(point, bounds.Size);
+		}
+
+		return true;
+	}
+
+	// TODO Uno: HitTestLocalInternalPostChildren (ListViewBaseItemChrome.cpp, lines 2340-2360) has no post-children hit test hook;
+	// the presenter's own HitTest already covers its bounds.
+
+	private bool IsInsideRoundedCorners(Point point, Size size)
+	{
+		var radii = CornerRadius.GetRadii(size, default).Outer;
+
+		return IsInsideCorner(radii.TopLeft, radii.TopLeft.X - point.X, radii.TopLeft.Y - point.Y)
+			&& IsInsideCorner(radii.TopRight, point.X - (size.Width - radii.TopRight.X), radii.TopRight.Y - point.Y)
+			&& IsInsideCorner(radii.BottomRight, point.X - (size.Width - radii.BottomRight.X), point.Y - (size.Height - radii.BottomRight.Y))
+			&& IsInsideCorner(radii.BottomLeft, radii.BottomLeft.X - point.X, point.Y - (size.Height - radii.BottomLeft.Y));
+
+		// dx/dy: distance from the corner's ellipse center towards the corner, positive inside the corner square.
+		static bool IsInsideCorner(global::System.Numerics.Vector2 radius, double dx, double dy)
+		{
+			if (radius.X <= 0 || radius.Y <= 0 || dx <= 0 || dy <= 0)
+			{
+				return true;
+			}
+
+			var nx = dx / radius.X;
+			var ny = dy / radius.Y;
+			return nx * nx + ny * ny <= 1;
+		}
+	}
+
 	private protected override void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
 		base.OnCornerRadiusChanged(oldValue, newValue);
@@ -82,5 +135,8 @@ public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 			OldValueInternal = oldValue,
 			NewValueInternal = newValue,
 		});
+
+		// Uno-specific: WinUI re-renders after UpdateRequiresCompNodeForRoundedCorners; the post layer depends on it.
+		RenderLayers();
 	}
 }
