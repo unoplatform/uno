@@ -839,7 +839,7 @@ public partial class Given_ListViewItemPresenter
 
 	private delegate void VisualStatesUpdater(ref ListViewBaseItemPresenter.VisualStates states);
 
-	// GoToChromedState is not ported yet; drive the chrome state directly.
+	// Drive the chrome state directly, without GoToChromedState side effects.
 	private static void UpdateVisualStates(ListViewBaseItemPresenter presenter, VisualStatesUpdater update)
 	{
 		var field = typeof(ListViewBaseItemPresenter).GetField("m_visualStates", BindingFlags.NonPublic | BindingFlags.Instance)!;
