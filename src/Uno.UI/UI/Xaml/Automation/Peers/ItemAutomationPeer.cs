@@ -23,7 +23,7 @@ public partial class ItemAutomationPeer : AutomationPeer, IVirtualizedItemProvid
 	private readonly object _item;
 	private readonly ItemsControlAutomationPeer _itemsControlAutomationPeer;
 	private WeakReference<UIElement>? _realizedContainer;
-	private UIElement? _boundingRectangleContainer;
+	private UIElement? _occurrenceContainer;
 
 	public ItemAutomationPeer(object item, ItemsControlAutomationPeer parent)
 	{
@@ -45,7 +45,7 @@ public partial class ItemAutomationPeer : AutomationPeer, IVirtualizedItemProvid
 	{
 		if (_itemsControlAutomationPeer?.Owner is ItemsControl itemsControl)
 		{
-			if (_boundingRectangleContainer is { } queryContainer &&
+			if (_occurrenceContainer is { } queryContainer &&
 				ReferenceEquals(itemsControl.ItemFromContainer(queryContainer), _item))
 			{
 				return queryContainer;
@@ -107,17 +107,23 @@ public partial class ItemAutomationPeer : AutomationPeer, IVirtualizedItemProvid
 		=> container.GetOrCreateAutomationPeer()?.GetChildren();
 
 	internal Rect GetBoundingRectangleForContainer(UIElement container)
+		=> WithOccurrenceContainer(container, GetBoundingRectangle);
+
+	/// <summary>
+	/// Native occurrences of a repeated item share the WinUI item peer, but not their container: runs a query or
+	/// an action against the given occurrence, e.g. so selecting it doesn't select the last realized one.
+	/// </summary>
+	internal T WithOccurrenceContainer<T>(UIElement container, Func<T> action)
 	{
-		// Native occurrences share the WinUI item peer, but not their container geometry.
-		var previousContainer = _boundingRectangleContainer;
-		_boundingRectangleContainer = container;
+		var previousContainer = _occurrenceContainer;
+		_occurrenceContainer = container;
 		try
 		{
-			return GetBoundingRectangle();
+			return action();
 		}
 		finally
 		{
-			_boundingRectangleContainer = previousContainer;
+			_occurrenceContainer = previousContainer;
 		}
 	}
 
