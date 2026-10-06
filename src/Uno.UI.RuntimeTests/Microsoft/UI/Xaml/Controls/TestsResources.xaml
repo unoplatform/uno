@@ -1121,4 +1121,19 @@
 		</Setter>
 	</Style>
 
+	<Style x:Key="ListViewBaseItemStateRecorderStyle"
+		   TargetType="ListViewItem">
+		<Setter Property="IsTabStop" Value="True" />
+		<Setter Property="Height" Value="60" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ListViewItem">
+					<local:ListViewBaseItem_StateRecorder Background="Transparent">
+						<ContentPresenter />
+					</local:ListViewBaseItem_StateRecorder>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 </ResourceDictionary>
