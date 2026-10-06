@@ -1299,19 +1299,29 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				: null;
 
 	internal bool Activate(nint handle)
-	{
-		var peer = ResolvePeer(handle);
-		if (peer is null)
+		=> WithOccurrence(handle, () =>
 		{
-			return false;
-		}
+			var peer = ResolvePeer(handle);
+			if (peer is null)
+			{
+				return false;
+			}
 
-		// Invoke wins, as in InvokeAutomationPeer: ItemClick list items support selection too.
-		return AccessibilityPeerHelper.TryInvoke(peer)
-			|| (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider
-				? AccessibilityPeerHelper.TryToggleSelection(peer)
-				: AccessibilityPeerHelper.TryInvokeDefaultAction(peer));
-	}
+			// Invoke wins, as in InvokeAutomationPeer: ItemClick list items support selection too.
+			return AccessibilityPeerHelper.TryInvoke(peer)
+				|| (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider
+					? AccessibilityPeerHelper.TryToggleSelection(peer)
+					: AccessibilityPeerHelper.TryInvokeDefaultAction(peer));
+		});
+
+	// A repeated item's occurrences share one item peer, so act on the occurrence this element represents.
+	private T WithOccurrence<T>(nint handle, Func<T> action)
+		=> _nodePeers.TryGetValue(handle, out var binding) &&
+			binding.Peer.TryGetTarget(out var nodePeer) &&
+			nodePeer is ItemAutomationPeer itemPeer &&
+			GetOwner(handle) is { } occurrence
+				? itemPeer.WithOccurrenceContainer(occurrence, action)
+				: action();
 
 	internal bool Increment(nint handle)
 	{
@@ -1520,6 +1530,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			if (ec.ExpandCollapseState is ExpandCollapseState.Collapsed)
 			{
 				list.Add(CreateCustomAction(
+					weakSelf,
+					handle,
 					GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionExpand),
 					_ =>
 					{
@@ -1534,6 +1546,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			else if (ec.ExpandCollapseState is ExpandCollapseState.Expanded)
 			{
 				list.Add(CreateCustomAction(
+					weakSelf,
+					handle,
 					GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionCollapse),
 					_ =>
 					{
@@ -1559,6 +1573,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				? GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionDeselect)
 				: GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionSelect);
 			list.Add(CreateCustomAction(
+				weakSelf,
+				handle,
 				label,
 				_ =>
 				{
@@ -1575,6 +1591,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			(scrollProvider.HorizontallyScrollable || scrollProvider.VerticallyScrollable))
 		{
 			list.Add(CreateCustomAction(
+				weakSelf,
+				handle,
 				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionScrollForward),
 				_ =>
 				{
@@ -1585,6 +1603,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					return self.Scroll(handle, UIAccessibilityScrollDirection.Down);
 				}));
 			list.Add(CreateCustomAction(
+				weakSelf,
+				handle,
 				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionScrollBackward),
 				_ =>
 				{
@@ -1599,6 +1619,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		if (peer.GetPattern(PatternInterface.ScrollItem) is IScrollItemProvider)
 		{
 			list.Add(CreateCustomAction(
+				weakSelf,
+				handle,
 				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionScrollIntoView),
 				_ =>
 				{
@@ -1614,6 +1636,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		if (peer.GetPattern(PatternInterface.VirtualizedItem) is IVirtualizedItemProvider)
 		{
 			list.Add(CreateCustomAction(
+				weakSelf,
+				handle,
 				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionRealize),
 				_ =>
 				{
@@ -1629,6 +1653,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		if (peer.GetPattern(PatternInterface.Window) is IWindowProvider wp)
 		{
 			list.Add(CreateCustomAction(
+				weakSelf,
+				handle,
 				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionDismiss),
 				_ =>
 				{
@@ -1649,6 +1675,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			if (canMax && visualState != WindowVisualState.Maximized)
 			{
 				list.Add(CreateCustomAction(
+					weakSelf,
+					handle,
 					GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionMaximize),
 					_ =>
 					{
@@ -1665,6 +1693,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			if (canMin && visualState != WindowVisualState.Minimized)
 			{
 				list.Add(CreateCustomAction(
+					weakSelf,
+					handle,
 					GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionMinimize),
 					_ =>
 					{
@@ -1681,6 +1711,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			if (visualState is WindowVisualState.Maximized or WindowVisualState.Minimized)
 			{
 				list.Add(CreateCustomAction(
+					weakSelf,
+					handle,
 					GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionRestore),
 					_ =>
 					{
@@ -1722,6 +1754,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					}
 
 					list.Add(CreateCustomAction(
+						weakSelf,
+						handle,
 						viewLabel,
 						_ =>
 						{
@@ -1741,6 +1775,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		if (peer.GetPattern(PatternInterface.Transform2) is ITransformProvider2 t2 && t2.CanZoom)
 		{
 			list.Add(CreateCustomAction(
+				weakSelf,
+				handle,
 				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionZoomIn),
 				_ =>
 				{
@@ -1752,6 +1788,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					return p is not null && AccessibilityPeerHelper.TryZoomByUnit(p, ZoomUnit.SmallIncrement);
 				}));
 			list.Add(CreateCustomAction(
+				weakSelf,
+				handle,
 				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionZoomOut),
 				_ =>
 				{
@@ -1780,6 +1818,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				}
 				var capturedPos = pos;
 				list.Add(CreateCustomAction(
+					weakSelf,
+					handle,
 					GetDockActionLabel(pos),
 					_ =>
 					{
@@ -3211,9 +3251,16 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		});
 
 	private static UIAccessibilityCustomAction CreateCustomAction(
+		WeakReference<AppleUIKitAccessibility> adapterRef,
+		nint handle,
 		string name,
 		Func<UIAccessibilityCustomAction, bool> handler)
-		=> new(name, handler);
+	{
+		Func<UIAccessibilityCustomAction, bool> occurrenceHandler = action => adapterRef.TryGetTarget(out var adapter)
+			? adapter.WithOccurrence(handle, () => handler(action))
+			: handler(action);
+		return new(name, occurrenceHandler);
+	}
 
 	internal AXCustomContent[]? GetCustomContent(nint handle)
 	{
