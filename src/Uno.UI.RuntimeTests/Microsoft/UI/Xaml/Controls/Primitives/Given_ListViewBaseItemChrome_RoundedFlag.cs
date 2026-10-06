@@ -1,4 +1,4 @@
-#if HAS_UNO
+﻿#if HAS_UNO
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -27,7 +27,6 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 	[TestMethod]
 	public void When_Fluent_Resource_True()
 	{
-		// TODO Uno: the Fluent theme only ships the True value from the style-tables chunk; set it explicitly until then.
 		using (ListViewChromeHelper.UseRoundedChromeResource(true))
 		{
 			Assert.IsTrue(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
@@ -35,12 +34,13 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 	}
 
 	[TestMethod]
-	public void When_Generic_Resource_False()
+	public void When_UwpStyles_Fluent_Resource_Still_Wins()
 	{
+		// The Fluent True is a system-level resource, so it outranks Generic.xaml's False.
 		using (StyleHelper.UseUwpStyles())
 		{
 			ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
-			Assert.IsFalse(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
+			Assert.IsTrue(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
 		}
 	}
 
@@ -103,31 +103,10 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 	{
 		using (StyleHelper.UseUwpStyles())
 		{
-			// Fills the static cache with the Generic.xaml value.
-			Assert.IsFalse(new ListViewItemPresenter().IsRoundedListViewBaseItemChromeEnabled());
-		}
-
-		// TODO Uno: drop the manual True once the Fluent theme ships it; set without clearing the cache,
-		// so only the cache clear on UseUwpStyles restore lets the new value through.
-		var resources = Application.Current.Resources;
-		var hadValue = resources.ContainsKey(Key);
-		var previous = hadValue ? resources[Key] : null;
-		resources[Key] = true;
-		try
-		{
 			Assert.IsTrue(new ListViewItemPresenter().IsRoundedListViewBaseItemChromeEnabled());
 		}
-		finally
-		{
-			if (hadValue)
-			{
-				resources[Key] = previous;
-			}
-			else
-			{
-				resources.Remove(Key);
-			}
-		}
+
+		Assert.IsTrue(new ListViewItemPresenter().IsRoundedListViewBaseItemChromeEnabled());
 	}
 }
 #endif
