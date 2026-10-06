@@ -220,7 +220,45 @@ partial class ListViewBaseItemPresenter
 		return (scale != 1.0f) && GetUseLayoutRounding();
 	}
 
-	// TODO Uno: AddRectangle and AddBorder (C:262-329) come with the chrome rendering layers (C6).
+	private static void AddRectangle(
+		ChromeContentRenderer pContentRenderer,
+		Rect bounds,
+		Brush pBrush,
+		UIElement? pUIElement
+		)
+	{
+		if (!IsNullCompositionBrush(pBrush))
+		{
+			pContentRenderer.AddRectangle(bounds, pBrush);
+		}
+	}
+
+	private static void AddBorder(
+		ChromeContentRenderer pContentRenderer,
+		Rect bounds,
+		Thickness thickness,
+		Brush pBrush,
+		ListViewBaseItemPresenter? listViewItemChrome
+		)
+	{
+		if (!IsNullCompositionBrush(pBrush))
+		{
+			// Uno-specific: a hollow rectangle at the bounds, in place of WinUI's ninegrid translated to (X, Y).
+			pContentRenderer.AddBorder(bounds, thickness, pBrush);
+		}
+	}
+
+	// Uno-specific: the Inline state fill goes to the element background (IBorderInfoProvider.Background), which carries BackgroundTransition.
+	private static void AddElementBackgroundRectangle(
+		ChromeContentRenderer pContentRenderer,
+		Brush pBrush
+		)
+	{
+		if (!IsNullCompositionBrush(pBrush))
+		{
+			pContentRenderer.AddElementBackground(pBrush);
+		}
+	}
 
 	// Dead WinUI code: AddChromeAssociatedPath (C:331-376).
 }
@@ -411,7 +449,6 @@ partial class ListViewBaseItemPresenter
 {
 	internal ListViewBaseItemPresenter()
 	{
-		m_isFocusVisualDrawnByFocusManager = false;
 		m_shouldRenderChrome = true;
 		m_isInIndicatorSelect = false;
 		m_isInMultiSelect = false;
@@ -574,6 +611,55 @@ partial class ListViewBaseItemPresenter
 		=> GoToChromedStateNewStyle(pStateName, useTransitions, out pWentToState);
 
 	// Dead WinUI code: DrawBaseLayer, DrawUnderContentLayer, DrawOverContentLayer and DrawDragOverlayLayer (C:995-1341).
+
+	private void RenderLayer(
+		ChromeContentRenderer pContentRenderer,
+		ListViewBaseItemChromeLayerPosition layer
+		)
+	{
+		if (m_shouldRenderChrome && ActualWidth > 0 && ActualHeight > 0)
+		{
+			Rect bounds = new(0.0f, 0.0f, ActualWidth, ActualHeight);
+
+			if (ShouldUseLayoutRounding())
+			{
+				bounds = LayoutRoundHelper(bounds);
+			}
+
+			if (ShouldDrawUnderContentLayerHere(layer))
+			{
+				DrawUnderContentLayerNewStyle(pContentRenderer, bounds);
+			}
+
+			if (ShouldDrawOverContentLayerHere(layer))
+			{
+				DrawOverContentLayerNewStyle(pContentRenderer, bounds);
+			}
+		}
+	}
+
+	// Dead WinUI code: ShouldDrawBaseLayerHere (C:1372-1377).
+
+	// Returns TRUE if the under-content layer graphics should be drawn at the given layer.
+	private static bool ShouldDrawUnderContentLayerHere(ListViewBaseItemChromeLayerPosition layer)
+		=> layer == ListViewBaseItemChromeLayerPosition.PrimaryChrome_Pre;
+
+	// Returns TRUE if the over-content layer graphics should be drawn at the given layer.
+	private bool ShouldDrawOverContentLayerHere(ListViewBaseItemChromeLayerPosition layer)
+	{
+		// Order of precedence matters!
+		// Default to Primary Chrome Post.
+		var targetLayer = ListViewBaseItemChromeLayerPosition.PrimaryChrome_Post;
+
+		// Some states require us to draw the over-content layer on the secondary chrome instead, so we can animate it.
+		if (m_visualStates.HasState(DragStates.MultipleDraggingPrimary) || m_visualStates.HasState(DragStates.Dragging) ||
+			m_visualStates.HasState(DragStates.MultipleReorderingPrimary) || m_visualStates.HasState(DragStates.Reordering))
+		{
+			targetLayer = ListViewBaseItemChromeLayerPosition.SecondaryChrome_Post;
+		}
+
+		return layer == targetLayer;
+	}
 
 	// Obtains the next animation command to execute, or NULL if none exists. Note that the ref
 	// to the returned item is still controlled by the chrome - see UnlockLayersForAnimationAndDisposeCommand.
@@ -1110,9 +1196,14 @@ partial class ListViewBaseItemPresenter
 
 	// TODO Uno: GenerateContentBounds (C:2273-2286) has no Uno equivalent; the chrome draws within {0,0,ActualWidth,ActualHeight}.
 
+	// Uno-specific: HitTestLocalInternal (C:2288-2338) is the HitTest override in ListViewBaseItemPresenter.cs.
+	// TODO Uno: HitTestLocalInternalPostChildren (C:2340-2360) has no post-children hit test hook.
+
 	internal void InvalidateRender()
 	{
-		// TODO Uno: NWSetContentDirty on this, the parent item and the secondary chrome; the chrome rendering is not ported yet.
+		// Uno-specific: WinUI dirties this, the parent item and the secondary chrome (NWSetContentDirty) for the next render walk;
+		// Uno has no per-frame walk of the chrome, so the layers are configured right away.
+		RenderLayers();
 	}
 
 	// Uno-specific: CListViewBaseItemChrome::OnPropertyChanged (C:2377-2383) calls the base then OnPropertyChangedNewStyle;
@@ -2050,6 +2141,305 @@ partial class ListViewBaseItemPresenter
 
 	// Uno-specific: xref::get_weakref, which also accepts a null target.
 	private static WeakReference<T> GetWeakRef<T>(T? target) where T : class => new(target!);
+
+	// Draws the below-content layer
+	private void DrawUnderContentLayerNewStyle(
+		ChromeContentRenderer pContentRenderer,
+		Rect bounds
+		)
+	{
+		var controlBorderBounds = bounds;
+
+		if (!IsRoundedListViewBaseItemChromeEnabled())
+		{
+			var pParentListViewBaseItemNoRef = GetParentListViewBaseItemNoRef();
+
+			// Control background
+			if (pParentListViewBaseItemNoRef.Background is { } background)
+			{
+				AddRectangle(
+					pContentRenderer,
+					controlBorderBounds,
+					background,
+					this
+					);
+			}
+
+			// Border background
+			// Responsible for the different visual states in CommonStates2
+			// For ListViewItem, we render a filled rectangle under the content
+			// For GridViewItem, we render a hollow rectangle on top of the content
+			if (m_checkMode == ListViewItemPresenterCheckMode.Inline)
+			{
+				Brush? backgroundBrush = null;
+
+				if (m_visualStates.HasState(CommonStates2.PointerOver))
+				{
+					backgroundBrush = m_pPointerOverBackground;
+				}
+				else if (m_visualStates.HasState(CommonStates2.Pressed))
+				{
+					backgroundBrush = m_pPressedBackground;
+				}
+				else if (m_visualStates.HasState(CommonStates2.Selected))
+				{
+					backgroundBrush = m_pSelectedBackground;
+				}
+				else if (m_visualStates.HasState(CommonStates2.PointerOverSelected))
+				{
+					backgroundBrush = m_pSelectedPointerOverBackground;
+				}
+				else if (m_visualStates.HasState(CommonStates2.PressedSelected))
+				{
+					backgroundBrush = m_pSelectedPressedBackground;
+				}
+
+				if (backgroundBrush is not null)
+				{
+					if (m_previousBackgroundBrush != backgroundBrush)
+					{
+						var isAnimationEnabled = global::Uno.UI.Helpers.WinUI.SharedHelpers.IsAnimationsEnabled();
+
+						if (isAnimationEnabled)
+						{
+							var backgroundTransition = BackgroundTransition;
+
+							if (backgroundTransition is not null)
+							{
+								BorderHelper.SetUpBrushTransitionIfAllowed(
+									ChromeVisual,
+									m_previousBackgroundBrush /* from */,
+									backgroundBrush /* to */,
+									backgroundTransition,
+									isAnimation: false);
+							}
+							else
+							{
+								// TODO Uno: WUCBrushManager::CleanUpBrushTransition has no Uno equivalent; a running transition completes.
+							}
+						}
+
+						m_previousBackgroundBrush = backgroundBrush;
+					}
+
+					AddElementBackgroundRectangle(
+						pContentRenderer,
+						backgroundBrush
+						);
+				}
+				else
+				{
+					m_previousBackgroundBrush = null;
+				}
+			}
+		}
+
+		// Draw Reveal Background brush below content
+		if (GetRevealBackgroundBrushNoRef() is not null && !GetRevealBackgroundShowsAboveContent())
+		{
+			DrawRevealBackground(pContentRenderer, controlBorderBounds);
+		}
+	}
+
+	// Draws the above-content layer
+	private void DrawOverContentLayerNewStyle(
+		ChromeContentRenderer pContentRenderer,
+		Rect bounds
+		)
+	{
+		Rect controlBorderBounds = default;
+		Thickness controlBorderThickness = default;
+
+		var pParentListViewBaseItemNoRef = GetParentListViewBaseItemNoRef();
+
+		controlBorderThickness = pParentListViewBaseItemNoRef.BorderThickness;
+
+		if (ShouldUseLayoutRounding())
+		{
+			LayoutRoundHelper(ref controlBorderThickness);
+		}
+
+		controlBorderBounds = bounds;
+
+		// Placeholder
+		if (m_visualStates.HasState(DataVirtualizationStates.DataPlaceholder) && m_pPlaceholderBackground is { } placeholderBackground)
+		{
+			AddRectangle(
+				pContentRenderer,
+				controlBorderBounds,
+				placeholderBackground,
+				this
+				);
+		}
+
+		// Control border
+		if (pParentListViewBaseItemNoRef.BorderBrush is { } controlBorderBrush)
+		{
+			AddBorder(
+				pContentRenderer,
+				controlBorderBounds,
+				controlBorderThickness,
+				controlBorderBrush,
+				this
+				);
+		}
+
+		// Border background
+		// Responsible for the different visual states in CommonStates2
+		// For ListViewItem, we render a filled rectangle under the content
+		// For GridViewItem, we render a hollow rectangle (of thickness 2) on top of the content
+		if (!IsRoundedListViewBaseItemChromeEnabled() && m_checkMode == ListViewItemPresenterCheckMode.Overlay)
+		{
+			// if item is not focused currently, we want chrome to draw border. so, clearing the boolean for m_isFocusVisualDrawnByFocusManager
+			if (IsFocusVisualDrawnByFocusManager())
+			{
+				// if we get here, it means the item has focus and the focus manager has drawn the inner border. chrome should not draw any border.
+			}
+			else
+			{
+				// We want the chrome to draw selection/hover/press visual border only if focus manager did not draw the border
+				Brush? borderBrush = null;
+
+				if (m_visualStates.HasState(CommonStates2.PointerOver))
+				{
+					borderBrush = m_pPointerOverBackground;
+				}
+				else if (m_visualStates.HasState(CommonStates2.Pressed))
+				{
+					borderBrush = m_pPressedBackground;
+				}
+				else if (m_visualStates.HasState(CommonStates2.Selected))
+				{
+					borderBrush = m_pSelectedBackground;
+				}
+				else if (m_visualStates.HasState(CommonStates2.PointerOverSelected))
+				{
+					borderBrush = m_pSelectedPointerOverBackground;
+				}
+				else if (m_visualStates.HasState(CommonStates2.PressedSelected))
+				{
+					borderBrush = m_pSelectedPressedBackground;
+				}
+
+				if (borderBrush is not null)
+				{
+					FocusRectangleOptions focusOptions = default;
+
+					focusOptions.drawFirst = true;
+					focusOptions.firstThickness = new Thickness(s_gridViewItemFocusBorderThickness);
+					// TODO Uno: FocusRectangleOptions only holds a SolidColorBrush; WinUI's static_cast still strokes with any brush.
+					focusOptions.firstBrush = (borderBrush as SolidColorBrush)!;
+					// TODO Uno: focusOptions.isContinuous = true; (FocusRectangleOptions has no isContinuous, the chrome only renders continuous rectangles).
+
+					RenderFocusRectangle(
+						pContentRenderer,
+						focusOptions);
+				}
+			}
+		}
+
+		// TH2 Focus Rectangle (dotted lines) - In this case, the chrome draws focus rectangles, and overrides the FocusRectManager.
+		if (!m_visualStates.HasState(DisabledStates.Disabled) && m_visualStates.HasState(FocusStates.Focused))
+		{
+			var shouldDrawDottedLines = ShouldDrawDottedLinesFocusVisual();
+			if (shouldDrawDottedLines)
+			{
+				// TODO Uno: DottedLine focus visuals (C:3565-3603: FocusBorderBrush / FocusSecondaryBorderBrush dotted rectangle).
+			}
+		}
+
+		{
+			// disable hittest for reveal brushes which are above content
+			// Uno-specific: the over-content layer visual is never hit-tested.
+
+			// Draw Reveal Background brush over content
+			if (GetRevealBackgroundBrushNoRef() is not null && GetRevealBackgroundShowsAboveContent())
+			{
+				DrawRevealBackground(pContentRenderer, controlBorderBounds);
+			}
+
+			// Reveal border is above everything
+			var revealBorderBrush = GetRevealBorderBrushNoRef();
+
+			if (revealBorderBrush is not null)
+			{
+				AddBorder(
+					pContentRenderer,
+					controlBorderBounds,
+					GetRevealBorderThickness(),
+					revealBorderBrush,
+					this
+				);
+			}
+		}
+	}
+
+	// TODO Uno: wired by FocusRectManager.CallCustomizationFunction (the focus visual pipeline does not call it yet).
+	internal void CustomizeFocusRectangle(
+		ref FocusRectangleOptions options,
+		out bool shouldDrawFocusRect)
+	{
+		// Callback from CFocusRectManager at beginning of render walk.  It's an opportunity to tell
+		// CFocusRectManager how to render the focus rectangle, and whether or not it should draw it
+		// at all.
+		var shouldDrawDottedLines = ShouldDrawDottedLinesFocusVisual();
+		if (shouldDrawDottedLines)
+		{
+			shouldDrawFocusRect = false;
+		}
+		else
+		{
+			if (m_checkMode == ListViewItemPresenterCheckMode.Overlay)
+			{
+				if (m_visualStates.HasState(CommonStates2.PointerOver))
+				{
+					options.secondThickness = new Thickness(s_gridViewItemFocusBorderThickness);
+					options.secondBrush = (m_pPointerOverBackground as SolidColorBrush)!;
+				}
+				else if (m_visualStates.HasState(CommonStates2.Pressed))
+				{
+					options.secondThickness = new Thickness(s_gridViewItemFocusBorderThickness);
+					options.secondBrush = (m_pPressedBackground as SolidColorBrush)!;
+				}
+				else if (m_visualStates.HasState(CommonStates2.Selected))
+				{
+					options.secondThickness = new Thickness(s_gridViewItemFocusBorderThickness);
+					options.secondBrush = (m_pSelectedBackground as SolidColorBrush)!;
+				}
+				else if (m_visualStates.HasState(CommonStates2.PointerOverSelected))
+				{
+					options.secondThickness = new Thickness(s_gridViewItemFocusBorderThickness);
+					options.secondBrush = (m_pSelectedPointerOverBackground as SolidColorBrush)!;
+				}
+				else if (m_visualStates.HasState(CommonStates2.PressedSelected))
+				{
+					options.secondThickness = new Thickness(s_gridViewItemFocusBorderThickness);
+					options.secondBrush = (m_pSelectedPressedBackground as SolidColorBrush)!;
+				}
+			}
+
+			shouldDrawFocusRect = true;
+			// Uno-specific: m_isFocusVisualDrawnByFocusManager = true is derived by IsFocusVisualDrawnByFocusManager() (A33).
+		}
+	}
+
+	private bool ShouldDrawDottedLinesFocusVisual()
+	{
+		var shouldDrawDottedLines = false;
+
+		var parentListViewBaseItem = GetParentListViewBaseItemNoRef();
+
+		var useSystemFocusVisuals = parentListViewBaseItem.UseSystemFocusVisuals;
+
+		var focusVisualKind = Application.Current?.FocusVisualKind ?? FocusVisualKind.HighVisibility;
+
+		if (useSystemFocusVisuals && focusVisualKind == FocusVisualKind.DottedLine)
+		{
+			shouldDrawDottedLines = true;
+		}
+
+		return shouldDrawDottedLines;
+	}
 
 	// Removes the multi-select checkbox from the tree.
 	internal void RemoveMultiSelectCheckBox()
@@ -3092,6 +3482,23 @@ partial class ListViewBaseItemPresenter
 				}
 			}
 		}
+	}
+
+	private void DrawRevealBackground(
+		ChromeContentRenderer pContentRenderer,
+		Rect bounds)
+	{
+		var placeholderBounds = bounds;
+
+		// exclude the reveal border area
+		CSizeUtil.Deflate(ref placeholderBounds, GetRevealBorderThickness());
+
+		AddRectangle(
+			pContentRenderer,
+			placeholderBounds,
+			GetRevealBackgroundBrushNoRef()!,
+			this
+		);
 	}
 
 	// all XCBBs are backed by a comp brush
