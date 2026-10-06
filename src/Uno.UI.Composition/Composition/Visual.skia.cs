@@ -52,6 +52,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _pictureCollapsingOptimizationVisualCountThreshold;
 
 	private CompositionClip? _clip;
+	private CompositionClip? _transitionClip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private (Matrix4x4 matrix, bool isLocalMatrixIdentity) _totalMatrix = (Matrix4x4.Identity, true);
@@ -392,6 +393,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		get => _clip;
 		set => SetProperty(ref _clip, value);
+	}
+
+	/// <summary>
+	/// The clip of the owning element's TransitionTarget, intersected with <see cref="Clip"/> in local coordinates.
+	/// </summary>
+	internal CompositionClip? TransitionClip
+	{
+		get => _transitionClip;
+		set => SetProperty(ref _transitionClip, value);
 	}
 
 	public Vector2 AnchorPoint
@@ -1198,9 +1208,19 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// or null when it has none. Release, not Dispose: the reference may be one taken on a cached geometry, whose
 	/// creator still holds the Dispose.</summary>
 	internal virtual IGeometry? GetPrePaintingClipping()
-		=> Clip is null
+	{
+		var clip = Clip is null
 			? null
 			: Clip.GetClipPath(this) ?? GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
+
+		if (_transitionClip is null)
+		{
+			return clip;
+		}
+
+		var transitionClip = _transitionClip.GetClipPath(this) ?? GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
+		return clip is null ? transitionClip : IntersectOwned(clip, transitionClip);
+	}
 
 	/// <summary>Intersects two owned clip references, releasing both in favour of the result.</summary>
 	private protected static IGeometry IntersectOwned(IGeometry a, IGeometry b)
@@ -1212,7 +1232,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <summary>Applies this visual's pre-painting clipping (its <see cref="Clip"/> and any layout/corner clip) to the drawing session.</summary>
-	internal virtual void ApplyPrePaintingClipping(IDrawingSession session) => Clip?.ApplyClip(this, session);
+	internal virtual void ApplyPrePaintingClipping(IDrawingSession session)
+	{
+		Clip?.ApplyClip(this, session);
+		_transitionClip?.ApplyClip(this, session);
+	}
 
 	/// <summary>
 	/// True when this visual renders nothing inside <paramref name="cullRect"/> (root-space AABB of the
@@ -1273,7 +1297,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	/// <summary>The local-space rect bounds of this visual's pre-painting clips when they are rect-shaped
 	/// (used only to narrow the culling rect), or <c>null</c> when unknown.</summary>
-	private protected virtual Rect? GetLocalCullClipBounds() => Clip?.GetBounds(this);
+	private protected virtual Rect? GetLocalCullClipBounds()
+	{
+		var bounds = Clip?.GetBounds(this);
+		if (_transitionClip?.GetBounds(this) is not { } transitionBounds)
+		{
+			return bounds;
+		}
+
+		return bounds is { } b ? Intersect(b, transitionBounds) : transitionBounds;
+	}
 
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
 	/// <summary>Clipping that affects this visual's children but not itself, as a reference the caller owns and

@@ -85,6 +85,8 @@ namespace Uno.UI.Media
 			Update();
 		}
 
+		internal void UpdateTransitionTarget() => Update();
+
 		private void UpdateOnTransformPropertyChanged(object snd, EventArgs args)
 			=> Update();
 
@@ -124,9 +126,16 @@ namespace Uno.UI.Media
 		{
 			FlowDirectionTransform = Owner.GetFlowDirectionTransform();
 
-			// Get base 2D transform (RenderTransform + FlowDirection)
+			// Get base 2D transform (RenderTransform + TransitionTarget + FlowDirection)
 			Matrix3x2 transform2D;
-			if (Transform is null)
+			if (Owner.TransitionTarget is { CompositeTransform: { } transitionTransform } transitionTarget)
+			{
+				// MUX: components/elements/UIElement.cpp - the TransitionTarget transform applies after RenderTransform, before the RTL flip.
+				transform2D = (Transform?.ToMatrix(CurrentOrigin, CurrentSize) ?? Matrix3x2.Identity)
+					* transitionTransform.ToMatrix(transitionTarget.TransformOrigin, CurrentSize)
+					* FlowDirectionTransform;
+			}
+			else if (Transform is null)
 			{
 				transform2D = FlowDirectionTransform;
 			}

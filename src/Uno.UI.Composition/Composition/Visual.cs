@@ -206,7 +206,7 @@ namespace Microsoft.UI.Composition
 					ContributeRemovalDamage(target);
 				}
 			}
-			else if (propertyName is nameof(Clip) or LayoutClipPropertyName)
+			else if (propertyName is nameof(Clip) or LayoutClipPropertyName or nameof(TransitionClip))
 			{
 				// The clip reveals or hides part of this subtree while descendants keep their content and
 				// transform, so they would report no damage on their own. Raise the signal Render carries down

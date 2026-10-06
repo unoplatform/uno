@@ -494,6 +494,15 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				clippingBounds = clippingBounds.IntersectWith(elementToRoot.Transform(clip)) ?? default;
 			}
+
+			// Clip target to the implicit transition clip (uielement.cpp BoundsTestInternalImpl)
+			if (element.TransitionTarget is { HasClipAnimation: true } transitionTarget)
+			{
+				var transitionClip = new Rect(0, 0, element.Visual.Size.X, element.Visual.Size.Y);
+				transitionTarget.TransformBounds(ref transitionClip);
+				clippingBounds = clippingBounds.IntersectWith(elementToRoot.Transform(transitionClip)) ?? default;
+			}
+
 			TRACE($"- clipping (absolute): {clippingBounds.ToDebugString()}");
 
 			// The region where the current element draws itself.

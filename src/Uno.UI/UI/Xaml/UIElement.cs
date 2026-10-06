@@ -444,7 +444,7 @@ namespace Microsoft.UI.Xaml
 
 			_renderTransform?.Dispose();
 
-			if (transform is not null || !flowDirectionTransform.IsIdentity)
+			if (transform is not null || !flowDirectionTransform.IsIdentity || _transitionTarget is not null)
 			{
 				_renderTransform = new NativeRenderTransformAdapter(this, transform, RenderTransformOrigin, flowDirectionTransform);
 				OnRenderTransformSet();
@@ -1582,7 +1582,7 @@ namespace Microsoft.UI.Xaml
 
 		private void UpdateOpacity()
 		{
-			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
+			Visual.Opacity = Visibility == Visibility.Visible ? (float)GetOpacityCombined() : 0;
 		}
 
 		internal ContainerVisual Visual
@@ -1900,7 +1900,7 @@ namespace Microsoft.UI.Xaml
 			visual.Size = new Vector2((float)rect.Width, (float)rect.Height);
 
 			var hasProjection = _projection is not null;
-			if (_renderTransform is null && (!GetFlowDirectionTransform().IsIdentity || hasProjection))
+			if (_renderTransform is null && (!GetFlowDirectionTransform().IsIdentity || hasProjection || _transitionTarget is not null))
 			{
 				_renderTransform = new NativeRenderTransformAdapter(this, RenderTransform, RenderTransformOrigin);
 			}
@@ -1917,6 +1917,12 @@ namespace Microsoft.UI.Xaml
 				{
 					_renderTransform.UpdateFlowDirectionTransform();
 				}
+			}
+
+			if (_transitionTarget is { HasClipAnimation: true })
+			{
+				// The clip transform origin is relative to the element size.
+				UpdateTransitionClip();
 			}
 
 			// The clipping applied by our parent due to layout constraints are pushed to the visual through the LayoutClip property
