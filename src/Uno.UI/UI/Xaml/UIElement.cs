@@ -1409,10 +1409,9 @@ namespace Microsoft.UI.Xaml
 			return returnValue;
 		}
 
-		private static double XcpRound(double x)
-		{
-			return Math.Round(x);
-		}
+		// MUX Reference inlined.cpp: XcpFloor(x + 0.5). Math.Round would round midpoints to even, placing e.g. a
+		// slot centred at 28.5 one pixel off from WinUI.
+		private static double XcpRound(double x) => Math.Floor(x + 0.5);
 #endif
 
 		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
