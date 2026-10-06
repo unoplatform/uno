@@ -39,6 +39,7 @@ public class Given_MultiWindowAccessibility
 
 		var primaryAccessibility = GetAccessibility(primaryOwner);
 		Assert.IsNotNull(primaryAccessibility, "Primary window must have a live accessibility instance.");
+		QueryAsAccessibilityClient(primaryAccessibility);
 		Assert.IsTrue(IsAccessibilityEnabled(primaryAccessibility),
 			"Primary window accessibility must be enabled.");
 
@@ -61,6 +62,7 @@ public class Given_MultiWindowAccessibility
 
 			var secondaryAccessibility = GetAccessibility(secondaryOwner);
 			Assert.IsNotNull(secondaryAccessibility, "Secondary window must have its own accessibility instance (FR-001).");
+			QueryAsAccessibilityClient(secondaryAccessibility);
 			Assert.IsTrue(IsAccessibilityEnabled(secondaryAccessibility),
 				"Secondary window accessibility must be enabled independently of the primary.");
 
@@ -98,6 +100,7 @@ public class Given_MultiWindowAccessibility
 			?? throw new InvalidOperationException("Primary owner missing.");
 		var primaryAccessibility = GetAccessibility(primaryOwner)
 			?? throw new InvalidOperationException("Primary accessibility missing.");
+		QueryAsAccessibilityClient(primaryAccessibility);
 
 		var secondary = new Window();
 		Button secondaryButton;
@@ -363,6 +366,29 @@ public class Given_MultiWindowAccessibility
 		}
 		return null;
 	}
+
+	/// <summary>
+	/// macOS only builds a window's native accessibility tree once an accessibility client queries the window, so act
+	/// as one: ask the window for its accessibility children. Win32 enables it with the window and needs nothing.
+	/// </summary>
+	private static void QueryAsAccessibilityClient(object accessibility)
+	{
+		if (!OperatingSystem.IsMacOS())
+		{
+			return;
+		}
+
+		var windowHandle = (nint)accessibility.GetType()
+			.GetProperty("WindowHandle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!
+			.GetValue(accessibility)!;
+		_ = objc_msgSend(windowHandle, sel_registerName("accessibilityChildren"));
+	}
+
+	[System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.A.dylib")]
+	private static extern nint sel_registerName(string name);
+
+	[System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.A.dylib")]
+	private static extern nint objc_msgSend(nint receiver, nint selector);
 
 	private static bool IsAccessibilityEnabled(object accessibility)
 	{

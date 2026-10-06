@@ -32,8 +32,11 @@ namespace Uno.UI.Runtime.MacOS;
 /// </summary>
 internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 {
+	private static readonly Dictionary<nint, MacOSAccessibility> _byWindow = new();
+
 	private nint _windowHandle;
 	private bool _accessibilityTreeInitialized;
+	private bool _clientRequestedTree;
 	private bool _isCreatingAOM;
 	private nint _activeModalHandle;
 	private nint _modalTriggerHandle;
@@ -48,6 +51,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		NativeUno.uno_accessibility_set_range_callbacks(&OnNativeIncrement, &OnNativeDecrement);
 		NativeUno.uno_accessibility_set_expand_collapse_callback(&OnNativeExpandCollapse);
 		NativeUno.uno_accessibility_set_value_callback(&OnNativeSetValue);
+		NativeUno.uno_accessibility_set_tree_requested_callback(&OnNativeTreeRequested);
 	}
 
 	internal MacOSAccessibility(nint windowHandle)
@@ -59,11 +63,42 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 
 		_windowHandle = windowHandle;
 		NativeUno.uno_accessibility_init_context(_windowHandle);
+		_byWindow[windowHandle] = this;
 	}
 
 	internal nint WindowHandle => _windowHandle;
 
-	public override bool IsAccessibilityEnabled => !IsDisposed && _windowHandle != nint.Zero;
+	/// <summary>Provides the window's root element when an accessibility client asks for the tree.</summary>
+	internal Func<UIElement?>? RootElementProvider { get; set; }
+
+	/// <remarks>
+	/// Only true once an accessibility client (VoiceOver, Switch Control, Accessibility Inspector, UI automation) has
+	/// queried this window: until then the native tree is neither built nor kept in sync, which would otherwise cost
+	/// native calls for every moved or resized visual in every app.
+	/// </remarks>
+	public override bool IsAccessibilityEnabled => !IsDisposed && _windowHandle != nint.Zero && _clientRequestedTree;
+
+	// Called from native code the first time an accessibility client queries the window, before the native side
+	// answers: the tree is built synchronously so that first query already sees it.
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnNativeTreeRequested(nint window)
+	{
+		try
+		{
+			if (_byWindow.TryGetValue(window, out var accessibility) && !accessibility.IsDisposed)
+			{
+				accessibility._clientRequestedTree = true;
+				if (accessibility.RootElementProvider?.Invoke() is { } rootElement)
+				{
+					accessibility.BuildTree(rootElement);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			ApplicationExtensions.RaiseRecoverableUnhandledExceptionOrLog(Application.Current, e, typeof(MacOSAccessibility));
+		}
+	}
 
 	// Called from native code when VoiceOver triggers a press action on an element.
 	// The GCHandle target carries the UIElement directly so there's no per-instance
@@ -900,6 +935,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		// VoiceOver queries then observe a detached element rather than following
 		// a stale context back-pointer.
 		var windowHandle = _windowHandle;
+		_byWindow.Remove(windowHandle);
 		_windowHandle = nint.Zero;
 		_accessibilityTreeInitialized = false;
 		_activeModalHandle = nint.Zero;

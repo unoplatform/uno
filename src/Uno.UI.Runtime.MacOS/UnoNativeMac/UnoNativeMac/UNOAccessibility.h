@@ -65,6 +65,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableDictionary<NSNumber*, UNOAccessibilityElement*> *elements;
 @property (nonatomic, strong, nullable) UNOAccessibilityElement *rootElement;
 @property (nonatomic, strong, nullable) UNOAccessibilityElement *focusedElement;
+// Set once an accessibility client first asks this window for its tree, so managed code is asked to build it only once.
+@property (nonatomic) BOOL treeRequested;
 
 - (instancetype)initWithWindow:(NSWindow *)window;
 @end
@@ -81,11 +83,15 @@ typedef void (*accessibility_increment_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_decrement_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_expand_collapse_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_set_value_fn_ptr)(intptr_t handle, const char* _Nonnull value);
+typedef void (*accessibility_tree_requested_fn_ptr)(NSWindow* _Nonnull window);
 
 // Setup — window-scoped context lifecycle
 void uno_accessibility_init_context(NSWindow* _Nonnull window);
 void uno_accessibility_destroy_context(NSWindow* _Nonnull window);
 void uno_accessibility_set_callbacks(accessibility_invoke_fn_ptr invoke, accessibility_focus_fn_ptr focus);
+void uno_accessibility_set_tree_requested_callback(accessibility_tree_requested_fn_ptr treeRequested);
+// Asks managed code to build the window's tree the first time an accessibility client queries it.
+void uno_accessibility_ensure_tree(NSWindow* _Nonnull window);
 void uno_accessibility_set_range_callbacks(accessibility_increment_fn_ptr increment, accessibility_decrement_fn_ptr decrement);
 void uno_accessibility_set_expand_collapse_callback(accessibility_expand_collapse_fn_ptr expandCollapse);
 void uno_accessibility_set_value_callback(accessibility_set_value_fn_ptr setValue);

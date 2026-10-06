@@ -352,7 +352,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			return;
 		}
 
-		_accessibility = new MacOSAccessibility(_nativeWindow.Handle);
+		_accessibility = new MacOSAccessibility(_nativeWindow.Handle)
+		{
+			RootElementProvider = () => _winUIWindow.RootElement,
+		};
 
 		if (_winUIWindow.RootElement is { } rootElement)
 		{
