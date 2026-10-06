@@ -45,6 +45,7 @@ public partial class ContainerVisual : Visual
 			// so we need to force a new frame even though no paint invalidations happened just so that
 			// already-clean added/removed visuals are reflected in the UI
 			CompositionTarget?.RequestNewFrame();
+			Compositor.OnVisualTreeChanged();
 
 			if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset
 				&& e.OldItems is not null)

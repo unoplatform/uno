@@ -16,8 +16,15 @@ namespace Microsoft.UI.Composition;
 
 public partial class Compositor
 {
-	private Dictionary<CompositionAnimation, ICompositionTarget> _runningAnimations = new();
+	private Dictionary<CompositionAnimation, RunningAnimation> _runningAnimations = new();
 	private Dictionary<ICompositionTarget, int> _runningTargets = new();
+
+	// Animations whose host isn't connected to a composition target: started while detached, or unbounded
+	// animations whose visual left the tree. Held weakly so a detached subtree stays collectable; they resume
+	// once the host is attached again.
+	private List<(WeakReference<CompositionAnimation> Animation, WeakReference<CompositionObject> Host)>? _detachedAnimations;
+	private int _visualTreeVersion;
+	private int _validatedVisualTreeVersion;
 	private LinkedList<ColorBrushTransitionState> _backgroundTransitions = new();
 #if PRINT_FRAME_TIMES
 	private int _frameNumber;
@@ -35,6 +42,11 @@ public partial class Compositor
 
 	internal bool IsAnimating => _runningAnimations.Count > 0;
 
+	private readonly record struct RunningAnimation(ICompositionTarget Target, CompositionObject Host);
+
+	/// <summary>Called whenever the composition tree's shape changes, so animation targets get re-validated on the next frame.</summary>
+	internal void OnVisualTreeChanged() => _visualTreeVersion++;
+
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
 	{
 		// Feed the animation into the innermost active scoped batch so its Completed event waits
@@ -50,25 +62,33 @@ public partial class Compositor
 			return;
 		}
 
-		// Resolve the CompositionTarget that needs invalidation. For Visuals it's the visual's
-		// own target; for a CompositionPropertySet it's the owning Visual's target so animations
-		// on `someVisual.Properties.Foo` still get ticked. A property set created standalone via
-		// Compositor.CreatePropertySet (e.g. AnimatedIcon's progress property set) must therefore
-		// have its Owner set to a Visual — AnimatedIcon does this before starting its animations.
-		// Without an owning Visual there is no target and the animation never ticks.
-		ICompositionTarget? target = host switch
+		if (GetAnimationTarget(host) is { } target)
 		{
-			Visual visual => visual.CompositionTarget,
-			CompositionPropertySet { Owner: Visual ownerVisual } => ownerVisual.CompositionTarget,
-			_ => null,
-		};
-
-		if (target is null)
-		{
-			return;
+			AddRunningAnimation(animation, host, target);
 		}
+		else
+		{
+			// Not connected yet: start ticking once the host is attached instead of never.
+			AddDetachedAnimation(animation, host);
+		}
+	}
 
-		_runningAnimations.Add(animation, target);
+	// Resolve the CompositionTarget that needs invalidation. For Visuals it's the visual's
+	// own target; for a CompositionPropertySet it's the owning Visual's target so animations
+	// on `someVisual.Properties.Foo` still get ticked. A property set created standalone via
+	// Compositor.CreatePropertySet (e.g. AnimatedIcon's progress property set) must therefore
+	// have its Owner set to a Visual — AnimatedIcon does this before starting its animations.
+	// Without an owning Visual there is no target and the animation never ticks.
+	private static ICompositionTarget? GetAnimationTarget(CompositionObject host) => host switch
+	{
+		Visual visual => visual.CompositionTarget,
+		CompositionPropertySet { Owner: Visual ownerVisual } => ownerVisual.CompositionTarget,
+		_ => null,
+	};
+
+	private void AddRunningAnimation(CompositionAnimation animation, CompositionObject host, ICompositionTarget target)
+	{
+		_runningAnimations.Add(animation, new(target, host));
 
 		if (_runningTargets.TryGetValue(target, out int count))
 		{
@@ -86,36 +106,120 @@ public partial class Compositor
 		}
 	}
 
+	private void AddDetachedAnimation(CompositionAnimation animation, CompositionObject host)
+		=> (_detachedAnimations ??= new()).Add((new(animation), new(host)));
+
 	internal void UnregisterAnimation(CompositionAnimation animation, CompositionObject visual)
 	{
-		if (animation.IsTrackedByCompositor)
+		if (!animation.IsTrackedByCompositor)
 		{
-			if (_runningAnimations.TryGetValue(animation, out var target))
+			return;
+		}
+
+		if (_runningAnimations.TryGetValue(animation, out var running))
+		{
+			RemoveRunningAnimation(animation, running.Target);
+		}
+		else if (!RemoveDetachedAnimation(animation))
+		{
+			if (this.Log().IsDebugEnabled())
 			{
-				_runningAnimations.Remove(animation);
+				this.Log().Debug($"Cannot unregister unknown animation");
+			}
+		}
+	}
 
-				if (_runningTargets.TryGetValue(target, out int count))
-				{
-					if (this.Log().IsTraceEnabled())
-					{
-						this.Log().Trace($"Unregister running targets {target.GetHashCode():X8}={count - 1} Animations={_runningAnimations.Count}");
-					}
+	private void RemoveRunningAnimation(CompositionAnimation animation, ICompositionTarget target)
+	{
+		_runningAnimations.Remove(animation);
 
-					if (count == 1)
-					{
-						_runningTargets.Remove(target);
-					}
-					else
-					{
-						_runningTargets[target] = count - 1;
-					}
-				}
+		if (_runningTargets.TryGetValue(target, out int count))
+		{
+			if (this.Log().IsTraceEnabled())
+			{
+				this.Log().Trace($"Unregister running targets {target.GetHashCode():X8}={count - 1} Animations={_runningAnimations.Count}");
+			}
+
+			if (count == 1)
+			{
+				_runningTargets.Remove(target);
 			}
 			else
 			{
-				if (this.Log().IsDebugEnabled())
+				_runningTargets[target] = count - 1;
+			}
+		}
+	}
+
+	private bool RemoveDetachedAnimation(CompositionAnimation animation)
+	{
+		if (_detachedAnimations is not { } detached)
+		{
+			return false;
+		}
+
+		for (var i = 0; i < detached.Count; i++)
+		{
+			if (detached[i].Animation.TryGetTarget(out var candidate) && ReferenceEquals(candidate, animation))
+			{
+				detached.RemoveAt(i);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/// <summary>
+	/// Re-validates where running animations tick after the tree changed. An unbounded animation whose host left the
+	/// tree (e.g. it sits below the root of a removed subtree, whose own animations are stopped on removal) would
+	/// otherwise keep requesting frames forever and keep the detached subtree alive through <see cref="_runningAnimations"/>.
+	/// Finite animations keep running: they end on their own and may be awaited through a scoped batch.
+	/// </summary>
+	private void RefreshAnimationTargets()
+	{
+		List<CompositionAnimation>? retarget = null;
+		foreach (var (animation, running) in _runningAnimations)
+		{
+			var target = GetAnimationTarget(running.Host);
+			if (!ReferenceEquals(target, running.Target)
+				&& (target is not null || animation is KeyFrameAnimation { IterationBehavior: AnimationIterationBehavior.Forever }))
+			{
+				(retarget ??= new()).Add(animation);
+			}
+		}
+
+		if (retarget is not null)
+		{
+			foreach (var animation in retarget)
+			{
+				var running = _runningAnimations[animation];
+				RemoveRunningAnimation(animation, running.Target);
+
+				if (GetAnimationTarget(running.Host) is { } target)
 				{
-					this.Log().Debug($"Cannot unregister unknown animation");
+					AddRunningAnimation(animation, running.Host, target);
+				}
+				else
+				{
+					AddDetachedAnimation(animation, running.Host);
+				}
+			}
+		}
+
+		if (_detachedAnimations is { Count: > 0 } detached)
+		{
+			for (var i = detached.Count - 1; i >= 0; i--)
+			{
+				if (!detached[i].Animation.TryGetTarget(out var animation) || !detached[i].Host.TryGetTarget(out var host))
+				{
+					detached.RemoveAt(i);
+				}
+				else if (GetAnimationTarget(host) is { } target && !_runningAnimations.ContainsKey(animation))
+				{
+					// An instance already running on another target stays parked (see TODO Uno #24102).
+					detached.RemoveAt(i);
+					AddRunningAnimation(animation, host, target);
 				}
 			}
 		}
@@ -202,6 +306,12 @@ public partial class Compositor
 		if (rootVisual is null)
 		{
 			throw new ArgumentNullException(nameof(rootVisual));
+		}
+
+		if (_validatedVisualTreeVersion != _visualTreeVersion)
+		{
+			_validatedVisualTreeVersion = _visualTreeVersion;
+			RefreshAnimationTargets();
 		}
 
 		var recPhaseT0 = _logRecordPhases ? Stopwatch.GetTimestamp() : 0;
