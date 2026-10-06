@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using DirectUI;
 using Uno.UI.Xaml.Core.Scaling;
 using Windows.Foundation;
 
@@ -279,13 +280,10 @@ partial class ListViewBaseItemPresenter
 	// Dead WinUI code: AppendCheckmarkTransform and AppendEarmarkTransform (C:766-818).
 
 	/// <inheritdoc />
-	protected override Size MeasureOverride(Size availableSize)
-	{
-		// TODO Uno: MeasureNewStyle (C:2385-2500) is not ported yet; this only keeps its parent requirement.
-		GetParentListViewBaseItemNoRef();
+	protected override Size MeasureOverride(Size availableSize) => MeasureNewStyle(availableSize);
 
-		return base.MeasureOverride(availableSize);
-	}
+	/// <inheritdoc />
+	protected override Size ArrangeOverride(Size finalSize) => ArrangeNewStyle(finalSize);
 
 	private protected sealed override bool HasTemplateChild() => GetTemplateChildIfExists() != null;
 
@@ -789,6 +787,307 @@ partial class ListViewBaseItemPresenter
 
 	// Uno-specific: CListViewBaseItemChrome::OnPropertyChanged (C:2377-2383) calls the base then OnPropertyChangedNewStyle;
 	// Uno routes the presenter DPs through OnChromePropertyChanged and ContentPresenter.CornerRadius through OnCornerRadiusChanged.
+
+	private Size MeasureNewStyle(Size availableSize)
+	{
+		var contentMargin = m_contentMargin;
+		Thickness controlBorderThickness = default;
+		Size totalSize = default;
+
+		if (m_backplateRectangle is null && IsRoundedListViewBaseItemChromeEnabled())
+		{
+			EnsureBackplate();
+		}
+
+		var pTemplateChild = GetTemplateChildIfExists();
+
+		// We can't be used without a parent LVB.
+		var pParentListViewBaseItemNoRef = GetParentListViewBaseItemNoRef();
+
+		controlBorderThickness = pParentListViewBaseItemNoRef.BorderThickness;
+
+		if (ShouldUseLayoutRounding())
+		{
+			LayoutRoundHelper(ref contentMargin);
+			LayoutRoundHelper(ref controlBorderThickness);
+		}
+
+		if (pTemplateChild is not null)
+		{
+			var contentAvailableSize = availableSize;
+			var contentPrefixWidth = 0.0f;
+
+			// Size available for content is availableSize - content margin - control border
+			CSizeUtil.Deflate(ref contentAvailableSize, contentMargin);
+			CSizeUtil.Deflate(ref contentAvailableSize, controlBorderThickness);
+
+			// Check to see if we need to offset the content due to the potential CheckBox in Inline MultiSelect state.
+			if (GetSelectionCheckMarkVisualEnabled() &&
+				m_visualStates.HasState(MultiSelectStates.MultiSelectEnabled) &&
+				m_checkMode == ListViewItemPresenterCheckMode.Inline)
+			{
+				contentPrefixWidth = IsRoundedListViewBaseItemChromeEnabled() ? s_multiSelectRoundedContentOffset : s_listViewItemMultiSelectContentOffset;
+			}
+
+			if (IsInSelectionIndicatorMode() &&
+				GetSelectionIndicatorMode() == ListViewItemPresenterSelectionIndicatorMode.Inline)
+			{
+				contentPrefixWidth = Math.Max(contentPrefixWidth, (float)(s_selectionIndicatorMargin.Left + s_selectionIndicatorSize.Width + s_selectionIndicatorMargin.Right));
+			}
+
+			// subtract the offset to have the child arrange using the new width
+			contentAvailableSize.Width -= contentPrefixWidth;
+
+			pTemplateChild.Measure(contentAvailableSize);
+			// Uno-specific: as in ContentPresenter.MeasureOverride.
+			pTemplateChild.EnsureLayoutStorage();
+
+			// Use child's desired size for our size.
+			totalSize = pTemplateChild.DesiredSize;
+
+			// If SelectionMode is Multiple and a CheckBox is potentially visible (Inline mode), we add the buffer of the CheckBox back.
+			// If SelectionMode is Single or Extended and a SelectionIndicator is potentially visible (Inline mode), we add the buffer of the SelectionIndicator back.
+			totalSize.Width += contentPrefixWidth;
+		}
+
+		// border should be accounted for regardless if there is content.
+		CSizeUtil.Inflate(ref totalSize, contentMargin);
+		CSizeUtil.Inflate(ref totalSize, controlBorderThickness);
+
+		if (GetSelectionCheckMarkVisualEnabled() && m_multiSelectCheckBoxRectangle is not null)
+		{
+			m_multiSelectCheckBoxRectangle.Measure(totalSize);
+		}
+
+		if (IsSelectionIndicatorVisualEnabled() && m_selectionIndicatorRectangle is not null)
+		{
+			m_selectionIndicatorRectangle.Measure(totalSize);
+		}
+
+		if (m_backplateRectangle is not null)
+		{
+			global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+			m_backplateRectangle.Measure(totalSize);
+		}
+
+		if (m_innerSelectionBorder is not null && m_outerBorder != m_innerSelectionBorder.GetParent())
+		{
+			global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+			global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+			m_innerSelectionBorder.Measure(totalSize);
+		}
+
+		if (m_outerBorder is not null)
+		{
+			global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+			global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+			m_outerBorder.Measure(totalSize);
+		}
+
+		// Minimum size
+		{
+			var minimumSize = new Size(pParentListViewBaseItemNoRef.MinWidth, pParentListViewBaseItemNoRef.MinHeight);
+
+			if (ShouldUseLayoutRounding())
+			{
+				LayoutRoundHelper(ref minimumSize);
+			}
+
+			totalSize.Width = Math.Max(totalSize.Width, minimumSize.Width);
+			totalSize.Height = Math.Max(totalSize.Height, minimumSize.Height);
+		}
+
+		return totalSize;
+	}
+
+	private Size ArrangeNewStyle(Size finalSize)
+	{
+		var contentMargin = m_contentMargin;
+		var finalBounds = new Rect(0.0, 0.0, finalSize.Width, finalSize.Height);
+		Rect controlBorderBounds = default;
+
+		if (ShouldUseLayoutRounding())
+		{
+			LayoutRoundHelper(ref contentMargin);
+		}
+
+
+		// Peel off content margin whitespace.
+		controlBorderBounds = finalBounds;
+		CSizeUtil.Deflate(ref controlBorderBounds, contentMargin);
+
+		var contentPrefixWidth = 0.0f;
+
+		if (GetSelectionCheckMarkVisualEnabled() && m_visualStates.HasState(MultiSelectStates.MultiSelectEnabled))
+		{
+			var multiSelectSquareSize = s_multiSelectSquareSize;
+
+			if (ShouldUseLayoutRounding())
+			{
+				LayoutRoundHelper(ref multiSelectSquareSize);
+			}
+
+			// If checkmark is visible, make sure there's at least enough space to show it.
+			finalBounds.Width = Math.Max(finalBounds.Width, multiSelectSquareSize.Width);
+			finalBounds.Height = Math.Max(finalBounds.Height, multiSelectSquareSize.Height);
+
+			// Check to see if we need to offset the content due to the CheckBox in MultiSelect state.
+			if (m_checkMode == ListViewItemPresenterCheckMode.Inline)
+			{
+				contentPrefixWidth = IsRoundedListViewBaseItemChromeEnabled() ? s_multiSelectRoundedContentOffset : s_listViewItemMultiSelectContentOffset;
+			}
+		}
+
+		if (IsInSelectionIndicatorMode())
+		{
+			var selectionIndicatorSize = new Size(s_selectionIndicatorMargin.Left + s_selectionIndicatorSize.Width + s_selectionIndicatorMargin.Right, s_selectionIndicatorHeightShrinkage + 1.0f);
+
+			if (ShouldUseLayoutRounding())
+			{
+				LayoutRoundHelper(ref selectionIndicatorSize);
+			}
+
+			// If a selection indicator is potentially visible, make sure there's at least enough space to show it.
+			finalBounds.Width = Math.Max(finalBounds.Width, selectionIndicatorSize.Width);
+			finalBounds.Height = Math.Max(finalBounds.Height, selectionIndicatorSize.Height);
+
+			// Check to see if we need to offset the content due to the Inline selection indicator.
+			if (GetSelectionIndicatorMode() == ListViewItemPresenterSelectionIndicatorMode.Inline)
+			{
+				contentPrefixWidth = (float)Math.Max(contentPrefixWidth, selectionIndicatorSize.Width);
+			}
+		}
+
+		if (contentPrefixWidth != 0)
+		{
+			// will be used by ArrangeTemplateChild
+			controlBorderBounds.X += contentPrefixWidth;
+
+			// subtract the offset to have the child arrange using the new width
+			controlBorderBounds.Width -= contentPrefixWidth;
+		}
+
+		if (m_multiSelectCheckBoxRectangle is not null)
+		{
+			m_multiSelectCheckBoxRectangle.Arrange(finalBounds);
+		}
+
+		if (m_selectionIndicatorRectangle is not null)
+		{
+			var selectionIndicatorBounds = finalBounds;
+			var selectionIndicatorHeight = GetSelectionIndicatorHeightFromAvailableHeight((float)finalBounds.Height);
+
+			if (m_visualStates.HasState(CommonStates2.Pressed) ||
+				m_visualStates.HasState(CommonStates2.PressedSelected))
+			{
+				global::System.Diagnostics.Debug.Assert(selectionIndicatorHeight > s_selectionIndicatorHeightShrinkage);
+				selectionIndicatorHeight -= s_selectionIndicatorHeightShrinkage;
+			}
+
+			var excessAvailableHeight = (float)finalBounds.Height - selectionIndicatorHeight;
+
+			if (excessAvailableHeight > 0)
+			{
+				selectionIndicatorBounds.Y += excessAvailableHeight / 2.0f;
+				selectionIndicatorBounds.Height -= excessAvailableHeight;
+			}
+
+			m_selectionIndicatorRectangle.Arrange(selectionIndicatorBounds);
+		}
+
+		if (m_backplateRectangle is not null)
+		{
+			global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+			m_backplateRectangle.Arrange(finalBounds);
+		}
+
+		if (m_innerSelectionBorder is not null && m_outerBorder != m_innerSelectionBorder.GetParent())
+		{
+			global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+			global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+			m_innerSelectionBorder.Arrange(finalBounds);
+		}
+
+		if (m_outerBorder is not null)
+		{
+			global::System.Diagnostics.Debug.Assert(IsRoundedListViewBaseItemChromeEnabled());
+			global::System.Diagnostics.Debug.Assert(IsChromeForGridViewItem());
+			m_outerBorder.Arrange(finalBounds);
+		}
+
+		// TODO Uno: WinUI never lays out the secondary chrome; Uno does not render a never-arranged element, so it gets the primary bounds.
+		m_pSecondaryChrome?.Arrange(new Rect(0.0, 0.0, finalBounds.Width, finalBounds.Height));
+
+		var newFinalSize = new Size(finalBounds.Width, finalBounds.Height);
+
+		ArrangeTemplateChild(controlBorderBounds);
+
+		return newFinalSize;
+	}
+
+	private void ArrangeTemplateChild(Rect controlBorderBounds)
+	{
+		var pTemplateChild = GetTemplateChildIfExists();
+
+		if (pTemplateChild is not null)
+		{
+			var contentAvailableSize = new Size(controlBorderBounds.Width, controlBorderBounds.Height);
+			Size contentSize = default;
+			Rect contentArrangedBounds = default;
+			Thickness controlBorderThickness = default;
+
+			var horizontalContentAlignment = HorizontalContentAlignment;
+			var verticalContentAlignment = VerticalContentAlignment;
+
+			// We can't be used without a parent LVB.
+			var pParentListViewBaseItemNoRef = GetParentListViewBaseItemNoRef();
+
+			controlBorderThickness = pParentListViewBaseItemNoRef.BorderThickness;
+
+			if (ShouldUseLayoutRounding())
+			{
+				LayoutRoundHelper(ref controlBorderThickness);
+			}
+
+			// control border is not going to be available for content.
+			CSizeUtil.Deflate(ref contentAvailableSize, controlBorderThickness);
+
+			// If alignment is Stretch, use entire available size, otherwise control's desired size.
+			contentSize.Width = (horizontalContentAlignment == HorizontalAlignment.Stretch) ? contentAvailableSize.Width : pTemplateChild.DesiredSize.Width;
+			contentSize.Height = (verticalContentAlignment == VerticalAlignment.Stretch) ? contentAvailableSize.Height : pTemplateChild.DesiredSize.Height;
+
+			FrameworkElement.ComputeAlignmentOffset(
+				horizontalContentAlignment,
+				verticalContentAlignment,
+				contentAvailableSize,
+				contentSize,
+				out var offsetX,
+				out var offsetY);
+			contentArrangedBounds.X = offsetX;
+			contentArrangedBounds.Y = offsetY;
+
+			// making sure we are still within the boundaries of the control
+			if (contentSize.Width > contentAvailableSize.Width)
+			{
+				contentSize.Width = contentAvailableSize.Width;
+			}
+
+			if (contentSize.Height > contentAvailableSize.Height)
+			{
+				contentSize.Height = contentAvailableSize.Height;
+			}
+
+			// Adjust top/left coordinate to account for space used for chrome.
+			contentArrangedBounds.X += controlBorderThickness.Left + controlBorderBounds.X;
+			contentArrangedBounds.Y += controlBorderThickness.Top + controlBorderBounds.Y;
+			contentArrangedBounds.Width = contentSize.Width;
+			contentArrangedBounds.Height = contentSize.Height;
+
+			// Uno-specific: as in ContentPresenter.ArrangeOverride.
+			pTemplateChild.EnsureLayoutStorage();
+			pTemplateChild.Arrange(contentArrangedBounds);
+		}
+	}
 
 	// Removes the multi-select checkbox from the tree.
 	internal void RemoveMultiSelectCheckBox()
