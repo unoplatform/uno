@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ListViewItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
+	public partial class ListViewItemTemplateSettings
 	{
 		// Skipping already declared property DragItemsCount
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings.DragItemsCount.get

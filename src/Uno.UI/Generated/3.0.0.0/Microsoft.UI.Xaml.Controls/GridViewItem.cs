@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class GridViewItem : global::Microsoft.UI.Xaml.Controls.Primitives.SelectorItem
+	public partial class GridViewItem
 	{
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.GridViewItem.GridViewItem()

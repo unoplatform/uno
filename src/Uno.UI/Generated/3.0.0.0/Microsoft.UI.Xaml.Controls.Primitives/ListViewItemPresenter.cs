@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ListViewItemPresenter : global::Microsoft.UI.Xaml.Controls.ContentPresenter
+	public partial class ListViewItemPresenter
 	{
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
