@@ -27,7 +27,7 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 	[TestMethod]
 	public void When_Fluent_Resource_True()
 	{
-		// TODO: the Fluent theme only ships the True value from the style-tables chunk; set it explicitly until then.
+		// TODO Uno: the Fluent theme only ships the True value from the style-tables chunk; set it explicitly until then.
 		using (ListViewChromeHelper.UseRoundedChromeResource(true))
 		{
 			Assert.IsTrue(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeEnabledStatic());
@@ -83,7 +83,7 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 			Assert.IsTrue(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeEnabledStatic());
 		}
 
-		Assert.IsFalse(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeEnabledStatic());
+		Assert.IsFalse(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeForced());
 	}
 
 	[TestMethod]
@@ -101,14 +101,32 @@ public class Given_ListViewBaseItemChrome_RoundedFlag
 	[TestMethod]
 	public void When_ListView_Created_After_UseUwpStyles()
 	{
-		using (ListViewChromeHelper.UseRoundedChromeResource(true))
+		using (StyleHelper.UseUwpStyles())
 		{
-			using (StyleHelper.UseUwpStyles())
-			{
-			}
+			// Fills the static cache with the Generic.xaml value.
+			Assert.IsFalse(new ListViewBaseItemChrome().IsRoundedListViewBaseItemChromeEnabled());
+		}
 
-			var chrome = new ListViewBaseItemChrome();
-			Assert.IsTrue(chrome.IsRoundedListViewBaseItemChromeEnabled());
+		// TODO Uno: drop the manual True once the Fluent theme ships it; set without clearing the cache,
+		// so only the cache clear on UseUwpStyles restore lets the new value through.
+		var resources = Application.Current.Resources;
+		var hadValue = resources.ContainsKey(Key);
+		var previous = hadValue ? resources[Key] : null;
+		resources[Key] = true;
+		try
+		{
+			Assert.IsTrue(new ListViewBaseItemChrome().IsRoundedListViewBaseItemChromeEnabled());
+		}
+		finally
+		{
+			if (hadValue)
+			{
+				resources[Key] = previous;
+			}
+			else
+			{
+				resources.Remove(Key);
+			}
 		}
 	}
 }
