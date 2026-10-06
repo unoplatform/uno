@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Uno.Disposables;
@@ -527,10 +528,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 					criteria.isInsideListView = true;
 
-					foreach (var state in VisualStatesHelper.GetValidVisualStatesListViewBaseItem(criteria))
-					{
-						GoToState(useTransitions, state);
-					}
+					// TODO Uno: replaced by the ListViewBaseItem port; only the focus and drag slots are applied here.
+					var states = VisualStatesHelper.GetValidVisualStatesListViewBaseItem(criteria).ToArray();
+					GoToState(useTransitions, states[0]);
+					GoToState(useTransitions, states[^1]);
 				}
 			}
 		}
