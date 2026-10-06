@@ -225,6 +225,7 @@ public partial class Given_ListViewItemPresenter
 	[TestMethod]
 	public async Task When_Template_Child_Added_Without_Backplate_Then_Inserted_First()
 	{
+		using var chromeScope = ListViewChromeHelper.UseNonRoundedChrome();
 		var presenter = new ListViewItemPresenter();
 		presenter.SetChromedListViewBaseItem(new ListViewItem());
 
