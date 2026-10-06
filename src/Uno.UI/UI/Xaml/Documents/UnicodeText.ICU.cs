@@ -14,6 +14,9 @@ namespace Microsoft.UI.Xaml.Documents;
 
 internal readonly partial struct UnicodeText
 {
+	// Counts ubrk_open calls so tests can prove break iterators are reused.
+	internal static int BreakIteratorOpenCount;
+
 	private static class ICU
 	{
 		private static Assembly? _dataAssembly;
@@ -299,6 +302,97 @@ internal readonly partial struct UnicodeText
 			return new DisposableStruct<IntPtr>(static bidi => GetMethod<ubidi_close>()(bidi), bidi);
 		}
 
+		private static ubrk_setText? _setText;
+		private static bool _setTextResolved;
+
+		// Break iterators are not thread-safe, so each thread keeps its own, indexed by UBreakIteratorType
+		// (only word = 1 and line = 2 are requested).
+		[ThreadStatic]
+		private static IntPtr[]? _breakIterators;
+
+		[ThreadStatic]
+		private static string? _breakIteratorsLocale;
+
+		/// <summary>
+		/// Returns a break iterator pointed at <paramref name="text"/>. ubrk_open costs a flat ~4us regardless of
+		/// text length, so where ubrk_setText is available this thread's iterator is re-pointed instead.
+		/// The caller must close the iterator only when <paramref name="isCached"/> is false.
+		/// </summary>
+		public static IntPtr GetBreakIterator(int boundaryType, string localeName, IntPtr locale, IntPtr text, int textLength, out bool isCached)
+		{
+			if (!_setTextResolved)
+			{
+				_setText = TryGetMethod<ubrk_setText>();
+				_setTextResolved = true;
+			}
+
+			if (_setText is not { } setText || boundaryType is not (1 or 2))
+			{
+				isCached = false;
+				return OpenBreakIterator(boundaryType, locale, text, textLength);
+			}
+
+			isCached = true;
+			if (_breakIterators is null || !string.Equals(_breakIteratorsLocale, localeName, StringComparison.Ordinal))
+			{
+				CloseBreakIterators();
+				_breakIterators = new IntPtr[3];
+				_breakIteratorsLocale = localeName;
+			}
+
+			var iterator = _breakIterators[boundaryType];
+			if (iterator == IntPtr.Zero)
+			{
+				return _breakIterators[boundaryType] = OpenBreakIterator(boundaryType, locale, text, textLength);
+			}
+
+			// Always re-point before use: the previous text was only pinned for the previous caller.
+			setText(iterator, text, textLength, out var status);
+			CheckErrorCode<ubrk_setText>(status);
+			return iterator;
+		}
+
+		private static IntPtr OpenBreakIterator(int boundaryType, IntPtr locale, IntPtr text, int textLength)
+		{
+			BreakIteratorOpenCount++;
+			var iterator = GetMethod<ubrk_open>()(boundaryType, locale, text, textLength, out var status);
+			CheckErrorCode<ubrk_open>(status);
+			return iterator;
+		}
+
+		private static void CloseBreakIterators()
+		{
+			if (_breakIterators is not { } iterators)
+			{
+				return;
+			}
+
+			var close = GetMethod<ubrk_close>();
+			foreach (var iterator in iterators)
+			{
+				if (iterator != IntPtr.Zero)
+				{
+					close(iterator);
+				}
+			}
+
+			_breakIterators = null;
+			_breakIteratorsLocale = null;
+		}
+
+		// WebAssembly and iOS resolve ICU through the fixed symbol tables below, which may not carry every entry point.
+		private static T? TryGetMethod<T>() where T : class
+		{
+			try
+			{
+				return GetMethod<T>();
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
+
 		public static void CheckErrorCode<T>(int status)
 		{
 			if (status > 0)
@@ -349,6 +443,9 @@ internal readonly partial struct UnicodeText
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void ubrk_close(IntPtr bi);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void ubrk_setText(IntPtr bi, IntPtr text, int textLength, out int status);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ubrk_first(IntPtr bi);
@@ -490,6 +587,9 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("__Internal")]
 			static extern void ubrk_close_77(IntPtr bi);
+
+			[DllImport("__Internal")]
+			static extern void ubrk_setText_77(IntPtr bi, IntPtr text, int textLength, out int status);
 
 			[DllImport("__Internal")]
 			static extern int ubrk_first_77(IntPtr bi);
