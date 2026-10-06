@@ -24,7 +24,7 @@ partial class GridViewItemPresenter
 		set => SetSelectionCheckMarkVisualEnabledValue(value);
 	}
 
-	private static bool GetSelectionCheckMarkVisualEnabledDefaultValue() => ListViewBaseItemChrome.GetDefaultSelectionCheckMarkVisualEnabled();
+	private static bool GetSelectionCheckMarkVisualEnabledDefaultValue() => ListViewBaseItemPresenter.GetDefaultSelectionCheckMarkVisualEnabled();
 
 	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty SelectionCheckMarkVisualEnabledProperty { get; } = CreateSelectionCheckMarkVisualEnabledProperty();
@@ -269,7 +269,7 @@ partial class GridViewItemPresenter
 		set => SetDragOpacityValue(value);
 	}
 
-	private static double GetDragOpacityDefaultValue() => ListViewBaseItemChrome.GetDefaultDragOpacity();
+	private static double GetDragOpacityDefaultValue() => ListViewBaseItemPresenter.GetDefaultDragOpacity();
 
 	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty DragOpacityProperty { get; } = CreateDragOpacityProperty();
@@ -287,7 +287,7 @@ partial class GridViewItemPresenter
 		set => SetReorderHintOffsetValue(value);
 	}
 
-	private static double GetReorderHintOffsetDefaultValue() => ListViewBaseItemChrome.GetDefaultGridViewItemReorderHintOffset();
+	private static double GetReorderHintOffsetDefaultValue() => ListViewBaseItemPresenter.GetDefaultGridViewItemReorderHintOffset();
 
 	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty ReorderHintOffsetProperty { get; } = CreateReorderHintOffsetProperty();

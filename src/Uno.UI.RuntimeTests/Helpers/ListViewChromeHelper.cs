@@ -22,7 +22,7 @@ internal static class ListViewChromeHelper
 		var previous = hadValue ? resources[RoundedKey] : null;
 
 		resources[RoundedKey] = value;
-		ListViewBaseItemChrome.ClearIsRoundedListViewBaseItemChromeEnabledCache();
+		ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
 
 		return Disposable.Create(() =>
 		{
@@ -35,7 +35,7 @@ internal static class ListViewChromeHelper
 				resources.Remove(RoundedKey);
 			}
 
-			ListViewBaseItemChrome.ClearIsRoundedListViewBaseItemChromeEnabledCache();
+			ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
 		});
 	}
 }

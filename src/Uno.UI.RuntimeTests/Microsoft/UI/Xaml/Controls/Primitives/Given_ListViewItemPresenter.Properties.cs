@@ -19,10 +19,10 @@ public class Given_ListViewItemPresenter_Properties
 	private const double Tolerance = 1e-6;
 
 	[TestInitialize]
-	public void Init() => ListViewBaseItemChrome.ClearIsRoundedListViewBaseItemChromeEnabledCache();
+	public void Init() => ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
 
 	[TestCleanup]
-	public void Cleanup() => ListViewBaseItemChrome.ClearIsRoundedListViewBaseItemChromeEnabledCache();
+	public void Cleanup() => ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
 
 	[TestMethod]
 	public void When_Constant_Defaults()
@@ -121,7 +121,7 @@ public class Given_ListViewItemPresenter_Properties
 			Assert.IsFalse(presenter.SelectionIndicatorVisualEnabled);
 
 			// ...but not in the item reader, which still sees the resource.
-			Assert.IsTrue(ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeEnabledStatic());
+			Assert.IsTrue(ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic());
 		}
 	}
 
