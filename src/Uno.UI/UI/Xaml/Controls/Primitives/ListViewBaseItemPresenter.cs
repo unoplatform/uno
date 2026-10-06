@@ -20,7 +20,9 @@ public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 	{
 		if (property == ListViewItemPresenter.DisabledOpacityProperty
 			|| property == ListViewItemPresenter.SelectedBorderThicknessProperty
-			|| property == ListViewItemPresenter.SelectionIndicatorVisualEnabledProperty)
+			|| property == ListViewItemPresenter.SelectionIndicatorVisualEnabledProperty
+			|| property == GridViewItemPresenter.DisabledOpacityProperty
+			|| property == GridViewItemPresenter.SelectedBorderThicknessProperty)
 		{
 			// WinUI quirk: unlike the chrome readers, Deny here skips the resource lookup, so Deny + resource True gives non-rounded defaults on a rounded chrome.
 			var denyRoundedListViewBaseItemChrome = ListViewBaseItemChromeRuntimeFeatures.DenyRoundedListViewBaseItemChrome;
@@ -41,7 +43,7 @@ public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 			{
 				defaultValue = forRoundedListViewBaseItemChrome;
 			}
-			else if (property == ListViewItemPresenter.DisabledOpacityProperty)
+			else if (property == ListViewItemPresenter.DisabledOpacityProperty || property == GridViewItemPresenter.DisabledOpacityProperty)
 			{
 				defaultValue = (double)ListViewBaseItemChrome.GetDefaultDisabledOpacity(forRoundedListViewBaseItemChrome);
 			}

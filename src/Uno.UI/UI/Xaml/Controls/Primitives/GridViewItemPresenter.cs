@@ -7,6 +7,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class GridViewItemPresenter : ListViewBaseItemPresenter
 {
+	private void OnChromePropertyChanged(DependencyPropertyChangedEventArgs args) => OnPropertyChangedNewStyle(args);
+
 	protected override bool GoToElementStateCore(string stateName, bool useTransitions)
 	{
 		// Return false to indicate we didn't handle the state change.
