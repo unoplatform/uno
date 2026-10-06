@@ -8,10 +8,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial struct KeyTime : IEquatable<KeyTime>, IComparable<KeyTime>
 	{
-		public TimeSpan TimeSpan;
+		private KeyTime(TimeSpan timeSpan) => TimeSpan = timeSpan;
+
+		public TimeSpan TimeSpan { get; }
 
 		public static KeyTime FromTimeSpan(TimeSpan timeSpan)
-			=> new KeyTime() { TimeSpan = timeSpan };
+			=> new KeyTime(timeSpan);
 
 		public static implicit operator KeyTime(string timeSpan)
 			=> FromTimeSpan(TimeSpan.Parse(timeSpan, CultureInfo.InvariantCulture));

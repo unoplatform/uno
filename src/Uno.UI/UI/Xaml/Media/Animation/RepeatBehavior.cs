@@ -38,11 +38,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			Count = 0;
 		}
 
-		public double Count;
+		public double Count { get; set; }
 
-		public TimeSpan Duration;
+		public TimeSpan Duration { get; set; }
 
-		public RepeatBehaviorType Type;
+		public RepeatBehaviorType Type { get; set; }
 
 		public bool HasCount => Type == RepeatBehaviorType.Count;
 
@@ -83,11 +83,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public override string ToString()
 			=> ToString(CultureInfo.InvariantCulture);
 
-		public string ToString(IFormatProvider provider)
+		public string ToString(IFormatProvider formatProvider)
 			=> Type switch
 			{
-				RepeatBehaviorType.Count => Count.ToString(provider) + "x",
-				RepeatBehaviorType.Duration => Duration.ToXamlString(provider),
+				RepeatBehaviorType.Count => Count.ToString(formatProvider) + "x",
+				RepeatBehaviorType.Duration => Duration.ToXamlString(formatProvider),
 				RepeatBehaviorType.Forever => ForeverLiteral,
 
 				_ => throw new NotSupportedException("This RepeatBehavior type is not supported.")

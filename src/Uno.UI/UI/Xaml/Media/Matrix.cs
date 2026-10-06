@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Numerics;
 using System.Security;
 using Windows.Foundation;
@@ -34,12 +35,12 @@ namespace Microsoft.UI.Xaml.Media
 
 		public bool IsIdentity => this.Equals(Identity);
 
-		public double M11;
-		public double M12;
-		public double M21;
-		public double M22;
-		public double OffsetX;
-		public double OffsetY;
+		public double M11 { get; set; }
+		public double M12 { get; set; }
+		public double M21 { get; set; }
+		public double M22 { get; set; }
+		public double OffsetX { get; set; }
+		public double OffsetY { get; set; }
 
 		public bool Equals(Matrix value) => this == value;
 
@@ -50,7 +51,21 @@ namespace Microsoft.UI.Xaml.Media
 			=> ToMatrix3x2().GetHashCode();
 
 		public override string ToString()
-			=> $"{M11},{M12},{M21},{M22},{OffsetX},{OffsetY}";
+			=> ToString(null);
+
+		public string ToString(IFormatProvider provider)
+		{
+			if (IsIdentity)
+			{
+				return "Identity";
+			}
+
+			// Same list separator rule as WinUI's projection: ';' when the culture's decimal separator is ','.
+			var decimalSeparator = NumberFormatInfo.GetInstance(provider).NumberDecimalSeparator;
+			var separator = decimalSeparator.Length > 0 && decimalSeparator[0] == ',' ? ';' : ',';
+
+			return string.Create(provider, $"{M11}{separator}{M12}{separator}{M21}{separator}{M22}{separator}{OffsetX}{separator}{OffsetY}");
+		}
 
 		public Point Transform(Point point)
 		{
