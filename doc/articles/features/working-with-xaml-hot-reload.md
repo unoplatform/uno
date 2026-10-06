@@ -257,7 +257,7 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 
 ---
 
-Legend:
+### Legend
 
 - ✅ Supported
 - 🛜 Supported through [SSH to a Mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
