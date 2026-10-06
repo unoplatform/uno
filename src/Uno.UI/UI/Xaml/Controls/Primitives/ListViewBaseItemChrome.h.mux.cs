@@ -155,8 +155,7 @@ partial class ListViewBaseItemPresenter
 #pragma warning disable CS0169, CS0414, CS0649 // Fields used by the chrome parts not ported yet.
 	// Uno-specific: a strong reference; the item unlinks it (SetGridViewItemChrome) when retemplated.
 	private ContentControl? m_pParentListViewBaseItemNoRef;
-	// TODO Uno: typed as ListViewBaseItemSecondaryChrome once it is ported.
-	private FrameworkElement? m_pSecondaryChrome;
+	private ListViewBaseItemSecondaryChrome? m_pSecondaryChrome;
 
 	// Dead WinUI code: m_pCheckGeometryData and m_checkGeometryBounds belong to the removed checkmark path.
 
