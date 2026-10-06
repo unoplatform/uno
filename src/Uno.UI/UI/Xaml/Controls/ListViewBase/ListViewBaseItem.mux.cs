@@ -71,7 +71,15 @@ partial class ListViewBaseItem
 
 		m_tpCheckboxContainer = GetTemplateChild(LISTVIEWBASEITEM_CHECKBOX_CONTAINER_PART_NAME) as UIElement;
 
-		// TODO Uno: Set up the chrome (GetItemChrome + SetChromedListViewBaseItem), LBI:291-304.
+		// Set up the chrome, if we have it.
+		{
+			var pChrome = GetItemChrome();
+
+			pChrome?.SetChromedListViewBaseItem(this);
+
+			// Update the child (refs get taken care of).
+			SetGridViewItemChrome(pChrome);
+		}
 
 		// Sync the logical and visual states of the control
 		ChangeVisualState(false);
@@ -897,8 +905,13 @@ partial class ListViewBaseItem
 		}
 	}
 
-	// TODO Uno: OnKeyboardReorder / QueryFor / Get+SetDragIsGrabbed / GoToStateWithFallback / GetLogicalParentForAPProtected /
-	// GetItemChrome / GetOrCreateDragDropVisual / ClearDragDropVisual (LBI:2217-2398) not ported here.
+	// TODO Uno: OnKeyboardReorder / QueryFor / Get+SetDragIsGrabbed / GoToStateWithFallback / GetLogicalParentForAPProtected (LBI:2217-2352) not ported here.
+
+	// MUX Reference ListViewBaseItem_Partial.cpp, lines 2354-2381
+	// Uno-specific: a type test instead of WinUI's exact chrome type index, so presenter subclasses (e.g. RevealListViewItemPresenter) get the chrome as in WinUI.
+	private ListViewBaseItemPresenter? GetItemChrome() => GetFirstChildNoAddRef() as ListViewBaseItemPresenter;
+
+	// TODO Uno: GetOrCreateDragDropVisual / ClearDragDropVisual (LBI:2383-2398) not ported here.
 
 	private void ChangeVisualStateWithContextNewStyle(
 		// true to use transitions when updating the visual state, false
@@ -944,7 +957,7 @@ partial class ListViewBaseItem
 
 			criteria.isMultiSelect = spListView.IsMultiSelectCheckBoxEnabled;
 
-			criteria.isIndicatorSelect = ListViewBaseItemChrome.IsRoundedListViewBaseItemChromeEnabledStatic();
+			criteria.isIndicatorSelect = ListViewBaseItemPresenter.IsRoundedListViewBaseItemChromeEnabledStatic();
 
 			var selectionMode = spListView.SelectionMode;
 

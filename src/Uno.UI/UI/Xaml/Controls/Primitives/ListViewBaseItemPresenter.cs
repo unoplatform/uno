@@ -11,10 +11,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 // All members of this class MUST be internal (or private protected).
 public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 {
-	internal ListViewBaseItemPresenter()
-	{
-	}
-
 	// Ports CDependencyProperty::GetDefaultValue for the presenter DPs (DependencyProperty.cpp:159-193).
 	internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
 	{
@@ -45,11 +41,11 @@ public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 			}
 			else if (property == ListViewItemPresenter.DisabledOpacityProperty || property == GridViewItemPresenter.DisabledOpacityProperty)
 			{
-				defaultValue = (double)ListViewBaseItemChrome.GetDefaultDisabledOpacity(forRoundedListViewBaseItemChrome);
+				defaultValue = (double)ListViewBaseItemPresenter.GetDefaultDisabledOpacity(forRoundedListViewBaseItemChrome);
 			}
 			else
 			{
-				defaultValue = ListViewBaseItemChrome.GetSelectedBorderXThickness(forRoundedListViewBaseItemChrome);
+				defaultValue = ListViewBaseItemPresenter.GetSelectedBorderXThickness(forRoundedListViewBaseItemChrome);
 			}
 
 			return true;
