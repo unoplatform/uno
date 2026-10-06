@@ -340,6 +340,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					State = TimelineState.Stopped;
 
 					ClearValue();
+					_owner?.ReleaseControlOfTarget();
 				}
 
 				_owner.OnCompleted();
