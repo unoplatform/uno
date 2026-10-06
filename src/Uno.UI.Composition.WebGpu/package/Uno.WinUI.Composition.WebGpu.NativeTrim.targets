@@ -1,0 +1,86 @@
+<Project>
+
+	<!--
+	Drops the wgpu native payload from an app that cannot reach it.
+
+	Skia renders by default wherever it is referenced (UnoPlatformHostBuilder.TryLightUpGraphicsBackend), so an app
+	that names both features reaches WebGPU only through its own code. DetectWebGpuUsage_v0 reads that out of the
+	compiled metadata, where an unused reference is never emitted. All WebGPU plumbing is ours, so binding to the
+	backend assembly is the whole question.
+
+	Every managed assembly the app ships is examined, so a registration inside a package is seen as readily as
+	one in the app's own code. Anything unreadable keeps the payload. To drop it deliberately, do not name the
+	webgpu feature.
+	-->
+
+	<UsingTask TaskName="Uno.Sdk.Tasks.DetectWebGpuUsage_v0" AssemblyFile="$(UnoSdkTasksAssembly)"
+			   Condition="'$(UnoSdkTasksAssembly)' != '' And Exists('$(UnoSdkTasksAssembly)')" />
+
+	<Target Name="_UnoWebGpuDetectUsage"
+			AfterTargets="CoreCompile"
+			Condition="'@(IntermediateAssembly)' != ''
+					   And '$(UnoSdkTasksAssembly)' != '' And Exists('$(UnoSdkTasksAssembly)')">
+		<!-- Everything managed that ships with the app: its own assembly, plus every reference it carries, so a
+		     backend registered by a package counts too. -->
+		<ItemGroup>
+			<_UnoWebGpuScan Include="@(IntermediateAssembly)" />
+			<_UnoWebGpuScan Include="@(ReferenceCopyLocalPaths)" Condition="'%(Extension)' == '.dll'" />
+		</ItemGroup>
+
+		<Uno.Sdk.Tasks.DetectWebGpuUsage_v0 Assemblies="@(_UnoWebGpuScan)" Condition="'@(_UnoWebGpuScan)' != ''">
+			<Output TaskParameter="CanReachWebGpu" PropertyName="_UnoWebGpuReferencedByApp" />
+			<Output TaskParameter="Reason" PropertyName="_UnoWebGpuReferencedBy" />
+		</Uno.Sdk.Tasks.DetectWebGpuUsage_v0>
+
+		<PropertyGroup>
+			<!-- Only ever drop when Skia is present to render instead. -->
+			<_UnoWebGpuSkiaPresent>false</_UnoWebGpuSkiaPresent>
+			<_UnoWebGpuSkiaPresent Condition="$(UnoFeatures.Contains(';skia;'))">true</_UnoWebGpuSkiaPresent>
+			<_UnoWebGpuNativeUnused Condition="'$(_UnoWebGpuReferencedByApp)' != 'true' And '$(_UnoWebGpuSkiaPresent)' == 'true'">true</_UnoWebGpuNativeUnused>
+		</PropertyGroup>
+
+		<Message Importance="normal" Condition="'$(_UnoWebGpuNativeUnused)' == 'true'"
+				 Text="Nothing in this app goes near WebGPU and Skia is present, so the wgpu native payload is omitted." />
+		<Message Importance="low" Condition="'$(_UnoWebGpuReferencedByApp)' == 'true'"
+				 Text="Keeping the wgpu native payload: $(_UnoWebGpuReferencedBy)." />
+	</Target>
+
+	<!-- Build output and publish resolve the payload through separate item lists, so both are filtered. The
+	     payload ships under the DllImport's own name (webgpu/libwebgpu); only the android per-ABI slice keeps
+	     the wgpu_native one. Exact names, so the managed assembly beside it is never mistaken for it. -->
+	<Target Name="_UnoWebGpuDropNativeFromOutput"
+			AfterTargets="_UnoWebGpuDetectUsage"
+			BeforeTargets="CopyFilesToOutputDirectory"
+			Condition="'$(_UnoWebGpuNativeUnused)' == 'true'">
+		<ItemGroup>
+			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="'%(Filename)' == 'webgpu' Or '%(Filename)' == 'libwebgpu'
+										 Or '%(Filename)' == 'wgpu_native' Or '%(Filename)' == 'libwgpu_native'" />
+		</ItemGroup>
+	</Target>
+
+	<!--
+	Runs after ILLink, which the SDK keeps as an empty placeholder in the publish chain when nothing trims, so
+	this is the one place both answers are in hand.
+
+	An app that trims has a better answer than the metadata scan: ILLink marks the whole closure, so it sees a
+	backend reached through a framework interface or a virtual call, which reading reference tables cannot. If it
+	dropped the managed backend, nothing survives to call into the native. No Skia gate here, unlike the scan: the
+	code that would P/Invoke is gone either way. NativeAOT sets PublishTrimmed, so it takes this path too.
+	-->
+	<Target Name="_UnoWebGpuDropNativeFromPublish" AfterTargets="ILLink">
+		<ItemGroup Condition="'$(PublishTrimmed)' == 'true'">
+			<_UnoWebGpuManagedToPublish Include="@(ResolvedFileToPublish)" Condition="'%(Filename)' == 'Uno.UI.Composition.WebGpu'" />
+		</ItemGroup>
+
+		<PropertyGroup Condition="'$(PublishTrimmed)' == 'true' And '@(_UnoWebGpuManagedToPublish)' == ''">
+			<_UnoWebGpuNativeUnused>true</_UnoWebGpuNativeUnused>
+			<_UnoWebGpuReferencedBy>trimming removed the managed backend</_UnoWebGpuReferencedBy>
+		</PropertyGroup>
+
+		<ItemGroup Condition="'$(_UnoWebGpuNativeUnused)' == 'true'">
+			<ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Filename)' == 'webgpu' Or '%(Filename)' == 'libwebgpu'
+										 Or '%(Filename)' == 'wgpu_native' Or '%(Filename)' == 'libwgpu_native'" />
+		</ItemGroup>
+	</Target>
+
+</Project>

@@ -101,6 +101,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	private const string SkiaBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackend, Uno.UI.Composition.Skia";
 	private const string WebGpuGraphicsProviderTypeName = "Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider, Uno.UI.Composition.WebGpu";
 	private const string ManagedGeometryFactoryTypeName = "Uno.UI.Composition.Drawing.ManagedGeometryFactory, Uno.UI.Composition.Managed";
+	private const string ManagedFontProviderTypeName = "Uno.UI.Composition.Drawing.ManagedFontProvider, Uno.UI.Composition.Managed";
+	private const string ManagedImageDecoderTypeName = "Uno.UI.Composition.Drawing.ManagedImageDecoderBackend, Uno.UI.Composition.Managed";
 
 	// SVG has no core Skia impl: the Svg.Skia renderer ships as the optional Uno.UI.Svg add-in, with the managed
 	// engine as the built-in fallback.
@@ -108,7 +110,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	private const string ManagedSvgRendererTypeName = "Uno.UI.Composition.Drawing.ManagedSvgRenderer, Uno.UI.Composition.Managed";
 
 	// Lottie: the Skottie add-in (Uno.UI.Lottie) is the default when referenced, else the SkiaSharp-free managed
-	// engine (Uno.UI.Composition.Managed). UNO_MANAGED_LOTTIE=1 forces the managed engine even when Skottie is present.
+	// engine (Uno.UI.Composition.Managed). An app that wants the managed engine either drops the add-in reference
+	// or calls IUnoPlatformHostBuilder.LottieRenderer, which this light-up leaves alone.
 	private const string SkottieLottieRendererTypeName = "Uno.UI.Lottie.SkottieLottieRenderer, Uno.UI.Lottie";
 	private const string ManagedLottieRendererTypeName = "Uno.UI.Composition.Drawing.ManagedLottieRenderer, Uno.UI.Composition.Managed";
 
@@ -171,30 +174,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		// UNO_WEBGPU opts an app into the WebGPU renderer (over the managed geometry engine, which WebGPU
-		// flattens) without any head code: the backend is probed reflectively, so a head that doesn't ship the
-		// WebGPU assemblies — or a probe failure — falls through to the Skia default below.
-		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain"
-			&& InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(WebGpuGraphicsProviderTypeName, throwOnError: false)
-				?.GetConstructor(Type.EmptyTypes)) is { } webGpuProvider)
-		{
-			// Skia after it, so a WebGPU that cannot initialize on this host (no native wgpu shipped, no usable
-			// adapter) is negotiated past rather than leaving the window with no backend at all. The variable is
-			// inherited by child processes, which need not ship what the parent does.
-			Drawing.GraphicsRegistry.RegisterDefault(
-				InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
-					?.GetMethod("CreateGraphicsProvider", FactoryFlags, Type.EmptyTypes)) is { } skiaFallback
-					? new[] { webGpuProvider, skiaFallback }
-					: new[] { webGpuProvider });
-			if (!Drawing.GeometryFactory.IsRegistered
-				&& InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedGeometryFactoryTypeName, throwOnError: false)
-					?.GetConstructor(Type.EmptyTypes)) is { } managedGeometry)
-			{
-				Drawing.GeometryFactory.RegisterDefault(managedGeometry);
-			}
-			return;
-		}
-
+		// Skia is the default renderer wherever it is referenced: naming the WebGpu feature makes the backend
+		// available, but a head opts into it by registering it on the host builder (handled above).
 		if (InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
 			?.GetMethod("CreateGraphicsProvider", FactoryFlags, Type.EmptyTypes)) is { } provider)
 		{
@@ -205,14 +186,39 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			{
 				Drawing.DrawingRegistration.RegisterDefaultRenderer(renderer);
 			}
+
+			return;
+		}
+
+		// No Skia: a SkiaSharp-free app, where WebGPU is the only renderer there is. Geometry goes to the managed
+		// engine, which WebGPU flattens.
+		if (InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(WebGpuGraphicsProviderTypeName, throwOnError: false)
+			?.GetConstructor(Type.EmptyTypes)) is { } webGpuProvider)
+		{
+			Drawing.GraphicsRegistry.RegisterDefault(new[] { webGpuProvider });
+			if (!Drawing.GeometryFactory.IsRegistered
+				&& InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedGeometryFactoryTypeName, throwOnError: false)
+					?.GetConstructor(Type.EmptyTypes)) is { } managedGeometry)
+			{
+				Drawing.GeometryFactory.RegisterDefault(managedGeometry);
+			}
 		}
 	}
 
 	private static void TryLightUpFontProvider()
 	{
-		if (!Drawing.FontProvider.IsRegistered
-			&& InvokeFactory<Drawing.IFontProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
-				?.GetMethod("CreateFontProvider", FactoryFlags, Type.EmptyTypes)) is { } fontProvider)
+		if (Drawing.FontProvider.IsRegistered)
+		{
+			return;
+		}
+
+		// The managed engine is the fallback for a SkiaSharp-free head. It reads the system fonts, so it needs a
+		// bundled default passed in where those cannot be enumerated (iOS, WASM) - such a head registers its own.
+		var fontProvider = InvokeFactory<Drawing.IFontProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateFontProvider", FactoryFlags, Type.EmptyTypes))
+			?? InvokeFactory<Drawing.IFontProvider>(static () => Type.GetType(ManagedFontProviderTypeName, throwOnError: false)
+				?.GetConstructor(Type.EmptyTypes));
+		if (fontProvider is not null)
 		{
 			Drawing.FontProvider.RegisterDefault(fontProvider);
 		}
@@ -220,9 +226,16 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	private static void TryLightUpImageDecoder()
 	{
-		if (!Drawing.ImageEncoderDecoder.IsRegistered
-			&& InvokeFactory<Drawing.IImageEncoderDecoder>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
-				?.GetMethod("CreateImageDecoder", FactoryFlags, Type.EmptyTypes)) is { } decoder)
+		if (Drawing.ImageEncoderDecoder.IsRegistered)
+		{
+			return;
+		}
+
+		var decoder = InvokeFactory<Drawing.IImageEncoderDecoder>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateImageDecoder", FactoryFlags, Type.EmptyTypes))
+			?? InvokeFactory<Drawing.IImageEncoderDecoder>(static () => Type.GetType(ManagedImageDecoderTypeName, throwOnError: false)
+				?.GetConstructor(Type.EmptyTypes));
+		if (decoder is not null)
 		{
 			Drawing.ImageEncoderDecoder.RegisterDefault(decoder);
 		}
@@ -230,9 +243,16 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	private static void TryLightUpGeometryFactory()
 	{
-		if (!Drawing.GeometryFactory.IsRegistered
-			&& InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
-				?.GetMethod("CreateGeometryFactory", FactoryFlags, Type.EmptyTypes)) is { } geometryFactory)
+		if (Drawing.GeometryFactory.IsRegistered)
+		{
+			return;
+		}
+
+		var geometryFactory = InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateGeometryFactory", FactoryFlags, Type.EmptyTypes))
+			?? InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedGeometryFactoryTypeName, throwOnError: false)
+				?.GetConstructor(Type.EmptyTypes));
+		if (geometryFactory is not null)
 		{
 			Drawing.GeometryFactory.RegisterDefault(geometryFactory);
 		}
@@ -262,9 +282,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		var forceManaged = Environment.GetEnvironmentVariable("UNO_MANAGED_LOTTIE") is "1" or "true";
-		var renderer = (forceManaged ? null : InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(SkottieLottieRendererTypeName, throwOnError: false)
-				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes)))
+		var renderer = InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(SkottieLottieRendererTypeName, throwOnError: false)
+				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes))
 			?? InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(ManagedLottieRendererTypeName, throwOnError: false)
 				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes));
 		if (renderer is not null)

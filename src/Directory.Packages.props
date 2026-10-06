@@ -149,6 +149,7 @@
 		<PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
 		<PackageVersion Include="System.Private.Uri" Version="4.3.2" />
 		<PackageVersion Include="System.Reactive" Version="6.0.0" />
+		<PackageVersion Include="System.Reflection.Metadata" Version="8.0.0" />
 		<PackageVersion Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
 		<PackageVersion Include="System.Security.Cryptography.Xml" Version="10.0.10" />
 		<PackageVersion Include="System.Text.Json" Version="8.0.5" />
