@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
@@ -352,6 +353,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			listView.IsItemClickEnabled = false;
 			Assert.IsNull(containerPeer.GetPattern(PatternInterface.Invoke));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Containers_Are_Recycled_Then_Item_Peers_Stay_In_Item_Order()
+		{
+			var items = new List<string>();
+			for (var i = 0; i < 200; i++)
+			{
+				items.Add($"Item {i:000}");
+			}
+
+			var listView = new ListView { ItemsSource = items, Height = 300 };
+			await UITestHelper.Load(listView);
+
+			// Scrolling page by page, as a screen reader's scroll gesture does, recycles containers one at a time, which a
+			// virtualizing panel may append to its children out of item order on the way back up.
+			var scrollViewer = FindDescendant<ScrollViewer>(listView);
+			Assert.IsNotNull(scrollViewer);
+			var pages = new List<double>();
+			for (var offset = 0d; offset <= 2000; offset += 250)
+			{
+				pages.Add(offset);
+			}
+
+			for (var i = pages.Count - 2; i >= 0; i--)
+			{
+				pages.Add(pages[i]);
+			}
+
+			foreach (var offset in pages)
+			{
+				scrollViewer.ChangeView(null, offset, null, disableAnimation: true);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			var names = new List<string>();
+			foreach (var child in FrameworkElementAutomationPeer.CreatePeerForElement(listView).GetChildren())
+			{
+				names.Add(child.GetName());
+			}
+
+			var sorted = new List<string>(names);
+			sorted.Sort(StringComparer.Ordinal);
+			Assert.AreEqual("Item 000", names[0]);
+			CollectionAssert.AreEqual(sorted, names, "Item peers must follow item order, as screen readers traverse them in order.");
+		}
+
+		private static T FindDescendant<T>(DependencyObject parent) where T : DependencyObject
+		{
+			for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+			{
+				var child = VisualTreeHelper.GetChild(parent, i);
+				if (child is T match || (match = FindDescendant<T>(child)) is not null)
+				{
+					return match;
+				}
+			}
+
+			return null;
 		}
 	}
 }
