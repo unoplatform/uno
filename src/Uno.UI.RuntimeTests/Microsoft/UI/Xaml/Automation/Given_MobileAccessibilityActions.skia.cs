@@ -347,6 +347,39 @@ public partial class Given_MobileAccessibilityActions
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+	public async Task When_A_Repeated_Item_Is_Activated_Then_That_Occurrence_Is_Selected()
+	{
+		var duplicate = "Duplicate item";
+		var listView = new ListView
+		{
+			ItemsSource = new List<string> { duplicate, duplicate, "Unique item", duplicate },
+			SelectionMode = ListViewSelectionMode.Single,
+		};
+		await UITestHelper.Load(listView);
+
+		var execute =
+			AccessibilityPeerHelper.AndroidAccessibilityActionAccessor
+			?? AccessibilityPeerHelper.IOSAccessibilityActionAccessor;
+		Assert.IsNotNull(execute, "The native action hook must be registered.");
+
+		// The screen reader's cursor brings XAML focus to the occurrence it lands on.
+		var first = (Control)listView.ContainerFromIndex(0);
+		first.Focus(FocusState.Pointer);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(execute(first, new AccessibilityNativeActionRequest(AccessibilityNativeAction.Activate)));
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(0, listView.SelectedIndex, "Activating an occurrence must select it, not the last realized one.");
+		Assert.AreSame(
+			first,
+			Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(listView.XamlRoot!),
+			"Focus, which the screen reader follows, must stay on the activated occurrence.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
 	public async Task When_Advanced_Actions_Are_Advertised_Then_Native_Hook_Executes_Providers()
 	{
 		var control = new AdvancedActionControl { Width = 100, Height = 100 };
