@@ -684,7 +684,12 @@ partial class ListViewBaseItem
 	internal virtual void SetDragItemsCountDisplay(
 		uint dragItemsCount)
 	{
-		// TODO Uno: chrome SetDragItemsCount (GetGridViewItemChromeNoRef) wired by the chrome port.
+		var pChrome = GetGridViewItemChromeNoRef();
+
+		if (pChrome is not null)
+		{
+			pChrome.SetDragItemsCount(dragItemsCount);
+		}
 	}
 
 	// Change to the correct visual state for the ListViewItem using
@@ -752,11 +757,22 @@ partial class ListViewBaseItem
 		}
 		else if (args.Property == BorderThicknessProperty)
 		{
-			// TODO Uno: chrome InvalidateMeasure + InvalidateRender (GetItemChrome) wired by the chrome port.
+			var pChrome = GetItemChrome();
+
+			if (pChrome is not null)
+			{
+				pChrome.InvalidateMeasure();
+				pChrome.InvalidateRender();
+			}
 		}
 		else if (args.Property == BorderBrushProperty || args.Property == BackgroundProperty)
 		{
-			// TODO Uno: chrome InvalidateRender (GetItemChrome) wired by the chrome port.
+			var pChrome = GetItemChrome();
+
+			if (pChrome is not null)
+			{
+				pChrome.InvalidateRender();
+			}
 		}
 	}
 
