@@ -3,6 +3,7 @@
 // MUX Reference XamlOM/Model/Microsoft.UI.Xaml.Controls.cs, tag winui3/release/2.5.1
 
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -10,6 +11,19 @@ namespace Microsoft.UI.Xaml.Controls;
 // All members of this class MUST be internal (or private protected).
 public abstract partial class ListViewBaseItem : SelectorItem
 {
+	internal bool IsDraggable
+	{
+		get => (bool)GetValue(IsDraggableProperty);
+		private set => SetValue(IsDraggableProperty, value);
+	}
+
+	internal static DependencyProperty IsDraggableProperty { get; } =
+		DependencyProperty.Register(
+			nameof(IsDraggable),
+			typeof(bool),
+			typeof(ListViewBaseItem),
+			new FrameworkPropertyMetadata(BoolBoxes.False));
+
 	internal ListViewBaseItem()
 	{
 	}
