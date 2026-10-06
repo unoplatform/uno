@@ -89,6 +89,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				PropertyInfo?.CloneShareableObjectsInPath();
 
+				_owner?.TakeControlOfTarget();
+
 				_subscriptions.Clear(); //Dispose all and start a new
 
 				_activeDuration.Restart();
@@ -113,6 +115,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				_animator?.Cancel(); // stop could be called before the initialization
 				_startingValue = null;
 				ClearValue();
+				_owner?.ReleaseControlOfTarget();
 				State = TimelineState.Stopped;
 			}
 

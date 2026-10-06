@@ -93,6 +93,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			Reset();
 
+			TakeControlOfTarget();
+
 			State = TimelineState.Active;
 
 			// MUX Reference: CAnimation::GetAnimationBaseValue / ReadBaseValuesFromTargetOrHandoff
@@ -130,6 +132,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			Reset();
 			ClearValue();
+			ReleaseControlOfTarget();
 		}
 
 		void ITimeline.Resume()
