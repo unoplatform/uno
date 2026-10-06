@@ -102,6 +102,7 @@ public partial class Given_VisualStateManager
 		var items = Enumerable.Range(0, 3).ToArray();
 		var setup = new GridView
 		{
+			ItemContainerStyle = (Style)Application.Current.Resources["GridViewItemExpanded"],
 			ItemsSource = items,
 			SelectedItem = items.Last(),
 		};
@@ -116,17 +117,18 @@ public partial class Given_VisualStateManager
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-	public Task SelectorItem_MultiSelectState_GV() => SelectorItem_MultiSelectState_Impl<GridView>();
+	public Task SelectorItem_MultiSelectState_GV() => SelectorItem_MultiSelectState_Impl<GridView>("GridViewItemExpanded");
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-	public Task SelectorItem_MultiSelectState_LV() => SelectorItem_MultiSelectState_Impl<ListView>();
+	public Task SelectorItem_MultiSelectState_LV() => SelectorItem_MultiSelectState_Impl<ListView>("ListViewItemExpanded");
 
-	public async Task SelectorItem_MultiSelectState_Impl<T>() where T : ListViewBase, new()
+	public async Task SelectorItem_MultiSelectState_Impl<T>(string itemStyleKey) where T : ListViewBase, new()
 	{
 		var items = Enumerable.Range(0, 3).ToArray();
 		var setup = new T
 		{
+			ItemContainerStyle = (Style)Application.Current.Resources[itemStyleKey],
 			ItemsSource = items,
 			SelectionMode = ListViewSelectionMode.Multiple,
 		};
