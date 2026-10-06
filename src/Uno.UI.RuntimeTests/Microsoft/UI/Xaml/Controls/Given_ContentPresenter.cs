@@ -521,6 +521,28 @@ public partial class Given_ContentPresenter
 		Assert.IsFalse(reference.IsAlive);
 	}
 
+	// The presenter is the template root, without explicit Content/ContentTemplate bindings (the
+	// ListViewItemPresenter templates rely on this): the first measure must already see the content.
+	[TestMethod]
+	public void When_Implicit_Content_Then_First_Measure_Includes_It()
+	{
+		var template = (ControlTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+			"""
+			<ControlTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" TargetType="ContentControl">
+				<ContentPresenter />
+			</ControlTemplate>
+			""");
+		var SUT = new ContentControl
+		{
+			Template = template,
+			Content = new Border { Width = 50, Height = 30 },
+		};
+
+		SUT.Measure(new Size(200, 200));
+
+		Assert.AreEqual(new Size(50, 30), SUT.DesiredSize);
+	}
+
 #if HAS_UNO
 	[TestMethod]
 	public async Task When_Sentinel_Child_At_Index_0_Template_Root_Used_For_Layout()
