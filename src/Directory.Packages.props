@@ -164,6 +164,7 @@
 		<PackageVersion Include="Uno.Core.Extensions.Logging" Version="5.0.0-dev.28" />
 		<PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="5.0.0-dev.28" />
 		<PackageVersion Include="Uno.Core.Extensions.Threading" Version="5.0.0-dev.28" />
+		<!-- Minimum for Uno.Settings.DevServer 2.x: the host's copy owns the TelemetryUserContext its add-ins publish to -->
 		<PackageVersion Include="Uno.DevTools.Telemetry" Version="1.4.0-dev.18" />
 		<PackageVersion Include="Uno.Diagnostics.Eventing" Version="2.0.1" />
 		<PackageVersion Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
