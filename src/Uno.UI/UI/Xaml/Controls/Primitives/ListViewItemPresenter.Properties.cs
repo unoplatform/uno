@@ -24,7 +24,7 @@ partial class ListViewItemPresenter
 		set => SetSelectionCheckMarkVisualEnabledValue(value);
 	}
 
-	private static bool GetSelectionCheckMarkVisualEnabledDefaultValue() => ListViewBaseItemChrome.GetDefaultSelectionCheckMarkVisualEnabled();
+	private static bool GetSelectionCheckMarkVisualEnabledDefaultValue() => ListViewBaseItemPresenter.GetDefaultSelectionCheckMarkVisualEnabled();
 
 	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty SelectionCheckMarkVisualEnabledProperty { get; } = CreateSelectionCheckMarkVisualEnabledProperty();
@@ -269,7 +269,7 @@ partial class ListViewItemPresenter
 		set => SetDragOpacityValue(value);
 	}
 
-	private static double GetDragOpacityDefaultValue() => ListViewBaseItemChrome.GetDefaultDragOpacity();
+	private static double GetDragOpacityDefaultValue() => ListViewBaseItemPresenter.GetDefaultDragOpacity();
 
 	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty DragOpacityProperty { get; } = CreateDragOpacityProperty();
@@ -287,7 +287,7 @@ partial class ListViewItemPresenter
 		set => SetReorderHintOffsetValue(value);
 	}
 
-	private static double GetReorderHintOffsetDefaultValue() => ListViewBaseItemChrome.GetDefaultListViewItemReorderHintOffset();
+	private static double GetReorderHintOffsetDefaultValue() => ListViewBaseItemPresenter.GetDefaultListViewItemReorderHintOffset();
 
 	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty ReorderHintOffsetProperty { get; } = CreateReorderHintOffsetProperty();
@@ -799,7 +799,7 @@ partial class ListViewItemPresenter
 		set => SetCheckBoxCornerRadiusValue(value);
 	}
 
-	private static CornerRadius GetCheckBoxCornerRadiusDefaultValue() => ListViewBaseItemChrome.s_defaultCheckBoxCornerRadius;
+	private static CornerRadius GetCheckBoxCornerRadiusDefaultValue() => ListViewBaseItemPresenter.s_defaultCheckBoxCornerRadius;
 
 	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty CheckBoxCornerRadiusProperty { get; } = CreateCheckBoxCornerRadiusProperty();
@@ -817,7 +817,7 @@ partial class ListViewItemPresenter
 		set => SetSelectionIndicatorCornerRadiusValue(value);
 	}
 
-	private static CornerRadius GetSelectionIndicatorCornerRadiusDefaultValue() => ListViewBaseItemChrome.s_defaultSelectionIndicatorCornerRadius;
+	private static CornerRadius GetSelectionIndicatorCornerRadiusDefaultValue() => ListViewBaseItemPresenter.s_defaultSelectionIndicatorCornerRadius;
 
 	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
 	public static DependencyProperty SelectionIndicatorCornerRadiusProperty { get; } = CreateSelectionIndicatorCornerRadiusProperty();
