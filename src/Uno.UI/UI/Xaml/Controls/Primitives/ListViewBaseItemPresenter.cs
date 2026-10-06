@@ -22,7 +22,7 @@ public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 			|| property == ListViewItemPresenter.SelectedBorderThicknessProperty
 			|| property == ListViewItemPresenter.SelectionIndicatorVisualEnabledProperty)
 		{
-			// WinUI quirk: Deny only cancels Force here; it does not stop the resource lookup of a non-forced app.
+			// WinUI quirk: unlike the chrome readers, Deny here skips the resource lookup, so Deny + resource True gives non-rounded defaults on a rounded chrome.
 			var denyRoundedListViewBaseItemChrome = ListViewBaseItemChromeRuntimeFeatures.DenyRoundedListViewBaseItemChrome;
 			var forceRoundedListViewBaseItemChrome = ListViewBaseItemChromeRuntimeFeatures.ForceRoundedListViewBaseItemChrome;
 
@@ -65,9 +65,11 @@ public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 		}
 
 		// The store replays the alias default when the alias value is cleared; forwarding it would clobber a TemplateBinding on the target.
-		if (instance.GetCurrentHighestValuePrecedence(alias) != DependencyPropertyValuePrecedences.DefaultValue)
+		var precedence = instance.GetCurrentHighestValuePrecedence(alias);
+		if (precedence != DependencyPropertyValuePrecedences.DefaultValue)
 		{
-			instance.SetValue(target, valueToSet);
+			// TODO Uno: the store passes no incoming precedence (a value below the alias' current one lands higher), and keeps no Style value under a Local one on the target.
+			instance.SetValue(target, valueToSet, precedence);
 		}
 
 		return null;
