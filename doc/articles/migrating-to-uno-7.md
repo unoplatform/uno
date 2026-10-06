@@ -1115,6 +1115,11 @@ To port a custom source, move the work as follows:
   The `_v2` suffix was an Uno-only artifact of the Fluent V1/V2 split; with V1 removed there is one
   theme-resources dictionary, under the name WinUI itself uses.
 
+- **`InfoBar`, `RatingControl`, `TreeView` and `TwoPaneView` styles now come only from
+  `XamlControlsResources`**, as on WinUI. Uno.UI no longer carries its own older (WinUI 2 "v1")
+  copies of them, nor of the Fluent acrylic brushes such as `AcrylicBackgroundFillColorDefaultBrush`.
+  An app that does not merge `XamlControlsResources` gets no default template for these controls.
+
 - **`ContentDialog`'s light-dismiss overlay** now uses `SystemControlPageBackgroundMediumAltMediumBrush`,
   matching WinUI, so overriding `ContentDialogLightDismissOverlayBackground` no longer changes it.
 
