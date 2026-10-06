@@ -819,6 +819,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = sp;
 			await WindowHelper.WaitForIdle();
 
+			// The first pass emits MultiSelectDisabled, whose 333 ms storyboard keeps the square visible until it ends.
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+
 			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList.FindName("MultiSelectSquare")).Visibility);
 			Assert.AreEqual(Visibility.Visible, ((Border)multipleList.FindName("MultiSelectSquare")).Visibility);
 			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList.FindName("MultiSelectSquare")).Visibility);
@@ -3761,7 +3765,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			item1.Focus(FocusState.Keyboard);
 			VisualState state = null;
-			await WindowHelper.WaitForNonNull(() => state = VisualStateManager.GetCurrentState(item1, "FocusStates"));
+			// FocusStates is set to Unfocused on the first pass, so wait for the focus to land.
+			await WindowHelper.WaitFor(() => (state = VisualStateManager.GetCurrentState(item1, "FocusStates"))?.Name == "Focused");
 
 			Assert.AreEqual("Focused", state?.Name);
 		}
@@ -3905,6 +3910,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Height = 200,
 				SelectionMode = ListViewSelectionMode.Multiple,
+				ItemContainerStyle = (Style)Application.Current.Resources["ListViewItemExpanded"],
 				ItemsSource = Enumerable.Range(3, 12).ToArray(),
 			};
 			WindowHelper.WindowContent = SUT;
@@ -3927,7 +3933,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			const string msc = "MultiSelectCheck";
 			var lvi0 = new ListViewItem
 			{
-				Content = "child 1"
+				Content = "child 1",
+				Style = (Style)Application.Current.Resources["ListViewItemExpanded"],
 			};
 			var SUT = new ListView
 			{
@@ -4671,11 +4678,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(2) is { });
 			await WindowHelper.WaitForIdle();
 
-			// Make screenshot of the initial state
-			var screenshotBefore = await UITestHelper.ScreenShot(SUT);
-
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
+
+			// Keep the baseline free of hover, and let the first-pass MultiSelectDisabled storyboard (333 ms content slide) finish.
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { X = SUT.GetAbsoluteBoundsRect().Right + 100 });
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+
+			// Make screenshot of the initial state
+			var screenshotBefore = await UITestHelper.ScreenShot(SUT);
 
 			// drag(pick-up) item#0
 			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 50 });
@@ -5477,11 +5489,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #endif
 
-		// Uno-only stopgap: WinUI applies the full list. The ListViewBaseItem port will invert this test.
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Focused_Only_Focus_And_Drag_States_Are_Emitted()
+		public async Task When_Focused_All_Item_States_Are_Emitted()
 		{
 			var style = (Style)XamlReader.Load(
 				"""
@@ -5536,8 +5546,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("Focused", Group("FocusStates").CurrentState?.Name);
 			Assert.AreEqual("NotDragging", Group("DragStates").CurrentState?.Name);
-			Assert.IsNull(Group("ReorderHintStates").CurrentState, "NoReorderHint must not be emitted by the legacy caller.");
-			Assert.IsNull(Group("SelectionIndicatorStates").CurrentState, "Indicator states must not be emitted by the legacy caller.");
+			Assert.AreEqual("NoReorderHint", Group("ReorderHintStates").CurrentState?.Name);
+			Assert.IsNotNull(Group("SelectionIndicatorStates").CurrentState, "The SelectionIndicator slot is emitted on every pass.");
 		}
 	}
 
