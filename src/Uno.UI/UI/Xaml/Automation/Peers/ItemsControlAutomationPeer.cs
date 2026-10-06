@@ -587,9 +587,12 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 					else
 					{
 						// Standard Panel without grouping (StackPanel, etc.)
+						IList<UIElement> containers = spItemsHostPanel is IVirtualizingPanel
+							? OrderByItemIndex(spItemsControl, spItemsFromItemsHostPanel)
+							: spItemsFromItemsHostPanel;
 						for (int i = 0; i < nCount; i++)
 						{
-							var spItemContainer = spItemsFromItemsHostPanel[i] as FrameworkElement;
+							var spItemContainer = containers[i] as FrameworkElement;
 							object spItem = null;
 
 							if (spItemContainer == null) continue;
@@ -631,6 +634,27 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 		_lastChildPeerOccurrences = childOccurrences;
 		return children;
+	}
+
+	// WinUI walks a virtualizing (ModernCollectionBasePanel) host in item order. Uno's virtualizing panels aren't one,
+	// and recycling reorders their Children, so a screen reader would otherwise traverse scrolled rows out of order.
+	private static List<UIElement> OrderByItemIndex(ItemsControl itemsControl, IList<UIElement> containers)
+	{
+		var keyed = new List<(int Index, UIElement Container)>(containers.Count);
+		foreach (var container in containers)
+		{
+			keyed.Add((itemsControl.IndexFromContainer(container), container));
+		}
+
+		keyed.Sort(static (x, y) => x.Index.CompareTo(y.Index));
+
+		var ordered = new List<UIElement>(keyed.Count);
+		foreach (var (_, container) in keyed)
+		{
+			ordered.Add(container);
+		}
+
+		return ordered;
 	}
 
 	internal void OnItemsChanged(NotifyCollectionChangedEventArgs args)
