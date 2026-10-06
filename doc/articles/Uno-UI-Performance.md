@@ -114,15 +114,8 @@ Here's what to look for:
 - Enable [AOT or PG-AOT](xref:Uno.Wasm.Bootstrap.Runtime.Execution) to get the best performance.
 - Consider enabling the [`Jiterpreter`](xref:Uno.Wasm.Bootstrap.Runtime.Execution#jiterpreter-mode) mode for faster performance.
 - When [recording a PG-AOT profile](xref:Uno.Wasm.Bootstrap.Runtime.Execution#profile-guided-aot), make sure to run through most of your application before saving the profile.
-- Adjusting the GC configuration may be useful to limit the collection runs on large allocations. Add the following to your `csproj` file:
-
-    ```xml
-    <ItemGroup>
-      <WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
-    </ItemGroup>
-    ```
-
-  You can adjust the `nursery-size` and `soft-heap-limit` based on your application's memory consumption characteristics. See the [.NET GC configuration](https://learn.microsoft.com/xamarin/android/internals/garbage-collection#configuration) for more details.
+- Do not set a large GC nursery (for example `nursery-size=64m` in `MONO_GC_PARAMS`) by default. A larger nursery means fewer but much longer minor collections, which can show up as freezes of several hundred milliseconds up to a second while scrolling or animating. The Uno Platform samples app used to set it and stopped after seeing exactly that. If you still suspect the GC configuration is limiting your app, measure first, then add `WasmShellMonoEnvironment` entries for `MONO_GC_PARAMS` (see the [.NET GC configuration](https://learn.microsoft.com/xamarin/android/internals/garbage-collection#configuration) for the available options) and compare frame times before and after.
+- Reducing allocations on hot paths such as scrolling and animations is usually a safer way to cut GC pauses than tuning the GC.
 
 - The size of the application can be reduced by:
 
