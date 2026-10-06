@@ -273,4 +273,263 @@ public class Given_ListViewBaseItem
 		Assert.AreEqual("Normal", LastCommonState(recorder), "Disabling stops the touch timer, so Pressed never comes.");
 		finger.Release();
 	}
+
+	private static readonly string[] MultiSelectStates = { "MultiSelectDisabled", "MultiSelectEnabled" };
+	private static readonly string[] SelectionIndicatorStates = { "SelectionIndicatorDisabled", "SelectionIndicatorEnabled" };
+	private static readonly string[] DragStates =
+	{
+		"NotDragging", "Dragging", "DraggingTarget", "MultipleDraggingPrimary", "MultipleDraggingSecondary", "DraggedPlaceholder",
+		"Reordering", "ReorderingTarget", "MultipleReorderingPrimary", "ReorderedPlaceholder", "DragOver",
+	};
+
+	private static string LastState(ListViewBaseItem_StateRecorder recorder, string[] group)
+		=> recorder.States.LastOrDefault(s => group.Contains(s));
+
+	private static ListViewBaseItem_StateRecorder RecorderOf(ListViewItem item)
+		=> (ListViewBaseItem_StateRecorder)VisualTreeHelper.GetChild(item, 0);
+
+	[TestMethod]
+	public async Task When_SelectionMode_And_CheckBox_Change_Refresh_MultiSelect_States()
+	{
+		var (list, _, recorder) = await Setup();
+		var otherRecorder = RecorderOf((ListViewItem)list.ContainerFromIndex(2));
+
+		recorder.States.Clear();
+		otherRecorder.States.Clear();
+		list.SelectionMode = ListViewSelectionMode.Multiple;
+		Assert.AreEqual("MultiSelectEnabled", LastState(recorder, MultiSelectStates), string.Join(", ", recorder.States));
+		Assert.AreEqual("MultiSelectEnabled", LastState(otherRecorder, MultiSelectStates), string.Join(", ", otherRecorder.States));
+
+		recorder.States.Clear();
+		list.IsMultiSelectCheckBoxEnabled = false;
+		Assert.AreEqual("MultiSelectDisabled", LastState(recorder, MultiSelectStates), string.Join(", ", recorder.States));
+
+		recorder.States.Clear();
+		list.IsMultiSelectCheckBoxEnabled = true;
+		Assert.AreEqual("MultiSelectEnabled", LastState(recorder, MultiSelectStates), string.Join(", ", recorder.States));
+
+		recorder.States.Clear();
+		list.SelectionMode = ListViewSelectionMode.Single;
+		Assert.AreEqual("MultiSelectDisabled", LastState(recorder, MultiSelectStates), string.Join(", ", recorder.States));
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_SelectionMode_Changes_Refresh_SelectionIndicator_States()
+	{
+#if HAS_UNO
+		using var _ = ListViewChromeHelper.UseRoundedChromeResource(true);
+#endif
+		var (list, item, recorder) = await Setup();
+		item.IsSelected = true;
+		Assert.AreEqual("SelectionIndicatorEnabled", LastState(recorder, SelectionIndicatorStates), string.Join(", ", recorder.States));
+
+		recorder.States.Clear();
+		list.SelectionMode = ListViewSelectionMode.Multiple;
+		Assert.AreEqual("SelectionIndicatorDisabled", LastState(recorder, SelectionIndicatorStates), string.Join(", ", recorder.States));
+
+		recorder.States.Clear();
+		list.SelectionMode = ListViewSelectionMode.Extended;
+		Assert.AreEqual("SelectionIndicatorEnabled", LastState(recorder, SelectionIndicatorStates), string.Join(", ", recorder.States));
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Recycled_Clears_Interaction_State()
+	{
+#if HAS_UNO
+		var (_, item, recorder) = await Setup();
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available");
+		using var mouse = injector.GetMouse();
+
+		try
+		{
+			mouse.PressRight(Center(item));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Pressed", LastCommonState(recorder));
+
+			recorder.States.Clear();
+			item.PrepareForRecycle();
+
+			Assert.AreEqual("Normal", LastCommonState(recorder), string.Join(", ", recorder.States));
+		}
+		finally
+		{
+			mouse.ReleaseRight();
+			mouse.MoveTo(new Point(Center(item).X, Center(item).Y + 1000));
+			await WindowHelper.WaitForIdle();
+		}
+
+		recorder.States.Clear();
+		item.UpdateVisualState(false);
+		Assert.AreEqual("Normal", LastCommonState(recorder), "Pointer flags must stay cleared after the recycle.");
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Container_Prepared_Clears_Interaction_State()
+	{
+#if HAS_UNO
+		var (list, item, recorder) = await Setup();
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available");
+		using var mouse = injector.GetMouse();
+
+		mouse.MoveTo(Center(item));
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("PointerOver", LastCommonState(recorder));
+
+		try
+		{
+			recorder.States.Clear();
+			list.PrepareContainerForIndex(item, 0);
+
+			Assert.AreEqual("Normal", LastCommonState(recorder), string.Join(", ", recorder.States));
+		}
+		finally
+		{
+			mouse.MoveTo(new Point(Center(item).X, Center(item).Y + 1000));
+			await WindowHelper.WaitForIdle();
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_Reorder_Multiple_Items_DragItemsCount()
+	{
+		var (list, item, recorder) = await Setup(ListViewSelectionMode.Multiple);
+		list.AllowDrop = true;
+		list.CanDragItems = true;
+		list.CanReorderItems = true;
+		var secondItem = (ListViewItem)list.ContainerFromIndex(1);
+		var secondRecorder = RecorderOf(secondItem);
+		list.SelectedItems.Add("A");
+		list.SelectedItems.Add("B");
+		await WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available");
+		using var mouse = injector.GetMouse();
+
+		var from = Center(item);
+		var to = new Point(from.X, from.Y + 150);
+		recorder.States.Clear();
+		secondRecorder.States.Clear();
+
+		mouse.Press(from);
+		await WindowHelper.WaitForIdle();
+		try
+		{
+			mouse.MoveTo(to, 5);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, item.TemplateSettings.DragItemsCount);
+			Assert.AreEqual("MultipleReorderingPrimary", LastState(recorder, DragStates), string.Join(", ", recorder.States));
+			Assert.AreEqual("ReorderingTarget", LastState(secondRecorder, DragStates), string.Join(", ", secondRecorder.States));
+		}
+		finally
+		{
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+		}
+
+		await UITestHelper.WaitFor(() => LastState(recorder, DragStates) == "NotDragging", timeoutMS: 2000);
+		Assert.AreEqual(0, item.TemplateSettings.DragItemsCount);
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_Dragged_Over_Center_Zone_Enters_DragOver()
+	{
+		var (list, target, targetRecorder) = await Setup();
+		list.AllowDrop = true;
+		list.CanDragItems = true;
+		// Uno's live reorder opens a gap under the pointer, so items are only dragged over during a plain item drag.
+		target.AllowDrop = true;
+		var dragged = (ListViewItem)list.ContainerFromIndex(2);
+		await WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available");
+		using var mouse = injector.GetMouse();
+
+		// The item is 60 px high: 20/60/20 zones put the DragOver band between 12 and 48 px.
+		var targetTop = target.TransformToVisual(null).TransformPoint(default);
+		var center = Center(target);
+		var edge = new Point(center.X, targetTop.Y + 4);
+
+		mouse.Press(Center(dragged));
+		await WindowHelper.WaitForIdle();
+		try
+		{
+			mouse.MoveTo(center, 16);
+			await WindowHelper.WaitForIdle();
+			// Moves made while the drag operation starts are not routed as drag events.
+			await Task.Delay(100);
+			mouse.MoveTo(new Point(center.X, center.Y + 1), 2);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("DragOver", LastState(targetRecorder, DragStates), string.Join(", ", targetRecorder.States));
+
+			mouse.MoveTo(edge, 2);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("DraggingTarget", LastState(targetRecorder, DragStates), string.Join(", ", targetRecorder.States));
+
+			mouse.MoveTo(center, 2);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("DragOver", LastState(targetRecorder, DragStates), string.Join(", ", targetRecorder.States));
+		}
+		finally
+		{
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+		}
+
+		await UITestHelper.WaitFor(() => LastState(targetRecorder, DragStates) == "NotDragging", timeoutMS: 2000);
+#if HAS_UNO
+		Assert.IsFalse(list.IsDragOverItem(target), "The drop resets the dragged-over item.");
+#endif
+		mouse.MoveTo(new Point(center.X, center.Y + 1000));
+		await WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Touch_Holding_With_Reorder()
+	{
+#if HAS_UNO
+		var (list, item, recorder) = await Setup();
+		list.AllowDrop = true;
+		list.CanDragItems = true;
+		list.CanReorderItems = true;
+		await WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available");
+		using var finger = injector.GetFinger();
+
+		recorder.States.Clear();
+		finger.Press(Center(item));
+		try
+		{
+			await UITestHelper.WaitFor(() => list.GetIsHolding(), timeoutMS: 3000, message: "Touch holding must set the ListViewBase holding state.");
+			Assert.AreEqual("Reordering", LastState(recorder, DragStates), string.Join(", ", recorder.States));
+		}
+		finally
+		{
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+		}
+
+		await UITestHelper.WaitFor(() => !list.GetIsHolding(), timeoutMS: 2000, message: "Releasing completes the holding gesture.");
+		Assert.AreEqual("NotDragging", LastState(recorder, DragStates), string.Join(", ", recorder.States));
+#else
+		await Task.CompletedTask;
+#endif
+	}
 }
