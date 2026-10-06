@@ -4161,7 +4161,9 @@
 		  <Member fullName="Uno.UI.Hosting.X11RenderingBackend Uno.UI.Hosting.X11RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
 		  <!-- Uno-only static sentinel fields removed; use default(Thickness) / default(CornerRadius). -->
 		  <Member fullName="Microsoft.UI.Xaml.CornerRadius Microsoft.UI.Xaml.CornerRadius::None" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Composition.CornerRadius Uno.UI.Composition.CornerRadius::None" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.Thickness Microsoft.UI.Xaml.Thickness::Empty" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Composition.Thickness Uno.UI.Composition.Thickness::Empty" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
 	  </Fields>
 	  <Properties>
 		  <!-- Property types aligned to the WinUI metadata (#2086, breaking changes for 7.0). -->
@@ -5333,6 +5335,7 @@
 		  <Member fullName="Microsoft.UI.Xaml.GridLength Microsoft.UI.Xaml.GridLength.op_Implicit(System.Double value)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IconElement Microsoft.UI.Xaml.Controls.IconElement.op_Implicit(System.String symbol)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.CornerRadius Microsoft.UI.Xaml.CornerRadius.op_Implicit(System.Double uniformRadius)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Composition.CornerRadius Uno.UI.Composition.CornerRadius.op_Implicit(System.Double uniformRadius)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.Data.Binding Microsoft.UI.Xaml.Data.Binding.op_Implicit(System.String path)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.Data.BindingBase Microsoft.UI.Xaml.Data.BindingBase.op_Implicit(System.String path)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
 		  <Member fullName="System.String Microsoft.UI.Xaml.PropertyPath.op_Implicit(Microsoft.UI.Xaml.PropertyPath path)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
