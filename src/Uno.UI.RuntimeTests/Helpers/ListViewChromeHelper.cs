@@ -18,7 +18,8 @@ internal static class ListViewChromeHelper
 	public static IDisposable UseRoundedChromeResource(bool value)
 	{
 		var resources = Application.Current.Resources;
-		var hadValue = resources.ContainsKey(RoundedKey);
+		// ContainsKey also sees merged and system dictionaries; restoring that value would pin it as a local entry.
+		var hadValue = resources.ContainsKeyLocal(RoundedKey);
 		var previous = hadValue ? resources[RoundedKey] : null;
 
 		resources[RoundedKey] = value;
