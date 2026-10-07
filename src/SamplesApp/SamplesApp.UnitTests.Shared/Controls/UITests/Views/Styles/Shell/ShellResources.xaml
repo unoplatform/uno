@@ -150,6 +150,23 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
+    <!--  Clickable cards (Home): card fill and stroke at rest, the stock button states on hover and press.  -->
+    <Style
+        x:Key="ShellCardButtonStyle"
+        BasedOn="{StaticResource DefaultButtonStyle}"
+        TargetType="Button">
+        <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="{ThemeResource ShellCardBorderThickness}" />
+        <Setter Property="CornerRadius" Value="{StaticResource OverlayCornerRadius}" />
+        <Setter Property="Padding" Value="12" />
+        <Setter Property="MinHeight" Value="64" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
     <!--  Neutralises the implicit not_win: Button style in App.xaml (HorizontalAlignment=Left).  -->
     <Style
         x:Key="ShellPlainButtonStyle"

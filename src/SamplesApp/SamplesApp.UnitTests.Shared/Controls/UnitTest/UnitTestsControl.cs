@@ -306,7 +306,7 @@ namespace Uno.UI.Samples.Tests
 			StopRunningTests();
 		}
 
-		private void StopRunningTests()
+		internal void StopRunningTests()
 		{
 			var cts = Interlocked.Exchange(ref _cts, null);
 			cts?.Cancel();

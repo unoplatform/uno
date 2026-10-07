@@ -85,7 +85,8 @@ public static class ShellFunctions
 
 	public static string FavoriteGlyph(bool isFavorite) => isFavorite ? "\uE735" : "\uE734";
 
-	public static string HeaderTitle(string? controlName, bool isHomeVisible) => isHomeVisible ? "Home" : controlName ?? string.Empty;
+	// Takes the sample, not its name: x:Bind skips a function whose path has a null step, and Home can show before any sample.
+	public static string HeaderTitle(SampleChooserContent? sample, bool isHomeVisible) => isHomeVisible ? "Home" : sample?.ControlName ?? string.Empty;
 
 	/// <summary>The header breadcrumb steps aside while the browser pane, which has its own, is open.</summary>
 	public static Visibility HeaderBreadcrumbVisibility(IReadOnlyList<string>? crumbs, bool isBrowserOpen, bool isHomeVisible)

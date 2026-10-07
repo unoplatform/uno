@@ -3,15 +3,18 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using SampleControl.Entities;
 using SampleControl.Presentation;
 using Uno.UI.Samples.Entities;
 using Uno.UI.Samples.Helper;
 using Windows.Foundation;
+using Windows.System;
 
 namespace Uno.UI.Samples.Controls;
 
@@ -46,6 +49,8 @@ partial class SampleChooserControl
 	private readonly Dictionary<FrameworkElement, double> _barWidths = new();
 	private double _barChromeWidth = FallbackBarChromeWidth;
 	private bool _isQuickSettingsFlyoutDetached;
+	private Func<Task>? _pendingRunnerLeave;
+	private Control? _runnerLeaveReturnFocus;
 
 	/// <summary>False on touch, where keyboard shortcut hints mean nothing. Per window, so suggestions re-evaluate when it flips.</summary>
 	public bool ShowShortcutHints
@@ -59,6 +64,8 @@ partial class SampleChooserControl
 
 	private void InitializeShell()
 	{
+		SampleChooserViewModel.SupportsHomeView = true;
+
 		_iconOnlyCommands = [ShellPreviousSampleButton, ShellNextSampleButton, ShellReloadSampleButton, OverflowSettingsButton];
 		_labelledCommands = [ShellFavoriteToggle, InfoButton];
 		_menuShortcuts =
@@ -213,6 +220,7 @@ partial class SampleChooserControl
 
 			case nameof(SampleChooserViewModel.CurrentSelectedSample):
 			case nameof(SampleChooserViewModel.IsHomeVisible):
+				HideRunnerLeaveBar();
 				SyncSearchResultSelection();
 				QueueHeaderLocationUpdate(contentChanged: true);
 				break;
@@ -308,10 +316,9 @@ partial class SampleChooserControl
 			_syncingRail = false;
 		}
 
-		var current = vm.ShellDestination.ToString();
 		foreach (var button in PaneDestinationButtons)
 		{
-			if (Equals(button.Tag, current) && ShellThemeBrushes.Get("SubtleFillColorSecondaryBrush", ActualTheme) is { } selected)
+			if (ToDestination(button.Tag) == vm.ShellDestination && ShellThemeBrushes.Get("SubtleFillColorSecondaryBrush", ActualTheme) is { } selected)
 			{
 				button.Background = selected;
 				AutomationProperties.SetItemStatus(button, "Current");
@@ -335,49 +342,170 @@ partial class SampleChooserControl
 			return;
 		}
 
-		Navigate(vm, args.IsSettingsInvoked ? "Settings" : (args.InvokedItemContainer as FrameworkElement)?.Tag as string);
+		var destination = args.IsSettingsInvoked ? ShellDestination.Settings : ToDestination((args.InvokedItemContainer as FrameworkElement)?.Tag);
+		NavigateOrConfirm(vm, destination, onLeft: null);
 	}
 
 	private void ShellDestinationButton_Click(object sender, RoutedEventArgs e)
 	{
-		if (_shellViewModel is not { } vm || (sender as FrameworkElement)?.Tag is not string destination)
+		if (_shellViewModel is not { } vm || ToDestination((sender as FrameworkElement)?.Tag) is not { } destination)
 		{
 			return;
 		}
 
-		Navigate(vm, destination);
-
-		// Settings lives in the pane itself; every other destination replaces the content behind the overlay.
-		if (destination != "Settings" && SplitView.DisplayMode is SplitViewDisplayMode.Overlay or SplitViewDisplayMode.CompactOverlay)
+		NavigateOrConfirm(vm, destination, onLeft: () =>
 		{
-			vm.IsSplitVisible = false;
+			// Settings lives in the pane itself; every other destination replaces the content behind the overlay.
+			if (destination != ShellDestination.Settings && SplitView.DisplayMode is SplitViewDisplayMode.Overlay or SplitViewDisplayMode.CompactOverlay)
+			{
+				vm.IsSplitVisible = false;
+			}
+		});
+	}
+
+	/// <summary>Leaving a running runner asks first; Home keeps the runner alive behind it, so confirming stops the run explicitly.</summary>
+	private void NavigateOrConfirm(SampleChooserViewModel vm, ShellDestination? destination, Action? onLeft)
+	{
+		var isRunActive = vm.IsRuntimeTestRunActive;
+		if (!LeavesRunner(destination, vm.ShellDestination, isRunActive))
+		{
+			// Re-invoking the runner would reload it and silently stop the run.
+			if (!(isRunActive && destination == vm.ShellDestination))
+			{
+				Navigate(vm, destination);
+			}
+
+			onLeft?.Invoke();
+			return;
+		}
+
+		ShowRunnerLeaveBar(async () =>
+		{
+			await vm.StopRuntimeTestRunAsync();
+			Navigate(vm, destination);
+			onLeft?.Invoke();
+		});
+	}
+
+	/// <summary>Replaces the header content with the confirm bar; <paramref name="leave"/> runs on Stop and leave.</summary>
+	internal void ShowRunnerLeaveBar(Func<Task> leave)
+	{
+		_pendingRunnerLeave = leave;
+		var focused = XamlRoot is { } root ? FocusManager.GetFocusedElement(root) as Control : null;
+		ShellHeaderContent.Visibility = Visibility.Collapsed;
+		ShellRunnerLeaveBar.Visibility = Visibility.Visible;
+
+		// Only keyboard users get moved: stealing focus from a running test sends its injected keys into the shell.
+		if (focused is { FocusState: FocusState.Keyboard } && !ReferenceEquals(focused, ShellRunnerLeaveConfirm) && !ReferenceEquals(focused, ShellRunnerLeaveCancel))
+		{
+			_runnerLeaveReturnFocus ??= focused;
+
+			// The buttons need a layout pass before they can take focus.
+			ShellRunnerLeaveBar.UpdateLayout();
+			ShellRunnerLeaveCancel.Focus(FocusState.Keyboard);
 		}
 	}
 
-	private static void Navigate(SampleChooserViewModel vm, string? destination)
+	private void ShellRunnerLeaveBar_KeyDown(object sender, KeyRoutedEventArgs e)
+	{
+		if (e.Key == VirtualKey.Escape)
+		{
+			e.Handled = true;
+			HideRunnerLeaveBar();
+		}
+	}
+
+	private async void ShellRunnerLeaveConfirm_Click(object sender, RoutedEventArgs e)
+	{
+		if (_pendingRunnerLeave is not { } leave)
+		{
+			return;
+		}
+
+		_pendingRunnerLeave = null;
+		ShellRunnerLeaveConfirm.IsEnabled = ShellRunnerLeaveCancel.IsEnabled = false;
+		ShellRunnerLeaveMessage.Text = "Stopping tests…";
+		try
+		{
+			await leave();
+		}
+		catch (Exception ex)
+		{
+			ShellLog.Error("Leaving the runner failed.", ex);
+		}
+		finally
+		{
+			ShellRunnerLeaveConfirm.IsEnabled = ShellRunnerLeaveCancel.IsEnabled = true;
+			HideRunnerLeaveBar();
+			UpdateInputHints();
+		}
+	}
+
+	private void ShellRunnerLeaveCancel_Click(object sender, RoutedEventArgs e) => HideRunnerLeaveBar();
+
+	internal void HideRunnerLeaveBar()
+	{
+		_pendingRunnerLeave = null;
+		var returnFocus = _runnerLeaveReturnFocus;
+		_runnerLeaveReturnFocus = null;
+		if (ShellRunnerLeaveBar.Visibility == Visibility.Collapsed)
+		{
+			return;
+		}
+
+		var hadFocus = XamlRoot is { } root && IndexOfRegionContaining([ShellRunnerLeaveBar], FocusManager.GetFocusedElement(root) as DependencyObject) >= 0;
+		ShellRunnerLeaveBar.Visibility = Visibility.Collapsed;
+		ShellHeaderContent.Visibility = Visibility.Visible;
+
+		// Overflow and title fitting were skipped while the header content was collapsed.
+		DispatcherQueue.TryEnqueue(OnOverflowItemsChanged);
+		QueueHeaderLocationUpdate(contentChanged: true);
+
+		if (hadFocus)
+		{
+			ShellHeaderContent.UpdateLayout();
+			if (returnFocus?.Focus(FocusState.Programmatic) != true && FocusManager.FindFirstFocusableElement(ShellHeaderContent) is Control first)
+			{
+				first.Focus(FocusState.Programmatic);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Samples and Settings only open the browser pane, so the runner stays on screen. Only the rail and the phone pane
+	/// destinations ask; opening a sample from the browser, search or Home stops the run through SampleChanging.
+	/// </summary>
+	internal static bool LeavesRunner(ShellDestination? destination, ShellDestination current, bool isRunActive)
+		=> isRunActive && destination is not (null or ShellDestination.Samples or ShellDestination.Settings) && destination != current;
+
+	// Rail items and pane buttons carry the destination name as their Tag.
+	private static ShellDestination? ToDestination(object? tag)
+		=> tag is string name && Enum.TryParse(name, out ShellDestination destination) ? destination : null;
+
+	private static void Navigate(SampleChooserViewModel vm, ShellDestination? destination)
 	{
 		switch (destination)
 		{
-			case "Settings":
+			case ShellDestination.Settings:
 				Run(vm.ShowSettingsCommand);
 				break;
-			case "Home":
+			case ShellDestination.Home:
 				Run(vm.ShowHomeCommand);
 				break;
-			case "Samples":
+			case ShellDestination.Samples:
 				vm.BrowserView = BrowserView.Samples;
 				vm.IsSplitVisible = true;
 				break;
-			case "RuntimeTests":
+			case ShellDestination.RuntimeTests:
 				Run(vm.OpenRuntimeTestsCommand);
 				break;
-			case "Benchmarks":
+			case ShellDestination.Benchmarks:
 				Run(vm.OpenBenchmarksCommand);
 				break;
-			case "Playground":
+			case ShellDestination.Playground:
 				Run(vm.OpenPlaygroundCommand);
 				break;
-			case "Help":
+			case ShellDestination.Help:
 				Run(vm.OpenHelpCommand);
 				break;
 		}
@@ -433,6 +561,11 @@ partial class SampleChooserControl
 	// The event fires before the items move, so this runs once they have.
 	private void OnOverflowItemsChanged()
 	{
+		if (ShellHeaderContent.Visibility != Visibility.Visible)
+		{
+			return;
+		}
+
 		UpdateCommandSizes();
 		if (ShellCommandBar.IsOpen)
 		{
@@ -591,6 +724,11 @@ partial class SampleChooserControl
 	// Priority: the commands, a minimum title, the Manual tag, the rest of the title, then the breadcrumb (shown only whole).
 	private void UpdateHeaderLocation()
 	{
+		if (ShellHeaderContent.Visibility != Visibility.Visible)
+		{
+			return;
+		}
+
 		var state = ShellLayoutStates.CurrentState?.Name;
 		var titleMax = state switch
 		{
@@ -611,7 +749,7 @@ partial class SampleChooserControl
 
 		var search = SearchBox.Visibility == Visibility.Visible ? SearchBox.Width : ShellSearchButton.Width;
 		var toggle = ShellBrowserToggle.Visibility == Visibility.Visible ? ShellBrowserToggle.Width : 0;
-		var available = ShellHeader.ActualWidth - ShellHeader.Padding.Left - ShellHeader.Padding.Right - 3 * ShellHeader.ColumnSpacing - toggle - search;
+		var available = ShellHeader.ActualWidth - ShellHeader.Padding.Left - ShellHeader.Padding.Right - 3 * ShellHeaderContent.ColumnSpacing - toggle - search;
 
 		var (title, tag, breadcrumb) = _headerContentWidths;
 		var minTitle = state is "WideState" or "TabletState" ? MinTitleWidth : NarrowMinTitleWidth;
@@ -749,9 +887,10 @@ partial class SampleChooserControl
 			(false, true) => "Search (Ctrl+F)",
 			_ => "Search samples (Ctrl+F)",
 		};
-		ShellHomeHint.Text = touch ? "Search or open the menu to browse samples." : "Search with Ctrl+F or browse with Ctrl+B.";
 		ShellHostEmptyHint.Text = touch ? "Search to find one" : "Press Ctrl+F to find one";
 		ShellFavoritesEmptyHint.Text = touch ? "Star a sample to keep it here." : "Star a sample (Ctrl+Shift+D) to keep it here.";
+		ShellRunnerLeaveConfirm.MinHeight = ShellRunnerLeaveCancel.MinHeight = touch ? TouchRowHeight : 0;
+		ShellRunnerLeaveMessage.Text = _isNarrow ? "Tests are running." : "Tests are running. Stop them and leave?";
 
 		foreach (var (element, commandId) in _menuShortcuts)
 		{

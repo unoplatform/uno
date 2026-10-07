@@ -1,0 +1,330 @@
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Controls.HomeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Uno.UI.Samples.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Shell/ShellResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="ShellHomeActionTemplate" x:DataType="local:HomeCard">
+                <Button
+                    AutomationProperties.AcceleratorKey="{x:Bind Shortcut}"
+                    AutomationProperties.AutomationId="{x:Bind AutomationId}"
+                    AutomationProperties.Name="{x:Bind Title}"
+                    Command="{x:Bind Command}"
+                    CommandParameter="{x:Bind CommandParameter}"
+                    Style="{StaticResource ShellCardButtonStyle}"
+                    ToolTipService.ToolTip="{x:Bind ToolTip}">
+                    <!--  Both card templates share the 36 plate column, so every title starts at the same x.  -->
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            Width="36"
+                            Height="36"
+                            Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                            CornerRadius="{StaticResource ControlCornerRadius}">
+                            <FontIcon
+                                AutomationProperties.AccessibilityView="Raw"
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                FontSize="20"
+                                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                Glyph="{x:Bind Glyph}"
+                                IsTextScaleFactorEnabled="False" />
+                        </Border>
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            MaxLines="1"
+                            Text="{x:Bind Title}"
+                            TextTrimming="CharacterEllipsis" />
+                        <TextBlock
+                            Grid.Column="2"
+                            VerticalAlignment="Center"
+                            AutomationProperties.AccessibilityView="Raw"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="{x:Bind ShortcutText}" />
+                    </Grid>
+                </Button>
+            </DataTemplate>
+
+            <DataTemplate x:Key="ShellHomeCardTemplate" x:DataType="local:HomeCard">
+                <Button
+                    AutomationProperties.AutomationId="{x:Bind AutomationId}"
+                    AutomationProperties.Name="{x:Bind AutomationName}"
+                    Command="{x:Bind Command}"
+                    CommandParameter="{x:Bind CommandParameter}"
+                    Style="{StaticResource ShellCardButtonStyle}"
+                    ToolTipService.ToolTip="{x:Bind ToolTip}">
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            Width="32"
+                            Height="32"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                            CornerRadius="{StaticResource ControlCornerRadius}">
+                            <FontIcon
+                                AutomationProperties.AccessibilityView="Raw"
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                FontSize="16"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Glyph="{x:Bind Glyph}"
+                                IsTextScaleFactorEnabled="False" />
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock
+                                MaxLines="1"
+                                Text="{x:Bind Title}"
+                                TextTrimming="CharacterEllipsis" />
+                            <TextBlock
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                MaxLines="1"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{x:Bind Caption}"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </Grid>
+                </Button>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer
+        x:Name="ShellHomeScroller"
+        HorizontalScrollBarVisibility="Disabled"
+        HorizontalScrollMode="Disabled"
+        VerticalScrollBarVisibility="Auto">
+        <!--  The star column caps the content at 1200 and keeps it left-aligned on wide windows.  -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MaxWidth="1200" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                x:Name="ShellHomeContent"
+                Padding="24,16"
+                Spacing="24">
+                <Grid
+                    x:Name="ShellHomeMeta"
+                    ColumnSpacing="8"
+                    RowSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        x:Name="ShellHomeSummary"
+                        VerticalAlignment="Center"
+                        AutomationProperties.AutomationId="ShellHomeSummary"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="Indexing samples…"
+                        TextWrapping="Wrap" />
+                    <StackPanel
+                        x:Name="ShellHomeTags"
+                        Grid.Column="1"
+                        Orientation="Horizontal"
+                        Spacing="8">
+                        <Border Style="{StaticResource ShellTagStyle}">
+                            <TextBlock x:Name="ShellHomePlatformTag" Style="{StaticResource ShellTagTextStyle}" />
+                        </Border>
+                        <Border Style="{StaticResource ShellTagStyle}">
+                            <TextBlock x:Name="ShellHomeFrameworkTag" Style="{StaticResource ShellTagTextStyle}" />
+                        </Border>
+                        <Border Style="{StaticResource ShellTagStyle}">
+                            <TextBlock x:Name="ShellHomeConfigurationTag" Style="{StaticResource ShellTagTextStyle}" />
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Spacing="8">
+                    <Grid MinHeight="32">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            AutomationProperties.HeadingLevel="Level2"
+                            Style="{StaticResource ShellHeaderTitleTextStyle}"
+                            Text="Quick actions" />
+                    </Grid>
+                    <ItemsRepeater
+                        x:Name="ShellHomeQuickActions"
+                        AutomationProperties.AutomationId="ShellHomeQuickActions"
+                        AutomationProperties.Name="Quick actions"
+                        ItemTemplate="{StaticResource ShellHomeActionTemplate}"
+                        TabFocusNavigation="Once"
+                        XYFocusKeyboardNavigation="Enabled">
+                        <ItemsRepeater.Layout>
+                            <UniformGridLayout
+                                ItemsStretch="Fill"
+                                MinColumnSpacing="8"
+                                MinItemHeight="64"
+                                MinItemWidth="260"
+                                MinRowSpacing="8" />
+                        </ItemsRepeater.Layout>
+                    </ItemsRepeater>
+                </StackPanel>
+
+                <StackPanel x:Name="ShellHomeRecentSection" Spacing="8">
+                    <Grid MinHeight="32" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            AutomationProperties.HeadingLevel="Level2"
+                            Style="{StaticResource ShellHeaderTitleTextStyle}"
+                            Text="Recent" />
+                        <HyperlinkButton
+                            x:Name="ShellHomeRecentShowAll"
+                            Grid.Column="1"
+                            Margin="0,0,-12,0"
+                            AutomationProperties.AutomationId="ShellHomeRecentShowAll"
+                            AutomationProperties.Name="Show all recent samples"
+                            Click="RecentShowAll_Click">
+                            <!--  A TextBlock, not a string: Uno underlines string content, WinUI 3 does not.  -->
+                            <TextBlock Text="Show all" />
+                        </HyperlinkButton>
+                    </Grid>
+                    <ItemsRepeater
+                        x:Name="ShellHomeRecentList"
+                        AutomationProperties.AutomationId="ShellHomeRecentList"
+                        AutomationProperties.Name="Recent samples"
+                        ItemTemplate="{StaticResource ShellHomeCardTemplate}"
+                        TabFocusNavigation="Once"
+                        XYFocusKeyboardNavigation="Enabled">
+                        <ItemsRepeater.Layout>
+                            <UniformGridLayout
+                                ItemsStretch="Fill"
+                                MinColumnSpacing="8"
+                                MinItemHeight="64"
+                                MinItemWidth="260"
+                                MinRowSpacing="8" />
+                        </ItemsRepeater.Layout>
+                    </ItemsRepeater>
+                    <Border
+                        x:Name="ShellHomeRecentEmptyCard"
+                        MinHeight="64"
+                        Style="{StaticResource ShellCardStyle}">
+                        <TextBlock
+                            x:Name="ShellHomeRecentEmpty"
+                            VerticalAlignment="Center"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="Samples you open show up here."
+                            TextWrapping="Wrap" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel x:Name="ShellHomeFavoritesSection" Spacing="8">
+                    <Grid MinHeight="32" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            AutomationProperties.HeadingLevel="Level2"
+                            Style="{StaticResource ShellHeaderTitleTextStyle}"
+                            Text="Favorites" />
+                        <HyperlinkButton
+                            x:Name="ShellHomeFavoritesShowAll"
+                            Grid.Column="1"
+                            Margin="0,0,-12,0"
+                            AutomationProperties.AutomationId="ShellHomeFavoritesShowAll"
+                            AutomationProperties.Name="Show all favorites"
+                            Click="FavoritesShowAll_Click">
+                            <!--  A TextBlock, not a string: Uno underlines string content, WinUI 3 does not.  -->
+                            <TextBlock Text="Show all" />
+                        </HyperlinkButton>
+                    </Grid>
+                    <ItemsRepeater
+                        x:Name="ShellHomeFavoritesList"
+                        AutomationProperties.AutomationId="ShellHomeFavoritesList"
+                        AutomationProperties.Name="Favorite samples"
+                        ItemTemplate="{StaticResource ShellHomeCardTemplate}"
+                        TabFocusNavigation="Once"
+                        XYFocusKeyboardNavigation="Enabled">
+                        <ItemsRepeater.Layout>
+                            <UniformGridLayout
+                                ItemsStretch="Fill"
+                                MinColumnSpacing="8"
+                                MinItemHeight="64"
+                                MinItemWidth="260"
+                                MinRowSpacing="8" />
+                        </ItemsRepeater.Layout>
+                    </ItemsRepeater>
+                    <Border
+                        x:Name="ShellHomeFavoritesEmptyCard"
+                        MinHeight="64"
+                        Style="{StaticResource ShellCardStyle}">
+                        <TextBlock
+                            x:Name="ShellHomeFavoritesEmpty"
+                            VerticalAlignment="Center"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="Star a sample (Ctrl+Shift+D) to pin it here."
+                            TextWrapping="Wrap" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel x:Name="ShellHomeCategoriesSection" Spacing="8">
+                    <Grid MinHeight="32" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            AutomationProperties.HeadingLevel="Level2"
+                            Style="{StaticResource ShellHeaderTitleTextStyle}"
+                            Text="Categories" />
+                        <HyperlinkButton
+                            x:Name="ShellHomeBrowseLibrary"
+                            Grid.Column="1"
+                            Margin="0,0,-12,0"
+                            AutomationProperties.AutomationId="ShellHomeBrowseLibrary"
+                            Click="BrowseLibrary_Click">
+                            <!--  A TextBlock, not a string: Uno underlines string content, WinUI 3 does not.  -->
+                            <TextBlock Text="Browse library" />
+                        </HyperlinkButton>
+                    </Grid>
+                    <ItemsRepeater
+                        x:Name="ShellHomeCategoriesList"
+                        AutomationProperties.AutomationId="ShellHomeCategoriesList"
+                        AutomationProperties.Name="Categories"
+                        ItemTemplate="{StaticResource ShellHomeCardTemplate}"
+                        TabFocusNavigation="Once"
+                        XYFocusKeyboardNavigation="Enabled">
+                        <ItemsRepeater.Layout>
+                            <UniformGridLayout
+                                ItemsStretch="Fill"
+                                MinColumnSpacing="8"
+                                MinItemHeight="64"
+                                MinItemWidth="260"
+                                MinRowSpacing="8" />
+                        </ItemsRepeater.Layout>
+                    </ItemsRepeater>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

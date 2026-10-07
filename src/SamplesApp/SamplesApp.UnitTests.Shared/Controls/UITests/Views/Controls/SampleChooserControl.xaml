@@ -311,8 +311,7 @@
             <Grid
                 x:Name="ShellHeader"
                 Height="{StaticResource ShellHeaderHeight}"
-                Padding="8,0,8,0"
-                ColumnSpacing="8">
+                Padding="8,0,8,0">
                 <Grid.Resources>
                     <ResourceDictionary>
                         <ResourceDictionary.MergedDictionaries>
@@ -320,418 +319,468 @@
                         </ResourceDictionary.MergedDictionaries>
                     </ResourceDictionary>
                 </Grid.Resources>
-                <!--  The command bar needs a bounded column to move commands into overflow; code caps the location instead (UpdateHeaderLocation).  -->
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+                <!--  The leave bar collapses this, so the covered controls leave the tab order and the UIA tree.  -->
+                <Grid x:Name="ShellHeaderContent" ColumnSpacing="8">
+                    <!--  The command bar needs a bounded column to move commands into overflow; code caps the location instead (UpdateHeaderLocation).  -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                <!--  Local values rather than a Style: an explicit style would drop the implicit Fluent template on Uno.  -->
-                <ToggleButton
-                    x:Name="ShellBrowserToggle"
-                    Width="40"
-                    Height="40"
-                    MinWidth="0"
-                    MinHeight="0"
-                    Padding="0"
-                    VerticalAlignment="Center"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
-                    AutomationProperties.AutomationId="ShellBrowserToggle"
-                    AutomationProperties.Name="Sample browser"
-                    Background="{ThemeResource SubtleFillColorTransparentBrush}"
-                    BorderThickness="0"
-                    IsChecked="{x:Bind ViewModel.IsSplitVisible, Mode=TwoWay, FallbackValue=False}"
-                    IsEnabled="{x:Bind shell:ShellFunctions.Not(ViewModel.IsRecordAllTests), Mode=OneWay, FallbackValue=True}">
-                    <FontIcon
-                        x:Name="ShellBrowserToggleIcon"
-                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                        FontSize="16"
-                        Glyph="&#xE8A0;"
-                        IsTextScaleFactorEnabled="False" />
-                </ToggleButton>
-
-                <!--  Location: breadcrumb (hidden while the pane shows its own), then the sample title  -->
-                <StackPanel
-                    x:Name="ShellLocation"
-                    Grid.Column="1"
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal">
-                    <!--  Code shows the host only when the whole breadcrumb fits; the binding owns the panel's own visibility.  -->
-                    <Border x:Name="ShellBreadcrumbHost" VerticalAlignment="Center">
-                        <StackPanel
-                            x:Name="ShellBreadcrumbPanel"
-                            VerticalAlignment="Center"
-                            Orientation="Horizontal"
-                            Visibility="{x:Bind shell:ShellFunctions.HeaderBreadcrumbVisibility(ViewModel.CurrentBreadcrumb, ViewModel.IsSplitVisible, ViewModel.IsHomeVisible), Mode=OneWay, FallbackValue=Collapsed}">
-                            <BreadcrumbBar
-                                x:Name="ShellBreadcrumb"
-                                VerticalAlignment="Center"
-                                AutomationProperties.AutomationId="ShellBreadcrumb"
-                                ItemClicked="ShellBreadcrumb_ItemClicked"
-                                ItemsSource="{x:Bind ViewModel.CurrentBreadcrumb, Mode=OneWay}">
-                                <BreadcrumbBar.Resources>
-                                    <ResourceDictionary>
-                                        <!--  One size for crumbs and title; crumbs stay secondary so the title leads.  -->
-                                        <x:Double x:Key="BreadcrumbBarItemThemeFontSize">20</x:Double>
-                                        <FontWeight x:Key="BreadcrumbBarItemFontWeight">SemiBold</FontWeight>
-                                        <ResourceDictionary.ThemeDictionaries>
-                                            <ResourceDictionary x:Key="Light">
-                                                <SolidColorBrush x:Key="BreadcrumbBarNormalForegroundBrush" Color="{ThemeResource TextFillColorSecondary}" />
-                                                <SolidColorBrush x:Key="BreadcrumbBarCurrentNormalForegroundBrush" Color="{ThemeResource TextFillColorSecondary}" />
-                                            </ResourceDictionary>
-                                            <ResourceDictionary x:Key="Dark">
-                                                <SolidColorBrush x:Key="BreadcrumbBarNormalForegroundBrush" Color="{ThemeResource TextFillColorSecondary}" />
-                                                <SolidColorBrush x:Key="BreadcrumbBarCurrentNormalForegroundBrush" Color="{ThemeResource TextFillColorSecondary}" />
-                                            </ResourceDictionary>
-                                        </ResourceDictionary.ThemeDictionaries>
-                                    </ResourceDictionary>
-                                </BreadcrumbBar.Resources>
-                            </BreadcrumbBar>
-                            <!--  Same glyph, size and gap as the BreadcrumbBar separator (its last item has none).  -->
-                            <FontIcon
-                                Margin="2,0,3,0"
-                                VerticalAlignment="Center"
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                FontSize="12"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                Glyph="&#xE974;"
-                                IsTextScaleFactorEnabled="False"
-                                MirroredWhenRightToLeft="True" />
-                        </StackPanel>
-                    </Border>
-
-                    <TextBlock
-                        x:Name="ShellSampleTitle"
-                        MaxWidth="480"
+                    <!--  Local values rather than a Style: an explicit style would drop the implicit Fluent template on Uno.  -->
+                    <ToggleButton
+                        x:Name="ShellBrowserToggle"
+                        Width="40"
+                        Height="40"
+                        MinWidth="0"
+                        MinHeight="0"
+                        Padding="0"
                         VerticalAlignment="Center"
-                        AutomationProperties.HeadingLevel="Level1"
-                        IsTextSelectionEnabled="True"
-                        MaxLines="1"
-                        Style="{StaticResource ShellHeaderTitleTextStyle}"
-                        Text="{x:Bind shell:ShellFunctions.HeaderTitle(ViewModel.CurrentSelectedSample.ControlName, ViewModel.IsHomeVisible), Mode=OneWay}"
-                        TextTrimming="CharacterEllipsis"
-                        TextWrapping="NoWrap"
-                        ToolTipService.ToolTip="{x:Bind ViewModel.CurrentSelectedSample.ControlName, Mode=OneWay}" />
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        AutomationProperties.AutomationId="ShellBrowserToggle"
+                        AutomationProperties.Name="Sample browser"
+                        Background="{ThemeResource SubtleFillColorTransparentBrush}"
+                        BorderThickness="0"
+                        IsChecked="{x:Bind ViewModel.IsSplitVisible, Mode=TwoWay, FallbackValue=False}"
+                        IsEnabled="{x:Bind shell:ShellFunctions.Not(ViewModel.IsRecordAllTests), Mode=OneWay, FallbackValue=True}">
+                        <FontIcon
+                            x:Name="ShellBrowserToggleIcon"
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            FontSize="16"
+                            Glyph="&#xE8A0;"
+                            IsTextScaleFactorEnabled="False" />
+                    </ToggleButton>
 
-                    <!--  Code hides the host when the title needs the room; the binding owns the tag's own visibility.  -->
-                    <Border x:Name="ShellManualTagHost" VerticalAlignment="Center">
-                        <Border
-                            x:Name="ShellManualTag"
-                            Margin="8,0,0,0"
-                            Style="{StaticResource ShellTagStyle}"
-                            Visibility="{x:Bind shell:ShellFunctions.ManualTagVisibility(ViewModel.CurrentSelectedSample.IsManualTest, ViewModel.IsHomeVisible), Mode=OneWay, FallbackValue=Collapsed}">
-                            <TextBlock Style="{StaticResource ShellTagTextStyle}" Text="Manual" />
+                    <!--  Location: breadcrumb (hidden while the pane shows its own), then the sample title  -->
+                    <StackPanel
+                        x:Name="ShellLocation"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <!--  Code shows the host only when the whole breadcrumb fits; the binding owns the panel's own visibility.  -->
+                        <Border x:Name="ShellBreadcrumbHost" VerticalAlignment="Center">
+                            <StackPanel
+                                x:Name="ShellBreadcrumbPanel"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Visibility="{x:Bind shell:ShellFunctions.HeaderBreadcrumbVisibility(ViewModel.CurrentBreadcrumb, ViewModel.IsSplitVisible, ViewModel.IsHomeVisible), Mode=OneWay, FallbackValue=Collapsed}">
+                                <BreadcrumbBar
+                                    x:Name="ShellBreadcrumb"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.AutomationId="ShellBreadcrumb"
+                                    ItemClicked="ShellBreadcrumb_ItemClicked"
+                                    ItemsSource="{x:Bind ViewModel.CurrentBreadcrumb, Mode=OneWay}">
+                                    <BreadcrumbBar.Resources>
+                                        <ResourceDictionary>
+                                            <!--  One size for crumbs and title; crumbs stay secondary so the title leads.  -->
+                                            <x:Double x:Key="BreadcrumbBarItemThemeFontSize">20</x:Double>
+                                            <FontWeight x:Key="BreadcrumbBarItemFontWeight">SemiBold</FontWeight>
+                                            <ResourceDictionary.ThemeDictionaries>
+                                                <ResourceDictionary x:Key="Light">
+                                                    <SolidColorBrush x:Key="BreadcrumbBarNormalForegroundBrush" Color="{ThemeResource TextFillColorSecondary}" />
+                                                    <SolidColorBrush x:Key="BreadcrumbBarCurrentNormalForegroundBrush" Color="{ThemeResource TextFillColorSecondary}" />
+                                                </ResourceDictionary>
+                                                <ResourceDictionary x:Key="Dark">
+                                                    <SolidColorBrush x:Key="BreadcrumbBarNormalForegroundBrush" Color="{ThemeResource TextFillColorSecondary}" />
+                                                    <SolidColorBrush x:Key="BreadcrumbBarCurrentNormalForegroundBrush" Color="{ThemeResource TextFillColorSecondary}" />
+                                                </ResourceDictionary>
+                                            </ResourceDictionary.ThemeDictionaries>
+                                        </ResourceDictionary>
+                                    </BreadcrumbBar.Resources>
+                                </BreadcrumbBar>
+                                <!--  Same glyph, size and gap as the BreadcrumbBar separator (its last item has none).  -->
+                                <FontIcon
+                                    Margin="2,0,3,0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    FontSize="12"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Glyph="&#xE974;"
+                                    IsTextScaleFactorEnabled="False"
+                                    MirroredWhenRightToLeft="True" />
+                            </StackPanel>
                         </Border>
-                    </Border>
-                </StackPanel>
 
-                <CommandBar
-                    x:Name="ShellCommandBar"
-                    Grid.Column="2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    AutomationProperties.AutomationId="ShellCommandBar"
-                    Background="Transparent"
-                    DefaultLabelPosition="Right"
-                    IsDynamicOverflowEnabled="True"
-                    OverflowButtonVisibility="Auto"
-                    TabFocusNavigation="Once"
-                    Visibility="{x:Bind shell:ShellFunctions.Collapsed(ViewModel.IsHomeVisible), Mode=OneWay}">
-                    <AppBarButton
-                        x:Name="ShellPreviousSampleButton"
-                        Width="40"
-                        AutomationProperties.AutomationId="ShellPreviousSampleButton"
-                        Command="{x:Bind ViewModel.LoadPreviousTestCommand, Mode=OneWay}"
-                        DynamicOverflowOrder="3"
-                        Label="Previous sample"
-                        LabelPosition="Collapsed">
-                        <AppBarButton.Icon>
-                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE892;" />
-                        </AppBarButton.Icon>
-                    </AppBarButton>
-                    <AppBarButton
-                        x:Name="ShellNextSampleButton"
-                        Width="40"
-                        AutomationProperties.AutomationId="ShellNextSampleButton"
-                        Command="{x:Bind ViewModel.LoadNextTestCommand, Mode=OneWay}"
-                        DynamicOverflowOrder="3"
-                        Label="Next sample"
-                        LabelPosition="Collapsed">
-                        <AppBarButton.Icon>
-                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE893;" />
-                        </AppBarButton.Icon>
-                    </AppBarButton>
-                    <AppBarButton
-                        x:Name="ShellReloadSampleButton"
-                        Width="40"
-                        AutomationProperties.AutomationId="ShellReloadSampleButton"
-                        Command="{x:Bind ViewModel.ReloadCurrentTestCommand, Mode=OneWay}"
-                        Label="Reload sample"
-                        LabelPosition="Collapsed">
-                        <AppBarButton.Icon>
-                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
-                        </AppBarButton.Icon>
-                    </AppBarButton>
-                    <AppBarSeparator x:Name="ShellSampleCommandsSeparator" />
-                    <AppBarToggleButton
-                        x:Name="ShellFavoriteToggle"
-                        AutomationProperties.AutomationId="ShellFavoriteToggle"
-                        AutomationProperties.Name="{x:Bind shell:ShellFunctions.FavoriteLabel(ViewModel.IsFavoritedSample), Mode=OneWay}"
-                        DynamicOverflowOrder="1"
-                        IsChecked="{x:Bind ViewModel.IsFavoritedSample, Mode=TwoWay, FallbackValue=False}"
-                        Label="Favorite">
-                        <AppBarToggleButton.Icon>
-                            <FontIcon
-                                x:Name="ShellFavoriteIcon"
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                Glyph="{x:Bind shell:ShellFunctions.FavoriteGlyph(ViewModel.IsFavoritedSample), Mode=OneWay}" />
-                        </AppBarToggleButton.Icon>
-                    </AppBarToggleButton>
-                    <AppBarButton
-                        x:Name="InfoButton"
-                        AutomationProperties.AutomationId="ShellInfoButton"
-                        DynamicOverflowOrder="2"
-                        Label="Info">
-                        <AppBarButton.Icon>
-                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE946;" />
-                        </AppBarButton.Icon>
-                        <AppBarButton.Flyout>
-                            <Flyout Opening="InfoFlyout_Opening" Placement="BottomEdgeAlignedRight">
-                                <u:SampleInfoControl x:Name="SampleInfoFlyoutContent" DataContext="{x:Null}" />
-                            </Flyout>
-                        </AppBarButton.Flyout>
-                    </AppBarButton>
-                    <AppBarSeparator />
-                    <AppBarButton
-                        x:Name="OverflowSettingsButton"
-                        Width="40"
-                        AutomationProperties.AutomationId="ShellQuickSettingsButton"
-                        AutomationProperties.Name="Quick settings"
-                        Click="OverflowSettingsButton_Click"
-                        Label="Quick settings"
-                        LabelPosition="Collapsed"
-                        ToolTipService.ToolTip="Quick settings">
-                        <AppBarButton.Icon>
-                            <!--  No Source: the fallback draws the sliders glyph, so the gear stays unique to All settings.  -->
-                            <controls:AnimatedIcon x:Name="OverflowSettingsIcon">
-                                <controls:AnimatedIcon.FallbackIconSource>
-                                    <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE9E9;" />
-                                </controls:AnimatedIcon.FallbackIconSource>
-                            </controls:AnimatedIcon>
-                        </AppBarButton.Icon>
-                        <AppBarButton.Flyout>
-                            <MenuFlyout
-                                x:Name="ShellQuickSettingsFlyout"
-                                Opening="ShellQuickSettingsFlyout_Opening"
-                                Placement="BottomEdgeAlignedRight">
-                                <MenuFlyoutSubItem
-                                    x:Name="ThemeMenuFlyout"
-                                    AutomationProperties.AutomationId="ShellQuickTheme"
-                                    Text="Theme">
-                                    <MenuFlyoutSubItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE793;" />
-                                    </MenuFlyoutSubItem.Icon>
-                                    <RadioMenuFlyoutItem
-                                        GroupName="AppTheme"
-                                        IsChecked="{Binding IsAppThemeSystem, Mode=TwoWay}"
-                                        Tag="Auto"
-                                        Text="System" />
-                                    <RadioMenuFlyoutItem
-                                        GroupName="AppTheme"
-                                        IsChecked="{Binding IsAppThemeLight, Mode=TwoWay}"
-                                        Tag="Light"
-                                        Text="Light" />
-                                    <RadioMenuFlyoutItem
-                                        GroupName="AppTheme"
-                                        IsChecked="{Binding IsAppThemeDark, Mode=TwoWay}"
-                                        Tag="Dark"
-                                        Text="Dark" />
-                                </MenuFlyoutSubItem>
-                                <ToggleMenuFlyoutItem
-                                    AutomationProperties.AutomationId="ShellQuickRtl"
-                                    IsChecked="{Binding UseRtl, Mode=TwoWay}"
-                                    Text="Flow right-to-left">
-                                    <ToggleMenuFlyoutItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE9AB;" />
-                                    </ToggleMenuFlyoutItem.Icon>
-                                </ToggleMenuFlyoutItem>
-                                <ToggleMenuFlyoutItem
-                                    AutomationProperties.AutomationId="ShellQuickFps"
-                                    IsChecked="{Binding ShowFpsIndicator, Mode=TwoWay}"
-                                    Text="Show FPS indicator">
-                                    <ToggleMenuFlyoutItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEC4A;" />
-                                    </ToggleMenuFlyoutItem.Icon>
-                                </ToggleMenuFlyoutItem>
-                                <not_win:ToggleMenuFlyoutItem
-                                    AutomationProperties.AutomationId="ShellQuickSimulateTouch"
-                                    IsChecked="{Binding SimulateTouch, Mode=TwoWay}"
-                                    Text="Simulate touch">
-                                    <not_win:ToggleMenuFlyoutItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE815;" />
-                                    </not_win:ToggleMenuFlyoutItem.Icon>
-                                </not_win:ToggleMenuFlyoutItem>
-                                <not_win:ToggleMenuFlyoutItem
-                                    AutomationProperties.AutomationId="ShellQuickDamageRegion"
-                                    IsChecked="{Binding DamageRegionOverlay, Mode=TwoWay}"
-                                    Text="Show damage region">
-                                    <not_win:ToggleMenuFlyoutItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE81E;" />
-                                    </not_win:ToggleMenuFlyoutItem.Icon>
-                                </not_win:ToggleMenuFlyoutItem>
-                                <not_win:ToggleMenuFlyoutItem
-                                    AutomationProperties.AutomationId="ShellQuickKeepPopups"
-                                    IsChecked="{Binding PreventLightDismissOnWindowDeactivated, Mode=TwoWay}"
-                                    Text="Keep popups open on breakpoints">
-                                    <not_win:ToggleMenuFlyoutItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE92F;" />
-                                    </not_win:ToggleMenuFlyoutItem.Icon>
-                                </not_win:ToggleMenuFlyoutItem>
-                                <ToggleMenuFlyoutItem
-                                    AutomationProperties.AutomationId="ShellQuickFluentStyles"
-                                    IsChecked="{Binding UseFluentStyles, Mode=TwoWay}"
-                                    Text="Use Fluent styles">
-                                    <ToggleMenuFlyoutItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
-                                    </ToggleMenuFlyoutItem.Icon>
-                                </ToggleMenuFlyoutItem>
-                                <ToggleMenuFlyoutItem
-                                    AutomationProperties.AutomationId="ShellQuickExtendTitleBar"
-                                    IsChecked="{Binding ExtendContentIntoTitleBar, Mode=TwoWay}"
-                                    Text="Extend content into title bar">
-                                    <ToggleMenuFlyoutItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE737;" />
-                                    </ToggleMenuFlyoutItem.Icon>
-                                </ToggleMenuFlyoutItem>
-                                <!--  The strip's close button has no way back otherwise; checked state is synced on Opening.  -->
-                                <ToggleMenuFlyoutItem
-                                    x:Name="ShellQuickDescriptionItem"
-                                    AutomationProperties.AutomationId="ShellQuickDescription"
-                                    Click="ShellQuickDescriptionItem_Click"
-                                    Text="Show sample description">
-                                    <ToggleMenuFlyoutItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8A5;" />
-                                    </ToggleMenuFlyoutItem.Icon>
-                                </ToggleMenuFlyoutItem>
-                                <MenuFlyoutSeparator />
-                                <MenuFlyoutItem
-                                    x:Name="ShellQuickAllSettingsItem"
-                                    AutomationProperties.AutomationId="ShellQuickAllSettings"
-                                    Command="{x:Bind ViewModel.ShowSettingsCommand, Mode=OneWay}"
-                                    Text="All settings…">
-                                    <MenuFlyoutItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE713;" />
-                                    </MenuFlyoutItem.Icon>
-                                </MenuFlyoutItem>
-                                <MenuFlyoutItem
-                                    x:Name="ShellQuickHelpItem"
-                                    AutomationProperties.AutomationId="ShellQuickHelp"
-                                    Command="{x:Bind ViewModel.OpenHelpCommand, Mode=OneWay}"
-                                    Text="Help">
-                                    <MenuFlyoutItem.Icon>
-                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE897;" />
-                                    </MenuFlyoutItem.Icon>
-                                </MenuFlyoutItem>
-                            </MenuFlyout>
-                        </AppBarButton.Flyout>
-                    </AppBarButton>
+                        <TextBlock
+                            x:Name="ShellSampleTitle"
+                            MaxWidth="480"
+                            VerticalAlignment="Center"
+                            AutomationProperties.HeadingLevel="Level1"
+                            IsTextSelectionEnabled="True"
+                            MaxLines="1"
+                            Style="{StaticResource ShellHeaderTitleTextStyle}"
+                            Text="{x:Bind shell:ShellFunctions.HeaderTitle(ViewModel.CurrentSelectedSample, ViewModel.IsHomeVisible), Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap"
+                            ToolTipService.ToolTip="{x:Bind ViewModel.CurrentSelectedSample.ControlName, Mode=OneWay}" />
 
-                    <CommandBar.SecondaryCommands>
+                        <!--  Code hides the host when the title needs the room; the binding owns the tag's own visibility.  -->
+                        <Border x:Name="ShellManualTagHost" VerticalAlignment="Center">
+                            <Border
+                                x:Name="ShellManualTag"
+                                Margin="8,0,0,0"
+                                Style="{StaticResource ShellTagStyle}"
+                                Visibility="{x:Bind shell:ShellFunctions.ManualTagVisibility(ViewModel.CurrentSelectedSample.IsManualTest, ViewModel.IsHomeVisible), Mode=OneWay, FallbackValue=Collapsed}">
+                                <TextBlock Style="{StaticResource ShellTagTextStyle}" Text="Manual" />
+                            </Border>
+                        </Border>
+                    </StackPanel>
+
+                    <CommandBar
+                        x:Name="ShellCommandBar"
+                        Grid.Column="2"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        AutomationProperties.AutomationId="ShellCommandBar"
+                        Background="Transparent"
+                        DefaultLabelPosition="Right"
+                        IsDynamicOverflowEnabled="True"
+                        OverflowButtonVisibility="Auto"
+                        TabFocusNavigation="Once"
+                        Visibility="{x:Bind shell:ShellFunctions.Collapsed(ViewModel.IsHomeVisible), Mode=OneWay}">
                         <AppBarButton
-                            x:Name="ShellCopyLinkButton"
-                            AutomationProperties.AutomationId="ShellCopyLinkButton"
-                            Command="{x:Bind ViewModel.CopySampleLinkCommand, Mode=OneWay}"
-                            Label="Copy link">
+                            x:Name="ShellPreviousSampleButton"
+                            Width="40"
+                            AutomationProperties.AutomationId="ShellPreviousSampleButton"
+                            Command="{x:Bind ViewModel.LoadPreviousTestCommand, Mode=OneWay}"
+                            DynamicOverflowOrder="3"
+                            Label="Previous sample"
+                            LabelPosition="Collapsed">
                             <AppBarButton.Icon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE71B;" />
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE892;" />
                             </AppBarButton.Icon>
                         </AppBarButton>
                         <AppBarButton
-                            x:Name="ShellOpenInNewWindowButton"
-                            AutomationProperties.AutomationId="ShellOpenInNewWindowButton"
-                            Command="{x:Bind ViewModel.OpenSampleInNewWindowCommand, Mode=OneWay}"
-                            Label="Open in new window">
+                            x:Name="ShellNextSampleButton"
+                            Width="40"
+                            AutomationProperties.AutomationId="ShellNextSampleButton"
+                            Command="{x:Bind ViewModel.LoadNextTestCommand, Mode=OneWay}"
+                            DynamicOverflowOrder="3"
+                            Label="Next sample"
+                            LabelPosition="Collapsed">
                             <AppBarButton.Icon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8A7;" />
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE893;" />
                             </AppBarButton.Icon>
                         </AppBarButton>
                         <AppBarButton
-                            x:Name="ShellViewSourceButton"
-                            AutomationProperties.AutomationId="ShellViewSourceButton"
-                            Command="{x:Bind ViewModel.OpenSourceOnGitHubCommand, Mode=OneWay}"
-                            Label="View source on GitHub">
+                            x:Name="ShellReloadSampleButton"
+                            Width="40"
+                            AutomationProperties.AutomationId="ShellReloadSampleButton"
+                            Command="{x:Bind ViewModel.ReloadCurrentTestCommand, Mode=OneWay}"
+                            Label="Reload sample"
+                            LabelPosition="Collapsed">
                             <AppBarButton.Icon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE774;" />
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
                             </AppBarButton.Icon>
                         </AppBarButton>
+                        <AppBarSeparator x:Name="ShellSampleCommandsSeparator" />
+                        <AppBarToggleButton
+                            x:Name="ShellFavoriteToggle"
+                            AutomationProperties.AutomationId="ShellFavoriteToggle"
+                            AutomationProperties.Name="{x:Bind shell:ShellFunctions.FavoriteLabel(ViewModel.IsFavoritedSample), Mode=OneWay}"
+                            DynamicOverflowOrder="1"
+                            IsChecked="{x:Bind ViewModel.IsFavoritedSample, Mode=TwoWay, FallbackValue=False}"
+                            Label="Favorite">
+                            <AppBarToggleButton.Icon>
+                                <FontIcon
+                                    x:Name="ShellFavoriteIcon"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    Glyph="{x:Bind shell:ShellFunctions.FavoriteGlyph(ViewModel.IsFavoritedSample), Mode=OneWay}" />
+                            </AppBarToggleButton.Icon>
+                        </AppBarToggleButton>
                         <AppBarButton
-                            x:Name="ShellCopyTypeNameButton"
-                            AutomationProperties.AutomationId="ShellCopyTypeNameButton"
-                            Command="{x:Bind ViewModel.CopyTypeNameCommand, Mode=OneWay}"
-                            Label="Copy type name">
+                            x:Name="InfoButton"
+                            AutomationProperties.AutomationId="ShellInfoButton"
+                            DynamicOverflowOrder="2"
+                            Label="Info">
                             <AppBarButton.Icon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE946;" />
                             </AppBarButton.Icon>
+                            <AppBarButton.Flyout>
+                                <Flyout Opening="InfoFlyout_Opening" Placement="BottomEdgeAlignedRight">
+                                    <u:SampleInfoControl x:Name="SampleInfoFlyoutContent" DataContext="{x:Null}" />
+                                </Flyout>
+                            </AppBarButton.Flyout>
                         </AppBarButton>
                         <AppBarSeparator />
                         <AppBarButton
-                            x:Name="ShellLogViewDumpButton"
-                            AutomationProperties.AutomationId="ShellLogViewDumpButton"
-                            Command="{x:Bind ViewModel.LogViewDumpCommand, Mode=OneWay}"
-                            Label="Log view dump">
+                            x:Name="OverflowSettingsButton"
+                            Width="40"
+                            AutomationProperties.AutomationId="ShellQuickSettingsButton"
+                            AutomationProperties.Name="Quick settings"
+                            Click="OverflowSettingsButton_Click"
+                            Label="Quick settings"
+                            LabelPosition="Collapsed"
+                            ToolTipService.ToolTip="Quick settings">
                             <AppBarButton.Icon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEBD2;" />
+                                <!--  No Source: the fallback draws the sliders glyph, so the gear stays unique to All settings.  -->
+                                <controls:AnimatedIcon x:Name="OverflowSettingsIcon">
+                                    <controls:AnimatedIcon.FallbackIconSource>
+                                        <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE9E9;" />
+                                    </controls:AnimatedIcon.FallbackIconSource>
+                                </controls:AnimatedIcon>
                             </AppBarButton.Icon>
+                            <AppBarButton.Flyout>
+                                <MenuFlyout
+                                    x:Name="ShellQuickSettingsFlyout"
+                                    Opening="ShellQuickSettingsFlyout_Opening"
+                                    Placement="BottomEdgeAlignedRight">
+                                    <MenuFlyoutSubItem
+                                        x:Name="ThemeMenuFlyout"
+                                        AutomationProperties.AutomationId="ShellQuickTheme"
+                                        Text="Theme">
+                                        <MenuFlyoutSubItem.Icon>
+                                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE793;" />
+                                        </MenuFlyoutSubItem.Icon>
+                                        <RadioMenuFlyoutItem
+                                            GroupName="AppTheme"
+                                            IsChecked="{Binding IsAppThemeSystem, Mode=TwoWay}"
+                                            Tag="Auto"
+                                            Text="System" />
+                                        <RadioMenuFlyoutItem
+                                            GroupName="AppTheme"
+                                            IsChecked="{Binding IsAppThemeLight, Mode=TwoWay}"
+                                            Tag="Light"
+                                            Text="Light" />
+                                        <RadioMenuFlyoutItem
+                                            GroupName="AppTheme"
+                                            IsChecked="{Binding IsAppThemeDark, Mode=TwoWay}"
+                                            Tag="Dark"
+                                            Text="Dark" />
+                                    </MenuFlyoutSubItem>
+                                    <ToggleMenuFlyoutItem
+                                        AutomationProperties.AutomationId="ShellQuickRtl"
+                                        IsChecked="{Binding UseRtl, Mode=TwoWay}"
+                                        Text="Flow right-to-left">
+                                        <ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE9AB;" />
+                                        </ToggleMenuFlyoutItem.Icon>
+                                    </ToggleMenuFlyoutItem>
+                                    <ToggleMenuFlyoutItem
+                                        AutomationProperties.AutomationId="ShellQuickFps"
+                                        IsChecked="{Binding ShowFpsIndicator, Mode=TwoWay}"
+                                        Text="Show FPS indicator">
+                                        <ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEC4A;" />
+                                        </ToggleMenuFlyoutItem.Icon>
+                                    </ToggleMenuFlyoutItem>
+                                    <not_win:ToggleMenuFlyoutItem
+                                        AutomationProperties.AutomationId="ShellQuickSimulateTouch"
+                                        IsChecked="{Binding SimulateTouch, Mode=TwoWay}"
+                                        Text="Simulate touch">
+                                        <not_win:ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE815;" />
+                                        </not_win:ToggleMenuFlyoutItem.Icon>
+                                    </not_win:ToggleMenuFlyoutItem>
+                                    <not_win:ToggleMenuFlyoutItem
+                                        AutomationProperties.AutomationId="ShellQuickDamageRegion"
+                                        IsChecked="{Binding DamageRegionOverlay, Mode=TwoWay}"
+                                        Text="Show damage region">
+                                        <not_win:ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE81E;" />
+                                        </not_win:ToggleMenuFlyoutItem.Icon>
+                                    </not_win:ToggleMenuFlyoutItem>
+                                    <not_win:ToggleMenuFlyoutItem
+                                        AutomationProperties.AutomationId="ShellQuickKeepPopups"
+                                        IsChecked="{Binding PreventLightDismissOnWindowDeactivated, Mode=TwoWay}"
+                                        Text="Keep popups open on breakpoints">
+                                        <not_win:ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE92F;" />
+                                        </not_win:ToggleMenuFlyoutItem.Icon>
+                                    </not_win:ToggleMenuFlyoutItem>
+                                    <ToggleMenuFlyoutItem
+                                        AutomationProperties.AutomationId="ShellQuickFluentStyles"
+                                        IsChecked="{Binding UseFluentStyles, Mode=TwoWay}"
+                                        Text="Use Fluent styles">
+                                        <ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
+                                        </ToggleMenuFlyoutItem.Icon>
+                                    </ToggleMenuFlyoutItem>
+                                    <ToggleMenuFlyoutItem
+                                        AutomationProperties.AutomationId="ShellQuickExtendTitleBar"
+                                        IsChecked="{Binding ExtendContentIntoTitleBar, Mode=TwoWay}"
+                                        Text="Extend content into title bar">
+                                        <ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE737;" />
+                                        </ToggleMenuFlyoutItem.Icon>
+                                    </ToggleMenuFlyoutItem>
+                                    <!--  The strip's close button has no way back otherwise; checked state is synced on Opening.  -->
+                                    <ToggleMenuFlyoutItem
+                                        x:Name="ShellQuickDescriptionItem"
+                                        AutomationProperties.AutomationId="ShellQuickDescription"
+                                        Click="ShellQuickDescriptionItem_Click"
+                                        Text="Show sample description">
+                                        <ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8A5;" />
+                                        </ToggleMenuFlyoutItem.Icon>
+                                    </ToggleMenuFlyoutItem>
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem
+                                        x:Name="ShellQuickAllSettingsItem"
+                                        AutomationProperties.AutomationId="ShellQuickAllSettings"
+                                        Command="{x:Bind ViewModel.ShowSettingsCommand, Mode=OneWay}"
+                                        Text="All settings…">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE713;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem
+                                        x:Name="ShellQuickHelpItem"
+                                        AutomationProperties.AutomationId="ShellQuickHelp"
+                                        Command="{x:Bind ViewModel.OpenHelpCommand, Mode=OneWay}"
+                                        Text="Help">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE897;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                </MenuFlyout>
+                            </AppBarButton.Flyout>
                         </AppBarButton>
-                        <AppBarButton
-                            x:Name="ShellFocusModeButton"
-                            AutomationProperties.AutomationId="ShellFocusModeButton"
-                            Command="{x:Bind ViewModel.ToggleFocusModeCommand, Mode=OneWay}"
-                            Label="Focus mode">
-                            <AppBarButton.Icon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE740;" />
-                            </AppBarButton.Icon>
-                        </AppBarButton>
-                    </CommandBar.SecondaryCommands>
-                </CommandBar>
 
-                <!--  Search stays the last column so it sits in the same spot on every page  -->
-                <AutoSuggestBox
-                    x:Name="SearchBox"
-                    Grid.Column="3"
-                    Width="280"
-                    VerticalAlignment="Center"
-                    AutomationProperties.AutomationId="ShellSearchBox"
-                    AutomationProperties.LandmarkType="Search"
-                    AutomationProperties.Name="Search samples"
-                    ItemTemplateSelector="{StaticResource ShellSuggestionTemplateSelector}"
-                    ItemsSource="{x:Bind shell:ShellFunctions.TopSuggestions(ViewModel.FilteredSamples, ViewModel.SearchTerm, ShowShortcutHints), Mode=OneWay}"
-                    KeyDown="SearchBox_KeyDown"
-                    PlaceholderText="Search samples (Ctrl+F)"
-                    QueryIcon="Find"
-                    QuerySubmitted="SearchBox_QuerySubmitted"
-                    TextChanged="SearchBox_TextChanged"
-                    TextMemberPath="ControlName"
-                    UpdateTextOnSelect="False" />
+                        <CommandBar.SecondaryCommands>
+                            <AppBarButton
+                                x:Name="ShellCopyLinkButton"
+                                AutomationProperties.AutomationId="ShellCopyLinkButton"
+                                Command="{x:Bind ViewModel.CopySampleLinkCommand, Mode=OneWay}"
+                                Label="Copy link">
+                                <AppBarButton.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE71B;" />
+                                </AppBarButton.Icon>
+                            </AppBarButton>
+                            <AppBarButton
+                                x:Name="ShellOpenInNewWindowButton"
+                                AutomationProperties.AutomationId="ShellOpenInNewWindowButton"
+                                Command="{x:Bind ViewModel.OpenSampleInNewWindowCommand, Mode=OneWay}"
+                                Label="Open in new window">
+                                <AppBarButton.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8A7;" />
+                                </AppBarButton.Icon>
+                            </AppBarButton>
+                            <AppBarButton
+                                x:Name="ShellViewSourceButton"
+                                AutomationProperties.AutomationId="ShellViewSourceButton"
+                                Command="{x:Bind ViewModel.OpenSourceOnGitHubCommand, Mode=OneWay}"
+                                Label="View source on GitHub">
+                                <AppBarButton.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE774;" />
+                                </AppBarButton.Icon>
+                            </AppBarButton>
+                            <AppBarButton
+                                x:Name="ShellCopyTypeNameButton"
+                                AutomationProperties.AutomationId="ShellCopyTypeNameButton"
+                                Command="{x:Bind ViewModel.CopyTypeNameCommand, Mode=OneWay}"
+                                Label="Copy type name">
+                                <AppBarButton.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
+                                </AppBarButton.Icon>
+                            </AppBarButton>
+                            <AppBarSeparator />
+                            <AppBarButton
+                                x:Name="ShellLogViewDumpButton"
+                                AutomationProperties.AutomationId="ShellLogViewDumpButton"
+                                Command="{x:Bind ViewModel.LogViewDumpCommand, Mode=OneWay}"
+                                Label="Log view dump">
+                                <AppBarButton.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEBD2;" />
+                                </AppBarButton.Icon>
+                            </AppBarButton>
+                            <AppBarButton
+                                x:Name="ShellFocusModeButton"
+                                AutomationProperties.AutomationId="ShellFocusModeButton"
+                                Command="{x:Bind ViewModel.ToggleFocusModeCommand, Mode=OneWay}"
+                                Label="Focus mode">
+                                <AppBarButton.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE740;" />
+                                </AppBarButton.Icon>
+                            </AppBarButton>
+                        </CommandBar.SecondaryCommands>
+                    </CommandBar>
 
-                <AppBarButton
-                    x:Name="ShellSearchButton"
-                    Grid.Column="3"
-                    Width="40"
-                    Height="40"
-                    VerticalAlignment="Center"
-                    AutomationProperties.AutomationId="ShellSearchButton"
-                    AutomationProperties.Name="Search samples"
-                    Click="ShellSearchButton_Click"
-                    LabelPosition="Collapsed"
+                    <!--  Search stays the last column so it sits in the same spot on every page  -->
+                    <AutoSuggestBox
+                        x:Name="SearchBox"
+                        Grid.Column="3"
+                        Width="280"
+                        VerticalAlignment="Center"
+                        AutomationProperties.AutomationId="ShellSearchBox"
+                        AutomationProperties.LandmarkType="Search"
+                        AutomationProperties.Name="Search samples"
+                        ItemTemplateSelector="{StaticResource ShellSuggestionTemplateSelector}"
+                        ItemsSource="{x:Bind shell:ShellFunctions.TopSuggestions(ViewModel.FilteredSamples, ViewModel.SearchTerm, ShowShortcutHints), Mode=OneWay}"
+                        KeyDown="SearchBox_KeyDown"
+                        PlaceholderText="Search samples (Ctrl+F)"
+                        QueryIcon="Find"
+                        QuerySubmitted="SearchBox_QuerySubmitted"
+                        TextChanged="SearchBox_TextChanged"
+                        TextMemberPath="ControlName"
+                        UpdateTextOnSelect="False" />
+
+                    <AppBarButton
+                        x:Name="ShellSearchButton"
+                        Grid.Column="3"
+                        Width="40"
+                        Height="40"
+                        VerticalAlignment="Center"
+                        AutomationProperties.AutomationId="ShellSearchButton"
+                        AutomationProperties.Name="Search samples"
+                        Click="ShellSearchButton_Click"
+                        LabelPosition="Collapsed"
+                        Visibility="Collapsed">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE721;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+
+                </Grid>
+
+                <!--  Leaving a running runner asks here, not in a flyout: the runner closes every popup after each test.  -->
+                <Grid
+                    x:Name="ShellRunnerLeaveBar"
+                    ColumnSpacing="8"
+                    KeyDown="ShellRunnerLeaveBar_KeyDown"
                     Visibility="Collapsed">
-                    <AppBarButton.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE721;" />
-                    </AppBarButton.Icon>
-                </AppBarButton>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center"
+                        AutomationProperties.AccessibilityView="Raw"
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontSize="16"
+                        Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                        Glyph="&#xE7BA;"
+                        IsTextScaleFactorEnabled="False" />
+                    <TextBlock
+                        x:Name="ShellRunnerLeaveMessage"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        AutomationProperties.LiveSetting="Assertive"
+                        MaxLines="2"
+                        Text="Tests are running. Stop them and leave?"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="Wrap" />
+                    <Button
+                        x:Name="ShellRunnerLeaveConfirm"
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        AutomationProperties.AutomationId="ShellRunnerLeaveConfirm"
+                        Click="ShellRunnerLeaveConfirm_Click"
+                        Content="Stop and leave" />
+                    <Button
+                        x:Name="ShellRunnerLeaveCancel"
+                        Grid.Column="3"
+                        VerticalAlignment="Center"
+                        AutomationProperties.AutomationId="ShellRunnerLeaveCancel"
+                        Click="ShellRunnerLeaveCancel_Click"
+                        Content="Stay" />
+                </Grid>
             </Grid>
 
             <!--  DESCRIPTION STRIP (the chrome states collapse the host; the binding owns the strip)  -->
@@ -1467,27 +1516,11 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <!--  Placeholder until the Home view lands  -->
-                        <StackPanel
+                        <u:HomeView
                             x:Name="ShellHomeView"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Spacing="8"
-                            Visibility="{x:Bind ViewModel.IsHomeVisible, Mode=OneWay, FallbackValue=Collapsed}">
-                            <FontIcon
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                FontSize="48"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                Glyph="&#xE80F;"
-                                IsTextScaleFactorEnabled="False" />
-                            <TextBlock Style="{StaticResource ShellEmptyStateTitleStyle}" Text="Pick a sample" />
-                            <TextBlock
-                                x:Name="ShellHomeHint"
-                                HorizontalAlignment="Center"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="Search with Ctrl+F or browse with Ctrl+B." />
-                        </StackPanel>
+                            x:Load="{x:Bind ViewModel.IsHomeVisible, Mode=OneWay, FallbackValue=False}"
+                            AutomationProperties.AutomationId="ShellHomeView"
+                            ShowShortcutHints="{x:Bind ShowShortcutHints, Mode=OneWay}" />
 
                         <!--  Drawn over the sample, which usually paints the page background across the host fill.  -->
                         <Border

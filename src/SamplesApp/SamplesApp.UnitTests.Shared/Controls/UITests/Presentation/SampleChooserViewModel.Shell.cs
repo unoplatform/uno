@@ -17,6 +17,13 @@ using UITests.Playground;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
+
 using ICommand = System.Windows.Input.ICommand;
 
 namespace SampleControl.Presentation;
@@ -256,12 +263,19 @@ public partial class SampleChooserViewModel
 		}
 	}
 
+	/// <summary>Playground, Help, the runners... live in the hidden '_' categories, not the library.</summary>
+	internal static bool IsToolPage(SampleChooserContent? sample)
+		=> sample?.Categories?.FirstOrDefault() is { } category && category.StartsWith('_');
+
 	public bool RecentsEnabled => _numberOfRecentSamplesVisible > 0;
 
-	public int TotalSampleCount => _totalSampleCount ??=
-		_allCategories?.SelectMany(c => c.SamplesContent).Distinct().Count() ?? 0;
+	/// <summary>Distinct samples in the visible <see cref="Categories"/>, so it pairs with <see cref="CategoryCount"/>.</summary>
+	public int TotalSampleCount => _totalSampleCount ??= CountSamples(Categories);
 
 	public int CategoryCount => Categories?.Count ?? 0;
+
+	internal static int CountSamples(IEnumerable<SampleChooserCategory>? categories)
+		=> categories?.Where(c => c is not null).SelectMany(c => c.SamplesContent).Distinct().Count() ?? 0;
 
 	public int FavoritesCount => FavoriteSamples?.Count ?? 0;
 
@@ -340,6 +354,8 @@ public partial class SampleChooserViewModel
 				break;
 
 			case nameof(Categories):
+				_totalSampleCount = null;
+				RaisePropertyChanged(nameof(TotalSampleCount));
 				RaisePropertyChanged(nameof(CategoryCount));
 				break;
 
@@ -400,27 +416,93 @@ public partial class SampleChooserViewModel
 	/// </summary>
 	public async Task ApplyStartupPageAsync(CancellationToken ct)
 	{
-		var page = IsAutomationRun ? StartupPage.Playground : StartupPage;
+		var page = ResolveStartupPage(StartupPage, IsAutomationRun, SupportsHomeView, hasLastSample: null);
 
 		if (page == StartupPage.LastSample)
 		{
 			var recents = RecentSamples?.ToList() is { Count: > 0 } loaded ? loaded : await GetRecentSamples(ct);
-			if (recents.FirstOrDefault() is { ControlType: not null } last)
+
+			// A sample opened, or an automation run started, while the recents were read.
+			if (CurrentSelectedSample is not null || IsAutomationRun)
 			{
-				await SetSelectedSample(ct, last.ControlType.FullName);
 				return;
 			}
 
-			page = StartupPage.Home;
+			var last = PickLastSample(recents);
+			page = ResolveStartupPage(page, IsAutomationRun, SupportsHomeView, hasLastSample: last is not null);
+
+			if (page == StartupPage.LastSample)
+			{
+				await SetSelectedSample(ct, last!.ControlType.FullName);
+				return;
+			}
 		}
 
-		if (page == StartupPage.Home && SupportsHomeView)
+		if (page == StartupPage.Home)
 		{
 			ShowHome();
 			return;
 		}
 
 		SetSelectedSample(ct, "_None", "Playground");
+	}
+
+	/// <summary>The most recent library sample; tool pages are skipped so a cold start never relaunches the runner.</summary>
+	internal static SampleChooserContent? PickLastSample(IEnumerable<SampleChooserContent?>? recents)
+		=> recents?.FirstOrDefault(s => s?.ControlType is not null && !IsToolPage(s));
+
+	/// <summary>
+	/// What a cold start opens. Automation always gets Playground; Last sample falls back to Home when there is none
+	/// (<paramref name="hasLastSample"/> is null until the recents are read), and Home falls back to Playground without a Home view.
+	/// </summary>
+	internal static StartupPage ResolveStartupPage(StartupPage requested, bool isAutomationRun, bool supportsHomeView, bool? hasLastSample)
+	{
+		if (isAutomationRun)
+		{
+			return StartupPage.Playground;
+		}
+
+		if (requested == StartupPage.LastSample && hasLastSample != false)
+		{
+			return StartupPage.LastSample;
+		}
+
+		return supportsHomeView && requested != StartupPage.Playground ? StartupPage.Home : StartupPage.Playground;
+	}
+
+	/// <summary>True while the runtime-test runner is the current sample and a run is in progress.</summary>
+	internal bool IsRuntimeTestRunActive => FindRuntimeTestsControl() is { RunningStateForUITest: "Running" };
+
+	/// <summary>Stops a run in progress; leaving for Home keeps the runner alive behind it, so nothing else would.</summary>
+	internal void StopRuntimeTestRun() => FindRuntimeTestsControl()?.StopRunningTests();
+
+	/// <summary>Stops the run and waits for the test in flight, which would otherwise keep injecting input into the shell.</summary>
+	internal async Task StopRuntimeTestRunAsync(int timeoutMs = 10_000)
+	{
+		StopRuntimeTestRun();
+		for (var waited = 0; IsRuntimeTestRunActive && waited < timeoutMs; waited += 50)
+		{
+			await Task.Delay(50);
+		}
+
+		if (IsRuntimeTestRunActive && _log.IsEnabled(LogLevel.Warning))
+		{
+			_log.Warn($"The runtime test run did not stop within {timeoutMs} ms; leaving while it still runs.");
+		}
+	}
+
+	private Uno.UI.Samples.Tests.UnitTestsControl? FindRuntimeTestsControl()
+	{
+		if (CurrentSelectedSample?.ControlType?.FullName != RuntimeTestsPageTypeName || ContentPhone is not FrameworkElement content)
+		{
+			return null;
+		}
+
+#if HAS_UNO
+		return content.FindName("UnitTestsRootControl") as Uno.UI.Samples.Tests.UnitTestsControl;
+#else
+		return MUXControlsTestApp.Utilities.VisualTreeUtils.FindVisualChildByName(content, "UnitTestsRootControl") as Uno.UI.Samples.Tests.UnitTestsControl;
+#endif
 	}
 
 	private void ShowHome()
