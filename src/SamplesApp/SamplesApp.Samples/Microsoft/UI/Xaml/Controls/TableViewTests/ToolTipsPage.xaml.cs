@@ -3,6 +3,7 @@
 // MUX Reference Samples\TableViewSampleApp\ToolTipsPage.xaml.cs, tag winui3/release/2.5.4-experimental, commit 7b127093475
 
 #nullable enable
+#pragma warning disable CS8305 // TableView is [Experimental]
 
 using System;
 using System.Collections.Generic;
