@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TabularShaping\RowExpansionModel.h, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TabularShaping\RowExpansionModel.h, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -53,15 +53,8 @@ internal static partial class ShapingHelpers
 		// Raised after intent changes, never during. A handler may re-enter and read state.
 		public void SetChangedHandler(ChangedHandler? handler) => m_changed = handler;
 
-		// What a key with no explicit intent resolves to. Setting it CLEARS every explicit
-		// intent: a caller changing the default is declaring a new baseline, and keeping the
-		// old exceptions would resolve keys against a baseline nobody asked for.
-		public bool DefaultExpanded() => m_defaultExpanded;
-		public partial void SetDefaultExpanded(bool expanded);
-
 		public partial bool IsExpanded(string key);
 		public partial void SetExpanded(string key, bool isExpanded);
-		public void Toggle(string key) => SetExpanded(key, !IsExpanded(key));
 
 		// Moves the baseline and drops every exception, so keys that do not exist yet also
 		// resolve to `isExpanded`. This is "expand all" as an intent, not as a loop over the
@@ -74,7 +67,7 @@ internal static partial class ShapingHelpers
 		// no live key's resolved state.
 		public partial void RetainOnly(HashSet<string> liveKeys);
 
-		public partial void Clear();
+		private partial void SetDefaultExpanded(bool expanded);
 
 		private partial void RaiseChanged(Change change);
 

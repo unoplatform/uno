@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\ShapedItemsSource\ShapedItemsSource.h, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\ShapedItemsSource\ShapedItemsSource.h, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -38,10 +38,17 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 // the remaining methods declared here are partial methods implemented there.
 internal sealed partial class ShapedItemsSource
 {
-	// What the last rebuild actually produced -- the EFFECTIVE shape, not the requested one. A
-	// grouping request degrades to Flat when group identity is unresolvable or collides, and a
-	// source with no usable row identity degrades to Unshaped, a plain 1:1 mirror. Consumers read
-	// this to decide how to interpret a row, so it must never report intent.
+	// What the last rebuild actually produced -- the EFFECTIVE shape, not the requested one.
+	// Consumers read this to decide how to interpret a row, so it must never report intent.
+	//
+	// Only ONE shaping request degrades: a source with no usable ROW identity degrades to
+	// Unshaped, a plain 1:1 mirror (RebuildUnshapedRows). A GROUPING request does NOT degrade --
+	// an unresolvable, unstable or colliding group identity throws hresult_invalid_argument out of
+	// RebuildGroupedRows instead of quietly producing Flat. The asymmetry is deliberate: a row
+	// identity the engine cannot derive is a property of the app's data that the app may not be
+	// able to change, and an unshaped mirror still shows every row; a bad group identity comes
+	// from the GroupBy(...) selector the app just wrote, and silently rendering ungrouped is a bug
+	// an app ships without ever noticing.
 	internal enum ProjectionKind
 	{
 		// No projection has been built yet.
@@ -56,41 +63,6 @@ internal sealed partial class ShapedItemsSource
 
 	// explicit ShapedItemsSource(object? source); (ShapedItemsSource.mux.cs)
 	// ~ShapedItemsSource(); (ShapedItemsSource.mux.cs)
-
-	// Scope returned by DeferRefresh. Move-only: copying it would end the deferral early.
-	// TODO Uno: a reference type, so copying the reference never ends the deferral; the move constructor
-	// and move assignment have no C# equivalent and Dispose replaces the destructor.
-	internal sealed class DeferRefreshScope : IDisposable
-	{
-		public DeferRefreshScope(ShapedItemsSource? owner) => m_owner = owner;
-		// TODO Uno: Original C++ move constructor and move assignment (not representable):
-		// DeferRefreshScope(DeferRefreshScope&& other) noexcept : m_owner(std::exchange(other.m_owner, nullptr)) {}
-		// DeferRefreshScope& operator=(DeferRefreshScope&& other) noexcept
-		// {
-		//     if (this != &other)
-		//     {
-		//         Release();
-		//         m_owner = std::exchange(other.m_owner, nullptr);
-		//     }
-		//     return *this;
-		// }
-		// DeferRefreshScope(DeferRefreshScope const&) = delete;
-		// DeferRefreshScope& operator=(DeferRefreshScope const&) = delete;
-		// ~DeferRefreshScope() { Release(); }
-		public void Dispose() => Release();
-
-		private void Release()
-		{
-			var owner = m_owner;
-			m_owner = null;
-			if (owner is not null)
-			{
-				owner.EndShapingBatch();
-			}
-		}
-
-		private ShapedItemsSource? m_owner;
-	}
 
 	// Subscribes to the source and builds the first projection. Separate from the constructor so
 	// the owner can install its handlers first and therefore observe the very first projection.
@@ -172,21 +144,6 @@ internal sealed partial class ShapedItemsSource
 
 	public partial void Refresh();
 
-	// Suppresses intermediate projections while several verbs are declared as one change.
-	// A consumer whose API surfaces shaping as a COLLECTION (e.g. a vector of sort descriptions)
-	// has to re-declare every axis whenever one of them moves; without this each axis would
-	// rebuild the projection and emit its own Reset. Re-entrant: only the outermost scope
-	// applies. Spec diffing is unaffected -- the pipeline diffs against the last COMMITTED spec,
-	// so one commit at the end sees exactly the accumulated change.
-	//
-	// Scope-bound rather than a Begin/End pair, matching ICollectionView::DeferRefresh: every
-	// consumer was already wrapping the pair in a scope guard, and an unbalanced End would
-	// strand the projection in a permanently deferred state.
-	// TODO Uno: [[nodiscard]] - dispose the returned scope with `using`.
-	public partial DeferRefreshScope DeferRefresh();
-
-	private partial void BeginShapingBatch();
-	private partial void EndShapingBatch();
 	private partial void SubscribeToSourceCollectionChanges();
 	private partial void UnsubscribeFromSourceCollectionChanges();
 	private partial void OnSourceCollectionChanged();
@@ -223,9 +180,6 @@ internal sealed partial class ShapedItemsSource
 	private partial bool TryGetTrackedFlatRowIndex(string identity, ref uint index);
 	private partial void ShiftTrackedFlatRowIndicesForInsert(uint insertedIndex);
 	private partial void ShiftTrackedFlatRowIndicesForRemove(uint removedIndex);
-#pragma warning disable IDE0051 // Unused upstream as well, kept for 1:1 parity
-	private static partial string StringifyKey(object? key);
-#pragma warning restore IDE0051
 	// Prefixes a caller-facing message with the consumer's diagnostic name.
 	private partial string Diagnostic(string text);
 	private partial ShapingHelpers.ShapingPipeline.SortedInsertPlacement SortedInsertPlacementFor(object? item);
@@ -287,10 +241,6 @@ internal sealed partial class ShapedItemsSource
 	// the source must not interleave a nested update against a half-updated projection.
 	private bool m_isApplyingIncrementalChange;
 	private bool m_pendingRefresh;
-	// Depth of the current BeginShapingBatch scope, plus what the batch owes when it unwinds.
-	private uint m_shapingBatchDepth;
-	private bool m_shapingBatchHasShapingChange;
-	private bool m_shapingBatchHasRefresh;
 	private Dictionary<string, ShapedGroup> m_groupCache = new();
 	private GroupedSourceAdapter? m_groupedAdapter;
 

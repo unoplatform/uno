@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TabularShaping\ShapingHelpers.h, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TabularShaping\ShapingHelpers.h, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -176,19 +176,26 @@ internal static partial class ShapingHelpers
 	//
 	// Callbacks (all supplied by the adapter, which owns the WinRT-coupled policy):
 	//   resolveKey(item)            -> the group key (adapter wraps its selector incl. throw->null).
-	//   resolveIdentity(key,id,why) -> false signals the caller MUST degrade to a flat projection
-	//                                  (e.g. unstable/unresolvable identity); *why is a static reason.
+	//   resolveIdentity(key,id,why) -> false signals the bucketization CANNOT be produced (unstable
+	//                                  or unresolvable identity); *why is a static reason string.
 	//   keysConsideredEqual(a,b)    -> false on a genuine identity COLLISION (same identity string,
-	//                                  logically-different keys) which also forces a flat degrade.
+	//                                  logically-different keys), which also fails the bucketization.
 	// Returns true with outBuckets populated (first-seen order); returns false and sets
-	// degradeReason when the adapter must fall back to flat.
+	// rejectReason otherwise.
+	//
+	// This function itself does not throw and has no opinion about recovery -- it is pure, so it
+	// reports and the caller decides. What the caller decides is NOT open, though: the shipped
+	// policy is FAIL FAST. ShapedItemsSource::RebuildGroupedRows turns a false return into
+	// hresult_invalid_argument. It deliberately does NOT fall back to a flat projection: a
+	// grouping request that silently renders ungrouped is a bug an app ships without noticing.
+	// A new caller that "recovers" by flattening is reintroducing exactly that bug.
 	internal static partial bool BucketizeToGroups(
 		List<object?> items,
 		KeySelector? resolveKey,
 		ResolveIdentityCallback? resolveIdentity,
 		Func<object?, object?, bool>? keysConsideredEqual,
 		List<KeyedBucket> outBuckets,
-		ref string? degradeReason);
+		ref string? rejectReason);
 
 	// Upper-bound insertion index shared by the incremental fast-paths. Given an already-sorted
 	// range of `count` items, returns the position where a newly-arrived item should be inserted

@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\ResizeGripper\ResizeGripper.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\ResizeGripper\ResizeGripper.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -44,6 +44,19 @@ partial class ResizeGripper
 
 		IsEnabledChanged += OnIsEnabledChanged;
 		Unloaded += OnUnloaded;
+
+		// The separator's side is derived from FlowDirection, and FlowDirection is not a property this
+		// control declares, so there is no OnPropertyChanged for it. A host may flip direction on a live
+		// tree rather than rebuilding it, which would otherwise leave the separator on the stale edge.
+		RegisterPropertyChangedCallback(
+			FrameworkElement.FlowDirectionProperty,
+			static (sender, _) =>
+			{
+				if (sender is ResizeGripper gripper)
+				{
+					gripper.UpdateOrientationVisualState();
+				}
+			});
 	}
 
 	// Detached mid-gesture - the host rebuilt the subtree we live in - so no manipulation event will
@@ -97,11 +110,26 @@ partial class ResizeGripper
 	// separately, with opposite-polarity tests, is where an axis bug hides.
 	private bool IsHorizontalDrag() => DragOrientation != Orientation.Vertical;
 
+	// The separator is drawn on one side of the gripper, so the state has to carry the mirror as well as
+	// the axis: under RTL a horizontal gripper's trailing edge is its LEFT edge. Only the horizontal case
+	// mirrors - FlowDirection does not mirror y, so a vertical gripper's separator stays on the bottom.
+	// Falls back to the unmirrored state if a host's template predates HorizontalMirrored, which is the
+	// previous behaviour rather than no separator at all.
 	private void UpdateOrientationVisualState()
 	{
-		VisualStateManager.GoToState(this,
-			IsHorizontalDrag() ? "Horizontal" : "Vertical",
-			true /* useTransitions */);
+		if (!IsHorizontalDrag())
+		{
+			VisualStateManager.GoToState(this, "Vertical", true /* useTransitions */);
+			return;
+		}
+
+		if (FlowDirection == FlowDirection.RightToLeft &&
+			VisualStateManager.GoToState(this, "HorizontalMirrored", true /* useTransitions */))
+		{
+			return;
+		}
+
+		VisualStateManager.GoToState(this, "Horizontal", true /* useTransitions */);
 	}
 
 	// PARKED - deliberately not called. The framework drops ProtectedCursor on the next pointer move,

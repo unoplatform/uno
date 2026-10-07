@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TabularShaping\ShapingDescriptions.h, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TabularShaping\ShapingDescriptions.h, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -163,8 +163,4 @@ internal static partial class ShapingHelpers
 	// instance-based otherwise. It is total and never degrades to flat. Consumers needing their own
 	// identity or collision policy bucketize with BucketizeToGroups directly instead.
 	internal static partial void Reshape(ShapingState state, ShapingSpec spec, ShapingDelta delta);
-
-	// Convenience for the full-rebuild path: discards any prior projection and reshapes from
-	// Source.
-	internal static partial void Reshape(ShapingState state, ShapingSpec spec);
 }

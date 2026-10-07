@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TabularShaping\ShapingDescriptions.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TabularShaping\ShapingDescriptions.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -350,16 +350,5 @@ internal static partial class ShapingHelpers
 		}
 
 		state.HasProjection = true;
-	}
-
-	internal static partial void Reshape(ShapingState state, ShapingSpec spec)
-	{
-		ShapingDelta full = default;
-		full.FilterChanged = true;
-		full.GroupingChanged = true;
-		full.SortChanged = true;
-		full.RequiredWork = ShapingWork.FullReshape;
-		state.HasProjection = false;
-		Reshape(state, spec, full);
 	}
 }
