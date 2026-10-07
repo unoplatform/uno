@@ -48,6 +48,40 @@ public class Given_TableViewSource
 		Assert.Throws<ArgumentException>(() => source.Filter(null!));
 		Assert.Throws<ArgumentException>(() => source.GroupBy(null!));
 		Assert.Throws<ArgumentException>(() => source.GroupBy(null!, null));
+		Assert.Throws<ArgumentException>(() => source.Sort("", SortDirection.Ascending));
+		Assert.Throws<ArgumentException>(() => source.Sort((TableViewKeySelector)null!, SortDirection.Ascending));
+		Assert.Throws<ArgumentException>(() => source.Sort(new TableViewKeySelector(i => ((Row)i!).Score), (SortDirection)42));
+	}
+
+	[TestMethod]
+	public async Task When_Sort_Same_Path_Replaces_Axis()
+	{
+		var items = new List<Row> { new("B", "x", 2), new("C", "x", 3), new("A", "x", 1) };
+		var source = TableViewSource.From(items);
+		var table = new TableView { ItemsSource = source };
+		table.Columns.Add(new TableViewTextColumn { Header = "Name", Binding = new Binding { Path = new PropertyPath(nameof(Row.Name)) } });
+
+		var host = new Grid { Width = 400, Height = 600 };
+		host.Children.Add(table);
+		WindowHelper.WindowContent = host;
+		await WindowHelper.WaitForLoaded(table);
+		await WindowHelper.WaitForIdle();
+
+		// SortAxisTokenForPath tokenizes the path, so re-sorting it replaces the axis instead of stacking one.
+		source.Sort(nameof(Row.Name), SortDirection.Ascending);
+		source.Sort(nameof(Row.Name), SortDirection.Descending);
+		await WindowHelper.WaitForIdle();
+
+		var axis = source.ActiveSortAxisInfos().Single();
+		Assert.AreEqual(nameof(Row.Name), axis.SortMemberPath);
+		Assert.AreEqual(SortDirection.Descending, axis.Direction);
+		CollectionAssert.AreEqual(new[] { "C", "B", "A" }, RowNames(table));
+
+		source.Sort(nameof(Row.Name), SortDirection.None);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(0, source.ActiveSortAxisInfos().Count);
+		CollectionAssert.AreEqual(new[] { "B", "C", "A" }, RowNames(table));
 	}
 
 	[TestMethod]

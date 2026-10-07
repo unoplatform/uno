@@ -13,6 +13,10 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Tabular;
+using Uno.UI.DevTools.Input;
+using Windows.Foundation;
+using Windows.UI.Input.Preview.Injection;
+using Windows.UI.ViewManagement;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
@@ -194,6 +198,77 @@ public partial class Given_TableView
 		// The commit is posted, not synchronous: it is re-evaluated once focus has settled.
 		await WindowHelper.WaitFor(() => !table.IsEditing, message: "focus leaving the editor did not commit");
 		Assert.AreEqual("Committed", items[3].Name);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Double_Click_Begins_Edit()
+	{
+		var items = People(5);
+		var table = CreateTable(items);
+		var city = table.Columns[2];
+		table.IsReadOnly = false;
+		await LoadAsync(table);
+
+		var beginning = new List<TableViewBeginningEditEventArgs>();
+		table.BeginningEdit += (_, e) => beginning.Add(e);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		// OnPointerPressedForEditing: two left presses on one cell within UISettings.DoubleClickTime
+		// and the double-click slop. The injected clock advances 1 ms per press/release.
+		var point = Center(GetCell(GetRow(table, 2)!, city));
+		mouse.Press(point);
+		mouse.Release();
+		mouse.Press(point);
+		mouse.Release();
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(table.IsEditing);
+		Assert.AreEqual(1, beginning.Count);
+		Assert.AreSame(items[2], beginning[0].Item);
+		Assert.AreSame(city, beginning[0].Column, "the column comes from the pressed cell");
+		Assert.IsTrue(Descendants(GetCell(GetRow(table, 2)!, city)).OfType<TextBox>().Any(), "the editor is hosted in the City cell");
+
+		Assert.IsTrue(table.CancelEdit());
+		await WindowHelper.WaitForIdle();
+		beginning.Clear();
+
+		// Too slow: the second press lands after the double-click time.
+		point = Center(GetCell(GetRow(table, 0)!, city));
+		mouse.Press(point);
+		mouse.Release();
+		mouse.MoveTo(new Point(point.X + 1, point.Y), 1, new UISettings().DoubleClickTime + 100);
+		mouse.MoveTo(point, 1, 1);
+		mouse.Press(point);
+		mouse.Release();
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(table.IsEditing, "presses further apart than DoubleClickTime");
+		Assert.AreEqual(0, beginning.Count);
+
+		// Too far: the second press is outside the slop, inside the same cell.
+		point = Center(GetCell(GetRow(table, 1)!, city));
+		mouse.Press(point);
+		mouse.Release();
+		mouse.Press(new Point(point.X + 10, point.Y));
+		mouse.Release();
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(table.IsEditing, "presses further apart than the double-click slop");
+		Assert.AreEqual(0, beginning.Count);
+
+		// Secondary button: a right double-click opens no editor.
+		point = Center(GetCell(GetRow(table, 3)!, city));
+		mouse.PressRight(point);
+		mouse.ReleaseRight();
+		mouse.PressRight(point);
+		mouse.ReleaseRight();
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(table.IsEditing, "a right double-click");
+		Assert.AreEqual(0, beginning.Count);
 	}
 
 	public sealed class ValidatingPerson : INotifyPropertyChanged, INotifyDataErrorInfo
