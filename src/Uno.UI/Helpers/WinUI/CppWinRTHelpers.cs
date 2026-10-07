@@ -29,6 +29,29 @@ internal static class CppWinRTHelpers
 		}
 	}
 
+	/// <summary>
+	/// Default style key for controls of the Microsoft.UI.Xaml.Controls.Tabular binary (TableView and its parts),
+	/// whose default styles live in that binary's own generic.xaml.
+	/// </summary>
+	/// <remarks>
+	/// Port of SetDefaultStyleKeyWorker, controls\dev\dll-tabular\TabularControlsResources.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475.
+	/// Like <see cref="SetDefaultStyleKey{TDerived}(TDerived)"/>, the key is the compile-time TDerived type.
+	/// </remarks>
+	internal static void SetTabularDefaultStyleKey<TDerived>(this TDerived derivedControl) where TDerived : Control
+	{
+		derivedControl.SetDefaultStyleKeyInternal(typeof(TDerived));
+
+		// TABULAR_BINARY_EMITS_THEME_RESOURCES is defined for the Tabular binary (dll-tabular\Microsoft.UI.Xaml.Common.props).
+		if (derivedControl is Control control)
+		{
+			const bool isPerf2026Enabled = false; // TODO: Decide based on opt-in flag, task.ms/60958581
+			Uri uri = new Uri(isPerf2026Enabled
+				? XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.TabularRootNamespace + "/Themes/generic_perf2026.xaml"
+				: XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.TabularGenericURL);
+			control.DefaultStyleResourceUri = uri;
+		}
+	}
+
 	public static IDisposable RegisterXamlRootChanged(XamlRoot xamlRoot, TypedEventHandler<XamlRoot, XamlRootChangedEventArgs> handler)
 	{
 		xamlRoot.Changed += handler;
