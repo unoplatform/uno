@@ -126,6 +126,57 @@ public class Given_UIElement_Manipulation
 		}
 	}
 
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR || !HAS_UNO
+	[Ignore("Cancel injection relies on Uno's InputInjector.")]
+#endif
+	public async Task When_Touch_Drag_Canceled_Then_No_ManipulationCompleted()
+	{
+		// WinUI stops the interaction of a canceled contact without calling back ManipulationCompleted.
+		var (sut, container) = CreateSetup();
+
+		int started = 0, completed = 0, canceled = 0;
+		sut.ManipulationStarted += (_, _) => started++;
+		sut.ManipulationCompleted += (_, _) => completed++;
+		sut.PointerCanceled += (_, _) => canceled++;
+
+		try
+		{
+			await UITestHelper.Load(container);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var toHost = sut.TransformToVisual(null);
+			var to = toHost.TransformPoint(new Point(60, 10));
+
+			finger.Press(toHost.TransformPoint(new Point(10, 10)));
+			finger.MoveTo(to, steps: 2);
+			CancelTouch(injector, to);
+
+			Assert.AreEqual(1, started);
+			Assert.AreEqual(1, canceled);
+			Assert.AreEqual(0, completed);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	internal static void CancelTouch(InputInjector injector, Point position, uint id = 42)
+		=> injector.InjectTouchInput(
+		[
+			new InjectedInputTouchInfo
+			{
+				PointerInfo = new()
+				{
+					PointerId = id,
+					PixelLocation = new() { PositionX = (int)position.X, PositionY = (int)position.Y },
+					PointerOptions = InjectedInputPointerOptions.Canceled,
+				}
+			}
+		]);
+
 	private static (Border sut, Grid container) CreateSetup()
 	{
 		var sut = new Border
