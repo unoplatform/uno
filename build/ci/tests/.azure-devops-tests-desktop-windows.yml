@@ -54,7 +54,7 @@ jobs:
       ArtifactType: Container
 
 - job: Skia_Windows_Runtime_Tests_Build
-  displayName: 'Runtime Tests'
+  displayName: 'Skia Runtime Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
 
@@ -98,7 +98,7 @@ jobs:
     displayName: Build HR dependencies
 
   - pwsh: build/test-scripts/run-windows-skia-runtime-tests.ps1
-    displayName: Run Runtime Tests
+    displayName: Run Skia Runtime Tests
 
   - task: PublishTestResults@2
     condition: always()
@@ -122,7 +122,7 @@ jobs:
 # wgpu runs on Mesa's lavapipe (llvmpipe behind Vulkan) rather than D3D12 WARP: measured 2.75x faster, which lets the
 # whole suite run in one job (on WARP it took four, about an hour of agent time).
 - job: Skia_Windows_WebGpu_Runtime_Tests
-  displayName: 'Runtime Tests (WebGPU)'
+  displayName: 'WebGPU Runtime Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
   # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1); master runs it always.
@@ -201,7 +201,7 @@ jobs:
     displayName: Install Mesa lavapipe
 
   - pwsh: build/test-scripts/run-windows-skia-runtime-tests.ps1
-    displayName: Run Runtime Tests
+    displayName: Run WebGPU Runtime Tests
 
   - task: PublishTestResults@2
     condition: always()

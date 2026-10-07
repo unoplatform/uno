@@ -5,7 +5,8 @@ parameters:
   vmLinuxPool: ''
   XAML_FLAVOR_BUILD: ''
   jobName: 'Skia_Browser_Runtime_Tests_Build'
-  displayName: ' ' ## Concatenated with the matrix group name
+  # Names the job and its test run; the job name is concatenated with the matrix group name.
+  renderer: 'Skia'
   testResultLabel: ''
   # UNO_* variables handed to the app through the URL's env= parameter, e.g. 'UNO_WEBGPU=1'.
   appEnvironment: ''
@@ -25,7 +26,7 @@ jobs:
 ## WebAssembly Skia
 ##
 - job: ${{ parameters.jobName }}
-  displayName: '${{ parameters.displayName }}'
+  displayName: '${{ parameters.renderer }}'
   timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
 
@@ -102,7 +103,7 @@ jobs:
     timeoutInMinutes: 10
 
   - bash: build/test-scripts/wasm-run-skia-runtime-tests.sh
-    displayName: Run WebAssembly Skia Runtime Tests
+    displayName: Run WebAssembly ${{ parameters.renderer }} Runtime Tests
     env:
       UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
       UNO_TEST_APP_ENVIRONMENT: ${{ parameters.appEnvironment }}
@@ -113,7 +114,7 @@ jobs:
   - task: PublishTestResults@2
     condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))
     inputs:
-      testRunTitle: 'WebAssembly Skia${{ parameters.testResultLabel }} Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testRunTitle: 'WebAssembly ${{ parameters.renderer }} Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm${{ parameters.testResultLabel }}-runtime-tests-results.xml'
       failTaskOnFailedTests: true

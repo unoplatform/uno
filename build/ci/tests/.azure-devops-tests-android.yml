@@ -2,25 +2,34 @@ parameters:
   vmLinuxPool: ''
   XAML_FLAVOR_BUILD: ''
   jobTimeoutInMinutes: 45
+  jobName: 'Android_Tests'
+  # Names the job and its test run; the job name is concatenated with the matrix group name.
+  renderer: 'Skia'
+  testResultLabel: ''
+  # Intent extras handed to the app, e.g. '-e UNO_WEBGPU 1'.
+  appExtras: ''
+  # Overrides the job's run condition, e.g. to skip a lane on pull requests that don't need it.
+  condition: ''
 
 jobs:
 ##
-## Android+NativeAOT Skia
+## Android Skia
 ##
 
-- job: Android_NativeAOT_Tests
-  displayName: ' ' ## Name is concatenated with the matrix group name
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+- job: ${{ parameters.jobName }}
+  displayName: '${{ parameters.renderer }}'
   timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
-  dependsOn: Skia_Android_NativeAOT_Tests_Build
+  dependsOn: Skia_Android_Tests_Build
+  ${{ if ne(parameters.condition, '') }}:
+    condition: ${{ parameters.condition }}
   pool: ${{ parameters.vmLinuxPool }}
 
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
-    SAMPLEAPP_ARTIFACT_NAME: $[ dependencies.Skia_Android_NativeAOT_Tests_Build.outputs['set_android_nativeaot_artifact.SamplesAppArtifactName'] ]
+    SAMPLEAPP_ARTIFACT_NAME: $[ dependencies.Skia_Android_Tests_Build.outputs['set_android_artifact.SamplesAppArtifactName'] ]
 
   strategy:
     matrix:
@@ -31,7 +40,7 @@ jobs:
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        TARGETPLATFORM_NAME: net10
+        TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
       'Runtime Tests 1':
@@ -40,7 +49,7 @@ jobs:
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        TARGETPLATFORM_NAME: net10
+        TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
       'Runtime Tests 2':
@@ -49,7 +58,7 @@ jobs:
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        TARGETPLATFORM_NAME: net10
+        TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
       'Runtime Tests 3':
@@ -58,7 +67,7 @@ jobs:
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 3
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        TARGETPLATFORM_NAME: net10
+        TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
       'Runtime Tests 4':
@@ -67,7 +76,7 @@ jobs:
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 4
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        TARGETPLATFORM_NAME: net10
+        TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
   steps:
@@ -95,22 +104,24 @@ jobs:
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-      artifact: runtime-tests-android-skia-nativeaot-failures
+      artifact: runtime-tests-android-skia${{ parameters.testResultLabel }}-failures
       path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
   - template: ../templates/dotnet-install.yml
 
   - bash: |
       chmod +x $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
-      UNO_UITEST_APP_ID=uno.platform.samplesapp.skia.nativeaot \
-        $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
+      $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
 
-    displayName: Run Android+NativeAOT Skia Tests
+    displayName: Run Android ${{ parameters.renderer }} Runtime Tests
+    env:
+      UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
+      UNO_TEST_APP_EXTRAS: ${{ parameters.appExtras }}
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Android+NativeAOT Skia Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testRunTitle: 'Android ${{ parameters.renderer }} Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/*TestResult*.xml'
       failTaskOnFailedTests: true
@@ -120,7 +131,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: runtime-tests-android-skia-nativeaot-results
+      ArtifactName: runtime-tests-android-skia${{ parameters.testResultLabel }}-results
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
@@ -129,5 +140,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: runtime-tests-android-skia-nativeaot-failures
+      ArtifactName: runtime-tests-android-skia${{ parameters.testResultLabel }}-failures
       ArtifactType: Container

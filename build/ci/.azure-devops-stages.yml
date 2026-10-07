@@ -110,7 +110,7 @@ stages:
     parameters:
       poolName: '$(linuxScaledPool)'
 
-- template: tests/.azure-devops-tests-skia-stages.yml
+- template: tests/.azure-devops-tests-runtime-stages.yml
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
     vmMacImage: '$(macOSVMImage)'

@@ -7,18 +7,17 @@ parameters:
   poolName: ''
   XAML_FLAVOR_BUILD: ''
   jobName: 'Skia_macos_Runtime_Tests_Build'
-  displayName: 'Runtime Tests'
   testResultLabel: ''
-  # Runs the app on the WebGPU backend (Metal).
-  webGpu: false
+  # 'WebGPU' runs the app on the WebGPU backend (Metal).
+  renderer: 'Skia'
 
 jobs:
 
 - job: ${{ parameters.jobName }}
-  displayName: '${{ parameters.displayName }}'
+  displayName: '${{ parameters.renderer }} Runtime Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
-  ${{ if eq(parameters.webGpu, true) }}:
+  ${{ if eq(parameters.renderer, 'WebGPU') }}:
     # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1); master runs it always.
     condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))
 
@@ -63,19 +62,19 @@ jobs:
   - script: |
       chmod +x build/test-scripts/macos-skia-runtime-tests.sh
       build/test-scripts/macos-skia-runtime-tests.sh
-    displayName: Run macOS Runtime Tests
+    displayName: Run macOS ${{ parameters.renderer }} Runtime Tests
     env:
       SamplesAppArtifactPath: $(SamplesAppArtifactPath)
       SamplesAppArtifactName: $(SamplesAppArtifactName)
       UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
-      ${{ if eq(parameters.webGpu, true) }}:
+      ${{ if eq(parameters.renderer, 'WebGPU') }}:
         UNO_WEBGPU: 1
         UNO_WEBGPU_LOG: warn
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'macOS Skia${{ parameters.testResultLabel }} Runtime Tests'
+      testRunTitle: 'macOS ${{ parameters.renderer }} Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-macos${{ parameters.testResultLabel }}-runtime-tests-results.xml'
       failTaskOnFailedTests: true

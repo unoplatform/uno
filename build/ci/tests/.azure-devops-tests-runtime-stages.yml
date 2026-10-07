@@ -9,40 +9,40 @@ parameters:
 
 stages:
 - stage: runtime_tests_skia_build
-  displayName: Build - Skia Runtime Tests
+  displayName: Build - Desktop Runtime Tests
   dependsOn:
     - binaries_build_native_macos
 
   jobs:
-  - template: .azure-devops-tests-skia-build.yml
+  - template: .azure-devops-tests-desktop-build.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_browser
-  displayName: Tests - WebAssembly Skia
+  displayName: Tests - WebAssembly
   dependsOn:
     - Setup
 
   jobs:
-  - template: .azure-devops-tests-webassembly-skia-build.yml
+  - template: .azure-devops-tests-webassembly-build.yml
     parameters:
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
-  - template: .azure-devops-tests-webassembly-skia.yml
+  - template: .azure-devops-tests-webassembly.yml
     parameters:
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
   # The same app on the WebGPU backend. The agents have no GPU: Chrome's bundled SwiftShader provides the adapter,
   # on the self-hosted pool because it renders on the CPU.
-  - template: .azure-devops-tests-webassembly-skia.yml
+  - template: .azure-devops-tests-webassembly.yml
     parameters:
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       jobName: 'Skia_Browser_WebGpu_Runtime_Tests'
-      displayName: 'WebGPU'
+      renderer: 'WebGPU'
       testResultLabel: '-webgpu'
       appEnvironment: 'UNO_WEBGPU=1'
       # Chrome crashed at startup on the self-hosted agents with its default profile location, so it gets its own.
@@ -58,55 +58,55 @@ stages:
       condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))"
 
 - stage: runtime_tests_skia_android
-  displayName: Tests - Android Skia
+  displayName: Tests - Android
   dependsOn:
     - Setup
 
   jobs:
-  - template: .azure-devops-tests-android-skia-build.yml
+  - template: .azure-devops-tests-android-build.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-  - template: .azure-devops-tests-android-skia.yml
+  - template: .azure-devops-tests-android.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
   # The same APK on the WebGPU backend, on the emulator's software Vulkan (SwiftShader).
-  - template: .azure-devops-tests-android-skia.yml
+  - template: .azure-devops-tests-android.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
       jobName: 'Android_WebGpu_Tests'
-      displayName: 'WebGPU'
+      renderer: 'WebGPU'
       testResultLabel: '-webgpu'
       appExtras: '-e UNO_WEBGPU 1 -e UNO_WEBGPU_LOG warn'
       # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1).
       condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))"
 
 - stage: runtime_tests_skia_android_nativeaot
-  displayName: Tests - Android+NativeAOT Skia
+  displayName: Tests - Android+NativeAOT
   dependsOn:
     - Setup
 
   jobs:
-  - template: .azure-devops-tests-android-nativeaot-skia-build.yml
+  - template: .azure-devops-tests-android-nativeaot-build.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-  - template: .azure-devops-tests-android-nativeaot-skia.yml
+  - template: .azure-devops-tests-android-nativeaot.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_ios
-  displayName: Tests - iOS Skia
+  displayName: Tests - iOS
   # Builds from source and never consumes native-assets-macos, so it need not wait for that stage.
   dependsOn:
     - Setup
 
   jobs:
-  - template: .azure-devops-tests-ios-skia-build.yml
+  - template: .azure-devops-tests-ios-build.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -115,7 +115,7 @@ stages:
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
       poolName: '${{ parameters.poolName }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-  - template: .azure-devops-tests-ios-skia.yml
+  - template: .azure-devops-tests-ios.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -126,13 +126,13 @@ stages:
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_tvos
-  displayName: Tests - tvOS Skia
+  displayName: Tests - tvOS
   # Builds from source and never consumes native-assets-macos, so it need not wait for that stage.
   dependsOn:
     - Setup
 
   jobs:
-  - template: .azure-devops-tests-tvos-skia-build.yml
+  - template: .azure-devops-tests-tvos-build.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -141,7 +141,7 @@ stages:
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
       poolName: '${{ parameters.poolName }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-  - template: .azure-devops-tests-tvos-skia.yml
+  - template: .azure-devops-tests-tvos.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -152,13 +152,13 @@ stages:
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_linux
-  displayName: Tests - Desktop Skia Linux
+  displayName: Tests - Desktop Linux
   dependsOn:
     - Setup
     - runtime_tests_skia_build
 
   jobs:
-  - template: .azure-devops-tests-linux-skia.yml
+  - template: .azure-devops-tests-desktop-linux.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -168,7 +168,7 @@ stages:
       poolName: '${{ parameters.poolName }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
-  - template: .azure-devops-tests-linux-skia.yml
+  - template: .azure-devops-tests-desktop-linux.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -181,19 +181,18 @@ stages:
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
       runSnapshotTests: false
       jobPrefix: 'Skia_Linux_WebGpu'
-      runtimeTestsDisplayName: 'Runtime Tests (WebGPU)'
-      testRunTitle: 'Linux Skia WebGPU Runtime Tests'
+      renderer: 'WebGPU'
+      testRunTitle: 'Linux WebGPU Runtime Tests'
       testResultLabel: '-webgpu'
-      webGpu: true
 
 - stage: runtime_tests_skia_linux_framebuffer
-  displayName: Tests - Desktop Skia Linux Framebuffer
+  displayName: Tests - Desktop Linux Framebuffer
   dependsOn:
     - Setup
     - runtime_tests_skia_build
 
   jobs:
-  - template: .azure-devops-tests-linux-skia.yml
+  - template: .azure-devops-tests-desktop-linux.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -209,13 +208,13 @@ stages:
       testResultLabel: '-framebuffer'
 
 - stage: runtime_tests_skia_macos
-  displayName: Tests - Desktop Skia macOS
+  displayName: Tests - Desktop macOS
   dependsOn:
     - Setup
     - runtime_tests_skia_build
 
   jobs:
-  - template: .azure-devops-tests-macos-skia.yml
+  - template: .azure-devops-tests-desktop-macos.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -225,7 +224,7 @@ stages:
       poolName: '${{ parameters.poolName }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
-  - template: .azure-devops-tests-macos-skia.yml
+  - template: .azure-devops-tests-desktop-macos.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -237,18 +236,17 @@ stages:
       poolName: '${{ parameters.poolName }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
       jobName: 'Skia_macos_WebGpu_Runtime_Tests'
-      displayName: 'Runtime Tests (WebGPU)'
+      renderer: 'WebGPU'
       testResultLabel: '-webgpu'
-      webGpu: true
 
 - stage: runtime_tests_skia_windows
-  displayName: Tests - Desktop Skia Windows
+  displayName: Tests - Desktop Windows
   dependsOn:
     - Setup
     - runtime_tests_skia_build
 
   jobs:
-  - template: .azure-devops-tests-windows-skia.yml
+  - template: .azure-devops-tests-desktop-windows.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
