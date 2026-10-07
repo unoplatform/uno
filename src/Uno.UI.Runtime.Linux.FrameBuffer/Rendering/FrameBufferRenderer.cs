@@ -57,15 +57,16 @@ internal abstract class FrameBufferRenderer
 		}
 
 		using var _ = MakeCurrent();
-		var bounds = FrameBufferWindowWrapper.Instance.Size;
-		var orientation = FrameBufferWindowWrapper.Instance.Orientation;
-		var (degrees, transX, transY) = orientation switch
+		// One snapshot per frame: the orientation can change on the UI thread while this frame is being drawn.
+		var displayState = FrameBufferWindowWrapper.Instance.CurrentDisplayState;
+		var physicalSize = displayState.PhysicalSize;
+		var (degrees, transX, transY) = displayState.Orientation switch
 		{
 			DisplayOrientations.None => (0, 0d, 0d),
 			DisplayOrientations.Landscape => (0, 0d, 0d),
-			DisplayOrientations.Portrait => (90, bounds.Height, 0d),
-			DisplayOrientations.LandscapeFlipped => (180, bounds.Width, bounds.Height),
-			DisplayOrientations.PortraitFlipped => (-90, 0d, bounds.Width),
+			DisplayOrientations.Portrait => (90, physicalSize.Width, 0d),
+			DisplayOrientations.LandscapeFlipped => (180, physicalSize.Width, physicalSize.Height),
+			DisplayOrientations.PortraitFlipped => (-90, 0d, physicalSize.Height),
 			_ => throw new ArgumentOutOfRangeException()
 		};
 
@@ -79,7 +80,7 @@ internal abstract class FrameBufferRenderer
 		// target while the physical size is unchanged (portrait swaps width/height for the physical framebuffer).
 		context.SetAcquire((width, height) =>
 		{
-			if (orientation is DisplayOrientations.Portrait or DisplayOrientations.PortraitFlipped)
+			if (displayState.IsPortrait)
 			{
 				(width, height) = (height, width);
 			}

@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml;
 using Uno.Helpers;
 using WUX = Microsoft.UI.Xaml;
 using System.Threading.Tasks;
+using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Linux.FrameBuffer
 {
@@ -47,6 +48,35 @@ namespace Uno.UI.Runtime.Linux.FrameBuffer
 
 			_eventLoop = new EventLoop();
 			_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
+
+			builder.AttachHost(this);
+		}
+
+		// Called by the setter FramebufferHostBuilder.Orientation hands out, with an already validated value.
+		internal void SetOrientation(DisplayOrientations orientation)
+		{
+			if (_isDispatcherThread)
+			{
+				ApplyOrientation(orientation);
+			}
+			else
+			{
+				_eventLoop.Schedule(() => ApplyOrientation(orientation));
+			}
+		}
+
+		// Runs on the event loop, so it is ordered against InnerInitialize: before it, the value is what the window
+		// starts with; after, the window rotates.
+		private void ApplyOrientation(DisplayOrientations orientation)
+		{
+			if (FrameBufferWindowWrapper.InstanceOrNull is { } window)
+			{
+				window.SetOrientation(orientation);
+			}
+			else
+			{
+				_hostBuilder.Orientation(orientation);
+			}
 		}
 
 		/// <summary>
