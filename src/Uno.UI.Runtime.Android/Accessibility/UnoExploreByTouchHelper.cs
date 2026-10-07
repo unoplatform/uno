@@ -1572,7 +1572,9 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			}
 		}
 
-		return HostId;
+		// Not HostId: the host spans the whole window, so a touch exploration probe over empty space would move the
+		// screen reader's focus to the entire page, as also happens when a swipe gesture starts there.
+		return InvalidId;
 	}
 
 	private bool ContainsPoint(int virtualViewId, Windows.Foundation.Point logicalPoint)
@@ -2945,7 +2947,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 
 		var id = GetVirtualViewAt((float)physicalX, (float)physicalY);
-		return id == HostId ? null : id;
+		return id is HostId or InvalidId ? null : id;
 	}
 
 	private bool TryGetVirtualId(UIElement element, out int id)
