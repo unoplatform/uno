@@ -158,7 +158,8 @@ namespace Common
 
 		public static void Fail(string message, params object[] args)
 		{
-			Assert.Fail(string.Format(message, args));
+			// Like Log, a message with braces and no arguments is literal, not a format string.
+			Assert.Fail(args.Length == 0 ? message : string.Format(message, args));
 		}
 
 		public static void Throws<T>(Action action, string message) where T : Exception
