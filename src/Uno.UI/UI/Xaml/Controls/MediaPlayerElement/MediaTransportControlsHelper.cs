@@ -4,6 +4,10 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaTransportControlsHelper
 	{
+		internal MediaTransportControlsHelper()
+		{
+		}
+
 		public static DependencyProperty DropoutOrderProperty
 		{
 			[DynamicDependency(nameof(GetDropoutOrder))]

@@ -9,6 +9,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public sealed partial class CalendarViewTemplateSettings : DependencyObject
 	{
+		internal CalendarViewTemplateSettings()
+		{
+		}
+
 		/// <summary>Gets the minimum width of the view.</summary>
 		/// <returns>The minimum width of the view.</returns>
 		public double MinViewWidth

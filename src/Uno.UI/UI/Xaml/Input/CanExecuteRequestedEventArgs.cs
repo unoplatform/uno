@@ -2,6 +2,10 @@
 {
 	public partial class CanExecuteRequestedEventArgs
 	{
+		internal CanExecuteRequestedEventArgs()
+		{
+		}
+
 		public bool CanExecute
 		{
 			get; set;

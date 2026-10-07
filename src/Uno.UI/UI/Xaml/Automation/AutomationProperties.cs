@@ -10,6 +10,10 @@ namespace Microsoft.UI.Xaml.Automation;
 /// </summary>
 public partial class AutomationProperties
 {
+	internal AutomationProperties()
+	{
+	}
+
 	/// <summary>
 	/// Identifies the AcceleratorKey attached property, which describes the accelerator (shortcut) key combination for an element.
 	/// </summary>

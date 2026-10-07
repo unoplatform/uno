@@ -14,6 +14,10 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class ItemCollection : IList<object>, IEnumerable<object>, IObservableVector<object>, IObservableVector
 	{
+		internal ItemCollection()
+		{
+		}
+
 		private readonly IList<object> _inner = new List<object>();
 
 		private IList<object> _itemsSource;

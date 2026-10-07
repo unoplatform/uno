@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private TimeSpan _pauseStateUpdateUntil;
 		private bool _canRaiseClickOnPointerRelease;
 
-		public SelectorItem()
+		protected SelectorItem()
 		{
 			AddHandler(ManipulationStartedEvent, _onManipulationStarted, handledEventsToo: true);
 

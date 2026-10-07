@@ -299,7 +299,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private protected CompositionSpriteShape SpriteShape => _shape;
 
-		public Shape()
+		protected Shape()
 		{
 			var visual = Visual;
 			var compositor = visual.Compositor;

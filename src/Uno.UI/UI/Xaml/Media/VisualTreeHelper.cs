@@ -33,6 +33,10 @@ namespace Microsoft.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
+		internal VisualTreeHelper()
+		{
+		}
+
 		[Uno.NotImplemented]
 		public static void DisconnectChildrenRecursive(UIElement element)
 		{

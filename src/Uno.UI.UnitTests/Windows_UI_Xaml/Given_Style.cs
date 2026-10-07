@@ -103,7 +103,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			SUT2.Seal();
 
-			Control control = new();
+			Control control = new PlainControl();
 			control.Style = SUT2;
 
 			Assert.IsTrue(SUT.IsSealed);
@@ -113,6 +113,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsTrue(SUT2.IsSealed);
 			Assert.IsTrue(SUT2.Setters.IsSealed);
 			Assert.IsTrue(SUT2.Setters[0].IsSealed);
+		}
+
+		private sealed class PlainControl : Control
+		{
 		}
 	}
 }
