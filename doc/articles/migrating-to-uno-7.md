@@ -710,8 +710,9 @@ On Android, retargeted drawables now keep their file extension in their resource
   drawables now include the original extension, so `Assets/logo.png` and `Assets/logo.jpg` no
   longer collide and a same-named `logo.svg` asset is no longer shadowed by the PNG. Code that
   uses the generated ids changes accordingly: `Resource.Drawable.Assets_logo` becomes
-  `Resource.Drawable.Assets_logo_png`. XAML and code that load images through `ms-appx:///`
-  URIs or relative paths are unaffected.
+  `Resource.Drawable.Assets_logo_png`. Callers of `DrawableHelper.FindResourceId` must now pass
+  the filename with its extension (for example, `FindResourceId("logo.png")`); `FindResourceId("logo")`
+  no longer resolves. XAML and code that load images through `ms-appx:///` URIs or relative paths are unaffected.
 - **Drawables you add under `Platforms/Android/Resources/drawable` no longer resolve through
   `ms-appx:///`.** A lookup for `ms-appx:///foo.png` now searches for the drawable `foo_png`, not
   `foo`. Move images you load by URI into `Assets` so Uno packages them, or reference the native
