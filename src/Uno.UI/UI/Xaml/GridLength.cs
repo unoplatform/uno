@@ -137,7 +137,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		public override bool Equals(object oCompare) => oCompare is GridLength other ? Equals(other) : false;
+		public override bool Equals(object oCompare) => oCompare is GridLength other && Equals(other);
 
 		public override int GetHashCode() => GridUnitType.GetHashCode() ^ Value.GetHashCode();
 
