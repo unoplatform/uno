@@ -11,6 +11,7 @@
     xmlns:ios="http://umbrella/ios"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:not_win="http://uno.ui/not_win"
+    xmlns:shell="using:Uno.UI.Samples.Helper"
     xmlns:u="using:Uno.UI.Samples.Controls"
     xmlns:ub="using:Uno.UI.Samples.Behaviors"
     xmlns:uc="using:Uno.UI.Samples.Converters"
@@ -494,17 +495,18 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             IsChecked="{Binding IsPaneOpen, ElementName=SplitView, Mode=TwoWay}"
-                            IsEnabled="{Binding IsRecordAllTests, Converter={StaticResource reverseBoolConverter}}"
+                            IsEnabled="{x:Bind shell:ShellFunctions.Not(ViewModel.IsRecordAllTests), Mode=OneWay, FallbackValue=True}"
                             Style="{StaticResource BurgerButtonStyle}" />
 
                         <!--  Sample Name  -->
                         <TextBlock
+                            x:Name="ShellSampleTitle"
                             Grid.Column="1"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             IsTextSelectionEnabled="True"
                             Style="{StaticResource Typo03}"
-                            Text="{Binding CurrentSelectedSample.ControlName}"
+                            Text="{x:Bind ViewModel.CurrentSelectedSample.ControlName, Mode=OneWay}"
                             TextAlignment="Center"
                             TextWrapping="NoWrap" />
 

@@ -1,0 +1,117 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shell="using:Uno.UI.Samples.Helper">
+
+    <!--  Shell tokens. Merged by the shell and its infra pages only, never by App.xaml, so samples keep the framework defaults.  -->
+
+    <ResourceDictionary.ThemeDictionaries>
+        <!--  No Default key on purpose: HighContrast would otherwise fall back to the Light/Dark colours.  -->
+        <!--  Brushes over ThemeResource colours, not StaticResource redirects: WinUI resolves a redirect in an app theme  -->
+        <!--  dictionary under the app theme, so a Light shell on a Dark app got Dark colours. ShellThemeBrushes mirrors these.  -->
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="ShellTestPassedBrush" Color="{ThemeResource SystemFillColorSuccess}" />
+            <SolidColorBrush x:Key="ShellTestFailedBrush" Color="{ThemeResource SystemFillColorCritical}" />
+            <SolidColorBrush x:Key="ShellTestWarningBrush" Color="{ThemeResource SystemFillColorCaution}" />
+            <SolidColorBrush x:Key="ShellTestNeutralBrush" Color="{ThemeResource TextFillColorTertiary}" />
+            <SolidColorBrush x:Key="ShellTagBackgroundBrush" Color="{ThemeResource SubtleFillColorSecondary}" />
+            <SolidColorBrush x:Key="ShellTagForegroundBrush" Color="{ThemeResource TextFillColorSecondary}" />
+            <SolidColorBrush x:Key="ShellLogBackgroundBrush" Color="{ThemeResource CardBackgroundFillColorDefault}" />
+            <Thickness x:Key="ShellCardBorderThickness">1</Thickness>
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="ShellTestPassedBrush" Color="{ThemeResource SystemFillColorSuccess}" />
+            <SolidColorBrush x:Key="ShellTestFailedBrush" Color="{ThemeResource SystemFillColorCritical}" />
+            <SolidColorBrush x:Key="ShellTestWarningBrush" Color="{ThemeResource SystemFillColorCaution}" />
+            <SolidColorBrush x:Key="ShellTestNeutralBrush" Color="{ThemeResource TextFillColorTertiary}" />
+            <SolidColorBrush x:Key="ShellTagBackgroundBrush" Color="{ThemeResource SubtleFillColorSecondary}" />
+            <SolidColorBrush x:Key="ShellTagForegroundBrush" Color="{ThemeResource TextFillColorSecondary}" />
+            <SolidColorBrush x:Key="ShellLogBackgroundBrush" Color="{ThemeResource CardBackgroundFillColorDefault}" />
+            <Thickness x:Key="ShellCardBorderThickness">1</Thickness>
+        </ResourceDictionary>
+
+        <!--  Status is never colour-only in HC: pair these with the glyphs from the spec (E73E, E711, E7BA, E733, E72C).  -->
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="ShellTestPassedBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="ShellTestFailedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="ShellTestWarningBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="ShellTestNeutralBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="ShellTagBackgroundBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="ShellTagForegroundBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="ShellLogBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <Thickness x:Key="ShellCardBorderThickness">2</Thickness>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <!--  Runtime tests and screenshots expect the sample host this far down (48 + 2x4 margin).  -->
+    <x:Double x:Key="ShellHeaderHeight">56</x:Double>
+    <x:Double x:Key="ShellPaneWidth">320</x:Double>
+    <x:Double x:Key="ShellRowMinHeight">32</x:Double>
+    <x:Double x:Key="ShellTouchRowMinHeight">40</x:Double>
+    <CornerRadius x:Key="ShellHostCornerRadius">8,0,0,0</CornerRadius>
+    <!--  One family only: Uno Skia does not split comma fallback lists. ShellMonospace swaps it off Windows.  -->
+    <FontFamily x:Key="ShellMonospaceFontFamily">Consolas</FontFamily>
+
+    <Style x:Key="ShellCardStyle" TargetType="Border">
+        <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="{ThemeResource ShellCardBorderThickness}" />
+        <Setter Property="CornerRadius" Value="{StaticResource OverlayCornerRadius}" />
+        <Setter Property="Padding" Value="16,12" />
+    </Style>
+
+    <Style x:Key="ShellSettingsCardStyle" TargetType="Grid">
+        <Setter Property="MinHeight" Value="64" />
+        <Setter Property="ColumnSpacing" Value="16" />
+    </Style>
+
+    <Style x:Key="ShellTagStyle" TargetType="Border">
+        <Setter Property="Background" Value="{ThemeResource ShellTagBackgroundBrush}" />
+        <Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
+        <Setter Property="Padding" Value="8,2" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style
+        x:Key="ShellTagTextStyle"
+        BasedOn="{StaticResource CaptionTextBlockStyle}"
+        TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{ThemeResource ShellTagForegroundBrush}" />
+    </Style>
+
+    <Style x:Key="ShellKeycapStyle" TargetType="Border">
+        <Setter Property="Background" Value="{ThemeResource ControlFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
+        <Setter Property="Padding" Value="6,2" />
+        <Setter Property="MinWidth" Value="24" />
+    </Style>
+
+    <Style
+        x:Key="ShellMonospaceTextStyle"
+        BasedOn="{StaticResource CaptionTextBlockStyle}"
+        TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource ShellMonospaceFontFamily}" />
+        <Setter Property="shell:ShellMonospace.IsEnabled" Value="True" />
+        <Setter Property="IsTextSelectionEnabled" Value="True" />
+    </Style>
+
+    <Style
+        x:Key="ShellEmptyStateTitleStyle"
+        BasedOn="{StaticResource SubtitleTextBlockStyle}"
+        TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <!--  Neutralises the implicit not_win: Button style in App.xaml (HorizontalAlignment=Left).  -->
+    <Style
+        x:Key="ShellPlainButtonStyle"
+        BasedOn="{StaticResource DefaultButtonStyle}"
+        TargetType="Button">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+</ResourceDictionary>

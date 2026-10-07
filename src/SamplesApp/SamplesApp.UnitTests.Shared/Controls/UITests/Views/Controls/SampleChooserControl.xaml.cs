@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,9 +41,16 @@ namespace Uno.UI.Samples.Controls
 
 			InitializePerfHooks();
 			InitializeShortcuts();
+
+			DataContextChanged += OnDataContextChanged;
 		}
 
-		private SampleChooserViewModel ViewModel => (SampleChooserViewModel)DataContext;
+		/// <summary>
+		/// Typed source for x:Bind. Null until MainPage sets the DataContext, so bound functions must be null-safe.
+		/// </summary>
+		internal SampleChooserViewModel? ViewModel => DataContext as SampleChooserViewModel;
+
+		private void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args) => Bindings.Update();
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -74,7 +83,7 @@ namespace Uno.UI.Samples.Controls
 		{
 			if (e.Key == Windows.System.VirtualKey.Enter)
 			{
-				((SampleChooserViewModel)DataContext).TryOpenTopSearchResult();
+				ViewModel?.TryOpenTopSearchResult();
 			}
 		}
 
@@ -82,7 +91,10 @@ namespace Uno.UI.Samples.Controls
 		{
 			if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
 			{
-				((SampleChooserViewModel)DataContext).SearchTerm = sender.Text;
+				if (ViewModel is { } vm)
+				{
+					vm.SearchTerm = sender.Text;
+				}
 			}
 		}
 
@@ -90,7 +102,7 @@ namespace Uno.UI.Samples.Controls
 		{
 			if (args is { ChosenSuggestion: null })
 			{
-				((SampleChooserViewModel)DataContext).TryOpenTopSearchResult();
+				ViewModel?.TryOpenTopSearchResult();
 			}
 		}
 
@@ -98,7 +110,7 @@ namespace Uno.UI.Samples.Controls
 		{
 			if (args.SelectedItem is SampleChooserContent control)
 			{
-				_ = ((SampleChooserViewModel)DataContext).OpenSample(CancellationToken.None, control);
+				_ = ViewModel?.OpenSample(CancellationToken.None, control);
 			}
 		}
 
