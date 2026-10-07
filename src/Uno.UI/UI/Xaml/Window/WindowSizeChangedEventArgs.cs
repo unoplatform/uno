@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml;
 
 public sealed partial class WindowSizeChangedEventArgs
 {
-	public WindowSizeChangedEventArgs(Size newSize)
+	internal WindowSizeChangedEventArgs(Size newSize)
 	{
 		Size = newSize;
 	}

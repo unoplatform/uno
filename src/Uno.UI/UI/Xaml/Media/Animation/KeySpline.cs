@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// <param name="y1">The y-coordinate for the ControlPoint1 of the KeySpline.</param>
 		/// <param name="x2">The x-coordinate for the ControlPoint2 of the KeySpline.</param>
 		/// <param name="y2">The y-coordinate for the ControlPoint2 of the KeySpline.</param>
-		public KeySpline(double x1, double y1, double x2, double y2)
+		internal KeySpline(double x1, double y1, double x2, double y2)
 		{
 			ControlPoint1 = new Point(x1, y1);
 			ControlPoint2 = new Point(x2, y2);
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// </summary>
 		/// <param name="controlPoint1">The control point for the ControlPoint1 of the KeySpline.</param>
 		/// <param name="controlPoint2">The control point for the ControlPoint2 of the KeySpline.</param>
-		public KeySpline(Point controlPoint1, Point controlPoint2)
+		internal KeySpline(Point controlPoint1, Point controlPoint2)
 		{
 			ControlPoint1 = controlPoint1;
 			ControlPoint2 = controlPoint2;

@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(PivotItem);
 		}
 
-		public PivotItem(string header) : this()
+		internal PivotItem(string header) : this()
 		{
 			Header = header;
 		}

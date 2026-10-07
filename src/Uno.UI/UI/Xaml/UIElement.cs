@@ -1547,7 +1547,7 @@ namespace Microsoft.UI.Xaml
 		private Rect? _lastClippedFrame;
 		private Vector3 _lastTranslation;
 
-		public UIElement()
+		internal UIElement()
 		{
 			_isFrameworkElement = this is FrameworkElement;
 

@@ -116,13 +116,13 @@ namespace Microsoft.UI.Xaml
 			_value = value;
 		}
 
-		public Setter(DependencyProperty targetProperty, SetterValueProviderHandler valueProvider)
+		internal Setter(DependencyProperty targetProperty, SetterValueProviderHandler valueProvider)
 		{
 			Property = targetProperty;
 			_valueProvider = valueProvider;
 		}
 
-		public Setter(DependencyProperty targetProperty, object? owner, SetterValueProviderHandlerWithOwner valueProvider)
+		internal Setter(DependencyProperty targetProperty, object? owner, SetterValueProviderHandlerWithOwner valueProvider)
 		{
 			Property = targetProperty;
 
@@ -130,7 +130,7 @@ namespace Microsoft.UI.Xaml
 			_valueProvider = () => valueProvider(ownerRef?.Target);
 		}
 
-		public Setter(TargetPropertyPath targetPath, object value)
+		internal Setter(TargetPropertyPath targetPath, object value)
 		{
 			Target = targetPath;
 			Value = value;

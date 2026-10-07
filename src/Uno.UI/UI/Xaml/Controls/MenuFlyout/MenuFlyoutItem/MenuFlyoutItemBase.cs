@@ -14,7 +14,7 @@ public abstract partial class MenuFlyoutItemBase : Control
 {
 	private ManagedWeakReference m_wrParentMenuFlyoutPresenter;
 
-	public MenuFlyoutItemBase()
+	internal MenuFlyoutItemBase()
 	{
 	}
 

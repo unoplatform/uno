@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		public bool UseTargetSize { get; set; }
 
-		protected ImageSource(string url) : this()
+		internal ImageSource(string url) : this()
 		{
 			var uri = TryCreateUriFromString(url);
 
@@ -68,7 +68,7 @@ namespace Microsoft.UI.Xaml.Media
 			InitFromUri(uri);
 		}
 
-		protected ImageSource(Uri uri) : this()
+		internal ImageSource(Uri uri) : this()
 		{
 			InitFromUri(uri);
 		}

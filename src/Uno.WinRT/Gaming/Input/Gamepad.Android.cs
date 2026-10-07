@@ -23,7 +23,7 @@ public partial class Gamepad
 
 	private GamepadReading _gamepadReading;
 
-	public Gamepad(int nativeDeviceId)
+	internal Gamepad(int nativeDeviceId)
 	{
 		_nativeDeviceId = nativeDeviceId;
 	}

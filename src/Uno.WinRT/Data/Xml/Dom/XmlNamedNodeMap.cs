@@ -11,7 +11,7 @@ namespace Windows.Data.Xml.Dom
 		private readonly XmlDocument _owner;
 		internal readonly SystemXmlNamedNodeMap _backingNamedNodeMap;
 
-		public XmlNamedNodeMap(XmlDocument owner, SystemXmlNamedNodeMap backingNamedNodeMap)
+		internal XmlNamedNodeMap(XmlDocument owner, SystemXmlNamedNodeMap backingNamedNodeMap)
 		{
 			_owner = owner;
 			_backingNamedNodeMap = backingNamedNodeMap;

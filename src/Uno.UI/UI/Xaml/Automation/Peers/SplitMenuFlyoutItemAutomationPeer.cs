@@ -13,7 +13,7 @@ public partial class SplitMenuFlyoutItemAutomationPeer : FrameworkElementAutomat
 {
 	private const string c_primaryButtonAutomationId = "SplitMenuFlyoutItemPrimaryButton";
 
-	public SplitMenuFlyoutItemAutomationPeer(FrameworkElement owner) : base(owner)
+	internal SplitMenuFlyoutItemAutomationPeer(FrameworkElement owner) : base(owner)
 	{
 	}
 

@@ -11,7 +11,7 @@ public partial class InputCursor
 
 	internal bool IsDisposed { get; private set; }
 
-	protected InputCursor()
+	internal InputCursor()
 	{
 	}
 

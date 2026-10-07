@@ -8,7 +8,7 @@ namespace Windows.Data.Xml.Dom
 		private readonly XmlDocument _owner;
 		internal readonly SystemProcessingInstruction _backingProcessingInstruction;
 
-		public XmlProcessingInstruction(XmlDocument owner, SystemProcessingInstruction backingProcessingInstruction)
+		internal XmlProcessingInstruction(XmlDocument owner, SystemProcessingInstruction backingProcessingInstruction)
 		{
 			_owner = owner;
 			_backingProcessingInstruction = backingProcessingInstruction;

@@ -28,7 +28,7 @@ public partial struct Thickness : IEquatable<Thickness>
 		Bottom = bottom;
 	}
 
-	public Thickness(double leftRight, double topBottom)
+	internal Thickness(double leftRight, double topBottom)
 		: this()
 	{
 		Left = leftRight;

@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Media
 		private readonly SerialDisposable _opening = new SerialDisposable();
 		private readonly List<Action<ImageData>> _subscriptions = new List<Action<ImageData>>();
 
-		protected ImageSource()
+		internal ImageSource()
 		{
 
 		}

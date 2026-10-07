@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// </summary>
 		private readonly HashSet<DataTemplate> _itemTemplatesThatArentContainers = new HashSet<DataTemplate>();
 
-		public Selector()
+		internal Selector()
 		{
 
 		}

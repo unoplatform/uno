@@ -15,7 +15,7 @@ public partial class IconSource : DependencyObject
 {
 	private List<WeakReference<IconElement>> m_createdIconElements = new List<WeakReference<IconElement>>();
 
-	protected IconSource()
+	internal IconSource()
 	{
 	}
 

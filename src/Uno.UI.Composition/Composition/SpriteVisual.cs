@@ -6,7 +6,7 @@ namespace Microsoft.UI.Composition
 	{
 		private CompositionBrush? _brush;
 
-		public SpriteVisual(Compositor compositor) : base(compositor)
+		internal SpriteVisual(Compositor compositor) : base(compositor)
 		{
 
 		}

@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class DatePickerFlyoutPresenterAutomationPeer
 {
-	public DatePickerFlyoutPresenterAutomationPeer(DatePickerFlyoutPresenter owner) : base(owner)
+	internal DatePickerFlyoutPresenterAutomationPeer(DatePickerFlyoutPresenter owner) : base(owner)
 	{
 	}
 

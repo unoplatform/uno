@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		private Transform _elementTransform;
 
-		public Transition()
+		internal Transition()
 		{
 			InitializeBinder();
 		}

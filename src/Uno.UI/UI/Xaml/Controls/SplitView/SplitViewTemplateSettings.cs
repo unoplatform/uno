@@ -21,7 +21,7 @@ public sealed partial class SplitViewTemplateSettings : DependencyObject
 	private const double DefaultCompactPaneLength = 48;
 	private const double DefaultViewHeight = 2000;
 
-	public SplitViewTemplateSettings(SplitView splitView)
+	internal SplitViewTemplateSettings(SplitView splitView)
 	{
 		InitializeBinder();
 

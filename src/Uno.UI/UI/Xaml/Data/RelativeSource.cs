@@ -7,7 +7,7 @@
 
 		}
 
-		public RelativeSource(RelativeSourceMode mode)
+		internal RelativeSource(RelativeSourceMode mode)
 		{
 			Mode = mode;
 		}

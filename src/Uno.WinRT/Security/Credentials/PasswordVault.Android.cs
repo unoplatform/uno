@@ -22,7 +22,7 @@ sealed partial class PasswordVault
 	{
 	}
 
-	public PasswordVault(string filePath)
+	internal PasswordVault(string filePath)
 		: this(Build.VERSION.SdkInt > BuildVersionCodes.LollipopMr1 ? new KeyStorePersister() : (IPersister)new UnSecureKeyStorePersister())
 	{
 	}

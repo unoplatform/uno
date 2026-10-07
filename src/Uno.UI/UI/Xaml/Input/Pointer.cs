@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Input
 		internal static long CreateUniqueIdForUnknownPointer()
 			=> (long)1 << 63 | (long)Interlocked.Increment(ref _unknownId);
 
-		public Pointer(uint id, PointerDeviceType type, bool isInContact, bool isInRange)
+		internal Pointer(uint id, PointerDeviceType type, bool isInContact, bool isInRange)
 		{
 			PointerId = id;
 			PointerDeviceType = type;

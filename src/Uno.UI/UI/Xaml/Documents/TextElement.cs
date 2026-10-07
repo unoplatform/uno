@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	public abstract partial class TextElement : BaseClass, IThemeChangeAware, IXNameProvider
 	{
-		public TextElement()
+		internal TextElement()
 		{
 			SetDefaultForeground(ForegroundProperty);
 			InitializeBinder();

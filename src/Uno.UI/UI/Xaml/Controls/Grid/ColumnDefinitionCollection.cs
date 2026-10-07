@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal event VectorChangedEventHandler<ColumnDefinition> CollectionChanged;
 
-		public ColumnDefinitionCollection()
+		internal ColumnDefinitionCollection()
 		{
 			_inner.VectorChanged += (s, e) => CollectionChanged?.Invoke(s, e);
 		}

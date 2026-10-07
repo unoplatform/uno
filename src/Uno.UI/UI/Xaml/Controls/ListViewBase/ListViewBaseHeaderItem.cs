@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ListViewBaseHeaderItem : ContentControl
 	{
-		public ListViewBaseHeaderItem()
+		internal ListViewBaseHeaderItem()
 		{
 			DefaultStyleKey = typeof(ListViewBaseHeaderItem);
 		}

@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Media
 			_values = new List<double>();
 		}
 
-		public DoubleCollection(IEnumerable<double> collection)
+		internal DoubleCollection(IEnumerable<double> collection)
 		{
 			_values = collection.ToList();
 		}

@@ -4,7 +4,7 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class DataContextChangedEventArgs
 	{
-		public DataContextChangedEventArgs(object newValue)
+		internal DataContextChangedEventArgs(object newValue)
 		{
 			NewValue = newValue;
 		}
