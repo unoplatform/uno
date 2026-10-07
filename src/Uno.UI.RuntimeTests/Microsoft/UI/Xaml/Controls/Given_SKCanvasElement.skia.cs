@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
 using SkiaSharp;
+using Uno.Foundation.Extensibility;
+using Uno.Graphics;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.WinUI.Graphics2DSK;
 using Size = Windows.Foundation.Size;
@@ -94,6 +98,77 @@ public class Given_SKCanvasElement
 		Assert.IsFalse(SUT.RenderOverrideCalledNestedly);
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24699")]
+	public void When_Graphics3DGL_Not_Referenced_By_Graphics2DSK()
+	{
+		// AOT and eager linkers (Android AOT, .NET 11 iOS CoreTypeMap) fail on a reference the package doesn't carry.
+		var references = typeof(SKCanvasElement).Assembly.GetReferencedAssemblies();
+
+		Assert.IsFalse(
+			references.Any(r => r.Name is "Uno.WinUI.Graphics3DGL" or "Silk.NET.OpenGL"),
+			$"Graphics2DSK must not reference Graphics3DGL or Silk; found: {string.Join(", ", references.Select(r => r.Name))}");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24699")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	public void When_GL_Island_Registered_By_Graphics3DGL()
+	{
+		// SKCanvasElement falls back to the GL island only through this registration.
+		Assert.IsTrue(ApiExtensibility.IsRegistered<IGLIsland>());
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24699")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	public async Task When_GL_Island_Renders_Or_Reports_Unavailable()
+	{
+		var renderer = new RecordingGLIslandRenderer();
+		Assert.IsTrue(ApiExtensibility.CreateInstance<IGLIsland>(renderer, out var island));
+		island.Element.Width = 100;
+		island.Element.Height = 100;
+
+		try
+		{
+			await UITestHelper.Load(island.Element);
+			await UITestHelper.WaitFor(() => renderer.Rendered || renderer.Unavailable, timeoutMS: 5000);
+
+			if (renderer.Rendered)
+			{
+				Assert.IsTrue(renderer.Initialized);
+				Assert.AreNotEqual(0u, renderer.Framebuffer);
+				Assert.AreEqual((100, 100), renderer.Size);
+			}
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	private class RecordingGLIslandRenderer : IGLIslandRenderer
+	{
+		public bool Initialized { get; private set; }
+		public bool Rendered { get; private set; }
+		public bool Unavailable { get; private set; }
+		public uint Framebuffer { get; private set; }
+		public (int Width, int Height) Size { get; private set; }
+
+		public void Init() => Initialized = true;
+
+		public void Render(uint framebuffer, int width, int height)
+		{
+			Rendered = true;
+			Framebuffer = framebuffer;
+			Size = (width, height);
+		}
+
+		public void Destroy() { }
+
+		public void OnUnavailable() => Unavailable = true;
+	}
+
 	private class BlueFillSKCanvasElement : SKCanvasElement
 	{
 		public bool Rendered { get; private set; }
@@ -101,7 +176,8 @@ public class Given_SKCanvasElement
 		protected override void RenderOverride(SKCanvas canvas, Size area)
 		{
 			Rendered = true;
-			canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), new SKPaint { Color = SKColors.Blue });
+			using var paint = new SKPaint { Color = SKColors.Blue };
+			canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), paint);
 		}
 	}
 
