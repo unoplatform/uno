@@ -156,7 +156,7 @@ public class Given_CompositionTarget
 		target.FrameRendered += onFrameRendered;
 		try
 		{
-			await Task.Delay(1000);
+			await WaitForFrames(() => sameTick + laterTick);
 		}
 		finally
 		{
@@ -196,7 +196,7 @@ public class Given_CompositionTarget
 		CompositionTarget.Rendering += onRendering;
 		try
 		{
-			await Task.Delay(1000);
+			await WaitForFrames(() => pairs.Count);
 		}
 		finally
 		{
@@ -445,7 +445,7 @@ public class Given_CompositionTarget
 		CompositionTarget.Rendering += onRendering;
 		try
 		{
-			await Task.Delay(1000);
+			await WaitForFrames(() => frames);
 		}
 		finally
 		{
@@ -530,22 +530,23 @@ public class Given_CompositionTarget
 
 		var timestamps = new System.Collections.Generic.List<long>();
 		EventHandler<long> driver = (_, timestamp) => timestamps.Add(timestamp);
+		var subscribed = border.Visual.Compositor.TimestampInTicks;
 		target.FrameStarting += driver;
 		try
 		{
-			await TestServices.WindowHelper.WaitFor(() => timestamps.Count >= 3, message: "the driver should keep ticking");
+			await TestServices.WindowHelper.WaitFor(() => timestamps.Count >= 1, timeoutMS: SlowHostFrameTimeoutMs, message: "the driver should tick");
 		}
 		finally
 		{
 			target.FrameStarting -= driver;
 		}
 
-		// An absolute bound, well short of the pause: hosts that are not vsync-paced (the framebuffer) measure
-		// intervals far below a display's, so a bound in frame intervals would fail on any ordinary frame there.
-		var firstStep = timestamps[1] - timestamps[0];
+		// Relative to the subscription rather than to the next step: a software-rendered host can take longer
+		// per frame than the pause, so the step that plays out the pause need not stand out from the others.
+		var staleBy = subscribed - timestamps[0];
 		Assert.IsTrue(
-			firstStep < 100 * TimeSpan.TicksPerMillisecond,
-			$"the first step spanned {firstStep / (double)TimeSpan.TicksPerMillisecond:F1}ms, so it played out the pause");
+			staleBy <= 0,
+			$"the first tick was dated {staleBy / (double)TimeSpan.TicksPerMillisecond:F1}ms before the driver subscribed, so it plays out the pause");
 	}
 
 	/// <summary>
@@ -588,7 +589,7 @@ public class Given_CompositionTarget
 		target.FrameRendered += onFrameRendered;
 		try
 		{
-			await Task.Delay(1000);
+			await WaitForFrames(() => frames);
 		}
 		finally
 		{
@@ -599,6 +600,22 @@ public class Given_CompositionTarget
 
 		Assert.IsTrue(frames >= 5, $"the pipeline should keep producing frames, got {frames}");
 		Assert.IsTrue(ticks <= frames + 2, $"a swapped driver must tick once per frame, got {ticks} ticks for {frames} frames");
+	}
+
+	// Long enough for a software-rendered host (SwiftShader WebGPU on CI) that presents a few frames per second
+	// and can stall for seconds while the GPU catches up.
+	private const int SlowHostFrameTimeoutMs = 30000;
+
+	/// <summary>
+	/// Waits a second, and on a host too slow to present <paramref name="minimum"/> frames in that time, until it has.
+	/// </summary>
+	private static async Task WaitForFrames(Func<int> frames, int minimum = 5)
+	{
+		var elapsed = System.Diagnostics.Stopwatch.StartNew();
+		while (elapsed.ElapsedMilliseconds < 1000 || (frames() < minimum && elapsed.ElapsedMilliseconds < SlowHostFrameTimeoutMs))
+		{
+			await Task.Delay(50);
+		}
 	}
 
 	private static async Task<(int Ticks, int Frames)> CountDriverTicks(CompositionTarget target, EventHandler<long> driver)
@@ -616,7 +633,7 @@ public class Given_CompositionTarget
 		target.FrameRendered += onFrameRendered;
 		try
 		{
-			await Task.Delay(1000);
+			await WaitForFrames(() => frames);
 		}
 		finally
 		{
