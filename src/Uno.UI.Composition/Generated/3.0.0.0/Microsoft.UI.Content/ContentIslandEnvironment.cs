@@ -8,7 +8,7 @@ namespace Microsoft.UI.Content
 #endif
 	public partial class ContentIslandEnvironment
 	{
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.WindowId AppWindowId
 		{

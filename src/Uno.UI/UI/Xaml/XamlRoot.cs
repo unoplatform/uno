@@ -79,6 +79,29 @@ public sealed partial class XamlRoot
 
 	internal Window? HostWindow => VisualTree.ContentRoot.GetOwnerWindow();
 
+	private Microsoft.UI.Content.ContentIslandEnvironment? _contentIslandEnvironment;
+
+	/// <summary>
+	/// Gets the environment that hosts this XAML content, or null when it is not hosted in a window.
+	/// </summary>
+	public Microsoft.UI.Content.ContentIslandEnvironment? ContentIslandEnvironment
+	{
+		get
+		{
+			if (HostWindow?.AppWindow.Id is not { } appWindowId)
+			{
+				return null;
+			}
+
+			if (_contentIslandEnvironment is null || _contentIslandEnvironment.AppWindowId != appWindowId)
+			{
+				_contentIslandEnvironment = new(appWindowId);
+			}
+
+			return _contentIslandEnvironment;
+		}
+	}
+
 	internal static DisplayInformation GetDisplayInformation(XamlRoot? root)
 		=> root?.HostWindow?.AppWindow.Id is { } id ? DisplayInformation.GetOrCreateForWindowId(id) : DisplayInformation.GetForCurrentViewSafe();
 
