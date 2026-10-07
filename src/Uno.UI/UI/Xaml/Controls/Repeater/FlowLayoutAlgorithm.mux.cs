@@ -590,10 +590,10 @@ partial class FlowLayoutAlgorithm
 		MUX_ASSERT(m_layoutRoundFactor != 0.0);
 
 		return new Rect(
-			Math.Round(value.X * m_layoutRoundFactor) / m_layoutRoundFactor,
-			Math.Round(value.Y * m_layoutRoundFactor) / m_layoutRoundFactor,
-			Math.Round(value.Width * m_layoutRoundFactor) / m_layoutRoundFactor,
-			Math.Round(value.Height * m_layoutRoundFactor) / m_layoutRoundFactor);
+			Math.Round(value.X * m_layoutRoundFactor, MidpointRounding.AwayFromZero) / m_layoutRoundFactor,
+			Math.Round(value.Y * m_layoutRoundFactor, MidpointRounding.AwayFromZero) / m_layoutRoundFactor,
+			Math.Round(value.Width * m_layoutRoundFactor, MidpointRounding.AwayFromZero) / m_layoutRoundFactor,
+			Math.Round(value.Height * m_layoutRoundFactor, MidpointRounding.AwayFromZero) / m_layoutRoundFactor);
 	}
 
 	private void EvaluateLayoutRoundFactor(
