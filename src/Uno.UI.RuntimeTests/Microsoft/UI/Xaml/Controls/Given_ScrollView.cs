@@ -96,8 +96,10 @@ public class Given_ScrollView
 			target.FrameRendered -= onFrameRendered;
 		}
 
-		Assert.IsTrue(frames >= 5, $"expected the wheel inertia to span several frames, got {frames}");
 		Assert.AreEqual(0, mismatches, $"{mismatches} of {frames} recorded frames showed a position the tracker had already left");
+
+		// The inertia lasts a fixed time, so a slow agent records only a few frames of it.
+		Assert.IsTrue(frames >= 2, $"expected the wheel inertia to span more than one frame, got {frames}");
 	}
 
 	/// <summary>A finger pressed and held on coasting content stops it, without having to move first.</summary>
