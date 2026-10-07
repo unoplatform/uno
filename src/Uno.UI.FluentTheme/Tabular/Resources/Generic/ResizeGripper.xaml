@@ -1,0 +1,92 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<!-- MUX Reference controls\dev\ResizeGripper\ResizeGripper.xaml, tag winui3/release/2.5.4-experimental, commit 7b127093475 -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:privatecontrols="using:Microsoft.UI.Private.Controls">
+
+    <!-- Kept in the default-style page, not a separate *_themeresources.xaml: theme-XBF emission is
+         off for the Tabular binary, so only this page reaches a consumer through generic.xaml. A
+         separate page would force every host app to merge it by hand or the template's ThemeResource
+         lookups fail and inflating a header throws. -->
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <StaticResource x:Key="ResizeGripperSeparatorBrush" ResourceKey="AccentFillColorDefaultBrush" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <StaticResource x:Key="ResizeGripperSeparatorBrush" ResourceKey="AccentFillColorDefaultBrush" />
+        </ResourceDictionary>
+        <!-- Not the accent brush: under High Contrast it resolves to the window background, which
+             would make the separator invisible. Highlight is the HC colour for an active affordance. -->
+        <ResourceDictionary x:Key="HighContrast">
+            <StaticResource x:Key="ResizeGripperSeparatorBrush" ResourceKey="SystemColorHighlightColorBrush" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <Thickness x:Key="ResizeGripperSeparatorThickness">0,0,2,0</Thickness>
+    <Thickness x:Key="ResizeGripperSeparatorThicknessVertical">0,0,0,2</Thickness>
+
+    <Style TargetType="privatecontrols:ResizeGripper">
+        <!-- A pointer affordance by default: a host that wants it focusable sets IsTabStop="True"
+             and the gripper handles its own arrow keys. TableView keeps focus on the header cell,
+             where the column commands live. -->
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="UseSystemFocusVisuals" Value="True" />
+        <Setter Property="AutomationProperties.AccessibilityView" Value="Raw" />
+        <!-- A Border with a null Background does not hit-test; being a pointer target is the point. -->
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{ThemeResource ResizeGripperSeparatorBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="privatecontrols:ResizeGripper">
+                    <!-- The separator is the whole visual: it tells the user this edge is draggable
+                         before any press. Owned here rather than by the host so every consumer gets
+                         it, and so it can be restyled through ResizeGripperSeparatorBrush and
+                         ResizeGripperSeparatorThickness. -->
+                    <Border x:Name="LayoutRoot"
+                            Background="{TemplateBinding Background}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch">
+                        <Border x:Name="Separator"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Opacity="0"
+                                IsHitTestVisible="False"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch" />
+                        <VisualStateManager.VisualStateGroups>
+                            <!-- Separate groups: sharing one would make hover and orientation fight over BorderThickness. -->
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="Separator.Opacity" Value="1" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <!-- Same weight as PointerOver: the pointer is still over the
+                                     gripper during a drag, and a change mid-gesture reads as a glitch. -->
+                                <VisualState x:Name="Pressed">
+                                    <VisualState.Setters>
+                                        <Setter Target="Separator.Opacity" Value="1" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Disabled" />
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="OrientationStates">
+                                <VisualState x:Name="Horizontal">
+                                    <VisualState.Setters>
+                                        <Setter Target="Separator.BorderThickness" Value="{ThemeResource ResizeGripperSeparatorThickness}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Vertical">
+                                    <VisualState.Setters>
+                                        <Setter Target="Separator.BorderThickness" Value="{ThemeResource ResizeGripperSeparatorThicknessVertical}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <!-- Group header fallback strings -->
+  <data name="TableViewGroupHeaderCountFormat" xml:space="preserve">
+    <value>({0})</value>
+    <comment>Format string for the item count shown in group headers. {0} is the culture-formatted item count.</comment>
+  </data>
+  <data name="TableViewGroupHeaderNull" xml:space="preserve">
+    <value>(null)</value>
+    <comment>Placeholder text shown in group headers when the grouping key is null.</comment>
+  </data>
+  <data name="TableViewGroupHeaderFallback" xml:space="preserve">
+    <value>(group)</value>
+    <comment>Placeholder text shown in group headers when the grouping key cannot be converted to a string.</comment>
+  </data>
+  <data name="TableViewSortedAscending" xml:space="preserve">
+    <value>Sorted by %1!s! ascending.</value>
+    <comment>Screen-reader announcement after the rows are sorted ascending. %1!s! is the column header text.</comment>
+  </data>
+  <data name="TableViewSortedDescending" xml:space="preserve">
+    <value>Sorted by %1!s! descending.</value>
+    <comment>Screen-reader announcement after the rows are sorted descending. %1!s! is the column header text.</comment>
+  </data>
+  <data name="TableViewSortCleared" xml:space="preserve">
+    <value>Sorting cleared for %1!s!.</value>
+    <comment>Screen-reader announcement after sorting is removed from one column. %1!s! is the column header text.</comment>
+  </data>
+  <data name="TableViewSortClearedAll" xml:space="preserve">
+    <value>All sorting cleared.</value>
+    <comment>Screen-reader announcement after sorting is removed from every column.</comment>
+  </data>
+  <data name="TableViewSortAscendingHelpText" xml:space="preserve">
+    <value>Sorted ascending</value>
+    <comment>Help text reported by a column header that is currently sorted ascending.</comment>
+  </data>
+  <data name="TableViewSortDescendingHelpText" xml:space="preserve">
+    <value>Sorted descending</value>
+    <comment>Help text reported by a column header that is currently sorted descending.</comment>
+  </data>
+  <data name="TableViewSortNoneHelpText" xml:space="preserve">
+    <value>Not sorted</value>
+    <comment>Help text reported by a sortable column header that is not currently sorted.</comment>
+  </data>
+  <data name="TableViewColumnHeaderHelpTextFormat" xml:space="preserve">
+    <value>%1!s!. %2!s!</value>
+    <comment>Joins a column header's tooltip text with its sort state when the header reports both as help text. %1!s! is the tooltip text; %2!s! is the sort-state help text.</comment>
+  </data>
+  <!-- Automation peer strings -->
+  <data name="TableViewColumnWidthChanged" xml:space="preserve">
+    <value>Column %1!s! width: %2!s! pixels.</value>
+    <comment>Assistive-technology announcement raised when a TableView column is resized, by pointer or by keyboard, while its header has focus. %1!s! is the column header text; %2!s! is the whole-pixel width.</comment>
+  </data>
+  <!-- Sort direction names (used in SaveLayoutToJson serialization — not localized at runtime but
+       kept here for documentation; code uses invariant English for round-trip fidelity) -->
+</root>

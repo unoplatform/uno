@@ -1,0 +1,324 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<!-- MUX Reference controls\dev\CommonStyles\TabularSurfaces_themeresources.xaml, tag winui3/release/2.5.4-experimental, commit 7b127093475 -->
+<!--
+    Tabular Surfaces — shared theming tokens for any control that paints tabular UI
+    (rows, headers, gridlines, cells, selection, focus). Authored as a framework
+    primitive so future controls (TableView, DataGrid, list-of-rows, etc.) consume
+    a single named-token surface instead of inventing their own brushes.
+
+    Token namespace: MUX_TabularSurface*
+        Row*           - row-level surfaces (background, hover, selected, foreground)
+        Header*        - column-header surfaces
+        GridLine*      - row/column separator brushes and metrics
+        Cell*          - cell-level metrics (padding)
+        Focus*         - focus-indicator brushes for cell/row focus
+
+    IMPORTANT — why literal SolidColorBrush per theme instead of <StaticResource>
+    aliases to TextFillColor*Brush / SubtleFillColor*Brush / etc.:
+
+    The aliased pattern (`<StaticResource ResourceKey="TextFillColorPrimaryBrush" />`)
+    works ONLY when this file is consumed via the dll's master themeresources.xaml
+    (produced by BatchMergeXaml + bundled in Microsoft.UI.Xaml.Controls.dll). In that
+    context every alias resolves against the same compiled XBF blob.
+
+    Consuming apps merge this file directly via
+       <ResourceDictionary Source="ms-appx:///TabularSurfaces_themeresources.xaml" />
+    because XamlControlsResources does NOT deploy the dll's master themeresources to
+    the consumer's package. When merged that way, the StaticResource aliases must
+    cross-reference into ANOTHER merged dictionary (XamlControlsResources's theme
+    dicts) at runtime — which the XAML resolver does NOT do reliably for keys nested
+    inside ThemeDictionaries blocks of a sibling MergedDictionary. The result was
+    silent fallbacks (Light-theme black brushes used in Dark theme → dark-on-dark
+    body cells + header text, hard to read).
+
+    Fix is to inline the WinUI Fluent color values per theme so the brushes are
+    self-contained. The hex values mirror controls/dev/CommonStyles/Common_themeresources_any.xaml
+    exactly so the visual identity stays in sync with the rest of WinUI. If the
+    Fluent design system tweaks a token, refresh the corresponding hex here.
+
+    HighContrast block continues to use {ThemeResource SystemColor*} which is a
+    re-resolving markup extension and works correctly across MergedDictionary
+    boundaries.
+-->
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+
+            <!-- Row backgrounds -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundBrush" Color="#00FFFFFF" />                          <!-- SubtleFillColorTransparent -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundAlternatingBrush" Color="#0FFFFFFF" />               <!-- SubtleFillColorSecondary -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundPointerOverBrush" Color="#0FFFFFFF" />               <!-- SubtleFillColorSecondary -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundPressedBrush" Color="#0AFFFFFF" />                   <!-- SubtleFillColorTertiary -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundSelectedBrush" Color="#0FFFFFFF" />                  <!-- SubtleFillColorSecondary -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundSelectedPointerOverBrush" Color="#0AFFFFFF" />       <!-- SubtleFillColorTertiary -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundSelectedPressedBrush" Color="#0FFFFFFF" />           <!-- SubtleFillColorSecondary -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundDisabledBrush" Color="#00FFFFFF" />                  <!-- SubtleFillColorTransparent -->
+            <SolidColorBrush x:Key="TabularSurfaceSelectionIndicatorBrush" Color="{ThemeResource SystemAccentColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceSelectionIndicatorDisabledBrush" Color="#5DFFFFFF" />
+
+            <!-- Row foregrounds -->
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundBrush" Color="#FFFFFF" />                            <!-- TextFillColorPrimary -->
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundSelectedBrush" Color="#FFFFFF" />                    <!-- TextFillColorPrimary -->
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundSelectedPointerOverBrush" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundSelectedPressedBrush" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundPointerOverBrush" Color="#FFFFFF" />                  <!-- TextFillColorPrimary (subtle pointer-over fill keeps primary text) -->
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundPressedBrush" Color="#FFFFFF" />                     <!-- TextFillColorPrimary -->
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundDisabledBrush" Color="#5DFFFFFF" />                  <!-- TextFillColorDisabled -->
+
+            <!-- Header surfaces. Header background bumped from #19 (~10%) to #26 (~15%) during visual tuning for
+                 visible step above row banding and proportional parity with the Light theme. -->
+            <SolidColorBrush x:Key="TabularSurfaceHeaderBackgroundBrush" Color="#26FFFFFF" />                       <!-- ~15% white (#26 alpha) -->
+            <SolidColorBrush x:Key="TabularSurfaceHeaderForegroundBrush" Color="#C5FFFFFF" />                       <!-- TextFillColorSecondary -->
+            <SolidColorBrush x:Key="TabularSurfaceHeaderSeparatorBrush" Color="#12FFFFFF" />                        <!-- ControlStrokeColorDefault -->
+
+            <!-- Group-header row surfaces (P2.8 grouped rows) -->
+            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderBackgroundBrush" Color="#4C3A3A3A" />                  <!-- LayerFillColorDefault -->
+            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderForegroundBrush" Color="#FFFFFF" />                    <!-- TextFillColorPrimary -->
+            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderCountForegroundBrush" Color="#C5FFFFFF" />             <!-- TextFillColorSecondary -->
+            <x:Double x:Key="TabularSurfaceGroupHeaderCountOpacity">0.7</x:Double>
+            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderBorderBrush" Color="Transparent" />
+            <Thickness x:Key="TabularSurfaceGroupHeaderBorderThickness">0</Thickness>
+
+            <!-- Grid lines. DividerStrokeColorDefault (~16% white on Dark) — visible above row
+                 banding without dominating the surface. Earlier ControlStrokeColorDefault (~7%
+                 white) was too faint at 1-px width on alternating rows. -->
+            <SolidColorBrush x:Key="TabularSurfaceGridLineBrush" Color="#29FFFFFF" />                               <!-- DividerStrokeColorDefault (Dark) — bumped 8.2%→16.1% for readability over banding -->
+            <Thickness x:Key="TabularSurfaceGridLineThickness">0,0,0,1</Thickness>
+            <Thickness x:Key="TabularSurfaceVerticalGridLineThickness">0,0,1,0</Thickness>
+
+            <!-- Cell metrics -->
+            <Thickness x:Key="TabularSurfaceCellPadding">12,4,12,4</Thickness>
+            <Thickness x:Key="TabularSurfaceHeaderCellPadding">8,4,8,4</Thickness>
+            <x:Double x:Key="TabularSurfaceRowMinHeight">28</x:Double>
+            <x:Double x:Key="TabularSurfaceHeaderMinHeight">40</x:Double>
+            <CornerRadius x:Key="TabularSurfaceCornerRadius">4</CornerRadius>
+
+            <!-- Focus / selection visuals -->
+            <SolidColorBrush x:Key="TabularSurfaceFocusBorderBrush" Color="#FFFFFF" />                              <!-- FocusStrokeColorOuter -->
+            <SolidColorBrush x:Key="TabularSurfaceSelectedBorderBrush" Color="{ThemeResource SystemAccentColor}" />
+            <Thickness x:Key="TabularSurfaceSelectedBorderThickness">2</Thickness>
+
+            <!-- Back-compat aliases: keep the old MUX_-prefixed key names so any out-of-tree
+                 consumer (or in-tree test) that references MUX_TabularSurface* by string still
+                 resolves to the same primary value. New consumers should reference the unprefixed
+                 keys above. The MUX_ aliases will be removed in a future cleanup when no consumer
+                 references them — track via grep `MUX_TabularSurface`. -->
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundBrush" ResourceKey="TabularSurfaceRowBackgroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundAlternatingBrush" ResourceKey="TabularSurfaceRowBackgroundAlternatingBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundPointerOverBrush" ResourceKey="TabularSurfaceRowBackgroundPointerOverBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundPressedBrush" ResourceKey="TabularSurfaceRowBackgroundPressedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundSelectedBrush" ResourceKey="TabularSurfaceRowBackgroundSelectedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundSelectedPointerOverBrush" ResourceKey="TabularSurfaceRowBackgroundSelectedPointerOverBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundSelectedPressedBrush" ResourceKey="TabularSurfaceRowBackgroundSelectedPressedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundDisabledBrush" ResourceKey="TabularSurfaceRowBackgroundDisabledBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceSelectionIndicatorBrush" ResourceKey="TabularSurfaceSelectionIndicatorBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundBrush" ResourceKey="TabularSurfaceRowForegroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundSelectedBrush" ResourceKey="TabularSurfaceRowForegroundSelectedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundSelectedPointerOverBrush" ResourceKey="TabularSurfaceRowForegroundSelectedPointerOverBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundSelectedPressedBrush" ResourceKey="TabularSurfaceRowForegroundSelectedPressedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundDisabledBrush" ResourceKey="TabularSurfaceRowForegroundDisabledBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderBackgroundBrush" ResourceKey="TabularSurfaceHeaderBackgroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderForegroundBrush" ResourceKey="TabularSurfaceHeaderForegroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderSeparatorBrush" ResourceKey="TabularSurfaceHeaderSeparatorBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderBackgroundBrush" ResourceKey="TabularSurfaceGroupHeaderBackgroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderForegroundBrush" ResourceKey="TabularSurfaceGroupHeaderForegroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderCountForegroundBrush" ResourceKey="TabularSurfaceGroupHeaderCountForegroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGridLineBrush" ResourceKey="TabularSurfaceGridLineBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGridLineThickness" ResourceKey="TabularSurfaceGridLineThickness" />
+            <StaticResource x:Key="MUX_TabularSurfaceVerticalGridLineThickness" ResourceKey="TabularSurfaceVerticalGridLineThickness" />
+            <StaticResource x:Key="MUX_TabularSurfaceCellPadding" ResourceKey="TabularSurfaceCellPadding" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderCellPadding" ResourceKey="TabularSurfaceHeaderCellPadding" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowMinHeight" ResourceKey="TabularSurfaceRowMinHeight" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderMinHeight" ResourceKey="TabularSurfaceHeaderMinHeight" />
+            <StaticResource x:Key="MUX_TabularSurfaceCornerRadius" ResourceKey="TabularSurfaceCornerRadius" />
+            <StaticResource x:Key="MUX_TabularSurfaceFocusBorderBrush" ResourceKey="TabularSurfaceFocusBorderBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceSelectedBorderBrush" ResourceKey="TabularSurfaceSelectedBorderBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceSelectedBorderThickness" ResourceKey="TabularSurfaceSelectedBorderThickness" />
+
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Light">
+
+            <!-- Light theme = Default. Same key set as Default (above) but with the
+                 WinUI Fluent Light-theme color values inlined per the IMPORTANT note
+                 at the top of this file. -->
+
+            <!-- Row backgrounds -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundBrush" Color="#00FFFFFF" />                          <!-- SubtleFillColorTransparent -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundAlternatingBrush" Color="#09000000" />               <!-- SubtleFillColorSecondary (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundPointerOverBrush" Color="#09000000" />               <!-- SubtleFillColorSecondary (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundPressedBrush" Color="#06000000" />                   <!-- SubtleFillColorTertiary (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundSelectedBrush" Color="#09000000" />                  <!-- SubtleFillColorSecondary (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundSelectedPointerOverBrush" Color="#06000000" />       <!-- SubtleFillColorTertiary (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundSelectedPressedBrush" Color="#09000000" />           <!-- SubtleFillColorSecondary (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundDisabledBrush" Color="#00FFFFFF" />                  <!-- SubtleFillColorTransparent -->
+            <SolidColorBrush x:Key="TabularSurfaceSelectionIndicatorBrush" Color="{ThemeResource SystemAccentColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceSelectionIndicatorDisabledBrush" Color="#5C000000" />
+
+            <!-- Row foregrounds -->
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundBrush" Color="#E4000000" />                          <!-- TextFillColorPrimary (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundSelectedBrush" Color="#E4000000" />                  <!-- TextFillColorPrimary (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundSelectedPointerOverBrush" Color="#E4000000" />
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundSelectedPressedBrush" Color="#E4000000" />
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundPointerOverBrush" Color="#E4000000" />              <!-- TextFillColorPrimary (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundPressedBrush" Color="#E4000000" />                 <!-- TextFillColorPrimary (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundDisabledBrush" Color="#5C000000" />                  <!-- TextFillColorDisabled (Light) -->
+
+            <!-- Header surfaces. Header background bumped from #19 (~10%) to #26 (~15%) during visual tuning for
+                 clearer contrast above row banding (matches WPF DataGrid header strip). -->
+            <SolidColorBrush x:Key="TabularSurfaceHeaderBackgroundBrush" Color="#26000000" />                       <!-- ~15% black (#26 alpha) -->
+            <SolidColorBrush x:Key="TabularSurfaceHeaderForegroundBrush" Color="#9E000000" />                       <!-- TextFillColorSecondary (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceHeaderSeparatorBrush" Color="#0F000000" />                        <!-- ControlStrokeColorDefault (Light) -->
+
+            <!-- Grid lines. DividerStrokeColorDefault (~16% black on Light) — visible above row
+                 banding without dominating the surface. Earlier ControlStrokeColorDefault (~6%
+                 black) was too faint at 1-px width on alternating rows. -->
+            <SolidColorBrush x:Key="TabularSurfaceGridLineBrush" Color="#29000000" />                               <!-- DividerStrokeColorDefault (Light) -->
+            <Thickness x:Key="TabularSurfaceGridLineThickness">0,0,0,1</Thickness>
+            <Thickness x:Key="TabularSurfaceVerticalGridLineThickness">0,0,1,0</Thickness>
+
+            <!-- Cell metrics -->
+            <Thickness x:Key="TabularSurfaceCellPadding">12,4,12,4</Thickness>
+            <Thickness x:Key="TabularSurfaceHeaderCellPadding">8,4,8,4</Thickness>
+            <x:Double x:Key="TabularSurfaceRowMinHeight">28</x:Double>
+            <x:Double x:Key="TabularSurfaceHeaderMinHeight">40</x:Double>
+            <CornerRadius x:Key="TabularSurfaceCornerRadius">4</CornerRadius>
+
+            <!-- Focus / selection visuals -->
+            <SolidColorBrush x:Key="TabularSurfaceFocusBorderBrush" Color="#E4000000" />                            <!-- FocusStrokeColorOuter (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceSelectedBorderBrush" Color="{ThemeResource SystemAccentColor}" />
+            <Thickness x:Key="TabularSurfaceSelectedBorderThickness">2</Thickness>
+
+
+            <!-- Group header surfaces (parity with Default theme) -->
+            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderBackgroundBrush" Color="#14000000" />                  <!-- subtle group-header band, a touch darker than the rows (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderForegroundBrush" Color="#E4000000" />                  <!-- TextFillColorPrimary (Light) -->
+            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderCountForegroundBrush" Color="#9E000000" />             <!-- TextFillColorSecondary (Light) -->
+            <x:Double x:Key="TabularSurfaceGroupHeaderCountOpacity">0.7</x:Double>
+            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderBorderBrush" Color="Transparent" />
+            <Thickness x:Key="TabularSurfaceGroupHeaderBorderThickness">0</Thickness>
+
+            <!-- Back-compat aliases (see Default theme dict for rationale). -->
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundBrush" ResourceKey="TabularSurfaceRowBackgroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundAlternatingBrush" ResourceKey="TabularSurfaceRowBackgroundAlternatingBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundPointerOverBrush" ResourceKey="TabularSurfaceRowBackgroundPointerOverBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundPressedBrush" ResourceKey="TabularSurfaceRowBackgroundPressedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundSelectedBrush" ResourceKey="TabularSurfaceRowBackgroundSelectedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundSelectedPointerOverBrush" ResourceKey="TabularSurfaceRowBackgroundSelectedPointerOverBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundSelectedPressedBrush" ResourceKey="TabularSurfaceRowBackgroundSelectedPressedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundDisabledBrush" ResourceKey="TabularSurfaceRowBackgroundDisabledBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceSelectionIndicatorBrush" ResourceKey="TabularSurfaceSelectionIndicatorBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundBrush" ResourceKey="TabularSurfaceRowForegroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundSelectedBrush" ResourceKey="TabularSurfaceRowForegroundSelectedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundSelectedPointerOverBrush" ResourceKey="TabularSurfaceRowForegroundSelectedPointerOverBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundSelectedPressedBrush" ResourceKey="TabularSurfaceRowForegroundSelectedPressedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundDisabledBrush" ResourceKey="TabularSurfaceRowForegroundDisabledBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderBackgroundBrush" ResourceKey="TabularSurfaceHeaderBackgroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderForegroundBrush" ResourceKey="TabularSurfaceHeaderForegroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderSeparatorBrush" ResourceKey="TabularSurfaceHeaderSeparatorBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGridLineBrush" ResourceKey="TabularSurfaceGridLineBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGridLineThickness" ResourceKey="TabularSurfaceGridLineThickness" />
+            <StaticResource x:Key="MUX_TabularSurfaceVerticalGridLineThickness" ResourceKey="TabularSurfaceVerticalGridLineThickness" />
+            <StaticResource x:Key="MUX_TabularSurfaceCellPadding" ResourceKey="TabularSurfaceCellPadding" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderCellPadding" ResourceKey="TabularSurfaceHeaderCellPadding" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowMinHeight" ResourceKey="TabularSurfaceRowMinHeight" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderMinHeight" ResourceKey="TabularSurfaceHeaderMinHeight" />
+            <StaticResource x:Key="MUX_TabularSurfaceCornerRadius" ResourceKey="TabularSurfaceCornerRadius" />
+            <StaticResource x:Key="MUX_TabularSurfaceFocusBorderBrush" ResourceKey="TabularSurfaceFocusBorderBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceSelectedBorderBrush" ResourceKey="TabularSurfaceSelectedBorderBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceSelectedBorderThickness" ResourceKey="TabularSurfaceSelectedBorderThickness" />
+            <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderBackgroundBrush" ResourceKey="TabularSurfaceGroupHeaderBackgroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderForegroundBrush" ResourceKey="TabularSurfaceGroupHeaderForegroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderCountForegroundBrush" ResourceKey="TabularSurfaceGroupHeaderCountForegroundBrush" />
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="HighContrast">
+            <!-- §1.13 audit 2026-05-21: all brushes use ThemeResource System*Color tokens. -->
+
+            <!-- Row backgrounds -->
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundAlternatingBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundPointerOverBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundPressedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundSelectedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundSelectedPointerOverBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundSelectedPressedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowBackgroundDisabledBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceSelectionIndicatorBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceSelectionIndicatorDisabledBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+
+            <!-- Row foregrounds -->
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundSelectedBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundSelectedPointerOverBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundSelectedPressedBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundPointerOverBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundPressedBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceRowForegroundDisabledBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+
+            <!-- Header surfaces -->
+            <SolidColorBrush x:Key="TabularSurfaceHeaderBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceHeaderForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceHeaderSeparatorBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+
+            <!-- Group-header row surfaces (P2.8 grouped rows) -->
+            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderCountForegroundBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <x:Double x:Key="TabularSurfaceGroupHeaderCountOpacity">1.0</x:Double>
+            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <Thickness x:Key="TabularSurfaceGroupHeaderBorderThickness">0,1,0,1</Thickness>
+
+            <!-- Grid lines -->
+            <SolidColorBrush x:Key="TabularSurfaceGridLineBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <Thickness x:Key="TabularSurfaceGridLineThickness">0,0,0,1</Thickness>
+            <Thickness x:Key="TabularSurfaceVerticalGridLineThickness">0,0,1,0</Thickness>
+
+            <!-- Cell metrics -->
+            <Thickness x:Key="TabularSurfaceCellPadding">12,4,12,4</Thickness>
+            <Thickness x:Key="TabularSurfaceHeaderCellPadding">8,4,8,4</Thickness>
+            <x:Double x:Key="TabularSurfaceRowMinHeight">28</x:Double>
+            <x:Double x:Key="TabularSurfaceHeaderMinHeight">40</x:Double>
+            <CornerRadius x:Key="TabularSurfaceCornerRadius">4</CornerRadius>
+
+            <!-- Focus / selection visuals -->
+            <SolidColorBrush x:Key="TabularSurfaceFocusBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="TabularSurfaceSelectedBorderBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <Thickness x:Key="TabularSurfaceSelectedBorderThickness">2</Thickness>
+
+            <!-- Back-compat aliases (see Default theme dict for rationale). -->
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundBrush" ResourceKey="TabularSurfaceRowBackgroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundAlternatingBrush" ResourceKey="TabularSurfaceRowBackgroundAlternatingBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundPointerOverBrush" ResourceKey="TabularSurfaceRowBackgroundPointerOverBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundPressedBrush" ResourceKey="TabularSurfaceRowBackgroundPressedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundSelectedBrush" ResourceKey="TabularSurfaceRowBackgroundSelectedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundSelectedPointerOverBrush" ResourceKey="TabularSurfaceRowBackgroundSelectedPointerOverBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundSelectedPressedBrush" ResourceKey="TabularSurfaceRowBackgroundSelectedPressedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowBackgroundDisabledBrush" ResourceKey="TabularSurfaceRowBackgroundDisabledBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceSelectionIndicatorBrush" ResourceKey="TabularSurfaceSelectionIndicatorBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundBrush" ResourceKey="TabularSurfaceRowForegroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundSelectedBrush" ResourceKey="TabularSurfaceRowForegroundSelectedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundSelectedPointerOverBrush" ResourceKey="TabularSurfaceRowForegroundSelectedPointerOverBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundSelectedPressedBrush" ResourceKey="TabularSurfaceRowForegroundSelectedPressedBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowForegroundDisabledBrush" ResourceKey="TabularSurfaceRowForegroundDisabledBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderBackgroundBrush" ResourceKey="TabularSurfaceHeaderBackgroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderForegroundBrush" ResourceKey="TabularSurfaceHeaderForegroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderSeparatorBrush" ResourceKey="TabularSurfaceHeaderSeparatorBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderBackgroundBrush" ResourceKey="TabularSurfaceGroupHeaderBackgroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderForegroundBrush" ResourceKey="TabularSurfaceGroupHeaderForegroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderCountForegroundBrush" ResourceKey="TabularSurfaceGroupHeaderCountForegroundBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGridLineBrush" ResourceKey="TabularSurfaceGridLineBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceGridLineThickness" ResourceKey="TabularSurfaceGridLineThickness" />
+            <StaticResource x:Key="MUX_TabularSurfaceVerticalGridLineThickness" ResourceKey="TabularSurfaceVerticalGridLineThickness" />
+            <StaticResource x:Key="MUX_TabularSurfaceCellPadding" ResourceKey="TabularSurfaceCellPadding" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderCellPadding" ResourceKey="TabularSurfaceHeaderCellPadding" />
+            <StaticResource x:Key="MUX_TabularSurfaceRowMinHeight" ResourceKey="TabularSurfaceRowMinHeight" />
+            <StaticResource x:Key="MUX_TabularSurfaceHeaderMinHeight" ResourceKey="TabularSurfaceHeaderMinHeight" />
+            <StaticResource x:Key="MUX_TabularSurfaceCornerRadius" ResourceKey="TabularSurfaceCornerRadius" />
+            <StaticResource x:Key="MUX_TabularSurfaceFocusBorderBrush" ResourceKey="TabularSurfaceFocusBorderBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceSelectedBorderBrush" ResourceKey="TabularSurfaceSelectedBorderBrush" />
+            <StaticResource x:Key="MUX_TabularSurfaceSelectedBorderThickness" ResourceKey="TabularSurfaceSelectedBorderThickness" />
+
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>
