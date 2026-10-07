@@ -11,11 +11,13 @@
 		<license type="expression">Apache-2.0</license>
 		<icon>uno.png</icon>
 		<description>
-			Support for Lottie on Uno.WinUI.
+			The Skottie (SkiaSharp.Skottie) Lottie renderer for Uno Platform, plugged into the Lottie renderer seam of
+			Uno.WinUI.
 
-			This is the Uno-compatible version of the package Microsoft.Toolkit.Uwp.UI.Lottie.
+			AnimatedVisualPlayer and LottieVisualSource are part of Uno.WinUI, which also includes a managed Lottie
+			engine that is used when this package is not referenced. This renderer requires SkiaSharp.
 
-			Original documentation: https://docs.microsoft.com/windows/communitytoolkit/animations/lottie
+			Documentation: https://platform.uno/docs/articles/features/Lottie.html
 		</description>
 		<copyright>Copyright (C) 2015-2019 Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />

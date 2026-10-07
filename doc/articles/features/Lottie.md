@@ -31,29 +31,22 @@ Add the following namespaces:
 </winui:AnimatedVisualPlayer>
 ```
 
-### References in a Single Project
+### References
 
-In Uno Platform Single Project, you'll need to add the `Lottie` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
+`AnimatedVisualPlayer`, `LottieVisualSource` and `ThemableLottieVisualSource` are part of Uno Platform, so no package or [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) is needed on Uno Platform targets. The Skottie renderer comes with Skia: the `Uno.Sdk` references `Uno.WinUI.Lottie` whenever the Skia renderer is used, which is the default. See [Lottie renderers](#lottie-renderers) below.
 
-```xml
-<UnoFeatures>
-    ...
-    Lottie;
-    ...
-</UnoFeatures>
-```
+On Windows (WinAppSDK), reference the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
 
-### References in a Legacy Project
+### Lottie renderers
 
-On all Uno Platform targets, you'll need the following packages:
+On Uno Platform targets, Lottie animations are rendered by one of two renderers:
 
-* `Uno.WinUI.Lottie` (for the `LottieVisualSource`)
+| Renderer | Used when | Coverage | Drawing backends |
+|----------|-----------|----------|------------------|
+| Skottie (`Uno.WinUI.Lottie` package) | The Skia renderer is used, which is the default. | Most Lottie features, as supported by [Skottie](https://skia.org/docs/user/modules/skottie/) | Skia, drawn as vectors. WebGPU, each frame is rasterized and uploaded as a texture. Requires SkiaSharp. |
+| Managed engine (built into `Uno.WinUI`) | The Skia renderer is not used, for example in a WebGPU-only app | Shape and null layers, layer parenting, transforms, bézier, rectangle and ellipse paths, solid fills, strokes and trim paths, with keyframe easing. Gradients, repeaters, masks, mattes, precompositions, image and text layers, and effects are not supported yet: unsupported items are skipped. | Skia and WebGPU, drawn as vectors |
 
-Additionally, on Skia Desktop targets, you'll need `SkiaSharp.Skottie` version 4.148.0 or later.
-
-It is supplied at the version the Uno.Sdk manages (`4.151.1` in Uno Platform 7.0), so an Uno.Sdk project needs no explicit reference.
-
-On Windows/WinAppSDK, use the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
+An app can also register a renderer explicitly with the `LottieRenderer(...)` method of the host builder, which takes precedence over both.
 
 For more information, see [AnimatedVisualPlayer Class](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer).
 

@@ -11,7 +11,10 @@
 		<license type="expression">Apache-2.0</license>
 		<icon>uno.png</icon>
 		<description>
-			Support for Svg on Uno.WinUI.
+			Replaces the managed SVG engine built into Uno.WinUI with the Svg.Skia renderer, which covers SVG features
+			the managed engine does not, such as text, clip paths, masks, filters, patterns and embedded images.
+
+			Uno.WinUI renders SVG without this package. This renderer requires SkiaSharp.
 		</description>
 		<copyright>Copyright (C) 2015-2022 uno platform inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
