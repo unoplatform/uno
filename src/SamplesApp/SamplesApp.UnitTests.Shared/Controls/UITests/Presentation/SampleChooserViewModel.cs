@@ -955,7 +955,8 @@ namespace SampleControl.Presentation
 								? favoriteSamples           // Use the parameter if it exists
 								: FavoriteSamples;    // Use the DynamicProperty
 
-			foreach (var sample in samples)
+			// No category is selected until the library is browsed, so there may be no sample list yet.
+			foreach (var sample in samples.Safe())
 			{
 				UpdateFavoriteForSample(sample, favorites.Contains(sample));
 			}
