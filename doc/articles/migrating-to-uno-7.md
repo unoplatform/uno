@@ -978,13 +978,19 @@ recompile against 7.0 rather than swapping assemblies in place.
   (was `provider`). The `Equals` overloads and `==`/`!=` operators of `KeyTime`,
   `RepeatBehavior`, `Thickness`, `CornerRadius`, `GridLength` and `Duration` take WinUI's
   parameter names too (for example `keyTime1`/`keyTime2` instead of `t1`/`t2`, and
-  `thickness` instead of `other`). Only named arguments are affected. `Matrix` also gains WinUI's
-  `ToString(IFormatProvider)` overload.
+  `thickness` instead of `other`). Only named arguments are affected.
+
+- **`Matrix.ToString()` formats like WinUI.** `Matrix` gains WinUI's
+  `ToString(IFormatProvider)` overload, and `ToString()` now goes through it: the identity
+  matrix prints `Identity`, and under a culture whose decimal separator is `,` the values are
+  separated by `;` (for example `1,5;0;0;2;3;4` in `de-DE`). Code that parses or compares the
+  string should format the components itself.
 
 - **`ToggleSwitch`'s `OnToggled`, `OnHeaderChanged`, `OnOnContentChanged` and
   `OnOffContentChanged` are no longer virtual.** WinUI's `ToggleSwitch` is sealed and these
-  are plain `protected` methods. A subclass overriding them should handle the `Toggled`
-  event or watch the matching dependency property instead.
+  are plain `protected` methods. Uno keeps `ToggleSwitch` unsealed, so a subclass still
+  compiles but can no longer override these hooks; handle the `Toggled` event or watch the
+  matching dependency property instead.
 
 - **`Inline` is no longer abstract.** WinUI's `Inline` is a concrete class with a protected
   constructor; Uno's now matches. Existing subclasses are unaffected.
