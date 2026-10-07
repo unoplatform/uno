@@ -66,6 +66,8 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 	void IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
 	{
+		// Pending so the text change itself lands the caret here instead of passing through 0.
+		SetPendingSelection(selectionStart, selectionLength);
 		ProcessTextInput(text);
 		Select(selectionStart, selectionLength);
 	}
