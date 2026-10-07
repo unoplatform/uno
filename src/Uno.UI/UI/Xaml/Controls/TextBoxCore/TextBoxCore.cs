@@ -728,7 +728,14 @@ internal sealed partial class TextBoxCore
 	{
 		if (_placeHolder != null)
 		{
-			_placeHolder.Visibility = Text.IsNullOrEmpty() ? Visibility.Visible : Visibility.Collapsed;
+			var isEmpty = Text.IsNullOrEmpty();
+			if (!isEmpty && Owner.GetValue(Microsoft.UI.Xaml.Automation.AutomationProperties.DescribedByProperty) is global::System.Collections.Generic.IList<DependencyObject> { Count: > 0 })
+			{
+				// Matches WinUI's UpdatePlaceholderTextPresenterVisibility: a hidden placeholder must not keep describing the control.
+				DirectUI.TextBoxPlaceholderTextHelper.ClearPlaceholderTextBlockDescribedBy(Owner);
+			}
+
+			_placeHolder.Visibility = isEmpty ? Visibility.Visible : Visibility.Collapsed;
 		}
 	}
 

@@ -126,7 +126,7 @@ partial class TextBoxPlaceholderTextHelper
 		}
 	}
 
-	private static void ClearPlaceholderTextBlockDescribedBy(UIElement textBox)
+	internal static void ClearPlaceholderTextBlockDescribedBy(UIElement textBox)
 	{
 		var spOwner = textBox;
 		var textBlock = GetTextBlockFromOwner(spOwner, true /*considerCollapsedTextBlocks*/);
