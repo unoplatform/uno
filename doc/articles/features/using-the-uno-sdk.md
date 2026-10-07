@@ -330,9 +330,9 @@ If you still need one of the stripped packages on Windows for a specific reason,
 When `UnoFeatures` includes `MVUX`, the `Uno.Sdk` also references [`Uno.HotTesting.Reactive`](https://www.nuget.org/packages/Uno.HotTesting.Reactive) in builds where `Optimize` is not `true` (Debug, by default). The package provides MVUX feed mocks for previews and UI tests, and is meant to stay out of published apps:
 
 - It is absent from optimized (Release) builds. Code that uses its types must only compile in non-optimized builds, for example under `#if DEBUG`, or the Release build fails.
-- It is referenced with `PrivateAssets="all"`, so it does not flow to projects that reference yours, nor into the package of a library packed in Debug. A test project that uses it references it directly.
-- It follows `UnoExtensionsVersion`, and is skipped when that version is older than 7.4, the first Extensions release that ships it.
-- Debug and Release restore different packages. If you use `RestoreLockedMode`, give each configuration its own lock file, e.g. `<NuGetLockFilePath>packages.$(Configuration).lock.json</NuGetLockFilePath>`.
+- It is referenced with `PrivateAssets="all"`, so it does not flow to projects that reference yours, nor into the package of a library packed in Debug. A test project that doesn't use the `MVUX` feature references it directly, at the same version as the app's Uno.Extensions packages.
+- It follows `UnoExtensionsVersion`, and is skipped (`UNOB0028`) when that version is older than the 7.4 builds that first ship it, or is a floating version or a range.
+- Debug and Release restore different packages. Restore the configuration you build before any `--no-restore` build, and if you use `RestoreLockedMode`, give each configuration its own lock file, e.g. `<NuGetLockFilePath>packages.$(Configuration).lock.json</NuGetLockFilePath>`.
 
 To turn the implicit reference off:
 
