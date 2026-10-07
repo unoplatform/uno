@@ -195,6 +195,14 @@ namespace Uno.UI.Runtime.Android
 				return base.DispatchGenericMotionEvent(ev);
 			}
 
+			// TalkBack's touch exploration turns finger touches into hover probes, which only the view tree routes to the
+			// render view's accessibility helper. They are screen reader gestures, never XAML pointer input.
+			if (IsTouchExplorationHover(ev))
+			{
+				base.DispatchGenericMotionEvent(ev);
+				return true;
+			}
+
 			var nativelyHandled = false;
 			if (_nativeLayerHost?.Path?.FillContains(new global::System.Numerics.Vector2(ev.GetX(), ev.GetY())) ?? false)
 			{
@@ -213,6 +221,12 @@ namespace Uno.UI.Runtime.Android
 			// as we assume that anyway we are the fully opaque (i.e. the pointer should not be dispatch to any element under this current ApplicationActivity).
 			return true;
 		}
+
+		private bool IsTouchExplorationHover(MotionEvent ev)
+			=> ev.ActionMasked is MotionEventActions.HoverEnter or MotionEventActions.HoverMove or MotionEventActions.HoverExit
+				&& ev.IsFromSource(InputSourceType.Touchscreen)
+				&& ev.GetToolType(0) == MotionEventToolType.Finger
+				&& GetSystemService(AccessibilityService) is global::Android.Views.Accessibility.AccessibilityManager { IsEnabled: true, IsTouchExplorationEnabled: true };
 
 		public override bool DispatchTouchEvent(MotionEvent? ev)
 		{
