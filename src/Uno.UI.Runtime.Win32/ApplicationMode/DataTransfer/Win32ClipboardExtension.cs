@@ -28,12 +28,11 @@ namespace Uno.UI.Runtime.Win32;
 
 internal partial class Win32ClipboardExtension : IClipboardExtension
 {
-	private const ulong MaxClipboardFormatBytes = 32ul * 1024 * 1024;
-	private const ulong MaxClipboardSnapshotBytes = 64ul * 1024 * 1024;
+	// Budget for the eager drag-enter snapshot only; explicit clipboard reads are not capped.
+	private const ulong MaxClipboardFormatBytes = 256ul * 1024 * 1024;
+	private const ulong MaxClipboardSnapshotBytes = 512ul * 1024 * 1024;
 	private const int MaxClipboardSnapshotFormats = 128;
-	private const uint MaxFileDropItems = 4096;
 	private const uint MaxFileDropPathCharacters = 32_767;
-	private const uint MaxFileDropTotalCharacters = 1_048_576;
 	// DROPFILES is a fixed 20-byte Win32 header followed by the path payload.
 	private const int DropFilesHeaderSize = 20;
 
@@ -616,9 +615,9 @@ partial class Win32ClipboardExtension // from clipboard
 		}
 
 		var formatBytes = (ulong)PInvoke.GlobalSize((HGLOBAL)(IntPtr)handle);
-		if (formatBytes == 0 || formatBytes > MaxClipboardFormatBytes)
+		if (formatBytes == 0)
 		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"Clipboard format '{name}' has an invalid or oversized payload ({formatBytes} bytes).");
+			typeof(Win32ClipboardExtension).LogError()?.Error($"Clipboard format '{name}' has an empty payload.");
 			return (FetchOutcome.Failed, null);
 		}
 

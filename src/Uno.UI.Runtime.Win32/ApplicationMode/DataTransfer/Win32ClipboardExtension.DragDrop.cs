@@ -98,7 +98,7 @@ internal partial class Win32ClipboardExtension
 	internal static unsafe List<string>? GetFileDropPaths(HGLOBAL handle)
 	{
 		var allocationSize = (ulong)PInvoke.GlobalSize(handle);
-		if (allocationSize < DropFilesHeaderSize || allocationSize > MaxClipboardFormatBytes)
+		if (allocationSize < DropFilesHeaderSize)
 		{
 			typeof(Win32ClipboardExtension).LogError()?.Error($"The HDROP allocation size {allocationSize} is invalid.");
 			return null;
@@ -119,14 +119,7 @@ internal partial class Win32ClipboardExtension
 			return null;
 		}
 
-		if (filesDropped > MaxFileDropItems)
-		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"HDROP contains more than {MaxFileDropItems} items.");
-			return null;
-		}
-
 		var paths = new List<string>((int)filesDropped);
-		uint totalCharacters = 0;
 		for (uint i = 0; i < filesDropped; i++)
 		{
 			var charLength = PInvoke.DragQueryFile(hDrop, i, new PWSTR(), 0);
@@ -135,12 +128,11 @@ internal partial class Win32ClipboardExtension
 				typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying buffer length: {Win32Helper.GetErrorMessage()}");
 				continue;
 			}
-			if (charLength > MaxFileDropPathCharacters || totalCharacters > MaxFileDropTotalCharacters - charLength)
+			if (charLength > MaxFileDropPathCharacters)
 			{
-				typeof(Win32ClipboardExtension).LogError()?.Error("HDROP exceeds the file-path character budget.");
-				return null;
+				typeof(Win32ClipboardExtension).LogError()?.Error($"HDROP item {i} exceeds the maximum path length and was skipped.");
+				continue;
 			}
-			totalCharacters += charLength;
 
 			var bufferLength = charLength + 1; // + 1 for \0
 			var buffer = Marshal.AllocHGlobal((IntPtr)(bufferLength * Unsafe.SizeOf<char>()));
@@ -149,7 +141,7 @@ internal partial class Win32ClipboardExtension
 			if (charsWritten == 0)
 			{
 				typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying file path: {Win32Helper.GetErrorMessage()}");
-				return null;
+				continue;
 			}
 			paths.Add(Marshal.PtrToStringUni(buffer, (int)charsWritten));
 		}
