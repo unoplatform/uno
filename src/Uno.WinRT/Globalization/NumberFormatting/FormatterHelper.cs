@@ -87,6 +87,57 @@ namespace Uno.Globalization.NumberFormatting
 			AppendFormatFractionPart(value, stringBuilder);
 		}
 
+		public void AppendFormatInteger(ulong magnitude, bool isNegative, StringBuilder stringBuilder)
+		{
+			var numberFormat = CultureInfo.InvariantCulture.NumberFormat;
+
+			if (isNegative)
+			{
+				stringBuilder.Append(numberFormat.NegativeSign);
+			}
+
+			var digits = magnitude.ToString(CultureInfo.InvariantCulture);
+			if (digits.Length < IntegerDigits)
+			{
+				digits = digits.PadLeft(IntegerDigits, '0');
+			}
+
+			if (IsGrouped)
+			{
+				var groupSize = numberFormat.NumberGroupSizes[0];
+				var firstGroupLength = digits.Length % groupSize;
+				if (firstGroupLength == 0)
+				{
+					firstGroupLength = groupSize;
+				}
+
+				stringBuilder.Append(digits, 0, firstGroupLength);
+				for (var i = firstGroupLength; i < digits.Length; i += groupSize)
+				{
+					stringBuilder.Append(numberFormat.NumberGroupSeparator);
+					stringBuilder.Append(digits, i, groupSize);
+				}
+			}
+			else
+			{
+				stringBuilder.Append(digits);
+			}
+
+			// An integer has no fraction of its own, so only the requested trailing zeros are shown.
+			var integerLength = magnitude.ToString(CultureInfo.InvariantCulture).Length;
+			var fractionDigits = Math.Max(FractionDigits, SignificantDigits - integerLength);
+
+			if (fractionDigits > 0)
+			{
+				stringBuilder.Append(numberFormat.NumberDecimalSeparator);
+				stringBuilder.Append('0', fractionDigits);
+			}
+			else if (IsDecimalPointAlwaysDisplayed)
+			{
+				stringBuilder.Append(numberFormat.NumberDecimalSeparator);
+			}
+		}
+
 		private void AppendFormatIntegerPart(double value, StringBuilder stringBuilder)
 		{
 			var integerPart = (int)Math.Truncate(value);
