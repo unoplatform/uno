@@ -156,7 +156,10 @@ namespace Windows.UI.ViewManagement
 
 		// TODO Uno: Not read from the host system (Win32 GetDoubleClickTime). Matches the multi-tap delay
 		// of Uno's GestureRecognizer (MultiTapMaxDelayMicroseconds in Uno.UI), so both agree.
-		public uint DoubleClickTime => 500;
+		public uint DoubleClickTime => GetDoubleClickTime();
+
+		// Allocation-free read for framework code that needs the value per input event.
+		internal static uint GetDoubleClickTime() => 500;
 
 		[NotImplemented]
 		public global::Windows.UI.ViewManagement.HandPreference HandPreference
