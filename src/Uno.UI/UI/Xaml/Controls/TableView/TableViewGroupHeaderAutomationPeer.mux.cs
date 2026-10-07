@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewGroupHeaderAutomationPeer.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableViewGroupHeaderAutomationPeer.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -8,6 +8,8 @@ using System;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
+
+using static Microsoft.UI.Xaml.Controls.Tabular.TableViewAutomationHelpers;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
 
@@ -56,22 +58,55 @@ partial class TableViewGroupHeaderAutomationPeer
 		// being assembled here.
 		if (GetHeader() is { } header)
 		{
+			var name = AutomationProperties.GetName(header);
+			if (!string.IsNullOrEmpty(name))
+			{
+				return name;
+			}
+			if (GetLabeledBy() is { } label)
+			{
+				var labelName = label.GetName();
+				if (!string.IsNullOrEmpty(labelName))
+				{
+					return labelName;
+				}
+			}
 			if (header.Content is TableViewGroupInfo info)
 			{
-				var keyText = info.KeyText;
-				var countText = info.ItemCountText;
-				if (!string.IsNullOrEmpty(keyText) && !string.IsNullOrEmpty(countText))
+				var infoName = GroupInfoToName(info);
+				if (!string.IsNullOrEmpty(infoName))
 				{
-					return keyText + " " + countText;
-				}
-				if (!string.IsNullOrEmpty(keyText))
-				{
-					return keyText;
+					return infoName;
 				}
 			}
 		}
 
 		return base.GetNameCore();
+	}
+
+	protected override int GetLevelCore()
+	{
+		// An app-set AutomationProperties.Level wins, as in the dxaml peers that compute this.
+		var provided = base.GetLevelCore();
+		if (provided > 0)
+		{
+			return provided;
+		}
+
+		// 1-based per UIA; 0 means "unknown", the honest answer once the projection info is gone.
+		if (GetHeader() is { } header)
+		{
+			if (header.Content is TableViewGroupInfo info)
+			{
+				var level = info.Level;
+				if (level >= 0)
+				{
+					return level + 1;
+				}
+			}
+		}
+
+		return 0;
 	}
 
 	internal void RaiseExpandCollapseAutomationEvent(
