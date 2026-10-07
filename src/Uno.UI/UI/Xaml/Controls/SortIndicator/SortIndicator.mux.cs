@@ -22,8 +22,8 @@ partial class SortIndicator
 
 	// Segoe Fluent Icons ScrollChevronUpLegacy / ScrollChevronDownLegacy -- chevrons, not the
 	// SortUp/SortDown glyphs, because a chevron reads correctly at header scale.
-	private const string s_AscendingGlyph = "";
-	private const string s_DescendingGlyph = "";
+	private const string s_AscendingGlyph = "\uE96D";
+	private const string s_DescendingGlyph = "\uE96E";
 
 	public SortIndicator()
 	{

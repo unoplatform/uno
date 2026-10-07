@@ -14,10 +14,6 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableViewSource
 {
-	// TODO Uno: Original C++ anonymous-namespace alias
-	// namespace tabularPrimitives = winrt::Microsoft::UI::Xaml::Controls::Tabular::Primitives::implementation;
-	// is covered by the `using Microsoft.UI.Xaml.Controls.Tabular.Primitives;` directive.
-
 	// TODO Uno: Original C++: TableViewSource::~TableViewSource() = default;
 
 	internal TableViewSource(object? items)
@@ -77,7 +73,6 @@ partial class TableViewSource
 	// keySelector: required, non-null (throws E_INVALIDARG when null; use ClearGroupBy() to
 	// remove grouping). Overload metadata is frozen at v1 — without it MIDL bakes GroupBy2 into
 	// the ABI.
-	// TODO Uno: MIDL overload-naming note; C# overloads need no ABI method_name.
 	/// <summary>
 	/// Groups the source by the key the specified selector returns.
 	/// </summary>
@@ -229,7 +224,6 @@ partial class TableViewSource
 	// path replaces that axis in place rather than adding a second one.
 	// Throws E_INVALIDARG when sortMemberPath is empty.
 	// Overload metadata is frozen at v1 — without it MIDL bakes Sort2 into the ABI.
-	// TODO Uno: MIDL overload-naming note; C# overloads need no ABI method_name.
 	/// <summary>
 	/// Sorts the source by the property the specified path names, evaluated the same way a column evaluates
 	/// its SortMemberPath. Re-sorting the same path replaces that axis in place.
@@ -283,8 +277,7 @@ partial class TableViewSource
 		// The engine stores a std::function, which cannot be compared, so the delegate itself is
 		// handed over as the axis identity. The wrapping lambda holds a strong ref to that same
 		// delegate, so the identity stays valid for as long as the axis lives.
-		// TODO Uno: Original C++ passes key.as<winrt::Windows::Foundation::IUnknown>(); the delegate object is
-		// its own identity on .NET.
+		// key.as<IUnknown>(): the delegate object is its own identity on .NET.
 		m_engine.SetSort(
 			previousSortAxisToken,
 			sortAxisToken,

@@ -1108,7 +1108,15 @@ partial class TableView
 			{
 				if (repeater.ItemsSourceView is { } view)
 				{
-					global::System.Collections.Specialized.NotifyCollectionChangedEventHandler handler = OnEmptyStateItemsSourceCollectionChanged;
+					// TODO Uno: C++ captures a raw, non-owning this; a weak capture keeps a long-lived source from rooting the control.
+					WeakReference<TableView> weakThis = new(this);
+					global::System.Collections.Specialized.NotifyCollectionChangedEventHandler handler = (s, a) =>
+					{
+						if (weakThis.TryGetTarget(out var strongThis))
+						{
+							strongThis.OnEmptyStateItemsSourceCollectionChanged(s, a);
+						}
+					};
 					view.CollectionChanged += handler;
 					m_emptyStateCollectionChangedRevoker.Disposable = Disposable.Create(() => view.CollectionChanged -= handler);
 				}

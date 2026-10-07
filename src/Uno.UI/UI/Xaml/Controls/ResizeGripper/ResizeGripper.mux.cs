@@ -245,6 +245,9 @@ partial class ResizeGripper
 		UpdateVisualState();
 	}
 
+	// Raise the same events a pointer drag would, so a keyboard step is indistinguishable from the
+	// gesture. TryDrag takes the offset from where the drag began and returns whether it moved far
+	// enough to raise DragDelta. Pass canceled to EndDrag when the gesture was torn down.
 	public void BeginDrag()
 	{
 		// A disabled control takes no pointer input from the framework, but BeginDrag is callable
@@ -320,6 +323,10 @@ partial class ResizeGripper
 		return Math.Max(raw, c_dragDeadband);
 	}
 
+	// One arrow key as a complete one-step drag. The gripper acts on its own keys when a host makes
+	// it focusable; a host that keeps focus on its own element calls this instead, so neither path
+	// re-derives the direction, the RTL mirror or the step. False when the key is not on this axis.
+	//
 	// One implementation of "an arrow key is a one-step drag", used by OnKeyDown when the gripper has
 	// focus and callable by a host that keeps focus on its own element. Returns false when the key is
 	// not one this gripper acts on.

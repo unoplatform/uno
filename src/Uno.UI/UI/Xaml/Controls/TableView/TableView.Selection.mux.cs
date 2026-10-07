@@ -726,6 +726,7 @@ partial class TableView
 		ApplySelection(index);
 	}
 
+	// ----- Public API -----
 	// Named to match ItemsView. No identity-based overloads: an index is the only addressing mode.
 
 	/// <summary>

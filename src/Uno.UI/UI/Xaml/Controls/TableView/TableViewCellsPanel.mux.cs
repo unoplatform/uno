@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
@@ -77,12 +78,12 @@ partial class TableViewCellsPanel
 			return;
 		}
 
-		measuredWidth = Math.Max(0.0, measuredWidth);
+		measuredWidth = StdMath.Max(0.0, measuredWidth);
 		var key = column;
 		// Grow-only within the pass (the map is cleared each MeasureOverride); operator[] default-inserts
 		// 0.0 on first sight of the column this pass, so max() yields the measured width.
 		m_measuredWidthsByColumn.TryGetValue(key, out var cachedWidth);
-		m_measuredWidthsByColumn[key] = Math.Max(cachedWidth, measuredWidth);
+		m_measuredWidthsByColumn[key] = StdMath.Max(cachedWidth, measuredWidth);
 	}
 
 	private bool RecordAndDetectMeasuredWidthChange(
@@ -142,7 +143,7 @@ partial class TableViewCellsPanel
 			{
 				child.Measure(new Size(infinity, availableSize.Height));
 				var childDesired = child.DesiredSize;
-				height = Math.Max(height, (float)childDesired.Height);
+				height = (float)StdMath.Max(height, (float)childDesired.Height);
 				width += (float)childDesired.Width;
 				continue;
 			}
@@ -155,7 +156,7 @@ partial class TableViewCellsPanel
 				continue;
 			}
 
-			float columnWidth = (float)Math.Max(0.0, column.ActualWidth);
+			float columnWidth = (float)StdMath.Max(0.0, column.ActualWidth);
 
 			if (column.Width.GridUnitType == GridUnitType.Auto)
 			{
@@ -166,7 +167,7 @@ partial class TableViewCellsPanel
 				if (editingCell is not null && ReferenceEquals(child, editingCell))
 				{
 					child.Measure(new Size(columnWidth > 0.0f ? columnWidth : infinity, availableSize.Height));
-					height = Math.Max(height, (float)child.DesiredSize.Height);
+					height = (float)StdMath.Max(height, (float)child.DesiredSize.Height);
 
 					// Carry a width forward so the column does not collapse while the edit is open.
 					// Contributing nothing would let an Auto column resolve from the header and other
@@ -189,8 +190,11 @@ partial class TableViewCellsPanel
 				// pass to resolve the Auto column width.
 				child.Measure(new Size(infinity, availableSize.Height));
 				var childDesired = child.DesiredSize;
-				height = Math.Max(height, (float)childDesired.Height);
-				CacheMeasuredWidthForColumn(column, childDesired.Width);
+				// TODO Uno: winrt::Size is float; Uno's DesiredSize is double, narrowed here so the fit guard compares like C++.
+				float desiredWidth = (float)childDesired.Width;
+				float desiredHeight = (float)childDesired.Height;
+				height = (float)StdMath.Max(height, desiredHeight);
+				CacheMeasuredWidthForColumn(column, desiredWidth);
 
 				// Change signal: this cell's own measured width differs from the previous pass (grow OR
 				// shrink). Comparing to the cell's own history -- not the column width -- is convergent: a
@@ -199,7 +203,7 @@ partial class TableViewCellsPanel
 				// re-resolve settles the column and the cell re-measures unchanged, the delta is zero and it
 				// stops firing (MaxWidth-clamped columns also converge, since the compare is history-based,
 				// not against the clamped column width -- so no ping-pong).
-				if (RecordAndDetectMeasuredWidthChange(column, childDesired.Width, newLastMeasured) &&
+				if (RecordAndDetectMeasuredWidthChange(column, desiredWidth, newLastMeasured) &&
 					ownerNeedingResolve is null)
 				{
 					ownerNeedingResolve = column.GetOwningTableView();
@@ -213,10 +217,10 @@ partial class TableViewCellsPanel
 				// width. When the column is at least as wide as the content, the unconstrained measure
 				// already fits (no clip, no wrap, stable height), so the second measure is skipped -- this
 				// mirrors CGrid, which measures unclamped Auto cells only once and does not re-measure them.
-				if (columnWidth > 0.0f && columnWidth < childDesired.Width)
+				if (columnWidth > 0.0f && columnWidth < desiredWidth)
 				{
 					child.Measure(new Size(columnWidth, availableSize.Height));
-					height = Math.Max(height, (float)child.DesiredSize.Height);
+					height = (float)StdMath.Max(height, (float)child.DesiredSize.Height);
 				}
 
 				width += columnWidth;
@@ -229,7 +233,7 @@ partial class TableViewCellsPanel
 				// width is resolved (first pass, ActualWidth == 0), fall back to an unconstrained measure for
 				// a provisional height; the panel is re-measured after ResolveColumnWidths sets ActualWidth.
 				child.Measure(new Size(columnWidth > 0.0f ? columnWidth : infinity, availableSize.Height));
-				height = Math.Max(height, (float)child.DesiredSize.Height);
+				height = (float)StdMath.Max(height, (float)child.DesiredSize.Height);
 				width += columnWidth;
 			}
 		}
@@ -256,7 +260,7 @@ partial class TableViewCellsPanel
 		{
 			var column = ColumnForCell(child);
 			float w = column is not null
-				? (column.Visibility == Visibility.Visible ? (float)Math.Max(0.0, column.ActualWidth) : 0.0f)
+				? (column.Visibility == Visibility.Visible ? (float)StdMath.Max(0.0, column.ActualWidth) : 0.0f)
 				: (float)child.DesiredSize.Width;
 
 			// Cells are arranged at the resolved column width; content wider than the column clips/ellipsizes.
@@ -308,8 +312,8 @@ partial class TableViewCellsPanel
 
 			var column = element.Tag as TableViewColumn;
 			double cellWidth = column is not null
-				? (column.Visibility == Visibility.Visible ? Math.Max(0.0, column.ActualWidth) : 0.0)
-				: Math.Max(0.0, element.ActualWidth);
+				? (column.Visibility == Visibility.Visible ? StdMath.Max(0.0, column.ActualWidth) : 0.0)
+				: StdMath.Max(0.0, element.ActualWidth);
 			bool columnIsLeading = column is not null && column.FrozenEdge == TableViewFrozenEdge.Leading;
 			bool isLeadingFrozen = inLeadingPrefix && columnIsLeading;
 			if (column is not null && !columnIsLeading)
@@ -334,12 +338,12 @@ partial class TableViewCellsPanel
 
 				// Hide local x below leadingFrozenWidth - panelX + offset.
 				double clipLeft = (leadingFrozenWidth > 0.0)
-					? Math.Max(0.0, leadingFrozenWidth + horizontalOffset - panelX)
+					? StdMath.Max(0.0, leadingFrozenWidth + horizontalOffset - panelX)
 					: 0.0;
 				if (clipLeft > 0.0)
 				{
 					// A zero-width clip hides cells fully covered by the pinned region.
-					double clipWidth = Math.Max(0.0, cellWidth - clipLeft);
+					double clipWidth = StdMath.Max(0.0, cellWidth - clipLeft);
 					double actualHeight = element.ActualHeight;
 					if (actualHeight <= 0.0)
 					{

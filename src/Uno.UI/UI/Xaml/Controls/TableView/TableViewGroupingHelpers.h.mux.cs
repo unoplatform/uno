@@ -22,7 +22,7 @@ internal static partial class TableViewDetails
 	// thread during measure. The DecimalFormatter itself is NOT shared: callers mutate
 	// FractionDigits, so a shared instance would let one call site's digits leak into another's
 	// output (and would race across XAML threads).
-	// TODO Uno: a class rather than a struct, so GetGroupingLocale can hand out the cached instance
+	// A class rather than a struct, so GetGroupingLocale can hand out the cached instance
 	// by reference as the C++ `GroupingLocale const&` does.
 	internal sealed class GroupingLocale
 	{
@@ -33,7 +33,7 @@ internal static partial class TableViewDetails
 
 	internal static GroupingLocale GetGroupingLocale()
 	{
-		// TODO Uno: Original C++ function-local `static GroupingLocale s_locale;` + `static std::once_flag s_onceFlag;`
+		// Original C++ function-local `static GroupingLocale s_locale;` + `static std::once_flag s_onceFlag;`
 		// with std::call_once become the s_groupingLocale Lazy<T> below (ExecutionAndPublication == call_once).
 		return s_groupingLocale.Value;
 	}

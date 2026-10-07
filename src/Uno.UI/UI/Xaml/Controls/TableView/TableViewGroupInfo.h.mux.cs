@@ -21,10 +21,8 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 // Compares group keys by value for boxed scalars, falling back to COM identity. Exposed so
 // TableView can tell whether a recycled header still represents the same group before it
 // announces an expansion change -- announcing across a recycle would report the wrong group.
-// TODO Uno: Original C++ free function, defined in TableViewGroupInfo.cpp:
 // bool SameGroupKey(winrt::IInspectable const& left, winrt::IInspectable const& right) noexcept;
-// C# has no free functions; it is ported as `internal static bool SameGroupKey(object? left, object? right)`
-// on TableViewGroupInfo in TableViewGroupInfo.mux.cs.
+// (ported as a static member of TableViewGroupInfo in TableViewGroupInfo.mux.cs)
 partial class TableViewGroupInfo
 {
 	// TableViewGroupInfo(
@@ -73,6 +71,7 @@ partial class TableViewGroupInfo
 	private string m_itemCountText = "";
 	private bool m_hasItemCountText = false;
 
-	// TODO Uno: Original C++: winrt::event<winrt::PropertyChangedEventHandler> m_propertyChanged;
-	// The PropertyChanged event is declared in TableViewGroupInfo.Properties.cs.
+	// winrt::event<winrt::PropertyChangedEventHandler> m_propertyChanged;
+	// The PropertyChanged event is declared in TableViewGroupInfo.Properties.cs; RaisePropertyChanged keeps the
+	// winrt::event semantics (handler exceptions swallowed) through CppWinRTHelpers.InvokeWinRTEvent.
 }

@@ -12,7 +12,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
-using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 

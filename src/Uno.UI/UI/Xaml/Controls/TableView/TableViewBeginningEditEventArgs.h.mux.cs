@@ -6,6 +6,10 @@
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
 
+// ----- Editing event args -----
+// Cancel is read synchronously, right after the handler returns, so a handler must decide before
+// returning. Asynchronous validation would need a deferral, which is not in this release.
+
 /// <summary>
 /// Provides data for the <see cref="TableView.BeginningEdit"/> event.
 /// </summary>

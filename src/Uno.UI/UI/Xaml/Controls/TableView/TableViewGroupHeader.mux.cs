@@ -185,7 +185,7 @@ partial class TableViewGroupHeader
 		// It does not protect XAML's in-flight pointer dispatch -- that safety comes from the owner
 		// deferring the reshape, and from RequestToggle being the last statement in
 		// OnPointerReleased so nothing here touches a member after the raise.
-		// TODO Uno: `this` is already a strong GC reference for the duration of the call.
+		// `this` is already a strong GC reference for the duration of the call.
 		// auto const strongThis = get_strong();
 		// auto const self = strongThis.as<winrt::TableViewGroupHeader>();
 		var self = this;
