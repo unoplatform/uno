@@ -9,7 +9,6 @@ internal class InteractionTrackerPointerWheelInertiaHandler : InteractionTracker
 {
 	private const double DurationInMilliseconds = 250;
 
-	private readonly InteractionTracker _interactionTracker;
 	private readonly Vector3 _minPosition;
 	private readonly Vector3 _maxPosition;
 	private readonly Vector3 _initialPosition;
@@ -18,10 +17,9 @@ internal class InteractionTrackerPointerWheelInertiaHandler : InteractionTracker
 	public InteractionTrackerPointerWheelInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities)
 		: base(interactionTracker, requestId: 0)
 	{
-		_interactionTracker = interactionTracker;
 		_minPosition = interactionTracker.MinPosition;
 		_maxPosition = interactionTracker.MaxPosition;
-		_initialPosition = _interactionTracker.Position;
+		_initialPosition = interactionTracker.Position;
 
 		InitialVelocity = translationVelocities;
 
@@ -47,7 +45,7 @@ internal class InteractionTrackerPointerWheelInertiaHandler : InteractionTracker
 		var newPosition = _initialPosition + (float)(elapsedInMilliseconds / 1000) * InitialVelocity;
 		var clampedNewPosition = Vector3.Clamp(newPosition, _minPosition, _maxPosition);
 
-		_interactionTracker.SetPosition(clampedNewPosition, requestId: 0);
+		InteractionTracker.SetPosition(clampedNewPosition, RequestId);
 
 		if (clampedNewPosition.Equals(FinalModifiedPosition))
 		{

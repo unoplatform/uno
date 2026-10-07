@@ -7,11 +7,9 @@ namespace Microsoft.UI.Composition.Interactions;
 
 internal sealed partial class InteractionTrackerActiveInputInertiaHandler : InteractionTrackerFrameInertiaHandler
 {
-	private readonly InteractionTracker _interactionTracker;
 	private readonly AxisHelper _xHelper;
 	private readonly AxisHelper _yHelper;
 	private readonly AxisHelper _zHelper;
-	private readonly int _requestId;
 
 	/// <summary>Seconds since the motion started, as of the frame being processed.</summary>
 	internal float ElapsedInSeconds { get; private set; }
@@ -23,11 +21,9 @@ internal sealed partial class InteractionTrackerActiveInputInertiaHandler : Inte
 	public InteractionTrackerActiveInputInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities, int requestId)
 		: base(interactionTracker, requestId)
 	{
-		_interactionTracker = interactionTracker;
 		_xHelper = new AxisHelper(this, translationVelocities, Axis.X);
 		_yHelper = new AxisHelper(this, translationVelocities, Axis.Y);
 		_zHelper = new AxisHelper(this, translationVelocities, Axis.Z);
-		_requestId = requestId;
 	}
 
 	protected override void Advance(long elapsedTicks)
@@ -45,6 +41,6 @@ internal sealed partial class InteractionTrackerActiveInputInertiaHandler : Inte
 			_yHelper.GetPosition(ElapsedInSeconds),
 			_zHelper.GetPosition(ElapsedInSeconds));
 
-		_interactionTracker.SetPosition(newPosition, _requestId);
+		InteractionTracker.SetPosition(newPosition, RequestId);
 	}
 }

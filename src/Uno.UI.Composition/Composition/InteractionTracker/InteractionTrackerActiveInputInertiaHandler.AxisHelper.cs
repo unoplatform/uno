@@ -36,15 +36,15 @@ internal sealed partial class InteractionTrackerActiveInputInertiaHandler
 			Axis = axis;
 			Handler = handler;
 			InitialVelocity = GetValue(velocities);
-			DecayRate = 1.0f - GetValue(Handler._interactionTracker.PositionInertiaDecayRate ?? new(0.95f));
-			InitialValue = GetValue(Handler._interactionTracker.Position);
+			DecayRate = 1.0f - GetValue(Handler.InteractionTracker.PositionInertiaDecayRate ?? new(0.95f));
+			InitialValue = GetValue(Handler.InteractionTracker.Position);
 
 			TimeToMinimumVelocity = GetTimeToMinimumVelocity();
 
 			var deltaPosition = CalculateDeltaPosition(TimeToMinimumVelocity);
 
 			FinalValue = InitialValue + deltaPosition;
-			FinalModifiedValue = Math.Clamp(FinalValue, GetValue(Handler._interactionTracker.MinPosition), GetValue(Handler._interactionTracker.MaxPosition));
+			FinalModifiedValue = Math.Clamp(FinalValue, GetValue(Handler.InteractionTracker.MinPosition), GetValue(Handler.InteractionTracker.MaxPosition));
 		}
 
 		private float GetValue(Vector3 vector)
@@ -133,9 +133,9 @@ internal sealed partial class InteractionTrackerActiveInputInertiaHandler
 				return (float)value;
 			}
 
-			var currentPosition = GetValue(Handler._interactionTracker.Position);
-			var minPosition = GetValue(Handler._interactionTracker.MinPosition);
-			var maxPosition = GetValue(Handler._interactionTracker.MaxPosition);
+			var currentPosition = GetValue(Handler.InteractionTracker.Position);
+			var minPosition = GetValue(Handler.InteractionTracker.MinPosition);
+			var maxPosition = GetValue(Handler.InteractionTracker.MaxPosition);
 			if (currentPosition < minPosition || currentPosition > maxPosition)
 			{
 				// This is an overpan from Interacting state. Use damping animation.
