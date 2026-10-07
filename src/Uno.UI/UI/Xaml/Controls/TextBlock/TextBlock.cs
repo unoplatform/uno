@@ -1859,7 +1859,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			session.Session.Save();
 			session.Session.Translate((float)Padding.Left, (float)Padding.Top);
-			var highligherters = _renderSelection && SelectionHighlightColor.Color.A != 0 ? TextHighlighters.Append(new TextHighlighter
+			var highligherters = _renderSelection && SelectionHighlightColor is not { Color.A: 0 } ? TextHighlighters.Append(new TextHighlighter
 			{
 				Background = SelectionHighlightColor,
 				Foreground = DefaultBrushes.SelectedTextForegroundColor,
