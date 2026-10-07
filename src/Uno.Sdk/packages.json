@@ -30,14 +30,15 @@
 	},
 	{
 		"group": "WasmBootstrap",
-		"version": "10.0.96",
+		"version": "10.0.98",
 		"packages": [
 			"Uno.Wasm.Bootstrap",
 			"Uno.Wasm.Bootstrap.DevServer",
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net11.0": "10.1.0-dev.217"
+			"net10.0": "10.1.0-dev.219",
+			"net11.0": "10.1.0-dev.219"
 		}
 	},
 	{
