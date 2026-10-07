@@ -609,7 +609,7 @@ public partial class SampleChooserViewModel
 	/// <summary>Copies <see cref="AppInfo"/> to the clipboard; false when the clipboard is unavailable.</summary>
 	internal bool CopyDiagnostics() => CopyToClipboard(AppInfo.ToString());
 
-	private static bool CopyToClipboard(string? text)
+	internal static bool CopyToClipboard(string? text)
 	{
 		if (string.IsNullOrEmpty(text))
 		{
