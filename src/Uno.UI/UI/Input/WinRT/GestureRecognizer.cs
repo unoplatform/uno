@@ -26,7 +26,8 @@ namespace Windows.UI.Input
 		internal const int TapMaxXDelta = 10;
 		internal const int TapMaxYDelta = 10;
 
-		internal const ulong MultiTapMaxDelayMicroseconds = 500000;
+		// The system double-click time, read per tap like Win32's ::GetDoubleClickTime().
+		internal static ulong MultiTapMaxDelayMicroseconds => (ulong)global::Windows.UI.ViewManagement.UISettings.GetDoubleClickTime() * 1000UL;
 
 		internal const long HoldMinDelayMicroseconds = 800000;
 		internal const float HoldMinPressure = .75f;
