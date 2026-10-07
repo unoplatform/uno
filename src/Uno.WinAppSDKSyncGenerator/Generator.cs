@@ -1011,11 +1011,9 @@ namespace Uno.WinAppSDKSyncGenerator
 
 		private static bool ShouldSkipInterface(INamedTypeSymbol iface)
 		{
-			// Skip for now.
-			// For IFormattable and IEquatable, this should be fixed in the future. Currently, just removing this condition doesn't work as the implementation isn't generated properly.
-			// Note that no types implement these interfaces in UWP, but there are types that implement it in WinUI.
-			// For IDynamicInterfaceCastable, ICustomQueryInterface, or IUnmanagedVirtualMethodTableProvider, they are WinRT projection infrastructure and not important for Uno.
-			return iface.Name is "IFormattable" or "IEquatable" or "IDynamicInterfaceCastable" or "ICustomQueryInterface" or "IUnmanagedVirtualMethodTableProvider";
+			// IEquatable<T> on WinRT classes is CsWinRT COM-identity plumbing (struct equality is handled by
+			// IsSelfEquatableStructInterface). The others are WinRT projection infrastructure, not part of the API.
+			return iface.Name is "IEquatable" or "IDynamicInterfaceCastable" or "ICustomQueryInterface" or "IUnmanagedVirtualMethodTableProvider";
 		}
 
 		// IEquatable<T> on a WinRT struct is backed by the memberwise members from BuildStructEquality.

@@ -6,7 +6,7 @@ namespace Windows.UI
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct Color
+	public partial struct Color : global::System.IFormattable
 	{
 		// Skipping already declared property A
 		// Skipping already declared property R
@@ -30,5 +30,6 @@ namespace Windows.UI
 		// Skipping already declared method Windows.UI.Color.Equals(Windows.UI.Color)
 		// Skipping already declared method Windows.UI.Color.operator ==(Windows.UI.Color, Windows.UI.Color)
 		// Skipping already declared method Windows.UI.Color.operator !=(Windows.UI.Color, Windows.UI.Color)
+		// Processing: System.IFormattable
 	}
 }

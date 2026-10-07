@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct RepeatBehavior
+	public partial struct RepeatBehavior : global::System.IFormattable
 	{
 		// Skipping already declared property Forever
 		// Skipping already declared property HasCount
@@ -37,5 +37,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.GetHashCode()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.operator ==(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.operator !=(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
+		// Processing: System.IFormattable
 	}
 }

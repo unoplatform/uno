@@ -6,7 +6,7 @@ namespace Windows.Foundation
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct Point
+	public partial struct Point : global::System.IFormattable
 	{
 		// Skipping already declared property X
 		// Skipping already declared property Y
@@ -20,18 +20,13 @@ namespace Windows.Foundation
 		// Forced skipping of method Windows.Foundation.Point.Y.get
 		// Forced skipping of method Windows.Foundation.Point.Y.set
 		// Skipping already declared method Windows.Foundation.Point.ToString()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ToString(global::System.IFormatProvider provider)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Point", "ToString(IFormatProvider provider)");
-		}
-#endif
+		// Skipping already declared method Windows.Foundation.Point.ToString(System.IFormatProvider)
 		// Forced skipping of method Windows.Foundation.Point.System.IFormattable.ToString(string, System.IFormatProvider)
 		// Skipping already declared method Windows.Foundation.Point.operator ==(Windows.Foundation.Point, Windows.Foundation.Point)
 		// Skipping already declared method Windows.Foundation.Point.operator !=(Windows.Foundation.Point, Windows.Foundation.Point)
 		// Skipping already declared method Windows.Foundation.Point.Equals(object)
 		// Skipping already declared method Windows.Foundation.Point.Equals(Windows.Foundation.Point)
 		// Skipping already declared method Windows.Foundation.Point.GetHashCode()
+		// Processing: System.IFormattable
 	}
 }

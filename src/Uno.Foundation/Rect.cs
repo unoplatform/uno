@@ -10,7 +10,7 @@ namespace Windows.Foundation;
 
 [DebuggerDisplay("[Rect {Size}@{Location}]")]
 [Uno.Foundation.Internals.Bindable]
-public partial struct Rect
+public partial struct Rect : IFormattable
 {
 	// These are public in WinUI (with the underscore!), but we don't want to expose it for now at least.
 	private float _x;
@@ -202,6 +202,25 @@ public partial struct Rect
 	}
 
 	public override string ToString() => (string)this;
+
+	public string ToString(IFormatProvider provider) => ConvertToString(null, provider);
+
+	string IFormattable.ToString(string? format, IFormatProvider? provider) => ConvertToString(format, provider);
+
+	private string ConvertToString(string? format, IFormatProvider? provider)
+	{
+		if (IsEmpty)
+		{
+			return "Empty.";
+		}
+
+		return string.Join(
+			TokenizerHelper.GetNumericListSeparator(provider),
+			_x.ToString(format, provider),
+			_y.ToString(format, provider),
+			_width.ToString(format, provider),
+			_height.ToString(format, provider));
+	}
 
 	internal string ToDebugString()
 		=> IsEmpty ? "--empty--"
