@@ -321,8 +321,8 @@ public partial class AutomationPeer : DependencyObject
 	/// Gets an IRawElementProviderSimple for the specified peer.
 	/// </summary>
 	/// <param name="peer">The automation peer.</param>
-	/// <returns>The raw element provider.</returns>
-	protected internal IRawElementProviderSimple ProviderFromPeer(AutomationPeer? peer) => new IRawElementProviderSimple(peer);
+	/// <returns>The raw element provider, or null when <paramref name="peer"/> is null.</returns>
+	protected internal IRawElementProviderSimple? ProviderFromPeer(AutomationPeer? peer) => peer is null ? null : new IRawElementProviderSimple(peer);
 
 	#endregion
 
