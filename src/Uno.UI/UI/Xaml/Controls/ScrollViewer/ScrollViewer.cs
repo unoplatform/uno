@@ -1788,9 +1788,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					ScrollToVerticalOffset(newOffset);
 					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
-				}
 
-				args.Handled |= key is VirtualKey.PageUp or VirtualKey.PageDown;
+					// Paging is consumed even at an edge, but a viewport that cannot scroll vertically has
+					// nothing for DManip to page, so the key keeps routing.
+					args.Handled |= key is VirtualKey.PageUp or VirtualKey.PageDown;
+				}
 			}
 
 			if (args.Handled && shouldMoveFocus)
