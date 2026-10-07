@@ -71,14 +71,14 @@
 	},
 	{
 		"group": "sdkextras",
-		"version": "6.4.0-dev.13",
+		"version": "6.4.0-dev.15",
 		"packages": [
 			"Uno.Sdk.Extras"
 		]
 	},
 	{
 		"group": "settings",
-		"version": "2.0.0-dev.10",
+		"version": "2.0.0-dev.22",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
@@ -288,7 +288,7 @@
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.7.0-dev.16",
+		"version": "7.0.0-dev.33",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -296,7 +296,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "7.4.0-dev.81",
+		"version": "8.0.0-dev.72",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -327,7 +327,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "9.1.0-dev.2",
+		"version": "11.0.0-dev.127",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -340,7 +340,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "7.1.0-dev.1",
+		"version": "9.0.0-dev.29",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
