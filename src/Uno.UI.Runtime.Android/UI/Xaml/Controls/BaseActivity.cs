@@ -364,9 +364,13 @@ namespace Uno.UI
 				BaseActivity? next;
 				lock (_instances)
 				{
-					// _instances is only pruned on Dispose, so it can still hold activities already torn down.
+					// _instances is only pruned on Dispose, so it can still hold activities already torn down,
+					// and it gains an activity at construction, before its OnCreate makes it usable.
 					next = _instances.Values
-						.Where(activity => !ReferenceEquals(activity, this) && !activity.IsDestroyed && !activity.IsFinishing)
+						.Where(activity => !ReferenceEquals(activity, this)
+							&& activity._lastActivation > 0
+							&& !activity.IsDestroyed
+							&& !activity.IsFinishing)
 						.MaxBy(activity => activity._lastActivation);
 				}
 
