@@ -804,6 +804,11 @@ static char* _Nullable CaptureVideo(UNOCaptureOperation *operation)
 
         AVAsset *asset = [AVAsset assetWithURL:fileURL];
         AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetPassthrough];
+        if (!exportSession) {
+            // A nil session never calls the completion handler, so the wait below would run to its timeout.
+            [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+            return NULL;
+        }
         exportSession.outputURL = mp4URL;
         exportSession.outputFileType = AVFileTypeMPEG4;
         exportSession.shouldOptimizeForNetworkUse = YES;
