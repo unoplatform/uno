@@ -13,8 +13,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Tabular;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.DevTools.Input;
+using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 
@@ -63,6 +65,81 @@ public partial class Given_TableView
 		await PressAsync("home");
 		await PressAsync("up");
 		Assert.AreEqual(0, table.SelectedIndex);
+	}
+
+	[TestMethod]
+	public async Task When_Keyboard_Entry_From_Header()
+	{
+		// TableView_Keyboard.cpp: with focus inside the table but off the rows, Up/Down resume from the
+		// SELECTED row ("otherwise Down after clicking away yanks the selection to the top"), PageDown
+		// enters at rowsPerPage - 1 and End at the last row.
+		var items = People(30);
+		var table = CreateTable(items);
+		await LoadAsync(table);
+
+		var rowsPerPage = Math.Max(1, (int)(GetBodyScroller(table).ViewportHeight / GetRow(table, 0)!.ActualHeight));
+
+		table.Select(5);
+		await FocusHeaderAsync();
+		await PressAsync("down");
+		Assert.AreEqual(6, table.SelectedIndex, "Down resumes from the selected row");
+		Assert.AreEqual(6, GetFocusedRowIndex(table));
+
+		table.DeselectAll();
+		await FocusHeaderAsync();
+		await PressAsync("pagedown");
+		var expectedPageEntry = Math.Clamp(rowsPerPage - 1, 0, items.Count - 1);
+		Assert.AreEqual(expectedPageEntry, table.SelectedIndex, "the first PageDown lands on rowsPerPage - 1");
+		Assert.AreEqual(expectedPageEntry, GetFocusedRowIndex(table));
+
+		await FocusHeaderAsync();
+		await PressAsync("end");
+		Assert.AreEqual(items.Count - 1, table.SelectedIndex, "End enters at the last row");
+		Assert.AreEqual(items.Count - 1, GetFocusedRowIndex(table));
+
+		async Task FocusHeaderAsync()
+		{
+			Assert.IsTrue(GetHeaderCells(table)[0].Focus(FocusState.Keyboard), "the resizable header cell did not take focus");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(-1, GetFocusedRowIndex(table));
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Keyboard_Handled_By_Cell_Control()
+	{
+		// A key a focused descendant already handled (a ComboBox in a template cell) is only acted on
+		// when focus is on one of our rows or group headers.
+		var table = CreateTable(People(10));
+		var actionColumn = new TableViewTemplateColumn
+		{
+			Header = "Action",
+			CellTemplate = (DataTemplate)XamlReader.Load(
+				"""
+				<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<Button Content="Act" />
+				</DataTemplate>
+				"""),
+		};
+		table.Columns.Add(actionColumn);
+		await LoadAsync(table, width: 700);
+
+		table.Select(1);
+
+		var button = Descendants(GetCell(GetRow(table, 1)!, actionColumn)).OfType<Button>().Single();
+		button.KeyDown += (_, e) =>
+		{
+			if (e.Key == VirtualKey.Down)
+			{
+				e.Handled = true;
+			}
+		};
+		Assert.IsTrue(button.Focus(FocusState.Keyboard));
+		await WindowHelper.WaitForIdle();
+
+		await PressAsync("down");
+
+		Assert.AreEqual(1, table.SelectedIndex, "a Down the cell control handled does not navigate");
 	}
 
 	[TestMethod]
@@ -355,6 +432,10 @@ public partial class Given_TableView
 		await LoadAsync(table);
 
 		table.Select(2);
+		var selected = table.SelectedItem;
+
+		var args = new List<SelectionChangedEventArgs>();
+		table.SelectionChanged += (_, e) => args.Add(e);
 
 		// A different data set does not contain the selected item.
 		table.ItemsSource = People(6);
@@ -363,6 +444,92 @@ public partial class Given_TableView
 		Assert.AreEqual(-1, table.SelectedIndex);
 		Assert.IsNull(table.SelectedItem);
 		Assert.IsTrue(GetRealizedRows(table).All(r => !r.IsSelected));
+
+		// ResolveSelectionAfterSourceChange publishes once: no transient null-then-reselect pair.
+		Assert.AreEqual(1, args.Count);
+		Assert.AreSame(selected, args[0].RemovedItems.Single());
+		Assert.AreEqual(0, args[0].AddedItems.Count);
+	}
+
+	[TestMethod]
+	public async Task When_TableViewSource_Filter_Keeps_Selection()
+	{
+		// OnSelectionSourceReset is subscribed ahead of SelectionModel so an in-place Reset that keeps
+		// the selected item restores it silently instead of raising a clear-then-restore pair.
+		var items = People(6);
+		var source = TableViewSource.From(items);
+		var table = CreateTable(source);
+		await LoadAsync(table);
+
+		table.Select(3);
+		var selected = items[3];
+
+		var args = new List<SelectionChangedEventArgs>();
+		table.SelectionChanged += (_, e) => args.Add(e);
+
+		source.Filter(new TableViewPredicate(item => !ReferenceEquals(item, items[1])));
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(0, args.Count, "the item is still selected, so nothing is reported");
+		Assert.AreSame(selected, table.SelectedItem);
+		Assert.AreEqual(2, table.SelectedIndex, "the index follows the item");
+		Assert.IsTrue(GetRow(table, 2)!.IsSelected);
+
+		source.Filter(new TableViewPredicate(item => !ReferenceEquals(item, selected)));
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, args.Count, "dropping the selected item raises exactly one clear");
+		Assert.AreSame(selected, args[0].RemovedItems.Single());
+		Assert.AreEqual(0, args[0].AddedItems.Count);
+		Assert.AreEqual(-1, table.SelectedIndex);
+		Assert.IsNull(table.SelectedItem);
+		Assert.IsTrue(GetRealizedRows(table).All(r => !r.IsSelected));
+	}
+
+	[TestMethod]
+	public async Task When_Nested_Select_Wins()
+	{
+		// OnSelectionModelSelectionChanged's m_selectionVersion guard: an observer that selects something
+		// else from inside PushSelectionProperties publishes and raises the newer selection, and the
+		// outer pass must not overwrite it or raise a stale delta afterwards.
+		var items = People(5);
+		var table = CreateTable(items);
+		await LoadAsync(table);
+
+		table.Select(0);
+
+		var args = new List<SelectionChangedEventArgs>();
+		table.SelectionChanged += (_, e) => args.Add(e);
+
+		var redirected = false;
+		var token = table.RegisterPropertyChangedCallback(TableView.SelectedItemProperty, (_, _) =>
+		{
+			if (!redirected && ReferenceEquals(table.SelectedItem, items[1]))
+			{
+				redirected = true;
+				table.Select(2);
+			}
+		});
+
+		try
+		{
+			table.Select(1);
+		}
+		finally
+		{
+			table.UnregisterPropertyChangedCallback(TableView.SelectedItemProperty, token);
+		}
+
+		Assert.IsTrue(redirected);
+		Assert.AreEqual(2, table.SelectedIndex);
+		Assert.AreSame(items[2], table.SelectedItem);
+		Assert.IsTrue(GetRow(table, 2)!.IsSelected);
+		Assert.IsFalse(GetRow(table, 1)!.IsSelected);
+		Assert.IsFalse(GetRow(table, 0)!.IsSelected);
+
+		Assert.IsTrue(args.Count > 0);
+		Assert.AreSame(items[2], args[^1].AddedItems.Single(), "the last reported selection is the nested one");
+		Assert.IsFalse(args.Any(a => a.AddedItems.Contains(items[1])), "no stale event for the superseded selection");
 	}
 
 	[TestMethod]
@@ -478,13 +645,114 @@ public partial class Given_TableView
 		// IsSelected is read-only to apps; the control is its only writer.
 		Assert.IsTrue(GetRow(table, 1)!.IsSelected);
 		Assert.IsFalse(GetRow(table, 0)!.IsSelected);
+
+		// Pressed / SelectedPressed hold until the release.
+		mouse.Press(Center(GetRow(table, 1)!));
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("SelectedPressed", GetCommonState(GetRow(table, 1)!));
+		mouse.Release();
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("SelectedPointerOver", GetCommonState(GetRow(table, 1)!));
+
+		mouse.MoveTo(Center(GetRow(table, 0)!));
+		mouse.Press(Center(GetRow(table, 0)!));
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("Pressed", GetCommonState(GetRow(table, 0)!));
+		mouse.Release();
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("SelectedPointerOver", GetCommonState(GetRow(table, 0)!), "the release selected row 0");
+
+		mouse.MoveTo(Center(GetHeaderCells(table)[0]));
+		await WindowHelper.WaitForIdle();
+
+		// Disabled wins over every other state (ListViewItem parity).
+		table.IsEnabled = false;
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("SelectedDisabled", GetCommonState(GetRow(table, 0)!));
+		Assert.AreEqual("Disabled", GetCommonState(GetRow(table, 1)!));
+
+		table.IsEnabled = true;
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("Selected", GetCommonState(GetRow(table, 0)!));
+		Assert.AreEqual("Normal", GetCommonState(GetRow(table, 1)!));
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_GroupHeader_Pointer()
+	{
+		var items = new ObservableCollection<Person>
+		{
+			new("Ada", 30, "Oslo"),
+			new("Bob", 31, "Kyoto"),
+			new("Cy", 32, "Oslo"),
+		};
+		var source = TableViewSource.From(items).GroupBy(new TableViewKeySelector(item => ((Person)item!).City));
+		var table = CreateTable(source);
+		await LoadAsync(table, height: 600);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		mouse.MoveTo(Center(GetHeaderCells(table)[0]));
+		await WindowHelper.WaitForIdle();
+
+		var header = GetOsloHeader();
+		Assert.IsTrue(header.IsExpandable);
+		Assert.IsTrue(header.IsExpanded);
+		Assert.AreEqual("Normal", GetVisualState(header, "CommonStates"));
+		Assert.AreEqual("Expanded", GetVisualState(header, "ExpansionStates"));
+		Assert.AreEqual("Expandable", GetVisualState(header, "ExpandabilityStates"));
+
+		// A left click toggles on release inside: PointerOver -> Pressed -> PointerOver.
+		var point = Center(header);
+		mouse.MoveTo(point);
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("PointerOver", GetVisualState(header, "CommonStates"));
+
+		mouse.Press(point);
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("Pressed", GetVisualState(header, "CommonStates"));
+		Assert.IsTrue(GetOsloHeader().IsExpanded, "the toggle waits for the release");
+
+		mouse.Release();
+		await WindowHelper.WaitForIdle();
+		header = GetOsloHeader();
+		Assert.IsFalse(header.IsExpanded);
+		Assert.AreEqual("Collapsed", GetVisualState(header, "ExpansionStates"));
+		Assert.AreEqual(1, GetRealizedRows(table).Count, "only the Kyoto row remains");
+
+		// A right click neither toggles nor reaches row selection.
+		var selectedBefore = table.SelectedIndex;
+		point = Center(header);
+		mouse.PressRight(point);
+		mouse.ReleaseRight();
+		await WindowHelper.WaitForIdle();
+		Assert.IsFalse(GetOsloHeader().IsExpanded);
+		Assert.AreEqual(selectedBefore, table.SelectedIndex);
+
+		// A press that drags off the band does not activate.
+		header = GetOsloHeader();
+		point = Center(header);
+		mouse.MoveTo(point);
+		mouse.Press(point);
+		mouse.MoveTo(Center(GetHeaderCells(table)[0]), 4);
+		mouse.Release();
+		await WindowHelper.WaitForIdle();
+		Assert.IsFalse(GetOsloHeader().IsExpanded);
+
+		TableViewGroupHeader GetOsloHeader()
+			=> GetRealizedGroupHeaders(table).Single(h => (string?)((TableViewGroupInfo)h.Content).Key == "Oslo");
 	}
 
 	private static string? GetCommonState(TableViewRow row)
+		=> GetVisualState(row, "CommonStates");
+
+	private static string? GetVisualState(Control control, string groupName)
 	{
-		var templateRoot = (FrameworkElement)VisualTreeHelper.GetChild(row, 0);
+		var templateRoot = (FrameworkElement)VisualTreeHelper.GetChild(control, 0);
 		return VisualStateManager.GetVisualStateGroups(templateRoot)
-			.Single(g => g.Name == "CommonStates")
+			.Single(g => g.Name == groupName)
 			.CurrentState?.Name;
 	}
 

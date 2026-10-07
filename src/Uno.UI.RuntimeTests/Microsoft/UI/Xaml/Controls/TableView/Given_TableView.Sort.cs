@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Tabular;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI.DevTools.Input;
@@ -262,13 +263,31 @@ public partial class Given_TableView
 
 		table.Select(0);
 		var selected = items[0];
+		var expectedIndex = items.OrderBy(p => p.Name, StringComparer.CurrentCulture).ToList().IndexOf(selected);
+		Assert.AreNotEqual(0, expectedIndex, "the sort must move the selected row for this test to mean anything");
+
+		var selectionChanged = 0;
+		table.SelectionChanged += (_, _) => selectionChanged++;
+
+		// RecomputeSortDPsAndRaiseInternal re-applies the selection before Sorted is raised.
+		int? indexInSorted = null;
+		bool? rowSelectedInSorted = null;
+		table.Sorted += (_, _) =>
+		{
+			indexInSorted = table.SelectedIndex;
+			rowSelectedInSorted = GetRow(table, table.SelectedIndex)?.IsSelected;
+		};
 
 		table.SortByColumn(table.Columns[0], SortDirection.Ascending);
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreSame(selected, table.SelectedItem, "selection follows the row, not the slot");
-		var expectedIndex = items.OrderBy(p => p.Name, StringComparer.CurrentCulture).ToList().IndexOf(selected);
 		Assert.AreEqual(expectedIndex, table.SelectedIndex);
+		Assert.AreEqual(0, selectionChanged, "the item is unchanged, so no clear-then-reselect is reported");
+		Assert.AreEqual(expectedIndex, indexInSorted, "SelectedIndex already follows the row when Sorted is raised");
+		// The Reset may have unrealized the row by then; a realized one must already be stamped.
+		Assert.AreNotEqual(false, rowSelectedInSorted, "the row at the new index is not stamped selected when Sorted is raised");
+		Assert.IsTrue(GetRow(table, expectedIndex)!.IsSelected);
 	}
 
 	[TestMethod]
@@ -592,6 +611,136 @@ public partial class Given_TableView
 		byLength.CustomSortComparer = null;
 		table.ClearSort();
 		Assert.IsFalse(table.SortByColumn(byLength, SortDirection.Ascending));
+	}
+
+	[TestMethod]
+	public async Task When_CustomSortComparer_Swapped_While_Sorted()
+	{
+		var items = new List<Person>
+		{
+			new("Bo", 1, "Oslo"),
+			new("Alexandra", 2, "Oslo"),
+			new("Cyd", 3, "Oslo"),
+			new("Al", 4, "Oslo"),
+		};
+
+		var table = CreateTable(items);
+		var byLength = new TableViewTemplateColumn
+		{
+			Header = "Length",
+			CustomSortComparer = new NameLengthComparer(),
+		};
+		table.Columns.Add(byLength);
+		await LoadAsync(table);
+
+		Assert.IsTrue(table.SortByColumn(byLength, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+		CollectionAssert.AreEqual(new[] { "Bo", "Al", "Cyd", "Alexandra" }, GetRowNames(table));
+
+		var sorted = new List<TableViewSortedEventArgs>();
+		table.Sorted += (_, e) => sorted.Add(e);
+
+		// The setter re-applies the active direction (SortByColumn(None), then SortByColumn(direction))
+		// rather than leaving the rows in the old comparer's order.
+		byLength.CustomSortComparer = new ReversedComparer(new NameLengthComparer());
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(2, sorted.Count);
+		Assert.AreSame(byLength, sorted[0].Column);
+		Assert.AreEqual(SortDirection.None, sorted[0].Direction);
+		Assert.AreSame(byLength, sorted[1].Column);
+		Assert.AreEqual(SortDirection.Ascending, sorted[1].Direction);
+		Assert.AreEqual(SortDirection.Ascending, byLength.SortDirection);
+		CollectionAssert.AreEqual(new[] { "Alexandra", "Cyd", "Bo", "Al" }, GetRowNames(table));
+	}
+
+	[TestMethod]
+	public async Task When_TextColumn_Explicit_SortMemberPath_Wins()
+	{
+		// TableViewTextColumn::GetSortMemberPathCore: an explicit SortMemberPath beats the binding path.
+		var items = People(6);
+		var source = TableViewSource.From(items);
+		var table = CreateTable(source);
+		var name = table.Columns[0];
+		name.SortMemberPath = nameof(Person.Age);
+		await LoadAsync(table);
+
+		Assert.IsTrue(table.SortByColumn(name, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+
+		CollectionAssert.AreEqual(items.OrderBy(p => p.Age).Select(p => p.Name).ToList(), GetRowNames(table), "sorted by Age, not by the displayed Name");
+
+		Assert.IsTrue(table.ClearSort());
+		await WindowHelper.WaitForIdle();
+
+		// ReconcileSortStateWithSource matches the app's path axis on GetSortMemberPathCore.
+		source.Sort(nameof(Person.Age), SortDirection.Descending);
+		await WindowHelper.WaitFor(() => name.SortDirection == SortDirection.Descending, message: "the chevron did not follow the app's Age sort");
+		AssertIndicator(table, name, SortDirection.Descending);
+		Assert.AreEqual(SortDirection.None, table.Columns[1].SortDirection, "the Age column is not the first match");
+	}
+
+	[TestMethod]
+	public async Task When_TextColumn_Binding_With_Explicit_Source_Is_Not_Sortable()
+	{
+		// GetEditingPropertyPath: a path relative to an explicit Source (or RelativeSource / ElementName)
+		// names nothing on the row, so the column has no sort path.
+		var table = CreateTable(People(6));
+		var other = new Person("Other", 1, "Lima");
+		var sourced = new TableViewTextColumn
+		{
+			Header = "Sourced",
+			Binding = new Binding { Source = other, Path = new PropertyPath(nameof(Person.Name)) },
+		};
+		table.Columns.Add(sourced);
+		await LoadAsync(table, width: 700);
+
+		Assert.IsFalse(table.SortByColumn(sourced, SortDirection.Ascending));
+		Assert.AreEqual(SortDirection.None, sourced.SortDirection);
+
+		// The header builds its chevron from CanUserSortColumns && CanSort alone (TableView::RebuildHeaders),
+		// so the unresolvable path leaves it in place at None.
+		AssertIndicator(table, sourced, SortDirection.None);
+	}
+
+	[TestMethod]
+	public async Task When_GetSortMemberPathCore_Overridden()
+	{
+		var items = People(6);
+		var source = TableViewSource.From(items);
+		var table = CreateTable(source);
+		var byAge = new AgeSortedTemplateColumn { Header = "Custom" };
+		table.Columns.Add(byAge);
+		await LoadAsync(table, width: 700);
+
+		// The override makes a template column (no binding, no comparer) sortable.
+		Assert.IsTrue(table.SortByColumn(byAge, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+		CollectionAssert.AreEqual(items.OrderBy(p => p.Age).Select(p => p.Name).ToList(), GetRowNames(table));
+
+		Assert.IsTrue(table.ClearSort());
+		await WindowHelper.WaitForIdle();
+
+		// The chevron follows an app-declared path axis matched through the override. The Age text
+		// column comes first in Columns and also matches, so remove it to isolate the override.
+		table.Columns.RemoveAt(1);
+		source.Sort(nameof(Person.Age), SortDirection.Descending);
+		await WindowHelper.WaitFor(() => byAge.SortDirection == SortDirection.Descending, message: "the chevron did not follow the app's sort through the override");
+		AssertIndicator(table, byAge, SortDirection.Descending);
+	}
+
+	private sealed class AgeSortedTemplateColumn : TableViewTemplateColumn
+	{
+		protected internal override string GetSortMemberPathCore() => nameof(Person.Age);
+	}
+
+	private sealed class ReversedComparer : ITableViewSortComparer
+	{
+		private readonly ITableViewSortComparer _inner;
+
+		public ReversedComparer(ITableViewSortComparer inner) => _inner = inner;
+
+		public int Compare(object? left, object? right) => -_inner.Compare(left, right);
 	}
 
 	[TestMethod]

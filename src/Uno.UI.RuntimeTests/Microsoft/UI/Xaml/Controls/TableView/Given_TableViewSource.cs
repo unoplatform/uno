@@ -42,15 +42,15 @@ public class Given_TableViewSource
 	public void When_TableViewSource_From_Invalid()
 	{
 		// Unlike the TableView command surface, the shaping verbs reject bad input (E_INVALIDARG).
-		Assert.Throws<ArgumentException>(() => TableViewSource.From(null!));
+		Assert.ThrowsExactly<ArgumentException>(() => TableViewSource.From(null!));
 
 		var source = TableViewSource.From(new List<Row>());
-		Assert.Throws<ArgumentException>(() => source.Filter(null!));
-		Assert.Throws<ArgumentException>(() => source.GroupBy(null!));
-		Assert.Throws<ArgumentException>(() => source.GroupBy(null!, null));
-		Assert.Throws<ArgumentException>(() => source.Sort("", SortDirection.Ascending));
-		Assert.Throws<ArgumentException>(() => source.Sort((TableViewKeySelector)null!, SortDirection.Ascending));
-		Assert.Throws<ArgumentException>(() => source.Sort(new TableViewKeySelector(i => ((Row)i!).Score), (SortDirection)42));
+		Assert.ThrowsExactly<ArgumentException>(() => source.Filter(null!));
+		Assert.ThrowsExactly<ArgumentException>(() => source.GroupBy(null!));
+		Assert.ThrowsExactly<ArgumentException>(() => source.GroupBy(null!, null));
+		Assert.ThrowsExactly<ArgumentException>(() => source.Sort("", SortDirection.Ascending));
+		Assert.ThrowsExactly<ArgumentException>(() => source.Sort((TableViewKeySelector)null!, SortDirection.Ascending));
+		Assert.ThrowsExactly<ArgumentException>(() => source.Sort(new TableViewKeySelector(i => ((Row)i!).Score), (SortDirection)42));
 	}
 
 	[TestMethod]
@@ -107,7 +107,65 @@ public class Given_TableViewSource
 		var shared = new Row("A", "x", 1);
 		var source = TableViewSource.From(new List<Row> { shared, new("B", "x", 2), shared });
 
-		Assert.Throws<ArgumentException>(() => source.Sort(nameof(Row.Name), SortDirection.Ascending));
+		Assert.ThrowsExactly<ArgumentException>(() => source.Sort(nameof(Row.Name), SortDirection.Ascending));
+	}
+
+	[TestMethod]
+	public void When_GroupBy_Invalid_Identity()
+	{
+		// RowIdentity::TryGetGroupIdentity has no built-in identity for a null key or a plain reference
+		// key, and the engine fails fast (ShapedItemsSource::RebuildGrouped) rather than flattening.
+		const string invalidIdentity = "GroupBy key selector produced an invalid group identity";
+		var items = new List<Row> { new("A", "x", 1), new("B", "y", 2), new("C", "x", 3) };
+
+		var nullKeySource = TableViewSource.From(items);
+		var nullKey = Assert.ThrowsExactly<ArgumentException>(() => SuppressDebugAssertions(
+			() => nullKeySource.GroupBy(new TableViewKeySelector(i => ((Row)i!).Name == "B" ? null : ((Row)i!).Group))));
+		StringAssert.Contains(nullKey.Message, invalidIdentity);
+		StringAssert.Contains(nullKey.Message, "null group key");
+
+		var referenceKeySource = TableViewSource.From(items);
+		var referenceKey = Assert.ThrowsExactly<ArgumentException>(() => SuppressDebugAssertions(
+			() => referenceKeySource.GroupBy(new TableViewKeySelector(_ => new object()))));
+		StringAssert.Contains(referenceKey.Message, invalidIdentity);
+		StringAssert.Contains(referenceKey.Message, "reference group key without stable identity selector");
+
+		// A boxed enum is an IPropertyValue of OtherType, which ValueKey::TryFormatPropertyValue does not format.
+		var enumKeySource = TableViewSource.From(items);
+		var enumKey = Assert.ThrowsExactly<ArgumentException>(() => SuppressDebugAssertions(
+			() => enumKeySource.GroupBy(new TableViewKeySelector(i => ((Row)i!).Score > 1 ? SortDirection.Ascending : SortDirection.Descending))));
+		StringAssert.Contains(enumKey.Message, "reference group key without stable identity selector");
+
+		// Value-like keys canonicalize on their own; a reference key needs an identity selector.
+		TableViewSource.From(items).GroupBy(new TableViewKeySelector(i => ((Row)i!).Score % 2));
+		TableViewSource.From(items).GroupBy(new TableViewKeySelector(i => ((Row)i!).Group));
+		TableViewSource.From(items).GroupBy(new TableViewKeySelector(i => ((Row)i!).Score > 1 ? Guid.Empty : new Guid("00000000-0000-0000-0000-000000000001")));
+		TableViewSource.From(items).GroupBy(
+			new TableViewKeySelector(i => new GroupKey(((Row)i!).Group)),
+			new TableViewIdentitySelector(key => ((GroupKey)key!).Name));
+	}
+
+	private sealed class GroupKey
+	{
+		public GroupKey(string name) => Name = name;
+
+		public string Name { get; }
+	}
+
+	// An intentionally-triggered MUX_ASSERT (Debug.Assert) on a caller-bug path must not fail the test host.
+	private static void SuppressDebugAssertions(Action action)
+	{
+		var saved = new global::System.Diagnostics.TraceListener[global::System.Diagnostics.Trace.Listeners.Count];
+		global::System.Diagnostics.Trace.Listeners.CopyTo(saved, 0);
+		global::System.Diagnostics.Trace.Listeners.Clear();
+		try
+		{
+			action();
+		}
+		finally
+		{
+			global::System.Diagnostics.Trace.Listeners.AddRange(saved);
+		}
 	}
 
 	[TestMethod]

@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Tabular;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.DevTools.Input;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
@@ -52,6 +54,10 @@ public partial class Given_TableView
 		{
 			Assert.AreEqual(100.0, GetCell(row, name).ActualWidth, LayoutTolerance);
 		}
+
+		// hi = max(lo, MaxWidth): MinWidth wins over a smaller MaxWidth.
+		name.MinWidth = 200;
+		await WindowHelper.WaitForEqual(200.0, () => name.ActualWidth, LayoutTolerance);
 	}
 
 	[TestMethod]
@@ -120,6 +126,84 @@ public partial class Given_TableView
 	}
 
 	[TestMethod]
+	public async Task When_Auto_Width_Without_Content()
+	{
+		// No header (hidden) and no realized rows: the measured max is 0, so Auto falls back to
+		// c_widthDefault (120), still clamped by MinWidth/MaxWidth.
+		var table = CreateTable(new List<Person>());
+		table.HeadersVisibility = TableViewHeadersVisibility.None;
+		var name = table.Columns[0];
+		name.Width = new GridLength(1, GridUnitType.Auto);
+		await LoadAsync(table);
+
+		await WindowHelper.WaitForEqual(120.0, () => name.ActualWidth, LayoutTolerance);
+
+		name.MaxWidth = 90;
+		await WindowHelper.WaitForEqual(90.0, () => name.ActualWidth, LayoutTolerance);
+
+		name.MaxWidth = double.PositiveInfinity;
+		name.MinWidth = 150;
+		await WindowHelper.WaitForEqual(150.0, () => name.ActualWidth, LayoutTolerance);
+	}
+
+	[TestMethod]
+	public async Task When_Star_Width_Zero_Factor()
+	{
+		// MinWidthForStarFactor: a 0* column gets a zero share and a zero lower bound, unless MinWidth
+		// is set locally (the default MinWidth of 20 does not apply).
+		var table = new TableView();
+		var fixedColumn = TextColumn(nameof(Person.Name), new GridLength(100, GridUnitType.Pixel));
+		var zeroStar = TextColumn(nameof(Person.Age), new GridLength(0, GridUnitType.Star));
+		var oneStar = TextColumn(nameof(Person.City), new GridLength(1, GridUnitType.Star));
+		table.Columns.Add(fixedColumn);
+		table.Columns.Add(zeroStar);
+		table.Columns.Add(oneStar);
+		table.ItemsSource = People(3);
+
+		await LoadAsync(table, width: 500);
+
+		var viewport = GetBodyScroller(table).ViewportWidth;
+		await WindowHelper.WaitForEqual(0.0, () => zeroStar.ActualWidth, LayoutTolerance);
+		Assert.AreEqual(viewport - 100, oneStar.ActualWidth, LayoutTolerance);
+
+		zeroStar.MinWidth = 30;
+		await WindowHelper.WaitForEqual(30.0, () => zeroStar.ActualWidth, LayoutTolerance);
+		Assert.AreEqual(viewport - 130, oneStar.ActualWidth, LayoutTolerance, "the 1* column re-divides what the clamped 0* column left");
+	}
+
+	[TestMethod]
+	public async Task When_Star_Width_Clamped_Column_Redistributes()
+	{
+		// The WPF ComputeStarColumnWidths loop: a Star column that hits MaxWidth is fixed there and the
+		// remaining Star columns re-divide what is left, instead of each taking its plain proportional share.
+		var table = new TableView();
+		var fixedColumn = TextColumn(nameof(Person.Name), new GridLength(100, GridUnitType.Pixel));
+		var capped = TextColumn(nameof(Person.Age), new GridLength(1, GridUnitType.Star));
+		capped.MaxWidth = 50;
+		var free = TextColumn(nameof(Person.City), new GridLength(1, GridUnitType.Star));
+		table.Columns.Add(fixedColumn);
+		table.Columns.Add(capped);
+		table.Columns.Add(free);
+		table.ItemsSource = People(3);
+
+		await LoadAsync(table, width: 500);
+
+		var viewport = GetBodyScroller(table).ViewportWidth;
+		Assert.IsTrue((viewport - 100) / 2 > 50, "the plain proportional share must exceed the cap");
+
+		await WindowHelper.WaitForEqual(50.0, () => capped.ActualWidth, LayoutTolerance);
+		Assert.AreEqual(viewport - 100 - 50, free.ActualWidth, LayoutTolerance);
+
+		// Same for MinWidth: a Star column whose share is below its MinWidth is fixed at MinWidth.
+		capped.MaxWidth = double.PositiveInfinity;
+		// TableViewColumn::UpdateActualWidth clamps capped to MinWidth synchronously, so wait on the
+		// column that only the next ResolveColumnWidths pass moves.
+		capped.MinWidth = viewport - 100 - 40;
+		await WindowHelper.WaitForEqual(40.0, () => free.ActualWidth, LayoutTolerance);
+		Assert.AreEqual(viewport - 100 - 40, capped.ActualWidth, LayoutTolerance);
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)] // UIElement.Translation
 	public async Task When_Frozen_Leading_Prefix()
 	{
@@ -150,6 +234,21 @@ public partial class Given_TableView
 			Assert.AreEqual(offset, GetCell(row, frozen).Translation.X, LayoutTolerance, "frozen cell is pinned");
 			Assert.AreEqual(0.0, GetCell(row, scrolling).Translation.X, LayoutTolerance, "scrolling cell");
 			Assert.AreEqual(0.0, GetCell(row, nonContiguous).Translation.X, LayoutTolerance, "non-contiguous Leading cell scrolls");
+
+			// ApplyFrozenColumnLayout: the pinned cell paints above the scrolled ones, and each scrolled
+			// cell is clipped where it slides under the band (left = frozenWidth + offset - panelX).
+			Assert.AreEqual(1, Canvas.GetZIndex(GetCell(row, frozen)));
+			Assert.IsNull(GetCell(row, frozen).Clip);
+
+			Assert.AreEqual(0, Canvas.GetZIndex(GetCell(row, scrolling)));
+			var clip = GetCell(row, scrolling).Clip as RectangleGeometry;
+			Assert.IsNotNull(clip, "the scrolled cell under the band is clipped");
+			Assert.AreEqual(100 + offset - 100, clip!.Rect.X, LayoutTolerance);
+			Assert.AreEqual(300 - (100 + offset - 100), clip.Rect.Width, LayoutTolerance);
+
+			// panelX = 400: nothing of it is under the band yet (clipLeft <= 0).
+			Assert.AreEqual(0, Canvas.GetZIndex(GetCell(row, nonContiguous)));
+			Assert.IsNull(GetCell(row, nonContiguous).Clip);
 		}
 
 		// Header and rows share the pinning so they stay aligned.
@@ -163,6 +262,49 @@ public partial class Given_TableView
 		foreach (var row in GetRealizedRows(table))
 		{
 			Assert.AreEqual(0.0, GetCell(row, frozen).Translation.X, LayoutTolerance);
+			foreach (var cell in GetCells(row))
+			{
+				Assert.AreEqual(0, Canvas.GetZIndex(cell));
+				Assert.IsNull(cell.Clip, "with no frozen band nothing is clipped");
+			}
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)] // UIElement.Translation
+	public async Task When_Frozen_Leading_Prefix_RightToLeft()
+	{
+		// The pin math is LTR-only: under RTL ApplyFrozenColumnLayout resets Translation, ZIndex and Clip
+		// and skips pinning altogether.
+		var table = new TableView { FlowDirection = FlowDirection.RightToLeft };
+		var frozen = TextColumn(nameof(Person.Name), new GridLength(100, GridUnitType.Pixel));
+		frozen.FrozenEdge = TableViewFrozenEdge.Leading;
+		table.Columns.Add(frozen);
+		table.Columns.Add(TextColumn(nameof(Person.Age), new GridLength(300, GridUnitType.Pixel)));
+		table.Columns.Add(TextColumn(nameof(Person.City), new GridLength(300, GridUnitType.Pixel)));
+		table.ItemsSource = People(5);
+
+		await LoadAsync(table, width: 300);
+
+		var scroller = GetBodyScroller(table);
+		scroller.ChangeView(150, null, null, true);
+		await WindowHelper.WaitFor(() => Math.Abs(scroller.HorizontalOffset - 150) < 0.5);
+		await WindowHelper.WaitForIdle();
+
+		foreach (var row in GetRealizedRows(table))
+		{
+			foreach (var cell in GetCells(row))
+			{
+				Assert.AreEqual(0.0, cell.Translation.X, LayoutTolerance);
+				Assert.AreEqual(0, Canvas.GetZIndex(cell));
+				Assert.IsNull(cell.Clip);
+			}
+		}
+
+		foreach (var headerCell in GetHeaderCells(table))
+		{
+			Assert.AreEqual(0.0, headerCell.Translation.X, LayoutTolerance);
+			Assert.IsNull(headerCell.Clip);
 		}
 	}
 
@@ -201,8 +343,13 @@ public partial class Given_TableView
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		using var mouse = injector.GetMouse();
 
+#if __SKIA__
+		using var listener = RecordingAutomationListener.Install();
+#endif
+
 		// The drag is clamped to MaxWidth.
-		var start = Center(FindGripper(GetHeaderCell(table, name))!);
+		var nameHeaderCell = GetHeaderCell(table, name);
+		var start = Center(FindGripper(nameHeaderCell)!);
 		mouse.Press(start);
 		mouse.MoveTo(new Point(start.X + 80, start.Y), 8);
 		mouse.Release();
@@ -211,6 +358,16 @@ public partial class Given_TableView
 		Assert.AreEqual(GridUnitType.Pixel, name.Width.GridUnitType);
 		Assert.AreEqual(160.0, name.Width.Value, LayoutTolerance);
 		await WindowHelper.WaitForEqual(160.0, () => name.ActualWidth, LayoutTolerance);
+
+#if __SKIA__
+		// DragCompleted announces a pointer resize too ("a pointer resize was otherwise completely silent").
+		var announcements = listener.TakeNotifications("TableViewColumnWidthChangedActivityId");
+		Assert.AreEqual(1, announcements.Count, "one announcement per completed drag");
+		Assert.AreSame(FrameworkElementAutomationPeer.FromElement(nameHeaderCell), announcements[0].Peer);
+		Assert.AreEqual(
+			StringUtil.FormatString(ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TableViewColumnWidthChanged), "Name", "160"),
+			announcements[0].DisplayString);
+#endif
 
 		// A press without movement writes nothing.
 		var star = new GridLength(1, GridUnitType.Star);
@@ -224,6 +381,9 @@ public partial class Given_TableView
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreEqual(star, city.Width, "a click on the gripper must not pin a Star column");
+#if __SKIA__
+		Assert.AreEqual(0, listener.TakeNotifications("TableViewColumnWidthChangedActivityId").Count, "a release without movement announces nothing");
+#endif
 	}
 
 	[TestMethod]
@@ -303,6 +463,40 @@ public partial class Given_TableView
 
 #if __SKIA__
 		AssertColumnWidthAnnouncement(listener, headerCell, 120);
+#endif
+
+		// Shift takes the large step: c_largeIncrementMultiplier (4) x 8.
+		try
+		{
+			await KeyboardHelper.PressKeySequence("$d$_shift#$d$_right#$u$_right#$u$_shift", headerCell);
+			await WindowHelper.WaitForIdle();
+		}
+		finally
+		{
+			await ReleaseModifierAsync("shift");
+		}
+
+		Assert.AreEqual(rightToLeft ? 88.0 : 152.0, name.Width.Value, LayoutTolerance);
+
+#if __SKIA__
+		AssertColumnWidthAnnouncement(listener, headerCell, rightToLeft ? 88 : 152);
+#endif
+
+		// Alt is left unhandled for the window menu: no resize, no announcement.
+		try
+		{
+			await KeyboardHelper.PressKeySequence("$d$_alt#$d$_right#$u$_right#$u$_alt", headerCell);
+			await WindowHelper.WaitForIdle();
+		}
+		finally
+		{
+			await ReleaseModifierAsync("alt");
+		}
+
+		Assert.AreEqual(rightToLeft ? 88.0 : 152.0, name.Width.Value, LayoutTolerance);
+
+#if __SKIA__
+		Assert.AreEqual(0, listener.TakeNotifications("TableViewColumnWidthChangedActivityId").Count);
 
 		static void AssertColumnWidthAnnouncement(RecordingAutomationListener listener, FrameworkElement headerCell, int width)
 		{
@@ -362,6 +556,15 @@ public partial class Given_TableView
 		Assert.AreSame(frozen, beginning[0].Column);
 		Assert.IsTrue(table.IsEditing);
 		Assert.IsTrue(Descendants(GetCell(GetRow(table, 1)!, frozen)).OfType<TextBox>().Any(), "the editor is hosted in the frozen cell");
+	}
+
+	// KeyboardStateTracker is process-wide; never let a failed test leave a modifier down.
+	private static async Task ReleaseModifierAsync(string key)
+	{
+		if (FocusManager.GetFocusedElement(WindowHelper.XamlRoot) is UIElement focused)
+		{
+			await KeyboardHelper.PressKeySequence($"$u$_{key}", focused);
+		}
 	}
 
 	private static FrameworkElement? FindGripper(Grid headerCell)

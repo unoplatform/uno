@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Tabular;
 using Microsoft.UI.Xaml.Data;
@@ -53,6 +54,12 @@ public partial class Given_TableView
 		Assert.IsNull(table.GroupHeaderTemplate);
 		Assert.IsNotNull(table.Columns);
 		Assert.AreEqual(0, table.Columns.Count);
+
+		Assert.IsFalse(new TableViewRow().IsSelected);
+
+		var groupHeader = new TableViewGroupHeader();
+		Assert.IsFalse(groupHeader.IsExpandable);
+		Assert.IsFalse(groupHeader.IsExpanded);
 	}
 
 	[TestMethod]
@@ -73,11 +80,17 @@ public partial class Given_TableView
 		Assert.IsFalse(column.IsReadOnly);
 		Assert.IsNull(column.Header);
 		Assert.IsNull(column.HeaderTemplate);
+		Assert.IsNull(column.HeaderTemplateSelector);
 		Assert.IsNull(column.HeaderToolTip);
 		Assert.IsNull(column.CellEditingTemplate);
 		Assert.IsNull(column.CustomSortComparer);
 		Assert.IsNull(column.CellToolTipBinding);
 		Assert.IsNull(column.Binding);
+
+		// BoxedDefaultValue<hstring>: the stored default is the empty string, not null, which
+		// ReconcileSortStateWithSource's == against an axis path relies on.
+		Assert.AreEqual(string.Empty, column.GetValue(TableViewColumn.SortMemberPathProperty));
+		Assert.AreEqual(string.Empty, column.SortMemberPath);
 
 		var templateColumn = new TableViewTemplateColumn();
 		Assert.IsNull(templateColumn.CellTemplate);
@@ -280,6 +293,82 @@ public partial class Given_TableView
 	}
 
 	[TestMethod]
+	public async Task When_Row_Banding_Follows_Index_Changes()
+	{
+		// RefreshRowBackground: "Index-dependent (parity), so it must refresh when the row's position
+		// changes on recycle", and on realized rows after a collection change.
+		var items = new ObservableCollection<Person>(People(60));
+		var table = CreateTable(items);
+		var baseBrush = new SolidColorBrush(Colors.Green);
+		var alternating = new SolidColorBrush(Colors.Red);
+		table.RowBackground = baseBrush;
+		table.AlternatingRowBackground = alternating;
+		await LoadAsync(table);
+
+		AssertParity("initial");
+
+		// Every realized row below the insertion point shifts by one, so its parity flips.
+		items.Insert(0, new Person("Inserted", 1, "Oslo"));
+		await WindowHelper.WaitForIdle();
+		AssertParity("after Insert(0)");
+
+		items.RemoveAt(0);
+		await WindowHelper.WaitForIdle();
+		AssertParity("after RemoveAt(0)");
+
+		// Recycled containers must not keep the fill of the index they were realized at.
+		var scroller = GetBodyScroller(table);
+		scroller.ChangeView(null, scroller.ScrollableHeight, null, true);
+		await WindowHelper.WaitFor(() => Math.Abs(scroller.VerticalOffset - scroller.ScrollableHeight) < 0.5);
+		await WindowHelper.WaitForIdle();
+		Assert.IsTrue(GetRealizedRows(table).Any(r => GetRepeater(table)!.GetElementIndex(r) == items.Count - 1), "the last row is realized");
+		AssertParity("after scrolling to the end");
+
+		void AssertParity(string stage)
+		{
+			var repeater = GetRepeater(table)!;
+			foreach (var row in GetRealizedRows(table))
+			{
+				var index = repeater.GetElementIndex(row);
+				Assert.AreSame(index % 2 != 0 ? alternating : baseBrush, row.Background, $"row {index} {stage}");
+			}
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Row_Banding_Counts_Group_Headers()
+	{
+		// Group headers share the repeater's index space, so parity follows the repeater index rather
+		// than the data row's position within its group.
+		var items = new ObservableCollection<Person>
+		{
+			new("Ada", 30, "Oslo"),
+			new("Bob", 31, "Kyoto"),
+			new("Cy", 32, "Oslo"),
+			new("Dee", 33, "Kyoto"),
+		};
+		var source = TableViewSource.From(items).GroupBy(new TableViewKeySelector(item => ((Person)item!).City));
+		var table = CreateTable(source);
+		var baseBrush = new SolidColorBrush(Colors.Green);
+		var alternating = new SolidColorBrush(Colors.Red);
+		table.RowBackground = baseBrush;
+		table.AlternatingRowBackground = alternating;
+		await LoadAsync(table, height: 600);
+
+		var repeater = GetRepeater(table)!;
+		var rows = GetRealizedRows(table);
+		Assert.AreEqual(4, rows.Count);
+
+		// [0] Oslo header, [1] Ada, [2] Cy, [3] Kyoto header, [4] Bob, [5] Dee.
+		CollectionAssert.AreEqual(new[] { 1, 2, 4, 5 }, rows.Select(r => repeater.GetElementIndex(r)).ToList());
+		foreach (var row in rows)
+		{
+			var index = repeater.GetElementIndex(row);
+			Assert.AreSame(index % 2 != 0 ? alternating : baseBrush, row.Background, $"row {index}");
+		}
+	}
+
+	[TestMethod]
 	public async Task When_EmptyTemplate()
 	{
 		var items = new ObservableCollection<Person>();
@@ -354,6 +443,41 @@ public partial class Given_TableView
 	}
 
 	[TestMethod]
+	public async Task When_EmptyTemplate_Filtered_To_Nothing()
+	{
+		// UpdateEmptyState counts the repeater's ItemsSourceView (the shaped projection), not the raw
+		// source: a filter that removes every row shows the empty state.
+		var source = TableViewSource.From(People(5));
+		var table = CreateTable(source);
+		table.EmptyTemplate = (DataTemplate)XamlReader.Load(
+			"""
+			<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+				<TextBlock Text="Nothing here" />
+			</DataTemplate>
+			""");
+		await LoadAsync(table);
+
+		var presenter = FindByName<ContentControl>(table, "PART_EmptyStatePresenter")!;
+		var repeater = GetRepeater(table)!;
+
+		Assert.AreEqual(Visibility.Collapsed, presenter.Visibility);
+		Assert.AreEqual(Visibility.Visible, repeater.Visibility);
+
+		source.Filter(new TableViewPredicate(_ => false));
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(Visibility.Visible, presenter.Visibility, "a projection filtered to nothing is empty");
+		Assert.AreEqual(Visibility.Collapsed, repeater.Visibility);
+
+		source.ClearFilter();
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(Visibility.Collapsed, presenter.Visibility);
+		Assert.AreEqual(Visibility.Visible, repeater.Visibility);
+		Assert.AreEqual(5, GetRealizedRows(table).Count);
+	}
+
+	[TestMethod]
 	public async Task When_Column_Collapsed()
 	{
 		var table = CreateTable(People(3));
@@ -394,6 +518,83 @@ public partial class Given_TableView
 			Assert.IsNull(presenter.ContentTemplate);
 			Assert.IsNull(presenter.Content, "an empty presenter, not the item's ToString()");
 		}
+	}
+
+	[TestMethod]
+	public async Task When_TemplateColumn_Recycles()
+	{
+		// TableViewTemplateColumn::GenerateElementCore: Content is bound to the cell wrapper's inherited
+		// DataContext, not the presenter's own ("would freeze after the first item (stale cells on recycle)").
+		var table = CreateTable(People(60));
+		var templateColumn = new TableViewTemplateColumn
+		{
+			Header = "Template",
+			CellTemplate = (DataTemplate)XamlReader.Load(
+				"""
+				<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<TextBlock Tag="Name" Text="{Binding Name}" />
+				</DataTemplate>
+				"""),
+		};
+		table.Columns.Add(templateColumn);
+		await LoadAsync(table);
+
+		AssertTemplateCells("Name", p => p.Name, "initial");
+
+		var scroller = GetBodyScroller(table);
+		scroller.ChangeView(null, scroller.ScrollableHeight, null, true);
+		await WindowHelper.WaitFor(() => Math.Abs(scroller.VerticalOffset - scroller.ScrollableHeight) < 0.5);
+		await WindowHelper.WaitForIdle();
+
+		AssertTemplateCells("Name", p => p.Name, "after recycling");
+
+		// A CellTemplate change regenerates the realized cells (NotifyCellContentChanged).
+		templateColumn.CellTemplate = (DataTemplate)XamlReader.Load(
+			"""
+			<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+				<TextBlock Tag="City" Text="{Binding City}" />
+			</DataTemplate>
+			""");
+		await WindowHelper.WaitForIdle();
+
+		AssertTemplateCells("City", p => p.City, "after the CellTemplate swap");
+
+		void AssertTemplateCells(string tag, Func<Person, string> expected, string stage)
+		{
+			var rows = GetRealizedRows(table);
+			Assert.IsTrue(rows.Count > 0);
+			foreach (var row in rows)
+			{
+				var person = (Person)row.DataContext;
+				var textBlock = Descendants(GetCell(row, templateColumn)).OfType<TextBlock>().SingleOrDefault();
+				Assert.IsNotNull(textBlock, $"{person} has no template content ({stage})");
+				Assert.AreEqual(tag, textBlock!.Tag, $"{person} uses a stale template ({stage})");
+				Assert.AreEqual(expected(person), textBlock.Text, $"{person} shows another item's value ({stage})");
+			}
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Column_Header_Changes_After_Load()
+	{
+		var table = CreateTable(People(3));
+		var name = table.Columns[0];
+		name.Width = new GridLength(1, GridUnitType.Auto);
+		await LoadAsync(table, width: 800);
+
+		Assert.AreEqual("Name", AutomationProperties.GetName(GetHeaderCell(table, name)));
+		var initialWidth = name.ActualWidth;
+
+		// OnColumnHeaderChanged re-renders the headers and re-measures this column's Auto width.
+		name.Header = "Renamed";
+		await WindowHelper.WaitForIdle();
+
+		var headerCell = GetHeaderCell(table, name);
+		Assert.AreEqual("Renamed", headerCell.Children.OfType<ContentPresenter>().First().Content);
+		Assert.AreEqual("Renamed", AutomationProperties.GetName(headerCell));
+
+		name.Header = "A much, much longer header than any of the cell values below it";
+		await WindowHelper.WaitFor(() => name.ActualWidth > initialWidth + 100, message: "the Auto column did not re-resolve against the wider header");
 	}
 
 	#region Helpers
