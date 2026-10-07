@@ -26,10 +26,17 @@ public static partial class GlobalizationPreferences
 			}
 #endif
 
-			// TODO Uno: no OS API for the user's home location on this target; the current culture's region stands in.
+			// TODO Uno: no OS API for the user's home location on this target; the region of the culture the process
+			// started with (ApplicationLanguages.OriginalCultureName, as in GetUserDefaultLocaleName) stands in.
+			var originalCultureName = global::Windows.Globalization.ApplicationLanguages.OriginalCultureName;
+			if (string.IsNullOrEmpty(originalCultureName))
+			{
+				return UnknownGeographicRegion;
+			}
+
 			try
 			{
-				var region = global::System.Globalization.RegionInfo.CurrentRegion.TwoLetterISORegionName;
+				var region = new global::System.Globalization.RegionInfo(originalCultureName).TwoLetterISORegionName;
 
 				// The invariant culture reports "IV", which is not a region; Windows reports an unknown location as "ZZ".
 				return string.IsNullOrEmpty(region) || region == "IV" ? UnknownGeographicRegion : region;
