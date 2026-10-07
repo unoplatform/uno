@@ -46,7 +46,11 @@ internal static class ValueConversionHelpers
 
 	internal static string ConvertValueToString(object value, Type type) => Convert.ToString(value, CultureInfo.InvariantCulture);
 
+	// TODO Uno: IPropertyValue projection. A null type stands for an empty IPropertyValue. Enums report
+	// OtherType, as C++/WinRT's boxed IReference<enum> does; any other type outside the WinRT scalar set does too.
+	// Callers decide whether the value is an IPropertyValue at all (WinRT boxes only value types and strings).
 	internal static PropertyType GetPropertyType(Type type) =>
+		type is null ? PropertyType.Empty :
 		type == typeof(byte) ? PropertyType.UInt8 :
 		type == typeof(short) ? PropertyType.Int16 :
 		type == typeof(ushort) ? PropertyType.UInt16 :
@@ -60,5 +64,12 @@ internal static class ValueConversionHelpers
 		type == typeof(bool) ? PropertyType.Boolean :
 		type == typeof(string) ? PropertyType.String :
 		type == typeof(Guid) ? PropertyType.Guid :
-		PropertyType.Empty;
+		// Windows.Foundation.DateTime projects to DateTimeOffset; System.DateTime is accepted for the same value.
+		type == typeof(DateTimeOffset) ? PropertyType.DateTime :
+		type == typeof(DateTime) ? PropertyType.DateTime :
+		type == typeof(TimeSpan) ? PropertyType.TimeSpan :
+		type == typeof(Point) ? PropertyType.Point :
+		type == typeof(Size) ? PropertyType.Size :
+		type == typeof(Rect) ? PropertyType.Rect :
+		PropertyType.OtherType;
 }
