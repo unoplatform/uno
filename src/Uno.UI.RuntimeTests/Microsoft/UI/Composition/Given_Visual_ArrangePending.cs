@@ -144,6 +144,14 @@ public class Given_Visual_ArrangePending
 
 		public void RequestNewFrame() => NewFrameRequests++;
 
+		public event EventHandler<long>? FrameStarting
+		{
+			add { }
+			remove { }
+		}
+
+		public long FrameIntervalInTicks => TimeSpan.TicksPerSecond / 60;
+
 		public void AddDamage(Windows.Foundation.Rect bounds) { }
 
 		public void AddDamage(Uno.UI.Composition.Drawing.IGeometry region) { }

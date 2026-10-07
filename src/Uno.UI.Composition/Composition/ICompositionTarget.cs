@@ -26,14 +26,10 @@ internal interface ICompositionTarget
 	void RequestNewFrame();
 
 	/// <summary>Raised once per frame, before layout and before the record, with the frame's timestamp.</summary>
-	event EventHandler<long>? FrameStarting
-	{
-		add { }
-		remove { }
-	}
+	event EventHandler<long>? FrameStarting;
 
 	/// <summary>Estimated interval between presented frames, for drivers that need a nominal step.</summary>
-	long FrameIntervalInTicks => TimeSpan.TicksPerSecond / 60;
+	long FrameIntervalInTicks { get; }
 
 	/// <summary>Marks a rectangular area (root/frame coordinates) dirty so the next frame repaints it, even if no
 	/// visual paints there this frame (e.g. a removed or hidden visual vacating the area).</summary>
