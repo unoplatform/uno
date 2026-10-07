@@ -188,7 +188,13 @@ namespace Microsoft.UI.Composition
 		internal ICompositionTarget? CompositionTarget
 		{
 			get => _compositionTarget ?? Parent?.CompositionTarget; // TODO: can this be cached?
-			set => _compositionTarget = value;
+			set
+			{
+				_compositionTarget = value;
+#if __SKIA__
+				Compositor.OnVisualTreeChanged();
+#endif
+			}
 		}
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
