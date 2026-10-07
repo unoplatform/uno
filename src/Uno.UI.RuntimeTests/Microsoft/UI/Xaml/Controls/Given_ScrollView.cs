@@ -4,7 +4,6 @@
 
 using System;
 using System.Numerics;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Composition;
@@ -26,8 +25,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_ScrollView
 {
+	[TestCleanup]
+	public void Cleanup() => TestServices.WindowHelper.WindowContent = null;
+
 	/// <summary>A precision touchpad reports wheel deltas finer than one 120-unit detent, and each must still scroll.</summary>
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24730")]
 	public async Task When_Wheel_Delta_Below_A_Detent_Then_Scrolls()
 	{
 		var (sut, bounds) = await LoadTallScrollView();
@@ -40,7 +43,7 @@ public class Given_ScrollView
 		await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 0, message: "a sub-detent wheel delta should scroll");
 		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
-		Assert.AreEqual(12, sut.VerticalOffset, 0.5, "a quarter detent should scroll a quarter of the 48px a detent scrolls");
+		Assert.AreEqual(InteractionTracker.PixelsPerWheelDetent / 4, sut.VerticalOffset, 0.5, "a quarter detent should scroll a quarter of what a detent scrolls");
 	}
 
 	/// <summary>
@@ -48,12 +51,13 @@ public class Given_ScrollView
 	/// dispatcher continuation instead left the content a hop behind the tracker.
 	/// </summary>
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24730")]
 	public async Task When_Wheel_Inertia_Then_Recorded_Frame_Shows_Tracker_Position()
 	{
 		var (sut, bounds) = await LoadTallScrollView();
 		var presenter = sut.ScrollPresenter!;
 		var content = presenter.Content!;
-		var tracker = GetTracker(presenter);
+		var tracker = presenter.InteractionTracker;
 		var target = (CompositionTarget)content.Visual.CompositionTarget!;
 
 		var frames = 0;
@@ -98,6 +102,7 @@ public class Given_ScrollView
 
 	/// <summary>A finger pressed and held on coasting content stops it, without having to move first.</summary>
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24730")]
 	public async Task When_Finger_Held_On_Coasting_Content_Then_Stops()
 	{
 		var (sut, bounds) = await LoadTallScrollView();
@@ -157,10 +162,5 @@ public class Given_ScrollView
 	}
 
 	private static Point Center(Rect bounds) => new(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2);
-
-	private static InteractionTracker GetTracker(ScrollPresenter presenter)
-		=> (InteractionTracker)typeof(ScrollPresenter)
-			.GetField("m_interactionTracker", BindingFlags.Instance | BindingFlags.NonPublic)!
-			.GetValue(presenter)!;
 }
 #endif
