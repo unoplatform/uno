@@ -1,5 +1,6 @@
 ﻿#if __SKIA__
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -205,12 +206,15 @@ public class Given_CompositionTarget
 		}
 
 		Assert.IsTrue(pairs.Count >= 5, $"expected the driver and Rendering to be raised together, got {pairs.Count} frames");
-		for (var i = 1; i < pairs.Count; i++)
-		{
-			var driverStep = pairs[i].Driver - pairs[i - 1].Driver;
-			var renderingStep = (pairs[i].Rendering - pairs[i - 1].Rendering).Ticks;
-			Assert.AreEqual(driverStep, renderingStep, $"frame {i}: the driver stepped {driverStep} ticks but RenderingTime {renderingStep}");
-		}
+
+		// RenderingTime is the frame time on another origin, so the offset between the two is constant for one window.
+		// Another target armed in the same tick makes Rendering take the later of the two frame times, which is
+		// a fraction of a frame later: anything beyond a frame would be a different frame.
+		var offsets = pairs.Select(p => p.Rendering.Ticks - p.Driver).ToArray();
+		var spread = offsets.Max() - offsets.Min();
+		Assert.IsTrue(
+			spread < target.FrameIntervalInTicks,
+			$"RenderingTime drifted {spread} ticks from the driver's frame time (frame interval {target.FrameIntervalInTicks}); offsets: {string.Join(", ", offsets)}");
 	}
 
 	/// <summary>
