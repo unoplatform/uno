@@ -13,6 +13,8 @@ The `Windows.Media.Capture` namespace provides classes for capturing photos, aud
 
 `CameraCaptureUI` is currently supported on Android, iOS, macOS (Skia Desktop), and WinUI. On other platforms, `CaptureFileAsync` will return `null`.
 
+On Android, iOS, and macOS, `CameraCaptureUIMode.PhotoOrVideo` captures a photo: the user is not offered a choice between a photo and a video. Use `CameraCaptureUIMode.Video` to record a video.
+
 > [!IMPORTANT]
 > `CaptureFileAsync` should only be called from the UI thread. Calling them from a background thread will throw an `InvalidOperationException`.
 
