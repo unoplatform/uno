@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewColumnHeaderAutomationPeer.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableViewColumnHeaderAutomationPeer.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Uno.UI.Helpers.WinUI;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 
 using static Microsoft.UI.Xaml.Controls.Tabular.TableViewAutomationHelpers;
@@ -19,39 +20,21 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableViewColumnHeaderAutomationPeer
 {
-	// Two 32-bit halves of the column's stable IUnknown, which is the cheapest per-column
-	// identity available here. Widen to 64-bit before shifting so this stays correct on 32-bit,
-	// where uintptr_t is 32-bit and `>> 32` would be an out-of-range shift; the high part is
-	// simply 0 there.
-	private static int[] RuntimeIdPartsForColumn(TableViewColumn? column)
+	private static uint AutomationIdentityForColumn(TableViewColumn? column)
 	{
-		if (column is null)
-		{
-			return new int[] { 0, 0 };
-		}
-
-		// TODO Uno: There is no IUnknown address in .NET; ObjectIdentityHelper hands out a stable id per live object.
-		// Original C++:
-		// const uint64_t identity = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(winrt::get_unknown(column)));
-		ulong identity = ObjectIdentityHelper.GetId(column);
-		return new int[]
-		{
-			unchecked((int)(identity & 0xffffffffUL)),
-			unchecked((int)((identity >> 32) & 0xffffffffUL))
-		};
+		return column is not null ? column.AutomationIdentity() : 0;
 	}
 
-	// Help text is supplementary: degrade instead of letting a resource failure escape into UIA.
-	private static string TryGetLocalizedString(string resourceName)
+	private static TableView OwnerForPublicConstructor(TableView? table, TableViewColumn? column)
 	{
-		try
+		if (table is not null && column is not null &&
+			column.GetOwningTableView() == table)
 		{
-			return ResourceAccessor.GetLocalizedStringResource(resourceName);
+			return table;
 		}
-		catch (Exception)
-		{
-			return string.Empty;
-		}
+
+		// hresult_invalid_argument
+		throw new ArgumentException();
 	}
 
 	/// <summary>
@@ -62,31 +45,60 @@ partial class TableViewColumnHeaderAutomationPeer
 	public TableViewColumnHeaderAutomationPeer(
 		TableView owner,
 		TableViewColumn column)
-		: base(owner)
+		: base(OwnerForPublicConstructor(owner, column))
+	{
+		m_column = new WeakReference<TableViewColumn>(column);
+		m_table = new WeakReference<TableView>(owner);
+		m_columnAutomationIdentity = AutomationIdentityForColumn(column);
+	}
+
+	internal TableViewColumnHeaderAutomationPeer(
+		FrameworkElement header,
+		TableView? table,
+		TableViewColumn? column)
+		: base(header)
 	{
 		m_column = column is not null ? new WeakReference<TableViewColumn>(column) : null;
-		m_columnRuntimeIdParts = RuntimeIdPartsForColumn(column);
+		m_table = table is not null ? new WeakReference<TableView>(table) : null;
+		m_columnAutomationIdentity = AutomationIdentityForColumn(column);
 	}
 
 	protected override string GetClassNameCore() => "TableViewColumnHeader";
 
 	protected override string GetNameCore()
 	{
-		// Prefer string headers so screen readers announce a distinct column name.
+		if (GetHeaderElement() is { } headerElement)
+		{
+			var name = AutomationProperties.GetName(headerElement);
+			if (!string.IsNullOrEmpty(name))
+			{
+				return name;
+			}
+			if (GetLabeledBy() is { } label)
+			{
+				var labelName = label.GetName();
+				if (!string.IsNullOrEmpty(labelName))
+				{
+					return labelName;
+				}
+			}
+		}
+
 		if (TryGetColumnHeaderString(m_column.Get()) is { } headerString)
 		{
 			return headerString;
 		}
 
-		// For template headers, use the realized header cell and avoid the TableView owner's name.
-		if (GetHeaderElement() is { } headerElement)
+		// Read template content, never re-enter this header's own peer.
+		if (GetHeaderElement() is Panel header)
 		{
-			if (FrameworkElementAutomationPeer.CreatePeerForElement(headerElement) is { } peer)
+			uint remaining = 64;
+			foreach (var child in header.Children)
 			{
-				var name = peer.GetName();
-				if (!string.IsNullOrEmpty(name))
+				var childName = GetCellContentName(child as FrameworkElement, true, 8, ref remaining);
+				if (!string.IsNullOrEmpty(childName))
 				{
-					return name;
+					return childName;
 				}
 			}
 		}
@@ -94,38 +106,10 @@ partial class TableViewColumnHeaderAutomationPeer
 		return string.Empty;
 	}
 
-	protected override IList<AutomationPeer> GetChildrenCore()
-	{
-		// Column headers are leaf HeaderItems; do not expose the TableView subtree.
-		return new List<AutomationPeer>();
-	}
-
 	protected override AutomationControlType GetAutomationControlTypeCore()
 	{
-		// HeaderItem is the UIA control type for table column headers.
 		return AutomationControlType.HeaderItem;
 	}
-
-	// TODO Uno: Uno's AutomationPeer has no overridable GetRuntimeIdCore, and IAutomationPeerOverrides
-	// does not declare one in WinUI either, so this is not reachable through the base peer. Kept for parity.
-#pragma warning disable IDE0051 // Unused private member
-	private int[] GetRuntimeIdCore()
-	{
-		// Header peers are all owned by the TableView, so the owner-derived RuntimeId the base
-		// would supply is identical for every column - a UIA protocol violation that makes the
-		// headers indistinguishable to assistive technology. Build a self-contained id instead:
-		// the UiaAppendRuntimeId prefix keeps it well-formed as a framework-appended runtime id,
-		// the control-family tag namespaces it, and the column identity parts make it unique and
-		// stable for the lifetime of the column.
-		return new int[]
-		{
-			3, // UiaAppendRuntimeId
-			0x54564348, // 'TVCH' control-family tag
-			m_columnRuntimeIdParts[0],
-			m_columnRuntimeIdParts[1]
-		};
-	}
-#pragma warning restore IDE0051
 
 	protected override string GetAutomationIdCore()
 	{
@@ -139,12 +123,8 @@ partial class TableViewColumnHeaderAutomationPeer
 			}
 		}
 
-		// Otherwise fall back to the same column identity backing the RuntimeId, so headers stay
-		// addressable in UI automation before their templates realize.
 		string automationId = "TableViewColumnHeader_";
-		automationId += m_columnRuntimeIdParts[0].ToString(CultureInfo.InvariantCulture);
-		automationId += '_';
-		automationId += m_columnRuntimeIdParts[1].ToString(CultureInfo.InvariantCulture);
+		automationId += m_columnAutomationIdentity.ToString(CultureInfo.InvariantCulture);
 		return automationId;
 	}
 
@@ -220,44 +200,141 @@ partial class TableViewColumnHeaderAutomationPeer
 		return base.GetPatternCore(patternInterface);
 	}
 
+	protected override bool IsEnabledCore()
+	{
+		// Grid is not a Control, so its base peer does not report inherited disabled state.
+		var table = m_table.Get();
+		if (table is null || !table.IsEnabled)
+		{
+			return false;
+		}
+
+		// A template control (for example the header ScrollViewer) can be disabled
+		// independently of the table. Its coerced state applies to this header too.
+		var ancestor = VisualTreeHelper.GetParent(Owner);
+		while (ancestor is not null && ancestor != table)
+		{
+			if (ancestor is Control control && !control.IsEnabled)
+			{
+				return false;
+			}
+			ancestor = VisualTreeHelper.GetParent(ancestor);
+		}
+		return true;
+	}
+
 	/// <summary>
 	/// Advances the column's sort direction through its sort cycle.
 	/// </summary>
 	public void Invoke()
 	{
+		if (!IsEnabled())
+		{
+			// UIA_E_ELEMENTNOTENABLED
+			throw new ElementNotEnabledException();
+		}
+		if (!IsSortableColumn())
+		{
+			// UIA_E_INVALIDOPERATION
+			throw new InvalidOperationException();
+		}
 		if (m_column.Get() is { } column)
 		{
-			if (Owner is TableView owner)
+			if (m_table.Get() is { } owner)
 			{
 				owner.ToggleSortDirection(column);
+				return;
 			}
 		}
+
+		// UIA_E_ELEMENTNOTAVAILABLE
+		throw new ElementNotAvailableException();
+	}
+
+	protected override IList<AutomationPeer> GetChildrenCore()
+	{
+		if (!IsTableViewOwned())
+		{
+			return base.GetChildrenCore();
+		}
+
+		return new List<AutomationPeer>();
+	}
+
+	protected override Rect GetBoundingRectangleCore()
+	{
+		if (IsTableViewOwned())
+		{
+			return default;
+		}
+
+		return base.GetBoundingRectangleCore();
+	}
+
+	protected override Point GetClickablePointCore()
+	{
+		if (IsTableViewOwned())
+		{
+			return new Point(float.NaN, float.NaN);
+		}
+
+		return base.GetClickablePointCore();
+	}
+
+	protected override bool IsOffscreenCore()
+	{
+		return IsTableViewOwned() ? true : base.IsOffscreenCore();
+	}
+
+	internal bool IsTableViewOwned()
+	{
+		return Owner is TableView;
 	}
 
 	private bool IsSortableColumn()
 	{
 		var column = m_column.Get();
-		if (column is null || !column.CanSort)
+		if (column is null || !column.CanSort || !IsVisibleColumn(column))
 		{
 			return false;
 		}
 
-		var owner = Owner as TableView;
-		return owner is not null && owner.CanUserSortColumns;
+		var owner = m_table.Get();
+		return owner is not null && owner.IsLoaded && owner.CanUserSortColumns;
 	}
 
 	protected override int GetPositionInSetCore()
 	{
-		// Complements the distinct RuntimeId and GetNameCore: expose the 1-based visible column
-		// position so AT (Narrator) can announce "column i of n" as the user moves across headers.
+		// The header's attached override wins over the visible-column position.
+		if (GetHeaderElement() is { } header)
+		{
+			var provided = AutomationProperties.GetPositionInSet(header);
+			if (provided > 0)
+			{
+				return provided;
+			}
+		}
+
 		var index = GetColumnIndex();
-		return index >= 0 ? index + 1 : -1;
+
+		// 0 is UIA's "not specified"; valid values are 1-based, so -1 reached the client as a nonsense
+		// position.
+		return index >= 0 ? index + 1 : 0;
 	}
 
 	protected override int GetSizeOfSetCore()
 	{
+		if (GetHeaderElement() is { } header)
+		{
+			var provided = AutomationProperties.GetSizeOfSet(header);
+			if (provided > 0)
+			{
+				return provided;
+			}
+		}
+
 		// Total visible column count, so PositionInSet reads as "i of n".
-		if (Owner is TableView owner)
+		if (m_table.Get() is { } owner)
 		{
 			if (owner.Columns is { } columns)
 			{
@@ -269,33 +346,8 @@ partial class TableViewColumnHeaderAutomationPeer
 				if (count > 0) { return count; }
 			}
 		}
-		return -1;
-	}
 
-	protected override Rect GetBoundingRectangleCore()
-	{
-		// Use this header's realized cell bounds; unrealized headers have no on-screen rect.
-		if (GetHeaderElement() is { } headerElement)
-		{
-			if (FrameworkElementAutomationPeer.CreatePeerForElement(headerElement) is { } peer)
-			{
-				return peer.GetBoundingRectangle();
-			}
-		}
-		return default;
-	}
-
-	protected override Point GetClickablePointCore()
-	{
-		if (GetHeaderElement() is { } headerElement)
-		{
-			if (FrameworkElementAutomationPeer.CreatePeerForElement(headerElement) is { } peer)
-			{
-				return peer.GetClickablePoint();
-			}
-		}
-		// Unrealized headers have no clickable point (NaN per UIA convention).
-		return new Point(float.NaN, float.NaN);
+		return 0;
 	}
 
 	private int GetColumnIndex()
@@ -305,7 +357,7 @@ partial class TableViewColumnHeaderAutomationPeer
 		// consistent even when Columns contains null holes or collapsed columns.
 		// Columns are matched by identity; a column instance is a single logical position
 		// (single-owner model), so the same instance appearing twice in Columns is unsupported.
-		if (Owner is TableView owner)
+		if (m_table.Get() is { } owner)
 		{
 			if (m_column.Get() is { } col)
 			{
@@ -331,7 +383,7 @@ partial class TableViewColumnHeaderAutomationPeer
 	private FrameworkElement? GetHeaderElement()
 	{
 		// Match by Tag so null Columns entries do not skew logical indexes.
-		var owner = Owner as TableView;
+		var owner = m_table.Get();
 		var col = m_column.Get();
 		if (owner is null || col is null)
 		{
@@ -344,6 +396,11 @@ partial class TableViewColumnHeaderAutomationPeer
 			return null;
 		}
 
-		return TableViewCellsPanel.CellForColumn(host, col);
+		var header = TableViewCellsPanel.CellForColumn(host, col);
+		if (!(Owner is TableView) && header != Owner)
+		{
+			return null;
+		}
+		return header;
 	}
 }

@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewGroupHeaderAutomationPeer.h, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableViewGroupHeaderAutomationPeer.h, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -27,6 +27,10 @@ partial class TableViewGroupHeaderAutomationPeer
 	// void Expand();
 	// void Collapse();
 	// winrt::ExpandCollapseState ExpandCollapseState();
+
+	// Grouping is hierarchical, and Level is how an ExpandCollapse container conveys depth.
+	// Without it Narrator hears two nested groups as siblings.
+	// int32_t GetLevelCore();
 
 	// Internal: announce a state change from THIS peer. UIA delivers property-changed events
 	// through the peer the client is connected to, so the raise has to happen on the peer

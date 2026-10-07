@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewAutomationPeer.h, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableViewAutomationPeer.h, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -50,20 +50,29 @@ partial class TableViewAutomationPeer
 	// of the TableView peer may be stale.
 	// void RaiseStructureChangedForGroupExpansion();
 
-	// private:
-	// One peer per column, kept alive for as long as the column stays in Columns(). Each call
-	// to GetColumnHeaders must hand back the same provider for a given column: minting a fresh
-	// peer per call yields unstable provider identity and leaves the returned providers with no
-	// owner keeping them alive.
-	private struct ColumnHeaderPeerCacheEntry
-	{
-		public WeakReference<TableViewColumn>? column;
-		public AutomationPeer? peer;
-	}
-
+	// Internal — the single source of column-header peer identity, shared with
+	// TableViewCellAutomationPeer::GetColumnHeaderItems.
 	// winrt::AutomationPeer GetOrCreateColumnHeaderPeer(
 	//     winrt::TableView const& tableView,
 	//     winrt::TableViewColumn const& column);
+
+	// private:
+	// One peer per column, kept alive for as long as the column stays in Columns(). Each call
+	// to GetColumnHeaders must hand back the same provider for a given column.
+	private readonly struct ColumnHeaderPeerCacheEntry
+	{
+		// TODO Uno: C++ also takes the ITrackerHandleManager owner for its tracker_ref; a plain reference suffices under the GC.
+		public ColumnHeaderPeerCacheEntry(
+			TableViewColumn headerColumn,
+			AutomationPeer headerPeer)
+		{
+			column = new WeakReference<TableViewColumn>(headerColumn);
+			peer = headerPeer;
+		}
+
+		public readonly WeakReference<TableViewColumn>? column;
+		public readonly AutomationPeer? peer;
+	}
 
 	// void RaiseStructureChanged(winrt::AutomationStructureChangeType const& structureChangeType);
 	// com_ptr<TableView> GetImpl();

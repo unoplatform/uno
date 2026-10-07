@@ -1,12 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewAutomationPeer.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableViewAutomationPeer.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -277,11 +276,16 @@ partial class TableViewAutomationPeer
 
 		if (cellElement is FrameworkElement cellFE)
 		{
-			// Return the same rich cell peer used for tree navigation.
-			var owningColumn = rowImpl.GetCellOwningColumn(cellElement);
-			AutomationPeer cellPeer =
-				new TableViewCellAutomationPeer(cellFE, rowElement, owningColumn, column);
-			return ProviderFromPeer(cellPeer);
+			// Route through the row peer so Grid.GetItem and tree navigation share provider identity.
+			if (FrameworkElementAutomationPeer.CreatePeerForElement(rowElement) is TableViewRowAutomationPeer rowPeer)
+			{
+				if (rowPeer.GetOrCreateCellPeer(cellFE) is { } cellPeer)
+				{
+					return ProviderFromPeer(cellPeer);
+				}
+			}
+
+			// A fresh peer would not match editing/tree navigation; custom row peers may expose no item.
 		}
 		return null;
 	}
@@ -392,8 +396,10 @@ partial class TableViewAutomationPeer
 			if (tableView.Columns is { } columns)
 			{
 				var count = columns.Count;
+				List<TableViewColumn> seenColumns = new();
 				headers.Capacity = count;
 				liveCache.Capacity = count;
+				seenColumns.Capacity = count;
 				for (int i = 0; i < count; i++)
 				{
 					var column = columns[i];
@@ -401,6 +407,11 @@ partial class TableViewAutomationPeer
 					{
 						continue;
 					}
+					if (seenColumns.Contains(column))
+					{
+						continue;
+					}
+					seenColumns.Add(column);
 
 					var headerPeer = GetOrCreateColumnHeaderPeer(tableView, column);
 					if (headerPeer is null)
@@ -408,10 +419,11 @@ partial class TableViewAutomationPeer
 						continue;
 					}
 
-					// The peer is cached even when it currently has no provider: ProviderFromPeer only
-					// yields one for a peer UIA has connected, so a transiently unconnected peer must
-					// keep its identity for the next enumeration rather than being rebuilt.
-					liveCache.Add(new ColumnHeaderPeerCacheEntry { column = new WeakReference<TableViewColumn>(column), peer = headerPeer });
+					if (headerPeer is TableViewColumnHeaderAutomationPeer headerAutomationPeer &&
+						headerAutomationPeer.IsTableViewOwned())
+					{
+						liveCache.Add(new ColumnHeaderPeerCacheEntry(column, headerPeer));
+					}
 
 					// A provider array must not contain nulls - UIA marshals every element.
 					if (ProviderFromPeer(headerPeer) is { } provider)
@@ -428,63 +440,46 @@ partial class TableViewAutomationPeer
 		return headers.ToArray();
 	}
 
-	private AutomationPeer? GetOrCreateColumnHeaderPeer(
+	internal AutomationPeer? GetOrCreateColumnHeaderPeer(
 		TableView? tableView,
 		TableViewColumn? column)
 	{
-		if (tableView is null || column is null)
+		if (tableView is null || column is null ||
+			column.GetOwningTableView() != tableView)
 		{
 			return null;
 		}
 
-		// Looked up against the cache as it stood at the previous enumeration, so a column that
-		// survives keeps the very same peer - and therefore the same provider identity - across calls.
+		if (tableView.GetHeaderHostInternal() is { } host)
+		{
+			if (TableViewCellsPanel.CellForColumn(host, column) is { } header)
+			{
+				m_columnHeaderPeerCache.RemoveAll(
+					entry =>
+					{
+						var entryColumn = entry.column.Get();
+						return entry.peer is null || entryColumn is null || entryColumn == column;
+					});
+
+				return FrameworkElementAutomationPeer.CreatePeerForElement(header);
+			}
+		}
+
 		foreach (var entry in m_columnHeaderPeerCache)
 		{
-			if (entry.peer is not null &&
-				entry.column is not null &&
-				entry.column.TryGetTarget(out var cachedColumn) &&
-				cachedColumn == column)
+			if (entry.peer is not null && entry.column.Get() == column)
 			{
 				return entry.peer;
 			}
 		}
 
-		// The TableView owns the peer so headers stay enumerable before their templates realize;
-		// TableViewColumnHeaderAutomationPeer supplies its own per-column RuntimeId and AutomationId
-		// to keep the headers distinguishable despite the shared owner.
-		return new TableViewColumnHeaderAutomationPeer(tableView, column);
-	}
+		AutomationPeer peer = new TableViewColumnHeaderAutomationPeer(tableView, column);
+		peer.SetParent(this);
 
-	private static string ItemToName(object? item)
-	{
-		// Boxed WinRT primitives surface as IPropertyValue, not IStringable.
-		// TODO Uno: IPropertyValue projection. try_as<IPropertyValue>() + Type() becomes ValueConversionHelpers.TryGetPropertyType.
-		if (item is not null && ValueConversionHelpers.TryGetPropertyType(item, out var propertyType))
-		{
-			switch (propertyType)
-			{
-				case PropertyType.String: return (string)item;
-				case PropertyType.Boolean: return (bool)item ? "True" : "False";
-				case PropertyType.Int16: return ((int)(short)item).ToString(CultureInfo.InvariantCulture);
-				case PropertyType.Int32: return ((int)item).ToString(CultureInfo.InvariantCulture);
-				case PropertyType.Int64: return ((long)item).ToString(CultureInfo.InvariantCulture);
-				case PropertyType.UInt8: return ((uint)(byte)item).ToString(CultureInfo.InvariantCulture);
-				case PropertyType.UInt16: return ((uint)(ushort)item).ToString(CultureInfo.InvariantCulture);
-				case PropertyType.UInt32: return ((uint)item).ToString(CultureInfo.InvariantCulture);
-				case PropertyType.UInt64: return ((ulong)item).ToString(CultureInfo.InvariantCulture);
-				case PropertyType.Single: return CppWinRTHelpers.ToHString((float)item);
-				case PropertyType.Double: return CppWinRTHelpers.ToHString((double)item);
-				default: break;
-			}
-		}
+		m_columnHeaderPeerCache.RemoveAll(entry => entry.peer is null || entry.column.Get() is null);
 
-		if (SharedHelpers.IsStringable(item))
-		{
-			return SharedHelpers.StringableToString(item);
-		}
-
-		return string.Empty;
+		m_columnHeaderPeerCache.Add(new ColumnHeaderPeerCacheEntry(column, peer));
+		return peer;
 	}
 
 	private static string StringPropertyValue(object? value)
@@ -514,6 +509,25 @@ partial class TableViewAutomationPeer
 		}
 
 		return false;
+	}
+
+	private static bool MatchesItemName(
+		TableView table,
+		object? item,
+		UIElement? element,
+		string requested)
+	{
+		if (element is not null)
+		{
+			if (FrameworkElementAutomationPeer.CreatePeerForElement(element) is { } peer)
+			{
+				return peer.GetName() == requested;
+			}
+			return false;
+		}
+		var group = GroupedEntry.TryGetGroupedEntry(item);
+		var name = group is not null ? table.GetGroupHeaderNameCandidate(group) : ItemToName(item);
+		return !string.IsNullOrEmpty(name) && name == requested;
 	}
 
 	/// <summary>
@@ -562,25 +576,30 @@ partial class TableViewAutomationPeer
 			return null;
 		}
 
-		// Resolve startAfter through its owning realized TableViewRow.
 		int startIndex = -1;
 		if (startAfter is not null)
 		{
+			// Any repeater child is a valid anchor. Matching only TableViewRow restarted grouping
+			// enumeration at item 0, so clients never advanced past the first group header.
+			bool resolved = false;
 			if (PeerFromProvider(startAfter) is FrameworkElementAutomationPeer startPeer)
 			{
-				if (startPeer.Owner is TableViewRow ownerRow)
+				if (startPeer.Owner is UIElement ownerElement)
 				{
-					int rowIndex = repeater.GetElementIndex(ownerRow);
-					if (rowIndex >= 0)
+					int index = repeater.GetElementIndex(ownerElement);
+					if (index >= 0)
 					{
-						startIndex = rowIndex;
-					}
-					else
-					{
-						// Avoid restarting at item 0 after startAfter has been virtualized away.
-						return null;
+						startIndex = index;
+						resolved = true;
 					}
 				}
+			}
+
+			// An unresolvable startAfter - virtualized away, or not one of ours - must not degrade to
+			// "start from the beginning": that turns a wrong answer into an enumeration that never ends.
+			if (!resolved)
+			{
+				return null;
 			}
 		}
 
@@ -606,22 +625,7 @@ partial class TableViewAutomationPeer
 				// Realized row peer names override item text for custom AutomationProperties.Name.
 				if (property == AutomationElementIdentifiers.NameProperty)
 				{
-					string requested = StringPropertyValue(value);
-
-					string candidate = string.Empty;
-					if (repeater.TryGetElement(i) is { } rowElement)
-					{
-						if (FrameworkElementAutomationPeer.CreatePeerForElement(rowElement) is { } rowPeer)
-						{
-							candidate = rowPeer.GetName();
-						}
-					}
-					if (string.IsNullOrEmpty(candidate))
-					{
-						candidate = ItemToName(item);
-					}
-
-					isMatch = (candidate == requested);
+					isMatch = MatchesItemName(impl, item, repeater.TryGetElement(i), StringPropertyValue(value));
 				}
 				// ValueValue — match by cell value (text content).
 				else if (property == ValuePatternIdentifiers.ValueProperty)
@@ -719,6 +723,12 @@ partial class TableViewAutomationPeer
 
 			if (matchedRowElement is not null)
 			{
+				if (property == AutomationElementIdentifiers.NameProperty &&
+					!MatchesItemName(impl, item, matchedRowElement, StringPropertyValue(value)))
+				{
+					continue;
+				}
+
 				if (FrameworkElementAutomationPeer.CreatePeerForElement(matchedRowElement) is { } rowPeer)
 				{
 					return ProviderFromPeer(rowPeer);
