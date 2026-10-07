@@ -42,6 +42,13 @@ public class Given_TextBlock_SharedText
 				new System.Drawing.Rectangle(0, 0, 200, 50),
 				Microsoft.UI.Colors.Red,
 				tolerance: 40);
+
+			// WinUI (CTextBlock::UpdateSelectionHighlightColor) falls back to the default selection color.
+			ImageAssert.HasColorInRectangle(
+				screenshot,
+				new System.Drawing.Rectangle(0, 0, 8, 30),
+				Uno.UI.Xaml.Media.DefaultBrushes.SelectionHighlightColor.Color,
+				tolerance: 10);
 		}
 		finally
 		{
