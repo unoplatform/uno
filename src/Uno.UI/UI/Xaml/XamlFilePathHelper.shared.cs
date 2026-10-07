@@ -23,6 +23,13 @@ namespace Uno.UI.Xaml
 		public const string WinUIThemeResourceFileName = "themeresources.xaml";
 		public const string WinUIThemeResourceURL = "Microsoft.UI.Xaml/Themes/" + WinUIThemeResourceFileName;
 
+		// MUXTABULARROOT_NAMESPACE_STR (controls\dev\inc\BuildMacros.h): the Tabular binary's PRI root.
+		public const string TabularRootNamespace = "Microsoft.UI.Xaml.Controls.Tabular";
+		public const string TabularGenericFileName = "generic.xaml";
+		public const string TabularThemeResourceFileName = "themeresources.xaml";
+		public const string TabularGenericURL = TabularRootNamespace + "/Themes/" + TabularGenericFileName;
+		public const string TabularThemeResourceURL = TabularRootNamespace + "/Themes/" + TabularThemeResourceFileName;
+
 #if !NETSTANDARD
 		/// <summary>
 		/// Converts the MRT local-resource form the XAML compiler emits for relative URIs

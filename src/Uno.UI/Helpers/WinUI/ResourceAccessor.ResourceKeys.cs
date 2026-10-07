@@ -102,6 +102,9 @@ internal partial class ResourceAccessor
 	public const string SR_ProgressBarErrorStatus = "ProgressBarErrorStatus";
 	public const string SR_RatingLocalizedControlType = "RatingLocalizedControlType";
 	public const string SR_BreadcrumbBarItemLocalizedControlType = "BreadcrumbBarItemLocalizedControlType";
+	public const string SR_ResizeGripperName = "ResizeGripperName";
+	public const string SR_ResizeGripperNameFormat = "ResizeGripperNameFormat";
+	public const string SR_TableViewColumnWidthChanged = "TableViewColumnWidthChanged";
 	public const string SR_SplitButtonSecondaryButtonName = "SplitButtonSecondaryButtonName";
 	public const string SR_ProofingMenuItemLabel = "ProofingMenuItemLabel";
 	public const string SR_TextCommandLabelCut = "TextCommandLabelCut";
@@ -166,6 +169,18 @@ internal partial class ResourceAccessor
 
 	public const string SR_WarningSuitableWebView2NotFound = "WarningSuitableWebView2NotFound";
 	public const string SR_DownloadWebView2Runtime = "DownloadWebView2Runtime";
+
+	public const string SR_TableViewGroupHeaderCountFormat = "TableViewGroupHeaderCountFormat";
+	public const string SR_TableViewGroupHeaderNull = "TableViewGroupHeaderNull";
+	public const string SR_TableViewGroupHeaderFallback = "TableViewGroupHeaderFallback";
+	public const string SR_TableViewSortedAscending = "TableViewSortedAscending";
+	public const string SR_TableViewSortedDescending = "TableViewSortedDescending";
+	public const string SR_TableViewSortCleared = "TableViewSortCleared";
+	public const string SR_TableViewSortClearedAll = "TableViewSortClearedAll";
+	public const string SR_TableViewSortAscendingHelpText = "TableViewSortAscendingHelpText";
+	public const string SR_TableViewSortDescendingHelpText = "TableViewSortDescendingHelpText";
+	public const string SR_TableViewSortNoneHelpText = "TableViewSortNoneHelpText";
+	public const string SR_TableViewColumnHeaderHelpTextFormat = "TableViewColumnHeaderHelpTextFormat";
 
 	public const string SR_UIA_LIGHTDISMISS_NAME = "UIA_LIGHTDISMISS_NAME";
 
