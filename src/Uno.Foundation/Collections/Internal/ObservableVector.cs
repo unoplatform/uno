@@ -12,14 +12,10 @@ internal class ObservableVector<T> : IObservableVector<T>, IObservableVector, IL
 		get { return _list[index]; }
 		set
 		{
-			var originalValue = _list[index];
+			// Like WinRT single_threaded_observable_vector::SetAt, re-setting the same instance still raises ItemChanged.
+			_list[index] = value;
 
-			if (!ReferenceEquals(originalValue, value))
-			{
-				_list[index] = value;
-
-				RaiseVectorChanged(CollectionChange.ItemChanged, index);
-			}
+			RaiseVectorChanged(CollectionChange.ItemChanged, index);
 		}
 	}
 
