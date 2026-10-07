@@ -214,7 +214,7 @@ public partial class Given_TableView
 		foreach (var row in GetRealizedRows(table))
 		{
 			Assert.AreEqual(rowMinHeight, row.MinHeight, "row MinHeight");
-			var textBlock = (TextBlock)GetCells(row)[0].Child;
+			var textBlock = (TextBlock)GetCellContent(GetCells(row)[0])!;
 			Assert.AreEqual(new Thickness(8, cellPaddingTop, 8, cellPaddingTop), textBlock.Padding, "cell padding");
 		}
 
@@ -222,7 +222,8 @@ public partial class Given_TableView
 		{
 			Assert.AreEqual(rowMinHeight, headerCell.MinHeight, "header MinHeight");
 			var presenter = headerCell.Children.OfType<ContentPresenter>().First();
-			Assert.AreEqual(new Thickness(8, headerPaddingTop, 8, headerPaddingTop), presenter.Padding, "header padding");
+			// Sortable headers reserve the chevron's SortIndicatorSize (16) on the trailing edge.
+			Assert.AreEqual(new Thickness(8, headerPaddingTop, 8 + 16, headerPaddingTop), presenter.Padding, "header padding");
 		}
 	}
 
@@ -514,7 +515,7 @@ public partial class Given_TableView
 
 		foreach (var row in GetRealizedRows(table))
 		{
-			var presenter = (ContentPresenter)GetCell(row, templateColumn).Child;
+			var presenter = (ContentPresenter)GetCellContent(GetCell(row, templateColumn))!;
 			Assert.IsNull(presenter.ContentTemplate);
 			Assert.IsNull(presenter.Content, "an empty presenter, not the item's ToString()");
 		}
@@ -590,7 +591,8 @@ public partial class Given_TableView
 		await WindowHelper.WaitForIdle();
 
 		var headerCell = GetHeaderCell(table, name);
-		Assert.AreEqual("Renamed", headerCell.Children.OfType<ContentPresenter>().First().Content);
+		// A plain string header renders through a trimming TextBlock.
+		Assert.AreEqual("Renamed", ((TextBlock)headerCell.Children.OfType<ContentPresenter>().First().Content).Text);
 		Assert.AreEqual("Renamed", AutomationProperties.GetName(headerCell));
 
 		name.Header = "A much, much longer header than any of the cell values below it";
@@ -755,11 +757,15 @@ public partial class Given_TableView
 	private static TableViewRow? GetRow(TableView table, int index)
 		=> GetRepeater(table)!.TryGetElement(index) as TableViewRow;
 
-	private static List<Border> GetCells(TableViewRow row)
-		=> FindByName<Panel>(row, "PART_CellsHost")!.Children.OfType<Border>().ToList();
+	// A cell is a single-child Grid wrapper (TableViewCell) tagged with its column.
+	private static List<Grid> GetCells(TableViewRow row)
+		=> FindByName<Panel>(row, "PART_CellsHost")!.Children.OfType<TableViewCell>().Cast<Grid>().ToList();
 
-	private static Border GetCell(TableViewRow row, TableViewColumn column)
+	private static Grid GetCell(TableViewRow row, TableViewColumn column)
 		=> GetCells(row).Single(c => ReferenceEquals(c.Tag, column));
+
+	private static UIElement? GetCellContent(Grid cell)
+		=> cell.Children.Count > 0 ? cell.Children[0] : null;
 
 	private static List<Grid> GetHeaderCells(TableView table)
 		=> FindByName<Panel>(table, "PART_HeaderHost")!.Children.OfType<Grid>().ToList();
@@ -768,7 +774,7 @@ public partial class Given_TableView
 		=> GetHeaderCells(table).Single(c => ReferenceEquals(c.Tag, column));
 
 	private static string? GetCellText(TableViewRow row, int columnIndex)
-		=> (GetCells(row)[columnIndex].Child as TextBlock)?.Text;
+		=> (GetCellContent(GetCells(row)[columnIndex]) as TextBlock)?.Text;
 
 	private static List<string> GetRowNames(TableView table)
 		=> GetRealizedRows(table).Select(r => ((Person)r.DataContext).Name).ToList();

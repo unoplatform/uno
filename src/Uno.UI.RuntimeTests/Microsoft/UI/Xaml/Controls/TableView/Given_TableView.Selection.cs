@@ -70,9 +70,8 @@ public partial class Given_TableView
 	[TestMethod]
 	public async Task When_Keyboard_Entry_From_Header()
 	{
-		// TableView_Keyboard.cpp: with focus inside the table but off the rows, Up/Down resume from the
-		// SELECTED row ("otherwise Down after clicking away yanks the selection to the top"), PageDown
-		// enters at rowsPerPage - 1 and End at the last row.
+		// TableView_Keyboard.cpp: Up/Down are clamped inside the header band (TryHandleHeaderVerticalKey),
+		// while from the header PageDown enters the rows at rowsPerPage - 1 and End at the last row.
 		var items = People(30);
 		var table = CreateTable(items);
 		await LoadAsync(table);
@@ -82,8 +81,8 @@ public partial class Given_TableView
 		table.Select(5);
 		await FocusHeaderAsync();
 		await PressAsync("down");
-		Assert.AreEqual(6, table.SelectedIndex, "Down resumes from the selected row");
-		Assert.AreEqual(6, GetFocusedRowIndex(table));
+		Assert.AreEqual(5, table.SelectedIndex, "Down stays inside the header band");
+		Assert.AreEqual(-1, GetFocusedRowIndex(table), "focus stays on the header");
 
 		table.DeselectAll();
 		await FocusHeaderAsync();
@@ -189,7 +188,7 @@ public partial class Given_TableView
 
 		try
 		{
-			// Ctrl toggles, matching SingleSelector::OnInteractedAction.
+			// Row-selection Space excludes Alt and Ctrl, so Ctrl+Space leaves the selection alone.
 			await KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_space#$u$_space#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 		}
@@ -198,8 +197,8 @@ public partial class Given_TableView
 			await ReleaseCtrlAsync();
 		}
 
-		Assert.AreEqual(-1, table.SelectedIndex, "Ctrl+Space toggles the selection off");
-		Assert.IsNull(table.SelectedItem);
+		Assert.AreEqual(2, table.SelectedIndex, "Ctrl+Space is not a row-selection gesture");
+		Assert.AreSame(items[2], table.SelectedItem);
 	}
 
 	[TestMethod]
