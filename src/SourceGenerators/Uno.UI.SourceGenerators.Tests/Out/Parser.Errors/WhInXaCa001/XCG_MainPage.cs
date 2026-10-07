@@ -1895,7 +1895,7 @@ namespace TestRepro
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
 														Path = @"OpenItemCommand",
-														RelativeSource = new RelativeSource(default),
+														RelativeSource = new RelativeSource(),
 													}
 												);
 												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
@@ -1943,7 +1943,7 @@ namespace TestRepro
 													new Microsoft.UI.Xaml.Data.Binding()
 													{
 														Path = @"CommentCommand",
-														RelativeSource = new RelativeSource(default),
+														RelativeSource = new RelativeSource(),
 													}
 												);
 												global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,

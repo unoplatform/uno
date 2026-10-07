@@ -345,6 +345,54 @@ public partial class Given_Parser
 	}
 
 	[TestMethod]
+	public async Task When_Margin_Has_Two_Values()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile(
+				"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+					<Grid Margin="4,8">
+						<Border Padding="1.5 2.5" />
+					</Grid>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_EventTrigger_Uses_Loaded()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile(
+				"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+					<Grid>
+						<Grid.Triggers>
+							<EventTrigger RoutedEvent="FrameworkElement.Loaded" />
+						</Grid.Triggers>
+					</Grid>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task When_Invalid_CornerRadius_Value()
 	{
 		var xamlFiles = new[]
