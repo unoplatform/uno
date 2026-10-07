@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView.idl, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableView.idl, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -12,7 +12,8 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 // target fails when the state is applied, not when the template is parsed.
 //
 //   PART_RootBorder              — Border. Row chrome; Background driven by CommonStates.
-//   PART_CellsHost               — Panel. One cell wrapper per column, in Columns order.
+//   PART_GridLineBorder          — Border. Renders border chrome and terminal-line suppression.
+//   PART_CellsHost              — Panel. One cell wrapper per column, in Columns order.
 //   PART_CellForegroundPresenter — ContentPresenter hosting PART_CellsHost. Exists because a
 //                                  Border has no Foreground for the Selected* states to animate.
 //   PART_SelectionIndicator      — Shape (default: Rectangle). Selected* states animate Opacity
