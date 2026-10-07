@@ -550,7 +550,9 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			}
 		}
 
-		if (peer is not ItemAutomationPeer &&
+		// Only RichEditBox's element-less peers map onto their host element; other virtual peers
+		// (e.g. LoopingSelector items) must not overwrite their ancestor's native node.
+		if (peer is RichEditBoxTextObjectAutomationPeer or RichEditBoxSpellingErrorAutomationPeer &&
 			peer.TryGetProviderOwner(out owner))
 		{
 			return true;
