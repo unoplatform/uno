@@ -62,6 +62,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private bool m_openingCanceled;
 
+		private bool m_shouldTakeFocus = true;
+
 		private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
 		/// <summary>
@@ -280,14 +282,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		public static DependencyProperty OverlayInputPassThroughElementProperty { get; } =
-			DependencyProperty.Register(
-				nameof(OverlayInputPassThroughElement),
-				typeof(DependencyObject),
-				typeof(FlyoutBase),
-				new FrameworkPropertyMetadata(
-					null,
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
-					OnOverlayInputPassThroughElementChanged));
+			DependencyProperty.Register(nameof(OverlayInputPassThroughElement), typeof(DependencyObject), typeof(FlyoutBase), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		/// <summary>
 		/// Gets or sets whether a disabled control can receive focus.
@@ -614,12 +609,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			UpdateStateToShowMode(showOptions?.ShowMode ?? FlyoutShowMode.Standard);
 
-			// Set how the popup will be dismissed. This needs to be done each time the flyout is
-			// opened because the placement mode may change. In theory we should wait until the
-			// placement logic has been executed to get the final placement, but the light dismiss
-			// value must be set before the popup is opened to have an effect.
-			SetPopupLightDismissBehavior();
-
 			OnOpening();
 
 			if (m_openingCanceled)
@@ -659,6 +648,29 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				_popup.HorizontalOffset = m_targetPoint.X;
 				_popup.VerticalOffset = m_targetPoint.Y;
+			}
+		}
+
+		private void UpdateStateToShowMode(FlyoutShowMode showMode)
+		{
+			// TODO Uno: m_shouldHideIfPointerMovesAway and m_shouldOverlayPassThroughAllInput not handled yet.
+
+			if (showMode == FlyoutShowMode.Auto)
+			{
+				showMode = FlyoutShowMode.Standard;
+			}
+
+			ShowMode = showMode;
+
+			switch (showMode)
+			{
+				case FlyoutShowMode.Standard:
+					m_shouldTakeFocus = true;
+					break;
+				case FlyoutShowMode.Transient:
+				case FlyoutShowMode.TransientWithDismissOnPointerMoveAway:
+					m_shouldTakeFocus = false;
+					break;
 			}
 		}
 

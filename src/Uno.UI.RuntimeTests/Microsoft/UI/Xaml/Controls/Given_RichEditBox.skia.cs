@@ -642,68 +642,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
-		[DataRow(false)]
-		[DataRow(true)]
-		public async Task When_Touch_Tap_Selects_Word_And_Shows_Grippers(bool explicitPassThrough)
+		public async Task When_Touch_Tap_Selects_Word_And_Shows_Grippers()
 		{
-			var SUT = new RichEditBox { Width = 400, Margin = new Thickness(100) };
+			var SUT = new RichEditBox { Width = 400 };
 			try
 			{
 				WindowHelper.WindowContent = SUT;
 				await WindowHelper.WaitForLoaded(SUT);
 				SUT.Document.SetText(TextSetOptions.None, "Hello world");
 				await WindowHelper.WaitForIdle();
-				// TextControlHelper.h distinguishes initial caret placement from this already-focused word-selection phase.
-				Assert.IsTrue(SUT.Focus(FocusState.Programmatic));
-				await WindowHelper.WaitForIdle();
-
-				var flyout = SUT.SelectionFlyout;
-				Assert.IsNotNull(flyout);
-				if (explicitPassThrough)
-				{
-					flyout.OverlayInputPassThroughElement = SUT;
-				}
-				var opened = 0;
-				flyout.Opened += (_, _) => opened++;
-				var presses = 0;
-				SUT.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler((_, _) => presses++), true);
 
 				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 				using var finger = injector.GetFinger();
 				finger.Press(GetTextPoint(SUT, 8));
 				finger.Release();
-				await WindowHelper.WaitFor(() => opened > 0);
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(1, presses);
 				Assert.AreEqual(6, SUT.Document.Selection.StartPosition);
 				Assert.AreEqual(11, SUT.Document.Selection.EndPosition);
 				Assert.AreEqual(RichEditBox.RichEditCaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 				Assert.IsNotNull(SUT.SelectionGrippersForTesting);
 
-				var previousOpened = opened;
-				Assert.IsFalse(flyout.GetPresenter().GetAbsoluteBounds().Contains(GetTextPoint(SUT, 8)),
-					"The tap must target text beneath the overlay, not a flyout command.");
 				finger.Press(GetTextPoint(SUT, 8));
 				finger.Release();
 				await WindowHelper.WaitForIdle();
-				Assert.AreEqual(2, presses, "A transient selection flyout must pass the tap through to the editor.");
-				await WindowHelper.WaitFor(() => opened > previousOpened);
 				Assert.AreEqual(6, SUT.Document.Selection.StartPosition);
 				Assert.AreEqual(11, SUT.Document.Selection.EndPosition);
 
 				finger.Press(GetTextPoint(SUT, 1));
 				finger.Release();
 				await WindowHelper.WaitForIdle();
-				Assert.AreEqual(3, presses);
 				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
 				Assert.AreEqual(0, SUT.Document.Selection.EndPosition);
 				Assert.AreEqual(RichEditBox.RichEditCaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
 			}
 			finally
 			{
-				SUT.SelectionFlyout?.Hide();
 				WindowHelper.WindowContent = null;
 			}
 		}
