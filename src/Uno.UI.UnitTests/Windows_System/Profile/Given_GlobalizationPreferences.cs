@@ -16,6 +16,31 @@ public class Given_GlobalizationPreferences
 		var region = GlobalizationPreferences.HomeGeographicRegion;
 
 		Assert.IsFalse(string.IsNullOrEmpty(region));
-		Assert.AreEqual(region, new RegionInfo(region).TwoLetterISORegionName);
+		Assert.AreNotEqual("IV", region);
+		if (region != "ZZ")
+		{
+			Assert.AreEqual(region, new RegionInfo(region).TwoLetterISORegionName);
+		}
+	}
+
+	[TestMethod]
+	public void When_HomeGeographicRegion_InvariantCulture_Then_Not_Invariant_Region()
+	{
+		var originalCulture = CultureInfo.CurrentCulture;
+		try
+		{
+			CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+
+			// RegionInfo.CurrentRegion is cached until the culture data is cleared.
+			CultureInfo.CurrentCulture.ClearCachedData();
+
+			// Windows never reports the invariant "IV" region; an unknown home location is "ZZ".
+			Assert.AreNotEqual("IV", GlobalizationPreferences.HomeGeographicRegion);
+		}
+		finally
+		{
+			CultureInfo.CurrentCulture = originalCulture;
+			CultureInfo.CurrentCulture.ClearCachedData();
+		}
 	}
 }
