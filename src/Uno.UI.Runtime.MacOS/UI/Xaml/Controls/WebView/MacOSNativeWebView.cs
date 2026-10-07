@@ -133,7 +133,8 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 			return null;
 		}
 
-		var tcs = new TaskCompletionSource<string?>();
+		// Completed from WebKit's completion handler: the awaiting code must not run inside it.
+		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
 		using (token.Register(() => tcs.TrySetCanceled()))
 		{
 			var handle = GCHandle.Alloc(tcs);
@@ -202,7 +203,7 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 			return null;
 		}
 
-		var tcs = new TaskCompletionSource<string?>();
+		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
 		using (token.Register(() => tcs.TrySetCanceled()))
 		{
 			var handle = GCHandle.Alloc(tcs);
