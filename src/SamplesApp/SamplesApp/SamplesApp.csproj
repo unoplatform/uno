@@ -677,7 +677,7 @@
 
 	<!--
 	On macOS, create a minimal .app bundle alongside the regular build output so that
-	TCC-gated APIs (microphone, speech recognition) can present their authorization prompt.
+	TCC-gated APIs (camera, microphone, speech recognition) can present their authorization prompt.
 	Launch via `open bin/.../SamplesApp.app`. Set SkipMacOSAppBundle=true to skip.
 	-->
 	<Target Name="_UnoBundleAppMacOS"
