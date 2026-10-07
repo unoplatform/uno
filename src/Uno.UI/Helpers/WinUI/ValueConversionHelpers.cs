@@ -72,4 +72,18 @@ internal static class ValueConversionHelpers
 		type == typeof(Size) ? PropertyType.Size :
 		type == typeof(Rect) ? PropertyType.Rect :
 		PropertyType.OtherType;
+
+	// TODO Uno: IPropertyValue projection, the equivalent of try_as<IPropertyValue>() followed by Type().
+	// WinRT boxes only value types and strings; any other reference type is not an IPropertyValue.
+	internal static bool TryGetPropertyType(object value, out PropertyType type)
+	{
+		if (value is string || (value is not null && value.GetType().IsValueType))
+		{
+			type = GetPropertyType(value.GetType());
+			return true;
+		}
+
+		type = PropertyType.Empty;
+		return false;
+	}
 }
