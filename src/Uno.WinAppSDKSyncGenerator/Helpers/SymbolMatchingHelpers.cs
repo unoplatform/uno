@@ -9,11 +9,6 @@ internal static class SymbolMatchingHelpers
 {
 	public static bool AreMatching(ISymbol uapSymbol, ISymbol unoSymbol)
 	{
-		if (ShouldSkipSymbol(uapSymbol))
-		{
-			return true;
-		}
-
 		if (uapSymbol is IEventSymbol uapEvent)
 		{
 			var result = unoSymbol is IEventSymbol unoEvent && AreEventsMatching(uapEvent, unoEvent);
@@ -59,25 +54,6 @@ internal static class SymbolMatchingHelpers
 		{
 			throw new ArgumentException($"Unexpected symbol '{uapSymbol?.Kind.ToString() ?? "<null>"}'");
 		}
-	}
-
-	private static bool ShouldSkipSymbol(ISymbol uapSymbol)
-	{
-		if (uapSymbol.ContainingSymbol?.Name is
-			"ColorKeyFrameCollection" or
-			"Matrix" or
-			"KeyTime" or
-			"PointCollection" or
-			"RepeatBehavior" or
-			"Matrix3D" or
-			"InlineCollection" or
-			"GeneratorPosition" or
-			"ToggleSwitch")
-		{
-			return true;
-		}
-
-		return false;
 	}
 
 	private static bool AreMatchingCommon(ISymbol uapSymbol, ISymbol unoSymbol)

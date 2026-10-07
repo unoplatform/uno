@@ -25,5 +25,10 @@ namespace Windows.UI
 		// Skipping already declared method Windows.UI.Color.ToString()
 		// Skipping already declared method Windows.UI.Color.ToString(System.IFormatProvider)
 		// Forced skipping of method Windows.UI.Color.System.IFormattable.ToString(string, System.IFormatProvider)
+		// Skipping already declared method Windows.UI.Color.GetHashCode()
+		// Skipping already declared method Windows.UI.Color.Equals(object)
+		// Skipping already declared method Windows.UI.Color.Equals(Windows.UI.Color)
+		// Skipping already declared method Windows.UI.Color.operator ==(Windows.UI.Color, Windows.UI.Color)
+		// Skipping already declared method Windows.UI.Color.operator !=(Windows.UI.Color, Windows.UI.Color)
 	}
 }

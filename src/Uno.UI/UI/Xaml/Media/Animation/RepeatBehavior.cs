@@ -38,11 +38,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			Count = 0;
 		}
 
-		public double Count;
+		public double Count { get; set; }
 
-		public TimeSpan Duration;
+		public TimeSpan Duration { get; set; }
 
-		public RepeatBehaviorType Type;
+		public RepeatBehaviorType Type { get; set; }
 
 		public bool HasCount => Type == RepeatBehaviorType.Count;
 
@@ -66,28 +66,28 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public override bool Equals(object value)
 			=> value is RepeatBehavior other && Equals(this, other);
 
-		public bool Equals(RepeatBehavior other)
-			=> Equals(this, other);
+		public bool Equals(RepeatBehavior repeatBehavior)
+			=> Equals(this, repeatBehavior);
 
-		public static bool operator ==(RepeatBehavior first, RepeatBehavior second)
-			=> Equals(first, second);
+		public static bool operator ==(RepeatBehavior repeatBehavior1, RepeatBehavior repeatBehavior2)
+			=> Equals(repeatBehavior1, repeatBehavior2);
 
-		public static bool operator !=(RepeatBehavior first, RepeatBehavior second)
-			=> !Equals(first, second);
+		public static bool operator !=(RepeatBehavior repeatBehavior1, RepeatBehavior repeatBehavior2)
+			=> !Equals(repeatBehavior1, repeatBehavior2);
 
-		public static bool Equals(RepeatBehavior first, RepeatBehavior second)
-			=> first.Type.Equals(second.Type)
-				&& first.Count.Equals(second.Count)
-				&& first.Duration.Equals(second.Duration);
+		public static bool Equals(RepeatBehavior repeatBehavior1, RepeatBehavior repeatBehavior2)
+			=> repeatBehavior1.Type.Equals(repeatBehavior2.Type)
+				&& repeatBehavior1.Count.Equals(repeatBehavior2.Count)
+				&& repeatBehavior1.Duration.Equals(repeatBehavior2.Duration);
 
 		public override string ToString()
 			=> ToString(CultureInfo.InvariantCulture);
 
-		public string ToString(IFormatProvider provider)
+		public string ToString(IFormatProvider formatProvider)
 			=> Type switch
 			{
-				RepeatBehaviorType.Count => Count.ToString(provider) + "x",
-				RepeatBehaviorType.Duration => Duration.ToXamlString(provider),
+				RepeatBehaviorType.Count => Count.ToString(formatProvider) + "x",
+				RepeatBehaviorType.Duration => Duration.ToXamlString(formatProvider),
 				RepeatBehaviorType.Forever => ForeverLiteral,
 
 				_ => throw new NotSupportedException("This RepeatBehavior type is not supported.")

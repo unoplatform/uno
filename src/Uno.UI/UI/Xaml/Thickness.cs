@@ -51,12 +51,12 @@ public partial struct Thickness : IEquatable<Thickness>
 
 	internal Thickness GetInverse() => new Thickness(-Left, -Top, -Right, -Bottom);
 
-	public bool Equals(Thickness other)
+	public bool Equals(Thickness thickness)
 	{
-		return Math.Abs(Left - other.Left) < double.Epsilon
-			&& Math.Abs(Top - other.Top) < double.Epsilon
-			&& Math.Abs(Right - other.Right) < double.Epsilon
-			&& Math.Abs(Bottom - other.Bottom) < double.Epsilon;
+		return Math.Abs(Left - thickness.Left) < double.Epsilon
+			&& Math.Abs(Top - thickness.Top) < double.Epsilon
+			&& Math.Abs(Right - thickness.Right) < double.Epsilon
+			&& Math.Abs(Bottom - thickness.Bottom) < double.Epsilon;
 	}
 
 	public override bool Equals(object obj)
