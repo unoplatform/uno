@@ -80,8 +80,10 @@ public sealed partial class CameraCaptureUISample : Page
 		{
 			result = await CaptureAsync(CameraCaptureUIMode.Video, cancelAfterDelay);
 		}
-		catch (OperationCanceledException)
+		catch (Exception ex)
 		{
+			// CaptureAsync already reported the cancellation or failure in CaptureStatus.
+			System.Diagnostics.Debug.WriteLine(ex);
 			return;
 		}
 
@@ -119,6 +121,11 @@ public sealed partial class CameraCaptureUISample : Page
 		catch (OperationCanceledException)
 		{
 			CaptureStatus.Text = $"{mode} capture cancelled";
+			throw;
+		}
+		catch (Exception ex)
+		{
+			CaptureStatus.Text = $"{mode} capture failed: {ex.Message}";
 			throw;
 		}
 	}
