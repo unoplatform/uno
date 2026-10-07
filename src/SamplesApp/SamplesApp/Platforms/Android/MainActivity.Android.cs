@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Views;
 using Microsoft.Identity.Client;
 using Microsoft.UI.Xaml;
+using Uno.UI.Runtime.Android;
 
 namespace SamplesApp.Droid
 {
@@ -37,7 +38,7 @@ namespace SamplesApp.Droid
 		{
 			AndroidX.Core.SplashScreen.SplashScreen.InstallSplashScreen(this);
 
-			var externalFilesDir = Microsoft.UI.Xaml.NativeApplication.Context.GetExternalFilesDir(null);
+			var externalFilesDir = NativeApplication.Context.GetExternalFilesDir(null);
 			if (externalFilesDir != null)
 			{
 				string fullPath = Path.Combine(externalFilesDir.AbsolutePath, "primestorage.txt");

@@ -12,6 +12,7 @@ using Android.Views.InputMethods;
 using Android.Widget;
 using AndroidX.Activity;
 using AndroidX.Core.Graphics;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
@@ -27,10 +28,10 @@ using Windows.UI.ViewManagement;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 
-namespace Microsoft.UI.Xaml
+namespace Uno.UI.Runtime.Android
 {
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
-	public partial class ApplicationActivity : Controls.NativePage
+	public partial class ApplicationActivity : NativePage
 	{
 		private static IUnoRenderView? _renderView;
 		private static View? _renderViewAsView;
