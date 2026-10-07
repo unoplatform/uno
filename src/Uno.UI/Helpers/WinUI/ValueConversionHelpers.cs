@@ -3,6 +3,7 @@
 // MUX Reference ValueHelpers.cpp
 
 using System;
+using System.Collections.Concurrent;
 using System.Globalization;
 using Windows.Foundation;
 
@@ -48,7 +49,7 @@ internal static class ValueConversionHelpers
 
 	// TODO Uno: IPropertyValue projection. A null type stands for an empty IPropertyValue. Enums report
 	// OtherType, as C++/WinRT's boxed IReference<enum> does; any other type outside the WinRT scalar set does too.
-	// Callers decide whether the value is an IPropertyValue at all (WinRT boxes only value types and strings).
+	// Callers that start from a value use TryGetPropertyType, which also decides whether it is an IPropertyValue at all.
 	internal static PropertyType GetPropertyType(Type type) =>
 		type is null ? PropertyType.Empty :
 		type == typeof(byte) ? PropertyType.UInt8 :
@@ -64,7 +65,8 @@ internal static class ValueConversionHelpers
 		type == typeof(bool) ? PropertyType.Boolean :
 		type == typeof(string) ? PropertyType.String :
 		type == typeof(Guid) ? PropertyType.Guid :
-		// Windows.Foundation.DateTime projects to DateTimeOffset; System.DateTime is accepted for the same value.
+		// Windows.Foundation.DateTime projects to DateTimeOffset. A boxed System.DateTime is no IPropertyValue
+		// (TryGetPropertyType rejects it); the mapping serves type-based callers such as navigation parameters.
 		type == typeof(DateTimeOffset) ? PropertyType.DateTime :
 		type == typeof(DateTime) ? PropertyType.DateTime :
 		type == typeof(TimeSpan) ? PropertyType.TimeSpan :
@@ -74,10 +76,12 @@ internal static class ValueConversionHelpers
 		PropertyType.OtherType;
 
 	// TODO Uno: IPropertyValue projection, the equivalent of try_as<IPropertyValue>() followed by Type().
-	// WinRT boxes only value types and strings; any other reference type is not an IPropertyValue.
+	// A .NET value reaches WinRT through a CsWinRT CCW, which offers IReference<T>/IPropertyValue only for
+	// the types its ShouldProvideIReference accepts. Everything else (decimal, System.DateTime, DateOnly,
+	// tuples, app structs and enums, any other class) is a plain CCW and so not an IPropertyValue.
 	internal static bool TryGetPropertyType(object value, out PropertyType type)
 	{
-		if (value is string || (value is not null && value.GetType().IsValueType))
+		if (value is not null && ProvidesPropertyValue(value.GetType()))
 		{
 			type = GetPropertyType(value.GetType());
 			return true;
@@ -86,4 +90,35 @@ internal static class ValueConversionHelpers
 		type = PropertyType.Empty;
 		return false;
 	}
+
+	private static readonly ConcurrentDictionary<Type, bool> _providesPropertyValue = new();
+
+	private static bool ProvidesPropertyValue(Type type) =>
+		type == typeof(string) ||
+		type == typeof(byte) ||
+		type == typeof(short) ||
+		type == typeof(ushort) ||
+		type == typeof(int) ||
+		type == typeof(uint) ||
+		type == typeof(long) ||
+		type == typeof(ulong) ||
+		type == typeof(float) ||
+		type == typeof(double) ||
+		type == typeof(char) ||
+		type == typeof(bool) ||
+		type == typeof(Guid) ||
+		type == typeof(DateTimeOffset) ||
+		type == typeof(TimeSpan) ||
+		typeof(Type).IsAssignableFrom(type) ||
+		typeof(Exception).IsAssignableFrom(type) ||
+		(type.IsValueType && _providesPropertyValue.GetOrAdd(type, IsWindowsRuntimeType));
+
+	// TODO Uno: CsWinRT recognizes a projected struct or enum by its WindowsRuntimeTypeAttribute. Uno projections
+	// carry no such attribute, so a projected type is one Uno declares publicly in a Windows.* or Microsoft.* namespace.
+	private static bool IsWindowsRuntimeType(Type type) =>
+		type.IsVisible &&
+		type.Namespace is { } ns &&
+		(ns.StartsWith("Windows.", StringComparison.Ordinal) || ns.StartsWith("Microsoft.", StringComparison.Ordinal)) &&
+		type.Assembly.GetName().Name is { } assemblyName &&
+		assemblyName.StartsWith("Uno", StringComparison.Ordinal);
 }
