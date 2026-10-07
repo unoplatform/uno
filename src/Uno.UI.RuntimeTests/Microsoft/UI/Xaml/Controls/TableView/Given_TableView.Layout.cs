@@ -5,13 +5,17 @@
 #if !WINAPPSDK
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Tabular;
 using Uno.UI.DevTools.Input;
+using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
@@ -277,6 +281,10 @@ public partial class Given_TableView
 		Assert.IsTrue(headerCell.Focus(FocusState.Keyboard));
 		await WindowHelper.WaitForIdle();
 
+#if __SKIA__
+		using var listener = RecordingAutomationListener.Install();
+#endif
+
 		await KeyboardHelper.PressKeySequence("$d$_right#$u$_right", headerCell);
 		await WindowHelper.WaitForIdle();
 
@@ -284,13 +292,76 @@ public partial class Given_TableView
 		Assert.AreEqual(GridUnitType.Pixel, name.Width.GridUnitType);
 		Assert.AreEqual(rightToLeft ? 112.0 : 128.0, name.Width.Value, LayoutTolerance);
 
+#if __SKIA__
+		AssertColumnWidthAnnouncement(listener, headerCell, rightToLeft ? 112 : 128);
+#endif
+
 		await KeyboardHelper.PressKeySequence("$d$_left#$u$_left", headerCell);
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreEqual(120.0, name.Width.Value, LayoutTolerance);
 
-		// TODO: assert the "Column %1 width: %2 pixels." announcement (AnnounceColumnWidth) once the
-		// runtime tests can observe AutomationPeer.RaiseNotificationEvent.
+#if __SKIA__
+		AssertColumnWidthAnnouncement(listener, headerCell, 120);
+
+		static void AssertColumnWidthAnnouncement(RecordingAutomationListener listener, FrameworkElement headerCell, int width)
+		{
+			// AnnounceColumnWidthOn: attributed to the focused header's peer, whole pixels.
+			var announcements = listener.TakeNotifications("TableViewColumnWidthChangedActivityId");
+			Assert.AreEqual(1, announcements.Count, "one announcement per completed resize");
+			var announcement = announcements[0];
+			Assert.AreSame(FrameworkElementAutomationPeer.FromElement(headerCell), announcement.Peer);
+			Assert.AreEqual(AutomationNotificationKind.Other, announcement.Kind);
+			Assert.AreEqual(AutomationNotificationProcessing.MostRecent, announcement.Processing);
+			Assert.AreEqual(
+				StringUtil.FormatString(ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TableViewColumnWidthChanged), "Name", width.ToString(CultureInfo.InvariantCulture)),
+				announcement.DisplayString);
+		}
+#endif
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)] // UIElement.Translation
+	public async Task When_Frozen_Cell_Pressed_Over_Scrolled_Column()
+	{
+		var table = new TableView { IsReadOnly = false };
+		var frozen = TextColumn(nameof(Person.Name), new GridLength(100, GridUnitType.Pixel));
+		frozen.FrozenEdge = TableViewFrozenEdge.Leading;
+		var scrolling = TextColumn(nameof(Person.Age), new GridLength(300, GridUnitType.Pixel));
+		table.Columns.Add(frozen);
+		table.Columns.Add(scrolling);
+		table.Columns.Add(TextColumn(nameof(Person.City), new GridLength(300, GridUnitType.Pixel)));
+		table.ItemsSource = People(5);
+
+		await LoadAsync(table, width: 300);
+
+		var scroller = GetBodyScroller(table);
+		scroller.ChangeView(150, null, null, true);
+		await WindowHelper.WaitFor(() => Math.Abs(scroller.HorizontalOffset - 150) < 0.5);
+		await WindowHelper.WaitForIdle();
+
+		var beginning = new List<TableViewBeginningEditEventArgs>();
+		table.BeginningEdit += (_, e) => beginning.Add(e);
+
+		// The pinned frozen cell sits over the start of the scrolled Age column; ResolvePressedColumn
+		// must pick the frozen cell on top, not the column laid out underneath it.
+		var row = GetRow(table, 1)!;
+		var viewportLeft = scroller.TransformToVisual(null).TransformPoint(new Point(0, 0)).X;
+		var point = new Point(viewportLeft + 50, Center(row).Y);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		mouse.Press(point);
+		mouse.Release();
+		mouse.Press(point);
+		mouse.Release();
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, beginning.Count);
+		Assert.AreSame(frozen, beginning[0].Column);
+		Assert.IsTrue(table.IsEditing);
+		Assert.IsTrue(Descendants(GetCell(GetRow(table, 1)!, frozen)).OfType<TextBox>().Any(), "the editor is hosted in the frozen cell");
 	}
 
 	private static FrameworkElement? FindGripper(Grid headerCell)

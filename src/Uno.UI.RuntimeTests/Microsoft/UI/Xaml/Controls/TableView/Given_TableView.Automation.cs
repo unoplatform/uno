@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Tabular;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.Helpers.WinUI;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
@@ -218,6 +219,206 @@ public partial class Given_TableView
 		appTextBlock = Descendants(cell).OfType<TextBlock>().First(t => t.Text == "Note");
 		Assert.AreEqual("APP-OWNED", ToolTipService.GetToolTip(appTextBlock));
 	}
+
+	[TestMethod]
+	public async Task When_Header_Is_Not_A_String()
+	{
+		var table = new TableView();
+		var intColumn = TextColumn(nameof(Person.Age));
+		intColumn.Header = 42;
+		var captionColumn = TextColumn(nameof(Person.Name));
+		captionColumn.Header = new HeaderCaption("Full name");
+		var elementColumn = TextColumn(nameof(Person.City));
+		elementColumn.Header = new TextBlock { Text = "City" };
+		table.Columns.Add(intColumn);
+		table.Columns.Add(captionColumn);
+		table.Columns.Add(elementColumn);
+		table.ItemsSource = People(3);
+		await LoadAsync(table);
+
+		// Managed headers are IStringable through their CCW in WinUI, so ToString() names them;
+		// a framework element is native there and is not.
+		AssertHeaderName(intColumn, "42");
+		AssertHeaderName(captionColumn, "Full name");
+		AssertHeaderName(elementColumn, "");
+
+		void AssertHeaderName(TableViewColumn column, string expected)
+		{
+			var headerCell = GetHeaderCell(table, column);
+			Assert.AreEqual(expected, AutomationProperties.GetName(headerCell), "header cell name");
+
+			var gripper = FindGripper(headerCell) as global::Microsoft.UI.Private.Controls.ResizeGripper;
+			Assert.IsNotNull(gripper);
+			Assert.AreEqual(expected, gripper.OwnerName, "gripper OwnerName");
+		}
+	}
+
+	private sealed class HeaderCaption(string caption)
+	{
+		public override string ToString() => caption;
+	}
+
+#if __SKIA__
+	[TestMethod]
+	public async Task When_Selection_Raises_Automation_Events()
+	{
+		var items = People(5);
+		var table = CreateTable(items);
+		await LoadAsync(table);
+
+		var tablePeer = FrameworkElementAutomationPeer.CreatePeerForElement(table);
+		var row0Peer = FrameworkElementAutomationPeer.CreatePeerForElement(GetRow(table, 0)!);
+		var row1Peer = FrameworkElementAutomationPeer.CreatePeerForElement(GetRow(table, 1)!);
+
+		using var listener = RecordingAutomationListener.Install();
+
+		table.Select(0);
+		listener.Events.Clear();
+
+		table.Select(1);
+
+		// RaiseSelectionAutomationEvents: container first, then the per-row pattern events, then the
+		// IsSelected property changes (selected row first).
+		CollectionAssert.AreEqual(
+			new[]
+			{
+				(tablePeer, "SelectionPatternOnInvalidated"),
+				(row1Peer, "SelectionItemPatternOnElementSelected"),
+				(row0Peer, "SelectionItemPatternOnElementRemovedFromSelection"),
+				(row1Peer, "IsSelected:False->True"),
+				(row0Peer, "IsSelected:True->False"),
+			},
+			listener.Events.Where(IsSelectionEvent).ToArray());
+
+		// FromElement is GetOrCreateAutomationPeer in WinUI (FrameworkElementAutomationPeer_partial.cpp),
+		// so a realized row nobody queried still gets a peer and raises; the C++ comment claiming
+		// otherwise does not match the framework.
+		var row2 = GetRow(table, 2)!;
+		listener.Events.Clear();
+
+		table.Select(2);
+
+		var row2Peer = FrameworkElementAutomationPeer.FromElement(row2);
+		Assert.IsNotNull(row2Peer);
+		CollectionAssert.AreEqual(
+			new[]
+			{
+				(tablePeer, "SelectionPatternOnInvalidated"),
+				(row2Peer, "SelectionItemPatternOnElementSelected"),
+				(row1Peer, "SelectionItemPatternOnElementRemovedFromSelection"),
+				(row2Peer, "IsSelected:False->True"),
+				(row1Peer, "IsSelected:True->False"),
+			},
+			listener.Events.Where(IsSelectionEvent).ToArray());
+
+		static bool IsSelectionEvent((AutomationPeer Peer, string Event) e)
+			=> e.Event is "SelectionPatternOnInvalidated"
+				or "SelectionItemPatternOnElementSelected"
+				or "SelectionItemPatternOnElementRemovedFromSelection"
+				|| e.Event.StartsWith("IsSelected:", System.StringComparison.Ordinal);
+	}
+
+	[TestMethod]
+	public async Task When_Sort_Announces()
+	{
+		var table = CreateTable(People(6));
+		var name = table.Columns[0];
+		await LoadAsync(table);
+
+		using var listener = RecordingAutomationListener.Install();
+
+		// AnnounceSortChange: ActionCompleted / MostRecent on the table's own peer.
+		Assert.IsTrue(table.SortByColumn(name, SortDirection.Ascending));
+		AssertAnnouncement(ResourceAccessor.SR_TableViewSortedAscending, "Name");
+
+		Assert.IsTrue(table.SortByColumn(name, SortDirection.Descending));
+		AssertAnnouncement(ResourceAccessor.SR_TableViewSortedDescending, "Name");
+
+		Assert.IsTrue(table.SortByColumn(name, SortDirection.None));
+		AssertAnnouncement(ResourceAccessor.SR_TableViewSortCleared, "Name");
+
+		Assert.IsTrue(table.SortByColumn(name, SortDirection.Ascending));
+		listener.TakeNotifications("TableViewSortChanged");
+
+		Assert.IsTrue(table.ClearSort());
+		AssertAnnouncement(ResourceAccessor.SR_TableViewSortClearedAll, null);
+
+		await WindowHelper.WaitForIdle();
+
+		void AssertAnnouncement(string resourceName, string? header)
+		{
+			var announcements = listener.TakeNotifications("TableViewSortChanged");
+			Assert.AreEqual(1, announcements.Count, resourceName);
+			var announcement = announcements[0];
+			Assert.AreSame(FrameworkElementAutomationPeer.FromElement(table), announcement.Peer);
+			Assert.AreEqual(AutomationNotificationKind.ActionCompleted, announcement.Kind);
+			Assert.AreEqual(AutomationNotificationProcessing.MostRecent, announcement.Processing);
+
+			var format = ResourceAccessor.GetLocalizedStringResource(resourceName);
+			Assert.AreEqual(header is null ? format : StringUtil.FormatString(format, header), announcement.DisplayString);
+		}
+	}
+
+	internal sealed record Notification(AutomationPeer Peer, AutomationNotificationKind Kind, AutomationNotificationProcessing Processing, string DisplayString, string ActivityId);
+
+	// Installed through AutomationPeer.TestAutomationPeerListener so ListenerExists reports true.
+	internal sealed class RecordingAutomationListener : IAutomationPeerListener, System.IDisposable
+	{
+		private readonly IAutomationPeerListener? _previous;
+
+		private RecordingAutomationListener()
+		{
+			_previous = AutomationPeer.TestAutomationPeerListener;
+			AutomationPeer.TestAutomationPeerListener = this;
+		}
+
+		public static RecordingAutomationListener Install() => new();
+
+		public List<(AutomationPeer Peer, string Event)> Events { get; } = new();
+
+		public List<Notification> Notifications { get; } = new();
+
+		public List<Notification> TakeNotifications(string activityId)
+		{
+			var taken = Notifications.Where(n => n.ActivityId == activityId).ToList();
+			Notifications.RemoveAll(n => n.ActivityId == activityId);
+			return taken;
+		}
+
+		public void Dispose() => AutomationPeer.TestAutomationPeerListener = _previous;
+
+		public bool ListenerExistsHelper(AutomationEvents eventId) => true;
+
+		public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId) => Events.Add((peer, eventId.ToString()));
+
+		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
+		{
+		}
+
+		public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
+		{
+			if (automationProperty == SelectionItemPatternIdentifiers.IsSelectedProperty)
+			{
+				Events.Add((peer, $"IsSelected:{oldValue}->{newValue}"));
+			}
+		}
+
+		public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
+			=> Notifications.Add(new(peer, notificationKind, notificationProcessing, displayString, activityId));
+
+		public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child)
+		{
+		}
+
+		public void NotifyInvalidatePeer(AutomationPeer peer)
+		{
+		}
+
+		public void NotifyTextEditTextChangedEvent(AutomationPeer peer, AutomationTextEditChangeType changeType, IReadOnlyList<string> changedData)
+		{
+		}
+	}
+#endif
 
 	private sealed class PeerBridge : FrameworkElementAutomationPeer
 	{

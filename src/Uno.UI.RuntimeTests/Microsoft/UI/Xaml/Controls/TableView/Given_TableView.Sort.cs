@@ -14,7 +14,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Tabular;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Uno.UI.DevTools.Input;
+using Uno.UI.Helpers.WinUI;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 
@@ -130,6 +132,7 @@ public partial class Given_TableView
 		Assert.IsNull(FindSortIndicator(GetHeaderCell(table, name)));
 		Assert.IsNotNull(FindSortIndicator(GetHeaderCell(table, table.Columns[1])));
 
+		// CanSortColumn rejects the column, so the code wins over the IDL's "programmatic SortByColumn still works".
 		Assert.IsFalse(table.ToggleSortDirection(name));
 		Assert.IsFalse(table.SortByColumn(name, SortDirection.Ascending));
 		Assert.AreEqual(SortDirection.None, name.SortDirection);
@@ -143,6 +146,76 @@ public partial class Given_TableView
 		table.CanUserSortColumns = false;
 		await WindowHelper.WaitForIdle();
 		Assert.IsTrue(GetHeaderCells(table).All(c => FindSortIndicator(c) is null));
+	}
+
+	[TestMethod]
+	public async Task When_CanUserSortColumns_Turned_Off_Clears_Sort()
+	{
+		var items = People(6);
+		var table = CreateTable(items);
+		var name = table.Columns[0];
+		var age = table.Columns[1];
+		await LoadAsync(table);
+
+		Assert.IsTrue(table.SortByColumn(name, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+
+		var sorting = new List<TableViewSortingEventArgs>();
+		var sorted = new List<TableViewSortedEventArgs>();
+		table.Sorting += (_, e) => sorting.Add(e);
+		table.Sorted += (_, e) => sorted.Add(e);
+
+		// The gate turning off drops the sort it was responsible for, through a regular ClearSort.
+		table.CanUserSortColumns = false;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(SortDirection.None, name.SortDirection);
+		AssertRowOrder(table, items, SortDirection.None);
+		Assert.AreEqual(1, sorting.Count);
+		Assert.IsNull(sorting[0].Column);
+		Assert.AreEqual(1, sorted.Count);
+		Assert.IsNull(sorted[0].Column);
+		Assert.AreEqual(SortDirection.None, sorted[0].Direction);
+
+		// CanSortColumn does not consult CanUserSortColumns: programmatic sorting still works.
+		Assert.IsTrue(table.SortByColumn(age, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(SortDirection.Ascending, age.SortDirection);
+		var ages = GetRealizedRows(table).Select(r => ((Person)r.DataContext).Age).ToList();
+		CollectionAssert.AreEqual(ages.OrderBy(a => a).ToList(), ages);
+	}
+
+	[TestMethod]
+	public async Task When_CanSort_Turned_Off_On_Sorted_Column()
+	{
+		var items = People(6);
+		var table = CreateTable(items);
+		var name = table.Columns[0];
+		await LoadAsync(table);
+
+		Assert.IsTrue(table.SortByColumn(name, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+
+		var sortedCount = 0;
+		table.Sorted += (_, _) => sortedCount++;
+
+		// OnColumnCanSortChanged asks for SortByColumn(column, None), but CanSortColumn already
+		// rejects the opted-out column, so the request is a no-op and the sort stays applied.
+		// The code wins over its own comment ("must not keep an active sort applied to it").
+		name.CanSort = false;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(SortDirection.Ascending, name.SortDirection);
+		AssertRowOrder(table, items, SortDirection.Ascending);
+		Assert.AreEqual(0, sortedCount);
+		Assert.IsNull(FindSortIndicator(GetHeaderCell(table, name)), "the rebuilt header drops the chevron");
+
+		// ClearSort does not go through CanSortColumn, so it still clears the column.
+		Assert.IsTrue(table.ClearSort());
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(SortDirection.None, name.SortDirection);
+		AssertRowOrder(table, items, SortDirection.None);
 	}
 
 	[TestMethod]
@@ -244,6 +317,189 @@ public partial class Given_TableView
 	}
 
 	[TestMethod]
+	public async Task When_ItemsSource_Replaced_Sort_Reset_Silently()
+	{
+		var table = CreateTable(People(6));
+		var name = table.Columns[0];
+		await LoadAsync(table);
+
+		Assert.IsTrue(table.SortByColumn(name, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+		AssertIndicator(table, name, SortDirection.Ascending);
+
+		var sortingCount = 0;
+		var sortedCount = 0;
+		table.Sorting += (_, _) => sortingCount++;
+		table.Sorted += (_, _) => sortedCount++;
+
+		// ResetSortStateForNewItemsSource: the data set the sort described is gone, so the state is
+		// dropped without a cancellable Sorting or a Sorted.
+		var replacement = People(6);
+		table.ItemsSource = replacement;
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(table.Columns.All(c => c.SortDirection == SortDirection.None));
+		foreach (var column in table.Columns)
+		{
+			AssertIndicator(table, column, SortDirection.None);
+		}
+		AssertRowOrder(table, replacement, SortDirection.None);
+		Assert.AreEqual(0, sortingCount);
+		Assert.AreEqual(0, sortedCount);
+	}
+
+	[TestMethod]
+	public async Task When_TableViewSource_Reshape_Does_Not_Reraise_Sorted()
+	{
+		var items = new ObservableCollection<Person>(People(6));
+		var source = TableViewSource.From(items);
+		var table = CreateTable(source);
+		var name = table.Columns[0];
+		await LoadAsync(table, height: 600);
+
+		var sorted = new List<TableViewSortedEventArgs>();
+		table.Sorted += (_, e) => sorted.Add(e);
+
+		// Nothing sorted anywhere: a group change reaches the reconciliation but raises nothing.
+		source.GroupBy(new TableViewKeySelector(item => ((Person)item!).City));
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(0, sorted.Count, "a group change with nothing sorted is not a sort change");
+
+		source.ClearGroupBy();
+		await WindowHelper.WaitForIdle();
+
+		source.Sort(nameof(Person.Name), SortDirection.Ascending);
+		await WindowHelper.WaitFor(() => name.SortDirection == SortDirection.Ascending, message: "the column did not follow the source's path sort");
+		await WindowHelper.WaitForIdle();
+		var countAfterSort = sorted.Count;
+		Assert.AreEqual(1, countAfterSort);
+
+		// Already reconciled to exactly this state: an unrelated filter must not report a sort change.
+		source.Filter(new TableViewPredicate(item => ((Person)item!).Age >= 20));
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(countAfterSort, sorted.Count);
+		Assert.AreEqual(SortDirection.Ascending, name.SortDirection);
+	}
+
+	[TestMethod]
+	public async Task When_TableViewSource_Sort_Replaces_Control_Axis()
+	{
+		var items = People(6);
+		var source = TableViewSource.From(items);
+		var table = CreateTable(source);
+		var name = table.Columns[0];
+		var age = table.Columns[1];
+		await LoadAsync(table);
+
+		Assert.IsTrue(table.SortByColumn(age, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+
+		var sorted = new List<TableViewSortedEventArgs>();
+		table.Sorted += (_, e) => sorted.Add(e);
+
+		// Last writer wins: the app's axis removes the control's own instead of stacking behind it.
+		source.Sort(nameof(Person.Name), SortDirection.Descending);
+		await WindowHelper.WaitFor(() => name.SortDirection == SortDirection.Descending, message: "the column did not follow the source's path sort");
+		await WindowHelper.WaitForIdle();
+
+		var axes = source.ActiveSortAxisInfos();
+		Assert.AreEqual(1, axes.Count, "only the app's axis remains");
+		Assert.AreEqual(nameof(Person.Name), axes[0].SortMemberPath);
+		Assert.AreEqual(SortDirection.Descending, axes[0].Direction);
+
+		Assert.AreEqual(SortDirection.None, age.SortDirection);
+		AssertIndicator(table, age, SortDirection.None);
+		AssertIndicator(table, name, SortDirection.Descending);
+		AssertRowOrder(table, items, SortDirection.Descending);
+		Assert.AreSame(name, sorted[^1].Column);
+		Assert.AreEqual(SortDirection.Descending, sorted[^1].Direction);
+	}
+
+	[TestMethod]
+	public async Task When_Sort_While_Editing_Commits_First()
+	{
+		var items = People(6);
+		var table = CreateTable(items);
+		var name = table.Columns[0];
+		table.IsReadOnly = false;
+		await LoadAsync(table);
+
+		await FocusRowAsync(table, 1);
+		await PressAsync("f2");
+		Assert.IsTrue(table.IsEditing);
+
+		var editor = FindEditor(table)!;
+		editor.Text = "Aaron";
+
+		// TryTerminateEditForControlInitiatedReshape closes the editor before the rows move.
+		Assert.IsTrue(table.SortByColumn(name, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(table.IsEditing);
+		Assert.AreEqual("Aaron", items[1].Name);
+		Assert.AreEqual(SortDirection.Ascending, name.SortDirection);
+		AssertRowOrder(table, items, SortDirection.Ascending);
+		Assert.AreEqual("Aaron", GetRowNames(table)[0]);
+	}
+
+	[TestMethod]
+	public async Task When_Sort_While_Editing_Vetoed()
+	{
+		var items = People(6);
+		var original = items[1].Name;
+		var table = CreateTable(items);
+		var name = table.Columns[0];
+		table.IsReadOnly = false;
+		await LoadAsync(table);
+
+		table.CellEditEnding += (_, e) => e.Cancel = true;
+		var sortingCount = 0;
+		var sortedCount = 0;
+		table.Sorting += (_, _) => sortingCount++;
+		table.Sorted += (_, _) => sortedCount++;
+
+		await FocusRowAsync(table, 1);
+		await PressAsync("f2");
+		FindEditor(table)!.Text = "Aaron";
+
+		// A vetoed close blocks the reshape: the sort is refused and the editor stays open.
+		Assert.IsFalse(table.SortByColumn(name, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(table.IsEditing);
+		Assert.IsNotNull(FindEditor(table));
+		Assert.AreEqual(original, items[1].Name);
+		Assert.AreEqual(SortDirection.None, name.SortDirection);
+		Assert.AreEqual(0, sortingCount, "Sorting is raised only after the edit has closed");
+		Assert.AreEqual(0, sortedCount);
+	}
+
+	[TestMethod]
+	public async Task When_Sorting_Handler_Removes_Column()
+	{
+		var items = People(6);
+		var table = CreateTable(items);
+		var name = table.Columns[0];
+		await LoadAsync(table);
+
+		var sortedCount = 0;
+		table.Sorting += (_, e) => table.Columns.Remove(e.Column!);
+		table.Sorted += (_, _) => sortedCount++;
+
+		// IsSortRequestStillValid re-checks ownership after Sorting returns.
+		Assert.IsFalse(table.SortByColumn(name, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(table.Columns.Contains(name));
+		Assert.AreEqual(SortDirection.None, name.SortDirection);
+		Assert.AreEqual(0, sortedCount);
+		AssertRowOrder(table, items, SortDirection.None);
+	}
+
+	[TestMethod]
 	public async Task When_Sorted_Column_Removed()
 	{
 		var table = CreateTable(People(6));
@@ -253,7 +509,9 @@ public partial class Given_TableView
 		Assert.IsTrue(table.SortByColumn(name, SortDirection.Ascending));
 		await WindowHelper.WaitForIdle();
 
+		var sortingCount = 0;
 		var sorted = new List<TableViewSortedEventArgs>();
+		table.Sorting += (_, _) => sortingCount++;
 		table.Sorted += (_, e) => sorted.Add(e);
 
 		table.Columns.Remove(name);
@@ -264,6 +522,37 @@ public partial class Given_TableView
 
 		Assert.IsNull(sorted[0].Column);
 		Assert.AreEqual(SortDirection.None, sorted[0].Direction);
+		Assert.AreEqual(0, sortingCount, "the queued clear is not cancellable");
+	}
+
+	[TestMethod]
+	public async Task When_Sorted_Column_Removed_Then_Resorted_Same_Tick()
+	{
+		var items = People(6);
+		var table = CreateTable(items);
+		var name = table.Columns[0];
+		var age = table.Columns[1];
+		await LoadAsync(table);
+
+		Assert.IsTrue(table.SortByColumn(name, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+
+		var sorted = new List<TableViewSortedEventArgs>();
+		table.Sorted += (_, e) => sorted.Add(e);
+
+		// The removal queues a clear; the newer sort lands before it runs, and the stale-clear guard
+		// in RecomputeSortDPsAndRaiseInternal drops it.
+		table.Columns.Remove(name);
+		Assert.IsTrue(table.SortByColumn(age, SortDirection.Ascending));
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(SortDirection.Ascending, age.SortDirection);
+		var ages = GetRealizedRows(table).Select(r => ((Person)r.DataContext).Age).ToList();
+		CollectionAssert.AreEqual(ages.OrderBy(a => a).ToList(), ages);
+		Assert.AreEqual(1, sorted.Count, "no queued clear overrides the newer sort");
+		Assert.AreSame(age, sorted[0].Column);
+		Assert.AreEqual(SortDirection.Ascending, sorted[0].Direction);
 	}
 
 	[TestMethod]
@@ -365,7 +654,9 @@ public partial class Given_TableView
 	}
 
 	[TestMethod]
-	public async Task When_GroupHeader_Toggle_Keeps_Focus()
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_GroupHeader_Toggle_Keeps_Focus(bool rightToLeft)
 	{
 		var items = new ObservableCollection<Person>
 		{
@@ -375,14 +666,24 @@ public partial class Given_TableView
 		};
 		var source = TableViewSource.From(items).GroupBy(new TableViewKeySelector(item => ((Person)item!).City));
 		var table = CreateTable(source);
+		if (rightToLeft)
+		{
+			table.FlowDirection = FlowDirection.RightToLeft;
+		}
+
 		await LoadAsync(table, height: 600);
 
 		var header = GetRealizedGroupHeaders(table)[0];
 		Assert.IsTrue(header.Focus(FocusState.Keyboard));
 		await WindowHelper.WaitForIdle();
 
+		// Only Enter/Space go through RequestToggle; the arrows go through RequestExpansion, which
+		// asks the owner directly and raises no ToggleRequested.
 		var toggles = new List<object?>();
-		header.ToggleRequested += (_, e) => toggles.Add(e.GroupKey);
+		foreach (var realized in GetRealizedGroupHeaders(table))
+		{
+			realized.ToggleRequested += (_, e) => toggles.Add(e.GroupKey);
+		}
 
 		await PressAsync("enter");
 		await WindowHelper.WaitForIdle();
@@ -390,17 +691,200 @@ public partial class Given_TableView
 		Assert.AreEqual(1, toggles.Count);
 		Assert.AreEqual("Oslo", toggles[0]);
 
-		var focused = FocusManager.GetFocusedElement(WindowHelper.XamlRoot) as TableViewGroupHeader;
-		Assert.IsNotNull(focused, "focus stays on the group header across the reshape");
-		Assert.AreEqual("Oslo", ((TableViewGroupInfo)focused!.Content).Key);
+		var focused = GetFocusedOsloHeader();
 		Assert.IsFalse(focused.IsExpanded);
 		Assert.AreEqual(1, GetRealizedRows(table).Count, "only the Kyoto row remains");
 
-		// Left collapses, Right expands (TreeViewItem parity).
-		await PressAsync("right");
+		// Right expands in LTR and collapses in RTL (TreeViewItem / Expander convention).
+		var expandKey = rightToLeft ? "left" : "right";
+		var collapseKey = rightToLeft ? "right" : "left";
+
+		await PressAsync(expandKey);
 		await WindowHelper.WaitForIdle();
+		Assert.IsTrue(GetFocusedOsloHeader().IsExpanded);
 		Assert.AreEqual(3, GetRealizedRows(table).Count);
+
+		// SetGroupExpansion is idempotent: expanding an expanded group changes nothing.
+		await PressAsync(expandKey);
+		await WindowHelper.WaitForIdle();
+		Assert.IsTrue(GetFocusedOsloHeader().IsExpanded);
+		Assert.AreEqual(3, GetRealizedRows(table).Count);
+
+		await PressAsync(collapseKey);
+		await WindowHelper.WaitForIdle();
+		Assert.IsFalse(GetFocusedOsloHeader().IsExpanded);
+		Assert.AreEqual(1, GetRealizedRows(table).Count);
+
+		await PressAsync(collapseKey);
+		await WindowHelper.WaitForIdle();
+		Assert.IsFalse(GetFocusedOsloHeader().IsExpanded);
+		Assert.AreEqual(1, GetRealizedRows(table).Count);
+
+		Assert.AreEqual(1, toggles.Count, "the arrow keys raise no ToggleRequested");
+
+		// Space toggles like Enter.
+		var spaceHeader = GetFocusedOsloHeader();
+		var spaceToggles = 0;
+		spaceHeader.ToggleRequested += (_, _) => spaceToggles++;
+
+		await PressAsync("space");
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, spaceToggles);
+		Assert.IsTrue(GetFocusedOsloHeader().IsExpanded);
+		Assert.AreEqual(3, GetRealizedRows(table).Count);
+
+		static TableViewGroupHeader GetFocusedOsloHeader()
+		{
+			var focused = FocusManager.GetFocusedElement(WindowHelper.XamlRoot) as TableViewGroupHeader;
+			Assert.IsNotNull(focused, "focus stays on the group header across the reshape");
+			Assert.AreEqual("Oslo", ((TableViewGroupInfo)focused!.Content).Key);
+			return focused;
+		}
 	}
+
+	[TestMethod]
+	public async Task When_GroupHeaderTemplate()
+	{
+		var items = new ObservableCollection<Person>
+		{
+			new("Ada", 30, "Oslo"),
+			new("Bob", 31, "Kyoto"),
+		};
+		var source = TableViewSource.From(items).GroupBy(new TableViewKeySelector(item => ((Person)item!).City));
+		var table = CreateTable(source);
+		var appTemplate = (DataTemplate)XamlReader.Load(
+			"""
+			<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+				<TextBlock Text="{Binding KeyText}" />
+			</DataTemplate>
+			""");
+		table.GroupHeaderTemplate = appTemplate;
+		await LoadAsync(table, height: 600);
+
+		var headers = GetRealizedGroupHeaders(table);
+		Assert.AreEqual(2, headers.Count);
+		Assert.IsTrue(headers.All(h => ReferenceEquals(h.ContentTemplate, appTemplate)), "the app template is set on each prepared header");
+
+		// GroupHeaderTemplate carries no change callback at this tag (TableView.idl), so the revert is
+		// observed on headers prepared afterwards: ClearValue lets the Style's template re-apply.
+		table.GroupHeaderTemplate = null;
+		source.ClearGroupBy();
+		await WindowHelper.WaitForIdle();
+		source.GroupBy(new TableViewKeySelector(item => ((Person)item!).City));
+		await WindowHelper.WaitForIdle();
+
+		headers = GetRealizedGroupHeaders(table);
+		Assert.AreEqual(2, headers.Count);
+		foreach (var header in headers)
+		{
+			Assert.AreEqual(DependencyProperty.UnsetValue, header.ReadLocalValue(ContentControl.ContentTemplateProperty));
+			Assert.IsNotNull(header.ContentTemplate, "the default Style's ContentTemplate setter applies");
+			Assert.AreNotSame(appTemplate, header.ContentTemplate);
+		}
+	}
+
+	[TestMethod]
+	public async Task When_GroupInfo_KeyText_For_Non_String_Keys()
+	{
+		var items = new ObservableCollection<Person>
+		{
+			new("Ada", 30, "Oslo", "Note"),
+			new("Bob", 31, "Kyoto"),
+			new("Cy", 30, "Oslo"),
+		};
+		// A null key has no built-in group identity (RowIdentity::TryGetGroupIdentity fails with "null group
+		// key"), so the bucket needs an app-supplied identity.
+		var source = TableViewSource.From(items).GroupBy(
+			new TableViewKeySelector(item => ((Person)item!).Notes),
+			new TableViewIdentitySelector(key => key as string ?? "<null>"));
+		var table = CreateTable(source);
+		await LoadAsync(table, height: 600);
+
+		var infos = GetRealizedGroupHeaders(table).Select(h => (TableViewGroupInfo)h.Content).ToList();
+		Assert.AreEqual(2, infos.Count);
+		Assert.AreEqual("Note", infos[0].KeyText);
+		Assert.IsNull(infos[1].Key);
+		Assert.AreEqual(LocalizedOrFallback(ResourceAccessor.SR_TableViewGroupHeaderNull, "(null)"), infos[1].KeyText, "a null key reads as the localized null label");
+
+		// A non-string key is stringified (IStringable on a C# key), not reported as the "(group)" fallback.
+		source.GroupBy(new TableViewKeySelector(item => ((Person)item!).Age));
+		await WindowHelper.WaitForIdle();
+
+		infos = GetRealizedGroupHeaders(table).Select(h => (TableViewGroupInfo)h.Content).ToList();
+		CollectionAssert.AreEqual(new[] { "30", "31" }, infos.Select(i => i.KeyText).ToList());
+		Assert.AreEqual(30, infos[0].Key);
+	}
+
+	[TestMethod]
+	public async Task When_HeaderTemplateSelector_Takes_Precedence()
+	{
+		var table = CreateTable(People(3));
+		var name = table.Columns[0];
+		name.HeaderTemplate = HeaderTemplate("FromTemplate");
+		var selector = new FixedTemplateSelector(HeaderTemplate("FromSelector"));
+		name.HeaderTemplateSelector = selector;
+		await LoadAsync(table);
+
+		var presenter = GetHeaderCell(table, name).Children.OfType<ContentPresenter>().First();
+		Assert.AreSame(selector, presenter.ContentTemplateSelector);
+		Assert.AreEqual(DependencyProperty.UnsetValue, presenter.ReadLocalValue(ContentPresenter.ContentTemplateProperty), "the template is not applied alongside the selector");
+
+		var texts = Descendants(GetHeaderCell(table, name)).OfType<TextBlock>().Select(t => t.Text).ToList();
+		CollectionAssert.Contains(texts, "FromSelector");
+		CollectionAssert.DoesNotContain(texts, "FromTemplate");
+
+		// Without a selector, the template applies.
+		name.HeaderTemplateSelector = null;
+		await WindowHelper.WaitForIdle();
+
+		presenter = GetHeaderCell(table, name).Children.OfType<ContentPresenter>().First();
+		Assert.AreSame(name.HeaderTemplate, presenter.ContentTemplate);
+		texts = Descendants(GetHeaderCell(table, name)).OfType<TextBlock>().Select(t => t.Text).ToList();
+		CollectionAssert.Contains(texts, "FromTemplate");
+
+		static DataTemplate HeaderTemplate(string text)
+			=> (DataTemplate)XamlReader.Load(
+				$"""
+				<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<TextBlock Text="{text}" />
+				</DataTemplate>
+				""");
+	}
+
+	[TestMethod]
+	public async Task When_HeaderToolTip()
+	{
+		var table = CreateTable(People(3));
+		var name = table.Columns[0];
+		name.HeaderToolTip = "";
+		await LoadAsync(table);
+
+		// Null or empty means no tooltip.
+		Assert.IsNull(ToolTipService.GetToolTip(GetHeaderCell(table, name)));
+
+		name.HeaderToolTip = "The name";
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual("The name", GetCellToolTipText(GetHeaderCell(table, name)));
+
+		name.HeaderToolTip = "";
+		await WindowHelper.WaitForIdle();
+		Assert.IsNull(GetCellToolTipText(GetHeaderCell(table, name)), "an empty value retracts the tooltip");
+	}
+
+	private sealed class FixedTemplateSelector : DataTemplateSelector
+	{
+		private readonly DataTemplate _template;
+
+		public FixedTemplateSelector(DataTemplate template) => _template = template;
+
+		protected override DataTemplate SelectTemplateCore(object item) => _template;
+
+		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => _template;
+	}
+
+	private static string LocalizedOrFallback(string resourceName, string fallback)
+		=> ResourceAccessor.GetLocalizedStringResource(resourceName) is { Length: > 0 } resolved ? resolved : fallback;
 
 	private sealed class NameLengthComparer : ITableViewSortComparer
 	{

@@ -52,11 +52,14 @@ public partial class Given_TableView
 		Assert.AreEqual(0, GetFocusedRowIndex(table), "Home focuses the first row");
 		Assert.AreEqual(0, table.SelectedIndex);
 
+		// GetEstimatedRowsPerPage: viewport height over a realized data row's height.
+		var rowsPerPage = Math.Max(1, (int)(GetBodyScroller(table).ViewportHeight / GetRow(table, 0)!.ActualHeight));
 		await PressAsync("pagedown");
-		Assert.IsTrue(table.SelectedIndex > 1, $"PageDown moves by a page (SelectedIndex={table.SelectedIndex})");
+		Assert.AreEqual(Math.Min(items.Count - 1, rowsPerPage), table.SelectedIndex, "PageDown moves by the estimated rows per page");
 		Assert.AreEqual(table.SelectedIndex, GetFocusedRowIndex(table));
 
-		// Up at the top is clamped; nothing moves.
+		// Up on the first row does not move the selection; unlike Home/End/PageUp/PageDown the key is
+		// left unhandled at the boundary, so focus may leave the table.
 		await PressAsync("home");
 		await PressAsync("up");
 		Assert.AreEqual(0, table.SelectedIndex);
@@ -232,20 +235,48 @@ public partial class Given_TableView
 	}
 
 	[TestMethod]
-	[DataRow(TableViewSelectionMode.Single)]
-	[DataRow(TableViewSelectionMode.None)]
-	public async Task When_DeselectAll(TableViewSelectionMode mode)
+	public async Task When_DeselectAll()
 	{
-		var table = CreateTable(People(5));
+		var items = People(5);
+		var table = CreateTable(items);
 		await LoadAsync(table);
 
 		table.Select(3);
-		table.SelectionMode = mode;
+
+		var args = new List<SelectionChangedEventArgs>();
+		table.SelectionChanged += (_, e) => args.Add(e);
 
 		table.DeselectAll();
 
 		Assert.AreEqual(-1, table.SelectedIndex);
 		Assert.IsNull(table.SelectedItem);
+		Assert.AreEqual(1, args.Count);
+		Assert.AreSame(items[3], args[0].RemovedItems.Single());
+	}
+
+	[TestMethod]
+	public async Task When_DeselectAll_While_Unloaded_Drops_Pending_Selection()
+	{
+		var items = People(6);
+		var table = CreateTable(items);
+		var host = await LoadAsync(table);
+
+		table.Select(3);
+
+		host.Children.Remove(table);
+		await WindowHelper.WaitFor(() => !table.IsLoaded);
+
+		// DeselectAll also clears the selection held for the reload (ClearPendingSelection), so the
+		// round trip cannot resurrect it.
+		table.DeselectAll();
+
+		host.Children.Add(table);
+		await WindowHelper.WaitForLoaded(table);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(-1, table.SelectedIndex);
+		Assert.IsNull(table.SelectedItem);
+		Assert.IsTrue(GetRealizedRows(table).All(r => !r.IsSelected));
 	}
 
 	[TestMethod]

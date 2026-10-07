@@ -103,11 +103,12 @@ public partial class Given_TableView
 	}
 
 	[TestMethod]
-	public async Task When_No_TabularControlsResources()
+	public async Task When_DefaultStyle_Resolves_Through_DefaultStyleResourceUri()
 	{
-		// Documents the WinUI resolution path: the default style is reached through
-		// DefaultStyleResourceUri (SetDefaultStyleKeyWorker), not through the app's merged dictionaries,
-		// so the template applies even though TabularControlsResources only supplies theme resources.
+		// The default style is reached through DefaultStyleResourceUri (SetDefaultStyleKeyWorker), not
+		// through the app's merged dictionaries. The theme resources it references still come from
+		// TabularControlsResources, which the SamplesApp merges app-wide; without them WinUI fails to
+		// resolve SortIndicatorForeground (Samples/TableViewSampleApp/App.xaml).
 		var table = CreateTable(People(3));
 
 		Assert.AreEqual(TabularGenericUri, ((Uri)table.GetValue(Control.DefaultStyleResourceUriProperty)).OriginalString);
@@ -315,6 +316,41 @@ public partial class Given_TableView
 
 		Assert.AreEqual(Visibility.Collapsed, presenter.Visibility);
 		Assert.AreEqual(Visibility.Visible, repeater.Visibility);
+	}
+
+	[TestMethod]
+	public async Task When_EmptyTemplate_Null_ItemsSource()
+	{
+		// UpdateEmptyState: with no ItemsSourceView the table counts as empty.
+		var table = CreateTable(null);
+		var emptyTemplate = (DataTemplate)XamlReader.Load(
+			"""
+			<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+				<TextBlock Text="Nothing here" />
+			</DataTemplate>
+			""");
+		table.EmptyTemplate = emptyTemplate;
+		await LoadAsync(table);
+
+		var presenter = FindByName<ContentControl>(table, "PART_EmptyStatePresenter")!;
+		var repeater = GetRepeater(table)!;
+
+		Assert.AreEqual(Visibility.Visible, presenter.Visibility);
+		Assert.AreEqual(Visibility.Collapsed, repeater.Visibility);
+		Assert.AreSame(emptyTemplate, presenter.ContentTemplate);
+		Assert.AreEqual("", presenter.Content, "an empty string so the template inflates without a data item");
+
+		table.ItemsSource = People(2);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(Visibility.Collapsed, presenter.Visibility);
+		Assert.AreEqual(Visibility.Visible, repeater.Visibility);
+
+		table.ItemsSource = null;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(Visibility.Visible, presenter.Visibility);
+		Assert.AreEqual(Visibility.Collapsed, repeater.Visibility);
 	}
 
 	[TestMethod]
