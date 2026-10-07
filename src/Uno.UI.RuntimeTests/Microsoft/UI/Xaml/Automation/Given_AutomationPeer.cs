@@ -333,6 +333,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public void When_AutomationProperties_HelpText_Default()
+		{
+			Border border = new();
+			Assert.AreEqual(string.Empty, AutomationProperties.GetHelpText(border));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public void When_AutomationPeer_Default_GetItemStatus()
 		{
 			var automationPeer = new TestAutomationPeer();
