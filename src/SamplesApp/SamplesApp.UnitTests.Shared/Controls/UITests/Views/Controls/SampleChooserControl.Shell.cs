@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using SampleControl.Entities;
 using SampleControl.Presentation;
 using Uno.UI.Samples.Entities;
@@ -35,6 +36,7 @@ partial class SampleChooserControl
 	private const double FallbackLabelPadding = 52;
 
 	private const double TouchRowHeight = 40;
+	private const double FocusModeButtonSize = 32;
 
 	private SampleChooserViewModel? _shellViewModel;
 	private bool _syncingRail;
@@ -51,6 +53,12 @@ partial class SampleChooserControl
 	private bool _isQuickSettingsFlyoutDetached;
 	private Func<Task>? _pendingRunnerLeave;
 	private Control? _runnerLeaveReturnFocus;
+	private Microsoft.UI.Dispatching.DispatcherQueueTimer? _focusModeIdleTimer;
+	private long _focusModeLastActivity;
+	private bool _isKeyboardInput;
+
+	/// <summary>How long the focus-mode exit button stays after the last pointer activity.</summary>
+	internal static TimeSpan FocusModeButtonIdleDelay { get; set; } = TimeSpan.FromSeconds(3);
 
 	/// <summary>False on touch, where keyboard shortcut hints mean nothing. Per window, so suggestions re-evaluate when it flips.</summary>
 	public bool ShowShortcutHints
@@ -83,6 +91,7 @@ partial class SampleChooserControl
 
 		ApplyShortcutHints();
 		InitializeRowHeight();
+		InitializeFocusModeButton();
 
 		// On touch a long press would select the title instead of showing its tooltip.
 		ShellSampleTitle.IsTextSelectionEnabled = !ShellFunctions.IsTouchPlatform;
@@ -183,8 +192,12 @@ partial class SampleChooserControl
 				break;
 
 			case nameof(SampleChooserViewModel.UseMicaBackdrop):
+				UpdateBackdropState();
+				break;
+
 			case nameof(SampleChooserViewModel.IsRecordAllTests):
 				UpdateBackdropState();
+				UpdateChromeState(useTransitions: false);
 				break;
 
 			case nameof(SampleChooserViewModel.IsFavoritedSample):
@@ -253,9 +266,18 @@ partial class SampleChooserControl
 		ShellRail.IsPaneVisible = hasRail;
 
 		// Without the rail the host runs edge to edge, so only its top stroke remains.
-		ShellHostLayer.CornerRadius = !_isNarrow && Resources.TryGetValue("ShellHostCornerRadius", out var radius) && radius is CornerRadius r ? r : default;
+		ShellHostLayer.CornerRadius = hasRail && Resources.TryGetValue("ShellHostCornerRadius", out var radius) && radius is CornerRadius r ? r : default;
 		ShellHostEdge.CornerRadius = ShellHostLayer.CornerRadius;
 		ShellHostEdge.BorderThickness = new Thickness(_isNarrow ? 0 : 1, 1, 0, 0);
+
+		var wasFocusMode = ShellExitFocusModeButton.Visibility == Visibility.Visible;
+		var isFocusMode = state == "ChromeHiddenState" && _shellViewModel is { IsRecordAllTests: false };
+		ShellExitFocusModeButton.Visibility = ShellFunctions.Visible(isFocusMode);
+		if (wasFocusMode != isFocusMode)
+		{
+			QueueFocusModeFocus(isFocusMode);
+			OnFocusModeActivity();
+		}
 
 		// A hidden overlay pane would keep its light-dismiss layer over the sample.
 		if (state == "ChromeHiddenState"
@@ -264,6 +286,108 @@ partial class SampleChooserControl
 		{
 			vm.IsSplitVisible = false;
 		}
+	}
+
+	// The exit button fades out while idle so it does not cover the sample's top-right corner; pointer activity or focus brings it back.
+	// It never hides while keyboard-focused: the focus rectangle would stay drawn around an invisible button.
+	private void InitializeFocusModeButton()
+	{
+		ShellRoot.AddHandler(PointerMovedEvent, new PointerEventHandler((_, _) => OnFocusModeActivity()), handledEventsToo: true);
+		ShellRoot.AddHandler(PointerPressedEvent, new PointerEventHandler((_, _) =>
+		{
+			_isKeyboardInput = false;
+			OnFocusModeActivity();
+		}), handledEventsToo: true);
+		ShellRoot.AddHandler(PreviewKeyDownEvent, new KeyEventHandler((_, _) => _isKeyboardInput = true), handledEventsToo: true);
+		ShellExitFocusModeButton.GotFocus += (_, _) => OnFocusModeActivity();
+		ShellExitFocusModeButton.LostFocus += (_, _) => OnFocusModeActivity();
+	}
+
+	internal void OnFocusModeActivity()
+	{
+		if (ShellExitFocusModeButton.Visibility != Visibility.Visible)
+		{
+			_focusModeIdleTimer?.Stop();
+			return;
+		}
+
+		_focusModeLastActivity = Environment.TickCount64;
+		SetFocusModeButtonIdle(false);
+
+		if (_focusModeIdleTimer is null)
+		{
+			_focusModeIdleTimer = DispatcherQueue.CreateTimer();
+			_focusModeIdleTimer.Tick += (_, _) => OnFocusModeIdleTick();
+		}
+
+		if (!_focusModeIdleTimer.IsRunning || _focusModeIdleTimer.Interval != FocusModeButtonIdleDelay)
+		{
+			_focusModeIdleTimer.Interval = FocusModeButtonIdleDelay;
+			_focusModeIdleTimer.Start();
+		}
+	}
+
+	private void OnFocusModeIdleTick()
+	{
+		var button = ShellExitFocusModeButton;
+		if (button.Visibility != Visibility.Visible)
+		{
+			_focusModeIdleTimer?.Stop();
+			return;
+		}
+
+		var idleFor = TimeSpan.FromMilliseconds(Environment.TickCount64 - _focusModeLastActivity);
+		if (idleFor < FocusModeButtonIdleDelay || button.IsPointerOver || button.FocusState == FocusState.Keyboard)
+		{
+			return;
+		}
+
+		_focusModeIdleTimer?.Stop();
+		SetFocusModeButtonIdle(true);
+	}
+
+	private void SetFocusModeButtonIdle(bool idle)
+	{
+		ShellExitFocusModeButton.Opacity = idle ? 0 : 1;
+		ShellExitFocusModeButton.IsHitTestVisible = !idle;
+	}
+
+	// Focus must not be left on chrome that just collapsed, or on the exit button once it is gone.
+	private void QueueFocusModeFocus(bool isFocusMode)
+		=> DispatcherQueue.TryEnqueue(() =>
+		{
+			if (XamlRoot is null)
+			{
+				return;
+			}
+
+			var focused = FocusManager.GetFocusedElement(XamlRoot) as DependencyObject;
+			if (isFocusMode)
+			{
+				// Collapsing the focused chrome hands focus to whatever is left, often the SplitView itself.
+				if (!IsWithin(focused, ShellHostLayer))
+				{
+					// Keyboard users see where focus went; after a tap the button can still fade out.
+					ShellExitFocusModeButton.Focus(_isKeyboardInput ? FocusState.Keyboard : FocusState.Programmatic);
+				}
+			}
+			else if (!IsWithin(focused, ShellHostLayer) && !IsWithin(focused, ShellHeaderContent) && !IsWithin(focused, ShellBrowserPane))
+			{
+				(FocusManager.FindFirstFocusableElement(ShellHeaderContent) as Control)?.Focus(FocusState.Programmatic);
+			}
+		});
+
+	private static bool IsWithin(DependencyObject? element, DependencyObject ancestor)
+	{
+		for (var current = element; current is not null; current = VisualTreeHelper.GetParent(current))
+		{
+			if (current == ancestor)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private void UpdateBackdropState()
@@ -940,6 +1064,7 @@ partial class SampleChooserControl
 		}
 
 		ShellDescriptionStrip.MinHeight = ShellFunctions.IsTouchShell ? TouchRowHeight : DesktopRowHeight;
+		ShellExitFocusModeButton.Width = ShellExitFocusModeButton.Height = ShellFunctions.IsTouchShell ? TouchRowHeight : FocusModeButtonSize;
 
 		var height = PaneRowHeight;
 		ShellBrowserPane.Resources["ListViewItemMinHeight"] = height;
@@ -1116,6 +1241,7 @@ partial class SampleChooserControl
 		SetShortcutHint(ShellRecentsTab, ShellCommands.ShowRecents, "Recent");
 		SetShortcutHint(ShellFavoritesTab, ShellCommands.ShowFavorites, "Favorites");
 		SetShortcutHint(ShellLibraryTab, ShellCommands.ShowLibrary, "Library");
+		SetShortcutHint(ShellExitFocusModeButton, ShellCommands.ToggleFocusMode, "Exit focus mode");
 		AutomationProperties.SetAcceleratorKey(SearchBox, ShellCommands.Describe(ShellCommands.FocusSearch));
 		AutomationProperties.SetAcceleratorKey(ShellPaneSearchBox, ShellCommands.Describe(ShellCommands.FocusSearch));
 

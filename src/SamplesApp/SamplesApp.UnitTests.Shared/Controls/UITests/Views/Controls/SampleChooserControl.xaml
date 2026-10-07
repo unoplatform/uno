@@ -1534,6 +1534,49 @@
             </SplitView>
         </Grid>
 
+        <!--  Focus mode's only visible way out: phones have no F11. Never shown while recording.  -->
+        <Button
+            x:Name="ShellExitFocusModeButton"
+            Grid.Row="1"
+            Grid.Column="1"
+            Width="32"
+            Height="32"
+            Margin="8"
+            Padding="0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            AutomationProperties.AutomationId="ShellExitFocusModeButton"
+            AutomationProperties.Name="Exit focus mode"
+            Command="{x:Bind ViewModel.ToggleFocusModeCommand, Mode=OneWay}"
+            Visibility="Collapsed">
+            <!--  Opaque in every state: the default hover/pressed fills are translucent over the sample.  -->
+            <Button.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Default">
+                            <SolidColorBrush x:Key="ButtonBackground" Color="{ThemeResource SolidBackgroundFillColorTertiary}" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SolidBackgroundFillColorQuarternary}" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource SolidBackgroundFillColorSecondary}" />
+                        </ResourceDictionary>
+                        <ResourceDictionary x:Key="Light">
+                            <SolidColorBrush x:Key="ButtonBackground" Color="{ThemeResource SolidBackgroundFillColorTertiary}" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SolidBackgroundFillColorQuarternary}" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource SolidBackgroundFillColorSecondary}" />
+                        </ResourceDictionary>
+                        <ResourceDictionary x:Key="HighContrast">
+                            <SolidColorBrush x:Key="ButtonBackground" Color="{ThemeResource SystemColorButtonFaceColor}" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SystemColorHighlightColor}" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource SystemColorHighlightColor}" />
+                        </ResourceDictionary>
+                    </ResourceDictionary.ThemeDictionaries>
+                </ResourceDictionary>
+            </Button.Resources>
+            <FontIcon
+                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                FontSize="14"
+                Glyph="&#xE73F;" />
+        </Button>
+
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="ShellLayoutStates">
                 <VisualState x:Name="NarrowState">
