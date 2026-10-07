@@ -66,7 +66,6 @@ partial class TableViewCellsPanel
 
 		// Non-owning identity key (see m_measuredWidthsByColumn note) -- a raw pointer instead of a
 		// per-lookup weak_ref resolve on the hot layout path; O(1) hash lookup.
-		// TODO Uno: C++ keys by winrt::get_self<TableViewColumn>(column); C# keys by reference identity.
 		var key = column;
 		return m_measuredWidthsByColumn.TryGetValue(key, out var value) ? value : 0.0;
 	}

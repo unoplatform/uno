@@ -8,7 +8,6 @@ using System;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-// TODO Uno: Microsoft.UI.Xaml.Data.INotifyDataErrorInfo is projected to System.ComponentModel.INotifyDataErrorInfo in C#.
 using INotifyDataErrorInfo = System.ComponentModel.INotifyDataErrorInfo;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
@@ -1056,6 +1055,16 @@ partial class TableView
 		return true;
 	}
 
+	// Editing starts from the user: double-click, or F2 on the current cell. There is no
+	// programmatic BeginEdit in this release, and therefore no public current-cell surface for one
+	// to target. Both arrive together when there is a scenario - a context menu or a view-model
+	// command - to justify them.
+
+	// Closes the open CELL edit. False when it did not close: a veto or failed validation leaves the
+	// edit open and IsEditing true.
+	//
+	// There is no row-scoped commit/cancel API and no RowEditEnding in this release; both arrive
+	// with row editing.
 	/// <summary>
 	/// Closes the open cell edit, writing the value back.
 	/// </summary>

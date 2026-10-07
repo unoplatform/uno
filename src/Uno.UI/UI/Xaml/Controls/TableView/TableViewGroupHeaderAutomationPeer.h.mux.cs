@@ -13,7 +13,6 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 // the header is its own container, the peer is its own type: no adaptive branch, no GridItem
 // coordinates for a band that spans every column, and the ExpandCollapse pattern is
 // unconditional rather than state-gated.
-// TODO Uno: The C++ header has no fields and no inline bodies; this file only carries its comments.
 partial class TableViewGroupHeaderAutomationPeer
 {
 	// explicit TableViewGroupHeaderAutomationPeer(winrt::TableViewGroupHeader const& owner);

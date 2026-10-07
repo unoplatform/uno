@@ -307,7 +307,7 @@ partial class TableViewColumn
 	/// </summary>
 	public string SortMemberPath
 	{
-		get => (string)GetValue(SortMemberPathProperty);
+		get => (string?)GetValue(SortMemberPathProperty) ?? string.Empty;
 		set => SetValue(SortMemberPathProperty, value);
 	}
 
@@ -360,9 +360,8 @@ partial class TableViewColumn
 			nameof(Width),
 			typeof(GridLength),
 			typeof(TableViewColumn),
-			// TODO Uno: c_widthDefault (TableViewColumn.h) is inlined, as static initializer order across partial files is unspecified.
 			// ValueHelper<winrt::GridLength>::BoxValueIfNecessary(c_widthDefault)
-			new FrameworkPropertyMetadata(new GridLength(120.0, GridUnitType.Pixel), OnPropertyChanged));
+			new FrameworkPropertyMetadata(c_widthDefault, OnPropertyChanged));
 
 	private static void OnPropertyChanged(
 		DependencyObject sender,

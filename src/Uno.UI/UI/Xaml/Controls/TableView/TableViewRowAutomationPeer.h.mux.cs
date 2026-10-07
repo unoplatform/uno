@@ -6,7 +6,6 @@
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
 
-// TODO Uno: The C++ header has no fields and no inline bodies; this file only carries its comments.
 partial class TableViewRowAutomationPeer
 {
 	// TableViewRowAutomationPeer(winrt::TableViewRow const& owner);

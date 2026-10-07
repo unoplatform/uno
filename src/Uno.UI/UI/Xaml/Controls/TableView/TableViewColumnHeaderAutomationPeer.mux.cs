@@ -64,7 +64,6 @@ partial class TableViewColumnHeaderAutomationPeer
 		TableViewColumn column)
 		: base(owner)
 	{
-		// TODO Uno: winrt::make_weak on a null column yields an empty weak_ref.
 		m_column = column is not null ? new WeakReference<TableViewColumn>(column) : null;
 		m_columnRuntimeIdParts = RuntimeIdPartsForColumn(column);
 	}
@@ -74,7 +73,7 @@ partial class TableViewColumnHeaderAutomationPeer
 	protected override string GetNameCore()
 	{
 		// Prefer string headers so screen readers announce a distinct column name.
-		if (TryGetColumnHeaderString(GetTarget(m_column)) is { } headerString)
+		if (TryGetColumnHeaderString(m_column.Get()) is { } headerString)
 		{
 			return headerString;
 		}
@@ -151,7 +150,7 @@ partial class TableViewColumnHeaderAutomationPeer
 
 	protected override string GetHelpTextCore()
 	{
-		var column = GetTarget(m_column);
+		var column = m_column.Get();
 		if (column is null)
 		{
 			return base.GetHelpTextCore();
@@ -208,16 +207,7 @@ partial class TableViewColumnHeaderAutomationPeer
 			return toolTipText;
 		}
 
-		// TODO Uno: StringUtil::FormatString (FormatMessage) returns an empty string on a malformed
-		// format, while the Uno helper throws, so the failure is mapped back to an empty string.
-		try
-		{
-			return StringUtil.FormatString(format, toolTipText, sortText);
-		}
-		catch (FormatException)
-		{
-			return string.Empty;
-		}
+		return StringUtil.FormatString(format, toolTipText, sortText);
 	}
 
 	protected override object? GetPatternCore(PatternInterface patternInterface)
@@ -235,7 +225,7 @@ partial class TableViewColumnHeaderAutomationPeer
 	/// </summary>
 	public void Invoke()
 	{
-		if (GetTarget(m_column) is { } column)
+		if (m_column.Get() is { } column)
 		{
 			if (Owner is TableView owner)
 			{
@@ -246,7 +236,7 @@ partial class TableViewColumnHeaderAutomationPeer
 
 	private bool IsSortableColumn()
 	{
-		var column = GetTarget(m_column);
+		var column = m_column.Get();
 		if (column is null || !column.CanSort)
 		{
 			return false;
@@ -317,7 +307,7 @@ partial class TableViewColumnHeaderAutomationPeer
 		// (single-owner model), so the same instance appearing twice in Columns is unsupported.
 		if (Owner is TableView owner)
 		{
-			if (GetTarget(m_column) is { } col)
+			if (m_column.Get() is { } col)
 			{
 				if (!IsVisibleColumn(col))
 				{
@@ -342,7 +332,7 @@ partial class TableViewColumnHeaderAutomationPeer
 	{
 		// Match by Tag so null Columns entries do not skew logical indexes.
 		var owner = Owner as TableView;
-		var col = GetTarget(m_column);
+		var col = m_column.Get();
 		if (owner is null || col is null)
 		{
 			return null;
@@ -356,8 +346,4 @@ partial class TableViewColumnHeaderAutomationPeer
 
 		return TableViewCellsPanel.CellForColumn(host, col);
 	}
-
-	// TODO Uno: weak_ref<T>::get() equivalent.
-	private static T? GetTarget<T>(WeakReference<T>? weakRef) where T : class
-		=> weakRef is not null && weakRef.TryGetTarget(out var target) ? target : null;
 }

@@ -46,23 +46,7 @@ partial class TableViewSourceSortBinding
 
 partial class TableView
 {
-	// TODO Uno: duplicated anon-namespace helper (TableView_Grouping.cpp defines the same function; see
-	// LocalizedOrFallback in TableView.Grouping.mux.cs).
-	private static string SortLocalizedOrFallback(string resourceName, string fallback)
-	{
-		try
-		{
-			if (ResourceAccessor.GetLocalizedStringResource(resourceName) is { } resolved && !string.IsNullOrEmpty(resolved))
-			{
-				return resolved;
-			}
-		}
-		catch (Exception)
-		{
-		}
-
-		return fallback;
-	}
+	// TODO Uno: TableView_Sort.cpp's anonymous-namespace LocalizedOrFallback is identical to TableView_Grouping.cpp's; both share the definition in TableView.Grouping.mux.cs.
 
 	// Evaluates a property path against a row item; see SortMemberPathResolver.h. The same
 	// evaluator backs TableViewSource's path-based Sort verb, so a column and a fluent sort on
@@ -138,6 +122,18 @@ partial class TableView
 		return false;
 	}
 
+	// ----- Sorting -----
+	// Single-column sort. The control reshapes the rows itself: an ItemsSource that is not already
+	// a TableViewSource is projected through one internally, so sorting works over any collection
+	// the control can display. Sorting is raised first; cancel it to own the ordering instead.
+	// The active sort state lives on the column, as TableViewColumn.SortDirection; Sorted hands
+	// the app the column that changed, and a null column there means the sort was cleared.
+	//
+	// This and TableViewSource.Sort reconcile rather than stack: exactly one sort axis is ever in
+	// force, and the last writer wins. See the dev spec for the full ownership rules.
+
+	// Clears any other sort state, then sets this column's SortDirection. Pass SortDirection.None
+	// to clear. Returns true when the sort state changed.
 	public bool SortByColumn(TableViewColumn column, SortDirection direction)
 	{
 		if (!CanSortColumn(column))
@@ -195,6 +191,8 @@ partial class TableView
 		return true;
 	}
 
+	// Cycles the trigger column's direction per SortCycle, clearing any other sort state first.
+	// Returns true when the sort state changed.
 	public bool ToggleSortDirection(TableViewColumn column)
 	{
 		if (!CanSortColumn(column))
@@ -272,6 +270,7 @@ partial class TableView
 		return true;
 	}
 
+	// Clears every column's sort state in one batch. Returns true when anything was cleared.
 	public bool ClearSort()
 	{
 		if (m_sortedColumns.Count == 0)
@@ -673,41 +672,27 @@ partial class TableView
 			switch (trigger.SortDirection)
 			{
 				case SortDirection.Ascending:
-					AnnounceSortChange(FormatOrEmpty(
-						SortLocalizedOrFallback(ResourceAccessor.SR_TableViewSortedAscending, "Sorted by %1!s! ascending."), header));
+					AnnounceSortChange(StringUtil.FormatString(
+						LocalizedOrFallback(ResourceAccessor.SR_TableViewSortedAscending, "Sorted by %1!s! ascending."), header));
 					break;
 				case SortDirection.Descending:
-					AnnounceSortChange(FormatOrEmpty(
-						SortLocalizedOrFallback(ResourceAccessor.SR_TableViewSortedDescending, "Sorted by %1!s! descending."), header));
+					AnnounceSortChange(StringUtil.FormatString(
+						LocalizedOrFallback(ResourceAccessor.SR_TableViewSortedDescending, "Sorted by %1!s! descending."), header));
 					break;
 				case SortDirection.None:
 				default:
-					AnnounceSortChange(FormatOrEmpty(
-						SortLocalizedOrFallback(ResourceAccessor.SR_TableViewSortCleared, "Sorting cleared for %1!s!."), header));
+					AnnounceSortChange(StringUtil.FormatString(
+						LocalizedOrFallback(ResourceAccessor.SR_TableViewSortCleared, "Sorting cleared for %1!s!."), header));
 					break;
 			}
 		}
 		else
 		{
-			AnnounceSortChange(SortLocalizedOrFallback(ResourceAccessor.SR_TableViewSortClearedAll, "All sorting cleared."));
+			AnnounceSortChange(LocalizedOrFallback(ResourceAccessor.SR_TableViewSortClearedAll, "All sorting cleared."));
 		}
 
 		// The chevrons are already current: SetSortStateInternal republished them through
 		// RefreshSortIndicators as each column's DP was written.
-
-		// TODO Uno: StringUtil::FormatString returns an empty string when FormatMessage fails, which
-		// AnnounceSortChange then skips; the managed FormatString throws instead, so map that back.
-		static string FormatOrEmpty(string format, string arg)
-		{
-			try
-			{
-				return StringUtil.FormatString(format, arg);
-			}
-			catch (Exception)
-			{
-				return "";
-			}
-		}
 	}
 
 	private void QueueReconcileSortStateWithSource()

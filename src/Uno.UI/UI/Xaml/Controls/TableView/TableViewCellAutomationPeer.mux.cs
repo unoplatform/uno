@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.WinUI;
 
 using static Microsoft.UI.Xaml.Controls.Tabular.TableViewAutomationHelpers;
 
@@ -97,7 +98,7 @@ partial class TableViewCellAutomationPeer
 	private string GetColumnHeaderText()
 	{
 		// Non-string headers have no simple textual prefix, so let the value stand alone.
-		if (TryGetColumnHeaderString(GetTarget(m_column)) is { } headerString)
+		if (TryGetColumnHeaderString(m_column.Get()) is { } headerString)
 		{
 			return headerString;
 		}
@@ -163,7 +164,7 @@ partial class TableViewCellAutomationPeer
 
 	private int GetRowIndex()
 	{
-		if (GetTarget(m_row) is { } row)
+		if (m_row.Get() is { } row)
 		{
 			// TableView exposes no public row-index API, so resolve it from ItemsRepeater.
 			DependencyObject? parent = VisualTreeHelper.GetParent(row);
@@ -222,7 +223,7 @@ partial class TableViewCellAutomationPeer
 		get
 		{
 			// The containing grid is the owning TableView's automation peer.
-			if (GetTarget(m_row) is { } row)
+			if (m_row.Get() is { } row)
 			{
 				if (row.GetOwningTableView() is { } owner)
 				{
@@ -257,9 +258,9 @@ partial class TableViewCellAutomationPeer
 		// as the table-level header enumeration.
 		List<IRawElementProviderSimple> headers = new();
 
-		if (GetTarget(m_column) is { } column)
+		if (m_column.Get() is { } column)
 		{
-			if (GetTarget(m_row) is { } row)
+			if (m_row.Get() is { } row)
 			{
 				if (row.GetOwningTableView() is { } owner)
 				{
@@ -302,8 +303,8 @@ partial class TableViewCellAutomationPeer
 			throw new NotImplementedException("This cell is read-only.");
 		}
 
-		var row = GetTarget(m_row);
-		var column = GetTarget(m_column);
+		var row = m_row.Get();
+		var column = m_column.Get();
 		if (row is null || column is null)
 		{
 			// throw winrt::hresult_error(E_FAIL, L"The cell is no longer realized.");
@@ -358,7 +359,7 @@ partial class TableViewCellAutomationPeer
 
 	private bool SupportsValuePattern()
 	{
-		var column = GetTarget(m_column);
+		var column = m_column.Get();
 		if (column is null || column.IsReadOnly)
 		{
 			return false;
@@ -377,8 +378,4 @@ partial class TableViewCellAutomationPeer
 		var textColumn = column as TableViewTextColumn;
 		return textColumn is not null && column.CellEditingTemplate is null;
 	}
-
-	// TODO Uno: weak_ref<T>::get() equivalent.
-	private static T? GetTarget<T>(WeakReference<T>? weakRef) where T : class
-		=> weakRef is not null && weakRef.TryGetTarget(out var target) ? target : null;
 }

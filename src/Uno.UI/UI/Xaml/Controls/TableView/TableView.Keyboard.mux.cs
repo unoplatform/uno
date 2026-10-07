@@ -22,7 +22,6 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableView
 {
-	// TODO Uno: anonymous-namespace helper of TableView_Keyboard.cpp.
 	private static bool IsKeyDown(VirtualKey key) =>
 		(InputKeyboardSource.GetKeyStateForCurrentThread(key) &
 			CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
@@ -32,7 +31,6 @@ partial class TableView
 	// most visibly) would resolve to a column and let arrow keys resize it.
 	// Returns the focused header cell in headerCell, so a caller that needs the cell does not have
 	// to scan the header band again to find what this walk already passed through.
-	// TODO Uno: anonymous-namespace helper of TableView_Keyboard.cpp.
 	private static TableViewColumn? ResolveFocusedHeaderColumn(
 		object? source,
 		Panel? headerHost,
@@ -72,7 +70,6 @@ partial class TableView
 	}
 
 	// The focused header is the element AT is on, so attribute the announcement to its peer.
-	// TODO Uno: anonymous-namespace helper of TableView_Keyboard.cpp.
 	private static void AnnounceColumnWidthOn(object? announcer, TableViewColumn? column)
 	{
 		var element = announcer as UIElement;
@@ -90,15 +87,9 @@ partial class TableView
 		string headerName = peer.GetName();
 		if (string.IsNullOrEmpty(headerName))
 		{
-			// TODO Uno: C++ matches column.Header().try_as<winrt::IStringable>(). A WinRT boxed string can
-			// answer that QI, but a .NET string does not implement IStringable, so it is matched explicitly.
-			if (column.Header is string headerString)
+			if (SharedHelpers.IsStringable(column.Header))
 			{
-				headerName = headerString;
-			}
-			else if (column.Header is IStringable stringable)
-			{
-				headerName = stringable.ToString();
+				headerName = SharedHelpers.StringableToString(column.Header);
 			}
 		}
 
@@ -127,7 +118,7 @@ partial class TableView
 
 	// Both input paths end in DragCompleted, so the announcement lives there rather than in the key
 	// handler: a pointer resize was otherwise completely silent to assistive technology.
-	private void AnnounceColumnWidth(object? announcer, TableViewColumn? column)
+	internal void AnnounceColumnWidth(object? announcer, TableViewColumn? column)
 	{
 		AnnounceColumnWidthOn(announcer, column);
 	}
@@ -611,14 +602,13 @@ partial class TableView
 							return;
 						}
 
-						// TODO Uno: Locals renamed (C++ reuses repeater/element/control); C# forbids shadowing them here.
-						if (strongThis.m_rowsRepeater is { } deferredRepeater)
+						if (strongThis.m_rowsRepeater is { } repeater)
 						{
-							if (deferredRepeater.GetOrCreateElement(index) is { } deferredElement)
+							if (repeater.GetOrCreateElement(index) is { } element)
 							{
-								if (deferredElement is Control deferredControl)
+								if (element is Control control)
 								{
-									deferredControl.Focus(FocusState.Keyboard);
+									control.Focus(FocusState.Keyboard);
 								}
 							}
 						}

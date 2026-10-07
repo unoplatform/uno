@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Runtime.CompilerServices;
 using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular.Primitives;
@@ -21,41 +20,37 @@ partial class RowMetadataProvider
 		return view.Length >= prefix.Length && view.Slice(0, prefix.Length).SequenceEqual(prefix.AsSpan());
 	}
 
-#if HAS_UNO
-	// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
-	// Move this logic into Loaded/Unloaded event handlers or other lifecycle methods to avoid leaks.
-	// TODO Uno: Investigate potential leak: nothing revokes the CollectionChanged subscriptions. The grouped
-	// adapter's Entries() view outlives every provider minted over it, so each rebuild leaves one more (inert,
-	// weakly-bound) handler on it.
+	// TODO Uno: C++ destructor; runs when the last shared_ptr owner releases, mapped to Dispose.
+	public void Dispose()
+	{
+		// Order matters: kill the subscription's effect first, so it is already inert no matter what
+		// happens below (the handler checks this flag under a weak lock).
+		if (m_alive is not null)
+		{
+			m_alive.Value = false;
+			m_alive = null;
+		}
 
-	// Original destructor logic (not executed):
-	// RowMetadataProvider::~RowMetadataProvider()
-	// {
-	//     // Order matters: kill the subscription's effect first, so it is already inert no matter what
-	//     // happens below (the handler checks this flag under a weak lock).
-	//     m_alive.reset();
-	//
-	//     // Teardown runs on the owning UI thread: every strong owner of this provider is a
-	//     // ReferenceTracker (TableViewSource, TableView) whose final_release marshals destruction to the
-	//     // captured DispatcherQueue, so the shared_ptr that drops this object drops it on that thread.
-	//     // Revoking the XAML subscription below is therefore safe without a thread guard.
-	//     try
-	//     {
-	//         if (m_groupedRows && m_groupedRowsChangedToken)
-	//         {
-	//             m_groupedRows.CollectionChanged(m_groupedRowsChangedToken);
-	//         }
-	//
-	//         if (m_flatRows && m_flatRowsChangedToken)
-	//         {
-	//             m_flatRows.CollectionChanged(m_flatRowsChangedToken);
-	//         }
-	//     }
-	//     catch (...)
-	//     {
-	//     }
-	// }
-#endif
+		// Teardown runs on the owning UI thread: every strong owner of this provider is a
+		// ReferenceTracker (TableViewSource, TableView) whose final_release marshals destruction to the
+		// captured DispatcherQueue, so the shared_ptr that drops this object drops it on that thread.
+		// Revoking the XAML subscription below is therefore safe without a thread guard.
+		try
+		{
+			if (m_groupedRows is not null)
+			{
+				m_groupedRowsChangedToken.Disposable = null;
+			}
+
+			if (m_flatRows is not null)
+			{
+				m_flatRowsChangedToken.Disposable = null;
+			}
+		}
+		catch
+		{
+		}
+	}
 
 	internal static ITableViewRowMetadataProvider CreateForFlatRows(
 		ItemsSourceView? rows,
@@ -107,16 +102,12 @@ partial class RowMetadataProvider
 		//
 		// The handler captures a weak alive-flag so a notification that races teardown becomes a no-op
 		// once the destructor resets the flag -- GC / re-entrancy safety, independent of threading.
-		WeakReference<StrongBox<bool>> weakAlive = new(m_alive!);
-		// TODO Uno: Original C++ captures `this` raw. A C# closure over `this` would keep the provider alive for as
-		// long as the rows view lives, so `this` is captured weakly; a collected provider makes the handler a no-op,
-		// which is what the C++ alive-flag guarantees once the destructor runs.
-		WeakReference<RowMetadataProvider> weakThis = new(this);
+		var weakAlive = m_alive!;
 		NotifyCollectionChangedEventHandler onChanged = (_, _) =>
 		{
-			if (weakAlive.TryGetTarget(out _) && weakThis.TryGetTarget(out var self))
+			if (weakAlive.Value)
 			{
-				self.InvalidateIdentityIndex();
+				InvalidateIdentityIndex();
 			}
 		};
 
@@ -259,7 +250,6 @@ partial class RowMetadataProvider
 			case SourceKind.Flat:
 				if (m_flatRows is null)
 				{
-					// TODO Uno: Original C++ throws winrt::hresult_out_of_bounds (E_BOUNDS).
 					throw new ArgumentOutOfRangeException(nameof(index));
 				}
 				if (m_flatRows.HasKeyIndexMapping)
@@ -313,7 +303,6 @@ partial class RowMetadataProvider
 	{
 		if (m_groupedRows is null || index < 0 || index >= m_groupedRows.Count)
 		{
-			// TODO Uno: Original C++ throws winrt::hresult_out_of_bounds (E_BOUNDS).
 			throw new ArgumentOutOfRangeException(nameof(index));
 		}
 
@@ -353,7 +342,6 @@ partial class RowMetadataProvider
 	{
 		if (m_flatRows is null || index < 0 || index >= m_flatRows.Count)
 		{
-			// TODO Uno: Original C++ throws winrt::hresult_out_of_bounds (E_BOUNDS).
 			throw new ArgumentOutOfRangeException(nameof(index));
 		}
 
@@ -480,7 +468,6 @@ partial class RowMetadataProvider
 
 	private static bool SameObject(object? a, object? b)
 	{
-		// TODO Uno: Original C++ compares the canonical IUnknown pointers obtained through try_as<::IUnknown>.
 		return a is not null && b is not null && ReferenceEquals(a, b);
 	}
 }

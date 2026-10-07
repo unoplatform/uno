@@ -15,11 +15,9 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableView
 {
-	// TODO Uno: anonymous-namespace helper of TableView_Columns.cpp.
 	private static bool IsColumnOwnedBy(TableView owner, TableViewColumn? column) =>
 		column is not null && column.GetOwningTableView() == owner;
 
-	// TODO Uno: anonymous-namespace helper of TableView_Columns.cpp.
 	private static bool TrySetColumnOwnerForTracking(TableView owner, TableViewColumn? column)
 	{
 		if (column is null)
@@ -163,13 +161,6 @@ partial class TableView
 		// Detach the old vector so replaced Columns do not leak subscriptions or owners.
 		if (m_columnsVectorChangedToken.Disposable is not null)
 		{
-			// TODO Uno: The revoker unsubscribes from the vector it was registered on, which is the old value.
-			// Original C++:
-			// if (auto oldColumns = args.OldValue().try_as<winrt::IObservableVector<winrt::TableViewColumn>>())
-			// {
-			//     oldColumns.VectorChanged(m_columnsVectorChangedToken);
-			// }
-			// m_columnsVectorChangedToken = {};
 			m_columnsVectorChangedToken.Disposable = null;
 		}
 

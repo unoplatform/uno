@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 // One in-flight resize drag. The gripper owns the gesture; this is only the host's anchor for it,
 // kept reachable so Escape can cancel the drag in flight.
-// TODO Uno: A class rather than a struct: C++ only ever holds it through std::shared_ptr and compares
+// A class rather than a struct: C++ only ever holds it through std::shared_ptr and compares
 // those pointers by identity, which is reference semantics.
 internal sealed class ColumnResizeDragState
 {
@@ -44,7 +44,7 @@ internal sealed class ColumnResizeDragState
 // small nested structs (DensityInfo/GridLineInfo) so each cached concern reads as one
 // cohesive unit; nested-struct naming follows the controls/dev `*Info` convention
 // (e.g. LinedFlowLayout::ItemsInfo, WebView2::XamlFocusChangeInfo).
-// TODO Uno: Classes rather than structs: C++ only ever reaches the cache (and its nested groups)
+// Classes rather than structs: C++ only ever reaches the cache (and its nested groups)
 // by reference (`auto& cache = ...`), so a value-type copy would silently drop writes.
 internal sealed partial class TableViewResourceCache
 {
@@ -90,12 +90,12 @@ internal sealed partial class TableViewResourceCache
 	public double lastFrozenColumnsHorizontalOffset = 0.0;
 }
 
-// TODO Uno: Original C++: namespace ShapingHelpers { class CustomSortRankAdapter; }
+// namespace ShapingHelpers { class CustomSortRankAdapter; }
 // (forward declaration only; the type is ShapingHelpers.CustomSortRankAdapter in TabularShaping).
 
 // The control's half of the TableViewSource sort axis. The projection is addressed by an opaque
 // axis token, so re-sorting the same column replaces its axis rather than stacking a second one.
-// TODO Uno: A class rather than a struct: it is only ever used in place as TableView's member and
+// A class rather than a struct: it is only ever used in place as TableView's member and
 // its methods mutate it, so reference semantics avoid accidental copies. ResetCustomSort and Clear
 // are defined in TableView.Sort.mux.cs.
 internal sealed partial class TableViewSourceSortBinding
@@ -242,6 +242,17 @@ partial class TableView
 	// winrt::TableViewColumn CurrentColumn();
 	// void SetCurrentCell(winrt::IInspectable const& item, winrt::TableViewColumn const& column);
 
+	// ----- Editing -----
+
+	// True while an edit is in flight on a cell: from the edit being accepted, through the open
+	// editor, until the matching close completes.
+	//
+	// It also covers the brief windows where an edit is still opening and where a close is already
+	// underway, because the control uses this to reject re-entrant edit operations from inside
+	// consumer callbacks. An app querying it from a BeginningEdit handler therefore sees true even
+	// if that handler goes on to cancel.
+	//
+	// Cell scope: this is "a cell editor is open". Row-scoped editing is not part of this release.
 	/// <summary>
 	/// Gets a value that indicates whether an edit is in flight on a cell: from the edit being accepted,
 	/// through the open editor, until the matching close completes.
@@ -539,7 +550,7 @@ partial class TableView
 
 	// Pending source-reshaping operations. A deque, not a vector: the drain pops from the front so
 	// replay order matches arrival order.
-	// TODO Uno: std::deque<std::function<void()>>; the C++ only uses push_back / front + pop_front /
+	// std::deque<std::function<void()>>; the C++ only uses push_back / front + pop_front /
 	// empty / clear, which Queue<Action> covers 1:1.
 	private readonly Queue<Action> m_pendingEditReshapes = new();
 

@@ -250,8 +250,8 @@ partial class TableView
 #if HAS_UNO
 	// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
 	// Move this logic into Loaded/Unloaded event handlers or other lifecycle methods to avoid leaks.
-	// TODO Uno: Investigate potential leak: the recycle pools cached by the row-template selector are
-	// only dropped by this destructor in WinUI.
+	// The selector's templates are per-instance, so the template/RecyclePool/row cycle is collected
+	// by the GC and Detach is not needed for lifetime.
 
 	// Original destructor logic (not executed):
 	// TableView::~TableView()
@@ -386,15 +386,9 @@ partial class TableView
 		try
 		{
 			// ContentIslandEnvironment can be null during teardown / unusual hosts.
-			// TODO Uno: XamlRoot.ContentIslandEnvironment is not implemented (it throws), so the
-			// AppWindowId is read from the XamlRoot's host window instead.
-			// Original C++:
-			// if (auto env = xamlRoot.ContentIslandEnvironment())
-			// {
-			//     m_themeSettings = winrt::Microsoft::UI::System::ThemeSettings::CreateForWindowId(env.AppWindowId());
-			if (xamlRoot.HostWindow?.AppWindow?.Id is { } appWindowId)
+			if (xamlRoot.ContentIslandEnvironment is { } env)
 			{
-				var themeSettings = ThemeSettings.CreateForWindowId(appWindowId);
+				var themeSettings = ThemeSettings.CreateForWindowId(env.AppWindowId);
 				m_themeSettings = themeSettings;
 				m_isHighContrast = themeSettings.HighContrast;
 				// Changed is raised on this UI thread, so the handler can touch XAML directly.
@@ -456,13 +450,6 @@ partial class TableView
 			// Drop per-template Loaded handlers so old elements cannot keep this alive.
 			if (m_rowsRepeaterLoadedToken.Disposable is not null)
 			{
-				// TODO Uno: The revoker captured the old repeater when it registered, so disposing it
-				// unsubscribes from that same element.
-				// Original C++:
-				// if (auto oldRepeaterFE = oldRepeater.try_as<winrt::FrameworkElement>())
-				// {
-				//     oldRepeaterFE.Loaded(m_rowsRepeaterLoadedToken);
-				// }
 				m_rowsRepeaterLoadedToken.Disposable = null;
 			}
 
@@ -1521,12 +1508,9 @@ partial class TableView
 	{
 		if (column.Header is { } header)
 		{
-			// TODO Uno: Under C#/WinRT every managed object is IStringable through its CCW, so a WinUI
-			// app's plain CLR header reaches the first branch via ToString(); Uno only sees types that
-			// implement IStringable explicitly.
-			if (header is IStringable stringable)
+			if (SharedHelpers.IsStringable(header))
 			{
-				return stringable.ToString() ?? "";
+				return SharedHelpers.StringableToString(header);
 			}
 			// TODO Uno: IPropertyValue projection - a boxed PropertyType::String projects as System.String.
 			// Original C++: header.try_as<IPropertyValue>(); propValue && propValue.Type() == PropertyType::String

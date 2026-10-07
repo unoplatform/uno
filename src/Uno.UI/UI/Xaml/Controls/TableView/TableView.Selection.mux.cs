@@ -28,8 +28,6 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 partial class TableView
 {
 	// Restores the previous value rather than clearing, so nesting cannot unlatch an outer scope.
-	// TODO Uno: anon-namespace RAII struct ported as a ref struct holding a ref field; the C++
-	// destructor maps to Dispose, consumed through `using`.
 	private ref struct ScopedFlag : IDisposable
 	{
 		public ScopedFlag(ref bool flag, bool value)
@@ -533,11 +531,9 @@ partial class TableView
 		m_resetSelectionRestorePending = true;
 	}
 
-	// TODO Uno: C++ takes (IInspectable, IInspectable); ItemsSourceView.CollectionChanged is a
-	// NotifyCollectionChangedEventHandler in Uno, so the args are typed. They are unused either way.
 	private void OnSelectionItemsSourceCollectionChanged(
 		object? sender,
-		NotifyCollectionChangedEventArgs args)
+		object args)
 	{
 		if (m_resetSelectionRestorePending)
 		{
@@ -730,7 +726,7 @@ partial class TableView
 		ApplySelection(index);
 	}
 
-	// ----- Public API -----
+	// Named to match ItemsView. No identity-based overloads: an index is the only addressing mode.
 
 	/// <summary>
 	/// Selects the item at <paramref name="index"/>. A negative index clears the selection.

@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Helpers.Boxes;
+using Uno.UI.Helpers.WinUI;
 
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
@@ -18,6 +19,8 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableViewColumn
 {
+	// Required for derivation: the overridable cell factories below are only reachable if a
+	// consumer can actually construct a derived column.
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TableViewColumn"/> class.
 	/// </summary>
@@ -444,8 +447,7 @@ partial class TableViewColumn
 
 	internal void SetDesiredWidthInternal(double desiredWidth)
 	{
-		// TODO Uno: std::max(0.0, desiredWidth) spelled out - Math.Max propagates NaN, std::max does not.
-		m_desiredWidth = (0.0 < desiredWidth) ? desiredWidth : 0.0;
+		m_desiredWidth = StdMath.Max(0.0, desiredWidth);
 	}
 
 	internal void ResetDesiredWidthInternal() => m_desiredWidth = 0.0;
@@ -462,13 +464,8 @@ partial class TableViewColumn
 
 		// Keep std::clamp well-defined even when MinWidth exceeds MaxWidth.
 		var lo = MinWidth;
-		// TODO Uno: std::max / std::clamp spelled out - Math.Max and Math.Clamp treat NaN differently.
-		// Original C++:
-		// const double hi = std::max(lo, MaxWidth());
-		// const double clamped = std::clamp(widthPixels, lo, hi);
-		var maxWidth = MaxWidth;
-		var hi = (lo < maxWidth) ? maxWidth : lo;
-		var clamped = (widthPixels < lo) ? lo : (hi < widthPixels) ? hi : widthPixels;
+		var hi = StdMath.Max(lo, MaxWidth);
+		var clamped = StdMath.Clamp(widthPixels, lo, hi);
 
 		// ActualWidth uses the SetValue-via-key read-only DP convention.
 		if (Math.Abs(clamped - ActualWidth) > 0.0001)

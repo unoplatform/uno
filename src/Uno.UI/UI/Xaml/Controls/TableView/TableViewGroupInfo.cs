@@ -18,4 +18,14 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 [global::Windows.Foundation.Metadata.Experimental]
 public sealed partial class TableViewGroupInfo : INotifyPropertyChanged
 {
+	// Object Key { get; };            // the GroupBy key
+	// Int32 ItemCount { get; };       // members in the group
+	// Int32 Level { get; };           // 0 for single-level v1
+	// Boolean IsExpandable { get; };  // false when the group can't expand (e.g. empty)
+	// Boolean IsExpanded { get; };
+
+	// Culture-formatted display strings for the built-in content template.
+	// Computed lazily: a template binding only Key / ItemCount pays nothing.
+	// String KeyText { get; };
+	// String ItemCountText { get; };
 }
