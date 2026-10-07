@@ -332,6 +332,92 @@ public class Given_ImeSessionCoordinator_RootOwnership
 		}
 	}
 
+	[TestMethod]
+	public async Task When_App_Handler_Throws_During_Composition_The_Exception_Surfaces()
+	{
+		using var scope = ImeSessionCoordinator.SetExtensionFactoryForTesting(_ => new FakeExtension());
+		var textBox = new TextBox { Width = 200 };
+		var host = ((ITextBoxHost)textBox).Core;
+		textBox.BeforeTextChanging += (_, _) => throw new InvalidOperationException("App handler failure.");
+		try
+		{
+			await UITestHelper.Load(textBox);
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic));
+			await WindowHelper.WaitForIdle();
+			var extension = GetExtension(host);
+			extension.Emit("started");
+
+			Assert.ThrowsExactly<InvalidOperationException>(() => extension.Emit("updated"));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Unrelated_Layout_Changes_The_Ime_Session_Is_Not_Resynced()
+	{
+		using var scope = ImeSessionCoordinator.SetExtensionFactoryForTesting(_ => new FakeExtension());
+		var textBox = new TextBox { Text = "text", Width = 200 };
+		var other = new Border { Width = 50, Height = 20 };
+		var host = ((ITextBoxHost)textBox).Core;
+		try
+		{
+			await UITestHelper.Load(new StackPanel { HorizontalAlignment = HorizontalAlignment.Left, Children = { textBox, other } });
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic));
+			await WindowHelper.WaitForIdle();
+			var extension = GetExtension(host);
+			extension.Updates.Clear();
+
+			for (var i = 0; i < 5; i++)
+			{
+				other.Height = 21 + (i % 2);
+				other.UpdateLayout();
+			}
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, extension.Updates.Count, "Layout passes that don't move the TextBox must not resync the IME.");
+
+			textBox.Margin = new Thickness(0, 40, 0, 0);
+			await WindowHelper.WaitForIdle();
+			CollectionAssert.Contains(extension.Updates, ImeSessionUpdate.TextAndSelection, "Moving the TextBox must resync the IME geometry.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Native_Text_Update_Caret_Does_Not_Pass_Through_Zero()
+	{
+		using var scope = ImeSessionCoordinator.SetExtensionFactoryForTesting(_ => new FakeExtension());
+		var textBox = new TextBox { Text = "abc", Width = 200 };
+		var host = ((ITextBoxHost)textBox).Core;
+		try
+		{
+			await UITestHelper.Load(textBox);
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic));
+			textBox.Select(3, 0);
+			await WindowHelper.WaitForIdle();
+			var extension = GetExtension(host);
+			extension.SelectionStartsAtUpdate.Clear();
+
+			((IImeSessionHost)host).UpdateTextFromNative("abcd", 4, 0);
+
+			Assert.AreEqual("abcd", textBox.Text);
+			Assert.AreEqual(4, textBox.SelectionStart);
+			CollectionAssert.DoesNotContain(extension.SelectionStartsAtUpdate, 0, "The caret must not be reported at 0 while native text is applied.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
 	private static FakeExtension GetExtension(IImeSessionHost host)
 	{
 		var extension = ImeSessionCoordinator.GetExtension(host) as FakeExtension;
@@ -387,6 +473,7 @@ public class Given_ImeSessionCoordinator_RootOwnership
 		public bool ThrowOnStart { get; set; }
 		public ImeSessionActivation LastActivation { get; private set; }
 		public List<ImeSessionUpdate> Updates { get; } = new();
+		public List<int> SelectionStartsAtUpdate { get; } = new();
 		public IReadOnlyList<string> Alternatives { get; set; } = Array.Empty<string>();
 
 		public event EventHandler? CompositionStarted;
@@ -416,7 +503,11 @@ public class Given_ImeSessionCoordinator_RootOwnership
 			}
 		}
 
-		public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update) => Updates.Add(update);
+		public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update)
+		{
+			Updates.Add(update);
+			SelectionStartsAtUpdate.Add(host.SelectionStart);
+		}
 
 		public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
 			=> Task.FromResult(Alternatives);
