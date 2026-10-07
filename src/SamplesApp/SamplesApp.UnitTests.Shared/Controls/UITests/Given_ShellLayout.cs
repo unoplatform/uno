@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -143,6 +144,54 @@ public class Given_ShellLayout
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	public async Task When_Touch_Simulated_Pane_Rows_Use_Touch_Height()
+	{
+		var vm = SampleChooserViewModel.Instance;
+		var pane = (FrameworkElement)vm.Owner.FindName("ShellBrowserPane");
+		var lists = new[] { "ShellCategoriesList", "ShellSamplesList" }.Select(name => (ListView)vm.Owner.FindName(name)).ToArray();
+		var wasTouch = vm.SimulateTouch;
+		var wasPaneOpen = vm.IsSplitVisible;
+		var expectedDefault = OperatingSystem.IsAndroid() || OperatingSystem.IsIOS() ? 40d : 32d;
+
+		IEnumerable<ListViewItem> RealizedRows() => lists.SelectMany(list => list.ItemsPanelRoot?.Children.OfType<ListViewItem>() ?? []);
+
+		void AssertRowHeight(double expected)
+		{
+			Assert.AreEqual(expected, (double)pane.Resources["ListViewItemMinHeight"]);
+
+			var rows = RealizedRows().ToArray();
+			Assert.IsTrue(rows.Length > 0, "No pane rows were realized.");
+			foreach (var item in rows)
+			{
+				Assert.AreEqual(expected, item.MinHeight);
+			}
+		}
+
+		try
+		{
+			// Under --runtime-tests the pane starts closed and its lists have no containers.
+			vm.IsSplitVisible = true;
+			await TestServices.WindowHelper.WaitFor(() => RealizedRows().Any(), timeoutMS: 5000);
+
+			vm.SimulateTouch = true;
+			await TestServices.WindowHelper.WaitForIdle();
+			AssertRowHeight(40d);
+
+			vm.SimulateTouch = false;
+			await TestServices.WindowHelper.WaitForIdle();
+			AssertRowHeight(expectedDefault);
+		}
+		finally
+		{
+			vm.SimulateTouch = wasTouch;
+			vm.IsSplitVisible = wasPaneOpen;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+#endif
 
 	[TestMethod]
 	public async Task When_IsFavoritedSample_Set_Favorite_Is_Toggled()
