@@ -13,8 +13,13 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Tabular;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.DevTools.Input;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
 using static Private.Infrastructure.TestServices;
@@ -271,9 +276,423 @@ public partial class Given_TableView
 		Assert.AreEqual(0, beginning.Count);
 	}
 
+	[TestMethod]
+	public async Task When_CommitEdit_Validation_Scoped_To_Edited_Property()
+	{
+		// HasBlockingValidationErrors scopes GetErrors to the edited property: "Object-level HasErrors
+		// lets an unrelated, pre-existing error on a different property block this cell permanently".
+		var item = new ValidatingPerson("Ada");
+		item.SetError(nameof(ValidatingPerson.City), "City is unknown.");
+		var table = new TableView { IsReadOnly = false };
+		table.Columns.Add(TextColumn(nameof(ValidatingPerson.Name)));
+		table.ItemsSource = new List<ValidatingPerson> { item };
+		await LoadAsync(table);
+
+		await FocusRowAsync(table, 0);
+		await PressAsync("f2");
+		FindEditor(table)!.Text = "Grace";
+
+		Assert.IsTrue(table.CommitEdit(), "an error on another property does not block this cell");
+		Assert.IsFalse(table.IsEditing);
+		Assert.AreEqual("Grace", item.Name);
+		Assert.IsTrue(item.HasErrors, "the unrelated error stands");
+	}
+
+	[TestMethod]
+	public async Task When_CommitEdit_Validation_Dotted_Path_Uses_Leaf()
+	{
+		// GetErrors takes a property name, not a path: the leaf segment of Address.Street is asked.
+		var item = new AddressedPerson("Main St");
+		var table = new TableView { IsReadOnly = false };
+		table.Columns.Add(TextColumn($"{nameof(AddressedPerson.Address)}.{nameof(Address.Street)}"));
+		table.ItemsSource = new List<AddressedPerson> { item };
+		await LoadAsync(table);
+
+		await FocusRowAsync(table, 0);
+		await PressAsync("f2");
+		FindEditor(table)!.Text = "";
+
+		Assert.IsFalse(table.CommitEdit(), "the error reported under the leaf name blocks the commit");
+		Assert.IsTrue(table.IsEditing);
+		Assert.AreEqual("Main St", item.Address.Street, "the rejected write is undone");
+
+		FindEditor(table)!.Text = "Side St";
+		Assert.IsTrue(table.CommitEdit());
+		Assert.AreEqual("Side St", item.Address.Street);
+	}
+
+	[TestMethod]
+	public async Task When_CommitEdit_Validation_Without_Editing_Path_Uses_HasErrors()
+	{
+		// A binding with an explicit Source has no editing path (GetEditingPropertyPath), so the control
+		// falls back to object-level HasErrors and the unrelated City error blocks the commit.
+		var item = new ValidatingPerson("Ada");
+		item.SetError(nameof(ValidatingPerson.City), "City is unknown.");
+		var table = new TableView { IsReadOnly = false };
+		table.Columns.Add(new TableViewTextColumn
+		{
+			Header = "Name",
+			Binding = new Binding { Source = item, Path = new PropertyPath(nameof(ValidatingPerson.Name)) },
+		});
+		table.ItemsSource = new List<ValidatingPerson> { item };
+		await LoadAsync(table);
+
+		await FocusRowAsync(table, 0);
+		await PressAsync("f2");
+		FindEditor(table)!.Text = "Grace";
+
+		Assert.IsFalse(table.CommitEdit());
+		Assert.IsTrue(table.IsEditing);
+
+		item.SetError(nameof(ValidatingPerson.City), null);
+		FindEditor(table)!.Text = "Grace";
+		Assert.IsTrue(table.CommitEdit());
+		Assert.AreEqual("Grace", item.Name);
+	}
+
+	[TestMethod]
+	[DataRow(ForcedClose.TableIsReadOnly)]
+	[DataRow(ForcedClose.ColumnIsReadOnly)]
+	[DataRow(ForcedClose.ItemsSourceReplaced)]
+	public async Task When_IsReadOnly_Set_While_Editing(ForcedClose trigger)
+	{
+		// TerminateEditWithoutVisualRestore -> TerminateEditForReset(force: true): the pending value is
+		// written first, the close cannot be vetoed (honorCancel == false), and Commit is reported.
+		var items = People(5);
+		var table = CreateTable(items);
+		table.IsReadOnly = false;
+		await LoadAsync(table);
+
+		var raised = new List<TableViewCellEditEndingEventArgs>();
+		table.CellEditEnding += (_, e) =>
+		{
+			raised.Add(e);
+			e.Cancel = true;
+		};
+
+		await FocusRowAsync(table, 1);
+		await PressAsync("f2");
+		FindEditor(table)!.Text = "Forced";
+
+		switch (trigger)
+		{
+			case ForcedClose.TableIsReadOnly:
+				table.IsReadOnly = true;
+				break;
+			case ForcedClose.ColumnIsReadOnly:
+				table.Columns[0].IsReadOnly = true;
+				break;
+			case ForcedClose.ItemsSourceReplaced:
+				table.ItemsSource = People(5);
+				break;
+		}
+
+		Assert.IsFalse(table.IsEditing, "the veto is ignored on a forced close");
+		Assert.IsNull(FindEditor(table));
+		Assert.AreEqual("Forced", items[1].Name, "the valid pending value reaches the item");
+		Assert.AreEqual(1, raised.Count);
+		Assert.AreEqual(TableViewEditAction.Commit, raised[0].EditAction);
+		Assert.AreSame(items[1], raised[0].Item);
+	}
+
+	[TestMethod]
+	public async Task When_IsReadOnly_Set_On_Other_Column_While_Editing()
+	{
+		var items = People(5);
+		var table = CreateTable(items);
+		table.IsReadOnly = false;
+		await LoadAsync(table);
+
+		await FocusRowAsync(table, 1);
+		await PressAsync("f2");
+		Assert.IsTrue(table.IsEditing);
+
+		// OnColumnIsReadOnlyChanged only closes the edit when it is on that column.
+		table.Columns[1].IsReadOnly = true;
+
+		Assert.IsTrue(table.IsEditing);
+		Assert.IsNotNull(FindEditor(table));
+		Assert.IsTrue(table.CancelEdit());
+	}
+
+	[TestMethod]
+	public async Task When_IsReadOnly_Set_While_Editing_Invalid_Value()
+	{
+		var item = new ValidatingPerson("Ada");
+		var table = new TableView { IsReadOnly = false };
+		table.Columns.Add(TextColumn(nameof(ValidatingPerson.Name)));
+		table.ItemsSource = new List<ValidatingPerson> { item };
+		await LoadAsync(table);
+
+		var raised = new List<TableViewCellEditEndingEventArgs>();
+		table.CellEditEnding += (_, e) =>
+		{
+			raised.Add(e);
+			e.Cancel = true;
+		};
+
+		await FocusRowAsync(table, 0);
+		await PressAsync("f2");
+		FindEditor(table)!.Text = "";
+
+		// The forced close writes, sees the blocking error, and reports Cancel. TerminateEditForReset's write
+		// does not set m_editSourceWritten, so FinishEditTeardown's cancel path skips the rollback and the
+		// rejected value stays on the item, as in WinUI.
+		table.IsReadOnly = true;
+
+		Assert.IsFalse(table.IsEditing);
+		Assert.AreEqual(1, raised.Count);
+		Assert.AreEqual(TableViewEditAction.Cancel, raised[0].EditAction);
+		Assert.AreEqual("", item.Name);
+	}
+
+	[TestMethod]
+	public async Task When_Editor_Handles_Escape_And_Enter()
+	{
+		var items = People(5);
+		var original = items[1].Name;
+		var table = CreateTable(items);
+		table.IsReadOnly = false;
+		await LoadAsync(table);
+
+		await FocusRowAsync(table, 1);
+		await PressAsync("f2");
+		var editor = FindEditor(table)!;
+		editor.KeyDown += (_, e) =>
+		{
+			if (e.Key is VirtualKey.Escape or VirtualKey.Enter)
+			{
+				e.Handled = true;
+			}
+		};
+		editor.Text = "Typed";
+
+		// OnKeyDownForEditing: Escape defers to an editor that consumed it (a ComboBox closing its popup).
+		await KeyboardHelper.PressKeySequence("$d$_esc#$u$_esc", editor);
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(table.IsEditing, "a handled Escape does not cancel the edit");
+		Assert.AreEqual(original, items[1].Name);
+
+		// Enter commits even when the editor marked it handled.
+		await KeyboardHelper.PressKeySequence("$d$_enter#$u$_enter", editor);
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(table.IsEditing, "a handled Enter still commits");
+		Assert.AreEqual("Typed", items[1].Name);
+	}
+
+	[TestMethod]
+	public async Task When_Focused_Element_Handles_F2()
+	{
+		var table = CreateTable(People(5));
+		table.IsReadOnly = false;
+		await LoadAsync(table);
+
+		var beginning = 0;
+		table.BeginningEdit += (_, _) => beginning++;
+
+		var row = GetRow(table, 1)!;
+		row.KeyDown += (_, e) =>
+		{
+			if (e.Key == VirtualKey.F2)
+			{
+				e.Handled = true;
+			}
+		};
+
+		await FocusRowAsync(table, 1);
+		await PressAsync("f2");
+
+		Assert.AreEqual(0, beginning, "F2 belongs to whatever focused control claimed it first");
+		Assert.IsFalse(table.IsEditing);
+	}
+
+	[TestMethod]
+	public async Task When_Focus_Settles_On_Row_Container_Editor_Refocused()
+	{
+		var items = People(5);
+		var table = CreateTable(items);
+		table.IsReadOnly = false;
+		var actionColumn = new TableViewTemplateColumn
+		{
+			Header = "Action",
+			CellTemplate = (DataTemplate)XamlReader.Load(
+				"""
+				<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<Button Content="Act" />
+				</DataTemplate>
+				"""),
+		};
+		table.Columns.Add(actionColumn);
+		await LoadAsync(table, width: 700);
+
+		await FocusRowAsync(table, 1);
+		await PressAsync("f2");
+		var editor = FindEditor(table)!;
+		editor.Text = "Typed";
+
+		// CompleteFocusLossCommit: focus landing on the row container itself re-focuses the editor.
+		var row = GetRow(table, 1)!;
+		row.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(table.IsEditing, "focus settling on the row container does not commit");
+		Assert.IsTrue(IsWithin(FocusManager.GetFocusedElement(WindowHelper.XamlRoot) as DependencyObject, editor), "the editor is re-focused");
+
+		// A control in another cell of the same row is a genuine focus target.
+		var button = Descendants(GetCell(row, actionColumn)).OfType<Button>().Single();
+		button.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitFor(() => !table.IsEditing, message: "focus moving to another cell's control did not commit");
+
+		Assert.AreEqual("Typed", items[1].Name);
+		Assert.AreSame(button, FocusManager.GetFocusedElement(WindowHelper.XamlRoot), "focus is not stolen back");
+
+		static bool IsWithin(DependencyObject? candidate, DependencyObject ancestor)
+		{
+			while (candidate is not null)
+			{
+				if (candidate == ancestor)
+				{
+					return true;
+				}
+
+				candidate = VisualTreeHelper.GetParent(candidate);
+			}
+
+			return false;
+		}
+	}
+
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_BeginEdit_While_Editing_Commits_First(bool veto)
+	{
+		var items = People(5);
+		var original = items[0].Name;
+		var table = CreateTable(items);
+		table.IsReadOnly = false;
+		await LoadAsync(table);
+
+		var log = new List<string>();
+		table.BeginningEdit += (_, e) => log.Add($"Beginning {items.IndexOf((Person)e.Item!)}");
+		table.CellEditEnding += (_, e) =>
+		{
+			log.Add($"Ending {e.EditAction} {items.IndexOf((Person)e.Item!)}");
+			e.Cancel = veto;
+		};
+
+		await FocusRowAsync(table, 0);
+		await PressAsync("f2");
+		FindEditor(table)!.Text = "Typed";
+		log.Clear();
+
+		// The double-click / F2 entry point: moving to another item commits the open edit first, and a
+		// commit that fails aborts the move.
+		var moved = table.BeginEdit(items[2], table.Columns[0]);
+
+		if (veto)
+		{
+			Assert.IsFalse(moved);
+			CollectionAssert.AreEqual(new[] { "Ending Commit 0" }, log, "no BeginningEdit after a vetoed commit");
+			Assert.IsTrue(table.IsEditing);
+			Assert.AreEqual(original, items[0].Name);
+			Assert.IsTrue(Descendants(GetCell(GetRow(table, 0)!, table.Columns[0])).OfType<TextBox>().Any(), "row 0 stays in edit");
+		}
+		else
+		{
+			Assert.IsTrue(moved);
+			CollectionAssert.AreEqual(new[] { "Ending Commit 0", "Beginning 2" }, log);
+			Assert.AreEqual("Typed", items[0].Name);
+			Assert.IsTrue(table.IsEditing);
+			Assert.IsTrue(Descendants(GetCell(GetRow(table, 2)!, table.Columns[0])).OfType<TextBox>().Any(), "the editor moved to row 2");
+		}
+	}
+
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Sort_From_CellEditEnding_Is_Replayed(bool vetoOuterCommit)
+	{
+		var items = People(6);
+		var table = CreateTable(items);
+		var name = table.Columns[0];
+		table.IsReadOnly = false;
+		await LoadAsync(table);
+
+		var sorting = 0;
+		var sorted = new List<TableViewSortedEventArgs>();
+		table.Sorting += (_, _) => sorting++;
+		table.Sorted += (_, e) => sorted.Add(e);
+
+		bool? sortResultInsideHandler = null;
+		var sortingInsideHandler = -1;
+		var veto = vetoOuterCommit;
+		table.CellEditEnding += (_, e) =>
+		{
+			if (sortResultInsideHandler is null)
+			{
+				// The state is Ending: the request is queued (QueueCoalescedEditReshape), not applied.
+				sortResultInsideHandler = table.SortByColumn(name, SortDirection.Descending);
+				sortingInsideHandler = sorting;
+			}
+
+			e.Cancel = veto;
+		};
+
+		await FocusRowAsync(table, 1);
+		await PressAsync("f2");
+		FindEditor(table)!.Text = "Zed";
+
+		var committed = table.CommitEdit();
+
+		Assert.AreEqual(false, sortResultInsideHandler);
+		Assert.AreEqual(0, sortingInsideHandler, "no Sorting is raised from inside the handler");
+
+		if (vetoOuterCommit)
+		{
+			// A vetoed close clears the queue.
+			Assert.IsFalse(committed);
+			Assert.IsTrue(table.IsEditing);
+
+			veto = false;
+			Assert.IsTrue(table.CancelEdit());
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SortDirection.None, name.SortDirection);
+			Assert.AreEqual(0, sorting);
+			Assert.AreEqual(0, sorted.Count);
+			AssertRowOrder(table, items, SortDirection.None);
+		}
+		else
+		{
+			// DrainCoalescedEditReshape replays the request once the edit has closed.
+			Assert.IsTrue(committed);
+			Assert.IsFalse(table.IsEditing);
+			Assert.AreEqual(SortDirection.Descending, name.SortDirection);
+			Assert.AreEqual(1, sorting);
+			Assert.AreEqual(1, sorted.Count);
+			Assert.AreSame(name, sorted[0].Column);
+			Assert.AreEqual(SortDirection.Descending, sorted[0].Direction);
+
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Zed", items[1].Name);
+			AssertRowOrder(table, items, SortDirection.Descending);
+		}
+	}
+
+	public enum ForcedClose
+	{
+		TableIsReadOnly,
+		ColumnIsReadOnly,
+		ItemsSourceReplaced,
+	}
+
 	public sealed class ValidatingPerson : INotifyPropertyChanged, INotifyDataErrorInfo
 	{
 		private string _name;
+		private string _city = "";
 		private readonly Dictionary<string, List<string>> _errors = new();
 
 		public ValidatingPerson(string name) => _name = name;
@@ -290,17 +709,17 @@ public partial class Given_TableView
 
 				_name = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+				SetError(nameof(Name), string.IsNullOrEmpty(value) ? "Name is required." : null);
+			}
+		}
 
-				if (string.IsNullOrEmpty(value))
-				{
-					_errors[nameof(Name)] = new List<string> { "Name is required." };
-				}
-				else
-				{
-					_errors.Remove(nameof(Name));
-				}
-
-				ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Name)));
+		public string City
+		{
+			get => _city;
+			set
+			{
+				_city = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(City)));
 			}
 		}
 
@@ -312,6 +731,72 @@ public partial class Given_TableView
 
 		public IEnumerable GetErrors(string? propertyName)
 			=> propertyName is not null && _errors.TryGetValue(propertyName, out var errors) ? errors : Array.Empty<string>();
+
+		public void SetError(string propertyName, string? error)
+		{
+			if (error is null)
+			{
+				_errors.Remove(propertyName);
+			}
+			else
+			{
+				_errors[propertyName] = new List<string> { error };
+			}
+
+			ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+		}
+	}
+
+	public sealed class Address : INotifyPropertyChanged
+	{
+		private readonly Action<string> _onStreetChanged;
+		private string _street;
+
+		public Address(string street, Action<string> onStreetChanged)
+		{
+			_street = street;
+			_onStreetChanged = onStreetChanged;
+		}
+
+		public string Street
+		{
+			get => _street;
+			set
+			{
+				if (_street == value)
+				{
+					return;
+				}
+
+				_street = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Street)));
+				_onStreetChanged(value);
+			}
+		}
+
+		public event PropertyChangedEventHandler? PropertyChanged;
+	}
+
+	// Reports Address.Street errors under the leaf name, the way a flattened view model would.
+	public sealed class AddressedPerson : INotifyDataErrorInfo
+	{
+		private string? _streetError;
+
+		public AddressedPerson(string street)
+			=> Address = new Address(street, value =>
+			{
+				_streetError = string.IsNullOrEmpty(value) ? "Street is required." : null;
+				ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Address.Street)));
+			});
+
+		public Address Address { get; }
+
+		public bool HasErrors => _streetError is not null;
+
+		public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+		public IEnumerable GetErrors(string? propertyName)
+			=> propertyName == nameof(Address.Street) && _streetError is not null ? new[] { _streetError } : Array.Empty<string>();
 	}
 
 	private static async Task FocusRowAsync(TableView table, int index)
