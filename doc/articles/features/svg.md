@@ -75,7 +75,19 @@ SVG is supported on all Uno Platform targets. On Windows (WinAppSDK), the OS is 
 | Managed engine (built into `Uno.WinUI`) | The `Uno.WinUI.Svg` package is not referenced | `svg`, `g`, `path`, `rect`, `circle`, `ellipse`, `line`, `polyline`, `polygon` and `use` elements, with solid and linear/radial gradient fills, strokes, opacity, fill rules, transforms, `viewBox` and inline styles. Text, clip paths, masks, filters, patterns, embedded images and CSS class styling are not supported yet. | Skia and WebGPU, drawn as vectors |
 | Svg.Skia (`Uno.WinUI.Svg` package, added by the `Svg` feature) | The `Uno.WinUI.Svg` package is referenced | Most of the SVG specification, as supported by [Svg.Skia](https://github.com/wieslawsoltes/Svg.Skia) | Skia, drawn as vectors. WebGPU, rasterized once per displayed size. Requires SkiaSharp. |
 
-An app can also register a renderer explicitly with the `SvgRenderer(...)` method of the host builder, which takes precedence over both.
+The host builder picks the renderer automatically. An app can also register one explicitly, which takes precedence over both. Each renderer is created by its assembly's factory:
+
+```csharp
+var host = UnoPlatformHostBuilder.Create()
+    .App(() => new App())
+    // Svg.Skia (requires the Uno.WinUI.Svg package):
+    .SvgRenderer(Uno.UI.Composition.Skia.SkiaBackend.CreateSvgRenderer())
+    // or the managed engine:
+    // .SvgRenderer(Uno.UI.Composition.Managed.ManagedBackend.CreateSvgRenderer())
+    .Build();
+```
+
+`SkiaBackend.CreateSvgRenderer()` is added to `SkiaBackend` by the `Uno.WinUI.Svg` package, as a C# 14 extension member (the default from .NET 10). Explicit registration is required on a trimmed or AOT-compiled head (iOS, tvOS), where the host builder can't find the Svg.Skia renderer automatically.
 
 ## When to use SVG
 

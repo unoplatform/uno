@@ -46,7 +46,19 @@ On Uno Platform targets, Lottie animations are rendered by one of two renderers:
 | Skottie (`Uno.WinUI.Lottie` package) | The Skia renderer is used, which is the default. | Most Lottie features, as supported by [Skottie](https://skia.org/docs/user/modules/skottie/) | Skia, drawn as vectors. WebGPU, each frame is rasterized and uploaded as a texture. Requires SkiaSharp. |
 | Managed engine (built into `Uno.WinUI`) | The Skia renderer is not used, for example in a WebGPU-only app | Shape and null layers, layer parenting, transforms, bézier, rectangle and ellipse paths, solid fills, strokes and trim paths, with keyframe easing. Gradients, repeaters, masks, mattes, precompositions, image and text layers, and effects are not supported yet: unsupported items are skipped. | Skia and WebGPU, drawn as vectors |
 
-An app can also register a renderer explicitly with the `LottieRenderer(...)` method of the host builder, which takes precedence over both.
+The host builder picks the renderer automatically. An app can also register one explicitly, which takes precedence over both. Each renderer is created by its assembly's factory:
+
+```csharp
+var host = UnoPlatformHostBuilder.Create()
+    .App(() => new App())
+    // Skottie (available whenever the Skia renderer is):
+    .LottieRenderer(Uno.UI.Composition.Skia.SkiaBackend.CreateLottieRenderer())
+    // or the managed engine:
+    // .LottieRenderer(Uno.UI.Composition.Managed.ManagedBackend.CreateLottieRenderer())
+    .Build();
+```
+
+`SkiaBackend.CreateLottieRenderer()` is added to `SkiaBackend` by the `Uno.WinUI.Lottie` package, as a C# 14 extension member (the default from .NET 10). Explicit registration is required on a trimmed or AOT-compiled head (iOS, tvOS), where the host builder can't find the Skottie renderer automatically.
 
 For more information, see [AnimatedVisualPlayer Class](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer).
 
