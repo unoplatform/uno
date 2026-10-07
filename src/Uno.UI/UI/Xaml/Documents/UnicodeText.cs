@@ -197,51 +197,118 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			var currentFontDetails = inline.FontInfo;
 			int currentScript = 0;
-			for (var i = 0; i < inlineText.Length; i += char.IsSurrogate(inlineText, i) ? 2 : 1)
+			void ProcessNormalRange(int rangeStart, int rangeEnd)
 			{
-				FontDetails newFontDetails;
-				var codepoint = char.ConvertToUtf32(inlineText, i);
+				for (var i = rangeStart; i < rangeEnd; i += char.IsSurrogate(inlineText, i) ? 2 : 1)
+				{
+					FontDetails newFontDetails;
+					var codepoint = char.ConvertToUtf32(inlineText, i);
 
-				// ASCII shortcut: the whole ASCII range is Latin letters (USCRIPT_LATIN=25) or Script=Common (0),
-				// so the per-character ICU P/Invoke — a dominant cost of re-laying-out short labels — is skippable.
-				int newScript;
-				if (codepoint < 0x80)
-				{
-					newScript = char.IsAsciiLetter((char)codepoint) ? 25 : 0;
-				}
-				else
-				{
-					allAscii = false;
-					newScript = ICU.GetMethod<ICU.uscript_getScript>()(codepoint, out var errorCode);
-					ICU.CheckErrorCode<ICU.uscript_getScript>(errorCode);
-				}
-
-				if (newScript != currentScript)
-				{
-					currentScript = newScript;
-					if (i != 0)
+					// ASCII shortcut: the whole ASCII range is Latin letters (USCRIPT_LATIN=25) or Script=Common (0),
+					// so the per-character ICU P/Invoke — a dominant cost of re-laying-out short labels — is skippable.
+					int newScript;
+					if (codepoint < 0x80)
 					{
-						scriptBreaks.Add(inlineStart + i);
+						newScript = char.IsAsciiLetter((char)codepoint) ? 25 : 0;
+					}
+					else
+					{
+						allAscii = false;
+						newScript = ICU.GetMethod<ICU.uscript_getScript>()(codepoint, out var errorCode);
+						ICU.CheckErrorCode<ICU.uscript_getScript>(errorCode);
+					}
+
+					if (newScript != currentScript)
+					{
+						currentScript = newScript;
+						if (i != 0)
+						{
+							scriptBreaks.Add(inlineStart + i);
+						}
+					}
+
+					if (!inline.FontInfo.FontHandle.ContainsGlyph(codepoint))
+					{
+						newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, fontListener) ?? inline.FontInfo;
+					}
+					else
+					{
+						newFontDetails = inline.FontInfo;
+					}
+
+					if (newFontDetails != currentFontDetails)
+					{
+						if (i != 0)
+						{
+							fontBreaks.Add((inlineStart + i, currentFontDetails));
+						}
+						currentFontDetails = newFontDetails;
 					}
 				}
+			}
 
-				if (!inline.FontInfo.FontHandle.ContainsGlyph(codepoint))
+			if (OperatingSystem.IsBrowser() && ContainsEmojiCandidate(inlineText))
+			{
+				allAscii = false;
+				var graphemeStarts = StringInfo.ParseCombiningCharacters(inlineText);
+				for (var graphemeIndex = 0; graphemeIndex < graphemeStarts.Length; graphemeIndex++)
 				{
-					newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, fontListener) ?? inline.FontInfo;
-				}
-				else
-				{
-					newFontDetails = inline.FontInfo;
-				}
-
-				if (newFontDetails != currentFontDetails)
-				{
-					if (i != 0)
+					var graphemeStart = graphemeStarts[graphemeIndex];
+					var graphemeEnd = graphemeIndex + 1 < graphemeStarts.Length
+						? graphemeStarts[graphemeIndex + 1]
+						: inlineText.Length;
+					int? emojiCodepoint = null;
+					var requestsEmojiPresentation = false;
+					var requestsTextPresentation = false;
+					var requiresEmojiFallback = false;
+					for (var i = graphemeStart; i < graphemeEnd; i += char.IsSurrogate(inlineText, i) ? 2 : 1)
 					{
-						fontBreaks.Add((inlineStart + i, currentFontDetails));
+						var codepoint = char.ConvertToUtf32(inlineText, i);
+						requestsEmojiPresentation |= codepoint == 0xFE0F;
+						requestsTextPresentation |= codepoint == 0xFE0E;
+						if (NotoFontFallbackService.IsEmojiCodepoint(codepoint))
+						{
+							var needsFallback = NotoFontFallbackService.IsEmojiPresentationCodepoint(codepoint)
+								&& (codepoint >= 0x1F000 || !inline.FontInfo.FontHandle.ContainsGlyph(codepoint));
+							if (emojiCodepoint is null || needsFallback && !requiresEmojiFallback)
+							{
+								emojiCodepoint = codepoint;
+							}
+							requiresEmojiFallback |= needsFallback;
+						}
 					}
-					currentFontDetails = newFontDetails;
+
+					var useEmojiFont = emojiCodepoint is not null
+						&& !requestsTextPresentation
+						&& (requestsEmojiPresentation || requiresEmojiFallback);
+					if (useEmojiFont)
+					{
+						var emojiFont = GetFallbackFont(
+							emojiCodepoint!.Value,
+							(float)inline.FontSize,
+							inline.FontWeight,
+							inline.FontStretch,
+							inline.FontStyle,
+							fontListener,
+							preferFallbackService: true) ?? inline.FontInfo;
+						if (emojiFont != currentFontDetails)
+						{
+							if (graphemeStart != 0)
+							{
+								fontBreaks.Add((inlineStart + graphemeStart, currentFontDetails));
+							}
+							currentFontDetails = emojiFont;
+						}
+					}
+					else
+					{
+						ProcessNormalRange(graphemeStart, graphemeEnd);
+					}
 				}
+			}
+			else
+			{
+				ProcessNormalRange(0, inlineText.Length);
 			}
 
 			scriptBreaks.Add(inlineStart + inlineText.Length);
@@ -1714,8 +1781,20 @@ internal readonly partial struct UnicodeText : IParsedText
 		return alignmentOffset;
 	}
 
-	private static FontDetails? GetFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, IFontCacheUpdateListener fontListener)
+	private static FontDetails? GetFallbackFont(
+		int codepoint,
+		float fontSize,
+		FontWeight fontWeight,
+		FontStretch fontStretch,
+		FontStyle fontStyle,
+		IFontCacheUpdateListener fontListener,
+		bool preferFallbackService = false)
 	{
+		if (preferFallbackService && TryGetProviderFallbackFont(codepoint, fontSize, fontWeight, fontStretch, fontStyle, fontListener) is { } preferredFallback)
+		{
+			return preferredFallback;
+		}
+
 		var symbolsFontTask = FontDetailsCache.GetFont(FeatureConfiguration.Font.SymbolsFont, fontSize, fontWeight, fontStretch, fontStyle);
 		if (symbolsFontTask.loadedTask.IsCompleted)
 		{
@@ -1743,9 +1822,14 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		// The provider resolves installed fonts synchronously and defers only when a fallback must be fetched (browser
-		// Noto). A synchronously-resolved font is returned immediately; a deferred one registers a listener that
-		// re-invalidates the text once it arrives.
+		return preferFallbackService ? null : TryGetProviderFallbackFont(codepoint, fontSize, fontWeight, fontStretch, fontStyle, fontListener);
+	}
+
+	// The provider resolves installed fonts synchronously and defers only when a fallback must be fetched (browser
+	// Noto). A synchronously-resolved font is returned immediately; a deferred one registers a listener that
+	// re-invalidates the text once it arrives.
+	private static FontDetails? TryGetProviderFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, IFontCacheUpdateListener fontListener)
+	{
 		var fallbackFontTask = FontDetailsCache.GetFontForCodepoint(codepoint, fontSize, fontWeight, fontStretch, fontStyle);
 		if (fallbackFontTask.IsCompleted)
 		{
@@ -1767,6 +1851,27 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		return null;
+	}
+
+	// Every emoji range starts at or above U+00A9, so plain ASCII labels skip the range lookups.
+	private const char FirstEmojiCandidate = (char)0xA9;
+
+	private static bool ContainsEmojiCandidate(string text)
+	{
+		for (var i = 0; i < text.Length; i += char.IsSurrogate(text, i) ? 2 : 1)
+		{
+			if (text[i] < FirstEmojiCandidate)
+			{
+				continue;
+			}
+
+			if (NotoFontFallbackService.IsEmojiCodepoint(char.ConvertToUtf32(text, i)))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static unsafe void AppendBoundaries(int boundaryType, string text, int outputBaseOffset, List<int> list)
