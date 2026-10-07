@@ -96,28 +96,27 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	#region Default drawing-backend resolution (composition root)
 
 	// The framework holds no compile-time reference to any concrete backend. When the app declares no backend/seam,
-	// the SkiaSharp backend is lit up by reflection if its assembly is present; a SkiaSharp-free build registers each
-	// seam explicitly. Resolved by assembly-qualified name so no assembly reference is required.
+	// each default is lit up by reflection if its assembly is present; a SkiaSharp-free build registers each seam
+	// explicitly. Resolved by assembly-qualified name so no assembly reference is required. Every backend and add-in
+	// assembly has one public static *Backend entry class, and each default comes from the same Create* factory an
+	// app registers explicitly, so the two paths can't diverge.
 	private const string SkiaBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackend, Uno.UI.Composition.Skia";
-	private const string WebGpuGraphicsProviderTypeName = "Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider, Uno.UI.Composition.WebGpu";
-	private const string ManagedGeometryFactoryTypeName = "Uno.UI.Composition.Drawing.ManagedGeometryFactory, Uno.UI.Composition.Managed";
-	private const string ManagedFontProviderTypeName = "Uno.UI.Composition.Drawing.ManagedFontProvider, Uno.UI.Composition.Managed";
-	private const string ManagedImageDecoderTypeName = "Uno.UI.Composition.Drawing.ManagedImageDecoderBackend, Uno.UI.Composition.Managed";
+	private const string WebGpuBackendTypeName = "Uno.UI.Composition.WebGpu.WebGpuBackend, Uno.UI.Composition.WebGpu";
+	private const string ManagedBackendTypeName = "Uno.UI.Composition.Managed.ManagedBackend, Uno.UI.Composition.Managed";
 
 	// SVG has no core Skia impl: the Svg.Skia renderer ships as the optional Uno.UI.Svg add-in, with the managed
-	// engine as the built-in fallback.
-	private const string SvgAddInBackendTypeName = "Uno.UI.Svg.SvgBackend, Uno.UI.Svg";
-	private const string ManagedSvgRendererTypeName = "Uno.UI.Composition.Drawing.ManagedSvgRenderer, Uno.UI.Composition.Managed";
+	// engine as the built-in fallback. Each add-in extends SkiaBackend with its factory (a C# 14 static extension,
+	// emitted as a plain static method on the add-in's extension class, which is what is looked up here).
+	private const string SvgAddInBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackendSvgExtensions, Uno.UI.Svg";
 
 	// Lottie: the Skottie add-in (Uno.UI.Lottie) is the default when referenced, else the SkiaSharp-free managed
 	// engine (Uno.UI.Composition.Managed). An app that wants the managed engine either drops the add-in reference
 	// or calls IUnoPlatformHostBuilder.LottieRenderer, which this light-up leaves alone.
-	private const string SkottieLottieRendererTypeName = "Uno.UI.Lottie.SkottieLottieRenderer, Uno.UI.Lottie";
-	private const string ManagedLottieRendererTypeName = "Uno.UI.Composition.Drawing.ManagedLottieRenderer, Uno.UI.Composition.Managed";
+	private const string LottieAddInBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackendLottieExtensions, Uno.UI.Lottie";
 
-	// Each factory lookup keeps Type.GetType and GetMethod/GetConstructor, both with literal arguments, in one expression:
+	// Each factory lookup keeps Type.GetType and GetMethod, both with literal arguments, in one expression:
 	// that lets the trimmer (and NativeAOT) keep exactly the factory invoked, and nothing else on the type.
-	// NonPublic: the SkiaBackend factories are internal.
+	// NonPublic: SkiaBackend.CreateDefaultRenderer is internal.
 	private const BindingFlags FactoryFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
 	// Downward codec-resolve trigger: Uno.UWP's BitmapEncoder sits below Uno.UI and can't reach the codec registry,
@@ -192,13 +191,13 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 		// No Skia: a SkiaSharp-free app, where WebGPU is the only renderer there is. Geometry goes to the managed
 		// engine, which WebGPU flattens.
-		if (InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(WebGpuGraphicsProviderTypeName, throwOnError: false)
-			?.GetConstructor(Type.EmptyTypes)) is { } webGpuProvider)
+		if (InvokeFactory<Drawing.IGraphicsProvider>(static () => Type.GetType(WebGpuBackendTypeName, throwOnError: false)
+			?.GetMethod("CreateGraphicsProvider", FactoryFlags, Type.EmptyTypes)) is { } webGpuProvider)
 		{
 			Drawing.GraphicsRegistry.RegisterDefault(new[] { webGpuProvider });
 			if (!Drawing.GeometryFactory.IsRegistered
-				&& InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedGeometryFactoryTypeName, throwOnError: false)
-					?.GetConstructor(Type.EmptyTypes)) is { } managedGeometry)
+				&& InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
+					?.GetMethod("CreateGeometryFactory", FactoryFlags, Type.EmptyTypes)) is { } managedGeometry)
 			{
 				Drawing.GeometryFactory.RegisterDefault(managedGeometry);
 			}
@@ -216,8 +215,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		// bundled default passed in where those cannot be enumerated (iOS, WASM) - such a head registers its own.
 		var fontProvider = InvokeFactory<Drawing.IFontProvider>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateFontProvider", FactoryFlags, Type.EmptyTypes))
-			?? InvokeFactory<Drawing.IFontProvider>(static () => Type.GetType(ManagedFontProviderTypeName, throwOnError: false)
-				?.GetConstructor(Type.EmptyTypes));
+			?? InvokeFactory<Drawing.IFontProvider>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateFontProvider", FactoryFlags, Type.EmptyTypes));
 		if (fontProvider is not null)
 		{
 			Drawing.FontProvider.RegisterDefault(fontProvider);
@@ -233,8 +232,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 		var decoder = InvokeFactory<Drawing.IImageEncoderDecoder>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateImageDecoder", FactoryFlags, Type.EmptyTypes))
-			?? InvokeFactory<Drawing.IImageEncoderDecoder>(static () => Type.GetType(ManagedImageDecoderTypeName, throwOnError: false)
-				?.GetConstructor(Type.EmptyTypes));
+			?? InvokeFactory<Drawing.IImageEncoderDecoder>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateImageDecoder", FactoryFlags, Type.EmptyTypes));
 		if (decoder is not null)
 		{
 			Drawing.ImageEncoderDecoder.RegisterDefault(decoder);
@@ -250,8 +249,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 		var geometryFactory = InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateGeometryFactory", FactoryFlags, Type.EmptyTypes))
-			?? InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedGeometryFactoryTypeName, throwOnError: false)
-				?.GetConstructor(Type.EmptyTypes));
+			?? InvokeFactory<Drawing.IGeometryFactory>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateGeometryFactory", FactoryFlags, Type.EmptyTypes));
 		if (geometryFactory is not null)
 		{
 			Drawing.GeometryFactory.RegisterDefault(geometryFactory);
@@ -267,8 +266,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 		var renderer = InvokeFactory<Drawing.ISvgRenderer>(static () => Type.GetType(SvgAddInBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateSvgRenderer", FactoryFlags, Type.EmptyTypes))
-			?? InvokeFactory<Drawing.ISvgRenderer>(static () => Type.GetType(ManagedSvgRendererTypeName, throwOnError: false)
-				?.GetConstructor(Type.EmptyTypes));
+			?? InvokeFactory<Drawing.ISvgRenderer>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
+				?.GetMethod("CreateSvgRenderer", FactoryFlags, Type.EmptyTypes));
 		if (renderer is not null)
 		{
 			Drawing.SvgRenderer.RegisterDefault(renderer);
@@ -282,9 +281,9 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		var renderer = InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(SkottieLottieRendererTypeName, throwOnError: false)
+		var renderer = InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(LottieAddInBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes))
-			?? InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(ManagedLottieRendererTypeName, throwOnError: false)
+			?? InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes));
 		if (renderer is not null)
 		{

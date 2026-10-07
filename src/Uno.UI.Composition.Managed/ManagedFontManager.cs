@@ -22,7 +22,7 @@ namespace Uno.UI.Composition.Drawing;
 /// has a guaranteed default face. Registered as any other <see cref="IFontProvider"/> via
 /// <see cref="FontProvider.Current"/>.
 /// </remarks>
-public sealed class ManagedFontProvider : IFontProvider
+internal sealed class ManagedFontProvider : IFontProvider
 {
 	private sealed record FaceEntry(string Path, int TtcIndex, string Family, int Weight, int WidthClass, bool Italic);
 

@@ -601,7 +601,7 @@ plus a clear answer to "who drives."
 > **decline** (unavailable, or the host's config opted out). The host switches purely on `kind` and
 > names no backend and no `UNO_WEBGPU`. **The backend owns the kind order** (`IGraphicsProvider.PreferredContexts`,
 > walked as-is); preference is expressed two neutral ways only — the app orders the provider's kinds via
-> its constructor (`new SkiaGraphicsProvider(GraphicsContextKind.Software)` forces software), a host
+> its factory (`SkiaBackend.CreateGraphicsProvider(GraphicsContextKind.Software)` forces software), a host
 > *declines* kinds per its own config (LinuxFB `UseDRM`, WASM `forceSoftwareRendering`), and the X11/Win32
 > host builders exclude kinds up front (`ForceRenderingBackend`/`DisableRenderingBackends` →
 > `GraphicsRegistry.DisabledContextKinds`, which negotiation skips). Removed with the redesign: `INativeWindow`, `NativeWindowKind`,
@@ -651,7 +651,7 @@ identical on every platform, in the shared app bootstrap:
 
 ```csharp
 // ordered by preference: try WebGPU, fall back to Skia
-GraphicsRegistry.Register(new IGraphicsProvider[] { new WebGpuGraphicsProvider(), new SkiaGraphicsProvider() });
+GraphicsRegistry.Register(new IGraphicsProvider[] { WebGpuBackend.CreateGraphicsProvider(), SkiaBackend.CreateGraphicsProvider() });
 ```
 
 Separately, the **host** sets exactly one delegate — `GraphicsRegistry.ContextFactory =

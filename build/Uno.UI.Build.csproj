@@ -164,7 +164,10 @@
 
 		<!-- Update Uno.WinUI references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
-		
+
+		<!-- Update Uno.WinUI.Composition.Skia references version (the Svg and Lottie add-ins extend its SkiaBackend) -->
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Composition.Skia']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
+
 		<!-- Update Uno.Foundation references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
 		

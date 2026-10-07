@@ -12,15 +12,13 @@ using System.Numerics;
 namespace Uno.UI.Lottie;
 
 /// <summary>
-/// Skottie-backed <see cref="ILottieRenderer"/>, the default Lottie renderer resolved reflectively by the host
-/// builder when Uno.UI.Lottie is referenced. Renders through the neutral <see cref="IDrawingSession"/>: straight
-/// into the backend's live SKCanvas when it exposes one, else via a session-native texture (so WebGPU works too).
+/// Skottie-backed <see cref="ILottieRenderer"/>, the default Lottie renderer when Uno.UI.Lottie is referenced (created
+/// through <c>SkiaBackend.CreateLottieRenderer()</c>, by the host builder or by an app registering it explicitly). Renders through
+/// the neutral <see cref="IDrawingSession"/>: straight into the backend's live SKCanvas when it exposes one, else via
+/// a session-native texture (so WebGPU works too).
 /// </summary>
 internal sealed class SkottieLottieRenderer : ILottieRenderer
 {
-	// Reflective bootstrap entry point (found by name from UnoPlatformHostBuilder); keep the type/method name stable.
-	internal static ILottieRenderer CreateLottieRenderer() => new SkottieLottieRenderer();
-
 	public ILottieAnimation? Load(string animationJson, IGeometryFactory geometry)
 	{
 		using var stream = new Utf8StringStream(animationJson);

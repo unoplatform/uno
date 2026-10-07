@@ -1,7 +1,7 @@
 #nullable enable
 
 using System;
-using Uno.UI.Composition.Drawing;
+using Uno.UI.Composition.Managed;
 using Uno.UI.Hosting;
 
 namespace SamplesApp;
@@ -21,14 +21,14 @@ internal static class DrawingBackendConfiguration
 		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "neutral" or "1" or "true" or "swapchain")
 		{
 			// WebGPU renderer; geometry is the managed (SkiaSharp-free) engine — WebGPU flattens it.
-			builder.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider());
-			builder.GeometryFactory(new ManagedGeometryFactory());
+			builder.GraphicsBackend(global::Uno.UI.Composition.WebGpu.WebGpuBackend.CreateGraphicsProvider());
+			builder.GeometryFactory(ManagedBackend.CreateGeometryFactory());
 		}
 		else
 #endif
 		{
 #if UNO_DRAWING_SKIA
-			builder.GraphicsBackend(new SkiaGraphicsProvider());
+			builder.GraphicsBackend(global::Uno.UI.Composition.Skia.SkiaBackend.CreateGraphicsProvider());
 #if __APPLE_UIKIT__
 			// iOS and tvOS only: the host builder discovers these reflectively, which their trimmed/AOT images
 			// cannot resolve, so Build() fails with every content seam unregistered. Everywhere else the light-up
@@ -39,42 +39,46 @@ internal static class DrawingBackendConfiguration
 			builder.GeometryFactory(global::Uno.UI.Composition.Skia.SkiaBackend.CreateGeometryFactory());
 			// Same story for the Lottie renderer: unregistered it reports "No ILottieRenderer is registered" and
 			// the player silently shows its fallback content instead of the animation.
-			builder.LottieRenderer(global::Uno.UI.Lottie.LottieBackend.CreateLottieRenderer());
+			// The add-ins' factories are C# 14 extensions on SkiaBackend; this project compiles as C# 13, so it calls
+			// their extension classes directly.
+			builder.LottieRenderer(global::Uno.UI.Composition.Skia.SkiaBackendLottieExtensions.CreateLottieRenderer());
+			// And the SVG renderer, which this head references too.
+			builder.SvgRenderer(global::Uno.UI.Composition.Skia.SkiaBackendSvgExtensions.CreateSvgRenderer());
 #endif
 			// UNO_MANAGED_GEOMETRY swaps the geometry seam to the managed engine (rasterized on Skia pixels).
 			if (Environment.GetEnvironmentVariable("UNO_MANAGED_GEOMETRY") is "1" or "true")
 			{
-				builder.GeometryFactory(new ManagedGeometryFactory());
+				builder.GeometryFactory(ManagedBackend.CreateGeometryFactory());
 			}
 #elif UNO_DRAWING_WEBGPU
 			// SkiaSharp-free build: WebGPU is the only renderer, over the managed geometry engine.
-			builder.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider());
-			builder.GeometryFactory(new ManagedGeometryFactory());
+			builder.GraphicsBackend(global::Uno.UI.Composition.WebGpu.WebGpuBackend.CreateGraphicsProvider());
+			builder.GeometryFactory(ManagedBackend.CreateGeometryFactory());
 #endif
 		}
 
 #if !UNO_DRAWING_SKIA
 		// SkiaSharp-free build: no Skia assembly supplies defaults, so the content seams must be registered
 		// explicitly here or the host builder throws at Build(). (Geometry is already set to the managed engine above.)
-		builder.FontProvider(new ManagedFontProvider(TryGetBundledDefaultFont()));
-		builder.ImageEncoderDecoder(new ManagedImageDecoderBackend());
-		builder.SvgRenderer(new ManagedSvgRenderer());
+		builder.FontProvider(ManagedBackend.CreateFontProvider(TryGetBundledDefaultFont()));
+		builder.ImageEncoderDecoder(ManagedBackend.CreateImageDecoder());
+		builder.SvgRenderer(ManagedBackend.CreateSvgRenderer());
 #endif
 
 		// Independent content seams (dev toggles). Left unset in a Skia build, they fall back to their Skia impls.
 		if (Environment.GetEnvironmentVariable("UNO_MANAGED_FONTS") is "1" or "true")
 		{
-			builder.FontProvider(new ManagedFontProvider(TryGetBundledDefaultFont()));
+			builder.FontProvider(ManagedBackend.CreateFontProvider(TryGetBundledDefaultFont()));
 		}
 
 		if (Environment.GetEnvironmentVariable("UNO_MANAGED_IMAGE_DECODER") is "1" or "true")
 		{
-			builder.ImageEncoderDecoder(new ManagedImageDecoderBackend());
+			builder.ImageEncoderDecoder(ManagedBackend.CreateImageDecoder());
 		}
 
 		if (Environment.GetEnvironmentVariable("UNO_MANAGED_SVG") is "1" or "true")
 		{
-			builder.SvgRenderer(new ManagedSvgRenderer());
+			builder.SvgRenderer(ManagedBackend.CreateSvgRenderer());
 		}
 	}
 

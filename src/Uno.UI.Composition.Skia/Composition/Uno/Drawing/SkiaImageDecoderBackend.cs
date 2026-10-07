@@ -11,7 +11,7 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// The SkiaSharp <see cref="IImageEncoderDecoder"/>: the SKCodec decode pipeline + SKBitmap.Encode. An app that
-/// wants SkiaSharp-free imaging registers <see cref="ManagedImageDecoderBackend"/> as
+/// wants SkiaSharp-free imaging registers the managed decoder (<c>ManagedBackend.CreateImageDecoder()</c>) as
 /// <see cref="ImageEncoderDecoder.Current"/> instead.
 /// </summary>
 internal sealed class SkiaImageDecoderBackend : IImageEncoderDecoder
