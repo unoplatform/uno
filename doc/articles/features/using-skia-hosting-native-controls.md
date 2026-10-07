@@ -4,9 +4,6 @@ uid: Uno.Skia.Embedding.Native
 
 # Embedding Native Elements in Skia Apps
 
-> [!NOTE]
-> This document describes Skia renderer native embedding, for other platforms/renderers see the [native views](xref:Uno.Development.NativeViews) documentation.
-
 Uno Platform apps always render with Skia, and you can embed native controls in them. This is useful if you want to use a native control for a specific task, for instance, to integrate an existing native platform control.
 
 Each target platform has its own idea of a native element.

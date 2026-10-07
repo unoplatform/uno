@@ -4,11 +4,9 @@ uid: Uno.Features.CustomizingUIApplicationDelegate
 
 # Customizing the `UIApplicationDelegate` on iOS
 
-Uno Platform provides the ability to provide custom behavior for `UIApplicationDelegate` on iOS in case of both native- and Skia-based rendering.
+Uno Platform provides the ability to provide custom behavior for `UIApplicationDelegate` on iOS.
 
-## Skia rendering
-
-In Skia-based apps, the `App` type no longer derives from `UIApplicationDelegate`. Instead, Uno Platform provides `Uno.UI.Runtime.AppleUIKit.UnoUIApplicationDelegate`. If you decide to implement your own application lifecycle handling, create a new type that derives from it:
+The `App` type does not derive from `UIApplicationDelegate`. Instead, Uno Platform provides `Uno.UI.Runtime.AppleUIKit.UnoUIApplicationDelegate`. If you decide to implement your own application lifecycle handling, create a new type that derives from it:
 
 ```csharp
 public class MyApplicationDelegate : Uno.UI.Runtime.AppleUIKit.UnoUIApplicationDelegate
@@ -28,27 +26,6 @@ var host = UnoPlatformHostBuilder.Create()
     .Build();
 
 host.Run();
-```
-
-> [!IMPORTANT]
-> Make sure to call the `base` methods when you override key application lifecycle methods, so that the internals of Uno Platform are still properly executed.
-
-## Native rendering
-
-Your `App` class already derives from `UIApplicationDelegate`. This means you can directly override the UIKit methods this class provides:
-
-```csharp
-public App : Application
-{
-    // Existing code in App.xaml.cs
-
-    public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
-    {
-        // Your custom handling
-
-        return base.FinishedLaunching(application, launchOptions);
-    }
-}
 ```
 
 > [!IMPORTANT]

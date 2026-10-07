@@ -42,9 +42,6 @@ To create from a recommended template using [Uno.Extensions](xref:Uno.Extensions
 dotnet new unoapp -preset=recommended -o test
 ```
 
-> [!NOTE]
-> Starting with Uno.Sdk 6.0, [Skia rendering](xref:Uno.Development.HowItWorks) is now the default rendering engine in Uno Platform templates for iOS/Android/WebAssembly. If you prefer native rendering instead, you can use the `-renderer native` parameter.
-
 More articles on WinUI 3:
 
 - [WinUI 3, UWP, and Uno Platform.](uwp-vs-winui3.md)

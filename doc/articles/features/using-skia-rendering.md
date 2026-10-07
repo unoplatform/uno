@@ -6,11 +6,11 @@ uid: uno.features.renderer.skia
 
 Available on iOS, Android, macOS, Windows, Linux and WebAssembly, based on the [Skia](https://skia.org) drawing library, the Skia Renderer is a cross-platform unified rendering component of Uno Platform which provides a single UI experience across all supported platforms.
 
-The whole UI Visual Tree is drawn on an hardware accelerated canvas, using Metal, OpenGL, [Vulkan](xref:Uno.Skia.Vulkan), and WebGL where applicable. Unlike Native rendering, Skia doesn’t rely on platform UI components.
+The whole UI Visual Tree is drawn on an hardware accelerated canvas, using Metal, OpenGL, [Vulkan](xref:Uno.Skia.Vulkan), and WebGL where applicable. Skia doesn’t rely on platform UI components.
 
 The Skia Rendering backend has a very cheap cost for creating UI elements, which makes it very efficient for large user interfaces.
 
-Starting with Uno.Sdk 6.0, **it is the default rendering engine** when creating a project from the templates. Starting with Uno Platform 7.0, it is the default rendering engine: the native renderers have been removed, and the `Skia` `UnoFeature` (which references the SkiaSharp backend) is implied on every target. The legacy `SkiaRenderer` feature is mapped to `Skia` for backwards compatibility.
+Starting with Uno Platform 7.0, **it is the only rendering engine**: the native renderers have been removed, and the `Skia` `UnoFeature` (which references the SkiaSharp backend) is implied on every target. The legacy `SkiaRenderer` feature is mapped to `Skia` for backwards compatibility.
 
 This renderer supports [integrating native views](xref:Uno.Skia.Embedding.Native).
 
@@ -32,7 +32,7 @@ As the Skia Renderer bypasses native UI components, Skia can offer pixel-perfect
 
 - **Consistent visuals**: Skia ensures pixel-perfect rendering across all supported platforms, making it ideal for applications where precise control over appearance is critical.
 - **Custom drawing**: Ideal for apps requiring advanced graphics, custom controls, or canvas-based rendering—Skia gives you low-level drawing access, such as with the [SKCanvasElement](xref:Uno.Controls.SKCanvasElement).
-- **Unified rendering pipeline**: Unlike native rendering, which varies by platform, Skia uses a single rendering backend, reducing platform-specific variations.
+- **Unified rendering pipeline**: A single rendering backend on every platform reduces platform-specific variations.
 - **Improved rendering performance on desktop**: On platforms like Linux/macOS, Skia is often faster and more efficient than native alternatives.
 - **Access to the full Composition API**: The Skia renderer provides access to the full [Composition API access for richer custom rendering](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/composition).
 - **Better control over visual updates**: You can fine-tune repainting behavior for animations, games, or dynamic content using Skia’s immediate mode rendering.
@@ -43,7 +43,7 @@ As the Skia Renderer bypasses native UI components, Skia can offer pixel-perfect
 You can use our [Visual Studio Wizard](xref:Uno.GettingStarted.UsingWizard) to create a new project. The Wizard uses the Skia rendering engine, automatically setting up the necessary MSBuild properties and references for you. You can find more details on how to use the Wizard here: [Creating a new project](xref:Uno.GettingStarted.UsingWizard).
 
 > [!NOTE]
-> If you're upgrading an existing project to Uno Platform 6.0, be sure to also check our migration guidance in [Migrating from previous releases](xref:Uno.Development.MigratingFromPreviousReleases).
+> If you're upgrading an existing project to Uno Platform 7.0, be sure to also check our [migration guide](xref:Uno.Development.MigratingToUno7).
 
 ## Using Skia rendering for existing apps
 
@@ -67,7 +67,7 @@ You can find more details in [Using the Skia Desktop](xref:Uno.Skia.Desktop).
 
 ## Limitations
 
-Using Skia rendering might have some limitations compared to native rendering. Some of the known limitations include:
+Known limitations of Skia rendering include:
 
 - **Accessibility support**: Since Skia doesn't rely on native controls, accessibility tools (e.g., screen readers) are a work in progress. We're actively improving accessibility support in future releases.
 - **Text rendering differences**: Font rendering may not match platform-specific expectations due to differences in text shaping and anti-aliasing.

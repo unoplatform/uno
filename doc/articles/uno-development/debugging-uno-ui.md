@@ -68,10 +68,7 @@ Then, here are the steps to use a local build of Uno.UI in another application:
 1. Prepare the application
 1. Make a copy of `src/crosstargeting_override.props.sample` and name it as `src/crosstargeting_override.props`.
 1. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->` and set the `$(UnoNugetOverrideVersion)` value to the value determined in the previous section, e.g. `6.2.0-dev.171`.  You want to use the `UnoVersion*` version here. _Do not mix it up with `Uno.Sdk` version_.
-1. Open the appropriate Uno.UI solution filter and build the following:
-   - For iOS/Android native, you can right-click on the `Uno.UI` project
-   - For WebAssembly/native, you can right-click on the `Uno.UI.Runtime.WebAssembly` project
-   - For Skia, you can right-click on the corresponding `Uno.UI.Runtime.[Win32|X11|macOS|iOS|Android|Wpf]` project.
+1. Open the appropriate Uno.UI solution filter and build the `Uno.UI.Runtime.*` project for your target platform: `Win32`, `X11`, `MacOS`, `Linux.FrameBuffer`, `Android`, `AppleUIKit` or `WebAssembly.Browser`.
 
 To debug Uno.UI code in the application, follow these steps (using `FrameworkElement.MeasureOverride()` as an example):
 
