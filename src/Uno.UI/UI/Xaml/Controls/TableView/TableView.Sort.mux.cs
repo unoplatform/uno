@@ -593,8 +593,7 @@ partial class TableView
 
 		// Identity, not equality: the projection holds the app's own objects, and a value-based match
 		// would re-select the wrong row whenever two rows compare equal.
-		// TODO Uno: try_as<::IUnknown>() succeeds for any non-null object, and the IUnknown pointer
-		// comparison is ReferenceEquals.
+		// try_as<::IUnknown>() never fails for a non-null item, and comparing IUnknown pointers is ReferenceEquals.
 		object target = item;
 
 		var count = m_rowsItemsSourceView.Count;

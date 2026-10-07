@@ -20,7 +20,6 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 // Not thread-safe and UI-thread affine (it drives the binding engine). Reuse one instance per
 // path - EnsureBinding rebinds only when the path changes, so repeated Resolve calls on the same
 // path cost a DataContext write and a property read.
-// TODO Uno: a C++ struct that is only ever held through std::make_shared, so it becomes a class.
 internal sealed class SortMemberPathResolver
 {
 	public SortMemberPathResolver(string sortMemberPath)
@@ -45,7 +44,6 @@ internal sealed class SortMemberPathResolver
 			}
 			finally
 			{
-				// TODO Uno: Original C++ wil::scope_exit([this]() noexcept { ClearDataContext(); })
 				ClearDataContext();
 			}
 		}

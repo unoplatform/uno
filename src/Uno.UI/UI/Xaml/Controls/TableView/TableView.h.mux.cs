@@ -687,12 +687,16 @@ partial class TableView
 	// void QueueReconcileSortStateWithSource();
 	// Suppresses ReconcileSortStateWithSource for the duration of a control-initiated verb, whose
 	// own source mutations would otherwise read as the app taking over.
-	// TODO Uno: Original C++ returns a [[nodiscard]] gsl::finally guard; the IDisposable must be
-	// consumed with `using`.
-	private IDisposable BeginControlInitiatedSortScope()
+	private ControlInitiatedSortScope BeginControlInitiatedSortScope()
 	{
 		m_isApplyingControlInitiatedSort = true;
-		return Disposable.Create(() => m_isApplyingControlInitiatedSort = false);
+		return new(this);
+	}
+
+	// gsl::finally semantics: writes false on dispose rather than restoring the previous value.
+	private readonly struct ControlInitiatedSortScope(TableView owner) : IDisposable
+	{
+		public void Dispose() => owner.m_isApplyingControlInitiatedSort = false;
 	}
 	// EmptyTemplate shows only for null or empty row sources.
 	// void UpdateEmptyState();

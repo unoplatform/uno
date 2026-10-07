@@ -459,10 +459,10 @@ partial class TableViewAutomationPeer
 	private static string ItemToName(object? item)
 	{
 		// Boxed WinRT primitives surface as IPropertyValue, not IStringable.
-		// TODO Uno: IPropertyValue projection; boxed primitives are matched by their CLR type.
-		if (item is not null)
+		// TODO Uno: IPropertyValue projection. try_as<IPropertyValue>() + Type() becomes ValueConversionHelpers.TryGetPropertyType.
+		if (item is not null && ValueConversionHelpers.TryGetPropertyType(item, out var propertyType))
 		{
-			switch (ValueConversionHelpers.GetPropertyType(item.GetType()))
+			switch (propertyType)
 			{
 				case PropertyType.String: return (string)item;
 				case PropertyType.Boolean: return (bool)item ? "True" : "False";
@@ -479,16 +479,9 @@ partial class TableViewAutomationPeer
 			}
 		}
 
-		// TODO Uno: IStringable projection. Every managed object is IStringable through its CCW, so
-		// the C++ try_as<IStringable>() becomes Object.ToString().
-		// Original C++:
-		// if (auto const stringable = item.try_as<winrt::IStringable>())
-		// {
-		//     return stringable.ToString();
-		// }
-		if (item is not null)
+		if (SharedHelpers.IsStringable(item))
 		{
-			return item.ToString() ?? string.Empty;
+			return SharedHelpers.StringableToString(item);
 		}
 
 		return string.Empty;

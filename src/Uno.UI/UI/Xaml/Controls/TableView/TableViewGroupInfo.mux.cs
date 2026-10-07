@@ -101,7 +101,8 @@ partial class TableViewGroupInfo
 
 	private void RaisePropertyChanged(string propertyName)
 	{
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		PropertyChangedEventArgs args = new(propertyName);
+		CppWinRTHelpers.InvokeWinRTEvent(ref PropertyChanged, handler => handler(this, args));
 	}
 
 	// C++/WinRT's operator== compares the ABI pointer of the interface currently held, with no
@@ -109,7 +110,6 @@ partial class TableViewGroupInfo
 	// are also re-created per projection pass, so two *equal* keys are distinct objects --
 	// identity alone would still raise a spurious change every render. Compare boxed values by
 	// value first, then fall back to COM identity for reference keys.
-	// TODO Uno: a free function in C++; C# has no free functions, so it is a static member of TableViewGroupInfo.
 	internal static bool SameGroupKey(object? left, object? right)
 	{
 		if (left is null || right is null)

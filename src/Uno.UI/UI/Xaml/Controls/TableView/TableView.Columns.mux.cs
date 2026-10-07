@@ -6,6 +6,7 @@
 
 using System;
 using Uno.Disposables;
+using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
@@ -52,7 +53,7 @@ partial class TableView
 				{
 					break;
 				}
-				width += column.Visibility == Visibility.Visible ? Math.Max(0.0, column.ActualWidth) : 0.0;
+				width += column.Visibility == Visibility.Visible ? StdMath.Max(0.0, column.ActualWidth) : 0.0;
 			}
 		}
 		return width;

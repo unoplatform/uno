@@ -9,8 +9,6 @@ using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
 
-// TODO Uno: Original C++: class ShapedItemsSource; (forward declaration only)
-
 // The control-facing face of the shaping stack: a fluent verb surface, and the one place that
 // decides what a projected row MEANS to a TableView.
 //

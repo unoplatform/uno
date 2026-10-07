@@ -22,9 +22,7 @@ internal static partial class TableViewDetails
 		public string PublishedHelpText = "";
 	}
 
-	// TODO Uno: GlobalDependencyProperty becomes a lazily registered attached DependencyProperty.
-	// InitializeDependencyProperty(name, name_of<IInspectable>(), name_of<TableView>(), true /* isAttached */,
-	// nullptr /* defaultValue */, callback) maps to RegisterAttached(name, typeof(object), typeof(TableView), ...).
+	// InitializeDependencyProperty(name, IInspectable, TableView, isAttached: true, defaultValue: nullptr)
 	internal static DependencyProperty? s_cellToolTipRecordProperty;
 
 	// Holds the evaluated CellToolTipBinding value. The binding lives on the cell wrapper, so the

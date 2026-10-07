@@ -87,7 +87,6 @@ partial class TableViewRow
 	// Not cached, so a change made in the mouse control panel takes effect immediately.
 	private static ulong GetDoubleClickIntervalMicroseconds()
 	{
-		// TODO Uno: ::GetDoubleClickTime() is Win32-only; UISettings.DoubleClickTime is the WinRT equivalent.
 		// return static_cast<uint64_t>(::GetDoubleClickTime()) * 1000ull;
 		return (ulong)UISettings.GetDoubleClickTime() * 1000UL;
 	}
