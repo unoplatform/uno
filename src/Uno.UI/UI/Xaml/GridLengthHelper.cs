@@ -5,13 +5,13 @@ namespace Microsoft.UI.Xaml
 {
 	public sealed partial class GridLengthHelper
 	{
-		public static GridLength Auto { get; } = new GridLength(1.0f, GridUnitType.Auto);
+		public static GridLength Auto { get; } = new GridLength(1.0, GridUnitType.Auto);
 
-		internal static GridLength OneStar { get; } = new GridLength(1.0f, GridUnitType.Star);
+		internal static GridLength OneStar { get; } = new GridLength(1.0, GridUnitType.Star);
 
-		public static GridLength FromPixels(double pixels) => new GridLength((float)pixels, GridUnitType.Pixel);
+		public static GridLength FromPixels(double pixels) => FromValueAndType(pixels, GridUnitType.Pixel);
 
-		public static GridLength FromValueAndType(double value, GridUnitType type) => new GridLength((float)value, type);
+		public static GridLength FromValueAndType(double value, GridUnitType type) => new GridLength(value, type);
 
 		public static bool GetIsAbsolute(GridLength target) => target.IsAbsolute;
 
