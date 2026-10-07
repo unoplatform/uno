@@ -568,8 +568,11 @@
 			const selectionStart = input.selectionStart;
 			const selectionEnd = input.selectionEnd;
 			const selectionDirection = input.selectionDirection;
-			input.blur();
-			input.focus({ preventScroll: true });
+			// Managed-initiated: reporting this blur would unfocus the TextBox that owns the session.
+			BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(() => {
+				input.blur();
+				input.focus({ preventScroll: true });
+			});
 			if (selectionStart !== null && selectionEnd !== null) {
 				input.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
 			}
