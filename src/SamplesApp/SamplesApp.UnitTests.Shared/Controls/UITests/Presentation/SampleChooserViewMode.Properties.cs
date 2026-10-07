@@ -579,7 +579,7 @@ namespace SampleControl.Presentation
 				if (value)
 				{
 					SetRootTheme(ElementTheme.Dark);
-					RaisePropertyChanged();
+					RaiseThemeFlagsChanged();
 				}
 			}
 		}
@@ -592,7 +592,7 @@ namespace SampleControl.Presentation
 				if (value)
 				{
 					SetRootTheme(ElementTheme.Light);
-					RaisePropertyChanged();
+					RaiseThemeFlagsChanged();
 				}
 			}
 		}
@@ -605,12 +605,19 @@ namespace SampleControl.Presentation
 				if (value)
 				{
 					SetRootTheme(ElementTheme.Default);
-					RaisePropertyChanged();
+					RaiseThemeFlagsChanged();
 				}
 			}
 		}
 
-		private ElementTheme GetRootTheme()
+				private void RaiseThemeFlagsChanged()
+		{
+			RaisePropertyChanged(nameof(IsAppThemeDark));
+			RaisePropertyChanged(nameof(IsAppThemeLight));
+			RaisePropertyChanged(nameof(IsAppThemeSystem));
+		}
+
+private ElementTheme GetRootTheme()
 		{
 			if (Owner.XamlRoot?.Content is FrameworkElement root)
 			{
