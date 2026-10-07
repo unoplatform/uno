@@ -416,13 +416,13 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.setInputMode")]
 		public static partial void SetInputMode(string inputMode);
 
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setTextPredictionEnabled")]
+		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.setTextPredictionEnabled")]
 		public static partial void SetTextPredictionEnabled(bool enabled);
 
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setSpellCheckEnabled")]
+		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.setSpellCheckEnabled")]
 		public static partial void SetSpellCheckEnabled(bool enabled);
 
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setAcceptsReturn")]
+		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.setAcceptsReturn")]
 		public static partial void SetAcceptsReturn(bool acceptsReturn);
 	}
 }

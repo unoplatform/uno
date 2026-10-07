@@ -103,7 +103,7 @@ public class Given_Win32DragDrop
 
 	private static List<string>? GetFileDropPaths(IntPtr handle)
 	{
-		var type = Type.GetType("Uno.UI.Runtime.Skia.Win32.Win32ClipboardExtension, Uno.UI.Runtime.Skia.Win32", throwOnError: true)!;
+		var type = Type.GetType("Uno.UI.Runtime.Win32.Win32ClipboardExtension, Uno.UI.Runtime.Win32", throwOnError: true)!;
 		var method = type.GetMethod("GetFileDropPaths", BindingFlags.Static | BindingFlags.NonPublic);
 		Assert.IsNotNull(method);
 		var hglobalType = method.GetParameters()[0].ParameterType;
@@ -129,7 +129,7 @@ public class Given_Win32DragDrop
 		Func<List<IStorageItem>?> getFiles,
 		IDisposable cleanup)
 	{
-		var type = Type.GetType("Uno.UI.Runtime.Skia.Win32.Win32DragDropExtension, Uno.UI.Runtime.Skia.Win32", throwOnError: true)!;
+		var type = Type.GetType("Uno.UI.Runtime.Win32.Win32DragDropExtension, Uno.UI.Runtime.Win32", throwOnError: true)!;
 		var method = type.GetMethod("CompleteFileDrop", BindingFlags.Static | BindingFlags.NonPublic);
 		Assert.IsNotNull(method);
 		method.Invoke(null, new object[] { completion, getFiles, cleanup });

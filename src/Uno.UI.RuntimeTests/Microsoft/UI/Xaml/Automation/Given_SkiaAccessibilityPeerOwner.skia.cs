@@ -101,7 +101,7 @@ public class Given_SkiaAccessibilityPeerOwner
 	private static bool TryGetPeerOwner(AutomationPeer peer, out UIElement? owner)
 	{
 		var type = Type.GetType(
-			"Uno.UI.Runtime.Skia.SkiaAccessibilityBase, Uno.UI.Runtime.Skia",
+			"Uno.UI.Runtime.SkiaAccessibilityBase, Uno.UI.Runtime",
 			throwOnError: true)!;
 		var method = type.GetMethod(
 			"TryGetPeerOwner",

@@ -154,11 +154,11 @@ public partial class Given_RichEditBox
 	}
 
 	private static Type GetWin32BridgeType(string name)
-		=> Type.GetType($"Uno.UI.Runtime.Skia.Win32.{name}, Uno.UI.Runtime.Skia.Win32", throwOnError: true)!;
+		=> Type.GetType($"Uno.UI.Runtime.Win32.{name}, Uno.UI.Runtime.Win32", throwOnError: true)!;
 
 	private static object ResolveWin32Accessibility(UIElement element)
 	{
-		var router = Type.GetType("Uno.UI.Runtime.Skia.AccessibilityRouter, Uno.UI.Runtime.Skia", throwOnError: true)!;
+		var router = Type.GetType("Uno.UI.Runtime.AccessibilityRouter, Uno.UI.Runtime", throwOnError: true)!;
 		var resolve = router.GetMethod("Resolve", new[] { typeof(UIElement) })!;
 		return resolve.Invoke(null, new object[] { element }) ?? throw new InvalidOperationException("No window accessibility instance.");
 	}
