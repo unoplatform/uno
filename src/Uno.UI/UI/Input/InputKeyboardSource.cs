@@ -6,6 +6,10 @@ namespace Microsoft.UI.Input;
 
 public partial class InputKeyboardSource
 {
+	internal InputKeyboardSource()
+	{
+	}
+
 	public static CoreVirtualKeyStates GetKeyStateForCurrentThread(VirtualKey virtualKey)
 		=> KeyboardStateTracker.GetKeyState(virtualKey);
 }

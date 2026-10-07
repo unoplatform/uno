@@ -8,11 +8,6 @@ namespace Windows.Media.SpeechRecognition
 #endif
 	public partial class SpeechRecognitionCompilationResult
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal SpeechRecognitionCompilationResult()
-		{
-		}
-#endif
 		// Skipping already declared property Status
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionCompilationResult.Status.get
 	}

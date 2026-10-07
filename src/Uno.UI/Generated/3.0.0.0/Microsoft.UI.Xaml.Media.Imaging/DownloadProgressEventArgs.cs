@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #endif
 	public partial class DownloadProgressEventArgs
 	{
-#if __SKIA__
-		internal DownloadProgressEventArgs()
-		{
-		}
-#endif
 		// Skipping already declared property Progress
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.Progress.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.Progress.set

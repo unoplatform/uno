@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ItemCollection : global::Windows.Foundation.Collections.IObservableVector<object>, global::System.Collections.Generic.IList<object>, global::System.Collections.Generic.ICollection<object>, global::System.Collections.Generic.IEnumerable<object>, global::System.Collections.IEnumerable
 	{
-#if __SKIA__
-		internal ItemCollection()
-		{
-		}
-#endif
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]

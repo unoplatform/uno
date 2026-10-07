@@ -10,6 +10,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 /// </summary>
 public partial class MenuFlyoutPresenterTemplateSettings : DependencyObject
 {
+	internal MenuFlyoutPresenterTemplateSettings()
+	{
+	}
+
 	/// <summary>
 	/// Gets the minimum width of flyout content.
 	/// </summary>

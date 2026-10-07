@@ -8,11 +8,6 @@ namespace Windows.Media.SpeechRecognition
 #endif
 	public partial class SpeechRecognizerStateChangedEventArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal SpeechRecognizerStateChangedEventArgs()
-		{
-		}
-#endif
 		// Skipping already declared property State
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerStateChangedEventArgs.State.get
 	}

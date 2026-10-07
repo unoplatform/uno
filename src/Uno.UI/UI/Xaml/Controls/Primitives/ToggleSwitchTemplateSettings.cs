@@ -2,6 +2,10 @@
 {
 	public partial class ToggleSwitchTemplateSettings : DependencyObject
 	{
+		internal ToggleSwitchTemplateSettings()
+		{
+		}
+
 		public double CurtainCurrentToOffOffset { get; internal set; }
 
 		public double CurtainCurrentToOnOffset { get; internal set; }

@@ -10,6 +10,10 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ProgressBarTemplateSettings : DependencyObject
 {
+	internal ProgressBarTemplateSettings()
+	{
+	}
+
 	public static DependencyProperty ContainerAnimationStartPositionProperty { get; } = DependencyProperty.Register(
 		nameof(ContainerAnimationStartPosition), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 

@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class DatePickerFlyoutItem : global::Microsoft.UI.Xaml.DependencyObject, global::Microsoft.UI.Xaml.Data.ICustomPropertyProvider
 	{
-#if __SKIA__
-		internal DatePickerFlyoutItem()
-		{
-		}
-#endif
 		// Skipping already declared property PrimaryTextProperty
 		// Skipping already declared property SecondaryTextProperty
 		// Skipping already declared property PrimaryText

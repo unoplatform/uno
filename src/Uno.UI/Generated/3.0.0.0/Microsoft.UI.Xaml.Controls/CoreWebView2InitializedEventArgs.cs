@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class CoreWebView2InitializedEventArgs
 	{
-#if __SKIA__
-		internal CoreWebView2InitializedEventArgs()
-		{
-		}
-#endif
 		// Skipping already declared property Exception
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs.Exception.get
 	}

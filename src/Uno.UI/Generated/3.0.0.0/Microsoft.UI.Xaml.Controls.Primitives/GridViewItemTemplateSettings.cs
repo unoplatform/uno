@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class GridViewItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __SKIA__
-		internal GridViewItemTemplateSettings()
-		{
-		}
-#endif
 		// Skipping already declared property DragItemsCount
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.DragItemsCount.get
 	}

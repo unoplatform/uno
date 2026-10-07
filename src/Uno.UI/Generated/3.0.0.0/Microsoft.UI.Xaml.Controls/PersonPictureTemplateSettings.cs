@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class PersonPictureTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __SKIA__
-		internal PersonPictureTemplateSettings()
-		{
-		}
-#endif
 		// Skipping already declared property ActualImageBrush
 		// Skipping already declared property ActualInitials
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.ActualImageBrush.get

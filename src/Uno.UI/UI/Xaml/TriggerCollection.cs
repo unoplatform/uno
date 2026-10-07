@@ -8,6 +8,10 @@ namespace Microsoft.UI.Xaml;
 /// </summary>
 public partial class TriggerCollection : IList<TriggerBase>, IEnumerable<TriggerBase>
 {
+	internal TriggerCollection()
+	{
+	}
+
 	private readonly List<TriggerBase> _triggers = new List<TriggerBase>();
 	private FrameworkElement _owner;
 

@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 	public partial class BlockCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Documents.Block>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Documents.Block>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Documents.Block>, global::System.Collections.IEnumerable
 	{
-#if __SKIA__
-		internal BlockCollection()
-		{
-		}
-#endif
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]

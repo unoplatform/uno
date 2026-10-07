@@ -8,11 +8,6 @@ namespace Windows.Media.Capture
 #endif
 	public partial class CameraCaptureUIVideoCaptureSettings
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CameraCaptureUIVideoCaptureSettings()
-		{
-		}
-#endif
 #if false || false || __TVOS__ || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AllowTrimming

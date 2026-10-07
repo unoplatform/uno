@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class MediaTransportControlsHelper
 	{
-#if __SKIA__
-		internal MediaTransportControlsHelper()
-		{
-		}
-#endif
 		// Skipping already declared property DropoutOrderProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.GetDropoutOrder(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.SetDropoutOrder(Microsoft.UI.Xaml.UIElement, int?)

@@ -5,6 +5,10 @@ namespace Microsoft.UI.Xaml
 {
 	public sealed partial class DebugSettings
 	{
+		internal DebugSettings()
+		{
+		}
+
 		public LayoutCycleTracingLevel LayoutCycleTracingLevel { get; set; }
 
 #if !UNO_REFERENCE_API

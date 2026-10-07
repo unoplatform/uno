@@ -8,11 +8,6 @@ namespace Windows.UI.Core
 #endif
 	public partial class VisibilityChangedEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal VisibilityChangedEventArgs()
-		{
-		}
-#endif
 		// Skipping already declared property Handled
 		// Skipping already declared property Visible
 		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Handled.get

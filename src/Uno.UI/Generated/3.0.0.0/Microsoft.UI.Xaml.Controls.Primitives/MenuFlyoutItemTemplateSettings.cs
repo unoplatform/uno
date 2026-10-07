@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class MenuFlyoutItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __SKIA__
-		internal MenuFlyoutItemTemplateSettings()
-		{
-		}
-#endif
 		// Skipping already declared property KeyboardAcceleratorTextMinWidth
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.KeyboardAcceleratorTextMinWidth.get
 	}

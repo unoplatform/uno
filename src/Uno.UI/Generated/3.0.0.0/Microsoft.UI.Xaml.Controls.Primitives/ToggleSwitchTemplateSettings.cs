@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class ToggleSwitchTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __SKIA__
-		internal ToggleSwitchTemplateSettings()
-		{
-		}
-#endif
 		// Skipping already declared property CurtainCurrentToOffOffset
 		// Skipping already declared property CurtainCurrentToOnOffset
 		// Skipping already declared property CurtainOffToOnOffset

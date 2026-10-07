@@ -8,7 +8,7 @@ namespace Windows.ApplicationModel.Background
 #endif
 	public partial class BackgroundTaskDeferral
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal BackgroundTaskDeferral()
 		{
 		}

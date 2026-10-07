@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Data
 #endif
 	public partial class BindingOperations
 	{
-#if __SKIA__
-		internal BindingOperations()
-		{
-		}
-#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)
 	}
 }

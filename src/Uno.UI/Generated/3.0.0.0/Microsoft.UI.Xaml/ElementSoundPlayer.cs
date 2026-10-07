@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class ElementSoundPlayer
 	{
-#if __SKIA__
-		internal ElementSoundPlayer()
-		{
-		}
-#endif
 		// Skipping already declared property SpatialAudioMode
 		// Skipping already declared property State
 		// Skipping already declared property Volume

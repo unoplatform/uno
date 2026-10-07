@@ -8,11 +8,6 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputPointerSource : global::Microsoft.UI.Input.InputObject
 	{
-#if __SKIA__
-		internal InputPointerSource()
-		{
-		}
-#endif
 		// Skipping already declared property Cursor
 		// Skipping already declared property DeviceKinds
 #if __SKIA__

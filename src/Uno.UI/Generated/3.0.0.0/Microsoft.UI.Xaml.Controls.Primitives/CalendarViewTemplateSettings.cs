@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class CalendarViewTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __SKIA__
-		internal CalendarViewTemplateSettings()
-		{
-		}
-#endif
 		// Skipping already declared property CenterX
 		// Skipping already declared property CenterY
 		// Skipping already declared property ClipRect

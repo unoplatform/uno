@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class CanExecuteRequestedEventArgs
 	{
-#if __SKIA__
-		internal CanExecuteRequestedEventArgs()
-		{
-		}
-#endif
 		// Skipping already declared property CanExecute
 		// Skipping already declared property Parameter
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.CanExecute.get

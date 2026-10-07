@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 	public partial class RangeValuePatternIdentifiers
 	{
-#if __SKIA__
-		internal RangeValuePatternIdentifiers()
-		{
-		}
-#endif
 		// Skipping already declared property IsReadOnlyProperty
 		// Skipping already declared property LargeChangeProperty
 		// Skipping already declared property MaximumProperty

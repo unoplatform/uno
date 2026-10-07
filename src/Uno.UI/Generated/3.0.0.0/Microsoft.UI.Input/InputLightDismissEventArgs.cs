@@ -8,10 +8,5 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputLightDismissEventArgs
 	{
-#if __SKIA__
-		internal InputLightDismissEventArgs()
-		{
-		}
-#endif
 	}
 }

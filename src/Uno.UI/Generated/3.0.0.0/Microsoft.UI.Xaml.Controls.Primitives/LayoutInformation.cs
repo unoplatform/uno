@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class LayoutInformation
 	{
 #if __SKIA__
-		internal LayoutInformation()
-		{
-		}
-#endif
-#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.UIElement GetLayoutExceptionElement(object dispatcher)
 		{

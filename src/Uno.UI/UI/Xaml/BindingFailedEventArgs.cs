@@ -5,6 +5,10 @@ namespace Microsoft.UI.Xaml
 {
 	public sealed partial class BindingFailedEventArgs
 	{
+		internal BindingFailedEventArgs()
+		{
+		}
+
 		public string Message { get; }
 	}
 }

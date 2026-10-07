@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class ListViewItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __SKIA__
-		internal ListViewItemTemplateSettings()
-		{
-		}
-#endif
 		// Skipping already declared property DragItemsCount
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings.DragItemsCount.get
 	}

@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class DebugSettings
 	{
-#if __SKIA__
-		internal DebugSettings()
-		{
-		}
-#endif
 		// Skipping already declared property EnableFrameRateCounter
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]

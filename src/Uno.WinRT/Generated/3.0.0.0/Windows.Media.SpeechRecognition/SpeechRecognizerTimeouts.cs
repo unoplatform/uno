@@ -8,11 +8,6 @@ namespace Windows.Media.SpeechRecognition
 #endif
 	public partial class SpeechRecognizerTimeouts
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal SpeechRecognizerTimeouts()
-		{
-		}
-#endif
 		// Skipping already declared property BabbleTimeout
 		// Skipping already declared property EndSilenceTimeout
 		// Skipping already declared property InitialSilenceTimeout

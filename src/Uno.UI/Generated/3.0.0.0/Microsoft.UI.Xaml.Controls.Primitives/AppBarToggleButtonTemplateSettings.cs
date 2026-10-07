@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class AppBarToggleButtonTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __SKIA__
-		internal AppBarToggleButtonTemplateSettings()
-		{
-		}
-#endif
 		// Skipping already declared property KeyboardAcceleratorTextMinWidth
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.KeyboardAcceleratorTextMinWidth.get
 	}

@@ -7,6 +7,10 @@ namespace Windows.Devices.Bluetooth
 {
 	public partial class BluetoothDevice : global::System.IDisposable
 	{
+		internal BluetoothDevice()
+		{
+		}
+
 		private static string _deviceSelectorPrefix = "System.Devices.DevObjectType:=5 AND System.Devices.Aep.ProtocolId:=\"{E0CBF06C-CD8B-4647-BB8A-263B43F0F974}\" AND ";
 		private static string _deviceSelectorIssueInquiry = "System.Devices.Aep.Bluetooth.IssueInquiry:=System.StructuredQueryType.Boolean";
 

@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class VisualTreeHelper
 	{
-#if __SKIA__
-		internal VisualTreeHelper()
-		{
-		}
-#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.VisualTreeHelper.FindElementsInHostCoordinates(Windows.Foundation.Point, Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.VisualTreeHelper.FindElementsInHostCoordinates(Windows.Foundation.Rect, Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.VisualTreeHelper.FindElementsInHostCoordinates(Windows.Foundation.Point, Microsoft.UI.Xaml.UIElement, bool)

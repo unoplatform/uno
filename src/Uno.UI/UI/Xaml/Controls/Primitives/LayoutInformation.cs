@@ -5,6 +5,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class LayoutInformation
 {
+	internal LayoutInformation()
+	{
+	}
+
 	public static Size GetAvailableSize(UIElement element)
 	{
 		ArgumentNullException.ThrowIfNull(element);

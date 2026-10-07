@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ToolTipService
 	{
-#if __SKIA__
-		internal ToolTipService()
-		{
-		}
-#endif
 		// Skipping already declared property PlacementProperty
 		// Skipping already declared property PlacementTargetProperty
 		// Skipping already declared property ToolTipProperty

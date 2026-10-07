@@ -10,6 +10,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 /// </summary>
 public partial class MenuFlyoutItemTemplateSettings : DependencyObject
 {
+	internal MenuFlyoutItemTemplateSettings()
+	{
+	}
+
 	/// <summary>
 	/// Gets the minimum width allocated for the accelerator key tip of an MenuFlyout.
 	/// </summary>

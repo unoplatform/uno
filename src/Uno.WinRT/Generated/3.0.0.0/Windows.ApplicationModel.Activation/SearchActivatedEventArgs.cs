@@ -8,11 +8,6 @@ namespace Windows.ApplicationModel.Activation
 #endif
 	public partial class SearchActivatedEventArgs : global::Windows.ApplicationModel.Activation.ISearchActivatedEventArgs, global::Windows.ApplicationModel.Activation.IActivatedEventArgs, global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs, global::Windows.ApplicationModel.Activation.ISearchActivatedEventArgsWithLinguisticDetails, global::Windows.ApplicationModel.Activation.IViewSwitcherProvider, global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal SearchActivatedEventArgs()
-		{
-		}
-#endif
 		// Skipping already declared property CurrentlyShownApplicationViewId
 		// Skipping already declared property Kind
 		// Skipping already declared property Language

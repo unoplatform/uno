@@ -8,10 +8,5 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 	public partial class HyperlinkClickEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-#if __SKIA__
-		internal HyperlinkClickEventArgs()
-		{
-		}
-#endif
 	}
 }

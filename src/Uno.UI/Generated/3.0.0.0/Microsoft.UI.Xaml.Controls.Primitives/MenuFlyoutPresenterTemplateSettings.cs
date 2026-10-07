@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class MenuFlyoutPresenterTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __SKIA__
-		internal MenuFlyoutPresenterTemplateSettings()
-		{
-		}
-#endif
 		// Skipping already declared property FlyoutContentMinWidth
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings.FlyoutContentMinWidth.get
 	}

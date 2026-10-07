@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class SplitViewPaneClosingEventArgs
 	{
-#if __SKIA__
-		internal SplitViewPaneClosingEventArgs()
-		{
-		}
-#endif
 		// Skipping already declared property Cancel
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs.Cancel.set

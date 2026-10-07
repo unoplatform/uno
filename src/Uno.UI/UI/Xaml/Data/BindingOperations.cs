@@ -11,6 +11,10 @@ namespace Microsoft.UI.Xaml.Data
 	/// </summary>
 	public sealed partial class BindingOperations
 	{
+		internal BindingOperations()
+		{
+		}
+
 		/// <summary>
 		/// Associates a <see cref="Binding"/> with a target property on a target object. 
 		/// This method is the code equivalent to using a {Binding} markup extension in XAML markup. 

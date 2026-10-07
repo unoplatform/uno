@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Markup
 	public partial class XamlBindingHelper
 	{
 #if __SKIA__
-		internal XamlBindingHelper()
-		{
-		}
-#endif
-#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty DataTemplateComponentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(

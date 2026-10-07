@@ -5,6 +5,10 @@ namespace Windows.Data.Pdf;
 
 public sealed partial class PdfPageDimensions
 {
+	internal PdfPageDimensions()
+	{
+	}
+
 	[NotImplemented("__ANDROID__")]
 	public Rect ArtBox { get; }
 	[NotImplemented("__ANDROID__")]

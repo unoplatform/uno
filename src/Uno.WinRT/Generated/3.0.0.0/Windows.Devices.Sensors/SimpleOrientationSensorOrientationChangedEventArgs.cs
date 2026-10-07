@@ -8,11 +8,6 @@ namespace Windows.Devices.Sensors
 #endif
 	public partial class SimpleOrientationSensorOrientationChangedEventArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal SimpleOrientationSensorOrientationChangedEventArgs()
-		{
-		}
-#endif
 		// Skipping already declared property Orientation
 		// Skipping already declared property Timestamp
 		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.Orientation.get
