@@ -127,7 +127,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			public const string FontFamily = Namespaces.Media + ".FontFamily";
 
 			// Controls
-			public const string NativePage = Namespaces.Controls + ".NativePage"; // Should remains in Umbrella
+			public const string NativePage = "Uno.UI.Runtime.Android.NativePage";
 			public const string Border = Namespaces.Controls + ".Border";
 			public const string TextBlock = Namespaces.Controls + ".TextBlock";
 			public const string UserControl = Namespaces.Controls + ".UserControl";

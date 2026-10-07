@@ -18,10 +18,11 @@ using System.ComponentModel;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Windows.UI.Core;
+using Application = Microsoft.UI.Xaml.Application;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
 
-namespace Microsoft.UI.Xaml
+namespace Uno.UI.Runtime.Android
 {
 	/// <summary>
 	/// Base <see cref="Android.App.Application"/> for an Uno Platform app. Derive from this type in the

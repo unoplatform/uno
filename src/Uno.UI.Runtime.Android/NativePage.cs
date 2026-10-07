@@ -8,7 +8,7 @@ using Android.Views;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Uno.UI.Runtime.Android
 {
 	public abstract class NativePage : BaseActivity
 	{

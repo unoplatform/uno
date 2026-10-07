@@ -18,7 +18,7 @@ At the root of every Android Uno app, lies a `BaseActivity` class that extends f
 
 ## Accessing Android main activity events
 
-Uno Platform provides an API to get access to the events/overrides invoked in the main activity (commonly inheriting from `UI.Xaml.ApplicationActivity`) outside of the activity class.
+Uno Platform provides an API to get access to the events/overrides invoked in the main activity (commonly inheriting from `Uno.UI.Runtime.Android.ApplicationActivity`) outside of the activity class.
 
 In order to get access to these events, you can write the following:
 

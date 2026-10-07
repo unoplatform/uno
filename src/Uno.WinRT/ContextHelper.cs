@@ -33,7 +33,7 @@ namespace Uno.UI
 						.Warn(
 							"ContextHelper.Current not defined. " +
 							"For compatibility with Uno, you should ensure your `MainActivity` " +
-							"is deriving from Windows.UI.Xaml.ApplicationActivity.");
+							"is deriving from Uno.UI.Runtime.Android.ApplicationActivity.");
 				}
 				return _current;
 			}

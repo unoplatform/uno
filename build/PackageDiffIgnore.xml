@@ -3749,6 +3749,10 @@
 		  <Member fullName="Uno.UI.Runtime.Skia.X11" reason="Assembly renamed Uno.UI.Runtime.Skia.X11 -> Uno.UI.Runtime.X11 (breaking changes for 7.0)" />
 	  </Assemblies>
 	  <Types>
+		  <!-- Uno-only Android host types moved out of the WinUI namespaces into the host namespace; WinUI has no counterpart. -->
+		  <Member fullName="Microsoft.UI.Xaml.ApplicationActivity" reason="Moved Uno-only ApplicationActivity to Uno.UI.Runtime.Android (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.NativeApplication" reason="Moved Uno-only NativeApplication to Uno.UI.Runtime.Android (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.NativePage" reason="Moved Uno-only NativePage to Uno.UI.Runtime.Android (breaking changes for 7.0)" />
 		  <!-- Uno.UI types that carried the host namespace move with it (breaking changes for 7.0). -->
 		  <Member fullName="Uno.UI.Runtime.Skia.AriaMapper" reason="Namespace renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Runtime.Skia.AriaAttributes" reason="Namespace renamed Uno.UI.Runtime.Skia -> Uno.UI.Runtime (breaking changes for 7.0)" />

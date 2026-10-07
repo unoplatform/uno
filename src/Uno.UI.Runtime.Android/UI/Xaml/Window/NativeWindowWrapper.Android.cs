@@ -18,6 +18,7 @@ using Windows.UI.ViewManagement;
 using Size = Windows.Foundation.Size;
 using MUX = Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml;
+using Uno.UI.Runtime.Android;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -46,7 +47,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		DispatchDpiChanged();
 	}
 
-	public override object NativeWindow => Microsoft.UI.Xaml.ApplicationActivity.Instance?.Window;
+	public override object NativeWindow => ApplicationActivity.Instance?.Window;
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
@@ -55,8 +56,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	public override string Title
 	{
-		get => Microsoft.UI.Xaml.ApplicationActivity.Instance.Title;
-		set => Microsoft.UI.Xaml.ApplicationActivity.Instance.Title = value;
+		get => ApplicationActivity.Instance.Title;
+		set => ApplicationActivity.Instance.Title = value;
 	}
 
 	internal int SystemUiVisibility { get; set; }

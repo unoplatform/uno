@@ -5,7 +5,7 @@ using Android.OS;
 using AndroidX.Activity;
 using Windows.UI.Core;
 
-namespace Microsoft.UI.Xaml;
+namespace Uno.UI.Runtime.Android;
 
 partial class ApplicationActivity
 {
