@@ -13,7 +13,7 @@ using INotifyCollectionChanged = System.Collections.Specialized.INotifyCollectio
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
 
-// TODO Uno: free functions declared here and defined in ShapingHelpers.cpp are C# partial method
+// Free functions declared here and defined in ShapingHelpers.cpp are C# partial method
 // declarations, implemented in ShapingHelpers.mux.cs. std::vector& parameters are mutated in place
 // (their contents replaced), exactly as the C++ reference is.
 internal static partial class ShapingHelpers
@@ -135,10 +135,10 @@ internal static partial class ShapingHelpers
 	// Canonical predicate filter shared by Tabular shaping engines. Retains items for which
 	// predicate(item) returns true; a predicate that throws is treated as "exclude", which is the
 	// fail-safe every caller wants: a broken predicate hides rows rather than failing the shape. In-place; preserves relative order of kept items.
-	// TODO Uno: std::function<bool(IInspectable const&)> is the same type as the Predicate alias, so the delegate is reused.
+	// std::function<bool(IInspectable const&)> is the same type as the Predicate alias, so the delegate is reused.
 	internal static partial void ApplyPredicateFilter(
 		List<object?> items,
-		Predicate predicate);
+		Predicate? predicate);
 
 	// Canonical multi-axis stable sort shared by every Tabular shaping engine.
 	// The caller supplies key extraction
@@ -185,8 +185,8 @@ internal static partial class ShapingHelpers
 	internal static partial bool BucketizeToGroups(
 		List<object?> items,
 		KeySelector? resolveKey,
-		ResolveIdentityCallback resolveIdentity,
-		Func<object?, object?, bool> keysConsideredEqual,
+		ResolveIdentityCallback? resolveIdentity,
+		Func<object?, object?, bool>? keysConsideredEqual,
 		List<KeyedBucket> outBuckets,
 		ref string? degradeReason);
 

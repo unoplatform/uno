@@ -23,9 +23,9 @@ partial class ShapedGroup
 
 	public partial object? Group => m_key;
 
-	public partial IObservableVector<object?>? GroupItems => m_items;
+	public partial IObservableVector<object?> GroupItems => m_items;
 
-	public partial IEnumerator<object?> GetEnumerator() => m_items!.GetEnumerator();
+	public partial IEnumerator<object?> GetEnumerator() => m_items.GetEnumerator();
 
 	public override partial string ToString()
 	{
@@ -63,5 +63,5 @@ partial class ShapedGroup
 
 	public partial void Key(object? value) => m_key = value;
 
-	public partial void SetItems(List<object?> items) => m_items!.ReplaceAll(items);
+	public partial void SetItems(List<object?> items) => m_items.ReplaceAll(items);
 }

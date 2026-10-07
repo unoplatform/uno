@@ -18,7 +18,6 @@ partial class ResizeGripper
 {
 	// The registered default for KeyboardIncrement, and the fallback when a host supplies an unusable
 	// one - the two must agree, so the IDL's MUX_DEFAULT_VALUE names this rather than restating 8.0.
-	// TODO Uno: File-scope constexpr in C++; C# needs a containing type.
 	internal const double c_defaultKeyboardIncrement = 8.0;
 
 	// ResizeGripper();

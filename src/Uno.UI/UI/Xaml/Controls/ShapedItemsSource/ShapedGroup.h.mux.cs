@@ -38,7 +38,7 @@ internal sealed partial class ShapedGroup :
 
 	// ICollectionViewGroup — the contract consumers below layer 4 are allowed to know about.
 	public partial object? Group { get; }
-	public partial IObservableVector<object?>? GroupItems { get; }
+	public partial IObservableVector<object?> GroupItems { get; }
 
 	// IIterable — a group is also directly enumerable, which is what the generic
 	// "each element of the source is itself a collection" path expects.
@@ -69,5 +69,5 @@ internal sealed partial class ShapedGroup :
 	private object? m_key;
 	private string m_groupKey = "";
 	// TODO Uno: typed as the concrete ObservableVector<T> (single_threaded_observable_vector) so ReplaceAll raises one Reset.
-	private ObservableVector<object?>? m_items;
+	private readonly ObservableVector<object?> m_items;
 }
