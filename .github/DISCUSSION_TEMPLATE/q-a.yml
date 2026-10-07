@@ -15,23 +15,16 @@ body:
     attributes:
       label: Provide repro steps and sample
       description: |
-        - Attach a [**minimal repro project**](https://aka.platform.uno/uno-repro-sample) and provide detailed **steps to reproduce**.
+        - Attach a [**minimal repro project**](https://platform.uno/docs/articles/uno-howto-create-a-repro.html) and provide detailed **steps to reproduce**.
         - Make sure to attach the zip file to this discussion (you can use drag and drop of the zip file).
 
   - type: textarea
     id: nuget-versions
     attributes:
-      label: NuGet package version(s)
-
-  - type: checkboxes
-    id: renderer
-    attributes:
-      label: Renderer
-      multiple: true
-      options:
-
-        - Skia
-        - Native
+      label: Uno.Sdk version (and other relevant versions)
+      description: |
+        Please provide the version of the Uno.Sdk you are using. This can be found in the `global.json` file.
+        If you explicitly override any package versions with `Uno{Component}Version` properties (e.g. `UnoVersion`, `UnoExtensionsVersion`, `UnoToolkitVersion`) in your `.csproj` or `Directory.Build.props`, please list them as well.
 
   - type: dropdown
     id: platforms

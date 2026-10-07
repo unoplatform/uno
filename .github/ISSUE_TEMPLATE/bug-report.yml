@@ -45,15 +45,6 @@ body:
       label: "Workaround 🛠️"
       description: "Please provide steps to workaround this problem if possible. Got a hack? Share it! 💡"
 
-  - type: checkboxes
-    id: renderer
-    attributes:
-      label: "Renderer 🎨"
-      description: "Select the renderer you are using. Your application is using Skia if you find `SkiaRenderer` in your `.csproj` project file."
-      options:
-        - label: "Skia"
-        - label: "Native"
-
   - type: dropdown
     id: platforms
     attributes:
@@ -76,7 +67,9 @@ body:
     id: nuget-versions
     attributes:
       label: "Uno.Sdk version (and other relevant versions) 📦"
-      description: "Please provide the version of the Uno.Sdk you are using. This can be found in the `global.json` file."
+      description: |
+        Please provide the version of the Uno.Sdk you are using. This can be found in the `global.json` file.
+        If you explicitly override any package versions with `Uno{Component}Version` properties (e.g. `UnoVersion`, `UnoExtensionsVersion`, `UnoToolkitVersion`) in your `.csproj` or `Directory.Build.props`, please list them as well.
 
   - type: input
     id: ide

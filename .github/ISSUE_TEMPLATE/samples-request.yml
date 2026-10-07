@@ -15,15 +15,6 @@ body:
     validations:
       required: true
 
-  - type: checkboxes
-    id: samples-request-renderer
-    attributes:
-      label: "Renderer 🎨"
-      description: "Select the renderer you are using. Your application is using Skia if you find `SkiaRenderer` in your `.csproj` project file."
-      options:
-        - label: "Skia"
-        - label: "Native"
-
   - type: dropdown
     id: samples-request-platforms
     attributes:

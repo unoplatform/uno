@@ -16,15 +16,6 @@ body:
       label: "Why is this needed? 🤔"
       description: "Describe the use case of this enhancement 📚"
 
-  - type: checkboxes
-    id: enhancement-renderer
-    attributes:
-      label: "Renderer 🎨"
-      description: "Select the renderer you are using. Your application is using Skia if you find `SkiaRenderer` in your `.csproj` project file."
-      options:
-        - label: "Skia"
-        - label: "Native"
-
   - type: dropdown
     id: enhancement-platforms
     attributes:
