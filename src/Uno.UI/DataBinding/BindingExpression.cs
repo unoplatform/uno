@@ -137,24 +137,11 @@ namespace Microsoft.UI.Xaml.Data
 					.ToArray();
 			}
 
-			if (ParentBinding.ElementNameSubject != null)
+			if (ParentBinding.ElementNameSubject != null || ParentBinding.ElementName != null)
 			{
+				// A code-created binding has no ElementNameSubject; its name is resolved against the
+				// target's namescopes in ApplyElementName, as WinUI does.
 				_isElementNameSource = true;
-			}
-			else if (ParentBinding.ElementName != null)
-			{
-				// ElementName is resolved through the ElementNameSubject set by the XAML code generator
-				// and the runtime reader. A Binding created in code with only the name set cannot be
-				// resolved yet, but it must still count as explicitly sourced so that it doesn't silently
-				// bind the name as a property path against the DataContext.
-				_isElementNameSource = true;
-
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().LogWarning(
-						$"The binding on {TargetName} sets ElementName '{ParentBinding.ElementName}' without an ElementNameSubject. " +
-						"ElementName bindings created in code are not supported yet, use the XAML syntax instead.");
-				}
 			}
 
 			if (!(GetWeakDataContext()?.IsAlive ?? false))
@@ -409,6 +396,13 @@ namespace Microsoft.UI.Xaml.Data
 						applySource();
 					}
 				}
+			}
+			else if (ParentBinding.ElementName is { } elementName)
+			{
+				// Re-resolved each time the target enters the tree, so a name in an outer scope is
+				// found once the element is parented.
+				ExplicitSource = NameScope.FindInNamescopes(_view?.Target as DependencyObject, elementName);
+				ApplyExplicitSource();
 			}
 		}
 
