@@ -27,11 +27,12 @@ public sealed partial class SampleInfoControl : UserControl
 
 	public void CopyContentClick(object sender, RoutedEventArgs e)
 	{
-		var button = (Button)sender;
-		var content = (string)button.CommandParameter;
-		var dataPackage = new DataPackage();
-		dataPackage.SetText(content);
-		Clipboard.SetContent(dataPackage);
+		if (sender is Button { CommandParameter: string { Length: > 0 } content })
+		{
+			var dataPackage = new DataPackage();
+			dataPackage.SetText(content);
+			Clipboard.SetContent(dataPackage);
+		}
 	}
 
 	public async void OpenGitHubClick(object sender, RoutedEventArgs e)
