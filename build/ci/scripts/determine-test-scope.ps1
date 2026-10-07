@@ -4,7 +4,7 @@ Determines which optional CI test scopes must run for a pull request based on th
 
 .DESCRIPTION
 This script inspects the diff between the PR head and its target branch to figure out which
-optional test stages (template tests and the screenshot comparison) should execute. It sets
+optional test stages (template tests, the screenshot comparison and tvOS) should execute. It sets
 Azure DevOps variables (both standard and task output) for each scope so subsequent stages can
 conditionally run.
 
@@ -25,6 +25,7 @@ $scopeVariables = [ordered]@{
     TemplateTestsRequired = $false
     ScreenshotsRequired   = $false
     WebGpuTestsRequired   = $false
+    TvOSTestsRequired     = $false
 }
 
 # Heuristics:
@@ -34,10 +35,15 @@ $scopeVariables = [ordered]@{
 #                           that could affect rendered output.
 #   WebGpuTestsRequired   - the WebGPU backend, its native packaging and loaders, or the runtime-test
 #                           infrastructure. Gates every WebGPU lane but Linux's, which always runs.
+#   TvOSTestsRequired     - Apple-specific code or tvOS CI plumbing. tvOS shares the Skia layer with
+#                           iOS, which runs on every PR, so other changes are covered there. Also
+#                           matches PascalCase names (iOSResourceConverter) and the files that gate
+#                           the tvOS stage, so a change to the gate runs the lane it gates.
 $patterns = @{
     TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/sourcegenerators/uno\.ui\.tasks/|^src/.*devserver.*|^src/.*remotecontrol.*)'
     ScreenshotsRequired   = [regex]'(?i)^src/(uno\.ui|addins).*\.cs$'
     WebGpuTestsRequired   = [regex]'(?i)(?:webgpu|wgpu|^build/ci/tests/|^build/test-scripts/)'
+    TvOSTestsRequired     = [regex]'(?i)(?:^|[/._-])(?:tvos|ios|uikit|appleuikit|apple)(?:[/._-]|$)|(?:^|[/._-])(?-i:iOS|tvOS|UIKit|Apple)(?-i:[A-Z])|^build/ci/\.azure-devops-stages\.yml$|^build/ci/tests/\.azure-devops-tests-runtime-stages\.yml$|^build/ci/scripts/determine-test-scope\.ps1$'
 }
 
 function Set-TestScopeVariable {

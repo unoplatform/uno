@@ -127,6 +127,8 @@ stages:
 
 - stage: runtime_tests_skia_tvos
   displayName: Tests - tvOS
+  # On PRs only Apple-specific changes run it; iOS covers the shared Skia layer and the Mac pool is the bottleneck.
+  condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.TvOSTestsRequired'], 'true')))
   # Builds from source and never consumes native-assets-macos, so it need not wait for that stage.
   dependsOn:
     - Setup
