@@ -154,15 +154,9 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		[NotImplemented]
-		public uint DoubleClickTime
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UISettings", "DoubleClickTime");
-				return 250;
-			}
-		}
+		// TODO Uno: Not read from the host system (Win32 GetDoubleClickTime). Matches the multi-tap delay
+		// of Uno's GestureRecognizer (MultiTapMaxDelayMicroseconds in Uno.UI), so both agree.
+		public uint DoubleClickTime => 500;
 
 		[NotImplemented]
 		public global::Windows.UI.ViewManagement.HandPreference HandPreference
