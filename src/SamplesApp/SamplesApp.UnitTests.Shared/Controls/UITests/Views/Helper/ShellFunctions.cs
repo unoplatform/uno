@@ -37,7 +37,9 @@ public static class ShellFunctions
 	public static Visibility VisibleIfNotEmpty(string? value) => Visible(NotEmpty(value));
 
 	public static Visibility ShowDescription(string? description, bool isCollapsed, bool isHomeVisible)
-		=> Visible(NotEmpty(description) && !isCollapsed && !isHomeVisible);
+		=> Visible(HasDescription(description, isHomeVisible) && !isCollapsed);
+
+	public static bool HasDescription(string? description, bool isHomeVisible) => NotEmpty(description) && !isHomeVisible;
 
 	public static string FavoriteLabel(bool isFavorite) => isFavorite ? "Remove from favorites" : "Add to favorites";
 

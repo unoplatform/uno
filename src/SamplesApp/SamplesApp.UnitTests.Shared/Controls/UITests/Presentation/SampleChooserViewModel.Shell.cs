@@ -680,9 +680,12 @@ public partial class SampleChooserViewModel
 		}
 	}
 
+	/// <summary>Lets in-app tests flip shell settings without persisting them.</summary>
+	internal bool IsShellPersistenceSuspended { get; set; }
+
 	private void PersistShellSetting(string key, object value)
 	{
-		if (IsAutomationRun)
+		if (IsAutomationRun || IsShellPersistenceSuspended)
 		{
 			return;
 		}

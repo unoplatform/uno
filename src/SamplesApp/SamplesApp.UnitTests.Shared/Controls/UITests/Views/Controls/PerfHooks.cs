@@ -16,21 +16,27 @@ namespace Uno.UI.Samples.Controls
 			// so the flyout-over-animated-content cost is measurable in scripted runs.
 			if (Environment.GetEnvironmentVariable("UNO_PERF_OPEN_MENU") is "1" or "true")
 			{
-				Loaded += async (_, _) =>
+				RunOnceLoaded("UNO_PERF_OPEN_MENU", async () =>
 				{
 					await Task.Delay(TimeSpan.FromSeconds(30));
-					// Narrow windows move the button into the "..." menu; anchor to the command bar then.
-					FrameworkElement anchor = OverflowSettingsButton.IsInOverflow ? ShellCommandBar : OverflowSettingsButton;
-					OverflowSettingsButton.Flyout?.ShowAt(anchor);
+					// Home and focus mode hide the command bar, so bring it back first.
+					if (DataContext is SampleChooserViewModel vm)
+					{
+						vm.IsHomeVisible = false;
+						vm.IsShellChromeVisible = true;
+						UpdateLayout();
+					}
+
+					OverflowSettingsButton.Flyout?.ShowAt(GetCommandAnchor(OverflowSettingsButton));
 					Console.WriteLine("PERF: gear menu opened");
-				};
+				});
 			}
 
 			// Benchmark hook: UNO_PERF_CYCLE=<seconds> walks every sample, dwelling <seconds> on each, with
 			// "PERF-NAV:" markers; pairs with the UNO_LOG_FPS hook below for a per-sample FPS sweep.
 			if (int.TryParse(Environment.GetEnvironmentVariable("UNO_PERF_CYCLE"), out var dwellSeconds) && dwellSeconds > 0)
 			{
-				Loaded += async (_, _) =>
+				RunOnceLoaded("UNO_PERF_CYCLE", async () =>
 				{
 					if (Environment.GetEnvironmentVariable("UNO_PERF_MAXIMIZE") is "1" or "true"
 						&& SamplesApp.App.MainWindow?.AppWindow?.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
@@ -40,14 +46,14 @@ namespace Uno.UI.Samples.Controls
 					}
 					await Task.Delay(TimeSpan.FromSeconds(10));
 					await ViewModel.CycleAllSamplesForPerf(dwellSeconds, CancellationToken.None);
-				};
+				});
 			}
 
 			// Benchmark hook: UNO_PERF_SCROLL=1 auto-scrolls the samples list at 60Hz (bounces at the ends),
 			// reproducing the realize/derealize churn of manual scrolling without synthesizing input.
 			if (Environment.GetEnvironmentVariable("UNO_PERF_SCROLL") is "1" or "true")
 			{
-				Loaded += async (_, _) =>
+				RunOnceLoaded("UNO_PERF_SCROLL", async () =>
 				{
 					await Task.Delay(TimeSpan.FromSeconds(12));
 					var sv = FindBrowserListScrollViewer() ?? FindTallestScrollViewer(this);
@@ -67,7 +73,15 @@ namespace Uno.UI.Samples.Controls
 						sv.ChangeView(null, next, null, disableAnimation: true);
 					};
 					scrollTimer.Start();
-				};
+
+					void StopScrolling(object sender, RoutedEventArgs e)
+					{
+						Unloaded -= StopScrolling;
+						scrollTimer.Stop();
+					}
+
+					Unloaded += StopScrolling;
+				});
 			}
 
 
@@ -87,6 +101,25 @@ namespace Uno.UI.Samples.Controls
 					}
 				};
 			}
+		}
+
+		// Loaded fires again whenever the control re-enters the tree, and an async void handler must not throw.
+		private void RunOnceLoaded(string hookName, Func<Task> hook)
+		{
+			async void OnLoaded(object sender, RoutedEventArgs e)
+			{
+				Loaded -= OnLoaded;
+				try
+				{
+					await hook();
+				}
+				catch (Exception ex)
+				{
+					ShellLog.Error($"{hookName} hook failed.", ex);
+				}
+			}
+
+			Loaded += OnLoaded;
 		}
 
 		// The browser's sample list is the scenario the hook was written for; fall back to any tall list.

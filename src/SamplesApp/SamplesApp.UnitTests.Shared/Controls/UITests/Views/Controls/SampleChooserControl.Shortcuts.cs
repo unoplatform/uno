@@ -133,7 +133,7 @@ partial class SampleChooserControl
 		}
 	}
 
-	internal void ShowSampleInfo() => InfoButton.Flyout?.ShowAt(InfoButton);
+	internal void ShowSampleInfo() => InfoButton.Flyout?.ShowAt(GetCommandAnchor(InfoButton));
 
 	internal bool MoveFocusRegion(bool backward)
 	{
