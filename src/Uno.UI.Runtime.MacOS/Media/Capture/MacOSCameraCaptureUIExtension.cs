@@ -20,6 +20,8 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 	public static void Register() =>
 		ApiExtensibility.Register<CameraCaptureUI>(typeof(ICameraCaptureUIExtension), _ => new MacOSCameraCaptureUIExtension());
 
+	private static long _nextOperationId;
+
 	private CameraCaptureUIMode _mode;
 	private CameraCaptureUIPhotoFormat _photoFormat;
 	private CameraCaptureUIVideoFormat _videoFormat;
@@ -84,28 +86,17 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 		}
 		finally
 		{
-			if (!string.IsNullOrEmpty(nativePath))
-			{
-				try
-				{
-					if (File.Exists(nativePath))
-					{
-						File.Delete(nativePath);
-					}
-				}
-				catch
-				{
-					// Ignore cleanup failures.
-				}
-			}
+			TryDeleteFile(nativePath);
 		}
 	}
 
 	private async Task<string?> CaptureNativeAsync(CancellationToken token)
 	{
+		var operationId = Interlocked.Increment(ref _nextOperationId);
+
 		string? Capture() => _mode == CameraCaptureUIMode.Video
-			? NativeUno.uno_capture_video()
-			: NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
+			? NativeUno.uno_capture_video(operationId)
+			: NativeUno.uno_capture_photo(operationId, _photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
 
 		// Run the blocking native modal from the main *run loop*, not the GCD main queue (which is
 		// what NativeDispatcher.Main.Enqueue uses). [NSApp runModalForWindow:] blocks the thread it
@@ -116,12 +107,11 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 		// It also runs after the current event (the pointer dispatch that started the capture) has
 		// unwound, so the modal does not re-enter the pointer pipeline.
 		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		// Cancellation only asks the native operation to tear itself down. The task completes once
+		// Capture() has returned, so the camera is released and any file it produced is accounted for.
 		using var cancelRegistration = token.CanBeCanceled
-			? token.Register(() =>
-			{
-				NativeUno.uno_capture_cancel();
-				tcs.TrySetCanceled(token);
-			})
+			? token.Register(() => NativeUno.uno_capture_cancel(operationId))
 			: default;
 
 		Action work = () =>
@@ -133,7 +123,16 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 			}
 			try
 			{
-				tcs.TrySetResult(Capture());
+				var path = Capture();
+				if (token.IsCancellationRequested)
+				{
+					TryDeleteFile(path);
+					tcs.TrySetCanceled(token);
+				}
+				else
+				{
+					tcs.TrySetResult(path);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -144,6 +143,26 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 		ScheduleOnMainRunLoop(work);
 
 		return await tcs.Task;
+	}
+
+	private static void TryDeleteFile(string? path)
+	{
+		if (string.IsNullOrEmpty(path))
+		{
+			return;
+		}
+
+		try
+		{
+			if (File.Exists(path))
+			{
+				File.Delete(path);
+			}
+		}
+		catch
+		{
+			// Ignore cleanup failures.
+		}
 	}
 
 	// Schedules the work item on the main run loop via the native helper. The GCHandle is freed by
