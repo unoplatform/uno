@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewSource.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableViewSource.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -73,6 +73,19 @@ partial class TableViewSource
 	// keySelector: required, non-null (throws E_INVALIDARG when null; use ClearGroupBy() to
 	// remove grouping). Overload metadata is frozen at v1 — without it MIDL bakes GroupBy2 into
 	// the ABI.
+	//
+	// Grouping FAILS FAST. When a group's identity cannot be resolved, the call that builds the
+	// projection throws E_INVALIDARG; the projection is never silently flattened, because a
+	// grouping request that quietly renders ungrouped is a bug an app ships without noticing.
+	// An identity is unresolvable when:
+	//   * the key is null, or is a reference type and no groupIdentitySelector was supplied;
+	//   * the key is the EMPTY STRING, or a supplied groupIdentitySelector returns the empty
+	//     string. String is a supported key type, but "" is not a usable identity, so an app
+	//     grouping on a property that can be null/blank must coalesce it to a real bucket label
+	//     (e.g. "(none)") itself;
+	//   * a supplied groupIdentitySelector throws;
+	//   * two logically-different keys resolve to the same identity string and no
+	//     groupIdentitySelector was supplied to declare that collapse intentional.
 	/// <summary>
 	/// Groups the source by the key the specified selector returns.
 	/// </summary>
@@ -87,7 +100,7 @@ partial class TableViewSource
 
 	// groupIdentitySelector is OPTIONAL: null selects the built-in value-type group identity
 	// (String/Int32/Int64/Guid/Boolean/enum); a reference-type group key with no selector fails
-	// fast at projection time.
+	// fast at projection time, as does an empty identity from either source (see above).
 
 	/// <summary>
 	/// Groups the source by the key the specified selector returns, using a stable string identity for each group key.

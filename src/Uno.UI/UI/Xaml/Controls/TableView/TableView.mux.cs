@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableView.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -33,7 +33,10 @@ partial class TableView
 	// unusable.
 	private const double c_resizeGripperWidthFallback = 8.0;
 	private const string s_SortIndicatorName = "TableViewSortIndicator";
-	// ScrollViewer template names are documented; ancestors are resolved by walking from child parts.
+	private const string s_SortIndicatorSizeKey = "SortIndicatorSize";
+	// Matches SortIndicatorSize in SortIndicator_themeresources.xaml; used only when that key is
+	// missing or unusable.
+	private const double c_sortIndicatorSizeFallback = 16.0;
 
 	// cppwinrt's == compares raw ABI pointers, which can differ for the same object across a QI,
 	// so fall back to canonical IUnknown identity.
@@ -154,6 +157,61 @@ partial class TableView
 		visibility == TableViewGridLinesVisibility.Vertical ||
 		visibility == TableViewGridLinesVisibility.All;
 
+	private static double TerminalEdgeTolerance(FrameworkElement? element)
+	{
+		double scale = 1.0;
+		try
+		{
+			if (element is not null)
+			{
+				if (element.XamlRoot is { } root)
+				{
+					var rasterizationScale = root.RasterizationScale;
+					if (double.IsFinite(rasterizationScale) && rasterizationScale > 0.0)
+					{
+						scale = rasterizationScale;
+					}
+				}
+			}
+		}
+		catch (Exception)
+		{
+		}
+
+		// Half a physical pixel, widened slightly because transformed bounds are float-backed and
+		// can land microscopically beyond that boundary after layout rounding.
+		const double layoutEpsilonPixels = 1.0 / 64.0;
+		return (0.5 + layoutEpsilonPixels) / scale;
+	}
+
+	private static bool TryGetBoundsRelativeTo(
+		FrameworkElement? element,
+		UIElement? relativeTo,
+		out Rect bounds)
+	{
+		bounds = default;
+		try
+		{
+			if (element is null || relativeTo is null || !element.IsLoaded ||
+				element.ActualWidth <= 0.0 || element.ActualHeight <= 0.0)
+			{
+				return false;
+			}
+
+			bounds = element.TransformToVisual(relativeTo).TransformBounds(
+				new Rect(0.0f, 0.0f, (float)element.ActualWidth, (float)element.ActualHeight));
+		}
+		catch (Exception)
+		{
+			return false;
+		}
+
+		return double.IsFinite(bounds.X) &&
+			double.IsFinite(bounds.Y) &&
+			double.IsFinite(bounds.Width) &&
+			double.IsFinite(bounds.Height);
+	}
+
 	private static TableViewResourceCache GetTableViewResourceCache(TableView owner)
 	{
 		// Per-instance member (not a process-global map) so multi-UI-thread instances never share state.
@@ -258,7 +316,11 @@ partial class TableView
 	// {
 	//     // Must run while this control still holds the selector: once anything has been recycled the
 	//     // pools hang off the cached templates and close a cycle the reference tracker cannot walk.
-	//     if (auto const selector = m_rowTemplateSelector.get())
+	//     // Destructor runs off the reference tracker's teardown path (e.g. UIAffinityReleaseQueue),
+	//     // not necessarily via a direct Release() call, so plain get() can observe the tracker handle
+	//     // already invalidated and assert/fail-fast in chk builds. safe_get() is the documented-safe
+	//     // accessor for tracker_ref from a destructor (see tracker_ref.h and ItemsView/ScrollView).
+	//     if (auto const selector = m_rowTemplateSelector.safe_get())
 	//     {
 	//         winrt::get_self<::TableViewRowTemplateSelector>(selector)->Detach();
 	//     }
@@ -290,6 +352,28 @@ partial class TableView
 		// AddHandler takes the handler as IInspectable, so the delegate must be boxed (see RoutedEventHelpers.h).
 		AddHandler(UIElement.KeyDownEvent, m_keyDownHandler, true /* handledEventsToo */);
 
+		m_keyUpHandler = new KeyEventHandler(
+			(object sender, KeyRoutedEventArgs args) =>
+			{
+				if (weakThis.TryGetTarget(out var strongThis))
+				{
+					strongThis.OnKeyUpForHeaderSort(sender, args);
+				}
+			});
+		// Space on a focused header arms on KeyDown and sorts on an unhandled KeyUp; handledEventsToo
+		// lets a handled KeyUp leave the arm intact rather than consuming it.
+		AddHandler(UIElement.KeyUpEvent, m_keyUpHandler, true /* handledEventsToo */);
+
+		RoutedEventHandler headerSortLostFocusHandler =
+			(object _, RoutedEventArgs _) =>
+			{
+				if (weakThis.TryGetTarget(out var strongThis))
+				{
+					strongThis.m_headerSortSpaceArmedColumn = null;
+				}
+			};
+		LostFocus += headerSortLostFocusHandler;
+		m_headerSortLostFocusRevoker.Disposable = Disposable.Create(() => LostFocus -= headerSortLostFocusHandler);
 		// Tunneling PreviewKeyDown runs before the framework's built-in focus navigation; snapshot the
 		// currently focused row there so OnKeyDownForNavigation anchors on the pre-move index.
 		m_previewKeyDownHandler = new KeyEventHandler(
@@ -312,6 +396,11 @@ partial class TableView
 				if (weakThis.TryGetTarget(out var strongThis))
 				{
 					strongThis.QueueRebuildHeaders();
+					// Body cells carry the same stamp as a one-sided BorderThickness, and realized rows
+					// are not rebuilt by the header pass - refresh them or the body grid lines stay on
+					// the edge the previous direction chose.
+					strongThis.RefreshGridLinesOnRealizedRows();
+					strongThis.QueueTerminalGridLineRefresh();
 				}
 			});
 
@@ -421,6 +510,7 @@ partial class TableView
 		}
 		catch (Exception)
 		{
+			// Best-effort during teardown; keep the previous HC state if the read fails.
 		}
 
 		InvalidateTableViewResourceCache(this);
@@ -428,15 +518,16 @@ partial class TableView
 		{
 			RebuildHeaders();
 			RefreshGridLinesOnRealizedRows();
+			QueueTerminalGridLineRefresh();
 		}
 	}
 
 	protected override void OnApplyTemplate()
 	{
+		m_headerSortSpaceArmedColumn = null;
 		base.OnApplyTemplate();
 		InvalidateTableViewResourceCache(this);
 
-		// Detach old wiring
 		if (m_pendingFocusLayoutToken.Disposable is not null)
 		{
 			m_pendingFocusLayoutToken.Disposable = null;
@@ -445,6 +536,31 @@ partial class TableView
 		{
 			m_pendingGroupFocusLayoutToken.Disposable = null;
 		}
+		if (m_pendingGroupRowRefreshLayoutToken.Disposable is not null)
+		{
+			m_pendingGroupRowRefreshLayoutToken.Disposable = null;
+		}
+		if (m_terminalGridLinesLayoutToken.Disposable is not null)
+		{
+			m_terminalGridLinesLayoutToken.Disposable = null;
+		}
+		if (m_terminalGridLineRow?.TryGetTarget(out var terminalRow) == true)
+		{
+			terminalRow.SetTerminalGridLineSuppression(new());
+		}
+		if (m_terminalGridLineGroupHeader?.TryGetTarget(out var terminalHeader) == true)
+		{
+			terminalHeader.SetTerminalBottomGridLineSuppression(false);
+		}
+		m_terminalGridLineRowSizeChangedRevoker.Disposable = null;
+		m_terminalGridLineRow = null;
+		m_terminalGridLineGroupHeader = null;
+		m_suppressTrailingGridLine = false;
+		m_suppressBottomGridLine = false;
+		m_terminalGridLineGeometryRetryAvailable = true;
+		m_terminalGridLineColumnIndex = -1;
+		m_terminalGridLineHorizontalOffset = double.NaN;
+		m_terminalGridLineVerticalOffset = double.NaN;
 		if (m_rowsRepeater is { } oldRepeater)
 		{
 			// Drop per-template Loaded handlers so old elements cannot keep this alive.
@@ -476,6 +592,11 @@ partial class TableView
 			{
 				m_headerHostLoadedToken.Disposable = null;
 			}
+
+			// Auto-revoke would also release these on reassignment below, but the old band must not
+			// raise focus events into a control whose template has already been swapped.
+			m_headerHostGettingFocusRevoker.Disposable = null;
+			m_headerHostGotFocusRevoker.Disposable = null;
 		}
 		if (m_bodyScroller is not null)
 		{
@@ -494,13 +615,38 @@ partial class TableView
 		m_emptyStatePresenter = GetTemplateChild(s_EmptyStatePresenterPartName) as ContentControl;
 		WeakReference<TableView> weakThis = new(this);
 
-		// Drive the repeater from the active source once the template is alive. The source itself is
-		// unchanged, so this only pushes its view into the freshly built repeater.
-		RefreshRowsPipeline();
-
 		// Defer ScrollViewer ancestor lookup until Loaded because template parts are not fully connected here.
 		if (m_headerHost is { } headerHost)
 		{
+			// One tab stop for the header band, matching Explorer and WinUI list controls: Tab crosses
+			// bands, arrows stay inside. Apply it at PART_HeaderHost, not TableViewCellsPanel; the panel
+			// is shared layout, while the focus policy belongs to the two host bands.
+			headerHost.TabFocusNavigation = KeyboardNavigationMode.Once;
+
+			// Redirect band entry from the first header to the remembered column.
+			TypedEventHandler<UIElement, GettingFocusEventArgs> headerHostGettingFocusHandler =
+				(UIElement sender, GettingFocusEventArgs args) =>
+				{
+					if (weakThis.TryGetTarget(out var strongThis))
+					{
+						strongThis.OnHeaderHostGettingFocus(sender, args);
+					}
+				};
+			headerHost.GettingFocus += headerHostGettingFocusHandler;
+			m_headerHostGettingFocusRevoker.Disposable = Disposable.Create(() => headerHost.GettingFocus -= headerHostGettingFocusHandler);
+
+			// Update the shared column cursor whenever a header actually takes focus.
+			RoutedEventHandler headerHostGotFocusHandler =
+				(object sender, RoutedEventArgs args) =>
+				{
+					if (weakThis.TryGetTarget(out var strongThis))
+					{
+						strongThis.OnHeaderHostGotFocus(sender, args);
+					}
+				};
+			headerHost.GotFocus += headerHostGotFocusHandler;
+			m_headerHostGotFocusRevoker.Disposable = Disposable.Create(() => headerHost.GotFocus -= headerHostGotFocusHandler);
+
 			// Focus on an off-screen header must not scroll PART_HeaderScroller: header/body sync is
 			// one-way, so the band would end up offset from the columns it labels.
 			TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> bringIntoViewHandler =
@@ -528,6 +674,8 @@ partial class TableView
 				headerHostFE.Loaded += headerHostLoadedHandler;
 				m_headerHostLoadedToken.Disposable = Disposable.Create(() => headerHostFE.Loaded -= headerHostLoadedHandler);
 			}
+
+			QueueTerminalGridLineRefresh();
 		}
 
 		if (m_rowsRepeater is { } repeater)
@@ -587,6 +735,11 @@ partial class TableView
 			}
 		}
 
+		// Drive the repeater from the active source only after its item template and lifecycle hooks
+		// are wired. ItemsRepeater may react to ItemsSource immediately; doing this earlier leaves it
+		// briefly sourced without the selector/ElementPrepared owner hookup TableView rows require.
+		RefreshRowsPipeline();
+
 		// Body horizontal scrolling drives the header ScrollViewer; vertical stickiness is structural.
 
 		RebuildHeaders();
@@ -623,6 +776,7 @@ partial class TableView
 						// Rebuild headers and realized rows so grid-line brushes re-resolve.
 						strongThis.RebuildHeaders();
 						strongThis.RefreshGridLinesOnRealizedRows();
+						strongThis.QueueTerminalGridLineRefresh();
 					}
 					catch (Exception)
 					{
@@ -703,6 +857,7 @@ partial class TableView
 						{
 							strongThis.InvalidateMeasure();
 							strongThis.RefreshFrozenColumns();
+							strongThis.QueueTerminalGridLineRefresh();
 						}
 					};
 				bodyScroller.SizeChanged += sizeChangedHandler;
@@ -711,6 +866,7 @@ partial class TableView
 				// Resolve during the next table measure now that the viewport is known (initial layout).
 				InvalidateMeasure();
 				RefreshFrozenColumns();
+				QueueTerminalGridLineRefresh();
 			}
 		}
 	}
@@ -731,6 +887,22 @@ partial class TableView
 		if (ShouldRefreshFrozenColumnsForScroll(this, bodyHOffset))
 		{
 			RefreshFrozenColumns();
+		}
+
+		var bodyVOffset = bodyScroller.VerticalOffset;
+		var horizontalMoved =
+			!double.IsFinite(m_terminalGridLineHorizontalOffset) ||
+			Math.Abs(m_terminalGridLineHorizontalOffset - bodyHOffset) >= 0.25;
+		var verticalMoved =
+			!double.IsFinite(m_terminalGridLineVerticalOffset) ||
+			Math.Abs(m_terminalGridLineVerticalOffset - bodyVOffset) >= 0.25;
+
+		if (horizontalMoved || verticalMoved)
+		{
+			m_terminalGridLineHorizontalOffset = bodyHOffset;
+			m_terminalGridLineVerticalOffset = bodyVOffset;
+			m_terminalGridLineGeometryRetryAvailable = true;
+			RefreshTerminalGridLines();
 		}
 
 		var headerScroller = m_headerScroller;
@@ -775,6 +947,10 @@ partial class TableView
 		// left over from the previous data set can never match an item from the new one.
 		SetCurrentCell(null, null);
 
+		// The column set changed; reset the shared cursor so first header entry does not skip an
+		// unvisited column.
+		ResetColumnCursorInternal();
+
 		// New data set: clear the grow-only Auto accumulators so widths recompute from scratch. The next
 		// table measure pass pulls measured widths from the by-then re-realized rows, so the outgoing rows'
 		// stale content no longer pins the columns.
@@ -802,6 +978,7 @@ partial class TableView
 		}
 
 		UpdateHeaderVisibility();
+		QueueTerminalGridLineRefresh();
 	}
 
 	private void OnGridLinesVisibilityPropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -813,6 +990,7 @@ partial class TableView
 
 		ApplyGridLinesToHeader();
 		RefreshGridLinesOnRealizedRows();
+		QueueTerminalGridLineRefresh();
 	}
 
 	private void OnRowBackgroundPropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -865,6 +1043,22 @@ partial class TableView
 		var headerGridLineName = s_HeaderGridLineName;
 		var headerCells = host.Children;
 		var headerCellCount = headerCells.Count;
+		var lastVisibleHeaderCell = headerCellCount;
+		for (var i = headerCellCount; i > 0; --i)
+		{
+			if (headerCells[i - 1] is Panel headerCell)
+			{
+				var column = headerCell.Tag as TableViewColumn;
+				if (headerCell.Visibility == Visibility.Visible &&
+					column is not null &&
+					column.ActualWidth > 0.0)
+				{
+					lastVisibleHeaderCell = i - 1;
+					break;
+				}
+			}
+		}
+
 		for (var i = 0; i < headerCellCount; ++i)
 		{
 			if (headerCells[i] is Panel headerCell)
@@ -877,7 +1071,10 @@ partial class TableView
 					{
 						if (border.Name == headerGridLineName)
 						{
-							border.Visibility = wantVertical ? Visibility.Visible : Visibility.Collapsed;
+							border.Visibility =
+								wantVertical && !(m_suppressTrailingGridLine && i == lastVisibleHeaderCell)
+									? Visibility.Visible
+									: Visibility.Collapsed;
 						}
 					}
 				}
@@ -902,10 +1099,305 @@ partial class TableView
 
 	private void RefreshGridLinesOnRealizedRows()
 	{
+		TableViewRow? terminalRow = null;
+		m_terminalGridLineRow?.TryGetTarget(out terminalRow);
 		ForEachRealizedRow(row =>
 		{
-			row.RefreshGridLines();
+			var suppressBottom = terminalRow is not null && IsSameObject(row, terminalRow) && m_suppressBottomGridLine;
+			row.SetTerminalGridLineSuppression(new()
+			{
+				suppressTrailing = m_suppressTrailingGridLine,
+				suppressBottom = suppressBottom
+			});
 		});
+	}
+
+	private void QueueTerminalGridLineRefresh(bool isGeometryRetry = false)
+	{
+		if (!isGeometryRetry)
+		{
+			m_terminalGridLineGeometryRetryAvailable = true;
+		}
+
+		if (m_terminalGridLinesLayoutToken.Disposable is not null)
+		{
+			return;
+		}
+
+		if (isGeometryRetry)
+		{
+			if (!m_terminalGridLineGeometryRetryAvailable)
+			{
+				return;
+			}
+			m_terminalGridLineGeometryRetryAvailable = false;
+		}
+
+		WeakReference<TableView> weakThis = new(this);
+		EventHandler<object> layoutUpdatedHandler =
+			(object? _, object _) =>
+			{
+				if (weakThis.TryGetTarget(out var strongThis))
+				{
+					if (strongThis.m_terminalGridLinesLayoutToken.Disposable is not null)
+					{
+						strongThis.m_terminalGridLinesLayoutToken.Disposable = null;
+					}
+
+					strongThis.RefreshTerminalGridLines();
+				}
+			};
+		LayoutUpdated += layoutUpdatedHandler;
+		m_terminalGridLinesLayoutToken.Disposable = Disposable.Create(() => LayoutUpdated -= layoutUpdatedHandler);
+	}
+
+	private bool? ShouldSuppressTrailingGridLine()
+	{
+		if (!WantsVerticalLines(GridLinesVisibility))
+		{
+			return false;
+		}
+
+		var border = BorderThickness;
+		// Both edges are read in the panel's logical coordinate space, which XAML mirrors wholesale
+		// under RTL, so the logical trailing edge meets BorderThickness.Right in either direction.
+		var outerThickness = Math.Max(0.0, border.Right);
+		if (outerThickness <= 0.0 || ActualWidth <= 0.0)
+		{
+			return false;
+		}
+
+		FrameworkElement? candidate = null;
+		ForEachRealizedRow(row =>
+		{
+			if (candidate is null)
+			{
+				candidate = row.GetLastVisibleCellInternal();
+			}
+		});
+
+		if (candidate is null && ShouldShowColumnHeaders())
+		{
+			if (m_headerHost is { } host)
+			{
+				var cells = host.Children;
+				for (var i = cells.Count; i > 0; --i)
+				{
+					if (cells[i - 1] is FrameworkElement cell &&
+						cell.Visibility == Visibility.Visible &&
+						cell.ActualWidth > 0.0)
+					{
+						candidate = cell;
+						break;
+					}
+				}
+			}
+		}
+
+		if (candidate is null)
+		{
+			return false;
+		}
+
+		if (!TryGetBoundsRelativeTo(candidate, this, out var bounds))
+		{
+			return null;
+		}
+
+		// TransformToVisual reports the panel's logical coordinate space.
+		var candidateEdge = bounds.X + bounds.Width;
+		var outerEdge = ActualWidth - outerThickness;
+		return Math.Abs(candidateEdge - outerEdge) <= TerminalEdgeTolerance(this);
+	}
+
+	private bool? ShouldSuppressBottomGridLine(
+		FrameworkElement? element,
+		bool hasBottomGridLine)
+	{
+		if (element is null || !hasBottomGridLine)
+		{
+			return false;
+		}
+
+		var bottomThickness = Math.Max(0.0, BorderThickness.Bottom);
+		if (bottomThickness <= 0.0 || ActualHeight <= 0.0)
+		{
+			return false;
+		}
+
+		if (!TryGetBoundsRelativeTo(element, this, out var bounds))
+		{
+			return null;
+		}
+
+		var innerBottom = ActualHeight - bottomThickness;
+		return Math.Abs(bounds.Y + bounds.Height - innerBottom) <= TerminalEdgeTolerance(this);
+	}
+
+	private void RefreshTerminalGridLines()
+	{
+		var terminalColumnIndex = -1;
+		if (Columns is { } columns)
+		{
+			for (var i = columns.Count; i > 0; --i)
+			{
+				var column = columns[i - 1];
+				if (column is not null &&
+					column.Visibility == Visibility.Visible &&
+					column.ActualWidth > 0.0)
+				{
+					terminalColumnIndex = i - 1;
+					break;
+				}
+			}
+		}
+		var terminalColumnChanged = terminalColumnIndex != m_terminalGridLineColumnIndex;
+		m_terminalGridLineColumnIndex = terminalColumnIndex;
+
+		var trailingResult = ShouldSuppressTrailingGridLine();
+		var suppressTrailing = trailingResult ?? m_suppressTrailingGridLine;
+		var trailingChanged = suppressTrailing != m_suppressTrailingGridLine;
+		m_suppressTrailingGridLine = suppressTrailing;
+
+		FrameworkElement? terminalElement = null;
+		TableViewRow? terminalRow = null;
+		TableViewGroupHeader? terminalGroupHeader = null;
+		var terminalGeometryUnavailable = false;
+		if (m_rowsRepeater is { } repeater)
+		{
+			// Select by geometry rather than by item index: once content overflows and scrolls, the
+			// container meeting the inner bottom edge is not the last item.
+			var innerBottom = ActualHeight - Math.Max(0.0, BorderThickness.Bottom);
+			var closestDistance = double.PositiveInfinity;
+			var childCount = VisualTreeHelper.GetChildrenCount(repeater);
+			for (var i = 0; i < childCount; ++i)
+			{
+				if (VisualTreeHelper.GetChild(repeater, i) is not FrameworkElement child)
+				{
+					continue;
+				}
+
+				if (!TryGetBoundsRelativeTo(child, this, out var bounds))
+				{
+					terminalGeometryUnavailable = true;
+					continue;
+				}
+
+				var distance = Math.Abs(bounds.Y + bounds.Height - innerBottom);
+				if (distance < closestDistance)
+				{
+					closestDistance = distance;
+					terminalElement = child;
+				}
+			}
+
+			terminalRow = terminalElement as TableViewRow;
+			terminalGroupHeader = terminalElement as TableViewGroupHeader;
+		}
+
+		TableViewRow? previousTerminalRow = null;
+		m_terminalGridLineRow?.TryGetTarget(out previousTerminalRow);
+		TableViewGroupHeader? previousTerminalGroupHeader = null;
+		m_terminalGridLineGroupHeader?.TryGetTarget(out previousTerminalGroupHeader);
+		var terminalChanged =
+			!IsSameObject(previousTerminalRow, terminalRow) ||
+			!IsSameObject(previousTerminalGroupHeader, terminalGroupHeader);
+		if (terminalChanged)
+		{
+			if (previousTerminalRow is not null)
+			{
+				previousTerminalRow.SetTerminalGridLineSuppression(new()
+				{
+					suppressTrailing = m_suppressTrailingGridLine,
+					suppressBottom = false
+				});
+			}
+			if (previousTerminalGroupHeader is not null)
+			{
+				previousTerminalGroupHeader.SetTerminalBottomGridLineSuppression(false);
+			}
+
+			m_terminalGridLineRowSizeChangedRevoker.Disposable = null;
+			m_terminalGridLineRow = terminalRow is not null ? new WeakReference<TableViewRow>(terminalRow) : null;
+			m_terminalGridLineGroupHeader =
+				terminalGroupHeader is not null ? new WeakReference<TableViewGroupHeader>(terminalGroupHeader) : null;
+
+			if (terminalElement is not null)
+			{
+				WeakReference<TableView> weakThis = new(this);
+				SizeChangedEventHandler sizeChangedHandler =
+					(object _, SizeChangedEventArgs _) =>
+					{
+						if (weakThis.TryGetTarget(out var strongThis))
+						{
+							strongThis.QueueTerminalGridLineRefresh();
+						}
+					};
+				var sizeChangedSource = terminalElement;
+				sizeChangedSource.SizeChanged += sizeChangedHandler;
+				m_terminalGridLineRowSizeChangedRevoker.Disposable = Disposable.Create(() => sizeChangedSource.SizeChanged -= sizeChangedHandler);
+			}
+		}
+
+		var hasBottomGridLine =
+			terminalRow is not null
+				? WantsHorizontalLines(GridLinesVisibility)
+				: terminalGroupHeader is not null && terminalGroupHeader.BorderThickness.Bottom > 0.0;
+		bool? bottomResult = terminalElement is not null
+			? ShouldSuppressBottomGridLine(terminalElement, hasBottomGridLine)
+			: false;
+		// A container that failed its transform could be the real edge container, so a negative
+		// result is only trustworthy once every container was measurable.
+		if (terminalGeometryUnavailable && !(bottomResult ?? false))
+		{
+			bottomResult = null;
+		}
+		var suppressBottom = bottomResult ?? m_suppressBottomGridLine;
+		m_suppressBottomGridLine = suppressBottom;
+
+		if (trailingChanged || terminalColumnChanged)
+		{
+			ApplyGridLinesToHeader();
+			RefreshGridLinesOnRealizedRows();
+		}
+
+		// Push unconditionally rather than only on a detected change. A container can be recycled or
+		// re-prepared while this state is applied, so its own copy can disagree with the table's; a
+		// change-gated push would leave that disagreement permanent. This is also the only thing that
+		// re-derives the overlay from the container's current BorderThickness.
+		if (m_rowsRepeater is { } rowsRepeater)
+		{
+			var childCount = VisualTreeHelper.GetChildrenCount(rowsRepeater);
+			for (var i = 0; i < childCount; ++i)
+			{
+				if (VisualTreeHelper.GetChild(rowsRepeater, i) is TableViewGroupHeader header &&
+					!IsSameObject(header, terminalGroupHeader))
+				{
+					header.SetTerminalBottomGridLineSuppression(false);
+				}
+			}
+		}
+		if (terminalRow is not null)
+		{
+			terminalRow.SetTerminalGridLineSuppression(new()
+			{
+				suppressTrailing = m_suppressTrailingGridLine,
+				suppressBottom = m_suppressBottomGridLine
+			});
+		}
+		if (terminalGroupHeader is not null)
+		{
+			terminalGroupHeader.SetTerminalBottomGridLineSuppression(m_suppressBottomGridLine);
+		}
+
+		if (!trailingResult.HasValue || !bottomResult.HasValue)
+		{
+			QueueTerminalGridLineRefresh(true);
+		}
+		else
+		{
+			m_terminalGridLineGeometryRetryAvailable = true;
+		}
 	}
 
 	private void RefreshRowBackgroundsOnRealizedRows()
@@ -914,6 +1406,52 @@ partial class TableView
 		{
 			row.RefreshRowBackground();
 		});
+	}
+
+	private void QueueGroupExpansionRowRefresh()
+	{
+		if (m_pendingGroupRowRefreshLayoutToken.Disposable is not null)
+		{
+			return;
+		}
+
+		WeakReference<TableView> weakThis = new(this);
+		EventHandler<object> layoutUpdatedHandler =
+			(object? _, object _) =>
+			{
+				if (!weakThis.TryGetTarget(out var strongThis))
+				{
+					return;
+				}
+
+				if (strongThis.m_pendingGroupRowRefreshLayoutToken.Disposable is not null)
+				{
+					strongThis.m_pendingGroupRowRefreshLayoutToken.Disposable = null;
+				}
+
+				try
+				{
+					strongThis.RefreshRealizedRowsAfterGroupExpansion();
+				}
+				catch (Exception)
+				{
+					// Best-effort repair after a deferred grouped reshape.
+				}
+			};
+		LayoutUpdated += layoutUpdatedHandler;
+		m_pendingGroupRowRefreshLayoutToken.Disposable = Disposable.Create(() => LayoutUpdated -= layoutUpdatedHandler);
+	}
+
+	private void RefreshRealizedRowsAfterGroupExpansion()
+	{
+		ForEachRealizedRow(row =>
+		{
+			var rowImpl = row;
+			rowImpl.EnsureOwningTableViewInternal(this);
+			RefreshRowSelectionState(row);
+		});
+
+		InvalidateMeasure();
 	}
 
 	private void AdoptItemsSource()
@@ -1023,7 +1561,7 @@ partial class TableView
 				repeater.ItemsSource = rowsSource;
 			}
 
-			UpdateEmptyStateCollectionChangedSubscription();
+			UpdateItemsSourceCollectionChangedSubscription();
 			UpdateEmptyState();
 
 			// Re-point selection at the new source. SelectionModel::Source clears unconditionally, so a
@@ -1045,10 +1583,16 @@ partial class TableView
 		}
 
 		RefreshRowsPipeline();
+		QueueGroupExpansionRowRefresh();
 	}
 
 	private void OnTableViewSourceShapingChanged(bool reorderOnly)
 	{
+		if (!reorderOnly)
+		{
+			QueueGroupExpansionRowRefresh();
+		}
+
 		// The app may have declared or cleared a sort straight on the source, which the control has no
 		// other way to learn about. Reconcile before anything else so the chevrons never outlive the
 		// axis they describe.
@@ -1068,7 +1612,7 @@ partial class TableView
 		var peer = FrameworkElementAutomationPeer.FromElement(this);
 		if (peer is null)
 		{
-			peer = FrameworkElementAutomationPeer.CreatePeerForElement(this);
+			return;
 		}
 
 		if (peer is TableViewAutomationPeer tableViewPeer)
@@ -1093,40 +1637,38 @@ partial class TableView
 			return;
 		}
 
-		UpdateEmptyStateCollectionChangedSubscription();
+		UpdateItemsSourceCollectionChangedSubscription();
 		UpdateEmptyState();
 	}
 
-	private void UpdateEmptyStateCollectionChangedSubscription()
+	private void UpdateItemsSourceCollectionChangedSubscription()
 	{
-		// Rewire count-change tracking; auto_revoke drops the prior source subscription.
-		m_emptyStateCollectionChangedRevoker.Disposable = null;
-		if (EmptyTemplate != null)
+		// Count changes also move the terminal row separator, so keep this subscription even when no
+		// EmptyTemplate is configured.
+		m_itemsSourceCollectionChangedRevoker.Disposable = null;
+		if (m_rowsRepeater is { } repeater)
 		{
-			// Count changes matter only when an empty template can be displayed.
-			if (m_rowsRepeater is { } repeater)
+			if (repeater.ItemsSourceView is { } view)
 			{
-				if (repeater.ItemsSourceView is { } view)
+				// TODO Uno: C++ captures a raw, non-owning this; a weak capture keeps a long-lived source from rooting the control.
+				WeakReference<TableView> weakThis = new(this);
+				global::System.Collections.Specialized.NotifyCollectionChangedEventHandler handler = (s, a) =>
 				{
-					// TODO Uno: C++ captures a raw, non-owning this; a weak capture keeps a long-lived source from rooting the control.
-					WeakReference<TableView> weakThis = new(this);
-					global::System.Collections.Specialized.NotifyCollectionChangedEventHandler handler = (s, a) =>
+					if (weakThis.TryGetTarget(out var strongThis))
 					{
-						if (weakThis.TryGetTarget(out var strongThis))
-						{
-							strongThis.OnEmptyStateItemsSourceCollectionChanged(s, a);
-						}
-					};
-					view.CollectionChanged += handler;
-					m_emptyStateCollectionChangedRevoker.Disposable = Disposable.Create(() => view.CollectionChanged -= handler);
-				}
+						strongThis.OnItemsSourceCollectionChanged(s, a);
+					}
+				};
+				view.CollectionChanged += handler;
+				m_itemsSourceCollectionChangedRevoker.Disposable = Disposable.Create(() => view.CollectionChanged -= handler);
 			}
 		}
 	}
 
-	private void OnEmptyStateItemsSourceCollectionChanged(object? sender, object? args)
+	private void OnItemsSourceCollectionChanged(object? sender, object? args)
 	{
 		UpdateEmptyState();
+		QueueTerminalGridLineRefresh();
 	}
 
 	private void UpdateEmptyState()
@@ -1424,16 +1966,22 @@ partial class TableView
 		if (args.Element is TableViewRow row)
 		{
 			var rowImpl = row;
-			rowImpl.SetOwningTableViewInternal(this);
-			rowImpl.RefreshGridLines();
+			rowImpl.EnsureOwningTableViewInternal(this);
+			rowImpl.SetTerminalGridLineSuppression(new()
+			{
+				suppressTrailing = m_suppressTrailingGridLine,
+				suppressBottom = false
+			});
 			rowImpl.RefreshRowBackground();
 			RefreshRowSelectionState(row);
 			InvalidateMeasure();
+			QueueTerminalGridLineRefresh();
 		}
 		else if (args.Element is TableViewGroupHeader header)
 		{
 			PrepareGroupHeaderElement(header, args.Index);
 			InvalidateMeasure();
+			QueueTerminalGridLineRefresh();
 		}
 	}
 
@@ -1472,13 +2020,35 @@ partial class TableView
 			var rowImpl = row;
 			// Release app-supplied tooltip content rather than pinning it in the recycle pool.
 			rowImpl.ReleaseCellToolTips();
+			rowImpl.SetTerminalGridLineSuppression(new());
+			if (m_terminalGridLineRow?.TryGetTarget(out var terminalRow) == true && IsSameObject(row, terminalRow))
+			{
+				m_terminalGridLineRowSizeChangedRevoker.Disposable = null;
+				m_terminalGridLineRow = null;
+				m_suppressBottomGridLine = false;
+			}
 			rowImpl.SetOwningTableViewInternal(null);
+			// Grouped reshapes can rebind a pooled row through DataContext without a fresh
+			// ElementPrepared/ElementIndexChanged callback. Keep the weak owner available so that path
+			// can rebuild cells and publish a live row peer; item-identity tracking still rejects stale
+			// peers after the rebind.
+			rowImpl.EnsureOwningTableViewInternal(this);
 			InvalidateMeasure();
+			QueueTerminalGridLineRefresh();
 		}
 		else if (args.Element is TableViewGroupHeader header)
 		{
+			header.SetTerminalBottomGridLineSuppression(false);
+			if (m_terminalGridLineGroupHeader?.TryGetTarget(out var terminalHeader) == true &&
+				IsSameObject(header, terminalHeader))
+			{
+				m_terminalGridLineRowSizeChangedRevoker.Disposable = null;
+				m_terminalGridLineGroupHeader = null;
+				m_suppressBottomGridLine = false;
+			}
 			ClearGroupHeaderElement(header);
 			InvalidateMeasure();
+			QueueTerminalGridLineRefresh();
 		}
 	}
 
@@ -1494,14 +2064,26 @@ partial class TableView
 			if (args.Element is TableViewGroupHeader header)
 			{
 				PrepareGroupHeaderElement(header, args.NewIndex);
+				QueueTerminalGridLineRefresh();
 			}
 			return;
 		}
 
+		var rowImpl = row;
+		// Realized rows can be preserved through grouped projection reshapes without a fresh
+		// ElementPrepared callback, so keep the owner/cells invariant true on index changes too.
+		rowImpl.SetOwningTableViewInternal(this);
+		rowImpl.SetTerminalGridLineSuppression(new()
+		{
+			suppressTrailing = m_suppressTrailingGridLine,
+			suppressBottom = false
+		});
+		QueueTerminalGridLineRefresh();
+
 		// Realized rows keep their element but get a new index, so banding parity must refresh.
 		if (RowBackground != null || AlternatingRowBackground != null)
 		{
-			row.RefreshRowBackground();
+			rowImpl.RefreshRowBackground();
 		}
 
 		// ...and so must selected chrome. The element keeps its item here (only its index moved), so
@@ -1531,6 +2113,16 @@ partial class TableView
 		return "";
 	}
 
+	// GetColumnHeaderText renders any IStringable for automation purposes, but only a genuine string
+	// may be swapped for a TextBlock -- a UIElement or a type with an implicit DataTemplate must keep
+	// the ContentPresenter's content model.
+	private static bool IsPlainStringHeader(TableViewColumn column)
+	{
+		// TODO Uno: IPropertyValue projection - a boxed PropertyType::String projects as System.String.
+		// Original C++: propValue && propValue.Type() == PropertyType::String
+		return column.Header is string;
+	}
+
 	private void ReleaseHeaderToolTips(Panel? host)
 	{
 		if (host is null)
@@ -1557,6 +2149,7 @@ partial class TableView
 
 	internal void RebuildHeaders()
 	{
+		m_headerSortSpaceArmedColumn = null;
 		var host = m_headerHost;
 		if (host is null)
 		{
@@ -1585,6 +2178,12 @@ partial class TableView
 		{
 			cachedResizeGripperWidth = c_resizeGripperWidthFallback;
 		}
+		var cachedSortIndicatorWidth =
+			LookupElementResource(this, s_SortIndicatorSizeKey) is double sortIndicatorWidth ? sortIndicatorWidth : c_sortIndicatorSizeFallback;
+		if (!double.IsFinite(cachedSortIndicatorWidth) || cachedSortIndicatorWidth <= 0.0)
+		{
+			cachedSortIndicatorWidth = c_sortIndicatorSizeFallback;
+		}
 		var canUserSortColumns = CanUserSortColumns;
 
 		// Logical-end (trailing) edge alignment must mirror under RTL. The header cell's subtree does
@@ -1598,55 +2197,102 @@ partial class TableView
 		{
 			foreach (var column in columns)
 			{
-				// Skip entries this TableView rejected so a half-owned column cannot render here while
-				// its callbacks still route to another owner.
 				if (column is null || column.GetOwningTableView() != this)
 				{
 					continue;
 				}
 
-				// Header cell root.
-				Grid headerCell = new();
+				// Header cell root: TableViewHeaderCell is the focus/hit-test target so its automation
+				// peer attaches to the right element. Content and chevron get separate columns so the
+				// chevron reserves width instead of overlaying text.
+				Grid headerCell = new TableViewHeaderCell(this, column);
+				var contentColumnIndex = isRightToLeft ? 1 : 0;
+				var indicatorColumnIndex = isRightToLeft ? 0 : 1;
+				{
+					ColumnDefinition starColumn = new();
+					starColumn.Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star);
+					ColumnDefinition autoColumn = new();
+					autoColumn.Width = GridLengthHelper.FromValueAndType(0, GridUnitType.Auto);
+					if (isRightToLeft)
+					{
+						headerCell.ColumnDefinitions.Add(autoColumn);
+						headerCell.ColumnDefinitions.Add(starColumn);
+					}
+					else
+					{
+						headerCell.ColumnDefinitions.Add(starColumn);
+						headerCell.ColumnDefinitions.Add(autoColumn);
+					}
+				}
 				headerCell.Visibility = column.Visibility;
-				// The header cell, not the gripper, is the keyboard target: column commands live here,
-				// and a bare focusable Grid is unnamed and Raw to a screen reader. Only a tab stop when
-				// focusing it can actually do something -- otherwise every column costs a Tab press for
-				// nothing. Same condition that decides whether a gripper is created at all.
+				// Header cells are the named keyboard/UIA targets; the host is one Tab stop, and arrows
+				// must still reach every visible header. Every visible header is a tab stop by product
+				// decision, including non-actionable ones: ARIA permits skipping them, but skipping makes
+				// the band's keyboard model depend on per-column capability, which is harder to explain
+				// than one uniform rule.
 				var headerIsResizable = CanUserResizeColumns && column.CanResize;
-				headerCell.IsTabStop = headerIsResizable;
-				headerCell.UseSystemFocusVisuals = headerIsResizable;
+				var headerIsSortable = canUserSortColumns && column.CanSort;
+				headerCell.IsTabStop = true;
+				headerCell.UseSystemFocusVisuals = true;
 				var headerText = GetColumnHeaderText(column);
 				if (!string.IsNullOrEmpty(headerText))
 				{
 					AutomationProperties.SetName(headerCell, headerText);
 				}
 				AutomationProperties.SetAccessibilityView(headerCell, AccessibilityView.Content);
-				// Match the body row min-height so the header band and rows render at the same height.
 				headerCell.MinHeight = cachedRowMinHeight;
 				// Without a fill the padding takes no pointer input, killing the tooltip and
 				// click-to-sort there.
 				headerCell.Background = cachedHeaderCellFill;
 
-				// No Width binding: TableViewCellsPanel arranges header cells at the column's ActualWidth;
-				// an explicit Width would defeat the panel's unconstrained Auto measured-width measurement.
 
 				ContentPresenter content = new();
 				content.Content = column.Header;
+				// Header peer already names this subtree; leaving it in Content view double-announces.
+				AutomationProperties.SetAccessibilityView(content, AccessibilityView.Raw);
 				if (column.HeaderTemplateSelector is { } headerTemplateSelector)
 				{
+					content.Content = column.Header;
 					content.ContentTemplateSelector = headerTemplateSelector;
 				}
 				else if (column.HeaderTemplate is { } headerTemplate)
 				{
+					content.Content = column.Header;
 					content.ContentTemplate = headerTemplate;
 				}
+				else if (!string.IsNullOrEmpty(headerText) && IsPlainStringHeader(column))
+				{
+					// A ContentPresenter renders a bare string through an implicit TextBlock carrying no
+					// TextTrimming, so a too-wide header hard-clips mid-glyph while its cells ellipsize.
+					TextBlock headerBlock = new();
+					headerBlock.Text = headerText;
+					headerBlock.TextTrimming = TextTrimming.CharacterEllipsis;
+					headerBlock.VerticalAlignment = VerticalAlignment.Center;
+					// The header cell's peer already announces this text.
+					AutomationProperties.SetAccessibilityView(headerBlock, AccessibilityView.Raw);
+					content.Content = headerBlock;
+				}
 				// Consume TableViewHeaderCellPadding from theme resources (cached once per rebuild).
-				content.Padding = cachedHeaderCellPadding;
+				// Sortable headers reserve the chevron's themed width so text trims before the overlay.
+				var contentPadding = cachedHeaderCellPadding;
+				if (headerIsSortable)
+				{
+					if (isRightToLeft)
+					{
+						contentPadding.Left += cachedSortIndicatorWidth;
+					}
+					else
+					{
+						contentPadding.Right += cachedSortIndicatorWidth;
+					}
+				}
+				content.Padding = contentPadding;
 				content.HorizontalAlignment = HorizontalAlignment.Stretch;
 				content.VerticalAlignment = VerticalAlignment.Center;
 				// Column-header text: theme font size, SemiBold to stand out from cells (templates override).
 				content.FontSize = cachedHeaderFontSize;
 				content.FontWeight = FontWeights.SemiBold;
+				Grid.SetColumn(content, contentColumnIndex);
 				headerCell.Children.Add(content);
 
 				// Resolve from TableView so header grid lines track theme.
@@ -1656,29 +2302,19 @@ partial class TableView
 					headerGridLine.Width = 1;
 					headerGridLine.HorizontalAlignment = logicalEndAlignment;
 					headerGridLine.IsHitTestVisible = false;
+					AutomationProperties.SetAccessibilityView(headerGridLine, AccessibilityView.Raw);
 					headerGridLine.Visibility = wantVerticalHeaderLines ? Visibility.Visible : Visibility.Collapsed;
 					headerGridLine.Background = cachedHeaderGridLineBrush;
+					Grid.SetColumnSpan(headerGridLine, 2);
 					headerCell.Children.Add(headerGridLine);
 				}
 
-				// Tag header cells so frozen-column refresh can map them back to columns.
 				headerCell.Tag = column;
 
-				// No HelpText: the header's peer is virtual and composes the text itself.
 				TableViewDetails.ApplyHeaderToolTip(headerCell, column.HeaderToolTip);
 
-				// Sort affordance. Gated on both the control-wide and the per-column opt-in, so an
-				// opted-out column carries no chevron and no click handler at all.
-				if (canUserSortColumns && column.CanSort)
+				if (headerIsSortable)
 				{
-					// The header cell is a Grid, and a Grid with a null Background is not hit-test
-					// visible in its empty regions. The header content presenter and the chevron host
-					// below are both effectively non-hit-testable in their padding, so without an
-					// explicit brush a tap that misses the header glyphs never reaches the Tapped
-					// handler and the column never sorts. A transparent fill makes the WHOLE cell the
-					// click target, matching the group-header band and WPF DataGrid column headers.
-					headerCell.Background = new SolidColorBrush(Colors.Transparent);
-
 					// Hosted in its own panel so the chevron sits on the logical trailing edge without
 					// competing with the header content's Stretch alignment.
 					StackPanel indicatorHost = new();
@@ -1688,7 +2324,12 @@ partial class TableView
 					// The chevron is decoration on top of a clickable header: letting it take the hit
 					// would create a dead spot in the middle of the click target.
 					indicatorHost.IsHitTestVisible = false;
+					// SortIndicator has a fixed themed Width and only fades via Opacity, so an always-
+					// visible host would cost that width on every sortable column.
+					indicatorHost.Visibility = column.SortDirection == SortDirection.None
+						? Visibility.Collapsed : Visibility.Visible;
 					AppendSortIndicatorVisual(indicatorHost, column);
+					Grid.SetColumn(indicatorHost, indicatorColumnIndex);
 					headerCell.Children.Add(indicatorHost);
 
 					// Weak: the handler is owned by a visual the control also owns, so a strong
@@ -1813,7 +2454,14 @@ partial class TableView
 			// which left a programmatic sort (no header rebuild) with a stale chevron.
 			if (FindSortIndicator(headerCell) is { } indicator)
 			{
-				indicator.Direction = ToSortIndicatorDirection(column.SortDirection);
+				var direction = column.SortDirection;
+				indicator.Direction = ToSortIndicatorDirection(direction);
+				// Keep the reserved column in step with the chevron.
+				if (indicator.Parent is UIElement indicatorHost)
+				{
+					indicatorHost.Visibility = direction == SortDirection.None
+						? Visibility.Collapsed : Visibility.Visible;
+				}
 			}
 		}
 	}
@@ -1909,6 +2557,7 @@ partial class TableView
 
 	private void OnTableViewUnloaded()
 	{
+		m_headerSortSpaceArmedColumn = null;
 		if (m_pendingFocusLayoutToken.Disposable is not null)
 		{
 			m_pendingFocusLayoutToken.Disposable = null;
@@ -1918,6 +2567,31 @@ partial class TableView
 		{
 			m_pendingGroupFocusLayoutToken.Disposable = null;
 		}
+		if (m_pendingGroupRowRefreshLayoutToken.Disposable is not null)
+		{
+			m_pendingGroupRowRefreshLayoutToken.Disposable = null;
+		}
+		if (m_terminalGridLinesLayoutToken.Disposable is not null)
+		{
+			m_terminalGridLinesLayoutToken.Disposable = null;
+		}
+		if (m_terminalGridLineRow?.TryGetTarget(out var terminalRow) == true)
+		{
+			terminalRow.SetTerminalGridLineSuppression(new());
+		}
+		if (m_terminalGridLineGroupHeader?.TryGetTarget(out var terminalHeader) == true)
+		{
+			terminalHeader.SetTerminalBottomGridLineSuppression(false);
+		}
+		m_terminalGridLineRowSizeChangedRevoker.Disposable = null;
+		m_terminalGridLineRow = null;
+		m_terminalGridLineGroupHeader = null;
+		m_suppressTrailingGridLine = false;
+		m_suppressBottomGridLine = false;
+		m_terminalGridLineGeometryRetryAvailable = true;
+		m_terminalGridLineColumnIndex = -1;
+		m_terminalGridLineHorizontalOffset = double.NaN;
+		m_terminalGridLineVerticalOffset = double.NaN;
 		m_pendingGroupFocusIdentity = "";
 		m_pendingGroupFocusState = FocusState.Unfocused;
 
@@ -2046,20 +2720,18 @@ partial class TableView
 		string headerText,
 		HorizontalAlignment logicalEndAlignment)
 	{
-		// A real gripper in the tree, so the pointer has something to hit before any drag starts.
 		WeakReference<TableView> weakThis = new(this);
 		ResizeGripper gripperVisual = new();
-		// Direction of travel, opposite of WPF's GridSplitter, so state it rather than lean on the default.
 		gripperVisual.DragOrientation = Orientation.Horizontal;
 		// Pointer affordance only here: the header cell owns keyboard focus, and one tab stop per
 		// column would sit between the user and the data.
 		gripperVisual.IsTabStop = false;
+		AutomationProperties.SetAccessibilityView(gripperVisual, AccessibilityView.Raw);
 		// Same explicit logical-end alignment the grid line and the sort affordance use: the header
 		// cell's subtree does not observe the ambient FlowDirection auto-flip, so the gripper has to be
 		// told which edge is trailing or it lands opposite the grid line under RTL.
 		gripperVisual.HorizontalAlignment = logicalEndAlignment;
 		gripperVisual.Width = gripperWidth;
-		// The peer names itself from OwnerName, so N grippers in one header band are distinguishable.
 		if (!string.IsNullOrEmpty(headerText))
 		{
 			gripperVisual.OwnerName = headerText;
@@ -2083,6 +2755,7 @@ partial class TableView
 				// Before the guard below: a stale didWrite would revert to the previous drag's start width.
 				state.didWrite = false;
 				state.didDelta = false;
+				state.frozen.Clear();
 
 				// One resize at a time. Manipulation arbitrates per element, so a second contact on a
 				// DIFFERENT gripper would otherwise run a concurrent drag that Escape could not reach.
@@ -2104,7 +2777,13 @@ partial class TableView
 				if (weakColumn.TryGetTarget(out var col))
 				{
 					state.startValue = col.ActualWidth;
-					state.startWidth = col.Width;
+					// TODO Uno: ReadLocalValue returns the bound value, not the BindingExpression, so a
+					// cancel restores a snapshot rather than the binding.
+					state.startWidth = col.ReadLocalValue(TableViewColumn.WidthProperty);
+					if (strongThis is not null)
+					{
+						state.bounds = strongThis.ResizeBoundsForColumn(col);
+					}
 				}
 
 				// Published so Escape can find the gesture in flight; the gripper owns everything else
@@ -2125,7 +2804,6 @@ partial class TableView
 				}
 
 				state.didDelta = true;
-
 				// std::max mirrors TableViewColumn::UpdateActualWidth, so a column whose MaxWidth is below
 				// its MinWidth cannot make Width and ActualWidth disagree.
 				var lo = (double.IsFinite(col.MinWidth) && col.MinWidth >= 0.0) ? col.MinWidth : 0.0;
@@ -2133,16 +2811,32 @@ partial class TableView
 					? StdMath.Max(lo, col.MaxWidth)
 					: double.PositiveInfinity;
 
+				// The upper bound never falls below the width the drag started from, so a table that
+				// already overflows can still shrink.
+				lo = StdMath.Max(lo, state.bounds.Min);
+				hi = StdMath.Max(lo, StdMath.Min(hi, StdMath.Max(state.startValue, state.bounds.Max)));
+
 				var next = StdMath.Clamp(state.startValue + vargs.TotalDelta, lo, hi);
 
-				// Pinned at a bound the pointer keeps moving but the width does not: writing anyway would
-				// re-run measure and every cell panel on each move.
+				// Pinned at a bound the pointer keeps moving but the width does not. Writing anyway would
+				// re-run measure, and on a Star column it would also latch the width to pixels.
 				var current = col.Width;
-				if (current.GridUnitType == GridUnitType.Pixel && Math.Abs(current.Value - next) < 0.0001)
+				var currentValue =
+					current.GridUnitType == GridUnitType.Pixel ? current.Value : col.ActualWidth;
+				if (Math.Abs(currentValue - next) < 0.0001)
 				{
 					return;
 				}
 
+				var columnImpl = col;
+				if (!state.didWrite)
+				{
+					if (weakThis.TryGetTarget(out var strongThis))
+					{
+						strongThis.FreezeColumnsBeforeResize(col, state.frozen);
+					}
+				}
+				using var resizeScope = columnImpl.BeginUserResizeScope();
 				col.Width = GridLengthHelper.FromPixels(next);
 				state.didWrite = true;
 			};
@@ -2169,9 +2863,19 @@ partial class TableView
 				{
 					// Only when a write actually happened, so a press that never moved cannot pin an
 					// Auto/Star column.
+					// Non-empty only when a freeze actually ran, so this needs no didWrite gate: a write
+					// that threw after freezing would otherwise strand the predecessors as pixels.
+					foreach (var entry in state.frozen)
+					{
+						if (entry.column is not null && entry.column.TryGetTarget(out var frozenCol))
+						{
+							TableView.RestoreColumnWidth(frozenCol, entry.width);
+						}
+					}
+
 					if (state.didWrite && col is not null)
 					{
-						col.Width = state.startWidth;
+						TableView.RestoreColumnWidth(col, state.startWidth);
 					}
 					return;
 				}
@@ -2183,6 +2887,7 @@ partial class TableView
 					strongThis.AnnounceColumnWidth(weakHeaderCell.TryGetTarget(out var announcer) ? announcer : null, col);
 				}
 			};
+		Grid.SetColumnSpan(gripperVisual, 2);
 		headerCell.Children.Add(gripperVisual);
 	}
 

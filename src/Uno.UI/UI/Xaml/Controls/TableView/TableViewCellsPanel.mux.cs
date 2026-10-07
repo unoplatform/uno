@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewCellsPanel.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableViewCellsPanel.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -278,23 +278,12 @@ partial class TableViewCellsPanel
 			return;
 		}
 
-		if (host.FlowDirection == FlowDirection.RightToLeft)
-		{
-			// Frozen-column pin math is LTR-only; under RTL it would pin/clip the wrong
-			// edge. Skip pinning in RTL so scrolling remains plain and uncorrupted.
-			var rtlChildren = host.Children;
-			int rtlCount = rtlChildren.Count;
-			for (int i = 0; i < rtlCount; ++i)
-			{
-				if (rtlChildren[i] is FrameworkElement el)
-				{
-					el.Translation = new Vector3(0.0f, 0.0f, 0.0f);
-					Canvas.SetZIndex(el, 0);
-					el.Clip = null;
-				}
-			}
-			return;
-		}
+		// The pin math below runs entirely in logical (pre-mirror) LTR coordinates: children arrange
+		// left-to-right regardless of FlowDirection, and XAML applies RTL as a single mirror transform
+		// at the FlowDirection boundary above this panel. That mirror flips the counter-translation and
+		// the clip geometry uniformly, so a Leading-frozen prefix pinned at logical-left lands on the
+		// visual right under RTL - exactly where FrozenEdge.Leading must pin. No RTL special-casing is
+		// needed here; the same code pins the correct edge in both flow directions.
 
 		// Accumulate each cell's panel-space left edge from column ActualWidth.
 		double panelX = 0.0;

@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\Generated\TableView.properties.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\Generated\TableView.properties.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -261,10 +261,14 @@ partial class TableView
 	// selection and stay coherent with each other. Drive selection through Select / Deselect /
 	// DeselectAll, matching ItemsView. Independent of editing.
 
-	// The selected item's index, or -1 when nothing is selected.
+	// The selected item's index in the displayed row projection, or -1 when nothing is selected.
+	// Under grouping, group headers occupy projection indexes but cannot be selected.
 	/// <summary>
-	/// Gets the selected item's index, or -1 when nothing is selected.
+	/// Gets the selected item's index in the displayed row projection, or -1 when nothing is selected.
 	/// </summary>
+	/// <remarks>
+	/// Under grouping, group headers occupy projection indexes but cannot be selected.
+	/// </remarks>
 	public int SelectedIndex
 	{
 		get => (int)GetValue(SelectedIndexProperty);

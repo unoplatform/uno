@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewGroupHeader.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableViewGroupHeader.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -17,6 +17,8 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableViewGroupHeader
 {
+	private const string s_GridLineBorderPartName = "PART_GridLineBorder";
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TableViewGroupHeader"/> class.
 	/// </summary>
@@ -74,6 +76,7 @@ partial class TableViewGroupHeader
 		base.OnApplyTemplate();
 
 		m_isEnabledChangedRevoker.Disposable = null;
+		m_gridLineBorder = GetTemplateChild(s_GridLineBorderPartName) as Border;
 
 		// Keep CommonStates in sync with IsEnabled so Disabled activates when a consumer toggles it
 		// at runtime, not only when it happens to be false at template time.
@@ -89,6 +92,29 @@ partial class TableViewGroupHeader
 		m_isEnabledChangedRevoker.Disposable = Disposable.Create(() => IsEnabledChanged -= handler);
 
 		UpdateVisualStates(false /* useTransitions */);
+		UpdateTerminalBottomGridLineSuppression();
+	}
+
+	internal void SetTerminalBottomGridLineSuppression(bool suppress)
+	{
+		// Re-applies on every call rather than returning early on an unchanged flag: the overlay is
+		// also derived from BorderThickness, so a same-value push re-asserts it against the current
+		// thickness.
+		m_suppressBottomGridLine = suppress;
+		UpdateTerminalBottomGridLineSuppression();
+	}
+
+	private void UpdateTerminalBottomGridLineSuppression()
+	{
+		if (m_gridLineBorder is { } gridLineBorder)
+		{
+			var thickness = BorderThickness;
+			if (m_suppressBottomGridLine)
+			{
+				thickness.Bottom = 0.0;
+			}
+			gridLineBorder.BorderThickness = thickness;
+		}
 	}
 
 	protected override void OnContentChanged(object oldContent, object newContent)
@@ -119,20 +145,18 @@ partial class TableViewGroupHeader
 			SyncExpansionToContent();
 			UpdateVisualStates(true /* useTransitions */);
 		}
-
 	}
 
 	internal void RaiseExpandCollapseStateChanged(ExpandCollapseState oldState, ExpandCollapseState newState)
 	{
-		// Route through the peer the client is connected to. FromElement returns the already-created
-		// peer; CreatePeerForElement is the fallback because a container freshly prepared out of the
-		// recycle pool may not have had its peer created yet, and XAML caches the peer per element so
-		// this returns that same instance rather than a disconnected one.
-		var peer = FrameworkElementAutomationPeer.FromElement(this);
-		if (peer is null)
+		if (!AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
 		{
-			peer = FrameworkElementAutomationPeer.CreatePeerForElement(this);
+			return;
 		}
+
+		// FromElement only: no live peer means no listener, so creating one purely to announce would
+		// materialize automation objects a client never asked for.
+		var peer = FrameworkElementAutomationPeer.FromElement(this);
 
 		if ((peer is not null ? peer as TableViewGroupHeaderAutomationPeer : null) is { } headerPeer)
 		{

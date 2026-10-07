@@ -1,11 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewColumn.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableViewColumn.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
@@ -19,6 +20,30 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableViewColumn
 {
+	// namespace {
+	private static uint s_nextAutomationIdentity = 1;
+
+	private static bool TryFocusEditor(FrameworkElement editor)
+	{
+		if (editor.Focus(FocusState.Programmatic))
+		{
+			return true;
+		}
+		if (FocusManager.FindFirstFocusableElement(editor) is { } target)
+		{
+			if (target is Control control)
+			{
+				return control.Focus(FocusState.Programmatic);
+			}
+			if (target is UIElement element)
+			{
+				return element.Focus(FocusState.Programmatic);
+			}
+		}
+		return false;
+	}
+	// } // namespace
+
 	// Required for derivation: the overridable cell factories below are only reachable if a
 	// consumer can actually construct a derived column.
 	/// <summary>
@@ -102,18 +127,49 @@ partial class TableViewColumn
 		// Focus so typing goes straight into the editor; otherwise the row keeps focus and the user has
 		// to click the editor they just opened. The editing root is not necessarily focusable - a
 		// template column produces a ContentPresenter - so fall back to its first focusable descendant.
-		if (!editingElement.Focus(FocusState.Programmatic))
+		var root = editingElement.XamlRoot;
+		var initialFocus = root is not null ? FocusManager.GetFocusedElement(root) : null;
+		if (!TryFocusEditor(editingElement))
 		{
-			if (FocusManager.FindFirstFocusableElement(editingElement) is { } focusable)
+			if (root is not null && FocusManager.GetFocusedElement(root) != initialFocus)
 			{
-				if (focusable is Control focusableElement)
+				return null;
+			}
+			var owner = GetOwningTableView();
+			var editingParent = VisualTreeHelper.GetParent(editingElement);
+			TableViewRow? row = null;
+			for (var parent = editingParent; parent is not null;
+				parent = VisualTreeHelper.GetParent(parent))
+			{
+				if (parent is TableViewRow candidate)
 				{
-					focusableElement.Focus(FocusState.Programmatic);
+					row = candidate;
+					break;
 				}
-				else if (focusable is UIElement focusableUi)
-				{
-					focusableUi.Focus(FocusState.Programmatic);
-				}
+			}
+			var item = row?.DataContext;
+
+			// The editing ContentPresenter may not have instantiated its DataTemplate.
+			// Realize it before returning from F2 so the first keystroke has a target.
+			editingElement.UpdateLayout();
+
+			// Layout can run application code and recycle the row or end the edit.
+			if (owner is not null && (GetOwningTableView() != owner ||
+				owner.CurrentEditingElement() != editingElement ||
+				editingParent is null || VisualTreeHelper.GetParent(editingElement) != editingParent ||
+				row is null || row.GetOwningTableView() != owner ||
+				!TableView.SameInspectableIdentity(row.DataContext, item)))
+			{
+				return null;
+			}
+			if (root is not null && FocusManager.GetFocusedElement(root) != initialFocus)
+			{
+				// A Loaded/focus handler chose another target; preserve that choice.
+				return null;
+			}
+			if (!TryFocusEditor(editingElement))
+			{
+				TVDiag.LogRetailF("[TableView] The realized cell editor has no available keyboard focus target.");
 			}
 		}
 
@@ -244,6 +300,16 @@ partial class TableViewColumn
 		return m_owningTableView is not null && m_owningTableView.TryGetTarget(out var owner) ? owner : null;
 	}
 
+	internal uint AutomationIdentity()
+	{
+		if (m_automationIdentity == 0)
+		{
+			// fetch_add returns the pre-increment value.
+			m_automationIdentity = Interlocked.Increment(ref s_nextAutomationIdentity) - 1;
+		}
+		return m_automationIdentity;
+	}
+
 	private protected void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 	{
 		var property = args.Property;
@@ -252,6 +318,12 @@ partial class TableViewColumn
 			property == MinWidthProperty ||
 			property == MaxWidthProperty)
 		{
+			// Only an app-driven assignment replaces the authored width; a user resize does not.
+			if (property == WidthProperty && !m_inUserResize)
+			{
+				m_authoredWidth = (GridLength)args.NewValue!;
+			}
+
 			UpdateActualWidth();
 			if (GetOwningTableView() is { } owner)
 			{
@@ -462,9 +534,14 @@ partial class TableViewColumn
 				? width.Value
 				: c_widthDefault.Value;
 
-		// Keep std::clamp well-defined even when MinWidth exceeds MaxWidth.
-		var lo = MinWidth;
-		var hi = StdMath.Max(lo, MaxWidth);
+		// Reject non-finite / negative bounds the same way the resize path does (TableView.cpp), so a
+		// pathological MinWidth/MaxWidth (NaN, infinity, negative) can never leak into ActualWidth. A
+		// non-finite MinWidth means "no lower bound" (0) and a non-finite MaxWidth means "no upper
+		// bound" (infinity). std::max keeps the clamp well-defined when MinWidth exceeds MaxWidth.
+		var lo = (double.IsFinite(MinWidth) && MinWidth >= 0.0) ? MinWidth : 0.0;
+		var hi = (double.IsFinite(MaxWidth) && MaxWidth >= 0.0)
+			? StdMath.Max(lo, MaxWidth)
+			: double.PositiveInfinity;
 		var clamped = StdMath.Clamp(widthPixels, lo, hi);
 
 		// ActualWidth uses the SetValue-via-key read-only DP convention.

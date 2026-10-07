@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewColumn.h, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableViewColumn.h, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -28,6 +28,9 @@ partial class TableViewColumn
 
 	// Typed accessor for the owning TableView.
 	// winrt::TableView GetOwningTableView();
+
+	// Internal — stable, non-address token used by column-header automation peers.
+	// uint32_t AutomationIdentity();
 
 	// Overridable
 	// virtual winrt::hstring GetSortMemberPathCore();
@@ -81,15 +84,34 @@ partial class TableViewColumn
 	// void ResetDesiredWidthInternal();
 	internal double DesiredWidthInternal() => m_desiredWidth;
 
+	// Internal - resize: the width the app authored. A user resize rewrites Width as pixels, and
+	// the layout needs the original mode to know whether the table is meant to fit its viewport.
+	internal GridLength AuthoredWidthInternal() => m_authoredWidth;
+	// Width written inside this scope is the control resizing, not the app re-authoring the column.
+	internal UserResizeScope BeginUserResizeScope()
+	{
+		m_inUserResize = true;
+		return new(this);
+	}
+
+	// gsl::finally semantics: writes false on dispose rather than restoring the previous value.
+	internal readonly struct UserResizeScope(TableViewColumn owner) : IDisposable
+	{
+		public void Dispose() => owner.m_inUserResize = false;
+	}
+
 	// private:
 	// Write the resolved, clamped width into the read-only ActualWidth DP.
 	// void UpdateActualWidth();
 
 	// Monotonic max of pulled realized-cell measured widths for an Auto column (0 until first pull).
 	private double m_desiredWidth = 0.0;
+	private GridLength m_authoredWidth = c_widthDefault;
+	private bool m_inUserResize = false;
 
 	private Binding? m_cellToolTipBinding;
 
 	private WeakReference<TableView>? m_owningTableView = null;
 	private ITableViewSortComparer? m_customSortComparer = null;
+	private uint m_automationIdentity = 0;
 }
