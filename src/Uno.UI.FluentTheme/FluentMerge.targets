@@ -10,14 +10,23 @@
 
   <PropertyGroup>
 	<!--
-	  Build artifact, not committed (#23399). The source generator requires it at the project root under
-	  this exact name - XamlCodeGeneration matches the project-relative path to register
-	  ms-appx:///Microsoft.UI.Xaml/Themes/themeresources.xaml - so it cannot move to obj\.
-	  Sources and output are both kept out of the automatic Page glob; the merge feeds on the explicit
-	  XamlMergeInput below, and the Uno.XamlMerge.Task targets add the merged file to @(Page).
+	  Build artifacts, not committed (#23399). The source generator requires them at these exact
+	  project-relative paths - XamlCodeGeneration matches them to register
+	  ms-appx:///Microsoft.UI.Xaml/Themes/themeresources.xaml and
+	  ms-appx:///Microsoft.UI.Xaml.Controls.Tabular/Themes/{themeresources,generic}.xaml - so they cannot
+	  move to obj\. Sources and outputs are all kept out of the automatic Page glob; the merge feeds on the
+	  explicit XamlMergeInput below, and the Uno.XamlMerge.Task targets add the merged files to @(Page).
 	-->
-	<XamlMergeOutputFile>$(MSBuildThisFileDirectory)themeresources.xaml</XamlMergeOutputFile>
-	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml;$(XamlMergeOutputFile)</PageExclusions>
+	<_FluentThemeResourcesMergeFile>$(MSBuildThisFileDirectory)themeresources.xaml</_FluentThemeResourcesMergeFile>
+	<!--
+	  The Tabular controls (TableView) get their own generic.xaml and themeresources.xaml, as the
+	  Microsoft.UI.Xaml.Controls.Tabular binary ships them on Windows. The task pairs each XamlMergeInput with
+	  an output by MergeFile = output *file name*, so the Tabular theme file needs a name distinct from the
+	  Fluent one on disk; the URI it is registered under keeps the WinUI name.
+	-->
+	<_TabularGenericMergeFile>$(MSBuildThisFileDirectory)Tabular\Themes\generic.xaml</_TabularGenericMergeFile>
+	<_TabularThemeResourcesMergeFile>$(MSBuildThisFileDirectory)Tabular\Themes\tabular_themeresources.xaml</_TabularThemeResourcesMergeFile>
+	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml;$(MSBuildThisFileDirectory)Tabular\**\*.xaml;$(_FluentThemeResourcesMergeFile)</PageExclusions>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,17 +42,31 @@
 	<_ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\PriorityDefault\SplitView_themeresources.xaml" />
 
 	<!--
-	  Explicit merge inputs (not @(Page)) so every variant merges the same content into the shared
-	  output file - this avoids a variant that disables the Page glob writing an empty file over it.
+	  Several outputs, so XamlMergeOutputFile stays unset (the task refuses both). That also keeps
+	  Directory.Build.targets from appending @(Page) to XamlMergeInput, so the density dictionaries remain
+	  separate pages: ms-appx:///Microsoft.UI.Xaml/DensityStyles/Compact.xaml keeps resolving and Compact stays opt-in.
 	-->
-	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\**\*.xaml" Exclude="@(_ExcludedTemplates)" />
+	<XamlMergeOutputFiles Include="$(_FluentThemeResourcesMergeFile)" />
+	<XamlMergeOutputFiles Include="$(_TabularGenericMergeFile)" />
+	<XamlMergeOutputFiles Include="$(_TabularThemeResourcesMergeFile)" />
 
 	<!--
-	  Directory.Build.targets appends @(Page) to XamlMergeInput as soon as XamlMergeOutputFile is set, which
-	  would fold the density dictionaries into the merged theme - they have to stay separate pages so that
-	  ms-appx:///Microsoft.UI.Xaml/DensityStyles/Compact.xaml keeps resolving and Compact stays opt-in.
+	  Explicit merge inputs (not @(Page)) so every variant merges the same content into the shared
+	  output files - this avoids a variant that disables the Page glob writing an empty file over them.
 	-->
-	<_NonMergedXamlResources Include="$(MSBuildThisFileDirectory)DensityStyles\**\*.xaml" />
+	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\**\*.xaml" Exclude="@(_ExcludedTemplates)" MergeFile="themeresources.xaml" />
+
+	<!--
+	  Tabular pages in the order the Windows build merges them (Tabular.ProjectImports.targets): vcxitems in
+	  import order (ResizeGripper, SortIndicator, TableView), TabularSurfaces (Priority 2) ahead of the
+	  unprioritized theme pages. DefaultStyle pages go to generic.xaml, ThemeResources pages to themeresources.xaml.
+	-->
+	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Tabular\Resources\Generic\ResizeGripper.xaml" MergeFile="generic.xaml" />
+	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Tabular\Resources\Generic\SortIndicator.xaml" MergeFile="generic.xaml" />
+	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Tabular\Resources\Generic\TableView.xaml" MergeFile="generic.xaml" />
+	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Tabular\Resources\ThemeResources\TabularSurfaces_themeresources.xaml" MergeFile="tabular_themeresources.xaml" />
+	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Tabular\Resources\ThemeResources\SortIndicator_themeresources.xaml" MergeFile="tabular_themeresources.xaml" />
+	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Tabular\Resources\ThemeResources\TableView_themeresources.xaml" MergeFile="tabular_themeresources.xaml" />
   </ItemGroup>
 
   <!--
@@ -64,14 +87,14 @@
   <!--
     The merged file is no longer committed, so a skipped merge (unrestored package, relocated
     NuGetPackageRoot, stale version literal) would otherwise produce a theme assembly with no
-    resources and a successful build - the source generator registers
-    ms-appx:///Microsoft.UI.Xaml/Themes/themeresources.xaml only when the file is present.
+    resources and a successful build - the source generator registers each
+    ms-appx:///.../Themes/*.xaml dictionary only when its file is present.
   -->
   <Target Name="_VerifyMergedThemeResource"
 		  BeforeTargets="CoreCompile"
 		  Condition="'$(DesignTimeBuild)' != 'true'">
-	<Error Condition="!Exists('$(XamlMergeOutputFile)')"
-		   Text="$(XamlMergeOutputFile) was not generated. Uno.XamlMerge.Task $(UnoXamlMergeTaskVersion) must be restored (expected under '$(NuGetPackageRoot)\uno.xamlmerge.task\$(UnoXamlMergeTaskVersion)'). Run 'dotnet restore'." />
+	<Error Condition="!Exists('%(XamlMergeOutputFiles.FullPath)')"
+		   Text="%(XamlMergeOutputFiles.FullPath) was not generated. Uno.XamlMerge.Task $(UnoXamlMergeTaskVersion) must be restored (expected under '$(NuGetPackageRoot)\uno.xamlmerge.task\$(UnoXamlMergeTaskVersion)'). Run 'dotnet restore'." />
   </Target>
 
   <PropertyGroup>

@@ -274,6 +274,8 @@ mergedstyles.xaml
 
 # Generated at build time by Uno.XamlMerge.Task (Uno.UI.FluentTheme/FluentMerge.targets)
 /src/Uno.UI.FluentTheme/themeresources.xaml
+/src/Uno.UI.FluentTheme/Tabular/Themes/generic.xaml
+/src/Uno.UI.FluentTheme/Tabular/Themes/tabular_themeresources.xaml
 
 !build/ci/publish
 /doc/articles/llms/llms-full.txt

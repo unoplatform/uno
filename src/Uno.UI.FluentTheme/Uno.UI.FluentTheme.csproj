@@ -19,6 +19,9 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+
+		<!-- The Tabular (TableView) types are [Experimental] like their WinUI MUX_PREVIEW counterparts; that warning is for consumers. -->
+		<NoWarn>$(NoWarn);CS8305</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
