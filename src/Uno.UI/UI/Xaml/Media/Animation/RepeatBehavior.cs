@@ -66,19 +66,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public override bool Equals(object value)
 			=> value is RepeatBehavior other && Equals(this, other);
 
-		public bool Equals(RepeatBehavior other)
-			=> Equals(this, other);
+		public bool Equals(RepeatBehavior repeatBehavior)
+			=> Equals(this, repeatBehavior);
 
-		public static bool operator ==(RepeatBehavior first, RepeatBehavior second)
-			=> Equals(first, second);
+		public static bool operator ==(RepeatBehavior repeatBehavior1, RepeatBehavior repeatBehavior2)
+			=> Equals(repeatBehavior1, repeatBehavior2);
 
-		public static bool operator !=(RepeatBehavior first, RepeatBehavior second)
-			=> !Equals(first, second);
+		public static bool operator !=(RepeatBehavior repeatBehavior1, RepeatBehavior repeatBehavior2)
+			=> !Equals(repeatBehavior1, repeatBehavior2);
 
-		public static bool Equals(RepeatBehavior first, RepeatBehavior second)
-			=> first.Type.Equals(second.Type)
-				&& first.Count.Equals(second.Count)
-				&& first.Duration.Equals(second.Duration);
+		public static bool Equals(RepeatBehavior repeatBehavior1, RepeatBehavior repeatBehavior2)
+			=> repeatBehavior1.Type.Equals(repeatBehavior2.Type)
+				&& repeatBehavior1.Count.Equals(repeatBehavior2.Count)
+				&& repeatBehavior1.Duration.Equals(repeatBehavior2.Duration);
 
 		public override string ToString()
 			=> ToString(CultureInfo.InvariantCulture);
