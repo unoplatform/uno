@@ -1037,7 +1037,7 @@ namespace SampleControl.Presentation
 		/// <param name="ct"></param>
 		/// <param name="getAllSamples">If true, will load favorites based on all samples and not just based on selected category</param>
 		/// <returns></returns>
-		private async Task<List<SampleChooserContent>> GetFavoriteSamples(CancellationToken ct, bool getAllSamples = false)
+		internal async Task<List<SampleChooserContent>> GetFavoriteSamples(CancellationToken ct, bool getAllSamples = false)
 		{
 			try
 			{

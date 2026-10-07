@@ -2,6 +2,9 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SampleControl.Presentation;
 using Uno.UI.RuntimeTests;
@@ -37,6 +40,29 @@ public class Given_SampleChooserViewModel
 			vm.PropertyChanged -= OnChanged;
 			vm.IsAppThemeLight = true;
 			vm.IsAutomationRun = wasAutomation;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Favorites_Load_For_All_Samples_Library_Keeps_Selected_Category()
+	{
+		var vm = SampleChooserViewModel.Instance;
+		var previous = vm.SelectedCategory;
+		var category = vm.Categories.First(c => !c.Equals(previous) && c.Count > 1);
+
+		try
+		{
+			vm.SelectedCategory = category;
+
+			// The startup load flags favorites across every sample.
+			await vm.GetFavoriteSamples(CancellationToken.None, getAllSamples: true);
+
+			CollectionAssert.AreEquivalent(category.SamplesContent.ToList(), vm.SampleContents);
+		}
+		finally
+		{
+			vm.SelectedCategory = previous;
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 	}
