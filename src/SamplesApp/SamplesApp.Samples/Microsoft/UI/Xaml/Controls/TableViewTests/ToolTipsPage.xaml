@@ -1,0 +1,106 @@
+﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
+<!--  MUX Reference Samples\TableViewSampleApp\ToolTipsPage.xaml, tag winui3/release/2.5.4-experimental, commit 7b127093475  -->
+<Page
+    x:Class="MUXControlsTestApp.ToolTipsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:tv="using:Microsoft.UI.Xaml.Controls.Tabular"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <!--
+            A cell whose OWN content carries an app-set ToolTip. The control must never replace or
+            clear this one; hovering the text shows the app's tooltip, not a control-owned one.
+        -->
+        <DataTemplate x:Key="AppToolTipCell">
+            <TextBlock
+                Margin="8,0"
+                VerticalAlignment="Center"
+                Text="{Binding Notes}"
+                ToolTipService.ToolTip="APP-OWNED tooltip (set in the cell template)" />
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="2">
+            <TextBlock
+                FontSize="18"
+                FontWeight="SemiBold"
+                Text="Cell and header tooltips" />
+            <TextBlock
+                FontSize="12"
+                Opacity="0.7"
+                Text="Opt-in per-cell tooltips via TableViewColumn.CellToolTipBinding. Bio binds a plain string; Name uses a converter to produce rich non-string content; Score has no binding (no tooltip should appear); Notes has an app-set tooltip in its own cell template that the control must not touch. Column headers use TableViewColumn.HeaderToolTip: Name and City carry text (reported as help text alongside the sort state), Bio carries rich content (mouse only), Score repeats its own header text (dropped from help text)."
+                TextWrapping="Wrap" />
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="1"
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+            Spacing="8">
+            <Button
+                x:Name="AttachLate"
+                Click="OnAttachLate"
+                Content="Detach bindings" />
+            <Button
+                x:Name="MutateData"
+                Click="OnMutateData"
+                Content="Mutate data (no invalidate)" />
+            <Button
+                x:Name="ScrollDown"
+                Click="OnScroll"
+                Content="Scroll (recycle rows)" />
+            <Button
+                x:Name="CheckOwnership"
+                Click="OnCheckOwnership"
+                Content="Check app-owned cells" />
+            <Button
+                x:Name="CheckUiaHelp"
+                Click="OnCheckUiaHelp"
+                Content="Check UIA help text" />
+            <Button
+                x:Name="CheckHeaderUia"
+                Click="OnCheckHeaderUia"
+                Content="Check header UIA help" />
+            <Button
+                x:Name="CheckHeaderTips"
+                Click="OnCheckHeaderTips"
+                Content="Check header tooltips" />
+            <Button
+                x:Name="MutateHeaderTips"
+                Click="OnMutateHeaderTips"
+                Content="Mutate header tooltips" />
+            <Button
+                x:Name="CheckHeaderHitTest"
+                Click="OnCheckHeaderHitTest"
+                Content="Header hit-test" />
+            <Button
+                x:Name="SortHeaders"
+                Click="OnSortHeaders"
+                Content="Sort (rebuild headers)" />
+        </StackPanel>
+
+        <Border
+            Grid.Row="2"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="6">
+            <tv:TableView x:Name="Table" />
+        </Border>
+
+        <TextBlock
+            x:Name="Status"
+            Grid.Row="3"
+            FontSize="12"
+            Opacity="0.8"
+            TextWrapping="Wrap" />
+    </Grid>
+</Page>

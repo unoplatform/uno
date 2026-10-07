@@ -1,0 +1,50 @@
+﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
+<!--  MUX Reference Samples\TableViewSampleApp\InteractiveCellsPage.xaml, tag winui3/release/2.5.4-experimental, commit 7b127093475  -->
+<Page
+    x:Class="MUXControlsTestApp.InteractiveCellsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:tv="using:Microsoft.UI.Xaml.Controls.Tabular"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="2">
+            <TextBlock
+                FontSize="18"
+                FontWeight="SemiBold"
+                Text="Interactive cells (expandable in every column)" />
+            <TextBlock
+                FontSize="12"
+                Opacity="0.7"
+                Text="Every column hosts an interactive Expander (some embed an editable TextBox), plus a 'Width' column whose Slider grows an inner bar to change the cell's width live. The dropdown sets ALL columns to the same width mode: Auto sizes each column to its widest realized cell and re-sizes when you drag the Slider or expand a row; Star divides the viewport so content wraps/clips; Pixel fixes every column."
+                TextWrapping="Wrap" />
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="1"
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+            Spacing="8">
+            <TextBlock VerticalAlignment="Center" Text="All columns width:" />
+            <ComboBox x:Name="WidthCombo" SelectionChanged="Width_Changed">
+                <ComboBoxItem Content="Auto" IsSelected="True" />
+                <ComboBoxItem Content="Star" />
+                <ComboBoxItem Content="Pixel 200" />
+            </ComboBox>
+        </StackPanel>
+
+        <Border
+            Grid.Row="2"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="6">
+            <tv:TableView x:Name="Table" />
+        </Border>
+    </Grid>
+</Page>

@@ -51,6 +51,12 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView2Tests\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView2Tests\**"
 		      Link="Microsoft\UI\Xaml\Controls\WebView2Tests\%(RecursiveDir)%(Filename)%(Extension)" />
+
+		<!-- The referenced WinAppSDK does not ship the Tabular (TableView) binary -->
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\TableViewTests\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\TableViewTests\**" />
+		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\TableViewTests\**"
+		      Link="Microsoft\UI\Xaml\Controls\TableViewTests\%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 	<!-- SkiaSharp-free build: SKCanvasElement exposes raw SKCanvas (Uno.WinUI.Graphics2DSK) and cannot be neutral. -->
 	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'=='false'">

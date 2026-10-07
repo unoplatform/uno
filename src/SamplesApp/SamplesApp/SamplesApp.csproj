@@ -90,6 +90,9 @@
 		-->
 		<NoWarn>$(NoWarn);NU1703</NoWarn>
 
+		<!-- The TableView samples use the [Experimental] Tabular types, including from generated XAML code. -->
+		<NoWarn>$(NoWarn);CS8305</NoWarn>
+
 		<!-- Trimmer warnings the wasm, android and iOS/tvOS trimming passes raise. To remove as they are fixed. -->
 		<_UnoTrimmingNoWarn>IL2026;IL2057;IL2062;IL2065;IL2067;IL2070;IL2072;IL2075;IL2077;IL2080;IL2104;IL2111;IL2122</_UnoTrimmingNoWarn>
 
