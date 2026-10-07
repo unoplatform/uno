@@ -425,7 +425,7 @@ partial class FlowLayout
 		}
 
 		avgCountInLine = Math.Max(1.0, flowState.TotalItemsPerLine / flowState.TotalLinesMeasured);
-		avgLineSize = Math.Round(flowState.TotalLineSize / flowState.TotalLinesMeasured, MidpointRounding.AwayFromZero);
+		avgLineSize = Math.Round(flowState.TotalLineSize / flowState.TotalLinesMeasured);
 
 		return avgLineSize;
 	}

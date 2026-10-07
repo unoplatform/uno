@@ -25,9 +25,7 @@ partial class StackLayout
 	/// instead. Two cases release it: the first item being realized, where the natural origin is 0
 	/// and holding a stale one would offset the whole list, and realized items sitting above the held
 	/// origin, which happens when scrolling back up puts items at negative algorithm coordinates --
-	/// holding then would leave them above the repeater's frame, unreachable. Changing Orientation or
-	/// Spacing bumps <see cref="_extentOriginVersion"/>, so an origin held for the old configuration
-	/// is dropped as well.
+	/// holding then would leave them above the repeater's frame, unreachable.
 	///
 	/// Remove once Uno's ScrollViewer honours the pending viewport shift.
 	/// </remarks>
@@ -38,7 +36,7 @@ partial class StackLayout
 		Rect firstRealizedLayoutBounds)
 	{
 		var held = stackState._lastReportedExtentMajorStart;
-		var hasHeld = stackState._extentOriginVersion == _extentOriginVersion && !double.IsNaN(held);
+		var hasHeld = !double.IsNaN(held);
 		var itemsAboveHeld = hasHeld && MajorStart(firstRealizedLayoutBounds) < held;
 
 		if (hasHeld && firstRealizedItemIndex != 0 && !itemsAboveHeld)
@@ -47,14 +45,7 @@ partial class StackLayout
 		}
 
 		stackState._lastReportedExtentMajorStart = MajorStart(extent);
-		stackState._extentOriginVersion = _extentOriginVersion;
 	}
-
-	private uint _extentOriginVersion;
-
-	internal uint ExtentOriginVersion => _extentOriginVersion;
-
-	private void InvalidateExtentOrigin() => _extentOriginVersion++;
 
 	private ScrollOrientation _scrollOrientation;
 

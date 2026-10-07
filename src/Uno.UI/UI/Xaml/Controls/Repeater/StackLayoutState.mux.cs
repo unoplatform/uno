@@ -12,9 +12,6 @@ partial class StackLayoutState
 		VirtualizingLayoutContext context,
 		IFlowLayoutAlgorithmDelegates callbacks)
 	{
-#if HAS_UNO
-		ResetExtentOrigin();
-#endif
 		m_flowAlgorithm.InitializeForContext(context, callbacks);
 		if (m_estimationBuffer.Length == 0)
 		{
@@ -25,12 +22,7 @@ partial class StackLayoutState
 	}
 
 	internal void UninitializeForContext(VirtualizingLayoutContext context)
-	{
-		m_flowAlgorithm.UninitializeForContext(context);
-#if HAS_UNO
-		ResetExtentOrigin();
-#endif
-	}
+		=> m_flowAlgorithm.UninitializeForContext(context);
 
 	internal void OnElementMeasured(int elementIndex, double majorSize, double minorSize)
 	{
@@ -69,7 +61,7 @@ partial class StackLayoutState
 		m_lastElementSize = 0.0;
 		Array.Clear(m_estimationBuffer);
 #if HAS_UNO
-		ResetExtentOrigin();
+		_lastReportedExtentMajorStart = double.NaN;
 #endif
 	}
 }
