@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Composition;
 using Silk.NET.OpenGL;
@@ -264,8 +265,32 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			return;
 		}
 
-		Compositor.GetSharedCompositor().InvalidateRender(Visual);
+		// Safe to call from any thread: invalidating marks the visual dirty and drops the cached
+		// recording of every ancestor, so doing it off the UI thread races the frame being recorded
+		// or replayed. On the UI thread it stays inline, which is what keeps the resize case above
+		// from hanging and keeps Invalidate() inside RenderOverride() a direct call.
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			Compositor.GetSharedCompositor().InvalidateRender(Visual);
+			return;
+		}
+
+		// Coalesce: invalidation is idempotent, and a background loop that invalidates per unit of
+		// work would otherwise post a callback per call and starve the UI thread of the frame it is
+		// asking for.
+		if (Interlocked.Exchange(ref _invalidatePending, 1) == 0)
+		{
+			NativeDispatcher.Main.Enqueue(
+				() =>
+				{
+					Volatile.Write(ref _invalidatePending, 0);
+					Compositor.GetSharedCompositor().InvalidateRender(Visual);
+				},
+				NativeDispatcherPriority.Normal);
+		}
 	}
+
+	private int _invalidatePending;
 
 	private protected override ContainerVisual CreateElementVisual() => new GLVisual(this, Compositor.GetSharedCompositor());
 

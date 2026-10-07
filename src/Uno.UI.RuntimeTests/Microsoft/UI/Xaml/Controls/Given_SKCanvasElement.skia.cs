@@ -167,6 +167,68 @@ public class Given_SKCanvasElement
 		public void Destroy() { }
 
 		public void OnUnavailable() => Unavailable = true;
+	[TestMethod]
+	public async Task When_Invalidated_From_Background_Thread()
+	{
+		if (OperatingSystem.IsBrowser())
+		{
+			Assert.Inconclusive("This test requires a multithreaded environment.");
+		}
+
+		// Invalidating disposes this visual's cached recording and those of its ancestors, so doing it
+		// off the UI thread can free a picture the render thread is replaying. The element redraws
+		// continuously here to keep frames in flight while other threads invalidate.
+		//
+		// This covers the supported call pattern rather than the race itself: the window is too
+		// narrow to hit reliably on demand, and this passed even before Invalidate marshalled.
+		var SUT = new CountingSKCanvasElement { Width = 400, Height = 400 };
+		await UITestHelper.Load(SUT);
+		await UITestHelper.WaitFor(() => SUT.RenderCount > 0, timeoutMS: 5000);
+
+		var before = SUT.RenderCount;
+		using var cts = new CancellationTokenSource();
+		var workers = Enumerable.Range(0, 2).Select(_ => Task.Run(() =>
+		{
+			while (!cts.IsCancellationRequested)
+			{
+				SUT.Invalidate();
+			}
+		})).ToArray();
+
+		try
+		{
+			await Task.Delay(2000);
+		}
+		finally
+		{
+			await cts.CancelAsync();
+			await Task.WhenAll(workers);
+		}
+
+		Assert.IsTrue(SUT.RenderCount > before, "the element should have kept rendering");
+	}
+
+	private class CountingSKCanvasElement : SKCanvasElement
+	{
+		private readonly SKPaint _paint = new() { Color = SKColors.Blue };
+		private int _renderCount;
+
+		public int RenderCount => Volatile.Read(ref _renderCount);
+
+		protected override void RenderOverride(SKCanvas canvas, Size area)
+		{
+			Interlocked.Increment(ref _renderCount);
+
+			// Paint enough that recording and replaying a frame is not instant, which keeps the
+			// window the invalidating threads are racing against open. Deliberately does not
+			// self-invalidate: that would keep the render loop hot after the test and stop anything
+			// waiting for idle afterwards from ever settling.
+			for (var i = 0; i < 100; i++)
+			{
+				_paint.Color = new SKColor((byte)i, (byte)(255 - i), 0x80);
+				canvas.DrawRect(new SKRect(i % 50, i % 50, (float)area.Width, (float)area.Height), _paint);
+			}
+		}
 	}
 
 	private class BlueFillSKCanvasElement : SKCanvasElement
