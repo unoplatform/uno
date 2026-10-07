@@ -9,10 +9,13 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using SampleControl.Presentation;
 using Uno.UI.RuntimeTests;
+using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Helper;
 using Windows.Foundation;
 
@@ -330,5 +333,157 @@ public class Given_ShellLayout
 				await TestServices.WindowHelper.WaitFor(() => IsPersisted() == initial, timeoutMS: 5000);
 			}
 		}
+	}
+
+	[TestMethod]
+	public async Task When_Focus_Mode_Exit_Button_Shows_Only_Outside_Recording()
+	{
+		var vm = SampleChooserViewModel.Instance;
+		var owner = vm.Owner;
+		var exitButton = (Button)owner.FindName("ShellExitFocusModeButton");
+		var header = (FrameworkElement)owner.FindName("ShellHeader");
+		var host = (Grid)owner.FindName("ShellHostLayer");
+		var wasChromeVisible = vm.IsShellChromeVisible;
+		var wasRecording = vm.IsRecordAllTests;
+
+		try
+		{
+			vm.IsShellChromeVisible = false;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Visibility.Visible, exitButton.Visibility, "Focus mode");
+			Assert.AreEqual(Visibility.Collapsed, header.Visibility);
+			Assert.AreEqual(default(CornerRadius), host.CornerRadius);
+
+			// Screenshots must not contain the button.
+			vm.IsRecordAllTests = true;
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsFalse(vm.IsShellChromeVisible);
+			Assert.AreEqual(Visibility.Collapsed, exitButton.Visibility, "Recording");
+
+			vm.IsRecordAllTests = false;
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(vm.IsShellChromeVisible, "Recording ends with the chrome back.");
+			Assert.AreEqual(Visibility.Collapsed, exitButton.Visibility, "Chrome visible");
+			Assert.AreEqual(Visibility.Visible, header.Visibility);
+		}
+		finally
+		{
+			vm.IsRecordAllTests = wasRecording;
+			vm.IsShellChromeVisible = wasChromeVisible;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Focus_Mode_Exit_Button_Idles_It_Hides_Until_Activity()
+	{
+		var vm = SampleChooserViewModel.Instance;
+		var owner = vm.Owner;
+		var exitButton = (Button)owner.FindName("ShellExitFocusModeButton");
+		var wasChromeVisible = vm.IsShellChromeVisible;
+		var delay = SampleChooserControl.FocusModeButtonIdleDelay;
+
+		try
+		{
+			SampleChooserControl.FocusModeButtonIdleDelay = TimeSpan.FromMilliseconds(100);
+			vm.IsShellChromeVisible = false;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, exitButton.Opacity, "Shown on entering focus mode");
+			Assert.IsTrue(exitButton.IsHitTestVisible);
+			Assert.AreEqual("Exit focus mode (F11)", ToolTipService.GetToolTip(exitButton));
+			Assert.AreEqual("F11", AutomationProperties.GetAcceleratorKey(exitButton));
+
+			// A focused button stays visible, so park focus in the sample first.
+			var hostControl = FocusManager.FindFirstFocusableElement((DependencyObject)owner.FindName("ShellHostLayer")) as Control;
+			Assert.IsNotNull(hostControl);
+			Assert.IsTrue(hostControl.Focus(FocusState.Programmatic));
+
+			await TestServices.WindowHelper.WaitFor(() => exitButton.Opacity == 0, timeoutMS: 3000, message: "Idle button should fade out");
+			Assert.IsFalse(exitButton.IsHitTestVisible, "The sample's corner must be reachable while the button is hidden.");
+			Assert.AreEqual(Visibility.Visible, exitButton.Visibility, "Still reachable by keyboard and UIA.");
+
+			owner.OnFocusModeActivity();
+			Assert.AreEqual(1, exitButton.Opacity, "Activity brings it back");
+			Assert.IsTrue(exitButton.IsHitTestVisible);
+
+			// Tabbing onto the hidden button reveals it and keeps it up.
+			await TestServices.WindowHelper.WaitFor(() => exitButton.Opacity == 0, timeoutMS: 3000);
+			Assert.IsTrue(exitButton.Focus(FocusState.Keyboard));
+			// GotFocus is raised asynchronously.
+			await TestServices.WindowHelper.WaitFor(() => exitButton.Opacity == 1, timeoutMS: 2000, message: "Focus brings it back");
+			await Task.Delay(300);
+			Assert.AreEqual(1, exitButton.Opacity, "Stays while focused");
+		}
+		finally
+		{
+			SampleChooserControl.FocusModeButtonIdleDelay = delay;
+			vm.IsShellChromeVisible = wasChromeVisible;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	[DataRow("Light")]
+	[DataRow("Default")]
+	[DataRow("HighContrast")]
+	public void When_Focus_Mode_Exit_Button_Fills_Are_Opaque(string theme)
+	{
+		var exitButton = (Button)SampleChooserViewModel.Instance.Owner.FindName("ShellExitFocusModeButton");
+		var dictionary = (ResourceDictionary)exitButton.Resources.ThemeDictionaries[theme];
+
+		foreach (var key in new[] { "ButtonBackground", "ButtonBackgroundPointerOver", "ButtonBackgroundPressed" })
+		{
+			var brush = dictionary[key] as SolidColorBrush;
+			Assert.IsNotNull(brush, key);
+			Assert.AreEqual(255, brush.Color.A, $"{theme} {key} must hide the sample underneath.");
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Focus_Mode_Toggled_From_Header_Focus_Stays_Reachable()
+	{
+		var vm = SampleChooserViewModel.Instance;
+		var owner = vm.Owner;
+		var exitButton = (Button)owner.FindName("ShellExitFocusModeButton");
+		var headerContent = (FrameworkElement)owner.FindName("ShellHeaderContent");
+		var wasChromeVisible = vm.IsShellChromeVisible;
+
+		try
+		{
+			var headerControl = FocusManager.FindFirstFocusableElement(headerContent) as Control;
+			Assert.IsNotNull(headerControl);
+			Assert.IsTrue(headerControl.Focus(FocusState.Programmatic));
+
+			vm.IsShellChromeVisible = false;
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreSame(exitButton, FocusManager.GetFocusedElement(owner.XamlRoot!), "The focused header control collapsed.");
+
+			vm.ToggleFocusModeCommand.Execute(null);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(vm.IsShellChromeVisible);
+			var focused = FocusManager.GetFocusedElement(owner.XamlRoot!) as DependencyObject;
+			Assert.IsTrue(IsWithin(focused, headerContent), $"Focus should return to the header, not {focused}.");
+		}
+		finally
+		{
+			vm.IsShellChromeVisible = wasChromeVisible;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	private static bool IsWithin(DependencyObject? element, DependencyObject ancestor)
+	{
+		for (var current = element; current is not null; current = VisualTreeHelper.GetParent(current))
+		{
+			if (current == ancestor)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
