@@ -973,6 +973,17 @@ namespace Uno.UI.Helpers.WinUI
 			return returnHString;
 		}
 
+#nullable enable
+		// TODO Uno: try_as<IStringable>() as a C#/WinRT app sees it. The CCW of every managed object implements
+		// IStringable over Object.ToString(); framework DependencyObjects are native in WinUI and do not.
+		internal static bool IsStringable([System.Diagnostics.CodeAnalysis.NotNullWhen(true)] object? value)
+			=> value is IStringable || (value is not null && value is not DependencyObject);
+
+		// IStringable.ToString() on a value IsStringable accepted; an explicit IStringable implementation wins.
+		internal static string StringableToString(object value)
+			=> (value is IStringable stringable ? stringable.ToString() : value.ToString()) ?? "";
+#nullable restore
+
 		//
 		// Header file
 		//

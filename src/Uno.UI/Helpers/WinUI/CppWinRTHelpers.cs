@@ -2,6 +2,8 @@
 
 
 using System;
+using System.Globalization;
+using System.Numerics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
@@ -96,4 +98,122 @@ internal static class CppWinRTHelpers
 
 		return false;
 	}
+
+#nullable enable
+	/// <summary>
+	/// Equivalent of C++/WinRT <c>weak_ref&lt;T&gt;::get()</c>: the target, or null when the reference
+	/// is empty or the target has been collected.
+	/// </summary>
+	internal static T? Get<T>(this WeakReference<T>? weakRef) where T : class
+		=> weakRef is not null && weakRef.TryGetTarget(out var target) ? target : null;
+
+	/// <summary>
+	/// Equivalent of C++/WinRT <c>winrt::to_hstring(float)</c>, which formats with MSVC <c>std::to_chars(value)</c>.
+	/// </summary>
+	internal static string ToHString(float value)
+	{
+		uint bits = BitConverter.SingleToUInt32Bits(value);
+		if (float.IsFinite(value))
+		{
+			return FormatShortest(value.ToString("R", CultureInfo.InvariantCulture), (double)value);
+		}
+
+		return FormatNonFinite((bits & 0x8000_0000u) != 0, bits & 0x007F_FFFFu, 0x0040_0000u);
+	}
+
+	/// <summary>
+	/// Equivalent of C++/WinRT <c>winrt::to_hstring(double)</c>, which formats with MSVC <c>std::to_chars(value)</c>.
+	/// </summary>
+	internal static string ToHString(double value)
+	{
+		ulong bits = BitConverter.DoubleToUInt64Bits(value);
+		if (double.IsFinite(value))
+		{
+			return FormatShortest(value.ToString("R", CultureInfo.InvariantCulture), value);
+		}
+
+		return FormatNonFinite((bits & 0x8000_0000_0000_0000ul) != 0, bits & 0x000F_FFFF_FFFF_FFFFul, 0x0008_0000_0000_0000ul);
+	}
+
+	private static string FormatNonFinite(bool isNegative, ulong mantissa, ulong quietBit)
+	{
+		var sign = isNegative ? "-" : "";
+		if (mantissa == 0)
+		{
+			return sign + "inf";
+		}
+
+		if (isNegative && mantissa == quietBit)
+		{
+			return sign + "nan(ind)";
+		}
+
+		return sign + ((mantissa & quietBit) != 0 ? "nan" : "nan(snan)");
+	}
+
+	// std::to_chars(value) without a format: the shortest round-trip digits, in fixed or scientific
+	// notation, whichever is shorter (fixed on a tie). Integral fixed output prints the exact value.
+	private static string FormatShortest(string roundTrip, double exactValue)
+	{
+		var isNegative = roundTrip.StartsWith('-');
+		var unsigned = isNegative ? roundTrip.Substring(1) : roundTrip;
+		var sign = isNegative ? "-" : "";
+
+		var exponentIndex = unsigned.IndexOf('E');
+		var mantissa = exponentIndex >= 0 ? unsigned.Substring(0, exponentIndex) : unsigned;
+		var exponent = exponentIndex >= 0 ? int.Parse(unsigned.Substring(exponentIndex + 1), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture) : 0;
+
+		var pointIndex = mantissa.IndexOf('.');
+		var integerDigitCount = pointIndex >= 0 ? pointIndex : mantissa.Length;
+		var allDigits = mantissa.Replace(".", "");
+
+		var leadingZeros = 0;
+		while (leadingZeros < allDigits.Length && allDigits[leadingZeros] == '0')
+		{
+			leadingZeros++;
+		}
+
+		var digits = allDigits.Substring(leadingZeros).TrimEnd('0');
+		if (digits.Length == 0)
+		{
+			return sign + "0";
+		}
+
+		// Decimal exponent of the first significant digit (d.ddd x 10^scientificExponent).
+		var scientificExponent = integerDigitCount - leadingZeros - 1 + exponent;
+		var digitCount = digits.Length;
+
+		var absExponent = Math.Abs(scientificExponent);
+		var scientificLength = digitCount + (digitCount > 1 ? 1 : 0) + 2 + Math.Max(2, absExponent.ToString(CultureInfo.InvariantCulture).Length);
+
+		int fixedLength;
+		if (scientificExponent >= 0)
+		{
+			fixedLength = scientificExponent + 1 >= digitCount ? scientificExponent + 1 : digitCount + 1;
+		}
+		else
+		{
+			fixedLength = 2 + (-scientificExponent - 1) + digitCount;
+		}
+
+		if (fixedLength <= scientificLength)
+		{
+			if (scientificExponent + 1 >= digitCount)
+			{
+				// Integral: MSVC prints the exact value rather than the shortest digits padded with zeros.
+				return sign + new BigInteger(Math.Abs(exactValue)).ToString(CultureInfo.InvariantCulture);
+			}
+
+			if (scientificExponent >= 0)
+			{
+				return string.Concat(sign, digits.AsSpan(0, scientificExponent + 1), ".", digits.AsSpan(scientificExponent + 1));
+			}
+
+			return sign + "0." + new string('0', -scientificExponent - 1) + digits;
+		}
+
+		var scientificMantissa = digitCount > 1 ? string.Concat(digits.AsSpan(0, 1), ".", digits.AsSpan(1)) : digits;
+		return sign + scientificMantissa + "e" + (scientificExponent < 0 ? "-" : "+") + absExponent.ToString("00", CultureInfo.InvariantCulture);
+	}
+#nullable restore
 }
