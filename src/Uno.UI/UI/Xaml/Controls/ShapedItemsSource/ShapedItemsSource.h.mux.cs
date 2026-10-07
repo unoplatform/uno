@@ -164,7 +164,7 @@ internal sealed partial class ShapedItemsSource
 	// a Grouped projection the presented row axis is the GroupedSourceAdapter's computed
 	// ItemsSourceView instead, but this vector is still maintained as the flat shaped projection
 	// (group order, headers excluded) so Rows() stays coherent regardless of grouping.
-	public IObservableVector<object?>? Rows() => m_rows;
+	public IObservableVector<object?> Rows() => m_rows;
 	public GroupedSourceAdapter? GroupedAdapter() => m_groupedAdapter;
 	// The selector every identity consumer must use. Derives identity from each item's object
 	// identity, so shaping never depends on the app having a unique domain key.
@@ -273,7 +273,7 @@ internal sealed partial class ShapedItemsSource
 	private bool m_projectedAsGrouped;
 	private string m_diagnosticName = "ShapedItemsSource";
 	// TODO Uno: typed as the concrete ObservableVector<T> (single_threaded_observable_vector) so ReplaceAll raises one Reset.
-	private ObservableVector<object?>? m_rows;
+	private readonly ObservableVector<object?> m_rows;
 	private ObservableVector<object?>? m_groupSource;
 	// Identities of the rows currently in the flat projection, and each one's index in it.
 	// Maintained incrementally so the sorted fast-path can detect duplicate/empty identities and

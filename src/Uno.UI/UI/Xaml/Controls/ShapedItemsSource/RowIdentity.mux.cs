@@ -6,6 +6,7 @@
 
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -169,7 +170,6 @@ partial class RowIdentity
 			if (TryGetRequiredRowIdentity(rows[index], keySelector, out var identity, ref reason))
 			{
 				identities.Add(identity);
-				// TODO Uno: std::unordered_map::emplace keeps the existing entry on a duplicate key; TryAdd does the same.
 				identityToIndex.TryAdd(identity, (uint)index);
 			}
 			else
@@ -219,12 +219,12 @@ partial class RowIdentity
 		Dictionary<string, uint> identityToIndex,
 		uint insertedIndex)
 	{
-		// TODO Uno: Dictionary values cannot be mutated through its enumerator; the keys are snapshotted first.
-		foreach (var key in new List<string>(identityToIndex.Keys))
+		foreach (var key in identityToIndex.Keys)
 		{
-			if (identityToIndex[key] >= insertedIndex)
+			ref var index = ref CollectionsMarshal.GetValueRefOrNullRef(identityToIndex, key);
+			if (index >= insertedIndex)
 			{
-				++identityToIndex[key];
+				++index;
 			}
 		}
 	}
@@ -233,12 +233,12 @@ partial class RowIdentity
 		Dictionary<string, uint> identityToIndex,
 		uint removedIndex)
 	{
-		// TODO Uno: Dictionary values cannot be mutated through its enumerator; the keys are snapshotted first.
-		foreach (var key in new List<string>(identityToIndex.Keys))
+		foreach (var key in identityToIndex.Keys)
 		{
-			if (identityToIndex[key] > removedIndex)
+			ref var index = ref CollectionsMarshal.GetValueRefOrNullRef(identityToIndex, key);
+			if (index > removedIndex)
 			{
-				--identityToIndex[key];
+				--index;
 			}
 		}
 	}
@@ -282,7 +282,6 @@ partial class RowIdentity
 
 	internal static partial bool GroupKeysEqual(object? a, object? b)
 	{
-		// TODO Uno: IInspectable operator== compares the canonical COM identity, which is reference equality.
 		if (ReferenceEquals(a, b))
 		{
 			return true;
@@ -299,12 +298,13 @@ partial class RowIdentity
 			return aIdentity == bIdentity;
 		}
 
-		// TODO Uno: try_as<::IUnknown> pointer equality is reference equality, already ruled out above.
+		// try_as<IUnknown> identity is reference identity in .NET, already handled by the ReferenceEquals
+		// above, so this path is always false.
 		// Original C++:
 		// auto aUnknown = a.try_as<::IUnknown>();
 		// auto bUnknown = b.try_as<::IUnknown>();
 		// return aUnknown && bUnknown && aUnknown.get() == bUnknown.get();
-		return ReferenceEquals(a, b);
+		return false;
 	}
 
 	internal static partial string StringifyKey(object? key) => ShapingHelpers.ValueKey.ToString(key);

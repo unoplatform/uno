@@ -19,8 +19,6 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 // of rows — header, items, header, items — held in an ordinary IObservableVector. That vector
 // can then be wrapped in an ItemsSourceView and handed to the ItemsRepeater by the control.
 // TODO Uno: std::enable_shared_from_this becomes a plain class; weak_from_this() captures become WeakReference<GroupedSourceAdapter>.
-// The constructor GroupedSourceAdapter() and the commented-out destructor are in GroupedSourceAdapter.mux.cs;
-// the remaining methods declared here are partial methods implemented there.
 internal sealed partial class GroupedSourceAdapter
 {
 	// UI-thread-affine: construct on a UI thread with a DispatcherQueue. Source notifications are

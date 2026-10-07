@@ -5,7 +5,6 @@
 #nullable enable
 
 using System;
-using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.UI.Xaml.Interop;
@@ -40,17 +39,14 @@ internal static partial class ShapingHelpers
 		Unknown,
 	}
 
-	// TODO Uno: IPropertyValue projection. A boxed WinRT value is an IPropertyValue in C++; in C# the value is the boxed
-	// CLR object itself and its PropertyType is resolved through ValueConversionHelpers.GetPropertyType. A boxed enum is an
-	// IReference<Enum>, whose IPropertyValue type is OtherType. GetPropertyType reports Empty for a type that is not a
-	// WinRT property value, and no boxed CLR value is ever WinRT Empty (PropertyValue.CreateEmpty() projects as null).
+	// TODO Uno: IPropertyValue projection, the equivalent of try_as<IPropertyValue>(). WinRT boxes only value types
+	// and strings, so any other reference type is not an IPropertyValue; a boxed enum is an IReference<Enum> (OtherType).
 	private static bool IsPropertyValue(object? value) =>
-		value is not null &&
-		(value.GetType().IsEnum || ValueConversionHelpers.GetPropertyType(value.GetType()) != PropertyType.Empty);
+		value is not null && ValueConversionHelpers.TryGetPropertyType(value, out _);
 
 	// TODO Uno: IPropertyValue projection, the equivalent of IPropertyValue::Type().
 	private static PropertyType GetPropertyValueType(object propertyValue) =>
-		propertyValue.GetType().IsEnum ? PropertyType.OtherType : ValueConversionHelpers.GetPropertyType(propertyValue.GetType());
+		ValueConversionHelpers.GetPropertyType(propertyValue.GetType());
 
 	// TODO Uno: WinRT DateTime counts 100ns intervals since 1601-01-01 UTC; it projects as DateTimeOffset.
 	private const long c_winrtDateTimeEpochTicks = 504911232000000000;
@@ -66,17 +62,6 @@ internal static partial class ShapingHelpers
 
 	// TODO Uno: IPropertyValue::GetTimeSpan().count(); both count 100ns ticks.
 	private static long GetTimeSpanCount(object propertyValue) => ((TimeSpan)propertyValue).Ticks;
-
-	// TODO Uno: winrt::guid exposes Data1..Data4; System.Guid's byte layout is the same little-endian GUID struct.
-	private static void GetGuidParts(Guid guid, out uint data1, out ushort data2, out ushort data3, out byte[] data4)
-	{
-		Span<byte> bytes = stackalloc byte[16];
-		guid.TryWriteBytes(bytes);
-		data1 = BinaryPrimitives.ReadUInt32LittleEndian(bytes.Slice(0, 4));
-		data2 = BinaryPrimitives.ReadUInt16LittleEndian(bytes.Slice(4, 2));
-		data3 = BinaryPrimitives.ReadUInt16LittleEndian(bytes.Slice(6, 2));
-		data4 = bytes.Slice(8, 8).ToArray();
-	}
 
 	// TODO Uno: the hstring operator< is an ordinal UTF-16 code unit comparison.
 	private static bool HStringLess(string a, string b) => string.CompareOrdinal(a, b) < 0;
@@ -278,30 +263,9 @@ internal static partial class ShapingHelpers
 				return GetTimeSpanCount(a) < GetTimeSpanCount(b) ? -1 :
 					(GetTimeSpanCount(a) > GetTimeSpanCount(b) ? 1 : 0);
 			case PropertyType.Guid:
-				{
-					GetGuidParts((Guid)a, out var vaData1, out var vaData2, out var vaData3, out var vaData4);
-					GetGuidParts((Guid)b, out var vbData1, out var vbData2, out var vbData3, out var vbData4);
-					if (vaData1 != vbData1)
-					{
-						return vaData1 < vbData1 ? -1 : 1;
-					}
-					if (vaData2 != vbData2)
-					{
-						return vaData2 < vbData2 ? -1 : 1;
-					}
-					if (vaData3 != vbData3)
-					{
-						return vaData3 < vbData3 ? -1 : 1;
-					}
-					for (int i = 0; i < 8; ++i)
-					{
-						if (vaData4[i] != vbData4[i])
-						{
-							return vaData4[i] < vbData4[i] ? -1 : 1;
-						}
-					}
-					return 0;
-				}
+				// Original C++ compares Data1, Data2, Data3 (unsigned), then Data4[0..7] in order;
+				// System.Guid.CompareTo walks the same fields in the same order.
+				return Math.Sign(((Guid)a).CompareTo((Guid)b));
 			case PropertyType.Point:
 				{
 					var va = (Point)a;
@@ -601,14 +565,9 @@ internal static partial class ShapingHelpers
 					key = "ts:" + GetTimeSpanCount(propertyValue).ToString(CultureInfo.InvariantCulture);
 					return true;
 				case PropertyType.Guid:
-					{
-						GetGuidParts((Guid)propertyValue, out var data1, out var data2, out var data3, out var data4);
-						// Original C++: swprintf_s(buffer, 40, L"g:%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X", ...);
-						key = string.Create(
-							CultureInfo.InvariantCulture,
-							$"g:{data1:X8}-{data2:X4}-{data3:X4}-{data4[0]:X2}{data4[1]:X2}-{data4[2]:X2}{data4[3]:X2}{data4[4]:X2}{data4[5]:X2}{data4[6]:X2}{data4[7]:X2}");
-						return true;
-					}
+					// Original C++: swprintf_s(buffer, 40, L"g:%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X", ...);
+					key = "g:" + ((Guid)propertyValue).ToString("D").ToUpperInvariant();
+					return true;
 				default:
 					return false;
 			}
@@ -939,7 +898,7 @@ internal static partial class ShapingHelpers
 
 	internal static partial void ApplyPredicateFilter(
 		List<object?> items,
-		Predicate predicate)
+		Predicate? predicate)
 	{
 		if (predicate is null)
 		{
@@ -1052,8 +1011,8 @@ internal static partial class ShapingHelpers
 	internal static partial bool BucketizeToGroups(
 		List<object?> items,
 		KeySelector? resolveKey,
-		ResolveIdentityCallback resolveIdentity,
-		Func<object?, object?, bool> keysConsideredEqual,
+		ResolveIdentityCallback? resolveIdentity,
+		Func<object?, object?, bool>? keysConsideredEqual,
 		List<KeyedBucket> outBuckets,
 		ref string? degradeReason)
 	{

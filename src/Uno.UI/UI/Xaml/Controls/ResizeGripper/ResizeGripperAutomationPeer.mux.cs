@@ -61,22 +61,7 @@ partial class ResizeGripperAutomationPeer
 			{
 				var nameFormat = localized(ResourceAccessor.SR_ResizeGripperNameFormat, "%1!s!, %2!s!");
 
-				// TODO Uno: C++ StringUtil::FormatString returns an empty string on a bad format, while the
-				// Uno helper throws. Catch to keep the C++ fallback below and keep exceptions out of UIA.
-				// Original C++:
-				// if (auto const formatted = StringUtil::FormatString(nameFormat, headerName.c_str(), name.c_str());
-				//     !formatted.empty())
-				string formatted;
-				try
-				{
-					formatted = StringUtil.FormatString(nameFormat, headerName, name);
-				}
-				catch (Exception)
-				{
-					formatted = string.Empty;
-				}
-
-				if (!string.IsNullOrEmpty(formatted))
+				if (StringUtil.FormatString(nameFormat, headerName, name) is { Length: > 0 } formatted)
 				{
 					return formatted;
 				}

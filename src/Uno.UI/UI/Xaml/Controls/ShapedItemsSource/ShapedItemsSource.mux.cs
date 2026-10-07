@@ -44,10 +44,9 @@ partial class ShapedItemsSource
 	}
 
 #if HAS_UNO
-	// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
-	// Move this logic into Loaded/Unloaded event handlers or other lifecycle methods to avoid leaks.
-	// TODO Uno: Investigate potential leak: the app's source collection keeps its CollectionChanged /
-	// VectorChanged handler (which holds only a WeakReference to this object) until the owner revokes it.
+	// TODO Uno: .NET has no deterministic destructor, so this revoke cannot run when the engine dies.
+	// Instead, a handler whose engine is gone revokes its own subscription on the next notification
+	// (see SubscribeToSourceCollectionChanges).
 
 	// Original destructor logic (not executed):
 	// ShapedItemsSource::~ShapedItemsSource()
@@ -268,7 +267,6 @@ partial class ShapedItemsSource
 		}
 		for (var i = 0; i < m_rows.Count; ++i)
 		{
-			// TODO Uno: IInspectable operator!= compares COM identity, i.e. reference equality.
 			if (!ReferenceEquals(m_shapingState.Items[i], m_rows[i]))
 			{
 				return false;
@@ -308,6 +306,9 @@ partial class ShapedItemsSource
 		}
 
 		WeakReference<ShapedItemsSource> weakThis = new(this);
+		// TODO Uno: there is no destructor to revoke the subscription below, so a handler that outlives
+		// this object revokes it itself on the next notification instead of staying registered forever.
+		IDisposable? revokeWhenDead = null;
 		// TODO Uno: the C++ generic lambda applyVectorChange is instantiated once per delegate type; C# needs one lambda per type.
 		VectorChangedEventHandler<object?> applyVectorChange = (s, args) =>
 		{
@@ -321,6 +322,10 @@ partial class ShapedItemsSource
 				{
 					strongThis.OnSourceCollectionChanged();
 				}
+			}
+			else
+			{
+				revokeWhenDead?.Dispose();
 			}
 		};
 		BindableVectorChangedEventHandler applyBindableVectorChange = (s, args) =>
@@ -336,6 +341,10 @@ partial class ShapedItemsSource
 					strongThis.OnSourceCollectionChanged();
 				}
 			}
+			else
+			{
+				revokeWhenDead?.Dispose();
+			}
 		};
 
 		if (m_sourceAccessor.AsNotifyCollectionChanged() is { } collection)
@@ -348,21 +357,28 @@ partial class ShapedItemsSource
 				{
 					strongThis.OnSourceCollectionChanged(args);
 				}
+				else
+				{
+					revokeWhenDead?.Dispose();
+				}
 			};
 			collection.CollectionChanged += handler;
-			m_sourceCollectionChangedRevoker.Disposable = Disposable.Create(() => collection.CollectionChanged -= handler);
+			revokeWhenDead = Disposable.Create(() => collection.CollectionChanged -= handler);
+			m_sourceCollectionChangedRevoker.Disposable = revokeWhenDead;
 		}
 		else if (m_sourceAccessor.AsObservableVector() is { } vector)
 		{
 			// VectorChanged carries a single index + verb. For flat 1:1 projections, keep this
 			// incremental instead of collapsing to ReplaceAll.
 			vector.VectorChanged += applyVectorChange;
-			m_sourceVectorChangedRevoker.Disposable = Disposable.Create(() => vector.VectorChanged -= applyVectorChange);
+			revokeWhenDead = Disposable.Create(() => vector.VectorChanged -= applyVectorChange);
+			m_sourceVectorChangedRevoker.Disposable = revokeWhenDead;
 		}
 		else if (m_sourceAccessor.AsBindableObservableVector() is { } bindableVector)
 		{
 			bindableVector.VectorChanged += applyBindableVectorChange;
-			m_sourceBindableVectorChangedRevoker.Disposable = Disposable.Create(() => bindableVector.VectorChanged -= applyBindableVectorChange);
+			revokeWhenDead = Disposable.Create(() => bindableVector.VectorChanged -= applyBindableVectorChange);
+			m_sourceBindableVectorChangedRevoker.Disposable = revokeWhenDead;
 		}
 	}
 
@@ -759,7 +775,7 @@ partial class ShapedItemsSource
 	{
 
 		var identityRequired = IsIdentityRequired();
-		var rows = m_rows!;
+		var rows = m_rows;
 
 		// A stable sort breaks ties by SOURCE order, and the sorted projection does not carry the
 		// source index of each row, so an item that lands inside a tie group cannot be placed
@@ -1022,7 +1038,7 @@ partial class ShapedItemsSource
 		// no layer-1 membership to re-sort in place later.
 		InvalidateShapingState();
 
-		m_rows!.ReplaceAll(rows);
+		m_rows.ReplaceAll(rows);
 		m_kind = ProjectionKind.Unshaped;
 
 		// A grouped/degraded projection does not use the flat incremental fast-path.
@@ -1165,7 +1181,7 @@ partial class ShapedItemsSource
 		m_shapingState.IsGrouped = false;
 		m_shapingState.HasProjection = true;
 
-		m_rows!.ReplaceAll(rows);
+		m_rows.ReplaceAll(rows);
 		m_kind = ProjectionKind.Flat;
 
 		// Seed the identity tracking that the incremental fast-path maintains, so it can detect
@@ -1297,8 +1313,7 @@ partial class ShapedItemsSource
 			liveKeys.Add(keyString);
 		}
 
-		// TODO Uno: erase-while-iterating becomes a snapshot of the keys, then Remove.
-		foreach (var key in new List<string>(m_groupCache.Keys))
+		foreach (var key in m_groupCache.Keys)
 		{
 			if (!liveKeys.Contains(key))
 			{
@@ -1337,7 +1352,7 @@ partial class ShapedItemsSource
 		// Expansion is deliberately not applied: this is the shaped DATA. Collapsing a group hides
 		// rows from the presented row axis without removing them from the projection, and a flat
 		// vector whose size changed when a chevron is clicked would be reporting UI state.
-		m_rows!.ReplaceAll(flatRows);
+		m_rows.ReplaceAll(flatRows);
 
 		m_kind = ProjectionKind.Grouped;
 		m_projectedAsGrouped = true;

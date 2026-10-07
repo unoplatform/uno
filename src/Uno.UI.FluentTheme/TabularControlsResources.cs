@@ -44,8 +44,7 @@ public sealed partial class TabularControlsResources : ResourceDictionary
 			// Authority-less: a consuming app's build folds this component's PRI into its own and
 			// drops component root map names. Path must match AppxPriInitialPath.
 			string packagePrefix = XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.TabularRootNamespace + "/Themes/";
-			// TODO Uno: Uno.UI.FluentTheme registers the merged Tabular theme resources under the themeresources.xaml name only.
-			string postfix = isPerf2026Enabled ? "themeresources_perf2026.xaml" : XamlFilePathHelper.TabularThemeResourceFileName;
+			string postfix = isPerf2026Enabled ? "themeresources_perf2026.xaml" : "themeresources.xaml";
 
 			return packagePrefix + postfix;
 		}

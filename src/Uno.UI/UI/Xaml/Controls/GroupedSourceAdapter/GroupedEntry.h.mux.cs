@@ -30,8 +30,6 @@ internal interface IGroupedEntryTag
 {
 }
 
-// TODO Uno: the constructor GroupedEntry(object? group, int groupItemCount, bool isExpanded) is in
-// GroupedEntry.mux.cs; the methods declared here are partial methods implemented there.
 internal sealed partial class GroupedEntry : IGroupedEntryTag
 {
 	// GroupedEntry(object? group, int groupItemCount, bool isExpanded); (GroupedEntry.mux.cs)

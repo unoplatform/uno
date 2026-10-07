@@ -80,7 +80,6 @@ internal static partial class ShapingHelpers
 
 	// The minimum work a spec change requires. Ordered by cost so a caller can take the maximum
 	// of several deltas.
-	// TODO Uno: deliberately not [Flags]; the C++ enum is an ordered cost scale, not a bit set.
 	internal enum ShapingWork : uint
 	{
 		None = 0,
