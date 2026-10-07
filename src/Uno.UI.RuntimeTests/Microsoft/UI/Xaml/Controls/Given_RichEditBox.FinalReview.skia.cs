@@ -14,7 +14,6 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SkiaSharp;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -182,11 +181,8 @@ public partial class Given_RichEditBox
 	{
 		const int dimension = 512;
 		var document = new RichEditBox().Document;
-		using var surface = SKSurface.Create(new SKImageInfo(dimension, dimension));
-		surface.Canvas.Clear(SKColors.CornflowerBlue);
-		using var sourceImage = surface.Snapshot();
-		using var encoded = sourceImage.Encode(SKEncodedImageFormat.Png, 100);
-		using var stream = new MemoryStream(encoded.ToArray()).AsRandomAccessStream();
+		var encoded = Uno.UI.RuntimeTests.Helpers.TestPngEncoder.CreateSolidPng(dimension, dimension, Microsoft.UI.Colors.CornflowerBlue);
+		using var stream = new MemoryStream(encoded).AsRandomAccessStream();
 		document.GetRange(0, 0).InsertImage(
 			dimension,
 			dimension,

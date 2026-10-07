@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SkiaSharp;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using static Private.Infrastructure.TestServices;
@@ -222,7 +221,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			package.SetDataProvider(
 				StandardDataFormats.Text,
 				(DataProviderHandler)(_ => throw new IOException("Text unavailable")));
-			package.SetBitmap(CreateBitmapReference(CreatePng(SKColors.CornflowerBlue)));
+			package.SetBitmap(CreateBitmapReference(CreatePng(Microsoft.UI.Colors.CornflowerBlue)));
 			var document = new RichEditBox().Document;
 			var range = document.GetRange(0, 0);
 
@@ -377,7 +376,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(editor);
 				var package = new DataPackage();
 				package.SetText("text");
-				package.SetBitmap(CreateBitmapReference(CreatePng(SKColors.Goldenrod)));
+				package.SetBitmap(CreateBitmapReference(CreatePng(Microsoft.UI.Colors.Goldenrod)));
 				var view = package.GetView();
 
 				Assert.IsFalse(TomClipboardFormat.IsAvailable(view, TomClipboardFormat.Bitmap));

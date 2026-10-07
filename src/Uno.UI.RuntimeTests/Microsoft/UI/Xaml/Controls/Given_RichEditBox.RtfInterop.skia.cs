@@ -6,7 +6,6 @@ using System.Text;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SkiaSharp;
 using Windows.Storage.Streams;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -135,7 +134,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public void When_Rtf_Picture_Uses_Binary_Payload()
 		{
-			using var imageStream = CreateImageStream(SKColors.Orange);
+			using var imageStream = CreateImageStream(Microsoft.UI.Colors.Orange);
 			using var imageBytes = new MemoryStream();
 			imageStream.AsStreamForRead().CopyTo(imageBytes);
 			var bytes = imageBytes.ToArray();

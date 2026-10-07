@@ -4,7 +4,6 @@ using System.Text;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SkiaSharp;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -70,7 +69,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var document = new RichEditBox().Document;
 			document.SetText(TextSetOptions.None, "ab");
 			document.ClearUndoRedoHistory();
-			using var image = CreateImageStream(SKColors.Blue);
+			using var image = CreateImageStream(Microsoft.UI.Colors.Blue);
 
 			document.GetRange(1, 1).InsertImage(
 				8,

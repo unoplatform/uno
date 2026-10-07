@@ -17,7 +17,6 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.DevTools.Input;
@@ -4684,7 +4683,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				WindowHelper.WindowContent = SUT;
 				await WindowHelper.WaitForLoaded(SUT);
-				using var stream = CreateImageStream(SKColors.Purple);
+				using var stream = CreateImageStream(Microsoft.UI.Colors.Purple);
 				using var memory = new MemoryStream();
 				stream.AsStreamForRead().CopyTo(memory);
 				var hex = Convert.ToHexString(memory.ToArray());
@@ -7770,7 +7769,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Document.SetText(TextSetOptions.None, "abcd");
 
 			var range = SUT.Document.GetRange(1, 3);
-			range.InsertImage(20, 10, 7, VerticalCharacterAlignment.Baseline, "logo", CreateImageStream(SKColors.Red));
+			range.InsertImage(20, 10, 7, VerticalCharacterAlignment.Baseline, "logo", CreateImageStream(Microsoft.UI.Colors.Red));
 
 			GetTextWithoutFinalEop(SUT.Document, out var raw);
 			GetTextWithoutFinalEop(SUT.Document, TextGetOptions.UseObjectText, out var objectText);
@@ -7800,11 +7799,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = SUT;
 				await WindowHelper.WaitForLoaded(SUT);
 
-				using var surface = SKSurface.Create(new SKImageInfo(2, 2));
-				surface.Canvas.Clear(SKColors.Red);
-				using var image = surface.Snapshot();
-				using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
-				using var stream = new MemoryStream(encoded.ToArray()).AsRandomAccessStream();
+				var encoded = Uno.UI.RuntimeTests.Helpers.TestPngEncoder.CreateSolidPng(2, 2, Microsoft.UI.Colors.Red);
+				using var stream = new MemoryStream(encoded).AsRandomAccessStream();
 
 				SUT.Document.SetText(TextSetOptions.None, "AB");
 				SUT.Document.GetRange(1, 1).InsertImage(40, 20, 15, VerticalCharacterAlignment.Baseline, "red", stream);
@@ -7833,11 +7829,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = SUT;
 				await WindowHelper.WaitForLoaded(SUT);
 
-				using var surface = SKSurface.Create(new SKImageInfo(2, 2));
-				surface.Canvas.Clear(SKColors.Blue);
-				using var image = surface.Snapshot();
-				using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
-				var bytes = encoded.ToArray();
+				var bytes = Uno.UI.RuntimeTests.Helpers.TestPngEncoder.CreateSolidPng(2, 2, Microsoft.UI.Colors.Blue);
 				SUT.Document.GetRange(0, 0).InsertImage(20, 15, 10, VerticalCharacterAlignment.Baseline, "one", new MemoryStream(bytes).AsRandomAccessStream());
 				SUT.Document.GetRange(1, 1).InsertImage(20, 15, 10, VerticalCharacterAlignment.Baseline, "one", new MemoryStream(bytes).AsRandomAccessStream());
 				await WindowHelper.WaitForIdle();
@@ -7870,7 +7862,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(panel);
 
 			source.Document.SetText(TextSetOptions.None, "x");
-			source.Document.GetRange(1, 1).InsertImage(8, 9, 6, VerticalCharacterAlignment.Bottom, "picture", CreateImageStream(SKColors.Green));
+			source.Document.GetRange(1, 1).InsertImage(8, 9, 6, VerticalCharacterAlignment.Bottom, "picture", CreateImageStream(Microsoft.UI.Colors.Green));
 			target.Document.GetRange(0, 0).FormattedText = source.Document.GetRange(0, 2);
 			GetTextWithoutFinalEop(target.Document, TextGetOptions.UseObjectText, out var formattedText);
 			Assert.AreEqual("xpicture", formattedText);
@@ -7891,7 +7883,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-			var bytes = CreateImageStream(SKColors.Blue);
+			var bytes = CreateImageStream(Microsoft.UI.Colors.Blue);
 			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
 				SUT.Document.GetRange(0, 0).InsertImage(-1, 1, 0, VerticalCharacterAlignment.Top, "bad", bytes));
 
@@ -9635,14 +9627,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			return null;
 		}
 
-		private static IRandomAccessStream CreateImageStream(SKColor color)
-		{
-			using var surface = SKSurface.Create(new SKImageInfo(2, 2));
-			surface.Canvas.Clear(color);
-			using var image = surface.Snapshot();
-			using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
-			return new MemoryStream(encoded.ToArray()).AsRandomAccessStream();
-		}
+		private static IRandomAccessStream CreateImageStream(Windows.UI.Color color)
+			=> new MemoryStream(Uno.UI.RuntimeTests.Helpers.TestPngEncoder.CreateSolidPng(2, 2, color)).AsRandomAccessStream();
 
 		private sealed class ReadOnlyPropertyChangedListener : IAutomationPeerListener
 		{

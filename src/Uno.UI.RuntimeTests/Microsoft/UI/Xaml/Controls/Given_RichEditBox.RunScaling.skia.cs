@@ -6,7 +6,6 @@ using System.Text;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SkiaSharp;
 using Windows.Storage.Streams;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -73,7 +72,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				6,
 				VerticalCharacterAlignment.Baseline,
 				"pic",
-				CreateImageStream(SkiaSharp.SKColors.Blue));
+				CreateImageStream(Microsoft.UI.Colors.Blue));
 			target.Document.SetText(TextSetOptions.None, "XXYY");
 
 			target.Document.GetRange(1, 3).FormattedText = source.Document.GetRange(0, 9);
@@ -239,7 +238,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public void When_Repeated_Rtf_Images_Remain_Distinct_Without_Weakening_Image_Budgets()
 		{
 			const int imageCount = 64;
-			using var imageStream = CreateImageStream(SKColors.Orange);
+			using var imageStream = CreateImageStream(Microsoft.UI.Colors.Orange);
 			using var imageBytes = new MemoryStream();
 			imageStream.AsStreamForRead().CopyTo(imageBytes);
 			var imageHex = Convert.ToHexString(imageBytes.ToArray());

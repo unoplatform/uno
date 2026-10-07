@@ -236,7 +236,7 @@ public partial class Given_RichEditBox
 			1,
 			VerticalCharacterAlignment.Baseline,
 			"image",
-			CreateImageStream(SkiaSharp.SKColors.Red));
+			CreateImageStream(Microsoft.UI.Colors.Red));
 
 		var expanded = document.GetRange(3, 3);
 		Assert.AreEqual(-1, expanded.Expand(TextRangeUnit.Object));

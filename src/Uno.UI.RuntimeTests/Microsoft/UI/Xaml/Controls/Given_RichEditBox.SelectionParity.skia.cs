@@ -5,7 +5,6 @@ using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SkiaSharp;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
@@ -177,7 +176,7 @@ public partial class Given_RichEditBox
 			WindowHelper.WindowContent = sut;
 			await WindowHelper.WaitForLoaded(sut);
 			sut.Document.SetText(TextSetOptions.None, "ab");
-			using var stream = CreateImageStream(SKColors.Red);
+			using var stream = CreateImageStream(Microsoft.UI.Colors.Red);
 			sut.Document.GetRange(1, 1).InsertImage(
 				20,
 				12,

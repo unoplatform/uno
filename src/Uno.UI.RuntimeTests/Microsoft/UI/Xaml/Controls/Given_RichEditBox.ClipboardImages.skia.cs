@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SkiaSharp;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
 using static Private.Infrastructure.TestServices;
@@ -28,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Document.SetText(TextSetOptions.None, "abcd");
 				SUT.Document.Selection.SetRange(1, 3);
 				SUT.Document.ClearUndoRedoHistory();
-				SetClipboard(bitmap: CreatePng(SKColors.Orange));
+				SetClipboard(bitmap: CreatePng(Microsoft.UI.Colors.Orange));
 				await WindowHelper.WaitForIdle();
 
 				Assert.IsTrue(SUT.Document.CanPaste());
@@ -66,7 +65,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(SUT);
 				var package = new DataPackage();
 				package.SetText("text");
-				package.SetBitmap(CreateBitmapReference(CreatePng(SKColors.Blue)));
+				package.SetBitmap(CreateBitmapReference(CreatePng(Microsoft.UI.Colors.Blue)));
 				Clipboard.SetContent(package);
 				await WindowHelper.WaitForIdle();
 
@@ -103,7 +102,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				WindowHelper.WindowContent = panel;
 				await WindowHelper.WaitForLoaded(panel);
-				SetClipboard(bitmap: CreatePng(SKColors.Green));
+				SetClipboard(bitmap: CreatePng(Microsoft.UI.Colors.Green));
 				await WindowHelper.WaitForIdle();
 
 				limited.PasteFromClipboard();
@@ -147,11 +146,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				WindowHelper.WindowContent = SUT;
 				await WindowHelper.WaitForLoaded(SUT);
-				using var surface = SKSurface.Create(new SKImageInfo(2050, 2050));
-				surface.Canvas.Clear(SKColors.Purple);
-				using var image = surface.Snapshot();
-				using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
-				SetClipboard(bitmap: encoded.ToArray());
+				var encoded = Uno.UI.RuntimeTests.Helpers.TestPngEncoder.CreateSolidPng(2050, 2050, Microsoft.UI.Colors.Purple);
+				SetClipboard(bitmap: encoded);
 				await WindowHelper.WaitForIdle();
 
 				SUT.PasteFromClipboard();
@@ -167,14 +163,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		private static byte[] CreatePng(SKColor color)
-		{
-			using var surface = SKSurface.Create(new SKImageInfo(2, 2));
-			surface.Canvas.Clear(color);
-			using var image = surface.Snapshot();
-			using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
-			return encoded.ToArray();
-		}
+		private static byte[] CreatePng(Windows.UI.Color color)
+			=> Uno.UI.RuntimeTests.Helpers.TestPngEncoder.CreateSolidPng(2, 2, color);
 
 		private static void SetClipboard(byte[] bitmap)
 		{

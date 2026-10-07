@@ -14,7 +14,6 @@ using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SkiaSharp;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -129,7 +128,7 @@ public partial class Given_RichEditBox
 			sut.Document.SetText(TextSetOptions.None, "prefix link suffix");
 			sut.Document.GetRange(7, 11).Link = "\"javascript:alert(1)\"";
 			sut.Document.GetRange(sut.Document.TextLength, sut.Document.TextLength)
-				.InsertImage(20, 14, 10, VerticalCharacterAlignment.Baseline, "logo", CreateImageStream(SKColors.Red));
+				.InsertImage(20, 14, 10, VerticalCharacterAlignment.Baseline, "logo", CreateImageStream(Microsoft.UI.Colors.Red));
 			await WindowHelper.WaitForIdle();
 
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(sut);
@@ -217,7 +216,7 @@ public partial class Given_RichEditBox
 			sut.Document.SetText(TextSetOptions.None, "prefix link suffix ");
 			sut.Document.GetRange(7, 11).Link = "\"https://example.com\"";
 			sut.Document.GetRange(sut.Document.TextLength, sut.Document.TextLength)
-				.InsertImage(20, 14, 10, VerticalCharacterAlignment.Baseline, "logo", CreateImageStream(SKColors.Red));
+				.InsertImage(20, 14, 10, VerticalCharacterAlignment.Baseline, "logo", CreateImageStream(Microsoft.UI.Colors.Red));
 			await WindowHelper.WaitForIdle();
 
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(sut);
@@ -374,7 +373,7 @@ public partial class Given_RichEditBox
 			sut.Document.SetText(TextSetOptions.None, text);
 			sut.Document.GetRange(firstLinkStart, firstLinkStart + firstLinkText.Length).Link = "\"https://contoso.example/shared\"";
 			sut.Document.GetRange(secondLinkStart, secondLinkStart + secondLinkText.Length).Link = "\"https://contoso.example/shared\"";
-			using (var stream = CreateImageStream(SKColors.Red))
+			using (var stream = CreateImageStream(Microsoft.UI.Colors.Red))
 			{
 				sut.Document.GetRange(sut.Document.TextLength, sut.Document.TextLength)
 					.InsertImage(20, 14, 10, VerticalCharacterAlignment.Baseline, "retained image", stream);
@@ -790,7 +789,7 @@ public partial class Given_RichEditBox
 		{
 			WindowHelper.WindowContent = sut;
 			await WindowHelper.WaitForLoaded(sut);
-			using var stream = CreateImageStream(SKColors.Red);
+			using var stream = CreateImageStream(Microsoft.UI.Colors.Red);
 			var image = InlineImageState.CreateFromStream(
 				stream,
 				width: 20,

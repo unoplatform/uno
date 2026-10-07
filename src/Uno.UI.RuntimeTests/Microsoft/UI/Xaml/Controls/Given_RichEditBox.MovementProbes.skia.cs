@@ -5,7 +5,6 @@ using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SkiaSharp;
 using Windows.System;
 using static Private.Infrastructure.TestServices;
 
@@ -73,7 +72,7 @@ public partial class Given_RichEditBox
 			editor.Document.SetText(
 				TextSetOptions.None,
 				"אבג דהו זחט יכל מנס עףצ קרש ת\rפסקה שניה ארוכה עם מילים");
-			using (var image = CreateImageStream(SKColors.Cyan))
+			using (var image = CreateImageStream(Microsoft.UI.Colors.Cyan))
 			{
 				editor.Document.GetRange(6, 6).InsertImage(
 					24,

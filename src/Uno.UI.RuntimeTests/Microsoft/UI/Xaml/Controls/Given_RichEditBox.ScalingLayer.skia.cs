@@ -14,7 +14,6 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SkiaSharp;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
@@ -139,7 +138,7 @@ public partial class Given_RichEditBox
 			{
 				var imagePositions = new[] { 19_000, 10_000, 100 };
 				var imageNames = new[] { "late stress image", "middle stress image", "early stress image" };
-				var imageColors = new[] { SKColors.Cyan, SKColors.Purple, SKColors.Orange };
+				var imageColors = new[] { Microsoft.UI.Colors.Cyan, Microsoft.UI.Colors.Purple, Microsoft.UI.Colors.Orange };
 				for (var i = 0; i < imagePositions.Length; i++)
 				{
 					using var stream = CreateImageStream(imageColors[i]);
@@ -396,7 +395,7 @@ public partial class Given_RichEditBox
 				{
 					var color = palette[i];
 					var name = $"seeded-image-{i}";
-					using var stream = CreateImageStream(new SKColor(color.R, color.G, color.B, color.A));
+					using var stream = CreateImageStream(color);
 					document.GetRange(positions[i], positions[i]).InsertImage(
 						18,
 						14,
@@ -888,7 +887,7 @@ public partial class Given_RichEditBox
 		var editor = new RichEditBox();
 		var document = editor.Document;
 		document.SetText(TextSetOptions.None, initial.ToString());
-		using var imageStream = CreateImageStream(SKColors.Blue);
+		using var imageStream = CreateImageStream(Microsoft.UI.Colors.Blue);
 		document.GetRange(imagePosition, imagePosition).InsertImage(
 			2,
 			2,
