@@ -45,7 +45,7 @@ public class Given_ValueConversionHelpers
 	[TestMethod]
 	public void When_TryGetPropertyType_Reference_Type_Then_Not_PropertyValue()
 	{
-		// WinRT boxes only strings and value types into an IPropertyValue.
+		// A CsWinRT CCW of a plain class offers no IPropertyValue.
 		Assert.IsFalse(ValueConversionHelpers.TryGetPropertyType(new object(), out var type));
 		Assert.AreEqual(PropertyType.Empty, type);
 		Assert.IsFalse(ValueConversionHelpers.TryGetPropertyType(new Uri("https://platform.uno"), out _));
@@ -64,5 +64,34 @@ public class Given_ValueConversionHelpers
 		Assert.AreEqual(PropertyType.Int32, intType);
 		Assert.IsTrue(ValueConversionHelpers.TryGetPropertyType(Visibility.Collapsed, out var enumType));
 		Assert.AreEqual(PropertyType.OtherType, enumType);
+	}
+
+	private enum AppKind
+	{
+		First,
+	}
+
+	private readonly record struct AppPoint(int X);
+
+	[TestMethod]
+	public void When_TryGetPropertyType_Non_WinRT_Value_Then_Not_PropertyValue()
+	{
+		// CsWinRT offers IReference<T>/IPropertyValue only for WinRT scalars and projected structs/enums.
+		Assert.IsFalse(ValueConversionHelpers.TryGetPropertyType(1.5m, out _));
+		Assert.IsFalse(ValueConversionHelpers.TryGetPropertyType(DateTime.Now, out _));
+		Assert.IsFalse(ValueConversionHelpers.TryGetPropertyType((1, 2), out _));
+		Assert.IsFalse(ValueConversionHelpers.TryGetPropertyType(AppKind.First, out _));
+		Assert.IsFalse(ValueConversionHelpers.TryGetPropertyType(new AppPoint(1), out _));
+	}
+
+	[TestMethod]
+	public void When_TryGetPropertyType_Projected_Struct_Then_OtherType()
+	{
+		Assert.IsTrue(ValueConversionHelpers.TryGetPropertyType(new Thickness(1), out var thicknessType));
+		Assert.AreEqual(PropertyType.OtherType, thicknessType);
+		Assert.IsTrue(ValueConversionHelpers.TryGetPropertyType(DateTimeOffset.UnixEpoch, out var dateType));
+		Assert.AreEqual(PropertyType.DateTime, dateType);
+		Assert.IsTrue(ValueConversionHelpers.TryGetPropertyType(new Point(1, 2), out var pointType));
+		Assert.AreEqual(PropertyType.Point, pointType);
 	}
 }
