@@ -29,15 +29,12 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 	public UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	public TextInputPlugin TextInputPlugin { get; }
 
-	private global::Uno.UI.Composition.Drawing.ISwapChain? _context;
-	private global::Uno.UI.Composition.Drawing.IDrawingFactory? _renderer;
 	private Thread? _renderThread;
 	private volatile bool _renderRequested;
 	private volatile bool _surfaceReady;
 	private volatile bool _disposed;
 	private int _width, _height;
 	private readonly ManualResetEventSlim _renderEvent = new(false);
-	private IntPtr _nativeWindow; // Must stay alive while the wgpu surface references it
 	private readonly ApplicationActivity _activity;
 
 	public UnoWebGpuView(ApplicationActivity activity) : base(activity)
@@ -115,33 +112,9 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		// once it is no longer the current render thread, so it cannot resume on the next surface.
 		Volatile.Write(ref _renderThread, null);
 
-		if (!stopped)
+		if (!stopped && this.Log().IsEnabled(LogLevel.Error))
 		{
-			// The straggler is still inside a frame using these objects, so abandon them rather than
-			// free them under it, as TeardownRenderer does. The next surface negotiates fresh ones.
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error("UnoWebGpuView: the render thread did not stop within the timeout; its resources are left to the process teardown.");
-			}
-
-			_renderer = null;
-			_context = null;
-			_nativeWindow = IntPtr.Zero;
-			return;
-		}
-
-		// Before the swapchain: the backend built its own device objects on it, and tearing the swapchain down
-		// first leaves the driver dereferencing them. Surface re-creation negotiates a fresh backend.
-		(_renderer as IDisposable)?.Dispose();
-		_renderer = null;
-
-		_context?.Dispose();
-		_context = null;
-
-		if (_nativeWindow != IntPtr.Zero)
-		{
-			ANativeWindow_release(_nativeWindow);
-			_nativeWindow = IntPtr.Zero;
+			this.Log().Error("UnoWebGpuView: the render thread did not stop within the timeout; it releases its resources once its frame ends.");
 		}
 	}
 
@@ -152,9 +125,10 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 	private void RenderLoop(object? state)
 	{
 		var holder = (ISurfaceHolder)state!;
+		using RenderSession session = new();
 		try
 		{
-			InitializeWebGpu(holder);
+			InitializeWebGpu(holder, session);
 		}
 		catch (Exception ex)
 		{
@@ -178,7 +152,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 				}
 
 				_renderRequested = false;
-				RenderFrame();
+				RenderFrame(session);
 			}
 		}
 		catch (Exception ex)
@@ -187,7 +161,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		}
 	}
 
-	private void InitializeWebGpu(ISurfaceHolder holder)
+	private void InitializeWebGpu(ISurfaceHolder holder, RenderSession session)
 	{
 		var surface = holder.Surface;
 		if (surface == null || !surface.IsValid)
@@ -196,10 +170,10 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		}
 
 		// Keep the ANativeWindow alive for the wgpu surface's lifetime (the swapchain references it).
-		_nativeWindow = ANativeWindow_fromSurface(JNIEnv.Handle, surface.Handle);
+		session.NativeWindow = ANativeWindow_fromSurface(JNIEnv.Handle, surface.Handle);
 		// surface must stay alive across the interop call above, or it can be collected mid-call.
 		GC.KeepAlive(surface);
-		if (_nativeWindow == IntPtr.Zero)
+		if (session.NativeWindow == IntPtr.Zero)
 		{
 			throw new InvalidOperationException("Failed to get ANativeWindow from Surface");
 		}
@@ -210,23 +184,23 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 
 		// This SurfaceView owns the ANativeWindow, so it serves the WebGpu kind by creating the swapchain context.
 		// The wgpu P/Invoke resolves at runtime, so a Skia-only app that never negotiates WebGpu never loads it.
-		var nativeWindow = _nativeWindow;
+		var nativeWindow = session.NativeWindow;
 		global::Uno.UI.Composition.Drawing.GraphicsRegistry.ContextFactory =
 			kind => System.Threading.Tasks.Task.FromResult<global::Uno.UI.Composition.Drawing.ISwapChain?>(
 				kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu
 					? global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateAndroid(nativeWindow, 1f)
 					: null);
 		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
-		_context = init.Context;
-		_renderer = init.Renderer;
+		session.Context = init.Context;
+		session.Renderer = init.Renderer;
 		// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
 			init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;
 	}
 
-	private void RenderFrame()
+	private void RenderFrame(RenderSession session)
 	{
-		if (_context is not { } context)
+		if (session.Context is not { } context)
 		{
 			return;
 		}
@@ -245,7 +219,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		// its last frame while input keeps being delivered.
 		try
 		{
-			compositionTarget.Renderer = _renderer!;
+			compositionTarget.Renderer = session.Renderer!;
 			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
 
 			if (_activity.NativeLayerHost is { } nativeLayerHost)
@@ -356,28 +330,38 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 
 		if (!stopped)
 		{
-			// The render thread is still inside a frame, holding the WebGPU context and the native
-			// window. Releasing them here would free objects it is about to touch, so leave them to
-			// the process teardown rather than corrupt the driver.
+			// The straggler still waits on the event once its frame ends, so it must outlive it.
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().Error("The WebGPU render thread did not stop within the timeout; its resources are left to the process teardown.");
+				this.Log().Error("The WebGPU render thread did not stop within the timeout; it releases its resources once its frame ends.");
 			}
 
 			return;
 		}
 
-		// The backend owns device objects built on the swapchain, so it goes first.
-		(_renderer as IDisposable)?.Dispose();
-		_renderer = null;
-		_context?.Dispose();
-		_context = null;
-		if (_nativeWindow != IntPtr.Zero)
-		{
-			ANativeWindow_release(_nativeWindow);
-			_nativeWindow = IntPtr.Zero;
-		}
 		_renderEvent.Dispose();
+	}
+
+	// One surface's WebGPU resources, owned by the render thread that created them: a thread that outlives
+	// its surface keeps using and then releases its own, never a successor's.
+	private sealed class RenderSession : IDisposable
+	{
+		public IntPtr NativeWindow; // Must stay alive while the wgpu surface references it
+		public global::Uno.UI.Composition.Drawing.ISwapChain? Context;
+		public global::Uno.UI.Composition.Drawing.IDrawingFactory? Renderer;
+
+		public void Dispose()
+		{
+			// Before the swapchain: the backend built its own device objects on it, and tearing the swapchain
+			// down first leaves the driver dereferencing them.
+			(Renderer as IDisposable)?.Dispose();
+			Context?.Dispose();
+
+			if (NativeWindow != IntPtr.Zero)
+			{
+				ANativeWindow_release(NativeWindow);
+			}
+		}
 	}
 
 	protected override void Dispose(bool disposing)
