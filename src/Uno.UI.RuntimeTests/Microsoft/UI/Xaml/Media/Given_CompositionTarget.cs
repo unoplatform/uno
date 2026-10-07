@@ -1,5 +1,6 @@
 ﻿#if __SKIA__
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -619,6 +620,64 @@ public class Given_CompositionTarget
 		while (elapsed.ElapsedMilliseconds < 1000 || (frames() < minimum && elapsed.ElapsedMilliseconds < SlowHostFrameTimeoutMs))
 		{
 			await Task.Delay(50);
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Frames_Presented_Then_Sequences_Advance()
+	{
+		var border = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Colors.Red) };
+		await UITestHelper.Load(border);
+
+		var target = (CompositionTarget)border.Visual.CompositionTarget!;
+		List<FramePresentedInfo> presented = new();
+		EventHandler<FramePresentedInfo> onPresented = (_, info) =>
+		{
+			// Raised on the presenting thread.
+			lock (presented)
+			{
+				presented.Add(info);
+			}
+		};
+
+		target.FramePresented += onPresented;
+		var recordedBefore = target.LastRecordedSequence;
+		var colors = new[] { Colors.Blue, Colors.Green, Colors.Yellow, Colors.Red };
+		try
+		{
+			foreach (var color in colors)
+			{
+				var previous = target.LastRecordedSequence;
+				border.Background = new SolidColorBrush(color);
+				await TestServices.WindowHelper.WaitFor(() =>
+				{
+					lock (presented)
+					{
+						return presented.Count > 0 && presented[^1].Sequence > previous;
+					}
+				}, timeoutMS: 5000, message: "each change should present a newly recorded frame");
+			}
+		}
+		finally
+		{
+			target.FramePresented -= onPresented;
+		}
+
+		FramePresentedInfo[] snapshot;
+		lock (presented)
+		{
+			snapshot = presented.ToArray();
+		}
+
+		Assert.IsTrue(snapshot.Select(p => p.Sequence).Distinct().Count() >= colors.Length, $"each change should present a newly recorded frame, got {string.Join(",", snapshot.Select(p => p.Sequence))}");
+		// The frame recorded just before subscribing may still be presented after it.
+		Assert.IsTrue(snapshot[0].Sequence >= recordedBefore, "frames presented before subscribing should not be reported");
+		for (var i = 1; i < snapshot.Length; i++)
+		{
+			// A re-present repeats the previous sequence; it never goes back to an older frame.
+			Assert.IsTrue(snapshot[i].Sequence >= snapshot[i - 1].Sequence, $"sequence went backwards at {i}: {snapshot[i - 1].Sequence} -> {snapshot[i].Sequence}");
+			Assert.IsTrue(snapshot[i].Timestamp >= snapshot[i - 1].Timestamp, $"timestamp went backwards at {i}");
 		}
 	}
 
