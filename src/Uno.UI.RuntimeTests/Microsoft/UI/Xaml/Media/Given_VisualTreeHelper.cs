@@ -143,6 +143,99 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if !UNO_HAS_MANAGED_POINTERS
+		[Ignore("Hit-test visibility is only computed for managed hit testing.")]
+#endif
+		public async Task When_Ancestor_Visibility_Changes_Then_Deep_Descendant_Follows()
+		{
+			// The middle panel has no background, so it is Invisible: the walk has to carry on through it.
+			var leaf = new Border { Width = 10, Height = 10, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+			var middle = new Grid { Children = { new Border { Child = leaf } } };
+			var ancestor = new Border { Width = 40, Height = 40, Background = new SolidColorBrush(Microsoft.UI.Colors.Blue), Child = middle };
+
+			try
+			{
+				await UITestHelper.Load(ancestor);
+				Assert.AreEqual(HitTestability.Invisible, middle.GetHitTestVisibility());
+				Assert.AreEqual(HitTestability.Visible, leaf.GetHitTestVisibility());
+
+				ancestor.Visibility = Visibility.Collapsed;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(HitTestability.Collapsed, leaf.GetHitTestVisibility(), "a collapsed ancestor must collapse every level below it");
+
+				ancestor.Visibility = Visibility.Visible;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(HitTestability.Invisible, middle.GetHitTestVisibility());
+				Assert.AreEqual(HitTestability.Visible, leaf.GetHitTestVisibility(), "showing the ancestor must restore every level below it");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !UNO_HAS_MANAGED_POINTERS
+		[Ignore("Hit-test visibility is only computed for managed hit testing.")]
+#endif
+		public async Task When_Element_Added_Under_Collapsed_Ancestor_Then_Collapsed_Until_Shown()
+		{
+			var panel = new StackPanel { Background = new SolidColorBrush(Microsoft.UI.Colors.Blue) };
+			var root = new Grid { Width = 40, Height = 40, Children = { panel } };
+
+			try
+			{
+				await UITestHelper.Load(root);
+				panel.Visibility = Visibility.Collapsed;
+				await WindowHelper.WaitForIdle();
+
+				var child = new Border { Width = 10, Height = 10, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+				panel.Children.Add(child);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(HitTestability.Collapsed, child.GetHitTestVisibility(), "an element added under a collapsed ancestor must be collapsed");
+
+				panel.Visibility = Visibility.Visible;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(HitTestability.Visible, child.GetHitTestVisibility());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !UNO_HAS_MANAGED_POINTERS
+		[Ignore("Hit-test visibility is only computed for managed hit testing.")]
+#endif
+		public async Task When_Element_Moved_From_Collapsed_Parent_Then_Follows_New_Parent()
+		{
+			var collapsed = new StackPanel { Visibility = Visibility.Collapsed };
+			var visible = new StackPanel { Background = new SolidColorBrush(Microsoft.UI.Colors.Blue) };
+			var root = new StackPanel { Width = 40, Height = 40, Children = { collapsed, visible } };
+			var child = new Border { Width = 10, Height = 10, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+			collapsed.Children.Add(child);
+
+			try
+			{
+				await UITestHelper.Load(root, _ => visible.IsLoaded);
+				Assert.AreEqual(HitTestability.Collapsed, child.GetHitTestVisibility());
+
+				collapsed.Children.Remove(child);
+				visible.Children.Add(child);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(HitTestability.Visible, child.GetHitTestVisibility(), "a moved element must take its new parent's hit-test visibility");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task Nested_Setup_HitTest()
 		{
 			var sut = new Border

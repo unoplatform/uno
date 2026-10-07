@@ -153,10 +153,10 @@ namespace Microsoft.UI.Xaml
 		internal static void SetLogicalParent(this FrameworkElement element, DependencyObject logicalParent)
 		{
 			// UWP distinguishes between the 'logical parent' (or inheritance parent) and the 'visual parent' of an element. Uno already
-			// recognises this distinction on some targets, but for targets using CoerceHitTestVisibility() for hit testing, the pointer
-			// implementation depends upon the logical parent (ie DepObjStore.Parent) being identical to the visual parent, because it
-			// piggybacks on the DP inheritance mechanism. Therefore we use LogicalParentOverride as a workaround to modify the publicly-visible
-			// FrameworkElement.Parent without affecting DP propagation.
+			// recognises this distinction on some targets, but for targets using managed hit testing, UIElement.HitTestVisibility is
+			// computed from the logical parent (ie DepObjStore.Parent) and pushed down the visual children, so the two must be identical.
+			// Therefore we use LogicalParentOverride as a workaround to modify the publicly-visible FrameworkElement.Parent without
+			// affecting DP propagation or hit-test visibility.
 			element.LogicalParentOverride = logicalParent;
 		}
 
