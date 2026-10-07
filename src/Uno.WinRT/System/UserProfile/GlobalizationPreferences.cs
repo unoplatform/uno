@@ -15,6 +15,8 @@ namespace Windows.System.UserProfile;
 
 public static partial class GlobalizationPreferences
 {
+	// TODO Uno: Windows reads the user's home location (GetUserGeoID); every target derives it from the current culture instead.
+	public static string HomeGeographicRegion => global::System.Globalization.RegionInfo.CurrentRegion.TwoLetterISORegionName;
 
 #if __ANDROID__ || __IOS__ || __SKIA__
 	public static IReadOnlyList<string> Languages =>
