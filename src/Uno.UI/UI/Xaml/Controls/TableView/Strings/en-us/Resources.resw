@@ -108,6 +108,30 @@
     <value>Column %1!s! width: %2!s! pixels.</value>
     <comment>Assistive-technology announcement raised when a TableView column is resized, by pointer or by keyboard, while its header has focus. %1!s! is the column header text; %2!s! is the whole-pixel width.</comment>
   </data>
+  <data name="TableViewCellLocalizedControlType" xml:space="preserve">
+    <value>cell</value>
+    <comment>Localized control type announced by assistive technology for a single cell in a TableView. Lower case: screen readers read it inline after the cell's name.</comment>
+  </data>
+  <data name="TableViewCellTextSeparator" xml:space="preserve">
+    <value>, </value>
+    <comment>Separator used by assistive technology when joining multiple TableView cell names into one row name.</comment>
+  </data>
+  <data name="TableViewCellNameFormat" xml:space="preserve">
+    <value>%1!s!, %2!s!</value>
+    <comment>Cell name announced by assistive technology when both a column header and a cell value are available. %1!s! is the column header text; %2!s! is the cell value text.</comment>
+  </data>
+  <data name="TableViewBooleanTrue" xml:space="preserve">
+    <value>True</value>
+    <comment>Boolean true value announced by assistive technology when a TableView row or cell name is generated from a Boolean data item.</comment>
+  </data>
+  <data name="TableViewBooleanFalse" xml:space="preserve">
+    <value>False</value>
+    <comment>Boolean false value announced by assistive technology when a TableView row or cell name is generated from a Boolean data item.</comment>
+  </data>
+  <data name="TableViewGroupHeaderNameFormat" xml:space="preserve">
+    <value>%1!s! %2!s!</value>
+    <comment>Group header name announced by assistive technology when both the group key and item count are available. %1!s! is the group key text; %2!s! is the item count text.</comment>
+  </data>
   <!-- Sort direction names (used in SaveLayoutToJson serialization — not localized at runtime but
        kept here for documentation; code uses invariant English for round-trip fidelity) -->
 </root>
