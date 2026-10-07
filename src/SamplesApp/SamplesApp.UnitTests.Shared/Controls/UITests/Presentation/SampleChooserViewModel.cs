@@ -955,7 +955,15 @@ namespace SampleControl.Presentation
 				UpdateFavoriteForSample(sample, favorites.Contains(sample));
 			}
 
-			SampleContents = samples;
+			if (getAllSamples)
+			{
+				// Only the favorite flags changed: the library list keeps showing the selected category, re-sorted.
+				OnSelectedCategoryChanged();
+			}
+			else
+			{
+				SampleContents = samples;
+			}
 		}
 
 		/// <summary>Toggles, or sets <paramref name="isFavorite"/>; false when the stored list already matches and nothing was written.</summary>
