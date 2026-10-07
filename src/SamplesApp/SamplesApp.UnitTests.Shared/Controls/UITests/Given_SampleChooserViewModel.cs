@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Private.Infrastructure;
 using SampleControl.Presentation;
 using Uno.UI.RuntimeTests;
 
@@ -64,6 +65,39 @@ public class Given_SampleChooserViewModel
 		{
 			vm.SelectedCategory = previous;
 			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_No_Category_Is_Browsed_Favorite_Toggle_Persists()
+	{
+		var vm = SampleChooserViewModel.Instance;
+		var sample = vm.CurrentSelectedSample;
+		Assert.IsNotNull(sample);
+
+		var previousCategory = vm.SelectedCategory;
+		var previousContents = vm.SampleContents;
+		var initial = vm.FavoriteSamples?.Contains(sample) ?? false;
+
+		try
+		{
+			// The state of a fresh start, before the library is opened on a category.
+			vm.SelectedCategory = null;
+			vm.SampleContents = null;
+
+			vm.ToggleFavoriteCommand.Execute(sample);
+			await TestServices.WindowHelper.WaitFor(() => (vm.FavoriteSamples?.Contains(sample) ?? false) != initial, timeoutMS: 5000);
+		}
+		finally
+		{
+			if ((vm.FavoriteSamples?.Contains(sample) ?? false) != initial)
+			{
+				vm.ToggleFavoriteCommand.Execute(sample);
+				await TestServices.WindowHelper.WaitFor(() => (vm.FavoriteSamples?.Contains(sample) ?? false) == initial, timeoutMS: 5000);
+			}
+
+			vm.SelectedCategory = previousCategory;
+			vm.SampleContents = previousContents;
 		}
 	}
 }
