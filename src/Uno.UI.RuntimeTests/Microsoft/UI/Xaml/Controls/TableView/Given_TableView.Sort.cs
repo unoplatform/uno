@@ -1061,10 +1061,19 @@ public partial class Given_TableView
 		var indicator = FindSortIndicator(GetHeaderCell(table, column))!;
 		Assert.IsNotNull(indicator);
 
-		// Opacity and Glyph are driven imperatively after GoToState (microsoft-ui-xaml#6203).
+		// An unsorted column collapses the chevron's host, so a never-sorted indicator has no template yet.
+		var host = (UIElement)Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(indicator);
+		Assert.AreEqual(direction == SortDirection.None ? Visibility.Collapsed : Visibility.Visible, host.Visibility, $"indicator host visibility for {direction}");
+		if (direction == SortDirection.None && FindByName<FrameworkElement>(indicator, "LayoutRoot") is null)
+		{
+			return;
+		}
+
+		// The DirectionStates setters drive LayoutRoot.Visibility and GlyphIcon.Glyph; leaving
+		// Descending reverts the Glyph to the template's ascending one.
 		var layoutRoot = FindByName<FrameworkElement>(indicator, "LayoutRoot")!;
 		var glyph = FindByName<FontIcon>(indicator, "GlyphIcon")!;
-		Assert.AreEqual(direction == SortDirection.None ? 0.0 : 1.0, layoutRoot.Opacity, $"indicator opacity for {direction}");
+		Assert.AreEqual(direction == SortDirection.None ? Visibility.Collapsed : Visibility.Visible, layoutRoot.Visibility, $"indicator visibility for {direction}");
 		Assert.AreEqual(direction == SortDirection.Descending ? DescendingGlyph : AscendingGlyph, glyph.Glyph, $"indicator glyph for {direction}");
 	}
 }

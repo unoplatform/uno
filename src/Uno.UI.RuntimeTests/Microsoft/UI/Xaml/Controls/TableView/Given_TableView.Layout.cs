@@ -274,13 +274,14 @@ public partial class Given_TableView
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)] // UIElement.Translation
 	public async Task When_Frozen_Leading_Prefix_RightToLeft()
 	{
-		// The pin math is LTR-only: under RTL ApplyFrozenColumnLayout resets Translation, ZIndex and Clip
-		// and skips pinning altogether.
+		// ApplyFrozenColumnLayout pins in logical LTR coordinates; the RTL mirror at the FlowDirection
+		// boundary flips the counter-translation and clip, so a Leading prefix pins on the visual right.
 		var table = new TableView { FlowDirection = FlowDirection.RightToLeft };
 		var frozen = TextColumn(nameof(Person.Name), new GridLength(100, GridUnitType.Pixel));
 		frozen.FrozenEdge = TableViewFrozenEdge.Leading;
+		var scrolling = TextColumn(nameof(Person.Age), new GridLength(300, GridUnitType.Pixel));
 		table.Columns.Add(frozen);
-		table.Columns.Add(TextColumn(nameof(Person.Age), new GridLength(300, GridUnitType.Pixel)));
+		table.Columns.Add(scrolling);
 		table.Columns.Add(TextColumn(nameof(Person.City), new GridLength(300, GridUnitType.Pixel)));
 		table.ItemsSource = People(5);
 
@@ -291,21 +292,27 @@ public partial class Given_TableView
 		await WindowHelper.WaitFor(() => Math.Abs(scroller.HorizontalOffset - 150) < 0.5);
 		await WindowHelper.WaitForIdle();
 
+		var offset = scroller.HorizontalOffset;
 		foreach (var row in GetRealizedRows(table))
 		{
-			foreach (var cell in GetCells(row))
-			{
-				Assert.AreEqual(0.0, cell.Translation.X, LayoutTolerance);
-				Assert.AreEqual(0, Canvas.GetZIndex(cell));
-				Assert.IsNull(cell.Clip);
-			}
+			Assert.AreEqual(offset, GetCell(row, frozen).Translation.X, LayoutTolerance, "frozen cell is pinned");
+			Assert.AreEqual(1, Canvas.GetZIndex(GetCell(row, frozen)));
+			Assert.IsNull(GetCell(row, frozen).Clip);
+
+			Assert.AreEqual(0.0, GetCell(row, scrolling).Translation.X, LayoutTolerance, "scrolling cell");
+			var clip = GetCell(row, scrolling).Clip as RectangleGeometry;
+			Assert.IsNotNull(clip, "the scrolled cell under the band is clipped");
+			Assert.AreEqual(offset, clip!.Rect.X, LayoutTolerance);
+			Assert.AreEqual(300 - offset, clip.Rect.Width, LayoutTolerance);
 		}
 
-		foreach (var headerCell in GetHeaderCells(table))
-		{
-			Assert.AreEqual(0.0, headerCell.Translation.X, LayoutTolerance);
-			Assert.IsNull(headerCell.Clip);
-		}
+		var frozenHeader = GetHeaderCell(table, frozen);
+		Assert.AreEqual(offset, frozenHeader.Translation.X, LayoutTolerance);
+
+		// Visually the band sits on the table's right edge.
+		var tableBounds = table.TransformToVisual(null).TransformBounds(new Rect(0, 0, table.ActualWidth, table.ActualHeight));
+		var frozenBounds = GetCell(GetRealizedRows(table)[0], frozen).TransformToVisual(null).TransformBounds(new Rect(0, 0, 100, 1));
+		Assert.AreEqual(tableBounds.Right, frozenBounds.Right, 2.0, "the Leading band pins to the visual right under RTL");
 	}
 
 	[TestMethod]
@@ -322,7 +329,7 @@ public partial class Given_TableView
 		await WindowHelper.WaitForIdle();
 
 		Assert.IsNull(FindGripper(GetHeaderCell(table, name)));
-		Assert.IsFalse(GetHeaderCell(table, name).IsTabStop);
+		Assert.IsTrue(GetHeaderCell(table, name).IsTabStop, "every visible header is a tab stop, resizable or not");
 		Assert.IsNotNull(FindGripper(GetHeaderCell(table, table.Columns[1])));
 
 		table.CanUserResizeColumns = false;
@@ -390,28 +397,37 @@ public partial class Given_TableView
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Resize_Drag_Escape_Restores_Authored_Width()
 	{
+		// A Star column only resizes against a later Star column (ResizeBoundsForColumn pins the
+		// last one), so drag Age and let City yield.
 		var table = CreateTable(People(3));
+		var name = table.Columns[0];
+		var age = table.Columns[1];
 		var city = table.Columns[2];
 		var star = new GridLength(1, GridUnitType.Star);
+		age.Width = star;
 		city.Width = star;
 		await LoadAsync(table);
+
+		var nameWidth = name.ReadLocalValue(TableViewColumn.WidthProperty);
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		using var mouse = injector.GetMouse();
 
-		var start = Center(FindGripper(GetHeaderCell(table, city))!);
+		var start = Center(FindGripper(GetHeaderCell(table, age))!);
 		mouse.Press(start);
 		try
 		{
 			mouse.MoveTo(new Point(start.X - 40, start.Y), 8);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(GridUnitType.Pixel, city.Width.GridUnitType, "the drag writes a pixel width");
+			Assert.AreEqual(GridUnitType.Pixel, age.Width.GridUnitType, "the drag writes a pixel width");
 
 			await KeyboardHelper.PressKeySequence("$d$_esc#$u$_esc", table);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(star, city.Width, "Escape restores the authored GridLength, not the resolved pixels");
+			Assert.AreEqual(star, age.Width, "Escape restores the authored GridLength, not the resolved pixels");
+			Assert.AreEqual(star, city.Width, "the yielding column is never written");
+			Assert.AreEqual(nameWidth, name.ReadLocalValue(TableViewColumn.WidthProperty), "a frozen predecessor is restored");
 		}
 		finally
 		{
@@ -419,7 +435,7 @@ public partial class Given_TableView
 			await WindowHelper.WaitForIdle();
 		}
 
-		Assert.AreEqual(star, city.Width, "releasing after a cancel must not write");
+		Assert.AreEqual(star, age.Width, "releasing after a cancel must not write");
 	}
 
 	[TestMethod]
@@ -445,8 +461,8 @@ public partial class Given_TableView
 		using var listener = RecordingAutomationListener.Install();
 #endif
 
-		await KeyboardHelper.PressKeySequence("$d$_right#$u$_right", headerCell);
-		await WindowHelper.WaitForIdle();
+		// Alt+Left/Right is the resize chord (WPF DataGrid's binding).
+		await PressHeaderResizeChordAsync("right", headerCell);
 
 		// ResizeGripper.KeyboardIncrement defaults to 8 (c_defaultKeyboardIncrement); RTL mirrors the axis.
 		Assert.AreEqual(GridUnitType.Pixel, name.Width.GridUnitType);
@@ -456,8 +472,7 @@ public partial class Given_TableView
 		AssertColumnWidthAnnouncement(listener, headerCell, rightToLeft ? 112 : 128);
 #endif
 
-		await KeyboardHelper.PressKeySequence("$d$_left#$u$_left", headerCell);
-		await WindowHelper.WaitForIdle();
+		await PressHeaderResizeChordAsync("left", headerCell);
 
 		Assert.AreEqual(120.0, name.Width.Value, LayoutTolerance);
 
@@ -466,15 +481,7 @@ public partial class Given_TableView
 #endif
 
 		// Shift takes the large step: c_largeIncrementMultiplier (4) x 8.
-		try
-		{
-			await KeyboardHelper.PressKeySequence("$d$_shift#$d$_right#$u$_right#$u$_shift", headerCell);
-			await WindowHelper.WaitForIdle();
-		}
-		finally
-		{
-			await ReleaseModifierAsync("shift");
-		}
+		await PressHeaderResizeChordAsync("right", headerCell, shift: true);
 
 		Assert.AreEqual(rightToLeft ? 88.0 : 152.0, name.Width.Value, LayoutTolerance);
 
@@ -482,16 +489,9 @@ public partial class Given_TableView
 		AssertColumnWidthAnnouncement(listener, headerCell, rightToLeft ? 88 : 152);
 #endif
 
-		// Alt is left unhandled for the window menu: no resize, no announcement.
-		try
-		{
-			await KeyboardHelper.PressKeySequence("$d$_alt#$d$_right#$u$_right#$u$_alt", headerCell);
-			await WindowHelper.WaitForIdle();
-		}
-		finally
-		{
-			await ReleaseModifierAsync("alt");
-		}
+		// A bare arrow navigates the header band: no resize, no announcement.
+		await KeyboardHelper.PressKeySequence("$d$_right#$u$_right", headerCell);
+		await WindowHelper.WaitForIdle();
 
 		Assert.AreEqual(rightToLeft ? 88.0 : 152.0, name.Width.Value, LayoutTolerance);
 
@@ -559,6 +559,27 @@ public partial class Given_TableView
 	}
 
 	// KeyboardStateTracker is process-wide; never let a failed test leave a modifier down.
+	private static async Task PressHeaderResizeChordAsync(string arrow, UIElement headerCell, bool shift = false)
+	{
+		try
+		{
+			var keys = shift
+				? $"$d$_alt#$d$_shift#$d$_{arrow}#$u$_{arrow}#$u$_shift#$u$_alt"
+				: $"$d$_alt#$d$_{arrow}#$u$_{arrow}#$u$_alt";
+			await KeyboardHelper.PressKeySequence(keys, headerCell);
+			await WindowHelper.WaitForIdle();
+		}
+		finally
+		{
+			if (shift)
+			{
+				await ReleaseModifierAsync("shift");
+			}
+
+			await ReleaseModifierAsync("alt");
+		}
+	}
+
 	private static async Task ReleaseModifierAsync(string key)
 	{
 		if (FocusManager.GetFocusedElement(WindowHelper.XamlRoot) is UIElement focused)
