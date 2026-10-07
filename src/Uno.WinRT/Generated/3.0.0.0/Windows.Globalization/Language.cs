@@ -53,13 +53,7 @@ namespace Windows.Globalization
 #endif
 		// Skipping already declared method Windows.Globalization.Language.Language(string)
 		// Forced skipping of method Windows.Globalization.Language.Language(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsWellFormed(string languageTag)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "IsWellFormed(string languageTag)");
-		}
-#endif
+		// Skipping already declared method Windows.Globalization.Language.IsWellFormed(string)
 #if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TrySetInputMethodLanguageTag(string languageTag)
