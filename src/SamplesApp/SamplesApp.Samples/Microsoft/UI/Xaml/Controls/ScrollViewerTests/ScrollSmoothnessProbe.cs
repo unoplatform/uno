@@ -362,8 +362,9 @@ internal sealed class ScrollSmoothnessProbe
 		return Math.Abs(axis(window[center].R) - a);
 	}
 
+	// Nearest-rank: the one-based rank ceil(p * N), so P95 of 20 samples is the 19th, not the maximum.
 	private static double Percentile(double[] sorted, double p)
-		=> sorted.Length == 0 ? 0 : sorted[Math.Min(sorted.Length - 1, (int)Math.Floor(p * sorted.Length))];
+		=> sorted.Length == 0 ? 0 : sorted[Math.Clamp((int)Math.Ceiling(p * sorted.Length) - 1, 0, sorted.Length - 1)];
 }
 
 internal sealed class ScrollSmoothnessResult
