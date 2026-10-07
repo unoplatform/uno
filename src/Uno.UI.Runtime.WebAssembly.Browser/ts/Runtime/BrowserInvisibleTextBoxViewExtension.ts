@@ -363,7 +363,10 @@
 		public static setTextPredictionEnabled(enabled: boolean) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input) {
-				input.autocomplete = enabled ? "on" : "off";
+				// Password inputs keep their password-manager hint.
+				if (!(input instanceof HTMLInputElement && input.type === "password")) {
+					input.autocomplete = enabled ? "on" : "off";
+				}
 				input.setAttribute("autocorrect", enabled ? "on" : "off");
 			}
 		}
