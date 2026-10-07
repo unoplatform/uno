@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Layout : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __SKIA__
-		internal Layout()
-		{
-		}
-#endif
 		// Skipping already declared property IndexBasedLayoutOrientation
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.InitializeForContext(Microsoft.UI.Xaml.Controls.LayoutContext)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.UninitializeForContext(Microsoft.UI.Xaml.Controls.LayoutContext)

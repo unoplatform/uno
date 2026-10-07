@@ -10,4 +10,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class Layout : global::Microsoft.UI.Xaml.DependencyObject
 {
+	internal Layout()
+	{
+	}
 }

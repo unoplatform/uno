@@ -4,6 +4,10 @@ namespace Microsoft.UI.Input
 {
 	public partial class InputObject
 	{
+		internal InputObject()
+		{
+		}
+
 		public Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue
 			=> Microsoft.UI.Dispatching.DispatcherQueue.Main;
 	}
