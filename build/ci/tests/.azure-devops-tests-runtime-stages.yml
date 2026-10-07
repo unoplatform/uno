@@ -45,7 +45,7 @@ stages:
       renderer: 'WebGPU'
       testResultLabel: '-webgpu'
       appEnvironment: 'UNO_WEBGPU=1'
-      chromeFlags: '--enable-unsafe-webgpu --user-data-dir=/tmp/uno-chrome-webgpu-profile'
+      chromeFlags: '--enable-unsafe-webgpu --ignore-gpu-blocklist --user-data-dir=/tmp/uno-chrome-webgpu-profile'
       testGroups: [0, 1, 2, 3]
       browserSize: '1280x800'
       # Groups split by test method, so the leak tests' When_Add_Remove (~21 min of data rows) always lands whole in one.

@@ -1,0 +1,12 @@
+<!doctype html><html><body><script>
+// Logs the WebGPU adapter Chrome hands this page, for webgpu-adapter-probe.sh.
+(async () => {
+  const log = m => console.log("PROBE " + m);
+  try {
+    const adapter = await navigator.gpu?.requestAdapter({ powerPreference: "high-performance" });
+    if (!adapter) { log("adapter=null"); return; }
+    const i = adapter.info || {};
+    log("adapter vendor=" + i.vendor + " architecture=" + i.architecture + " description=" + i.description + " fallback=" + i.isFallbackAdapter);
+  } catch (e) { log("error " + e); }
+})();
+</script></body></html>

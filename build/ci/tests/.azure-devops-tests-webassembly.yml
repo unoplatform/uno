@@ -93,6 +93,11 @@ jobs:
       displayName: Check chrome
       timeoutInMinutes: 10
 
+    - bash: build/test-scripts/webgpu-adapter-probe.sh
+      displayName: Probe the WebGPU adapter
+      timeoutInMinutes: 5
+      continueOnError: true
+
   - ${{ else }}:
     - template: ../templates/linux-install-deps.yml
       parameters:
