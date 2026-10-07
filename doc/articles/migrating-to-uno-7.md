@@ -758,6 +758,22 @@ Independently of rendering, `Uno.WinUI.MSAL`'s `WithUnoHelpers()` changed on Web
   your own `WithCustomWebUi(...)` (and `WithHttpClientFactory(...)` if needed) — see
   [MSAL: WebAssembly](xref:Uno.Interop.MSAL#webassembly).
 
+Hit testing and input timing were also aligned with WinUI:
+
+- **`VisualTreeHelper.FindElementsInHostCoordinates` requires a subtree.** The `Point`
+  overloads now throw `ArgumentException` when `subtree` is `null`, as WinUI 3 desktop does;
+  before 7.0 they returned an empty sequence. Pass an element instead, typically
+  `XamlRoot.Content`. The exception is thrown when the method is called, not when the result
+  is enumerated.
+- **`FindElementsInHostCoordinates` results are ordered front-to-back.** The top-most hit
+  element comes first, followed by its ancestors, matching WinUI. Before 7.0 the results were
+  in document order (parents first). Code that took `First()` as the root-most hit should take
+  `Last()` or filter by type.
+- **Double-tap timing follows the system setting on Windows.** On the Win32 host,
+  `UISettings.DoubleClickTime`, `DoubleTapped` and other multi-tap detection now use the
+  user's double-click speed (`GetDoubleClickTime`) instead of a fixed 500 ms. Other hosts
+  keep 500 ms.
+
 ### `SystemBackdrop` no longer rewrites your content's backgrounds
 
 Setting `Window.SystemBackdrop` used to walk the whole visual tree and replace the
