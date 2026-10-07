@@ -281,9 +281,10 @@
                     IsChecked="{x:Bind ViewModel.IsSplitVisible, Mode=TwoWay, FallbackValue=False}"
                     IsEnabled="{x:Bind shell:ShellFunctions.Not(ViewModel.IsRecordAllTests), Mode=OneWay, FallbackValue=True}">
                     <FontIcon
+                        x:Name="ShellBrowserToggleIcon"
                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                         FontSize="16"
-                        Glyph="{x:Bind shell:ShellFunctions.BrowserToggleGlyph(ViewModel.IsSplitVisible), Mode=OneWay}"
+                        Glyph="&#xE8A0;"
                         IsTextScaleFactorEnabled="False" />
                 </ToggleButton>
 
@@ -706,6 +707,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <AutoSuggestBox
@@ -889,6 +891,7 @@
                                         Style="{StaticResource BodyStrongTextBlockStyle}"
                                         Text="No favorites yet" />
                                     <TextBlock
+                                        x:Name="ShellFavoritesEmptyHint"
                                         HorizontalAlignment="Center"
                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                         Style="{StaticResource CaptionTextBlockStyle}"
@@ -1047,6 +1050,114 @@
                                 Text="Use the quick settings button in the header to change the theme and diagnostics."
                                 TextWrapping="Wrap" />
                         </Grid>
+                        <!--  Phones hide the rail, so its destinations move to the bottom of the pane, within thumb reach.  -->
+                        <Grid
+                            x:Name="ShellPaneDestinations"
+                            Grid.Row="2"
+                            Padding="0,4,0,0"
+                            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                            BorderThickness="0,1,0,0"
+                            Visibility="Collapsed">
+                            <!--  One star column per destination so the row always fits the pane; the Benchmarks column collapses with its button (code).  -->
+                            <Grid
+                                x:Name="ShellPaneDestinationsRow"
+                                AutomationProperties.Name="Destinations"
+                                TabFocusNavigation="Once"
+                                XYFocusKeyboardNavigation="Enabled">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition x:Name="ShellPaneBenchmarksColumn" Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Button
+                                    x:Name="ShellPaneHomeButton"
+                                    AutomationProperties.AutomationId="ShellPaneHomeButton"
+                                    AutomationProperties.Name="Home"
+                                    Click="ShellDestinationButton_Click"
+                                    Style="{StaticResource ShellDestinationButtonStyle}"
+                                    Tag="Home">
+                                    <FontIcon
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="16"
+                                        Glyph="&#xE80F;"
+                                        IsTextScaleFactorEnabled="False" />
+                                </Button>
+                                <Button
+                                    x:Name="ShellPaneRuntimeTestsButton"
+                                    Grid.Column="1"
+                                    AutomationProperties.AutomationId="ShellPaneRuntimeTestsButton"
+                                    AutomationProperties.Name="Runtime tests"
+                                    Click="ShellDestinationButton_Click"
+                                    Style="{StaticResource ShellDestinationButtonStyle}"
+                                    Tag="RuntimeTests">
+                                    <FontIcon
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="16"
+                                        Glyph="&#xE9D5;"
+                                        IsTextScaleFactorEnabled="False" />
+                                </Button>
+                                <Button
+                                    x:Name="ShellPaneBenchmarksButton"
+                                    Grid.Column="2"
+                                    AutomationProperties.AutomationId="ShellPaneBenchmarksButton"
+                                    AutomationProperties.Name="Benchmarks"
+                                    Click="ShellDestinationButton_Click"
+                                    Style="{StaticResource ShellDestinationButtonStyle}"
+                                    Tag="Benchmarks"
+                                    Visibility="{x:Bind shell:ShellFunctions.Visible(ViewModel.HasBenchmarks), FallbackValue=Collapsed}">
+                                    <FontIcon
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="16"
+                                        Glyph="&#xE9D2;"
+                                        IsTextScaleFactorEnabled="False" />
+                                </Button>
+                                <Button
+                                    x:Name="ShellPanePlaygroundButton"
+                                    Grid.Column="3"
+                                    AutomationProperties.AutomationId="ShellPanePlaygroundButton"
+                                    AutomationProperties.Name="Playground"
+                                    Click="ShellDestinationButton_Click"
+                                    Style="{StaticResource ShellDestinationButtonStyle}"
+                                    Tag="Playground">
+                                    <FontIcon
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="16"
+                                        Glyph="&#xE943;"
+                                        IsTextScaleFactorEnabled="False" />
+                                </Button>
+                                <Button
+                                    x:Name="ShellPaneHelpButton"
+                                    Grid.Column="4"
+                                    AutomationProperties.AutomationId="ShellPaneHelpButton"
+                                    AutomationProperties.Name="Help"
+                                    Click="ShellDestinationButton_Click"
+                                    Style="{StaticResource ShellDestinationButtonStyle}"
+                                    Tag="Help">
+                                    <FontIcon
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="16"
+                                        Glyph="&#xE897;"
+                                        IsTextScaleFactorEnabled="False" />
+                                </Button>
+                                <Button
+                                    x:Name="ShellPaneSettingsButton"
+                                    Grid.Column="5"
+                                    AutomationProperties.AutomationId="ShellPaneSettingsButton"
+                                    AutomationProperties.Name="Settings"
+                                    Click="ShellDestinationButton_Click"
+                                    Style="{StaticResource ShellDestinationButtonStyle}"
+                                    Tag="Settings">
+                                    <FontIcon
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="16"
+                                        Glyph="&#xE713;"
+                                        IsTextScaleFactorEnabled="False" />
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </SplitView.Pane>
 
@@ -1105,6 +1216,7 @@
                                     IsTextScaleFactorEnabled="False" />
                                 <TextBlock Style="{StaticResource ShellEmptyStateTitleStyle}" Text="No sample open" />
                                 <TextBlock
+                                    x:Name="ShellHostEmptyHint"
                                     HorizontalAlignment="Center"
                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                     Style="{StaticResource CaptionTextBlockStyle}"
@@ -1127,6 +1239,7 @@
                                 IsTextScaleFactorEnabled="False" />
                             <TextBlock Style="{StaticResource ShellEmptyStateTitleStyle}" Text="Pick a sample" />
                             <TextBlock
+                                x:Name="ShellHomeHint"
                                 HorizontalAlignment="Center"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 Style="{StaticResource CaptionTextBlockStyle}"
@@ -1161,6 +1274,7 @@
                         <Setter Target="SearchBox.Visibility" Value="Collapsed" />
                         <Setter Target="ShellSearchButton.Visibility" Value="Visible" />
                         <Setter Target="ShellPaneSearchBox.Visibility" Value="Visible" />
+                        <Setter Target="ShellPaneDestinations.Visibility" Value="Visible" />
                         <Setter Target="ShellCommandBar.DefaultLabelPosition" Value="Collapsed" />
                     </VisualState.Setters>
                 </VisualState>
@@ -1171,7 +1285,6 @@
                     <VisualState.Setters>
                         <Setter Target="SplitView.DisplayMode" Value="Overlay" />
                         <Setter Target="SearchBox.Width" Value="200" />
-                        <Setter Target="SearchBox.PlaceholderText" Value="Search (Ctrl+F)" />
                         <Setter Target="ShellCommandBar.DefaultLabelPosition" Value="Collapsed" />
                         <Setter Target="ShellBreadcrumbHost.Visibility" Value="Collapsed" />
                         <Setter Target="ShellSampleTitle.MaxWidth" Value="260" />

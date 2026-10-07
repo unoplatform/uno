@@ -6,12 +6,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using SampleControl.Presentation;
 using Uno.UI.RuntimeTests;
+using Uno.UI.Samples.Helper;
 using Windows.Foundation;
 
 namespace SamplesApp.Tests;
@@ -192,6 +194,71 @@ public class Given_ShellLayout
 		}
 	}
 #endif
+
+	[TestMethod]
+	public async Task When_Theme_Changes_Current_Pane_Destination_Follows()
+	{
+		var vm = SampleChooserViewModel.Instance;
+		var owner = vm.Owner;
+		var buttons = new[] { "ShellPaneHomeButton", "ShellPaneRuntimeTestsButton", "ShellPaneBenchmarksButton", "ShellPanePlaygroundButton", "ShellPaneHelpButton", "ShellPaneSettingsButton" }
+			.Select(name => (Button)owner.FindName(name))
+			.ToArray();
+		var current = buttons.FirstOrDefault(b => Equals(b.Tag, vm.ShellDestination.ToString()));
+		if (current is null)
+		{
+			Assert.Inconclusive($"No pane button for {vm.ShellDestination}.");
+		}
+
+		var wasAutomation = vm.IsAutomationRun;
+		var wasLight = vm.IsAppThemeLight;
+		var wasDark = vm.IsAppThemeDark;
+		try
+		{
+			// Keeps the theme flip out of the persisted settings.
+			vm.IsAutomationRun = true;
+
+			foreach (var dark in new[] { true, false })
+			{
+				if (dark)
+				{
+					vm.IsAppThemeDark = true;
+				}
+				else
+				{
+					vm.IsAppThemeLight = true;
+				}
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var expectedTheme = dark ? ElementTheme.Dark : ElementTheme.Light;
+				Assert.AreEqual(expectedTheme, current.ActualTheme);
+				Assert.AreSame(ShellThemeBrushes.Get("SubtleFillColorSecondaryBrush", expectedTheme), current.Background);
+				Assert.AreEqual("Current", AutomationProperties.GetItemStatus(current));
+				foreach (var other in buttons.Where(b => b != current))
+				{
+					Assert.IsTrue(string.IsNullOrEmpty(AutomationProperties.GetItemStatus(other)));
+				}
+			}
+		}
+		finally
+		{
+			if (wasLight)
+			{
+				vm.IsAppThemeLight = true;
+			}
+			else if (wasDark)
+			{
+				vm.IsAppThemeDark = true;
+			}
+			else
+			{
+				vm.IsAppThemeSystem = true;
+			}
+
+			vm.IsAutomationRun = wasAutomation;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
 
 	[TestMethod]
 	public async Task When_IsFavoritedSample_Set_Favorite_Is_Toggled()

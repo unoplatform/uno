@@ -21,19 +21,34 @@ partial class SampleChooserControl
 
 	private SampleChooserViewModel? _shellViewModel;
 	private bool _syncingRail;
+	private bool _isNarrow;
 
 	private void InitializeShell()
 	{
 		ApplyShortcutHints();
 		InitializeRowHeight();
 
+		// On touch a long press would select the title instead of showing its tooltip.
+		ShellSampleTitle.IsTextSelectionEnabled = !ShellFunctions.IsTouchPlatform;
+		ShellLayoutStates.CurrentStateChanged += (_, _) => UpdateLayoutState();
+
 		ShellOpenInNewWindowButton.Visibility = ShellFunctions.Visible(SampleChooserViewModel.CanCreateNewWindow);
 		ShellLogViewDumpButton.Visibility = ShellFunctions.Visible(SampleChooserViewModel.IsDebug);
 
 		DataContextChanged += OnShellDataContextChanged;
 		Loaded += OnShellLoaded;
-		ActualThemeChanged += (_, _) => UpdateFavoriteIcon();
+		ActualThemeChanged += (_, _) =>
+		{
+			UpdateFavoriteIcon();
+			SyncRailSelection();
+		};
+
+		ShellPaneBenchmarksButton.RegisterPropertyChangedCallback(VisibilityProperty, (_, _) => UpdatePaneDestinationColumns());
+		UpdatePaneDestinationColumns();
 	}
+
+	private void UpdatePaneDestinationColumns()
+		=> ShellPaneBenchmarksColumn.Width = ShellPaneBenchmarksButton.Visibility == Visibility.Visible ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
 
 	private void OnShellLoaded(object sender, RoutedEventArgs e)
 	{
@@ -44,8 +59,10 @@ partial class SampleChooserControl
 		}
 
 		UpdateChromeState(useTransitions: false);
+		UpdateLayoutState();
 		SyncRailSelection();
 		UpdateFavoriteIcon();
+		UpdateInputHints();
 	}
 
 	private void OnShellDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
@@ -66,6 +83,7 @@ partial class SampleChooserControl
 		SyncRailSelection();
 		UpdateFavoriteIcon();
 		UpdateSampleCommands();
+		UpdateBrowserToggle();
 		UpdateRowHeight();
 	}
 
@@ -92,9 +110,14 @@ partial class SampleChooserControl
 				UpdateSampleCommands();
 				break;
 
+			case nameof(SampleChooserViewModel.IsSplitVisible):
+				UpdateBrowserToggle();
+				break;
+
 #if HAS_UNO
 			case nameof(SampleChooserViewModel.SimulateTouch):
 				UpdateRowHeight();
+				UpdateInputHints();
 				break;
 #endif
 		}
@@ -111,7 +134,17 @@ partial class SampleChooserControl
 
 		VisualStateManager.GoToState(this, state, useTransitions);
 
-		ShellRailColumn.Width = new GridLength(state == "ChromeNormalState" ? RailWidth : 0);
+		// Phones reach the rail's destinations from the browser pane; the hidden pane keeps the zero-width rail from drawing over the content.
+		// Matches the chrome states' setters, so the result never depends on setter vs local precedence (WinUI kept this local True).
+		var hasRail = state == "ChromeNormalState" && !_isNarrow;
+		// TODO Uno: the rail is zeroed, never collapsed or raised (see uno-issues: uno--collapsed-navigationview-breaks-highcontrast-adjustment.md, uno--zero-width-navigationview-above-content-swallows-touch-exit.md)
+		ShellRailColumn.Width = new GridLength(hasRail ? RailWidth : 0);
+		ShellRail.IsPaneVisible = hasRail;
+
+		// Without the rail the host runs edge to edge, so only its top stroke remains.
+		ShellHostLayer.CornerRadius = !_isNarrow && Resources.TryGetValue("ShellHostCornerRadius", out var radius) && radius is CornerRadius r ? r : default;
+		ShellHostEdge.CornerRadius = ShellHostLayer.CornerRadius;
+		ShellHostEdge.BorderThickness = new Thickness(_isNarrow ? 0 : 1, 1, 0, 0);
 
 		// A hidden overlay pane would keep its light-dismiss layer over the sample.
 		if (state == "ChromeHiddenState"
@@ -161,7 +194,25 @@ partial class SampleChooserControl
 		{
 			_syncingRail = false;
 		}
+
+		var current = vm.ShellDestination.ToString();
+		foreach (var button in PaneDestinationButtons)
+		{
+			if (Equals(button.Tag, current) && ShellThemeBrushes.Get("SubtleFillColorSecondaryBrush", ActualTheme) is { } selected)
+			{
+				button.Background = selected;
+				AutomationProperties.SetItemStatus(button, "Current");
+			}
+			else
+			{
+				button.ClearValue(BackgroundProperty);
+				button.ClearValue(AutomationProperties.ItemStatusProperty);
+			}
+		}
 	}
+
+	private Button[] PaneDestinationButtons =>
+		[ShellPaneHomeButton, ShellPaneRuntimeTestsButton, ShellPaneBenchmarksButton, ShellPanePlaygroundButton, ShellPaneHelpButton, ShellPaneSettingsButton];
 
 	// Items act as commands, so invoking the selected item again (e.g. Runtime tests) re-runs it.
 	private void ShellRail_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
@@ -171,14 +222,32 @@ partial class SampleChooserControl
 			return;
 		}
 
-		if (args.IsSettingsInvoked)
+		Navigate(vm, args.IsSettingsInvoked ? "Settings" : (args.InvokedItemContainer as FrameworkElement)?.Tag as string);
+	}
+
+	private void ShellDestinationButton_Click(object sender, RoutedEventArgs e)
+	{
+		if (_shellViewModel is not { } vm || (sender as FrameworkElement)?.Tag is not string destination)
 		{
-			Run(vm.ShowSettingsCommand);
 			return;
 		}
 
-		switch ((args.InvokedItemContainer as FrameworkElement)?.Tag as string)
+		Navigate(vm, destination);
+
+		// Settings lives in the pane itself; every other destination replaces the content behind the overlay.
+		if (destination != "Settings" && SplitView.DisplayMode is SplitViewDisplayMode.Overlay or SplitViewDisplayMode.CompactOverlay)
 		{
+			vm.IsSplitVisible = false;
+		}
+	}
+
+	private static void Navigate(SampleChooserViewModel vm, string? destination)
+	{
+		switch (destination)
+		{
+			case "Settings":
+				Run(vm.ShowSettingsCommand);
+				break;
 			case "Home":
 				Run(vm.ShowHomeCommand);
 				break;
@@ -211,6 +280,46 @@ partial class SampleChooserControl
 	}
 
 	private void ShellRoot_SizeChanged(object sender, SizeChangedEventArgs e) => UpdatePaneLength();
+
+	private void UpdateLayoutState()
+	{
+		var isNarrow = ShellLayoutStates.CurrentState?.Name == "NarrowState";
+		if (isNarrow != _isNarrow)
+		{
+			_isNarrow = isNarrow;
+			UpdateChromeState(useTransitions: false);
+			UpdatePaneLength();
+			UpdateBrowserToggle();
+		}
+
+		UpdateInputHints();
+	}
+
+	// Without the rail the toggle leads to every destination, so it reads as the app menu.
+	private void UpdateBrowserToggle()
+	{
+		var label = _isNarrow ? "Menu" : "Sample browser";
+		ShellBrowserToggleIcon.Glyph = _isNarrow ? "\uE700" : ShellFunctions.BrowserToggleGlyph(_shellViewModel?.IsSplitVisible ?? false);
+		AutomationProperties.SetName(ShellBrowserToggle, label);
+		SetShortcutHint(ShellBrowserToggle, ShellCommands.ToggleBrowser, label);
+	}
+
+	// Shortcut hints mean nothing without a keyboard.
+	private void UpdateInputHints()
+	{
+		var touch = ShellFunctions.IsTouchShell;
+		var tablet = ShellLayoutStates.CurrentState?.Name == "TabletState";
+
+		SearchBox.PlaceholderText = (touch, tablet) switch
+		{
+			(true, _) => "Search samples",
+			(false, true) => "Search (Ctrl+F)",
+			_ => "Search samples (Ctrl+F)",
+		};
+		ShellHomeHint.Text = touch ? "Search or open the menu to browse samples." : "Search with Ctrl+F or browse with Ctrl+B.";
+		ShellHostEmptyHint.Text = touch ? "Search to find one" : "Press Ctrl+F to find one";
+		ShellFavoritesEmptyHint.Text = touch ? "Star a sample to keep it here." : "Star a sample (Ctrl+Shift+D) to keep it here.";
+	}
 
 	private ListView[] PaneLists => [ShellCategoriesList, ShellSamplesList, ShellFavoritesList, ShellRecentsList];
 
@@ -371,6 +480,12 @@ partial class SampleChooserControl
 	private void ApplyShortcutHints()
 	{
 		SetShortcutHint(ShellBrowserToggle, ShellCommands.ToggleBrowser, "Sample browser");
+		SetShortcutHint(ShellPaneHomeButton, ShellCommands.ShowHome, "Home");
+		SetShortcutHint(ShellPaneRuntimeTestsButton, ShellCommands.OpenRuntimeTests, "Runtime tests");
+		SetShortcutHint(ShellPanePlaygroundButton, ShellCommands.OpenPlayground, "Playground");
+		SetShortcutHint(ShellPaneHelpButton, ShellCommands.OpenHelp, "Help");
+		SetShortcutHint(ShellPaneSettingsButton, ShellCommands.ShowSettings, "Settings");
+		ToolTipService.SetToolTip(ShellPaneBenchmarksButton, "Benchmarks");
 		SetShortcutHint(ShellPreviousSampleButton, ShellCommands.PreviousSample, "Previous sample");
 		SetShortcutHint(ShellNextSampleButton, ShellCommands.NextSample, "Next sample");
 		SetShortcutHint(ShellReloadSampleButton, ShellCommands.ReloadSample, "Reload sample");

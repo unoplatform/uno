@@ -128,6 +128,19 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <!--  Pane destination buttons (phones): rail-sized icon targets.  -->
+    <Style
+        x:Key="ShellDestinationButtonStyle"
+        BasedOn="{StaticResource ShellSubtleButtonStyle}"
+        TargetType="Button">
+        <Setter Property="MinWidth" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
     <!--  Neutralises the implicit not_win: Button style in App.xaml (HorizontalAlignment=Left).  -->
     <Style
         x:Key="ShellPlainButtonStyle"
