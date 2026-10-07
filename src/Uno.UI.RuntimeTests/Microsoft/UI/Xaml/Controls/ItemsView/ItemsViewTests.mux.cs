@@ -543,7 +543,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Select an item, scroll to recycle selected item, scroll back to ensure selection persisted across recycling")]
-	[Ignore("Uno-specific: ItemsView uses Layout.IndexBasedLayoutOrientation in TryGetItemIndex which is not yet implemented in Uno.")]
+	[Ignore("Uno-specific: Bringing item 0 back into view after a far item leaves the ItemsRepeater realized range stale.")]
 	public async Task VerifySelectionPersistsAfterRecycling()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
@@ -858,7 +858,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Invokes the ItemsView.StartBringItemIntoView methods.")]
-	[Ignore("Uno-specific: ItemsView uses Layout.IndexBasedLayoutOrientation in TryGetItemIndex which is not yet implemented in Uno.")]
+	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
 	public async Task CanBringItemIntoView()
 	{
 		await CanBringItemIntoView(useLinedFlowLayout: false, useUniformGridLayout: false);
@@ -991,7 +991,7 @@ public class ItemsViewTests : MUXApiTestBase
 	}
 
 	[TestMethod]
-	[Ignore("Uno-specific: ItemsView uses Layout.IndexBasedLayoutOrientation in TryGetItemIndex which is not yet implemented in Uno.")]
+	[Ignore("Uno-specific: Bringing item 0 back into view after a far item leaves the ItemsRepeater realized range stale.")]
 	public async Task VerifyItemsViewUIASelectionProviderBehavior()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
