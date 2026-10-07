@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 
@@ -106,6 +107,50 @@ internal static class CppWinRTHelpers
 	/// </summary>
 	internal static T? Get<T>(this WeakReference<T>? weakRef) where T : class
 		=> weakRef is not null && weakRef.TryGetTarget(out var target) ? target : null;
+
+	private const int RPC_E_DISCONNECTED = unchecked((int)0x80010108);
+	private const int HRESULT_FROM_WIN32_RPC_S_SERVER_UNAVAILABLE = unchecked((int)0x800706BA);
+	private const int JSCRIPT_E_CANTEXECUTE = unchecked((int)0x89020001);
+
+	/// <summary>
+	/// Equivalent of raising a C++/WinRT <c>winrt::event&lt;T&gt;</c> (<c>event::operator()</c> + <c>impl::invoke</c>):
+	/// every handler of the snapshot is called even when an earlier one throws, a thrown exception is
+	/// reported but not rethrown, and a handler whose target is disconnected is removed.
+	/// </summary>
+	/// <remarks>
+	/// Only for members that are a plain <c>winrt::event</c>. The MUX <c>event_source</c> does not swallow
+	/// exceptions, so events backed by it stay plain C# events.
+	/// </remarks>
+	internal static void InvokeWinRTEvent<TDelegate>(ref TDelegate? field, Action<TDelegate> invoke) where TDelegate : Delegate
+	{
+		var targets = field?.GetInvocationList();
+		if (targets is null)
+		{
+			return;
+		}
+
+		foreach (var target in targets)
+		{
+			var handler = (TDelegate)target;
+			try
+			{
+				invoke(handler);
+			}
+			catch (Exception ex)
+			{
+				// TODO Uno: C++/WinRT reports through RoTransformError; the closest Uno equivalent is the log.
+				if (typeof(CppWinRTHelpers).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(CppWinRTHelpers).Log().Error("An event handler threw; the exception was swallowed as C++/WinRT does.", ex);
+				}
+
+				if (ex.HResult is RPC_E_DISCONNECTED or HRESULT_FROM_WIN32_RPC_S_SERVER_UNAVAILABLE or JSCRIPT_E_CANTEXECUTE)
+				{
+					field = (TDelegate?)Delegate.Remove(field, handler);
+				}
+			}
+		}
+	}
 
 	/// <summary>
 	/// Equivalent of C++/WinRT <c>winrt::to_hstring(float)</c>, which formats with MSVC <c>std::to_chars(value)</c>.
