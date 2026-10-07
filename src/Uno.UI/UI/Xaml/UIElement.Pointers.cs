@@ -238,7 +238,14 @@ namespace Microsoft.UI.Xaml
 		private static readonly RoutedEventHandler ClearPointersStateOnUnload = (object sender, RoutedEventArgs args) =>
 		{
 			_currentPointerEventDispatch.VisualTreeAltered = true;
-			(sender as UIElement)?.ClearPointerState();
+			if (sender is UIElement elt)
+			{
+				elt.ClearPointerState();
+
+				// MUX Reference dxaml\xcp\core\input\InputServices.cpp (CInputServices::CleanPointerElementObject), tag winui3/release/2.5.4-experimental, commit 7b127093475
+				// Remove the manipulation container that is associated with the leaving element.
+				elt._manipulationContainer = null;
+			}
 		};
 
 		private partial void ClearPointerStateOnRecycle()
@@ -334,7 +341,15 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(src, that, args));
+			var startingArgs = new ManipulationStartingRoutedEventArgs(src, that, args);
+			that.SafeRaiseEvent(ManipulationStartingEvent, startingArgs);
+
+			// MUX Reference dxaml\xcp\core\input\InputServices.cpp (CInputServices::RaiseManipulationStartingEvent), tag winui3/release/2.5.4-experimental, commit 7b127093475
+			// Add the manipulation container into the map chain to keep to use it during ManipulationStarted/Delta/Completed events
+			if (startingArgs.Container is { } manipulationContainer)
+			{
+				that._manipulationContainer = manipulationContainer;
+			}
 #if UNO_HAS_MANAGED_POINTERS
 			if (args.Settings is not GestureSettings.None)
 			{
@@ -349,7 +364,7 @@ namespace Microsoft.UI.Xaml
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			that.CancelAllDirectManipulations(args.Pointers);
-			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(src, that, sender, args));
+			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(src, that._manipulationContainer, sender, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>
@@ -357,7 +372,7 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(src, that, sender, args));
+			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(src, that._manipulationContainer, sender, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnRecognizerManipulationInertiaStarting = (sender, args) =>
@@ -367,7 +382,7 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(src, that, args));
+			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(src, that._manipulationContainer, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> OnRecognizerManipulationCompleted = (sender, args) =>
@@ -380,7 +395,11 @@ namespace Microsoft.UI.Xaml
 				that.ReleasePointerCapture(pointer, muteEvent: true, PointerCaptureKind.Implicit);
 			}
 
-			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, that, args));
+			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, that._manipulationContainer, args));
+
+			// MUX Reference dxaml\xcp\core\input\InputServices.cpp (CInputServices::ProcessManipulationCompletedInput), tag winui3/release/2.5.4-experimental, commit 7b127093475
+			// Remove the manipulation container from map chain
+			that._manipulationContainer = null;
 
 #if UNO_HAS_MANAGED_POINTERS
 			that.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.UnregisterUiElementManipulationRecognizer(args.Pointers, sender);
@@ -575,6 +594,38 @@ namespace Microsoft.UI.Xaml
 		#endregion
 
 		#region Manipulations (recognizer settings / custom bubbling)
+		// TODO Uno: WinUI keeps the container in CInputServices::m_mapManipulationContainer, keyed by the manipulated element.
+		private UIElement _manipulationContainer;
+
+		// MUX Reference dxaml\xcp\core\input\InputPointEventArgs.cpp (CInputPointEventArgs::ConvertGlobalPointToRelativePoint), tag winui3/release/2.5.4-experimental, commit 7b127093475
+		internal static Point GetManipulationRelativePosition(UIElement pRelativeTo, Point globalPoint)
+		{
+			if (pRelativeTo is Popup { IsInLiveTree: false } popup)
+			{
+				// for popup not in the live tree, we can use its
+				// child for this operation since popup does not
+				// have visuals of its own and has just one child.
+				pRelativeTo = popup.Child;
+			}
+
+			if (pRelativeTo is not null && !pRelativeTo.IsInLiveTree)
+			{
+				// We doesn't return a fail for inactive relativeTo element.
+				// Return the zero point as (0,0) if relativeTo element is out of tree.
+				return default;
+			}
+			else if (pRelativeTo is null)
+			{
+				// In the event that the target element is NULL then the point should be transformed to the
+				// browser control root.
+				return globalPoint;
+			}
+			else
+			{
+				return GetTransform(pRelativeTo, null).Inverse().Transform(globalPoint);
+			}
+		}
+
 		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (handlersCount == 1)
