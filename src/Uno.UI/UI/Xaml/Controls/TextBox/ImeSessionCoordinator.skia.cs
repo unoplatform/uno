@@ -189,14 +189,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			try
-			{
-				callback(host);
-			}
-			catch (Exception error)
-			{
-				typeof(ImeSessionCoordinator).LogError()?.Error("A platform IME callback failed.", error);
-			}
+			// App code (TextChanging/TextChanged, bindings) runs here, so its exceptions must surface.
+			callback(host);
 		}
 
 		/// <summary>Activates an IME session for <paramref name="host"/> (called on focus).</summary>
