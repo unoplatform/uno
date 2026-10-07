@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.UI.Samples.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Entities;
 using Windows.System;
 
@@ -82,6 +83,8 @@ internal static class ShellCommands
 	public const string ShowSettings = nameof(ShowSettings);
 	public const string ShowHome = nameof(ShowHome);
 	public const string ToggleFocusMode = nameof(ToggleFocusMode);
+	public const string FocusNextRegion = nameof(FocusNextRegion);
+	public const string FocusPreviousRegion = nameof(FocusPreviousRegion);
 
 	// Windows.System.VirtualKey has no named member for the OEM comma key.
 	private const VirtualKey CommaKey = (VirtualKey)188;
@@ -92,8 +95,8 @@ internal static class ShellCommands
 
 	public static IReadOnlyList<ShellCommand> All { get; } = new ShellCommand[]
 	{
-		new(FocusSearch, "Search samples", "", VirtualKey.F, Ctrl, (vm, control) => _ = control.FocusSearchAsync()),
-		new(FocusSearchAlias, "Search samples", "", VirtualKey.K, Ctrl, (vm, control) => _ = control.FocusSearchAsync(), wasmUnsafe: true, isAlias: true),
+		new(FocusSearch, "Search samples", "", VirtualKey.F, Ctrl, (vm, control) => _ = control.FocusSearchAsync(vm)),
+		new(FocusSearchAlias, "Search samples", "", VirtualKey.K, Ctrl, (vm, control) => _ = control.FocusSearchAsync(vm), wasmUnsafe: true, isAlias: true),
 		new(ReloadSample, "Reload sample", "", VirtualKey.F5, VirtualKeyModifiers.None, (vm, _) => Run(vm.ReloadCurrentTestCommand), wasmUnsafe: true),
 		new(PreviousSample, "Previous sample", "", VirtualKey.Left, Alt, (vm, _) => Run(vm.LoadPreviousTestCommand), wasmUnsafe: true),
 		new(NextSample, "Next sample", "", VirtualKey.Right, Alt, (vm, _) => Run(vm.LoadNextTestCommand), wasmUnsafe: true),
@@ -103,9 +106,11 @@ internal static class ShellCommands
 		new(ShowLibrary, "Library", "", VirtualKey.E, Ctrl | Shift, (vm, _) => vm.ShowBrowserSection(Section.Library)),
 		new(ToggleBrowser, "Sample browser", "", VirtualKey.B, Ctrl, (vm, _) =>
 		{
-			if (!vm.IsRecordAllTests)
+			if (CanShowBrowser(vm))
 			{
-				vm.IsSplitVisible = !vm.IsSplitVisible;
+				// In focus mode the pane is hidden, so leaving it always opens the browser.
+				vm.IsSplitVisible = !vm.IsShellChromeVisible || !vm.IsSplitVisible;
+				vm.IsShellChromeVisible = true;
 			}
 		}),
 		new(ToggleFavorite, "Toggle favorite", "", VirtualKey.D, Ctrl | Shift, (vm, _) => vm.ToggleFavoriteCommand.Execute(vm.CurrentSelectedSample)),
@@ -117,7 +122,39 @@ internal static class ShellCommands
 		new(ShowSettings, "Settings", "", CommaKey, Ctrl, (vm, _) => Run(vm.ShowSettingsCommand)),
 		new(ShowHome, "Home", "", VirtualKey.H, Alt | Shift, (vm, _) => Run(vm.ShowHomeCommand)),
 		new(ToggleFocusMode, "Focus mode", "", VirtualKey.F11, VirtualKeyModifiers.None, (vm, _) => Run(vm.ToggleFocusModeCommand), alwaysEnabled: true, wasmUnsafe: true),
+		new(FocusNextRegion, "Next region", "", VirtualKey.F6, VirtualKeyModifiers.None, (_, control) => control.MoveFocusRegion(backward: false), wasmUnsafe: true),
+		new(FocusPreviousRegion, "Previous region", "", VirtualKey.F6, Shift, (_, control) => control.MoveFocusRegion(backward: true), wasmUnsafe: true),
 	};
+
+	/// <summary>
+	/// Whether a shortcut may run: samples that disable shortcuts (the runtime-test runner) only get the
+	/// always-enabled ones, and those stay off under automation so they never interfere with a CI run.
+	/// </summary>
+	public static bool IsEnabled(ShellCommand command, bool keyboardShortcutsEnabled, bool isAutomationRun)
+		=> command.AlwaysEnabled ? !isAutomationRun : keyboardShortcutsEnabled;
+
+	/// <summary>Shortcuts never open the sample browser while screenshots are recorded; callers leave focus mode first.</summary>
+	public static bool CanShowBrowser(SampleChooserViewModel vm) => !vm.IsRecordAllTests;
+
+	/// <summary>True when typing goes to the element, so plain-character shortcuts like "/" must not fire.</summary>
+	public static bool IsTextInput(object? focused)
+		=> focused is TextBox or PasswordBox or RichEditBox or AutoSuggestBox;
+
+	/// <summary>The region indices to try, in order, when moving focus away from <paramref name="current"/> (-1 if none).</summary>
+	public static IEnumerable<int> GetRegionCycle(int current, int count, bool backward)
+	{
+		for (var step = 1; step <= count; step++)
+		{
+			if (current < 0)
+			{
+				yield return backward ? count - step : step - 1;
+			}
+			else if (step < count)
+			{
+				yield return ((backward ? current - step : current + step) % count + count) % count;
+			}
+		}
+	}
 
 	public static ShellCommand? Find(string id) => All.FirstOrDefault(c => c.Id == id);
 

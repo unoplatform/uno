@@ -283,6 +283,7 @@ public partial class SampleChooserViewModel
 		{
 			case nameof(CurrentSelectedSample):
 				RaisePropertyChanged(nameof(CurrentBreadcrumb));
+				RaisePropertyChanged(nameof(KeyboardShortcutsEnabled));
 				UpdateShellDestination();
 				break;
 

@@ -219,14 +219,17 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="ShellRoot" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <SplitView
             x:Name="SplitView"
             DisplayMode="Overlay"
             IsPaneOpen="{Binding IsSplitVisible, Mode=TwoWay}"
             OpenPaneLength="280">
             <SplitView.Pane>
-                <Grid uub:VisibleBoundsPadding.PaddingMask="All" Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}">
+                <Grid
+                    x:Name="ShellBrowserPane"
+                    uub:VisibleBoundsPadding.PaddingMask="All"
+                    Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}">
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -257,12 +260,6 @@
                             VerticalAlignment="Center"
                             Command="{Binding OpenRuntimeTestsCommand}"
                             Style="{StaticResource IconButtonStyle}">
-                            <Button.KeyboardAccelerators>
-                                <KeyboardAccelerator
-                                    Key="T"
-                                    Invoked="RuntimeTestsAccelerator_Invoked"
-                                    Modifiers="Control" />
-                            </Button.KeyboardAccelerators>
                             <u:PathControl Margin="5,0" Style="{StaticResource Icon_RuntimeTests}" />
                         </Button>
 
@@ -274,12 +271,6 @@
                             Command="{Binding OpenPlaygroundCommand}"
                             Foreground="{ThemeResource AccentFillColorDefaultBrush}"
                             Style="{StaticResource IconButtonStyle}">
-                            <Button.KeyboardAccelerators>
-                                <KeyboardAccelerator
-                                    Key="P"
-                                    Invoked="PlaygroundAccelerator_Invoked"
-                                    Modifiers="Control" />
-                            </Button.KeyboardAccelerators>
                             <FontIcon Glyph="&#xE7FC;" />
                         </Button>
 
@@ -339,12 +330,6 @@
                             SuggestionChosen="SearchBox_SuggestionChosen"
                             TextChanged="SearchBox_TextChanged"
                             TextMemberPath="ControlName">
-                            <AutoSuggestBox.KeyboardAccelerators>
-                                <KeyboardAccelerator
-                                    Key="F"
-                                    Invoked="FocusSearchAccelerator_Invoked"
-                                    Modifiers="Control" />
-                            </AutoSuggestBox.KeyboardAccelerators>
                             <AutoSuggestBox.ItemTemplate>
                                 <DataTemplate x:DataType="entities:SampleChooserContent">
                                     <TextBlock Text="{x:Bind ControlName}" />
@@ -447,12 +432,6 @@
                                 GroupName="SelectedSectionPhone"
                                 IsChecked="{Binding FavoritesSelected, Mode=TwoWay}"
                                 Style="{StaticResource SampleChooserNavRadioButtonStyle}">
-                                <RadioButton.KeyboardAccelerators>
-                                    <KeyboardAccelerator
-                                        Key="F"
-                                        Invoked="FavoritesViewAccelerator_Invoked"
-                                        Modifiers="Control,Shift" />
-                                </RadioButton.KeyboardAccelerators>
                                 <StackPanel VerticalAlignment="Center" Orientation="Vertical">
                                     <FontIcon Glyph="&#xE734;" />
                                     <TextBlock
@@ -468,12 +447,6 @@
                                 GroupName="SelectedSectionPhone"
                                 IsChecked="{Binding RecentsSelected, Mode=TwoWay}"
                                 Style="{StaticResource SampleChooserNavRadioButtonStyle}">
-                                <RadioButton.KeyboardAccelerators>
-                                    <KeyboardAccelerator
-                                        Key="H"
-                                        Invoked="HistoryViewAccelerator_Invoked"
-                                        Modifiers="Control" />
-                                </RadioButton.KeyboardAccelerators>
                                 <StackPanel VerticalAlignment="Center" Orientation="Vertical">
                                     <FontIcon Glyph="&#xE823;" />
                                     <TextBlock
@@ -497,6 +470,7 @@
                     <!--  CONTENT  -->
                     <Border Height="{Binding TitleBarVisualHeight}" />
                     <Grid
+                        x:Name="ShellHeader"
                         Grid.Row="1"
                         Background="{ThemeResource NavigationViewTopPaneBackground}"
                         ColumnSpacing="4"
@@ -561,12 +535,6 @@
                             Command="{Binding LoadPreviousTestCommand}"
                             CommandParameter="{Binding CurrentSelectedSample}"
                             Style="{StaticResource IconButtonStyle}">
-                            <Button.KeyboardAccelerators>
-                                <KeyboardAccelerator
-                                    Key="Left"
-                                    Invoked="PreviousSampleAccelerator_Invoked"
-                                    Modifiers="Menu" />
-                            </Button.KeyboardAccelerators>
                             <FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE76B;" />
                         </Button>
 
@@ -576,9 +544,6 @@
                             Command="{Binding ReloadCurrentTestCommand}"
                             CommandParameter="{Binding CurrentSelectedSample}"
                             Style="{StaticResource IconButtonStyle}">
-                            <Button.KeyboardAccelerators>
-                                <KeyboardAccelerator Key="F5" Invoked="ReloadSampleAccelerator_Invoked" />
-                            </Button.KeyboardAccelerators>
                             <FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE72C;" />
                         </Button>
 
@@ -588,12 +553,6 @@
                             Command="{Binding LoadNextTestCommand}"
                             CommandParameter="{Binding CurrentSelectedSample}"
                             Style="{StaticResource IconButtonStyle}">
-                            <Button.KeyboardAccelerators>
-                                <KeyboardAccelerator
-                                    Key="Right"
-                                    Invoked="NextSampleAccelerator_Invoked"
-                                    Modifiers="Menu" />
-                            </Button.KeyboardAccelerators>
                             <FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE76C;" />
                         </Button>
 
@@ -694,13 +653,13 @@
                                         </MenuFlyoutItem.Icon>
                                     </MenuFlyoutItem>
                                     <MenuFlyoutSeparator />
-                                    <MenuFlyoutItem Command="{Binding OpenHelpCommand}" Text="Help">
+                                    <MenuFlyoutItem
+                                        Command="{Binding OpenHelpCommand}"
+                                        KeyboardAcceleratorTextOverride="F1"
+                                        Text="Help">
                                         <MenuFlyoutItem.Icon>
                                             <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE897;" />
                                         </MenuFlyoutItem.Icon>
-                                        <MenuFlyoutItem.KeyboardAccelerators>
-                                            <KeyboardAccelerator Key="F1" Invoked="HelpAccelerator_Invoked" />
-                                        </MenuFlyoutItem.KeyboardAccelerators>
                                     </MenuFlyoutItem>
                                 </MenuFlyout>
                             </Button.Flyout>
@@ -709,6 +668,7 @@
 
                     <!--  Sample Content  -->
                     <ContentControl
+                        x:Name="ShellHostLayer"
                         Grid.Row="2"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Stretch"
