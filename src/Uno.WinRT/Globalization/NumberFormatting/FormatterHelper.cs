@@ -83,8 +83,18 @@ namespace Uno.Globalization.NumberFormatting
 
 		public void AppendFormatDouble(double value, StringBuilder stringBuilder)
 		{
-			AppendFormatIntegerPart(value, stringBuilder);
-			AppendFormatFractionPart(value, stringBuilder);
+			// The integer part alone cannot carry the sign of a value in (-1, 0), so it is emitted up front.
+			if (value < 0)
+			{
+				stringBuilder.Append(CultureInfo.InvariantCulture.NumberFormat.NegativeSign);
+				value = -value;
+			}
+
+			// "F0" gives the exact integer digits of any finite double, beyond the range of int and ulong.
+			var integerDigits = Math.Truncate(value).ToString("F0", CultureInfo.InvariantCulture);
+
+			AppendFormatIntegerPart(integerDigits, stringBuilder);
+			AppendFormatFractionPart(value, integerDigits.Length, stringBuilder);
 		}
 
 		public void AppendFormatInteger(ulong magnitude, bool isNegative, StringBuilder stringBuilder)
@@ -96,7 +106,39 @@ namespace Uno.Globalization.NumberFormatting
 				stringBuilder.Append(numberFormat.NegativeSign);
 			}
 
-			var digits = magnitude.ToString(CultureInfo.InvariantCulture);
+			var integerDigits = magnitude.ToString(CultureInfo.InvariantCulture);
+			AppendIntegerDigits(integerDigits, stringBuilder);
+
+			// An integer has no fraction of its own, so only the requested trailing zeros are shown.
+			var integerLength = integerDigits.Length;
+			var fractionDigits = Math.Max(FractionDigits, SignificantDigits - integerLength);
+
+			if (fractionDigits > 0)
+			{
+				stringBuilder.Append(numberFormat.NumberDecimalSeparator);
+				stringBuilder.Append('0', fractionDigits);
+			}
+			else if (IsDecimalPointAlwaysDisplayed)
+			{
+				stringBuilder.Append(numberFormat.NumberDecimalSeparator);
+			}
+		}
+
+		private void AppendFormatIntegerPart(string integerDigits, StringBuilder stringBuilder)
+		{
+			if (integerDigits == "0" &&
+				IntegerDigits == 0)
+			{
+				return;
+			}
+
+			AppendIntegerDigits(integerDigits, stringBuilder);
+		}
+
+		private void AppendIntegerDigits(string digits, StringBuilder stringBuilder)
+		{
+			var numberFormat = CultureInfo.InvariantCulture.NumberFormat;
+
 			if (digits.Length < IntegerDigits)
 			{
 				digits = digits.PadLeft(IntegerDigits, '0');
@@ -122,57 +164,12 @@ namespace Uno.Globalization.NumberFormatting
 			{
 				stringBuilder.Append(digits);
 			}
-
-			// An integer has no fraction of its own, so only the requested trailing zeros are shown.
-			var integerLength = magnitude.ToString(CultureInfo.InvariantCulture).Length;
-			var fractionDigits = Math.Max(FractionDigits, SignificantDigits - integerLength);
-
-			if (fractionDigits > 0)
-			{
-				stringBuilder.Append(numberFormat.NumberDecimalSeparator);
-				stringBuilder.Append('0', fractionDigits);
-			}
-			else if (IsDecimalPointAlwaysDisplayed)
-			{
-				stringBuilder.Append(numberFormat.NumberDecimalSeparator);
-			}
 		}
 
-		private void AppendFormatIntegerPart(double value, StringBuilder stringBuilder)
-		{
-			var integerPart = (int)Math.Truncate(value);
-
-			if (integerPart == 0 &&
-				IntegerDigits == 0)
-			{
-				return;
-			}
-
-			var formatBuilder = StringBuilderCache.Acquire();
-
-			if (IsGrouped)
-			{
-				formatBuilder.Append("{0:");
-				formatBuilder.Append('0', IntegerDigits - 1);
-				formatBuilder.Append(",0}");
-			}
-			else
-			{
-				formatBuilder.Append("{0:D");
-				formatBuilder.Append(IntegerDigits);
-				formatBuilder.Append('}');
-			}
-
-			var format = StringBuilderCache.GetStringAndRelease(formatBuilder);
-			stringBuilder.AppendFormat(CultureInfo.InvariantCulture, format, integerPart);
-		}
-
-		private void AppendFormatFractionPart(double value, StringBuilder stringBuilder)
+		private void AppendFormatFractionPart(double value, int integerPartLen, StringBuilder stringBuilder)
 		{
 			var numberDecimalSeparator = CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator;
 
-			var integerPart = (int)Math.Truncate(value);
-			var integerPartLen = integerPart.GetLength();
 			var fractionDigits = Math.Max(FractionDigits, SignificantDigits - integerPartLen);
 			var rounded = Math.Round(value, fractionDigits, MidpointRounding.AwayFromZero);
 			var needZeros = value == rounded;
