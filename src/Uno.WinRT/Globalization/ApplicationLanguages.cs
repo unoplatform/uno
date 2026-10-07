@@ -24,6 +24,10 @@ public static partial class ApplicationLanguages
 
 	internal readonly static bool InvariantCulture = GetBooleanConfig("System.Globalization.Invariant", "DOTNET_SYSTEM_GLOBALIZATION_INVARIANT");
 
+	// The culture the process started with, before ApplyCulture overwrites it with the app language.
+	// It is the closest stand-in for the user's regional-format locale where the OS has no API for it.
+	internal readonly static string OriginalCultureName = CultureInfo.CurrentCulture.Name;
+
 
 #if !IS_UNIT_TESTS
 	private const string PrimaryLanguageOverrideSettingKey = "__Uno.PrimaryLanguageOverride";
