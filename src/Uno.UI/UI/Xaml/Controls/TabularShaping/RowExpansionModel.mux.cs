@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TabularShaping\RowExpansionModel.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TabularShaping\RowExpansionModel.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -12,7 +12,7 @@ internal static partial class ShapingHelpers
 {
 	internal sealed partial class RowExpansionModel
 	{
-		public partial void SetDefaultExpanded(bool expanded)
+		private partial void SetDefaultExpanded(bool expanded)
 		{
 			if (m_defaultExpanded == expanded && m_nonDefault.Count == 0)
 			{
@@ -81,21 +81,6 @@ internal static partial class ShapingHelpers
 		public partial void SetAllExpanded(bool isExpanded) => SetDefaultExpanded(isExpanded);
 
 		public partial void RetainOnly(HashSet<string> liveKeys) => m_nonDefault.RemoveWhere(key => !liveKeys.Contains(key));
-
-		public partial void Clear()
-		{
-			if (m_nonDefault.Count == 0)
-			{
-				return;
-			}
-
-			m_nonDefault.Clear();
-
-			Change change = new();
-			change.AffectsAllKeys = true;
-			change.IsExpanded = m_defaultExpanded;
-			RaiseChanged(change);
-		}
 
 		private partial void RaiseChanged(Change change)
 		{

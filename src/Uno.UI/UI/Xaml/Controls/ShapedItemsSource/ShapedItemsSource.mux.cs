@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\ShapedItemsSource\ShapedItemsSource.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\ShapedItemsSource\ShapedItemsSource.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -59,40 +59,6 @@ partial class ShapedItemsSource
 	{
 		SubscribeToSourceCollectionChanges();
 		Refresh();
-	}
-
-	private partial void BeginShapingBatch() => ++m_shapingBatchDepth;
-
-	public partial DeferRefreshScope DeferRefresh()
-	{
-		BeginShapingBatch();
-		return new DeferRefreshScope(this);
-	}
-
-	private partial void EndShapingBatch()
-	{
-		MUX_ASSERT(m_shapingBatchDepth > 0);
-		if (m_shapingBatchDepth == 0 || --m_shapingBatchDepth > 0)
-		{
-			return;
-		}
-
-		var rebuild = m_shapingBatchHasRefresh;
-		var shapingChange = m_shapingBatchHasShapingChange;
-		m_shapingBatchHasRefresh = false;
-		m_shapingBatchHasShapingChange = false;
-
-		// A pending identity-selector change is the stronger of the two: it invalidates the whole
-		// projection, and the spec diff that ApplyShapingChange would commit is still owed either
-		// way, so commit it first and let the rebuild publish the result.
-		if (shapingChange)
-		{
-			ApplyShapingChange();
-		}
-		if (rebuild)
-		{
-			Refresh();
-		}
 	}
 
 	public partial void SetFilter(ShapingHelpers.Predicate? predicate)
@@ -179,14 +145,6 @@ partial class ShapedItemsSource
 
 	private partial void ApplyShapingChange()
 	{
-		if (m_shapingBatchDepth > 0)
-		{
-			// Deliberately do NOT commit the spec here: the pipeline diffs against the last
-			// committed spec, so deferring the commit is what lets the whole batch read as one delta.
-			m_shapingBatchHasShapingChange = true;
-			return;
-		}
-
 		// Commit unconditionally, even when the in-place path is not taken: the committed spec is
 		// the baseline the NEXT verb diffs against, so skipping it would make that diff report a
 		// change that has already been applied.
@@ -1223,7 +1181,7 @@ partial class ShapedItemsSource
 		ApplySort(rows, -1, m_pipeline.GroupOrder());
 
 		List<ShapingHelpers.KeyedBucket> keyedBuckets = new();
-		string? degradeReason = null;
+		string? rejectReason = null;
 		var grouped = ShapingHelpers.BucketizeToGroups(
 			rows,
 			(object? item) =>
@@ -1243,7 +1201,7 @@ partial class ShapedItemsSource
 				return m_groupIdentitySelector is not null || RowIdentity.GroupKeysEqual(existingKey, newKey);
 			},
 			keyedBuckets,
-			ref degradeReason);
+			ref rejectReason);
 
 		if (!grouped)
 		{
@@ -1261,11 +1219,11 @@ partial class ShapedItemsSource
 				"selector so every group has a stable non-empty unique string identity, or " +
 				"supply a groupIdentitySelector that resolves the collision intentionally. " +
 				"See the per-bucket reason string logged via LogIdentityProjectionDisabled.");
-			LogIdentityProjectionDisabled(degradeReason);
+			LogIdentityProjectionDisabled(rejectReason);
 			var message = Diagnostic("GroupBy key selector produced an invalid group identity");
-			if (degradeReason is not null)
+			if (rejectReason is not null)
 			{
-				message = message + ": " + degradeReason;
+				message = message + ": " + rejectReason;
 			}
 			throw new ArgumentException(message);
 		}
@@ -1376,8 +1334,6 @@ partial class ShapedItemsSource
 		count = m_sourceAccessor.Count();
 		return true;
 	}
-
-	private static partial string StringifyKey(object? key) => RowIdentity.StringifyKey(key);
 
 	private partial string Diagnostic(string text) => m_diagnosticName + ": " + text;
 }

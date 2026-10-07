@@ -88,29 +88,6 @@ public class Given_ShapedItemsSource
 	}
 
 	[TestMethod]
-	public void When_DeferRefresh_Batches_Verbs()
-	{
-		var shaped = Start(
-			new List<Entry> { new("a", 3), new("b", 1), new("c", 2), new("d", 0) },
-			out var changes);
-
-		var shapingChanged = 0;
-		shaped.SetShapingChangedHandler(_ => shapingChanged++);
-
-		using (shaped.DeferRefresh())
-		{
-			shaped.SetFilter(item => ((Entry)item!).Rank > 0);
-			shaped.SetSort("", "rank", s_byRank, null, "Rank", SortDirection.Descending);
-
-			Assert.AreEqual(0, changes.Count, "nothing is published inside the batch");
-		}
-
-		CollectionAssert.AreEqual(new[] { "a", "c", "b" }, Names(shaped));
-		CollectionAssert.AreEqual(new[] { CollectionChange.Reset }, changes, "the whole batch reads as one delta");
-		Assert.AreEqual(1, shapingChanged);
-	}
-
-	[TestMethod]
 	public void When_Clear_On_Nothing_Is_NoOp()
 	{
 		var shaped = Start(new List<Entry> { new("a", 1) }, out var changes);

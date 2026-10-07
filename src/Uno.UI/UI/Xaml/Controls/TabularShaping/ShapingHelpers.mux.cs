@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TabularShaping\ShapingHelpers.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TabularShaping\ShapingHelpers.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -1014,7 +1014,7 @@ internal static partial class ShapingHelpers
 		ResolveIdentityCallback? resolveIdentity,
 		Func<object?, object?, bool>? keysConsideredEqual,
 		List<KeyedBucket> outBuckets,
-		ref string? degradeReason)
+		ref string? rejectReason)
 	{
 		outBuckets.Clear();
 		// identity string -> index into outBuckets, so first-seen group order is preserved by
@@ -1029,7 +1029,7 @@ internal static partial class ShapingHelpers
 			string? reason = null;
 			if (resolveIdentity is null || !resolveIdentity(key, ref identity, ref reason))
 			{
-				degradeReason = reason;
+				rejectReason = reason;
 				return false;
 			}
 
@@ -1042,12 +1042,12 @@ internal static partial class ShapingHelpers
 			{
 				var bucket = outBuckets[bucketIndex];
 				// A genuine identity COLLISION (two logically-different keys mapping to the same
-				// identity string) forces a flat degrade; keysConsideredEqual lets the adapter
+				// identity string) fails the bucketization; keysConsideredEqual lets the adapter
 				// treat intentional shared identities (e.g. an app-supplied identity selector) as
 				// the same group instead.
 				if (keysConsideredEqual is not null && !keysConsideredEqual(bucket.Key, key))
 				{
-					degradeReason = "duplicate group identity";
+					rejectReason = "duplicate group identity";
 					return false;
 				}
 				bucket.Items.Add(item);
