@@ -59,7 +59,7 @@ public partial class FauxGradientBorderPresenter : ContentPresenter
 	[GeneratedDependencyProperty]
 	public static DependencyProperty RequestedBorderThicknessProperty { get; } = CreateRequestedBorderThicknessProperty();
 
-	private static Thickness GetRequestedBorderThicknessDefaultValue() => Thickness.Empty;
+	private static Thickness GetRequestedBorderThicknessDefaultValue() => default(Thickness);
 
 	private void OnRequestedBorderThicknessChanged() => OnBorderChanged();
 
@@ -78,7 +78,7 @@ public partial class FauxGradientBorderPresenter : ContentPresenter
 	[GeneratedDependencyProperty]
 	public static DependencyProperty RequestedCornerRadiusProperty { get; } = CreateRequestedCornerRadiusProperty();
 
-	private static CornerRadius GetRequestedCornerRadiusDefaultValue() => CornerRadius.None;
+	private static CornerRadius GetRequestedCornerRadiusDefaultValue() => default(CornerRadius);
 
 	private void OnRequestedCornerRadiusChanged() => OnBorderChanged();
 

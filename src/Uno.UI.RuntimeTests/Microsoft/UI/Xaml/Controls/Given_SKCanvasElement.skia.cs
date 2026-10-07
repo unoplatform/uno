@@ -25,13 +25,13 @@ public class Given_SKCanvasElement
 
 		var border = new Border
 		{
-			BorderBrush = Microsoft.UI.Colors.Green,
+			BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Green),
 			Height = 400,
 			Child = new ScrollViewer
 			{
 				VerticalAlignment = VerticalAlignment.Top,
 				Height = 100,
-				Background = Microsoft.UI.Colors.Red,
+				Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
 				Content = SUT
 			}
 		};

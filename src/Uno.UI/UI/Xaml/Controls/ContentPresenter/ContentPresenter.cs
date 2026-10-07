@@ -512,7 +512,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(Thickness),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				(Thickness)Thickness.Empty,
+				default(Thickness),
 				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 			)
@@ -539,7 +539,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(Thickness),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				(Thickness)Thickness.Empty,
+				default(Thickness),
 				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 			)
@@ -580,7 +580,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	#endregion
 
 	#region CornerRadius DependencyProperty
-	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+	private static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
 	[GeneratedDependencyProperty(ChangedCallback = true)]
 	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();

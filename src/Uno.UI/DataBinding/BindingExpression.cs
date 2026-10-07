@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml.Data
 			_targetOwnerType = targetPropertyDetails.Property.OwnerType;
 			TargetPropertyDetails = targetPropertyDetails;
 			_bindingPath = new BindingPath(
-				path: ParentBinding.Path,
+				path: ParentBinding.Path?.Path ?? "",
 				fallbackValue: ParentBinding.FallbackValue,
 				forAnimations: false,
 				allowPrivateMembers: ParentBinding.IsXBind

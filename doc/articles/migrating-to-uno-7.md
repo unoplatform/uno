@@ -1046,6 +1046,30 @@ recompile against 7.0 rather than swapping assemblies in place.
   + ((IObservableVector<SwipeItem>)items).VectorChanged += OnItemsChanged;
   ```
 
+### Uno-only implicit conversions and static fields removed
+
+Uno exposed a few C# shortcuts that WinUI doesn't have. Code using them compiled on Uno heads but
+not on a WinAppSDK head, and the string conversions only failed at runtime. They're removed in
+7.0; construct the value explicitly instead:
+
+| Removed | Replacement |
+| --- | --- |
+| `Brush brush = Colors.Red;` | `new SolidColorBrush(Colors.Red)` |
+| `Brush brush = "#FF0000";` | `new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(0xFF, 0xFF, 0x00, 0x00))`. To build a color from a hex string at runtime, use your own parser: WinUI has no string-to-color API. |
+| `GridLength width = 42;` / `= "Auto";` | `new GridLength(42)` / `GridLength.Auto` / `new GridLength(1, GridUnitType.Star)` |
+| `RowDefinition row = "Auto";` (same for `ColumnDefinition`) | `new RowDefinition { Height = GridLength.Auto }` |
+| `IconElement icon = "Add";` | `new SymbolIcon(Symbol.Add)` |
+| `CornerRadius radius = 4;` | `new CornerRadius(4)` |
+| `CornerRadius.None` | `default(CornerRadius)` or `new CornerRadius(0)` |
+| `Thickness.Empty` | `default(Thickness)` or `new Thickness(0)` |
+| `Binding binding = "Path";` | `new Binding { Path = new PropertyPath("Path") }` |
+| `BindingBase binding = "Path";` / `element.SetBinding(property, "Path")` | `BindingBase binding = new Binding { Path = new PropertyPath("Path") };` / `element.SetBinding(property, new Binding { Path = new PropertyPath("Path") })` |
+| `string path = binding.Path;` | `binding.Path?.Path ?? ""` |
+
+XAML is unaffected: `Background="Red"`, `Width="Auto"`, `Icon="Add"` and `{Binding}` markup
+keep working. Implicit conversions that WinUI's own C# projection also has (`Duration` and
+`KeyTime` from `TimeSpan`, `GridLength.Auto`, `Duration.Forever`, …) are kept.
+
 ### Custom `IAnimatedVisualSource` implementations
 
 `Microsoft.UI.Xaml.Controls.IAnimatedVisualSource` was a nine-method Uno-only contract. WinUI's
@@ -1322,9 +1346,11 @@ be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
 19. Remove any `UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` or `UnoWinRTRuntimeIdentifier` property from
    application heads, and replace `UnoRuntimeIdentifier` with `UnoRuntimeVariant` in cross-runtime libraries —
    UNOB0024 points them out.
-20. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+20. Replace Uno-only implicit conversions (`Brush brush = Colors.Red`, `GridLength width = "Auto"`, …) and
+   `Thickness.Empty` / `CornerRadius.None` with explicit constructors.
+21. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
-21. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
+22. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
    bring pre-7.0 application settings into the `UnoApplicationData` container, and update any
    native/interop code that read them from `NSUserDefaults.StandardUserDefaults`.
 

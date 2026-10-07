@@ -574,7 +574,7 @@ namespace Microsoft.UI.Xaml
 			set => SetFocusVisualMarginValue(value);
 		}
 
-		private static Thickness GetFocusVisualMarginDefaultValue() => Thickness.Empty;
+		private static Thickness GetFocusVisualMarginDefaultValue() => default(Thickness);
 
 		[GeneratedDependencyProperty]
 		public static DependencyProperty FocusVisualMarginProperty { get; } = CreateFocusVisualMarginProperty();
@@ -763,7 +763,7 @@ namespace Microsoft.UI.Xaml
 
 		#endregion
 
-		private protected virtual Thickness GetBorderThickness() => Thickness.Empty;
+		private protected virtual Thickness GetBorderThickness() => default(Thickness);
 
 		private protected Size MeasureFirstChild(Size availableSize)
 		{

@@ -4159,6 +4159,11 @@
 		       order, and the host opts out of kinds instead (ForceRenderingBackend/DisableRenderingBackends). -->
 		  <Member fullName="Uno.UI.Hosting.Win32RenderingBackend Uno.UI.Hosting.Win32RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Hosting.X11RenderingBackend Uno.UI.Hosting.X11RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
+		  <!-- Uno-only static sentinel fields removed; use default(Thickness) / default(CornerRadius). -->
+		  <Member fullName="Microsoft.UI.Xaml.CornerRadius Microsoft.UI.Xaml.CornerRadius::None" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Composition.CornerRadius Uno.UI.Composition.CornerRadius::None" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Thickness Microsoft.UI.Xaml.Thickness::Empty" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Composition.Thickness Uno.UI.Composition.Thickness::Empty" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
 	  </Fields>
 	  <Properties>
 		  <!-- Property types aligned to the WinUI metadata (#2086, breaking changes for 7.0). -->
@@ -5323,6 +5328,19 @@
 		  <Member fullName="Microsoft\.UI\.Xaml\.FrameworkElement Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)(Try)?AdaptNative\(.+\)" reason="Removed the legacy VisualTreeHelper.AdaptNative/TryAdaptNative native-view adapter; host native views as ContentControl/ContentPresenter content (BC23, breaking changes for 7.0, uno#8339)" isRegex="true" />
 		  <!-- Uno-only VisualTreeHelper.GetChildren helpers reduced to internal; WinUI has no counterpart. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.VisualTreeHelper(::|\.)GetChildren.*\(Microsoft\.UI\.Xaml\.DependencyObject view\)" reason="Reduced Uno-only VisualTreeHelper.GetChildren to internal (breaking changes for 7.0)" isRegex="true" />
+		  <!-- Uno-only implicit conversion operators removed; use the explicit constructors (WinUI parity). -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.Brush Microsoft.UI.Xaml.Media.Brush.op_Implicit(Windows.UI.Color uiColor)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Brush Microsoft.UI.Xaml.Media.Brush.op_Implicit(System.String colorCode)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.GridLength Microsoft.UI.Xaml.GridLength.op_Implicit(System.String value)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.GridLength Microsoft.UI.Xaml.GridLength.op_Implicit(System.Double value)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.IconElement Microsoft.UI.Xaml.Controls.IconElement.op_Implicit(System.String symbol)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.CornerRadius Microsoft.UI.Xaml.CornerRadius.op_Implicit(System.Double uniformRadius)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Composition.CornerRadius Uno.UI.Composition.CornerRadius.op_Implicit(System.Double uniformRadius)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Data.Binding Microsoft.UI.Xaml.Data.Binding.op_Implicit(System.String path)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Data.BindingBase Microsoft.UI.Xaml.Data.BindingBase.op_Implicit(System.String path)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.String Microsoft.UI.Xaml.PropertyPath.op_Implicit(Microsoft.UI.Xaml.PropertyPath path)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.RowDefinition Microsoft.UI.Xaml.Controls.RowDefinition.op_Implicit(System.String value)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ColumnDefinition Microsoft.UI.Xaml.Controls.ColumnDefinition.op_Implicit(System.String value)" reason="Uno-only convenience with no WinUI counterpart (breaking changes for 7.0)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->

@@ -1387,7 +1387,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return pOwner.m_calendarItemCornerRadius;
 			}
 
-			return CornerRadius.None;
+			return default(CornerRadius);
 		}
 		#endregion
 	}
@@ -1450,7 +1450,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return pOwner.m_dayItemCornerRadius;
 			}
 
-			return CornerRadius.None;
+			return default(CornerRadius);
 		}
 		#endregion
 	}

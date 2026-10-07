@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Data
 		{
 			InitializeBinder();
 		}
-
-		public static implicit operator BindingBase(string path)
-		{
-			return new Binding(path);
-		}
 	}
 }
 

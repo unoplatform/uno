@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetBorderThicknessValue(value);
 		}
 
-		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
+		private static Thickness GetBorderThicknessDefaultValue() => default(Thickness);
 
 		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
@@ -81,7 +81,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetPaddingValue(value);
 		}
 
-		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
+		private static Thickness GetPaddingDefaultValue() => default(Thickness);
 
 		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
@@ -102,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetCornerRadiusValue(value);
 		}
 
-		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+		private static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
 		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusPropertyChanged))]
 		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
