@@ -193,12 +193,8 @@ internal readonly partial struct UnicodeText : IParsedText
 				clusterContainsOnlyWhitespace &= char.IsWhiteSpace(_text[i]);
 			}
 
-			// Spacing is applied once per grapheme, so combining marks stay attached to their base glyph.
-			float clusterWidth = clusterContainsTab || IsGraphemeExtension(_text, indexStart) ? 0 : characterSpacing;
-			for (var glyphNode = glyphsStart; glyphNode != glyphsLast.Next; glyphNode = glyphNode.Next)
-			{
-				clusterWidth += glyphNode!.Value.XAdvance;
-			}
+			var advance = GetGlyphAdvance(glyphsStart, glyphsLast);
+			var clusterWidth = advance + GetEffectiveCharacterSpacing(characterSpacing, advance, clusterContainsTab, _text, indexStart);
 
 			return new(indexStart, indexEnd, glyphsStart, glyphsLast, fontDetails, hidden ? 0 : clusterWidth, runIndex, clusterContainsOnlyWhitespace, clusterContainsTab, false, -1, -1);
 		}
@@ -2958,14 +2954,38 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	private static float GetClusterCharacterSpacing(in Cluster cluster, List<RunBreak> runBreaks, string text)
-		=> cluster.runIndex < 0 || IsGraphemeExtension(text, cluster.start)
+		=> cluster.runIndex < 0
 			? 0
-			: CollectionsMarshal.AsSpan(runBreaks)[cluster.runIndex].characterSpacing;
+			: GetEffectiveCharacterSpacing(
+				CollectionsMarshal.AsSpan(runBreaks)[cluster.runIndex].characterSpacing,
+				GetGlyphAdvance(cluster.glyphStart, cluster.glyphLast),
+				cluster.containsTab,
+				text,
+				cluster.start);
 
-	private static bool IsGraphemeExtension(string text, int index)
+	// Mirrors lineservicescallbacks.cpp LineServicesGetRunCharacterWidths: zero-advance glyphs and diacritics (not "spaceable") get no
+	// spacing, and spacing never takes an advance below zero.
+	private static float GetEffectiveCharacterSpacing(float characterSpacing, float advance, bool containsTab, string text, int start)
+		=> characterSpacing == 0 || containsTab || advance <= 0 || IsCombiningMark(text, start)
+			? 0
+			: Math.Max(characterSpacing, -advance);
+
+	private static float GetGlyphAdvance(LinkedListNode<Glyph> glyphStart, LinkedListNode<Glyph> glyphLast)
+	{
+		float advance = 0;
+		for (var glyphNode = glyphStart; ; glyphNode = glyphNode.Next!)
+		{
+			advance += glyphNode.Value.XAdvance;
+			if (glyphNode == glyphLast)
+			{
+				return advance;
+			}
+		}
+	}
+
+	private static bool IsCombiningMark(string text, int index)
 		=> index < text.Length
-			&& (text[index] == (char)0x200D // ZWJ
-				|| CharUnicodeInfo.GetUnicodeCategory(text, index) is UnicodeCategory.NonSpacingMark or UnicodeCategory.SpacingCombiningMark or UnicodeCategory.EnclosingMark);
+			&& CharUnicodeInfo.GetUnicodeCategory(text, index) is UnicodeCategory.NonSpacingMark or UnicodeCategory.SpacingCombiningMark or UnicodeCategory.EnclosingMark;
 
 	private static bool GetRunHidden(in Cluster cluster, List<RunBreak> runBreaks)
 		=> cluster.runIndex >= 0 && CollectionsMarshal.AsSpan(runBreaks)[cluster.runIndex].hidden;
