@@ -193,10 +193,11 @@ internal readonly partial struct UnicodeText : IParsedText
 				clusterContainsOnlyWhitespace &= char.IsWhiteSpace(_text[i]);
 			}
 
-			float clusterWidth = 0;
+			// Spacing is applied once per grapheme, so combining marks stay attached to their base glyph.
+			float clusterWidth = clusterContainsTab || IsGraphemeExtension(_text, indexStart) ? 0 : characterSpacing;
 			for (var glyphNode = glyphsStart; glyphNode != glyphsLast.Next; glyphNode = glyphNode.Next)
 			{
-				clusterWidth += glyphNode!.Value.XAdvance + (clusterContainsTab ? 0 : characterSpacing);
+				clusterWidth += glyphNode!.Value.XAdvance;
 			}
 
 			return new(indexStart, indexEnd, glyphsStart, glyphsLast, fontDetails, hidden ? 0 : clusterWidth, runIndex, clusterContainsOnlyWhitespace, clusterContainsTab, false, -1, -1);
@@ -1670,15 +1671,16 @@ internal readonly partial struct UnicodeText : IParsedText
 				var glyphs = glyphsAndPositions.glyphs;
 				var positions = glyphsAndPositions.positions;
 
-				var characterSpacing = GetRunCharacterSpacing(cluster.Value, _runBreaks);
+				var characterSpacing = GetClusterCharacterSpacing(cluster.Value, _runBreaks, _text);
 				for (var glyphNode = cluster.Value.glyphStart; ; glyphNode = glyphNode.Next!)
 				{
 					var glyph = glyphNode.Value;
 					glyphs.Add(glyph.GlyphId);
 					positions.Add(new Vector2(positionAcc.X + glyph.XOffset, positionAcc.Y + glyph.YOffset - clusterBaselineOffset));
-					positionAcc.X += glyph.XAdvance + characterSpacing;
+					positionAcc.X += glyph.XAdvance;
 					if (cluster.Value.glyphLast == glyphNode)
 					{
+						positionAcc.X += characterSpacing;
 						break;
 					}
 				}
@@ -2926,8 +2928,15 @@ internal readonly partial struct UnicodeText : IParsedText
 		return text[index];
 	}
 
-	private static float GetRunCharacterSpacing(in Cluster cluster, List<RunBreak> runBreaks)
-		=> cluster.runIndex < 0 ? 0 : CollectionsMarshal.AsSpan(runBreaks)[cluster.runIndex].characterSpacing;
+	private static float GetClusterCharacterSpacing(in Cluster cluster, List<RunBreak> runBreaks, string text)
+		=> cluster.runIndex < 0 || IsGraphemeExtension(text, cluster.start)
+			? 0
+			: CollectionsMarshal.AsSpan(runBreaks)[cluster.runIndex].characterSpacing;
+
+	private static bool IsGraphemeExtension(string text, int index)
+		=> index < text.Length
+			&& (text[index] == (char)0x200D // ZWJ
+				|| CharUnicodeInfo.GetUnicodeCategory(text, index) is UnicodeCategory.NonSpacingMark or UnicodeCategory.SpacingCombiningMark or UnicodeCategory.EnclosingMark);
 
 	private static bool GetRunHidden(in Cluster cluster, List<RunBreak> runBreaks)
 		=> cluster.runIndex >= 0 && CollectionsMarshal.AsSpan(runBreaks)[cluster.runIndex].hidden;
@@ -3118,12 +3127,12 @@ internal readonly partial struct UnicodeText : IParsedText
 				|| terminalCluster.Value.containsTab
 				|| GetInlineObject(terminalCluster.Value, inlineObjects) is not null
 				|| GetRunHidden(terminalCluster.Value, runBreaks)
-				|| GetRunCharacterSpacing(terminalCluster.Value, runBreaks) == 0)
+				|| GetClusterCharacterSpacing(terminalCluster.Value, runBreaks, text) == 0)
 			{
 				continue;
 			}
 
-			var spacing = GetRunCharacterSpacing(terminalCluster.Value, runBreaks);
+			var spacing = GetClusterCharacterSpacing(terminalCluster.Value, runBreaks, text);
 			terminalCluster.Value = terminalCluster.Value with { width = terminalCluster.Value.width - spacing };
 			lines[lineIndex] = line with
 			{
