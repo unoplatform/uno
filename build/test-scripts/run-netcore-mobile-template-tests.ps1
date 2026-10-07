@@ -252,17 +252,16 @@ $projects =
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=WebGpu"), @("NetCore"),
         @(), @(), @("webgpu.dll"), @("Uno.UI.Composition.Skia.dll", "SkiaSharp.dll", "libSkiaSharp.dll")),
 
-    # Lottie and SVG draw through SkiaSharp add-ins over a neutral seam that Uno.WinUI also implements without
-    # SkiaSharp, so both need a Skia renderer to draw with. Lottie rides along with it (pure managed, small);
-    # SVG keeps its own feature. Without Skia, neither add-in ships and the managed engine serves the seam.
+    # Skottie comes with the Skia backend; SVG draws through a SkiaSharp add-in behind its own feature. Without
+    # Skia, neither ships and the managed engines serve the Lottie and SVG seams.
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia"), @("NetCore"),
-        @(), @(), @("Uno.UI.Lottie.dll", "SkiaSharp.Skottie.dll"), @("Uno.UI.Svg.dll")),
+        @(), @(), @("SkiaSharp.Skottie.dll"), @("Uno.UI.Svg.dll")),
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Svg"), @("NetCore"),
         @(), @(), @("Uno.UI.Svg.dll"), @()),
 
-    # No Skia renderer: nothing for either add-in to draw with, even when the feature asks for it.
+    # No Skia renderer: nothing for the SVG add-in to draw with, even when the feature asks for it.
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=WebGpu%3BSvg"), @("NetCore"),
-        @(), @(), @("webgpu.dll"), @("Uno.UI.Lottie.dll", "Uno.UI.Svg.dll", "SkiaSharp.Skottie.dll")),
+        @(), @(), @("webgpu.dll"), @("Uno.UI.Svg.dll", "SkiaSharp.Skottie.dll")),
 
     # 5.6 net-current runtime folder validation
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @(), @("macOS", "NetCore")),

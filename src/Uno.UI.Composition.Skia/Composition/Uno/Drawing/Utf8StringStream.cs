@@ -1,14 +1,12 @@
 #nullable enable
 
-#if HAS_SKOTTIE
-
 using System;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Uno.UI.Lottie;
+namespace Uno.UI.Composition.Drawing;
 
 /// <summary>A forward-only read stream over a UTF-8 encoding of a string, so a Lottie JSON payload can be handed to
 /// Skottie without materializing the whole byte array.</summary>
@@ -108,5 +106,3 @@ internal sealed class Utf8StringStream(string text) : Stream
 	public override void Write(byte[] buffer, int offset, int count)
 		=> throw new NotSupportedException();
 }
-
-#endif

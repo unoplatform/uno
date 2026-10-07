@@ -39,10 +39,9 @@ internal static class DrawingBackendConfiguration
 			builder.GeometryFactory(global::Uno.UI.Composition.Skia.SkiaBackend.CreateGeometryFactory());
 			// Same story for the Lottie renderer: unregistered it reports "No ILottieRenderer is registered" and
 			// the player silently shows its fallback content instead of the animation.
-			// The add-ins' factories are C# 14 extensions on SkiaBackend; this project compiles as C# 13, so it calls
-			// their extension classes directly.
-			builder.LottieRenderer(global::Uno.UI.Composition.Skia.SkiaBackendLottieExtensions.CreateLottieRenderer());
-			// And the SVG renderer, which this head references too.
+			builder.LottieRenderer(global::Uno.UI.Composition.Skia.SkiaBackend.CreateLottieRenderer());
+			// And the SVG renderer, which this head references too. The add-in's factory is a C# 14 extension on
+			// SkiaBackend; this project compiles as C# 13, so it calls the extension class directly.
 			builder.SvgRenderer(global::Uno.UI.Composition.Skia.SkiaBackendSvgExtensions.CreateSvgRenderer());
 #endif
 			// UNO_MANAGED_GEOMETRY swaps the geometry seam to the managed engine (rasterized on Skia pixels).

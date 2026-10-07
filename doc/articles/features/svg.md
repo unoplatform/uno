@@ -70,10 +70,10 @@ You can also explicitly use `SvgImageSource`:
 
 SVG is supported on all Uno Platform targets. On Windows (WinAppSDK), the OS is responsible for SVG rendering, and complex SVG files may not render properly. On the other targets, Uno Platform renders SVG with one of two renderers:
 
-| Renderer | Used when | Coverage | Drawing backends |
-|----------|-----------|----------|------------------|
-| Managed engine (built into `Uno.WinUI`) | The `Uno.WinUI.Svg` package is not referenced | `svg`, `g`, `path`, `rect`, `circle`, `ellipse`, `line`, `polyline`, `polygon` and `use` elements, with solid and linear/radial gradient fills, strokes, opacity, fill rules, transforms, `viewBox` and inline styles. Text, clip paths, masks, filters, patterns, embedded images and CSS class styling are not supported yet. | Skia and WebGPU, drawn as vectors |
-| Svg.Skia (`Uno.WinUI.Svg` package, added by the `Svg` feature) | The `Uno.WinUI.Svg` package is referenced | Most of the SVG specification, as supported by [Svg.Skia](https://github.com/wieslawsoltes/Svg.Skia) | Skia, drawn as vectors. WebGPU, rasterized once per displayed size. Requires SkiaSharp. |
+| Renderer | Used when | Coverage |
+|----------|-----------|----------|
+| Managed engine (built into `Uno.WinUI`) | The `Uno.WinUI.Svg` package is not referenced | `svg`, `g`, `path`, `rect`, `circle`, `ellipse`, `line`, `polyline`, `polygon` and `use` elements, with solid and linear/radial gradient fills, strokes, opacity, fill rules, transforms, `viewBox` and inline styles. Text, clip paths, masks, filters, patterns, embedded images and CSS class styling are not supported yet. |
+| Svg.Skia (`Uno.WinUI.Svg` package, added by the `Svg` feature) | The `Uno.WinUI.Svg` package is referenced | Most of the SVG specification, as supported by [Svg.Skia](https://github.com/wieslawsoltes/Svg.Skia) |
 
 The host builder picks the renderer automatically. An app can also register one explicitly, which takes precedence over both. Each renderer is created by its assembly's factory:
 

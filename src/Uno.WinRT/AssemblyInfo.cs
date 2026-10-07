@@ -11,7 +11,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Extras")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition.Drawing")]
-[assembly: InternalsVisibleTo("Uno.UI.Lottie")]
 [assembly: InternalsVisibleTo("Uno.UI.GooglePlay")]
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.X11")]

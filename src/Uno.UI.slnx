@@ -18,9 +18,6 @@
     <Project Path="AddIns/Uno.UI.GooglePlay/Uno.UI.GooglePlay.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="AddIns/Uno.UI.MediaPlayer.Win32/Uno.UI.MediaPlayer.Win32.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>

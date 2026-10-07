@@ -14,7 +14,6 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Extras")]
 [assembly: InternalsVisibleTo("Uno.UI.RemoteControl")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
-[assembly: InternalsVisibleTo("Uno.UI.Lottie")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Linux.FrameBuffer")]

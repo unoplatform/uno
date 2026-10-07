@@ -1,7 +1,5 @@
 ﻿#nullable enable
 
-#if HAS_SKOTTIE
-
 using System;
 using SkiaSharp;
 using SkiaSharp.SceneGraph;
@@ -9,13 +7,13 @@ using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 using System.Numerics;
 
-namespace Uno.UI.Lottie;
+namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// Skottie-backed <see cref="ILottieRenderer"/>, the default Lottie renderer when Uno.UI.Lottie is referenced (created
-/// through <c>SkiaBackend.CreateLottieRenderer()</c>, by the host builder or by an app registering it explicitly). Renders through
-/// the neutral <see cref="IDrawingSession"/>: straight into the backend's live SKCanvas when it exposes one, else via
-/// a session-native texture (so WebGPU works too).
+/// Skottie-backed <see cref="ILottieRenderer"/>, the default Lottie renderer wherever the Skia backend is present (created
+/// through <c>SkiaBackend.CreateLottieRenderer()</c>, by the host builder or by an app registering it explicitly).
+/// Renders through the neutral <see cref="IDrawingSession"/>: straight into the backend's live SKCanvas when it exposes
+/// one, else via a session-native texture (so WebGPU works too).
 /// </summary>
 internal sealed class SkottieLottieRenderer : ILottieRenderer
 {
@@ -109,5 +107,3 @@ internal sealed class SkottieLottieRenderer : ILottieRenderer
 		}
 	}
 }
-
-#endif

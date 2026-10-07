@@ -18,6 +18,9 @@ public static class SkiaBackend
 
 	public static IGeometryFactory CreateGeometryFactory() => new SkiaGeometryFactory();
 
+	/// <summary>The Skottie <see cref="ILottieRenderer"/>.</summary>
+	public static ILottieRenderer CreateLottieRenderer() => new SkottieLottieRenderer();
+
 	/// <summary>The Skia graphics provider (the backend negotiation picks a context and builds its drawing factory).</summary>
 	public static IGraphicsProvider CreateGraphicsProvider() => new SkiaGraphicsProvider();
 

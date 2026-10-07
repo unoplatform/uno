@@ -17,7 +17,7 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />

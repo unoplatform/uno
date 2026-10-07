@@ -84,7 +84,6 @@
 
 	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'!='false'">
 		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
-		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(UnoDrawingBackendSkia)'!='false'">

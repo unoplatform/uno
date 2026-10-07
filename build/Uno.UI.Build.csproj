@@ -154,7 +154,6 @@
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.Composition.WebGpu.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.Foundation.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinRT.nuspec" />
-			<_NuspecFiles Include=".\nuget\Uno.WinUI.Lottie.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.MSAL.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.Graphics2DSK.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.Svg.nuspec" />
@@ -165,7 +164,7 @@
 		<!-- Update Uno.WinUI references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
 
-		<!-- Update Uno.WinUI.Composition.Skia references version (the Svg and Lottie add-ins extend its SkiaBackend) -->
+		<!-- Update Uno.WinUI.Composition.Skia references version (the Svg add-in extends its SkiaBackend) -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Composition.Skia']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
 
 		<!-- Update Uno.Foundation references version -->
@@ -219,7 +218,6 @@
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Composition.WebGpu.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.Foundation.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinRT.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
-		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.MSAL.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Graphics2DSK.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Svg.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
@@ -266,7 +264,6 @@
 			<_diffPackage Include="Uno.WinUI" Other="Uno.WinUI.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Foldable" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Foldable.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.GooglePlay" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.GooglePlay.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinUI.Lottie" Other="Uno.WinUI.Lottie.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.MSAL" Other="Uno.WinUI.MSAL.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Svg" Other="Uno.WinUI.Svg.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinUI.Runtime.Linux.FrameBuffer.$(NBGV_SemVer2).nupkg" />

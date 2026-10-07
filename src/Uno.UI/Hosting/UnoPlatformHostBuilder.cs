@@ -104,15 +104,13 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	private const string WebGpuBackendTypeName = "Uno.UI.Composition.WebGpu.WebGpuBackend, Uno.UI.Composition.WebGpu";
 	private const string ManagedBackendTypeName = "Uno.UI.Composition.Managed.ManagedBackend, Uno.UI.Composition.Managed";
 
+	// Lottie defaults to Skottie, which comes with the Skia backend, else to the SkiaSharp-free managed engine.
+	// An app that wants the managed engine calls IUnoPlatformHostBuilder.LottieRenderer, which this light-up leaves alone.
+	//
 	// SVG has no core Skia impl: the Svg.Skia renderer ships as the optional Uno.UI.Svg add-in, with the managed
-	// engine as the built-in fallback. Each add-in extends SkiaBackend with its factory (a C# 14 static extension,
+	// engine as the built-in fallback. The add-in extends SkiaBackend with its factory (a C# 14 static extension,
 	// emitted as a plain static method on the add-in's extension class, which is what is looked up here).
 	private const string SvgAddInBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackendSvgExtensions, Uno.UI.Svg";
-
-	// Lottie: the Skottie add-in (Uno.UI.Lottie) is the default when referenced, else the SkiaSharp-free managed
-	// engine (Uno.UI.Composition.Managed). An app that wants the managed engine either drops the add-in reference
-	// or calls IUnoPlatformHostBuilder.LottieRenderer, which this light-up leaves alone.
-	private const string LottieAddInBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackendLottieExtensions, Uno.UI.Lottie";
 
 	// Each factory lookup keeps Type.GetType and GetMethod, both with literal arguments, in one expression:
 	// that lets the trimmer (and NativeAOT) keep exactly the factory invoked, and nothing else on the type.
@@ -281,7 +279,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		var renderer = InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(LottieAddInBackendTypeName, throwOnError: false)
+		var renderer = InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(SkiaBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes))
 			?? InvokeFactory<Drawing.ILottieRenderer>(static () => Type.GetType(ManagedBackendTypeName, throwOnError: false)
 				?.GetMethod("CreateLottieRenderer", FactoryFlags, Type.EmptyTypes));
