@@ -192,6 +192,7 @@ namespace SamplesApp
 			}
 			AssertInitialWindowSize();
 
+			DetectAutomationLaunch(GetLaunchArguments(e));
 
 			InitializeFrame(e.Arguments);
 
@@ -410,15 +411,20 @@ namespace SamplesApp
 			}
 		}
 
-		private async void HandleLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
-		{
+		private static string GetLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
 #if !HAS_UNO
-			var args = string.Join("&", Environment.GetCommandLineArgs().Skip(1));
+			=> string.Join("&", Environment.GetCommandLineArgs().Skip(1));
 #else
-			var args = launchActivatedEventArgs.Arguments ?? "";
+			=> launchActivatedEventArgs.Arguments ?? "";
 #endif
 
+		private async void HandleLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
+		{
+			var args = GetLaunchArguments(launchActivatedEventArgs);
+
 			Console.WriteLine($"HandleLaunchArguments: {args}");
+
+			args = ApplyLaunchTheme(args);
 
 			// Check the "sample=" deep link before the System.CommandLine-based handlers: on
 			// platforms where Console.ResetColor throws (Android, WebAssembly), System.CommandLine's
@@ -457,7 +463,14 @@ namespace SamplesApp
 
 			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
 			{
-				vm.SetSelectedSample(CancellationToken.None, "_None", "Playground");
+				try
+				{
+					await vm.ApplyStartupPageAsync(CancellationToken.None);
+				}
+				catch (Exception ex)
+				{
+					_log?.Error($"Could not open the startup page - {ex}");
+				}
 			}
 		}
 

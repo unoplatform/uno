@@ -60,11 +60,7 @@ namespace SampleControl.Presentation
 		private const string TestsIterationsVariable = "UITEST_RUNTIME_TESTS_ITERATIONS";
 		private const string TestsAttemptsVariable = "UITEST_RUNTIME_TESTS_ATTEMPTS";
 
-#if DEBUG
-		private const int _numberOfRecentSamplesVisible = 10;
-#else
-		private const int _numberOfRecentSamplesVisible = 0;
-#endif
+		private const int _numberOfRecentSamplesVisible = 20;
 
 #if HAS_UNO
 		private Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(SampleChooserViewModel));
@@ -130,15 +126,22 @@ namespace SampleControl.Presentation
 				ShowFpsIndicator = boolValue;
 			}
 
+			IsAutomationRun = IsAutomationLaunch;
+
 			InitializeCommands();
+			InitializeShellCommands();
 			ObserveChanges();
+			ObserveShellChanges();
 
 			InitializeCategories();
+			RaisePropertyChanged(nameof(IsSampleIndexLoaded));
 
 			if (_log.IsEnabled(LogLevel.Information))
 			{
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
+
+			RestoreShellSettings();
 
 			_ = _dispatcher.RunAsync(
 					async () =>
@@ -1100,6 +1103,14 @@ namespace SampleControl.Presentation
 				container.DataContext = null;
 			}
 
+			IsHomeVisible = false;
+
+			if (!ShouldTrackRecents)
+			{
+				CurrentSelectedSample = newContent;
+				return (container, control);
+			}
+
 			var recents = await GetRecentSamples(ct);
 
 			// Get the selected category, else if null find it using the SampleContent passed in
@@ -1112,13 +1123,20 @@ namespace SampleControl.Presentation
 
 			CurrentSelectedSample = newContent;
 
-			if (!recents.Contains(newContent))
+			// Most recently opened first, so Home and "Last sample" start from it.
+			var recentIndex = recents.IndexOf(newContent);
+			if (recentIndex != 0)
 			{
+				if (recentIndex > 0)
+				{
+					recents.RemoveAt(recentIndex);
+				}
+
 				recents.Insert(0, newContent);
 
 				if (recents.Count > _numberOfRecentSamplesVisible)
 				{
-					recents.RemoveAt(_numberOfRecentSamplesVisible);
+					recents.RemoveRange(_numberOfRecentSamplesVisible, recents.Count - _numberOfRecentSamplesVisible);
 				}
 
 				await SetFile(SampleChooserLRUConstant, recents.Where(s => s?.ControlType != null).Select(s => s.ControlType.FullName).ToArray());
