@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using SampleControl.Presentation;
@@ -133,7 +134,17 @@ partial class SampleChooserControl
 		}
 	}
 
-	internal void ShowSampleInfo() => InfoButton.Flyout?.ShowAt(GetCommandAnchor(InfoButton));
+	internal void ShowSampleInfo()
+	{
+		if (_isNarrow)
+		{
+			ShellInfoFlyout.ShowAt(ShellHeader, new FlyoutShowOptions { Placement = FlyoutPlacementMode.Bottom });
+		}
+		else
+		{
+			ShellInfoFlyout.ShowAt(GetCommandAnchor(InfoButton));
+		}
+	}
 
 	internal bool MoveFocusRegion(bool backward)
 	{

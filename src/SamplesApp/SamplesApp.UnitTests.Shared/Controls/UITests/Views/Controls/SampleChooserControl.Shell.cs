@@ -50,7 +50,7 @@ partial class SampleChooserControl
 	private (DependencyObject Element, string CommandId)[] _menuShortcuts = [];
 	private readonly Dictionary<FrameworkElement, double> _barWidths = new();
 	private double _barChromeWidth = FallbackBarChromeWidth;
-	private bool _isQuickSettingsFlyoutDetached;
+	private readonly List<(AppBarButton Button, FlyoutBase Flyout)> _detachedFlyouts = new();
 	private Func<Task>? _pendingRunnerLeave;
 	private Control? _runnerLeaveReturnFocus;
 	private Microsoft.UI.Dispatching.DispatcherQueueTimer? _focusModeIdleTimer;
@@ -669,14 +669,14 @@ partial class SampleChooserControl
 		ShellCommandBar.Opening += (_, _) =>
 		{
 			ReleaseOverflowCommandWidths();
-			DetachQuickSettingsFlyoutInOverflow();
+			DetachFlyoutsInOverflow();
 		};
 		ShellCommandBar.Closed += (_, _) =>
 		{
 			UpdateCommandSizes();
 
 			// The bar closes inside the overflowed button's click, before the button opens its flyout as a submenu.
-			DispatcherQueue.TryEnqueue(ReattachQuickSettingsFlyout);
+			DispatcherQueue.TryEnqueue(ReattachFlyouts);
 		};
 		ShellCommandBar.DynamicOverflowItemsChanging += (_, _) => DispatcherQueue.TryEnqueue(OnOverflowItemsChanged);
 		UpdateCommandSizes();
@@ -800,33 +800,62 @@ partial class SampleChooserControl
 	}
 
 	// An overflowed flyout button opens a submenu that cascades over the overflow menu, which phones cannot fit.
-	private void DetachQuickSettingsFlyoutInOverflow()
+	private void DetachFlyoutsInOverflow()
 	{
-		if (OverflowSettingsButton.IsInOverflow)
+		foreach (var button in new[] { OverflowSettingsButton, InfoButton })
 		{
-			OverflowSettingsButton.Flyout = null;
-			_isQuickSettingsFlyoutDetached = true;
+			if (button.IsInOverflow)
+			{
+				DetachFlyout(button);
+			}
 		}
 	}
 
-	private void ReattachQuickSettingsFlyout()
+	// A button without a flyout closes the overflow menu on click, so its flyout can open on its own.
+	private void DetachFlyout(AppBarButton button)
 	{
-		if (_isQuickSettingsFlyoutDetached)
+		if (button.Flyout is { } flyout)
 		{
-			OverflowSettingsButton.Flyout = ShellQuickSettingsFlyout;
-			_isQuickSettingsFlyoutDetached = false;
+			button.Flyout = null;
+			_detachedFlyouts.Add((button, flyout));
 		}
+	}
+
+	private bool IsFlyoutDetached(AppBarButton button) => _detachedFlyouts.Exists(entry => entry.Button == button);
+
+	private void ReattachFlyouts()
+	{
+		foreach (var (button, flyout) in _detachedFlyouts)
+		{
+			button.Flyout = flyout;
+		}
+
+		_detachedFlyouts.Clear();
 	}
 
 	private void OverflowSettingsButton_Click(object sender, RoutedEventArgs e)
 	{
 		// Wait for the overflow menu to close so the flyout opens on its own; a detached flyout would lose the shell theme.
-		if (_isQuickSettingsFlyoutDetached)
+		if (IsFlyoutDetached(OverflowSettingsButton))
 		{
 			DispatcherQueue.TryEnqueue(() =>
 			{
-				ReattachQuickSettingsFlyout();
+				ReattachFlyouts();
 				ShellQuickSettingsFlyout.ShowAt(GetCommandAnchor(OverflowSettingsButton));
+			});
+		}
+	}
+
+	private void InfoButton_Click(object sender, RoutedEventArgs e)
+	{
+		// Phones center the panel under the header instead of hanging it off the button.
+		if (IsFlyoutDetached(InfoButton) || _isNarrow)
+		{
+			DetachFlyout(InfoButton);
+			DispatcherQueue.TryEnqueue(() =>
+			{
+				ReattachFlyouts();
+				ShowSampleInfo();
 			});
 		}
 	}

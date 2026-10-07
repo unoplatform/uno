@@ -494,13 +494,18 @@
                         <AppBarButton
                             x:Name="InfoButton"
                             AutomationProperties.AutomationId="ShellInfoButton"
+                            Click="InfoButton_Click"
                             DynamicOverflowOrder="2"
                             Label="Info">
                             <AppBarButton.Icon>
                                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE946;" />
                             </AppBarButton.Icon>
                             <AppBarButton.Flyout>
-                                <Flyout Opening="InfoFlyout_Opening" Placement="BottomEdgeAlignedRight">
+                                <Flyout
+                                    x:Name="ShellInfoFlyout"
+                                    Closed="InfoFlyout_Closed"
+                                    Opening="InfoFlyout_Opening"
+                                    Placement="BottomEdgeAlignedRight">
                                     <u:SampleInfoControl x:Name="SampleInfoFlyoutContent" DataContext="{x:Null}" />
                                 </Flyout>
                             </AppBarButton.Flyout>

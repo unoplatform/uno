@@ -139,7 +139,27 @@ namespace Uno.UI.Samples.Controls
 
 		private void InfoFlyout_Opening(object sender, object e)
 		{
+			SampleInfoFlyoutContent.CloseRequested -= InfoFlyoutContent_CloseRequested;
+			SampleInfoFlyoutContent.CloseRequested += InfoFlyoutContent_CloseRequested;
 			SampleInfoFlyoutContent.DataContext = ViewModel?.CurrentSelectedSample;
+			if (XamlRoot is { } root)
+			{
+				SampleInfoFlyoutContent.FitToWindow(root.Size);
+				root.Changed -= InfoFlyoutRoot_Changed;
+				root.Changed += InfoFlyoutRoot_Changed;
+			}
 		}
+
+		private void InfoFlyout_Closed(object sender, object e)
+		{
+			if (XamlRoot is { } root)
+			{
+				root.Changed -= InfoFlyoutRoot_Changed;
+			}
+		}
+
+		private void InfoFlyoutRoot_Changed(XamlRoot sender, XamlRootChangedEventArgs args) => SampleInfoFlyoutContent.FitToWindow(sender.Size);
+
+		private void InfoFlyoutContent_CloseRequested(object? sender, EventArgs e) => ShellInfoFlyout.Hide();
 	}
 }

@@ -9,72 +9,234 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-    <StackPanel MaxWidth="320" Orientation="Vertical">
-        <StackPanel.Resources>
-            <Style TargetType="TextBlock">
-                <Setter Property="TextWrapping" Value="Wrap" />
-                <Setter Property="Margin" Value="0,0,0,8" />
-                <Setter Property="IsTextSelectionEnabled" Value="True" />
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Shell/ShellResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style
+                x:Key="ShellInfoCopyButtonStyle"
+                BasedOn="{StaticResource ShellSubtleButtonStyle}"
+                TargetType="Button">
+                <Setter Property="Padding" Value="4" />
+                <Setter Property="Width" Value="32" />
+                <Setter Property="Height" Value="32" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
             </Style>
-        </StackPanel.Resources>
-        <TextBlock>
-            <Run FontWeight="Bold" Text="Name: " />
-            <Run Text="{Binding ControlName}" />
-        </TextBlock>
-        <TextBlock>
-            <Run FontWeight="Bold" Text="Categories: " />
-            <Run Text="{Binding CategoriesString}" />
-        </TextBlock>
-        <TextBlock>
-            <Run FontWeight="Bold" Text="Description: " />
-            <LineBreak /><Run Text="{Binding Description}" />
-        </TextBlock>
-        <TextBlock
-            Margin="0"
-            FontWeight="Bold"
-            Text="Control type:" />
-        <Grid ColumnSpacing="8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Button Click="CopyContentClick" CommandParameter="{Binding ControlType.FullName}">
-                <SymbolIcon Symbol="Copy" />
-            </Button>
-            <TextBlock
-                Grid.Column="1"
-                VerticalAlignment="Center"
-                Text="{Binding ControlType.FullName}"
-                TextWrapping="Wrap" />
-        </Grid>
 
-        <TextBlock
-            Margin="0"
-            FontWeight="Bold"
-            Text="Query string:" />
-        <Grid ColumnSpacing="8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Button Click="CopyContentClick" CommandParameter="{Binding QueryString}">
-                <SymbolIcon Symbol="Copy" />
-            </Button>
-            <TextBlock
-                Grid.Column="1"
-                VerticalAlignment="Center"
-                Text="{Binding QueryString}"
-                TextWrapping="Wrap" />
-        </Grid>
+            <Style x:Key="ShellInfoLabelStyle" TargetType="TextBlock">
+                <Setter Property="Margin" Value="0,6,0,0" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+                <Setter Property="FontSize" Value="12" />
+            </Style>
 
-        <HyperlinkButton
-            x:Name="GitHubLinkButton"
-            Margin="0,8,0,0"
-            Click="OpenGitHubClick">
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE774;" />
-                <TextBlock IsTextSelectionEnabled="False" Text="View source on GitHub" />
+            <Style
+                x:Key="ShellInfoValueStyle"
+                BasedOn="{StaticResource ShellMonospaceTextStyle}"
+                TargetType="TextBlock">
+                <Setter Property="Margin" Value="0,6,0,0" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+            </Style>
+
+            <DataTemplate x:Key="ShellInfoChipTemplate">
+                <Border Style="{StaticResource ShellTagStyle}">
+                    <TextBlock Style="{StaticResource ShellTagTextStyle}" Text="{Binding}" />
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer
+        x:Name="ShellInfoScroll"
+        HorizontalScrollBarVisibility="Disabled"
+        VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <TextBlock
+                x:Name="ShellInfoEmptyText"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Text="No sample selected"
+                Visibility="Collapsed" />
+
+            <StackPanel x:Name="ShellInfoContent" Spacing="12">
+                <TextBlock
+                    x:Name="ShellInfoTitle"
+                    IsTextSelectionEnabled="True"
+                    Style="{StaticResource ShellHeaderTitleTextStyle}"
+                    TextWrapping="Wrap" />
+
+                <ItemsControl
+                    x:Name="ShellInfoChips"
+                    IsTabStop="False"
+                    ItemTemplate="{StaticResource ShellInfoChipTemplate}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <local:ShellWrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <TextBlock
+                    x:Name="ShellInfoDescription"
+                    IsTextSelectionEnabled="True"
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    TextWrapping="Wrap" />
+
+                <TextBlock
+                    x:Name="ShellInfoNoDescription"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Text="No description"
+                    Visibility="Collapsed" />
+
+                <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" />
+
+                <Grid
+                    x:Name="ShellInfoDefinitions"
+                    ColumnSpacing="12"
+                    RowSpacing="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        x:Name="ShellInfoTypeLabel"
+                        Style="{StaticResource ShellInfoLabelStyle}"
+                        Text="Type" />
+                    <TextBlock
+                        x:Name="ShellInfoTypeValue"
+                        Grid.Column="1"
+                        Style="{StaticResource ShellInfoValueStyle}" />
+                    <Button
+                        x:Name="ShellCopyTypeButton"
+                        Grid.Column="2"
+                        AutomationProperties.AutomationId="ShellCopyTypeButton"
+                        AutomationProperties.Name="Copy type name"
+                        Click="CopyContentClick"
+                        Style="{StaticResource ShellInfoCopyButtonStyle}"
+                        ToolTipService.ToolTip="Copy type name">
+                        <FontIcon
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            FontSize="16"
+                            Glyph="&#xE8C8;" />
+                    </Button>
+
+                    <TextBlock
+                        x:Name="ShellInfoLinkLabel"
+                        Grid.Row="1"
+                        Style="{StaticResource ShellInfoLabelStyle}"
+                        Text="Link" />
+                    <TextBlock
+                        x:Name="ShellInfoLinkValue"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Style="{StaticResource ShellInfoValueStyle}" />
+                    <Button
+                        x:Name="ShellCopyLinkInfoButton"
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        AutomationProperties.AutomationId="ShellCopyLinkInfoButton"
+                        AutomationProperties.Name="Copy sample link"
+                        Click="CopyContentClick"
+                        Style="{StaticResource ShellInfoCopyButtonStyle}"
+                        ToolTipService.ToolTip="Copy sample link">
+                        <FontIcon
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            FontSize="16"
+                            Glyph="&#xE8C8;" />
+                    </Button>
+
+                    <TextBlock
+                        x:Name="ShellInfoLaunchLabel"
+                        Grid.Row="2"
+                        Style="{StaticResource ShellInfoLabelStyle}"
+                        Text="Launch" />
+                    <TextBlock
+                        x:Name="ShellInfoLaunchValue"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Style="{StaticResource ShellInfoValueStyle}" />
+                    <Button
+                        x:Name="ShellCopyLaunchButton"
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        AutomationProperties.AutomationId="ShellCopyLaunchButton"
+                        AutomationProperties.Name="Copy launch argument"
+                        Click="CopyContentClick"
+                        Style="{StaticResource ShellInfoCopyButtonStyle}"
+                        ToolTipService.ToolTip="Copy launch argument">
+                        <FontIcon
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            FontSize="16"
+                            Glyph="&#xE8C8;" />
+                    </Button>
+
+                    <TextBlock
+                        x:Name="ShellInfoSourceLabel"
+                        Grid.Row="3"
+                        Style="{StaticResource ShellInfoLabelStyle}"
+                        Text="Source" />
+                    <TextBlock
+                        x:Name="ShellInfoSourceValue"
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Style="{StaticResource ShellInfoValueStyle}" />
+                    <Button
+                        x:Name="ShellCopySourceButton"
+                        Grid.Row="3"
+                        Grid.Column="2"
+                        AutomationProperties.AutomationId="ShellCopySourceButton"
+                        AutomationProperties.Name="Copy source path"
+                        Click="CopyContentClick"
+                        Style="{StaticResource ShellInfoCopyButtonStyle}"
+                        ToolTipService.ToolTip="Copy source path">
+                        <FontIcon
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            FontSize="16"
+                            Glyph="&#xE8C8;" />
+                    </Button>
+                </Grid>
+
+                <StackPanel
+                    x:Name="ShellInfoLinks"
+                    Orientation="Horizontal"
+                    Spacing="16">
+                    <HyperlinkButton
+                        x:Name="GitHubLinkButton"
+                        Padding="0"
+                        Click="OpenGitHubClick">
+                        <TextBlock IsTextSelectionEnabled="False" Text="View source on GitHub" />
+                    </HyperlinkButton>
+                    <HyperlinkButton
+                        x:Name="ShellInfoOpenNewWindowButton"
+                        Padding="0"
+                        Click="OpenNewWindowClick">
+                        <TextBlock IsTextSelectionEnabled="False" Text="Open in new window" />
+                    </HyperlinkButton>
+                </StackPanel>
+
             </StackPanel>
-        </HyperlinkButton>
-    </StackPanel>
+
+            <!--  Outside the spaced stack so the hidden announcement adds no gap.  -->
+            <TextBlock
+                x:Name="ShellInfoCopiedAnnouncement"
+                Height="0"
+                VerticalAlignment="Bottom"
+                AutomationProperties.LiveSetting="Polite"
+                Opacity="0"
+                Style="{StaticResource CaptionTextBlockStyle}" />
+        </Grid>
+    </ScrollViewer>
 </UserControl>
