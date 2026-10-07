@@ -19,7 +19,9 @@ namespace Uno.UI.Samples.Controls
 				Loaded += async (_, _) =>
 				{
 					await Task.Delay(TimeSpan.FromSeconds(30));
-					OverflowSettingsButton.Flyout?.ShowAt(OverflowSettingsButton);
+					// Narrow windows move the button into the "..." menu; anchor to the command bar then.
+					FrameworkElement anchor = OverflowSettingsButton.IsInOverflow ? ShellCommandBar : OverflowSettingsButton;
+					OverflowSettingsButton.Flyout?.ShowAt(anchor);
 					Console.WriteLine("PERF: gear menu opened");
 				};
 			}
@@ -48,7 +50,7 @@ namespace Uno.UI.Samples.Controls
 				Loaded += async (_, _) =>
 				{
 					await Task.Delay(TimeSpan.FromSeconds(12));
-					var sv = FindTallestScrollViewer(this);
+					var sv = FindBrowserListScrollViewer() ?? FindTallestScrollViewer(this);
 					if (sv is null)
 					{
 						Console.WriteLine("PERF-SCROLL: no scrollable ScrollViewer found");
@@ -85,6 +87,18 @@ namespace Uno.UI.Samples.Controls
 					}
 				};
 			}
+		}
+
+		// The browser's sample list is the scenario the hook was written for; fall back to any tall list.
+		private ScrollViewer FindBrowserListScrollViewer()
+		{
+			if (ShellSamplesList is { IsLoaded: true, Visibility: Visibility.Visible, ActualHeight: > 0 } list)
+			{
+				var sv = FindTallestScrollViewer(list);
+				return sv is { ScrollableHeight: > 0 } ? sv : null;
+			}
+
+			return null;
 		}
 
 		private static ScrollViewer FindTallestScrollViewer(DependencyObject root)

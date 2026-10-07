@@ -41,6 +41,7 @@ namespace Uno.UI.Samples.Controls
 
 			InitializePerfHooks();
 			InitializeShortcuts();
+			InitializeShell();
 
 			DataContextChanged += OnDataContextChanged;
 		}
@@ -77,14 +78,6 @@ namespace Uno.UI.Samples.Controls
 
 			_initialArrange = false;
 			return base.ArrangeOverride(availableSize);
-		}
-
-		private void OnSearchEnterKey_KeyDown(object sender, KeyRoutedEventArgs e)
-		{
-			if (e.Key == Windows.System.VirtualKey.Enter)
-			{
-				ViewModel?.TryOpenTopSearchResult();
-			}
 		}
 
 		private void SearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)

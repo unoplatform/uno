@@ -98,6 +98,14 @@
         <Setter Property="IsTextSelectionEnabled" Value="True" />
     </Style>
 
+    <!--  Explicit weight: Uno's fallback SubtitleTextBlockStyle is Normal, so the SemiBold crumbs outweighed the title.  -->
+    <Style
+        x:Key="ShellHeaderTitleTextStyle"
+        BasedOn="{StaticResource SubtitleTextBlockStyle}"
+        TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
     <Style
         x:Key="ShellEmptyStateTitleStyle"
         BasedOn="{StaticResource SubtitleTextBlockStyle}"
@@ -105,6 +113,19 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="TextAlignment" Value="Center" />
         <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <!--  Icon-only buttons in strips and card headers: no fill or border until hovered.  -->
+    <Style
+        x:Key="ShellSubtleButtonStyle"
+        BasedOn="{StaticResource DefaultButtonStyle}"
+        TargetType="Button">
+        <Setter Property="Background" Value="{ThemeResource SubtleFillColorTransparentBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource SubtleFillColorTransparentBrush}" />
+        <Setter Property="Padding" Value="6" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <!--  Neutralises the implicit not_win: Button style in App.xaml (HorizontalAlignment=Left).  -->

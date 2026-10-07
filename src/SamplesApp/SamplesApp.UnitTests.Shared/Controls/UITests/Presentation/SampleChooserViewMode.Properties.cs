@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
 using SampleControl.Entities;
 using Microsoft.UI.Xaml.Data;
@@ -435,6 +436,10 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		/// <summary>
+		/// Whether the current sample is a favorite. Setting a value that differs from the persisted state
+		/// persists it, so a TwoWay toggle button needs no command. Rapid toggles are serialised and the last one wins.
+		/// </summary>
 		public bool IsFavoritedSample
 		{
 			get => _isFavoritedSample;
@@ -442,6 +447,11 @@ namespace SampleControl.Presentation
 			{
 				_isFavoritedSample = value;
 				RaisePropertyChanged();
+
+				if (CurrentSelectedSample is { } sample && value != IsPersistedFavorite(sample))
+				{
+					_ = PersistRequestedFavoriteAsync(sample);
+				}
 			}
 		}
 

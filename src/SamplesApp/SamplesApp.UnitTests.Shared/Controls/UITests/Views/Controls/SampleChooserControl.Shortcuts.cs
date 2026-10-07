@@ -116,10 +116,18 @@ partial class SampleChooserControl
 		}
 
 		vm.IsShellChromeVisible = true;
-		SplitView.IsPaneOpen = true;
 
-		// A pane that is still opening is not focusable yet, so retry for a few frames.
-		for (var attempt = 0; attempt < 20 && !SearchBox.Focus(FocusState.Keyboard); attempt++)
+		// Narrow windows trade the header box for one at the top of the browser pane.
+		var target = SearchBox;
+		if (SearchBox.Visibility == Visibility.Collapsed)
+		{
+			vm.BrowserView = BrowserView.Samples;
+			SplitView.IsPaneOpen = true;
+			target = ShellPaneSearchBox;
+		}
+
+		// A pane or header that is still being shown is not focusable yet, so retry for a few frames.
+		for (var attempt = 0; attempt < 20 && !target.Focus(FocusState.Keyboard); attempt++)
 		{
 			await Task.Delay(16);
 		}

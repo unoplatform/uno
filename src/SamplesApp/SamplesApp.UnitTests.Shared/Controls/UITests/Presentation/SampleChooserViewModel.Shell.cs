@@ -304,6 +304,7 @@ public partial class SampleChooserViewModel
 			case nameof(FavoriteSamples):
 				RaisePropertyChanged(nameof(FavoritesCount));
 				RaisePropertyChanged(nameof(HasFavorites));
+				SyncFavoritedSample();
 				break;
 
 			case nameof(RecentSamples):
@@ -560,6 +561,61 @@ public partial class SampleChooserViewModel
 		SetRootTheme(theme);
 		PersistShellSetting(ShellThemeKey, theme.ToString());
 		RaiseThemeFlagsChanged();
+	}
+
+	private bool IsPersistedFavorite(SampleChooserContent sample) => FavoriteSamples?.Contains(sample) ?? false;
+
+	private bool _isPersistingFavorite;
+
+	internal bool IsPersistingFavorite => _isPersistingFavorite;
+
+	// Clicks faster than a write are folded into the next pass, so a few passes always reach the last request.
+	private const int MaxFavoritePersistPasses = 8;
+
+	// One write at a time: a click that lands mid-write is picked up by the next loop pass instead of being undone.
+	private async Task PersistRequestedFavoriteAsync(SampleChooserContent sample)
+	{
+		if (_isPersistingFavorite)
+		{
+			return;
+		}
+
+		_isPersistingFavorite = true;
+		try
+		{
+			for (var pass = 0; ReferenceEquals(CurrentSelectedSample, sample) && _isFavoritedSample != IsPersistedFavorite(sample); pass++)
+			{
+				if (pass == MaxFavoritePersistPasses)
+				{
+					ShellLog.Warn($"Gave up saving favorite {sample.ControlName} after {pass} attempts.");
+					break;
+				}
+
+				// Sets rather than toggles: a stored list that failed to load must not turn a removal into an add.
+				if (!await ToggleFavorite(CancellationToken.None, sample, isFavorite: _isFavoritedSample))
+				{
+					ShellLog.Warn($"Favorite {sample.ControlName} already reads as {(_isFavoritedSample ? "set" : "cleared")} in storage; keeping that.");
+					break;
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			ShellLog.Error($"Failed to update favorite {sample.ControlName}.", e);
+		}
+		finally
+		{
+			_isPersistingFavorite = false;
+			SyncFavoritedSample();
+		}
+	}
+
+	private void SyncFavoritedSample()
+	{
+		if (!_isPersistingFavorite)
+		{
+			IsFavoritedSample = CurrentSelectedSample is { } sample && IsPersistedFavorite(sample);
+		}
 	}
 
 	private bool ShouldTrackRecents => !IsAutomationRun && !IsRecordAllTests;
