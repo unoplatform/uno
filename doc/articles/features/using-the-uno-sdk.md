@@ -105,7 +105,7 @@ Here are the supported features:
 | `MauiEmbedding`      | Adds support for [embedding Maui controls in Uno Platform applications](xref:Uno.Extensions.Maui.Overview).                                                                                                                                |
 | `MediaPlayerElement`       | Adds native references where needed to use [MediaPlayerElement](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.mediaplayerelement).                                                                                                |
 | `Mvvm`               | Adds support for the [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm) package.                                                                                                                                |
-| `MVUX`               | Adds support for [MVUX](xref:Uno.Extensions.Mvux.Overview). Non-optimized (Debug) builds also reference [Uno.HotTesting.Reactive](https://www.nuget.org/packages/Uno.HotTesting.Reactive) for feed mocks in previews and UI tests.       |
+| `MVUX`               | Adds support for [MVUX](xref:Uno.Extensions.Mvux.Overview). Non-optimized builds also reference `Uno.HotTesting.Reactive`; see [MVUX feed mocks](#mvux-feed-mocks-in-non-optimized-builds).                              |
 | `Navigation`         | Adds support for [Navigation](xref:Uno.Extensions.Navigation.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                               |
 | `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
 | `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
@@ -324,6 +324,23 @@ If you still need one of the stripped packages on Windows for a specific reason,
 
 > [!NOTE]
 > This property is aimed at libraries (`IsPackable=true`). Application heads typically need the implicit Uno packages on Windows to run, so setting this on a head project is not recommended.
+
+## MVUX feed mocks in non-optimized builds
+
+When `UnoFeatures` includes `MVUX`, the `Uno.Sdk` also references [`Uno.HotTesting.Reactive`](https://www.nuget.org/packages/Uno.HotTesting.Reactive) in builds where `Optimize` is not `true` (Debug, by default). The package provides MVUX feed mocks for previews and UI tests, and is meant to stay out of published apps:
+
+- It is absent from optimized (Release) builds. Code that uses its types must only compile in non-optimized builds, for example under `#if DEBUG`, or the Release build fails.
+- It is referenced with `PrivateAssets="all"`, so it does not flow to projects that reference yours, nor into the package of a library packed in Debug. A test project that uses it references it directly.
+- It follows `UnoExtensionsVersion`, and is skipped when that version is older than 7.4, the first Extensions release that ships it.
+- Debug and Release restore different packages. If you use `RestoreLockedMode`, give each configuration its own lock file, e.g. `<NuGetLockFilePath>packages.$(Configuration).lock.json</NuGetLockFilePath>`.
+
+To turn the implicit reference off:
+
+```xml
+<PropertyGroup>
+  <UnoDisableHotTesting>true</UnoDisableHotTesting>
+</PropertyGroup>
+```
 
 ## Running packaged WinUI apps with `dotnet run`
 

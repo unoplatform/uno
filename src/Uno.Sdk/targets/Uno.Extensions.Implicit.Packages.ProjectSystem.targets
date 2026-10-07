@@ -90,8 +90,13 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.WinUI" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.Messaging" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
-		<!-- Feed mocks for previews and UI testing: dev/test-only, kept out of the Release graph like Uno.UI.HotDesign. -->
-		<_UnoProjectSystemPackageReference Include="Uno.HotTesting.Reactive" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
+		<!--
+			Feed mocks for previews and UI testing. Dev/test-only: absent when optimized, and PrivateAssets keeps it
+			out of the consumers and nuspec of a Debug-packed library. MinimumVersion skips it when UnoExtensionsVersion
+			pins an Extensions build that predates the package.
+		-->
+		<_UnoProjectSystemPackageReference Include="Uno.HotTesting.Reactive" ProjectSystem="true" PrivateAssets="all" MinimumVersion="7.4.0"
+			Condition=" '$(Optimize)' != 'true' AND '$(UnoDisableHotTesting)' != 'true' " />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';serialization;'))">

@@ -422,6 +422,16 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			return;
 		}
 
+		// 3.1) Skip a package that does not exist at its group version, e.g. when an older group version is pinned
+		if (metadata.TryGetValue(PackageReference.MinimumVersionMetadata, out var minimumVersion)
+			&& NuGetVersion.TryParse(minimumVersion, out var minimum)
+			&& NuGetVersion.TryParse(version, out var resolved)
+			&& resolved < minimum)
+		{
+			Log.LogMessage(MessageImportance.Normal, "Skipping the implicit reference to '{0}': version '{1}' is older than its first release '{2}'.", packageId, version, minimumVersion);
+			return;
+		}
+
 		// 4) Ensure there is not already an existing Implicit Reference that was added (this shouldn't happen)
 		var existing = _implicitPackages.SingleOrDefault(x => x.PackageId == packageId);
 		if (existing is not null)
