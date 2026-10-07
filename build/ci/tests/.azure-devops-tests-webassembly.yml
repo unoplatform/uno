@@ -1,8 +1,10 @@
 parameters:
   vmLinuxImage: ''
-  # A self-hosted pool to run on instead of the hosted image. The WebGPU job needs one: Chrome's SwiftShader
-  # renders on the CPU and scales with cores, and the hosted agents are too small to finish a group in time.
+  # A self-hosted pool to run on instead of the hosted Linux image.
   vmLinuxPool: ''
+  # 'macOS' runs on the hosted macOS image instead: its agents have a (paravirtual) GPU, which Chrome's WebGPU uses.
+  os: 'Linux'
+  vmMacImage: ''
   XAML_FLAVOR_BUILD: ''
   jobName: 'Skia_Browser_Runtime_Tests_Build'
   # Names the job and its test run; the job name is concatenated with the matrix group name.
@@ -30,7 +32,10 @@ jobs:
   timeoutInMinutes: ${{ parameters.jobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 0
 
-  ${{ if ne(parameters.vmLinuxPool, '') }}:
+  ${{ if eq(parameters.os, 'macOS') }}:
+    pool:
+      vmImage: ${{ parameters.vmMacImage }}
+  ${{ elseif ne(parameters.vmLinuxPool, '') }}:
     pool: ${{ parameters.vmLinuxPool }}
   ${{ else }}:
     pool:
@@ -77,30 +82,42 @@ jobs:
 
   - template: ../templates/dotnet-install.yml
 
-  - template: ../templates/linux-install-deps.yml
-    parameters:
-      # This job only runs Chrome under a virtual display. The vlc/gtk/webkit -dev packages in
-      # the default set exist for the Skia desktop X11 host and pull ~200 MB nothing here loads.
-      packages: 'xvfb fluxbox'
-
-  - bash: |
+  - ${{ if eq(parameters.os, 'macOS') }}:
+    - bash: |
         set -euo pipefail
-        set -x
-        # We use google-chrome instead of chromium-browser because ubuntu uses snap
-        # for the chromium package, and snapd isn't available in CI
-        wget --tries=3 --timeout=60 https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        # No apt-get update here: the .deb carries its own dependency list, and refreshing the
-        # mirror indexes is exactly where the long stalls happen.
-        apt_opts="-o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Dpkg::Use-Pty=0"
-        if ! sudo timeout --kill-after=30s 5m apt-get install -y $apt_opts ./google-chrome-stable_current_amd64.deb; then
-          # Chrome pulls its runtime dependencies from the .deb; refresh the indexes only if
-          # they turn out not to be resolvable from the pre-baked ones.
-          sudo dpkg --configure -a || true
-          sudo timeout --kill-after=30s 3m apt-get update $apt_opts
-          sudo timeout --kill-after=30s 5m apt-get install -y $apt_opts ./google-chrome-stable_current_amd64.deb
+        # The hosted image ships Chrome; install it only if a future image stops doing so.
+        if [ ! -x "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" ]; then
+          brew install --cask google-chrome
         fi
-    displayName: Install chrome
-    timeoutInMinutes: 10
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --version
+      displayName: Check chrome
+      timeoutInMinutes: 10
+
+  - ${{ else }}:
+    - template: ../templates/linux-install-deps.yml
+      parameters:
+        # This job only runs Chrome under a virtual display. The vlc/gtk/webkit -dev packages in
+        # the default set exist for the Skia desktop X11 host and pull ~200 MB nothing here loads.
+        packages: 'xvfb fluxbox'
+
+    - bash: |
+          set -euo pipefail
+          set -x
+          # We use google-chrome instead of chromium-browser because ubuntu uses snap
+          # for the chromium package, and snapd isn't available in CI
+          wget --tries=3 --timeout=60 https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          # No apt-get update here: the .deb carries its own dependency list, and refreshing the
+          # mirror indexes is exactly where the long stalls happen.
+          apt_opts="-o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Dpkg::Use-Pty=0"
+          if ! sudo timeout --kill-after=30s 5m apt-get install -y $apt_opts ./google-chrome-stable_current_amd64.deb; then
+            # Chrome pulls its runtime dependencies from the .deb; refresh the indexes only if
+            # they turn out not to be resolvable from the pre-baked ones.
+            sudo dpkg --configure -a || true
+            sudo timeout --kill-after=30s 3m apt-get update $apt_opts
+            sudo timeout --kill-after=30s 5m apt-get install -y $apt_opts ./google-chrome-stable_current_amd64.deb
+          fi
+      displayName: Install chrome
+      timeoutInMinutes: 10
 
   - bash: build/test-scripts/wasm-run-skia-runtime-tests.sh
     displayName: Run WebAssembly ${{ parameters.renderer }} Runtime Tests
