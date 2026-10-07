@@ -38,6 +38,17 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
+                    <!--  Uno's ListViewItem has no selection pill yet; WinUI draws its own (the helper keeps this one collapsed there).  -->
+                    <Border
+                        Grid.ColumnSpan="3"
+                        Width="3"
+                        Height="16"
+                        Margin="-12,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        shell:ShellSelectionIndicator.IsEnabled="True"
+                        Background="{ThemeResource AccentFillColorDefaultBrush}"
+                        CornerRadius="1.5" />
                     <TextBlock
                         VerticalAlignment="Center"
                         Text="{x:Bind ControlName}"
@@ -71,6 +82,17 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
+                    <!--  Uno's ListViewItem has no selection pill yet; WinUI draws its own (the helper keeps this one collapsed there).  -->
+                    <Border
+                        Grid.ColumnSpan="3"
+                        Width="3"
+                        Height="16"
+                        Margin="-12,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        shell:ShellSelectionIndicator.IsEnabled="True"
+                        Background="{ThemeResource AccentFillColorDefaultBrush}"
+                        CornerRadius="1.5" />
                     <TextBlock
                         VerticalAlignment="Center"
                         Text="{x:Bind Category}"
@@ -125,6 +147,50 @@
                         Visibility="{x:Bind shell:ShellFunctions.Visible(IsFavorite), Mode=OneWay}" />
                 </Grid>
             </DataTemplate>
+
+            <!--  Three columns like ShellSuggestionTemplate, so the keycap ends where the category captions end.  -->
+            <DataTemplate x:Key="ShellSeeAllSuggestionTemplate" x:DataType="shell:SearchSeeAllItem">
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                        Text="{x:Bind Text}" />
+                    <Border
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource ShellKeycapStyle}"
+                        Visibility="{x:Bind shell:ShellFunctions.Visible(HasShortcut)}">
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="{x:Bind Shortcut}" />
+                    </Border>
+                </Grid>
+            </DataTemplate>
+
+            <DataTemplate x:Key="ShellSearchHeaderTemplate" x:DataType="shell:SearchResultsHeader">
+                <TextBlock
+                    Margin="4,8,0,0"
+                    AutomationProperties.HeadingLevel="Level2"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Text="{x:Bind Title}" />
+            </DataTemplate>
+
+            <shell:ShellTemplateSelector
+                x:Key="ShellSuggestionTemplateSelector"
+                ItemTemplate="{StaticResource ShellSuggestionTemplate}"
+                SeeAllTemplate="{StaticResource ShellSeeAllSuggestionTemplate}" />
+
+            <shell:ShellTemplateSelector
+                x:Key="ShellSearchResultsTemplateSelector"
+                HeaderTemplate="{StaticResource ShellSearchHeaderTemplate}"
+                ItemTemplate="{StaticResource ShellSampleRowTemplate}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -586,12 +652,12 @@
                     AutomationProperties.AutomationId="ShellSearchBox"
                     AutomationProperties.LandmarkType="Search"
                     AutomationProperties.Name="Search samples"
-                    ItemTemplate="{StaticResource ShellSuggestionTemplate}"
-                    ItemsSource="{x:Bind shell:ShellFunctions.TopSuggestions(ViewModel.FilteredSamples), Mode=OneWay}"
+                    ItemTemplateSelector="{StaticResource ShellSuggestionTemplateSelector}"
+                    ItemsSource="{x:Bind shell:ShellFunctions.TopSuggestions(ViewModel.FilteredSamples, ViewModel.SearchTerm, ShowShortcutHints), Mode=OneWay}"
+                    KeyDown="SearchBox_KeyDown"
                     PlaceholderText="Search samples (Ctrl+F)"
                     QueryIcon="Find"
                     QuerySubmitted="SearchBox_QuerySubmitted"
-                    SuggestionChosen="SearchBox_SuggestionChosen"
                     TextChanged="SearchBox_TextChanged"
                     TextMemberPath="ControlName"
                     UpdateTextOnSelect="False" />
@@ -716,12 +782,12 @@
                             AutomationProperties.AutomationId="ShellPaneSearchBox"
                             AutomationProperties.LandmarkType="Search"
                             AutomationProperties.Name="Search samples"
-                            ItemTemplate="{StaticResource ShellSuggestionTemplate}"
-                            ItemsSource="{x:Bind shell:ShellFunctions.TopSuggestions(ViewModel.FilteredSamples), Mode=OneWay}"
+                            ItemTemplateSelector="{StaticResource ShellSuggestionTemplateSelector}"
+                            ItemsSource="{x:Bind shell:ShellFunctions.PaneSuggestions(ViewModel.FilteredSamples, ViewModel.SearchTerm, ShowShortcutHints), Mode=OneWay}"
+                            KeyDown="SearchBox_KeyDown"
                             PlaceholderText="Search samples"
                             QueryIcon="Find"
                             QuerySubmitted="SearchBox_QuerySubmitted"
-                            SuggestionChosen="SearchBox_SuggestionChosen"
                             TextChanged="SearchBox_TextChanged"
                             TextMemberPath="ControlName"
                             UpdateTextOnSelect="False"
@@ -798,11 +864,13 @@
                                     Grid.Column="1"
                                     Padding="8,2"
                                     AutomationProperties.AutomationId="ShellManualTestsChip"
+                                    Background="{ThemeResource SubtleFillColorTransparentBrush}"
                                     CornerRadius="{StaticResource ControlCornerRadius}"
                                     IsChecked="{Binding ManualTestsOnly, Mode=TwoWay}"
                                     ToolTipService.ToolTip="Show manual tests only">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon
+                                            x:Name="ShellManualTestsChipIcon"
                                             FontFamily="{StaticResource SymbolThemeFontFamily}"
                                             FontSize="12"
                                             Glyph="&#xE71C;"
@@ -837,6 +905,51 @@
                                     Text="{Binding SelectedCategory.Count}" />
                             </Grid>
 
+                            <!--  Context header: search results  -->
+                            <Grid
+                                x:Name="ShellSearchHeader"
+                                Grid.Row="1"
+                                MinHeight="32"
+                                Padding="8,0,0,0"
+                                ColumnSpacing="8"
+                                Visibility="{x:Bind ViewModel.SearchVisibility, Mode=OneWay, FallbackValue=Collapsed}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    x:Name="ShellSearchTitle"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.HeadingLevel="Level2"
+                                    Text="{x:Bind shell:ShellFunctions.SearchResultsTitle(ViewModel.SearchTerm), Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap" />
+                                <TextBlock
+                                    x:Name="ShellSearchResultCount"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.LiveSetting="Polite"
+                                    AutomationProperties.Name="{x:Bind shell:ShellFunctions.SearchResultCountName(ViewModel.SearchResultCount), Mode=OneWay}"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                    Text="{x:Bind ViewModel.SearchResultCount, Mode=OneWay}" />
+                                <Button
+                                    x:Name="ShellCloseSearchButton"
+                                    Grid.Column="2"
+                                    AutomationProperties.AutomationId="ShellCloseSearchButton"
+                                    AutomationProperties.Name="Close search results"
+                                    Click="ShellCloseSearchButton_Click"
+                                    Style="{StaticResource ShellSubtleButtonStyle}"
+                                    ToolTipService.ToolTip="Close search results">
+                                    <FontIcon
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="12"
+                                        Glyph="&#xE711;"
+                                        IsTextScaleFactorEnabled="False" />
+                                </Button>
+                            </Grid>
+
                             <ListView
                                 x:Name="ShellCategoriesList"
                                 Grid.Row="2"
@@ -864,6 +977,74 @@
                                 SelectionMode="Single"
                                 Visibility="{x:Bind ViewModel.SampleVisibility, Mode=OneWay, FallbackValue=Collapsed}" />
 
+                            <StackPanel
+                                Grid.Row="2"
+                                Margin="16,48"
+                                HorizontalAlignment="Center"
+                                Spacing="8"
+                                Visibility="{x:Bind shell:ShellFunctions.LibraryLoadingVisibility(ViewModel.CategoryVisibility, ViewModel.IsSampleIndexLoaded), Mode=OneWay, FallbackValue=Collapsed}">
+                                <ProgressRing IsActive="True" />
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                    Text="Indexing samples…" />
+                            </StackPanel>
+
+                            <StackPanel
+                                Grid.Row="2"
+                                Margin="16,48"
+                                HorizontalAlignment="Center"
+                                Spacing="8"
+                                Visibility="{x:Bind shell:ShellFunctions.SavedSamplesLoadingVisibility(ViewModel.FavoritesVisibility, ViewModel.RecentsVisibility, ViewModel.AreSavedSamplesLoaded), Mode=OneWay, FallbackValue=Collapsed}">
+                                <ProgressRing IsActive="True" />
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                    Text="Loading…" />
+                            </StackPanel>
+
+                            <!--  SEARCH RESULTS: SearchResultsGrouped flattened into heading and sample rows (code)  -->
+                            <Grid Grid.Row="2" Visibility="{x:Bind ViewModel.SearchVisibility, Mode=OneWay, FallbackValue=Collapsed}">
+                                <ListView
+                                    x:Name="ShellSearchResultsList"
+                                    ub:SplitViewBehavior.CloseOnClick="True"
+                                    AutomationProperties.AutomationId="ShellSearchResultsList"
+                                    AutomationProperties.Name="Search results"
+                                    IsItemClickEnabled="True"
+                                    ItemClick="ShellSearchResultsList_ItemClick"
+                                    ItemTemplateSelector="{StaticResource ShellSearchResultsTemplateSelector}"
+                                    SelectionChanged="ShellSearchResultsList_SelectionChanged"
+                                    SelectionMode="Single" />
+                                <StackPanel
+                                    Margin="16,48"
+                                    HorizontalAlignment="Center"
+                                    Spacing="8"
+                                    Visibility="{x:Bind shell:ShellFunctions.SearchEmptyVisibility(ViewModel.SearchResultCount, ViewModel.SearchTerm), Mode=OneWay, FallbackValue=Collapsed}">
+                                    <FontIcon
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="32"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Glyph="&#xE721;"
+                                        IsTextScaleFactorEnabled="False" />
+                                    <TextBlock
+                                        x:Name="ShellSearchEmptyTitle"
+                                        HorizontalAlignment="Center"
+                                        Style="{StaticResource BodyStrongTextBlockStyle}"
+                                        Text="{x:Bind shell:ShellFunctions.SearchEmptyTitle(ViewModel.SearchTerm), Mode=OneWay}"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap" />
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="Search looks at names, categories and type names."
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
+
                             <Grid Grid.Row="2" Visibility="{x:Bind ViewModel.FavoritesVisibility, Mode=OneWay, FallbackValue=Collapsed}">
                                 <ListView
                                     x:Name="ShellFavoritesList"
@@ -879,7 +1060,7 @@
                                     Margin="16,48"
                                     HorizontalAlignment="Center"
                                     Spacing="8"
-                                    Visibility="{x:Bind shell:ShellFunctions.Collapsed(ViewModel.HasFavorites), Mode=OneWay}">
+                                    Visibility="{x:Bind shell:ShellFunctions.EmptyListVisibility(ViewModel.HasFavorites, ViewModel.AreSavedSamplesLoaded), Mode=OneWay, FallbackValue=Collapsed}">
                                     <FontIcon
                                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                                         FontSize="32"
@@ -916,7 +1097,7 @@
                                     Margin="16,48"
                                     HorizontalAlignment="Center"
                                     Spacing="8"
-                                    Visibility="{x:Bind shell:ShellFunctions.Collapsed(ViewModel.HasRecents), Mode=OneWay}">
+                                    Visibility="{x:Bind shell:ShellFunctions.EmptyListVisibility(ViewModel.HasRecents, ViewModel.AreSavedSamplesLoaded), Mode=OneWay, FallbackValue=Collapsed}">
                                     <FontIcon
                                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                                         FontSize="32"
@@ -931,11 +1112,20 @@
                                         HorizontalAlignment="Center"
                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                         Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="Samples you open show up here."
+                                        Text="{x:Bind shell:ShellFunctions.RecentsEmptyHint(ViewModel.RecentsEnabled)}"
                                         TextAlignment="Center"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
                             </Grid>
+
+                            <!--  Footer: the results view lists the best matches only  -->
+                            <TextBlock
+                                Grid.Row="3"
+                                Padding="8,8"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{x:Bind shell:ShellFunctions.SearchCapText(ViewModel.SearchResultCount), Mode=OneWay}"
+                                Visibility="{x:Bind shell:ShellFunctions.SearchCapVisibility(ViewModel.SearchVisibility, ViewModel.SearchResultCount), Mode=OneWay, FallbackValue=Collapsed}" />
 
                             <!--  Footer: count + clear (Favorites and Recent)  -->
                             <Grid

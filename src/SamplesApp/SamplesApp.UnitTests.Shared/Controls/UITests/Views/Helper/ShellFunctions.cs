@@ -63,8 +63,21 @@ public static class ShellFunctions
 			? new List<object>()
 			: items.Cast<object>().Take(count).ToList();
 
-	/// <summary>The header search shows the top matches only; the results view lists the rest.</summary>
-	public static IList TopSuggestions(IEnumerable? items) => Take(items, 8);
+	internal const int MaxSuggestions = 8;
+
+	/// <summary>The header search shows the top matches, then a "See all" entry that opens the results view.</summary>
+	public static IList TopSuggestions(IEnumerable? items, string? term, bool showShortcutHints)
+	{
+		var all = items?.Cast<object>().ToList() ?? new List<object>();
+		if (all.Count <= MaxSuggestions)
+		{
+			return all;
+		}
+
+		var top = all.Take(MaxSuggestions).ToList();
+		top.Add(new SearchSeeAllItem(all.Count, term, showShortcutHints ? "Ctrl+Enter" : ""));
+		return top;
+	}
 
 	public static string BrowserToggleGlyph(bool isOpen) => isOpen ? "\uE89F" : "\uE8A0";
 
@@ -97,4 +110,46 @@ public static class ShellFunctions
 
 	public static string RecentsCountText(IEnumerable? recents)
 		=> recents?.Cast<object>().Count() is { } count ? $"{count:N0} recent" : string.Empty;
+
+	/// <summary>
+	/// Search results as one list with a heading row per category. Uno's Skia ListView does not render
+	/// GroupStyle headers (unoplatform/uno#21019), so the groups are flattened rather than shown through a grouped view.
+	/// </summary>
+	public static IList FlattenSearchResults(IEnumerable<IGrouping<string, SampleChooserContent>>? groups)
+	{
+		List<object> rows = new();
+		foreach (var group in groups ?? Enumerable.Empty<IGrouping<string, SampleChooserContent>>())
+		{
+			rows.Add(new SearchResultsHeader(group.Key.StartsWith('_') ? "Tools" : group.Key));
+			rows.AddRange(group);
+		}
+
+		return rows;
+	}
+
+	// The pane box needs its own function: the WinAppSDK XAML compiler fails on a function binding repeated with the same arguments.
+	public static IList PaneSuggestions(IEnumerable? items, string? term, bool showShortcutHints) => TopSuggestions(items, term, showShortcutHints);
+
+	public static string SearchResultsTitle(string? term) => $"Results for “{term?.Trim()}”";
+
+	public static string SearchResultCountName(int count) => count == 1 ? "1 result" : $"{count:N0} results";
+
+	public static string SearchEmptyTitle(string? term) => $"No samples match “{term?.Trim()}”";
+
+	public static Visibility SearchEmptyVisibility(int count, string? term) => Visible(count == 0 && NotEmpty(term));
+
+	/// <summary>The results view lists the best matches only; the footer says so when there are more.</summary>
+	public static Visibility SearchCapVisibility(bool isSearchView, int count) => Visible(isSearchView && count > SampleSearch.MaxGroupedResults);
+
+	public static string SearchCapText(int count) => $"Showing the first {SampleSearch.MaxGroupedResults:N0} of {count:N0}";
+
+	public static Visibility LibraryLoadingVisibility(bool isCategoriesView, bool isIndexLoaded) => Visible(isCategoriesView && !isIndexLoaded);
+
+	public static Visibility SavedSamplesLoadingVisibility(bool isFavoritesView, bool isRecentsView, bool isLoaded)
+		=> Visible((isFavoritesView || isRecentsView) && !isLoaded);
+
+	public static Visibility EmptyListVisibility(bool hasItems, bool isLoaded) => Visible(isLoaded && !hasItems);
+
+	public static string RecentsEmptyHint(bool isEnabled)
+		=> isEnabled ? "Samples you open show up here." : "History is disabled in this build configuration.";
 }

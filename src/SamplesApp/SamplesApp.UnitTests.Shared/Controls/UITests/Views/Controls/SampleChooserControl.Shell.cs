@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using SampleControl.Entities;
 using SampleControl.Presentation;
 using Uno.UI.Samples.Entities;
 using Uno.UI.Samples.Helper;
@@ -22,6 +23,16 @@ partial class SampleChooserControl
 	private SampleChooserViewModel? _shellViewModel;
 	private bool _syncingRail;
 	private bool _isNarrow;
+
+	/// <summary>False on touch, where keyboard shortcut hints mean nothing. Per window, so suggestions re-evaluate when it flips.</summary>
+	public bool ShowShortcutHints
+	{
+		get => (bool)GetValue(ShowShortcutHintsProperty);
+		set => SetValue(ShowShortcutHintsProperty, value);
+	}
+
+	public static DependencyProperty ShowShortcutHintsProperty { get; } =
+		DependencyProperty.Register(nameof(ShowShortcutHints), typeof(bool), typeof(SampleChooserControl), new PropertyMetadata(true));
 
 	private void InitializeShell()
 	{
@@ -41,10 +52,13 @@ partial class SampleChooserControl
 		{
 			UpdateFavoriteIcon();
 			SyncRailSelection();
+			UpdateManualTestsChip();
 		};
 
 		ShellPaneBenchmarksButton.RegisterPropertyChangedCallback(VisibilityProperty, (_, _) => UpdatePaneDestinationColumns());
 		UpdatePaneDestinationColumns();
+
+		InitializeBrowserPane();
 	}
 
 	private void UpdatePaneDestinationColumns()
@@ -85,6 +99,8 @@ partial class SampleChooserControl
 		UpdateSampleCommands();
 		UpdateBrowserToggle();
 		UpdateRowHeight();
+		UpdateSearchResults();
+		UpdateManualTestsChip();
 	}
 
 	private void OnShellViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -112,6 +128,28 @@ partial class SampleChooserControl
 
 			case nameof(SampleChooserViewModel.IsSplitVisible):
 				UpdateBrowserToggle();
+				BringLibraryRowIntoView();
+				break;
+
+			case nameof(SampleChooserViewModel.SearchResultsGrouped):
+				UpdateSearchResults();
+				break;
+
+			case nameof(SampleChooserViewModel.SearchTerm):
+				SyncSearchText();
+				break;
+
+			case nameof(SampleChooserViewModel.ManualTestsOnly):
+				UpdateManualTestsChip();
+				break;
+
+			case nameof(SampleChooserViewModel.SelectedLibrarySample):
+				BringLibraryRowIntoView();
+				break;
+
+			case nameof(SampleChooserViewModel.CurrentSelectedSample):
+			case nameof(SampleChooserViewModel.IsHomeVisible):
+				SyncSearchResultSelection();
 				break;
 
 #if HAS_UNO
@@ -290,6 +328,7 @@ partial class SampleChooserControl
 			UpdateChromeState(useTransitions: false);
 			UpdatePaneLength();
 			UpdateBrowserToggle();
+			UpdateBrowserTabs();
 		}
 
 		UpdateInputHints();
@@ -308,6 +347,7 @@ partial class SampleChooserControl
 	private void UpdateInputHints()
 	{
 		var touch = ShellFunctions.IsTouchShell;
+		ShowShortcutHints = !touch;
 		var tablet = ShellLayoutStates.CurrentState?.Name == "TabletState";
 
 		SearchBox.PlaceholderText = (touch, tablet) switch
@@ -321,7 +361,7 @@ partial class SampleChooserControl
 		ShellFavoritesEmptyHint.Text = touch ? "Star a sample to keep it here." : "Star a sample (Ctrl+Shift+D) to keep it here.";
 	}
 
-	private ListView[] PaneLists => [ShellCategoriesList, ShellSamplesList, ShellFavoritesList, ShellRecentsList];
+	private ListView[] PaneLists => [ShellCategoriesList, ShellSamplesList, ShellFavoritesList, ShellRecentsList, ShellSearchResultsList];
 
 	private double DesktopRowHeight => (double)Resources["ShellRowMinHeight"];
 
@@ -333,12 +373,35 @@ partial class SampleChooserControl
 		ShellBrowserPane.Resources["ListViewItemMinHeight"] = PaneRowHeight;
 		foreach (var list in PaneLists)
 		{
-			list.ContainerContentChanging += (_, args) => args.ItemContainer.MinHeight = PaneRowHeight;
+			list.ContainerContentChanging += (sender, args) =>
+			{
+				args.ItemContainer.MinHeight = PaneRowHeight;
+
+				// Search headings are labels, not rows: no hover, press, focus or menu.
+				var isSample = args.Item is SampleChooserContent;
+				var isRow = isSample || args.Item is SampleChooserCategory;
+				args.ItemContainer.ContextFlyout = isSample ? SampleRowFlyout : null;
+				args.ItemContainer.IsHitTestVisible = isRow;
+				args.ItemContainer.IsTabStop = isRow;
+
+				if (sender == ShellSearchResultsList)
+				{
+					PrepareSearchResultContainer(args);
+				}
+			};
 		}
 	}
 
 	private void UpdateRowHeight()
 	{
+		// The pane's small controls grow to a finger-sized target too.
+		var target = ShellFunctions.IsTouchShell ? TouchRowHeight : 0;
+		foreach (var control in new Control[] { ShellManualTestsChip, ShellCloseSearchButton })
+		{
+			control.MinWidth = target;
+			control.MinHeight = target;
+		}
+
 		var height = PaneRowHeight;
 		ShellBrowserPane.Resources["ListViewItemMinHeight"] = height;
 		foreach (var list in PaneLists)

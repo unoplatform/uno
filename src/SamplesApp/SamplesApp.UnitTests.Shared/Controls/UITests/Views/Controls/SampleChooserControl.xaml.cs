@@ -91,20 +91,50 @@ namespace Uno.UI.Samples.Controls
 			}
 		}
 
+		// Suggestions open on submit (click or Enter), not on SuggestionChosen, which also fires while arrowing through them.
 		private void SearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
 		{
-			if (args is { ChosenSuggestion: null })
+			if (ViewModel is not { } vm)
 			{
-				ViewModel?.TryOpenTopSearchResult();
+				return;
+			}
+
+			switch (args.ChosenSuggestion)
+			{
+				case SampleChooserContent sample:
+					_ = vm.OpenSample(CancellationToken.None, sample);
+					CloseOverlayBrowser(vm);
+					break;
+
+				case Uno.UI.Samples.Helper.SearchSeeAllItem:
+					ShowAllSearchResults(sender, vm);
+					break;
+
+				case null when !string.IsNullOrWhiteSpace(sender.Text):
+					vm.SearchTerm = sender.Text;
+					if (IsControlDown || !vm.TryOpenTopSearchResult())
+					{
+						ShowAllSearchResults(sender, vm);
+					}
+					else
+					{
+						CloseOverlayBrowser(vm);
+					}
+					break;
 			}
 		}
 
-		private void SearchBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+		// Focus moves on to the results: WinUI would otherwise reopen the suggestions over them when they refresh.
+		private void ShowAllSearchResults(AutoSuggestBox box, SampleChooserViewModel vm)
 		{
-			if (args.SelectedItem is SampleChooserContent control)
+			// Only a keyboard submit (Enter, Ctrl+Enter) should show the focus rectangle on the results.
+			var focusState = IsEnterDown ? FocusState.Keyboard : FocusState.Programmatic;
+			vm.ShowSearchResults();
+			DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
 			{
-				_ = ViewModel?.OpenSample(CancellationToken.None, control);
-			}
+				box.IsSuggestionListOpen = false;
+				ShellSearchResultsList.Focus(focusState);
+			});
 		}
 
 		private void InfoFlyout_Opening(object sender, object e)

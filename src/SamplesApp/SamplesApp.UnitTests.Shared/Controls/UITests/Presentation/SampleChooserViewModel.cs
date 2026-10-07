@@ -155,6 +155,8 @@ namespace SampleControl.Presentation
 						{
 							RecentSamples = await GetRecentSamples(CancellationToken.None);
 						}
+
+						AreSavedSamplesLoaded = true;
 					}
 				);
 		}
@@ -235,6 +237,9 @@ namespace SampleControl.Presentation
 		{
 			CategoryVisibility = section == Section.Library;
 			CategoriesSelected = section == Section.Library || section == Section.Samples;
+			RecentsSelected = section == Section.Recents;
+			FavoritesSelected = section == Section.Favorites;
+			SearchSelected = section == Section.Search;
 
 			RecentsVisibility = section == Section.Recents;
 			FavoritesVisibility = section == Section.Favorites;
@@ -630,7 +635,7 @@ namespace SampleControl.Presentation
 
 				void Update(SampleChooserContent newContent)
 				{
-					if (_isRecordAllTests)
+					if (_isRecordAllTests || _isSyncingBrowserSelection)
 					{
 						return;
 					}
@@ -880,7 +885,7 @@ namespace SampleControl.Presentation
 
 			_allCategories = categories.ToList();
 			_visibleCategories = _allCategories.Where(c => !c.Category.StartsWith('_')).ToList();
-			_manualTestsCategories = _allCategories
+			_manualTestsCategories = _visibleCategories
 				.Select(cat => new SampleChooserCategory(cat.Category, cat.SamplesContent.Where(s => s.IsManualTest)))
 				.Where(cat => cat.Count > 0)
 				.ToList();

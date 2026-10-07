@@ -253,7 +253,7 @@ public partial class SampleChooserViewModel
 		ShowSettingsCommand = new DelegateCommand(ShowSettings);
 		ShowLibraryCommand = new DelegateCommand(() => ShowBrowserSection(Section.Library));
 		ShowCategoryCommand = new DelegateCommand<string>(ShowCategory);
-		ShowSearchResultsCommand = new DelegateCommand(() => ShowBrowserSection(Section.Search));
+		ShowSearchResultsCommand = new DelegateCommand(ShowSearchResults);
 		OpenSampleCommand = new DelegateCommand<SampleChooserContent>(sample =>
 		{
 			if (sample is not null)
@@ -275,6 +275,7 @@ public partial class SampleChooserViewModel
 	{
 		PropertyChanged += OnShellPropertyChanged;
 		UpdateShellDestination();
+		ObserveBrowserChanges();
 	}
 
 	private void OnShellPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -400,11 +401,17 @@ public partial class SampleChooserViewModel
 
 	internal void ShowBrowserSection(Section section)
 	{
-		BrowserView = BrowserView.Samples;
-		ShowNewSection(CancellationToken.None, section);
-		RecentsSelected = section == Section.Recents;
-		FavoritesSelected = section == Section.Favorites;
-		IsSplitVisible = true;
+		_isShowingBrowserSection = true;
+		try
+		{
+			BrowserView = BrowserView.Samples;
+			ShowNewSection(CancellationToken.None, section);
+			IsSplitVisible = true;
+		}
+		finally
+		{
+			_isShowingBrowserSection = false;
+		}
 	}
 
 	private void ShowCategory(string? categoryName)
@@ -654,8 +661,6 @@ public partial class SampleChooserViewModel
 			&& parsedSection is Section.Recents or Section.Favorites)
 		{
 			ShowNewSection(CancellationToken.None, parsedSection);
-			RecentsSelected = parsedSection == Section.Recents;
-			FavoritesSelected = parsedSection == Section.Favorites;
 		}
 	}
 
