@@ -4449,6 +4449,12 @@
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.PagePool::TimeToLive()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.PagePool::IsPoolingEnabled()" reason="Removed with the PagePool type (breaking changes for 7.0, uno#8339)" />
 
+		  <!-- ItemsRepeater WinUI port: FlowLayout now exposes exactly the FlowLayout.idl DP set (LineAlignment/LineSpacing/MinItemSpacing/Orientation); the Uno-only MinColumnSpacing/MinRowSpacing pair had no WinUI counterpart. Accessors paired in <Methods> below. -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout::MinColumnSpacing()" reason="Removed Uno-only FlowLayout.MinColumnSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.FlowLayout::MinColumnSpacingProperty()" reason="Removed Uno-only FlowLayout.MinColumnSpacingProperty; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout::MinRowSpacing()" reason="Removed Uno-only FlowLayout.MinRowSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.FlowLayout::MinRowSpacingProperty()" reason="Removed Uno-only FlowLayout.MinRowSpacingProperty; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+
 		  <!-- Transitions moved from FrameworkElement to UIElement, as in WinUI (accessors paired in <Methods> below). -->
 		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.TransitionCollection Microsoft.UI.Xaml.FrameworkElement::Transitions()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::TransitionsProperty()" reason="Transitions moved to UIElement for WinUI parity (breaking changes for 7.0)" />
@@ -5218,6 +5224,14 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.Binding.set_ElementName(System.Object value)" reason="WinUI sync: Binding.ElementName narrowed from object to string (#2086, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.IEasingFunction Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.get_EasingFunction()" reason="WinUI sync: DoubleAnimation.EasingFunction changed from IEasingFunction to EasingFunctionBase (#2086, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.set_EasingFunction(Microsoft.UI.Xaml.Media.Animation.IEasingFunction value)" reason="WinUI sync: DoubleAnimation.EasingFunction changed from IEasingFunction to EasingFunctionBase (#2086, breaking changes for 7.0)" />
+
+		  <!-- ItemsRepeater WinUI port: FlowLayout MinColumnSpacing/MinRowSpacing accessors, paired with the <Properties> entries above. -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout.get_MinColumnSpacing()" reason="Removed Uno-only FlowLayout.MinColumnSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.FlowLayout.set_MinColumnSpacing(System.Double value)" reason="Removed Uno-only FlowLayout.MinColumnSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.FlowLayout.get_MinColumnSpacingProperty()" reason="Removed Uno-only FlowLayout.MinColumnSpacingProperty; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout.get_MinRowSpacing()" reason="Removed Uno-only FlowLayout.MinRowSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.FlowLayout.set_MinRowSpacing(System.Double value)" reason="Removed Uno-only FlowLayout.MinRowSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.FlowLayout.get_MinRowSpacingProperty()" reason="Removed Uno-only FlowLayout.MinRowSpacingProperty; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
 
 		  <!-- ItemsRepeater WinUI port: element get/clear helpers reduced to internal (they back the layout context and are not on ItemsRepeater.idl), and StackLayout's last implicitly-implemented IFlowLayoutAlgorithmDelegates member became explicit like its siblings. -->
 		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.Controls.ItemsRepeater.GetElementImpl(System.Int32 index, System.Boolean forceCreate, System.Boolean suppressAutoRecycle)" reason="Reduced Uno-only public ItemsRepeater.GetElementImpl to internal; not on ItemsRepeater.idl (ItemsRepeater WinUI port, uno#23406)" />

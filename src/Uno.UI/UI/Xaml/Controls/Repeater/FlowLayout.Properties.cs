@@ -70,44 +70,6 @@ partial class FlowLayout
 		new FrameworkPropertyMetadata(DoubleBoxes.Zero, OnPropertyChanged));
 
 	/// <summary>
-	/// Gets or sets the minimum space between items in adjacent columns.
-	/// </summary>
-	/// <value>The minimum column spacing, in pixels. The default is 0.</value>
-	public double MinColumnSpacing
-	{
-		get => (double)GetValue(MinColumnSpacingProperty);
-		set => SetValue(MinColumnSpacingProperty, Boxer.Box(value));
-	}
-
-	/// <summary>
-	/// Identifies the <see cref="MinColumnSpacing"/> dependency property.
-	/// </summary>
-	public static DependencyProperty MinColumnSpacingProperty { get; } = DependencyProperty.Register(
-		nameof(MinColumnSpacing),
-		typeof(double),
-		typeof(FlowLayout),
-		new FrameworkPropertyMetadata(DoubleBoxes.Zero, OnPropertyChanged));
-
-	/// <summary>
-	/// Gets or sets the minimum space between items in adjacent rows.
-	/// </summary>
-	/// <value>The minimum row spacing, in pixels. The default is 0.</value>
-	public double MinRowSpacing
-	{
-		get => (double)GetValue(MinRowSpacingProperty);
-		set => SetValue(MinRowSpacingProperty, Boxer.Box(value));
-	}
-
-	/// <summary>
-	/// Identifies the <see cref="MinRowSpacing"/> dependency property.
-	/// </summary>
-	public static DependencyProperty MinRowSpacingProperty { get; } = DependencyProperty.Register(
-		nameof(MinRowSpacing),
-		typeof(double),
-		typeof(FlowLayout),
-		new FrameworkPropertyMetadata(DoubleBoxes.Zero, OnPropertyChanged));
-
-	/// <summary>
 	/// Gets or sets the axis along which items are laid out.
 	/// </summary>
 	/// <value>The axis along which items are laid out. The default is <see cref="Orientation.Horizontal"/>.</value>

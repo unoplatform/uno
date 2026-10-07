@@ -10,19 +10,6 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class FlowLayout
 {
 	private ScrollOrientation _scrollOrientation;
-	private double m_minColumnSpacing;
-	private double m_minRowSpacing;
-	private bool m_useLegacySpacingProperties;
-
-	private double EffectiveLineSpacing =>
-		m_useLegacySpacingProperties
-			? GetScrollOrientation() == ScrollOrientation.Vertical ? m_minRowSpacing : m_minColumnSpacing
-			: m_lineSpacing;
-
-	private double EffectiveMinItemSpacing =>
-		m_useLegacySpacingProperties
-			? GetScrollOrientation() == ScrollOrientation.Vertical ? m_minColumnSpacing : m_minRowSpacing
-			: m_minItemSpacing;
 
 	ScrollOrientation OrientationBasedMeasures.ScrollOrientation
 	{

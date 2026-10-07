@@ -3,7 +3,6 @@
 // Uno-specific layout API and compatibility tests with no active WinUI APITests counterpart.
 
 using System;
-using System.Reflection;
 using Windows.Foundation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Controls;
@@ -94,37 +93,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			Verify.IsFalse(layout.Invoke(default, new Rect(0, 0, 100, 100), new Rect(49, 0, 100, 100)));
 			Verify.IsTrue(layout.Invoke(default, new Rect(0, 0, 100, 100), new Rect(51, 0, 100, 100)));
 		}
-
-		[TestMethod]
-		public void ValidateLegacyFlowLayoutSpacingCompatibility()
-		{
-			RunOnUIThread.Execute(() =>
-			{
-				var layout = new FlowLayout
-				{
-					Orientation = Orientation.Horizontal,
-					MinColumnSpacing = 10,
-					MinRowSpacing = 20,
-				};
-
-				Verify.AreEqual(10.0, GetEffectiveSpacing(layout, "EffectiveMinItemSpacing"));
-				Verify.AreEqual(20.0, GetEffectiveSpacing(layout, "EffectiveLineSpacing"));
-
-				layout.Orientation = Orientation.Vertical;
-				Verify.AreEqual(20.0, GetEffectiveSpacing(layout, "EffectiveMinItemSpacing"));
-				Verify.AreEqual(10.0, GetEffectiveSpacing(layout, "EffectiveLineSpacing"));
-
-				layout.MinItemSpacing = 7;
-				layout.LineSpacing = 9;
-				Verify.AreEqual(7.0, GetEffectiveSpacing(layout, "EffectiveMinItemSpacing"));
-				Verify.AreEqual(9.0, GetEffectiveSpacing(layout, "EffectiveLineSpacing"));
-			});
-		}
-
-		private static double GetEffectiveSpacing(FlowLayout layout, string propertyName)
-			=> (double)typeof(FlowLayout)
-				.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.NonPublic)
-				.GetValue(layout);
 
 		private sealed class SignificantViewportLayout : VirtualizingLayout
 		{
