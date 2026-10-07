@@ -91,7 +91,8 @@ internal class SkiaDrawingSession : IDrawingSession
 		opacityPaint?.Dispose();
 	}
 
-	public Matrix4x4 TotalMatrix => _canvas.TotalMatrix.ToMatrix4x4();
+	// The 4x4 counterpart of SetMatrix: the 3x3 TotalMatrix drops the Z row/column (e.g. M33 = 0 from LottieGen).
+	public Matrix4x4 TotalMatrix => _canvas.TotalMatrix44;
 
 	public void SetMatrix(in Matrix4x4 matrix)
 	{
