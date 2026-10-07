@@ -212,6 +212,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 	{
 		markedText ??= string.Empty;
 		var imeExtension = ImeExtension;
+		imeExtension?.OnSettingMarkedText(markedText);
 		base.SetMarkedText(markedText, selectedRange);
 		if (ReferenceEquals(imeExtension, ImeExtension))
 		{

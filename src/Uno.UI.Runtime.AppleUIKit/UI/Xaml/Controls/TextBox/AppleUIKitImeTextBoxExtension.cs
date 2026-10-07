@@ -20,11 +20,13 @@ namespace Uno.UI.Runtime.AppleUIKit.Controls;
 internal sealed class AppleUIKitImeTextBoxExtension : IHostScopedImeTextBoxExtension
 {
 	private bool _isComposing;
+	private bool _isMarkedTextPending;
 	private string _lastComposingText = string.Empty;
 	private IImeSessionHost? _activeTextBox;
 	private Rect _lastCaretRect = Rect.Empty;
 
-	public bool IsComposing => _isComposing;
+	// Marked text counts as composing while UIKit applies it, so the native change it raises isn't treated as typed text.
+	public bool IsComposing => _isComposing || _isMarkedTextPending;
 
 	public event EventHandler? CompositionStarted;
 	public event EventHandler<ImeCompositionEventArgs>? CompositionUpdated;
@@ -109,8 +111,11 @@ internal sealed class AppleUIKitImeTextBoxExtension : IHostScopedImeTextBoxExten
 	/// <summary>
 	/// Called from native view override when UITextInput.SetMarkedText is invoked.
 	/// </summary>
+	internal void OnSettingMarkedText(string text) => _isMarkedTextPending = text.Length > 0;
+
 	internal void OnSetMarkedText(string text, int cursorPosition)
 	{
+		_isMarkedTextPending = false;
 		bool wasComposing = _isComposing;
 
 		if (text.Length > 0)

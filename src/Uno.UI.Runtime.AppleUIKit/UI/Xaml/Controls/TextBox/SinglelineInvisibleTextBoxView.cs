@@ -291,6 +291,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	{
 		markedText ??= string.Empty;
 		var imeExtension = ImeExtension;
+		imeExtension?.OnSettingMarkedText(markedText);
 		base.SetMarkedText(markedText, selectedRange);
 		if (ReferenceEquals(imeExtension, ImeExtension))
 		{
