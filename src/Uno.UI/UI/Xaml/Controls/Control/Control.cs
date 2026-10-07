@@ -42,8 +42,6 @@ namespace Microsoft.UI.Xaml.Controls
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		internal void SetDefaultStyleKeyInternal(object defaultStyleKey) => DefaultStyleKey = defaultStyleKey;
 
-		protected override bool IsSimpleLayout => true;
-
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
 
 		private protected override Type GetDefaultStyleKey() => DefaultStyleKey as Type;

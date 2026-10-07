@@ -41,8 +41,6 @@ public partial class Border : FrameworkElement
 
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 
-	protected override bool IsSimpleLayout => true;
-
 	private protected override Thickness GetBorderThickness() => BorderThickness;
 
 

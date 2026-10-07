@@ -213,8 +213,6 @@ namespace Microsoft.UI.Xaml.Controls
 				Padding :
 				default(Thickness);
 
-		protected override bool IsSimpleLayout => true;
-
 		private _ViewGroup _itemsPanel;
 
 		internal _ViewGroup Panel => _itemsPanel;

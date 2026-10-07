@@ -461,6 +461,16 @@ own target framework, the library's calls included.
   `IShadowChildrenProvider`, `CompositorThread`,
   `Uno.UI.Composition.ICompositionRoot`. Use the WinUI control
   (`ListView`/`Frame`/`Popup`/…) — everything renders via Skia.
+- **Layout-constraint optimization:** `FrameworkElement.AreDimensionsConstrained`,
+  `FrameworkElement.UseConstraintOptimizations`, the `ILayoutConstraints` interface, and the
+  protected `FrameworkElement.IsSimpleLayout`, `IsWidthConstrainedInner` and
+  `IsHeightConstrainedInner` members. They let the native Android layouter skip re-measuring
+  a parent; Skia layout never read them, so setting them had no effect. Remove the
+  assignments and any overrides in your own controls. XAML that still sets the property now
+  fails the build with `Property 'AreDimensionsConstrained' does not exist on '<Type>'`:
+  `not_win:AreDimensionsConstrained="True"` fails on every Uno Platform target, while a
+  platform-prefixed form such as `android:AreDimensionsConstrained` fails only when building
+  that target.
 - **Native flyout opt-in:** `FlyoutBase.UseNativePopup`, including its conditional-XAML forms
   (`android:UseNativePopup` / `ios:UseNativePopup`). Remove the assignment — flyouts always use
   the WinUI presentation. The two `Uno.UI.Toolkit` attached properties that only ever

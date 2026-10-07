@@ -4,11 +4,10 @@ using Windows.Foundation;
 using Uno.UI;
 using Uno.UI.Helpers.Boxes;
 using Windows.System;
-using View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
+	public partial class ScrollContentPresenter : ContentPresenter
 	{
 		public ScrollContentPresenter()
 		{
@@ -103,26 +102,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				Content = null;
 			}
-		}
-
-		bool ILayoutConstraints.IsWidthConstrained(View requester)
-		{
-			if (requester != null && CanHorizontallyScroll)
-			{
-				return false;
-			}
-
-			return this.IsWidthConstrainedSimple() ?? (Parent as ILayoutConstraints)?.IsWidthConstrained(this) ?? false;
-		}
-
-		bool ILayoutConstraints.IsHeightConstrained(View requester)
-		{
-			if (requester != null && CanVerticallyScroll)
-			{
-				return false;
-			}
-
-			return this.IsHeightConstrainedSimple() ?? (Parent as ILayoutConstraints)?.IsHeightConstrained(this) ?? false;
 		}
 
 		public double ViewportHeight => DesiredSize.Height - Margin.Top - Margin.Bottom;

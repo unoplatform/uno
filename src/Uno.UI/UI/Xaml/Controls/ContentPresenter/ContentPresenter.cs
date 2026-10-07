@@ -86,8 +86,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	internal DataTemplate SelectedContentTemplate => _dataTemplateUsedLastUpdate;
 
-	protected override bool IsSimpleLayout => true;
-
 	#region Content DependencyProperty
 
 	public object Content
