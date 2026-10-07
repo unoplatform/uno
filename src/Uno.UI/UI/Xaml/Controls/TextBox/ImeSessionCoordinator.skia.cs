@@ -218,7 +218,7 @@ namespace Microsoft.UI.Xaml.Controls
 						_extension?.StartImeSession(host, activation);
 						_activeActivation = activation;
 					}
-					catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is null)
+					catch (Exception error) when (global::Uno.UI.Helpers.FatalExceptionHelper.FindFatalException(error) is null)
 					{
 						RecoverFailedSession(host, "Failed to reactivate the IME session.", error);
 					}
@@ -232,7 +232,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					_extension?.EndImeSession();
 				}
-				catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is null)
+				catch (Exception error) when (global::Uno.UI.Helpers.FatalExceptionHelper.FindFatalException(error) is null)
 				{
 					typeof(ImeSessionCoordinator).LogError()?.Error("Failed to end the previous IME session.", error);
 				}
@@ -246,7 +246,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_activeHost = host;
 				_activeActivation = activation;
 			}
-			catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is null)
+			catch (Exception error) when (global::Uno.UI.Helpers.FatalExceptionHelper.FindFatalException(error) is null)
 			{
 				RecoverFailedSession(host, "Failed to start the IME session.", error);
 			}
@@ -294,7 +294,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_extension?.EndImeSession();
 			}
-			catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is null)
+			catch (Exception error) when (global::Uno.UI.Helpers.FatalExceptionHelper.FindFatalException(error) is null)
 			{
 				typeof(ImeSessionCoordinator).LogError()?.Error("Failed to end the IME session.", error);
 			}
@@ -319,7 +319,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					_extension?.UpdateImeSession(host, update);
 				}
-				catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is null)
+				catch (Exception error) when (global::Uno.UI.Helpers.FatalExceptionHelper.FindFatalException(error) is null)
 				{
 					RecoverFailedSession(host, "Failed to update the IME session.", error);
 				}
@@ -333,7 +333,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_extension?.EndImeSession();
 			}
-			catch (Exception cleanupError) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(cleanupError) is null)
+			catch (Exception cleanupError) when (global::Uno.UI.Helpers.FatalExceptionHelper.FindFatalException(cleanupError) is null)
 			{
 				typeof(ImeSessionCoordinator).LogError()?.Error("Failed to clean up the IME session.", cleanupError);
 			}
@@ -394,7 +394,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_extension?.EndImeSession();
 			}
-			catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is null)
+			catch (Exception error) when (global::Uno.UI.Helpers.FatalExceptionHelper.FindFatalException(error) is null)
 			{
 				typeof(ImeSessionCoordinator).LogError()?.Error("Failed to restart the IME session while ending it.", error);
 			}
@@ -403,7 +403,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_extension?.StartImeSession(host, _activeActivation);
 			}
-			catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is null)
+			catch (Exception error) when (global::Uno.UI.Helpers.FatalExceptionHelper.FindFatalException(error) is null)
 			{
 				RecoverFailedSession(host, "Failed to restart the IME session while starting it.", error);
 			}

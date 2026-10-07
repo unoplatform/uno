@@ -481,32 +481,7 @@ namespace Microsoft.UI.Text
 				: null;
 		}
 
-		internal static Exception? FindFatalException(Exception error)
-		{
-			if (error is OutOfMemoryException
-				or StackOverflowException
-				or AccessViolationException
-				or AppDomainUnloadedException
-				or BadImageFormatException
-				or CannotUnloadAppDomainException)
-			{
-				return error;
-			}
-			if (error is AggregateException aggregate)
-			{
-				foreach (var inner in aggregate.InnerExceptions)
-				{
-					if (FindFatalException(inner) is { } fatal)
-					{
-						return fatal;
-					}
-				}
-				return null;
-			}
-			return error.InnerException is { } innerException
-				? FindFatalException(innerException)
-				: null;
-		}
+		internal static Exception? FindFatalException(Exception error) => global::Uno.UI.Helpers.FatalExceptionHelper.FindFatalException(error);
 
 		internal static bool IsImageOnlyFragment(RichTextFragment fragment)
 			=> fragment.Text == "\ufffc"
