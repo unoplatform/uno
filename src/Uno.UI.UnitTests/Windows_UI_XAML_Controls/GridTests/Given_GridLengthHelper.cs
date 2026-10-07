@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Uno.UI.Tests.GridTests;
 
 [TestClass]
-public class Given_GridLengthHelper
+public partial class Given_GridLengthHelper
 {
 	[TestMethod]
 	[DataRow(0.1)]
