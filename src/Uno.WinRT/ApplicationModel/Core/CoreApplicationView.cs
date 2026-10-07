@@ -7,7 +7,7 @@ namespace Windows.ApplicationModel.Core
 	{
 		private CoreApplicationViewTitleBar _titleBar;
 
-		public CoreApplicationView()
+		internal CoreApplicationView()
 		{
 		}
 

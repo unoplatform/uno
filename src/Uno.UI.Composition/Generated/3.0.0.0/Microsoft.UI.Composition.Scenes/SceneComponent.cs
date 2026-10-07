@@ -9,6 +9,11 @@ namespace Microsoft.UI.Composition.Scenes
 	public partial class SceneComponent : global::Microsoft.UI.Composition.Scenes.SceneObject
 	{
 #if __SKIA__
+		internal SceneComponent()
+		{
+		}
+#endif
+#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.Scenes.SceneComponentType ComponentType
 		{

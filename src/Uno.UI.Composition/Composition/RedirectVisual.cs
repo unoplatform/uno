@@ -6,7 +6,7 @@ namespace Microsoft.UI.Composition
 	{
 		private Visual? _source;
 
-		public RedirectVisual(Compositor compositor) : base(compositor)
+		internal RedirectVisual(Compositor compositor) : base(compositor)
 		{
 
 		}

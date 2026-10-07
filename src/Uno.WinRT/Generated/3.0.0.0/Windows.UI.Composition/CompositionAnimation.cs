@@ -9,6 +9,11 @@ namespace Windows.UI.Composition
 	public partial class CompositionAnimation : global::Windows.UI.Composition.CompositionObject, global::Windows.UI.Composition.ICompositionAnimationBase
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal CompositionAnimation()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.InitialValueExpressionCollection InitialValueExpressions
 		{

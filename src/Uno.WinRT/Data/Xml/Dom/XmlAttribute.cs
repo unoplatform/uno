@@ -8,7 +8,7 @@ namespace Windows.Data.Xml.Dom
 		private readonly XmlDocument _owner;
 		internal readonly SystemXmlAttribute _backingAttribute;
 
-		public XmlAttribute(XmlDocument owner, SystemXmlAttribute backingAttribute)
+		internal XmlAttribute(XmlDocument owner, SystemXmlAttribute backingAttribute)
 		{
 			_owner = owner;
 			_backingAttribute = backingAttribute;

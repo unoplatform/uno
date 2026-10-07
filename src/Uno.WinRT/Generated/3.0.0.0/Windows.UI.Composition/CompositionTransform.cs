@@ -8,5 +8,10 @@ namespace Windows.UI.Composition
 #endif
 	public partial class CompositionTransform : global::Windows.UI.Composition.CompositionObject
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal CompositionTransform()
+		{
+		}
+#endif
 	}
 }

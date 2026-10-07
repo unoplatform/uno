@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 		const string _contentPanelName = "ContentPanel";
 		const string _titlePresenterName = "TitlePresenter";
 
-		public DatePickerFlyoutPresenter()
+		internal DatePickerFlyoutPresenter()
 		{
 			//_isInitializing = true;
 			_dayVisible = true;

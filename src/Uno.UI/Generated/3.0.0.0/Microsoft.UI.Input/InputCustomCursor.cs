@@ -8,5 +8,10 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputCustomCursor : global::Microsoft.UI.Input.InputCursor
 	{
+#if __SKIA__
+		internal InputCustomCursor()
+		{
+		}
+#endif
 	}
 }

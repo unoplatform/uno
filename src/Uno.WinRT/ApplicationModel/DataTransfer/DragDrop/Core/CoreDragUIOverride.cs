@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		internal object? Content { get; set; }
 		internal Point ContentAnchor { get; set; }
 
-		public CoreDragUIOverride()
+		internal CoreDragUIOverride()
 		{
 			Clear();
 		}

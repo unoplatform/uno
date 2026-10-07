@@ -15,7 +15,7 @@ public partial class TreeViewDragItemsStartingEventArgs
 {
 	private readonly DragItemsStartingEventArgs _dragItemsStartingEventArgs;
 
-	public TreeViewDragItemsStartingEventArgs(DragItemsStartingEventArgs args)
+	internal TreeViewDragItemsStartingEventArgs(DragItemsStartingEventArgs args)
 	{
 		_dragItemsStartingEventArgs = args;
 	}

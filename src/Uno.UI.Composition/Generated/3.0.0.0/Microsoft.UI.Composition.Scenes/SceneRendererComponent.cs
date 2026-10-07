@@ -8,5 +8,10 @@ namespace Microsoft.UI.Composition.Scenes
 #endif
 	public partial class SceneRendererComponent : global::Microsoft.UI.Composition.Scenes.SceneComponent
 	{
+#if __SKIA__
+		internal SceneRendererComponent()
+		{
+		}
+#endif
 	}
 }

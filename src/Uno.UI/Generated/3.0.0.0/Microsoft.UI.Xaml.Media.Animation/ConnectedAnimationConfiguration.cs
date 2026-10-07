@@ -8,5 +8,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class ConnectedAnimationConfiguration
 	{
+#if __SKIA__
+		internal ConnectedAnimationConfiguration()
+		{
+		}
+#endif
 	}
 }

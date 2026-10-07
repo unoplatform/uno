@@ -511,6 +511,8 @@ namespace Uno.WinAppSDKSyncGenerator
 
 			public bool HasUndefined => GetRelevantPlatforms().Any(p => p.symbol is null);
 
+			public (string define, T symbol)[] Platforms => GetRelevantPlatforms();
+
 			/// <summary>
 			/// The (preprocessor define, platform symbol) pairs that participate in the generated
 			/// stub for the current library. Skia-only libraries contribute Skia alone — see
@@ -1642,8 +1644,7 @@ namespace Uno.WinAppSDKSyncGenerator
 				return true;
 			}
 
-			if (method.MethodKind == MethodKind.Constructor && method.Parameters.Length == 1 &&
-				method.Parameters[0].Type.Name is "IObjectReference" or "DerivedComposed")
+			if (IsWinRTInteropConstructor(method))
 			{
 				return true;
 			}
@@ -1691,6 +1692,15 @@ namespace Uno.WinAppSDKSyncGenerator
 		}
 
 		/// <summary>
+		/// CsWinRT emits these on every composable or activatable class to wrap a native object.
+		/// They are projection plumbing, not constructors a WinUI app can call.
+		/// </summary>
+		protected static bool IsWinRTInteropConstructor(IMethodSymbol method)
+			=> method.MethodKind == MethodKind.Constructor
+				&& method.Parameters.Length == 1
+				&& method.Parameters[0].Type.Name is "IObjectReference" or "DerivedComposed";
+
+		/// <summary>
 		/// Identifies WinRT CsWinRT projection infrastructure members that should be
 		/// silently skipped without emitting "Forced skipping" comments.
 		/// </summary>
@@ -1716,10 +1726,7 @@ namespace Uno.WinAppSDKSyncGenerator
 				return true;
 			}
 
-			// WinRT interop constructors (IObjectReference, DerivedComposed)
-			if (method.MethodKind == MethodKind.Constructor
-				&& method.Parameters.Length == 1
-				&& method.Parameters[0].Type.Name is "IObjectReference" or "DerivedComposed")
+			if (IsWinRTInteropConstructor(method))
 			{
 				return true;
 			}

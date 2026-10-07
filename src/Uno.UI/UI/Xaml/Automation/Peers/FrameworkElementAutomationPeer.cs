@@ -38,9 +38,9 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	public UIElement Owner { get; }
 
-	public FrameworkElementAutomationPeer() { }
+	internal FrameworkElementAutomationPeer() { }
 
-	public FrameworkElementAutomationPeer(object element)
+	internal FrameworkElementAutomationPeer(object element)
 	{
 		Owner = element as UIElement;
 	}

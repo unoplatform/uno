@@ -55,7 +55,7 @@ namespace TestRepro
 					new Microsoft.UI.Xaml.Data.Binding()
 					{
 						Path = @"ThePath",
-						RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
+						RelativeSource = new RelativeSource { Mode = RelativeSourceMode.TemplatedParent },
 					}
 				);
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);

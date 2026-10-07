@@ -78,7 +78,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 									TargetNullValue = "TargetNullValue",
 									FallbackValue = "FallbackValue",
 									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
-									RelativeSource = new RelativeSource(RelativeSourceMode.None),
+									RelativeSource = new RelativeSource { Mode = RelativeSourceMode.None },
 									Source = "Source",
 								}
 							);

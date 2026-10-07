@@ -9,7 +9,7 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 public partial class CoreWebView2NavigationStartingEventArgs : EventArgs
 {
-	public CoreWebView2NavigationStartingEventArgs(ulong navigationId, string? uri) =>
+	internal CoreWebView2NavigationStartingEventArgs(ulong navigationId, string? uri) =>
 		(NavigationId, Uri) = (navigationId, uri);
 
 	/// <summary>

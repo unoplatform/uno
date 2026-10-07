@@ -96,7 +96,7 @@ namespace TestRepro
 											global::MyProject.GlobalStaticResources.__PreserveProperties(
 												new global::Microsoft.UI.Xaml.Setter
 												{
-													Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._MyBadgeSubject, "Opacity"),
+													Target = new global::Microsoft.UI.Xaml.TargetPropertyPath { Target = this._MyBadgeSubject, Path = new global::Microsoft.UI.Xaml.PropertyPath("Opacity") },
 													Value = @"1",
 													// Source MainPage.xaml (Line 15:8)
 												}

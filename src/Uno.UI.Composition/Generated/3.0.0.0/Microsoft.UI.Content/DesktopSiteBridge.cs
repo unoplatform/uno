@@ -9,6 +9,11 @@ namespace Microsoft.UI.Content
 	public partial class DesktopSiteBridge : global::Microsoft.UI.IClosableNotifier, global::Microsoft.UI.Content.IContentSiteBridge, global::System.IDisposable
 	{
 #if __SKIA__
+		internal DesktopSiteBridge()
+		{
+		}
+#endif
+#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue
 		{

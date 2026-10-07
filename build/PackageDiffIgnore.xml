@@ -5399,6 +5399,105 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerCollection..ctor()" reason="Implicit public constructor replaced by an internal one; WinUI exposes no constructor (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Composition.CompositionLight Microsoft.UI.Xaml.Media.XamlLight.get_CompositionLight()" reason="XamlLight.CompositionLight is protected, as in WinUI (breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.XamlLight.set_CompositionLight(Microsoft.UI.Composition.CompositionLight value)" reason="XamlLight.CompositionLight is protected, as in WinUI (breaking changes for 7.0)" />
+		  <!-- Hand-written constructors WinUI lacks, now reported by the sync generator (breaking changes for 7.0). -->
+		  <Member fullName="System.Void Microsoft.UI.Composition.CompositionDrawingSurface..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.CompositionGeometricClip..ctor(Microsoft.UI.Composition.Compositor compositor)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.CompositionLight..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.CompositionShadow..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.CompositionTransform..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.CompositionVirtualDrawingSurface..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.CompositionVisualSurface..ctor(Microsoft.UI.Composition.Compositor compositor)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaModifier..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.NaturalMotionAnimation..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.RedirectVisual..ctor(Microsoft.UI.Composition.Compositor compositor)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.ScalarNaturalMotionAnimation..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.Scenes.SceneComponent..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.Scenes.SceneMaterial..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.Scenes.SceneMaterialInput..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.Scenes.SceneObject..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.Scenes.ScenePbrMaterial..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.Scenes.SceneRendererComponent..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.ShapeVisual..ctor(Microsoft.UI.Composition.Compositor compositor)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.SpriteVisual..ctor(Microsoft.UI.Composition.Compositor compositor)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.Vector2NaturalMotionAnimation..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Composition.Vector3NaturalMotionAnimation..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Content.ContentCoordinateConverter..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Content.ContentIslandEnvironment..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Content.ContentSiteEnvironment..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Content.ContentSiteEnvironmentView..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Content.DesktopSiteBridge..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Input.InputCursor..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Input.InputCustomCursor..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Input.InputObject..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer..ctor(Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer buttonBase)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.DatePickerFlyoutPresenterAutomationPeer..ctor(Microsoft.UI.Xaml.Controls.DatePickerFlyoutPresenter owner)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer..ctor(System.Object element)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer..ctor(Microsoft.UI.Xaml.FrameworkElement owner)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.DatePickerFlyoutPresenter..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IconSource..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Layout..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.LayoutContext..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBaseHeaderItem..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MapElement..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MapLayer..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItemBase..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.PivotItem..ctor(System.String header)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs..ctor(System.Object originalSource, System.Double horizontalChange, System.Double verticalChange, System.Double totalHorizontalChange, System.Double totalVerticalChange, System.Boolean canceled)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings..ctor(Microsoft.UI.Xaml.Controls.SplitView splitView)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.RowDefinitionCollection..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.SectionsInViewChangedEventArgs..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs..ctor(Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs args)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.VirtualizingPanel..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.BindingExpressionBase..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Data.RelativeSource..ctor(Microsoft.UI.Xaml.Data.RelativeSourceMode mode)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DataContextChangedEventArgs..ctor(System.Object newValue)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.TextElement..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.TextHighlighterBase..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DragUI..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Input.Pointer..ctor(System.UInt32 id, Microsoft.UI.Input.PointerDeviceType type, System.Boolean isInContact, System.Boolean isInRange)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame..ctor(System.Double value)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.DiscreteDoubleKeyFrame..ctor(System.Double value, Microsoft.UI.Xaml.Media.Animation.KeyTime keyTime)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame..ctor(System.Double value)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame..ctor(System.Double value, Microsoft.UI.Xaml.Media.Animation.KeyTime keyTime)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame..ctor(System.Double value)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame..ctor(System.Double value, Microsoft.UI.Xaml.Media.Animation.KeyTime keyTime)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame..ctor(System.Double value, Microsoft.UI.Xaml.Media.Animation.KeyTime keyTime, Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase easingFunction)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.KeySpline..ctor(System.Double x1, System.Double y1, System.Double x2, System.Double y2)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.KeySpline..ctor(Windows.Foundation.Point controlPoint1, Windows.Foundation.Point controlPoint2)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame..ctor(System.Double value)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.LinearDoubleKeyFrame..ctor(System.Double value, Microsoft.UI.Xaml.Media.Animation.KeyTime keyTime)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.SplineDoubleKeyFrame..ctor(System.Double value)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.SplineDoubleKeyFrame..ctor(System.Double value, Microsoft.UI.Xaml.Media.Animation.KeyTime keyTime)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.SplineDoubleKeyFrame..ctor(System.Double value, Microsoft.UI.Xaml.Media.Animation.KeyTime keyTime, Microsoft.UI.Xaml.Media.Animation.KeySpline keySpline)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Animation.Transition..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.DoubleCollection..ctor(System.Collections.Generic.IEnumerable`1&lt;System.Double&gt; collection)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.ImageSource..ctor(System.String url)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.ImageSource..ctor(System.Uri uri)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Imaging.BitmapSource..ctor(System.String sourceString)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Imaging.BitmapSource..ctor(System.Uri sourceUri)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.PathSegment..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.PointCollection..ctor(System.Collections.Generic.IEnumerable`1&lt;Windows.Foundation.Point&gt; coordinates)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Media.Shadow..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.PropertyMetadata..ctor(Microsoft.UI.Xaml.PropertyChangedCallback propertyChangedCallback)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.RoutedEvent..ctor(System.String name)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Setter..ctor(Microsoft.UI.Xaml.DependencyProperty targetProperty, Microsoft.UI.Xaml.SetterValueProviderHandler valueProvider)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Setter..ctor(Microsoft.UI.Xaml.DependencyProperty targetProperty, System.Object owner, Microsoft.UI.Xaml.SetterValueProviderHandlerWithOwner valueProvider)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Setter..ctor(Microsoft.UI.Xaml.TargetPropertyPath targetPath, System.Object value)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TargetPropertyPath..ctor(System.Object target, Microsoft.UI.Xaml.PropertyPath path)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Thickness..ctor(System.Double leftRight, System.Double topBottom)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerAction..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.TriggerBase..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.WindowSizeChangedEventArgs..ctor(Windows.Foundation.Size newSize)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2Controller..ctor()" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs..ctor(System.UInt64 navigationId, System.String uri)" reason="Constructor has no WinUI counterpart (breaking changes for 7.0)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->

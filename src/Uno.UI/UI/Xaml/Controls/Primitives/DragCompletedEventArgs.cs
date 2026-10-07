@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			VerticalChange = verticalChange;
 		}
 
-		public DragCompletedEventArgs(object originalSource, double horizontalChange, double verticalChange, double totalHorizontalChange, double totalVerticalChange, bool canceled)
+		internal DragCompletedEventArgs(object originalSource, double horizontalChange, double verticalChange, double totalHorizontalChange, double totalVerticalChange, bool canceled)
 			: base(originalSource)
 		{
 			Canceled = canceled;

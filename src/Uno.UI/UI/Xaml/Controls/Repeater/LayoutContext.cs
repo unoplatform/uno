@@ -9,6 +9,10 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class LayoutContext
 	{
+		internal LayoutContext()
+		{
+		}
+
 		#region ILayoutContext
 		public object LayoutState
 		{

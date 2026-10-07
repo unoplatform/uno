@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml
 
 		public TargetPropertyPath() { }
 
-		public TargetPropertyPath(object target, PropertyPath path)
+		internal TargetPropertyPath(object target, PropertyPath path)
 		{
 			Target = target;
 			Path = path;

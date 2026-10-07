@@ -8,5 +8,10 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 	public partial class InteractionTrackerVector2InertiaModifier : global::Microsoft.UI.Composition.CompositionObject
 	{
+#if __SKIA__
+		internal InteractionTrackerVector2InertiaModifier()
+		{
+		}
+#endif
 	}
 }

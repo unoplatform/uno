@@ -8,5 +8,10 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionShadow : global::Microsoft.UI.Composition.CompositionObject
 	{
+#if __SKIA__
+		internal CompositionShadow()
+		{
+		}
+#endif
 	}
 }

@@ -20,7 +20,7 @@ public partial class ButtonBaseAutomationPeer : FrameworkElementAutomationPeer
 	{
 	}
 
-	protected ButtonBaseAutomationPeer(ButtonBaseAutomationPeer buttonBase) : base(buttonBase)
+	internal ButtonBaseAutomationPeer(ButtonBaseAutomationPeer buttonBase) : base(buttonBase)
 	{
 	}
 

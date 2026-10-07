@@ -8,5 +8,10 @@ namespace Microsoft.UI.Composition.Scenes
 #endif
 	public partial class SceneObject : global::Microsoft.UI.Composition.CompositionObject
 	{
+#if __SKIA__
+		internal SceneObject()
+		{
+		}
+#endif
 	}
 }

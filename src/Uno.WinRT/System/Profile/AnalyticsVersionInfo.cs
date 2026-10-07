@@ -8,7 +8,7 @@ namespace Windows.System.Profile;
 /// </summary>
 public partial class AnalyticsVersionInfo
 {
-	public AnalyticsVersionInfo() => Initialize();
+	internal AnalyticsVersionInfo() => Initialize();
 
 	partial void Initialize();
 

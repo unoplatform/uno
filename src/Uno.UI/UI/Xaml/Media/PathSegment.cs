@@ -2,5 +2,8 @@
 {
 	public partial class PathSegment : DependencyObject
 	{
+		internal PathSegment()
+		{
+		}
 	}
 }

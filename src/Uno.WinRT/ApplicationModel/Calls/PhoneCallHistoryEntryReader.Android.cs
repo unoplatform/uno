@@ -20,7 +20,7 @@ public partial class PhoneCallHistoryEntryReader
 
 	private Android.Database.ICursor? _cursor;
 
-	public PhoneCallHistoryEntryReader() => InitializeCursor();
+	internal PhoneCallHistoryEntryReader() => InitializeCursor();
 
 	~PhoneCallHistoryEntryReader() => CleanupCursor();
 

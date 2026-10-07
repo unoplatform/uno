@@ -8,6 +8,7 @@ using System.Text;
 using Uno.Collections;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Markup;
 using Windows.ApplicationModel.Resources;
 using Microsoft.UI.Xaml;
@@ -50,6 +51,12 @@ namespace Uno.UI.Helpers
 				provider.SetXName(name);
 			}
 		}
+
+		/// <summary>
+		/// Creates the named <see cref="RoutedEvent"/> the XAML generator assigns to <see cref="EventTrigger.RoutedEvent"/>.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static RoutedEvent CreateRoutedEvent(string name) => new(RoutedEventFlag.None, name);
 
 		/// <summary>
 		/// Gets the Uid defined via <see cref="SetXUid(object, string)"/>

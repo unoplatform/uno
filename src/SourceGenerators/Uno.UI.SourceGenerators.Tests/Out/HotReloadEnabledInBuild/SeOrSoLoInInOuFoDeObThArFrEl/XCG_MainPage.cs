@@ -294,7 +294,7 @@ namespace TestRepro
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
 						new global::Microsoft.UI.Xaml.Setter
 						{
-							Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
+							Target = new global::Microsoft.UI.Xaml.TargetPropertyPath { Target = this._TheListViewSubject, Path = new global::Microsoft.UI.Xaml.PropertyPath("Background") },
 							Value = @"Red",
 							// Source MainPage.xaml (Line 27:12)
 						}
@@ -327,7 +327,7 @@ namespace TestRepro
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
 						new global::Microsoft.UI.Xaml.Setter
 						{
-							Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
+							Target = new global::Microsoft.UI.Xaml.TargetPropertyPath { Target = this._TheListViewSubject, Path = new global::Microsoft.UI.Xaml.PropertyPath("Background") },
 							Value = @"Green",
 							// Source MainPage.xaml (Line 35:12)
 						}

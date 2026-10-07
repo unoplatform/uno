@@ -3,4 +3,9 @@
 /// <summary>
 /// The base class for shadow effects that can be applied to a XAML element.
 /// </summary>
-public partial class Shadow : DependencyObject, IMultiParentShareableDependencyObject;
+public partial class Shadow : DependencyObject, IMultiParentShareableDependencyObject
+{
+	internal Shadow()
+	{
+	}
+}

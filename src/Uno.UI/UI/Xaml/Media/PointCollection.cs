@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Media
 			_points = new List<Point>();
 		}
 
-		public PointCollection(IEnumerable<Point> coordinates)
+		internal PointCollection(IEnumerable<Point> coordinates)
 		{
 			_points = coordinates.ToList();
 		}

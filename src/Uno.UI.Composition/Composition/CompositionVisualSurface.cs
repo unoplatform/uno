@@ -15,7 +15,7 @@ namespace Microsoft.UI.Composition
 		private Vector2 _sourceOffset;
 		private Vector2 _sourceSize;
 
-		public CompositionVisualSurface(Compositor compositor) : base(compositor)
+		internal CompositionVisualSurface(Compositor compositor) : base(compositor)
 		{
 
 		}

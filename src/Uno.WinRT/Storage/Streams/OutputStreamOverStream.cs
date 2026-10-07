@@ -11,7 +11,7 @@ namespace Windows.Storage.Streams
 	{
 		private readonly Stream _stream;
 
-		public OutputStreamOverStream(Stream stream)
+		internal OutputStreamOverStream(Stream stream)
 		{
 			_stream = stream;
 		}

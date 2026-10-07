@@ -7,7 +7,7 @@ public partial class ShapeVisual : ContainerVisual
 	private CompositionViewBox? _viewBox;
 	private CompositionShapeCollection? _shapes;
 
-	public ShapeVisual(Compositor compositor)
+	internal ShapeVisual(Compositor compositor)
 		: base(compositor)
 	{
 		InitializePartial();

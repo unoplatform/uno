@@ -9,6 +9,11 @@ namespace Windows.UI.Composition.Scenes
 	public partial class ScenePbrMaterial : global::Windows.UI.Composition.Scenes.SceneMaterial
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal ScenePbrMaterial()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float AlphaCutoff
 		{

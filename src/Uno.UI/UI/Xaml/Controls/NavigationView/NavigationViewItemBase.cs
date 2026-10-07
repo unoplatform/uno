@@ -15,7 +15,7 @@ public partial class NavigationViewItemBase : ContentControl
 	internal CompositeDisposable EventRevokers { get; set; }
 #endif
 
-	public NavigationViewItemBase()
+	internal NavigationViewItemBase()
 	{
 		Loaded += OnLoaded;
 	}

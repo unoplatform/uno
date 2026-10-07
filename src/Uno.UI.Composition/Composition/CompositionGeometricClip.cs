@@ -7,7 +7,7 @@ namespace Microsoft.UI.Composition
 		private CompositionViewBox? _viewBox;
 		private CompositionGeometry? _geometry;
 
-		public CompositionGeometricClip(Compositor compositor) : base(compositor)
+		internal CompositionGeometricClip(Compositor compositor) : base(compositor)
 		{
 
 		}

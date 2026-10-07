@@ -6,7 +6,7 @@ namespace Windows.Devices.Geolocation
 {
 	public partial class Geocoordinate
 	{
-		public Geocoordinate(
+		internal Geocoordinate(
 			double latitude,
 			double longitude,
 			double accuracy,

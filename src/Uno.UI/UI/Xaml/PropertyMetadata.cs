@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml
 			BackingFieldUpdateCallback = backingFieldUpdateCallback;
 		}
 
-		public PropertyMetadata(
+		internal PropertyMetadata(
 			PropertyChangedCallback propertyChangedCallback
 		)
 		{

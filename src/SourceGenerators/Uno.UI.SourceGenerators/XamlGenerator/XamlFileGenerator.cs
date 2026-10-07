@@ -4290,7 +4290,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						return (
 							templateBindingNode.Members,
-							new[] { "RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)" }
+							new[] { "RelativeSource = new RelativeSource { Mode = RelativeSourceMode.TemplatedParent }" }
 						);
 					}
 
@@ -5555,7 +5555,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// Attached properties need to be expanded using the namespace, otherwise the resolution will be
 					// performed at runtime at a higher cost.
 					propertyName = RewriteAttachedPropertyPath(propertyName);
-					return $"new global::Microsoft.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\")";
+					return $"new global::Microsoft.UI.Xaml.TargetPropertyPath {{ Target = this._{elementName}Subject, Path = new global::Microsoft.UI.Xaml.PropertyPath(\"{propertyName}\") }}";
 				}
 				else
 				{
@@ -5756,12 +5756,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Validate that this is the Loaded event on a FrameworkElement-derived type,
 			// which is the only event EventTrigger supports. In WinUI the RoutedEvent
 			// property is essentially a string placeholder; the actual firing logic is
-			// hard-coded to the Loaded event. We create a new RoutedEvent instance
-			// via the public constructor so the generated code compiles without
-			// referencing internal members.
+			// hard-coded to the Loaded event, so MarkupHelper hands out a named placeholder.
 			if (eventName == "Loaded" && IsType(type, Generation.FrameworkElementSymbol.Value))
 			{
-				return $"new global::Microsoft.UI.Xaml.RoutedEvent(\"{eventName}\")";
+				return $"global::Uno.UI.Helpers.MarkupHelper.CreateRoutedEvent(\"{eventName}\")";
 			}
 
 			throw new XamlGenerationException(
@@ -5804,6 +5802,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					AddError($"Invalid Thickness value '{memberValue}'. Each component must be a valid number", owner);
 					return "new global::Microsoft.UI.Xaml.Thickness(0)";
 				}
+			}
+
+			if (components.Length == 2)
+			{
+				// WinUI has no (leftRight, topBottom) constructor.
+				memberValue = $"{components[0]},{components[1]},{components[0]},{components[1]}";
 			}
 
 			if (memberValue.Contains("."))
@@ -5895,22 +5899,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (firstMember is null)
 					{
 						AddError("'Mode' is not defined on 'RelativeSource'", m);
-						return "new RelativeSource(default)";
+						return "new RelativeSource()";
 					}
 					if (firstMember is not { Member.Name: XamlConstants.PositionalParameters or "Mode" })
 					{
 						AddError($"Property '{firstMember.Member.Name}' is not supported on 'RelativeSource'", firstMember);
-						return "new RelativeSource(default)";
+						return "new RelativeSource()";
 					}
 
 					var resourceName = firstMember.Value?.ToString() ?? firstMember.Objects.SingleOrDefault()?.Members?.SingleOrDefault()?.Value?.ToString();
 					if (resourceName is not ("None" or "TemplatedParent" or "Self"))
 					{
 						AddError($"'{resourceName}' is not a valid 'RelativeSourceMode'", firstMember);
-						return "new RelativeSource(default)";
+						return "new RelativeSource()";
 					}
 
-					return $"new RelativeSource(RelativeSourceMode.{resourceName})";
+					return $"new RelativeSource {{ Mode = RelativeSourceMode.{resourceName} }}";
 				}
 
 				if (bindingType.Type.Name == "NullExtension")

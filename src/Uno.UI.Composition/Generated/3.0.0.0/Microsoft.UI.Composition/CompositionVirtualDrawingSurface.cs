@@ -9,6 +9,11 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionVirtualDrawingSurface : global::Microsoft.UI.Composition.CompositionDrawingSurface
 	{
 #if __SKIA__
+		internal CompositionVirtualDrawingSurface()
+		{
+		}
+#endif
+#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public void Trim(global::Windows.Graphics.RectInt32[] rects)
 		{

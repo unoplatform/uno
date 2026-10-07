@@ -47,12 +47,12 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		protected BitmapSource() { }
 
-		protected BitmapSource(Uri sourceUri) : base(sourceUri)
+		internal BitmapSource(Uri sourceUri) : base(sourceUri)
 		{
 
 		}
 
-		protected BitmapSource(string sourceString) : base(sourceString)
+		internal BitmapSource(string sourceString) : base(sourceString)
 		{
 
 		}

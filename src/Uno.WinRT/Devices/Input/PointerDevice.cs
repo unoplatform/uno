@@ -27,7 +27,7 @@ namespace Windows.Devices.Input
 			}
 		}
 
-		public PointerDevice(PointerDeviceType type)
+		internal PointerDevice(PointerDeviceType type)
 		{
 			PointerDeviceType = type;
 		}

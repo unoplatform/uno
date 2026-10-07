@@ -9,6 +9,11 @@ namespace Microsoft.UI.Composition.Scenes
 	public partial class ScenePbrMaterial : global::Microsoft.UI.Composition.Scenes.SceneMaterial
 	{
 #if __SKIA__
+		internal ScenePbrMaterial()
+		{
+		}
+#endif
+#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public float AlphaCutoff
 		{

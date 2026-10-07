@@ -195,7 +195,7 @@ namespace Microsoft.UI.Xaml
 			_properties.CloneToForHotReload(otherStore._properties, this, otherStore);
 		}
 
-		public DependencyObject()
+		protected DependencyObject()
 			: this(originalObject: null)
 		{
 		}

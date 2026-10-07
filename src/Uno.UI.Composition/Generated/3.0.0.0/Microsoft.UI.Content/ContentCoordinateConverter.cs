@@ -9,6 +9,11 @@ namespace Microsoft.UI.Content
 	public partial class ContentCoordinateConverter
 	{
 #if __SKIA__
+		internal ContentCoordinateConverter()
+		{
+		}
+#endif
+#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Content.ContentCoordinateConverter CreateForWindowId(global::Microsoft.UI.WindowId windowId)
 		{

@@ -8,5 +8,10 @@ namespace Microsoft.UI.Xaml.Data
 #endif
 	public partial class BindingExpressionBase
 	{
+#if __SKIA__
+		internal BindingExpressionBase()
+		{
+		}
+#endif
 	}
 }

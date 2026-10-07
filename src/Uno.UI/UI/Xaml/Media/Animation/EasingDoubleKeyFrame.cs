@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// Initializes a new instance of the EasingDoubleKeyFrame class with the specified Double value.
 		/// </summary>
 		/// <param name="value">The initial Double value.</param>
-		public EasingDoubleKeyFrame(double value)
+		internal EasingDoubleKeyFrame(double value)
 			: base(value)
 		{
 		}
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// </summary>
 		/// <param name="value">The initial Double value.</param>
 		/// <param name="keyTime">The initial key time.</param>
-		public EasingDoubleKeyFrame(double value, KeyTime keyTime)
+		internal EasingDoubleKeyFrame(double value, KeyTime keyTime)
 			: base(value, keyTime)
 		{
 		}
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// <param name="value">The initial Double value.</param>
 		/// <param name="keyTime">The initial key time.</param>
 		/// <param name="easingFunction">The easing function.</param>
-		public EasingDoubleKeyFrame(double value, KeyTime keyTime, EasingFunctionBase easingFunction)
+		internal EasingDoubleKeyFrame(double value, KeyTime keyTime, EasingFunctionBase easingFunction)
 			: base(value, keyTime)
 		{
 			EasingFunction = easingFunction;

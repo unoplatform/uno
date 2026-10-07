@@ -14,12 +14,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			InitializeBinder();
 		}
 
-		public DoubleKeyFrame(double value) : this()
+		internal DoubleKeyFrame(double value) : this()
 		{
 			Value = value;
 		}
 
-		public DoubleKeyFrame(double value, KeyTime keyTime) : this()
+		internal DoubleKeyFrame(double value, KeyTime keyTime) : this()
 		{
 			Value = value;
 			KeyTime = keyTime;

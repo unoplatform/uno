@@ -8,5 +8,10 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class TriggerAction : global::Microsoft.UI.Xaml.DependencyObject
 	{
+#if __SKIA__
+		internal TriggerAction()
+		{
+		}
+#endif
 	}
 }

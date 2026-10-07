@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// Initializes a new instance of the SplineDoubleKeyFrame class with the specified ending value.
 		/// </summary>
 		/// <param name="value">Ending value (also known as "target value") for the key frame.</param>
-		public SplineDoubleKeyFrame(double value)
+		internal SplineDoubleKeyFrame(double value)
 			: base(value)
 		{
 		}
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// </summary>
 		/// <param name="value">Ending value (also known as "target value") for the key frame.</param>
 		/// <param name="keyTime">Key time for the key frame. The key time determines when the target value is reached which is also when the key frame ends.</param>
-		public SplineDoubleKeyFrame(double value, KeyTime keyTime)
+		internal SplineDoubleKeyFrame(double value, KeyTime keyTime)
 			: base(value, keyTime)
 		{
 		}
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// <param name="value">Ending value (also known as "target value") for the key frame.</param>
 		/// <param name="keyTime">Key time for the key frame. The key time determines when the target value is reached which is also when the key frame ends.</param>
 		/// <param name="keySpline">KeySpline for the key frame. The KeySpline represents a Bezier curve which defines animation progress of the key frame.</param>
-		public SplineDoubleKeyFrame(double value, KeyTime keyTime, KeySpline keySpline)
+		internal SplineDoubleKeyFrame(double value, KeyTime keyTime, KeySpline keySpline)
 			: base(value, keyTime)
 		{
 			KeySpline = keySpline;
