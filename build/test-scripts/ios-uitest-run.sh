@@ -170,11 +170,19 @@ date
 # edit here. The Select Xcode step has already made sure that runtime is installed.
 if [ -z "${UNO_UITEST_SIMULATOR_VERSION-}" ]; then
 	IOS_SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
-	UNO_UITEST_SIMULATOR_VERSION=$(xcrun simctl list runtimes --json | jq -r --arg ver "$IOS_SDK_VERSION" '
-		.runtimes
-		| map(select(.isAvailable == true and (.identifier | test("SimRuntime\\.iOS")) and (.version | startswith($ver))))
-		| sort_by(.version | split(".") | map(tonumber? // 0))
-		| .[-1].identifier // empty')
+
+	# simctl can list an incomplete set right after a runtime install or an Xcode switch.
+	for attempt in 1 2 3 4 5 6; do
+		UNO_UITEST_SIMULATOR_VERSION=$(xcrun simctl list runtimes --json | jq -r --arg ver "$IOS_SDK_VERSION" '
+			.runtimes
+			| map(select(.isAvailable == true and (.identifier | test("SimRuntime\\.iOS")) and (.version | startswith($ver))))
+			| sort_by(.version | split(".") | map(tonumber? // 0))
+			| .[-1].identifier // empty')
+
+		[ -n "$UNO_UITEST_SIMULATOR_VERSION" ] && break
+		echo "Waiting for an iOS $IOS_SDK_VERSION simulator runtime to be listed (attempt $attempt)"
+		sleep 5
+	done
 
 	if [ -z "$UNO_UITEST_SIMULATOR_VERSION" ]; then
 		echo "##vso[task.logissue type=error]UNOBLD008: No iOS $IOS_SDK_VERSION simulator runtime is available on this agent."
@@ -196,13 +204,19 @@ UITEST_IOSDEVICE_ID=$(find_ios_device)
 # The images only pre-create current device models, and the screen size the tests were written
 # against is the 12.9-inch iPad Pro, so create that device when it is missing.
 if [ -z "$UITEST_IOSDEVICE_ID" ]; then
-	IOS_DEVICETYPE_ID=$(xcrun simctl list devicetypes --json | jq -r --arg name "$UNO_UITEST_SIMULATOR_NAME" '
-		.devicetypes
-		| map(select(.name == $name))
-		| .[0].identifier // empty')
+	for attempt in 1 2 3 4 5 6; do
+		IOS_DEVICETYPE_ID=$(xcrun simctl list devicetypes --json | jq -r --arg name "$UNO_UITEST_SIMULATOR_NAME" '
+			.devicetypes
+			| map(select(.name == $name))
+			| .[0].identifier // empty')
+
+		[ -n "$IOS_DEVICETYPE_ID" ] && break
+		echo "Waiting for the '$UNO_UITEST_SIMULATOR_NAME' device type to be listed (attempt $attempt)"
+		sleep 5
+	done
 
 	if [ -z "$IOS_DEVICETYPE_ID" ]; then
-		echo "##vso[task.logissue type=error]UNOBLD008: No '$UNO_UITEST_SIMULATOR_NAME' simulator device type is available on this agent."
+		echo "##vso[task.logissue type=error]UNOBLD009: No '$UNO_UITEST_SIMULATOR_NAME' simulator device type is available on this agent."
 		xcrun simctl list devicetypes || true
 		exit 1
 	fi
@@ -212,7 +226,6 @@ if [ -z "$UITEST_IOSDEVICE_ID" ]; then
 fi
 
 export UITEST_IOSDEVICE_ID
-export UITEST_IOSDEVICE_DATA_PATH=$(xcrun simctl list devices --json | jq -r --arg udid "$UITEST_IOSDEVICE_ID" '[.devices[][] | select(.udid == $udid)][0].dataPath')
 
 export DEVICELIST_FILEPATH=$LOG_FILEPATH/DeviceList-$LOG_PREFIX.json
 echo "Listing iOS simulators to $DEVICELIST_FILEPATH"
