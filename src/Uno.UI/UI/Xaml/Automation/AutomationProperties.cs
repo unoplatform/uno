@@ -148,7 +148,7 @@ public partial class AutomationProperties
 			"HelpText",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 
 	/// <summary>
 	/// Identifies the IsDataValidForForm attached property, which indicates whether the element’s value is valid for form submission.
