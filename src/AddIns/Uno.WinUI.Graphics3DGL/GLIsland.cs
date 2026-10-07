@@ -1,4 +1,4 @@
-﻿#if CROSSRUNTIME
+﻿#if !WINAPPSDK
 using Microsoft.UI.Xaml;
 using Silk.NET.OpenGL;
 using Uno.Foundation.Extensibility;
