@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -1024,6 +1024,11 @@ namespace Uno.WinAppSDKSyncGenerator
 				&& iface is { Name: "IEquatable", TypeArguments.Length: 1 }
 				&& SymbolEqualityComparer.Default.Equals(iface.TypeArguments[0], type);
 
+		// A struct CsWinRT doesn't generate (WinUI hand-writes it over private fields), so BuildStructEquality skips it.
+		private static bool IsHandProjectedStruct(INamedTypeSymbol type)
+			=> type.TypeKind == TypeKind.Struct
+				&& !type.GetMembers().OfType<IFieldSymbol>().Any(f => !f.IsStatic && f.DeclaredAccessibility == Accessibility.Public);
+
 		private static bool HasProjectedStructEquality(INamedTypeSymbol type)
 			=> type.TypeKind == TypeKind.Struct && !type.GetMembers(WellKnownMemberNames.EqualityOperatorName).IsEmpty;
 
@@ -1499,7 +1504,7 @@ namespace Uno.WinAppSDKSyncGenerator
 				}
 
 				if (
-						method.MethodKind == MethodKind.Ordinary
+						(method.MethodKind == MethodKind.Ordinary || (method.MethodKind is MethodKind.UserDefinedOperator or MethodKind.Conversion && IsHandProjectedStruct(type)))
 						&& !SkipMethod(type, method)
 						&& IsNotWinAppSDKMapping(type, method)
 						&& (
@@ -1528,7 +1533,12 @@ namespace Uno.WinAppSDKSyncGenerator
 							genericParameters = $"<{string.Join(", ", method.TypeParameters.Select(p => p.Name))}>";
 						}
 
-						var declaration = $"{SanitizeType(method.ReturnType)} {method.Name}{genericParameters}({parameters})";
+						var declaration = method.MethodKind switch
+						{
+							MethodKind.UserDefinedOperator => $"{SanitizeType(method.ReturnType)} operator {SyntaxFacts.GetText(SyntaxFacts.GetOperatorKind(method.Name))}({parameters})",
+							MethodKind.Conversion => $"{(method.Name == WellKnownMemberNames.ImplicitConversionName ? "implicit" : "explicit")} operator {SanitizeType(method.ReturnType)}({parameters})",
+							_ => $"{SanitizeType(method.ReturnType)} {method.Name}{genericParameters}({parameters})",
+						};
 
 						if (type.TypeKind == TypeKind.Interface || type.Name == "DependencyObject")
 						{
@@ -1632,7 +1642,13 @@ namespace Uno.WinAppSDKSyncGenerator
 				}
 			}
 
-			if (method.Name is "FromAbi" or "IsOverridableInterface" or "IsInterfaceImplemented" or "GetInterfaceImplementation" or "GetInterface" or "GetHashCode" or "Equals")
+			if (method.Name is "FromAbi" or "IsOverridableInterface" or "IsInterfaceImplemented" or "GetInterfaceImplementation" or "GetInterface")
+			{
+				return true;
+			}
+
+			// On runtime classes these are CsWinRT COM-identity plumbing; on hand-projected structs they are real API.
+			if (method.Name is "GetHashCode" or "Equals" && !IsHandProjectedStruct(type))
 			{
 				return true;
 			}
