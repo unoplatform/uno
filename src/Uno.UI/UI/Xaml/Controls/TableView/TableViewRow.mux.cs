@@ -33,7 +33,6 @@ partial class TableViewRow
 	// scroll, and a fresh brush per cell is pure allocation for a value that never varies.
 	private static Brush TransparentBrush()
 	{
-		// TODO Uno: C++ uses a function-local static (`static const winrt::SolidColorBrush s_transparent{ winrt::Colors::Transparent() };`).
 		return s_transparent ??= new SolidColorBrush(Colors.Transparent);
 	}
 
@@ -61,8 +60,13 @@ partial class TableViewRow
 	// GetSystemMetrics is a cheap cached read in user32, not a round trip.
 	private static double GetDoubleClickSlop(UIElement? element)
 	{
-		// TODO Uno: The rasterization scale is read before the metrics (C++ reads it after) because the
-		// metric substitute below needs it.
+		// TODO Uno: 4 is the Windows default for GetSystemMetrics(SM_CXDOUBLECLK / SM_CYDOUBLECLK); no per-host source.
+		// const auto cx = static_cast<double>(::GetSystemMetrics(SM_CXDOUBLECLK));
+		// const auto cy = static_cast<double>(::GetSystemMetrics(SM_CYDOUBLECLK));
+		const double cx = 4.0;
+		const double cy = 4.0;
+		double physical = Math.Max(Math.Max(cx, cy), 4.0) / 2.0;
+
 		double scale = 1.0;
 		if (element is not null)
 		{
@@ -76,16 +80,6 @@ partial class TableViewRow
 			}
 		}
 
-		// TODO Uno: There is no cross-platform SM_CXDOUBLECLK / SM_CYDOUBLECLK. Uno's GestureRecognizer
-		// uses TapMaxXDelta / TapMaxYDelta as a DIP half-width for its own multi-tap detection, so they are
-		// expressed here as the equivalent full physical-pixel rectangle, which makes the formula below
-		// yield exactly the recognizer's tolerance.
-		// const auto cx = static_cast<double>(::GetSystemMetrics(SM_CXDOUBLECLK));
-		// const auto cy = static_cast<double>(::GetSystemMetrics(SM_CYDOUBLECLK));
-		var cx = 2.0 * GestureRecognizer.TapMaxXDelta * scale;
-		var cy = 2.0 * GestureRecognizer.TapMaxYDelta * scale;
-		double physical = Math.Max(Math.Max(cx, cy), 4.0) / 2.0;
-
 		return physical / scale;
 	}
 
@@ -95,7 +89,7 @@ partial class TableViewRow
 	{
 		// TODO Uno: ::GetDoubleClickTime() is Win32-only; UISettings.DoubleClickTime is the WinRT equivalent.
 		// return static_cast<uint64_t>(::GetDoubleClickTime()) * 1000ull;
-		return (ulong)new UISettings().DoubleClickTime * 1000UL;
+		return (ulong)UISettings.GetDoubleClickTime() * 1000UL;
 	}
 
 	public TableViewRow()
@@ -1326,8 +1320,6 @@ partial class TableViewRow
 			current = VisualTreeHelper.GetParent(current);
 		}
 
-		// TODO Uno: Correct results with frozen (clipped, translated) columns depend on
-		// FindElementsInHostCoordinates being clip-aware, front-to-back and duplicate-free (plan I13).
 		foreach (var hit in VisualTreeHelper.FindElementsInHostCoordinates(hostPoint, this))
 		{
 			if (hit is Border border)

@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
@@ -33,18 +34,6 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableView
 {
-	// TODO Uno: std::max / std::clamp / std::round semantics. Math.Max propagates NaN where std::max
-	// returns its first argument, Math.Clamp throws when min > max, and Math.Round defaults to
-	// banker's rounding where std::round rounds half away from zero.
-	private static class StdMath
-	{
-		public static double Max(double a, double b) => (a < b) ? b : a;
-
-		public static double Clamp(double v, double lo, double hi) => (v < lo) ? lo : (hi < v) ? hi : v;
-
-		public static double Round(double v) => Math.Round(v, MidpointRounding.AwayFromZero);
-	}
-
 	private static double MinWidthForStarFactor(TableViewColumn column, double factor)
 	{
 		if (factor > 0.0)

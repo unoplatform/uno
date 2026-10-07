@@ -4,6 +4,8 @@
 
 #nullable enable
 
+using System;
+
 namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 internal enum TableViewRowKind
@@ -12,8 +14,7 @@ internal enum TableViewRowKind
 	GroupHeader = 1,
 }
 
-// TODO Uno: The C++ default member initializers (Kind = Data, Level = 0, IsExpandable = false,
-// IsExpanded = false, ChildCount = 0) all equal default(TableViewRowInfo), so they are not restated.
+// The C++ default member initializers all equal default(TableViewRowInfo).
 internal struct TableViewRowInfo
 {
 	public TableViewRowKind Kind;
@@ -30,9 +31,10 @@ internal struct TableViewRowInfo
 // TODO Uno: std::function<winrt::hstring(winrt::IInspectable const&)>; an empty std::function maps to null.
 internal delegate string TableViewRowItemKeySelector(object? item);
 
-internal interface ITableViewRowMetadataProvider
+internal interface ITableViewRowMetadataProvider : IDisposable
 {
-	// TODO Uno: Original C++: virtual ~ITableViewRowMetadataProvider() = default;
+	// TODO Uno: Original C++: virtual ~ITableViewRowMetadataProvider() = default; mapped to IDisposable so
+	// owners can run the destructor through the interface.
 
 	TableViewRowInfo GetRowInfo(int index);
 	string GetIdentity(int index);

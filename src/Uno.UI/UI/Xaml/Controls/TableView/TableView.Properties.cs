@@ -256,6 +256,11 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(default(Brush), OnRowBackgroundPropertyChanged));
 
+	// ----- Selection -----
+	// Row-scoped, single item. SelectedItem and SelectedIndex are read-only projections of the
+	// selection and stay coherent with each other. Drive selection through Select / Deselect /
+	// DeselectAll, matching ItemsView. Independent of editing.
+
 	// The selected item's index, or -1 when nothing is selected.
 	/// <summary>
 	/// Gets the selected item's index, or -1 when nothing is selected.
@@ -325,6 +330,10 @@ partial class TableView
 	/// Occurs before a cell edit closes. Vetoable via Cancel; the handler must decide before returning.
 	/// </summary>
 	public event TypedEventHandler<TableView, TableViewCellEditEndingEventArgs>? CellEditEnding;
+
+	// There is no post-close event in this release. CellEditEnding reports the outcome through
+	// EditAction and is raised for every close, so a second "it finished" event is surface without
+	// a scenario of its own yet. It can be added later without breaking anyone.
 
 	/// <summary>
 	/// Occurs after the selection has settled.

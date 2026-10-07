@@ -107,7 +107,7 @@ internal partial class RowMetadataProvider : ITableViewRowMetadataProvider
 	// races teardown becomes a no-op under the weak lock -- GC / re-entrancy safety, not threading.
 	private readonly SerialDisposable m_groupedRowsChangedToken = new();
 	private readonly SerialDisposable m_flatRowsChangedToken = new();
-	// TODO Uno: std::shared_ptr<bool>; handlers capture a WeakReference to the box and the teardown
-	// path nulls this field, mirroring m_alive.reset() + weak_ptr::lock().
+	// TODO Uno: std::shared_ptr<bool> mapped to StrongBox<bool>; handlers capture the box and test Value
+	// in place of weak_ptr::lock(), and Dispose clears Value and nulls the field in place of m_alive.reset().
 	private StrongBox<bool>? m_alive = new(true);
 }

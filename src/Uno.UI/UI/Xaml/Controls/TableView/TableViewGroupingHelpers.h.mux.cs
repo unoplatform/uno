@@ -45,13 +45,12 @@ internal static partial class TableViewDetails
 
 			try
 			{
-				// TODO Uno: Original C++:
 				// WCHAR currentLocale[LOCALE_NAME_MAX_LENGTH] = {};
 				// if (GetUserDefaultLocaleName(currentLocale, LOCALE_NAME_MAX_LENGTH) != 0)
-				// GetUserDefaultLocaleName is Win32-only; the current culture name stands in for the user default
-				// locale, and an empty name stands in for the API failing.
-				var currentLocale = CultureInfo.CurrentCulture.Name;
-				if (!string.IsNullOrEmpty(currentLocale))
+				// TODO Uno: null stands in for the Win32 call returning 0. Off Windows the helper approximates the user
+				// default locale with the startup culture, see https://github.com/unoplatform/uno/issues/6908.
+				var currentLocale = GlobalizationPreferences.GetUserDefaultLocaleName();
+				if (currentLocale is not null)
 				{
 					// Strip any sort-order suffix (e.g. de-DE_phoneb), which is not a valid tag.
 					var underscore = currentLocale.IndexOf('_');

@@ -121,8 +121,8 @@ partial class TableViewGroupInfo
 		{
 			// TODO Uno: IPropertyValue projection. try_as<IPropertyValue> succeeds for boxed WinRT values,
 			// which on .NET are boxed value types and strings; Type() comes from ValueConversionHelpers.GetPropertyType.
-			var leftValue = TryGetPropertyType(left, out var leftType);
-			var rightValue = TryGetPropertyType(right, out var rightType);
+			var leftValue = ValueConversionHelpers.TryGetPropertyType(left, out var leftType);
+			var rightValue = ValueConversionHelpers.TryGetPropertyType(right, out var rightType);
 			if (leftValue && rightValue)
 			{
 				if (leftType != rightType)
@@ -176,20 +176,6 @@ partial class TableViewGroupInfo
 		{
 			return false;
 		}
-	}
-
-	// TODO Uno: IPropertyValue projection helper. Boxed value types and strings are the .NET shape of a WinRT
-	// IPropertyValue; any other reference type fails try_as<IPropertyValue>.
-	private static bool TryGetPropertyType(object value, out PropertyType type)
-	{
-		if (value is string || value.GetType().IsValueType)
-		{
-			type = ValueConversionHelpers.GetPropertyType(value.GetType());
-			return true;
-		}
-
-		type = PropertyType.Empty;
-		return false;
 	}
 
 	// TODO Uno: IPropertyValue.GetDateTime() projection. A WinRT DateTime surfaces on .NET as either

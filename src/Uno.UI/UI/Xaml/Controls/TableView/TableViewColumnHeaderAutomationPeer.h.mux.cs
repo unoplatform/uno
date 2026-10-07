@@ -54,6 +54,5 @@ partial class TableViewColumnHeaderAutomationPeer
 	private WeakReference<TableViewColumn>? m_column = null;
 	// Captured at construction from the column's stable IUnknown so identity survives the
 	// column being released; the peer must not resurrect the column just to report an id.
-	// TODO Uno: std::array<int32_t, 2>; assigned from RuntimeIdPartsForColumn in the constructor.
 	private int[] m_columnRuntimeIdParts = { 0, 0 };
 }

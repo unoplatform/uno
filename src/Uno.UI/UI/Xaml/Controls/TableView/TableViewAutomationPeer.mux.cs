@@ -103,7 +103,6 @@ partial class TableViewAutomationPeer
 		return base.GetPatternCore(patternInterface);
 	}
 
-	// TODO Uno: hstring_name_of<winrt::TableView>() yields the WinRT runtime class name.
 	protected override string GetClassNameCore() => typeof(TableView).FullName!;
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.DataGrid;
@@ -474,10 +473,8 @@ partial class TableViewAutomationPeer
 				case PropertyType.UInt16: return ((uint)(ushort)item).ToString(CultureInfo.InvariantCulture);
 				case PropertyType.UInt32: return ((uint)item).ToString(CultureInfo.InvariantCulture);
 				case PropertyType.UInt64: return ((ulong)item).ToString(CultureInfo.InvariantCulture);
-				// TODO Uno: winrt::to_hstring uses std::to_chars (shortest round-trip, general format);
-				// .NET's shortest round-trip may pick a different exponent notation for very large/small values.
-				case PropertyType.Single: return ((float)item).ToString(CultureInfo.InvariantCulture);
-				case PropertyType.Double: return ((double)item).ToString(CultureInfo.InvariantCulture);
+				case PropertyType.Single: return CppWinRTHelpers.ToHString((float)item);
+				case PropertyType.Double: return CppWinRTHelpers.ToHString((double)item);
 				default: break;
 			}
 		}
@@ -659,7 +656,6 @@ partial class TableViewAutomationPeer
 				else if (property == AutomationElementIdentifiers.ClassNameProperty)
 				{
 					string requested = StringPropertyValue(value);
-					// TODO Uno: hstring_name_of<winrt::TableViewRow>() yields the WinRT runtime class name.
 					string candidate = typeof(TableViewRow).FullName!;
 					if (repeater.TryGetElement(i) is { } rowElement)
 					{

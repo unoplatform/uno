@@ -20,7 +20,6 @@ partial class TableViewRowAutomationPeer
 	{
 	}
 
-	// TODO Uno: hstring_name_of<winrt::TableViewRow>() yields the WinRT runtime class name.
 	protected override string GetClassNameCore() => typeof(TableViewRow).FullName!;
 
 	protected override AutomationControlType GetAutomationControlTypeCore()

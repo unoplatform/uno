@@ -40,9 +40,9 @@ internal static class TableViewAutomationHelpers
 		if (column is not null)
 		{
 			var header = column.Header;
-			if (header is IStringable stringable)
+			if (SharedHelpers.IsStringable(header))
 			{
-				return stringable.ToString();
+				return SharedHelpers.StringableToString(header);
 			}
 			// TODO Uno: IPropertyValue projection
 			if (header is not null)

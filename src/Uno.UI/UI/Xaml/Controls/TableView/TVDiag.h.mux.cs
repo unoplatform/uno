@@ -256,7 +256,9 @@ internal static partial class TVDiag
 					else if (zeroPad && precision < 0)
 					{
 						var signLength = text.Length > 0 && (text[0] == '-' || text[0] == '+' || text[0] == ' ') ? 1 : 0;
-						text = text.Insert(signLength, new string('0', width - text.Length));
+						// The CRT pads after the alternate-form 0x/0X prefix.
+						var prefixLength = alternate && conversion is 'x' or 'X' && text.Length >= 2 && text[0] == '0' && (text[1] == 'x' || text[1] == 'X') ? 2 : 0;
+						text = text.Insert(signLength + prefixLength, new string('0', width - text.Length));
 					}
 					else
 					{

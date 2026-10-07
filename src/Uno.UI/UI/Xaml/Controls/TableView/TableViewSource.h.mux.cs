@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
 
@@ -117,7 +118,7 @@ partial class TableViewSource
 	// structure-changed event that a programmatic reshape has no other trigger for.
 	// void NotifyOwnerShapingChanged(bool reorderOnly);
 
-	private ShapedItemsSource? m_engine;
+	private readonly ShapedItemsSource m_engine;
 	// Weak, and typed as IInspectable rather than TableView: this slot exists only to detect a
 	// second owner binding, and the owning TableView references this source through its
 	// ItemsSource property, so a strong back-pointer would be a cycle.
@@ -130,4 +131,8 @@ partial class TableViewSource
 	// rows and collect any cycle; also swaps to null safely during finalization.
 	private ItemsSourceView? m_itemsSourceView;
 	private ITableViewRowMetadataProvider? m_rowMetadata;
+
+	// TODO Uno: the ReferenceTracker base's m_owningThreadId (RuntimeClassHelpers.h); abi_enter is emulated by an
+	// explicit CheckThread() at the top of each public member.
+	private readonly ReferenceTrackerThreadAffinity m_threadAffinity;
 }

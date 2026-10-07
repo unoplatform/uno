@@ -21,8 +21,7 @@ partial class TableView
 {
 	// Every step can fail on a locale-starved or self-contained host, and this runs during
 	// measure, so nothing is allowed to escape.
-	// TODO Uno: duplicated anon-namespace helper (TableView_Sort.cpp defines the same function; see
-	// SortLocalizedOrFallback in TableView.Sort.mux.cs).
+	// TODO Uno: TableView_Grouping.cpp's anonymous-namespace LocalizedOrFallback is identical to TableView_Sort.cpp's; both share this definition.
 	private static string LocalizedOrFallback(string resourceName, string fallback)
 	{
 		try
@@ -369,8 +368,6 @@ partial class TableView
 		// header container during the next layout pass; focusing now would land on a container layout
 		// is about to recycle, dropping focus a second time. A one-shot LayoutUpdated fires once the
 		// tree has settled, mirroring FocusRow's deferred-focus pattern.
-		// TODO Uno: The C++ event_token becomes the m_pendingGroupFocusLayoutToken SerialDisposable;
-		// `token.value` is `Disposable is not null` and revoking is `Disposable = null`.
 		if (m_pendingGroupFocusLayoutToken.Disposable is not null)
 		{
 			m_pendingGroupFocusLayoutToken.Disposable = null;
@@ -438,6 +435,10 @@ partial class TableView
 		}
 	}
 
+	// ----- Grouping commands -----
+	// Expands or collapses every group in one batch. Individual groups are expanded and collapsed
+	// through the group header's ExpandCollapse pattern or by clicking the header itself; these
+	// are the programmatic bulk counterparts. Both are no-ops when the source is not grouped.
 	public void ExpandAllGroups()
 	{
 		SetAllGroupsExpansion(true);
@@ -541,14 +542,11 @@ partial class TableView
 			return LocalizedOrFallback(ResourceAccessor.SR_TableViewGroupHeaderNull, "(null)");
 		}
 
-		// TODO Uno: try_as<IStringable>() becomes an `is IStringable` check. In WinUI a C# app key
-		// reaches this code through a CsWinRT CCW; Uno has no CCW layer, so only types that implement
-		// Windows.Foundation.IStringable take this branch.
-		if (key is IStringable stringable)
+		if (SharedHelpers.IsStringable(key))
 		{
 			try
 			{
-				return stringable.ToString();
+				return SharedHelpers.StringableToString(key);
 			}
 			catch (Exception)
 			{
@@ -557,9 +555,9 @@ partial class TableView
 			}
 		}
 
-		// TODO Uno: IPropertyValue projection. try_as<IPropertyValue>() + Type() becomes a type switch
-		// through ValueConversionHelpers.GetPropertyType; PropertyType.Empty stands for "not an IPropertyValue".
-		if (ValueConversionHelpers.GetPropertyType(key.GetType()) is var propertyType && propertyType != PropertyType.Empty)
+		// TODO Uno: IPropertyValue projection. try_as<IPropertyValue>() + Type() becomes ValueConversionHelpers.TryGetPropertyType;
+		// WinRT boxes only value types and strings, so any other reference type is not an IPropertyValue.
+		if (ValueConversionHelpers.TryGetPropertyType(key, out var propertyType))
 		{
 			var formatter = GetGroupKeyDecimalFormatter();
 			try

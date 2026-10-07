@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Controls.Tabular.Primitives;
+using Uno.UI.Helpers.WinUI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
@@ -21,6 +22,7 @@ partial class TableViewSource
 
 	internal TableViewSource(object? items)
 	{
+		m_threadAffinity = ReferenceTrackerThreadAffinity.ForCurrentThread();
 		m_engine = new ShapedItemsSource(items);
 
 		// Diagnostics raised by the engine are contractual for apps written against this type, so
@@ -33,6 +35,9 @@ partial class TableViewSource
 		m_engine.Start();
 	}
 
+	// Accepts the same collection interfaces as ItemsSourceView: IVector<Object> (so also
+	// IObservableVector<Object>), IBindableVector, IIterable<Object>, or IBindableIterable.
+	// Anything else throws E_INVALIDARG. The projection is populated by the time From returns.
 	/// <summary>
 	/// Creates a <see cref="TableViewSource"/> over the specified collection. Accepts the same collection
 	/// interfaces as <see cref="ItemsSourceView"/>; the projection is populated by the time this method returns.
@@ -50,6 +55,7 @@ partial class TableViewSource
 		return new TableViewSource(items);
 	}
 
+	// Use ClearFilter() to remove an existing filter rather than passing a pass-everything one.
 	/// <summary>
 	/// Filters the source with the specified predicate. Each call replaces the previous predicate;
 	/// use <see cref="ClearFilter"/> to remove it.
@@ -58,14 +64,20 @@ partial class TableViewSource
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
 	public TableViewSource Filter(TableViewPredicate predicate)
 	{
+		m_threadAffinity.CheckThread();
+
 		if (predicate is null)
 		{
 			throw new ArgumentException("predicate cannot be null.");
 		}
-		m_engine!.SetFilter(item => predicate(item));
+		m_engine.SetFilter(item => predicate(item));
 		return this;
 	}
 
+	// keySelector: required, non-null (throws E_INVALIDARG when null; use ClearGroupBy() to
+	// remove grouping). Overload metadata is frozen at v1 — without it MIDL bakes GroupBy2 into
+	// the ABI.
+	// TODO Uno: MIDL overload-naming note; C# overloads need no ABI method_name.
 	/// <summary>
 	/// Groups the source by the key the specified selector returns.
 	/// </summary>
@@ -73,8 +85,14 @@ partial class TableViewSource
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
 	public TableViewSource GroupBy(TableViewKeySelector key)
 	{
+		m_threadAffinity.CheckThread();
+
 		return GroupBy(key, null);
 	}
+
+	// groupIdentitySelector is OPTIONAL: null selects the built-in value-type group identity
+	// (String/Int32/Int64/Guid/Boolean/enum); a reference-type group key with no selector fails
+	// fast at projection time.
 
 	/// <summary>
 	/// Groups the source by the key the specified selector returns, using a stable string identity for each group key.
@@ -85,6 +103,8 @@ partial class TableViewSource
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
 	public TableViewSource GroupBy(TableViewKeySelector key, TableViewIdentitySelector? groupIdentitySelector)
 	{
+		m_threadAffinity.CheckThread();
+
 		if (key is null)
 		{
 			throw new ArgumentException("key cannot be null.");
@@ -96,7 +116,7 @@ partial class TableViewSource
 			groupIdentity = item => groupIdentitySelector(item);
 		}
 
-		m_engine!.SetGroup(item => key(item), groupIdentity);
+		m_engine.SetGroup(item => key(item), groupIdentity);
 		return this;
 	}
 
@@ -106,7 +126,9 @@ partial class TableViewSource
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
 	public TableViewSource ClearFilter()
 	{
-		m_engine!.ClearFilter();
+		m_threadAffinity.CheckThread();
+
+		m_engine.ClearFilter();
 		return this;
 	}
 
@@ -116,7 +138,9 @@ partial class TableViewSource
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
 	public TableViewSource ClearGroupBy()
 	{
-		m_engine!.ClearGroup();
+		m_threadAffinity.CheckThread();
+
+		m_engine.ClearGroup();
 		return this;
 	}
 
@@ -126,26 +150,28 @@ partial class TableViewSource
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
 	public TableViewSource ClearSort()
 	{
-		m_engine!.ClearSorts();
+		m_threadAffinity.CheckThread();
+
+		m_engine.ClearSorts();
 		return this;
 	}
 
 	internal TableViewSource ClearSort(string sortAxisToken)
 	{
-		m_engine!.ClearSort(sortAxisToken);
+		m_engine.ClearSort(sortAxisToken);
 		return this;
 	}
 
 	internal TableViewSource ClearSortsExcept(string sortAxisToken)
 	{
-		m_engine!.ClearSortsExcept(sortAxisToken);
+		m_engine.ClearSortsExcept(sortAxisToken);
 		return this;
 	}
 
 	internal List<ActiveSortAxisInfo> ActiveSortAxisInfos()
 	{
 		List<ActiveSortAxisInfo> infos = new();
-		foreach (var axis in m_engine!.ActiveSortAxisInfos())
+		foreach (var axis in m_engine.ActiveSortAxisInfos())
 		{
 			infos.Add(new ActiveSortAxisInfo
 			{
@@ -167,6 +193,11 @@ partial class TableViewSource
 		return "path:" + sortMemberPath;
 	}
 
+	// keySelector form: for keys no property path expresses — computed, multi-field, normalized,
+	// or the identity of a primitive collection. The axis is ANONYMOUS: nothing names a property,
+	// so a bound TableView cannot attribute it to a column and clears every sort indicator
+	// instead of leaving one describing a sort that is no longer primary. Prefer the
+	// sortMemberPath overload whenever the key is a property.
 	/// <summary>
 	/// Sorts the source by the key the specified selector returns. The axis is anonymous: a bound
 	/// <see cref="TableView"/> cannot attribute it to a column. Prefer <see cref="Sort(string, SortDirection)"/>
@@ -177,9 +208,28 @@ partial class TableViewSource
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
 	public TableViewSource Sort(TableViewKeySelector key, SortDirection direction)
 	{
+		m_threadAffinity.CheckThread();
+
 		return SortCore("", "", key, "", direction);
 	}
 
+	// SortDirection.None removes that key's sort axis rather than seeding a stage, so sorting
+	// every axis to None leaves the source unsorted. When several axes are active the FIRST one
+	// declared is the primary sort and each later axis breaks ties within the previous, matching
+	// WPF DataGrid's SortDescriptions order; re-sorting an existing axis keeps its position.
+	//
+	// Both overloads are LAST WRITER WINS against TableView's own sort: declaring a sort here
+	// replaces the control's axis rather than stacking behind it, so the rows are ordered by this
+	// axis alone. What differs is what the headers can say about it.
+	//
+	// sortMemberPath names the property this axis sorts on and is the preferred form. The path is
+	// evaluated by the same binding-based evaluator a column uses for its SortMemberPath, so a
+	// path that displays also sorts (dotted paths and indexers included), and a bound TableView
+	// can match the path to a column and light that column's sort indicator. Re-sorting the same
+	// path replaces that axis in place rather than adding a second one.
+	// Throws E_INVALIDARG when sortMemberPath is empty.
+	// Overload metadata is frozen at v1 — without it MIDL bakes Sort2 into the ABI.
+	// TODO Uno: MIDL overload-naming note; C# overloads need no ABI method_name.
 	/// <summary>
 	/// Sorts the source by the property the specified path names, evaluated the same way a column evaluates
 	/// its SortMemberPath. Re-sorting the same path replaces that axis in place.
@@ -189,6 +239,8 @@ partial class TableViewSource
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
 	public TableViewSource Sort(string sortMemberPath, SortDirection direction)
 	{
+		m_threadAffinity.CheckThread();
+
 		if (string.IsNullOrEmpty(sortMemberPath))
 		{
 			throw new ArgumentException("sortMemberPath cannot be empty.");
@@ -233,7 +285,7 @@ partial class TableViewSource
 		// delegate, so the identity stays valid for as long as the axis lives.
 		// TODO Uno: Original C++ passes key.as<winrt::Windows::Foundation::IUnknown>(); the delegate object is
 		// its own identity on .NET.
-		m_engine!.SetSort(
+		m_engine.SetSort(
 			previousSortAxisToken,
 			sortAxisToken,
 			item => key(item),
@@ -245,7 +297,7 @@ partial class TableViewSource
 
 	internal bool IsGrouped()
 	{
-		return m_engine!.IsProjectedAsGrouped();
+		return m_engine.IsProjectedAsGrouped();
 	}
 
 	internal ItemsSourceView? GetItemsSourceView()
@@ -263,11 +315,12 @@ partial class TableViewSource
 		// The control-level reading of the projection: what an ItemsRepeater consumes, and how a row
 		// at an index is described. The engine reports which shape it produced; deciding what that
 		// shape means for a TableView is this class's only remaining projection responsibility.
-		switch (m_engine!.Kind())
+		var previousRowMetadata = m_rowMetadata;
+		switch (m_engine.Kind())
 		{
 			case ShapedItemsSource.ProjectionKind.Grouped:
 				{
-					var adapter = m_engine!.GroupedAdapter();
+					var adapter = m_engine.GroupedAdapter();
 					// No wrap: the grouped view IS an ItemsSourceView, so ItemsRepeater consumes it directly.
 					m_itemsSourceView = adapter!.Entries();
 					m_rowMetadata = RowMetadataProvider.CreateForGroupedRows(adapter, MakeIdentitySelector());
@@ -277,7 +330,7 @@ partial class TableViewSource
 				{
 					// tracker_ref, so set through .set(); read the local back into the metadata provider since
 					// CreateForFlatRows takes the concrete ItemsSourceView, not the tracked slot.
-					var flatView = new ItemsSourceView(m_engine!.Rows());
+					var flatView = new ItemsSourceView(m_engine.Rows());
 					m_itemsSourceView = flatView;
 					m_rowMetadata = RowMetadataProvider.CreateForFlatRows(flatView, MakeIdentitySelector());
 					break;
@@ -285,7 +338,7 @@ partial class TableViewSource
 			case ShapedItemsSource.ProjectionKind.Unshaped:
 				// An unshaped mirror carries no shaped identity, so there is deliberately no row
 				// metadata: consumers must not read sorted/identity semantics off a degraded projection.
-				m_itemsSourceView = new ItemsSourceView(m_engine!.Rows());
+				m_itemsSourceView = new ItemsSourceView(m_engine.Rows());
 				m_rowMetadata = null;
 				break;
 			case ShapedItemsSource.ProjectionKind.None:
@@ -298,6 +351,13 @@ partial class TableViewSource
 		// owner cached from the previous projection is stale from here - whether or not grouped-ness
 		// changed.
 		NotifyOwnerProjectionChanged();
+
+		// TODO Uno: shared_ptr release of the replaced provider. The owner swaps its copy during the
+		// notify above, so this was the last reference.
+		if (!ReferenceEquals(previousRowMetadata, m_rowMetadata))
+		{
+			previousRowMetadata?.Dispose();
+		}
 	}
 
 	private TableViewRowItemKeySelector? MakeIdentitySelector()
@@ -305,7 +365,7 @@ partial class TableViewSource
 		// Bridge the engine's Object-returning identity selector to the String-returning selector the
 		// row-metadata provider consumes. The engine derives identity from each item's object identity
 		// and already stringifies it, so this only unwraps the box.
-		var keySelector = m_engine!.IdentitySelector();
+		var keySelector = m_engine.IdentitySelector();
 		if (keySelector is null)
 		{
 			return null;

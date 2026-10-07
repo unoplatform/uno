@@ -14,8 +14,8 @@ partial class TableViewColumn
 	// Default pixel width and fallback for unresolved Auto values (and Star before the owning
 	// TableView has a viewport to resolve against); keep in sync with ActualWidth's
 	// MUX_DEFAULT_VALUE("120.0") in TableView.idl.
-	// TODO Uno: File-scope `static constexpr winrt::GridLength` in C++; GridLength cannot be a C# const.
-	internal static readonly GridLength c_widthDefault = new(120.0, GridUnitType.Pixel);
+	// TODO Uno: `static constexpr winrt::GridLength` in C++; a property, as GridLength cannot be a C# const.
+	internal static GridLength c_widthDefault => new(120.0, GridUnitType.Pixel);
 
 	// TableViewColumn();
 
