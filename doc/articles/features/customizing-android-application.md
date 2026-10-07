@@ -17,7 +17,7 @@ host.Run();
 
 Android has no managed entry point to put that in. The .NET for Android SDK rewrites `OutputType` from `Exe` to `Library`, and application startup is driven entirely by the Android runtime instantiating the class named in `AndroidManifest.xml`. A `Main` method would compile, but nothing would ever call it.
 
-Android therefore builds the same host from a virtual method instead of a `Main`. Your Android head declares an `Android.App.Application` subclass deriving from `Microsoft.UI.Xaml.NativeApplication`, and overrides `CreateHost()`:
+Android therefore builds the same host from a virtual method instead of a `Main`. Your Android head declares an `Android.App.Application` subclass deriving from `Uno.UI.Runtime.Android.NativeApplication`, and overrides `CreateHost()`:
 
 ```csharp
 using Uno.UI.Hosting;
@@ -29,7 +29,7 @@ using Uno.UI.Hosting;
     HardwareAccelerated = true,
     Theme = "@style/AppTheme"
 )]
-public class Application : Microsoft.UI.Xaml.NativeApplication
+public class Application : Uno.UI.Runtime.Android.NativeApplication
 {
     public Application(IntPtr javaReference, JniHandleOwnership transfer)
         : base(javaReference, transfer)
@@ -85,14 +85,14 @@ Note that `Application.OnCreate()` also runs for process entries that have no ac
 
 ## Customizing the activity
 
-The launcher activity is declared at compile time through `[Activity(MainLauncher = true)]`, so it is not configurable from the host builder. Derive from `Microsoft.UI.Xaml.ApplicationActivity` to customize it:
+The launcher activity is declared at compile time through `[Activity(MainLauncher = true)]`, so it is not configurable from the host builder. Derive from `Uno.UI.Runtime.Android.ApplicationActivity` to customize it:
 
 ```csharp
 [Activity(
     MainLauncher = true,
     ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges
 )]
-public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
+public class MainActivity : Uno.UI.Runtime.Android.ApplicationActivity
 {
     protected override void OnCreate(Bundle bundle)
     {

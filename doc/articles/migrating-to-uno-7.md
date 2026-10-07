@@ -184,9 +184,28 @@ or configures a host through its builder callback needs updating.
 | `MacSkiaHost` | `MacOSHost` |
 | `IAndroidSkiaHostBuilder` | `IAndroidHostBuilder` |
 | `IAppleUIKitSkiaHostBuilder` | `IAppleUIKitHostBuilder` |
+| `Microsoft.UI.Xaml.ApplicationActivity` (Android) | `Uno.UI.Runtime.Android.ApplicationActivity` |
+| `Microsoft.UI.Xaml.NativeApplication` (Android) | `Uno.UI.Runtime.Android.NativeApplication` |
+| `Microsoft.UI.Xaml.Controls.NativePage` (Android) | `Uno.UI.Runtime.Android.NativePage` |
 
 For example, `using Uno.UI.Runtime.Skia.Win32;` becomes `using Uno.UI.Runtime.Win32;`, and
 `UseAndroid(b => …)` now takes an `Action<IAndroidHostBuilder>`.
+
+The three Android types are Uno-only host types that WinUI does not have, so they leave the WinUI
+namespaces, the same way the iOS `UnoUISceneDelegate` lives in `Uno.UI.Runtime.AppleUIKit`. Every
+Android head names two of them, so this one does need an edit in each app:
+
+```csharp
+// Before
+public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
+public class Application : Microsoft.UI.Xaml.NativeApplication
+
+// After
+public class MainActivity : Uno.UI.Runtime.Android.ApplicationActivity
+public class Application : Uno.UI.Runtime.Android.NativeApplication
+```
+
+A XAML-defined `NativePage` needs its `xmlns` pointed at `using:Uno.UI.Runtime.Android`.
 
 ### Platform targeting in multi-targeted libraries
 
@@ -1217,7 +1236,7 @@ To port a custom source, move the work as follows:
 ### Android head uses the host builder
 
 The Android head now builds its host through `UnoPlatformHostBuilder`, like every other target.
-`Microsoft.UI.Xaml.NativeApplication` is now `abstract`; its `AppBuilder` delegate type and the
+`NativeApplication` (now `Uno.UI.Runtime.Android.NativeApplication`, see [Runtime host renames](#runtime-host-renames)) is now `abstract`; its `AppBuilder` delegate type and the
 constructor taking one have been removed, replaced by an abstract `CreateHost()` method.
 
 ```csharp
@@ -1233,7 +1252,7 @@ public class Application : Microsoft.UI.Xaml.NativeApplication
 // After
 using Uno.UI.Hosting;
 
-public class Application : Microsoft.UI.Xaml.NativeApplication
+public class Application : Uno.UI.Runtime.Android.NativeApplication
 {
     public Application(IntPtr javaReference, JniHandleOwnership transfer)
         : base(javaReference, transfer)
@@ -1344,6 +1363,8 @@ be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
 9. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
 10. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
+   Derive it and `MainActivity` from `Uno.UI.Runtime.Android.NativeApplication` /
+   `Uno.UI.Runtime.Android.ApplicationActivity` instead of the `Microsoft.UI.Xaml` types.
 11. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to their new `Uno.UI.*` namespaces.
     Likewise drop `Skia` from `Uno.UI.Runtime.Skia.*` / `Uno.WinUI.Runtime.Skia.*` usings and host
     package references — see [Runtime host renames](#runtime-host-renames).
