@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -171,6 +172,17 @@ namespace Uno.UI.Tests.Foundation
 			Assert.AreEqual(double.NaN, sut.Top);
 			Assert.AreEqual(0, sut.Right);
 			Assert.AreEqual(double.NaN, sut.Bottom);
+		}
+
+		[TestMethod]
+		public void When_Formatted()
+		{
+			var sut = new Rect(1.5, 2, 3, 0.1);
+
+			Assert.AreEqual("1.5,2,3,0.1", sut.ToString(CultureInfo.InvariantCulture));
+			Assert.AreEqual("1,5;2;3;0,1", sut.ToString(new CultureInfo("de-DE")));
+			Assert.AreEqual("1.50,2.00,3.00,0.10", ((IFormattable)sut).ToString("F2", CultureInfo.InvariantCulture));
+			Assert.AreEqual("Empty.", ((IFormattable)Rect.Empty).ToString("F2", CultureInfo.InvariantCulture));
 		}
 	}
 }
