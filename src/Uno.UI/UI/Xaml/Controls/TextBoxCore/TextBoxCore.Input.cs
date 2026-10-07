@@ -78,6 +78,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	private bool _isImeLayoutTrackingAttached;
 	private bool _imeGeometryTrackingRequested;
 	private (int start, int length, bool backward)? _lastImeSelection;
+	private ImeLayoutState? _lastImeLayoutState;
 
 	private MenuFlyout _proofingMenu;
 
@@ -506,7 +507,23 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	}
 
 	private void OnImeLayoutUpdated(object sender, object args)
-		=> ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
+	{
+		// LayoutUpdated fires after every layout pass in the window, so only push when something the IME sees has moved.
+		var layoutState = new ImeLayoutState(
+			UIElement.GetTransform(Owner, null),
+			Owner.ActualSize,
+			Owner.XamlRoot?.RasterizationScale ?? 1,
+			Text,
+			SelectionStart,
+			SelectionLength);
+		if (layoutState == _lastImeLayoutState)
+		{
+			return;
+		}
+
+		_lastImeLayoutState = layoutState;
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
+	}
 
 	private void OnImeScrollViewerViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
 		=> ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
@@ -1702,4 +1719,6 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		// — reads back Handled
 		return _host.RaiseContextMenuOpening(rootPoint.X, rootPoint.Y);
 	}
+
+	private readonly record struct ImeLayoutState(Matrix3x2 Transform, Vector2 Size, double Scale, string Text, int SelectionStart, int SelectionLength);
 }

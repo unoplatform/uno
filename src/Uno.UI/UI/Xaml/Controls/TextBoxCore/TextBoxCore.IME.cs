@@ -98,6 +98,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		// Geometry tracking costs a LayoutUpdated subscription, so only the TextBox with a live session pays it.
 		_imeGeometryTrackingRequested = true;
 		_lastImeSelection = null;
+		_lastImeLayoutState = null;
 		AttachImeGeometryTracking();
 	}
 
