@@ -296,7 +296,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "7.3.0-dev.102",
+		"version": "7.4.0-dev.81",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -321,7 +321,8 @@
 			"Uno.Extensions.Serialization.Http",
 			"Uno.Extensions.Serialization.Refit",
 			"Uno.Extensions.Logging.Serilog",
-			"Uno.Extensions.Storage.WinUI"
+			"Uno.Extensions.Storage.WinUI",
+			"Uno.HotTesting.Reactive"
 		]
 	},
 	{

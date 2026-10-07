@@ -90,6 +90,8 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.WinUI" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.Messaging" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
+		<!-- Feed mocks for previews and UI testing: dev/test-only, kept out of the Release graph like Uno.UI.HotDesign. -->
+		<_UnoProjectSystemPackageReference Include="Uno.HotTesting.Reactive" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';serialization;'))">
