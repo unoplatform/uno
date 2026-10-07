@@ -518,6 +518,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		// WinAppSDK: KeyboardHelper is a no-op there.
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Vertical_Scroll_Disabled_Then_PageDown_PageUp_Not_Handled()
+		{
+			var SUT = new ScrollViewer
+			{
+				VerticalScrollMode = ScrollMode.Disabled,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+				HorizontalScrollMode = ScrollMode.Disabled,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden,
+				Content = new Border
+				{
+					Width = 2000,
+					Height = 2000,
+					Child = new ItemsControl() // any focusable element
+				}
+			};
+
+			var keyDownCount = 0;
+			var border = new Border
+			{
+				Width = 175,
+				Height = 175,
+				Child = SUT
+			};
+			border.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			border.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await KeyboardHelper.PageDown();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, keyDownCount);
+
+			await KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+			Assert.AreEqual(0, SUT.VerticalOffset);
+		}
+
+		[TestMethod]
+		// WinAppSDK: KeyboardHelper is a no-op there.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Args_Handled_ArrowKeys()
 		{
 			var SUT = new ScrollViewer
