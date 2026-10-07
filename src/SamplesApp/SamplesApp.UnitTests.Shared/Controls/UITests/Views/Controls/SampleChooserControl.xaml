@@ -1057,6 +1057,22 @@
                         AutomationProperties.LandmarkType="Main"
                         Background="{ThemeResource LayerFillColorDefaultBrush}"
                         CornerRadius="{StaticResource ShellHostCornerRadius}">
+                        <Grid.Resources>
+                            <!--  Samples paint the page background over the layer fill, so the edge alone draws the card; the dark card stroke vanishes on the dark page.  -->
+                            <ResourceDictionary>
+                                <ResourceDictionary.ThemeDictionaries>
+                                    <ResourceDictionary x:Key="Light">
+                                        <SolidColorBrush x:Key="ShellHostStrokeBrush" Color="{ThemeResource CardStrokeColorDefault}" />
+                                    </ResourceDictionary>
+                                    <ResourceDictionary x:Key="Dark">
+                                        <SolidColorBrush x:Key="ShellHostStrokeBrush" Color="{ThemeResource ControlStrokeColorDefault}" />
+                                    </ResourceDictionary>
+                                    <ResourceDictionary x:Key="HighContrast">
+                                        <SolidColorBrush x:Key="ShellHostStrokeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+                                    </ResourceDictionary>
+                                </ResourceDictionary.ThemeDictionaries>
+                            </ResourceDictionary>
+                        </Grid.Resources>
                         <ContentControl
                             x:Name="SampleHost"
                             Padding="0"
@@ -1120,7 +1136,7 @@
                         <!--  Drawn over the sample, which usually paints the page background across the host fill.  -->
                         <Border
                             x:Name="ShellHostEdge"
-                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderBrush="{ThemeResource ShellHostStrokeBrush}"
                             BorderThickness="1,1,0,0"
                             CornerRadius="{StaticResource ShellHostCornerRadius}"
                             IsHitTestVisible="False" />
