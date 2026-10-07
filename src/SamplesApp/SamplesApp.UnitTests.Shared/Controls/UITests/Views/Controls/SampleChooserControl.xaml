@@ -1252,7 +1252,7 @@
                             </Grid>
                         </Grid>
 
-                        <!--  SETTINGS VIEW (filled in by the settings view)  -->
+                        <!--  SETTINGS VIEW  -->
                         <Grid
                             x:Name="ShellSettingsHost"
                             Grid.Row="1"
@@ -1270,7 +1270,7 @@
                                 <TextBlock
                                     VerticalAlignment="Center"
                                     AutomationProperties.HeadingLevel="Level1"
-                                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                                    Style="{StaticResource ShellBodyStrongTextStyle}"
                                     Text="Settings" />
                                 <Button
                                     x:Name="ShellCloseSettingsButton"
@@ -1287,13 +1287,11 @@
                                         IsTextScaleFactorEnabled="False" />
                                 </Button>
                             </Grid>
-                            <TextBlock
+                            <!--  Loaded the first time Settings is shown (EnsureSettingsView).  -->
+                            <u:SettingsView
+                                x:Name="ShellSettingsView"
                                 Grid.Row="1"
-                                Margin="8,0"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="Use the quick settings button in the header to change the theme and diagnostics."
-                                TextWrapping="Wrap" />
+                                x:Load="False" />
                         </Grid>
                         <!--  Phones hide the rail, so its destinations move to the bottom of the pane, within thumb reach.  -->
                         <Grid
@@ -1557,6 +1555,22 @@
                         <Setter Target="ShellBrowserPane.Visibility" Value="Collapsed" />
                         <Setter Target="ShellHostEdge.Visibility" Value="Collapsed" />
                         <Setter Target="ShellHostLayer.CornerRadius" Value="0" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+
+            <!--  Mica shows through the chrome; an overlay pane keeps its solid fill so the sample under it does not bleed through.  -->
+            <VisualStateGroup x:Name="ShellBackdropStates">
+                <VisualState x:Name="BackdropNoneState" />
+                <VisualState x:Name="BackdropMicaOverlayState">
+                    <VisualState.Setters>
+                        <Setter Target="ShellRoot.Background" Value="Transparent" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="BackdropMicaState">
+                    <VisualState.Setters>
+                        <Setter Target="ShellRoot.Background" Value="Transparent" />
+                        <Setter Target="SplitView.PaneBackground" Value="{ThemeResource LayerOnMicaBaseAltFillColorTransparentBrush}" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

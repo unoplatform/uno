@@ -98,25 +98,41 @@ public class Given_ShellLayout
 		var vm = SampleChooserViewModel.Instance;
 		var rail = (NavigationView)vm.Owner.FindName("ShellRail");
 		var wasAutomation = vm.IsAutomationRun;
+		var wasBrowserView = vm.BrowserView;
+		var wasSplitVisible = vm.IsSplitVisible;
 
 		try
 		{
 			// The rail reports no selection while automation hides its pane, so leave automation briefly.
-			// Nothing is persisted meanwhile: this test changes no setting, sample or theme.
+			vm.IsShellPersistenceSuspended = true;
 			vm.IsAutomationRun = false;
 			await TestServices.WindowHelper.WaitForIdle();
 
+			if (!rail.IsPaneVisible)
+			{
+				Assert.Inconclusive("Narrow windows have no rail; the browser pane lists its destinations.");
+			}
+
 			Assert.AreEqual(ShellDestination.RuntimeTests, vm.ShellDestination);
 			Assert.AreSame(vm.Owner.FindName("ShellRailRuntimeTests"), rail.SelectedItem);
+
+			// Settings opens in the browser pane, so the runner stays loaded behind it.
+			vm.ShowSettingsCommand.Execute(null);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ShellDestination.Settings, vm.ShellDestination);
+			Assert.AreSame(rail.SettingsItem, rail.SelectedItem);
 		}
 		finally
 		{
+			vm.BrowserView = wasBrowserView;
+			vm.IsSplitVisible = wasSplitVisible;
 			vm.IsAutomationRun = wasAutomation;
-
-			// Let the runner host move back before the next test measures it.
+			vm.IsShellPersistenceSuspended = false;
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
+		Assert.AreEqual(ShellDestination.RuntimeTests, vm.ShellDestination);
 		Assert.AreEqual(!wasAutomation, rail.IsPaneVisible);
 	}
 

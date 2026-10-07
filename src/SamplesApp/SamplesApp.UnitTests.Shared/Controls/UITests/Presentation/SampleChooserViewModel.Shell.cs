@@ -6,7 +6,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using SampleControl.Entities;
 using SamplesApp.Samples.Help;
 using Uno.UI.Common;
@@ -28,12 +30,14 @@ public partial class SampleChooserViewModel
 	private const string ShellStartupPageKey = "Shell.StartupPage";
 	private const string ShellManualTestsOnlyKey = "Shell.ManualTestsOnly";
 	private const string ShellDescriptionCollapsedKey = "Shell.DescriptionCollapsed";
+	private const string ShellUseMicaKey = "Shell.UseMica";
 	private const string ShellBrowserSectionKey = "Shell.BrowserSection";
 
 	private bool _isAutomationRun;
 	private bool _isShellChromeVisible = true;
 	private bool _isHomeVisible;
 	private bool _isDescriptionCollapsed;
+	private bool _useMicaBackdrop;
 	private BrowserView _browserView = BrowserView.Samples;
 	private StartupPage _startupPage = StartupPage.Home;
 	private ShellDestination _shellDestination = ShellDestination.Samples;
@@ -64,6 +68,9 @@ public partial class SampleChooserViewModel
 #else
 		false;
 #endif
+
+	/// <summary>Win32 on Windows 11 22621+ and macOS on Uno; whatever the OS supports on WinAppSDK.</summary>
+	public static bool CanUseMica => MicaController.IsSupported();
 
 	public AppInfo AppInfo { get; } = new();
 
@@ -152,6 +159,38 @@ public partial class SampleChooserViewModel
 			{
 				_startupPage = value;
 				PersistShellSetting(ShellStartupPageKey, value.ToString());
+				RaisePropertyChanged();
+				RaisePropertyChanged(nameof(StartupPageIndex));
+			}
+		}
+	}
+
+	/// <summary><see cref="StartupPage"/> as a ComboBox index: 0 = Home, 1 = Playground, 2 = Last sample.</summary>
+	public int StartupPageIndex
+	{
+		get => (int)StartupPage;
+		set
+		{
+			// A TwoWay SelectedIndex pushes -1 while its items reset.
+			if (Enum.IsDefined(typeof(StartupPage), value))
+			{
+				StartupPage = (StartupPage)value;
+			}
+		}
+	}
+
+	/// <summary>Mica behind the shell chrome; ignored where <see cref="CanUseMica"/> is false.</summary>
+	public bool UseMicaBackdrop
+	{
+		get => _useMicaBackdrop;
+		set
+		{
+			value &= CanUseMica;
+			if (_useMicaBackdrop != value)
+			{
+				_useMicaBackdrop = value;
+				ApplyMicaBackdrop();
+				PersistShellSetting(ShellUseMicaKey, value);
 				RaisePropertyChanged();
 			}
 		}
@@ -246,6 +285,7 @@ public partial class SampleChooserViewModel
 	public ICommand ClearFavoritesCommand { get; private set; } = null!;
 	public ICommand ClearRecentsCommand { get; private set; } = null!;
 	public ICommand ToggleFocusModeCommand { get; private set; } = null!;
+	public ICommand CopyDiagnosticsCommand { get; private set; } = null!;
 
 	private void InitializeShellCommands()
 	{
@@ -269,6 +309,7 @@ public partial class SampleChooserViewModel
 		ClearFavoritesCommand = new DelegateCommand(() => _ = ClearFavorites());
 		ClearRecentsCommand = new DelegateCommand(() => _ = ClearRecents());
 		ToggleFocusModeCommand = new DelegateCommand(ToggleFocusMode);
+		CopyDiagnosticsCommand = new DelegateCommand(() => CopyDiagnostics());
 	}
 
 	private void ObserveShellChanges()
@@ -453,16 +494,59 @@ public partial class SampleChooserViewModel
 		}
 	}
 
-	private static void CopyToClipboard(string? text)
+	/// <summary>Called once the window is known, and on every change: a restored setting waits for it.</summary>
+	private void ApplyMicaBackdrop()
 	{
-		if (string.IsNullOrEmpty(text))
+		if (_window is not { } window || !CanUseMica)
 		{
 			return;
 		}
 
-		DataPackage dataPackage = new();
-		dataPackage.SetText(text);
-		Clipboard.SetContent(dataPackage);
+		if (!_useMicaBackdrop)
+		{
+			// Leave a backdrop set by something else (a sample) alone.
+			if (window.SystemBackdrop is MicaBackdrop)
+			{
+				window.SystemBackdrop = null;
+			}
+
+			return;
+		}
+
+#if HAS_UNO
+		// Uno does not implement the Kind variants.
+		window.SystemBackdrop = new MicaBackdrop();
+#else
+		window.SystemBackdrop = new MicaBackdrop { Kind = MicaKind.BaseAlt };
+#endif
+	}
+
+	/// <summary>Writes to the system clipboard; tests swap it so they leave the real clipboard alone.</summary>
+	internal static Action<DataPackage> SetClipboardContent { get; set; } = Clipboard.SetContent;
+
+	/// <summary>Copies <see cref="AppInfo"/> to the clipboard; false when the clipboard is unavailable.</summary>
+	internal bool CopyDiagnostics() => CopyToClipboard(AppInfo.ToString());
+
+	private static bool CopyToClipboard(string? text)
+	{
+		if (string.IsNullOrEmpty(text))
+		{
+			return false;
+		}
+
+		try
+		{
+			DataPackage dataPackage = new();
+			dataPackage.SetText(text);
+			SetClipboardContent(dataPackage);
+			return true;
+		}
+		catch (Exception e)
+		{
+			// WinAppSDK throws CLIPBRD_E_CANT_OPEN while another process holds the clipboard.
+			ShellLog.Warn("Could not copy to the clipboard.", e);
+			return false;
+		}
 	}
 
 	// Commands discard these tasks, so failures are logged here.
@@ -648,6 +732,8 @@ public partial class SampleChooserViewModel
 		{
 			_isDescriptionCollapsed = descriptionCollapsed;
 		}
+
+		_useMicaBackdrop = ReadShellSetting<bool?>(ShellUseMicaKey) is true && CanUseMica;
 
 		if (ReadShellSetting<bool?>(ShellManualTestsOnlyKey) is true)
 		{

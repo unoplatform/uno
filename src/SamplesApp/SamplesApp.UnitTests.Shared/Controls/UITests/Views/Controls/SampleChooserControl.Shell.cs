@@ -96,6 +96,7 @@ partial class SampleChooserControl
 		};
 
 		ShellPaneBenchmarksButton.RegisterPropertyChangedCallback(VisibilityProperty, (_, _) => UpdatePaneDestinationColumns());
+		SplitView.RegisterPropertyChangedCallback(SplitView.DisplayModeProperty, (_, _) => UpdateBackdropState());
 		UpdatePaneDestinationColumns();
 
 		InitializeBrowserPane();
@@ -114,6 +115,7 @@ partial class SampleChooserControl
 
 		UpdateChromeState(useTransitions: false);
 		UpdateLayoutState();
+		UpdateBackdropState();
 		SyncRailSelection();
 		UpdateFavoriteIcon();
 		UpdateInputHints();
@@ -135,6 +137,7 @@ partial class SampleChooserControl
 		}
 
 		UpdateChromeState(useTransitions: false);
+		UpdateBackdropState();
 		SyncRailSelection();
 		UpdateFavoriteIcon();
 		UpdateSampleCommands();
@@ -142,6 +145,15 @@ partial class SampleChooserControl
 		UpdateRowHeight();
 		UpdateSearchResults();
 		UpdateManualTestsChip();
+		EnsureSettingsView();
+	}
+
+	private void EnsureSettingsView()
+	{
+		if (_shellViewModel is { BrowserView: BrowserView.Settings })
+		{
+			FindName("ShellSettingsView");
+		}
 	}
 
 	private void OnShellViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -157,6 +169,15 @@ partial class SampleChooserControl
 
 			case nameof(SampleChooserViewModel.ShellDestination):
 				SyncRailSelection();
+				break;
+
+			case nameof(SampleChooserViewModel.BrowserView):
+				EnsureSettingsView();
+				break;
+
+			case nameof(SampleChooserViewModel.UseMicaBackdrop):
+			case nameof(SampleChooserViewModel.IsRecordAllTests):
+				UpdateBackdropState();
 				break;
 
 			case nameof(SampleChooserViewModel.IsFavoritedSample):
@@ -235,6 +256,16 @@ partial class SampleChooserControl
 		{
 			vm.IsSplitVisible = false;
 		}
+	}
+
+	private void UpdateBackdropState()
+	{
+		// Screenshots render the XAML tree only, so a recording needs the opaque root, not the DWM backdrop.
+		var state = _shellViewModel is { UseMicaBackdrop: true, IsRecordAllTests: false }
+			? SplitView.DisplayMode == SplitViewDisplayMode.Inline ? "BackdropMicaState" : "BackdropMicaOverlayState"
+			: "BackdropNoneState";
+
+		VisualStateManager.GoToState(this, state, useTransitions: false);
 	}
 
 	// Tool pages (Help, Playground, the runner...) are not part of a category, so the sample navigation does not apply.
