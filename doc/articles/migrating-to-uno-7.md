@@ -975,7 +975,10 @@ recompile against 7.0 rather than swapping assemblies in place.
 
 - **A few parameters are renamed to match WinUI.** The `PointCollection` indexer parameter
   is `index` (was `i`), and `RepeatBehavior.ToString(IFormatProvider)` takes `formatProvider`
-  (was `provider`). Only named arguments are affected. `Matrix` also gains WinUI's
+  (was `provider`). The `Equals` overloads and `==`/`!=` operators of `KeyTime`,
+  `RepeatBehavior`, `Thickness`, `CornerRadius`, `GridLength` and `Duration` take WinUI's
+  parameter names too (for example `keyTime1`/`keyTime2` instead of `t1`/`t2`, and
+  `thickness` instead of `other`). Only named arguments are affected. `Matrix` also gains WinUI's
   `ToString(IFormatProvider)` overload.
 
 - **`ToggleSwitch`'s `OnToggled`, `OnHeaderChanged`, `OnOnContentChanged` and
