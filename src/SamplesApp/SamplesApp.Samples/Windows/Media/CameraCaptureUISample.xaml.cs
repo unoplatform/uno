@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 using Uno.UI.Samples.Controls;
 using Windows.Media.Capture;
+using Windows.Storage;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -25,7 +27,15 @@ public sealed partial class CameraCaptureUISample : Page
 		true;
 #endif
 
-	private async void CaptureImage_Click(object sender, RoutedEventArgs e)
+	private void CaptureImage_Click(object sender, RoutedEventArgs e) => CaptureImage(cancelAfterDelay: false);
+
+	private void CaptureImageCancelledFromCode_Click(object sender, RoutedEventArgs e) => CaptureImage(cancelAfterDelay: true);
+
+	private void CaptureVideo_Click(object sender, RoutedEventArgs e) => CaptureVideo(cancelAfterDelay: false);
+
+	private void CaptureVideoCancelledFromCode_Click(object sender, RoutedEventArgs e) => CaptureVideo(cancelAfterDelay: true);
+
+	private async void CaptureImage(bool cancelAfterDelay)
 	{
 		if (!IsTargetSupported())
 		{
@@ -34,9 +44,7 @@ public sealed partial class CameraCaptureUISample : Page
 
 		try
 		{
-			var captureUI = new CameraCaptureUI();
-
-			var file = await captureUI.CaptureFileAsync(CameraCaptureUIMode.Photo);
+			var file = await CaptureAsync(CameraCaptureUIMode.Photo, cancelAfterDelay);
 
 			if (file != null)
 			{
@@ -50,22 +58,32 @@ public sealed partial class CameraCaptureUISample : Page
 				ImageControl.Source = null;
 			}
 		}
+		catch (OperationCanceledException)
+		{
+			ImageControl.Source = null;
+		}
 		catch (Exception ex)
 		{
 			System.Diagnostics.Debug.WriteLine(ex);
 		}
 	}
 
-	private async void CaptureVideo_Click(object sender, RoutedEventArgs e)
+	private async void CaptureVideo(bool cancelAfterDelay)
 	{
 		if (!IsTargetSupported())
 		{
 			return;
 		}
 
-		var captureUI = new CameraCaptureUI();
-
-		var result = await captureUI.CaptureFileAsync(CameraCaptureUIMode.Video);
+		StorageFile result;
+		try
+		{
+			result = await CaptureAsync(CameraCaptureUIMode.Video, cancelAfterDelay);
+		}
+		catch (OperationCanceledException)
+		{
+			return;
+		}
 
 		if (result != null)
 		{
@@ -74,6 +92,34 @@ public sealed partial class CameraCaptureUISample : Page
 		else
 		{
 			videoSize.Text = "Nothing was selected";
+		}
+	}
+
+	private async Task<StorageFile> CaptureAsync(CameraCaptureUIMode mode, bool cancelAfterDelay)
+	{
+		var captureUI = new CameraCaptureUI();
+		CaptureStatus.Text = $"{mode} capture in progress";
+
+		try
+		{
+			StorageFile file;
+			if (cancelAfterDelay)
+			{
+				using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+				file = await captureUI.CaptureFileAsync(mode).AsTask(cts.Token);
+			}
+			else
+			{
+				file = await captureUI.CaptureFileAsync(mode);
+			}
+
+			CaptureStatus.Text = file is null ? $"{mode} capture returned no file" : $"{mode} capture completed";
+			return file;
+		}
+		catch (OperationCanceledException)
+		{
+			CaptureStatus.Text = $"{mode} capture cancelled";
+			throw;
 		}
 	}
 }

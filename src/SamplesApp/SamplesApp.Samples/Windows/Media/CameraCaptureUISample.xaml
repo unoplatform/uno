@@ -13,6 +13,9 @@
     <StackPanel>
         <Button Click="CaptureImage_Click" Content="Capture Image" />
         <Button Click="CaptureVideo_Click" Content="Capture Video" />
+        <Button Click="CaptureImageCancelledFromCode_Click" Content="Capture Image, cancel from code after 5 s" />
+        <Button Click="CaptureVideoCancelledFromCode_Click" Content="Capture Video, cancel from code after 5 s" />
+        <TextBlock x:Name="CaptureStatus" TextWrapping="WrapWholeWords" />
         <Image x:Name="ImageControl" />
         <TextBlock x:Name="videoSize" TextWrapping="WrapWholeWords" />
     </StackPanel>
