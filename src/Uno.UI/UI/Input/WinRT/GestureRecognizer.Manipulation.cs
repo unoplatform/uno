@@ -286,7 +286,14 @@ namespace Windows.UI.Input
 			}
 
 			public void Complete()
+				=> Stop(callbackForManipulationCompleted: true);
+
+			// MUX Reference dxaml\xcp\core\input\InteractionManager.cpp (StopInteraction), tag winui3/release/2.5.4-experimental
+			/// <returns>The pointers of a started manipulation that was stopped without raising ManipulationCompleted, null otherwise.</returns>
+			public PointerIdentifier[]? Stop(bool callbackForManipulationCompleted)
 			{
+				PointerIdentifier[]? silentlyStoppedPointers = null;
+
 				StopDragTimer();
 
 				// If the manipulation was not started, we just abort the manipulation without any event
@@ -311,9 +318,16 @@ namespace Windows.UI.Input
 						var changes = StageChanges();
 						CommitChanges(changes);
 
-						_recognizer.ManipulationCompleted?.Invoke(
-							_recognizer,
-							new ManipulationCompletedEventArgs(_currents.Identifiers, changes.Position, changes.Cumulative, changes.Velocities, isInertial, _contacts.onStart, _contacts.current));
+						if (callbackForManipulationCompleted)
+						{
+							_recognizer.ManipulationCompleted?.Invoke(
+								_recognizer,
+								new ManipulationCompletedEventArgs(_currents.Identifiers, changes.Position, changes.Cumulative, changes.Velocities, isInertial, _contacts.onStart, _contacts.current));
+						}
+						else
+						{
+							silentlyStoppedPointers = _currents.Identifiers;
+						}
 						break;
 
 					case ManipulationStatus.Starting:
@@ -335,6 +349,8 @@ namespace Windows.UI.Input
 				{
 					_recognizer._manipulation = null;
 				}
+
+				return silentlyStoppedPointers;
 			}
 
 			public void RunInertiaSync()

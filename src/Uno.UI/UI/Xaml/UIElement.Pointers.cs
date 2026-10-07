@@ -397,14 +397,19 @@ namespace Microsoft.UI.Xaml
 
 			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, that._manipulationContainer, args));
 
+			that.CleanupStoppedManipulation(args.Pointers, sender);
+		};
+
+		private void CleanupStoppedManipulation(PointerIdentifier[] pointers, GestureRecognizer recognizer)
+		{
 			// MUX Reference dxaml\xcp\core\input\InputServices.cpp (CInputServices::ProcessManipulationCompletedInput), tag winui3/release/2.5.4-experimental, commit 7b127093475
 			// Remove the manipulation container from map chain
-			that._manipulationContainer = null;
+			_manipulationContainer = null;
 
 #if UNO_HAS_MANAGED_POINTERS
-			that.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.UnregisterUiElementManipulationRecognizer(args.Pointers, sender);
+			XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.UnregisterUiElementManipulationRecognizer(pointers, recognizer);
 #endif
-		};
+		}
 
 		private static readonly TypedEventHandler<GestureRecognizer, TappedEventArgs> OnRecognizerTapped = (sender, args) =>
 		{
@@ -1353,7 +1358,19 @@ namespace Microsoft.UI.Xaml
 
 			if (IsGestureRecognizerCreated)
 			{
-				GestureRecognizer.CompleteGesture();
+				// MUX Reference dxaml\xcp\core\input\InputServices.cpp (CInputServices::CleanPointerProcessingState), tag winui3/release/2.5.4-experimental
+				// A canceled contact stops the interaction without a ManipulationCompleted.
+				var recognizer = GestureRecognizer;
+				if (recognizer.StopGesture(callbackForManipulationCompleted: false) is { } stoppedPointers)
+				{
+					foreach (var pointer in stoppedPointers)
+					{
+						ReleasePointerCapture(pointer, muteEvent: true, PointerCaptureKind.Implicit);
+					}
+
+					CleanupStoppedManipulation(stoppedPointers, recognizer);
+				}
+
 				if (GestureRecognizer.IsDragging)
 				{
 					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessAborted(args.Pointer.PointerId);

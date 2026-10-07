@@ -1018,6 +1018,12 @@ internal partial class InputManager
 
 					foreach (var target in targets)
 					{
+						if (target.Element == originalSource)
+						{
+							// Already raised above, like the explicit target in the branch above.
+							continue;
+						}
+
 						if (_trace)
 						{
 							Trace($"[Implicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to capture target [{originalSource.GetDebugName()}] (-- no bubbling--)");

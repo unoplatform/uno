@@ -190,6 +190,10 @@ namespace Windows.UI.Input
 			=> _manipulation?.RunInertiaSync();
 
 		public void CompleteGesture()
+			=> StopGesture(callbackForManipulationCompleted: true);
+
+		/// <returns>The pointers of a started manipulation that was stopped without raising ManipulationCompleted, null otherwise.</returns>
+		internal PointerIdentifier[] StopGesture(bool callbackForManipulationCompleted)
 		{
 			// Capture the list in order to avoid alteration while enumerating
 			var gestures = _gestures;
@@ -204,7 +208,7 @@ namespace Windows.UI.Input
 				gesture.ProcessComplete();
 			}
 
-			_manipulation?.Complete();
+			return _manipulation?.Stop(callbackForManipulationCompleted);
 		}
 
 		/// <returns>The set of events that can be raised by this recognizer for this pointer ID</returns>
