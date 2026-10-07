@@ -1859,9 +1859,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			session.Session.Save();
 			session.Session.Translate((float)Padding.Left, (float)Padding.Top);
-			var highligherters = _renderSelection && SelectionHighlightColor is not { Color.A: 0 } ? TextHighlighters.Append(new TextHighlighter
+			// Like CTextBlock::UpdateSelectionHighlightColor, a null brush means the default selection color.
+			var selectionHighlightColor = SelectionHighlightColor ?? DefaultBrushes.SelectionHighlightColor;
+			var highligherters = _renderSelection && selectionHighlightColor.Color.A != 0 ? TextHighlighters.Append(new TextHighlighter
 			{
-				Background = SelectionHighlightColor,
+				Background = selectionHighlightColor,
 				Foreground = DefaultBrushes.SelectedTextForegroundColor,
 				Ranges =
 				{
