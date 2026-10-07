@@ -36,6 +36,11 @@ namespace Uno.UI.Runtime {
 					console.error("WebGpuInit: navigator.gpu.requestAdapter returned null");
 					return 0;
 				}
+				// Tells a GPU-backed run from one that fell back to a software adapter (SwiftShader).
+				const info = (adapter as any).info ?? {};
+				console.log("WebGpuInit: adapter vendor=" + info.vendor + " architecture=" + info.architecture
+					+ " device=" + info.device + " description=" + info.description
+					+ " fallback=" + (info.isFallbackAdapter ?? (adapter as any).isFallbackAdapter));
 				// Request timestamp-query when the adapter offers it: it is the only way to read REAL GPU pass
 				// durations in the browser (the frame-phase log is CPU-only, so a GPU-bound frame merely shows up
 				// as time blocked in submit/present). Requesting it costs nothing; the queries themselves are
