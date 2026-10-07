@@ -24,6 +24,23 @@ public class Given_BindingExpression
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_ElementName_Binding_Created_In_Code()
+	{
+		var root = new BindingExpression_With_Converter();
+
+		// Resolved through the page's NameScope once the child is parented under it.
+		var child = new TextBlock();
+		child.SetBinding(TextBlock.TextProperty, new Binding { ElementName = "eBinding1", Path = new global::Microsoft.UI.Xaml.PropertyPath("Name") });
+		((StackPanel)root.Content).Children.Add(child);
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(child);
+
+		Assert.AreEqual("eBinding1", child.Text);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Binding_Outer_Inner_DC_Null()
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
