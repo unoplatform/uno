@@ -41,4 +41,28 @@ public class Given_ValueConversionHelpers
 	[TestMethod]
 	public void When_GetPropertyType_Null_Then_Empty()
 		=> Assert.AreEqual(PropertyType.Empty, ValueConversionHelpers.GetPropertyType(null!));
+
+	[TestMethod]
+	public void When_TryGetPropertyType_Reference_Type_Then_Not_PropertyValue()
+	{
+		// WinRT boxes only strings and value types into an IPropertyValue.
+		Assert.IsFalse(ValueConversionHelpers.TryGetPropertyType(new object(), out var type));
+		Assert.AreEqual(PropertyType.Empty, type);
+		Assert.IsFalse(ValueConversionHelpers.TryGetPropertyType(new Uri("https://platform.uno"), out _));
+	}
+
+	[TestMethod]
+	public void When_TryGetPropertyType_Null_Then_Not_PropertyValue()
+		=> Assert.IsFalse(ValueConversionHelpers.TryGetPropertyType(null!, out _));
+
+	[TestMethod]
+	public void When_TryGetPropertyType_Boxed_Values_Then_PropertyValue()
+	{
+		Assert.IsTrue(ValueConversionHelpers.TryGetPropertyType("text", out var stringType));
+		Assert.AreEqual(PropertyType.String, stringType);
+		Assert.IsTrue(ValueConversionHelpers.TryGetPropertyType(42, out var intType));
+		Assert.AreEqual(PropertyType.Int32, intType);
+		Assert.IsTrue(ValueConversionHelpers.TryGetPropertyType(Visibility.Collapsed, out var enumType));
+		Assert.AreEqual(PropertyType.OtherType, enumType);
+	}
 }
