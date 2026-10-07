@@ -154,12 +154,33 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		// TODO Uno: Not read from the host system (Win32 GetDoubleClickTime). Matches the multi-tap delay
-		// of Uno's GestureRecognizer (MultiTapMaxDelayMicroseconds in Uno.UI), so both agree.
 		public uint DoubleClickTime => GetDoubleClickTime();
 
 		// Allocation-free read for framework code that needs the value per input event.
-		internal static uint GetDoubleClickTime() => 500;
+		// Not cached, so a change made in the mouse control panel takes effect immediately.
+		// GestureRecognizer's multi-tap delay reads this too, so DoubleTapped and double-click agree.
+		internal static uint GetDoubleClickTime()
+		{
+#if __SKIA__
+			if (OperatingSystem.IsWindows())
+			{
+				return NativeMethods.GetDoubleClickTime();
+			}
+#endif
+
+			// TODO Uno: no host source for the double-click time on this target; the Windows default stands in.
+			return DefaultDoubleClickTime;
+		}
+
+		private const uint DefaultDoubleClickTime = 500;
+
+#if __SKIA__
+		private static class NativeMethods
+		{
+			[global::System.Runtime.InteropServices.DllImport("user32.dll")]
+			internal static extern uint GetDoubleClickTime();
+		}
+#endif
 
 		[NotImplemented]
 		public global::Windows.UI.ViewManagement.HandPreference HandPreference
