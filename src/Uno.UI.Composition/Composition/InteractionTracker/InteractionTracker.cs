@@ -61,8 +61,8 @@ public partial class InteractionTracker : CompositionObject
 		newState.OnActivated();
 	}
 
-	/// <summary>The target whose frames advance this tracker's motion.</summary>
-	internal ICompositionTarget? FrameTarget
+	/// <summary>The frames that advance this tracker's motion: its source's window, else every window's.</summary>
+	internal IFrameTickSource? FrameTarget
 	{
 		get
 		{
@@ -74,7 +74,7 @@ public partial class InteractionTracker : CompositionObject
 				}
 			}
 
-			return Compositor.FrameDriverTargetResolver?.Invoke();
+			return Compositor.FrameTicks is { HasHosts: true } frameTicks ? frameTicks : null;
 		}
 	}
 

@@ -7,7 +7,7 @@ using Microsoft.UI.Composition.Interactions;
 
 namespace Uno.UI.Composition;
 
-internal interface ICompositionTarget
+internal interface ICompositionTarget : IFrameTickSource
 {
 	void TryRedirectForManipulation(global::Microsoft.UI.Input.PointerPoint pointerPoint, InteractionTracker tracker);
 
@@ -24,12 +24,6 @@ internal interface ICompositionTarget
 	global::Uno.UI.Composition.Drawing.IDrawingFactory? Renderer { get; }
 
 	void RequestNewFrame();
-
-	/// <summary>Raised once per frame, before layout and before the record, with the frame's timestamp.</summary>
-	event EventHandler<long>? FrameStarting;
-
-	/// <summary>Estimated interval between presented frames, for drivers that need a nominal step.</summary>
-	long FrameIntervalInTicks { get; }
 
 	/// <summary>Marks a rectangular area (root/frame coordinates) dirty so the next frame repaints it, even if no
 	/// visual paints there this frame (e.g. a removed or hidden visual vacating the area).</summary>

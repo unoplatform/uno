@@ -10,7 +10,7 @@ namespace Microsoft.UI.Composition.Interactions;
 /// <summary>Drives an inertia motion once per frame, on the UI thread, from the frame's timestamp.</summary>
 internal abstract class InteractionTrackerFrameInertiaHandler : IInteractionTrackerInertiaHandler
 {
-	private ICompositionTarget? _target;
+	private IFrameTickSource? _target;
 	private EventHandler<long>? _handler;
 	private long? _startTimestamp;
 

@@ -126,7 +126,6 @@ public partial class CompositionTarget
 
 	static CompositionTarget()
 	{
-		Compositor.FrameDriverTargetResolver = static () => MainFrameDriverTarget;
 		// Some hosts unregister from a background thread (X11 does from a task continuation).
 		XamlRootMap.Unregistered += static (_, xamlRoot) =>
 		{

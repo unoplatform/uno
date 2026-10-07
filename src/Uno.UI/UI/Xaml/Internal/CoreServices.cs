@@ -44,7 +44,7 @@ namespace Uno.UI.Xaml.Core
 			EventManager = EventManager.Create();
 		}
 
-		internal static XamlRoot? GetXamlRoot()
+		private static XamlRoot? GetXamlRoot()
 		{
 			if (CoreServices.Instance.ContentRootCoordinator.ContentRoots.Count > 0)
 			{

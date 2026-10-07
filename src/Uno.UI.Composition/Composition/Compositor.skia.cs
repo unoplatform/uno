@@ -34,13 +34,14 @@ public partial class Compositor
 
 	internal static bool SkipVisualTreePainting { get; set; }
 
-	// Frame drivers are motion too, so "wait until animations settle" must cover them. They live on the
+	// Frame drivers are motion too, so "wait until animations settle" must cover them. Most live on the
 	// CompositionTarget, which this assembly cannot name, so they are counted.
 	private int _frameDriverCount;
 
-	/// <summary>Resolves the target that ticks frame drivers with no visual of their own to name one.</summary>
-	/// <remarks>TODO Uno: resolves the first window's target, which is wrong for a driver in another window.</remarks>
-	internal static Func<ICompositionTarget?>? FrameDriverTargetResolver { get; set; }
+	private CompositorFrameTickSource? _frameTicks;
+
+	/// <summary>The frames that tick drivers with no visual of their own, such as a free-standing InteractionTracker.</summary>
+	internal CompositorFrameTickSource FrameTicks => _frameTicks ??= new(this);
 
 	internal void AddFrameDriver() => Interlocked.Increment(ref _frameDriverCount);
 
