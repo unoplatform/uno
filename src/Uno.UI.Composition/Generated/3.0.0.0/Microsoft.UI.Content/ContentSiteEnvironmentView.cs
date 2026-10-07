@@ -9,6 +9,11 @@ namespace Microsoft.UI.Content
 	public partial class ContentSiteEnvironmentView
 	{
 #if __SKIA__
+		internal ContentSiteEnvironmentView()
+		{
+		}
+#endif
+#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.WindowId AppWindowId
 		{

@@ -8,5 +8,10 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class MapLayer : global::Microsoft.UI.Xaml.DependencyObject
 	{
+#if __SKIA__
+		internal MapLayer()
+		{
+		}
+#endif
 	}
 }

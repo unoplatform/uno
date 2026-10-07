@@ -8,5 +8,10 @@ namespace Windows.UI.Composition.Interactions
 #endif
 	public partial class InteractionTrackerInertiaModifier : global::Windows.UI.Composition.CompositionObject
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal InteractionTrackerInertiaModifier()
+		{
+		}
+#endif
 	}
 }

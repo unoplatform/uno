@@ -9,6 +9,11 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class SectionsInViewChangedEventArgs
 	{
 #if __SKIA__
+		internal SectionsInViewChangedEventArgs()
+		{
+		}
+#endif
+#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.HubSection> AddedSections
 		{

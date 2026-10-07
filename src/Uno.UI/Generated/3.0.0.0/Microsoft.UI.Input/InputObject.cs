@@ -8,6 +8,11 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputObject
 	{
+#if __SKIA__
+		internal InputObject()
+		{
+		}
+#endif
 		// Skipping already declared property DispatcherQueue
 		// Forced skipping of method Microsoft.UI.Input.InputObject.DispatcherQueue.get
 	}

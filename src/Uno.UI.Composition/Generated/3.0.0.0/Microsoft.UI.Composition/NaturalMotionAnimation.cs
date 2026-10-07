@@ -9,6 +9,11 @@ namespace Microsoft.UI.Composition
 	public partial class NaturalMotionAnimation : global::Microsoft.UI.Composition.CompositionAnimation
 	{
 #if __SKIA__
+		internal NaturalMotionAnimation()
+		{
+		}
+#endif
+#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.AnimationDelayBehavior DelayBehavior
 		{

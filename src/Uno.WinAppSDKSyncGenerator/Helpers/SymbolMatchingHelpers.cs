@@ -61,6 +61,29 @@ internal static class SymbolMatchingHelpers
 		}
 	}
 
+	/// <summary>
+	/// Compares signatures only, so a constructor that differs in parameter names or accessibility
+	/// still finds its WinUI counterpart.
+	/// </summary>
+	public static bool AreParameterTypesMatching(IMethodSymbol uapMethod, IMethodSymbol unoMethod)
+	{
+		if (uapMethod.Parameters.Length != unoMethod.Parameters.Length)
+		{
+			return false;
+		}
+
+		for (int i = 0; i < uapMethod.Parameters.Length; i++)
+		{
+			if (uapMethod.Parameters[i].RefKind != unoMethod.Parameters[i].RefKind
+				|| !AreMatching(uapMethod.Parameters[i].Type, unoMethod.Parameters[i].Type))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private static bool ShouldSkipSymbol(ISymbol uapSymbol)
 	{
 		if (uapSymbol.ContainingSymbol?.Name is

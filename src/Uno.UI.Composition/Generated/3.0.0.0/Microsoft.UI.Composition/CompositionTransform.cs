@@ -8,5 +8,10 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionTransform : global::Microsoft.UI.Composition.CompositionObject
 	{
+#if __SKIA__
+		internal CompositionTransform()
+		{
+		}
+#endif
 	}
 }

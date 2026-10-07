@@ -8,5 +8,10 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class PathSegment : global::Microsoft.UI.Xaml.DependencyObject
 	{
+#if __SKIA__
+		internal PathSegment()
+		{
+		}
+#endif
 	}
 }

@@ -8,5 +8,10 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 	public partial class TextHighlighterBase : global::Microsoft.UI.Xaml.DependencyObject
 	{
+#if __SKIA__
+		internal TextHighlighterBase()
+		{
+		}
+#endif
 	}
 }

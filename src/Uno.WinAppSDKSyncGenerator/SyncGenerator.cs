@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Uno.WinAppSDKSyncGenerator.AttributeGeneration;
+using Uno.WinAppSDKSyncGenerator.Helpers;
 
 namespace Uno.WinAppSDKSyncGenerator
 {
@@ -72,6 +73,7 @@ namespace Uno.WinAppSDKSyncGenerator
 			if (SkippedType(type))
 			{
 				b.AppendLineInvariant($"// Skipped type, see SkippedType method");
+				BuildUnmatchedConstructorErrors(type, b, allSymbols);
 				return;
 			}
 
@@ -203,11 +205,12 @@ namespace Uno.WinAppSDKSyncGenerator
 				{
 					if (type.TypeKind != TypeKind.Enum)
 					{
-						if (type.TypeKind == TypeKind.Class && !type.IsStatic && !type.GetMembers(WellKnownMemberNames.InstanceConstructorName).Any(c => c.DeclaredAccessibility is Accessibility.Public or Accessibility.Protected))
+						BuildUnmatchedConstructorErrors(type, b, allSymbols);
+
+						if (type.TypeKind == TypeKind.Class && !type.IsStatic && GetReferenceConstructors(type).Length == 0)
 						{
 							// The type in reference compilation (UWP/WinUI) doesn't have an accessible constructor.
 							// So, generated code will generate an internal constructor if there is no constructor defined by individual platforms.
-							// TODO: Consider producing an error if the individual platforms has a publicly accessible constructor.
 							var nonGeneratedConstructors = GetAllGetNonGeneratedMembers(
 								allSymbols,
 								WellKnownMemberNames.InstanceConstructorName,
@@ -258,6 +261,76 @@ namespace Uno.WinAppSDKSyncGenerator
 				}
 			}
 		}
+
+		private static IMethodSymbol[] GetReferenceConstructors(INamedTypeSymbol type)
+			=> type.InstanceConstructors
+				.Where(c => !c.IsImplicitlyDeclared && c.DeclaredAccessibility is Accessibility.Public or Accessibility.Protected && !IsWinRTInteropConstructor(c))
+				.ToArray();
+
+		/// <summary>
+		/// The generator walks WinUI's members, so a hand-written constructor WinUI lacks is never visited.
+		/// Report each one that is visible outside Uno, so it can't widen the API surface unnoticed.
+		/// </summary>
+		private static void BuildUnmatchedConstructorErrors(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> allSymbols)
+		{
+			if (type.TypeKind is not (TypeKind.Class or TypeKind.Struct) || type.IsStatic)
+			{
+				return;
+			}
+
+			var referenceConstructors = GetReferenceConstructors(type);
+			var errors = allSymbols.Platforms
+				.Where(p => p.symbol is not null)
+				.SelectMany(p => p.symbol.InstanceConstructors
+					.Where(c => !c.IsImplicitlyDeclared && c.DeclaredAccessibility is Accessibility.Public or Accessibility.Protected or Accessibility.ProtectedOrInternal)
+					.Select(c => (p.define, error: GetUnmatchedConstructorError(c, referenceConstructors))))
+				.Where(e => e.error is not null)
+				.GroupBy(e => e.error, e => e.define);
+
+			foreach (var error in errors)
+			{
+				using (b.Indent(-b.CurrentLevel))
+				{
+					b.AppendLineInvariant($"#if {string.Join(" || ", error.Distinct())}");
+					b.AppendLineInvariant($"#error {error.Key}");
+					b.AppendLineInvariant("#endif");
+				}
+			}
+		}
+
+		private static string GetUnmatchedConstructorError(IMethodSymbol unoConstructor, IMethodSymbol[] referenceConstructors)
+		{
+			var unoAccessibility = unoConstructor.DeclaredAccessibility is Accessibility.ProtectedOrInternal ? Accessibility.Protected : unoConstructor.DeclaredAccessibility;
+			var signature = $"{unoConstructor.ContainingType.ToDisplayString()}({string.Join(", ", unoConstructor.Parameters.Select(p => p.Type.ToDisplayString()))})";
+			var match = referenceConstructors.FirstOrDefault(c => SymbolMatchingHelpers.AreParameterTypesMatching(c, unoConstructor));
+
+			if (match is null && IsUnoExtensibilityConstructor(unoConstructor))
+			{
+				return null;
+			}
+
+			if (match is null)
+			{
+				return $"Constructor {signature} is {unoAccessibility.ToString().ToLowerInvariant()}, but WinUI has no such constructor. Make it internal.";
+			}
+
+			if (match.DeclaredAccessibility != unoAccessibility)
+			{
+				return $"Constructor {signature} is {unoAccessibility.ToString().ToLowerInvariant()}, but WinUI declares it {match.DeclaredAccessibility.ToString().ToLowerInvariant()}.";
+			}
+
+			return null;
+		}
+
+		private static bool IsUnoExtensibilityConstructor(IMethodSymbol constructor)
+			=> constructor.ContainingType.ToDisplayString() switch
+			{
+				// A custom IWebAuthenticationBrokerProvider returns it from AuthenticateAsync.
+				"Windows.Security.Authentication.Web.WebAuthenticationResult" => true,
+				// Subclasses supply their own IPersister; it's the only working vault on WASM and Skia.
+				"Windows.Security.Credentials.PasswordVault" => constructor.DeclaredAccessibility == Accessibility.Protected,
+				_ => false,
+			};
 
 		private static void EnsureMatchingStaticness(INamedTypeSymbol type, PlatformSymbols<INamedTypeSymbol> allSymbols)
 		{

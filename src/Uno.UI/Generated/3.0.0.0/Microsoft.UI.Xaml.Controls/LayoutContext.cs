@@ -8,6 +8,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class LayoutContext : global::Microsoft.UI.Xaml.DependencyObject
 	{
+#if __SKIA__
+		internal LayoutContext()
+		{
+		}
+#endif
 		// Skipping already declared property LayoutState
 		// Skipping already declared property LayoutStateCore
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.LayoutState.get

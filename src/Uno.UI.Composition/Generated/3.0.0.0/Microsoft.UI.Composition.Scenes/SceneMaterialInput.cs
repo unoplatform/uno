@@ -8,5 +8,10 @@ namespace Microsoft.UI.Composition.Scenes
 #endif
 	public partial class SceneMaterialInput : global::Microsoft.UI.Composition.Scenes.SceneObject
 	{
+#if __SKIA__
+		internal SceneMaterialInput()
+		{
+		}
+#endif
 	}
 }

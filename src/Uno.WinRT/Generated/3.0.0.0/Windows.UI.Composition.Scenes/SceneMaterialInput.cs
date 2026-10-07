@@ -8,5 +8,10 @@ namespace Windows.UI.Composition.Scenes
 #endif
 	public partial class SceneMaterialInput : global::Windows.UI.Composition.Scenes.SceneObject
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal SceneMaterialInput()
+		{
+		}
+#endif
 	}
 }

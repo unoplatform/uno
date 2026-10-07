@@ -9,6 +9,11 @@ namespace Microsoft.UI.Composition
 	public partial class ScalarNaturalMotionAnimation : global::Microsoft.UI.Composition.NaturalMotionAnimation
 	{
 #if __SKIA__
+		internal ScalarNaturalMotionAnimation()
+		{
+		}
+#endif
+#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public float? FinalValue
 		{

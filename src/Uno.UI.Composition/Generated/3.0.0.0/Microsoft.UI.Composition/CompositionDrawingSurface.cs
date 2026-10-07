@@ -9,6 +9,11 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionDrawingSurface : global::Microsoft.UI.Composition.CompositionObject, global::Microsoft.UI.Composition.ICompositionSurface
 	{
 #if __SKIA__
+		internal CompositionDrawingSurface()
+		{
+		}
+#endif
+#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.Graphics.DirectX.DirectXAlphaMode AlphaMode
 		{

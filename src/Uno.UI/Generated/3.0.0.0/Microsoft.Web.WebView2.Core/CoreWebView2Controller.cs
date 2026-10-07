@@ -9,6 +9,11 @@ namespace Microsoft.Web.WebView2.Core
 	public partial class CoreWebView2Controller
 	{
 #if __SKIA__
+		internal CoreWebView2Controller()
+		{
+		}
+#endif
+#if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool AllowExternalDrop
 		{
