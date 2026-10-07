@@ -129,7 +129,10 @@ namespace Uno.UI.Samples.Behaviors
 			{
 				if (splitView.IsPaneOpen && GetCloseOnClick(element))
 				{
-					splitView.IsPaneOpen = false;
+					if (splitView.DisplayMode is SplitViewDisplayMode.Overlay or SplitViewDisplayMode.CompactOverlay)
+					{
+						splitView.IsPaneOpen = false;
+					}
 				}
 				else if (!splitView.IsPaneOpen && GetOpenOnClick(element))
 				{
