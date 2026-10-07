@@ -105,6 +105,12 @@ internal partial class ResourceAccessor
 	public const string SR_ResizeGripperName = "ResizeGripperName";
 	public const string SR_ResizeGripperNameFormat = "ResizeGripperNameFormat";
 	public const string SR_TableViewColumnWidthChanged = "TableViewColumnWidthChanged";
+	public const string SR_TableViewCellLocalizedControlType = "TableViewCellLocalizedControlType";
+	public const string SR_TableViewCellTextSeparator = "TableViewCellTextSeparator";
+	public const string SR_TableViewCellNameFormat = "TableViewCellNameFormat";
+	public const string SR_TableViewBooleanTrue = "TableViewBooleanTrue";
+	public const string SR_TableViewBooleanFalse = "TableViewBooleanFalse";
+	public const string SR_TableViewGroupHeaderNameFormat = "TableViewGroupHeaderNameFormat";
 	public const string SR_SplitButtonSecondaryButtonName = "SplitButtonSecondaryButtonName";
 	public const string SR_ProofingMenuItemLabel = "ProofingMenuItemLabel";
 	public const string SR_TextCommandLabelCut = "TextCommandLabelCut";

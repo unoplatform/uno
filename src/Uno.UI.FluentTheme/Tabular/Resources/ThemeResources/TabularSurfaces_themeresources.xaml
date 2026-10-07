@@ -1,5 +1,5 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference controls\dev\CommonStyles\TabularSurfaces_themeresources.xaml, tag winui3/release/2.5.4-experimental, commit 7b127093475 -->
+<!-- MUX Reference controls\dev\CommonStyles\TabularSurfaces_themeresources.xaml, tag winui3/main, commit dc28206ea35 -->
 <!--
     Tabular Surfaces — shared theming tokens for any control that paints tabular UI
     (rows, headers, gridlines, cells, selection, focus). Authored as a framework
@@ -74,7 +74,6 @@
             <!-- Group-header row surfaces (P2.8 grouped rows) -->
             <SolidColorBrush x:Key="TabularSurfaceGroupHeaderBackgroundBrush" Color="#4C3A3A3A" />                  <!-- LayerFillColorDefault -->
             <SolidColorBrush x:Key="TabularSurfaceGroupHeaderForegroundBrush" Color="#FFFFFF" />                    <!-- TextFillColorPrimary -->
-            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderCountForegroundBrush" Color="#C5FFFFFF" />             <!-- TextFillColorSecondary -->
             <x:Double x:Key="TabularSurfaceGroupHeaderCountOpacity">0.7</x:Double>
             <SolidColorBrush x:Key="TabularSurfaceGroupHeaderBorderBrush" Color="Transparent" />
             <Thickness x:Key="TabularSurfaceGroupHeaderBorderThickness">0</Thickness>
@@ -122,7 +121,6 @@
             <StaticResource x:Key="MUX_TabularSurfaceHeaderSeparatorBrush" ResourceKey="TabularSurfaceHeaderSeparatorBrush" />
             <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderBackgroundBrush" ResourceKey="TabularSurfaceGroupHeaderBackgroundBrush" />
             <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderForegroundBrush" ResourceKey="TabularSurfaceGroupHeaderForegroundBrush" />
-            <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderCountForegroundBrush" ResourceKey="TabularSurfaceGroupHeaderCountForegroundBrush" />
             <StaticResource x:Key="MUX_TabularSurfaceGridLineBrush" ResourceKey="TabularSurfaceGridLineBrush" />
             <StaticResource x:Key="MUX_TabularSurfaceGridLineThickness" ResourceKey="TabularSurfaceGridLineThickness" />
             <StaticResource x:Key="MUX_TabularSurfaceVerticalGridLineThickness" ResourceKey="TabularSurfaceVerticalGridLineThickness" />
@@ -193,7 +191,6 @@
             <!-- Group header surfaces (parity with Default theme) -->
             <SolidColorBrush x:Key="TabularSurfaceGroupHeaderBackgroundBrush" Color="#14000000" />                  <!-- subtle group-header band, a touch darker than the rows (Light) -->
             <SolidColorBrush x:Key="TabularSurfaceGroupHeaderForegroundBrush" Color="#E4000000" />                  <!-- TextFillColorPrimary (Light) -->
-            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderCountForegroundBrush" Color="#9E000000" />             <!-- TextFillColorSecondary (Light) -->
             <x:Double x:Key="TabularSurfaceGroupHeaderCountOpacity">0.7</x:Double>
             <SolidColorBrush x:Key="TabularSurfaceGroupHeaderBorderBrush" Color="Transparent" />
             <Thickness x:Key="TabularSurfaceGroupHeaderBorderThickness">0</Thickness>
@@ -229,7 +226,6 @@
             <StaticResource x:Key="MUX_TabularSurfaceSelectedBorderThickness" ResourceKey="TabularSurfaceSelectedBorderThickness" />
             <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderBackgroundBrush" ResourceKey="TabularSurfaceGroupHeaderBackgroundBrush" />
             <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderForegroundBrush" ResourceKey="TabularSurfaceGroupHeaderForegroundBrush" />
-            <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderCountForegroundBrush" ResourceKey="TabularSurfaceGroupHeaderCountForegroundBrush" />
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="HighContrast">
@@ -264,7 +260,6 @@
             <!-- Group-header row surfaces (P2.8 grouped rows) -->
             <SolidColorBrush x:Key="TabularSurfaceGroupHeaderBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="TabularSurfaceGroupHeaderForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
-            <SolidColorBrush x:Key="TabularSurfaceGroupHeaderCountForegroundBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
             <x:Double x:Key="TabularSurfaceGroupHeaderCountOpacity">1.0</x:Double>
             <SolidColorBrush x:Key="TabularSurfaceGroupHeaderBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
             <Thickness x:Key="TabularSurfaceGroupHeaderBorderThickness">0,1,0,1</Thickness>
@@ -306,7 +301,6 @@
             <StaticResource x:Key="MUX_TabularSurfaceHeaderSeparatorBrush" ResourceKey="TabularSurfaceHeaderSeparatorBrush" />
             <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderBackgroundBrush" ResourceKey="TabularSurfaceGroupHeaderBackgroundBrush" />
             <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderForegroundBrush" ResourceKey="TabularSurfaceGroupHeaderForegroundBrush" />
-            <StaticResource x:Key="MUX_TabularSurfaceGroupHeaderCountForegroundBrush" ResourceKey="TabularSurfaceGroupHeaderCountForegroundBrush" />
             <StaticResource x:Key="MUX_TabularSurfaceGridLineBrush" ResourceKey="TabularSurfaceGridLineBrush" />
             <StaticResource x:Key="MUX_TabularSurfaceGridLineThickness" ResourceKey="TabularSurfaceGridLineThickness" />
             <StaticResource x:Key="MUX_TabularSurfaceVerticalGridLineThickness" ResourceKey="TabularSurfaceVerticalGridLineThickness" />
