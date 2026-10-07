@@ -32,6 +32,9 @@ public partial class AutomationPeer : DependencyObject
 	/// <returns>True if there are listeners for the event.</returns>
 	public static bool ListenerExists(AutomationEvents eventId) => ListenerExistsHelper(eventId);
 
+	// AutomationEvents.Notification is commented out of the public enum (experimental in WinUI).
+	internal const AutomationEvents NotificationEvent = (AutomationEvents)30;
+
 	#region Public Properties
 
 	/// <summary>
