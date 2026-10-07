@@ -82,6 +82,22 @@ public class Given_SkiaAccessibilityPeerOwner
 		Assert.AreSame(editor, owner);
 	}
 
+	[TestMethod]
+	public void When_Elementless_Peer_Outside_RichEditBox_Does_Not_Resolve_To_Ancestor()
+	{
+		// e.g. LoopingSelectorItemDataAutomationPeer: its events must not land on the ancestor's native node.
+		var button = new Button();
+		var buttonPeer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+		var virtualPeer = new VirtualAutomationPeer();
+		virtualPeer.SetParent(buttonPeer);
+
+		Assert.IsTrue(virtualPeer.TryGetProviderOwner(out var ancestorOwner));
+		Assert.AreSame(button, ancestorOwner);
+
+		Assert.IsFalse(TryGetPeerOwner(virtualPeer, out var owner));
+		Assert.IsNull(owner);
+	}
+
 	private static bool TryGetPeerOwner(AutomationPeer peer, out UIElement? owner)
 	{
 		var type = Type.GetType(
