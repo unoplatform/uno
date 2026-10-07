@@ -120,8 +120,11 @@ while [ $TRY_COUNT -lt 5 ]; do
     # chrome starts but never navigates, so the canary never appears.
     if [ "$IS_MACOS" = true ]; then
         # The agent has a logged-in desktop session, so Chrome gets a real window and the GPU; no xvfb.
-        killall -9 "Google Chrome" || true
-        "$MACOS_CHROME" --enable-logging=stderr --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size="${UNO_TEST_BROWSER_SIZE/x/,}" ${MACOS_CHROME_FLAGS[@]+"${MACOS_CHROME_FLAGS[@]}"} "${RUNTIME_TESTS_URL}" &
+        # A retry must start clean: killall misses the helper processes (the GPU one included), and a relaunch
+        # beside them, or on the killed run's profile, fails GPU init, which leaves WebGPU without an adapter.
+        pkill -9 -f "Google Chrome" || true
+        sleep 2
+        "$MACOS_CHROME" --user-data-dir="$(mktemp -d)" --enable-logging=stderr --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size="${UNO_TEST_BROWSER_SIZE/x/,}" ${MACOS_CHROME_FLAGS[@]+"${MACOS_CHROME_FLAGS[@]}"} "${RUNTIME_TESTS_URL}" &
     else
         xvfb-run --auto-servernum --server-args="-screen 0 ${UNO_TEST_BROWSER_SIZE}x24" sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size=$3 $2 "$1"' _ "${RUNTIME_TESTS_URL}" "${UNO_TEST_CHROME_FLAGS}" "${UNO_TEST_BROWSER_SIZE/x/,}" &
     fi
