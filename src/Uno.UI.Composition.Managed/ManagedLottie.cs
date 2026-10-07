@@ -8,10 +8,10 @@ using Windows.UI;
 
 namespace Uno.UI.Composition.Drawing;
 
-// SkiaSharp-free Lottie (Bodymovin) model + keyframe evaluation. v1 covers the shape-layer subset (shape/null
-// layers, parenting, transforms, bezier/rect/ellipse paths, solid fills + strokes) with full keyframe interpolation
-// (linear + cubic-bézier easing + hold). Gradients, trim paths, repeaters, masks, mattes, precomps, image/text
-// layers and effects are not modelled yet — an unsupported item is skipped, never fatal. Rendering: ManagedLottie.Render.cs.
+// SkiaSharp-free Lottie (Bodymovin) model + keyframe evaluation. Covers shape, null and precomp layers, parenting,
+// transforms, bezier/rect/ellipse paths, solid fills + strokes and trim paths, with full keyframe interpolation
+// (linear + cubic-bézier easing + hold). Gradients, repeaters, merge paths, masks, mattes, image/text layers and
+// effects are not modelled yet — an unsupported item is skipped, never fatal. Rendering: ManagedLottie.Render.cs.
 internal sealed partial class ManagedLottie
 {
 	public float Width { get; private init; }
@@ -19,20 +19,33 @@ internal sealed partial class ManagedLottie
 	public float FrameRate { get; private init; }
 	public float InPoint { get; private init; }
 	public float OutPoint { get; private init; }
-	public IReadOnlyList<Layer> Layers { get; private init; } = Array.Empty<Layer>();
-	public IReadOnlyDictionary<int, Layer> LayersByIndex { get; private init; } = new Dictionary<int, Layer>();
+	public Composition Root { get; private init; } = new();
 
 	// ---- model ----
 
 	public sealed class Layer
 	{
-		public int Type;              // ty: 3=null, 4=shape (others skipped in v1)
+		public int Type;              // ty: 0=precomp, 3=null, 4=shape (others skipped)
 		public int Index;             // ind
 		public int? ParentIndex;      // parent
-		public float InPoint;         // ip
-		public float OutPoint;        // op
+		public float InPoint;         // ip, in the containing composition's time
+		public float OutPoint;        // op, same
+		public float StartTime;       // st: a precomp's content runs at (t - st) / sr
+		public float TimeStretch = 1; // sr
+		public string? RefId;         // refId: the asset a precomp layer shows
+		public float Width, Height;   // w, h: a precomp layer's clip
+		public Composition? Precomp;  // the resolved RefId
 		public Transform Transform = new();
 		public IReadOnlyList<ShapeItem> Shapes = Array.Empty<ShapeItem>();
+
+		public float LocalFrame(float frame) => (frame - StartTime) / (TimeStretch != 0 ? TimeStretch : 1);
+	}
+
+	// The root timeline or a precomp asset: its layers, and the same layers by index for parenting.
+	public sealed class Composition
+	{
+		public IReadOnlyList<Layer> Layers = Array.Empty<Layer>();
+		public IReadOnlyDictionary<int, Layer> LayersByIndex = new Dictionary<int, Layer>();
 	}
 
 	public sealed class Transform
@@ -161,10 +174,22 @@ internal sealed partial class ManagedLottie
 	internal readonly struct AnimatedVector
 	{
 		private readonly Track _track;
-		private AnimatedVector(Track t) => _track = t;
+		// Set for a split position ("s": true): X and Y animate on tracks of their own, _track carrying X.
+		private readonly Track? _y;
+		private AnimatedVector(Track t, Track? y = null) { _track = t; _y = y; }
 		public static AnimatedVector Constant(Vector2 v) => new(Track.Const(new[] { v.X, v.Y }));
 		internal static AnimatedVector FromTrack(Track t) => new(t);
-		public Vector2 Evaluate(float frame) { var v = _track.Evaluate(frame); return new Vector2(v.Length > 0 ? v[0] : 0f, v.Length > 1 ? v[1] : 0f); }
+		internal static AnimatedVector FromSplit(Track x, Track y) => new(x, y);
+		public Vector2 Evaluate(float frame)
+		{
+			var v = _track.Evaluate(frame);
+			if (_y is { } yTrack)
+			{
+				var y = yTrack.Evaluate(frame);
+				return new Vector2(v.Length > 0 ? v[0] : 0f, y.Length > 0 ? y[0] : 0f);
+			}
+			return new Vector2(v.Length > 0 ? v[0] : 0f, v.Length > 1 ? v[1] : 0f);
+		}
 	}
 
 	internal readonly struct AnimatedColor
