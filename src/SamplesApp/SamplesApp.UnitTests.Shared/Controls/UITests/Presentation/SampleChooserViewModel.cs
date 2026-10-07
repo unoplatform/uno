@@ -694,60 +694,73 @@ namespace SampleControl.Presentation
 
 		private void TryUpdateSearchResults()
 		{
-			_pendingSearch?.Cancel();
+			CancelPendingSearch();
 
-			var currentSearch = _pendingSearch = new CancellationTokenSource();
+			_pendingSearch = new CancellationTokenSource();
+			var token = _pendingSearch.Token;
 
 			var search = SearchTerm;
+			var categories = _allCategories;
 
+			// The dispatcher takes an Action, so this lambda is async void: nothing may escape it.
 			_ = RunOnUIThreadAsync(
 				async () =>
 				{
-					// Delay the search to allow the user to type more characters
-					await Task.Delay(400);
-
-					if (currentSearch.IsCancellationRequested)
+					try
 					{
-						return;
+						if (!string.IsNullOrWhiteSpace(search))
+						{
+							// Delay the search to allow the user to type more characters
+							await Task.Delay(SearchDebounceDelay, token);
+						}
+
+						var results = await SearchAsync(search, categories, token);
+
+						if (results is null || token.IsCancellationRequested)
+						{
+							return;
+						}
+
+						ApplySearchResults(results);
 					}
-
-					var results = await SearchAsync(search, _allCategories, currentSearch.Token);
-
-					if (results is null || currentSearch.IsCancellationRequested)
+					catch (OperationCanceledException)
 					{
-						return;
 					}
-
-					FilteredSamples = results;
+					catch (Exception e)
+					{
+						if (_log.IsEnabled(LogLevel.Error))
+						{
+							_log.Error($"Search for '{search}' failed: {e}");
+						}
+					}
 				}
 			);
 		}
 
+		private void CancelPendingSearch()
+		{
+			_pendingSearch?.Cancel();
+			_pendingSearch?.Dispose();
+			_pendingSearch = null;
+		}
+
 		private async Task<List<SampleChooserContent>> SearchAsync(string search, List<SampleChooserCategory> categories, CancellationToken cancellationToken)
 		{
-			if (string.IsNullOrEmpty(search))
+			if (string.IsNullOrWhiteSpace(search) || categories is null)
 			{
 				return [];
 			}
 
 			return await Task.Run(() =>
 			{
-				var starts = categories
-					.SelectMany(cat => cat.SamplesContent)
-					.Where(content => content.ControlName.StartsWith(search, StringComparison.OrdinalIgnoreCase));
-
-				if (cancellationToken.IsCancellationRequested)
+				try
+				{
+					return SampleSearch.Rank(search, categories.SelectMany(cat => cat.SamplesContent), cancellationToken);
+				}
+				catch (OperationCanceledException)
 				{
 					return null;
 				}
-
-				var contains = categories
-					.SelectMany(cat => cat.SamplesContent)
-					.Where(content => content.ControlName.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
-
-				// Order the results by showing the "start with" results
-				// followed by results that "contain" the search term
-				return starts.Concat(contains).OrderBy(s => s.ControlName).Distinct().ToList();
 			});
 		}
 

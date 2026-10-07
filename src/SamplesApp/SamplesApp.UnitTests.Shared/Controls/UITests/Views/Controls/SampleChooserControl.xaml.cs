@@ -197,7 +197,7 @@ namespace Uno.UI.Samples.Controls
 		{
 			if (e.Key == Windows.System.VirtualKey.Enter)
 			{
-				((SampleChooserViewModel)DataContext).TryOpenSingleSearchResult();
+				((SampleChooserViewModel)DataContext).TryOpenTopSearchResult();
 			}
 		}
 
@@ -211,9 +211,9 @@ namespace Uno.UI.Samples.Controls
 
 		private void SearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
 		{
-			if (args is not null)
+			if (args is { ChosenSuggestion: null })
 			{
-				((SampleChooserViewModel)DataContext).TryOpenSingleSearchResult();
+				((SampleChooserViewModel)DataContext).TryOpenTopSearchResult();
 			}
 		}
 
