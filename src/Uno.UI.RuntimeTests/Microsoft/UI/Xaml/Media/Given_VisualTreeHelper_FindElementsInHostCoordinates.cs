@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
@@ -160,6 +161,100 @@ public class Given_VisualTreeHelper_FindElementsInHostCoordinates
 			var result = VisualTreeHelper.FindElementsInHostCoordinates(ToHost(popupChild, 25, 25), root).ToArray();
 
 			CollectionAssert.AreEqual(new UIElement[] { popupChild, popup, underlay, root }, result);
+		}
+		finally
+		{
+			popup.IsOpen = false;
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Shape_Has_No_Fill_Then_IncludeAllElements_Uses_Its_Geometry()
+	{
+		var ellipse = new Ellipse { Width = 100, Height = 100 };
+		var root = new Grid { Width = 100, Height = 100, Children = { ellipse } };
+
+		try
+		{
+			await UITestHelper.Load(root, x => x.IsLoaded);
+
+			var center = VisualTreeHelper.FindElementsInHostCoordinates(ToHost(root, 50, 50), root, includeAllElements: true).ToArray();
+			var corner = VisualTreeHelper.FindElementsInHostCoordinates(ToHost(root, 5, 5), root, includeAllElements: true).ToArray();
+
+			// The fill is tested as if it were solid, so the transparent corners of the ellipse are not hit.
+			CollectionAssert.AreEqual(new UIElement[] { ellipse, root }, center);
+			CollectionAssert.AreEqual(new UIElement[] { root }, corner);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Rounded_Border_Then_Children_Clipped_At_Corners()
+	{
+		var child = new Border { Background = new SolidColorBrush(Colors.Blue) };
+		var root = new Border { Width = 100, Height = 100, CornerRadius = new CornerRadius(50), Background = new SolidColorBrush(Colors.Red), Child = child };
+
+		try
+		{
+			await UITestHelper.Load(root);
+
+			var center = VisualTreeHelper.FindElementsInHostCoordinates(ToHost(root, 50, 50), root).ToArray();
+			var corner = VisualTreeHelper.FindElementsInHostCoordinates(ToHost(root, 3, 3), root).ToArray();
+
+			CollectionAssert.AreEqual(new UIElement[] { child, root }, center);
+			Assert.IsEmpty(corner);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Added_Before_Loaded_Then_Found()
+	{
+		var root = new Grid { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Green) };
+
+		try
+		{
+			await UITestHelper.Load(root);
+
+			// The API updates the layout itself, it does not wait for Loaded.
+			var sut = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
+			root.Children.Add(sut);
+			var result = VisualTreeHelper.FindElementsInHostCoordinates(ToHost(root, 50, 50), root).ToArray();
+
+			CollectionAssert.AreEqual(new UIElement[] { sut, root }, result);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_IsLightDismissEnabled_Changes_While_Open_Then_Value_At_Open_Is_Used()
+	{
+		var popupChild = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Colors.Red) };
+		var popup = new Popup { Child = popupChild, IsLightDismissEnabled = false };
+		var root = new Grid { Width = 200, Height = 200, Children = { popup } };
+
+		try
+		{
+			await UITestHelper.Load(root);
+			popup.IsOpen = true;
+			await WindowHelper.WaitForLoaded(popupChild);
+
+			popup.IsLightDismissEnabled = true;
+
+			// Outside of the popup content, only a light-dismiss popup makes the popup root hit.
+			var result = VisualTreeHelper.FindElementsInHostCoordinates(ToHost(root, 150, 150), root).ToArray();
+
+			Assert.IsFalse(result.Any(e => e.GetType().Name == "PopupRoot"));
 		}
 		finally
 		{
