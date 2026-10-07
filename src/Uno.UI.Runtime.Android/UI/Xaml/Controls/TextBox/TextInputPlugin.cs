@@ -121,7 +121,7 @@ internal sealed class TextInputPlugin
 	internal void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
 	{
 		SetActiveHost(host);
-		if (!activation.IsSoftwareKeyboardSuppressed)
+		if (!activation.IsSoftwareKeyboardSuppressed && host.CanAcceptTextInput)
 		{
 			ShowTextInput(host);
 		}
