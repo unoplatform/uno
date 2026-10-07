@@ -44,6 +44,20 @@ internal class ObservableVector<T> : IObservableVector<T>, IObservableVector, IL
 		RaiseVectorChanged(CollectionChange.Reset, 0);
 	}
 
+	/// <summary>
+	/// Replaces the contents and raises a single <see cref="CollectionChange.Reset"/>, as WinRT's IVector.ReplaceAll does.
+	/// </summary>
+	internal virtual void ReplaceAll(IEnumerable<T> items)
+	{
+		// Snapshot first: items may enumerate this vector.
+		var newItems = items.ToArray();
+
+		_list.Clear();
+		_list.AddRange(newItems);
+
+		RaiseVectorChanged(CollectionChange.Reset, 0);
+	}
+
 	public bool Contains(T item) => _list.Contains(item);
 
 	public void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);

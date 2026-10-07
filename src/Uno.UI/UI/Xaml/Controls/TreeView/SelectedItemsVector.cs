@@ -73,7 +73,7 @@ internal class SelectedItemsVector : ObservableVector<object>
 
 	internal void RemoveAtEnd() => RemoveAt(Count - 1);
 
-	internal void ReplaceAll(IEnumerable<object> items)
+	internal override void ReplaceAll(IEnumerable<object> items)
 	{
 		Clear();
 

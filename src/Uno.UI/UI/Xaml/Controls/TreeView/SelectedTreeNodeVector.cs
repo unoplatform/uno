@@ -66,7 +66,7 @@ internal class SelectedTreeNodeVector : ObservableVector<TreeViewNode>
 
 	internal void RemoveAtEnd() => RemoveAt(Count - 1);
 
-	internal void ReplaceAll(IEnumerable<TreeViewNode> nodes)
+	internal override void ReplaceAll(IEnumerable<TreeViewNode> nodes)
 	{
 		Clear();
 
