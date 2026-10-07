@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView_Selection.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableView_Selection.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -44,6 +44,33 @@ partial class TableView
 
 		private readonly ref bool m_flag;
 		private readonly bool m_previous;
+	}
+
+	private static bool IsResolvableSelectionAnnouncementRow(
+		TableView? owner,
+		TableViewRow? row,
+		AutomationPeer? peer,
+		object? expectedItem)
+	{
+		if (owner is null || row is null || peer is null || expectedItem is null ||
+			row.GetOwningTableView() != owner)
+		{
+			return false;
+		}
+
+		var repeater = owner.GetRowsRepeaterInternal();
+		if (repeater is null)
+		{
+			return false;
+		}
+
+		int index = repeater.GetElementIndex(row);
+		var element = index >= 0 ? repeater.TryGetElement(index) as TableViewRow : null;
+		// Identity, not just index: a recycled container can still report an index while it has
+		// already been re-bound to a different item, so either announcement - selected or removed
+		// from selection - would name the wrong record.
+		var actualItem = owner.UnwrapEditingDataItem(row.DataContext);
+		return element == row && actualItem is not null && TableView.SameInspectableIdentity(actualItem, expectedItem);
 	}
 
 	internal bool CanSelectRows() => SelectionMode != TableViewSelectionMode.None;
@@ -250,6 +277,8 @@ partial class TableView
 	{
 		int newIndex = SelectedIndexInternal();
 		var newItem = SelectedItemInternal();
+		var deselectedItem = UnwrapEditingDataItem(SelectedItem);
+		var selectedItem = UnwrapEditingDataItem(newItem);
 
 		var deselectedRow = FindRealizedRowForIndex(m_lastPublishedIndex);
 		var selectedRow = FindRealizedRowForIndex(newIndex);
@@ -292,7 +321,7 @@ partial class TableView
 			return;
 		}
 
-		RaiseSelectionAutomationEvents(deselectedRow, selectedRow);
+		RaiseSelectionAutomationEvents(deselectedRow, deselectedItem, selectedRow, selectedItem);
 		RaiseSelectionChanged(newItem);
 	}
 
@@ -373,7 +402,9 @@ partial class TableView
 
 	private void RaiseSelectionAutomationEvents(
 		TableViewRow? deselectedRow,
-		TableViewRow? selectedRow)
+		object? deselectedItem,
+		TableViewRow? selectedRow,
+		object? selectedItem)
 	{
 		// Container-level first: it is the only signal available when the selected row is unrealized
 		// and there is no row peer to raise a per-element event on.
@@ -391,7 +422,10 @@ partial class TableView
 		{
 			if (FrameworkElementAutomationPeer.FromElement(selectedRow) is { } peer)
 			{
-				peer.RaiseAutomationEvent(AutomationEvents.SelectionItemPatternOnElementSelected);
+				if (IsResolvableSelectionAnnouncementRow(this, selectedRow, peer, selectedItem))
+				{
+					peer.RaiseAutomationEvent(AutomationEvents.SelectionItemPatternOnElementSelected);
+				}
 			}
 		}
 
@@ -400,7 +434,10 @@ partial class TableView
 		{
 			if (FrameworkElementAutomationPeer.FromElement(deselectedRow) is { } peer)
 			{
-				peer.RaiseAutomationEvent(AutomationEvents.SelectionItemPatternOnElementRemovedFromSelection);
+				if (IsResolvableSelectionAnnouncementRow(this, deselectedRow, peer, deselectedItem))
+				{
+					peer.RaiseAutomationEvent(AutomationEvents.SelectionItemPatternOnElementRemovedFromSelection);
+				}
 			}
 		}
 
@@ -412,10 +449,13 @@ partial class TableView
 			{
 				if (FrameworkElementAutomationPeer.FromElement(selectedRow) is { } peer)
 				{
-					peer.RaisePropertyChangedEvent(
-						SelectionItemPatternIdentifiers.IsSelectedProperty,
-						BoolBoxes.False,
-						BoolBoxes.True);
+					if (IsResolvableSelectionAnnouncementRow(this, selectedRow, peer, selectedItem))
+					{
+						peer.RaisePropertyChangedEvent(
+							SelectionItemPatternIdentifiers.IsSelectedProperty,
+							BoolBoxes.False,
+							BoolBoxes.True);
+					}
 				}
 			}
 
@@ -423,10 +463,13 @@ partial class TableView
 			{
 				if (FrameworkElementAutomationPeer.FromElement(deselectedRow) is { } peer)
 				{
-					peer.RaisePropertyChangedEvent(
-						SelectionItemPatternIdentifiers.IsSelectedProperty,
-						BoolBoxes.True,
-						BoolBoxes.False);
+					if (IsResolvableSelectionAnnouncementRow(this, deselectedRow, peer, deselectedItem))
+					{
+						peer.RaisePropertyChangedEvent(
+							SelectionItemPatternIdentifiers.IsSelectedProperty,
+							BoolBoxes.True,
+							BoolBoxes.False);
+					}
 				}
 			}
 		}
@@ -724,6 +767,11 @@ partial class TableView
 		}
 
 		ApplySelection(index);
+	}
+
+	internal void SelectRowIndexFromKeyboardFocus(int index)
+	{
+		SelectRowIndexFromInteraction(index, false /* toggle */);
 	}
 
 	// ----- Public API -----

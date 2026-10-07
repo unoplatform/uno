@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView.idl, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableView.idl, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -18,6 +18,7 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 // Parts (all optional; omitting one degrades rather than fails):
 //   PART_ExpanderGutter  Border    reserves the chevron column so content stays aligned
 //   PART_ExpanderIcon    FontIcon  glyph driven by ExpansionStates, not by code
+//   PART_GridLineBorder  Border    renders border chrome and terminal-line suppression
 //   content region       inherited from ContentControl
 //
 // States: CommonStates Normal|PointerOver|Pressed|Disabled

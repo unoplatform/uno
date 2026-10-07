@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView_Layout.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableView_Layout.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -47,10 +47,80 @@ partial class TableView
 		return localMinWidth == DependencyProperty.UnsetValue ? 0.0 : column.MinWidth;
 	}
 
+	// Divides `available` in proportion to each column's Star factor. A column that would clamp at
+	// its Min/MaxWidth is fixed there and dropped, then the rest re-divide what is left (the WPF
+	// ComputeStarColumnWidths shape).
+	private static void DistributeStarWidths(
+		List<TableViewColumn> pool,
+		double available,
+		Func<TableViewColumn, double> factorOf,
+		Func<double, double> layoutRound,
+		Action<TableViewColumn, double> resolve)
+	{
+		double totalFactor()
+		{
+			var total = 0.0;
+			foreach (var c in pool)
+			{
+				total += factorOf(c);
+			}
+			return total;
+		}
+
+		for (var adjusted = true; adjusted && pool.Count != 0;)
+		{
+			adjusted = false;
+
+			var factorSum = totalFactor();
+			var unit = factorSum > 0.0 ? available / factorSum : 0.0;
+
+			for (var i = 0; i < pool.Count; ++i)
+			{
+				var c = pool[i];
+				var factor = factorOf(c);
+				var desired = unit * factor;
+				var lo = MinWidthForStarFactor(c, factor);
+				var hi = StdMath.Max(lo, c.MaxWidth);
+				var clamped = StdMath.Clamp(desired, lo, hi);
+				// std::clamp returns desired exactly when it is already in [lo, hi], so any
+				// inequality is a real Min/MaxWidth clamp.
+				if (clamped != desired)
+				{
+					resolve(c, clamped);
+					available -= clamped;
+					pool.RemoveAt(i);
+					adjusted = true;
+					break;
+				}
+			}
+		}
+
+		{
+			var factorSum = totalFactor();
+			var unit = factorSum > 0.0 ? StdMath.Max(0.0, available) / factorSum : 0.0;
+			// Rounded on the running total rather than per column, so the widths still sum to
+			// `available` once snapped; rounding each independently can overshoot the viewport and
+			// leave a permanent one-pixel scrollbar.
+			var exactConsumed = 0.0;
+			var roundedConsumed = 0.0;
+			foreach (var c in pool)
+			{
+				var factor = factorOf(c);
+				var lo = MinWidthForStarFactor(c, factor);
+				var hi = StdMath.Max(lo, c.MaxWidth);
+				exactConsumed += StdMath.Clamp(unit * factor, lo, hi);
+				var edge = layoutRound(exactConsumed);
+				resolve(c, edge - roundedConsumed);
+				roundedConsumed = edge;
+			}
+		}
+	}
+
 	protected override Size MeasureOverride(Size availableSize)
 	{
 		var desired = base.MeasureOverride(availableSize);
 		ResolveColumnWidths();
+		QueueTerminalGridLineRefresh();
 		return desired;
 	}
 
@@ -205,6 +275,15 @@ partial class TableView
 				case GridUnitType.Pixel:
 				default:
 					{
+						// A locked column the authored pass below sizes from its Star share must not also be
+						// booked as fixed here, or it lands in fixedTotal twice and starves the real donors.
+						if (CanUserResizeColumns && !column.CanResize &&
+							column.AuthoredWidthInternal().GridUnitType == GridUnitType.Star)
+						{
+							starColumns.Add(column);
+							break;
+						}
+
 						var resolved = layoutRound(StdMath.Clamp(width.Value, lo, hi));
 						changed |= setResolvedActualWidth(column, resolved);
 						fixedTotal += resolved;
@@ -241,72 +320,220 @@ partial class TableView
 			return;
 		}
 
-		// Distribute the remaining width proportional to each Star factor. A column that would clamp to
-		// its Min/MaxWidth is fixed at the clamp and removed from the pool, then the rest re-divide the
-		// space that is left (the WPF ComputeStarColumnWidths shape). The viewport basis is layout-rounded
-		// so the divided space is snapped consistently with the fixed columns (CGrid rounds availableSize
-		// before distribution); per-column Star widths are then snapped in setResolvedActualWidth.
-		var available = StdMath.Max(0.0, layoutRound(viewport) - fixedTotal);
-		List<TableViewColumn> pool = new(starColumns);
-		var adjusted = true;
+		var resizeEnabled = CanUserResizeColumns;
+		static GridLength authoredOf(TableViewColumn c) => c.AuthoredWidthInternal();
+		// Only while a resize can actually happen; otherwise no column's width is at risk and the
+		// ordinary pool already clamps correctly.
+		bool isLocked(TableViewColumn c) => resizeEnabled && !c.CanResize;
 
-		while (adjusted && pool.Count != 0)
+		if (starColumns.Exists(isLocked))
 		{
-			adjusted = false;
-
-			var totalFactor = 0.0;
-			foreach (var c in pool)
+			// A locked Star column takes its share of the authored layout rather than of whatever a
+			// neighbor's resize left behind, so a drag cannot change its width.
+			var authoredFixedTotal = 0.0;
+			List<TableViewColumn> authoredPool = new();
+			foreach (var c in columns)
 			{
-				totalFactor += StdMath.Max(0.0, c.Width.Value);
-			}
-			var unit = totalFactor > 0.0 ? available / totalFactor : 0.0;
-
-			for (var i = 0; i < pool.Count; ++i)
-			{
-				var c = pool[i];
-				var factor = StdMath.Max(0.0, c.Width.Value);
-				var desired = unit * factor;
-				var lo = MinWidthForStarFactor(c, factor);
-				var hi = StdMath.Max(lo, c.MaxWidth);
-				var clamped = StdMath.Clamp(desired, lo, hi);
-				// std::clamp returns desired exactly when it is already in [lo, hi], so any inequality is a
-				// real Min/MaxWidth clamp: fix this column at its bound, drop it, and re-divide the rest.
-				if (clamped != desired)
+				if (c is null ||
+					c.GetOwningTableView() != this ||
+					c.Visibility != Visibility.Visible)
 				{
-					changed |= setResolvedActualWidth(c, clamped);
-					available -= clamped;
-					pool.RemoveAt(i);
-					adjusted = true;
-					break;
+					continue;
+				}
+
+				var authored = authoredOf(c);
+				if (authored.GridUnitType == GridUnitType.Star)
+				{
+					authoredPool.Add(c);
+					continue;
+				}
+
+				// Clamped and rounded exactly as the resolved pass above does, so the authored basis
+				// and the real layout agree on what the fixed columns take.
+				var lo = c.MinWidth;
+				var hi = StdMath.Max(lo, c.MaxWidth);
+				if (authored.GridUnitType == GridUnitType.Auto)
+				{
+					// The content width, not the width a resize gave it: a dragged Auto column must not
+					// change what the authored layout leaves for the Star columns.
+					var desired = c.DesiredWidthInternal();
+					authoredFixedTotal += layoutRound(StdMath.Clamp(desired > 0.0 ? desired : c.ActualWidth, lo, hi));
+				}
+				else
+				{
+					authoredFixedTotal += layoutRound(StdMath.Clamp(authored.Value, lo, hi));
 				}
 			}
+
+			DistributeStarWidths(
+				authoredPool,
+				StdMath.Max(0.0, layoutRound(viewport) - authoredFixedTotal),
+				c => StdMath.Max(0.0, authoredOf(c).Value),
+				layoutRound,
+				(c, width) =>
+				{
+					if (isLocked(c))
+					{
+						changed |= setResolvedActualWidth(c, width);
+						fixedTotal += c.ActualWidth;
+					}
+				});
+
+			starColumns.RemoveAll(isLocked);
 		}
 
-		// Whatever survived without clamping splits the remaining space at the final proportional rate.
-		if (pool.Count != 0)
-		{
-			var totalFactor = 0.0;
-			foreach (var c in pool)
+		// The viewport basis is layout-rounded so the divided space is snapped consistently with the
+		// fixed columns (CGrid rounds availableSize before distribution); per-column Star widths are
+		// then snapped in setResolvedActualWidth.
+		DistributeStarWidths(
+			starColumns,
+			StdMath.Max(0.0, layoutRound(viewport) - fixedTotal),
+			c => StdMath.Max(0.0, c.Width.Value),
+			layoutRound,
+			(c, width) =>
 			{
-				totalFactor += StdMath.Max(0.0, c.Width.Value);
-			}
-			var unit = totalFactor > 0.0 ? StdMath.Max(0.0, available) / totalFactor : 0.0;
-			foreach (var c in pool)
-			{
-				var factor = StdMath.Max(0.0, c.Width.Value);
-				var lo = MinWidthForStarFactor(c, factor);
-				var hi = StdMath.Max(lo, c.MaxWidth);
-				changed |= setResolvedActualWidth(
-					c,
-					StdMath.Clamp(unit * factor, lo, hi));
-			}
-		}
+				changed |= setResolvedActualWidth(c, width);
+			});
 
 		if (changed)
 		{
 			InvalidateCellPanels();
 			RefreshFrozenColumns();
 		}
+	}
+
+	// Puts Width back the way the app left it. Restoring the effective value would convert a binding
+	// or an inherited default into a local value the app never set.
+	internal static void RestoreColumnWidth(TableViewColumn column, object? localWidth)
+	{
+		var columnImpl = column;
+		using var resizeScope = columnImpl.BeginUserResizeScope();
+		if (localWidth is null || localWidth == DependencyProperty.UnsetValue)
+		{
+			column.ClearValue(TableViewColumn.WidthProperty);
+		}
+		else
+		{
+			column.SetValue(TableViewColumn.WidthProperty, localWidth);
+		}
+	}
+
+	// A resize takes space only from the columns after the dragged one (the WPF DataGrid contract).
+	// Holding the earlier Star columns at the width they already render keeps them out of the
+	// redistribution pass without changing what the user sees. A locked column is skipped: the
+	// authored pass below already pins it, and freezing it would double-count it there.
+	internal void FreezeColumnsBeforeResize(TableViewColumn column, List<ColumnResizeFrozenColumn> frozen)
+	{
+		var columns = Columns;
+		var index = columns?.IndexOf(column) ?? -1;
+		if (columns is null || index < 0)
+		{
+			return;
+		}
+
+		// Collected before any write: writing Width runs app callbacks that may mutate Columns, and
+		// indexing a live vector across that would throw out of the manipulation.
+		List<TableViewColumn> candidates = new();
+		for (var i = 0; i < index && i < columns.Count; ++i)
+		{
+			var other = columns[i];
+			if (other is null ||
+				other.GetOwningTableView() != this ||
+				other.Visibility != Visibility.Visible ||
+				other.Width.GridUnitType != GridUnitType.Star ||
+				!other.CanResize)
+			{
+				continue;
+			}
+			candidates.Add(other);
+		}
+
+		foreach (var other in candidates)
+		{
+			frozen.Add(new() { column = new(other), width = other.ReadLocalValue(TableViewColumn.WidthProperty) });
+
+			var columnImpl = other;
+			using var resizeScope = columnImpl.BeginUserResizeScope();
+			other.Width = GridLengthHelper.FromPixels(other.ActualWidth);
+		}
+	}
+
+	// How far a drag may take this column. A table whose columns divide the viewport may not grow past
+	// it, and a column the user may not resize neither gives width away nor takes any.
+	internal ColumnResizeBounds ResizeBoundsForColumn(TableViewColumn column)
+	{
+		ColumnResizeBounds bounds = new();
+
+		var columns = Columns;
+		var bodyScroller = m_bodyScroller;
+		var viewport = bodyScroller is not null ? bodyScroller.ViewportWidth : 0.0;
+		if (columns is null || !(viewport > 0.0) || double.IsInfinity(viewport))
+		{
+			return bounds;
+		}
+
+		static GridUnitType authoredType(TableViewColumn c) => c.AuthoredWidthInternal().GridUnitType;
+
+		var resizeEnabled = CanUserResizeColumns;
+		var draggedIndex = columns.IndexOf(column);
+		if (draggedIndex < 0)
+		{
+			return bounds;
+		}
+
+		var reservedForOthers = 0.0;
+		var dividesViewport = authoredType(column) == GridUnitType.Star;
+		var hasParticipant = false;
+
+		for (var i = 0; i < columns.Count; ++i)
+		{
+			var other = columns[i];
+			if (other is null ||
+				i == draggedIndex ||
+				other.GetOwningTableView() != this ||
+				other.Visibility != Visibility.Visible)
+			{
+				continue;
+			}
+
+			dividesViewport |= authoredType(other) == GridUnitType.Star;
+
+			// Only a column that is Star *now* and sits after the dragged one can yield space: the
+			// layout pass re-divides by current Width, and a resize never takes from its left.
+			var participates =
+				i > draggedIndex &&
+				other.Width.GridUnitType == GridUnitType.Star &&
+				resizeEnabled && other.CanResize;
+			hasParticipant |= participates;
+
+			if (!participates)
+			{
+				reservedForOthers += other.ActualWidth;
+			}
+			else
+			{
+				reservedForOthers += MinWidthForStarFactor(other, StdMath.Max(0.0, other.Width.Value));
+			}
+		}
+
+		// Without a Star column anywhere the extent is meant to grow and scroll.
+		if (!dividesViewport)
+		{
+			return bounds;
+		}
+
+		// Pinned in both directions: bounding only growth would let the drag hand width to a column
+		// that is then not allowed to give it back. A Pixel or Auto column owns its width outright, so
+		// it may still shrink -- that only makes the table narrower and needs nothing from a neighbour.
+		if (!hasParticipant && column.Width.GridUnitType == GridUnitType.Star)
+		{
+			bounds.Min = column.ActualWidth;
+			bounds.Max = bounds.Min;
+			return bounds;
+		}
+
+		bounds.Max = StdMath.Max(0.0, viewport - reservedForOthers);
+		return bounds;
 	}
 
 	// Re-run the cell panels' measure/arrange so the header band and all rows reflect the newly resolved

@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView_Columns.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableView_Columns.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -355,6 +355,10 @@ partial class TableView
 			row.RefreshColumnVisibility(column, visibility);
 		});
 
+		// Visibility can move the terminal column. Evaluate after layout so Auto and Star widths,
+		// transforms, and the body viewport are final.
+		QueueTerminalGridLineRefresh();
+
 		// Keep a synchronous RefreshFrozenColumns here: collapsing a column changes the leading
 		// frozen-band width without changing any surviving column's ActualWidth, so ResolveColumnWidths'
 		// `changed` gate stays false and would never re-pin. Refresh it directly.
@@ -382,6 +386,7 @@ partial class TableView
 		InvalidateMeasure();
 		InvalidateCellPanels();
 		RefreshFrozenColumns();
+		QueueTerminalGridLineRefresh();
 	}
 
 	internal void OnColumnCellTemplateChanged(TableViewColumn? column)

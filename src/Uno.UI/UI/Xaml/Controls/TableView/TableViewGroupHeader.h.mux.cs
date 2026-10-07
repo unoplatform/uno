@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewGroupHeader.h, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableViewGroupHeader.h, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -73,6 +73,7 @@ partial class TableViewGroupHeader
 	// ancestor walk from a detached element silently finds nothing and no-ops.
 	// void SetOwningTableViewInternal(winrt::TableView const& owner);
 	// winrt::TableView GetOwningTableView() const;
+	// void SetTerminalBottomGridLineSuppression(bool suppress);
 
 	// Internal: single-subscription guard for the ToggleRequested handler.
 	// PrepareGroupHeaderElement sets this once so repeated prepares are no-ops.
@@ -81,15 +82,17 @@ partial class TableViewGroupHeader
 
 	// private:
 	// void UpdateVisualStates(bool useTransitions);
-
+	// void UpdateTerminalBottomGridLineSuppression();
 
 	// Mirror the authoritative IsExpandable/IsExpanded DPs onto the bound projection.
 	// void SyncExpansionToContent();
 
 	private readonly SerialDisposable m_isEnabledChangedRevoker = new();
+	private Border? m_gridLineBorder;
 
 	private bool m_isPointerOver = false;
 	private bool m_isPressed = false;
+	private bool m_suppressBottomGridLine = false;
 
 	private WeakReference<TableView>? m_owningTableView = null;
 

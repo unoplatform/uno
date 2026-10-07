@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView_Grouping.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableView_Grouping.cpp, tag winui3/main, commit dc28206ea35
 
 #nullable enable
 
@@ -19,6 +19,15 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableView
 {
+	private static object? GetGroupHeaderKey(GroupedEntry entry)
+	{
+		var groupObject = entry.Group();
+		if (groupObject is ICollectionViewGroup group)
+		{
+			return group.Group;
+		}
+		return groupObject;
+	}
 	// Every step can fail on a locale-starved or self-contained host, and this runs during
 	// measure, so nothing is allowed to escape.
 	// TODO Uno: TableView_Grouping.cpp's anonymous-namespace LocalizedOrFallback is identical to TableView_Sort.cpp's; both share this definition.
@@ -101,6 +110,62 @@ partial class TableView
 	{
 		TableViewRowInfo rowInfo = default;
 		return TryGetTableViewSourceRowInfo(index, ref rowInfo) && rowInfo.Kind == TableViewRowKind.GroupHeader;
+	}
+
+	internal int GetDataRowPositionInSetInternal(int rowIndex)
+	{
+		if (rowIndex < 0)
+		{
+			return 0;
+		}
+
+		if (!IsTableViewSourceGrouped())
+		{
+			return rowIndex + 1;
+		}
+
+		int position = 0;
+		for (int index = 0; index <= rowIndex; ++index)
+		{
+			TableViewRowInfo rowInfo = default;
+			if (!TryGetTableViewSourceRowInfo(index, ref rowInfo))
+			{
+				return rowIndex + 1;
+			}
+
+			if (rowInfo.Kind == TableViewRowKind.Data)
+			{
+				++position;
+			}
+		}
+
+		return position;
+	}
+
+	internal int GetDataRowSizeOfSetInternal()
+	{
+		var rowCount = GetRowCountInternal();
+		if (!IsTableViewSourceGrouped())
+		{
+			return rowCount;
+		}
+
+		int dataRowCount = 0;
+		for (int index = 0; index < rowCount; ++index)
+		{
+			TableViewRowInfo rowInfo = default;
+			if (!TryGetTableViewSourceRowInfo(index, ref rowInfo))
+			{
+				return rowCount;
+			}
+
+			if (rowInfo.Kind == TableViewRowKind.Data)
+			{
+				++dataRowCount;
+			}
+		}
+
+		return dataRowCount;
 	}
 
 	// ---------------------------------------------------------------------------------------------
@@ -343,6 +408,7 @@ partial class TableView
 		// told clients to re-read a structure that had not changed yet.
 		if (changed)
 		{
+			QueueGroupExpansionRowRefresh();
 			RaiseGroupStructureChanged();
 		}
 
@@ -386,7 +452,18 @@ partial class TableView
 				strongThis.m_pendingGroupFocusLayoutToken.Disposable = null;
 			}
 
-			strongThis.FocusGroupHeaderByIdentity(identity, focusState);
+			// This runs from a LAYOUT callback, where an escaping exception reaches no app handler
+			// and fails the process fast instead. FocusGroupHeaderByIdentity realizes a container
+			// and moves focus, both of which can throw when the projection has moved underneath a
+			// deferred restore.
+			try
+			{
+				strongThis.FocusGroupHeaderByIdentity(identity, focusState);
+			}
+			catch (Exception)
+			{
+				// Best-effort focus restore: the group can be gone by the time layout settles.
+			}
 		};
 		LayoutUpdated += onLayoutUpdated;
 		m_pendingGroupFocusLayoutToken.Disposable = Disposable.Create(() => LayoutUpdated -= onLayoutUpdated);
@@ -407,6 +484,15 @@ partial class TableView
 
 		var repeater = m_rowsRepeater;
 		if (repeater is null)
+		{
+			return;
+		}
+
+		// The metadata provider and repeater own separate views that can absorb reshapes at different
+		// times, so a resolved index can exceed what the repeater accepts. GetOrCreateElement throws
+		// for that, and this deferred layout callback would fail-fast the process.
+		var sourceView = repeater.ItemsSourceView;
+		if (sourceView is null || index >= sourceView.Count)
 		{
 			return;
 		}
@@ -495,6 +581,7 @@ partial class TableView
 
 		if (changed)
 		{
+			QueueGroupExpansionRowRefresh();
 			RaiseGroupStructureChanged();
 		}
 
@@ -503,6 +590,8 @@ partial class TableView
 
 	private void RaiseGroupStructureChanged()
 	{
+		QueueTerminalGridLineRefresh();
+
 		if (FrameworkElementAutomationPeer.FromElement(this) is TableViewAutomationPeer peer)
 		{
 			peer.RaiseStructureChangedForGroupExpansion();
@@ -610,6 +699,13 @@ partial class TableView
 	// Group-header containers
 	// ---------------------------------------------------------------------------------------------
 
+	internal string GetGroupHeaderNameCandidate(GroupedEntry entry)
+	{
+		var key = GetGroupHeaderKey(entry);
+		return TableViewAutomationHelpers.GroupInfoToName(new TableViewGroupInfo(
+			key, entry.GroupItemCount(), 0, false, false, StringifyGroupKey(key)));
+	}
+
 	private void PrepareGroupHeaderElement(TableViewGroupHeader? header, int index)
 	{
 		if (header is null)
@@ -659,15 +755,7 @@ partial class TableView
 			// internal group object. entry->Group() is the ShapedGroup (an ICollectionViewGroup);
 			// unwrap it to the key it carries so an app template binding {Binding Key} sees the key
 			// value, not the projection wrapper. KeyText / display is unaffected either way.
-			var groupObject = entry.Group();
-			if (groupObject is ICollectionViewGroup collectionViewGroup)
-			{
-				groupKey = collectionViewGroup.Group;
-			}
-			else
-			{
-				groupKey = groupObject;
-			}
+			groupKey = GetGroupHeaderKey(entry);
 			itemCount = entry.GroupItemCount();
 			isExpanded = hasRowInfo ? rowInfo.IsExpanded : entry.IsExpanded();
 			isExpandable = hasRowInfo ? rowInfo.IsExpandable : (entry.GroupItemCount() > 0);

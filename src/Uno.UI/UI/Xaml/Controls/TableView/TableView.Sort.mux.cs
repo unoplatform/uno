@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView_Sort.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
+// MUX Reference controls\dev\TableView\TableView_Sort.cpp, tag winui3/main, commit dc28206ea35
 
 // Single-column sort for TableView.
 //
@@ -378,13 +378,7 @@ partial class TableView
 		}
 
 		var args = new TableViewSortingEventArgs(trigger, direction);
-		try
-		{
-			Sorting?.Invoke(this, args);
-		}
-		catch (Exception)
-		{
-		}
+		Sorting?.Invoke(this, args);
 
 		return args.Cancel;
 	}
@@ -644,50 +638,47 @@ partial class TableView
 		{
 			var appliedDirection = trigger is not null ? trigger.SortDirection : SortDirection.None;
 			var args = new TableViewSortedEventArgs(trigger, appliedDirection);
-			try
-			{
-				Sorted?.Invoke(this, args);
-			}
-			catch (Exception)
-			{
-			}
+			Sorted?.Invoke(this, args);
 		}
 
-		// A programmatic or header-driven re-sort has no input event behind it, so without an
-		// announcement a screen-reader user has no way to learn the order changed.
-		if (trigger is not null)
+		if (AutomationPeer.ListenerExists(AutomationPeer.NotificationEvent))
 		{
-			string header = "";
-			if (trigger.Header is { } headerContent)
+			// A programmatic or header-driven re-sort has no input event behind it, so without an
+			// announcement a screen-reader user has no way to learn the order changed.
+			if (trigger is not null)
 			{
-				// TODO Uno: IPropertyValue projection; Type() == PropertyType::String becomes a type check
-				// through ValueConversionHelpers.GetPropertyType.
-				if (ValueConversionHelpers.GetPropertyType(headerContent.GetType()) == PropertyType.String)
+				string header = "";
+				if (trigger.Header is { } headerContent)
 				{
-					header = (string)headerContent;
+					// TODO Uno: IPropertyValue projection; Type() == PropertyType::String becomes a type check
+					// through ValueConversionHelpers.GetPropertyType.
+					if (ValueConversionHelpers.GetPropertyType(headerContent.GetType()) == PropertyType.String)
+					{
+						header = (string)headerContent;
+					}
+				}
+
+				switch (trigger.SortDirection)
+				{
+					case SortDirection.Ascending:
+						AnnounceSortChange(StringUtil.FormatString(
+							LocalizedOrFallback(ResourceAccessor.SR_TableViewSortedAscending, "Sorted by %1!s! ascending."), header));
+						break;
+					case SortDirection.Descending:
+						AnnounceSortChange(StringUtil.FormatString(
+							LocalizedOrFallback(ResourceAccessor.SR_TableViewSortedDescending, "Sorted by %1!s! descending."), header));
+						break;
+					case SortDirection.None:
+					default:
+						AnnounceSortChange(StringUtil.FormatString(
+							LocalizedOrFallback(ResourceAccessor.SR_TableViewSortCleared, "Sorting cleared for %1!s!."), header));
+						break;
 				}
 			}
-
-			switch (trigger.SortDirection)
+			else
 			{
-				case SortDirection.Ascending:
-					AnnounceSortChange(StringUtil.FormatString(
-						LocalizedOrFallback(ResourceAccessor.SR_TableViewSortedAscending, "Sorted by %1!s! ascending."), header));
-					break;
-				case SortDirection.Descending:
-					AnnounceSortChange(StringUtil.FormatString(
-						LocalizedOrFallback(ResourceAccessor.SR_TableViewSortedDescending, "Sorted by %1!s! descending."), header));
-					break;
-				case SortDirection.None:
-				default:
-					AnnounceSortChange(StringUtil.FormatString(
-						LocalizedOrFallback(ResourceAccessor.SR_TableViewSortCleared, "Sorting cleared for %1!s!."), header));
-					break;
+				AnnounceSortChange(LocalizedOrFallback(ResourceAccessor.SR_TableViewSortClearedAll, "All sorting cleared."));
 			}
-		}
-		else
-		{
-			AnnounceSortChange(LocalizedOrFallback(ResourceAccessor.SR_TableViewSortClearedAll, "All sorting cleared."));
 		}
 
 		// The chevrons are already current: SetSortStateInternal republished them through
@@ -842,13 +833,7 @@ partial class TableView
 			var args = new TableViewSortedEventArgs(
 				matchedColumn,
 				matchedColumn is not null ? foreignDirection : SortDirection.None);
-			try
-			{
-				Sorted?.Invoke(this, args);
-			}
-			catch (Exception)
-			{
-			}
+			Sorted?.Invoke(this, args);
 		}
 	}
 
@@ -883,6 +868,11 @@ partial class TableView
 	private void AnnounceSortChange(string announcement)
 	{
 		if (string.IsNullOrEmpty(announcement))
+		{
+			return;
+		}
+
+		if (!AutomationPeer.ListenerExists(AutomationPeer.NotificationEvent))
 		{
 			return;
 		}
