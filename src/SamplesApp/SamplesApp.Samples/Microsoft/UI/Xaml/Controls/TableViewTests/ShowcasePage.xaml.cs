@@ -35,21 +35,21 @@ public sealed partial class ShowcasePage : Page
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		Table.SortByColumn(_progress, SortDirection.Descending);
-		Table.Select(2);
+		Table.Select(7);
 	}
 
 	private DataTemplate GetTemplate(string key) => (DataTemplate)Resources[key];
 
 	private void BuildColumns()
 	{
-		_progress = Column("Progress", "ProgressCell", new GridLength(220), nameof(Roadmap.Progress));
+		_progress = Column("Progress", "ProgressCell", new GridLength(1, GridUnitType.Star), nameof(Roadmap.Progress));
 
 		Table.Columns.Add(Column("Feature", "FeatureCell", new GridLength(1, GridUnitType.Auto), nameof(Roadmap.Feature), TableViewFrozenEdge.Leading));
 		Table.Columns.Add(Column("Owner", "OwnerCell", new GridLength(1, GridUnitType.Auto), nameof(Roadmap.Owner)));
 		Table.Columns.Add(Column("Status", "StatusCell", new GridLength(150), nameof(Roadmap.Status)));
 		Table.Columns.Add(_progress);
 		Table.Columns.Add(Column("Tests", "TestsCell", new GridLength(120), nameof(Roadmap.Tests)));
-		Table.Columns.Add(Column("Updated", "UpdatedCell", new GridLength(1, GridUnitType.Star), nameof(Roadmap.UpdatedMinutes)));
+		Table.Columns.Add(Column("Updated", "UpdatedCell", new GridLength(1, GridUnitType.Auto), nameof(Roadmap.UpdatedMinutes)));
 	}
 
 	private TableViewTemplateColumn Column(string header, string template, GridLength width, string sortPath, TableViewFrozenEdge frozen = TableViewFrozenEdge.None) =>
@@ -144,7 +144,6 @@ public sealed class Roadmap
 		Add("Milestone 2 · Beta", "Image attachments", "Editor", "", amber, "Grace Hopper", "Blocked", 23, 97, 1500);
 
 		Add("Milestone 3 · Planned", "AI summaries", "Intelligence", "", violet, "Alan Turing", "Planned", 8, 12, 4320);
-		Add("Milestone 3 · Planned", "Shared notebooks", "Sync", "", rose, "Omar Farouk", "Planned", 3, 0, 8640);
 		Add("Milestone 3 · Planned", "Web clipper", "Browser", "", blue, "Nina Patel", "Planned", 15, 46, 2160);
 
 		return items;
