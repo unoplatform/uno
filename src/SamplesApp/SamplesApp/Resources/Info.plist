@@ -25,7 +25,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to your camera for the camera capture samples.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app needs access to use your microphone for speech recognition samples.</string>
+	<string>This app needs access to your microphone for the speech recognition and video capture samples.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This app needs access to recognize your speech for speech recognition samples.</string>
 </dict>
