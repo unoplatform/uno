@@ -803,13 +803,13 @@ internal static partial class NativeUno
 	internal static partial void uno_accessibility_post_live_region_changed(nint handle);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial string? /* const char* _Nullable */ uno_capture_photo([MarshalAs(UnmanagedType.I1)] bool useJpeg);
+	internal static partial string? /* const char* _Nullable */ uno_capture_photo(long operationId, [MarshalAs(UnmanagedType.I1)] bool useJpeg);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial string? /* const char* _Nullable */ uno_capture_video();
+	internal static partial string? /* const char* _Nullable */ uno_capture_video(long operationId);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_capture_cancel();
+	internal static partial void uno_capture_cancel(long operationId);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_perform_on_main_runloop(nint context, delegate* unmanaged<nint, void> callback);
