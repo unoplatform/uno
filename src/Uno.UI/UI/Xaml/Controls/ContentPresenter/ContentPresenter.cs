@@ -1223,6 +1223,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private protected override Thickness GetBorderThickness() => BorderThickness;
 
+	internal override bool HitTestInvisible(Point relativeLocation)
+		=> Border.HitTestLocalInternalImpl(this, relativeLocation, invisibleHitTestMode: true);
+
 	internal override bool CanHaveChildren() => true;
 
 	internal override bool IsViewHit() => Border.IsViewHitImpl(this);

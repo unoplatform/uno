@@ -1631,6 +1631,18 @@ namespace Microsoft.UI.Xaml
 		/// <remarks>This does NOT take the clipping into account.</remarks>
 		internal virtual bool HitTest(Point relativeLocation) => Visual.HitTest(relativeLocation);
 
+		// MUX Reference dxaml\xcp\core\core\elements\uielement.cpp (CUIElement::HitTestLocalInternal), tag winui3/release/2.5.4-experimental
+		/// <summary>
+		/// Local hit test under InvisibleHitTestMode, where a null background or fill is tested as if it were solid.
+		/// </summary>
+		/// <param name="relativeLocation">The point being tested, in element coordinates.</param>
+		// Various uielements don't implement HitTestLocalInternal and rely on the base implementation.
+		// Most of these require a very basic hit test algorithm - hit against the bounds.
+		// Examples include ItemsPresenter, Page and UserControl. These don't hit by default, but
+		// we will want them in InvisibleHitTestMode.
+		internal virtual bool HitTestInvisible(Point relativeLocation)
+			=> new Rect(0, 0, ActualSize.X, ActualSize.Y).Contains(relativeLocation);
+
 		internal void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)

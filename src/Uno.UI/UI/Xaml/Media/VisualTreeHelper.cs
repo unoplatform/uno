@@ -876,16 +876,13 @@ namespace Microsoft.UI.Xaml.Media
 		//------------------------------------------------------------------------
 		private static bool IsEnabledAndVisibleForHitTest(UIElement element, bool canHitDisabledElements, bool canHitInvisibleElements)
 		{
-			// TODO Uno: Uno coerces IsHitTestVisible, Visibility and the inherited IsEnabled into HitTestVisibility, so
-			// canHitDisabledElements and canHitInvisibleElements cannot relax it. Every public caller passes false for both.
-			// A parentless Popup is never loaded in Uno, so it gets its own (non-inherited) flags instead.
+			// TODO Uno: Uno does not suppress hit testing of an element (m_isHitTestingSuppressed). Uno coerces IsEnabled
+			// for controls only (WinUI coerces m_fCoercedIsEnabled for every element), the walk does not descend into a
+			// disabled control anyway. The coerced HitTestVisibility is not used, as it also excludes elements not loaded yet.
 			//return IsHitTestVisible(canHitInvisibleElements) && (canHitDisabledElements || IsEnabled());
-			if (element is Popup { IsInLiveTree: false } popup)
-			{
-				return popup.IsHitTestVisible && popup.Visibility == Visibility.Visible;
-			}
-
-			return element.GetHitTestVisibility() != HitTestability.Collapsed;
+			return (element.IsHitTestVisible || canHitInvisibleElements)
+				&& element.IsVisible()
+				&& (canHitDisabledElements || element.IsEnabledInternal());
 		}
 
 		//------------------------------------------------------------------------
@@ -912,6 +909,26 @@ namespace Microsoft.UI.Xaml.Media
 			}
 
 			return false;
+		}
+
+		// MUX Reference dxaml\xcp\core\core\elements\framework.cpp (CFrameworkElement::UpdateRequiresCompNodeForRoundedCorners), tag winui3/release/2.5.4-experimental
+		// If a non-zero corner radius is being used, and this element has children, we need to create
+		// a CompNode for this element so we can correctly apply rounded corner clipping to this element's
+		// children.
+		// TODO Uno: Uno has no CompNode requirement flag, it is evaluated on demand. Only the types that override
+		// CFrameworkElement::GetCornerRadius in WinUI report a corner radius.
+		private static bool RequiresCompNodeForRoundedCorners(UIElement element, out CornerRadius cornerRadius)
+		{
+			cornerRadius = element is Border or Panel or ContentPresenter or CalendarViewBaseItem
+				&& element is Uno.UI.Xaml.Controls.IBorderInfoProvider borderInfo
+				? borderInfo.CornerRadius
+				: default;
+
+			var hasRoundedCorner = Border.HasNonZeroCornerRadius(cornerRadius);
+
+			var hasChildren = element.GetChildren().Count > 0;
+
+			return hasRoundedCorner && hasChildren;
 		}
 
 		// MUX Reference dxaml\xcp\components\elements\UIElementHitTesting.cpp, tag winui3/release/2.5.4-experimental, commit 7b127093475
@@ -1118,13 +1135,12 @@ namespace Microsoft.UI.Xaml.Media
 						//	IFC_RETURN(ClipHitTypeToRect(testTarget, m_combinedInnerBounds, &continueHitTest));
 						//}
 
-						// TODO Uno: The rounded corners of a Border do not clip the hit test of its children.
-						//if (continueHitTest && RequiresCompNodeForRoundedCorners())
-						//{
-						//	// Perform rounded corner hit-testing in this scenario, as the rounded corners clips children as well as content.
-						//	ASSERT(OfTypeByIndex<KnownTypeIndex::FrameworkElement>());
-						//	continueHitTest = CBorder::HitTestRoundedCornerClip(static_cast<CFrameworkElement*>(this), testTarget);
-						//}
+						if (continueHitTest && RequiresCompNodeForRoundedCorners(element, out var cornerRadius))
+						{
+							// Perform rounded corner hit-testing in this scenario, as the rounded corners clips children as well as content.
+							Debug.Assert(element is FrameworkElement);
+							continueHitTest = Border.HitTestRoundedCornerClip((FrameworkElement)element, cornerRadius, testTarget);
+						}
 					}
 
 					// If we successfully transformed the point/rect into local space, and it passed all clip checks, proceed
@@ -1465,8 +1481,7 @@ namespace Microsoft.UI.Xaml.Media
 
 						// Check for light dismiss.
 						// If a drag and drop operation is in progress, we allow it to hit test through the light dismiss layer.
-						// TODO Uno: m_fIsLightDismiss is the IsLightDismissEnabled value captured when the popup opened.
-						if (pPopup.IsLightDismissEnabled &&
+						if (pPopup.IsLightDismiss &&
 							childHitResult.HasFlag(BoundsWalkHitResult.Continue) &&
 							!global::DirectUI.DXamlCore.IsWinRTDndOperationInProgress())
 						{
@@ -1544,7 +1559,7 @@ namespace Microsoft.UI.Xaml.Media
 				// TODO Uno: Uno does not track the unloading state of popups (IsUnloading).
 				foreach (var pPopup in popupRoot.GetOpenPopups())
 				{
-					if (/*!pPopup->IsUnloading() &&*/ pPopup.IsLightDismissEnabled)
+					if (/*!pPopup->IsUnloading() &&*/ pPopup.IsLightDismiss)
 					{
 						isHit = true;
 						break;
@@ -1710,23 +1725,22 @@ namespace Microsoft.UI.Xaml.Media
 					return PopupRootHitTestLocalInternal(popupRoot);
 				}
 
-				// TODO Uno: The HitTestLocalInternal overrides of each element type map to the hit testability of the element
-				// (Invisible when it has no Background/Fill) and to UIElement.HitTest, inside the bounds it renders in.
-				if (element.GetHitTestVisibility() == HitTestability.Visible
+				// TODO Uno: The HitTestLocalInternal overrides of each element type map to UIElement.IsViewHit (false when it
+				// has no Background/Fill) and to UIElement.HitTest, inside the bounds it renders in. The coerced
+				// HitTestVisibility is not used, IsEnabledAndVisibleForHitTest already gated the walk.
+				if (element.IsViewHit()
 					&& new Rect(default, element.LayoutSlotWithMarginsAndAlignments.Size).Contains(target)
 					&& element.HitTest(target))
 				{
 					return true;
 				}
 
-				// Various uielements don't implement HitTestLocalInternal and rely on the base implementation.
-				// Most of these require a very basic hit test algorithm - hit against the bounds.
-				// Examples include ItemsPresenter, Page and UserControl. These don't hit by default, but
-				// we will want them in InvisibleHitTestMode.
+				// TODO Uno: In InvisibleHitTestMode, UIElement.HitTestInvisible stands for HitTestLocalInternal. Border, Panel,
+				// ContentPresenter and Shape test their geometry as if a null background/fill were solid, the base
+				// implementation hits against the bounds.
 				if (m_invisibleHitTestMode)
 				{
-					var rc = new Rect(0, 0, element.ActualSize.X, element.ActualSize.Y);
-					return rc.Contains(target);
+					return element.HitTestInvisible(target);
 				}
 
 				return false;

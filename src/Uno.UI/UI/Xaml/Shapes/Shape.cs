@@ -299,6 +299,12 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private protected CompositionSpriteShape SpriteShape => _shape;
 
+		// MUX Reference dxaml\xcp\core\core\elements\shape.cpp (CShape::HitTestLocalInternalImpl), tag winui3/release/2.5.4-experimental
+		// If InvisibleHitTestMode is set and the fill is NULL, hittest this shape as if it
+		// has a solid color fill instead. A null stroke is tested as if its thickness is zero.
+		internal override bool HitTestInvisible(Point relativeLocation)
+			=> _shape.HitTest(relativeLocation, treatNullFillAsSolid: true);
+
 		public Shape()
 		{
 			var visual = Visual;

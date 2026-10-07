@@ -45,6 +45,9 @@ public partial class Border : FrameworkElement
 
 	private protected override Thickness GetBorderThickness() => BorderThickness;
 
+	internal override bool HitTestInvisible(global::Windows.Foundation.Point relativeLocation)
+		=> HitTestLocalInternalImpl(this, relativeLocation, invisibleHitTestMode: true);
+
 
 	#region Child DependencyProperty
 

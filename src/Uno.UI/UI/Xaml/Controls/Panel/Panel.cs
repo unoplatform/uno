@@ -189,6 +189,9 @@ public partial class Panel : FrameworkElement, IPanel
 
 	private protected override Thickness GetBorderThickness() => BorderThicknessInternal;
 
+	internal override bool HitTestInvisible(Point relativeLocation)
+		=> Border.HitTestLocalInternalImpl(this, relativeLocation, invisibleHitTestMode: true);
+
 	internal override bool CanHaveChildren() => true;
 
 	public Brush Background
