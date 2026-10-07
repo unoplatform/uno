@@ -253,6 +253,8 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly Dictionary<int, InlineObjectInfo>? _inlineObjects;
 	private readonly Dictionary<int, global::Microsoft.UI.Text.TabLeader>? _tabLeaders;
 	private readonly Size _availableSize;
+	private readonly bool _layoutUsesAvailableWidth;
+	private readonly bool _layoutUsesAvailableHeight;
 
 	internal unsafe UnicodeText(
 		Size availableSize,
@@ -494,6 +496,10 @@ internal readonly partial struct UnicodeText : IParsedText
 				GetParagraphLeftInset(endingParagraphLayout, firstLine: true) + GetParagraphRightInset(endingParagraphLayout, firstLine: true),
 				_endingLineContentTop + _endingNewLineLineHeight.Value + (endingParagraphLayout?.SpaceAfter ?? 0));
 			_availableSize = availableSize;
+			_layoutUsesAvailableWidth = _rtl // caret placement
+				|| _textAlignment is TextAlignment.Center or TextAlignment.Right or TextAlignment.Justify
+				|| endingParagraphAlignment is not null
+				|| endingParagraphLayout is not null;
 			_xyTable = [];
 			_indexToCluster = [];
 			_inlineObjects = null;
@@ -967,6 +973,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		ApplyParagraphJustification(lines, _text, (float)availableSize.Width, textAlignment!.Value);
 
 		var textEndsInLineBreak = IsLineBreak(_text, _text.Length);
+		// Lines that do not fit the available height are dropped below, so the height only matters past one line.
+		_layoutUsesAvailableHeight = lines.Count + (textEndsInLineBreak ? 1 : 0) > 1;
 		var (terminalNaturalHeight, terminalNaturalBaseline) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, defaultFontDetails, false, true);
 		var terminalEffectiveHeight = endingParagraphLayout is null
 			? terminalNaturalHeight
@@ -1290,7 +1298,23 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		calculatedSize = new Size(maxLineWidth, finalHeight);
 		_availableSize = availableSize;
+		_layoutUsesAvailableWidth = textWrapping != TextWrapping.NoWrap
+			|| textTrimming != TextTrimming.None
+			|| _rtl
+			|| _textAlignment is TextAlignment.Center or TextAlignment.Right or TextAlignment.Justify // see GetAlignmentOffsetForLine
+			|| paragraphAlignments is not null
+			|| paragraphLayouts is not null
+			|| endingParagraphAlignment is not null
+			|| endingParagraphLayout is not null;
 	}
+
+	/// <summary>
+	/// Whether laying the same text out in <paramref name="availableSize"/> would give this exact result, because the
+	/// dimensions that differ from the size this was parsed with are not ones the layout depends on.
+	/// </summary>
+	internal bool IsLayoutValidFor(Size availableSize)
+		=> (!_layoutUsesAvailableWidth || availableSize.Width == _availableSize.Width)
+		&& (!_layoutUsesAvailableHeight || availableSize.Height == _availableSize.Height);
 
 	// Printable ASCII (plus tab) has no mandatory line breaks and needs no ICU break analysis for NoWrap text.
 	private static bool IsAsciiWithoutLineBreaks(string text)
@@ -1616,9 +1640,13 @@ internal readonly partial struct UnicodeText : IParsedText
 				runBreakIndex++;
 			}
 
-			while (WordBoundaries[wordBoundariesIndex] <= cluster.Value.start)
+			// Word boundaries only place spell-check squiggles; computing them runs ICU word breaking on the first draw.
+			if (_corrections is not null)
 			{
-				wordBoundariesIndex++;
+				while (WordBoundaries[wordBoundariesIndex] <= cluster.Value.start)
+				{
+					wordBoundariesIndex++;
+				}
 			}
 
 			var lineIndex = cluster.Value.lineIndex;
