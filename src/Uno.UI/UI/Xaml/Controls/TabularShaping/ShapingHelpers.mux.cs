@@ -39,8 +39,9 @@ internal static partial class ShapingHelpers
 		Unknown,
 	}
 
-	// TODO Uno: IPropertyValue projection, the equivalent of try_as<IPropertyValue>(). WinRT boxes only value types
-	// and strings, so any other reference type is not an IPropertyValue; a boxed enum is an IReference<Enum> (OtherType).
+	// TODO Uno: IPropertyValue projection, the equivalent of try_as<IPropertyValue>(). The CsWinRT CCW of a .NET value
+	// offers IPropertyValue only for WinRT scalars, string, Guid, DateTimeOffset, TimeSpan and projected structs/enums
+	// (OtherType). decimal, System.DateTime, tuples and app structs/enums fall back to IStringable, as in WinUI.
 	private static bool IsPropertyValue(object? value) =>
 		value is not null && ValueConversionHelpers.TryGetPropertyType(value, out _);
 
@@ -56,7 +57,6 @@ internal static partial class ShapingHelpers
 		propertyValue switch
 		{
 			DateTimeOffset dateTimeOffset => dateTimeOffset.UtcTicks - c_winrtDateTimeEpochTicks,
-			DateTime dateTime => dateTime.ToUniversalTime().Ticks - c_winrtDateTimeEpochTicks,
 			_ => 0,
 		};
 

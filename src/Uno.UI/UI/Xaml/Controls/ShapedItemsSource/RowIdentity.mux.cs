@@ -52,10 +52,16 @@ partial class RowIdentity
 			// objects never collide -- including two boxed copies of the same value, which are
 			// separate objects and therefore separate rows.
 			// TODO Uno: there is no IUnknown address in .NET; ObjectIdentityHelper hands out a stable id per live object.
+			// A string or value-type row is an IPropertyValue box, and under C#/WinRT every read through the ABI
+			// mints a new box, so such a row never keeps its identity across reads and equal values never collide.
+			// The fresh object below stands in for that new box; keying the .NET reference instead would merge
+			// interned strings and reused boxes into one identity.
 			// Original C++:
 			// auto const unknown = item.as<winrt::Windows::Foundation::IUnknown>();
 			// auto const address = reinterpret_cast<uintptr_t>(winrt::get_abi(unknown));
-			var address = ObjectIdentityHelper.GetId(item);
+			var address = ValueConversionHelpers.TryGetPropertyType(item, out _)
+				? ObjectIdentityHelper.GetId(new object())
+				: ObjectIdentityHelper.GetId(item);
 
 			// swprintf_s(buffer, L"0x%zx", static_cast<size_t>(address));
 			return "0x" + address.ToString("x", CultureInfo.InvariantCulture);
