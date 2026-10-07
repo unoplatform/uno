@@ -1087,6 +1087,34 @@ WinUI types is unaffected.
   …), automation pattern identifiers, and static-like helpers (`VisualTreeHelper`,
   `XamlReader`, `BindingOperations`, `ToolTipService`, `FontWeights`, …). Use their static
   members, or get the instance from the framework.
+- **`DependencyObject` has a `protected` constructor**, as in WinUI. Derive from it instead of
+  creating a bare instance.
+- **Base classes WinUI doesn't let you derive from are no longer constructible.** This covers
+  `UIElement`, `Selector`, `IconElement`, `IconSource`, `MenuFlyoutItemBase`,
+  `NavigationViewItemBase`, `VirtualizingPanel`, `TextElement`, `Transition`, `ImageSource`,
+  `BitmapSource`, `Layout`, `PathSegment`, the abstract composition types (`Visual`,
+  `CompositionObject`, `CompositionBrush`, …) and others. Derive from a WinUI type that has
+  a `protected` constructor, such as `FrameworkElement`, `Control` or `Panel`.
+- **Uno-only convenience constructors are gone.** Use the WinUI constructor and set the
+  properties instead:
+
+  | Removed | Replacement |
+  |---------|-------------|
+  | `new Thickness(leftRight, topBottom)` | `new Thickness(leftRight, topBottom, leftRight, topBottom)` |
+  | `new RelativeSource(mode)` | `new RelativeSource { Mode = mode }` |
+  | `new PropertyMetadata(callback)` | `new PropertyMetadata(null, callback)` |
+  | `new KeySpline(x1, y1, x2, y2)` | `new KeySpline { ControlPoint1 = new(x1, y1), ControlPoint2 = new(x2, y2) }` |
+  | `new LinearDoubleKeyFrame(value, keyTime)` (and the other `*DoubleKeyFrame` value overloads) | `new LinearDoubleKeyFrame { Value = value, KeyTime = keyTime }` |
+  | `new DoubleCollection(values)`, `new PointCollection(points)` | Create the collection, then `Add` each item |
+  | `new TargetPropertyPath(target, path)` | `new TargetPropertyPath { Target = target, Path = path }` |
+  | `new PivotItem(header)` | `new PivotItem { Header = header }` |
+
+- **Framework-raised types lose their public constructor.** Event arguments
+  (`DataContextChangedEventArgs`, `WindowSizeChangedEventArgs`, `DragCompletedEventArgs`, …),
+  `Pointer`, `PointerDevice`, `Geoposition`, `Geocoordinate`, `RoutedEvent` and
+  `CoreWebView2NavigationStartingEventArgs` can only be obtained from the framework, as in WinUI.
+  `WebAuthenticationResult` keeps its public constructor, because a custom
+  `IWebAuthenticationBrokerProvider` returns it.
 - **`ObjectKeyFrameCollection` has a public constructor**, as in WinUI.
 - **`XamlLight.CompositionLight` is `protected`**, as in WinUI. Set it from your `XamlLight`
   subclass.
