@@ -342,10 +342,15 @@ public partial class GestureRecognizer
 				Stop();
 
 				_time = Stopwatch.StartNew();
+				TimeSpan? origin = null;
 				_handler = (_, args) =>
 				{
-					// Note: We are not using the ((Microsoft.UI.Xaml.Media.RenderingEventArgs)args).RenderingTime as we are not able to have the value at t0
-					onTick(_time.Elapsed);
+					var frameTime = ((RenderingEventArgs)args).RenderingTime;
+
+					// The start falls between frames, so the first step is measured on the real clock and every
+					// later one by the frame times.
+					origin ??= frameTime - _time.Elapsed;
+					onTick(frameTime - origin.Value);
 				};
 
 				CompositionTarget.Rendering += _handler;

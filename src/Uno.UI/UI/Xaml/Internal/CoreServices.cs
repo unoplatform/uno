@@ -61,13 +61,35 @@ namespace Uno.UI.Xaml.Core
 
 		internal static void RequestAdditionalFrame()
 		{
-			if (GetXamlRoot() is { Bounds: { Width: not 0, Height: not 0 } } &&
+			if (HasRootWithBounds() &&
 				Interlocked.CompareExchange(ref _isAdditionalFrameRequested, 1, 0) == 0)
 			{
 				// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
 				NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Normal);
 			}
 		}
+
+		// Any root, not only the first: a minimized main window must not stop the others' layout and frame ticks.
+		private static bool HasRootWithBounds()
+		{
+			var contentRoots = CoreServices.Instance.ContentRootCoordinator.ContentRoots;
+			if (contentRoots.Count == 0)
+			{
+				return GetXamlRoot() is { } xamlRoot && HasBounds(xamlRoot);
+			}
+
+			foreach (var contentRoot in contentRoots)
+			{
+				if (contentRoot.XamlRoot is { } xamlRoot && HasBounds(xamlRoot))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static bool HasBounds(XamlRoot xamlRoot) => xamlRoot.Bounds is { Width: not 0, Height: not 0 };
 
 		private static void OnTick()
 		{
@@ -111,6 +133,32 @@ namespace Uno.UI.Xaml.Core
 			// -----------------------------
 			// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
 
+			// Before layout and before the record: what the frame's motion writes is then an ordinary pre-frame
+			// invalidation, and the layout it dirties is cleaned by this same tick instead of the next one.
+			CompositionTarget.RaiseFrameTick();
+
+			UpdateLayoutAndRaiseLoaded();
+
+			// As in WinUI, Rendering sees this tick's layout, and what its handlers change is laid out again
+			// before the record.
+			if (CompositionTarget.RaiseRendering())
+			{
+				UpdateLayoutAndRaiseLoaded();
+			}
+
+#if __SKIA__
+			foreach (var window in ApplicationHelper.WindowsInternal)
+			{
+				if (window.RootElement?.XamlRoot is { } xamlRoot && HasBounds(xamlRoot))
+				{
+					(xamlRoot.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+				}
+			}
+#endif
+		}
+
+		private static void UpdateLayoutAndRaiseLoaded()
+		{
 			// This happens for Islands.
 			if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland })
 			{
@@ -125,7 +173,8 @@ namespace Uno.UI.Xaml.Core
 
 			foreach (var window in ApplicationHelper.WindowsInternal)
 			{
-				if (window.RootElement is not { } root)
+				// A window without bounds (minimized) would only be laid out at 0x0.
+				if (window.RootElement is not { } root || (root.XamlRoot is { } xamlRoot && !HasBounds(xamlRoot)))
 				{
 					continue;
 				}
@@ -137,10 +186,6 @@ namespace Uno.UI.Xaml.Core
 					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					root.UpdateLayout();
 				}
-
-#if __SKIA__
-				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
-#endif
 			}
 		}
 
