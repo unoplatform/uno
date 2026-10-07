@@ -110,6 +110,19 @@ public class Given_ShapingPipeline
 	}
 
 	[TestMethod]
+	public void When_Sort_Key_Throws_Row_Sorts_As_Null()
+	{
+		var pipeline = new ShapingHelpers.ShapingPipeline();
+		pipeline.SetSort("", "rank", item => ((Entry)item!).Rank > 0 ? ((Entry)item!).Rank : throw new InvalidOperationException(), null, "Rank", SortDirection.Ascending);
+
+		// A throwing key selector yields a null key, which sorts first; the sort itself is not aborted.
+		var rows = Rows(new("c", 3), new("a", 1), new("bad", 0), new("b", 2));
+		pipeline.ApplySort(rows);
+
+		CollectionAssert.AreEqual(new[] { "bad", "a", "b", "c" }, Names(rows));
+	}
+
+	[TestMethod]
 	public void When_Sort_Direction_None_Removes_Axis()
 	{
 		var pipeline = new ShapingHelpers.ShapingPipeline();

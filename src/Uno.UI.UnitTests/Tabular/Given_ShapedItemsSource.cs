@@ -170,4 +170,34 @@ public class Given_ShapedItemsSource
 		// A verb requires object identity, which two rows backed by one object cannot provide.
 		Assert.ThrowsExactly<ArgumentException>(() => shaped.SetSort("", "rank", s_byRank, null, "Rank", SortDirection.Ascending));
 	}
+
+	private static readonly ShapingHelpers.KeySelector s_byValue = item => item;
+
+	[TestMethod]
+	public void When_Equal_Strings_On_Two_Rows_With_A_Verb()
+	{
+		var source = new ObservableCollection<string> { "b", "a", "b" };
+		var shaped = Start(source, out _);
+
+		// Each read of a string row through the WinRT ABI is a new IPropertyValue box, so equal strings
+		// are distinct rows, unlike one object shared by two rows.
+		shaped.SetSort("", "value", s_byValue, null, "", SortDirection.Ascending);
+
+		CollectionAssert.AreEqual(new[] { "a", "b", "b" }, shaped.Rows()!.Cast<string>().ToArray());
+	}
+
+	[TestMethod]
+	public void When_Sorted_String_Row_Removed()
+	{
+		var source = new ObservableCollection<string> { "c", "a", "b" };
+		var shaped = Start(source, out var changes);
+		shaped.SetSort("", "value", s_byValue, null, "", SortDirection.Ascending);
+		changes.Clear();
+
+		// The removed item is a fresh box with no tracked identity, so the splice falls back to a Reset.
+		source.RemoveAt(1);
+
+		CollectionAssert.AreEqual(new[] { "b", "c" }, shaped.Rows()!.Cast<string>().ToArray());
+		CollectionAssert.AreEqual(new[] { CollectionChange.Reset }, changes);
+	}
 }
