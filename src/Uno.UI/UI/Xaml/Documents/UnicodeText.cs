@@ -398,7 +398,8 @@ internal readonly partial struct UnicodeText : IParsedText
 						requestsTextPresentation |= codepoint == 0xFE0E;
 						if (NotoFontFallbackService.IsEmojiCodepoint(codepoint))
 						{
-							var needsFallback = codepoint >= 0x1F000 || !inline.FontInfo.FontHandle.ContainsGlyph(codepoint);
+							var needsFallback = NotoFontFallbackService.IsEmojiPresentationCodepoint(codepoint)
+								&& (codepoint >= 0x1F000 || !inline.FontInfo.FontHandle.ContainsGlyph(codepoint));
 							if (emojiCodepoint is null || needsFallback && !requiresEmojiFallback)
 							{
 								emojiCodepoint = codepoint;

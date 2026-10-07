@@ -97,6 +97,21 @@ internal static class NotoFontFallbackService
 		(0x1FAEF, 0x1FAF9),
 	];
 
+	// Emoji_Presentation=Yes codepoints below U+1F000 (emoji-data.txt). Everything else in _emojiRanges below
+	// U+1F000 defaults to text presentation, so it only gets the color font when U+FE0F asks for it.
+	private static readonly (int Start, int End)[] _emojiPresentationRanges =
+	[
+		(0x231A, 0x231C), (0x23E9, 0x23ED), (0x23F0, 0x23F1), (0x23F3, 0x23F4),
+		(0x25FD, 0x25FF), (0x2614, 0x2616), (0x2648, 0x2654), (0x267F, 0x2680),
+		(0x2693, 0x2694), (0x26A1, 0x26A2), (0x26AA, 0x26AC), (0x26BD, 0x26BF),
+		(0x26C4, 0x26C6), (0x26CE, 0x26CF), (0x26D4, 0x26D5), (0x26EA, 0x26EB),
+		(0x26F2, 0x26F4), (0x26F5, 0x26F6), (0x26FA, 0x26FB), (0x26FD, 0x26FE),
+		(0x2705, 0x2706), (0x270A, 0x270C), (0x2728, 0x2729), (0x274C, 0x274D),
+		(0x274E, 0x274F), (0x2753, 0x2756), (0x2757, 0x2758), (0x2795, 0x2798),
+		(0x27B0, 0x27B1), (0x27BF, 0x27C0), (0x2B1B, 0x2B1D), (0x2B50, 0x2B51),
+		(0x2B55, 0x2B56),
+	];
+
 	public static IFontFallbackService Instance { get; } = CreateInstance();
 
 	private static IFontFallbackService CreateInstance()
@@ -113,14 +128,19 @@ internal static class NotoFontFallbackService
 		return new EmojiAwareFallbackService(textService, emojiService);
 	}
 
-	internal static bool IsEmojiCodepoint(int codepoint)
+	internal static bool IsEmojiCodepoint(int codepoint) => IsInRanges(_emojiRanges, codepoint);
+
+	internal static bool IsEmojiPresentationCodepoint(int codepoint)
+		=> codepoint >= 0x1F000 ? IsEmojiCodepoint(codepoint) : IsInRanges(_emojiPresentationRanges, codepoint);
+
+	private static bool IsInRanges((int Start, int End)[] ranges, int codepoint)
 	{
 		var low = 0;
-		var high = _emojiRanges.Length - 1;
+		var high = ranges.Length - 1;
 		while (low <= high)
 		{
 			var middle = low + (high - low) / 2;
-			var range = _emojiRanges[middle];
+			var range = ranges[middle];
 			if (codepoint < range.Start)
 			{
 				high = middle - 1;
@@ -207,13 +227,20 @@ internal static class NotoFontFallbackService
 
 		public async Task<string?> GetFontFamilyForCodepoint(int codepoint)
 		{
-			if (IsEmojiCodepoint(codepoint)
-				&& await _emojiService.GetFontFamilyForCodepoint(codepoint) is { } emojiFamily)
+			if (!IsEmojiCodepoint(codepoint))
 			{
-				return emojiFamily;
+				return await _textService.GetFontFamilyForCodepoint(codepoint);
 			}
 
-			return await _textService.GetFontFamilyForCodepoint(codepoint);
+			// Text-presentation symbols (e.g. U+26A0) prefer a monochrome text font, like DirectWrite.
+			if (!IsEmojiPresentationCodepoint(codepoint)
+				&& await _textService.GetFontFamilyForCodepoint(codepoint) is { } textFamily)
+			{
+				return textFamily;
+			}
+
+			return await _emojiService.GetFontFamilyForCodepoint(codepoint)
+				?? await _textService.GetFontFamilyForCodepoint(codepoint);
 		}
 
 		public Task<Stream?> GetFontStreamForFontFamily(
