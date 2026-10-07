@@ -127,8 +127,10 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 		try
 		{
-			return ExploreByTouchHelper.DispatchHoverEvent(e) ||
-				base.DispatchHoverEvent(e);
+			// While touch exploring, the host's own hover handling would move the screen reader's focus to the whole page.
+			return ExploreByTouchHelper.IsTouchExplorationEnabled
+				? ExploreByTouchHelper.DispatchHoverEvent(e)
+				: base.DispatchHoverEvent(e);
 		}
 		catch (System.Exception error)
 		{
