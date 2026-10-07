@@ -144,8 +144,18 @@ public class Given_ShapedItemsSource
 		CollectionAssert.AreEqual(new[] { "a", "b", "c", "d" }, Names(shaped));
 		CollectionAssert.AreEqual(new[] { CollectionChange.ItemInserted }, changes);
 
+		// Sorted: a single Remove drops the tracked row instead of a rebuild.
+		changes.Clear();
 		source.RemoveAt(0);
 		CollectionAssert.AreEqual(new[] { "b", "c", "d" }, Names(shaped));
+		CollectionAssert.AreEqual(new[] { CollectionChange.ItemRemoved }, changes);
+
+		// Sorted: an Add that ties an existing key and is not the last source item cannot be placed
+		// incrementally (source order decides the tie), so it falls back to one Reset.
+		changes.Clear();
+		source.Insert(0, new Entry("x", 3));
+		CollectionAssert.AreEqual(new[] { "b", "x", "c", "d" }, Names(shaped), "the tie keeps source order");
+		CollectionAssert.AreEqual(new[] { CollectionChange.Reset }, changes);
 	}
 
 	[TestMethod]
