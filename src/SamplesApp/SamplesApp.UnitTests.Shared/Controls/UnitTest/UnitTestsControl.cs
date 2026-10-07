@@ -747,18 +747,25 @@ namespace Uno.UI.Samples.Tests
 			  DynamicallyAccessedMemberTypes.PublicParameterlessConstructor
 			| DynamicallyAccessedMemberTypes.PublicMethods;
 
-		public async Task RunTestsForInstance<[DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] T>(T testClassInstance)
+		public Task RunTestsForInstance<[DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] T>(T testClassInstance)
+			=> RunTestsForInstance(testClassInstance, BuildConfig());
+
+		internal async Task RunTestsForInstance<[DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] T>(T testClassInstance, UnitTestEngineConfig engineConfig)
 		{
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
 			testResults.Children.Clear();
+
+			_currentRun = new TestRun()
+			{
+				StartTime = DateTimeOffset.UtcNow
+			};
 
 			try
 			{
 				try
 				{
 					var testTypeInfo = BuildType(typeof(T));
-					var engineConfig = BuildConfig();
 
 					await ExecuteTestsForInstance(_cts.Token, testClassInstance, testTypeInfo, engineConfig);
 				}
