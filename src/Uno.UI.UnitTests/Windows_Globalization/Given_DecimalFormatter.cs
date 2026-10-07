@@ -44,6 +44,19 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[DataRow(-0.5d, "-0.50")]
+		[DataRow(-1.5d, "-1.50")]
+		[DataRow(3000000000.5d, "3000000000.50")]
+		[DataRow(-3000000000.5d, "-3000000000.50")]
+		public void When_FormatDouble_Negative_Or_Beyond_Int32(double value, string expected)
+		{
+			var sut = MakeFormatter();
+			sut.FractionDigits = 2;
+
+			Assert.AreEqual(expected, sut.FormatDouble(value));
+		}
+
+		[TestMethod]
 		[DataRow(1234, 2, 0, "1,234")]
 		[DataRow(1234, 6, 0, "001,234")]
 		[DataRow(1234.56, 2, 2, "1,234.56")]
