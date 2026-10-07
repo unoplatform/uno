@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,16 @@ public static class ShellFunctions
 	public static Visibility Collapsed(bool value) => value ? Visibility.Collapsed : Visibility.Visible;
 
 	public static bool Not(bool value) => !value;
+
+	/// <summary>Phones, where every target is finger-sized.</summary>
+	internal static bool IsTouchPlatform => OperatingSystem.IsAndroid() || OperatingSystem.IsIOS();
+
+	/// <summary>Touch-sized targets and no shortcut hints: phones, or Simulate touch.</summary>
+	internal static bool IsTouchShell => IsTouchPlatform
+#if HAS_UNO
+		|| SampleChooserViewModel.Instance is { SimulateTouch: true }
+#endif
+		;
 
 	public static bool NotEmpty(string? value) => !string.IsNullOrWhiteSpace(value);
 

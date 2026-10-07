@@ -17,12 +17,15 @@ partial class SampleChooserControl
 	private const double RailWidth = 48;
 	private const double OverlayDismissGutter = 48;
 
+	private const double TouchRowHeight = 40;
+
 	private SampleChooserViewModel? _shellViewModel;
 	private bool _syncingRail;
 
 	private void InitializeShell()
 	{
 		ApplyShortcutHints();
+		InitializeRowHeight();
 
 		ShellOpenInNewWindowButton.Visibility = ShellFunctions.Visible(SampleChooserViewModel.CanCreateNewWindow);
 		ShellLogViewDumpButton.Visibility = ShellFunctions.Visible(SampleChooserViewModel.IsDebug);
@@ -63,6 +66,7 @@ partial class SampleChooserControl
 		SyncRailSelection();
 		UpdateFavoriteIcon();
 		UpdateSampleCommands();
+		UpdateRowHeight();
 	}
 
 	private void OnShellViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -87,6 +91,12 @@ partial class SampleChooserControl
 			case nameof(SampleChooserViewModel.CurrentBreadcrumb):
 				UpdateSampleCommands();
 				break;
+
+#if HAS_UNO
+			case nameof(SampleChooserViewModel.SimulateTouch):
+				UpdateRowHeight();
+				break;
+#endif
 		}
 	}
 
@@ -201,6 +211,41 @@ partial class SampleChooserControl
 	}
 
 	private void ShellRoot_SizeChanged(object sender, SizeChangedEventArgs e) => UpdatePaneLength();
+
+	private ListView[] PaneLists => [ShellCategoriesList, ShellSamplesList, ShellFavoritesList, ShellRecentsList];
+
+	private double DesktopRowHeight => (double)Resources["ShellRowMinHeight"];
+
+	private double PaneRowHeight => ShellFunctions.IsTouchShell ? TouchRowHeight : DesktopRowHeight;
+
+	// The stock ListViewItem style only reads ListViewItemMinHeight when a container is styled, so containers are also stamped as they are (re)used.
+	private void InitializeRowHeight()
+	{
+		ShellBrowserPane.Resources["ListViewItemMinHeight"] = PaneRowHeight;
+		foreach (var list in PaneLists)
+		{
+			list.ContainerContentChanging += (_, args) => args.ItemContainer.MinHeight = PaneRowHeight;
+		}
+	}
+
+	private void UpdateRowHeight()
+	{
+		var height = PaneRowHeight;
+		ShellBrowserPane.Resources["ListViewItemMinHeight"] = height;
+		foreach (var list in PaneLists)
+		{
+			if (list.ItemsPanelRoot is { } panel)
+			{
+				foreach (var child in panel.Children)
+				{
+					if (child is ListViewItem item)
+					{
+						item.MinHeight = height;
+					}
+				}
+			}
+		}
+	}
 
 	// On a phone the overlay pane leaves a strip of the content column to tap away; it takes no room while the chrome is hidden.
 	private void UpdatePaneLength()
