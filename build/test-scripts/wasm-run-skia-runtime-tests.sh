@@ -24,8 +24,10 @@ rawurlencode() {
 # For Skia-WASM, SamplesApp is set up so that when saving files, it
 # sends a POST request at HOSTNAME:PORT+1 where HOSTNAME and PORT are
 # the hostname and port of the server that serves the SamplesApp
-python -m http.server 8000 -d "$SAMPLESAPPARTIFACTPATH" &
-python $BUILD_SOURCESDIRECTORY/build/test-scripts/skia-browserwasm-file-creation-server.py 8001 &
+# macOS agents have python3 but no python.
+PYTHON=$(command -v python3 || command -v python)
+"$PYTHON" -m http.server 8000 -d "$SAMPLESAPPARTIFACTPATH" &
+"$PYTHON" $BUILD_SOURCESDIRECTORY/build/test-scripts/skia-browserwasm-file-creation-server.py 8001 &
 sleep 10
 
 # A label (e.g. -webgpu) keeps a variant lane's results and retry list apart from the default lane's.
@@ -46,7 +48,8 @@ echo "##vso[task.setvariable variable=UNO_TESTS_STEP_RAN]true"
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
-	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`
+	# Not `base64 -w 0`: the BSD base64 on macOS has no -w.
+	export UITEST_RUNTIME_TESTS_FILTER=`base64 < $UNO_TESTS_FAILED_LIST | tr -d '\n'`
 
     # Replace the `=` with `!` to avoid url encoding issues
     UITEST_RUNTIME_TESTS_FILTER=${UITEST_RUNTIME_TESTS_FILTER//=/!}
@@ -77,7 +80,17 @@ export UNO_TEST_CHROME_FLAGS=${UNO_TEST_CHROME_FLAGS:-}
 export UNO_TEST_BROWSER_SIZE=${UNO_TEST_BROWSER_SIZE:-1920x1080}
 
 # The software-rendered lanes scale with cores, and Chrome needs a writable profile; record both.
-echo "Agent: $(nproc) cores, user=$(id -un), HOME=${HOME:-unset}, shm: $(df -h /dev/shm 2>/dev/null | tail -1)"
+echo "Agent: $(nproc 2>/dev/null || sysctl -n hw.ncpu) cores, user=$(id -un), HOME=${HOME:-unset}, shm: $(df -h /dev/shm 2>/dev/null | tail -1)"
+
+IS_MACOS=false
+if [ "$(uname)" = "Darwin" ]; then
+    IS_MACOS=true
+    MACOS_CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    # The hosted macOS agents have a (paravirtual) GPU, which is why a WebGPU lane runs there: record what it is.
+    system_profiler SPDisplaysDataType || true
+    # IFS is newline/tab here, so split the flags on spaces explicitly.
+    IFS=' ' read -r -a MACOS_CHROME_FLAGS <<< "$UNO_TEST_CHROME_FLAGS"
+fi
 
 TRY_COUNT=0
 
@@ -105,7 +118,13 @@ while [ $TRY_COUNT -lt 5 ]; do
     # --no-first-run/--no-default-browser-check/--disable-search-engine-choice-screen stop the first-run
     # experience from swallowing the command-line URL on the agent's brand-new profile: without them
     # chrome starts but never navigates, so the canary never appears.
-    xvfb-run --auto-servernum --server-args="-screen 0 ${UNO_TEST_BROWSER_SIZE}x24" sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size=$3 $2 "$1"' _ "${RUNTIME_TESTS_URL}" "${UNO_TEST_CHROME_FLAGS}" "${UNO_TEST_BROWSER_SIZE/x/,}" &
+    if [ "$IS_MACOS" = true ]; then
+        # The agent has a logged-in desktop session, so Chrome gets a real window and the GPU; no xvfb.
+        killall -9 "Google Chrome" || true
+        "$MACOS_CHROME" --enable-logging=stderr --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size="${UNO_TEST_BROWSER_SIZE/x/,}" ${MACOS_CHROME_FLAGS[@]+"${MACOS_CHROME_FLAGS[@]}"} "${RUNTIME_TESTS_URL}" &
+    else
+        xvfb-run --auto-servernum --server-args="-screen 0 ${UNO_TEST_BROWSER_SIZE}x24" sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size=$3 $2 "$1"' _ "${RUNTIME_TESTS_URL}" "${UNO_TEST_CHROME_FLAGS}" "${UNO_TEST_BROWSER_SIZE/x/,}" &
+    fi
 
     # wait one minute for the canary file to be created, otherwise fail the script.
     # This may happen if xvfb-run of chrome fails to start
