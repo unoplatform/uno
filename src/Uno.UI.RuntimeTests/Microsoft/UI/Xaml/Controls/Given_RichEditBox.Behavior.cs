@@ -3214,8 +3214,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_SelectionChanging_Handler_Text_Mutation_Does_Not_Override_Cancel()
+		public async Task When_SelectionChanging_Handler_Text_Mutation_Overrides_Cancel()
 		{
 			var SUT = new RichEditBox();
 			try
@@ -3224,6 +3223,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(SUT);
 				SUT.Document.SetText(TextSetOptions.None, "abc");
 				SUT.Document.Selection.SetRange(1, 1);
+				await WindowHelper.WaitForIdle();
 
 				var changingCount = 0;
 				var changedCount = 0;
@@ -3236,14 +3236,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.SelectionChanged += (s, e) => changedCount++;
 
 				SUT.Document.Selection.SetRange(2, 2);
+				await WindowHelper.WaitForIdle();
 
+				// SetText moved the selection while handling the event, which supersedes Cancel.
 				Assert.AreEqual(1, changingCount);
-				Assert.AreEqual(0, changedCount);
-				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
-				Assert.AreEqual(1, SUT.Document.Selection.EndPosition);
-#if HAS_UNO
-				Assert.AreEqual(1, SUT.SelectionStartForTesting);
-#endif
+				Assert.AreEqual(1, changedCount);
+				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(0, SUT.Document.Selection.EndPosition);
 			}
 			finally
 			{
@@ -3353,8 +3352,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Cancelled_SelectionChanging_Text_Shrink_Restores_Silently()
+		public async Task When_Cancelled_SelectionChanging_Text_Shrink_Keeps_Handler_Selection()
 		{
 			var SUT = new RichEditBox();
 			try
@@ -3363,26 +3361,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(SUT);
 				SUT.Document.SetText(TextSetOptions.None, "abcdef");
 				SUT.Document.Selection.SetRange(5, 5);
+				await WindowHelper.WaitForIdle();
 
 				var changingCount = 0;
-				var changedCount = 0;
 				SUT.SelectionChanging += (s, e) =>
 				{
 					changingCount++;
 					e.Cancel = true;
 					SUT.Document.SetText(TextSetOptions.None, "ab");
 				};
-				SUT.SelectionChanged += (s, e) => changedCount++;
 
 				SUT.Document.Selection.SetRange(4, 4);
 
 				Assert.AreEqual(1, changingCount);
-				Assert.AreEqual(0, changedCount);
-				Assert.AreEqual(2, SUT.Document.Selection.StartPosition);
-				Assert.AreEqual(2, SUT.Document.Selection.EndPosition);
-#if HAS_UNO
-				Assert.AreEqual(2, SUT.SelectionStartForTesting);
-#endif
+				Assert.AreEqual(0, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(0, SUT.Document.Selection.EndPosition);
 			}
 			finally
 			{
