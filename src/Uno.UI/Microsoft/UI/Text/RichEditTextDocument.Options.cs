@@ -85,15 +85,15 @@ namespace Microsoft.UI.Text
 		}
 
 		/// <summary>
-		/// Returns whether the current selection can be copied to the clipboard, i.e. the selection is
-		/// non-degenerate.
+		/// Returns whether copying is allowed. Like WinUI, this does not depend on the selection, so callers
+		/// check for a non-degenerate selection themselves.
 		/// </summary>
-		public bool CanCopy() => Selection.StartPosition != Selection.EndPosition;
+		public bool CanCopy() => true;
 
 		/// <summary>
-		/// Returns whether the clipboard currently holds text, RTF, or bitmap content that can be pasted.
+		/// Returns whether the document is editable and the clipboard holds text, RTF, or bitmap content that can be pasted.
 		/// </summary>
-		public bool CanPaste() => CanPaste(TomClipboardFormat.Best);
+		public bool CanPaste() => !IsOwnerReadOnly && CanPaste(TomClipboardFormat.Best);
 
 		internal bool CanPaste(int format)
 		{
