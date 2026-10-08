@@ -1609,15 +1609,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 			else if (shouldRenderCluster)
 			{
-				var color = foregroundOverride ?? (useHighContrastAdjustment
-					? WithOpacity(
-						highlighter.Value.background is not null
-							? highContrastSelectionForeground
-							: highContrastForeground,
-						effectiveOpacity)
-					: BrushToColor(
-						highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground,
-						effectiveOpacity));
+				var color = GetForegroundColor(_runBreaks[runBreakIndex].foreground);
 				var key = (color, GetRunOutline(cluster.Value, _runBreaks));
 				if (!colorAndOutlineToFontToGlyphs.TryGetValue(key, out var fontToGlyphs))
 				{
@@ -1654,10 +1646,21 @@ internal readonly partial struct UnicodeText : IParsedText
 					unalignedX + alignmentOffset,
 					unalignedX + alignmentOffset + cluster.Value.width,
 					positionAcc.Y,
-					BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, effectiveOpacity),
+					GetForegroundColor(_runBreaks[runBreakIndex].foreground),
 					fontDetails,
 					tabLeader));
 			}
+
+			Color GetForegroundColor(Brush? runForeground)
+				=> foregroundOverride ?? (useHighContrastAdjustment
+					? WithOpacity(
+						highlighter.Value.background is not null
+							? highContrastSelectionForeground
+							: highContrastForeground,
+						effectiveOpacity)
+					: BrushToColor(
+						highlighter.Value.foreground is { } h ? h : runForeground,
+						effectiveOpacity));
 
 			// Floor every edge and +1 the trailing edges so adjacent background
 			// rects always overlap by 1 px, preventing antialiased-edge seams.
