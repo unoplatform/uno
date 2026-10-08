@@ -690,6 +690,10 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			{
 				NativeUno.uno_accessibility_update_description(handle, pb.PlaceholderText);
 			}
+			else if (feap.Owner is RichEditBox reb && !string.IsNullOrEmpty(reb.Header?.ToString()) && !string.IsNullOrEmpty(reb.PlaceholderText))
+			{
+				NativeUno.uno_accessibility_update_description(handle, reb.PlaceholderText);
+			}
 		}
 
 		if (!string.IsNullOrEmpty(attributes.RoleDescription))
