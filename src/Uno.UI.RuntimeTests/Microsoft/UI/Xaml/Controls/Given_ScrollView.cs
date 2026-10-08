@@ -108,18 +108,21 @@ public class Given_ScrollView
 	}
 
 	/// <summary>
-	/// Measured on WinUI 3: a notch moves a ScrollView 32 DIP along v0·(1 − (t/T)²) over 257ms, so half-way at
-	/// 89ms and 90% at 189ms after the motion starts (WinUI adds ~20ms of compositor latency before that start).
+	/// Measured on WinUI 3: a notch moves a ScrollView 32 DIP along v0·(1 − (t/T)²) over 257ms, i.e. position
+	/// 1.5·(s − s³/3) of the notch at s = t/T (WinUI adds ~20ms of compositor latency before the motion starts).
 	/// </summary>
 	[TestMethod]
 	public async Task When_Wheel_Notch_Then_Follows_The_WinUI_Curve()
 	{
+		const double Notch = 32;
+		const double DurationMs = 257;
+
 		var (sut, bounds) = await LoadTallScrollView();
 		var tracker = sut.ScrollPresenter!.InteractionTracker;
 
-		var stopwatch = new System.Diagnostics.Stopwatch();
+		// Rendering carries the timestamp the tracker was just advanced to, so each sample sits exactly on the curve.
 		var samples = new List<(double Ms, float Position)>();
-		EventHandler<object> onRendering = (_, _) => samples.Add((stopwatch.Elapsed.TotalMilliseconds, tracker.Position.Y));
+		EventHandler<object> onRendering = (_, args) => samples.Add((((RenderingEventArgs)args).RenderingTime.TotalMilliseconds, tracker.Position.Y));
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		using var mouse = injector.GetMouse();
@@ -128,7 +131,6 @@ public class Given_ScrollView
 		CompositionTarget.Rendering += onRendering;
 		try
 		{
-			stopwatch.Start();
 			mouse.WheelDown();
 			await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 0, message: "the wheel should scroll");
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
@@ -138,18 +140,39 @@ public class Given_ScrollView
 			CompositionTarget.Rendering -= onRendering;
 		}
 
-		Assert.AreEqual(32, sut.VerticalOffset, 0.01, "a notch should scroll 32 DIP");
+		Assert.AreEqual(Notch, sut.VerticalOffset, 0.1, "a notch should scroll 32 DIP");
 
-		// Timed from the last frame at rest: the first moving frame is a whole frame into the curve.
-		var start = samples.FindLastIndex(sample => sample.Position == 0);
-		var t0 = samples[start].Ms;
-		var t50 = samples.First(sample => sample.Position >= 16).Ms - t0;
-		var t90 = samples.First(sample => sample.Position >= 32 * 0.9).Ms - t0;
-		var tolerance = 50.0; // wall-clock samples: absorb CI jitter, still far from a linear (128ms/231ms) curve
+		// On the curve, every moving frame implies the same start time. A linear motion spreads it by ~30ms,
+		// and a first-frame jump puts the first frame off the others.
+		var starts = samples
+			.Where(sample => sample.Position > 0.01 && sample.Position < Notch - 0.01)
+			.Select(sample => sample.Ms - DurationMs * CurveTimeAt(sample.Position / Notch))
+			.ToList();
 
-		Assert.AreEqual(89, t50, tolerance, $"half the notch took {t50:F0}ms");
-		Assert.AreEqual(189, t90, tolerance, $"90% of the notch took {t90:F0}ms");
-		Assert.IsTrue(samples[start + 1].Position < 4, $"the first frame jumped {samples[start + 1].Position:F1} DIP");
+		Assert.IsTrue(starts.Count >= 3, $"expected the notch to span several frames, got {starts.Count}");
+		Assert.IsTrue(
+			starts.Max() - starts.Min() < 3,
+			$"frames do not lie on the WinUI curve, implied starts (ms): {string.Join(", ", starts.Select(start => start.ToString("F1")))}");
+	}
+
+	// Inverts 1.5·(s − s³/3), which rises monotonically over [0, 1].
+	private static double CurveTimeAt(double fraction)
+	{
+		double low = 0, high = 1;
+		for (var i = 0; i < 40; i++)
+		{
+			var mid = (low + high) / 2;
+			if (1.5 * (mid - mid * mid * mid / 3) < fraction)
+			{
+				low = mid;
+			}
+			else
+			{
+				high = mid;
+			}
+		}
+
+		return (low + high) / 2;
 	}
 
 	/// <summary>A finger pressed and held on coasting content stops it, without having to move first.</summary>
