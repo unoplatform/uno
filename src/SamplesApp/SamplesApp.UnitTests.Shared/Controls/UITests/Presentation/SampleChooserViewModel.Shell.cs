@@ -683,7 +683,8 @@ public partial class SampleChooserViewModel
 
 	/// <summary>
 	/// Called when UI tests drive the app through the RunTest backdoor: stops persistence and recents,
-	/// and drops any restored theme so results do not depend on local settings.
+	/// and drops the restored shell settings so results do not depend on local settings.
+	/// The saved values are kept: persistence is already off when they are reset.
 	/// </summary>
 	internal void EnterUITestAutomation()
 	{
@@ -694,6 +695,18 @@ public partial class SampleChooserViewModel
 
 		IsAutomationRun = true;
 		ApplyTransientTheme(ElementTheme.Default);
+		UseMicaBackdrop = false;
+		IsDescriptionCollapsed = false;
+
+		if (ManualTestsOnly)
+		{
+			ManualTestsOnly = false;
+		}
+
+		if (RecentsVisibility || FavoritesVisibility)
+		{
+			ShowNewSection(CancellationToken.None, Section.Library);
+		}
 	}
 
 	/// <summary>Applies a theme without persisting it (launch argument, restored setting).</summary>
