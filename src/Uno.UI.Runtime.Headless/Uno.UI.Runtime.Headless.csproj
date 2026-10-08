@@ -23,7 +23,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="HarfBuzzSharp" />
 		<!-- Text layout (UnicodeText) requires ICU. Linux uses the system libicuuc; Windows/macOS ship it
 		     through these packages, which also embed icudt.dat into the app head (IsUnoHead). -->
 		<PackageReference Include="Uno.icu-win" />

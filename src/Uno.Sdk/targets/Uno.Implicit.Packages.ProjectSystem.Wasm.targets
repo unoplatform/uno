@@ -16,6 +16,9 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.WebAssembly.Browser" ProjectSystem="true" />
 		<!-- libSkiaSharp.a is linked by this package's own targets, so only a head using the Skia backend pays for it. -->
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.WebAssembly" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';skia;'))" />
+		<!-- Uno.WinUI depends on HarfBuzzSharp for text shaping, and HarfBuzzSharp brings its own native assets
+		     for Windows, macOS, Android, iOS and tvOS but not for WebAssembly. -->
+		<_UnoProjectSystemPackageReference Include="HarfBuzzSharp.NativeAssets.WebAssembly" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">

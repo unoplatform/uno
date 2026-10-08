@@ -143,6 +143,7 @@ internal class PackageManifest
 		public const string HotDesign = nameof(HotDesign);
 		public const string AppMcp = nameof(AppMcp);
 		public const string SkiaSharp = nameof(SkiaSharp);
+		public const string HarfBuzzSharp = nameof(HarfBuzzSharp);
 		public const string SvgSkia = nameof(SvgSkia);
 		public const string WinAppSdk = nameof(WinAppSdk);
 		public const string WinAppSdkBuildTools = nameof(WinAppSdkBuildTools);

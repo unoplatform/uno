@@ -38,5 +38,8 @@
 			bumped past Uno's floor keeps the old libSkiaSharp on Linux and crashes Skia Desktop at startup.
 		-->
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Linux" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';skia;'))" />
+		<!-- Uno.WinUI depends on HarfBuzzSharp for text shaping, and HarfBuzzSharp brings its own native assets
+		     for Windows, macOS, Android, iOS and tvOS but not for Linux. -->
+		<_UnoProjectSystemPackageReference Include="HarfBuzzSharp.NativeAssets.Linux" ProjectSystem="true" />
 	</ItemGroup>
 </Project>

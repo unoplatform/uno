@@ -102,6 +102,14 @@
 		]
 	},
 	{
+		"group": "HarfBuzzSharp",
+		"version": "14.2.1.1",
+		"packages": [
+			"HarfBuzzSharp.NativeAssets.Linux",
+			"HarfBuzzSharp.NativeAssets.WebAssembly"
+		]
+	},
+	{
 		"group": "SvgSkia",
 		"version": "3.0.6",
 		"packages": [

@@ -2,5 +2,6 @@
 	<ItemGroup Condition="$(MSBuildProjectName.EndsWith('Skia.Linux.FrameBuffer'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Linux.FrameBuffer" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Linux" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';skia;'))" />
+		<_UnoProjectSystemPackageReference Include="HarfBuzzSharp.NativeAssets.Linux" ProjectSystem="true" />
 	</ItemGroup>
 </Project>

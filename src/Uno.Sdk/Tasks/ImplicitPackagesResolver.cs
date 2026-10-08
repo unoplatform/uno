@@ -55,6 +55,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? SkiaSharpVersion { get; set; }
 
+	public string? HarfBuzzSharpVersion { get; set; }
+
 	public string? SvgSkiaVersion { get; set; }
 
 	public string? UnoLoggingVersion { get; set; }
@@ -249,6 +251,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.HotDesign, UnoHotDesignVersion)
 			.UpdateManifest(PackageManifest.Group.AppMcp, UnoAppMcpVersion)
 			.UpdateManifest(PackageManifest.Group.SkiaSharp, SkiaSharpVersion)
+			.UpdateManifest(PackageManifest.Group.HarfBuzzSharp, HarfBuzzSharpVersion)
 			.UpdateManifest(PackageManifest.Group.SvgSkia, SvgSkiaVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdk, WinAppSdkVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdkBuildTools, WinAppSdkBuildToolsVersion)
