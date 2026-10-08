@@ -3634,8 +3634,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Cancelled_Programmatic_Selection_Preserves_Pending_Caret_Format()
+		public async Task When_Cancelled_Programmatic_Selection_Drops_Pending_Caret_Format()
 		{
 			var SUT = new RichEditBox();
 			try
@@ -3651,7 +3650,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
 				Assert.AreEqual(1, SUT.Document.Selection.EndPosition);
-				Assert.AreEqual(FormatEffect.On, SUT.Document.Selection.CharacterFormat.Bold);
+				Assert.AreEqual(FormatEffect.Off, SUT.Document.Selection.CharacterFormat.Bold);
 			}
 			finally
 			{
