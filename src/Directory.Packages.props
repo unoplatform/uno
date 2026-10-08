@@ -159,12 +159,12 @@
 		<PackageVersion Include="Unity" Version="5.11.10" />
 		<PackageVersion Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
 		<PackageVersion Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
-		<PackageVersion Include="Uno.Core.Extensions" Version="5.0.0-dev.28" />
-		<PackageVersion Include="Uno.Core.Extensions.Compatibility" Version="5.0.0-dev.28" />
-		<PackageVersion Include="Uno.Core.Extensions.Disposables" Version="5.0.0-dev.28" />
-		<PackageVersion Include="Uno.Core.Extensions.Logging" Version="5.0.0-dev.28" />
-		<PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="5.0.0-dev.28" />
-		<PackageVersion Include="Uno.Core.Extensions.Threading" Version="5.0.0-dev.28" />
+		<PackageVersion Include="Uno.Core.Extensions" Version="5.0.0-dev.34" />
+		<PackageVersion Include="Uno.Core.Extensions.Compatibility" Version="5.0.0-dev.34" />
+		<PackageVersion Include="Uno.Core.Extensions.Disposables" Version="5.0.0-dev.34" />
+		<PackageVersion Include="Uno.Core.Extensions.Logging" Version="5.0.0-dev.34" />
+		<PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="5.0.0-dev.34" />
+		<PackageVersion Include="Uno.Core.Extensions.Threading" Version="5.0.0-dev.34" />
 		<!-- Minimum for Uno.Settings.DevServer 2.x: the host's copy owns the TelemetryUserContext its add-ins publish to -->
 		<PackageVersion Include="Uno.DevTools.Telemetry" Version="1.4.0-dev.18" />
 		<PackageVersion Include="Uno.Diagnostics.Eventing" Version="2.0.1" />
