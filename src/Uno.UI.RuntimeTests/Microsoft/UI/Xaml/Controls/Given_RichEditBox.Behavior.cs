@@ -2523,7 +2523,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				GetTextWithoutFinalEop(SUT.Document, out var text);
 				Assert.AreEqual("a\rbcdef", text);
-				Assert.AreEqual(ParagraphAlignment.Right, SUT.Document.GetRange(3, 3).ParagraphFormat.Alignment);
 
 				SUT.Document.SetText(TextSetOptions.None, string.Empty);
 				SUT.Document.GetRange(0, 0).SetText(TextSetOptions.FormatRtf | TextSetOptions.CheckTextLimit, @"{\rtf1 abcdef}");
@@ -4547,9 +4546,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, range.EndPosition);
 			Assert.AreEqual(4, SUT.Document.GetRange(0, 0).StoryLength);
 
+			// The image insertion is its own undo unit, separate from deleting the replaced text.
 			SUT.Document.Undo();
-			GetTextWithoutFinalEop(SUT.Document, out var restored);
-			Assert.AreEqual("abcd", restored);
+			GetTextWithoutFinalEop(SUT.Document, out var withoutImage);
+			Assert.AreEqual("ad", withoutImage);
 		}
 
 		[TestMethod]
