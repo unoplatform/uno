@@ -14,14 +14,14 @@ Apple UIKit runtime already use, making the architecture **multi-window-ready**.
 - `NativeWindowWrapper` instances bound to the activity driving a window, not a `Lazy<>`
   singleton. Note this lands as **per-activity**, not yet strictly per-`Window`: the activity
   still adopts the wrapper through the ambient current window, because an explicit
-  activity⇄window binding needs the lifecycle orchestration deferred below. Marked `TODO #13827`.
+  activity⇄window binding needs the lifecycle orchestration deferred below. Marked `TODO #8341`.
 - Per-window render stack on `ApplicationActivity` (render view, native-layer host,
   root layout) — instance state, not `static`.
 - A per-window `IXamlRootHost` that resolves its own `RootElement`, render view and
   input sources instead of reaching `Window.Current` / `ApplicationActivity.Instance`.
 - Per-window input sources (pointer + keyboard), resolved from the host (the Win32 pattern).
 - `ContextHelper` **split**: an explicit app-global `ApplicationContext`, and `Current` that
-  tracks the *foreground* activity via the existing `BaseActivity` registry (fixing today's
+  tracks the most recently active live activity via the existing `BaseActivity` registry (fixing today's
   sticky "last-ever-set" behaviour). `Current` stays **activity-scoped and does not fall back
   to the application context** — falling back would break the `(Activity)Current` hard-casts and
   `Current == null` guards in existing callers — and is typed `Context?` to say so honestly.
@@ -32,7 +32,8 @@ Apple UIKit runtime already use, making the architecture **multi-window-ready**.
   mirrors how iOS staged its own multi-window behind scene adoption (#8341).
 - Threading an explicit owning-window `Context` through every `Uno.WinRT`/AddIn
   `ContextHelper.Current` consumer. While only one window is live this is a no-op;
-  those callers stay on the (now-correct) foreground activity until live multi-window lands.
+  those callers stay on the most recently active live activity until live multi-window lands;
+  purely app-scoped ones (system services, package info) use `ApplicationContext`.
 - `XamlRootMap.Unregister` on window close. There is no window-close path while
   `SupportsMultipleWindows` is false (the app keeps one window for its lifetime), and the
   other single-window Skia hosts (macOS, Linux.FrameBuffer, WASM, AppleUIKit) likewise don't
@@ -75,7 +76,7 @@ consolidation; the `Uno.WinRT`/`Uno.Foundation` Android assemblies must keep com
 - Consumers (`ContentPresenter` native hosting, TextBox notifications, IME) resolve the owning
   activity/render view via `XamlRoot → XamlRootMap.GetHostForRoot → host`.
 - Input sources registered `ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), host => …)`.
-- `ContextHelper`: `ApplicationContext` (app-global) + `Current` = foreground activity
+- `ContextHelper`: `ApplicationContext` (app-global) + `Current` = most recently active live activity
   (registry-backed), typed `Context?`, no app-context fallback.
 
 ## Phases (each compiles for `net10.0-android`; committed separately)
@@ -106,9 +107,9 @@ consolidation; the `Uno.WinRT`/`Uno.Foundation` Android assemblies must keep com
   runtime-test lane (`build/ci/tests/.azure-devops-tests-android-skia.yml`), so
   `Given_AndroidSkiaXamlRootHost` asserts host registration, activity resolution and per-window
   input-source identity under `[PlatformCondition(… RuntimeTestPlatforms.SkiaAndroid)]`.
-- **Runtime:** single-window smoke on an emulator/device — **not executed in the dev
-  environment used for this change** (no reachable emulator/adb). Run with:
-  `cd src/SamplesApp/SamplesApp.Skia.netcoremobile/Android && dotnet run -f net10.0-android`.
+- **Runtime:** single-window smoke on an emulator/device — validated on a Pixel Tablet emulator
+  (API 35) before the rebase onto the `Uno.UI.Runtime.Android` host-namespace move; to be re-run
+  after it. Run with `dotnet run --project src/SamplesApp/SamplesApp -f net10.0-android`.
   Exercise: launch/render, touch + text input (soft keyboard, IME composition), rotation,
   background→foreground, and a config-change re-creation (system font-size/locale change).
   Two live windows is a follow-up.
