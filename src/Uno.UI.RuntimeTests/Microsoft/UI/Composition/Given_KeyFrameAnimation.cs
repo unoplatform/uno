@@ -322,7 +322,8 @@ public partial class Given_KeyFrameAnimation
 		{
 			sprite.StartAnimation(nameof(Visual.AnchorPoint), animation);
 
-			await TestServices.WindowHelper.WaitFor(() => valueWhenStopped is not null, message: "the animation should stop on its first frame");
+			// One frame, but a software-rendered host (SwiftShader WebGPU) can take seconds to present it.
+			await TestServices.WindowHelper.WaitFor(() => valueWhenStopped is not null, timeoutMS: 30000, message: "the animation should stop on its first frame");
 			Assert.AreEqual(target, valueWhenStopped);
 		}
 		finally

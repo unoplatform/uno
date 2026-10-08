@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -103,7 +104,18 @@ public class Given_SKCanvasElement
 	public void When_Graphics3DGL_Not_Referenced_By_Graphics2DSK()
 	{
 		// AOT and eager linkers (Android AOT, .NET 11 iOS CoreTypeMap) fail on a reference the package doesn't carry.
-		var references = typeof(SKCanvasElement).Assembly.GetReferencedAssemblies();
+		System.Reflection.AssemblyName[] references;
+		try
+		{
+			references = typeof(SKCanvasElement).Assembly.GetReferencedAssemblies();
+		}
+		catch (PlatformNotSupportedException) when (!RuntimeFeature.IsDynamicCodeSupported)
+		{
+			// NativeAOT keeps no assembly references; the JIT platforms check the same assembly. On those, the
+			// exception would be unexpected, so it still fails the test there.
+			Assert.Inconclusive("Assembly references are not available on this runtime (NativeAOT).");
+			return;
+		}
 
 		Assert.IsFalse(
 			references.Any(r => r.Name is "Uno.WinUI.Graphics3DGL" or "Silk.NET.OpenGL"),

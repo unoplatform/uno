@@ -56,7 +56,7 @@ public class Given_SystemFocusVisual
 
 		button.Focus(FocusState.Keyboard);
 		await TestServices.WindowHelper.WaitForIdle();
-		await UITestHelper.WaitForRender(2);
+		await UITestHelper.WaitForRender(2, timeoutMS: 5000);
 		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
@@ -108,7 +108,7 @@ public class Given_SystemFocusVisual
 
 		button.Focus(FocusState.Keyboard);
 		await TestServices.WindowHelper.WaitForIdle();
-		await UITestHelper.WaitForRender(2);
+		await UITestHelper.WaitForRender(2, timeoutMS: 5000);
 		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
@@ -171,7 +171,7 @@ public class Given_SystemFocusVisual
 
 		button.Focus(FocusState.Keyboard);
 		await TestServices.WindowHelper.WaitForIdle();
-		await UITestHelper.WaitForRender(2);
+		await UITestHelper.WaitForRender(2, timeoutMS: 5000);
 
 		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
@@ -253,7 +253,7 @@ public class Given_SystemFocusVisual
 		button.Focus(FocusState.Keyboard);
 
 		await TestServices.WindowHelper.WaitFor(() => FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot) == button);
-		await UITestHelper.WaitForRender(2);
+		await UITestHelper.WaitForRender(2, timeoutMS: 5000);
 
 		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
 		var focusVisualLayer = visualTree?.FocusVisualRoot;

@@ -414,29 +414,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		/// <summary>
-		/// Scroll and wait until at least 1s has elapsed since ScrollViewer.ViewChange or timed out after a given time.
+		/// Scroll and wait until the scroll has ended and at least 1s has elapsed since ScrollViewer.ViewChanged, or timed out after a given time.
 		/// </summary>
-		/// <param name="listViewBase"></param>
-		/// <param name="vOffset"></param>
-		/// <param name="timeoutInMs"></param>
-		/// <returns></returns>
-		private static async Task ScrollToAndWait(ListViewBase listViewBase, double vOffset, int timeoutInMs = 10000)
+		/// <remarks>
+		/// An animated scroll only advances when a frame is presented, so a quiet second alone can be a stalled frame
+		/// (a software-rendered host) rather than the end of the scroll: it has to have raised its final ViewChanged.
+		/// </remarks>
+		private static async Task ScrollToAndWait(ListViewBase listViewBase, double vOffset, int timeoutInMs = 30000)
 		{
 			var sv = listViewBase.FindFirstChild<ScrollViewer>();
 
 			var lastScrolled = DateTime.Now;
-			sv.ViewChanged += (s, e) => lastScrolled = DateTime.Now;
-
-			sv.ChangeView(null, vOffset, null);
-
-			var timeout = DateTime.Now.AddMilliseconds(timeoutInMs);
-			while (DateTime.Now < timeout)
+			var ended = false;
+			EventHandler<ScrollViewerViewChangedEventArgs> onViewChanged = (s, e) =>
 			{
-				await WindowHelper.WaitForIdle();
-				if (lastScrolled.AddSeconds(1) < DateTime.Now)
+				lastScrolled = DateTime.Now;
+				ended |= !e.IsIntermediate;
+			};
+			sv.ViewChanged += onViewChanged;
+
+			try
+			{
+				sv.ChangeView(null, vOffset, null);
+
+				var timeout = DateTime.Now.AddMilliseconds(timeoutInMs);
+				while (DateTime.Now < timeout)
 				{
-					return;
+					await WindowHelper.WaitForIdle();
+
+					// Already at the target, a ChangeView raises no ViewChanged at all.
+					var atTarget = Math.Abs(sv.VerticalOffset - Math.Min(vOffset, sv.ScrollableHeight)) < 1;
+					if ((ended || atTarget) && lastScrolled.AddSeconds(1) < DateTime.Now)
+					{
+						return;
+					}
 				}
+
+				Assert.Fail($"The scroll to {vOffset} did not settle within {timeoutInMs}ms (offset {sv.VerticalOffset}, scrollable {sv.ScrollableHeight}, final ViewChanged raised: {ended}).");
+			}
+			finally
+			{
+				sv.ViewChanged -= onViewChanged;
 			}
 		}
 

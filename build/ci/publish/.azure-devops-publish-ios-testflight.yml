@@ -6,6 +6,8 @@ jobs:
 - job: iOS_TestFlight
   displayName: 'Build Samples App - TestFlight'
   condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+  # The Release build alone takes 40-50 min, so the 60 min default cancelled it mid-build.
+  timeoutInMinutes: 90
   cancelTimeoutInMinutes: 0
 
   strategy:
