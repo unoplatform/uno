@@ -189,9 +189,9 @@
                         <Run FontWeight="SemiBold">Record screenshots:</Run>
                         <Run>on Home, captures every sample in turn with the shell hidden.</Run>
                     </TextBlock>
-                    <TextBlock TextWrapping="Wrap">
-                        <Run FontWeight="SemiBold">New window:</Run>
-                        <Run>opens a second Uno Platform Samples window for side-by-side comparison.</Run>
+                    <TextBlock TextWrapping="Wrap" Visibility="{x:Bind NewWindowVisibility}">
+                        <Run FontWeight="SemiBold">Open in new window:</Run>
+                        <Run>in the more menu, opens the sample in a second window for side-by-side comparison.</Run>
                     </TextBlock>
                 </StackPanel>
             </Border>
