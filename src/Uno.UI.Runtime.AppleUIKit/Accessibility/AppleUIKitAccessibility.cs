@@ -21,7 +21,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Dispatching;
 
-namespace Uno.UI.Runtime.Skia.AppleUIKit;
+namespace Uno.UI.Runtime.AppleUIKit;
 
 /// <summary>
 /// Per-XamlRoot accessibility adapter for Skia iOS/tvOS/macCatalyst.
