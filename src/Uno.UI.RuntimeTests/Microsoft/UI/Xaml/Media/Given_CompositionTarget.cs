@@ -98,11 +98,13 @@ public class Given_CompositionTarget
 			var entry = frameData[0];
 			Assert.IsNotNull(entry.Window, "Each entry should name the window the frame belongs to.");
 			// Skia hands out its own SKPicture; a backend with nothing to expose hands out null.
+#if UNO_DRAWING_SKIA
 			if (RuntimeTestsBackendHelper.CurrentBackend == RuntimeTestBackends.Skia)
 			{
 				Assert.IsInstanceOfType(entry.Data, typeof(SkiaSharp.SKPicture), "The Skia backend should expose the recorded frame as an SKPicture.");
 			}
 			else
+#endif
 			{
 				Assert.IsNull(entry.Data, "A backend with no native recording type should expose null.");
 			}
