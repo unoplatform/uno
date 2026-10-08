@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -108,9 +109,10 @@ public class Given_SKCanvasElement
 		{
 			references = typeof(SKCanvasElement).Assembly.GetReferencedAssemblies();
 		}
-		catch (PlatformNotSupportedException)
+		catch (PlatformNotSupportedException) when (!RuntimeFeature.IsDynamicCodeSupported)
 		{
-			// NativeAOT keeps no assembly references; the JIT platforms check the same assembly.
+			// NativeAOT keeps no assembly references; the JIT platforms check the same assembly. On those, the
+			// exception would be unexpected, so it still fails the test there.
 			Assert.Inconclusive("Assembly references are not available on this runtime (NativeAOT).");
 			return;
 		}

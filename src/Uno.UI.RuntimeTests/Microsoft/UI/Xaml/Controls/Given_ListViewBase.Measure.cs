@@ -449,6 +449,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 						return;
 					}
 				}
+
+				Assert.Fail($"The scroll to {vOffset} did not settle within {timeoutInMs}ms (offset {sv.VerticalOffset}, scrollable {sv.ScrollableHeight}, final ViewChanged raised: {ended}).");
 			}
 			finally
 			{
