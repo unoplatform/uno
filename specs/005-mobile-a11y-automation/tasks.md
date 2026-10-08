@@ -238,6 +238,12 @@ repeated add/remove/window/focus cycles and verify timing and registry baselines
 - [X] T066 [P] [US7] Complete iOS weak ownership, stable element reuse, container diffing, and disposal cleanup in `src/Uno.UI.Runtime.Skia.AppleUIKit/Accessibility/AppleUIKitAccessibility.cs`
 - [X] T067 [US7] Add bounded invalidation queues, UI-thread marshaling, and disposed-callback guards in `src/Uno.UI.Runtime.Skia.Android/Accessibility/AndroidSkiaAccessibility.cs` and `src/Uno.UI.Runtime.Skia.AppleUIKit/Accessibility/AppleUIKitAccessibility.cs`
 - [X] T068 [US7] Validate per-XamlRoot isolation and active-owner routing in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MultiWindowAccessibility.cs`
+- [ ] T083 [US7] Keep both bridges dormant until a client reads the tree (scenario 1, SC-008): Android caches the `AccessibilityManager` state and enables on a service or a first provider query, iOS builds on the first `accessibilityElements`/`automationElements`/hit-test query or when VoiceOver/Switch Control runs, and `ItemsControl` item changes no longer create the control's peer, in `src/Uno.UI.Runtime.Android/Accessibility/`, `src/Uno.UI.Runtime.AppleUIKit/Accessibility/AppleUIKitAccessibility.cs` and `src/Uno.UI/UI/Xaml/Controls/ItemsControl/ItemsControl.cs`; guarded by `src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Automation/Given_AccessibilityOnDemand.skia.cs`
+
+> **PARTIAL T083**: Android passes the automation suite with and without TalkBack, and the
+> `ItemsControl` guard fails before and passes after on Skia Win32. iOS is compile-only:
+> the native suite, VoiceOver and XCUITest still need a Mac, and the physical-device
+> before/after profiling with the bridge disabled as the floor is still to do.
 - [ ] T069 [US7] Run US7 lifecycle/performance tests through `build/test-scripts/android-run-skia-runtime-tests.sh` and `build/test-scripts/ios-uitest-run.sh`
 
 > **PARTIAL T069**: Android lifecycle, registry, stale-node, 500-node, and 1,000-item
