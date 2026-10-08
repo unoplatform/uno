@@ -80,6 +80,28 @@ The removed-animation test stops its animation when it ends. Otherwise the leake
 [#25054](https://github.com/unoplatform/uno/issues/25054) would keep every later test in the run rendering at
 display rate. Before this was added, it raised the idle test to 10 frames per second.
 
+### Fails before the fixes, passes after (servicing/6.8)
+
+The same tests, ported to `servicing/6.8` with equivalent hooks, run at three commits. 6.8 still has the
+`SKPath`-based compositor, so the path counter there counts every `SKPath.Op` in the composition layer. Skia
+desktop, Windows:
+
+| Metric (budget) | Before [#24788](https://github.com/unoplatform/uno/pull/24788) | After #24788 | After [#24792](https://github.com/unoplatform/uno/pull/24792) | master |
+|---|---:|---:|---:|---:|
+| `scroll.path-ops-per-step` (≤ 1) | **57.5** | **6.4** | **6.4** | 0.4 |
+| `progressring.damage-per-ring-area` (≤ 2×) | **122.75×** | **122.75×** | 1.21× | 1.21× |
+| `progressring.path-ops-per-frame` (≤ 1) | **25** | **5** | **5** | 0 |
+| `scroll.frames-per-step` (≤ 1.5) | 1 | 1 | 1 | 1 |
+| `scroll.damage-per-viewport` (≤ 1.25×) | 0.97× | 0.97× | 0.93× | 1.05× |
+
+Each fix moves the metric it targets, and nothing else moves:
+- #24788 cuts the scroll path booleans by 9×.
+- #24792 brings the ring's damage back to its own bounds.
+
+The 6.4 path booleans per step left on 6.8 are most likely the clip-path work that master caches since
+[#24230](https://github.com/unoplatform/uno/pull/24230) (not checked op by op). That cache was measured at under
+3% of a 6.8 scroll frame and deliberately not backported, so the master budget is stricter than 6.8 needs to be.
+
 ## 4. How the numbers reach the pull request
 
 1. A test calls `RuntimeTestMetrics.Record(name, value, budget, unit)`
