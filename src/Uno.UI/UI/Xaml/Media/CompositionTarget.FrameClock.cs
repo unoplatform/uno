@@ -69,10 +69,20 @@ public partial class CompositionTarget
 		}
 	}
 
+	event EventHandler<long>? IFrameTickSource.FrameStarting
+	{
+		add => FrameStarting += value;
+		remove => FrameStarting -= value;
+	}
+
+	long IFrameTickSource.FrameIntervalInTicks => FrameIntervalInTicks;
+
 	/// <summary>Estimated interval between presented frames, for drivers that need a nominal step.</summary>
 	internal long FrameIntervalInTicks => _frameClock.IntervalInTicks;
 
-	private bool HasFrameTickWork => _frameStarting is not null || _isRenderingActive;
+	private static CompositorFrameTickSource CompositorFrameTicks => Compositor.GetSharedCompositor().FrameTicks;
+
+	private bool HasFrameTickWork => _frameStarting is not null || _isRenderingActive || CompositorFrameTicks.HasDrivers;
 
 	private void SampleFrameTimestamp()
 	{
@@ -105,6 +115,7 @@ public partial class CompositionTarget
 		_frameTickArmed = false;
 
 		Compositor.GetSharedCompositor().StopAnimations(this);
+		CompositorFrameTicks.RemoveHost(this);
 
 		if (_frameStarting is null)
 		{
@@ -117,8 +128,8 @@ public partial class CompositionTarget
 	}
 
 	/// <summary>
-	/// Raises the frame drivers of every armed target. Called from the tick, before layout and before the record;
-	/// <see cref="RaiseRendering"/> follows once the tick has laid out.
+	/// Raises the frame drivers of every armed target, then the compositor's. Called from the tick, before layout
+	/// and before the record; <see cref="RaiseRendering"/> follows once the tick has laid out.
 	/// </summary>
 	internal static void RaiseFrameTick()
 	{
@@ -130,13 +141,26 @@ public partial class CompositionTarget
 
 		_isAnyFrameTickArmed = false;
 
+		long? latestTimestamp = null;
+		var latestInterval = 0L;
 		foreach (var (target, _) in _targets)
 		{
 			if (target._frameTickArmed && target.RaiseFrameStarting() is { } timestamp)
 			{
 				// Several windows can arm the same tick, and their clocks are not in phase: Rendering takes the latest.
 				_pendingRenderingTimestamp = Math.Max(_pendingRenderingTimestamp ?? timestamp, timestamp);
+
+				if (latestTimestamp is null || timestamp > latestTimestamp)
+				{
+					latestTimestamp = timestamp;
+					latestInterval = target.FrameIntervalInTicks;
+				}
 			}
+		}
+
+		if (latestTimestamp is { } frameTimestamp)
+		{
+			CompositorFrameTicks.RaiseFrameStarting(frameTimestamp, latestInterval);
 		}
 	}
 
@@ -200,12 +224,12 @@ public partial class CompositionTarget
 					}
 				}
 			}
+		}
 
-			// The next tick comes from the next frame, so a driver that wrote nothing still needs one.
-			if (_frameStarting is not null)
-			{
-				((ICompositionTarget)this).RequestNewFrame();
-			}
+		// The next tick comes from the next frame, so a driver that wrote nothing still needs one.
+		if (_frameStarting is not null || CompositorFrameTicks.HasDrivers)
+		{
+			((ICompositionTarget)this).RequestNewFrame();
 		}
 
 		return timestamp;

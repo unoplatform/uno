@@ -7,7 +7,7 @@ using Microsoft.UI.Composition.Interactions;
 
 namespace Uno.UI.Composition;
 
-internal interface ICompositionTarget
+internal interface ICompositionTarget : IFrameTickSource
 {
 	void TryRedirectForManipulation(global::Microsoft.UI.Input.PointerPoint pointerPoint, InteractionTracker tracker);
 

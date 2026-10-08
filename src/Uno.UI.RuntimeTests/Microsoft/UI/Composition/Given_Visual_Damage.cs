@@ -684,6 +684,14 @@ public class Given_Visual_Damage
 
 		public void RequestNewFrame() { }
 
+		public event EventHandler<long> FrameStarting
+		{
+			add { }
+			remove { }
+		}
+
+		public long FrameIntervalInTicks => TimeSpan.TicksPerSecond / 60;
+
 		public void AddDamage(Rect bounds) => Damage.Add(bounds);
 
 		public void AddDamage(IGeometry region) => Damage.Add(region.Bounds);

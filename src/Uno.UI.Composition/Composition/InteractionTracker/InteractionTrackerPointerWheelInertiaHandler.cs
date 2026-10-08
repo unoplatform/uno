@@ -1,89 +1,55 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
-using System.Diagnostics;
 using System.Numerics;
-using System.Threading;
 
 namespace Microsoft.UI.Composition.Interactions;
 
-internal class InteractionTrackerPointerWheelInertiaHandler : IInteractionTrackerInertiaHandler
+internal class InteractionTrackerPointerWheelInertiaHandler : InteractionTrackerFrameInertiaHandler
 {
-	// InteractionTracker works at 60 FPS, per documentation
-	// https://learn.microsoft.com/en-us/windows/uwp/composition/interaction-tracker-manipulations#why-use-interactiontracker
-	// > InteractionTracker was built to utilize the new Animation engine that operates on an independent thread at 60 FPS,resulting in smooth motion.
-	private const int IntervalInMilliseconds = 17; // Ceiling of 1000/60
+	private const double DurationInMilliseconds = 250;
 
-	private Timer? _timer;
-	private Stopwatch? _stopwatch;
-
-	private readonly InteractionTracker _interactionTracker;
 	private readonly Vector3 _minPosition;
 	private readonly Vector3 _maxPosition;
 	private readonly Vector3 _initialPosition;
 	private readonly Vector3 _calculatedFinalPosition;
 
 	public InteractionTrackerPointerWheelInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities)
+		: base(interactionTracker, requestId: 0)
 	{
-		_interactionTracker = interactionTracker;
 		_minPosition = interactionTracker.MinPosition;
 		_maxPosition = interactionTracker.MaxPosition;
-		_initialPosition = _interactionTracker.Position;
+		_initialPosition = interactionTracker.Position;
 
 		InitialVelocity = translationVelocities;
 
 		// This handler works with constant velocity for 0.25 second.
-		_calculatedFinalPosition = interactionTracker.Position + InitialVelocity * 0.25f;
+		_calculatedFinalPosition = interactionTracker.Position + InitialVelocity * (float)(DurationInMilliseconds / 1000);
 	}
 
-	public Vector3 InitialVelocity { get; }
+	public override Vector3 InitialVelocity { get; }
 
-	public Vector3 FinalPosition => Vector3.Clamp(_calculatedFinalPosition, _minPosition, _maxPosition);
+	public override Vector3 FinalPosition => Vector3.Clamp(_calculatedFinalPosition, _minPosition, _maxPosition);
 
-	public Vector3 FinalModifiedPosition => FinalPosition;
+	public override Vector3 FinalModifiedPosition => FinalPosition;
 
-	public float FinalScale => _interactionTracker.Scale; // TODO: Scale not yet implemented
-
-	public void Start()
+	protected override void Advance(long elapsedTicks)
 	{
-		if (_timer is not null)
+		var elapsedInMilliseconds = elapsedTicks / (double)TimeSpan.TicksPerMillisecond;
+		if (elapsedInMilliseconds >= DurationInMilliseconds)
 		{
-			throw new InvalidOperationException("Cannot start inertia timer twice.");
-		}
-
-		_stopwatch = Stopwatch.StartNew();
-		_timer = new Timer(OnTick, null, 0, IntervalInMilliseconds);
-	}
-
-	public void Stop()
-	{
-		_timer?.Dispose();
-		_stopwatch?.Stop();
-	}
-
-	private void OnTick(object? state)
-	{
-		var currentElapsed = _stopwatch!.ElapsedMilliseconds;
-
-		if (currentElapsed >= 250)
-		{
-			_interactionTracker.SetPosition(FinalModifiedPosition, requestId: 0);
-			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId: 0));
-			_timer!.Dispose();
-			_stopwatch!.Stop();
+			Complete();
 			return;
 		}
 
-		var newPosition = _initialPosition + (currentElapsed / 1000.0f) * InitialVelocity;
+		var newPosition = _initialPosition + (float)(elapsedInMilliseconds / 1000) * InitialVelocity;
 		var clampedNewPosition = Vector3.Clamp(newPosition, _minPosition, _maxPosition);
 
-		_interactionTracker.SetPosition(clampedNewPosition, requestId: 0);
+		InteractionTracker.SetPosition(clampedNewPosition, RequestId);
 
 		if (clampedNewPosition.Equals(FinalModifiedPosition))
 		{
-			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId: 0));
-			_timer!.Dispose();
-			_stopwatch!.Stop();
+			Complete();
 		}
 	}
 }
