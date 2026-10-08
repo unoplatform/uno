@@ -178,6 +178,10 @@ public class Given_RenderingBudget
 	[TestMethod]
 	public async Task When_Page_Removed_Then_Released()
 	{
+		// One-time static caches can keep a type's first instance alive (the first ToggleSwitch of a process stays
+		// referenced), and whether this test creates that first instance depends on the tests that ran before it. A
+		// warm-up page absorbs those, so the measured page reports only retention that grows with each page.
+		await LoadAndUnloadPageAsync();
 		var objects = await LoadAndUnloadPageAsync();
 
 		await RecordAliveAsync("page-removal", objects);
