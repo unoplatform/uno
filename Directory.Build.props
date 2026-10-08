@@ -45,13 +45,4 @@
 		<NoWarn>$(NoWarn);MSTEST0001</NoWarn>
 	</PropertyGroup>
 
-	<!--
-		The .NET SDK picks the Windows SDK projection (and with it WinRT.Runtime) from its own defaults, and consumers
-		cannot unify it through NuGet. Building net10.0 Windows assets with the .NET 11 SDK would make them reference
-		WinRT.Runtime 2.3.1, which fails every .NET 10 SDK consumer with CS1705, so pin the .NET 10 SDK default.
-	-->
-	<PropertyGroup Condition="'$(TargetFramework)' == '$(NetPreviousWinAppSDK)'">
-		<WindowsSdkPackageVersion>10.0.19041.57</WindowsSdkPackageVersion>
-	</PropertyGroup>
-
 </Project>
