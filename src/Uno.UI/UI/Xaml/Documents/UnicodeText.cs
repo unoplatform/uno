@@ -229,6 +229,8 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly float _endingLineContentTop;
 	private readonly float _endingLineBaselineOffset;
 	private readonly ParagraphLayoutInfo? _endingParagraphLayout;
+	// List markers shaped and measured during layout, reused by every paint.
+	private readonly Dictionary<(IFont font, string text), MarkerShape>? _markerShapes;
 	private readonly TextAlignment? _endingParagraphAlignment;
 	private readonly Brush? _defaultForeground;
 	private readonly bool _alignmentIncludesTrailingWhitespace;
@@ -1040,6 +1042,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		float maxLineWidth = 0;
+		Dictionary<(IFont font, string text), MarkerShape>? markerShapes = null;
 		_indexToCluster = new List<(int start, int end, LinkedListNode<Cluster> cluster)>();
 		_clustersInLogicalOrder = new();
 		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
@@ -1052,7 +1055,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			var measuredLineRight = paragraphLeft + (includeTrailingWhitespaceInMeasurement ? line.width : line.widthWithoutTrailingSpaces) + paragraphRight;
 			if (line is { isFirstLineOfParagraph: true, paragraphLayout: { IsList: true, MarkerText.Length: > 0 } markerLayout })
 			{
-				var markerBounds = GlyphRunRenderer.MeasureInk(line.clusterStart.Value.fontDetails.FontHandle, markerLayout.MarkerText);
+				var markerBounds = GetMarkerShape(ref markerShapes, line.clusterStart.Value.fontDetails.FontHandle, markerLayout.MarkerText).Ink;
 				var markerAnchor = GetParagraphMarkerAnchor(markerLayout, (float)availableSize.Width);
 				var markerRight = markerLayout.MarkerAlignment switch
 				{
@@ -1080,7 +1083,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				+ GetParagraphRightInset(endingParagraphLayout, firstLine: true);
 			if (endingParagraphLayout is { IsList: true, MarkerText.Length: > 0 } endingMarkerLayout)
 			{
-				var markerBounds = GlyphRunRenderer.MeasureInk(defaultFontDetails.FontHandle, endingMarkerLayout.MarkerText);
+				var markerBounds = GetMarkerShape(ref markerShapes, defaultFontDetails.FontHandle, endingMarkerLayout.MarkerText).Ink;
 				var markerAnchor = GetParagraphMarkerAnchor(endingMarkerLayout, (float)availableSize.Width);
 				var markerRight = endingMarkerLayout.MarkerAlignment switch
 				{
@@ -1209,6 +1212,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		_lines = lines;
+		_markerShapes = markerShapes;
 		_inlineObjects = inlineObjects;
 		_tabLeaders = tabLeaders;
 		_defaultFontDetails = defaultFontDetails;
@@ -1982,7 +1986,22 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
-	private static void DrawParagraphMarker(
+	private sealed record MarkerShape(ushort[] Glyphs, Vector2[] Positions, Rect Ink);
+
+	private static MarkerShape GetMarkerShape(ref Dictionary<(IFont font, string text), MarkerShape>? cache, IFont font, string text)
+	{
+		if (cache?.TryGetValue((font, text), out var shape) is true)
+		{
+			return shape;
+		}
+
+		var (glyphs, positions) = GlyphRunRenderer.Layout(font, text);
+		shape = new MarkerShape(glyphs, positions, GlyphRunRenderer.MeasureInk(font, glyphs, positions));
+		(cache ??= new())[(font, text)] = shape;
+		return shape;
+	}
+
+	private void DrawParagraphMarker(
 		in Visual.PaintingSession session,
 		ParagraphLayoutInfo layout,
 		IFont font,
@@ -1991,8 +2010,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		Brush? foreground,
 		Color? foregroundOverride)
 	{
-		var (glyphs, positions) = GlyphRunRenderer.Layout(font, layout.MarkerText!);
-		var markerBounds = GlyphRunRenderer.MeasureInk(font, glyphs, positions);
+		var cache = _markerShapes;
+		var (glyphs, positions, markerBounds) = GetMarkerShape(ref cache, font, layout.MarkerText!);
 		var markerAnchor = GetParagraphMarkerAnchor(layout, totalWidth);
 		var markerLeft = layout.MarkerAlignment switch
 		{
@@ -2000,13 +2019,10 @@ internal readonly partial struct UnicodeText : IParsedText
 			global::Microsoft.UI.Text.MarkerAlignment.Center => markerAnchor - markerBounds.Width / 2,
 			_ => markerAnchor - markerBounds.Width,
 		};
-		var origin = new Vector2((float)(markerLeft - markerBounds.Left), baseline);
-		for (var i = 0; i < positions.Length; i++)
-		{
-			positions[i] += origin;
-		}
-
-		session.Session.DrawGlyphRun(font, glyphs, positions, 0, foregroundOverride ?? BrushToColor(foreground, session.Opacity));
+		session.Session.Save();
+		session.Session.Translate((float)(markerLeft - markerBounds.Left), 0);
+		session.Session.DrawGlyphRun(font, glyphs, positions, baseline, foregroundOverride ?? BrushToColor(foreground, session.Opacity));
+		session.Session.Restore();
 	}
 
 	private static void DrawTextDecorations(IDrawingSession session, List<TextDecorationDrawInfo> decorations)
