@@ -67,7 +67,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Unfocused_Selection_Highlight_Is_Transparent_Text_Remains_Visible()
 		{
 			var editor = new RichEditBox
@@ -101,7 +100,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				var unselected = await UITestHelper.ScreenShot(editor);
 
-				await ImageAssert.AreEqualAsync(selected, unselected);
+				// WinUI leaves off-by-one antialiasing differences behind the unfocused selection.
+				await ImageAssert.AreEqualAsync(selected, unselected, tolerance: 2);
 			}
 			finally
 			{
