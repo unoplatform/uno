@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -524,6 +524,64 @@ public partial class Given_RichEditBox
 				minY: (int)(caret.Top + block.Padding.Top),
 				maxY: (int)Math.Ceiling(caret.Bottom + block.Padding.Top)) > 1,
 				"The list marker before the paragraph text must remain visible in high contrast.");
+		}
+		finally
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = originalColors;
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSchemeOverride = originalScheme;
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = originalHighContrast;
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_SourcePort_TabLeaders_UseHighContrastForeground()
+	{
+#if HAS_UNO
+		var originalHighContrast = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride;
+		var originalScheme = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSchemeOverride;
+		var originalColors = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride;
+		var editor = new RichEditBox
+		{
+			Width = 320,
+			Height = 100,
+			FontSize = 32,
+			Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			HighContrastAdjustment = ElementHighContrastAdjustment.Auto,
+			IsSpellCheckEnabled = false,
+			TextWrapping = TextWrapping.NoWrap,
+		};
+		try
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = CreateSourcePortHighContrastColors();
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSchemeOverride = "High Contrast Black";
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = true;
+			editor.Document.SetText(TextSetOptions.None, "A	B");
+			editor.Document.GetRange(0, int.MaxValue).CharacterFormat.ForegroundColor = Microsoft.UI.Colors.Red;
+			editor.Document.GetRange(0, 0).ParagraphFormat.AddTab(180, TabAlignment.Left, TabLeader.Dashes);
+			await UITestHelper.Load(editor);
+
+			var block = GetDisplayBlock(editor);
+			var leaderStart = block.ParsedText.GetRectForIndex(1);
+			var leaderEnd = block.ParsedText.GetRectForIndex(2);
+			Assert.IsGreaterThan(leaderStart.X + 40, leaderEnd.X, "The tab must open a field wide enough to draw a leader.");
+
+			var screenshot = await UITestHelper.ScreenShot(block);
+			Assert.AreEqual(0, CountSourcePortColor(screenshot, Microsoft.UI.Colors.Red),
+				"Tab leaders must use the system foreground in high contrast.");
+			Assert.IsTrue(CountSourcePortColor(
+				screenshot,
+				Microsoft.UI.Colors.White,
+				minX: (int)(leaderStart.Left + block.Padding.Left) + 8,
+				maxX: (int)(leaderEnd.Left + block.Padding.Left) - 8,
+				minY: (int)(leaderStart.Top + block.Padding.Top),
+				maxY: (int)Math.Ceiling(leaderStart.Bottom + block.Padding.Top)) > 1,
+				"The tab leader must remain visible in high contrast.");
 		}
 		finally
 		{
