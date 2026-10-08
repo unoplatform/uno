@@ -13,9 +13,9 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime;
 
-namespace Uno.UI.Runtime.Skia.Android;
+namespace Uno.UI.Runtime.Android;
 
 internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 {
