@@ -22,7 +22,7 @@ native Android/UIKit renderers are compile/no-regression targets only.
 
 **Language/Version**: C# on .NET 9.0/10.0; .NET Android and .NET iOS platform bindings<br>
 **Primary Dependencies**: Uno.UI `AutomationPeer` and provider interfaces;
-`Uno.UI.Runtime.Skia` (`AccessibilityRouter`, `SkiaAccessibilityBase`,
+`Uno.UI.Runtime` (`AccessibilityRouter`, `SkiaAccessibilityBase`,
 `IAccessibilityOwner`); AndroidX `ExploreByTouchHelper` /
 `AccessibilityNodeInfoCompat`; Android accessibility events/actions; UIKit
 `UIAccessibilityElement`, `UIAccessibility`, and `UIView.AccessibilityElements`<br>
@@ -105,11 +105,11 @@ src/Uno.UI/Accessibility/
 └── AccessibilityPeerHelper.cs
     # Small internal tree-inclusion/provider-action helper; live peers only, no snapshot (NEW)
 
-src/Uno.UI.Runtime.Skia/Accessibility/
+src/Uno.UI.Runtime/Accessibility/
 ├── AccessibilityRouter.cs
 └── SkiaAccessibilityBase.cs
 
-src/Uno.UI.Runtime.Skia.Android/
+src/Uno.UI.Runtime.Android/
 ├── Accessibility/
 │   ├── AndroidSkiaAccessibility.cs
 │   │   # Per-XamlRoot SkiaAccessibilityBase adapter (NEW)
@@ -132,7 +132,7 @@ src/Uno.UI.Runtime.Skia.Android/
 └── ApplicationActivity.cs
     # Window/activity activation and disposal routing if host lifecycle requires it (MODIFY)
 
-src/Uno.UI.Runtime.Skia.AppleUIKit/
+src/Uno.UI.Runtime.AppleUIKit/
 ├── Accessibility/
 │   ├── AppleUIKitAccessibility.cs
 │   │   # Per-XamlRoot SkiaAccessibilityBase adapter and element registry (NEW)
