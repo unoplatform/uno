@@ -144,7 +144,7 @@ namespace Microsoft.UI.Text
 			{
 				if (value != global::Microsoft.UI.Text.TextConstants.UndefinedInt32Value && value < 0)
 				{
-					throw new ArgumentOutOfRangeException(nameof(value));
+					throw new ArgumentException("The list level index cannot be negative.", nameof(value));
 				}
 				ListLevelIndexValue = value;
 				ListLevelIndexDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedInt32Value;
@@ -195,7 +195,7 @@ namespace Microsoft.UI.Text
 				ValidateFinite(value, nameof(value));
 				if (value != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue && value < 0)
 				{
-					throw new ArgumentOutOfRangeException(nameof(value));
+					throw new ArgumentException("The list tab cannot be negative.", nameof(value));
 				}
 				ListTabValue = value;
 				ListTabDefined = value != global::Microsoft.UI.Text.TextConstants.UndefinedFloatValue;
