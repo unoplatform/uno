@@ -9,13 +9,12 @@ using Windows.UI;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// The default <see cref="IDrawingSession.DrawGlyphRun"/>, which works with any <see cref="IFont"/>: builds the run
+/// The default <see cref="IDrawingSession.DrawGlyphRun"/> and <see cref="IDrawingSession.StrokeGlyphRun"/>, which work with any <see cref="IFont"/>: builds the run
 /// into neutral <see cref="GlyphRunElement"/>s and renders each: a
-/// monochrome outline (filled with the text colour), COLR vector layers (each filled with its own colour), or a
-/// rasterized colour glyph whose neutral BGRA pixels are turned into an image (via the registered image decoder) and
-/// uploaded to a texture. On this path the font never touches the render backend; that upload happens here. Any
-/// geometry produced by the font is disposed once drawing completes. A backend overriding <see cref="IDrawingSession.DrawGlyphRun"/>
-/// calls this for fonts it cannot draw natively.
+/// monochrome outline (filled or stroked with the text colour), COLR vector layers (each filled with its own colour), or a
+/// rasterized colour glyph whose neutral BGRA pixels are uploaded to a texture. On this path the font never touches the render backend; that upload happens here. Any
+/// geometry produced by the font is disposed once drawing completes. A backend overriding those methods calls this for
+/// fonts it cannot draw natively. The internal helpers lay out and draw rich-text list markers and inline images.
 /// </summary>
 public static class GlyphRunRenderer
 {
@@ -113,11 +112,14 @@ public static class GlyphRunRenderer
 		}
 	}
 
-	/// <summary>Shapes <paramref name="text"/> left-to-right into glyphs positioned from the origin on the baseline.</summary>
-	public static (ushort[] glyphs, Vector2[] positions) Layout(IFont font, string text)
+	/// <summary>
+	/// Shapes <paramref name="text"/> into glyphs positioned from the origin on the baseline: left-to-right, in
+	/// <paramref name="font"/> alone (no fallback), so it suits short markers rather than arbitrary text.
+	/// </summary>
+	internal static (ushort[] glyphs, Vector2[] positions) Layout(IFont font, string text)
 		=> Layout(font, text, out _);
 
-	public static (ushort[] glyphs, Vector2[] positions) Layout(IFont font, string text, out float advance)
+	internal static (ushort[] glyphs, Vector2[] positions) Layout(IFont font, string text, out float advance)
 	{
 		var run = font.Shape(text, TextDirection.LeftToRight);
 		var positions = new Vector2[run.Count];
@@ -133,14 +135,14 @@ public static class GlyphRunRenderer
 	}
 
 	/// <summary>Ink bounds of <paramref name="text"/> laid out from the origin on the baseline (y grows down).</summary>
-	public static Rect MeasureInk(IFont font, string text)
+	internal static Rect MeasureInk(IFont font, string text)
 	{
 		var (glyphs, positions) = Layout(font, text);
 		return MeasureInk(font, glyphs, positions);
 	}
 
 	/// <summary>Union of the glyphs' ink bounds, or an empty rect when no glyph has ink.</summary>
-	public static Rect MeasureInk(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions)
+	internal static Rect MeasureInk(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions)
 	{
 		var elements = new List<GlyphRunElement>();
 		font.BuildGlyphRun(GeometryFactory.Current, glyphs, positions, 0, elements);
@@ -193,7 +195,7 @@ public static class GlyphRunRenderer
 	/// Draws a decoded image stretched into <paramref name="destination"/>. Images with the same
 	/// <paramref name="key"/> must have the same pixels; they share one cached texture.
 	/// </summary>
-	public static void DrawImage(IDrawingSession session, IImage image, object key, Rect destination, float opacity)
+	internal static void DrawImage(IDrawingSession session, IImage image, object key, Rect destination, float opacity)
 	{
 		if (image.PixelWidth <= 0 || image.PixelHeight <= 0 || destination.Width <= 0 || destination.Height <= 0)
 		{
