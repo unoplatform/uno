@@ -627,7 +627,12 @@ namespace Uno.UI.Runtime {
 			});
 
 			// Input event handler for text changes (T050)
-			element.addEventListener('input', () => {
+			element.addEventListener('input', (ev: Event) => {
+				// Intermediate IME readings are not edits; compositionend reports the committed value once.
+				if ((ev as InputEvent).isComposing) {
+					return;
+				}
+
 				if (callbacks.onTextInput) {
 					callbacks.onTextInput(
 						handle,
