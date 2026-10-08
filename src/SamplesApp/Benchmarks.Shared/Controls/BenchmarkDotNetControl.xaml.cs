@@ -141,11 +141,7 @@ namespace Benchmarks.Shared.Controls
 
 					for (int i = 0; i < 3; i++)
 					{
-						await Dispatcher.RunIdleAsync(_ =>
-						{
-							GC.Collect();
-							GC.WaitForPendingFinalizers();
-						});
+						await CollectGarbageWhenIdleAsync();
 					}
 				}
 
@@ -163,6 +159,32 @@ namespace Benchmarks.Shared.Controls
 				BenchmarkUIHost.Root = null;
 				SetRunning(false);
 			}
+		}
+
+		private async Task CollectGarbageWhenIdleAsync()
+		{
+			static void Collect()
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
+
+#if WINAPPSDK
+			// UIElement.Dispatcher is null on WinAppSDK and it has no idle priority.
+			var completion = new TaskCompletionSource();
+			if (!DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+			{
+				Collect();
+				completion.SetResult();
+			}))
+			{
+				completion.SetResult();
+			}
+
+			await completion.Task;
+#else
+			await Dispatcher.RunIdleAsync(_ => Collect());
+#endif
 		}
 
 		// The shell must not react to testHost.Content changes: benchmarks set it inside their measured loops.
