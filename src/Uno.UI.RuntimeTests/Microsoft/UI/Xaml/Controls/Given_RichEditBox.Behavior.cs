@@ -1514,19 +1514,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Percent_Line_Spacing_Is_Rejected()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-			var format = SUT.Document.GetDefaultParagraphFormat();
-			Assert.ThrowsExactly<ArgumentException>(() => format.SetLineSpacing(LineSpacingRule.Percent, 150));
-			Assert.ThrowsExactly<ArgumentException>(() => format.SetIndents(float.NaN, 0, 0));
-			Assert.ThrowsExactly<ArgumentException>(() => format.SpaceBefore = float.PositiveInfinity);
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => format.ListTab = -1);
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => format.ListLevelIndex = -1);
-			Assert.ThrowsExactly<ArgumentException>(() => format.ListType = (MarkerType)999);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				var format = SUT.Document.GetDefaultParagraphFormat();
+				Assert.ThrowsExactly<ArgumentException>(() => format.SetLineSpacing(LineSpacingRule.Percent, 150));
+				Assert.ThrowsExactly<ArgumentException>(() => format.ListTab = -1);
+				Assert.ThrowsExactly<ArgumentException>(() => format.ListLevelIndex = -1);
+				Assert.ThrowsExactly<ArgumentException>(() => format.ListType = (MarkerType)999);
+#if HAS_UNO
+				// WinUI accepts non-finite metrics; Uno rejects them so they cannot reach layout.
+				Assert.ThrowsExactly<ArgumentException>(() => format.SetIndents(float.NaN, 0, 0));
+				Assert.ThrowsExactly<ArgumentException>(() => format.SpaceBefore = float.PositiveInfinity);
+#endif
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		private static void ConfigureListParagraph(ITextParagraphFormat format, int level, float leftIndent)
