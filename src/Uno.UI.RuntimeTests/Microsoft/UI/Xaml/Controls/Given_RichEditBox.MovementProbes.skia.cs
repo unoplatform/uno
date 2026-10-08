@@ -118,6 +118,12 @@ public partial class Given_RichEditBox
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaUIKit)]
 	public async Task When_Ctrl_UpDown_Uses_Tom_Paragraph_Boundaries()
 	{
+		if (Uno.UI.Helpers.DeviceTargetHelper.UsesAppleKeyboardLayout)
+		{
+			// Also covers WASM running in a browser on an Apple device.
+			Assert.Inconclusive("Apple keyboard layouts map Command+Up/Down to document start/end.");
+		}
+
 		var editor = new RichEditBox { Width = 260, TextWrapping = TextWrapping.Wrap };
 		try
 		{
