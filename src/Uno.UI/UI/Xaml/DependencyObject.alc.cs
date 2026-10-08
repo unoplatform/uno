@@ -8,11 +8,11 @@ namespace Microsoft.UI.Xaml
 	public partial class DependencyObject
 	{
 		/// <summary>
-		/// Drops <see cref="_associatedParent"/> — and any DataContext it propagated into this store —
-		/// when the parent is owned by an unloading collectible ALC, is an unloaded
-		/// <see cref="FrameworkElement"/>, or is orphaned from the content-root coordinator, so a
-		/// host-lifetime resource cannot pin a secondary app's ALC. A live host element re-associates
-		/// on its next value assignment.
+		/// Drops the stale <see cref="_associatedParentRef"/> (a weak reference) — and any DataContext it
+		/// propagated into this store — when the parent is owned by an unloading collectible ALC, is an
+		/// unloaded <see cref="FrameworkElement"/>, or is orphaned from the content-root coordinator, so a
+		/// host-lifetime resource does not keep treating a gone element as its parent. A live host element
+		/// re-associates on its next value assignment.
 		/// </summary>
 		internal void ClearCollectibleAssociatedParent()
 		{
@@ -33,10 +33,14 @@ namespace Microsoft.UI.Xaml
 			// The collectible branch is gated on the parent's ALC unload having actually been
 			// initiated: a still-live session-lifetime add-in ALC (e.g. a designer host) is also
 			// collectible, but its associations must be preserved until it really unloads.
+			// Read the weak parent once and keep it alive for the whole sweep: it could otherwise be collected
+			// between two reads, leaving the slot neither cleared here nor reusable by the next consumer.
+			var parent = AssociatedParent;
+
 			var collectibleAndUnloading = false;
-			if (_associatedParent is { } collectibleCandidate && collectibleCandidate.GetType().IsCollectible)
+			if (parent is not null && parent.GetType().IsCollectible)
 			{
-				var parentAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(collectibleCandidate.GetType().Assembly);
+				var parentAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(parent.GetType().Assembly);
 				// Conservative when the unload state can't be read: do NOT clear, so a still-live add-in
 				// ALC's associations (and inherited DataContext) are never dropped on an unreadable state.
 				// FeatureConfiguration.Alc.ThrowOnUnloadStateReadFailure surfaces such a runtime change in dev.
@@ -44,12 +48,19 @@ namespace Microsoft.UI.Xaml
 					&& global::Uno.UI.Xaml.Core.AlcStateHelper.IsUnloadInitiated(parentAlc, valueIfUnknown: false);
 			}
 
-			if (_associatedParent is { } parent
+			if (_associatedParentRef is not null && parent is null)
+			{
+				// The parent was already collected: free the slot so the next consumer is not counted as a second parent.
+				SetAssociatedParent(null);
+				associationCleared = true;
+			}
+
+			if (parent is not null
 				&& (collectibleAndUnloading
 					|| parent is FrameworkElement { IsLoaded: false }
 					|| (parent is FrameworkElement orphanCandidate && IsOrphanedFromContentRoots(orphanCandidate))))
 			{
-				_associatedParent = null;
+				SetAssociatedParent(null);
 				associationCleared = true;
 			}
 
@@ -94,16 +105,16 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception)
 			{
-				// Fail leak-safe: if orphan state can't be determined, treat the element as orphaned
-				// so its association is cleared rather than left to pin a potentially-unloaded ALC.
+				// Fail safe: if orphan state can't be determined, treat the element as orphaned
+				// so its stale association is cleared rather than left behind.
 				return true;
 			}
 		}
 
 		// Stores that recorded a collectible-ALC object as their associated parent, grouped by
-		// that parent's ALC. Entries are swept (associated parent cleared) when the ALC unloads,
-		// so a host-lifetime shared resource can never outlive-pin a secondary app's ALC.
-		// CWT-keyed by the ALC so the registry itself never extends the ALC's lifetime.
+		// that parent's ALC. Entries are swept (stale associated parent and inherited DataContext
+		// cleared) when the ALC unloads. CWT-keyed by the ALC so the registry itself never extends
+		// the ALC's lifetime.
 		private static readonly global::System.Runtime.CompilerServices.ConditionalWeakTable<global::System.Runtime.Loader.AssemblyLoadContext, List<WeakReference<DependencyObject>>> _collectibleParentAssociations = new();
 
 		private void RegisterCollectibleParentAssociation(object parent)
