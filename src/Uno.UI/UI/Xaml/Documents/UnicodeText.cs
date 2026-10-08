@@ -1539,7 +1539,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		Dictionary<(Color color, bool outline), Dictionary<IFont, (List<ushort> glyphs, List<Vector2> positions)>> colorAndOutlineToFontToGlyphs = new();
+		Dictionary<(Color color, bool outline), Dictionary<IFont, (List<ushort> glyphs, List<Vector2> positions, float fontSize)>> colorAndOutlineToFontToGlyphs = new();
 		List<TextDecorationDrawInfo> textDecorations = new();
 		List<(float x1, float x2, float baseline, Color color, FontDetails font, global::Microsoft.UI.Text.TabLeader leader)>? tabLeaders = null;
 		Dictionary<(int wordIndex, int lineIndex, float scale), (float left, float right, float y)> spellCheckUnderlines = new();
@@ -1621,11 +1621,11 @@ internal readonly partial struct UnicodeText : IParsedText
 				var key = (color, GetRunOutline(cluster.Value, _runBreaks));
 				if (!colorAndOutlineToFontToGlyphs.TryGetValue(key, out var fontToGlyphs))
 				{
-					colorAndOutlineToFontToGlyphs[key] = fontToGlyphs = new Dictionary<IFont, (List<ushort> glyphs, List<Vector2> positions)>();
+					colorAndOutlineToFontToGlyphs[key] = fontToGlyphs = new Dictionary<IFont, (List<ushort> glyphs, List<Vector2> positions, float fontSize)>();
 				}
 				if (!fontToGlyphs.TryGetValue(fontDetails.FontHandle, out var glyphsAndPositions))
 				{
-					fontToGlyphs[fontDetails.FontHandle] = glyphsAndPositions = (new List<ushort>(), new List<Vector2>());
+					fontToGlyphs[fontDetails.FontHandle] = glyphsAndPositions = (new List<ushort>(), new List<Vector2>(), fontDetails.FontSize);
 				}
 				var glyphs = glyphsAndPositions.glyphs;
 				var positions = glyphsAndPositions.positions;
@@ -1868,14 +1868,14 @@ internal readonly partial struct UnicodeText : IParsedText
 		foreach (var ((color, outline), fontToGlyphs) in colorAndOutlineToFontToGlyphs)
 		{
 			var paintColor = color;
-			foreach (var (font, (glyphs, positions)) in fontToGlyphs)
+			foreach (var (font, (glyphs, positions, fontSize)) in fontToGlyphs)
 			{
 				var glyphSpan = CollectionsMarshal.AsSpan(glyphs);
 				var positionSpan = CollectionsMarshal.AsSpan(positions);
 
 				if (outline)
 				{
-					drawingSession.StrokeGlyphRun(font, glyphSpan, positionSpan, 0, paintColor, GetOutlineStrokeWidth(font));
+					drawingSession.StrokeGlyphRun(font, glyphSpan, positionSpan, 0, paintColor, Math.Max(1, fontSize / 24));
 				}
 				else
 				{
@@ -2150,9 +2150,6 @@ internal readonly partial struct UnicodeText : IParsedText
 		using var path = builder.Build();
 		session.StrokePath(path, decoration.Color, thickness);
 	}
-
-	private static float GetOutlineStrokeWidth(IFont font)
-		=> Math.Max(1, (font.Descent - font.Ascent) / 24);
 
 	private static bool IsThickUnderline(global::Microsoft.UI.Text.UnderlineType style)
 		=> style is global::Microsoft.UI.Text.UnderlineType.Thick
