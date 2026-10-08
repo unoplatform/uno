@@ -157,7 +157,8 @@ function Publish-Comment([string]$body) {
         return
     }
     if ([string]::IsNullOrWhiteSpace($token) -or $token.StartsWith('$(')) {
-        Write-Host '##vso[task.logissue type=warning]No GitHub token available (fork pull request?); the report was not posted.'
+        # Plain output, not a pipeline warning: a fork pull request has no secrets, and that is not a problem to flag.
+        Write-Host 'No GitHub token available (fork pull request?); the report was not posted.'
         return
     }
 
