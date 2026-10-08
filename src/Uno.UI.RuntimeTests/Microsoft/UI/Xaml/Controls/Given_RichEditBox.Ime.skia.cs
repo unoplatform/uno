@@ -529,6 +529,55 @@ public partial class Given_RichEditBox
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Wasm_Semantic_Composition_Commit_Is_Single_Undo_Unit()
+	{
+		await global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.EnsureAccessibilityEnabledAsync();
+		var sut = new RichEditBox();
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Document.SetText(TextSetOptions.None, "ab");
+			sut.Document.Selection.SetRange(2, 2);
+			sut.Focus(FocusState.Programmatic);
+			await UITestHelper.WaitFor(
+				() => global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.SemanticElementExists(sut),
+				timeoutMS: 5000,
+				message: "Timed out waiting for the RichEditBox semantic element.");
+
+			var id = global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.GetSemanticElementId(sut);
+			// Event order recorded from Chromium IME: each composing input is followed by a select event.
+			foreach (var step in new[]
+			{
+				"t.focus();t.dispatchEvent(new CompositionEvent('compositionstart'));",
+				"t.value='abにほん';t.setSelectionRange(5,5);t.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'にほん'}));t.dispatchEvent(new Event('select'));",
+				"t.value='ab日本';t.setSelectionRange(4,4);t.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'日本'}));",
+				"t.dispatchEvent(new CompositionEvent('compositionend',{data:'日本'}));t.dispatchEvent(new Event('select'));",
+			})
+			{
+				global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+					$"(function(){{const t=document.getElementById('{id}');{step}return 'ok';}})()");
+				await WindowHelper.WaitForIdle();
+			}
+
+			GetTextWithoutFinalEop(sut.Document, out var text);
+			Assert.AreEqual("ab日本", text);
+
+			sut.Document.Undo();
+			await WindowHelper.WaitForIdle();
+
+			GetTextWithoutFinalEop(sut.Document, out text);
+			Assert.AreEqual("ab", text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.DisableAccessibility();
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Wasm_Composition_Commit_And_Cancel_Follow_Browser_Events()
 	{
 		var sut = new RichEditBox();
