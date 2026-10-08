@@ -60,7 +60,7 @@ public class Given_AndroidSkiaXamlRootHost
 	// Reads internal host members through reflection, which NativeAOT trims away.
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
 #endif
-	public void When_Host_Then_Input_Sources_Are_Stable_Per_Window()
+	public void When_Host_Then_Input_Sources_Are_Owned_By_Its_Window()
 	{
 		var host = GetHostForCurrentWindow();
 		Assert.IsNotNull(host);
@@ -71,10 +71,14 @@ public class Given_AndroidSkiaXamlRootHost
 		Assert.IsNotNull(pointer, "The window's host must expose its own pointer source.");
 		Assert.IsNotNull(keyboard, "The window's host must expose its own keyboard source.");
 
-		// Owned by the window's wrapper, so repeated resolution must yield the same instances
-		// rather than newly created (or globally shared) ones.
-		Assert.AreSame(pointer, GetMember(host, "PointerSource"));
-		Assert.AreSame(keyboard, GetMember(host, "KeyboardSource"));
+		var activity = GetMember(host, "Activity");
+		Assert.IsNotNull(activity);
+		var wrapper = GetMember(activity, "Wrapper");
+		Assert.IsNotNull(wrapper);
+
+		// The activity feeds native input into its window's wrapper, so the host must hand out those same sources.
+		Assert.AreSame(GetMember(wrapper, "PointerSource"), pointer);
+		Assert.AreSame(GetMember(wrapper, "KeyboardSource"), keyboard);
 	}
 
 	[TestMethod]
@@ -106,6 +110,38 @@ public class Given_AndroidSkiaXamlRootHost
 			0,
 			GetField(wrapper, "_awaitingFirstFrame"),
 			"The first-frame gate must be released once the window has presented a frame.");
+	}
+
+	[TestMethod]
+#if RUNTIME_NATIVE_AOT
+	// Reads internal host members through reflection, which NativeAOT trims away.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
+#endif
+	public void When_Activity_Paused_Then_Window_Host_Activity_Still_Resolves()
+	{
+		var host = GetHostForCurrentWindow();
+		Assert.IsNotNull(host);
+		var activity = GetMember(host, "Activity");
+		Assert.IsNotNull(activity);
+
+		var currentField = FindType("Uno.UI.BaseActivity")?.GetField("_current", BindingFlags.Static | BindingFlags.NonPublic);
+		var resolve = FindType("Uno.UI.Runtime.Android.AndroidSkiaWindowFactory")
+			?.GetMethod("ResolveHostActivity", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+		Assert.IsNotNull(currentField);
+		Assert.IsNotNull(resolve);
+
+		var saved = currentField.GetValue(null);
+		try
+		{
+			// What OnPause/OnStop do; OnLaunched can create the window from that state.
+			currentField.SetValue(null, null);
+
+			Assert.AreSame(activity, resolve.Invoke(null, null), "A paused activity must still host the window.");
+		}
+		finally
+		{
+			currentField.SetValue(null, saved);
+		}
 	}
 
 	private static object? GetHostForCurrentWindow()
