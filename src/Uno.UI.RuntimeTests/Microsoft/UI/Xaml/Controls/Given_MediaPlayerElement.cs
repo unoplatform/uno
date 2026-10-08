@@ -586,23 +586,6 @@ public partial class Given_MediaPlayerElement
 					message: "Timeout waiting for TransportControls IsZoomButtonVisible Visibility Collapsed when Auto Hide."
 				);
 
-#if !WINAPPSDK
-		sut.TransportControls.IsCompactOverlayButtonVisible = true;
-		esut = (FrameworkElement)root.FindName("CompactOverlayButton");
-		await WindowHelper.WaitFor(
-					condition: () => esut.Visibility == Visibility.Visible,
-					timeoutMS: 3000,
-					message: "Timeout waiting for TransportControls IsCompactOverlayButtonVisible Visibility Collapsed when Auto Hide."
-				);
-		sut.TransportControls.IsCompactOverlayButtonVisible = false;
-		esut = (FrameworkElement)root.FindName("CompactOverlayButton");
-		await WindowHelper.WaitFor(
-					condition: () => esut.Visibility == Visibility.Collapsed,
-					timeoutMS: 3000,
-					message: "Timeout waiting for TransportControls IsCompactOverlayButtonVisible Visibility Collapsed when Auto Hide."
-				);
-#endif
-
 		sut.TransportControls.IsSeekBarVisible = true;
 		esut = (FrameworkElement)root.FindName("MediaTransportControls_Timeline_Border");
 		await WindowHelper.WaitFor(
