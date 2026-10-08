@@ -64,6 +64,41 @@ public class Given_GlyphRunRenderer
 		Assert.AreEqual(0, mismatches, $"{mismatches} pixels differ from Skia's text rendering at {fontSize}px.");
 	}
 
+	// Outline text must stay on Skia's text pipeline too, drawn as a stroked text blob.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Skia_Strokes_GlyphRun_Then_Matches_Skia_Stroked_Text()
+	{
+		const float fontSize = 20f;
+		const float strokeWidth = 1f;
+		var data = await LoadFontData();
+		var font = CreateSkiaFont(data, fontSize);
+
+		var (run, positions, info, baseline) = Layout(font, fontSize);
+
+		using var actual = CreateSurface(info);
+		new SkiaDrawingSession(actual.Canvas, DrawingFactory.Current).StrokeGlyphRun(font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black, strokeWidth);
+
+		using var expected = CreateSurface(info);
+		using (var builder = new SKTextBlobBuilder())
+		using (var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = strokeWidth })
+		{
+			var points = new SKPoint[positions.Length];
+			for (var i = 0; i < positions.Length; i++)
+			{
+				points[i] = new SKPoint(positions[i].X, positions[i].Y);
+			}
+
+			builder.AddPositionedRun(run.Glyphs, ((SkiaFont)font).NativeFont, points);
+			using var blob = builder.Build();
+			expected.Canvas.DrawText(blob, 0, baseline, paint);
+		}
+
+		var mismatches = CountMismatches(actual, expected, info, out var inked);
+		Assert.IsTrue(inked > 0, "Nothing was stroked.");
+		Assert.AreEqual(0, mismatches, $"{mismatches} pixels differ from Skia's stroked text rendering.");
+	}
+
 	// A font the Skia backend can't draw natively falls back to the portable outline renderer.
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
