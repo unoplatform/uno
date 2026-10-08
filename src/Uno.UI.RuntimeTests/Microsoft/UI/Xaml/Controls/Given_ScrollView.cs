@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
+using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -17,6 +18,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.Disposables;
 using Uno.UI.DevTools.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
@@ -143,6 +145,7 @@ public class Given_ScrollView
 	[TestMethod]
 	public async Task When_ScrollTo_Default_Options_Then_Animates_And_Completes_Once()
 	{
+		using var animations = ForceAnimationsEnabled();
 		var (scrollView, _) = await LoadScrollView();
 		var completions = TrackScrollCompleted(scrollView);
 		var verticalOffsets = TrackVerticalOffsets(scrollView);
@@ -178,6 +181,7 @@ public class Given_ScrollView
 	[TestMethod]
 	public async Task When_ScrollTo_Interrupted_By_ScrollTo_Then_Ends_At_Second_Target()
 	{
+		using var animations = ForceAnimationsEnabled();
 		var (scrollView, _) = await LoadScrollView();
 		var completions = TrackScrollCompleted(scrollView);
 
@@ -252,13 +256,14 @@ public class Given_ScrollView
 	private static async Task WaitFor(Func<bool> condition)
 		=> await TestServices.WindowHelper.WaitFor(condition, timeoutMS: (int)CompletionTimeout.TotalMilliseconds);
 
-	private static async Task WaitForFrames(int count)
+	private static Task WaitForFrames(int count) => UITestHelper.WaitForRender(count, (int)CompletionTimeout.TotalMilliseconds);
+
+	// Auto resolves against the OS reduced-motion setting, which CI agents may have on.
+	private static IDisposable ForceAnimationsEnabled()
 	{
-		for (var i = 0; i < count; i++)
-		{
-			await TestServices.WindowHelper.WaitForIdle();
-			await Task.Delay(16);
-		}
+		var previous = ScrollPresenterTestHooks.IsAnimationsEnabledOverride;
+		ScrollPresenterTestHooks.IsAnimationsEnabledOverride = true;
+		return Disposable.Create(() => ScrollPresenterTestHooks.IsAnimationsEnabledOverride = previous);
 	}
 
 	private static async Task<(ScrollView ScrollView, Rect Bounds)> LoadTallScrollView()
