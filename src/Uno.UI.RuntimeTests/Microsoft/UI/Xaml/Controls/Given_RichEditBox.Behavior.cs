@@ -2003,6 +2003,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = null;
 			}
 		}
+		[TestMethod]
+		public async Task When_SetText_Keeps_First_Character_Format()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.GetRange(0, 3).CharacterFormat.Bold = FormatEffect.On;
+
+				SUT.Document.SetText(TextSetOptions.None, "xyz");
+				Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 3).CharacterFormat.Bold);
+
+				SUT.Document.GetRange(0, 3).CharacterFormat.Bold = FormatEffect.Off;
+				SUT.Document.GetRange(0, 1).CharacterFormat.Italic = FormatEffect.On;
+				SUT.Document.SetText(TextSetOptions.None, "pq");
+				Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 2).CharacterFormat.Italic);
+
+				SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1 \b bold}");
+				SUT.Document.SetText(TextSetOptions.None, "plain");
+				Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 5).CharacterFormat.Bold);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 
 		[TestMethod]
 		public async Task When_Hidden_Text_Has_No_Visual_Advance_But_Retains_Tom_Positions()
