@@ -213,13 +213,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsLessThan(paragraphCount + 1, captureClones.Character);
 			Assert.IsLessThan(paragraphCount + 2, captureClones.Paragraph);
 
-			var (visible, filteredClones) = TrackFormattingClones(
-				() => source.Document.CaptureFragment(0, source.Document.TextLength, noHidden: true));
-			Assert.AreEqual(paragraphCount / 2 * paragraphLength, visible.Text.Length);
-			Assert.IsTrue(visible.AreRunInvariantsValid());
-			Assert.IsLessThan(paragraphCount + 1, filteredClones.Character);
-			Assert.IsLessThan(paragraphCount + 2, filteredClones.Paragraph);
-
 			var target = new RichEditBox();
 			var (_, pasteClones) = TrackFormattingClones(() =>
 			{

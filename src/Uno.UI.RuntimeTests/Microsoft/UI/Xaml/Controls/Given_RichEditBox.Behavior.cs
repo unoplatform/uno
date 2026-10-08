@@ -1997,7 +1997,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_NoHidden_Filters_Plain_And_Rtf_Text()
 		{
 			var source = new RichEditBox();
@@ -2012,14 +2011,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				source.Document.SetText(TextSetOptions.None, "visible hidden tail");
 				source.Document.GetRange(8, 14).CharacterFormat.Hidden = FormatEffect.On;
 
-				GetTextWithoutFinalEop(source.Document, TextGetOptions.NoHidden, out var plain);
+				source.Document.GetText(TextGetOptions.NoHidden, out var plain);
 				Assert.AreEqual("visible  tail", plain);
+				source.Document.GetText(TextGetOptions.NoHidden | TextGetOptions.AllowFinalEop, out var plainWithEop);
+				Assert.AreEqual("visible  tail\r", plainWithEop);
 
+				// NoHidden only filters plain text; RTF keeps the hidden run.
 				source.Document.GetText(TextGetOptions.NoHidden | TextGetOptions.FormatRtf, out var rtf);
 				target.Document.SetText(TextSetOptions.FormatRtf, rtf);
 				GetTextWithoutFinalEop(target.Document, out var richText);
-				Assert.AreEqual("visible  tail", richText);
-				Assert.AreEqual(FormatEffect.Off, target.Document.GetRange(0, richText.Length).CharacterFormat.Hidden);
+				Assert.AreEqual("visible hidden tail", richText);
+				Assert.AreEqual(FormatEffect.On, target.Document.GetRange(8, 14).CharacterFormat.Hidden);
+				Assert.AreEqual(FormatEffect.Off, target.Document.GetRange(0, 7).CharacterFormat.Hidden);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Range_Text_Includes_Final_Eop()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				var range = SUT.Document.GetRange(0, 4);
+
+				range.GetText(TextGetOptions.None, out var raw);
+				range.GetText(TextGetOptions.UseLf, out var lf);
+				range.GetText(TextGetOptions.NoHidden, out var noHidden);
+				range.GetText(TextGetOptions.UseLf | TextGetOptions.AllowFinalEop, out var lfWithEop);
+
+				Assert.AreEqual("abc\r", raw);
+				Assert.AreEqual("abc", lf);
+				Assert.AreEqual("abc", noHidden);
+				Assert.AreEqual("abc\n", lfWithEop);
 			}
 			finally
 			{
@@ -2361,8 +2391,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Range_Rtf_Stream_NoHidden_Removes_Hidden_Text()
+		public async Task When_Range_Rtf_Stream_NoHidden_Keeps_Hidden_Text()
 		{
 			var source = new RichEditBox();
 			var target = new RichEditBox();
@@ -2377,10 +2406,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				source.Document.GetRange(1, 2).CharacterFormat.Hidden = FormatEffect.On;
 				var stream = new InMemoryRandomAccessStream();
 				source.Document.GetRange(0, 3).GetTextViaStream(TextGetOptions.FormatRtf | TextGetOptions.NoHidden, stream);
+				stream.Seek(0);
 				target.Document.GetRange(0, 0).SetTextViaStream(TextSetOptions.FormatRtf, stream);
 
 				GetTextWithoutFinalEop(target.Document, out var text);
-				Assert.AreEqual("ac", text);
+				Assert.AreEqual("abc", text);
+				Assert.AreEqual(FormatEffect.On, target.Document.GetRange(1, 2).CharacterFormat.Hidden);
 			}
 			finally
 			{
