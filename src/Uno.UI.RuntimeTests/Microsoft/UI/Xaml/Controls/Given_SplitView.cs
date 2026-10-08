@@ -189,6 +189,8 @@ public class Given_SplitView
 
 		sut.DisplayMode = SplitViewDisplayMode.Inline;
 		await WaitForPaneAnimationsToSettle(sut);
+		// The pane is already settled, and on WinUI the idle wait can finish before the next layout pass.
+		sut.UpdateLayout();
 
 		var content = (FrameworkElement)sut.Content;
 		var contentLeft = content.TransformToVisual(sut).TransformPoint(default).X;
