@@ -49,6 +49,13 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return true;
 		}
 
+		// The editor node already reports its placeholder as the hint text.
+		if (element is TextBlock textBlock
+			&& textBlock.GetTemplatedParent() is RichEditBox)
+		{
+			return true;
+		}
+
 		// TODO: What about non-UIElements? e.g, Hyperlinks?
 		// In WinUI, `TextElement`s can have automation peers. We need to support that in Uno.
 		if ((element as UIElement)?.GetOrCreateAutomationPeer() is null)
