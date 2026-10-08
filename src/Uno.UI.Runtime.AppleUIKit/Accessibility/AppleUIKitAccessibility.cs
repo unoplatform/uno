@@ -2841,6 +2841,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		{
 			nativeTraits |= AccessibilityNativeTraits.Header;
 		}
+		if ((traits & UIAccessibilityTrait.Selected) != 0)
+		{
+			nativeTraits |= AccessibilityNativeTraits.Selected;
+		}
 
 		var peer = ResolvePeer(element.NodeId);
 		var value = element.AccessibilityValue;

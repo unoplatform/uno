@@ -53,6 +53,7 @@ internal enum AccessibilityNativeTraits
 	Link = 1 << 4,
 	Image = 1 << 5,
 	Header = 1 << 6,
+	Selected = 1 << 7,
 }
 
 internal enum AccessibilityNativeAction
