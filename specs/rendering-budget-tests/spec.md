@@ -19,9 +19,9 @@ changed, and two side effects shipped with it. Users found them in 6.7 stable
 - An active `ProgressRing` damaged the whole window on every frame until
   [#24792](https://github.com/unoplatform/uno/pull/24792).
 
-Both are visible as **counts**: path operations per scroll step, and damaged area per frame. Timings are not
-usable in CI: the same build varied by up to 3× between runs on hosted agents, while the counts were identical
-run after run.
+Both are visible as **counts**: path operations per scroll step, and damaged area per frame. Timings are too
+noisy to gate pull requests: in a local comparison of published builds, CPU time for the same build varied by up
+to 3× between runs, while the counts were identical run after run.
 
 ## 2. What is measured
 
@@ -56,25 +56,35 @@ rendering/damage lead, then scrolling, images, text and animations.
 | | `progressring.path-ops-per-frame` | ≤ 1 | |
 | `When_Animated_Subtree_Removed_Then_Rendering_Stops` | `removed-animation.frames-per-second` | ≤ 2 | Detached animations driving frames (#25054) |
 | | `removed-animation.objects-alive` | 0 | The detached subtree leaking |
-| `When_Page_Removed_Then_Released` (image, list, ring, text box, toggle switch) | `page-removal.objects-alive` | 0 | Controls retained after their page is gone |
+| `When_Page_Removed_Then_Released` (image, list, ring, text box, toggle switch; measured on the second page) | `page-removal.objects-alive` | 0 | Controls retained after their page is gone |
 
 Budgets leave room above today's values. The goal is to catch the step changes regressions cause (a whole
 window instead of a ring, hundreds of path operations instead of none), not to pin exact numbers.
 
-### Values on master (Skia desktop, Windows, two runs, identical)
+### Values on master (Skia desktop, Windows)
 
 | Metric | Value | |
 |---|---|---|
 | `idle.frames-per-second` | 0 | |
 | `scroll.frames-per-step` | 1 | |
-| `scroll.damage-per-viewport` | 1.05× | |
+| `scroll.damage-per-viewport` | 0.93× or 1.05× | Varies between runs; the only count that did |
 | `scroll.path-ops-per-step` | 0.4 | |
 | `scroll.measures-per-step` | 11.4 | |
 | `progressring.damage-per-ring-area` | 1.21× | The ring plus its antialiasing outset |
 | `progressring.path-ops-per-frame` | 0 | |
 | `removed-animation.frames-per-second` | 11 (display rate) | **Over budget**: [#25054](https://github.com/unoplatform/uno/issues/25054), not fixed on master yet |
 | `removed-animation.objects-alive` | 1 of 3 (the `Visual`) | **Over budget**: [#25054](https://github.com/unoplatform/uno/issues/25054) |
-| `page-removal.objects-alive` | 1 of 7 (the `ToggleSwitch`) | **Over budget**: to investigate. The add/remove leak tests cover a `ToggleSwitch` on its own; here it sits on a page with other controls. |
+| `page-removal.objects-alive` | 0 of 7 | After a warm-up page (see below) |
+
+Across four local runs, every other count was identical. Frame rates follow the display rate, which was about
+11 Hz on the test machine. A frame rate therefore has a budget only where the expected value is zero (idle,
+removed animation). Everything else is measured per frame or per step.
+
+**First `ToggleSwitch` retained.** The first `ToggleSwitch` created in a process stays alive after its page is
+removed, whatever its `IsOn`. Later instances are collected. It is a one-instance retention, not a growing leak,
+and it only shows when no earlier test created a `ToggleSwitch`. That would explain why the add/remove leak tests
+don't flag it. The page test therefore removes a warm-up page first and measures the second one. The retention itself is
+worth its own issue.
 
 The removed-animation test stops its animation when it ends. Otherwise the leaked animation from
 [#25054](https://github.com/unoplatform/uno/issues/25054) would keep every later test in the run rendering at
