@@ -1650,13 +1650,15 @@ namespace Microsoft.UI.Text
 			ArgumentNullException.ThrowIfNull(value);
 			if (width < 0 || height < 0 || ascent < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(width), "Image dimensions and ascent cannot be negative.");
+				throw new ArgumentException("Image dimensions and ascent cannot be negative.", nameof(width));
 			}
 
 			var image = InlineImageState.CreateFromStream(value, width, height, ascent, verticalAlign, alternateText);
 			var fragment = _document.CreateInlineImageFragment(_start, image);
-			var insertedLength = _document.ReplaceRangeWithFragment(_start, _end, fragment, this);
-			_end = _start + insertedLength;
+			_ = _document.ReplaceRangeWithFragment(_start, _end, fragment, this);
+
+			// Like WinUI, the range collapses before the inserted image.
+			_end = _start;
 			OnRangeChanged();
 			FinalizeSelectionHistoryIfNeeded();
 		}
