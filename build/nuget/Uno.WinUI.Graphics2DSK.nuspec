@@ -5,10 +5,11 @@
 		<version>0.0.1</version>
 		<authors>Uno Platform</authors>
 		<icon>uno.png</icon>
+		<readme>README.md</readme>
 		<projectUrl>https://github.com/unoplatform/uno</projectUrl>
 		<license type="expression">Apache-2.0</license>
 		<description>This package provides 2D graphics extensions for an Uno Platform application.</description>
-		<copyright>Uno Platform</copyright>
+		<copyright>Copyright (C) 2015-$year$ Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 		<dependencies>
 			<group targetFramework="net10.0">
@@ -50,6 +51,7 @@
 
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
+		<file src="README.md" target="/" />
 
 		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Uno.WinUI.Graphics2DSK.Crossruntime\Release\net10.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0" />
 		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Uno.WinUI.Graphics2DSK.Crossruntime\Release\net11.0\Uno.WinUI.Graphics2DSK.*" target="lib\net11.0" />

@@ -10,8 +10,9 @@
 		<projectUrl>https://platform.uno/</projectUrl>
 		<license type="expression">Apache-2.0</license>
 		<icon>uno.png</icon>
+		<readme>README.md</readme>
 		<description>Development Server for Uno Platform projects, such as XAML Hot Reload.</description>
-		<copyright>Copyright (C) 2015-2023 Uno Platform Inc. - all rights reserved</copyright>
+		<copyright>Copyright (C) 2015-$year$ Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 
 		<dependencies>
@@ -43,6 +44,7 @@
 
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
+		<file src="README.md" target="/" />
 		<!-- Remote Control -->
 		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl\Release\net10.0\Uno.UI.RemoteControl.dll" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl\Release\net10.0\Uno.UI.RemoteControl.pdb" target="lib\net10.0" />
