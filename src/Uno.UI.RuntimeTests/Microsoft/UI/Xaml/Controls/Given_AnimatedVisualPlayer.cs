@@ -184,6 +184,8 @@ public class Given_AnimatedVisualPlayer
 	}
 
 	[TestMethod]
+	// iOS: times out intermittently, https://github.com/unoplatform/uno/issues/25105
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)]
 	public async Task When_PlaybackRate_Zero_Keeps_Progress_Stable()
 	{
 		var player = CreatePlayer(duration: TimeSpan.FromMilliseconds(800));
