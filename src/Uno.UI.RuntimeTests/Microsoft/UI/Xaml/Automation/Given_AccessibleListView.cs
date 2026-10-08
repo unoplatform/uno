@@ -253,6 +253,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Item_Is_Selected_Then_Item_Peer_Reports_IsSelected()
+		{
+			var listView = new ListView
+			{
+				ItemsSource = new List<string> { "Alpha", "Beta", "Gamma" },
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			await UITestHelper.Load(listView);
+			listView.SelectedIndex = 1;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+			var selected = (ISelectionItemProvider)peer.CreateItemAutomationPeer("Beta").GetPattern(PatternInterface.SelectionItem);
+			var unselected = (ISelectionItemProvider)peer.CreateItemAutomationPeer("Alpha").GetPattern(PatternInterface.SelectionItem);
+
+			Assert.IsTrue(selected.IsSelected, "The selected item's peer must report IsSelected.");
+			Assert.IsFalse(unselected.IsSelected, "An unselected item's peer must not report IsSelected.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Items_Are_Duplicated_Then_Item_Peer_Is_Reused()
 		{
 			var duplicate = "Same";
