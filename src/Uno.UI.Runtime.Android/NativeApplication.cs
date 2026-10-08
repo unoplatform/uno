@@ -131,7 +131,7 @@ namespace Uno.UI.Runtime.Android
 						this.Log().LogDebug("Intent contained JumpList extra arguments, reporting a Launch activation.");
 					}
 
-					var arguments = intent.GetStringExtra(JumpListItem.ArgumentsExtraKey);
+					var arguments = intent.GetStringExtra(JumpListItem.ArgumentsExtraKey) ?? string.Empty;
 
 					ReportActivation(AppActivationArguments.CreateLaunch(
 						new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, arguments)));
