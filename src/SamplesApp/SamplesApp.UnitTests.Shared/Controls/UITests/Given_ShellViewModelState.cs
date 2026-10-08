@@ -8,6 +8,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using SampleControl.Presentation;
 using Uno.UI.RuntimeTests;
+using Uno.UI.Samples.Entities;
+using Windows.Storage;
 
 namespace SamplesApp.Tests;
 
@@ -172,6 +174,66 @@ public class Given_ShellViewModelState
 			vm.IsAutomationRun = wasAutomation;
 			await TestServices.WindowHelper.WaitForIdle();
 		}
+	}
+
+	[TestMethod]
+	public async Task When_UITest_Automation_Entered_Restored_Settings_Are_Suspended_Not_Erased()
+	{
+		var vm = SampleChooserViewModel.Instance;
+		var wasAutomation = vm.IsAutomationRun;
+		var wasManualTestsOnly = vm.ManualTestsOnly;
+		var wasDescriptionCollapsed = vm.IsDescriptionCollapsed;
+		var wasMica = vm.UseMicaBackdrop;
+		var wasSplitVisible = vm.IsSplitVisible;
+		var browserView = vm.BrowserView;
+		var section = CurrentSection(vm);
+		var saved = ReadSavedShellSettings();
+		try
+		{
+			// What RestoreShellSettings leaves behind at startup.
+			vm.IsAutomationRun = true;
+			vm.ManualTestsOnly = true;
+			vm.IsDescriptionCollapsed = true;
+			vm.UseMicaBackdrop = true;
+			vm.ShowBrowserSection(Section.Favorites);
+			vm.IsAutomationRun = false;
+
+			vm.EnterUITestAutomation();
+
+			Assert.IsFalse(vm.ManualTestsOnly);
+			Assert.IsFalse(vm.IsDescriptionCollapsed);
+			Assert.IsFalse(vm.UseMicaBackdrop);
+			Assert.IsFalse(vm.FavoritesVisibility);
+			Assert.IsTrue(vm.CategoryVisibility);
+			CollectionAssert.AreEqual(saved, ReadSavedShellSettings());
+		}
+		finally
+		{
+			vm.IsAutomationRun = true;
+			vm.ManualTestsOnly = wasManualTestsOnly;
+			vm.IsDescriptionCollapsed = wasDescriptionCollapsed;
+			vm.UseMicaBackdrop = wasMica;
+			vm.ShowBrowserSection(section);
+			vm.BrowserView = browserView;
+			vm.IsSplitVisible = wasSplitVisible;
+			vm.IsAppThemeLight = true;
+			vm.IsAutomationRun = wasAutomation;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	private static Section CurrentSection(SampleChooserViewModel vm)
+		=> vm.FavoritesVisibility ? Section.Favorites
+		: vm.RecentsVisibility ? Section.Recents
+		: vm.SampleVisibility ? Section.Samples
+		: Section.Library;
+
+	private static object?[] ReadSavedShellSettings()
+	{
+		var values = ApplicationData.Current.LocalSettings.Values;
+		return new[] { "Shell.Theme", "Shell.ManualTestsOnly", "Shell.DescriptionCollapsed", "Shell.UseMica", "Shell.BrowserSection" }
+			.Select(key => values.TryGetValue(key, out var value) ? value : null)
+			.ToArray();
 	}
 
 	[TestMethod]
