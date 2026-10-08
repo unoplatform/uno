@@ -102,6 +102,12 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					: Owner.TryGetTarget(out var owner) && ReferenceEquals(owner, node.Owner));
 	}
 
+	// Set once a client (VoiceOver, Switch Control, XCTest, a test hook) asks for the elements, or VoiceOver or
+	// Switch Control is running: until then the tree is neither built nor kept in sync.
+	private bool _clientRequestedTree;
+	private NSObject? _voiceOverStatusObserver;
+	private NSObject? _switchControlStatusObserver;
+
 	private bool _rebuildPending;
 	private bool _isRebuildingTree;
 	private int _rebuildGeneration;
@@ -177,36 +183,36 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			}
 
 			AccessibilityPeerHelper.IOSAccessibilityElementAccessor =
-				element => FindAdapterForElement(element)?.GetElementForOwner(element);
+				element => FindClientAdapterForElement(element)?.GetElementForOwner(element);
 
 			AccessibilityPeerHelper.IOSAccessibilityElementCountAccessor =
-				root => FindAdapterForRoot(root)?._nodeElements.Count ?? 0;
+				root => FindClientAdapterForRoot(root)?._nodeElements.Count ?? 0;
 
 			AccessibilityPeerHelper.IOSAllElementsForRootAccessor =
-				root => FindAdapterForRoot(root)?.GetAllElementsForRoot(root);
+				root => FindClientAdapterForRoot(root)?.GetAllElementsForRoot(root);
 
 			AccessibilityPeerHelper.IOSAutomationElementsCountAccessor =
-				root => FindAdapterForRoot(root)?.GetAutomationElementsCountForRoot(root) ?? 0;
+				root => FindClientAdapterForRoot(root)?.GetAutomationElementsCountForRoot(root) ?? 0;
 
 			AccessibilityPeerHelper.IOSAutomationElementsForRootAccessor =
-				root => FindAdapterForRoot(root)?.GetAutomationElementsForRoot(root);
+				root => FindClientAdapterForRoot(root)?.GetAutomationElementsForRoot(root);
 
 			AccessibilityPeerHelper.IOSAccessibilityNodeSnapshotAccessor =
-				element => FindAdapterForElement(element)?.GetSnapshotForOwner(element);
+				element => FindClientAdapterForElement(element)?.GetSnapshotForOwner(element);
 
 			AccessibilityPeerHelper.IOSAllNodeSnapshotsForRootAccessor =
-				root => FindAdapterForRoot(root)?.GetAllSnapshotsForRoot(root);
+				root => FindClientAdapterForRoot(root)?.GetAllSnapshotsForRoot(root);
 
 			AccessibilityPeerHelper.IOSAccessibilityCustomContentValuesAccessor =
-				element => FindAdapterForElement(element)?.GetCustomContentValuesForOwner(element);
+				element => FindClientAdapterForElement(element)?.GetCustomContentValuesForOwner(element);
 
 			AccessibilityPeerHelper.IOSAccessibilityHitTestAccessor =
-				(root, x, y) => FindAdapterForRoot(root)?.HitTestSnapshotForRoot(root, x, y);
+				(root, x, y) => FindClientAdapterForRoot(root)?.HitTestSnapshotForRoot(root, x, y);
 
 			AccessibilityPeerHelper.IOSAccessibilityElementDidBecomeFocusedAction =
 				element =>
 				{
-					if (FindAdapterForElement(element)?.GetElementForOwner(element) is UnoUIAccessibilityElement native)
+					if (FindClientAdapterForElement(element)?.GetElementForOwner(element) is UnoUIAccessibilityElement native)
 					{
 						native.AccessibilityElementDidBecomeFocused();
 					}
@@ -214,27 +220,27 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 			AccessibilityPeerHelper.IOSAccessibilityElementRespondsToSelectorAccessor =
 				(element, selector) =>
-					FindAdapterForElement(element)?.GetElementForOwner(element) is NSObject native &&
+					FindClientAdapterForElement(element)?.GetElementForOwner(element) is NSObject native &&
 					native.RespondsToSelector(new ObjCRuntime.Selector(selector));
 
 			AccessibilityPeerHelper.IOSAccessibilityActionAccessor =
 				(element, request) =>
-					FindAdapterForElement(element)?.ExecuteAction(element, request) ?? false;
+					FindClientAdapterForElement(element)?.ExecuteAction(element, request) ?? false;
 
 			AccessibilityPeerHelper.IOSAccessibilityFocusAccessor =
-				element => FindAdapterForElement(element)?.RequestNativeFocus(element) ?? false;
+				element => FindClientAdapterForElement(element)?.RequestNativeFocus(element) ?? false;
 
 			AccessibilityPeerHelper.IOSFocusedNativeNodeAccessor =
-				root => FindAdapterForRoot(root)?.GetFocusedNativeNode(root);
+				root => FindClientAdapterForRoot(root)?.GetFocusedNativeNode(root);
 
 			AccessibilityPeerHelper.IOSAccessibilityEventsAccessor =
-				root => FindAdapterForRoot(root)?.GetEventsForRoot(root);
+				root => FindClientAdapterForRoot(root)?.GetEventsForRoot(root);
 
 			AccessibilityPeerHelper.IOSClearAccessibilityEventsAction =
-				root => FindAdapterForRoot(root)?.ClearEventsForRoot(root);
+				root => FindClientAdapterForRoot(root)?.ClearEventsForRoot(root);
 
 			AccessibilityPeerHelper.IOSAccessibilityRebuildGenerationAccessor =
-				root => FindAdapterForRoot(root)?._rebuildGeneration ?? 0;
+				root => FindClientAdapterForRoot(root)?._rebuildGeneration ?? 0;
 
 			_staticDispatchersInstalled = true;
 		}
@@ -287,6 +293,17 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	private static AppleUIKitAccessibility? FindAdapterForElement(UIElement? element)
 		=> FindAdapterForRoot(element?.XamlRoot);
 
+	// Test hooks read the tree the way a client does, so they enable it like one.
+	private static AppleUIKitAccessibility? FindClientAdapterForRoot(XamlRoot? root)
+	{
+		var adapter = FindAdapterForRoot(root);
+		adapter?.EnsureTreeRequested();
+		return adapter;
+	}
+
+	private static AppleUIKitAccessibility? FindClientAdapterForElement(UIElement? element)
+		=> FindClientAdapterForRoot(element?.XamlRoot);
+
 	internal AppleUIKitAccessibility(XamlRoot xamlRoot, RootViewController viewController)
 	{
 		_xamlRoot = xamlRoot;
@@ -299,25 +316,71 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		RegisterAdapter(_xamlRoot, this);
 		Trace("Configured AppleUIKit accessibility adapter.");
 
-		// Schedule an initial tree build in case XAML content already exists before the
-		// router's OnChildAdded callbacks start arriving (e.g., Window re-activation path).
-		ScheduleRebuild();
+		_voiceOverStatusObserver = UIApplication.Notifications.ObserveVoiceOverStatusDidChange(OnAssistiveTechnologyStatusChanged);
+		_switchControlStatusObserver = UIApplication.Notifications.ObserveSwitchControlStatusDidChange(OnAssistiveTechnologyStatusChanged);
+		if (IsAssistiveTechnologyRunning)
+		{
+			_clientRequestedTree = true;
+			ScheduleRebuild();
+		}
 	}
 
 	// IAccessibilityOwner
 
-	public override bool IsAccessibilityEnabled => true;
+	public override bool IsAccessibilityEnabled => !IsDisposed && _clientRequestedTree;
 
 	protected override bool IsAutomationListenerActive
-		=> _recordEvents || UIAccessibility.IsVoiceOverRunning || UIAccessibility.IsSwitchControlRunning;
+		=> IsAccessibilityEnabled && (_recordEvents || IsAssistiveTechnologyRunning);
 
 	protected override bool ShouldInvalidateOnScroll
+		=> IsAccessibilityEnabled && IsAssistiveTechnologyRunning;
+
+	private static bool IsAssistiveTechnologyRunning
 		=> UIAccessibility.IsVoiceOverRunning || UIAccessibility.IsSwitchControlRunning;
 
+	// Resolving the modal scope walks the whole peer tree, which only a client should cause.
 	protected override bool IsBlockedByActiveModal(UIElement element)
 	{
+		if (!IsAccessibilityEnabled)
+		{
+			return false;
+		}
+
 		var modalOwner = GetCurrentModalScopeOwner();
 		return modalOwner is not null && !IsWithinModalScope(element, modalOwner);
+	}
+
+	// Builds the tree ahead of the screen reader's first query.
+	private void OnAssistiveTechnologyStatusChanged(object? sender, NSNotificationEventArgs e)
+	{
+		if (IsAssistiveTechnologyRunning)
+		{
+			EnsureTreeRequested();
+		}
+	}
+
+	/// <summary>
+	/// Called before answering a client's query. The first one builds the tree synchronously, so it already sees the
+	/// elements.
+	/// </summary>
+	internal void EnsureTreeRequested()
+	{
+		if (_clientRequestedTree || IsDisposed)
+		{
+			return;
+		}
+
+		_clientRequestedTree = true;
+		Trace("An accessibility client requested the tree.");
+		ScheduleRebuild();
+		RebuildTree();
+	}
+
+	/// <summary>The elements the render view reports to VoiceOver, Switch Control and XCTest.</summary>
+	internal UIAccessibilityElement[] GetAccessibilityElementsForClient()
+	{
+		EnsureTreeRequested();
+		return _currentAccessibilityElements;
 	}
 
 	private void Trace(string message)
@@ -425,16 +488,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	}
 
 	private int GetAutomationElementsCountForRoot(XamlRoot xamlRoot)
-	{
-		if (!ReferenceEquals(xamlRoot, _xamlRoot) ||
-			!_controllerRef.TryGetTarget(out var controller) ||
-			controller.RenderView is not IAppleUIKitRenderView renderView)
-		{
-			return 0;
-		}
-
-		return renderView.AutomationElements?.Length ?? 0;
-	}
+		=> GetAutomationElementsForRoot(xamlRoot)?.Length ?? 0;
 
 	private object[]? GetAutomationElementsForRoot(XamlRoot xamlRoot)
 	{
@@ -496,7 +550,6 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			_currentAccessibilityElements = Array.Empty<UIAccessibilityElement>();
 			using var emptyArray = NSArray.FromNSObjects(_currentAccessibilityElements);
 			metalView.SetValueForKey(emptyArray, _accessibilityElementsKey);
-			((IAppleUIKitRenderView)metalView).AutomationElements = null;
 			return;
 		}
 
@@ -521,7 +574,6 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		_currentAccessibilityElements = elements.ToArray();
 		using var array = NSArray.FromNSObjects(_currentAccessibilityElements);
 		metalView.SetValueForKey(array, _accessibilityElementsKey);
-		((IAppleUIKitRenderView)metalView).AutomationElements = _currentAccessibilityElements;
 	}
 
 	// Initial build hook called from NativeWindowWrapper.ShowCore
@@ -532,6 +584,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	/// FrameworkElement raises its <c>Loaded</c> event, ensuring the tree is built even
 	/// when no child-add callbacks arrive (e.g., static content set before adapter creation).
 	/// </summary>
+	/// <remarks>No-op until a client has requested the tree.</remarks>
 	internal void TriggerInitialBuild() => ScheduleRebuild();
 
 	// Tree management
@@ -554,8 +607,9 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	{
 		_modalScopeDirty = true;
 
-		// Prevent scheduling after the adapter has been disposed or a rebuild is already pending.
-		if (_rebuildPending || IsDisposed)
+		// Prevent scheduling after the adapter has been disposed, before any client asked for the tree,
+		// or while a rebuild is already pending.
+		if (_rebuildPending || IsDisposed || !_clientRequestedTree)
 		{
 			return;
 		}
@@ -1232,6 +1286,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		{
 			return null;
 		}
+
+		EnsureTreeRequested();
 
 		if (_rebuildPending && !_isRebuildingTree)
 		{
@@ -2307,6 +2363,11 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		// installed for any other live roots; do not null them out.
 		UnregisterAdapter(_xamlRoot, this);
 
+		_voiceOverStatusObserver?.Dispose();
+		_voiceOverStatusObserver = null;
+		_switchControlStatusObserver?.Dispose();
+		_switchControlStatusObserver = null;
+
 		_pendingInvalidationHandles.Clear();
 		_invalidationFlushScheduled = false;
 		_forceStructureNotification = false;
@@ -2521,7 +2582,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	public override void NotifyInvalidatePeer(AutomationPeer peer)
 	{
 		base.NotifyInvalidatePeer(peer);
-		PostOnMain(ScheduleRebuild);
+		if (IsAccessibilityEnabled)
+		{
+			PostOnMain(ScheduleRebuild);
+		}
 	}
 
 	public override void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
