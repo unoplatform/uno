@@ -29,7 +29,7 @@ SDK/framework versions declared in `.vsts-ci.yml`.
 ## 2. Build the Android runtime and SamplesApp
 
 ```powershell
-dotnet build src\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj `
+dotnet build src\Uno.UI.Runtime.Android\Uno.UI.Runtime.Android.csproj `
   -c Release -f net10.0-android `
   -p:UnoTargetFrameworkOverride=net10.0-android `
   -p:NetCurrent=net10.0 -p:NetPrevious=net9.0 `

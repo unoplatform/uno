@@ -22,12 +22,12 @@
 
 Key source locations:
 
-- `src/Uno.UI.Runtime.Skia/Accessibility/AccessibilityRouter.cs`
-- `src/Uno.UI.Runtime.Skia/Accessibility/SkiaAccessibilityBase.cs`
-- `src/Uno.UI.Runtime.Skia.Android/Accessibility/UnoExploreByTouchHelper.cs`
-- `src/Uno.UI.Runtime.Skia.Android/Hosting/AndroidSkiaXamlRootHost.cs`
-- `src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Window/RootViewController.cs`
-- `src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Window/AppleUIKitWindowWrapper.cs`
+- `src/Uno.UI.Runtime/Accessibility/AccessibilityRouter.cs`
+- `src/Uno.UI.Runtime/Accessibility/SkiaAccessibilityBase.cs`
+- `src/Uno.UI.Runtime.Android/Accessibility/UnoExploreByTouchHelper.cs`
+- `src/Uno.UI.Runtime.Android/Hosting/AndroidSkiaXamlRootHost.cs`
+- `src/Uno.UI.Runtime.AppleUIKit/UI/Xaml/Window/RootViewController.cs`
+- `src/Uno.UI.Runtime.AppleUIKit/UI/Xaml/Window/AppleUIKitWindowWrapper.cs`
 - `src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Automation/`
 
 ## 2. Scope
