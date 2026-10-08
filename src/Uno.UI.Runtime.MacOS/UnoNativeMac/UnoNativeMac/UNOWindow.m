@@ -16,9 +16,6 @@ static id windowDidChangeScreen;
 static window_did_change_screen_fn_ptr window_did_change_screen;
 static window_did_change_screen_parameters_fn_ptr window_did_change_screen_parameters;
 
-// libSkiaSharp
-extern void* gr_direct_context_make_metal(id device, id queue);
-
 static uno_drawable_resize_fn_ptr window_resize;
 static metal_draw_fn_ptr metal_draw;
 static soft_draw_fn_ptr soft_draw;
