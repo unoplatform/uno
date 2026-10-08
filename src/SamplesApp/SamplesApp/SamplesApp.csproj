@@ -618,7 +618,7 @@
 	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true' AND '$(_Platform)' != 'browserwasm'">
 		<PackageReference Include="Uno.Resizetizer" />
 		<UnoIcon Include="Assets\Icons\icon.svg" ForegroundFile="Assets\Icons\icon_foreground.svg" ForegroundScale="0.65" Color="#ffffff" />
-		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
+		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" BackgroundColor="#ffffff" />
 	</ItemGroup>
 
 	<!-- Win32 DPI-awareness manifest (desktop only; windows sets its own ApplicationManifest above) -->

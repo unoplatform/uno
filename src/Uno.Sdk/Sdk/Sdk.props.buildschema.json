@@ -306,7 +306,7 @@
 			"type": "string"
 		},
 		"UnoSplashScreenBackgroundColor": {
-			"description": "The background color of the splash screen, used for all themes unless overridden. Defaults to '#FFFFFF', except on WebAssembly where no color is set so the splash screen follows the browser theme.",
+			"description": "The background color of the splash screen, used for all themes unless overridden. Replaces UnoSplashScreenColor, which was removed in Uno Platform 7.0. Defaults to '#FFFFFF', except on WebAssembly where no color is set so the splash screen follows the browser theme.",
 			"type": "color"
 		},
 		"UnoSplashScreenDarkBackgroundColor": {
@@ -316,10 +316,6 @@
 		"UnoSplashScreenDarkFile": {
 			"description": "The path to the splash screen image file used when the dark theme is active.",
 			"type": "file"
-		},
-		"UnoSplashScreenColor": {
-			"description": "The background color of the splash screen. Superseded by UnoSplashScreenBackgroundColor, which takes precedence when both are set.",
-			"type": "color"
 		},
 		"UnoSplashScreenScale": {
 			"description": "Used to scale the image that will be used as the SplashScreen.",

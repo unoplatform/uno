@@ -11,12 +11,8 @@
 		<UnoIconBackgroundColor Condition="$(UnoIconBackgroundColor) == ''">#00000000</UnoIconBackgroundColor>
 		<UnoSplashScreenFile Condition="$(UnoSplashScreenFile) == ''">$(UnoSplashFolder)splash_screen.svg</UnoSplashScreenFile>
 		<UnoSplashScreenBaseSize Condition="$(UnoSplashScreenBaseSize) == ''">300,300</UnoSplashScreenBaseSize>
-		<!-- UnoSplashScreenColor is the legacy name of UnoSplashScreenBackgroundColor -->
-		<UnoSplashScreenBackgroundColor Condition="$(UnoSplashScreenBackgroundColor) == ''">$(UnoSplashScreenColor)</UnoSplashScreenBackgroundColor>
 		<!-- WebAssembly has no default color so that the loader follows the browser theme. Other targets have no theme-aware splash screen yet. -->
 		<UnoSplashScreenBackgroundColor Condition="$(UnoSplashScreenBackgroundColor) == '' and $(IsBrowserWasm) != 'true'">#FFFFFF</UnoSplashScreenBackgroundColor>
-		<!-- Kept in sync for targets that still read the legacy name -->
-		<UnoSplashScreenColor Condition="$(UnoSplashScreenColor) == ''">$(UnoSplashScreenBackgroundColor)</UnoSplashScreenColor>
 
 		<!-- Support net10.0, without a platform identifier -->
 		<_UnoResizetizerIsCompatibleApp Condition=" 
@@ -35,7 +31,7 @@
 			Condition="Exists('$(UnoIconBackgroundFile)') and Exists('$(UnoIconForegroundFile)')" />
 		<UnoSplashScreen Include="$(UnoSplashScreenFile)"
 			BaseSize="$(UnoSplashScreenBaseSize)"
-			Color="$(UnoSplashScreenBackgroundColor)"
+			BackgroundColor="$(UnoSplashScreenBackgroundColor)"
 			DarkBackgroundColor="$(UnoSplashScreenDarkBackgroundColor)"
 			DarkFile="$(UnoSplashScreenDarkFile)"
 			Scale="$(UnoSplashScreenScale)"
@@ -51,4 +47,12 @@
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
 		<Content Remove="@(UnoImage);$(UnoIconBackgroundFile);$(UnoIconForegroundFile);$(UnoSplashScreenFile);$(UnoSplashScreenDarkFile)" />
 	</ItemGroup>
+
+	<Target Name="_UnoWarnRemovedSplashScreenColor"
+			BeforeTargets="CoreCompile"
+			Condition="'$(DesignTimeBuild)' != 'true' and '$(UnoSplashScreenColor)' != ''">
+		<Warning Code="UNOB0028"
+				 HelpLink="https://aka.platform.uno/UNOB0028"
+				 Text="The UnoSplashScreenColor property is no longer supported in Uno Platform 7.0 and is ignored. Use UnoSplashScreenBackgroundColor instead. (See https://aka.platform.uno/UNOB0028)" />
+	</Target>
 </Project>
