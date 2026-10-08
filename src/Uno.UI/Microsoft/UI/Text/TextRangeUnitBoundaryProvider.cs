@@ -8,30 +8,14 @@ namespace Microsoft.UI.Text
 	internal readonly record struct TextRangeUnitSpan
 	{
 		internal TextRangeUnitSpan(int start, int end)
-			: this(start, end, end, end)
-		{
-		}
-
-		internal TextRangeUnitSpan(int start, int end, int containmentEnd)
-			: this(start, end, containmentEnd, end)
-		{
-		}
-
-		internal TextRangeUnitSpan(int start, int end, int containmentEnd, int operationEnd)
 		{
 			Start = start;
 			End = end;
-			ContainmentEnd = containmentEnd;
-			OperationEnd = operationEnd;
 		}
 
 		internal int Start { get; }
 
 		internal int End { get; }
-
-		internal int ContainmentEnd { get; }
-
-		internal int OperationEnd { get; }
 	}
 
 	internal sealed class TextRangeUnitBoundarySet
@@ -99,7 +83,7 @@ namespace Microsoft.UI.Text
 				{
 					high = middle - 1;
 				}
-				else if (position >= span.ContainmentEnd)
+				else if (position >= span.End)
 				{
 					low = middle + 1;
 				}

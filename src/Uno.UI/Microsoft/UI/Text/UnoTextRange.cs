@@ -1299,7 +1299,7 @@ namespace Microsoft.UI.Text
 			{
 				return 0;
 			}
-			var target = boundaries[index].OperationEnd;
+			var target = boundaries[index].End;
 
 			if (!extend && target > _document.TextLength)
 			{
@@ -1374,7 +1374,7 @@ namespace Microsoft.UI.Text
 			var oldEnd = _end;
 			var originalLength = _end - _start;
 			_start = boundaries[startIndex].Start;
-			_end = boundaries[endIndex].OperationEnd;
+			_end = boundaries[endIndex].End;
 			OnRangeChanged();
 			return oldEnd == _end && oldStart != _start
 				? _start - oldStart

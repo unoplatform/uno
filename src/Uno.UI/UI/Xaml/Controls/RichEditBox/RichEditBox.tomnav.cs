@@ -332,11 +332,8 @@ namespace Microsoft.UI.Xaml.Controls
 				var containmentEnd = i + 1 < spans.Length
 					? _visualLineIndex[i + 1].Start
 					: textLength + 1;
-				spans[i] = new TextRangeUnitSpan(
-					_visualLineIndex[i].Start,
-					containmentEnd,
-					containmentEnd,
-					_visualLineIndex[i].End);
+				// Like WinUI, a TOM line unit includes its trailing paragraph mark.
+				spans[i] = new TextRangeUnitSpan(_visualLineIndex[i].Start, containmentEnd);
 			}
 			_visualLineUnitBoundaries = new TextRangeUnitBoundarySet(spans);
 			return true;
