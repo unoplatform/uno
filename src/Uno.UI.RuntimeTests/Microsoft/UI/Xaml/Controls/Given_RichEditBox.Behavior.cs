@@ -906,7 +906,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Selection_Horizontal_Extend_Tracks_Active_Endpoint()
 		{
 			var SUT = new RichEditBox();
@@ -949,10 +948,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				SUT.Document.Selection.SetRange(1, 3);
 				SUT.SelectionChanging += (s, e) => e.Cancel = true;
-				Assert.AreEqual(0, SUT.Document.Selection.MoveLeft(TextRangeUnit.Character, 1, false));
+
+				// A cancelled move still reports the proposed movement.
+				Assert.AreEqual(1, SUT.Document.Selection.MoveLeft(TextRangeUnit.Character, 1, false));
 				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
 				Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
-				Assert.AreEqual(0, SUT.Document.Selection.EndKey(TextRangeUnit.Story, false));
+				Assert.AreEqual(3, SUT.Document.Selection.EndKey(TextRangeUnit.Story, false));
 				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
 				Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
 			}
