@@ -1207,6 +1207,8 @@ namespace Microsoft.UI.Xaml.Controls
 					|| proposedStart + selectionLength != proposedEnd;
 				if (cancelled)
 				{
+					// The engine moved the selection before it was restored, which drops the insertion-point format.
+					Document.ClearPendingCaretFormatIfMoved(proposedStart, proposedStart + selectionLength);
 					return;
 				}
 
