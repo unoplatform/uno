@@ -1388,6 +1388,31 @@ affected — they stay where they are and remain invisible to `ApplicationData`,
 See [Application Data and Settings](xref:Uno.Features.ApplicationData) for details on where
 each platform stores its data.
 
+### Android context APIs
+
+Skia-on-Android no longer keeps the window, its render stack, or its input sources in
+process-wide statics, so the ambient Android context APIs changed shape:
+
+- **`Uno.UI.ContextHelper.Current` is now typed `Android.Content.Context?`.** It has always been
+  able to be `null` — before any activity is created — but the property was annotated non-null,
+  so the compiler never surfaced it. Code that dereferences it directly will now warn under
+  nullable reference types. Guard it, or use the new `ContextHelper.ApplicationContext` when a
+  process-wide context is all that is needed (system services, resources, package info).
+- **`Uno.UI.ContextHelper.Current` now tracks the most recently active live activity.** It stays
+  on an activity while it is paused or stopped, so background work still resolves one, and moves
+  to another live activity (or `null`) when that activity is destroyed. It previously kept the
+  last activity ever assigned, including a destroyed one. It is not necessarily the foreground
+  activity, so avoid it for work that needs a resumed activity.
+- **The `Uno.UI.ContextHelper.Current` setter is now `internal`.** The value is owned by the
+  activity lifecycle (`BaseActivity`), which overwrote any value app code assigned.
+- **`Uno.UI.ViewManagement.ApplicationViewHelper.GetBaseActivityEvents()` and
+  `IBaseActivityEvents` were removed.** No Skia activity implements the interface, so the method
+  always returned `null`. Observe activity lifecycle events with Android's
+  `Application.RegisterActivityLifecycleCallbacks` instead. The `Uno.UI.ViewManagement.Activity*Handler`
+  delegates it used were removed with it.
+- **`Uno.UI.OnSystemUiVisibilityChangeListener` is now `internal`.** It is constructed by the host
+  with the activity that owns the window; app code had no way to supply one.
+
 ### Templates and project heads
 
 New apps get Skia heads only. Existing apps should drop native `*.Mobile` / native

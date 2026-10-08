@@ -16,21 +16,17 @@ public class Given_ApplicationActivity
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24598")]
-	[DynamicDependency("get_Instance", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
 	[DynamicDependency("Recreate", "Android.App.Activity", "Mono.Android")]
 	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
 	public async Task When_Recreated_Dispatcher_Stays_Responsive()
 	{
-		// The runtime tests don't reference Mono.Android, hence the reflection.
-		var instanceProperty = Type.GetType("Uno.UI.Runtime.Android.ApplicationActivity, Uno.UI.Runtime.Android")
-			?.GetProperty("Instance", BindingFlags.NonPublic | BindingFlags.Static);
-		Assert.IsNotNull(instanceProperty);
-
-		var original = instanceProperty.GetValue(null);
+		var original = GetWindowActivity();
 		Assert.IsNotNull(original);
 		original.GetType().GetMethod("Recreate", Type.EmptyTypes)!.Invoke(original, null);
 
-		await TestServices.WindowHelper.WaitFor(() => !ReferenceEquals(instanceProperty.GetValue(null), original), timeoutMS: 10000);
+		await TestServices.WindowHelper.WaitFor(() => GetWindowActivity() is { } current && !ReferenceEquals(current, original), timeoutMS: 10000);
 		await Task.Delay(1000);
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -55,7 +51,8 @@ public class Given_ApplicationActivity
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24598")]
-	[DynamicDependency("get_Instance", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
 	[DynamicDependency("Recreate", "Android.App.Activity", "Mono.Android")]
 	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
 	public async Task When_Recreated_Window_Stays_Open()
@@ -69,15 +66,11 @@ public class Given_ApplicationActivity
 
 		try
 		{
-			var instanceProperty = Type.GetType("Uno.UI.Runtime.Android.ApplicationActivity, Uno.UI.Runtime.Android")
-				?.GetProperty("Instance", BindingFlags.NonPublic | BindingFlags.Static);
-			Assert.IsNotNull(instanceProperty);
-
-			var original = instanceProperty.GetValue(null);
+			var original = GetWindowActivity();
 			Assert.IsNotNull(original);
 			original.GetType().GetMethod("Recreate", Type.EmptyTypes)!.Invoke(original, null);
 
-			await TestServices.WindowHelper.WaitFor(() => !ReferenceEquals(instanceProperty.GetValue(null), original), timeoutMS: 10000);
+			await TestServices.WindowHelper.WaitFor(() => GetWindowActivity() is { } current && !ReferenceEquals(current, original), timeoutMS: 10000);
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(closed, "The window was closed by a configuration-driven Activity recreation.");
@@ -86,6 +79,70 @@ public class Given_ApplicationActivity
 		{
 			window.Closed -= OnClosed;
 		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Reads internal wrapper state through reflection, which NativeAOT trims away.")]
+#endif
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("Recreate", "Android.App.Activity", "Mono.Android")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
+	public async Task When_Recreated_Then_Successor_Drives_The_Window()
+	{
+		var original = GetWindowActivity();
+		Assert.IsNotNull(original);
+		original.GetType().GetMethod("Recreate", Type.EmptyTypes)!.Invoke(original, null);
+
+		object successor = null;
+		await TestServices.WindowHelper.WaitFor(() => (successor = GetWindowActivity()) is { } current && !ReferenceEquals(current, original), timeoutMS: 10000);
+
+		// The successor attaches its content before the wrapper re-subscribes to the attach event;
+		// a missed attach keeps the pre-draw gate shut and the app renders black.
+		var wrapper = GetMember(successor, "Wrapper");
+		Assert.IsNotNull(wrapper);
+		await TestServices.WindowHelper.WaitFor(() => GetField(wrapper, "_awaitingFirstFrame") is 0, timeoutMS: 10000);
+		Assert.AreEqual(true, GetMember(successor, "IsContentViewAttachedToWindow"));
+
+		Assert.AreSame(successor, GetMember(wrapper, "CurrentActivity"), "The window must be handed over to the re-created activity.");
+
+		var contextHelper = Type.GetType("Uno.UI.ContextHelper, Uno.WinRT");
+		Assert.IsNotNull(contextHelper);
+		Assert.AreSame(
+			successor,
+			contextHelper.GetProperty("Current", BindingFlags.Static | BindingFlags.Public)!.GetValue(null),
+			"ContextHelper.Current must not stay on the destroyed activity.");
+	}
+
+	private static object GetMember(object instance, string name)
+		=> instance.GetType()
+			.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+			?.GetValue(instance);
+
+	private static object GetField(object instance, string name)
+		=> instance.GetType()
+			.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+			?.GetValue(instance);
+
+	// The activity driving the test window, resolved through its host so it follows re-creation.
+	// The runtime tests don't reference Mono.Android or the Android host, hence the reflection.
+	private static object GetWindowActivity()
+	{
+		if (TestServices.WindowHelper.XamlRoot is not { } xamlRoot)
+		{
+			return null;
+		}
+
+		var host = typeof(Microsoft.UI.Xaml.XamlRoot).Assembly.GetType("Uno.UI.Hosting.XamlRootMap")
+			?.GetMethod("GetHostForRoot", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public)
+			?.Invoke(null, new object[] { xamlRoot });
+
+		return host?.GetType()
+			.GetProperty("Activity", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+			?.GetValue(host);
 	}
 }
 #endif

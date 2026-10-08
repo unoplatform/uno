@@ -24,7 +24,7 @@ namespace Windows.UI.StartScreen
 
 		private void LoadItems()
 		{
-			var shortcuts = ShortcutManagerCompat.GetDynamicShortcuts(ContextHelper.Current).ToArray();
+			var shortcuts = ShortcutManagerCompat.GetDynamicShortcuts(ContextHelper.ApplicationContext).ToArray();
 			Items.Clear();
 			foreach (var shortcut in shortcuts)
 			{
@@ -36,14 +36,14 @@ namespace Windows.UI.StartScreen
 		{
 			return AsyncAction.FromTask(async ct =>
 			{
-				var nonUnoShortcuts = ShortcutManagerCompat.GetDynamicShortcuts(ContextHelper.Current).Where(s => !s.IsUnoShortcut()).ToArray();
+				var nonUnoShortcuts = ShortcutManagerCompat.GetDynamicShortcuts(ContextHelper.ApplicationContext).Where(s => !s.IsUnoShortcut()).ToArray();
 				var convertedItems = new List<ShortcutInfoCompat>();
 				foreach (var item in Items)
 				{
 					convertedItems.Add(await item.ToShortcutInfoCompatAsync());
 				}
 
-				ShortcutManagerCompat.SetDynamicShortcuts(ContextHelper.Current, nonUnoShortcuts.Union(convertedItems).ToArray());
+				ShortcutManagerCompat.SetDynamicShortcuts(ContextHelper.ApplicationContext, nonUnoShortcuts.Union(convertedItems).ToArray());
 			});
 		}
 	}

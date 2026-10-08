@@ -18,24 +18,15 @@ At the root of every Android Uno app, lies a `BaseActivity` class that extends f
 
 ## Accessing Android main activity events
 
-Uno Platform provides an API to get access to the events/overrides invoked in the main activity (commonly inheriting from `Uno.UI.Runtime.Android.ApplicationActivity`) outside of the activity class.
-
-In order to get access to these events, you can write the following:
+To observe the lifecycle of the main activity (commonly inheriting from `Uno.UI.Runtime.Android.ApplicationActivity`) outside of the activity class, register Android's activity lifecycle callbacks on the application:
 
 ```csharp
-using Uno.UI.ViewManagement;
-
-App()
+#if __ANDROID__
+if (Android.App.Application.Context is Android.App.Application application)
 {
-    // ...
-    ApplicationViewHelper.GetBaseActivityEvents().Create += OnCreateEvent;
-    // ...
+    application.RegisterActivityLifecycleCallbacks(new MyActivityLifecycleCallbacks());
 }
-
-private void OnCreateEvent(Android.OS.Bundle savedInstanceState)
-{
-
-}
+#endif
 ```
 
-Note that some events are raised early during the application lifecycle and may need to be registered from the `App` constructor.
+`MyActivityLifecycleCallbacks` implements `Android.App.Application.IActivityLifecycleCallbacks`. Note that some callbacks are raised early during the application lifecycle and may need to be registered from the `App` constructor.

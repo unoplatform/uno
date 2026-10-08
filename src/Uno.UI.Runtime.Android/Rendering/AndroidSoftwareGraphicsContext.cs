@@ -40,7 +40,7 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 		"uniform sampler2D uTex;\n" +
 		"void main() { gl_FragColor = texture2D(uTex, vTex); }\n";
 
-	// Resources of a context disposed off the GL thread (ResetRendererContext is a UI-thread call): a GL delete
+	// Resources of a context disposed off the GL thread: a GL delete
 	// issued with no current context silently no-ops, and the CPU buffer can still back a live Skia surface.
 	// Drained by the next Present, on the GL thread, once the replacement context has been negotiated.
 	private static readonly ConcurrentQueue<(int Program, int Texture, ByteBuffer? Buffer)> _pendingDisposal = new();

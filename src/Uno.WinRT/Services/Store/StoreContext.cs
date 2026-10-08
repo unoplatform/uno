@@ -15,6 +15,11 @@ public sealed partial class StoreContext
 	partial void InitializePlatform();
 
 	/// <summary>
+	/// The window set through <c>InitializeWithWindow</c>, which hosts the store UI.
+	/// </summary>
+	internal object AssociatedWindow { get; set; }
+
+	/// <summary>
 	/// Gets a StoreContext object that can be used to access
 	/// and manage store-related data for the current
 	/// user in the context of the current app.

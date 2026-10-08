@@ -3,6 +3,7 @@
 using System;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Windows.Services.Store;
 using Windows.UI.Popups;
 using WinRT.Interop;
 using WinRT.Interop.Internal;
@@ -38,6 +39,10 @@ internal sealed class WindowInteropExtension : IWindowInteropExtension
 		if (target is MessageDialog messageDialog)
 		{
 			messageDialog.AssociatedWindow = window;
+		}
+		else if (target is StoreContext storeContext)
+		{
+			storeContext.AssociatedWindow = window;
 		}
 	}
 }
