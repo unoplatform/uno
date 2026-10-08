@@ -11,5 +11,6 @@
 		<IsMSALSupported>true</IsMSALSupported>
 	</PropertyGroup>
 
+	<Import Project="$(MSBuildThisFileDirectory)android-workarounds.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.Android.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
 </Project>
