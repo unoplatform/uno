@@ -2732,24 +2732,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_TextChanged_Not_Raised_On_Same_Text()
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Same_Text_Is_Set_Text_Events_Are_Raised(bool observeTextChanging)
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
 
-			SUT.Document.SetText(TextSetOptions.None, "abc");
-			await WindowHelper.WaitForIdle();
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				await WindowHelper.WaitForIdle();
 
-			var count = 0;
-			SUT.TextChanged += (s, e) => count++;
+				var changing = 0;
+				var changed = 0;
+				SUT.TextChanged += (s, e) => changed++;
+				if (observeTextChanging)
+				{
+					SUT.TextChanging += (s, e) => changing++;
+				}
 
-			// Re-setting the identical text must not raise (choke-point de-dupes against last value).
-			SUT.Document.SetText(TextSetOptions.None, "abc");
-			await WindowHelper.WaitForIdle();
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(1, changed);
+				Assert.AreEqual(observeTextChanging ? 1 : 0, changing);
 
-			Assert.AreEqual(0, count);
+				SUT.Document.GetRange(0, 1).Text = "a";
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(2, changed);
+				Assert.AreEqual(observeTextChanging ? 2 : 0, changing);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
