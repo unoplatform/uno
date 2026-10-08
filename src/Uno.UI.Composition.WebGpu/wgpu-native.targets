@@ -78,12 +78,27 @@
 	     evaluated BEFORE its DependsOnTargets run, so it would still be empty here — the task-level conditions below
 	     (evaluated after _SelectWgpuAsset has run) are the correct guard. -->
 	<Target Name="_FetchWgpuNative" DependsOnTargets="_SelectWgpuAsset">
-		<MakeDir Directories="$(WgpuNativeCacheDir)" Condition="'$(_WgpuAsset)' != ''" />
-		<DownloadFile Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)$(_WgpuAsset)')"
+		<!-- Every project importing this file, and each of its target frameworks, shares the cache, so a cold parallel
+		     build fetches it several times at once: writing the same zip concurrently failed with "being used by another
+		     process". Each fetch downloads and unzips into its own staging folder and only copies the result in. -->
+		<PropertyGroup>
+			<_WgpuNeedsFetch Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)')">true</_WgpuNeedsFetch>
+			<_WgpuStageDir>$(WgpuNativeCacheDir)stage\$([System.Guid]::NewGuid().ToString('N'))\</_WgpuStageDir>
+		</PropertyGroup>
+		<MakeDir Directories="$(_WgpuStageDir)" Condition="'$(_WgpuNeedsFetch)' == 'true'" />
+		<DownloadFile Condition="'$(_WgpuNeedsFetch)' == 'true'"
 			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/$(_WgpuAsset)"
-			DestinationFolder="$(WgpuNativeCacheDir)" Retries="3" />
-		<Microsoft.Build.Tasks.Unzip Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)')"
-			SourceFiles="$(WgpuNativeCacheDir)$(_WgpuAsset)" DestinationFolder="$(WgpuNativeCacheDir)" />
+			DestinationFolder="$(_WgpuStageDir)" Retries="3" />
+		<Microsoft.Build.Tasks.Unzip Condition="'$(_WgpuNeedsFetch)' == 'true'"
+			SourceFiles="$(_WgpuStageDir)$(_WgpuAsset)" DestinationFolder="$(_WgpuStageDir)" />
+		<ItemGroup Condition="'$(_WgpuNeedsFetch)' == 'true'">
+			<_WgpuStagedFile Include="$(_WgpuStageDir)**\*" Exclude="$(_WgpuStageDir)$(_WgpuAsset)" />
+		</ItemGroup>
+		<!-- Unzip keeps the archive's timestamps, so a fetch that lost the race skips the files the winner copied. -->
+		<Copy Condition="'$(_WgpuNeedsFetch)' == 'true'" SourceFiles="@(_WgpuStagedFile)"
+			DestinationFiles="@(_WgpuStagedFile->'$(WgpuNativeCacheDir)%(RecursiveDir)%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true" Retries="10" RetryDelayMilliseconds="500" />
+		<RemoveDir Condition="'$(_WgpuNeedsFetch)' == 'true'" Directories="$(_WgpuStageDir)" ContinueOnError="true" />
 	</Target>
 
 	<!-- Packaging provisions every RID the package ships, not just the build host's: the packages job runs on one
