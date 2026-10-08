@@ -256,23 +256,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public void When_Invalid_Rtf_Is_A_Deliberate_Security_Divergence()
+		public void When_Invalid_Rtf_Is_Imported_As_Plain_Text()
 		{
 			var document = new RichEditBox().Document;
 			document.SetText(TextSetOptions.None, "original");
-			document.ClearUndoRedoHistory();
 
-#if HAS_UNO
-			Assert.ThrowsExactly<ArgumentException>(() =>
-				document.SetText(TextSetOptions.FormatRtf, "invalid"));
-			GetTextWithoutFinalEop(document, out var text);
-			Assert.AreEqual("original", text);
-			Assert.IsFalse(document.CanUndo());
-#else
 			document.SetText(TextSetOptions.FormatRtf, "invalid");
+
 			GetTextWithoutFinalEop(document, out var text);
 			Assert.AreEqual("invalid", text);
-#endif
 		}
 
 		private static InMemoryRandomAccessStream CreateContractStream(byte[] bytes)
