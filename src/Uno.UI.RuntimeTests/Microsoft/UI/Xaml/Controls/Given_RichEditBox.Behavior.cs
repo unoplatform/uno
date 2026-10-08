@@ -2146,7 +2146,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ReadOnly_Tom_Mutations_Are_Rejected_Atomically()
 		{
 			var SUT = new RichEditBox();
@@ -2162,11 +2161,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.ThrowsExactly<UnauthorizedAccessException>(() => SUT.Document.GetRange(0, 1).Text = "x");
 				Assert.ThrowsExactly<UnauthorizedAccessException>(() => SUT.Document.GetRange(0, 1).CharacterFormat.Bold = FormatEffect.On);
 				Assert.ThrowsExactly<UnauthorizedAccessException>(() => SUT.Document.GetRange(0, 1).ParagraphFormat.Alignment = ParagraphAlignment.Center);
-				Assert.ThrowsExactly<UnauthorizedAccessException>(() => SUT.Document.Undo());
 
 				GetTextWithoutFinalEop(SUT.Document, out var text);
 				Assert.AreEqual("abc", text);
 				Assert.IsFalse(SUT.Document.CanUndo());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ReadOnly_Undo_And_Redo_Are_Ignored()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
+				SUT.Document.ClearUndoRedoHistory();
+				SUT.Document.SetText(TextSetOptions.None, "abcd");
+				SUT.IsReadOnly = true;
+
+				SUT.Document.Undo();
+				GetTextWithoutFinalEop(SUT.Document, out var text);
+				Assert.AreEqual("abcd", text);
+				Assert.IsTrue(SUT.Document.CanUndo());
+
+				SUT.IsReadOnly = false;
+				SUT.Document.Undo();
+				SUT.IsReadOnly = true;
+				SUT.Document.Redo();
+				GetTextWithoutFinalEop(SUT.Document, out text);
+				Assert.AreEqual("abc", text);
+				Assert.IsTrue(SUT.Document.CanRedo());
 			}
 			finally
 			{
