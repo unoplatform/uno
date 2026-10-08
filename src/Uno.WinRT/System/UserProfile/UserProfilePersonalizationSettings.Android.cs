@@ -24,15 +24,8 @@ namespace Windows.System.UserProfile
 		public IAsyncOperation<bool> TrySetWallpaperImageAsync(StorageFile imageFile) =>
 			TrySetImageAsync(imageFile, WallpaperManagerFlags.System).AsAsyncOperation();
 
-		private static WallpaperManager GetWallpaperManager()
-		{
-			if (ContextHelper.Current == null)
-			{
-				throw new InvalidOperationException("Operation called too early in application lifecycle.");
-			}
-
-			return WallpaperManager.GetInstance(ContextHelper.Current);
-		}
+		private static WallpaperManager GetWallpaperManager() =>
+			WallpaperManager.GetInstance(ContextHelper.ApplicationContext);
 
 		private Task<bool> TrySetImageAsync(StorageFile imageFile, WallpaperManagerFlags target)
 		{

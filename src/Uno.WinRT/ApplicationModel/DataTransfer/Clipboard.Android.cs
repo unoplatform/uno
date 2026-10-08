@@ -88,7 +88,7 @@ namespace Windows.ApplicationModel.DataTransfer
 					clipData.AddItem(items[itemIndex]);
 				}
 
-				var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
+				var manager = ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) as ClipboardManager;
 				if (manager is null)
 				{
 					return;
@@ -107,7 +107,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			var dataPackage = new DataPackage();
 
-			var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
+			var manager = ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) as ClipboardManager;
 			if (manager is null)
 			{
 				return dataPackage.GetView();
@@ -191,7 +191,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static void Clear()
 		{
-			if (ContextHelper.Current.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
+			if (ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
 			{
 				if (OperatingSystem.IsAndroidVersionAtLeast(28))
 				{
@@ -206,7 +206,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		private static void StartContentChanged()
 		{
-			if (ContextHelper.Current.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
+			if (ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
 			{
 				manager.PrimaryClipChanged += Manager_PrimaryClipChanged;
 			}
@@ -214,7 +214,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		private static void StopContentChanged()
 		{
-			if (ContextHelper.Current.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
+			if (ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
 			{
 				manager.PrimaryClipChanged -= Manager_PrimaryClipChanged;
 			}
