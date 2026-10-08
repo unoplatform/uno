@@ -31,8 +31,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	private bool _observesContentViewAttach;
 
 	// Armed on every ApplicationActivity creation so its window's draws wait for a Skia frame; released by the render
-	// view once that frame is presented. The render view outlives a recreated Activity, so it must not keep its own
-	// "already signaled" state: OnPreDraw would then cancel every draw of the new window, forever.
+	// view once that frame is presented. It lives on the wrapper, which outlives a recreated Activity, so each
+	// activity must re-arm it rather than inherit an "already signaled" state.
 	private int _awaitingFirstFrame;
 
 	private Rect _previousTrueVisibleBounds;
