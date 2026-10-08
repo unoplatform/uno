@@ -358,6 +358,62 @@ public partial class Given_RichEditBox
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[DataRow(TextUnit.Line)]
+	[DataRow(TextUnit.Paragraph)]
+	public async Task When_Automation_Range_Reaches_The_Final_Paragraph_Mark(TextUnit unit)
+	{
+		var sut = new RichEditBox { Width = 300, Height = 100 };
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Document.SetText(TextSetOptions.None, "first\rlast");
+			await WindowHelper.WaitForIdle();
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(sut);
+			var textProvider = peer?.GetPattern(PatternInterface.Text) as ITextProvider;
+			Assert.IsNotNull(textProvider);
+			var documentRange = textProvider.DocumentRange;
+
+			ITextRangeProvider CaretAt(int offset)
+			{
+				var caret = documentRange.Clone();
+				caret.MoveEndpointByRange(TextPatternRangeEndpoint.End, caret, TextPatternRangeEndpoint.Start);
+				caret.Move(TextUnit.Character, offset);
+				return caret;
+			}
+
+			foreach (var offset in new[] { 6, 8, 10 })
+			{
+				var range = CaretAt(offset);
+				range.ExpandToEnclosingUnit(unit);
+				Assert.AreEqual("last", range.GetText(-1), $"caret at {offset}");
+				Assert.AreEqual(0, range.CompareEndpoints(TextPatternRangeEndpoint.End, documentRange, TextPatternRangeEndpoint.End));
+			}
+
+			var first = CaretAt(1);
+			first.ExpandToEnclosingUnit(unit);
+			Assert.AreEqual("first\r", first.GetText(-1));
+
+			var extended = CaretAt(0);
+			Assert.AreEqual(10, extended.MoveEndpointByUnit(TextPatternRangeEndpoint.End, TextUnit.Character, 50));
+			Assert.AreEqual("first\rlast", extended.GetText(-1));
+			Assert.AreEqual(0, extended.MoveEndpointByUnit(TextPatternRangeEndpoint.End, TextUnit.Character, 1));
+			Assert.AreEqual(0, extended.MoveEndpointByUnit(TextPatternRangeEndpoint.End, TextUnit.Paragraph, 1));
+			Assert.AreEqual(0, extended.CompareEndpoints(TextPatternRangeEndpoint.End, documentRange, TextPatternRangeEndpoint.End));
+
+			var moved = CaretAt(10);
+			Assert.AreEqual(0, moved.Move(TextUnit.Character, 1));
+			Assert.AreEqual(string.Empty, moved.GetText(-1));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Automation_Ranges_Are_Retained_They_Rebase_With_The_Document()
 	{
 		const string firstLinkText = "first-link";
