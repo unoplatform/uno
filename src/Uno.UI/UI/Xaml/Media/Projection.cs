@@ -2,6 +2,7 @@
 using System;
 using System.Numerics;
 using Windows.Foundation;
+using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Media;
 
@@ -23,6 +24,19 @@ public partial class Projection : DependencyObject, IMultiParentShareableDepende
 	/// Event raised when any property affecting the projection changes.
 	/// </summary>
 	internal event EventHandler Changed;
+
+	private WeakEventHelper.WeakEventCollection _weakChangedHandlers;
+
+	/// <summary>
+	/// Registers a <see cref="Changed"/> handler without keeping its target alive, for subscribers that are
+	/// shorter-lived than the projection (e.g. elements styled with a projection shared through a Style setter).
+	/// </summary>
+	/// <returns>A disposable that keeps the registration alive; dispose it to unregister.</returns>
+	internal IDisposable RegisterChanged(EventHandler handler)
+		=> WeakEventHelper.RegisterEvent(
+			_weakChangedHandlers ??= new(),
+			handler,
+			(h, s, e) => (h as EventHandler)?.Invoke(s, (EventArgs)e));
 
 	/// <summary>
 	/// Gets or sets the UIElement that owns this projection.
@@ -46,6 +60,7 @@ public partial class Projection : DependencyObject, IMultiParentShareableDepende
 	private protected void OnPropertyChanged()
 	{
 		Changed?.Invoke(this, EventArgs.Empty);
+		_weakChangedHandlers?.Invoke(this, EventArgs.Empty);
 	}
 }
 #endif
