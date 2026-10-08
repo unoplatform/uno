@@ -409,6 +409,35 @@ public class Given_RunnerBottomSheet
 		static double Center(Rect bounds) => bounds.Y + bounds.Height / 2;
 	}
 
+#if HAS_UNO
+	[TestMethod]
+	public async Task When_Touch_Filter_Reaches_Target_Height_With_Centred_Text()
+	{
+		var vm = SampleControl.Presentation.SampleChooserViewModel.Instance;
+		if (vm is null)
+		{
+			Assert.Inconclusive("Needs the SamplesApp shell.");
+		}
+
+		var wasTouch = vm.SimulateTouch;
+		try
+		{
+			vm.SimulateTouch = true;
+			var runner = await LoadRunner();
+			var filter = Find<TextBox>(runner, "testFilter");
+
+			// The TextBox template pins its text to the top padding, so extra height must come from even padding, not MinHeight.
+			Assert.IsTrue(filter.MinHeight < UnitTestsControl.TouchTargetSize, $"A MinHeight of {filter.MinHeight} would leave the text above centre.");
+			Assert.IsTrue(filter.ActualHeight >= UnitTestsControl.TouchTargetSize - 0.5, $"Filter height {filter.ActualHeight}.");
+			Assert.AreEqual(filter.Padding.Top, filter.Padding.Bottom, 1, "Text sits in the middle of the box.");
+		}
+		finally
+		{
+			vm.SimulateTouch = wasTouch;
+		}
+	}
+#endif
+
 	[TestMethod]
 	public async Task When_Window_Turns_Wide_During_A_Run_Layout_Waits_For_The_End()
 	{
