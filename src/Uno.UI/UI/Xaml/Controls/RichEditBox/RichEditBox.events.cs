@@ -11,9 +11,9 @@ namespace Microsoft.UI.Xaml.Controls
 	// TextChanged and SelectionChanged (both RoutedEventHandler) are raised from the shared document
 	// text choke point (OnDocumentTextChanged) and the selection render choke point
 	// (UpdateDisplaySelection) respectively, mirroring WinUI's "fire after the content/selection has
-	// actually changed" semantics. Each is de-duplicated against the last-raised value so that
-	// format-only edits (which don't change the plain text) and pure re-renders / focus changes (which
-	// don't change the selection span) do not raise spurious notifications.
+	// actually changed" semantics. Each is de-duplicated against the last-raised value so that pure
+	// re-renders and focus changes do not raise spurious notifications. Like WinUI, a text edit that
+	// replaces content with identical text still raises TextChanging and TextChanged.
 	//
 	// The paired "changing" events use TypedEventHandler with their own args. TextChanging fires
 	// immediately before TextChanged with IsContentChanging == true (our architecture applies the
@@ -35,12 +35,14 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_lastObservedText = GetPlainTextContent();
 				_lastObservedTextVersion = Document.TextVersion;
+				_lastObservedContentEditVersion = Document.ContentEditVersion;
 			}
 			_textChanging += value;
 		}
 
 		private string _lastObservedText = string.Empty;
 		private long _lastObservedTextVersion;
+		private long _lastObservedContentEditVersion;
 		private global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxTextChangingEventArgs>? _textChanging;
 		private bool _isInvokingTextChanging;
 
@@ -50,27 +52,31 @@ namespace Microsoft.UI.Xaml.Controls
 		private TextChangeNotification? PrepareTextChangedNotification(bool isContentChanging)
 		{
 			var version = Document.TextVersion;
+			var editVersion = Document.ContentEditVersion;
 			var textChanging = _textChanging;
 			if (textChanging is null)
 			{
-				if (isContentChanging && version == _lastObservedTextVersion)
+				if (isContentChanging && version == _lastObservedTextVersion && editVersion == _lastObservedContentEditVersion)
 				{
 					return null;
 				}
 
 				_lastObservedTextVersion = version;
+				_lastObservedContentEditVersion = editVersion;
 				return new TextChangeNotification(version);
 			}
 
 			var text = GetPlainTextContent();
-			if (isContentChanging && text == _lastObservedText)
+			if (isContentChanging && text == _lastObservedText && editVersion == _lastObservedContentEditVersion)
 			{
 				return null;
 			}
 
 			var oldText = _lastObservedText;
+			var oldEditVersion = _lastObservedContentEditVersion;
 			_lastObservedText = text;
 			_lastObservedTextVersion = version;
+			_lastObservedContentEditVersion = editVersion;
 
 			// A TextChanging handler may synchronously edit the document again. The nested render still
 			// runs, but its notification is folded into the outer one so observers never receive stale
@@ -92,9 +98,10 @@ namespace Microsoft.UI.Xaml.Controls
 				finalText = GetPlainTextContent();
 				_lastObservedText = finalText;
 				_lastObservedTextVersion = Document.TextVersion;
+				_lastObservedContentEditVersion = Document.ContentEditVersion;
 			}
 
-			if (isContentChanging && oldText == finalText)
+			if (isContentChanging && oldText == finalText && oldEditVersion == _lastObservedContentEditVersion)
 			{
 				return null;
 			}

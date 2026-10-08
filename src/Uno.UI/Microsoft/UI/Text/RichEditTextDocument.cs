@@ -46,6 +46,7 @@ namespace Microsoft.UI.Text
 		private bool _preservedRtfMetadataEditApplied;
 		private long _characterFormatVersion;
 		private long _paragraphFormatVersion;
+		private long _contentEditVersion;
 		private long _automationVersion;
 		private long _rangeEditGeneration;
 		private long _rangeEditLogBaseGeneration;
@@ -135,6 +136,9 @@ namespace Microsoft.UI.Text
 			=> _textElementBoundaryCache.Get(PlainText, TextVersion);
 
 		internal long TextVersion => _textBuffer.Version;
+
+		// Counts text edits, including those that replace text with identical content, which WinUI still reports as changes.
+		internal long ContentEditVersion => _contentEditVersion;
 
 		internal long CharacterFormatVersion => _characterFormatVersion;
 

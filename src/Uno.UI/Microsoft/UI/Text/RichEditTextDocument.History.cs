@@ -196,6 +196,11 @@ namespace Microsoft.UI.Text
 			TextHistoryKind historyKind = TextHistoryKind.None,
 			bool forceHistory = false)
 		{
+			if (textEdit is { } attemptedEdit && (attemptedEdit.RemoveLength > 0 || attemptedEdit.InsertLength > 0))
+			{
+				_contentEditVersion++;
+			}
+
 			if (_isRestoringHistory)
 			{
 				mutate();
@@ -363,6 +368,10 @@ namespace Microsoft.UI.Text
 			}
 			var afterSelection = CaptureSelectionState();
 			var selectionChanged = !beforeSelection.Equals(afterSelection);
+			if (!documentChanged && textEdit is { } identicalEdit && (identicalEdit.RemoveLength > 0 || identicalEdit.InsertLength > 0))
+			{
+				RequestRender(isContentChanging: true);
+			}
 			if (!documentChanged && !selectionChanged && !forceHistory)
 			{
 				return false;
