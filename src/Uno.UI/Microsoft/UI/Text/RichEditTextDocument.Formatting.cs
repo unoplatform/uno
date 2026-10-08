@@ -658,7 +658,7 @@ namespace Microsoft.UI.Text
 			}
 
 			format = (UnoTextCharacterFormat)format.GetClone();
-			ResolveRangeToggleEffects(format, GetFormatOverRange(start, end, gravity));
+			ResolveCharacterToggles(format, start, end, gravity);
 			var onlyRemovingProtection = format.ProtectedTextEffect == global::Microsoft.UI.Text.FormatEffect.Off
 				&& WouldOnlyRemoveProtection(start, end, format);
 			if (IsOwnerReadOnly)
@@ -673,6 +673,28 @@ namespace Microsoft.UI.Text
 			MutateWithUndo(
 				() => ApplyFormatOverRange(start, end, state => ApplyCharacterFormatToState(state, format)),
 				characterRange: new HistoryRange(start, end));
+		}
+
+		// Like TOM, Toggle resolves against the first character of a range, or the caret's insertion format.
+		internal void ResolveCharacterToggles(UnoTextCharacterFormat format, int start, int end, global::Microsoft.UI.Text.RangeGravity gravity)
+		{
+			SyncRunsToLength(_textBuffer.Length);
+			start = Math.Clamp(start, 0, _textBuffer.Length);
+			end = Math.Clamp(end, start, _textBuffer.Length);
+			UnoTextCharacterFormat current;
+			if (start == end)
+			{
+				current = new UnoTextCharacterFormat();
+				current.LoadFrom(
+					ResolveCaretBasisFormat(start, gravity is global::Microsoft.UI.Text.RangeGravity.Forward or global::Microsoft.UI.Text.RangeGravity.Inward),
+					_owner);
+			}
+			else
+			{
+				current = GetFormatOverRange(start, start + 1, gravity);
+			}
+
+			ResolveRangeToggleEffects(format, current);
 		}
 
 		private static void ResolveRangeToggleEffects(UnoTextCharacterFormat requested, UnoTextCharacterFormat current)

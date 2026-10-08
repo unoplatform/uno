@@ -21,15 +21,30 @@ namespace Microsoft.UI.Text
 
 		internal void Bind(UnoTextRange range) => _apply = range.ApplyCharacterFormat;
 
-		private void ApplyIfBound(Action<UnoTextCharacterFormat> define)
+		private UnoTextCharacterFormat? ApplyIfBound(Action<UnoTextCharacterFormat> define)
 		{
 			if (_apply is { } apply)
 			{
 				var delta = new UnoTextCharacterFormat();
 				define(delta);
 				apply(delta);
+				return delta;
 			}
+
+			return null;
 		}
+
+		// Like TOM, Toggle is resolved when it is set: a bound format adopts the value its range resolved,
+		// and an unbound format flips its own value.
+		private static global::Microsoft.UI.Text.FormatEffect ResolveToggle(
+			global::Microsoft.UI.Text.FormatEffect current,
+			global::Microsoft.UI.Text.FormatEffect requested,
+			global::Microsoft.UI.Text.FormatEffect? applied)
+			=> applied ?? (requested == global::Microsoft.UI.Text.FormatEffect.Toggle
+				? current == global::Microsoft.UI.Text.FormatEffect.On
+					? global::Microsoft.UI.Text.FormatEffect.Off
+					: global::Microsoft.UI.Text.FormatEffect.On
+				: requested);
 
 		private void ApplyAllIfBound() => _apply?.Invoke(this);
 
@@ -74,6 +89,7 @@ namespace Microsoft.UI.Text
 			get => BoldEffect;
 			set
 			{
+				var current = BoldEffect;
 				BoldEffect = value;
 				if (value is global::Microsoft.UI.Text.FormatEffect.On or global::Microsoft.UI.Text.FormatEffect.Off)
 				{
@@ -84,12 +100,13 @@ namespace Microsoft.UI.Text
 				{
 					WeightDefined = false;
 				}
-				ApplyIfBound(delta =>
+				var applied = ApplyIfBound(delta =>
 				{
 					delta.BoldEffect = value;
 					delta.WeightDefined = WeightDefined;
 					delta.WeightValue = WeightValue;
 				});
+				BoldEffect = ResolveToggle(current, value, applied?.BoldEffect);
 			}
 		}
 
@@ -98,8 +115,7 @@ namespace Microsoft.UI.Text
 			get => ItalicEffect;
 			set
 			{
-				ItalicEffect = value;
-				ApplyIfBound(delta => delta.ItalicEffect = value);
+				ItalicEffect = ResolveToggle(ItalicEffect, value, ApplyIfBound(delta => delta.ItalicEffect = value)?.ItalicEffect);
 			}
 		}
 
@@ -108,8 +124,7 @@ namespace Microsoft.UI.Text
 			get => StrikethroughEffect;
 			set
 			{
-				StrikethroughEffect = value;
-				ApplyIfBound(delta => delta.StrikethroughEffect = value);
+				StrikethroughEffect = ResolveToggle(StrikethroughEffect, value, ApplyIfBound(delta => delta.StrikethroughEffect = value)?.StrikethroughEffect);
 			}
 		}
 
@@ -227,8 +242,7 @@ namespace Microsoft.UI.Text
 			get => AllCapsEffect;
 			set
 			{
-				AllCapsEffect = value;
-				ApplyIfBound(delta => delta.AllCapsEffect = value);
+				AllCapsEffect = ResolveToggle(AllCapsEffect, value, ApplyIfBound(delta => delta.AllCapsEffect = value)?.AllCapsEffect);
 			}
 		}
 
@@ -271,8 +285,7 @@ namespace Microsoft.UI.Text
 			get => HiddenEffect;
 			set
 			{
-				HiddenEffect = value;
-				ApplyIfBound(delta => delta.HiddenEffect = value);
+				HiddenEffect = ResolveToggle(HiddenEffect, value, ApplyIfBound(delta => delta.HiddenEffect = value)?.HiddenEffect);
 			}
 		}
 
@@ -319,8 +332,7 @@ namespace Microsoft.UI.Text
 			get => OutlineEffect;
 			set
 			{
-				OutlineEffect = value;
-				ApplyIfBound(delta => delta.OutlineEffect = value);
+				OutlineEffect = ResolveToggle(OutlineEffect, value, ApplyIfBound(delta => delta.OutlineEffect = value)?.OutlineEffect);
 			}
 		}
 
@@ -344,8 +356,7 @@ namespace Microsoft.UI.Text
 			get => ProtectedTextEffect;
 			set
 			{
-				ProtectedTextEffect = value;
-				ApplyIfBound(delta => delta.ProtectedTextEffect = value);
+				ProtectedTextEffect = ResolveToggle(ProtectedTextEffect, value, ApplyIfBound(delta => delta.ProtectedTextEffect = value)?.ProtectedTextEffect);
 			}
 		}
 
@@ -354,8 +365,7 @@ namespace Microsoft.UI.Text
 			get => SmallCapsEffect;
 			set
 			{
-				SmallCapsEffect = value;
-				ApplyIfBound(delta => delta.SmallCapsEffect = value);
+				SmallCapsEffect = ResolveToggle(SmallCapsEffect, value, ApplyIfBound(delta => delta.SmallCapsEffect = value)?.SmallCapsEffect);
 			}
 		}
 
@@ -379,8 +389,7 @@ namespace Microsoft.UI.Text
 			get => SubscriptEffect;
 			set
 			{
-				SubscriptEffect = value;
-				ApplyIfBound(delta => delta.SubscriptEffect = value);
+				SubscriptEffect = ResolveToggle(SubscriptEffect, value, ApplyIfBound(delta => delta.SubscriptEffect = value)?.SubscriptEffect);
 			}
 		}
 
@@ -389,8 +398,7 @@ namespace Microsoft.UI.Text
 			get => SuperscriptEffect;
 			set
 			{
-				SuperscriptEffect = value;
-				ApplyIfBound(delta => delta.SuperscriptEffect = value);
+				SuperscriptEffect = ResolveToggle(SuperscriptEffect, value, ApplyIfBound(delta => delta.SuperscriptEffect = value)?.SuperscriptEffect);
 			}
 		}
 

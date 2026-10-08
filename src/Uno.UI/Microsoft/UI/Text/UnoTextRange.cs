@@ -1135,7 +1135,11 @@ namespace Microsoft.UI.Text
 		// Applies a bound character format to this range's current extent. Called by
 		// UnoTextCharacterFormat's property setters so `range.CharacterFormat.Bold = On` takes effect.
 		internal void ApplyCharacterFormat(UnoTextCharacterFormat format)
-			=> _document.SetFormatOverRange(_start, _end, format, _gravity);
+		{
+			// Resolving in place lets a live format report the value a Toggle produced.
+			_document.ResolveCharacterToggles(format, _start, _end, _gravity);
+			_document.SetFormatOverRange(_start, _end, format, _gravity);
+		}
 
 		// --- Paragraph formatting (functional over the document paragraph run model) ---
 
