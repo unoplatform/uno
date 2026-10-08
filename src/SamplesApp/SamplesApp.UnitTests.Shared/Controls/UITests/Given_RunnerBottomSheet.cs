@@ -393,10 +393,20 @@ public class Given_RunnerBottomSheet
 		var bar = Find<FrameworkElement>(runner, "ShellSheetBar");
 		var status = Find<FrameworkElement>(runner, "ShellSheetStatus");
 		var stats = Find<FrameworkElement>(runner, "ShellRunStats");
+		var run = Find<FrameworkElement>(runner, "runButton");
+		var handle = Find<FrameworkElement>(runner, "ShellSheetHandle");
 
-		Assert.IsTrue(bar.ActualHeight <= 88, $"Bar height {bar.ActualHeight}, chips {stats.ActualHeight}.");
-		Assert.AreEqual(GetBounds(status, runner).X, GetBounds(stats, runner).X, 0.5, "The chips line up under the status.");
+		Assert.IsTrue(bar.ActualHeight <= 96, $"Bar height {bar.ActualHeight}, chips {stats.ActualHeight}.");
+
+		var runBounds = GetBounds(run, runner);
+		var runCenter = runBounds.Y + runBounds.Height / 2;
+		Assert.AreEqual(runCenter, Center(GetBounds(status, runner)), 1, "The status is centred with Run and Stop.");
+		Assert.AreEqual(runCenter, Center(GetBounds(handle, runner)), 1, "The handle is centred with Run and Stop.");
+		Assert.AreEqual(runBounds.X, GetBounds(stats, runner).X, 0.5, "The chips start under Run.");
+		Assert.IsTrue(GetBounds(stats, runner).Y >= runBounds.Bottom, "The chips sit below the buttons.");
 		Assert.IsTrue(GetBounds(stats, runner).Right >= runner.ActualWidth - 16, "The chips use the bar's width.");
+
+		static double Center(Rect bounds) => bounds.Y + bounds.Height / 2;
 	}
 
 	[TestMethod]
