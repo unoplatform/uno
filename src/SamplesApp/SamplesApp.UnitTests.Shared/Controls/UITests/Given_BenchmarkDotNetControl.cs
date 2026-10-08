@@ -146,6 +146,22 @@ public class Given_BenchmarkDotNetControl
 	}
 
 	[TestMethod]
+	public async Task When_Filter_Matches_Nothing_Status_Explains()
+	{
+		var (_, control) = await Load(1000, 700);
+		control.ClassFilter = "NoSuchBenchmarkClass";
+
+		await control.Run();
+
+		Assert.AreEqual("No benchmarks match \"NoSuchBenchmarkClass\"", Find<TextBlock>(control, "runStatus").Text);
+		Assert.AreEqual("0", Find<TextBlock>(control, "runCount").Text);
+		Assert.AreEqual(0, Find<TextBlock>(control, "runLogs").Inlines.Count, "No error should be logged");
+		Assert.AreEqual("", control.ResultsAsBase64);
+		Assert.IsFalse(Find<Button>(control, "downloadResults").IsEnabled);
+		Assert.IsTrue(Find<Button>(control, "runButton").IsEnabled);
+	}
+
+	[TestMethod]
 	public void When_Log_Kind_Is_Hint_It_Is_Not_A_Warning()
 		=> Assert.AreEqual("TextFillColorSecondaryBrush", BenchmarkDotNetControl.GetLogBrushKey(LogKind.Hint));
 
