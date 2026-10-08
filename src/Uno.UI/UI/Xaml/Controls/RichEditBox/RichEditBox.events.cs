@@ -141,19 +141,22 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_lastRaisedSelection = current;
-			try
+
+			// Like WinUI's event manager, the routed SelectionChanged event is queued rather than raised synchronously,
+			// and it reaches the handlers registered when the selection changed.
+			if (SelectionChanged is { } selectionChanged)
 			{
-				SelectionChanged?.Invoke(this, new RoutedEventArgs());
+				_ = Dispatcher.RunAsync(
+					global::Windows.UI.Core.CoreDispatcherPriority.Normal,
+					() => selectionChanged(this, new RoutedEventArgs()));
 			}
-			finally
+
+			if (GetOrCreateAutomationPeer() is RichEditBoxAutomationPeer peer
+				&& AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextSelectionChanged))
 			{
-				if (GetOrCreateAutomationPeer() is RichEditBoxAutomationPeer peer
-					&& AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextSelectionChanged))
-				{
-					peer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
-				}
-				Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
+				peer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
 			}
+			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
 		}
 
 		private readonly record struct TextChangeNotification(long Version);
