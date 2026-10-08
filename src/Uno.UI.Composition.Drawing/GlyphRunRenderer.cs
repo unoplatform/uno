@@ -27,8 +27,14 @@ public static class GlyphRunRenderer
 	[ThreadStatic]
 	private static List<PathInstance>? _pending;
 
-	/// <param name="outlineStrokeWidth">When set, monochrome glyphs are stroked at this width instead of filled.</param>
-	public static void Draw(IDrawingSession session, IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color, float? outlineStrokeWidth = null)
+	public static void Draw(IDrawingSession session, IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color)
+		=> Draw(session, font, glyphs, positions, baselineY, color, outlineStrokeWidth: null);
+
+	/// <summary>The default <see cref="IDrawingSession.StrokeGlyphRun"/>: as <see cref="Draw(IDrawingSession, IFont, ReadOnlySpan{ushort}, ReadOnlySpan{Vector2}, float, Color)"/>, but monochrome glyphs are stroked instead of filled.</summary>
+	public static void Stroke(IDrawingSession session, IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color, float strokeWidth)
+		=> Draw(session, font, glyphs, positions, baselineY, color, strokeWidth);
+
+	private static void Draw(IDrawingSession session, IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color, float? outlineStrokeWidth)
 	{
 		var elements = _elements ??= new List<GlyphRunElement>();
 		elements.Clear();

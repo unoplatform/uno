@@ -140,6 +140,14 @@ public interface IDrawingSession
 		=> GlyphRunRenderer.Draw(this, font, glyphs, positions, baselineY, color);
 
 	/// <summary>
+	/// Draws a shaped glyph run with its outlines stroked at <paramref name="strokeWidth"/> rather than filled (outline
+	/// text). Overridden the same way as <see cref="DrawGlyphRun"/>, calling <see cref="GlyphRunRenderer.Stroke"/> for
+	/// the fonts the backend cannot draw natively.
+	/// </summary>
+	void StrokeGlyphRun(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color, float strokeWidth)
+		=> GlyphRunRenderer.Stroke(this, font, glyphs, positions, baselineY, color, strokeWidth);
+
+	/// <summary>
 	/// Draws <paramref name="silhouette"/> as a soft shadow: coverage blurred by (<paramref name="sigmaX"/>,
 	/// <paramref name="sigmaY"/>) and filled with <paramref name="color"/>; <paramref name="additive"/>
 	/// sums overlapping contributions. The sigmas are in the session's CURRENT coordinate space, not device

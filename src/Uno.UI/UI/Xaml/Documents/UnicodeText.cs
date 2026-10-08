@@ -1875,7 +1875,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 				if (outline)
 				{
-					GlyphRunRenderer.Draw(drawingSession, font, glyphSpan, positionSpan, 0, paintColor, GetOutlineStrokeWidth(font));
+					drawingSession.StrokeGlyphRun(font, glyphSpan, positionSpan, 0, paintColor, GetOutlineStrokeWidth(font));
 				}
 				else
 				{
@@ -2107,7 +2107,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 
-			GlyphRunRenderer.Draw(session, font, CollectionsMarshal.AsSpan(leaderGlyphs), CollectionsMarshal.AsSpan(leaderPositions), 0, color);
+			session.DrawGlyphRun(font, CollectionsMarshal.AsSpan(leaderGlyphs), CollectionsMarshal.AsSpan(leaderPositions), 0, color);
 		}
 	}
 
