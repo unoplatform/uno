@@ -431,6 +431,7 @@ namespace Uno.UI.Samples.Tests
 					TestResult = testResult,
 					Message = error?.ToString() ?? message,
 					ConsoleOutput = console,
+					Metrics = Uno.UI.RuntimeTests.Helpers.RuntimeTestMetrics.TakeAll(),
 				});
 
 			void Update()
@@ -575,6 +576,34 @@ namespace Uno.UI.Samples.Tests
 				testCaseNode.SetAttribute("time", "0");
 
 				testCaseNode.SetAttribute("result", run.TestResult.ToString());
+
+				// NUnit 3 test-case properties; CI collects these from every lane (see build/ci/scripts/runtime-tests-metrics.ps1).
+				if (run.Metrics is { Count: > 0 } metrics)
+				{
+					var propertiesNode = doc.CreateElement("properties");
+					testCaseNode.AppendChild(propertiesNode);
+
+					void AddProperty(string name, string value)
+					{
+						var propertyNode = doc.CreateElement("property");
+						propertiesNode.AppendChild(propertyNode);
+						propertyNode.SetAttribute("name", name);
+						propertyNode.SetAttribute("value", value);
+					}
+
+					foreach (var metric in metrics)
+					{
+						AddProperty("metric:" + metric.Name, metric.Value.ToString("R", CultureInfo.InvariantCulture));
+						if (metric.Budget is { } budget)
+						{
+							AddProperty("budget:" + metric.Name, budget.ToString("R", CultureInfo.InvariantCulture));
+						}
+						if (metric.Unit is { } unit)
+						{
+							AddProperty("unit:" + metric.Name, unit);
+						}
+					}
+				}
 
 				if (run.TestResult == TestResult.Failed || run.TestResult == TestResult.Error)
 				{
@@ -1122,6 +1151,9 @@ namespace Uno.UI.Samples.Tests
 
 			async Task GeneralInitAsync()
 			{
+				// Each attempt reports only its own measurements, not those of a failed attempt before a retry.
+				Uno.UI.RuntimeTests.Helpers.RuntimeTestMetrics.Reset();
+
 #if HAS_UNO
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
