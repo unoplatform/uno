@@ -286,13 +286,6 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		return null;
 	}
 
-	/// <summary>
-	/// Resolves the adapter for the XamlRoot that contains <paramref name="element"/>.
-	/// Returns null when the element has no associated root or the root has no adapter.
-	/// </summary>
-	private static AppleUIKitAccessibility? FindAdapterForElement(UIElement? element)
-		=> FindAdapterForRoot(element?.XamlRoot);
-
 	// Test hooks read the tree the way a client does, so they enable it like one.
 	private static AppleUIKitAccessibility? FindClientAdapterForRoot(XamlRoot? root)
 	{
