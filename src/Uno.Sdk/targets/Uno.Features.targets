@@ -10,8 +10,9 @@
 		     naming one, which is what lets an app be SkiaSharp-free. Listing both references both, and Skia
 		     still renders by default; the head opts into WebGPU on the host builder. The legacy
 		     'nativerenderer' token is ignored, and 'skiarenderer' is mapped to 'skia' for backwards
-		     compatibility. -->
+		     compatibility. 'lottie' is ignored too: Lottie is built into Uno.WinUI. -->
 		<UnoFeatures>$(UnoFeatures.Replace(';nativerenderer;', ';'))</UnoFeatures>
+		<UnoFeatures>$(UnoFeatures.Replace(';lottie;', ';'))</UnoFeatures>
 		<UnoFeatures>$(UnoFeatures.Replace(';skiarenderer;', ';'))</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;'))">$(UnoFeatures)skia;</UnoFeatures>
 	</PropertyGroup>
