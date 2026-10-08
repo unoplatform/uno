@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 	// selection if cancelled. A selection changed reentrantly by the handler takes precedence over Cancel.
 	//
 	// The clipboard events (CopyingToClipboard, CuttingToClipboard, Paste) are raised from the
-	// RichEditBox clipboard methods (see RichEditBox.clipboard.skia.cs) before the corresponding
+	// RichEditBox clipboard methods (see RichEditBox.clipboard.cs) before the corresponding
 	// clipboard operation; a handler setting Handled = true suppresses the default behavior. Cut raises
 	// CuttingToClipboard (not CopyingToClipboard), matching WinUI.
 	partial class RichEditBox

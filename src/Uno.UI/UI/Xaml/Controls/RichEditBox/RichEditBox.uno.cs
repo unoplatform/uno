@@ -415,7 +415,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return GetPlainTextContent();
 		}
 
-		// Interactive IME composition state lives in RichEditBox.IME.skia.cs; the shared DisplayBlock
+		// Interactive IME composition state lives in RichEditBox.IME.cs; the shared DisplayBlock
 		// reads these to render the composition underline over the active (unresolved) preedit region.
 		bool ITextBoxViewHost.IsComposing => IsComposing;
 

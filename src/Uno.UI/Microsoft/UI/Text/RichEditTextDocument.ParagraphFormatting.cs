@@ -7,7 +7,7 @@ namespace Microsoft.UI.Text
 {
 	// Run-model internals for the functional paragraph-formatting layer of the RichEditBox Text
 	// Object Model. Paragraph formatting is stored per-character (mirroring the character run model in
-	// RichEditTextDocument.Formatting.skia.cs) so it splices in lock-step with text edits and
+	// RichEditTextDocument.Formatting.cs) so it splices in lock-step with text edits and
 	// participates in the same undo deltas. Writes always cover whole paragraphs (split on
 	// \r / \n / \r\n / U+2029, each paragraph including its trailing break), so every character
 	// inside a paragraph shares the same ParagraphFormatState. A separate state represents the
