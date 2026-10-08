@@ -145,9 +145,7 @@ namespace Benchmarks.Shared.Controls
 					}
 				}
 
-				await SetStatus($"Finished");
-
-				ArchiveTestResult(config);
+				await CompleteRun(config.ArtifactsPath);
 			}
 			catch (Exception e)
 			{
@@ -300,14 +298,18 @@ namespace Benchmarks.Shared.Controls
 			}
 		}
 
-		private void ArchiveTestResult(CoreConfig config)
+		// "Finished" goes last: BenchmarkDotNetTests (SamplesApp.UITests) reads ResultsAsBase64 as soon as it sees it.
+		internal async Task CompleteRun(string artifactsPath)
+			=> await SetStatus(ArchiveTestResult(artifactsPath) ? "Finished" : "Failed: no benchmark results were written");
+
+		private bool ArchiveTestResult(string artifactsPath)
 		{
 			var archiveName = BenchmarkResultArchiveName;
 
-			if (!Directory.Exists(config.ArtifactsPath))
+			if (!Directory.Exists(artifactsPath))
 			{
-				_logger?.WriteLine(LogKind.Error, $"No benchmark artifacts were written to {config.ArtifactsPath}.");
-				return;
+				_logger?.WriteLine(LogKind.Error, $"No benchmark artifacts were written to {artifactsPath}.");
+				return false;
 			}
 
 			if (File.Exists(archiveName))
@@ -315,11 +317,12 @@ namespace Benchmarks.Shared.Controls
 				File.Delete(archiveName);
 			}
 
-			ZipFile.CreateFromDirectory(config.ArtifactsPath, archiveName, CompressionLevel.Optimal, false);
+			ZipFile.CreateFromDirectory(artifactsPath, archiveName, CompressionLevel.Optimal, false);
 
 			downloadResults.IsEnabled = true;
 
 			ResultsAsBase64 = Convert.ToBase64String(File.ReadAllBytes(BenchmarkResultArchiveName));
+			return true;
 		}
 
 		private static string BenchmarkResultArchiveName
