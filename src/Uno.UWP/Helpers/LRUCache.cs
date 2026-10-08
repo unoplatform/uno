@@ -126,6 +126,22 @@ namespace Uno.Helpers
 			}
 		}
 
+		/// <summary>
+		/// Removes the entry for <paramref name="key"/> only if it still holds <paramref name="value"/>,
+		/// so a stale removal cannot drop a newer entry that replaced it.
+		/// </summary>
+		public void Remove(TKey key, TValue value)
+		{
+			lock (_gate)
+			{
+				if (_table.TryGetValue(key, out var node) && ReferenceEquals(node.Value.val, value))
+				{
+					_table.Remove(key);
+					_queue.Remove(node);
+				}
+			}
+		}
+
 		public TValue this[TKey key]
 		{
 			set => Add(key, value);
