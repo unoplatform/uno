@@ -120,6 +120,23 @@ public class Given_GlyphRunRenderer
 		Assert.AreEqual(0, mismatches, $"{mismatches} pixels differ from the outline renderer.");
 	}
 
+	// List markers are aligned by their ink, so a marker without ink must not report a size.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Measuring_Marker_Ink_Then_Bounds_Cover_Only_Inked_Glyphs()
+	{
+		var font = CreateSkiaFont(await LoadFontData(), 20f);
+
+		Assert.IsTrue(GlyphRunRenderer.MeasureInk(font, "   ").IsEmpty);
+
+		var ink = GlyphRunRenderer.MeasureInk(font, "1.");
+		GlyphRunRenderer.Layout(font, "1.", out var advance);
+		Assert.IsGreaterThan(0, ink.Width);
+		Assert.IsGreaterThan(0, ink.Height);
+		Assert.IsLessThanOrEqualTo(advance, ink.Width);
+		Assert.IsLessThan(0, ink.Top, "Ink sits above the baseline (y grows down).");
+	}
+
 	// Every paint draws the images in the same order, so plain LRU eviction would miss on every lookup once a paint
 	// draws more images than the cap.
 	[TestMethod]
