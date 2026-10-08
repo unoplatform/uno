@@ -34,6 +34,7 @@ internal readonly struct ParsedText : IParsedText
 	private readonly float _defaultLineHeight; // used when the text is empty
 	private readonly FlowDirection _flowDirection;
 	private readonly Inline[] _inlines;
+	private readonly LineTopsCache _lineTopsCache = new(); // reference type: the struct is copied around, the cache must be shared
 
 	private ParsedText(Inline[] inlines, List<RenderLine> renderLines, Size availableSize, TextAlignment textTextAlignment, TextWrapping textWrapping, float defaultLineHeight, FlowDirection flowDirection)
 	{
@@ -913,13 +914,7 @@ internal readonly struct ParsedText : IParsedText
 		}
 
 		var lineIndex = GetLineAt(Math.Clamp(adjustedIndex, 0, _text.Length)).lineIndex;
-		var lineBottom = 0f;
-		for (var i = 0; i <= lineIndex; i++)
-		{
-			lineBottom += _renderLines[i].Height;
-		}
-
-		return lineBottom + _renderLines[lineIndex].BaselineOffsetY;
+		return GetLineTops()[lineIndex + 1] + _renderLines[lineIndex].BaselineOffsetY;
 	}
 
 	public int VisualLineCount => Math.Max(1, _renderLines.Count);
@@ -945,11 +940,7 @@ internal readonly struct ParsedText : IParsedText
 
 		var intervals = GetLineIntervals();
 		var line = _renderLines[lineIndex];
-		var top = 0f;
-		for (var i = 0; i < lineIndex; i++)
-		{
-			top += _renderLines[i].Height;
-		}
+		var top = GetLineTops()[lineIndex];
 		var (x, _) = line.GetOffsets((float)_availableSize.Width, ResolvedTextAlignment);
 		return new TextVisualLineInfo(
 			intervals[lineIndex].start,
@@ -1123,18 +1114,38 @@ internal readonly struct ParsedText : IParsedText
 	// top, so hit-testing has to add back the height of the lines it skipped.
 	internal float GetLineTop(int lineIndex)
 	{
-		var top = 0f;
-		for (var i = 0; i < lineIndex && i < _renderLines.Count; i++)
+		return lineIndex <= 0 ? 0f : GetLineTops()[Math.Min(lineIndex, _renderLines.Count)];
+	}
+
+	// Prefix sums of line heights, Count + 1 entries.
+	private sealed class LineTopsCache
+	{
+		public float[]? Tops;
+	}
+
+	private float[] GetLineTops()
+	{
+		if (_lineTopsCache.Tops is null)
 		{
-			top += _renderLines[i].Height;
+			var tops = new float[_renderLines.Count + 1];
+			for (var i = 0; i < _renderLines.Count; i++)
+			{
+				tops[i + 1] = tops[i] + _renderLines[i].Height;
+			}
+
+			_lineTopsCache.Tops = tops;
 		}
 
-		return top;
+		return _lineTopsCache.Tops;
 	}
 
 	// Text trimming collapses a line in place: the formatter hands the same ParsedText back for every
 	// line of the paragraph, so the collapsed line has to replace the original for Draw to pick it up.
-	internal void ReplaceRenderLine(int index, RenderLine line) => _renderLines[index] = line;
+	internal void ReplaceRenderLine(int index, RenderLine line)
+	{
+		_renderLines[index] = line;
+		_lineTopsCache.Tops = null;
+	}
 
 	public float FirstLineBaseline => _renderLines.Count > 0 ? _renderLines[0].Height + _renderLines[0].BaselineOffsetY : _defaultLineHeight;
 
