@@ -140,6 +140,47 @@ public class Given_ShellLayout
 	}
 
 	[TestMethod]
+	public async Task When_Rail_Item_Gets_Initial_Focus_It_Moves_To_Selected_Item()
+	{
+		var vm = SampleChooserViewModel.Instance;
+		var owner = vm.Owner;
+		var home = (NavigationViewItem)owner.FindName("ShellRailHome");
+		var selected = (NavigationViewItem)owner.FindName("ShellRailRuntimeTests");
+		var wasAutomation = vm.IsAutomationRun;
+		var wasKeeping = owner.KeepsRailFocusOnSelection;
+
+		try
+		{
+			vm.IsAutomationRun = false;
+			owner.KeepsRailFocusOnSelection = true;
+			await TestServices.WindowHelper.WaitForIdle();
+			if (!((NavigationView)owner.FindName("ShellRail")).IsPaneVisible)
+			{
+				Assert.Inconclusive("Narrow windows have no rail to focus.");
+			}
+
+			Assert.AreEqual(ShellDestination.RuntimeTests, vm.ShellDestination);
+
+			// What WinUI does at window activation, whichever destination a deep link opened.
+			Assert.IsTrue(home.Focus(FocusState.Programmatic));
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreSame(selected, FocusManager.GetFocusedElement(owner.XamlRoot!));
+
+			// Once the user has pressed a key or the pointer, the rail keeps their focus.
+			owner.KeepsRailFocusOnSelection = false;
+			Assert.IsTrue(home.Focus(FocusState.Keyboard));
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreSame(home, FocusManager.GetFocusedElement(owner.XamlRoot!));
+		}
+		finally
+		{
+			owner.KeepsRailFocusOnSelection = wasKeeping;
+			vm.IsAutomationRun = wasAutomation;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Browser_Toggled_Pane_And_Toggle_Follow_View_Model()
 	{
 		var vm = SampleChooserViewModel.Instance;
