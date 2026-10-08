@@ -297,9 +297,9 @@ namespace Microsoft.UI.Text
 		}
 
 		/// <summary>Resets formatting to a single default run of <paramref name="length"/> characters.</summary>
-		private void ResetRuns(int length)
+		private void ResetRuns(int length, CharacterFormatState? format = null)
 			=> SetRuns(length > 0
-				? new List<FormatRun> { new(length, DefaultFormatState()) }
+				? new List<FormatRun> { new(length, format ?? DefaultFormatState()) }
 				: new List<FormatRun>());
 
 		private void ApplyUnicodeBidiScripts(int start, string text)

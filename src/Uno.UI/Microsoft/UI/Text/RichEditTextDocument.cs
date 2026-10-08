@@ -1888,12 +1888,21 @@ namespace Microsoft.UI.Text
 			}
 
 			var oldLength = _textBuffer.Length;
+			// Like RichEdit's replace, the new text takes the character format of the first replaced character.
+			SyncRunsToLength(oldLength);
+			CharacterFormatState? inheritedFormat = null;
+			if (oldLength > 0)
+			{
+				inheritedFormat = GetFormatAt(0).Clone();
+				inheritedFormat.Link = null;
+				inheritedFormat.LinkAnchor = null;
+			}
 			var selection = (UnoTextSelection)Selection;
 			var selectionWasNonzero = selection.StartPosition != 0 || selection.EndPosition != 0;
 			var documentChanged = MutateWithUndo(() =>
 			{
 				SetPlainTextCore(text);
-				ResetRuns(text.Length);
+				ResetRuns(text.Length, inheritedFormat);
 				_preservedRtfMetadata = RtfPreservedMetadata.Empty;
 				_preservedRtfMetadataEditApplied = true;
 				if (options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.UnicodeBidi))
