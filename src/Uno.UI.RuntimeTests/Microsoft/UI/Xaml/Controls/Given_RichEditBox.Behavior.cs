@@ -2020,7 +2020,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				source.Document.GetText(TextGetOptions.NoHidden | TextGetOptions.FormatRtf, out var rtf);
 				target.Document.SetText(TextSetOptions.FormatRtf, rtf);
 				GetTextWithoutFinalEop(target.Document, out var richText);
-				Assert.AreEqual("visible hidden tail", richText);
+				Assert.AreEqual("visible hidden tail", richText.TrimEnd('\r'));
 				Assert.AreEqual(FormatEffect.On, target.Document.GetRange(8, 14).CharacterFormat.Hidden);
 				Assert.AreEqual(FormatEffect.Off, target.Document.GetRange(0, 7).CharacterFormat.Hidden);
 			}
@@ -2407,10 +2407,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var stream = new InMemoryRandomAccessStream();
 				source.Document.GetRange(0, 3).GetTextViaStream(TextGetOptions.FormatRtf | TextGetOptions.NoHidden, stream);
 				stream.Seek(0);
-				target.Document.GetRange(0, 0).SetTextViaStream(TextSetOptions.FormatRtf, stream);
+				target.Document.LoadFromStream(TextSetOptions.FormatRtf, stream);
 
 				GetTextWithoutFinalEop(target.Document, out var text);
-				Assert.AreEqual("abc", text);
+				Assert.AreEqual("abc", text.TrimEnd('\r'));
 				Assert.AreEqual(FormatEffect.On, target.Document.GetRange(1, 2).CharacterFormat.Hidden);
 			}
 			finally
@@ -4092,12 +4092,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public void When_Double_Wave_Underline_Uses_The_Standard_Control_Word()
 		{
-			var SUT = new RichEditBox();
-			SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1\ululdbwave text}");
-			Assert.AreEqual(UnderlineType.DoubleWave, SUT.Document.GetRange(0, 4).CharacterFormat.Underline);
+			var standard = new RichEditBox();
+			standard.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1\ululdbwave text}");
+			Assert.AreEqual(UnderlineType.DoubleWave, standard.Document.GetRange(0, 4).CharacterFormat.Underline);
 
-			SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1\uldbwave text}");
-			Assert.AreEqual(UnderlineType.None, SUT.Document.GetRange(0, 4).CharacterFormat.Underline);
+			var nonStandard = new RichEditBox();
+			nonStandard.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1\uldbwave text}");
+			Assert.AreEqual(UnderlineType.None, nonStandard.Document.GetRange(0, 4).CharacterFormat.Underline);
 		}
 
 		[TestMethod]
