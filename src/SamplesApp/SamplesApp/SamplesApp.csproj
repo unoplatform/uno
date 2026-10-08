@@ -234,7 +234,7 @@
 
 	<!-- browserwasm packages -->
 	<ItemGroup Condition="'$(_Platform)' == 'browserwasm'">
-		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
+		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" />
 		<!-- Pins BenchmarkDotNet's transitive System.Management from 4.5.0 to 8.0.0 -->
 		<PackageReference Include="System.Management" />
