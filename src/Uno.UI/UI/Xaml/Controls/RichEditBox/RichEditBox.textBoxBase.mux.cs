@@ -263,20 +263,12 @@ partial class RichEditBox
 		{
 			var originalSelection = _selection;
 			var spSelection = Document.Selection;
-#if HAS_UNO
-			var selectionChangeVersion = Document.SelectionChangeVersion;
-#endif
 			var selectionChangingCanceled = OnSelectionChangingHandler(selectionStart, selectionLength);
 
 			var selectionStartAfterChangingEvent = spSelection.StartPosition;
 			var selectionEndAfterChangingEvent = spSelection.EndPosition;
 			var selectionChangedByApp = selectionStartAfterChangingEvent != selectionStart
 				|| selectionEndAfterChangingEvent != selectionStart + selectionLength;
-#if HAS_UNO
-			// Managed SetText rebases the same selection object during this callback; native TOM owns that transaction.
-			// Only explicit selection mutations (including an asynchronous paste request) supersede Cancel.
-			selectionChangedByApp = Document.SelectionChangeVersion != selectionChangeVersion;
-#endif
 
 			if (selectionChangedByApp)
 			{
