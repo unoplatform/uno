@@ -105,6 +105,37 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 		return false;
 	}
 
+	// TOM ranges can reach past the story's final paragraph mark, which the UIA text excludes.
+	private void ClampToOwnerText(Microsoft.UI.Text.ITextRange range)
+	{
+		var length = GetOwnerTextLength();
+		if (range.EndPosition > length)
+		{
+			range.EndPosition = length;
+		}
+	}
+
+	private int ClampMovedToOwnerText(Microsoft.UI.Text.ITextRange range, TextPatternRangeEndpoint endpoint, int endpointBefore, TextUnit unit, int moved)
+	{
+		var unclamped = GetEndpoint(range, endpoint);
+		ClampToOwnerText(range);
+		var clamped = GetEndpoint(range, endpoint);
+		if (clamped == unclamped)
+		{
+			return moved;
+		}
+
+		if (clamped == endpointBefore)
+		{
+			return 0;
+		}
+
+		return unit == TextUnit.Character ? moved - (unclamped - clamped) : moved;
+	}
+
+	private static int GetEndpoint(Microsoft.UI.Text.ITextRange range, TextPatternRangeEndpoint endpoint)
+		=> endpoint == TextPatternRangeEndpoint.Start ? range.StartPosition : range.EndPosition;
+
 	private static bool TryMapTextUnit(TextUnit unit, out Microsoft.UI.Text.TextRangeUnit rangeUnit)
 	{
 		switch (unit)
@@ -406,6 +437,7 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 		if (TryGetRichEditRange(out var range) && TryMapTextUnit(unit, out var rangeUnit))
 		{
 			range.Expand(rangeUnit);
+			ClampToOwnerText(range);
 			UpdateFromRichEditRange(range);
 			return;
 		}
@@ -961,7 +993,8 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 
 		if (TryGetRichEditRange(out var range) && TryMapTextUnit(unit, out var rangeUnit))
 		{
-			var moved = range.Move(rangeUnit, count);
+			var startBefore = range.StartPosition;
+			var moved = ClampMovedToOwnerText(range, TextPatternRangeEndpoint.Start, startBefore, unit, range.Move(rangeUnit, count));
 			UpdateFromRichEditRange(range);
 			return moved;
 		}
@@ -1024,9 +1057,11 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 
 		if (TryGetRichEditRange(out var range) && TryMapTextUnit(unit, out var rangeUnit))
 		{
+			var endpointBefore = GetEndpoint(range, endpoint);
 			var moved = endpoint == TextPatternRangeEndpoint.Start
 				? range.MoveStart(rangeUnit, count)
 				: range.MoveEnd(rangeUnit, count);
+			moved = ClampMovedToOwnerText(range, endpoint, endpointBefore, unit, moved);
 			UpdateFromRichEditRange(range);
 			return moved;
 		}
