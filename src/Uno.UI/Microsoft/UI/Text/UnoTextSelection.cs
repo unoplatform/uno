@@ -193,8 +193,11 @@ namespace Microsoft.UI.Text
 			}
 
 			SetAtEndOfLine(direction > 0 && _document.IsVisualLineEnd(Math.Min(target, _document.TextLength)));
+
+			// Like WinUI, the result reports the proposed move even if a SelectionChanging handler cancels it.
+			var proposalMoved = _start != oldStart || _end != oldEnd;
 			OnRangeChanged();
-			return _start == oldStart && _end == oldEnd ? 0 : countSign * unitsMoved;
+			return proposalMoved ? countSign * unitsMoved : 0;
 		}
 
 		public int HomeKey(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend)
@@ -232,8 +235,9 @@ namespace Microsoft.UI.Text
 
 			SetActivePosition(target, extend);
 			SetAtEndOfLine(!home && unit == global::Microsoft.UI.Text.TextRangeUnit.Line);
+			var delta = GetActivePosition() - current;
 			OnRangeChanged();
-			return GetActivePosition() - current;
+			return delta;
 		}
 
 		public int MoveUp(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend)
