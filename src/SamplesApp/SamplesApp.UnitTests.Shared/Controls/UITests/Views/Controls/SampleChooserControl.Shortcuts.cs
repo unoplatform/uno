@@ -96,7 +96,7 @@ partial class SampleChooserControl
 	private void OnShellCharacterReceived(UIElement sender, CharacterReceivedRoutedEventArgs args)
 	{
 		if (args.Handled
-			|| args.Character != '/'
+			|| args.Character != ShellCommands.SearchCharacter
 			|| _shortcutsViewModel is not { KeyboardShortcutsEnabled: true } vm
 			|| !ShellCommands.CanShowBrowser(vm)
 			|| XamlRoot is null

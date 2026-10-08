@@ -17,30 +17,26 @@ internal sealed class ShellCommand
 	public ShellCommand(
 		string id,
 		string label,
-		string glyph,
 		VirtualKey key,
 		VirtualKeyModifiers modifiers,
 		Action<SampleChooserViewModel, SampleChooserControl> execute,
 		bool alwaysEnabled = false,
 		bool wasmUnsafe = false,
-		bool isAlias = false)
+		string? aliasOf = null)
 	{
 		Id = id;
 		Label = label;
-		Glyph = glyph;
 		Key = key;
 		Modifiers = modifiers;
 		Execute = execute;
 		AlwaysEnabled = alwaysEnabled;
 		WasmUnsafe = wasmUnsafe;
-		IsAlias = isAlias;
+		AliasOf = aliasOf;
 	}
 
 	public string Id { get; }
 
 	public string Label { get; }
-
-	public string Glyph { get; }
 
 	public VirtualKey Key { get; }
 
@@ -54,8 +50,10 @@ internal sealed class ShellCommand
 	/// <summary>The shortcut collides with a browser shortcut on WebAssembly.</summary>
 	public bool WasmUnsafe { get; }
 
-	/// <summary>A second shortcut for another entry's action; hidden from Help.</summary>
-	public bool IsAlias { get; }
+	/// <summary>The id of the entry whose action this second shortcut repeats; Help lists it on that entry's row.</summary>
+	public string? AliasOf { get; }
+
+	public bool IsAlias => AliasOf is not null;
 
 	public string Shortcut => ShellCommands.Describe(Key, Modifiers);
 
@@ -86,6 +84,9 @@ internal static class ShellCommands
 	public const string FocusNextRegion = nameof(FocusNextRegion);
 	public const string FocusPreviousRegion = nameof(FocusPreviousRegion);
 
+	/// <summary>Focuses search outside text input: a typed character, so it is not a catalogue accelerator.</summary>
+	public const char SearchCharacter = '/';
+
 	// Windows.System.VirtualKey has no named member for the OEM comma key.
 	private const VirtualKey CommaKey = (VirtualKey)188;
 
@@ -95,16 +96,16 @@ internal static class ShellCommands
 
 	public static IReadOnlyList<ShellCommand> All { get; } = new ShellCommand[]
 	{
-		new(FocusSearch, "Search samples", "", VirtualKey.F, Ctrl, (vm, control) => _ = control.FocusSearchAsync(vm)),
-		new(FocusSearchAlias, "Search samples", "", VirtualKey.K, Ctrl, (vm, control) => _ = control.FocusSearchAsync(vm), wasmUnsafe: true, isAlias: true),
-		new(ReloadSample, "Reload sample", "", VirtualKey.F5, VirtualKeyModifiers.None, (vm, _) => Run(vm.ReloadCurrentTestCommand), wasmUnsafe: true),
-		new(PreviousSample, "Previous sample", "", VirtualKey.Left, Alt, (vm, _) => Run(vm.LoadPreviousTestCommand), wasmUnsafe: true),
-		new(NextSample, "Next sample", "", VirtualKey.Right, Alt, (vm, _) => Run(vm.LoadNextTestCommand), wasmUnsafe: true),
-		new(ShowFavorites, "Favorites", "", VirtualKey.F, Ctrl | Shift, (vm, _) => vm.ShowBrowserSection(Section.Favorites)),
-		new(ShowRecents, "Recent", "", VirtualKey.H, Ctrl, (vm, _) => vm.ShowBrowserSection(Section.Recents), wasmUnsafe: true),
-		new(ShowRecentsAlias, "Recent", "", VirtualKey.R, Alt, (vm, _) => vm.ShowBrowserSection(Section.Recents), isAlias: true),
-		new(ShowLibrary, "Library", "", VirtualKey.E, Ctrl | Shift, (vm, _) => vm.ShowBrowserSection(Section.Library)),
-		new(ToggleBrowser, "Sample browser", "", VirtualKey.B, Ctrl, (vm, _) =>
+		new(FocusSearch, "Search samples", VirtualKey.F, Ctrl, (vm, control) => _ = control.FocusSearchAsync(vm)),
+		new(FocusSearchAlias, "Search samples", VirtualKey.K, Ctrl, (vm, control) => _ = control.FocusSearchAsync(vm), wasmUnsafe: true, aliasOf: FocusSearch),
+		new(ReloadSample, "Reload sample", VirtualKey.F5, VirtualKeyModifiers.None, (vm, _) => Run(vm.ReloadCurrentTestCommand), wasmUnsafe: true),
+		new(PreviousSample, "Previous sample", VirtualKey.Left, Alt, (vm, _) => Run(vm.LoadPreviousTestCommand), wasmUnsafe: true),
+		new(NextSample, "Next sample", VirtualKey.Right, Alt, (vm, _) => Run(vm.LoadNextTestCommand), wasmUnsafe: true),
+		new(ShowFavorites, "Favorites", VirtualKey.F, Ctrl | Shift, (vm, _) => vm.ShowBrowserSection(Section.Favorites)),
+		new(ShowRecents, "Recent", VirtualKey.H, Ctrl, (vm, _) => vm.ShowBrowserSection(Section.Recents), wasmUnsafe: true),
+		new(ShowRecentsAlias, "Recent", VirtualKey.R, Alt, (vm, _) => vm.ShowBrowserSection(Section.Recents), aliasOf: ShowRecents),
+		new(ShowLibrary, "Library", VirtualKey.E, Ctrl | Shift, (vm, _) => vm.ShowBrowserSection(Section.Library)),
+		new(ToggleBrowser, "Sample browser", VirtualKey.B, Ctrl, (vm, _) =>
 		{
 			if (CanShowBrowser(vm))
 			{
@@ -113,17 +114,17 @@ internal static class ShellCommands
 				vm.IsShellChromeVisible = true;
 			}
 		}),
-		new(ToggleFavorite, "Toggle favorite", "", VirtualKey.D, Ctrl | Shift, (vm, _) => vm.ToggleFavoriteCommand.Execute(vm.CurrentSelectedSample)),
-		new(ShowSampleInfo, "Sample info", "", VirtualKey.I, Ctrl, (_, control) => control.ShowSampleInfo()),
-		new(CopySampleLink, "Copy deep link", "", VirtualKey.L, Ctrl | Shift, (vm, _) => Run(vm.CopySampleLinkCommand)),
-		new(OpenRuntimeTests, "Runtime tests", "", VirtualKey.T, Ctrl, (vm, _) => Run(vm.OpenRuntimeTestsCommand), wasmUnsafe: true),
-		new(OpenPlayground, "Playground", "", VirtualKey.P, Ctrl, (vm, _) => Run(vm.OpenPlaygroundCommand), wasmUnsafe: true),
-		new(OpenHelp, "Help", "", VirtualKey.F1, VirtualKeyModifiers.None, (vm, _) => Run(vm.OpenHelpCommand)),
-		new(ShowSettings, "Settings", "", CommaKey, Ctrl, (vm, _) => Run(vm.ShowSettingsCommand)),
-		new(ShowHome, "Home", "", VirtualKey.H, Alt | Shift, (vm, _) => Run(vm.ShowHomeCommand)),
-		new(ToggleFocusMode, "Focus mode", "", VirtualKey.F11, VirtualKeyModifiers.None, (vm, _) => Run(vm.ToggleFocusModeCommand), alwaysEnabled: true, wasmUnsafe: true),
-		new(FocusNextRegion, "Next region", "", VirtualKey.F6, VirtualKeyModifiers.None, (_, control) => control.MoveFocusRegion(backward: false), wasmUnsafe: true),
-		new(FocusPreviousRegion, "Previous region", "", VirtualKey.F6, Shift, (_, control) => control.MoveFocusRegion(backward: true), wasmUnsafe: true),
+		new(ToggleFavorite, "Toggle favorite", VirtualKey.D, Ctrl | Shift, (vm, _) => vm.ToggleFavoriteCommand.Execute(vm.CurrentSelectedSample)),
+		new(ShowSampleInfo, "Sample info", VirtualKey.I, Ctrl, (_, control) => control.ShowSampleInfo()),
+		new(CopySampleLink, "Copy deep link", VirtualKey.L, Ctrl | Shift, (vm, _) => Run(vm.CopySampleLinkCommand)),
+		new(OpenRuntimeTests, "Runtime tests", VirtualKey.T, Ctrl, (vm, _) => Run(vm.OpenRuntimeTestsCommand), wasmUnsafe: true),
+		new(OpenPlayground, "Playground", VirtualKey.P, Ctrl, (vm, _) => Run(vm.OpenPlaygroundCommand), wasmUnsafe: true),
+		new(OpenHelp, "Help", VirtualKey.F1, VirtualKeyModifiers.None, (vm, _) => Run(vm.OpenHelpCommand)),
+		new(ShowSettings, "Settings", CommaKey, Ctrl, (vm, _) => Run(vm.ShowSettingsCommand)),
+		new(ShowHome, "Home", VirtualKey.H, Alt | Shift, (vm, _) => Run(vm.ShowHomeCommand)),
+		new(ToggleFocusMode, "Focus mode", VirtualKey.F11, VirtualKeyModifiers.None, (vm, _) => Run(vm.ToggleFocusModeCommand), alwaysEnabled: true, wasmUnsafe: true),
+		new(FocusNextRegion, "Next region", VirtualKey.F6, VirtualKeyModifiers.None, (_, control) => control.MoveFocusRegion(backward: false), wasmUnsafe: true),
+		new(FocusPreviousRegion, "Previous region", VirtualKey.F6, Shift, (_, control) => control.MoveFocusRegion(backward: true), wasmUnsafe: true),
 	};
 
 	/// <summary>
