@@ -3372,7 +3372,6 @@ namespace Microsoft.UI.Text
 				case "ulwave": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.Wave); break;
 				case "ulth": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.Thick); break;
 				case "ulhair": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.Thin); break;
-				case "uldbwave":
 				case "ululdbwave": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.DoubleWave); break;
 				case "ulhwave": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.HeavyWave); break;
 				case "ulldash": state.Character.Underline = ResolveUnderline(hasParameter, parameter, global::Microsoft.UI.Text.UnderlineType.LongDash); break;
