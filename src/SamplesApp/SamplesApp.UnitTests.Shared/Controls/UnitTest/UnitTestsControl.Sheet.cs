@@ -296,14 +296,12 @@ public sealed partial class UnitTestsControl
 			}
 		}
 
-		// The chips line up under the status text, next to Run and Stop.
+		// Run, Stop, the status and the handle share one row; the chips get the full width below it.
 		Grid.SetRow(runButton, toSheet ? 1 : 0);
 		Grid.SetRow(stopButton, toSheet ? 1 : 0);
 		Grid.SetRow(ShellRunStats, toSheet ? 2 : 0);
-		Grid.SetColumn(ShellRunStats, toSheet ? 2 : 0);
-		Grid.SetColumnSpan(ShellRunStats, toSheet ? 2 : 1);
-		Grid.SetRowSpan(runButton, toSheet ? 2 : 1);
-		Grid.SetRowSpan(stopButton, toSheet ? 2 : 1);
+		Grid.SetColumn(ShellRunStats, 0);
+		Grid.SetColumnSpan(ShellRunStats, toSheet ? 4 : 1);
 
 		if (toSheet)
 		{

@@ -102,7 +102,7 @@
                     Padding="12,0,12,6"
                     Background="Transparent"
                     ColumnSpacing="8"
-                    RowSpacing="2"
+                    RowSpacing="6"
                     SizeChanged="OnSheetBarSizeChanged"
                     Tapped="OnSheetBarTapped"
                     Visibility="Collapsed">
@@ -127,14 +127,14 @@
                         AutomationProperties.AccessibilityView="Raw"
                         Background="{ThemeResource ControlStrongFillColorDefaultBrush}"
                         CornerRadius="2" />
-                    <StackPanel
+                    <!--  The progress bar overlays the cell bottom so the status text stays centred with Run and Stop.  -->
+                    <Grid
                         x:Name="ShellSheetStatusPanel"
                         Grid.Row="1"
-                        Grid.Column="2"
-                        VerticalAlignment="Center"
-                        Spacing="4">
+                        Grid.Column="2">
                         <TextBlock
                             x:Name="ShellSheetStatus"
+                            VerticalAlignment="Center"
                             Style="{StaticResource ShellBodyStrongTextStyle}"
                             Text="Ready"
                             TextTrimming="CharacterEllipsis"
@@ -142,9 +142,11 @@
                         <!--  Opacity, not Visibility: the bar keeps its height so the test host never moves mid-run.  -->
                         <ProgressBar
                             x:Name="ShellSheetProgress"
+                            Margin="0,0,0,2"
+                            VerticalAlignment="Bottom"
                             AutomationProperties.Name="Test run progress"
                             Opacity="0" />
-                    </StackPanel>
+                    </Grid>
                     <local:ShellSheetHandle
                         x:Name="ShellSheetHandle"
                         Grid.Row="1"
