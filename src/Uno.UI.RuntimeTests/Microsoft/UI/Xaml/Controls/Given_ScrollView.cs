@@ -139,6 +139,46 @@ public class Given_ScrollView
 		AssertOnWheelCurve(samples, from, distance: left, durationMs: 250 * left / InteractionTracker.PixelsPerWheelDetent);
 	}
 
+	/// <summary>A notch arriving mid-motion moves the running target, so no notch is lost (ProcessMousewheelManipulation).</summary>
+	[TestMethod]
+	public async Task When_Wheel_Notches_In_A_Row_Then_Each_Moves_The_Target()
+	{
+		var (sut, bounds) = await LoadTallScrollView();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+		mouse.MoveTo(Center(bounds));
+
+		mouse.WheelDown();
+		await UITestHelper.WaitForRender(2);
+		mouse.WheelDown();
+		await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 0, message: "the wheel should scroll");
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+		Assert.AreEqual(2 * InteractionTracker.PixelsPerWheelDetent, sut.VerticalOffset, 0.1);
+	}
+
+	/// <summary>A notch against the motion moves the running target back rather than stopping it.</summary>
+	[TestMethod]
+	public async Task When_Wheel_Notch_Reverses_Mid_Motion_Then_Returns_To_Start()
+	{
+		var (sut, bounds) = await LoadTallScrollView();
+		const double From = 1000;
+		sut.ScrollTo(0, From, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled));
+		await TestServices.WindowHelper.WaitFor(() => Math.Abs(sut.VerticalOffset - From) < 0.01, message: "the view should reach the start offset");
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+		mouse.MoveTo(Center(bounds));
+
+		mouse.WheelDown();
+		await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > From, message: "the first notch should scroll");
+		mouse.WheelUp();
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+		Assert.AreEqual(From, sut.VerticalOffset, 0.1);
+	}
+
 	private static async Task<List<(double Ms, float Position)>> RecordWheelNotch(ScrollView sut, Rect bounds)
 	{
 		var tracker = sut.ScrollPresenter!.InteractionTracker;
