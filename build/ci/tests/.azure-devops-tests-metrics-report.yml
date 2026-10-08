@@ -1,0 +1,51 @@
+parameters:
+  vmImage: ''
+
+jobs:
+
+- job: Runtime_Tests_Metrics_Report
+  displayName: 'Rendering Budgets Report'
+  timeoutInMinutes: 15
+  cancelTimeoutInMinutes: 0
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  steps:
+  - checkout: self
+    fetchDepth: 1
+
+  # Each desktop lane adds its folder to this artifact (templates/publish-runtime-tests-metrics.yml). It is missing
+  # when no lane got to run its tests; the report then says so.
+  - task: DownloadBuildArtifacts@1
+    displayName: Download runtime test metrics
+    continueOnError: true
+    inputs:
+      buildType: current
+      downloadType: single
+      artifactName: runtime-tests-metrics
+      downloadPath: $(Build.ArtifactStagingDirectory)
+
+  - pwsh: >-
+      build/ci/scripts/runtime-tests-metrics.ps1 -Mode Report
+      -InputDirectory '$(Build.ArtifactStagingDirectory)/runtime-tests-metrics'
+      -ReportFile '$(Build.ArtifactStagingDirectory)/runtime-tests-metrics-report/rendering-budgets.md'
+      -Repository '$(Build.Repository.Name)'
+      -PullRequestNumber '$(System.PullRequest.PullRequestNumber)'
+      -CommitId '$(System.PullRequest.SourceCommitId)'
+      -BuildUrl '$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)'
+    displayName: Report rendering budgets
+    # A failed post must not turn the build red: the comment is informational.
+    continueOnError: true
+    env:
+      GITHUB_TOKEN: $(CommentsGitHubPAT)
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish rendering budgets report
+    condition: always()
+    continueOnError: true
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/runtime-tests-metrics-report
+      ArtifactName: runtime-tests-metrics-report
+      ArtifactType: Container
