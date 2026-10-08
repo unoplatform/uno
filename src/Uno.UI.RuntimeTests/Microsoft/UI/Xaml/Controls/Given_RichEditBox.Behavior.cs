@@ -2122,8 +2122,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Unhide_Prevents_Plain_And_Rtf_Insertions_From_Remaining_Hidden()
+		public async Task When_Unhide_Applies_To_Plain_Text_Only()
 		{
 			var SUT = new RichEditBox();
 			try
@@ -2140,7 +2139,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				const string hiddenRtf = @"{\rtf1\ansi\v Y}";
 				var rich = SUT.Document.GetRange(2, 2);
 				rich.SetText(TextSetOptions.FormatRtf | TextSetOptions.Unhide, hiddenRtf);
-				Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(2, 3).CharacterFormat.Hidden);
+				Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(2, 3).CharacterFormat.Hidden);
 
 				GetTextWithoutFinalEop(SUT.Document, out var text);
 				Assert.AreEqual("aXYb", text);
@@ -2513,41 +2512,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Rtf_Import_Honors_MaxLength_Before_Model_Allocation()
+		public async Task When_Rtf_Import_Ignores_MaxLength()
 		{
 			var SUT = new RichEditBox { MaxLength = 3 };
 			try
 			{
 				WindowHelper.WindowContent = SUT;
 				await WindowHelper.WaitForLoaded(SUT);
-				SUT.Document.SetText(TextSetOptions.FormatRtf | TextSetOptions.CheckTextLimit, @"{\rtf1 abcdef}");
+				SUT.Document.SetText(TextSetOptions.FormatRtf | TextSetOptions.CheckTextLimit, @"{\rtf1\ql a\par\qr bcdef}");
 
 				GetTextWithoutFinalEop(SUT.Document, out var text);
+				Assert.AreEqual("a\rbcdef", text);
+				Assert.AreEqual(ParagraphAlignment.Right, SUT.Document.GetRange(3, 3).ParagraphFormat.Alignment);
+
+				SUT.Document.SetText(TextSetOptions.None, string.Empty);
+				SUT.Document.GetRange(0, 0).SetText(TextSetOptions.FormatRtf | TextSetOptions.CheckTextLimit, @"{\rtf1 abcdef}");
+				GetTextWithoutFinalEop(SUT.Document, out text);
+				Assert.AreEqual("abcdef", text);
+
+				// Plain text still honors the limit.
+				SUT.Document.SetText(TextSetOptions.CheckTextLimit, "abcdef");
+				GetTextWithoutFinalEop(SUT.Document, out text);
 				Assert.AreEqual("abc", text);
-			}
-			finally
-			{
-				WindowHelper.WindowContent = null;
-			}
-		}
-
-		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Rtf_Truncation_Does_Not_Apply_Discarded_Paragraph_Format()
-		{
-			var SUT = new RichEditBox { MaxLength = 1 };
-			try
-			{
-				WindowHelper.WindowContent = SUT;
-				await WindowHelper.WaitForLoaded(SUT);
-				SUT.Document.SetText(
-					TextSetOptions.FormatRtf | TextSetOptions.CheckTextLimit,
-					@"{\rtf1\ql a\par\qr b}");
-
-				GetTextWithoutFinalEop(SUT.Document, out var text);
-				Assert.AreEqual("a", text);
-				Assert.AreEqual(ParagraphAlignment.Left, SUT.Document.GetRange(1, 1).ParagraphFormat.Alignment);
 			}
 			finally
 			{
@@ -4543,7 +4529,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_InsertImage_Replaces_Range_As_One_Object_With_AlternateText()
 		{
 			var SUT = new RichEditBox();
@@ -4559,7 +4544,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("a\ufffcd", raw);
 			Assert.AreEqual("alogod", objectText);
 			Assert.AreEqual(1, range.StartPosition);
-			Assert.AreEqual(2, range.EndPosition);
+			Assert.AreEqual(1, range.EndPosition);
 			Assert.AreEqual(4, SUT.Document.GetRange(0, 0).StoryLength);
 
 			SUT.Document.Undo();
@@ -4633,7 +4618,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_InsertImage_Validates_And_Counts_Against_MaxLength()
 		{
 			var SUT = new RichEditBox { MaxLength = 1 };
@@ -4641,7 +4625,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(SUT);
 
 			var bytes = CreateImageStream(Microsoft.UI.Colors.Blue);
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+			Assert.ThrowsExactly<ArgumentException>(() =>
 				SUT.Document.GetRange(0, 0).InsertImage(-1, 1, 0, VerticalCharacterAlignment.Top, "bad", bytes));
 
 			bytes.Seek(0);

@@ -314,7 +314,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			GetTextWithoutFinalEop(SUT.Document, out var text);
 			Assert.AreEqual("hidden", text);
 			Assert.AreEqual(string.Empty, SUT.Document.GetRange(0, 1).Link);
-			Assert.AreEqual(FormatEffect.Off, SUT.Document.GetRange(0, 6).CharacterFormat.Hidden);
+			// Unhide only applies to plain text.
+			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 6).CharacterFormat.Hidden);
 		}
 
 		[TestMethod]
