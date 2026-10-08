@@ -185,7 +185,6 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				if (!ShouldSkipElement(current))
 				{
 					virtualViewIds.Add(Integer.ValueOf(GetOrCreateVirtualId(current)));
-					AddTextObjectVirtualViews(current, virtualViewIds);
 				}
 
 				_rememberAllVisited.Add(current);
@@ -201,23 +200,6 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		{
 			FocusProperties.UnoForceGetTextBlockForAccessibility = false;
 			_rememberAllVisited.Clear();
-		}
-	}
-
-	private void AddTextObjectVirtualViews(DependencyObject element, IList<Integer> virtualViewIds)
-	{
-		if (element is not RichEditBox richEditBox
-			|| richEditBox.GetOrCreateAutomationPeer() is not { } peer)
-		{
-			return;
-		}
-
-		foreach (var child in peer.GetChildren() ?? Array.Empty<AutomationPeer>())
-		{
-			if (TryGetVirtualTextObjectBounds(child, out _))
-			{
-				virtualViewIds.Add(Integer.ValueOf(GetOrCreateVirtualId(child)));
-			}
 		}
 	}
 
@@ -319,9 +301,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		if (element is UIElement uiElement)
 		{
-			var transform = UIElement.GetTransform(from: uiElement, to: null);
-			var logicalRect = transform.Transform(new Windows.Foundation.Rect(default, new Windows.Foundation.Size(uiElement.Visual.Size.X, uiElement.Visual.Size.Y)));
-			var physicalRect = logicalRect.LogicalToPhysicalPixels();
+			var physicalRect = GetPhysicalBounds(uiElement);
 #pragma warning disable CS0618 // Type or member is obsolete
 			node.SetBoundsInParent(new global::Android.Graphics.Rect((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom));
 #pragma warning restore CS0618 // Type or member is obsolete
@@ -463,6 +443,21 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return;
 		}
 
+		if (peer.GetParent() is { } parent
+			&& parent.TryGetProviderOwner(out var parentOwner))
+		{
+			node.SetParent(_host, GetOrCreateVirtualId(parentOwner));
+
+			// ExploreByTouchHelper adds every virtual ancestor's bounds to reach screen space,
+			// so the bounds must be relative to the editor rather than to the host.
+			if (parentOwner is UIElement parentElement)
+			{
+				var parentBounds = GetPhysicalBounds(parentElement);
+				bounds.X -= parentBounds.X;
+				bounds.Y -= parentBounds.Y;
+			}
+		}
+
 #pragma warning disable CS0618 // Type or member is obsolete
 		node.SetBoundsInParent(new global::Android.Graphics.Rect(
 			(int)bounds.Left,
@@ -479,16 +474,17 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			? "android.widget.ImageView"
 			: "android.widget.TextView";
 
-		if (peer.GetParent() is { } parent
-			&& parent.TryGetProviderOwner(out var parentOwner))
-		{
-			node.SetParent(_host, GetOrCreateVirtualId(parentOwner));
-		}
-
 		if (node.Clickable)
 		{
 			node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionClick);
 		}
+	}
+
+	private static Windows.Foundation.Rect GetPhysicalBounds(UIElement element)
+	{
+		var transform = UIElement.GetTransform(from: element, to: null);
+		var logicalRect = transform.Transform(new Windows.Foundation.Rect(default, new Windows.Foundation.Size(element.Visual.Size.X, element.Visual.Size.Y)));
+		return logicalRect.LogicalToPhysicalPixels();
 	}
 
 	private static bool TryGetVirtualTextObjectBounds(
