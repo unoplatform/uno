@@ -11,7 +11,11 @@
 		<UnoIconBackgroundColor Condition="$(UnoIconBackgroundColor) == ''">#00000000</UnoIconBackgroundColor>
 		<UnoSplashScreenFile Condition="$(UnoSplashScreenFile) == ''">$(UnoSplashFolder)splash_screen.svg</UnoSplashScreenFile>
 		<UnoSplashScreenBaseSize Condition="$(UnoSplashScreenBaseSize) == ''">300,300</UnoSplashScreenBaseSize>
-		<UnoSplashScreenColor Condition="$(UnoSplashScreenColor) == ''">#FFFFFF</UnoSplashScreenColor>
+		<!-- UnoSplashScreenColor is the legacy name of UnoSplashScreenBackgroundColor -->
+		<UnoSplashScreenBackgroundColor Condition="$(UnoSplashScreenBackgroundColor) == ''">$(UnoSplashScreenColor)</UnoSplashScreenBackgroundColor>
+		<!-- WebAssembly has no default color so that the loader follows the browser theme. Other targets have no theme-aware splash screen yet. -->
+		<UnoSplashScreenBackgroundColor Condition="$(UnoSplashScreenBackgroundColor) == '' and $(IsBrowserWasm) != 'true'">#FFFFFF</UnoSplashScreenBackgroundColor>
+		<UnoSplashScreenColor Condition="$(UnoSplashScreenColor) == '' and $(IsBrowserWasm) != 'true'">#FFFFFF</UnoSplashScreenColor>
 
 		<!-- Support net10.0, without a platform identifier -->
 		<_UnoResizetizerIsCompatibleApp Condition=" 
@@ -30,7 +34,9 @@
 			Condition="Exists('$(UnoIconBackgroundFile)') and Exists('$(UnoIconForegroundFile)')" />
 		<UnoSplashScreen Include="$(UnoSplashScreenFile)"
 			BaseSize="$(UnoSplashScreenBaseSize)"
-			Color="$(UnoSplashScreenColor)"
+			Color="$(UnoSplashScreenBackgroundColor)"
+			DarkBackgroundColor="$(UnoSplashScreenDarkBackgroundColor)"
+			DarkFile="$(UnoSplashScreenDarkFile)"
 			Scale="$(UnoSplashScreenScale)"
 			IsDefaultItem="true"
 			Exclude="@(UnoSplashScreen)"
@@ -39,9 +45,9 @@
 
 	<ItemGroup>
 		<UnoImage Include="$(AssetsFolder)**\*.svg"
-			Exclude="@(UnoImage);@(UnoIcon);@(UnoSplashScreen);$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(AssetsFolder)\**\Svg\**\*.svg"
+			Exclude="@(UnoImage);@(UnoIcon);@(UnoSplashScreen);$(UnoSplashScreenDarkFile);$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(AssetsFolder)\**\Svg\**\*.svg"
 			IsDefaultItem="true"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
-		<Content Remove="@(UnoImage);$(UnoIconBackgroundFile);$(UnoIconForegroundFile);$(UnoSplashScreenFile)" />
+		<Content Remove="@(UnoImage);$(UnoIconBackgroundFile);$(UnoIconForegroundFile);$(UnoSplashScreenFile);$(UnoSplashScreenDarkFile)" />
 	</ItemGroup>
 </Project>

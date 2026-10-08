@@ -305,8 +305,20 @@
 			"description": "The base size of the splash screen image. e.g.: '300,300'.",
 			"type": "string"
 		},
+		"UnoSplashScreenBackgroundColor": {
+			"description": "The background color of the splash screen, used for all themes unless overridden. Defaults to '#FFFFFF', except on WebAssembly where no color is set so the splash screen follows the browser theme.",
+			"type": "color"
+		},
+		"UnoSplashScreenDarkBackgroundColor": {
+			"description": "The background color of the splash screen when the dark theme is active.",
+			"type": "color"
+		},
+		"UnoSplashScreenDarkFile": {
+			"description": "The path to the splash screen image file used when the dark theme is active.",
+			"type": "file"
+		},
 		"UnoSplashScreenColor": {
-			"description": "The background color of the splash screen.",
+			"description": "The background color of the splash screen. Superseded by UnoSplashScreenBackgroundColor, which takes precedence when both are set.",
 			"type": "color"
 		},
 		"UnoSplashScreenScale": {
