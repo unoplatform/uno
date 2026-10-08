@@ -366,7 +366,6 @@ namespace Microsoft.UI.Text
 							RichTextRtfCodec.MaxImportCharacters,
 							false),
 					this,
-					unhide: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide),
 					unlink: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unlink),
 					forceHistory: true,
 					checkTextLimit: false)
@@ -1638,7 +1637,6 @@ namespace Microsoft.UI.Text
 				_end,
 				fragment,
 				this,
-				unhide: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide),
 				unlink: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unlink),
 				forceHistory: true,
 				checkTextLimit: false);

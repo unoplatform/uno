@@ -1928,22 +1928,14 @@ namespace Microsoft.UI.Text
 			RichTextFragment fragment,
 			global::Microsoft.UI.Text.TextSetOptions options)
 		{
-			var unlink = options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unlink);
-			var unhide = options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide);
-			if (unlink || unhide)
+			// Like WinUI, Unhide only applies to plain text; RTF keeps its hidden runs.
+			if (options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unlink))
 			{
-				fragment = fragment.TransformCharacterFormats(state =>
+				fragment = fragment.TransformCharacterFormats(static state =>
 				{
-					if (unlink)
-					{
-						state.Link = null;
-						state.LinkAnchor = null;
-						state.TextObjectIdentity = null;
-					}
-					if (unhide)
-					{
-						state.Hidden = false;
-					}
+					state.Link = null;
+					state.LinkAnchor = null;
+					state.TextObjectIdentity = null;
 				});
 			}
 
