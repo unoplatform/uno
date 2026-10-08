@@ -1941,8 +1941,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Bold_Toggle_On_Mixed_Weights_Uses_Aggregate_State()
+		public async Task When_Bold_Toggle_On_Mixed_Weights_Uses_First_Character()
 		{
 			var SUT = new RichEditBox();
 			try
@@ -1953,6 +1952,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Document.GetRange(0, 1).CharacterFormat.Weight = 350;
 				SUT.Document.GetRange(1, 2).CharacterFormat.Weight = 900;
 
+				var format = SUT.Document.GetRange(0, 2).CharacterFormat;
+				Assert.AreEqual(FormatEffect.Undefined, format.Bold);
+				format.Bold = FormatEffect.Toggle;
+
+				Assert.AreEqual(FormatEffect.On, format.Bold);
+				Assert.AreEqual(700, SUT.Document.GetRange(0, 1).CharacterFormat.Weight);
+				Assert.AreEqual(700, SUT.Document.GetRange(1, 2).CharacterFormat.Weight);
+
+				SUT.Document.GetRange(1, 2).CharacterFormat.Weight = 400;
 				SUT.Document.GetRange(0, 2).CharacterFormat.Bold = FormatEffect.Toggle;
 
 				Assert.AreEqual(400, SUT.Document.GetRange(0, 1).CharacterFormat.Weight);
@@ -1965,8 +1973,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Character_Format_Toggle_Can_Be_Reused()
+		public async Task When_Character_Format_Toggle_Resolves_On_Detached_Format()
 		{
 			var SUT = new RichEditBox();
 			try
@@ -1978,13 +1985,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var toggle = SUT.Document.GetRange(2, 4).CharacterFormat.GetClone();
 				toggle.Bold = FormatEffect.Toggle;
+				Assert.AreEqual(FormatEffect.On, toggle.Bold);
+				Assert.AreEqual(TextConstants.UndefinedInt32Value, toggle.Weight);
+
 				SUT.Document.GetRange(0, 2).CharacterFormat = toggle;
+				Assert.AreEqual(FormatEffect.On, toggle.Bold);
+				Assert.AreEqual(700, SUT.Document.GetRange(0, 1).CharacterFormat.Weight);
+				Assert.AreEqual(700, SUT.Document.GetRange(1, 2).CharacterFormat.Weight);
 
-				Assert.AreEqual(FormatEffect.Toggle, toggle.Bold);
-				Assert.AreEqual(400, SUT.Document.GetRange(0, 2).CharacterFormat.Weight);
-
-				SUT.Document.GetRange(2, 4).CharacterFormat = toggle;
-				Assert.AreEqual(700, SUT.Document.GetRange(2, 4).CharacterFormat.Weight);
+				toggle.Italic = FormatEffect.Toggle;
+				Assert.AreEqual(FormatEffect.On, toggle.Italic);
+				toggle.Italic = FormatEffect.Toggle;
+				Assert.AreEqual(FormatEffect.Off, toggle.Italic);
 			}
 			finally
 			{
