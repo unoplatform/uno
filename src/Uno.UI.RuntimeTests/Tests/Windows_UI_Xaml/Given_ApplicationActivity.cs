@@ -16,6 +16,7 @@ public class Given_ApplicationActivity
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24598")]
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
 	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
 	[DynamicDependency("Recreate", "Android.App.Activity", "Mono.Android")]
 	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
@@ -50,6 +51,7 @@ public class Given_ApplicationActivity
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24598")]
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
 	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
 	[DynamicDependency("Recreate", "Android.App.Activity", "Mono.Android")]
 	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
@@ -78,6 +80,52 @@ public class Given_ApplicationActivity
 			window.Closed -= OnClosed;
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Reads internal wrapper state through reflection, which NativeAOT trims away.")]
+#endif
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("Recreate", "Android.App.Activity", "Mono.Android")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
+	public async Task When_Recreated_Then_Successor_Drives_The_Window()
+	{
+		var original = GetWindowActivity();
+		Assert.IsNotNull(original);
+		original.GetType().GetMethod("Recreate", Type.EmptyTypes)!.Invoke(original, null);
+
+		object successor = null;
+		await TestServices.WindowHelper.WaitFor(() => (successor = GetWindowActivity()) is { } current && !ReferenceEquals(current, original), timeoutMS: 10000);
+
+		// The successor attaches its content before the wrapper re-subscribes to the attach event;
+		// a missed attach keeps the pre-draw gate shut and the app renders black.
+		var wrapper = GetMember(successor, "Wrapper");
+		Assert.IsNotNull(wrapper);
+		await TestServices.WindowHelper.WaitFor(() => GetField(wrapper, "_awaitingFirstFrame") is 0, timeoutMS: 10000);
+		Assert.AreEqual(true, GetMember(successor, "IsContentViewAttachedToWindow"));
+
+		Assert.AreSame(successor, GetMember(wrapper, "CurrentActivity"), "The window must be handed over to the re-created activity.");
+
+		var contextHelper = Type.GetType("Uno.UI.ContextHelper, Uno.WinRT");
+		Assert.IsNotNull(contextHelper);
+		Assert.AreSame(
+			successor,
+			contextHelper.GetProperty("Current", BindingFlags.Static | BindingFlags.Public)!.GetValue(null),
+			"ContextHelper.Current must not stay on the destroyed activity.");
+	}
+
+	private static object GetMember(object instance, string name)
+		=> instance.GetType()
+			.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+			?.GetValue(instance);
+
+	private static object GetField(object instance, string name)
+		=> instance.GetType()
+			.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+			?.GetValue(instance);
 
 	// The activity driving the test window, resolved through its host so it follows re-creation.
 	// The runtime tests don't reference Mono.Android or the Android host, hence the reflection.
