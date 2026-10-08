@@ -214,6 +214,9 @@ namespace Microsoft.UI.Text
 			}
 		}
 
+		// RichEdit only parses text that starts with this signature as RTF; anything else is imported as plain text.
+		internal static bool HasRtfSignature(string value) => value.StartsWith(@"{\rtf1", StringComparison.Ordinal);
+
 		internal static RichTextFragment Read(
 			string rtf,
 			int maxCharacters = HardMaxParsedCharacters,
@@ -244,7 +247,7 @@ namespace Microsoft.UI.Text
 
 		private static RichTextFragment ReadCore(string rtf, int maxCharacters, bool truncateAtLimit)
 		{
-			var (rootStart, rootEnd) = ValidateFraming(rtf);
+			(rtf, var rootStart, var rootEnd) = ValidateFraming(rtf);
 			var (fonts, defaultFontIndex, documentCodePage) = ParseFonts(rtf, new ParseWorkBudget());
 			var defaultFontName = defaultFontIndex is { } fontIndex && fonts.TryGetValue(fontIndex, out var defaultFont)
 				? defaultFont.Name
@@ -358,7 +361,7 @@ namespace Microsoft.UI.Text
 			return output.Build(terminalParagraph, !budget.WasTruncated);
 		}
 
-		private static (int RootStart, int RootEnd) ValidateFraming(string rtf)
+		private static (string Rtf, int RootStart, int RootEnd) ValidateFraming(string rtf)
 		{
 			var rootStart = 0;
 			while (rootStart < rtf.Length && char.IsWhiteSpace(rtf[rootStart]))
@@ -406,20 +409,14 @@ namespace Microsoft.UI.Text
 				}
 			}
 
+			// Like RichEdit, groups left open at the end of the input are closed and data after the root group is ignored.
 			if (rootEnd < 0)
 			{
-				throw new ArgumentException("The RTF contains an unterminated group.", nameof(rtf));
+				rtf = string.Concat(rtf, new string('}', depth));
+				rootEnd = rtf.Length - 1;
 			}
 
-			for (var i = rootEnd + 1; i < rtf.Length; i++)
-			{
-				if (rtf[i] != '\0' && !char.IsWhiteSpace(rtf[i]))
-				{
-					throw new ArgumentException("The RTF contains data outside its root group.", nameof(rtf));
-				}
-			}
-
-			return (rootStart, rootEnd);
+			return (rtf, rootStart, rootEnd);
 		}
 
 		private static Dictionary<string, int> CollectFonts(

@@ -353,7 +353,9 @@ namespace Microsoft.UI.Text
 
 		public void SetText(global::Microsoft.UI.Text.TextSetOptions options, string value)
 		{
-			var insertedLength = options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.FormatRtf)
+			var isRtf = options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.FormatRtf)
+				&& (string.IsNullOrEmpty(value) || RichTextRtfCodec.HasRtfSignature(value));
+			var insertedLength = isRtf
 				? _document.ReplaceRangeWithFragment(
 					_start,
 					_end,

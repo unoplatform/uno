@@ -67,7 +67,7 @@ namespace Microsoft.UI.Text
 				throw new ArgumentException("The stream does not contain RTF.", nameof(rtf));
 			}
 
-			var (rootStart, rootEnd) = ValidateFraming(rtf);
+			(rtf, var rootStart, var rootEnd) = ValidateFraming(rtf);
 			var workBudget = new ParseWorkBudget();
 			var budget = new MathRtfBudget();
 			if (!TryFindMathGroup(rtf, rootStart + 1, rootEnd, "mmath", workBudget, budget, out var mathGroup))

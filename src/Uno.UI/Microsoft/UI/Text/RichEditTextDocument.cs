@@ -1893,7 +1893,8 @@ namespace Microsoft.UI.Text
 		{
 			ThrowIfNotEditable(0, _textBuffer.Length);
 
-			if (options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.FormatRtf))
+			if (options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.FormatRtf)
+				&& (string.IsNullOrEmpty(value) || RichTextRtfCodec.HasRtfSignature(value)))
 			{
 				MathDocument? mathDocument = null;
 				RichTextFragment fragment;
