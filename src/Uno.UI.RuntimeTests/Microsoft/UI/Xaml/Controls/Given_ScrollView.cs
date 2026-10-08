@@ -108,17 +108,41 @@ public class Given_ScrollView
 	}
 
 	/// <summary>
-	/// Measured on WinUI 3: a notch moves a ScrollView 32 DIP along v0·(1 − (t/T)²) over 257ms, i.e. position
-	/// 1.5·(s − s³/3) of the notch at s = t/T (WinUI adds ~20ms of compositor latency before the motion starts).
+	/// WinUI scrolls a notch with a sine ease-out keyframe animation, D·sin(π/2·t/T) over T = 250ms
+	/// (CInteractionTracker::ScrollToPosition in the lifted compositor).
 	/// </summary>
 	[TestMethod]
 	public async Task When_Wheel_Notch_Then_Follows_The_WinUI_Curve()
 	{
-		const double Notch = 32;
-		const double DurationMs = 257;
-
 		var (sut, bounds) = await LoadTallScrollView();
+
+		var samples = await RecordWheelNotch(sut, bounds);
+
+		Assert.AreEqual(InteractionTracker.PixelsPerWheelDetent, sut.VerticalOffset, 0.1, "a notch should scroll one detent");
+		AssertOnWheelCurve(samples, from: 0, distance: InteractionTracker.PixelsPerWheelDetent, durationMs: 250);
+	}
+
+	/// <summary>A notch clamped at the end shortens the curve by the share of it that is left (CalculatePositionAnimationDuration).</summary>
+	[TestMethod]
+	public async Task When_Wheel_Notch_Clamped_At_The_End_Then_Curve_Is_Shortened()
+	{
+		var (sut, bounds) = await LoadTallScrollView();
+		var left = InteractionTracker.PixelsPerWheelDetent / 2;
+		var from = sut.ScrollableHeight - left;
+
+		sut.ScrollTo(0, from, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled));
+		await TestServices.WindowHelper.WaitFor(() => Math.Abs(sut.VerticalOffset - from) < 0.01, message: "the view should reach the start offset");
+
+		var samples = await RecordWheelNotch(sut, bounds);
+
+		Assert.AreEqual(sut.ScrollableHeight, sut.VerticalOffset, 0.1, "the notch should stop at the end");
+		AssertOnWheelCurve(samples, from, distance: left, durationMs: 250 * left / InteractionTracker.PixelsPerWheelDetent);
+	}
+
+	private static async Task<List<(double Ms, float Position)>> RecordWheelNotch(ScrollView sut, Rect bounds)
+	{
 		var tracker = sut.ScrollPresenter!.InteractionTracker;
+		var initialOffset = sut.VerticalOffset;
 
 		// Rendering carries the timestamp the tracker was just advanced to, so each sample sits exactly on the curve.
 		var samples = new List<(double Ms, float Position)>();
@@ -132,7 +156,7 @@ public class Given_ScrollView
 		try
 		{
 			mouse.WheelDown();
-			await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > 0, message: "the wheel should scroll");
+			await TestServices.WindowHelper.WaitFor(() => sut.VerticalOffset > initialOffset, message: "the wheel should scroll");
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 		}
 		finally
@@ -140,39 +164,23 @@ public class Given_ScrollView
 			CompositionTarget.Rendering -= onRendering;
 		}
 
-		Assert.AreEqual(Notch, sut.VerticalOffset, 0.1, "a notch should scroll 32 DIP");
+		return samples;
+	}
 
-		// On the curve, every moving frame implies the same start time. A linear motion spreads it by ~30ms,
-		// and a first-frame jump puts the first frame off the others.
+	// On the curve, every moving frame implies the same start time. Another curve spreads it by tens of ms,
+	// and a first-frame jump puts the first frame off the others.
+	private static void AssertOnWheelCurve(List<(double Ms, float Position)> samples, double from, double distance, double durationMs)
+	{
 		var starts = samples
-			.Where(sample => sample.Position > 0.01 && sample.Position < Notch - 0.01)
-			.Select(sample => sample.Ms - DurationMs * CurveTimeAt(sample.Position / Notch))
+			.Select(sample => (sample.Ms, Fraction: (sample.Position - from) / distance))
+			.Where(sample => sample.Fraction > 0.005 && sample.Fraction < 0.99)
+			.Select(sample => sample.Ms - durationMs * Math.Asin(sample.Fraction) * 2 / Math.PI)
 			.ToList();
 
-		Assert.IsTrue(starts.Count >= 3, $"expected the notch to span several frames, got {starts.Count}");
+		Assert.IsTrue(starts.Count >= 2, $"expected the notch to span several frames, got {starts.Count}");
 		Assert.IsTrue(
 			starts.Max() - starts.Min() < 3,
 			$"frames do not lie on the WinUI curve, implied starts (ms): {string.Join(", ", starts.Select(start => start.ToString("F1")))}");
-	}
-
-	// Inverts 1.5·(s − s³/3), which rises monotonically over [0, 1].
-	private static double CurveTimeAt(double fraction)
-	{
-		double low = 0, high = 1;
-		for (var i = 0; i < 40; i++)
-		{
-			var mid = (low + high) / 2;
-			if (1.5 * (mid - mid * mid * mid / 3) < fraction)
-			{
-				low = mid;
-			}
-			else
-			{
-				high = mid;
-			}
-		}
-
-		return (low + high) / 2;
 	}
 
 	/// <summary>A finger pressed and held on coasting content stops it, without having to move first.</summary>
