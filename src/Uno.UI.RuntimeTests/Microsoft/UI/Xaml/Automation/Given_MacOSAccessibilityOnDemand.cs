@@ -54,6 +54,66 @@ public class Given_MacOSAccessibilityOnDemand
 		}
 	}
 
+	[TestMethod]
+	public async Task When_RichEditBox_Has_Header_Then_Placeholder_Is_Native_Placeholder()
+	{
+		var window = new Window();
+		try
+		{
+			var editor = new RichEditBox { Header = "Notes", PlaceholderText = "Nothing here yet" };
+			window.Content = editor;
+			var activated = false;
+			window.Activated += (_, _) => activated = true;
+			window.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+			await TestServices.WindowHelper.WaitForLoaded(editor);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var accessibility = GetAccessibility(editor.XamlRoot!);
+			var windowHandle = (nint)accessibility.GetType().GetProperty("WindowHandle", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(accessibility)!;
+			_ = objc_msgSend(windowHandle, sel_registerName("accessibilityChildren"));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var textArea = FindByRole(windowHandle, "AXTextArea");
+			Assert.AreNotEqual(nint.Zero, textArea, "the RichEditBox must be exposed as a native text area");
+			Assert.AreEqual("Nothing here yet", GetString(objc_msgSend(textArea, sel_registerName("accessibilityPlaceholderValue"))));
+		}
+		finally
+		{
+			window.Close();
+		}
+	}
+
+	private static nint FindByRole(nint element, string role)
+	{
+		// Only walk Uno's own nodes; touching AppKit's title bar proxies destabilizes later window teardown.
+		if (Marshal.PtrToStringUTF8(object_getClassName(element))?.StartsWith("UNO", StringComparison.Ordinal) != true)
+		{
+			return nint.Zero;
+		}
+
+		if (GetString(objc_msgSend(element, sel_registerName("accessibilityRole"))) == role)
+		{
+			return element;
+		}
+
+		var children = objc_msgSend(element, sel_registerName("accessibilityChildren"));
+		var count = children == nint.Zero ? 0 : objc_msgSend_nuint(children, sel_registerName("count"));
+		for (nuint i = 0; i < count; i++)
+		{
+			var match = FindByRole(objc_msgSend_index(children, sel_registerName("objectAtIndex:"), i), role);
+			if (match != nint.Zero)
+			{
+				return match;
+			}
+		}
+
+		return nint.Zero;
+	}
+
+	private static string? GetString(nint nsString)
+		=> nsString == nint.Zero ? null : Marshal.PtrToStringUTF8(objc_msgSend(nsString, sel_registerName("UTF8String")));
+
 	private static object GetAccessibility(XamlRoot xamlRoot)
 	{
 		var xamlRootMap = typeof(XamlRoot).Assembly.GetType("Uno.UI.Hosting.XamlRootMap")!;
@@ -76,5 +136,11 @@ public class Given_MacOSAccessibilityOnDemand
 
 	[DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
 	private static extern nuint objc_msgSend_nuint(nint receiver, nint selector);
+
+	[DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
+	private static extern nint objc_msgSend_index(nint receiver, nint selector, nuint index);
+
+	[DllImport("/usr/lib/libobjc.A.dylib")]
+	private static extern nint object_getClassName(nint obj);
 }
 #endif
