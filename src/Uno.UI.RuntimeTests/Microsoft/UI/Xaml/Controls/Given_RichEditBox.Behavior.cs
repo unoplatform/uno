@@ -3539,20 +3539,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_CanCopy_Reflects_Selection()
+		public async Task When_CanCopy_Does_Not_Depend_On_Selection()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
 
-			SUT.Document.SetText(TextSetOptions.None, "Hello world");
+				Assert.IsTrue(SUT.Document.CanCopy());
 
-			SUT.Document.Selection.SetRange(0, 0);
-			Assert.IsFalse(SUT.Document.CanCopy());
+				SUT.Document.SetText(TextSetOptions.None, "Hello world");
+				SUT.Document.Selection.SetRange(0, 0);
+				Assert.IsTrue(SUT.Document.CanCopy());
 
-			SUT.Document.Selection.SetRange(0, 5);
-			Assert.IsTrue(SUT.Document.CanCopy());
+				SUT.Document.Selection.SetRange(0, 5);
+				Assert.IsTrue(SUT.Document.CanCopy());
+
+				SUT.IsReadOnly = true;
+				Assert.IsTrue(SUT.Document.CanCopy());
+				Assert.IsFalse(SUT.Document.CanPaste());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
