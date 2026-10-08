@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 
@@ -30,7 +31,16 @@ internal partial struct ImageData
 #if __SKIA__
 	// Neutral surface (ICompositionSurface): a texture-backed CompositionImageSurface OR a live self-painting one
 	// (e.g. CompositionSvgSurface). Consumers that need texture specifics down-cast.
-	public static ImageData FromCompositionSurface(ICompositionSurface compositionSurface) => new(compositionSurface);
+	public static ImageData FromCompositionSurface(ICompositionSurface compositionSurface)
+	{
+		Interlocked.Increment(ref CompositionSurfacesCreatedForTesting);
+		return new(compositionSurface);
+	}
+
+	/// <summary>
+	/// Number of decoded surfaces produced; for tests.
+	/// </summary>
+	internal static int CompositionSurfacesCreatedForTesting;
 
 	private ImageData(ICompositionSurface compositionSurface)
 	{
@@ -42,6 +52,17 @@ internal partial struct ImageData
 	public static ImageData Empty { get; }
 
 	public bool HasData => Kind != ImageDataKind.Empty && Kind != ImageDataKind.Error;
+
+	/// <summary>
+	/// Whether the data is shared by every source that loads the same cached key, in which case no single source may
+	/// release it. Travels with the result so a cancelled or superseded open releases exactly what it owned.
+	/// </summary>
+	public bool IsShared { get; private init; }
+
+	/// <summary>
+	/// Returns this data marked as shared (see <see cref="IsShared"/>).
+	/// </summary>
+	internal ImageData AsShared() => this with { IsShared = true };
 
 	public ImageDataKind Kind { get; }
 

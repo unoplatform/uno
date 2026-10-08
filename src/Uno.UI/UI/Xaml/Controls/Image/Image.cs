@@ -39,7 +39,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// SVG flows through the same neutral path as any source: its ISvgRenderer produces a live composition
 			// surface (drawn as vector each frame, crisp at any size) that the sprite renders like any bitmap.
-			if (newValue is ImageSource source)
+			// Subscribing is what decodes the source, so an unloaded Image (e.g. a recycled container whose binding
+			// updates off-tree) waits for OnLoaded, as WinUI decodes only once the element is in the live tree.
+			if (newValue is ImageSource source && IsLoaded)
 			{
 				InitializeImageSource(source);
 			}
@@ -168,6 +170,29 @@ namespace Microsoft.UI.Xaml.Controls
 				_imageSprite.Size = default;
 				return ArrangeFirstChild(finalSize);
 			}
+		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			// The subscription was released on unload: subscribe again, which decodes the source again.
+			if (_sourceDisposable.Disposable is null && Source is { } source)
+			{
+				OnSourceChanged(source, forceReload: false);
+			}
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			// Nothing displays this image while it is unloaded, so its subscription is released, which lets the source
+			// release its decoded pixels; the sprite must not keep pointing at them.
+			_imageSprite.Brush = null;
+			_currentSurface = null;
+			_pendingImageData = null;
+			_sourceDisposable.Disposable = null;
 		}
 
 		partial void OnMonochromeColorChanged()

@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.UI.Core;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
 using Uno.Diagnostics.Eventing;
@@ -74,7 +75,45 @@ namespace Microsoft.UI.Xaml.Media
 				Open();
 			}
 
-			return Disposable.Create(() => _subscriptions.Remove(onSourceOpened));
+			return Disposable.Create(() =>
+			{
+				_subscriptions.Remove(onSourceOpened);
+
+				// Nothing displays the image anymore: its decoded pixels are released now, as WinUI drops a decoded
+				// surface once its last user lets go, and decoded again if something subscribes later.
+				if (_subscriptions.Count == 0)
+				{
+					ReleaseImageData();
+				}
+			});
+		}
+
+		/// <summary>
+		/// Number of decoded surfaces released ahead of finalization; for tests.
+		/// </summary>
+		internal static int ReleasedSurfacesForTesting;
+
+		/// <summary>
+		/// Cancels an open in flight and releases the decoded data this source owns.
+		/// </summary>
+		private void ReleaseImageData()
+		{
+			_opening.Disposable = null;
+			ReleaseSurface(_imageData);
+			_imageData = ImageData.Empty;
+		}
+
+		/// <summary>
+		/// Releases the decoded frames of an image surface that nothing will display, unless the data is shared through
+		/// the bitmap cache, in which case it is the cache's to release.
+		/// </summary>
+		private protected static void ReleaseSurface(ImageData data)
+		{
+			if (!data.IsShared && data.CompositionSurface is CompositionImageSurface surface)
+			{
+				surface.ReleaseFrames();
+				Interlocked.Increment(ref ReleasedSurfacesForTesting);
+			}
 		}
 
 		/// <summary>
@@ -85,7 +124,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		private protected void InvalidateSource()
 		{
-			_imageData = default;
+			ReleaseImageData();
 			if (_subscriptions.Count > 0 || this is SvgImageSource)
 			{
 				Open();
@@ -113,6 +152,12 @@ namespace Microsoft.UI.Xaml.Media
 							if (!ct.IsCancellationRequested)
 							{
 								OnOpened(data);
+							}
+							else
+							{
+								// A superseded open still produced an image nobody will show: release it now rather than leave
+								// it to finalization, which is what a burst of source changes would otherwise pile up.
+								ReleaseSurface(data);
 							}
 						}
 						catch (OperationCanceledException) when (ct.IsCancellationRequested)
