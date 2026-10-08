@@ -159,8 +159,14 @@
 
 			let bootstrapperLoaders = document.getElementsByClassName(WebAssemblyWindowWrapper.unoPersistentLoaderClassName);
 			if (bootstrapperLoaders.length > 0) {
-				let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
-				bootstrapperLoader.parentElement.removeChild(bootstrapperLoader);
+				// Newer bootstrappers fade the loader out themselves; older ones don't expose dismissLoader.
+				const dismissLoader = (globalThis as any).Uno?.WebAssembly?.Bootstrap?.Bootstrapper?.dismissLoader;
+				if (typeof dismissLoader === "function") {
+					dismissLoader();
+				} else {
+					let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
+					bootstrapperLoader.parentElement.removeChild(bootstrapperLoader);
+				}
 			}
 		}
 
