@@ -476,7 +476,7 @@ namespace Microsoft.UI.Text
 				: useObjectText || noHidden
 					? GetFilteredTextInRange(start, end, useObjectText, noHidden)
 					: _textBuffer.Slice(start, end - start);
-			if (includesFinalEop && (!noHidden || options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.AllowFinalEop)))
+			if (includesFinalEop && (!OmitsFinalEop(options) || options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.AllowFinalEop)))
 			{
 				text += '\r';
 			}
@@ -1980,10 +1980,7 @@ namespace Microsoft.UI.Text
 				throw new ArgumentException("Math-only documents can only be retrieved as RTF.", nameof(options));
 			}
 
-			// Like WinUI, converting line endings or filtering hidden text omits the final EOP unless AllowFinalEop is set.
-			var omitsFinalEop = options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.UseLf)
-				|| options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.UseCrlf)
-				|| options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.NoHidden);
+			var omitsFinalEop = OmitsFinalEop(options);
 			var effectiveOptions = !omitsFinalEop
 				|| options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.AllowFinalEop)
 					? options | global::Microsoft.UI.Text.TextGetOptions.AllowFinalEop
@@ -2001,6 +1998,12 @@ namespace Microsoft.UI.Text
 					rangeEnd,
 					effectiveOptions);
 		}
+
+		// Like WinUI, converting line endings or filtering hidden text omits the final EOP unless AllowFinalEop is set.
+		private static bool OmitsFinalEop(global::Microsoft.UI.Text.TextGetOptions options)
+			=> options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.UseLf)
+				|| options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.UseCrlf)
+				|| options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.NoHidden);
 
 		private static string ConvertTextForGetOptions(string text, global::Microsoft.UI.Text.TextGetOptions options)
 		{
