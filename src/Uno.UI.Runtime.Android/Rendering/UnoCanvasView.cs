@@ -71,6 +71,14 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 			{
 				_renderer.TeardownOnRenderThread();
 			}
+			catch (Exception ex)
+			{
+				// An exception escaping here crosses JNI and takes the process down without a managed log.
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Failed to tear down the renderer on the GL thread.", ex);
+				}
+			}
 			finally
 			{
 				torndown.Set();

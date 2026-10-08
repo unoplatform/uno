@@ -294,11 +294,6 @@ namespace Uno.UI.Runtime.Android
 
 			// Hold the window's draws until a Skia frame is presented (see the render views).
 			Wrapper.ArmFirstFrameGate();
-			if (_renderView is not null)
-			{
-				// A recreated Activity reuses the render view, so request the frame that releases the gate.
-				InvalidateRender();
-			}
 
 			_ = LayoutProvider;
 
@@ -553,7 +548,19 @@ namespace Uno.UI.Runtime.Android
 			// dispose path, so the GL/Vulkan context has to be released explicitly. This must
 			// precede base.OnDestroy(): NativePage detaches the content view there, which stops
 			// the GL thread the teardown is queued on.
-			_renderView?.TeardownRenderer();
+			try
+			{
+				_renderView?.TeardownRenderer();
+			}
+			catch (Exception ex)
+			{
+				// base.OnDestroy() and the unsubscriptions below must still run, or this activity leaks.
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Failed to tear down the render view.", ex);
+				}
+			}
+
 			_renderView = null;
 			_renderViewAsView = null;
 			_nativeLayerHost = null;
