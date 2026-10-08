@@ -62,6 +62,9 @@ namespace Microsoft.UI.Text
 
 		internal bool HasDecodedImage => _decodedImage is not null;
 
+		// Clones share the encoded bytes but each decodes its own image, so the bytes are the stable identity.
+		internal object TextureKey => _data;
+
 		internal long DecodedByteLength => GetDecodedPixelCount() * 4;
 
 		internal static InlineImageState CreateFromStream(

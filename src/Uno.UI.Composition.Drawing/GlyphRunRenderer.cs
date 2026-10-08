@@ -183,8 +183,11 @@ public static class GlyphRunRenderer
 		return bounds ?? Rect.Empty;
 	}
 
-	/// <summary>Draws a decoded image stretched into <paramref name="destination"/>.</summary>
-	public static void DrawImage(IDrawingSession session, IImage image, Rect destination, float opacity)
+	/// <summary>
+	/// Draws a decoded image stretched into <paramref name="destination"/>. Images with the same
+	/// <paramref name="key"/> must have the same pixels; they share one cached texture.
+	/// </summary>
+	public static void DrawImage(IDrawingSession session, IImage image, object key, Rect destination, float opacity)
 	{
 		if (image.PixelWidth <= 0 || image.PixelHeight <= 0 || destination.Width <= 0 || destination.Height <= 0)
 		{
@@ -194,7 +197,7 @@ public static class GlyphRunRenderer
 		session.Save();
 		session.Translate((float)destination.X, (float)destination.Y);
 		session.Scale((float)destination.Width / image.PixelWidth, (float)destination.Height / image.PixelHeight);
-		session.DrawImage(ImageTextureCache.Get(session.Factory, image), 0, 0, opacity);
+		session.DrawImage(ImageTextureCache.Get(session, key, image), 0, 0, opacity);
 		session.Restore();
 	}
 
@@ -247,52 +250,84 @@ public static class GlyphRunRenderer
 		}
 	}
 
-	// Per-render-thread textures for decoded images (inline objects), keyed by image identity and evicted least
-	// recently used, so a page showing more images than the cap re-uploads one texture at a time, not all of them.
-	private static class ImageTextureCache
+	// Per-render-thread textures for decoded images (inline objects), evicted least recently used past a count and
+	// byte budget. Entries the current session has drawn are never evicted: a paint showing more images than the
+	// budget would otherwise evict each one just before it is drawn again, missing on every lookup.
+	internal static class ImageTextureCache
 	{
-		private const int Cap = 64;
+		internal const int Cap = 64;
+		internal const long ByteBudget = 256L * 1024 * 1024;
+
+		private sealed class Entry(object key, ITexture texture, long bytes)
+		{
+			public object Key { get; } = key;
+			public ITexture Texture { get; } = texture;
+			public long Bytes { get; } = bytes;
+			public int Generation { get; set; }
+		}
 
 		[ThreadStatic]
-		private static Dictionary<IImage, LinkedListNode<(IImage image, ITexture texture)>>? _textures;
+		private static Dictionary<object, LinkedListNode<Entry>>? _textures;
 		[ThreadStatic]
-		private static LinkedList<(IImage image, ITexture texture)>? _recency;
+		private static LinkedList<Entry>? _recency;
 		[ThreadStatic]
 		private static IDrawingFactory? _factory;
+		[ThreadStatic]
+		private static IDrawingSession? _session;
+		[ThreadStatic]
+		private static int _generation;
+		[ThreadStatic]
+		private static long _bytes;
 
-		public static ITexture Get(IDrawingFactory factory, IImage image)
+		internal static int Count => _textures?.Count ?? 0;
+
+		public static ITexture Get(IDrawingSession session, object key, IImage image)
 		{
 			var map = _textures ??= new(ReferenceEqualityComparer.Instance);
 			var recency = _recency ??= new();
+			var factory = session.Factory;
 			if (!ReferenceEquals(factory, _factory))
 			{
-				foreach (var (_, texture) in recency)
+				foreach (var entry in recency)
 				{
-					texture.Dispose();
+					entry.Texture.Dispose();
 				}
 
 				map.Clear();
 				recency.Clear();
+				_bytes = 0;
 				_factory = factory;
 			}
 
-			if (map.TryGetValue(image, out var node))
+			if (!ReferenceEquals(session, _session))
+			{
+				_session = session;
+				_generation++;
+			}
+
+			if (map.TryGetValue(key, out var node))
 			{
 				recency.Remove(node);
 				recency.AddFirst(node);
-				return node.Value.texture;
+				node.Value.Generation = _generation;
+				return node.Value.Texture;
 			}
 
-			if (map.Count >= Cap && recency.Last is { } oldest)
+			var bytes = (long)image.PixelWidth * image.PixelHeight * 4;
+			while ((map.Count >= Cap || _bytes + bytes > ByteBudget)
+				&& recency.Last is { } oldest
+				&& oldest.Value.Generation != _generation)
 			{
 				recency.RemoveLast();
-				map.Remove(oldest.Value.image);
-				oldest.Value.texture.Dispose();
+				map.Remove(oldest.Value.Key);
+				_bytes -= oldest.Value.Bytes;
+				oldest.Value.Texture.Dispose();
 			}
 
-			node = recency.AddFirst((image, factory.CreateTexture(image)));
-			map[image] = node;
-			return node.Value.texture;
+			node = recency.AddFirst(new Entry(key, factory.CreateTexture(image), bytes) { Generation = _generation });
+			map[key] = node;
+			_bytes += bytes;
+			return node.Value.Texture;
 		}
 	}
 }

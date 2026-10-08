@@ -7,9 +7,10 @@ namespace Microsoft.UI.Xaml.Documents;
 
 internal sealed class InlineObjectInfo
 {
-	internal InlineObjectInfo(IImage? image, float width, float height, float ascent, VerticalCharacterAlignment verticalAlignment)
+	internal InlineObjectInfo(IImage? image, object? imageKey, float width, float height, float ascent, VerticalCharacterAlignment verticalAlignment)
 	{
 		Image = image;
+		ImageKey = imageKey;
 		Width = width;
 		Height = height;
 		Ascent = ascent;
@@ -17,6 +18,9 @@ internal sealed class InlineObjectInfo
 	}
 
 	internal IImage? Image { get; }
+
+	/// <summary>Identifies the image's pixels across re-decodes, so they can share one texture.</summary>
+	internal object? ImageKey { get; }
 
 	internal float Width { get; }
 

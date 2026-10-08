@@ -485,6 +485,7 @@ partial class RichEditBox
 				_run.InlineObject = format.InlineImage is { } inlineImage
 					? new InlineObjectInfo(
 						inlineImage.GetDecodedImage(),
+						inlineImage.TextureKey,
 						inlineImage.Width,
 						inlineImage.Height,
 						inlineImage.Ascent,

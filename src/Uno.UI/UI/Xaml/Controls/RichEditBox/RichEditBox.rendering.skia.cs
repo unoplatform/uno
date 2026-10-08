@@ -1151,6 +1151,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				run.InlineObject = new InlineObjectInfo(
 					inlineImage.GetDecodedImage(),
+					inlineImage.TextureKey,
 					inlineImage.Width,
 					inlineImage.Height,
 					inlineImage.Ascent,

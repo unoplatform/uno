@@ -1544,7 +1544,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		List<(float x1, float x2, float baseline, Color color, FontDetails font, global::Microsoft.UI.Text.TabLeader leader)>? tabLeaders = null;
 		Dictionary<(int wordIndex, int lineIndex, float scale), (float left, float right, float y)> spellCheckUnderlines = new();
 		List<(float x1, float x2, float y, Color color)> compositionUnderlines = new();
-		List<(IImage image, Rect destination)>? inlineObjectImages = null;
+		List<(IImage image, object key, Rect destination)>? inlineObjectImages = null;
 		List<(float x1, float x2, float top, float thickness, Color color)> textDecorationLines = new();
 
 		Rect? caretRect = default;
@@ -1599,6 +1599,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					var imageY = GetInlineObjectTop(inlineObject, line.lineHeight, line.baselineOffset);
 					(inlineObjectImages ??= new()).Add((
 						image,
+						inlineObject.ImageKey ?? image,
 						new Rect(
 							unalignedX + alignmentOffset,
 							y + imageY,
@@ -1892,9 +1893,9 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		if (inlineObjectImages is not null)
 		{
-			foreach (var (image, destination) in inlineObjectImages)
+			foreach (var (image, key, destination) in inlineObjectImages)
 			{
-				GlyphRunRenderer.DrawImage(drawingSession, image, destination, effectiveOpacity);
+				GlyphRunRenderer.DrawImage(drawingSession, image, key, destination, effectiveOpacity);
 			}
 		}
 
