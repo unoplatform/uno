@@ -17,6 +17,14 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		private readonly record struct BitmapImageCacheKey(Uri Uri, int? DecodeWidth, int? DecodeHeight);
 
 		private static readonly LRUCache<BitmapImageCacheKey, Task<ImageData>> _bitmapImageCache = new(FeatureConfiguration.Image.MaxBitmapImageCacheCount);
+
+		// Test hook: resolves the uri like the loader does so tests can observe cache membership for a key.
+		internal static async Task<Task<ImageData>> GetCachedImageDataTaskForTesting(Uri uri, int? decodeWidth, int? decodeHeight)
+		{
+			uri = await TryResolveLocalResource(uri);
+			return _bitmapImageCache.TryGetValue(new BitmapImageCacheKey(uri, decodeWidth, decodeHeight), out var imageDataTask) ? imageDataTask : null;
+		}
+
 		// TODO: Introduce LRU caching if needed
 		private static readonly Dictionary<string, string> _scaledBitmapPathCache = new();
 
@@ -141,7 +149,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 							}
 						}, ct);
 
-						if (FeatureConfiguration.Image.EnableBitmapImageCache)
+						// IgnoreImageCache must also skip the add: otherwise the decoded image is
+						// retained by the cache exactly as if the option were not set.
+						if (!ignoreCache && FeatureConfiguration.Image.EnableBitmapImageCache)
 						{
 							_bitmapImageCache.Add(cacheKey, imageDataTask);
 							// if loading failed not because of an actual failure but because
