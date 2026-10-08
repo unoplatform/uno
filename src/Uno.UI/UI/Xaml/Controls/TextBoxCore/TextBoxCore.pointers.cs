@@ -29,6 +29,7 @@ internal sealed partial class TextBoxCore
 	private bool _touchCaretDrag;
 	// True once the current touch press was handled as a hold when the hold started (OnHolding): the delayed
 	// ContextRequested the ContextMenuProcessor raises for the same hold, and the release, are then not a new gesture.
+	// Reset by the next press and by the release of the press; after a capture loss it lasts until the next press.
 	private bool _touchHoldHandled;
 
 	internal void OnPointerMoved(PointerRoutedEventArgs e)
@@ -345,13 +346,25 @@ internal sealed partial class TextBoxCore
 	// here, as the text viewport is a pannable ScrollViewer, and dropped when the finger lifts before that).
 	internal void OnHolding(HoldingRoutedEventArgs e)
 	{
-		if (e.HoldingState == HoldingState.Started
-			&& e.PointerDeviceType == PointerDeviceType.Touch
-			&& TouchSelectionConvention != TouchTextSelectionConvention.Desktop)
+		if (e.HoldingState != HoldingState.Started
+			|| e.PointerDeviceType != PointerDeviceType.Touch
+			|| TouchSelectionConvention == TouchTextSelectionConvention.Desktop)
 		{
-			HandleTouchHold(e.GetPosition(TextBoxView.DisplayBlock), e.GetPosition(Owner));
-			_touchHoldHandled = true;
+			return;
 		}
+
+		var displayBlockPoint = e.GetPosition(TextBoxView.DisplayBlock);
+		var textBoxPoint = e.GetPosition(Owner);
+
+		// Touch defers focus to the release (ShouldFocusOnPointerPressed), but the hold acts now: unfocused, the selection
+		// or caret drag isn't rendered. As in WinUI's TextSelectionManager::OnHolding, a hold that can't take it doesn't act.
+		_touchHoldHandled = true;
+		if (Owner.FocusState == FocusState.Unfocused && !Owner.Focus(FocusState.Pointer))
+		{
+			return;
+		}
+
+		HandleTouchHold(displayBlockPoint, textBoxPoint);
 	}
 
 	// On iOS/Android a touch-and-hold does native text selection instead of opening a context menu (see
@@ -426,7 +439,6 @@ internal sealed partial class TextBoxCore
 		_isPressed = false;
 		_mouseMultiTapChunk = null;
 		_touchCaretDrag = false;
-		_touchHoldHandled = false;
 	}
 
 	internal void OnDoubleTapped(DoubleTappedRoutedEventArgs args)
