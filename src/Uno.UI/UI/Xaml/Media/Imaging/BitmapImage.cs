@@ -160,6 +160,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// TODO: Introduce LRU caching if needed
 		private static readonly Dictionary<string, string> _scaledBitmapPathCache = new();
 
+		private static bool IsFailedLoad(Task<ImageData> load)
+			=> load.IsFaulted || (load.IsCompletedSuccessfully && load.Result.Kind == ImageDataKind.Error);
+
 		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 		{
 			asyncImage = TryOpenSourceAsync(ct);
@@ -269,12 +272,22 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						&& !CreateOptions.HasFlag(BitmapCreateOptions.IgnoreImageCache);
 					var cacheKey = new BitmapImageCacheKey(uri, decodeWidth, decodeHeight);
 
-					if (!useCache || !_bitmapImageCache.TryGetValue(cacheKey, out var imageDataTask))
+					Task<ImageData> imageDataTask = null;
+
+					if (useCache && _bitmapImageCache.TryGetValue(cacheKey, out imageDataTask) && IsFailedLoad(imageDataTask))
+					{
+						// A lookup can see a load that just failed before its eviction continuation below has run
+						// (e.g. an immediate retry from ImageFailed); treat it as a miss so the retry downloads again.
+						_bitmapImageCache.Remove(cacheKey, imageDataTask);
+						imageDataTask = null;
+					}
+
+					if (imageDataTask is null)
 					{
 						// A cached load is shared by every BitmapImage opening the same key, so it never runs on a single
-						// requester's token (cancelling one must not fail the others): as in WinUI's
-						// ImageCache::OnRequestReleasing (ImageCache.cpp), releasing a request leaves the shared download
-						// running. Only an uncached load is cancelled with its sole requester.
+						// requester's token (cancelling one must not fail the others); releasing a request leaves the shared
+						// download running (MUX Reference: ImageCache::OnRequestReleasing — ImageCache.cpp). Only an
+						// uncached load is cancelled with its sole requester.
 						var loadCt = useCache ? CancellationToken.None : ct;
 
 						imageDataTask = Task.Run(async () =>
@@ -292,6 +305,23 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						if (useCache)
 						{
 							_bitmapImageCache.Add(cacheKey, imageDataTask);
+
+							// A failed load must not keep failing later requesters. WinUI's provider store does not own its
+							// ImageCache, so a failed one is dropped once released and the next request downloads again
+							// (MUX Reference: ImageProvider::OnImageCacheInvalidated — ImageProvider.cpp); the LRU owns its
+							// entries, so drop a failed load as soon as it completes, and only while it is still the stored
+							// one (MUX Reference: ImageProvider::RemoveImageCache — ImageProvider.cpp).
+							_ = imageDataTask.ContinueWith(
+								t =>
+								{
+									if (IsFailedLoad(t))
+									{
+										_bitmapImageCache.Remove(cacheKey, t);
+									}
+								},
+								CancellationToken.None,
+								TaskContinuationOptions.ExecuteSynchronously,
+								TaskScheduler.Default);
 						}
 					}
 
