@@ -35,8 +35,8 @@ namespace Microsoft.UI.Text
 						bytes,
 						DefaultFormatState(),
 						DefaultParagraphState(),
-						GetSetTextImportCharacterLimit(0, _textBuffer.Length, options),
-						ShouldTruncateSetTextImportAtLimit(0, _textBuffer.Length, options),
+						RichTextRtfCodec.MaxImportCharacters,
+						false,
 						out mathDocument,
 						out var mathFragment))
 				{
@@ -46,15 +46,15 @@ namespace Microsoft.UI.Text
 				{
 					fragment = RichTextRtfCodec.Read(
 						bytes,
-						GetSetTextImportCharacterLimit(0, _textBuffer.Length, options),
-						ShouldTruncateSetTextImportAtLimit(0, _textBuffer.Length, options));
+						RichTextRtfCodec.MaxImportCharacters,
+						false);
 				}
 				fragment = ApplyRtfSetOptions(fragment, options);
 				SetDocumentFragment(
 					fragment,
 					mathDocument,
 					forceHistory: true,
-					checkTextLimit: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.CheckTextLimit));
+					checkTextLimit: false);
 			}
 			else
 			{

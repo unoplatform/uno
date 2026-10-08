@@ -1853,8 +1853,8 @@ namespace Microsoft.UI.Text
 						value,
 						DefaultFormatState(),
 						DefaultParagraphState(),
-						GetSetTextImportCharacterLimit(0, _textBuffer.Length, options),
-						ShouldTruncateSetTextImportAtLimit(0, _textBuffer.Length, options),
+						RichTextRtfCodec.MaxImportCharacters,
+						false,
 						out mathDocument,
 						out var mathFragment))
 				{
@@ -1864,15 +1864,15 @@ namespace Microsoft.UI.Text
 				{
 					fragment = RichTextRtfCodec.Read(
 						value,
-						GetSetTextImportCharacterLimit(0, _textBuffer.Length, options),
-						ShouldTruncateSetTextImportAtLimit(0, _textBuffer.Length, options));
+						RichTextRtfCodec.MaxImportCharacters,
+						false);
 				}
 				fragment = ApplyRtfSetOptions(fragment, options);
 				SetDocumentFragment(
 					fragment,
 					mathDocument,
 					forceHistory: true,
-					checkTextLimit: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.CheckTextLimit));
+					checkTextLimit: false);
 				return;
 			}
 
@@ -1923,22 +1923,6 @@ namespace Microsoft.UI.Text
 				_owner.OnDocumentTextChangedInteractive();
 			}
 		}
-
-		internal int GetSetTextImportCharacterLimit(
-			int start,
-			int end,
-			global::Microsoft.UI.Text.TextSetOptions options)
-			=> options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.CheckTextLimit)
-				? GetImportCharacterLimit(start, end)
-				: GetRtfImportSafetyLimit();
-
-		internal bool ShouldTruncateSetTextImportAtLimit(
-			int start,
-			int end,
-			global::Microsoft.UI.Text.TextSetOptions options)
-			=> options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.CheckTextLimit)
-				&& _owner.MaxLength > 0
-				&& Math.Max(0, _owner.MaxLength - (_textBuffer.Length - (end - start))) < GetRtfImportSafetyLimit();
 
 		private RichTextFragment ApplyRtfSetOptions(
 			RichTextFragment fragment,

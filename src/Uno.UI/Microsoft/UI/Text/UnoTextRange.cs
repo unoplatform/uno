@@ -363,13 +363,13 @@ namespace Microsoft.UI.Text
 						? RichTextFragment.Empty()
 						: RichTextRtfCodec.Read(
 							value,
-							_document.GetSetTextImportCharacterLimit(_start, _end, options),
-							_document.ShouldTruncateSetTextImportAtLimit(_start, _end, options)),
+							RichTextRtfCodec.MaxImportCharacters,
+							false),
 					this,
 					unhide: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide),
 					unlink: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unlink),
 					forceHistory: true,
-					checkTextLimit: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.CheckTextLimit))
+					checkTextLimit: false)
 				: _document.ReplaceRange(
 					_start,
 					_end,
@@ -1631,8 +1631,8 @@ namespace Microsoft.UI.Text
 
 			var fragment = _document.ReadRangeRtfViaStream(
 				value,
-				_document.GetSetTextImportCharacterLimit(_start, _end, options),
-				_document.ShouldTruncateSetTextImportAtLimit(_start, _end, options));
+				RichTextRtfCodec.MaxImportCharacters,
+				false);
 			var insertedLength = _document.ReplaceRangeWithFragment(
 				_start,
 				_end,
@@ -1641,7 +1641,7 @@ namespace Microsoft.UI.Text
 				unhide: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unhide),
 				unlink: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.Unlink),
 				forceHistory: true,
-				checkTextLimit: options.HasFlag(global::Microsoft.UI.Text.TextSetOptions.CheckTextLimit));
+				checkTextLimit: false);
 			_start = _end = _start + insertedLength;
 			OnRangeChanged();
 			FinalizeSelectionHistoryIfNeeded();
