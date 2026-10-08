@@ -99,7 +99,7 @@ namespace Benchmarks.Shared.Controls
 			);
 		}
 
-		private async Task Run()
+		internal async Task Run()
 		{
 			_logger = new TextBlockLogger(runLogs, debugLog.IsChecked ?? false, ActualTheme, OnLogAppended);
 			runLogs.Inlines.Clear();
@@ -117,6 +117,21 @@ namespace Benchmarks.Shared.Controls
 				int currentCount = 0;
 				SetRunCount(0);
 				ShellBenchCountPanel.Visibility = Visibility.Visible;
+
+				if (types.Length == 0)
+				{
+					await SetStatus(string.IsNullOrEmpty(ClassFilter)
+						? $"No benchmarks found in {BenchmarksBaseNamespace}"
+						: $"No benchmarks match \"{ClassFilter}\"");
+					return;
+				}
+
+				// Earlier runs' reports would otherwise end up in this run's archive.
+				if (Directory.Exists(config.ArtifactsPath))
+				{
+					Directory.Delete(config.ArtifactsPath, recursive: true);
+				}
+
 				foreach (var type in types)
 				{
 					SetRunCount(++currentCount);
@@ -266,6 +281,12 @@ namespace Benchmarks.Shared.Controls
 		private void ArchiveTestResult(CoreConfig config)
 		{
 			var archiveName = BenchmarkResultArchiveName;
+
+			if (!Directory.Exists(config.ArtifactsPath))
+			{
+				_logger?.WriteLine(LogKind.Error, $"No benchmark artifacts were written to {config.ArtifactsPath}.");
+				return;
+			}
 
 			if (File.Exists(archiveName))
 			{
