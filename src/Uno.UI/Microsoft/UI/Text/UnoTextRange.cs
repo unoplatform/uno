@@ -347,7 +347,7 @@ namespace Microsoft.UI.Text
 		public void GetText(global::Microsoft.UI.Text.TextGetOptions options, out string value)
 		{
 			value = options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.FormatRtf)
-				? RichTextRtfCodec.Write(_document.CaptureFragment(_start, _end, options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.NoHidden)))
+				? RichTextRtfCodec.Write(_document.CaptureFragment(_start, _end))
 				: _document.GetTextInRange(_start, _end, options);
 		}
 

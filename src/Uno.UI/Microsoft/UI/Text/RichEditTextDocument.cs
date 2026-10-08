@@ -1052,60 +1052,6 @@ namespace Microsoft.UI.Text
 				: _terminalParagraphFormat.Clone();
 		}
 
-		internal RichTextFragment CaptureFragment(int start, int end, bool noHidden)
-		{
-			if (!noHidden)
-			{
-				return CaptureFragment(start, end);
-			}
-
-			start = Math.Clamp(start, 0, _textBuffer.Length);
-			end = Math.Clamp(end, start, _textBuffer.Length);
-			SyncRunsToLength(_textBuffer.Length);
-			SyncParagraphRunsToLength(_textBuffer.Length);
-			var text = new global::System.Text.StringBuilder(end - start);
-			var characterRuns = new List<FormatRun>();
-			var paragraphRuns = new List<ParagraphRun>();
-			if (start < end)
-			{
-				var characterRunIndex = FindRunIndex(start);
-				var paragraphRunIndex = FindParagraphRunIndex(start);
-				var position = start;
-				while (position < end)
-				{
-					var characterEnd = _runs.GetEnd(characterRunIndex);
-					var paragraphEnd = _paragraphRuns.GetEnd(paragraphRunIndex);
-					var segmentEnd = Math.Min(end, Math.Min(characterEnd, paragraphEnd));
-					var character = _runs[characterRunIndex].Format;
-					var paragraph = _paragraphRuns[paragraphRunIndex].Format;
-					if (!character.Hidden)
-					{
-						var segmentLength = segmentEnd - position;
-						_textBuffer.AppendTo(text, position, segmentLength);
-						AppendRun(characterRuns, segmentLength, character);
-						AppendParagraphRun(paragraphRuns, segmentLength, paragraph);
-					}
-
-					position = segmentEnd;
-					if (position == characterEnd)
-					{
-						characterRunIndex++;
-					}
-					if (position == paragraphEnd)
-					{
-						paragraphRunIndex++;
-					}
-				}
-			}
-
-			return new RichTextFragment(
-				text.ToString(),
-				characterRuns,
-				paragraphRuns,
-				GetTerminalParagraphForFragment(start, end),
-				true);
-		}
-
 		internal RichTextFragment CreateInlineImageFragment(int start, InlineImageState image)
 		{
 			start = Math.Clamp(start, 0, _textBuffer.Length);
@@ -2049,7 +1995,7 @@ namespace Microsoft.UI.Text
 			value = options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.FormatRtf)
 				? IsMathMode
 					? RichTextRtfCodec.WriteMath(_mathDocument ?? MathDocument.FromPlainText(PlainText))
-					: RichTextRtfCodec.Write(CaptureFragment(0, _textBuffer.Length, options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.NoHidden)))
+					: RichTextRtfCodec.Write(CaptureFragment(0, _textBuffer.Length))
 				: GetTextInRange(
 					0,
 					rangeEnd,

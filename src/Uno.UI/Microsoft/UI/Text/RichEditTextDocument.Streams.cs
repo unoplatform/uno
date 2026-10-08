@@ -72,10 +72,7 @@ namespace Microsoft.UI.Text
 			{
 				var content = IsMathMode
 					? RichTextRtfCodec.WriteMath(_mathDocument ?? MathDocument.FromPlainText(PlainText))
-					: RichTextRtfCodec.Write(CaptureFragment(
-						0,
-						_textBuffer.Length,
-						options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.NoHidden)));
+					: RichTextRtfCodec.Write(CaptureFragment(0, _textBuffer.Length));
 				bytes = EncodeRtfStream(
 					content,
 					appendNullTerminator: _textBuffer.Length == 0);
@@ -102,11 +99,7 @@ namespace Microsoft.UI.Text
 			}
 
 			var bytes = isRtf
-				? EncodeRtfStream(RichTextRtfCodec.Write(CaptureFragment(
-					start,
-					end,
-					options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.NoHidden))),
-					appendNullTerminator: false)
+				? EncodeRtfStream(RichTextRtfCodec.Write(CaptureFragment(start, end)), appendNullTerminator: false)
 				: EncodePlainText(GetTextInRange(start, end, options));
 			WriteStreamBytes(value, bytes);
 		}
