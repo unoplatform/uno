@@ -390,6 +390,25 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 		// 2) Load the Version from the PackageManifest. This will get the version whether it was set through MSBuild or the bundled packages.json
 		var version = _manifest!.GetPackageVersion(packageId);
 
+		// 2.1) An optional package is skipped, never fetched from nuget.org, when its group version predates it
+		if (metadata.TryGetValue(PackageReference.AvailableSinceMetadata, out var availableSince)
+			&& !IsAvailable(version, availableSince))
+		{
+			Log.LogMessage(subcategory: null,
+				code: "UNOB0028",
+				helpKeyword: null,
+				file: null,
+				lineNumber: 0,
+				columnNumber: 0,
+				endLineNumber: 0,
+				endColumnNumber: 0,
+				MessageImportance.Normal,
+				message: string.IsNullOrEmpty(version)
+					? $"The implicit reference to '{packageId}' was skipped: the Uno.Sdk package manifest has no version for it."
+					: $"The implicit reference to '{packageId}' was skipped: it is available from version {availableSince}, and the resolved version is '{version}'.");
+			return;
+		}
+
 		// 3) Validate the version has a value. If not attempt to get the latest version from NuGet.org
 		if (string.IsNullOrEmpty(version))
 		{
@@ -433,6 +452,21 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 		// 5) Add the Implicit Package Reference
 		Debug("Adding Implicit Reference for '{0}' with version: '{1}'.", packageId, version);
 		_implicitPackages.Add(new PackageReference(packageId, version, metadata));
+	}
+
+	/// <remarks>
+	/// Compares the numeric parts only, so every prerelease of a version counts as that version. A version that
+	/// can't be compared (a float, a range) is treated as unavailable: the package is optional.
+	/// </remarks>
+	private static bool IsAvailable(string? version, string availableSince)
+	{
+		static Version Normalize(Version v) => new(v.Major, v.Minor, Math.Max(v.Build, 0), Math.Max(v.Revision, 0));
+
+		return version?.Trim() is { } exact
+			&& exact.IndexOfAny(['*', '[', '(', ',']) < 0
+			&& NuGetVersion.TryParse(exact, out var resolved)
+			&& NuGetVersion.TryParse(availableSince, out var since)
+			&& Normalize(resolved.Version) >= Normalize(since.Version);
 	}
 
 	private void Debug(string message, params object[] args)
