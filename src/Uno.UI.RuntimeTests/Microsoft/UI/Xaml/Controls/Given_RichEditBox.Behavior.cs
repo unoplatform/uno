@@ -4050,13 +4050,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public void When_Standard_Double_Wave_Underline_Alias_Is_Parsed()
+		public void When_Double_Wave_Underline_Uses_The_Standard_Control_Word()
 		{
 			var SUT = new RichEditBox();
-			SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1\uldbwave text}");
-
+			SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1\ululdbwave text}");
 			Assert.AreEqual(UnderlineType.DoubleWave, SUT.Document.GetRange(0, 4).CharacterFormat.Underline);
+
+			SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1\uldbwave text}");
+			Assert.AreEqual(UnderlineType.None, SUT.Document.GetRange(0, 4).CharacterFormat.Underline);
 		}
 
 		[TestMethod]
