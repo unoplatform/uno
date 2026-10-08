@@ -79,7 +79,7 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 	{
 		var newDelta = isHorizontal ? new Vector3((float)delta, 0, 0) : new Vector3(0, (float)delta, 0);
 		var totalDelta = (_handler.FinalModifiedPosition - _interactionTracker.Position) + newDelta;
-		// The curve restarts over what is left plus the new notch, which only ever raises the velocity.
+		// The curve restarts over what is left plus the new notch.
 		var velocity = InteractionTrackerPointerWheelInertiaHandler.GetLaunchVelocity(totalDelta);
 		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocity, requestId: 0, isFromPointerWheel: true));
 	}
