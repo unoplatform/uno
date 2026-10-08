@@ -3042,7 +3042,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Programmatic_SelectionChanging_Precedes_SelectionChanged()
 		{
 			var SUT = new RichEditBox();
@@ -3057,7 +3056,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.SelectionChanged += (s, e) => events.Add("changed");
 
 				SUT.Document.Selection.SetRange(2, 5);
+				CollectionAssert.AreEqual(new[] { "changing" }, events);
 
+				// SelectionChanged is queued, like WinUI's routed event.
+				await WindowHelper.WaitForIdle();
 				CollectionAssert.AreEqual(new[] { "changing", "changed" }, events);
 			}
 			finally
@@ -3067,7 +3069,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Programmatic_SelectionChanging_Handler_Selection_Wins_Over_Cancel()
 		{
 			var SUT = new RichEditBox();
@@ -3089,6 +3090,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.SelectionChanged += (s, e) => changedCount++;
 
 				SUT.Document.Selection.SetRange(2, 5);
+				await WindowHelper.WaitForIdle();
 
 				Assert.AreEqual(1, changingCount);
 				Assert.AreEqual(1, changedCount);
@@ -3171,7 +3173,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SelectionChanging_Handler_Grows_Text_Uses_Final_Document_Length()
 		{
 			var SUT = new RichEditBox();
@@ -3194,6 +3195,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.SelectionChanged += (s, e) => changedCount++;
 
 				SUT.Document.Selection.SetRange(2, 2);
+				await WindowHelper.WaitForIdle();
 
 				GetTextWithoutFinalEop(SUT.Document, out var text);
 				Assert.AreEqual("abcdef", text);
@@ -3513,7 +3515,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SelectionChanging_Handler_Cut_Overrides_Cancel_Without_Recursion()
 		{
 			var SUT = new RichEditBox();
@@ -3535,6 +3536,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.SelectionChanged += (s, e) => changedCount++;
 
 				SUT.Document.Selection.SetRange(2, 4);
+				await WindowHelper.WaitForIdle();
 
 				GetTextWithoutFinalEop(SUT.Document, out var text);
 				Assert.AreEqual("abef", text);

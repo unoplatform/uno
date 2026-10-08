@@ -645,6 +645,7 @@ public partial class Given_RichEditBox
 			Assert.AreEqual(0, textChanged);
 
 			Assert.IsTrue(sut.ApplyAccessibilitySelection(2, 3));
+			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(1, selectionChanged);
 
 			sut.Document.GetRange(2, 3).CharacterFormat.ProtectedText = FormatEffect.Off;

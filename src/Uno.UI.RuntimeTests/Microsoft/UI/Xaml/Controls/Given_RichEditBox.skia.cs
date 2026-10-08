@@ -2665,6 +2665,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.SelectionChanged += (s, e) => changedCount++;
 
 				RaiseKey(SUT, VirtualKey.Left);
+				await WindowHelper.WaitForIdle();
 
 				Assert.AreEqual(1, changingCount);
 				Assert.AreEqual(1, changedCount);
@@ -2737,6 +2738,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.SelectionChanged += (s, e) => changedCount++;
 
 				SUT.Document.GetRange(0, 0).Text = "x";
+				await WindowHelper.WaitForIdle();
 
 				Assert.AreEqual(1, changingCount);
 				Assert.AreEqual(1, changedCount);

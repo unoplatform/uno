@@ -258,43 +258,6 @@ public partial class Given_RichEditBox
 	}
 
 	[TestMethod]
-	public async Task When_SelectionChanged_HandlerThrows_PreservesAcceptedSelection()
-	{
-		var editor = new RichEditBox();
-		var failure = new InvalidOperationException("SelectionChanged handler");
-		var notifications = 0;
-		RoutedEventHandler handler = (_, _) =>
-		{
-			if (++notifications == 1)
-			{
-				throw failure;
-			}
-		};
-		try
-		{
-			WindowHelper.WindowContent = editor;
-			await WindowHelper.WaitForLoaded(editor);
-			editor.Document.SetText(TextSetOptions.None, "abc");
-			editor.SelectionChanged += handler;
-			Assert.AreSame(failure, Assert.ThrowsExactly<InvalidOperationException>(() => editor.Document.Selection.SetRange(1, 2)));
-			Assert.AreEqual(1, editor.Document.Selection.StartPosition);
-			Assert.AreEqual(2, editor.Document.Selection.EndPosition);
-			Assert.AreEqual(1, editor.SelectionStartForTesting);
-			Assert.AreEqual(1, editor.SelectionLengthForTesting);
-
-			editor.Document.Selection.SetRange(3, 3);
-			Assert.AreEqual(2, notifications);
-			Assert.AreEqual(3, editor.SelectionStartForTesting);
-			Assert.AreEqual(0, editor.SelectionLengthForTesting);
-		}
-		finally
-		{
-			editor.SelectionChanged -= handler;
-			WindowHelper.WindowContent = null;
-		}
-	}
-
-	[TestMethod]
 	public async Task When_TextChanging_DuringCompositionCommit_PropagatesAndClosesUndoGroup()
 	{
 		var fake = new FakeImeTextBoxExtension();
