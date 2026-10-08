@@ -84,6 +84,9 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 		try
 		{
 			ApplyValue(_animation.Evaluate());
+
+			// A keyframe animation stops only once its final value has landed.
+			_animation.OnEvaluatedValueApplied();
 		}
 		finally
 		{
