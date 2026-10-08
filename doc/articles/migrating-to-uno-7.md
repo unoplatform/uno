@@ -1313,6 +1313,15 @@ To port a custom source, move the work as follows:
   `ScrollViewer`, `ProgressBar`, `AppBarButton` and `MenuFlyout`, fall back to those styles, and
   `DefaultScrollViewerStyle` is now defined by `XamlControlsResources`, as on WinUI.
 
+- **`XamlControlsResources` dictionaries are re-synced with WinUI 2.5.1.** Most templates and
+  resource values now match WinUI exactly, so some controls look slightly different. Examples: the
+  `CheckBox` glyph animation, `MenuFlyout` and `SplitMenuFlyoutItem`, and HighContrast colors.
+  WinUI's newer resources, such as `SubtleButtonStyle` and the `ListBox` theme resources, are now
+  available. The Reveal resources come from a single `RevealBrush_themeresources.xaml`, as on WinUI 3,
+  instead of per-OS-version dictionaries.
+  `MediaTransportControls` no longer has a `CompactOverlayButton`, matching WinUI 3's template, so
+  `IsCompactOverlayButtonVisible` has no visible effect.
+
 - **`ContentDialog`'s light-dismiss overlay** now uses `SystemControlPageBackgroundMediumAltMediumBrush`,
   matching WinUI, so overriding `ContentDialogLightDismissOverlayBackground` no longer changes it.
 
