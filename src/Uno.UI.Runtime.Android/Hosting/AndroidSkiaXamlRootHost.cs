@@ -3,7 +3,7 @@
 using System;
 using Microsoft.UI.Xaml;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime;
 
 namespace Uno.UI.Runtime.Android;
 
