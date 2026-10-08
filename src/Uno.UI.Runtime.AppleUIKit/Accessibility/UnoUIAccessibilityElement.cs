@@ -7,7 +7,7 @@ using Foundation;
 using ObjCRuntime;
 using UIKit;
 
-namespace Uno.UI.Runtime.Skia.AppleUIKit;
+namespace Uno.UI.Runtime.AppleUIKit;
 
 /// <summary>
 /// Stable managed <see cref="UIAccessibilityElement"/> for a Skia iOS/tvOS/macCatalyst node.

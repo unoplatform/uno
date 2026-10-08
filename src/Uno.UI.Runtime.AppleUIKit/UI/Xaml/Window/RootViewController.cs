@@ -17,7 +17,7 @@ using Uno.UI.Runtime.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
 using System.Threading;
 using Uno.UI.Xaml.Core;
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime;
 
 namespace Uno.UI.Runtime.AppleUIKit;
 
