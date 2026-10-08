@@ -313,6 +313,14 @@
 			"description": "The background color of the splash screen when the dark theme is active.",
 			"type": "color"
 		},
+		"UnoSplashScreenAccentColor": {
+			"description": "The accent color of the splash screen, used for the progress bar of the WebAssembly loader in all themes unless overridden. Other targets ignore it. Defaults to the WinUI accent color.",
+			"type": "color"
+		},
+		"UnoSplashScreenDarkAccentColor": {
+			"description": "The accent color of the splash screen when the dark theme is active, used for the progress bar of the WebAssembly loader. Other targets ignore it. Defaults to the WinUI dark theme accent color.",
+			"type": "color"
+		},
 		"UnoSplashScreenDarkFile": {
 			"description": "The path to the splash screen image file used when the dark theme is active.",
 			"type": "file"

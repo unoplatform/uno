@@ -33,6 +33,8 @@
 			BaseSize="$(UnoSplashScreenBaseSize)"
 			BackgroundColor="$(UnoSplashScreenBackgroundColor)"
 			DarkBackgroundColor="$(UnoSplashScreenDarkBackgroundColor)"
+			AccentColor="$(UnoSplashScreenAccentColor)"
+			DarkAccentColor="$(UnoSplashScreenDarkAccentColor)"
 			DarkFile="$(UnoSplashScreenDarkFile)"
 			Scale="$(UnoSplashScreenScale)"
 			IsDefaultItem="true"
