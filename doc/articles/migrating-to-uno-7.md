@@ -1403,6 +1403,14 @@ delegate it relied on, which started the app without the Skia iOS host. Build an
 connected macOS host instead. The `UnoDisableHotRestartHelperGeneration` property no longer has any effect and can
 be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
 
+### `UnoSplashScreenColor` removed
+
+The Uno.Sdk no longer reads `UnoSplashScreenColor`; it is ignored and reported as
+[UNOB0028](xref:Build.Solution.error-codes#unob0028-the-unosplashscreencolor-property-is-no-longer-supported).
+Rename it to `UnoSplashScreenBackgroundColor`, and use `BackgroundColor` instead of `Color` on hand-written
+`UnoSplashScreen` items. WebAssembly apps that never set a splash color now get a loader that follows the
+browser theme instead of white. See [Splash screen](xref:Uno.Development.SplashScreen).
+
 ## Migration checklist
 
 1. Remove `<UnoFeatures>skiarenderer</UnoFeatures>` (now implicit) — and any native-only

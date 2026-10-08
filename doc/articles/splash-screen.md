@@ -23,11 +23,13 @@ Projects using the Uno.Sdk single-project layout can configure the splash screen
 | `UnoSplashScreenBackgroundColor` | The background color for all themes, unless overridden by `UnoSplashScreenDarkBackgroundColor`. |
 | `UnoSplashScreenDarkBackgroundColor` | The background color when the dark theme is active. |
 | `UnoSplashScreenDarkFile` | The image used when the dark theme is active, relative to the project. |
-| `UnoSplashScreenColor` | The previous name of `UnoSplashScreenBackgroundColor`. It is still supported, but `UnoSplashScreenBackgroundColor` wins when both are set. |
 
 By default the background color is `#FFFFFF`, except on WebAssembly where no color is set. Without a color, the WebAssembly splash screen follows the browser's light or dark theme, using `#F3F3F3` and `#202020` respectively. Set `UnoSplashScreenBackgroundColor` to keep a fixed color in both themes.
 
 The dark properties are applied on WebAssembly. Other targets use the light values for now.
+
+> [!IMPORTANT]
+> `UnoSplashScreenColor` was removed in Uno Platform 7.0. The SDK ignores it and reports [UNOB0028](xref:Build.Solution.error-codes#unob0028-the-unosplashscreencolor-property-is-no-longer-supported). Rename it to `UnoSplashScreenBackgroundColor`. If you declare `UnoSplashScreen` items by hand, use the `BackgroundColor` metadata instead of `Color`. Both changes need a version of Uno.Resizetizer that supports `BackgroundColor` on splash screens.
 
 ```xml
 <PropertyGroup>
