@@ -1366,7 +1366,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				source.Document.Undo();
 				Assert.AreEqual(0f, source.Document.GetRange(2, 2).ParagraphFormat.LeftIndent);
-				Assert.AreEqual(MarkerType.Undefined, source.Document.GetRange(2, 2).ParagraphFormat.ListType);
+				Assert.AreEqual(MarkerType.None, source.Document.GetRange(2, 2).ParagraphFormat.ListType);
 			}
 			finally
 			{

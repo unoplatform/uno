@@ -1275,21 +1275,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ParagraphFormat_ListType_RoundTrips()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
 
-			SUT.Document.SetText(TextSetOptions.None, "one\rtwo");
+				Assert.AreEqual(MarkerType.None, SUT.Document.GetDefaultParagraphFormat().ListType);
+				SUT.Document.SetText(TextSetOptions.None, "one\rtwo");
+				Assert.AreEqual(MarkerType.None, SUT.Document.GetRange(4, 7).ParagraphFormat.ListType);
 
-			var first = SUT.Document.GetRange(0, 0).ParagraphFormat;
-			first.ListType = MarkerType.Bullet;
+				var first = SUT.Document.GetRange(0, 0).ParagraphFormat;
+				first.ListType = MarkerType.Bullet;
 
-			Assert.AreEqual(MarkerType.Bullet, SUT.Document.GetRange(0, 3).ParagraphFormat.ListType);
-			// The other paragraph keeps its (undefined) list type.
-			Assert.AreEqual(MarkerType.Undefined, SUT.Document.GetRange(4, 7).ParagraphFormat.ListType);
+				Assert.AreEqual(MarkerType.Bullet, SUT.Document.GetRange(0, 3).ParagraphFormat.ListType);
+				Assert.AreEqual(MarkerType.None, SUT.Document.GetRange(4, 7).ParagraphFormat.ListType);
+				Assert.AreEqual(MarkerType.Undefined, SUT.Document.GetRange(0, 7).ParagraphFormat.ListType);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
