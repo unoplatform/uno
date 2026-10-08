@@ -2,6 +2,7 @@
 
 using System;
 using System.Numerics;
+using System.Threading;
 using SkiaSharp;
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
@@ -12,6 +13,14 @@ namespace Microsoft.UI.Composition
 	internal partial class SkiaGeometrySource2D : DrawingResource, IGeometrySource2D, IGeometry
 	{
 		private readonly SKPath _geometry;
+
+		private static int _pathOpCount;
+
+		/// <summary>
+		/// The number of path booleans (SKPath.Op) run through this class since startup. Runtime tests take deltas to
+		/// budget the path work a frame does: an Op per clipped visual per frame is what made 6.7 scrolling slow.
+		/// </summary>
+		internal static int PathOpCount => Volatile.Read(ref _pathOpCount);
 
 		public SkiaGeometrySource2D(SKPath source)
 		{
@@ -35,7 +44,11 @@ namespace Microsoft.UI.Composition
 
 		public bool Contains(float x, float y) => _geometry.Contains(x, y);
 
-		public SkiaGeometrySource2D Op(SkiaGeometrySource2D other, SKPathOp op) => new(_geometry.Op(other._geometry, op));
+		public SkiaGeometrySource2D Op(SkiaGeometrySource2D other, SKPathOp op)
+		{
+			Interlocked.Increment(ref _pathOpCount);
+			return new(_geometry.Op(other._geometry, op));
+		}
 
 		#endregion
 
@@ -73,6 +86,7 @@ namespace Microsoft.UI.Composition
 				_ => SKPathOp.Union,
 			};
 
+			Interlocked.Increment(ref _pathOpCount);
 			if (_geometry.Op(lease.Path, op) is { } combined)
 			{
 				return new SkiaGeometrySource2D(combined);
