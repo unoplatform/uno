@@ -3930,7 +3930,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Empty_Rtf_Replaces_Document_And_Range()
 		{
 			var SUT = new RichEditBox();
@@ -3953,7 +3952,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("abef", rangeText);
 			Assert.AreEqual(2, range.StartPosition);
 			Assert.AreEqual(2, range.EndPosition);
-			Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetText(TextSetOptions.FormatRtf, " "));
 		}
 
 		[TestMethod]

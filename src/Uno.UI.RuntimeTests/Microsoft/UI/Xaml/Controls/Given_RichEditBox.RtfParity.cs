@@ -45,21 +45,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public void When_Rtf_Root_Framing_Is_Strict()
+		[DataRow(@"{\rtf1 first}{\rtf1 second}", "first")]
+		[DataRow(@"{\rtf1 text}junk", "text")]
+		[DataRow(@"{\rtf1 unbalanced", "unbalanced")]
+		[DataRow(@"{\rtf1 a{\b b", "ab")]
+		public void When_Rtf_Root_Framing_Is_Lenient(string rtf, string expected)
 		{
 			var SUT = new RichEditBox();
 			SUT.Document.SetText(TextSetOptions.None, "original");
 
-			Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1 first}{\rtf1 second}"));
-			Assert.ThrowsExactly<ArgumentException>(() => SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1 text}junk"));
+			SUT.Document.SetText(TextSetOptions.FormatRtf, rtf);
 
-			GetTextWithoutFinalEop(SUT.Document, out var unchanged);
-			Assert.AreEqual("original", unchanged);
+			GetTextWithoutFinalEop(SUT.Document, out var text);
+			Assert.AreEqual(expected, text);
+		}
 
-			SUT.Document.SetText(TextSetOptions.FormatRtf, " \t\r\n{\\rtf1 valid}\0 \r\n");
-			GetTextWithoutFinalEop(SUT.Document, out var valid);
-			Assert.AreEqual("valid", valid);
+		[TestMethod]
+		[DataRow(" ")]
+		[DataRow("hello")]
+		[DataRow(@" {\rtf1 x}")]
+		[DataRow(@"{\rtf x}")]
+		[DataRow(@"{\rtf2 x}")]
+		[DataRow(@"{\RTF1 x}")]
+		[DataRow(@"{\urtf1 x}")]
+		public void When_Rtf_Signature_Is_Missing_Text_Is_Imported_As_Plain_Text(string value)
+		{
+			var SUT = new RichEditBox();
+			SUT.Document.SetText(TextSetOptions.None, "original");
+
+			SUT.Document.SetText(TextSetOptions.FormatRtf, value);
+			GetTextWithoutFinalEop(SUT.Document, out var text);
+			Assert.AreEqual(value, text);
+
+			SUT.Document.SetText(TextSetOptions.None, "abcdef");
+			var range = SUT.Document.GetRange(2, 4);
+			range.SetText(TextSetOptions.FormatRtf, value);
+			GetTextWithoutFinalEop(SUT.Document, out var rangeText);
+			Assert.AreEqual("ab" + value + "ef", rangeText);
+			Assert.AreEqual(2, range.StartPosition);
+			Assert.AreEqual(2 + value.Length, range.EndPosition);
 		}
 
 		[TestMethod]
