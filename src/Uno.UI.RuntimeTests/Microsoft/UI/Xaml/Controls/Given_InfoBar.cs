@@ -17,6 +17,7 @@ public class Given_InfoBar
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25015")]
 	public async Task When_Default_Style_Then_FluentTheme_Template_Applies()
 	{
 		var SUT = new InfoBar { IsOpen = true, Title = "Title", Message = "Message" };

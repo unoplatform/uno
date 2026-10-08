@@ -4331,12 +4331,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = grid;
 			await WindowHelper.WaitForIdle();
 			var exploredTextBlocks = new HashSet<TextBlock>();
-			var expectedForeground = Windows.UI.Color.FromArgb(0xE4, 0, 0, 0);
+			var expectedLightForeground = Windows.UI.Color.FromArgb(0xE4, 0, 0, 0);
+			var expectedDarkForeground = Colors.White;
 			foreach (var listViewItem in GetPanelVisibleChildren(SUT))
 			{
 				var tb = listViewItem.FindFirstDescendant<TextBlock>();
 				exploredTextBlocks.Add(tb);
-				Assert.AreEqual(expectedForeground, ((SolidColorBrush)tb.Foreground).Color);
+				Assert.AreEqual(expectedLightForeground, ((SolidColorBrush)tb.Foreground).Color);
 			}
 
 			using (ThemeHelper.UseDarkTheme())
@@ -4345,12 +4346,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await ScrollToAndWait(SUT, scrollPosition);
 				var seenNewTextBlock = false;
-				expectedForeground = Colors.White;
 				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
 				{
 					var tb = listViewItem.FindFirstDescendant<TextBlock>();
 					seenNewTextBlock |= exploredTextBlocks.Add(tb);
-					Assert.AreEqual(expectedForeground, ((SolidColorBrush)tb.Foreground).Color);
+					Assert.AreEqual(expectedDarkForeground, ((SolidColorBrush)tb.Foreground).Color);
 				}
 
 				Assert.IsTrue(seenNewTextBlock);

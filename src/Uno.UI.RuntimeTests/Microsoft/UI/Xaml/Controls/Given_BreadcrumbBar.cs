@@ -21,6 +21,7 @@ public class Given_BreadcrumbBar
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25019")]
 	public async Task When_Ellipsis_Flyout_Opened_Then_Background_Is_Acrylic()
 	{
 		var SUT = new BreadcrumbBar { ItemsSource = new List<string> { "Node 1", "Node 2", "Node 3" } };
