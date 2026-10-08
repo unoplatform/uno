@@ -500,6 +500,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Navigation_Key_Has_Control_Character_Unicode()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				await TypeAsync(SUT, "abc");
+
+				// macOS keyboard events carry these characters for arrows and page keys.
+				RaiseKey(SUT, VirtualKey.Left, unicodeKey: '\u001C');
+				RaiseKey(SUT, VirtualKey.Left, unicodeKey: '\u001C');
+				RaiseKey(SUT, VirtualKey.Right, unicodeKey: '\u001D');
+				RaiseKey(SUT, VirtualKey.Up, unicodeKey: '\u001E');
+				RaiseKey(SUT, VirtualKey.Down, unicodeKey: '\u001F');
+				RaiseKey(SUT, VirtualKey.PageDown, unicodeKey: '\u000C');
+				await WindowHelper.WaitForIdle();
+
+				GetTextWithoutFinalEop(SUT.Document, out var text);
+				Assert.AreEqual("abc", text);
+
+				RaiseKey(SUT, VirtualKey.End, unicodeKey: '\u0004');
+				RaiseKey(SUT, VirtualKey.Left, unicodeKey: '\u001C');
+				RaiseKey(SUT, VirtualKey.Left, unicodeKey: '\u001C');
+				await TypeAsync(SUT, "X");
+
+				GetTextWithoutFinalEop(SUT.Document, out text);
+				Assert.AreEqual("aXbc", text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_TextChanging_Precedes_Render_And_TextChanged_Is_Async()
 		{
 			var SUT = new RichEditBox();
