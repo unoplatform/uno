@@ -239,8 +239,7 @@ public static class GlyphRunRenderer
 				Flush(map);
 			}
 
-			var decoded = ImageEncoderDecoder.Current.CreateImage(width, height, pixels);
-			texture = factory.CreateTexture(decoded);
+			texture = factory.CreateTexture(width, height, pixels);
 			map[pixels] = texture;
 			return texture;
 		}
