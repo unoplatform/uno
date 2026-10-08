@@ -157,8 +157,8 @@ public partial class InteractionTracker : CompositionObject
 		_state.ReceiveInertiaStarting(-linearVelocity);
 	}
 
-	// Measured on WinUI 3: a notch moves a ScrollView 32 DIP, whatever the viewport and the display scale's
-	// physical pixels. The curve lives in the closed-source compositor, so there is no WinUI constant to port.
+	// Measured on WinUI 3 at 150% scale. WinUI asks ninput for it (lines to scroll × 16px through the DPI), so it may
+	// follow the scale and the Windows setting; that is not confirmed yet.
 	internal const double PixelsPerWheelDetent = 32;
 
 	/// <param name="mouseWheelTicks">Detents scrolled, fractional for touchpads that report deltas finer than one detent.</param>

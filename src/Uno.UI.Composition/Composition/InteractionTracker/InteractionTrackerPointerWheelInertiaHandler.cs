@@ -6,56 +6,56 @@ using System.Numerics;
 namespace Microsoft.UI.Composition.Interactions;
 
 /// <summary>
-/// The wheel curve measured on WinUI 3's ScrollView: velocity v0·(1 − (t/T)²) over T = 257ms, so position
-/// D·1.5·(s − s³/3) with s = t/T, and v0 = 1.5·D/T. It has no first-frame jump, and a notch arriving mid-motion
-/// restarts it over what is left plus the new notch.
+/// WinUI scrolls a notch with a sine ease-out keyframe animation from the current position to the clamped target,
+/// D·sin(π/2·t/T) over T = 250ms, shortened by the share of the move the clamp left
+/// (dwmcorei CInteractionTracker::ScrollToPosition and CalculatePositionAnimationDuration).
 /// </summary>
 internal class InteractionTrackerPointerWheelInertiaHandler : InteractionTrackerFrameInertiaHandler
 {
-	private const double DurationInSeconds = 0.257;
-	private const float LaunchFactor = 1.5f;
+	private const float DurationInSeconds = 0.25f;
+	private const float MinDurationInSeconds = 0.001f;
 
 	private readonly Vector3 _minPosition;
 	private readonly Vector3 _maxPosition;
 	private readonly Vector3 _initialPosition;
 	private readonly Vector3 _distance;
-	private readonly Vector3 _calculatedFinalPosition;
+	private readonly Vector3 _target;
+	private readonly double _durationInSeconds;
 
-	public InteractionTrackerPointerWheelInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities)
+	public InteractionTrackerPointerWheelInertiaHandler(InteractionTracker interactionTracker, Vector3 target)
 		: base(interactionTracker, requestId: 0)
 	{
 		_minPosition = interactionTracker.MinPosition;
 		_maxPosition = interactionTracker.MaxPosition;
 		_initialPosition = interactionTracker.Position;
 
-		InitialVelocity = translationVelocities;
+		_target = Vector3.Clamp(target, _minPosition, _maxPosition);
+		_distance = _target - _initialPosition;
 
-		_distance = InitialVelocity * (float)DurationInSeconds / LaunchFactor;
-		_calculatedFinalPosition = interactionTracker.Position + _distance;
+		var duration = _target == target
+			? DurationInSeconds
+			: Math.Max(DurationInSeconds * _distance.Length() / (target - _initialPosition).Length(), MinDurationInSeconds);
+		_durationInSeconds = duration;
+
+		InitialVelocity = _distance * (MathF.PI / 2 / duration);
 	}
-
-	/// <summary>The launch velocity that makes the curve travel <paramref name="distance"/>.</summary>
-	internal static Vector3 GetLaunchVelocity(Vector3 distance) => distance * LaunchFactor / (float)DurationInSeconds;
-
-	/// <inheritdoc cref="GetLaunchVelocity(Vector3)"/>
-	internal static float GetLaunchVelocity(float distance) => distance * LaunchFactor / (float)DurationInSeconds;
 
 	public override Vector3 InitialVelocity { get; }
 
-	public override Vector3 FinalPosition => Vector3.Clamp(_calculatedFinalPosition, _minPosition, _maxPosition);
+	public override Vector3 FinalPosition => _target;
 
-	public override Vector3 FinalModifiedPosition => FinalPosition;
+	public override Vector3 FinalModifiedPosition => _target;
 
 	protected override void Advance(long elapsedTicks)
 	{
-		var s = elapsedTicks / (double)TimeSpan.TicksPerSecond / DurationInSeconds;
+		var s = elapsedTicks / (double)TimeSpan.TicksPerSecond / _durationInSeconds;
 		if (s >= 1)
 		{
 			Complete();
 			return;
 		}
 
-		var newPosition = _initialPosition + _distance * (float)(LaunchFactor * (s - s * s * s / 3));
+		var newPosition = _initialPosition + _distance * (float)Math.Sin(Math.PI / 2 * s);
 		var clampedNewPosition = Vector3.Clamp(newPosition, _minPosition, _maxPosition);
 
 		InteractionTracker.SetPosition(clampedNewPosition, RequestId);

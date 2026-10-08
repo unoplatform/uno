@@ -49,5 +49,17 @@ internal abstract class InteractionTrackerState : IDisposable
 
 	internal virtual void TryUpdateScaleWithAnimation(CompositionAnimation animation, Vector3 centerPoint, int requestId)
 		=> _interactionTracker.ChangeState(InteractionTrackerCustomAnimationState.ForScale(_interactionTracker, animation, centerPoint, requestId));
+	/// <summary>Moves the wheel's target by <paramref name="delta"/> from <paramref name="from"/> (ProcessMousewheelManipulation).</summary>
+	private protected void ScrollByPointerWheel(Vector3 from, double delta, bool isHorizontal)
+	{
+		var target = from + (isHorizontal ? new Vector3((float)delta, 0, 0) : new Vector3(0, (float)delta, 0));
+		if (Vector3.Clamp(target, _interactionTracker.MinPosition, _interactionTracker.MaxPosition) == _interactionTracker.Position)
+		{
+			return;
+		}
+
+		_interactionTracker.ChangeState(InteractionTrackerInertiaState.ForPointerWheel(_interactionTracker, target));
+	}
+
 	public virtual void Dispose() => _disposed = true;
 }

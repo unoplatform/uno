@@ -43,17 +43,13 @@ internal sealed class InteractionTrackerIdleState : InteractionTrackerState
 	}
 
 	internal override void ReceivePointerWheel(double delta, bool isHorizontal)
-	{
-		var velocityValue = InteractionTrackerPointerWheelInertiaHandler.GetLaunchVelocity((float)delta);
-		Vector3 velocity = isHorizontal ? new Vector3(velocityValue, 0, 0) : new Vector3(0, velocityValue, 0);
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocity, requestId: 0, isFromPointerWheel: true));
-	}
+		=> ScrollByPointerWheel(_interactionTracker.Position, delta, isHorizontal);
 
 	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId)
 	{
 		// State changes to inertia and inertia modifiers are evaluated with requested velocity as initial velocity
 		// TODO: inertia modifiers not yet implemented.
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, requestId, isFromPointerWheel: false));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, requestId));
 	}
 
 	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId)
