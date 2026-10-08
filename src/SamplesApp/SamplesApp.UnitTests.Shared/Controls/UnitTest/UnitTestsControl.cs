@@ -274,6 +274,11 @@ namespace Uno.UI.Samples.Tests
 
 		private void OnRunTests(object sender, RoutedEventArgs e)
 		{
+			if (IsSheetDragging)
+			{
+				return;
+			}
+
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
 			// Apply test group settings from UI only when the user has entered values.
@@ -304,6 +309,11 @@ namespace Uno.UI.Samples.Tests
 
 		private void OnStopTests(object sender, RoutedEventArgs e)
 		{
+			if (IsSheetDragging)
+			{
+				return;
+			}
+
 			StopRunningTests();
 		}
 
@@ -436,7 +446,7 @@ namespace Uno.UI.Samples.Tests
 					failedTestDetails.Text += $"{testResult}: {testName} [{error.GetType()}] \n {error}\n\n";
 					if (failedTestDetailsRow.Height.Value == 0)
 					{
-						failedTestDetailsRow.Height = new GridLength(FailureDetailsHeight);
+						failedTestDetailsRow.Height = new GridLength(DefaultFailureDetailsHeight);
 						UpdateHeaderMaxHeight();
 					}
 				}

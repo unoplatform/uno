@@ -46,6 +46,10 @@
                 TargetType="Border">
                 <Setter Property="Padding" Value="12,8" />
             </Style>
+            <!--  Opaque layers over the automation-only texts; the bottom sheet clears them locally.  -->
+            <Style x:Key="ShellRunLayerStyle" TargetType="Grid">
+                <Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
+            </Style>
             <!--  Result rows with details to show (failure card or expandable output).  -->
             <Style
                 x:Key="ShellResultRowButtonStyle"
@@ -59,13 +63,11 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid x:Name="ShellRunnerRoot">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition x:Name="failedTestDetailsRow" Height="0" />
-            <!--  Will be set to height = 100 if any exception  -->
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <!--  The collapsed bottom sheet's bar on narrow portrait windows, 0 side by side.  -->
+            <RowDefinition x:Name="ShellSheetPeekRow" Height="0" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="outputColumn" Width="*" />
@@ -73,29 +75,39 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!--  Capped from code so the results keep room on short windows (phone landscape).  -->
-        <ScrollViewer
-            x:Name="ShellRunHeaderScroller"
-            Grid.Row="0"
-            HorizontalScrollBarVisibility="Disabled"
-            HorizontalScrollMode="Disabled"
-            VerticalScrollBarVisibility="Auto">
-            <StackPanel
-                x:Name="ShellRunHeaderPanel"
-                Padding="16,12,16,8"
-                SizeChanged="OnHeaderPanelSizeChanged"
-                Spacing="12">
-                <TextBlock
-                    x:Name="ShellRunTitle"
-                    AutomationProperties.HeadingLevel="Level1"
-                    Style="{StaticResource ShellHeaderTitleTextStyle}"
-                    Text="Runtime tests" />
+        <!--  The dashboard column side by side; a bottom sheet over the test host on narrow portrait windows.  -->
+        <Border x:Name="ShellSheet" Grid.RowSpan="2">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="ShellSheetTransform" />
+            </Border.RenderTransform>
+            <Grid x:Name="ShellSheetLayout">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
+                <!--  Flyout-like surface, visible only as a bottom sheet.  -->
+                <Border
+                    x:Name="ShellSheetSurface"
+                    Grid.RowSpan="2"
+                    Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+                    BackgroundSizing="InnerBorderEdge"
+                    BorderBrush="{ThemeResource SurfaceStrokeColorFlyoutBrush}"
+                    BorderThickness="1,1,1,0"
+                    Visibility="Collapsed" />
+
+                <!--  Run controls, status and counters stay reachable while the sheet is collapsed; the counter chips go under the status.  -->
                 <Grid
-                    x:Name="ShellRunToolbar"
+                    x:Name="ShellSheetBar"
+                    Padding="12,0,12,6"
+                    Background="Transparent"
                     ColumnSpacing="8"
-                    RowSpacing="8">
+                    RowSpacing="2"
+                    SizeChanged="OnSheetBarSizeChanged"
+                    Tapped="OnSheetBarTapped"
+                    Visibility="Collapsed">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="10" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
@@ -105,502 +117,624 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Button
-                        x:Name="runButton"
-                        Grid.Column="0"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        AutomationProperties.Name="Run"
-                        Click="OnRunTests"
-                        Style="{ThemeResource AccentButtonStyle}">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <FontIcon
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                FontSize="14"
-                                Glyph="&#xE768;" />
-                            <TextBlock x:Name="ShellRunLabel" Text="Run" />
-                        </StackPanel>
-                    </Button>
-                    <Button
-                        x:Name="stopButton"
-                        Grid.Column="1"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        AutomationProperties.Name="Stop"
-                        Click="OnStopTests"
-                        IsEnabled="False">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <FontIcon
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                FontSize="14"
-                                Glyph="&#xE978;" />
-                            <TextBlock x:Name="ShellStopLabel" Text="Stop" />
-                        </StackPanel>
-                    </Button>
-                    <TextBox
-                        x:Name="testFilter"
+                    <Border
+                        x:Name="ShellSheetGrip"
+                        Grid.ColumnSpan="4"
+                        Width="32"
+                        Height="4"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        AutomationProperties.AccessibilityView="Raw"
+                        Background="{ThemeResource ControlStrongFillColorDefaultBrush}"
+                        CornerRadius="2" />
+                    <StackPanel
+                        x:Name="ShellSheetStatusPanel"
+                        Grid.Row="1"
                         Grid.Column="2"
-                        HorizontalAlignment="Stretch"
-                        AutomationProperties.Name="Test filter"
-                        IsSpellCheckEnabled="False"
-                        PlaceholderText="Filter, e.g. Given_Button;Given_TextBox"
-                        ToolTipService.ToolTip="Test names to run, separated by semicolons. Empty runs everything." />
-                    <Button
-                        x:Name="ShellRunOptionsButton"
-                        Grid.Column="3"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        AutomationProperties.Name="Options">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock x:Name="ShellRunOptionsLabel" Text="Options" />
-                            <FontIcon
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                FontSize="12"
-                                Glyph="&#xE70D;" />
-                        </StackPanel>
-                        <Button.Flyout>
-                            <Flyout Placement="BottomEdgeAlignedRight">
-                                <StackPanel MinWidth="280" Spacing="12">
-                                    <StackPanel Spacing="4">
-                                        <TextBlock Style="{StaticResource ShellBodyStrongTextStyle}" Text="Options" />
-                                        <CheckBox
-                                            x:Name="consoleOutput"
-                                            Content="Capture console output"
-                                            ToolTipService.ToolTip="Record each test's console output into its result" />
-                                        <CheckBox
-                                            x:Name="runIgnored"
-                                            Content="Run ignored tests"
-                                            ToolTipService.ToolTip="Include tests marked with an [Ignore] attribute" />
-                                        <CheckBox
-                                            x:Name="retry"
-                                            Content="Retry failed tests"
-                                            IsChecked="True"
-                                            ToolTipService.ToolTip="Automatically retry failed tests" />
-                                        <CheckBox
-                                            x:Name="unloadTestContent"
-                                            Content="Unload test content after each test"
-                                            IsChecked="True"
-                                            ToolTipService.ToolTip="Remove test UI content from the visual tree after each test completes" />
-                                    </StackPanel>
-
-                                    <StackPanel Spacing="8">
-                                        <TextBlock Style="{StaticResource ShellBodyStrongTextStyle}" Text="Repeat" />
-                                        <TextBox
-                                            x:Name="iterationCount"
-                                            HorizontalAlignment="Stretch"
-                                            Header="Iterations"
-                                            InputScope="Number"
-                                            PlaceholderText="1"
-                                            ToolTipService.ToolTip="Number of times to repeat each test case (can be used to validate repeatability)" />
-                                    </StackPanel>
-
-                                    <StackPanel Spacing="8">
-                                        <TextBlock Style="{StaticResource ShellBodyStrongTextStyle}" Text="Test grouping" />
-                                        <Grid ColumnSpacing="8">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBox
-                                                x:Name="testGroupNumber"
-                                                HorizontalAlignment="Stretch"
-                                                Header="Group ID"
-                                                InputScope="Number"
-                                                PlaceholderText="e.g. 0"
-                                                ToolTipService.ToolTip="Zero-based index of the test group to run" />
-                                            <TextBox
-                                                x:Name="testGroupCount"
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Stretch"
-                                                Header="Group count"
-                                                InputScope="Number"
-                                                PlaceholderText="e.g. 12"
-                                                ToolTipService.ToolTip="Total number of groups to split tests into" />
-                                        </Grid>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Flyout>
-                        </Button.Flyout>
-                    </Button>
-                </Grid>
-
-                <!--  Plain status line while idle and on CI; the InfoBar takes over once a run starts outside CI.  -->
-                <TextBlock
-                    x:Name="runStatus"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="Ready"
-                    TextWrapping="Wrap" />
-
-                <InfoBar
-                    x:Name="ShellRunInfoBar"
-                    Title="Running"
-                    x:Load="False"
-                    IsClosable="False"
-                    IsOpen="True"
-                    Severity="Informational">
-                    <!--  Running test and count on one trimmed line (InfoBar.Message never trims), bar below at full width.  -->
-                    <Grid
-                        x:Name="ShellRunProgressPanel"
-                        Margin="0,0,16,8"
-                        ColumnSpacing="8"
-                        RowSpacing="4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                        VerticalAlignment="Center"
+                        Spacing="4">
                         <TextBlock
-                            x:Name="ShellRunMessageText"
+                            x:Name="ShellSheetStatus"
+                            Style="{StaticResource ShellBodyStrongTextStyle}"
+                            Text="Ready"
                             TextTrimming="CharacterEllipsis"
                             TextWrapping="NoWrap" />
-                        <TextBlock
-                            x:Name="ShellRunProgressText"
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                            Style="{StaticResource CaptionTextBlockStyle}"
-                            TextWrapping="NoWrap" />
+                        <!--  Opacity, not Visibility: the bar keeps its height so the test host never moves mid-run.  -->
                         <ProgressBar
-                            x:Name="ShellRunProgress"
-                            Grid.Row="1"
-                            Grid.ColumnSpan="2"
+                            x:Name="ShellSheetProgress"
                             AutomationProperties.Name="Test run progress"
-                            IsIndeterminate="True" />
-                    </Grid>
-                </InfoBar>
-
-                <Grid
-                    x:Name="ShellRunStats"
-                    ColumnSpacing="8"
-                    RowSpacing="8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <Border
-                        x:Name="ShellPassedCard"
-                        Grid.Column="0"
-                        Style="{StaticResource ShellRunCardStyle}">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <FontIcon
-                                    Foreground="{ThemeResource ShellTestPassedBrush}"
-                                    Glyph="&#xE73E;"
-                                    Style="{StaticResource ShellRunStatGlyphStyle}" />
-                                <TextBlock
-                                    x:Name="succeededTestCount"
-                                    AutomationProperties.Name="Passed: 0"
-                                    Style="{StaticResource ShellRunStatNumberStyle}"
-                                    Text="0" />
-                            </StackPanel>
-                            <TextBlock
-                                x:Name="ShellPassedLabel"
-                                Style="{StaticResource ShellRunStatLabelStyle}"
-                                Text="Passed" />
-                        </StackPanel>
-                    </Border>
-                    <Border
-                        x:Name="ShellFailedCard"
-                        Grid.Column="1"
-                        Style="{StaticResource ShellRunCardStyle}">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <FontIcon
-                                    Foreground="{ThemeResource ShellTestFailedBrush}"
-                                    Glyph="&#xE711;"
-                                    Style="{StaticResource ShellRunStatGlyphStyle}" />
-                                <TextBlock
-                                    x:Name="failedTestCount"
-                                    AutomationProperties.Name="Failed: 0"
-                                    Style="{StaticResource ShellRunStatNumberStyle}"
-                                    Text="0" />
-                            </StackPanel>
-                            <TextBlock
-                                x:Name="ShellFailedLabel"
-                                Style="{StaticResource ShellRunStatLabelStyle}"
-                                Text="Failed" />
-                        </StackPanel>
-                    </Border>
-                    <Border
-                        x:Name="ShellInconclusiveCard"
-                        Grid.Column="2"
-                        Style="{StaticResource ShellRunCardStyle}">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <FontIcon
-                                    Foreground="{ThemeResource ShellTestWarningBrush}"
-                                    Glyph="&#xE7BA;"
-                                    Style="{StaticResource ShellRunStatGlyphStyle}" />
-                                <TextBlock
-                                    x:Name="inconclusiveTestCount"
-                                    AutomationProperties.Name="Inconclusive: 0"
-                                    Style="{StaticResource ShellRunStatNumberStyle}"
-                                    Text="0" />
-                            </StackPanel>
-                            <TextBlock
-                                x:Name="ShellInconclusiveLabel"
-                                Style="{StaticResource ShellRunStatLabelStyle}"
-                                Text="Inconclusive" />
-                        </StackPanel>
-                    </Border>
-                    <Border
-                        x:Name="ShellRetriedCard"
-                        Grid.Column="3"
-                        Style="{StaticResource ShellRunCardStyle}">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <FontIcon
-                                    Foreground="{ThemeResource ShellTestWarningBrush}"
-                                    Glyph="&#xE72C;"
-                                    Style="{StaticResource ShellRunStatGlyphStyle}" />
-                                <TextBlock
-                                    x:Name="retriedTestCount"
-                                    AutomationProperties.Name="Retried: 0"
-                                    Style="{StaticResource ShellRunStatNumberStyle}"
-                                    Text="0" />
-                            </StackPanel>
-                            <TextBlock
-                                x:Name="ShellRetriedLabel"
-                                Style="{StaticResource ShellRunStatLabelStyle}"
-                                Text="Retried" />
-                        </StackPanel>
-                    </Border>
-                </Grid>
-            </StackPanel>
-        </ScrollViewer>
-
-        <!--  Full text for automation (RuntimeTests UI test); hidden under the opaque layer below.  -->
-        <TextBlock
-            x:Name="failedTestDetails"
-            Grid.Row="1"
-            AutomationProperties.AccessibilityView="Raw"
-            IsHitTestVisible="False"
-            MaxLines="1" />
-        <Grid
-            x:Name="ShellFailureLayer"
-            Grid.Row="1"
-            Padding="16,0,16,4"
-            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-            <Border x:Name="ShellFailureCard" Style="{StaticResource ShellRunCardStyle}">
-                <Grid RowSpacing="4">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid ColumnSpacing="4">
-                        <Grid.Resources>
-                            <!--  Disabled subtle buttons stay plain glyphs instead of filled boxes.  -->
-                            <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="Transparent" />
-                            <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="Transparent" />
-                        </Grid.Resources>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel
-                            VerticalAlignment="Center"
-                            Orientation="Horizontal"
-                            Spacing="8">
-                            <TextBlock
-                                x:Name="ShellFailureTitle"
-                                AutomationProperties.HeadingLevel="Level2"
-                                Style="{StaticResource ShellBodyStrongTextStyle}"
-                                Text="Failure details" />
-                            <TextBlock
-                                x:Name="ShellFailurePosition"
-                                VerticalAlignment="Center"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                Style="{StaticResource CaptionTextBlockStyle}" />
-                        </StackPanel>
-                        <Button
-                            x:Name="ShellPreviousFailureButton"
-                            Grid.Column="1"
-                            AutomationProperties.Name="Previous failure"
-                            Click="OnPreviousFailure"
-                            Style="{StaticResource ShellSubtleButtonStyle}"
-                            ToolTipService.ToolTip="Previous failure">
-                            <FontIcon
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                FontSize="12"
-                                Glyph="&#xE76B;"
-                                MirroredWhenRightToLeft="True" />
-                        </Button>
-                        <Button
-                            x:Name="ShellNextFailureButton"
-                            Grid.Column="2"
-                            AutomationProperties.Name="Next failure"
-                            Click="OnNextFailure"
-                            Style="{StaticResource ShellSubtleButtonStyle}"
-                            ToolTipService.ToolTip="Next failure">
-                            <FontIcon
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                FontSize="12"
-                                Glyph="&#xE76C;"
-                                MirroredWhenRightToLeft="True" />
-                        </Button>
-                        <Button
-                            x:Name="ShellCopyFailuresButton"
-                            Grid.Column="3"
-                            AutomationProperties.Name="Copy failure details"
-                            Click="CopyFailedTestDetails"
-                            Style="{StaticResource ShellSubtleButtonStyle}"
-                            ToolTipService.ToolTip="Copy all failure details">
-                            <FontIcon
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                FontSize="14"
-                                Glyph="&#xE8C8;" />
-                        </Button>
-                    </Grid>
-                    <ScrollViewer
+                            Opacity="0" />
+                    </StackPanel>
+                    <local:ShellSheetHandle
+                        x:Name="ShellSheetHandle"
                         Grid.Row="1"
-                        HorizontalScrollBarVisibility="Auto"
-                        HorizontalScrollMode="Auto"
-                        VerticalScrollBarVisibility="Auto"
-                        VerticalScrollMode="Auto">
-                        <TextBlock x:Name="ShellFailureText" Style="{StaticResource ShellMonospaceTextStyle}" />
-                    </ScrollViewer>
+                        Grid.Column="3"
+                        Width="40"
+                        Height="40"
+                        VerticalAlignment="Center"
+                        AutomationProperties.Name="Test details"
+                        Click="OnSheetHandleClick"
+                        Style="{StaticResource ShellSubtleButtonStyle}">
+                        <FontIcon
+                            x:Name="ShellSheetHandleIcon"
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            FontSize="14"
+                            Glyph="&#xE70E;" />
+                    </local:ShellSheetHandle>
                 </Grid>
-            </Border>
-        </Grid>
 
-        <local:ShellSplitter
-            x:Name="ShellRowSplitter"
-            Grid.Row="2"
-            Height="5"
-            Padding="16,0"
-            HorizontalAlignment="Stretch"
-            AutomationProperties.Name="Resize failure details"
-            ManipulationDelta="UpdateFailedTestDetailsSize"
-            ManipulationMode="TranslateY"
-            Orientation="Horizontal" />
+                <ContentControl
+                    x:Name="ShellSheetBody"
+                    Grid.Row="1"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False">
+                    <Grid x:Name="ShellDashboard">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition x:Name="failedTestDetailsRow" Height="0" />
+                            <!--  Will be set to height = 100 if any exception  -->
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
 
-        <TextBlock x:Name="failedTests" Grid.Row="3" />
-        <TextBlock x:Name="runningState" Grid.Row="3" />
-        <!--  Opaque layer: keeps failedTests and runningState visible to automation but out of sight.  -->
-        <Grid
-            x:Name="ShellResultsLayer"
-            Grid.Row="3"
-            Padding="16,4,16,16"
-            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-            <Border Padding="0" Style="{StaticResource ShellCardStyle}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid
-                        x:Name="ShellResultsHeader"
-                        Padding="16,8,12,4"
-                        ColumnSpacing="4">
-                        <Grid.Resources>
-                            <ResourceDictionary>
-                                <ResourceDictionary.MergedDictionaries>
-                                    <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Shell/ShellToggleResources.xaml" />
-                                </ResourceDictionary.MergedDictionaries>
-                            </ResourceDictionary>
-                        </Grid.Resources>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid VerticalAlignment="Center" ColumnSpacing="8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock
-                                AutomationProperties.HeadingLevel="Level2"
-                                Style="{StaticResource ShellBodyStrongTextStyle}"
-                                Text="Results" />
+                        <!--  Capped from code so the results keep room on short windows (phone landscape).  -->
+                        <ScrollViewer
+                            x:Name="ShellRunHeaderScroller"
+                            Grid.Row="0"
+                            HorizontalScrollBarVisibility="Disabled"
+                            HorizontalScrollMode="Disabled"
+                            VerticalScrollBarVisibility="Auto">
                             <StackPanel
-                                x:Name="ShellResultsCaption"
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal"
-                                Spacing="4">
+                                x:Name="ShellRunHeaderPanel"
+                                Padding="16,12,16,8"
+                                SizeChanged="OnHeaderPanelSizeChanged"
+                                Spacing="12">
                                 <TextBlock
-                                    x:Name="runTestCount"
+                                    x:Name="ShellRunTitle"
+                                    AutomationProperties.HeadingLevel="Level1"
+                                    Style="{StaticResource ShellHeaderTitleTextStyle}"
+                                    Text="Runtime tests" />
+
+                                <!--  Shown while the bottom sheet is expanded during a run.  -->
+                                <Grid
+                                    x:Name="ShellSheetRunHint"
+                                    ColumnSpacing="8"
+                                    Visibility="Collapsed">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <FontIcon
+                                        VerticalAlignment="Top"
+                                        AutomationProperties.AccessibilityView="Raw"
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="14"
+                                        Foreground="{ThemeResource ShellTestWarningBrush}"
+                                        Glyph="&#xE7BA;" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="Tests are running. Using these controls may affect them."
+                                        TextWrapping="Wrap" />
+                                </Grid>
+
+                                <Grid
+                                    x:Name="ShellRunToolbar"
+                                    ColumnSpacing="8"
+                                    RowSpacing="8">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button
+                                        x:Name="runButton"
+                                        Grid.Column="0"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        AutomationProperties.Name="Run"
+                                        Click="OnRunTests"
+                                        Style="{ThemeResource AccentButtonStyle}">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <FontIcon
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                FontSize="14"
+                                                Glyph="&#xE768;" />
+                                            <TextBlock x:Name="ShellRunLabel" Text="Run" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button
+                                        x:Name="stopButton"
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        AutomationProperties.Name="Stop"
+                                        Click="OnStopTests"
+                                        IsEnabled="False">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <FontIcon
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                FontSize="14"
+                                                Glyph="&#xE978;" />
+                                            <TextBlock x:Name="ShellStopLabel" Text="Stop" />
+                                        </StackPanel>
+                                    </Button>
+                                    <TextBox
+                                        x:Name="testFilter"
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Stretch"
+                                        AutomationProperties.Name="Test filter"
+                                        IsSpellCheckEnabled="False"
+                                        PlaceholderText="Filter, e.g. Given_Button;Given_TextBox"
+                                        ToolTipService.ToolTip="Test names to run, separated by semicolons. Empty runs everything." />
+                                    <Button
+                                        x:Name="ShellRunOptionsButton"
+                                        Grid.Column="3"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        AutomationProperties.Name="Options">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock x:Name="ShellRunOptionsLabel" Text="Options" />
+                                            <FontIcon
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                FontSize="12"
+                                                Glyph="&#xE70D;" />
+                                        </StackPanel>
+                                        <Button.Flyout>
+                                            <Flyout Placement="BottomEdgeAlignedRight">
+                                                <StackPanel MinWidth="280" Spacing="12">
+                                                    <StackPanel Spacing="4">
+                                                        <TextBlock Style="{StaticResource ShellBodyStrongTextStyle}" Text="Options" />
+                                                        <CheckBox
+                                                            x:Name="consoleOutput"
+                                                            Content="Capture console output"
+                                                            ToolTipService.ToolTip="Record each test's console output into its result" />
+                                                        <CheckBox
+                                                            x:Name="runIgnored"
+                                                            Content="Run ignored tests"
+                                                            ToolTipService.ToolTip="Include tests marked with an [Ignore] attribute" />
+                                                        <CheckBox
+                                                            x:Name="retry"
+                                                            Content="Retry failed tests"
+                                                            IsChecked="True"
+                                                            ToolTipService.ToolTip="Automatically retry failed tests" />
+                                                        <CheckBox
+                                                            x:Name="unloadTestContent"
+                                                            Content="Unload test content after each test"
+                                                            IsChecked="True"
+                                                            ToolTipService.ToolTip="Remove test UI content from the visual tree after each test completes" />
+                                                    </StackPanel>
+
+                                                    <StackPanel Spacing="8">
+                                                        <TextBlock Style="{StaticResource ShellBodyStrongTextStyle}" Text="Repeat" />
+                                                        <TextBox
+                                                            x:Name="iterationCount"
+                                                            HorizontalAlignment="Stretch"
+                                                            Header="Iterations"
+                                                            InputScope="Number"
+                                                            PlaceholderText="1"
+                                                            ToolTipService.ToolTip="Number of times to repeat each test case (can be used to validate repeatability)" />
+                                                    </StackPanel>
+
+                                                    <StackPanel Spacing="8">
+                                                        <TextBlock Style="{StaticResource ShellBodyStrongTextStyle}" Text="Test grouping" />
+                                                        <Grid ColumnSpacing="8">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="*" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBox
+                                                                x:Name="testGroupNumber"
+                                                                HorizontalAlignment="Stretch"
+                                                                Header="Group ID"
+                                                                InputScope="Number"
+                                                                PlaceholderText="e.g. 0"
+                                                                ToolTipService.ToolTip="Zero-based index of the test group to run" />
+                                                            <TextBox
+                                                                x:Name="testGroupCount"
+                                                                Grid.Column="1"
+                                                                HorizontalAlignment="Stretch"
+                                                                Header="Group count"
+                                                                InputScope="Number"
+                                                                PlaceholderText="e.g. 12"
+                                                                ToolTipService.ToolTip="Total number of groups to split tests into" />
+                                                        </Grid>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Flyout>
+                                        </Button.Flyout>
+                                    </Button>
+                                </Grid>
+
+                                <!--  Plain status line while idle and on CI; the InfoBar takes over once a run starts outside CI.  -->
+                                <TextBlock
+                                    x:Name="runStatus"
                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="0" />
-                                <TextBlock
-                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="total ·" />
-                                <TextBlock
-                                    x:Name="ignoredTestCount"
-                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="0" />
-                                <TextBlock
-                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="skipped" />
+                                    Text="Ready"
+                                    TextWrapping="Wrap" />
+
+                                <InfoBar
+                                    x:Name="ShellRunInfoBar"
+                                    Title="Running"
+                                    x:Load="False"
+                                    IsClosable="False"
+                                    IsOpen="True"
+                                    Severity="Informational">
+                                    <!--  Running test and count on one trimmed line (InfoBar.Message never trims), bar below at full width.  -->
+                                    <Grid
+                                        x:Name="ShellRunProgressPanel"
+                                        Margin="0,0,16,8"
+                                        ColumnSpacing="8"
+                                        RowSpacing="4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock
+                                            x:Name="ShellRunMessageText"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="NoWrap" />
+                                        <TextBlock
+                                            x:Name="ShellRunProgressText"
+                                            Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                            TextWrapping="NoWrap" />
+                                        <ProgressBar
+                                            x:Name="ShellRunProgress"
+                                            Grid.Row="1"
+                                            Grid.ColumnSpan="2"
+                                            AutomationProperties.Name="Test run progress"
+                                            IsIndeterminate="True" />
+                                    </Grid>
+                                </InfoBar>
+
+                                <Grid
+                                    x:Name="ShellRunStats"
+                                    ColumnSpacing="8"
+                                    RowSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <Border
+                                        x:Name="ShellPassedCard"
+                                        Grid.Column="0"
+                                        Style="{StaticResource ShellRunCardStyle}">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <FontIcon
+                                                    Foreground="{ThemeResource ShellTestPassedBrush}"
+                                                    Glyph="&#xE73E;"
+                                                    Style="{StaticResource ShellRunStatGlyphStyle}" />
+                                                <TextBlock
+                                                    x:Name="succeededTestCount"
+                                                    AutomationProperties.Name="Passed: 0"
+                                                    Style="{StaticResource ShellRunStatNumberStyle}"
+                                                    Text="0" />
+                                            </StackPanel>
+                                            <TextBlock
+                                                x:Name="ShellPassedLabel"
+                                                Style="{StaticResource ShellRunStatLabelStyle}"
+                                                Text="Passed" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Border
+                                        x:Name="ShellFailedCard"
+                                        Grid.Column="1"
+                                        Style="{StaticResource ShellRunCardStyle}">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <FontIcon
+                                                    Foreground="{ThemeResource ShellTestFailedBrush}"
+                                                    Glyph="&#xE711;"
+                                                    Style="{StaticResource ShellRunStatGlyphStyle}" />
+                                                <TextBlock
+                                                    x:Name="failedTestCount"
+                                                    AutomationProperties.Name="Failed: 0"
+                                                    Style="{StaticResource ShellRunStatNumberStyle}"
+                                                    Text="0" />
+                                            </StackPanel>
+                                            <TextBlock
+                                                x:Name="ShellFailedLabel"
+                                                Style="{StaticResource ShellRunStatLabelStyle}"
+                                                Text="Failed" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Border
+                                        x:Name="ShellInconclusiveCard"
+                                        Grid.Column="2"
+                                        Style="{StaticResource ShellRunCardStyle}">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <FontIcon
+                                                    Foreground="{ThemeResource ShellTestWarningBrush}"
+                                                    Glyph="&#xE7BA;"
+                                                    Style="{StaticResource ShellRunStatGlyphStyle}" />
+                                                <TextBlock
+                                                    x:Name="inconclusiveTestCount"
+                                                    AutomationProperties.Name="Inconclusive: 0"
+                                                    Style="{StaticResource ShellRunStatNumberStyle}"
+                                                    Text="0" />
+                                            </StackPanel>
+                                            <TextBlock
+                                                x:Name="ShellInconclusiveLabel"
+                                                Style="{StaticResource ShellRunStatLabelStyle}"
+                                                Text="Inconclusive" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Border
+                                        x:Name="ShellRetriedCard"
+                                        Grid.Column="3"
+                                        Style="{StaticResource ShellRunCardStyle}">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <FontIcon
+                                                    Foreground="{ThemeResource ShellTestWarningBrush}"
+                                                    Glyph="&#xE72C;"
+                                                    Style="{StaticResource ShellRunStatGlyphStyle}" />
+                                                <TextBlock
+                                                    x:Name="retriedTestCount"
+                                                    AutomationProperties.Name="Retried: 0"
+                                                    Style="{StaticResource ShellRunStatNumberStyle}"
+                                                    Text="0" />
+                                            </StackPanel>
+                                            <TextBlock
+                                                x:Name="ShellRetriedLabel"
+                                                Style="{StaticResource ShellRunStatLabelStyle}"
+                                                Text="Retried" />
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
                             </StackPanel>
-                            <!--  Counts shown here when short windows hide the stat cards.  -->
-                            <TextBlock
-                                x:Name="ShellResultsStatsSummary"
-                                Grid.Column="2"
-                                VerticalAlignment="Center"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                TextTrimming="CharacterEllipsis"
-                                TextWrapping="NoWrap"
-                                Visibility="Collapsed" />
+                        </ScrollViewer>
+
+                        <!--  Full text for automation (RuntimeTests UI test); hidden under the opaque layer below.  -->
+                        <TextBlock
+                            x:Name="failedTestDetails"
+                            Grid.Row="1"
+                            AutomationProperties.AccessibilityView="Raw"
+                            IsHitTestVisible="False"
+                            MaxLines="1" />
+                        <Grid
+                            x:Name="ShellFailureLayer"
+                            Grid.Row="1"
+                            Padding="16,0,16,4"
+                            Style="{StaticResource ShellRunLayerStyle}">
+                            <Border x:Name="ShellFailureCard" Style="{StaticResource ShellRunCardStyle}">
+                                <Grid RowSpacing="4">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid ColumnSpacing="4">
+                                        <Grid.Resources>
+                                            <!--  Disabled subtle buttons stay plain glyphs instead of filled boxes.  -->
+                                            <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="Transparent" />
+                                            <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="Transparent" />
+                                        </Grid.Resources>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel
+                                            VerticalAlignment="Center"
+                                            Orientation="Horizontal"
+                                            Spacing="8">
+                                            <TextBlock
+                                                x:Name="ShellFailureTitle"
+                                                AutomationProperties.HeadingLevel="Level2"
+                                                Style="{StaticResource ShellBodyStrongTextStyle}"
+                                                Text="Failure details" />
+                                            <TextBlock
+                                                x:Name="ShellFailurePosition"
+                                                VerticalAlignment="Center"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Style="{StaticResource CaptionTextBlockStyle}" />
+                                        </StackPanel>
+                                        <Button
+                                            x:Name="ShellPreviousFailureButton"
+                                            Grid.Column="1"
+                                            AutomationProperties.Name="Previous failure"
+                                            Click="OnPreviousFailure"
+                                            Style="{StaticResource ShellSubtleButtonStyle}"
+                                            ToolTipService.ToolTip="Previous failure">
+                                            <FontIcon
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                FontSize="12"
+                                                Glyph="&#xE76B;"
+                                                MirroredWhenRightToLeft="True" />
+                                        </Button>
+                                        <Button
+                                            x:Name="ShellNextFailureButton"
+                                            Grid.Column="2"
+                                            AutomationProperties.Name="Next failure"
+                                            Click="OnNextFailure"
+                                            Style="{StaticResource ShellSubtleButtonStyle}"
+                                            ToolTipService.ToolTip="Next failure">
+                                            <FontIcon
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                FontSize="12"
+                                                Glyph="&#xE76C;"
+                                                MirroredWhenRightToLeft="True" />
+                                        </Button>
+                                        <Button
+                                            x:Name="ShellCopyFailuresButton"
+                                            Grid.Column="3"
+                                            AutomationProperties.Name="Copy failure details"
+                                            Click="CopyFailedTestDetails"
+                                            Style="{StaticResource ShellSubtleButtonStyle}"
+                                            ToolTipService.ToolTip="Copy all failure details">
+                                            <FontIcon
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                FontSize="14"
+                                                Glyph="&#xE8C8;" />
+                                        </Button>
+                                    </Grid>
+                                    <ScrollViewer
+                                        x:Name="ShellFailureScroller"
+                                        Grid.Row="1"
+                                        HorizontalScrollBarVisibility="Auto"
+                                        HorizontalScrollMode="Auto"
+                                        VerticalScrollBarVisibility="Auto"
+                                        VerticalScrollMode="Auto">
+                                        <TextBlock x:Name="ShellFailureText" Style="{StaticResource ShellMonospaceTextStyle}" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Border>
                         </Grid>
-                        <ToggleButton
-                            x:Name="ShellFailedOnlyToggle"
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            AutomationProperties.Name="Failed only"
-                            Checked="OnFailedOnlyChanged"
-                            Unchecked="OnFailedOnlyChanged">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <FontIcon
-                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                    FontSize="14"
-                                    Glyph="&#xE71C;" />
-                                <TextBlock x:Name="ShellFailedOnlyLabel" Text="Failed only" />
-                            </StackPanel>
-                        </ToggleButton>
-                        <Button
-                            x:Name="ShellCopyResultsButton"
-                            Grid.Column="2"
-                            AutomationProperties.Name="Copy results as NUnit XML"
-                            Click="CopyTestResults"
-                            Style="{StaticResource ShellSubtleButtonStyle}"
-                            ToolTipService.ToolTip="Copy results (NUnit XML)">
-                            <FontIcon
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                FontSize="14"
-                                Glyph="&#xE8C8;" />
-                        </Button>
+
+                        <local:ShellSplitter
+                            x:Name="ShellRowSplitter"
+                            Grid.Row="2"
+                            Height="5"
+                            Padding="16,0"
+                            HorizontalAlignment="Stretch"
+                            AutomationProperties.Name="Resize failure details"
+                            ManipulationDelta="UpdateFailedTestDetailsSize"
+                            ManipulationMode="TranslateY"
+                            Orientation="Horizontal" />
+
+                        <TextBlock x:Name="failedTests" Grid.Row="3" />
+                        <TextBlock x:Name="runningState" Grid.Row="3" />
+                        <!--  Opaque layer: keeps failedTests and runningState visible to automation but out of sight.  -->
+                        <Grid
+                            x:Name="ShellResultsLayer"
+                            Grid.Row="3"
+                            Padding="16,4,16,16"
+                            Style="{StaticResource ShellRunLayerStyle}">
+                            <Border Padding="0" Style="{StaticResource ShellCardStyle}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid
+                                        x:Name="ShellResultsHeader"
+                                        Padding="16,8,12,4"
+                                        ColumnSpacing="4">
+                                        <Grid.Resources>
+                                            <ResourceDictionary>
+                                                <ResourceDictionary.MergedDictionaries>
+                                                    <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Shell/ShellToggleResources.xaml" />
+                                                </ResourceDictionary.MergedDictionaries>
+                                            </ResourceDictionary>
+                                        </Grid.Resources>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid VerticalAlignment="Center" ColumnSpacing="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock
+                                                AutomationProperties.HeadingLevel="Level2"
+                                                Style="{StaticResource ShellBodyStrongTextStyle}"
+                                                Text="Results" />
+                                            <StackPanel
+                                                x:Name="ShellResultsCaption"
+                                                Grid.Column="1"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal"
+                                                Spacing="4">
+                                                <TextBlock
+                                                    x:Name="runTestCount"
+                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                    Text="0" />
+                                                <TextBlock
+                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                    Text="total ·" />
+                                                <TextBlock
+                                                    x:Name="ignoredTestCount"
+                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                    Text="0" />
+                                                <TextBlock
+                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                    Text="skipped" />
+                                            </StackPanel>
+                                            <!--  Counts shown here when short windows hide the stat cards.  -->
+                                            <TextBlock
+                                                x:Name="ShellResultsStatsSummary"
+                                                Grid.Column="2"
+                                                VerticalAlignment="Center"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Style="{StaticResource CaptionTextBlockStyle}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="NoWrap"
+                                                Visibility="Collapsed" />
+                                        </Grid>
+                                        <ToggleButton
+                                            x:Name="ShellFailedOnlyToggle"
+                                            Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            AutomationProperties.Name="Failed only"
+                                            Checked="OnFailedOnlyChanged"
+                                            Unchecked="OnFailedOnlyChanged">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <FontIcon
+                                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                    FontSize="14"
+                                                    Glyph="&#xE71C;" />
+                                                <TextBlock x:Name="ShellFailedOnlyLabel" Text="Failed only" />
+                                            </StackPanel>
+                                        </ToggleButton>
+                                        <Button
+                                            x:Name="ShellCopyResultsButton"
+                                            Grid.Column="2"
+                                            AutomationProperties.Name="Copy results as NUnit XML"
+                                            Click="CopyTestResults"
+                                            Style="{StaticResource ShellSubtleButtonStyle}"
+                                            ToolTipService.ToolTip="Copy results (NUnit XML)">
+                                            <FontIcon
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                FontSize="14"
+                                                Glyph="&#xE8C8;" />
+                                        </Button>
+                                    </Grid>
+                                    <ScrollViewer x:Name="testResultsScroller" Grid.Row="1">
+                                        <StackPanel x:Name="testResults" Padding="16,0,12,8" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Border>
+                        </Grid>
                     </Grid>
-                    <ScrollViewer x:Name="testResultsScroller" Grid.Row="1">
-                        <StackPanel x:Name="testResults" Padding="16,0,12,8" />
-                    </ScrollViewer>
-                </Grid>
-            </Border>
-        </Grid>
+                </ContentControl>
+            </Grid>
+        </Border>
 
         <local:ShellSplitter
             x:Name="ShellColumnSplitter"
-            Grid.RowSpan="4"
+            Grid.RowSpan="2"
             Grid.Column="1"
             Width="5"
             VerticalAlignment="Stretch"
@@ -611,7 +745,7 @@
 
         <ContentControl
             x:Name="unitTestContentRoot"
-            Grid.RowSpan="4"
+            Grid.RowSpan="2"
             Grid.Column="2"
             VerticalAlignment="Top"
             HorizontalContentAlignment="Left" />

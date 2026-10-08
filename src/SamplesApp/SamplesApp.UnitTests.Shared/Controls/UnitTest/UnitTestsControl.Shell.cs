@@ -79,13 +79,14 @@ public sealed partial class UnitTestsControl
 
 	private void InitializeShell()
 	{
+		InitializeSheet();
 		ApplyShowHeader();
 		UpdateFailureNavigation();
 
 		ShellRowSplitter.KeyboardResize += (_, delta) => ResizeFailureDetails(delta);
 		ShellRowSplitter.ResetRequested += (_, _) =>
 		{
-			failedTestDetailsRow.Height = new GridLength(_failures.Count > 0 ? FailureDetailsHeight : 0);
+			failedTestDetailsRow.Height = new GridLength(_failures.Count > 0 ? DefaultFailureDetailsHeight : 0);
 			UpdateHeaderMaxHeight();
 		};
 		ShellColumnSplitter.KeyboardResize += (_, delta) => ResizeOutput(delta);
@@ -132,6 +133,7 @@ public sealed partial class UnitTestsControl
 
 	private void UpdateHeaderMaxHeight(bool contentChanged = false)
 	{
+		UpdateRowSplitterVisibility();
 		if (_isFittingHeader)
 		{
 			return;
@@ -140,6 +142,22 @@ public sealed partial class UnitTestsControl
 		_isFittingHeader = true;
 		try
 		{
+			// The sheet shows the counters as chips in its bar; its header only has to leave the results room.
+			if (_isSheet)
+			{
+				ApplyStatCards(StatsMode.Strip);
+				var sheetMaxHeight = GetSheetHeaderMaxHeight();
+				if (ShellRunHeaderScroller.ActualWidth > 0)
+				{
+					ShellRunHeaderPanel.Measure(new Size(ShellRunHeaderScroller.ActualWidth, double.PositiveInfinity));
+					sheetMaxHeight = SnapHeaderHeight(sheetMaxHeight, GetHeaderSectionBottoms(), ShellRunHeaderPanel.Padding.Bottom);
+				}
+
+				ShellRunHeaderScroller.MaxHeight = sheetMaxHeight;
+				_headerFitSize = null;
+				return;
+			}
+
 			var maxHeight = GetHeaderMaxHeight(ActualHeight, failedTestDetailsRow.Height.Value);
 			var width = ShellRunHeaderScroller.ActualWidth;
 			if (double.IsInfinity(maxHeight) || width <= 0)
@@ -206,7 +224,11 @@ public sealed partial class UnitTestsControl
 	}
 
 	private static void OnIsRunningOnCIChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-		=> ((UnitTestsControl)d)._isRunningOnCICache = (bool)e.NewValue;
+	{
+		var control = (UnitTestsControl)d;
+		control._isRunningOnCICache = (bool)e.NewValue;
+		control.UpdateSheetLock();
+	}
 
 	private void ApplyShowHeader()
 	{
@@ -276,10 +298,10 @@ public sealed partial class UnitTestsControl
 		var isWide = layout == RunLayout.Wide;
 		var isTiny = layout == RunLayout.Tiny;
 
-		// Filter on its own row below Wide.
-		Grid.SetRow(testFilter, isWide ? 0 : 1);
+		// Filter on its own row below Wide; in the sheet, Run and Stop are in the bar and the filter takes their place.
+		Grid.SetRow(testFilter, isWide || _isSheet ? 0 : 1);
 		Grid.SetColumn(testFilter, isWide ? 2 : 0);
-		Grid.SetColumnSpan(testFilter, isWide ? 1 : 4);
+		Grid.SetColumnSpan(testFilter, isWide ? 1 : _isSheet ? 3 : 4);
 
 		ApplyStatCards(_statsMode, force: true);
 
@@ -293,23 +315,24 @@ public sealed partial class UnitTestsControl
 		{
 			if (child is FrameworkElement { Tag: ResultRowInfo info })
 			{
-				ApplyResultRowLayout(info, layout);
+				ApplyResultRowLayout(info, layout, _isSheet);
 			}
 		}
 
 		// Labels: buttons keep theirs down to Compact, "Failed only" only in Wide; Tiny also drops the section captions.
 		var buttonLabels = isTiny ? Visibility.Collapsed : Visibility.Visible;
-		ShellRunLabel.Visibility = ShellStopLabel.Visibility = ShellRunOptionsLabel.Visibility = buttonLabels;
+		ShellRunLabel.Visibility = ShellStopLabel.Visibility = _isSheet ? Visibility.Collapsed : buttonLabels;
+		ShellRunOptionsLabel.Visibility = buttonLabels;
 		ShellFailedOnlyLabel.Visibility = isWide ? Visibility.Visible : Visibility.Collapsed;
 		ShellResultsCaption.Visibility = buttonLabels;
 		ShellFailureTitle.Visibility = buttonLabels;
-		ToolTipService.SetToolTip(runButton, isTiny ? "Run" : null);
-		ToolTipService.SetToolTip(stopButton, isTiny ? "Stop" : null);
+		ToolTipService.SetToolTip(runButton, isTiny || _isSheet ? "Run" : null);
+		ToolTipService.SetToolTip(stopButton, isTiny || _isSheet ? "Stop" : null);
 		ToolTipService.SetToolTip(ShellRunOptionsButton, isTiny ? "Options" : null);
 		ToolTipService.SetToolTip(ShellFailedOnlyToggle, isWide ? null : "Failed only");
 
 		var gutter = isTiny ? 8 : 16;
-		ShellRunHeaderPanel.Padding = new Thickness(gutter, 12, gutter, 8);
+		ShellRunHeaderPanel.Padding = new Thickness(gutter, _isSheet ? 4 : 12, gutter, 8);
 		ShellFailureLayer.Padding = new Thickness(gutter, 0, gutter, 4);
 		ShellResultsLayer.Padding = new Thickness(gutter, 4, gutter, gutter);
 		ShellRowSplitter.Padding = new Thickness(gutter, 0, gutter, 0);
@@ -329,12 +352,13 @@ public sealed partial class UnitTestsControl
 
 		_statsMode = mode;
 		var layout = _runLayout ?? RunLayout.Wide;
-		var isCompactCard = mode != StatsMode.Cards || layout == RunLayout.Tiny;
+		var isCompactCard = _isSheet || mode != StatsMode.Cards || layout == RunLayout.Tiny;
 
 		ShellRunStats.Visibility = mode == StatsMode.Hidden ? Visibility.Collapsed : Visibility.Visible;
 		ShellResultsStatsSummary.Visibility = mode == StatsMode.Hidden ? Visibility.Visible : Visibility.Collapsed;
 
-		var columnCount = IsSingleStatRow(layout, mode) ? 4 : 2;
+		// The sheet's bar shows the chips in one row.
+		var columnCount = _isSheet || IsSingleStatRow(layout, mode) ? 4 : 2;
 		var columns = ShellRunStats.ColumnDefinitions;
 		while (columns.Count > columnCount)
 		{
@@ -343,8 +367,16 @@ public sealed partial class UnitTestsControl
 
 		while (columns.Count < columnCount)
 		{
-			columns.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+			columns.Add(new ColumnDefinition());
 		}
+
+		foreach (var column in columns)
+		{
+			column.Width = new GridLength(1, GridUnitType.Star);
+		}
+
+		ShellRunStats.ColumnSpacing = _isSheet ? 4 : 8;
+		ShellRunStats.RowSpacing = _isSheet ? 0 : 8;
 
 		var cards = new (Border Card, TextBlock Number, TextBlock Label)[]
 		{
@@ -356,12 +388,20 @@ public sealed partial class UnitTestsControl
 		for (var i = 0; i < cards.Length; i++)
 		{
 			var (card, number, label) = cards[i];
-			var (row, column) = GetStatCardCell(i, layout, mode);
+			var (row, column) = _isSheet ? (0, i) : GetStatCardCell(i, layout, mode);
 			Grid.SetRow(card, row);
 			Grid.SetColumn(card, column);
-			card.Padding = isCompactCard ? new Thickness(8, 6, 8, 6) : new Thickness(12, 8, 12, 8);
+			card.Padding = _isSheet ? new Thickness(8, 2, 8, 2) : isCompactCard ? new Thickness(8, 6, 8, 6) : new Thickness(12, 8, 12, 8);
 			label.Visibility = isCompactCard ? Visibility.Collapsed : Visibility.Visible;
-			number.FontSize = isCompactCard ? 16 : 20;
+			number.FontSize = _isSheet ? 14 : isCompactCard ? 16 : 20;
+			if (_isSheet)
+			{
+				number.LineHeight = 20;
+			}
+			else
+			{
+				number.ClearValue(TextBlock.LineHeightProperty);
+			}
 			ToolTipService.SetToolTip(card, isCompactCard ? label.Text : null);
 		}
 	}
@@ -382,6 +422,7 @@ public sealed partial class UnitTestsControl
 		failedTestDetailsRow.Height = new GridLength(0);
 		UpdateHeaderMaxHeight();
 		UpdateFailureNavigation();
+		OnRunStarting();
 	}
 
 	private void ResizeFailureDetails(double delta)
@@ -487,6 +528,7 @@ public sealed partial class UnitTestsControl
 
 	private void UpdateProgress()
 	{
+		UpdateSheetStatus();
 		if (ShellRunInfoBar is null)
 		{
 			return;
@@ -502,12 +544,19 @@ public sealed partial class UnitTestsControl
 
 	private void ApplyRunOutcome(bool isStopped)
 	{
-		if (_currentRun is not { } run || EnsureRunInfoBar() is not { } infoBar)
+		if (_currentRun is not { } run)
 		{
+			OnRunEnded(null);
 			return;
 		}
 
 		var (severity, title) = GetRunOutcome(run.Failed, run.Inconclusive, isStopped);
+		OnRunEnded(title);
+		if (EnsureRunInfoBar() is not { } infoBar)
+		{
+			return;
+		}
+
 		infoBar.Severity = severity;
 		infoBar.Title = title;
 		infoBar.Message = FormatRunSummary(run.Run, run.Ignored, DateTimeOffset.UtcNow - run.StartTime);
@@ -576,7 +625,7 @@ public sealed partial class UnitTestsControl
 			_failureIndex = index;
 			if (failedTestDetailsRow.Height.Value == 0)
 			{
-				failedTestDetailsRow.Height = new GridLength(FailureDetailsHeight);
+				failedTestDetailsRow.Height = new GridLength(DefaultFailureDetailsHeight);
 				UpdateHeaderMaxHeight();
 			}
 
@@ -776,7 +825,7 @@ public sealed partial class UnitTestsControl
 		row.Children.Add(info.Glyph);
 		row.Children.Add(info.Name);
 		row.Children.Add(info.Detail);
-		ApplyResultRowLayout(info, _runLayout ?? RunLayout.Wide);
+		ApplyResultRowLayout(info, _runLayout ?? RunLayout.Wide, _isSheet);
 
 		var automationName = $"{testName}: {detail}";
 		// The detail column trims the message; the full text is in the failure card or the expanded output.
@@ -837,18 +886,20 @@ public sealed partial class UnitTestsControl
 		ApplyFailedOnlyFilter(element);
 	}
 
-	// Tiny puts the detail under the name, so the name keeps the whole column.
-	private static void ApplyResultRowLayout(ResultRowInfo info, RunLayout layout)
+	// Tiny puts the detail under the name, so the name keeps the whole column. The sheet keeps every row on one line.
+	private static void ApplyResultRowLayout(ResultRowInfo info, RunLayout layout, bool isSheet)
 	{
-		var isTiny = layout == RunLayout.Tiny;
+		var isTiny = layout == RunLayout.Tiny && !isSheet;
 		if (info.Detail.Parent is Grid row)
 		{
-			row.Padding = new Thickness(isTiny ? 4 : 16, 2, 0, 2);
+			row.Padding = new Thickness(isTiny || isSheet ? 4 : 16, 2, 0, 2);
 		}
 
 		Grid.SetRow(info.Detail, isTiny ? 1 : 0);
 		Grid.SetColumn(info.Detail, isTiny ? 1 : 2);
-		info.Detail.MaxWidth = GetDetailMaxWidth(layout);
+		info.Detail.MaxWidth = isSheet ? GetDetailMaxWidth(RunLayout.Compact) : GetDetailMaxWidth(layout);
+		info.Name.MaxLines = isSheet ? 1 : 2;
+		info.Name.TextWrapping = isSheet ? TextWrapping.NoWrap : TextWrapping.Wrap;
 	}
 
 	private void ApplyResultRowBrushes()
