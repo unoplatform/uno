@@ -1178,11 +1178,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			return peer.IsPassword() ? null : value.Value;
 		}
 
-		if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selection)
-		{
-			return IsSelected(handle, peer, selection) ? "1" : "0";
-		}
-
+		// Selection is reported by the Selected trait; VoiceOver would speak a "0"/"1" value as a number.
 		return peer.GetItemStatus() is { Length: > 0 } itemStatus
 			? itemStatus
 			: null;
