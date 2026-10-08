@@ -1654,6 +1654,14 @@ namespace Microsoft.UI.Text
 			}
 
 			var image = InlineImageState.CreateFromStream(value, width, height, ascent, verticalAlign, alternateText);
+
+			// WinUI deletes the replaced text and inserts the image as separate undo units.
+			if (_start != _end)
+			{
+				_document.ReplaceRange(_start, _end, string.Empty, this, forceHistory: true, checkTextLimit: false);
+				_end = _start;
+			}
+
 			var fragment = _document.CreateInlineImageFragment(_start, image);
 			_ = _document.ReplaceRangeWithFragment(_start, _end, fragment, this);
 
