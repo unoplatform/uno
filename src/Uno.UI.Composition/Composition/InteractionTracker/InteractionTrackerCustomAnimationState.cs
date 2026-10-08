@@ -14,7 +14,7 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 	private readonly bool _isScaleAnimation;
 	private readonly Vector3 _centerPoint;
 	private bool _isAnimationRunning;
-	private ICompositionTarget? _target;
+	private IFrameTickSource? _target;
 
 	private InteractionTrackerCustomAnimationState(
 		InteractionTracker interactionTracker,
@@ -79,6 +79,7 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 
 		// Evaluated at the frame's timestamp, like the animations a record ticks.
 		var compositor = _interactionTracker.Compositor;
+		var previousTimestamp = compositor.FrameTimestampInTicks;
 		compositor.FrameTimestampInTicks = timestamp;
 		try
 		{
@@ -86,7 +87,7 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 		}
 		finally
 		{
-			compositor.FrameTimestampInTicks = null;
+			compositor.FrameTimestampInTicks = previousTimestamp;
 		}
 
 		if (!_isAnimationRunning)
