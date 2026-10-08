@@ -10,10 +10,9 @@
 		<projectUrl>https://platform.uno/</projectUrl>
 		<license type="expression">Apache-2.0</license>
 		<icon>uno.png</icon>
-		<description>
-			Support for Svg on Uno.WinUI.
-		</description>
-		<copyright>Copyright (C) 2015-2022 uno platform inc. - all rights reserved</copyright>
+		<readme>README.md</readme>
+		<description>SVG image support for Uno Platform, rendering SvgImageSource with Skia.</description>
+		<copyright>Copyright (C) 2015-$year$ Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 
 		<dependencies>
@@ -76,6 +75,7 @@
 	</metadata>
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
+		<file src="README.md" target="/" />
 		<file src="..\..\src\AddIns\Uno.UI.Svg\Bin\Uno.UI.Svg\Release\net10.0\Uno.UI.Svg.*" target="lib\net10.0" />
 		<file src="..\..\src\AddIns\Uno.UI.Svg\Bin\Uno.UI.Svg\Release\net11.0\Uno.UI.Svg.*" target="lib\net11.0" />
 
