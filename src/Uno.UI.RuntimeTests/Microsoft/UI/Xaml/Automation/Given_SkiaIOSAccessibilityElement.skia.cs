@@ -197,6 +197,35 @@ public partial class Given_SkiaIOSAccessibilityElement
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_A_List_Row_Is_Selectable_Then_Selection_Is_A_Trait_Not_A_Value()
+	{
+		var listView = new ListView
+		{
+			ItemsSource = new[] { "First row", "Second row" },
+			Width = 300,
+			Height = 300,
+		};
+		await UITestHelper.Load(listView);
+
+		listView.SelectedIndex = 1;
+		await UITestHelper.WaitForIdle();
+		var selectedRow = (ListViewItem)listView.ContainerFromIndex(1);
+		Assert.IsTrue(selectedRow.IsSelected);
+
+		var unselected = GetSnapshot((UIElement)listView.ContainerFromIndex(0));
+		var selected = GetSnapshot(selectedRow);
+
+		// VoiceOver speaks a value verbatim, so "0" or "1" would be read as "zero" or "one" on every row.
+		Assert.IsNotNull(unselected);
+		Assert.IsNotNull(selected);
+		Assert.IsNull(unselected.Value);
+		Assert.IsNull(selected.Value);
+		Assert.AreEqual(AccessibilityNativeTraits.None, unselected.Traits & AccessibilityNativeTraits.Selected);
+		Assert.AreEqual(AccessibilityNativeTraits.Selected, selected.Traits & AccessibilityNativeTraits.Selected);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Content_Is_Covered_Then_Hit_Test_Returns_The_Topmost_Element()
 	{
 		var behind = new Button { Content = "Behind", Width = 200, Height = 100 };
