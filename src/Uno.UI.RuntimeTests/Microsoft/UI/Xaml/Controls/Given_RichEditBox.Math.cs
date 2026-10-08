@@ -6,9 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.UI.Text;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -242,5 +246,160 @@ public partial class Given_RichEditBox
 				_ => string.Empty,
 			}));
 		return $"<{element.Name.LocalName}{attributes}>{content}</{element.Name.LocalName}>";
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RunsOnUIThread]
+	public void When_MathML_Rejects_Malformed_Or_Overly_Complex_Structures()
+	{
+		var richEditBox = new RichEditBox();
+		richEditBox.Document.SetMathMode(RichEditMathMode.MathOnly);
+		const string valid = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>seed</mi></math>";
+		var deep = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+			+ string.Concat(Enumerable.Repeat("<mrow>", 65))
+			+ "<mi>x</mi>"
+			+ string.Concat(Enumerable.Repeat("</mrow>", 65))
+			+ "</math>";
+		var tooManyNodes = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+			+ string.Concat(Enumerable.Repeat("<mi>x</mi>", 4097))
+			+ "</math>";
+		var tooManyRows = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mtable>"
+			+ string.Concat(Enumerable.Repeat("<mtr><mtd><mi>x</mi></mtd></mtr>", 65))
+			+ "</mtable></math>";
+		var tooManyColumns = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mtable><mtr>"
+			+ string.Concat(Enumerable.Repeat("<mtd><mi>x</mi></mtd>", 65))
+			+ "</mtr></mtable></math>";
+
+		foreach (var invalid in new[]
+		{
+			"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac><mi>x</mi></mfrac></math>",
+			deep,
+			tooManyNodes,
+			tooManyRows,
+			tooManyColumns,
+		})
+		{
+			richEditBox.Document.SetMathML(valid);
+			richEditBox.Document.GetMathML(out var beforeFailure);
+			richEditBox.Document.Selection.SetRange(0, 4);
+			richEditBox.Document.ClearUndoRedoHistory();
+			Assert.ThrowsExactly<ArgumentException>(() => richEditBox.Document.SetMathML(invalid));
+			richEditBox.Document.GetMathML(out var afterFailure);
+			Assert.AreEqual(beforeFailure, afterFailure);
+			Assert.AreEqual(0, richEditBox.Document.Selection.StartPosition);
+			Assert.AreEqual(4, richEditBox.Document.Selection.EndPosition);
+			Assert.IsFalse(richEditBox.Document.CanUndo());
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_UnicodeMath_Character_Typing_Uses_A_Conversion_Boundary()
+	{
+		var richEditBox = new RichEditBox();
+		richEditBox.Document.SetMathMode(RichEditMathMode.MathOnly);
+		foreach (var character in "x^2 ")
+		{
+			richEditBox.Document.Selection.TypeText(character.ToString());
+		}
+
+		richEditBox.Document.GetMathML(out var converted);
+		Assert.IsTrue(XDocument.Parse(converted).Descendants().Any(element => element.Name.LocalName == "msup"));
+		richEditBox.Document.Undo();
+		Assert.AreEqual("\U0001D465^2\r", richEditBox.Document.GetRange(0, int.MaxValue).Text);
+		richEditBox.Document.GetMathML(out var linear);
+		Assert.IsFalse(XDocument.Parse(linear).Descendants().Any(element => element.Name.LocalName == "msup"));
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Fraction_Layout_Renders_A_Bar_With_Ink_Above_And_Below()
+	{
+		var richEditBox = CreateMathEditor();
+		richEditBox.Width = 320;
+		richEditBox.Height = 200;
+		richEditBox.FontSize = 48;
+		try
+		{
+			WindowHelper.WindowContent = richEditBox;
+			await WindowHelper.WaitForLoaded(richEditBox);
+			richEditBox.Document.SetMathMode(RichEditMathMode.MathOnly);
+			richEditBox.Document.SetMathML(
+				"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac><mi>abc</mi><mi>xyz</mi></mfrac></math>");
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(richEditBox);
+			var longestRun = 0;
+			var barRow = 0;
+			for (var y = 0; y < bitmap.Height; y++)
+			{
+				var current = 0;
+				for (var x = 0; x < bitmap.Width; x++)
+				{
+					var pixel = bitmap.GetPixel(x, y);
+					if (pixel is { A: > 200, R: < 90, G: < 90, B: < 90 })
+					{
+						current++;
+						if (current > longestRun)
+						{
+							longestRun = current;
+							barRow = y;
+						}
+					}
+					else
+					{
+						current = 0;
+					}
+				}
+			}
+
+			Assert.IsGreaterThan(20, longestRun);
+			Assert.IsGreaterThan(20, CountMathDarkPixels(bitmap, 0, Math.Max(0, barRow - 2)));
+			Assert.IsGreaterThan(20, CountMathDarkPixels(bitmap, Math.Min(bitmap.Height, barRow + 3), bitmap.Height));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	private static RichEditBox CreateMathEditor()
+		=> new()
+		{
+			Width = 500,
+			Height = 220,
+			FontSize = 36,
+			TextWrapping = TextWrapping.NoWrap,
+			BorderThickness = new Thickness(0),
+			Padding = new Thickness(12),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+			Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black),
+		};
+
+	private static void AssertBounded(Rect rect)
+	{
+		Assert.IsFalse(double.IsNaN(rect.X) || double.IsInfinity(rect.X));
+		Assert.IsFalse(double.IsNaN(rect.Y) || double.IsInfinity(rect.Y));
+		Assert.IsTrue(rect.Width is >= 0 and < 5_000);
+		Assert.IsTrue(rect.Height is >= 0 and < 5_000);
+	}
+
+	private static int CountMathDarkPixels(RawBitmap bitmap, int startY, int endY)
+	{
+		var count = 0;
+		for (var y = startY; y < endY; y++)
+		{
+			for (var x = 0; x < bitmap.Width; x++)
+			{
+				var pixel = bitmap.GetPixel(x, y);
+				if (pixel is { A: > 200, R: < 90, G: < 90, B: < 90 })
+				{
+					count++;
+				}
+			}
+		}
+
+		return count;
 	}
 }

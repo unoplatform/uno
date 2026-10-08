@@ -10,6 +10,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_RichEditBox
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Advanced_Destinations_RoundTrip_Without_Unsafe_Payloads()
 		{
 			const string rtf = @"{\rtf1"
@@ -82,6 +83,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Table_Is_Untouched_Row_And_Cell_Descriptors_RoundTrip()
 		{
 			const string rtf = @"{\rtf1\trowd\trgaph108\clvertalc\cellx1200"
@@ -104,6 +106,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Nested_Table_Is_Untouched_Nested_Boundaries_RoundTrip()
 		{
 			const string rtf = @"{\rtf1\trowd\cellx3000\intbl outer "
@@ -120,6 +123,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Edit_Is_Outside_Table_Preservation_Remains()
 		{
 			const string rtf = @"{\rtf1\trowd\cellx1000\intbl A\cell\row tail}";
@@ -137,6 +141,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Edit_Is_Inside_Table_Preserves_Metadata_And_Content()
 		{
 			const string rtf = @"{\rtf1\trowd\cellx1000\intbl AB\cell\row tail}";
@@ -154,6 +159,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Outer_Table_Is_Edited_Nested_Table_Metadata_Is_Preserved()
 		{
 			const string rtf = @"{\rtf1\trowd\cellx3000\intbl outer "
@@ -171,6 +177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Table_Invalidation_Is_Undone_Preserved_Metadata_Is_Restored()
 		{
 			const string rtf = @"{\rtf1\trowd\cellx1000\intbl AB\cell\row tail}";
@@ -209,6 +216,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Text_Is_Inserted_Into_Empty_Table_Cell_RoundTrip_Preserves_It()
 		{
 			const string rtf = @"{\rtf1\trowd\cellx1000\cellx2000\intbl\cell B\cell\row}";
@@ -227,6 +235,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Text_Is_Inserted_At_Table_Start_Metadata_Rebases_After_The_Insert()
 		{
 			const string rtf = @"{\rtf1\trowd\cellx1000\intbl AB\cell\row tail}";
@@ -242,6 +251,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Opaque_Destination_Exceeds_Budget_Import_Is_Rejected()
 		{
 			var rtf = @"{\rtf1{\header " + new string('x', 256 * 1024 + 1) + "}}";
@@ -251,6 +261,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Empty_Objects_Exceed_Text_Object_Budget_Import_Is_Rejected()
 		{
 			var rtf = @"{\rtf1" + string.Concat(

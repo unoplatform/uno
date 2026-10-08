@@ -11,6 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_RichEditBox
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Rtf_Stream_Binary_Payload_Contains_Syntax_Bytes()
 		{
 			var stream = CreateRtfStream(
@@ -26,6 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		[DataRow(@"{\rtf1\ansi before\bin after}")]
 		[DataRow(@"{\rtf1\ansi before\bin-1 x}")]
 		[DataRow(@"{\rtf1\ansi before\bin-0 x}")]
@@ -43,6 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Rtf_Root_Framing_Is_Strict()
 		{
 			var SUT = new RichEditBox();
@@ -122,6 +125,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Rtf_Range_Stream_Failure_Is_Atomic()
 		{
 			var SUT = new RichEditBox();
@@ -138,6 +142,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Rtf_Incomplete_DoubleByte_Character_Fails_Atomically()
 		{
 			var SUT = new RichEditBox();
