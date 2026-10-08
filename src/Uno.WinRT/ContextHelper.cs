@@ -9,6 +9,7 @@ namespace Uno.UI
 	public static class ContextHelper
 	{
 		private static Android.Content.Context? _current;
+		private static bool _hadActivity;
 
 		/// <summary>
 		/// Gets the context of the most recently active activity that is still alive.
@@ -26,7 +27,8 @@ namespace Uno.UI
 		{
 			get
 			{
-				if (_current is null && typeof(ContextHelper).Log().IsEnabled(LogLevel.Warning))
+				// Null after the last activity is gone is expected; only never having one is a misconfiguration.
+				if (_current is null && !_hadActivity && typeof(ContextHelper).Log().IsEnabled(LogLevel.Warning))
 				{
 					typeof(ContextHelper)
 						.Log()
@@ -38,7 +40,7 @@ namespace Uno.UI
 
 				return _current;
 			}
-			internal set => _current = value;
+			internal set => SetForeground(value);
 		}
 
 		/// <summary>
@@ -69,7 +71,11 @@ namespace Uno.UI
 		/// activity is torn down. Passing <c>null</c> leaves <see cref="Current"/> without a
 		/// live activity; app-scoped callers should use <see cref="ApplicationContext"/>.
 		/// </summary>
-		internal static void SetForeground(Android.Content.Context? context) => _current = context;
+		internal static void SetForeground(Android.Content.Context? context)
+		{
+			_current = context;
+			_hadActivity |= context is not null;
+		}
 	}
 }
 #endif
