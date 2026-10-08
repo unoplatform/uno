@@ -136,6 +136,7 @@ namespace Microsoft.UI.Xaml
 
 <<<<<<< HEAD:src/Uno.UI/UI/Xaml/NativeApplication.cs
 <<<<<<< HEAD:src/Uno.UI/UI/Xaml/NativeApplication.cs
+<<<<<<< HEAD:src/Uno.UI/UI/Xaml/NativeApplication.cs
 #if ANDROID_SKIA
 =======
 					// The app does not exist yet at this point (the host is built in CreateHost() below),
@@ -147,6 +148,9 @@ namespace Microsoft.UI.Xaml
 #endif
 =======
 					var arguments = intent.GetStringExtra(JumpListItem.ArgumentsExtraKey);
+=======
+					var arguments = intent.GetStringExtra(JumpListItem.ArgumentsExtraKey) ?? string.Empty;
+>>>>>>> 67e184c9 (fix(android): Treat a missing jump list argument as empty):src/Uno.UI.Runtime.Android/NativeApplication.cs
 
 					ReportActivation(AppActivationArguments.CreateLaunch(
 						new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, arguments)));
