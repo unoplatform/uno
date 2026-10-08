@@ -47,7 +47,7 @@ namespace Microsoft.UI.Text
 		public global::Microsoft.UI.Text.LineSpacingRule LineSpacingRule = global::Microsoft.UI.Text.LineSpacingRule.Single;
 		public float LineSpacing;
 
-		public global::Microsoft.UI.Text.MarkerType ListType = global::Microsoft.UI.Text.MarkerType.Undefined;
+		public global::Microsoft.UI.Text.MarkerType ListType = global::Microsoft.UI.Text.MarkerType.None;
 		public global::Microsoft.UI.Text.MarkerStyle ListStyle = global::Microsoft.UI.Text.MarkerStyle.Undefined;
 		public global::Microsoft.UI.Text.MarkerAlignment ListAlignment = global::Microsoft.UI.Text.MarkerAlignment.Undefined;
 		public int ListLevelIndex;

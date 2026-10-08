@@ -2801,7 +2801,9 @@ namespace Microsoft.UI.Text
 				state.SpaceAfter = spaceAfter;
 				state.LineSpacingRule = parsedLineSpacingRule;
 				state.LineSpacing = lineSpacing;
-				state.ListType = parsedListType;
+				state.ListType = parsedListType == global::Microsoft.UI.Text.MarkerType.Undefined
+					? global::Microsoft.UI.Text.MarkerType.None
+					: parsedListType;
 				state.ListStyle = parsedListStyle;
 				state.ListAlignment = parsedListAlignment;
 				state.ListLevelIndex = listLevelIndex;
