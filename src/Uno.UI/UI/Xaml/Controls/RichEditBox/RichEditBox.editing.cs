@@ -217,6 +217,9 @@ namespace Microsoft.UI.Xaml.Controls
 			OnPostKeyDownSkia(args);
 		}
 
+		// macOS reports navigation keys with control characters (arrows are U+001C-U+001F), which must not be typed.
+		private static bool IsTypedCharacter(char key) => !char.IsControl(key) || key is '\r' or '\n' or '\t';
+
 		private void OnPostKeyDownSkia(KeyRoutedEventArgs args)
 		{
 			if (_textBoxView is null || FocusState == FocusState.Unfocused)
@@ -413,7 +416,7 @@ namespace Microsoft.UI.Xaml.Controls
 						ctrlHeld ||
 						args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Windows) ||
 						(!DeviceTargetHelper.UsesAppleKeyboardLayout && altHeld));
-					if (!IsReadOnly && !hasShortcutModifier && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
+					if (!IsReadOnly && !hasShortcutModifier && args.UnicodeKey is { } key && IsTypedCharacter(key) && (!isEnterKey || AcceptsReturn))
 					{
 						historyKind = global::Microsoft.UI.Text.TextHistoryKind.Typing;
 						var start = Math.Min(selectionStart, selectionStart + selectionLength);
@@ -583,7 +586,7 @@ namespace Microsoft.UI.Xaml.Controls
 						return true;
 					}
 
-					if (args.UnicodeKey is not { } key)
+					if (args.UnicodeKey is not { } key || !IsTypedCharacter(key))
 					{
 						return false;
 					}
