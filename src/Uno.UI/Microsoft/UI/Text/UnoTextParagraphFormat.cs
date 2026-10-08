@@ -19,17 +19,13 @@ namespace Microsoft.UI.Text
 		private const int TomTabNext = -2;
 		private const int TomTabBack = -3;
 
-		// When bound, each setter applies immediately through the bound callback: for a range-bound
-		// format (via the range's ParagraphFormat getter) this pushes into that range's paragraphs —
-		// making the canonical `range.ParagraphFormat.Alignment = Center` idiom work, matching WinUI's
-		// live paragraph-format object; for the document default (GetDefaultParagraphFormat) it writes
-		// the document's default state. A cloned or default-constructed format is unbound and behaves as
-		// a plain value object.
+		// When bound, each setter applies immediately to the range it came from (via the range's
+		// ParagraphFormat getter), making the canonical `range.ParagraphFormat.Alignment = Center` idiom
+		// work, matching WinUI's live paragraph-format object. A cloned, default-constructed or document
+		// default format is unbound and behaves as a plain value object.
 		private Action<UnoTextParagraphFormat>? _apply;
 
 		internal void Bind(UnoTextRange range) => _apply = range.ApplyParagraphFormat;
-
-		internal void BindApply(Action<UnoTextParagraphFormat> apply) => _apply = apply;
 
 		private void ApplyIfBound(Action<UnoTextParagraphFormat> define)
 		{

@@ -607,12 +607,14 @@ namespace Microsoft.UI.Text
 			}, paragraphRange: new HistoryRange(protectedStart, protectedEnd));
 		}
 
-		/// <summary>Gets the document's default paragraph format as a live (bound) format object.</summary>
+		/// <summary>
+		/// Gets a copy of the document's default paragraph format. Like WinUI, changes to it only take
+		/// effect when passed to <see cref="SetDefaultParagraphFormat"/>.
+		/// </summary>
 		public global::Microsoft.UI.Text.ITextParagraphFormat GetDefaultParagraphFormat()
 		{
 			var format = new UnoTextParagraphFormat();
 			format.LoadFrom(_defaultParagraphFormat);
-			format.BindApply(ApplyDefaultParagraphFormat);
 			return format;
 		}
 
@@ -625,9 +627,9 @@ namespace Microsoft.UI.Text
 			}
 		}
 
-		// Writes the defined properties of the (default-bound) format into the document default. This
-		// does not retroactively re-format existing paragraphs; it only changes the basis for future text.
-		internal void ApplyDefaultParagraphFormat(UnoTextParagraphFormat format)
+		// Writes the defined properties of the format into the document default. This does not
+		// retroactively re-format existing paragraphs; it only changes the basis for future text.
+		private void ApplyDefaultParagraphFormat(UnoTextParagraphFormat format)
 			=> format.ApplyTo(_defaultParagraphFormat);
 
 		/// <summary>

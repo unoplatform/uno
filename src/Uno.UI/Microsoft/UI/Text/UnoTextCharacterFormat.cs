@@ -13,17 +13,13 @@ namespace Microsoft.UI.Text
 	// shared-layout equivalent; other properties remain queryable and transferable through the TOM.
 	internal sealed class UnoTextCharacterFormat : global::Microsoft.UI.Text.ITextCharacterFormat
 	{
-		// When bound, each tracked-property setter applies immediately through the bound callback: for a
-		// range-bound format (via the range's CharacterFormat getter) this pushes into that range's
-		// characters — making the canonical `range.CharacterFormat.Bold = On` idiom work, matching
-		// WinUI's live character-format object; for the document default (GetDefaultCharacterFormat) it
-		// writes the document's default state. A cloned or default-constructed format is unbound and
-		// behaves as a plain value object.
+		// When bound, each tracked-property setter applies immediately to the range it came from (via the
+		// range's CharacterFormat getter), making the canonical `range.CharacterFormat.Bold = On` idiom
+		// work, matching WinUI's live character-format object. A cloned, default-constructed or document
+		// default format is unbound and behaves as a plain value object.
 		private Action<UnoTextCharacterFormat>? _apply;
 
 		internal void Bind(UnoTextRange range) => _apply = range.ApplyCharacterFormat;
-
-		internal void BindApply(Action<UnoTextCharacterFormat> apply) => _apply = apply;
 
 		private void ApplyIfBound(Action<UnoTextCharacterFormat> define)
 		{

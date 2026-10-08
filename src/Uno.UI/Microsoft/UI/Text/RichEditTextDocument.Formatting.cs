@@ -985,12 +985,14 @@ namespace Microsoft.UI.Text
 			}
 		}
 
-		/// <summary>Gets the document's default character format as a live (bound) format object.</summary>
+		/// <summary>
+		/// Gets a copy of the document's default character format. Like WinUI, changes to it only take
+		/// effect when passed to <see cref="SetDefaultCharacterFormat"/>.
+		/// </summary>
 		public global::Microsoft.UI.Text.ITextCharacterFormat GetDefaultCharacterFormat()
 		{
 			var format = new UnoTextCharacterFormat();
 			format.LoadFrom(DefaultFormatState(), _owner);
-			format.BindApply(ApplyDefaultCharacterFormat);
 			return format;
 		}
 
@@ -1003,9 +1005,9 @@ namespace Microsoft.UI.Text
 			}
 		}
 
-		// Writes the defined properties of the (default-bound) format into the document default. This
-		// does not retroactively re-format existing runs; it only changes the basis for future text.
-		internal void ApplyDefaultCharacterFormat(UnoTextCharacterFormat format)
+		// Writes the defined properties of the format into the document default. This does not
+		// retroactively re-format existing runs; it only changes the basis for future text.
+		private void ApplyDefaultCharacterFormat(UnoTextCharacterFormat format)
 			=> ApplyCharacterFormatToState(_defaultCharacterFormat, format);
 
 		private static global::Microsoft.UI.Text.FormatEffect Effect(bool value)
