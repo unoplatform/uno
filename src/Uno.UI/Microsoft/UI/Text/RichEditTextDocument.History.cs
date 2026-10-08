@@ -861,6 +861,12 @@ namespace Microsoft.UI.Text
 		/// <summary>Redoes the most recent undo action.</summary>
 		public void Redo()
 		{
+			// WinUI silently ignores undo and redo while the control is read-only.
+			if (IsOwnerReadOnly)
+			{
+				return;
+			}
+
 			ThrowIfNotEditable(0, _textBuffer.Length);
 			if (_redoStack.Count == 0)
 			{
@@ -880,6 +886,11 @@ namespace Microsoft.UI.Text
 		/// <summary>Undoes the most recent action.</summary>
 		public void Undo()
 		{
+			if (IsOwnerReadOnly)
+			{
+				return;
+			}
+
 			ThrowIfNotEditable(0, _textBuffer.Length);
 			if (_undoStack.Count == 0)
 			{
