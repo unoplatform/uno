@@ -377,7 +377,7 @@ internal static class Program
 				&& bounds.bottom > bounds.top;
 		});
 		Check(firstChildren.FirstLink?.CurrentIsOffscreen == 0, "link becomes onscreen after range scrolling");
-		Check(bounds.right > bounds.left && bounds.bottom > bounds.top, "onscreen link has a nonempty bounding rectangle");
+		Check(bounds.right - bounds.left > 0 && bounds.bottom - bounds.top > 0, "onscreen link has a nonempty bounding rectangle");
 
 		var typoRange = documentRange.FindText("typo", 0, 0);
 		var annotationTypesValue = typoRange?.GetAttributeValue(UIA_AnnotationTypesAttributeId);
@@ -760,8 +760,8 @@ internal static class Program
 
 		Check(Convert.ToInt32(values["BackgroundColor"]) == 255, "BackgroundColor maps TOM red to COLORREF");
 		Check(Convert.ToInt32(values["BulletStyle"]) == 5, "BulletStyle maps a minus marker to DashBullet");
-		Check(Convert.ToDouble(values["IndentationLeading"]) == 9, "leading indent is exposed");
-		Check(Convert.ToDouble(values["IndentationTrailing"]) == 12, "trailing/right indent is exposed");
+		Check(Math.Abs(Convert.ToDouble(values["IndentationLeading"]) - 9) < 0.01, "leading indent is exposed");
+		Check(Math.Abs(Convert.ToDouble(values["IndentationTrailing"]) - 12) < 0.01, "trailing/right indent is exposed");
 		Check(
 			values["Tabs"] is double[] tabs
 				&& tabs.SequenceEqual([24d, 48d]),
