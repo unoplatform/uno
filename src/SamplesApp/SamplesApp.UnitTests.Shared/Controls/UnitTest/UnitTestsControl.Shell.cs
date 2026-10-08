@@ -102,9 +102,16 @@ public sealed partial class UnitTestsControl
 				control.MinWidth = control.MinHeight = TouchTargetSize;
 			}
 
-			testFilter.MinHeight = TouchTargetSize;
+			// The TextBox template ignores VerticalContentAlignment, so grow it with even padding rather than MinHeight to keep the text centred.
+			var padding = Application.Current.Resources.TryGetValue("TextControlThemePadding", out var value) && value is Thickness themePadding
+				? themePadding
+				: new Thickness(10, 5, 6, 6);
+			testFilter.Padding = new Thickness(padding.Left, padding.Top + TouchFilterExtraPadding, padding.Right, padding.Bottom + TouchFilterExtraPadding);
 		}
 	}
+
+	// Brings the 32 DIP TextBox to the 40 DIP touch target height.
+	private const double TouchFilterExtraPadding = 4;
 
 	internal const double TouchTargetSize = 40;
 
