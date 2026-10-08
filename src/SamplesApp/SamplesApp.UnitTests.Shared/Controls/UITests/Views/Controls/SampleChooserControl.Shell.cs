@@ -60,6 +60,9 @@ partial class SampleChooserControl
 	/// <summary>How long the focus-mode exit button stays after the last pointer activity.</summary>
 	internal static TimeSpan FocusModeButtonIdleDelay { get; set; } = TimeSpan.FromSeconds(3);
 
+	/// <summary>Until the first pointer or key input, focus that lands on the rail moves to the selected destination.</summary>
+	internal bool KeepsRailFocusOnSelection { get; set; } = true;
+
 	/// <summary>False on touch, where keyboard shortcut hints mean nothing. Per window, so suggestions re-evaluate when it flips.</summary>
 	public bool ShowShortcutHints
 	{
@@ -92,6 +95,7 @@ partial class SampleChooserControl
 		ApplyShortcutHints();
 		InitializeRowHeight();
 		InitializeFocusModeButton();
+		ShellRail.GotFocus += (_, _) => DispatcherQueue.TryEnqueue(KeepInitialFocusOnSelectedRailItem);
 
 		// On touch a long press would select the title instead of showing its tooltip.
 		ShellSampleTitle.IsTextSelectionEnabled = !ShellFunctions.IsTouchPlatform;
@@ -296,9 +300,14 @@ partial class SampleChooserControl
 		ShellRoot.AddHandler(PointerPressedEvent, new PointerEventHandler((_, _) =>
 		{
 			_isKeyboardInput = false;
+			KeepsRailFocusOnSelection = false;
 			OnFocusModeActivity();
 		}), handledEventsToo: true);
-		ShellRoot.AddHandler(PreviewKeyDownEvent, new KeyEventHandler((_, _) => _isKeyboardInput = true), handledEventsToo: true);
+		ShellRoot.AddHandler(PreviewKeyDownEvent, new KeyEventHandler((_, _) =>
+		{
+			_isKeyboardInput = true;
+			KeepsRailFocusOnSelection = false;
+		}), handledEventsToo: true);
 		ShellExitFocusModeButton.GotFocus += (_, _) => OnFocusModeActivity();
 		ShellExitFocusModeButton.LostFocus += (_, _) => OnFocusModeActivity();
 	}
@@ -440,6 +449,8 @@ partial class SampleChooserControl
 			_syncingRail = false;
 		}
 
+		KeepInitialFocusOnSelectedRailItem();
+
 		foreach (var button in PaneDestinationButtons)
 		{
 			if (ToDestination(button.Tag) == vm.ShellDestination && ShellThemeBrushes.Get("SubtleFillColorSecondaryBrush", ActualTheme) is { } selected)
@@ -453,6 +464,22 @@ partial class SampleChooserControl
 				button.ClearValue(AutomationProperties.ItemStatusProperty);
 			}
 		}
+	}
+
+	// WinUI focuses the first rail item at activation, with a focus rect, even when a deep link selected another one.
+	private void KeepInitialFocusOnSelectedRailItem()
+	{
+		if (!KeepsRailFocusOnSelection
+			|| XamlRoot is null
+			|| ShellRail.SelectedItem is not NavigationViewItem selected
+			|| FocusManager.GetFocusedElement(XamlRoot) is not NavigationViewItem focused
+			|| focused == selected
+			|| !IsWithin(focused, ShellRail))
+		{
+			return;
+		}
+
+		selected.Focus(FocusState.Programmatic);
 	}
 
 	private Button[] PaneDestinationButtons =>
