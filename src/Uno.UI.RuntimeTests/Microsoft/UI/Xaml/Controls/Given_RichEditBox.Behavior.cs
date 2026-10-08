@@ -564,40 +564,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_EndOf_Line_Moves_To_Line_End_Before_Paragraph_Mark()
+		public async Task When_EndOf_Line_Moves_Past_Paragraph_Mark()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
 
-			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
-			await WindowHelper.WaitForIdle();
+				SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+				await WindowHelper.WaitForIdle();
 
-			var range = SUT.Document.GetRange(4, 4);
-			range.EndOf(TextRangeUnit.Line, false);
+				var range = SUT.Document.GetRange(4, 4);
+				Assert.AreEqual(2, range.EndOf(TextRangeUnit.Line, false));
+				Assert.AreEqual(6, range.StartPosition);
+				Assert.AreEqual(6, range.EndPosition);
 
-			// The visual line end stops before the trailing carriage return.
-			Assert.AreEqual(5, range.StartPosition);
-			Assert.AreEqual(5, range.EndPosition);
+				range.SetRange(4, 4);
+				Assert.AreEqual(2, range.EndOf(TextRangeUnit.Line, true));
+				Assert.AreEqual(4, range.StartPosition);
+				Assert.AreEqual(6, range.EndPosition);
+
+				range.SetRange(7, 7);
+				Assert.AreEqual(1, range.EndOf(TextRangeUnit.Line, false));
+				Assert.AreEqual(8, range.StartPosition);
+
+				// The selection's End key still stops before the paragraph mark.
+				SUT.Document.Selection.SetRange(4, 4);
+				Assert.AreEqual(1, SUT.Document.Selection.EndKey(TextRangeUnit.Line, false));
+				Assert.AreEqual(5, SUT.Document.Selection.StartPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Expand_Line_Selects_Whole_Line()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
 
-			SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
-			await WindowHelper.WaitForIdle();
+				SUT.Document.SetText(TextSetOptions.None, "aa\rbb\rcc");
+				await WindowHelper.WaitForIdle();
 
-			var range = SUT.Document.GetRange(4, 4);
-			range.Expand(TextRangeUnit.Line);
+				var range = SUT.Document.GetRange(4, 4);
+				Assert.AreEqual(3, range.Expand(TextRangeUnit.Line));
 
-			Assert.AreEqual(3, range.StartPosition);
-			Assert.AreEqual(5, range.EndPosition);
+				Assert.AreEqual(3, range.StartPosition);
+				Assert.AreEqual(6, range.EndPosition);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
