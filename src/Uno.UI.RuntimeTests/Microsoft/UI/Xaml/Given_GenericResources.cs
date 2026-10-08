@@ -79,7 +79,7 @@ public class Given_GenericResources
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12839")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	public void When_ScrollViewer_Compatibility_Style_Is_Applied()
+	public void When_ScrollViewer_Implicit_Style_Is_Based_On_Default()
 	{
 		var defaultStyle = Application.Current!.Resources["DefaultScrollViewerStyle"] as Style;
 		var implicitStyle = Application.Current.Resources[typeof(ScrollViewer)] as Style;
