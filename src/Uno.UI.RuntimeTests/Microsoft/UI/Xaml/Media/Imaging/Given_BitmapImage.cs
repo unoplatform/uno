@@ -131,6 +131,40 @@ public class Given_BitmapImage
 		GC.KeepAlive(secondImage);
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25096")]
+	public async Task When_Shared_Download_Failed_Then_Same_Uri_Reopened()
+	{
+		using var server = await GatedImageServer.StartAsync();
+		server.FailNextRequest = true;
+		server.ReleaseResponses();
+
+		var first = new BitmapImage(server.Uri);
+		var firstResult = TrackOpen(first);
+		var firstImage = new Image { Source = first };
+
+		Assert.IsFalse(await firstResult.WaitAsync(TimeSpan.FromSeconds(10)), "The first BitmapImage should fail");
+
+#if HAS_UNO
+		// The entry is dropped by a continuation on the load, so poll rather than assume it ran before ImageFailed.
+		await TestHelper.RetryAssert(
+			async () => Assert.IsNull(await BitmapImage.GetCachedImageDataTaskForTesting(server.Uri, null, null), "The failed load should have been dropped from the cache"),
+			count: 200);
+#endif
+
+		var second = new BitmapImage(server.Uri);
+		var secondResult = TrackOpen(second);
+		var secondImage = new Image { Source = second };
+
+		Assert.IsTrue(await secondResult.WaitAsync(TimeSpan.FromSeconds(10)), "A failed download must not be cached: the next BitmapImage should download again and open");
+		Assert.AreEqual(100, second.PixelWidth);
+		Assert.AreEqual(2, server.RequestCount, "The second BitmapImage should have downloaded again");
+
+		GC.KeepAlive(firstImage);
+		GC.KeepAlive(secondImage);
+	}
+
 	private static Task<bool> TrackOpen(BitmapImage image)
 	{
 		var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -142,6 +176,7 @@ public class Given_BitmapImage
 	/// <summary>
 	/// Minimal loopback HTTP server that sends the response headers immediately but holds the image bytes
 	/// until <see cref="ReleaseResponses"/>, so a test can act while a download is deterministically in flight.
+	/// With <see cref="FailNextRequest"/> set, the next request gets an HTTP 500 instead of the image.
 	/// </summary>
 	private sealed class GatedImageServer : IDisposable
 	{
@@ -173,6 +208,8 @@ public class Given_BitmapImage
 		public Uri Uri { get; }
 
 		public int RequestCount => Volatile.Read(ref _requestCount);
+
+		public bool FailNextRequest { get; set; }
 
 		public void ReleaseResponses() => _release.TrySetResult();
 
@@ -221,6 +258,14 @@ public class Given_BitmapImage
 				}
 
 				Interlocked.Increment(ref _requestCount);
+
+				if (FailNextRequest)
+				{
+					FailNextRequest = false;
+					await stream.WriteAsync(Encoding.ASCII.GetBytes("HTTP/1.1 500 Internal Server Error\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"));
+					await stream.FlushAsync();
+					return;
+				}
 
 				var headers = $"HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nContent-Length: {_body.Length}\r\nConnection: close\r\n\r\n";
 				await stream.WriteAsync(Encoding.ASCII.GetBytes(headers));
