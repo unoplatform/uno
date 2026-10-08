@@ -1,5 +1,4 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX reference PipsPager.xaml, tag winui3/release/1.4.2 -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary x:Key="Light">
@@ -93,8 +92,8 @@
   <x:Double x:Key="PipsPagerButtonWidth">20</x:Double>
   <x:Double x:Key="PipsPagerButtonHeight">12</x:Double>
   <x:Double x:Key="PipsPagerHorizontalOrientationButtonWidth">12</x:Double>
-  <x:Double x:Key="PipsPagerHorizontalOrientationButtonHeight">20</x:Double>
-  <x:Double x:Key="PipsPagerVerticalOrientationButtonWidth">20</x:Double>
+  <x:Double x:Key="PipsPagerHorizontalOrientationButtonHeight">24</x:Double>
+  <x:Double x:Key="PipsPagerVerticalOrientationButtonWidth">24</x:Double>
   <x:Double x:Key="PipsPagerVerticalOrientationButtonHeight">12</x:Double>
   <Thickness x:Key="PipsPagerButtonBorderThickness">1</Thickness>
   <Thickness x:Key="PipsPagerNavigationButtonBorderThickness">1</Thickness>
@@ -102,8 +101,8 @@
   <x:String x:Key="PipsPagerNormalGlyph">&#xEA3B;</x:String>
   <x:String x:Key="PipsPagerPreviousPageButtonGlyph">&#xEDDB;</x:String>
   <x:String x:Key="PipsPagerNextPageButtonGlyph">&#xEDDC;</x:String>
-  <x:Double x:Key="PipsPagerNavigationButtonHeight">20</x:Double>
-  <x:Double x:Key="PipsPagerNavigationButtonWidth">20</x:Double>
+  <x:Double x:Key="PipsPagerNavigationButtonHeight">24</x:Double>
+  <x:Double x:Key="PipsPagerNavigationButtonWidth">24</x:Double>
   <x:Double x:Key="PipsPagerNavigationButtonFontSize">8</x:Double>
   <x:String x:Key="PipsPagerSelectedGlyphFontSize">6</x:String>
   <x:String x:Key="PipsPagerNormalGlyphFontSize">4</x:String>
