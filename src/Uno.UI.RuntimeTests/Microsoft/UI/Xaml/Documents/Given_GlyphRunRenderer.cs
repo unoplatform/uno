@@ -85,6 +85,71 @@ public class Given_GlyphRunRenderer
 		Assert.AreEqual(0, mismatches, $"{mismatches} pixels differ from the outline renderer.");
 	}
 
+	// Every paint draws the images in the same order, so plain LRU eviction would miss on every lookup once a paint
+	// draws more images than the cap.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public void When_A_Paint_Draws_More_Images_Than_The_Cap_Then_A_Repaint_Reuses_Their_Textures()
+	{
+		const int count = GlyphRunRenderer.ImageTextureCache.Cap + 6;
+		var images = new (object Key, IImage Image)[count];
+		for (var i = 0; i < count; i++)
+		{
+			images[i] = (new object(), ImageEncoderDecoder.Current.CreateImage(2, 2, new byte[2 * 2 * 4]));
+		}
+
+		try
+		{
+			using var surface = SKSurface.Create(new SKImageInfo(8, 8));
+			var paint = new SkiaDrawingSession(surface.Canvas, DrawingFactory.Current);
+			var textures = new ITexture[count];
+			for (var i = 0; i < count; i++)
+			{
+				textures[i] = GlyphRunRenderer.ImageTextureCache.Get(paint, images[i].Key, images[i].Image);
+			}
+
+			var repaint = new SkiaDrawingSession(surface.Canvas, DrawingFactory.Current);
+			var hits = 0;
+			for (var i = 0; i < count; i++)
+			{
+				if (ReferenceEquals(textures[i], GlyphRunRenderer.ImageTextureCache.Get(repaint, images[i].Key, images[i].Image)))
+				{
+					hits++;
+				}
+			}
+
+			Assert.AreEqual(count, hits);
+		}
+		finally
+		{
+			foreach (var (_, image) in images)
+			{
+				image.Dispose();
+			}
+		}
+	}
+
+	// Format runs, undo snapshots and fragments clone the image state, and each clone decodes its own image.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public void When_Inline_Image_Is_Cloned_Then_Its_Texture_Is_Shared()
+	{
+		var encoded = Uno.UI.RuntimeTests.Helpers.TestPngEncoder.CreateSolidPng(4, 4, Microsoft.UI.Colors.CornflowerBlue);
+		Assert.IsTrue(Microsoft.UI.Text.InlineImageState.TryCreate(encoded, 4, 4, 4, Microsoft.UI.Text.VerticalCharacterAlignment.Baseline, null, Microsoft.UI.Text.InlineImageEncoding.Unknown, out var original));
+		var clone = original.Clone();
+
+		var originalImage = original.GetDecodedImage();
+		var cloneImage = clone.GetDecodedImage();
+		Assert.IsNotNull(originalImage);
+		Assert.IsNotNull(cloneImage);
+
+		using var surface = SKSurface.Create(new SKImageInfo(8, 8));
+		var session = new SkiaDrawingSession(surface.Canvas, DrawingFactory.Current);
+		Assert.AreSame(
+			GlyphRunRenderer.ImageTextureCache.Get(session, original.TextureKey, originalImage),
+			GlyphRunRenderer.ImageTextureCache.Get(session, clone.TextureKey, cloneImage));
+	}
+
 	private static async Task<byte[]> LoadFontData()
 	{
 		var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf"));
