@@ -103,7 +103,7 @@ partial class App
 			await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
 				CancellationToken.None,
 				runtimeTestResultFilePath,
-				() => System.Environment.Exit(0));
+				exitCode => System.Environment.Exit(exitCode));
 
 			return true;
 		}
