@@ -1,12 +1,14 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Benchmarks.Shared.Controls;
 using BenchmarkDotNet.Loggers;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
@@ -159,6 +161,25 @@ public class Given_BenchmarkDotNetControl
 		Assert.AreEqual("", control.ResultsAsBase64);
 		Assert.IsFalse(Find<Button>(control, "downloadResults").IsEnabled);
 		Assert.IsTrue(Find<Button>(control, "runButton").IsEnabled);
+	}
+
+	[TestMethod]
+	public async Task When_Run_Completes_Results_Are_Archived()
+	{
+#if !WINAPPSDK
+		// Skia heads run the page in the CI benchmark job; WinAppSDK has no CoreDispatcher.
+		Assert.Inconclusive("Covers the WinAppSDK head only.");
+#endif
+		var (_, control) = await Load(1000, 700);
+		control.ClassFilter = "SpanTesting";
+
+		await control.Run();
+
+		var log = string.Concat(Find<TextBlock>(control, "runLogs").Inlines.OfType<Run>().Select(r => r.Text + "\n"));
+		Assert.AreEqual("Finished", Find<TextBlock>(control, "runStatus").Text, log);
+		Assert.AreEqual("1", Find<TextBlock>(control, "runCount").Text);
+		Assert.IsFalse(string.IsNullOrEmpty(control.ResultsAsBase64), "Results were not archived");
+		Assert.IsTrue(Find<Button>(control, "downloadResults").IsEnabled);
 	}
 
 	[TestMethod]
