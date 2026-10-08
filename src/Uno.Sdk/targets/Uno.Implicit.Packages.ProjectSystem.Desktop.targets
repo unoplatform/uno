@@ -31,15 +31,13 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Win32" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.X11" ProjectSystem="true" />
 
-		<!--
-			The managed SkiaSharp package auto-references its Win32/macOS native assets but not the Linux one,
-			which only arrives as a transitive floor from the X11 / FrameBuffer runtime packs above. Inject it
-			so overriding SkiaSharpVersion retargets the Linux native asset too; otherwise a managed SkiaSharp
-			bumped past Uno's floor keeps the old libSkiaSharp on Linux and crashes Skia Desktop at startup.
-		-->
-		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Linux" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';skia;'))" />
-		<!-- Uno.WinUI depends on HarfBuzzSharp for text shaping, and HarfBuzzSharp brings its own native assets
-		     for Windows, macOS, Android, iOS and tvOS but not for Linux. -->
+		<!-- Native libraries are referenced explicitly rather than left to the managed SkiaSharp / HarfBuzzSharp
+		     packages' own dependencies. HarfBuzz shapes text for the font providers in Uno.WinUI; Skia is the skia feature's. -->
+		<_UnoProjectSystemPackageReference Include="HarfBuzzSharp.NativeAssets.Win32" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="HarfBuzzSharp.NativeAssets.macOS" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="HarfBuzzSharp.NativeAssets.Linux" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Win32" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';skia;'))" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.macOS" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';skia;'))" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Linux" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';skia;'))" />
 	</ItemGroup>
 </Project>

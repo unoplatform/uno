@@ -14,11 +14,11 @@
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.WebAssembly.Browser" ProjectSystem="true" />
-		<!-- libSkiaSharp.a is linked by this package's own targets, so only a head using the Skia backend pays for it. -->
-		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.WebAssembly" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';skia;'))" />
-		<!-- Uno.WinUI depends on HarfBuzzSharp for text shaping, and HarfBuzzSharp brings its own native assets
-		     for Windows, macOS, Android, iOS and tvOS but not for WebAssembly. -->
+		<!-- Native libraries are referenced explicitly rather than left to the managed SkiaSharp / HarfBuzzSharp
+		     packages' own dependencies. HarfBuzz shapes text for the font providers in Uno.WinUI; Skia is the skia
+		     feature's, and its own targets link libSkiaSharp.a, so only a head using Skia pays for it. -->
 		<_UnoProjectSystemPackageReference Include="HarfBuzzSharp.NativeAssets.WebAssembly" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.WebAssembly" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';skia;'))" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">

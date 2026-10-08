@@ -95,6 +95,9 @@
 		"packages": [
 			"SkiaSharp.Skottie",
 			"SkiaSharp.Views.WinUI",
+			"SkiaSharp.NativeAssets.Android",
+			"SkiaSharp.NativeAssets.iOS",
+			"SkiaSharp.NativeAssets.tvOS",
 			"SkiaSharp.NativeAssets.Linux",
 			"SkiaSharp.NativeAssets.macOS",
 			"SkiaSharp.NativeAssets.Win32",
@@ -105,7 +108,12 @@
 		"group": "HarfBuzzSharp",
 		"version": "14.2.1.1",
 		"packages": [
+			"HarfBuzzSharp.NativeAssets.Android",
+			"HarfBuzzSharp.NativeAssets.iOS",
+			"HarfBuzzSharp.NativeAssets.tvOS",
 			"HarfBuzzSharp.NativeAssets.Linux",
+			"HarfBuzzSharp.NativeAssets.macOS",
+			"HarfBuzzSharp.NativeAssets.Win32",
 			"HarfBuzzSharp.NativeAssets.WebAssembly"
 		]
 	},

@@ -36,6 +36,10 @@
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Android" ProjectSystem="true" />
+		<!-- Native libraries are referenced explicitly rather than left to the managed SkiaSharp / HarfBuzzSharp
+		     packages' own dependencies. HarfBuzz shapes text for the font providers in Uno.WinUI; Skia is the skia feature's. -->
+		<_UnoProjectSystemPackageReference Include="HarfBuzzSharp.NativeAssets.Android" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Android" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';skia;'))" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">

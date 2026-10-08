@@ -39,10 +39,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="HarfbuzzSharp" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.Runtime\Uno.UI.Runtime.csproj" />
 		<!-- WebGPU "init half": the host calls WebGpuContext.Create* to build a WebGpu window+context for the
 		     GraphicsContextKind.WebGpu kind. The host uses only the renderer-agnostic init API, not the renderer. -->
