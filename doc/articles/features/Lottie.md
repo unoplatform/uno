@@ -44,7 +44,7 @@ On Uno Platform targets, Lottie animations are rendered by one of two renderers:
 | Renderer | Used when | Coverage |
 |----------|-----------|----------|
 | Skottie (part of the Skia renderer) | The Skia renderer is present (the `Skia` feature, which is on by default), even when WebGPU draws the UI | Most Lottie features, as supported by [Skottie](https://skia.org/docs/user/modules/skottie/) |
-| Managed engine (built into `Uno.WinUI`) | The Skia renderer is not present, for example in a WebGPU-only app | Shape and null layers, layer parenting, transforms, bézier, rectangle and ellipse paths, solid fills, strokes and trim paths, with keyframe easing. Gradients, repeaters, masks, mattes, precompositions, image and text layers, and effects are not supported yet: unsupported items are skipped. |
+| Managed engine (built into `Uno.WinUI`) | The Skia renderer is not present, for example in a WebGPU-only app | A subset of Lottie: unsupported features are skipped. |
 
 The host builder picks the renderer automatically. An app can also register one explicitly, which takes precedence over both. Each renderer is created by its assembly's factory:
 
