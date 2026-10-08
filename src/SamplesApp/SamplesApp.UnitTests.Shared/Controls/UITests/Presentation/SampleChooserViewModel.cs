@@ -375,8 +375,6 @@ namespace SampleControl.Presentation
 						{
 							Console.WriteLine($"Creating control for {fileName}");
 
-							LogMemoryStatistics();
-
 							if (_log.IsEnabled(LogLevel.Debug))
 							{
 								_log.Debug($"Generating {folderName}\\{fileName}");
@@ -629,8 +627,6 @@ namespace SampleControl.Presentation
 				doneAction?.Invoke();
 			}
 		}
-
-		partial void LogMemoryStatistics();
 
 		private void ObserveChanges()
 		{

@@ -4,12 +4,6 @@
     xmlns:controls="using:Uno.UI.Samples.Controls"
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:u="using:Uno.UI.Samples.Controls">
-    <!--  Merged Dictionaries  -->
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Application/_Application.xaml" />
-        <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/_Controls.xaml" />
-    </ResourceDictionary.MergedDictionaries>
-
     <Style x:Key="DefaultSampleControlStyle" TargetType="controls:SampleControl">
         <Setter Property="Template">
             <Setter.Value>

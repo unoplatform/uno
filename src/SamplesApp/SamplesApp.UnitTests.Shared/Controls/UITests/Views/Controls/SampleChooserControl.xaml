@@ -19,8 +19,6 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Application/_Application.xaml" />
-                <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/_Controls.xaml" />
                 <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/SampleControl.xaml" />
                 <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Shell/ShellResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
