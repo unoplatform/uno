@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using SampleControl.Presentation;
+using SamplesApp.Samples.UnitTests;
 using Uno.UI.RuntimeTests;
 using Uno.UI.Samples.Entities;
 using Windows.Storage;
@@ -216,6 +218,35 @@ public class Given_ShellViewModelState
 			vm.ShowBrowserSection(section);
 			vm.BrowserView = browserView;
 			vm.IsSplitVisible = wasSplitVisible;
+			vm.IsAppThemeLight = true;
+			vm.IsAutomationRun = wasAutomation;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	[DataRow(true, false, 0)]
+	[DataRow(false, false, 2)]
+	[DataRow(true, true, 2)]
+	public async Task When_Launch_Sample_Opens_Restored_Theme_Is_Dropped_Only_For_Runner(bool isRunner, bool hasLaunchTheme, int expectedThemeIndex)
+	{
+		var vm = SampleChooserViewModel.Instance;
+		var wasAutomation = vm.IsAutomationRun;
+		try
+		{
+			vm.IsAutomationRun = true;
+			vm.ApplyRestoredTheme(ElementTheme.Dark);
+			if (hasLaunchTheme)
+			{
+				vm.ApplyTransientTheme(ElementTheme.Dark);
+			}
+
+			vm.DropRestoredThemeForRunner(isRunner ? typeof(UnitTestsPage).FullName : typeof(Given_ShellViewModelState).FullName);
+
+			Assert.AreEqual(expectedThemeIndex, vm.AppThemeIndex);
+		}
+		finally
+		{
 			vm.IsAppThemeLight = true;
 			vm.IsAutomationRun = wasAutomation;
 			await TestServices.WindowHelper.WaitForIdle();
