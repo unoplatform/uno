@@ -15,7 +15,8 @@
 		<UnoSplashScreenBackgroundColor Condition="$(UnoSplashScreenBackgroundColor) == ''">$(UnoSplashScreenColor)</UnoSplashScreenBackgroundColor>
 		<!-- WebAssembly has no default color so that the loader follows the browser theme. Other targets have no theme-aware splash screen yet. -->
 		<UnoSplashScreenBackgroundColor Condition="$(UnoSplashScreenBackgroundColor) == '' and $(IsBrowserWasm) != 'true'">#FFFFFF</UnoSplashScreenBackgroundColor>
-		<UnoSplashScreenColor Condition="$(UnoSplashScreenColor) == '' and $(IsBrowserWasm) != 'true'">#FFFFFF</UnoSplashScreenColor>
+		<!-- Kept in sync for targets that still read the legacy name -->
+		<UnoSplashScreenColor Condition="$(UnoSplashScreenColor) == ''">$(UnoSplashScreenBackgroundColor)</UnoSplashScreenColor>
 
 		<!-- Support net10.0, without a platform identifier -->
 		<_UnoResizetizerIsCompatibleApp Condition=" 
