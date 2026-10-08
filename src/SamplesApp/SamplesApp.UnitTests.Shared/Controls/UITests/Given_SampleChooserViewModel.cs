@@ -1,7 +1,9 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using SampleControl.Presentation;
 using Uno.UI.RuntimeTests;
+using Uno.UI.Samples.Tests;
 
 namespace SamplesApp.Tests;
 
@@ -99,5 +102,33 @@ public class Given_SampleChooserViewModel
 			vm.SelectedCategory = previousCategory;
 			vm.SampleContents = previousContents;
 		}
+	}
+
+	[TestMethod]
+	public async Task When_Runtime_Test_Runner_Is_Missing_Run_Fails()
+	{
+		var path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.xml");
+
+		var exitCode = await SampleChooserViewModel.Instance.RunRuntimeTestsCore(
+			CancellationToken.None,
+			path,
+			_ => Task.FromResult<UnitTestsControl>(null!));
+
+		Assert.AreEqual(1, exitCode);
+		Assert.IsFalse(File.Exists(path));
+	}
+
+	[TestMethod]
+	public async Task When_Runtime_Test_Runner_Throws_Run_Fails()
+	{
+		var path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.xml");
+
+		var exitCode = await SampleChooserViewModel.Instance.RunRuntimeTestsCore(
+			CancellationToken.None,
+			path,
+			_ => throw new InvalidOperationException("Runner unavailable"));
+
+		Assert.AreEqual(1, exitCode);
+		Assert.IsFalse(File.Exists(path));
 	}
 }
