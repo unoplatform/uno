@@ -56,7 +56,7 @@ jobs:
     JobDisplayName: 'Mobile Accessibility UI Tests'
     TestRunName: 'iOS Skia Mobile Accessibility UI Tests'
     JobTimeoutInMinutes: 90
-    vmImage: ${{ parameters.vmMacImageTest }}
+    vmImage: ${{ parameters.vmMacImage }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_AUTOMATED_GROUP: MobileAccessibility
     UITEST_TEST_TIMEOUT: '20m'
@@ -64,7 +64,7 @@ jobs:
     SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesapp.skia'
     UITEST_VARIANT: 'skia'
     TEST_KIND: ui
-    xCodeRoot: ${{ parameters.xCodeRootTest }}
+    xCodeRoot: ${{ parameters.xCodeRootBuild }}
     dependsOn:
       - Skia_Tests_Build_iOS
     BuildJobName: 'Skia_Tests_Build_iOS'
