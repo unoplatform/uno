@@ -20,7 +20,7 @@
 		The override only works while Generic.xaml is registered into MasterDictionary before
 		mergedstyles.xaml, since the last merged dictionary wins. That ordering comes from the
 		generator and is guarded by
-		Given_GenericResources.When_ScrollViewer_Compatibility_Style_Is_Applied.
+		Given_GenericResources.When_GridView_Default_Style_Uses_WrapPanel.
 	  -->
 	  <_NonMergedXamlResources Include="$(MSBuildProjectDirectory)\UI\Xaml\Style\Generic\Generic.xaml" />
 	  <_NonMergedXamlResources Include="$(MSBuildProjectDirectory)\UI\Xaml\Style\Generic\SystemResources.xaml" />
