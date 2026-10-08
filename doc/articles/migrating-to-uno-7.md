@@ -1408,7 +1408,8 @@ process-wide statics, so the ambient Android context APIs changed shape:
 - **`Uno.UI.ViewManagement.ApplicationViewHelper.GetBaseActivityEvents()` and
   `IBaseActivityEvents` were removed.** No Skia activity implements the interface, so the method
   always returned `null`. Observe activity lifecycle events with Android's
-  `Application.RegisterActivityLifecycleCallbacks` instead.
+  `Application.RegisterActivityLifecycleCallbacks` instead. The `Uno.UI.ViewManagement.Activity*Handler`
+  delegates it used were removed with it.
 - **`Uno.UI.OnSystemUiVisibilityChangeListener` is now `internal`.** It is constructed by the host
   with the activity that owns the window; app code had no way to supply one.
 
