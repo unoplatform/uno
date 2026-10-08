@@ -476,7 +476,7 @@ namespace Microsoft.UI.Text
 				: useObjectText || noHidden
 					? GetFilteredTextInRange(start, end, useObjectText, noHidden)
 					: _textBuffer.Slice(start, end - start);
-			if (includesFinalEop)
+			if (includesFinalEop && (!noHidden || options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.AllowFinalEop)))
 			{
 				text += '\r';
 			}
@@ -2034,13 +2034,15 @@ namespace Microsoft.UI.Text
 				throw new ArgumentException("Math-only documents can only be retrieved as RTF.", nameof(options));
 			}
 
-			var convertsLineEndings = options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.UseLf)
-				|| options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.UseCrlf);
-			var effectiveOptions = !convertsLineEndings
+			// Like WinUI, converting line endings or filtering hidden text omits the final EOP unless AllowFinalEop is set.
+			var omitsFinalEop = options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.UseLf)
+				|| options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.UseCrlf)
+				|| options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.NoHidden);
+			var effectiveOptions = !omitsFinalEop
 				|| options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.AllowFinalEop)
 					? options | global::Microsoft.UI.Text.TextGetOptions.AllowFinalEop
 					: options & ~global::Microsoft.UI.Text.TextGetOptions.AllowFinalEop;
-			var rangeEnd = !convertsLineEndings
+			var rangeEnd = !omitsFinalEop
 				|| options.HasFlag(global::Microsoft.UI.Text.TextGetOptions.AllowFinalEop)
 					? StoryLength
 					: TextLength;
