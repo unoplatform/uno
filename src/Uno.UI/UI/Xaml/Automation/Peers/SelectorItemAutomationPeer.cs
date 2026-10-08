@@ -131,9 +131,9 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 
 			if (ItemsControlAutomationPeer is { } parent)
 			{
-				if (parent.Owner is ISelector selector)
+				if (parent.Owner is Selector selector)
 				{
-					return (selector as Selector).AutomationPeerIsSelected(GetItemIndex(), Item);
+					return selector.AutomationPeerIsSelected(GetItemIndex(), Item);
 				}
 			}
 
