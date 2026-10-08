@@ -1809,52 +1809,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_DefaultCharacterFormat_RoundTrips()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
 
-			var def = SUT.Document.GetDefaultCharacterFormat();
-			def.Bold = FormatEffect.On;
-			def.Size = 24;
+				var def = SUT.Document.GetDefaultCharacterFormat();
+				def.Bold = FormatEffect.On;
+				def.Size = 24;
 
-			var reread = SUT.Document.GetDefaultCharacterFormat();
-			Assert.AreEqual(FormatEffect.On, reread.Bold);
-			Assert.AreEqual(24f, reread.Size);
+				// The returned format is a copy until it is set back.
+				Assert.AreEqual(FormatEffect.Off, SUT.Document.GetDefaultCharacterFormat().Bold);
+
+				SUT.Document.SetDefaultCharacterFormat(def);
+				var reread = SUT.Document.GetDefaultCharacterFormat();
+				Assert.AreEqual(FormatEffect.On, reread.Bold);
+				Assert.AreEqual(24f, reread.Size);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_DefaultCharacterFormat_Applies_To_New_Text()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
 
-			SUT.Document.GetDefaultCharacterFormat().Bold = FormatEffect.On;
-			SUT.Document.SetText(TextSetOptions.None, "abc");
+				var format = SUT.Document.GetDefaultCharacterFormat();
+				format.Bold = FormatEffect.On;
+				SUT.Document.SetDefaultCharacterFormat(format);
+				SUT.Document.SetText(TextSetOptions.None, "abc");
 
-			// SetText content is created against the (now bold) document default.
-			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 3).CharacterFormat.Bold);
+				Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 3).CharacterFormat.Bold);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_DefaultCharacterFormat_Applies_To_Typed_Text()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
 
-			SUT.Document.GetDefaultCharacterFormat().Italic = FormatEffect.On;
-			SUT.Document.Selection.TypeText("hi");
+				var format = SUT.Document.GetDefaultCharacterFormat();
+				format.Italic = FormatEffect.On;
+				SUT.Document.SetDefaultCharacterFormat(format);
+				SUT.Document.Selection.TypeText("hi");
 
-			GetTextWithoutFinalEop(SUT.Document, out var text);
-			Assert.AreEqual("hi", text);
-			// Text typed into the empty document inherits the document default formatting.
-			Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 2).CharacterFormat.Italic);
+				GetTextWithoutFinalEop(SUT.Document, out var text);
+				Assert.AreEqual("hi", text);
+				Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, 2).CharacterFormat.Italic);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
@@ -2776,32 +2800,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_DefaultParagraphFormat_RoundTrips()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
 
-			SUT.Document.GetDefaultParagraphFormat().Alignment = ParagraphAlignment.Right;
+				var format = SUT.Document.GetDefaultParagraphFormat();
+				format.Alignment = ParagraphAlignment.Center;
+				Assert.AreEqual(ParagraphAlignment.Left, SUT.Document.GetDefaultParagraphFormat().Alignment);
 
-			Assert.AreEqual(ParagraphAlignment.Right, SUT.Document.GetDefaultParagraphFormat().Alignment);
+				SUT.Document.SetDefaultParagraphFormat(format);
+				Assert.AreEqual(ParagraphAlignment.Center, SUT.Document.GetDefaultParagraphFormat().Alignment);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_DefaultParagraphFormat_Applies_To_New_Text()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
 
-			SUT.Document.GetDefaultParagraphFormat().Alignment = ParagraphAlignment.Center;
-			SUT.Document.SetText(TextSetOptions.None, "aaa\rbbb");
+				var format = SUT.Document.GetDefaultParagraphFormat();
+				format.Alignment = ParagraphAlignment.Center;
+				SUT.Document.SetDefaultParagraphFormat(format);
+				SUT.Document.SetText(TextSetOptions.None, "aaa\rbbb");
 
-			// Both paragraphs are created against the (centered) document default.
-			Assert.AreEqual(ParagraphAlignment.Center, SUT.Document.GetRange(1, 1).ParagraphFormat.Alignment);
-			Assert.AreEqual(ParagraphAlignment.Center, SUT.Document.GetRange(5, 5).ParagraphFormat.Alignment);
+				Assert.AreEqual(ParagraphAlignment.Center, SUT.Document.GetRange(1, 1).ParagraphFormat.Alignment);
+				Assert.AreEqual(ParagraphAlignment.Center, SUT.Document.GetRange(5, 5).ParagraphFormat.Alignment);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]

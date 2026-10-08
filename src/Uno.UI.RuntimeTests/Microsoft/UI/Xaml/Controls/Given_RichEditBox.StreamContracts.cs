@@ -195,9 +195,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public void When_ApplyRtfDocumentDefaults_Does_Not_Replace_Managed_Default_Format_Objects()
 		{
 			var document = new RichEditBox().Document;
-			document.GetDefaultCharacterFormat().Name = "Segoe UI";
-			document.GetDefaultCharacterFormat().Size = 11;
-			document.GetDefaultParagraphFormat().Alignment = ParagraphAlignment.Center;
+			var characterFormat = document.GetDefaultCharacterFormat();
+			characterFormat.Name = "Segoe UI";
+			characterFormat.Size = 11;
+			document.SetDefaultCharacterFormat(characterFormat);
+			var paragraphFormat = document.GetDefaultParagraphFormat();
+			paragraphFormat.Alignment = ParagraphAlignment.Center;
+			document.SetDefaultParagraphFormat(paragraphFormat);
 			var defaultName = document.GetDefaultCharacterFormat().Name;
 			var defaultSize = document.GetDefaultCharacterFormat().Size;
 			var defaultAlignment = document.GetDefaultParagraphFormat().Alignment;

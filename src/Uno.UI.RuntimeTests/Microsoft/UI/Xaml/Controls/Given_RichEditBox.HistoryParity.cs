@@ -139,10 +139,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					document.Selection.Options = SelectionOptions.Overtype | SelectionOptions.StartActive;
 					break;
 				case "default-character-format":
-					document.GetDefaultCharacterFormat().Bold = FormatEffect.On;
+					var characterFormat = document.GetDefaultCharacterFormat();
+					characterFormat.Bold = FormatEffect.On;
+					document.SetDefaultCharacterFormat(characterFormat);
 					break;
 				case "default-paragraph-format":
-					document.GetDefaultParagraphFormat().Alignment = ParagraphAlignment.Right;
+					var paragraphFormat = document.GetDefaultParagraphFormat();
+					paragraphFormat.Alignment = ParagraphAlignment.Center;
+					document.SetDefaultParagraphFormat(paragraphFormat);
 					break;
 			}
 
