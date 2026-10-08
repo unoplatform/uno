@@ -8,13 +8,14 @@
 
 		<!-- A renderer is required, so 'skia' is implied when the app names none. Naming 'webgpu' counts as
 		     naming one, which is what lets an app be SkiaSharp-free. Listing both references both, and Skia
-		     still renders by default; the head opts into WebGPU on the host builder. The legacy
-		     'nativerenderer' token is ignored, and 'skiarenderer' is mapped to 'skia' for backwards
+		     still renders by default; the head opts into WebGPU on the host builder. WinAppSDK renders with
+		     WinUI, so nothing is implied there: a Windows head that uses SKCanvasElement lists 'skia'. The
+		     legacy 'nativerenderer' token is ignored, and 'skiarenderer' is mapped to 'skia' for backwards
 		     compatibility. 'lottie' is ignored too: Lottie is built into Uno.WinUI. -->
 		<UnoFeatures>$(UnoFeatures.Replace(';nativerenderer;', ';'))</UnoFeatures>
 		<UnoFeatures>$(UnoFeatures.Replace(';lottie;', ';'))</UnoFeatures>
-		<UnoFeatures>$(UnoFeatures.Replace(';skiarenderer;', ';'))</UnoFeatures>
-		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;'))">$(UnoFeatures)skia;</UnoFeatures>
+		<UnoFeatures>$(UnoFeatures.Replace(';skiarenderer;', ';skia;'))</UnoFeatures>
+		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;')) And '$(IsWinAppSdk)' != 'true'">$(UnoFeatures)skia;</UnoFeatures>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
