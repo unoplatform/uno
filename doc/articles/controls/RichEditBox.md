@@ -93,4 +93,4 @@ editor.Document.GetRange(0, 3).CharacterFormat.Bold = FormatEffect.On;
 
 ## See RichEditBox in action
 
-The [SamplesApp RichEditBox samples](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.Samples/Windows_UI_Xaml_Controls/RichEditBox) cover basic editing, formatting, events, keyboard accelerators, automation, and advanced rich content.
+The [SamplesApp RichEditBox samples](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/RichEditBox) cover basic editing, formatting, events, keyboard accelerators, automation, and advanced rich content.
