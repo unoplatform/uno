@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Benchmarks.Shared.Controls;
@@ -180,6 +181,52 @@ public class Given_BenchmarkDotNetControl
 		Assert.AreEqual("1", Find<TextBlock>(control, "runCount").Text);
 		Assert.IsFalse(string.IsNullOrEmpty(control.ResultsAsBase64), "Results were not archived");
 		Assert.IsTrue(Find<Button>(control, "downloadResults").IsEnabled);
+	}
+
+	[TestMethod]
+	public async Task When_Run_Writes_No_Artifacts_Status_Reports_Failure()
+	{
+		var (_, control) = await Load(1000, 700);
+
+		await control.CompleteRun(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N")));
+
+		var status = Find<TextBlock>(control, "runStatus").Text;
+		Assert.AreNotEqual("Finished", status, "The UI test would wait for an archive that never comes");
+		StringAssert.StartsWith(status, "Failed");
+		Assert.AreEqual("", control.ResultsAsBase64);
+		Assert.IsFalse(Find<Button>(control, "downloadResults").IsEnabled);
+	}
+
+	[TestMethod]
+	public async Task When_Run_Finishes_Results_Are_Archived_First()
+	{
+		var (_, control) = await Load(1000, 700);
+		var artifacts = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N")));
+		File.WriteAllText(Path.Combine(artifacts.FullName, "report.md"), "results");
+
+		// BenchmarkDotNetTests (SamplesApp.UITests) reads ResultsAsBase64 as soon as it sees "Finished".
+		var status = Find<TextBlock>(control, "runStatus");
+		string? resultsWhenFinished = null;
+		var token = status.RegisterPropertyChangedCallback(TextBlock.TextProperty, (_, _) =>
+		{
+			if (status.Text == "Finished")
+			{
+				resultsWhenFinished = control.ResultsAsBase64;
+			}
+		});
+
+		try
+		{
+			await control.CompleteRun(artifacts.FullName);
+		}
+		finally
+		{
+			status.UnregisterPropertyChangedCallback(TextBlock.TextProperty, token);
+			artifacts.Delete(recursive: true);
+		}
+
+		Assert.AreEqual("Finished", status.Text);
+		Assert.IsFalse(string.IsNullOrEmpty(resultsWhenFinished), "Finished was reported before the results were archived");
 	}
 
 	[TestMethod]
