@@ -65,6 +65,32 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	/// <summary>Resolves the accessibility element at a point of the render view, for VoiceOver touch exploration.</summary>
 	internal NSObject? AccessibilityHitTest(CGPoint point) => _accessibility?.HitTest(point);
 
+	/// <summary>The accessibility elements the render view reports to clients.</summary>
+	internal NSObject[]? GetAccessibilityElements() => _accessibility?.GetAccessibilityElementsForClient();
+
+	internal nint GetAccessibilityElementCount() => GetAccessibilityElements()?.Length ?? 0;
+
+	internal NSObject? GetAccessibilityElementAt(nint index)
+		=> GetAccessibilityElements() is { } elements && index >= 0 && index < elements.Length
+			? elements[index]
+			: null;
+
+	internal nint GetIndexOfAccessibilityElement(NSObject? element)
+	{
+		if (element is not null && GetAccessibilityElements() is { } elements)
+		{
+			for (var i = 0; i < elements.Length; i++)
+			{
+				if (ReferenceEquals(elements[i], element))
+				{
+					return i;
+				}
+			}
+		}
+
+		return NSRange.NotFound;
+	}
+
 	public RootViewController()
 	{
 		Initialize();
