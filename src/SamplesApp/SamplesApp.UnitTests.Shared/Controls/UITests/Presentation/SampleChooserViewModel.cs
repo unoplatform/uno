@@ -1331,6 +1331,8 @@ namespace SampleControl.Presentation
 				return false;
 			}
 
+			DropRestoredThemeForRunner(sample.ControlType?.FullName);
+
 			ShowNewSection(token, Section.SamplesContent);
 			SelectedLibrarySample = sample;
 

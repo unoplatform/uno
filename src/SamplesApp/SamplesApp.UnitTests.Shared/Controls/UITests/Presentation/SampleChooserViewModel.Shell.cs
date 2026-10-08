@@ -45,6 +45,7 @@ public partial class SampleChooserViewModel
 	private bool _isHomeVisible;
 	private bool _isDescriptionCollapsed;
 	private bool _useMicaBackdrop;
+	private bool _isThemeRestored;
 	private BrowserView _browserView = BrowserView.Samples;
 	private StartupPage _startupPage = StartupPage.Home;
 	private ShellDestination _shellDestination = ShellDestination.Samples;
@@ -712,6 +713,8 @@ public partial class SampleChooserViewModel
 	/// <summary>Applies a theme without persisting it (launch argument, restored setting).</summary>
 	internal void ApplyTransientTheme(ElementTheme theme)
 	{
+		_isThemeRestored = false;
+
 		if (Owner.XamlRoot?.Content is FrameworkElement)
 		{
 			_pendingRootTheme = null;
@@ -729,6 +732,22 @@ public partial class SampleChooserViewModel
 		_pendingRootTheme = theme;
 	}
 
+	/// <summary>A runner opened at launch follows the system theme, like an automated run, unless a theme was asked for.</summary>
+	internal void DropRestoredThemeForRunner(string? sampleTypeName)
+	{
+		if (_isThemeRestored && sampleTypeName == RuntimeTestsPageTypeName)
+		{
+			ApplyTransientTheme(ElementTheme.Default);
+		}
+	}
+
+	/// <summary>Applies the saved <c>Shell.Theme</c> without persisting it again.</summary>
+	internal void ApplyRestoredTheme(ElementTheme theme)
+	{
+		ApplyTransientTheme(theme);
+		_isThemeRestored = true;
+	}
+
 	private void ApplyPendingRootTheme(object sender, RoutedEventArgs e)
 	{
 		Owner.Loaded -= ApplyPendingRootTheme;
@@ -743,6 +762,7 @@ public partial class SampleChooserViewModel
 
 	private void SetAppTheme(ElementTheme theme)
 	{
+		_isThemeRestored = false;
 		_pendingRootTheme = null;
 		SetRootTheme(theme);
 		PersistShellSetting(ShellThemeKey, theme.ToString());
@@ -815,7 +835,7 @@ public partial class SampleChooserViewModel
 
 		if (ReadShellSetting<string>(ShellThemeKey) is { } theme && Enum.TryParse(theme, out ElementTheme elementTheme))
 		{
-			ApplyTransientTheme(elementTheme);
+			ApplyRestoredTheme(elementTheme);
 		}
 
 		if (ReadShellSetting<string>(ShellStartupPageKey) is { } startupPage && Enum.TryParse(startupPage, out StartupPage parsedStartupPage))
