@@ -362,8 +362,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_SetIndex_With_Extend_Moves_Only_End()
+		public async Task When_SetIndex_With_Extend_Selects_Whole_Unit()
 		{
 			var SUT = new RichEditBox();
 			try
@@ -375,14 +374,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var range = SUT.Document.GetRange(2, 3);
 				range.SetIndex(TextRangeUnit.Word, 2, true);
 
-				Assert.AreEqual(2, range.StartPosition);
+				Assert.AreEqual(6, range.StartPosition);
 				Assert.AreEqual(12, range.EndPosition);
 
-				// SetIndex moves EndPosition only. TOM's endpoint invariant collapses the range
-				// when that new end precedes the current start.
 				range.SetRange(13, 14);
 				range.SetIndex(TextRangeUnit.Word, 1, true);
-				Assert.AreEqual(6, range.StartPosition);
+				Assert.AreEqual(0, range.StartPosition);
 				Assert.AreEqual(6, range.EndPosition);
 			}
 			finally
@@ -429,7 +426,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SetIndex_Models_Final_Story_Units()
 		{
 			var SUT = new RichEditBox();
@@ -455,7 +451,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				range.SetRange(2, 2);
 				range.SetIndex(TextRangeUnit.Story, -1, true);
-				Assert.AreEqual(2, range.StartPosition);
+				Assert.AreEqual(0, range.StartPosition);
 				Assert.AreEqual(7, range.EndPosition);
 			}
 			finally
