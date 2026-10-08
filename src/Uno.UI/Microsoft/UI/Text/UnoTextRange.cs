@@ -1424,18 +1424,9 @@ namespace Microsoft.UI.Text
 			}
 			var indexedUnit = units[GetUnitIndex(index, units.Count)];
 
-			if (extend)
-			{
-				_end = indexedUnit.End;
-				if (_end < _start)
-				{
-					_start = _end;
-				}
-			}
-			else
-			{
-				_start = _end = indexedUnit.Start;
-			}
+			// Like TOM, extend selects the whole unit; otherwise the range collapses to its start.
+			_start = indexedUnit.Start;
+			_end = extend ? indexedUnit.End : indexedUnit.Start;
 
 			OnRangeChanged();
 		}
