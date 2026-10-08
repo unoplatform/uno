@@ -80,6 +80,11 @@ jobs:
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
 
+  - template: ../templates/publish-runtime-tests-metrics.yml
+    parameters:
+      resultsFile: '$(build.sourcesdirectory)/build/skia-macos${{ parameters.testResultLabel }}-runtime-tests-results.xml'
+      lane: 'skia-macos${{ parameters.testResultLabel }}'
+
   - task: PublishBuildArtifacts@1
     condition: always()
     displayName: Publish Failed Tests Results
