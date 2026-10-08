@@ -500,20 +500,24 @@ namespace Microsoft.UI.Xaml
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
 		public static DependencyProperty ProjectionProperty { get; } = CreateProjectionProperty();
 
+		private IDisposable _projectionChangedRegistration;
+
 		private void OnProjectionChanged(Media.Projection oldValue, Media.Projection newValue)
 		{
 			if (oldValue is not null)
 			{
-				oldValue.Changed -= OnProjectionPropertyChanged;
 				oldValue.Owner = null;
 			}
 
+			_projectionChangedRegistration?.Dispose();
+			_projectionChangedRegistration = null;
 			_projection = newValue;
 
 			if (newValue is not null)
 			{
 				newValue.Owner = this;
-				newValue.Changed += OnProjectionPropertyChanged;
+				// Weak registration: a projection shared through a Style must not root discarded elements.
+				_projectionChangedRegistration = newValue.RegisterChanged(OnProjectionPropertyChanged);
 			}
 
 			// Update the visual transform

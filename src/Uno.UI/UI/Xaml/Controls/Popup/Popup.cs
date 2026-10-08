@@ -87,8 +87,8 @@ public partial class Popup
 		// we set the anchor point of the child in PopupPanel.ArrangeOverride, so even though RenderTransform normally doesn't
 		// AffectArrange, in this situation, it does.
 		var callback = new EventHandler((_, _) => PopupPanel.InvalidateArrange());
-		renderTransform.Changed += callback;
-		_renderTransformChangedRegistration = Disposable.Create(() => renderTransform.Changed -= callback);
+		// Weak registration: a transform shared through a Style must not root discarded popups and their content.
+		_renderTransformChangedRegistration = renderTransform.RegisterChanged(callback);
 	}
 
 	private void OnKeyDown(object sender, KeyRoutedEventArgs args)
