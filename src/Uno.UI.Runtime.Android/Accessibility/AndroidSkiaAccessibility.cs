@@ -52,6 +52,10 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 	private bool _rootInvalidationScheduled;
 	private readonly HashSet<UIElement> _pendingScrollSubscriptionRoots = new();
 
+	// Set once something reads the node tree (a service, UIAutomator or a test hook); reset when Android reports
+	// no accessibility service left. The tree is only kept in sync while a client may read it.
+	private bool _clientRequestedTree;
+
 	internal AndroidSkiaAccessibility(XamlRoot xamlRoot)
 	{
 		_xamlRootRef = new WeakReference<XamlRoot>(xamlRoot);
@@ -68,24 +72,29 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		}
 	}
 
-	// Always true: tree is available for TalkBack and UIAutomator regardless of
-	// service state; unsolicited events are gated in AnnounceOnPlatform.
-	public override bool IsAccessibilityEnabled => true;
+	public override bool IsAccessibilityEnabled
+		=> !IsDisposed && _helper is { } helper && (_clientRequestedTree || helper.IsAccessibilityServiceEnabled);
 
 	protected override bool IsAutomationListenerActive
-		=> _recordEvents || _helper?.IsAccessibilityServiceEnabled == true;
+		=> !IsDisposed && (_recordEvents || _helper?.IsAccessibilityServiceEnabled == true);
 
 	protected override bool ShouldInvalidateOnScroll
-		=> _helper?.IsTouchExplorationEnabled == true;
+		=> !IsDisposed && _helper?.IsTouchExplorationEnabled == true;
 
+	// Checking the modal builds the node tree, which only a client should cause.
 	protected override bool IsBlockedByActiveModal(UIElement element)
-		=> _helper?.IsBlockedByActiveModal(element) is true;
+		=> IsAccessibilityEnabled && _helper?.IsBlockedByActiveModal(element) is true;
 
 	public override void NotifyInvalidatePeer(AutomationPeer peer)
 	{
 		base.NotifyInvalidatePeer(peer);
-		var virtualIds = _helper?.GetCurrentVirtualIdsForPeer(peer) ?? Array.Empty<int>();
-		_helper?.MarkAccessibilityTreeDirty();
+		if (!IsAccessibilityEnabled || _helper is not { } helper)
+		{
+			return;
+		}
+
+		var virtualIds = helper.GetCurrentVirtualIdsForPeer(peer);
+		helper.MarkAccessibilityTreeDirty();
 		if (virtualIds.Length > 0)
 		{
 			foreach (var id in virtualIds)
@@ -107,7 +116,7 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		object newValue)
 	{
 		base.NotifyPropertyChangedEvent(peer, automationProperty, oldValue, newValue);
-		if (_helper?.GetCurrentVirtualIdsForPeer(peer) is { Length: > 0 } ids)
+		if (IsAccessibilityEnabled && _helper?.GetCurrentVirtualIdsForPeer(peer) is { Length: > 0 } ids)
 		{
 			foreach (var id in ids)
 			{
@@ -133,11 +142,9 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		helper.Initialize(this);
 		Trace("Configured Android accessibility adapter.");
 
-		// Subscribe scroll sources already in the tree so descendant bounds stay
-		// current when the user scrolls before any child-add events fire.
-		if (RootElement is { } root)
+		if (IsAccessibilityEnabled)
 		{
-			SubscribeScrollSourcesInSubtree(root);
+			ResyncTree(invalidateRoot: false);
 		}
 
 		_registeredEventsAccessor = GetEventRecords;
@@ -179,6 +186,73 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		Trace("Detached Android accessibility adapter.");
 	}
 
+	// On-demand tracking -------------------------------------------------------
+
+	// Called by the helper before it builds its node tree.
+	internal void EnsureTreeRequested()
+	{
+		if (_clientRequestedTree)
+		{
+			return;
+		}
+
+		var wasEnabled = IsAccessibilityEnabled;
+		_clientRequestedTree = true;
+		if (!wasEnabled)
+		{
+			ResyncTree(invalidateRoot: false);
+		}
+	}
+
+	// Called by the helper when Android turns accessibility services or touch exploration on or off.
+	internal void OnAccessibilityServiceStateChanged(bool wasEnabled)
+	{
+		if (_helper is not { } helper)
+		{
+			return;
+		}
+
+		if (!helper.IsAccessibilityServiceEnabled)
+		{
+			_clientRequestedTree = false;
+		}
+
+		var isEnabled = IsAccessibilityEnabled;
+		Trace($"Accessibility service state changed; bridge enabled: {isEnabled}.");
+		if (!wasEnabled && isEnabled)
+		{
+			ResyncTree(invalidateRoot: true);
+		}
+		else if (wasEnabled && !isEnabled)
+		{
+			ReleaseTreeState();
+		}
+	}
+
+	// Tree mutations are not tracked while disabled, so enabling starts again from the current tree.
+	private void ResyncTree(bool invalidateRoot)
+	{
+		_helper?.MarkAccessibilityTreeDirty();
+		if (RootElement is { } root)
+		{
+			SubscribeScrollSourcesInSubtree(root);
+		}
+
+		if (invalidateRoot)
+		{
+			ScheduleRootInvalidation();
+		}
+	}
+
+	// Nothing prunes these while disabled, so they would otherwise keep removed elements alive.
+	private void ReleaseTreeState()
+	{
+		UnsubscribeAllScrollSources();
+		_pendingScrollSubscriptionRoots.Clear();
+		_pendingDirtyHandles.Clear();
+		_helper?.MarkAccessibilityTreeDirty();
+	}
+
 	// Event log -----------------------------------------------------------------
 
 	private AccessibilityNativeEventRecord[]? GetEventRecords(XamlRoot xamlRoot)
@@ -189,6 +263,7 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		}
 
 		_recordEvents = true;
+		EnsureTreeRequested();
 		return _eventLog.ToArray();
 	}
 
@@ -197,6 +272,7 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		if (_xamlRootRef.TryGetTarget(out var r) && ReferenceEquals(r, xamlRoot))
 		{
 			_recordEvents = true;
+			EnsureTreeRequested();
 			_eventLog.Clear();
 		}
 	}

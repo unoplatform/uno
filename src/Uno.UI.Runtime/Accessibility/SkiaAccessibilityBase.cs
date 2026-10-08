@@ -297,6 +297,21 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 	}
 
+	protected void UnsubscribeAllScrollSources()
+	{
+		foreach (var subscription in _scrollViewerSubscriptions.Values)
+		{
+			subscription.Source.ViewChanged -= subscription.Handler;
+		}
+		_scrollViewerSubscriptions.Clear();
+
+		foreach (var subscription in _scrollPresenterSubscriptions.Values)
+		{
+			subscription.Source.ViewChanged -= subscription.Handler;
+		}
+		_scrollPresenterSubscriptions.Clear();
+	}
+
 	// Walks descendants of the scrolled element and re-emits OnSizeOrOffsetChanged
 	// for each ContainerVisual. The platform overrides recompute positions via
 	// UIElement.GetTransform, which composes ancestor scroll offsets and transforms.
@@ -1405,18 +1420,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 				_assertiveAnnouncementVersion++;
 			}
 
-			foreach (var subscription in _scrollViewerSubscriptions.Values)
-			{
-				subscription.Source.ViewChanged -= subscription.Handler;
-			}
-			_scrollViewerSubscriptions.Clear();
-
-			foreach (var subscription in _scrollPresenterSubscriptions.Values)
-			{
-				subscription.Source.ViewChanged -= subscription.Handler;
-			}
-			_scrollPresenterSubscriptions.Clear();
-
+			UnsubscribeAllScrollSources();
 			UntrackFocusedElement();
 		}
 	}

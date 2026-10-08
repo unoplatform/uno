@@ -113,6 +113,12 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private bool _isBuildingPeerTree;
 	private int _peerTreeRevision;
 
+	// Cached and kept current by listeners: they are read for every visual move, hover and automation event.
+	private AccessibilityManager? _accessibilityManager;
+	private AccessibilityStateListener? _accessibilityStateListener;
+	private bool _isAccessibilityServiceEnabled;
+	private bool _isTouchExplorationOn;
+
 	// Action hook delegate stored for reference-equality check in ClearAdapter.
 	private Func<UIElement, AccessibilityNativeActionRequest, bool>? _registeredActionAccessor;
 	private Func<int, int, bool>? _registeredRawActionAccessor;
@@ -438,13 +444,74 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 	}
 
-	internal bool IsTouchExplorationEnabled
-		=> _host.Context?.GetSystemService(global::Android.Content.Context.AccessibilityService) is
-			AccessibilityManager { IsEnabled: true, IsTouchExplorationEnabled: true };
+	internal bool IsTouchExplorationEnabled => _isAccessibilityServiceEnabled && _isTouchExplorationOn;
 
-	internal bool IsAccessibilityServiceEnabled
-		=> _host.Context?.GetSystemService(global::Android.Content.Context.AccessibilityService) is
-			AccessibilityManager { IsEnabled: true };
+	internal bool IsAccessibilityServiceEnabled => _isAccessibilityServiceEnabled;
+
+	private void StartTrackingAccessibilityState()
+	{
+		if (_accessibilityStateListener is not null ||
+			_host.Context?.GetSystemService(global::Android.Content.Context.AccessibilityService) is not AccessibilityManager manager)
+		{
+			return;
+		}
+
+		_accessibilityManager = manager;
+		_accessibilityStateListener = new AccessibilityStateListener(this);
+		manager.AddAccessibilityStateChangeListener(_accessibilityStateListener);
+		manager.AddTouchExplorationStateChangeListener(_accessibilityStateListener);
+		_isAccessibilityServiceEnabled = manager.IsEnabled;
+		_isTouchExplorationOn = manager.IsTouchExplorationEnabled;
+	}
+
+	private void StopTrackingAccessibilityState()
+	{
+		if (_accessibilityManager is { } manager && _accessibilityStateListener is { } listener)
+		{
+			manager.RemoveAccessibilityStateChangeListener(listener);
+			manager.RemoveTouchExplorationStateChangeListener(listener);
+			listener.Dispose();
+		}
+
+		_accessibilityManager = null;
+		_accessibilityStateListener = null;
+		_isAccessibilityServiceEnabled = false;
+		_isTouchExplorationOn = false;
+	}
+
+	private void OnAccessibilityStateChanged(bool? serviceEnabled, bool? touchExplorationOn)
+	{
+		var wasEnabled = _adapter?.IsAccessibilityEnabled is true;
+		_isAccessibilityServiceEnabled = serviceEnabled ?? _isAccessibilityServiceEnabled;
+		_isTouchExplorationOn = touchExplorationOn ?? _isTouchExplorationOn;
+		_adapter?.OnAccessibilityServiceStateChanged(wasEnabled);
+	}
+
+	private sealed class AccessibilityStateListener : Java.Lang.Object,
+		AccessibilityManager.IAccessibilityStateChangeListener,
+		AccessibilityManager.ITouchExplorationStateChangeListener
+	{
+		private readonly WeakReference<UnoExploreByTouchHelper> _owner;
+
+		public AccessibilityStateListener(UnoExploreByTouchHelper owner)
+			=> _owner = new WeakReference<UnoExploreByTouchHelper>(owner);
+
+		public void OnAccessibilityStateChanged(bool enabled)
+		{
+			if (_owner.TryGetTarget(out var owner))
+			{
+				owner.OnAccessibilityStateChanged(enabled, touchExplorationOn: null);
+			}
+		}
+
+		public void OnTouchExplorationStateChanged(bool enabled)
+		{
+			if (_owner.TryGetTarget(out var owner))
+			{
+				owner.OnAccessibilityStateChanged(serviceEnabled: null, enabled);
+			}
+		}
+	}
 
 	internal void InvalidateAccessibilityRoot()
 	{
@@ -466,6 +533,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	private IReadOnlyList<AccessibilityPeerNode> GetCurrentPeerTree()
 	{
+		_adapter?.EnsureTreeRequested();
+
 		var root = GetRootElement();
 		if (root is null)
 		{
@@ -633,6 +702,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		_adapter = adapter;
 		MarkAccessibilityTreeDirty();
+		StartTrackingAccessibilityState();
 
 		// Android's current Skia host supports one XamlRoot per process, so these
 		// test hooks are single-slot. AppleUIKit uses a per-root registry because
@@ -733,6 +803,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		_resourceSegmentByAutomationId.Clear();
 		_automationIdByResourceSegment.Clear();
 		MarkAccessibilityTreeDirty();
+		StopTrackingAccessibilityState();
 		_adapter = null;
 	}
 

@@ -226,7 +226,7 @@ namespace Uno.UI.Runtime.Android
 			=> ev.ActionMasked is MotionEventActions.HoverEnter or MotionEventActions.HoverMove or MotionEventActions.HoverExit
 				&& ev.IsFromSource(InputSourceType.Touchscreen)
 				&& ev.GetToolType(0) == MotionEventToolType.Finger
-				&& GetSystemService(AccessibilityService) is global::Android.Views.Accessibility.AccessibilityManager { IsEnabled: true, IsTouchExplorationEnabled: true };
+				&& _renderView?.ExploreByTouchHelper.IsTouchExplorationEnabled is true;
 
 		public override bool DispatchTouchEvent(MotionEvent? ev)
 		{
