@@ -25,7 +25,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 
-			<group targetFramework="net10.0-android">
+			<group targetFramework="net10.0-android30.0">
 				<dependency id="Svg.Skia" version="3.0.6" />
 				<dependency id="SkiaSharp.NativeAssets.android" version="4.151.1" />
 
@@ -44,7 +44,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 
-			<group targetFramework="net11.0-android">
+			<group targetFramework="net11.0-android30.0">
 				<dependency id="Svg.Skia" version="3.0.6" />
 				<dependency id="SkiaSharp.NativeAssets.android" version="4.151.1" />
 
