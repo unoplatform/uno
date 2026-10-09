@@ -59,4 +59,64 @@ public class Given_LiteralValue
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task When_TemplateBinding_On_Attached_Property()
+	{
+		// Exercises the isTemplateBindingAttachedProperty branch of BuildLiteralValue.
+		var xamlFile = new XamlFile("MainPage.xaml", """
+			<Page x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:TestRepro">
+
+				<Page.Resources>
+					<ControlTemplate x:Key="MyTemplate" TargetType="local:MyControl">
+						<Border local:MyControl.Attached="{TemplateBinding Value}" />
+					</ControlTemplate>
+				</Page.Resources>
+
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MyControl : Control
+						{
+							public object Value { get; set; }
+
+							public static object GetAttached(DependencyObject element) => element.GetValue(AttachedProperty);
+
+							public static void SetAttached(DependencyObject element, object value) => element.SetValue(AttachedProperty, value);
+
+							public static readonly DependencyProperty AttachedProperty =
+								DependencyProperty.RegisterAttached("Attached", typeof(object), typeof(MyControl), new PropertyMetadata(null));
+						}
+
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			},
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }
