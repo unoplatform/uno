@@ -295,7 +295,9 @@ public class Given_ShellLayout
 
 				var expectedTheme = dark ? ElementTheme.Dark : ElementTheme.Light;
 				Assert.AreEqual(expectedTheme, current.ActualTheme);
-				Assert.AreSame(ShellThemeBrushes.Get("SubtleFillColorSecondaryBrush", expectedTheme), current.Background);
+				// WinUI can apply the brush a few ticks after WaitForIdle returns.
+				var expectedBrush = ShellThemeBrushes.Get("SubtleFillColorSecondaryBrush", expectedTheme);
+				await TestServices.WindowHelper.WaitFor(() => ReferenceEquals(expectedBrush, current.Background), timeoutMS: 3000, message: $"The current destination should use the {expectedTheme} brush.");
 				Assert.AreEqual("Current", AutomationProperties.GetItemStatus(current));
 				foreach (var other in buttons.Where(b => b != current))
 				{
