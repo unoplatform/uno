@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -148,6 +149,93 @@ public class Given_AccessibilityOnDemand
 			UIElementAccessibilityHelper.ExternalOnChildAdded = childAdded;
 			UIElementAccessibilityHelper.ExternalOnChildRemoved = childRemoved;
 			VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = visualChanged;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+	public async Task When_No_Bridge_Was_Ever_Enabled_Then_The_Router_Short_Circuits_Until_The_First_Query()
+	{
+		using var suspended = await SuspendAccessibilityClient();
+		using var router = RouterBridgeState.ResetToNeverEnabled();
+
+		var button = new Button { Content = "Changed without a bridge" };
+		await UITestHelper.Load(button);
+
+		Assert.IsFalse(router.IsAnyBridgeEnabled);
+		Assert.IsFalse(AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged), "No bridge can listen before one is enabled.");
+
+		AutomationProperties.SetHelpText(button, "Help");
+		Assert.IsNull(button.CachedAutomationPeer, "Without an enabled bridge, a property change must not create a peer.");
+
+		var xamlRoot = button.XamlRoot!;
+		_ = AccessibilityPeerHelper.AndroidAllNodeSnapshotsForRootAccessor?.Invoke(xamlRoot)
+			?? AccessibilityPeerHelper.IOSAllNodeSnapshotsForRootAccessor?.Invoke(xamlRoot);
+
+		Assert.IsTrue(router.IsAnyBridgeEnabled, "The first query must enable routing.");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+	public async Task When_Changed_Before_Any_Bridge_Was_Enabled_Then_The_First_Query_Sees_The_Change()
+	{
+		using var suspended = await SuspendAccessibilityClient();
+		using var router = RouterBridgeState.ResetToNeverEnabled();
+
+		var renamed = new Button { Content = "Original name" };
+		var hidden = new Button { Content = "Hidden before the first query" };
+		await UITestHelper.Load(new StackPanel { Children = { renamed, hidden } });
+
+		// The router drops both signals: no bridge is enabled yet.
+		AutomationProperties.SetName(renamed, "Renamed before the first query");
+		AutomationProperties.SetAccessibilityView(hidden, AccessibilityView.Raw);
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.IsFalse(router.IsAnyBridgeEnabled);
+
+		var xamlRoot = renamed.XamlRoot!;
+		_ = AccessibilityPeerHelper.AndroidAllNodeSnapshotsForRootAccessor?.Invoke(xamlRoot)
+			?? AccessibilityPeerHelper.IOSAllNodeSnapshotsForRootAccessor?.Invoke(xamlRoot);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(router.IsAnyBridgeEnabled, "The first query must enable routing.");
+		Assert.AreEqual("Renamed before the first query", MobileAccessibilityTestHelper.TryGetNativeSnapshot(renamed)?.Name);
+		Assert.IsNull(
+			MobileAccessibilityTestHelper.TryGetNativeSnapshot(hidden),
+			"A raw view set before the first query must stay out of the tree.");
+	}
+
+	// Earlier tests enabled a bridge, which the router remembers for the rest of the run.
+	private sealed class RouterBridgeState : IDisposable
+	{
+		private readonly FieldInfo _field;
+		private readonly bool _wasEnabled;
+
+		private RouterBridgeState(FieldInfo field)
+		{
+			_field = field;
+			_wasEnabled = field.GetValue(null) is true;
+			field.SetValue(null, false);
+		}
+
+		public bool IsAnyBridgeEnabled => _field.GetValue(null) is true;
+
+		public static RouterBridgeState ResetToNeverEnabled()
+		{
+			var router = AppDomain.CurrentDomain.GetAssemblies()
+				.Select(assembly => assembly.GetType("Uno.UI.Runtime.AccessibilityRouter", throwOnError: false))
+				.FirstOrDefault(type => type is not null)
+				?? throw new InvalidOperationException("AccessibilityRouter type not found.");
+			var field = router.GetField("_anyBridgeEnabled", BindingFlags.Static | BindingFlags.NonPublic)
+				?? throw new InvalidOperationException("AccessibilityRouter._anyBridgeEnabled not found.");
+			return new RouterBridgeState(field);
+		}
+
+		public void Dispose()
+		{
+			if (_wasEnabled)
+			{
+				_field.SetValue(null, true);
+			}
 		}
 	}
 
