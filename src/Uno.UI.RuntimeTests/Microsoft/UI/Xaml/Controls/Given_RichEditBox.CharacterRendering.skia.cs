@@ -6,10 +6,12 @@ using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
+using Colors = Microsoft.UI.Colors;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -149,6 +151,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			finally
 			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SpellCheck_Squiggle_Is_Below_Descenders()
+		{
+			UnicodeText.SpellCheckingServiceOverrideForTesting = new DeterministicSpellCheckingService();
+			var editor = new RichEditBox
+			{
+				Width = 300,
+				IsSpellCheckEnabled = true,
+				Foreground = new SolidColorBrush(Colors.Black),
+				Background = new SolidColorBrush(Colors.White),
+				BorderThickness = new Thickness(0),
+			};
+			try
+			{
+				WindowHelper.WindowContent = editor;
+				await WindowHelper.WaitForLoaded(editor);
+				editor.Document.SetText(TextSetOptions.None, "typo"); // misspelled, with descenders
+				await WindowHelper.WaitForIdle();
+
+				var (lowestTextRow, highestSquiggleRow) = Given_TextBox.FindTextAndSquiggleRows(await UITestHelper.ScreenShot(editor));
+
+				Assert.IsNotNull(highestSquiggleRow, "the misspelled word should have a squiggle");
+				Assert.IsNotNull(lowestTextRow, "the text should be drawn");
+				Assert.IsTrue(
+					highestSquiggleRow > lowestTextRow,
+					$"the squiggle (top row {highestSquiggleRow}) should be below the text's descenders (bottom row {lowestTextRow})");
+			}
+			finally
+			{
+				UnicodeText.SpellCheckingServiceOverrideForTesting = null;
 				WindowHelper.WindowContent = null;
 			}
 		}
