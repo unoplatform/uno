@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Media3D;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using SamplesApp.UITests;
 using Uno.Disposables;
@@ -5966,22 +5967,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				(int)svBounds.Bottom + 1,
 				(int)svBounds.Width,
 				(int)CaretWithStemAndThumb.ThumbSize);
-			ImageAssert.HasColorInRectangle(
-				await UITestHelper.ScreenShot(root),
-				bandBelowViewport,
-				CaretWithStemAndThumb.ThumbFillColor,
-				tolerance: 20);
+			await AssertEventually(
+				async () => ImageAssert.HasColorInRectangle(
+					await UITestHelper.ScreenShot(root),
+					bandBelowViewport,
+					CaretWithStemAndThumb.ThumbFillColor,
+					tolerance: 20));
 
 			// A few px past it and the thumb would hang entirely below the viewport, over whatever is painted there.
 			scrollViewer.ChangeView(null, offsetAtEdge - 6, null, disableAnimation: true);
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be hidden once the point it hangs from leaves the viewport");
 
-			ImageAssert.DoesNotHaveColorInRectangle(
-				await UITestHelper.ScreenShot(root),
-				bandBelowViewport,
-				CaretWithStemAndThumb.ThumbFillColor,
-				tolerance: 20);
+			await AssertEventually(
+				async () => ImageAssert.DoesNotHaveColorInRectangle(
+					await UITestHelper.ScreenShot(root),
+					bandBelowViewport,
+					CaretWithStemAndThumb.ThumbFillColor,
+					tolerance: 20));
+		}
+
+		// Gripper visuals are updated on a rendered frame, which may land after the screenshot on slow adapters.
+		private static async Task AssertEventually(Func<Task> assertion)
+		{
+			var deadline = DateTime.UtcNow.AddSeconds(10);
+			while (DateTime.UtcNow < deadline)
+			{
+				try
+				{
+					await assertion();
+					return;
+				}
+				catch (AssertFailedException)
+				{
+					await Task.Delay(50);
+				}
+			}
+
+			await assertion();
 		}
 
 		// The other half of the culling contract: a gripper the finger is holding must NOT be culled when its
@@ -6854,6 +6877,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					|| (SUT.ContextFlyout as TextCommandBarFlyout)?.IsOpen == true,
 				message: "a text command flyout should open after the long-press");
 			await WindowHelper.WaitForIdle(); // ...and let it settle before checking the steady state.
+			await UITestHelper.WaitForRender(frameCount: 2, timeoutMS: 10000); // thumbs are laid out per frame
 
 			// Steady state (Assert, not WaitFor): after the flyout opens, the word must stay selected AND both
 			// thumbs must remain — a bug that flips CaretMode back to thumbless leaves the highlight but drops the thumbs.
