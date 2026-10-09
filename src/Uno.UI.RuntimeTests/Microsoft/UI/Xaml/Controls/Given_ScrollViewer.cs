@@ -3115,6 +3115,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1500, SUT.VerticalOffset);
 		}
 
+		[TestMethod]
+#if !HAS_UNO
+		[Ignore("IsInMotion is internal to Uno.")]
+#endif
+		public async Task When_ChangeView_Animated_Then_In_Motion_Until_Final_ViewChanged()
+		{
+#if HAS_UNO
+			// Code deferring to a running scroll (FlipView's offset fix) must not see it end before its last frame,
+			// which lands after the animation's wall-clock duration whenever that frame is late.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			await UITestHelper.Load(SUT);
+			var presenter = SUT.Presenter!;
+
+			var isStarted = false;
+			var isFinal = false;
+			SUT.ViewChanged += (_, e) =>
+			{
+				isStarted = true;
+				isFinal |= !e.IsIntermediate;
+			};
+
+			SUT.ChangeView(null, 1500, null, disableAnimation: false);
+			await WindowHelper.WaitFor(() => isStarted);
+
+			// Outlast the longest scroll animation (475ms) between two of its frames.
+			System.Threading.Thread.Sleep(600);
+
+			Assert.IsFalse(isFinal);
+			Assert.IsTrue(presenter.IsInMotion, "Out of motion before the animation applied its last frame.");
+
+			await WindowHelper.WaitFor(() => isFinal, timeoutMS: 5000);
+
+			Assert.AreEqual(1500, SUT.VerticalOffset);
+			Assert.IsFalse(presenter.IsInMotion, "Still in motion after the final ViewChanged.");
+#endif
+		}
+
 		// A flick fast enough to launch a fling: the velocity tracker fits the recent gesture, so it needs
 		// several moves spread over real time rather than one long jump.
 		private static async Task FlickUp(InputInjector input, Point from)
