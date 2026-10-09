@@ -298,19 +298,27 @@ function New-Report($lanes, $baselines) {
         }
 
         # The versions, one line each, so "within budget" is never read as being about another version.
+        $main = $laneReports[0]
         $prOver = @($rows.Values | Where-Object { $key = $_.key; @($laneNames | Where-Object { Test-OverBudget $lanes[$_][$key] }).Count -gt 0 }).Count
         $prLine = if ($prOver -eq 0) { "✅ all $($rows.Count) metrics within budget on all $($laneNames.Count) lanes" } else { "⚠️ $prOver of $($rows.Count) metrics over budget on at least one of $($laneNames.Count) lanes" }
         if ($dev -and $dev.lanes) {
-            $higherTotal = ($laneReports | Measure-Object -Property higher -Sum).Sum
-            $prLine += if ($higherTotal -eq 0) { '; nothing higher than the latest dev' } else { "; **$higherTotal value(s) higher than the latest dev** ▲" }
+            $up = @($laneReports | Where-Object { $_.higher -gt 0 })
+            $prLine += if ($up.Count -eq 0) { '; nothing higher than the latest dev' } else { "; **higher than the latest dev on $(($up | ForEach-Object { $_.title }) -join ', ')** ▲" }
         }
         [void]$sb.AppendLine("- **This PR**: $prLine.")
         foreach ($b in $baselines) {
             $build = if ($b.buildUrl) { "[$($b.version)]($($b.buildUrl -replace ' ', '%20'))" } else { $b.version }
             if ($b.lanes) {
                 $bLanes = @($laneNames | Where-Object { $b.lanes.Contains($_) })
-                $lanesText = if ($bLanes.Count -eq 1) { "measured on $(Get-LaneTitle $bLanes[0]) only" } else { "measured on $($bLanes.Count) lanes" }
-                [void]$sb.AppendLine("- **$($b.label)** $($build): $lanesText.")
+                $where = if ($bLanes.Count -eq 1) { "measured on $(Get-LaneTitle $bLanes[0]) only" } else { "measured on $($bLanes.Count) lanes" }
+                if ($b.lanes.Contains($main.lane)) {
+                    $mainLane = $main.lane
+                    $over = @($rows.Values | Where-Object { Test-OverBudget $b.lanes[$mainLane][$_.key] }).Count
+                    [void]$sb.AppendLine("- **$($b.label)** $($build): $(Format-OverBudget $over) on $($main.title) ($where).")
+                }
+                else {
+                    [void]$sb.AppendLine("- **$($b.label)** $($build): $where.")
+                }
             }
             else {
                 [void]$sb.AppendLine("- **$($b.label)** $($build): no numbers, $($b.note).")
@@ -320,29 +328,20 @@ function New-Report($lanes, $baselines) {
         [void]$sb.AppendLine('Report only for now: nothing here fails the build.')
         [void]$sb.AppendLine()
 
-        # Overview: where to look.
-        [void]$sb.AppendLine('**By lane**')
+        # The main comparison: this PR next to the latest dev and stable on the first lane (Windows when it ran).
+        [void]$sb.AppendLine("**Compared with the latest published versions** ($($main.title))")
         [void]$sb.AppendLine()
-        [void]$sb.AppendLine("| Lane | This PR | Against the latest dev | $($versionHeaders -join ' | ') |")
-        [void]$sb.AppendLine("|---|---|---|$(($baselines | ForEach-Object { '---' }) -join '|')|")
-        foreach ($report in $laneReports) {
-            $versusDev = if ($dev -and $dev.lanes -and $dev.lanes.Contains($report.lane)) { Format-Changes $report.lower $report.higher } else { '–' }
-            $baselineCells = foreach ($b in $baselines) {
-                if ($b.lanes -and $b.lanes.Contains($report.lane)) {
-                    $lane = $report.lane
-                    Format-OverBudget @($rows.Values | Where-Object { Test-OverBudget $b.lanes[$lane][$_.key] }).Count
-                }
-                else { '–' }
-            }
-            [void]$sb.AppendLine("| $($report.title) | $(Format-OverBudget $report.over) | $versusDev | $($baselineCells -join ' | ') |")
-        }
+        [void]$sb.AppendLine("| Metric | Budget | This PR | $($versionHeaders -join ' | ') |")
+        [void]$sb.AppendLine("|---|---|---:|$(($baselines | ForEach-Object { '---:' }) -join '|')|")
+        $main.lines | ForEach-Object { [void]$sb.AppendLine($_) }
         [void]$sb.AppendLine()
 
-        # Details: one table per lane, open for the first lane and for any lane where this PR went up.
+        # Then the same comparison for every lane, collapsed, with the lane's status in its heading.
+        [void]$sb.AppendLine('**Every lane**')
+        [void]$sb.AppendLine()
         foreach ($report in $laneReports) {
-            $open = if ($report -eq $laneReports[0] -or $report.higher -gt 0) { ' open' } else { '' }
             $versusDev = if ($dev -and $dev.lanes -and $dev.lanes.Contains($report.lane)) { " · $(Format-Changes $report.lower $report.higher) against the latest dev" } else { '' }
-            [void]$sb.AppendLine("<details$open><summary><b>$($report.title)</b>: $(Format-OverBudget $report.over)$versusDev</summary>")
+            [void]$sb.AppendLine("<details><summary><b>$($report.title)</b>: $(Format-OverBudget $report.over)$versusDev</summary>")
             [void]$sb.AppendLine()
             [void]$sb.AppendLine("| Metric | Budget | This PR | $($versionHeaders -join ' | ') |")
             [void]$sb.AppendLine("|---|---|---:|$(($baselines | ForEach-Object { '---:' }) -join '|')|")

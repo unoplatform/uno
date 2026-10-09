@@ -132,12 +132,11 @@ The 6.4 path booleans per step left on 6.8 are most likely the clip-path work th
 
 ### 4.1 Compared with the latest published versions
 
-The comment starts with one line per version (this PR, latest dev, latest stable), then a **By lane** overview:
-one row per lane with how many metrics are over budget for each version, and what this PR changed against the
-latest dev. Under it, each lane has its own table, Metric | Budget | This PR | Latest dev | Latest stable, so
-versions are compared like with like on the same lane. The first lane, and any lane where this PR went up, are
-open; the others are collapsed with their status in the heading. "What the numbers mean" is collapsed last: the
-symbols, and one line per metric taken from the tests' descriptions.
+The comment starts with one line per version (this PR, latest dev, latest stable), then the main comparison
+table, Metric | Budget | This PR | Latest dev | Latest stable, on the first lane (Windows). Under it, **Every lane**
+repeats that comparison for each lane, collapsed, with the lane's status in its heading (over budget, and what
+this PR changed against the latest dev). "What the numbers mean" is collapsed last: the symbols, and one line per
+metric taken from the tests' descriptions.
 
 - The versions are read from nuget.org (`Uno.WinUI`) on every report, so the comparison is always with what users
   can install. The dev version is the newest one of this build's line: 7.0 for master, 6.8 for `servicing/6.8`.
