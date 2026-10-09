@@ -20,9 +20,9 @@ Projects using the Uno.Sdk single-project layout can configure the splash screen
 | Property | Description |
 |---|---|
 | `UnoSplashScreenFile` | The splash screen image. Defaults to `Assets/Splash/splash_screen.svg`. |
+| `UnoSplashScreenDarkFile` | The image used when the dark theme is active, relative to the project. |
 | `UnoSplashScreenBackgroundColor` | The background color for all themes, unless overridden by `UnoSplashScreenDarkBackgroundColor`. |
 | `UnoSplashScreenDarkBackgroundColor` | The background color when the dark theme is active. |
-| `UnoSplashScreenDarkFile` | The image used when the dark theme is active, relative to the project. |
 | `UnoSplashScreenAccentColor` | The accent color of the WebAssembly loader progress bar. Defaults to the WinUI accent color. |
 | `UnoSplashScreenDarkAccentColor` | The accent color of the WebAssembly loader progress bar when the dark theme is active. Defaults to the WinUI dark theme accent color. |
 
