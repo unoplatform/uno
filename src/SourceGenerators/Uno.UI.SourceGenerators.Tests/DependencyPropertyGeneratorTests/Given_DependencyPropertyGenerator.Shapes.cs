@@ -416,6 +416,43 @@ public partial class Given_DependencyPropertyGenerator
 	}
 
 	[TestMethod]
+	public async Task When_Backing_Field_Owner_Declarers_Differ_By_Separator()
+	{
+		var run = await RunAsync(
+			"""
+			using Microsoft.UI.Xaml;
+			using TestHelpers;
+			using Uno.UI.Xaml;
+
+			namespace Mynamespace
+			{
+				public partial class Owner : TestDependencyObject
+				{
+				}
+
+				public static partial class A_B
+				{
+					[GeneratedDependencyProperty(AttachedBackingFieldOwner = typeof(Owner))]
+					public static partial int GetMyValue(DependencyObject target);
+				}
+
+				public static partial class A
+				{
+					public static partial class B
+					{
+						[GeneratedDependencyProperty(AttachedBackingFieldOwner = typeof(Owner))]
+						public static partial int GetMyValue(DependencyObject target);
+					}
+				}
+			}
+			""");
+
+		run.ShouldSucceed()
+			.ShouldContain("Mynamespace.A_B.g.cs", "__Mynamespace_A_5F_B_MyValuePropertyBackingField")
+			.ShouldContain("Mynamespace.A.B.g.cs", "__Mynamespace_A_B_MyValuePropertyBackingField");
+	}
+
+	[TestMethod]
 	public async Task When_Containing_Type_Is_Nested_And_Generic()
 	{
 		var run = await RunAsync(
