@@ -80,4 +80,51 @@ public class Given_GroupedItemsControlAutomationPeer
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Ungrouped_Items_Change_Then_Only_Removed_Peers_Are_Evicted(bool replace)
+	{
+		var removed = new object();
+		var duplicated = new object();
+		var survivor = new object();
+		var items = new ObservableCollection<object> { removed, duplicated, survivor, duplicated };
+		var listView = new ListView { ItemsSource = items, Width = 320, Height = 400 };
+
+		try
+		{
+			await UITestHelper.Load(listView);
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(listView) as ItemsControlAutomationPeer;
+			Assert.IsNotNull(peer);
+			// Realizes the item peers, so their containers are released too.
+			Assert.IsNotNull(peer.GetChildren());
+			var removedPeer = peer.CreateItemAutomationPeer(removed);
+			var duplicatedPeer = peer.CreateItemAutomationPeer(duplicated);
+			var survivorPeer = peer.CreateItemAutomationPeer(survivor);
+
+			if (replace)
+			{
+				items[0] = new object();
+				items[3] = new object();
+			}
+			else
+			{
+				items.RemoveAt(3);
+				items.RemoveAt(0);
+			}
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreSame(survivorPeer, peer.CreateItemAutomationPeer(survivor));
+			Assert.AreSame(duplicatedPeer, peer.CreateItemAutomationPeer(duplicated),
+				"Removing one occurrence must not evict an item still in the list.");
+			Assert.AreNotSame(removedPeer, peer.CreateItemAutomationPeer(removed),
+				"The removed item's cached peer must be released.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }
