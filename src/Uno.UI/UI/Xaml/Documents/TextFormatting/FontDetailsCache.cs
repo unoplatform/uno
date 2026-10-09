@@ -97,7 +97,8 @@ internal static class FontDetailsCache
 		try
 		{
 			using var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
-			return FontProvider.LoadFontFile(stream);
+			// LoadFontFile reads synchronously; keep that file I/O off the UI thread, as the async copy did.
+			return await Task.Run(() => FontProvider.LoadFontFile(stream));
 		}
 		catch (Exception e)
 		{
