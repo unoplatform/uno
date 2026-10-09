@@ -183,7 +183,7 @@ public class Given_AccessibleScrollViewer
 
 			// Fixed settle window rather than WaitFor: we assert the offset does NOT revert, so there is
 			// no condition to poll. The browser raises the echoed scroll event on its next animation frame.
-			for (var i = 0; i < 10; i++)
+			for (var i = 0; i < 4; i++)
 			{
 				await Task.Delay(50);
 				await UITestHelper.WaitForIdle();

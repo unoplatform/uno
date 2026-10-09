@@ -959,6 +959,9 @@ namespace Uno.UI.Runtime {
 			}
 		}
 
+		// The browser rounds scroll offsets to whole pixels.
+		private static readonly SCROLL_ECHO_TOLERANCE_PX = 1;
+
 		// Last scroll offsets of each semantic scroller that are known to mirror the managed ScrollViewer.
 		private static syncedScrollOffsets = new WeakMap<HTMLElement, { left: number, top: number }>();
 
@@ -969,7 +972,7 @@ namespace Uno.UI.Runtime {
 		 * Forwarding those would drag the managed ScrollViewer back to a stale offset.
 		 */
 		private static isScrollEcho(element: HTMLElement): boolean {
-			if (!element.isConnected || (element.clientWidth === 0 && element.clientHeight === 0)) {
+			if (!element.isConnected || element.clientWidth === 0 || element.clientHeight === 0) {
 				return true;
 			}
 
@@ -985,7 +988,8 @@ namespace Uno.UI.Runtime {
 
 			// A user scroll can only reach the end of the range, never be pushed back to it from beyond.
 			const isEcho = (value: number, syncedValue: number, max: number) =>
-				Math.abs(value - syncedValue) < 1 || (Math.abs(value - max) < 1 && syncedValue > max);
+				Math.abs(value - syncedValue) < Accessibility.SCROLL_ECHO_TOLERANCE_PX
+				|| (Math.abs(value - max) < Accessibility.SCROLL_ECHO_TOLERANCE_PX && syncedValue > max);
 
 			if (isEcho(left, synced.left, maxLeft) && isEcho(top, synced.top, maxTop)) {
 				synced.left = left;
