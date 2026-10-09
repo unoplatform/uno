@@ -2989,38 +2989,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(30)]
 		[DataRow(60)]
 		[DataRow(144)]
-		public void When_Wheel_Detents_Then_Decay_Lands_On_Whole_Pixels(int framesPerSecond)
+		public void When_Wheel_Notches_Then_Land_On_Whole_Pixels(int framesPerSecond)
 		{
 #if HAS_UNO
-			// Whole-pixel detents must land on whole pixels, and exactly on the extent's end: an offset a hair short
+			// Whole-pixel notches must land on whole pixels, and exactly on the extent's end: an offset a hair short
 			// of ScrollableHeight still reports room left, and is not the end the user scrolled to.
 			var interval = TimeSpan.TicksPerSecond / framesPerSecond;
 			var timestamp = 0L;
 
-			ScrollDecaySimulation decay = new();
-			decay.Start(0, interval);
+			ScrollWheelSimulation wheel = new();
+			wheel.Start(0);
 			for (var i = 0; i < 5; i++)
 			{
-				decay.AddImpulse(4);
+				wheel.AddDistance(4);
 			}
 
-			Settle(ref decay, max: 1000);
-			Assert.AreEqual(20, decay.Position, "Five 4px detents did not land on 20.");
+			Settle(ref wheel, max: 1000);
+			Assert.AreEqual(20, wheel.Position, "Five 4px notches did not land on 20.");
 
-			decay.Start(decay.Position, interval);
+			wheel.Start(wheel.Position);
 			for (var i = 0; i < 3; i++)
 			{
-				decay.AddImpulse(20);
+				wheel.AddDistance(20);
 			}
 
-			Assert.AreEqual(80, decay.ProjectedEnd, "Three 20px detents from 20 do not project to 80.");
-			Settle(ref decay, max: 80);
-			Assert.AreEqual(80, decay.Position, "The detents that reach the end of the extent did not land on it.");
+			Assert.AreEqual(80, wheel.ProjectedEnd, "Three 20px notches from 20 do not project to 80.");
+			Settle(ref wheel, max: 80);
+			Assert.AreEqual(80, wheel.Position, "The notches that reach the end of the extent did not land on it.");
 
-			void Settle(ref ScrollDecaySimulation decay, double max)
+			void Settle(ref ScrollWheelSimulation wheel, double max)
 			{
 				var frames = 0;
-				while (decay.Tick(timestamp += interval, 0, max) && ++frames < 1000)
+				while (wheel.Tick(timestamp += interval, 0, max) && ++frames < 1000)
 				{
 				}
 			}
