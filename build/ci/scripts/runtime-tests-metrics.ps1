@@ -158,28 +158,38 @@ function Publish-Comment([string]$body) {
     }
     if ([string]::IsNullOrWhiteSpace($token) -or $token.StartsWith('$(')) {
         # Plain output, not a pipeline warning: a fork pull request has no secrets, and that is not a problem to flag.
-        Write-Host 'No GitHub token available (fork pull request?); the report was not posted.'
+        Write-Host 'No GitHub token available (fork pull request, or the pipeline secret is not set); the report was not posted.'
         return
     }
 
-    $headers = @{ Authorization = "token $token"; Accept = 'application/vnd.github+json'; 'User-Agent' = 'uno-runtime-tests-metrics' }
+    $headers = @{ Authorization = "Bearer $token"; Accept = 'application/vnd.github+json'; 'X-GitHub-Api-Version' = '2022-11-28'; 'User-Agent' = 'uno-runtime-tests-metrics' }
     $api = "https://api.github.com/repos/$Repository/issues"
 
-    $existing = $null
-    for ($page = 1; $page -le 20 -and -not $existing; $page++) {
-        $comments = @(Invoke-RestMethod -Headers $headers -Uri "$api/$PullRequestNumber/comments?per_page=100&page=$page")
-        $existing = $comments | Where-Object { $_.body -and $_.body.StartsWith($Marker) } | Select-Object -First 1
-        if ($comments.Count -lt 100) { break }
-    }
+    # Informational only: a failed post is logged and the build goes on (the report is still in the artifact).
+    try {
+        # Only a comment this account wrote can be edited: editing someone else's needs admin rights on the
+        # repository, so a marker comment left by another account is ignored and a new one is created.
+        $login = (Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/user').login
 
-    $payload = @{ body = $body } | ConvertTo-Json
-    if ($existing) {
-        Invoke-RestMethod -Headers $headers -Method Patch -Uri "$api/comments/$($existing.id)" -Body $payload -ContentType 'application/json' | Out-Null
-        Write-Host "Updated comment $($existing.html_url)"
+        $existing = $null
+        for ($page = 1; $page -le 20 -and -not $existing; $page++) {
+            $comments = @(Invoke-RestMethod -Headers $headers -Uri "$api/$PullRequestNumber/comments?per_page=100&page=$page")
+            $existing = $comments | Where-Object { $_.user.login -eq $login -and $_.body -and $_.body.StartsWith($Marker) } | Select-Object -First 1
+            if ($comments.Count -lt 100) { break }
+        }
+
+        $payload = @{ body = $body } | ConvertTo-Json
+        if ($existing) {
+            Invoke-RestMethod -Headers $headers -Method Patch -Uri "$api/comments/$($existing.id)" -Body $payload -ContentType 'application/json' | Out-Null
+            Write-Host "Updated comment $($existing.html_url)"
+        }
+        else {
+            $created = Invoke-RestMethod -Headers $headers -Method Post -Uri "$api/$PullRequestNumber/comments" -Body $payload -ContentType 'application/json'
+            Write-Host "Created comment $($created.html_url)"
+        }
     }
-    else {
-        $created = Invoke-RestMethod -Headers $headers -Method Post -Uri "$api/$PullRequestNumber/comments" -Body $payload -ContentType 'application/json'
-        Write-Host "Created comment $($created.html_url)"
+    catch {
+        Write-Host "The report was not posted: $($_.Exception.Message) $($_.ErrorDetails.Message)"
     }
 }
 
