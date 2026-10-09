@@ -633,6 +633,8 @@
           href: features/focus-management.md
         - name: Fonts
           href: features/custom-fonts.md
+        - name: Input validation
+          href: features/input-validation.md
         - name: Markup Extensions
           href: features/windows-ui-markup-extensions.md
         - name: Orientation
