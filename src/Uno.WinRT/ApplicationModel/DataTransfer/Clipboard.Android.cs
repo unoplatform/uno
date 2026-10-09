@@ -20,6 +20,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		private static bool _clipboardKnownCleared;
 		private static DataPackageView _locallySetContent;
 		private static long? _locallySetClipTimestamp;
+		private static bool _setPending;
 
 		public static void SetContent(DataPackage/* ? */ content)
 		{
@@ -126,6 +127,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				}
 
 				manager.PrimaryClip = clipData;
+				_setPending = true;
 				_clearPending = false;
 				_clipboardKnownCleared = false;
 				_clearedClipTimestamp = null;
@@ -305,6 +307,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			if (ContextHelper.ApplicationContext.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
 			{
 				_clearPending = true;
+				_setPending = false;
 				_clipboardKnownCleared = true;
 				lock (_syncLock)
 				{
@@ -347,11 +350,14 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			var manager = sender as ClipboardManager
 				?? ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
+			var isLocalEcho = false;
 			if (manager is not null)
 			{
 				var timestamp = Build.VERSION.SdkInt >= BuildVersionCodes.O
 					? manager.PrimaryClipDescription?.Timestamp
 					: null;
+				isLocalEcho = IsEchoOfLocalChange(manager, timestamp);
+				_setPending = false;
 				if (_clearPending)
 				{
 					_clearedClipTimestamp = timestamp;
@@ -376,7 +382,33 @@ namespace Windows.ApplicationModel.DataTransfer
 				}
 			}
 
-			OnContentChanged();
+			// SetContent and Clear already raised it: like WinUI, one ContentChanged per change.
+			if (!isLocalEcho)
+			{
+				OnContentChanged();
+			}
+		}
+
+		// SetContent and Clear raise ContentChanged themselves because Android can withhold this callback.
+		private static bool IsEchoOfLocalChange(ClipboardManager manager, long? timestamp)
+		{
+			if (Build.VERSION.SdkInt < BuildVersionCodes.O)
+			{
+				// No clip timestamps, but callbacks are only withheld from Android 10, so the next one is our write's.
+				return _setPending || _clearPending;
+			}
+
+			if (_clipboardKnownCleared)
+			{
+				return !manager.HasPrimaryClip || timestamp == _clearedClipTimestamp;
+			}
+
+			lock (_syncLock)
+			{
+				return _locallySetContent is not null &&
+					_locallySetClipTimestamp is { } setTimestamp &&
+					setTimestamp == timestamp;
+			}
 		}
 
 		[GeneratedRegex("(<.*?>\\s*)+", RegexOptions.Singleline)]
