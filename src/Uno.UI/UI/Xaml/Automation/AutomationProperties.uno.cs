@@ -33,18 +33,26 @@ public sealed partial class AutomationProperties
 		DependencyObject dependencyObject,
 		DependencyPropertyChangedEventArgs args)
 	{
+#if __SKIA__
+		if (AutomationPeer.AutomationPeerListener is not { } listener ||
+			!listener.ListenerExistsHelper(AutomationEvents.PropertyChanged))
+		{
+			return;
+		}
+
 		if (_initializingCollections.TryGetValue(dependencyObject, out var properties) &&
 			properties.Contains(args.Property))
 		{
 			return;
 		}
 
-		var automationProperty = GetAutomationProperty(args.Property);
-
-		if (automationProperty is not null)
+		if (GetAutomationProperty(args.Property) is { } automationProperty &&
+			dependencyObject is UIElement element &&
+			element.GetOrCreateAutomationPeer() is { } peer)
 		{
-			NotifyAutomationPropertyChanged(dependencyObject, args, automationProperty);
+			listener.NotifyPropertyChangedEvent(peer, automationProperty, args.OldValue, args.NewValue);
 		}
+#endif
 	}
 
 	private static AutomationProperty? GetAutomationProperty(DependencyProperty property)
