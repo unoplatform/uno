@@ -23,6 +23,7 @@ public class Given_AndroidAccessibilityNativeFocus
 {
 	private const int KeyEventActionDown = 0;
 	private const int KeycodeTab = 61;
+	private const int FocusForward = 2;
 
 	[TestMethod]
 	public async Task When_No_Client_Then_Native_Focus_Does_Not_Enable_The_Bridge()
@@ -83,12 +84,21 @@ public class Given_AndroidAccessibilityNativeFocus
 			?? throw new InvalidOperationException("The activity has no render view.");
 	}
 
-	// Clearing the only focusable view hands focus straight back in touch mode, so either call makes it gain focus.
+	// Goes through the render view's own OnFocusChanged override, as Android does when the view gains focus.
+	// View.RequestFocus()/ClearFocus() are not overridden, so the trimmed Release build has no metadata for them.
 	private static void RefocusRenderView(XamlRoot xamlRoot)
 	{
+		var directionType = Type.GetType("Android.Views.FocusSearchDirection, Mono.Android", throwOnError: true)!;
+		var rectType = Type.GetType("Android.Graphics.Rect, Mono.Android", throwOnError: true)!;
 		var renderView = GetRenderView(xamlRoot);
-		renderView.GetType().GetMethod("ClearFocus", Type.EmptyTypes)!.Invoke(renderView, null);
-		renderView.GetType().GetMethod("RequestFocus", Type.EmptyTypes)!.Invoke(renderView, null);
+		var onFocusChanged = renderView.GetType().GetMethod(
+			"OnFocusChanged",
+			BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+			new[] { typeof(bool), directionType, rectType })
+			?? throw new InvalidOperationException($"{renderView.GetType().Name}.OnFocusChanged not found.");
+
+		onFocusChanged.Invoke(renderView, new object?[] { false, Enum.ToObject(directionType, FocusForward), null });
+		onFocusChanged.Invoke(renderView, new object?[] { true, Enum.ToObject(directionType, FocusForward), null });
 	}
 
 	private static void DispatchKeyDown(XamlRoot xamlRoot, int keyCode)
@@ -134,6 +144,10 @@ public class Given_AndroidAccessibilityNativeFocus
 			if (wasRequested)
 			{
 				ensureRequested.Invoke(accessibility, null);
+			}
+			else
+			{
+				MobileAccessibilityTestHelper.ReleaseClientRequest(accessibility, requestedField, recordingField: null);
 			}
 		});
 
