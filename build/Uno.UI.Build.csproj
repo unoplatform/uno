@@ -195,6 +195,7 @@
 			<!-- NU5123: Long paths - disabled as targets in Uno.UI.Runtime.WebAssembly.Browser\buildTransitive have too long paths -->
 			<NuSpecProperties>NoWarn=NU5100,NU5105,NU5131;NU5123;branch=$(NBGV_BuildingRef);commitid=$(NBGV_GitCommitId)</NuSpecProperties>
 			<NuSpecProperties>$(NuSpecProperties);winuisourcepath=$(NetUWPOrWinUI);winuitargetpath=$(NetUWPOrWinUI)</NuSpecProperties>
+			<NuSpecProperties>$(NuSpecProperties);year=$([System.DateTime]::UtcNow.Year)</NuSpecProperties>
 		</PropertyGroup>
 
 		<!-- Pre-validation of contents to be packed -->

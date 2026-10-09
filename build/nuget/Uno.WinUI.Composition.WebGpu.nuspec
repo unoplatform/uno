@@ -5,10 +5,11 @@
 		<version>0.0.1</version>
 		<authors>Uno Platform</authors>
 		<icon>uno.png</icon>
+		<readme>README.md</readme>
 		<projectUrl>https://github.com/unoplatform/uno</projectUrl>
 		<license type="expression">Apache-2.0</license>
 		<description>The WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam over the managed geometry engine). Referenced by the 'WebGpu' UnoFeature; opt-in, carries the wgpu-native runtime.</description>
-		<copyright>Uno Platform</copyright>
+		<copyright>Copyright (C) 2015-$year$ Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 		<dependencies>
 			<group targetFramework="net10.0">
@@ -24,6 +25,7 @@
 
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
+		<file src="README.md" target="/" />
 
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net10.0\Uno.UI.Composition.WebGpu.dll" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net10.0\Uno.UI.Composition.WebGpu.pdb" target="lib\net10.0" />

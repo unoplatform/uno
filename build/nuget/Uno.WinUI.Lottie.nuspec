@@ -10,14 +10,9 @@
 		<projectUrl>https://platform.uno/</projectUrl>
 		<license type="expression">Apache-2.0</license>
 		<icon>uno.png</icon>
-		<description>
-			Support for Lottie on Uno.WinUI.
-
-			This is the Uno-compatible version of the package Microsoft.Toolkit.Uwp.UI.Lottie.
-
-			Original documentation: https://docs.microsoft.com/windows/communitytoolkit/animations/lottie
-		</description>
-		<copyright>Copyright (C) 2015-2019 Uno Platform Inc. - all rights reserved</copyright>
+		<readme>README.md</readme>
+		<description>Lottie animation support for Uno Platform: plays Lottie JSON files through AnimatedVisualPlayer.</description>
+		<copyright>Copyright (C) 2015-$year$ Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 
 		<dependencies>
@@ -31,7 +26,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 
-			<group targetFramework="net10.0-android">
+			<group targetFramework="net10.0-android30.0">
 				<dependency id="SkiaSharp.Skottie" version="4.151.1" />
 				<dependency id="SkiaSharp.NativeAssets.android" version="4.151.1" />
 
@@ -50,7 +45,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 
-			<group targetFramework="net11.0-android">
+			<group targetFramework="net11.0-android30.0">
 				<dependency id="SkiaSharp.Skottie" version="4.151.1" />
 				<dependency id="SkiaSharp.NativeAssets.android" version="4.151.1" />
 
@@ -83,6 +78,7 @@
 	</metadata>
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
+		<file src="README.md" target="/" />
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie\Release\net10.0\Uno.UI.Lottie.*" target="lib\net10.0" />
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie\Release\net11.0\Uno.UI.Lottie.*" target="lib\net11.0" />
 
