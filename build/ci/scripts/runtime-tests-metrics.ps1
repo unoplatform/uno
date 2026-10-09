@@ -162,7 +162,9 @@ function Get-VersionMetrics($candidate, $headers, $api) {
         [ordered]@{ query = "tagFilters=$([uri]::EscapeDataString("metrics-baseline-$($candidate.version)"))"; remeasured = $true }
     )
     foreach ($source in $sources) {
-        $builds = @((Invoke-RestMethod -Headers $headers -Uri "$api`?definitions=$DefinitionId&$($source.query)&statusFilter=completed&queryOrder=finishTimeDescending&api-version=7.1").value)
+        # No status filter: what matters is the metrics artifact, and a build whose failed lane is being retried is back
+        # "in progress" for a while although its other lanes' metrics are already published.
+        $builds = @((Invoke-RestMethod -Headers $headers -Uri "$api`?definitions=$DefinitionId&$($source.query)&queryOrder=queueTimeDescending&api-version=7.1").value)
         foreach ($build in $builds) {
             # The version's own build is linked even when it has no numbers.
             if (-not $found.buildId -and -not $source.remeasured) { $found.buildId = $build.id; $found.buildUrl = $build._links.web.href }
@@ -434,12 +436,17 @@ function Publish-Comment([string]$body) {
         # repository, so a marker comment left by another account is ignored and a new one is created.
         $login = (Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/user').login
 
-        $existing = $null
-        for ($page = 1; $page -le 20 -and -not $existing; $page++) {
-            $comments = @(Invoke-RestMethod -Headers $headers -Uri "$api/$PullRequestNumber/comments?per_page=100&page=$page")
-            $existing = $comments | Where-Object { $_.user.login -eq $login -and $_.body -and $_.body.StartsWith($Marker) } | Select-Object -First 1
+        $all = @()
+        for ($page = 1; $page -le 20; $page++) {
+            $response = Invoke-RestMethod -Headers $headers -Uri "$api/$PullRequestNumber/comments?per_page=100&page=$page"
+            # Invoke-RestMethod can hand the JSON array over as a single object: enumerate it, or the filter below sees
+            # every comment at once and "finds" all of them.
+            $comments = @($response | ForEach-Object { $_ })
+            $all += $comments
             if ($comments.Count -lt 100) { break }
         }
+        # The newest marker comment of this account: older ones may have been hidden as outdated.
+        $existing = $all | Where-Object { $_.user.login -eq $login -and $_.body -and $_.body.StartsWith($Marker) } | Select-Object -Last 1
 
         $payload = @{ body = $body } | ConvertTo-Json
         if ($existing) {
@@ -449,8 +456,7 @@ function Publish-Comment([string]$body) {
                 return
             }
             catch {
-                # An account whose repository access was reduced can still comment on a public repository but no
-                # longer edit its own comments (403 "Must have admin rights"). A new comment beats no report at all.
+                # Whatever refused the update (permissions, a deleted comment), a new comment beats no report at all.
                 Write-Host "Could not update $($existing.html_url) ($($_.Exception.Message)); posting a new comment instead."
             }
         }
