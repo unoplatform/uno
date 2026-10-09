@@ -29,6 +29,38 @@ public class Given_WasmWebGlUploads
 		})()
 		""";
 
+	// Runs without a GPU (CI browsers often have no WebGL2): records what the patched calls hand to the original ones.
+	private const string RecordedUploadScript = """
+		(function () {
+			const sizes = [];
+			const gl = {
+				UNPACK_ALIGNMENT: 0x0CF5, UNPACK_ROW_LENGTH: 0x0CF2, UNPACK_SKIP_ROWS: 0x0CF3, UNPACK_SKIP_PIXELS: 0x0CF4,
+				RED: 0x1903, UNSIGNED_BYTE: 0x1401,
+				pixelStorei() { },
+				texImage2D() { sizes.push(arguments[8].byteLength); },
+				texSubImage2D() { sizes.push(arguments[8].byteLength); },
+			};
+			globalThis.Uno.UI.Runtime.EmscriptenWebGL.fixStridedUploads(gl);
+
+			const heap = new Uint8Array(64 * 64);
+			gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+			gl.texSubImage2D(0, 0, 4, 4, 8, 8, gl.RED, gl.UNSIGNED_BYTE, new Uint8Array(heap.buffer, 0, 8 * 8));
+			gl.pixelStorei(gl.UNPACK_ROW_LENGTH, 64);
+			gl.texSubImage2D(0, 0, 4, 4, 8, 8, gl.RED, gl.UNSIGNED_BYTE, new Uint8Array(heap.buffer, 0, 8 * 8));
+			gl.texImage2D(0, 0, 0, 8, 8, 0, gl.RED, gl.UNSIGNED_BYTE, new Uint8Array(heap.buffer, 0, 8 * 8));
+			gl.texSubImage2D(0, 0, 4, 4, 8, 8, gl.RED, gl.UNSIGNED_BYTE, new Uint8Array(heap.buffer, heap.length - 64, 64));
+			return sizes.join(',');
+		})()
+		""";
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public void When_Row_Length_Set_Then_Upload_View_Covers_Strided_Rows()
+	{
+		// Unstrided: untouched. Row length 64: 7 full rows + 8 bytes. Rows past the buffer's end: left for WebGL to reject.
+		Assert.AreEqual("64,456,456,64", WasmSemanticDomHelper.InvokeBrowserJs(RecordedUploadScript));
+	}
+
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public void When_Upload_Uses_Row_Length_Then_Short_View_Is_Accepted()
