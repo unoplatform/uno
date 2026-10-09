@@ -1343,6 +1343,50 @@ namespace Uno.WinAppSDKSyncGenerator
 			}
 		}
 
+		/// <summary>
+		/// Reports hand-written overrides whose return or property type differs from the overridden member (C# covariant returns).
+		/// WinUI members are only visited on the type that declares them, so such an override would otherwise go unnoticed,
+		/// while WinRT has no covariant returns and any further override with the WinUI signature fails with CS0508.
+		/// </summary>
+		protected void BuildOverrideTypeMismatchErrors(IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types)
+		{
+			var errors = new[] { types.AndroidSymbol, types.IOSSymbol, types.TvOSSymbol, types.NetStdReferenceSymbol, types.WasmSymbol, types.SkiaSymbol }
+				.Where(t => t is not null)
+				.SelectMany(t => t.GetMembers())
+				.Where(m => m.IsOverride
+					&& m.DeclaredAccessibility is Accessibility.Public or Accessibility.Protected or Accessibility.ProtectedOrInternal
+					&& m.Locations.All(l => l.SourceTree is { } tree && !PlatformSymbols<ISymbol>.IsGeneratedFile(tree.FilePath)))
+				.Select(GetOverrideTypeMismatch)
+				.Where(e => e is not null)
+				.Distinct()
+				.ToList();
+
+			foreach (var error in errors)
+			{
+				using (b.Indent(-b.CurrentLevel))
+				{
+					b.AppendLineInvariant($"#error {error}. Update the hand-written source file to match WinUI.");
+				}
+			}
+
+			static string GetOverrideTypeMismatch(ISymbol member)
+			{
+				var (type, overriddenType, overridden) = member switch
+				{
+					IMethodSymbol { MethodKind: MethodKind.Ordinary, OverriddenMethod: { } o } m => (m.ReturnType, o.ReturnType, (ISymbol)o),
+					IPropertySymbol { OverriddenProperty: { } o } p => (p.Type, o.Type, o),
+					_ => default,
+				};
+
+				if (overridden is null || SymbolEqualityComparer.Default.Equals(type, overriddenType))
+				{
+					return null;
+				}
+
+				return $"{member.ToDisplayString()} returns {type.ToDisplayString()} but overrides {overridden.ToDisplayString()} which returns {overriddenType.ToDisplayString()}";
+			}
+		}
+
 		protected void BuildEvents(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types)
 		{
 			foreach (var eventMember in type.GetMembers().OfType<IEventSymbol>())

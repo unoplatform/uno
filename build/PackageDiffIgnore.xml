@@ -4772,6 +4772,7 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer..ctor(Microsoft.UI.Xaml.FrameworkElement e)" reason="AP reorganization - constructor signature alignment" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer..ctor(System.Object e)" reason="AP reorganization - constructor signature alignment" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer..ctor(System.Object e)" reason="AP reorganization - constructor signature alignment" />
+		  <Member fullName="System.Collections.Generic.List`1&lt;Microsoft.UI.Xaml.Automation.Peers.AutomationPeer&gt; Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.GetChildrenCore()" reason="Align with WinUI IList`1 return type, covariant return broke WinUI-signature overrides (#24552)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ListViewBaseHeaderItemAutomationPeer..ctor(System.Object owner)" reason="AP reorganization - constructor signature alignment" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer..ctor(System.Object o)" reason="AP reorganization - constructor signature alignment" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer..ctor(System.Object item, Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer parent)" reason="AP reorganization - constructor signature alignment" />
