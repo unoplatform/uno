@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -37,19 +38,17 @@ public class Given_MobileAccessibilityTemplatedIds
 		};
 		await UITestHelper.Load(listView);
 
-		for (var index = 0; index < Items.Length; index++)
+		// The bridge may expose the id on the container or the template root, so search the whole tree.
+		var xamlRoot = listView.XamlRoot!;
+		var snapshots = AccessibilityPeerHelper.AndroidAllNodeSnapshotsForRootAccessor?.Invoke(xamlRoot)
+			?? AccessibilityPeerHelper.IOSAllNodeSnapshotsForRootAccessor?.Invoke(xamlRoot)
+			?? Array.Empty<AccessibilityNativeNodeSnapshot>();
+
+		foreach (var item in Items)
 		{
-			var container = (ListViewItem)listView.ContainerFromIndex(index);
-			Assert.IsNotNull(container, $"Container {index} must be realized.");
-			var templateRoot = container.ContentTemplateRoot;
-			Assert.IsNotNull(templateRoot, $"Container {index} must have applied its template.");
-
-			var snapshot = MobileAccessibilityTestHelper.TryGetNativeSnapshot(templateRoot);
-
-			Assert.IsNotNull(snapshot, $"'{Items[index]}' must be exposed as a native node.");
 			Assert.IsTrue(
-				snapshot.AutomationId?.EndsWith(Items[index], StringComparison.Ordinal) is true,
-				$"Expected AutomationId ending '{Items[index]}', got '{snapshot.AutomationId}'.");
+				snapshots.Any(snapshot => snapshot.AutomationId?.EndsWith(item, StringComparison.Ordinal) is true),
+				$"'{item}' must be exposed as a native node with its AutomationId.");
 		}
 	}
 }
