@@ -2463,6 +2463,78 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_UNO
+		[Ignore("The scroll simulations are internal to Uno.")]
+#endif
+		[DataRow(300d)]
+		[DataRow(2000d)]
+		[DataRow(-4500d)]
+		public void When_Android_Fling_Then_It_Follows_OverScroller(double velocity)
+		{
+#if HAS_UNO
+			// Reference values from AOSP OverScroller.SplineOverScroller, in dp: Uno's logical pixel on Android.
+			const double DecelerationRate = 2.3582017;
+			const double Inflexion = 0.35;
+			const double FlingFriction = 0.015;
+			const double PhysicalCoefficient = 9.80665 * 39.37 * 160.0 * 0.84; // SplineOverScroller.computeDeceleration, per dp
+
+			var l = Math.Log(Inflexion * Math.Abs(velocity) / (FlingFriction * PhysicalCoefficient));
+			var expectedDuration = Math.Exp(l / (DecelerationRate - 1.0)); // getSplineFlingDuration, in seconds
+			var expectedDistance = Math.Sign(velocity) * FlingFriction * PhysicalCoefficient * Math.Exp(DecelerationRate / (DecelerationRate - 1.0) * l); // getSplineFlingDistance
+
+			var fling = ScrollFlingSimulation.Create(0, velocity, isApple: false, logicalPixelsPerInch: 160);
+
+			Assert.AreEqual(expectedDuration, fling.Duration, delta: expectedDuration * 1e-6, "The fling does not last as long as OverScroller's.");
+			Assert.AreEqual(expectedDistance, fling.FinalPosition, delta: Math.Abs(expectedDistance) * 1e-6, "The fling does not travel as far as OverScroller's.");
+			Assert.AreEqual(expectedDistance, fling.GetPosition(fling.Duration), delta: 1e-6, "The fling does not end at its final position.");
+			Assert.AreEqual(0, fling.GetVelocity(fling.Duration), delta: 1e-6, "The fling is still moving when its duration is over.");
+			Assert.AreEqual(velocity, fling.GetVelocity(0), delta: Math.Abs(velocity) * 1e-6, "The fling did not start at its launch velocity.");
+
+			// OverScroller samples the spline into SPLINE_POSITION (NB_SAMPLES = 100) with this exact loop.
+			var splinePosition = new double[101];
+			float xMin = 0;
+			for (var i = 0; i < 100; i++)
+			{
+				var alpha = (float)i / 100;
+				float xMax = 1, x, coef;
+				while (true)
+				{
+					x = xMin + (xMax - xMin) / 2.0f;
+					coef = 3.0f * x * (1.0f - x);
+					var tx = coef * ((1.0f - x) * 0.175f + x * 0.35f) + x * x * x;
+					if (Math.Abs(tx - alpha) < 1E-5)
+					{
+						break;
+					}
+
+					if (tx > alpha)
+					{
+						xMax = x;
+					}
+					else
+					{
+						xMin = x;
+					}
+				}
+
+				splinePosition[i] = coef * ((1.0f - x) * 0.5f + x) + x * x * x;
+			}
+
+			splinePosition[100] = 1;
+
+			for (var i = 0; i <= 100; i++)
+			{
+				var t = i / 100.0 * expectedDuration;
+				Assert.AreEqual(
+					splinePosition[i] * expectedDistance,
+					fling.GetPosition(t),
+					delta: Math.Abs(expectedDistance) * 1e-4,
+					$"The fling leaves OverScroller's spline at {i}% of its duration.");
+			}
+#endif
+		}
+
+		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
