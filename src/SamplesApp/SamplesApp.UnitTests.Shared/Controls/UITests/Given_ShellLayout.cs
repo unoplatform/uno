@@ -89,9 +89,10 @@ public class Given_ShellLayout
 		var origin = host.TransformToVisual(vm.Owner).TransformPoint(new Point(0, 0));
 		var headerHeight = (double)vm.Owner.Resources["ShellHeaderHeight"];
 
-		// Runtime tests and screenshots expect the sample 56 DIP down, with nothing to its left.
-		Assert.AreEqual(0, origin.X, 0.5);
-		Assert.AreEqual(vm.TitleBarVisualHeight + headerHeight, origin.Y, 0.5);
+		// Runtime tests and screenshots expect the sample 56 DIP below the safe area, with nothing to its left.
+		var safeArea = ((Grid)vm.Owner.FindName("ShellRoot")).Padding;
+		Assert.AreEqual(safeArea.Left, origin.X, 0.5);
+		Assert.AreEqual(safeArea.Top + vm.TitleBarVisualHeight + headerHeight, origin.Y, 0.5);
 		Assert.AreEqual(56d, headerHeight);
 	}
 
