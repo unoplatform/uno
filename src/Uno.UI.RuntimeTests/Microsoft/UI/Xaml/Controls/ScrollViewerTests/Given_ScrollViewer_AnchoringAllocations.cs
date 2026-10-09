@@ -1,3 +1,4 @@
+#if HAS_UNO
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -82,3 +83,4 @@ public class Given_ScrollViewer_AnchoringAllocations
 		Assert.AreEqual(expected.Height, actual.Height, 0.01);
 	}
 }
+#endif
