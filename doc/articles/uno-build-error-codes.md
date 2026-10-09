@@ -295,7 +295,7 @@ Uno Platform 7.0 removed the `*.Apple.cs`, `*.iOSmacOS.cs`, and `*.reference.cs`
 
 `*.skia.cs` is still recognized, but it now compiles for every target framework except the WinAppSDK one, not only for `netX.0-desktop`. See [Platform targeting in multi-targeted libraries](xref:Uno.Development.MigratingToUno7) for the other changes.
 
-### UNOB0028: Uno Platform application projects must use the Uno.Sdk
+### UNOB0029: Uno Platform application projects must use the Uno.Sdk
 
 Starting with Uno Platform 7.0, an application must be built with the [`Uno.Sdk`](xref:Uno.Features.Uno.Sdk). The legacy project format — a `Microsoft.NET.Sdk` project referencing the `Uno.WinUI` package, together with one head project per platform (`MyApp.Mobile`, `MyApp.Wasm`, `MyApp.Skia.Gtk`, `MyApp.Windows`, …) — is no longer supported.
 
@@ -307,7 +307,7 @@ If your project is an executable that merely links `Uno.WinUI` as a library — 
 
 ```xml
 <PropertyGroup>
-  <UnoDisableUNOB0028Validation>true</UnoDisableUNOB0028Validation>
+  <UnoDisableUNOB0029Validation>true</UnoDisableUNOB0029Validation>
 </PropertyGroup>
 ```
 
