@@ -51,7 +51,7 @@ namespace Uno.UI.Runtime {
 		// With MAXIMUM_MEMORY above 2GB, emscripten avoids its garbage-free WebGL2 upload path (Firefox bug
 		// 1838218) and slices the source as height * width rows, ignoring UNPACK_ROW_LENGTH and SKIP_*.
 		// Skia uploads glyph atlas patches with a row length, so WebGL rejected them and glyphs went blank.
-		// Re-slice such views to the strided size WebGL validates against.
+		// Re-slice such views to the strided size WebGL validates against. The 3D uploads aren't wrapped: Skia doesn't use them.
 		public static fixStridedUploads(gl: WebGL2RenderingContext): void {
 			const anyGl = <any>gl;
 			if (anyGl.__unoStridedUploadsFixed || typeof WebGL2RenderingContext === "undefined" || !(gl instanceof WebGL2RenderingContext)) {
@@ -71,8 +71,10 @@ namespace Uno.UI.Runtime {
 				return pixelStorei.call(gl, pname, param);
 			};
 
+			const isStrided = () => unpack.rowLength !== 0 || unpack.skipRows !== 0 || unpack.skipPixels !== 0;
+
 			const resize = (width: number, height: number, format: number, type: number, pixels: any): any => {
-				if (!ArrayBuffer.isView(pixels) || (unpack.rowLength === 0 && unpack.skipRows === 0 && unpack.skipPixels === 0)) {
+				if (!ArrayBuffer.isView(pixels)) {
 					return pixels;
 				}
 
@@ -89,25 +91,31 @@ namespace Uno.UI.Runtime {
 					return pixels;
 				}
 
+				// Rounding up to whole elements must not run past the end of the buffer.
 				const elementSize = (<any>view).BYTES_PER_ELEMENT || 1;
-				return new (<any>view.constructor)(view.buffer, view.byteOffset, Math.ceil(required / elementSize));
+				const length = Math.min(Math.ceil(required / elementSize), Math.floor((view.buffer.byteLength - view.byteOffset) / elementSize));
+				return new (<any>view.constructor)(view.buffer, view.byteOffset, length);
 			};
 
 			const texImage2D = gl.texImage2D;
-			anyGl.texImage2D = function (...args: any[]) {
+			anyGl.texImage2D = function () {
 				// (target, level, internalformat, width, height, border, format, type, pixels)
-				if (args.length === 9) {
-					args[8] = resize(args[3], args[4], args[6], args[7], args[8]);
+				if (arguments.length !== 9 || !isStrided()) {
+					return (<any>texImage2D).apply(gl, arguments);
 				}
+				const args = Array.prototype.slice.call(arguments);
+				args[8] = resize(args[3], args[4], args[6], args[7], args[8]);
 				return (<any>texImage2D).apply(gl, args);
 			};
 
 			const texSubImage2D = gl.texSubImage2D;
-			anyGl.texSubImage2D = function (...args: any[]) {
+			anyGl.texSubImage2D = function () {
 				// (target, level, xoffset, yoffset, width, height, format, type, pixels)
-				if (args.length === 9) {
-					args[8] = resize(args[4], args[5], args[6], args[7], args[8]);
+				if (arguments.length !== 9 || !isStrided()) {
+					return (<any>texSubImage2D).apply(gl, arguments);
 				}
+				const args = Array.prototype.slice.call(arguments);
+				args[8] = resize(args[4], args[5], args[6], args[7], args[8]);
 				return (<any>texSubImage2D).apply(gl, args);
 			};
 		}
