@@ -383,13 +383,25 @@ then
 	CANARY_FILE="$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE.canary"
 	CANARY_TIMEOUT=$((5 * 60))
 	CANARY_WAITED=0
+	CANARY_APP_EXITED=false
 	while [ ! -f "$CANARY_FILE" ] && [ $CANARY_WAITED -lt $CANARY_TIMEOUT ]; do
 		sleep 10
 		CANARY_WAITED=$((CANARY_WAITED + 10))
+
+		if [ -n "${APP_PID:-}" ] && ! ps -p "$APP_PID" > /dev/null; then
+			CANARY_APP_EXITED=true
+			break
+		fi
 	done
 
 	if [ ! -f "$CANARY_FILE" ]; then
-		echo "##vso[task.logissue type=error]UNOBLD010: The app did not write $CANARY_FILE within $((CANARY_TIMEOUT / 60))m. It launched (PID ${APP_PID:-unknown}) but never reached the first test."
+		if [ "$CANARY_APP_EXITED" = "true" ]; then
+			echo "##vso[task.logissue type=error]UNOBLD010: The app (PID $APP_PID) exited after ${CANARY_WAITED}s without writing $CANARY_FILE, before reaching the first test."
+		else
+			echo "##vso[task.logissue type=error]UNOBLD010: The app did not write $CANARY_FILE within $((CANARY_TIMEOUT / 60))m. It launched (PID ${APP_PID:-unknown}) but never reached the first test."
+		fi
+		echo "--- last 50 lines of the app stderr ---"
+		tail -n 50 "$APP_STDERR" 2>/dev/null || true
 		echo "--- last 50 lines of the app log ---"
 		tail -n 50 "$APP_LOG_FILEPATH" 2>/dev/null || true
 		exit 1
