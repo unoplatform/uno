@@ -3284,7 +3284,6 @@ public class MenuFlyoutIntegrationTests
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIOS)] // Cascading sub-menu closes on mouse move past the sub-item boundary https://github.com/unoplatform/uno/issues/23032
-	[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)] // Same as above: the slower frames of a GPU-less agent expose it
 	public async Task ValidateSubMenuItemWithLongItems()
 	{
 		Rect subItemBounds = default;

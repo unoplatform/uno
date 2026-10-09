@@ -126,7 +126,7 @@ jobs:
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
   # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1); master runs it always.
-  condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))
+  condition: succeeded() # TEMP(webgpu-stability): always run the WebGPU lanes on this PR; revert before merge
 
   pool:
     vmImage: 'windows-2025'
