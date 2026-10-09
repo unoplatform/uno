@@ -5499,8 +5499,8 @@
 										  ZoomMode="Disabled"
 										  win:Template="{StaticResource ScrollViewerScrollBarlessTemplate}"
 										  BringIntoViewOnFocusChange="False">
-								<Grid x:Name="Panel"
-									  VerticalAlignment="Stretch">
+								<PivotPanel x:Name="Panel"
+											VerticalAlignment="Stretch">
 									<Grid x:Name="PivotLayoutElement">
 										<Grid.RowDefinitions>
 											<RowDefinition Height="Auto" />
@@ -5592,7 +5592,7 @@
 											</ItemsPresenter.RenderTransform>
 										</ItemsPresenter>
 									</Grid>
-								</Grid>
+								</PivotPanel>
 							</ScrollViewer>
 						</Grid>
 

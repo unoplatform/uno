@@ -409,8 +409,7 @@
                                 </ControlTemplate>
                             </Grid.Resources>
                             <ScrollViewer x:Name="ScrollViewer" Margin="{TemplateBinding Padding}" HorizontalSnapPointsType="MandatorySingle" HorizontalSnapPointsAlignment="Center" HorizontalScrollBarVisibility="Hidden" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" VerticalSnapPointsType="None" VerticalContentAlignment="Stretch" ZoomMode="Disabled" Template="{StaticResource ScrollViewerScrollBarlessTemplate}" BringIntoViewOnFocusChange="False">
-                                <!--UNO TODO: Replace with PivotPanel, when header bug is fixed https://github.com/unoplatform/uno/issues/3596-->
-                                <Grid x:Name="Panel" VerticalAlignment="Stretch">
+                                <PivotPanel x:Name="Panel" VerticalAlignment="Stretch">
                                     <Grid x:Name="PivotLayoutElement">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -458,7 +457,7 @@
                                             </ItemsPresenter.RenderTransform>
                                         </ItemsPresenter>
                                     </Grid>
-                                </Grid>
+                                </PivotPanel>
                             </ScrollViewer>
 
                         </Grid>
