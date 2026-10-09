@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -601,6 +601,10 @@ namespace Uno.UI.Samples.Tests
 						if (metric.Unit is { } unit)
 						{
 							AddProperty("unit:" + metric.Name, unit);
+						}
+						if (metric.Description is { } description)
+						{
+							AddProperty("description:" + metric.Name, description);
 						}
 					}
 				}
