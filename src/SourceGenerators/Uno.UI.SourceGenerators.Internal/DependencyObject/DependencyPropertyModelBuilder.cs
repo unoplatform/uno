@@ -406,7 +406,8 @@ internal sealed partial class DependencyPropertyModelBuilder
 		var fieldPrefix = new System.Text.StringBuilder("__");
 		foreach (var c in _hierarchy.MetadataName)
 		{
-			fieldPrefix.Append(char.IsLetterOrDigit(c) ? c : '_');
+			// '_' is escaped so that N.A.B and N.A_B don't end up with the same field name.
+			fieldPrefix.Append(c == '_' ? "_5F_" : char.IsLetterOrDigit(c) ? c : '_');
 		}
 
 		return new BackingFieldOwnerInfo(HierarchyInfo.From((INamedTypeSymbol)owner), $"{fieldPrefix}_{name}PropertyBackingField");
