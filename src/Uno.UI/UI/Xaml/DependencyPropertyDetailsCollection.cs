@@ -179,6 +179,10 @@ namespace Microsoft.UI.Xaml
 			_entries = newEntries;
 		}
 
+		/// <summary>
+		/// Returns the backing table: sparse, in hash order (not registration order), and a snapshot that may
+		/// or may not reflect properties added while it is being walked.
+		/// </summary>
 		internal DependencyPropertyDetails?[] GetAllDetails() => _entries;
 
 	}
