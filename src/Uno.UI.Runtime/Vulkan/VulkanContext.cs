@@ -93,7 +93,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		var vkSurface = new VkSurfaceKHR { Handle = surfaceHandle };
 
 		// Create device (checks surface presentation support)
-		_device = VulkanDevice.Create((VulkanInstance)_instance, _instanceApi, vkSurface);
+		_device = VulkanDevice.Create((VulkanInstance)_instance, _instanceApi, vkSurface, factory.GetPresentingAdapterLuid(nativeWindowHandle));
 
 		// Destroy the temporary surface used for device selection
 		_instanceApi.DestroySurfaceKHR(new VkInstance { Handle = _instance.Handle }, vkSurface, IntPtr.Zero);

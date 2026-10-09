@@ -14,12 +14,16 @@ internal unsafe partial class VulkanDevice
 {
 	/// <summary>
 	/// Creates a VulkanDevice. Simplified from Avalonia's version:
-	/// - Always prefers discrete GPUs
+	/// - Prefers the device of <paramref name="presentingAdapterLuid"/>, then discrete GPUs
 	/// - Always requires VK_KHR_swapchain
 	/// - Does not require compute bit by default
 	/// </summary>
+	/// <remarks>
+	/// On a hybrid system the discrete GPU often has no display attached, so its swapchain reaches the screen
+	/// through a cross-adapter copy that drops the alpha DWM needs to show a system backdrop.
+	/// </remarks>
 	public static VulkanDevice Create(VulkanInstance instance, VulkanInstanceApi instanceApi,
-		VkSurfaceKHR? checkSurface = null)
+		VkSurfaceKHR? checkSurface = null, long? presentingAdapterLuid = null)
 	{
 		uint deviceCount = 0;
 		var vkInstance = instance.Handle;
@@ -33,7 +37,7 @@ internal unsafe partial class VulkanDevice
 		instanceApi.EnumeratePhysicalDevices(vkInstance, ref deviceCount, devices)
 			.ThrowOnError("vkEnumeratePhysicalDevices");
 
-		DeviceInfo? compatibleDevice = null, discreteDevice = null;
+		DeviceInfo? compatibleDevice = null, discreteDevice = null, presentingDevice = null;
 
 		for (var c = 0; c < deviceCount; c++)
 		{
@@ -43,13 +47,17 @@ internal unsafe partial class VulkanDevice
 				compatibleDevice ??= info;
 				if (info.Value.Type == VkPhysicalDeviceType.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 					discreteDevice ??= info;
+				if (presentingAdapterLuid is { } luid && GetDeviceLuid(instanceApi, devices[c]) == luid)
+					presentingDevice ??= info;
 			}
 
-			if (compatibleDevice != null && discreteDevice != null)
+			if (compatibleDevice != null && discreteDevice != null && (presentingAdapterLuid is null || presentingDevice != null))
 				break;
 		}
 
-		if (discreteDevice != null)
+		if (presentingDevice != null)
+			compatibleDevice = presentingDevice;
+		else if (discreteDevice != null)
 			compatibleDevice = discreteDevice;
 
 		if (compatibleDevice == null)
@@ -125,6 +133,23 @@ internal unsafe partial class VulkanDevice
 	}
 
 	private const string VK_KHR_swapchain = "VK_KHR_swapchain";
+
+	internal static long? GetDeviceLuid(VulkanInstanceApi instance, VkPhysicalDevice physicalDevice)
+	{
+		var idProperties = new VkPhysicalDeviceIDProperties
+		{
+			sType = VkStructureType.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES,
+		};
+		var properties = new VkPhysicalDeviceProperties2
+		{
+			sType = VkStructureType.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2,
+			pNext = &idProperties,
+		};
+		instance.GetPhysicalDeviceProperties2(physicalDevice, &properties);
+
+		// Same memory layout as a Win32 LUID: LowPart, then HighPart.
+		return idProperties.deviceLUIDValid != 0 ? *(long*)idProperties.deviceLUID : null;
+	}
 
 	static DeviceInfo? CheckDevice(VulkanInstanceApi instance, VkPhysicalDevice physicalDevice,
 		VkSurfaceKHR? surface)
