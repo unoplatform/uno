@@ -2832,8 +2832,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ChangeView_Animated_Short_Distance_Then_Settles_Quickly()
 		{
-			// Like WinUI's ScrollPresenter, the animation lasts 5ms per pixel within [50ms, 1000ms], so a short
-			// hop does not crawl for a whole second.
+			// Like WinUI's ScrollViewer, the animation lasts 1.4ms per physical pixel within [175ms, 475ms], so a
+			// short hop settles quickly.
 			var SUT = new ScrollViewer
 			{
 				Width = 200,
@@ -2858,15 +2858,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(completed.Task.IsCompleted, "The animated scroll never completed.");
 			Assert.AreEqual(20, SUT.VerticalOffset, 0.5);
-			Assert.IsTrue(stopwatch.ElapsedMilliseconds < 500, $"A 20px animated scroll took {stopwatch.ElapsedMilliseconds}ms.");
+			// Well under the full second a fixed-duration animation would take, with room for slow agents' frames.
+			Assert.IsTrue(stopwatch.ElapsedMilliseconds < 800, $"A 20px animated scroll took {stopwatch.ElapsedMilliseconds}ms.");
 		}
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_ChangeView_Animated_Then_Eases_Like_ScrollPresenter()
+		public async Task When_ChangeView_Animated_Then_Eases_Like_WinUI()
 		{
-			// WinUI's ScrollPresenter animates offset changes with the composition default easing, a gentle
-			// cubic bezier: a tenth of the way in it has covered ~15% of the distance, where Power(Out, 10) is at 65%.
+			// Measured on WinUI's ScrollViewer: a quartic ease-out over 475ms for a long scroll. It leaves fast: 89% of
+			// the distance 200ms in, where a gentle cubic bezier (the composition default) is at 41%.
+			const double Distance = 1500;
 			var content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) };
 			var SUT = new ScrollViewer { Width = 200, Height = 200, Content = content };
 			await UITestHelper.Load(SUT);
@@ -2880,7 +2882,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			try
 			{
 				stopwatch.Start();
-				SUT.ChangeView(null, 200, null, disableAnimation: false); // 200px, so the full 1000ms
+				SUT.ChangeView(null, Distance, null, disableAnimation: false); // far enough for the longest duration
 				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			}
 			finally
@@ -2888,17 +2890,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= onRendering;
 			}
 
-			var early = samples.First(sample => sample.Ms >= 100);
-			Assert.IsTrue(early.Offset / 200 < 0.4, $"{early.Ms:F0}ms in, the scroll already covered {early.Offset / 200:P0} of its distance");
-			Assert.AreEqual(200, SUT.VerticalOffset);
+			const double Duration = 475;
+			static double Quartic(double ms) => 1 - Math.Pow(1 - Math.Clamp(ms / Duration, 0, 1), 4);
+
+			// The animation starts on a frame that still draws its origin, and each sample reads the value of the frame
+			// before it: it started between two samples before the first one that moved and that one. Timing from
+			// there keeps however long the first frame took out of the check.
+			var firstMove = samples.FindIndex(sample => sample.Offset > 0);
+			Assert.IsGreaterThan(0, firstMove, "The scroll never moved, or moved before it was requested.");
+			var earliestStart = firstMove >= 2 ? samples[firstMove - 2].Ms : 0;
+			var latestStart = samples[firstMove].Ms;
+
+			for (var i = firstMove; i < samples.Count; i++)
+			{
+				var progress = samples[i].Offset / Distance;
+				var lower = Quartic(samples[i - 1].Ms - latestStart) - 0.02;
+				var upper = Quartic(samples[i].Ms - earliestStart) + 0.02;
+				Assert.IsTrue(
+					progress >= lower && progress <= upper,
+					$"{samples[i].Ms - latestStart:F0}ms in, the scroll covered {progress:P0} of its distance, outside [{lower:P0}, {upper:P0}].");
+			}
+
+			Assert.AreEqual(Distance, SUT.VerticalOffset);
 		}
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ChangeView_Animated_Then_Final_Offset_Is_The_Target()
 		{
-			// The last frame of an animated scroll can move by several pixels; the final ViewChanged must report where
-			// the scroll ended, not the frame before it.
+			// The final ViewChanged reports where the animated scroll ended.
 			var SUT = new ScrollViewer
 			{
 				Width = 200,
