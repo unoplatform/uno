@@ -221,11 +221,12 @@ internal static class AccessibilityRouter
 		public void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
 			=> Resolve(peer)?.NotifyTextEditTextChangedEvent(peer, changeType, changedData);
 
+		// Asked on every TextBlock text change, so it must not allocate.
 		public bool ListenerExistsHelper(AutomationEvents eventId)
 		{
-			foreach (var pair in XamlRootMap.Enumerate())
+			foreach (var host in XamlRootMap.Hosts)
 			{
-				if (pair.Value is IAccessibilityOwner { Accessibility: { } accessibility }
+				if (host is IAccessibilityOwner { Accessibility: { } accessibility }
 					&& accessibility.ListenerExistsHelper(eventId))
 				{
 					return true;
