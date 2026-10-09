@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
+using Uno.Helpers;
 using Uno.UI.Extensions;
 using Uno.UI.Hosting;
 using Uno.UI.RuntimeTests.Helpers;
@@ -109,6 +110,45 @@ public class Given_AccessibilityOnDemand
 		}
 
 		Assert.AreEqual(0, GC.GetAllocatedBytesForCurrentThread() - allocatedBefore);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+	public async Task When_No_Client_Then_Visual_Tree_Changes_Are_Not_Routed_Until_The_First_Query()
+	{
+		using var suspended = await SuspendAccessibilityClient();
+
+		// Earlier tests enabled the routing for the rest of the run: start again as an app no client ever queried.
+		var childAdded = UIElementAccessibilityHelper.ExternalOnChildAdded;
+		var childRemoved = UIElementAccessibilityHelper.ExternalOnChildRemoved;
+		var visualChanged = VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged;
+		UIElementAccessibilityHelper.ExternalOnChildAdded = null;
+		UIElementAccessibilityHelper.ExternalOnChildRemoved = null;
+		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = null;
+		try
+		{
+			var button = new Button { Content = "Moved without a client" };
+			await UITestHelper.Load(button);
+			button.Margin = new Thickness(20);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsNull(VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged, "Without a client, layout must not pay for routing.");
+			Assert.IsNull(UIElementAccessibilityHelper.ExternalOnChildAdded);
+
+			var xamlRoot = button.XamlRoot!;
+			_ = AccessibilityPeerHelper.AndroidAllNodeSnapshotsForRootAccessor?.Invoke(xamlRoot)
+				?? AccessibilityPeerHelper.IOSAllNodeSnapshotsForRootAccessor?.Invoke(xamlRoot);
+
+			Assert.IsNotNull(VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged, "The first query must start routing.");
+			Assert.IsNotNull(UIElementAccessibilityHelper.ExternalOnChildAdded);
+			Assert.IsNotNull(UIElementAccessibilityHelper.ExternalOnChildRemoved);
+		}
+		finally
+		{
+			UIElementAccessibilityHelper.ExternalOnChildAdded = childAdded;
+			UIElementAccessibilityHelper.ExternalOnChildRemoved = childRemoved;
+			VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = visualChanged;
+		}
 	}
 
 	// Earlier tests read the tree, which enables the mobile bridges for the rest of the run: start again from an app
