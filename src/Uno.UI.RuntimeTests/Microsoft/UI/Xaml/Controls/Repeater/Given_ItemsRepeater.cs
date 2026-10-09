@@ -633,6 +633,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		{
 			var repeater = new ItemsRepeater
 			{
+				Layout = new StackLayout { Orientation = Orientation.Vertical },
 				ItemsSource = Enumerable.Range(0, 200).ToArray(),
 				ItemTemplate = XamlHelper.LoadXaml<DataTemplate>("""
 					<DataTemplate>
@@ -648,21 +649,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				Content = repeater,
 			};
 
-			await UITestHelper.Load(scrollView);
-
-			foreach (var offset in new[] { 5000.0, 0.0, 12000.0 })
+			try
 			{
-				scrollView.ScrollTo(0, offset, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled));
-				await UITestHelper.WaitFor(() => scrollView.VerticalOffset == offset, message: $"ScrollTo({offset}) did not complete");
-				await TestServices.WindowHelper.WaitForIdle();
+				await UITestHelper.Load(scrollView);
 
-				// Items are 100px tall, so the realized ones must cover the whole 300px viewport.
-				var visible = repeater.Children
-					.Select(child => child.TransformToVisual(scrollView).TransformBounds(new Rect(0, 0, child.ActualSize.X, child.ActualSize.Y)))
-					.Where(bounds => bounds.Bottom > 0 && bounds.Top < scrollView.ActualHeight)
-					.ToArray();
+				foreach (var offset in new[] { 5000.0, 0.0, 12000.0 })
+				{
+					scrollView.ScrollTo(0, offset, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled));
+					await UITestHelper.WaitFor(() => Math.Abs(scrollView.VerticalOffset - offset) < 0.5, message: $"ScrollTo({offset}) did not complete");
+					await TestServices.WindowHelper.WaitForIdle();
 
-				visible.Should().HaveCountGreaterThanOrEqualTo(3, $"the viewport at offset {offset} should be filled with items");
+					// Items are 100px tall, so the realized ones must cover the whole viewport.
+					var viewportHeight = scrollView.ViewportHeight;
+					var visible = repeater.Children
+						.Select(child => child.TransformToVisual(scrollView).TransformBounds(new Rect(0, 0, child.ActualSize.X, child.ActualSize.Y)))
+						.Where(bounds => bounds.Bottom > 0 && bounds.Top < viewportHeight)
+						.ToArray();
+
+					viewportHeight.Should().Be(300);
+					visible.Should().HaveCountGreaterThanOrEqualTo(3, $"the viewport at offset {offset} should be filled with items");
+				}
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
 
