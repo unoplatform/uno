@@ -3155,7 +3155,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_SelectInternal_Request_Is_Clamped_Then_Original_Selection_Is_Restored()
+		public async Task When_SelectInternal_Request_Is_Clamped_Then_Clamped_Selection_Is_Kept()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -3163,11 +3163,78 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(textBox);
 			textBox.Select(1, 3);
 
+			(int start, int length)? reported = null;
+			textBox.SelectionChanged += (_, _) => reported = (textBox.SelectionStart, textBox.SelectionLength);
+
 			var selected = textBox.Core.SelectInternal(100, 2);
+
+			Assert.IsTrue(selected);
+			Assert.AreEqual<(int, int)?>((11, 0), reported, "SelectionChanged should report the clamped selection.");
+			Assert.AreEqual(11, textBox.SelectionStart);
+			Assert.AreEqual(0, textBox.SelectionLength);
+			Assert.AreEqual(string.Empty, textBox.SelectedText);
+		}
+
+		[TestMethod]
+		public async Task When_SelectInternal_Backward_Request_Is_Clamped_Then_Selection_Stays_Consistent()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox { Text = "hello" };
+			await UITestHelper.Load(textBox);
+
+			var selected = textBox.Core.SelectInternal(9, -6);
+
+			Assert.IsTrue(selected);
+			Assert.AreEqual(3, textBox.SelectionStart);
+			Assert.AreEqual(2, textBox.SelectionLength);
+			Assert.AreEqual("lo", textBox.SelectedText);
+			Assert.IsTrue(textBox.IsBackwardSelection);
+		}
+
+		[TestMethod]
+		public async Task When_SelectInternal_Is_Rejected_By_SelectionChanging_Then_Original_Selection_Is_Restored()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox { Text = "hello world" };
+			await UITestHelper.Load(textBox);
+			textBox.Select(1, 3);
+			textBox.SelectionChanging += (_, e) => e.Cancel = true;
+
+			var selected = textBox.Core.SelectInternal(8, -4);
 
 			Assert.IsFalse(selected);
 			Assert.AreEqual(1, textBox.SelectionStart);
 			Assert.AreEqual(3, textBox.SelectionLength);
+			Assert.IsFalse(textBox.IsBackwardSelection, "A rejected backward request must not leave its direction behind.");
+		}
+
+		[TestMethod]
+		public async Task When_TextChanging_Shortens_Text_Then_Selection_Stays_In_Range()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox { Text = "hell" };
+			await UITestHelper.Load(textBox);
+			textBox.Focus(FocusState.Programmatic);
+			textBox.Select(textBox.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			textBox.TextChanging += (sender, _) =>
+			{
+				if (sender.Text.Length > 2)
+				{
+					sender.Text = sender.Text.Substring(0, 2);
+				}
+			};
+
+			textBox.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(textBox, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("he", textBox.Text);
+			Assert.IsLessThanOrEqualTo(textBox.Text.Length, textBox.SelectionStart + textBox.SelectionLength);
+			Assert.AreEqual(textBox.Text.Substring(textBox.SelectionStart, textBox.SelectionLength), textBox.SelectedText);
 		}
 
 
