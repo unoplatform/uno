@@ -2167,6 +2167,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				advanced,
 				$"Every 1px move should advance the offset, got [{string.Join(", ", offsets)}].");
 		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Flick_Released_Past_Last_Move_Then_Release_Delta_Is_Applied()
+		{
+			// The recognizer commits the release's own delta without raising Updated for it, so the
+			// fling hand-off is the only place that can apply it before the coast starts.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				IsScrollInertiaEnabled = true,
+				UpdatesMode = Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+				Content = new Border { Width = 180, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			var bounds = await UITestHelper.Load(SUT);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			var current = bounds.GetCenter().Offset(0, 70);
+			finger.Press(current);
+			for (var i = 0; i < 8; i++)
+			{
+				current = current.Offset(0, -10);
+				finger.MoveTo(current, steps: 1);
+				await Task.Delay(8);
+			}
+
+			var dragged = SUT.VerticalOffset;
+
+			// No await between the release and the read: the fling has not ticked a single frame yet.
+			const double ReleaseDelta = 60;
+			finger.Release(current.Offset(0, -ReleaseDelta));
+			var released = SUT.VerticalOffset;
+
+			Assert.AreEqual(
+				dragged + ReleaseDelta,
+				released,
+				delta: 1,
+				$"The release moved the finger {ReleaseDelta}px further, but the content only followed by {released - dragged}px.");
+		}
 #endif
 
 		[TestMethod]
