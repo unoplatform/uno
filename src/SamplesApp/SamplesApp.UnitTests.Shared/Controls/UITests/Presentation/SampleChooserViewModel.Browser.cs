@@ -55,10 +55,6 @@ public partial class SampleChooserViewModel
 				_wasSplitVisible = IsSplitVisible;
 				break;
 
-			case nameof(Categories):
-				RemapSelectedCategory();
-				break;
-
 			case nameof(SearchTerm) when string.IsNullOrWhiteSpace(SearchTerm):
 				CloseSearchResults();
 				break;
@@ -115,18 +111,20 @@ public partial class SampleChooserViewModel
 
 	// The manual-tests filter swaps in other category instances; keep pointing at the same category,
 	// or back out to the category list when the new list does not have it.
-	private void RemapSelectedCategory()
+	private void RemapSelectedCategory(SampleChooserCategory? selected)
 	{
-		if (SelectedCategory is not { } selected
-			|| Categories is not { } categories
-			|| categories.Any(c => ReferenceEquals(c, selected)))
+		if (selected is null || Categories is not { } categories)
 		{
 			return;
 		}
 
-		if (categories.FirstOrDefault(c => c.Category == selected.Category) is { } match)
+		if ((categories.FirstOrDefault(c => ReferenceEquals(c, selected)) ?? categories.FirstOrDefault(c => c.Category == selected.Category)) is { } match)
 		{
-			SelectedCategory = match;
+			if (!ReferenceEquals(SelectedCategory, match))
+			{
+				SelectedCategory = match;
+			}
+
 			return;
 		}
 

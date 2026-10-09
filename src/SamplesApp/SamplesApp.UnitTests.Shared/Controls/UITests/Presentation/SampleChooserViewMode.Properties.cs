@@ -208,8 +208,12 @@ namespace SampleControl.Presentation
 			get => _categories;
 			set
 			{
+				var selected = _selectedCategory;
 				_categories = value;
 				RaisePropertyChanged();
+
+				// After the bindings: WinUI's ListView drops its selection on a new ItemsSource and writes null back.
+				RemapSelectedCategory(selected);
 			}
 		}
 
