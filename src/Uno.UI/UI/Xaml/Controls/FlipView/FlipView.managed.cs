@@ -48,6 +48,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Dispatcher timer to set correct offset values after size changed
 		DispatcherTimer m_tpFixOffsetTimer;
 
+		// Uno-specific: lets tests wait out the offset fix armed by sizing, which a manipulation would otherwise postpone and replay.
+		internal bool IsFixOffsetPending => m_tpFixOffsetTimer?.IsEnabled == true;
+
 		// Stores a reference to the ButtonLayer part.
 		//Panel* m_pButtonLayerPart;
 
