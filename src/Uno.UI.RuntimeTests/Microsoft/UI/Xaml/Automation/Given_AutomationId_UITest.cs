@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
@@ -53,6 +54,10 @@ public class Given_AutomationId_UITest : SampleControlUITestBase
 
 		var target = FindByAutomationId(automationId);
 		Assert.IsNotNull(target, $"No element exposes the AutomationId '{automationId}'.");
+
+		// The list sits below the fixture controls, so on small screens it starts outside the viewport.
+		target.Element.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false });
+		await UITestHelper.WaitForIdle();
 
 		var bounds = target.Rect;
 		App.TapCoordinates(bounds.CenterX, bounds.CenterY);
