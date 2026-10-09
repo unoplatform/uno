@@ -32,7 +32,6 @@ public class Given_Matrix
 
 		Assert.AreEqual("1,5;0;0;2;3;4", matrix.ToString(new CultureInfo("de-DE")));
 	}
-	}
 
 	[TestMethod]
 	public void When_Formatted_Through_IFormattable()
