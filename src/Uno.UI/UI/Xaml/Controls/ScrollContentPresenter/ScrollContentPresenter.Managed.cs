@@ -34,6 +34,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
 
 
+		// Set while an update replaces the running scroll animation, so the one cut short does not report its stop as final.
+		private bool _isReplacingScrollAnimation;
+
 		private ScrollDecaySimulation _wheelDecayH;
 		private ScrollDecaySimulation _wheelDecayV;
 		private bool _isWheelDecayRunning;
@@ -503,7 +506,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (options is { DisableAnimation: true } or { IsTouch: true })
 			{
+				_isReplacingScrollAnimation = true;
 				visual.StopAnimation(nameof(Visual.AnchorPoint));
+				_isReplacingScrollAnimation = false;
 				visual.StopAnimation(nameof(Visual.Scale));
 				visual.AnchorPoint = target;
 				visual.Scale = targetScale;
@@ -539,6 +544,13 @@ namespace Microsoft.UI.Xaml.Controls
 					scrollAnimation.AnimationFrame -= OnFrame;
 					scrollAnimation.Stopped -= OnStopped;
 
+					// Cut short by the motion taking over, which publishes the offsets itself: a final offset here
+					// would be followed by more intermediate ones.
+					if (_isReplacingScrollAnimation)
+					{
+						return;
+					}
+
 					// Having reached its target, it publishes the exact offsets rather than the pixel it is drawn at.
 					if (Vector2.DistanceSquared(visual.AnchorPoint, target) < 0.0001f)
 					{
@@ -555,7 +567,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 				scrollAnimation.Stopped += OnStopped;
 
+				_isReplacingScrollAnimation = true;
 				visual.StartAnimation(nameof(Visual.AnchorPoint), scrollAnimation);
+				_isReplacingScrollAnimation = false;
 
 				// After StartAnimation, so it runs after the handler that applies the frame's value, not before it.
 				scrollAnimation.AnimationFrame += OnFrame;
