@@ -92,7 +92,7 @@ public class Given_GeneratedDependencyProperty
 		test.GeneratedXamlCode.Should().Contain("Property = global::TestRepro.MyControl.MyValueProperty");
 		test.GeneratedXamlCode.Should().Contain("global::TestRepro.MyControl.MyValueProperty, \"MyDoubleResource\", isThemeResourceExtension: true");
 		test.GeneratedXamlCode.Should().Contain("global::TestRepro.MyControl.MyValueProperty, \"MyDoubleResource\", isThemeResourceExtension: false");
-		test.GeneratedXamlCode.Should().MatchRegex(@"SetBinding\(\s*global::TestRepro\.MyControl\.MyValueProperty,");
+		test.GeneratedXamlCode.Should().MatchRegex(@"SetBinding\(\s*__p1,\s*global::TestRepro\.MyControl\.MyValueProperty,");
 	}
 
 	[TestMethod]
@@ -159,7 +159,7 @@ public class Given_GeneratedDependencyProperty
 		await test.RunAsync();
 
 		test.GeneratedXamlCode.Should().Contain("global::TestRepro.MyAttached.OffsetProperty, \"MyDoubleResource\", isThemeResourceExtension: true");
-		test.GeneratedXamlCode.Should().MatchRegex(@"SetBinding\(\s*global::TestRepro\.MyAttached\.OffsetProperty,");
+		test.GeneratedXamlCode.Should().MatchRegex(@"SetBinding\(\s*__p1,\s*global::TestRepro\.MyAttached\.OffsetProperty,");
 	}
 
 	[TestMethod]
@@ -230,7 +230,7 @@ public class Given_GeneratedDependencyProperty
 
 		// A referenced assembly already exposes its accessible identifiers, so the attribute must not be trusted there.
 		test.GeneratedXamlCode.Should().NotContain("MyValueProperty");
-		test.GeneratedXamlCode.Should().MatchRegex(@"SetBinding\(\s*""MyValue"",");
+		test.GeneratedXamlCode.Should().MatchRegex(@"SetBinding\(\s*__p1,\s*""MyValue"",");
 	}
 
 	private sealed class GeneratedDependencyPropertyTest : XamlSourceGeneratorVerifier.TestBase
