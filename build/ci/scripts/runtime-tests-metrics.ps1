@@ -87,6 +87,7 @@ function Invoke-Extract {
                 value  = [double]::Parse($properties[$key], $Invariant)
                 budget = if ($properties.ContainsKey("budget:$name")) { [double]::Parse($properties["budget:$name"], $Invariant) } else { $null }
                 unit   = $properties["unit:$name"]
+                description = $properties["description:$name"]
             }
         }
     }
@@ -208,7 +209,8 @@ function New-Report($lanes, $baselines) {
         foreach ($lane in $laneNames) {
             foreach ($metric in $lanes[$lane].Values) {
                 $key = "$($metric.test)|$($metric.name)"
-                if (-not $rows.Contains($key)) { $rows[$key] = [ordered]@{ key = $key; name = $metric.name; budget = $metric.budget } }
+                if (-not $rows.Contains($key)) { $rows[$key] = [ordered]@{ key = $key; name = $metric.name; budget = $metric.budget; description = $null } }
+                if (-not $rows[$key].description -and $metric.description) { $rows[$key].description = $metric.description }
             }
         }
 
@@ -286,7 +288,21 @@ function New-Report($lanes, $baselines) {
         [void]$sb.AppendLine("|---|---|---:|$(($baselines | ForEach-Object { '---:' }) -join '|')|")
         $tableLines | ForEach-Object { [void]$sb.AppendLine($_) }
         [void]$sb.AppendLine()
-        [void]$sb.AppendLine('▲ / ▼: higher / lower than the latest dev by more than 20%; lower is better for every budgeted count. Frame rates follow the agent''s display rate, so they are only compared when they cross their budget.')
+        # The legend comes from the tests themselves (RuntimeTestMetrics.Record's description), so a new budget explains
+        # itself here without touching this script.
+        [void]$sb.AppendLine('**What the numbers mean**')
+        [void]$sb.AppendLine()
+        [void]$sb.AppendLine('- Every value is a **count** measured by the runtime tests, never a timing, and **lower is better**.')
+        [void]$sb.AppendLine('- **Budget** is the highest acceptable value. ⚠️ marks a value over it; – means the version did not measure it.')
+        [void]$sb.AppendLine('- ▲ / ▼: this PR is more than 20% higher / lower than the latest dev. Frame rates follow the agent''s display rate, so they only count as changed when they cross their budget.')
+        [void]$sb.AppendLine('- `x` is a ratio, and `/N` is out of N objects tracked.')
+        $described = @($rows.Values | Where-Object { $_.description })
+        if ($described.Count -gt 0) {
+            [void]$sb.AppendLine()
+            [void]$sb.AppendLine('| Metric | What it counts |')
+            [void]$sb.AppendLine('|---|---|')
+            foreach ($row in $described) { [void]$sb.AppendLine("| ``$($row.name)`` | $($row.description -replace '\|', '\|') |") }
+        }
         [void]$sb.AppendLine()
 
         # Every lane of this PR, for differences between platforms and renderers.

@@ -74,8 +74,8 @@ public class Given_RenderingBudget
 		using var probe = new FrameProbe(page);
 		await Task.Delay(TimeSpan.FromSeconds(1));
 
-		RuntimeTestMetrics.Record("idle.frames-per-second", probe.Frames, IdleFramesPerSecondBudget);
-		RuntimeTestMetrics.Record("idle.full-window-frames", probe.FullWindowFrames, 0);
+		RuntimeTestMetrics.Record("idle.frames-per-second", probe.Frames, IdleFramesPerSecondBudget, description: "Frames rendered in 1 s on a page where nothing changes (text, button, check box). Expected: 0.");
+		RuntimeTestMetrics.Record("idle.full-window-frames", probe.FullWindowFrames, 0, description: "Frames that repainted the whole window on that page. Expected: 0.");
 	}
 
 	[TestMethod]
@@ -106,11 +106,11 @@ public class Given_RenderingBudget
 		Assert.IsTrue(scroller.VerticalOffset > 0, "The list did not scroll.");
 
 		var viewportArea = list.ActualWidth * list.ActualHeight;
-		RuntimeTestMetrics.Record("scroll.frames-per-step", (double)probe.Frames / ScrollSteps, ScrollFramesPerStepBudget);
-		RuntimeTestMetrics.Record("scroll.damage-per-viewport", probe.MeanDamagedArea / viewportArea, ScrollDamagePerViewportBudget, "x");
-		RuntimeTestMetrics.Record("scroll.full-window-frames", probe.FullWindowFrames, 0);
-		RecordPathOps("scroll.path-ops-per-step", probe, ScrollSteps, ScrollPathOpsPerStepBudget);
-		RuntimeTestMetrics.Record("scroll.measures-per-step", (double)probe.Measures / ScrollSteps, ScrollMeasuresPerStepBudget);
+		RuntimeTestMetrics.Record("scroll.frames-per-step", (double)probe.Frames / ScrollSteps, ScrollFramesPerStepBudget, description: "Frames per step while scrolling a 300×300 ListView of rounded items, 30 steps of 37 px. Expected: 1.");
+		RuntimeTestMetrics.Record("scroll.damage-per-viewport", probe.MeanDamagedArea / viewportArea, ScrollDamagePerViewportBudget, "x", description: "Area repainted per scroll frame, divided by the list's area. About 1x means only the list repaints.");
+		RuntimeTestMetrics.Record("scroll.full-window-frames", probe.FullWindowFrames, 0, description: "Scroll frames that repainted the whole window. Expected: 0.");
+		RecordPathOps("scroll.path-ops-per-step", probe, ScrollSteps, ScrollPathOpsPerStepBudget, "Path booleans (SKPath.Op, costly geometry operations) per scroll step. Expected: close to 0.");
+		RuntimeTestMetrics.Record("scroll.measures-per-step", (double)probe.Measures / ScrollSteps, ScrollMeasuresPerStepBudget, description: "Layout measure calls per scroll step (realizing and recycling items).");
 	}
 
 	[TestMethod]
@@ -137,10 +137,10 @@ public class Given_RenderingBudget
 		Assert.IsTrue(probe.Frames > 0, "The ProgressRing did not render any frame.");
 
 		var ringArea = ring.ActualWidth * ring.ActualHeight;
-		RuntimeTestMetrics.Record("progressring.frames-per-second", probe.Frames);
-		RuntimeTestMetrics.Record("progressring.damage-per-ring-area", probe.MeanDamagedArea / ringArea, RingDamagePerRingAreaBudget, "x");
-		RuntimeTestMetrics.Record("progressring.full-window-frames", probe.FullWindowFrames, 0);
-		RecordPathOps("progressring.path-ops-per-frame", probe, probe.Frames, RingPathOpsPerFrameBudget);
+		RuntimeTestMetrics.Record("progressring.frames-per-second", probe.Frames, description: "Frames in 1 s with a 40×40 ProgressRing spinning. Follows the display rate: for information only.");
+		RuntimeTestMetrics.Record("progressring.damage-per-ring-area", probe.MeanDamagedArea / ringArea, RingDamagePerRingAreaBudget, "x", description: "Area repainted per frame, divided by the ring's area. About 1.2x is the ring plus its antialiased edge.");
+		RuntimeTestMetrics.Record("progressring.full-window-frames", probe.FullWindowFrames, 0, description: "Ring frames that repainted the whole window. Expected: 0.");
+		RecordPathOps("progressring.path-ops-per-frame", probe, probe.Frames, RingPathOpsPerFrameBudget, "Path booleans (SKPath.Op) per ring frame. Expected: 0.");
 	}
 
 	[TestMethod]
@@ -162,10 +162,10 @@ public class Given_RenderingBudget
 			using (var probe = new FrameProbe(host))
 			{
 				await Task.Delay(TimeSpan.FromSeconds(1));
-				RuntimeTestMetrics.Record("removed-animation.frames-per-second", probe.Frames, RemovedAnimationFramesPerSecondBudget);
+				RuntimeTestMetrics.Record("removed-animation.frames-per-second", probe.Frames, RemovedAnimationFramesPerSecondBudget, description: "Frames in 1 s after removing a panel whose child runs an endless animation (#25054). Expected: 0.");
 			}
 
-			await RecordAliveAsync("removed-animation", subtree);
+			await RecordAliveAsync("removed-animation", subtree, "Parts of the removed panel (panel, child, composition visual) still in memory after garbage collection. Expected: 0.");
 		}
 		finally
 		{
@@ -184,7 +184,7 @@ public class Given_RenderingBudget
 		await LoadAndUnloadPageAsync();
 		var objects = await LoadAndUnloadPageAsync();
 
-		await RecordAliveAsync("page-removal", objects);
+		await RecordAliveAsync("page-removal", objects, "Controls still in memory after their page is removed (image, bitmap, list, ring, text box, toggle switch). Expected: 0.");
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)] // Keeps the page out of the caller's async state machine.
@@ -251,10 +251,10 @@ public class Given_RenderingBudget
 			</DataTemplate>
 			""");
 
-	private static void RecordPathOps(string name, FrameProbe probe, int divisor, double budget)
+	private static void RecordPathOps(string name, FrameProbe probe, int divisor, double budget, string description)
 	{
 #if UNO_DRAWING_SKIA
-		RuntimeTestMetrics.Record(name, divisor == 0 ? probe.PathOps : (double)probe.PathOps / divisor, budget);
+		RuntimeTestMetrics.Record(name, divisor == 0 ? probe.PathOps : (double)probe.PathOps / divisor, budget, description: description);
 #endif
 	}
 
@@ -262,7 +262,7 @@ public class Given_RenderingBudget
 	/// Collects, then records how many of <paramref name="objects"/> are still alive, and which: a leak report that
 	/// names the type saves a debugging session.
 	/// </summary>
-	private static async Task RecordAliveAsync(string scenario, TrackedObject[] objects)
+	private static async Task RecordAliveAsync(string scenario, TrackedObject[] objects, string description)
 	{
 		// The collection loop of Given_BindingMemoryLeak: some targets only clear weak references after a yield, and
 		// dispatcher-deferred disposals need an idle pass.
@@ -277,10 +277,10 @@ public class Given_RenderingBudget
 		}
 
 		var alive = objects.Where(o => o.Reference.IsAlive).ToArray();
-		RuntimeTestMetrics.Record($"{scenario}.objects-alive", alive.Length, 0, $"/{objects.Length}");
+		RuntimeTestMetrics.Record($"{scenario}.objects-alive", alive.Length, 0, $"/{objects.Length}", description);
 		foreach (var o in alive)
 		{
-			RuntimeTestMetrics.Record($"{scenario}.alive.{o.Name}", 1, 0);
+			RuntimeTestMetrics.Record($"{scenario}.alive.{o.Name}", 1, 0, description: $"A {o.Name} still in memory after removal.");
 		}
 	}
 
