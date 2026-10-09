@@ -1101,13 +1101,27 @@ namespace Microsoft.UI.Xaml.Controls
 				var manipulation = args.Manipulation;
 				_touchInertia = manipulation;
 
+				// The release's own delta is committed by the recognizer without an Updated event.
+				var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
+				var deltaY = Math.Clamp(-args.Delta.Translation.Y, scrollable.Up, scrollable.Down);
+				Set(
+					horizontalOffset: HorizontalOffset + deltaX,
+					verticalOffset: VerticalOffset + deltaY,
+					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
+
+				// A synchronous ViewChanged handler may have scrolled programmatically, which ends the hand-off.
+				if (!ReferenceEquals(_touchInertia, manipulation))
+				{
+					return true;
+				}
+
 				StartFling(vx, vy);
 
 				if (!_isFlingRunning)
 				{
 					// No frame driver (e.g. the presenter has no composition target): nothing would ever
-					// publish the final offsets, so end the manipulation and let OnCompleted do it.
-					_touchInertia = null;
+					// publish the final offsets, so end the manipulation and let OnCompleted do it. The
+					// completion is inertial, so _touchInertia must stay set for OnCompleted to publish.
 					manipulation.Complete();
 					return true;
 				}
