@@ -1533,13 +1533,13 @@ namespace Microsoft.UI.Xaml.Controls
 		/// extent this ScrollViewer has not been arranged with yet, so it is kept as is rather than clamped to the
 		/// current range, and the post-layout recompute seats it once the extent catches up.
 		/// </summary>
-		internal void ChangeViewForLayoutAdjustment(double? horizontalOffset, double? verticalOffset)
+		internal void ChangeViewForLayoutAdjustment(double? horizontalOffset, double? verticalOffset, bool disableAnimation = true)
 		{
 			var wasLayoutAdjustment = _isLayoutAdjustment;
 			_isLayoutAdjustment = true;
 			try
 			{
-				ChangeView(horizontalOffset, verticalOffset, null, disableAnimation: true);
+				ChangeView(horizontalOffset, verticalOffset, null, disableAnimation);
 			}
 			finally
 			{
