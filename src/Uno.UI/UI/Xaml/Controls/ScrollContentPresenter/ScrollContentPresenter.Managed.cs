@@ -37,6 +37,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Set while an update replaces the running scroll animation, so the one cut short does not report its stop as final.
 		private bool _isReplacingScrollAnimation;
 
+		// The animated scroll in flight, from its start until it has stopped (having published its final offsets).
+		private CompositionAnimation? _runningScrollAnimation;
+
 		private bool _isInManipulation;
 
 		/// <summary>
@@ -150,20 +153,19 @@ namespace Microsoft.UI.Xaml.Controls
 				// A fling and a wheel decay own the offsets exactly like an animation does, but they are frame
 				// drivers rather than composition animations, so the controller check below cannot see them.
 				// Left unreported, an intent armed mid-motion snaps the offset back on the next layout pass.
-				if (_isFlingRunning || _isWheelDecayRunning)
+				// The scroll animation runs until it has applied its last frame and published the final offsets, which on a
+				// late frame is after its wall-clock duration: Remaining would already report it done.
+				if (_isFlingRunning || _isWheelDecayRunning || _runningScrollAnimation is not null)
 				{
 					return true;
 				}
 
-				// A KeyFrameAnimation that completed naturally stays in the owning
-				// CompositionObject's animation dictionary (only StopAnimation removes it),
-				// so the controller's mere presence is not a reliable "in progress" signal.
-				// Check the remaining time instead. The zoom animation can outlast a short scroll.
+				// A KeyFrameAnimation that completed naturally stays in the owning CompositionObject's animation
+				// dictionary (only StopAnimation removes it), so the zoom's controller presence is not a reliable
+				// "in progress" signal: check its remaining time. It can outlast a short scroll.
 				return Content is UIElement contentElt && contentElt.Visual is { } visual
-					&& (IsRunning(visual, nameof(Visual.AnchorPoint)) || IsRunning(visual, nameof(Visual.Scale)));
-
-				static bool IsRunning(Visual visual, string property)
-					=> visual.TryGetAnimationController(property) is { } controller && controller.Remaining > TimeSpan.Zero;
+					&& visual.TryGetAnimationController(nameof(Visual.Scale)) is { } controller
+					&& controller.Remaining > TimeSpan.Zero;
 			}
 		}
 
@@ -198,6 +200,9 @@ namespace Microsoft.UI.Xaml.Controls
 			StopWheelDecayAndPublishFinalOffsets();
 			StopFlingAndPublishFinalOffsets();
 			_isInManipulation = false;
+
+			// A visual off the tree may never tick its animation to completion: nothing would clear this otherwise.
+			_runningScrollAnimation = null;
 
 			// The processor outlives the fling on purpose, so unloading has to end it explicitly: left running
 			// it holds a frame driver, keeps this presenter rooted and swallows presses on a tree it has left.
@@ -553,6 +558,11 @@ namespace Microsoft.UI.Xaml.Controls
 					scrollAnimation.AnimationFrame -= OnFrame;
 					scrollAnimation.Stopped -= OnStopped;
 
+					if (_runningScrollAnimation == scrollAnimation)
+					{
+						_runningScrollAnimation = null;
+					}
+
 					// Cut short by the motion taking over, which publishes the offsets itself: a final offset here
 					// would be followed by more intermediate ones.
 					if (_isReplacingScrollAnimation)
@@ -579,6 +589,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_isReplacingScrollAnimation = true;
 				visual.StartAnimation(nameof(Visual.AnchorPoint), scrollAnimation);
 				_isReplacingScrollAnimation = false;
+				_runningScrollAnimation = scrollAnimation;
 
 				// After StartAnimation, so it runs after the handler that applies the frame's value, not before it.
 				scrollAnimation.AnimationFrame += OnFrame;
@@ -780,9 +791,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>Where the content is drawn, which trails the offsets while an animated scroll is in flight.</summary>
 		private (double Horizontal, double Vertical) GetDrawnOffsets()
 		{
-			if (Content is UIElement { Visual: { } visual }
-				&& visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller
-				&& controller.Remaining > TimeSpan.Zero)
+			if (_runningScrollAnimation is not null && Content is UIElement { Visual: { } visual })
 			{
 				// AnchorPoint also carries the centering offset of content smaller than the viewport, cf. Update.
 				var centeringX = Math.Max(0, (ViewportWidth - ExtentWidth * _zoomFactor) / 2);
