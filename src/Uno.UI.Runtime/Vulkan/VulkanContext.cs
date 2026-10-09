@@ -36,6 +36,9 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	public VkQueue MainQueueHandle => new() { Handle = _device!.MainQueueHandle };
 	public uint GraphicsQueueFamilyIndex => _device!.GraphicsQueueFamilyIndex;
 
+	/// <summary>LUID of the adapter the device runs on, or null when the driver doesn't report one.</summary>
+	internal long? DeviceLuid => VulkanDevice.GetDeviceLuid(_instanceApi!, PhysicalDeviceHandle);
+
 	// --- Neutral device face (consumed by the host's IVulkanDeviceContext) ---
 	// The Skia GRContext lives in the Skia backend now; this subsystem is Vulkan-native only and just exposes the
 	// device details + the per-frame render image, so the backend builds its own GRContext-Vulkan over them.
