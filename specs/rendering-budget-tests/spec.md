@@ -176,8 +176,10 @@ are enforced once their fix lands, and the fix PR shows the value dropping in it
 ## 6. Adding a budget
 
 - Measure counts, never durations.
-- Record with `RuntimeTestMetrics.Record("<scenario>.<metric>", value, budget, unit)`. Normalize by the
-  scenario size (per step, per frame, per area) so the value doesn't depend on window size or frame rate.
+- Record with `RuntimeTestMetrics.Record("<scenario>.<metric>", value, budget, unit, description)`. Normalize by
+  the scenario size (per step, per frame, per area) so the value doesn't depend on window size or frame rate.
+- Give it a one-sentence description: what it counts, in which scenario, and what a good value is. The report's
+  "What the numbers mean" table is built from these descriptions.
 - Keep the measured objects out of the async state machine (`[MethodImpl(NoInlining)]` helpers) when counting
   what stays alive.
 - Undo anything a regression could leave running, so it can't affect later tests.
