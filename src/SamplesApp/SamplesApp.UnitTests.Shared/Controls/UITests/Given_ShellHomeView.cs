@@ -90,6 +90,7 @@ public class Given_ShellHomeView
 		=> Assert.AreEqual(expected, SampleChooserControl.LeavesRunner(destination, ShellDestination.RuntimeTests, isRunActive));
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // KeyboardHelper sends nothing on WinAppSDK.
 	public async Task When_Runner_Leave_Bar_Shown_Header_Content_Is_Hidden_Until_Escape()
 	{
 		var owner = SampleChooserViewModel.Instance.Owner;
@@ -208,13 +209,13 @@ public class Given_ShellHomeView
 		var vm = SampleChooserViewModel.Instance;
 		Assert.IsTrue(vm.Categories?.Count >= 4, "The runner's sample index should be loaded.");
 
-		// Tall enough to realize every card.
-		var view = await LoadHomeView(width, height: 3000);
-		var list = (ItemsRepeater)view.FindName("ShellHomeCategoriesList");
+		var view = await LoadHomeView(width);
+		var list = await ShowCategories(view);
 		var cards = RealizedCards(list);
 
 		Assert.AreEqual(HomeView.MaxCards, ((System.Collections.ICollection)list.ItemsSource).Count, "Categories are capped.");
-		Assert.AreEqual(HomeView.MaxCards, cards.Count);
+		// WinUI realizes only what is on screen, which is at least the first row.
+		Assert.IsTrue(cards.Count >= expectedColumns, $"{cards.Count} cards realized");
 
 		var columns = cards.Select(c => Math.Round(c.Left)).Distinct().Count();
 		Assert.AreEqual(expectedColumns, columns);
@@ -235,9 +236,10 @@ public class Given_ShellHomeView
 		try
 		{
 			var view = await LoadHomeView(1232);
-			var list = (ItemsRepeater)view.FindName("ShellHomeCategoriesList");
+			var list = await ShowCategories(view);
 			var card = (Button)list.TryGetElement(0);
-			var category = ((HomeCard)card.DataContext).Title;
+			// An x:Bind template leaves the DataContext alone on WinUI.
+			var category = ((IList<HomeCard>)list.ItemsSource)[0].Title;
 
 			card.Command.Execute(card.CommandParameter);
 			await TestServices.WindowHelper.WaitForIdle();
@@ -281,6 +283,12 @@ public class Given_ShellHomeView
 
 	private static async Task<HomeView> LoadHomeView(double width, double height = 800)
 	{
+		// The test root can be shorter than the window, and WinUI realizes cards only inside it.
+		if (TestServices.WindowHelper.RootElement is FrameworkElement { ActualHeight: > 0 } root)
+		{
+			height = Math.Min(height, root.ActualHeight);
+		}
+
 		HomeView view = new() { DataContext = SampleChooserViewModel.Instance };
 		Border host = new() { Width = width, Height = height, Child = view };
 
@@ -289,6 +297,16 @@ public class Given_ShellHomeView
 		await TestServices.WindowHelper.WaitForIdle();
 
 		return view;
+	}
+
+	private static async Task<ItemsRepeater> ShowCategories(HomeView view)
+	{
+		var list = (ItemsRepeater)view.FindName("ShellHomeCategoriesList");
+		list.StartBringIntoView(new BringIntoViewOptions { VerticalAlignmentRatio = 0, AnimationDesired = false });
+		await TestServices.WindowHelper.WaitFor(() => list.TryGetElement(0) is not null, message: "The first card should be realized.");
+		view.UpdateLayout();
+
+		return list;
 	}
 
 	private static List<Rect> RealizedCards(ItemsRepeater repeater)

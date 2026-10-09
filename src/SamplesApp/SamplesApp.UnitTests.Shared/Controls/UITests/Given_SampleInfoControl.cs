@@ -195,6 +195,8 @@ public class Given_SampleInfoControl
 	{
 		var control = await Load(CreateSample());
 		control.FitToWindow(new Windows.Foundation.Size(345, 700));
+		// WaitForIdle does not run layout on WinUI.
+		control.UpdateLayout();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.AreEqual(Orientation.Vertical, Find<StackPanel>(control, "ShellInfoLinks").Orientation);
