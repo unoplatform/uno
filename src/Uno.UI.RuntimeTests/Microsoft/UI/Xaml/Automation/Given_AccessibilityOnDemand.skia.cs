@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
@@ -92,6 +93,22 @@ public class Given_AccessibilityOnDemand
 		Assert.IsTrue(
 			snapshots.Any(snapshot => snapshot.Name == "Added without a client"),
 			"The first read must see content added while no client listened.");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWin32)]
+	public void When_Checking_For_Listeners_Then_Nothing_Is_Allocated()
+	{
+		// TextBlock asks on every text change.
+		AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged);
+
+		var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+		for (var i = 0; i < 100; i++)
+		{
+			AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged);
+		}
+
+		Assert.AreEqual(0, GC.GetAllocatedBytesForCurrentThread() - allocatedBefore);
 	}
 
 	// Earlier tests read the tree, which enables the mobile bridges for the rest of the run: start again from an app
