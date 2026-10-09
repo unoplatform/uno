@@ -1317,35 +1317,49 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	/// </summary>
 	internal bool SelectInternal(int selectionStart, int selectionLength)
 	{
+		// Clamp both ends the same way Select does, so the direction and caret offset describe
+		// the selection that actually gets applied.
+		var textLength = Text.Length;
+		var anchor = Math.Min(selectionStart, textLength);
+		var caret = Math.Min(selectionStart + selectionLength, textLength);
+		var normalizedStart = Math.Min(anchor, caret);
+		var normalizedLength = Math.Abs(caret - anchor);
+
 		var originalSelection = _selection;
 		var originalCaretXOffset = _caretXOffset;
-		var normalizedStart = Math.Min(selectionStart, selectionStart + selectionLength);
-		var normalizedLength = Math.Abs(selectionLength);
+		var rangeChanges = normalizedStart != originalSelection.start || normalizedLength != originalSelection.length;
 
 		_inSelectInternal = true;
 		try
 		{
 			// The native overlay reads IsBackwardSelection during Select, before this method returns.
 			// Publish the direction first, then restore it below if SelectionChanging rejects the update.
-			_selection.selectionEndsAtTheStart = selectionLength < 0;
+			_selection.selectionEndsAtTheStart = caret < anchor;
 			if (DisplayBlockInlines is { })
 			{
-				_caretXOffset = selectionLength >= 0 ?
-					(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Left :
-					(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Right;
+				var caretRect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(caret);
+				_caretXOffset = (float)(caret >= anchor ? caretRect.Left : caretRect.Right);
 			}
 
-			Select(normalizedStart, normalizedLength);
-			if (SelectionStart != normalizedStart || SelectionLength != normalizedLength)
+			if (!Select(normalizedStart, normalizedLength))
 			{
 				_selection = originalSelection;
 				_caretXOffset = originalCaretXOffset;
-				UpdateDisplaySelection();
 				return false;
 			}
 
-			UpdateDisplaySelection();
-			UpdateScrolling();
+			if (rangeChanges)
+			{
+				// SelectPartial already refreshed the display; scrolling waits for the final direction.
+				UpdateScrolling();
+			}
+			else if (_selection.selectionEndsAtTheStart != originalSelection.selectionEndsAtTheStart || _caretXOffset != originalCaretXOffset)
+			{
+				// Select is a no-op when only the direction flips, but the caret moved to the other end.
+				UpdateDisplaySelection();
+				UpdateScrolling();
+			}
+
 			return true;
 		}
 		finally
