@@ -11,8 +11,8 @@ namespace UITests.Windows_UI_ViewManagement
 	//  1. Tapping a TextBox must keep the keyboard open (no self-dismiss).
 	//  2. LostFocus must fire when the keyboard is dismissed / focus leaves the field.
 	//  3. The focused field near the bottom must scroll above the on-screen keyboard.
-	//  4. Moving focus between fields of a side panel must keep the keyboard open and must not let Safari
-	//     pan the page (the panel's ScrollViewer is the only thing allowed to move).
+	//  4. Moving focus between fields of a side panel must keep the keyboard open and land each field above it,
+	//     moving the whole content up when the panel cannot scroll far enough (Safari must not pan the page).
 	//  5. Dragging inside the side panel scrolls the panel, not the whole page.
 	// 1-3 reproduce only on a real touch device (iPad Safari/Chrome). 4-5 also reproduce in the iOS Simulator:
 	// with the field focused, toggle I/O > Keyboard > Connect Hardware Keyboard on and off to force a keyboard
