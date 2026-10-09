@@ -1,4 +1,4 @@
-using Microsoft.UI.Input;
+﻿using Microsoft.UI.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
 
@@ -28,11 +28,10 @@ public class Given_ScrollVelocityTracker
 			tracker.AddPosition(t, new Point(-1.5 * t, 2 * t));
 		}
 
-		var velocity = tracker.GetVelocity();
+		var velocity = GetVelocity(tracker);
 
-		Assert.IsNotNull(velocity);
-		Assert.AreEqual(-1.5, velocity.Value.X, Tolerance);
-		Assert.AreEqual(2, velocity.Value.Y, Tolerance);
+		Assert.AreEqual(-1.5, velocity.X, Tolerance);
+		Assert.AreEqual(2, velocity.Y, Tolerance);
 	}
 
 	[TestMethod]
@@ -45,11 +44,10 @@ public class Given_ScrollVelocityTracker
 			tracker.AddPosition(t, new Point(0, t + 0.01 * t * t));
 		}
 
-		var velocity = tracker.GetVelocity();
+		var velocity = GetVelocity(tracker);
 
-		Assert.IsNotNull(velocity);
-		Assert.AreEqual(0, velocity.Value.X, Tolerance);
-		Assert.AreEqual(1 + 0.02 * 80, velocity.Value.Y, Tolerance);
+		Assert.AreEqual(0, velocity.X, Tolerance);
+		Assert.AreEqual(1 + 0.02 * 80, velocity.Y, Tolerance);
 	}
 
 	[TestMethod]
@@ -65,13 +63,12 @@ public class Given_ScrollVelocityTracker
 
 		for (var i = 0; i <= 4; i++)
 		{
-			tracker.AddPosition(90 + i * 8, new Point(0, 400 + i * 8));
+			tracker.AddPosition(90 + i * 8d, new Point(0, 400 + i * 8d));
 		}
 
-		var velocity = tracker.GetVelocity();
+		var velocity = GetVelocity(tracker);
 
-		Assert.IsNotNull(velocity);
-		Assert.AreEqual(1, velocity.Value.Y, Tolerance);
+		Assert.AreEqual(1, velocity.Y, Tolerance);
 	}
 
 	[TestMethod]
@@ -85,10 +82,9 @@ public class Given_ScrollVelocityTracker
 			tracker.AddPosition(t, new Point(0, y));
 		}
 
-		var velocity = tracker.GetVelocity();
+		var velocity = GetVelocity(tracker);
 
-		Assert.IsNotNull(velocity);
-		Assert.AreEqual(1, velocity.Value.Y, Tolerance);
+		Assert.AreEqual(1, velocity.Y, Tolerance);
 	}
 
 	[TestMethod]
@@ -116,4 +112,7 @@ public class Given_ScrollVelocityTracker
 
 		Assert.IsNull(tracker.GetVelocity());
 	}
+
+	private static Point GetVelocity(ScrollVelocityTracker tracker)
+		=> tracker.GetVelocity() ?? throw new AssertFailedException("Expected a velocity.");
 }
