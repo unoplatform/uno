@@ -3,6 +3,7 @@
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
@@ -48,6 +49,22 @@ public class Given_UnicodeText_BreakIterator
 
 		Assert.AreEqual(first, again);
 		Assert.IsTrue(first.Height > MeasureWrapped("short", 120).Height, "The long text is expected to wrap.");
+	}
+
+	[TestMethod]
+	public void When_Measuring_Thread_Exits_Then_Its_Break_Iterators_Are_Closed()
+	{
+		var before = UnicodeText.BreakIteratorCloseCount;
+
+		var thread = new Thread(() => MeasureWrapped(LongText, 120));
+		thread.Start();
+		thread.Join();
+
+		GC.Collect();
+		GC.WaitForPendingFinalizers();
+
+		var closed = UnicodeText.BreakIteratorCloseCount - before;
+		Assert.IsTrue(closed > 0, "The exited thread's cached ICU break iterators were never closed.");
 	}
 
 	[TestMethod]
