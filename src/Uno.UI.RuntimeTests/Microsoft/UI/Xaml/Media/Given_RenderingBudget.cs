@@ -298,7 +298,7 @@ public class Given_RenderingBudget
 		private readonly CompositionTarget _target;
 		private readonly int _measuresAtStart = UIElement.LayoutMeasureCoreCount;
 #if UNO_DRAWING_SKIA
-		private readonly int _pathOpsAtStart = SkiaGeometrySource2D.PathOpCount;
+		private readonly int _pathOpsAtStart = SkiaPathOpCounter.Count;
 #endif
 		private TaskCompletionSource? _nextFrame;
 		private double _damagedArea;
@@ -319,7 +319,7 @@ public class Given_RenderingBudget
 		public int Measures => UIElement.LayoutMeasureCoreCount - _measuresAtStart;
 
 #if UNO_DRAWING_SKIA
-		public int PathOps => SkiaGeometrySource2D.PathOpCount - _pathOpsAtStart;
+		public int PathOps => SkiaPathOpCounter.Count - _pathOpsAtStart;
 #endif
 
 		public async Task WaitForNextFrameAsync()
