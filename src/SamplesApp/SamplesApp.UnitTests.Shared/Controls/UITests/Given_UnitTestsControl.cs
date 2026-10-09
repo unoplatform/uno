@@ -296,7 +296,7 @@ public class Given_UnitTestsControl
 
 	[TestMethod]
 	[DataRow(700d, 0)]
-	[DataRow(330d, 1)]
+	[DataRow(360d, 1)] // Mid-window: fonts differ per platform, and the strip fits 330-370 on desktop.
 	[DataRow(270d, 2)]
 	public async Task When_Runner_Is_Short_Stat_Cards_Shrink(double height, int expectedMode)
 	{
