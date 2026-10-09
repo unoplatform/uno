@@ -145,8 +145,11 @@ on nuget.org, on one reference lane (`skia-windows`). The full per-lane table is
 - A version built before these tests existed shows no numbers, with a note saying why. The dev column fills in
   with the first dev version published after this change. The stable column fills in with the first stable
   release whose branch carries the tests, so the tests need to be on the release branch before that release.
+- Above the table, one line per column says how many of its metrics are over budget, and how many this PR moved
+  against the latest dev, so "within budget" is never read as being about another version.
 - ▲ / ▼ mark a change of more than 20% from the latest dev. The damaged area alone varies by about 13% between
-  runs. Frame rates follow the agent's display rate and are not compared.
+  runs. Frame rates follow the agent's display rate, so they count as changed only when they cross their budget
+  (for example a removed animation going from 33 frames per second to 0).
 
 Every step is `continueOnError`. Nothing depends on the report stage, so package publishing never waits for it.
 
