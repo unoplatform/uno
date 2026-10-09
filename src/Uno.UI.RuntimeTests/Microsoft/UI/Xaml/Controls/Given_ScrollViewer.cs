@@ -2756,15 +2756,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Wheel_Delta_Too_Fine_To_Scroll_Then_It_Does_Not_Chain()
 		{
 #if HAS_INPUT_INJECTOR
-			// A precision delta rounds to no whole pixel on a small viewport (step max(48, 15%)), but to one pixel
-			// on a large one: the inner ScrollViewer still owns it, so the page around it must not move.
+			// A precision delta moves the inner ScrollViewer by a fraction of a pixel (15% of 100 per 120 units):
+			// it still owns it, so the page around it must not move.
 			var inner = new ScrollViewer
 			{
 				Width = 200,
 				Height = 100,
 				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
 			};
-			// 450px is the smallest viewport whose step (15%) still rounds a delta of 1 to a whole pixel.
 			var outer = new ScrollViewer
 			{
 				Width = 300,
@@ -2785,7 +2784,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await Task.Delay(300);
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(0, outer.VerticalOffset, $"A wheel delta the inner ScrollViewer could not round to a pixel scrolled the outer one (inner moved {inner.VerticalOffset}).");
+				Assert.AreEqual(0, outer.VerticalOffset, $"A precision wheel delta on the inner ScrollViewer scrolled the outer one (inner moved {inner.VerticalOffset}).");
 			}
 			finally
 			{
@@ -2843,8 +2842,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WaitForOffsetToSettle(SUT);
 				await WindowHelper.WaitForIdle();
 
-				// One notch on a 200px viewport scrolls max(48, 15% of 200) = 48px.
-				Assert.AreEqual(drawn + 48, SUT.VerticalOffset, delta: 2, $"The notch did not continue from the drawn offset {drawn}.");
+				// One notch on a 200px viewport scrolls 15% of 200 = 30px.
+				Assert.AreEqual(drawn + 30, SUT.VerticalOffset, delta: 2, $"The notch did not continue from the drawn offset {drawn}.");
 				Assert.AreEqual(1, finals, "The scroll was reported as finished before the wheel motion ended.");
 			}
 			finally
