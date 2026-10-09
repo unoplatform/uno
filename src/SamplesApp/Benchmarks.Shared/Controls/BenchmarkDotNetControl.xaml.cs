@@ -340,14 +340,22 @@ namespace Benchmarks.Shared.Controls
 			// Default file name if the user does not type one in or select a file to replace
 			savePicker.SuggestedFileName = "benchmarks-results";
 
-			var file = await savePicker.PickSaveFileAsync();
-			if (file != null)
+			try
 			{
-				CachedFileManager.DeferUpdates(file);
+				var file = await savePicker.PickSaveFileAsync();
+				if (file != null)
+				{
+					CachedFileManager.DeferUpdates(file);
 
-				await FileIO.WriteBytesAsync(file, File.ReadAllBytes(BenchmarkResultArchiveName));
+					await FileIO.WriteBytesAsync(file, File.ReadAllBytes(BenchmarkResultArchiveName));
 
-				await CachedFileManager.CompleteUpdatesAsync(file);
+					await CachedFileManager.CompleteUpdatesAsync(file);
+				}
+			}
+			catch (Exception e)
+			{
+				await SetStatus($"Download failed: {e.Message}");
+				_logger.WriteLine(LogKind.Error, e.ToString());
 			}
 		}
 
