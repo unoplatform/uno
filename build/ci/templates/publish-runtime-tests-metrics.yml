@@ -1,0 +1,27 @@
+# Extracts the metrics runtime tests recorded (RuntimeTestMetrics, e.g. the rendering budgets) from a lane's NUnit
+# results and adds them to the shared 'runtime-tests-metrics' artifact, one folder per lane, for the
+# runtime_tests_metrics stage to report. Never fails the lane: the metrics are informational.
+parameters:
+  resultsFile: ''
+  lane: ''
+
+steps:
+  - pwsh: >-
+      build/ci/scripts/runtime-tests-metrics.ps1 -Mode Extract
+      -ResultsFile '${{ parameters.resultsFile }}'
+      -Lane '${{ parameters.lane }}'
+      -OutputDirectory '$(Build.ArtifactStagingDirectory)/runtime-tests-metrics'
+      -Attempt $(System.JobAttempt)
+    displayName: Extract runtime test metrics
+    condition: always()
+    continueOnError: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish runtime test metrics
+    condition: and(always(), eq(variables['RuntimeTestsMetricsExtracted'], 'true'))
+    continueOnError: true
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/runtime-tests-metrics
+      ArtifactName: runtime-tests-metrics
+      ArtifactType: Container

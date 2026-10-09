@@ -146,6 +146,22 @@ stages:
     parameters:
       poolName: '$(windowsScaledPool)'
 
+- stage: runtime_tests_metrics
+  displayName: Tests - Rendering budgets
+  # Report only: summarizes the metrics the runtime tests recorded (rendering budgets) on the desktop lanes and, on
+  # pull requests, keeps one comment up to date with them. Nothing waits on this stage, publishing included.
+  condition: succeededOrFailed()
+  dependsOn:
+    - runtime_tests_skia_linux
+    - runtime_tests_skia_linux_framebuffer
+    - runtime_tests_skia_macos
+    - runtime_tests_skia_windows
+
+  jobs:
+  - template: tests/.azure-devops-tests-metrics-report.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
 - stage: ios_testflight
   displayName: Publish - iOS TestFlight
   dependsOn:
