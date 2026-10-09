@@ -583,7 +583,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Touch_Tap_Selects_Word_And_Shows_Grippers()
 		{
-			var SUT = new RichEditBox { Width = 400 };
+			// The margin leaves room for the selection flyout above the text; otherwise (e.g. on tvOS)
+			// it can cover the later taps and take them instead of the editor.
+			var SUT = new RichEditBox { Width = 400, Margin = new Thickness(100) };
 			try
 			{
 				WindowHelper.WindowContent = SUT;
