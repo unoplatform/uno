@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 //#define TRACE_COMPOSITION
 
 using System;
@@ -666,11 +666,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			localClipCombinedByClipFromParent.AddRect(new SKRect(0, 0, Size.X, Size.Y));
 		}
 		localClipCombinedByClipFromParent.Transform(TotalMatrix.ToSKMatrix(), localClipCombinedByClipFromParent);
-		localClipCombinedByClipFromParent.Op(clipFromParent, SKPathOp.Intersect, localClipCombinedByClipFromParent);
+		global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(localClipCombinedByClipFromParent, clipFromParent, SKPathOp.Intersect, localClipCombinedByClipFromParent);
 
 		if (IsNativeHostVisual || CanPaint())
 		{
-			clipPath.Op(localClipCombinedByClipFromParent, IsNativeHostVisual ? SKPathOp.Union : SKPathOp.Difference, clipPath);
+			global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(clipPath, localClipCombinedByClipFromParent, IsNativeHostVisual ? SKPathOp.Union : SKPathOp.Difference, clipPath);
 		}
 
 		if (IsNativeHostVisual && !localClipCombinedByClipFromParent.IsEmpty)
@@ -681,7 +681,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (GetPostPaintingClipping() is { } postClip)
 		{
 			postClip.Transform(TotalMatrix.ToSKMatrix(), postClip);
-			localClipCombinedByClipFromParent.Op(postClip, SKPathOp.Intersect, localClipCombinedByClipFromParent);
+			global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(localClipCombinedByClipFromParent, postClip, SKPathOp.Intersect, localClipCombinedByClipFromParent);
 		}
 		foreach (var child in GetChildrenInRenderOrder())
 		{
@@ -709,7 +709,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			// The local clip is in local coordinates. We need to transform it to root coordinates.
 			localPath.Transform(in totalMatrix);
-			dst.Op(localPath, SKPathOp.Intersect, dst);
+			global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(dst, localPath, SKPathOp.Intersect, dst);
 		}
 
 		if (!skipPostPaintingClipping)
@@ -717,7 +717,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			if (GetPostPaintingClipping() is { } postClip)
 			{
 				postClip.Transform(in totalMatrix);
-				dst.Op(postClip, SKPathOp.Intersect, dst);
+				global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(dst, postClip, SKPathOp.Intersect, dst);
 			}
 		}
 	}
@@ -868,7 +868,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			if (hasClip)
 			{
-				clipPath.Op(ancestorClipInRoot, SKPathOp.Intersect, clipPath);
+				global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(clipPath, ancestorClipInRoot, SKPathOp.Intersect, clipPath);
 			}
 			else
 			{
@@ -892,7 +892,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			sizeCandidate.Transform(toRoot);
 			if (hasClip)
 			{
-				sizeCandidate.Op(clipPath, SKPathOp.Intersect, sizeCandidate);
+				global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(sizeCandidate, clipPath, SKPathOp.Intersect, sizeCandidate);
 			}
 			canSkipOwnContribution = accumulator.IsFullyCovered(sizeCandidate);
 		}
@@ -919,7 +919,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 				if (hasClip)
 				{
-					if (transformed.Op(clipPath, SKPathOp.Intersect, transformed) && !transformed.IsEmpty)
+					if (global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(transformed, clipPath, SKPathOp.Intersect, transformed) && !transformed.IsEmpty)
 					{
 						accumulator.Add(transformed, alpha * combinedOpacity);
 					}
@@ -945,7 +945,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			if (hasClip)
 			{
-				clipPath.Op(postClipInRoot, SKPathOp.Intersect, clipPath);
+				global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(clipPath, postClipInRoot, SKPathOp.Intersect, clipPath);
 			}
 			else
 			{

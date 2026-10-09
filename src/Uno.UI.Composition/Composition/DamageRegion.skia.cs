@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using SkiaSharp;
@@ -91,7 +91,7 @@ internal sealed class DamageRegion : IDisposable
 		}
 		else
 		{
-			_exact.Op(addition, SKPathOp.Union, _exact);
+			global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(_exact, addition, SKPathOp.Union, _exact);
 		}
 	}
 
@@ -125,7 +125,7 @@ internal sealed class DamageRegion : IDisposable
 
 				if (!_exact.IsEmpty)
 				{
-					destination.Op(_exact, SKPathOp.Union, destination);
+					global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(destination, _exact, SKPathOp.Union, destination);
 				}
 			}
 			else if (!_exact.IsEmpty)
@@ -137,7 +137,7 @@ internal sealed class DamageRegion : IDisposable
 			{
 				_clamp.Reset();
 				_clamp.AddRect(clampTo);
-				destination.Op(_clamp, SKPathOp.Intersect, destination);
+				global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(destination, _clamp, SKPathOp.Intersect, destination);
 			}
 		}
 		finally

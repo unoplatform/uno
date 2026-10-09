@@ -111,6 +111,11 @@ jobs:
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
 
+  - template: ../templates/publish-runtime-tests-metrics.yml
+    parameters:
+      resultsFile: '$(build.sourcesdirectory)/build/skia-windows-runtime-tests-results.xml'
+      lane: 'skia-windows'
+
   - task: PublishBuildArtifacts@1
     condition: always()
     displayName: Publish Failed Tests Results
