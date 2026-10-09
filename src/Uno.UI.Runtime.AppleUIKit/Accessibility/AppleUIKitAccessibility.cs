@@ -103,7 +103,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	}
 
 	// Set once a client (VoiceOver, Switch Control, XCTest, a test hook) asks for the elements, or VoiceOver or
-	// Switch Control is running: until then the tree is neither built nor kept in sync.
+	// Switch Control is running: until then the tree is neither built nor kept in sync. Reset when VoiceOver and
+	// Switch Control both stop; the next query enables it again.
 	private bool _clientRequestedTree;
 	private NSObject? _voiceOverStatusObserver;
 	private NSObject? _switchControlStatusObserver;
@@ -344,13 +345,43 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		return modalOwner is not null && !IsWithinModalScope(element, modalOwner);
 	}
 
-	// Builds the tree ahead of the screen reader's first query.
-	private void OnAssistiveTechnologyStatusChanged(object? sender, NSNotificationEventArgs e)
+	// Builds the tree ahead of the screen reader's first query, and stops keeping it in sync once none is left.
+	private void OnAssistiveTechnologyStatusChanged(object? sender, NSNotificationEventArgs? e)
 	{
 		if (IsAssistiveTechnologyRunning)
 		{
 			EnsureTreeRequested();
 		}
+		else
+		{
+			ReleaseTreeRequest();
+		}
+	}
+
+	// Mirrors Android's OnAccessibilityServiceStateChanged. Clients iOS doesn't report (Voice Control, Full Keyboard
+	// Access, XCTest) re-enable the tree on their next query; an event-recording test hook keeps it enabled.
+	private void ReleaseTreeRequest()
+	{
+		if (!_clientRequestedTree || IsDisposed || _recordEvents)
+		{
+			return;
+		}
+
+		_clientRequestedTree = false;
+		_rebuildPending = false;
+		Trace("No accessibility client left; stopped tracking the tree.");
+
+		// Nothing keeps these in sync while disabled: scroll subscriptions would keep firing for nothing, and cached
+		// custom content/actions could go stale before the next query rebuilds the tree.
+		UnsubscribeAllScrollSources();
+		_allScrollSources.Clear();
+		_pendingInvalidationHandles.Clear();
+		foreach (var element in _nodeElements.Values)
+		{
+			element.InvalidateCachedAccessibilityData();
+		}
+
+		_modalScopeDirty = true;
 	}
 
 	/// <summary>
