@@ -29,6 +29,10 @@ public partial class CompositionTarget
 	// across windows — doing so crashes when one window's context is torn down.
 	private IDrawingFactory? _renderer;
 
+	// Resolved once, on the UI thread: a window keeps its host, so the render thread can read the host's backend
+	// without walking the visual tree.
+	private IXamlRootHost? _host;
+
 	/// <summary>
 	/// The rendering backend that owns this window's frame record/present lifecycle.
 	/// </summary>
@@ -38,27 +42,68 @@ public partial class CompositionTarget
 				"No graphics backend registered for this window. The host must negotiate one and expose it as IXamlRootHost.Renderer.");
 
 	/// <summary>
-	/// The backend for this window, taken from its host the first time one is needed and remembered after.
+	/// The backend for this window, read from its host whenever one is needed.
 	/// <para>
 	/// Pulled rather than pushed: a host that assigned it while drawing would be claiming the backend AFTER a frame
 	/// could already have been recorded without one. Reading it here cannot race the recording that needs it, so no
 	/// frame is ever recorded under a backend other than the one that presents it.
 	/// </para>
+	/// <para>
+	/// A host can replace its backend, as Android does when a surface is re-created and the old backend disposed.
+	/// Whatever was recorded for the old one is then dropped.
+	/// </para>
 	/// </summary>
 	private IDrawingFactory? ResolveRenderer()
 	{
-		if (_renderer is not null)
+		if (_host is null)
 		{
-			return _renderer;
+			var xamlRoot = ContentRoot.VisualTree.RootElement?.XamlRoot;
+			_host = xamlRoot is not null ? XamlRootMap.GetHostForRoot(xamlRoot) : null;
+			if (_host is null)
+			{
+				return null;
+			}
 		}
 
-		var xamlRoot = ContentRoot.VisualTree.RootElement?.XamlRoot;
-		if (xamlRoot is not null && XamlRootMap.GetHostForRoot(xamlRoot)?.Renderer is { } hostRenderer)
+		var current = _host.Renderer;
+		var previous = Interlocked.Exchange(ref _renderer, current);
+		if (previous is not null && !ReferenceEquals(previous, current))
 		{
-			_renderer = hostRenderer;
+			OnRendererReplaced();
 		}
 
-		return _renderer;
+		return current;
+	}
+
+	private void OnRendererReplaced()
+	{
+		(FrameHold frame, IGeometry nativeElementClipPath, Rect[]? damage)? staleFrame;
+		lock (_frameGate)
+		{
+			staleFrame = _lastRenderedFrame;
+			_lastRenderedFrame = null;
+		}
+		staleFrame?.frame.OnPipelineReleased();
+
+		// This can be the render thread, and walking the tree from there races the UI thread changing it.
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			InvalidateRecordings();
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(InvalidateRecordings, NativeDispatcherPriority.Normal);
+		}
+	}
+
+	private void InvalidateRecordings()
+	{
+		if (ContentRoot?.VisualTree?.RootElement?.Visual is { } rootVisual)
+		{
+			rootVisual.InvalidatePaintRecursive();
+		}
+
+		((ICompositionTarget)this).RequestNewFrame();
 	}
 
 	// Non-throwing peek at renderer availability. False while a declared backend initializes asynchronously (WASM
@@ -393,6 +438,12 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 		var phaseDrawT0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
 
+		// Before borrowing the frame: if the backend was replaced, this drops the frame recorded for the old one.
+		if (ResolveRenderer() is not { } renderer)
+		{
+			return FrameRenderHelper.EmptyClipPath;
+		}
+
 		(FrameHold frame, IGeometry nativeElementClipPath, Rect[]? damage)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
@@ -457,7 +508,7 @@ public partial class CompositionTarget
 			var useDamage = damageEligible && !overlayEnabled && !_forceFullRepaint && !drawsOutsideDamage && rootTransform is null;
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			using (var present = BeginPresent(Renderer, target, useDamage ? ToDevicePixels(lastRenderedFrame.damage!, rasterizationScale) : default))
+			using (var present = BeginPresent(renderer, target, useDamage ? ToDevicePixels(lastRenderedFrame.damage!, rasterizationScale) : default))
 			{
 				// Detach returns null both for "nothing was damaged" and for "no damage information", but a frame
 				// is only ever recorded with tracking on, so on an unresized frame null means nothing changed. The

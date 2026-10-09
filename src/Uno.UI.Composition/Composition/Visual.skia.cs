@@ -346,6 +346,19 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		InvalidateParentShadowCaches(includeSelf: false);
 	}
 
+	/// <summary>
+	/// Discards this visual's and its whole subtree's cached recordings, for when the window's backend is replaced
+	/// and recordings made for the old one can't be replayed by the new one.
+	/// </summary>
+	internal void InvalidatePaintRecursive()
+	{
+		InvalidatePaint();
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.InvalidatePaintRecursive();
+		}
+	}
+
 	internal void InvalidateSubtreePaint()
 	{
 		InvalidatePaint();
