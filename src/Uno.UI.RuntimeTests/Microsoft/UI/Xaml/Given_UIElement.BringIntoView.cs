@@ -25,7 +25,9 @@ public class Given_UIElement_BringIntoView
 		// Like an ItemsRepeater element realized during the current layout pass: in the live tree, not loaded yet.
 		var target = new Border { Width = 10, Height = 10 };
 		host.Children.Add(target);
+#if HAS_UNO // WinUI raises Loaded synchronously on Add.
 		Assert.IsFalse(target.IsLoaded, "Precondition: the element must not have raised Loaded yet.");
+#endif
 
 		target.StartBringIntoView();
 
