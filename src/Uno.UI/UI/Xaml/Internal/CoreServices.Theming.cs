@@ -169,7 +169,7 @@ internal partial class CoreServices
 		{
 			if (contentRoot.VisualTree?.RootElement is IRootElement rootElement)
 			{
-				rootElement.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
+				rootElement.SetBackgroundColor(ThemingHelper.FromArgb(Theming.GetRootVisualBackground()));
 			}
 		}
 

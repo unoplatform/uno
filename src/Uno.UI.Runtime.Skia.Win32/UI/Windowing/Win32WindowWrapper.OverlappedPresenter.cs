@@ -147,17 +147,10 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		PInvoke.DwmExtendFrameIntoClientArea(_hwnd, in margins);
 	}
 
-	// Gated on the controller IsSupported() checks (which require Windows 11 22621+) so we don't
-	// force the "sheet of glass" frame extension on OS versions where SetSystemBackdrop is a no-op.
+	// Gated on IsSystemBackdropSupported so we don't force the "sheet of glass" frame extension on
+	// OS versions where SetSystemBackdrop is a no-op.
 	private bool HasActiveSystemBackdrop()
-		=> _window?.SystemBackdrop switch
-		{
-			Microsoft.UI.Xaml.Media.MicaBackdrop
-				=> Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported(),
-			Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop
-				=> Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported(),
-			_ => false,
-		};
+		=> _window?.SystemBackdrop is { } backdrop && IsSystemBackdropSupported(backdrop);
 
 	private MARGINS UpdateClientAreaExtensionMargins()
 	{
