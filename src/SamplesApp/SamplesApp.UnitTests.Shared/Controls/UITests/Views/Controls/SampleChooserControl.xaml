@@ -972,7 +972,7 @@
                                     Padding="8,2"
                                     AutomationProperties.AutomationId="ShellManualTestsChip"
                                     Background="{ThemeResource SubtleFillColorTransparentBrush}"
-                                    CornerRadius="{StaticResource ControlCornerRadius}"
+                                    CornerRadius="{ThemeResource ControlCornerRadius}"
                                     IsChecked="{Binding ManualTestsOnly, Mode=TwoWay}"
                                     ToolTipService.ToolTip="Show manual tests only">
                                     <StackPanel Orientation="Horizontal" Spacing="6">

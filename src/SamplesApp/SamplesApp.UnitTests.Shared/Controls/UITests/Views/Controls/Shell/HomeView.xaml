@@ -35,7 +35,7 @@
                             Width="36"
                             Height="36"
                             Background="{ThemeResource SubtleFillColorSecondaryBrush}"
-                            CornerRadius="{StaticResource ControlCornerRadius}">
+                            CornerRadius="{ThemeResource ControlCornerRadius}">
                             <FontIcon
                                 AutomationProperties.AccessibilityView="Raw"
                                 FontFamily="{StaticResource SymbolThemeFontFamily}"
@@ -80,7 +80,7 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Background="{ThemeResource SubtleFillColorSecondaryBrush}"
-                            CornerRadius="{StaticResource ControlCornerRadius}">
+                            CornerRadius="{ThemeResource ControlCornerRadius}">
                             <FontIcon
                                 AutomationProperties.AccessibilityView="Raw"
                                 FontFamily="{StaticResource SymbolThemeFontFamily}"
