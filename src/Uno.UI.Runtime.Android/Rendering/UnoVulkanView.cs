@@ -355,7 +355,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		}
 		try
 		{
-			return ExploreByTouchHelper.DispatchKeyEvent(e) || base.DispatchKeyEvent(e);
+			return ExploreByTouchHelper.DispatchHostKeyEvent(e) || base.DispatchKeyEvent(e);
 		}
 		catch (System.Exception error)
 		{
@@ -373,7 +373,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		base.OnFocusChanged(gainFocus, direction, previouslyFocusedRect);
 		try
 		{
-			ExploreByTouchHelper.OnFocusChanged(gainFocus, (int)direction, previouslyFocusedRect);
+			ExploreByTouchHelper.OnHostFocusChanged(gainFocus, (int)direction, previouslyFocusedRect);
 		}
 		catch (Exception e)
 		{

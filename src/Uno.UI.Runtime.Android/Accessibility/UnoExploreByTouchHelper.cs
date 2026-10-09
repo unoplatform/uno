@@ -138,6 +138,10 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	// -> XAML focus change -> AutomationFocusChanged infinite loops.
 	private bool _settingNativeFocus;
 
+	// Set while a client action or a service user's key moves the virtual keyboard focus:
+	// only those may move XAML focus, never the host view merely gaining native focus.
+	private bool _isClientDrivenKeyboardFocus;
+
 	// Stable Android constants used for native focus requests.
 	// ACTION_ACCESSIBILITY_FOCUS = 0x40 per AccessibilityNodeInfoCompat (all API levels).
 	private const int ActionFocusId = 0x1;
@@ -373,8 +377,20 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			=> _owner.ExecuteProviderCallback(
 				nameof(PerformAction),
 				virtualViewId,
-				() => _owner.IsVirtualViewAvailable(virtualViewId) &&
-					_innerProvider.PerformAction(virtualViewId, action, arguments),
+				() =>
+				{
+					var wasClientDriven = _owner._isClientDrivenKeyboardFocus;
+					_owner._isClientDrivenKeyboardFocus = true;
+					try
+					{
+						return _owner.IsVirtualViewAvailable(virtualViewId) &&
+							_innerProvider.PerformAction(virtualViewId, action, arguments);
+					}
+					finally
+					{
+						_owner._isClientDrivenKeyboardFocus = wasClientDriven;
+					}
+				},
 				fallback: false);
 	}
 
@@ -382,6 +398,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	{
 		try
 		{
+			OnClientRequest();
 			callback();
 		}
 		catch (System.Exception error)
@@ -398,6 +415,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	{
 		try
 		{
+			OnClientRequest();
 			return callback();
 		}
 		catch (System.Exception error)
@@ -447,6 +465,56 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	internal bool IsTouchExplorationEnabled => _isAccessibilityServiceEnabled && _isTouchExplorationOn;
 
 	internal bool IsAccessibilityServiceEnabled => _isAccessibilityServiceEnabled;
+
+	// Only an accessibility client turns the bridge on: provider queries (made for a service or UiAutomation) and
+	// the test hooks. Native focus and key events are not clients, so building the tree must not latch it.
+	private void OnClientRequest() => _adapter?.EnsureTreeRequested();
+
+	// Forwarded by the render view. Without a service, keys are ordinary input: AndroidX would otherwise
+	// populate every virtual node to move a keyboard focus nobody reads.
+	internal bool DispatchHostKeyEvent(KeyEvent e)
+	{
+		if (!_isAccessibilityServiceEnabled || _adapter is null)
+		{
+			return false;
+		}
+
+		var wasClientDriven = _isClientDrivenKeyboardFocus;
+		_isClientDrivenKeyboardFocus = true;
+		try
+		{
+			return DispatchKeyEvent(e);
+		}
+		finally
+		{
+			_isClientDrivenKeyboardFocus = wasClientDriven;
+		}
+	}
+
+	// Forwarded by the render view. AndroidX would move the virtual keyboard focus by geometry when the host gains
+	// native focus (e.g. TextInputPlugin requesting it for a TextBox), but XAML owns keyboard focus: mirror it instead.
+	internal void OnHostFocusChanged(bool gainFocus, int direction, global::Android.Graphics.Rect? previouslyFocusedRect)
+	{
+		if (!gainFocus)
+		{
+			// Only clears the virtual keyboard focus, without reading the tree.
+			OnFocusChanged(gainFocus, direction, previouslyFocusedRect);
+			return;
+		}
+
+		if (_adapter?.IsAccessibilityEnabled is not true ||
+			GetRootElement()?.XamlRoot is not { } xamlRoot ||
+			Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(xamlRoot) is not UIElement focused)
+		{
+			return;
+		}
+
+		EnsureVisibleTreeBuilt();
+		if (TryGetVirtualId(focused, out var id))
+		{
+			SyncNativeKeyboardFocusIfFocusable(id);
+		}
+	}
 
 	private void StartTrackingAccessibilityState()
 	{
@@ -533,8 +601,6 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	private IReadOnlyList<AccessibilityPeerNode> GetCurrentPeerTree()
 	{
-		_adapter?.EnsureTreeRequested();
-
 		var root = GetRootElement();
 		if (root is null)
 		{
@@ -809,6 +875,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	private bool PerformRawAction(int virtualViewId, int action)
 	{
+		OnClientRequest();
 		var provider = GetAccessibilityNodeProvider(_host);
 		if (provider?.PerformAction(virtualViewId, action, arguments: null) is true ||
 			OnPerformActionForVirtualView(virtualViewId, action, arguments: null))
@@ -1675,7 +1742,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		// The request originated from SyncNativeKeyboardFocus mirroring an existing XAML
 		// focus, so the XAML side is already focused; only the native tracking is updated.
-		if (_settingNativeFocus)
+		// The second case is native focus no accessibility client drove, which must not move XAML focus.
+		if (_settingNativeFocus || !_isClientDrivenKeyboardFocus)
 		{
 			_nativeKeyboardFocusedId = virtualViewId;
 			return;
@@ -1752,7 +1820,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	protected override void GetVisibleVirtualViews(IList<Integer>? virtualViewIds)
 	{
-		if (virtualViewIds is null)
+		// Clients enable the bridge before reading; anything else reaching here has no reader for the tree.
+		if (virtualViewIds is null || _adapter?.IsAccessibilityEnabled is not true)
 		{
 			return;
 		}
@@ -2979,6 +3048,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	// to ensure per-scan caches are current before querying the provider).
 	private object? GetNodeForElement(UIElement element)
 	{
+		OnClientRequest();
 		var ids = new List<Integer>();
 		GetVisibleVirtualViews(ids);
 
@@ -2994,6 +3064,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	// Returns the stable virtual ID for element, triggering a scan if needed.
 	private int? GetVirtualIdForElement(UIElement element)
 	{
+		OnClientRequest();
 		var ids = new List<Integer>();
 		GetVisibleVirtualViews(ids);
 
@@ -3004,6 +3075,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	private int? GetVirtualIdForPeer(AutomationPeer peer)
 	{
+		OnClientRequest();
 		var ids = new List<Integer>();
 		GetVisibleVirtualViews(ids);
 		return TryGetVirtualId(peer, out var id) ? id : null;
@@ -3011,6 +3083,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	private int? HitTestForRoot(XamlRoot root, double physicalX, double physicalY)
 	{
+		OnClientRequest();
 		if (_adapter?.RootElement?.XamlRoot is not { } adapterRoot ||
 			!ReferenceEquals(adapterRoot, root))
 		{
@@ -3044,6 +3117,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	// in peer-tree order, or null if the root is not ours.
 	private object[]? GetAllNodesForRoot(XamlRoot xamlRoot)
 	{
+		OnClientRequest();
 		if (_adapter is null)
 		{
 			return null;
@@ -3115,6 +3189,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	private AccessibilityNativeNodeSnapshot[]? GetAllSnapshotsForRoot(XamlRoot xamlRoot)
 	{
+		OnClientRequest();
 		if (_adapter is null)
 		{
 			return null;
@@ -3168,6 +3243,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	private string GetDiagnostics(XamlRoot xamlRoot)
 	{
+		OnClientRequest();
 		var root = GetRootElement();
 		if (root is null)
 		{
@@ -3197,6 +3273,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	// regardless of whether a TalkBack session is active).
 	private bool RequestNativeFocusForElement(UIElement element)
 	{
+		OnClientRequest();
 		// Ensure the per-scan caches are current before looking up the ID.
 		var ids = new List<Integer>();
 		GetVisibleVirtualViews(ids);
@@ -3223,6 +3300,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	// the method works in test environments where no TalkBack session is active.
 	private object? GetFocusedNativeNode(XamlRoot xamlRoot)
 	{
+		OnClientRequest();
 		if (_adapter?.RootElement?.XamlRoot is not { } rootXamlRoot ||
 			!ReferenceEquals(rootXamlRoot, xamlRoot))
 		{
@@ -3911,6 +3989,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	// responsibility of AndroidSkiaAccessibility.PerformActionForElement.
 	internal bool ExecuteAction(UIElement element, AccessibilityNativeActionRequest request)
 	{
+		OnClientRequest();
 		var ids = new List<Integer>();
 		GetVisibleVirtualViews(ids);
 

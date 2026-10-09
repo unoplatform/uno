@@ -152,7 +152,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 		try
 		{
-			return ExploreByTouchHelper.DispatchKeyEvent(e) ||
+			return ExploreByTouchHelper.DispatchHostKeyEvent(e) ||
 				base.DispatchKeyEvent(e);
 		}
 		catch (System.Exception error)
@@ -172,7 +172,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 		try
 		{
-			ExploreByTouchHelper.OnFocusChanged(gainFocus, (int)direction, previouslyFocusedRect);
+			ExploreByTouchHelper.OnHostFocusChanged(gainFocus, (int)direction, previouslyFocusedRect);
 		}
 		catch (Exception e)
 		{
