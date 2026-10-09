@@ -45,7 +45,10 @@ internal sealed class ScrollVelocityTracker
 		}
 	}
 
-	/// <summary>Velocity in logical pixels per millisecond, or null when there is not enough recent motion.</summary>
+	/// <summary>
+	/// Velocity in logical pixels per millisecond: zero when the pointer stopped before its newest samples,
+	/// or null when there is not enough recent motion to tell.
+	/// </summary>
 	public Point? GetVelocity()
 	{
 		if (_count < MinSamples)
@@ -61,6 +64,7 @@ internal sealed class ScrollVelocityTracker
 		var sampleCount = 0;
 		var i = _index;
 		var previousTime = newest.TimeMs;
+		var stopped = false;
 
 		for (var visited = 0; visited < _count; visited++)
 		{
@@ -69,7 +73,13 @@ internal sealed class ScrollVelocityTracker
 			var gap = Math.Abs(previousTime - sample.TimeMs);
 			previousTime = sample.TimeMs;
 
-			if (age > HorizonMs || gap > AssumeStoppedMs)
+			if (gap > AssumeStoppedMs)
+			{
+				stopped = true;
+				break;
+			}
+
+			if (age > HorizonMs)
 			{
 				break;
 			}
@@ -84,7 +94,9 @@ internal sealed class ScrollVelocityTracker
 
 		if (sampleCount < MinSamples)
 		{
-			return null;
+			// Like Android's VelocityTracker, a pointer that rested before its newest samples has stopped: that is
+			// a known velocity of zero, not a lack of data to fall back from.
+			return stopped ? new Point(0, 0) : null;
 		}
 
 		var vx = SolveSlope(ages, xs, sampleCount);
