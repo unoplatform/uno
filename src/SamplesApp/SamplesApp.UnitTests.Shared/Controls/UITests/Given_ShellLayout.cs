@@ -57,12 +57,14 @@ public class Given_ShellLayout
 
 	private static Rect? GetTestHostBounds()
 	{
-		if (TestServices.WindowHelper.EmbeddedTestRoot.control is not FrameworkElement { XamlRoot: not null } host)
+		if (TestServices.WindowHelper.EmbeddedTestRoot.control is not FrameworkElement { XamlRoot: not null } host
+			|| SampleChooserViewModel.Instance.Owner is not { } shell)
 		{
 			return null;
 		}
 
-		return host.TransformToVisual(null).TransformBounds(new Rect(0, 0, host.ActualWidth, 0));
+		// Relative to the shell: an earlier test can leave the whole window shifted (e.g. for the soft keyboard on Android).
+		return host.TransformToVisual(shell).TransformBounds(new Rect(0, 0, host.ActualWidth, 0));
 	}
 
 	[TestMethod]
