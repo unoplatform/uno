@@ -127,12 +127,12 @@ public partial class ToolTipService
 			m_OpenTimer?.Stop();
 			m_CloseTimer?.Stop();
 
-			m_CurrentToolTip.IsOpen = false;
+			// WinUI (ToolTip_Partial.cpp, ToolTip::OnIsOpenChanged) clears ToolTipServiceMetadata::m_tpCurrentToolTip
+			// when the automatic ToolTip closes; keeping it here would root the closed tooltip and its owner.
+			m_CurrentToolTip = null;
 		}
-		else
-		{
-			toolTip.IsOpen = false;
-		}
+
+		toolTip.IsOpen = false;
 	}
 
 	private static void OnOpenTimerTick(object sender, object e)
@@ -158,9 +158,10 @@ public partial class ToolTipService
 	{
 		m_CloseTimer.Stop();
 
-		if (m_CurrentToolTip is { })
+		if (m_CurrentToolTip is { } toolTip)
 		{
-			m_CurrentToolTip.IsOpen = false;
+			m_CurrentToolTip = null;
+			toolTip.IsOpen = false;
 		}
 	}
 
@@ -319,4 +320,23 @@ public partial class ToolTipService
 			}
 		}
 	}
+
+	/// <summary>
+	/// Called by a <see cref="ToolTip"/> when it closes, whichever path closed it: the service, the app, or its popup closing.
+	/// </summary>
+	internal static void OnToolTipClosed(ToolTip toolTip)
+	{
+		// WinUI clears ToolTipServiceMetadata::m_tpCurrentToolTip in the ToolTip's own IsOpen change rather than in the
+		// service's close paths (ToolTip_Partial.cpp, ToolTip::OnIsOpenChanged), so a tooltip closed by a path the service
+		// does not drive is not kept as the current one, and with it its owner.
+		if (ReferenceEquals(m_CurrentToolTip, toolTip))
+		{
+			m_CurrentToolTip = null;
+		}
+	}
+
+	/// <summary>
+	/// The tooltip the service is opening or showing, if any; for tests.
+	/// </summary>
+	internal static ToolTip CurrentToolTipForTesting => m_CurrentToolTip;
 }
