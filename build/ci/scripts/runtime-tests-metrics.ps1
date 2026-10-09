@@ -218,12 +218,32 @@ function Test-OverBudget($metric) {
     return $null -ne $metric -and $null -ne $metric.budget -and $metric.value -gt $metric.budget
 }
 
-# A value under this PR's, in the small print of a cell: no bold, so this PR's value stays the one that stands out.
-function Format-Reference($metric) {
-    if ($null -eq $metric) { return '–' }
-    $text = (Format-Number $metric.value) + $metric.unit
-    if (Test-OverBudget $metric) { return "$text ⚠️" }
-    return $text
+# Every budgeted metric is a count where lower is better: ▲ / ▼ flag a clear move away from the latest dev on the same
+# lane, past run-to-run noise (the damaged area alone varies by about 13% between runs of the same build). Frame rates
+# follow the agent's display rate, so for them only crossing the budget counts.
+function Get-Change($row, $current, $devMetric) {
+    if ($null -eq $current -or $null -eq $devMetric -or $null -eq $row.budget) { return $null }
+    if ($row.name.EndsWith('frames-per-second')) {
+        $overNow = Test-OverBudget $current
+        if ($overNow -eq (Test-OverBudget $devMetric)) { return $null }
+        return $(if ($overNow) { '▲' } else { '▼' })
+    }
+    $difference = $current.value - $devMetric.value
+    if ([math]::Abs($difference) -le [math]::Max(0.05, 0.2 * [math]::Abs($devMetric.value))) { return $null }
+    return $(if ($difference -gt 0) { '▲' } else { '▼' })
+}
+
+function Format-OverBudget([int]$count) {
+    if ($count -eq 0) { return '✅ within budget' }
+    return "⚠️ $count over budget"
+}
+
+function Format-Changes([int]$lower, [int]$higher) {
+    if ($lower + $higher -eq 0) { return 'no change' }
+    $parts = @()
+    if ($higher -gt 0) { $parts += "$higher higher ▲" }
+    if ($lower -gt 0) { $parts += "$lower lower ▼" }
+    return $parts -join ', '
 }
 
 function New-Report($lanes, $baselines) {
@@ -248,71 +268,49 @@ function New-Report($lanes, $baselines) {
         }
 
         $dev = $baselines | Where-Object { $_.label -eq 'Latest dev' } | Select-Object -First 1
-        $measured = @($baselines | Where-Object { $_.lanes })
-        $lowerMetrics = [System.Collections.Generic.HashSet[string]]::new()
-        $higherMetrics = [System.Collections.Generic.HashSet[string]]::new()
-
-        # One row per metric, one column per lane. A cell shows this PR's value, and under it the latest published
-        # versions' values on the same lane, so platforms and versions read off the same table.
-        $tableLines = [System.Collections.Generic.List[string]]::new()
-        foreach ($row in $rows.Values) {
-            $budget = if ($null -ne $row.budget) { '≤ ' + (Format-Number $row.budget) } else { '–' }
-            $cells = foreach ($lane in $laneNames) {
-                $current = $lanes[$lane][$row.key]
-                $cell = Format-Metric $current
-
-                # Every budgeted metric is a count where lower is better; flag a clear move away from the latest dev on
-                # the same lane, past run-to-run noise (the damaged area alone varies by about 13% between runs of the
-                # same build). Frame rates follow the agent's display rate, so for them only crossing the budget counts.
-                $devMetric = if ($dev -and $dev.lanes -and $dev.lanes.Contains($lane)) { $dev.lanes[$lane][$row.key] } else { $null }
-                $arrow = $null
-                if ($null -ne $current -and $null -ne $devMetric -and $null -ne $row.budget) {
-                    if ($row.name.EndsWith('frames-per-second')) {
-                        $overNow = Test-OverBudget $current
-                        if ($overNow -ne (Test-OverBudget $devMetric)) { $arrow = if ($overNow) { '▲' } else { '▼' } }
-                    }
-                    else {
-                        $difference = $current.value - $devMetric.value
-                        if ([math]::Abs($difference) -gt [math]::Max(0.05, 0.2 * [math]::Abs($devMetric.value))) {
-                            $arrow = if ($difference -gt 0) { '▲' } else { '▼' }
-                        }
-                    }
-                }
-                if ($arrow) {
-                    $cell += " $arrow"
-                    [void]$(if ($arrow -eq '▲') { $higherMetrics.Add($row.name) } else { $lowerMetrics.Add($row.name) })
-                }
-
-                # Only the versions measured on this lane: a stable line built before a lane existed says nothing there.
-                $references = foreach ($b in $measured | Where-Object { $_.lanes.Contains($lane) }) {
-                    "$($b.short) $(Format-Reference $b.lanes[$lane][$row.key])"
-                }
-                if ($references) { $cell += "<br><sub>$($references -join ' · ')</sub>" }
-                $cell
-            }
-            $tableLines.Add("| ``$($row.name)`` | $budget | $($cells -join ' | ') |")
+        $versionHeaders = foreach ($b in $baselines) {
+            $version = if ($b.buildUrl) { "[$($b.version)]($($b.buildUrl -replace ' ', '%20'))" } else { $b.version }
+            "$($b.label)<br>$version"
         }
 
-        # One summary line per version, so "within budget" is never read as being about another version.
+        # One comparison per lane: this PR next to the latest dev and stable on the same lane, like with like.
+        $laneReports = foreach ($lane in $laneNames) {
+            $over = 0; $lower = 0; $higher = 0
+            $lines = [System.Collections.Generic.List[string]]::new()
+            foreach ($row in $rows.Values) {
+                $current = $lanes[$lane][$row.key]
+                $devMetric = if ($dev -and $dev.lanes -and $dev.lanes.Contains($lane)) { $dev.lanes[$lane][$row.key] } else { $null }
+                $cell = Format-Metric $current
+                $change = Get-Change $row $current $devMetric
+                if ($change) {
+                    $cell += " $change"
+                    if ($change -eq '▲') { $higher++ } else { $lower++ }
+                }
+                if (Test-OverBudget $current) { $over++ }
+
+                $budget = if ($null -ne $row.budget) { '≤ ' + (Format-Number $row.budget) } else { '–' }
+                $baselineCells = foreach ($b in $baselines) {
+                    if ($b.lanes -and $b.lanes.Contains($lane)) { Format-Metric $b.lanes[$lane][$row.key] } else { '–' }
+                }
+                $lines.Add("| ``$($row.name)`` | $budget | $cell | $($baselineCells -join ' | ') |")
+            }
+            [pscustomobject]@{ lane = $lane; title = (Get-LaneTitle $lane); over = $over; lower = $lower; higher = $higher; lines = $lines }
+        }
+
+        # The versions, one line each, so "within budget" is never read as being about another version.
         $prOver = @($rows.Values | Where-Object { $key = $_.key; @($laneNames | Where-Object { Test-OverBudget $lanes[$_][$key] }).Count -gt 0 }).Count
         $prLine = if ($prOver -eq 0) { "✅ all $($rows.Count) metrics within budget on all $($laneNames.Count) lanes" } else { "⚠️ $prOver of $($rows.Count) metrics over budget on at least one of $($laneNames.Count) lanes" }
         if ($dev -and $dev.lanes) {
-            $prLine += if ($lowerMetrics.Count + $higherMetrics.Count -eq 0) { '; no change from the latest dev' } else { "; against the latest dev: $($lowerMetrics.Count) lower ▼, $($higherMetrics.Count) higher ▲" }
+            $higherTotal = ($laneReports | Measure-Object -Property higher -Sum).Sum
+            $prLine += if ($higherTotal -eq 0) { '; nothing higher than the latest dev' } else { "; **$higherTotal value(s) higher than the latest dev** ▲" }
         }
         [void]$sb.AppendLine("- **This PR**: $prLine.")
         foreach ($b in $baselines) {
             $build = if ($b.buildUrl) { "[$($b.version)]($($b.buildUrl -replace ' ', '%20'))" } else { $b.version }
             if ($b.lanes) {
-                # Over the rows shown: a version's own extra rows (which objects it leaked) are not in this table.
                 $bLanes = @($laneNames | Where-Object { $b.lanes.Contains($_) })
-                $over = @($rows.Values | Where-Object { $key = $_.key; @($bLanes | Where-Object { Test-OverBudget $b.lanes[$_][$key] }).Count -gt 0 }).Count
-                $state = if ($bLanes.Count -eq 1) {
-                    $only = Get-LaneTitle $bLanes[0]
-                    if ($over -eq 0) { "✅ within budget on its only lane ($only)" } else { "⚠️ $over metrics over budget on its only lane ($only)" }
-                }
-                elseif ($over -eq 0) { "✅ within budget on all its $($bLanes.Count) lanes" }
-                else { "⚠️ $over metrics over budget on at least one of its $($bLanes.Count) lanes" }
-                [void]$sb.AppendLine("- **$($b.label)** $($build): $state.")
+                $lanesText = if ($bLanes.Count -eq 1) { "measured on $(Get-LaneTitle $bLanes[0]) only" } else { "measured on $($bLanes.Count) lanes" }
+                [void]$sb.AppendLine("- **$($b.label)** $($build): $lanesText.")
             }
             else {
                 [void]$sb.AppendLine("- **$($b.label)** $($build): no numbers, $($b.note).")
@@ -322,15 +320,36 @@ function New-Report($lanes, $baselines) {
         [void]$sb.AppendLine('Report only for now: nothing here fails the build.')
         [void]$sb.AppendLine()
 
-        $headers = foreach ($lane in $laneNames) { Get-LaneTitle $lane }
-        if ($measured.Count -gt 0) {
-            $versions = foreach ($b in $measured) { "$($b.short) = $($b.label.ToLowerInvariant()) $($b.version)" }
-            [void]$sb.AppendLine("Each cell: **this PR**, then on the same lane $($versions -join ', ').")
-            [void]$sb.AppendLine()
+        # Overview: where to look.
+        [void]$sb.AppendLine('**By lane**')
+        [void]$sb.AppendLine()
+        [void]$sb.AppendLine("| Lane | This PR | Against the latest dev | $($versionHeaders -join ' | ') |")
+        [void]$sb.AppendLine("|---|---|---|$(($baselines | ForEach-Object { '---' }) -join '|')|")
+        foreach ($report in $laneReports) {
+            $versusDev = if ($dev -and $dev.lanes -and $dev.lanes.Contains($report.lane)) { Format-Changes $report.lower $report.higher } else { '–' }
+            $baselineCells = foreach ($b in $baselines) {
+                if ($b.lanes -and $b.lanes.Contains($report.lane)) {
+                    $lane = $report.lane
+                    Format-OverBudget @($rows.Values | Where-Object { Test-OverBudget $b.lanes[$lane][$_.key] }).Count
+                }
+                else { '–' }
+            }
+            [void]$sb.AppendLine("| $($report.title) | $(Format-OverBudget $report.over) | $versusDev | $($baselineCells -join ' | ') |")
         }
-        [void]$sb.AppendLine("| Metric | Budget | $($headers -join ' | ') |")
-        [void]$sb.AppendLine("|---|---|$(($laneNames | ForEach-Object { '---:' }) -join '|')|")
-        $tableLines | ForEach-Object { [void]$sb.AppendLine($_) }
+        [void]$sb.AppendLine()
+
+        # Details: one table per lane, open for the first lane and for any lane where this PR went up.
+        foreach ($report in $laneReports) {
+            $open = if ($report -eq $laneReports[0] -or $report.higher -gt 0) { ' open' } else { '' }
+            $versusDev = if ($dev -and $dev.lanes -and $dev.lanes.Contains($report.lane)) { " · $(Format-Changes $report.lower $report.higher) against the latest dev" } else { '' }
+            [void]$sb.AppendLine("<details$open><summary><b>$($report.title)</b>: $(Format-OverBudget $report.over)$versusDev</summary>")
+            [void]$sb.AppendLine()
+            [void]$sb.AppendLine("| Metric | Budget | This PR | $($versionHeaders -join ' | ') |")
+            [void]$sb.AppendLine("|---|---|---:|$(($baselines | ForEach-Object { '---:' }) -join '|')|")
+            $report.lines | ForEach-Object { [void]$sb.AppendLine($_) }
+            [void]$sb.AppendLine()
+            [void]$sb.AppendLine('</details>')
+        }
         [void]$sb.AppendLine()
 
         # Collapsed, to keep the comment short. The descriptions come from the tests themselves
