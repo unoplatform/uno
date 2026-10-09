@@ -15,6 +15,10 @@ Host startup
   -> register XamlRoot -> owner
   -> AccessibilityRouter.SetActive(owner) on activation
 
+First client query, or a screen reader running
+  -> AccessibilityRouter.EnsureTreeNotifications()
+  -> build the tree from the current visual tree
+
 Host close
   -> adapter.Dispose()
   -> AccessibilityRouter.NotifyDisposed(owner)
@@ -23,7 +27,9 @@ Host close
 
 Required behavior:
 
-- Router initialization occurs before the first XAML child-add callback.
+- Router initialization occurs at host startup. Visual-tree changes are routed only after
+  `EnsureTreeNotifications`, once an adapter is enabled: enabling builds the tree from scratch,
+  so the changes made before it are not needed, and no layout pass pays for routing until then.
 - One adapter owns one XamlRoot/native window.
 - Activation and disposal are idempotent.
 - Delayed callbacks after disposal are ignored.

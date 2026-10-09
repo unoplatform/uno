@@ -241,9 +241,13 @@ repeated add/remove/window/focus cycles and verify timing and registry baselines
 - [ ] T083 [US7] Keep both bridges dormant until a client reads the tree (scenario 1, SC-008): Android caches the `AccessibilityManager` state and enables on a service or a first provider query, iOS builds on the first `accessibilityElements`/`automationElements`/hit-test query or when VoiceOver/Switch Control runs, and `ItemsControl` item changes no longer create the control's peer, in `src/Uno.UI.Runtime.Android/Accessibility/`, `src/Uno.UI.Runtime.AppleUIKit/Accessibility/AppleUIKitAccessibility.cs` and `src/Uno.UI/UI/Xaml/Controls/ItemsControl/ItemsControl.cs`; guarded by `src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Automation/Given_AccessibilityOnDemand.skia.cs`
 
 > **PARTIAL T083**: Android passes the automation suite with and without TalkBack, and the
-> `ItemsControl` guard fails before and passes after on Skia Win32. iOS is compile-only:
-> the native suite, VoiceOver and XCUITest still need a Mac, and the physical-device
-> before/after profiling with the bridge disabled as the floor is still to do.
+> `ItemsControl` guard fails before and passes after on Skia Win32. On iOS the automation
+> suite passes on a physical iPad, Accessibility Inspector reads the tree with VoiceOver never
+> turned on, and VoiceOver works whether it is on at launch or turned on later. With T084,
+> `Perf_TreeGridParity` on a physical iPhone (Release, 3 interleaved rounds) matches master,
+> which has no mobile bridge, in time and allocations. The Android physical-device profiling
+> is still to do; XCUITest runs on PR CI.
+- [X] T084 [US7] Keep the shared router idle without a client too (SC-008): `AccessibilityRouter` routes visual-tree changes only once a bridge is enabled (`EnsureTreeNotifications`, called at each platform's enable point) and checks for listeners without allocating, in `src/Uno.UI.Runtime/Accessibility/AccessibilityRouter.cs` and `src/Uno.UI/Hosting/XamlRootMap.cs`; guarded by `src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Automation/Given_AccessibilityOnDemand.skia.cs`
 - [ ] T069 [US7] Run US7 lifecycle/performance tests through `build/test-scripts/android-run-skia-runtime-tests.sh` and `build/test-scripts/ios-uitest-run.sh`
 
 > **PARTIAL T069**: Android lifecycle, registry, stale-node, 500-node, and 1,000-item
