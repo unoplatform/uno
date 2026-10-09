@@ -7,16 +7,22 @@
     metrics as test-case properties (metric:<name>, budget:<name>, unit:<name>), and saves them as JSON under
     <OutputDirectory>/<Lane>/ for the shared 'runtime-tests-metrics' artifact.
 
-    Report (runs once, after the lanes): merges the lanes' JSON into one markdown table, writes it to ReportFile,
-    and on a pull request creates or updates a single comment carrying it (found again through a hidden marker),
-    so pushes and stage retries update the comment instead of adding new ones.
+    Report (runs once, after the lanes): writes one markdown report to ReportFile and, on a pull request, creates
+    or updates a single comment carrying it (found again through a hidden marker and its author), so pushes and
+    stage retries update the comment instead of adding new ones.
+
+    The report compares this build with the latest published versions: the latest dev and the latest stable
+    Uno.WinUI on nuget.org. Each version is mapped to the CI build that produced it (its build number is the
+    version) and that build's own 'runtime-tests-metrics' artifact gives its numbers. The comparison is therefore
+    with what users actually have, and follows the stable line as it moves from one release branch to the next.
 
     Report-only: a value over its budget is flagged, never fails the build. See specs/rendering-budget-tests/spec.md.
 
 .EXAMPLE
     # Preview a report locally from a results file, without posting anything:
     ./runtime-tests-metrics.ps1 -Mode Extract -ResultsFile results.xml -Lane skia-windows -OutputDirectory out
-    ./runtime-tests-metrics.ps1 -Mode Report -InputDirectory out -ReportFile report.md
+    ./runtime-tests-metrics.ps1 -Mode Report -InputDirectory out -ReportFile report.md -BuildNumber 7.0-dev.1 `
+        -CollectionUri https://dev.azure.com/uno-platform/ -ProjectId 1dd81cbd-cb35-41de-a570-b0df3571a196 -DefinitionId 5
 #>
 param(
     [Parameter(Mandatory)][ValidateSet('Extract', 'Report')][string]$Mode,
@@ -33,7 +39,16 @@ param(
     [string]$Repository,         # owner/name, e.g. unoplatform/uno
     [string]$PullRequestNumber,  # empty outside pull requests: nothing is posted
     [string]$CommitId,
-    [string]$BuildUrl
+    [string]$BuildUrl,
+
+    # Report: comparison with the published versions
+    [string]$CollectionUri,      # e.g. https://dev.azure.com/uno-platform/
+    [string]$ProjectId,
+    [string]$DefinitionId,
+    [string]$BuildNumber,        # this build's, e.g. 7.0-dev.1662+db89a9843c: selects the dev line to compare with
+    [string]$ReferenceLane = 'skia-windows',
+    [string]$DevBuildNumber,     # overrides for a manual comparison; by default, the builds of the latest
+    [string]$StableBuildNumber   # dev and stable Uno.WinUI versions on nuget.org
 )
 
 $ErrorActionPreference = 'Stop'
@@ -43,6 +58,13 @@ $Invariant = [System.Globalization.CultureInfo]::InvariantCulture
 function Format-Number([double]$value) {
     if ($value -eq [math]::Floor($value)) { return $value.ToString('0', $Invariant) }
     return $value.ToString('0.##', $Invariant)
+}
+
+function Format-Metric($metric) {
+    if ($null -eq $metric) { return '–' }
+    $text = (Format-Number $metric.value) + $metric.unit
+    if ($null -ne $metric.budget -and $metric.value -gt $metric.budget) { return "**$text** ⚠️" }
+    return $text
 }
 
 function Invoke-Extract {
@@ -79,11 +101,11 @@ function Invoke-Extract {
     Write-Host '##vso[task.setvariable variable=RuntimeTestsMetricsExtracted]true'
 }
 
-function Get-LaneMetrics {
+function Get-LaneMetrics([string]$directory) {
     $lanes = [ordered]@{}
-    if (-not (Test-Path $InputDirectory)) { return $lanes }
+    if (-not $directory -or -not (Test-Path $directory)) { return $lanes }
 
-    foreach ($laneDirectory in Get-ChildItem -Directory -Path $InputDirectory | Sort-Object Name) {
+    foreach ($laneDirectory in Get-ChildItem -Directory -Path $directory | Sort-Object Name) {
         $byKey = [ordered]@{}
         foreach ($file in Get-ChildItem -File -Path $laneDirectory.FullName -Filter 'metrics-attempt*.json' | Sort-Object { [int]($_.BaseName -replace '\D', '') }) {
             foreach ($metric in @(Get-Content -Raw -Path $file.FullName | ConvertFrom-Json)) {
@@ -95,7 +117,82 @@ function Get-LaneMetrics {
     return $lanes
 }
 
-function New-Report($lanes) {
+# The published versions to compare with: the latest dev of this build's line (7.0 for master, 6.8 for
+# servicing/6.8...) and the latest stable, as nuget.org lists them, each with the CI build number that produced it.
+function Get-PublishedBaselines {
+    $versions = @()
+    if (-not $DevBuildNumber -or -not $StableBuildNumber) {
+        try { $versions = @((Invoke-RestMethod -Uri 'https://api.nuget.org/v3-flatcontainer/uno.winui/index.json').versions) }
+        catch { Write-Host "Could not read the published versions from nuget.org: $($_.Exception.Message)" }
+    }
+
+    $baselines = @()
+    if ($DevBuildNumber) {
+        $baselines += [ordered]@{ label = 'Latest dev'; version = $DevBuildNumber; buildNumber = $DevBuildNumber }
+    }
+    elseif ($BuildNumber -match '^(\d+)\.(\d+)') {
+        $line = "$($Matches[1]).$($Matches[2])"
+        $dev = $versions | Where-Object { $_ -match "^$([regex]::Escape($line))\.0-dev\.\d+$" } |
+            Sort-Object { [int]($_ -replace '^.*-dev\.', '') } | Select-Object -Last 1
+        if ($dev) {
+            # 7.0.0-dev.1656 on nuget.org is CI build number 7.0-dev.1656.
+            $baselines += [ordered]@{ label = 'Latest dev'; version = $dev; buildNumber = ($dev -replace '^(\d+\.\d+)\.0-dev\.', '$1-dev.') }
+        }
+    }
+
+    if ($StableBuildNumber) {
+        $baselines += [ordered]@{ label = 'Latest stable'; version = $StableBuildNumber; buildNumber = $StableBuildNumber }
+    }
+    else {
+        $stable = $versions | Where-Object { $_ -match '^\d+\.\d+\.\d+$' } | Sort-Object { [version]$_ } | Select-Object -Last 1
+        if ($stable) { $baselines += [ordered]@{ label = 'Latest stable'; version = $stable; buildNumber = $stable } }
+    }
+    return $baselines
+}
+
+function Get-BaselineMetrics($baseline) {
+    $result = [ordered]@{ label = $baseline.label; version = $baseline.version; buildId = $null; buildUrl = $null; lanes = $null; note = $null }
+    if (-not ($CollectionUri -and $ProjectId -and $DefinitionId)) {
+        $result.note = 'no CI connection to look its build up'
+        return $result
+    }
+
+    # The project is public, so the token is only a courtesy; it is absent when the script runs locally.
+    $headers = @{}
+    if ($env:SYSTEM_ACCESSTOKEN -and -not $env:SYSTEM_ACCESSTOKEN.StartsWith('$(')) { $headers.Authorization = "Bearer $env:SYSTEM_ACCESSTOKEN" }
+    $api = "$($CollectionUri.TrimEnd('/'))/$ProjectId/_apis/build/builds"
+
+    try {
+        $query = "definitions=$DefinitionId&buildNumber=$([uri]::EscapeDataString($baseline.buildNumber))&statusFilter=completed&queryOrder=finishTimeDescending&api-version=7.1"
+        $builds = @((Invoke-RestMethod -Headers $headers -Uri "$api`?$query").value)
+        if ($builds.Count -eq 0) {
+            $result.note = "no CI build numbered $($baseline.buildNumber) was found"
+            return $result
+        }
+
+        foreach ($build in $builds) {
+            $result.buildId = $build.id
+            $result.buildUrl = $build._links.web.href
+            try { $artifact = Invoke-RestMethod -Headers $headers -Uri "$api/$($build.id)/artifacts?artifactName=runtime-tests-metrics&api-version=7.1" }
+            catch { continue } # Not found: the build ran before the tests existed.
+
+            $directory = Join-Path ([System.IO.Path]::GetTempPath()) "runtime-tests-metrics-$($build.id)"
+            $zip = "$directory.zip"
+            Invoke-WebRequest -Headers $headers -Uri $artifact.resource.downloadUrl -OutFile $zip
+            Expand-Archive -Path $zip -DestinationPath $directory -Force
+            $result.lanes = Get-LaneMetrics (Join-Path $directory 'runtime-tests-metrics')
+            if ($result.lanes.Count -gt 0) { return $result }
+            $result.lanes = $null
+        }
+        $result.note = 'its build ran before these tests existed'
+    }
+    catch {
+        $result.note = "its build could not be read ($($_.Exception.Message))"
+    }
+    return $result
+}
+
+function New-Report($lanes, $baselines) {
     $laneNames = @($lanes.Keys)
     $sb = [System.Text.StringBuilder]::new()
     [void]$sb.AppendLine($Marker)
@@ -111,32 +208,78 @@ function New-Report($lanes) {
         foreach ($lane in $laneNames) {
             foreach ($metric in $lanes[$lane].Values) {
                 $key = "$($metric.test)|$($metric.name)"
-                if (-not $rows.Contains($key)) { $rows[$key] = [ordered]@{ test = $metric.test; name = $metric.name; budget = $metric.budget; unit = $metric.unit } }
+                if (-not $rows.Contains($key)) { $rows[$key] = [ordered]@{ key = $key; name = $metric.name; budget = $metric.budget } }
             }
         }
 
-        $overBudget = [System.Collections.Generic.HashSet[string]]::new()
-        $lines = foreach ($row in $rows.Values) {
-            $budget = if ($null -ne $row.budget) { '≤ ' + (Format-Number $row.budget) } else { '–' }
-            $cells = foreach ($lane in $laneNames) {
-                $metric = $lanes[$lane]["$($row.test)|$($row.name)"]
-                if ($null -eq $metric) { '–'; continue }
-                $text = (Format-Number $metric.value) + $metric.unit
-                if ($null -ne $metric.budget -and $metric.value -gt $metric.budget) { [void]$overBudget.Add($row.name); "**$text** ⚠️" } else { $text }
+        $overBudget = 0
+        foreach ($row in $rows.Values) {
+            foreach ($lane in $laneNames) {
+                $m = $lanes[$lane][$row.key]
+                if ($null -ne $m -and $null -ne $m.budget -and $m.value -gt $m.budget) { $overBudget++; break }
             }
-            "| ``$($row.name)`` | $budget | $($cells -join ' | ') |"
         }
-
-        if ($overBudget.Count -eq 0) {
+        if ($overBudget -eq 0) {
             [void]$sb.AppendLine("✅ All $($rows.Count) metrics are within budget on every lane.")
         }
         else {
-            [void]$sb.AppendLine("⚠️ $($overBudget.Count) of $($rows.Count) metrics are over budget on at least one lane. Report only for now: this does not fail the build.")
+            [void]$sb.AppendLine("⚠️ $overBudget of $($rows.Count) metrics are over budget on at least one lane. Report only for now: this does not fail the build.")
         }
+        [void]$sb.AppendLine()
+
+        # This PR next to the latest published versions, on one lane so the columns compare like with like.
+        $reference = if ($lanes.Contains($ReferenceLane)) { $ReferenceLane } else { $laneNames[0] }
+        $dev = $baselines | Where-Object { $_.label -eq 'Latest dev' } | Select-Object -First 1
+        $columns = foreach ($b in $baselines) {
+            $version = if ($b.buildUrl) { "[$($b.version)]($($b.buildUrl -replace ' ', '%20'))" } else { $b.version }
+            "$($b.label)<br>$version"
+        }
+        [void]$sb.AppendLine("**Compared with the latest published versions** (lane ``$reference``)")
+        [void]$sb.AppendLine()
+        [void]$sb.AppendLine("| Metric | Budget | This PR | $($columns -join ' | ') |")
+        [void]$sb.AppendLine("|---|---|---:|$(($baselines | ForEach-Object { '---:' }) -join '|')|")
+        foreach ($row in $rows.Values) {
+            $budget = if ($null -ne $row.budget) { '≤ ' + (Format-Number $row.budget) } else { '–' }
+            $current = $lanes[$reference][$row.key]
+            $cell = Format-Metric $current
+
+            # Every budgeted metric is a count where lower is better; flag a clear move away from the latest dev. Not
+            # for frame rates, which follow the agent's display rate, and not under 20%: the damaged area alone
+            # varies by about 13% between runs of the same build.
+            $devMetric = if ($dev -and $dev.lanes -and $dev.lanes.Contains($reference)) { $dev.lanes[$reference][$row.key] } else { $null }
+            if ($null -ne $current -and $null -ne $devMetric -and $null -ne $row.budget -and -not $row.name.EndsWith('frames-per-second')) {
+                $difference = $current.value - $devMetric.value
+                if ([math]::Abs($difference) -gt [math]::Max(0.05, 0.2 * [math]::Abs($devMetric.value))) {
+                    $cell += $(if ($difference -gt 0) { ' ▲' } else { ' ▼' })
+                }
+            }
+
+            $baselineCells = foreach ($b in $baselines) {
+                if ($b.lanes -and $b.lanes.Contains($reference)) { Format-Metric $b.lanes[$reference][$row.key] } else { '–' }
+            }
+            [void]$sb.AppendLine("| ``$($row.name)`` | $budget | $cell | $($baselineCells -join ' | ') |")
+        }
+        [void]$sb.AppendLine()
+        [void]$sb.AppendLine('▲ / ▼: more than 20% higher / lower than the latest dev (lower is better for every budgeted count; frame rates are not compared).')
+        foreach ($b in $baselines | Where-Object { -not $_.lanes }) {
+            $build = if ($b.buildId) { " ([build $($b.buildId)]($($b.buildUrl -replace ' ', '%20')))" } else { '' }
+            [void]$sb.AppendLine("<br>$($b.label) $($b.version)$($build): no numbers, $($b.note).")
+        }
+        [void]$sb.AppendLine()
+
+        # Every lane of this PR, for differences between platforms and renderers.
+        [void]$sb.AppendLine('<details><summary>This PR on every lane</summary>')
         [void]$sb.AppendLine()
         [void]$sb.AppendLine("| Metric | Budget | $($laneNames -join ' | ') |")
         [void]$sb.AppendLine("|---|---|$(($laneNames | ForEach-Object { '---:' }) -join '|')|")
-        $lines | ForEach-Object { [void]$sb.AppendLine($_) }
+        foreach ($row in $rows.Values) {
+            $budget = if ($null -ne $row.budget) { '≤ ' + (Format-Number $row.budget) } else { '–' }
+            $cells = foreach ($lane in $laneNames) { Format-Metric $lanes[$lane][$row.key] }
+            [void]$sb.AppendLine("| ``$($row.name)`` | $budget | $($cells -join ' | ') |")
+        }
+        [void]$sb.AppendLine()
+        [void]$sb.AppendLine("Frame rates follow each lane's display rate (the framebuffer lane has no vsync), so compare them within a lane.")
+        [void]$sb.AppendLine('</details>')
     }
 
     [void]$sb.AppendLine()
@@ -196,7 +339,9 @@ function Publish-Comment([string]$body) {
 switch ($Mode) {
     'Extract' { Invoke-Extract }
     'Report' {
-        $report = New-Report (Get-LaneMetrics)
+        $lanes = Get-LaneMetrics $InputDirectory
+        $baselines = @(Get-PublishedBaselines | ForEach-Object { Get-BaselineMetrics $_ })
+        $report = New-Report $lanes $baselines
         if ($ReportFile) {
             New-Item -ItemType Directory -Force -Path (Split-Path -Parent ([System.IO.Path]::GetFullPath($ReportFile))) | Out-Null
             Set-Content -Path $ReportFile -Value $report -Encoding utf8
