@@ -57,6 +57,14 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		{
 			var layerCmds = _target;
 			_target = t.ParentTarget;
+			// A single image can't overlap itself, so its shader applies the layer's matrix exactly and the offscreen
+			// pass is skipped (the effect-brush recipe case).
+			if (t.ColorMatrix is not null && t.CompositeMode == 0 && t.Effect is null && layerCmds is [ImageCmd { ColorMatrix: null } im])
+			{
+				im.ColorMatrix = t.ColorMatrix;
+				_target.Add(im);
+				return;
+			}
 			_target.Add(new LayerCmd { Commands = layerCmds, CompositeMode = t.CompositeMode, ColorMatrix = t.ColorMatrix, ShadowEffect = t.Effect, Clip = _clip });
 		}
 	}
@@ -70,12 +78,21 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 	public void SaveLayer() => PushLayer(0, null);
 	public void SaveLayer(IColorFilter colorFilter)
 	{
-		// A 4x5 colour-matrix filter (effect brush): apply it directly in the image shader — matching the original
-		// webgpu branch's AddImage(colorMatrix) — instead of an offscreen layer. Scope it to the matching Restore.
-		if ((colorFilter as WebGpuColorFilter)?.Matrix is { } matrix)
+		if ((colorFilter as WebGpuColorFilter)?.Matrix is { Length: >= 20 } matrix)
 		{
-			_stack.Push(new SaveEntry { M = _m, Clip = _clip, PendingColorMatrix = _pendingColorMatrix });
-			_pendingColorMatrix = matrix;
+			// When the matrix keeps alpha (e.g. the alpha mask), applying it to each draw equals applying it to the
+			// composited layer, so it is folded into the draws until the matching Restore. Any other matrix (an
+			// opacity fade) has to see the content as a whole, or overlapping draws stack.
+			if (KeepsAlpha(matrix))
+			{
+				_stack.Push(new SaveEntry { M = _m, Clip = _clip, PendingColorMatrix = _pendingColorMatrix });
+				_pendingColorMatrix = matrix;
+			}
+			else
+			{
+				PushLayer(0, matrix);
+				_pendingColorMatrix = null;
+			}
 			return;
 		}
 
@@ -90,6 +107,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 
 		PushLayer(0, null);
 	}
+	private static bool KeepsAlpha(float[] m) => m[15] == 0f && m[16] == 0f && m[17] == 0f && m[18] == 1f && m[19] == 0f;
 	public void SaveLayerMask() => PushLayer(1, null);   // 1 = DstIn composite
 	public void SaveLayer(IEffectFilter filter) => PushLayer(0, null, filter as WebGpuEffectFilter);
 	// Device-space AABB of a mapped rect (its 4 corners), for the scissor / fast reject.

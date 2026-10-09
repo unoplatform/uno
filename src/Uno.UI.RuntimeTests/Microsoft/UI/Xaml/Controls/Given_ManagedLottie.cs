@@ -116,6 +116,149 @@ public class Given_ManagedLottie
 		}
 	}
 
+	// A 40x40 red square on a 20-frame timeline, its fill opacity keyframed in the pre-5.5 form: each keyframe carries
+	// its own end ("e") and the track closes on a bare { t } keyframe. The value must hold past it, up to the very end.
+	private const string LegacyKeyframesJson = """
+		{"v":"5.4.4","fr":10,"ip":0,"op":20,"w":40,"h":40,"layers":[{"ty":4,"ind":1,"ip":0,"op":20,"st":0,
+		"ks":{"o":{"a":0,"k":100},"p":{"a":0,"k":[0,0,0]},"a":{"a":0,"k":[0,0,0]},"s":{"a":0,"k":[100,100,100]},"r":{"a":0,"k":0}},
+		"shapes":[{"ty":"gr","it":[
+			{"ty":"sh","ks":{"a":1,"k":[
+				{"t":0,"s":[{"c":true,"v":[[0,0],[40,0],[40,40],[0,40]],"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]]}],
+				       "e":[{"c":true,"v":[[0,0],[40,0],[40,40],[0,40]],"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]]}]},
+				{"t":10}]}},
+			{"ty":"fl","c":{"a":0,"k":[1,0,0,1]},"o":{"a":1,"k":[{"t":0,"s":[0],"e":[100]},{"t":10}]}},
+			{"ty":"tr","p":{"a":0,"k":[0,0]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":0,"k":0},"o":{"a":0,"k":100}}]}]}]}
+		""";
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[DataRow(0.75f, DisplayName = "after the last keyframe")]
+	[DataRow(1.0f, DisplayName = "at the end of the timeline")]
+	public async Task When_Legacy_Keyframes_End_Then_Value_Holds(float progress)
+	{
+		var pixels = await RenderManagedAsync(LegacyKeyframesJson, progress);
+
+		// The square at full opacity, not the white background.
+		Assert.IsTrue(IsRed(pixels, 20, 20), $"Expected the red square at progress {progress}: {Describe(pixels, 20, 20)}.");
+	}
+
+	// A red horizontal line across a 40x40 comp, its group followed (not contained) by a trim keeping the first half.
+	private const string TrimAfterGroupJson = """
+		{"v":"5.4.4","fr":10,"ip":0,"op":20,"w":40,"h":40,"layers":[{"ty":4,"ind":1,"ip":0,"op":20,"st":0,
+		"ks":{"o":{"a":0,"k":100},"p":{"a":0,"k":[0,0,0]},"a":{"a":0,"k":[0,0,0]},"s":{"a":0,"k":[100,100,100]},"r":{"a":0,"k":0}},
+		"shapes":[
+			{"ty":"gr","it":[
+				{"ty":"sh","ks":{"a":0,"k":{"c":false,"v":[[0,20],[40,20]],"i":[[0,0],[0,0]],"o":[[0,0],[0,0]]}}},
+				{"ty":"st","c":{"a":0,"k":[1,0,0,1]},"o":{"a":0,"k":100},"w":{"a":0,"k":8},"lc":1,"lj":1},
+				{"ty":"tr","p":{"a":0,"k":[0,0]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":0,"k":0},"o":{"a":0,"k":100}}]},
+			{"ty":"tm","s":{"a":0,"k":0},"e":{"a":0,"k":50},"o":{"a":0,"k":0},"m":1}]}]}
+		""";
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	public async Task When_Trim_Follows_Group_Then_Group_Paths_Are_Trimmed()
+	{
+		var pixels = await RenderManagedAsync(TrimAfterGroupJson, 0.5f);
+
+		Assert.IsTrue(IsRed(pixels, 10, 20), $"The kept half should be drawn: {Describe(pixels, 10, 20)}.");
+		Assert.IsTrue(IsWhite(pixels, 30, 20), $"The trimmed-off half should not be drawn: {Describe(pixels, 30, 20)}.");
+	}
+
+	// JSON fragments are written with single quotes (they are mostly braces and quotes) and converted by Json().
+	private static string Json(string singleQuoted) => singleQuoted.Replace('\'', '"');
+
+	private const string Transform100 = "'ks':{'o':{'a':0,'k':100},'p':{'a':0,'k':[0,0,0]},'a':{'a':0,'k':[0,0,0]},'s':{'a':0,'k':[100,100,100]},'r':{'a':0,'k':0}}";
+
+	// A filled square group.
+	private static string Square(int x, int y, int size, string rgba)
+		=> "{'ty':'gr','it':[{'ty':'rc','p':{'a':0,'k':[" + (x + size / 2) + "," + (y + size / 2) + "]},'s':{'a':0,'k':[" + size + "," + size + "]},'r':{'a':0,'k':0}},"
+			+ "{'ty':'fl','c':{'a':0,'k':[" + rgba + "]},'o':{'a':0,'k':100}},"
+			+ "{'ty':'tr','p':{'a':0,'k':[0,0]},'a':{'a':0,'k':[0,0]},'s':{'a':0,'k':[100,100]},'r':{'a':0,'k':0},'o':{'a':0,'k':100}}]}";
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	public async Task When_Precomp_With_Split_Position_Then_Asset_Renders_At_It()
+	{
+		// A 10x10 red square at the origin of an asset, shown by a precomp layer placed at (25, 15) by a split position.
+		var json = Json("{'v':'5.4.4','fr':10,'ip':0,'op':20,'w':40,'h':40,"
+			+ "'assets':[{'id':'comp_0','layers':[{'ty':4,'ind':1,'ip':0,'op':20,'st':0," + Transform100 + ",'shapes':[" + Square(0, 0, 10, "1,0,0,1") + "]}]}],"
+			+ "'layers':[{'ty':0,'ind':1,'refId':'comp_0','ip':0,'op':20,'st':0,'w':40,'h':40,"
+			+ "'ks':{'o':{'a':0,'k':100},'a':{'a':0,'k':[0,0,0]},'s':{'a':0,'k':[100,100,100]},'r':{'a':0,'k':0},"
+			+ "'p':{'s':true,'x':{'a':0,'k':25},'y':{'a':0,'k':15}}}}]}");
+
+		var pixels = await RenderManagedAsync(json, 0.5f);
+
+		Assert.IsTrue(IsRed(pixels, 30, 20), $"The asset should render at the precomp's position: {Describe(pixels, 30, 20)}.");
+		Assert.IsTrue(IsWhite(pixels, 5, 5), $"Nothing should render at the asset's own origin: {Describe(pixels, 5, 5)}.");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	public async Task When_Groups_Overlap_Then_First_Is_On_Top()
+	{
+		// Same square twice: blue first in the list, red second. Lottie stacks shapes like layers, first on top.
+		var json = Json("{'v':'5.4.4','fr':10,'ip':0,'op':20,'w':40,'h':40,'layers':[{'ty':4,'ind':1,'ip':0,'op':20,'st':0," + Transform100
+			+ ",'shapes':[" + Square(10, 10, 20, "0,0,1,1") + "," + Square(10, 10, 20, "1,0,0,1") + "]}]}");
+
+		var pixels = await RenderManagedAsync(json, 0.5f);
+
+		var p = (20 * 40 + 20) * 4;
+		Assert.IsTrue(pixels[p] > 200 && pixels[p + 2] < 60, $"The first group should be on top (blue): {Describe(pixels, 20, 20)}.");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	public async Task When_Layer_Is_Translucent_Then_It_Fades_As_A_Whole()
+	{
+		// Two identical red squares in a 50% layer: one 50% red over white, not two 50% squares stacking to 75%.
+		var json = Json("{'v':'5.4.4','fr':10,'ip':0,'op':20,'w':40,'h':40,'layers':[{'ty':4,'ind':1,'ip':0,'op':20,'st':0,"
+			+ "'ks':{'o':{'a':0,'k':50},'p':{'a':0,'k':[0,0,0]},'a':{'a':0,'k':[0,0,0]},'s':{'a':0,'k':[100,100,100]},'r':{'a':0,'k':0}},"
+			+ "'shapes':[" + Square(10, 10, 20, "1,0,0,1") + "," + Square(10, 10, 20, "1,0,0,1") + "]}]}");
+
+		var pixels = await RenderManagedAsync(json, 0.5f);
+
+		// 50% red over white is (255, 128, 128); stacking would give (255, 64, 64).
+		var p = (20 * 40 + 20) * 4;
+		Assert.IsTrue(pixels[p + 1] is > 110 and < 145, $"Expected one 50% red square: {Describe(pixels, 20, 20)}.");
+	}
+
+	private static async Task<byte[]> RenderManagedAsync(string json, float progress)
+	{
+		using var animation = new global::Uno.UI.Composition.Drawing.ManagedLottieRenderer()
+			.Load(json, global::Uno.UI.Composition.Drawing.GeometryFactory.Current);
+		Assert.IsNotNull(animation, "The animation should load.");
+
+		var factory = global::Uno.UI.Composition.Drawing.DrawingFactory.Current;
+		using var texture = factory.RenderOffscreen(40, 40, session =>
+		{
+			session.Clear(Colors.White);
+			animation.Render(session, progress, new global::Windows.Foundation.Rect(0, 0, 40, 40));
+		});
+		var image = await factory.SnapshotAsync(texture);
+		var pixels = new byte[40 * 40 * 4];
+		image.CopyPixels(pixels);
+		return pixels;
+	}
+
+	// BGRA pixels of a 40-wide render.
+	private static bool IsRed(byte[] bgra, int x, int y)
+	{
+		var p = (y * 40 + x) * 4;
+		return bgra[p + 2] > 200 && bgra[p + 1] < 60 && bgra[p] < 60;
+	}
+
+	private static bool IsWhite(byte[] bgra, int x, int y)
+	{
+		var p = (y * 40 + x) * 4;
+		return bgra[p] > 230 && bgra[p + 1] > 230 && bgra[p + 2] > 230;
+	}
+
+	private static string Describe(byte[] bgra, int x, int y)
+	{
+		var p = (y * 40 + x) * 4;
+		return $"({x},{y}) B={bgra[p]} G={bgra[p + 1]} R={bgra[p + 2]}";
+	}
+
 	private static int NonBackgroundPixels(RawBitmap bmp, int w, int h, Color background)
 	{
 		var count = 0;
