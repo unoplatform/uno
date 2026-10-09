@@ -67,7 +67,16 @@ public sealed class AppInfo
 	private static string GetTargetFramework()
 		=> FormatTargetFramework(
 			typeof(AppInfo).Assembly.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName,
-			typeof(AppInfo).Assembly.GetCustomAttribute<TargetPlatformAttribute>()?.PlatformName);
+			typeof(AppInfo).Assembly.GetCustomAttribute<TargetPlatformAttribute>()?.PlatformName ?? GetRuntimePlatform());
+
+	// The iOS/tvOS trimmer strips TargetPlatformAttribute.
+	private static string? GetRuntimePlatform()
+		=> global::System.OperatingSystem.IsMacCatalyst() ? "MacCatalyst"
+			: global::System.OperatingSystem.IsTvOS() ? "tvOS"
+			: global::System.OperatingSystem.IsIOS() ? "iOS"
+			: global::System.OperatingSystem.IsAndroid() ? "Android"
+			: global::System.OperatingSystem.IsBrowser() ? "BrowserWasm"
+			: null;
 
 	// (".NETCoreApp,Version=v10.0", "Android36.0") -> "net10.0-android36.0"; SDK-defined platforms such as "Desktop1.0" drop their placeholder version.
 	internal static string FormatTargetFramework(string? frameworkName, string? platformName)
