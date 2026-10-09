@@ -33,7 +33,7 @@ partial class ItemsViewAutomationPeer : FrameworkElementAutomationPeer, ISelecti
 
 	protected override string GetClassNameCore()
 	{
-		return typeof(ItemsView).FullName;
+		return "Microsoft.UI.Xaml.Controls.ItemsView";
 	}
 
 	protected override AutomationControlType GetAutomationControlTypeCore()
