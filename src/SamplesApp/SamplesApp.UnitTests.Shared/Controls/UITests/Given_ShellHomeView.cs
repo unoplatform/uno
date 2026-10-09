@@ -15,7 +15,6 @@ using SampleControl.Presentation;
 using Uno.UI.RuntimeTests;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Helper;
-using Windows.Foundation;
 
 namespace SamplesApp.Tests;
 
@@ -211,19 +210,16 @@ public class Given_ShellHomeView
 
 		var view = await LoadHomeView(width);
 		var list = await ShowCategories(view);
-		var cards = RealizedCards(list);
+		var first = (FrameworkElement)list.TryGetElement(0);
 
 		Assert.AreEqual(HomeView.MaxCards, ((System.Collections.ICollection)list.ItemsSource).Count, "Categories are capped.");
-		// WinUI realizes only what is on screen, which is at least the first row.
-		Assert.IsTrue(cards.Count >= expectedColumns, $"{cards.Count} cards realized");
 
-		var columns = cards.Select(c => Math.Round(c.Left)).Distinct().Count();
-		Assert.AreEqual(expectedColumns, columns);
-
-		// The cards stretch: the last column ends at the grid's edge.
-		var right = cards.Max(c => c.Left + c.Width);
-		Assert.AreEqual(list.ActualWidth, right, 1, $"Cards end at {right}, grid is {list.ActualWidth} wide.");
-		Assert.IsTrue(cards.All(c => c.Width >= 260 - 0.5), "No card is narrower than the minimum.");
+		// WinUI realizes only what the window shows, so the columns come from the stretched card width, not from counting cards.
+		const double spacing = 8;
+		var columns = (int)Math.Round((list.ActualWidth + spacing) / (first.ActualWidth + spacing));
+		Assert.AreEqual(expectedColumns, columns, $"Card {first.ActualWidth} wide in a {list.ActualWidth} grid.");
+		Assert.AreEqual(list.ActualWidth, columns * first.ActualWidth + (columns - 1) * spacing, 1, "The cards stretch to the grid's edge.");
+		Assert.IsTrue(first.ActualWidth >= 260 - 0.5, "No card is narrower than the minimum.");
 	}
 
 	[TestMethod]
@@ -309,22 +305,6 @@ public class Given_ShellHomeView
 		view.UpdateLayout();
 
 		return list;
-	}
-
-	private static List<Rect> RealizedCards(ItemsRepeater repeater)
-	{
-		var count = ((System.Collections.ICollection)repeater.ItemsSource).Count;
-		List<Rect> cards = new();
-		for (var i = 0; i < count; i++)
-		{
-			if (repeater.TryGetElement(i) is FrameworkElement element)
-			{
-				var origin = element.TransformToVisual(repeater).TransformPoint(default);
-				cards.Add(new Rect(origin.X, origin.Y, element.ActualWidth, element.ActualHeight));
-			}
-		}
-
-		return cards;
 	}
 
 	private static SampleChooserCategory Category(string name, int sampleCount)
