@@ -143,16 +143,15 @@ namespace Microsoft.UI.Xaml.Controls
 					return true;
 				}
 
-				if (Content is UIElement contentElt && contentElt.Visual is { } visual
-					&& visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller)
-				{
-					// A KeyFrameAnimation that completed naturally stays in the owning
-					// CompositionObject's animation dictionary (only StopAnimation removes it),
-					// so the controller's mere presence is not a reliable "in progress" signal.
-					// Check the remaining time instead.
-					return controller.Remaining > TimeSpan.Zero;
-				}
-				return false;
+				// A KeyFrameAnimation that completed naturally stays in the owning
+				// CompositionObject's animation dictionary (only StopAnimation removes it),
+				// so the controller's mere presence is not a reliable "in progress" signal.
+				// Check the remaining time instead. The zoom animation can outlast a short scroll.
+				return Content is UIElement contentElt && contentElt.Visual is { } visual
+					&& (IsRunning(visual, nameof(Visual.AnchorPoint)) || IsRunning(visual, nameof(Visual.Scale)));
+
+				static bool IsRunning(Visual visual, string property)
+					=> visual.TryGetAnimationController(property) is { } controller && controller.Remaining > TimeSpan.Zero;
 			}
 		}
 
@@ -513,20 +512,14 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var compositor = visual.Compositor;
 
-				// The composition default, which WinUI's ScrollPresenter animates offset changes with: its
-				// GetPositionAnimation inserts the final keyframe without an easing (ScrollPresenter.cpp, winui3/release/2.5.1).
-				var easing = Compositor.GetDefaultEasingFunction();
-
-				// Scroll offset animation
+				// WinUI's ScrollViewer animates ChangeView through DirectManipulation, whose curve is not in the XAML sources.
+				// Measured on WinUI 1.8: 1.4ms per physical pixel within [175, 475]ms, along a curve a quartic ease-out fits
+				// as well as any other tested.
 				var scrollAnimation = compositor.CreateVector2KeyFrameAnimation();
-				scrollAnimation.InsertKeyFrame(1.0f, target, easing);
+				scrollAnimation.InsertKeyFrame(1.0f, target, CompositionEasingFunction.CreatePowerEasingFunction(compositor, CompositionEasingFunctionMode.Out, 4));
 
-				// Scaled with the distance, as WinUI's ScrollPresenter does; the legacy ScrollViewer's own curve lives in DManip.
-				var distance = Vector2.Distance(visual.AnchorPoint, target);
-				scrollAnimation.Duration = TimeSpan.FromMilliseconds(Math.Clamp(
-					distance * Primitives.ScrollPresenter.s_offsetsChangeMsPerUnit,
-					Primitives.ScrollPresenter.s_offsetsChangeMinMs,
-					Primitives.ScrollPresenter.s_offsetsChangeMaxMs));
+				var physicalDistance = Vector2.Distance(visual.AnchorPoint, target) * (view.XamlRoot?.RasterizationScale ?? 1);
+				scrollAnimation.Duration = TimeSpan.FromMilliseconds(Math.Clamp(physicalDistance * 1.4, 175, 475));
 				// AnchorPoint also carries the centering offset, which has to be removed to get back the logical scroll offsets.
 				var stopped = false;
 				void OnFrame(CompositionAnimation? _)
@@ -545,9 +538,8 @@ namespace Microsoft.UI.Xaml.Controls
 					scrollAnimation.AnimationFrame -= OnFrame;
 					scrollAnimation.Stopped -= OnStopped;
 
-					// A completed animation stops while evaluating its last frame, before that value is applied, so
-					// the AnchorPoint still holds the previous frame: publish where it was going instead.
-					if (scrollAnimation.Progress >= 1)
+					// Having reached its target, it publishes the exact offsets rather than the pixel it is drawn at.
+					if (Vector2.DistanceSquared(visual.AnchorPoint, target) < 0.0001f)
 					{
 						Updated(horizontalOffset, verticalOffset, false);
 					}
@@ -571,8 +563,12 @@ namespace Microsoft.UI.Xaml.Controls
 				if (Math.Abs(visual.Scale.X - zoom) > 0.0001f)
 				{
 					var zoomAnimation = compositor.CreateVector3KeyFrameAnimation();
-					zoomAnimation.InsertKeyFrame(1.0f, targetScale, easing);
+					zoomAnimation.InsertKeyFrame(1.0f, targetScale, CompositionEasingFunction.CreatePowerEasingFunction(compositor, CompositionEasingFunctionMode.Out, 10));
 					zoomAnimation.Duration = TimeSpan.FromMilliseconds(300); // Shorter duration for zoom per WinUI style
+
+					// It can outlast the scroll animation, and holds off the ScrollViewer's offset recompute until it ends
+					// (IsScrollAnimationInProgress): nothing else would arrange it again once it has.
+					zoomAnimation.Stopped += (_, _) => Scroller?.InvalidateArrange();
 					visual.StartAnimation(nameof(Visual.Scale), zoomAnimation);
 				}
 			}
