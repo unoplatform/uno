@@ -72,6 +72,9 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	// Any enabled service keeps structure and properties in sync: password managers, Switch Access or Voice Access
+	// read nodes without touch exploration, and nearly every service declares it retrieves window content. The continuous
+	// geometry work (offset/size and scroll invalidations, hover) only serves touch exploration and is gated on it.
 	public override bool IsAccessibilityEnabled
 		=> !IsDisposed && _helper is { } helper && (_clientRequestedTree || helper.IsAccessibilityServiceEnabled);
 
