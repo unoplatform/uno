@@ -1030,6 +1030,16 @@ recompile against 7.0 rather than swapping assemblies in place.
   separated by `;` (for example `1,5;0;0;2;3;4` in `de-DE`). Code that parses or compares the
   string should format the components itself.
 
+- **`Matrix`, `Matrix3D` and `RepeatBehavior` implement `IFormattable` like WinUI.** A format
+  string now reaches the numbers, so `$"{matrix:F2}"` prints `1.50,0.00,…`. `Matrix3D`'s public
+  `ToString(string, IFormatProvider)` became an explicit `IFormattable` implementation: cast to
+  `IFormattable` or use string interpolation instead of calling it directly.
+
+  ```diff
+  - var text = matrix3D.ToString("F2", CultureInfo.InvariantCulture);
+  + var text = ((IFormattable)matrix3D).ToString("F2", CultureInfo.InvariantCulture);
+  ```
+
 - **`ToggleSwitch`'s `OnToggled`, `OnHeaderChanged`, `OnOnContentChanged` and
   `OnOffContentChanged` are no longer virtual.** WinUI's `ToggleSwitch` is sealed and these
   are plain `protected` methods. Uno keeps `ToggleSwitch` unsealed, so a subclass still

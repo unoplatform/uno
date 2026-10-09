@@ -6,7 +6,7 @@ namespace Windows.Foundation
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct Rect
+	public partial struct Rect : global::System.IFormattable
 	{
 		// Skipping already declared property X
 		// Skipping already declared property Y
@@ -52,18 +52,13 @@ namespace Windows.Foundation
 		}
 #endif
 		// Skipping already declared method Windows.Foundation.Rect.ToString()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ToString(global::System.IFormatProvider provider)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Rect", "ToString(IFormatProvider provider)");
-		}
-#endif
+		// Skipping already declared method Windows.Foundation.Rect.ToString(System.IFormatProvider)
 		// Forced skipping of method Windows.Foundation.Rect.System.IFormattable.ToString(string, System.IFormatProvider)
 		// Skipping already declared method Windows.Foundation.Rect.Equals(Windows.Foundation.Rect)
 		// Skipping already declared method Windows.Foundation.Rect.operator ==(Windows.Foundation.Rect, Windows.Foundation.Rect)
 		// Skipping already declared method Windows.Foundation.Rect.operator !=(Windows.Foundation.Rect, Windows.Foundation.Rect)
 		// Skipping already declared method Windows.Foundation.Rect.Equals(object)
 		// Skipping already declared method Windows.Foundation.Rect.GetHashCode()
+		// Processing: System.IFormattable
 	}
 }

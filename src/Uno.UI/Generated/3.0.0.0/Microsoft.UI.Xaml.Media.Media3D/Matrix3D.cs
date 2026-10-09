@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct Matrix3D
+	public partial struct Matrix3D : global::System.IFormattable
 	{
 		// Skipping already declared property M11
 		// Skipping already declared property M12
@@ -75,5 +75,6 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.operator *(Microsoft.UI.Xaml.Media.Media3D.Matrix3D, Microsoft.UI.Xaml.Media.Media3D.Matrix3D)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.HasInverse.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.Invert()
+		// Processing: System.IFormattable
 	}
 }

@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Media
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct Matrix
+	public partial struct Matrix : global::System.IFormattable
 	{
 		// Skipping already declared property M11
 		// Skipping already declared property M12
@@ -42,5 +42,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.Equals(Microsoft.UI.Xaml.Media.Matrix)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.operator ==(Microsoft.UI.Xaml.Media.Matrix, Microsoft.UI.Xaml.Media.Matrix)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.operator !=(Microsoft.UI.Xaml.Media.Matrix, Microsoft.UI.Xaml.Media.Matrix)
+		// Processing: System.IFormattable
 	}
 }
