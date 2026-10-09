@@ -145,7 +145,13 @@ metric taken from the tests' descriptions.
 - Each version is the build number of the CI build that produced it: `7.0.0-dev.1656` comes from build
   `7.0-dev.1656`, and `6.7.135` from build `6.7.135`. The report reads that build's own `runtime-tests-metrics`
   artifact, so all three columns come from the same tests, on the same kind of agent.
-- A version built before these tests existed shows no numbers, with a note saying why. The dev column fills in
+- A version built before these tests existed can be **re-measured**: a measurement-only branch takes the exact
+  release commit, adds the tests and their counters, runs the desktop lanes once (Pipelines Runs API with
+  `stagesToSkip`, nothing published), and the build is tagged `metrics-baseline-<version>` and kept forever. The
+  report uses that build when the version's own build has no numbers, and says "(re-measured)" next to the version.
+  6.7.135 and 7.0.0-dev.1656 were re-measured this way. The dev column falls back to the newest dev version with
+  numbers; the stable column is only ever the last public release.
+- A version with neither shows no numbers, with a note saying why. The dev column fills in
   with the first dev version published after this change. The stable column fills in with the first stable
   release whose branch carries the tests, so the tests need to be on the release branch before that release.
 - Above the table, one line per column says how many of its metrics are over budget, and how many this PR moved

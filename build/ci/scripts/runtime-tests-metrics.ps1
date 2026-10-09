@@ -118,7 +118,9 @@ function Get-LaneMetrics([string]$directory) {
 }
 
 # The published versions to compare with: the latest dev of this build's line (7.0 for master, 6.8 for
-# servicing/6.8...) and the latest stable, as nuget.org lists them, each with the CI build number that produced it.
+# servicing/6.8...) and the latest stable, as nuget.org lists them. Each baseline lists candidate versions, newest
+# first, with the CI build number that produced each. The stable one is only ever the last public release; the dev one
+# falls back to the newest dev version that has numbers.
 function Get-PublishedBaselines {
     $versions = @()
     if (-not $DevBuildNumber -or -not $StableBuildNumber) {
@@ -128,30 +130,61 @@ function Get-PublishedBaselines {
 
     $baselines = @()
     if ($DevBuildNumber) {
-        $baselines += [ordered]@{ label = 'Latest dev'; short = 'dev'; version = $DevBuildNumber; buildNumber = $DevBuildNumber }
+        $baselines += [ordered]@{ label = 'Latest dev'; short = 'dev'; candidates = @([ordered]@{ version = $DevBuildNumber; buildNumber = $DevBuildNumber }) }
     }
     elseif ($BuildNumber -match '^(\d+)\.(\d+)') {
         $line = "$($Matches[1]).$($Matches[2])"
-        $dev = $versions | Where-Object { $_ -match "^$([regex]::Escape($line))\.0-dev\.\d+$" } |
-            Sort-Object { [int]($_ -replace '^.*-dev\.', '') } | Select-Object -Last 1
-        if ($dev) {
+        $devs = @($versions | Where-Object { $_ -match "^$([regex]::Escape($line))\.0-dev\.\d+$" } |
+                Sort-Object { [int]($_ -replace '^.*-dev\.', '') } -Descending | Select-Object -First 20)
+        if ($devs.Count -gt 0) {
             # 7.0.0-dev.1656 on nuget.org is CI build number 7.0-dev.1656.
-            $baselines += [ordered]@{ label = 'Latest dev'; short = 'dev'; version = $dev; buildNumber = ($dev -replace '^(\d+\.\d+)\.0-dev\.', '$1-dev.') }
+            $candidates = @($devs | ForEach-Object { [ordered]@{ version = $_; buildNumber = ($_ -replace '^(\d+\.\d+)\.0-dev\.', '$1-dev.') } })
+            $baselines += [ordered]@{ label = 'Latest dev'; short = 'dev'; candidates = $candidates }
         }
     }
 
     if ($StableBuildNumber) {
-        $baselines += [ordered]@{ label = 'Latest stable'; short = 'stable'; version = $StableBuildNumber; buildNumber = $StableBuildNumber }
+        $baselines += [ordered]@{ label = 'Latest stable'; short = 'stable'; candidates = @([ordered]@{ version = $StableBuildNumber; buildNumber = $StableBuildNumber }) }
     }
     else {
         $stable = $versions | Where-Object { $_ -match '^\d+\.\d+\.\d+$' } | Sort-Object { [version]$_ } | Select-Object -Last 1
-        if ($stable) { $baselines += [ordered]@{ label = 'Latest stable'; short = 'stable'; version = $stable; buildNumber = $stable } }
+        if ($stable) { $baselines += [ordered]@{ label = 'Latest stable'; short = 'stable'; candidates = @([ordered]@{ version = $stable; buildNumber = $stable }) } }
     }
     return $baselines
 }
 
+# A version's numbers: those of the CI build that produced it or, for a version built before these tests existed, of a
+# build that re-measured its exact commit with them, tagged metrics-baseline-<version>.
+function Get-VersionMetrics($candidate, $headers, $api) {
+    $found = [ordered]@{ buildId = $null; buildUrl = $null; lanes = $null; remeasured = $false }
+    $sources = @(
+        [ordered]@{ query = "buildNumber=$([uri]::EscapeDataString($candidate.buildNumber))"; remeasured = $false }
+        [ordered]@{ query = "tagFilters=$([uri]::EscapeDataString("metrics-baseline-$($candidate.version)"))"; remeasured = $true }
+    )
+    foreach ($source in $sources) {
+        $builds = @((Invoke-RestMethod -Headers $headers -Uri "$api`?definitions=$DefinitionId&$($source.query)&statusFilter=completed&queryOrder=finishTimeDescending&api-version=7.1").value)
+        foreach ($build in $builds) {
+            # The version's own build is linked even when it has no numbers.
+            if (-not $found.buildId -and -not $source.remeasured) { $found.buildId = $build.id; $found.buildUrl = $build._links.web.href }
+            try { $artifact = Invoke-RestMethod -Headers $headers -Uri "$api/$($build.id)/artifacts?artifactName=runtime-tests-metrics&api-version=7.1" }
+            catch { continue } # Not found: the build ran before the tests existed.
+
+            $directory = Join-Path ([System.IO.Path]::GetTempPath()) "runtime-tests-metrics-$($build.id)"
+            $zip = "$directory.zip"
+            Invoke-WebRequest -Headers $headers -Uri $artifact.resource.downloadUrl -OutFile $zip
+            Expand-Archive -Path $zip -DestinationPath $directory -Force
+            $lanes = Get-LaneMetrics (Join-Path $directory 'runtime-tests-metrics')
+            if ($lanes.Count -gt 0) {
+                return [ordered]@{ buildId = $build.id; buildUrl = $build._links.web.href; lanes = $lanes; remeasured = $source.remeasured }
+            }
+        }
+    }
+    return $found
+}
+
 function Get-BaselineMetrics($baseline) {
-    $result = [ordered]@{ label = $baseline.label; short = $baseline.short; version = $baseline.version; buildId = $null; buildUrl = $null; lanes = $null; note = $null }
+    $first = $baseline.candidates[0]
+    $result = [ordered]@{ label = $baseline.label; short = $baseline.short; version = $first.version; buildId = $null; buildUrl = $null; lanes = $null; remeasured = $false; newerWithout = $null; note = $null }
     if (-not ($CollectionUri -and $ProjectId -and $DefinitionId)) {
         $result.note = 'no CI connection to look its build up'
         return $result
@@ -163,33 +196,33 @@ function Get-BaselineMetrics($baseline) {
     $api = "$($CollectionUri.TrimEnd('/'))/$ProjectId/_apis/build/builds"
 
     try {
-        $query = "definitions=$DefinitionId&buildNumber=$([uri]::EscapeDataString($baseline.buildNumber))&statusFilter=completed&queryOrder=finishTimeDescending&api-version=7.1"
-        $builds = @((Invoke-RestMethod -Headers $headers -Uri "$api`?$query").value)
-        if ($builds.Count -eq 0) {
-            $result.note = "no CI build numbered $($baseline.buildNumber) was found"
-            return $result
+        foreach ($candidate in $baseline.candidates) {
+            $found = Get-VersionMetrics $candidate $headers $api
+            if ($candidate -eq $first) { $result.buildId = $found.buildId; $result.buildUrl = $found.buildUrl }
+            if ($found.lanes) {
+                $result.version = $candidate.version
+                $result.buildId = $found.buildId
+                $result.buildUrl = $found.buildUrl
+                $result.lanes = $found.lanes
+                $result.remeasured = $found.remeasured
+                if ($candidate -ne $first) { $result.newerWithout = $first.version }
+                return $result
+            }
         }
-
-        foreach ($build in $builds) {
-            $result.buildId = $build.id
-            $result.buildUrl = $build._links.web.href
-            try { $artifact = Invoke-RestMethod -Headers $headers -Uri "$api/$($build.id)/artifacts?artifactName=runtime-tests-metrics&api-version=7.1" }
-            catch { continue } # Not found: the build ran before the tests existed.
-
-            $directory = Join-Path ([System.IO.Path]::GetTempPath()) "runtime-tests-metrics-$($build.id)"
-            $zip = "$directory.zip"
-            Invoke-WebRequest -Headers $headers -Uri $artifact.resource.downloadUrl -OutFile $zip
-            Expand-Archive -Path $zip -DestinationPath $directory -Force
-            $result.lanes = Get-LaneMetrics (Join-Path $directory 'runtime-tests-metrics')
-            if ($result.lanes.Count -gt 0) { return $result }
-            $result.lanes = $null
-        }
-        $result.note = 'its build ran before these tests existed'
+        $result.note = if ($result.buildId) { 'its build ran before these tests existed' } else { "no CI build numbered $($first.buildNumber) was found" }
     }
     catch {
         $result.note = "its build could not be read ($($_.Exception.Message))"
     }
     return $result
+}
+
+# How a version is named in the report: linked to the build its numbers come from, and saying when that build
+# re-measured the release commit rather than being the build that published it.
+function Format-Version($baseline) {
+    $text = if ($baseline.buildUrl) { "[$($baseline.version)]($($baseline.buildUrl -replace ' ', '%20'))" } else { $baseline.version }
+    if ($baseline.remeasured) { $text += ' (re-measured)' }
+    return $text
 }
 
 # Lane titles, in reading order: the three desktop platforms first, then their renderer and host variants.
@@ -268,10 +301,7 @@ function New-Report($lanes, $baselines) {
         }
 
         $dev = $baselines | Where-Object { $_.label -eq 'Latest dev' } | Select-Object -First 1
-        $versionHeaders = foreach ($b in $baselines) {
-            $version = if ($b.buildUrl) { "[$($b.version)]($($b.buildUrl -replace ' ', '%20'))" } else { $b.version }
-            "$($b.label)<br>$version"
-        }
+        $versionHeaders = foreach ($b in $baselines) { "$($b.label)<br>$(Format-Version $b)" }
 
         # One comparison per lane: this PR next to the latest dev and stable on the same lane, like with like.
         $laneReports = foreach ($lane in $laneNames) {
@@ -307,7 +337,8 @@ function New-Report($lanes, $baselines) {
         }
         [void]$sb.AppendLine("- **This PR**: $prLine.")
         foreach ($b in $baselines) {
-            $build = if ($b.buildUrl) { "[$($b.version)]($($b.buildUrl -replace ' ', '%20'))" } else { $b.version }
+            $build = Format-Version $b
+            if ($b.newerWithout) { $build += ", the newest with numbers ($($b.newerWithout) and later have none yet)" }
             if ($b.lanes) {
                 $bLanes = @($laneNames | Where-Object { $b.lanes.Contains($_) })
                 $where = if ($bLanes.Count -eq 1) { "measured on $(Get-LaneTitle $bLanes[0]) only" } else { "measured on $($bLanes.Count) lanes" }
@@ -412,13 +443,19 @@ function Publish-Comment([string]$body) {
 
         $payload = @{ body = $body } | ConvertTo-Json
         if ($existing) {
-            Invoke-RestMethod -Headers $headers -Method Patch -Uri "$api/comments/$($existing.id)" -Body $payload -ContentType 'application/json' | Out-Null
-            Write-Host "Updated comment $($existing.html_url)"
+            try {
+                Invoke-RestMethod -Headers $headers -Method Patch -Uri "$api/comments/$($existing.id)" -Body $payload -ContentType 'application/json' | Out-Null
+                Write-Host "Updated comment $($existing.html_url)"
+                return
+            }
+            catch {
+                # An account whose repository access was reduced can still comment on a public repository but no
+                # longer edit its own comments (403 "Must have admin rights"). A new comment beats no report at all.
+                Write-Host "Could not update $($existing.html_url) ($($_.Exception.Message)); posting a new comment instead."
+            }
         }
-        else {
-            $created = Invoke-RestMethod -Headers $headers -Method Post -Uri "$api/$PullRequestNumber/comments" -Body $payload -ContentType 'application/json'
-            Write-Host "Created comment $($created.html_url)"
-        }
+        $created = Invoke-RestMethod -Headers $headers -Method Post -Uri "$api/$PullRequestNumber/comments" -Body $payload -ContentType 'application/json'
+        Write-Host "Created comment $($created.html_url)"
     }
     catch {
         Write-Host "The report was not posted: $($_.Exception.Message) $($_.ErrorDetails.Message)"
