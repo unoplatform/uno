@@ -664,19 +664,59 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 			ClearItemAutomationPeerCache();
 		}
 		else if (args.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace &&
+			_itemPeers.Count > 0 &&
 			Owner is ItemsControl itemsControl)
 		{
-			PruneItemAutomationPeerCache(itemsControl);
+			// A group change removes items that OldItems doesn't list.
+			if (itemsControl.IsGrouping ||
+				args.OldItems is not { } oldItems ||
+				!TryPruneRemovedItemPeers(itemsControl, oldItems))
+			{
+				PruneItemAutomationPeerCache(itemsControl);
+			}
 		}
+	}
+
+	private bool TryPruneRemovedItemPeers(ItemsControl itemsControl, global::System.Collections.IList oldItems)
+	{
+		HashSet<ItemAutomationPeer>? stalePeers = null;
+		foreach (var item in oldItems)
+		{
+			// The cache is keyed by reference, which a boxed value never matches again.
+			if (item is ValueType)
+			{
+				ReleaseItemPeers(stalePeers);
+				return false;
+			}
+
+			if (item is not null &&
+				_itemPeers.TryGetValue(item, out var peer) &&
+				!ContainsItemReference(itemsControl.Items, item))
+			{
+				_itemPeers.Remove(item);
+				(stalePeers ??= new(Uno.ReferenceEqualityComparer<ItemAutomationPeer>.Default)).Add(peer);
+			}
+		}
+
+		ReleaseItemPeers(stalePeers);
+		return true;
+	}
+
+	private static bool ContainsItemReference(ItemCollection items, object item)
+	{
+		for (var i = 0; i < items.Count; i++)
+		{
+			if (ReferenceEquals(items[i], item))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private void PruneItemAutomationPeerCache(ItemsControl itemsControl)
 	{
-		if (_itemPeers.Count == 0)
-		{
-			return;
-		}
-
 		var currentItems = new HashSet<object>(Uno.ReferenceEqualityComparer<object>.Default);
 		foreach (var item in itemsControl.Items)
 		{
@@ -687,18 +727,14 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 		}
 
 		List<object>? staleItems = null;
+		HashSet<ItemAutomationPeer>? stalePeers = null;
 		foreach (var (item, peer) in _itemPeers)
 		{
-			if (currentItems.Contains(item))
+			if (!currentItems.Contains(item))
 			{
-				continue;
+				(staleItems ??= new()).Add(item);
+				(stalePeers ??= new(Uno.ReferenceEqualityComparer<ItemAutomationPeer>.Default)).Add(peer);
 			}
-
-			ReleaseRealizedItemPeers(peer);
-
-			_itemPeerStorage.RemoveAll(candidate => ReferenceEquals(candidate, peer));
-			_itemPeerStorageForPattern.RemoveAll(candidate => ReferenceEquals(candidate, peer));
-			(staleItems ??= new()).Add(item);
 		}
 
 		if (staleItems is null)
@@ -710,6 +746,37 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 		{
 			_itemPeers.Remove(item);
 		}
+
+		ReleaseItemPeers(stalePeers);
+	}
+
+	private void ReleaseItemPeers(HashSet<ItemAutomationPeer>? peers)
+	{
+		if (peers is null)
+		{
+			return;
+		}
+
+		List<(UIElement Container, ItemAutomationPeer Peer)>? realized = null;
+		foreach (var (container, entry) in _realizedItemPeers)
+		{
+			if (peers.Contains(entry.Peer))
+			{
+				(realized ??= new()).Add((container, entry.Peer));
+			}
+		}
+
+		if (realized is not null)
+		{
+			foreach (var (container, peer) in realized)
+			{
+				peer.ReleaseRealizedContainer(container);
+				_realizedItemPeers.Remove(container);
+			}
+		}
+
+		_itemPeerStorage.RemoveAll(peers.Contains);
+		_itemPeerStorageForPattern.RemoveAll(peers.Contains);
 	}
 
 	private void ReleaseRealizedItemPeers(ItemAutomationPeer peer)
