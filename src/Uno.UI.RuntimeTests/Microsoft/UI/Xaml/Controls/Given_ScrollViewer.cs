@@ -2628,6 +2628,173 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaMacOS)] // Apple wheels apply each event immediately
+		public async Task When_Wheel_Delta_Too_Fine_To_Scroll_Then_It_Does_Not_Chain()
+		{
+#if HAS_INPUT_INJECTOR
+			// A precision delta rounds to no whole pixel on a small viewport (step max(48, 15%)), but to one pixel
+			// on a large one: the inner ScrollViewer still owns it, so the page around it must not move.
+			var inner = new ScrollViewer
+			{
+				Width = 200,
+				Height = 100,
+				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			// 450px is the smallest viewport whose step (15%) still rounds a delta of 1 to a whole pixel.
+			var outer = new ScrollViewer
+			{
+				Width = 300,
+				Height = 450,
+				VerticalAlignment = VerticalAlignment.Top,
+				Content = new StackPanel { Children = { inner, new Border { Height = 4000 } } },
+			};
+
+			try
+			{
+				await UITestHelper.Load(outer);
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				using var mouse = input.GetMouse();
+				mouse.MoveTo(inner.GetAbsoluteBounds().GetCenter());
+				mouse.Wheel(-1);
+
+				await Task.Delay(300);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, outer.VerticalOffset, $"A wheel delta the inner ScrollViewer could not round to a pixel scrolled the outer one (inner moved {inner.VerticalOffset}).");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+#if HAS_UNO // ScrollViewer.UpdatesMode is Uno-specific
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaMacOS)] // Apple wheels apply each event immediately
+		public async Task When_Wheel_During_Animated_ChangeView_Then_It_Continues_From_The_Drawn_Offset()
+		{
+#if HAS_INPUT_INJECTOR
+			// An animated ChangeView moves the offsets to its target up front and lets the content catch up. A notch
+			// in flight takes over from where the content is drawn; starting from the target would jump there.
+			const double Target = 5000;
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				UpdatesMode = Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+				Content = new Border { Width = 180, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			try
+			{
+				var bounds = await UITestHelper.Load(SUT);
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				using var mouse = input.GetMouse();
+				mouse.MoveTo(bounds.GetCenter());
+
+				SUT.ChangeView(null, Target, null, disableAnimation: false);
+				await WindowHelper.WaitFor(() => SUT.VerticalOffset > 0, timeoutMS: 2000, message: "the animated ChangeView never started");
+
+				// No await from the read to the notch, so no frame moves the content in between.
+				var drawn = SUT.VerticalOffset;
+				if (drawn >= Target * 0.9)
+				{
+					Assert.Inconclusive($"The animation had almost completed ({drawn}) before the notch could be injected.");
+				}
+
+				mouse.WheelDown();
+
+				await WaitForOffsetToSettle(SUT);
+				await WindowHelper.WaitForIdle();
+
+				// One notch on a 200px viewport scrolls max(48, 15% of 200) = 48px.
+				Assert.AreEqual(drawn + 48, SUT.VerticalOffset, delta: 2, $"The notch did not continue from the drawn offset {drawn}.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		// A slow agent can go 150ms without a frame, so a single unchanged read is not the end of the motion.
+		private static async Task WaitForOffsetToSettle(ScrollViewer sv)
+		{
+			var last = double.NaN;
+			var stableReads = 0;
+			for (var i = 0; i < 60 && stableReads < 3; i++)
+			{
+				stableReads = sv.VerticalOffset == last ? stableReads + 1 : 0;
+				last = sv.VerticalOffset;
+				await Task.Delay(150);
+			}
+		}
+#endif
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaMacOS)] // Apple wheels apply each event immediately
+		public async Task When_Unloaded_Mid_Wheel_Decay_Then_Final_Offset_Is_Published()
+		{
+#if HAS_INPUT_INJECTOR
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new Border { Width = 180, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			var events = new List<bool>();
+			SUT.ViewChanged += (_, e) => events.Add(e.IsIntermediate);
+
+			try
+			{
+				var bounds = await UITestHelper.Load(SUT);
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				using var mouse = input.GetMouse();
+				mouse.MoveTo(bounds.GetCenter());
+				for (var i = 0; i < 5; i++)
+				{
+					mouse.WheelDown();
+				}
+
+				await WindowHelper.WaitFor(() => events.Count > 0, timeoutMS: 2000, message: "the wheel decay never started");
+				if (!events[^1])
+				{
+					Assert.Inconclusive("The wheel decay ended before it could be cut short.");
+				}
+
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(events[^1], "Unloading cut the wheel decay short without publishing a final offset.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
 #if !HAS_UNO
 		[Ignore("The scroll simulations are internal to Uno.")]
 #endif
