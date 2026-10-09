@@ -37,20 +37,17 @@ public partial class Given_InteractionTracker
 	private async Task<string> WaitTrackerLogs(InteractionTracker tracker)
 		=> await WaitTrackerLogs((TrackerOwner)tracker.Owner);
 
+	// Waits for the tracker to come to rest, not for its logs to go quiet: it moves once per frame, and a
+	// software-rendered frame can take longer than any quiet period short enough to keep these tests fast.
 	private async Task<string> WaitTrackerLogs(TrackerOwner owner)
 	{
-		string logs = owner.GetLogs();
-		while (true)
-		{
-			await Task.Delay(100);
-			var currentLogs = owner.GetLogs();
-			if (logs == currentLogs)
-			{
-				return logs;
-			}
+		await TestServices.WindowHelper.WaitFor(
+			() => owner.GetLogs().Contains("IdleStateEntered:", StringComparison.Ordinal),
+			timeoutMS: 30000,
+			message: "The tracker never came to rest.");
+		await TestServices.WindowHelper.WaitForIdle();
 
-			logs = currentLogs;
-		}
+		return owner.GetLogs();
 	}
 
 	[TestMethod]
