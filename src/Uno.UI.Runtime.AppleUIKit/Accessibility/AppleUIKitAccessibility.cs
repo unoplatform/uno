@@ -314,6 +314,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		if (IsAssistiveTechnologyRunning)
 		{
 			_clientRequestedTree = true;
+			AccessibilityRouter.EnsureTreeNotifications();
 			ScheduleRebuild();
 		}
 	}
@@ -365,6 +366,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 		_clientRequestedTree = true;
 		Trace("An accessibility client requested the tree.");
+		AccessibilityRouter.EnsureTreeNotifications();
 		ScheduleRebuild();
 		RebuildTree();
 	}
