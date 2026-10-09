@@ -377,7 +377,8 @@ internal sealed partial class TextBoxCore
 
 	internal void OnPointerCaptureLost(PointerRoutedEventArgs e) => OnPointerCaptureLostPartial(e);
 
-	internal void Select(int start, int length)
+	/// <returns><c>false</c> only when a SelectionChanging handler rejected the update.</returns>
+	internal bool Select(int start, int length)
 	{
 		if (start < 0)
 		{
@@ -409,15 +410,18 @@ internal sealed partial class TextBoxCore
 
 		if (SelectionStart == start && SelectionLength == length)
 		{
-			return;
+			return true;
 		}
 
-		if (_host.RaiseSelectionChanging(start, length))
+		if (!_host.RaiseSelectionChanging(start, length))
 		{
-			SelectPartial(start, length);
-			_host.RaiseSelectionChanged();
-			SelectionChanged?.Invoke(this, new RoutedEventArgs(_host.Owner));
+			return false;
 		}
+
+		SelectPartial(start, length);
+		_host.RaiseSelectionChanged();
+		SelectionChanged?.Invoke(this, new RoutedEventArgs(_host.Owner));
+		return true;
 	}
 
 	/// <summary>
