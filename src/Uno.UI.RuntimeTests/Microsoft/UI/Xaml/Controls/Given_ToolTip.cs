@@ -700,6 +700,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 #endif
+				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
 
@@ -732,6 +733,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 #endif
+				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
 
@@ -782,6 +784,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 #endif
+				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
 
@@ -823,6 +826,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 #endif
+				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
 
@@ -857,6 +861,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 #endif
+				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
 	}
