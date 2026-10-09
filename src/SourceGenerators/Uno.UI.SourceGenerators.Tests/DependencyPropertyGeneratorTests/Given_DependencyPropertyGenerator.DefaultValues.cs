@@ -91,6 +91,20 @@ public partial class Given_DependencyPropertyGenerator
 	}
 
 	[TestMethod]
+	public async Task When_DefaultValue_Flags_Enum_Has_Keyword_Members()
+	{
+		var run = await RunAsync(InstanceType("""
+			[System.Flags]
+			public enum Keywords { None = 0, @event = 1, @class = 2 }
+
+			[GeneratedDependencyProperty(DefaultValue = Keywords.@event | Keywords.@class)]
+			public partial Keywords MyValue { get; set; }
+			"""));
+
+		run.ShouldSucceed().ShouldContain(HintName, "defaultValue: global::Mynamespace.C.Keywords.@event | global::Mynamespace.C.Keywords.@class,");
+	}
+
+	[TestMethod]
 	[DataRow("bool", "true", "global::Uno.UI.Helpers.Boxes.BoolBoxes.True")]
 	[DataRow("bool", "false", "global::Uno.UI.Helpers.Boxes.BoolBoxes.False")]
 	[DataRow("bool?", "true", "global::Uno.UI.Helpers.Boxes.BoolBoxes.True")]
