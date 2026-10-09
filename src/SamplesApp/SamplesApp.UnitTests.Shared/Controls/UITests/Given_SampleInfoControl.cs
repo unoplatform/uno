@@ -96,9 +96,9 @@ public class Given_SampleInfoControl
 	public async Task When_Sample_Is_Shown_Rows_Copy_Their_Values_And_Glyph_Flips()
 	{
 		var control = await Load(CreateSample());
-		var copied = new List<string?>();
+		var copied = new List<DataPackageView>();
 		var original = SampleChooserViewModel.SetClipboardContent;
-		SampleChooserViewModel.SetClipboardContent = package => copied.Add(package.GetView().GetTextAsync().GetAwaiter().GetResult());
+		SampleChooserViewModel.SetClipboardContent = package => copied.Add(package.GetView());
 		try
 		{
 			var expected = new (string Name, string Text)[]
@@ -116,7 +116,7 @@ public class Given_SampleInfoControl
 				Assert.AreEqual(text, button.CommandParameter, name);
 
 				control.CopyContentClick(button, new RoutedEventArgs());
-				Assert.AreEqual(text, copied[^1], name);
+				Assert.AreEqual(text, await copied[^1].GetTextAsync(), name);
 				Assert.AreEqual("\uE73E", ((FontIcon)button.Content).Glyph, $"{name} shows the check");
 				Assert.AreEqual("Copied", Find<TextBlock>(control, "ShellInfoCopiedAnnouncement").Text, name);
 			}

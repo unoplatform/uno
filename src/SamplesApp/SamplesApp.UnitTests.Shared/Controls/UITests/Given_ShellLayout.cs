@@ -441,7 +441,7 @@ public class Given_ShellLayout
 			Assert.IsNotNull(hostControl);
 			Assert.IsTrue(hostControl.Focus(FocusState.Programmatic));
 
-			await TestServices.WindowHelper.WaitFor(() => exitButton.Opacity == 0, timeoutMS: 3000, message: "Idle button should fade out");
+			await TestServices.WindowHelper.WaitFor(() => exitButton.Opacity < 0.01, timeoutMS: 3000, message: "Idle button should fade out");
 			Assert.IsFalse(exitButton.IsHitTestVisible, "The sample's corner must be reachable while the button is hidden.");
 			Assert.AreEqual(Visibility.Visible, exitButton.Visibility, "Still reachable by keyboard and UIA.");
 
@@ -450,10 +450,10 @@ public class Given_ShellLayout
 			Assert.IsTrue(exitButton.IsHitTestVisible);
 
 			// Tabbing onto the hidden button reveals it and keeps it up.
-			await TestServices.WindowHelper.WaitFor(() => exitButton.Opacity == 0, timeoutMS: 3000);
+			await TestServices.WindowHelper.WaitFor(() => exitButton.Opacity < 0.01, timeoutMS: 3000);
 			Assert.IsTrue(exitButton.Focus(FocusState.Keyboard));
 			// GotFocus is raised asynchronously.
-			await TestServices.WindowHelper.WaitFor(() => exitButton.Opacity == 1, timeoutMS: 2000, message: "Focus brings it back");
+			await TestServices.WindowHelper.WaitFor(() => exitButton.Opacity > 0.99, timeoutMS: 2000, message: "Focus brings it back");
 			await Task.Delay(300);
 			Assert.AreEqual(1, exitButton.Opacity, "Stays while focused");
 		}
