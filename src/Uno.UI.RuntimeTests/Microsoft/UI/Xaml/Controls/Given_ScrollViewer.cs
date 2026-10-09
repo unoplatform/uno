@@ -2107,15 +2107,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				because: $"the fling must stay proportionate to the {dragDistance:F0}px flick that launched it");
 		}
 
-#if HAS_UNO // ScrollViewer.UpdatesMode is Uno-specific
 		[TestMethod]
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // ScrollViewer.UpdatesMode is Uno-specific
 		public async Task When_SlowTouchDrag_Then_ScrollAdvancesEveryMove()
 		{
+#if HAS_UNO
 			// The manipulation delta threshold that bounds public ManipulationDelta volume must not reach
 			// the scroll path, where it acts as a motion quantizer: below 2 logical px the content would not
 			// move at all, then jump the whole accumulated amount, so a slow drag advances every other frame.
@@ -2166,6 +2167,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Moves - 1,
 				advanced,
 				$"Every 1px move should advance the offset, got [{string.Join(", ", offsets)}].");
+#else
+			await Task.CompletedTask;
+#endif
 		}
 
 		[TestMethod]
@@ -2174,8 +2178,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // ScrollViewer.UpdatesMode is Uno-specific
 		public async Task When_Flick_Released_Past_Last_Move_Then_Release_Delta_Is_Applied()
 		{
+#if HAS_UNO
 			// The recognizer commits the release's own delta without raising Updated for it, so the
 			// fling hand-off is the only place that can apply it before the coast starts.
 			var SUT = new ScrollViewer
@@ -2213,8 +2219,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				released,
 				delta: 1,
 				$"The release moved the finger {ReleaseDelta}px further, but the content only followed by {released - dragged}px.");
-		}
+#else
+			await Task.CompletedTask;
 #endif
+		}
 
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR || !__SKIA__
@@ -2675,15 +2683,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
-#if HAS_UNO // ScrollViewer.UpdatesMode is Uno-specific
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaMacOS)] // Apple wheels apply each event immediately
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.NativeWinUI)] // Apple wheels apply each event immediately; UpdatesMode is Uno-specific
 		public async Task When_Wheel_During_Animated_ChangeView_Then_It_Continues_From_The_Drawn_Offset()
 		{
-#if HAS_INPUT_INJECTOR
+#if HAS_INPUT_INJECTOR && HAS_UNO
 			// An animated ChangeView moves the offsets to its target up front and lets the content catch up. A notch
 			// in flight takes over from where the content is drawn; starting from the target would jump there.
 			const double Target = 5000;
@@ -2730,6 +2737,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+#if HAS_INPUT_INJECTOR // only the injected wheel and fling tests use it
 		// A slow agent can go 150ms without a frame, so a single unchanged read is not the end of the motion.
 		private static async Task WaitForOffsetToSettle(ScrollViewer sv)
 		{
