@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -366,6 +367,34 @@ public class Given_InputInjector_Keyboard
 
 		// The valid leading entry must not have been dispatched.
 		Assert.AreEqual(string.Empty, textBox.Text);
+	}
+
+	[TestMethod]
+	public async Task When_InjectAsync_Canceled_MidBatch_Does_Not_Latch_Modifiers()
+	{
+		var injector = GetInjector();
+		var textBox = new TextBox();
+		await UITestHelper.Load(textBox);
+		textBox.Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		try
+		{
+			using CancellationTokenSource cts = new();
+			var injection = injector.InjectKeyboardInputAsync(new[] { Key(VirtualKey.Control), KeyUp(VirtualKey.Control) }, cts.Token);
+			cts.Cancel();
+
+			await Assert.ThrowsAsync<OperationCanceledException>(async () => await injection);
+
+			Tap(injector, VirtualKey.A);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("a", textBox.Text);
+		}
+		finally
+		{
+			injector.InjectKeyboardInput(new[] { KeyUp(VirtualKey.Control) });
+		}
 	}
 
 	[TestMethod]
