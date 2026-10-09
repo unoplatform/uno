@@ -38,12 +38,16 @@ internal struct ScrollDecaySimulation
 	private long _lastTimestampInTicks;
 	private long _frameIntervalInTicks;
 
+	// position + velocity / λ, which each tick preserves exactly in theory but not in floating point: kept as
+	// the sum of the impulses instead, so whole-pixel detents land on whole pixels (and on the extent's end).
+	private double _target;
+
 	public readonly bool IsRunning => Math.Abs(_velocity) > VelocityEpsilon;
 
 	public readonly double Position => _position;
 
 	/// <summary>Where the motion currently in flight will come to rest, ignoring bounds.</summary>
-	public readonly double ProjectedEnd => _position + _velocity / Lambda;
+	public readonly double ProjectedEnd => IsRunning ? _target : _position;
 
 	/// <param name="frameIntervalInTicks">
 	/// The nominal frame step this motion is ticked on. The first tick is back-dated by it, so the frame the
@@ -52,6 +56,7 @@ internal struct ScrollDecaySimulation
 	public void Start(double position, long frameIntervalInTicks)
 	{
 		_position = position;
+		_target = position;
 		_velocity = 0;
 		_frameIntervalInTicks = frameIntervalInTicks;
 
@@ -61,7 +66,11 @@ internal struct ScrollDecaySimulation
 	}
 
 	/// <param name="distance">Signed distance this impulse would travel on its own.</param>
-	public void AddImpulse(double distance) => _velocity += distance * Lambda;
+	public void AddImpulse(double distance)
+	{
+		_target = ProjectedEnd + distance;
+		_velocity += distance * Lambda;
+	}
 
 	/// <summary>Advances to <paramref name="timestampInTicks"/>, clamped to [<paramref name="min"/>, <paramref name="max"/>].</summary>
 	/// <returns>False once the motion has settled.</returns>
@@ -97,7 +106,7 @@ internal struct ScrollDecaySimulation
 		else if (Math.Abs(_velocity) < MinVelocity)
 		{
 			// Lands on the projected end, so a detent travels exactly the distance it carries.
-			_position = Math.Clamp(ProjectedEnd, min, max);
+			_position = Math.Clamp(_target, min, max);
 			_velocity = 0;
 		}
 
