@@ -89,6 +89,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			if (_byWindow.TryGetValue(window, out var accessibility) && !accessibility.IsDisposed)
 			{
 				accessibility._clientRequestedTree = true;
+				AccessibilityRouter.EnsureTreeNotifications();
 				if (accessibility.RootElementProvider?.Invoke() is { } rootElement)
 				{
 					accessibility.BuildTree(rootElement);
