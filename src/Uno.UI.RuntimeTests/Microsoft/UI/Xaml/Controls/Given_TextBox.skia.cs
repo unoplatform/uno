@@ -3237,6 +3237,98 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(textBox.Text.Substring(textBox.SelectionStart, textBox.SelectionLength), textBox.SelectedText);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_CanPasteClipboardContent_Changes_Without_Peer_Then_No_Peer_Is_Created()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			await SetClipboardText("paste me");
+			var textBox = new TextBox();
+			await UITestHelper.Load(textBox);
+			if (!textBox.CanPasteClipboardContent)
+			{
+				Assert.Inconclusive("The clipboard text is not visible to the TextBox on this platform.");
+			}
+
+			if (textBox.CachedAutomationPeer is not null)
+			{
+				Assert.Inconclusive("An accessibility client already created the TextBox peer.");
+			}
+
+			var listener = new InvalidatePeerListener();
+			var previous = AutomationPeer.TestAutomationPeerListener;
+			try
+			{
+				AutomationPeer.TestAutomationPeerListener = listener;
+
+				// Read-only always disables paste, flipping the value without touching the clipboard.
+				textBox.IsReadOnly = true;
+
+				Assert.IsFalse(textBox.CanPasteClipboardContent);
+				Assert.IsNull(textBox.CachedAutomationPeer, "Only an accessibility client may create the TextBox peer.");
+			}
+			finally
+			{
+				AutomationPeer.TestAutomationPeerListener = previous;
+				Clipboard.Clear();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_CanPasteClipboardContent_Changes_With_Peer_Then_Peer_Is_Invalidated()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			await SetClipboardText("paste me");
+			var textBox = new TextBox();
+			await UITestHelper.Load(textBox);
+			if (!textBox.CanPasteClipboardContent)
+			{
+				Assert.Inconclusive("The clipboard text is not visible to the TextBox on this platform.");
+			}
+
+			var listener = new InvalidatePeerListener();
+			var previous = AutomationPeer.TestAutomationPeerListener;
+			try
+			{
+				AutomationPeer.TestAutomationPeerListener = listener;
+				var peer = textBox.GetOrCreateAutomationPeer();
+				Assert.IsNotNull(peer);
+
+				textBox.IsReadOnly = true;
+
+				CollectionAssert.Contains(listener.InvalidatedPeers, peer);
+			}
+			finally
+			{
+				AutomationPeer.TestAutomationPeerListener = previous;
+				Clipboard.Clear();
+			}
+		}
+
+		private sealed class InvalidatePeerListener : IAutomationPeerListener
+		{
+			public List<AutomationPeer> InvalidatedPeers { get; } = new();
+
+			public void NotifyInvalidatePeer(AutomationPeer peer) => InvalidatedPeers.Add(peer);
+
+			public bool ListenerExistsHelper(Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId) => true;
+
+			public void OnAutomationEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId) { }
+
+			public void NotifyAutomationEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId) { }
+
+			public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer child) { }
+
+			public void NotifyPropertyChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object oldValue, object newValue) { }
+
+			public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId) { }
+
+			public void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, IReadOnlyList<string> changedData) { }
+		}
+
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18371")]
