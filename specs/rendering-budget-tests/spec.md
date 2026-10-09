@@ -29,7 +29,7 @@ to 3× between runs, while the counts were identical run after run.
 |---|---|---|
 | Frames rendered | `CompositionTarget.FrameRendered` (internal event, raised once per recorded frame) | Driven by what changed, not by machine speed. Subscribing does not force frames, unlike the public `CompositionTarget.Rendering`. |
 | Damaged area per frame | `CompositionTarget.LastRecordedDamage` and `LastRecordedFrameRect` (new, internal) | The damage a frame records is decided by the visual tree, not by the host, so it is the same on every desktop lane. |
-| Path booleans | `SkiaGeometrySource2D.PathOpCount` (new, internal) | Counts `SKPath.Op` calls. Only exists in builds with the Skia drawing backend (`UNO_DRAWING_SKIA`). |
+| Path booleans | `SkiaPathOpCounter.Count` (new, internal) | Counts `SKPath.Op` calls. Only exists in builds with the Skia drawing backend (`UNO_DRAWING_SKIA`). |
 | Measures | `UIElement.LayoutMeasureCoreCount` (existing, internal) | Deterministic for a given tree and input. |
 | Objects left alive | `WeakReference` after a GC loop | Same loop as the binding leak tests. Each object still alive is reported by type. |
 
@@ -125,9 +125,10 @@ The 6.4 path booleans per step left on 6.8 are most likely the clip-path work th
 4. The `runtime_tests_metrics` stage ("Tests - Rendering budgets") runs once the desktop runtime-test stages
    finish, whether they passed or failed. `-Mode Report` merges the lanes into one table, publishes it as the
    `runtime-tests-metrics-report` artifact and, on a pull request, creates or updates **one** comment. It finds
-   the comment through the hidden marker `<!-- runtime-tests-metrics -->`, so a push or a stage retry edits it in
-   place. It uses the PAT the screenshot comparison already uses (`CommentsGitHubPAT`). Fork pull requests get
-   no comment, because they have no secrets.
+   the comment through the hidden marker `<!-- runtime-tests-metrics -->` and the account that posted it, so a
+   push or a stage retry edits it in place. It posts as `unodevops`, with a fine-grained PAT (pull requests: read
+   and write) stored as the `UnoDevOpsGitHubPAT` secret variable of the pipeline. Without that secret, and on fork
+   pull requests, which get no secrets, the report is only published as an artifact.
 
 Every step is `continueOnError`. Nothing depends on the report stage, so package publishing never waits for it.
 
