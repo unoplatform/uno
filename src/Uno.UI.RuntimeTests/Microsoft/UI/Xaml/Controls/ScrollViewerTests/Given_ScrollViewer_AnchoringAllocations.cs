@@ -43,15 +43,14 @@ public class Given_ScrollViewer_AnchoringAllocations
 		// Warm-up (JIT, template realization, pools)
 		for (var i = 1; i <= 10; i++)
 		{
-			Step(i * 400);
+			Step(i * 400d);
 		}
 
 		const int steps = 20;
-		GC.Collect();
 		var before = GC.GetAllocatedBytesForCurrentThread();
 		for (var i = 11; i < 11 + steps; i++)
 		{
-			Step(i * 400);
+			Step(i * 400d);
 		}
 		var perStep = (GC.GetAllocatedBytesForCurrentThread() - before) / steps;
 
