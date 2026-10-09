@@ -1,0 +1,70 @@
+﻿<Project>
+	<!--
+		NuGet override (UnoNugetOverrideVersion): installs the locally built tasks into an overridden uno.winui package.
+
+		A published package's tasks are built with the commit SHA in place of "v0" (UpdateTasksSHA in build/Uno.UI.Build.csproj): the
+		assembly is Uno.UI.Tasks.<sha>.dll, the task types are named <Task>_<sha>, and the package's targets load them by those names.
+		Locally built tasks keep "v0", so the package's targets are switched over to the local tasks as well.
+	-->
+	<PropertyGroup>
+		<_UnoOverriddenTasksPackageFolder Condition="'$(_UnoOverriddenTasksPackageFolder)'==''">$(NuGetPackageRoot)\uno.winui\$(UnoNugetOverrideVersion)</_UnoOverriddenTasksPackageFolder>
+		<_UnoOverriddenTasksFolder>$(_UnoOverriddenTasksPackageFolder)\buildTransitive\Uno.UI.Tasks</_UnoOverriddenTasksFolder>
+	</PropertyGroup>
+
+	<!-- The copy only warns on failure, as a reused MSBuild node may hold the tasks installed by a previous override. -->
+	<Target Name="_UnoOverrideTasksPackage" Condition="'$(UnoNugetOverrideVersion)'!=''">
+		<ItemGroup>
+			<_UnoTasksOutputFile Include="$(TargetDir)**\*.*" />
+			<_UnoTasksOutputDestinationFile Include="@(_UnoTasksOutputFile->'$(_UnoOverriddenTasksFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			<_UnoTasksExistingFile Include="$(_UnoOverriddenTasksFolder)\**\*.*" />
+			<_UnoTasksStaleFile Include="@(_UnoTasksExistingFile)" Exclude="@(_UnoTasksOutputDestinationFile)" />
+		</ItemGroup>
+		<MakeDir Directories="$(_UnoOverriddenTasksFolder)" />
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_UnoOverriddenTasksFolder)" />
+		<Copy SourceFiles="@(_UnoTasksOutputFile)" DestinationFiles="@(_UnoTasksOutputDestinationFile)" SkipUnchangedFiles="true" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
+	</Target>
+
+	<!--
+		Once the local tasks assembly is in the package, the package's targets are switched to it and only then are the package's own
+		tasks deleted, so the targets always load tasks that are present. Without it (failed copy), the package keeps its own tasks.
+	-->
+	<Target Name="_UnoOverrideTasksPackageCleanup"
+			AfterTargets="_UnoOverrideTasksPackage"
+			DependsOnTargets="_UnoPointOverriddenPackageAtLocalTasks"
+			Condition="'$(UnoNugetOverrideVersion)'!='' and $([System.IO.File]::Exists('$(_UnoOverriddenTasksFolder)\$(TargetFileName)'))">
+		<Delete Files="@(_UnoTasksStaleFile)" ContinueOnError="true" />
+	</Target>
+
+	<!--
+		A suffix (a SHA, or "v0" left by a previous override) references the tasks where it follows "Uno.UI.Tasks." (the assembly name,
+		and the task type names in UsingTask) or ends an element name (a task invocation). Each one that isn't the local tasks' suffix,
+		"v0" unless the local sources were given a SHA as well, is replaced with it. Files that a previous, possibly interrupted,
+		override already switched have none left, so repeated overrides leave them alone.
+	-->
+	<Target Name="_UnoPointOverriddenPackageAtLocalTasks" Condition="'$(UnoNugetOverrideVersion)'!=''">
+		<PropertyGroup>
+			<_UnoLocalTasksSuffix>$(TargetName.Replace('Uno.UI.Tasks.', ''))</_UnoLocalTasksSuffix>
+			<_UnoLocalTasksSuffix Condition="'$(_UnoLocalTasksSuffix)'==''">v0</_UnoLocalTasksSuffix>
+			<_UnoPackageTasksSuffixPattern>(?&lt;=Uno\.UI\.Tasks\.|Uno\.UI\.Tasks\.[\w.]+_|&lt;/?\w+_)(?!$(_UnoLocalTasksSuffix)(?![0-9a-f]))(?:[0-9a-f]{40}|v0)(?![0-9a-f])</_UnoPackageTasksSuffixPattern>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_UnoPackageTasksFile Include="$(_UnoOverriddenTasksPackageFolder)\buildTransitive\**\*.targets;$(_UnoOverriddenTasksPackageFolder)\buildTransitive\**\*.props" />
+		</ItemGroup>
+		<ItemGroup Condition="'@(_UnoPackageTasksFile)' != ''">
+			<_UnoPackageTasksBoundFile Include="@(_UnoPackageTasksFile)" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch($([System.IO.File]::ReadAllText('%(FullPath)')), '$(_UnoPackageTasksSuffixPattern)'))" />
+		</ItemGroup>
+
+		<Message Importance="high"
+				 Text="Pointing the package targets at the $(_UnoLocalTasksSuffix) tasks: @(_UnoPackageTasksBoundFile->'%(RecursiveDir)%(Filename)%(Extension)', ', ')"
+				 Condition="'@(_UnoPackageTasksBoundFile)' != ''" />
+		<!-- Written next to each file and moved over it, so the package never holds a partly written targets file. -->
+		<WriteLinesToFile File="%(_UnoPackageTasksBoundFile.FullPath).override-tmp"
+						  Lines="$([MSBuild]::Escape($([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText('%(_UnoPackageTasksBoundFile.FullPath)')), '$(_UnoPackageTasksSuffixPattern)', '$(_UnoLocalTasksSuffix)').TrimEnd())))"
+						  Overwrite="true"
+						  Condition="'@(_UnoPackageTasksBoundFile)' != ''" />
+		<Move SourceFiles="@(_UnoPackageTasksBoundFile->'%(FullPath).override-tmp')"
+			  DestinationFiles="@(_UnoPackageTasksBoundFile->'%(FullPath)')"
+			  Condition="'@(_UnoPackageTasksBoundFile)' != ''" />
+	</Target>
+</Project>
