@@ -423,11 +423,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// omitted.
 			canvas.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
 
-			var rootClip = _pathPool.Allocate();
-			using var rootClipDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), rootClip);
-			rootClip.Rewind();
-			rootClip.AddRect(InfiniteClipRect);
-			Render(session, rootClip);
+			Render(session, InfiniteClipRect);
 		}
 	}
 
@@ -435,7 +431,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	private void Render(in PaintingSession parentSession, SKPath clipInRoot, bool applyChildOptimization = true, bool ancestorClipChanged = false)
+	private void Render(in PaintingSession parentSession, SKRect clipInRoot, bool applyChildOptimization = true, bool ancestorClipChanged = false)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -469,15 +465,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		CreateLocalSession(in parentSession, out var session);
 
-		// The clip in effect for this visual's own content (the inherited clip intersected with this visual's
-		// pre-painting clip) and for its children (additionally intersected with the post-painting clip),
-		// accumulated in root coordinates as we descend so each visual's total clip is computed once instead
-		// of re-walking the ancestor chain per visual.
-		var ownClip = _pathPool.Allocate();
-		using var ownClipDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), ownClip);
-		var childClip = _pathPool.Allocate();
-		using var childClipDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), childClip);
-
+		// The bounds of the clip in effect for this visual's own content (the inherited clip intersected with this
+		// visual's pre-painting clip) and for its children (additionally intersected with the post-painting clip),
+		// accumulated in root coordinates as we descend. Damage only consumes clip bounds, so bounds are threaded
+		// rather than paths: a path boolean per visual per frame is what made scrolling expensive.
 		using (session)
 		{
 			var canvas = session.Canvas;
@@ -487,25 +478,17 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			var preClip = _spareRenderPath;
 			preClip.Rewind();
 
-			ownClip.Rewind();
-			ownClip.AddPath(clipInRoot);
+			var ownClip = clipInRoot;
 			if (GetPrePaintingClipping(preClip))
 			{
 				canvas.ClipPath(preClip, antialias: true);
-				preClip.Transform(toRoot);
-				ownClip.Op(preClip, SKPathOp.Intersect, ownClip);
+				ownClip = SKRect.Intersect(ownClip, toRoot.MapRect(preClip.Bounds));
 			}
 
-			childClip.Rewind();
-			childClip.AddPath(ownClip);
+			var childClip = ownClip;
 			if (GetPostPaintingClipping() is { } postClip)
 			{
-				var postClipInRoot = _pathPool.Allocate();
-				postClipInRoot.Rewind();
-				postClipInRoot.AddPath(postClip);
-				postClipInRoot.Transform(toRoot);
-				childClip.Op(postClipInRoot, SKPathOp.Intersect, childClip);
-				_pathPool.Free(postClipInRoot);
+				childClip = SKRect.Intersect(childClip, toRoot.MapRect(postClip.Bounds));
 			}
 
 			if (ShadowState is null || TryRenderAnalyticShadow(canvas, ShadowState))
@@ -540,7 +523,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 		}
 
-		static void PaintStep(Visual visual, in PaintingSession session, SKPath clip, bool clipChanged)
+		static void PaintStep(Visual visual, in PaintingSession session, SKRect clip, bool clipChanged)
 		{
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
 			// be specific to that visual and should not affect the rendering of any other visual.
@@ -552,7 +535,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				visual.InvalidateParentChildrenPicture(includeSelf: false);
 				// why bother with a recorder when it's going to get repainted next frame? just paint directly
 				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage, clip, clipChanged);
-				visual._ownContentPath = visual.Paint(session);
+				visual.Paint(session);
 			}
 			else
 			{
@@ -564,7 +547,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					var recordingCanvas = _recorder.BeginRecording(InfiniteClipRect);
 					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, session.Damage, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
-					visual._ownContentPath = visual.Paint(in recorderSession);
+					visual.Paint(in recorderSession);
 
 					var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
 					UnoSkiaApi.sk_refcnt_safe_unref(visual._picture);
@@ -600,7 +583,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #endif
 		}
 
-		static void RenderChildrenStep(Visual visual, PaintingSession session, SKPath childClip, bool applyChildOptimization, bool clipChanged)
+		static void RenderChildrenStep(Visual visual, PaintingSession session, SKRect childClip, bool applyChildOptimization, bool clipChanged)
 		{
 			if (visual._childrenPicture != IntPtr.Zero)
 			{
