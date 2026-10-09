@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -12,6 +13,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml;
 [TestClass]
 public class Given_ResourceResolver_Scopes
 {
+	private static readonly TimeSpan WaitTimeout = TimeSpan.FromSeconds(10);
+
+	private static void WaitOrFail(ManualResetEventSlim signal)
+		=> Assert.IsTrue(signal.Wait(WaitTimeout), "Timed out waiting for the other thread.");
+
 	[TestMethod]
 	public async Task When_Parallel_Threads_Push_Distinct_Scopes_Each_Thread_Sees_Its_Own()
 	{
@@ -29,13 +35,13 @@ public class Given_ResourceResolver_Scopes
 			var secondScope = XamlScope.Create().Push(secondReference);
 			Assert.AreNotEqual(firstScope, secondScope);
 
-			var first = Task.Run(() =>
+			var first = Task.Factory.StartNew(() =>
 			{
 				ResourceResolver.PushNewScope(firstScope);
 				try
 				{
 					firstPushed.Set();
-					secondPushed.Wait();
+					WaitOrFail(secondPushed);
 
 					// A shared process-wide stack exposes secondScope here, so this
 					// assertion fails before ResourceResolver scopes are thread-local.
@@ -46,23 +52,23 @@ public class Given_ResourceResolver_Scopes
 					ResourceResolver.PopScope();
 					firstChecked.Set();
 				}
-			});
+			}, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
-			var second = Task.Run(() =>
+			var second = Task.Factory.StartNew(() =>
 			{
-				firstPushed.Wait();
+				WaitOrFail(firstPushed);
 				ResourceResolver.PushNewScope(secondScope);
 				try
 				{
 					secondPushed.Set();
-					firstChecked.Wait();
+					WaitOrFail(firstChecked);
 					Assert.AreEqual(secondScope, ResourceResolver.CurrentScope);
 				}
 				finally
 				{
 					ResourceResolver.PopScope();
 				}
-			});
+			}, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
 			await Task.WhenAll(first, second);
 		}
