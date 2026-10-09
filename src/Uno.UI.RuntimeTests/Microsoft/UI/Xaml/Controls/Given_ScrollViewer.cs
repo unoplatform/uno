@@ -2956,6 +2956,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_UNO
+		[Ignore("The scroll simulations are internal to Uno.")]
+#endif
+		[DataRow(30)]
+		[DataRow(60)]
+		[DataRow(144)]
+		public void When_Wheel_Detents_Then_Decay_Lands_On_Whole_Pixels(int framesPerSecond)
+		{
+#if HAS_UNO
+			// Whole-pixel detents must land on whole pixels, and exactly on the extent's end: an offset a hair short
+			// of ScrollableHeight still reports room left, and is not the end the user scrolled to.
+			var interval = TimeSpan.TicksPerSecond / framesPerSecond;
+			var timestamp = 0L;
+
+			ScrollDecaySimulation decay = new();
+			decay.Start(0, interval);
+			for (var i = 0; i < 5; i++)
+			{
+				decay.AddImpulse(4);
+			}
+
+			Settle(ref decay, max: 1000);
+			Assert.AreEqual(20, decay.Position, "Five 4px detents did not land on 20.");
+
+			decay.Start(decay.Position, interval);
+			for (var i = 0; i < 3; i++)
+			{
+				decay.AddImpulse(20);
+			}
+
+			Assert.AreEqual(80, decay.ProjectedEnd, "Three 20px detents from 20 do not project to 80.");
+			Settle(ref decay, max: 80);
+			Assert.AreEqual(80, decay.Position, "The detents that reach the end of the extent did not land on it.");
+
+			void Settle(ref ScrollDecaySimulation decay, double max)
+			{
+				var frames = 0;
+				while (decay.Tick(timestamp += interval, 0, max) && ++frames < 1000)
+				{
+				}
+			}
+#endif
+		}
+
+		[TestMethod]
 		public async Task When_ChangeView_Animated_Short_Distance_Then_Settles_Quickly()
 		{
 			// Like WinUI's ScrollViewer, the animation lasts 1.4ms per physical pixel within [175ms, 475ms], so a
