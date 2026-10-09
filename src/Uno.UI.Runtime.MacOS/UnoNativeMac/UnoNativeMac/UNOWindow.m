@@ -1438,6 +1438,9 @@ NSOperatingSystemVersion _osVersion;
         self.overlappedPresenterState = OverlappedPresenterStateRestored;
         self.hasPresenterTitleBar = true;
         self.showCaptionButtons = true;
+        // `windows` owns the window. Left on, AppKit's own release on close takes that reference under ARC and
+        // frees the window mid-close, while managed handles and AppKit bookkeeping still point at it.
+        self.releasedWhenClosed = NO;
     }
     return self;
 }
@@ -2042,6 +2045,15 @@ NSOperatingSystemVersion _osVersion;
     [center removeObserver:windowDidChangeScreen name:NSApplicationDidChangeScreenParametersNotification object:self];
 
     uno_get_window_close_callback()(self);
+
+    // Detach the rendering view while the window is alive, so it (and any native element hosted in it) stops
+    // observing this window before the window goes away.
+    [self.renderingView removeFromSuperview];
+
+    // Released on a later turn, once AppKit has finished closing the window.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [windows removeObject:self];
+    });
 }
 
 #pragma mark - NSAccessibility
