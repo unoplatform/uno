@@ -81,6 +81,10 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal void OnLostFocus(RoutedEventArgs args) => LostFocus?.Invoke(this, args);
 
+		// Hyperlink.cpp CHyperlink::UnderlineVisibleResourceDirective: a missing resource means the underline is visible.
+		internal static bool UnderlineVisibleResourceDirective()
+			=> ResourceResolver.ResolveTopLevelResource(new SpecializedResourceDictionary.ResourceKey("HyperlinkUnderlineVisible"), true) is not false;
+
 		public Hyperlink()
 		{
 			OnUnderlineStyleChanged();
