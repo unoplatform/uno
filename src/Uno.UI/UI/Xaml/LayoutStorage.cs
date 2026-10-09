@@ -59,6 +59,11 @@ partial class UIElement
 #endif
 		m_size = default;
 		//m_pLayoutClipGeometry = default;
+
+		// Uno specific: ArrangeVisual compares against these instead of m_finalRect. Reset them too, so the
+		// next arrange counts as a change and updates the effective viewport, as WinUI's CUIElement::ArrangeInternal does.
+		_lastFinalRect = default;
+		_lastClippedFrame = default;
 #endif
 	}
 
