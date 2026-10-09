@@ -13,8 +13,20 @@
 		<description>Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today. Open source and professionally supported.</description>
 		<copyright>Copyright (C) 2015-2025 Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+
+		<!-- The package has no dependencies, but every lib folder still needs a group so consumers resolve an exact match. -->
+		<dependencies>
+			<group targetFramework="net10.0" />
+			<group targetFramework="net10.0-android30.0" />
+			<group targetFramework="net10.0-ios26.0" />
+			<group targetFramework="net10.0-tvos26.0" />
+			<group targetFramework="net11.0" />
+			<group targetFramework="net11.0-android36.0" />
+			<group targetFramework="net11.0-ios26.5" />
+			<group targetFramework="net11.0-tvos26.5" />
+		</dependencies>
 	</metadata>
-	
+
 	<files>
 		<!-- Icon File -->
 		<file src="..\..\src\Common\uno.png" target="/" />
