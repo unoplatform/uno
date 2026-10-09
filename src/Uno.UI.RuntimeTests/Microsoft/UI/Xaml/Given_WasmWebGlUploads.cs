@@ -1,4 +1,5 @@
-﻿using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
+﻿#if HAS_UNO
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -92,3 +93,4 @@ public class Given_WasmWebGlUploads
 		Assert.AreEqual("true", result);
 	}
 }
+#endif
