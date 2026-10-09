@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -177,7 +177,7 @@ public partial class ContainerVisual : Visual
 
 			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
 			{
-				dst.Op(prePaintingClipPath, SKPathOp.Intersect, dst);
+				global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(dst, prePaintingClipPath, SKPathOp.Intersect, dst);
 			}
 
 			return true;

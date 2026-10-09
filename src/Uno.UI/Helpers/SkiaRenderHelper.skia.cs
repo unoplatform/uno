@@ -96,7 +96,7 @@ internal static class SkiaRenderHelper
 		{
 			var invertedPath = new SKPath();
 			invertedPath.AddRect(rect);
-			invertedPath.Op(clipPath, SKPathOp.Difference, invertedPath);
+			global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(invertedPath, clipPath, SKPathOp.Difference, invertedPath);
 
 			clipPath.Dispose();
 
@@ -114,7 +114,7 @@ internal static class SkiaRenderHelper
 		{
 			var result = new SKPath();
 			result.AddRect(new SKRect(0f, 0f, width, height));
-			result.Op(_emptyClipPath, SKPathOp.Difference, result);
+			global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(result, _emptyClipPath, SKPathOp.Difference, result);
 
 			_invertedClipPathWidth = width;
 			_invertedClipPathHeight = height;

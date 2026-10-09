@@ -532,7 +532,7 @@ namespace Microsoft.UI.Composition
 					{
 						using var cutter = BuildHalfPlaneCutter(startPos, backDir, strokeWidth);
 						using var result = new SKPath();
-						if (fillPath.Op(cutter, SKPathOp.Difference, result))
+						if (global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(fillPath, cutter, SKPathOp.Difference, result))
 						{
 							fillPath.Rewind();
 							fillPath.AddPath(result);
@@ -564,7 +564,7 @@ namespace Microsoft.UI.Composition
 							{
 								using var cutter = BuildHalfPlaneCutter(endPos, endTan, strokeWidth);
 								using var result = new SKPath();
-								if (fillPath.Op(cutter, SKPathOp.Difference, result))
+								if (global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(fillPath, cutter, SKPathOp.Difference, result))
 								{
 									fillPath.Rewind();
 									fillPath.AddPath(result);

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using SkiaSharp;
@@ -9,6 +9,11 @@ namespace Microsoft.UI.Composition
 	internal class SkiaGeometrySource2D : IGeometrySource2D, IDisposable
 	{
 		private readonly SKPath _geometry;
+
+		private static int _pathOpCount;
+		internal static int PathOpCount => System.Threading.Volatile.Read(ref _pathOpCount);
+		internal static bool CountedOp(SKPath a, SKPath b, SKPathOp op, SKPath result) { System.Threading.Interlocked.Increment(ref _pathOpCount); return a.Op(b, op, result); }
+		internal static SKPath CountedOp(SKPath a, SKPath b, SKPathOp op) { System.Threading.Interlocked.Increment(ref _pathOpCount); return a.Op(b, op); }
 
 		public SkiaGeometrySource2D(SKPath source)
 		{
@@ -35,7 +40,7 @@ namespace Microsoft.UI.Composition
 
 		public bool Contains(float x, float y) => _geometry.Contains(x, y);
 
-		public SkiaGeometrySource2D Op(SkiaGeometrySource2D other, SKPathOp op) => new(_geometry.Op(other._geometry, op));
+		public SkiaGeometrySource2D Op(SkiaGeometrySource2D other, SKPathOp op) => new(global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(_geometry, other._geometry, op));
 
 		#endregion
 

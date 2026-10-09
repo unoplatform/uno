@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Numerics;
@@ -107,7 +107,7 @@ public partial class Visual
 				contentPath.AddPath(ownContent);
 				contentPath.Transform(TotalMatrix.ToSKMatrix());
 				OutsetForAntialiasing(contentPath);
-				contentPath.Op(clipPath, SKPathOp.Intersect, contentPath);
+				global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(contentPath, clipPath, SKPathOp.Intersect, contentPath);
 				if (contentPath.IsEmpty)
 				{
 					return false;
@@ -154,7 +154,7 @@ public partial class Visual
 				using var rectPathDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), rectPath);
 				rectPath.Rewind();
 				rectPath.AddRect(root);
-				clipPath.Op(rectPath, SKPathOp.Intersect, clipPath);
+				global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(clipPath, rectPath, SKPathOp.Intersect, clipPath);
 
 				if (clipPath.IsEmpty)
 				{
@@ -201,7 +201,7 @@ public partial class Visual
 		band.Rewind();
 		result.Rewind();
 		_outsetPaint.GetFillPath(path, band);
-		path.Op(band, SKPathOp.Union, result);
+		global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(path, band, SKPathOp.Union, result);
 		path.Rewind();
 		path.AddPath(result);
 	}

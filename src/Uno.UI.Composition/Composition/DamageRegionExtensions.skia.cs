@@ -26,7 +26,7 @@ internal static class DamageRegionExtensions
 		}
 		else
 		{
-			region.Op(addition, SKPathOp.Union, region);
+			global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(region, addition, SKPathOp.Union, region);
 		}
 	}
 
@@ -53,6 +53,6 @@ internal static class DamageRegionExtensions
 		var scratch = _clampScratch ??= new SKPath();
 		scratch.Rewind();
 		scratch.AddRect(frameRect);
-		region.Op(scratch, SKPathOp.Intersect, region);
+		global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(region, scratch, SKPathOp.Intersect, region);
 	}
 }

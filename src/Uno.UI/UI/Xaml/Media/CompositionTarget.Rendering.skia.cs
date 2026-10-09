@@ -78,6 +78,8 @@ public partial class CompositionTarget
 	private List<Visual> _nativeVisualsInZOrder = new();
 
 	internal event Action? FrameRendered;
+	internal global::Windows.Foundation.Rect[]? LastRecordedDamage { get; private set; }
+	internal global::Windows.Foundation.Rect LastRecordedFrameRect { get; private set; }
 
 	private static event EventHandler<object>? _rendering;
 
@@ -149,6 +151,24 @@ public partial class CompositionTarget
 			_pendingDamage.Rewind();
 
 			_lastRenderedFrame = (framePicture, path, damageSnapshot);
+			LastRecordedFrameRect = new global::Windows.Foundation.Rect(frameRect.Left, frameRect.Top, frameRect.Width, frameRect.Height);
+			if (damageSnapshot.IsEmpty)
+			{
+				LastRecordedDamage = null;
+			}
+			else
+			{
+				using var clip = new SKRegion(SKRectI.Ceiling(frameRect));
+				using var region = new SKRegion();
+				region.SetPath(damageSnapshot, clip);
+				var rects = new List<global::Windows.Foundation.Rect>();
+				using var it = region.CreateRectIterator();
+				while (it.Next(out var r))
+				{
+					rects.Add(new global::Windows.Foundation.Rect(r.Left, r.Top, r.Width, r.Height));
+				}
+				LastRecordedDamage = rects.ToArray();
+			}
 
 			// The previous frame is being superseded in place (it wasn't borrowed for present, since the
 			// slot was non-null); its snapshot is no longer referenced, so recycle it for the next frame.
@@ -235,7 +255,7 @@ public partial class CompositionTarget
 		_damageOutsetBand.Rewind();
 		_damageOutsetPaint.GetFillPath(damage, _damageOutsetBand);
 		_outsetDamage.Rewind();
-		damage.Op(_damageOutsetBand, SKPathOp.Union, _outsetDamage);
+		global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(damage, _damageOutsetBand, SKPathOp.Union, _outsetDamage);
 		return _outsetDamage;
 	}
 

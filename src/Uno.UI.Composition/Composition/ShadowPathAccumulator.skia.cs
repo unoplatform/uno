@@ -68,7 +68,7 @@ internal sealed class ShadowPathAccumulator : IDisposable
 		}
 
 		using var diff = new SKPath();
-		if (!candidate.Op(_opaqueSilhouette, SKPathOp.Difference, diff))
+		if (!global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(candidate, _opaqueSilhouette, SKPathOp.Difference, diff))
 		{
 			return false;
 		}
@@ -101,7 +101,7 @@ internal sealed class ShadowPathAccumulator : IDisposable
 		}
 		else
 		{
-			_opaqueSilhouette.Op(path, SKPathOp.Union, _opaqueSilhouette);
+			global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(_opaqueSilhouette, path, SKPathOp.Union, _opaqueSilhouette);
 		}
 		_opaqueBounds = _opaqueSilhouette.Bounds;
 
@@ -114,7 +114,7 @@ internal sealed class ShadowPathAccumulator : IDisposable
 		// reference, and either survives in _swap as its own leftover or is disposed if fully consumed).
 		foreach (var (R, alphaR) in _regions)
 		{
-			R.Op(path, SKPathOp.Difference, R);
+			global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(R, path, SKPathOp.Difference, R);
 			if (R.IsEmpty)
 			{
 				R.Dispose();
@@ -138,7 +138,7 @@ internal sealed class ShadowPathAccumulator : IDisposable
 		// don't need to be added anywhere. Strip them from the remainder before processing translucents.
 		if (_opaqueSilhouette is not null)
 		{
-			remainder.Op(_opaqueSilhouette, SKPathOp.Difference, remainder);
+			global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(remainder, _opaqueSilhouette, SKPathOp.Difference, remainder);
 			if (remainder.IsEmpty)
 			{
 				remainder.Dispose();
@@ -151,14 +151,14 @@ internal sealed class ShadowPathAccumulator : IDisposable
 		foreach (var (R, alphaR) in _regions)
 		{
 			using var intersect = new SKPath();
-			if (R.Op(remainder, SKPathOp.Intersect, intersect) && !intersect.IsEmpty)
+			if (global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(R, remainder, SKPathOp.Intersect, intersect) && !intersect.IsEmpty)
 			{
 				var combined = alpha + alphaR * (1f - alpha);
 				_swap.Add((new SKPath(intersect), combined));
 
 				// R becomes R - intersect (= R - remainder). We use `intersect` rather than `remainder` so
 				// the subsequent `remainder - intersect` step is unaffected by us mutating R here.
-				R.Op(intersect, SKPathOp.Difference, R);
+				global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(R, intersect, SKPathOp.Difference, R);
 				if (R.IsEmpty)
 				{
 					R.Dispose();
@@ -169,7 +169,7 @@ internal sealed class ShadowPathAccumulator : IDisposable
 				}
 
 				// Strip the just-processed area from remainder (= remainder - R via the same identity).
-				remainder.Op(intersect, SKPathOp.Difference, remainder);
+				global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(remainder, intersect, SKPathOp.Difference, remainder);
 			}
 			else
 			{

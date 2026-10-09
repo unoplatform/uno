@@ -159,7 +159,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 				path.Rewind();
 
 				path.AddRoundRect(rect);
-				dst.Op(path, SKPathOp.Intersect, dst);
+				global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(dst, path, SKPathOp.Intersect, dst);
 
 				return true;
 			}
@@ -181,7 +181,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		UpdatePathsAndCornerClip();
 		return _childClipCausedByCornerRadius?.GetClipPath(this) is { } path
 			? base.GetPostPaintingClipping() is { } baseClip
-				? path.Op(baseClip, SKPathOp.Intersect)
+				? global::Microsoft.UI.Composition.SkiaGeometrySource2D.CountedOp(path, baseClip, SKPathOp.Intersect)
 				: path
 			: base.GetPostPaintingClipping();
 	}

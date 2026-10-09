@@ -129,6 +129,11 @@ jobs:
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
 
+  - template: ../templates/publish-runtime-tests-metrics.yml
+    parameters:
+      resultsFile: '$(build.sourcesdirectory)/build/skia-linux${{ parameters.testResultLabel }}-runtime-tests-results.xml'
+      lane: 'skia-linux${{ parameters.testResultLabel }}'
+
   - task: PublishBuildArtifacts@1
     condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))
     displayName: Publish Failed Tests Results
