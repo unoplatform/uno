@@ -33,6 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
 
+
 		private ScrollDecaySimulation _wheelDecayH;
 		private ScrollDecaySimulation _wheelDecayV;
 		private bool _isWheelDecayRunning;
@@ -1118,9 +1119,19 @@ namespace Microsoft.UI.Xaml.Controls
 				// Fitted over the recent gesture rather than taken from the last two samples: inertia
 				// distance grows with the square of the launch velocity, so a two-point estimate that
 				// catches one short interval sends the content thousands of pixels.
+				// The release is a sample too: a finger that rested before lifting sends no move while still,
+				// and only the release reveals that gap, which drops the samples of the motion before it.
+				if (_velocityTrackerContacts <= 1)
+				{
+					_velocityTracker.AddPosition(args.Manipulation.CurrentTimestampInMicroseconds / 1000d, args.Position);
+				}
+
 				var fitted = _velocityTracker.GetVelocity();
-				var vx = (fitted?.X ?? args.Velocities.Linear.X) * 1000;
-				var vy = (fitted?.Y ?? args.Velocities.Linear.Y) * 1000;
+
+				// Only along the axes the gesture moves this content: the fit runs on the raw pointer, which drifts
+				// across an axis that is railed (its recognizer velocity is zeroed) or that this presenter cannot scroll.
+				var vx = scrollable.Horizontally && args.Velocities.Linear.X != 0 ? (fitted?.X ?? args.Velocities.Linear.X) * 1000 : 0;
+				var vy = scrollable.Vertically && args.Velocities.Linear.Y != 0 ? (fitted?.Y ?? args.Velocities.Linear.Y) * 1000 : 0;
 
 				// Deliberately not completed: the manipulation has to stay inertial so a press over the
 				// coasting content resumes it (DirectManipulation.TryProcessDown), which stops the content
