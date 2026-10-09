@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using AwesomeAssertions;
 
 namespace Uno.UI.Tasks.Tests;
@@ -49,11 +49,11 @@ public class Given_AndroidIncrementalApkWorkaround
 
 	private static bool Package(bool embedAssemblies, bool archiveIsUpToDate, params string[] properties)
 	{
-		var directory = Path.Combine(Path.GetTempPath(), "uno-android-apk-workaround", Guid.NewGuid().ToString("N"));
+		var directory = Path.Join(Path.GetTempPath(), "uno-android-apk-workaround", Guid.NewGuid().ToString("N"));
 		Directory.CreateDirectory(directory);
 		try
 		{
-			var projectPath = Path.Combine(directory, "Head.proj");
+			var projectPath = Path.Join(directory, "Head.proj");
 			File.WriteAllText(projectPath, $"""
 				<Project>
 					<PropertyGroup>
@@ -82,8 +82,8 @@ public class Given_AndroidIncrementalApkWorkaround
 				</Project>
 				""");
 
-			var resources = Path.Combine(directory, "packaged_resources");
-			var archive = Path.Combine(directory, "app.apk");
+			var resources = Path.Join(directory, "packaged_resources");
+			var archive = Path.Join(directory, "app.apk");
 			File.WriteAllText(resources, "");
 			File.WriteAllText(archive, "");
 			var now = DateTime.UtcNow;
