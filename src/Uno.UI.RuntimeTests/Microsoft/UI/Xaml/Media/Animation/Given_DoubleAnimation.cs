@@ -264,7 +264,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				Duration = new Duration(TimeSpan.FromSeconds(30)),
 			}.BindTo(translate, nameof(translate.Y));
 			animation0.ToStoryboard().Begin();
-			await Task.Delay(125);
+			await WindowHelper.WaitFor(() => translate.Y > 50, timeoutMS: 30000, message: "animation #0 never applied a frame");
 
 			// Start an second animation which should pick up from current animating value.
 			var animation1 = new DoubleAnimation
@@ -273,8 +273,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				To = 50,
 				Duration = new Duration(TimeSpan.FromSeconds(30)),
 			}.BindTo(translate, nameof(translate.Y));
+			var beforeSecond = translate.Y;
 			animation1.ToStoryboard().Begin();
-			await Task.Delay(125);
+			await WindowHelper.WaitFor(() => translate.Y != beforeSecond, timeoutMS: 30000, message: "animation #1 never applied a frame");
 
 			var value = GetTranslateY(translate, isStillAnimating: true);
 			if (value is double y)
