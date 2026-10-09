@@ -38,7 +38,9 @@ jobs:
     # A failed post must not turn the build red: the comment is informational.
     continueOnError: true
     env:
-      GITHUB_TOKEN: $(CommentsGitHubPAT)
+      # A unodevops PAT (fine-grained: Pull requests read and write on this repository), a secret variable on the
+      # pipeline definition. Without it the report is only published as an artifact.
+      GITHUB_TOKEN: $(UnoDevOpsGitHubPAT)
 
   - task: PublishBuildArtifacts@1
     displayName: Publish rendering budgets report
