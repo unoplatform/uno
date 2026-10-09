@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -263,11 +263,18 @@ public class Given_AccessibilityOnDemand
 
 		var resume = new Resume(() =>
 		{
-			recordingField?.SetValue(accessibility, wasRecording);
 			if (wasRequested)
 			{
 				ensureRequested.Invoke(accessibility, null);
 			}
+			else
+			{
+				// The test's own query enabled the bridge, possibly with routing it then reset: go back to never queried,
+				// so the next client's query enables everything again.
+				MobileAccessibilityTestHelper.ReleaseClientRequest(accessibility, requestedField, recordingField);
+			}
+
+			recordingField?.SetValue(accessibility, wasRecording);
 		});
 
 		if (IsAccessibilityEnabled(accessibility))
