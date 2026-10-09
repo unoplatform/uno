@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
@@ -185,8 +186,14 @@ public class Given_AccessibleScrollViewer
 
 		target.Focus(FocusState.Programmatic);
 
-		var semanticScrollTop = InvokeBrowserJs($"(function(){{let e = document.getElementById('{GetSemanticElementId(target)}'); let top = 0; while (e) {{ top = Math.max(top, e.scrollTop); e = e.parentElement; }} return String(top); }})()");
-		Assert.AreEqual("0", semanticScrollTop, "The browser scrolled a semantic ancestor to reveal the focused node.");
+		// A browser-driven scroll can land a few frames after Focus(), so keep watching.
+		var stopwatch = Stopwatch.StartNew();
+		while (stopwatch.ElapsedMilliseconds < 500)
+		{
+			var semanticScrollTop = InvokeBrowserJs($"(function(){{let e = document.getElementById('{GetSemanticElementId(target)}'); let top = 0; while (e) {{ top = Math.max(top, e.scrollTop); e = e.parentElement; }} return String(top); }})()");
+			Assert.AreEqual("0", semanticScrollTop, "The browser scrolled a semantic ancestor to reveal the focused node.");
+			await Task.Delay(50);
+		}
 
 		await UITestHelper.WaitForIdle();
 
