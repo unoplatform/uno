@@ -1096,6 +1096,15 @@ namespace Uno.UI.Samples.Tests
 									{
 										iterationFailed = true;
 										_currentRun.Failed++;
+
+										if (config.Iterations > 1)
+										{
+											// The iterations that passed before are not reported, so this is the failure rate.
+											var iterationText = $"Failed on iteration {iteration + 1} of {config.Iterations}";
+											Console.WriteLine($"{fullTestName}: {iterationText}");
+											console = iterationText + Environment.NewLine + console;
+										}
+
 										ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Failed, e, console: console);
 									}
 								}

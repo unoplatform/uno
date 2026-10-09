@@ -57,6 +57,8 @@ namespace SampleControl.Presentation
 		private const string TestGroupVariable = "UITEST_RUNTIME_TEST_GROUP";
 		private const string TestGroupCountVariable = "UITEST_RUNTIME_TEST_GROUP_COUNT";
 		private const string TestsFilterRawVariable = "UITEST_RUNTIME_TESTS_FILTER";
+		private const string TestsIterationsVariable = "UITEST_RUNTIME_TESTS_ITERATIONS";
+		private const string TestsAttemptsVariable = "UITEST_RUNTIME_TESTS_ATTEMPTS";
 
 #if DEBUG
 		private const int _numberOfRecentSamplesVisible = 10;
@@ -590,6 +592,20 @@ namespace SampleControl.Presentation
 
 						Console.WriteLine($"Using filters: {string.Join(", ", engineConfig.Filters)}");
 					}
+
+					// The same knobs the runner's UI offers: run each test several times in a row (it stops at the first
+					// failing iteration), and how many attempts a failing iteration gets before it is reported, 1 being none.
+					if (int.TryParse(Environment.GetEnvironmentVariable(TestsIterationsVariable), out var iterations) && iterations > 0)
+					{
+						engineConfig.Iterations = iterations;
+					}
+
+					if (int.TryParse(Environment.GetEnvironmentVariable(TestsAttemptsVariable), out var attempts) && attempts > 0)
+					{
+						engineConfig.Attempts = attempts;
+					}
+
+					Console.WriteLine($"Running each test {engineConfig.Iterations} time(s), with up to {engineConfig.Attempts} attempt(s) per iteration");
 
 					await Task.Run(() => unitTests.RunTests(ct, engineConfig));
 

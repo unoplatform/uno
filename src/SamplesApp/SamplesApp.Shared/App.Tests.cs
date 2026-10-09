@@ -70,11 +70,23 @@ partial class App
 			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER", runtimeTestFilter);
 		}
 
+		if (argsPairs.TryGetValue("--runtime-tests-iterations", out var runtimeTestIterations))
+		{
+			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TESTS_ITERATIONS", runtimeTestIterations);
+		}
+
+		if (argsPairs.TryGetValue("--runtime-tests-attempts", out var runtimeTestAttempts))
+		{
+			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TESTS_ATTEMPTS", runtimeTestAttempts);
+		}
+
 		Console.WriteLine(
 			$"Automated runtime tests output file: {runtimeTestResultFilePath} (" +
 			$"UITEST_RUNTIME_TEST_GROUP: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP")}, " +
 			$"UITEST_RUNTIME_TEST_GROUP_COUNT: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT")}, " +
-			$"UITEST_RUNTIME_TESTS_FILTER: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER")}" +
+			$"UITEST_RUNTIME_TESTS_FILTER: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER")}, " +
+			$"UITEST_RUNTIME_TESTS_ITERATIONS: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_ITERATIONS")}, " +
+			$"UITEST_RUNTIME_TESTS_ATTEMPTS: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_ATTEMPTS")}" +
 			$")");
 
 		if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
