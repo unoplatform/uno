@@ -108,10 +108,8 @@ internal sealed partial class TextBoxCore
 			if (_host.CanPasteClipboardContent != value)
 			{
 				_host.CanPasteClipboardContent = value;
-				if (AutomationPeer.AutomationPeerListener is not null)
-				{
-					_host.Owner.GetOrCreateAutomationPeer()?.InvalidatePeer();
-				}
+				// A peer that doesn't exist yet reads the fresh value when it gets created.
+				_host.Owner.CachedAutomationPeer?.InvalidatePeer();
 			}
 		}
 	}
