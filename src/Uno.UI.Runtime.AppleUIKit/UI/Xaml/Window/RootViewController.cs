@@ -28,8 +28,9 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	private ISwapChain? _context;
 	private IDrawingFactory? _renderer;
 
-	// Read by this window's CompositionTarget the first time it needs a backend.
-	IDrawingFactory? IXamlRootHost.Renderer => _renderer;
+	// Read by this window's CompositionTarget when it needs a backend. Implicit rather than explicit: the iOS
+	// trimmer preserves this NSObject subclass's members by name and can't resolve an explicit member's dotted one.
+	public IDrawingFactory? Renderer => _renderer;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private TopViewLayer? _topViewLayer;
