@@ -167,6 +167,8 @@ public class Given_SKCanvasElement
 		public void Destroy() { }
 
 		public void OnUnavailable() => Unavailable = true;
+	}
+
 	[TestMethod]
 	public async Task When_Invalidated_From_Background_Thread()
 	{
