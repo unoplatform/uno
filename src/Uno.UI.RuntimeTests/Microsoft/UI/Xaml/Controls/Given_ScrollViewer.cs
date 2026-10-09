@@ -2225,6 +2225,118 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Railed_Flick_Drifts_Sideways_Then_Fling_Stays_On_Its_Axis()
+		{
+#if HAS_INPUT_INJECTOR
+			// The rail locks the drag to its axis, so the fling launched by it must stay there too, even though the
+			// finger itself drifted sideways.
+			var SUT = new ScrollViewer
+			{
+				Width = 300,
+				Height = 300,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				IsHorizontalRailEnabled = true,
+				IsVerticalRailEnabled = true,
+				IsScrollInertiaEnabled = true,
+				Content = new Border { Width = 3000, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			try
+			{
+				var bounds = await UITestHelper.Load(SUT);
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				using (var finger = input.GetFinger())
+				{
+					var current = bounds.GetCenter().Offset(0, 100);
+					finger.Press(current);
+					for (var i = 0; i < 10; i++)
+					{
+						current = current.Offset(-2, -15);
+						finger.MoveTo(current, steps: 1);
+						await Task.Delay(8);
+					}
+
+					finger.Release();
+				}
+
+				await WaitForOffsetToSettle(SUT);
+
+				Assert.IsGreaterThan(100d, SUT.VerticalOffset, "The flick did not fling.");
+				Assert.AreEqual(0d, SUT.HorizontalOffset, "The fling left the rail the drag was locked to.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Finger_Rests_Before_Lifting_Then_It_Does_Not_Fling_At_Drag_Speed()
+		{
+#if HAS_INPUT_INJECTOR
+			// A finger held still sends no moves, so only the release reveals the pause: the samples of the fast drag
+			// before it are stale, and launching at their velocity would throw the content.
+			var SUT = new ScrollViewer
+			{
+				Width = 300,
+				Height = 300,
+				IsScrollInertiaEnabled = true,
+				Content = new Border { Width = 280, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			try
+			{
+				var bounds = await UITestHelper.Load(SUT);
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				var finger = input.GetFinger();
+				var current = bounds.GetCenter().Offset(0, 100);
+				finger.Press(current);
+				for (var i = 0; i < 10; i++)
+				{
+					current = current.Offset(0, -15);
+					finger.MoveTo(current, steps: 1);
+				}
+
+				var dragged = SUT.VerticalOffset;
+
+				// Released 150ms after the last move, where it was.
+				var release = Uno.UI.DevTools.Input.Finger.GetRelease(42, current);
+				var info = release.PointerInfo;
+				info.TimeOffsetInMilliseconds = 150;
+				release.PointerInfo = info;
+				input.InjectTouchInput(new[] { release });
+
+				await WaitForOffsetToSettle(SUT);
+
+				// The drag ran at 15px/ms: a fling at that speed would coast thousands of pixels.
+				Assert.IsLessThan(200d, SUT.VerticalOffset - dragged, $"The content coasted {SUT.VerticalOffset - dragged:F0}px after a finger that had come to rest.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
 #if !HAS_INPUT_INJECTOR || !__SKIA__
 		[Ignore("Frame drivers are specific to the Skia compositor, and the flick needs the input injector.")]
 #endif
