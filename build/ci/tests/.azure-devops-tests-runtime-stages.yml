@@ -55,7 +55,7 @@ stages:
       resultsTimeoutMinutes: 55
       jobTimeoutInMinutes: 75
       # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1).
-      condition: "succeeded()" # TEMP(webgpu-stability): always run the WebGPU lanes on this PR; revert before merge
+      condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))"
 
 - stage: runtime_tests_skia_android
   displayName: Tests - Android
@@ -82,7 +82,7 @@ stages:
       testResultLabel: '-webgpu'
       appExtras: '-e UNO_WEBGPU 1 -e UNO_WEBGPU_LOG warn'
       # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1).
-      condition: "succeeded()" # TEMP(webgpu-stability): always run the WebGPU lanes on this PR; revert before merge
+      condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))"
 
 - stage: runtime_tests_skia_android_nativeaot
   displayName: Tests - Android+NativeAOT

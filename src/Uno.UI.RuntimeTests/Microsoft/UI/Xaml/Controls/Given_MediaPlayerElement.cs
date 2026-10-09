@@ -24,6 +24,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 // Every test streams a remote video into a native child window that no drawing backend renders. Under WebGPU on a
 // GPU-less host, WARP rasterizes on every core and the player's TLS handshake to the video times out, so the tests
 // would measure the agent's spare CPU rather than the element.
+[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)]
 public partial class Given_MediaPlayerElement
 {
 	private static readonly Uri TestVideoUrl = new Uri("https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4");

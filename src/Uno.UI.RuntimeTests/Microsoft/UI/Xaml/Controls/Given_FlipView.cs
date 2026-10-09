@@ -684,6 +684,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// See https://github.com/unoplatform/uno/issues/9080.
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaMacOS)]
 		// The same flakiness shows on the GPU-less WebGPU CI agents.
+		[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)]
 		public async Task When_TouchFlick_Then_FlipOneItem()
 		{
 			var flipView = new FlipView()
