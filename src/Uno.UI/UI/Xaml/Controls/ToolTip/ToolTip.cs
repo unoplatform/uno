@@ -168,6 +168,13 @@ namespace Microsoft.UI.Xaml.Controls
 				UnsubscribeOwnerThemeChanged();
 				Closed?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Closed", useTransitions: true);
+
+				if (!isOpen)
+				{
+					// As in WinUI's ToolTip::OnIsOpenChanged, the service lets go of a tooltip once it has closed, whichever
+					// path closed it (a disabled tooltip asked to open also lands here, and stays the service's to close).
+					ToolTipService.OnToolTipClosed(this);
+				}
 			}
 		}
 
