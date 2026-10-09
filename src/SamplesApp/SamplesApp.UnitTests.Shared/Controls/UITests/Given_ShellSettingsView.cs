@@ -20,8 +20,11 @@ namespace SamplesApp.Tests;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_ShellSettingsView
+public partial class Given_ShellSettingsView
 {
+	[GeneratedRegex(@"^net[0-9]+[.][0-9]+-[a-z]")]
+	private static partial Regex PlatformTargetFrameworkRegex();
+
 	[TestMethod]
 	[DataRow(300d, false, true, DisplayName = "Phone width, ComboBox")]
 	[DataRow(300d, true, false, DisplayName = "Phone width, toggle")]
@@ -278,7 +281,7 @@ public class Given_ShellSettingsView
 		var framework = new AppInfo().TargetFramework;
 
 		// Every SamplesApp head builds for a platform TFM.
-		StringAssert.Matches(framework, new Regex(@"^net[0-9]+[.][0-9]+-[a-z]"));
+		StringAssert.Matches(framework, PlatformTargetFrameworkRegex());
 	}
 
 	[TestMethod]

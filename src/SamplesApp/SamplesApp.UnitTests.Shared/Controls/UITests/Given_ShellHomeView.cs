@@ -267,7 +267,7 @@ public class Given_ShellHomeView
 
 		Assert.IsTrue(Cards(actions).All(c => c.ShortcutText.Length == 0));
 		Assert.AreEqual("Ctrl+T", Cards(actions).First(c => c.AutomationId == "ShellHomeRuntimeTests").Shortcut, "Screen readers keep the shortcut.");
-		StringAssert.DoesNotMatch(((TextBlock)view.FindName("ShellHomeFavoritesEmpty")).Text, new System.Text.RegularExpressions.Regex("Ctrl"));
+		Assert.IsFalse(((TextBlock)view.FindName("ShellHomeFavoritesEmpty")).Text.Contains("Ctrl", StringComparison.Ordinal));
 
 		static IEnumerable<HomeCard> Cards(ItemsRepeater repeater) => (IEnumerable<HomeCard>)repeater.ItemsSource;
 	}

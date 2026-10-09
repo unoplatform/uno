@@ -592,9 +592,11 @@ public class Given_RunnerBottomSheet
 		=> root.FindName(name) as T ?? throw new AssertFailedException($"{name} ({typeof(T).Name}) not found");
 
 	// No [TestClass]: only run through RunTestsForInstance.
+#pragma warning disable MSTEST0030 // Type containing [TestMethod] should be marked with [TestClass]
 	public class SlowFixture
 	{
 		[TestMethod]
 		public async Task Waits() => await Task.Delay(500);
 	}
+#pragma warning restore MSTEST0030
 }

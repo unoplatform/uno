@@ -348,6 +348,7 @@ public class Given_UnitTestsControl
 		=> root.FindName(name) as T ?? throw new AssertFailedException($"{name} ({typeof(T).Name}) not found");
 
 	// No [TestClass]: these only run through RunTestsForInstance, never discovered by the outer runner.
+#pragma warning disable MSTEST0030 // Type containing [TestMethod] should be marked with [TestClass]
 	public class SingleTestFixture
 	{
 		[TestMethod]
@@ -390,4 +391,5 @@ public class Given_UnitTestsControl
 		{
 		}
 	}
+#pragma warning restore MSTEST0030
 }
