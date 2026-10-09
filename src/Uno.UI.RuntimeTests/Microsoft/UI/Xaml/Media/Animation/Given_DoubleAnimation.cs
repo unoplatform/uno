@@ -275,7 +275,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			}.BindTo(translate, nameof(translate.Y));
 			var beforeSecond = translate.Y;
 			animation1.ToStoryboard().Begin();
-			await WindowHelper.WaitFor(() => translate.Y != beforeSecond, timeoutMS: 30000, message: "animation #1 never applied a frame");
+			await WindowHelper.WaitFor(() => Math.Abs(translate.Y - beforeSecond) > 0.0001, timeoutMS: 30000, message: "animation #1 never applied a frame");
 
 			var value = GetTranslateY(translate, isStillAnimating: true);
 			if (value is double y)
