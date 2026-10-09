@@ -2832,6 +2832,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					Assert.Inconclusive($"The animation had almost completed ({drawn}) before the notch could be injected.");
 				}
 
+				// The animation the notch takes over from ends without having reached its target: only the wheel's
+				// own motion may report the scroll as finished.
+				var finals = 0;
+				SUT.ViewChanged += (_, e) => finals += e.IsIntermediate ? 0 : 1;
+
 				mouse.WheelDown();
 
 				await WaitForOffsetToSettle(SUT);
@@ -2839,6 +2844,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				// One notch on a 200px viewport scrolls max(48, 15% of 200) = 48px.
 				Assert.AreEqual(drawn + 48, SUT.VerticalOffset, delta: 2, $"The notch did not continue from the drawn offset {drawn}.");
+				Assert.AreEqual(1, finals, "The scroll was reported as finished before the wheel motion ended.");
 			}
 			finally
 			{
