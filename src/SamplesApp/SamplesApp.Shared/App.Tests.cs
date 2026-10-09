@@ -97,6 +97,12 @@ partial class App
 			// let the app finish its startup
 			await Task.Delay(TimeSpan.FromSeconds(5));
 
+			// The theme lives on the shell's root, which a slow machine may not have loaded yet.
+			for (var i = 0; i < 600 && SampleControl.Presentation.SampleChooserViewModel.Instance.Owner?.XamlRoot is null; i++)
+			{
+				await Task.Delay(100);
+			}
+
 			// Runtime tests should run in light theme by default
 			SampleControl.Presentation.SampleChooserViewModel.Instance.IsAppThemeLight = true;
 
