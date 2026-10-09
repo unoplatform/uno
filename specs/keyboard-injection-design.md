@@ -216,6 +216,8 @@ isolated commit so it can be reverted independently.
 ## Documented limitations
 
 - **In-process only.** Unlike WinUI, injection does not reach other applications or the OS.
+- **Synchronous delivery.** WinUI returns before any event is delivered; Uno Platform runs every
+  handler before `InjectKeyboardInput` returns.
 - **No IME participation.** All six `IImeTextBoxExtension` implementations are driven exclusively by
   native platform events; an injected key cannot start, feed or commit a composition. Keys injected
   *during* a live composition are silently swallowed by `ShouldSwallowKeyDuringComposition`.

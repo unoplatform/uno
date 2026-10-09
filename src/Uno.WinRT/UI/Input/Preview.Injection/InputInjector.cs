@@ -315,7 +315,12 @@ public partial class InputInjector
 	/// rejects batches larger than 16 events; Uno Platform accepts any length, so keep batches at or
 	/// below 16 for code that must run on both.
 	/// </para>
+	/// <para>
+	/// Windows queues the events and returns before any of them is delivered. Uno Platform delivers
+	/// them synchronously, so every handler has run by the time this method returns.
+	/// </para>
 	/// </remarks>
+	/// <exception cref="InvalidOperationException">The method is not called on the UI thread.</exception>
 	/// <exception cref="ArgumentException">
 	/// An entry sets <see cref="InjectedInputKeyOptions.Unicode"/> together with a non-zero
 	/// <see cref="InjectedInputKeyboardInfo.VirtualKey"/>. The batch is validated before anything is
@@ -391,11 +396,27 @@ public partial class InputInjector
 	// TODO: Move as extension method
 	internal async ValueTask InjectKeyboardInputAsync(IEnumerable<InjectedInputKeyboardInfo> input, CancellationToken ct)
 	{
+		ct.ThrowIfCancellationRequested();
+
+		// Once started, the batch always runs to completion: abandoning it midway would leave
+		// its modifier keys latched in the process-wide KeyboardStateTracker.
 		foreach (var info in ValidateKeyboardBatch(input))
 		{
 			InjectKeyboardInputCore(info);
-			await WaitForIdle(ct);
+
+			if (!ct.IsCancellationRequested)
+			{
+				try
+				{
+					await WaitForIdle(ct);
+				}
+				catch (OperationCanceledException) when (ct.IsCancellationRequested)
+				{
+				}
+			}
 		}
+
+		ct.ThrowIfCancellationRequested();
 	}
 
 	/// <summary>
