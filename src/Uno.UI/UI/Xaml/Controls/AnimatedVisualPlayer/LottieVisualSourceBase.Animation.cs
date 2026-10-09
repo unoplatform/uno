@@ -57,7 +57,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					// its fallback content rather than silently rendering nothing — but log so the dev isn't left guessing.
 					if (typeof(LottieAnimatedVisual).Log().IsEnabled(LogLevel.Warning))
 					{
-						typeof(LottieAnimatedVisual).Log().Warn("No ILottieRenderer is registered (reference the Uno.UI.Lottie add-in or call .LottieRenderer(...)); Lottie playback is unavailable and the player will show its fallback content.");
+						typeof(LottieAnimatedVisual).Log().Warn("No ILottieRenderer is registered (reference the Skia drawing backend or call .LottieRenderer(...)); Lottie playback is unavailable and the player will show its fallback content.");
 					}
 
 					diagnostics = new InvalidOperationException("No ILottieRenderer is registered; Lottie playback is unavailable.");

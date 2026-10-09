@@ -15,14 +15,9 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Composition.WebGpu" ProjectSystem="true" />
 	</ItemGroup>
 
-	<!-- Lottie and SVG each ship a SkiaSharp add-in over a neutral seam that Uno.WinUI also implements without
-	     SkiaSharp, so without a Skia renderer there is nothing for the add-in to draw with and the host builder
-	     resolves the managed engine instead. Lottie stays implicit because it is pure managed and adds ~144 KB
-	     where SkiaSharp is already present, which is not worth downgrading every app to the managed engine. -->
-	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
-	</ItemGroup>
-
+	<!-- SVG ships a SkiaSharp add-in over a neutral seam that Uno.WinUI also implements without SkiaSharp, so
+	     without a Skia renderer there is nothing for the add-in to draw with and the host builder resolves the
+	     managed engine instead. Lottie needs no package: Skottie comes with the Skia backend. -->
 	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) AND $(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" />
 	</ItemGroup>
@@ -32,8 +27,6 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(IsPackable)' != 'true' AND $(UnoFeatures.Contains(';skia;'))">
-		<!-- Uno.WinUI.Lottie declares Skottie only on its mobile groups, so the plain TFMs need it injected here. -->
-		<_UnoProjectSystemPackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Svg.Skia" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'" />
 	</ItemGroup>
 </Project>

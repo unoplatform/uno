@@ -15,6 +15,8 @@
 		<UnoRuntimeVariant>Generic</UnoRuntimeVariant>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<Nullable>enable</Nullable>
+		<!-- C# 14 for the static extension member that puts this add-in's factory on SkiaBackend. -->
+		<LangVersion>14.0</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,6 +26,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" />
 		<ProjectReference Include="..\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
 	</ItemGroup>
 

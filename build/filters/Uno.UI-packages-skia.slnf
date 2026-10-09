@@ -2,7 +2,6 @@
   "solution": {
     "path": "..\\..\\src\\Uno.UI.slnx",
     "projects": [
-      "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Generic.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.netcoremobile.csproj",
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.csproj",

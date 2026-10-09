@@ -11,7 +11,6 @@
 			"Uno.WinUI.Foldable",
 			"Uno.WinUI.MSAL",
 			"Uno.WinUI.Svg",
-			"Uno.WinUI.Lottie",
 			"Uno.WinUI.DevServer",
 			"Uno.WinUI.Runtime.Linux.FrameBuffer",
 			"Uno.WinUI.Runtime.MacOS",

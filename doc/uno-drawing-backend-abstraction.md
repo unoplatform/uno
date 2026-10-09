@@ -105,7 +105,7 @@ default.
 
 The **default-backend reflection lives entirely in the host builder** (`UnoPlatformHostBuilder.Build()`), not
 scattered across the seam holders. After the app's explicit registrations are applied, `Build()` reflectively
-lights up any seam the app left empty from the SkiaSharp backend (or the SVG/Lottie add-ins) — by
+lights up any seam the app left empty from the SkiaSharp backend (or the SVG add-in) — by
 assembly-qualified name, so the framework keeps no compile-time dependency on SkiaSharp — then **throws right
 there** if a *required* seam (graphics backend, font, image decoder, geometry) is still unsatisfied and no Skia
 is present, instead of NRE-ing deep in the first frame. A deliberately SkiaSharp-free app registers each seam
@@ -472,7 +472,7 @@ its shapes with the registered geometry engine; the Skottie add-in ignores it. T
   interpolation (linear + cubic-bézier easing + hold, over scalars/vectors/colors/bézier-paths). Gradients,
   repeaters, merge paths, stars, masks, mattes, precomps, image/text layers and effects are not modelled yet —
   an unsupported item is skipped, never fatal.
-- **`SkottieLottieRenderer`** (`Uno.UI.Lottie` add-in) — wraps `SkiaSharp.Skottie`. `Render` fast-paths on
+- **`SkottieLottieRenderer`** (Skia backend) — wraps `SkiaSharp.Skottie`. `Render` fast-paths on
   `NativeSurface is SKCanvas` (draws straight into the frame), else rasterizes to an offscreen and goes through
   `session.Factory.CreateTexture(...)` → `DrawImage` — so it plays on WebGPU too.
 
@@ -601,7 +601,7 @@ plus a clear answer to "who drives."
 > **decline** (unavailable, or the host's config opted out). The host switches purely on `kind` and
 > names no backend and no `UNO_WEBGPU`. **The backend owns the kind order** (`IGraphicsProvider.PreferredContexts`,
 > walked as-is); preference is expressed two neutral ways only — the app orders the provider's kinds via
-> its constructor (`new SkiaGraphicsProvider(GraphicsContextKind.Software)` forces software), a host
+> its factory (`SkiaBackend.CreateGraphicsProvider(GraphicsContextKind.Software)` forces software), a host
 > *declines* kinds per its own config (LinuxFB `UseDRM`, WASM `forceSoftwareRendering`), and the X11/Win32
 > host builders exclude kinds up front (`ForceRenderingBackend`/`DisableRenderingBackends` →
 > `GraphicsRegistry.DisabledContextKinds`, which negotiation skips). Removed with the redesign: `INativeWindow`, `NativeWindowKind`,
@@ -651,7 +651,7 @@ identical on every platform, in the shared app bootstrap:
 
 ```csharp
 // ordered by preference: try WebGPU, fall back to Skia
-GraphicsRegistry.Register(new IGraphicsProvider[] { new WebGpuGraphicsProvider(), new SkiaGraphicsProvider() });
+GraphicsRegistry.Register(new IGraphicsProvider[] { WebGpuBackend.CreateGraphicsProvider(), SkiaBackend.CreateGraphicsProvider() });
 ```
 
 Separately, the **host** sets exactly one delegate — `GraphicsRegistry.ContextFactory =

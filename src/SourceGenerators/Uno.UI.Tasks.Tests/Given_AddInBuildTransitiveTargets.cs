@@ -4,7 +4,7 @@ using AwesomeAssertions;
 namespace Uno.UI.Tasks.Tests;
 
 /// <summary>
-/// The add-ins' buildTransitive targets reach every consumer (Lottie is referenced implicitly by Uno.Sdk), yet
+/// The add-ins' buildTransitive targets reach every consumer (Svg is referenced implicitly by the Uno.Sdk), yet
 /// nothing in the repository imports them, so a condition MSBuild cannot parse only surfaces in app builds.
 /// </summary>
 [TestClass]
@@ -27,10 +27,6 @@ public class Given_AddInBuildTransitiveTargets
 	}
 
 	[TestMethod]
-	[DataRow("Lottie", "net10.0", "true")]
-	[DataRow("Lottie", "net10.0-desktop", "true")]
-	[DataRow("Lottie", "net10.0-android", "false")]
-	[DataRow("Lottie", "net10.0-browserwasm", "false")]
 	[DataRow("Svg", "net10.0", "true")]
 	[DataRow("Svg", "net10.0-desktop", "true")]
 	[DataRow("Svg", "net10.0-ios", "false")]

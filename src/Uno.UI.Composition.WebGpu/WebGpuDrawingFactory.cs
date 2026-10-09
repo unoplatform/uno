@@ -171,7 +171,7 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 
 /// <summary>A host graphics context that owns a <see cref="WebGpuDevice"/> (e.g. an on-window swapchain context).
 /// Lets <see cref="WebGpuGraphicsProvider"/> obtain the device without naming the platform context type.</summary>
-public sealed class WebGpuGraphicsProvider : IGraphicsProvider<IWebGpuDeviceContext>
+internal sealed class WebGpuGraphicsProvider : IGraphicsProvider<IWebGpuDeviceContext>
 {
 	private static readonly GraphicsContextKind[] _preferred = { GraphicsContextKind.WebGpu };
 
@@ -410,7 +410,8 @@ internal sealed unsafe class WebGpuReadbackImage : DrawingResource, IImage
 /// backdrop-blur effect, and offscreen rasterization are all WebGPU-owned. Geometry, font resolution/shaping and
 /// image decode are separate backend-independent seams (<see cref="GeometryFactory"/> / <see cref="FontProvider"/>
 /// / <see cref="ImageEncoderDecoder"/>); WebGPU consumes the neutral <see cref="IGeometry"/> it's registered by flattening
-/// it, so a SkiaSharp-free app registers a <see cref="ManagedGeometryFactory"/> and links zero SkiaSharp for drawing.
+/// it, so a SkiaSharp-free app registers the managed geometry engine (<c>ManagedBackend.CreateGeometryFactory()</c>)
+/// and links zero SkiaSharp for drawing.
 /// </summary>
 public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 {
