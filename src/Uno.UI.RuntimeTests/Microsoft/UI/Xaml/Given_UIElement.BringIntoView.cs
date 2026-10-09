@@ -9,6 +9,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 [TestClass]
 public class Given_UIElement_BringIntoView
 {
+	[TestCleanup]
+	public void Cleanup() => Private.Infrastructure.TestServices.WindowHelper.WindowContent = null;
+
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_StartBringIntoView_Before_Loaded_Then_Request_Is_Raised()
