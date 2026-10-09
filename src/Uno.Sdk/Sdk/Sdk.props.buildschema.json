@@ -310,7 +310,7 @@
 			"type": "color"
 		},
 		"UnoSplashScreenDarkBackgroundColor": {
-			"description": "The background color of the splash screen when the dark theme is active.",
+			"description": "The background color of the splash screen when the dark theme is active. Defaults to UnoSplashScreenBackgroundColor.",
 			"type": "color"
 		},
 		"UnoSplashScreenAccentColor": {
@@ -318,7 +318,7 @@
 			"type": "color"
 		},
 		"UnoSplashScreenDarkAccentColor": {
-			"description": "The accent color of the splash screen when the dark theme is active, used for the progress bar of the WebAssembly loader. Other targets ignore it. Defaults to the WinUI dark theme accent color.",
+			"description": "The accent color of the splash screen when the dark theme is active, used for the progress bar of the WebAssembly loader. Other targets ignore it. Defaults to UnoSplashScreenAccentColor when set, otherwise to the WinUI dark theme accent color.",
 			"type": "color"
 		},
 		"UnoSplashScreenDarkFile": {
