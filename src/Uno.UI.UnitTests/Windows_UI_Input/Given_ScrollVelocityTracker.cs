@@ -72,6 +72,25 @@ public class Given_ScrollVelocityTracker
 	}
 
 	[TestMethod]
+	public void When_PointerRestsBeforeTheNewestSample_Then_VelocityIsZero()
+	{
+		ScrollVelocityTracker tracker = new();
+
+		// A fast motion, then a release 100ms later where the finger had stopped: no move is sent while still.
+		for (var t = 0; t <= 40; t += 8)
+		{
+			tracker.AddPosition(t, new Point(0, 10 * t));
+		}
+
+		tracker.AddPosition(140, new Point(0, 400));
+
+		var velocity = GetVelocity(tracker);
+
+		Assert.AreEqual(0, velocity.X, Tolerance);
+		Assert.AreEqual(0, velocity.Y, Tolerance);
+	}
+
+	[TestMethod]
 	public void When_SamplesOlderThanTheHorizon_Then_TheyAreIgnored()
 	{
 		ScrollVelocityTracker tracker = new();
