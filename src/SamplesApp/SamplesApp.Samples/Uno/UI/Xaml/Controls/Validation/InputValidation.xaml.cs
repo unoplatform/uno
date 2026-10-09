@@ -4,10 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Uno.Extras.Input;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Uno_UI_Xaml_Controls.Validation;
@@ -133,29 +130,4 @@ public class SignUpViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
 
 	private void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-}
-
-/// <summary>
-/// Supplied by the application: this slice ships no converters, so joining the errors into a single line is
-/// the cost of it rendering nothing on its own.
-/// </summary>
-public class ErrorsToStringConverter : IValueConverter
-{
-	public object Convert(object value, Type targetType, object parameter, string language)
-		=> value is IEnumerable<InputValidationError> errors
-			? string.Join(" ", errors.Select(error => error.ErrorMessage))
-			: "";
-
-	public object ConvertBack(object value, Type targetType, object parameter, string language)
-		=> throw new NotSupportedException();
-}
-
-/// <summary>Also the application's, for the same reason.</summary>
-public class BoolToVisibilityConverter : IValueConverter
-{
-	public object Convert(object value, Type targetType, object parameter, string language)
-		=> value is true ? Visibility.Visible : Visibility.Collapsed;
-
-	public object ConvertBack(object value, Type targetType, object parameter, string language)
-		=> throw new NotSupportedException();
 }

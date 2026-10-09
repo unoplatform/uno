@@ -4,17 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:input="using:Uno.Extras.Input"
-    xmlns:local="using:UITests.Shared.Uno_UI_Xaml_Controls.Validation"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d not_win">
-
-    <Page.Resources>
-        <local:ErrorsToStringConverter x:Key="ErrorsToString" />
-        <local:BoolToVisibilityConverter x:Key="BoolToVisibility" />
-    </Page.Resources>
 
     <win:TextBlock Text="This sample demos an Uno Platform only feature and is not available on Windows." />
 
@@ -27,7 +21,7 @@
 
             <TextBlock
                 Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
-                Text="Errors travel from a view model implementing INotifyDataErrorInfo to the bound control. Nothing renders them by itself: the TextBlocks below bind to the read model through the converters of this sample."
+                Text="Errors travel from a view model implementing INotifyDataErrorInfo to the bound control. Nothing renders them by itself: the lists below bind to the Validation.Errors collection of each control."
                 TextWrapping="Wrap" />
 
             <StackPanel Spacing="4">
@@ -36,12 +30,16 @@
                     input:Validation.Mode="Auto"
                     Header="User name (5 characters minimum)"
                     Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBlock
-                    x:Name="UserNameErrors"
-                    Foreground="Red"
-                    Text="{Binding (input:Validation.Errors), ElementName=UserNameBox, Converter={StaticResource ErrorsToString}}"
-                    TextWrapping="Wrap"
-                    Visibility="{Binding (input:Validation.HasErrors), ElementName=UserNameBox, Converter={StaticResource BoolToVisibility}}" />
+                <ItemsControl x:Name="UserNameErrors" ItemsSource="{Binding (input:Validation.Errors), ElementName=UserNameBox}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock
+                                Foreground="Red"
+                                Text="{Binding ErrorMessage}"
+                                TextWrapping="Wrap" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
 
             <StackPanel Spacing="4">
@@ -50,12 +48,16 @@
                     input:Validation.Mode="Auto"
                     Header="Password (8 characters minimum)"
                     Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBlock
-                    x:Name="PasswordErrors"
-                    Foreground="Red"
-                    Text="{Binding (input:Validation.Errors), ElementName=PasswordBox, Converter={StaticResource ErrorsToString}}"
-                    TextWrapping="Wrap"
-                    Visibility="{Binding (input:Validation.HasErrors), ElementName=PasswordBox, Converter={StaticResource BoolToVisibility}}" />
+                <ItemsControl x:Name="PasswordErrors" ItemsSource="{Binding (input:Validation.Errors), ElementName=PasswordBox}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock
+                                Foreground="Red"
+                                Text="{Binding ErrorMessage}"
+                                TextWrapping="Wrap" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
 
             <StackPanel Spacing="4">
@@ -65,12 +67,16 @@
                     Header="Country"
                     ItemsSource="{Binding Countries}"
                     SelectedItem="{Binding Country, Mode=TwoWay}" />
-                <TextBlock
-                    x:Name="CountryErrors"
-                    Foreground="Red"
-                    Text="{Binding (input:Validation.Errors), ElementName=CountryBox, Converter={StaticResource ErrorsToString}}"
-                    TextWrapping="Wrap"
-                    Visibility="{Binding (input:Validation.HasErrors), ElementName=CountryBox, Converter={StaticResource BoolToVisibility}}" />
+                <ItemsControl x:Name="CountryErrors" ItemsSource="{Binding (input:Validation.Errors), ElementName=CountryBox}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock
+                                Foreground="Red"
+                                Text="{Binding ErrorMessage}"
+                                TextWrapping="Wrap" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
 
         </StackPanel>
