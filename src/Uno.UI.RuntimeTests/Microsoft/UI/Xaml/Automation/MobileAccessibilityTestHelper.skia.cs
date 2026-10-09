@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -25,6 +26,22 @@ internal static class MobileAccessibilityTestHelper
 	internal static AccessibilityNativeNodeSnapshot? TryGetNativeSnapshot(UIElement element)
 		=> AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(element)
 			?? AccessibilityPeerHelper.IOSAccessibilityNodeSnapshotAccessor?.Invoke(element);
+
+	internal static void ReleaseClientRequest(object accessibility, FieldInfo requestedField, FieldInfo? recordingField)
+	{
+		if (requestedField.GetValue(accessibility) is not true)
+		{
+			return;
+		}
+
+		// What the bridge does once the last service goes away (Android, iOS).
+		recordingField?.SetValue(accessibility, false);
+		var type = accessibility.GetType();
+		var release = type.GetMethod("ReleaseTreeState", BindingFlags.Instance | BindingFlags.NonPublic)
+			?? type.GetMethod("ReleaseTreeRequest", BindingFlags.Instance | BindingFlags.NonPublic);
+		release?.Invoke(accessibility, null);
+		requestedField.SetValue(accessibility, false);
+	}
 }
 
 internal sealed class OwnerlessLiveRegionAutomationPeer : AutomationPeer
