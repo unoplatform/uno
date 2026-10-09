@@ -54,7 +54,8 @@ namespace Uno.UI.Runtime {
 		// Re-slice such views to the strided size WebGL validates against. The 3D uploads aren't wrapped: Skia doesn't use them.
 		public static fixStridedUploads(gl: WebGL2RenderingContext): void {
 			const anyGl = <any>gl;
-			if (anyGl.__unoStridedUploadsFixed || typeof WebGL2RenderingContext === "undefined" || !(gl instanceof WebGL2RenderingContext)) {
+			// WebGL 1 has no row length to honor.
+			if (anyGl.__unoStridedUploadsFixed || typeof anyGl.UNPACK_ROW_LENGTH !== "number") {
 				return;
 			}
 			anyGl.__unoStridedUploadsFixed = true;
