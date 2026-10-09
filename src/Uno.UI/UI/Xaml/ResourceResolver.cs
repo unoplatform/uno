@@ -94,6 +94,7 @@ namespace Uno.UI
 				if (_scopeStack is null)
 				{
 					_scopeStack = new Stack<XamlScope>();
+					// There should always be a base-level scope (this will be used when no template is being resolved)
 					_scopeStack.Push(XamlScope.Create());
 				}
 
