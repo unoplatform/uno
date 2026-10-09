@@ -232,6 +232,7 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 	// Tree mutations are not tracked while disabled, so enabling starts again from the current tree.
 	private void ResyncTree(bool invalidateRoot)
 	{
+		AccessibilityRouter.EnsureTreeNotifications();
 		_helper?.MarkAccessibilityTreeDirty();
 		if (RootElement is { } root)
 		{
