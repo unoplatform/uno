@@ -82,31 +82,24 @@ internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSourc
 
 	private (double x, double y) GetOrientationAdjustedAbsolutionPosition(IntPtr rawEvent, Func<IntPtr, int, double> getX, Func<IntPtr, int, double> getY)
 	{
-		double x, y;
-		switch (FrameBufferWindowWrapper.Instance.Orientation)
-		{
-			case DisplayOrientations.None:
-			case DisplayOrientations.Landscape:
-				x = getX(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
-				y = getY(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
-				break;
-			case DisplayOrientations.Portrait:
-				y = FrameBufferWindowWrapper.Instance.Bounds.Height - getX(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
-				x = getY(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
-				break;
-			case DisplayOrientations.LandscapeFlipped:
-				x = FrameBufferWindowWrapper.Instance.Bounds.Width - getX(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
-				y = FrameBufferWindowWrapper.Instance.Bounds.Height - getY(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
-				break;
-			case DisplayOrientations.PortraitFlipped:
-				y = getX(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
-				x = FrameBufferWindowWrapper.Instance.Bounds.Width - getY(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
-				break;
-			default:
-				throw new ArgumentOutOfRangeException();
-		}
+		// One snapshot per event, so a concurrent orientation change can't pair the new rotation with the old extent.
+		// libinput reports positions in the unrotated screen's space, here scaled to view pixels.
+		var window = FrameBufferWindowWrapper.Instance;
+		var displayState = window.CurrentDisplayState;
+		var scale = window.RasterizationScale;
+		var width = displayState.PhysicalSize.Width / scale;
+		var height = displayState.PhysicalSize.Height / scale;
+		var px = getX(rawEvent, (int)width);
+		var py = getY(rawEvent, (int)height);
 
-		return (x, y);
+		return displayState.Orientation switch
+		{
+			DisplayOrientations.None or DisplayOrientations.Landscape => (px, py),
+			DisplayOrientations.Portrait => (py, width - px),
+			DisplayOrientations.LandscapeFlipped => (width - px, height - py),
+			DisplayOrientations.PortraitFlipped => (height - py, px),
+			_ => throw new ArgumentOutOfRangeException()
+		};
 	}
 
 	private void LogNotSupported([CallerMemberName] string member = "")
