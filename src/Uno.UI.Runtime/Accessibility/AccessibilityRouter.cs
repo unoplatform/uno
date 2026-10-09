@@ -32,7 +32,14 @@ internal static class AccessibilityRouter
 {
 	private static volatile IAccessibilityOwner? _activeOwner;
 	private static volatile bool _initialized;
+	private static volatile bool _anyBridgeEnabled;
 	private static readonly object _gate = new();
+
+	/// <summary>
+	/// Whether any window's bridge has been enabled since startup. Sticky: until then no bridge can consume a
+	/// signal, so the router drops it before resolving the owning window.
+	/// </summary>
+	internal static bool IsAnyBridgeEnabled => _anyBridgeEnabled;
 
 	/// <summary>
 	/// Claims the framework's single-slot accessibility registrations and
@@ -66,6 +73,7 @@ internal static class AccessibilityRouter
 	/// </summary>
 	public static void EnsureTreeNotifications()
 	{
+		_anyBridgeEnabled = true;
 		UIElementAccessibilityHelper.ExternalOnChildAdded = OnChildAdded;
 		UIElementAccessibilityHelper.ExternalOnChildRemoved = OnChildRemoved;
 		UIElementAccessibilityHelper.ExternalOnTextControlStateChanged = OnTextControlStateChanged;
@@ -204,35 +212,77 @@ internal static class AccessibilityRouter
 	//  Fan-out shims — automation peer listener / announcer
 	// ────────────────────────────────────────────────────────────────
 
+	// Every bridge ignores a signal while disabled and rebuilds its tree when enabled, so a signal is dropped before
+	// the owner lookup until one is.
 	private sealed class RouterAutomationPeerListener : IAutomationPeerListener
 	{
 		public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty property, object oldValue, object newValue)
-			=> Resolve(peer)?.NotifyPropertyChangedEvent(peer, property, oldValue, newValue);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(peer)?.NotifyPropertyChangedEvent(peer, property, oldValue, newValue);
+			}
+		}
 
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
-			=> Resolve(peer)?.NotifyAutomationEvent(peer, eventId);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(peer)?.NotifyAutomationEvent(peer, eventId);
+			}
+		}
 
 		public void NotifyAccessibilityViewChanged(
 			UIElement element,
 			AccessibilityView oldValue,
 			AccessibilityView newValue)
-			=> Resolve(element)?.NotifyAccessibilityViewChanged(element, oldValue, newValue);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(element)?.NotifyAccessibilityViewChanged(element, oldValue, newValue);
+			}
+		}
 
 		public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child)
-			=> Resolve(peer)?.NotifyStructureChangedEvent(peer, structureChangeType, child);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(peer)?.NotifyStructureChangedEvent(peer, structureChangeType, child);
+			}
+		}
 
 		public void NotifyInvalidatePeer(AutomationPeer peer)
-			=> Resolve(peer)?.NotifyInvalidatePeer(peer);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(peer)?.NotifyInvalidatePeer(peer);
+			}
+		}
 
 		public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind kind, AutomationNotificationProcessing processing, string displayString, string activityId)
-			=> Resolve(peer)?.NotifyNotificationEvent(peer, kind, processing, displayString, activityId);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(peer)?.NotifyNotificationEvent(peer, kind, processing, displayString, activityId);
+			}
+		}
 
 		public void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
-			=> Resolve(peer)?.NotifyTextEditTextChangedEvent(peer, changeType, changedData);
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(peer)?.NotifyTextEditTextChangedEvent(peer, changeType, changedData);
+			}
+		}
 
 		// Asked on every TextBlock text change, so it must not allocate.
 		public bool ListenerExistsHelper(AutomationEvents eventId)
 		{
+			if (!_anyBridgeEnabled)
+			{
+				return false;
+			}
+
 			foreach (var host in XamlRootMap.Hosts)
 			{
 				if (host is IAccessibilityOwner { Accessibility: { } accessibility }
