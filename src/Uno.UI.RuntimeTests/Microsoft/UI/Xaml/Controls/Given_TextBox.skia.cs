@@ -3239,6 +3239,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)] // WASM clipboard APIs are async (Contains() is always true after Clear()); tvOS has no clipboard
 		public async Task When_CanPasteClipboardContent_Changes_Without_Peer_Then_No_Peer_Is_Created()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -3277,6 +3278,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)] // WASM clipboard APIs are async (Contains() is always true after Clear()); tvOS has no clipboard
 		public async Task When_CanPasteClipboardContent_Changes_With_Peer_Then_Peer_Is_Invalidated()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
