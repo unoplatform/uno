@@ -48,7 +48,8 @@ public class Given_MobileAccessibilityTemplatedIds
 		{
 			Assert.IsTrue(
 				snapshots.Any(snapshot => snapshot.AutomationId?.EndsWith(item, StringComparison.Ordinal) is true),
-				$"'{item}' must be exposed as a native node with its AutomationId.");
+				$"'{item}' must be exposed as a native node with its AutomationId. Exposed ids: " +
+				string.Join(", ", snapshots.Select(snapshot => snapshot.AutomationId).Where(id => !string.IsNullOrEmpty(id))));
 		}
 	}
 }
