@@ -168,5 +168,5 @@ public static class ShellThemeBrushes
 			&& themeDictionary.TryGetValue(key, out var value)
 			&& value is Color color
 				? color
-				: null;
+				: (Color?)null;
 }
