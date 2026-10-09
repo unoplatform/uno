@@ -130,8 +130,10 @@ namespace Microsoft.UI.Xaml
 		/// triggers at all, and it is paid for every state of every templated control as it is loaded.
 		/// Callers that only read should use this instead.
 		/// </remarks>
-		internal IList<StateTriggerBase> StateTriggersOrDefault
+#nullable enable
+		internal IList<StateTriggerBase>? StateTriggersOrDefault
 			=> GetValue(StateTriggersProperty) as IList<StateTriggerBase>;
+#nullable restore
 
 		internal static DependencyProperty StateTriggersProperty { get; } =
 			DependencyProperty.Register(

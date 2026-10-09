@@ -529,7 +529,7 @@ namespace Microsoft.UI.Xaml
 			var newState = GetActiveTrigger();
 			var oldState = CurrentState;
 
-			var currentStateHasTriggers = oldState is { StateTriggers: { Count: > 0 } };
+			var currentStateHasTriggers = oldState?.StateTriggersOrDefault is { Count: > 0 };
 			if (newState is null && !currentStateHasTriggers)
 			{
 				// We didn't activate any trigger state, we should keep the current non-trigger state.
