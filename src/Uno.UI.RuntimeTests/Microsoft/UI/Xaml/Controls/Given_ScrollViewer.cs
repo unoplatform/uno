@@ -2043,6 +2043,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_ChangeView_Past_Extent_Then_Extent_Growth_Does_Not_Chase_It(bool disableAnimation)
+		{
+			// WinUI validates the requested offset against the range at request time: growing the extent
+			// afterwards leaves the offset where the request was clamped, rather than chasing the raw value
+			// (which, with incremental loading, loads batch after batch).
+			var content = new Border { Width = 180, Height = 1000, Background = new SolidColorBrush(Colors.DeepPink) };
+			var SUT = new ScrollViewer { Width = 200, Height = 600, VerticalAlignment = VerticalAlignment.Top, Content = content };
+			await UITestHelper.Load(SUT);
+
+			SUT.ChangeView(null, 10000, null, disableAnimation);
+			await WindowHelper.WaitForEqual(400, () => SUT.VerticalOffset);
+
+			content.Height = 3000;
+			await WindowHelper.WaitForEqual(2400, () => SUT.ScrollableHeight);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
+
+			Assert.AreEqual(400, SUT.VerticalOffset, "The offset chased the request past the extent it was clamped to.");
+		}
+
+		[TestMethod]
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
