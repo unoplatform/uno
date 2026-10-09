@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 
@@ -14,8 +15,9 @@ namespace Microsoft.UI.Xaml.Documents;
 
 internal readonly partial struct UnicodeText
 {
-	// Counts ubrk_open calls so tests can prove break iterators are reused.
+	// Count ubrk_open/ubrk_close calls so tests can prove break iterators are reused and freed.
 	internal static int BreakIteratorOpenCount;
+	internal static int BreakIteratorCloseCount;
 
 	private static class ICU
 	{
@@ -238,7 +240,10 @@ internal readonly partial struct UnicodeText
 			}
 		}
 
-		public static T GetMethod<T>()
+		public static T GetMethod<T>() where T : class
+			=> TryGetMethod<T>() ?? throw new InvalidOperationException($"Failed to obtain the {typeof(T).Name} method from the ICU libraries.");
+
+		private static T? TryGetMethod<T>() where T : class
 		{
 			if (!_lookupCache.TryGetValue(typeof(T), out var value))
 			{
@@ -248,15 +253,14 @@ internal readonly partial struct UnicodeText
 					// the exact symbol names at compile times (even DllImport.EntryPoint doesn't work) and do the
 					// method mapping by reflection.
 					// On WASM, NativeLibrary.TryGetExport is supported, but not on NativeAOT.
+					// These symbol tables may not carry every entry point.
 					const BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Static;
-					MethodInfo? method = null;
-					Type type;
-					method = OperatingSystem.IsBrowser()
-						? (type = typeof(BrowserICUSymbols)).GetMethod($"uno_{typeof(T).Name}", flags)
-						: (type = typeof(IOSICUSymbols)).GetMethod($"{typeof(T).Name}_{_icuVersion}", flags);
+					var method = OperatingSystem.IsBrowser()
+						? typeof(BrowserICUSymbols).GetMethod($"uno_{typeof(T).Name}", flags)
+						: typeof(IOSICUSymbols).GetMethod($"{typeof(T).Name}_{_icuVersion}", flags);
 					if (method is null)
 					{
-						throw new InvalidOperationException($"Failed to find {typeof(T).Name} in {type.Name}.");
+						return null;
 					}
 					value = Delegate.CreateDelegate(typeof(T), method);
 				}
@@ -270,7 +274,7 @@ internal readonly partial struct UnicodeText
 				}
 				else
 				{
-					throw new Exception($"Failed to obtain the {typeof(T).Name} method from the ICU libraries.");
+					return null;
 				}
 				_lookupCache[typeof(T)] = value;
 			}
@@ -305,13 +309,36 @@ internal readonly partial struct UnicodeText
 		private static ubrk_setText? _setText;
 		private static bool _setTextResolved;
 
-		// Break iterators are not thread-safe, so each thread keeps its own, indexed by UBreakIteratorType
-		// (only word = 1 and line = 2 are requested).
+		// Break iterators are not thread-safe, so each thread keeps its own.
 		[ThreadStatic]
-		private static IntPtr[]? _breakIterators;
+		private static BreakIteratorCache? _breakIterators;
 
-		[ThreadStatic]
-		private static string? _breakIteratorsLocale;
+		// One thread's iterators, indexed by UBreakIteratorType (only word = 1 and line = 2 are requested).
+		// Once the thread exits its [ThreadStatic] reference is dropped and the finalizer frees the native iterators.
+		private sealed class BreakIteratorCache
+		{
+			// Resolved on the owning thread so the finalizer never touches the non-thread-safe lookup cache.
+			private readonly ubrk_close _close = GetMethod<ubrk_close>();
+
+			public readonly IntPtr[] Iterators = new IntPtr[3];
+
+			public string? LocaleName;
+
+			~BreakIteratorCache() => Close();
+
+			public void Close()
+			{
+				for (var i = 0; i < Iterators.Length; i++)
+				{
+					if (Iterators[i] != IntPtr.Zero)
+					{
+						_close(Iterators[i]);
+						Iterators[i] = IntPtr.Zero;
+						Interlocked.Increment(ref BreakIteratorCloseCount);
+					}
+				}
+			}
+		}
 
 		/// <summary>
 		/// Returns a break iterator pointed at <paramref name="text"/>. ubrk_open costs a flat ~4us regardless of
@@ -333,17 +360,17 @@ internal readonly partial struct UnicodeText
 			}
 
 			isCached = true;
-			if (_breakIterators is null || !string.Equals(_breakIteratorsLocale, localeName, StringComparison.Ordinal))
+			var cache = _breakIterators ??= new();
+			if (!string.Equals(cache.LocaleName, localeName, StringComparison.Ordinal))
 			{
-				CloseBreakIterators();
-				_breakIterators = new IntPtr[3];
-				_breakIteratorsLocale = localeName;
+				cache.Close();
+				cache.LocaleName = localeName;
 			}
 
-			var iterator = _breakIterators[boundaryType];
+			var iterator = cache.Iterators[boundaryType];
 			if (iterator == IntPtr.Zero)
 			{
-				return _breakIterators[boundaryType] = OpenBreakIterator(boundaryType, locale, text, textLength);
+				return cache.Iterators[boundaryType] = OpenBreakIterator(boundaryType, locale, text, textLength);
 			}
 
 			// Always re-point before use: the previous text was only pinned for the previous caller.
@@ -354,43 +381,10 @@ internal readonly partial struct UnicodeText
 
 		private static IntPtr OpenBreakIterator(int boundaryType, IntPtr locale, IntPtr text, int textLength)
 		{
-			BreakIteratorOpenCount++;
+			Interlocked.Increment(ref BreakIteratorOpenCount);
 			var iterator = GetMethod<ubrk_open>()(boundaryType, locale, text, textLength, out var status);
 			CheckErrorCode<ubrk_open>(status);
 			return iterator;
-		}
-
-		private static void CloseBreakIterators()
-		{
-			if (_breakIterators is not { } iterators)
-			{
-				return;
-			}
-
-			var close = GetMethod<ubrk_close>();
-			foreach (var iterator in iterators)
-			{
-				if (iterator != IntPtr.Zero)
-				{
-					close(iterator);
-				}
-			}
-
-			_breakIterators = null;
-			_breakIteratorsLocale = null;
-		}
-
-		// WebAssembly and iOS resolve ICU through the fixed symbol tables below, which may not carry every entry point.
-		private static T? TryGetMethod<T>() where T : class
-		{
-			try
-			{
-				return GetMethod<T>();
-			}
-			catch (Exception)
-			{
-				return null;
-			}
 		}
 
 		public static void CheckErrorCode<T>(int status)
