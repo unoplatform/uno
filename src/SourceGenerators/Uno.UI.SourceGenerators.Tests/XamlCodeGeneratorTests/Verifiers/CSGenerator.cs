@@ -434,7 +434,7 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 				}
 
 				// Output of a generator a test adds on top is asserted on by that test instead.
-				if (GetSnapshotExemptGenerators().Any(type => type.Name == generatorName))
+				if (GetSnapshotExemptGenerators().Any(type => type.FullName!.Substring(type.FullName.LastIndexOf('.') + 1) == generatorName))
 				{
 					return null;
 				}
