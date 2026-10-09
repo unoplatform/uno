@@ -309,9 +309,25 @@
 			"description": "The base size of the splash screen image. e.g.: '300,300'.",
 			"type": "string"
 		},
-		"UnoSplashScreenColor": {
-			"description": "The background color of the splash screen.",
+		"UnoSplashScreenBackgroundColor": {
+			"description": "The background color of the splash screen, used for all themes unless overridden. Replaces UnoSplashScreenColor, which was removed in Uno Platform 7.0. Defaults to '#FFFFFF', except on WebAssembly where no color is set so the splash screen follows the browser theme.",
 			"type": "color"
+		},
+		"UnoSplashScreenDarkBackgroundColor": {
+			"description": "The background color of the splash screen when the dark theme is active. Defaults to UnoSplashScreenBackgroundColor.",
+			"type": "color"
+		},
+		"UnoSplashScreenAccentColor": {
+			"description": "The accent color of the splash screen, used for the progress bar of the WebAssembly loader in all themes unless overridden. Other targets ignore it. Defaults to the WinUI accent color.",
+			"type": "color"
+		},
+		"UnoSplashScreenDarkAccentColor": {
+			"description": "The accent color of the splash screen when the dark theme is active, used for the progress bar of the WebAssembly loader. Other targets ignore it. Defaults to UnoSplashScreenAccentColor when set, otherwise to the WinUI dark theme accent color.",
+			"type": "color"
+		},
+		"UnoSplashScreenDarkFile": {
+			"description": "The path to the splash screen image file used when the dark theme is active.",
+			"type": "file"
 		},
 		"UnoSplashScreenScale": {
 			"description": "Used to scale the image that will be used as the SplashScreen.",

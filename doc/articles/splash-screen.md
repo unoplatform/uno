@@ -13,6 +13,37 @@ While the new templates simplify adding a splash screen, this article covers how
 >
 > See the guide [How-To: Get Started with Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted#unosplashscreen) for more information.
 
+## Configuring the splash screen with Uno.Sdk properties
+
+Projects using the Uno.Sdk single-project layout can configure the splash screen from the `.csproj`. The SDK passes these values to Uno.Resizetizer as `UnoSplashScreen` item metadata:
+
+| Property | Description |
+|---|---|
+| `UnoSplashScreenFile` | The splash screen image. Defaults to `Assets/Splash/splash_screen.svg`. |
+| `UnoSplashScreenDarkFile` | The image used when the dark theme is active, relative to the project. |
+| `UnoSplashScreenBackgroundColor` | The background color for all themes, unless overridden by `UnoSplashScreenDarkBackgroundColor`. |
+| `UnoSplashScreenDarkBackgroundColor` | The background color when the dark theme is active. Defaults to `UnoSplashScreenBackgroundColor`. |
+| `UnoSplashScreenAccentColor` | The accent color of the WebAssembly loader progress bar for all themes, unless overridden by `UnoSplashScreenDarkAccentColor`. Defaults to the WinUI accent color. |
+| `UnoSplashScreenDarkAccentColor` | The accent color of the WebAssembly loader progress bar when the dark theme is active. Defaults to `UnoSplashScreenAccentColor` when set, otherwise to the WinUI dark theme accent color. |
+
+By default the background color is `#FFFFFF`, except on WebAssembly where no color is set. Without a color, the WebAssembly splash screen follows the browser's light or dark theme, using `#F3F3F3` and `#202020` respectively. Set `UnoSplashScreenBackgroundColor` to keep a fixed color in both themes.
+
+The dark and accent properties are applied on WebAssembly. Other targets use the light values for now.
+
+> [!IMPORTANT]
+> `UnoSplashScreenColor` was removed in Uno Platform 7.0. The SDK ignores it and reports [UNOB0028](xref:Build.Solution.error-codes#unob0028-the-unosplashscreencolor-property-is-no-longer-supported). Rename it to `UnoSplashScreenBackgroundColor`. If you declare `UnoSplashScreen` items by hand, use the `BackgroundColor` metadata instead of `Color`. Both changes need a version of Uno.Resizetizer that supports `BackgroundColor` on splash screens.
+
+```xml
+<PropertyGroup>
+    <UnoSplashScreenFile>Assets/Splash/splash_screen.svg</UnoSplashScreenFile>
+    <UnoSplashScreenDarkFile>Assets/Splash/splash_screen_dark.svg</UnoSplashScreenDarkFile>
+    <UnoSplashScreenBackgroundColor>#FFFFFF</UnoSplashScreenBackgroundColor>
+    <UnoSplashScreenDarkBackgroundColor>#101820</UnoSplashScreenDarkBackgroundColor>
+    <UnoSplashScreenAccentColor>#0067C0</UnoSplashScreenAccentColor>
+    <UnoSplashScreenDarkAccentColor>#60CDFF</UnoSplashScreenDarkAccentColor>
+</PropertyGroup>
+```
+
 ## Step-by-step instructions
 
 ### 1. Shared splash screen image resources
