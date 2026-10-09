@@ -34,13 +34,19 @@ jobs:
       -PullRequestNumber '$(System.PullRequest.PullRequestNumber)'
       -CommitId '$(System.PullRequest.SourceCommitId)'
       -BuildUrl '$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)'
+      -CollectionUri '$(System.CollectionUri)'
+      -ProjectId '$(System.TeamProjectId)'
+      -DefinitionId '$(System.DefinitionId)'
+      -BuildNumber '$(Build.BuildNumber)'
     displayName: Report rendering budgets
     # A failed post must not turn the build red: the comment is informational.
     continueOnError: true
     env:
-      # A unodevops PAT (fine-grained: Pull requests read and write on this repository), a secret variable on the
-      # pipeline definition. Without it the report is only published as an artifact.
-      GITHUB_TOKEN: $(UnoDevOpsGitHubPAT)
+      # The PAT the screenshot comparison also comments with; it should belong to unodevops. Without it
+      # (fork pull requests) the report is only published as an artifact.
+      GITHUB_TOKEN: $(CommentsGitHubPAT)
+      # Reads the metrics of the builds behind the latest published versions.
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
 
   - task: PublishBuildArtifacts@1
     displayName: Publish rendering budgets report
