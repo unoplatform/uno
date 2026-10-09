@@ -212,24 +212,70 @@ function New-Report($lanes, $baselines) {
             }
         }
 
-        $overBudget = 0
-        foreach ($row in $rows.Values) {
-            foreach ($lane in $laneNames) {
-                $m = $lanes[$lane][$row.key]
-                if ($null -ne $m -and $null -ne $m.budget -and $m.value -gt $m.budget) { $overBudget++; break }
-            }
-        }
-        if ($overBudget -eq 0) {
-            [void]$sb.AppendLine("✅ All $($rows.Count) metrics are within budget on every lane.")
-        }
-        else {
-            [void]$sb.AppendLine("⚠️ $overBudget of $($rows.Count) metrics are over budget on at least one lane. Report only for now: this does not fail the build.")
-        }
-        [void]$sb.AppendLine()
-
         # This PR next to the latest published versions, on one lane so the columns compare like with like.
         $reference = if ($lanes.Contains($ReferenceLane)) { $ReferenceLane } else { $laneNames[0] }
         $dev = $baselines | Where-Object { $_.label -eq 'Latest dev' } | Select-Object -First 1
+        $isOver = { param($m) $null -ne $m -and $null -ne $m.budget -and $m.value -gt $m.budget }
+
+        $tableLines = [System.Collections.Generic.List[string]]::new()
+        $lower = 0
+        $higher = 0
+        foreach ($row in $rows.Values) {
+            $budget = if ($null -ne $row.budget) { '≤ ' + (Format-Number $row.budget) } else { '–' }
+            $current = $lanes[$reference][$row.key]
+            $cell = Format-Metric $current
+
+            # Every budgeted metric is a count where lower is better; flag a clear move away from the latest dev, past
+            # run-to-run noise (the damaged area alone varies by about 13% between runs of the same build). Frame rates
+            # follow the agent's display rate, so for them only crossing the budget is a change.
+            $devMetric = if ($dev -and $dev.lanes -and $dev.lanes.Contains($reference)) { $dev.lanes[$reference][$row.key] } else { $null }
+            $arrow = $null
+            if ($null -ne $current -and $null -ne $devMetric -and $null -ne $row.budget) {
+                if ($row.name.EndsWith('frames-per-second')) {
+                    $overNow = & $isOver $current
+                    if ($overNow -ne (& $isOver $devMetric)) { $arrow = if ($overNow) { '▲' } else { '▼' } }
+                }
+                else {
+                    $difference = $current.value - $devMetric.value
+                    if ([math]::Abs($difference) -gt [math]::Max(0.05, 0.2 * [math]::Abs($devMetric.value))) {
+                        $arrow = if ($difference -gt 0) { '▲' } else { '▼' }
+                    }
+                }
+            }
+            if ($arrow) {
+                $cell += " $arrow"
+                if ($arrow -eq '▲') { $higher++ } else { $lower++ }
+            }
+
+            $baselineCells = foreach ($b in $baselines) {
+                if ($b.lanes -and $b.lanes.Contains($reference)) { Format-Metric $b.lanes[$reference][$row.key] } else { '–' }
+            }
+            $tableLines.Add("| ``$($row.name)`` | $budget | $cell | $($baselineCells -join ' | ') |")
+        }
+
+        # One summary line per column, so "within budget" is never read as being about another version.
+        $prOver = @($rows.Values | Where-Object { $key = $_.key; @($laneNames | Where-Object { & $isOver $lanes[$_][$key] }).Count -gt 0 }).Count
+        $prLine = if ($prOver -eq 0) { "✅ all $($rows.Count) metrics within budget on every lane" } else { "⚠️ $prOver of $($rows.Count) metrics over budget on at least one lane" }
+        if ($dev -and $dev.lanes) {
+            $prLine += if ($lower + $higher -eq 0) { '; no change from the latest dev' } else { "; against the latest dev: $lower lower ▼, $higher higher ▲" }
+        }
+        [void]$sb.AppendLine("- **This PR**: $prLine.")
+        foreach ($b in $baselines) {
+            $build = if ($b.buildUrl) { "[$($b.version)]($($b.buildUrl -replace ' ', '%20'))" } else { $b.version }
+            if ($b.lanes -and $b.lanes.Contains($reference)) {
+                # Over the rows shown: a version's own extra rows (which objects it leaked) are not in this table.
+                $over = @($rows.Values | Where-Object { & $isOver $b.lanes[$reference][$_.key] }).Count
+                $state = if ($over -eq 0) { '✅ within budget' } else { "⚠️ $over over budget" }
+                [void]$sb.AppendLine("- **$($b.label)** $($build): $state.")
+            }
+            else {
+                [void]$sb.AppendLine("- **$($b.label)** $($build): no numbers, $($b.note).")
+            }
+        }
+        [void]$sb.AppendLine()
+        [void]$sb.AppendLine('Report only for now: nothing here fails the build.')
+        [void]$sb.AppendLine()
+
         $columns = foreach ($b in $baselines) {
             $version = if ($b.buildUrl) { "[$($b.version)]($($b.buildUrl -replace ' ', '%20'))" } else { $b.version }
             "$($b.label)<br>$version"
@@ -238,33 +284,9 @@ function New-Report($lanes, $baselines) {
         [void]$sb.AppendLine()
         [void]$sb.AppendLine("| Metric | Budget | This PR | $($columns -join ' | ') |")
         [void]$sb.AppendLine("|---|---|---:|$(($baselines | ForEach-Object { '---:' }) -join '|')|")
-        foreach ($row in $rows.Values) {
-            $budget = if ($null -ne $row.budget) { '≤ ' + (Format-Number $row.budget) } else { '–' }
-            $current = $lanes[$reference][$row.key]
-            $cell = Format-Metric $current
-
-            # Every budgeted metric is a count where lower is better; flag a clear move away from the latest dev. Not
-            # for frame rates, which follow the agent's display rate, and not under 20%: the damaged area alone
-            # varies by about 13% between runs of the same build.
-            $devMetric = if ($dev -and $dev.lanes -and $dev.lanes.Contains($reference)) { $dev.lanes[$reference][$row.key] } else { $null }
-            if ($null -ne $current -and $null -ne $devMetric -and $null -ne $row.budget -and -not $row.name.EndsWith('frames-per-second')) {
-                $difference = $current.value - $devMetric.value
-                if ([math]::Abs($difference) -gt [math]::Max(0.05, 0.2 * [math]::Abs($devMetric.value))) {
-                    $cell += $(if ($difference -gt 0) { ' ▲' } else { ' ▼' })
-                }
-            }
-
-            $baselineCells = foreach ($b in $baselines) {
-                if ($b.lanes -and $b.lanes.Contains($reference)) { Format-Metric $b.lanes[$reference][$row.key] } else { '–' }
-            }
-            [void]$sb.AppendLine("| ``$($row.name)`` | $budget | $cell | $($baselineCells -join ' | ') |")
-        }
+        $tableLines | ForEach-Object { [void]$sb.AppendLine($_) }
         [void]$sb.AppendLine()
-        [void]$sb.AppendLine('▲ / ▼: more than 20% higher / lower than the latest dev (lower is better for every budgeted count; frame rates are not compared).')
-        foreach ($b in $baselines | Where-Object { -not $_.lanes }) {
-            $build = if ($b.buildId) { " ([build $($b.buildId)]($($b.buildUrl -replace ' ', '%20')))" } else { '' }
-            [void]$sb.AppendLine("<br>$($b.label) $($b.version)$($build): no numbers, $($b.note).")
-        }
+        [void]$sb.AppendLine('▲ / ▼: higher / lower than the latest dev by more than 20%; lower is better for every budgeted count. Frame rates follow the agent''s display rate, so they are only compared when they cross their budget.')
         [void]$sb.AppendLine()
 
         # Every lane of this PR, for differences between platforms and renderers.
