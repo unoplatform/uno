@@ -46,7 +46,6 @@ param(
     [string]$ProjectId,
     [string]$DefinitionId,
     [string]$BuildNumber,        # this build's, e.g. 7.0-dev.1662+db89a9843c: selects the dev line to compare with
-    [string]$ReferenceLane = 'skia-windows',
     [string]$DevBuildNumber,     # overrides for a manual comparison; by default, the builds of the latest
     [string]$StableBuildNumber   # dev and stable Uno.WinUI versions on nuget.org
 )
@@ -129,7 +128,7 @@ function Get-PublishedBaselines {
 
     $baselines = @()
     if ($DevBuildNumber) {
-        $baselines += [ordered]@{ label = 'Latest dev'; version = $DevBuildNumber; buildNumber = $DevBuildNumber }
+        $baselines += [ordered]@{ label = 'Latest dev'; short = 'dev'; version = $DevBuildNumber; buildNumber = $DevBuildNumber }
     }
     elseif ($BuildNumber -match '^(\d+)\.(\d+)') {
         $line = "$($Matches[1]).$($Matches[2])"
@@ -137,22 +136,22 @@ function Get-PublishedBaselines {
             Sort-Object { [int]($_ -replace '^.*-dev\.', '') } | Select-Object -Last 1
         if ($dev) {
             # 7.0.0-dev.1656 on nuget.org is CI build number 7.0-dev.1656.
-            $baselines += [ordered]@{ label = 'Latest dev'; version = $dev; buildNumber = ($dev -replace '^(\d+\.\d+)\.0-dev\.', '$1-dev.') }
+            $baselines += [ordered]@{ label = 'Latest dev'; short = 'dev'; version = $dev; buildNumber = ($dev -replace '^(\d+\.\d+)\.0-dev\.', '$1-dev.') }
         }
     }
 
     if ($StableBuildNumber) {
-        $baselines += [ordered]@{ label = 'Latest stable'; version = $StableBuildNumber; buildNumber = $StableBuildNumber }
+        $baselines += [ordered]@{ label = 'Latest stable'; short = 'stable'; version = $StableBuildNumber; buildNumber = $StableBuildNumber }
     }
     else {
         $stable = $versions | Where-Object { $_ -match '^\d+\.\d+\.\d+$' } | Sort-Object { [version]$_ } | Select-Object -Last 1
-        if ($stable) { $baselines += [ordered]@{ label = 'Latest stable'; version = $stable; buildNumber = $stable } }
+        if ($stable) { $baselines += [ordered]@{ label = 'Latest stable'; short = 'stable'; version = $stable; buildNumber = $stable } }
     }
     return $baselines
 }
 
 function Get-BaselineMetrics($baseline) {
-    $result = [ordered]@{ label = $baseline.label; version = $baseline.version; buildId = $null; buildUrl = $null; lanes = $null; note = $null }
+    $result = [ordered]@{ label = $baseline.label; short = $baseline.short; version = $baseline.version; buildId = $null; buildUrl = $null; lanes = $null; note = $null }
     if (-not ($CollectionUri -and $ProjectId -and $DefinitionId)) {
         $result.note = 'no CI connection to look its build up'
         return $result
@@ -193,8 +192,42 @@ function Get-BaselineMetrics($baseline) {
     return $result
 }
 
+# Lane titles, in reading order: the three desktop platforms first, then their renderer and host variants.
+$LaneTitles = [ordered]@{
+    'skia-windows'           = 'Windows'
+    'skia-linux'             = 'Linux'
+    'skia-macos'             = 'macOS'
+    'skia-windows-webgpu'    = 'Windows WebGPU'
+    'skia-linux-webgpu'      = 'Linux WebGPU'
+    'skia-macos-webgpu'      = 'macOS WebGPU'
+    'skia-linux-framebuffer' = 'Linux framebuffer'
+}
+
+function Get-LaneTitle([string]$lane) {
+    if ($LaneTitles.Contains($lane)) { return $LaneTitles[$lane] }
+    return $lane
+}
+
+function Get-LaneOrder([string]$lane) {
+    $index = @($LaneTitles.Keys).IndexOf($lane)
+    if ($index -lt 0) { return 100 }
+    return $index
+}
+
+function Test-OverBudget($metric) {
+    return $null -ne $metric -and $null -ne $metric.budget -and $metric.value -gt $metric.budget
+}
+
+# A value under this PR's, in the small print of a cell: no bold, so this PR's value stays the one that stands out.
+function Format-Reference($metric) {
+    if ($null -eq $metric) { return '–' }
+    $text = (Format-Number $metric.value) + $metric.unit
+    if (Test-OverBudget $metric) { return "$text ⚠️" }
+    return $text
+}
+
 function New-Report($lanes, $baselines) {
-    $laneNames = @($lanes.Keys)
+    $laneNames = @($lanes.Keys | Sort-Object { Get-LaneOrder $_ }, { $_ })
     $sb = [System.Text.StringBuilder]::new()
     [void]$sb.AppendLine($Marker)
     [void]$sb.AppendLine('### 📏 Rendering budgets')
@@ -214,60 +247,71 @@ function New-Report($lanes, $baselines) {
             }
         }
 
-        # This PR next to the latest published versions, on one lane so the columns compare like with like.
-        $reference = if ($lanes.Contains($ReferenceLane)) { $ReferenceLane } else { $laneNames[0] }
         $dev = $baselines | Where-Object { $_.label -eq 'Latest dev' } | Select-Object -First 1
-        $isOver = { param($m) $null -ne $m -and $null -ne $m.budget -and $m.value -gt $m.budget }
+        $measured = @($baselines | Where-Object { $_.lanes })
+        $lowerMetrics = [System.Collections.Generic.HashSet[string]]::new()
+        $higherMetrics = [System.Collections.Generic.HashSet[string]]::new()
 
+        # One row per metric, one column per lane. A cell shows this PR's value, and under it the latest published
+        # versions' values on the same lane, so platforms and versions read off the same table.
         $tableLines = [System.Collections.Generic.List[string]]::new()
-        $lower = 0
-        $higher = 0
         foreach ($row in $rows.Values) {
             $budget = if ($null -ne $row.budget) { '≤ ' + (Format-Number $row.budget) } else { '–' }
-            $current = $lanes[$reference][$row.key]
-            $cell = Format-Metric $current
+            $cells = foreach ($lane in $laneNames) {
+                $current = $lanes[$lane][$row.key]
+                $cell = Format-Metric $current
 
-            # Every budgeted metric is a count where lower is better; flag a clear move away from the latest dev, past
-            # run-to-run noise (the damaged area alone varies by about 13% between runs of the same build). Frame rates
-            # follow the agent's display rate, so for them only crossing the budget is a change.
-            $devMetric = if ($dev -and $dev.lanes -and $dev.lanes.Contains($reference)) { $dev.lanes[$reference][$row.key] } else { $null }
-            $arrow = $null
-            if ($null -ne $current -and $null -ne $devMetric -and $null -ne $row.budget) {
-                if ($row.name.EndsWith('frames-per-second')) {
-                    $overNow = & $isOver $current
-                    if ($overNow -ne (& $isOver $devMetric)) { $arrow = if ($overNow) { '▲' } else { '▼' } }
-                }
-                else {
-                    $difference = $current.value - $devMetric.value
-                    if ([math]::Abs($difference) -gt [math]::Max(0.05, 0.2 * [math]::Abs($devMetric.value))) {
-                        $arrow = if ($difference -gt 0) { '▲' } else { '▼' }
+                # Every budgeted metric is a count where lower is better; flag a clear move away from the latest dev on
+                # the same lane, past run-to-run noise (the damaged area alone varies by about 13% between runs of the
+                # same build). Frame rates follow the agent's display rate, so for them only crossing the budget counts.
+                $devMetric = if ($dev -and $dev.lanes -and $dev.lanes.Contains($lane)) { $dev.lanes[$lane][$row.key] } else { $null }
+                $arrow = $null
+                if ($null -ne $current -and $null -ne $devMetric -and $null -ne $row.budget) {
+                    if ($row.name.EndsWith('frames-per-second')) {
+                        $overNow = Test-OverBudget $current
+                        if ($overNow -ne (Test-OverBudget $devMetric)) { $arrow = if ($overNow) { '▲' } else { '▼' } }
+                    }
+                    else {
+                        $difference = $current.value - $devMetric.value
+                        if ([math]::Abs($difference) -gt [math]::Max(0.05, 0.2 * [math]::Abs($devMetric.value))) {
+                            $arrow = if ($difference -gt 0) { '▲' } else { '▼' }
+                        }
                     }
                 }
-            }
-            if ($arrow) {
-                $cell += " $arrow"
-                if ($arrow -eq '▲') { $higher++ } else { $lower++ }
-            }
+                if ($arrow) {
+                    $cell += " $arrow"
+                    [void]$(if ($arrow -eq '▲') { $higherMetrics.Add($row.name) } else { $lowerMetrics.Add($row.name) })
+                }
 
-            $baselineCells = foreach ($b in $baselines) {
-                if ($b.lanes -and $b.lanes.Contains($reference)) { Format-Metric $b.lanes[$reference][$row.key] } else { '–' }
+                # Only the versions measured on this lane: a stable line built before a lane existed says nothing there.
+                $references = foreach ($b in $measured | Where-Object { $_.lanes.Contains($lane) }) {
+                    "$($b.short) $(Format-Reference $b.lanes[$lane][$row.key])"
+                }
+                if ($references) { $cell += "<br><sub>$($references -join ' · ')</sub>" }
+                $cell
             }
-            $tableLines.Add("| ``$($row.name)`` | $budget | $cell | $($baselineCells -join ' | ') |")
+            $tableLines.Add("| ``$($row.name)`` | $budget | $($cells -join ' | ') |")
         }
 
-        # One summary line per column, so "within budget" is never read as being about another version.
-        $prOver = @($rows.Values | Where-Object { $key = $_.key; @($laneNames | Where-Object { & $isOver $lanes[$_][$key] }).Count -gt 0 }).Count
-        $prLine = if ($prOver -eq 0) { "✅ all $($rows.Count) metrics within budget on every lane" } else { "⚠️ $prOver of $($rows.Count) metrics over budget on at least one lane" }
+        # One summary line per version, so "within budget" is never read as being about another version.
+        $prOver = @($rows.Values | Where-Object { $key = $_.key; @($laneNames | Where-Object { Test-OverBudget $lanes[$_][$key] }).Count -gt 0 }).Count
+        $prLine = if ($prOver -eq 0) { "✅ all $($rows.Count) metrics within budget on all $($laneNames.Count) lanes" } else { "⚠️ $prOver of $($rows.Count) metrics over budget on at least one of $($laneNames.Count) lanes" }
         if ($dev -and $dev.lanes) {
-            $prLine += if ($lower + $higher -eq 0) { '; no change from the latest dev' } else { "; against the latest dev: $lower lower ▼, $higher higher ▲" }
+            $prLine += if ($lowerMetrics.Count + $higherMetrics.Count -eq 0) { '; no change from the latest dev' } else { "; against the latest dev: $($lowerMetrics.Count) lower ▼, $($higherMetrics.Count) higher ▲" }
         }
         [void]$sb.AppendLine("- **This PR**: $prLine.")
         foreach ($b in $baselines) {
             $build = if ($b.buildUrl) { "[$($b.version)]($($b.buildUrl -replace ' ', '%20'))" } else { $b.version }
-            if ($b.lanes -and $b.lanes.Contains($reference)) {
+            if ($b.lanes) {
                 # Over the rows shown: a version's own extra rows (which objects it leaked) are not in this table.
-                $over = @($rows.Values | Where-Object { & $isOver $b.lanes[$reference][$_.key] }).Count
-                $state = if ($over -eq 0) { '✅ within budget' } else { "⚠️ $over over budget" }
+                $bLanes = @($laneNames | Where-Object { $b.lanes.Contains($_) })
+                $over = @($rows.Values | Where-Object { $key = $_.key; @($bLanes | Where-Object { Test-OverBudget $b.lanes[$_][$key] }).Count -gt 0 }).Count
+                $state = if ($bLanes.Count -eq 1) {
+                    $only = Get-LaneTitle $bLanes[0]
+                    if ($over -eq 0) { "✅ within budget on its only lane ($only)" } else { "⚠️ $over metrics over budget on its only lane ($only)" }
+                }
+                elseif ($over -eq 0) { "✅ within budget on all its $($bLanes.Count) lanes" }
+                else { "⚠️ $over metrics over budget on at least one of its $($bLanes.Count) lanes" }
                 [void]$sb.AppendLine("- **$($b.label)** $($build): $state.")
             }
             else {
@@ -278,23 +322,25 @@ function New-Report($lanes, $baselines) {
         [void]$sb.AppendLine('Report only for now: nothing here fails the build.')
         [void]$sb.AppendLine()
 
-        $columns = foreach ($b in $baselines) {
-            $version = if ($b.buildUrl) { "[$($b.version)]($($b.buildUrl -replace ' ', '%20'))" } else { $b.version }
-            "$($b.label)<br>$version"
+        $headers = foreach ($lane in $laneNames) { Get-LaneTitle $lane }
+        if ($measured.Count -gt 0) {
+            $versions = foreach ($b in $measured) { "$($b.short) = $($b.label.ToLowerInvariant()) $($b.version)" }
+            [void]$sb.AppendLine("Each cell: **this PR**, then on the same lane $($versions -join ', ').")
+            [void]$sb.AppendLine()
         }
-        [void]$sb.AppendLine("**Compared with the latest published versions** (lane ``$reference``)")
-        [void]$sb.AppendLine()
-        [void]$sb.AppendLine("| Metric | Budget | This PR | $($columns -join ' | ') |")
-        [void]$sb.AppendLine("|---|---|---:|$(($baselines | ForEach-Object { '---:' }) -join '|')|")
+        [void]$sb.AppendLine("| Metric | Budget | $($headers -join ' | ') |")
+        [void]$sb.AppendLine("|---|---|$(($laneNames | ForEach-Object { '---:' }) -join '|')|")
         $tableLines | ForEach-Object { [void]$sb.AppendLine($_) }
         [void]$sb.AppendLine()
-        # The legend comes from the tests themselves (RuntimeTestMetrics.Record's description), so a new budget explains
-        # itself here without touching this script.
-        [void]$sb.AppendLine('**What the numbers mean**')
+
+        # Collapsed, to keep the comment short. The descriptions come from the tests themselves
+        # (RuntimeTestMetrics.Record), so a new budget explains itself here without touching this script.
+        [void]$sb.AppendLine('<details><summary>What the numbers mean</summary>')
         [void]$sb.AppendLine()
         [void]$sb.AppendLine('- Every value is a **count** measured by the runtime tests, never a timing, and **lower is better**.')
-        [void]$sb.AppendLine('- **Budget** is the highest acceptable value. ⚠️ marks a value over it; – means the version did not measure it.')
-        [void]$sb.AppendLine('- ▲ / ▼: this PR is more than 20% higher / lower than the latest dev. Frame rates follow the agent''s display rate, so they only count as changed when they cross their budget.')
+        [void]$sb.AppendLine('- **Budget** is the highest acceptable value. ⚠️ marks a value over it; – means that version or lane has no value.')
+        [void]$sb.AppendLine('- ▲ / ▼: this PR is more than 20% higher / lower than the latest dev on the same lane.')
+        [void]$sb.AppendLine("- Frame rates follow each lane's display rate (the framebuffer lane has no vsync), so compare them within a lane; they only count as changed when they cross their budget.")
         [void]$sb.AppendLine('- `x` is a ratio, and `/N` is out of N objects tracked.')
         $described = @($rows.Values | Where-Object { $_.description })
         if ($described.Count -gt 0) {
@@ -304,19 +350,6 @@ function New-Report($lanes, $baselines) {
             foreach ($row in $described) { [void]$sb.AppendLine("| ``$($row.name)`` | $($row.description -replace '\|', '\|') |") }
         }
         [void]$sb.AppendLine()
-
-        # Every lane of this PR, for differences between platforms and renderers.
-        [void]$sb.AppendLine('<details><summary>This PR on every lane</summary>')
-        [void]$sb.AppendLine()
-        [void]$sb.AppendLine("| Metric | Budget | $($laneNames -join ' | ') |")
-        [void]$sb.AppendLine("|---|---|$(($laneNames | ForEach-Object { '---:' }) -join '|')|")
-        foreach ($row in $rows.Values) {
-            $budget = if ($null -ne $row.budget) { '≤ ' + (Format-Number $row.budget) } else { '–' }
-            $cells = foreach ($lane in $laneNames) { Format-Metric $lanes[$lane][$row.key] }
-            [void]$sb.AppendLine("| ``$($row.name)`` | $budget | $($cells -join ' | ') |")
-        }
-        [void]$sb.AppendLine()
-        [void]$sb.AppendLine("Frame rates follow each lane's display rate (the framebuffer lane has no vsync), so compare them within a lane.")
         [void]$sb.AppendLine('</details>')
     }
 

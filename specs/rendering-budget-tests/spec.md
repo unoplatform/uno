@@ -132,8 +132,10 @@ The 6.4 path booleans per step left on 6.8 are most likely the clip-path work th
 
 ### 4.1 Compared with the latest published versions
 
-The comment's main table puts this PR next to the **latest dev** and the **latest stable** versions as published
-on nuget.org, on one reference lane (`skia-windows`). The full per-lane table is collapsed below it.
+The comment's table has one row per metric and one column per lane (Windows, Linux, macOS, then the WebGPU and
+framebuffer variants). Each cell shows this PR's value, with the **latest dev** and **latest stable** values for
+that same lane under it, so platforms and versions read off one table. "What the numbers mean" is collapsed under
+the table: the symbols, and one line per metric taken from the tests' descriptions.
 
 - The versions are read from nuget.org (`Uno.WinUI`) on every report, so the comparison is always with what users
   can install. The dev version is the newest one of this build's line: 7.0 for master, 6.8 for `servicing/6.8`.
