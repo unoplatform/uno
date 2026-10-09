@@ -37,6 +37,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Set while an update replaces the running scroll animation, so the one cut short does not report its stop as final.
 		private bool _isReplacingScrollAnimation;
 
+		private bool _isInManipulation;
+
+		/// <summary>
+		/// Whether a touch manipulation, or the motion it hands over to (fling, snap) or an animated scroll, owns the
+		/// offsets. In WinUI all of those are DirectManipulation viewport changes, which ScrollViewer.IsInManipulation reports.
+		/// </summary>
+		internal bool IsInMotion => _isInManipulation || IsScrollAnimationInProgress;
+
 		private ScrollDecaySimulation _wheelDecayH;
 		private ScrollDecaySimulation _wheelDecayV;
 		private bool _isWheelDecayRunning;
@@ -189,6 +197,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			StopWheelDecayAndPublishFinalOffsets();
 			StopFlingAndPublishFinalOffsets();
+			_isInManipulation = false;
 
 			// The processor outlives the fling on purpose, so unloading has to end it explicitly: left running
 			// it holds a frame driver, keeps this presenter rooted and swallows presses on a tree it has left.
@@ -935,6 +944,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <inheritdoc />
 		void IDirectManipulationHandler.OnStarted(GestureRecognizer recognizer, ManipulationStartedEventArgs args, bool isResuming)
 		{
+			_isInManipulation = true;
 			_velocityTracker.Reset();
 			_velocityTrackerContacts = 0;
 			_touchInertia = null;
@@ -1195,6 +1205,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <inheritdoc />
 		void IDirectManipulationHandler.OnCompleted(GestureRecognizer _, ManipulationCompletedEventArgs? args)
 		{
+			_isInManipulation = false;
 			var wasCoasting = _touchInertia is not null;
 			_touchInertia = null;
 			StopFling();
