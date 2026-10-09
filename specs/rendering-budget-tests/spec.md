@@ -123,12 +123,30 @@ The 6.4 path booleans per step left on 6.8 are most likely the clip-path work th
    It calls `build/ci/scripts/runtime-tests-metrics.ps1 -Mode Extract`, which writes the lane's metrics as JSON
    into the shared `runtime-tests-metrics` artifact, one folder per lane and one file per job attempt.
 4. The `runtime_tests_metrics` stage ("Tests - Rendering budgets") runs once the desktop runtime-test stages
-   finish, whether they passed or failed. `-Mode Report` merges the lanes into one table, publishes it as the
+   finish, whether they passed or failed. `-Mode Report` builds the report (§4.1), publishes it as the
    `runtime-tests-metrics-report` artifact and, on a pull request, creates or updates **one** comment. It finds
    the comment through the hidden marker `<!-- runtime-tests-metrics -->` and the account that posted it, so a
-   push or a stage retry edits it in place. It posts as `unodevops`, with a fine-grained PAT (pull requests: read
-   and write) stored as the `UnoDevOpsGitHubPAT` secret variable of the pipeline. Without that secret, and on fork
-   pull requests, which get no secrets, the report is only published as an artifact.
+   push or a stage retry edits it in place. It posts with `CommentsGitHubPAT`, the same pipeline secret as the
+   screenshot comparison, which should be a `unodevops` token. Fork pull requests get no secrets, so for them the
+   report is only published as an artifact.
+
+### 4.1 Compared with the latest published versions
+
+The comment's main table puts this PR next to the **latest dev** and the **latest stable** versions as published
+on nuget.org, on one reference lane (`skia-windows`). The full per-lane table is collapsed below it.
+
+- The versions are read from nuget.org (`Uno.WinUI`) on every report, so the comparison is always with what users
+  can install. The dev version is the newest one of this build's line: 7.0 for master, 6.8 for `servicing/6.8`.
+  The stable version is the newest stable release, whichever release branch it came from, so the column moves
+  from one stable line to the next without any change here.
+- Each version is the build number of the CI build that produced it: `7.0.0-dev.1656` comes from build
+  `7.0-dev.1656`, and `6.7.135` from build `6.7.135`. The report reads that build's own `runtime-tests-metrics`
+  artifact, so all three columns come from the same tests, on the same kind of agent.
+- A version built before these tests existed shows no numbers, with a note saying why. The dev column fills in
+  with the first dev version published after this change. The stable column fills in with the first stable
+  release whose branch carries the tests, so the tests need to be on the release branch before that release.
+- ▲ / ▼ mark a change of more than 20% from the latest dev. The damaged area alone varies by about 13% between
+  runs. Frame rates follow the agent's display rate and are not compared.
 
 Every step is `continueOnError`. Nothing depends on the report stage, so package publishing never waits for it.
 
@@ -136,8 +154,12 @@ To preview a report locally:
 
 ```pwsh
 build/ci/scripts/runtime-tests-metrics.ps1 -Mode Extract -ResultsFile results.xml -Lane skia-windows -OutputDirectory out
-build/ci/scripts/runtime-tests-metrics.ps1 -Mode Report -InputDirectory out -ReportFile report.md
+build/ci/scripts/runtime-tests-metrics.ps1 -Mode Report -InputDirectory out -ReportFile report.md `
+    -BuildNumber 7.0-dev.1 -CollectionUri https://dev.azure.com/uno-platform/ `
+    -ProjectId 1dd81cbd-cb35-41de-a570-b0df3571a196 -DefinitionId 5
 ```
+
+`-DevBuildNumber` and `-StableBuildNumber` compare with specific builds instead of the latest published versions.
 
 ## 5. Report-only first, enforcing later
 
@@ -161,8 +183,9 @@ are enforced once their fix lands, and the fix PR shows the value dropping in it
 
 - **More lanes.** WASM, Android and iOS already have the properties in their results files. They need the
   extract step, plus a path to the file on each agent.
-- **Baselines.** Non-PR builds also publish the report artifact. The PR comment can then add columns for the
-  latest master build and the latest stable release, which turns "over budget" into "changed by this PR".
+- **Stable baseline.** The stable column stays empty until a stable release is built with these tests. That
+  needs the tests and their counters on the release branches (the `servicing/6.8` port in §3 shows what the 6.x
+  counters look like).
 - **More scenarios.** Lottie playback damage, decoded image memory after the image leaves the screen
   ([#25114](https://github.com/unoplatform/uno/issues/25114)), text updates (measures and damage per edit).
 - **Timing benchmarks** belong on merge builds, in parallel and never blocking publishing, with real devices
