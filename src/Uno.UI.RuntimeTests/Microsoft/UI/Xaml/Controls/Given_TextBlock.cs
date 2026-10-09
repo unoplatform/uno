@@ -816,7 +816,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("ABC", TextAlignment.Left, TextWrapping.NoWrap, 200, 300, false, DisplayName = "Single left-aligned line, width differs")]
 		[DataRow("ABC", TextAlignment.Center, TextWrapping.NoWrap, 200, 300, true, DisplayName = "Centred, width differs")]
 		[DataRow("ABC", TextAlignment.Left, TextWrapping.Wrap, 200, 300, true, DisplayName = "Wrapping, width differs")]
-		[DataRow("A\nB", TextAlignment.Left, TextWrapping.NoWrap, 300, 100, true, DisplayName = "Two lines, height differs")]
+		[DataRow("A\nB", TextAlignment.Left, TextWrapping.NoWrap, 300, 100, false, DisplayName = "Two lines, taller arrange still fits")]
 		public void When_Arranged_At_Other_Size_Then_Reparses_Only_If_Layout_Depends_On_It(string text, TextAlignment alignment, TextWrapping wrapping, double arrangeWidth, double arrangeHeight, bool expectReparse)
 		{
 			var SUT = new TextBlock { Text = text, TextAlignment = alignment, TextWrapping = wrapping };
@@ -833,6 +833,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Assert.AreSame(measured, SUT.ParsedText);
 			}
+		}
+
+		[TestMethod]
+		public void When_Arranged_At_Exact_Desired_Height_Then_Does_Not_Reparse()
+		{
+			var SUT = new TextBlock { Text = "A\nB" };
+
+			SUT.Measure(new Size(300, double.PositiveInfinity));
+			var measured = SUT.ParsedText;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 300, SUT.DesiredSize.Height));
+
+			Assert.AreSame(measured, SUT.ParsedText);
+		}
+
+		[TestMethod]
+		public void When_Measure_Was_Height_Truncated_Then_Arrange_Needs_The_Same_Height()
+		{
+			var SUT = new TextBlock { Text = "A\nB\nC\nD" };
+
+			SUT.Measure(new Size(300, 30));
+			var measured = SUT.ParsedText;
+
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 300, 30));
+			Assert.AreSame(measured, SUT.ParsedText, "Same height reuses the truncated layout.");
+
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 300, 1000));
+			Assert.AreNotSame(measured, SUT.ParsedText, "A truncated layout cannot be reused at a taller height.");
 		}
 #endif
 
