@@ -7,7 +7,8 @@ namespace Uno.UI.RuntimeTests.Helpers;
 
 /// <summary>
 /// Measurements a runtime test reports alongside its result. The runner clears them before each attempt and writes
-/// them into the NUnit results as test-case properties (<c>metric:</c>, <c>budget:</c> and <c>unit:</c> prefixes), so
+/// them into the NUnit results as test-case properties (<c>metric:</c>, <c>budget:</c>, <c>unit:</c> and
+/// <c>description:</c> prefixes), so
 /// CI can collect them from every lane without the test knowing where it runs.
 /// </summary>
 /// <remarks>
@@ -20,11 +21,13 @@ public static class RuntimeTestMetrics
 	private static readonly object _gate = new();
 	private static List<RuntimeTestMetric> _metrics = new();
 
-	public static void Record(string name, double value, double? budget = null, string? unit = null)
+	/// <param name="description">What the value counts and what a good value is, in a sentence: it is the legend of
+	/// the pull request report.</param>
+	public static void Record(string name, double value, double? budget = null, string? unit = null, string? description = null)
 	{
 		lock (_gate)
 		{
-			_metrics.Add(new RuntimeTestMetric(name, value, budget, unit));
+			_metrics.Add(new RuntimeTestMetric(name, value, budget, unit, description));
 		}
 	}
 
@@ -47,7 +50,7 @@ public static class RuntimeTestMetrics
 	}
 }
 
-public sealed record RuntimeTestMetric(string Name, double Value, double? Budget, string? Unit)
+public sealed record RuntimeTestMetric(string Name, double Value, double? Budget, string? Unit, string? Description = null)
 {
 	public bool IsOverBudget => Budget is { } budget && Value > budget;
 
