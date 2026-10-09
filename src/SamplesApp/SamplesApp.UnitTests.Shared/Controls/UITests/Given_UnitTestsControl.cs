@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -296,7 +297,6 @@ public class Given_UnitTestsControl
 
 	[TestMethod]
 	[DataRow(700d, 0)]
-	[DataRow(360d, 1)] // Mid-window: fonts differ per platform, and the strip fits 330-370 on desktop.
 	[DataRow(270d, 2)]
 	public async Task When_Runner_Is_Short_Stat_Cards_Shrink(double height, int expectedMode)
 	{
@@ -308,6 +308,30 @@ public class Given_UnitTestsControl
 		Assert.AreEqual(
 			expectedMode == 2 ? Visibility.Visible : Visibility.Collapsed,
 			Find<TextBlock>(runner, "ShellResultsStatsSummary").Visibility);
+	}
+
+	[TestMethod]
+	public async Task When_Runner_Shrinks_Stats_Step_Down_Through_Strip()
+	{
+		// The strip's height window moves with each platform's fonts, so walk through it rather than guess it.
+		var runner = await LoadRunner(height: 700);
+		var scroller = Find<ScrollViewer>(runner, "ShellRunHeaderScroller");
+		List<UnitTestsControl.StatsMode> modes = new();
+
+		for (var height = 700d; height >= 260; height -= 5)
+		{
+			runner.Height = height;
+			runner.UpdateLayout();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(scroller.ScrollableHeight <= 0.5, $"At {height} the header scrolls ({scroller.ScrollableHeight}).");
+			modes.Add(runner.CurrentStatsMode);
+		}
+
+		CollectionAssert.AreEqual(modes.OrderBy(m => m).ToList(), modes, $"Modes only get poorer: {string.Join(", ", modes.Distinct())}");
+		CollectionAssert.AreEqual(
+			new[] { UnitTestsControl.StatsMode.Cards, UnitTestsControl.StatsMode.Strip, UnitTestsControl.StatsMode.Hidden },
+			modes.Distinct().ToArray());
 	}
 
 	[TestMethod]

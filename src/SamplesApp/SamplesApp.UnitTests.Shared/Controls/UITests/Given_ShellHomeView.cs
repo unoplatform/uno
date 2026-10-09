@@ -302,7 +302,9 @@ public class Given_ShellHomeView
 	private static async Task<ItemsRepeater> ShowCategories(HomeView view)
 	{
 		var list = (ItemsRepeater)view.FindName("ShellHomeCategoriesList");
-		list.StartBringIntoView(new BringIntoViewOptions { VerticalAlignmentRatio = 0, AnimationDesired = false });
+		var scroller = (ScrollViewer)view.Content;
+		var top = list.TransformToVisual((UIElement)scroller.Content).TransformPoint(default).Y;
+		scroller.ChangeView(null, top, null, disableAnimation: true);
 		await TestServices.WindowHelper.WaitFor(() => list.TryGetElement(0) is not null, message: "The first card should be realized.");
 		view.UpdateLayout();
 
