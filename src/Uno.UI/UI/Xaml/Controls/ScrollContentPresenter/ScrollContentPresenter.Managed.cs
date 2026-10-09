@@ -393,7 +393,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var updatedHorizontalOffset = HorizontalOffset;
 			var updatedVerticalOffset = VerticalOffset;
-			if (updated || options.IsTouch)
+			// The touch and wheel drivers publish their final offset with no change at all, cf. Stop*AndPublishFinalOffsets.
+			if (updated || options.IsTouch || options.IsWheelDecay)
 			{
 				if (Content is UIElement contentElt)
 				{
@@ -468,11 +469,13 @@ namespace Microsoft.UI.Xaml.Controls
 			var targetScale = new Vector3(zoom, zoom, 1);
 			var visual = view.Visual;
 
-			// No matter the `options.DisableAnimation`, if we have an animation running
-			if (visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller
+			// No matter the `options.DisableAnimation`, if we have an animation running (that a wheel decay is not taking over)
+			if (!options.IsWheelDecay
+				&& visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller
 				// ... that is animating to (almost) the same target value
 				&& Vector2.DistanceSquared(visual.AnchorPoint, target) < 4
-				// ... and which is about to complete
+				// ... and which is about to complete (a completed one stays registered, but must not swallow this update)
+				&& controller.Remaining > TimeSpan.Zero
 				&& controller.Remaining < TimeSpan.FromMilliseconds(50))
 			{
 				// We keep the animation running, making sure that we are not abruptly stopping scrolling animation
@@ -700,13 +703,23 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </returns>
 		internal bool AddWheelImpulse(double horizontalDistance, double verticalDistance)
 		{
+			// A notch too fine to move a whole pixel is still this presenter's: chaining it would scroll a parent.
+			if (horizontalDistance == 0 && verticalDistance == 0)
+			{
+				return true;
+			}
+
 			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
 			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);
 
+			// An animated scroll has already moved the offsets to its target: the decay takes over from
+			// where the content is drawn, or its first frame would jump to that target.
+			var (drawnH, drawnV) = GetDrawnOffsets();
+
 			// Against where the motion in flight will come to rest, not where it is now: a decay that is
 			// already destined for the end of the extent has no room left, and the event must chain to a parent.
-			var fromH = _isWheelDecayRunning ? _wheelDecayH.ProjectedEnd : HorizontalOffset;
-			var fromV = _isWheelDecayRunning ? _wheelDecayV.ProjectedEnd : VerticalOffset;
+			var fromH = _isWheelDecayRunning ? _wheelDecayH.ProjectedEnd : drawnH;
+			var fromV = _isWheelDecayRunning ? _wheelDecayV.ProjectedEnd : drawnV;
 
 			if (!HasRoom(fromH, horizontalDistance, maxH) && !HasRoom(fromV, verticalDistance, maxV))
 			{
@@ -722,8 +735,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// Seeded from the current offset, which a coasting fling may still be advancing, and anchored
 				// on the first frame rather than on a clock read here — cf. StartFling.
-				_wheelDecayH.Start(HorizontalOffset, wheelTarget.FrameIntervalInTicks);
-				_wheelDecayV.Start(VerticalOffset, wheelTarget.FrameIntervalInTicks);
+				_wheelDecayH.Start(drawnH, wheelTarget.FrameIntervalInTicks);
+				_wheelDecayV.Start(drawnV, wheelTarget.FrameIntervalInTicks);
 				_isWheelDecayRunning = true;
 				_wheelDecayTarget = wheelTarget;
 				wheelTarget.FrameStarting += OnWheelDecayFrame;
@@ -731,8 +744,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// The decay has taken the notch over, so it also takes over from any coasting touch fling:
 			// both drive the same offsets from the same frame clock, and the fling would otherwise keep
-			// publishing its own position over the decay on every frame.
+			// publishing its own position over the decay on every frame. The decay's first frame would end the
+			// manipulation the fling held too, but a completion within that frame would stop the decay.
 			StopFling();
+			CompleteTouchInertia();
 
 			_wheelDecayH.AddImpulse(horizontalDistance);
 			_wheelDecayV.AddImpulse(verticalDistance);
@@ -740,6 +755,23 @@ namespace Microsoft.UI.Xaml.Controls
 
 			static bool HasRoom(double from, double distance, double max)
 				=> distance < 0 ? from > 0 : distance > 0 && from < max;
+		}
+
+		/// <summary>Where the content is drawn, which trails the offsets while an animated scroll is in flight.</summary>
+		private (double Horizontal, double Vertical) GetDrawnOffsets()
+		{
+			if (Content is UIElement { Visual: { } visual }
+				&& visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller
+				&& controller.Remaining > TimeSpan.Zero)
+			{
+				// AnchorPoint also carries the centering offset of content smaller than the viewport, cf. Update.
+				var centeringX = Math.Max(0, (ViewportWidth - ExtentWidth * _zoomFactor) / 2);
+				var centeringY = Math.Max(0, (ViewportHeight - ExtentHeight * _zoomFactor) / 2);
+
+				return (-visual.AnchorPoint.X + centeringX, -visual.AnchorPoint.Y + centeringY);
+			}
+
+			return (HorizontalOffset, VerticalOffset);
 		}
 
 		internal void StopWheelDecay()
