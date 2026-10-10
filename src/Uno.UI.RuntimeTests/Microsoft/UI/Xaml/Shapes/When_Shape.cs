@@ -275,6 +275,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
+		public async Task When_StrokeDashArray_Then_Relative_To_StrokeThickness()
+		{
+			// XAML dashes are multiples of StrokeThickness: {2, 2} at thickness 5 alternates every 10px,
+			// and every 20px once the thickness becomes 10.
+			var container = new Grid { Width = 220, Height = 40, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 10,
+				Y1 = 20,
+				X2 = 210,
+				Y2 = 20,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 5,
+				StrokeDashArray = new DoubleCollection { 2, 2 },
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+			for (var i = 0; i < 8; i++)
+			{
+				ImageAssert.HasColorAt(screenshot, 15 + i * 10, 20, i % 2 == 0 ? Colors.Red : Colors.White, tolerance: 30);
+			}
+
+			line.StrokeThickness = 10;
+			await UITestHelper.WaitForIdle();
+			screenshot = await UITestHelper.ScreenShot(container);
+			for (var i = 0; i < 4; i++)
+			{
+				ImageAssert.HasColorAt(screenshot, 20 + i * 20, 20, i % 2 == 0 ? Colors.Red : Colors.White, tolerance: 30);
+			}
+		}
+
+		[TestMethod]
 		public async Task When_StrokeLineCap_Properties_Are_Set()
 		{
 			// Verify that setting cap properties doesn't crash and the properties are stored correctly

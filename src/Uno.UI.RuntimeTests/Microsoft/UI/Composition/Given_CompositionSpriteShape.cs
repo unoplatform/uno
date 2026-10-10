@@ -14,11 +14,11 @@ using Microsoft.UI.Xaml.Markup;
 using Path = Microsoft.UI.Xaml.Shapes.Path;
 using System.Numerics;
 using Windows.Foundation;
+using Uno.UI.RuntimeTests.Helpers;
 
 #if __SKIA__
 using Private.Infrastructure;
 using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas;
 #endif
@@ -533,4 +533,52 @@ public class Given_CompositionSpriteShape
 		return points;
 	}
 #endif
+
+	// Composition dash intervals are absolute (geometry units), unlike XAML Shape.StrokeDashArray which is in
+	// multiples of StrokeThickness. A {10, 10} dash at thickness 6 must alternate every 10px, not every 60px.
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(0f, true)]
+	[DataRow(10f, false)]
+	public async Task When_StrokeDashArray_Then_Absolute_Units(float dashOffset, bool startsWithDash)
+	{
+		var anchor = new Border { Width = 1, Height = 1 };
+		await UITestHelper.Load(anchor);
+		var compositor = ElementCompositionPreview.GetElementVisual(anchor).Compositor;
+
+		var line = compositor.CreateLineGeometry();
+		line.Start = new Vector2(10, 20);
+		line.End = new Vector2(210, 20);
+
+		var shape = compositor.CreateSpriteShape(line);
+		shape.StrokeThickness = 6f;
+		shape.StrokeBrush = compositor.CreateColorBrush(Microsoft.UI.Colors.Red);
+		shape.StrokeDashCap = CompositionStrokeCap.Flat;
+		shape.StrokeDashArray.Add(10f);
+		shape.StrokeDashArray.Add(10f);
+		shape.StrokeDashOffset = dashOffset;
+
+		var shapeVisual = compositor.CreateShapeVisual();
+		shapeVisual.Shapes.Add(shape);
+		shapeVisual.Size = new Vector2(220, 40);
+
+		var host = new Border
+		{
+			Width = 220,
+			Height = 40,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+		};
+		ElementCompositionPreview.SetElementChildVisual(host, shapeVisual);
+
+		await UITestHelper.Load(host);
+		await UITestHelper.WaitForIdle();
+		var screenshot = await UITestHelper.ScreenShot(host);
+
+		// Centre of each 10px interval along the line.
+		for (var i = 0; i < 8; i++)
+		{
+			var isDash = (i % 2 == 0) == startsWithDash;
+			ImageAssert.HasColorAt(screenshot, 15 + i * 10, 20, isDash ? Microsoft.UI.Colors.Red : Microsoft.UI.Colors.White, tolerance: 30);
+		}
+	}
 }
