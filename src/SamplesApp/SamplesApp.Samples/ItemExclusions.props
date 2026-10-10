@@ -51,6 +51,12 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView2Tests\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView2Tests\**"
 		      Link="Microsoft\UI\Xaml\Controls\WebView2Tests\%(RecursiveDir)%(Filename)%(Extension)" />
+
+		<!-- Input validation is Uno-only: the Uno.Extras.Input.Validation attached properties do nothing on WinAppSDK -->
+		<Page Remove="$(MSBuildThisFileDirectory)Uno\UI\Xaml\Controls\Validation\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Uno\UI\Xaml\Controls\Validation\**" />
+		<None Include="$(MSBuildThisFileDirectory)Uno\UI\Xaml\Controls\Validation\**"
+		      Link="Uno\UI\Xaml\Controls\Validation\%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 	<!-- SkiaSharp-free build: SKCanvasElement exposes raw SKCanvas (Uno.WinUI.Graphics2DSK) and cannot be neutral. -->
 	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'=='false'">

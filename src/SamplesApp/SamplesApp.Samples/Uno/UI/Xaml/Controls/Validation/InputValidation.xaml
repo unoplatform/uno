@@ -1,0 +1,84 @@
+﻿<Page
+    x:Class="UITests.Shared.Uno_UI_Xaml_Controls.Validation.InputValidation"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:input="using:Uno.Extras.Input"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_win="http://uno.ui/not_win"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d not_win">
+
+    <win:TextBlock Text="This sample demos an Uno Platform only feature and is not available on Windows." />
+
+    <not_win:ScrollViewer>
+        <StackPanel
+            MaxWidth="480"
+            Margin="16"
+            HorizontalAlignment="Left"
+            Spacing="16">
+
+            <TextBlock
+                Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                Text="Errors travel from a view model implementing INotifyDataErrorInfo to the bound control. Nothing renders them by itself: the lists below bind to the Validation.Errors collection of each control."
+                TextWrapping="Wrap" />
+
+            <StackPanel Spacing="4">
+                <TextBox
+                    x:Name="UserNameBox"
+                    input:Validation.Mode="Auto"
+                    Header="User name (5 characters minimum)"
+                    Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <ItemsControl x:Name="UserNameErrors" ItemsSource="{Binding (input:Validation.Errors), ElementName=UserNameBox}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock
+                                Foreground="Red"
+                                Text="{Binding ErrorMessage}"
+                                TextWrapping="Wrap" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <StackPanel Spacing="4">
+                <PasswordBox
+                    x:Name="PasswordBox"
+                    input:Validation.Mode="Auto"
+                    Header="Password (8 characters minimum)"
+                    Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <ItemsControl x:Name="PasswordErrors" ItemsSource="{Binding (input:Validation.Errors), ElementName=PasswordBox}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock
+                                Foreground="Red"
+                                Text="{Binding ErrorMessage}"
+                                TextWrapping="Wrap" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <StackPanel Spacing="4">
+                <ComboBox
+                    x:Name="CountryBox"
+                    input:Validation.Mode="Auto"
+                    Header="Country"
+                    ItemsSource="{Binding Countries}"
+                    SelectedItem="{Binding Country, Mode=TwoWay}" />
+                <ItemsControl x:Name="CountryErrors" ItemsSource="{Binding (input:Validation.Errors), ElementName=CountryBox}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock
+                                Foreground="Red"
+                                Text="{Binding ErrorMessage}"
+                                TextWrapping="Wrap" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+        </StackPanel>
+    </not_win:ScrollViewer>
+</Page>

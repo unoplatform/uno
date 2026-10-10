@@ -589,7 +589,11 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void UpdateButtonStates() => _core.UpdateButtonStatesCore();
 
 		internal override void UpdateVisualState(bool useTransitions = true)
-			=> _core.UpdateVisualStateCore(useTransitions);
+		{
+			_core.UpdateVisualStateCore(useTransitions);
+
+			UpdateValidationStates();
+		}
 
 		internal override string GetPlainText()
 		{

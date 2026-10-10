@@ -39,6 +39,17 @@ namespace Microsoft.UI.Xaml.Data
 
 		internal DependencyPropertyDetails TargetPropertyDetails { get; }
 
+		/// <summary>
+		/// Set when this expression targets the validation property of its owner, so that
+		/// <see cref="OnValueChanged"/> re-resolves the validation source on every path resolution.
+		/// </summary>
+		internal bool IsValidationSource { get; set; }
+
+		/// <summary>
+		/// The owner of the bound property: an expression offers no other way back to it.
+		/// </summary>
+		internal ManagedWeakReference ViewReference => _view;
+
 		private object ExplicitSource
 		{
 			get => _explicitSourceStore?.Target;
@@ -85,6 +96,35 @@ namespace Microsoft.UI.Xaml.Data
 		}
 
 		public object DataItem => _bindingPath.DataItem;
+
+		/// <summary>
+		/// The object and property name at the leaf of the binding path, i.e. what may implement
+		/// <see cref="System.ComponentModel.INotifyDataErrorInfo"/>.
+		/// </summary>
+		/// <remarks>
+		/// A compiled binding resolves through its update sources and leaves <see cref="_bindingPath"/> empty,
+		/// so <see cref="DataItem"/> alone would silently never validate an x:Bind. Several update sources have
+		/// no single leaf.
+		/// </remarks>
+		internal (object Source, string PropertyName) GetValidationLeaf()
+		{
+			BindingPath path;
+
+			if (_updateSources is null)
+			{
+				path = _bindingPath;
+			}
+			else if (_updateSources.Length == 1)
+			{
+				path = _updateSources[0];
+			}
+			else
+			{
+				return default;
+			}
+
+			return (path.DataItem, path.LeafPropertyName);
+		}
 
 		internal bool IsExplicitlySourced => _isElementNameSource || (_explicitSourceStore?.IsAlive ?? false);
 
@@ -651,6 +691,11 @@ namespace Microsoft.UI.Xaml.Data
 
 		internal void OnValueChanged(object o)
 		{
+			if (IsValidationSource)
+			{
+				Microsoft.UI.Xaml.Controls.Control.OnValidationSourceChanged(this);
+			}
+
 			if (ParentBinding.XBindSelector != null)
 			{
 				SetTargetValueForXBindSelector();
