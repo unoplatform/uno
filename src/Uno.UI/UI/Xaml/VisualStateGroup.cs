@@ -656,6 +656,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public override string ToString()
-			=> Name ?? $"<unnamed group {GetHashCode()}>";
+			=> string.IsNullOrEmpty(Name) ? $"<unnamed group {GetHashCode()}>" : Name;
 	}
 }
