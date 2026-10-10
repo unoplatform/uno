@@ -245,25 +245,18 @@ public class Given_CompositionTarget
 	/// </summary>
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaAndroid)]
 	public async Task When_Host_Reports_Vsync_Then_Frame_Time_Is_The_Vsync()
 	{
 		var border = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
 		await UITestHelper.Load(border);
 		var target = (CompositionTarget)border.Visual.CompositionTarget!;
-		var compositor = border.Visual.Compositor;
-
-		var ticks = 0;
-		var aheadOfClock = 0L;
-		EventHandler<long> driver = (_, timestamp) =>
-		{
-			ticks++;
-			aheadOfClock = Math.Max(aheadOfClock, timestamp - compositor.TimestampInTicks);
-		};
+		var timestamps = new List<long>();
+		EventHandler<long> driver = (_, timestamp) => timestamps.Add(timestamp);
 		target.FrameStarting += driver;
 		try
 		{
-			await TestServices.WindowHelper.WaitFor(() => ticks >= 10, message: "the driver should keep ticking");
+			await TestServices.WindowHelper.WaitFor(() => timestamps.Count >= 40, message: "the driver should keep ticking");
 		}
 		finally
 		{
@@ -271,7 +264,16 @@ public class Given_CompositionTarget
 		}
 
 		Assert.IsTrue(target.IsFrameTimestampFromVsync, "the frame time should come from the host's vsync");
-		Assert.IsTrue(aheadOfClock <= 0, $"a vsync that already happened can't be {aheadOfClock / (double)TimeSpan.TicksPerMillisecond:F2}ms ahead of the clock");
+
+		// Real vsyncs are evenly spaced (a skipped frame leaves a whole multiple of the period), whereas time sampled
+		// on the render thread jitters by milliseconds.
+		var intervals = timestamps.Skip(5).Zip(timestamps.Skip(6), (a, b) => b - a).ToArray();
+		var period = intervals.OrderBy(i => i).ElementAt(intervals.Length / 2);
+		var tolerance = TimeSpan.TicksPerMillisecond * 0.3;
+		var worst = intervals.Max(i => Math.Abs(i - Math.Max(1, Math.Round(i / (double)period)) * period));
+		Assert.IsTrue(
+			worst <= tolerance,
+			$"frame times should be evenly spaced vsyncs, but one is {worst / (double)TimeSpan.TicksPerMillisecond:F2}ms off a whole number of {period / (double)TimeSpan.TicksPerMillisecond:F2}ms periods");
 	}
 
 	/// <summary>

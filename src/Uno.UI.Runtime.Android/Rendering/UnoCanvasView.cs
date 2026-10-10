@@ -35,10 +35,13 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 	private readonly ApplicationActivity _activity;
 	private readonly InternalRenderer _renderer;
+	private readonly ChoreographerFramePacer _framePacer;
 
 	public UnoCanvasView(ApplicationActivity activity) : base(activity)
 	{
 		_activity = activity;
+		// Frames start on vsync: the callback is what asks the GL thread to draw.
+		_framePacer = new ChoreographerFramePacer(() => RequestRender());
 		SetEGLContextClientVersion(2);
 		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
 		SetRenderer(_renderer = new InternalRenderer(this));
@@ -101,8 +104,18 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 	public void InvalidateRender()
 	{
 		ExploreByTouchHelper.InvalidateRoot();
-		// Request the call of IRenderer.OnDrawFrame for one frame
-		RequestRender();
+		// Request the call of IRenderer.OnDrawFrame for one frame, at the next vsync
+		_framePacer.RequestFrame();
+	}
+
+	protected override void Dispose(bool disposing)
+	{
+		if (disposing)
+		{
+			_framePacer.Dispose();
+		}
+
+		base.Dispose(disposing);
 	}
 
 	public override bool OnCheckIsTextEditor()
@@ -221,7 +234,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 			// The context wraps the ambient EGL context; the backend renders into the default framebuffer and
 			// GLSurfaceView swaps implicitly (Present is a no-op).
 			compositionTarget.Renderer = _renderer!;
-			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(_context);
+			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(_context, vsyncTimestamp: _view._framePacer.TakeVsyncTimestamp());
 
 			if (_activity.NativeLayerHost is { } nativeLayerHost)
 			{
