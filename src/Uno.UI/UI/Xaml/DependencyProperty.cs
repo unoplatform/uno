@@ -423,11 +423,13 @@ namespace Microsoft.UI.Xaml
 				name = propertyInfo.Name;
 			}
 
+			var requestedType = type;
+
 			do
 			{
 				if (_registry.TryGetValue(type, name, out var result))
 				{
-					return result;
+					return IsNameVisibleOn(result, requestedType) ? result : null;
 				}
 
 				// Dependency properties are inherited
@@ -437,6 +439,13 @@ namespace Microsoft.UI.Xaml
 
 			return null;
 		}
+
+		// As in WinUI, DependencyObject_Name is reachable by name only as FrameworkElement.Name, so bindings
+		// to "Name" on other objects keep resolving their CLR property (or nothing).
+		private static bool IsNameVisibleOn(DependencyProperty property, Type requestedType)
+			=> !ReferenceEquals(property, DependencyObject.NameProperty)
+				|| requestedType == typeof(DependencyObject)
+				|| typeof(FrameworkElement).IsAssignableFrom(requestedType);
 
 		/// <summary>
 		/// Gets the dependencies properties for the specified type with specific Framework metadata options
