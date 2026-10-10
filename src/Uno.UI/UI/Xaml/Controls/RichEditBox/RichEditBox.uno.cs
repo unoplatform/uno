@@ -143,7 +143,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			if (FindName("DescriptionPresenter") is ContentPresenter presenter)
+			if (FindNameInSubtree("DescriptionPresenter") is ContentPresenter presenter)
 			{
 				presenter.Visibility = Description is null ? Visibility.Collapsed : Visibility.Visible;
 			}
