@@ -1281,5 +1281,106 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		}
 
 		#endregion
+
+		#region Cached page re-entry
+
+		[TestMethod]
+		[RunsOnUIThread]
+		// NativeWinUI excluded: Frame.Navigate triggers a fatal 0xC0000005 access violation. https://github.com/unoplatform/uno/issues/23477
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_CachedPage_NavigatedBack_Then_RealizedItemsFillViewport()
+		{
+			var frame = new Frame { Width = 300, Height = 500 };
+			TestServices.WindowHelper.WindowContent = frame;
+
+			try
+			{
+				await TestServices.WindowHelper.WaitForLoaded(frame);
+
+				frame.Navigate(typeof(CachedRepeaterPage));
+				var page = (CachedRepeaterPage)frame.Content;
+				await TestServices.WindowHelper.WaitFor(() => page.Repeater.IsLoaded);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				CachedRepeaterPage.RealizedBottom(page).Should().BeGreaterThanOrEqualTo(page.Scroller.ViewportHeight, "items should fill the viewport on first load");
+
+				frame.Navigate(typeof(EmptyPage));
+				await TestServices.WindowHelper.WaitFor(() => !page.Repeater.IsLoaded);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				frame.GoBack();
+				frame.Content.Should().BeSameAs(page);
+				await TestServices.WindowHelper.WaitFor(() => page.Repeater.IsLoaded);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				CachedRepeaterPage.RealizedBottom(page).Should().BeGreaterThanOrEqualTo(page.Scroller.ViewportHeight, "items should fill the viewport after navigating back");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		public sealed partial class CachedRepeaterPage : Page
+		{
+			public CachedRepeaterPage()
+			{
+				NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
+
+				Repeater = new ItemsRepeater
+				{
+					ItemsSource = Enumerable.Range(0, 10).Select(i => $"Item {i}").ToArray(),
+					Layout = new StackLayout { Spacing = 12 },
+					ItemTemplate = (DataTemplate)XamlReader.Load("""
+						<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+							<Border Height="150" Background="LightSteelBlue">
+								<TextBlock Text="{Binding}" />
+							</Border>
+						</DataTemplate>
+						"""),
+				};
+				Scroller = new ScrollViewer
+				{
+					Padding = new Thickness(20, 16, 20, 20),
+					Content = new StackPanel
+					{
+						Spacing = 12,
+						Children =
+						{
+							new Border { Height = 60 },
+							Repeater,
+						},
+					},
+				};
+				Content = Scroller;
+			}
+
+			public ItemsRepeater Repeater { get; }
+
+			public ScrollViewer Scroller { get; }
+
+			// Bottom of the lowest realized element, relative to the repeater. Recycled elements are parked at negative offsets.
+			public static double RealizedBottom(CachedRepeaterPage page)
+			{
+				var bottom = 0.0;
+				var count = VisualTreeHelper.GetChildrenCount(page.Repeater);
+				for (var i = 0; i < count; i++)
+				{
+					if (VisualTreeHelper.GetChild(page.Repeater, i) is FrameworkElement { ActualHeight: > 0 } child
+						&& child.ActualOffset.Y > -1000)
+					{
+						bottom = Math.Max(bottom, child.ActualOffset.Y + child.ActualHeight);
+					}
+				}
+
+				return bottom;
+			}
+		}
+
+		public sealed partial class EmptyPage : Page
+		{
+		}
+
+		#endregion
 	}
 }
