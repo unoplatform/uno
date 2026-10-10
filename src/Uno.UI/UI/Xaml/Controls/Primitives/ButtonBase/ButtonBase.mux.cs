@@ -145,9 +145,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Called when the element enters the tree. Attaches event handler to Command.CanExecuteChanged.
 		/// </summary>
-		private protected override void EnterImpl(bool live)
+		private protected override void EnterManagedPeerImpl(bool live)
 		{
-			base.EnterImpl(live);
+			base.EnterManagedPeerImpl(live);
 			if (_canExecuteChangedHandler.Disposable == null)
 			{
 				var command = Command;
@@ -175,9 +175,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Called when the element leaves the tree. Detaches event handler from Command.CanExecuteChanged.
 		/// </summary>
-		private protected override void LeaveImpl(bool live)
+		private protected override void LeaveManagedPeerImpl(bool live)
 		{
-			base.LeaveImpl(live);
+			base.LeaveManagedPeerImpl(live);
 			if (_canExecuteChangedHandler.Disposable != null)
 			{
 				_canExecuteChangedHandler.Disposable = null;

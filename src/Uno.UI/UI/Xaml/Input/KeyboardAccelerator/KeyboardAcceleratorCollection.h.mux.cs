@@ -13,9 +13,9 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 	{
 	}
 
-	internal new void Enter(DependencyObject pNamescopeOwner, EnterParams enterParams)
+	internal void RegisterLiveAccelerators(DependencyObject pNamescopeOwner, EnterParams enterParams)
 	{
-		//base.Enter(pNamescopeOwner, enterParams);
+		// TODO Uno: the generic DependencyObject Enter walk is deliberately not run here.
 
 		if (enterParams.IsLive || enterParams.IsForKeyboardAccelerator)
 		{
@@ -41,14 +41,14 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 		{
 			foreach (var ka in this)
 			{
-				ka.EnterImpl(pNamescopeOwner, enterParams);
+				ka.EnterAcceleratorImpl(pNamescopeOwner, enterParams);
 			}
 		}
 	}
 
-	internal new void Leave(DependencyObject pNamescopeOwner, LeaveParams leaveParams)
+	internal void UnregisterLiveAccelerators(DependencyObject pNamescopeOwner, LeaveParams leaveParams)
 	{
-		//base.Leave(pNamescopeOwner, leaveParams);
+		// TODO Uno: the generic DependencyObject Leave walk is deliberately not run here.
 
 		if (leaveParams.IsLive || leaveParams.IsForKeyboardAccelerator)
 		{
