@@ -1139,12 +1139,24 @@ namespace Microsoft.UI.Xaml.Controls
 			// recompute coerces toward this offset instead of snapping back to a stale programmatic one.
 			_verticalOffsetIntent = offset;
 
+			var isThumbTrack = e.ScrollEventType == ScrollEventType.ThumbTrack;
+			if (isThumbTrack)
+			{
+				EnterIntermediateViewChangedMode();
+			}
+
+			// Snapping is deferred to EndScroll so it doesn't fight the thumb on every drag tick.
 			ChangeViewCore(
 				horizontalOffset: null,
 				verticalOffset: offset,
 				zoomFactor: null,
 				disableAnimation: immediate,
-				shouldSnap: true);
+				shouldSnap: !isThumbTrack);
+
+			if (e.ScrollEventType == ScrollEventType.EndScroll)
+			{
+				LeaveIntermediateViewChangedMode(raiseFinalViewChanged: true);
+			}
 		}
 
 		private void OnHorizontalScrollBarScrolled(object sender, ScrollEventArgs e)
@@ -1167,12 +1179,55 @@ namespace Microsoft.UI.Xaml.Controls
 			// Arm the intent — see OnVerticalScrollBarScrolled.
 			_horizontalOffsetIntent = offset;
 
+			var isThumbTrack = e.ScrollEventType == ScrollEventType.ThumbTrack;
+			if (isThumbTrack)
+			{
+				EnterIntermediateViewChangedMode();
+			}
+
 			ChangeViewCore(
 				horizontalOffset: offset,
 				verticalOffset: null,
 				zoomFactor: null,
 				disableAnimation: immediate,
-				shouldSnap: true);
+				shouldSnap: !isThumbTrack);
+
+			if (e.ScrollEventType == ScrollEventType.EndScroll)
+			{
+				LeaveIntermediateViewChangedMode(raiseFinalViewChanged: true);
+			}
+		}
+
+		// Called at the beginning of an operation that may cause several ViewChanged events, like a thumb drag.
+		private void EnterIntermediateViewChangedMode()
+		{
+			if (!_isInIntermediateViewChangedMode)
+			{
+				_isInIntermediateViewChangedMode = true;
+
+				// This flag is set to True the first time ViewChanged is raised during this multi-notification operation.
+				_isViewChangedRaisedInIntermediateMode = false;
+			}
+		}
+
+		// Called at the end of an operation that may have caused several ViewChanged events, like a thumb drag.
+		private void LeaveIntermediateViewChangedMode(bool raiseFinalViewChanged)
+		{
+			if (_isInIntermediateViewChangedMode)
+			{
+				_isInIntermediateViewChangedMode = false;
+
+				if (_isViewChangedRaisedInIntermediateMode)
+				{
+					_isViewChangedRaisedInIntermediateMode = false;
+
+					if (raiseFinalViewChanged)
+					{
+						// Mark the end of a multi-notification operation
+						RaiseViewChanged(isIntermediate: false);
+					}
+				}
+			}
 		}
 		#endregion
 
@@ -1197,8 +1252,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// we want to cancel any pending snapping, to prevent snapping to occur mid-scroll.
 					_snapPointsTimer?.Stop();
 				}
-				if (!isIntermediate
-					)
+				if (!isIntermediate && !_isInIntermediateViewChangedMode)
 				{
 					if (HorizontalSnapPointsType != SnapPointsType.None
 						|| VerticalSnapPointsType != SnapPointsType.None)
@@ -1239,6 +1293,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#region Deferred update (i.e. ViewChanged) support
+		private bool _isInIntermediateViewChangedMode;
+		private bool _isViewChangedRaisedInIntermediateMode;
 		private bool _hasPendingUpdate;
 		private double _pendingHorizontalOffset;
 		private double _pendingVerticalOffset;
@@ -1297,6 +1353,19 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			UpdatePartial(isIntermediate);
+
+			RaiseViewChanged(isIntermediate || _isInIntermediateViewChangedMode);
+		}
+
+		private void RaiseViewChanged(bool isIntermediate)
+		{
+			if (_isInIntermediateViewChangedMode)
+			{
+				// ViewChanged is raised during an 'intermediate mode'
+				// This means that ViewChanged with IsIntermediate==False needs to be raised
+				// at the end of this 'intermediate mode'.
+				_isViewChangedRaisedInIntermediateMode = true;
+			}
 
 			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs { IsIntermediate = isIntermediate });
 		}
