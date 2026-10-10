@@ -25,7 +25,7 @@ public partial class ShellMonospace
 	/// <summary>The family to use instead of Consolas, or null where Consolas is installed.</summary>
 	internal static string? HostFamilyName =>
 		OperatingSystem.IsWindows() ? null
-		: OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() ? "Menlo"
+		: OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsMacCatalyst() ? "Menlo"
 		: "monospace";
 
 	private static void OnIsEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
