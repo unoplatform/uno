@@ -14,6 +14,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 // would keep it (and its subgraph) alive.
 [TestClass]
 [RunsOnUIThread]
+// Browser WASM has no thread to run the Task.Run work while the UI thread spins in WaitWithoutPumping.
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 public class Given_CompositionObject_Lifetime
 {
 	[TestMethod]
