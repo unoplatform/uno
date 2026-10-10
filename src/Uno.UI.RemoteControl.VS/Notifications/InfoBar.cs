@@ -10,14 +10,16 @@ namespace Uno.UI.RemoteControl.VS.Notifications;
 /// <summary>
 /// Creates InfoBar controls for use on documents and tool windows.
 /// </summary>
-public class InfoBarFactory
+public class InfoBarFactory : IAsyncDisposable
 {
+	private readonly AsyncPackage _package;
 	private IVsInfoBarUIFactory _infoBarUIFactory;
 	private readonly IVsShell _shell;
 	private List<InfoBar> _infoBars = new();
 
-	public InfoBarFactory(IVsInfoBarUIFactory infoBarUIFactory, IVsShell shell)
+	public InfoBarFactory(AsyncPackage package, IVsInfoBarUIFactory infoBarUIFactory, IVsShell shell)
 	{
+		_package = package;
 		_infoBarUIFactory = infoBarUIFactory;
 		_shell = shell;
 	}
@@ -57,21 +59,12 @@ public class InfoBarFactory
 		}
 	}
 
-	internal void Dispose()
+	public async ValueTask DisposeAsync()
 	{
-		// IVsInfoBar* objects are UI-thread-affine, but Dispose can be invoked from any thread.
-		if (ThreadHelper.CheckAccess())
-		{
-			RemoveAllInfoBars();
-			return;
-		}
+		// IVsInfoBar* is UI-thread-affine; the package's DisposalToken bounds the hop at VS shutdown.
+		await _package.JoinableTaskFactory.SwitchToMainThreadAsync(_package.DisposalToken);
 
-		ThreadHelper.JoinableTaskFactory.Run(async () =>
-		{
-			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-			RemoveAllInfoBars();
-		});
+		RemoveAllInfoBars();
 	}
 }
 
