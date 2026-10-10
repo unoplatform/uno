@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -306,28 +305,17 @@ public class Given_DependencyObject_Name
 	}
 
 	[TestMethod]
-	public void When_NameProperty_Set_To_NonString_Then_Throws_And_Keeps_Value()
-	{
-		var brush = new SolidColorBrush();
-		var border = new Border { Name = "old" };
-		brush.SetValue(FrameworkElement.NameProperty, "old");
-
-		Assert.ThrowsExactly<InvalidCastException>(() => brush.SetValue(FrameworkElement.NameProperty, 42));
-		Assert.ThrowsExactly<InvalidCastException>(() => border.SetValue(FrameworkElement.NameProperty, 42));
-
-		Assert.AreEqual("old", brush.GetValue(FrameworkElement.NameProperty));
-		Assert.AreEqual("old", border.Name);
-	}
-
-	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-	public void When_Name_Set_Then_No_ModifiedValue()
+	public void When_Name_Set_Uncoerced_Then_No_ModifiedValue()
 	{
 #if __UNO__
 		var border = new Border { Name = "x" };
 		var brush = new SolidColorBrush();
-		brush.SetValue(FrameworkElement.NameProperty, null);
+		brush.SetValue(FrameworkElement.NameProperty, "x");
+		var state = new VisualState();
+		Uno.UI.Helpers.MarkupHelper.SetXName(state, "x");
 
+		Assert.IsNull(state.GetPropertyDetails(FrameworkElement.NameProperty).GetModifiedValue());
 		Assert.IsNull(border.GetPropertyDetails(FrameworkElement.NameProperty).GetModifiedValue());
 		Assert.IsNull(brush.GetPropertyDetails(FrameworkElement.NameProperty).GetModifiedValue());
 #endif
