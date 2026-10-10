@@ -40,11 +40,13 @@
 		<PackageVersion Include="coverlet.collector" Version="6.0.0" />
 		<PackageVersion Include="GtkSharp" Version="3.24.24.38" />
 		<PackageVersion Include="HarfBuzzSharp" Version="$(HarfbuzzSharpVersion)" />
+		<PackageVersion Include="HarfBuzzSharp.NativeAssets.Android" Version="$(HarfbuzzSharpVersion)" />
 		<PackageVersion Include="HarfBuzzSharp.NativeAssets.iOS" Version="$(HarfbuzzSharpVersion)" />
 		<PackageVersion Include="HarfBuzzSharp.NativeAssets.Linux" Version="$(HarfbuzzSharpVersion)" />
 		<PackageVersion Include="HarfBuzzSharp.NativeAssets.macOS" Version="$(HarfbuzzSharpVersion)" />
 		<PackageVersion Include="HarfBuzzSharp.NativeAssets.tvOS" Version="$(HarfbuzzSharpVersion)" />
 		<PackageVersion Include="HarfBuzzSharp.NativeAssets.WebAssembly" Version="$(HarfbuzzSharpVersion)" />
+		<PackageVersion Include="HarfBuzzSharp.NativeAssets.Win32" Version="$(HarfbuzzSharpVersion)" />
 		<PackageVersion Include="IdentityModel.OidcClient" Version="6.0.0" />
 		<PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
 		<PackageVersion Include="LibVLCSharp" Version="3.9.7.1" />
@@ -133,6 +135,7 @@
 		<PackageVersion Include="SkiaSharp.NativeAssets.macOS" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="SkiaSharp.NativeAssets.tvOS" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="$(SkiaSharpVersion)" />
+		<PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />

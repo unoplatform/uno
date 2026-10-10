@@ -48,6 +48,7 @@
 				UnoThemesVersion="$(UnoThemesVersion)"
 				UnoCSharpMarkupVersion="$(UnoCSharpMarkupVersion)"
 				SkiaSharpVersion="$(SkiaSharpVersion)"
+				HarfBuzzSharpVersion="$(HarfBuzzSharpVersion)"
 				SvgSkiaVersion="$(SvgSkiaVersion)"
 				UnoLoggingVersion="$(UnoLoggingVersion)"
 				UnoWasmBootstrapVersion="$(UnoWasmBootstrapVersion)"

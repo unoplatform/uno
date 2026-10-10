@@ -25,7 +25,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="Uno.icu-win" />
 		<PackageReference Include="WebView2Aot" />
 	</ItemGroup>

@@ -53,26 +53,20 @@
 		</ItemGroup>
 	</Target>
 
-	<Target	Name="_UnoAdjustSkiaSharpDependency"
+	<Target	Name="_UnoAdjustWasmNativeDependencies"
 			BeforeTargets="AssignTargetPaths;PrepareForBuild"
 			Condition=" '$(IsUnoHead)' == 'True' AND '$(UnoDisableAdjustSkiaSharpDependency)' != 'true' ">
 		<!--
-			This section is an extract of
-			- https://github.com/mono/SkiaSharp/blob/463dd820278ad9635b0d83f4f9f4984c09510a6d/binding/SkiaSharp.NativeAssets.WebAssembly/buildTransitive/SkiaSharp.targets#L4
-			- https://github.com/mono/SkiaSharp/blob/463dd820278ad9635b0d83f4f9f4984c09510a6d/binding/HarfBuzzSharp.NativeAssets.WebAssembly/buildTransitive/HarfBuzzSharp.targets#L5
-			
-			In order to support a two-layered rendering mode.
+			The native libraries (libSkiaSharp.a, libHarfBuzzSharp.a) are linked by their own NativeAssets packages,
+			which the head references only when it uses them. GLCanvasElement calls emscripten's GL
+			(native/uno_gl_shim.c), so WebGL2 and the GL runtime object are requested here instead of being left to SkiaSharp.
 		-->
-
 		<ItemGroup>
-			<WasmShellNativeFileReference Include="@(SkiaSharpStaticLibrary)" Visible="false" />
-			<WasmShellNativeFileReference Include="@(HarfBuzzSharpStaticLibrary)" Visible="false" />
-
-			<!-- Include the GL symbol when running under net7 (https://github.com/dotnet/runtime/issues/76077) -->
 			<EmccExportedRuntimeMethod Include="GL" KeepDuplicates="false" />
 		</ItemGroup>
 
 		<PropertyGroup>
+			<EmccExtraLDFlags Condition="!$(EmccExtraLDFlags.Contains('USE_WEBGL2'))">$(EmccExtraLDFlags) -s USE_WEBGL2=1</EmccExtraLDFlags>
 			<!-- Enable GLCtx when threading is available -->
 			<EmccFlags Condition="'$(WasmShellEnableThreads)'=='True'">$(EmccFlags);-s OFFSCREEN_FRAMEBUFFER=1</EmccFlags>
 		</PropertyGroup>

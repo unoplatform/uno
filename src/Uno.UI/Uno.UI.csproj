@@ -32,10 +32,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="HarfBuzzSharp" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
 		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Generic.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />

@@ -26,8 +26,10 @@ using System.Threading;
 using Windows.Storage.Streams;
 using System.Diagnostics;
 #if __SKIA__
-using SkiaSharp;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
+#endif
+#if UNO_DRAWING_SKIA
+using SkiaSharp;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
@@ -509,6 +511,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			Assert.AreEqual(150, bitmapImage.PixelHeight, "PixelHeight should preserve aspect ratio");
 		}
 
+#if UNO_DRAWING_SKIA
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Browser_Workers_Are_Reused()
@@ -589,6 +592,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 				WasmSemanticDomHelper.InvokeBrowserJs($"delete globalThis['{key}']");
 			}
 		}
+#endif
 #endif
 
 		private class Given_BitmapSource_Exception : Exception

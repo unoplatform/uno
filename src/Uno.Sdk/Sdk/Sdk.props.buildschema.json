@@ -161,6 +161,10 @@
 			"description": "Provides an explicit override for the version of SkiaSharp to use.",
 			"type": "nuget-version"
 		},
+		"HarfBuzzSharpVersion": {
+			"description": "Provides an explicit override for the version of the HarfBuzzSharp native assets to use.",
+			"type": "nuget-version"
+		},
 		"SvgSkiaVersion": {
 			"description": "Provides an explicit override for the version of Svg.Skia to use.",
 			"type": "nuget-version"
