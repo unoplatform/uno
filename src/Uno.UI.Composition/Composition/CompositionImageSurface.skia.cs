@@ -159,6 +159,8 @@ namespace Microsoft.UI.Composition
 			SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(frames, null), null);
 		}
 
+		private protected override bool HasOwnFinalizer => true;
+
 		~CompositionImageSurface()
 		{
 			SetFrameProviderAndOnFrameChanged(null, null);

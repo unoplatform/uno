@@ -19,11 +19,13 @@ namespace Microsoft.UI.Composition
 	{
 		private CompositionPropertySet? _properties;
 		private Dictionary<string, CompositionAnimation>? _animations;
+		private bool _isFinalizable = true;
 
 		internal CompositionObject()
 		{
 			ApiInformation.TryRaiseNotImplemented(GetType().FullName!, "The compositor constructor is not available, as the type is not implemented");
 			Compositor = new Compositor();
+			SetFinalizable(false);
 		}
 
 		~CompositionObject()
@@ -34,6 +36,7 @@ namespace Microsoft.UI.Composition
 		internal CompositionObject(Compositor compositor)
 		{
 			Compositor = compositor;
+			SetFinalizable(false);
 		}
 
 		public CompositionPropertySet Properties => _properties ??= GetProperties();
@@ -92,6 +95,7 @@ namespace Microsoft.UI.Composition
 
 			_animations ??= new();
 			_animations[propertyName] = animation;
+			SetFinalizable(true);
 			animation.AnimationFrame += ReEvaluateAnimation;
 			var animationValue = animation.Start(firstPropertyName, subPropertyName, this);
 
@@ -240,6 +244,11 @@ namespace Microsoft.UI.Composition
 				animation.AnimationFrame -= ReEvaluateAnimation;
 				animation.Stop();
 				_animations.Remove(propertyName);
+
+				if (_animations.Count == 0)
+				{
+					SetFinalizable(false);
+				}
 			}
 		}
 
@@ -255,6 +264,8 @@ namespace Microsoft.UI.Composition
 
 				_animations.Clear();
 			}
+
+			SetFinalizable(false);
 		}
 
 		public AnimationController? TryGetAnimationController(string propertyName)
@@ -326,6 +337,12 @@ namespace Microsoft.UI.Composition
 
 		private protected virtual void DisposeInternal()
 		{
+			if (_animations is not { Count: > 0 })
+			{
+				// Nothing to stop, so don't hand the UI thread a no-op that keeps this object alive until it runs.
+				return;
+			}
+
 			if (Dispatching.DispatcherQueue.Main.HasThreadAccess)
 			{
 				StopAllAnimations();
@@ -334,6 +351,33 @@ namespace Microsoft.UI.Composition
 			{
 				// For now, Composition is Dispatcher affine
 				Dispatching.DispatcherQueue.Main.TryEnqueue(StopAllAnimations);
+			}
+		}
+
+		/// <summary>
+		/// Whether a subclass declares its own finalizer, which must not be suppressed along with the animation one.
+		/// </summary>
+		private protected virtual bool HasOwnFinalizer => false;
+
+		// The finalizer only has work to do while animations are attached. Suppressing it otherwise keeps
+		// dead visuals from being promoted and retained until the UI thread drains a no-op callback.
+		// Only toggle on a state change: re-registering an already registered object queues its finalizer twice.
+		private void SetFinalizable(bool value)
+		{
+			if (_isFinalizable == value || HasOwnFinalizer)
+			{
+				return;
+			}
+
+			_isFinalizable = value;
+
+			if (value)
+			{
+				GC.ReRegisterForFinalize(this);
+			}
+			else
+			{
+				GC.SuppressFinalize(this);
 			}
 		}
 
