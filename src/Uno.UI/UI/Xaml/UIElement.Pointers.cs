@@ -945,6 +945,10 @@ namespace Microsoft.UI.Xaml
 				throw new TaskCanceledException();
 			}
 
+			// A drag started from a touch hold supersedes the hold's delayed context menu (in WinUI, the drag takes the pointer capture).
+			// This only runs once DragStarting completed: a menu due before that (e.g. a long deferral) still opens.
+			VisualTree.GetContentRootForElement(this)?.InputManager.ContextMenuProcessor.StopContextMenuTimer();
+
 			var dragInfo = new CoreDragInfo(
 				source: ptArgs,
 				data: routedArgs.Data.GetView(),

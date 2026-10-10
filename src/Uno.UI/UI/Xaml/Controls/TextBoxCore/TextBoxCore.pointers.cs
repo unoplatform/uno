@@ -27,6 +27,10 @@ internal sealed partial class TextBoxCore
 	// True while an iOS-convention touch caret-drag is in progress (started by a long-press): the caret
 	// follows the finger until release. See BeginTouchCaretDrag / OnContextRequestedImpl.
 	private bool _touchCaretDrag;
+	// True once the current touch press was handled as a hold when the hold started (OnHolding): the delayed
+	// ContextRequested the ContextMenuProcessor raises for the same hold, and the release, are then not a new gesture.
+	// Reset by the next press and by the release of the press; after a capture loss it lasts until the next press.
+	private bool _touchHoldHandled;
 
 	internal void OnPointerMoved(PointerRoutedEventArgs e)
 	{
@@ -123,6 +127,7 @@ internal sealed partial class TextBoxCore
 	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
 	{
 		_isPressed = true;
+		_touchHoldHandled = false;
 		TrySetCurrentlyTyping(false);
 
 		var currentPoint = args.GetCurrentPoint(null);
@@ -194,6 +199,8 @@ internal sealed partial class TextBoxCore
 			return;
 		}
 		_isPressed = false;
+		var wasTouchHold = _touchHoldHandled;
+		_touchHoldHandled = false;
 
 		if (args.Pointer.PointerDeviceType is not PointerDeviceType.Touch)
 		{
@@ -211,9 +218,10 @@ internal sealed partial class TextBoxCore
 
 		var touchHoldTime = args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp;
 
-		if (touchHoldTime >= GestureRecognizer.HoldMinDelayMicroseconds)
+		if (wasTouchHold || touchHoldTime >= GestureRecognizer.HoldMinDelayMicroseconds)
 		{
-			// context menu should have already been opened through UIElement-level ContextRequested handling.
+			// The hold was handled when it started (OnHolding) or the context menu should have already been
+			// opened through UIElement-level ContextRequested handling: the release doesn't make a tap.
 			return;
 		}
 
@@ -333,49 +341,84 @@ internal sealed partial class TextBoxCore
 		CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
 	}
 
-	// On iOS/Android a touch-and-hold does native text selection instead of opening a context menu:
-	// Android selects the word under the press (the selection toolbar then appears via the selection
-	// flyout); iOS starts dragging the caret; an empty field has neither, and just opens the flyout.
-	// Mouse/pen right-click and the Desktop convention keep the default context flyout.
+	// Like WinUI's CTextBoxBase::OnHolding (TextBoxBase.cpp), a text control acts on a touch-and-hold as soon as the
+	// hold starts, independently of the ContextRequested the ContextMenuProcessor raises for it (delayed by 500 ms
+	// here, as the text viewport is a pannable ScrollViewer, and dropped when the finger lifts before that).
+	internal void OnHolding(HoldingRoutedEventArgs e)
+	{
+		if (e.HoldingState != HoldingState.Started
+			|| e.PointerDeviceType != PointerDeviceType.Touch
+			|| TouchSelectionConvention == TouchTextSelectionConvention.Desktop)
+		{
+			return;
+		}
+
+		var displayBlockPoint = e.GetPosition(TextBoxView.DisplayBlock);
+		var textBoxPoint = e.GetPosition(Owner);
+
+		// Touch defers focus to the release (ShouldFocusOnPointerPressed), but the hold acts now: unfocused, the selection
+		// or caret drag isn't rendered. As in WinUI's TextSelectionManager::OnHolding, a hold that can't take it doesn't act.
+		_touchHoldHandled = true;
+		if (Owner.FocusState == FocusState.Unfocused && !Owner.Focus(FocusState.Pointer))
+		{
+			return;
+		}
+
+		HandleTouchHold(displayBlockPoint, textBoxPoint);
+	}
+
+	// On iOS/Android a touch-and-hold does native text selection instead of opening a context menu (see
+	// HandleTouchHold). Mouse/pen right-click and the Desktop convention keep the default context flyout.
 	// Returns whether the gesture was consumed; the host falls back to base handling when it wasn't.
 	internal bool OnContextRequestedImpl(ContextRequestedEventArgs args)
 	{
-		if (args.IsTouchInput
-			&& TouchSelectionConvention != TouchTextSelectionConvention.Desktop
-			&& args.TryGetPosition(TextBoxView.DisplayBlock, out var displayBlockPoint))
+		if (!args.IsTouchInput || TouchSelectionConvention == TouchTextSelectionConvention.Desktop)
 		{
-			args.TryGetPosition(Owner, out var textBoxPoint);
-
-			if (Text.IsNullOrEmpty())
-			{
-				// Neither convention has anything to select or to drag the caret through in an empty field.
-				HandleEmptyTextTouchGesture(textBoxPoint);
-			}
-			else
-			{
-				switch (TouchSelectionConvention)
-				{
-					case TouchTextSelectionConvention.Android:
-						TouchSelectWord(displayBlockPoint);
-						QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, textBoxPoint);
-						break;
-					case TouchTextSelectionConvention.iOS:
-						BeginTouchCaretDrag(displayBlockPoint);
-						break;
-				}
-			}
-
-			// suppress the default context flyout on iOS/Android
-			args.Handled = true;
-
-			// We handled the hold without opening a context menu, so don't let a later HoldingState.Canceled
-			// (finger moves during the caret-drag / after word-select) spuriously cancel a non-existent menu.
-			args.PreventContextMenuOnHolding = true;
-
-			return true;
+			return false;
 		}
 
-		return false;
+		if (!_touchHoldHandled) // else: the delayed request of a hold already handled in OnHolding
+		{
+			if (!args.TryGetPosition(TextBoxView.DisplayBlock, out var displayBlockPoint))
+			{
+				return false;
+			}
+
+			args.TryGetPosition(Owner, out var textBoxPoint);
+			HandleTouchHold(displayBlockPoint, textBoxPoint);
+		}
+
+		// suppress the default context flyout on iOS/Android
+		args.Handled = true;
+
+		// We handled the hold without opening a context menu, so don't let a later HoldingState.Canceled
+		// (finger moves during the caret-drag / after word-select) spuriously cancel a non-existent menu.
+		args.PreventContextMenuOnHolding = true;
+
+		return true;
+	}
+
+	// Android selects the word under the press (the selection toolbar then appears via the selection
+	// flyout); iOS starts dragging the caret; an empty field has neither, and just opens the flyout.
+	private void HandleTouchHold(Point displayBlockPoint, Point textBoxPoint)
+	{
+		if (Text.IsNullOrEmpty())
+		{
+			// Neither convention has anything to select or to drag the caret through in an empty field.
+			HandleEmptyTextTouchGesture(textBoxPoint);
+			return;
+		}
+
+		switch (TouchSelectionConvention)
+		{
+			case TouchTextSelectionConvention.Android:
+				TouchSelectWord(displayBlockPoint);
+				QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, textBoxPoint);
+				break;
+			case TouchTextSelectionConvention.iOS:
+				BeginTouchCaretDrag(displayBlockPoint);
+				break;
+		}
 	}
 
 	// iOS long-press: place the caret at the press point and capture the pointer so the caret follows

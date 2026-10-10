@@ -375,5 +375,63 @@ public partial class Given_ContextRequested_Injection
 		Assert.IsTrue(innerButton.Equals(capturedOriginalSource) || VisualTreeUtils.FindVisualParentByType<Button>(capturedOriginalSource as DependencyObject) == innerButton,
 			"OriginalSource should be the inner button where right-click occurred");
 	}
+
+	// The context menu of a touch hold on a draggable element is delayed (ContextMenuProcessor) to leave room for a drag:
+	// a drag started from the hold supersedes it, so it must not open in the middle of the drag.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+	public async Task When_Touch_Hold_Starts_Drag_Delayed_ContextFlyout_Does_Not_Open()
+	{
+		var flyout = new MenuFlyout();
+		flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
+		var flyoutOpened = 0;
+		flyout.Opened += (_, _) => flyoutOpened++;
+
+		var holding = 0;
+		var dragStarting = 0;
+		var dropCompleted = 0;
+		var target = new Border
+		{
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+			Width = 100,
+			Height = 100,
+			CanDrag = true,
+			ContextFlyout = flyout,
+		};
+		target.Holding += (_, _) => holding++;
+		target.DragStarting += (_, _) => dragStarting++;
+		target.DropCompleted += (_, _) => dropCompleted++;
+
+		await UITestHelper.Load(new Grid { Width = 400, Height = 300, Children = { target } });
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+		using var finger = injector.GetFinger();
+
+		try
+		{
+			finger.Press(target.GetAbsoluteBounds().GetCenter());
+			await TestServices.WindowHelper.WaitFor(() => holding == 1, timeoutMS: 5000, message: "The hold should be recognized");
+			Assert.AreEqual(0, flyoutOpened, "The context flyout of a hold on a draggable element is delayed");
+
+			// Injected timestamps only advance by the given offsets: carry the hold's duration to the gesture recognizer,
+			// which only starts a touch drag once the finger has rested past its hold delay.
+			finger.MoveBy(1, 0, steps: 1, stepOffsetInMilliseconds: 1000);
+			finger.MoveBy(100, 0, steps: 10, stepOffsetInMilliseconds: 10);
+			await TestServices.WindowHelper.WaitFor(() => dragStarting == 1, timeoutMS: 5000, message: "Moving after the hold should start a drag");
+
+			// Longer than what remained of the delay: a menu still pending would open here.
+			await Task.Delay(800);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, flyoutOpened, "The context flyout must not open once a drag started from the hold");
+		}
+		finally
+		{
+			finger.Release();
+			// Let the drag operation end, so it doesn't linger into the next tests.
+			await TestServices.WindowHelper.WaitFor(() => dragStarting == 0 || dropCompleted == 1, timeoutMS: 5000);
+			VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+		}
+	}
 }
 #endif

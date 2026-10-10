@@ -113,6 +113,9 @@ internal partial class ContextMenuProcessor
 	{
 		bool isDraggableOrPannable = UIElement.IsDraggableOrPannable(element);
 
+		// Uno: a new hold supersedes a pending delayed one (they share the touch point and the timer).
+		StopContextMenuTimer();
+
 		if (isDraggableOrPannable)
 		{
 			// Create and start the contextmenu timer, and attach the timeout handler to fire ShowContextMenu
@@ -164,6 +167,24 @@ internal partial class ContextMenuProcessor
 	/// Gets the context menu timer.
 	/// </summary>
 	public DispatcherTimer? GetContextMenuTimer() => _contextMenuTimer;
+
+	/// <summary>
+	/// Stops the delayed context menu of a touch hold on a draggable/pannable element, when the pointer is released or
+	/// cancelled (including by a DirectManipulation taking over), or a drag starts, before the delay elapsed.
+	/// </summary>
+	/// <remarks>
+	/// WinUI stops it in PointerInputProcessor.cpp on XCP_POINTERUP, XCP_POINTERCAPTURECHANGED and XCP_POINTERSUSPENDED;
+	/// Uno has no window-level capture change, so the cancel and the drag start stand in for it.
+	/// </remarks>
+	public void StopContextMenuTimer()
+	{
+		if (_contextMenuTimer is { } timer)
+		{
+			timer.Stop();
+			timer.Tick -= OnContextRequestOnHoldingTimeout;
+			_contextMenuTimer = null;
+		}
+	}
 
 	/// <summary>
 	/// Sets the touch point for context menu on holding gesture.

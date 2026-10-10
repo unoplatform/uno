@@ -595,6 +595,45 @@ public partial class Given_ContextRequested
 
 	#endregion
 
+	// The delayed context request of a touch hold on a pannable element and a new hold share the processor's timer and touch
+	// point: a hold on a non-pannable element, whose request is raised right away, must drop the pending delayed one.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+	public async Task When_Touch_Hold_On_Non_Pannable_Then_Pending_Delayed_Request_Is_Dropped()
+	{
+		var pannableRequests = 0;
+		var pannable = new Border { Width = 100, Height = 50, Background = new SolidColorBrush(Colors.Blue) };
+		pannable.ContextRequested += (_, e) => { pannableRequests++; e.Handled = true; };
+
+		var otherRequests = 0;
+		var other = new Border { Width = 100, Height = 50, Background = new SolidColorBrush(Colors.Green) };
+		other.ContextRequested += (_, e) => { otherRequests++; e.Handled = true; };
+
+		await UITestHelper.Load(new StackPanel { Children = { new ScrollViewer { Content = pannable, Width = 200, Height = 100 }, other } });
+
+		var processor = TestServices.WindowHelper.XamlRoot.VisualTree?.ContentRoot?.InputManager?.ContextMenuProcessor
+			?? throw new InvalidOperationException("ContextMenuProcessor is not available.");
+		try
+		{
+			processor.ProcessContextRequestOnHoldingGesture(pannable);
+			Assert.IsNotNull(processor.GetContextMenuTimer(), "the request of a hold on a pannable element is delayed");
+
+			processor.ProcessContextRequestOnHoldingGesture(other);
+			Assert.AreEqual(1, otherRequests, "the request of a hold on a non-pannable element is raised right away");
+			Assert.IsNull(processor.GetContextMenuTimer(), "the new hold drops the pending delayed request");
+
+			// Longer than the delay: a request still pending would be raised here.
+			await Task.Delay(800);
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, pannableRequests);
+		}
+		finally
+		{
+			processor.StopContextMenuTimer();
+			processor.SetIsContextMenuOnHolding(false);
+		}
+	}
+
 	private void RaiseContextRequestedEvent(
 		DependencyObject source,
 		Point point,
