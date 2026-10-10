@@ -4,6 +4,10 @@ using System.Runtime.InteropServices;
 using Uno.UI.Runtime.Vulkan;
 using Uno.UI.Runtime.Vulkan.Interop;
 using Uno.UI.Runtime.Vulkan.UnmanagedInterop;
+using Windows.Win32;
+using Windows.Win32.Devices.Display;
+using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.Gdi;
 
 namespace Uno.UI.Runtime.Win32.Vulkan;
 
@@ -57,6 +61,60 @@ internal class Win32VulkanSurfaceFactory : IVulkanPlatformSurfaceFactory
 			throw new VulkanException($"vkCreateWin32SurfaceKHR failed with result {result}");
 
 		return surface;
+	}
+
+	/// <summary>
+	/// Finds the adapter driving the window's monitor. DWM only receives a Vulkan swapchain's alpha - which a system
+	/// backdrop needs - when that adapter presents it; a hybrid laptop's discrete GPU usually drives no display.
+	/// </summary>
+	public unsafe long? GetPresentingAdapterLuid(IntPtr nativeWindowHandle)
+	{
+		var monitor = PInvoke.MonitorFromWindow((HWND)nativeWindowHandle, MONITOR_FROM_FLAGS.MONITOR_DEFAULTTONEAREST);
+		var monitorInfo = new MONITORINFOEXW { monitorInfo = new MONITORINFO { cbSize = (uint)sizeof(MONITORINFOEXW) } };
+		if (!PInvoke.GetMonitorInfo(monitor, (MONITORINFO*)&monitorInfo))
+		{
+			return null;
+		}
+
+		if (PInvoke.GetDisplayConfigBufferSizes(QUERY_DISPLAY_CONFIG_FLAGS.QDC_ONLY_ACTIVE_PATHS, out var pathCount, out var modeCount) != WIN32_ERROR.ERROR_SUCCESS)
+		{
+			return null;
+		}
+
+		var paths = new DISPLAYCONFIG_PATH_INFO[pathCount];
+		var modes = new DISPLAYCONFIG_MODE_INFO[modeCount];
+		fixed (DISPLAYCONFIG_PATH_INFO* pPaths = paths)
+		fixed (DISPLAYCONFIG_MODE_INFO* pModes = modes)
+		{
+			if (PInvoke.QueryDisplayConfig(QUERY_DISPLAY_CONFIG_FLAGS.QDC_ONLY_ACTIVE_PATHS, ref pathCount, pPaths, ref modeCount, pModes, null) != WIN32_ERROR.ERROR_SUCCESS)
+			{
+				return null;
+			}
+		}
+
+		var monitorName = monitorInfo.szDevice.ToString();
+		for (var i = 0; i < pathCount; i++)
+		{
+			var source = new DISPLAYCONFIG_SOURCE_DEVICE_NAME
+			{
+				header = new DISPLAYCONFIG_DEVICE_INFO_HEADER
+				{
+					type = DISPLAYCONFIG_DEVICE_INFO_TYPE.DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME,
+					size = (uint)sizeof(DISPLAYCONFIG_SOURCE_DEVICE_NAME),
+					adapterId = paths[i].sourceInfo.adapterId,
+					id = paths[i].sourceInfo.id,
+				},
+			};
+
+			if (PInvoke.DisplayConfigGetDeviceInfo(&source.header) == 0
+				&& source.viewGdiDeviceName.ToString() == monitorName)
+			{
+				var luid = paths[i].sourceInfo.adapterId;
+				return ((long)luid.HighPart << 32) | luid.LowPart;
+			}
+		}
+
+		return null;
 	}
 
 	public static bool IsVulkanAvailable()
