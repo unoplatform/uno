@@ -1893,7 +1893,6 @@ namespace Microsoft.UI.Xaml
 				}
 
 				OnArrangeVisual(newRect, clippedFrame);
-				OnViewportUpdated();
 			}
 			else
 			{
