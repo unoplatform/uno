@@ -621,6 +621,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	protected override void OnChildRemoved(UIElement parent, UIElement child)
 		=> ScheduleRebuild();
 
+	// Placeholder, read-only and spell-check changes on text editors raise no automation event.
+	protected override void OnTextControlStateChanged(UIElement element)
+		=> InvalidateElement(element.Visual.Handle);
+
 	protected override void OnSizeOrOffsetChanged(Visual visual)
 	{
 		if (visual is ContainerVisual { Owner.Target: UIElement owner })
