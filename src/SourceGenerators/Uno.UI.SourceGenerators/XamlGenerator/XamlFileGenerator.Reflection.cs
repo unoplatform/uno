@@ -145,6 +145,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsXNameProvider(XamlType xamlType)
 			=> Generation.XNameProviderSymbol.Value is { } provider && IsImplementingInterface(FindType(xamlType), provider);
 
+		// x:Name is WinUI's DependencyObject_Name: objects without a settable Name property store it through MarkupHelper.SetXName.
+		private bool ShouldSetXName(XamlType xamlType)
+			=> IsXNameProvider(xamlType)
+				|| (IsType(xamlType, Generation.DependencyObjectSymbol.Value) && !HasProperty(xamlType, "Name"));
+
 		// Intentional WinUI divergence: WinUI's XAML compiler rejects a plain Name where Name is get-only (WMC0050),
 		// but its runtime parser accepts it like x:Name, and so does Uno.
 		private bool IsXNameMember(XamlMemberDefinition member, XamlType objectType)

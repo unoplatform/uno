@@ -106,7 +106,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string ResourceDictionary = BaseXamlNamespace + ".ResourceDictionary";
 			public const string ElementStub = BaseXamlNamespace + ".ElementStub";
 			public const string ContentPresenter = Namespaces.Controls + ".ContentPresenter";
-			public const string MenuFlyout = Namespaces.Controls + ".MenuFlyout";
 			public const string Markup = BaseXamlNamespace + ".Markup";
 			public const string Metadata = RootFoundationNamespace + ".Metadata";
 			public const string IDependencyObjectParse = UnoXamlNamespace + ".IDependencyObjectParse";

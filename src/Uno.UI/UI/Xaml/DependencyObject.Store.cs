@@ -938,6 +938,9 @@ namespace Microsoft.UI.Xaml
 					// Don't fail validation for properties that are located on non-FrameworkElement types
 					// e.g. ScrollContentPresenter, for which using the Name property should not fail.
 					&& !isMixinFrameworkElement
+
+					// FrameworkElement.NameProperty is WinUI's DependencyObject_Name, valid on any DependencyObject.
+					&& !ReferenceEquals(property, FrameworkElement.NameProperty)
 				)
 				{
 					throw new InvalidOperationException(

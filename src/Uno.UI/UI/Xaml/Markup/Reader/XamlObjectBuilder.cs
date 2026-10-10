@@ -601,6 +601,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					GetPropertySetter(nameInfo).Invoke(instance, new[] { member.Value });
 				}
+				else if (member.Value is string xName)
+				{
+					Uno.UI.Helpers.MarkupHelper.SetXName(instance, xName);
+				}
 
 				// Update x:Name generated fields, if any
 				if (rootInstance != null && member.Value is string nameValue)

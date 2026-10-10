@@ -866,13 +866,19 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
-		public static DependencyProperty NameProperty { get; } = CreateNameProperty();
+		// WinUI's FrameworkElement.NameProperty is DependencyObject_Name, settable on any DependencyObject.
+		public static DependencyProperty NameProperty { get; } = DependencyProperty.Register(
+			nameof(Name),
+			typeof(string),
+			typeof(FrameworkElement),
+			new FrameworkPropertyMetadata(
+				defaultValue: "",
+				propertyChangedCallback: static (instance, args) => (instance as FrameworkElement)?.OnNameChanged((string)args.OldValue, (string)args.NewValue)));
 
 		public string Name
 		{
-			get => GetNameValue();
-			set => SetNameValue(value);
+			get => (string)GetValue(NameProperty);
+			set => SetValue(NameProperty, value);
 		}
 
 		#endregion

@@ -21,9 +21,6 @@ namespace Uno.UI.Helpers
 	/// </summary>
 	public static class MarkupHelper
 	{
-		// Set by the XAML generator for named MenuFlyouts, in place of WinUI's internal DependencyObject_Name.
-		internal const string XamlNamePropertyName = "__UnoXamlName";
-
 		private static WeakAttachedDictionary<object, string>? _weakProperties;
 
 		private static WeakAttachedDictionary<object, string> WeakProperties
@@ -43,7 +40,9 @@ namespace Uno.UI.Helpers
 		}
 
 		/// <summary>
-		/// Sets the x:Name of an element implementing <see cref="IXNameProvider"/>, whose Name property is get-only.
+		/// Sets the x:Name of an object that has no settable Name property: an <see cref="IXNameProvider"/>
+		/// (get-only Name), or any other <see cref="DependencyObject"/>, through WinUI's DependencyObject_Name
+		/// (<see cref="FrameworkElement.NameProperty"/>).
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void SetXName(object target, string name)
@@ -51,6 +50,10 @@ namespace Uno.UI.Helpers
 			if (target is IXNameProvider provider)
 			{
 				provider.SetXName(name);
+			}
+			else if (target is DependencyObject dependencyObject)
+			{
+				dependencyObject.SetValue(FrameworkElement.NameProperty, name);
 			}
 		}
 
@@ -154,9 +157,6 @@ namespace Uno.UI.Helpers
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static TInstance? GetElementProperty<TInstance>(object target, string propertyName)
 			=> WeakProperties.GetValue<TInstance>(target, propertyName);
-
-		internal static string? GetXamlName(object target)
-			=> GetElementProperty<string>(target, XamlNamePropertyName);
 
 		/// <summary>
 		/// Applies the materialization settings to a member created from a <see cref="FrameworkTemplate"/>.
