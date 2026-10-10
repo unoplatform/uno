@@ -20,6 +20,9 @@ trigger:
     - '*.md'
     - 'build/cSpell.json'
     - 'build/.markdownlint.json'
+    - '.vsts-ci-docs.yml'
+    - 'build/ci/.azure-devops-stages-docs.yml'
+    - 'build/ci/docs/**'
     
 pr: 
   branches:
@@ -43,6 +46,9 @@ pr:
     - '*.md'
     - 'build/cSpell.json'
     - 'build/.markdownlint.json'
+    - '.vsts-ci-docs.yml'
+    - 'build/ci/.azure-devops-stages-docs.yml'
+    - 'build/ci/docs/**'
 
 resources:
   containers:
