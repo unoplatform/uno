@@ -32,7 +32,12 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public object FindName(string name)
-			=> IFrameworkElementHelper.FindName(this, this, name);
+			=> IFrameworkElementHelper.FindName(this, this, name) ?? FindNameInNameScope(name);
+
+		// WinUI's FindName is a lookup in the element's namescope, which also holds named non-FrameworkElement
+		// objects (Run, brushes, MenuFlyout...). Uno's tree walk runs first so its existing results are kept.
+		private object FindNameInNameScope(string name)
+			=> NameScope.GetNameScope(this)?.FindName(name);
 
 
 		public void Dispose()

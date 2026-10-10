@@ -40,6 +40,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		private readonly Stack<Type> _styleTargetTypeStack = new Stack<Type>();
 		private Queue<Action> _postActions = new Queue<Action>();
 		private List<XamlParseException>? _parseExceptions;
+		private readonly Stack<NameScope> _nameScopes = new();
+		private NameScope? _componentNameScope;
 
 		private static Type[] _genericConvertibles = new[]
 		{
@@ -77,7 +79,27 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			{
 				var topLevelControl = _fileDefinition.Objects.First();
 
-				var instance = LoadObject(topLevelControl, rootInstance: null, component: component, createInstanceFromXClass: createInstanceFromXClass);
+				// Like WinUI's XamlReader.Load, the parsed tree gets its own namescope, owned by the root.
+				// LoadComponent registers into the component's existing namescope instead.
+				_componentNameScope = (component as DependencyObject)?.ReadLocalValue(NameScope.NameScopeProperty) as NameScope;
+				var nameScope = _componentNameScope ?? new NameScope();
+				_nameScopes.Push(nameScope);
+
+				object? instance;
+				try
+				{
+					instance = LoadObject(topLevelControl, rootInstance: null, component: component, createInstanceFromXClass: createInstanceFromXClass);
+				}
+				finally
+				{
+					_nameScopes.Pop();
+				}
+
+				if (instance is FrameworkElement root && NameScope.GetNameScope(root) is null)
+				{
+					NameScope.SetNameScope(root, nameScope);
+					nameScope.Owner = root;
+				}
 
 				if (_parseExceptions?.Count > 0)
 				{
@@ -217,7 +239,25 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					var contentOwner = unknownContent;
 
-					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: s) as _View;
+					// Each materialization gets its own namescope, owned by the template root.
+					var nameScope = new NameScope();
+					_nameScopes.Push(nameScope);
+					try
+					{
+						var templateRoot = LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: s) as _View;
+
+						if (templateRoot is not null && NameScope.GetNameScope(templateRoot) is null)
+						{
+							NameScope.SetNameScope(templateRoot, nameScope);
+							nameScope.Owner = templateRoot;
+						}
+
+						return templateRoot;
+					}
+					finally
+					{
+						_nameScopes.Pop();
+					}
 				};
 
 				// We're validating the content here to ensure that any parse exception is
@@ -436,6 +476,39 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		}
 
 		private void ProcessNamedMember(
+			XamlObjectDefinition control,
+			object instance,
+			XamlMemberDefinition member,
+			object rootInstance,
+			TemplateMaterializationSettings? settings)
+		{
+			ProcessNamedMemberCore(control, instance, member, rootInstance, settings);
+			TryRegisterName(control, instance, member);
+		}
+
+		// WinUI's parser registers both x:Name and a plain Name in the namescope being built.
+		private void TryRegisterName(XamlObjectDefinition control, object instance, XamlMemberDefinition member)
+		{
+			if (_nameScopes.Count > 0
+				&& member.Member.Name == "Name"
+				&& member.Value is string { Length: > 0 } name
+				&& instance is not MarkupExtension
+				&& (member.Member.DeclaringType == null
+					|| (TypeResolver.IsType(control.Type, member.Member.DeclaringType) && !TypeResolver.IsAttachedProperty(member))))
+			{
+				var nameScope = _nameScopes.Peek();
+
+				if (nameScope == _componentNameScope)
+				{
+					// LoadComponent re-registers the names the component's generated code already registered.
+					nameScope.UnregisterName(name);
+				}
+
+				nameScope.RegisterName(name, instance);
+			}
+		}
+
+		private void ProcessNamedMemberCore(
 			XamlObjectDefinition control,
 			object instance,
 			XamlMemberDefinition member,
