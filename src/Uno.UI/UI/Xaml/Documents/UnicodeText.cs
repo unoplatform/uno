@@ -1784,18 +1784,23 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static unsafe void AppendBoundaries(int boundaryType, string text, int outputBaseOffset, List<int> list)
 	{
-		fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
+		var localeName = CultureInfo.CurrentUICulture.Name;
+		fixed (char* locale = &localeName.GetPinnableReference())
 		{
 			fixed (char* textPtr = &text.GetPinnableReference())
 			{
-				var breakIterator = ICU.GetMethod<ICU.ubrk_open>()(boundaryType, (IntPtr)locale, (IntPtr)textPtr, text.Length, out int status);
-				ICU.CheckErrorCode<ICU.ubrk_open>(status);
+				var breakIterator = ICU.GetBreakIterator(boundaryType, localeName, (IntPtr)locale, (IntPtr)textPtr, text.Length, out var isCached);
+				var next = ICU.GetMethod<ICU.ubrk_next>();
 				ICU.GetMethod<ICU.ubrk_first>()(breakIterator);
-				while (ICU.GetMethod<ICU.ubrk_next>()(breakIterator) is var next && next != /* UBRK_DONE */ -1)
+				while (next(breakIterator) is var boundary && boundary != /* UBRK_DONE */ -1)
 				{
-					list.Add(next + outputBaseOffset);
+					list.Add(boundary + outputBaseOffset);
 				}
-				ICU.GetMethod<ICU.ubrk_close>()(breakIterator);
+
+				if (!isCached)
+				{
+					ICU.CloseBreakIterator(breakIterator);
+				}
 			}
 		}
 	}
