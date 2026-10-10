@@ -61,7 +61,7 @@ public class Given_FindName_NonFrameworkElement
 	}
 
 	[TestMethod]
-	public void When_Template_Name_Not_Visible_From_Outside()
+	public void When_DataTemplate_Content_Then_Its_Names_Resolve_From_Its_Root()
 	{
 		var grid = (Grid)XamlReader.Load(
 			$"<Grid {Ns}><Grid.Resources><DataTemplate x:Key='t'><TextBlock><Run x:Name='InnerRun' Text='a'/></TextBlock></DataTemplate></Grid.Resources></Grid>");
@@ -69,7 +69,54 @@ public class Given_FindName_NonFrameworkElement
 		var root = (TextBlock)((DataTemplate)grid.Resources["t"]).LoadContent();
 
 		Assert.IsInstanceOfType(root.FindName("InnerRun"), typeof(Run));
-		Assert.IsNull(grid.FindName("InnerRun"));
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21129")]
+	public async Task When_Live_ControlTemplate_Then_Names_Do_Not_Cross_Scopes()
+	{
+		var (grid, probe) = await LoadTemplatePartProbe();
+		var templateRoot = (FrameworkElement)VisualTreeHelper.GetChild(probe, 0);
+
+		Assert.IsInstanceOfType(grid.FindName("OuterRun"), typeof(Run));
+		Assert.IsInstanceOfType(templateRoot.FindName("TemplateRun"), typeof(Run));
+		Assert.IsNull(grid.FindName("TemplateRun"), "A template's names must not leak into the outer namescope.");
+		Assert.IsNull(templateRoot.FindName("OuterRun"), "The outer namescope must not be visible from inside a template.");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21129")]
+	public async Task When_Template_Part_Missing_Then_GetTemplateChild_Ignores_Outer_NameScope()
+	{
+		var (_, probe) = await LoadTemplatePartProbe();
+
+		Assert.IsInstanceOfType(probe.GetPart("TemplateRun"), typeof(Run));
+		Assert.IsNull(probe.GetPart("HeaderContentPresenter"), "WinUI's GetTemplateChild only looks in the template namescope.");
+		Assert.IsNull(probe.GetPart("OuterRun"));
+	}
+
+	private static async Task<(Grid Grid, TemplatePartProbe Probe)> LoadTemplatePartProbe()
+	{
+		var grid = (Grid)XamlReader.Load(
+			$"<Grid {Ns}><ContentPresenter x:Name='HeaderContentPresenter'/><TextBlock><Run x:Name='OuterRun' Text='o'/></TextBlock></Grid>");
+		var probe = new TemplatePartProbe
+		{
+			Width = 50,
+			Height = 50,
+			Template = (ControlTemplate)XamlReader.Load(
+				$"<ControlTemplate {Ns}><Grid><TextBlock><Run x:Name='TemplateRun' Text='t'/></TextBlock></Grid></ControlTemplate>"),
+		};
+		grid.Children.Add(probe);
+
+		await UITestHelper.Load(grid);
+		probe.ApplyTemplate();
+
+		return (grid, probe);
+	}
+
+	private sealed class TemplatePartProbe : Control
+	{
+		public DependencyObject GetPart(string name) => GetTemplateChild(name);
 	}
 
 	[TestMethod]
