@@ -1286,6 +1286,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// NativeWinUI excluded: Frame.Navigate triggers a fatal 0xC0000005 access violation. https://github.com/unoplatform/uno/issues/23477
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CachedPage_NavigatedBack_Then_RealizedItemsFillViewport()
 		{
 			var frame = new Frame { Width = 300, Height = 500 };
