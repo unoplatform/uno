@@ -7,6 +7,7 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml;
@@ -641,6 +642,226 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 #endif
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24557")]
+		public async Task When_Image_Source_Loads_While_Open()
+		{
+			var owner = new Button { Content = "owner" };
+			var image = new Image { Width = 180, Height = 120, Stretch = Stretch.Uniform };
+			var SUT = new ToolTip { Content = image };
+			ToolTipService.SetToolTip(owner, SUT);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = owner;
+				await TestServices.WindowHelper.WaitForLoaded(owner);
+
+				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitForLoaded(image);
+
+				// The image gets its source only once the tooltip is showing, so the bitmap data arrives
+				// while the image sits inside an already-laid-out popup.
+				var opened = new TaskCompletionSource<bool>();
+				image.ImageOpened += (_, _) => opened.TrySetResult(true);
+				image.ImageFailed += (_, _) => opened.TrySetResult(false);
+				image.Source = new BitmapImage(new Uri("ms-appx:///Assets/my500x200.jpg"));
+
+				await Task.WhenAny(opened.Task, Task.Delay(3000));
+
+				Assert.IsTrue(opened.Task.IsCompleted, "The image did not open while the tooltip was showing.");
+				Assert.IsTrue(await opened.Task, "The image failed to load.");
+
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsTrue(image.ActualWidth > 0 && image.ActualHeight > 0, "The image was not laid out with its bitmap.");
+
+				// Closing and reopening puts the tooltip back into the popup; a source assigned afterwards
+				// must still get through.
+				SUT.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var reopened = new TaskCompletionSource<bool>();
+				image.ImageOpened += (_, _) => reopened.TrySetResult(true);
+				image.ImageFailed += (_, _) => reopened.TrySetResult(false);
+				image.Source = new BitmapImage(new Uri("ms-appx:///Assets/StoreLogo.png"));
+
+				await Task.WhenAny(reopened.Task, Task.Delay(3000));
+
+				Assert.IsTrue(reopened.Task.IsCompleted, "The image did not open while the reopened tooltip was showing.");
+				Assert.IsTrue(await reopened.Task, "The image failed to load after reopening.");
+			}
+			finally
+			{
+				SUT.IsOpen = false;
+#if HAS_UNO
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24820")]
+		public async Task When_Content_Realizes_On_Load_Then_Measured_On_First_Open()
+		{
+			// An ItemsControl only creates its containers once loaded, so it invalidates its measure
+			// from inside the tooltip that has just opened.
+			var items = new ItemsControl { ItemsSource = new[] { "first error", "second error" } };
+			var owner = new Button { Content = "owner" };
+			var SUT = new ToolTip { Content = items };
+			ToolTipService.SetToolTip(owner, SUT);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = owner;
+				await TestServices.WindowHelper.WaitForLoaded(owner);
+
+				SUT.IsOpen = true;
+
+				await TestServices.WindowHelper.WaitFor(
+					() => items.ActualWidth > 0 && items.ActualHeight > 0,
+					timeoutMS: 3000,
+					message: "The tooltip content was never measured on its first open.");
+			}
+			finally
+			{
+				SUT.IsOpen = false;
+#if HAS_UNO
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24557")]
+		public async Task When_Closed_Then_DataContext_Kept()
+		{
+			var owner = new Button { Content = "owner" };
+			var content = new TextBlock();
+			content.SetBinding(TextBlock.TextProperty, new Binding());
+			var SUT = new ToolTip { Content = content };
+			ToolTipService.SetToolTip(owner, SUT);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = owner;
+				await TestServices.WindowHelper.WaitForLoaded(owner);
+				owner.DataContext = "VM1";
+
+				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("VM1", SUT.DataContext);
+				Assert.AreEqual("VM1", content.Text);
+
+				SUT.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("VM1", SUT.DataContext, "The DataContext was lost on close.");
+				Assert.AreEqual("VM1", content.Text);
+
+				owner.DataContext = "VM2";
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("VM2", SUT.DataContext);
+
+				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+				owner.DataContext = "VM3";
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("VM3", SUT.DataContext);
+
+				SUT.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("VM3", SUT.DataContext, "The DataContext was lost on the second close.");
+				Assert.AreEqual("VM3", content.Text);
+			}
+			finally
+			{
+				SUT.IsOpen = false;
+#if HAS_UNO
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24557")]
+		public async Task When_PlacementTarget_Then_DataContext_From_Owner()
+		{
+			var owner = new Button { Content = "owner", DataContext = "Owner" };
+			var target = new Button { Content = "target", DataContext = "Target" };
+			var SUT = new ToolTip { Content = "tooltip" };
+			ToolTipService.SetPlacementTarget(owner, target);
+			ToolTipService.SetToolTip(owner, SUT);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = new StackPanel { Children = { owner, target } };
+				await TestServices.WindowHelper.WaitForLoaded(owner);
+
+				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("Owner", SUT.DataContext);
+
+				owner.DataContext = "Owner2";
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("Owner2", SUT.DataContext);
+
+				// The placement target only positions the tooltip.
+				target.DataContext = "Target2";
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("Owner2", SUT.DataContext);
+
+				SUT.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual("Owner2", SUT.DataContext);
+			}
+			finally
+			{
+				SUT.IsOpen = false;
+#if HAS_UNO
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Closed_Then_Parent_Cleared()
+		{
+			var owner = new Button { Content = "owner" };
+			var SUT = new ToolTip { Content = "tooltip" };
+			ToolTipService.SetToolTip(owner, SUT);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = owner;
+				await TestServices.WindowHelper.WaitForLoaded(owner);
+
+				for (var i = 0; i < 2; i++)
+				{
+					SUT.IsOpen = true;
+					await TestServices.WindowHelper.WaitForIdle();
+					Assert.IsInstanceOfType(SUT.Parent, typeof(Popup));
+					Assert.IsNotNull(VisualTreeHelper.GetParent(SUT));
+
+					SUT.IsOpen = false;
+					await TestServices.WindowHelper.WaitForIdle();
+					Assert.IsNull(SUT.Parent);
+					Assert.IsNull(VisualTreeHelper.GetParent(SUT));
+				}
+			}
+			finally
+			{
+				SUT.IsOpen = false;
+#if HAS_UNO
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
 	}
