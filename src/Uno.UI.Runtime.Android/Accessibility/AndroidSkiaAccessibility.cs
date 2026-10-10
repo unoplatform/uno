@@ -540,6 +540,15 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	// Placeholder, read-only and spell-check changes on text editors raise no automation event.
+	protected override void OnTextControlStateChanged(UIElement element)
+	{
+		if (_helper is not null)
+		{
+			ScheduleInvalidation(element.Visual.Handle);
+		}
+	}
+
 	protected override void OnSizeOrOffsetChanged(Visual visual)
 	{
 		if (_helper is not null &&
