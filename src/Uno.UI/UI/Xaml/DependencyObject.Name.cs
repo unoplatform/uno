@@ -36,9 +36,6 @@ public partial class DependencyObject
 						case VisualStateGroup visualStateGroup:
 							visualStateGroup.NameCache = name;
 							break;
-						case Documents.TextElement textElement:
-							textElement.NameCache = name;
-							break;
 					}
 				}));
 	}
