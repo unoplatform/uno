@@ -5,6 +5,7 @@ using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
+using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.MacOS;
 
@@ -18,6 +19,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 
 		nativeWindow.Host.Closing += OnWindowClosing;
 		nativeWindow.Host.RasterizationScaleChanged += Host_RasterizationScaleChanged;
+		nativeWindow.Host.ActivationChanged += (_, e) => OnNativeActivationChanged(e.IsActive, e.ByPointer);
 		nativeWindow.Host.SizeChanged += (_, s) => OnHostSizeChanged(s);
 		OnHostSizeChanged(initialSize);
 		nativeWindow.Host.PositionChanged += (_, s) => OnHostPositionChanged(s.X, s.Y);
@@ -32,6 +34,11 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 	{
 		RasterizationScale = (float)_nativeWindow.Host.RasterizationScale;
 	}
+
+	internal void OnNativeActivationChanged(bool isActive, bool byPointer)
+		=> ActivationState = !isActive
+			? CoreWindowActivationState.Deactivated
+			: byPointer ? CoreWindowActivationState.PointerActivated : CoreWindowActivationState.CodeActivated;
 
 	public override object NativeWindow => _nativeWindow;
 

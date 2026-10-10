@@ -230,6 +230,9 @@ internal static partial class NativeUno
 		delegate* unmanaged[Cdecl]<nint, double, double, void> resizeCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_window_activation_changed_callback(delegate* unmanaged[Cdecl]<nint, int, int, void> activationChangedCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial uint uno_get_system_theme();
 
 	[LibraryImport("libUnoNativeMac.dylib")]

@@ -986,6 +986,13 @@ void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, wind
     window_close = close;
 }
 
+static window_activation_changed_fn_ptr window_activation_changed;
+
+void uno_set_window_activation_changed_callback(window_activation_changed_fn_ptr activationChanged)
+{
+    window_activation_changed = activationChanged;
+}
+
 // IME callback storage
 static ime_insert_text_callback_fn_ptr ime_insert_text_callback;
 static ime_set_marked_text_callback_fn_ptr ime_set_marked_text_callback;
@@ -1629,6 +1636,27 @@ NSOperatingSystemVersion _osVersion;
     NSLog(@"UNOWindow %p windowDidMove %@ x: %g y: %g", self, notification, position.x, position.y);
 #endif
     uno_get_window_move_event_callback()(self, position.x, position.y);
+}
+
+// The key window is the one receiving keyboard input, the closest match to an activated Win32 window.
+- (void)windowDidBecomeKey:(NSNotification *)notification {
+    NSEventType type = NSApp.currentEvent.type;
+    bool byPointer = type == NSEventTypeLeftMouseDown || type == NSEventTypeRightMouseDown || type == NSEventTypeOtherMouseDown;
+#if DEBUG
+    NSLog(@"UNOWindow %p windowDidBecomeKey byPointer %s", self, byPointer ? "true" : "false");
+#endif
+    if (window_activation_changed) {
+        window_activation_changed(self, 1, byPointer ? 1 : 0);
+    }
+}
+
+- (void)windowDidResignKey:(NSNotification *)notification {
+#if DEBUG
+    NSLog(@"UNOWindow %p windowDidResignKey", self);
+#endif
+    if (window_activation_changed) {
+        window_activation_changed(self, 0, 0);
+    }
 }
 
 - (void)windowDidResize:(NSNotification *)notification {

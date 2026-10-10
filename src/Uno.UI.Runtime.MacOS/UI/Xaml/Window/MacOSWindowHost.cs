@@ -333,6 +333,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), o => (o as IUnoCorePointerInputSource)!);
 
 		NativeUno.uno_set_window_close_callbacks(&WindowShouldClose, &WindowClose);
+		NativeUno.uno_set_window_activation_changed_callback(&WindowActivationChanged);
 
 		NativeUno.uno_set_ime_callbacks(&OnImeInsertText, &OnImeSetMarkedText, &OnImeUnmarkText, &OnImeGetCaretRect);
 
@@ -882,6 +883,25 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			Application.Current.RaiseRecoverableUnhandledException(e);
 			return 0;
+		}
+	}
+
+	/// <summary>
+	/// Raised when the native window becomes (true) or stops being (false) the key window.
+	/// </summary>
+	internal event EventHandler<(bool IsActive, bool ByPointer)>? ActivationChanged;
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static void WindowActivationChanged(nint handle, int isActive, int byPointer)
+	{
+		try
+		{
+			var window = GetWindowHost(handle);
+			window?.ActivationChanged?.Invoke(window, (isActive != 0, byPointer != 0));
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 

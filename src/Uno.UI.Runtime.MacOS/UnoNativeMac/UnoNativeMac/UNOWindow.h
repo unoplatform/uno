@@ -103,6 +103,10 @@ void uno_window_set_max_size(NSWindow* window, double width, double height);
 // material: 0 = None, 1 = Mica (Base), 2 = Mica (BaseAlt), 3 = Acrylic
 bool uno_window_set_system_backdrop(NSWindow* window, int material);
 
+// Raised when the window becomes or stops being the key window.
+typedef void (*window_activation_changed_fn_ptr)(UNOWindow* window, int32_t isActive, int32_t byPointer);
+void uno_set_window_activation_changed_callback(window_activation_changed_fn_ptr activationChanged);
+
 // https://learn.microsoft.com/en-us/uwp/api/windows.system.virtualkey?view=winrt-22621
 typedef NS_ENUM(sint32, VirtualKey) {
     VirtualKeyNone = 0,
