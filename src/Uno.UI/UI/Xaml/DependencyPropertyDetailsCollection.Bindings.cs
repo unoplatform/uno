@@ -23,12 +23,14 @@ namespace Microsoft.UI.Xaml
 		// For non-FrameworkElement owners there is no DataContextProperty (WinUI parity: a non-FE DependencyObject has
 		// no DataContext of its own). The ambient DataContext pushed down from the owner's mentor/parent FrameworkElement
 		// is cached here so newly-added and resumed bindings can resolve against it — this is the inheritance-context,
-		// not a DataContext stored on the object.
-		private object _inheritedDataContext;
+		// not a DataContext stored on the object. Held weakly: the value belongs to that FrameworkElement, and a shared
+		// owner (brush, transition, InputScope, ...) must not keep it alive once the element is gone.
+		private ManagedWeakReference _inheritedDataContextRef;
 
 		// The ambient (mentor) DataContext cached for a non-FE owner. Exposed so the store can inspect/clear it
 		// the same way it would read a FrameworkElement owner's DataContextProperty value (e.g. ALC teardown).
-		internal object InheritedDataContext => _inheritedDataContext;
+		internal object InheritedDataContext
+			=> _inheritedDataContextRef?.TryGetTarget<object>(out var dataContext) is true ? dataContext : null;
 
 		public bool HasBindings => _bindings != ImmutableList<BindingExpression>.Empty;
 
@@ -39,7 +41,10 @@ namespace Microsoft.UI.Xaml
 		{
 			// Cache the ambient DataContext so a binding added later (or resumed) on a non-FE owner can resolve
 			// against the same inherited value (FrameworkElement owners read their DataContextProperty instead).
-			_inheritedDataContext = dataContext;
+			if (_dataContextProperty is null)
+			{
+				CacheInheritedDataContext(dataContext);
+			}
 
 			var bindings = _bindings.Data;
 
@@ -122,7 +127,7 @@ namespace Microsoft.UI.Xaml
 
 				// FrameworkElement owners read their DataContextProperty; non-FE owners use the cached inherited
 				// (mentor/parent) DataContext instead, since they have no DataContextProperty of their own.
-				var value = DataContextPropertyDetails is { } dataContextDetails ? dataContextDetails.GetEffectiveValue() : _inheritedDataContext;
+				var value = DataContextPropertyDetails is { } dataContextDetails ? dataContextDetails.GetEffectiveValue() : InheritedDataContext;
 				if (value is null || value == DependencyProperty.UnsetValue)
 				{
 					// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
@@ -187,9 +192,30 @@ namespace Microsoft.UI.Xaml
 					{
 						// Non-FE owner: no DataContextProperty. Resolve the binding against the ambient DataContext
 						// inherited from the owner's mentor/parent FrameworkElement (WinUI inheritance-context).
-						ApplyBinding(bindingExpression, _inheritedDataContext);
+						ApplyBinding(bindingExpression, InheritedDataContext);
 					}
 				}
+			}
+		}
+
+		private void CacheInheritedDataContext(object dataContext)
+		{
+			if (_inheritedDataContextRef is { } previous)
+			{
+				// Keep the reference only while it still resolves to the same live value; a null update (clear)
+				// or a dead target must release it, otherwise a long-lived shared object retains the dead handle.
+				if (dataContext is not null && ReferenceEquals(InheritedDataContext, dataContext))
+				{
+					return;
+				}
+
+				WeakReferencePool.ReturnWeakReference(_owner, previous);
+				_inheritedDataContextRef = null;
+			}
+
+			if (dataContext is not null)
+			{
+				_inheritedDataContextRef = WeakReferencePool.RentWeakReference(_owner, dataContext);
 			}
 		}
 
