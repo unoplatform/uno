@@ -1373,7 +1373,8 @@ public class ItemsViewTests : MUXApiTestBase
 		// is caused by DComp callbacks arriving for released visuals during teardown.
 		ItemsView itemsView = null;
 		LinedFlowLayout linedFlowLayout = null;
-		List<string> itemsSource = new List<string>(Enumerable.Range(0, 300).Select(k => k + " - " + (new Random()).Next(100)));
+		var random = new Random();
+		List<string> itemsSource = new List<string>(Enumerable.Range(0, 300).Select(k => k + " - " + random.Next(100)));
 		UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
 		UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
 		UnoAutoResetEvent scrollViewScrollCompletedEvent = new UnoAutoResetEvent(false);
