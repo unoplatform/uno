@@ -850,22 +850,47 @@ internal static class AccessibilityPeerHelper
 		};
 
 	internal static bool CanCopyText(AutomationPeer peer)
-		=> !ResolveProviderPeer(peer).IsPassword() &&
-			GetTextBox(peer) is { IsEnabled: true, FocusState: not FocusState.Unfocused, SelectionLength: > 0 };
+	{
+		if (ResolveProviderPeer(peer).IsPassword())
+		{
+			return false;
+		}
+
+		return GetTextEditor(peer) switch
+		{
+			TextBox textBox => textBox is { IsEnabled: true, FocusState: not FocusState.Unfocused, SelectionLength: > 0 },
+#if __SKIA__
+			RichEditBox richEditBox => richEditBox is { IsEnabled: true, FocusState: not FocusState.Unfocused } &&
+				HasRichEditSelection(richEditBox),
+#endif
+			_ => false,
+		};
+	}
 
 	internal static bool CanCutText(AutomationPeer peer)
 		=> CanCopyText(peer) &&
-			GetTextBox(peer) is { IsReadOnly: false };
+			GetTextEditor(peer) is TextBox { IsReadOnly: false } or RichEditBox { IsReadOnly: false };
 
 	internal static bool CanPasteText(AutomationPeer peer)
 	{
 #if __SKIA__
-		return GetTextBox(peer) is
+		return GetTextEditor(peer) switch
 		{
-			IsEnabled: true,
-			IsReadOnly: false,
-			FocusState: not FocusState.Unfocused,
-			CanPasteClipboardContent: true,
+			TextBox textBox => textBox is
+			{
+				IsEnabled: true,
+				IsReadOnly: false,
+				FocusState: not FocusState.Unfocused,
+				CanPasteClipboardContent: true,
+			},
+			// Like WinUI, RichEditBox has no CanPasteClipboardContent; ask the clipboard directly.
+			RichEditBox richEditBox => richEditBox is
+			{
+				IsEnabled: true,
+				IsReadOnly: false,
+				FocusState: not FocusState.Unfocused,
+			} && TryPerform(global::Windows.ApplicationModel.DataTransfer.Clipboard.IsTextAvailable),
+			_ => false,
 		};
 #else
 		return false;
@@ -873,28 +898,37 @@ internal static class AccessibilityPeerHelper
 	}
 
 	internal static bool TryCopyText(AutomationPeer peer)
-	{
-		var textBox = GetTextBox(peer);
-		return textBox is not null &&
-			CanCopyText(peer) &&
-			TryPerform(textBox.CopySelectionToClipboard);
-	}
+		=> CanCopyText(peer) &&
+			GetTextEditor(peer) switch
+			{
+				TextBox textBox => TryPerform(textBox.CopySelectionToClipboard),
+#if __SKIA__
+				RichEditBox richEditBox => TryPerform(richEditBox.CopySelectionToClipboard),
+#endif
+				_ => false,
+			};
 
 	internal static bool TryCutText(AutomationPeer peer)
-	{
-		var textBox = GetTextBox(peer);
-		return textBox is not null &&
-			CanCutText(peer) &&
-			TryPerform(textBox.CutSelectionToClipboard);
-	}
+		=> CanCutText(peer) &&
+			GetTextEditor(peer) switch
+			{
+				TextBox textBox => TryPerform(textBox.CutSelectionToClipboard),
+#if __SKIA__
+				RichEditBox richEditBox => TryPerform(richEditBox.CutSelectionToClipboard),
+#endif
+				_ => false,
+			};
 
 	internal static bool TryPasteText(AutomationPeer peer)
-	{
-		var textBox = GetTextBox(peer);
-		return textBox is not null &&
-			CanPasteText(peer) &&
-			TryPerform(textBox.PasteFromClipboard);
-	}
+		=> CanPasteText(peer) &&
+			GetTextEditor(peer) switch
+			{
+				TextBox textBox => TryPerform(textBox.PasteFromClipboard),
+#if __SKIA__
+				RichEditBox richEditBox => TryPerform(richEditBox.PasteFromClipboard),
+#endif
+				_ => false,
+			};
 
 	internal static bool TryGetText(
 		AutomationPeer peer,
@@ -1343,10 +1377,18 @@ internal static class AccessibilityPeerHelper
 		=> GetProvider<ITransformProvider2>(peer, PatternInterface.Transform2)
 			?? GetProvider<ITransformProvider>(peer, PatternInterface.Transform);
 
-	private static TextBox? GetTextBox(AutomationPeer peer)
-		=> ResolveProviderPeer(peer) is FrameworkElementAutomationPeer { Owner: TextBox textBox }
-			? textBox
+	private static Control? GetTextEditor(AutomationPeer peer)
+		=> ResolveProviderPeer(peer) is FrameworkElementAutomationPeer { Owner: TextBox or RichEditBox } editorPeer
+			? (Control)editorPeer.Owner
 			: null;
+
+#if __SKIA__
+	private static bool HasRichEditSelection(RichEditBox richEditBox)
+	{
+		richEditBox.GetAccessibilitySelection(out var start, out var end);
+		return end > start;
+	}
+#endif
 
 	private static bool TryGetTextRangeOffsets(
 		ITextProvider provider,
