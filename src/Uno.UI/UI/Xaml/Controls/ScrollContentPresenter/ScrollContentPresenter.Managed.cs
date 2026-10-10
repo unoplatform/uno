@@ -219,13 +219,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnMinZoomFactorChanged(float newValue)
 		{
-			// While zoom is disabled the range must stay pinned to 1, otherwise a later MinZoomFactor
-			// change would silently re-open the zoom range.
-			if (Scroller?.ZoomMode == ZoomMode.Disabled)
-			{
-				newValue = 1f;
-			}
-
 			_minZoomFactor = Math.Max(0.1f, newValue);
 			// Clamp current zoom if it's now below the new minimum
 			if (_zoomFactor < _minZoomFactor)
@@ -236,11 +229,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnMaxZoomFactorChanged(float newValue)
 		{
-			if (Scroller?.ZoomMode == ZoomMode.Disabled)
-			{
-				newValue = 1f;
-			}
-
 			_maxZoomFactor = Math.Max(_minZoomFactor, newValue);
 			// Clamp current zoom if it's now above the new maximum
 			if (_zoomFactor > _maxZoomFactor)

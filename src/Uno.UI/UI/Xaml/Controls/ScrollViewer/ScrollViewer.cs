@@ -1882,21 +1882,12 @@ namespace Microsoft.UI.Xaml.Controls
 #nullable disable
 		partial void OnZoomModeChangedPartial(ZoomMode zoomMode)
 		{
+			// ZoomMode only gates user zoom input (pinch, Ctrl+wheel, Ctrl+/-), as in WinUI.
+			// Also called from OnApplyTemplate to seed the presenter with the Min/MaxZoomFactor range.
 			if (_presenter is ScrollContentPresenter scp)
 			{
-				switch (zoomMode)
-				{
-					case ZoomMode.Disabled:
-						// When zoom is disabled, set min/max to 1 to prevent any zooming
-						scp.OnMinZoomFactorChanged(1f);
-						scp.OnMaxZoomFactorChanged(1f);
-						break;
-					case ZoomMode.Enabled:
-						// When zoom is enabled, use the actual min/max values
-						scp.OnMinZoomFactorChanged(MinZoomFactor);
-						scp.OnMaxZoomFactorChanged(MaxZoomFactor);
-						break;
-				}
+				scp.OnMinZoomFactorChanged(MinZoomFactor);
+				scp.OnMaxZoomFactorChanged(MaxZoomFactor);
 			}
 		}
 #nullable enable
