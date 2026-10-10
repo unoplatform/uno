@@ -682,7 +682,7 @@ namespace Microsoft.UI.Xaml
 					);
 				}
 
-				RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+				RaiseCallbacks(actualInstanceAlias, propertyDetails, precedence, previousValue, previousPrecedence, newValue, newPrecedence);
 
 				// MUX Reference: CDependencyObject::UpdateEffectiveValue — PropertySystem.cpp:1893-1898,
 				// commit fc2f82117: after a direct SetValue is applied (and its theme reference cleared
@@ -1964,6 +1964,7 @@ namespace Microsoft.UI.Xaml
 		private void RaiseCallbacks(
 			DependencyObject actualInstanceAlias,
 			DependencyPropertyDetails propertyDetails,
+			DependencyPropertyValuePrecedences precedence,
 			object? previousValue,
 			DependencyPropertyValuePrecedences previousPrecedence,
 			object? newValue,
@@ -1975,8 +1976,10 @@ namespace Microsoft.UI.Xaml
 			// This check is present to avoid allocating if there is no bypass.
 			var propertyPath = hasPropagationBypass ? new DependencyPropertyPath(actualInstanceAlias, propertyDetails.Property) : null;
 
-			// WinUI stores DependencyObject_Name in a field and notifies on every set, even an unchanged one.
-			if (AreDifferent(newValue, previousValue) || ReferenceEquals(propertyDetails.Property, NameProperty))
+			// WinUI stores DependencyObject_Name in a field and notifies on every write of the effective value,
+			// even an unchanged one, but not on a write masked by a higher precedence.
+			if (AreDifferent(newValue, previousValue)
+				|| (ReferenceEquals(propertyDetails.Property, NameProperty) && precedence <= newPrecedence))
 			{
 				var bypassesPropagation = hasPropagationBypass && _propagationBypass.Contains(propertyPath!);
 
