@@ -39,6 +39,10 @@ namespace Microsoft.UI.Xaml
 		private object FindNameInNameScope(string name)
 			=> NameScope.GetNameScope(this)?.FindName(name);
 
+		// Template-part lookups: the inherited namescope would reach names of an outer page or template.
+		internal object FindNameInSubtree(string name)
+			=> IFrameworkElementHelper.FindName(this, this, name);
+
 
 		public void Dispose()
 		{
