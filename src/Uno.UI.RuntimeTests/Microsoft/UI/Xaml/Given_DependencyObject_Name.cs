@@ -75,6 +75,19 @@ public class Given_DependencyObject_Name
 	}
 
 	[TestMethod]
+	public void When_FrameworkElement_Name_Read_Then_NameProperty_Changes_Then_Name_Updates()
+	{
+		var border = new Border();
+		Assert.AreEqual("", border.Name);
+
+		border.SetValue(FrameworkElement.NameProperty, "Q");
+		Assert.AreEqual("Q", border.Name);
+
+		border.ClearValue(FrameworkElement.NameProperty);
+		Assert.AreEqual("", border.Name);
+	}
+
+	[TestMethod]
 	public void When_XName_On_Resource_Brush_Then_NameProperty_Holds_It()
 	{
 		var grid = (Grid)XamlReader.Load($"<Grid {Namespaces}><Grid.Resources><SolidColorBrush x:Key='k' x:Name='LB' Color='Red'/></Grid.Resources></Grid>");
