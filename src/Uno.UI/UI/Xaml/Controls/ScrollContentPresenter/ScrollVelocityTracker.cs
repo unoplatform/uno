@@ -49,8 +49,18 @@ internal sealed class ScrollVelocityTracker
 	/// Velocity in logical pixels per millisecond: zero when the pointer stopped before its newest samples,
 	/// or null when there is not enough recent motion to tell.
 	/// </summary>
-	public Point? GetVelocity()
+	/// <param name="releaseTimeMs">
+	/// When the pointer was released. Only its time counts: a release repeats the last move's position, and
+	/// fitting it as a sample bends the curve enough to shrink or even reverse the velocity (as Android does,
+	/// it only tells whether the pointer rested before lifting).
+	/// </param>
+	public Point? GetVelocity(double? releaseTimeMs = null)
 	{
+		if (_count > 0 && releaseTimeMs - _samples[_index].TimeMs > AssumeStoppedMs)
+		{
+			return new Point(0, 0);
+		}
+
 		if (_count < MinSamples)
 		{
 			return null;
