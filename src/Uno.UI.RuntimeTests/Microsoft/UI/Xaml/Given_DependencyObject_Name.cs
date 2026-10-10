@@ -148,6 +148,29 @@ public class Given_DependencyObject_Name
 	}
 
 	[TestMethod]
+	public void When_Compiled_XName_On_Custom_DependencyObject_Then_NameProperty_Holds_It()
+	{
+		var view = new DependencyObject_Name_CustomDO_View();
+		var plainDO = (DependencyObject)view.Resources["Plain"];
+
+		Assert.AreEqual("PD", plainDO.GetValue(FrameworkElement.NameProperty));
+		Assert.AreSame(plainDO, view.PD);
+	}
+
+	[TestMethod]
+	public void When_Compiled_XName_On_Custom_DependencyObject_With_Name_Then_Only_NameProperty_Holds_It()
+	{
+		var view = new DependencyObject_Name_CustomDO_View();
+		var namedDO = (Given_DependencyObject_Name_NamedDO)view.Resources["Named"];
+
+		Assert.AreEqual("ND", namedDO.GetValue(FrameworkElement.NameProperty));
+		Assert.IsNull(namedDO.Name);
+		Assert.AreSame(namedDO, view.ND);
+	}
+
+	// Native WinUI's XamlReader can't resolve test-assembly types: the compiled variants above cover it.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_XName_On_Custom_DependencyObject_Then_NameProperty_Holds_It()
 	{
 		var grid = (Grid)XamlReader.Load($"<Grid {Namespaces} xmlns:local='using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml'><Grid.Resources><local:Given_DependencyObject_Name_PlainDO x:Key='k' x:Name='PD'/></Grid.Resources></Grid>");
@@ -156,6 +179,7 @@ public class Given_DependencyObject_Name
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_XName_On_Custom_DependencyObject_With_Name_Then_Only_NameProperty_Holds_It()
 	{
 		var grid = (Grid)XamlReader.Load($"<Grid {Namespaces} xmlns:local='using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml'><Grid.Resources><local:Given_DependencyObject_Name_NamedDO x:Key='k' x:Name='ND'/></Grid.Resources></Grid>");
