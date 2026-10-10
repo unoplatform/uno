@@ -1516,7 +1516,8 @@ internal static class AccessibilityPeerHelper
 
 			for (var childIndex = 0; childIndex < children.Count; childIndex++)
 			{
-				if (children[childIndex] is not { } child)
+				// Spelling errors reach screen readers as Text pattern annotations, not as separate nodes.
+				if (children[childIndex] is not { } child || child is RichEditBoxSpellingErrorAutomationPeer)
 				{
 					continue;
 				}
