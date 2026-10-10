@@ -117,6 +117,52 @@ public class Given_ApplicationActivity
 			"ContextHelper.Current must not stay on the destroyed activity.");
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25177")]
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("InvalidateRender", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
+	public async Task When_Render_Requested_From_Dispatcher_Then_Dispatcher_Is_Not_Held_Until_Next_Frame()
+	{
+		var activity = GetWindowActivity();
+		Assert.IsNotNull(activity);
+		var invalidateRender = activity.GetType().GetMethod("InvalidateRender", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+		Assert.IsNotNull(invalidateRender);
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Each item asks for a frame and queues the next, as a scroll's deferred ViewChanged does. Invalidating a
+		// View there posts a traversal sync barrier, which would hold every following item until the next frame.
+		const int ChainLength = 60;
+		var remaining = ChainLength;
+		var completion = new TaskCompletionSource();
+		void Step()
+		{
+			invalidateRender.Invoke(activity, null);
+			if (--remaining == 0)
+			{
+				completion.SetResult();
+			}
+			else
+			{
+				NativeDispatcher.Main.Enqueue(Step);
+			}
+		}
+
+		var stopwatch = Stopwatch.StartNew();
+		NativeDispatcher.Main.Enqueue(Step);
+		await completion.Task;
+		stopwatch.Stop();
+
+		// One item per frame would take 500ms at 120Hz, 1s at 60Hz.
+		Assert.IsTrue(
+			stopwatch.ElapsedMilliseconds < 250,
+			$"{ChainLength} chained render requests took {stopwatch.ElapsedMilliseconds}ms.");
+	}
+
 	private static object GetMember(object instance, string name)
 		=> instance.GetType()
 			.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
