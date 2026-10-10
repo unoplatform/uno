@@ -1,8 +1,10 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -66,5 +68,73 @@ public class Given_CompositionGeometry
 		shape.StrokeDashArray.Add(2f);
 		shape.StrokeDashArray.Add(10f);
 		Assert.AreEqual(2, shape.StrokeDashArray.Count);
+	}
+
+	// The docs say TrimEnd defaults to 0, but WinUI reports (and renders) 1: an untrimmed geometry.
+	[TestMethod]
+	public async Task When_Default_Trim_Values()
+	{
+		var compositor = await GetCompositorAsync();
+		var ellipse = compositor.CreateEllipseGeometry();
+
+		Assert.AreEqual(0f, ellipse.TrimStart);
+		Assert.AreEqual(1f, ellipse.TrimEnd);
+		Assert.AreEqual(0f, ellipse.TrimOffset);
+	}
+
+	// A zero-length trim window draws nothing; TrimEnd = 0 must not read as "untrimmed".
+	[TestMethod]
+	[DataRow(0f, 0f, 0f)]
+	[DataRow(0.3f, 0.3f, 0f)]
+	[DataRow(0f, 0f, 0.25f)]
+	public async Task When_Trim_Window_Is_Empty_Then_Nothing_Drawn(float trimStart, float trimEnd, float trimOffset)
+	{
+		var screenshot = await RenderStrokedEllipse(e =>
+		{
+			e.TrimStart = trimStart;
+			e.TrimEnd = trimEnd;
+			e.TrimOffset = trimOffset;
+		});
+
+		ImageAssert.DoesNotHaveColorInRectangle(screenshot, new System.Drawing.Rectangle(0, 0, 100, 100), Microsoft.UI.Colors.Red, tolerance: 100);
+	}
+
+	// With TrimEnd left at its default (1), TrimStart = 0.5 keeps the second half: 6 o'clock clockwise to 12.
+	[TestMethod]
+	public async Task When_Only_TrimStart_Set_Then_Draws_To_End()
+	{
+		var screenshot = await RenderStrokedEllipse(e => e.TrimStart = 0.5f);
+
+		ImageAssert.HasColorAt(screenshot, 10, 50, Microsoft.UI.Colors.Red, tolerance: 30);
+		ImageAssert.HasColorAt(screenshot, 90, 50, Microsoft.UI.Colors.White, tolerance: 30);
+	}
+
+	private static async Task<RawBitmap> RenderStrokedEllipse(Action<CompositionEllipseGeometry> configure)
+	{
+		var compositor = await GetCompositorAsync();
+		var ellipse = compositor.CreateEllipseGeometry();
+		ellipse.Center = new Vector2(50, 50);
+		ellipse.Radius = new Vector2(40, 40);
+		configure(ellipse);
+
+		var shape = compositor.CreateSpriteShape(ellipse);
+		shape.StrokeThickness = 8f;
+		shape.StrokeBrush = compositor.CreateColorBrush(Microsoft.UI.Colors.Red);
+
+		var shapeVisual = compositor.CreateShapeVisual();
+		shapeVisual.Shapes.Add(shape);
+		shapeVisual.Size = new Vector2(100, 100);
+
+		var host = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+		};
+		ElementCompositionPreview.SetElementChildVisual(host, shapeVisual);
+
+		await UITestHelper.Load(host);
+		await UITestHelper.WaitForIdle();
+		return await UITestHelper.ScreenShot(host);
 	}
 }
