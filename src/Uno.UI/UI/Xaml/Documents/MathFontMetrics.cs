@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Buffers.Binary;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.UI.Composition.Drawing;
-using OpenTypeMathConstant = HarfBuzzSharp.OpenTypeMathConstant;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -639,6 +638,67 @@ internal sealed class MathFontMetrics
 			construction = default;
 			return false;
 		}
+	}
+
+	// MathConstants table records in OpenType spec order (same values as hb_ot_math_constant_t); ReadMathData indexes by them.
+	private enum OpenTypeMathConstant
+	{
+		ScriptPercentScaleDown,
+		ScriptScriptPercentScaleDown,
+		DelimitedSubFormulaMinHeight,
+		DisplayOperatorMinHeight,
+		MathLeading,
+		AxisHeight,
+		AccentBaseHeight,
+		FlattenedAccentBaseHeight,
+		SubscriptShiftDown,
+		SubscriptTopMax,
+		SubscriptBaselineDropMin,
+		SuperscriptShiftUp,
+		SuperscriptShiftUpCramped,
+		SuperscriptBottomMin,
+		SuperscriptBaselineDropMax,
+		SubSuperscriptGapMin,
+		SuperscriptBottomMaxWithSubscript,
+		SpaceAfterScript,
+		UpperLimitGapMin,
+		UpperLimitBaselineRiseMin,
+		LowerLimitGapMin,
+		LowerLimitBaselineDropMin,
+		StackTopShiftUp,
+		StackTopDisplayStyleShiftUp,
+		StackBottomShiftDown,
+		StackBottomDisplayStyleShiftDown,
+		StackGapMin,
+		StackDisplayStyleGapMin,
+		StretchStackTopShiftUp,
+		StretchStackBottomShiftDown,
+		StretchStackGapAboveMin,
+		StretchStackGapBelowMin,
+		FractionNumeratorShiftUp,
+		FractionNumeratorDisplayStyleShiftUp,
+		FractionDenominatorShiftDown,
+		FractionDenominatorDisplayStyleShiftDown,
+		FractionNumeratorGapMin,
+		FractionNumDisplayStyleGapMin,
+		FractionRuleThickness,
+		FractionDenominatorGapMin,
+		FractionDenomDisplayStyleGapMin,
+		SkewedFractionHorizontalGap,
+		SkewedFractionVerticalGap,
+		OverbarVerticalGap,
+		OverbarRuleThickness,
+		OverbarExtraAscender,
+		UnderbarVerticalGap,
+		UnderbarRuleThickness,
+		UnderbarExtraDescender,
+		RadicalVerticalGap,
+		RadicalDisplayStyleVerticalGap,
+		RadicalRuleThickness,
+		RadicalExtraAscender,
+		RadicalKernBeforeDegree,
+		RadicalKernAfterDegree,
+		RadicalDegreeBottomRaisePercent,
 	}
 
 	private sealed class RawMathConstants
