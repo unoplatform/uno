@@ -200,6 +200,6 @@ namespace Microsoft.UI.Xaml
 			Owner?.RefreshStateTriggers();
 		}
 
-		public override string ToString() => Name ?? $"<unnamed state {GetHashCode()}>";
+		public override string ToString() => string.IsNullOrEmpty(Name) ? $"<unnamed state {GetHashCode()}>" : Name;
 	}
 }
