@@ -1859,7 +1859,8 @@ namespace Microsoft.UI.Xaml
 			// This check is present to avoid allocating if there is no bypass.
 			var propertyPath = hasPropagationBypass ? new DependencyPropertyPath(actualInstanceAlias, propertyDetails.Property) : null;
 
-			if (AreDifferent(newValue, previousValue))
+			// WinUI stores DependencyObject_Name in a field and notifies on every set, even an unchanged one.
+			if (AreDifferent(newValue, previousValue) || ReferenceEquals(propertyDetails.Property, NameProperty))
 			{
 				var bypassesPropagation = hasPropagationBypass && _propagationBypass.Contains(propertyPath!);
 
