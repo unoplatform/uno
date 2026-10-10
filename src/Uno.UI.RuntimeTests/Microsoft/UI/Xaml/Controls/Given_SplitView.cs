@@ -198,6 +198,113 @@ public class Given_SplitView
 		Assert.AreEqual(SplitViewWidth - TestOpenPaneLength, content.ActualWidth, 0.5);
 	}
 
+	public enum InlineEntry
+	{
+		LoadedOpen,
+		OpenedAfterLoad,
+		ClosedThenReopened,
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(InlineEntry.LoadedOpen, false)]
+	[DataRow(InlineEntry.LoadedOpen, true)]
+	[DataRow(InlineEntry.OpenedAfterLoad, false)]
+	[DataRow(InlineEntry.OpenedAfterLoad, true)]
+	[DataRow(InlineEntry.ClosedThenReopened, false)]
+	[DataRow(InlineEntry.ClosedThenReopened, true)]
+	public async Task When_Open_Inline_Switches_To_Overlay_Content_Spans_Full_Width(InlineEntry entry, bool useControlsResourcesStyle)
+	{
+		// Mirrors narrowing the SamplesApp shell: its AdaptiveTrigger setter drops back to the local Overlay value.
+		var sut = CreateColoredSplitView(SplitViewDisplayMode.Inline, SplitViewPanePlacement.Left, useControlsResourcesStyle);
+		sut.IsPaneOpen = entry == InlineEntry.LoadedOpen;
+
+		await UITestHelper.Load(sut);
+
+		if (entry == InlineEntry.ClosedThenReopened)
+		{
+			sut.IsPaneOpen = true;
+			await WaitForPaneAnimationsToSettle(sut);
+			sut.IsPaneOpen = false;
+			await UITestHelper.WaitForIdle();
+		}
+
+		if (entry != InlineEntry.LoadedOpen)
+		{
+			sut.IsPaneOpen = true;
+		}
+
+		await WaitForPaneAnimationsToSettle(sut);
+
+		sut.DisplayMode = SplitViewDisplayMode.Overlay;
+		await WaitForPaneAnimationsToSettle(sut);
+		sut.UpdateLayout();
+
+		var content = (FrameworkElement)sut.Content;
+		Assert.AreEqual(0, content.TransformToVisual(sut).TransformPoint(default).X, 0.5);
+		Assert.AreEqual(SplitViewWidth, content.ActualWidth, 0.5);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_AdaptiveTrigger_Inline_Deactivates_Content_Spans_Full_Width(bool startOpen)
+	{
+		// The SamplesApp shell: local Overlay, an AdaptiveTrigger setter switching to Inline on wide windows.
+		var root = (Grid)Microsoft.UI.Xaml.Markup.XamlReader.Load($$"""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				  Width="{{SplitViewWidth}}" Height="{{SplitViewHeight}}">
+				<SplitView x:Name="SplitView" DisplayMode="Overlay" OpenPaneLength="{{TestOpenPaneLength}}" IsPaneOpen="{{startOpen}}">
+					<SplitView.Pane><Border Background="Red" /></SplitView.Pane>
+					<SplitView.Content><Border x:Name="ContentBorder" Background="Blue" /></SplitView.Content>
+				</SplitView>
+				<VisualStateManager.VisualStateGroups>
+					<VisualStateGroup>
+						<VisualState x:Name="TabletState">
+							<VisualState.StateTriggers>
+								<AdaptiveTrigger MinWindowWidth="0" />
+							</VisualState.StateTriggers>
+							<VisualState.Setters>
+								<Setter Target="SplitView.DisplayMode" Value="Inline" />
+							</VisualState.Setters>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateManager.VisualStateGroups>
+			</Grid>
+			""");
+
+		// Like the shell's SampleChooserControl, host the state triggers in a UserControl: WinUI doesn't evaluate them on bare window content.
+		await UITestHelper.Load(new UserControl { Content = root });
+
+		var sut = (SplitView)root.FindName("SplitView");
+		var content = (FrameworkElement)root.FindName("ContentBorder");
+		var trigger = (AdaptiveTrigger)VisualStateManager.GetVisualStateGroups(root)[0].States[0].StateTriggers[0];
+
+		Assert.AreEqual(SplitViewDisplayMode.Inline, sut.DisplayMode);
+
+		if (!startOpen)
+		{
+			sut.IsPaneOpen = true;
+		}
+
+		await UITestHelper.WaitForIdle();
+		await Task.Delay(500);
+		sut.UpdateLayout();
+		Assert.AreEqual(TestOpenPaneLength, content.TransformToVisual(sut).TransformPoint(default).X, 0.5, "Inline");
+
+		trigger.MinWindowWidth = 100_000;
+		await UITestHelper.WaitFor(() => sut.DisplayMode == SplitViewDisplayMode.Overlay);
+		await UITestHelper.WaitForIdle();
+		await Task.Delay(500);
+		sut.UpdateLayout();
+
+		Assert.IsTrue(sut.IsPaneOpen);
+		Assert.AreEqual(0, content.TransformToVisual(sut).TransformPoint(default).X, 0.5, "Overlay");
+		Assert.AreEqual(SplitViewWidth, content.ActualWidth, 0.5);
+	}
+
 	[TestMethod]
 	[RunsOnUIThread]
 	[DataRow(false)]
