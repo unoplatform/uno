@@ -76,7 +76,7 @@ public class Given_ScrollVelocityTracker
 	{
 		ScrollVelocityTracker tracker = new();
 
-		// A fast motion, then a release 100ms later where the finger had stopped: no move is sent while still.
+		// A fast motion, then a move 100ms later where the finger had stopped: no move is sent while still.
 		for (var t = 0; t <= 40; t += 8)
 		{
 			tracker.AddPosition(t, new Point(0, 10 * t));
@@ -85,6 +85,51 @@ public class Given_ScrollVelocityTracker
 		tracker.AddPosition(140, new Point(0, 400));
 
 		var velocity = GetVelocity(tracker);
+
+		Assert.AreEqual(0, velocity.X, Tolerance);
+		Assert.AreEqual(0, velocity.Y, Tolerance);
+	}
+
+	[TestMethod]
+	[DataRow(2d)]
+	[DataRow(6d)]
+	[DataRow(12d)]
+	public void When_ReleaseShortlyAfterTheLastMove_Then_VelocityIsTheMotionSlope(double releaseDelayMs)
+	{
+		ScrollVelocityTracker tracker = new();
+		for (var t = 0; t <= 32; t += 8)
+		{
+			tracker.AddPosition(t, new Point(0, 100 - 2 * t));
+		}
+
+		var velocity = tracker.GetVelocity(releaseTimeMs: 32 + releaseDelayMs) ?? throw new AssertFailedException("Expected a velocity.");
+
+		Assert.AreEqual(-2, velocity.Y, Tolerance);
+	}
+
+	[TestMethod]
+	public void When_ShortFlickReleasedShortlyAfterTheLastMove_Then_VelocityKeepsItsDirection()
+	{
+		ScrollVelocityTracker tracker = new();
+		tracker.AddPosition(0, new Point(0, 100));
+		tracker.AddPosition(8, new Point(0, 84));
+		tracker.AddPosition(16, new Point(0, 64));
+
+		var velocity = tracker.GetVelocity(releaseTimeMs: 26) ?? throw new AssertFailedException("Expected a velocity.");
+
+		Assert.IsLessThan(0, velocity.Y);
+	}
+
+	[TestMethod]
+	public void When_ReleaseLongAfterTheLastMove_Then_VelocityIsZero()
+	{
+		ScrollVelocityTracker tracker = new();
+		for (var t = 0; t <= 40; t += 8)
+		{
+			tracker.AddPosition(t, new Point(0, 10 * t));
+		}
+
+		var velocity = tracker.GetVelocity(releaseTimeMs: 100) ?? throw new AssertFailedException("Expected a velocity.");
 
 		Assert.AreEqual(0, velocity.X, Tolerance);
 		Assert.AreEqual(0, velocity.Y, Tolerance);
