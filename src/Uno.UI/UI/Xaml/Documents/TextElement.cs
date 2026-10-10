@@ -328,22 +328,13 @@ namespace Microsoft.UI.Xaml.Documents
 
 		#endregion
 
-		private string _name;
-
 		public string Name
 		{
-			get => _name;
-			internal set
-			{
-				if (_name != value)
-				{
-					_name = value;
-					OnNameChangedPartial(value);
-				}
-			}
+			get => (string)GetValue(NameProperty);
+			internal set => SetValue(NameProperty, value);
 		}
 
-		void IXNameProvider.SetXName(string name) => Name = name;
+		void IXNameProvider.SetXName(string name) => SetValue(NameProperty, name);
 
 		// WASM specific as on WASM BaseClass is UIElement
 
@@ -361,8 +352,6 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			return (DependencyObject)GetValue(AccessKeyScopeOwnerProperty);
 		}
-
-		partial void OnNameChangedPartial(string newValue);
 
 		// CTextElement::MarkDirty — propagate the change up if we have a text element collection as
 		// parent. WinUI reaches the collection directly; Uno parents elements to the owning element,

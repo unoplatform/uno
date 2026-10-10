@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -28,9 +28,13 @@ namespace Microsoft.UI.Xaml
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		public string Name { get; internal set; }
+		public string Name
+		{
+			get => (string)GetValue(NameProperty);
+			internal set => SetValue(NameProperty, value);
+		}
 
-		void IXNameProvider.SetXName(string name) => Name = name;
+		void IXNameProvider.SetXName(string name) => SetValue(NameProperty, name);
 
 		#region StoryBoard DependencyProperty
 
