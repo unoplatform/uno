@@ -19,7 +19,7 @@ internal unsafe partial class VulkanDevice
 	/// - Does not require compute bit by default
 	/// </summary>
 	public static VulkanDevice Create(VulkanInstance instance, VulkanInstanceApi instanceApi,
-		VkSurfaceKHR? checkSurface = null)
+		VkSurfaceKHR? checkSurface = null, Func<VkPhysicalDevice, uint, bool>? supportsPresentation = null)
 	{
 		uint deviceCount = 0;
 		var vkInstance = instance.Handle;
@@ -37,7 +37,7 @@ internal unsafe partial class VulkanDevice
 
 		for (var c = 0; c < deviceCount; c++)
 		{
-			var info = CheckDevice(instanceApi, devices[c], checkSurface);
+			var info = CheckDevice(instanceApi, devices[c], checkSurface, supportsPresentation);
 			if (info != null)
 			{
 				compatibleDevice ??= info;
@@ -127,7 +127,7 @@ internal unsafe partial class VulkanDevice
 	private const string VK_KHR_swapchain = "VK_KHR_swapchain";
 
 	static DeviceInfo? CheckDevice(VulkanInstanceApi instance, VkPhysicalDevice physicalDevice,
-		VkSurfaceKHR? surface)
+		VkSurfaceKHR? surface, Func<VkPhysicalDevice, uint, bool>? supportsPresentation)
 	{
 		instance.GetPhysicalDeviceProperties(physicalDevice, out var properties);
 
@@ -152,6 +152,8 @@ internal unsafe partial class VulkanDevice
 				if (supported == 0)
 					continue;
 			}
+			if (supportsPresentation is not null && !supportsPresentation(physicalDevice, (uint)c))
+				continue;
 
 			return new DeviceInfo
 			{
