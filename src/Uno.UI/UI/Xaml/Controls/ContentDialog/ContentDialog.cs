@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 				LightDismissOverlayMode = LightDismissOverlayMode.On,
 			};
 
-			ResourceResolver.ApplyResource(_popup, Popup.LightDismissOverlayBackgroundProperty, "ContentDialogLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
+			ResourceResolver.ApplyResource(_popup, Popup.LightDismissOverlayBackgroundProperty, "SystemControlPageBackgroundMediumAltMediumBrush", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 			_popup.PopupPanel = new ContentDialogPopupPanel(this);
 

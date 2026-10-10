@@ -81,6 +81,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			return false;
 		}
 
+		public bool IsAttachedProperty(Type declaringType, string name) => _isAttachedProperty(declaringType, name);
+
 		public bool IsType(XamlType xamlType, XamlType baseType)
 		{
 			if (xamlType == baseType)

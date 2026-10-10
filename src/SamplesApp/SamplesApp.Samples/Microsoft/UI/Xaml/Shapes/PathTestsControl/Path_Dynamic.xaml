@@ -70,7 +70,6 @@
             Header="Value"
             Maximum="225"
             Minimum="0"
-            Style="{StaticResource XamlDefaultSlider}"
             ValueChanged="Value_Changed"
             Value="0" />
 

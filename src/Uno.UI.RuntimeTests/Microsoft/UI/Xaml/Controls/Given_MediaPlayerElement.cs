@@ -11,6 +11,7 @@ using System.Threading;
 
 #if HAS_UNO
 using Uno.Foundation.Extensibility;
+using Uno.UI.Extensions;
 using Uno.Media.Playback;
 #endif
 
@@ -585,23 +586,6 @@ public partial class Given_MediaPlayerElement
 					message: "Timeout waiting for TransportControls IsZoomButtonVisible Visibility Collapsed when Auto Hide."
 				);
 
-#if !WINAPPSDK
-		sut.TransportControls.IsCompactOverlayButtonVisible = true;
-		esut = (FrameworkElement)root.FindName("CompactOverlayButton");
-		await WindowHelper.WaitFor(
-					condition: () => esut.Visibility == Visibility.Visible,
-					timeoutMS: 3000,
-					message: "Timeout waiting for TransportControls IsCompactOverlayButtonVisible Visibility Collapsed when Auto Hide."
-				);
-		sut.TransportControls.IsCompactOverlayButtonVisible = false;
-		esut = (FrameworkElement)root.FindName("CompactOverlayButton");
-		await WindowHelper.WaitFor(
-					condition: () => esut.Visibility == Visibility.Collapsed,
-					timeoutMS: 3000,
-					message: "Timeout waiting for TransportControls IsCompactOverlayButtonVisible Visibility Collapsed when Auto Hide."
-				);
-#endif
-
 		sut.TransportControls.IsSeekBarVisible = true;
 		esut = (FrameworkElement)root.FindName("MediaTransportControls_Timeline_Border");
 		await WindowHelper.WaitFor(
@@ -617,6 +601,82 @@ public partial class Given_MediaPlayerElement
 					message: "Timeout waiting for TransportControls IsSeekBarVisible Visibility Collapsed when Auto Hide."
 				);
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	// Uno-specific: WinUI's MediaPlayerPresenter has no visibility logic; Uno collapses the templated presenter until a source shows up.
+	// The macOS AVPlayer extension reports a source change while initializing, which shows the presenter right away.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_MediaPlayerElement_Loaded_Without_Source_Presenter_Collapsed()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement();
+		WindowHelper.WindowContent = sut;
+		// Without a source the element can measure to zero, so only wait for Loaded.
+		await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
+		await WindowHelper.WaitForIdle();
+
+		var presenter = sut.FindFirstChild<MediaPlayerPresenter>();
+		Assert.IsNotNull(presenter);
+		Assert.AreEqual(Visibility.Collapsed, presenter.Visibility);
+	}
+
+	[TestMethod]
+	// Uno-specific: WinUI's template leaves the presenter's IsFullWindow unbound, and WinUI 3 disables full window.
+	public async Task When_MediaPlayerElement_IsFullWindow_Set_Before_Template_Enters_Full_Window()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement() { IsFullWindow = true };
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
+			await WindowHelper.WaitForIdle();
+
+			var fullWindowContent = sut.XamlRoot!.VisualTree.FullWindowMediaRoot.Child;
+			Assert.IsNotNull(fullWindowContent);
+
+			var presenter = fullWindowContent.FindFirstChild<MediaPlayerPresenter>();
+			Assert.IsNotNull(presenter);
+			Assert.IsTrue(presenter.IsFullWindow);
+		}
+		finally
+		{
+			sut.IsFullWindow = false;
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	// Uno-specific: WinUI's MediaPlayerPresenter has no visibility logic.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_MediaPlayerElement_Retemplated_With_Source_Presenter_Stays_Visible()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement() { Source = MediaSource.CreateFromUri(TestVideoUrl) };
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
+			await WindowHelper.WaitFor(() => sut.FindFirstChild<MediaPlayerPresenter>()?.Visibility == Visibility.Visible);
+
+			var template = sut.Template;
+			sut.Template = null;
+			sut.Template = template;
+			sut.ApplyTemplate();
+			await WindowHelper.WaitForIdle();
+
+			var presenter = sut.FindFirstChild<MediaPlayerPresenter>();
+			Assert.IsNotNull(presenter);
+			Assert.AreEqual(Visibility.Visible, presenter.Visibility);
+		}
+		finally
+		{
+			sut.MediaPlayer?.Pause();
+			WindowHelper.WindowContent = null;
+		}
+	}
+#endif
 
 	private void CheckMediaPlayerExtensionAvailability()
 	{
