@@ -34,6 +34,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Include="..\Uno.UI.Composition.Managed\HarfBuzzShapingOptions.cs" Link="Composition\Uno\Drawing\HarfBuzzShapingOptions.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
 		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
 		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Generic.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />

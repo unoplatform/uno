@@ -64,6 +64,41 @@ public class Given_GlyphRunRenderer
 		Assert.AreEqual(0, mismatches, $"{mismatches} pixels differ from Skia's text rendering at {fontSize}px.");
 	}
 
+	// Outline text must stay on Skia's text pipeline too, drawn as a stroked text blob.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Skia_Strokes_GlyphRun_Then_Matches_Skia_Stroked_Text()
+	{
+		const float fontSize = 20f;
+		const float strokeWidth = 1f;
+		var data = await LoadFontData();
+		var font = CreateSkiaFont(data, fontSize);
+
+		var (run, positions, info, baseline) = Layout(font, fontSize);
+
+		using var actual = CreateSurface(info);
+		new SkiaDrawingSession(actual.Canvas, DrawingFactory.Current).StrokeGlyphRun(font, run.Glyphs, positions, baseline, Microsoft.UI.Colors.Black, strokeWidth);
+
+		using var expected = CreateSurface(info);
+		using (var builder = new SKTextBlobBuilder())
+		using (var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = strokeWidth })
+		{
+			var points = new SKPoint[positions.Length];
+			for (var i = 0; i < positions.Length; i++)
+			{
+				points[i] = new SKPoint(positions[i].X, positions[i].Y);
+			}
+
+			builder.AddPositionedRun(run.Glyphs, ((SkiaFont)font).NativeFont, points);
+			using var blob = builder.Build();
+			expected.Canvas.DrawText(blob, 0, baseline, paint);
+		}
+
+		var mismatches = CountMismatches(actual, expected, info, out var inked);
+		Assert.IsTrue(inked > 0, "Nothing was stroked.");
+		Assert.AreEqual(0, mismatches, $"{mismatches} pixels differ from Skia's stroked text rendering.");
+	}
+
 	// A font the Skia backend can't draw natively falls back to the portable outline renderer.
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
@@ -83,6 +118,88 @@ public class Given_GlyphRunRenderer
 		var mismatches = CountMismatches(actual, expected, info, out var inked);
 		Assert.IsTrue(inked > 0, "The fallback drew nothing.");
 		Assert.AreEqual(0, mismatches, $"{mismatches} pixels differ from the outline renderer.");
+	}
+
+	// List markers are aligned by their ink, so a marker without ink must not report a size.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Measuring_Marker_Ink_Then_Bounds_Cover_Only_Inked_Glyphs()
+	{
+		var font = CreateSkiaFont(await LoadFontData(), 20f);
+
+		Assert.IsTrue(GlyphRunRenderer.MeasureInk(font, "   ").IsEmpty);
+
+		var ink = GlyphRunRenderer.MeasureInk(font, "1.");
+		GlyphRunRenderer.Layout(font, "1.", out var advance);
+		Assert.IsGreaterThan(0, ink.Width);
+		Assert.IsGreaterThan(0, ink.Height);
+		Assert.IsLessThanOrEqualTo(advance, ink.Width);
+		Assert.IsLessThan(0, ink.Top, "Ink sits above the baseline (y grows down).");
+	}
+
+	// Every paint draws the images in the same order, so plain LRU eviction would miss on every lookup once a paint
+	// draws more images than the cap.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public void When_A_Paint_Draws_More_Images_Than_The_Cap_Then_A_Repaint_Reuses_Their_Textures()
+	{
+		const int count = GlyphRunRenderer.ImageTextureCache.Cap + 6;
+		var images = new (object Key, IImage Image)[count];
+		for (var i = 0; i < count; i++)
+		{
+			images[i] = (new object(), ImageEncoderDecoder.Current.CreateImage(2, 2, new byte[2 * 2 * 4]));
+		}
+
+		try
+		{
+			using var surface = SKSurface.Create(new SKImageInfo(8, 8));
+			var paint = new SkiaDrawingSession(surface.Canvas, DrawingFactory.Current);
+			var textures = new ITexture[count];
+			for (var i = 0; i < count; i++)
+			{
+				textures[i] = GlyphRunRenderer.ImageTextureCache.Get(paint, images[i].Key, images[i].Image);
+			}
+
+			var repaint = new SkiaDrawingSession(surface.Canvas, DrawingFactory.Current);
+			var hits = 0;
+			for (var i = 0; i < count; i++)
+			{
+				if (ReferenceEquals(textures[i], GlyphRunRenderer.ImageTextureCache.Get(repaint, images[i].Key, images[i].Image)))
+				{
+					hits++;
+				}
+			}
+
+			Assert.AreEqual(count, hits);
+		}
+		finally
+		{
+			foreach (var (_, image) in images)
+			{
+				image.Dispose();
+			}
+		}
+	}
+
+	// Format runs, undo snapshots and fragments clone the image state, and each clone decodes its own image.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public void When_Inline_Image_Is_Cloned_Then_Its_Texture_Is_Shared()
+	{
+		var encoded = Uno.UI.RuntimeTests.Helpers.TestPngEncoder.CreateSolidPng(4, 4, Microsoft.UI.Colors.CornflowerBlue);
+		Assert.IsTrue(Microsoft.UI.Text.InlineImageState.TryCreate(encoded, 4, 4, 4, Microsoft.UI.Text.VerticalCharacterAlignment.Baseline, null, Microsoft.UI.Text.InlineImageEncoding.Unknown, out var original));
+		var clone = original.Clone();
+
+		var originalImage = original.GetDecodedImage();
+		var cloneImage = clone.GetDecodedImage();
+		Assert.IsNotNull(originalImage);
+		Assert.IsNotNull(cloneImage);
+
+		using var surface = SKSurface.Create(new SKImageInfo(8, 8));
+		var session = new SkiaDrawingSession(surface.Canvas, DrawingFactory.Current);
+		Assert.AreSame(
+			GlyphRunRenderer.ImageTextureCache.Get(session, original.TextureKey, originalImage),
+			GlyphRunRenderer.ImageTextureCache.Get(session, clone.TextureKey, cloneImage));
 	}
 
 	private static async Task<byte[]> LoadFontData()

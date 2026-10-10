@@ -142,6 +142,7 @@ internal sealed partial class TextBoxCore
 	private GeneralTransform TransformToVisual(UIElement visual) => _host.Owner.TransformToVisual(visual);
 
 	// Platform hooks, implemented in TextBoxCore.Input.cs.
+	partial void OnLoadedPartial();
 	partial void OnUnloadedPartial();
 	partial void SetInputReturnTypePlatform(InputReturnType inputReturnType);
 	partial void OnTextChangedPartial();
@@ -247,6 +248,7 @@ internal sealed partial class TextBoxCore
 
 	internal void OnLoadedCore()
 	{
+		OnLoadedPartial();
 		// This workaround is added in OnLoaded rather than OnApplyTemplate.
 		// Apparently, sometimes (e.g, Material style), the TextBox style setters are executed after OnApplyTemplate
 		// So, the style setters would override what the workaround does.
@@ -726,7 +728,14 @@ internal sealed partial class TextBoxCore
 	{
 		if (_placeHolder != null)
 		{
-			_placeHolder.Visibility = Text.IsNullOrEmpty() ? Visibility.Visible : Visibility.Collapsed;
+			var isEmpty = Text.IsNullOrEmpty();
+			if (!isEmpty && Owner.GetValue(Microsoft.UI.Xaml.Automation.AutomationProperties.DescribedByProperty) is global::System.Collections.Generic.IList<DependencyObject> { Count: > 0 })
+			{
+				// Matches WinUI's UpdatePlaceholderTextPresenterVisibility: a hidden placeholder must not keep describing the control.
+				DirectUI.TextBoxPlaceholderTextHelper.ClearPlaceholderTextBlockDescribedBy(Owner);
+			}
+
+			_placeHolder.Visibility = isEmpty ? Visibility.Visible : Visibility.Collapsed;
 		}
 	}
 

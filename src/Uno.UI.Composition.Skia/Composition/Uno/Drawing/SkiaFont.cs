@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Composition;
@@ -146,18 +147,36 @@ internal sealed class SkiaFont : IFont
 		return buffer;
 	}
 
-	private GlyphRun ShapeBuffer(HbBuffer buffer, ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures)
+	public GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, in ShapingOptions options)
 	{
-		if (enableLigatures)
+		if (options with { DisableLigatures = false } == default)
 		{
-			GetHarfBuzzFont().Shape(buffer);
-		}
-		else
-		{
-			// Disable the OpenType 'liga' feature (a run may span multiple chars that must stay separately addressable).
-			GetHarfBuzzFont().Shape(buffer, new HarfBuzzSharp.Feature(new HarfBuzzSharp.Tag('l', 'i', 'g', 'a'), 0));
+			return Shape(text, direction, !options.DisableLigatures);
 		}
 
+		var buffer = FillBuffer(text);
+		buffer.Direction = direction == TextDirection.RightToLeft ? HarfBuzzSharp.Direction.RightToLeft : HarfBuzzSharp.Direction.LeftToRight;
+		HarfBuzzShapingOptions.Apply(buffer, options);
+		GetHarfBuzzFont().Shape(buffer, HarfBuzzShapingOptions.GetFeatures(options));
+		return ReadGlyphRun(buffer);
+	}
+
+	public bool TryGetTable(uint tag, [NotNullWhen(true)] out byte[]? data)
+	{
+		data = ReadTable(tag);
+		return data is not null;
+	}
+
+	private GlyphRun ShapeBuffer(HbBuffer buffer, ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures)
+	{
+		GetHarfBuzzFont().Shape(buffer, HarfBuzzShapingOptions.GetFeatures(new ShapingOptions { DisableLigatures = !enableLigatures }));
+		var run = ReadGlyphRun(buffer);
+		_shapeCache.Add(text, direction, enableLigatures, run);
+		return run;
+	}
+
+	private GlyphRun ReadGlyphRun(HbBuffer buffer)
+	{
 		var infos = buffer.GetGlyphInfoSpan();
 		var pos = buffer.GetGlyphPositionSpan();
 		var count = buffer.Length;
@@ -174,9 +193,7 @@ internal sealed class SkiaFont : IFont
 			advances[i] = pos[i].XAdvance * scale;
 		}
 
-		var run = new GlyphRun(glyphs, offsets, advances, clusters);
-		_shapeCache.Add(text, direction, enableLigatures, run);
-		return run;
+		return new GlyphRun(glyphs, offsets, advances, clusters);
 	}
 
 	private HbFont GetHarfBuzzFont()
@@ -195,6 +212,17 @@ internal sealed class SkiaFont : IFont
 	}
 
 	private HbBlob? CreateTableBlob(uint tag)
+	{
+		if (ReadTable(tag) is not { } bytes)
+		{
+			return null;
+		}
+
+		var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+		return new HbBlob(handle.AddrOfPinnedObject(), bytes.Length, HarfBuzzSharp.MemoryMode.ReadOnly, handle.Free);
+	}
+
+	private byte[]? ReadTable(uint tag)
 	{
 		var typeface = _font.Typeface;
 		if (typeface is null)
@@ -222,8 +250,7 @@ internal sealed class SkiaFont : IFont
 			}
 		}
 
-		var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-		return new HbBlob(handle.AddrOfPinnedObject(), bytes.Length, HarfBuzzSharp.MemoryMode.ReadOnly, handle.Free);
+		return bytes;
 	}
 
 	public void BuildGlyphRun(IGeometryFactory geometry, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements)

@@ -55,6 +55,7 @@ internal static class AccessibilityRouter
 			AccessibilityAnnouncer.AccessibilityImpl = new RouterAnnouncerShim();
 			UIElementAccessibilityHelper.ExternalOnChildAdded = OnChildAdded;
 			UIElementAccessibilityHelper.ExternalOnChildRemoved = OnChildRemoved;
+			UIElementAccessibilityHelper.ExternalOnTextControlStateChanged = OnTextControlStateChanged;
 			VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = OnVisualOffsetOrSizeChanged;
 			AutomationPeer.AutomationPeerListener = new RouterAutomationPeerListener();
 
@@ -157,6 +158,9 @@ internal static class AccessibilityRouter
 
 	private static void OnChildRemoved(UIElement parent, UIElement child)
 		=> Resolve(parent)?.RouteChildRemoved(parent, child);
+
+	private static void OnTextControlStateChanged(UIElement element)
+		=> Resolve(element)?.RouteTextControlStateChanged(element);
 
 	private static void OnVisualOffsetOrSizeChanged(Visual visual)
 	{

@@ -573,6 +573,8 @@ namespace Uno.UI.Runtime {
 			isReadOnly: boolean,
 			selectionStart: number,
 			selectionEnd: number,
+			selectionIsBackward: boolean,
+			isSpellCheckEnabled: boolean,
 			isFocusable: boolean
 		): void {
 			let element: HTMLInputElement | HTMLTextAreaElement;
@@ -593,10 +595,16 @@ namespace Uno.UI.Runtime {
 			const initialSelectionStart = Math.max(0, Math.min(selectionStart, maxLen));
 			const initialSelectionEnd = Math.max(initialSelectionStart, Math.min(selectionEnd, maxLen));
 			try {
-				element.setSelectionRange(initialSelectionStart, initialSelectionEnd);
+				element.setSelectionRange(
+					initialSelectionStart,
+					initialSelectionEnd,
+					selectionIsBackward ? 'backward' : 'forward');
 			} catch {
 				// Some browsers/input types may reject selection updates before focus.
 			}
+			const spellcheck = isSpellCheckEnabled && !password;
+			element.spellcheck = spellcheck;
+			element.setAttribute('spellcheck', String(spellcheck));
 
 			if (isReadOnly) {
 				element.readOnly = true;
@@ -610,14 +618,39 @@ namespace Uno.UI.Runtime {
 			// moves focus to the semantic element instead of the invisible TextBox <input>.
 			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(element, multiline);
 
+			element.addEventListener('paste', (event: ClipboardEvent) => {
+				const source = event.clipboardData?.getData('text') ?? '';
+				const sourceLimit = BrowserInvisibleTextBoxViewExtension.getNativePasteSourceLimit();
+				BrowserInvisibleTextBoxViewExtension.onNativePaste(
+					source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
+				event.preventDefault();
+			});
+
 			// Input event handler for text changes (T050)
-			element.addEventListener('input', () => {
+			element.addEventListener('input', (ev: Event) => {
+				// Intermediate IME readings are not edits; compositionend reports the committed value once.
+				if ((ev as InputEvent).isComposing) {
+					return;
+				}
+
 				if (callbacks.onTextInput) {
 					callbacks.onTextInput(
 						handle,
 						element.value,
 						element.selectionStart ?? 0,
-						element.selectionEnd ?? 0
+						element.selectionEnd ?? 0,
+						element.selectionDirection === 'backward'
+					);
+				}
+			});
+
+			element.addEventListener('select', () => {
+				if (callbacks.onTextSelectionChanged) {
+					callbacks.onTextSelectionChanged(
+						handle,
+						element.selectionStart ?? 0,
+						element.selectionEnd ?? 0,
+						element.selectionDirection === 'backward'
 					);
 				}
 			});
@@ -629,7 +662,8 @@ namespace Uno.UI.Runtime {
 						handle,
 						element.value,
 						element.selectionStart ?? 0,
-						element.selectionEnd ?? 0
+						element.selectionEnd ?? 0,
+						element.selectionDirection === 'backward'
 					);
 				}
 			});
@@ -804,7 +838,8 @@ namespace Uno.UI.Runtime {
 			handle: number,
 			value: string,
 			selectionStart: number,
-			selectionEnd: number
+			selectionEnd: number,
+			selectionIsBackward: boolean
 		): void {
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement | HTMLTextAreaElement;
 			if (element && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
@@ -821,11 +856,26 @@ namespace Uno.UI.Runtime {
 					const start = Math.max(0, Math.min(selectionStart, maxLen));
 					const end = Math.max(start, Math.min(selectionEnd, maxLen));
 					try {
-						element.setSelectionRange(start, end);
+						element.setSelectionRange(
+							start,
+							end,
+							selectionIsBackward ? 'backward' : 'forward');
 					} catch {
 						// Some input types (e.g., password in some browsers) don't support setSelectionRange
 					}
 				}
+			}
+		}
+
+		/**
+		 * Updates browser spell checking for a text input element.
+		 */
+		public static updateTextBoxSpellCheck(handle: number, isSpellCheckEnabled: boolean): void {
+			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement | HTMLTextAreaElement;
+			if (element && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
+				const spellcheck = isSpellCheckEnabled && element.getAttribute('type') !== 'password';
+				element.spellcheck = spellcheck;
+				element.setAttribute('spellcheck', String(spellcheck));
 			}
 		}
 

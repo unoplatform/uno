@@ -174,6 +174,11 @@ public static class AriaMapper
 			return SemanticElementType.Password;
 		}
 
+		if (peer is FrameworkElementAutomationPeer { Owner: Microsoft.UI.Xaml.Controls.RichEditBox })
+		{
+			return SemanticElementType.TextArea;
+		}
+
 		if (peer is FrameworkElementAutomationPeer frameworkPeer &&
 			frameworkPeer.Owner is Microsoft.UI.Xaml.Controls.TextBox textBox)
 		{

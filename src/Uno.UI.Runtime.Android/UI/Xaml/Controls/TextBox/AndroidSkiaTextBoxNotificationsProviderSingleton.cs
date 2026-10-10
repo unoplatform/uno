@@ -28,32 +28,32 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 		return activity?.RenderView?.TextInputPlugin;
 	}
 
-	public void OnFocused(TextBoxCore core)
+	public void OnFocused(TextBoxCore textBox)
 	{
-		if (GetTextInputPlugin(core.Owner.XamlRoot) is { } textInputPlugin)
+		if (GetTextInputPlugin(textBox.Owner.XamlRoot) is { } textInputPlugin)
 		{
-			if (CouldRequireKeyboard(core))
+			if (CouldRequireKeyboard(textBox.Owner))
 			{
-				textInputPlugin.ShowTextInput(core);
+				textInputPlugin.ShowTextInput(textBox);
 			}
-			textInputPlugin.NotifyViewEntered(core, core.GetHashCode());
+			textInputPlugin.NotifyViewEntered(textBox, textBox.GetHashCode());
 		}
 	}
 
-	public void OnUnfocused(TextBoxCore core)
+	public void OnUnfocused(TextBoxCore textBox)
 	{
-		if (GetTextInputPlugin(core.Owner.XamlRoot) is { } textInputPlugin)
+		if (GetTextInputPlugin(textBox.Owner.XamlRoot) is { } textInputPlugin)
 		{
 			// Hide the keyboard only when the next element to be focused is not an Element that
 			// could require the keyboard (TextBox, AutoSuggestBox, NumberBox, etc.).
 			// This prevents the keyboard from flickering when switching between TextBoxes
 			// https://github.com/unoplatform/uno-private/issues/1160
-			if (!IsFocusingElementKeyboardActivator(core.Owner.XamlRoot))
+			if (!IsFocusingElementKeyboardActivator(textBox.Owner.XamlRoot))
 			{
 				textInputPlugin.HideTextInput();
 			}
 
-			textInputPlugin.NotifyViewExited(core.GetHashCode());
+			textInputPlugin.NotifyViewExited(textBox, textBox.GetHashCode());
 		}
 
 		static bool IsFocusingElementKeyboardActivator(XamlRoot? xamlRoot)
@@ -68,16 +68,16 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 		}
 	}
 
-	public void OnEnteredVisualTree(TextBoxCore core)
+	public void OnEnteredVisualTree(TextBoxCore textBox)
 	{
-		LiveTextBoxes.Add(core);
-		LiveTextBoxesMap.Add(core.GetHashCode(), core);
+		LiveTextBoxes.Add(textBox);
+		LiveTextBoxesMap.Add(textBox.GetHashCode(), textBox);
 	}
 
-	public void OnLeaveVisualTree(TextBoxCore core)
+	public void OnLeaveVisualTree(TextBoxCore textBox)
 	{
-		LiveTextBoxes.Remove(core);
-		LiveTextBoxesMap.Remove(core.GetHashCode());
+		LiveTextBoxes.Remove(textBox);
+		LiveTextBoxesMap.Remove(textBox.GetHashCode());
 	}
 
 	public void FinishAutofillContext(bool shouldSave)
@@ -88,24 +88,28 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 		}
 	}
 
-	public void NotifyValueChanged(TextBoxCore core)
+	public void NotifyValueChanged(TextBoxCore textBox)
 	{
-		if (GetTextInputPlugin(core.Owner.XamlRoot) is { } textInputPlugin)
+		if (GetTextInputPlugin(textBox.Owner.XamlRoot) is { } textInputPlugin)
 		{
-			textInputPlugin.NotifyValueChanged(core.GetHashCode(), core.Text);
+			textInputPlugin.NotifyValueChanged(textBox.GetHashCode(), textBox.Text);
 		}
 	}
 
-	public void NotifySelectionChanged(TextBoxCore core)
+	public void NotifySelectionChanged(TextBoxCore textBox)
 	{
+		if (GetTextInputPlugin(textBox.Owner.XamlRoot) is { } textInputPlugin)
+		{
+			textInputPlugin.NotifySelectionChanged(textBox);
+		}
 	}
 
-	private static bool CouldRequireKeyboard(object? element)
+	private static bool CouldRequireKeyboard(FrameworkElement? element)
 	{
 		return element switch
 		{
-			TextBoxCore core => !core.IsReadOnly,
-			ITextBoxHost host => !host.Core.IsReadOnly,
+			ITextBoxHost { Core: { } core } => !core.IsReadOnly,
+			RichEditBox richEditBox => !richEditBox.IsReadOnly,
 			AutoSuggestBox or NumberBox => true,
 			_ => false,
 		};

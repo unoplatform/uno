@@ -1,6 +1,9 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
@@ -10,17 +13,14 @@ namespace Uno.UI.Runtime.Android;
 
 /// <summary>
 /// Android Skia implementation of <see cref="IImeTextBoxExtension"/>.
-/// Bridges Android <see cref="TextInputConnection"/> composition state
-/// (SetComposingText/CommitText/FinishComposingText) to the managed
-/// TextBox composition event lifecycle (Started → Updated → Completed → Ended).
+/// Bridges Android <see cref="TextInputConnection"/> text and composition state to the active
+/// <see cref="IImeSessionHost"/>.
 /// </summary>
 /// <remarks>
 /// Timing: The composition callback fires from <see cref="ObservableEditingState.EndBatchEdit"/>
 /// which happens BEFORE <see cref="TextInputConnection.EndBatchEdit"/> calls
-/// <c>ActiveTextBox.ProcessTextInput()</c>. This means TextBox.Text still has the
-/// composing text when our callback runs, so <c>ReplaceCompositionText</c> in
-/// <c>TextBox.skia.cs</c> works correctly. The subsequent <c>ProcessTextInput</c>
-/// from <c>EndBatchEdit</c> sets the same text and is effectively a no-op.
+/// the active host's native text-update path. The callback therefore marks the composition as
+/// platform-applied before the document is synchronized.
 /// </remarks>
 internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 {
@@ -30,41 +30,68 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 	private int _lastFullTextLength;
 	private bool _sessionActive;
 	private TextInputConnection? _subscribedConnection;
+	private IImeSessionHost? _activeHost;
+	private ImeSessionActivation _activation;
 	private TextInputPlugin? _subscribedPlugin;
 	private Uno.UI.Xaml.Controls.NativeWindowWrapper? _boundWrapper;
-	private XamlRoot? _xamlRoot;
 
 	public bool IsComposing => _isComposing;
 
 	public event EventHandler? CompositionStarted;
 	public event EventHandler<ImeCompositionEventArgs>? CompositionUpdated;
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
+	public event EventHandler<ImePartialCompositionEventArgs>? CompositionPartiallyCommitted
+	{
+		add { }
+		remove { }
+	}
+	public event EventHandler<ImeCompositionEventArgs>? CompositionCanceled;
 	public event EventHandler? CompositionEnded;
 
 	// TODO #8341: the foreground-activity fallback is ambiguous once multiple windows exist.
 	private TextInputPlugin? Plugin
-		=> (AndroidSkiaXamlRootHost.GetActivity(_xamlRoot) ?? BaseActivity.Current as ApplicationActivity)?.RenderView?.TextInputPlugin;
+		=> (AndroidSkiaXamlRootHost.GetActivity(_activeHost?.XamlRoot) ?? BaseActivity.Current as ApplicationActivity)?.RenderView?.TextInputPlugin;
 
-	public void StartImeSession(TextBoxCore core)
+	public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
 	{
-		if (core.IsPassword)
+		if (host is TextBoxCore { IsPassword: true })
 		{
 			return;
 		}
 
-		_xamlRoot = core.Owner.XamlRoot;
 		_sessionActive = true;
+		_activeHost = host;
+		_activation = activation;
 
-		// The wrapper outlives the activities driving its window, so it is what can tell an active
-		// session that the render view (and with it the plugin) was replaced.
-		_boundWrapper = AndroidSkiaXamlRootHost.GetActivity(_xamlRoot)?.Wrapper;
-		if (_boundWrapper is { } wrapper)
+		try
 		{
-			wrapper.CurrentActivityChanged -= OnCurrentActivityChanged;
-			wrapper.CurrentActivityChanged += OnCurrentActivityChanged;
-		}
+			// The wrapper outlives the activities driving its window, so it is what can tell an active
+			// session that the render view (and with it the plugin) was replaced.
+			_boundWrapper = AndroidSkiaXamlRootHost.GetActivity(host.XamlRoot)?.Wrapper;
+			if (_boundWrapper is { } wrapper)
+			{
+				wrapper.CurrentActivityChanged -= OnCurrentActivityChanged;
+				wrapper.CurrentActivityChanged += OnCurrentActivityChanged;
+			}
 
-		BindToPlugin(Plugin);
+			if (Plugin is { } plugin && ReferenceEquals(plugin, _subscribedPlugin))
+			{
+				// Same plugin, new or re-activated host: only the plugin's session moves.
+				plugin.StartImeSession(host, activation);
+				SubscribeToConnection(plugin.ActiveInputConnection);
+			}
+			else
+			{
+				BindToPlugin(Plugin);
+			}
+		}
+		catch
+		{
+			_sessionActive = false;
+			_activeHost = null;
+			UnbindFromPlugin();
+			throw;
+		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -73,9 +100,9 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 	}
 
 	/// <summary>
-	/// Points the session at <paramref name="plugin"/>, moving the subscriptions off the previous
-	/// one. Re-creating the activity that drives the window replaces the render view and with it
-	/// the plugin, while the focused TextBox keeps its session.
+	/// Points the session at <paramref name="plugin"/>, moving the subscriptions and the active host
+	/// off the previous one. Re-creating the activity that drives the window replaces the render view
+	/// and with it the plugin, while the focused host keeps its session.
 	/// </summary>
 	private void BindToPlugin(TextInputPlugin? plugin)
 	{
@@ -95,17 +122,42 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 		if (_subscribedPlugin is { } previous)
 		{
 			previous.InputConnectionCreated -= OnInputConnectionCreated;
+			if (_activeHost is { } previousHost)
+			{
+				previous.EndImeSession(previousHost);
+			}
 		}
 
 		UnsubscribeFromConnection();
 		_subscribedPlugin = plugin;
 
 		plugin.InputConnectionCreated += OnInputConnectionCreated;
+		if (_activeHost is { } host)
+		{
+			plugin.StartImeSession(host, _activation);
+		}
 		SubscribeToConnection(plugin.ActiveInputConnection);
 	}
 
+	private void UnbindFromPlugin()
+	{
+		if (_boundWrapper is { } wrapper)
+		{
+			wrapper.CurrentActivityChanged -= OnCurrentActivityChanged;
+			_boundWrapper = null;
+		}
+
+		UnsubscribeFromConnection();
+
+		if (_subscribedPlugin is { } plugin)
+		{
+			plugin.InputConnectionCreated -= OnInputConnectionCreated;
+			_subscribedPlugin = null;
+		}
+	}
+
 	/// <summary>
-	/// Moves an active session onto the replacement activity's plugin. The managed TextBox keeps
+	/// Moves an active session onto the replacement activity's plugin. The managed host keeps
 	/// its session across the re-creation, so nothing else re-runs <see cref="StartImeSession"/>.
 	/// </summary>
 	private void OnCurrentActivityChanged(object? sender, EventArgs args)
@@ -116,25 +168,36 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 		}
 	}
 
+	public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update)
+	{
+		_subscribedPlugin?.UpdateImeSession(host, update);
+	}
+
+	public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		return Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
+	}
+
+	public event EventHandler<ImeCandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged
+	{
+		add { }
+		remove { }
+	}
+
 	public void EndImeSession()
 	{
 		_sessionActive = false;
 
-		if (_boundWrapper is { } wrapper)
+		// End on the plugin this session bound to, not whichever one resolves now: after a
+		// re-creation those differ, and the old one would keep the handler and the host.
+		if (_subscribedPlugin is { } plugin && _activeHost is { } host)
 		{
-			wrapper.CurrentActivityChanged -= OnCurrentActivityChanged;
-			_boundWrapper = null;
+			plugin.EndImeSession(host);
 		}
 
-		UnsubscribeFromConnection();
-
-		// The plugin this session subscribed to, not whichever one resolves now: after a
-		// re-creation those differ, and unsubscribing from the new one leaves the old handler live.
-		if (_subscribedPlugin is { } plugin)
-		{
-			plugin.InputConnectionCreated -= OnInputConnectionCreated;
-			_subscribedPlugin = null;
-		}
+		UnbindFromPlugin();
+		_activeHost = null;
 
 		if (_isComposing)
 		{
@@ -166,11 +229,11 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 		}
 	}
 
-	private void OnInputConnectionCreated(TextInputConnection newConnection)
+	private void OnInputConnectionCreated(object? sender, TextInputConnectionCreatedEventArgs args)
 	{
 		if (_sessionActive)
 		{
-			SubscribeToConnection(newConnection);
+			SubscribeToConnection(args.Connection);
 		}
 	}
 
@@ -263,6 +326,9 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 			else if (committedLength == 0)
 			{
 				// Composing region removed without replacement — cancel.
+				CompositionCanceled?.Invoke(
+					this,
+					new ImeCompositionEventArgs(string.Empty, textAlreadyApplied: true));
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
 					this.Log().Trace("Composition cancelled (no committed text)");

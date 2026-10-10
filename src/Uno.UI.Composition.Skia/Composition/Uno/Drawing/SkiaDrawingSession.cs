@@ -174,17 +174,33 @@ internal class SkiaDrawingSession : IDrawingSession
 			return;
 		}
 
+		DrawTextBlob(skiaFont, glyphs, positions, baselineY, FillPaint(color));
+	}
+
+	public void StrokeGlyphRun(IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color, float strokeWidth)
+	{
+		if (font is not SkiaFont skiaFont)
+		{
+			GlyphRunRenderer.Stroke(this, font, glyphs, positions, baselineY, color, strokeWidth);
+			return;
+		}
+
+		DrawTextBlob(skiaFont, glyphs, positions, baselineY, StrokePaint(color, strokeWidth));
+	}
+
+	private void DrawTextBlob(SkiaFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, SKPaint paint)
+	{
 		if (glyphs.IsEmpty)
 		{
 			return;
 		}
 
 		var builder = _textBlobBuilder ??= new SKTextBlobBuilder();
-		builder.AddPositionedRun(glyphs, skiaFont.NativeFont, MemoryMarshal.Cast<Vector2, SKPoint>(positions));
+		builder.AddPositionedRun(glyphs, font.NativeFont, MemoryMarshal.Cast<Vector2, SKPoint>(positions));
 		using var blob = builder.Build();
 		if (blob is not null)
 		{
-			_canvas.DrawText(blob, 0, baselineY, FillPaint(color));
+			_canvas.DrawText(blob, 0, baselineY, paint);
 		}
 	}
 
