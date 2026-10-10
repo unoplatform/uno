@@ -371,10 +371,12 @@ namespace Microsoft.UI.Xaml.Shapes
 				return;
 			}
 
+			// XAML dashes are multiples of StrokeThickness; Composition takes absolute lengths.
+			var thickness = ActualStrokeThickness;
 			var compositionStrokeDashArray = new CompositionStrokeDashArray(_shape.Compositor);
 			for (int i = 0; i < strokeDashArray.Count; i++)
 			{
-				compositionStrokeDashArray.Add((float)strokeDashArray[i]);
+				compositionStrokeDashArray.Add((float)(strokeDashArray[i] * thickness));
 			}
 
 			_shape.StrokeDashArray = compositionStrokeDashArray;
@@ -404,7 +406,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void UpdateStrokeDashOffset()
 		{
-			_shape.StrokeDashOffset = (float)StrokeDashOffset;
+			_shape.StrokeDashOffset = (float)(StrokeDashOffset * ActualStrokeThickness);
 		}
 
 		/// <summary>

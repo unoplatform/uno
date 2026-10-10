@@ -294,29 +294,12 @@ internal sealed class ManagedSvg : ISvgDocument
 			DashCap = style.LineCap,
 			LineJoin = style.LineJoin,
 			MiterLimit = style.MiterLimit,
-			// StrokeStyle dash intervals are multiples of Thickness; SVG authors them in user units.
-			DashArray = ScaleToThickness(style.DashArray, style.StrokeWidth),
-			DashOffset = style.StrokeWidth > 0 ? style.DashOffset / style.StrokeWidth : 0f,
+			DashArray = style.DashArray,
+			DashOffset = style.DashOffset,
 		};
 
 		using var strokeFill = geometry.GetStrokeFillGeometry(strokeStyle, GeometryFlatteningScale.From(session.TotalMatrix));
 		FillRegion(session, strokeFill, geometry, style.StrokeRef, style.ResolvedStroke, style.StrokeAlpha);
-	}
-
-	private static float[]? ScaleToThickness(float[]? dashes, float thickness)
-	{
-		if (dashes is not { Length: > 0 } || thickness <= 0)
-		{
-			return null;
-		}
-
-		var scaled = new float[dashes.Length];
-		for (var i = 0; i < dashes.Length; i++)
-		{
-			scaled[i] = dashes[i] / thickness;
-		}
-
-		return scaled;
 	}
 
 	// The factory comes from the drawing session rather than a field: a gradient shader is device-bound, and

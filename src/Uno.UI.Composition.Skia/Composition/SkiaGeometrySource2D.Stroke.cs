@@ -63,13 +63,14 @@ namespace Microsoft.UI.Composition
 			if (style.DashArray is { Length: > 0 } dashArray)
 			{
 				paint.StrokeCap = ToSKStrokeCap(style.DashCap);
-				dashValues = new float[dashArray.Length];
-				for (var i = 0; i < dashArray.Length; i++)
+				// Skia needs an even count; an odd list repeats, as in SVG.
+				dashValues = new float[dashArray.Length % 2 == 0 ? dashArray.Length : dashArray.Length * 2];
+				for (var i = 0; i < dashValues.Length; i++)
 				{
-					dashValues[i] = dashArray[i] * style.Thickness;
+					dashValues[i] = MathF.Max(0f, dashArray[i % dashArray.Length]);
 				}
 
-				dashEffect = SKPathEffect.CreateDash(dashValues, style.DashOffset * style.Thickness);
+				dashEffect = SKPathEffect.CreateDash(dashValues, style.DashOffset);
 				if (dashEffect is not null)
 				{
 					paint.PathEffect = dashEffect;
@@ -120,12 +121,12 @@ namespace Microsoft.UI.Composition
 					|| style.EndCap != StrokeCap.Butt))
 			{
 				FixDashEndpointCaps(builder, _geometry, style.Thickness, style.DashCap, style.StartCap, style.EndCap,
-					dashValues, style.DashOffset * style.Thickness);
+					dashValues, style.DashOffset);
 			}
 
 			if (dashValues is not null && style.DashCap == StrokeCap.Triangle)
 			{
-				AddInternalTriangleDashCaps(builder, _geometry, style.Thickness, dashValues, style.DashOffset * style.Thickness);
+				AddInternalTriangleDashCaps(builder, _geometry, style.Thickness, dashValues, style.DashOffset);
 			}
 
 			if (style.LineJoin == StrokeJoin.Miter)
