@@ -473,6 +473,28 @@
 			}
 		}
 
+		// Called when a TextBox takes focus and when, having it already, it is tapped.
+		// By default iOS only shows the soft keyboard for an input that is focused while the user is
+		// interacting with the page. An input focused from code at another time, e.g. for a dialog that
+		// opens on a TextBox, has none, and a tap on its TextBox would not bring one up: the tap lands on
+		// the canvas, and nothing focuses an input that has focus already. Focusing it again from inside
+		// the tap tells WebKit that the user asked for it. WebKit does nothing for an input the keyboard
+		// is showing for, or when no user gesture is in progress.
+		public static refocus() {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (!BrowserInvisibleTextBoxViewExtension.isIOS || input == null || document.activeElement !== input) {
+				return;
+			}
+
+			input.focus(BrowserInvisibleTextBoxViewExtension.focusOptions);
+
+			// An input that keeps focus raises no focusin to arm the trailing-click guard with (see
+			// installTrailingClickGuard), so it is armed here, as it is for the tap that focuses the input.
+			if (BrowserInvisibleTextBoxViewExtension.lastPointerType === "touch" || BrowserInvisibleTextBoxViewExtension.lastPointerType === "pen") {
+				BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick = true;
+			}
+		}
+
 		private static detachCore() {
 			BrowserInvisibleTextBoxViewExtension.detachGeneration++;
 			BrowserInvisibleTextBoxViewExtension.currentHandle = 0;
