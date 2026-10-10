@@ -267,47 +267,49 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 
 	protected override bool DispatchHoverEvent(MotionEvent? e)
 	{
-		if (e is null)
+		if (e is not null)
 		{
-			return base.DispatchHoverEvent(e);
-		}
-		try
-		{
-			// While touch exploring, the host's own hover handling would move the screen reader's focus to the whole page.
-			return ExploreByTouchHelper.IsTouchExplorationEnabled
-				? ExploreByTouchHelper.DispatchHoverEvent(e)
-				: base.DispatchHoverEvent(e);
-		}
-		catch (System.Exception error)
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			try
 			{
-				this.Log().Error("Android accessibility hover dispatch failed.", error);
+				// While touch exploring, the host's own hover handling would move the screen reader's focus to the whole page.
+				if (ExploreByTouchHelper.IsTouchExplorationEnabled)
+				{
+					return ExploreByTouchHelper.DispatchHoverEvent(e);
+				}
 			}
-
-			return base.DispatchHoverEvent(e);
+			catch (System.Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Android accessibility hover dispatch failed.", error);
+				}
+			}
 		}
+
+		return base.DispatchHoverEvent(e);
 	}
 
 	public override bool DispatchKeyEvent(KeyEvent? e)
 	{
-		if (e is null)
+		if (e is not null)
 		{
-			return base.DispatchKeyEvent(e);
-		}
-		try
-		{
-			return ExploreByTouchHelper.DispatchHostKeyEvent(e) || base.DispatchKeyEvent(e);
-		}
-		catch (System.Exception error)
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			try
 			{
-				this.Log().Error("Android accessibility key dispatch failed.", error);
+				if (ExploreByTouchHelper.DispatchHostKeyEvent(e))
+				{
+					return true;
+				}
 			}
-
-			return base.DispatchKeyEvent(e);
+			catch (System.Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Android accessibility key dispatch failed.", error);
+				}
+			}
 		}
+
+		return base.DispatchKeyEvent(e);
 	}
 
 	protected override void OnFocusChanged(bool gainFocus, [GeneratedEnum] FocusSearchDirection direction, Rect? previouslyFocusedRect)
