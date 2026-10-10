@@ -30,6 +30,8 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 	public TextInputPlugin TextInputPlugin { get; }
 
 	private Thread? _renderThread;
+	// The live render thread's backend, published for the window's host. The session owns and disposes it.
+	private global::Uno.UI.Composition.Drawing.IDrawingFactory? _renderer;
 	private volatile bool _renderRequested;
 	private volatile bool _surfaceReady;
 	private volatile bool _disposed;
@@ -54,6 +56,8 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		SetWillNotDraw(false);
 		Holder!.AddCallback(this);
 	}
+
+	public global::Uno.UI.Composition.Drawing.IDrawingFactory? Renderer => Volatile.Read(ref _renderer);
 
 	public void InvalidateRender()
 	{
@@ -159,6 +163,11 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		{
 			this.Log().Error("UnoWebGpuView render thread failed", ex);
 		}
+		finally
+		{
+			// Before the session disposes it. A straggling thread must not clear a successor's backend.
+			Interlocked.CompareExchange(ref _renderer, null, session.Renderer);
+		}
 	}
 
 	private void InitializeWebGpu(ISurfaceHolder holder, RenderSession session)
@@ -193,6 +202,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
 		session.Context = init.Context;
 		session.Renderer = init.Renderer;
+		Volatile.Write(ref _renderer, init.Renderer);
 		// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
 			init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;
@@ -219,7 +229,6 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		// its last frame while input keeps being delivered.
 		try
 		{
-			compositionTarget.Renderer = session.Renderer!;
 			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
 
 			if (_activity.NativeLayerHost is { } nativeLayerHost)

@@ -122,7 +122,7 @@ public class Given_SvgImageSource_ManagedEngine
 	private static PixelGrid Rasterize(string markup)
 	{
 		var renderer = new ManagedSvgRenderer();
-		var doc = renderer.Parse(Encoding.UTF8.GetBytes(markup), new ManagedGeometryFactory(), new RecordingDrawingFactory());
+		var doc = renderer.Parse(Encoding.UTF8.GetBytes(markup), new ManagedGeometryFactory());
 		Assert.IsNotNull(doc, "managed SVG engine failed to parse the markup");
 
 		var session = new RecordingSession();
@@ -236,7 +236,11 @@ public class Given_SvgImageSource_ManagedEngine
 		public Matrix4x4 TotalMatrix => new(_ctm.M11, _ctm.M12, 0, 0, _ctm.M21, _ctm.M22, 0, 0, 0, 0, 1, 0, _ctm.M31, _ctm.M32, 0, 1);
 		public object? NativeSurface => null;
 		// The managed SVG engine draws vector paths only (no textures), so this is never read in these tests.
-		public IDrawingFactory Factory => throw new NotSupportedException();
+		// The document resolves gradient shaders from the session it draws into, so the session must supply a
+		// factory - it is no longer handed one at parse time.
+		private readonly RecordingDrawingFactory _factory = new();
+
+		public IDrawingFactory Factory => _factory;
 
 		public void SetMatrix(in Matrix4x4 matrix) => _ctm = To2D(matrix);
 		public void Concat(in Matrix4x4 matrix) => _ctm = To2D(matrix) * _ctm;

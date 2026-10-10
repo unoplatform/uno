@@ -42,10 +42,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// fallback into any.
 	// The visual's own target supplies the backend: with two windows open the process-wide factory holds
 	// whichever registered last, so one window would record through the other's device.
-	private static ICommandRecorder CreateRecording(Visual visual)
-		=> ForceFallbackRetainedRendering
-			? new CommandListRecorder()
-			: (visual.CompositionTarget?.Renderer ?? DrawingFactory.Current).CreateRecording();
+	// The backend comes from the session being painted into, not from the visual: a subtree can legitimately be
+	// rendered while detached from any window (offscreen capture, damage tests), and the session is the only
+	// thing that knows which device the result is destined for.
+	private static ICommandRecorder CreateRecording(IDrawingFactory renderer)
+		=> ForceFallbackRetainedRendering ? new CommandListRecorder(renderer) : renderer.CreateRecording();
 
 	private bool _enablePictureCollapsingOptimization;
 	private int _pictureCollapsingOptimizationFrameThreshold;
@@ -346,10 +347,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <summary>
-	/// Discards this visual's and its whole subtree's cached recordings. Used when the active
-	/// <see cref="Microsoft.UI.Xaml.Media.CompositionTarget"/> renderer changes (e.g. the WebGPU device is
-	/// imported asynchronously on WebAssembly, replacing the default Skia renderer): recordings retained by the
-	/// previous backend can't be replayed by the new one, so every visual must re-record under it.
+	/// Discards this visual's and its whole subtree's cached recordings, for when the window's backend is replaced
+	/// and recordings made for the old one can't be replayed by the new one.
 	/// </summary>
 	internal void InvalidatePaintRecursive()
 	{
@@ -590,7 +589,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					|| RequiresRepaintOnEveryFrame
 					|| _shadowFallbackOpacity != session.Opacity)
 				{
-					var recording = CreateRecording(this);
+					var recording = CreateRecording(parentSession.Session.Factory);
 					// child.Render will reapply the total transform matrix, so we need to invert ours.
 					Matrix4x4.Invert(TotalMatrix, out var rootTransform);
 					_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
@@ -672,7 +671,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
 
-					var recording = CreateRecording(visual);
+					var recording = CreateRecording(session.Session.Factory);
 					_factory.CreateInstance(visual, recording, ref session.RootTransform, session.Opacity, session.Damage, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
@@ -740,7 +739,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				var recording = CreateRecording(visual);
+				var recording = CreateRecording(session.Session.Factory);
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(visual, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
