@@ -1,0 +1,45 @@
+<Page x:Class="UITests.Windows_UI_Xaml.ApplicationTests.ToastNotificationSample"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      d:DesignHeight="450" 
+      d:DesignWidth="800">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel Margin="20">
+            <TextBlock Text="Toast Notification Sample" 
+                       FontSize="24" 
+                       FontWeight="Bold" 
+                       Margin="0,0,0,20"/>
+            
+            <TextBlock Text="This sample demonstrates how to show Android toast notifications with permission handling. On Android 13+, the POST_NOTIFICATIONS permission is required." 
+                       TextWrapping="Wrap" 
+                       Margin="0,0,0,20"/>
+            
+            <StackPanel Spacing="10">
+                <TextBlock Text="Title:" FontWeight="SemiBold"/>
+                <TextBox x:Name="TitleTextBox" 
+                         Text="Sample Notification" 
+                         PlaceholderText="Enter notification title"/>
+                
+                <TextBlock Text="Content:" FontWeight="SemiBold"/>
+                <TextBox x:Name="ContentTextBox" 
+                         Text="This is a test notification from Uno Platform" 
+                         PlaceholderText="Enter notification content"/>
+                
+                <Button x:Name="ShowToastButton" 
+                        Content="Show Toast Notification" 
+                        Click="ShowToastButton_Click"
+                        HorizontalAlignment="Left"
+                        Margin="0,10,0,0"/>
+                
+                <TextBlock x:Name="StatusTextBlock" 
+                           Text="Ready to show notification" 
+                           Foreground="Gray"
+                           Margin="0,10,0,0"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>
