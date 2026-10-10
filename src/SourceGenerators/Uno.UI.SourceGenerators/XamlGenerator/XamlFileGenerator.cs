@@ -3547,6 +3547,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										$@"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({writer.AppliedParameterName}, ""{XamlNamePropertyName}"", ""{value}"");");
 								}
 							}
+							else if (
+								IsFrameworkElementNameMember(member, objectDefinition.Type)
+								&& !string.IsNullOrEmpty(value)
+								&& !isMemberInsideResourceDictionary.isInside
+							)
+							{
+								writer.AppendLineIndented($@"__nameScope.RegisterName(""{value}"", {writer.AppliedParameterName});");
+							}
 
 							if (
 								member.Member.Name == "Name"
