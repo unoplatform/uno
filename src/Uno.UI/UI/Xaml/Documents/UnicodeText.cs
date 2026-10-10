@@ -2872,8 +2872,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		return null;
 	}
 
-	// An inline boundary (e.g. a formatting change) can split a surrogate pair, so a lone surrogate is read as
-	// its own code unit instead of throwing.
+	// A lone surrogate shows up when an inline boundary splits a pair or a pair arrives one code unit at a time
+	// (typing, an IME commit). It reads as U+FFFD so script and font fallback see a valid code point.
 	private static int ReadCodepoint(string text, int index, out int length)
 	{
 		if (char.IsHighSurrogate(text[index]) && index + 1 < text.Length && char.IsLowSurrogate(text[index + 1]))
@@ -2883,7 +2883,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		length = 1;
-		return text[index];
+		return char.IsSurrogate(text[index]) ? 0xFFFD : text[index];
 	}
 
 	private static float GetClusterCharacterSpacing(in Cluster cluster, List<RunBreak> runBreaks, string text)
