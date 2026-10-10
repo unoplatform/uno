@@ -673,8 +673,9 @@ public class Given_CompositionTarget
 		}
 
 		Assert.IsTrue(snapshot.Select(p => p.Sequence).Distinct().Count() >= colors.Length, $"each change should present a newly recorded frame, got {string.Join(",", snapshot.Select(p => p.Sequence))}");
-		// The frame recorded just before subscribing may still be presented after it.
-		Assert.IsTrue(snapshot[0].Sequence >= recordedBefore, "frames presented before subscribing should not be reported");
+		// A frame the render thread was already drawing is presented after subscribing, and newer frames may have
+		// been recorded meanwhile (Android). Every later present takes a frame recorded no earlier than that.
+		Assert.IsTrue(snapshot.Length < 2 || snapshot[1].Sequence >= recordedBefore, $"only the frame in flight when subscribing may predate {recordedBefore}, got {string.Join(",", snapshot.Select(p => p.Sequence))}");
 		for (var i = 1; i < snapshot.Length; i++)
 		{
 			// A re-present repeats the previous sequence; it never goes back to an older frame.
