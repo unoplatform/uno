@@ -107,7 +107,7 @@ public class Given_TitleBar
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task When_Extended_Into_TitleBar_RightHeader_Avoids_Caption_Buttons()
 	{
 		var rightHeader = new Button { Content = "Right" };

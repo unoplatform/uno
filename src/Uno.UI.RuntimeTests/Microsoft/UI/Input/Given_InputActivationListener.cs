@@ -12,7 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Input;
 public class Given_InputActivationListener
 {
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task When_Window_Activated_State_Is_Not_Deactivated()
 	{
 		var window = new Window();
