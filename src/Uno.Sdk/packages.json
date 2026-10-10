@@ -36,8 +36,8 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net10.0": "10.1.0-dev.219",
-			"net11.0": "10.1.0-dev.219"
+			"net10.0": "10.1.0-dev.260",
+			"net11.0": "10.1.0-dev.260"
 		}
 	},
 	{
@@ -64,7 +64,7 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "2.0.0-dev.14",
+		"version": "2.0.0-dev.36",
 		"packages": [
 			"Uno.Resizetizer"
 		]
@@ -78,14 +78,14 @@
 	},
 	{
 		"group": "settings",
-		"version": "2.0.0-dev.22",
+		"version": "2.0.0-dev.23",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.20.0-dev.750",
+		"version": "2.0.0-dev.2",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -148,7 +148,7 @@
 	},
 	{
 		"group": "MicrosoftLoggingConsole",
-		"version": "10.0.10",
+		"version": "10.0.12",
 		"packages": [
 			"Microsoft.Extensions.Logging.Console"
 		],
@@ -182,7 +182,7 @@
 	},
 	{
 		"group": "UnoFonts",
-		"version": "2.9.4",
+		"version": "2.10.0-dev.9",
 		"packages": [
 			"Uno.Fonts.OpenSans",
 			"Uno.Fonts.Fluent",
@@ -312,7 +312,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "8.0.0-dev.72",
+		"version": "8.0.0-dev.76",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -343,7 +343,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "11.0.0-dev.137",
+		"version": "11.0.0-dev.140",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -382,7 +382,7 @@
 	},
 	{
 		"group": "AppMcp",
-		"version": "2.0.0-dev.6",
+		"version": "2.0.0-dev.7",
 		"packages": [
 			"Uno.UI.App.Mcp"
 		]
