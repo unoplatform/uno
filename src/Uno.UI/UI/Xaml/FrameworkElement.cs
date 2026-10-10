@@ -866,9 +866,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		// Initialized (rather than forwarded) so DependencyObject_Name registers among FrameworkElement's properties: its
-		// details then share a bucket with theirs instead of costing every named element a bucket of its own.
-		public static new DependencyProperty NameProperty { get; } = DependencyObject.NameProperty;
+		public static new DependencyProperty NameProperty => DependencyObject.NameProperty;
 
 		// Mirrors the DP value, set by its backing field callback; null until first read.
 		internal string NameCache { private get; set; }
