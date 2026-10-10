@@ -585,6 +585,12 @@ namespace Microsoft.UI.Xaml
 				throw new ArgumentException("SetValue must not be called with precedence DependencyPropertyValuePrecedences.Coercion, as it expects a non-coerced value to function properly.");
 			}
 
+			if (ReferenceEquals(property, NameProperty) && value != DependencyProperty.UnsetValue)
+			{
+				// WinUI stores the name as an HSTRING: null reads back as "", and a non-string throws before storing.
+				value = (string?)value ?? "";
+			}
+
 			var actualInstanceAlias = ActualInstance;
 
 			var overrideDisposable = ApplyPrecedenceOverride(ref precedence);
