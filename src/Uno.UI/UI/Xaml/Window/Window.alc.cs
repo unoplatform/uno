@@ -356,6 +356,7 @@ partial class Window
 		DestroyForWindowIdSafe(nameof(global::Windows.UI.ViewManagement.ApplicationView), () => global::Windows.UI.ViewManagement.ApplicationView.DestroyForWindowId(closedWindowId));
 		DestroyForWindowIdSafe(nameof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager), () => global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.DestroyForWindowId(closedWindowId));
 		DestroyForWindowIdSafe(nameof(global::Microsoft.UI.Windowing.AppWindow), () => global::Microsoft.UI.Windowing.AppWindow.DestroyForWindowId(closedWindowId));
+		DestroyForWindowIdSafe(nameof(global::Microsoft.UI.Input.InputActivationListener), () => global::Microsoft.UI.Input.InputActivationListener.DestroyForWindowId(closedWindowId));
 
 		// Remove this window's ContentRoot from the process-wide ContentRootCoordinator.
 		// This is the only path that removes a window-owned content root — the teardown sweep

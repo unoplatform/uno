@@ -252,6 +252,8 @@ internal sealed partial class WindowChrome : ContentControl
 			return;
 		}
 
+		UpdateTitleBarInsets();
+
 		if (!InputNonClientPointerSource.TryGetForWindowId(_window.AppWindow.Id, out var input))
 		{
 			return;
@@ -316,6 +318,18 @@ internal sealed partial class WindowChrome : ContentControl
 		}
 
 		UpdateNonClientRegions(NonClientRegionKind.Caption, precedenceRects);
+	}
+
+	// The caption buttons are drawn by this chrome, so they are the "system-reserved" region AppWindowTitleBar reports.
+	private void UpdateTitleBarInsets()
+	{
+		var rightInset = 0;
+		if (CaptionVisibility == Visibility.Visible && m_tpTitleBarMinMaxCloseContainerPart is { } container)
+		{
+			rightInset = (int)Math.Ceiling(container.ActualWidth * _window.AppWindow.NativeAppWindow.RasterizationScale);
+		}
+
+		_window.AppWindow.TitleBar.SetInsets(0, rightInset);
 	}
 
 	private RectInt32 GetDefaultCaptionRegionRect()

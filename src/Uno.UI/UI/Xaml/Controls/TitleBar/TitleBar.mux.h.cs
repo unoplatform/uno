@@ -13,6 +13,7 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class TitleBar
 {
 	private readonly SerialDisposable m_inputActivationChangedToken = new();
+	private readonly SerialDisposable m_insetsChangedRevoker = new();
 	private readonly SerialDisposable m_windowRectChangedToken = new();
 	private string m_defaultAppWindowTitle;
 	private readonly SerialDisposable m_backButtonClickRevoker = new();
