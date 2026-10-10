@@ -3540,6 +3540,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								writer.AppendLineIndented($@"__nameScope.RegisterName(""{value}"", {writer.AppliedParameterName});");
 							}
+							else if (
+								IsFrameworkElementNameMember(member, objectDefinition.Type)
+								&& !string.IsNullOrEmpty(value)
+								&& !isMemberInsideResourceDictionary.isInside
+							)
+							{
+								writer.AppendLineIndented($@"__nameScope.RegisterName(""{value}"", {writer.AppliedParameterName});");
+							}
 
 							if (
 								member.Member.Name == "Name"
