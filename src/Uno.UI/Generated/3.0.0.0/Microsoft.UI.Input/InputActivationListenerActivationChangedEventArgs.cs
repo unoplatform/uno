@@ -8,6 +8,5 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputActivationListenerActivationChangedEventArgs
 	{
-		// Skipping already declared method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.InputActivationListenerActivationChangedEventArgs()
 	}
 }

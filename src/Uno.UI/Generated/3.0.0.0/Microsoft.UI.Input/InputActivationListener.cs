@@ -8,7 +8,6 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputActivationListener : global::Microsoft.UI.Input.InputObject
 	{
-		// Skipping already declared method Microsoft.UI.Input.InputActivationListener.InputActivationListener()
 		// Skipping already declared property State
 		// Skipping already declared method Microsoft.UI.Input.InputActivationListener.GetForWindowId(Microsoft.UI.WindowId)
 #if __SKIA__
