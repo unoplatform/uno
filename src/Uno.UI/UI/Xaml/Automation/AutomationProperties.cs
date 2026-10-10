@@ -22,7 +22,7 @@ public partial class AutomationProperties
 			"AcceleratorKey",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the AccessKey attached property, which specifies the access key (mnemonic) for an element.
@@ -32,7 +32,7 @@ public partial class AutomationProperties
 			"AccessKey",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the AccessibilityView attached property, which controls whether and how the element appears in the UI Automation tree.
@@ -42,7 +42,7 @@ public partial class AutomationProperties
 			"AccessibilityView",
 			typeof(AccessibilityView),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(AccessibilityView.Content));
+			new FrameworkPropertyMetadata(AccessibilityView.Content, OnAccessibilityViewChanged));
 
 	/// <summary>
 	/// Identifies the Annotations attached property, which provides a collection of annotations associated with the element.
@@ -52,7 +52,7 @@ public partial class AutomationProperties
 			"Annotations",
 			typeof(IList<AutomationAnnotation>),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(IList<AutomationAnnotation>)));
+			new FrameworkPropertyMetadata(default(IList<AutomationAnnotation>), OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the AutomationId attached property, which sets a developer-supplied identifier used by UI Automation.
@@ -86,7 +86,7 @@ public partial class AutomationProperties
 			"Culture",
 			typeof(int),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(IntBoxes.Zero));
+			new FrameworkPropertyMetadata(IntBoxes.Zero, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the DescribedBy attached property, which points to elements that provide extended descriptive text.
@@ -132,7 +132,7 @@ public partial class AutomationProperties
 			"FullDescription",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the HeadingLevel attached property, which indicates the heading level for structured content.
@@ -152,7 +152,7 @@ public partial class AutomationProperties
 			"HelpText",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsDataValidForForm attached property, which indicates whether the element’s value is valid for form submission.
@@ -172,7 +172,7 @@ public partial class AutomationProperties
 			"IsDialog",
 			typeof(bool),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(BoolBoxes.False));
+			new FrameworkPropertyMetadata(BoolBoxes.False, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsPeripheral attached property, which indicates whether the element is peripheral to the main UI experience.
@@ -182,7 +182,7 @@ public partial class AutomationProperties
 			"IsPeripheral",
 			typeof(bool),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(BoolBoxes.False));
+			new FrameworkPropertyMetadata(BoolBoxes.False, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsRequiredForForm attached property, which indicates whether the element requires user input before form submission.
@@ -192,7 +192,7 @@ public partial class AutomationProperties
 			"IsRequiredForForm",
 			typeof(bool),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(BoolBoxes.False));
+			new FrameworkPropertyMetadata(BoolBoxes.False, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the ItemStatus attached property, which conveys status information about an element (for example, “New” or “Busy”).
@@ -202,7 +202,7 @@ public partial class AutomationProperties
 			"ItemStatus",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the ItemType attached property, which describes the type of item represented by the element.
@@ -212,7 +212,7 @@ public partial class AutomationProperties
 			"ItemType",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the LabeledBy attached property, which references an element that provides the accessible label.
@@ -222,7 +222,7 @@ public partial class AutomationProperties
 			"LabeledBy",
 			typeof(UIElement),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(UIElement))
+			new FrameworkPropertyMetadata(default(UIElement), OnAutomationPropertyChanged)
 		);
 
 	/// <summary>
@@ -243,7 +243,7 @@ public partial class AutomationProperties
 			"Level",
 			typeof(int),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(IntBoxes.Zero));
+			new FrameworkPropertyMetadata(IntBoxes.NegativeOne, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the LiveSetting attached property, which indicates how changes to the element are announced to assistive technologies.
@@ -253,7 +253,7 @@ public partial class AutomationProperties
 			"LiveSetting",
 			typeof(AutomationLiveSetting),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(AutomationLiveSetting)));
+			new FrameworkPropertyMetadata(default(AutomationLiveSetting), OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the LocalizedControlType attached property, which supplies a localized string describing the control type.
@@ -263,7 +263,7 @@ public partial class AutomationProperties
 			"LocalizedControlType",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the LocalizedLandmarkType attached property, which supplies a localized string describing the landmark type.
@@ -294,7 +294,7 @@ public partial class AutomationProperties
 			"PositionInSet",
 			typeof(int),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(IntBoxes.NegativeOne));
+			new FrameworkPropertyMetadata(IntBoxes.NegativeOne, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the SizeOfSet attached property, which indicates the total number of items in the set that contains the element.
@@ -304,7 +304,7 @@ public partial class AutomationProperties
 			"SizeOfSet",
 			typeof(int),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(IntBoxes.NegativeOne));
+			new FrameworkPropertyMetadata(IntBoxes.NegativeOne, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the AutomationControlType attached property, which specifies the UI Automation control type of an element.
@@ -314,7 +314,7 @@ public partial class AutomationProperties
 			"AutomationControlType",
 			typeof(AutomationControlType),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(AutomationControlType)));
+			new FrameworkPropertyMetadata(default(AutomationControlType), OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Gets the UI Automation control type for the specified element.
@@ -441,7 +441,11 @@ public partial class AutomationProperties
 	/// <summary>
 	/// Gets the list of controlled peers for the specified element.
 	/// </summary>
-	public static IList<UIElement> GetControlledPeers(DependencyObject element) => (IList<UIElement>)element.GetValue(ControlledPeersProperty);
+	public static IList<UIElement> GetControlledPeers(DependencyObject element)
+		=> GetOrCreateAutomationCollection<UIElement>(
+			element,
+			ControlledPeersProperty,
+			AutomationElementIdentifiers.ControlledPeersProperty);
 
 	/// <summary>
 	/// Gets the 1-based position of the element within its set.
@@ -476,7 +480,11 @@ public partial class AutomationProperties
 	/// <summary>
 	/// Gets the annotations associated with the specified element.
 	/// </summary>
-	public static IList<AutomationAnnotation> GetAnnotations(DependencyObject element) => (IList<AutomationAnnotation>)element.GetValue(AnnotationsProperty);
+	public static IList<AutomationAnnotation> GetAnnotations(DependencyObject element)
+		=> GetOrCreateAutomationCollection<AutomationAnnotation>(
+			element,
+			AnnotationsProperty,
+			AutomationElementIdentifiers.AnnotationsProperty);
 
 	/// <summary>
 	/// Gets the landmark type for the specified element.
@@ -541,17 +549,29 @@ public partial class AutomationProperties
 	/// <summary>
 	/// Gets the collection of elements that describe the specified element.
 	/// </summary>
-	public static IList<DependencyObject> GetDescribedBy(DependencyObject element) => (IList<DependencyObject>)element.GetValue(DescribedByProperty);
+	public static IList<DependencyObject> GetDescribedBy(DependencyObject element)
+		=> GetOrCreateAutomationCollection<DependencyObject>(
+			element,
+			DescribedByProperty,
+			AutomationElementIdentifiers.DescribedByProperty);
 
 	/// <summary>
 	/// Gets the collection of elements that are next in reading order from the specified element.
 	/// </summary>
-	public static IList<DependencyObject> GetFlowsTo(DependencyObject element) => (IList<DependencyObject>)element.GetValue(FlowsToProperty);
+	public static IList<DependencyObject> GetFlowsTo(DependencyObject element)
+		=> GetOrCreateAutomationCollection<DependencyObject>(
+			element,
+			FlowsToProperty,
+			AutomationElementIdentifiers.FlowsToProperty);
 
 	/// <summary>
 	/// Gets the collection of elements that precede the specified element in reading order.
 	/// </summary>
-	public static IList<DependencyObject> GetFlowsFrom(DependencyObject element) => (IList<DependencyObject>)element.GetValue(FlowsFromProperty);
+	public static IList<DependencyObject> GetFlowsFrom(DependencyObject element)
+		=> GetOrCreateAutomationCollection<DependencyObject>(
+			element,
+			FlowsFromProperty,
+			AutomationElementIdentifiers.FlowsFromProperty);
 
 	/// <summary>
 	/// Gets the culture (locale) identifier for the specified element.

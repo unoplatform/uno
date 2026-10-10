@@ -469,7 +469,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected internal DependencyObject GetTemplateChild(string childName)
 		{
 			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as DependencyObject
-				?? FindName(childName) as DependencyObject;
+				?? FindNameInSubtree(childName) as DependencyObject;
 		}
 
 		/// <summary>
@@ -480,7 +480,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <returns>The first template part of the specified name; otherwise, null.</returns>
 		internal T GetTemplateChild<T>(string childName) where T : DependencyObject
 		{
-			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as T ?? FindName(childName) as T;
+			return FindNameInScope(TemplatedRoot as IFrameworkElement, childName) as T ?? FindNameInSubtree(childName) as T;
 		}
 
 		private static object FindNameInScope(IFrameworkElement root, string name)

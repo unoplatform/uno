@@ -1,20 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Uno.UI.Samples.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI.Xaml_Automation
 {
@@ -25,11 +13,38 @@ namespace UITests.Shared.Windows_UI.Xaml_Automation
 		{
 			this.InitializeComponent();
 
-			myList.ItemsSource = new[] {
+			myList.ItemsSource = new[]
+			{
 				new MyItem { AutomationId = "Item01", Text = "Item 01" },
 				new MyItem { AutomationId = "Item02", Text = "Item 02" },
 				new MyItem { AutomationId = "Item03", Text = "Item 03" },
+				new MyItem { AutomationId = "Item04", Text = "Item 04" },
+				new MyItem { AutomationId = "Item05", Text = "Item 05" },
+				new MyItem { AutomationId = "Item06", Text = "Item 06" },
+				new MyItem { AutomationId = "Item07", Text = "Item 07" },
+				new MyItem { AutomationId = "Item08", Text = "Item 08" },
+				new MyItem { AutomationId = "Item09", Text = "Item 09" },
+				new MyItem { AutomationId = "Item10", Text = "Item 10" },
 			};
+
+			ActionButton.Click += (_, _) => result.Text = "Fixture action invoked.";
+			VolumeSlider.ValueChanged += (_, e) =>
+			{
+				var label = $"Volume {(int)e.NewValue}";
+				VolumeValue.Text = label;
+				AutomationProperties.SetName(VolumeValue, label);
+			};
+			ChoiceBox.SelectionChanged += (_, _) =>
+			{
+				if (ChoiceBox.SelectedItem is ComboBoxItem { Content: string content })
+				{
+					result.Text = content;
+				}
+			};
+			AutomationProperties.GetControlledPeers(ActionButton).Add(ControlledField);
+			AutomationProperties.GetDescribedBy(ControlledField).Add(RelationLabel);
+			AutomationProperties.GetFlowsTo(ActionButton).Add(ControlledField);
+			AutomationProperties.GetFlowsFrom(ControlledField).Add(ActionButton);
 
 			myList.SelectionChanged += (s, e) =>
 			{

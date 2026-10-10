@@ -23,6 +23,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.UI.Dispatching;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Runtime;
 
@@ -2299,6 +2300,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	protected override void AnnounceOnPlatform(string text, bool assertive)
 	{
+		if (!NativeDispatcher.Main.HasThreadAccess)
+		{
+			NativeDispatcher.Main.Enqueue(() => AnnounceOnPlatform(text, assertive));
+			return;
+		}
+
 		if (assertive)
 		{
 			NativeMethods.AnnounceAssertive(text);
@@ -2785,6 +2792,53 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			NativeMethods.FocusSemanticElement(handle);
 		}
 	}
+
+	protected override void OnAccessibilityViewChanged(
+		UIElement element,
+		AccessibilityView oldValue,
+		AccessibilityView newValue)
+	{
+		var parent = element.GetParent() as UIElement
+			?? element.GetParentInternal(publicParentOnly: false) as UIElement;
+		if (parent is null)
+		{
+			if (WebAssemblyWindowWrapper.Instance?.Window?.RootElement is { } rootElement)
+			{
+				RebuildSemanticTree(rootElement);
+			}
+			return;
+		}
+
+		var children = parent.GetChildren();
+		var index = children.IndexOf(element);
+		OnChildRemoved(parent, element);
+		OnChildAdded(parent, element, index >= 0 ? index : null);
+	}
+
+	private void RebuildSemanticTree(UIElement rootElement)
+	{
+		foreach (var child in rootElement.GetChildren().ToList())
+		{
+			OnChildRemoved(rootElement, child);
+		}
+
+		NativeMethods.RemoveSemanticElement(IntPtr.Zero, _rootElementHandle);
+		_semanticParentMap.Clear();
+		_prunedHandles.Clear();
+		_pendingLabelledBy.Clear();
+		_relationshipPeers.Clear();
+
+		_isCreatingAOM = true;
+		try
+		{
+			CreateAOM(rootElement);
+		}
+		finally
+		{
+			_isCreatingAOM = false;
+		}
+	}
+
 	protected override void OnNativeStructureChanged() { }
 
 	internal void SyncTextBoxValueAndSelection(TextBoxCore core)

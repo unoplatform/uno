@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
+using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
@@ -200,9 +201,32 @@ public class Given_AccessibleScrollViewer
 		Assert.AreEqual(0, scrollViewer.VerticalOffset);
 	}
 
-
-
-
-
 #endif
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+	public async Task When_ScrollViewer_Scrollable_On_Mobile_Then_Native_Scroll_Details_Populated()
+	{
+#if __SKIA__
+		var scrollViewer = new ScrollViewer
+		{
+			Width = 200,
+			Height = 200,
+			Content = new Border { Width = 50, Height = 2000 },
+		};
+		AutomationProperties.SetName(scrollViewer, "Article Content");
+		AutomationProperties.SetAutomationId(scrollViewer, "scrollviewer-scroll-t045");
+
+		await UITestHelper.Load(scrollViewer);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var snapshot = MobileAccessibilityTestHelper.TryGetNativeSnapshot(scrollViewer);
+		Assert.IsNotNull(snapshot, "Native snapshot must be available on mobile Skia.");
+		Assert.IsNotNull(snapshot.Details?.Scroll, "Scroll must be populated for a scrollable ScrollViewer.");
+		Assert.IsTrue(
+			snapshot.Details!.Scroll!.IsVerticallyScrollable,
+			"A vertically overflowing ScrollViewer must report IsVerticallyScrollable=true.");
+#endif
+	}
 }

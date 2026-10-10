@@ -8,7 +8,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 internal partial class ListViewBaseItemAutomationPeer
 {
-	// TODO Uno: ItemInvokeAdapter is not yet ported.
-	// Original C++:
-	// ctl::ComPtr<DirectUI::ItemInvokeAdapter> m_spInvokeAdapter;
+	private ItemInvokeAdapter _invokeAdapter;
 }

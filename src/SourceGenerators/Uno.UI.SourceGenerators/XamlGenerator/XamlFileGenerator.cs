@@ -3540,6 +3540,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								writer.AppendLineIndented($@"__nameScope.RegisterName(""{value}"", {writer.AppliedParameterName});");
 							}
+							else if (
+								IsFrameworkElementNameMember(member, objectDefinition.Type)
+								&& !string.IsNullOrEmpty(value)
+								&& !isMemberInsideResourceDictionary.isInside
+							)
+							{
+								writer.AppendLineIndented($@"__nameScope.RegisterName(""{value}"", {writer.AppliedParameterName});");
+							}
 
 							if (
 								member.Member.Name == "Name"
@@ -3558,7 +3566,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								writer.AppendLineInvariantIndented("__that.{0} = {1};", value, writer.AppliedParameterName);
 
-								if (IsXNameMember(member, objectDefinition.Type) && IsXNameProvider(objectDefinition.Type))
+								if (IsXNameMember(member, objectDefinition.Type) && ShouldSetXName(objectDefinition.Type))
 								{
 									BuildSetXName(writer, value);
 								}
@@ -3570,7 +3578,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								writer.AppendLineInvariantIndented("// x:Name {0}", member.Value, member.Value);
 
-								if (IsXNameProvider(objectDefinition.Type))
+								if (ShouldSetXName(objectDefinition.Type))
 								{
 									BuildSetXName(writer, value);
 								}
@@ -6313,7 +6321,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		// WinUI sets x:Name on types like VisualState whose Name is get-only.
+		// x:Name on an object without a settable Name property (e.g. VisualState, MenuFlyout, Storyboard).
 		private static void BuildSetXName(XamlLazyApplyBlockIIndentedStringBuilder writer, string? name)
 			=> writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.Helpers.MarkupHelper.SetXName({writer.AppliedParameterName}, \"{name}\");");
 

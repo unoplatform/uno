@@ -69,4 +69,10 @@ internal static class XamlRootMap
 	/// </summary>
 	internal static IEnumerable<KeyValuePair<XamlRoot, IXamlRootHost>> Enumerate() =>
 		_map.ToArray();
+
+	/// <summary>
+	/// Live hosts, iterated without a copy or an allocation: only for callers that don't register or unregister
+	/// hosts while iterating.
+	/// </summary>
+	internal static Dictionary<XamlRoot, IXamlRootHost>.ValueCollection Hosts => _map.Values;
 }

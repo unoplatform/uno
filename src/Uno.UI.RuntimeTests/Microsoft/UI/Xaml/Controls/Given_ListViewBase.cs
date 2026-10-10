@@ -12,6 +12,7 @@ using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -3311,15 +3312,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
+			var automationPeer = FrameworkElementAutomationPeer.CreatePeerForElement(SUT);
+			Assert.IsNotNull(automationPeer);
+			_ = automationPeer.GetChildren();
+
 			source.RemoveAt(0);
 
 			await WindowHelper.WaitForIdle();
+			_ = automationPeer.GetChildren();
 
 			await AssertCollectedReference(refSource[0]);
 
 			source.Clear();
 
 			await WindowHelper.WaitForIdle();
+			_ = automationPeer.GetChildren();
 
 			foreach (var itemRef in refSource)
 			{

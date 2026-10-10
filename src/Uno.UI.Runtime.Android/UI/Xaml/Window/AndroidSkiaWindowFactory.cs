@@ -19,8 +19,12 @@ internal sealed class AndroidSkiaWindowFactory : INativeWindowFactoryExtension
 		var wrapper = activity.Wrapper;
 		wrapper.SetWindow(window, xamlRoot);
 
+		// The host owns the window's accessibility adapter, so a replaced window must release its own.
+		wrapper.XamlRootHost?.Dispose();
+		wrapper.XamlRootHost = new AndroidSkiaXamlRootHost(window, wrapper, xamlRoot);
+
 		// The XamlRootMap is how consumers resolve the owning activity from a XamlRoot.
-		XamlRootMap.Register(xamlRoot, new AndroidSkiaXamlRootHost(window, wrapper));
+		XamlRootMap.Register(xamlRoot, wrapper.XamlRootHost);
 
 		return wrapper;
 	}

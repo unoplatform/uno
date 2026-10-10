@@ -19,6 +19,8 @@ using Uno.Helpers.Theming;
 using Uno.UI;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime;
 using Uno.UI.Runtime.Android;
 using Uno.UI.Xaml.Controls;
 using Windows.Devices.Sensors;
@@ -193,6 +195,14 @@ namespace Uno.UI.Runtime.Android
 				return base.DispatchGenericMotionEvent(ev);
 			}
 
+			// TalkBack's touch exploration turns finger touches into hover probes, which only the view tree routes to the
+			// render view's accessibility helper. They are screen reader gestures, never XAML pointer input.
+			if (IsTouchExplorationHover(ev))
+			{
+				base.DispatchGenericMotionEvent(ev);
+				return true;
+			}
+
 			var nativelyHandled = false;
 			if (_nativeLayerHost?.Path?.FillContains(new global::System.Numerics.Vector2(ev.GetX(), ev.GetY())) ?? false)
 			{
@@ -211,6 +221,12 @@ namespace Uno.UI.Runtime.Android
 			// as we assume that anyway we are the fully opaque (i.e. the pointer should not be dispatch to any element under this current ApplicationActivity).
 			return true;
 		}
+
+		private bool IsTouchExplorationHover(MotionEvent ev)
+			=> ev.ActionMasked is MotionEventActions.HoverEnter or MotionEventActions.HoverMove or MotionEventActions.HoverExit
+				&& ev.IsFromSource(InputSourceType.Touchscreen)
+				&& ev.GetToolType(0) == MotionEventToolType.Finger
+				&& _renderView?.ExploreByTouchHelper.IsTouchExplorationEnabled is true;
 
 		public override bool DispatchTouchEvent(MotionEvent? ev)
 		{
@@ -346,6 +362,16 @@ namespace Uno.UI.Runtime.Android
 
 				// Index 0 keeps it under the native layer host.
 				RelativeLayout.AddView(_renderViewAsView, 0);
+
+				// A XamlRoot host registered before OnStart can only attach its accessibility adapter
+				// once this activity's render view exists.
+				foreach (var pair in XamlRootMap.Enumerate())
+				{
+					if (pair.Value is AndroidSkiaXamlRootHost androidHost && ReferenceEquals(androidHost.Activity, this))
+					{
+						androidHost.TryConfigureHelper();
+					}
+				}
 			}
 
 			// The window was handed over in OnCreate, before this render view existed; state bound to
@@ -526,6 +552,16 @@ namespace Uno.UI.Runtime.Android
 
 			RaiseConfigurationChanges();
 
+			// Activate accessibility routing for the foreground window.
+			foreach (var pair in XamlRootMap.Enumerate())
+			{
+				if (pair.Value is IAccessibilityOwner { Accessibility: { } } owner)
+				{
+					AccessibilityRouter.SetActive(owner);
+					break;
+				}
+			}
+
 			//WebAuthenticationBroker.OnResume();
 		}
 
@@ -585,6 +621,8 @@ namespace Uno.UI.Runtime.Android
 			if (IsFinishing && _wrapper is { } wrapper && ReferenceEquals(wrapper.CurrentActivity, this))
 			{
 				wrapper.OnNativeClosed();
+				wrapper.XamlRootHost?.Dispose();
+				wrapper.XamlRootHost = null;
 			}
 		}
 

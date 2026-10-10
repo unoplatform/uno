@@ -946,6 +946,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// Router owns the framework's single-slot registrations; per-window
 		// Win32Accessibility instances fan out via the router.
 		AccessibilityRouter.EnsureInitialized();
+		AccessibilityRouter.EnsureTreeNotifications();
 
 		// Defer instance creation until the root element is available.
 		// The root element may not be set yet at construction time.
@@ -982,7 +983,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		_accessibility = new Win32Accessibility(_hwnd.Value, rootElement, rootElement.DispatcherQueue);
 	}
 
-	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+	public SkiaAccessibilityBase? Accessibility => _accessibility;
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
 

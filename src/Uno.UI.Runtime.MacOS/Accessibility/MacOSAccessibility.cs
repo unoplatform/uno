@@ -40,6 +40,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	private bool _isCreatingAOM;
 	private nint _activeModalHandle;
 	private nint _modalTriggerHandle;
+	private WeakReference<UIElement>? _rootElement;
 
 	/// <summary>
 	/// Registers the process-wide native callbacks. Must be called once from
@@ -88,6 +89,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			if (_byWindow.TryGetValue(window, out var accessibility) && !accessibility.IsDisposed)
 			{
 				accessibility._clientRequestedTree = true;
+				AccessibilityRouter.EnsureTreeNotifications();
 				if (accessibility.RootElementProvider?.Invoke() is { } rootElement)
 				{
 					accessibility.BuildTree(rootElement);
@@ -368,6 +370,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		_rootElement = new(rootElement);
 		_accessibilityTreeInitialized = true;
 		InitializeAccessibilityTree(rootElement);
 		NativeUno.uno_accessibility_post_layout_changed(_windowHandle);
@@ -948,21 +951,20 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		// Match WinUI: resolve the EventsSource so ListItem/TabItem/TreeItem events target the data
-		// peer the client sees. ResolveProviderPeer returns `this` for every other peer.
+		var sourcePeer = peer;
 		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
 
-		base.NotifyAutomationEvent(peer, eventId);
+		base.NotifyAutomationEvent(sourcePeer, eventId);
 
 		switch (eventId)
 		{
-			case AutomationEvents.InvokePatternOnInvoked when TryGetPeerOwner(peer, out _):
-			case AutomationEvents.SelectionItemPatternOnElementSelected when TryGetPeerOwner(peer, out _):
+			case AutomationEvents.InvokePatternOnInvoked when TryGetPeerOwner(peer, sourcePeer, out _):
+			case AutomationEvents.SelectionItemPatternOnElementSelected when TryGetPeerOwner(peer, sourcePeer, out _):
 			case AutomationEvents.SelectionPatternOnInvalidated:
 				NativeUno.uno_accessibility_post_layout_changed(_windowHandle);
 				break;
 
-			case AutomationEvents.TextPatternOnTextSelectionChanged when TryGetPeerOwner(peer, out var textElement):
+			case AutomationEvents.TextPatternOnTextSelectionChanged when TryGetPeerOwner(peer, sourcePeer, out var textElement):
 				if (textElement is ITextBoxHost { Core: { } textBox })
 				{
 					NativeUno.uno_accessibility_update_selection(
@@ -985,27 +987,13 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 				}
 				break;
 
-			case AutomationEvents.LiveRegionChanged when TryGetPeerOwner(peer, out var liveElement):
+			case AutomationEvents.LiveRegionChanged when TryGetPeerOwner(peer, sourcePeer, out var liveElement):
 				if (_activeModalHandle != nint.Zero && !IsDescendantOf(liveElement, _activeModalHandle))
 				{
 					break;
 				}
 
 				NativeUno.uno_accessibility_post_live_region_changed(liveElement.Visual.Handle);
-
-				var label = ResolveLabel(peer);
-				if (!string.IsNullOrEmpty(label))
-				{
-					var liveSetting = AutomationProperties.GetLiveSetting(liveElement);
-					if (liveSetting == AutomationLiveSetting.Assertive)
-					{
-						AnnounceAssertive(label);
-					}
-					else
-					{
-						AnnouncePolite(label);
-					}
-				}
 				break;
 		}
 	}
@@ -1033,11 +1021,34 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	protected override void SetNativeFocus(nint handle)
 		=> NativeUno.uno_accessibility_set_focused(handle);
 
+	protected override void OnAccessibilityViewChanged(
+		UIElement element,
+		AccessibilityView oldValue,
+		AccessibilityView newValue)
+	{
+		if (!_accessibilityTreeInitialized ||
+			_rootElement is null ||
+			!_rootElement.TryGetTarget(out var rootElement))
+		{
+			return;
+		}
+
+		NativeUno.uno_accessibility_init_context(_windowHandle);
+		InitializeAccessibilityTree(rootElement);
+		NativeUno.uno_accessibility_post_children_changed(_windowHandle);
+	}
+
 	protected override void OnNativeStructureChanged()
 		=> NativeUno.uno_accessibility_post_children_changed(_windowHandle);
 
 	protected override void AnnounceOnPlatform(string text, bool assertive)
-		=> NativeUno.uno_accessibility_announce(_windowHandle, text, assertive);
+		=> NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (!IsDisposed)
+			{
+				NativeUno.uno_accessibility_announce(_windowHandle, text, assertive);
+			}
+		});
 
 	protected override void DisposeCore()
 	{
@@ -1054,6 +1065,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		_byWindow.Remove(windowHandle);
 		_windowHandle = nint.Zero;
 		_accessibilityTreeInitialized = false;
+		_rootElement = null;
 		_activeModalHandle = nint.Zero;
 		_modalTriggerHandle = nint.Zero;
 

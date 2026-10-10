@@ -3,8 +3,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-#if false || false || __TVOS__ || false || false || false
-	[global::Uno.NotImplemented("__TVOS__")]
+#if false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 #endif
 	public static partial class Clipboard
 	{

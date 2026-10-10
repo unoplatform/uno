@@ -103,7 +103,15 @@ internal sealed partial class TextBoxCore
 	private bool CanPasteClipboardContent
 	{
 		get => _host.CanPasteClipboardContent;
-		set => _host.CanPasteClipboardContent = value;
+		set
+		{
+			if (_host.CanPasteClipboardContent != value)
+			{
+				_host.CanPasteClipboardContent = value;
+				// A peer that doesn't exist yet reads the fresh value when it gets created.
+				_host.Owner.CachedAutomationPeer?.InvalidatePeer();
+			}
+		}
 	}
 #endif
 
@@ -367,7 +375,8 @@ internal sealed partial class TextBoxCore
 
 	internal void OnPointerCaptureLost(PointerRoutedEventArgs e) => OnPointerCaptureLostPartial(e);
 
-	internal void Select(int start, int length)
+	/// <returns><c>false</c> only when a SelectionChanging handler rejected the update.</returns>
+	internal bool Select(int start, int length)
 	{
 		if (start < 0)
 		{
@@ -399,15 +408,18 @@ internal sealed partial class TextBoxCore
 
 		if (SelectionStart == start && SelectionLength == length)
 		{
-			return;
+			return true;
 		}
 
-		if (_host.RaiseSelectionChanging(start, length))
+		if (!_host.RaiseSelectionChanging(start, length))
 		{
-			SelectPartial(start, length);
-			_host.RaiseSelectionChanged();
-			SelectionChanged?.Invoke(this, new RoutedEventArgs(_host.Owner));
+			return false;
 		}
+
+		SelectPartial(start, length);
+		_host.RaiseSelectionChanged();
+		SelectionChanged?.Invoke(this, new RoutedEventArgs(_host.Owner));
+		return true;
 	}
 
 	/// <summary>
@@ -806,7 +818,7 @@ internal sealed partial class TextBoxCore
 			return;
 		}
 
-		var descriptionPresenter = _host.Owner.FindName("DescriptionPresenter") as ContentPresenter;
+		var descriptionPresenter = _host.Owner.FindNameInSubtree("DescriptionPresenter") as ContentPresenter;
 		if (descriptionPresenter != null)
 		{
 			descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;

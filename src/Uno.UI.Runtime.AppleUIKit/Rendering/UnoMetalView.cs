@@ -19,6 +19,27 @@ namespace Uno.UI.Runtime.AppleUIKit
 	{
 		private readonly IMTLCommandQueue? _queue;
 
+		// VoiceOver, Switch Control and XCTest read the accessibility elements through these; the first read builds them.
+		[Export("accessibilityElements")]
+		public NSObject[]? GetAccessibilityElements() => _owner?.GetAccessibilityElements();
+
+		[Export("automationElements")]
+		public NSObject[]? GetAutomationElements() => _owner?.GetAccessibilityElements();
+
+		[Export("accessibilityElementCount")]
+		public nint GetAccessibilityElementCount() => _owner?.GetAccessibilityElementCount() ?? 0;
+
+		[Export("accessibilityElementAtIndex:")]
+		public NSObject? GetAccessibilityElementAt(nint index) => _owner?.GetAccessibilityElementAt(index);
+
+		[Export("indexOfAccessibilityElement:")]
+		public nint GetIndexOfAccessibilityElement(NSObject? element)
+			=> _owner?.GetIndexOfAccessibilityElement(element) ?? NSRange.NotFound;
+
+		[Export("accessibilityHitTest:withEvent:")]
+		public NSObject? AccessibilityHitTest(CGPoint point, UIEvent? uievent)
+			=> _owner?.AccessibilityHitTest(point);
+
 		private RootViewController? _owner;
 		private CADisplayLink _link;
 		private Thread? _renderThread;

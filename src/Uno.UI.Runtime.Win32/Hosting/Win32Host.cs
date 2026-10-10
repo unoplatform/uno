@@ -116,6 +116,8 @@ public class Win32Host : UnoPlatformHost, IApplicationHost
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
 
 		AccessibilityRouter.EnsureInitialized();
+		// A Win32 bridge is enabled as soon as its window exists.
+		AccessibilityRouter.EnsureTreeNotifications();
 	}
 
 	public Win32Host(Func<Application> appBuilder) : this(appBuilder, false)

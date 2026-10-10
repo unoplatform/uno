@@ -3154,6 +3154,183 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
+		[TestMethod]
+		public async Task When_SelectInternal_Request_Is_Clamped_Then_Clamped_Selection_Is_Kept()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox { Text = "hello world" };
+			await UITestHelper.Load(textBox);
+			textBox.Select(1, 3);
+
+			(int start, int length)? reported = null;
+			textBox.SelectionChanged += (_, _) => reported = (textBox.SelectionStart, textBox.SelectionLength);
+
+			var selected = textBox.Core.SelectInternal(100, 2);
+
+			Assert.IsTrue(selected);
+			Assert.AreEqual<(int, int)?>((11, 0), reported, "SelectionChanged should report the clamped selection.");
+			Assert.AreEqual(11, textBox.SelectionStart);
+			Assert.AreEqual(0, textBox.SelectionLength);
+			Assert.AreEqual(string.Empty, textBox.SelectedText);
+		}
+
+		[TestMethod]
+		public async Task When_SelectInternal_Backward_Request_Is_Clamped_Then_Selection_Stays_Consistent()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox { Text = "hello" };
+			await UITestHelper.Load(textBox);
+
+			var selected = textBox.Core.SelectInternal(9, -6);
+
+			Assert.IsTrue(selected);
+			Assert.AreEqual(3, textBox.SelectionStart);
+			Assert.AreEqual(2, textBox.SelectionLength);
+			Assert.AreEqual("lo", textBox.SelectedText);
+			Assert.IsTrue(textBox.IsBackwardSelection);
+		}
+
+		[TestMethod]
+		public async Task When_SelectInternal_Is_Rejected_By_SelectionChanging_Then_Original_Selection_Is_Restored()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox { Text = "hello world" };
+			await UITestHelper.Load(textBox);
+			textBox.Select(1, 3);
+			textBox.SelectionChanging += (_, e) => e.Cancel = true;
+
+			var selected = textBox.Core.SelectInternal(8, -4);
+
+			Assert.IsFalse(selected);
+			Assert.AreEqual(1, textBox.SelectionStart);
+			Assert.AreEqual(3, textBox.SelectionLength);
+			Assert.IsFalse(textBox.IsBackwardSelection, "A rejected backward request must not leave its direction behind.");
+		}
+
+		[TestMethod]
+		public async Task When_TextChanging_Shortens_Text_Then_Selection_Stays_In_Range()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox { Text = "hell" };
+			await UITestHelper.Load(textBox);
+			textBox.Focus(FocusState.Programmatic);
+			textBox.Select(textBox.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			textBox.TextChanging += (sender, _) =>
+			{
+				if (sender.Text.Length > 2)
+				{
+					sender.Text = sender.Text.Substring(0, 2);
+				}
+			};
+
+			textBox.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(textBox, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("he", textBox.Text);
+			Assert.IsLessThanOrEqualTo(textBox.Text.Length, textBox.SelectionStart + textBox.SelectionLength);
+			Assert.AreEqual(textBox.Text.Substring(textBox.SelectionStart, textBox.SelectionLength), textBox.SelectedText);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)] // WASM clipboard APIs are async (Contains() is always true after Clear()); tvOS has no clipboard
+		public async Task When_CanPasteClipboardContent_Changes_Without_Peer_Then_No_Peer_Is_Created()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			await SetClipboardText("paste me");
+			var textBox = new TextBox();
+			await UITestHelper.Load(textBox);
+			if (!textBox.CanPasteClipboardContent)
+			{
+				Assert.Inconclusive("The clipboard text is not visible to the TextBox on this platform.");
+			}
+
+			if (textBox.CachedAutomationPeer is not null)
+			{
+				Assert.Inconclusive("An accessibility client already created the TextBox peer.");
+			}
+
+			var listener = new InvalidatePeerListener();
+			var previous = AutomationPeer.TestAutomationPeerListener;
+			try
+			{
+				AutomationPeer.TestAutomationPeerListener = listener;
+
+				// Read-only always disables paste, flipping the value without touching the clipboard.
+				textBox.IsReadOnly = true;
+
+				Assert.IsFalse(textBox.CanPasteClipboardContent);
+				Assert.IsNull(textBox.CachedAutomationPeer, "Only an accessibility client may create the TextBox peer.");
+			}
+			finally
+			{
+				AutomationPeer.TestAutomationPeerListener = previous;
+				Clipboard.Clear();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)] // WASM clipboard APIs are async (Contains() is always true after Clear()); tvOS has no clipboard
+		public async Task When_CanPasteClipboardContent_Changes_With_Peer_Then_Peer_Is_Invalidated()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			await SetClipboardText("paste me");
+			var textBox = new TextBox();
+			await UITestHelper.Load(textBox);
+			if (!textBox.CanPasteClipboardContent)
+			{
+				Assert.Inconclusive("The clipboard text is not visible to the TextBox on this platform.");
+			}
+
+			var listener = new InvalidatePeerListener();
+			var previous = AutomationPeer.TestAutomationPeerListener;
+			try
+			{
+				AutomationPeer.TestAutomationPeerListener = listener;
+				var peer = textBox.GetOrCreateAutomationPeer();
+				Assert.IsNotNull(peer);
+
+				textBox.IsReadOnly = true;
+
+				CollectionAssert.Contains(listener.InvalidatedPeers, peer);
+			}
+			finally
+			{
+				AutomationPeer.TestAutomationPeerListener = previous;
+				Clipboard.Clear();
+			}
+		}
+
+		private sealed class InvalidatePeerListener : IAutomationPeerListener
+		{
+			public List<AutomationPeer> InvalidatedPeers { get; } = new();
+
+			public void NotifyInvalidatePeer(AutomationPeer peer) => InvalidatedPeers.Add(peer);
+
+			public bool ListenerExistsHelper(Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId) => true;
+
+			public void OnAutomationEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId) { }
+
+			public void NotifyAutomationEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId) { }
+
+			public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer child) { }
+
+			public void NotifyPropertyChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object oldValue, object newValue) { }
+
+			public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId) { }
+
+			public void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, IReadOnlyList<string> changedData) { }
+		}
+
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18371")]

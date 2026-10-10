@@ -7,7 +7,9 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
+using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
@@ -177,11 +179,262 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreNotEqual("0", GetSemanticAttribute(listView, "tabindex"), "A composite listbox container must not be a tab stop (tabindex must not be \"0\"); the roving stop lives on the active item.");
 		}
 
-
-
-
-
 #endif
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+		public async Task When_ListView_Multiple_Select_On_Mobile_Then_Native_Collection_CanSelectMultiple()
+		{
+#if __SKIA__
+			var listView = new ListView
+			{
+				ItemsSource = new List<string> { "One", "Two", "Three" },
+				SelectionMode = ListViewSelectionMode.Multiple,
+			};
+			AutomationProperties.SetAutomationId(listView, "listview-multiselect-t045");
+
+			await UITestHelper.Load(listView);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var snapshot = MobileAccessibilityTestHelper.TryGetNativeSnapshot(listView);
+			Assert.IsNotNull(snapshot, "Native snapshot must be available on mobile Skia.");
+			Assert.IsNotNull(snapshot.Details?.Collection, "Collection must be populated for a ListView.");
+			Assert.IsTrue(
+				snapshot.Details!.Collection!.CanSelectMultiple,
+				"Multiple-selection ListView must report CanSelectMultiple=true in Collection details.");
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Selection_Queried_Then_Item_Peer_Identity_Matches_Children()
+		{
+			var listView = new ListView
+			{
+				ItemsSource = new List<string> { "Alpha", "Beta", "Gamma" },
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			await UITestHelper.Load(listView);
+			listView.SelectedIndex = 1;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+
+			// Resolve through the pattern path first: this is the ordering that used to hand
+			// out a second peer instance for the same item once the children tree was built.
+			var patternPeer = peer.CreateItemAutomationPeer("Beta");
+			Assert.IsNotNull(patternPeer, "The pattern path must resolve an item peer.");
+
+			var children = peer.GetChildren();
+			Assert.IsNotNull(children, "A realized ListView must expose item children.");
+
+			ItemAutomationPeer childPeer = null;
+			foreach (var child in children)
+			{
+				if (child is ItemAutomationPeer { Item: "Beta" } itemPeer)
+				{
+					childPeer = itemPeer;
+					break;
+				}
+			}
+
+			Assert.IsNotNull(childPeer, "The children tree must contain a peer for the selected item.");
+			Assert.AreSame(
+				patternPeer,
+				childPeer,
+				"The children tree and the pattern providers must hand out the same ItemAutomationPeer instance.");
+			Assert.AreSame(
+				patternPeer,
+				peer.CreateItemAutomationPeer("Beta"),
+				"Resolving the item again after the tree was built must keep the same peer instance.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Item_Is_Selected_Then_Item_Peer_Reports_IsSelected()
+		{
+			var listView = new ListView
+			{
+				ItemsSource = new List<string> { "Alpha", "Beta", "Gamma" },
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			await UITestHelper.Load(listView);
+			listView.SelectedIndex = 1;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+			var selected = (ISelectionItemProvider)peer.CreateItemAutomationPeer("Beta").GetPattern(PatternInterface.SelectionItem);
+			var unselected = (ISelectionItemProvider)peer.CreateItemAutomationPeer("Alpha").GetPattern(PatternInterface.SelectionItem);
+
+			Assert.IsTrue(selected.IsSelected, "The selected item's peer must report IsSelected.");
+			Assert.IsFalse(unselected.IsSelected, "An unselected item's peer must not report IsSelected.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Are_Duplicated_Then_Item_Peer_Is_Reused()
+		{
+			var duplicate = "Same";
+			var listView = new ListView
+			{
+				ItemsSource = new List<string> { duplicate, duplicate },
+			};
+
+			await UITestHelper.Load(listView);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+			var children = peer.GetChildren();
+			Assert.IsNotNull(children);
+
+			var itemPeers = new List<ItemAutomationPeer>();
+			foreach (var child in children)
+			{
+				if (child is ItemAutomationPeer itemPeer)
+				{
+					itemPeers.Add(itemPeer);
+				}
+			}
+
+			Assert.AreEqual(2, itemPeers.Count, "Both duplicate occurrences must be projected.");
+			Assert.AreSame(
+				itemPeers[0],
+				itemPeers[1],
+				"WinUI reuses the item-keyed peer when the same item instance occurs more than once.");
+
+#if HAS_UNO
+			var nativePeerTree = MobileAccessibilityTestHelper.GetPeerTree(listView);
+			var occurrences = new List<AccessibilityPeerNode>();
+			foreach (var node in nativePeerTree)
+			{
+				if (ReferenceEquals(node.Peer, itemPeers[0]))
+				{
+					occurrences.Add(node);
+				}
+			}
+
+			Assert.AreEqual(2, occurrences.Count, "Both realized occurrences must remain in the promoted peer tree.");
+			Assert.IsNotNull(occurrences[0].Owner);
+			Assert.IsNotNull(occurrences[1].Owner);
+			Assert.AreNotSame(
+				occurrences[0].Owner,
+				occurrences[1].Owner,
+				"Each duplicate occurrence must retain its own realized container.");
+			Assert.AreEqual(0, listView.IndexFromContainer(occurrences[0].Owner));
+			Assert.AreEqual(1, listView.IndexFromContainer(occurrences[1].Owner));
+
+			var peerBounds = itemPeers[0].GetBoundingRectangle();
+			var firstOwner = occurrences[0].Owner;
+			var secondOwner = occurrences[1].Owner;
+			Assert.IsNotNull(firstOwner);
+			Assert.IsNotNull(secondOwner);
+			var firstContainerPeer = firstOwner.GetOrCreateAutomationPeer();
+			var secondContainerPeer = secondOwner.GetOrCreateAutomationPeer();
+			Assert.IsNotNull(firstContainerPeer);
+			Assert.IsNotNull(secondContainerPeer);
+			var firstBounds = AccessibilityPeerHelper.GetBoundingRectangle(itemPeers[0], firstOwner);
+			var secondBounds = AccessibilityPeerHelper.GetBoundingRectangle(itemPeers[0], secondOwner);
+			Assert.AreNotEqual(firstBounds.Y, secondBounds.Y);
+			Assert.AreEqual(firstContainerPeer.GetBoundingRectangle(), firstBounds);
+			Assert.AreEqual(secondContainerPeer.GetBoundingRectangle(), secondBounds);
+			Assert.AreEqual(peerBounds, itemPeers[0].GetBoundingRectangle(),
+				"Querying an occurrence must not permanently retarget the shared item peer.");
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ItemClick_Is_Enabled_Then_Item_Invoke_Raises_ItemClick()
+		{
+			var listView = new ListView
+			{
+				ItemsSource = new List<string> { "One", "Two", "Three" },
+				IsItemClickEnabled = true,
+			};
+			object clickedItem = null;
+			listView.ItemClick += (_, e) => clickedItem = e.ClickedItem;
+
+			await UITestHelper.Load(listView);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var containerPeer = FrameworkElementAutomationPeer.CreatePeerForElement((ListViewItem)listView.ContainerFromIndex(1));
+			var invokeProvider = containerPeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+			Assert.IsNotNull(invokeProvider, "WinUI exposes Invoke on the items of a list with ItemClick enabled.");
+			invokeProvider!.Invoke();
+			Assert.AreEqual("Two", clickedItem);
+
+			clickedItem = null;
+			var itemPeer = FrameworkElementAutomationPeer.CreatePeerForElement(listView).GetChildren()[2];
+			var itemInvokeProvider = itemPeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+			Assert.IsNotNull(itemInvokeProvider, "The data item peer forwards Invoke to its container.");
+			itemInvokeProvider!.Invoke();
+			Assert.AreEqual("Three", clickedItem);
+
+			listView.IsItemClickEnabled = false;
+			Assert.IsNull(containerPeer.GetPattern(PatternInterface.Invoke));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Containers_Are_Recycled_Then_Item_Peers_Stay_In_Item_Order()
+		{
+			var items = new List<string>();
+			for (var i = 0; i < 200; i++)
+			{
+				items.Add($"Item {i:000}");
+			}
+
+			var listView = new ListView { ItemsSource = items, Height = 300 };
+			await UITestHelper.Load(listView);
+
+			// Scrolling page by page, as a screen reader's scroll gesture does, recycles containers one at a time, which a
+			// virtualizing panel may append to its children out of item order on the way back up.
+			var scrollViewer = FindDescendant<ScrollViewer>(listView);
+			Assert.IsNotNull(scrollViewer);
+			var pages = new List<double>();
+			for (var offset = 0d; offset <= 2000; offset += 250)
+			{
+				pages.Add(offset);
+			}
+
+			for (var i = pages.Count - 2; i >= 0; i--)
+			{
+				pages.Add(pages[i]);
+			}
+
+			foreach (var offset in pages)
+			{
+				scrollViewer.ChangeView(null, offset, null, disableAnimation: true);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			var names = new List<string>();
+			foreach (var child in FrameworkElementAutomationPeer.CreatePeerForElement(listView).GetChildren())
+			{
+				names.Add(child.GetName());
+			}
+
+			var sorted = new List<string>(names);
+			sorted.Sort(StringComparer.Ordinal);
+			Assert.AreEqual("Item 000", names[0]);
+			CollectionAssert.AreEqual(sorted, names, "Item peers must follow item order, as screen readers traverse them in order.");
+		}
+
+		private static T FindDescendant<T>(DependencyObject parent) where T : DependencyObject
+		{
+			for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+			{
+				var child = VisualTreeHelper.GetChild(parent, i);
+				if (child is T match || (match = FindDescendant<T>(child)) is not null)
+				{
+					return match;
+				}
+			}
+
+			return null;
+		}
 	}
 }
