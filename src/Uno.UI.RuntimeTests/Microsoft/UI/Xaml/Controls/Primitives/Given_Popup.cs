@@ -14,6 +14,11 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
 using Windows.System;
 using static Private.Infrastructure.TestServices;
 
+#if HAS_UNO
+using Uno.UI.Xaml.Controls;
+using CoreWindowActivationState = Windows.UI.Core.CoreWindowActivationState;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 {
 	[TestClass]
@@ -484,6 +489,156 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			finally
 			{
 				popup.IsOpen = false;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25170")]
+		public async Task When_Window_Deactivated_Then_LightDismiss_Popup_Closed()
+		{
+			var (isOpen, _) = await ChangeWindowActivationWithLightDismissPopup(CoreWindowActivationState.CodeActivated, CoreWindowActivationState.Deactivated);
+
+			Assert.IsFalse(isOpen);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25170")]
+		public async Task When_Window_Activated_Then_LightDismiss_Popup_Left_Open()
+		{
+			var (isOpen, _) = await ChangeWindowActivationWithLightDismissPopup(CoreWindowActivationState.Deactivated, CoreWindowActivationState.PointerActivated);
+
+			Assert.IsTrue(isOpen);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25170")]
+		public async Task When_Window_Deactivated_Then_Earlier_Handler_Sees_LightDismiss_Popup_Open()
+		{
+			var (_, wasOpenForHandler) = await ChangeWindowActivationWithLightDismissPopup(CoreWindowActivationState.CodeActivated, CoreWindowActivationState.Deactivated);
+
+			Assert.IsTrue(wasOpenForHandler);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25170")]
+		public async Task When_Window_Deactivated_And_Flyout_Closing_Canceled()
+		{
+			if (WindowHelper.XamlRoot.HostWindow?.NativeWrapper is not NativeWindowWrapperBase nativeWindow)
+			{
+				Assert.Inconclusive("The activation of the window cannot be driven here.");
+				return;
+			}
+
+			var initialState = nativeWindow.ActivationState;
+			var button = new Button() { Content = "Test" };
+			var flyout = new Flyout() { Content = new TextBlock() { Text = "Flyout" } };
+			var cancelClosing = true;
+			var closingCount = 0;
+			flyout.Closing += (_, e) =>
+			{
+				closingCount++;
+				e.Cancel = cancelClosing;
+			};
+
+			try
+			{
+				nativeWindow.ActivationState = CoreWindowActivationState.CodeActivated;
+				WindowHelper.WindowContent = button;
+				await WindowHelper.WaitForLoaded(button);
+
+				flyout.ShowAt(button);
+				await WindowHelper.WaitFor(() => flyout.IsOpen);
+
+				nativeWindow.ActivationState = CoreWindowActivationState.Deactivated;
+				await WindowHelper.WaitForIdle();
+
+				// The flyout is asked once, and stays open when it declines.
+				Assert.AreEqual(1, closingCount);
+				Assert.IsTrue(flyout.IsOpen);
+			}
+			finally
+			{
+				cancelClosing = false;
+				flyout.Hide();
+				nativeWindow.ActivationState = initialState;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25170")]
+		public async Task When_XamlRoot_Changed_Without_Resize_Then_LightDismiss_Popup_Left_Open()
+		{
+			var popup = new Popup
+			{
+				Child = new Button() { Content = "Test" },
+				IsLightDismissEnabled = true
+			};
+
+			try
+			{
+				WindowHelper.WindowContent = popup;
+				popup.IsOpen = true;
+				await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count > 0);
+
+				// What a change of the scale or of the visibility of the host raises.
+				WindowHelper.XamlRoot.RaiseChangedEvent();
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(popup.IsOpen);
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		// Opens a light dismiss popup in a window that reports the first activation state, then has the window report the
+		// second one. Returns whether the popup is open after that, and whether it was for a Window.Activated handler
+		// added before the popup opened.
+		private static async Task<(bool isOpen, bool wasOpenForHandler)> ChangeWindowActivationWithLightDismissPopup(
+			CoreWindowActivationState openedIn,
+			CoreWindowActivationState changedTo)
+		{
+			var window = WindowHelper.XamlRoot.HostWindow;
+			if (window?.NativeWrapper is not NativeWindowWrapperBase nativeWindow)
+			{
+				Assert.Inconclusive("The activation of the window cannot be driven here.");
+				return default;
+			}
+
+			var initialState = nativeWindow.ActivationState;
+			var popup = new Popup
+			{
+				Child = new Button() { Content = "Test" },
+				IsLightDismissEnabled = true
+			};
+			var wasOpenForHandler = false;
+			void OnActivated(object sender, WindowActivatedEventArgs e) => wasOpenForHandler = popup.IsOpen;
+
+			try
+			{
+				nativeWindow.ActivationState = openedIn;
+				window.Activated += OnActivated;
+
+				WindowHelper.WindowContent = popup;
+				popup.IsOpen = true;
+				await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count > 0);
+
+				nativeWindow.ActivationState = changedTo;
+				await WindowHelper.WaitForIdle();
+
+				return (popup.IsOpen, wasOpenForHandler);
+			}
+			finally
+			{
+				window.Activated -= OnActivated;
+				popup.IsOpen = false;
+				nativeWindow.ActivationState = initialState;
 			}
 		}
 #endif
