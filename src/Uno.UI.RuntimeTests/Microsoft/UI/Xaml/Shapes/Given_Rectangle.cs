@@ -164,5 +164,37 @@ public class Given_Rectangle
 
 		Assert.AreEqual(greenBounds.Top - redBounds.Top, redBounds.Bottom - greenBounds.Bottom);
 	}
+
+#if HAS_UNO // Ellipse and Rectangle are sealed in WinUI, they can only be subclassed in Uno.
+	private sealed partial class MyRectangle : Rectangle { }
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24978")]
+	public void When_Derived_Default_Stretch()
+	{
+		Assert.AreEqual(Stretch.Fill, new Rectangle().Stretch, "Rectangle");
+		Assert.AreEqual(Stretch.Fill, new MyRectangle().Stretch, "MyRectangle");
+		Assert.AreEqual(Stretch.Fill, Shape.StretchProperty.GetMetadata(typeof(MyRectangle)).DefaultValue, "Metadata");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24978")]
+	public async Task When_Derived_Renders()
+	{
+		var shape = new MyRectangle { Width = 100, Height = 100, Fill = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+		var grid = new Grid
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+			Children = { shape },
+		};
+
+		await UITestHelper.Load(grid);
+		var screenshot = await UITestHelper.ScreenShot(grid);
+
+		ImageAssert.HasColorAt(screenshot, 50, 50, Microsoft.UI.Colors.Red, tolerance: 5);
+	}
+#endif
 }
 #endif
