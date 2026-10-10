@@ -21,6 +21,7 @@ using Windows.Storage.AccessCache;
 using System.Linq;
 using System.Collections.Immutable;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.Testing;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
@@ -32,6 +33,18 @@ public partial class Given_HotReloadWorkspace
 	private static Process? _process;
 	private static int _remoteControlPort;
 	private static Process? _testAppProcess;
+
+	/// <summary>
+	/// Budget for a single run of the hot-reload app. A healthy run takes about ninety seconds; a session
+	/// that breaks server-side leaves every remaining test in the app burning its own budget instead.
+	/// </summary>
+	private static readonly TimeSpan TestAppTimeout = TimeSpan.FromMinutes(6);
+
+	/// <summary>
+	/// Budget for building the app. This runs from <c>[TestInitialize]</c>, so a hang here is only bounded
+	/// by whatever the harness applies to initialize — never leave it unbounded.
+	/// </summary>
+	private static readonly TimeSpan BuildTimeout = TimeSpan.FromMinutes(10);
 
 	/// <remarks>
 	/// This test is running C# hot reload tests in a separate app, located 
@@ -55,11 +68,20 @@ public partial class Given_HotReloadWorkspace
 	// Hot reload tests are only available on Skia desktop targets
 	[Filters]
 	[TestMethod]
+	// Raises the harness default for this test, which builds an app before it runs one. It must stay above
+	// TestAppTimeout so the app is killed and reported before the harness abandons the test.
+	[Timeout(8 * 60 * 1000)]
 	public async Task When_HotReloadScenario(string filters)
 	{
 		// Remove this class and this method from the filters
 		filters = string.Join(";", (filters?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>()).ToImmutableArray().RemoveAll(IsOuterTestFilter));
-		var resultFile = await RunTestApp(filters, CancellationToken.None);
+
+		var resultFile = await RunWithinBudget(
+			ct => RunTestApp(filters, ct),
+			TestAppTimeout,
+			$"The hot reload test app did not complete within {TestAppTimeout} and was killed. " +
+			"This usually means a hot-reload never completed: look for an internal error in the " +
+			"dev-server output above.");
 
 		// Parse the nunit XML results file and extract all failed tests
 		var tests = NUnitXmlParser.GetTests(resultFile);
@@ -85,6 +107,27 @@ public partial class Given_HotReloadWorkspace
 		if (resultMessage.Length != 0)
 		{
 			Assert.Fail($"Tests failed:\n{resultMessage}");
+		}
+	}
+
+	/// <summary>
+	/// Runs <paramref name="run"/>, cancelling it once <paramref name="budget"/> elapses.
+	/// </summary>
+	/// <remarks>
+	/// Running out of budget is reported as a <see cref="NonRetryableTestFailureException"/>: a retry would
+	/// build and launch the app again only to wait out the same wedged session.
+	/// </remarks>
+	internal static async Task<T> RunWithinBudget<T>(Func<CancellationToken, Task<T>> run, TimeSpan budget, string timeoutMessage)
+	{
+		using var cts = new CancellationTokenSource(budget);
+
+		try
+		{
+			return await run(cts.Token);
+		}
+		catch (OperationCanceledException e) when (cts.IsCancellationRequested)
+		{
+			throw new NonRetryableTestFailureException(timeoutMessage, e);
 		}
 	}
 
@@ -119,8 +162,19 @@ public partial class Given_HotReloadWorkspace
 	[TestCleanup]
 	public void TestCleanupWrapper()
 	{
-		_testAppProcess?.Kill();
-		_testAppProcess?.WaitForExit();
+		// StartProcess redirects both streams, so the Process owns OS pipe handles that only a Dispose
+		// releases before the finalizer runs.
+		var process = _testAppProcess;
+		_testAppProcess = null;
+
+		if (process is { HasExited: false })
+		{
+			typeof(Given_HotReloadWorkspace).Log().Warn(
+				"The hot reload app was still running at cleanup and had to be killed — the run above did not complete on its own.");
+		}
+
+		ProcessHelpers.KillProcessTree(process);
+		process?.Dispose();
 	}
 
 	public static async Task InitializeServer()
@@ -140,8 +194,7 @@ public partial class Given_HotReloadWorkspace
 		var hrAppPath = GetHotReloadAppPath();
 
 		typeof(Given_HotReloadWorkspace).Log().Debug($"Starting test app (path{hrAppPath})");
-		var p = await ProcessHelpers.RunProcess(
-			ct,
+		var p = ProcessHelpers.StartProcess(
 			"dotnet",
 			new() {
 				"run",
@@ -160,13 +213,16 @@ public partial class Given_HotReloadWorkspace
 			},
 			hrAppPath,
 			"HRApp",
-			true,
 
 			// Required when running in CI, as VS sets it automatically in debug
 			new() { ["DOTNET_MODIFIABLE_ASSEMBLIES"] = "debug" }
 		);
 
+		// Track the app before waiting on it: a run that never completes leaves this method waiting,
+		// and the cleanup can only kill the app once it has been recorded here.
 		_testAppProcess = p;
+
+		await ProcessHelpers.WaitForExitAsync(p, "HRApp", ct);
 
 		if (p.ExitCode != 0)
 		{
@@ -198,11 +254,27 @@ public partial class Given_HotReloadWorkspace
 			output: builder
 		);
 
-		await process.WaitForExitAsync();
+		using var cts = new CancellationTokenSource(BuildTimeout);
 
-		if (process.ExitCode != 0)
+		try
 		{
-			throw new InvalidOperationException($"Failed to build app{Environment.NewLine}{builder}");
+			await ProcessHelpers.WaitForExitAsync(process, "HRAppBuild", cts.Token);
+
+			if (process.ExitCode != 0)
+			{
+				throw new InvalidOperationException($"Failed to build app{Environment.NewLine}{builder}");
+			}
+		}
+		catch (OperationCanceledException e) when (cts.IsCancellationRequested)
+		{
+			// Non-retryable whatever BuildTimeout is relative to the harness budget: a retry would only
+			// wait out the same hung build.
+			throw new NonRetryableTestFailureException(
+				$"Building the hot reload app did not complete within {BuildTimeout}.{Environment.NewLine}{builder}", e);
+		}
+		finally
+		{
+			process.Dispose();
 		}
 	}
 
