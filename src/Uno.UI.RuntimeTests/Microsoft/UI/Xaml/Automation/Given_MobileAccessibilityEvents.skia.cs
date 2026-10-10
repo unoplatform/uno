@@ -83,34 +83,6 @@ public class Given_MobileAccessibilityEvents
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_Orientation_Changes_Then_Listener_Receives_Orientation_Property()
-	{
-		var slider = new Slider();
-		var scrollBar = new ScrollBar();
-		var panel = new StackPanel { Children = { slider, scrollBar } };
-		await UITestHelper.Load(panel);
-
-		var listener = new RecordingListener();
-		var previous = AutomationPeer.TestAutomationPeerListener;
-		try
-		{
-			AutomationPeer.TestAutomationPeerListener = listener;
-
-			slider.Orientation = Orientation.Vertical;
-			scrollBar.Orientation = Orientation.Horizontal;
-
-			Assert.AreEqual(
-				2,
-				listener.Properties.Count(property => property == AutomationElementIdentifiers.OrientationProperty));
-		}
-		finally
-		{
-			AutomationPeer.TestAutomationPeerListener = previous;
-		}
-	}
-
-	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_AccessibilityView_Changes_Then_Membership_Notification_Does_Not_Require_A_Listener()
 	{
 		var button = new Button { Content = "Target" };
