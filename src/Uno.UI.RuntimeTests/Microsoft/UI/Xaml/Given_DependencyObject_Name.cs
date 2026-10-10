@@ -258,6 +258,40 @@ public class Given_DependencyObject_Name
 	}
 
 	[TestMethod]
+	public void When_NameProperty_Cleared_Then_Name_Mirrors_Default()
+	{
+		var group = new VisualStateGroup();
+		var state = new VisualState();
+		var run = new Run();
+		Assert.AreEqual("", group.Name);
+		Assert.AreEqual("", state.Name);
+		Assert.AreEqual("", run.Name);
+
+		group.SetValue(FrameworkElement.NameProperty, "G");
+		state.SetValue(FrameworkElement.NameProperty, "S");
+		run.SetValue(FrameworkElement.NameProperty, "R");
+		group.ClearValue(FrameworkElement.NameProperty);
+		state.ClearValue(FrameworkElement.NameProperty);
+		run.ClearValue(FrameworkElement.NameProperty);
+
+		Assert.AreEqual("", group.Name);
+		Assert.AreEqual("", state.Name);
+		Assert.AreEqual("", run.Name);
+	}
+
+	[TestMethod]
+	public void When_NameProperty_Changes_Then_Name_Updated_Before_Callback()
+	{
+		var state = new VisualState();
+		string seen = null;
+		state.RegisterPropertyChangedCallback(FrameworkElement.NameProperty, (s, dp) => seen = ((VisualState)s).Name);
+
+		state.SetValue(FrameworkElement.NameProperty, "S");
+
+		Assert.AreEqual("S", seen);
+	}
+
+	[TestMethod]
 	public void When_NameProperty_Set_To_Null_Then_Empty()
 	{
 		var brush = new SolidColorBrush();
