@@ -49,7 +49,7 @@ public sealed partial class ShellSplitter : Grid
 		_focusTarget.KeyDown += OnFocusTargetKeyDown;
 		_focusTarget.GotFocus += (_, _) => UpdateLine();
 		_focusTarget.LostFocus += (_, _) => UpdateLine();
-		ActualThemeChanged += (_, _) => UpdateLine();
+		ShellThemeBrushes.ObserveActualTheme(this, UpdateLine);
 		Loaded += (_, _) =>
 		{
 			AutomationProperties.SetName(_focusTarget, AutomationProperties.GetName(this));

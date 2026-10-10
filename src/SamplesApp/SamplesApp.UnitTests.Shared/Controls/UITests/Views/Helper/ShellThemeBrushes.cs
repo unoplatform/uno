@@ -90,6 +90,34 @@ public static class ShellThemeBrushes
 		return brush;
 	}
 
+	/// <summary>
+	/// Runs <paramref name="onThemeChanged"/> when the element's ActualTheme changes, including while it was out of the tree.
+	/// </summary>
+	/// <remarks>
+	/// WinUI stops raising ActualThemeChanged to handlers attached before the element left and re-entered the live tree
+	/// (e.g. the window content swapped out and back by a full-window runtime test), so the handler is re-attached on every Loaded.
+	/// </remarks>
+	public static void ObserveActualTheme(FrameworkElement element, Action onThemeChanged)
+	{
+		var appliedTheme = element.ActualTheme;
+
+		void OnActualThemeChanged(FrameworkElement sender, object args)
+		{
+			appliedTheme = element.ActualTheme;
+			onThemeChanged();
+		}
+
+		element.Loaded += (_, _) =>
+		{
+			element.ActualThemeChanged -= OnActualThemeChanged;
+			element.ActualThemeChanged += OnActualThemeChanged;
+			if (element.ActualTheme != appliedTheme)
+			{
+				OnActualThemeChanged(element, EventArgs.Empty);
+			}
+		};
+	}
+
 	private static AccessibilitySettings AccessibilitySettings => _accessibilitySettings ??= new();
 
 	// High contrast and accent colours change the resolved colours; the events may arrive off the UI thread.
