@@ -16,6 +16,7 @@ namespace MyProject
 		internal static global::Uno.UI.Xaml.XamlParseContext __ParseContext_ { get; } = new global::Uno.UI.Xaml.XamlParseContext()
 		{
 			AssemblyName = "TestProject",
+			AssemblyLoadContext = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(GlobalStaticResources).Assembly),
 		}
 		;
 
