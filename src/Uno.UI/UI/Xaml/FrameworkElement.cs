@@ -873,11 +873,22 @@ namespace Microsoft.UI.Xaml
 			typeof(FrameworkElement),
 			new FrameworkPropertyMetadata(
 				defaultValue: "",
-				propertyChangedCallback: static (instance, args) => (instance as FrameworkElement)?.OnNameChanged((string)args.OldValue, (string)args.NewValue)));
+				options: FrameworkPropertyMetadataOptions.None,
+				propertyChangedCallback: static (instance, args) => (instance as FrameworkElement)?.OnNameChanged((string)args.OldValue, (string)args.NewValue),
+				backingFieldUpdateCallback: static (instance, newValue) =>
+				{
+					if (instance is FrameworkElement fe)
+					{
+						fe._nameCache = (string)newValue;
+					}
+				}));
+
+		// Mirrors the DP value; null means not read yet (FindName reads Name on every visited element).
+		private string _nameCache;
 
 		public string Name
 		{
-			get => (string)GetValue(NameProperty);
+			get => _nameCache ??= (string)GetValue(NameProperty);
 			set => SetValue(NameProperty, value);
 		}
 
