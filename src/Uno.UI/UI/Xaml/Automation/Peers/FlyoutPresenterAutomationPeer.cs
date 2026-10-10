@@ -30,18 +30,13 @@ public partial class FlyoutPresenterAutomationPeer : FrameworkElementAutomationP
 
 	protected override string GetAutomationIdCore()
 	{
-		//TODO (DOTI): FlyoutPresenterOwner?.Name doesn't seem to be supported on some platforms
-#if __SKIA__
 		var id = base.GetAutomationIdCore();
 		if (!string.IsNullOrEmpty(id))
 		{
 			return id;
 		}
 
-		return FlyoutPresenterOwner?.Name.ToString() ?? string.Empty;
-#else
-		return base.GetAutomationIdCore();
-#endif
+		return FlyoutPresenterOwner?.GetOwnerName() ?? string.Empty;
 	}
 
 	public void Invoke()

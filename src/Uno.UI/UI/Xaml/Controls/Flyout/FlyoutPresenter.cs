@@ -34,6 +34,10 @@ namespace Microsoft.UI.Xaml.Controls
 		internal FlyoutBase GetOwnerFlyout()
 			=> _wrFlyout?.IsAlive == true ? _wrFlyout.Target as FlyoutBase : null;
 
+		// MUX Reference: FlyoutPresenter_partial.cpp GetOwnerName (lines 165-185).
+		internal string GetOwnerName()
+			=> GetOwnerFlyout()?.GetValue(FrameworkElement.NameProperty) as string;
+
 		protected override AutomationPeer OnCreateAutomationPeer()
 			=> new FlyoutPresenterAutomationPeer(this);
 
