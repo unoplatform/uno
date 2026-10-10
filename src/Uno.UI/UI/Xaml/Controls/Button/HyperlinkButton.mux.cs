@@ -146,7 +146,11 @@ namespace Microsoft.UI.Xaml.Controls
 					var contentTemplateRootAsITextBlock = contentTemplateRootAsIUIE as TextBlock;
 					if (contentTemplateRootAsITextBlock != null)
 					{
-						contentTemplateRootAsITextBlock.TextDecorations = TextDecorations.Underline;
+						// In 21H1 and later, when the HyperlinkUnderlineVisible resource is set to False, the underline is only visible in HighContrast mode.
+						var underlineVisibleResourceDirective = Microsoft.UI.Xaml.Documents.Hyperlink.UnderlineVisibleResourceDirective();
+						var underline = underlineVisibleResourceDirective || Uno.UI.Xaml.Core.CoreServices.Instance.Theming.HasHighContrastTheme();
+
+						contentTemplateRootAsITextBlock.TextDecorations = underline ? TextDecorations.Underline : TextDecorations.None;
 					}
 				}
 			}
