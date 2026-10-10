@@ -108,5 +108,37 @@ public class Given_Ellipse
 		}
 		Assert.IsTrue(partial <= 1, $"{partial} partially covered pixels across the edge at 4x; the ring must be one device pixel wide");
 	}
+
+#if HAS_UNO // Ellipse and Rectangle are sealed in WinUI, they can only be subclassed in Uno.
+	private sealed partial class MyEllipse : Ellipse { }
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24978")]
+	public void When_Derived_Default_Stretch()
+	{
+		Assert.AreEqual(Stretch.Fill, new Ellipse().Stretch, "Ellipse");
+		Assert.AreEqual(Stretch.Fill, new MyEllipse().Stretch, "MyEllipse");
+		Assert.AreEqual(Stretch.Fill, Shape.StretchProperty.GetMetadata(typeof(MyEllipse)).DefaultValue, "Metadata");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24978")]
+	public async Task When_Derived_Renders()
+	{
+		var shape = new MyEllipse { Width = 100, Height = 100, Fill = new SolidColorBrush(Colors.Red) };
+		var grid = new Grid
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Colors.White),
+			Children = { shape },
+		};
+
+		await UITestHelper.Load(grid);
+		var screenshot = await UITestHelper.ScreenShot(grid);
+
+		ImageAssert.HasColorAt(screenshot, 50, 50, Colors.Red, tolerance: 5);
+	}
+#endif
 }
 #endif

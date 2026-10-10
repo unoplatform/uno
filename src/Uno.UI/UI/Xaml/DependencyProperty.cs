@@ -585,7 +585,10 @@ namespace Microsoft.UI.Xaml
 
 			if (this == Shape.StretchProperty)
 			{
-				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
+				// WinUI sets Stretch.Fill in the CEllipse/CRectangle constructors, so it applies to any
+				// Ellipse/Rectangle instance. Ellipse and Rectangle are not sealed in Uno, so check the
+				// type hierarchy rather than the exact type to keep derived shapes visible.
+				if (typeof(Rectangle).IsAssignableFrom(forType) || typeof(Ellipse).IsAssignableFrom(forType))
 				{
 					return StretchBoxes.Fill;
 				}
