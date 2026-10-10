@@ -5,8 +5,8 @@ namespace Uno.UI.SourceGenerators.Tests.XamlCodeGeneratorTests;
 using Verify = XamlSourceGeneratorVerifier;
 
 /// <summary>
-/// <c>x:Name</c> is WinUI's DependencyObject_Name: a DependencyObject without a settable <c>Name</c>
-/// property (MenuFlyout, Storyboard, brushes...) stores it through <c>MarkupHelper.SetXName</c>.
+/// <c>x:Name</c> is WinUI's DependencyObject_Name: a non-FrameworkElement DependencyObject (MenuFlyout,
+/// Storyboard, brushes, or one with its own CLR <c>Name</c>) stores it through <c>MarkupHelper.SetXName</c>.
 /// </summary>
 [TestClass]
 public class Given_XName
@@ -58,6 +58,59 @@ public class Given_XName
 						{
 							this.InitializeComponent();
 						}
+					}
+					"""
+				}
+			},
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_XName_On_Custom_DependencyObject_With_Name()
+	{
+		var pageFile = new XamlFile("MainPage.xaml", """
+			<Page
+				x:Class="TestRepro.MainPage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:TestRepro">
+				<Page.Resources>
+					<local:NamedDO x:Key="NamedKey" x:Name="NamedObject" />
+				</Page.Resources>
+				<Grid>
+					<Grid.Tag>
+						<local:NamedDO x:Name="NamedTag" />
+					</Grid.Tag>
+				</Grid>
+			</Page>
+			""");
+
+		var test = new Verify.Test(pageFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro;
+
+					public sealed partial class MainPage : Page
+					{
+						public MainPage()
+						{
+							this.InitializeComponent();
+						}
+					}
+
+					public class NamedDO : DependencyObject
+					{
+						public string Name { get; set; }
 					}
 					"""
 				}
