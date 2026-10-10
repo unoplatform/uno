@@ -45,11 +45,7 @@ public partial class ScrollBar
 		if (args.Property == OrientationProperty)
 		{
 			OnOrientationChanged();
-#if __SKIA__
-			RaiseOrientationPropertyChanged(args);
-#endif
 		}
-
 		else if (args.Property == IndicatorModeProperty)
 		{
 			RefreshTrackLayout();
@@ -59,26 +55,6 @@ public partial class ScrollBar
 			OnVisibilityChanged();
 		}
 	}
-
-#if __SKIA__
-	private void RaiseOrientationPropertyChanged(DependencyPropertyChangedEventArgs args)
-	{
-		if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) == true &&
-			GetOrCreateAutomationPeer() is { } peer)
-		{
-			AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(
-				peer,
-				AutomationElementIdentifiers.OrientationProperty,
-				ToAutomationOrientation(args.OldValue),
-				ToAutomationOrientation(args.NewValue));
-		}
-	}
-
-	private static AutomationOrientation ToAutomationOrientation(object value)
-		=> value is Orientation.Vertical
-			? AutomationOrientation.Vertical
-			: AutomationOrientation.Horizontal;
-#endif
 
 	// Update the visual states when the Visibility property is changed.
 	private protected override void OnVisibilityChanged()
