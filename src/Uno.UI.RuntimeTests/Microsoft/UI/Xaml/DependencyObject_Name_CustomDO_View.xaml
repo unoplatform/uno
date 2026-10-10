@@ -1,0 +1,11 @@
+<UserControl
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.DependencyObject_Name_CustomDO_View"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml">
+
+	<UserControl.Resources>
+		<local:Given_DependencyObject_Name_PlainDO x:Key="Plain" x:Name="PD" x:FieldModifier="public" />
+		<local:Given_DependencyObject_Name_NamedDO x:Key="Named" x:Name="ND" x:FieldModifier="public" />
+	</UserControl.Resources>
+</UserControl>
