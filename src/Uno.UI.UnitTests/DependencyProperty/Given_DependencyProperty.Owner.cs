@@ -28,7 +28,9 @@ namespace Uno.UI.Tests
 			// so they are genuinely TextBox-owned.
 			("PasswordBox", "SelectionFlyout"),
 			("PasswordBox", "CanPasteClipboardContent"),
-			("ItemsView", "ItemsViewItemContainerRevokers")
+			("ItemsView", "ItemsViewItemContainerRevokers"),
+			// WinUI's FrameworkElement.NameProperty is DependencyObject_Name.
+			("FrameworkElement", "Name"),
 		};
 
 		[TestMethod]
