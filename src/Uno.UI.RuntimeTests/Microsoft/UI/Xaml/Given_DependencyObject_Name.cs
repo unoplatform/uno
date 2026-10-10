@@ -135,6 +135,52 @@ public class Given_DependencyObject_Name
 	}
 
 	[TestMethod]
+	public void When_XName_On_Custom_DependencyObject_With_Name_Then_Only_NameProperty_Holds_It()
+	{
+		var grid = (Grid)XamlReader.Load($"<Grid {Namespaces} xmlns:local='using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml'><Grid.Resources><local:Given_DependencyObject_Name_NamedDO x:Key='k' x:Name='ND'/></Grid.Resources></Grid>");
+		var namedDO = (Given_DependencyObject_Name_NamedDO)grid.Resources["k"];
+
+		Assert.AreEqual("ND", namedDO.GetValue(FrameworkElement.NameProperty));
+		Assert.IsNull(namedDO.Name);
+	}
+
+	[TestMethod]
+	public void When_NameProperty_Set_On_Run_Then_Name_Mirrors()
+	{
+		var run = new Run();
+
+		run.SetValue(FrameworkElement.NameProperty, "Q");
+
+		Assert.AreEqual("Q", run.Name);
+	}
+
+	[TestMethod]
+	public void When_NameProperty_Set_On_VisualState_Then_Name_Mirrors()
+	{
+		var group = new VisualStateGroup();
+		var state = new VisualState();
+
+		group.SetValue(FrameworkElement.NameProperty, "G");
+		state.SetValue(FrameworkElement.NameProperty, "S");
+
+		Assert.AreEqual("G", group.Name);
+		Assert.AreEqual("S", state.Name);
+	}
+
+	[TestMethod]
+	public void When_NameProperty_Set_To_Null_Then_Empty()
+	{
+		var brush = new SolidColorBrush();
+		var border = new Border();
+
+		brush.SetValue(FrameworkElement.NameProperty, null);
+		border.Name = null;
+
+		Assert.AreEqual("", brush.GetValue(FrameworkElement.NameProperty));
+		Assert.AreEqual("", border.Name);
+	}
+
+	[TestMethod]
 	public void When_Binding_Path_Name_To_Run_Then_Name()
 	{
 		var textBlock = (TextBlock)XamlReader.Load($"<TextBlock {Namespaces}><Run x:Name='BR' Text='a'/></TextBlock>");
@@ -169,4 +215,9 @@ public class Given_DependencyObject_Name
 
 public partial class Given_DependencyObject_Name_PlainDO : DependencyObject
 {
+}
+
+public partial class Given_DependencyObject_Name_NamedDO : DependencyObject
+{
+	public string Name { get; set; }
 }
