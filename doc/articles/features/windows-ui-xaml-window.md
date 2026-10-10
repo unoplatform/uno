@@ -173,7 +173,7 @@ if (AppWindowTitleBar.IsCustomizationSupported())
 }
 ```
 
-Currently, `IsCustomizationSupported()` returns `true` on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets.
+Currently, `IsCustomizationSupported()` returns `true` on Desktop Windows and macOS (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets.
 
 ### Setting border and title bar visibility
 
@@ -210,7 +210,17 @@ myWindow.SetTitleBar(myCustomTitleBarElement);
 ```
 
 > [!NOTE]
-> This API is currently supported on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets. On other platforms, the property exists but may have limited or no effect.
+> This API is currently supported on Desktop Windows and macOS (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets. On other platforms, the property exists but may have limited or no effect.
+
+#### macOS specifics
+
+On macOS, the window keeps its native close, minimize and zoom buttons (the "traffic lights") instead of drawing Windows-style caption buttons:
+
+* The content extends under a transparent title bar and the window title text is hidden.
+* The traffic lights are vertically centered in the title bar height (`PreferredHeightOption`). `TitleBarHeightOption.Collapsed` hides them.
+* `AppWindowTitleBar.LeftInset` reports the space they reserve, in actual pixels, so the `TitleBar` control keeps its content clear of them. `RightInset` is `0`.
+* Pressing on a `Caption` region (the element passed to `SetTitleBar`, drag rectangles, or the whole title bar strip when neither is set) drags the window. Double-clicking it follows the user's *Desktop & Dock* "Double-click a window's title bar" setting. `Passthrough` regions and the rest of the content receive input as usual.
+* Title bar colors (`ButtonForegroundColor`, `BackgroundColor`, etc.) and `IconShowOptions` have no effect, because the title bar and its buttons are drawn by macOS.
 
 ### Configuring title bar height
 
@@ -234,7 +244,7 @@ int titleBarHeight = myWindow.AppWindow.TitleBar.Height; // Height in actual pix
 ```
 
 > [!NOTE]
-> `PreferredHeightOption` is supported on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets when the title bar is extended into the content area. The `Height` property returns the value in actual pixels, not scaled points.
+> `PreferredHeightOption` is supported on Desktop Windows and macOS (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets when the title bar is extended into the content area. The `Height` property returns the value in actual pixels, not scaled points.
 
 ### Setting drag rectangles
 
@@ -254,7 +264,7 @@ myWindow.AppWindow.TitleBar.SetDragRectangles(dragRectangles);
 >
 > * The rectangles are specified in actual pixels, not scaled points.
 > * Drag rectangles must be updated when the window size or DPI scaling changes, otherwise they will be incorrectly positioned.
-> * This API is supported on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets.
+> * This API is supported on Desktop Windows and macOS (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets.
 
 Example of updating drag rectangles on window size changes:
 
@@ -290,7 +300,7 @@ nonClientInputSrc.SetRegionRects(NonClientRegionKind.Caption, new[] { maximizeBu
 >
 > * Region rectangles are specified in actual pixels, not scaled points.
 > * These rectangles must be updated when the window size or DPI scaling changes.
-> * This API is supported on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets.
+> * This API is supported on Desktop Windows (net10.0-desktop) and WinAppSDK (net10.0-windows10.0.x) targets. On macOS (net10.0-desktop), `Caption` and `Passthrough` regions are supported (`Icon` behaves like `Caption`); the caption-button and border kinds have no macOS equivalent and are ignored.
 
 ## Setting the background color for the Window
 
