@@ -280,10 +280,10 @@ In order to use WebView2 on Linux, you'll need to install `libwebkit2gtk` and `l
   sudo apt install libwebkit2gtk-4.0-37
   ```
 
-- On Ubuntu 24.04:
+- On Ubuntu 24.04 and 26.04:
 
   ```bash
-  sudo apt install libgtk-3-0 libwebkit2gtk-4.1-dev
+  sudo apt install libgtk-3-0t64 libwebkit2gtk-4.1-dev
   ```
 
 It's overall preferable to use libwebkit2gtk 4.1 whenever possible in order to get http headers support, if your environment allows for it.
