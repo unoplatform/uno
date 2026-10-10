@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
@@ -15,43 +14,15 @@ namespace Uno.UI.Runtime.Win32;
 
 partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 {
-	private readonly Dictionary<NonClientRegionKind, RectInt32[]> _regionRects = new();
+	private readonly NonClientRegionSet _regionRects = new();
 
-	// Regions overlap (e.g. TitleBar punches Passthrough holes into the Caption rect set by SetTitleBar),
-	// so hit-test in a fixed precedence order rather than in registration order: Passthrough wins, as in WinUI.
-	private static readonly NonClientRegionKind[] _regionHitTestOrder =
-	[
-		NonClientRegionKind.Passthrough,
-		NonClientRegionKind.Close,
-		NonClientRegionKind.Maximize,
-		NonClientRegionKind.Minimize,
-		NonClientRegionKind.Icon,
-		NonClientRegionKind.TopBorder,
-		NonClientRegionKind.LeftBorder,
-		NonClientRegionKind.RightBorder,
-		NonClientRegionKind.BottomBorder,
-		NonClientRegionKind.Caption,
-	];
+	public void ClearAllRegionRects() => _regionRects.ClearAll();
 
-	public void ClearAllRegionRects()
-		=> _regionRects.Clear();
+	public void ClearRegionRects(NonClientRegionKind region) => _regionRects.Clear(region);
 
-	public void ClearRegionRects(NonClientRegionKind region)
-		=> _regionRects.Remove(region);
+	public RectInt32[] GetRegionRects(NonClientRegionKind region) => _regionRects.Get(region);
 
-	public RectInt32[] GetRegionRects(NonClientRegionKind region)
-		=> _regionRects.TryGetValue(region, out var list) ? list : Array.Empty<RectInt32>();
-
-	public void SetRegionRects(NonClientRegionKind region, RectInt32[] rects)
-	{
-		if (rects.Length == 0)
-		{
-			_regionRects.Remove(region);
-			return;
-		}
-
-		_regionRects[region] = rects;
-	}
+	public void SetRegionRects(NonClientRegionKind region, RectInt32[] rects) => _regionRects.Set(region, rects);
 
 	private Win32NonClientHitTestKind NonClientAreaHitTest(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	{
@@ -138,29 +109,11 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 		var clientOrigin = default(System.Drawing.Point);
 		PInvoke.ClientToScreen(hWnd, ref clientOrigin);
 
-		bool hasCustomDragRects = _regionRects.TryGetValue(NonClientRegionKind.Caption, out var captionRects) && captionRects.Length > 0;
-		if (!onResizeBorder)
+		bool hasCustomDragRects = _regionRects.HasRects(NonClientRegionKind.Caption);
+		if (!onResizeBorder
+			&& _regionRects.HitTest(new PointInt32(ptMouse.X - clientOrigin.X, ptMouse.Y - clientOrigin.Y)) is { } kind)
 		{
-			foreach (var kind in _regionHitTestOrder)
-			{
-				if (!_regionRects.TryGetValue(kind, out var rects))
-				{
-					continue;
-				}
-
-				foreach (var rect in rects)
-				{
-					var adjustedRect = new RectInt32(
-						rect.X + clientOrigin.X,
-						rect.Y + clientOrigin.Y,
-						rect.Width,
-						rect.Height);
-					if (adjustedRect.Contains(new PointInt32(ptMouse.X, ptMouse.Y)))
-					{
-						return RegionKindToHitTest(kind);
-					}
-				}
-			}
+			return RegionKindToHitTest(kind);
 		}
 
 		// Fall back to default caption if we have a title bar and no custom drag rects.
