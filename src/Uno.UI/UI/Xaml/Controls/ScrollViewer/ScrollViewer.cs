@@ -34,6 +34,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
+		// Default physical amount to scroll with Up/Down/Left/Right key
+		private const double ScrollViewerLineDelta = 16.0;
+
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 		private bool m_isInConstantVelocityPan;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -1130,8 +1133,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ScrollEventType.LargeIncrement => (false, VerticalOffset + ActualHeight),
 				ScrollEventType.LargeDecrement => (false, VerticalOffset - ActualHeight),
-				ScrollEventType.SmallIncrement => (false, VerticalOffset + 16),
-				ScrollEventType.SmallDecrement => (false, VerticalOffset - 16),
+				ScrollEventType.SmallIncrement => (false, VerticalOffset + ScrollViewerLineDelta),
+				ScrollEventType.SmallDecrement => (false, VerticalOffset - ScrollViewerLineDelta),
 				_ => (true, e.NewValue)
 			};
 
@@ -1159,8 +1162,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ScrollEventType.LargeIncrement => (false, HorizontalOffset + ActualWidth),
 				ScrollEventType.LargeDecrement => (false, HorizontalOffset - ActualWidth),
-				ScrollEventType.SmallIncrement => (false, HorizontalOffset + 16),
-				ScrollEventType.SmallDecrement => (false, HorizontalOffset - 16),
+				ScrollEventType.SmallIncrement => (false, HorizontalOffset + ScrollViewerLineDelta),
+				ScrollEventType.SmallDecrement => (false, HorizontalOffset - ScrollViewerLineDelta),
 				_ => (true, e.NewValue)
 			};
 
@@ -1391,13 +1394,67 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Scroll content to the beginning.
 		/// </summary>
 		internal void PageHome()
-			=> HandleVerticalScroll(ScrollEventType.First);
+			=> HandleHorizontalScroll(ScrollEventType.First);
 
 		/// <summary>
 		/// Scroll content to the end.
 		/// </summary>
 		internal void PageEnd()
-			=> HandleVerticalScroll(ScrollEventType.Last);
+			=> HandleHorizontalScroll(ScrollEventType.Last);
+
+		/// <summary>
+		/// Scrolls the view in the specified direction.
+		/// </summary>
+		internal void ScrollInDirection(VirtualKey key)
+		{
+			// TODO Uno: The animated (DManip) variant is not supported.
+			var invert = FlowDirection == FlowDirection.RightToLeft;
+
+			switch (key)
+			{
+				case VirtualKey.Up:
+					LineUp();
+					break;
+				case VirtualKey.Down:
+					LineDown();
+					break;
+				case VirtualKey.Left:
+					if (invert)
+					{
+						LineRight();
+					}
+					else
+					{
+						LineLeft();
+					}
+					break;
+				case VirtualKey.Right:
+					if (invert)
+					{
+						LineLeft();
+					}
+					else
+					{
+						LineRight();
+					}
+					break;
+				case VirtualKey.PageUp:
+					PageUp();
+					break;
+				case VirtualKey.PageDown:
+					PageDown();
+					break;
+				case VirtualKey.Home:
+					PageHome();
+					break;
+				case VirtualKey.End:
+					PageEnd();
+					break;
+				default:
+					// Do nothing
+					break;
+			}
+		}
 
 		/// <summary>
 		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
@@ -1851,7 +1908,22 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void HandleVerticalScroll(ScrollEventType scrollEventType, double offset = 0)
 		{
-			//UNO TODO: Implement HandleVerticalScroll on ScrollViewer
+			// If style changes and Content cannot be found - just exit.
+			if (Presenter is null)
+			{
+				return;
+			}
+
+			var oldOffset = VerticalOffset;
+			var newOffset = GetScrollTargetOffset(scrollEventType, oldOffset, offset, ViewportHeight);
+
+			// Clamp the new offset at this stage to prevent unnecessary layout.
+			newOffset = Math.Min(ScrollableHeight, Math.Max(newOffset, 0.0));
+
+			if (!NumericExtensions.AreClose(oldOffset, newOffset))
+			{
+				ScrollToVerticalOffset(newOffset);
+			}
 		}
 
 		/// <summary>
@@ -1859,8 +1931,38 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void HandleHorizontalScroll(ScrollEventType scrollEventType, double offset = 0)
 		{
-			//UNO TODO: Implement HandleHorizontalScroll on ScrollViewer
+			// If style changes and Content cannot be found - just exit.
+			if (Presenter is null)
+			{
+				return;
+			}
+
+			var oldOffset = HorizontalOffset;
+			var newOffset = GetScrollTargetOffset(scrollEventType, oldOffset, offset, ViewportWidth);
+
+			// Clamp the new offset at this stage to prevent unnecessary layout.
+			newOffset = Math.Min(ScrollableWidth, Math.Max(newOffset, 0.0));
+
+			if (!NumericExtensions.AreClose(oldOffset, newOffset))
+			{
+				ScrollToHorizontalOffset(newOffset);
+			}
 		}
+
+		// Uno specific: WinUI delegates the line and page steps to IScrollInfo (ScrollContentPresenter),
+		// which moves by ScrollViewerLineDelta and by one viewport respectively.
+		private static double GetScrollTargetOffset(ScrollEventType scrollEventType, double oldOffset, double offset, double viewport)
+			=> scrollEventType switch
+			{
+				ScrollEventType.ThumbPosition or ScrollEventType.ThumbTrack => offset,
+				ScrollEventType.LargeDecrement => oldOffset - viewport,
+				ScrollEventType.LargeIncrement => oldOffset + viewport,
+				ScrollEventType.SmallDecrement => oldOffset - ScrollViewerLineDelta,
+				ScrollEventType.SmallIncrement => oldOffset + ScrollViewerLineDelta,
+				ScrollEventType.First => double.MinValue,
+				ScrollEventType.Last => double.MaxValue,
+				_ => oldOffset,
+			};
 
 		/// <summary>
 		/// Determines whether this ScrollViewer is pannable.
