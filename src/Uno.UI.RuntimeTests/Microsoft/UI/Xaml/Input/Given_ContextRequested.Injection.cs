@@ -375,5 +375,114 @@ public partial class Given_ContextRequested_Injection
 		Assert.IsTrue(innerButton.Equals(capturedOriginalSource) || VisualTreeUtils.FindVisualParentByType<Button>(capturedOriginalSource as DependencyObject) == innerButton,
 			"OriginalSource should be the inner button where right-click occurred");
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+	public async Task When_Touch_LongPress_Opens_ContextFlyout_Without_Click()
+	{
+		var clickCount = 0;
+		var flyoutOpened = false;
+
+		var flyout = new MenuFlyout();
+		flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
+		flyout.Opened += (s, e) => flyoutOpened = true;
+
+		var button = new Button
+		{
+			Content = "Long press me",
+			Width = 160,
+			Height = 60,
+			ContextFlyout = flyout
+		};
+		button.Click += (s, e) => clickCount++;
+
+		await UITestHelper.Load(button);
+
+		try
+		{
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var finger = injector.GetFinger();
+
+			var center = button.GetAbsoluteBounds().GetCenter();
+
+			// Press and hold without releasing. The holding gesture (800ms) opens the
+			// ContextFlyout for touch, which must also cancel the pending Click on release.
+			finger.Press(center);
+
+			for (var i = 0; i < 60 && !flyoutOpened; i++)
+			{
+				await Task.Delay(50);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			Assert.IsTrue(flyoutOpened, "Long press should open the ContextFlyout");
+
+			finger.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, clickCount, "Long press must NOT click the button - it should behave like a right-tap");
+		}
+		finally
+		{
+			flyout.Hide();
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+	public async Task When_Touch_LongPress_ContextRequested_Handled_Does_Not_Click()
+	{
+		var clickCount = 0;
+		var contextRequestedCount = 0;
+
+		var button = new Button
+		{
+			Content = "Long press me",
+			Width = 160,
+			Height = 60
+		};
+
+		// Simulate a context menu being shown on long-press by handling ContextRequested,
+		// without a flyout that steals focus. On a real touch device the context menu does
+		// not clear the button's pressed state via focus, so the pending Click must instead
+		// be cancelled by releasing the pointer capture.
+		button.ContextRequested += (s, e) =>
+		{
+			contextRequestedCount++;
+			e.Handled = true;
+		};
+		button.Click += (s, e) => clickCount++;
+
+		await UITestHelper.Load(button);
+
+		try
+		{
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var finger = injector.GetFinger();
+
+			var center = button.GetAbsoluteBounds().GetCenter();
+
+			finger.Press(center);
+
+			for (var i = 0; i < 60 && contextRequestedCount == 0; i++)
+			{
+				await Task.Delay(50);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			Assert.AreEqual(1, contextRequestedCount, "Long press should raise ContextRequested");
+
+			finger.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, clickCount, "Long press must NOT click the button once a context menu was shown");
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
 }
 #endif
