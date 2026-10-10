@@ -148,7 +148,7 @@ namespace Microsoft.UI.Composition
 					if (Uno.UI.Composition.Drawing.DrawingCapabilities.NativeStroking
 						&& stroke is CompositionColorBrush nativeStrokeColor && stroke.CanPaint()
 						&& _strokeDashArray is not { Count: > 0 }
-						&& (Geometry?.TrimStart ?? 0f) == 0f && (Geometry?.TrimEnd ?? 0f) == 0f
+						&& !TryResolveTrim(Geometry, out _, out _, out _)
 						&& StrokeStartCap == CompositionStrokeCap.Flat && StrokeEndCap == CompositionStrokeCap.Flat)
 					{
 						session.Session.StrokePath(geometryWithTransformations, WithOpacity(nativeStrokeColor.Color, session.Opacity), StrokeThickness, ToDrawingJoin(StrokeLineJoin));
@@ -361,23 +361,19 @@ namespace Microsoft.UI.Composition
 			end = 0f;
 			wrapEnd = null;
 
-			if (geometry is not { } g || (g.TrimStart == default && g.TrimEnd == default && g.TrimOffset == default))
+			// A window covering the whole path draws it untrimmed, whatever the offset — wrapping its endpoints
+			// into [0,1) would otherwise collapse it to nothing.
+			if (geometry is not { } g
+				|| (g.TrimStart <= 0f && g.TrimEnd >= 1f)
+				|| (g.TrimOffset != 0f && g.TrimEnd - g.TrimStart >= 1f))
 			{
 				return false;
 			}
 
-			if (g.TrimOffset == default)
+			if (g.TrimOffset == 0f)
 			{
 				start = g.TrimStart;
 				end = g.TrimEnd;
-				return true;
-			}
-
-			// A full (or wider) window stays full regardless of offset — wrapping its endpoints into [0,1)
-			// would otherwise collapse it to nothing.
-			if (g.TrimEnd - g.TrimStart >= 1f)
-			{
-				end = 1f;
 				return true;
 			}
 

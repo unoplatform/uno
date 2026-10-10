@@ -9,7 +9,8 @@ namespace Microsoft.UI.Composition
 	{
 		private float _trimStart;
 		private float _trimOffset;
-		private float _trimEnd;
+		// Docs say 0, but WinUI reports and renders 1 (untrimmed).
+		private float _trimEnd = 1f;
 
 		internal CompositionGeometry(Compositor compositor) : base(compositor)
 		{
