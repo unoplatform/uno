@@ -1183,6 +1183,14 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 			return false;
 		}
 
+#if __SKIA__
+		if (owner is RichEditBox richEditBox &&
+			unit is TextUnit.Word or TextUnit.Line or TextUnit.Paragraph)
+		{
+			return TryGetRichEditSegment(richEditBox, text.Length, unit, position, forward, out start, out end);
+		}
+#endif
+
 		switch (unit)
 		{
 			case TextUnit.Character:
@@ -1215,7 +1223,11 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 #if __SKIA__
 		const int line = 0x4;
 		const int page = 0x10;
-		if (GetParsedText(owner) is not null)
+		if (owner is RichEditBox)
+		{
+			granularities |= line;
+		}
+		else if (GetParsedText(owner) is not null)
 		{
 			granularities |= line;
 			if (owner is { ActualHeight: > 0 })
@@ -1226,6 +1238,45 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 #endif
 		return granularities;
 	}
+
+#if __SKIA__
+	// Segments come from the document's own TOM units, so they agree with ExpandToEnclosingUnit on a UIA range.
+	private static bool TryGetRichEditSegment(
+		RichEditBox owner,
+		int textLength,
+		TextUnit unit,
+		int position,
+		bool forward,
+		out int start,
+		out int end)
+	{
+		start = -1;
+		end = -1;
+		if (!TryMapTextUnit(unit, out var rangeUnit) ||
+			(forward ? position >= textLength : position <= 0))
+		{
+			return false;
+		}
+
+		var probe = forward ? position : position - 1;
+		var range = owner.Document.GetRange(probe, probe);
+		range.Expand(rangeUnit);
+		var segmentStart = Math.Clamp(range.StartPosition, 0, textLength);
+		var segmentEnd = Math.Clamp(range.EndPosition, segmentStart, textLength);
+		if (forward)
+		{
+			start = Math.Max(segmentStart, position);
+			end = segmentEnd;
+		}
+		else
+		{
+			start = segmentStart;
+			end = Math.Min(segmentEnd, position);
+		}
+
+		return end > start;
+	}
+#endif
 
 	private static int MovePosition(
 		FrameworkElement owner,
