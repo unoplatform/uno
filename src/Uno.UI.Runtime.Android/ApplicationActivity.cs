@@ -470,7 +470,6 @@ namespace Uno.UI.Runtime.Android
 			}
 
 			_renderView?.InvalidateRender();
-			RelativeLayout.Invalidate();
 		}
 
 		private void OnInsetsChanged(Thickness insets)
