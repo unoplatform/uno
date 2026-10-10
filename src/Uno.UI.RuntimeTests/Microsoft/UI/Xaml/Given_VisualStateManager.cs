@@ -46,6 +46,43 @@ public partial class Given_VisualStateManager
 	}
 
 	[TestMethod]
+	public async Task When_GoToState_Empty_Name_With_Unnamed_State_Then_Fails()
+	{
+		var host = (UserControl)XamlReader.Load(
+			"""
+			<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Grid>
+					<VisualStateManager.VisualStateGroups>
+						<VisualStateGroup>
+							<VisualState>
+								<VisualState.Setters>
+									<Setter Target="B.Width" Value="42" />
+								</VisualState.Setters>
+							</VisualState>
+						</VisualStateGroup>
+					</VisualStateManager.VisualStateGroups>
+					<Border x:Name="B" Width="1" />
+				</Grid>
+			</UserControl>
+			""");
+
+		await UITestHelper.Load(host, x => x.IsLoaded);
+
+		var border = (Border)host.FindName("B");
+		var group = VisualStateManager.GetVisualStateGroups((Grid)host.Content)[0];
+		Assert.AreEqual("", group.Name);
+		Assert.AreEqual("", group.States[0].Name);
+
+		Assert.IsFalse(VisualStateManager.GoToState(host, "", false));
+		Assert.IsFalse(VisualStateManager.GoToState(host, null, false));
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, border.Width);
+		Assert.IsNull(group.CurrentState);
+	}
+
+	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24600")]
 	public async Task When_Setter_Value_Equals_Inherited_Value_Setter_Still_Wins()
 	{
