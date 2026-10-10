@@ -16,15 +16,6 @@ using Windows.Win32.Graphics.OpenGL;
 namespace Uno.UI.Runtime.Win32;
 
 /// <summary>
-/// Implemented by contexts whose present is timer-paced (software BitBlt; GL under a fixed FrameRate) so they can
-/// be retargeted when the screen refresh rate changes. Self-pacing contexts (e.g. the WebGPU swapchain) don't.
-/// </summary>
-internal interface IWin32PacedContext
-{
-	void UpdateRefreshRate(double fps);
-}
-
-/// <summary>
 /// Implemented by contexts that can skip a present (no frame was acquired this tick, or the frame was dropped), so
 /// the render thread signals present-completion only for frames that actually reached the window.
 /// </summary>
@@ -39,7 +30,7 @@ internal interface IWin32PresentReporting
 /// <see cref="Present"/> swaps and releases current. Returns <see langword="null"/> on failure so negotiation
 /// falls through to the software context.
 /// </summary>
-internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContext, IWin32PresentReporting, IGLDeviceContext
+internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PresentReporting, IGLDeviceContext
 {
 	[UnmanagedFunctionPointer(CallingConvention.Winapi)]
 	private delegate int WglSwapIntervalEXT(int interval);
@@ -47,8 +38,8 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 	private readonly HWND _hwnd;
 	private readonly HDC _hdc;
 	private readonly HGLRC _glContext;
-	// Non-null only when honoring a fixed FrameRate (SetFrameRateAsScreenRefreshRate = false); otherwise
-	// wglSwapInterval(1) blocks SwapBuffers at the display refresh and paces the loop.
+	// Paces the loop only under a fixed FrameRate (SetFrameRateAsScreenRefreshRate = false); otherwise
+	// wglSwapInterval(1) blocks SwapBuffers at the display refresh and paces it.
 	private readonly Win32RenderPacer? _pacer;
 
 	private Win32OpenGLGraphicsContext(HWND hwnd, HDC hdc, HGLRC glContext, Win32RenderPacer? pacer)
@@ -78,7 +69,7 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 
 	public Func<string, nint> GetProcAddress => Win32NativeOpenGLWrapper.GetProcAddressStatic;
 
-	public static unsafe Win32OpenGLGraphicsContext? TryCreate(HWND hwnd)
+	public static unsafe Win32OpenGLGraphicsContext? TryCreate(HWND hwnd, Win32RenderPacer pacer)
 	{
 		var hdc = PInvoke.GetDC(hwnd);
 		if (hdc == IntPtr.Zero)
@@ -164,7 +155,7 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 
 		var followRefreshRate = FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate;
 		// Swap interval 1 blocks SwapBuffers at the refresh; for a fixed FrameRate use 0 and let
-		// the timer pace the loop instead.
+		// the pacer pace the loop instead.
 		SetSwapInterval(followRefreshRate ? 1 : 0);
 
 		// Detach the GL context from the calling thread so the render thread can make it
@@ -174,10 +165,7 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 			typeof(Win32OpenGLGraphicsContext).LogError()?.Error($"{nameof(PInvoke.wglMakeCurrent)} (detach) failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		var pacer = followRefreshRate
-			? null
-			: new Win32RenderPacer(FeatureConfiguration.CompositionTarget.FrameRate, followRefreshRate: false);
-		return new Win32OpenGLGraphicsContext(hwnd, hdc, glContext, pacer);
+		return new Win32OpenGLGraphicsContext(hwnd, hdc, glContext, followRefreshRate ? null : pacer);
 	}
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
@@ -221,8 +209,6 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 		}
 		_frameAcquired = false;
 
-		_pacer?.OnFrameStart();
-
 		_retained.BlitToDefault();
 
 		var success = PInvoke.SwapBuffers(_hdc);
@@ -230,7 +216,7 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 		_presented = success;
 
 		// Fixed-FrameRate path: SwapBuffers ran with swap interval 0 (non-blocking), so pace the
-		// loop with the timer. When following the refresh, swap interval 1 already blocked above.
+		// loop here. When following the refresh, swap interval 1 already blocked above.
 		_pacer?.WaitForNextFrame();
 
 		// Release current so the context is free for the next frame's make-current.
@@ -239,10 +225,6 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 			this.LogError()?.Error($"{nameof(PInvoke.wglMakeCurrent)} (detach) failed: {Win32Helper.GetErrorMessage()}");
 		}
 	}
-
-	// No-op: when following the refresh, swap interval 1 paces SwapBuffers with nothing to retarget;
-	// the fixed-FrameRate path uses a static timer rate.
-	public void UpdateRefreshRate(double fps) { }
 
 	// GL swap interval: 1 blocks SwapBuffers until the next refresh (vsync), 0 doesn't block (fixed
 	// FrameRate paced by the timer instead). Per-context, so re-apply whenever an HGLRC is created.
@@ -291,7 +273,6 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 
 	public void Dispose()
 	{
-		_pacer?.Dispose();
 		// The GL objects belong to this context, so they have to go while it is still current.
 		if (PInvoke.wglMakeCurrent(_hdc, _glContext))
 		{
@@ -319,7 +300,7 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 /// <c>BitBlt</c> present. <see cref="AcquireRenderTarget"/> (re)creates the DIB on resize and hands the backend
 /// an <see cref="ISoftwareRenderTarget"/>.
 /// </summary>
-internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedContext, IWin32PresentReporting
+internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PresentReporting
 {
 	private readonly HWND _hwnd;
 	private readonly Win32RenderPacer _pacer;
@@ -329,14 +310,11 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 	private int _width;
 	private int _height;
 
-	public Win32SoftwareGraphicsContext(HWND hwnd)
+	// BitBlt returns instantly, so the loop is paced by the window's pacer.
+	public Win32SoftwareGraphicsContext(HWND hwnd, Win32RenderPacer pacer)
 	{
 		_hwnd = hwnd;
-		// BitBlt returns instantly, so the loop is paced here: to the display refresh when
-		// SetFrameRateAsScreenRefreshRate is on, otherwise to the configured FrameRate.
-		_pacer = new Win32RenderPacer(
-			FeatureConfiguration.CompositionTarget.FrameRate,
-			FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate);
+		_pacer = pacer;
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Software;
@@ -403,8 +381,6 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 		}
 		_frameAcquired = false;
 
-		_pacer.OnFrameStart();
-
 		var paintDc = PInvoke.GetDC(_hwnd);
 		if (paintDc == new HDC(IntPtr.Zero))
 		{
@@ -439,15 +415,12 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 		if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.BitBlt)} failed: {Win32Helper.GetErrorMessage()}"); }
 		_presented = success2;
 
-		// BitBlt returns instantly, so block until the compositor's next vsync to pace the loop.
+		// BitBlt returns instantly, so block until the next frame is due to pace the loop.
 		_pacer.WaitForNextFrame();
 	}
 
-	public void UpdateRefreshRate(double fps) => _pacer.UpdateTargetFps(fps);
-
 	public void Dispose()
 	{
-		_pacer.Dispose();
 		if (_hBitmap != HBITMAP.Null)
 		{
 			var success = PInvoke.DeleteObject(_hBitmap) == 1;

@@ -15,11 +15,11 @@ namespace Uno.UI.Runtime.Win32;
 /// the whole frame; <see cref="Present"/> blits the render image to the swapchain and releases it. The ctor throws
 /// when Vulkan is unavailable so negotiation falls through to the next kind.
 /// </summary>
-internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext, IWin32PacedContext, IWin32PresentReporting
+internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext, IWin32PresentReporting
 {
 	private readonly VulkanContext _vk;
-	// MAILBOX present returns without blocking, so the render thread is paced here; otherwise it spins at
-	// thousands of fps rendering frames the presentation engine discards, and FrameRate is ignored.
+	// MAILBOX present returns without blocking, so the render thread is paced by the window's pacer; otherwise it
+	// spins at thousands of fps rendering frames the presentation engine discards, and FrameRate is ignored.
 	private readonly Win32RenderPacer _pacer;
 	private IDisposable? _frameLock;
 	private bool _skipPresent;
@@ -28,7 +28,7 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 
 	public bool PresentedLastFrame => _presented;
 
-	public Win32VulkanGraphicsContext(HWND hwnd)
+	public Win32VulkanGraphicsContext(HWND hwnd, Win32RenderPacer pacer)
 	{
 		if (!Win32VulkanSurfaceFactory.IsVulkanAvailable())
 		{
@@ -48,11 +48,7 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 		var factory = new Win32VulkanSurfaceFactory();
 		_vk = new VulkanContext();
 		_vk.Initialize(factory, hwnd.Value, _width, _height);
-
-		// Created last so a declined negotiation (the throw above) doesn't leave a timer behind.
-		_pacer = new Win32RenderPacer(
-			FeatureConfiguration.CompositionTarget.FrameRate,
-			FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate);
+		_pacer = pacer;
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;
@@ -103,8 +99,6 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 			return;
 		}
 
-		_pacer.OnFrameStart();
-
 		if (_skipPresent)
 		{
 			_skipPresent = false;
@@ -120,15 +114,10 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 		_frameLock = null;
 	}
 
-	// Retargets the pacer's timer (the degraded DwmFlush fallback, or the active pacer under a fixed FrameRate)
-	// when the window moves to a display with a different refresh rate.
-	public void UpdateRefreshRate(double fps) => _pacer.UpdateTargetFps(fps);
-
 	public void Dispose()
 	{
 		_frameLock?.Dispose();
 		_frameLock = null;
-		_pacer.Dispose();
 		_vk.Dispose();
 	}
 }
