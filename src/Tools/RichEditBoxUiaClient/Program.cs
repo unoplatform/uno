@@ -371,10 +371,11 @@ internal static class Program
 		var bounds = default(tagRECT);
 		WaitUntil(() =>
 		{
-			bounds = firstChildren.FirstLink?.CurrentBoundingRectangle ?? default;
+			var current = firstChildren.FirstLink?.CurrentBoundingRectangle ?? default;
+			bounds = current;
 			return firstChildren.FirstLink?.CurrentIsOffscreen == 0
-				&& bounds.right > bounds.left
-				&& bounds.bottom > bounds.top;
+				&& current.right > current.left
+				&& current.bottom > current.top;
 		});
 		Check(firstChildren.FirstLink?.CurrentIsOffscreen == 0, "link becomes onscreen after range scrolling");
 		Check(bounds.right - bounds.left > 0 && bounds.bottom - bounds.top > 0, "onscreen link has a nonempty bounding rectangle");
