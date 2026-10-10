@@ -345,25 +345,27 @@ public class Given_DependencyObject_Name
 	}
 
 	[TestMethod]
-	public void When_Binding_Path_Name_To_Brush_Then_Empty()
+	public void When_Binding_Path_Name_To_Brush_Then_Unresolved()
 	{
 		var grid = (Grid)XamlReader.Load($"<Grid {Namespaces}><Grid.Resources><SolidColorBrush x:Key='k' x:Name='BB' Color='Red'/></Grid.Resources></Grid>");
 		var target = new TextBlock();
 
-		target.SetBinding(TextBlock.TextProperty, new Binding { Source = grid.Resources["k"], Path = new PropertyPath("Name") });
+		// As in WinUI, "Name" on a brush resolves neither DependencyObject_Name nor a CLR property.
+		target.SetBinding(TextBlock.TextProperty, new Binding { Source = grid.Resources["k"], Path = new PropertyPath("Name"), FallbackValue = "unresolved" });
 
-		Assert.AreEqual("", target.Text);
+		Assert.AreEqual("unresolved", target.Text);
 	}
 
-#if __UNO__
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Name_Looked_Up_By_Name_Then_Same_Instance()
 	{
+#if __UNO__
 		Assert.AreSame(FrameworkElement.NameProperty, DependencyProperty.GetProperty(typeof(FrameworkElement), "Name"));
 		Assert.AreSame(FrameworkElement.NameProperty, DependencyProperty.GetProperty(typeof(Border), "Name"));
 		Assert.IsNull(DependencyProperty.GetProperty(typeof(SolidColorBrush), "Name"));
-	}
 #endif
+	}
 }
 
 public partial class Given_DependencyObject_Name_PlainDO : DependencyObject
