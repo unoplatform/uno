@@ -4585,9 +4585,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.Where(p => !p.StartsWith("global::", StringComparison.Ordinal))  // Don't include paths that start with global:: (e.g. Enums)
 					.Select(p => $"\"{p.Replace("\"", "\\\"")}\"");
 
-				var pathsArray = formattedPaths.Any()
+				var hasPaths = formattedPaths.Any();
+				var pathsArray = hasPaths
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
+
+				string? sourceTypeExpression = null;
 
 				string buildBindBack()
 				{
@@ -4597,6 +4600,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (!string.IsNullOrWhiteSpace(rawBindBack))
 							{
+								sourceTypeExpression = propertyType?.GetFullyQualifiedTypeIncludingGlobal();
 								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ ___tctx.{rawBindBack}(({propertyType})__value); }} }}";
 							}
 							else
@@ -4609,6 +4613,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (contextFunction.Properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(contextFunction.Properties[0], dataTypeSymbol, bindNode).GetFullyQualifiedTypeIncludingGlobal();
+								sourceTypeExpression = targetPropertyType;
 								var contextFunctionLValue = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType, targetPropertyType);
 								if (contextFunctionLValue.MethodDeclaration is not null)
 								{
@@ -4632,7 +4637,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray}))";
+				var bindBackResult = buildBindBack();
+				string sourceTypeArg;
+				string pathsArg;
+				if (sourceTypeExpression != null)
+				{
+					// New overload requires explicit propertyPaths to avoid overload ambiguity with the 5-arg overload.
+					sourceTypeArg = $", typeof({sourceTypeExpression})";
+					pathsArg = hasPaths ? pathsArray : ", null";
+				}
+				else
+				{
+					sourceTypeArg = "";
+					pathsArg = pathsArray;
+				}
+
+				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {bindBackResult}{sourceTypeArg}{pathsArg}))";
 			}
 			else
 			{
@@ -4650,6 +4670,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					RegisterXBindTryGetDeclaration(rewrittenRValue.MethodDeclaration);
 				}
 
+				string? sourceTypeExpression = null;
+
 				string buildBindBack()
 				{
 					if (modeMember == "TwoWay")
@@ -4658,6 +4680,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (!string.IsNullOrWhiteSpace(rawBindBack))
 							{
+								sourceTypeExpression = propertyType?.GetFullyQualifiedTypeIncludingGlobal();
 								return $"(___tctx, __value) => {rawBindBack}(({propertyType})__value)";
 							}
 							else
@@ -4670,6 +4693,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (rewrittenRValue.Properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(rewrittenRValue.Properties[0], rootType: null, bindNode).GetFullyQualifiedTypeIncludingGlobal();
+								sourceTypeExpression = targetPropertyType;
 
 								if (string.IsNullOrEmpty(rawFunction))
 								{
@@ -4718,11 +4742,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.Where(p => !p.StartsWith("global::", StringComparison.Ordinal))  // Don't include paths that start with global:: (e.g. Enums)
 					.Select(p => $"\"{p.Replace("\"", "\\\"")}\"");
 
-				var pathsArray = formattedPaths.Any()
+				var hasPaths = formattedPaths.Any();
+				var pathsArray = hasPaths
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
-				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
+				var bindBackResult = buildBindBack();
+				string sourceTypeArg;
+				string pathsArg;
+				if (sourceTypeExpression != null)
+				{
+					// New overload requires explicit propertyPaths to avoid overload ambiguity with the 5-arg overload.
+					sourceTypeArg = $", typeof({sourceTypeExpression})";
+					pathsArg = hasPaths ? pathsArray : ", null";
+				}
+				else
+				{
+					sourceTypeArg = "";
+					pathsArg = pathsArray;
+				}
+
+				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {bindBackResult}{sourceTypeArg}{pathsArg}))";
 			}
 		}
 
