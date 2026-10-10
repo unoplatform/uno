@@ -230,6 +230,9 @@ internal static partial class NativeUno
 		delegate* unmanaged[Cdecl]<nint, double, double, void> resizeCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_window_non_client_hit_test_callback(delegate* unmanaged[Cdecl]<nint, double, double, MacOSNonClientPointerAction> hitTestCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_window_activation_changed_callback(delegate* unmanaged[Cdecl]<nint, int, int, void> activationChangedCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -353,6 +356,13 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_set_always_on_top(nint window, [MarshalAs(UnmanagedType.I1)] bool isAlwaysOnTop);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_extends_content_into_title_bar(nint window, [MarshalAs(UnmanagedType.I1)] bool extend, double titleBarHeight, [MarshalAs(UnmanagedType.I1)] bool showCaptionButtons);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_window_get_caption_buttons_bounds(nint window, out double minX, out double maxX, out double windowWidth);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_set_border_and_title_bar(nint window, [MarshalAs(UnmanagedType.I1)] bool hasBorder, [MarshalAs(UnmanagedType.I1)] bool hasTitleBar);

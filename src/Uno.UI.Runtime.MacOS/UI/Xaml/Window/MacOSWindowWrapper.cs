@@ -1,7 +1,9 @@
 using System.ComponentModel;
+using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
+using Uno.UI.UI.Input.Internal;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
@@ -9,9 +11,10 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.MacOS;
 
-internal class MacOSWindowWrapper : NativeWindowWrapperBase
+internal class MacOSWindowWrapper : NativeWindowWrapperBase, INativeInputNonClientPointerSource
 {
 	private readonly MacOSWindowNative _nativeWindow;
+	private readonly NonClientRegionSet _nonClientRegions = new();
 
 	public MacOSWindowWrapper(MacOSWindowNative nativeWindow, Window window, XamlRoot xamlRoot, Size initialSize) : base(window, xamlRoot)
 	{
@@ -20,7 +23,14 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		nativeWindow.Host.Closing += OnWindowClosing;
 		nativeWindow.Host.RasterizationScaleChanged += Host_RasterizationScaleChanged;
 		nativeWindow.Host.ActivationChanged += (_, e) => OnNativeActivationChanged(e.IsActive, e.ByPointer);
-		nativeWindow.Host.SizeChanged += (_, s) => OnHostSizeChanged(s);
+		nativeWindow.Host.SizeChanged += (_, s) =>
+		{
+			OnHostSizeChanged(s);
+			// e.g. the traffic lights leave the content in full screen
+			UpdateTitleBarInsets();
+		};
+		nativeWindow.Host.NonClientHitTest = HitTestNonClient;
+		window.AppWindow.TitleBar.Changed += (_, _) => UpdateTitleBar();
 		OnHostSizeChanged(initialSize);
 		nativeWindow.Host.PositionChanged += (_, s) => OnHostPositionChanged(s.X, s.Y);
 		// the initial event occurred before the managed side was ready to handle it
@@ -33,7 +43,59 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 	private void Host_RasterizationScaleChanged(object? sender, EventArgs args)
 	{
 		RasterizationScale = (float)_nativeWindow.Host.RasterizationScale;
+		UpdateTitleBarInsets();
 	}
+
+	internal override bool HasNativeCaptionButtons => true;
+
+	protected override void ShowCore() => UpdateTitleBar();
+
+	// The native caption buttons (traffic lights) stay; the content extends under a transparent title bar.
+	private void UpdateTitleBar()
+	{
+		if (_nativeWindow.Handle == nint.Zero || Window?.AppWindow is not { NativeAppWindow: not null } appWindow)
+		{
+			return;
+		}
+
+		var titleBar = appWindow.TitleBar;
+		var extend = titleBar.ExtendsContentIntoTitleBar;
+		NativeUno.uno_window_set_extends_content_into_title_bar(
+			_nativeWindow.Handle,
+			extend,
+			extend ? titleBar.Height / RasterizationScale : 0,
+			titleBar.PreferredHeightOption != TitleBarHeightOption.Collapsed);
+
+		UpdateTitleBarInsets();
+	}
+
+	private void UpdateTitleBarInsets()
+	{
+		if (_nativeWindow.Handle == nint.Zero || Window?.AppWindow.TitleBar is not { } titleBar)
+		{
+			return;
+		}
+
+		var (left, right) = NativeUno.uno_window_get_caption_buttons_bounds(_nativeWindow.Handle, out var minX, out var maxX, out var width)
+			? MacOSTitleBarMath.GetInsets(minX, maxX, width, RasterizationScale)
+			: (0, 0);
+		titleBar.SetInsets(left, right);
+	}
+
+	/// <summary>
+	/// What a left-button press at the given content point, in logical pixels, does while extended into the title bar.
+	/// </summary>
+	internal MacOSNonClientPointerAction HitTestNonClient(double x, double y)
+		=> MacOSTitleBarMath.GetPointerAction(
+			_nonClientRegions.HitTest(new PointInt32((int)(x * RasterizationScale), (int)(y * RasterizationScale))));
+
+	public void ClearAllRegionRects() => _nonClientRegions.ClearAll();
+
+	public void ClearRegionRects(NonClientRegionKind region) => _nonClientRegions.Clear(region);
+
+	public RectInt32[] GetRegionRects(NonClientRegionKind region) => _nonClientRegions.Get(region);
+
+	public void SetRegionRects(NonClientRegionKind region, RectInt32[] rects) => _nonClientRegions.Set(region, rects);
 
 	internal void OnNativeActivationChanged(bool isActive, bool byPointer)
 		=> ActivationState = !isActive
@@ -151,7 +213,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
 	{
-		presenter.SetNative(new MacOSNativeOverlappedPresenter(_nativeWindow));
+		presenter.SetNative(new MacOSNativeOverlappedPresenter(_nativeWindow, UpdateTitleBar));
 		return Disposable.Create(() => presenter.SetNative(null));
 	}
 

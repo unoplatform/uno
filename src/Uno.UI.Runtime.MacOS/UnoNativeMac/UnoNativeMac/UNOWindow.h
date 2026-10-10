@@ -44,6 +44,14 @@ typedef NS_ENUM(sint32, OverlappedPresenterState) {
 
 @property OverlappedPresenterState overlappedPresenterState;
 
+/// Set by uno_window_set_extends_content_into_title_bar.
+@property bool extendsContentIntoTitleBar;
+/// Height, in points, the traffic lights are vertically centered in while extended (0 = native layout).
+@property CGFloat titleBarHeight;
+
+/// Re-applies the traffic-light placement, which AppKit resets on its own titlebar layout passes.
+- (void)layoutCaptionButtons;
+
 - (void)sendEvent:(NSEvent *)event;
 - (BOOL)performKeyEquivalent:(NSEvent *)event;
 
@@ -102,6 +110,24 @@ void uno_window_set_max_size(NSWindow* window, double width, double height);
 // System backdrop material support (Mica/Acrylic)
 // material: 0 = None, 1 = Mica (Base), 2 = Mica (BaseAlt), 3 = Acrylic
 bool uno_window_set_system_backdrop(NSWindow* window, int material);
+
+// AppWindowTitleBar.ExtendsContentIntoTitleBar: full-size content view under a transparent, title-less title bar.
+// The traffic lights stay native and are vertically centered in titleBarHeight (points, 0 keeps the native layout).
+void uno_window_set_extends_content_into_title_bar(UNOWindow* window, bool extend, double titleBarHeight, bool showCaptionButtons);
+
+// Horizontal extent of the visible traffic lights, in points from the window's left edge.
+// Returns false when they are not shown over the content (not extended, no title bar, hidden or full screen).
+bool uno_window_get_caption_buttons_bounds(UNOWindow* window, double* minX, double* maxX, double* windowWidth);
+
+// keep in sync with MacOSTitleBarMath.cs
+typedef NS_ENUM(sint32, NonClientPointerAction) {
+    NonClientPointerActionClient = 0,
+    NonClientPointerActionDrag = 1,
+};
+
+// x and y are in points from the top-left corner of the content view, which covers the title bar while extended.
+typedef NonClientPointerAction (*window_non_client_hit_test_fn_ptr)(UNOWindow* window, double x, double y);
+void uno_set_window_non_client_hit_test_callback(window_non_client_hit_test_fn_ptr hitTest);
 
 // Raised when the window becomes or stops being the key window.
 typedef void (*window_activation_changed_fn_ptr)(UNOWindow* window, int32_t isActive, int32_t byPointer);

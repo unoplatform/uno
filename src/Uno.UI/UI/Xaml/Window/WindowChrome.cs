@@ -307,6 +307,11 @@ internal sealed partial class WindowChrome : ContentControl
 		{
 			precedenceRects = [GetDefaultCaptionRegionRect()];
 		}
+		else if (IsExtendedOverNativeCaptionButtons())
+		{
+			// No XAML caption buttons to stop at: the whole title bar strip drags, the native buttons sit on top of it.
+			precedenceRects = [new RectInt32(0, 0, _window.AppWindow.ClientSize.Width, _window.AppWindow.TitleBar.Height)];
+		}
 		else
 		{
 			precedenceRects = [];
@@ -323,6 +328,11 @@ internal sealed partial class WindowChrome : ContentControl
 	// The caption buttons are drawn by this chrome, so they are the "system-reserved" region AppWindowTitleBar reports.
 	private void UpdateTitleBarInsets()
 	{
+		if (HasNativeCaptionButtons)
+		{
+			return;
+		}
+
 		var rightInset = 0;
 		if (CaptionVisibility == Visibility.Visible && m_tpTitleBarMinMaxCloseContainerPart is { } container)
 		{
@@ -515,7 +525,7 @@ internal sealed partial class WindowChrome : ContentControl
 		// If the presenter has no title bar, we shouldn't show caption buttons.
 		windowChromeCaptionButtonsRequested = windowChromeCaptionButtonsRequested && hasPresenterTitleBar;
 
-		CaptionVisibility = windowChromeCaptionButtonsRequested ?
+		CaptionVisibility = windowChromeCaptionButtonsRequested && !HasNativeCaptionButtons ?
 			Visibility.Visible :
 			Visibility.Collapsed;
 
@@ -523,7 +533,20 @@ internal sealed partial class WindowChrome : ContentControl
 		// inset back to the work area in WM_NCCALCSIZE), so the chrome simply fills the client area on all states.
 
 		ResizeCaptionButtons();
+
+		if (HasNativeCaptionButtons)
+		{
+			// There is no caption button container whose layout would refresh the default caption region.
+			UpdateAllNonClientRegions();
+		}
 	}
+
+	private bool HasNativeCaptionButtons => _window.AppWindow.NativeAppWindow is NativeWindowWrapperBase { HasNativeCaptionButtons: true };
+
+	private bool IsExtendedOverNativeCaptionButtons()
+		=> HasNativeCaptionButtons
+			&& _window.AppWindow.TitleBar is { ExtendsContentIntoTitleBar: true, Height: > 0 }
+			&& _window.AppWindow.Presenter is not OverlappedPresenter { HasTitleBar: false };
 
 	private void OnExtendsContentIntoTitleBarChanged(bool extends) => ConfigureWindowChrome();
 

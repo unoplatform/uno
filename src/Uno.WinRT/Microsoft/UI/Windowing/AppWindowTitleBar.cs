@@ -28,7 +28,7 @@ public partial class AppWindowTitleBar
 	/// Gets or sets a value that specifies whether app content extends into the title bar area.
 	/// </summary>
 	/// <remarks>
-	/// Currently only has effect on Desktop Windows and WinAppSDK targets.
+	/// Currently only has effect on Desktop Windows, Desktop macOS and WinAppSDK targets.
 	/// </remarks>
 	public bool ExtendsContentIntoTitleBar
 	{
@@ -116,8 +116,8 @@ public partial class AppWindowTitleBar
 	/// Gets a value that indicates whether the title bar can be customized.
 	/// </summary>
 	/// <returns>True if the title bar can be customized; otherwise, false.</returns>
-	/// <remarks>Title bar customization is currently not available on any Uno Platform target except WinAppSDK.</remarks>
-	public static bool IsCustomizationSupported() => OperatingSystem.IsWindows();
+	/// <remarks>Title bar customization is currently available on WinAppSDK, Desktop Windows and Desktop macOS.</remarks>
+	public static bool IsCustomizationSupported() => OperatingSystem.IsWindows() || OperatingSystem.IsMacOS();
 
 	/// <summary>
 	/// Resets the title bar to its default state.

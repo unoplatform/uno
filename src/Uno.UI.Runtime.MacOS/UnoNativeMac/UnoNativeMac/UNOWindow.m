@@ -563,6 +563,10 @@ char* uno_window_get_title(NSWindow *window)
 void uno_window_set_title(NSWindow *window, const char* title)
 {
     window.title = [NSString stringWithUTF8String:title];
+    // a title change relayouts AppKit's titlebar, including the traffic lights
+    if ([window isKindOfClass:[UNOWindow class]]) {
+        [(UNOWindow*)window layoutCaptionButtons];
+    }
 }
 
 bool uno_window_is_full_screen(NSWindow *window)
@@ -993,6 +997,84 @@ void uno_set_window_activation_changed_callback(window_activation_changed_fn_ptr
     window_activation_changed = activationChanged;
 }
 
+static window_non_client_hit_test_fn_ptr window_non_client_hit_test;
+
+void uno_set_window_non_client_hit_test_callback(window_non_client_hit_test_fn_ptr hitTest)
+{
+    window_non_client_hit_test = hitTest;
+}
+
+static NSArray<NSButton*>* uno_window_get_caption_buttons(NSWindow *window)
+{
+    NSMutableArray<NSButton*> *buttons = [NSMutableArray arrayWithCapacity:3];
+    for (NSNumber *type in @[@(NSWindowCloseButton), @(NSWindowMiniaturizeButton), @(NSWindowZoomButton)]) {
+        NSButton *button = [window standardWindowButton:(NSWindowButton)type.integerValue];
+        if (button) {
+            [buttons addObject:button];
+        }
+    }
+    return buttons;
+}
+
+void uno_window_set_extends_content_into_title_bar(UNOWindow* window, bool extend, double titleBarHeight, bool showCaptionButtons)
+{
+#if DEBUG
+    NSLog(@"uno_window_set_extends_content_into_title_bar %@ extend %s height %g showCaptionButtons %s", window, extend ? "true" : "false", titleBarHeight, showCaptionButtons ? "true" : "false");
+#endif
+    bool wasExtended = window.extendsContentIntoTitleBar;
+    window.extendsContentIntoTitleBar = extend;
+    window.titleBarHeight = extend ? titleBarHeight : 0;
+
+    NSWindowStyleMask style = extend
+        ? window.styleMask | NSWindowStyleMaskFullSizeContentView
+        : window.styleMask & ~NSWindowStyleMaskFullSizeContentView;
+    if (style != window.styleMask) {
+        window.styleMask = style;
+    }
+    window.titlebarAppearsTransparent = extend;
+    window.titleVisibility = extend ? NSWindowTitleHidden : NSWindowTitleVisible;
+
+    for (NSButton *button in uno_window_get_caption_buttons(window)) {
+        button.hidden = extend && !showCaptionButtons;
+    }
+
+    if (extend || wasExtended) {
+        [window layoutCaptionButtons];
+    }
+
+    // The content view now covers (or no longer covers) the title bar. The Metal view reports its new drawable
+    // size on its own, the software fallback relies on windowDidResize which a style change does not raise.
+    if (window.metalViewDelegate == nil) {
+        CGSize size = [window contentRectForFrameRect:window.frame].size;
+        uno_get_window_resize_event_callback()(window, size.width, size.height);
+    }
+}
+
+bool uno_window_get_caption_buttons_bounds(UNOWindow* window, double* minX, double* maxX, double* windowWidth)
+{
+    *minX = 0;
+    *maxX = 0;
+    *windowWidth = window.frame.size.width;
+
+    if (!window.extendsContentIntoTitleBar
+        || (window.styleMask & NSWindowStyleMaskTitled) == 0
+        || (window.styleMask & NSWindowStyleMaskFullScreen) != 0) {
+        return false;
+    }
+
+    bool found = false;
+    for (NSButton *button in uno_window_get_caption_buttons(window)) {
+        if (button.hidden) {
+            continue;
+        }
+        NSRect frame = [button convertRect:button.bounds toView:nil];
+        *minX = found ? MIN(*minX, NSMinX(frame)) : NSMinX(frame);
+        *maxX = found ? MAX(*maxX, NSMaxX(frame)) : NSMaxX(frame);
+        found = true;
+    }
+    return found;
+}
+
 // IME callback storage
 static ime_insert_text_callback_fn_ptr ime_insert_text_callback;
 static ime_set_marked_text_callback_fn_ptr ime_set_marked_text_callback;
@@ -1264,6 +1346,23 @@ void uno_window_resign_native_first_responder(UNOWindow* window)
     }
 }
 
+typedef NS_ENUM(NSInteger, TitleBarEventRoute) {
+    // content first, then AppKit (the regular path)
+    TitleBarEventRouteDefault,
+    // AppKit only: the native traffic lights
+    TitleBarEventRouteAppKit,
+    // content only: AppKit's own (transparent) titlebar would start a window drag or zoom of its own
+    TitleBarEventRouteContent,
+    // consumed: a caption region started a window drag or ran the double-click action
+    TitleBarEventRouteHandled,
+};
+
+@interface UNOWindow ()
+/// Height of AppKit's titlebar container before the traffic lights were moved, to restore it.
+@property CGFloat nativeTitleBarContainerHeight;
+@property bool captionButtonsMoved;
+@end
+
 @implementation UNOWindow : NSWindow
 
 NSEventModifierFlags _previousFlags;
@@ -1300,6 +1399,111 @@ NSOperatingSystemVersion _osVersion;
 
 @synthesize overlappedPresenterState;
 
+- (void)layoutCaptionButtons {
+    if (!self.extendsContentIntoTitleBar && !self.captionButtonsMoved) {
+        return;
+    }
+
+    NSArray<NSButton*> *buttons = uno_window_get_caption_buttons(self);
+    NSView *container = buttons.firstObject.superview.superview;
+    if (container == nil || (self.styleMask & NSWindowStyleMaskFullScreen) != 0) {
+        return;
+    }
+
+    if (!self.captionButtonsMoved) {
+        self.nativeTitleBarContainerHeight = NSHeight(container.frame);
+    }
+
+    bool move = self.extendsContentIntoTitleBar && self.titleBarHeight > 0;
+    CGFloat height = move ? self.titleBarHeight : self.nativeTitleBarContainerHeight;
+
+    // Same approach as Electron's trafficLightPosition: grow the titlebar container (kept at the top of the
+    // window) to the app's title bar height, then center the buttons in it.
+    NSRect frame = container.frame;
+    frame.size.height = height;
+    frame.origin.y = NSHeight(self.frame) - height;
+    [container setFrame:frame];
+    for (NSButton *button in buttons) {
+        NSPoint origin = button.frame.origin;
+        origin.y = round((height - NSHeight(button.frame)) / 2);
+        [button setFrameOrigin:origin];
+    }
+
+    self.captionButtonsMoved = move;
+}
+
+- (TitleBarEventRoute)routeTitleBarEvent:(NSEvent *)event {
+    if (!self.extendsContentIntoTitleBar) {
+        return TitleBarEventRouteDefault;
+    }
+
+    NSEventType type = event.type;
+    bool isDown = type == NSEventTypeLeftMouseDown || type == NSEventTypeRightMouseDown || type == NSEventTypeOtherMouseDown;
+    bool isButtonEvent = isDown
+        || type == NSEventTypeLeftMouseUp || type == NSEventTypeRightMouseUp || type == NSEventTypeOtherMouseUp
+        || type == NSEventTypeLeftMouseDragged || type == NSEventTypeRightMouseDragged || type == NSEventTypeOtherMouseDragged;
+    if (!isButtonEvent) {
+        return TitleBarEventRouteDefault;
+    }
+
+    // The frame view has no superview, so it hit-tests in window coordinates.
+    NSView *hit = [self.contentView.superview hitTest:event.locationInWindow];
+    if (hit != nil && ![hit isDescendantOf:self.contentView]) {
+        for (NSButton *button in uno_window_get_caption_buttons(self)) {
+            if (!button.hidden && [hit isDescendantOf:button]) {
+                return TitleBarEventRouteAppKit;
+            }
+        }
+    }
+
+    if (type == NSEventTypeLeftMouseDown && window_non_client_hit_test) {
+        CGFloat x = 0, y = 0;
+        if ([self getPositionFrom:event x:&x y:&y] && window_non_client_hit_test(self, x, y) == NonClientPointerActionDrag) {
+            if (event.clickCount == 2) {
+                [self performTitleBarDoubleClickAction];
+            } else {
+                [self performWindowDragWithEvent:event];
+            }
+            return TitleBarEventRouteHandled;
+        }
+    }
+
+    NSView *titlebarContainer = uno_window_get_caption_buttons(self).firstObject.superview.superview;
+    if (hit != nil && titlebarContainer != nil && [hit isDescendantOf:titlebarContainer]) {
+        // Skipping AppKit also skips its click-to-focus, so do it here.
+        if (isDown && !self.isKeyWindow) {
+            [self makeKeyAndOrderFront:nil];
+        }
+        return TitleBarEventRouteContent;
+    }
+
+    return TitleBarEventRouteDefault;
+}
+
+// Double-clicking a title bar follows "Double-click a window's title bar to" in System Settings > Desktop & Dock.
+- (void)performTitleBarDoubleClickAction {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *action = [defaults stringForKey:@"AppleActionOnDoubleClick"];
+    if (action == nil && [defaults boolForKey:@"AppleMiniaturizeOnDoubleClick"]) {
+        // pre-macOS 11 setting
+        action = @"Minimize";
+    }
+
+    if ([action isEqualToString:@"None"]) {
+        return;
+    }
+
+    if ([action isEqualToString:@"Minimize"]) {
+        if ((self.styleMask & NSWindowStyleMaskMiniaturizable) != 0) {
+            [self performMiniaturize:nil];
+        }
+        return;
+    }
+
+    // "Maximize", "Fill" (macOS 15+) and the default; windowShouldZoom:toFrame: still applies IsMaximizable
+    [self zoom:nil];
+}
+
 - (BOOL) getPositionFrom:(NSEvent*)event x:(CGFloat*)px y:(CGFloat *)py
 {
     *py = self.contentView.frame.size.height - event.locationInWindow.y;
@@ -1318,6 +1522,19 @@ NSOperatingSystemVersion _osVersion;
     }
 
     bool handled = false;
+    bool contentOnly = false;
+    switch ([self routeTitleBarEvent:event]) {
+        case TitleBarEventRouteAppKit:
+            [super sendEvent:event];
+            return;
+        case TitleBarEventRouteHandled:
+            return;
+        case TitleBarEventRouteContent:
+            contentOnly = true;
+            break;
+        case TitleBarEventRouteDefault:
+            break;
+    }
     MouseEvents mouse = MouseEventsNone;
     PointerDeviceType pdt = PointerDeviceTypeMouse;
     bool inContact = NO;
@@ -1530,7 +1747,7 @@ NSOperatingSystemVersion _osVersion;
         }
     }
 
-    if (!handled) {
+    if (!handled && !contentOnly) {
         [super sendEvent:event];
     }
 }
@@ -1586,6 +1803,7 @@ NSOperatingSystemVersion _osVersion;
     renderView.layer.contentsScale = screen.backingScaleFactor;
     // Reset the layerContentsPlacement property to its default value
     renderView.layerContentsPlacement = NSViewLayerContentsPlacementScaleAxesIndependently;
+    [self layoutCaptionButtons];
 }
 
 - (void) performMiniaturize:(id) sender {
@@ -1648,6 +1866,7 @@ NSOperatingSystemVersion _osVersion;
     if (window_activation_changed) {
         window_activation_changed(self, 1, byPointer ? 1 : 0);
     }
+    [self layoutCaptionButtons];
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification {
@@ -1657,9 +1876,17 @@ NSOperatingSystemVersion _osVersion;
     if (window_activation_changed) {
         window_activation_changed(self, 0, 0);
     }
+    [self layoutCaptionButtons];
+}
+
+- (void)windowDidExitFullScreen:(NSNotification *)notification {
+    [self layoutCaptionButtons];
 }
 
 - (void)windowDidResize:(NSNotification *)notification {
+    // AppKit lays its titlebar out again on resize
+    [self layoutCaptionButtons];
+
     // the UNOMetalViewDelegate has its own resize callback but we need something for the software fallback
     if (self.metalViewDelegate == nil) {
         // consider the title bar height

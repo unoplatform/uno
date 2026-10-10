@@ -23,6 +23,7 @@ using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
 using Microsoft.UI.Input;
+using Uno.UI.UI.Input.Internal;
 using Microsoft.UI.Xaml.Media;
 using Window = Microsoft.UI.Xaml.Window;
 using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
@@ -334,6 +335,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		NativeUno.uno_set_window_close_callbacks(&WindowShouldClose, &WindowClose);
 		NativeUno.uno_set_window_activation_changed_callback(&WindowActivationChanged);
+		NativeUno.uno_set_window_non_client_hit_test_callback(&WindowNonClientHitTest);
+		ApiExtensibility.Register<AppWindow>(typeof(INativeInputNonClientPointerSource), appWindow => (appWindow.NativeAppWindow as MacOSWindowWrapper)!);
 
 		NativeUno.uno_set_ime_callbacks(&OnImeInsertText, &OnImeSetMarkedText, &OnImeUnmarkText, &OnImeGetCaretRect);
 
@@ -902,6 +905,25 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		catch (Exception e)
 		{
 			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	/// <summary>
+	/// Resolves what a left-button press at a content point (in logical pixels) does while the content extends into the title bar.
+	/// </summary>
+	internal Func<double, double, MacOSNonClientPointerAction>? NonClientHitTest { get; set; }
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static MacOSNonClientPointerAction WindowNonClientHitTest(nint handle, double x, double y)
+	{
+		try
+		{
+			return GetWindowHost(handle)?.NonClientHitTest?.Invoke(x, y) ?? MacOSNonClientPointerAction.Client;
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+			return MacOSNonClientPointerAction.Client;
 		}
 	}
 
