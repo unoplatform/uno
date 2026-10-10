@@ -1683,7 +1683,9 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			if (_handleToId.TryGetValue(current.Visual.Handle, out var primaryId) &&
 				_orderedIdSet.Contains(primaryId))
 			{
-				return primaryId;
+				return TryGetPeerOnlyIdAt(current.Visual.Handle, primaryId, logicalPoint, out var peerOnlyId)
+					? peerOnlyId
+					: primaryId;
 			}
 
 			if (!_idsByHandle.TryGetValue(current.Visual.Handle, out var ids))
@@ -1713,6 +1715,29 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		// Not HostId: the host spans the whole window, so a touch exploration probe over empty space would move the
 		// screen reader's focus to the entire page, as also happens when a swipe gesture starts there.
 		return InvalidId;
+	}
+
+	// Ownerless child peers (e.g. RichEditBox hyperlinks) route through their host's handle; prefer the deepest one hit.
+	private bool TryGetPeerOnlyIdAt(nint handle, int primaryId, Windows.Foundation.Point logicalPoint, out int peerOnlyId)
+	{
+		if (_idsByHandle.TryGetValue(handle, out var ids))
+		{
+			for (var i = ids.Count - 1; i >= 0; i--)
+			{
+				var id = ids[i];
+				if (id != primaryId &&
+					_peerOnlyIds.Contains(id) &&
+					_orderedIdSet.Contains(id) &&
+					ContainsPoint(id, logicalPoint))
+				{
+					peerOnlyId = id;
+					return true;
+				}
+			}
+		}
+
+		peerOnlyId = InvalidId;
+		return false;
 	}
 
 	private bool ContainsPoint(int virtualViewId, Windows.Foundation.Point logicalPoint)
