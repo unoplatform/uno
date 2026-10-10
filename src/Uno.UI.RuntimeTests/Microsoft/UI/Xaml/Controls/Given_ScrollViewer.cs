@@ -1823,8 +1823,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, parent.VerticalOffset);
 			Assert.AreEqual(0, child.VerticalOffset);
-			var parentEndOffset = parent.ScrollableHeight;
 			var childEndOffset = child.ScrollableHeight;
+
+			// Chained inertia would only move the parent after the child hits its edge, so watch the whole fling.
+			var parentMaxOffset = 0d;
+			parent.ViewChanged += (_, _) => parentMaxOffset = Math.Max(parentMaxOffset, parent.VerticalOffset);
+			var isChildFinal = false;
+			child.ViewChanged += (_, e) => isChildFinal |= !e.IsIntermediate;
 
 			finger.Drag(
 				from: center,
@@ -1832,13 +1837,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				steps: 1,
 				stepOffsetInMilliseconds: 1);
 
-			// Polled rather than a single render: launch velocity is capped, so an injected flick this fast
-			// coasts to the edge over several frames instead of arriving within one.
+			// State-based, not frame-based: the fling coasts over a frame-rate dependent number of frames.
 			await WindowHelper.WaitFor(
-				() => Math.Abs(childEndOffset - child.VerticalOffset) < 1,
-				timeoutMS: 3000,
-				message: $"the child should coast to its end, got {child.VerticalOffset} of {childEndOffset}");
+				() => isChildFinal,
+				timeoutMS: 5000,
+				message: "the child fling never completed");
+			// Leave frames for inertia handed over to the parent at the edge to move it.
+			await UITestHelper.WaitForRender(frameCount: 5);
 
+			Assert.AreEqual(childEndOffset, child.VerticalOffset, delta: 1, "The child should coast to its end.");
+			Assert.AreEqual(0, parentMaxOffset, "The child's inertia was chained to the parent.");
 			Assert.AreEqual(0, parent.VerticalOffset);
 		}
 
