@@ -110,7 +110,7 @@ namespace Microsoft.UI.Xaml
 		/// <param name="name">The name of the template part</param>
 		public static DependencyObject GetTemplateChild(this IFrameworkElement e, string name)
 		{
-			return e.FindName(name) as DependencyObject;
+			return (e is FrameworkElement fe ? fe.FindNameInSubtree(name) : e.FindName(name)) as DependencyObject;
 		}
 #if !UNO_REFERENCE_API
 		// This extension method is not needed for Skia
