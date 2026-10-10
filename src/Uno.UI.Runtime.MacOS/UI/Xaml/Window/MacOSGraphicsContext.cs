@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Uno.UI.Composition.Drawing;
 
@@ -20,6 +21,7 @@ internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMetalDeviceContex
 	private readonly nint _window;
 	private readonly nint _device;
 	private readonly nint _queue;
+	private readonly RetainedPresentTracker _presents = new();
 	private nint _texture;
 	private MacOSMetalRenderTarget? _target;
 	private int _width;
@@ -40,8 +42,11 @@ internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMetalDeviceContex
 	public nint Device => _device;
 	public nint Queue => _queue;
 
-	/// <summary>Whether the last <see cref="Present"/> reached the screen; false when the layer vended no drawable.</summary>
-	internal bool LastPresentSucceeded { get; private set; }
+	/// <summary>Whether the last frame reached the screen; false when the layer vended no drawable.</summary>
+	internal bool LastPresentSucceeded => _presents.LastPresentSucceeded;
+
+	/// <summary>Whether the last frame needed no drawable, the window already showing it.</summary>
+	internal bool LastPresentSkipped => _presents.LastPresentSkipped;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -56,13 +61,23 @@ internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMetalDeviceContex
 			_width = width;
 			_height = height;
 			_target = _texture == 0 ? null : new MacOSMetalRenderTarget(this, width, height);
+			_presents.OnTargetReplaced();
 		}
 
 		return _target ?? throw new InvalidOperationException("Failed to allocate the Metal render texture.");
 	}
 
 	public void Present()
-		=> LastPresentSucceeded = _texture != 0 && NativeUno.uno_window_present_texture(_window, _texture);
+		=> _presents.OnPresented(_texture != 0 && NativeUno.uno_window_present_texture(_window, _texture), Stopwatch.GetTimestamp());
+
+	/// <summary>The layer keeps showing its last drawable, so only a frame that never reached the screen is presented.</summary>
+	public void PresentUnchanged()
+	{
+		if (!_presents.TrySkipUnchanged(Stopwatch.GetTimestamp()))
+		{
+			Present();
+		}
+	}
 
 	public void Dispose() => ReleaseTexture();
 

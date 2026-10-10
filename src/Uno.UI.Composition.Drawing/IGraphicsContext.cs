@@ -32,6 +32,12 @@ internal interface ISwapChain : IGraphicsContext
 	void Present();
 
 	/// <summary>
+	/// Presents a frame that left the target exactly as the last <see cref="Present"/> did. A swapchain whose window
+	/// still shows that may skip it.
+	/// </summary>
+	void PresentUnchanged() => Present();
+
+	/// <summary>
 	/// True when this swapchain keeps the previous frame's pixels at the same size, letting the compositor repaint
 	/// only the damaged region. A reused CPU framebuffer or a host-retained GPU surface returns true; a swapchain
 	/// whose back buffer is undefined each frame returns false (the default), forcing a full repaint.
