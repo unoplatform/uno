@@ -3540,7 +3540,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								ValidateName(value, member);
 
 								writer.AppendLineIndented($@"__nameScope.RegisterName(""{value}"", {writer.AppliedParameterName});");
-								if (objectDefinition.Type.Name == "MenuFlyout")
+								// Stands in for WinUI's DependencyObject_Name, which MenuFlyoutPresenter::GetOwnerName reads for the AutomationId.
+								if (IsType(objectDefinition.Type, Generation.MenuFlyoutSymbol.Value))
 								{
 									writer.AppendLineIndented(
 										$@"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({writer.AppliedParameterName}, ""{XamlNamePropertyName}"", ""{value}"");");

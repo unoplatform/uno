@@ -21,6 +21,7 @@ namespace Uno.UI.Helpers
 	/// </summary>
 	public static class MarkupHelper
 	{
+		// Set by the XAML generator for named MenuFlyouts, in place of WinUI's internal DependencyObject_Name.
 		internal const string XamlNamePropertyName = "__UnoXamlName";
 
 		private static WeakAttachedDictionary<object, string>? _weakProperties;
