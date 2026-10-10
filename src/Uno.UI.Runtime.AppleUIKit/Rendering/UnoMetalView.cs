@@ -21,6 +21,7 @@ namespace Uno.UI.Runtime.AppleUIKit
 
 		private RootViewController? _owner;
 		private CADisplayLink _link;
+		private long _vsyncTimestamp;
 		private Thread? _renderThread;
 		private int _renderRequested;
 		private int _stopped;
@@ -32,7 +33,7 @@ namespace Uno.UI.Runtime.AppleUIKit
 		public UnoMetalView()
 			: base(CGRect.Empty, null)
 		{
-			_link = CADisplayLink.Create(() => this.Draw());
+			_link = CADisplayLink.Create(OnDisplayLink);
 			var device = MTLDevice.SystemDefault;
 
 			if (device == null)
@@ -147,6 +148,12 @@ namespace Uno.UI.Runtime.AppleUIKit
 
 		void IAppleUIKitRenderView.SetOwner(RootViewController owner) => SetOwner(owner);
 
+		private void OnDisplayLink()
+		{
+			_vsyncTimestamp = DisplayLinkVsync.GetTimestamp(_link);
+			Draw();
+		}
+
 		/// <summary>
 		/// Creates the neutral native-texture Metal context bound to this view's device/queue, or <c>null</c> when
 		/// the constructor found no Metal device — negotiation then reports a decline and tries the next kind,
@@ -209,7 +216,7 @@ namespace Uno.UI.Runtime.AppleUIKit
 				// The drawable is acquired by the context at present time, not here: holding one across the frame's
 				// CPU work drains CAMetalLayer's small pool and stalls every frame.
 				// See : https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/Drawables.html
-				_owner?.OnFrameRequested();
+				_owner?.OnFrameRequested(_vsyncTimestamp);
 			}
 			finally
 			{

@@ -98,9 +98,12 @@ internal sealed partial class UnoWebGpuMetalView : UIView, IAppleUIKitRenderView
 
 	private void OnDisplayLink()
 	{
+		long? vsyncTimestamp = null;
+
 		// Coalesce: render once per requested invalidation, then pause until the next QueueRender.
 		if (_link is { } link)
 		{
+			vsyncTimestamp = DisplayLinkVsync.GetTimestamp(link);
 			link.Paused = true;
 		}
 
@@ -112,7 +115,7 @@ internal sealed partial class UnoWebGpuMetalView : UIView, IAppleUIKitRenderView
 				return;
 			}
 
-			_owner?.OnFrameRequested();
+			_owner?.OnFrameRequested(vsyncTimestamp);
 		}
 		catch (Exception ex)
 		{

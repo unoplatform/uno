@@ -84,9 +84,37 @@ public partial class CompositionTarget
 
 	private bool HasFrameTickWork => _frameStarting is not null || _isRenderingActive || CompositorFrameTicks.HasDrivers;
 
+	/// <summary>Whether the latest frame time came from the host's vsync rather than a sampled clock.</summary>
+	internal bool IsFrameTimestampFromVsync { get; private set; }
+
+	/// <summary>Samples the time of the native frame that armed this tick.</summary>
 	private void SampleFrameTimestamp()
 	{
-		_frameTimestamp = _frameClock.NextTimestamp(Compositor.GetSharedCompositor().TimestampInTicks);
+		long nativeTimestamp;
+		bool isVsync;
+		lock (_nativeFrameTimestampGate)
+		{
+			nativeTimestamp = _nativeFrameTimestamp;
+			isVsync = _isNativeFrameTimestampVsync;
+		}
+
+		if (nativeTimestamp == 0)
+		{
+			SampleCurrentTimestamp();
+			return;
+		}
+
+		var ticks = Compositor.ToTimestampInTicks(nativeTimestamp);
+		_frameTimestamp = isVsync ? _frameClock.NextVsyncTimestamp(ticks) : _frameClock.NextTimestamp(ticks);
+		IsFrameTimestampFromVsync = isVsync;
+		_isFrameTimestampFresh = true;
+	}
+
+	/// <summary>Samples the time for a tick no native frame armed, such as a driver starting between frames.</summary>
+	private void SampleCurrentTimestamp()
+	{
+		var now = Compositor.GetSharedCompositor().TimestampInTicks;
+		_frameTimestamp = IsFrameTimestampFromVsync ? _frameClock.CurrentVsyncTimestamp(now) : _frameClock.NextTimestamp(now);
 		_isFrameTimestampFresh = true;
 	}
 
@@ -201,7 +229,7 @@ public partial class CompositionTarget
 		// A tick armed by a new driver rather than by a frame: the last sample may be stale by an idle gap.
 		if (!_isFrameTimestampFresh)
 		{
-			SampleFrameTimestamp();
+			SampleCurrentTimestamp();
 		}
 
 		_isFrameTimestampFresh = false;

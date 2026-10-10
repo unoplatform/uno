@@ -8,9 +8,10 @@ namespace Uno.UI.Composition;
 /// A uniform frame clock for per-frame motion to evaluate against.
 /// </summary>
 /// <remarks>
-/// Frames present one per vsync, but the UI thread reaches each frame with milliseconds of jitter. Motion
-/// evaluated against that raw instant turns the jitter into v·Δt of position error, so it gets the grid the
-/// frames are actually shown on instead, recovered from the median frame interval.
+/// Hosts that know when each vsync happened report it, and those times are used as they are. Hosts that don't
+/// only give an instant sampled after the vsync, with milliseconds of jitter that motion would turn into v·Δt of
+/// position error, so those get the grid the frames are actually shown on instead, recovered from the median
+/// frame interval.
 /// </remarks>
 internal sealed class FrameClock
 {
@@ -27,6 +28,7 @@ internal sealed class FrameClock
 	private int _index;
 	private int _count;
 	private long _lastRaw;
+	private long _lastVsync;
 	private long _clock;
 
 	// The median of the window, refreshed only when a sample lands: it is read several times per frame.
@@ -45,6 +47,7 @@ internal sealed class FrameClock
 	public long NextTimestamp(long raw)
 	{
 		var previous = _clock;
+		_lastVsync = 0;
 
 		if (_lastRaw == 0)
 		{
@@ -56,27 +59,7 @@ internal sealed class FrameClock
 		_lastRaw = raw;
 
 		var period = _count >= MinSamples ? _median : 0;
-
-		// Admitting an idle gap would skew the median, which motion also back-dates its launch by. The absolute
-		// bound matters while frames are sparse: gaps are all there is to sample, and the median would become one.
-		if (delta > MaxFrameIntervalInTicks || (period > 0 && delta >= period * IdleGapPeriods))
-		{
-			return _clock = Math.Max(raw, previous);
-		}
-
-		_deltas[_index] = delta;
-		_index = (_index + 1) % Window;
-		if (_count < Window)
-		{
-			_count++;
-		}
-
-		if (_count >= MinSamples)
-		{
-			_median = Median();
-		}
-
-		if (period <= 0)
+		if (!TrySample(delta, period) || period <= 0)
 		{
 			return _clock = Math.Max(raw, previous);
 		}
@@ -98,6 +81,69 @@ internal sealed class FrameClock
 
 		// A backward step makes elapsed time negative, which a curve reads as "not started yet".
 		return _clock = Math.Max(_clock, previous);
+	}
+
+	/// <summary>
+	/// A vsync time the host reported: it is on the display's cadence already, at whatever rate the display runs,
+	/// so it is only sampled for the interval and kept from stepping back.
+	/// </summary>
+	public long NextVsyncTimestamp(long vsync)
+	{
+		// The grid re-anchors if the host ever stops reporting vsyncs.
+		_lastRaw = 0;
+
+		if (vsync == _lastVsync)
+		{
+			return _clock;
+		}
+
+		if (_lastVsync != 0)
+		{
+			TrySample(vsync - _lastVsync, _count >= MinSamples ? _median : 0);
+		}
+
+		_lastVsync = vsync;
+		return _clock = Math.Max(vsync, _clock);
+	}
+
+	/// <summary>
+	/// The latest vsync at or before <paramref name="now"/>, for a tick no vsync armed (a driver starting between
+	/// frames), extrapolated from the last one the host reported. Without one, it is <paramref name="now"/>.
+	/// </summary>
+	public long CurrentVsyncTimestamp(long now)
+	{
+		if (_lastVsync == 0 || now < _lastVsync)
+		{
+			return _clock = Math.Max(now, _clock);
+		}
+
+		var period = IntervalInTicks;
+		return _clock = Math.Max(_lastVsync + (now - _lastVsync) / period * period, _clock);
+	}
+
+	/// <returns>Whether the interval was admitted.</returns>
+	private bool TrySample(long delta, long period)
+	{
+		// Admitting an idle gap would skew the median, which motion also back-dates its launch by. The absolute
+		// bound matters while frames are sparse: gaps are all there is to sample, and the median would become one.
+		if (delta <= 0 || delta > MaxFrameIntervalInTicks || (period > 0 && delta >= period * IdleGapPeriods))
+		{
+			return false;
+		}
+
+		_deltas[_index] = delta;
+		_index = (_index + 1) % Window;
+		if (_count < Window)
+		{
+			_count++;
+		}
+
+		if (_count >= MinSamples)
+		{
+			_median = Median();
+		}
+
+		return true;
 	}
 
 	private long Median()

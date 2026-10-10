@@ -5,10 +5,27 @@
 #import "UNOMetalViewDelegate.h"
 #import "UNOWindow.h"
 #import "UnoNativeMac.h"
+#import <stdatomic.h>
+
+// Vsyncs without a frame asking for one before the link pauses itself.
+static const int IdleVsyncs = 30;
+
+// Past this, an extrapolated vsync could have drifted off the display's real one.
+static const CFTimeInterval MaxVsyncAge = 0.5;
+
+@interface UNOMetalViewDelegate ()
+
+// A CADisplayLink on macOS 14+. It only records when vsyncs happen; frames are still paced by the render thread.
+@property (atomic, strong, nullable) id vsyncLink;
+
+@end
 
 @implementation UNOMetalViewDelegate
 {
     id<MTLDevice> _device;
+    _Atomic(CFTimeInterval) _lastVsync;
+    _Atomic(CFTimeInterval) _vsyncPeriod;
+    atomic_int _idleVsyncs;
 }
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
@@ -24,12 +41,67 @@
         mtkView.sampleCount = 1;
         // this property has no effect on x86_64, only on arm64, and is required for sampling (which acrylicbrush does)
         mtkView.framebufferOnly = false;
+
+        if (@available(macOS 14.0, *))
+        {
+            // From the view, so it follows the window to whichever display it is on.
+            CADisplayLink* link = [mtkView displayLinkWithTarget:self selector:@selector(onVsync:)];
+            link.paused = YES;
+            [link addToRunLoop:NSRunLoop.mainRunLoop forMode:NSRunLoopCommonModes];
+            self.vsyncLink = link;
+        }
 #if DEBUG
         NSLog(@"initWithMetalKitView: paused %s enableSetNeedsDisplay %s", mtkView.paused ? "true" : "false", mtkView.enableSetNeedsDisplay ? "true" : "false");
 #endif
     }
     
     return self;
+}
+
+- (void)onVsync:(CADisplayLink *)link API_AVAILABLE(macos(14.0))
+{
+    atomic_store(&_vsyncPeriod, link.duration);
+    atomic_store(&_lastVsync, link.timestamp);
+
+    if (atomic_fetch_add(&_idleVsyncs, 1) >= IdleVsyncs)
+    {
+        link.paused = YES;
+    }
+}
+
+- (double)vsyncAge
+{
+    if (@available(macOS 14.0, *))
+    {
+        CADisplayLink* link = self.vsyncLink;
+        if (link == nil) return -1;
+
+        atomic_store(&_idleVsyncs, 0);
+        if (link.paused)
+        {
+            link.paused = NO;
+        }
+
+        CFTimeInterval lastVsync = atomic_load(&_lastVsync);
+        CFTimeInterval period = atomic_load(&_vsyncPeriod);
+        CFTimeInterval age = CACurrentMediaTime() - lastVsync;
+        if (lastVsync <= 0 || period <= 0 || age < 0 || age > MaxVsyncAge) return -1;
+
+        // The main thread may not have handled the latest vsyncs yet.
+        return fmod(age, period);
+    }
+
+    return -1;
+}
+
+- (void)invalidateVsync
+{
+    if (@available(macOS 14.0, *))
+    {
+        [(CADisplayLink*)self.vsyncLink invalidate];
+    }
+
+    self.vsyncLink = nil;
 }
 
 - (void)drawInMTKView:(nonnull MTKView *)view
@@ -238,4 +310,10 @@ bool uno_window_present_texture(NSWindow* window, void* texture)
         [commandBuffer commit];
         return true;
     }
+}
+
+double uno_window_get_vsync_age(NSWindow* window)
+{
+    UNOMetalViewDelegate* delegate = ((UNOWindow*)window).metalViewDelegate;
+    return delegate == nil ? -1 : [delegate vsyncAge];
 }
