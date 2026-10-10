@@ -140,6 +140,8 @@ public partial class Given_RichEditBox
 	// exceeds the 32-bit browser heap. When_Bounded_Layout_Ends_Fragment_Heavy_Story_Is_Released covers
 	// the same release contract on WebAssembly through the fragment threshold.
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+	// The 2 MiB line is one glyph run whose vertices exceed WebGPU's 256 MB buffer limit, which aborts the process.
+	[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)]
 	public async Task When_Bounded_Layout_Ends_Large_Story_Is_Released()
 	{
 		var editor = new RichEditBox
