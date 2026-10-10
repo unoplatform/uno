@@ -342,6 +342,8 @@ using ITextSelection = Windows.UI.Text.ITextSelection;
 
 #### 2.9. Dependency Properties (in `.Properties.cs`)
 
+Properties ported from WinUI (`ControlName.properties.cpp` or WinUI's generated property code) keep the 1:1 manual `DependencyProperty.Register` form: one registration per WinUI property, with the same name, type, default value, metadata and callback, so the port stays comparable with the C++ source property by property. Defaults and setters use the cached boxes from `Uno.UI.Helpers.Boxes`:
+
 ```csharp
 /// <summary>
 /// Gets or sets a value indicating whether the control is expanded.
@@ -349,7 +351,7 @@ using ITextSelection = Windows.UI.Text.ITextSelection;
 public bool IsExpanded
 {
     get => (bool)GetValue(IsExpandedProperty);
-    set => SetValue(IsExpandedProperty, value);
+    set => SetValue(IsExpandedProperty, Boxer.Box(value));
 }
 
 public static DependencyProperty IsExpandedProperty { get; } =
@@ -358,8 +360,23 @@ public static DependencyProperty IsExpandedProperty { get; } =
         typeof(bool),
         typeof(ControlName),
         new FrameworkPropertyMetadata(
-            false,
+            BoolBoxes.False,
             (s, e) => (s as ControlName)?.OnIsExpandedPropertyChanged(e)));
+```
+
+`[GeneratedDependencyProperty]` on a partial property is the recommended form for Uno-authored properties in `Uno.UI`, which have no WinUI source to mirror. Don't convert ported properties to it: it adds Uno-only behavior, such as a local value cache (on by default) and callbacks wired by name. The generator implements the property and declares and registers `IsExpandedProperty` (don't declare it yourself), and uses the cached boxes for defaults and setters. See `.claude/rules/dependency-properties.md` for attached properties, callback signatures and when to declare the identifier explicitly.
+
+```csharp
+/// <summary>
+/// Gets or sets a value indicating whether the control is expanded.
+/// </summary>
+[GeneratedDependencyProperty(DefaultValue = false, ChangedCallbackName = nameof(OnIsExpandedPropertyChanged))]
+public partial bool IsExpanded { get; set; }
+
+private void OnIsExpandedPropertyChanged(DependencyPropertyChangedEventArgs args)
+{
+    // ...
+}
 ```
 
 #### 2.10. TODO Comment Conventions
