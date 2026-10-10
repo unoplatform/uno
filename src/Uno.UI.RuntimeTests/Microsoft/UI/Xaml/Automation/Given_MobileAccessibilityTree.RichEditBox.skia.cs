@@ -1,5 +1,7 @@
 #nullable enable
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Text;
@@ -9,6 +11,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -34,6 +37,59 @@ public partial class Given_MobileAccessibilityTree
 		Assert.IsFalse(
 			nodes.Any(node => node.Owner is TextBlock textBlock && textBlock.GetTemplatedParent() is RichEditBox),
 			"The placeholder TextBlock must not appear next to the editor, which already reports it.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_RichEditBox_Has_Spelling_Error_Then_PeerTree_Keeps_It_As_Annotation()
+	{
+		UnicodeText.SpellCheckingServiceOverrideForTesting = new TypoSpellCheckingService();
+		try
+		{
+			var richEditBox = new RichEditBox { Width = 320, Height = 120 };
+			await UITestHelper.Load(richEditBox);
+			richEditBox.Document.SetText(TextSetOptions.None, "correct typo");
+			await UITestHelper.WaitForIdle();
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(richEditBox)!;
+			var provider = (ITextProvider)peer.GetPattern(PatternInterface.Text)!;
+			var annotations = (IRawElementProviderSimple[])provider.DocumentRange.GetAttributeValue(
+				(int)AutomationTextAttributesEnum.AnnotationObjectsAttribute);
+			Assert.HasCount(1, annotations, "The misspelled word must still be reported through the Text pattern.");
+
+			var nodes = AccessibilityPeerHelper.GetPeerTree(richEditBox);
+
+			Assert.IsFalse(
+				nodes.Any(node => node.Peer is RichEditBoxSpellingErrorAutomationPeer),
+				"A spelling error must not become a separate node next to the editor.");
+			Assert.IsTrue(nodes.Any(node => node.Peer == peer));
+		}
+		finally
+		{
+			UnicodeText.SpellCheckingServiceOverrideForTesting = null;
+		}
+	}
+
+	private sealed class TypoSpellCheckingService : ISpellCheckingService
+	{
+		public List<(int correctionStart, int correctionEnd)?> SpellCheck(List<int> wordBoundaries, string text)
+		{
+			var corrections = new List<(int correctionStart, int correctionEnd)?>(wordBoundaries.Count);
+			var wordStart = 0;
+			foreach (var wordEnd in wordBoundaries)
+			{
+				var word = text.Substring(wordStart, wordEnd - wordStart);
+				var offset = word.IndexOf("typo", StringComparison.Ordinal);
+				corrections.Add(word.Trim() == "typo" ? (offset, offset + 4) : null);
+				wordStart = wordEnd;
+			}
+
+			return corrections;
+		}
+
+		public (int replaceIndexStart, int replaceIndexEnd, List<string> suggestions)? GetSpellCheckSuggestions(
+			string text, List<int> wordBoundaries, int correctionStart, int correctionEnd)
+			=> null;
 	}
 
 	[TestMethod]
