@@ -98,7 +98,7 @@ jobs:
         # blocks exfil URL patterns (`gh ... view https://attacker/<secret>`),
         # run-summary disabled by default, and ignoring issues/comments edited
         # after trigger.
-        uses: anthropics/claude-code-action@cab360f6565aa35a51d6ce9e43f1f4287c0a32ea # v1.0.241
+        uses: anthropics/claude-code-action@6c690188da61cf16ee7debb28383ba67f02abb4c # v1.0.242
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_CODEREVIEW_KEY }}
           # Use the job's scoped Actions token instead of OIDC/GitHub App auth,
