@@ -27,15 +27,17 @@ This error may occur during resources (`.resw`) analysis if the framework does n
 
 For instance, the language code `zh-CN` is not recognized and `zh-Hans` should be used instead.
 
-### UNOB0004: The $(UnoVersion) property must match the version of the Uno.Sdk defined in global.json
+### UNOB0004: The Uno Platform core packages are pinned to a version other than the one shipped by the Uno.Sdk
 
-The build process has determined that an MSBuild property was defined to override `UnoVersion`. This property is defined by the Uno.Sdk and cannot be changed and must be updated through the `global.json` file
+This warning indicates that the `$(UnoVersion)` property was set to a version that differs from the one bundled with the `Uno.Sdk` defined in `global.json`. The `Uno.Sdk` and the Uno Platform packages it references are built and tested together, so a mismatched pair may fail to build or to run.
 
-Follow this guide in order to [update the Uno Platform packages](xref:Uno.Development.UpgradeUnoNuget).
+Overriding the version is supported for scenarios such as validating a newer `Uno.WinUI` before the matching `Uno.Sdk` is published — see [Overriding the Uno Platform version](xref:Uno.Features.Uno.Sdk#overriding-the-uno-platform-version). Whenever the version you need is also available as an `Uno.Sdk`, prefer updating `global.json` instead, following this guide to [update the Uno Platform packages](xref:Uno.Development.UpgradeUnoNuget).
 
-### UNOB0005: The Version of Uno.WinUI must match the version of the Uno.Sdk found in global.json
+Once you have acknowledged the risk, silence the warning with `<NoWarn>$(NoWarn);UNOB0004</NoWarn>`.
 
-The build process has determined that the version of the Uno.WinUI NuGet package does not match the Uno.Sdk version. In general, restarting your IDE and compiling again will fix this issue.
+### UNOB0005: The Version of Uno.WinUI must match the Uno Platform version used by the build
+
+The build process has determined that the version of the resolved Uno.WinUI NuGet package does not match the requested Uno Platform version, which comes either from the `Uno.Sdk` in `global.json` or from the `$(UnoVersion)` property. In general, restarting your IDE and compiling again will fix this issue.
 
 Follow this guide in order to [update the Uno Platform packages](xref:Uno.Development.UpgradeUnoNuget).
 
