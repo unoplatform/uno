@@ -169,6 +169,23 @@ public class Given_FindName_NonFrameworkElement
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21129")]
+	public void When_Compiled_Plain_Name_Then_Registered_In_NameScope()
+	{
+		var page = new FindName_NonFrameworkElement_Page();
+
+		Assert.IsInstanceOfType(NameScope.GetNameScope(page)?.FindName("PlainNamedBorder"), typeof(Border));
+	}
+
+	[TestMethod]
+	public void When_Runtime_Plain_Name_Then_Registered_In_NameScope()
+	{
+		var grid = (Grid)XamlReader.Load($"<Grid {Ns}><Border Name='PlainNamedBorder'/></Grid>");
+
+		Assert.IsInstanceOfType(NameScope.GetNameScope(grid)?.FindName("PlainNamedBorder"), typeof(Border));
+	}
+
+	[TestMethod]
 	public void When_NameProperty_Set_On_DependencyObject_Then_No_AutomationId_Side_Effect()
 	{
 		var brush = new SolidColorBrush();
