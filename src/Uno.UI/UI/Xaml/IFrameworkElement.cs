@@ -144,7 +144,7 @@ namespace Microsoft.UI.Xaml
 			var matchingChild = group.FindLastChild(name, static (c, name) => c is IFrameworkElement fe && string.Equals(fe.Name, name, StringComparison.Ordinal) ? fe : null, out var hasAnyChildren);
 			if (hasAnyChildren)
 			{
-				matchingChild ??= group.FindLastChild(name, static (c, name) => (c as IFrameworkElement)?.FindName(name) as IFrameworkElement, out _);
+				matchingChild ??= group.FindLastChild(name, static (c, name) => c is IFrameworkElement fe ? FindNameInSubtree(fe, name) : null, out _);
 			}
 
 			if (matchingChild is not null)
@@ -181,7 +181,7 @@ namespace Microsoft.UI.Xaml
 					return content.ConvertFromStubToElement(e, name);
 				}
 
-				var subviewResult = content.FindName(name) as IFrameworkElement;
+				var subviewResult = FindNameInSubtree(content, name);
 				if (subviewResult != null)
 				{
 					return subviewResult.ConvertFromStubToElement(e, name);
@@ -195,8 +195,8 @@ namespace Microsoft.UI.Xaml
 				static IFrameworkElement FindInFlyout(string name, Controls.Primitives.FlyoutBase flyoutBase)
 					=> flyoutBase switch
 					{
-						MenuFlyout f => f.Items.Select(i => i.FindName(name) as IFrameworkElement).Trim().FirstOrDefault(),
-						Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name) as IFrameworkElement
+						MenuFlyout f => f.Items.Select(i => FindNameInSubtree(i, name)).Trim().FirstOrDefault(),
+						Controls.Primitives.FlyoutBase fb => fb.GetPresenter() is { } presenter ? FindNameInSubtree(presenter, name) : null
 					};
 
 				if (e is UIElement uiElement &&
@@ -221,6 +221,10 @@ namespace Microsoft.UI.Xaml
 
 			return null;
 		}
+
+		// Descendants are searched by the tree walk alone; only the element FindName was called on consults its namescope.
+		private static IFrameworkElement FindNameInSubtree(IFrameworkElement element, string name)
+			=> element is ViewGroup group ? FindName(element, group, name) : element.FindName(name) as IFrameworkElement;
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{
