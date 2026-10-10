@@ -32,6 +32,9 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	private UIView? _nativeOverlayLayer;
 	private string? _lastSvgClipPath;
 	private readonly UnoKeyboardInputSource _keyboardInputSource = new();
+#if __TVOS__
+	private TvRemoteInputHandler? _remoteInput;
+#endif
 
 	public RootViewController()
 	{
@@ -93,6 +96,10 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_nativeOverlayLayer = nativeOverlayLayer;
 		_topViewLayer.AddSubview(_nativeOverlayLayer);
 		view.AddSubview(_topViewLayer);
+
+#if __TVOS__
+		RemoteInput.AttachSwipeRecognizers(view);
+#endif
 
 		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
 
@@ -334,6 +341,10 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	/// </summary>
 	internal UnoKeyboardInputSource KeyboardInputSource => _keyboardInputSource;
 
+#if __TVOS__
+	private TvRemoteInputHandler RemoteInput => _remoteInput ??= new(_keyboardInputSource);
+#endif
+
 	// This will handle when the status bar is showed / hidden by the system on iPhones
 	public override void ViewSafeAreaInsetsDidChange()
 	{
@@ -358,6 +369,32 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 #endif
 		base.MotionEnded(motion, evt);
 	}
+
+#if __TVOS__
+	public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
+	{
+		if (RemoteInput.OnPressesBegan(presses) is { } unhandled)
+		{
+			base.PressesBegan(unhandled, evt);
+		}
+	}
+
+	public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
+	{
+		if (RemoteInput.OnPressesEnded(presses) is { } unhandled)
+		{
+			base.PressesEnded(unhandled, evt);
+		}
+	}
+
+	public override void PressesCancelled(NSSet<UIPress> presses, UIPressesEvent evt)
+	{
+		if (RemoteInput.OnPressesEnded(presses) is { } unhandled)
+		{
+			base.PressesCancelled(unhandled, evt);
+		}
+	}
+#endif
 
 	public bool CanAutorotate { get; set; } = true;
 
