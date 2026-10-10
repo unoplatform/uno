@@ -597,12 +597,12 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// This is a special case, where the declaring type is from the x: namespace,
 				// but is considered of an unknown type. This can happen when providing the
 				// name of a control using x:Name instead of Name.
-				var nameInfo = TypeResolver.GetPropertyByName(control.Type, "Name");
-				if ((nameInfo is null || instance is IXNameProvider) && member.Value is string xName)
+				// As in WinUI, x:Name on a DependencyObject is DependencyObject_Name, whatever Name property the type declares.
+				if (instance is DependencyObject and not FrameworkElement && member.Value is string xName)
 				{
 					Uno.UI.Helpers.MarkupHelper.SetXName(instance, xName);
 				}
-				else if (nameInfo is not null)
+				else if (TypeResolver.GetPropertyByName(control.Type, "Name") is PropertyInfo nameInfo)
 				{
 					GetPropertySetter(nameInfo).Invoke(instance, new[] { member.Value });
 				}

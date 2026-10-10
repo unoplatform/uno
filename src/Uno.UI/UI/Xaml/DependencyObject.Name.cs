@@ -13,6 +13,8 @@ public partial class DependencyObject
 			defaultValue: "",
 			options: FrameworkPropertyMetadataOptions.None,
 			propertyChangedCallback: static (instance, args) => (instance as FrameworkElement)?.OnNameChanged((string)args.OldValue, (string)args.NewValue),
+			// WinUI stores the name as an HSTRING, so null reads back as "".
+			coerceValueCallback: static (_, baseValue, _) => baseValue ?? "",
 			backingFieldUpdateCallback: static (instance, newValue) =>
 			{
 				if (instance is FrameworkElement frameworkElement)

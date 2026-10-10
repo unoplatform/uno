@@ -6304,7 +6304,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// but is considered of an unknown type. This can happen when providing the
 						// name of a control using x:Name instead of Name.
 						var hasNameProperty = HasProperty(objectDefinition.Type, "Name");
-						if (hasNameProperty && !IsXNameProvider(objectDefinition.Type))
+						if (hasNameProperty && !ShouldSetXName(objectDefinition.Type))
 						{
 							writer.AppendLineInvariantIndented("{0} = \"{1}\"{2}", fullValueSetter, member.Value, closingPunctuation);
 						}
