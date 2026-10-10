@@ -58,6 +58,11 @@ internal sealed class SkiaDrawingFactory :
 		_vulkanDevice = vulkanDevice;
 	}
 
+	// Without stencil buffers, Ganesh draws arbitrary paths (glyph outlines, icon strokes, non-convex fills) with
+	// coverage AA. Its default stencil-and-cover path renderer only yields ~4 coverage levels on our
+	// single-sampled surfaces, which makes text and icons visibly jagged and shimmer as they move.
+	internal static GRContextOptions CreateContextOptions() => new() { AvoidStencilBuffers = true };
+
 	public ICommandRecorder CreateRecording() => SkiaDrawingSession.StartRecording(this);
 
 
@@ -95,7 +100,7 @@ internal sealed class SkiaDrawingFactory :
 				_vulkanDevice!.Instance, _vulkanDevice!.PhysicalDevice,
 				_vulkanDevice!.InstanceExtensions, _vulkanDevice!.DeviceExtensions),
 			GetProcedureAddress = (name, inst, dev) => _vulkanDevice!.GetProcAddress(name, inst, dev),
-		}) ?? throw new System.NotSupportedException("Failed to create a Vulkan GRContext.");
+		}, CreateContextOptions()) ?? throw new System.NotSupportedException("Failed to create a Vulkan GRContext.");
 
 		_vulkanContext.ResetContext();
 
@@ -148,8 +153,12 @@ internal sealed class SkiaDrawingFactory :
 	// GRContext so the render lands in the texture before the host commits the drawable. Recreated each frame.
 	private IPresentSession PresentForMetal(IMetalRenderTarget metal)
 	{
-		_metalContext ??= GRContext.CreateMetal(new GRMtlBackendContext { DeviceHandle = _metalDevice!.Device, QueueHandle = _metalDevice!.Queue })
-			?? throw new System.NotSupportedException("Failed to create a Metal GRContext.");
+		if (_metalContext is null)
+		{
+			using var backend = new GRMtlBackendContext { DeviceHandle = _metalDevice!.Device, QueueHandle = _metalDevice!.Queue };
+			_metalContext = GRContext.CreateMetal(backend, CreateContextOptions())
+				?? throw new System.NotSupportedException("Failed to create a Metal GRContext.");
+		}
 
 		var colorType = ToColorType(metal.ColorFormat);
 		// The render target descriptor is consumed by SKSurface.Create; the surface is disposed on present.
@@ -184,7 +193,8 @@ internal sealed class SkiaDrawingFactory :
 						GraphicsContextKind.WebGL => GRGlInterface.CreateWebGl(name => loader(name)),
 						_ => GRGlInterface.Create(),
 					})
-					?? throw new System.NotSupportedException("OpenGL is not available (GRGlInterface create failed)."))
+					?? throw new System.NotSupportedException("OpenGL is not available (GRGlInterface create failed)."),
+					CreateContextOptions())
 				?? throw new System.NotSupportedException("Failed to create an OpenGL GRContext.");
 
 			if (_glDevice.Kind == GraphicsContextKind.WebGL)
