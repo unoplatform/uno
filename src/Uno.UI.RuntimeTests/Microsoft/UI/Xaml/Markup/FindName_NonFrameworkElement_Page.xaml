@@ -26,5 +26,6 @@
 				<ScaleTransform x:Name="CompiledTransform" />
 			</Border.RenderTransform>
 		</Border>
+		<Border Name="PlainNamedBorder" />
 	</StackPanel>
 </Page>
