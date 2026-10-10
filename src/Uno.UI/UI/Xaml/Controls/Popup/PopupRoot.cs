@@ -22,6 +22,10 @@ internal partial class PopupRoot : Canvas
 
 	private readonly SerialDisposable _subscriptions = new();
 
+	// The window whose Activated event is subscribed to, and the size the XamlRoot was last seen at.
+	private Window _activatedWindow;
+	private Size _xamlRootSize;
+
 	public PopupRoot()
 	{
 		KeyDown += OnKeyDown;
@@ -37,30 +41,61 @@ internal partial class PopupRoot : Canvas
 	{
 		if (XamlRoot is { } xamlRoot)
 		{
-			void OnChanged(object sender, object args) => CloseLightDismissablePopups();
-
 			CompositeDisposable disposables = new();
-			xamlRoot.Changed += OnChanged;
-			disposables.Add(() => xamlRoot.Changed -= OnChanged);
+
+			_xamlRootSize = xamlRoot.Size;
+			xamlRoot.Changed += OnXamlRootChanged;
+			disposables.Add(() => xamlRoot.Changed -= OnXamlRootChanged);
 
 			if (xamlRoot.HostWindow is { } window)
 			{
+				_activatedWindow = window;
 				window.Activated += OnWindowActivated;
-				disposables.Add(() => window.Activated -= OnWindowActivated);
+				disposables.Add(() =>
+				{
+					window.Activated -= OnWindowActivated;
+					_activatedWindow = null;
+				});
 			}
 
 			_subscriptions.Disposable = disposables;
 		}
 	}
 
+	// As in WinUI (Popup_Partial.cpp OnXamlRootChanged), only a change of size dismisses. The event is also raised
+	// when the scale or the visibility of the host changes.
+	private void OnXamlRootChanged(object sender, object args)
+	{
+		if (XamlRoot is { } xamlRoot && xamlRoot.Size != _xamlRootSize)
+		{
+			_xamlRootSize = xamlRoot.Size;
+			CloseLightDismissablePopups();
+		}
+	}
+
 	private void OnWindowActivated(object sender, _WindowActivatedEventArgs e)
 	{
-		if (FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated)
+		// As in WinUI (Popup_Partial.cpp OnWindowActivated), only the deactivation of the window dismisses.
+		// A popup that was opened, or kept open, while the window was inactive stays when it is activated.
+		if (e.WindowActivationState != WindowActivationState.Deactivated
+			|| FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated)
 		{
 			return;
 		}
 
 		CloseLightDismissablePopups();
+	}
+
+	// In WinUI a popup registers for the activation of its window when it opens (Popup_Partial.cpp
+	// RegisterForWindowActivatedEvents), so the handlers the application added before that are raised first and
+	// find the popup still open. Subscribing again when a popup opens gives the same order.
+	private void MoveWindowActivatedHandlerLast()
+	{
+		if (_activatedWindow is { } window)
+		{
+			window.Activated -= OnWindowActivated;
+			window.Activated += OnWindowActivated;
+		}
 	}
 
 	private void OnRootUnloaded(object sender, RoutedEventArgs args)
@@ -225,6 +260,8 @@ internal partial class PopupRoot : Canvas
 
 			// Insert at head so the most recently opened popup is first
 			_openPopups.AddFirst(popupRegistration);
+
+			MoveWindowActivatedHandlerLast();
 		}
 
 		return Disposable.Create(() => _openPopups.Remove(popupRegistration));
