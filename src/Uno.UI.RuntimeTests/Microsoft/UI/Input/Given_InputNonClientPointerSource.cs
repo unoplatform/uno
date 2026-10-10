@@ -52,6 +52,42 @@ public class Given_InputNonClientPointerSource
 		}
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_Passthrough_Overlaps_Caption_On_MacOS_Passthrough_Is_Client()
+	{
+		var window = new Window { Content = new Grid() };
+		window.ExtendsContentIntoTitleBar = true;
+		var activated = false;
+		try
+		{
+			window.Activated += (s, e) => activated = true;
+			window.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var source = InputNonClientPointerSource.GetForWindowId(window.AppWindow.Id);
+			source.ClearAllRegionRects();
+
+			// Region rects are physical pixels, the native hit-test callback passes logical points.
+			var scale = window.Content.XamlRoot!.RasterizationScale;
+			source.SetRegionRects(NonClientRegionKind.Caption, [Scale(new RectInt32(0, 0, 300, 80), scale)]);
+			source.SetRegionRects(NonClientRegionKind.Passthrough, [Scale(new RectInt32(50, 30, 75, 30), scale)]);
+
+			Microsoft_UI_Windowing.Given_AppWindowTitleBar.HitTestNonClient(window, 75, 45).Should().Be(0, "Passthrough wins over Caption");
+			Microsoft_UI_Windowing.Given_AppWindowTitleBar.HitTestNonClient(window, 200, 45).Should().Be(1, "Caption drags the window");
+			Microsoft_UI_Windowing.Given_AppWindowTitleBar.HitTestNonClient(window, 200, 120).Should().Be(0, "outside every region");
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			window.Close();
+		}
+	}
+
+	private static RectInt32 Scale(RectInt32 rect, double scale)
+		=> new((int)(rect.X * scale), (int)(rect.Y * scale), (int)(rect.Width * scale), (int)(rect.Height * scale));
+
 	private static nint GetHwnd(Window window)
 	{
 #if __SKIA__
