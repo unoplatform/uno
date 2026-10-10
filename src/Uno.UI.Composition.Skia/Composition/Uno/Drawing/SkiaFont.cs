@@ -188,10 +188,29 @@ internal sealed class SkiaFont : IFont
 			var font = new HbFont(face);
 			font.SetScale(ShapeScale, ShapeScale);
 			font.SetFunctionsOpenType();
+			SetVariations(font, _font.Typeface);
 			_hbFont = font;
 		}
 
 		return _hbFont;
+	}
+
+	// A variable instance hands HarfBuzz the default instance's tables, so the shaper must be put at the same
+	// axis position as the outlines, or e.g. a bold instance is spaced with its regular advances.
+	private static void SetVariations(HbFont font, SKTypeface? typeface)
+	{
+		if (typeface?.VariationDesignPosition is not { Length: > 0 } position)
+		{
+			return;
+		}
+
+		var variations = new HarfBuzzSharp.Variation[position.Length];
+		for (var i = 0; i < position.Length; i++)
+		{
+			variations[i] = new HarfBuzzSharp.Variation { Tag = position[i].Axis, Value = position[i].Value };
+		}
+
+		font.SetVariations(variations);
 	}
 
 	private HbBlob? CreateTableBlob(uint tag)
