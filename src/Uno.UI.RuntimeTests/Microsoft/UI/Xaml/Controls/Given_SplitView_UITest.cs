@@ -61,15 +61,47 @@ public class Given_SplitView_UITest
 		ImageAssert.HasColorAtChild(compactScreenshot, targetRect, x, y, Microsoft.UI.Colors.Blue);
 
 		split.IsPaneOpen = true;
-		await UITestHelper.WaitForIdle();
+		await WaitForPaneToSettle(split);
 
 		var expandedScreenshot = await UITestHelper.ScreenShot(root);
 		ImageAssert.HasColorAtChild(expandedScreenshot, targetRect, x, y, Microsoft.UI.Colors.Red);
 
 		split.IsPaneOpen = false;
-		await UITestHelper.WaitForIdle();
+		await WaitForPaneToSettle(split);
 
 		var compactAgainScreenshot = await UITestHelper.ScreenShot(root);
 		ImageAssert.HasColorAtChild(compactAgainScreenshot, targetRect, x, y, Microsoft.UI.Colors.Blue);
+	}
+
+	// WinUI's compact overlay transitions slide the pane and its clip over 0.35s; an idle UI thread doesn't mean they're done.
+	private static async Task WaitForPaneToSettle(SplitView split)
+	{
+		var paneRoot = (UIElement)FindDescendant(split, "PaneRoot");
+		var paneTransform = (CompositeTransform)paneRoot.RenderTransform;
+		var paneClipTransform = (CompositeTransform)((RectangleGeometry)paneRoot.Clip).Transform;
+
+		var expectedClipTranslateX = split.IsPaneOpen ? 0 : split.TemplateSettings.OpenPaneLengthMinusCompactLength;
+
+		await UITestHelper.WaitFor(() => paneTransform.TranslateX == 0 && paneClipTransform.TranslateX == expectedClipTranslateX);
+		await UITestHelper.WaitForIdle();
+	}
+
+	private static DependencyObject FindDescendant(DependencyObject parent, string name)
+	{
+		for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+		{
+			var child = VisualTreeHelper.GetChild(parent, i);
+			if (child is FrameworkElement { Name: var childName } && childName == name)
+			{
+				return child;
+			}
+
+			if (FindDescendant(child, name) is { } match)
+			{
+				return match;
+			}
+		}
+
+		return null;
 	}
 }
