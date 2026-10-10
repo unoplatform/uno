@@ -3,9 +3,146 @@
 //
 
 #import "UNONative.h"
+#import "UNOApplication.h"
+#import <AVFoundation/AVFoundation.h>
+#import <dispatch/dispatch.h>
 
 static NSMutableSet<NSView*> *elements;
 static NSMutableSet<NSView*> *transients;
+
+// One camera capture call. Cancellation and late AVFoundation completions are scoped to it, so
+// they can never end a modal session that belongs to another capture or another component.
+// Accessed on the main thread only.
+@interface UNOCaptureOperation : NSObject
+@property (nonatomic, readonly) int64_t operationId;
+@property (nonatomic, readonly) BOOL cancelled;
+@property (nonatomic, readonly) BOOL finished;
+@property (nonatomic, weak) NSWindow *window;
+@property (nonatomic, assign) BOOL modalRunning;
+@end
+
+@implementation UNOCaptureOperation
+
+- (instancetype)initWithOperationId:(int64_t)operationId
+{
+    if (self = [super init]) {
+        _operationId = operationId;
+    }
+    return self;
+}
+
+- (BOOL)ownsModal
+{
+    return self.modalRunning && self.window != nil && NSApp.modalWindow == self.window;
+}
+
+- (void)stopModal
+{
+    if ([self ownsModal]) {
+        [NSApp stopModal];
+    }
+}
+
+- (void)abortModal
+{
+    if ([self ownsModal]) {
+        [NSApp abortModal];
+    }
+}
+
+- (void)cancel
+{
+    _cancelled = YES;
+    [self abortModal];
+}
+
+- (void)finish
+{
+    _finished = YES;
+    self.modalRunning = NO;
+}
+
+@end
+
+static NSMutableDictionary<NSNumber*, UNOCaptureOperation*> *s_captureOperations;
+
+static UNOCaptureOperation* BeginCaptureOperation(int64_t operationId)
+{
+    if (s_captureOperations == nil) {
+        s_captureOperations = [NSMutableDictionary dictionary];
+    }
+    UNOCaptureOperation *operation = [[UNOCaptureOperation alloc] initWithOperationId:operationId];
+    s_captureOperations[@(operationId)] = operation;
+    return operation;
+}
+
+static void EndCaptureOperation(UNOCaptureOperation *operation)
+{
+    [operation finish];
+    [s_captureOperations removeObjectForKey:@(operation.operationId)];
+}
+
+static BOOL EnsureCaptureAuthorization(AVMediaType mediaType, UNOCaptureOperation *operation)
+{
+    // Ensure required Info.plist usage description keys are present before requesting access.
+    // Skip this check when the app is not running as a bundled .app (e.g., during development
+    // via `dotnet run`), since there is no Info.plist to read from in that case.
+    if (uno_application_is_bundled()) {
+        NSString *usageDescriptionKey = nil;
+        if ([mediaType isEqualToString:AVMediaTypeVideo]) {
+            usageDescriptionKey = @"NSCameraUsageDescription";
+        } else if ([mediaType isEqualToString:AVMediaTypeAudio]) {
+            usageDescriptionKey = @"NSMicrophoneUsageDescription";
+        }
+
+        if (usageDescriptionKey != nil) {
+            id usageDescription = [[NSBundle mainBundle] objectForInfoDictionaryKey:usageDescriptionKey];
+            if (usageDescription == nil) {
+#if DEBUG
+                NSLog(@"Missing %@ in Info.plist. Capture authorization denied.", usageDescriptionKey);
+#endif
+                return NO;
+            }
+        }
+    }
+
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
+    if (status == AVAuthorizationStatusAuthorized) {
+        return YES;
+    }
+
+    if (status == AVAuthorizationStatusNotDetermined) {
+        __block BOOL authorized = NO;
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+
+        [AVCaptureDevice requestAccessForMediaType:mediaType
+                                 completionHandler:^(BOOL granted) {
+                                     authorized = granted;
+                                     dispatch_semaphore_signal(semaphore);
+                                 }];
+
+        if ([NSThread isMainThread]) {
+            // Pump the main run loop so the system prompt stays responsive and a cancellation of
+            // this operation (uno_capture_cancel) can land while the user has not answered yet.
+            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+            while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) != 0) {
+                if (operation.cancelled) {
+                    return NO;
+                }
+                @autoreleasepool {
+                    [runLoop runMode:NSDefaultRunLoopMode
+                            beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+                }
+            }
+        } else {
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        }
+
+        return authorized && !operation.cancelled;
+    }
+
+    return NO;
+}
 
 @implementation UNORedView : NSView
 
@@ -166,4 +303,549 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
     // would otherwise stay retained there forever.
     [transients removeObject:element];
     [elements removeObject:element];
+}
+
+// Camera capture using AVFoundation.
+// Both photo and video present a modal window with a live camera preview.
+// These functions must be called from the main thread (same pattern as file pickers).
+
+// Schedules a modal-teardown block ([NSApp stopModal] / abortModal) on the main thread
+// using CFRunLoop instead of the GCD main queue.
+//
+// The capture modal is launched through the managed NativeDispatcher, which posts work
+// onto the GCD main queue (dispatch_async on _dispatch_main_q). The blocking
+// [NSApp runModalForWindow:] therefore runs *inside* a GCD main-queue block. Because the
+// main queue is serial, it cannot drain any further main-queue block until that outer
+// block returns — but the outer block does not return until the modal ends. A teardown
+// call posted with dispatch_async(dispatch_get_main_queue(), ...) would deadlock: it can
+// never run, so the modal never ends and the Capture/Record buttons appear stuck.
+//
+// CFRunLoopPerformBlock enqueues directly onto the run loop and is serviced by the nested
+// modal run loop (NSModalPanelRunLoopMode is a common mode), so teardown works whether the
+// modal was entered from AppKit's event loop or from a GCD main-queue block. It is safe to
+// call from any thread.
+static void uno_dispatch_capture_modal_teardown(dispatch_block_t block)
+{
+    CFRunLoopRef mainLoop = CFRunLoopGetMain();
+    // [NSApp runModalForWindow:] pumps the run loop in NSModalPanelRunLoopMode, which is
+    // NOT a member of the common-modes set — so a block scheduled for kCFRunLoopCommonModes
+    // (or posted via the GCD main queue) is never serviced while the modal is up and the
+    // modal can never be torn down. Schedule explicitly for every mode the modal/button
+    // tracking loops can be running in so [NSApp stopModal]/abortModal always lands.
+    NSArray *modes = @[ (__bridge id)kCFRunLoopDefaultMode, NSModalPanelRunLoopMode, NSEventTrackingRunLoopMode ];
+    CFRunLoopPerformBlock(mainLoop, (__bridge CFArrayRef)modes, block);
+    CFRunLoopWakeUp(mainLoop);
+}
+
+// Schedules a managed callback on the main run loop (NOT the GCD main queue) and wakes it.
+//
+// The capture modal ([NSApp runModalForWindow:]) is blocking. The managed NativeDispatcher
+// posts work onto the serial GCD main queue (dispatch_async on _dispatch_main_q); running the
+// modal from there blocks that queue for the modal's entire lifetime. AVFoundation delivers its
+// photo/movie capture-completion through the main queue, so it can never drain and the
+// Capture/Record buttons freeze. Running the modal from a CFRunLoop block instead leaves the
+// serial main queue free while the modal pumps, so completions are delivered. The block also
+// runs on the next main run loop pass — after the current event (the pointer dispatch that
+// started the capture) has unwound — which avoids re-entering the pointer pipeline.
+void uno_perform_on_main_runloop(void* context, void (*callback)(void* context))
+{
+    CFRunLoopRef mainLoop = CFRunLoopGetMain();
+    CFRunLoopPerformBlock(mainLoop, kCFRunLoopCommonModes, ^{
+        callback(context);
+    });
+    CFRunLoopWakeUp(mainLoop);
+}
+
+// --- Photo capture delegate ---
+
+@interface UNOCameraCaptureDelegate : NSObject <AVCapturePhotoCaptureDelegate>
+@property (nonatomic, strong) UNOCaptureOperation *operation;
+@property (nonatomic, strong) NSData *capturedImageData;
+@end
+
+@implementation UNOCameraCaptureDelegate
+
+- (void)captureOutput:(AVCapturePhotoOutput *)output
+    didFinishProcessingPhoto:(AVCapturePhoto *)photo
+                       error:(NSError *)error
+{
+    if (!error) {
+        self.capturedImageData = [photo fileDataRepresentation];
+    }
+    UNOCaptureOperation *operation = self.operation;
+    uno_dispatch_capture_modal_teardown(^{
+        [operation stopModal];
+    });
+}
+
+@end
+
+// --- Window delegate that aborts the modal when the close button (or Cmd+W) is used ---
+
+@interface UNOCameraWindowDelegate : NSObject <NSWindowDelegate>
+@property (nonatomic, strong) UNOCaptureOperation *operation;
+@property (nonatomic, weak) AVCaptureMovieFileOutput *movieOutput;
+@end
+
+@implementation UNOCameraWindowDelegate
+
+- (void)windowWillClose:(NSNotification *)notification {
+    if (self.movieOutput && self.movieOutput.isRecording) {
+        [self.movieOutput stopRecording];
+    }
+    [self.operation abortModal];
+}
+
+@end
+
+// --- Photo modal helper ---
+
+@interface UNOPhotoModalHelper : NSObject
+@property (nonatomic, strong) UNOCaptureOperation *operation;
+@property (nonatomic, strong) AVCapturePhotoOutput *photoOutput;
+@property (nonatomic, strong) UNOCameraCaptureDelegate *captureDelegate;
+@end
+
+@implementation UNOPhotoModalHelper
+
+- (void)capturePhoto:(NSButton *)sender {
+    sender.enabled = NO;
+    self.captureDelegate = [[UNOCameraCaptureDelegate alloc] init];
+    self.captureDelegate.operation = self.operation;
+    AVCapturePhotoSettings *settings = [AVCapturePhotoSettings photoSettings];
+    [self.photoOutput capturePhotoWithSettings:settings delegate:self.captureDelegate];
+}
+
+- (void)cancel:(NSButton *)sender {
+    [self.operation abortModal];
+}
+
+@end
+
+// --- Video recording delegate ---
+
+@interface UNOVideoRecordingDelegate : NSObject <AVCaptureFileOutputRecordingDelegate>
+@property (nonatomic, strong) UNOCaptureOperation *operation;
+@property (nonatomic, assign) BOOL succeeded;
+@end
+
+@implementation UNOVideoRecordingDelegate
+
+- (void)captureOutput:(AVCaptureFileOutput *)output
+    didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
+                        fromConnections:(NSArray<AVCaptureConnection *> *)connections
+                                  error:(NSError *)error
+{
+    self.succeeded = (error == nil);
+    UNOCaptureOperation *operation = self.operation;
+    uno_dispatch_capture_modal_teardown(^{
+        if (operation.finished) {
+            // The capture already returned (cancelled or closed), so nothing will claim this file.
+            [[NSFileManager defaultManager] removeItemAtURL:outputFileURL error:nil];
+        } else {
+            [operation stopModal];
+        }
+    });
+}
+
+@end
+
+// --- Video modal helper ---
+
+@interface UNOVideoModalHelper : NSObject
+@property (nonatomic, strong) UNOCaptureOperation *operation;
+@property (nonatomic, strong) AVCaptureMovieFileOutput *movieOutput;
+@property (nonatomic, strong) UNOVideoRecordingDelegate *recordingDelegate;
+@property (nonatomic, strong) NSURL *outputFileURL;
+@property (nonatomic, weak) NSButton *cancelButton;
+@property (nonatomic, assign) BOOL isRecording;
+@end
+
+@implementation UNOVideoModalHelper
+
+- (void)toggleRecording:(NSButton *)sender {
+    if (!self.isRecording) {
+        // Start recording
+        self.isRecording = YES;
+        sender.title = @"Stop";
+        self.cancelButton.enabled = NO;
+
+        self.recordingDelegate = [[UNOVideoRecordingDelegate alloc] init];
+        self.recordingDelegate.operation = self.operation;
+        [self.movieOutput startRecordingToOutputFileURL:self.outputFileURL recordingDelegate:self.recordingDelegate];
+    } else {
+        // Stop recording — delegate callback will dismiss the modal
+        sender.enabled = NO;
+        [self.movieOutput stopRecording];
+    }
+}
+
+- (void)cancel:(NSButton *)sender {
+    if (self.isRecording) {
+        [self.movieOutput stopRecording];
+    }
+    [self.operation abortModal];
+}
+
+@end
+
+void uno_capture_cancel(int64_t operationId)
+{
+    uno_dispatch_capture_modal_teardown(^{
+        // No entry means the capture has not started (the managed side checks its token before
+        // starting) or has already finished, so there is nothing left to tear down.
+        [s_captureOperations[@(operationId)] cancel];
+    });
+}
+
+static char* _Nullable CapturePhoto(UNOCaptureOperation *operation, bool useJpeg)
+{
+    @autoreleasepool {
+        // Ensure we have authorization to use the camera before accessing the device.
+        // This also validates that the appropriate Info.plist usage description key
+        // (e.g., NSCameraUsageDescription) is present when running as a bundled app.
+        if (!EnsureCaptureAuthorization(AVMediaTypeVideo, operation))
+        {
+            return NULL;
+        }
+
+        // Find camera device
+        AVCaptureDevice *camera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        if (!camera) {
+            return NULL;
+        }
+
+        NSError *error = nil;
+        AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:camera error:&error];
+        if (!input) {
+            return NULL;
+        }
+
+        // Set up capture session
+        AVCaptureSession *session = [[AVCaptureSession alloc] init];
+        session.sessionPreset = AVCaptureSessionPresetPhoto;
+
+        if (![session canAddInput:input]) {
+            return NULL;
+        }
+        [session addInput:input];
+
+        AVCapturePhotoOutput *photoOutput = [[AVCapturePhotoOutput alloc] init];
+        if (![session canAddOutput:photoOutput]) {
+            return NULL;
+        }
+        [session addOutput:photoOutput];
+
+        // Build the modal window with camera preview
+        NSRect windowRect = NSMakeRect(0, 0, 640, 520);
+        NSWindow *window = [[NSWindow alloc]
+            initWithContentRect:windowRect
+                      styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
+                        backing:NSBackingStoreBuffered
+                          defer:NO];
+        // Wire window delegate so the close button / Cmd+W aborts the modal
+        UNOCameraWindowDelegate *windowDelegate = [[UNOCameraWindowDelegate alloc] init];
+        windowDelegate.operation = operation;
+        window.delegate = windowDelegate;
+
+        window.title = @"Camera Capture";
+        [window center];
+
+        NSView *contentView = window.contentView;
+
+        // Camera preview layer
+        AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:session];
+        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+        previewLayer.frame = NSMakeRect(0, 60, 640, 460);
+
+        NSView *previewView = [[NSView alloc] initWithFrame:NSMakeRect(0, 60, 640, 460)];
+        previewView.wantsLayer = YES;
+        [previewView.layer addSublayer:previewLayer];
+        [contentView addSubview:previewView];
+
+        // Helper that handles button actions
+        UNOPhotoModalHelper *helper = [[UNOPhotoModalHelper alloc] init];
+        helper.operation = operation;
+        helper.photoOutput = photoOutput;
+
+        // Capture button — initiates async capture, delegate dismisses modal when done
+        NSButton *captureButton = [[NSButton alloc] initWithFrame:NSMakeRect(270, 15, 100, 32)];
+        captureButton.title = @"Capture";
+        captureButton.bezelStyle = NSBezelStyleRounded;
+        captureButton.keyEquivalent = @"\r";
+        captureButton.target = helper;
+        captureButton.action = @selector(capturePhoto:);
+        [contentView addSubview:captureButton];
+
+        // Cancel button
+        NSButton *cancelButton = [[NSButton alloc] initWithFrame:NSMakeRect(20, 15, 100, 32)];
+        cancelButton.title = @"Cancel";
+        cancelButton.bezelStyle = NSBezelStyleRounded;
+        cancelButton.keyEquivalent = @"\033"; // Escape
+        cancelButton.target = helper;
+        cancelButton.action = @selector(cancel:);
+        [contentView addSubview:cancelButton];
+
+        // Nothing pumps the run loop between here and runModalForWindow, so a cancellation
+        // either landed already (during authorization) or will abort the modal it owns.
+        if (operation.cancelled) {
+            return NULL;
+        }
+
+        // Start camera and run modal
+        [session startRunning];
+        operation.window = window;
+        operation.modalRunning = YES;
+        NSModalResponse response = [NSApp runModalForWindow:window];
+        operation.modalRunning = NO;
+        [window orderOut:nil];
+        [session stopRunning];
+
+        // Keep the window delegate alive for the duration of the modal
+        // (NSWindow.delegate is weak, so ARC could release it prematurely)
+        (void)windowDelegate;
+
+        // NSModalResponseAbort means the user or the caller cancelled
+        if (response == NSModalResponseAbort || operation.cancelled) {
+            return NULL;
+        }
+
+        NSData *imageData = helper.captureDelegate.capturedImageData;
+        if (!imageData) {
+            return NULL;
+        }
+
+        // Convert to requested format
+        NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
+        if (!imageRep) {
+            return NULL;
+        }
+
+        NSData *outputData;
+        if (useJpeg) {
+            outputData = [imageRep representationUsingType:NSBitmapImageFileTypeJPEG properties:@{NSImageCompressionFactor: @0.9}];
+        } else {
+            outputData = [imageRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+        }
+
+        if (!outputData) {
+            return NULL;
+        }
+
+        // Write to temp file
+        NSString *tempDir = NSTemporaryDirectory();
+        NSString *fileName = [NSString stringWithFormat:@"%@.%@", [[NSUUID UUID] UUIDString], useJpeg ? @"jpg" : @"png"];
+        NSString *filePath = [tempDir stringByAppendingPathComponent:fileName];
+
+        if ([outputData writeToFile:filePath atomically:YES]) {
+            NSLog(@"Camera capture saved to: %@", filePath);
+            return strdup([filePath UTF8String]);
+        }
+
+        return NULL;
+    }
+}
+
+char* _Nullable uno_capture_photo(int64_t operationId, bool useJpeg)
+{
+    UNOCaptureOperation *operation = BeginCaptureOperation(operationId);
+    char *result = CapturePhoto(operation, useJpeg);
+    EndCaptureOperation(operation);
+    return result;
+}
+
+static char* _Nullable CaptureVideo(UNOCaptureOperation *operation)
+{
+    @autoreleasepool {
+        // Ensure camera authorization
+        if (!EnsureCaptureAuthorization(AVMediaTypeVideo, operation)) {
+            return NULL;
+        }
+
+        // Determine microphone authorization (audio is optional)
+        BOOL audioAuthorized = EnsureCaptureAuthorization(AVMediaTypeAudio, operation);
+
+        // Find camera and (optionally) microphone
+        AVCaptureDevice *camera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        if (!camera) {
+            return NULL;
+        }
+
+        NSError *error = nil;
+        AVCaptureDeviceInput *videoInput = [AVCaptureDeviceInput deviceInputWithDevice:camera error:&error];
+        if (!videoInput) {
+            return NULL;
+        }
+
+        // Set up capture session
+        AVCaptureSession *session = [[AVCaptureSession alloc] init];
+        session.sessionPreset = AVCaptureSessionPresetHigh;
+
+        if (![session canAddInput:videoInput]) {
+            return NULL;
+        }
+        [session addInput:videoInput];
+
+        // Add audio input if available and authorized
+        if (audioAuthorized) {
+            AVCaptureDevice *mic = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+            if (mic) {
+                AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:mic error:&error];
+                if (audioInput && [session canAddInput:audioInput]) {
+                    [session addInput:audioInput];
+                }
+            }
+        }
+
+        AVCaptureMovieFileOutput *movieOutput = [[AVCaptureMovieFileOutput alloc] init];
+        if (![session canAddOutput:movieOutput]) {
+            return NULL;
+        }
+        [session addOutput:movieOutput];
+
+        // Prepare output file path (.mov — AVCaptureMovieFileOutput writes QuickTime containers)
+        NSString *tempDir = NSTemporaryDirectory();
+        NSString *movFileName = [NSString stringWithFormat:@"%@.mov", [[NSUUID UUID] UUIDString]];
+        NSString *filePath = [tempDir stringByAppendingPathComponent:movFileName];
+        NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+
+        // Build the modal window with camera preview
+        NSRect windowRect = NSMakeRect(0, 0, 640, 520);
+        NSWindow *window = [[NSWindow alloc]
+            initWithContentRect:windowRect
+                      styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
+                        backing:NSBackingStoreBuffered
+                          defer:NO];
+        window.title = @"Video Capture";
+        [window center];
+
+        // Wire window delegate so the close button / Cmd+W aborts the modal
+        UNOCameraWindowDelegate *windowDelegate = [[UNOCameraWindowDelegate alloc] init];
+        windowDelegate.operation = operation;
+        windowDelegate.movieOutput = movieOutput;
+        window.delegate = windowDelegate;
+
+        NSView *contentView = window.contentView;
+
+        // Camera preview layer
+        AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:session];
+        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+        previewLayer.frame = NSMakeRect(0, 60, 640, 460);
+
+        NSView *previewView = [[NSView alloc] initWithFrame:NSMakeRect(0, 60, 640, 460)];
+        previewView.wantsLayer = YES;
+        [previewView.layer addSublayer:previewLayer];
+        [contentView addSubview:previewView];
+
+        // Helper that handles button actions
+        UNOVideoModalHelper *helper = [[UNOVideoModalHelper alloc] init];
+        helper.operation = operation;
+        helper.movieOutput = movieOutput;
+        helper.outputFileURL = fileURL;
+
+        // Record button — toggles between Start/Stop
+        NSButton *recordButton = [[NSButton alloc] initWithFrame:NSMakeRect(270, 15, 100, 32)];
+        recordButton.title = @"Record";
+        recordButton.bezelStyle = NSBezelStyleRounded;
+        recordButton.keyEquivalent = @"\r";
+        recordButton.target = helper;
+        recordButton.action = @selector(toggleRecording:);
+        [contentView addSubview:recordButton];
+
+        // Cancel button
+        NSButton *cancelButton = [[NSButton alloc] initWithFrame:NSMakeRect(20, 15, 100, 32)];
+        cancelButton.title = @"Cancel";
+        cancelButton.bezelStyle = NSBezelStyleRounded;
+        cancelButton.keyEquivalent = @"\033"; // Escape
+        cancelButton.target = helper;
+        cancelButton.action = @selector(cancel:);
+        [contentView addSubview:cancelButton];
+        helper.cancelButton = cancelButton;
+
+        // Nothing pumps the run loop between here and runModalForWindow, so a cancellation
+        // either landed already (during authorization) or will abort the modal it owns.
+        if (operation.cancelled) {
+            return NULL;
+        }
+
+        // Start camera and run modal
+        [session startRunning];
+        operation.window = window;
+        operation.modalRunning = YES;
+        NSModalResponse response = [NSApp runModalForWindow:window];
+        operation.modalRunning = NO;
+        [window orderOut:nil];
+        [session stopRunning];
+
+        // Keep the window delegate alive for the duration of the modal
+        // (NSWindow.delegate is weak, so ARC could release it prematurely)
+        (void)windowDelegate;
+
+        // NSModalResponseAbort means the user or the caller cancelled
+        if (response == NSModalResponseAbort || operation.cancelled) {
+            [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+            return NULL;
+        }
+
+        if (!helper.recordingDelegate.succeeded) {
+            [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+            return NULL;
+        }
+
+        // Verify the file was written
+        if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+            return NULL;
+        }
+
+        // Convert from MOV to MP4 using AVAssetExportSession (passthrough, no re-encoding)
+        NSString *mp4FileName = [NSString stringWithFormat:@"%@.mp4", [[NSUUID UUID] UUIDString]];
+        NSString *mp4Path = [tempDir stringByAppendingPathComponent:mp4FileName];
+        NSURL *mp4URL = [NSURL fileURLWithPath:mp4Path];
+
+        AVAsset *asset = [AVAsset assetWithURL:fileURL];
+        AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetPassthrough];
+        if (!exportSession) {
+            // A nil session never calls the completion handler, so the wait below would run to its timeout.
+            [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+            return NULL;
+        }
+        exportSession.outputURL = mp4URL;
+        exportSession.outputFileType = AVFileTypeMPEG4;
+        exportSession.shouldOptimizeForNetworkUse = YES;
+
+        dispatch_semaphore_t exportSema = dispatch_semaphore_create(0);
+        [exportSession exportAsynchronouslyWithCompletionHandler:^{
+            dispatch_semaphore_signal(exportSema);
+        }];
+
+        // Wait with a bounded timeout to avoid hanging indefinitely
+        dispatch_time_t exportTimeout = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(120 * NSEC_PER_SEC));
+        long exportWaitResult = dispatch_semaphore_wait(exportSema, exportTimeout);
+
+        // Clean up the intermediate MOV file
+        [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+
+        if (exportWaitResult != 0) {
+            // Timed out — cancel the export and clean up
+            [exportSession cancelExport];
+            [[NSFileManager defaultManager] removeItemAtURL:mp4URL error:nil];
+            return NULL;
+        }
+
+        if (exportSession.status != AVAssetExportSessionStatusCompleted) {
+            [[NSFileManager defaultManager] removeItemAtURL:mp4URL error:nil];
+            return NULL;
+        }
+
+        NSLog(@"Video capture exported to: %@", mp4Path);
+        return strdup([mp4Path UTF8String]);
+    }
+}
+
+char* _Nullable uno_capture_video(int64_t operationId)
+{
+    UNOCaptureOperation *operation = BeginCaptureOperation(operationId);
+    char *result = CaptureVideo(operation);
+    EndCaptureOperation(operation);
+    return result;
 }
