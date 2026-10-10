@@ -328,9 +328,12 @@ namespace Microsoft.UI.Xaml.Documents
 
 		#endregion
 
+		// Mirrors the DP value, set by its backing field callback.
+		internal string NameCache { private get; set; } = "";
+
 		public string Name
 		{
-			get => (string)GetValue(NameProperty);
+			get => NameCache;
 			internal set => SetValue(NameProperty, value);
 		}
 

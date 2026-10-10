@@ -15,9 +15,22 @@ public partial class DependencyObject
 			propertyChangedCallback: static (instance, args) => (instance as FrameworkElement)?.OnNameChanged((string)args.OldValue, (string)args.NewValue),
 			backingFieldUpdateCallback: static (instance, newValue) =>
 			{
-				if (instance is FrameworkElement frameworkElement)
+				// WinUI keeps the name in a field (CDependencyObject::m_strName); VSM lookups read it on every GoToState.
+				var name = (string)newValue;
+				switch (instance)
 				{
-					frameworkElement.NameCache = (string)newValue;
+					case FrameworkElement frameworkElement:
+						frameworkElement.NameCache = name;
+						break;
+					case VisualState visualState:
+						visualState.NameCache = name;
+						break;
+					case VisualStateGroup visualStateGroup:
+						visualStateGroup.NameCache = name;
+						break;
+					case Documents.TextElement textElement:
+						textElement.NameCache = name;
+						break;
 				}
 			}));
 }
