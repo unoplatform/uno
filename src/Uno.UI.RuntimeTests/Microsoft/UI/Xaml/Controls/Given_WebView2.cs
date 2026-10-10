@@ -365,6 +365,48 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
+#if HAS_UNO
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_Secondary_Windows_Closed_Then_WebView_Still_Works()
+	{
+		// A closed NSWindow used to be freed mid-close, and a later WKWebView attach crashed the process.
+		for (var i = 0; i < 3; i++)
+		{
+			var secondary = new global::Microsoft.UI.Xaml.Window();
+			var secondaryButton = new Button { Content = "Secondary" };
+			secondary.Content = secondaryButton;
+
+			var activated = false;
+			secondary.Activated += (_, _) => activated = true;
+			secondary.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+			await TestServices.WindowHelper.WaitForLoaded(secondaryButton);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			secondary.Close();
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		for (var i = 0; i < 3; i++)
+		{
+			var border = new Border();
+			var webView = new WebView2 { Width = 200, Height = 200 };
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			await webView.EnsureCoreWebView2Async();
+
+			var navigated = false;
+			webView.NavigationCompleted += (_, _) => navigated = true;
+			webView.NavigateToString("<html></html>");
+			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+
+			Assert.AreEqual("2", await webView.ExecuteScriptAsync("1 + 1"));
+		}
+	}
+#endif
+
 	[TestMethod]
 	// Fails on iOS https://github.com/unoplatform/uno/issues/9080
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS

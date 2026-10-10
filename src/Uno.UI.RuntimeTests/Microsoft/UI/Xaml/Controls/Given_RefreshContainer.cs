@@ -169,7 +169,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			await UITestHelper.WaitForIdle();
 
-			ImageAssert.HasPixels(await UITestHelper.ScreenShot(sut), ExpectedPixels.At(50, 1).Pixel(Colors.DeepPink));
+			await AssertTopPixelEventually(sut, Colors.DeepPink);
 
 			// Slowly swipe down (scroll up - no inertia)
 			finger.Drag(
@@ -180,7 +180,26 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			await UITestHelper.WaitForIdle();
 
-			ImageAssert.HasPixels(await UITestHelper.ScreenShot(sut), ExpectedPixels.At(50, 1).Pixel(Colors.Chartreuse));
+			await AssertTopPixelEventually(sut, Colors.Chartreuse);
+		}
+
+		// The content settles on the compositor after the gesture; on slow frames idle comes before the last frame.
+		private static async Task AssertTopPixelEventually(FrameworkElement sut, Color expected)
+		{
+			var deadline = DateTime.UtcNow.AddSeconds(10);
+			RawBitmap screenshot;
+			while (true)
+			{
+				screenshot = await UITestHelper.ScreenShot(sut);
+				if (screenshot.GetPixel(50, 1) == expected || DateTime.UtcNow > deadline)
+				{
+					break;
+				}
+
+				await Task.Delay(50);
+			}
+
+			ImageAssert.HasPixels(screenshot, ExpectedPixels.At(50, 1).Pixel(expected));
 		}
 
 		[TestMethod]
