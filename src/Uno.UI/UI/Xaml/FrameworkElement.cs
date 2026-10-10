@@ -858,7 +858,7 @@ namespace Microsoft.UI.Xaml
 
 		#region Name Dependency Property
 
-		private void OnNameChanged(string oldValue, string newValue)
+		internal void OnNameChanged(string oldValue, string newValue)
 		{
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
@@ -866,13 +866,15 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
-		public static DependencyProperty NameProperty { get; } = CreateNameProperty();
+		public static new DependencyProperty NameProperty => DependencyObject.NameProperty;
+
+		// Mirrors the DP value, set by its backing field callback; null until first read.
+		internal string NameCache { private get; set; }
 
 		public string Name
 		{
-			get => GetNameValue();
-			set => SetNameValue(value);
+			get => NameCache ??= (string)GetValue(NameProperty);
+			set => SetValue(NameProperty, value);
 		}
 
 		#endregion
