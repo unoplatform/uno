@@ -218,7 +218,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			UnloadImageDataPlatform();
 			UnloadImageSourceData();
-			_imageData = ImageData.Empty;
+			ReleaseImageData();
 		}
 
 		partial void UnloadImageDataPlatform();

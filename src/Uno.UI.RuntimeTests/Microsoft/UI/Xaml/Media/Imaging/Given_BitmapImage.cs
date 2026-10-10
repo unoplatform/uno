@@ -79,30 +79,36 @@ public class Given_BitmapImage
 	public async Task When_Shared_Download_And_First_Requester_Cancelled()
 	{
 		using var server = await GatedImageServer.StartAsync();
+		var panel = new StackPanel();
+		await UITestHelper.Load(panel, x => x.IsLoaded);
 
-		var first = new BitmapImage(server.Uri);
-		var second = new BitmapImage(server.Uri);
-		var firstResult = TrackOpen(first);
-		var secondResult = TrackOpen(second);
+		try
+		{
+			var first = new BitmapImage(server.Uri);
+			var second = new BitmapImage(server.Uri);
+			var firstResult = TrackOpen(first);
+			var secondResult = TrackOpen(second);
 
-		// Subscribing an Image is what opens the source; both join the same cached download.
-		var firstImage = new Image { Source = first };
-		var secondImage = new Image { Source = second };
+			// A loaded Image is what opens its source; both join the same cached download.
+			panel.Children.Add(new Image { Width = 50, Height = 50, Source = first });
+			panel.Children.Add(new Image { Width = 50, Height = 50, Source = second });
 
-		await WindowHelper.WaitFor(() => server.RequestCount >= 1, 5000, "the download never started");
+			await WindowHelper.WaitFor(() => server.RequestCount >= 1, 5000, "the download never started");
 
-		// Cancels the first requester while the shared download is in flight (what a recycled container does).
-		first.UriSource = null;
+			// Cancels the first requester while the shared download is in flight (what a recycled container does).
+			first.UriSource = null;
 
-		server.ReleaseResponses();
+			server.ReleaseResponses();
 
-		Assert.IsTrue(await secondResult.WaitAsync(TimeSpan.FromSeconds(10)), "The second BitmapImage should open");
-		Assert.AreEqual(100, second.PixelWidth);
-		Assert.AreEqual(1, server.RequestCount, "Both sources should share one download");
-		Assert.IsFalse(firstResult.IsCompleted, "The cancelled BitmapImage should raise neither ImageOpened nor ImageFailed");
-
-		GC.KeepAlive(firstImage);
-		GC.KeepAlive(secondImage);
+			Assert.IsTrue(await secondResult.WaitAsync(TimeSpan.FromSeconds(10)), "The second BitmapImage should open");
+			Assert.AreEqual(100, second.PixelWidth);
+			Assert.AreEqual(1, server.RequestCount, "Both sources should share one download");
+			Assert.IsFalse(firstResult.IsCompleted, "The cancelled BitmapImage should raise neither ImageOpened nor ImageFailed");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
@@ -111,24 +117,30 @@ public class Given_BitmapImage
 	public async Task When_Only_Requester_Cancelled_Then_Same_Uri_Reopened()
 	{
 		using var server = await GatedImageServer.StartAsync();
+		var panel = new StackPanel();
+		await UITestHelper.Load(panel, x => x.IsLoaded);
 
-		var first = new BitmapImage(server.Uri);
-		var firstImage = new Image { Source = first };
+		try
+		{
+			var first = new BitmapImage(server.Uri);
+			panel.Children.Add(new Image { Width = 50, Height = 50, Source = first });
 
-		await WindowHelper.WaitFor(() => server.RequestCount >= 1, 5000, "the download never started");
+			await WindowHelper.WaitFor(() => server.RequestCount >= 1, 5000, "the download never started");
 
-		first.UriSource = null;
-		server.ReleaseResponses();
+			first.UriSource = null;
+			server.ReleaseResponses();
 
-		var second = new BitmapImage(server.Uri);
-		var secondResult = TrackOpen(second);
-		var secondImage = new Image { Source = second };
+			var second = new BitmapImage(server.Uri);
+			var secondResult = TrackOpen(second);
+			panel.Children.Add(new Image { Width = 50, Height = 50, Source = second });
 
-		Assert.IsTrue(await secondResult.WaitAsync(TimeSpan.FromSeconds(10)), "A later BitmapImage for the same Uri should open");
-		Assert.AreEqual(100, second.PixelWidth);
-
-		GC.KeepAlive(firstImage);
-		GC.KeepAlive(secondImage);
+			Assert.IsTrue(await secondResult.WaitAsync(TimeSpan.FromSeconds(10)), "A later BitmapImage for the same Uri should open");
+			Assert.AreEqual(100, second.PixelWidth);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
@@ -140,29 +152,36 @@ public class Given_BitmapImage
 		server.FailNextRequest = true;
 		server.ReleaseResponses();
 
-		var first = new BitmapImage(server.Uri);
-		var firstResult = TrackOpen(first);
-		var firstImage = new Image { Source = first };
+		var panel = new StackPanel();
+		await UITestHelper.Load(panel, x => x.IsLoaded);
 
-		Assert.IsFalse(await firstResult.WaitAsync(TimeSpan.FromSeconds(10)), "The first BitmapImage should fail");
+		try
+		{
+			var first = new BitmapImage(server.Uri);
+			var firstResult = TrackOpen(first);
+			panel.Children.Add(new Image { Width = 50, Height = 50, Source = first });
+
+			Assert.IsFalse(await firstResult.WaitAsync(TimeSpan.FromSeconds(10)), "The first BitmapImage should fail");
 
 #if HAS_UNO
-		// The entry is dropped by a continuation on the load, so poll rather than assume it ran before ImageFailed.
-		await TestHelper.RetryAssert(
-			async () => Assert.IsNull(await BitmapImage.GetCachedImageDataTaskForTesting(server.Uri, null, null), "The failed load should have been dropped from the cache"),
-			count: 200);
+			// The entry is dropped by a continuation on the load, so poll rather than assume it ran before ImageFailed.
+			await TestHelper.RetryAssert(
+				async () => Assert.IsNull(await BitmapImage.GetCachedImageDataTaskForTesting(server.Uri, null, null), "The failed load should have been dropped from the cache"),
+				count: 200);
 #endif
 
-		var second = new BitmapImage(server.Uri);
-		var secondResult = TrackOpen(second);
-		var secondImage = new Image { Source = second };
+			var second = new BitmapImage(server.Uri);
+			var secondResult = TrackOpen(second);
+			panel.Children.Add(new Image { Width = 50, Height = 50, Source = second });
 
-		Assert.IsTrue(await secondResult.WaitAsync(TimeSpan.FromSeconds(10)), "A failed download must not be cached: the next BitmapImage should download again and open");
-		Assert.AreEqual(100, second.PixelWidth);
-		Assert.AreEqual(2, server.RequestCount, "The second BitmapImage should have downloaded again");
-
-		GC.KeepAlive(firstImage);
-		GC.KeepAlive(secondImage);
+			Assert.IsTrue(await secondResult.WaitAsync(TimeSpan.FromSeconds(10)), "A failed download must not be cached: the next BitmapImage should download again and open");
+			Assert.AreEqual(100, second.PixelWidth);
+			Assert.AreEqual(2, server.RequestCount, "The second BitmapImage should have downloaded again");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 
 	private static Task<bool> TrackOpen(BitmapImage image)
