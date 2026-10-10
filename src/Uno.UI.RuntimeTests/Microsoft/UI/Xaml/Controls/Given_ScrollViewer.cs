@@ -50,6 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		[RequiresFullWindow]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)] // tvOS: https://github.com/unoplatform/uno/issues/25151
+		[RequiresScaling(1f)] // Asserts exact measure/arrange sizes against the requested ones.
 		public async Task When_ScrollViewer_Resized()
 		{
 			var content = new Border
@@ -109,6 +110,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresScaling(1f)] // Compares the viewport against an exact pixel width.
 		public async Task When_Presenter_Doesnt_Take_Up_All_Space()
 		{
 			const int ContentWidth = 700;
@@ -390,6 +392,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		// WinAppSDK: KeyboardHelper is a no-op there.
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresScaling(1f)] // Page size derives from the viewport, which is not a whole number at other scales.
 		public async Task When_Home_End_PageDown_PageUp()
 		{
 			var border = new Border
@@ -828,8 +831,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not using animations
 		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
 		{
-			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
-			// we don't end up to invoke ScrollContentPresenter.Set again and again (preventing the ScrollContentPresenter.Update methohd to properly process its animation)
+			// A free-spinning wheel or a touchpad emits many events in quick succession. Each one must feed the
+			// motion already in flight rather than restart it, otherwise the presented displacement alternates
+			// between a large first step and a small tail and the scroll visibly judders.
 
 			FrameworkElement content;
 			var sut = new ScrollViewer
@@ -838,40 +842,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 100,
 				Content = content = new Border
 				{
-					Height = 200,
+					Height = 2000,
 					Background = new SolidColorBrush(Colors.Chartreuse)
 				},
 			};
 
 			var bounds = await UITestHelper.Load(sut);
-
 			var visual = ElementCompositionPreview.GetElementVisual(content);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
-
-			var initialAnimation = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			initialAnimation.Should().BeNull(because: "we have not scrolled yet");
-
 			mouse.MoveTo(bounds.GetCenter());
-			mouse.Wheel(-400, steps: 1);
 
-			// Here we assume that ScrollContentPresenter is using KeyFrameAnimation. If no longer the case, the test can be updated!
-			var scrollAnimation1 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation1.Should().NotBeNull(because: "we have requested scroll");
+			sut.VerticalOffset.Should().Be(0, because: "we have not scrolled yet");
 
-			// Scroll again in the same direction
-			mouse.Wheel(-200, steps: 1);
+			// Sample the visual position every frame so we see the motion, not the coalesced offset property.
+			var positions = new List<double>();
+			EventHandler<object> onRendering = (_, __) => positions.Add(-visual.AnchorPoint.Y);
+			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += onRendering;
+			try
+			{
+				for (var i = 0; i < 6; i++)
+				{
+					mouse.Wheel(-120, steps: 1);
+					await Task.Delay(50);
+				}
 
-			var scrollAnimation2 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation2.Should().Be(scrollAnimation1, because: "the wheel event has no effect");
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			}
+			finally
+			{
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= onRendering;
+			}
 
-			// But if we scroll in the opposite direction, the animation should be stopped and replaced
-			// (this basically confirm that the test is working -i.e the animation is not being re-used)
-			mouse.Wheel(+200, steps: 1);
+			sut.VerticalOffset.Should().BeGreaterThan(0, because: "the wheel events must scroll");
 
-			var scrollAnimation3 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation3.Should().NotBe(scrollAnimation1, because: "the wheel event should scroll in the opposite direction");
+			// Monotonic: a restart-per-event model overshoots and settles back, which reads as a stutter.
+			for (var i = 1; i < positions.Count; i++)
+			{
+				positions[i].Should().BeGreaterThanOrEqualTo(
+					positions[i - 1] - 0.01,
+					because: $"same-direction wheel motion must never reverse (frame {i} of {positions.Count})");
+			}
+
+			// The opposite direction must take effect rather than being swallowed by the motion in flight.
+			var beforeReverse = sut.VerticalOffset;
+			mouse.Wheel(+240, steps: 1);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			sut.VerticalOffset.Should().BeLessThan(beforeReverse, because: "the wheel event should scroll in the opposite direction");
 		}
 #endif
 
@@ -1211,6 +1230,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)] // Asserts an exact extent/viewport match, which rounding at other scales breaks.
 		public async Task When_NonRound_Content_Height()
 		{
 			var outerScrollViewer = new ScrollViewer()
@@ -1812,11 +1832,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				steps: 1,
 				stepOffsetInMilliseconds: 1);
 
-			await UITestHelper.WaitForRender();
+			// Polled rather than a single render: launch velocity is capped, so an injected flick this fast
+			// coasts to the edge over several frames instead of arriving within one.
+			await WindowHelper.WaitFor(
+				() => Math.Abs(childEndOffset - child.VerticalOffset) < 1,
+				timeoutMS: 3000,
+				message: $"the child should coast to its end, got {child.VerticalOffset} of {childEndOffset}");
 
 			Assert.AreEqual(0, parent.VerticalOffset);
-			Assert.IsLessThan(1d, Math.Abs(childEndOffset - child.VerticalOffset),
-				$"abs(childEndOffset - child.VerticalOffset)={Math.Abs(childEndOffset - child.VerticalOffset)}, expected to be < 1");
 		}
 
 		[TestMethod]
@@ -2017,6 +2040,1137 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// The scroll offset should remain 0 — there's nothing to scroll
 			Assert.AreEqual(0d, sut.VerticalOffset, "Should not have scrolled");
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_ChangeView_Past_Extent_Then_Extent_Growth_Does_Not_Chase_It(bool disableAnimation)
+		{
+			// WinUI validates the requested offset against the range at request time: growing the extent
+			// afterwards leaves the offset where the request was clamped, rather than chasing the raw value
+			// (which, with incremental loading, loads batch after batch).
+			var content = new Border { Width = 180, Height = 1000, Background = new SolidColorBrush(Colors.DeepPink) };
+			var SUT = new ScrollViewer { Width = 200, Height = 600, VerticalAlignment = VerticalAlignment.Top, Content = content };
+			await UITestHelper.Load(SUT);
+
+			SUT.ChangeView(null, 10000, null, disableAnimation);
+			await WindowHelper.WaitForEqual(400, () => SUT.VerticalOffset);
+
+			content.Height = 3000;
+			await WindowHelper.WaitForEqual(2400, () => SUT.ScrollableHeight);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
+
+			Assert.AreEqual(400, SUT.VerticalOffset, "The offset chased the request past the extent it was clamped to.");
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Fling_Then_DistanceMatchesTheGesture()
+		{
+			// Inertia distance grows with the square of the launch velocity, so a velocity taken from the
+			// last two samples — which can catch one short interval — sends the content orders of magnitude
+			// too far. Fitting over the recent gesture keeps the fling proportionate to the flick.
+			var content = new Border { Width = 380, Height = 60000, Background = new SolidColorBrush(Colors.DeepPink) };
+			var SUT = new ScrollViewer { Width = 400, Height = 600, Content = content, IsScrollInertiaEnabled = true };
+			var bounds = await UITestHelper.Load(SUT);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			double dragDistance;
+			using (var finger = input.GetFinger())
+			{
+				var c = bounds.GetCenter();
+				finger.Press(c);
+				for (var i = 1; i <= 12; i++)
+				{
+					finger.MoveTo(c.Offset(0, -i * 22d), steps: 1);
+					await Task.Delay(8);
+				}
+
+				dragDistance = SUT.VerticalOffset;
+				finger.Release();
+			}
+
+			await Task.Delay(3000);
+			await WindowHelper.WaitForIdle();
+
+			var inertiaDistance = SUT.VerticalOffset - dragDistance;
+
+			inertiaDistance.Should().BeGreaterThan(0, because: "a flick must produce a fling");
+			inertiaDistance.Should().BeLessThan(
+				dragDistance * 30,
+				because: $"the fling must stay proportionate to the {dragDistance:F0}px flick that launched it");
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // ScrollViewer.UpdatesMode is Uno-specific
+		public async Task When_SlowTouchDrag_Then_ScrollAdvancesEveryMove()
+		{
+#if HAS_UNO
+			// The manipulation delta threshold that bounds public ManipulationDelta volume must not reach
+			// the scroll path, where it acts as a motion quantizer: below 2 logical px the content would not
+			// move at all, then jump the whole accumulated amount, so a slow drag advances every other frame.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				IsScrollInertiaEnabled = false,
+				UpdatesMode = Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			var start = SUT.GetAbsoluteBounds().GetCenter();
+			finger.Press(start);
+
+			// Cross the manipulation start threshold first; only then are deltas fed to the scroll.
+			var current = start.Offset(0, -30);
+			finger.MoveTo(current, steps: 1);
+			await WindowHelper.WaitForIdle();
+
+			const int Moves = 6;
+			var offsets = new List<double>();
+			for (var i = 0; i < Moves; i++)
+			{
+				current = current.Offset(0, -1);
+				finger.MoveTo(current, steps: 1);
+				await WindowHelper.WaitForIdle();
+				offsets.Add(SUT.VerticalOffset);
+			}
+
+			finger.Release();
+
+			var advanced = 0;
+			for (var i = 1; i < offsets.Count; i++)
+			{
+				if (offsets[i] > offsets[i - 1])
+				{
+					advanced++;
+				}
+			}
+
+			Assert.AreEqual(
+				Moves - 1,
+				advanced,
+				$"Every 1px move should advance the offset, got [{string.Join(", ", offsets)}].");
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // ScrollViewer.UpdatesMode is Uno-specific
+		public async Task When_Flick_Released_Past_Last_Move_Then_Release_Delta_Is_Applied()
+		{
+#if HAS_UNO
+			// The recognizer commits the release's own delta without raising Updated for it, so the
+			// fling hand-off is the only place that can apply it before the coast starts.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				IsScrollInertiaEnabled = true,
+				UpdatesMode = Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+				Content = new Border { Width = 180, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			var bounds = await UITestHelper.Load(SUT);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			var current = bounds.GetCenter().Offset(0, 70);
+			finger.Press(current);
+			for (var i = 0; i < 8; i++)
+			{
+				current = current.Offset(0, -10);
+				finger.MoveTo(current, steps: 1);
+				await Task.Delay(8);
+			}
+
+			var dragged = SUT.VerticalOffset;
+
+			// No await between the release and the read: the fling has not ticked a single frame yet.
+			const double ReleaseDelta = 60;
+			finger.Release(current.Offset(0, -ReleaseDelta));
+			var released = SUT.VerticalOffset;
+
+			Assert.AreEqual(
+				dragged + ReleaseDelta,
+				released,
+				delta: 1,
+				$"The release moved the finger {ReleaseDelta}px further, but the content only followed by {released - dragged}px.");
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Railed_Flick_Drifts_Sideways_Then_Fling_Stays_On_Its_Axis()
+		{
+#if HAS_INPUT_INJECTOR
+			// The rail locks the drag to its axis, so the fling launched by it must stay there too, even though the
+			// finger itself drifted sideways.
+			var SUT = new ScrollViewer
+			{
+				Width = 300,
+				Height = 300,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				IsHorizontalRailEnabled = true,
+				IsVerticalRailEnabled = true,
+				IsScrollInertiaEnabled = true,
+				Content = new Border { Width = 3000, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			try
+			{
+				var bounds = await UITestHelper.Load(SUT);
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				using (var finger = input.GetFinger())
+				{
+					var current = bounds.GetCenter().Offset(0, 100);
+					finger.Press(current);
+					for (var i = 0; i < 10; i++)
+					{
+						current = current.Offset(-2, -15);
+						finger.MoveTo(current, steps: 1);
+						await Task.Delay(8);
+					}
+
+					finger.Release();
+				}
+
+				await WaitForOffsetToSettle(SUT);
+
+				Assert.IsGreaterThan(100d, SUT.VerticalOffset, "The flick did not fling.");
+				Assert.AreEqual(0d, SUT.HorizontalOffset, "The fling left the rail the drag was locked to.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Finger_Rests_Before_Lifting_Then_It_Does_Not_Fling_At_Drag_Speed()
+		{
+#if HAS_INPUT_INJECTOR
+			// A finger held still sends no moves, so only the release reveals the pause: the samples of the fast drag
+			// before it are stale, and launching at their velocity would throw the content.
+			var SUT = new ScrollViewer
+			{
+				Width = 300,
+				Height = 300,
+				IsScrollInertiaEnabled = true,
+				Content = new Border { Width = 280, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			try
+			{
+				var bounds = await UITestHelper.Load(SUT);
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				var finger = input.GetFinger();
+				var current = bounds.GetCenter().Offset(0, 100);
+				finger.Press(current);
+				for (var i = 0; i < 10; i++)
+				{
+					current = current.Offset(0, -15);
+					finger.MoveTo(current, steps: 1);
+				}
+
+				var dragged = SUT.VerticalOffset;
+
+				// Released 150ms after the last move, where it was.
+				var release = Uno.UI.DevTools.Input.Finger.GetRelease(42, current);
+				var info = release.PointerInfo;
+				info.TimeOffsetInMilliseconds = 150;
+				release.PointerInfo = info;
+				input.InjectTouchInput(new[] { release });
+
+				await WaitForOffsetToSettle(SUT);
+
+				// The drag ran at 15px/ms: a fling at that speed would coast thousands of pixels.
+				Assert.IsLessThan(200d, SUT.VerticalOffset - dragged, $"The content coasted {SUT.VerticalOffset - dragged:F0}px after a finger that had come to rest.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR || !__SKIA__
+		[Ignore("Frame drivers are specific to the Skia compositor, and the flick needs the input injector.")]
+#endif
+		public async Task When_Unloaded_Mid_Fling_Then_Frame_Driver_Is_Released()
+		{
+#if HAS_INPUT_INJECTOR && __SKIA__
+			// A fling hooks a frame driver onto the target it resolved through its visual, and the compositor
+			// reports the count for the whole process. Unloading mid-fling is the case with no net under it: the
+			// window stays registered, so nothing else ever drops a driver left behind here, and it re-requests a
+			// frame for the rest of the process' life.
+			var content = new Border { Width = 380, Height = 60000, Background = new SolidColorBrush(Colors.DeepPink) };
+			var SUT = new ScrollViewer { Width = 400, Height = 600, Content = content, IsScrollInertiaEnabled = true };
+
+			try
+			{
+				var bounds = await UITestHelper.Load(SUT);
+
+				await WindowHelper.WaitFor(
+					() => !IsAnimating(),
+					timeoutMS: 3000,
+					message: "the compositor was already animating before the flick, so this test cannot measure anything");
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				await FlickUp(input, bounds.GetCenter());
+
+				await WindowHelper.WaitFor(() => IsAnimating(), timeoutMS: 2000, message: "the flick did not start a fling");
+
+				// Torn down while it coasts: the presenter has to unhook from the target it hooked to, which its
+				// visual no longer resolves once unloaded.
+				WindowHelper.WindowContent = null;
+
+				await WindowHelper.WaitFor(
+					() => !IsAnimating(),
+					timeoutMS: 5000,
+					message: "a frame driver outlived the ScrollViewer that was unloaded mid-fling");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+
+			static bool IsAnimating() => Compositor.GetSharedCompositor().IsAnimating;
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Wheel_During_Fling_Then_Offset_Never_Goes_Backwards()
+		{
+#if HAS_INPUT_INJECTOR
+			// The wheel decay and the touch fling write the same offsets from the same frame clock, so a notch
+			// arriving mid-fling has to take the motion over. Two live drivers alternate their own positions and
+			// the content steps backwards on every other frame.
+			var content = new Border { Width = 380, Height = 60000, Background = new SolidColorBrush(Colors.DeepPink) };
+			var SUT = new ScrollViewer { Width = 400, Height = 600, Content = content, IsScrollInertiaEnabled = true };
+
+			try
+			{
+				var bounds = await UITestHelper.Load(SUT);
+
+				var published = new List<double>();
+				SUT.ViewChanged += (_, _) => published.Add(SUT.VerticalOffset);
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				await FlickUp(input, bounds.GetCenter());
+
+				var afterDrag = SUT.VerticalOffset;
+				await WindowHelper.WaitFor(
+					() => SUT.VerticalOffset > afterDrag + 20,
+					timeoutMS: 2000,
+					message: "the flick did not produce a fling");
+
+				// Same direction as the fling, while it is still coasting.
+				using var mouse = input.GetMouse();
+				mouse.MoveTo(bounds.GetCenter());
+				mouse.WheelDown();
+
+				// Sampled across real time rather than idle round-trips, which can both land inside one frame.
+				var settled = false;
+				for (var i = 0; i < 40 && !settled; i++)
+				{
+					var previous = SUT.VerticalOffset;
+					await Task.Delay(100);
+					await WindowHelper.WaitForIdle();
+					settled = SUT.VerticalOffset == previous;
+				}
+
+				Assert.IsTrue(settled, "The scroll never came to rest.");
+
+				for (var i = 1; i < published.Count; i++)
+				{
+					Assert.IsTrue(
+						published[i] >= published[i - 1] - 0.5,
+						$"The offset went backwards from {published[i - 1]:F1} to {published[i]:F1} " +
+						$"(published: [{string.Join(", ", published.Select(o => o.ToString("F1")))}]).");
+				}
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Tap_During_Fling_Then_It_Stops_And_Is_Not_Delivered()
+		{
+#if HAS_INPUT_INJECTOR
+			// Like WinUI, a press on coasting content stops it and is consumed: delivering it would invoke
+			// whatever is under the finger, when the user was only trying to stop the list.
+			var content = new Border { Width = 380, Height = 60000, Background = new SolidColorBrush(Colors.DeepPink) };
+			var SUT = new ScrollViewer { Width = 400, Height = 600, Content = content, IsScrollInertiaEnabled = true };
+
+			var events = new List<string>();
+			content.PointerPressed += (_, _) => events.Add("pressed");
+			content.PointerReleased += (_, _) => events.Add("released");
+
+			try
+			{
+				var bounds = await UITestHelper.Load(SUT);
+				var centre = bounds.GetCenter();
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				await FlickUp(input, centre);
+
+				var afterDrag = SUT.VerticalOffset;
+				await WindowHelper.WaitFor(
+					() => SUT.VerticalOffset > afterDrag + 20,
+					timeoutMS: 2000,
+					message: "the flick did not produce a fling");
+
+				events.Clear();
+
+				using (var finger = input.GetFinger())
+				{
+					finger.Press(centre);
+					finger.Release();
+				}
+
+				var stopped = SUT.VerticalOffset;
+
+				// Long enough that a fling still coasting at flick speed would have moved tens of pixels.
+				await Task.Delay(250);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(stopped, SUT.VerticalOffset, delta: 1, "The tap did not stop the coasting content.");
+
+				// The press is redirected to the inertial manipulation before it is even hit-tested
+				// (BeforePressTryRedirectToManipulations), so nothing under the finger sees it.
+				Assert.AreEqual(
+					0,
+					events.Count,
+					$"The stopping press was delivered to the content under the finger (got [{string.Join(", ", events)}]).");
+
+				// Positive control: once nothing is coasting, the same tap must reach the content — otherwise
+				// the assertion above would also hold for a presenter that swallowed every press.
+				events.Clear();
+				using (var finger = input.GetFinger())
+				{
+					finger.Press(centre);
+					finger.Release();
+				}
+
+				await WindowHelper.WaitForIdle();
+
+				CollectionAssert.Contains(events, "pressed", "A tap on settled content must still reach it.");
+				CollectionAssert.Contains(events, "released", "A tap on settled content must still reach it.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Fling_Is_Interrupted_Then_Final_Offset_Is_Published()
+		{
+#if HAS_INPUT_INJECTOR
+			// Every scroll has to end on ViewChanged(IsIntermediate: false) — that is what consumers commit on.
+			// A fling cut short by a press is the case with no frame left to publish it.
+			var content = new Border { Width = 380, Height = 60000, Background = new SolidColorBrush(Colors.DeepPink) };
+			var SUT = new ScrollViewer { Width = 400, Height = 600, Content = content, IsScrollInertiaEnabled = true };
+
+			var records = new List<bool>();
+			SUT.ViewChanged += (_, e) => records.Add(e.IsIntermediate);
+
+			try
+			{
+				var bounds = await UITestHelper.Load(SUT);
+				var centre = bounds.GetCenter();
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				await FlickUp(input, centre);
+
+				var afterDrag = SUT.VerticalOffset;
+				await WindowHelper.WaitFor(
+					() => SUT.VerticalOffset > afterDrag + 20,
+					timeoutMS: 2000,
+					message: "the flick did not produce a fling");
+
+				using (var finger = input.GetFinger())
+				{
+					finger.Press(centre);
+					finger.Release();
+				}
+
+				await WindowHelper.WaitFor(
+					() => records.Count > 0 && !records[^1],
+					timeoutMS: 2000,
+					message: "the interrupted fling never published a final, non-intermediate offset");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_UNO
+		[Ignore("The scroll simulations are internal to Uno.")]
+#endif
+		public void When_Fling_Launch_Velocity_Is_Absurd_Then_Distance_Is_Bounded()
+		{
+#if HAS_UNO
+			// A UI stall drops the velocity tracker's pre-stall samples, so the fit sees a drained input burst
+			// and reports a launch orders of magnitude too fast. Clamping it is what keeps a flick from
+			// teleporting to the end of the extent.
+			var clamped = ScrollFlingSimulation.Create(0, 5000);
+			var absurd = ScrollFlingSimulation.Create(0, 5_000_000);
+
+			Assert.AreEqual(
+				clamped.FinalPosition,
+				absurd.FinalPosition,
+				delta: 0.001,
+				$"An absurd launch travelled {absurd.FinalPosition:F0}px, not the clamped {clamped.FinalPosition:F0}px.");
+
+			Assert.IsTrue(
+				Math.Abs(absurd.FinalPosition) < 10_000,
+				$"An absurd launch is still unbounded, it travelled {absurd.FinalPosition:F0}px.");
+
+			// Symmetric, so a flick in either direction is capped the same way.
+			var backwards = ScrollFlingSimulation.Create(0, -5_000_000);
+			Assert.AreEqual(-clamped.FinalPosition, backwards.FinalPosition, delta: 0.001);
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_UNO
+		[Ignore("The scroll simulations are internal to Uno.")]
+#endif
+		public void When_Fling_Starts_Then_It_Leaves_From_Its_Launch()
+		{
+#if HAS_UNO
+			// Create picks the platform's own curve, so this runs against whichever family this runner is; both
+			// have to agree with the gesture at t=0, or the first inertial frame jumps away from the finger.
+			const double Start = 120;
+			const double Velocity = 2000;
+
+			var fling = ScrollFlingSimulation.Create(Start, Velocity);
+
+			Assert.AreEqual(Start, fling.GetPosition(0), delta: 0.001, "The fling did not start where the drag ended.");
+			Assert.AreEqual(Velocity, fling.GetVelocity(0), delta: 0.001, "The fling did not start at its launch velocity.");
+
+			// The reported velocity must be the curve's own slope, not a separate number.
+			const double H = 1e-4;
+			var slope = (fling.GetPosition(H) - fling.GetPosition(0)) / H;
+			Assert.AreEqual(
+				Velocity,
+				slope,
+				delta: Velocity * 0.01,
+				$"The curve leaves at {slope:F0}px/s while reporting {Velocity:F0}px/s.");
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_UNO
+		[Ignore("The scroll simulations are internal to Uno.")]
+#endif
+		[DataRow(300d)]
+		[DataRow(2000d)]
+		[DataRow(-4500d)]
+		public void When_Android_Fling_Then_It_Follows_OverScroller(double velocity)
+		{
+#if HAS_UNO
+			// Reference values from AOSP OverScroller.SplineOverScroller, in dp: Uno's logical pixel on Android.
+			const double DecelerationRate = 2.3582017;
+			const double Inflexion = 0.35;
+			const double FlingFriction = 0.015;
+			const double PhysicalCoefficient = 9.80665 * 39.37 * 160.0 * 0.84; // SplineOverScroller.computeDeceleration, per dp
+
+			var l = Math.Log(Inflexion * Math.Abs(velocity) / (FlingFriction * PhysicalCoefficient));
+			var expectedDuration = Math.Exp(l / (DecelerationRate - 1.0)); // getSplineFlingDuration, in seconds
+			var expectedDistance = Math.Sign(velocity) * FlingFriction * PhysicalCoefficient * Math.Exp(DecelerationRate / (DecelerationRate - 1.0) * l); // getSplineFlingDistance
+
+			var fling = ScrollFlingSimulation.Create(0, velocity, isApple: false, logicalPixelsPerInch: 160);
+
+			Assert.AreEqual(expectedDuration, fling.Duration, delta: expectedDuration * 1e-6, "The fling does not last as long as OverScroller's.");
+			Assert.AreEqual(expectedDistance, fling.FinalPosition, delta: Math.Abs(expectedDistance) * 1e-6, "The fling does not travel as far as OverScroller's.");
+			Assert.AreEqual(expectedDistance, fling.GetPosition(fling.Duration), delta: 1e-6, "The fling does not end at its final position.");
+			Assert.AreEqual(0, fling.GetVelocity(fling.Duration), delta: 1e-6, "The fling is still moving when its duration is over.");
+			Assert.AreEqual(velocity, fling.GetVelocity(0), delta: Math.Abs(velocity) * 1e-6, "The fling did not start at its launch velocity.");
+
+			// OverScroller samples the spline into SPLINE_POSITION (NB_SAMPLES = 100) with this exact loop.
+			var splinePosition = new double[101];
+			float xMin = 0;
+			for (var i = 0; i < 100; i++)
+			{
+				var alpha = (float)i / 100;
+				float xMax = 1, x, coef;
+				while (true)
+				{
+					x = xMin + (xMax - xMin) / 2.0f;
+					coef = 3.0f * x * (1.0f - x);
+					var tx = coef * ((1.0f - x) * 0.175f + x * 0.35f) + x * x * x;
+					if (Math.Abs(tx - alpha) < 1E-5)
+					{
+						break;
+					}
+
+					if (tx > alpha)
+					{
+						xMax = x;
+					}
+					else
+					{
+						xMin = x;
+					}
+				}
+
+				splinePosition[i] = coef * ((1.0f - x) * 0.5f + x) + x * x * x;
+			}
+
+			splinePosition[100] = 1;
+
+			for (var i = 0; i <= 100; i++)
+			{
+				var t = i / 100.0 * expectedDuration;
+				Assert.AreEqual(
+					splinePosition[i] * expectedDistance,
+					fling.GetPosition(t),
+					delta: Math.Abs(expectedDistance) * 1e-4,
+					$"The fling leaves OverScroller's spline at {i}% of its duration.");
+			}
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaMacOS)] // Apple wheels apply each event immediately
+		public async Task When_Wheel_Notches_In_A_Row_Then_One_Final_ViewChanged()
+		{
+#if HAS_INPUT_INJECTOR
+			// A notch adds to the motion in flight rather than restarting it, so the scroll only ends, and
+			// reports a final offset, once after the last one.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new Border { Width = 180, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			var bounds = await UITestHelper.Load(SUT);
+
+			var finals = 0;
+			SUT.ViewChanged += (_, e) =>
+			{
+				if (!e.IsIntermediate)
+				{
+					finals++;
+				}
+			};
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var mouse = input.GetMouse();
+			mouse.MoveTo(bounds.GetCenter());
+
+			for (var i = 0; i < 5; i++)
+			{
+				mouse.WheelDown();
+				await Task.Delay(30);
+			}
+
+			await WindowHelper.WaitFor(() => finals > 0, timeoutMS: 3000, message: "the wheel scroll never completed");
+			await Task.Delay(200);
+
+			Assert.AreEqual(1, finals, "Each notch ended the scroll in flight instead of adding to it.");
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaMacOS)] // Apple wheels apply each event immediately
+		public async Task When_Wheel_Delta_Too_Fine_To_Scroll_Then_It_Does_Not_Chain()
+		{
+#if HAS_INPUT_INJECTOR
+			// A precision delta rounds to no whole pixel on a small viewport (step max(48, 15%)), but to one pixel
+			// on a large one: the inner ScrollViewer still owns it, so the page around it must not move.
+			var inner = new ScrollViewer
+			{
+				Width = 200,
+				Height = 100,
+				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			// 450px is the smallest viewport whose step (15%) still rounds a delta of 1 to a whole pixel.
+			var outer = new ScrollViewer
+			{
+				Width = 300,
+				Height = 450,
+				VerticalAlignment = VerticalAlignment.Top,
+				Content = new StackPanel { Children = { inner, new Border { Height = 4000 } } },
+			};
+
+			try
+			{
+				await UITestHelper.Load(outer);
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				using var mouse = input.GetMouse();
+				mouse.MoveTo(inner.GetAbsoluteBounds().GetCenter());
+				mouse.Wheel(-1);
+
+				await Task.Delay(300);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, outer.VerticalOffset, $"A wheel delta the inner ScrollViewer could not round to a pixel scrolled the outer one (inner moved {inner.VerticalOffset}).");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.NativeWinUI)] // Apple wheels apply each event immediately; UpdatesMode is Uno-specific
+		public async Task When_Wheel_During_Animated_ChangeView_Then_It_Continues_From_The_Drawn_Offset()
+		{
+#if HAS_INPUT_INJECTOR && HAS_UNO
+			// An animated ChangeView moves the offsets to its target up front and lets the content catch up. A notch
+			// in flight takes over from where the content is drawn; starting from the target would jump there.
+			const double Target = 5000;
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				UpdatesMode = Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+				Content = new Border { Width = 180, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			try
+			{
+				var bounds = await UITestHelper.Load(SUT);
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				using var mouse = input.GetMouse();
+				mouse.MoveTo(bounds.GetCenter());
+
+				SUT.ChangeView(null, Target, null, disableAnimation: false);
+				await WindowHelper.WaitFor(() => SUT.VerticalOffset > 0, timeoutMS: 2000, message: "the animated ChangeView never started");
+
+				// No await from the read to the notch, so no frame moves the content in between.
+				var drawn = SUT.VerticalOffset;
+				if (drawn >= Target * 0.9)
+				{
+					Assert.Inconclusive($"The animation had almost completed ({drawn}) before the notch could be injected.");
+				}
+
+				// The animation the notch takes over from ends without having reached its target: only the wheel's
+				// own motion may report the scroll as finished.
+				var finals = 0;
+				SUT.ViewChanged += (_, e) => finals += e.IsIntermediate ? 0 : 1;
+
+				mouse.WheelDown();
+
+				await WaitForOffsetToSettle(SUT);
+				await WindowHelper.WaitForIdle();
+
+				// One notch on a 200px viewport scrolls max(48, 15% of 200) = 48px.
+				Assert.AreEqual(drawn + 48, SUT.VerticalOffset, delta: 2, $"The notch did not continue from the drawn offset {drawn}.");
+				Assert.AreEqual(1, finals, "The scroll was reported as finished before the wheel motion ended.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+#if HAS_INPUT_INJECTOR // only the injected wheel and fling tests use it
+		// A slow agent can go 150ms without a frame, so a single unchanged read is not the end of the motion.
+		private static async Task WaitForOffsetToSettle(ScrollViewer sv)
+		{
+			var last = double.NaN;
+			var stableReads = 0;
+			for (var i = 0; i < 60 && stableReads < 3; i++)
+			{
+				stableReads = sv.VerticalOffset == last ? stableReads + 1 : 0;
+				last = sv.VerticalOffset;
+				await Task.Delay(150);
+			}
+		}
+#endif
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaMacOS)] // Apple wheels apply each event immediately
+		public async Task When_Unloaded_Mid_Wheel_Decay_Then_Final_Offset_Is_Published()
+		{
+#if HAS_INPUT_INJECTOR
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new Border { Width = 180, Height = 20000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			var events = new List<bool>();
+			SUT.ViewChanged += (_, e) => events.Add(e.IsIntermediate);
+
+			try
+			{
+				var bounds = await UITestHelper.Load(SUT);
+
+				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+				using var mouse = input.GetMouse();
+				mouse.MoveTo(bounds.GetCenter());
+				for (var i = 0; i < 5; i++)
+				{
+					mouse.WheelDown();
+				}
+
+				await WindowHelper.WaitFor(() => events.Count > 0, timeoutMS: 2000, message: "the wheel decay never started");
+				if (!events[^1])
+				{
+					Assert.Inconclusive("The wheel decay ended before it could be cut short.");
+				}
+
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(events[^1], "Unloading cut the wheel decay short without publishing a final offset.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_UNO
+		[Ignore("The scroll simulations are internal to Uno.")]
+#endif
+		public void When_Wheel_Impulse_Then_Decay_Rests_Where_It_Was_Projected()
+		{
+#if HAS_UNO
+			// A detent is an impulse carrying a known distance, and wheel chaining decides whether there is room
+			// left from where the motion in flight will come to rest — so the projection has to be the truth.
+			const double Origin = 40;
+			const double Distance = 250;
+			const int MaxFrames = 600;
+
+			ScrollDecaySimulation decay = new();
+			decay.Start(Origin, TimeSpan.TicksPerSecond / 60);
+			decay.AddImpulse(Distance);
+
+			Assert.AreEqual(Origin + Distance, decay.ProjectedEnd, delta: 0.001, "The impulse does not project to the distance it carries.");
+
+			var timestamp = 0L;
+			var frames = 0;
+			while (decay.Tick(timestamp += TimeSpan.TicksPerSecond / 60, 0, 10_000) && ++frames < MaxFrames)
+			{
+			}
+
+			Assert.IsTrue(frames < MaxFrames, "The decay never settled.");
+
+			Assert.AreEqual(
+				Origin + Distance,
+				decay.Position,
+				delta: 0.001,
+				$"Integrating the decay came to rest at {decay.Position:F2}, not at its projected {Origin + Distance:F2}.");
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_UNO
+		[Ignore("The scroll simulations are internal to Uno.")]
+#endif
+		[DataRow(30)]
+		[DataRow(60)]
+		[DataRow(144)]
+		public void When_Wheel_Detents_Then_Decay_Lands_On_Whole_Pixels(int framesPerSecond)
+		{
+#if HAS_UNO
+			// Whole-pixel detents must land on whole pixels, and exactly on the extent's end: an offset a hair short
+			// of ScrollableHeight still reports room left, and is not the end the user scrolled to.
+			var interval = TimeSpan.TicksPerSecond / framesPerSecond;
+			var timestamp = 0L;
+
+			ScrollDecaySimulation decay = new();
+			decay.Start(0, interval);
+			for (var i = 0; i < 5; i++)
+			{
+				decay.AddImpulse(4);
+			}
+
+			Settle(ref decay, max: 1000);
+			Assert.AreEqual(20, decay.Position, "Five 4px detents did not land on 20.");
+
+			decay.Start(decay.Position, interval);
+			for (var i = 0; i < 3; i++)
+			{
+				decay.AddImpulse(20);
+			}
+
+			Assert.AreEqual(80, decay.ProjectedEnd, "Three 20px detents from 20 do not project to 80.");
+			Settle(ref decay, max: 80);
+			Assert.AreEqual(80, decay.Position, "The detents that reach the end of the extent did not land on it.");
+
+			void Settle(ref ScrollDecaySimulation decay, double max)
+			{
+				var frames = 0;
+				while (decay.Tick(timestamp += interval, 0, max) && ++frames < 1000)
+				{
+				}
+			}
+#endif
+		}
+
+		[TestMethod]
+		public async Task When_ChangeView_Animated_Short_Distance_Then_Settles_Quickly()
+		{
+			// Like WinUI's ScrollViewer, the animation lasts 1.4ms per physical pixel within [175ms, 475ms], so a
+			// short hop settles quickly.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			await UITestHelper.Load(SUT);
+
+			var completed = new TaskCompletionSource();
+			SUT.ViewChanged += (_, e) =>
+			{
+				if (!e.IsIntermediate)
+				{
+					completed.TrySetResult();
+				}
+			};
+
+			var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+			SUT.ChangeView(null, 20, null, disableAnimation: false);
+			await Task.WhenAny(completed.Task, Task.Delay(3000));
+			stopwatch.Stop();
+
+			Assert.IsTrue(completed.Task.IsCompleted, "The animated scroll never completed.");
+			Assert.AreEqual(20, SUT.VerticalOffset, 0.5);
+			// Well under the full second a fixed-duration animation would take, with room for slow agents' frames.
+			Assert.IsTrue(stopwatch.ElapsedMilliseconds < 800, $"A 20px animated scroll took {stopwatch.ElapsedMilliseconds}ms.");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ChangeView_Animated_Then_Eases_Like_WinUI()
+		{
+			// Measured on WinUI's ScrollViewer: a quartic ease-out over 475ms for a long scroll. It leaves fast: 89% of
+			// the distance 200ms in, where a gentle cubic bezier (the composition default) is at 41%.
+			const double Distance = 1500;
+			var content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) };
+			var SUT = new ScrollViewer { Width = 200, Height = 200, Content = content };
+			await UITestHelper.Load(SUT);
+
+			var visual = ElementCompositionPreview.GetElementVisual(content);
+			var stopwatch = new System.Diagnostics.Stopwatch();
+			var samples = new List<(double Ms, double Offset)>();
+			EventHandler<object> onRendering = (_, _) => samples.Add((stopwatch.Elapsed.TotalMilliseconds, -visual.AnchorPoint.Y));
+
+			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += onRendering;
+			try
+			{
+				stopwatch.Start();
+				SUT.ChangeView(null, Distance, null, disableAnimation: false); // far enough for the longest duration
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			}
+			finally
+			{
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= onRendering;
+			}
+
+			const double Duration = 475;
+			static double Quartic(double ms) => 1 - Math.Pow(1 - Math.Clamp(ms / Duration, 0, 1), 4);
+
+			// The animation starts on a frame that still draws its origin, and each sample reads the value of the frame
+			// before it: it started between two samples before the first one that moved and that one. Timing from
+			// there keeps however long the first frame took out of the check.
+			var firstMove = samples.FindIndex(sample => sample.Offset > 0);
+			Assert.IsGreaterThan(0, firstMove, "The scroll never moved, or moved before it was requested.");
+			var earliestStart = firstMove >= 2 ? samples[firstMove - 2].Ms : 0;
+			var latestStart = samples[firstMove].Ms;
+
+			for (var i = firstMove; i < samples.Count; i++)
+			{
+				var progress = samples[i].Offset / Distance;
+				var lower = Quartic(samples[i - 1].Ms - latestStart) - 0.02;
+				var upper = Quartic(samples[i].Ms - earliestStart) + 0.02;
+				Assert.IsTrue(
+					progress >= lower && progress <= upper,
+					$"{samples[i].Ms - latestStart:F0}ms in, the scroll covered {progress:P0} of its distance, outside [{lower:P0}, {upper:P0}].");
+			}
+
+			Assert.AreEqual(Distance, SUT.VerticalOffset);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ChangeView_Animated_Then_Final_Offset_Is_The_Target()
+		{
+			// The final ViewChanged reports where the animated scroll ended.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			await UITestHelper.Load(SUT);
+
+			double? final = null;
+			SUT.ViewChanged += (_, e) =>
+			{
+				if (!e.IsIntermediate)
+				{
+					final = SUT.VerticalOffset;
+				}
+			};
+
+			SUT.ChangeView(null, 1500, null, disableAnimation: false);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await WindowHelper.WaitFor(() => final is not null);
+
+			Assert.AreEqual(1500, final);
+			Assert.AreEqual(1500, SUT.VerticalOffset);
+		}
+
+		[TestMethod]
+#if !HAS_UNO
+		[Ignore("IsInMotion is internal to Uno.")]
+#endif
+		public async Task When_ChangeView_Animated_Then_In_Motion_Until_Final_ViewChanged()
+		{
+#if HAS_UNO
+			// Code deferring to a running scroll (FlipView's offset fix) must not see it end before its last frame,
+			// which lands after the animation's wall-clock duration whenever that frame is late.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			await UITestHelper.Load(SUT);
+			var presenter = SUT.Presenter!;
+
+			var isStarted = false;
+			var isFinal = false;
+			SUT.ViewChanged += (_, e) =>
+			{
+				isStarted = true;
+				isFinal |= !e.IsIntermediate;
+			};
+
+			SUT.ChangeView(null, 1500, null, disableAnimation: false);
+			await WindowHelper.WaitFor(() => isStarted);
+
+			// Outlast the longest scroll animation (475ms) between two of its frames.
+			System.Threading.Thread.Sleep(600);
+
+			Assert.IsFalse(isFinal);
+			Assert.IsTrue(presenter.IsInMotion, "Out of motion before the animation applied its last frame.");
+
+			await WindowHelper.WaitFor(() => isFinal, timeoutMS: 5000);
+
+			Assert.AreEqual(1500, SUT.VerticalOffset);
+			Assert.IsFalse(presenter.IsInMotion, "Still in motion after the final ViewChanged.");
+#endif
+		}
+
+		// A flick fast enough to launch a fling: the velocity tracker fits the recent gesture, so it needs
+		// several moves spread over real time rather than one long jump.
+		private static async Task FlickUp(InputInjector input, Point from)
+		{
+			using var finger = input.GetFinger();
+
+			finger.Press(from);
+			for (var i = 1; i <= 12; i++)
+			{
+				finger.MoveTo(from.Offset(0, -i * 22d), steps: 1);
+				await Task.Delay(8);
+			}
+
+			finger.Release();
 		}
 	}
 }

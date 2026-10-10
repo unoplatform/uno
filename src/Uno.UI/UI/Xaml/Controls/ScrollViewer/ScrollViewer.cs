@@ -1137,7 +1137,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Scrollbar interactions are explicit offset requests: arm the intent so the post-layout
 			// recompute coerces toward this offset instead of snapping back to a stale programmatic one.
-			_verticalOffsetIntent = offset;
+			_verticalOffsetIntent = ValidateVerticalOffsetIntent(offset);
 
 			ChangeViewCore(
 				horizontalOffset: null,
@@ -1165,7 +1165,7 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 
 			// Arm the intent — see OnVerticalScrollBarScrolled.
-			_horizontalOffsetIntent = offset;
+			_horizontalOffsetIntent = ValidateHorizontalOffsetIntent(offset);
 
 			ChangeViewCore(
 				horizontalOffset: offset,
@@ -1435,11 +1435,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (horizontalOffset is double hh)
 				{
-					_horizontalOffsetIntent = hh;
+					_horizontalOffsetIntent = _isLayoutAdjustment ? hh : ValidateHorizontalOffsetIntent(hh, zoomFactor);
 				}
 				if (verticalOffset is double vv)
 				{
-					_verticalOffsetIntent = vv;
+					_verticalOffsetIntent = _isLayoutAdjustment ? vv : ValidateVerticalOffsetIntent(vv, zoomFactor);
 				}
 			}
 
@@ -1500,9 +1500,52 @@ namespace Microsoft.UI.Xaml.Controls
 		// requests in the same sense as ChangeView; the new value supersedes any prior intent so
 		// the recompute step does not pull the offset back to a stale intent (which the user has
 		// just explicitly overridden).
-		internal void SetVerticalOffsetIntent(double offset) => _verticalOffsetIntent = offset;
+		internal void SetVerticalOffsetIntent(double offset) => _verticalOffsetIntent = ValidateVerticalOffsetIntent(offset);
 
-		internal void SetHorizontalOffsetIntent(double offset) => _horizontalOffsetIntent = offset;
+		internal void SetHorizontalOffsetIntent(double offset) => _horizontalOffsetIntent = ValidateHorizontalOffsetIntent(offset);
+
+		// The intent is validated against the range at request time, like WinUI's m_Offset
+		// (SetVerticalOffsetPrivate, and AdjustTargetVerticalOffset which uses the target zoom).
+		// Left raw, a request past the extent keeps chasing it as the extent grows.
+		private double ValidateVerticalOffsetIntent(double offset, float? zoomFactor = null)
+			=> ValidateOffsetIntent(offset, ExtentHeight, ViewportHeight, zoomFactor);
+
+		private double ValidateHorizontalOffsetIntent(double offset, float? zoomFactor = null)
+			=> ValidateOffsetIntent(offset, ExtentWidth, ViewportWidth, zoomFactor);
+
+		private double ValidateOffsetIntent(double offset, double extent, double viewport, float? zoomFactor)
+		{
+			var zoom = ZoomFactor;
+			if (zoomFactor is float z && !float.IsNaN(z) && ZoomMode == ZoomMode.Enabled)
+			{
+				// The same bounds the presenter applies the zoom with.
+				var min = Math.Max(0.1f, MinZoomFactor);
+				zoom = Math.Clamp(z, min, Math.Max(min, MaxZoomFactor));
+			}
+
+			return Math.Max(0, Math.Min(offset, Math.Max(Math.Round(extent * zoom - viewport, 4), 0)));
+		}
+
+		private bool _isLayoutAdjustment;
+
+		/// <summary>
+		/// Scrolls to compensate a change of the content's own layout. Unlike a request, it is computed against an
+		/// extent this ScrollViewer has not been arranged with yet, so it is kept as is rather than clamped to the
+		/// current range, and the post-layout recompute seats it once the extent catches up.
+		/// </summary>
+		internal void ChangeViewForLayoutAdjustment(double? horizontalOffset, double? verticalOffset, bool disableAnimation = true)
+		{
+			var wasLayoutAdjustment = _isLayoutAdjustment;
+			_isLayoutAdjustment = true;
+			try
+			{
+				ChangeView(horizontalOffset, verticalOffset, null, disableAnimation);
+			}
+			finally
+			{
+				_isLayoutAdjustment = wasLayoutAdjustment;
+			}
+		}
 
 		// Recomputes VerticalOffset/HorizontalOffset = clamp(intent, 0, ScrollableHeight/Width) when
 		// an intent is armed. Called from UpdateDimensionProperties after the SV's extent/viewport

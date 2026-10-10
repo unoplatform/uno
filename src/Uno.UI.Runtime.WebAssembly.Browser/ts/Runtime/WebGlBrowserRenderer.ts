@@ -3,10 +3,25 @@ namespace Uno.UI.Runtime {
 		private readonly canvas: HTMLCanvasElement;
 		private readonly anyGL: any;
 		private readonly glCtx: any;
+		private readonly usesWorkerClock: boolean;
 
 		constructor(canvas: HTMLCanvasElement) {
 			this.canvas = canvas;
 			this.anyGL = EmscriptenWebGL.assertGL();
+
+			if (WorkerFrameClock.isRequested()) {
+				try {
+					const renderCanvas = WorkerFrameClock.createRenderCanvas(canvas);
+					const offscreenCtx = EmscriptenWebGL.createContext(<any>renderCanvas, { antialias: 1 });
+					if (offscreenCtx > 0 && WorkerFrameClock.attach(canvas, renderCanvas)) {
+						this.glCtx = offscreenCtx;
+						this.usesWorkerClock = true;
+						return;
+					}
+				} catch (e) {
+					console.warn(`WebGlBrowserRenderer: no offscreen WebGL context, rendering on the page clock (${e})`);
+				}
+			}
 
 			this.glCtx = EmscriptenWebGL.createContext(this.canvas, { antialias: 1 });
 			if (!this.glCtx || this.glCtx < 0)
@@ -40,6 +55,7 @@ namespace Uno.UI.Runtime {
 					stencil: currentGLctx.getParameter(currentGLctx.STENCIL_BITS),
 					sample: 0, // TODO: currentGLctx.getParameter(GLctx.SAMPLES)
 					depth: currentGLctx.getParameter(currentGLctx.DEPTH_BITS),
+					usesWorkerClock: instance.usesWorkerClock === true,
 				};
 			} catch (e) {
 				return {
@@ -51,6 +67,12 @@ namespace Uno.UI.Runtime {
 
 		public static makeCurrent(instance: WebGlBrowserRenderer) {
 			instance.anyGL.makeContextCurrent(instance.glCtx);
+		}
+
+		public static present(instance: WebGlBrowserRenderer) {
+			if (instance.usesWorkerClock) {
+				WorkerFrameClock.instance.present();
+			}
 		}
 	}
 }

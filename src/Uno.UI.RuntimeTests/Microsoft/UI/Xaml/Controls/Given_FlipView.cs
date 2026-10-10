@@ -716,6 +716,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var rect = await UITestHelper.Load(flipView);
 
+			// Sizing arms a deferred offset fix. A flick starting before it ran postpones it to the end of the
+			// manipulation, where it suppresses the snap's selection change and scrolls back (as in WinUI).
+			await UITestHelper.WaitFor(() => !flipView.IsFixOffsetPending);
+
 			Assert.AreEqual(0, flipView.SelectedIndex);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
