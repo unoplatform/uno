@@ -71,6 +71,7 @@ These are added directly by `HealthService.BuildHealthReport()`:
 | `HostUnreachable` | Warning | Started but not yet connected |
 | `HostMcpEndpointNotAvailable` | Fatal | Host responds to HTTP but `/mcp` returns 404/400 — the host version predates MCP support (requires 6.6 or later). The MCP bridge cannot function without this endpoint. Remediation: upgrade the Uno.WinUI.DevServer package. |
 | `UpstreamError` | Fatal | Upstream task faulted |
+| `NoToolsRegistered` | Warning | Upstream connected and a tools/list completed, but it returned no tools besides the host's `uno_health` (typically signed out / unlicensed, or add-ins still loading). Remediation: sign in, then `uno_app_select_solution` with `forceRestart: true`. |
 
 ## Non-Mapped `IssueCode` Values
 

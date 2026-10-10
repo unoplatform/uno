@@ -328,18 +328,7 @@ internal class McpStdioServer(
 						toolStopwatch.Stop();
 						logger.LogWarning(ex, "Error executing tool {Tool} via execute_tool", targetToolName);
 						LogTimeline(logger, "tool.execute-tool.error", toolStopwatch.ElapsedMilliseconds, targetToolName);
-						return new CallToolResult
-						{
-							Content =
-							[
-								new TextContentBlock()
-								{
-									Text =
-										$"Tool '{targetToolName}' failed: {ex.Message}. Call uno_health for diagnostics."
-								}
-							],
-							IsError = true
-						};
+						return await BuildUpstreamToolFailureResultAsync(targetToolName, ex, ct);
 					}
 				}
 
@@ -388,6 +377,13 @@ internal class McpStdioServer(
 					logger.LogDebug("Forwarded MCP tool {Tool} to upstream in {ElapsedMs} ms", toolName,
 						toolStopwatch.ElapsedMilliseconds);
 					return result;
+				}
+				catch (McpProtocolException ex)
+				{
+					toolStopwatch.Stop();
+					logger.LogWarning(ex, "Upstream rejected tool {Tool}", toolName);
+					LogTimeline(logger, "tool.forwarded-upstream.error", toolStopwatch.ElapsedMilliseconds, toolName);
+					return await BuildUpstreamToolFailureResultAsync(toolName, ex, ct);
 				}
 				catch (OperationCanceledException) when (!ct.IsCancellationRequested)
 				{
@@ -635,6 +631,48 @@ internal class McpStdioServer(
 		return new CallToolResult
 		{
 			Content = [new TextContentBlock() { Text = json }],
+		};
+	}
+
+	/// <summary>
+	/// Turns an opaque upstream failure (e.g. "Request failed (remote): Unknown tool: 'x'") into an
+	/// actionable message. The most common cause is a signed-out / unlicensed session, where the
+	/// host is connected but the add-ins publish no tools (see IssueCode.NoToolsRegistered).
+	/// </summary>
+	private async Task<CallToolResult> BuildUpstreamToolFailureResultAsync(string toolName, Exception ex, CancellationToken ct)
+	{
+		try
+		{
+			// Refresh the snapshot so the diagnosis reflects the current upstream tool set.
+			await toolListManager.ListToolsWithTimeoutAsync(ct);
+		}
+		catch (Exception refreshEx) when (!ct.IsCancellationRequested)
+		{
+			logger.LogDebug(refreshEx, "Unable to refresh upstream tools while diagnosing failure of {Tool}", toolName);
+		}
+
+		var appToolCount = toolListManager.SnapshotToolCount
+			- (toolListManager.IsKnownUpstreamTool(HealthService.HealthTool.Name) ? 1 : 0);
+
+		var reason = toolListManager.HasFetchedTools && appToolCount <= 0
+			? "The DevServer host is connected but exposes no Uno app tools (uno_health issue NoToolsRegistered). You are most likely not signed in to Uno Platform, or your license does not include the App MCP tools. Run 'dotnet dnx uno.devserver login' to sign in, then call uno_app_select_solution with forceRestart=true."
+			: toolListManager.HasFetchedTools && !toolListManager.IsKnownUpstreamTool(toolName)
+				? $"'{toolName}' is not in the DevServer host's current tool list. Call uno_discover_tools to see the available tools."
+				: null;
+
+		var code = ex is McpProtocolException protocolEx ? $" (MCP error {(int)protocolEx.ErrorCode})" : "";
+		return new CallToolResult
+		{
+			Content =
+			[
+				new TextContentBlock()
+				{
+					Text = reason is null
+						? $"Tool '{toolName}' failed: {ex.Message}{code}. Call uno_health for diagnostics."
+						: $"Tool '{toolName}' failed: {reason} Upstream error: {ex.Message}{code}."
+				}
+			],
+			IsError = true
 		};
 	}
 
