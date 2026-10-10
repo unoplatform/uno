@@ -127,7 +127,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol> UIElementSymbol { get; }
 		internal Lazy<INamedTypeSymbol> DependencyObjectSymbol { get; }
 		internal Lazy<INamedTypeSymbol?> XNameProviderSymbol { get; }
-		internal Lazy<INamedTypeSymbol?> MenuFlyoutSymbol { get; }
 		internal Lazy<INamedTypeSymbol> MarkupExtensionSymbol { get; }
 		internal Lazy<INamedTypeSymbol> BrushSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ImageSourceSymbol { get; }
@@ -324,7 +323,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			ImageSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Image);
 			DependencyObjectSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.DependencyObject);
 			XNameProviderSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.IXNameProvider);
-			MenuFlyoutSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.MenuFlyout);
 			MarkupExtensionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.MarkupExtension);
 			BrushSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Brush);
 			DependencyObjectParseSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.IDependencyObjectParse);

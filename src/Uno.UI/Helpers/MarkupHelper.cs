@@ -21,9 +21,6 @@ namespace Uno.UI.Helpers
 	/// </summary>
 	public static class MarkupHelper
 	{
-		// Set by the XAML generator for named MenuFlyouts, in place of WinUI's internal DependencyObject_Name.
-		internal const string XamlNamePropertyName = "__UnoXamlName";
-
 		private static WeakAttachedDictionary<object, string>? _weakProperties;
 
 		private static WeakAttachedDictionary<object, string> WeakProperties
@@ -159,9 +156,6 @@ namespace Uno.UI.Helpers
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static TInstance? GetElementProperty<TInstance>(object target, string propertyName)
 			=> WeakProperties.GetValue<TInstance>(target, propertyName);
-
-		internal static string? GetXamlName(object target)
-			=> GetElementProperty<string>(target, XamlNamePropertyName);
 
 		/// <summary>
 		/// Applies the materialization settings to a member created from a <see cref="FrameworkTemplate"/>.
