@@ -45,4 +45,43 @@ public partial class Given_MenuFlyout
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Runtime_Xaml_MenuFlyout_Named_Then_Presenter_AutomationId_Is_Name()
+	{
+		var button = (Button)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+			"""
+			<Button xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Content="Open">
+				<Button.Flyout>
+					<MenuFlyout x:Name="runtimeMenuFlyout">
+						<MenuFlyoutItem Text="Item" />
+					</MenuFlyout>
+				</Button.Flyout>
+			</Button>
+			""");
+		await UITestHelper.Load(button);
+
+		var flyout = (MenuFlyout)button.Flyout;
+		try
+		{
+			flyout.ShowAt(button);
+			await WindowHelper.WaitForIdle();
+
+			var presenter = VisualTreeHelper
+				.GetOpenPopupsForXamlRoot(button.XamlRoot)
+				.Select(popup => popup.Child)
+				.OfType<MenuFlyoutPresenter>()
+				.LastOrDefault();
+			Assert.IsNotNull(presenter);
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(presenter);
+
+			Assert.AreEqual("runtimeMenuFlyout", peer.GetAutomationId());
+		}
+		finally
+		{
+			flyout.Hide();
+			WindowHelper.WindowContent = null;
+		}
+	}
 }
