@@ -157,6 +157,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				&& (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
 					|| (IsXNameProvider(objectType) && !IsAttachedProperty(member)));
 
+		// FrameworkElement.Name is WinUI's DependencyObject_Name, which its parser treats as the name directive.
+		private bool IsFrameworkElementNameMember(XamlMemberDefinition member, XamlType objectType)
+			=> member.Member.Name == "Name"
+				&& !IsAttachedProperty(member)
+				&& IsType(objectType, Generation.FrameworkElementSymbol.Value);
+
 		private bool IsRun(INamedTypeSymbol? symbol)
 		{
 			return IsType(symbol, Generation.RunSymbol.Value);
