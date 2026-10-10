@@ -33,7 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
 
-
 		// Set while an update replaces the running scroll animation, so the one cut short does not report its stop as final.
 		private bool _isReplacingScrollAnimation;
 
@@ -48,9 +47,9 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal bool IsInMotion => _isInManipulation || IsScrollAnimationInProgress;
 
-		private ScrollDecaySimulation _wheelDecayH;
-		private ScrollDecaySimulation _wheelDecayV;
-		private bool _isWheelDecayRunning;
+		private ScrollWheelSimulation _wheelMotionH;
+		private ScrollWheelSimulation _wheelMotionV;
+		private bool _isWheelMotionRunning;
 
 		private readonly Microsoft.UI.Input.ScrollVelocityTracker _velocityTracker = new();
 		private uint _velocityTrackerContacts;
@@ -67,7 +66,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Unsubscribing has to go through the target we subscribed to, or the handler leaks and the
 		// compositor keeps a frame driver alive forever.
 		private Media.CompositionTarget? _flingTarget;
-		private Media.CompositionTarget? _wheelDecayTarget;
+		private Media.CompositionTarget? _wheelMotionTarget;
 #nullable restore
 
 		private bool _canHorizontallyScroll;
@@ -150,12 +149,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				// A fling and a wheel decay own the offsets exactly like an animation does, but they are frame
+				// A fling and a wheel motion own the offsets exactly like an animation does, but they are frame
 				// drivers rather than composition animations, so the controller check below cannot see them.
 				// Left unreported, an intent armed mid-motion snaps the offset back on the next layout pass.
 				// The scroll animation runs until it has applied its last frame and published the final offsets, which on a
 				// late frame is after its wall-clock duration: Remaining would already report it done.
-				if (_isFlingRunning || _isWheelDecayRunning || _runningScrollAnimation is not null)
+				if (_isFlingRunning || _isWheelMotionRunning || _runningScrollAnimation is not null)
 				{
 					return true;
 				}
@@ -197,7 +196,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				UnhookScrollEvents(sv);
 			}
-			StopWheelDecayAndPublishFinalOffsets();
+			StopWheelMotionAndPublishFinalOffsets();
 			StopFlingAndPublishFinalOffsets();
 			_isInManipulation = false;
 
@@ -393,9 +392,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | updated: {updated} | req: h={horizontalOffset} v={verticalOffset} z={zoomFactor} | actual: h={HorizontalOffset} v={VerticalOffset} z={_zoomFactor} | opts: {options})");
 
-			if (!options.IsWheelDecay)
+			if (!options.IsWheelMotion)
 			{
-				StopWheelDecay();
+				StopWheelMotion();
 			}
 
 			if (!options.IsTouch)
@@ -411,7 +410,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var updatedHorizontalOffset = HorizontalOffset;
 			var updatedVerticalOffset = VerticalOffset;
 			// The touch and wheel drivers publish their final offset with no change at all, cf. Stop*AndPublishFinalOffsets.
-			if (updated || options.IsTouch || options.IsWheelDecay)
+			if (updated || options.IsTouch || options.IsWheelMotion)
 			{
 				if (Content is UIElement contentElt)
 				{
@@ -486,8 +485,8 @@ namespace Microsoft.UI.Xaml.Controls
 			var targetScale = new Vector3(zoom, zoom, 1);
 			var visual = view.Visual;
 
-			// No matter the `options.DisableAnimation`, if we have an animation running (that a wheel decay is not taking over)
-			if (!options.IsWheelDecay
+			// No matter the `options.DisableAnimation`, if we have an animation running (that a wheel motion is not taking over)
+			if (!options.IsWheelMotion
 				&& visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller
 				// ... that is animating to (almost) the same target value
 				&& Vector2.DistanceSquared(visual.AnchorPoint, target) < 4
@@ -617,7 +616,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Both drivers write the same offsets from the same frame clock, so they must never overlap:
 			// the loser would publish its own stale position over the winner's on every frame.
-			StopWheelDecay();
+			StopWheelMotion();
 
 			// Anchored on the first frame rather than here: the finger lifts at an arbitrary point within
 			// a frame, so timing from now would make the first inertial step a random fraction of a full
@@ -678,7 +677,7 @@ namespace Microsoft.UI.Xaml.Controls
 			inertia?.Complete();
 		}
 
-		/// <summary>The target whose tick drives this presenter's fling and wheel decay.</summary>
+		/// <summary>The target whose tick drives this presenter's fling and wheel motion.</summary>
 		private Media.CompositionTarget? FrameDriverTarget => Visual.CompositionTarget as Media.CompositionTarget;
 
 		private void OnFlingFrame(object? sender, long timestampInTicks)
@@ -727,14 +726,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		/// <summary>Feeds a wheel detent into the running decay, starting it if idle.</summary>
+		/// <summary>Feeds a wheel detent into the running wheel motion, starting it if idle.</summary>
 		/// <returns>
 		/// False when this presenter has no room left in the requested direction, so the wheel event stays
 		/// unhandled and chains to a parent ScrollViewer.
 		/// </returns>
 		internal bool AddWheelImpulse(double horizontalDistance, double verticalDistance)
 		{
-			// A notch too fine to move a whole pixel is still this presenter's: chaining it would scroll a parent.
+			// A notch that moves nothing is still this presenter's: chaining it would scroll a parent.
 			if (horizontalDistance == 0 && verticalDistance == 0)
 			{
 				return true;
@@ -743,21 +742,21 @@ namespace Microsoft.UI.Xaml.Controls
 			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
 			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);
 
-			// An animated scroll has already moved the offsets to its target: the decay takes over from
+			// An animated scroll has already moved the offsets to its target: the wheel motion takes over from
 			// where the content is drawn, or its first frame would jump to that target.
 			var (drawnH, drawnV) = GetDrawnOffsets();
 
-			// Against where the motion in flight will come to rest, not where it is now: a decay that is
+			// Against where the motion in flight will come to rest, not where it is now: a motion that is
 			// already destined for the end of the extent has no room left, and the event must chain to a parent.
-			var fromH = _isWheelDecayRunning ? _wheelDecayH.ProjectedEnd : drawnH;
-			var fromV = _isWheelDecayRunning ? _wheelDecayV.ProjectedEnd : drawnV;
+			var fromH = _isWheelMotionRunning ? _wheelMotionH.ProjectedEnd : drawnH;
+			var fromV = _isWheelMotionRunning ? _wheelMotionV.ProjectedEnd : drawnV;
 
 			if (!HasRoom(fromH, horizontalDistance, maxH) && !HasRoom(fromV, verticalDistance, maxV))
 			{
 				return false;
 			}
 
-			if (!_isWheelDecayRunning)
+			if (!_isWheelMotionRunning)
 			{
 				if (FrameDriverTarget is not { } wheelTarget)
 				{
@@ -766,22 +765,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// Seeded from the current offset, which a coasting fling may still be advancing, and anchored
 				// on the first frame rather than on a clock read here — cf. StartFling.
-				_wheelDecayH.Start(drawnH, wheelTarget.FrameIntervalInTicks);
-				_wheelDecayV.Start(drawnV, wheelTarget.FrameIntervalInTicks);
-				_isWheelDecayRunning = true;
-				_wheelDecayTarget = wheelTarget;
-				wheelTarget.FrameStarting += OnWheelDecayFrame;
+				_wheelMotionH.Start(drawnH);
+				_wheelMotionV.Start(drawnV);
+				_isWheelMotionRunning = true;
+				_wheelMotionTarget = wheelTarget;
+				wheelTarget.FrameStarting += OnWheelMotionFrame;
 			}
 
-			// The decay has taken the notch over, so it also takes over from any coasting touch fling:
+			// The wheel motion has taken the notch over, so it also takes over from any coasting touch fling:
 			// both drive the same offsets from the same frame clock, and the fling would otherwise keep
-			// publishing its own position over the decay on every frame. The decay's first frame would end the
-			// manipulation the fling held too, but a completion within that frame would stop the decay.
+			// publishing its own position over the wheel motion on every frame. The motion's first frame would end
+			// the manipulation the fling held too, but a completion within that frame would stop the motion.
 			StopFling();
 			CompleteTouchInertia();
 
-			_wheelDecayH.AddImpulse(horizontalDistance);
-			_wheelDecayV.AddImpulse(verticalDistance);
+			_wheelMotionH.AddDistance(horizontalDistance);
+			_wheelMotionV.AddDistance(verticalDistance);
 			return true;
 
 			static bool HasRoom(double from, double distance, double max)
@@ -803,44 +802,44 @@ namespace Microsoft.UI.Xaml.Controls
 			return (HorizontalOffset, VerticalOffset);
 		}
 
-		internal void StopWheelDecay()
+		internal void StopWheelMotion()
 		{
-			if (!_isWheelDecayRunning)
+			if (!_isWheelMotionRunning)
 			{
 				return;
 			}
 
-			if (_wheelDecayTarget is { } wheelTarget)
+			if (_wheelMotionTarget is { } wheelTarget)
 			{
-				wheelTarget.FrameStarting -= OnWheelDecayFrame;
-				_wheelDecayTarget = null;
+				wheelTarget.FrameStarting -= OnWheelMotionFrame;
+				_wheelMotionTarget = null;
 			}
 
-			_isWheelDecayRunning = false;
-			_wheelDecayH.Stop();
-			_wheelDecayV.Stop();
+			_isWheelMotionRunning = false;
+			_wheelMotionH.Stop();
+			_wheelMotionV.Stop();
 		}
 
 		/// <summary>
-		/// Stops a decay that is cut short, making sure the offsets it reached are still published as final:
-		/// <see cref="OnWheelDecayFrame"/> is the only place that would otherwise do it.
+		/// Stops a wheel motion that is cut short, making sure the offsets it reached are still published as final:
+		/// <see cref="OnWheelMotionFrame"/> is the only place that would otherwise do it.
 		/// </summary>
-		private void StopWheelDecayAndPublishFinalOffsets()
+		private void StopWheelMotionAndPublishFinalOffsets()
 		{
-			if (!_isWheelDecayRunning)
+			if (!_isWheelMotionRunning)
 			{
 				return;
 			}
 
-			StopWheelDecay();
-			Set(options: new ScrollOptions(DisableAnimation: true, IsIntermediate: false, IsWheelDecay: true));
+			StopWheelMotion();
+			Set(options: new ScrollOptions(DisableAnimation: true, IsIntermediate: false, IsWheelMotion: true));
 		}
 
-		private void OnWheelDecayFrame(object? sender, long timestampInTicks)
+		private void OnWheelMotionFrame(object? sender, long timestampInTicks)
 		{
 			// cf. OnFlingFrame: the invocation list of the frame in flight still contains this handler
 			// even when it was unsubscribed by another handler of that same frame.
-			if (!_isWheelDecayRunning)
+			if (!_isWheelMotionRunning)
 			{
 				return;
 			}
@@ -848,19 +847,19 @@ namespace Microsoft.UI.Xaml.Controls
 			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
 			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);
 
-			var runningH = _wheelDecayH.Tick(timestampInTicks, 0, maxH);
-			var runningV = _wheelDecayV.Tick(timestampInTicks, 0, maxV);
+			var runningH = _wheelMotionH.Tick(timestampInTicks, 0, maxH);
+			var runningV = _wheelMotionV.Tick(timestampInTicks, 0, maxV);
 			var running = runningH || runningV;
 
 			if (!running)
 			{
-				StopWheelDecay();
+				StopWheelMotion();
 			}
 
 			Set(
-				horizontalOffset: _wheelDecayH.Position,
-				verticalOffset: _wheelDecayV.Position,
-				options: new(DisableAnimation: true, IsIntermediate: running, IsWheelDecay: true));
+				horizontalOffset: _wheelMotionH.Position,
+				verticalOffset: _wheelMotionV.Position,
+				options: new(DisableAnimation: true, IsIntermediate: running, IsWheelMotion: true));
 		}
 
 		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)
@@ -885,8 +884,8 @@ namespace Microsoft.UI.Xaml.Controls
 		ManipulationModes IDirectManipulationHandler.OnStarting(GestureRecognizer _, ManipulationStartingEventArgs args)
 		{
 			// A press on content coasting from the wheel stops it. The touch paths go through
-			// OnInertiaInterrupted instead, which a wheel decay never reaches: it holds no manipulation.
-			StopWheelDecay();
+			// OnInertiaInterrupted instead, which a wheel motion never reaches: it holds no manipulation.
+			StopWheelMotion();
 
 			return ComputeAcceptedManipulationModes();
 		}
@@ -947,7 +946,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// finger has travelled the start threshold — so nothing else would stop the content under it.
 			_touchInertia = null;
 			StopFling();
-			StopWheelDecay();
+			StopWheelMotion();
 		}
 
 		/// <inheritdoc />
@@ -1302,6 +1301,6 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Indicates that the scroll is an intermediate value, not the final one
 	/// (i.e. active touch scrolling, touch scroll inertia or scroll animation).
 	/// </param>
-	/// <param name="IsWheelDecay">Indicates that the scroll is a frame of the wheel's decay, which must not stop itself.</param>
-	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false, bool IsWheelDecay = false);
+	/// <param name="IsWheelMotion">Indicates that the scroll is a frame of the wheel's motion, which must not stop itself.</param>
+	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false, bool IsWheelMotion = false);
 }
