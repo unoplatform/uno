@@ -808,8 +808,46 @@ internal static class AccessibilityPeerHelper
 
 	private static bool CanSetText(AutomationPeer providerPeer, IValueProvider provider)
 		=> providerPeer.IsEnabled()
-			&& !provider.IsReadOnly
-			&& providerPeer is not FrameworkElementAutomationPeer { Owner: RichEditBox };
+			&& !provider.IsReadOnly;
+
+	/// <summary>
+	/// Editors without a Value pattern (RichEditBox, like WinUI's windowless RichEdit host) report
+	/// their editability through the Text pattern's IsReadOnly attribute instead.
+	/// </summary>
+	internal static bool IsTextReadOnly(AutomationPeer peer)
+	{
+		var providerPeer = ResolveProviderPeer(peer);
+		if (!providerPeer.IsEnabled())
+		{
+			return true;
+		}
+
+		if (GetProvider<IValueProvider>(providerPeer, PatternInterface.Value) is { } valueProvider)
+		{
+			return valueProvider.IsReadOnly;
+		}
+
+		if (GetProvider<ITextProvider>(providerPeer, PatternInterface.Text) is { } textProvider)
+		{
+			var isReadOnly = true;
+			TryPerform(() =>
+			{
+				isReadOnly = textProvider.DocumentRange.GetAttributeValue(
+					(int)AutomationTextAttributesEnum.IsReadOnlyAttribute) is not false;
+				return true;
+			});
+			return isReadOnly;
+		}
+
+		return true;
+	}
+
+	// UIA has no multiline notion, but native text nodes do.
+	internal static bool IsMultilineText(AutomationPeer peer)
+		=> ResolveProviderPeer(peer) is FrameworkElementAutomationPeer
+		{
+			Owner: TextBox { AcceptsReturn: true } or RichEditBox { AcceptsReturn: true }
+		};
 
 	internal static bool CanCopyText(AutomationPeer peer)
 		=> !ResolveProviderPeer(peer).IsPassword() &&

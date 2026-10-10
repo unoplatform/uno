@@ -2621,18 +2621,13 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		bool isPassword,
 		bool isEnabled)
 	{
-		var isEdit = controlType is AutomationControlType.Edit or AutomationControlType.Document
-			|| (effectivePeer is FrameworkElementAutomationPeer { Owner: RichEditBox });
+		var isEdit = controlType is AutomationControlType.Edit or AutomationControlType.Document;
 
 		var valueProvider = effectivePeer.GetPattern(PatternInterface.Value) as IValueProvider;
-
-		// isReadOnly is true when disabled or when the provider reports read-only.
-		bool isReadOnly = !isEnabled || valueProvider?.IsReadOnly != false;
+		bool isReadOnly = !isEnabled || AccessibilityPeerHelper.IsTextReadOnly(effectivePeer);
 		bool isEditable = isEdit && !isReadOnly;
 		bool canSetText = isEditable && AccessibilityPeerHelper.CanSetText(effectivePeer);
-		bool isMultiline = isEdit &&
-			effectivePeer is FrameworkElementAutomationPeer { Owner: { } editOwner } &&
-			(editOwner is TextBox { AcceptsReturn: true } || editOwner is RichEditBox);
+		bool isMultiline = isEdit && AccessibilityPeerHelper.IsMultilineText(effectivePeer);
 
 		if (!isPassword &&
 			AccessibilityPeerHelper.TryGetText(
@@ -3532,21 +3527,17 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			supportedActions.Add(AccessibilityNativeAction.ScrollBackward);
 		}
 
-		var isEdit = controlType is AutomationControlType.Edit or AutomationControlType.Document
-			|| (effectivePeer is FrameworkElementAutomationPeer { Owner: RichEditBox });
+		var isEdit = controlType is AutomationControlType.Edit or AutomationControlType.Document;
 
 		AccessibilityNativeTextStateDetails? textState = null;
 		if (isEdit)
 		{
-			var valueProvider = effectivePeer.GetPattern(PatternInterface.Value) as IValueProvider;
-			bool isReadOnly = !enabled || valueProvider?.IsReadOnly != false;
+			bool isReadOnly = !enabled || AccessibilityPeerHelper.IsTextReadOnly(effectivePeer);
 			bool isEditable = !isReadOnly;
-			bool isMultiline = effectivePeer is FrameworkElementAutomationPeer { Owner: { } editOwner }
-				&& editOwner is TextBox tbD ? tbD.AcceptsReturn
-				: effectivePeer is FrameworkElementAutomationPeer { Owner: RichEditBox };
+			bool isMultiline = AccessibilityPeerHelper.IsMultilineText(effectivePeer);
 			bool hasTextSelection = effectivePeer.GetPattern(PatternInterface.Text) is ITextProvider;
 
-			if (isEditable)
+			if (isEditable && AccessibilityPeerHelper.CanSetText(effectivePeer))
 			{
 				supportedActions.Add(AccessibilityNativeAction.SetValue);
 			}

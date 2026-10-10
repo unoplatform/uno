@@ -2920,7 +2920,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	{
 		var actions = BuildSupportedActions(peer);
 		var range = BuildRange(peer);
-		var textState = BuildTextState(peer, owner);
+		var textState = BuildTextState(peer);
 		var scroll = BuildScroll(peer);
 		var collection = BuildCollection(peer);
 		var collectionItem = BuildCollectionItem(peer);
@@ -3031,7 +3031,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			verticalViewSize: sp.VerticalViewSize);
 	}
 
-	private static AccessibilityNativeTextStateDetails? BuildTextState(AutomationPeer peer, UIElement? owner)
+	private static AccessibilityNativeTextStateDetails? BuildTextState(AutomationPeer peer)
 	{
 		var controlType = peer.GetAutomationControlType();
 		if (controlType != AutomationControlType.Edit &&
@@ -3040,12 +3040,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			return null;
 		}
 
-		var valueProvider = peer.GetPattern(PatternInterface.Value) as IValueProvider;
-		bool isReadOnly = !peer.IsEnabled() || valueProvider?.IsReadOnly != false;
-
-		// Multiline from owner type; TextBox peers don't override GetOrientationCore.
-		bool isMultiline = owner is Microsoft.UI.Xaml.Controls.TextBox tb && tb.AcceptsReturn
-			|| owner is Microsoft.UI.Xaml.Controls.RichEditBox;
+		bool isReadOnly = AccessibilityPeerHelper.IsTextReadOnly(peer);
+		bool isMultiline = AccessibilityPeerHelper.IsMultilineText(peer);
 
 		bool hasTextSelection = peer.GetPattern(PatternInterface.Text) is ITextProvider;
 
