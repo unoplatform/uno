@@ -48,10 +48,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 			_app.WaitForElement("Page2NavViewContent");
 
 
-			var togglePaneButton = _app.Marked("TogglePaneButton");
+			// Scoped: the shell rail is a NavigationView with the same template part names.
+			var togglePaneButton = _app.Marked("BasicNavigation").Descendant().Marked("TogglePaneButton");
 			togglePaneButton.FastTap();
 
-			var settingsItem = _app.Marked("SettingsNavPaneItem");
+			var settingsItem = _app.Marked("BasicNavigation").Descendant().Marked("SettingsNavPaneItem");
 			settingsItem.FastTap();
 
 			_app.WaitForElement("SettingsNavViewContent");

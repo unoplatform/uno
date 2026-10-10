@@ -60,11 +60,7 @@ namespace SampleControl.Presentation
 		private const string TestsIterationsVariable = "UITEST_RUNTIME_TESTS_ITERATIONS";
 		private const string TestsAttemptsVariable = "UITEST_RUNTIME_TESTS_ATTEMPTS";
 
-#if DEBUG
-		private const int _numberOfRecentSamplesVisible = 10;
-#else
-		private const int _numberOfRecentSamplesVisible = 0;
-#endif
+		private const int _numberOfRecentSamplesVisible = 20;
 
 #if HAS_UNO
 		private Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(SampleChooserViewModel));
@@ -130,15 +126,22 @@ namespace SampleControl.Presentation
 				ShowFpsIndicator = boolValue;
 			}
 
+			IsAutomationRun = IsAutomationLaunch;
+
 			InitializeCommands();
+			InitializeShellCommands();
 			ObserveChanges();
+			ObserveShellChanges();
 
 			InitializeCategories();
+			RaisePropertyChanged(nameof(IsSampleIndexLoaded));
 
 			if (_log.IsEnabled(LogLevel.Information))
 			{
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
+
+			RestoreShellSettings();
 
 			_ = _dispatcher.RunAsync(
 					async () =>
@@ -152,6 +155,8 @@ namespace SampleControl.Presentation
 						{
 							RecentSamples = await GetRecentSamples(CancellationToken.None);
 						}
+
+						AreSavedSamplesLoaded = true;
 					}
 				);
 		}
@@ -232,6 +237,9 @@ namespace SampleControl.Presentation
 		{
 			CategoryVisibility = section == Section.Library;
 			CategoriesSelected = section == Section.Library || section == Section.Samples;
+			RecentsSelected = section == Section.Recents;
+			FavoritesSelected = section == Section.Favorites;
+			SearchSelected = section == Section.Search;
 
 			RecentsVisibility = section == Section.Recents;
 			FavoritesVisibility = section == Section.Favorites;
@@ -367,8 +375,6 @@ namespace SampleControl.Presentation
 						{
 							Console.WriteLine($"Creating control for {fileName}");
 
-							LogMemoryStatistics();
-
 							if (_log.IsEnabled(LogLevel.Debug))
 							{
 								_log.Debug($"Generating {folderName}\\{fileName}");
@@ -494,7 +500,11 @@ namespace SampleControl.Presentation
 #endif
 		}
 
-		internal void SetWindow(Window window) => _window = window;
+		internal void SetWindow(Window window)
+		{
+			_window = window;
+			ApplyMicaBackdrop();
+		}
 
 		internal void OpenPlayground()
 		{
@@ -543,82 +553,111 @@ namespace SampleControl.Presentation
 			ContentPhone = content;
 		}
 
-		internal async Task RunRuntimeTests(CancellationToken ct, string testResultsFilePath, Action doneAction = null)
+		/// <summary>
+		/// Runs the runtime tests and writes the results file, then calls <paramref name="doneAction"/> with the
+		/// process exit code: 0 when the results were written, 1 when the run could not complete.
+		/// </summary>
+		internal async Task RunRuntimeTests(CancellationToken ct, string testResultsFilePath, Action<int> doneAction = null)
+		{
+			var exitCode = await RunRuntimeTestsCore(ct, testResultsFilePath, OpenRuntimeTestsControl);
+			doneAction?.Invoke(exitCode);
+		}
+
+		internal async Task<int> RunRuntimeTestsCore(CancellationToken ct, string testResultsFilePath, Func<CancellationToken, Task<Uno.UI.Samples.Tests.UnitTestsControl>> openRunner)
 		{
 			try
 			{
-				await OpenRuntimeTests(ct);
-
-				if (ContentPhone is FrameworkElement fe
-#if HAS_UNO
-					&& fe.FindName("UnitTestsRootControl") is Uno.UI.Samples.Tests.UnitTestsControl unitTests)
-#else
-					&& fe.FindVisualChildByName("UnitTestsRootControl") is Uno.UI.Samples.Tests.UnitTestsControl unitTests)
-#endif
+				var unitTests = await openRunner(ct);
+				if (unitTests is null)
 				{
-#if IS_CI
-					// Used to disable showing the test output visually
-					unitTests.IsRunningOnCI = true;
-#endif
-					var engineConfig = new UnitTestEngineConfig();
-
-					// Used to perform test grouping on CI to reduce the impact of re-runs
-					if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(TestGroupVariable)))
+					if (_log.IsEnabled(LogLevel.Error))
 					{
-						unitTests.CITestGroup = int.Parse(Environment.GetEnvironmentVariable(TestGroupVariable));
-						unitTests.CITestGroupCount = int.Parse(Environment.GetEnvironmentVariable(TestGroupCountVariable));
+						_log.Error("Runtime tests failed: the runner (UnitTestsRootControl) was not found, no results were written.");
 					}
 
-					// Read the environment variable first
-					var rawFilter = Environment.GetEnvironmentVariable(TestsFilterRawVariable);
-
-					// Read the CI set variable, through Uno.UITest, used for Wasm DOM tests.
-					rawFilter = string.IsNullOrWhiteSpace(rawFilter) ? unitTests.CITestFilter : rawFilter;
-
-					if (!string.IsNullOrWhiteSpace(rawFilter))
-					{
-						// Replace the "!" with "==" that can be replaced when the variable
-						// value has been provided through an URL in wasm. (`=` is parsed as a key/value separator)
-						rawFilter = rawFilter.Replace("!", "=");
-
-						// read the filter generated by Uno.NUnitTransformTool with list-failed
-						var filter = Encoding.UTF8.GetString(Convert.FromBase64String(rawFilter));
-
-						engineConfig.Filters = filter
-							.Split("|")
-							.Select(s => s.Trim())
-							.Where(s => !string.IsNullOrEmpty(s) && s != "invalid-test-for-retry") // skip marker from tests scripts
-							.ToArray();
-
-						Console.WriteLine($"Using filters: {string.Join(", ", engineConfig.Filters)}");
-					}
-
-					// The same knobs the runner's UI offers: run each test several times in a row (it stops at the first
-					// failing iteration), and how many attempts a failing iteration gets before it is reported, 1 being none.
-					if (int.TryParse(Environment.GetEnvironmentVariable(TestsIterationsVariable), out var iterations) && iterations > 0)
-					{
-						engineConfig.Iterations = iterations;
-					}
-
-					if (int.TryParse(Environment.GetEnvironmentVariable(TestsAttemptsVariable), out var attempts) && attempts > 0)
-					{
-						engineConfig.Attempts = attempts;
-					}
-
-					Console.WriteLine($"Running each test {engineConfig.Iterations} time(s), with up to {engineConfig.Attempts} attempt(s) per iteration");
-
-					await Task.Run(() => unitTests.RunTests(ct, engineConfig));
-
-					await SkiaSamplesAppHelper.SaveFile(testResultsFilePath, unitTests.NUnitTestResultsDocument, ct);
+					return 1;
 				}
+
+#if IS_CI
+				// Used to disable showing the test output visually
+				unitTests.IsRunningOnCI = true;
+#endif
+				var engineConfig = new UnitTestEngineConfig();
+
+				// Used to perform test grouping on CI to reduce the impact of re-runs
+				if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(TestGroupVariable)))
+				{
+					unitTests.CITestGroup = int.Parse(Environment.GetEnvironmentVariable(TestGroupVariable));
+					unitTests.CITestGroupCount = int.Parse(Environment.GetEnvironmentVariable(TestGroupCountVariable));
+				}
+
+				// Read the environment variable first
+				var rawFilter = Environment.GetEnvironmentVariable(TestsFilterRawVariable);
+
+				// Read the CI set variable, through Uno.UITest, used for Wasm DOM tests.
+				rawFilter = string.IsNullOrWhiteSpace(rawFilter) ? unitTests.CITestFilter : rawFilter;
+
+				if (!string.IsNullOrWhiteSpace(rawFilter))
+				{
+					// Replace the "!" with "==" that can be replaced when the variable
+					// value has been provided through an URL in wasm. (`=` is parsed as a key/value separator)
+					rawFilter = rawFilter.Replace("!", "=");
+
+					// read the filter generated by Uno.NUnitTransformTool with list-failed
+					var filter = Encoding.UTF8.GetString(Convert.FromBase64String(rawFilter));
+
+					engineConfig.Filters = filter
+						.Split("|")
+						.Select(s => s.Trim())
+						.Where(s => !string.IsNullOrEmpty(s) && s != "invalid-test-for-retry") // skip marker from tests scripts
+						.ToArray();
+
+					Console.WriteLine($"Using filters: {string.Join(", ", engineConfig.Filters)}");
+				}
+
+				// The same knobs the runner's UI offers: run each test several times in a row (it stops at the first
+				// failing iteration), and how many attempts a failing iteration gets before it is reported, 1 being none.
+				if (int.TryParse(Environment.GetEnvironmentVariable(TestsIterationsVariable), out var iterations) && iterations > 0)
+				{
+					engineConfig.Iterations = iterations;
+				}
+
+				if (int.TryParse(Environment.GetEnvironmentVariable(TestsAttemptsVariable), out var attempts) && attempts > 0)
+				{
+					engineConfig.Attempts = attempts;
+				}
+
+				Console.WriteLine($"Running each test {engineConfig.Iterations} time(s), with up to {engineConfig.Attempts} attempt(s) per iteration");
+
+				await Task.Run(() => unitTests.RunTests(ct, engineConfig));
+
+				await SkiaSamplesAppHelper.SaveFile(testResultsFilePath, unitTests.NUnitTestResultsDocument, ct);
+
+				return 0;
 			}
-			finally
+			catch (Exception e)
 			{
-				doneAction?.Invoke();
+				if (_log.IsEnabled(LogLevel.Error))
+				{
+					_log.Error($"Runtime tests failed, results file {testResultsFilePath} may be missing or incomplete.", e);
+				}
+
+				return 1;
 			}
 		}
 
-		partial void LogMemoryStatistics();
+		private async Task<Uno.UI.Samples.Tests.UnitTestsControl> OpenRuntimeTestsControl(CancellationToken ct)
+		{
+			await OpenRuntimeTests(ct);
+
+			return ContentPhone is FrameworkElement fe
+#if HAS_UNO
+				? fe.FindName("UnitTestsRootControl") as Uno.UI.Samples.Tests.UnitTestsControl
+#else
+				? fe.FindVisualChildByName("UnitTestsRootControl") as Uno.UI.Samples.Tests.UnitTestsControl
+#endif
+				: null;
+		}
 
 		private void ObserveChanges()
 		{
@@ -627,7 +666,7 @@ namespace SampleControl.Presentation
 
 				void Update(SampleChooserContent newContent)
 				{
-					if (_isRecordAllTests)
+					if (_isRecordAllTests || _isSyncingBrowserSelection)
 					{
 						return;
 					}
@@ -647,7 +686,7 @@ namespace SampleControl.Presentation
 
 				void UpdateFavorite()
 				{
-					IsFavoritedSample = CurrentSelectedSample != null ? FavoriteSamples.Contains(CurrentSelectedSample) : false;
+					SyncFavoritedSample();
 				}
 
 				switch (e.PropertyName)
@@ -691,60 +730,73 @@ namespace SampleControl.Presentation
 
 		private void TryUpdateSearchResults()
 		{
-			_pendingSearch?.Cancel();
+			CancelPendingSearch();
 
-			var currentSearch = _pendingSearch = new CancellationTokenSource();
+			_pendingSearch = new CancellationTokenSource();
+			var token = _pendingSearch.Token;
 
 			var search = SearchTerm;
+			var categories = _allCategories;
 
+			// The dispatcher takes an Action, so this lambda is async void: nothing may escape it.
 			_ = RunOnUIThreadAsync(
 				async () =>
 				{
-					// Delay the search to allow the user to type more characters
-					await Task.Delay(400);
-
-					if (currentSearch.IsCancellationRequested)
+					try
 					{
-						return;
+						if (!string.IsNullOrWhiteSpace(search))
+						{
+							// Delay the search to allow the user to type more characters
+							await Task.Delay(SearchDebounceDelay, token);
+						}
+
+						var results = await SearchAsync(search, categories, token);
+
+						if (results is null || token.IsCancellationRequested)
+						{
+							return;
+						}
+
+						ApplySearchResults(results);
 					}
-
-					var results = await SearchAsync(search, _allCategories, currentSearch.Token);
-
-					if (results is null || currentSearch.IsCancellationRequested)
+					catch (OperationCanceledException)
 					{
-						return;
 					}
-
-					FilteredSamples = results;
+					catch (Exception e)
+					{
+						if (_log.IsEnabled(LogLevel.Error))
+						{
+							_log.Error($"Search for '{search}' failed: {e}");
+						}
+					}
 				}
 			);
 		}
 
+		private void CancelPendingSearch()
+		{
+			_pendingSearch?.Cancel();
+			_pendingSearch?.Dispose();
+			_pendingSearch = null;
+		}
+
 		private async Task<List<SampleChooserContent>> SearchAsync(string search, List<SampleChooserCategory> categories, CancellationToken cancellationToken)
 		{
-			if (string.IsNullOrEmpty(search))
+			if (string.IsNullOrWhiteSpace(search) || categories is null)
 			{
 				return [];
 			}
 
 			return await Task.Run(() =>
 			{
-				var starts = categories
-					.SelectMany(cat => cat.SamplesContent)
-					.Where(content => content.ControlName.StartsWith(search, StringComparison.OrdinalIgnoreCase));
-
-				if (cancellationToken.IsCancellationRequested)
+				try
+				{
+					return SampleSearch.Rank(search, categories.SelectMany(cat => cat.SamplesContent), cancellationToken);
+				}
+				catch (OperationCanceledException)
 				{
 					return null;
 				}
-
-				var contains = categories
-					.SelectMany(cat => cat.SamplesContent)
-					.Where(content => content.ControlName.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
-
-				// Order the results by showing the "start with" results
-				// followed by results that "contain" the search term
-				return starts.Concat(contains).OrderBy(s => s.ControlName).Distinct().ToList();
 			});
 		}
 
@@ -864,7 +916,7 @@ namespace SampleControl.Presentation
 
 			_allCategories = categories.ToList();
 			_visibleCategories = _allCategories.Where(c => !c.Category.StartsWith('_')).ToList();
-			_manualTestsCategories = _allCategories
+			_manualTestsCategories = _visibleCategories
 				.Select(cat => new SampleChooserCategory(cat.Category, cat.SamplesContent.Where(s => s.IsManualTest)))
 				.Where(cat => cat.Count > 0)
 				.ToList();
@@ -934,24 +986,40 @@ namespace SampleControl.Presentation
 								? favoriteSamples           // Use the parameter if it exists
 								: FavoriteSamples;    // Use the DynamicProperty
 
-			foreach (var sample in samples)
+			// No category is selected until the library is browsed, so there may be no sample list yet.
+			foreach (var sample in samples.Safe())
 			{
 				UpdateFavoriteForSample(sample, favorites.Contains(sample));
 			}
 
-			SampleContents = samples;
+			if (getAllSamples)
+			{
+				// Only the favorite flags changed: the library list keeps showing the selected category, re-sorted.
+				OnSelectedCategoryChanged();
+			}
+			else
+			{
+				SampleContents = samples;
+			}
 		}
 
-		private async Task ToggleFavorite(CancellationToken ct, SampleChooserContent sample)
+		/// <summary>Toggles, or sets <paramref name="isFavorite"/>; false when the stored list already matches and nothing was written.</summary>
+		private async Task<bool> ToggleFavorite(CancellationToken ct, SampleChooserContent sample, bool? isFavorite = null)
 		{
 			if (sample is null)
 			{
-				return;
+				return false;
 			}
 
 			var favorites = await GetFavoriteSamples(ct);
+			var wasFavorite = favorites.Contains(sample);
 
-			if (favorites.Contains(sample))
+			if (isFavorite == wasFavorite)
+			{
+				return false;
+			}
+
+			if (wasFavorite)
 			{
 				favorites.Remove(sample);
 			}
@@ -967,6 +1035,7 @@ namespace SampleControl.Presentation
 
 			OnSelectedCategoryChanged();
 			UpdateFavorites();
+			return true;
 		}
 
 		private async Task LoadPreviousTest(CancellationToken ct)
@@ -1005,7 +1074,7 @@ namespace SampleControl.Presentation
 		/// <param name="ct"></param>
 		/// <param name="getAllSamples">If true, will load favorites based on all samples and not just based on selected category</param>
 		/// <returns></returns>
-		private async Task<List<SampleChooserContent>> GetFavoriteSamples(CancellationToken ct, bool getAllSamples = false)
+		internal async Task<List<SampleChooserContent>> GetFavoriteSamples(CancellationToken ct, bool getAllSamples = false)
 		{
 			try
 			{
@@ -1100,6 +1169,14 @@ namespace SampleControl.Presentation
 				container.DataContext = null;
 			}
 
+			IsHomeVisible = false;
+
+			if (!ShouldTrackRecents)
+			{
+				CurrentSelectedSample = newContent;
+				return (container, control);
+			}
+
 			var recents = await GetRecentSamples(ct);
 
 			// Get the selected category, else if null find it using the SampleContent passed in
@@ -1112,13 +1189,20 @@ namespace SampleControl.Presentation
 
 			CurrentSelectedSample = newContent;
 
-			if (!recents.Contains(newContent))
+			// Most recently opened first, so Home and "Last sample" start from it.
+			var recentIndex = recents.IndexOf(newContent);
+			if (recentIndex != 0)
 			{
+				if (recentIndex > 0)
+				{
+					recents.RemoveAt(recentIndex);
+				}
+
 				recents.Insert(0, newContent);
 
 				if (recents.Count > _numberOfRecentSamplesVisible)
 				{
-					recents.RemoveAt(_numberOfRecentSamplesVisible);
+					recents.RemoveRange(_numberOfRecentSamplesVisible, recents.Count - _numberOfRecentSamplesVisible);
 				}
 
 				await SetFile(SampleChooserLRUConstant, recents.Where(s => s?.ControlType != null).Select(s => s.ControlType.FullName).ToArray());
@@ -1246,6 +1330,8 @@ namespace SampleControl.Presentation
 				Console.WriteLine($"[SampleChooser] Could not find a sample matching '{identifier}'. Use 'Category/SampleName', a sample name, or its fully-qualified type name.");
 				return false;
 			}
+
+			DropRestoredThemeForRunner(sample.ControlType?.FullName);
 
 			ShowNewSection(token, Section.SamplesContent);
 			SelectedLibrarySample = sample;

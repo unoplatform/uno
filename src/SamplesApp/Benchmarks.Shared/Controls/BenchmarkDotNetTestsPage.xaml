@@ -9,6 +9,6 @@
     mc:Ignorable="d">
 
     <Grid>
-        <local:BenchmarkDotNetControl />
+        <local:BenchmarkDotNetControl ShowHeader="False" />
     </Grid>
 </Page>
