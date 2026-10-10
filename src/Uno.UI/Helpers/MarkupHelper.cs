@@ -50,8 +50,7 @@ namespace Uno.UI.Helpers
 			{
 				provider.SetXName(name);
 			}
-
-			if (target is DependencyObject dependencyObject)
+			else if (target is DependencyObject dependencyObject)
 			{
 				dependencyObject.SetValue(DependencyObject.NameProperty, name);
 			}

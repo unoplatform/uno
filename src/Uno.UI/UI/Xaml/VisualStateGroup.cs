@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,9 +42,13 @@ namespace Microsoft.UI.Xaml
 
 		public VisualState CurrentState => _current.state;
 
-		public string Name { get; internal set; }
+		public string Name
+		{
+			get => (string)GetValue(NameProperty);
+			internal set => SetValue(NameProperty, value);
+		}
 
-		void IXNameProvider.SetXName(string name) => Name = name;
+		void IXNameProvider.SetXName(string name) => SetValue(NameProperty, name);
 
 		#region States Dependency Property
 
