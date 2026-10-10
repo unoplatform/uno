@@ -665,6 +665,22 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 	private object GetAttributeValueForSpan(AutomationTextAttributesEnum attribute, int start, int end)
 	{
 		var owner = (RichEditBox)_owner;
+
+		// Answered before the format walk below, which covers every paragraph in the range.
+		switch (attribute)
+		{
+			case AutomationTextAttributesEnum.IsReadOnlyAttribute:
+				return owner.IsReadOnly;
+			case AutomationTextAttributesEnum.AnnotationTypesAttribute:
+				return GetAnnotationTypes(start, end);
+			case AutomationTextAttributesEnum.AnnotationObjectsAttribute:
+				return GetAnnotationObjects(start, end);
+			case AutomationTextAttributesEnum.LinkAttribute:
+				return GetLinkAttribute(owner, start, end);
+			case AutomationTextAttributesEnum.SelectionActiveEndAttribute:
+				return GetSelectionActiveEnd(owner, start, end);
+		}
+
 		var character = owner.Document.GetFormatOverRange(start, end, resolveForeground: true);
 		var paragraph = owner.Document.GetParagraphFormatOverRange(start, end);
 
@@ -686,7 +702,6 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 			AutomationTextAttributesEnum.IndentationTrailingAttribute => GetParagraphMetric(paragraph.RightIndent),
 			AutomationTextAttributesEnum.IsHiddenAttribute => GetEffect(character.Hidden),
 			AutomationTextAttributesEnum.IsItalicAttribute => GetEffect(character.Italic),
-			AutomationTextAttributesEnum.IsReadOnlyAttribute => owner.IsReadOnly,
 			AutomationTextAttributesEnum.IsSubscriptAttribute => GetEffect(character.Subscript),
 			AutomationTextAttributesEnum.IsSuperscriptAttribute => GetEffect(character.Superscript),
 			AutomationTextAttributesEnum.MarginBottomAttribute => owner.Margin.Bottom + GetParagraphMetricValue(paragraph.SpaceAfter),
@@ -697,10 +712,6 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 			AutomationTextAttributesEnum.TabsAttribute => GetTabs(paragraph),
 			AutomationTextAttributesEnum.TextFlowDirectionsAttribute => GetTextFlowDirections(paragraph),
 			AutomationTextAttributesEnum.UnderlineStyleAttribute => GetUnderlineStyle(character.Underline),
-			AutomationTextAttributesEnum.AnnotationTypesAttribute => GetAnnotationTypes(start, end),
-			AutomationTextAttributesEnum.AnnotationObjectsAttribute => GetAnnotationObjects(start, end),
-			AutomationTextAttributesEnum.LinkAttribute => GetLinkAttribute(owner, start, end),
-			AutomationTextAttributesEnum.SelectionActiveEndAttribute => GetSelectionActiveEnd(owner, start, end),
 			_ => TextAttributeValueSentinel.NotSupported,
 		};
 	}
