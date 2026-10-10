@@ -9,8 +9,8 @@ using Microsoft.UI.Xaml.Shapes;
 #if !WINAPPSDK
 using Uno.Media;
 #endif
-using SamplesApp.UITests;
 using Path = Microsoft.UI.Xaml.Shapes.Path;
+using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 using System.Threading;
 using static Private.Infrastructure.TestServices;
