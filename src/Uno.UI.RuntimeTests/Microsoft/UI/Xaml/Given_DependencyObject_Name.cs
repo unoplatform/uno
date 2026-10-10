@@ -63,6 +63,27 @@ public class Given_DependencyObject_Name
 	}
 
 	[TestMethod]
+	public void When_NameProperty_Set_To_Same_Value_Then_Callback_Still_Fires()
+	{
+		var brush = new SolidColorBrush();
+		var border = new Border();
+		var brushCount = 0;
+		var borderCount = 0;
+		brush.RegisterPropertyChangedCallback(FrameworkElement.NameProperty, (s, dp) => brushCount++);
+		border.RegisterPropertyChangedCallback(FrameworkElement.NameProperty, (s, dp) => borderCount++);
+
+		brush.ClearValue(FrameworkElement.NameProperty);
+		brush.SetValue(FrameworkElement.NameProperty, "A");
+		brush.SetValue(FrameworkElement.NameProperty, "A");
+		border.Name = "A";
+		border.Name = "A";
+		border.Name = "A";
+
+		Assert.AreEqual(3, brushCount);
+		Assert.AreEqual(3, borderCount);
+	}
+
+	[TestMethod]
 	public void When_FrameworkElement_NameProperty_Set_Then_Name_Mirrors()
 	{
 		var border = new Border();
