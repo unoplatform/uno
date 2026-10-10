@@ -387,6 +387,12 @@ internal readonly partial struct UnicodeText
 			return iterator;
 		}
 
+		public static void CloseBreakIterator(IntPtr iterator)
+		{
+			GetMethod<ubrk_close>()(iterator);
+			Interlocked.Increment(ref BreakIteratorCloseCount);
+		}
+
 		public static void CheckErrorCode<T>(int status)
 		{
 			if (status > 0)

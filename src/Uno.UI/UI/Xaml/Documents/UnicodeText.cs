@@ -1765,7 +1765,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 				if (!isCached)
 				{
-					ICU.GetMethod<ICU.ubrk_close>()(breakIterator);
+					ICU.CloseBreakIterator(breakIterator);
 				}
 			}
 		}
