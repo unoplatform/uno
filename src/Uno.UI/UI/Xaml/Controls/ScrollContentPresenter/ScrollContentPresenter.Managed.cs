@@ -1152,14 +1152,9 @@ namespace Microsoft.UI.Xaml.Controls
 				// Fitted over the recent gesture rather than taken from the last two samples: inertia
 				// distance grows with the square of the launch velocity, so a two-point estimate that
 				// catches one short interval sends the content thousands of pixels.
-				// The release is a sample too: a finger that rested before lifting sends no move while still,
-				// and only the release reveals that gap, which drops the samples of the motion before it.
-				if (_velocityTrackerContacts <= 1)
-				{
-					_velocityTracker.AddPosition(args.Manipulation.CurrentTimestampInMicroseconds / 1000d, args.Position);
-				}
-
-				var fitted = _velocityTracker.GetVelocity();
+				// A finger that rested before lifting sends no move while still: only the release time reveals it.
+				var fitted = _velocityTracker.GetVelocity(
+					_velocityTrackerContacts <= 1 ? args.Manipulation.CurrentTimestampInMicroseconds / 1000d : null);
 
 				// Only along the axes the gesture moves this content: the fit runs on the raw pointer, which drifts
 				// across an axis that is railed (its recognizer velocity is zeroed) or that this presenter cannot scroll.
