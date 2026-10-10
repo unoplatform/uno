@@ -1215,6 +1215,13 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			return peer.IsPassword() ? null : value.Value;
 		}
 
+		// Editors without a Value pattern (RichEditBox) expose their content through the Text pattern.
+		if (peer.GetAutomationControlType() == AutomationControlType.Edit &&
+			AccessibilityPeerHelper.TryGetText(peer, out var editText, out _))
+		{
+			return peer.IsPassword() ? null : editText;
+		}
+
 		// Selection is reported by the Selected trait; VoiceOver would speak a "0"/"1" value as a number.
 		return peer.GetItemStatus() is { Length: > 0 } itemStatus
 			? itemStatus
