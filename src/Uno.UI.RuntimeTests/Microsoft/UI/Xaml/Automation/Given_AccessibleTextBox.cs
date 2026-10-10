@@ -948,7 +948,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.IsTrue(moved < 0);
 			Assert.AreEqual(0, range.CompareEndpoints(
 				TextPatternRangeEndpoint.Start,
-				textProvider.DocumentRange,
+				textProvider!.DocumentRange,
 				TextPatternRangeEndpoint.Start));
 		}
 	}
