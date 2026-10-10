@@ -950,6 +950,14 @@ internal static class AccessibilityPeerHelper
 					: textBox.SelectionStart + textBox.SelectionLength;
 				return true;
 			}
+
+			if (providerPeer is FrameworkElementAutomationPeer { Owner: RichEditBox richEditBox })
+			{
+				richEditBox.GetAccessibilitySelection(out var richStart, out var richEnd, out var isBackward);
+				start = isBackward ? richEnd : richStart;
+				end = isBackward ? richStart : richEnd;
+				return true;
+			}
 #endif
 
 			if (provider.GetSelection() is not { Length: > 0 } selection)
@@ -1003,6 +1011,17 @@ internal static class AccessibilityPeerHelper
 			if (providerPeer is FrameworkElementAutomationPeer { Owner: TextBox textBox })
 			{
 				return ((ITextBoxHost)textBox).Core.SelectInternal(selectionStart, selectionEnd - selectionStart) &&
+					TryGetTextSelection(providerPeer, out actualStart, out actualEnd) &&
+					actualStart == selectionStart &&
+					actualEnd == selectionEnd;
+			}
+
+			if (providerPeer is FrameworkElementAutomationPeer { Owner: RichEditBox richEditBox })
+			{
+				return richEditBox.ApplyAccessibilitySelection(
+						Math.Min(selectionStart, selectionEnd),
+						Math.Max(selectionStart, selectionEnd),
+						isBackward: selectionEnd < selectionStart) &&
 					TryGetTextSelection(providerPeer, out actualStart, out actualEnd) &&
 					actualStart == selectionStart &&
 					actualEnd == selectionEnd;
