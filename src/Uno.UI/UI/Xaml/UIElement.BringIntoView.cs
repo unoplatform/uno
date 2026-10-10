@@ -37,9 +37,15 @@ public partial class UIElement
 			throw new ArgumentNullException(nameof(options));
 		}
 
-		if (Visibility == Visibility.Collapsed || this is FrameworkElement { IsLoaded: false })
+		// WinUI only requires the element to be in the live tree (CUIElement::BringIntoView checks IsActive),
+		// so an element realized during this layout pass can be brought into view before its Loaded event.
+#if __CROSSRUNTIME__
+		var isInLiveTree = IsActiveInVisualTree;
+#else
+		var isInLiveTree = this is not FrameworkElement { IsLoaded: false };
+#endif
+		if (Visibility == Visibility.Collapsed || !isInLiveTree)
 		{
-			// Element must be loaded and visible for bring into view.
 			return;
 		}
 
