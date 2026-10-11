@@ -254,6 +254,18 @@ void uno_set_application_should_terminate_after_last_window_closed_callback(appl
     application_should_terminate_after_last_window_closed = p;
 }
 
+static application_open_url_fn_ptr application_open_url;
+
+inline application_open_url_fn_ptr uno_get_application_open_url_callback(void)
+{
+    return application_open_url;
+}
+
+void uno_set_application_open_url_callback(application_open_url_fn_ptr p)
+{
+    application_open_url = p;
+}
+
 static application_start_fn_ptr application_start;
 
 inline application_start_fn_ptr uno_get_application_start_callback(void)
@@ -294,6 +306,21 @@ void uno_application_quit(void)
     // creating the window will call `makeKeyWindow` and `orderFrontRegardless`
 
     uno_get_application_start_callback()();
+}
+
+// LaunchServices delivers a URL for a registered scheme here, both on a cold start and while running
+- (void)application:(NSApplication *)application openURLs:(NSArray<NSURL *> *)urls
+{
+#if DEBUG
+    NSLog(@"UNOApplicationDelegate.application:openURLs: %lu url(s)", (unsigned long)urls.count);
+#endif
+    application_open_url_fn_ptr cb = uno_get_application_open_url_callback();
+    if (cb == NULL) {
+        return;
+    }
+    for (NSURL *url in urls) {
+        cb(url.absoluteString.UTF8String);
+    }
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
