@@ -16,6 +16,23 @@ namespace Uno.UI.Runtime.Win32;
 partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 {
 	private readonly Dictionary<NonClientRegionKind, RectInt32[]> _regionRects = new();
+
+	// Regions overlap (e.g. TitleBar punches Passthrough holes into the Caption rect set by SetTitleBar),
+	// so hit-test in a fixed precedence order rather than in registration order: Passthrough wins, as in WinUI.
+	private static readonly NonClientRegionKind[] _regionHitTestOrder =
+	[
+		NonClientRegionKind.Passthrough,
+		NonClientRegionKind.Close,
+		NonClientRegionKind.Maximize,
+		NonClientRegionKind.Minimize,
+		NonClientRegionKind.Icon,
+		NonClientRegionKind.TopBorder,
+		NonClientRegionKind.LeftBorder,
+		NonClientRegionKind.RightBorder,
+		NonClientRegionKind.BottomBorder,
+		NonClientRegionKind.Caption,
+	];
+
 	public void ClearAllRegionRects()
 		=> _regionRects.Clear();
 
@@ -121,18 +138,17 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 		var clientOrigin = default(System.Drawing.Point);
 		PInvoke.ClientToScreen(hWnd, ref clientOrigin);
 
-		bool hasCustomDragRects = false;
+		bool hasCustomDragRects = _regionRects.TryGetValue(NonClientRegionKind.Caption, out var captionRects) && captionRects.Length > 0;
 		if (!onResizeBorder)
 		{
-			// Go through all the available rects
-			foreach (var region in _regionRects)
+			foreach (var kind in _regionHitTestOrder)
 			{
-				if (region.Key == NonClientRegionKind.Caption && region.Value.Length > 0)
+				if (!_regionRects.TryGetValue(kind, out var rects))
 				{
-					hasCustomDragRects = true;
+					continue;
 				}
 
-				foreach (var rect in region.Value)
+				foreach (var rect in rects)
 				{
 					var adjustedRect = new RectInt32(
 						rect.X + clientOrigin.X,
@@ -141,7 +157,7 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 						rect.Height);
 					if (adjustedRect.Contains(new PointInt32(ptMouse.X, ptMouse.Y)))
 					{
-						return RegionKindToHitTest(region.Key);
+						return RegionKindToHitTest(kind);
 					}
 				}
 			}

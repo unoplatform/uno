@@ -192,16 +192,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int LeftInset
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "LeftInset");
-			}
-		}
-#endif
+		// Skipping already declared property LeftInset
 		// Skipping already declared property PreferredHeightOption
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -217,16 +208,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int RightInset
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "RightInset");
-			}
-		}
-#endif
+		// Skipping already declared property RightInset
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.IsCustomizationSupported()
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.ResetToDefault()
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.SetDragRectangles(Windows.Graphics.RectInt32[])

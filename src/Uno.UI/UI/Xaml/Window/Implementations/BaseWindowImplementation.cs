@@ -253,6 +253,9 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		// (which will eventually be removed as a legacy API as well.
 		var coreWindowActivatedEventArgs = new Windows.UI.Core.WindowActivatedEventArgs(state);
 		CoreWindow?.OnActivated(coreWindowActivatedEventArgs);
+		InputActivationListener.SetStateForWindowId(
+			Window.AppWindow.Id,
+			state == CoreWindowActivationState.Deactivated ? InputActivationState.Deactivated : InputActivationState.Activated);
 		RaiseActivated(activatedEventArgs);
 		SystemThemeHelper.RefreshSystemTheme();
 		if (!FeatureConfiguration.DebugOptions.PreventKeyboardStateTrackerFromResettingOnWindowActivationChange)
