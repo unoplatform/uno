@@ -34,7 +34,7 @@
 
 - **Write it once, for real.** One single-project app, one set of XAML pages, one set of view models. Uno Platform takes care of each platform's window, input, accessibility and packaging.
 - **The WinUI API, everywhere.** You use the same `Microsoft.UI.Xaml` controls, styles, data binding and Composition API as on Windows. Controls are increasingly ported from WinUI's own C++ sources, and the default styles come from WinUI's own `generic.xaml`.
-- **Pixel-consistent by design.** Uno Platform draws the UI itself, so your app looks and behaves the same on a phone, in a browser and on the desktop. You can still embed native views where you need them, such as a map or a platform SDK control.
+- **Consistent by design.** Uno Platform draws the UI itself, so your app looks and behaves consistently on a phone, in a browser and on the desktop. You can still embed native views where you need them, such as a map or a platform SDK control.
 - **A fast inner loop.** Hot Reload updates XAML and C# in your running app, and AI agents can read the docs and drive your live app through the Uno Platform MCPs.
 - **Free and open source.** Uno Platform is licensed under Apache 2.0, and developed in the open, right here.
 
