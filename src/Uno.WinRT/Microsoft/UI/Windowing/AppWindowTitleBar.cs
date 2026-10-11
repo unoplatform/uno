@@ -3,6 +3,7 @@
 using System;
 using Uno.Foundation.Logging;
 using Windows.Graphics;
+using Windows.UI;
 
 namespace Microsoft.UI.Windowing;
 
@@ -111,6 +112,84 @@ public partial class AppWindowTitleBar
 	}
 
 	internal RectInt32[] DragRectangles { get; private set; } = [];
+
+	/// <summary>
+	/// Gets or sets the background color of the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
+	public Color? BackgroundColor { get; set; }
+
+	/// <summary>
+	/// Gets or sets the button background color of the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
+	public Color? ButtonBackgroundColor { get; set; }
+
+	/// <summary>
+	/// Gets or sets the button foreground color of the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
+	public Color? ButtonForegroundColor { get; set; }
+
+	/// <summary>
+	/// Gets or sets the button hover background color of the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
+	public Color? ButtonHoverBackgroundColor { get; set; }
+
+	/// <summary>
+	/// Gets or sets the button hover foreground color of the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
+	public Color? ButtonHoverForegroundColor { get; set; }
+
+	/// <summary>
+	/// Gets or sets the button inactive background color of the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
+	public Color? ButtonInactiveBackgroundColor { get; set; }
+
+	/// <summary>
+	/// Gets or sets the button inactive foreground color of the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
+	public Color? ButtonInactiveForegroundColor { get; set; }
+
+	/// <summary>
+	/// Gets or sets the button pressed background color of the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
+	public Color? ButtonPressedBackgroundColor { get; set; }
+
+	/// <summary>
+	/// Gets or sets the button pressed foreground color of the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
+	public Color? ButtonPressedForegroundColor { get; set; }
+
+	/// <summary>
+	/// Gets or sets the foreground color of the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
+	public Color? ForegroundColor { get; set; }
+
+	/// <summary>
+	/// Gets or sets the inactive background color of the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
+	public Color? InactiveBackgroundColor { get; set; }
+
+	/// <summary>
+	/// Gets or sets the inactive foreground color of the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it (the macOS title bar and traffic lights are drawn by the system).</remarks>
+	public Color? InactiveForegroundColor { get; set; }
+
+	/// <summary>
+	/// Gets or sets a value that specifies how the window icon is shown in the title bar.
+	/// </summary>
+	/// <remarks>Stored only: Skia desktop hosts do not apply it.</remarks>
+	public IconShowOptions IconShowOptions { get; set; }
 
 	/// <summary>
 	/// Gets a value that indicates whether the title bar can be customized.
