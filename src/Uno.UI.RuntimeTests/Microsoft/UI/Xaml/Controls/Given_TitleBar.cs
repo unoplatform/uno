@@ -136,6 +136,99 @@ public class Given_TitleBar
 		}
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Insets_Change_Passthrough_Regions_Follow()
+	{
+		var rightHeader = new Button { Content = "Right" };
+		var sut = new TitleBar { Title = "My Title", IsBackButtonVisible = true, RightHeader = rightHeader };
+		var root = CreateRootWithTitleBarRow(sut);
+		var window = new Window { Content = root };
+		window.ExtendsContentIntoTitleBar = true;
+		window.SetTitleBar(sut);
+		var activated = false;
+		try
+		{
+			window.Activated += (s, e) => activated = true;
+			window.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated && rightHeader.ActualWidth > 0 && GetInsets(window) > 0);
+
+			var backButton = sut.FindFirstDescendant<Button>("PART_BackButton")!;
+			await TestServices.WindowHelper.WaitFor(() => IsPassthrough(window, backButton) && IsPassthrough(window, rightHeader));
+
+			// Collapsed hides the caption buttons, so the TitleBar drops its inset padding and its parts move without it resizing.
+			window.AppWindow.TitleBar.PreferredHeightOption = global::Microsoft.UI.Windowing.TitleBarHeightOption.Collapsed;
+			await TestServices.WindowHelper.WaitFor(() => GetInsets(window) == 0);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await TestServices.WindowHelper.WaitFor(() => IsPassthrough(window, backButton) && IsPassthrough(window, rightHeader));
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			window.Close();
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_FlowDirection_Changes_Passthrough_Regions_Follow()
+	{
+		var rightHeader = new Button { Content = "Right" };
+		var sut = new TitleBar { Title = "My Title", IsBackButtonVisible = true, RightHeader = rightHeader };
+		var root = CreateRootWithTitleBarRow(sut);
+		var window = new Window { Content = root };
+		window.ExtendsContentIntoTitleBar = true;
+		window.SetTitleBar(sut);
+		var activated = false;
+		try
+		{
+			window.Activated += (s, e) => activated = true;
+			window.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated && rightHeader.ActualWidth > 0);
+
+			var backButton = sut.FindFirstDescendant<Button>("PART_BackButton")!;
+			await TestServices.WindowHelper.WaitFor(() => IsPassthrough(window, backButton) && IsPassthrough(window, rightHeader));
+
+			root.FlowDirection = FlowDirection.RightToLeft;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await TestServices.WindowHelper.WaitFor(() => IsPassthrough(window, backButton) && IsPassthrough(window, rightHeader));
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			window.Close();
+		}
+	}
+
+	// The TitleBar keeps its size here, as in a typical app, so only its padding and inner layout change.
+	private static Grid CreateRootWithTitleBarRow(TitleBar titleBar)
+	{
+		var root = new Grid { RowDefinitions = { new() { Height = GridLength.Auto }, new() } };
+		root.Children.Add(titleBar);
+		return root;
+	}
+
+	private static double GetInsets(Window window) => window.AppWindow.TitleBar.LeftInset + window.AppWindow.TitleBar.RightInset;
+
+	private static bool IsPassthrough(Window window, FrameworkElement element)
+	{
+		var center = GetCenter(element);
+		var scale = element.XamlRoot!.RasterizationScale;
+		var (x, y) = ((int)(center.X * scale), (int)(center.Y * scale));
+
+		return InputNonClientPointerSource.GetForWindowId(window.AppWindow.Id)
+			.GetRegionRects(NonClientRegionKind.Passthrough)
+			.Any(r => r.X <= x && x < r.X + r.Width && r.Y <= y && y < r.Y + r.Height);
+	}
+
+	private static global::Windows.Foundation.Point GetCenter(FrameworkElement element)
+	{
+		var bounds = element.TransformToVisual(null).TransformBounds(new(0, 0, element.ActualWidth, element.ActualHeight));
+		return new(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2);
+	}
+
 	private static void Invoke(Button button) =>
 		((IInvokeProvider)new ButtonAutomationPeer(button).GetPattern(PatternInterface.Invoke)).Invoke();
 
