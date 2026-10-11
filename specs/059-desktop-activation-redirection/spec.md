@@ -48,7 +48,8 @@ Three hosts feed that funnel today:
 | WebAssembly | `WebAssemblyBrowserHost.TryReportProtocolActivation` (`…/Hosting/WebAssemblyBrowserHost.cs:172-189`) | ✅ | n/a |
 | macOS | `MacOSActivation.TryReportUrl` (`src/Uno.UI.Runtime.MacOS/ApplicationModel/Activation/MacOSActivation.cs`), from `application:openURLs:` | ✅ | ✅ |
 | Win32 | `CommandLineActivation.Report` (`src/Uno.UI/Hosting/CommandLineActivation.cs`), from `Win32Host.Initialize`, parsed by `CommandLineActivationParser` (§1.6) | ✅ | ❌ needs §4 |
-| **X11 / FrameBuffer** | **none** | ❌ | ❌ |
+| X11 | `CommandLineActivation.Report` from `X11ApplicationHost.Initialize`, with the §3.4 bare-URI heuristic | ✅ | ❌ needs §4 |
+| **FrameBuffer** | **none** | ❌ | ❌ |
 
 `ActivationRegistrationManager` is entirely `[Uno.NotImplemented]` on every target
 (`src/Uno.WinRT/Generated/3.0.0.0/Microsoft.Windows.AppLifecycle/ActivationRegistrationManager.cs`).
