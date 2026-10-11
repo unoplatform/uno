@@ -1490,10 +1490,6 @@ NSOperatingSystemVersion _osVersion;
 }
 
 - (TitleBarEventRoute)routeTitleBarEvent:(NSEvent *)event {
-    if (![self isContentUnderTitleBar]) {
-        return TitleBarEventRouteDefault;
-    }
-
     NSEventType type = event.type;
     bool isDown = type == NSEventTypeLeftMouseDown || type == NSEventTypeRightMouseDown || type == NSEventTypeOtherMouseDown;
     bool isButtonEvent = isDown
@@ -1504,7 +1500,7 @@ NSOperatingSystemVersion _osVersion;
     }
 
     // The frame view has no superview, so it hit-tests in window coordinates.
-    NSView *hit = [self.contentView.superview hitTest:event.locationInWindow];
+    NSView *hit = [self isContentUnderTitleBar] ? [self.contentView.superview hitTest:event.locationInWindow] : nil;
     if (hit != nil && ![hit isDescendantOf:self.contentView]) {
         for (NSButton *button in uno_window_get_caption_buttons(self)) {
             if (!button.hidden && [hit isDescendantOf:button]) {
@@ -1513,9 +1509,11 @@ NSOperatingSystemVersion _osVersion;
         }
     }
 
+    // Like Win32, the regions apply whether or not the content extends into the title bar.
     if (type == NSEventTypeLeftMouseDown && window_non_client_hit_test) {
         CGFloat x = 0, y = 0;
         if ([self getPositionFrom:event x:&x y:&y] && window_non_client_hit_test(self, x, y) == NonClientPointerActionDrag) {
+            [self activateForMouseDown];
             if (event.clickCount == 2) {
                 [self performTitleBarDoubleClickAction];
             } else {
@@ -1527,14 +1525,28 @@ NSOperatingSystemVersion _osVersion;
 
     NSView *titlebarContainer = uno_window_get_caption_buttons(self).firstObject.superview.superview;
     if (hit != nil && titlebarContainer != nil && [hit isDescendantOf:titlebarContainer]) {
-        // Skipping AppKit also skips its click-to-focus, so do it here.
-        if (isDown && !self.isKeyWindow) {
-            [self makeKeyAndOrderFront:nil];
+        if (isDown) {
+            [self activateForMouseDown];
         }
         return TitleBarEventRouteContent;
     }
 
     return TitleBarEventRouteDefault;
+}
+
+// Skipping AppKit also skips its click-to-focus (and app activation), so do it here.
+- (void)activateForMouseDown {
+    NSApplication *app = [NSApplication sharedApplication];
+    if (!app.isActive) {
+        if (@available(macOS 14.0, *)) {
+            [app activate];
+        } else {
+            [app activateIgnoringOtherApps:YES];
+        }
+    }
+    if (!self.isKeyWindow) {
+        [self makeKeyAndOrderFront:nil];
+    }
 }
 
 // Double-clicking a title bar follows "Double-click a window's title bar to" in System Settings > Desktop & Dock.
@@ -1573,10 +1585,8 @@ NSOperatingSystemVersion _osVersion;
 }
 
 - (void)sendEvent:(NSEvent *)event {
-    if (![[NSApplication sharedApplication] isActive]) {
-        [super sendEvent:event];
-        return;
-    }
+    // captured first, routing a press can activate the app
+    bool isActive = [[NSApplication sharedApplication] isActive];
 
     bool handled = false;
     bool contentOnly = false;
@@ -1587,9 +1597,18 @@ NSOperatingSystemVersion _osVersion;
         case TitleBarEventRouteHandled:
             return;
         case TitleBarEventRouteContent:
+            if (!isActive) {
+                // Like the rest of the content, the first click into an inactive app only activates it.
+                // AppKit's transparent titlebar would start a drag or zoom on top of the XAML element instead.
+                return;
+            }
             contentOnly = true;
             break;
         case TitleBarEventRouteDefault:
+            if (!isActive) {
+                [super sendEvent:event];
+                return;
+            }
             break;
     }
     MouseEvents mouse = MouseEventsNone;
@@ -1915,8 +1934,14 @@ NSOperatingSystemVersion _osVersion;
 
 // The key window is the one receiving keyboard input, the closest match to an activated Win32 window.
 - (void)windowDidBecomeKey:(NSNotification *)notification {
-    NSEventType type = NSApp.currentEvent.type;
-    bool byPointer = type == NSEventTypeLeftMouseDown || type == NSEventTypeRightMouseDown || type == NSEventTypeOtherMouseDown;
+    NSEvent *event = NSApp.currentEvent;
+    NSEventType type = event.type;
+    bool isMouseDown = type == NSEventTypeLeftMouseDown || type == NSEventTypeRightMouseDown || type == NSEventTypeOtherMouseDown;
+    // A press on another window means code made this one key from a handler. When the press also activates the app,
+    // the current event is the app activation rather than the press, so fall back to the button state.
+    bool byPointer = isMouseDown
+        ? event.window == self
+        : [NSEvent pressedMouseButtons] != 0 && NSPointInRect([NSEvent mouseLocation], self.frame);
 #if DEBUG
     NSLog(@"UNOWindow %p windowDidBecomeKey byPointer %s", self, byPointer ? "true" : "false");
 #endif
@@ -1936,8 +1961,19 @@ NSOperatingSystemVersion _osVersion;
     [self layoutCaptionButtons];
 }
 
+- (void)windowDidEnterFullScreen:(NSNotification *)notification {
+    [self notifyTitleBarLayoutChanged];
+}
+
 - (void)windowDidExitFullScreen:(NSNotification *)notification {
     [self layoutCaptionButtons];
+    [self notifyTitleBarLayoutChanged];
+}
+
+// The insets depend on the full screen state, which may change after the last resize of the transition.
+- (void)notifyTitleBarLayoutChanged {
+    CGSize size = [self contentRectForFrameRect:self.frame].size;
+    uno_get_window_resize_event_callback()(self, size.width, size.height);
 }
 
 - (void)windowDidResize:(NSNotification *)notification {
