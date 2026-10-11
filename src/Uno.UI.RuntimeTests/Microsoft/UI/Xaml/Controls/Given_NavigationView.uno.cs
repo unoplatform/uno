@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -41,6 +41,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public partial class Given_NavigationView
 	{
+		[TestMethod]
+		public async Task When_BackButtonVisible_Auto_Then_Hidden_Only_On_TV()
+		{
+			var navView = new Microsoft.UI.Xaml.Controls.NavigationView
+			{
+				IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Auto,
+				IsBackEnabled = true,
+				Height = 500,
+				Width = 400,
+			};
+
+			await UITestHelper.Load(navView);
+
+			// Like WinUI on Xbox, a TV remote's Menu/B button goes back, so there is no on-screen back button by default.
+			var backButton = navView.FindFirstDescendant<Button>("NavigationViewBackButton");
+			Assert.IsNotNull(backButton);
+			Assert.AreEqual(OperatingSystem.IsTvOS() ? Visibility.Collapsed : Visibility.Visible, backButton.Visibility);
+		}
+
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14059")]
 #if !HAS_INPUT_INJECTOR
