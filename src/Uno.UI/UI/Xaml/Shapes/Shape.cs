@@ -371,8 +371,9 @@ namespace Microsoft.UI.Xaml.Shapes
 				return;
 			}
 
-			// XAML dashes are multiples of StrokeThickness; Composition takes absolute lengths.
-			var thickness = ActualStrokeThickness;
+			// XAML dashes are multiples of StrokeThickness; Composition takes absolute lengths. WinUI scales by the
+			// declared thickness, not the layout-rounded one the stroke is drawn with.
+			var thickness = StrokeThickness;
 			var compositionStrokeDashArray = new CompositionStrokeDashArray(_shape.Compositor);
 			for (int i = 0; i < strokeDashArray.Count; i++)
 			{
@@ -406,7 +407,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void UpdateStrokeDashOffset()
 		{
-			_shape.StrokeDashOffset = (float)(StrokeDashOffset * ActualStrokeThickness);
+			_shape.StrokeDashOffset = (float)(StrokeDashOffset * StrokeThickness);
 		}
 
 		/// <summary>
