@@ -73,6 +73,9 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	/// <summary>The intermediate render image described neutrally, for the backend to wrap as its surface.</summary>
 	public IVulkanRenderTarget CurrentRenderTarget => new VulkanRenderTarget(_renderImage!, _device!.GraphicsQueueFamilyIndex);
 
+	/// <summary>Bumped each time the render image is recreated, which leaves it blank.</summary>
+	public int RenderImageGeneration { get; private set; }
+
 	/// <summary>
 	/// Initialize the Vulkan context with a platform-specific surface factory and native window handle.
 	/// </summary>
@@ -110,8 +113,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 
 			// Create intermediate render image (TransitionLayout submits commands, needs lock). The Skia backend
 			// builds its own GRContext-Vulkan over this image via the neutral IVulkanDeviceContext/RenderTarget.
-			_renderImage = new VulkanImage(this, _display.CommandBufferPool,
-				_display.SurfaceFormat.format, new global::Windows.Graphics.SizeInt32(width, height));
+			CreateRenderImage(width, height);
 		}
 	}
 
@@ -150,8 +152,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		{
 			var platformSurface = new DirectVulkanSurface(nativeWindowHandle, new global::Windows.Graphics.SizeInt32(width, height), _factory);
 			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
-			_renderImage = new VulkanImage(this, _display.CommandBufferPool,
-				_display.SurfaceFormat.format, new global::Windows.Graphics.SizeInt32(width, height));
+			CreateRenderImage(width, height);
 		}
 	}
 
@@ -194,8 +195,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 
 			var platformSurface = new DirectVulkanSurface(_nativeWindowHandle, new global::Windows.Graphics.SizeInt32(width, height), _factory);
 			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
-			_renderImage = new VulkanImage(this, _display.CommandBufferPool,
-				_display.SurfaceFormat.format, new global::Windows.Graphics.SizeInt32(width, height));
+			CreateRenderImage(width, height);
 			// _cachedSkSurface will be lazily recreated on next EnsureCachedSurface
 		}
 	}
@@ -214,8 +214,15 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		_deviceApi!.DeviceWaitIdle(DeviceHandle);
 
 		_renderImage?.Dispose();
-		_renderImage = new VulkanImage(this, _display.CommandBufferPool,
+		CreateRenderImage(width, height);
+	}
+
+	// TransitionLayout submits commands, so this needs the device lock.
+	private void CreateRenderImage(int width, int height)
+	{
+		_renderImage = new VulkanImage(this, _display!.CommandBufferPool,
 			_display.SurfaceFormat.format, new global::Windows.Graphics.SizeInt32(width, height));
+		RenderImageGeneration++;
 	}
 
 	/// <summary>
