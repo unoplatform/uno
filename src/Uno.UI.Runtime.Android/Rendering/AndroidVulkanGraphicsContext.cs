@@ -32,9 +32,11 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;
 
-	// The Vulkan render image is stable across frames (resized only on change), so it keeps the previous frame's
-	// pixels — the compositor can repaint only the damaged region.
-	public bool PreservesContents => true;
+	// The Vulkan render image keeps the previous frame's pixels, so the compositor can repaint only the damaged
+	// region — unless the image was recreated since the last present. SurfaceChanged does that on rotation, and it
+	// can land after the frame that reported the new XAML size, so the compositor sees no resize. Read between
+	// AcquireRenderTarget and Present, under the frame lock that Resize also takes.
+	public bool PreservesContents => _vk.RenderImageHasContent;
 
 	// Neutral device face — the GRVkBackendContext inputs the Skia backend reads to build its GRContext-Vulkan.
 	public nint Instance => _vk.InstancePtr;

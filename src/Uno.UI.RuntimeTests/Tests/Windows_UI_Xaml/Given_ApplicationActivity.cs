@@ -3,9 +3,11 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.UI.Dispatching;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -161,6 +163,72 @@ public class Given_ApplicationActivity
 		Assert.IsTrue(
 			stopwatch.ElapsedMilliseconds < 250,
 			$"{ChainLength} chained render requests took {stopwatch.ElapsedMilliseconds}ms.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Reaches the render view's Vulkan context through reflection, which NativeAOT trims away.")]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24865")]
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("get_RenderView", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
+	public async Task When_Vulkan_Surface_Recreated_Then_Next_Frame_Repaints_Whole()
+	{
+		var border = new Microsoft.UI.Xaml.Controls.Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+		await UITestHelper.Load(border);
+
+		var renderView = GetMember(GetWindowActivity(), "RenderView");
+		if (renderView?.GetType().Name != "UnoVulkanView")
+		{
+			Assert.Inconclusive($"The window renders through {renderView?.GetType().Name ?? "nothing"}, not Vulkan.");
+		}
+
+		var vulkanContext = GetField(renderView, "_vulkanContext");
+		Assert.IsNotNull(vulkanContext);
+		var width = (int)GetField(renderView, "_width");
+		var height = (int)GetField(renderView, "_height");
+
+		var target = (Microsoft.UI.Xaml.Media.CompositionTarget)border.Visual.CompositionTarget!;
+		Microsoft.UI.Xaml.Media.FramePresentedInfo? firstPresent = null;
+		var recreated = false;
+		EventHandler<Microsoft.UI.Xaml.Media.FramePresentedInfo> onPresented = (_, info) =>
+		{
+			if (Volatile.Read(ref recreated))
+			{
+				firstPresent ??= info;
+			}
+		};
+
+		await TestServices.WindowHelper.WaitForIdle();
+		target.FramePresented += onPresented;
+		try
+		{
+			// A rotation can resize the XAML root a frame before SurfaceChanged swaps in the new-size render image;
+			// the frame after the swap then has no layout change to report, yet starts from a blank image.
+			vulkanContext.GetType().GetMethod("Resize")!.Invoke(vulkanContext, new object[] { width, height });
+			Volatile.Write(ref recreated, true);
+
+			// A small change, as a tap on a button would make: only its damage region would be repainted.
+			border.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Blue);
+
+			await TestServices.WindowHelper.WaitFor(() => firstPresent is not null, timeoutMS: 5000, message: "no frame was presented after the surface was recreated");
+		}
+		finally
+		{
+			target.FramePresented -= onPresented;
+		}
+
+		Assert.IsFalse(firstPresent!.Value.Unchanged, "The first frame on the recreated render image was presented as unchanged, leaving the window blank.");
+		Assert.IsFalse(firstPresent!.Value.Partial, "The first frame on the recreated render image repainted only its damage region, leaving the rest of the window blank.");
 	}
 
 	private static object GetMember(object instance, string name)

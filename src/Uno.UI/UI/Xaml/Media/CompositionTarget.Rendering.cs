@@ -206,14 +206,14 @@ public partial class CompositionTarget
 	private long _recordSequence;
 
 	// Set by Draw, raised once the swapchain presented; only touched from the presenting thread.
-	private (long Sequence, bool Unchanged)? _pendingPresent;
+	private (long Sequence, bool Unchanged, bool Partial)? _pendingPresent;
 
 	private void RaiseFramePresented()
 	{
 		if (_pendingPresent is { } pending)
 		{
 			_pendingPresent = null;
-			FramePresented?.Invoke(this, new FramePresentedInfo(pending.Sequence, Stopwatch.GetTimestamp(), pending.Unchanged));
+			FramePresented?.Invoke(this, new FramePresentedInfo(pending.Sequence, Stopwatch.GetTimestamp(), pending.Unchanged, pending.Partial));
 		}
 	}
 
@@ -567,7 +567,7 @@ public partial class CompositionTarget
 
 			if (FramePresented is not null)
 			{
-				_pendingPresent = (lastRenderedFrame.frame.Sequence, presentedUnchanged);
+				_pendingPresent = (lastRenderedFrame.frame.Sequence, presentedUnchanged, useDamage);
 			}
 
 			// This frame's damage is now presented; drop it so Render's carry-forward doesn't re-damage it next frame.
@@ -800,4 +800,5 @@ public partial class CompositionTarget
 /// <param name="Sequence">The presented frame's <see cref="CompositionTarget.LastRecordedSequence"/>.</param>
 /// <param name="Timestamp">A <see cref="Stopwatch.GetTimestamp"/> taken right after the swapchain presented.</param>
 /// <param name="Unchanged">The frame carried no damage, so the target was left as it was.</param>
-internal readonly record struct FramePresentedInfo(long Sequence, long Timestamp, bool Unchanged);
+/// <param name="Partial">Only the frame's damage region was repainted; the rest of the target was kept.</param>
+internal readonly record struct FramePresentedInfo(long Sequence, long Timestamp, bool Unchanged, bool Partial);
