@@ -1948,7 +1948,8 @@ NSOperatingSystemVersion _osVersion;
     // A press on another window means code made this one key from a handler. When the press also activates the app,
     // the current event is the app activation rather than the press, so fall back to the button state.
     bool byPointer = isMouseDown
-        ? event.window == self
+        // windowNumber, not window: a stale current event can point at a window that was already closed and freed
+        ? event.windowNumber == self.windowNumber
         : [NSEvent pressedMouseButtons] != 0 && NSPointInRect([NSEvent mouseLocation], self.frame);
 #if DEBUG
     NSLog(@"UNOWindow %p windowDidBecomeKey byPointer %s", self, byPointer ? "true" : "false");
