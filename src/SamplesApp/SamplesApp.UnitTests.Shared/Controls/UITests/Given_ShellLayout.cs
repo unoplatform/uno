@@ -39,33 +39,40 @@ public class Given_ShellLayout
 			return;
 		}
 
-		var now = await GetSettledTestHostBounds();
-		var isBack = now is { } after
-			&& Math.Abs(after.X - before.X) <= 0.5
-			&& Math.Abs(after.Y - before.Y) <= 0.5
-			&& Math.Abs(after.Width - before.Width) <= 0.5;
+		bool IsBack() => GetTestHostBounds() is { } now
+			&& Math.Abs(now.X - before.X) <= 0.5
+			&& Math.Abs(now.Y - before.Y) <= 0.5
+			&& Math.Abs(now.Width - before.Width) <= 0.5;
 
-		Assert.IsTrue(isBack, $"The test host was at {before} and is now at {now}.");
+		// A slow agent can hold a transition frame for a while, so wait for the host to come back rather than for it to stop.
+		var waited = Stopwatch.StartNew();
+		while (!IsBack() && waited.ElapsedMilliseconds < 5000)
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			await WaitForFrames(2);
+		}
+
+		Assert.IsTrue(IsBack(), $"The test host was at {before} and is now at {GetTestHostBounds()}.");
 	}
 
 	// A pane transition moves the host for a few frames after WaitForIdle, and not monotonically: its Grid.Column
-	// setter lands before the slide starts. Only bounds that hold across frames are where the host really is.
+	// setter lands before the slide starts. Only bounds that hold for a while are where the host really is.
 	private static async Task<Rect?> GetSettledTestHostBounds()
 	{
 		var bounds = GetTestHostBounds();
+		var unchanged = Stopwatch.StartNew();
 		var waited = Stopwatch.StartNew();
-		while (waited.ElapsedMilliseconds < 5000)
+		while (unchanged.ElapsedMilliseconds < 300 && waited.ElapsedMilliseconds < 5000)
 		{
 			await TestServices.WindowHelper.WaitForIdle();
 			await WaitForFrames(2);
 
 			var now = GetTestHostBounds();
-			if (now == bounds)
+			if (now != bounds)
 			{
-				return now;
+				bounds = now;
+				unchanged.Restart();
 			}
-
-			bounds = now;
 		}
 
 		return bounds;
