@@ -73,8 +73,8 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	/// <summary>The intermediate render image described neutrally, for the backend to wrap as its surface.</summary>
 	public IVulkanRenderTarget CurrentRenderTarget => new VulkanRenderTarget(_renderImage!, _device!.GraphicsQueueFamilyIndex);
 
-	/// <summary>Bumped each time the render image is recreated, which leaves it blank.</summary>
-	public int RenderImageGeneration { get; private set; }
+	/// <summary>Whether a frame has been presented from the render image; a newly created one is blank.</summary>
+	public bool RenderImageHasContent { get; private set; }
 
 	/// <summary>
 	/// Initialize the Vulkan context with a platform-specific surface factory and native window handle.
@@ -222,7 +222,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	{
 		_renderImage = new VulkanImage(this, _display!.CommandBufferPool,
 			_display.SurfaceFormat.format, new global::Windows.Graphics.SizeInt32(width, height));
-		RenderImageGeneration++;
+		RenderImageHasContent = false;
 	}
 
 	/// <summary>
@@ -234,6 +234,9 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	{
 		if (_display == null || _renderImage == null || _deviceApi == null)
 			return;
+
+		// Set even if the swapchain skips this present: the frame is already in the render image.
+		RenderImageHasContent = true;
 
 		// Try to acquire next swapchain image without retrying.
 		var acquireResult = _display.TryAcquireNextImage();
