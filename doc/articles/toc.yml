@@ -671,6 +671,8 @@
         href: features/android-auto.md
       - name: Android TV
         href: features/android-tv.md
+      - name: Apple TV
+        href: features/apple-tv.md
       - name: Wear OS (Android Watch)
         href: features/android-wear.md
       - name: App Actions

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -500,6 +500,8 @@ public class Given_SplitView
 			PanePlacement = placement,
 			Pane = new Border { Background = new SolidColorBrush(Colors.Red) },
 			Content = new Border { Background = new SolidColorBrush(Colors.Blue) },
+			// Auto shows the overlay on Xbox and tvOS, which would tint the content colors these tests check.
+			LightDismissOverlayMode = LightDismissOverlayMode.Off,
 		};
 
 		if (useControlsResourcesStyle)

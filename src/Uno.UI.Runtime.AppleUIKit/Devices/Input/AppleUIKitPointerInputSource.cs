@@ -120,6 +120,11 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 			foreach (UITouch touch in touches)
 			{
+				if (IsRemoteTouch(touch))
+				{
+					continue;
+				}
+
 				var args = CreatePointerEventArgs(source, touch);
 
 				TraceSingle(args);
@@ -144,6 +149,11 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 			foreach (UITouch touch in touches)
 			{
+				if (IsRemoteTouch(touch))
+				{
+					continue;
+				}
+
 				var args = CreatePointerEventArgs(source, touch);
 
 				TraceSingle(args);
@@ -168,6 +178,11 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 			foreach (UITouch touch in touches)
 			{
+				if (IsRemoteTouch(touch))
+				{
+					continue;
+				}
+
 				var args = CreatePointerEventArgs(source, touch);
 
 				TraceSingle(args);
@@ -192,6 +207,11 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 			foreach (UITouch touch in touches)
 			{
+				if (IsRemoteTouch(touch))
+				{
+					continue;
+				}
+
 				var args = CreatePointerEventArgs(source, touch);
 
 				TraceSingle(args);
@@ -525,6 +545,14 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 		return new PointerEventArgs(point, VirtualKeyModifiers.None);
 	}
+#endif
+
+	// The Siri Remote touch surface is not a pointer: it drives focus through TvRemoteInputHandler.
+	private static bool IsRemoteTouch(UITouch touch)
+#if __TVOS__
+		=> touch.Type == UITouchType.Indirect;
+#else
+		=> false;
 #endif
 
 	private PointerEventArgs CreatePointerEventArgs(UIView source, UITouch touch)
