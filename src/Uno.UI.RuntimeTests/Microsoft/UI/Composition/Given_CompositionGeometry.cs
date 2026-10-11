@@ -109,6 +109,35 @@ public class Given_CompositionGeometry
 		ImageAssert.HasColorAt(screenshot, 90, 50, Microsoft.UI.Colors.White, tolerance: 30);
 	}
 
+	// WinUI wraps a window whose start is past its end through the path origin, even without TrimOffset.
+	[TestMethod]
+	public async Task When_TrimStart_Greater_Than_TrimEnd_Then_Wraps()
+	{
+		var screenshot = await RenderStrokedEllipse(e =>
+		{
+			e.TrimStart = 0.9f;
+			e.TrimEnd = 0.1f;
+		});
+
+		ImageAssert.HasColorAt(screenshot, 50, 10, Microsoft.UI.Colors.Red, tolerance: 30);
+		ImageAssert.HasColorAt(screenshot, 50, 90, Microsoft.UI.Colors.White, tolerance: 30);
+	}
+
+	[TestMethod]
+	[DataRow(-0.1f, 1f)]
+	[DataRow(0f, 1.2f)]
+	public async Task When_Trim_Out_Of_Range_Then_Throws(float trimStart, float trimEnd)
+	{
+		var compositor = await GetCompositorAsync();
+		var ellipse = compositor.CreateEllipseGeometry();
+
+		Assert.ThrowsExactly<ArgumentException>(() =>
+		{
+			ellipse.TrimStart = trimStart;
+			ellipse.TrimEnd = trimEnd;
+		});
+	}
+
 	private static async Task<RawBitmap> RenderStrokedEllipse(Action<CompositionEllipseGeometry> configure)
 	{
 		var compositor = await GetCompositorAsync();
