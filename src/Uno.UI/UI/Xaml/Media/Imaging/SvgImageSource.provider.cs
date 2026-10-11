@@ -12,12 +12,21 @@ namespace Microsoft.UI.Xaml.Media.Imaging;
 partial class SvgImageSource
 {
 	private Task<ImageData>? _currentOpenTask;
+	private CancellationTokenSource? _loadCts;
 
 	internal event EventHandler? SourceLoaded;
 
-	private bool TryOpenSvgImageData(CancellationToken ct, out Task<ImageData> asyncImage)
+	private bool TryOpenSvgImageData(out Task<ImageData> asyncImage)
 	{
-		_currentOpenTask ??= LoadSvgImageAsync(ct);
+		// The load is shared by every open of this source, so it can't be bound to the token of the open that started
+		// it: an Image subscribing while the source's own open is in flight supersedes that open, but must reuse its
+		// load. Like WinUI, only a change of the source itself (UnloadImageSourceData) aborts the load.
+		if (_currentOpenTask is null)
+		{
+			_loadCts = new();
+			_currentOpenTask = LoadSvgImageAsync(_loadCts.Token);
+		}
+
 		asyncImage = _currentOpenTask;
 		return true;
 	}
@@ -28,9 +37,15 @@ partial class SvgImageSource
 		Unload();
 
 		var imageData = await GetSvgImageDataAsync(ct);
+		if (ct.IsCancellationRequested)
+		{
+			// The source changed while reading; the load that replaced this one publishes the result.
+			return ImageData.Empty;
+		}
+
 		if (imageData.Kind != ImageDataKind.ByteArray || imageData.ByteArray is null)
 		{
-			// A superseded open cancels its token mid-read, which is not a load failure.
+			// An aborted load (the source changed mid-read) is not a load failure.
 			if (imageData.Kind == ImageDataKind.Error && imageData.Error is not OperationCanceledException)
 			{
 				RaiseImageFailed(SvgImageSourceLoadStatus.Other);
@@ -77,6 +92,9 @@ partial class SvgImageSource
 
 	private protected override void UnloadImageSourceData()
 	{
+		_loadCts?.Cancel();
+		_loadCts?.Dispose();
+		_loadCts = null;
 		_currentOpenTask = null;
 		Unload();
 	}
